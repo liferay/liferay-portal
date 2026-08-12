@@ -84,6 +84,26 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		return controllerruntime.Result{}, error
 	}
 
+	if liferayEnvironment.Spec.Offline {
+		logger.V(1).Info("Awaiting offline bundle", "environmentID", environmentID)
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: "Waiting for the offline bundle to be provided",
+				Reason:  "AwaitingOfflineBundle",
+				Status:  metav1.ConditionFalse,
+				Type:    conditionActivated,
+			},
+		)
+
+		liferayEnvironment.Status.Phase = "Pending"
+
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, 15*time.Second,
+		)
+	}
+
 	if liferayEnvironment.Status.ActivatedAt == nil {
 		publicKey, error := publicKeyBase64(privateKey)
 

@@ -28,6 +28,8 @@ func (stubProvisioning *stubProvisioning) Activate(
 	context context.Context,
 	privateKey *rsa.PrivateKey,
 ) error {
+	stubProvisioning.activateCalled = true
+
 	return stubProvisioning.activateError
 }
 
@@ -36,6 +38,8 @@ func (stubProvisioning *stubProvisioning) DownloadAddOn(
 	downloadRequest provisioning.DownloadRequest,
 	privateKey *rsa.PrivateKey,
 ) (io.ReadCloser, error) {
+	stubProvisioning.downloadCalled = true
+
 	return nil, nil
 }
 
@@ -44,6 +48,8 @@ func (stubProvisioning *stubProvisioning) Manifest(
 	manifestRequest provisioning.ManifestRequest,
 	privateKey *rsa.PrivateKey,
 ) (*provisioning.Entitlements, error) {
+	stubProvisioning.manifestCalled = true
+
 	return stubProvisioning.entitlements, stubProvisioning.manifestError
 }
 
@@ -411,6 +417,67 @@ func TestReconcileIsNotBlockedByAddOns(t *testing.T) {
 
 	if length := len(getSecret("dev-entitlements", liferayEnvironmentReconciler, t).Data["add-ons.json"]); length == 0 {
 		t.Error("add-ons.json was not written to the entitlements secret")
+	}
+}
+
+func TestReconcileOfflineAwaitsBundle(t *testing.T) {
+	environment := pendingEnvironment()
+	environment.Spec.Offline = true
+
+	provisioningClient := &stubProvisioning{}
+
+	liferayEnvironmentReconciler, result := reconcileEnvironment(
+		provisioningClient, t,
+		&corev1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "liferay-dev",
+				UID:  "dev-namespace-uid",
+			},
+		},
+		environment,
+	)
+
+	if provisioningClient.activateCalled || provisioningClient.downloadCalled ||
+		provisioningClient.manifestCalled {
+		t.Errorf(
+			"Offline reconcile made provisioning calls: activate=%v download=%v manifest=%v",
+			provisioningClient.activateCalled,
+			provisioningClient.downloadCalled,
+			provisioningClient.manifestCalled,
+		)
+	}
+
+	if result.RequeueAfter != 15*time.Second {
+		t.Errorf("RequeueAfter = %s, want 15s", result.RequeueAfter)
+	}
+
+	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
+
+	if liferayEnvironment.Status.Phase != "Pending" {
+		t.Errorf("Phase = %q, want Pending", liferayEnvironment.Status.Phase)
+	}
+
+	if liferayEnvironment.Status.ActivatedAt != nil {
+		t.Errorf(
+			"ActivatedAt = %v, want nil in offline mode before a bundle",
+			liferayEnvironment.Status.ActivatedAt,
+		)
+	}
+
+	condition := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionActivated,
+	)
+
+	if condition == nil {
+		t.Fatal("Activated condition is nil, wanted value")
+	}
+
+	if condition.Reason != "AwaitingOfflineBundle" {
+		t.Errorf("Activated condition reason = %v, want AwaitingOfflineBundle", condition.Reason)
+	}
+
+	if condition.Status != metav1.ConditionFalse {
+		t.Errorf("Activated condition status = %v, want False", condition.Status)
 	}
 }
 
@@ -833,7 +900,10 @@ func virtualClusterLicenseXML(expirationDate string, maxClusterNodes int32) stri
 }
 
 type stubProvisioning struct {
-	activateError error
-	entitlements  *provisioning.Entitlements
-	manifestError error
+	activateCalled bool
+	activateError  error
+	downloadCalled bool
+	entitlements   *provisioning.Entitlements
+	manifestCalled bool
+	manifestError  error
 }
