@@ -1,7 +1,12 @@
 jest.mock('shared/util/request');
 
 import sendRequest from 'shared/util/request';
-import {createLiferay, updateLiferay} from '../data-source';
+import {
+	createLiferay,
+	createSalesforce,
+	updateLiferay,
+	updateSalesforce,
+} from '../data-source';
 
 const commonLiferayArgs = {
 	credentials: {
@@ -38,6 +43,58 @@ describe('Data Source API', () => {
 				data: dataArgs,
 				method: 'PATCH',
 				path: 'contacts/23/data_source/1/liferay',
+			});
+		});
+	});
+
+	describe('Salesforce Data Sources', () => {
+		it('should enable all campaigns when CREATING a salesforce data source', () => {
+			createSalesforce({
+				accountsConfiguration: {enableAllAccounts: true},
+				groupId: '23',
+				name: 'test',
+			});
+
+			expect(sendRequest).toHaveBeenCalledWith({
+				data: {
+					accountsConfiguration: {enableAllAccounts: true},
+					campaignsConfiguration: {enableAllCampaigns: true},
+					name: 'test',
+				},
+				method: 'POST',
+				path: 'contacts/23/data_source/salesforce',
+			});
+		});
+
+		it('should enable all campaigns when UPDATING a salesforce data source', () => {
+			updateSalesforce({
+				accountsConfiguration: {enableAllAccounts: true},
+				groupId: '23',
+				id: '1',
+				name: 'test',
+			});
+
+			expect(sendRequest).toHaveBeenCalledWith({
+				data: {
+					accountsConfiguration: {enableAllAccounts: true},
+					campaignsConfiguration: {enableAllCampaigns: true},
+					name: 'test',
+				},
+				method: 'PATCH',
+				path: 'contacts/23/data_source/1/salesforce',
+			});
+		});
+
+		it('should enable all campaigns when UPDATING only the name', () => {
+			updateSalesforce({groupId: '23', id: '1', name: 'test'});
+
+			expect(sendRequest).toHaveBeenCalledWith({
+				data: {
+					campaignsConfiguration: {enableAllCampaigns: true},
+					name: 'test',
+				},
+				method: 'PATCH',
+				path: 'contacts/23/data_source/1/salesforce',
 			});
 		});
 	});

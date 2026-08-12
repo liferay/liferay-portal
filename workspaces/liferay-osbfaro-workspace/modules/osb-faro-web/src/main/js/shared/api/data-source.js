@@ -333,6 +333,9 @@ export function createSalesforce({
 	return sendRequest({
 		data: {
 			...data,
+			campaignsConfiguration: {
+				enableAllCampaigns: true,
+			},
 			name,
 		},
 		method: 'POST',
@@ -459,6 +462,9 @@ export function updateSalesforce({
 	return sendRequest({
 		data: {
 			...data,
+			campaignsConfiguration: {
+				enableAllCampaigns: true,
+			},
 			name,
 		},
 		method: 'PATCH',
