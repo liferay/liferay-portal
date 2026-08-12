@@ -5,10 +5,19 @@
 
 package com.liferay.change.tracking.rest.internal.dto.v1_0.converter;
 
+import com.liferay.change.tracking.constants.CTDestinationNames;
 import com.liferay.change.tracking.rest.dto.v1_0.CTCollection;
 import com.liferay.change.tracking.rest.dto.v1_0.Status;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -73,13 +82,26 @@ public class CTCollectionDTOConverter
 	}
 
 	private Date _getDateScheduled(
-		com.liferay.change.tracking.model.CTCollection ctCollection) {
+			com.liferay.change.tracking.model.CTCollection ctCollection)
+		throws Exception {
 
 		if (ctCollection.getStatus() != WorkflowConstants.STATUS_SCHEDULED) {
 			return null;
 		}
 
-		return ctCollection.getScheduledDate();
+		SchedulerResponse schedulerResponse =
+			_schedulerEngineHelper.getScheduledJob(
+				StringBundler.concat(
+					ctCollection.getCtCollectionId(), StringPool.AT,
+					ctCollection.getCompanyId()),
+				CTDestinationNames.CT_COLLECTION_SCHEDULED_PUBLISH,
+				StorageType.PERSISTED);
+
+		if (schedulerResponse == null) {
+			return null;
+		}
+
+		return _schedulerEngineHelper.getStartDate(schedulerResponse);
 	}
 
 	private String _getStatusMessage(
@@ -119,21 +141,36 @@ public class CTCollectionDTOConverter
 		else if (ctCollection.getStatus() ==
 					WorkflowConstants.STATUS_SCHEDULED) {
 
-			Date scheduledDate = ctCollection.getScheduledDate();
+			try {
+				SchedulerResponse schedulerResponse =
+					SchedulerEngineHelperUtil.getScheduledJob(
+						StringBundler.concat(
+							ctCollection.getCtCollectionId(), StringPool.AT,
+							ctCollection.getCompanyId()),
+						CTDestinationNames.CT_COLLECTION_SCHEDULED_PUBLISH,
+						StorageType.PERSISTED);
 
-			if (scheduledDate == null) {
-				return StringPool.BLANK;
+				if (schedulerResponse == null) {
+					return null;
+				}
+
+				Date scheduledDate = SchedulerEngineHelperUtil.getStartDate(
+					schedulerResponse);
+
+				return _language.format(
+					httpServletRequest, "schedule-to-publish-in-x-by-x",
+					new String[] {
+						_language.getTimeDescription(
+							httpServletRequest,
+							scheduledDate.getTime() -
+								System.currentTimeMillis(),
+							true),
+						HtmlUtil.escape(ctCollection.getUserName())
+					});
 			}
-
-			return _language.format(
-				httpServletRequest, "schedule-to-publish-in-x-by-x",
-				new String[] {
-					_language.getTimeDescription(
-						httpServletRequest,
-						scheduledDate.getTime() - System.currentTimeMillis(),
-						true),
-					HtmlUtil.escape(ctCollection.getUserName())
-				});
+			catch (SchedulerException schedulerException) {
+				_log.error(schedulerException);
+			}
 		}
 
 		return StringPool.BLANK;
@@ -173,7 +210,13 @@ public class CTCollectionDTOConverter
 		};
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		CTCollectionDTOConverter.class);
+
 	@Reference
 	private Language _language;
+
+	@Reference
+	private SchedulerEngineHelper _schedulerEngineHelper;
 
 }

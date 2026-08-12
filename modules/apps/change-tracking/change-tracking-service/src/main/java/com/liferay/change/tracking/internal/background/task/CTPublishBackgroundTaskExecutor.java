@@ -248,7 +248,6 @@ public class CTPublishBackgroundTaskExecutor
 
 		latestCTCollection.setModifiedDate(modifiedDate);
 
-		latestCTCollection.setScheduledDate(null);
 		latestCTCollection.setStatus(WorkflowConstants.STATUS_APPROVED);
 		latestCTCollection.setStatusByUserId(backgroundTask.getUserId());
 		latestCTCollection.setStatusDate(modifiedDate);
