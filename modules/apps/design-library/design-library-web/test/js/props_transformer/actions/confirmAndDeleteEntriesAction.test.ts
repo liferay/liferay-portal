@@ -15,19 +15,27 @@ jest.mock('frontend-js-components-web', () => ({
 	openToast: (...args: any[]) => mockOpenToast(...args),
 }));
 
+const CONFIRMATION_MESSAGE = {
+	bodyHTML: '<p>body</p>',
+	partialSuccessMessage: '{0} of {1} entries were deleted.',
+	successMessage: 'Every entry was deleted.',
+	title: 'Delete entries?',
+};
+
 function buildItems(count: number) {
 	return Array.from({length: count}, (_, index) => ({
-		actions: {
-			delete: {href: `/design-libraries/${index}`, method: 'DELETE'},
-		},
-		name: `Design Library ${index}`,
+		actions: {delete: {href: `/entries/${index}`, method: 'DELETE'}},
 	}));
 }
 
 async function confirmDeletion(items: ReturnType<typeof buildItems>) {
 	const loadData = jest.fn();
 
-	confirmAndDeleteEntriesAction({items, loadData});
+	confirmAndDeleteEntriesAction({
+		confirmationMessage: CONFIRMATION_MESSAGE,
+		items,
+		loadData,
+	});
 
 	const [{buttons}] = mockOpenModal.mock.calls[0];
 
@@ -44,37 +52,30 @@ describe('confirmAndDeleteEntriesAction', () => {
 	});
 
 	it('opens a confirmation modal before deleting anything', () => {
-		confirmAndDeleteEntriesAction({items: buildItems(3)});
-
-		const [{title}] = mockOpenModal.mock.calls[0];
-
-		expect(title).toBe('delete-x-design-libraries-confirmation-title');
-		expect(fetch).not.toHaveBeenCalled();
-	});
-
-	it('names the design library when only one is selected', () => {
-		confirmAndDeleteEntriesAction({items: buildItems(1)});
+		confirmAndDeleteEntriesAction({
+			confirmationMessage: CONFIRMATION_MESSAGE,
+			items: buildItems(3),
+		});
 
 		const [{bodyHTML, title}] = mockOpenModal.mock.calls[0];
 
-		expect(title).toBe('delete-design-library-confirmation-title');
-		expect(bodyHTML).toContain(
-			'delete-design-library-confirmation-body-main'
-		);
+		expect(title).toBe('Delete entries?');
+		expect(bodyHTML).toBe('<p>body</p>');
+		expect(fetch).not.toHaveBeenCalled();
 	});
 
-	it('deletes every selected design library', async () => {
+	it('deletes every selected entry', async () => {
 		fetch.mockResponse('{}');
 
 		await confirmDeletion(buildItems(2));
 
 		expect(fetch).toHaveBeenCalledTimes(2);
 		expect(fetch).toHaveBeenCalledWith(
-			'/design-libraries/0',
+			'/entries/0',
 			expect.objectContaining({method: 'DELETE'})
 		);
 		expect(fetch).toHaveBeenCalledWith(
-			'/design-libraries/1',
+			'/entries/1',
 			expect.objectContaining({method: 'DELETE'})
 		);
 	});
@@ -85,18 +86,7 @@ describe('confirmAndDeleteEntriesAction', () => {
 		await confirmDeletion(buildItems(2));
 
 		expect(mockOpenToast).toHaveBeenCalledWith({
-			message: 'x-design-libraries-were-successfully-deleted',
-			type: 'success',
-		});
-	});
-
-	it('shows a singular success message when only one is selected', async () => {
-		fetch.mockResponseOnce('{}');
-
-		await confirmDeletion(buildItems(1));
-
-		expect(mockOpenToast).toHaveBeenCalledWith({
-			message: 'x-was-successfully-deleted',
+			message: 'Every entry was deleted.',
 			type: 'success',
 		});
 	});
@@ -108,7 +98,7 @@ describe('confirmAndDeleteEntriesAction', () => {
 		await confirmDeletion(buildItems(2));
 
 		expect(mockOpenToast).toHaveBeenCalledWith({
-			message: 'x-of-x-design-libraries-were-deleted',
+			message: '1 of 2 entries were deleted.',
 			type: 'warning',
 		});
 	});

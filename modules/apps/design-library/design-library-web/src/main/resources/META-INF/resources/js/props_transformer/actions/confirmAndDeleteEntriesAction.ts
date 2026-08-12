@@ -4,67 +4,29 @@
  */
 
 import {openModal, openToast} from 'frontend-js-components-web';
-import {escapeHTML, sub} from 'frontend-js-web';
+import {sub} from 'frontend-js-web';
 
 import DesignLibraryService from '../../services/DesignLibraryService';
-import {DesignLibrary} from '../../types';
+import {ConfirmationMessage, EntryActions} from '../../types';
 
-type DeletableDesignLibraries = Array<Pick<DesignLibrary, 'actions' | 'name'>>;
-
-function getConfirmationMessage(items: DeletableDesignLibraries) {
-	if (items.length === 1) {
-		const [{name}] = items;
-
-		return {
-			bodyMessage: Liferay.Language.get(
-				'delete-design-library-confirmation-body-main'
-			),
-			successMessage: sub(
-				Liferay.Language.get('x-was-successfully-deleted'),
-				`<strong>${escapeHTML(name)}</strong>`
-			),
-			title: sub(
-				Liferay.Language.get(
-					'delete-design-library-confirmation-title'
-				),
-				name
-			),
-		};
-	}
-
-	return {
-		bodyMessage: Liferay.Language.get(
-			'delete-design-libraries-confirmation-body-main'
-		),
-		successMessage: sub(
-			Liferay.Language.get(
-				'x-design-libraries-were-successfully-deleted'
-			),
-			items.length
-		),
-		title: sub(
-			Liferay.Language.get(
-				'delete-x-design-libraries-confirmation-title'
-			),
-			items.length
-		),
-	};
-}
+type DeletableEntries = Array<{actions?: EntryActions}>;
 
 export default function confirmAndDeleteEntriesAction({
+	confirmationMessage: {
+		bodyHTML,
+		partialSuccessMessage,
+		successMessage,
+		title,
+	},
 	items,
 	loadData,
 }: {
-	items: DeletableDesignLibraries;
+	confirmationMessage: ConfirmationMessage;
+	items: DeletableEntries;
 	loadData?: () => void;
 }) {
-	const {bodyMessage, successMessage, title} = getConfirmationMessage(items);
-
 	return openModal({
-		bodyHTML: `
-			<p>${bodyMessage}</p>
-			<p>${Liferay.Language.get('delete-design-library-confirmation-body-warning')}</p>
-		`,
+		bodyHTML,
 		buttons: [
 			{
 				autoFocus: true,
@@ -98,9 +60,7 @@ export default function confirmAndDeleteEntriesAction({
 					else if (deletedCount) {
 						openToast({
 							message: sub(
-								Liferay.Language.get(
-									'x-of-x-design-libraries-were-deleted'
-								),
+								partialSuccessMessage,
 								deletedCount,
 								items.length
 							),

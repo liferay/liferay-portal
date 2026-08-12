@@ -15,6 +15,7 @@ import {TableCellContentType} from '../constants';
 import CreateDesignLibraryModal from '../modal/CreateDesignLibraryModal';
 import {ActionItem, DesignLibrary} from '../types';
 import confirmAndDeleteEntriesAction from './actions/confirmAndDeleteEntriesAction';
+import getDesignLibrariesConfirmationMessage from './actions/getDesignLibrariesConfirmationMessage';
 import {
 	AuthorRenderer,
 	FromNowDateTimeRenderer,
@@ -116,6 +117,9 @@ export default function DesignLibraryAdminFDSPropsTransformer({
 				event?.preventDefault();
 
 				confirmAndDeleteEntriesAction({
+					confirmationMessage: getDesignLibrariesConfirmationMessage([
+						itemData,
+					]),
 					items: [itemData],
 					loadData: () => {
 						navigate(window.location.href);
@@ -136,6 +140,9 @@ export default function DesignLibraryAdminFDSPropsTransformer({
 		}) => {
 			if (action.data.id === 'delete') {
 				confirmAndDeleteEntriesAction({
+					confirmationMessage: getDesignLibrariesConfirmationMessage(
+						selectedData.items
+					),
 					items: selectedData.items,
 					loadData,
 				});

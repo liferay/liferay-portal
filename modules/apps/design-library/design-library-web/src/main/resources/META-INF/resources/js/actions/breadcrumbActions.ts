@@ -9,6 +9,7 @@ import {navigate} from 'frontend-js-web';
 import DesignLibraryConnectedSitesModal from '../modal/DesignLibraryConnectedSitesModal';
 import DesignLibraryManageMembersModal from '../modal/DesignLibraryManageMembersModal';
 import confirmAndDeleteEntriesAction from '../props_transformer/actions/confirmAndDeleteEntriesAction';
+import getDesignLibrariesConfirmationMessage from '../props_transformer/actions/getDesignLibrariesConfirmationMessage';
 
 export function confirmDeleteDesignLibrary({
 	descriptiveName,
@@ -19,13 +20,16 @@ export function confirmDeleteDesignLibrary({
 	href: string;
 	redirect?: string;
 }) {
+	const items = [
+		{
+			actions: {delete: {href, method: 'DELETE'}},
+			name: descriptiveName,
+		},
+	];
+
 	confirmAndDeleteEntriesAction({
-		items: [
-			{
-				actions: {delete: {href, method: 'DELETE'}},
-				name: descriptiveName,
-			},
-		],
+		confirmationMessage: getDesignLibrariesConfirmationMessage(items),
+		items,
 		loadData: () => {
 			if (redirect) {
 				navigate(redirect);
