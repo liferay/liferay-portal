@@ -149,11 +149,14 @@ export function showFilteredFields({
 			};
 		}
 		else {
+			const hiddenByVisibilityRule =
+				field.visible === false && !field.hiddenByTranslationFilter;
+
 			return {
 				...field,
 				disabled: true,
 				hidden: true,
-				hiddenByTranslationFilter: true,
+				hiddenByTranslationFilter: !hiddenByVisibilityRule,
 				visible: false,
 			};
 		}
