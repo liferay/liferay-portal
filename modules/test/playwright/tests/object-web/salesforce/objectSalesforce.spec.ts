@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ObjectDefinitionAPI} from '@liferay/object-admin-rest-client-js';
+import {
+	ObjectDefinitionAPI,
+	ObjectViewAPI,
+} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
@@ -112,6 +115,23 @@ test('Assert CRUD with created custom object using Salesforce storage type', asy
 		type: 'objectDefinition',
 	});
 
+	const objectViewAPIClient = await apiHelpers.buildRestClient(ObjectViewAPI);
+
+	await objectViewAPIClient.postObjectDefinitionObjectView(
+		objectDefinition.id,
+		{
+			defaultObjectView: true,
+			name: {en_US: getRandomString()},
+			objectViewColumns: [
+				{objectFieldName: objectFields[0].name, priority: 0},
+				{objectFieldName: 'createDate', priority: 1},
+			],
+			objectViewSortColumns: [
+				{objectFieldName: 'createDate', priority: 0, sortOrder: 'desc'},
+			],
+		}
+	);
+
 	const objectFieldValue = getRandomString();
 	const objectFieldUpdatedValue = getRandomString();
 
@@ -134,12 +154,15 @@ test('Assert CRUD with created custom object using Salesforce storage type', asy
 
 	await test.step('Read Object Entry', async () => {
 		await expect(
-			page.getByRole('cell', {name: objectFieldValue})
+			page.getByRole('cell', {exact: true, name: objectFieldValue})
 		).toBeVisible();
 	});
 
 	await test.step('Update Object Entry', async () => {
-		await page.getByRole('button', {name: 'Actions'}).last().click();
+		await page
+			.getByRole('row', {name: objectFieldValue})
+			.getByRole('button', {name: 'Actions'})
+			.click();
 		await page.getByRole('menuitem', {name: 'View'}).click();
 
 		await viewObjectEntriesPage.fillObjectEntry({
@@ -153,19 +176,22 @@ test('Assert CRUD with created custom object using Salesforce storage type', asy
 		await viewObjectEntriesPage.backButton.click();
 
 		await expect(
-			page.getByRole('cell', {name: objectFieldUpdatedValue})
+			page.getByRole('cell', {exact: true, name: objectFieldUpdatedValue})
 		).toBeVisible();
 	});
 
 	await test.step('Delete Object Entry', async () => {
-		await viewObjectEntriesPage.frontendDatasetActions.last().click();
+		await page
+			.getByRole('row', {name: objectFieldUpdatedValue})
+			.getByRole('button', {name: 'Actions'})
+			.click();
 		await viewObjectEntriesPage.frontendDatasetDeleteAction.click();
 		await viewObjectEntriesPage.deletionConfirmationModal
 			.getByRole('button', {name: 'Delete'})
 			.click();
 
 		await expect(
-			page.getByRole('cell', {name: objectFieldUpdatedValue})
+			page.getByRole('cell', {exact: true, name: objectFieldUpdatedValue})
 		).toBeAttached({attached: false});
 	});
 });
@@ -211,6 +237,23 @@ test('Assert CRUD with created custom object using Salesforce storage type in fo
 		type: 'objectDefinition',
 	});
 
+	const objectViewAPIClient = await apiHelpers.buildRestClient(ObjectViewAPI);
+
+	await objectViewAPIClient.postObjectDefinitionObjectView(
+		objectDefinition.id,
+		{
+			defaultObjectView: true,
+			name: {en_US: getRandomString()},
+			objectViewColumns: [
+				{objectFieldName: objectFields[0].name, priority: 0},
+				{objectFieldName: 'createDate', priority: 1},
+			],
+			objectViewSortColumns: [
+				{objectFieldName: 'createDate', priority: 0, sortOrder: 'desc'},
+			],
+		}
+	);
+
 	const formId = getRandomString();
 
 	const layout = await apiHelpers.headlessDelivery.createSitePage({
@@ -252,17 +295,24 @@ test('Assert CRUD with created custom object using Salesforce storage type in fo
 	await test.step('Read Object Entry in object admin', async () => {
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await expect(page.getByRole('cell', {name: entryValue})).toBeVisible();
+		await expect(
+			page.getByRole('cell', {exact: true, name: entryValue})
+		).toBeVisible();
 	});
 
 	await test.step('Delete Object Entry', async () => {
-		await viewObjectEntriesPage.frontendDatasetActions.last().click();
+		await page
+			.getByRole('row', {name: entryValue})
+			.getByRole('button', {name: 'Actions'})
+			.click();
 		await viewObjectEntriesPage.frontendDatasetDeleteAction.click();
 		await viewObjectEntriesPage.deletionConfirmationModal
 			.getByRole('button', {name: 'Delete'})
 			.click();
 
-		await expect(page.getByRole('cell', {name: entryValue})).toBeAttached({
+		await expect(
+			page.getByRole('cell', {exact: true, name: entryValue})
+		).toBeAttached({
 			attached: false,
 		});
 	});
