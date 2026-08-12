@@ -104,7 +104,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -5740,8 +5739,7 @@ public class JenkinsResultsParserUtil {
 			sb.append("=");
 
 			sb.append(
-				StringEscapeUtils.escapeJava(
-					getProperty(properties, propertyName)));
+				_escapePropertiesValue(getProperty(properties, propertyName)));
 
 			sb.append("\n");
 		}
@@ -6127,6 +6125,33 @@ public class JenkinsResultsParserUtil {
 
 	private static String _combineCommandArgs(String... args) {
 		return join(" ", args);
+	}
+
+	private static String _escapePropertiesValue(String value) {
+		if (value == null) {
+			return null;
+		}
+
+		StringBuilder sb = new StringBuilder(value.length());
+
+		for (int i = 0; i < value.length(); i++) {
+			char c = value.charAt(i);
+
+			if (c == '\\') {
+				sb.append("\\\\");
+			}
+			else if (c == '\n') {
+				sb.append("\\n");
+			}
+			else if (c == '\r') {
+				sb.append("\\r");
+			}
+			else {
+				sb.append(c);
+			}
+		}
+
+		return sb.toString();
 	}
 
 	private static void _executeCommandService(
