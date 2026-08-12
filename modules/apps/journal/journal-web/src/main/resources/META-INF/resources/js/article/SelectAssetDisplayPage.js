@@ -102,20 +102,20 @@ export default function SelectAssetDisplayPage({
 			</ClayForm.Group>
 
 			<ClayInput
-				hidden
 				name={`${namespace}layoutUuid`}
+				type="hidden"
 				value={assetDisplayPageSelected?.layoutUuid ?? ''}
 			/>
 
 			<ClayInput
-				hidden
 				name={`${namespace}assetDisplayPageId`}
+				type="hidden"
 				value={assetDisplayPageSelected?.assetDisplayPageId ?? ''}
 			/>
 
 			<ClayInput
-				hidden
 				name={`${namespace}displayPageType`}
+				type="hidden"
 				value={selectedDisplayPageType ?? ''}
 			/>
 
