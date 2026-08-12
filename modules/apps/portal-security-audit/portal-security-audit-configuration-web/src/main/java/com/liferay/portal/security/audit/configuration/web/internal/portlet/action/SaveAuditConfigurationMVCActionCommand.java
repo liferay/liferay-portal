@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
+import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 
 import jakarta.portlet.ActionRequest;
@@ -82,6 +83,22 @@ public class SaveAuditConfigurationMVCActionCommand
 			}
 
 			Dictionary<String, Object>
+				fileSystemAuditMessageProcessorConfigurationProperties =
+					_getFileSystemAuditMessageProcessorConfigurationProperties(
+						actionRequest,
+						_configurationProvider.getSystemConfiguration(
+							FileSystemAuditMessageProcessorConfiguration.
+								class));
+
+			if (!fileSystemAuditMessageProcessorConfigurationProperties.
+					isEmpty()) {
+
+				_configurationProvider.saveSystemConfiguration(
+					FileSystemAuditMessageProcessorConfiguration.class,
+					fileSystemAuditMessageProcessorConfigurationProperties);
+			}
+
+			Dictionary<String, Object>
 				persistentAuditMessageProcessorConfigurationProperties =
 					_getPersistentAuditMessageProcessorConfigurationProperties(
 						actionRequest,
@@ -122,6 +139,23 @@ public class SaveAuditConfigurationMVCActionCommand
 			}
 
 			Dictionary<String, Object>
+				fileSystemAuditMessageProcessorConfigurationProperties =
+					_getFileSystemAuditMessageProcessorConfigurationProperties(
+						actionRequest,
+						_configurationProvider.getCompanyConfiguration(
+							FileSystemAuditMessageProcessorConfiguration.class,
+							companyId));
+
+			if (!fileSystemAuditMessageProcessorConfigurationProperties.
+					isEmpty()) {
+
+				_configurationProvider.saveCompanyConfiguration(
+					FileSystemAuditMessageProcessorConfiguration.class,
+					companyId,
+					fileSystemAuditMessageProcessorConfigurationProperties);
+			}
+
+			Dictionary<String, Object>
 				persistentAuditMessageProcessorConfigurationProperties =
 					_getPersistentAuditMessageProcessorConfigurationProperties(
 						actionRequest,
@@ -159,6 +193,67 @@ public class SaveAuditConfigurationMVCActionCommand
 		AuditConfiguration auditConfiguration) {
 
 		return auditConfiguration.auditMessageMaxQueueSize();
+	}
+
+	private Dictionary<String, Object>
+		_getFileSystemAuditMessageProcessorConfigurationProperties(
+			ActionRequest actionRequest,
+			FileSystemAuditMessageProcessorConfiguration
+				fileSystemAuditMessageProcessorConfiguration) {
+
+		Dictionary<String, Object> properties = new HashMapDictionary<>();
+
+		if (!AuditConfigurationOverrideUtil.isOverridden(
+				FileSystemAuditMessageProcessorConfiguration.class,
+				"enabled")) {
+
+			properties.put(
+				"enabled",
+				ParamUtil.getBoolean(
+					actionRequest, "fileSystemAuditMessageProcessorEnabled",
+					fileSystemAuditMessageProcessorConfiguration.enabled()));
+		}
+
+		if (!AuditConfigurationOverrideUtil.isOverridden(
+				FileSystemAuditMessageProcessorConfiguration.class,
+				"generateChecksum")) {
+
+			properties.put(
+				"generateChecksum",
+				ParamUtil.getBoolean(
+					actionRequest,
+					"fileSystemAuditMessageProcessorGenerateChecksum",
+					fileSystemAuditMessageProcessorConfiguration.
+						generateChecksum()));
+		}
+
+		if (!AuditConfigurationOverrideUtil.isOverridden(
+				FileSystemAuditMessageProcessorConfiguration.class,
+				"outputDirectory")) {
+
+			properties.put(
+				"outputDirectory",
+				ParamUtil.getString(
+					actionRequest,
+					"fileSystemAuditMessageProcessorOutputDirectory",
+					fileSystemAuditMessageProcessorConfiguration.
+						outputDirectory()));
+		}
+
+		if (!AuditConfigurationOverrideUtil.isOverridden(
+				FileSystemAuditMessageProcessorConfiguration.class,
+				"outputFormat")) {
+
+			properties.put(
+				"outputFormat",
+				ParamUtil.getString(
+					actionRequest,
+					"fileSystemAuditMessageProcessorOutputFormat",
+					fileSystemAuditMessageProcessorConfiguration.
+						outputFormat()));
+		}
+
+		return properties;
 	}
 
 	private Dictionary<String, Object>

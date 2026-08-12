@@ -7,6 +7,7 @@ package com.liferay.portal.security.audit.configuration.web.internal.display.con
 
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
+import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 
 /**
@@ -16,16 +17,54 @@ public class AuditConfigurationDisplayContext {
 
 	public AuditConfigurationDisplayContext(
 		AuditConfiguration auditConfiguration,
+		FileSystemAuditMessageProcessorConfiguration
+			fileSystemAuditMessageProcessorConfiguration,
 		PersistentAuditMessageProcessorConfiguration
 			persistentAuditMessageProcessorConfiguration) {
 
 		_auditConfiguration = auditConfiguration;
+		_fileSystemAuditMessageProcessorConfiguration =
+			fileSystemAuditMessageProcessorConfiguration;
 		_persistentAuditMessageProcessorConfiguration =
 			persistentAuditMessageProcessorConfiguration;
 	}
 
 	public String getEnabledHelpMessage() {
 		return _getHelpMessage(AuditConfiguration.class, "enabled");
+	}
+
+	public String getFileSystemAuditMessageProcessorEnabledHelpMessage() {
+		return _getHelpMessage(
+			FileSystemAuditMessageProcessorConfiguration.class, "enabled");
+	}
+
+	public String
+		getFileSystemAuditMessageProcessorGenerateChecksumHelpMessage() {
+
+		return _getHelpMessage(
+			FileSystemAuditMessageProcessorConfiguration.class,
+			"generateChecksum");
+	}
+
+	public String getFileSystemAuditMessageProcessorOutputDirectory() {
+		return _fileSystemAuditMessageProcessorConfiguration.outputDirectory();
+	}
+
+	public String
+		getFileSystemAuditMessageProcessorOutputDirectoryHelpMessage() {
+
+		return _getHelpMessage(
+			FileSystemAuditMessageProcessorConfiguration.class,
+			"outputDirectory");
+	}
+
+	public String getFileSystemAuditMessageProcessorOutputFormat() {
+		return _fileSystemAuditMessageProcessorConfiguration.outputFormat();
+	}
+
+	public String getFileSystemAuditMessageProcessorOutputFormatHelpMessage() {
+		return _getHelpMessage(
+			FileSystemAuditMessageProcessorConfiguration.class, "outputFormat");
 	}
 
 	public int getPersistentAuditMessageProcessorBufferSize() {
@@ -60,6 +99,40 @@ public class AuditConfigurationDisplayContext {
 		return _isOverridden(AuditConfiguration.class, "enabled");
 	}
 
+	public boolean isFileSystemAuditMessageProcessorEnabled() {
+		return _fileSystemAuditMessageProcessorConfiguration.enabled();
+	}
+
+	public boolean isFileSystemAuditMessageProcessorEnabledOverridden() {
+		return _isOverridden(
+			FileSystemAuditMessageProcessorConfiguration.class, "enabled");
+	}
+
+	public boolean isFileSystemAuditMessageProcessorGenerateChecksum() {
+		return _fileSystemAuditMessageProcessorConfiguration.generateChecksum();
+	}
+
+	public boolean
+		isFileSystemAuditMessageProcessorGenerateChecksumOverridden() {
+
+		return _isOverridden(
+			FileSystemAuditMessageProcessorConfiguration.class,
+			"generateChecksum");
+	}
+
+	public boolean
+		isFileSystemAuditMessageProcessorOutputDirectoryOverridden() {
+
+		return _isOverridden(
+			FileSystemAuditMessageProcessorConfiguration.class,
+			"outputDirectory");
+	}
+
+	public boolean isFileSystemAuditMessageProcessorOutputFormatOverridden() {
+		return _isOverridden(
+			FileSystemAuditMessageProcessorConfiguration.class, "outputFormat");
+	}
+
 	public boolean isPersistentAuditMessageProcessorBufferSizeOverridden() {
 		return _isOverridden(
 			PersistentAuditMessageProcessorConfiguration.class, "bufferSize");
@@ -89,6 +162,8 @@ public class AuditConfigurationDisplayContext {
 	}
 
 	private final AuditConfiguration _auditConfiguration;
+	private final FileSystemAuditMessageProcessorConfiguration
+		_fileSystemAuditMessageProcessorConfiguration;
 	private final PersistentAuditMessageProcessorConfiguration
 		_persistentAuditMessageProcessorConfiguration;
 
