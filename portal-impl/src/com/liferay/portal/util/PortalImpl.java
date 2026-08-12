@@ -1763,6 +1763,189 @@ public class PortalImpl implements Portal {
 	}
 
 	@Override
+	public String getChangeLanguageURL(
+			String currentURL, HttpServletRequest httpServletRequest,
+			Locale locale, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Layout layout = themeDisplay.getLayout();
+
+		String layoutURL = currentURL;
+
+		String friendlyURLSeparatorPart = StringPool.BLANK;
+		String queryString = StringPool.BLANK;
+
+		int questionIndex = currentURL.indexOf(StringPool.QUESTION);
+
+		if (questionIndex != -1) {
+			queryString = currentURL.substring(questionIndex);
+			layoutURL = currentURL.substring(0, questionIndex);
+		}
+
+		String friendlyURLSeparator = StringPool.BLANK;
+		int friendlyURLSeparatorIndex = -1;
+
+		for (String urlSeparator :
+				FriendlyURLResolverRegistryUtil.getURLSeparators()) {
+
+			if (VirtualLayoutConstants.CANONICAL_URL_SEPARATOR.equals(
+					urlSeparator)) {
+
+				continue;
+			}
+
+			friendlyURLSeparatorIndex = layoutURL.indexOf(urlSeparator);
+
+			if (friendlyURLSeparatorIndex != -1) {
+				friendlyURLSeparator = urlSeparator;
+
+				break;
+			}
+		}
+
+		if (friendlyURLSeparatorIndex != -1) {
+			friendlyURLSeparatorPart = layoutURL.substring(
+				friendlyURLSeparatorIndex);
+
+			try {
+				LayoutFriendlyURLSeparatorComposite
+					layoutFriendlyURLSeparatorComposite =
+						getLayoutFriendlyURLSeparatorComposite(
+							layout.getGroupId(), layout.isPrivateLayout(),
+							friendlyURLSeparatorPart,
+							httpServletRequest.getParameterMap(),
+							HashMapBuilder.<String, Object>put(
+								"request", httpServletRequest
+							).build());
+
+				friendlyURLSeparatorPart =
+					layoutFriendlyURLSeparatorComposite.getFriendlyURL();
+			}
+			catch (NoSuchLayoutException noSuchLayoutException) {
+				if (!FRIENDLY_URL_SEPARATOR.equals(friendlyURLSeparator)) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(noSuchLayoutException);
+					}
+
+					throw noSuchLayoutException;
+				}
+			}
+
+			layoutURL = layoutURL.substring(0, friendlyURLSeparatorIndex);
+		}
+
+		Locale currentLocale = themeDisplay.getLocale();
+
+		String mappingPart = StringPool.BLANK;
+
+		String currentLayoutFriendlyURL = layout.getFriendlyURL(currentLocale);
+
+		int currentLayoutFriendlyURLIndex = -1;
+
+		if (Validator.isNotNull(currentLayoutFriendlyURL)) {
+			currentLayoutFriendlyURLIndex = layoutURL.indexOf(
+				currentLayoutFriendlyURL);
+		}
+
+		if (currentLayoutFriendlyURLIndex != -1) {
+			mappingPart = _getMappingPart(
+				currentLayoutFriendlyURLIndex +
+					currentLayoutFriendlyURL.length(),
+				layoutURL);
+		}
+		else {
+			Group group = layout.getGroup();
+
+			String groupFriendlyURL = group.getFriendlyURL();
+
+			int groupFriendlyURLIndex = layoutURL.indexOf(groupFriendlyURL);
+
+			if (groupFriendlyURLIndex != -1) {
+				mappingPart = _getMappingPart(
+					groupFriendlyURLIndex + groupFriendlyURL.length(),
+					layoutURL);
+			}
+		}
+
+		if (themeDisplay.isI18n()) {
+			String i18nPath = themeDisplay.getI18nPath();
+
+			String currentLocalePath =
+				StringPool.SLASH + currentLocale.toLanguageTag();
+
+			if (layoutURL.startsWith(currentLocalePath)) {
+				layoutURL = layoutURL.substring(currentLocalePath.length());
+			}
+			else if (layoutURL.startsWith(i18nPath)) {
+				layoutURL = layoutURL.substring(i18nPath.length());
+			}
+		}
+
+		int localePrependFriendlyURLStyle = PrefsPropsUtil.getInteger(
+			getCompanyId(httpServletRequest),
+			PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE);
+
+		String changeLanguageURL;
+
+		if (!Validator.isBlank(themeDisplay.getPathMain()) &&
+			layoutURL.startsWith(themeDisplay.getPathMain())) {
+
+			changeLanguageURL = layoutURL;
+		}
+		else if (_hasFriendlyURLResolverSeparator(layoutURL) ||
+				 layout.isTypeControlPanel()) {
+
+			changeLanguageURL = layoutURL + friendlyURLSeparatorPart;
+		}
+		else if (_isChangeLanguageGroupFriendlyURL(
+					layout.getGroup(), layout, layoutURL, currentLocale)) {
+
+			if (localePrependFriendlyURLStyle == 0) {
+				changeLanguageURL = layoutURL;
+			}
+			else {
+				changeLanguageURL = getGroupFriendlyURL(
+					layout.getLayoutSet(), themeDisplay, locale);
+			}
+
+			if (!changeLanguageURL.endsWith(StringPool.SLASH) &&
+				!friendlyURLSeparatorPart.startsWith(StringPool.SLASH)) {
+
+				changeLanguageURL += StringPool.SLASH;
+			}
+
+			if (Validator.isNotNull(friendlyURLSeparatorPart)) {
+				changeLanguageURL += friendlyURLSeparatorPart;
+			}
+		}
+		else {
+			if (localePrependFriendlyURLStyle == 0) {
+				changeLanguageURL = getLayoutURL(layout, themeDisplay, locale);
+			}
+			else {
+				changeLanguageURL = getLayoutFriendlyURL(
+					layout, themeDisplay, locale);
+			}
+
+			if (Validator.isNotNull(friendlyURLSeparatorPart)) {
+				changeLanguageURL += friendlyURLSeparatorPart;
+			}
+
+			if (Validator.isNotNull(mappingPart)) {
+				changeLanguageURL += mappingPart;
+			}
+		}
+
+		if (Validator.isNotNull(queryString)) {
+			changeLanguageURL = changeLanguageURL + queryString;
+		}
+
+		return _prependI18nPath(
+			changeLanguageURL, locale, themeDisplay, layout,
+			localePrependFriendlyURLStyle);
+	}
+
+	@Override
 	public String getClassName(long classNameId) {
 		try {
 			ClassName className = ClassNameLocalServiceUtil.getClassName(
@@ -7750,6 +7933,38 @@ public class PortalImpl implements Portal {
 		return sb.toString();
 	}
 
+	private String _getMappingPart(int fromIndex, String url) {
+		String mappingPart = StringPool.BLANK;
+
+		List<FriendlyURLMapper> friendlyURLMappers =
+			PortletLocalServiceUtil.getFriendlyURLMappers();
+
+		for (FriendlyURLMapper friendlyURLMapper : friendlyURLMappers) {
+			if (friendlyURLMapper.isCheckMappingWithPrefix()) {
+				continue;
+			}
+
+			String mappingPath =
+				StringPool.SLASH + friendlyURLMapper.getMapping();
+
+			int mappingIndex = url.indexOf(mappingPath, fromIndex);
+
+			if (mappingIndex == -1) {
+				continue;
+			}
+
+			int mappingEndIndex = mappingIndex + mappingPath.length();
+
+			if ((mappingEndIndex == url.length()) ||
+				(url.charAt(mappingEndIndex) == CharPool.SLASH)) {
+
+				mappingPart = url.substring(mappingIndex);
+			}
+		}
+
+		return mappingPart;
+	}
+
 	private String _getPortalURL(
 		String serverName, int serverPort, boolean secure) {
 
@@ -8130,6 +8345,54 @@ public class PortalImpl implements Portal {
 		return company.getVirtualHostname();
 	}
 
+	private boolean _hasFriendlyURLResolverSeparator(String layoutURL) {
+		for (String urlSeparator :
+				FriendlyURLResolverRegistryUtil.getURLSeparators()) {
+
+			if (layoutURL.contains(urlSeparator)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _isChangeLanguageGroupFriendlyURL(
+		Group group, Layout layout, String layoutURL, Locale locale) {
+
+		if (Validator.isNull(layoutURL) ||
+			Objects.equals(layoutURL, StringPool.SLASH)) {
+
+			return true;
+		}
+
+		if ((layoutURL.length() > 1) && layoutURL.endsWith(StringPool.SLASH)) {
+			layoutURL = layoutURL.substring(0, layoutURL.length() - 1);
+		}
+
+		if (isGroupFriendlyURL(
+				layoutURL, group.getFriendlyURL(),
+				layout.getFriendlyURL(locale))) {
+
+			return true;
+		}
+
+		int index = layoutURL.indexOf(StringPool.SLASH);
+
+		String string = layoutURL.substring(index + 1);
+
+		index = string.indexOf(CharPool.SLASH);
+
+		Locale layoutURLLocale = LocaleUtil.fromLanguageId(
+			string.substring(index + 1), true, false);
+
+		if (layoutURLLocale != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _isSignedIn(HttpServletRequest httpServletRequest) {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -8169,6 +8432,68 @@ public class PortalImpl implements Portal {
 		}
 
 		return false;
+	}
+
+	private String _prependI18nPath(
+			String changeLanguageURL, Locale locale, ThemeDisplay themeDisplay,
+			Layout layout, int localePrependFriendlyURLStyle)
+		throws PortalException {
+
+		if (localePrependFriendlyURLStyle == 0) {
+			return changeLanguageURL;
+		}
+
+		if ((localePrependFriendlyURLStyle != 2) &&
+			locale.equals(LocaleUtil.getDefault())) {
+
+			return changeLanguageURL;
+		}
+
+		if (layout.isTypeControlPanel()) {
+			return changeLanguageURL;
+		}
+
+		int pathStart = 0;
+
+		if (changeLanguageURL.startsWith(Http.HTTP_WITH_SLASH) ||
+			changeLanguageURL.startsWith(Http.HTTPS_WITH_SLASH)) {
+
+			pathStart = changeLanguageURL.indexOf(
+				CharPool.SLASH, changeLanguageURL.indexOf("://") + 3);
+
+			if (pathStart == -1) {
+				return changeLanguageURL;
+			}
+		}
+
+		String pathContext = themeDisplay.getPathContext();
+
+		if (Validator.isNotNull(pathContext) &&
+			!pathContext.equals(StringPool.SLASH) &&
+			changeLanguageURL.startsWith(pathContext, pathStart)) {
+
+			pathStart += pathContext.length();
+		}
+
+		String path = changeLanguageURL.substring(pathStart);
+
+		if (!Validator.isBlank(themeDisplay.getPathMain()) &&
+			path.startsWith(themeDisplay.getPathMain() + StringPool.SLASH)) {
+
+			return changeLanguageURL;
+		}
+
+		String i18nPath =
+			StringPool.SLASH +
+				getI18nPathLanguageId(locale, LocaleUtil.toLanguageId(locale));
+
+		if (path.startsWith(i18nPath + StringPool.SLASH) ||
+			path.equals(i18nPath)) {
+
+			return changeLanguageURL;
+		}
+
+		return changeLanguageURL.substring(0, pathStart) + i18nPath + path;
 	}
 
 	private boolean _requiresLayoutFriendlyURL(
