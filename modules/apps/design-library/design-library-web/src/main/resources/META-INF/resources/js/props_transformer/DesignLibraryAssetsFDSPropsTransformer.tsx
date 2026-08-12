@@ -3,13 +3,19 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
+import {
+	IBulkActionItem,
+	IFrontendDataSetProps,
+} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
 import {
 	FRAGMENT_COLLECTION_ENTRY_CLASS_NAME,
 	TableCellContentType,
 } from '../constants';
+import {ActionItem, DesignAsset} from '../types';
+import confirmAndDeleteEntriesAction from './actions/confirmAndDeleteEntriesAction';
+import getDesignAssetsConfirmationMessage from './actions/getDesignAssetsConfirmationMessage';
 import {
 	AuthorRenderer,
 	FromNowDateTimeRenderer,
@@ -20,17 +26,31 @@ import getDesignAssetCreationItems, {
 	DesignAssetCreationProps,
 } from './getDesignAssetCreationItems';
 
-export default function DesignLibraryAssetsFDSPropsTransformer(
-	props: IFrontendDataSetProps & {
-		additionalProps?: DesignAssetCreationProps;
-	}
-): IFrontendDataSetProps {
+export default function DesignLibraryAssetsFDSPropsTransformer({
+	additionalProps,
+	bulkActions,
+	...props
+}: IFrontendDataSetProps & {
+	additionalProps?: DesignAssetCreationProps;
+	bulkActions?: Array<IBulkActionItem>;
+}): IFrontendDataSetProps {
 	return {
 		...props,
+		bulkActions: bulkActions?.map((bulkAction): IBulkActionItem => {
+			if (bulkAction.data?.id !== 'delete') {
+				return bulkAction;
+			}
+
+			return {
+				...bulkAction,
+				isDisabled: ({allItemsSelectedActive, selectedItems}) =>
+					allItemsSelectedActive ||
+					!selectedItems?.length ||
+					selectedItems.some((item) => !item.actions?.delete),
+			};
+		}),
 		creationMenu: {
-			primaryItems: getDesignAssetCreationItems(
-				props.additionalProps || {}
-			),
+			primaryItems: getDesignAssetCreationItems(additionalProps || {}),
 		},
 		customRenderers: {
 			tableCell: [
@@ -80,6 +100,25 @@ export default function DesignLibraryAssetsFDSPropsTransformer(
 			],
 		},
 		hideManagementBarInEmptyState: true,
+		onBulkActionItemClick: ({
+			action,
+			loadData,
+			selectedData,
+		}: {
+			action: ActionItem;
+			loadData: () => void;
+			selectedData: {items: Array<DesignAsset>};
+		}) => {
+			if (action.data.id === 'delete') {
+				confirmAndDeleteEntriesAction({
+					confirmationMessage: getDesignAssetsConfirmationMessage(
+						selectedData.items
+					),
+					items: selectedData.items,
+					loadData,
+				});
+			}
+		},
 		views: [
 			{
 				contentRenderer: 'table',
