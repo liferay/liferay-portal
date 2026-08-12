@@ -167,11 +167,13 @@ describe('showFilteredFields(editingLanguageId, fields, filter, visibleFieldsets
 			) {
 				expect(field.disabled).toBe(false);
 				expect(field.hidden).toBe(false);
+				expect(field.hiddenByTranslationFilter).toBe(false);
 				expect(field.visible).toBe(true);
 			}
 			else {
 				expect(field.disabled).toBe(true);
 				expect(field.hidden).toBe(true);
+				expect(field.hiddenByTranslationFilter).toBe(true);
 				expect(field.visible).toBe(false);
 			}
 		});
@@ -195,11 +197,13 @@ describe('showFilteredFields(editingLanguageId, fields, filter, visibleFieldsets
 			) {
 				expect(field.disabled).toBe(true);
 				expect(field.hidden).toBe(true);
+				expect(field.hiddenByTranslationFilter).toBe(true);
 				expect(field.visible).toBe(false);
 			}
 			else {
 				expect(field.disabled).toBe(false);
 				expect(field.hidden).toBe(false);
+				expect(field.hiddenByTranslationFilter).toBe(false);
 				expect(field.visible).toBe(true);
 			}
 		});
