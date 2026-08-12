@@ -3,4 +3,5 @@ Bundle-SymbolicName: com.liferay.frontend.token.definition.api
 Bundle-Version: 8.2.0
 Export-Package:\
 	com.liferay.frontend.token.definition,\
+	com.liferay.frontend.token.definition.util,\
 	com.liferay.frontend.token.definition.validator

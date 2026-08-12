@@ -7,7 +7,7 @@ package com.liferay.style.book.service.impl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
-import com.liferay.frontend.token.definition.FrontendTokenDefinitionUtil;
+import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
 import com.liferay.frontend.token.definition.validator.FrontendTokenDefinitionJSONValidator;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
