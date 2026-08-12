@@ -20,7 +20,7 @@ jest.mock(
 	})
 );
 
-const getLabel = (viewport) => `reset-to-${viewport}-value`;
+const getLabel = (viewport: string) => `reset-to-${viewport}-value`;
 
 describe('getResetLabelByViewport', () => {
 	test.each([

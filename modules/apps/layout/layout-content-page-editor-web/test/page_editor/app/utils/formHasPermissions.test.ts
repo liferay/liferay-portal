@@ -4,6 +4,7 @@
  */
 
 import {formIsRestricted} from '../../../../src/main/resources/META-INF/resources/page_editor/app/utils/formIsRestricted';
+import getMockFormItem from '../../../../src/main/resources/META-INF/resources/page_editor/test_utils/getMockFormItem';
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/page_editor/app/config',
@@ -28,24 +29,20 @@ jest.mock(
 describe('formIsRestricted', () => {
 	it('checks if the item mapped to the form has permissions', () => {
 		expect(
-			formIsRestricted({
-				config: {
-					classNameId: '11111',
-					classTypeId: '0',
-				},
-				itemId: 'form-1',
-				type: 'form',
-			})
+			formIsRestricted(
+				getMockFormItem({
+					config: {classNameId: '11111', classTypeId: '0'},
+					itemId: 'form-1',
+				})
+			)
 		).toBe(false);
 		expect(
-			formIsRestricted({
-				config: {
-					classNameId: '22222',
-					classTypeId: '0',
-				},
-				itemId: 'form-1',
-				type: 'form',
-			})
+			formIsRestricted(
+				getMockFormItem({
+					config: {classNameId: '22222', classTypeId: '0'},
+					itemId: 'form-1',
+				})
+			)
 		).toBe(true);
 	});
 });

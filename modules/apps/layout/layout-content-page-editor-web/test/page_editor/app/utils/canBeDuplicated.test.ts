@@ -4,93 +4,73 @@
  */
 
 import {FRAGMENT_ENTRY_TYPES} from '../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/fragmentEntryTypes';
-import {LAYOUT_DATA_ITEM_TYPES} from '../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/layoutDataItemTypes';
 import canBeDuplicated from '../../../../src/main/resources/META-INF/resources/page_editor/app/utils/canBeDuplicated';
+import getMockFragmentEntryLink from '../../../../src/main/resources/META-INF/resources/page_editor/test_utils/getMockFragmentEntryLink';
+import getMockFragmentItem from '../../../../src/main/resources/META-INF/resources/page_editor/test_utils/getMockFragmentItem';
+import {LayoutData} from '../../../../src/main/resources/META-INF/resources/page_editor/types/layout_data/LayoutData';
 
-function getFragment(
-	{
-		fieldTypes = [],
-		fragmentEntryLinkId,
-		fragmentEntryType = 'component',
-		isWidget = false,
-		itemId,
-		parentId,
-	} = {
-		fieldTypes: [],
-		fragmentEntryType: 'component',
-		isWidget: false,
-	}
-) {
-	return {
-		children: [],
-		config: {
-			fragmentEntryLinkId,
-		},
-		fieldTypes,
-		fragmentEntryType,
-		isWidget,
-		itemId: itemId || 'fragment-id',
-		parentId,
-		type: LAYOUT_DATA_ITEM_TYPES.fragment,
-	};
-}
+const LAYOUT_DATA = {items: {}} as LayoutData;
 
 describe('canBeDuplicated', () => {
 	it('can not duplicate a Stepper fragment', () => {
-		const stepper = getFragment({
-			fieldTypes: ['stepper'],
+		const stepper = getMockFragmentItem({
 			fragmentEntryLinkId: 'stepper-fragment',
-			fragmentEntryType: FRAGMENT_ENTRY_TYPES.input,
 		});
 
 		const fragmentEntryLinks = {
-			[stepper.config.fragmentEntryLinkId]: {
-				editableValues: {},
+			'stepper-fragment': getMockFragmentEntryLink({
 				fieldTypes: ['stepper'],
-				fragmentEntryLinkId: stepper.config.fragmentEntryLinkId,
-			},
+				fragmentEntryLinkId: 'stepper-fragment',
+				fragmentEntryType: FRAGMENT_ENTRY_TYPES.input,
+			}),
 		};
 
-		expect(canBeDuplicated(fragmentEntryLinks, stepper, {}, () => [])).toBe(
-			false
-		);
+		expect(
+			canBeDuplicated(fragmentEntryLinks, stepper, LAYOUT_DATA, () => [])
+		).toBe(false);
 	});
 
 	it('can only duplicate instanceable widgets', () => {
-		const instanceableWidget = getFragment({
+		const instanceableWidget = getMockFragmentItem({
 			fragmentEntryLinkId: 'instanceable',
 		});
 
-		const nonInstanceableWidget = getFragment({
+		const nonInstanceableWidget = getMockFragmentItem({
 			fragmentEntryLinkId: 'nonInstanceable',
 		});
 
 		const fragmentEntryLinks = {
-			[instanceableWidget.config.fragmentEntryLinkId]: {
+			instanceable: getMockFragmentEntryLink({
 				editableValues: {portletId: 'instanceable'},
-				fragmentEntryLinkId:
-					instanceableWidget.config.fragmentEntryLinkId,
-			},
-			[nonInstanceableWidget.config.fragmentEntryLinkId]: {
+				fragmentEntryLinkId: 'instanceable',
+			}),
+			nonInstanceable: getMockFragmentEntryLink({
 				editableValues: {portletId: 'nonInstanceable'},
-				fragmentEntryLinkId:
-					nonInstanceableWidget.config.fragmentEntryLinkId,
-			},
+				fragmentEntryLinkId: 'nonInstanceable',
+			}),
 		};
 
 		const widgets = [
 			{
 				categories: [],
+				path: '',
 				portlets: [
 					{
+						highlighted: false,
 						instanceable: true,
 						portletId: 'instanceable',
+						portletItems: [],
+						title: '',
 					},
 					{
+						highlighted: false,
 						instanceable: false,
 						portletId: 'nonInstanceable',
+						portletItems: [],
+						title: '',
 					},
 				],
+				title: '',
 			},
 		];
 
@@ -98,7 +78,7 @@ describe('canBeDuplicated', () => {
 			canBeDuplicated(
 				fragmentEntryLinks,
 				instanceableWidget,
-				{},
+				LAYOUT_DATA,
 				() => widgets
 			)
 		).toBe(true);
@@ -107,7 +87,7 @@ describe('canBeDuplicated', () => {
 			canBeDuplicated(
 				fragmentEntryLinks,
 				nonInstanceableWidget,
-				{},
+				LAYOUT_DATA,
 				() => widgets
 			)
 		).toBe(false);

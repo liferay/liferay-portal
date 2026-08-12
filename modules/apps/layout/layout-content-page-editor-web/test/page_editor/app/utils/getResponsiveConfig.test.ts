@@ -6,7 +6,10 @@
 import {VIEWPORT_SIZES} from '../../../../src/main/resources/META-INF/resources/page_editor/app/config/constants/viewportSizes';
 import {getResponsiveConfig} from '../../../../src/main/resources/META-INF/resources/page_editor/app/utils/getResponsiveConfig';
 
-const SAMPLE_RESPONSIVE_CONFIG = {
+// The viewport keys are flattened into the result, so the merged shape is only
+// known at runtime.
+
+const SAMPLE_RESPONSIVE_CONFIG: Record<string, unknown> = {
 	nonViewport: 'yep',
 
 	[VIEWPORT_SIZES.portraitMobile]: {
