@@ -106,6 +106,20 @@ export class AssetCategoriesEditPage {
 		await this.assetCategoriesAdminPage.gotoAction('Edit', title);
 	}
 
+	async gotoEditCategory({
+		categoryId,
+		siteUrl,
+		vocabularyId,
+	}: {
+		categoryId: number | string;
+		siteUrl?: Site['friendlyUrlPath'];
+		vocabularyId: number | string;
+	}) {
+		await this.page.goto(
+			`/group${siteUrl || '/guest'}/~/control_panel/manage/-/categories_admin/vocabulary/${vocabularyId}/category/${categoryId}/edit`
+		);
+	}
+
 	async goToFriendlyURLTab(title: string) {
 		await this.goto(title);
 
