@@ -8,7 +8,7 @@ package com.liferay.portal.workflow.metrics.internal.search.index.reindexer;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.search.spi.reindexer.IndexReindexer;
 import com.liferay.portal.workflow.kaleo.definition.NodeType;
 import com.liferay.portal.workflow.kaleo.metrics.integration.helper.IndexerHelper;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
@@ -30,8 +30,8 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Rafael Praxedes
  */
-@Component(service = WorkflowMetricsReindexer.class)
-public class NodeWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
+@Component(service = {IndexReindexer.class, WorkflowMetricsReindexer.class})
+public class NodeWorkflowMetricsReindexer extends BaseWorkflowMetricsReindexer {
 
 	@Override
 	public String getKey() {
@@ -39,14 +39,14 @@ public class NodeWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
 	}
 
 	@Override
-	public void reindex(long companyId) throws PortalException {
+	protected void reindexEntities(long companyId, ExecutionMode executionMode)
+		throws Exception {
+
 		_reindexIndexWithKaleoNode(companyId);
 		_reindexIndexWithKaleoTask(companyId);
 	}
 
-	private void _reindexIndexWithKaleoNode(long companyId)
-		throws PortalException {
-
+	private void _reindexIndexWithKaleoNode(long companyId) throws Exception {
 		ActionableDynamicQuery actionableDynamicQuery =
 			_kaleoNodeLocalService.getActionableDynamicQuery();
 
@@ -80,9 +80,7 @@ public class NodeWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
 		actionableDynamicQuery.performActions();
 	}
 
-	private void _reindexIndexWithKaleoTask(long companyId)
-		throws PortalException {
-
+	private void _reindexIndexWithKaleoTask(long companyId) throws Exception {
 		ActionableDynamicQuery actionableDynamicQuery =
 			_kaleoTaskLocalService.getActionableDynamicQuery();
 
