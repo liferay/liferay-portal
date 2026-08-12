@@ -1446,31 +1446,110 @@ public class BatchEnginePortletDataHandlerTest {
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49852"))
 	@Test
 	public void testExportImportLanguageOverrides() throws Exception {
-		Group group = _stagingGroupHelper.fetchCompanyGroup(
-			TestPropsValues.getCompanyId());
+		PLOEntry ploEntry1 = _addPLOEntry(TestPropsValues.getUserId(), "en_US");
+		PLOEntry ploEntry2 = _addPLOEntry(TestPropsValues.getUserId(), "en_CA");
 
-		PLOEntry ploEntry1 = _addPLOEntry("en_US");
-		PLOEntry ploEntry2 = _addPLOEntry("en_CA");
-
-		File larFile = new ExportImportExecutor(
-		).withGroupId(
-			group.getGroupId()
-		).withIncludeLanguageOverrides(
-		).executeExport();
+		File larFile = _exportLanguageOverrides();
 
 		_ploEntryLocalService.deletePLOEntry(ploEntry1);
 		_ploEntryLocalService.deletePLOEntry(ploEntry2);
 
-		new ExportImportExecutor(
-		).withGroupId(
-			group.getGroupId()
-		).withIncludeLanguageOverrides(
-		).withLARFile(
-			larFile
-		).executeImport();
+		_importLanguageOverrides(larFile, null);
 
-		_assertPLOEntry(ploEntry1);
-		_assertPLOEntry(ploEntry2);
+		_assertPLOEntry(ploEntry1, TestPropsValues.getUserId());
+		_assertPLOEntry(ploEntry2, TestPropsValues.getUserId());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49852"))
+	@Test
+	public void testExportImportLanguageOverridesWithAlwaysCurrentUser()
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		PLOEntry ploEntry = _addPLOEntry(user.getUserId(), "en_US");
+
+		File larFile = _exportLanguageOverrides();
+
+		_ploEntryLocalService.deletePLOEntry(ploEntry);
+
+		_importLanguageOverrides(
+			larFile, UserIdStrategy.ALWAYS_CURRENT_USER_ID);
+
+		_assertPLOEntry(ploEntry, TestPropsValues.getUserId());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49852"))
+	@Test
+	public void testExportImportLanguageOverridesWithDifferentExistingCreator()
+		throws Exception {
+
+		User user1 = UserTestUtil.addUser();
+
+		_users.add(user1);
+
+		PLOEntry ploEntry = _addPLOEntry(user1.getUserId(), "en_US");
+
+		File larFile = _exportLanguageOverrides();
+
+		_ploEntryLocalService.deletePLOEntry(ploEntry);
+
+		User user2 = UserTestUtil.addUser();
+
+		_users.add(user2);
+
+		_ploEntryLocalService.addOrUpdatePLOEntry(
+			ploEntry.getExternalReferenceCode(), TestPropsValues.getCompanyId(),
+			user2.getUserId(), ploEntry.getKey(), ploEntry.getLanguageId(),
+			RandomTestUtil.randomString());
+
+		_importLanguageOverrides(larFile, UserIdStrategy.CURRENT_USER_ID);
+
+		_assertPLOEntry(ploEntry, user2.getUserId());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49852"))
+	@Test
+	public void testExportImportLanguageOverridesWithExistingOriginalCreator()
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		PLOEntry ploEntry = _addPLOEntry(user.getUserId(), "en_US");
+
+		File larFile = _exportLanguageOverrides();
+
+		_ploEntryLocalService.deletePLOEntry(ploEntry);
+
+		_importLanguageOverrides(larFile, UserIdStrategy.CURRENT_USER_ID);
+
+		_assertPLOEntry(ploEntry, user.getUserId());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49852"))
+	@Test
+	public void testExportImportLanguageOverridesWithMissingOriginalCreator()
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		PLOEntry ploEntry = _addPLOEntry(user.getUserId(), "en_US");
+
+		File larFile = _exportLanguageOverrides();
+
+		_ploEntryLocalService.deletePLOEntry(ploEntry);
+
+		_userLocalService.deleteUser(user);
+
+		_importLanguageOverrides(larFile, UserIdStrategy.CURRENT_USER_ID);
+
+		_assertPLOEntry(ploEntry, TestPropsValues.getUserId());
 	}
 
 	@Test
@@ -3056,11 +3135,13 @@ public class BatchEnginePortletDataHandlerTest {
 		return objectFields;
 	}
 
-	private PLOEntry _addPLOEntry(String languageId) throws Exception {
+	private PLOEntry _addPLOEntry(long userId, String languageId)
+		throws Exception {
+
 		return _ploEntryLocalService.addOrUpdatePLOEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
-			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
-			languageId, RandomTestUtil.randomString());
+			userId, RandomTestUtil.randomString(), languageId,
+			RandomTestUtil.randomString());
 	}
 
 	private ObjectEntry _addSystemObjectEntry(ObjectDefinition objectDefinition)
@@ -3314,7 +3395,9 @@ public class BatchEnginePortletDataHandlerTest {
 		}
 	}
 
-	private void _assertPLOEntry(PLOEntry ploEntry) throws Exception {
+	private void _assertPLOEntry(PLOEntry ploEntry, long userId)
+		throws Exception {
+
 		PLOEntry importedPLOEntry =
 			_ploEntryLocalService.getPLOEntryByExternalReferenceCode(
 				ploEntry.getExternalReferenceCode(),
@@ -3324,7 +3407,7 @@ public class BatchEnginePortletDataHandlerTest {
 		Assert.assertEquals(
 			ploEntry.getLanguageId(), importedPLOEntry.getLanguageId());
 		Assert.assertEquals(ploEntry.getValue(), importedPLOEntry.getValue());
-		Assert.assertEquals(ploEntry.getUserId(), importedPLOEntry.getUserId());
+		Assert.assertEquals(userId, importedPLOEntry.getUserId());
 	}
 
 	private void _deleteObjectEntries(ObjectEntry... objectEntries)
@@ -3349,6 +3432,14 @@ public class BatchEnginePortletDataHandlerTest {
 				_dlFileEntryLocalService.deleteFileEntry(fileEntryId);
 			}
 		}
+	}
+
+	private File _exportLanguageOverrides() throws Exception {
+		return new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeLanguageOverrides(
+		).executeExport();
 	}
 
 	private JSONArray _getClassExternalReferenceCodesJSONArray(
@@ -3378,6 +3469,13 @@ public class BatchEnginePortletDataHandlerTest {
 					throw new RuntimeException(exception);
 				});
 		}
+	}
+
+	private long _getCompanyGroupId() throws Exception {
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		return group.getGroupId();
 	}
 
 	private JSONArray _getExportedObjectEntriesJSONArray(
@@ -3588,6 +3686,20 @@ public class BatchEnginePortletDataHandlerTest {
 
 		return _dlURLHelper.getPreviewURL(
 			fileEntryFriendlyURL, group.getFriendlyURL());
+	}
+
+	private void _importLanguageOverrides(File larFile, String userIdStrategy)
+		throws Exception {
+
+		new ExportImportExecutor(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeLanguageOverrides(
+		).withLARFile(
+			larFile
+		).withUserIdStrategy(
+			userIdStrategy
+		).executeImport();
 	}
 
 	private SafeCloseable _register(
