@@ -50,11 +50,9 @@ const BaseCard: React.FC<IBaseCard> = ({
 			</div>
 
 			{description && (
-				<div className="mt-1">
-					<Text color="secondary" size={3}>
-						{description}
-					</Text>
-				</div>
+				<Text color="secondary" size={3}>
+					{description}
+				</Text>
 			)}
 
 			<div
