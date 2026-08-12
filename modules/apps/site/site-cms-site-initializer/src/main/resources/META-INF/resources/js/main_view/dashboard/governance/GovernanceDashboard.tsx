@@ -11,6 +11,7 @@ import {DuplicationAndSimilarity} from './components/DuplicationAndSimilarity';
 import {Filters} from './components/Filters';
 import {GovernanceHealth} from './components/GovernanceHealth';
 import {NeedsReview} from './components/NeedsReview';
+import {WorkflowAndContentProgress} from './components/WorkflowAndContentProgress';
 import {GovernanceAdditionalProps} from './types';
 
 import '../../../../css/dashboard/GovernanceDashboard.scss';
@@ -31,6 +32,8 @@ export default function GovernanceDashboard({
 			<AttentionRequired />
 
 			<NeedsReview additionalProps={additionalProps} />
+
+			<WorkflowAndContentProgress />
 
 			<DuplicationAndSimilarity
 				additionalProps={additionalProps}

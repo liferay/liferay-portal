@@ -154,7 +154,7 @@ export function NeedsReview({
 	const title = Liferay.Language.get('needs-review');
 
 	return (
-		<div className="mb-4 mt-4">
+		<div className="mb-3 mt-4">
 			<SectionHeader icon="restore" title={title} />
 
 			<ClayLayout.Row aria-label={title} className="mt-3" role="group">
