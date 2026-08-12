@@ -59,16 +59,14 @@ public class CTCollectionScheduledDateUpgradeProcess extends UpgradeProcess {
 					continue;
 				}
 
-				preparedStatement.setTimestamp(
-					1, new Timestamp(date.getTime()));
-
 				String jobName = schedulerResponse.getJobName();
 
 				long ctCollectionId = GetterUtil.getLong(
 					jobName.substring(0, jobName.indexOf(StringPool.AT)));
 
+				preparedStatement.setTimestamp(
+					1, new Timestamp(date.getTime()));
 				preparedStatement.setLong(2, ctCollectionId);
-
 				preparedStatement.setInt(3, WorkflowConstants.STATUS_SCHEDULED);
 
 				preparedStatement.addBatch();
