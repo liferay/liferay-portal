@@ -79,7 +79,7 @@ if (Validator.isNotNull(replyTo) && !replyTo.startsWith(PortalUtil.getPortalURL(
 										messageArguments[0] = LanguageUtil.format(request, "x,-y", messageArguments);
 									}
 
-									messageArguments[1] = messageArguments[0];
+									messageArguments[1] = HtmlUtil.escape(messageArguments[0]);
 									messageArguments[0] = HtmlUtil.escape(assignableScopes.getApplicationDescription(applicationName));
 								%>
 

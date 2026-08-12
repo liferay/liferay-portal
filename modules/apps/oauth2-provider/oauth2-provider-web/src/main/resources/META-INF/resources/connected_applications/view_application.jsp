@@ -87,7 +87,7 @@ renderResponse.setTitle(oAuth2Application.getName());
 								>
 									<div class="list-group-title text-truncate"><%= HtmlUtil.escape(assignableScopes.getApplicationDescription(applicationName)) %></div>
 
-									<p class="list-group-subtitle text-truncate"><%= StringUtil.merge(assignableScopes.getApplicationScopeDescription(themeDisplay.getCompanyId(), applicationName), ", ") %></p>
+									<p class="list-group-subtitle text-truncate"><%= HtmlUtil.escape(StringUtil.merge(assignableScopes.getApplicationScopeDescription(themeDisplay.getCompanyId(), applicationName), ", ")) %></p>
 								</clay:content-col>
 							</li>
 
