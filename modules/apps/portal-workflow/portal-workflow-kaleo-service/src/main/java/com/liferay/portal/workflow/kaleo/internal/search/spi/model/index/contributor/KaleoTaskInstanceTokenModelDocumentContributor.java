@@ -13,15 +13,12 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.workflow.WorkflowHandler;
-import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.portal.workflow.kaleo.internal.search.KaleoTaskInstanceTokenField;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
-import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionLocalService;
 
 import java.util.HashSet;
@@ -104,14 +101,6 @@ public class KaleoTaskInstanceTokenModelDocumentContributor
 			document.addKeyword(
 				KaleoTaskInstanceTokenField.KALEO_DEFINITION_ID,
 				kaleoDefinition.getKaleoDefinitionId());
-
-			WorkflowHandler<?> workflowHandler =
-				WorkflowHandlerRegistryUtil.getWorkflowHandler(
-					kaleoTaskInstanceToken.getClassName());
-
-			workflowHandler.contributeWorkflowContext(
-				WorkflowContextUtil.convert(
-					kaleoTaskInstanceToken.getWorkflowContext()));
 		}
 		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
