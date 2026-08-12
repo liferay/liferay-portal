@@ -253,6 +253,8 @@ public class WorkflowDefinitionResourceTest
 
 		assertEquals(randomWorkflowDefinition, postWorkflowDefinition);
 		assertValid(postWorkflowDefinition);
+
+		_testPostWorkflowDefinitionSaveWithSystem();
 	}
 
 	@Override
@@ -288,7 +290,7 @@ public class WorkflowDefinitionResourceTest
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
-			"active", "name", "nodes", "scope", "title", "title_i18n",
+			"active", "name", "nodes", "scope", "system", "title", "title_i18n",
 			"transitions", "version"
 		};
 	}
@@ -535,6 +537,32 @@ public class WorkflowDefinitionResourceTest
 			workflowDefinitionJSONObject.toString(),
 			"headless-admin-workflow/v1.0/workflow-definitions",
 			Http.Method.POST);
+	}
+
+	private void _testPostWorkflowDefinitionSaveWithSystem() throws Exception {
+		WorkflowDefinition randomWorkflowDefinition =
+			randomWorkflowDefinition();
+
+		randomWorkflowDefinition.setNodes(new Node[0]);
+		randomWorkflowDefinition.setSystem(true);
+		randomWorkflowDefinition.setTransitions(new Transition[0]);
+
+		WorkflowDefinition workflowDefinition =
+			testPostWorkflowDefinitionSave_addWorkflowDefinition(
+				randomWorkflowDefinition);
+
+		Assert.assertTrue(workflowDefinition.getSystem());
+
+		randomWorkflowDefinition.setSystem(false);
+
+		workflowDefinition =
+			workflowDefinitionResource.postWorkflowDefinitionSave(
+				randomWorkflowDefinition);
+
+		_workflowDefinitions.put(
+			workflowDefinition.getName(), workflowDefinition);
+
+		Assert.assertFalse(workflowDefinition.getSystem());
 	}
 
 	private static com.liferay.portal.kernel.workflow.WorkflowDefinition
