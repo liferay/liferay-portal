@@ -13,11 +13,11 @@ import com.liferay.layout.page.template.admin.web.internal.configuration.LayoutP
 import com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.RenderURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
@@ -319,9 +319,9 @@ public class DisplayPageActionDropdownItemsProviderTest {
 		);
 
 		Mockito.when(
-			afterResourceIDStep.buildString()
+			afterResourceIDStep.buildResourceURL()
 		).thenReturn(
-			StringPool.BLANK
+			Mockito.mock(LiferayPortletURL.class)
 		);
 	}
 
