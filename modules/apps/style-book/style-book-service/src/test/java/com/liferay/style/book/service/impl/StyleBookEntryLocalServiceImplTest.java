@@ -64,7 +64,7 @@ public class StyleBookEntryLocalServiceImplTest {
 			StringPool.BLANK);
 		_testUpdateFrontendTokenDefinitionWithDuplicateFrontendTokenInPayload();
 		_testUpdateFrontendTokenDefinitionWithInvalidJSON();
-		_testUpdateFrontendTokenDefinitionWithSchemaInvalidJSON();
+		_testUpdateFrontendTokenDefinitionWithInvalidJSONSchema();
 		_testUpdateFrontendTokenDefinitionWithValidFrontendTokenDefinition();
 	}
 
@@ -209,7 +209,7 @@ public class StyleBookEntryLocalServiceImplTest {
 				styleBookEntryId, "{not valid json"));
 	}
 
-	private void _testUpdateFrontendTokenDefinitionWithSchemaInvalidJSON()
+	private void _testUpdateFrontendTokenDefinitionWithInvalidJSONSchema()
 		throws Exception {
 
 		long styleBookEntryId = RandomTestUtil.randomLong();
