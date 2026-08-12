@@ -25,7 +25,7 @@
 		"@liferay/layout-js-components-web": "*",
 		"ckeditor5": "46.0.3",
 		"classnames": "2.3.1",
-		"eventsource": "^4.0.0",
+		"eventsource": "4.0.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",

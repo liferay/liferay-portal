@@ -6,16 +6,16 @@
 		"url": "https://github.com/liferay/liferay-portal/issues"
 	},
 	"dependencies": {
-		"browser-tabs-lock": "^1.2.7",
-		"core-js": "^2.5.6",
-		"hash.js": "^1.1.7",
+		"browser-tabs-lock": "1.2.8",
+		"core-js": "2.6.12",
+		"hash.js": "1.1.7",
 		"uuid": "9.0.0"
 	},
 	"description": "Javascript client to capture and send analytics data to server",
 	"devDependencies": {
-		"browserslist-config-clay-components": "^2.0.3",
+		"browserslist-config-clay-components": "2.1.12",
 		"fetch-mock": "5.13.1",
-		"isomorphic-fetch": "^2.2.1"
+		"isomorphic-fetch": "2.2.1"
 	},
 	"homepage": "https://github.com/liferay/liferay-portal#readme",
 	"jest": {

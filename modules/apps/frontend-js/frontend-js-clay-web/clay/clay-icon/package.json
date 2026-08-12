@@ -4,7 +4,7 @@
 	],
 	"dependencies": {
 		"classnames": "2.3.1",
-		"warning": "^4.0.3"
+		"warning": "4.0.3"
 	},
 	"description": "ClayIcon component",
 	"devDependencies": {

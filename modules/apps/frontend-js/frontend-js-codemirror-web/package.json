@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"codemirror": "^5.59.0"
+		"codemirror": "5.65.2"
 	},
 	"main": "js/index.ts",
 	"name": "@liferay/frontend-js-codemirror-web",

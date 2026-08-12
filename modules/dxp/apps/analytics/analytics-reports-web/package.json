@@ -19,7 +19,7 @@
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
 		"react": "18.2.0",
-		"recharts": "^2.8.0"
+		"recharts": "2.8.0"
 	},
 	"main": "js/index.js",
 	"name": "analytics-reports-web",

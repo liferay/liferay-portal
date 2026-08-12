@@ -39,7 +39,7 @@
 		"resize-observer-polyfill": "1.5.1"
 	},
 	"devDependencies": {
-		"faker": "^5.1.0",
+		"faker": "5.1.0",
 		"fetch-mock": "5.13.1"
 	},
 	"jest": {

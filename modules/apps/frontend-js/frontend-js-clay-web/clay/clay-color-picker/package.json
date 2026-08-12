@@ -10,7 +10,7 @@
 		"@clayui/shared": "^3.166.0",
 		"@clayui/slider": "^3.166.0",
 		"classnames": "2.3.1",
-		"tinycolor2": "^1.4.2"
+		"tinycolor2": "1.4.2"
 	},
 	"description": "ClayColorPicker component",
 	"devDependencies": {

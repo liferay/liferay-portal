@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"recharts": "^2.8.0"
+		"recharts": "2.8.0"
 	},
 	"name": "frontend-js-recharts",
 	"scripts": {

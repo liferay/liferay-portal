@@ -3,7 +3,7 @@
 		"@liferay/frontend-js-react-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
-		"recharts": "^2.8.0",
+		"recharts": "2.8.0",
 		"resize-observer-polyfill": "1.5.1"
 	},
 	"jest": {

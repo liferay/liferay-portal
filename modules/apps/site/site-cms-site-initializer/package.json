@@ -47,7 +47,7 @@
 		"document-library-preview-document": "*",
 		"document-library-preview-image": "*",
 		"document-library-video": "*",
-		"eventsource": "^4.0.0",
+		"eventsource": "4.0.0",
 		"formik": "2.1.4",
 		"frontend-editor-ckeditor-web": "*",
 		"frontend-js-components-web": "*",

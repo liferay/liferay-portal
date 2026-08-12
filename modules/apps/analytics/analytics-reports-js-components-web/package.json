@@ -20,7 +20,7 @@
 		"d3": "5.9.3",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
-		"recharts": "^2.8.0"
+		"recharts": "2.8.0"
 	},
 	"jest": {
 		"setupFiles": [

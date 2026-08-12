@@ -9,7 +9,7 @@
 		"@clayui/shared": "^3.166.0",
 		"classnames": "2.3.1",
 		"react-transition-group": "4.4.5",
-		"warning": "^4.0.3"
+		"warning": "4.0.3"
 	},
 	"description": "ClayNav component",
 	"devDependencies": {

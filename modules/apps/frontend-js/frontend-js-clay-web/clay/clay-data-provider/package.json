@@ -5,8 +5,8 @@
 	"dependencies": {
 		"@clayui/provider": "^3.166.0",
 		"@clayui/shared": "^3.166.0",
-		"fast-json-stable-stringify": "^2.1.0",
-		"warning": "^4.0.3"
+		"fast-json-stable-stringify": "2.1.0",
+		"warning": "4.0.3"
 	},
 	"description": "ClayDataProvider component",
 	"devDependencies": {

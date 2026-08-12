@@ -52,7 +52,7 @@
 		"document-library-preview-image": "*",
 		"document-library-video": "*",
 		"dynamic-data-mapping-form-field-type": "*",
-		"eventsource": "^4.0.0",
+		"eventsource": "4.0.0",
 		"formik": "2.1.4",
 		"frontend-editor-ckeditor-web": "*",
 		"frontend-js-components-web": "*",

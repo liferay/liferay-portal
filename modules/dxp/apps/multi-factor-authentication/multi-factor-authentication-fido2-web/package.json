@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"base64-js": "^1.3.0"
+		"base64-js": "1.5.1"
 	},
 	"main": "js/index.js",
 	"name": "@liferay/multi-factor-authentication-fido2-web",

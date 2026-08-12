@@ -27,13 +27,13 @@
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"graphql-hooks": "4.4.0",
-		"graphql-hooks-memcache": "^2.1.1",
+		"graphql-hooks-memcache": "2.1.1",
 		"highlight.js": "10.4.1",
 		"history": "4.9.0",
 		"prop-types": "15.7.2",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"react-helmet": "^6.1.0",
+		"react-helmet": "6.1.0",
 		"react-router": "7.13.0"
 	},
 	"jest": {
