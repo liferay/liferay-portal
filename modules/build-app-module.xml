@@ -104,10 +104,15 @@
 
 	<target depends="get-artifact-properties-releng" name="download-artifact" unless="artifact.exclude">
 		<if>
-			<or>
-				<contains string="${basedir}" substring="dxp${file.separator}" />
-				<istrue value="${download.artifact.private.override}" />
-			</or>
+			<and>
+				<or>
+					<contains string="${basedir}" substring="dxp${file.separator}" />
+					<istrue value="${download.artifact.private.override}" />
+				</or>
+				<not>
+					<equals arg1="${build.repository.private.username}" arg2="" />
+				</not>
+			</and>
 			<then>
 				<get
 					dest="${dist.dir}"
@@ -175,10 +180,15 @@
 			<isset property="artifact.sources.url" />
 			<then>
 				<if>
-					<or>
-						<contains string="${basedir}" substring="dxp${file.separator}" />
-						<istrue value="${download.artifact.private.override}" />
-					</or>
+					<and>
+						<or>
+							<contains string="${basedir}" substring="dxp${file.separator}" />
+							<istrue value="${download.artifact.private.override}" />
+						</or>
+						<not>
+							<equals arg1="${build.repository.private.username}" arg2="" />
+						</not>
+					</and>
 					<then>
 						<get
 							dest="${dist.dir}/sources"
