@@ -165,14 +165,8 @@ public class SegmentsFeatureFlagListenerTest {
 	}
 
 	private void _invokeFeatureFlagListeners(boolean enabled) {
-
-		// The listener only rewrites segments entries and segments experiences
-		// when the value changes, so deliver the opposite value first to put
-		// every company in a known state
-
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			CompanyConstants.SYSTEM, !enabled, "LPD-78863");
-
 		FeatureFlagTestUtil.invokeFeatureFlagListeners(
 			CompanyConstants.SYSTEM, enabled, "LPD-78863");
 	}

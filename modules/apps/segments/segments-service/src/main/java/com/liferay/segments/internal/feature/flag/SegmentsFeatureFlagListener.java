@@ -46,7 +46,7 @@ public class SegmentsFeatureFlagListener implements FeatureFlagListener {
 		// provider redelivers the current value without a change. The
 		// segments entries and segments experiences already hold the value
 		// that was last applied to them, so only a change in the value calls
-		// for rewriting them
+		// for rewriting them.
 
 		Boolean lastEnabled = _lastEnabledAtomicReference.getAndSet(enabled);
 
@@ -66,7 +66,7 @@ public class SegmentsFeatureFlagListener implements FeatureFlagListener {
 						GroupConstants.ANY_PARENT_GROUP_ID, true),
 					GroupModel::getGroupId);
 
-				// An empty group ID array contributes no SQL fragment to the
+				// An empty group IDs array contributes no SQL fragment to the
 				// arrayable finders below, which would leave them scoped by
 				// nothing but the active and source columns and matching
 				// every row in the database

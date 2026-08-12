@@ -84,7 +84,7 @@ public class SegmentsServiceVerifyProcessTest {
 	}
 
 	@Test
-	public void testVerifyWithFeatureFlagEnabled() throws Exception {
+	public void testVerify() throws Exception {
 		SegmentsEntry defaultSegmentsEntry = _addActiveSegmentsEntry(
 			SegmentsEntryConstants.SOURCE_DEFAULT);
 

@@ -584,13 +584,6 @@ public class SegmentsEntryLocalServiceImpl
 	}
 
 	private boolean _isActive(boolean active, String source) {
-
-		// While the feature flag is off, a segments entry the flag governs is
-		// created and updated inactive, so the data matches the flag from the
-		// start instead of relying on a later pass to fix it. Analytics Cloud
-		// entries are what the deprecation points to, and imports preserve
-		// what the exporting system stored
-
 		if (!active ||
 			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(source) ||
 			ExportImportThreadLocal.isImportInProcess() ||

@@ -738,14 +738,6 @@ public class SegmentsExperienceLocalServiceImpl
 	private boolean _isActive(
 		boolean active, SegmentsExperience segmentsExperience) {
 
-		// While the feature flag is off, a segments experience the flag
-		// governs is created and updated inactive, so the data matches the
-		// flag from the start instead of relying on a later pass to fix it.
-		// An experience without a resolvable segments entry backs the
-		// unsegmented default rendering, an Analytics Cloud entry is what the
-		// deprecation points to, and imports preserve what the exporting
-		// system stored
-
 		if (!active || ExportImportThreadLocal.isImportInProcess() ||
 			FeatureFlagManagerUtil.isEnabled(
 				CompanyConstants.SYSTEM, "LPD-78863")) {

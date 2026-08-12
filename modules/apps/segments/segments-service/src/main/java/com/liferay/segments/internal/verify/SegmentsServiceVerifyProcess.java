@@ -37,13 +37,6 @@ public class SegmentsServiceVerifyProcess extends VerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
-
-		// Data created before the services started resolving the governed
-		// state at the write can contradict the feature flag. Deactivation is
-		// the only direction reconciled here, because reactivating without a
-		// flag change would discard deliberate deactivations, while inactive
-		// rows under an enabled flag cost nothing
-
 		if (FeatureFlagManagerUtil.isEnabled(
 				CompanyConstants.SYSTEM, "LPD-78863")) {
 
@@ -62,7 +55,7 @@ public class SegmentsServiceVerifyProcess extends VerifyProcess {
 				companyId, GroupConstants.ANY_PARENT_GROUP_ID, true),
 			GroupModel::getGroupId);
 
-		// An empty group ID array contributes no SQL fragment to the
+		// An empty group IDs array contributes no SQL fragment to the
 		// arrayable finders below, which would leave them scoped by nothing
 		// but the active and source columns and matching every row in the
 		// database
