@@ -4567,6 +4567,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			"This is the description for Test Workflow Definition 1.",
 			workflowDefinitionTest1.getDescription());
+		Assert.assertTrue(workflowDefinitionTest1.getSystem());
 
 		WorkflowDefinitionLink workflowDefinitionLink1 =
 			_workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLink(
@@ -4590,6 +4591,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			"This is the description for Test Workflow Definition 2.",
 			workflowDefinitionTest2.getDescription());
+		Assert.assertFalse(workflowDefinitionTest2.getSystem());
 
 		WorkflowDefinitionLink workflowDefinitionLink2 =
 			_workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLink(
