@@ -98,6 +98,10 @@ public enum WorkflowMetricsIndex {
 		return true;
 	}
 
+	public String getIndexNameSuffix() {
+		return _indexNameSuffix;
+	}
+
 	public boolean removeIndex(
 			SearchCapabilities searchCapabilities,
 			SearchEngineAdapter searchEngineAdapter,
