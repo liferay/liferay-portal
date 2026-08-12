@@ -38,7 +38,27 @@ public class OmniSearchProductNavigationControlMenuEntryTest {
 	}
 
 	@Test
-	public void testIsShowWhenFeatureFlagLPD78171IsDisabled() throws Exception {
+	public void testIsShow() throws Exception {
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-78171"))
+		).thenReturn(
+			true
+		);
+
+		Assert.assertFalse(
+			_omniSearchProductNavigationControlMenuEntry.isShow(
+				_getMockHttpServletRequest(Constants.EDIT, true)));
+		Assert.assertFalse(
+			_omniSearchProductNavigationControlMenuEntry.isShow(
+				_getMockHttpServletRequest(Constants.HISTORY, true)));
+		Assert.assertFalse(
+			_omniSearchProductNavigationControlMenuEntry.isShow(
+				_getMockHttpServletRequest(Constants.VIEW, false)));
+		Assert.assertTrue(
+			_omniSearchProductNavigationControlMenuEntry.isShow(
+				_getMockHttpServletRequest(Constants.VIEW, true)));
+
 		_featureFlagManagerUtilMockedStatic.when(
 			() -> FeatureFlagManagerUtil.isEnabled(
 				Mockito.anyLong(), Mockito.eq("LPD-78171"))
@@ -47,42 +67,6 @@ public class OmniSearchProductNavigationControlMenuEntryTest {
 		);
 
 		Assert.assertFalse(
-			_omniSearchProductNavigationControlMenuEntry.isShow(
-				_getMockHttpServletRequest(Constants.VIEW, false)));
-	}
-
-	@Test
-	public void testIsShowWhenLayoutModeIsEdit() throws Exception {
-		_stubFeatureFlagEnabled();
-
-		Assert.assertFalse(
-			_omniSearchProductNavigationControlMenuEntry.isShow(
-				_getMockHttpServletRequest(Constants.EDIT, true)));
-	}
-
-	@Test
-	public void testIsShowWhenLayoutModeIsHistory() throws Exception {
-		_stubFeatureFlagEnabled();
-
-		Assert.assertFalse(
-			_omniSearchProductNavigationControlMenuEntry.isShow(
-				_getMockHttpServletRequest(Constants.HISTORY, true)));
-	}
-
-	@Test
-	public void testIsShowWhenUserIsNotSignedIn() throws Exception {
-		_stubFeatureFlagEnabled();
-
-		Assert.assertFalse(
-			_omniSearchProductNavigationControlMenuEntry.isShow(
-				_getMockHttpServletRequest(Constants.VIEW, false)));
-	}
-
-	@Test
-	public void testIsShowWhenUserIsSignedIn() throws Exception {
-		_stubFeatureFlagEnabled();
-
-		Assert.assertTrue(
 			_omniSearchProductNavigationControlMenuEntry.isShow(
 				_getMockHttpServletRequest(Constants.VIEW, true)));
 	}
@@ -107,15 +91,6 @@ public class OmniSearchProductNavigationControlMenuEntryTest {
 		mockHttpServletRequest.setParameter("p_l_mode", layoutMode);
 
 		return mockHttpServletRequest;
-	}
-
-	private void _stubFeatureFlagEnabled() {
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-78171"))
-		).thenReturn(
-			true
-		);
 	}
 
 	private final MockedStatic<FeatureFlagManagerUtil>
