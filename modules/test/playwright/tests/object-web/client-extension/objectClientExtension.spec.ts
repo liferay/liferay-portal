@@ -139,9 +139,11 @@ test('Can create, read, update, and delete object entries that use the client ex
 
 	await editObjectDetailsPage.goToDetailsTab();
 
+	const publishReloadPromise = page.waitForEvent('domcontentloaded');
+
 	await editObjectDetailsPage.publishButton.click();
 
-	await page.waitForLoadState('domcontentloaded');
+	await publishReloadPromise;
 
 	// Create
 
