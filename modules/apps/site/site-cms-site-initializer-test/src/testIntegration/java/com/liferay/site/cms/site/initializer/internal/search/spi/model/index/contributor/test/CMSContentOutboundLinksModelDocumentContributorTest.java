@@ -124,106 +124,11 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 	}
 
 	@Test
-	public void testContributeNoOutboundLinks() throws Exception {
-		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
-
-		ObjectEntry objectEntry = _addObjectEntry(
-			objectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				_RICH_TEXT_OBJECT_FIELD_NAME, "<p>No references at all</p>"
-			).build());
-
-		Document document = _getDocument(objectDefinition, objectEntry);
-
-		Assert.assertNull(document.getField("outboundLinks"));
-	}
-
-	@Test
-	public void testContributeRelationshipReference() throws Exception {
-		ObjectDefinition parentObjectDefinition = _addCMSObjectDefinition();
-		ObjectDefinition childObjectDefinition = _addCMSObjectDefinition();
-
-		ObjectRelationship objectRelationship =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				_objectRelationshipLocalService, parentObjectDefinition,
-				childObjectDefinition);
-
-		_objectRelationships.add(objectRelationship);
-
-		ObjectEntry parentObjectEntry = _addObjectEntry(
-			parentObjectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				_RICH_TEXT_OBJECT_FIELD_NAME, "<p>Target</p>"
-			).build());
-
-		ObjectEntry childObjectEntry = _addObjectEntry(
-			childObjectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				ObjectRelationshipUtil.getObjectRelationshipFieldName(
-					parentObjectDefinition, objectRelationship.getName()),
-				parentObjectEntry.getObjectEntryId()
-			).put(
-				_RICH_TEXT_OBJECT_FIELD_NAME, "<p>Source</p>"
-			).build());
-
-		Document document = _getDocument(
-			childObjectDefinition, childObjectEntry);
-
-		Assert.assertArrayEquals(
-			new String[] {
-				"objectEntryId_" + parentObjectEntry.getObjectEntryId()
-			},
-			document.getValues("outboundLinks"));
-	}
-
-	@Test
-	public void testContributeRichTextReferences() throws Exception {
-		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
-
-		String externalReferenceCode = RandomTestUtil.randomString();
-		String otherExternalReferenceCode = RandomTestUtil.randomString();
-
-		ObjectEntry objectEntry = _addObjectEntry(
-			objectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				_RICH_TEXT_OBJECT_FIELD_NAME,
-				StringBundler.concat(
-					_getImageHTML(externalReferenceCode),
-					_getVideoHTML(otherExternalReferenceCode),
-					"<a href=\"https://www.liferay.com\">External</a>")
-			).build());
-
-		Document document = _getDocument(objectDefinition, objectEntry);
-
-		Assert.assertArrayEquals(
-			new String[] {
-				"objectEntryERC_" + externalReferenceCode,
-				"objectEntryERC_" + otherExternalReferenceCode
-			},
-			document.getValues("outboundLinks"));
-	}
-
-	@Test
-	public void testContributeWhenObjectDefinitionIsNotCMS() throws Exception {
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				false, false, false, ObjectDefinitionTestUtil.getRandomName(),
-				Collections.singletonList(_buildRichTextObjectField()), 0,
-				ObjectDefinitionConstants.SCOPE_SITE,
-				TestPropsValues.getUserId());
-
-		_objectDefinitions.add(objectDefinition);
-
-		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			TestPropsValues.getGroupId(), objectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				_RICH_TEXT_OBJECT_FIELD_NAME,
-				_getImageHTML(RandomTestUtil.randomString())
-			).build());
-
-		Document document = _getDocument(objectDefinition, objectEntry);
-
-		Assert.assertNull(document.getField("outboundLinks"));
+	public void testContribute() throws Exception {
+		_testContributeWhenObjectDefinitionIsNotCMS();
+		_testContributeWithRelationshipReference();
+		_testContributeWithRichTextReferences();
+		_testContributeWithoutReferences();
 	}
 
 	private ObjectDefinition _addCMSObjectDefinition() throws Exception {
@@ -297,6 +202,107 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 		return StringBundler.concat(
 			"<div data-oembed-url=\"", url, "\"><video src=\"", url,
 			"\"></video></div>");
+	}
+
+	private void _testContributeWhenObjectDefinitionIsNotCMS()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				false, false, false, ObjectDefinitionTestUtil.getRandomName(),
+				Collections.singletonList(_buildRichTextObjectField()), 0,
+				ObjectDefinitionConstants.SCOPE_SITE,
+				TestPropsValues.getUserId());
+
+		_objectDefinitions.add(objectDefinition);
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			TestPropsValues.getGroupId(), objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_RICH_TEXT_OBJECT_FIELD_NAME,
+				_getImageHTML(RandomTestUtil.randomString())
+			).build());
+
+		Document document = _getDocument(objectDefinition, objectEntry);
+
+		Assert.assertNull(document.getField("outboundLinks"));
+	}
+
+	private void _testContributeWithoutReferences() throws Exception {
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_RICH_TEXT_OBJECT_FIELD_NAME, "<p>No references at all</p>"
+			).build());
+
+		Document document = _getDocument(objectDefinition, objectEntry);
+
+		Assert.assertNull(document.getField("outboundLinks"));
+	}
+
+	private void _testContributeWithRelationshipReference() throws Exception {
+		ObjectDefinition parentObjectDefinition = _addCMSObjectDefinition();
+		ObjectDefinition childObjectDefinition = _addCMSObjectDefinition();
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, parentObjectDefinition,
+				childObjectDefinition);
+
+		_objectRelationships.add(objectRelationship);
+
+		ObjectEntry parentObjectEntry = _addObjectEntry(
+			parentObjectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_RICH_TEXT_OBJECT_FIELD_NAME, "<p>Target</p>"
+			).build());
+
+		ObjectEntry childObjectEntry = _addObjectEntry(
+			childObjectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				ObjectRelationshipUtil.getObjectRelationshipFieldName(
+					parentObjectDefinition, objectRelationship.getName()),
+				parentObjectEntry.getObjectEntryId()
+			).put(
+				_RICH_TEXT_OBJECT_FIELD_NAME, "<p>Source</p>"
+			).build());
+
+		Document document = _getDocument(
+			childObjectDefinition, childObjectEntry);
+
+		Assert.assertArrayEquals(
+			new String[] {
+				"objectEntryId_" + parentObjectEntry.getObjectEntryId()
+			},
+			document.getValues("outboundLinks"));
+	}
+
+	private void _testContributeWithRichTextReferences() throws Exception {
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		String otherExternalReferenceCode = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_RICH_TEXT_OBJECT_FIELD_NAME,
+				StringBundler.concat(
+					_getImageHTML(externalReferenceCode),
+					_getVideoHTML(otherExternalReferenceCode),
+					"<a href=\"https://www.liferay.com\">External</a>")
+			).build());
+
+		Document document = _getDocument(objectDefinition, objectEntry);
+
+		Assert.assertArrayEquals(
+			new String[] {
+				"objectEntryERC_" + externalReferenceCode,
+				"objectEntryERC_" + otherExternalReferenceCode
+			},
+			document.getValues("outboundLinks"));
 	}
 
 	private static final String _RICH_TEXT_OBJECT_FIELD_NAME = "content";
