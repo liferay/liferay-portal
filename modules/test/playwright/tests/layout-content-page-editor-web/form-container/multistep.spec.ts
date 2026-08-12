@@ -1000,6 +1000,93 @@ test(
 );
 
 test(
+	'Sets the active step in view mode when a required textarea is the only invalid field',
+	{tag: ['@LPD-10727', '@LPD-102059']},
+	async ({apiHelpers, page, pageManagementSite}) => {
+
+		// Get the id of Potato object from the site initializer
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const {className: objectDefinitionClassName} = (
+			await objectDefinitionAPIClient.getObjectDefinitionByExternalReferenceCode(
+				getObjectERC('Potato')
+			)
+		).body;
+
+		// Create a form with three steps, mapping the required Potato Origin field to a textarea on the second step and leaving the submit button alone on the third one
+
+		const stepperFragment = getFragmentDefinition({
+			fragmentConfig: {
+				numberOfSteps: 3,
+			},
+			id: getRandomString(),
+			key: 'INPUTS-stepper',
+		});
+
+		const textareaFragment = getFragmentDefinition({
+			fragmentConfig: {
+				inputFieldId: 'ObjectField_potatoOrigin',
+			},
+			id: getRandomString(),
+			key: 'INPUTS-textarea',
+		});
+
+		const submitButtonFragment = getFragmentDefinition({
+			fragmentConfig: {
+				type: 'submit',
+			},
+			id: getRandomString(),
+			key: 'INPUTS-submit-button',
+		});
+
+		const formDefinition = getFormContainerDefinition({
+			id: getRandomString(),
+			objectDefinitionClassName,
+			pageElements: [stepperFragment],
+			steps: [[], [textareaFragment], [submitButtonFragment]],
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([formDefinition]),
+			siteId: pageManagementSite.id,
+			title: getRandomString(),
+		});
+
+		// Go to view mode
+
+		await page.goto(
+			`/web${pageManagementSite.friendlyUrlPath}${layout.friendlyUrlPath}`
+		);
+
+		// Go to the last step, where the textarea is hidden
+
+		const submitButton = page.getByRole('button', {name: 'Submit'});
+
+		await clickAndExpectToBeVisible({
+			target: submitButton,
+			timeout: 3000,
+			trigger: page.locator('[data-multi-step-icon="3"]'),
+		});
+
+		const textarea = page.getByRole('textbox', {name: 'Potato Origin'});
+
+		await expect(textarea).toBeHidden();
+
+		// Submit and check it goes back to the step holding the textarea
+
+		await submitButton.click();
+
+		await expect(textarea).toBeVisible();
+
+		await expect(page.locator('.multi-step-item.active')).toContainText(
+			'Step 2'
+		);
+	}
+);
+
+test(
 	'The last step is selected when the active one is removed',
 	{tag: '@LPD-38514'},
 	async ({apiHelpers, page, pageEditorPage, pageManagementSite}) => {
