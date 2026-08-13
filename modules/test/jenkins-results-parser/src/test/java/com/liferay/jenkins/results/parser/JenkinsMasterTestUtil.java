@@ -28,11 +28,11 @@ public class JenkinsMasterTestUtil {
 	}
 
 	public static JSONObject getComputerAPIJSONObject(
-		int busyExecutorCount, JSONObject... computerJSONObjects) {
+		int busyExecutorsCount, JSONObject... computerJSONObjects) {
 
 		return new JSONObject(
 		).put(
-			"busyExecutors", busyExecutorCount
+			"busyExecutors", busyExecutorsCount
 		).put(
 			"computer", new JSONArray(computerJSONObjects)
 		);

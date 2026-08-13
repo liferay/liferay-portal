@@ -298,7 +298,9 @@ public class JenkinsStopBuildUtilTest
 		JenkinsResultsParserUtil.setBuildProperties(properties);
 	}
 
-	private void _setUpResultOutputs(int buildingResultCount) throws Exception {
+	private void _setUpResultOutputs(int buildingResultsCount)
+		throws Exception {
+
 		UrlReader urlReader = mockUrlReader();
 
 		AtomicInteger readCount = new AtomicInteger();
@@ -309,7 +311,7 @@ public class JenkinsStopBuildUtilTest
 
 				JSONObject jsonObject = new JSONObject();
 
-				if (readCount.getAndIncrement() < buildingResultCount) {
+				if (readCount.getAndIncrement() < buildingResultsCount) {
 					jsonObject.put("result", JSONObject.NULL);
 				}
 				else {

@@ -18,42 +18,42 @@ public class StaleBuildReaper {
 		_jenkinsCohort = jenkinsCohort;
 	}
 
-	public int getReapedBuildCount() {
-		int reapedBuildCount = 0;
+	public int getReapedBuildsCount() {
+		int reapedBuildsCount = 0;
 
 		for (ReapAction reapAction : _reapActions) {
 			if (reapAction.isExecuted()) {
-				reapedBuildCount++;
+				reapedBuildsCount++;
 			}
 		}
 
-		return reapedBuildCount;
+		return reapedBuildsCount;
 	}
 
-	public int getStaleBuildCount() {
+	public int getStaleBuildsCount() {
 		return _reapActions.size();
 	}
 
 	public String getSummary() {
 		StringBuilder sb = new StringBuilder();
 
-		int staleBuildCount = getStaleBuildCount();
+		int staleBuildsCount = getStaleBuildsCount();
 
 		String nounForm = JenkinsResultsParserUtil.getNounForm(
-			staleBuildCount, "stale builds", "stale build");
+			staleBuildsCount, "stale builds", "stale build");
 
 		if (_dryRun) {
 			sb.append("Found ");
-			sb.append(staleBuildCount);
+			sb.append(staleBuildsCount);
 			sb.append(" ");
 			sb.append(nounForm);
 			sb.append(". No build was aborted because DRY_RUN is enabled.");
 		}
 		else {
 			sb.append("Reaped ");
-			sb.append(getReapedBuildCount());
+			sb.append(getReapedBuildsCount());
 			sb.append(" of ");
-			sb.append(staleBuildCount);
+			sb.append(staleBuildsCount);
 			sb.append(" ");
 			sb.append(nounForm);
 			sb.append(".");
@@ -120,7 +120,7 @@ public class StaleBuildReaper {
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					jenkinsMaster.getName(), " reports at most ",
-					String.valueOf(jenkinsMaster.getMaxRunningBuildCount()),
+					String.valueOf(jenkinsMaster.getMaxRunningBuildsCount()),
 					" running build(s). Enumerated ",
 					String.valueOf(runningBuilds.size()), "."));
 

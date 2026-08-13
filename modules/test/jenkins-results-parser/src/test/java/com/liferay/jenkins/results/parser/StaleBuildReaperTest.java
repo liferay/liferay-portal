@@ -63,7 +63,7 @@ public class StaleBuildReaperTest
 
 		String summary = staleBuildReaper.getSummary();
 
-		Assert.assertEquals(3, staleBuildReaper.getStaleBuildCount());
+		Assert.assertEquals(3, staleBuildReaper.getStaleBuildsCount());
 
 		Assert.assertTrue(summary, summary.contains(_BUILD_URL_LIKELY_STUCK));
 		Assert.assertTrue(summary, summary.contains(_BUILD_URL_NODE_REMOVED));
@@ -92,9 +92,9 @@ public class StaleBuildReaperTest
 		StaleBuildReaper staleBuildReaper = _reap(
 			false, null, stoppedBuildURLs);
 
-		Assert.assertEquals(3, staleBuildReaper.getReapedBuildCount());
+		Assert.assertEquals(3, staleBuildReaper.getReapedBuildsCount());
 
-		Assert.assertEquals(3, staleBuildReaper.getStaleBuildCount());
+		Assert.assertEquals(3, staleBuildReaper.getStaleBuildsCount());
 
 		List<String> expectedBuildURLs = new ArrayList<>();
 
@@ -116,9 +116,9 @@ public class StaleBuildReaperTest
 		StaleBuildReaper staleBuildReaper = _reap(
 			false, _BUILD_URL_LIKELY_STUCK, stoppedBuildURLs);
 
-		Assert.assertEquals(2, staleBuildReaper.getReapedBuildCount());
+		Assert.assertEquals(2, staleBuildReaper.getReapedBuildsCount());
 
-		Assert.assertEquals(3, staleBuildReaper.getStaleBuildCount());
+		Assert.assertEquals(3, staleBuildReaper.getStaleBuildsCount());
 
 		Assert.assertFalse(
 			stoppedBuildURLs.toString(),
@@ -155,7 +155,7 @@ public class StaleBuildReaperTest
 		StaleBuildReaper staleBuildReaper = _reap(
 			false, null, stoppedBuildURLs);
 
-		Assert.assertEquals(3, staleBuildReaper.getReapedBuildCount());
+		Assert.assertEquals(3, staleBuildReaper.getReapedBuildsCount());
 
 		Assert.assertTrue(
 			stoppedBuildURLs.toString(),
@@ -168,7 +168,7 @@ public class StaleBuildReaperTest
 
 		StaleBuildReaper staleBuildReaper = _reap(true, null, stoppedBuildURLs);
 
-		Assert.assertEquals(0, staleBuildReaper.getReapedBuildCount());
+		Assert.assertEquals(0, staleBuildReaper.getReapedBuildsCount());
 
 		Assert.assertTrue(
 			stoppedBuildURLs.toString(), stoppedBuildURLs.isEmpty());
