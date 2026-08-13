@@ -168,11 +168,11 @@ public class FrontendTokenDefinitionUtilTest {
 							"name", RandomTestUtil.randomString()
 						))));
 
-		Assert.assertEquals(
-			frontendTokenNames.toString(), 3, frontendTokenNames.size());
 		Assert.assertTrue(frontendTokenNames.contains("customPrimaryColor"));
 		Assert.assertTrue(frontendTokenNames.contains("customSecondaryColor"));
 		Assert.assertTrue(frontendTokenNames.contains("customHeadingColor"));
+		Assert.assertEquals(
+			frontendTokenNames.toString(), 3, frontendTokenNames.size());
 	}
 
 }
