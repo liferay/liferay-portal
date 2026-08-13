@@ -266,20 +266,22 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 	public int getAvailableSlavesCount(String labelExpression) {
 		int idleNodesCount = _getIdleNodesCount(labelExpression);
-		int queueCount = _getQueueCount(labelExpression);
+		int queueItemsCount = _getQueueItemsCount(labelExpression);
 		int recentBatchSizesTotal = _getRecentBatchSizesTotal(labelExpression);
 
-		return idleNodesCount - queueCount - recentBatchSizesTotal;
+		return idleNodesCount - queueItemsCount - recentBatchSizesTotal;
 	}
 
 	public float getAverageQueueLength(String labelExpression) {
 		int busyNodesCount = _getBusyNodesCount(labelExpression);
-		int queueCount = _getQueueCount(labelExpression);
+		int queueItemsCount = _getQueueItemsCount(labelExpression);
 		int recentBatchSizesTotal = _getRecentBatchSizesTotal(labelExpression);
 		int usableNodesCount = _getUsableNodesCount(labelExpression);
 
-		return ((float)busyNodesCount + queueCount + recentBatchSizesTotal) /
-			usableNodesCount;
+		float queueLength =
+			(float)busyNodesCount + queueItemsCount + recentBatchSizesTotal;
+
+		return queueLength / usableNodesCount;
 	}
 
 	public List<AWSFleetCloud> getAWSFleetClouds() {
@@ -1820,8 +1822,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return _labelExpressionLabels.get(labelExpression);
 	}
 
-	private int _getQueueCount(String labelExpression) {
-		int queueCount = 0;
+	private int _getQueueItemsCount(String labelExpression) {
+		int queueItemsCount = 0;
 
 		List<String> labels = _getLabels(labelExpression);
 
@@ -1831,11 +1833,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			}
 
 			if (_matchesLabels(queueItem.getLabelExpression(), labels)) {
-				queueCount++;
+				queueItemsCount++;
 			}
 		}
 
-		return queueCount;
+		return queueItemsCount;
 	}
 
 	private synchronized int _getRecentBatchSizesTotal(String labelExpression) {
