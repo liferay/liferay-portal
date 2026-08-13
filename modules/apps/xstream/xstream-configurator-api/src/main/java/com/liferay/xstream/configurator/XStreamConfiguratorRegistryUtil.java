@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.util.AggregateClassLoader;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -40,10 +39,10 @@ public class XStreamConfiguratorRegistryUtil {
 
 		// Temporary code to fetch class loaders from the old framework too
 
-		Map<Class<?>, String> aliases = XStreamAliasRegistryUtil.getAliases();
+		Set<Class<?>> aliases = XStreamAliasRegistryUtil.getAliases();
 
 		if (!aliases.isEmpty()) {
-			for (Class<?> clazz : aliases.keySet()) {
+			for (Class<?> clazz : aliases) {
 				classLoaders.add(clazz.getClassLoader());
 			}
 		}

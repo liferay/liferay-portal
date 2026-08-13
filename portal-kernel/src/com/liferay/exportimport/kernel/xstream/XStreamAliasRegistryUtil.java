@@ -7,8 +7,9 @@ package com.liferay.exportimport.kernel.xstream;
 
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
@@ -21,8 +22,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class XStreamAliasRegistryUtil {
 
-	public static Map<Class<?>, String> getAliases() {
-		return new HashMap<>(_xstreamAliases);
+	public static Set<Class<?>> getAliases() {
+		return new HashSet<>(_xstreamAliases.keySet());
 	}
 
 	private XStreamAliasRegistryUtil() {
