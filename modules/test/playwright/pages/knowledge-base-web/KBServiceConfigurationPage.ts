@@ -32,9 +32,8 @@ export class KBServiceConfigurationPage {
 	}
 
 	async goTo() {
-		await this.systemSettingsPage.goToSystemSetting(
-			'Knowledge Base',
-			'Service'
+		await this.systemSettingsPage.goToConfiguration(
+			'com.liferay.knowledge.base.internal.configuration.KBServiceConfiguration'
 		);
 	}
 

@@ -27,6 +27,14 @@ export class SystemSettingsPage {
 		await this.globalMenuPage.goToControlPanel('System Settings');
 	}
 
+	async goToConfiguration(factoryPid: string) {
+		await this.page.goto(
+			`/group/control_panel/manage?p_p_id=com_liferay_configuration_admin_web_portlet_SystemSettingsPortlet&_com_liferay_configuration_admin_web_portlet_SystemSettingsPortlet_factoryPid=${factoryPid}&_com_liferay_configuration_admin_web_portlet_SystemSettingsPortlet_mvcRenderCommandName=%2Fconfiguration_admin%2Fedit_configuration`
+		);
+
+		await waitForPageToBeLoaded(this.page);
+	}
+
 	async goToSystemSetting(
 		categoryKey: string,
 		configurationName: string,
