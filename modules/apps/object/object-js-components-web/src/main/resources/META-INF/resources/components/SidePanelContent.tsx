@@ -19,9 +19,9 @@ export function closeSidePanel() {
 export function saveAndReload() {
 	const parentWindow = Liferay.Util.getOpener();
 
-	closeSidePanel();
-
 	setTimeout(() => {
+		closeSidePanel();
+
 		parentWindow.location.reload();
 	}, 300);
 }
