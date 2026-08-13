@@ -1,0 +1,828 @@
+// Global Variables
+
+$clay-unset: clay-unset !default;
+
+// An alias for `$clay-unset`
+
+$c-unset: $clay-unset !default;
+
+$clay-unset-placeholder: clay-unset-placeholder !default;
+
+$custom-checkbox-indicator-border-radius: 0.25rem;
+
+$enable-c-inner: true !default;
+$enable-lexicon-flat-colors: true !default;
+$enable-scaling-components: true !default;
+$scaling-breakpoint-down: sm !default;
+
+$sticker-sm-border-radius: 0.25rem;
+
+$sticker-sizes: () !default;
+$sticker-sizes: map-deep-merge(
+	(
+		sticker-xs: (
+			border-radius: $sticker-sm-border-radius,
+		),
+	),
+	$sticker-sizes
+);
+
+$sticker-sm: () !default;
+$sticker-sm: map-deep-merge(
+	(
+		border-radius: $sticker-sm-border-radius,
+	),
+	$sticker-sm
+);
+
+$enable-caret: false !default;
+$enable-deprecation-messages: true !default;
+$enable-gradients: false !default;
+$enable-grid-classes: true !default;
+$enable-pointer-cursor-for-buttons: true !default;
+$enable-prefers-reduced-motion-media-query: true !default;
+$enable-print-styles: true !default;
+$enable-responsive-font-sizes: false !default;
+$enable-rounded: true !default;
+$enable-shadows: true !default;
+$enable-transitions: true !default;
+$enable-validation-icons: true !default;
+
+// Deprecated, no longer affects any compiled CSS
+
+$enable-hover-media-query: false !default;
+
+// Theme Base Colors
+
+$black: #000 !default;
+$white: #fff !default;
+
+$gray-100: #f7f8f9 !default;
+$gray-200: #f1f2f5 !default;
+$gray-300: #e7e7ed !default;
+$gray-400: #cdced9 !default;
+$gray-500: #a7a9bc !default;
+$gray-600: #6b6c7e !default;
+$gray-700: #495057 !default;
+$gray-800: #393a4a !default;
+$gray-900: #272833 !default;
+
+$blue: if($enable-lexicon-flat-colors, #4b9fff, #0b5fff) !default;
+$cyan: if($enable-lexicon-flat-colors, #5fc8ff, #17a2b8) !default;
+$green: if($enable-lexicon-flat-colors, #9be169, #287d3d) !default;
+$indigo: if($enable-lexicon-flat-colors, #7785ff, #6610f2) !default;
+$orange: if($enable-lexicon-flat-colors, #ffb46e, #b95000) !default;
+$pink: if($enable-lexicon-flat-colors, #ff73c3, #e83e8c) !default;
+$purple: if($enable-lexicon-flat-colors, #af78ff, #6f42c1) !default;
+$red: if($enable-lexicon-flat-colors, #ff5f5f, #da1414) !default;
+$teal: if($enable-lexicon-flat-colors, #50d2a0, #20c997) !default;
+$yellow: if($enable-lexicon-flat-colors, #ffd76e, #ffc107) !default;
+
+$primary: #0b5fff !default;
+
+$primary-d1: darken($primary, 5.1) !default;
+$primary-d2: darken($primary, 10) !default;
+$primary-l1: lighten($primary, 22.94) !default;
+$primary-l2: lighten($primary, 32.94) !default;
+$primary-l3: lighten($primary, 44.9) !default;
+
+$secondary: #6b6c7e !default;
+
+$secondary-d1: darken(saturate($secondary, 4.82), 20) !default;
+$secondary-d2: darken(saturate($secondary, 5.36), 23.92) !default;
+$secondary-l1: lighten(
+	saturate(adjust-hue($secondary, -3), 5.39),
+	23.92
+) !default;
+$secondary-l2: lighten(
+	saturate(adjust-hue($secondary, -2), 5.48),
+	37.06
+) !default;
+$secondary-l3: lighten(
+	saturate(adjust-hue($secondary, 3), 6.13),
+	46.08
+) !default;
+
+$info: #2e5aac !default;
+
+$info-d1: darken($info, 5) !default;
+$info-d2: darken($info, 10) !default;
+$info-l1: lighten(saturate($info, 0.59), 28.04) !default;
+$info-l2: lighten(desaturate($info, 3.25), 52.94) !default;
+
+$success: #287d3c !default;
+
+$success-d1: darken($success, 5) !default;
+$success-d2: darken($success, 10) !default;
+$success-l1: lighten(desaturate($success, 0.14), 24.95) !default;
+$success-l2: lighten(desaturate($success, 1.52), 62.94) !default;
+
+$warning: #b95000 !default;
+
+$warning-d1: darken($warning, 5.1) !default;
+$warning-d2: darken($warning, 10) !default;
+$warning-l1: lighten($warning, 24.9) !default;
+$warning-l2: lighten($warning, 60) !default;
+
+$danger: #da1414 !default;
+
+$danger-d1: darken($danger, 5) !default;
+$danger-d2: darken($danger, 10) !default;
+$danger-l1: lighten(desaturate($danger, 0.25), 28.04) !default;
+$danger-l2: lighten(saturate($danger, 5.04), 50) !default;
+
+$light: #f1f2f5 !default;
+
+$light-d1: darken($light, 5.1) !default;
+$light-d2: darken($light, 10) !default;
+$light-l1: lighten(desaturate(adjust-hue($light, -15), 2.38), 1.96) !default;
+$light-l2: lighten(desaturate(adjust-hue($light, -225), 16.67), 4.71) !default;
+
+$dark: #272833 !default;
+
+$dark-d1: darken($dark, 5.1) !default;
+$dark-d2: darken($dark, 10) !default;
+$dark-l1: lighten(saturate($dark, 0.18), 4.12) !default;
+$dark-l2: lighten(desaturate($dark, 0.36), 8.04) !default;
+
+$theme-colors: () !default;
+$theme-colors: map-merge(
+	(
+		'danger': $danger,
+		'dark': $dark,
+		'info': $info,
+		'light': $light,
+		'primary': $primary,
+		'secondary': $secondary,
+		'success': $success,
+		'warning': $warning,
+	),
+	$theme-colors
+);
+
+// Set a specific jump point for requesting color jumps
+
+$theme-color-interval: 8% !default;
+
+// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
+
+$yiq-contrasted-threshold: 150 !default;
+
+$yiq-text-dark: $gray-900 !default;
+$yiq-text-light: $white !default;
+
+// Spacing
+
+$spacer: 1rem !default;
+$spacers: () !default;
+$spacers: map-deep-merge(
+	(
+		0: var(--spacer-0, 0),
+		1: var(--spacer-1, $spacer * 0.25),
+		2: var(--spacer-2, $spacer * 0.5),
+		3: var(--spacer-3, $spacer * 1),
+		4: var(--spacer-4, $spacer * 1.5),
+		5: var(--spacer-5, $spacer * 3),
+		6: var(--spacer-6, $spacer * 4.5),
+		7: var(--spacer-7, $spacer * 6),
+		8: var(--spacer-8, $spacer * 7.5),
+		9: var(--spacer-9, $spacer * 9),
+		10: var(--spacer-10, $spacer * 10),
+	),
+	$spacers
+);
+
+// This variable affects the `.h-*` and `.w-*` classes.
+
+$sizes: () !default;
+$sizes: map-merge(
+	(
+		25: 25%,
+		50: 50%,
+		75: 75%,
+		100: 100%,
+		auto: auto,
+	),
+	$sizes
+);
+
+// Reusable Values
+
+$line-height-lg: 1.5 !default;
+$line-height-sm: 1.5 !default;
+
+$line-height-base: 1.5 !default;
+
+$border-color: $gray-200 !default;
+$border-width: 0.0625rem !default;
+
+$border-radius: 0.5rem !default;
+
+$border-radius-lg: var(--border-radius-lg, 0.5rem) !default;
+$border-radius-sm: var(--border-radius-sm, 0.5rem) !default;
+
+$rounded-0-border-radius: 0 !default;
+$rounded-border-radius: var(--border-radius, $border-radius) !default;
+$rounded-circle-border-radius: var(--border-radius-circle, 5000px) !default;
+$rounded-pill: var(--rounded-pill, 50rem) !default;
+
+$box-shadow: var(--box-shadow, 0 0.5rem 1rem rgba($black, 0.15)) !default;
+
+$box-shadow-lg: var(--box-shadow-lg, 0 1rem 3rem rgba($black, 0.175)) !default;
+$box-shadow-sm: var(
+	--box-shadow-sm,
+	0 0.125rem 0.25rem rgba($black, 0.075)
+) !default;
+
+$transition-base: all 0.2s ease-in-out !default;
+$transition-collapse: var(--transition-collapse, height 0.35s ease) !default;
+$transition-fade: var(--transition-fade, opacity 0.15s linear) !default;
+
+$embed-responsive-aspect-ratios: () !default;
+$embed-responsive-aspect-ratios: join(
+	((21 9), (16 9), (4 3), (1 1)),
+	$embed-responsive-aspect-ratios
+);
+
+$component-active-bg: #0b5fff !default;
+$component-active-color: $white !default;
+
+$component-focus-box-shadow: 0 0 0 0.125rem $white#{','} 0 0 0 0.25rem $primary-l1 !default;
+$component-focus-inset-box-shadow: inset 0 0 0 0.125rem $primary-l1#{','} inset 0
+	0 0 0.25rem $white !default;
+
+// Grid
+
+$grid-breakpoints: (
+	xs: 0,
+
+	sm: 576px,
+
+	md: 768px,
+
+	lg: 992px,
+
+	xl: 1280px,
+) !default;
+
+// Grid columns
+
+$grid-columns: 12 !default;
+$grid-gutter-width: 24px !default;
+$grid-row-columns: 6 !default;
+
+$container-max-widths: (
+	sm: var(--container-max-sm, 540px),
+	md: var(--container-max-md, 720px),
+	lg: var(--container-max-lg, 960px),
+	xl: var(--container-max-xl, 1248px),
+) !default;
+
+$container-form-lg: () !default;
+$container-form-lg: map-deep-merge(
+	(
+		breakpoint-up: lg,
+
+		padding-bottom: 3rem,
+		padding-top: 3rem,
+
+		padding-bottom-mobile: 1rem,
+		padding-top-mobile: 1rem,
+	),
+	$container-form-lg
+);
+
+$container-view: () !default;
+$container-view: map-deep-merge(
+	(
+		padding-bottom: 1.5rem,
+		padding-top: 1.5rem,
+	),
+	$container-view
+);
+
+$moz-osx-font-smoothing: grayscale !default;
+$webkit-font-smoothing: antialiased !default;
+
+$font-import-url: null !default;
+
+$font-family-monospace: sfmono-regular, menlo, monaco, consolas,
+	'Liberation Mono', 'Courier New', monospace !default;
+$font-family-sans-serif:
+	system-ui,
+	-apple-system,
+	blinkmacsystemfont,
+	'Segoe UI',
+	roboto,
+	oxygen-sans,
+	ubuntu,
+	cantarell,
+	'Helvetica Neue',
+	arial,
+	sans-serif,
+	'Apple Color Emoji',
+	'Segoe UI Emoji',
+	'Segoe UI Symbol' !default;
+$font-family-serif: georgia, 'Times New Roman', times, serif !default;
+
+$font-family-base: var(--font-family-base, $font-family-sans-serif) !default;
+
+$font-size-base: 1rem !default;
+
+$font-size-lg: 1.125rem !default;
+$font-size-sm: 0.875rem !default;
+
+$font-size-base-mobile: $font-size-base !default;
+$font-size-lg-mobile: $font-size-lg !default;
+
+$font-weight-bold: var(--font-weight-bold, 700) !default;
+$font-weight-bolder: var(--font-weight-bolder, 900) !default;
+$font-weight-light: var(--font-weight-light, 300) !default;
+$font-weight-lighter: var(--font-weight-lighter, lighter) !default;
+$font-weight-normal: var(--font-weight-normal, 400) !default;
+$font-weight-semi-bold: var(--font-weight-semi-bold, 600) !default;
+
+$font-weight-base: $font-weight-normal !default;
+
+$h1-font-size: var(--h1-font-size, 1.625rem) !default;
+$h2-font-size: var(--h2-font-size, 1.375rem) !default;
+$h3-font-size: var(--h3-font-size, 1.1875rem) !default;
+$h4-font-size: var(--h4-font-size, 1rem) !default;
+$h5-font-size: var(--h5-font-size, 0.875rem) !default;
+$h6-font-size: var(--h6-font-size, 0.8125rem) !default;
+
+$h1-font-size-mobile: null !default;
+$h2-font-size-mobile: null !default;
+$h3-font-size-mobile: null !default;
+$h4-font-size-mobile: null !default;
+$h5-font-size-mobile: null !default;
+$h6-font-size-mobile: null !default;
+
+$headings-color: null !default;
+$headings-font-family: null !default;
+$headings-font-weight: $font-weight-bold !default;
+$headings-line-height: 1.2 !default;
+$headings-margin-bottom: $spacer * 0.5 !default;
+
+// Body
+
+$body-bg: var(--body-bg, $white) !default;
+$body-color: var(--body-color, $dark-d1) !default;
+$body-moz-osx-font-smoothing: $moz-osx-font-smoothing !default;
+$body-text-align: inherit !default;
+$body-webkit-font-smoothing: $webkit-font-smoothing !default;
+
+$c-body: () !default;
+$c-body: map-merge(
+	(
+		-moz-osx-font-smoothing: $body-moz-osx-font-smoothing,
+		-ms-overflow-style: scrollbar,
+		-webkit-font-smoothing: $body-webkit-font-smoothing,
+		background-color: $body-bg,
+		color: $body-color,
+		font-family: $font-family-base,
+		font-size: var(--font-size-base, $font-size-base),
+		font-weight: $font-weight-base,
+		line-height: $line-height-base,
+		margin: 0,
+		text-align: $body-text-align
+	),
+	$c-body
+);
+
+// Link
+
+$link-color: $primary !default;
+$link-decoration: none !default;
+$link-hover-color: $primary-d2 !default;
+$link-hover-decoration: underline !default;
+
+// Cursors
+
+$disabled-cursor: not-allowed !default;
+$link-cursor: pointer !default;
+
+// Darken percentage for links with `.text-*` class (e.g. `.text-success`)
+
+$emphasized-link-hover-darken-percentage: 15% !default;
+
+// Paragraph
+
+$paragraph-margin-bottom: 1rem !default;
+
+$display1-size: var(--display1-size, 6rem) !default;
+$display2-size: var(--display2-size, 5.5rem) !default;
+$display3-size: var(--display3-size, 4.5rem) !default;
+$display4-size: var(--display4-size, 3.5rem) !default;
+
+$display1-weight: var(--display1-weight, 300) !default;
+$display2-weight: var(--display2-weight, 300) !default;
+$display3-weight: var(--display3-weight, 300) !default;
+$display4-weight: var(--display4-weight, 300) !default;
+
+$display-line-height: var(
+	--display-line-height,
+	$headings-line-height
+) !default;
+
+$lead-font-size: var(--lead-font-size, $font-size-base * 1.25) !default;
+$lead-font-weight: var(--lead-font-weight, 400) !default;
+
+$small-font-size: 0.875rem !default;
+
+$text-muted: var(--text-muted, $gray-500) !default;
+
+$blockquote-font-size: var(--blockquote-font-size, $font-size-base * 1.25);
+
+$blockquote-small-color: var(--blockquote-small-color, $gray-600);
+$blockquote-small-font-size: var(
+	--blockquote-small-font-size,
+	$small-font-size
+);
+
+$hr-border-color: var(--hr-border-color, rgba($black, 0.1)) !default;
+$hr-border-width: var(--hr-border-width, $border-width) !default;
+$hr-margin-y: var(--hr-margin-y, $spacer) !default;
+
+$mark-padding: 0.2em !default;
+
+$dt-font-weight: $font-weight-bold !default;
+
+$code-color: $pink !default;
+$code-font-size: 87.5% !default;
+
+$kbd-bg: $gray-900 !default;
+$kbd-box-shadow: inset 0 -0.1rem 0 rgba($black, 0.25) !default;
+$kbd-color: $white !default;
+$kbd-font-size: $code-font-size !default;
+$kbd-padding-x: 0.4rem !default;
+$kbd-padding-y: 0.2rem !default;
+
+$nav-divider-color: $secondary-l1;
+
+$nested-kbd-font-weight: $font-weight-bold !default;
+
+$pre-color: $gray-900 !default;
+$pre-scrollable-max-height: 340px !default;
+
+$list-inline-padding: 0.5rem !default;
+
+$mark-bg: #fcf8e3 !default;
+
+// Button
+
+$c-button-base: () !default;
+$c-button-base: map-merge(
+	(-webkit-appearance: button, cursor: $link-cursor),
+	$c-button-base
+);
+
+// Buttons + Forms
+
+$label-border-radius: 0.25rem;
+$label-font-size: 0.75rem;
+
+$label-lg: () !default;
+$label-lg: map-deep-merge(
+	(
+		border-radius: $label-border-radius,
+	),
+	$label-lg
+);
+
+$label-margin-bottom: 0.5rem !default;
+$label-text-transform: capitalize;
+
+$input-btn-font-family: null !default;
+$input-btn-font-size: $font-size-base !default;
+$input-btn-line-height: $line-height-base !default;
+$input-btn-padding-x: 0.75rem !default;
+$input-btn-padding-y: 0.375rem !default;
+
+$input-btn-focus-width: 0.2rem !default;
+
+$input-btn-focus-color: rgba($component-active-bg, 0.25) !default;
+
+$input-btn-focus-box-shadow: 0 0 0 $input-btn-focus-width $input-btn-focus-color !default;
+
+$input-btn-font-size-sm: $font-size-sm !default;
+$input-btn-line-height-sm: $line-height-sm !default;
+$input-btn-padding-x-sm: 0.5rem !default;
+$input-btn-padding-y-sm: 0.25rem !default;
+
+$input-btn-font-size-lg: $font-size-lg !default;
+$input-btn-line-height-lg: $line-height-lg !default;
+$input-btn-padding-x-lg: 1rem !default;
+$input-btn-padding-y-lg: 0.5rem !default;
+
+$input-btn-border-width: $border-width !default;
+
+// Print
+
+$print-body-min-width: map-get($grid-breakpoints, 'lg') !default;
+$print-page-size: a3 !default;
+
+// Btn
+
+$btn-primary: () !default;
+$btn-primary: map-deep-merge(
+	(
+		active: (
+			background-image: $c-unset,
+			color: $c-unset,
+		),
+
+		active-bg: $c-unset,
+		active-border-color: $c-unset,
+		active-focus-box-shadow: $c-unset,
+		background-color: var(--btn-primary-background-color, $primary),
+		border-color: var(--btn-primary-border-color, $primary),
+		box-shadow: $c-unset,
+		color: var(--btn-primary-color, color-yiq($primary)),
+		disabled: (
+			background-image: $c-unset,
+			border-color: $c-unset,
+			color: $c-unset,
+		),
+
+		disabled-bg: $c-unset,
+
+		focus: (
+			background-image: $c-unset,
+			border-color: $c-unset,
+			color: $c-unset,
+		),
+
+		focus-bg: $c-unset,
+		focus-box-shadow: $c-unset,
+
+		hover: (
+			background-image: clay-enable-gradients($primary-d1),
+			color: var(--btn-primary-hover-color, color-yiq($primary-d1)),
+		),
+
+		hover-bg: var(--btn-primary-hover-background-color, $primary-d1),
+		hover-border-color: var(--btn-primary-hover-border-color, transparent),
+	),
+	$btn-primary
+);
+
+$btn-outline-primary: () !default;
+$btn-outline-primary: map-deep-merge(
+	(
+		active: (
+			border-color: $c-unset,
+		),
+
+		active-bg: $c-unset,
+		active-box-shadow: $c-unset,
+		active-color: $c-unset,
+		active-focus-box-shadow: $c-unset,
+		border-color: var(--btn-outline-primary-border-color, $primary),
+		color: var(--btn-outline-primary-color, $primary),
+		disabled-bg: $c-unset,
+		disabled-border-color: $c-unset,
+		disabled-color: $c-unset,
+		focus-bg: $c-unset,
+		focus-box-shadow: $c-unset,
+		focus-color: $c-unset,
+
+		hover: (
+			border-color:
+				var(--btn-outline-primary-hover-border-color, $primary),
+		),
+
+		hover-bg: var(--btn-outline-primary-hover-background-color, $primary-l3),
+		hover-color: var(--btn-outline-primary-hover-color, color-yiq($primary)),
+	),
+	$btn-outline-primary
+);
+
+$btn-secondary: () !default;
+$btn-secondary: map-deep-merge(
+	(
+		active-bg: $c-unset,
+		active-border-color: $c-unset,
+		active-color: $c-unset,
+		active-focus-box-shadow: $c-unset,
+		background-image: clay-enable-gradients($white),
+		bg: var(--btn-secondary-background-color, $white),
+		border-color: var(--btn-secondary-border-color, $secondary-l2),
+		box-shadow: $c-unset,
+		color: var(--btn-secondary-color, $secondary),
+		disabled: (
+			background-image: $c-unset,
+		),
+
+		disabled-bg: $c-unset,
+		disabled-border-color: $c-unset,
+		disabled-color: $c-unset,
+
+		focus: (
+			background-image: $c-unset,
+		),
+
+		focus-bg: $c-unset,
+		focus-border-color: $c-unset,
+		focus-box-shadow: $c-unset,
+		focus-color: $c-unset,
+
+		hover: (
+			background-image: clay-enable-gradients($gray-100),
+		),
+
+		hover-bg: var(--btn-secondary-hover-background-color, $gray-100),
+		hover-border-color:
+			var(--btn-secondary-hover-border-color, $secondary-l2),
+		hover-color: var(--btn-secondary-hover-color, $gray-900),
+	),
+	$btn-secondary
+);
+
+$btn-sizes: () !default;
+$btn-sizes: map-deep-merge(
+	(
+		btn-xs: (
+			border-radius: 0.25rem,
+		),
+	),
+	$btn-sizes
+);
+
+$btn-outline-secondary: () !default;
+$btn-outline-secondary: map-deep-merge(
+	(
+		active-bg: $c-unset,
+		active-border-color: $c-unset,
+		active-box-shadow: $c-unset,
+		active-color: $c-unset,
+		active-focus-box-shadow: $c-unset,
+		bg: var(--btn-outline-secondary-background-color, transparent),
+		border-color: var(--btn-outline-secondary-border-color, $secondary-l2),
+		color: var(--btn-outline-secondary-color, $secondary),
+		disabled-bg: $c-unset,
+		disabled-border-color: $c-unset,
+		disabled-color: $c-unset,
+		focus-bg: $c-unset,
+		focus-border-color: $c-unset,
+		focus-box-shadow: $c-unset,
+		focus-color: $c-unset,
+		hover-bg:
+			var(
+				--btn-outline-secondary-hover-background-color,
+				rgba($gray-900, 0.03)
+			),
+		hover-border-color:
+			var(--btn-outline-secondary-hover-border-color, transparent),
+		hover-color: var(--btn-outline-secondary-hover-color, color-yiq($white)),
+	),
+	$btn-outline-secondary
+);
+
+$btn-link-disabled-color: $gray-600 !default;
+
+$btn-link: () !default;
+$btn-link: map-deep-merge(
+	(
+		active: (
+			box-shadow: clay-enable-shadows([none]),
+		),
+
+		border-radius: 1px,
+		box-shadow: $c-unset,
+		color: var(--btn-link-color, $link-color),
+		disabled: (
+			box-shadow: none,
+			color: $c-unset,
+			text-decoration: none,
+		),
+
+		focus: (
+			box-shadow: $c-unset,
+			text-decoration: $link-decoration,
+		),
+
+		font-weight: $font-weight-normal,
+
+		hover: (
+			color: var(--btn-link-hover-color, $link-hover-color),
+			text-decoration: $link-hover-decoration,
+		),
+
+		text-decoration: $link-decoration,
+	),
+	$btn-link
+);
+
+// Utilities
+
+$bg-theme-colors: () !default;
+$bg-theme-colors: map-deep-merge(
+	(
+		'danger': (
+			background-color: var(--danger, $danger) !important,
+		),
+		'dark': (
+			background-color: var(--dark, $dark) !important,
+		),
+		'gray-dark': (
+			background-color: var(--gray-800, $gray-800) !important,
+		),
+		'info': (
+			background-color: var(--info, $info) !important,
+		),
+		'light': (
+			background-color: var(--light, $light) !important,
+		),
+		'lighter': (
+			background-color: var(--gray-100, $gray-100) !important,
+		),
+		'primary': (
+			background-color: var(--primary, $primary) !important,
+		),
+		'secondary': (
+			background-color: var(--secondary, $secondary) !important,
+		),
+		'success': (
+			background-color: var(--success, $success) !important,
+		),
+		'warning': (
+			background-color: var(--warning, $warning) !important,
+		),
+	),
+	$bg-theme-colors
+);
+
+$border-theme-colors: () !default;
+$border-theme-colors: map-deep-merge(
+	(
+		'danger': (
+			border-color: var(--danger, $danger) !important,
+		),
+		'dark': (
+			border-color: var(--dark, $dark) !important,
+		),
+		'gray-dark': (
+			border-color: var(--gray-800, $gray-800) !important,
+		),
+		'info': (
+			border-color: var(--info, $info) !important,
+		),
+		'light': (
+			border-color: var(--light, $light) !important,
+		),
+		'lighter': (
+			border-color: var(--gray-100, $gray-100) !important,
+		),
+		'primary': (
+			border-color: var(--primary, $primary) !important,
+		),
+		'secondary': (
+			border-color: var(--secondary, $secondary) !important,
+		),
+		'success': (
+			border-color: var(--success, $success) !important,
+		),
+		'warning': (
+			border-color: var(--warning, $warning) !important,
+		),
+	),
+	$border-theme-colors
+);
+
+$text-theme-colors: () !default;
+$text-theme-colors: map-deep-merge(
+	(
+		'danger': (
+			color: var(--danger, $danger) !important,
+		),
+		'dark': (
+			color: var(--dark, $dark) !important,
+		),
+		'gray-dark': (
+			color: var(--gray-800, $gray-800) !important,
+		),
+		'info': (
+			color: var(--info, $info) !important,
+		),
+		'light': (
+			color: var(--light, $light) !important,
+		),
+		'lighter': (
+			color: var(--gray-100, $gray-100) !important,
+		),
+		'primary': (
+			color: var(--primary, $primary) !important,
+		),
+		'secondary': (
+			color: var(--secondary, $secondary) !important,
+		),
+		'success': (
+			color: var(--success, $success) !important,
+		),
+		'warning': (
+			color: var(--warning, $warning) !important,
+		),
+	),
+	$text-theme-colors
+);
