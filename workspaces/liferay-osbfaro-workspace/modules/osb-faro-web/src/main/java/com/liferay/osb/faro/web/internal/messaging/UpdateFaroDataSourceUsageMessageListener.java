@@ -61,7 +61,7 @@ public class UpdateFaroDataSourceUsageMessageListener
 
 			_trigger = _triggerFactory.createTrigger(
 				clazz.getName(), clazz.getName(), new Date(), null,
-				"0 0 1 * * ?");
+				"0 0 0/6 * * ?");
 
 			_schedulerEngineHelper.schedule(
 				_trigger, StorageType.PERSISTED, null,
