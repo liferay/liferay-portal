@@ -1,8 +1,0 @@
-$theme-color-palette: () !default;
-$theme-color-palette: map-merge(
-	(
-		gray-dark: $gray-800,
-		lighter: $gray-100,
-	),
-	$theme-color-palette
-);
