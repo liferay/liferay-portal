@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import ClayButton from '@clayui/button';
 import {TreeView} from '@clayui/core';
-import {ClayCheckbox, ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
+import {ClayCheckbox} from '@clayui/form';
 import ClayManagementToolbar, {
 	ClayResultsBar,
 } from '@clayui/management-toolbar';
 import ClayModal, {useModal} from '@clayui/modal';
 import React, {useMemo, useState} from 'react';
 
+import AutoSearch from '../components/AutoSearch';
 import {postProfileDataMask} from '../services/postProfileDataMask';
 import {DataMask, DataMaskTreeItem} from '../types';
 import {
@@ -146,49 +146,7 @@ export default function AddDataMasksModal({
 					<ClayManagementToolbar.Search
 						onSubmit={(event) => event.preventDefault()}
 					>
-						<ClayInput.Group>
-							<ClayInput.GroupItem>
-								<ClayInput.GroupInsetItem before tag="span">
-									<ClayIcon
-										className="inline-item inline-item-before"
-										focusable="false"
-										role="presentation"
-										symbol="search"
-									/>
-								</ClayInput.GroupInsetItem>
-
-								<ClayInput
-									aria-label={Liferay.Language.get('search')}
-									insetAfter={!!query}
-									insetBefore
-									onChange={(event) =>
-										onSearch(event.target.value)
-									}
-									placeholder={Liferay.Language.get('search')}
-									type="text"
-									value={query}
-								/>
-
-								{query && (
-									<ClayInput.GroupInsetItem after tag="span">
-										<ClayButtonWithIcon
-											aria-label={Liferay.Language.get(
-												'clear-search'
-											)}
-											borderless
-											displayType="secondary"
-											monospaced={false}
-											onClick={() => onSearch('')}
-											size="sm"
-											symbol="times"
-											title={Liferay.Language.get(
-												'clear-search'
-											)}
-										/>
-									</ClayInput.GroupInsetItem>
-								)}
-							</ClayInput.GroupItem>
-						</ClayInput.Group>
+						<AutoSearch onSearch={onSearch} query={query} />
 					</ClayManagementToolbar.Search>
 				</ClayManagementToolbar>
 
