@@ -120,10 +120,9 @@ public class LanguageTagTest {
 				LocaleUtil.US, RandomTestUtil.randomString()
 			).build(),
 			HashMapBuilder.put(
-				LocaleUtil.FRANCE,
-				StringPool.SLASH + RandomTestUtil.randomString()
+				LocaleUtil.FRANCE, StringPool.SLASH + _getRandomFriendlyURL()
 			).put(
-				LocaleUtil.US, StringPool.SLASH + RandomTestUtil.randomString()
+				LocaleUtil.US, StringPool.SLASH + _getRandomFriendlyURL()
 			).build());
 	}
 
