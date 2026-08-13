@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser;
 import com.liferay.jenkins.results.parser.aws.AWSFactory;
 import com.liferay.jenkins.results.parser.aws.AWSFleetCloud;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -166,6 +168,33 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 	}
 
+	public void copyFile(File sourceFile, String targetFilePath) {
+		String sourceFilePath = JenkinsResultsParserUtil.getCanonicalPath(
+			sourceFile);
+
+		String scpCommand = JenkinsResultsParserUtil.combine(
+			"scp ", _SSH_OPTIONS, " ", sourceFilePath, " ", _SSH_USER_NAME, "@",
+			getName(), ":", targetFilePath);
+
+		Process process = null;
+
+		try {
+			process = JenkinsResultsParserUtil.executeBashCommands(
+				false, new File("."), _SSH_COMMAND_TIMEOUT, scpCommand);
+		}
+		catch (IOException | TimeoutException exception) {
+			throw new RuntimeException(
+				"Unable to execute command " + scpCommand, exception);
+		}
+
+		if (process.exitValue() != 0) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to copy ", sourceFilePath, " to ", getName(), ":",
+					targetFilePath));
+		}
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof JenkinsMaster)) {
@@ -175,6 +204,38 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		JenkinsMaster jenkinsMaster = (JenkinsMaster)object;
 
 		return Objects.equals(jenkinsMaster.getName(), getName());
+	}
+
+	public String executeSSHCommand(String command) {
+		String sshCommand = JenkinsResultsParserUtil.combine(
+			"ssh ", _SSH_OPTIONS, " ", _SSH_USER_NAME, "@", getName(), " \"",
+			command, "\"");
+
+		Process process = null;
+
+		try {
+			process = JenkinsResultsParserUtil.executeBashCommands(
+				false, new File("."), _SSH_COMMAND_TIMEOUT, sshCommand);
+		}
+		catch (IOException | TimeoutException exception) {
+			throw new RuntimeException(
+				"Unable to execute command " + sshCommand, exception);
+		}
+
+		if (process.exitValue() != 0) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to execute command ", command, " on ", getName()));
+		}
+
+		try {
+			return JenkinsResultsParserUtil.readInputStream(
+				process.getInputStream());
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to read output of command " + sshCommand, ioException);
+		}
 	}
 
 	public synchronized List<APIToken> getAPITokens(String jenkinsUserID) {
@@ -1799,6 +1860,13 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	private static final long _MAXIMUM_QUEUE_UPDATE_DURATION = 15 * 1000;
 
 	private static final long _MAXIMUM_UPDATE_DURATION = 1000 * 15;
+
+	private static final long _SSH_COMMAND_TIMEOUT = 1000 * 60 * 5;
+
+	private static final String _SSH_OPTIONS =
+		"-o ConnectTimeout=60 -o NumberOfPasswordPrompts=0";
+
+	private static final String _SSH_USER_NAME = "root";
 
 	private static final Pattern _globalEnvironmentVariablesPattern =
 		Pattern.compile("[^\\{]+(?<json>\\{.*\\})\\s+");
