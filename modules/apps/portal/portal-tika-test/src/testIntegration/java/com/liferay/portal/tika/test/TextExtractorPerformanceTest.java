@@ -35,6 +35,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.poi.ss.SpreadsheetVersion;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -103,6 +117,32 @@ public class TextExtractorPerformanceTest {
 	}
 
 	@Test
+	public void testDocx() throws Exception {
+		_test(
+			"docx",
+			outputStream -> {
+				try (XWPFDocument xwpfDocument = new XWPFDocument()) {
+					int size = 0;
+
+					while (size < _fileSize) {
+						XWPFParagraph xwpfParagraph =
+							xwpfDocument.createParagraph();
+
+						XWPFRun xwpfRun = xwpfParagraph.createRun();
+
+						String text = _generateRandomString();
+
+						xwpfRun.setText(text);
+
+						size += text.length();
+					}
+
+					xwpfDocument.write(outputStream);
+				}
+			});
+	}
+
+	@Test
 	public void testHtml() throws Exception {
 		String[] tags = {
 			"p", "h1", "h2", "h3", "h4", "blockquote", "pre", "code", "div",
@@ -153,6 +193,53 @@ public class TextExtractorPerformanceTest {
 	}
 
 	@Test
+	public void testPdf() throws Exception {
+		_test(
+			"pdf",
+			outputStream -> {
+				try (PDDocument pdDocument = new PDDocument()) {
+					PDType1Font pdType1Font = new PDType1Font(
+						Standard14Fonts.FontName.TIMES_ROMAN);
+
+					int size = 0;
+
+					while (size < _fileSize) {
+						PDPage pdPage = new PDPage();
+
+						pdDocument.addPage(pdPage);
+
+						try (PDPageContentStream pdPageContentStream =
+								new PDPageContentStream(pdDocument, pdPage)) {
+
+							pdPageContentStream.beginText();
+
+							pdPageContentStream.setFont(pdType1Font, 10);
+							pdPageContentStream.setLeading(12);
+
+							pdPageContentStream.newLineAtOffset(50, 760);
+
+							for (int i = 0; (i < 60) && (size < _fileSize);
+								 i++) {
+
+								String text = _generateRandomString();
+
+								pdPageContentStream.showText(text);
+
+								size += text.length();
+
+								pdPageContentStream.newLine();
+							}
+
+							pdPageContentStream.endText();
+						}
+					}
+
+					pdDocument.save(outputStream);
+				}
+			});
+	}
+
+	@Test
 	public void testRtf() throws Exception {
 		_test(
 			"rtf",
@@ -181,6 +268,42 @@ public class TextExtractorPerformanceTest {
 					size += _writeStrings(
 						outputStream, _generateRandomString(),
 						StringPool.NEW_LINE);
+				}
+			});
+	}
+
+	@Test
+	public void testXlsx() throws Exception {
+		_test(
+			"xlsx",
+			outputStream -> {
+				try (SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(1)) {
+					int size = 0;
+
+					Sheet sheet = sxssfWorkbook.createSheet("test");
+
+					for (int i = 0;
+						 (size < _fileSize) &&
+						 (i < SpreadsheetVersion.EXCEL2007.getMaxRows()); i++) {
+
+						Row row = sheet.createRow(i);
+
+						for (int j = 0;
+							 (size < _fileSize) &&
+							 (j < SpreadsheetVersion.EXCEL2007.getMaxColumns());
+							 j++) {
+
+							String text = _generateRandomString();
+
+							Cell cell = row.createCell(j);
+
+							cell.setCellValue(text);
+
+							size += text.length();
+						}
+					}
+
+					sxssfWorkbook.write(outputStream);
 				}
 			});
 	}

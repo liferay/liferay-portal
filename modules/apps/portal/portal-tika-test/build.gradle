@@ -1,5 +1,9 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	testIntegrationImplementation group: "org.apache.pdfbox", name: "fontbox", version: "3.0.7"
+	testIntegrationImplementation group: "org.apache.pdfbox", name: "pdfbox", version: "3.0.7"
+	testIntegrationImplementation group: "org.apache.pdfbox", name: "pdfbox-io", version: "3.0.7"
+	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
