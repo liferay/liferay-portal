@@ -278,7 +278,17 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 					propertyName));
 		}
 
-		apiTokens.add(new APIToken(itemReference));
+		SecretsUtil.ItemField userIDItemField = item.getItemField("user.id");
+
+		if (userIDItemField == null) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to find item field ", itemReference, "/user.id"));
+		}
+
+		String userID = userIDItemField.getValue();
+
+		apiTokens.add(new APIToken(itemReference, userID));
 
 		Set<String> apiTokenItemFieldLabels = new HashSet<>();
 
@@ -291,7 +301,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 				continue;
 			}
 
-			apiTokens.add(new APIToken(new JSONObject(itemField.getValue())));
+			apiTokens.add(
+				new APIToken(new JSONObject(itemField.getValue()), userID));
 		}
 
 		_apiTokens.put(jenkinsUserID, apiTokens);
@@ -1385,12 +1396,23 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			return _hash;
 		}
 
+		public JenkinsResultsParserUtil.HTTPAuthorization
+			getHTTPAuthorization() {
+
+			return new JenkinsResultsParserUtil.BasicHTTPAuthorization(
+				getToken(), getUserID());
+		}
+
 		public String getName() {
 			return _name;
 		}
 
 		public String getToken() {
 			return _token;
+		}
+
+		public String getUserID() {
+			return _userID;
 		}
 
 		public String getUUID() {
@@ -1401,7 +1423,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			return _version;
 		}
 
-		private APIToken(JSONObject jsonObject) {
+		private APIToken(JSONObject jsonObject, String userID) {
 			_creationDateString = jsonObject.getString(
 				"api.token.creation.date");
 			_hash = jsonObject.getString("api.token.hash");
@@ -1409,9 +1431,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			_token = jsonObject.getString("api.token");
 			_uuid = jsonObject.getString("api.token.uuid");
 			_version = jsonObject.getString("api.token.version");
+
+			_userID = userID;
 		}
 
-		private APIToken(String itemReference) {
+		private APIToken(String itemReference, String userID) {
 			_creationDateString = _getSecret(
 				itemReference, "api.token.creation.date");
 			_hash = _getSecret(itemReference, "api.token.hash");
@@ -1419,6 +1443,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			_token = _getSecret(itemReference, "api.token");
 			_uuid = _getSecret(itemReference, "api.token.uuid");
 			_version = _getSecret(itemReference, "api.token.version");
+
+			_userID = userID;
 		}
 
 		private String _getSecret(String itemReference, String itemFieldLabel) {
@@ -1431,6 +1457,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		private final String _hash;
 		private final String _name;
 		private final String _token;
+		private final String _userID;
 		private final String _uuid;
 		private final String _version;
 
