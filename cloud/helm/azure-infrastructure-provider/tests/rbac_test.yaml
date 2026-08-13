@@ -1,9 +1,9 @@
 release:
     name: my-release
-    namespace: argocd-system
-suite: Crossplane provider-kubernetes RBAC
+    namespace: crossplane-system
+suite: RBAC
 templates:
-    -   templates/crossplane-provider-kubernetes-rbac.yaml
+    -   templates/rbac.yaml
 tests:
     -   asserts:
             -   documentIndex: 1
@@ -12,13 +12,7 @@ tests:
                     value: custom-system
         it: Follows the Crossplane namespace override
         set:
-            operatorApplications.crossplane.namespace: custom-system
-    -   asserts:
-            -   hasDocuments:
-                    count: 0
-        it: Omits the RBAC when Crossplane is disabled
-        set:
-            operatorApplications.crossplane.enabled: false
+            crossplaneNamespace: custom-system
     -   asserts:
             -   hasDocuments:
                     count: 2
@@ -38,20 +32,11 @@ tests:
                     path: rules
                     value:
                         -   apiGroups: [""]
-                            resources: ["configmaps", "secrets", "serviceaccounts"]
+                            resources: ["secrets", "serviceaccounts"]
                             verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-                        -   apiGroups: [""]
-                            resources: ["namespaces"]
-                            verbs: ["get", "list"]
                         -   apiGroups: ["elasticsearch.k8s.elastic.co"]
                             resources: ["elasticsearches"]
                             verbs: ["get", "list", "watch"]
-                        -   apiGroups: ["rbac.authorization.k8s.io"]
-                            resources: ["clusterroles"]
-                            verbs: ["bind", "get", "list", "watch"]
-                        -   apiGroups: ["rbac.authorization.k8s.io"]
-                            resources: ["rolebindings"]
-                            verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
             -   documentIndex: 1
                 isKind:
                     of: ClusterRoleBinding

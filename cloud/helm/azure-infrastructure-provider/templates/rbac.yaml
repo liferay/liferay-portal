@@ -1,39 +1,24 @@
-{{- if .Values.operatorApplications.crossplane.enabled -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
     annotations:
         argocd.argoproj.io/sync-wave: "-100"
     labels:
-        {{- include "liferay-platform.labels" . | nindent 8 }}
-        app.kubernetes.io/name: crossplane-provider-kubernetes
         rbac.crossplane.io/aggregate-to-crossplane: "true"
     name: crossplane-provider-kubernetes
 rules:
     -   apiGroups: [""]
         resources: ["secrets", "serviceaccounts"]
         verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-    -   apiGroups: [""]
-        resources: ["namespaces"]
-        verbs: ["get", "list"]
     -   apiGroups: ["elasticsearch.k8s.elastic.co"]
         resources: ["elasticsearches"]
         verbs: ["get", "list", "watch"]
-    -   apiGroups: ["rbac.authorization.k8s.io"]
-        resources: ["clusterroles"]
-        verbs: ["bind", "get", "list", "watch"]
-    -   apiGroups: ["rbac.authorization.k8s.io"]
-        resources: ["rolebindings"]
-        verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
     annotations:
         argocd.argoproj.io/sync-wave: "-100"
-    labels:
-        {{- include "liferay-platform.labels" . | nindent 8 }}
-        app.kubernetes.io/name: crossplane-provider-kubernetes-binding
     name: crossplane-provider-kubernetes-binding
 roleRef:
     apiGroup: rbac.authorization.k8s.io
@@ -42,5 +27,4 @@ roleRef:
 subjects:
     -   kind: ServiceAccount
         name: provider-kubernetes
-        namespace: {{ .Values.operatorApplications.crossplane.namespace }}
-{{- end -}}
+        namespace: {{ .Values.crossplaneNamespace }}
