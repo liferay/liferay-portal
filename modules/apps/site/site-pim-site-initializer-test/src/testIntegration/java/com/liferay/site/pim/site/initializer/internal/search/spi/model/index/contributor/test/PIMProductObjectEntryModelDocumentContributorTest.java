@@ -6,24 +6,17 @@
 package com.liferay.site.pim.site.initializer.internal.search.spi.model.index.contributor.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectEntryFolderLocalService;
-import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -31,11 +24,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
+import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
-
-import java.io.Serializable;
-
-import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -65,13 +55,7 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 
 	@Test
 	public void testContribute() throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			DepotConstants.TYPE_SPACE,
-			ServiceContextTestUtil.getServiceContext());
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
@@ -80,24 +64,11 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 						EXTERNAL_REFERENCE_CODE_BASE_SKU,
 					TestPropsValues.getCompanyId());
 
-		ObjectEntryFolder objectEntryFolder =
-			_objectEntryFolderLocalService.
-				fetchObjectEntryFolderByExternalReferenceCode(
-					PIMObjectEntryFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCTS,
-					depotEntry.getGroupId(), TestPropsValues.getCompanyId());
-
-		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			depotEntry.getGroupId(), TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
-			objectEntryFolder.getObjectEntryFolderId(),
+		ObjectEntry objectEntry = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
+			depotEntry.getGroupId(), RandomTestUtil.randomString(),
 			objectDefinition.getDefaultLanguageId(),
-			HashMapBuilder.<String, Serializable>put(
-				"code", RandomTestUtil.randomString()
-			).put(
-				"name", RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId()));
+			RandomTestUtil.randomString(),
+			PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
 
 		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.getIndexer(
 			objectDefinition.getClassName());
@@ -113,11 +84,5 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Inject
-	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
-
-	@Inject
-	private ObjectEntryLocalService _objectEntryLocalService;
 
 }

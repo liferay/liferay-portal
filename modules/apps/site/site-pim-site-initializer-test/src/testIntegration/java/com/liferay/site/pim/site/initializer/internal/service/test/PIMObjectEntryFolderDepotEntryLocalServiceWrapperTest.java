@@ -6,16 +6,12 @@
 package com.liferay.site.pim.site.initializer.internal.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -23,8 +19,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
-
-import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,13 +48,7 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapperTest {
 
 	@Test
 	public void testAddDepotEntry() throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			DepotConstants.TYPE_SPACE,
-			ServiceContextTestUtil.getServiceContext());
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
 		Assert.assertNotNull(
 			_objectEntryFolderLocalService.
@@ -82,13 +70,7 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapperTest {
 
 	@Test
 	public void testDeleteDepotEntry() throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			DepotConstants.TYPE_SPACE,
-			ServiceContextTestUtil.getServiceContext());
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry);
 
