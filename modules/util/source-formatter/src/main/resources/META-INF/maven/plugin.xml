@@ -7,7 +7,7 @@
 	<description/>
 	<groupId>com.liferay</groupId>
 	<artifactId>com.liferay.source.formatter</artifactId>
-	<version>1.0.1615</version>
+	<version>1.0.1616</version>
 	<goalPrefix>source-formatter</goalPrefix>
 	<isolatedRealm>false</isolatedRealm>
 	<inheritedByDefault>true</inheritedByDefault>
@@ -181,7 +181,7 @@
 			<groupId>com.liferay</groupId>
 			<artifactId>org.apache.commons.logging</artifactId>
 			<type>jar</type>
-			<version>1.2.LIFERAY-PATCHED-2</version>
+			<version>1.2.LIFERAY-PATCHED-3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.puppycrawl.tools</groupId>
