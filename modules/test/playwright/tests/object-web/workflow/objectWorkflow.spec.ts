@@ -188,7 +188,6 @@ test(
 	async ({
 		apiHelpers,
 		configurationTabPage,
-		globalMenuPage,
 		page,
 		viewObjectDefinitionsPage,
 	}) => {
@@ -202,47 +201,32 @@ test(
 			type: 'objectDefinition',
 		});
 
-		await globalMenuPage.goToApplications('Process Builder');
+		const label = objectDefinition.label['en_US'];
 
-		await configurationTabPage.configurationTabLink.click();
+		// What this test asserts is whether the object is listed, so reach the
+		// filtered Configuration tab by address. Walking the global menu adds
+		// two navigations that are torn down and rebuilt while the object
+		// definition redeploys, and neither of them is under test here.
 
-		await expect(
-			page.getByRole('row', {
-				name: objectDefinition.label['en_US'],
-			})
-		).toBeVisible();
+		await configurationTabPage.searchAssetType(label);
 
-		await viewObjectDefinitionsPage.goto();
-
-		await viewObjectDefinitionsPage.changeObjectActivateStatus(
-			objectDefinition.label['en_US']
-		);
-
-		await globalMenuPage.goToApplications('Process Builder');
-
-		await configurationTabPage.configurationTabLink.click();
-
-		await expect(
-			page.getByRole('row', {
-				name: objectDefinition.label['en_US'],
-			})
-		).toBeHidden();
+		await expect(page.getByRole('row', {name: label})).toBeVisible();
 
 		await viewObjectDefinitionsPage.goto();
 
-		await viewObjectDefinitionsPage.changeObjectActivateStatus(
-			objectDefinition.label['en_US']
-		);
+		await viewObjectDefinitionsPage.changeObjectActivateStatus(label);
 
-		await globalMenuPage.goToApplications('Process Builder');
+		await configurationTabPage.searchAssetType(label);
 
-		await configurationTabPage.configurationTabLink.click();
+		await expect(page.getByRole('row', {name: label})).toBeHidden();
 
-		await expect(
-			page.getByRole('row', {
-				name: objectDefinition.label['en_US'],
-			})
-		).toBeVisible();
+		await viewObjectDefinitionsPage.goto();
+
+		await viewObjectDefinitionsPage.changeObjectActivateStatus(label);
+
+		await configurationTabPage.searchAssetType(label);
+
+		await expect(page.getByRole('row', {name: label})).toBeVisible();
 	}
 );
 
