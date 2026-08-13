@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -138,7 +139,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			fileEntry.getContentStream()
 		).header(
 			"Content-Disposition",
-			"attachment; filename=\"" + fileEntry.getTitle() + "\""
+			getContentDispositionHeaderValue(fileEntry.getTitle())
 		).build();
 	}
 
@@ -265,6 +266,11 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			GroupUtil.getSiteGroup(
 				contextCompany.getCompanyId(), siteExternalReferenceCode),
 			GetterUtil.getLong(plid), portletId);
+	}
+
+	protected static String getContentDispositionHeaderValue(String fileName) {
+		return "attachment; filename*=UTF-8''" +
+			URLCodec.encodeURL(fileName, true);
 	}
 
 	private List<BackgroundTask> _getBackgroundTasks(
