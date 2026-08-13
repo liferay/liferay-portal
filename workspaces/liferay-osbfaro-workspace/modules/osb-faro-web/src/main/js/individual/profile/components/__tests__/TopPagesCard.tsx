@@ -96,6 +96,33 @@ const renderTopPagesCardWithoutPages = () =>
 		</Provider>
 	);
 
+/**
+ * Renders with no mock for the pages query on purpose: the card must not run
+ * it, and Apollo surfaces an unmatched query as an error state.
+ */
+
+const renderTopPagesCardWithoutIndividual = () =>
+	render(
+		<Provider store={mockStore()}>
+			<BasePage.Context.Provider
+				value={{
+					...MOCK_CONTEXT,
+					individualId: undefined,
+					individualName: undefined,
+				}}
+			>
+				<MemoryRouter>
+					<MockedProvider
+						addTypename={false}
+						mocks={[mockTimeRangeReq(), mockPreferenceReq()]}
+					>
+						<TopPagesCard />
+					</MockedProvider>
+				</MemoryRouter>
+			</BasePage.Context.Provider>
+		</Provider>
+	);
+
 describe('TopPagesCard', () => {
 	afterEach(cleanup);
 
@@ -160,6 +187,15 @@ describe('TopPagesCard', () => {
 		expect(href).toContain('/workspace/456/123/sites/pages');
 		expect(href).toContain('individualId=ind-1');
 		expect(href).toContain('individualName=Jane+Doe');
+	});
+
+	it('should request nothing while the individual is unknown', async () => {
+		renderTopPagesCardWithoutIndividual();
+
+		expect(
+			await screen.findByText('No Pages Available')
+		).toBeInTheDocument();
+		expect(screen.queryByText('An unexpected error occurred.')).toBeNull();
 	});
 
 	it('should render the empty state when the individual has no pages', async () => {

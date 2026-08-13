@@ -71,6 +71,22 @@ const renderTopCategoriesAndTags = () =>
 		</Provider>
 	);
 
+const renderTopCategoriesAndTagsWithoutAccount = () =>
+	render(
+		<Provider store={mockStore()}>
+			<BasePage.Context.Provider value={MOCK_CONTEXT}>
+				<MemoryRouter>
+					<MockedProvider
+						addTypename={false}
+						mocks={[mockTimeRangeReq(), mockPreferenceReq()]}
+					>
+						<TopCategoriesAndTags />
+					</MockedProvider>
+				</MemoryRouter>
+			</BasePage.Context.Provider>
+		</Provider>
+	);
+
 const buildCategory = (
 	overrides: Partial<ITopCategory> = {}
 ): ITopCategory => ({
@@ -434,6 +450,21 @@ describe('TopCategoriesAndTags', () => {
 			).toBeInTheDocument();
 		});
 
+		it('should stop loading when there is no account to scope by', () => {
+			mockUseRequestWith({loading: true});
+
+			const {container} = renderTopCategoriesAndTagsWithoutAccount();
+
+			const tabPanel = container.querySelector(
+				'.tab-pane'
+			) as HTMLElement;
+
+			expect(tabPanel.querySelector('.loading-root')).toBeNull();
+			expect(
+				within(tabPanel).getAllByText('No Categories Available').length
+			).toBeGreaterThan(0);
+		});
+
 		it('should not render rows while loading', () => {
 			mockUseRequestWith({loading: true});
 
@@ -518,6 +549,28 @@ describe('TopCategoriesAndTags', () => {
 			) as HTMLElement;
 
 			expect(within(tabPanel).getAllByText('999').length).toBe(1);
+		});
+
+		it('should show a zero when the item carries no selected metric', () => {
+			mockUseRequestWith({
+				data: {
+					items: [
+						buildCategory({
+							id: 'c-metricless',
+							impressionsMetric: undefined,
+							name: 'Metricless',
+						}),
+					],
+				},
+			});
+
+			const {container} = renderTopCategoriesAndTags();
+
+			const tabPanel = container.querySelector(
+				'.tab-pane'
+			) as HTMLElement;
+
+			expect(within(tabPanel).getAllByText('0').length).toBe(1);
 		});
 	});
 });
