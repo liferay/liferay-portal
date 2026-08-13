@@ -361,6 +361,9 @@ public interface OAuth2ApplicationLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public String resolveClientSecret(OAuth2Application oAuth2Application)
+		throws PortalException;
+
 	@Indexable(type = IndexableType.REINDEX)
 	public OAuth2Application updateExternalReferenceCode(
 			long oAuth2ApplicationId, String externalReferenceCode)
@@ -406,4 +409,4 @@ public interface OAuth2ApplicationLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-615932762
+// LIFERAY-SERVICE-BUILDER-HASH:-613623196

@@ -532,6 +532,16 @@ public class OAuth2ApplicationLocalServiceWrapper
 	}
 
 	@Override
+	public String resolveClientSecret(
+			com.liferay.oauth2.provider.model.OAuth2Application
+				oAuth2Application)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _oAuth2ApplicationLocalService.resolveClientSecret(
+			oAuth2Application);
+	}
+
+	@Override
 	public com.liferay.oauth2.provider.model.OAuth2Application
 			updateExternalReferenceCode(
 				long oAuth2ApplicationId, String externalReferenceCode)
@@ -637,4 +647,4 @@ public class OAuth2ApplicationLocalServiceWrapper
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:682669637
+// LIFERAY-SERVICE-BUILDER-HASH:1985616372
