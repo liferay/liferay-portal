@@ -9,12 +9,12 @@ import getProjectDependencies from '../configuration/getProjectDependencies.mjs'
 import getProjectDescription from '../configuration/getProjectDescription.mjs';
 import getProjectEntryPoints from '../configuration/getProjectEntryPoints.mjs';
 import fileExists from '../fileExists.mjs';
-import getProjectDirs from '../getProjectDirs.mjs';
+import getBuildableProjectDirs from '../getBuildableProjectDirs.mjs';
 import {MODULES_DIR, SRC_PATH} from '../locations.mjs';
 import visitProjectTsconfig from './visitProjectTsconfig.mjs';
 
 export default async function visitOutdatedTsconfigFiles(visitorFunction) {
-	const projectDirs = await getProjectDirs();
+	const projectDirs = await getBuildableProjectDirs();
 
 	const projectsEntryPoints = await getProjectsEntryPoints(
 		projectDirs,

@@ -4,7 +4,7 @@
  */
 
 import getPackageJSONs from '../configuration/getPackageJSONs.mjs';
-import getProjectDirs from '../getProjectDirs.mjs';
+import getBuildableProjectDirs from '../getBuildableProjectDirs.mjs';
 import getTypeScriptProjectDirs from '../getTypeScriptProjectDirs.mjs';
 import {PLAYWRIGHT_DIR} from '../locations.mjs';
 import formatAPISubmodules from './formatters/formatAPISubmodules.mjs';
@@ -138,7 +138,7 @@ export default async function formatPortal(check, files) {
 			projectDirs = await getTypeScriptProjectDirs(files);
 		}
 		else {
-			projectDirs = await getProjectDirs();
+			projectDirs = await getBuildableProjectDirs();
 		}
 
 		// We check all projects no matter if formatting current branch, local

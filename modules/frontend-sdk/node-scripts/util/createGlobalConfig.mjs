@@ -5,12 +5,12 @@
 
 import crypto from 'crypto';
 
-import getProjectDirs from './getProjectDirs.mjs';
+import getBuildableProjectDirs from './getBuildableProjectDirs.mjs';
 import objectSF from './objectSF.mjs';
 import projectScopeRequire from './projectScopeRequire.mjs';
 
 export default async function createGlobalConfig() {
-	const projectDirs = await getProjectDirs();
+	const projectDirs = await getBuildableProjectDirs();
 
 	let allDependencies = {};
 	let allSymbols = {};
