@@ -11,6 +11,7 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {liferayConfig} from '../../../../liferay.config';
+import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
@@ -20,6 +21,7 @@ import performLogin, {
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import getFragmentDefinition from '../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -1209,6 +1211,7 @@ test(
 	{tag: '@COMMERCE-12628'},
 	async ({
 		apiHelpers,
+		commerceAdminChannelsPage,
 		commerceAdminProductDetailsPage,
 		commerceAdminProductDetailsProductOptionsPage,
 		commerceAdminProductPage,
@@ -1216,7 +1219,42 @@ test(
 		page,
 		productDetailsPage,
 	}) => {
-		const {catalog, site} = await miniumSetUp(apiHelpers);
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+				}),
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		await waitForAlert(page);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
 
 		const {account, buyerUser} = await createAccountWithBuyerUser(
 			apiHelpers,
@@ -1228,7 +1266,7 @@ test(
 			regionISOCode: 'LA',
 		});
 
-		const componentProduct =
+		const product =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 				catalogId: catalog.id,
 				name: {en_US: getRandomString()},
@@ -1238,11 +1276,11 @@ test(
 				},
 			});
 
-		const componentSku = componentProduct.skus[0];
+		const sku = product.skus[0];
 
 		const unitOfMeasure1 =
 			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
-				componentSku.id,
+				sku.id,
 				{
 					basePrice: 30,
 					incrementalOrderQuantity: 0.6,
@@ -1256,7 +1294,7 @@ test(
 
 		const unitOfMeasure2 =
 			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
-				componentSku.id,
+				sku.id,
 				{
 					basePrice: 50,
 					incrementalOrderQuantity: 1.5,
@@ -1307,35 +1345,32 @@ test(
 				],
 			});
 
-		const bundleProductName = bundleProduct.name['en_US'];
-
 		await test.step('Link each option value to the same SKU at a different unit of measure', async () => {
-			await commerceAdminProductPage.gotoProduct(bundleProductName);
+			await commerceAdminProductPage.gotoProduct(
+				bundleProduct.name['en_US']
+			);
 
 			await commerceAdminProductDetailsPage.goToProductOptions();
 
 			await commerceAdminProductDetailsProductOptionsPage.openOption(
 				'Color'
 			);
-
 			await commerceAdminProductDetailsProductOptionsPage.editOptionValue(
 				'Blue',
 				{
 					quantity: '0.6',
-					sku: componentSku.sku,
+					sku: sku.sku,
 					unitOfMeasureKey: unitOfMeasure1.key,
 				}
 			);
-
 			await commerceAdminProductDetailsProductOptionsPage.editOptionValue(
 				'White',
 				{
 					quantity: '1.5',
-					sku: componentSku.sku,
+					sku: sku.sku,
 					unitOfMeasureKey: unitOfMeasure2.key,
 				}
 			);
-
 			await commerceAdminProductDetailsProductOptionsPage.closeOption();
 
 			await commerceAdminProductPage.generateSkus();
@@ -1350,9 +1385,12 @@ test(
 
 		try {
 			await test.step('The product details page converts each unit of measure price to a single bundle quantity', async () => {
-				await page.goto(`/web/${site.name}/p/${bundleProductName}`, {
-					waitUntil: 'networkidle',
-				});
+				await page.goto(
+					`/web/${site.name}/p/${bundleProduct.name['en_US']}`,
+					{
+						waitUntil: 'networkidle',
+					}
+				);
 
 				await productDetailsPage.selectOption('Blue', 'Color');
 
@@ -1367,6 +1405,19 @@ test(
 				).toBeVisible();
 
 				await productDetailsPage.addToCartButton.click();
+
+				await page.waitForLoadState('networkidle');
+
+				await commerceMiniCartPage.miniCartButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartSku('BLUE')
+				).toBeVisible();
+
+				await clickAndExpectToBeHidden({
+					target: commerceMiniCartPage.miniCartItemsContainer,
+					trigger: commerceMiniCartPage.miniCartButtonClose,
+				});
 
 				await productDetailsPage.selectOption(
 					'White + $ 10.00',
@@ -1390,54 +1441,43 @@ test(
 				).toBeVisible();
 
 				await productDetailsPage.addToCartButton.click();
+
+				await page.waitForLoadState('networkidle');
 			});
 
 			await test.step('The mini cart shows the converted price for both bundled order items', async () => {
 				await commerceMiniCartPage.miniCartButton.click();
 
-				for (const [sku, bundledItem, price] of [
+				for (const [skuName, bundledItem, price] of [
 					[
 						'BLUE',
-						`Blue(0.6 × ${componentProduct.name['en_US']} ${unitOfMeasure1.key})`,
+						`Blue(0.6 × ${product.name['en_US']} ${unitOfMeasure1.key})`,
 						'$ 30.00',
 					],
 					[
 						'WHITE',
-						`White(1.5 × ${componentProduct.name['en_US']} ${unitOfMeasure2.key})`,
+						`White(1.5 × ${product.name['en_US']} ${unitOfMeasure2.key})`,
 						'$ 40.00',
 					],
 				]) {
-					const miniCartItem = commerceMiniCartPage.miniCartItem(sku);
-
 					await clickAndExpectToBeVisible({
-						target: miniCartItem.getByText(bundledItem),
-						trigger: miniCartItem.getByRole('button', {
-							exact: true,
-							name: 'Show Options',
-						}),
+						target: commerceMiniCartPage
+							.miniCartItem(skuName)
+							.getByText(bundledItem),
+						trigger:
+							commerceMiniCartPage.miniCartItemShowOptionsButton(
+								skuName
+							),
 					});
 
 					await expect(
-						miniCartItem.getByText(price).first()
+						commerceMiniCartPage
+							.miniCartItem(skuName)
+							.getByText(price)
+							.first()
 					).toBeVisible();
 				}
 			});
-
-			const editPanel = page.locator('.mini-cart-edit-item');
-
-			const selectColorOption = async (optionValueName: string) => {
-				const colorSelect = editPanel.getByLabel('Color');
-
-				const optionLabels = await colorSelect
-					.locator('option')
-					.allTextContents();
-
-				await colorSelect.selectOption({
-					index: optionLabels.findIndex((optionLabel) =>
-						optionLabel.includes(optionValueName)
-					),
-				});
-			};
 
 			await test.step('Switching to the promotionally priced unit of measure converts both prices in the Edit panel', async () => {
 				await commerceMiniCartPage
@@ -1450,30 +1490,33 @@ test(
 					commerceMiniCartPage.editOptionsLabel
 				).toBeVisible();
 
-				await selectColorOption('White');
+				await commerceMiniCartPage.selectEditItemOption(
+					'White',
+					'Color'
+				);
 
 				await expect(
-					editPanel.getByText('List Price$ 50.00')
-				).toBeVisible();
+					commerceMiniCartPage.miniCartEditItemPrice('List Price')
+				).toHaveText('$ 50.00');
 				await expect(
-					editPanel.getByText('Price as Configured$ 40.00')
-				).toBeVisible();
+					commerceMiniCartPage.miniCartEditItemPrice(
+						'Price as Configured'
+					)
+				).toHaveText('$ 40.00');
 			});
 
 			await test.step('Editing the White order item back to Blue merges it into the Blue order item', async () => {
-				await page.goto(`/web/${site.name}/p/${bundleProductName}`, {
-					waitUntil: 'networkidle',
-				});
+				await page.goto(
+					`/web/${site.name}/p/${bundleProduct.name['en_US']}`,
+					{
+						waitUntil: 'networkidle',
+					}
+				);
 
 				await commerceMiniCartPage.miniCartButton.click();
 
 				await expect(
-					commerceMiniCartPage.miniCartItemsContainer.getByText(
-						'WHITE',
-						{
-							exact: true,
-						}
-					)
+					commerceMiniCartPage.miniCartSku('WHITE')
 				).toBeVisible();
 
 				await commerceMiniCartPage
@@ -1486,34 +1529,27 @@ test(
 					commerceMiniCartPage.editOptionsLabel
 				).toBeVisible();
 
-				await selectColorOption('Blue');
+				await commerceMiniCartPage.selectEditItemOption(
+					'Blue',
+					'Color'
+				);
 
 				await expect(
-					editPanel.getByText('List Price$ 30.00')
-				).toBeVisible();
+					commerceMiniCartPage.miniCartEditItemPrice('List Price')
+				).toHaveText('$ 30.00');
 				await expect(
-					editPanel.getByText('Price as Configured$ 30.00')
-				).toBeVisible();
-
-				await editPanel
-					.getByRole('button', {exact: true, name: 'Save'})
-					.click();
-
-				await expect(
-					commerceMiniCartPage.miniCartItemsContainer.getByText(
-						'WHITE',
-						{
-							exact: true,
-						}
+					commerceMiniCartPage.miniCartEditItemPrice(
+						'Price as Configured'
 					)
+				).toHaveText('$ 30.00');
+
+				await commerceMiniCartPage.miniCartSaveButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartSku('WHITE')
 				).toBeHidden();
 				await expect(
-					commerceMiniCartPage.miniCartItemsContainer.getByText(
-						'BLUE',
-						{
-							exact: true,
-						}
-					)
+					commerceMiniCartPage.miniCartSku('BLUE')
 				).toBeVisible();
 			});
 		}

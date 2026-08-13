@@ -1445,32 +1445,59 @@ test(
 	{tag: ['@COMMERCE-12543']},
 	async ({
 		apiHelpers,
+		commerceAdminChannelsPage,
 		commerceAdminProductDetailsPage,
 		commerceAdminProductDetailsProductOptionsPage,
 		commerceAdminProductPage,
 		commerceMiniCartPage,
 		page,
 		productDetailsPage,
+		site,
 	}) => {
-		test.setTimeout(120000);
-
 		const bundleName = getRandomString();
-		const componentProductName = 'Component' + getRandomInt();
+		const productName = 'Product' + getRandomInt();
 		const unitOfMeasure1Key = 'uom1';
 		const unitOfMeasure2Key = 'uom2';
 
 		let buyerUser;
 		let catalog;
-		let componentSku;
 		let productBundle;
-		let site;
+		let sku;
 
-		await test.step('Initialize Commerce Classic Site', async () => {
-			const {catalog: catalogSetup, site: siteSetup} =
-				await classicCommerceSetUp(apiHelpers, getRandomString());
+		await test.step('Create a channel, a catalog and a storefront page via API', async () => {
+			const channel =
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
 
-			catalog = catalogSetup;
-			site = siteSetup;
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+
+			await waitForAlert(page);
+
+			await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetName:
+							'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+					}),
+					getFragmentDefinition({
+						id: getRandomString(),
+						key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog(
+				{
+					name: getRandomString(),
+				}
+			);
 
 			({buyerUser} = await createAccountWithBuyerUser(
 				apiHelpers,
@@ -1478,18 +1505,18 @@ test(
 			));
 		});
 
-		await test.step('Create a component product with a SKU carrying two units of measure', async () => {
-			const componentProduct =
+		await test.step('Create a product with a SKU carrying two units of measure', async () => {
+			const product =
 				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 					catalogId: catalog.id,
-					name: {en_US: componentProductName},
+					name: {en_US: productName},
 				});
 
-			componentSku = componentProduct.skus[0];
+			sku = product.skus[0];
 
 			for (const key of [unitOfMeasure1Key, unitOfMeasure2Key]) {
 				await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
-					componentSku.id,
+					sku.id,
 					{
 						incrementalOrderQuantity: 1,
 						key,
@@ -1545,7 +1572,9 @@ test(
 				});
 
 			await commerceAdminProductPage.gotoProduct(bundleName);
+
 			await commerceAdminProductDetailsPage.goToProductOptions();
+
 			await commerceAdminProductDetailsProductOptionsPage.openOption(
 				'Color'
 			);
@@ -1555,20 +1584,16 @@ test(
 			await commerceAdminProductDetailsProductOptionsPage.openOptionValue(
 				'Blue'
 			);
+			await commerceAdminProductDetailsProductOptionsPage.searchSku(
+				sku.sku
+			);
 
-			const skuSuggestions =
-				await commerceAdminProductDetailsProductOptionsPage.getSkuSuggestions(
-					componentSku.sku
-				);
-
-			for (const key of [unitOfMeasure1Key, unitOfMeasure2Key]) {
-				expect(
-					skuSuggestions.filter(
-						(skuSuggestion) =>
-							skuSuggestion === `${componentSku.sku} - ${key}`
-					)
-				).toHaveLength(1);
-			}
+			await expect(
+				commerceAdminProductDetailsProductOptionsPage.optionValueSkuDropdownItems
+			).toContainText([
+				`${sku.sku} - ${unitOfMeasure1Key}`,
+				`${sku.sku} - ${unitOfMeasure2Key}`,
+			]);
 
 			await commerceAdminProductDetailsProductOptionsPage.closeOptionValue();
 		});
@@ -1577,23 +1602,21 @@ test(
 			await commerceAdminProductDetailsProductOptionsPage.editOptionValue(
 				'Blue',
 				{
-					deltaPrice: 40,
-					quantity: 1,
-					sku: componentSku.sku,
+					deltaPrice: '40',
+					quantity: '1',
+					sku: sku.sku,
 					unitOfMeasureKey: unitOfMeasure1Key,
 				}
 			);
-
 			await commerceAdminProductDetailsProductOptionsPage.editOptionValue(
 				'White',
 				{
-					deltaPrice: 20,
-					quantity: 1,
-					sku: componentSku.sku,
+					deltaPrice: '20',
+					quantity: '1',
+					sku: sku.sku,
 					unitOfMeasureKey: unitOfMeasure2Key,
 				}
 			);
-
 			await commerceAdminProductDetailsProductOptionsPage.closeOption();
 		});
 
@@ -1609,18 +1632,20 @@ test(
 				await apiHelpers.headlessCommerceAdminPricing.getBasePriceListId(
 					catalog.id
 				);
-
-			for (const [skuName, price] of [
-				['BLUE', 30],
-				['WHITE', 40],
-			] as Array<[string, number]>) {
-				await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
-					price,
-					priceListId: basePriceList.items[0].id,
-					skuId: bundleSkus.skus.find((sku) => sku.sku === skuName)
-						.id,
-				});
-			}
+			await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
+				price: 30,
+				priceListId: basePriceList.items[0].id,
+				skuId: bundleSkus.skus.find(
+					(bundleSku) => bundleSku.sku === 'BLUE'
+				).id,
+			});
+			await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
+				price: 40,
+				priceListId: basePriceList.items[0].id,
+				skuId: bundleSkus.skus.find(
+					(bundleSku) => bundleSku.sku === 'WHITE'
+				).id,
+			});
 		});
 
 		try {
@@ -1635,30 +1660,22 @@ test(
 					waitUntil: 'networkidle',
 				});
 
-				expect(
-					await productDetailsPage
-						.optionSelector('Color')
-						.locator('option')
-						.allTextContents()
-				).toEqual(['Choose an Option', 'Blue', 'White - $ 10.00']);
+				await expect(
+					productDetailsPage.optionSelector('Color').locator('option')
+				).toHaveText(['Choose an Option', 'Blue', 'White - $ 10.00']);
 
 				for (const [optionLabel, skuName, price] of [
 					['Blue', 'BLUE', '$ 70.00'],
 					['White - $ 10.00', 'WHITE', '$ 60.00'],
-				] as Array<[string, string, string]>) {
-					await expect(async () => {
-						await productDetailsPage.selectOption(
-							optionLabel,
-							'Color'
-						);
+				]) {
+					await productDetailsPage.selectOption(optionLabel, 'Color');
 
-						await expect(
-							await productDetailsPage.priceField(
-								price,
-								productDetailsPage.priceContainer
-							)
-						).toBeVisible({timeout: 5000});
-					}).toPass({timeout: 60000});
+					await expect(
+						await productDetailsPage.priceField(
+							price,
+							productDetailsPage.priceContainer
+						)
+					).toBeVisible();
 
 					await productDetailsPage.addToCartButton.click();
 
@@ -1681,27 +1698,22 @@ test(
 				await commerceMiniCartPage.miniCartButton.click();
 
 				for (const [skuName, unitOfMeasureKey, price] of [
-					['BLUE', unitOfMeasure1Key, '$ 70.00'],
-					['WHITE', unitOfMeasure2Key, '$ 60.00'],
-				] as Array<[string, string, string]>) {
-					const miniCartItem =
-						commerceMiniCartPage.miniCartItem(skuName);
-
-					await miniCartItem
-						.getByRole('button', {
-							exact: true,
-							name: 'Show Options',
-						})
+					['BLUE', unitOfMeasure1Key, /^List Price\$ 70\.00$/],
+					['WHITE', unitOfMeasure2Key, /^List Price\$ 60\.00$/],
+				] as Array<[string, string, RegExp]>) {
+					await commerceMiniCartPage
+						.miniCartItemShowOptionsButton(skuName)
 						.click();
 
 					await expect(
-						miniCartItem.getByLabel(
-							`1 × ${componentProductName} ${unitOfMeasureKey}`
-						)
+						commerceMiniCartPage
+							.miniCartItem(skuName)
+							.getByLabel(
+								`1 × ${productName} ${unitOfMeasureKey}`
+							)
 					).toBeVisible();
-
 					await expect(
-						miniCartItem.getByText(price, {exact: true}).first()
+						commerceMiniCartPage.miniCartItemPrice(price, skuName)
 					).toBeVisible();
 				}
 			});

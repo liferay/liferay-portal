@@ -118,8 +118,8 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 			sku,
 			unitOfMeasureKey,
 		}: {
-			deltaPrice?: number | string;
-			quantity: number | string;
+			deltaPrice?: string;
+			quantity: string;
 			sku: string;
 			unitOfMeasureKey?: string;
 		}
@@ -127,7 +127,7 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 		await this.openOptionValue(optionValueName);
 
 		if (deltaPrice) {
-			await this.optionValueDeltaPriceInput.fill(String(deltaPrice));
+			await this.optionValueDeltaPriceInput.fill(deltaPrice);
 		}
 
 		await this.searchSku(sku);
@@ -140,7 +140,7 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 
 		await expect(this.optionValueQuantityInput).toBeEnabled();
 
-		await this.optionValueQuantityInput.fill(String(quantity));
+		await this.optionValueQuantityInput.fill(quantity);
 		await this.optionValueSaveButton.click();
 
 		await expect(this.optionValueRow(optionValueName)).toContainText(
@@ -148,12 +148,6 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 		);
 
 		await this.closeOptionValue();
-	}
-
-	async getSkuSuggestions(sku: string) {
-		await this.searchSku(sku);
-
-		return await this.optionValueSkuDropdownItems.allInnerTexts();
 	}
 
 	async openOption(optionName: string) {
