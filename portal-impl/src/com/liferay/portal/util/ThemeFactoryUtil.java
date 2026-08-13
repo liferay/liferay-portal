@@ -30,8 +30,7 @@ public class ThemeFactoryUtil {
 
 		if (defaultRegularThemeId.equals(
 				PropsUtil.get(PropsKeys.DEFAULT_REGULAR_THEME_ID)) &&
-			(FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57922") ||
-			 FeatureFlagManagerUtil.isEnabled(companyId, "LPD-84497"))) {
+			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57922")) {
 
 			defaultRegularThemeId = "classic2_WAR_classic2theme";
 		}
