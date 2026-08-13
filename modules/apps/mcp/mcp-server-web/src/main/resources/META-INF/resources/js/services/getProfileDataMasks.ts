@@ -9,6 +9,7 @@ import {ProfileDataMask} from '../types';
 import {toODataStringLiteral} from '../utils';
 import ApiHelper, {RequestResult} from './ApiHelper';
 import {PROFILE_DATA_MASKS_URL} from './constants';
+import {fetchAllItems} from './fetchAllItems';
 
 export interface ProfileDataMaskFilters {
 	dataMaskExternalReferenceCode?: string;
@@ -18,24 +19,39 @@ export interface ProfileDataMaskFilters {
 export function getProfileDataMasks(
 	filters: ProfileDataMaskFilters = {}
 ): Promise<RequestResult<{items: ProfileDataMask[]; totalCount: number}>> {
-	const params: Record<string, string> = {};
-
 	if (filters.dataMaskExternalReferenceCode) {
-		params.filter = `dataMaskExternalReferenceCode eq ${toODataStringLiteral(
-			filters.dataMaskExternalReferenceCode
-		)}`;
-		params.pageSize = '1';
+		return ApiHelper.get<{items: ProfileDataMask[]; totalCount: number}>(
+			addParams(
+				{
+					filter: `dataMaskExternalReferenceCode eq ${toODataStringLiteral(
+						filters.dataMaskExternalReferenceCode
+					)}`,
+					pageSize: '1',
+				},
+				PROFILE_DATA_MASKS_URL
+			)
+		);
 	}
-	else if (filters.mcpServerProfileExternalReferenceCode) {
-		params.filter = `mcpServerProfileExternalReferenceCode eq ${toODataStringLiteral(
+
+	if (filters.mcpServerProfileExternalReferenceCode) {
+		const filter = `mcpServerProfileExternalReferenceCode eq ${toODataStringLiteral(
 			filters.mcpServerProfileExternalReferenceCode
 		)}`;
-		params.pageSize = '200';
-		params.sort = 'executionOrder:asc';
+
+		return fetchAllItems<ProfileDataMask>((page, pageSize) =>
+			addParams(
+				{
+					filter,
+					page: String(page),
+					pageSize: String(pageSize),
+					sort: 'executionOrder:asc',
+				},
+				PROFILE_DATA_MASKS_URL
+			)
+		);
 	}
 
-	return ApiHelper.get<{
-		items: ProfileDataMask[];
-		totalCount: number;
-	}>(addParams(params, PROFILE_DATA_MASKS_URL));
+	return ApiHelper.get<{items: ProfileDataMask[]; totalCount: number}>(
+		addParams({}, PROFILE_DATA_MASKS_URL)
+	);
 }
