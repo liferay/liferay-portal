@@ -7,8 +7,9 @@ defaults:
 jobs:
     approve-release:
         environment: production-release
-        if: ${{!cancelled() && !failure() && needs.set-up-variables.result == 'success'}}
+        if: ${{!cancelled() && !failure() && needs.check-repository.result == 'success'}}
         needs:
+            -   check-repository
             -   push-rc-aws
             -   push-rc-aws-infrastructure
             -   push-rc-aws-infrastructure-provider
@@ -21,7 +22,6 @@ jobs:
             -   push-rc-observability
             -   push-rc-platform
             -   push-rc-platform-components
-            -   set-up-variables
             -   update-staging-charts
         runs-on: ubuntu-latest
         steps:
@@ -134,6 +134,13 @@ jobs:
         with:
             chart_name: liferay-platform-components
             working_directory: ./cloud/helm/platform-components
+    check-repository:
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Check repository
+                run: |
+                    echo "The canonical repository was detected. The release pipeline will continue."
     promote-rc-aws:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-aws.result == 'success'}}
         needs:
@@ -326,33 +333,24 @@ jobs:
                 working-directory: ./cloud/helm/aws-marketplace
     push-rc-aws:
         if: ${{needs.check-aws.outputs.should_release == 'true'}}
-        needs:
-            -   check-aws
-            -   set-up-variables
+        needs: check-aws
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws
     push-rc-aws-infrastructure:
         if: ${{needs.check-aws-infrastructure.outputs.should_release == 'true'}}
-        needs:
-            -   check-aws-infrastructure
-            -   set-up-variables
+        needs: check-aws-infrastructure
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws-infrastructure
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws-infrastructure
     push-rc-aws-infrastructure-provider:
         if: ${{needs.check-aws-infrastructure-provider.outputs.should_release == 'true'}}
-        needs:
-            -   check-aws-infrastructure-provider
-            -   set-up-variables
+        needs: check-aws-infrastructure-provider
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws-infrastructure-provider
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws-infrastructure-provider
     push-rc-bootstrap-aws:
         if: ${{needs.check-bootstrap-aws.outputs.should_release == 'true'}}
@@ -368,73 +366,52 @@ jobs:
             provider: gcp
     push-rc-default:
         if: ${{needs.check-default.outputs.should_release == 'true'}}
-        needs:
-            -   check-default
-            -   set-up-variables
+        needs: check-default
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-default
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/default
     push-rc-gcp:
         if: ${{needs.check-gcp.outputs.should_release == 'true'}}
-        needs:
-            -   check-gcp
-            -   set-up-variables
+        needs: check-gcp
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp
     push-rc-gcp-infrastructure:
         if: ${{needs.check-gcp-infrastructure.outputs.should_release == 'true'}}
-        needs:
-            -   check-gcp-infrastructure
-            -   set-up-variables
+        needs: check-gcp-infrastructure
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp-infrastructure
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp-infrastructure
     push-rc-gcp-infrastructure-provider:
         if: ${{needs.check-gcp-infrastructure-provider.outputs.should_release == 'true'}}
-        needs:
-            -   check-gcp-infrastructure-provider
-            -   set-up-variables
+        needs: check-gcp-infrastructure-provider
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp-infrastructure-provider
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp-infrastructure-provider
     push-rc-observability:
         if: ${{needs.check-observability.outputs.should_release == 'true'}}
-        needs:
-            -   check-observability
-            -   set-up-variables
+        needs: check-observability
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: observability
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/observability
     push-rc-platform:
         if: ${{needs.check-platform.outputs.should_release == 'true'}}
-        needs:
-            -   check-platform
-            -   set-up-variables
+        needs: check-platform
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-platform
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/platform
     push-rc-platform-components:
         if: ${{needs.check-platform-components.outputs.should_release == 'true'}}
-        needs:
-            -   check-platform-components
-            -   set-up-variables
+        needs: check-platform-components
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-platform-components
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/platform-components
     record-release:
         if: ${{!cancelled() && !failure() && needs.approve-release.result == 'success'}}
@@ -711,37 +688,19 @@ jobs:
                     }
 
                     main "${@}"
-    set-up-variables:
-        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
-        outputs:
-            registry_path_segment: ${{steps.vars.outputs.registry_path_segment}}
-        runs-on: ubuntu-latest
-        steps:
-            -   id: vars
-                name: Set up variables
-                run: |
-                    set -o errexit
-                    set -o nounset
-                    set -o pipefail
-
-                    function main {
-                        echo "registry_path_segment=${GITHUB_SHA::7}" >> ${GITHUB_OUTPUT}
-                    }
-
-                    main "${@}"
     test-cloud-helm-chart:
-        needs: set-up-variables
+        needs: check-repository
         permissions:
             checks: write
             contents: read
         uses: ./.github/workflows/ci-reusable-test-cloud-helm-chart.yaml
     test-cloud-helm-chart-smoke:
-        needs: set-up-variables
+        needs: check-repository
         permissions:
             contents: read
         uses: ./.github/workflows/ci-reusable-test-cloud-helm-chart-smoke.yaml
     test-cloud-terraform:
-        needs: set-up-variables
+        needs: check-repository
         permissions:
             checks: write
             contents: read
@@ -751,7 +710,7 @@ jobs:
             ${{
                 !cancelled() &&
                 !failure() &&
-                needs.set-up-variables.result == 'success' &&
+                needs.check-repository.result == 'success' &&
                 (
                     needs.push-rc-gcp-infrastructure-provider.result == 'success' ||
                     needs.push-rc-gcp-infrastructure.result == 'success' ||
@@ -759,6 +718,7 @@ jobs:
                 )
             }}
         needs:
+            -   check-repository
             -   push-rc-aws
             -   push-rc-aws-infrastructure
             -   push-rc-aws-infrastructure-provider
@@ -768,7 +728,6 @@ jobs:
             -   push-rc-gcp
             -   push-rc-gcp-infrastructure
             -   push-rc-gcp-infrastructure-provider
-            -   set-up-variables
             -   test-cloud-helm-chart
             -   test-cloud-helm-chart-smoke
             -   test-cloud-terraform

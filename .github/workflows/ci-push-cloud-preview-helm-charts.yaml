@@ -5,101 +5,79 @@ defaults:
     run:
         shell: bash
 jobs:
+    check-repository:
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Check repository
+                run: |
+                    echo "The canonical repository was detected. All Helm charts will be pushed."
     push-aws:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws
     push-aws-infrastructure:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws-infrastructure
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws-infrastructure
     push-aws-infrastructure-provider:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws-infrastructure-provider
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws-infrastructure-provider
     push-default:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-default
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/default
     push-dxp-operator:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-dxp-operator
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/dxp-operator
     push-gcp:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp
     push-gcp-infrastructure:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp-infrastructure
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp-infrastructure
     push-gcp-infrastructure-provider:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp-infrastructure-provider
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp-infrastructure-provider
     push-observability:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: observability
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/observability
     push-platform:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-platform
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/platform
     push-platform-components:
-        needs: set-up-variables
+        needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-platform-components
-            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/platform-components
-    set-up-variables:
-        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
-        outputs:
-            registry_path_segment: ${{steps.vars.outputs.registry_path_segment}}
-        runs-on: ubuntu-latest
-        steps:
-            -   id: vars
-                name: Set up variables
-                run: |
-                    set -o errexit
-                    set -o nounset
-                    set -o pipefail
-
-                    function main {
-                        echo "registry_path_segment=${GITHUB_SHA::7}" >> ${GITHUB_OUTPUT}
-                    }
-
-                    main "${@}"
 on:
     push:
         branches:

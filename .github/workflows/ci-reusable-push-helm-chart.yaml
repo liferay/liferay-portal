@@ -34,12 +34,7 @@ jobs:
                         echo "CHART_VERSION=${chart_version}" >> ${GITHUB_ENV}
                         echo "chart_version=${chart_version}" >> ${GITHUB_OUTPUT}
 
-                        local registry_path="${HELM_CHART_REGISTRY_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')"
-
-                        if [[ -n "${{inputs.registry_path_segment}}" ]]
-                        then
-                            registry_path="${registry_path}/${{inputs.registry_path_segment}}"
-                        fi
+                        local registry_path="${HELM_CHART_REGISTRY_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')/${GITHUB_SHA::7}"
 
                         local image_ref="${registry_path}/${{inputs.chart_name}}:${chart_version}"
 
@@ -117,10 +112,6 @@ on:
         inputs:
             chart_name:
                 required: true
-                type: string
-            registry_path_segment:
-                default: ""
-                required: false
                 type: string
             working_directory:
                 required: true
