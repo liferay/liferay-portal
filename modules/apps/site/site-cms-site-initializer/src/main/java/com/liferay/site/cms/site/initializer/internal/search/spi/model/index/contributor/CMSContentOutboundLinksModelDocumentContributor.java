@@ -96,7 +96,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 							ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
 
 					for (String content :
-							_getContents(objectField, indexedValues)) {
+							_getContents(indexedValues, objectField)) {
 
 						for (String externalReferenceCode :
 								OutboundLinksUtil.
@@ -117,10 +117,6 @@ public class CMSContentOutboundLinksModelDocumentContributor
 			}
 		}
 		catch (Exception exception) {
-
-			// Never break indexing of the object entry because of the outbound
-			// links
-
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Unable to contribute outbound links for object entry " +
@@ -131,7 +127,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 	}
 
 	private List<String> _getContents(
-		ObjectField objectField, Map<String, Serializable> indexedValues) {
+		Map<String, Serializable> indexedValues, ObjectField objectField) {
 
 		if (objectField.isLocalized()) {
 			Object localizedValues = indexedValues.get(
