@@ -90,24 +90,6 @@ spec:
                                 type: string
                             environmentName:
                                 type: string
-                            marketplaceVolume:
-                                properties:
-                                    claimName:
-                                        type: string
-                                    enabled:
-                                        type: boolean
-                                    size:
-                                        anyOf:
-                                        -   type: integer
-                                        -   type: string
-                                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                                        x-kubernetes-int-or-string: true
-                                    storageClassName:
-                                        type: string
-                                required:
-                                -   size
-                                -   storageClassName
-                                type: object
                             offline:
                                 type: boolean
                             workloadRef:
@@ -119,7 +101,6 @@ spec:
                                 type: object
                         required:
                         -   activationCodeSecretRef
-                        -   marketplaceVolume
                         -   workloadRef
                         type: object
                     status:

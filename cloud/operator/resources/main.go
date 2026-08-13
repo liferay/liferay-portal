@@ -8,7 +8,6 @@ import (
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	controller "github.com/liferay/liferay-portal/cloud/operator/internal/controller"
 	licensing "github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
-	liferay "github.com/liferay/liferay-portal/cloud/operator/internal/controller/liferay"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	licensingwebhook "github.com/liferay/liferay-portal/cloud/operator/internal/webhook/licensing"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -74,9 +73,6 @@ func main() {
 			Recorder:          manager.GetEventRecorderFor("liferayenvironment-controller"),
 			RetryInitialDelay: config.RetryInitialDelay,
 			RetryMaxDelay:     config.RetryMaxDelay,
-		},
-		&liferay.LiferayStatefulSetReconciler{
-			Client: manager.GetClient(),
 		},
 	); error != nil {
 		controller.SetupLog.Error(error, "Unable to set up controllers")
