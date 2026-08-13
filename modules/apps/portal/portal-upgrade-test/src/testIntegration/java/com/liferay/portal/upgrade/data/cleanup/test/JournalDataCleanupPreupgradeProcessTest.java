@@ -70,11 +70,11 @@ public class JournalDataCleanupPreupgradeProcessTest
 
 	@After
 	public void tearDown() throws Exception {
+		_classNamesSafeCloseable.close();
+
 		if (_group != null) {
 			_groupLocalService.deleteGroup(_group);
 		}
-
-		_classNamesSafeCloseable.close();
 	}
 
 	@Test

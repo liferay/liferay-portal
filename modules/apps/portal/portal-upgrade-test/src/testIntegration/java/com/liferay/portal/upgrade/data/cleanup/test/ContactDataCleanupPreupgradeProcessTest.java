@@ -69,9 +69,8 @@ public class ContactDataCleanupPreupgradeProcessTest
 
 	@After
 	public void tearDown() throws Exception {
-		_systemEventsSafeCloseable.close();
-
 		_classNamesSafeCloseable.close();
+		_systemEventsSafeCloseable.close();
 	}
 
 	@Test

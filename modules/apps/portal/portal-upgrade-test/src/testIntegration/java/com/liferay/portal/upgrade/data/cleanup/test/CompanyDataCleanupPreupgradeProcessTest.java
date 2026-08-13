@@ -75,11 +75,11 @@ public class CompanyDataCleanupPreupgradeProcessTest
 
 	@After
 	public void tearDown() throws Exception {
+		_classNamesSafeCloseable.close();
+
 		DataAccess.cleanUp(_connection);
 
 		_resourceActionsSafeCloseable.close();
-
-		_classNamesSafeCloseable.close();
 	}
 
 	@Test

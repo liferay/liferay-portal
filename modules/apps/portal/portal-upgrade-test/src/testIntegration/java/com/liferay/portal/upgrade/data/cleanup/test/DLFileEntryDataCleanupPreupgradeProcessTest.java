@@ -105,11 +105,11 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 
 	@After
 	public void tearDown() throws Exception {
-		_systemEventsSafeCloseable.close();
-
 		_classNamesSafeCloseable.close();
 
 		DataAccess.cleanUp(_connection);
+
+		_systemEventsSafeCloseable.close();
 	}
 
 	@Test
