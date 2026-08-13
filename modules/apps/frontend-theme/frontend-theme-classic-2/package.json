@@ -17,7 +17,7 @@
 		"version": "7.1"
 	},
 	"main": "package.json",
-	"name": "@liferay/liferay-classic-2-theme",
+	"name": "liferay-classic-2-theme",
 	"repository": "liferay/liferay-portal",
 	"scripts": {
 		"build": "node-scripts build:theme",
