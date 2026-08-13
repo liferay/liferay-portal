@@ -13,6 +13,7 @@ import {
 } from '@liferay/site-cms-site-initializer';
 import {fetch, sub} from 'frontend-js-web';
 
+import {getFormattedLabel} from '../../utils/getFormattedText';
 import StateLabel from '../StateLabel';
 import ACTIONS from './actions/creationMenuActions';
 import manageMembersAction from './actions/manageMembersAction';
@@ -143,7 +144,7 @@ export default function ProjectsFDSPropsTransformer({
 						Liferay.Language.get(
 							'delete-project-confirmation-body'
 						),
-						itemData.embedded.title
+						getFormattedLabel(itemData.embedded.title)
 					),
 					itemData,
 					loadData

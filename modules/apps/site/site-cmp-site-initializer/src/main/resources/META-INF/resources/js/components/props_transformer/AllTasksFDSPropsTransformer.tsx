@@ -24,6 +24,7 @@ import {
 	registerTabFDS,
 } from '../../utils/cmpTabPersistence';
 import {WORKFLOW_TASK_ACTION_LINK_ID} from '../../utils/constants';
+import {getFormattedLabel} from '../../utils/getFormattedText';
 import {openCMPModal} from '../../utils/openCMPModal';
 import {
 	ProjectTaskItemData,
@@ -263,7 +264,7 @@ export default function AllTasksFDSPropsTransformer({
 				await deleteItemAction(
 					sub(
 						Liferay.Language.get('delete-task-confirmation-body'),
-						itemData.embedded.title
+						getFormattedLabel(itemData.embedded.title)
 					),
 					itemData,
 					loadData

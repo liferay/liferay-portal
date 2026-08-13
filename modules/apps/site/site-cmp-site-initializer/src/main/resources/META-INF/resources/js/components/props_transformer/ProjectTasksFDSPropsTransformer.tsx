@@ -23,6 +23,7 @@ import {
 	installCMPTabPersistence,
 	registerTabFDS,
 } from '../../utils/cmpTabPersistence';
+import {getFormattedLabel} from '../../utils/getFormattedText';
 import {openCMPModal} from '../../utils/openCMPModal';
 import {ProjectTaskItemData, TaskAction} from '../../utils/types';
 import StateLabel from '../StateLabel';
@@ -192,7 +193,7 @@ export default function ProjectTasksFDSPropsTransformer({
 				await deleteItemAction(
 					sub(
 						Liferay.Language.get('delete-task-confirmation-body'),
-						itemData.embedded.title
+						getFormattedLabel(itemData.embedded.title)
 					),
 					itemData,
 					loadData
