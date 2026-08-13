@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import fs from 'fs';
 import path from 'path';
 import url from 'url';
 
@@ -39,6 +40,15 @@ export const TSC_DIR = path.resolve(MODULES_DIR, '.tsc');
 export const TSC_BUILDINFO_DIR = path.resolve(TSC_DIR, 'buildinfo');
 export const TSC_TYPES_DIR = path.resolve(TSC_DIR, 'types');
 
+export const YARN_SCRIPT_DIR = path.resolve(
+	PORTAL_DIR,
+	'build',
+	'node',
+	'lib',
+	'node_modules',
+	'yarn'
+);
+
 //
 // Files
 //
@@ -51,6 +61,11 @@ export const GLOBAL_D_TS_FILE = path.resolve(MODULES_DIR, 'global.d.ts');
 export const GLOBAL_NODE_SCRIPTS_CONFIG_FILE = path.resolve(
 	MODULES_DIR,
 	'node-scripts.config.js'
+);
+
+export const YARN_SCRIPT_FILE = path.join(
+	YARN_SCRIPT_DIR,
+	fs.readdirSync(YARN_SCRIPT_DIR).find((name) => /^yarn-.*\.js$/.test(name))
 );
 export const YARN_LOCK_FILE = path.resolve(MODULES_DIR, 'yarn.lock');
 

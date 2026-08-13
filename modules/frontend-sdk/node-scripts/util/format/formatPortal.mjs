@@ -24,6 +24,7 @@ import formatSourceFiles from './formatters/formatSourceFiles.mjs';
 import formatTsconfigFiles from './formatters/formatTsconfigFiles.mjs';
 import formatTypeScript from './formatters/formatTypeScript.mjs';
 import formatYarnLock from './formatters/formatYarnLock.mjs';
+import formatYarnWorkspaceProjects from './formatters/formatYarnWorkspaceProjects.mjs';
 
 export default async function formatPortal(check, files) {
 	let checksPassed = true;
@@ -82,6 +83,10 @@ export default async function formatPortal(check, files) {
 		}
 
 		if (!(await formatGlobalPackageJSONDependencies(packageJSONs))) {
+			checksPassed = false;
+		}
+
+		if (!(await formatYarnWorkspaceProjects())) {
 			checksPassed = false;
 		}
 
