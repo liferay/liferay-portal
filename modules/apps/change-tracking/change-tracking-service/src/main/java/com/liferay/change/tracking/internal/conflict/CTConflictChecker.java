@@ -209,6 +209,19 @@ public class CTConflictChecker<T extends CTModel<T>> {
 			String[] columnNames)
 		throws PortalException {
 
+		ConstraintResolver<T> constraintResolver =
+			(ConstraintResolver<T>)
+				_constraintResolverServiceTrackerMap.getService(
+					new ConstraintResolverKey(
+						ctPersistence.getModelClass(), columnNames));
+
+		boolean modificationConflictCheckEnabled = false;
+
+		if (constraintResolver != null) {
+			modificationConflictCheckEnabled =
+				constraintResolver.isModificationConflictCheckEnabled();
+		}
+
 		String constraintConflictsSQL = CTRowUtil.getConstraintConflictsSQL(
 			ctPersistence.getTableName(), primaryKeyName, columnNames,
 			_targetCTCollectionId);
@@ -216,17 +229,12 @@ public class CTConflictChecker<T extends CTModel<T>> {
 		List<Map.Entry<Long, Long>> nextPrimaryKeys =
 			_getConflictingPrimaryKeys(
 				connection, ctPersistence.getTableName(), primaryKeyName,
-				columnNames, constraintConflictsSQL);
+				columnNames, constraintConflictsSQL,
+				modificationConflictCheckEnabled);
 
 		if (nextPrimaryKeys.isEmpty()) {
 			return;
 		}
-
-		ConstraintResolver<T> constraintResolver =
-			(ConstraintResolver<T>)
-				_constraintResolverServiceTrackerMap.getService(
-					new ConstraintResolverKey(
-						ctPersistence.getModelClass(), columnNames));
 
 		if (constraintResolver == null) {
 			StringBundler sb = new StringBundler(2 * columnNames.length);
@@ -276,7 +284,8 @@ public class CTConflictChecker<T extends CTModel<T>> {
 
 			nextPrimaryKeys = _getConflictingPrimaryKeys(
 				connection, ctPersistence.getTableName(), primaryKeyName,
-				columnNames, constraintConflictsSQL);
+				columnNames, constraintConflictsSQL,
+				modificationConflictCheckEnabled);
 
 			resolvedPrimaryKeys.addAll(nextPrimaryKeys);
 
@@ -286,7 +295,8 @@ public class CTConflictChecker<T extends CTModel<T>> {
 		List<Map.Entry<Long, Long>> unresolvedPrimaryKeys =
 			_getConflictingPrimaryKeys(
 				connection, ctPersistence.getTableName(), primaryKeyName,
-				columnNames, constraintConflictsSQL);
+				columnNames, constraintConflictsSQL,
+				modificationConflictCheckEnabled);
 
 		resolvedPrimaryKeys.removeAll(unresolvedPrimaryKeys);
 
@@ -665,18 +675,23 @@ public class CTConflictChecker<T extends CTModel<T>> {
 
 	private List<Map.Entry<Long, Long>> _getConflictingPrimaryKeys(
 		Connection connection, String tableName, String primaryKeyName,
-		String[] columnNames, String constraintConflictsSQL) {
+		String[] columnNames, String constraintConflictsSQL,
+		boolean modificationConflictCheckEnabled) {
 
 		Set<Long> verifyPrimaryKeys = new HashSet<>();
 		Set<Long> ignorablePrimaryKeys = new HashSet<>();
 
 		for (CTEntry ctEntry : _ctEntries) {
-			if (ctEntry.getChangeType() !=
-					CTConstants.CT_CHANGE_TYPE_ADDITION) {
+			int changeType = ctEntry.getChangeType();
 
+			if (changeType != CTConstants.CT_CHANGE_TYPE_ADDITION) {
 				ignorablePrimaryKeys.add(ctEntry.getModelClassPK());
 			}
-			else {
+
+			if ((changeType == CTConstants.CT_CHANGE_TYPE_ADDITION) ||
+				(modificationConflictCheckEnabled &&
+				 (changeType == CTConstants.CT_CHANGE_TYPE_MODIFICATION))) {
+
 				verifyPrimaryKeys.add(ctEntry.getModelClassPK());
 			}
 		}
