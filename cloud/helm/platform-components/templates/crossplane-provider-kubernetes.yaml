@@ -1,0 +1,82 @@
+{{- if .Values.operatorApplications.crossplane.enabled -}}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: ClusterProviderConfig
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-60"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: kubernetes-provider-config
+    name: default
+spec:
+    credentials:
+        source: InjectedIdentity
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: kubernetes-config
+    name: kubernetes-config
+spec:
+    deploymentTemplate:
+        spec:
+            selector:
+                matchLabels:
+                    pkg.crossplane.io/provider: provider-kubernetes
+            template:
+                metadata:
+                    annotations:
+                        {{- include "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" . | nindent 24 }}
+                    labels:
+                        pkg.crossplane.io/provider: provider-kubernetes
+                spec:
+                    containers:
+                        -   name: package-runtime
+                            resources:
+                                limits:
+                                    cpu: 1000m
+                                    memory: 2Gi
+                                requests:
+                                    cpu: 250m
+                                    memory: 512Mi
+                            securityContext:
+                                allowPrivilegeEscalation: false
+                                capabilities:
+                                    drop:
+                                        -   ALL
+                                privileged: false
+                                readOnlyRootFilesystem: true
+                    securityContext:
+                        fsGroup: 2000
+                        runAsGroup: 2000
+                        runAsNonRoot: true
+                        runAsUser: 2000
+                        seccompProfile:
+                            type: RuntimeDefault
+                    serviceAccountName: provider-kubernetes
+    serviceAccountTemplate:
+        metadata:
+            name: provider-kubernetes
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: ServerSideApply=true,SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: provider-kubernetes
+    name: provider-kubernetes
+spec:
+    package: xpkg.upbound.io/upbound/provider-kubernetes:v1.2.0
+    runtimeConfigRef:
+        name: kubernetes-config
+    skipDependencyResolution: true
+{{- end -}}
