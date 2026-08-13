@@ -9,6 +9,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateStructureRelElementVariationAudienceEntryRelException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateStructureRelElementVariationTargetElementException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariation;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelElementVariationAudienceEntryRel;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelElementVariationLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -63,6 +65,71 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceTest {
 		_testAddOrUpdateLayoutPageTemplateStructureRelElementVariationWithDuplicateAudienceEntryERCs();
 		_testAddOrUpdateLayoutPageTemplateStructureRelElementVariationWithSameAudienceEntryERCForDifferentSegmentsExperience();
 		_testAddOrUpdateLayoutPageTemplateStructureRelElementVariationWithSameAudienceEntryERCForDifferentTargetElement();
+	}
+
+	@Test
+	public void testDeleteLayoutPageTemplateStructureRelElementVariation()
+		throws Exception {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		_addLayoutPageTemplateStructureRelElementVariation(
+			audienceEntryERC, externalReferenceCode, _group);
+
+		Group group = GroupTestUtil.addGroup();
+
+		_addLayoutPageTemplateStructureRelElementVariation(
+			RandomTestUtil.randomString(), externalReferenceCode, group);
+
+		_layoutPageTemplateStructureRelElementVariationLocalService.
+			deleteLayoutPageTemplateStructureRelElementVariation(
+				externalReferenceCode, group.getGroupId());
+
+		List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
+			layoutPageTemplateStructureRelElementVariationAudienceEntryRels =
+				_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
+					getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+						_group.getGroupId(), externalReferenceCode);
+
+		Assert.assertEquals(
+			layoutPageTemplateStructureRelElementVariationAudienceEntryRels.
+				toString(),
+			1,
+			layoutPageTemplateStructureRelElementVariationAudienceEntryRels.
+				size());
+
+		LayoutPageTemplateStructureRelElementVariationAudienceEntryRel
+			layoutPageTemplateStructureRelElementVariationAudienceEntryRel =
+				layoutPageTemplateStructureRelElementVariationAudienceEntryRels.
+					get(0);
+
+		Assert.assertEquals(
+			audienceEntryERC,
+			layoutPageTemplateStructureRelElementVariationAudienceEntryRel.
+				getAudienceEntryERC());
+	}
+
+	private void _addLayoutPageTemplateStructureRelElementVariation(
+			String audienceEntryERC, String externalReferenceCode, Group group)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+
+		_layoutPageTemplateStructureRelElementVariationLocalService.
+			addOrUpdateLayoutPageTemplateStructureRelElementVariation(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				group.getGroupId(), RandomTestUtil.randomBoolean(),
+				RandomTestUtil.randomString(),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				RandomTestUtil.randomString(), layout.getPlid(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				new String[] {audienceEntryERC},
+				ServiceContextTestUtil.getServiceContext(
+					group, TestPropsValues.getUserId()));
 	}
 
 	private void _testAddOrUpdateLayoutPageTemplateStructureRelElementVariationWithDuplicateAudienceEntryERCForTargetElement()
@@ -231,6 +298,11 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceTest {
 	}
 
 	private Group _group;
+
+	@Inject
+	private
+		LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService
+			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService;
 
 	@Inject
 	private LayoutPageTemplateStructureRelElementVariationLocalService
