@@ -125,35 +125,10 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 			String analyticsChannelId, long companyId)
 		throws Exception {
 
-		AnalyticsConfiguration analyticsConfiguration =
-			getAnalyticsConfiguration(companyId);
-
-		List<Long> commerceChannelIds = new ArrayList<>();
-
-		for (String commerceChannelId :
-				analyticsConfiguration.syncedCommerceChannelIds()) {
-
-			Group group = _groupLocalService.fetchGroup(
-				companyId, _commerceChannelClassNameIdSupplier.get(),
-				GetterUtil.getLong(commerceChannelId));
-
-			if (group == null) {
-				continue;
-			}
-
-			UnicodeProperties typeSettingsUnicodeProperties =
-				group.getTypeSettingsProperties();
-
-			if (Objects.equals(
-					analyticsChannelId,
-					typeSettingsUnicodeProperties.getProperty(
-						"analyticsChannelId"))) {
-
-				commerceChannelIds.add(GetterUtil.getLong(commerceChannelId));
-			}
-		}
-
-		return commerceChannelIds.toArray(new Long[0]);
+		return ArrayUtil.toArray(
+			getCommerceChannelIds(
+				companyId,
+				ArrayUtil.toArray(getSiteIds(analyticsChannelId, companyId))));
 	}
 
 	@Override
