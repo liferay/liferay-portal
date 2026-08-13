@@ -277,24 +277,8 @@ public abstract class BaseFieldSummaryResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("order", additionalAssertFieldName)) {
-				if (fieldSummary.getOrder() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("people", additionalAssertFieldName)) {
 				if (fieldSummary.getPeople() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("product", additionalAssertFieldName)) {
-				if (fieldSummary.getProduct() == null) {
 					valid = false;
 				}
 
@@ -431,30 +415,9 @@ public abstract class BaseFieldSummaryResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("order", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						fieldSummary1.getOrder(), fieldSummary2.getOrder())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("people", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						fieldSummary1.getPeople(), fieldSummary2.getPeople())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("product", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						fieldSummary1.getProduct(),
-						fieldSummary2.getProduct())) {
 
 					return false;
 				}
@@ -575,20 +538,8 @@ public abstract class BaseFieldSummaryResourceTestCase {
 			return sb.toString();
 		}
 
-		if (entityFieldName.equals("order")) {
-			sb.append(String.valueOf(fieldSummary.getOrder()));
-
-			return sb.toString();
-		}
-
 		if (entityFieldName.equals("people")) {
 			sb.append(String.valueOf(fieldSummary.getPeople()));
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("product")) {
-			sb.append(String.valueOf(fieldSummary.getProduct()));
 
 			return sb.toString();
 		}
@@ -641,9 +592,7 @@ public abstract class BaseFieldSummaryResourceTestCase {
 		return new FieldSummary() {
 			{
 				account = RandomTestUtil.randomInt();
-				order = RandomTestUtil.randomInt();
 				people = RandomTestUtil.randomInt();
-				product = RandomTestUtil.randomInt();
 			}
 		};
 	}
@@ -869,4 +818,4 @@ public abstract class BaseFieldSummaryResourceTestCase {
 			_fieldSummaryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2052802524
+// LIFERAY-REST-BUILDER-HASH:-689454202

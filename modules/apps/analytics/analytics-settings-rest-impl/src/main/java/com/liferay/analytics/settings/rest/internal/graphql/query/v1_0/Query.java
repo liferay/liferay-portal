@@ -290,28 +290,6 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {fieldsOrders(keyword: ___, page: ___, pageSize: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
-	 */
-	@GraphQLField
-	public FieldPage fieldsOrders(
-			@GraphQLName("keyword") String keyword,
-			@GraphQLName("pageSize") int pageSize,
-			@GraphQLName("page") int page,
-			@GraphQLName("sort") String sortsString)
-		throws Exception {
-
-		return _applyComponentServiceObjects(
-			_fieldResourceComponentServiceObjects,
-			this::_populateResourceContext,
-			fieldResource -> new FieldPage(
-				fieldResource.getFieldsOrdersPage(
-					keyword, Pagination.of(page, pageSize),
-					_sortsBiFunction.apply(fieldResource, sortsString))));
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {fieldsPeople(keyword: ___, page: ___, pageSize: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
@@ -334,29 +312,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {fieldsProducts(keyword: ___, page: ___, pageSize: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
-	 */
-	@GraphQLField
-	public FieldPage fieldsProducts(
-			@GraphQLName("keyword") String keyword,
-			@GraphQLName("pageSize") int pageSize,
-			@GraphQLName("page") int page,
-			@GraphQLName("sort") String sortsString)
-		throws Exception {
-
-		return _applyComponentServiceObjects(
-			_fieldResourceComponentServiceObjects,
-			this::_populateResourceContext,
-			fieldResource -> new FieldPage(
-				fieldResource.getFieldsProductsPage(
-					keyword, Pagination.of(page, pageSize),
-					_sortsBiFunction.apply(fieldResource, sortsString))));
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {field{account, order, people, product}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {field{account, people}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public FieldSummary field() throws Exception {
@@ -987,4 +943,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-454282562
+// LIFERAY-REST-BUILDER-HASH:-1119865160

@@ -154,18 +154,6 @@ public class Mutation {
 	}
 
 	@GraphQLField
-	public boolean patchFieldOrder(@GraphQLName("fields") Field[] fields)
-		throws Exception {
-
-		_applyVoidComponentServiceObjects(
-			_fieldResourceComponentServiceObjects,
-			this::_populateResourceContext,
-			fieldResource -> fieldResource.patchFieldOrder(fields));
-
-		return true;
-	}
-
-	@GraphQLField
 	public boolean patchFieldPeople(@GraphQLName("fields") Field[] fields)
 		throws Exception {
 
@@ -173,18 +161,6 @@ public class Mutation {
 			_fieldResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			fieldResource -> fieldResource.patchFieldPeople(fields));
-
-		return true;
-	}
-
-	@GraphQLField
-	public boolean patchFieldProduct(@GraphQLName("fields") Field[] fields)
-		throws Exception {
-
-		_applyVoidComponentServiceObjects(
-			_fieldResourceComponentServiceObjects,
-			this::_populateResourceContext,
-			fieldResource -> fieldResource.patchFieldProduct(fields));
 
 		return true;
 	}
@@ -342,4 +318,4 @@ public class Mutation {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1595589409
+// LIFERAY-REST-BUILDER-HASH:-280752545

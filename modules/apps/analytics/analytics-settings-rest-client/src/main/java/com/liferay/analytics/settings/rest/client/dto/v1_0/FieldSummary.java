@@ -46,27 +46,6 @@ public class FieldSummary implements Cloneable, Serializable {
 
 	protected Integer account;
 
-	public Integer getOrder() {
-		return order;
-	}
-
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-
-	public void setOrder(
-		UnsafeSupplier<Integer, Exception> orderUnsafeSupplier) {
-
-		try {
-			order = orderUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Integer order;
-
 	public Integer getPeople() {
 		return people;
 	}
@@ -87,27 +66,6 @@ public class FieldSummary implements Cloneable, Serializable {
 	}
 
 	protected Integer people;
-
-	public Integer getProduct() {
-		return product;
-	}
-
-	public void setProduct(Integer product) {
-		this.product = product;
-	}
-
-	public void setProduct(
-		UnsafeSupplier<Integer, Exception> productUnsafeSupplier) {
-
-		try {
-			product = productUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Integer product;
 
 	@Override
 	public FieldSummary clone() throws CloneNotSupportedException {
@@ -141,4 +99,4 @@ public class FieldSummary implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:815395444
+// LIFERAY-REST-BUILDER-HASH:1950391259

@@ -88,47 +88,6 @@ public class FieldSummary implements Serializable {
 	private Supplier<Integer> _accountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Integer getOrder() {
-		if (_orderSupplier != null) {
-			order = _orderSupplier.get();
-
-			_orderSupplier = null;
-		}
-
-		return order;
-	}
-
-	public void setOrder(Integer order) {
-		this.order = order;
-
-		_orderSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setOrder(
-		UnsafeSupplier<Integer, Exception> orderUnsafeSupplier) {
-
-		_orderSupplier = () -> {
-			try {
-				return orderUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Integer order;
-
-	@JsonIgnore
-	private Supplier<Integer> _orderSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
 	public Integer getPeople() {
 		if (_peopleSupplier != null) {
 			people = _peopleSupplier.get();
@@ -169,47 +128,6 @@ public class FieldSummary implements Serializable {
 	@JsonIgnore
 	private Supplier<Integer> _peopleSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Integer getProduct() {
-		if (_productSupplier != null) {
-			product = _productSupplier.get();
-
-			_productSupplier = null;
-		}
-
-		return product;
-	}
-
-	public void setProduct(Integer product) {
-		this.product = product;
-
-		_productSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setProduct(
-		UnsafeSupplier<Integer, Exception> productUnsafeSupplier) {
-
-		_productSupplier = () -> {
-			try {
-				return productUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Integer product;
-
-	@JsonIgnore
-	private Supplier<Integer> _productSupplier;
-
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -249,18 +167,6 @@ public class FieldSummary implements Serializable {
 			sb.append(account);
 		}
 
-		Integer order = getOrder();
-
-		if (order != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"order\": ");
-
-			sb.append(order);
-		}
-
 		Integer people = getPeople();
 
 		if (people != null) {
@@ -271,18 +177,6 @@ public class FieldSummary implements Serializable {
 			sb.append("\"people\": ");
 
 			sb.append(people);
-		}
-
-		Integer product = getProduct();
-
-		if (product != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"product\": ");
-
-			sb.append(product);
 		}
 
 		sb.append("}");
@@ -386,4 +280,4 @@ public class FieldSummary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1960606759
+// LIFERAY-REST-BUILDER-HASH:-1639125129

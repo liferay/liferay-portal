@@ -56,16 +56,6 @@ public class FieldSummarySerDes {
 			sb.append(fieldSummary.getAccount());
 		}
 
-		if (fieldSummary.getOrder() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"order\": ");
-
-			sb.append(fieldSummary.getOrder());
-		}
-
 		if (fieldSummary.getPeople() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -74,16 +64,6 @@ public class FieldSummarySerDes {
 			sb.append("\"people\": ");
 
 			sb.append(fieldSummary.getPeople());
-		}
-
-		if (fieldSummary.getProduct() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"product\": ");
-
-			sb.append(fieldSummary.getProduct());
 		}
 
 		sb.append("}");
@@ -112,25 +92,11 @@ public class FieldSummarySerDes {
 			map.put("account", String.valueOf(fieldSummary.getAccount()));
 		}
 
-		if (fieldSummary.getOrder() == null) {
-			map.put("order", null);
-		}
-		else {
-			map.put("order", String.valueOf(fieldSummary.getOrder()));
-		}
-
 		if (fieldSummary.getPeople() == null) {
 			map.put("people", null);
 		}
 		else {
 			map.put("people", String.valueOf(fieldSummary.getPeople()));
-		}
-
-		if (fieldSummary.getProduct() == null) {
-			map.put("product", null);
-		}
-		else {
-			map.put("product", String.valueOf(fieldSummary.getProduct()));
 		}
 
 		return map;
@@ -154,13 +120,7 @@ public class FieldSummarySerDes {
 			if (Objects.equals(jsonParserFieldName, "account")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "order")) {
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "people")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "product")) {
 				return false;
 			}
 
@@ -178,21 +138,9 @@ public class FieldSummarySerDes {
 						Integer.valueOf((String)jsonParserFieldValue));
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "order")) {
-				if (jsonParserFieldValue != null) {
-					fieldSummary.setOrder(
-						Integer.valueOf((String)jsonParserFieldValue));
-				}
-			}
 			else if (Objects.equals(jsonParserFieldName, "people")) {
 				if (jsonParserFieldValue != null) {
 					fieldSummary.setPeople(
-						Integer.valueOf((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "product")) {
-				if (jsonParserFieldValue != null) {
-					fieldSummary.setProduct(
 						Integer.valueOf((String)jsonParserFieldValue));
 				}
 			}
@@ -277,4 +225,4 @@ public class FieldSummarySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:827781728
+// LIFERAY-REST-BUILDER-HASH:-1847272774
