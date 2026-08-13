@@ -1702,7 +1702,8 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 		"extension", "dateDisplay", "dateExpiration", "datePublish",
 		"dateReview", "dueDate", "folderId",
 		"objectDefinitionExternalReferenceCode",
-		"objectFolderExternalReferenceCode", "rootDescendantNode", "treePath"
+		"objectFolderExternalReferenceCode", "rootDescendantNode", "treePath",
+		"type"
 	};
 
 	private AssetCategory _assetCategory;
