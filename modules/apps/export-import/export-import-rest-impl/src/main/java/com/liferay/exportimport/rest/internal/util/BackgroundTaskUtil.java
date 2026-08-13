@@ -102,7 +102,7 @@ public class BackgroundTaskUtil {
 		return (int)(currentAdditionCounters * 100 / allCounters);
 	}
 
-	public static void setSorts(DynamicQuery dynamicQuery, Sort[] sorts) {
+	public static void addOrders(DynamicQuery dynamicQuery, Sort[] sorts) {
 		if (sorts == null) {
 			dynamicQuery.addOrder(OrderFactoryUtil.desc("createDate"));
 

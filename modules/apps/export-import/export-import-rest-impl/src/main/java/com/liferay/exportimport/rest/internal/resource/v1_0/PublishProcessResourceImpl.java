@@ -269,7 +269,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		DynamicQuery dynamicQuery = _getDynamicQuery(
 			creatorId, groupIds, search, status);
 
-		BackgroundTaskUtil.setSorts(dynamicQuery, sorts);
+		BackgroundTaskUtil.addOrders(dynamicQuery, sorts);
 
 		return _backgroundTaskLocalService.dynamicQuery(
 			dynamicQuery, pagination.getStartPosition(),
