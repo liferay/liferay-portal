@@ -127,7 +127,7 @@ public class LanguageTagTest {
 	}
 
 	private void _assertLocalizedURL(
-		String url, Layout layout, Locale locale, String suffix) {
+		Layout layout, Locale locale, String suffix, String url) {
 
 		Assert.assertEquals(
 			StringBundler.concat(
@@ -137,18 +137,8 @@ public class LanguageTagTest {
 			url);
 	}
 
-	private List<LanguageEntry> _getLanguageEntries(ThemeDisplay themeDisplay) {
-		return _getLanguageEntries(themeDisplay, null);
-	}
-
 	private List<LanguageEntry> _getLanguageEntries(
-		ThemeDisplay themeDisplay, String formAction) {
-
-		return _getLanguageEntries(themeDisplay, formAction, StringPool.BLANK);
-	}
-
-	private List<LanguageEntry> _getLanguageEntries(
-		ThemeDisplay themeDisplay, String formAction, String currentURLSuffix) {
+		String currentURLSuffix, String formAction, ThemeDisplay themeDisplay) {
 
 		Layout layout = themeDisplay.getLayout();
 
@@ -164,12 +154,22 @@ public class LanguageTagTest {
 		}
 
 		return _getLanguageEntriesForURL(
-			themeDisplay, formAction, currentCompleteURL);
+			currentCompleteURL, formAction, themeDisplay);
+	}
+
+	private List<LanguageEntry> _getLanguageEntries(
+		String formAction, ThemeDisplay themeDisplay) {
+
+		return _getLanguageEntries(StringPool.BLANK, formAction, themeDisplay);
+	}
+
+	private List<LanguageEntry> _getLanguageEntries(ThemeDisplay themeDisplay) {
+		return _getLanguageEntries(null, themeDisplay);
 	}
 
 	private List<LanguageEntry> _getLanguageEntriesForURL(
-		ThemeDisplay themeDisplay, String formAction,
-		String currentCompleteURL) {
+		String currentCompleteURL, String formAction,
+		ThemeDisplay themeDisplay) {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -294,29 +294,29 @@ public class LanguageTagTest {
 		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
 
 		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, StringPool.BLANK,
 			_getURL(
 				_getLanguageEntriesForURL(
-					themeDisplay, null,
 					StringBundler.concat(
 						themeDisplay.getPortalURL(),
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 						_group.getFriendlyURL(),
-						layout.getFriendlyURL(LocaleUtil.FRANCE))),
-				LocaleUtil.FRANCE),
-			layout, LocaleUtil.FRANCE, StringPool.BLANK);
+						layout.getFriendlyURL(LocaleUtil.FRANCE)),
+					null, themeDisplay),
+				LocaleUtil.FRANCE));
 
 		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART,
 			_getURL(
 				_getLanguageEntriesForURL(
-					themeDisplay, null,
 					StringBundler.concat(
 						themeDisplay.getPortalURL(),
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 						_group.getFriendlyURL(),
 						layout.getFriendlyURL(LocaleUtil.FRANCE),
-						_FRIENDLY_URL_MAPPING_PART)),
-				LocaleUtil.FRANCE),
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART);
+						_FRIENDLY_URL_MAPPING_PART),
+					null, themeDisplay),
+				LocaleUtil.FRANCE));
 	}
 
 	private void _testGetLanguageEntriesWithDefaultPageMappingPart(
@@ -326,15 +326,15 @@ public class LanguageTagTest {
 		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
 
 		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART,
 			_getURL(
 				_getLanguageEntriesForURL(
-					themeDisplay, null,
 					StringBundler.concat(
 						themeDisplay.getPortalURL(),
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-						_group.getFriendlyURL(), _FRIENDLY_URL_MAPPING_PART)),
-				LocaleUtil.FRANCE),
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART);
+						_group.getFriendlyURL(), _FRIENDLY_URL_MAPPING_PART),
+					null, themeDisplay),
+				LocaleUtil.FRANCE));
 	}
 
 	private void _testGetLanguageEntriesWithDisplayPage() throws Exception {
@@ -375,13 +375,13 @@ public class LanguageTagTest {
 
 		String frenchURL = _getURL(
 			_getLanguageEntriesForURL(
-				themeDisplay, null,
 				StringBundler.concat(
 					themeDisplay.getPortalURL(),
 					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 					_group.getFriendlyURL(),
 					FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
-					friendlyURLMap.get(LocaleUtil.US))),
+					friendlyURLMap.get(LocaleUtil.US)),
+				null, themeDisplay),
 			LocaleUtil.FRANCE);
 
 		Assert.assertEquals(
@@ -400,7 +400,7 @@ public class LanguageTagTest {
 			_FORM_ACTION + "?languageId=fr_FR",
 			_getURL(
 				_getLanguageEntries(
-					_getThemeDisplay(layout, LocaleUtil.US), _FORM_ACTION),
+					_FORM_ACTION, _getThemeDisplay(layout, LocaleUtil.US)),
 				LocaleUtil.FRANCE));
 	}
 
@@ -416,18 +416,18 @@ public class LanguageTagTest {
 				String.valueOf(localePrependFriendlyURLStyle));
 
 			_assertLocalizedURL(
+				layout, LocaleUtil.FRANCE, StringPool.BLANK,
 				_getURL(
 					_getLanguageEntries(
 						_getThemeDisplay(layout, LocaleUtil.US)),
-					LocaleUtil.FRANCE),
-				layout, LocaleUtil.FRANCE, StringPool.BLANK);
+					LocaleUtil.FRANCE));
 
 			_assertLocalizedURL(
+				layout, LocaleUtil.US, StringPool.BLANK,
 				_getURL(
 					_getLanguageEntries(
 						_getThemeDisplay(layout, LocaleUtil.FRANCE)),
-					LocaleUtil.US),
-				layout, LocaleUtil.US, StringPool.BLANK);
+					LocaleUtil.US));
 		}
 		finally {
 			_setLocalePrependFriendlyURLStyle(
@@ -471,37 +471,37 @@ public class LanguageTagTest {
 		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
 
 		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART,
 			_getURL(
 				_getLanguageEntries(
-					themeDisplay, null, _FRIENDLY_URL_MAPPING_PART),
-				LocaleUtil.FRANCE),
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART);
+					_FRIENDLY_URL_MAPPING_PART, null, themeDisplay),
+				LocaleUtil.FRANCE));
 
 		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART + "?foo=bar",
 			_getURL(
 				_getLanguageEntries(
-					themeDisplay, null,
-					_FRIENDLY_URL_MAPPING_PART + "?foo=bar"),
-				LocaleUtil.FRANCE),
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART + "?foo=bar");
+					_FRIENDLY_URL_MAPPING_PART + "?foo=bar", null,
+					themeDisplay),
+				LocaleUtil.FRANCE));
 
 		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/tags/new%20york",
 			_getURL(
-				_getLanguageEntries(themeDisplay, null, "/tags/new%20york"),
-				LocaleUtil.FRANCE),
-			layout, LocaleUtil.FRANCE, "/tags/new%20york");
+				_getLanguageEntries("/tags/new%20york", null, themeDisplay),
+				LocaleUtil.FRANCE));
 
 		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/tags",
 			_getURL(
-				_getLanguageEntries(themeDisplay, null, "/tags"),
-				LocaleUtil.FRANCE),
-			layout, LocaleUtil.FRANCE, "/tags");
+				_getLanguageEntries("/tags", null, themeDisplay),
+				LocaleUtil.FRANCE));
 
 		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/-/blogs/blog-1",
 			_getURL(
-				_getLanguageEntries(themeDisplay, null, "/-/blogs/blog-1"),
-				LocaleUtil.FRANCE),
-			layout, LocaleUtil.FRANCE, "/-/blogs/blog-1");
+				_getLanguageEntries("/-/blogs/blog-1", null, themeDisplay),
+				LocaleUtil.FRANCE));
 	}
 
 	private void _testGetLanguageEntriesWithoutLayout() throws Exception {
@@ -552,8 +552,8 @@ public class LanguageTagTest {
 			_UPDATE_LANGUAGE_PATH + "?languageId=fr_FR",
 			_getURL(
 				_getLanguageEntries(
-					_getThemeDisplay(layout, LocaleUtil.US), null,
-					"?redirect=" + RandomTestUtil.randomString()),
+					"?redirect=" + RandomTestUtil.randomString(), null,
+					_getThemeDisplay(layout, LocaleUtil.US)),
 				LocaleUtil.FRANCE));
 	}
 
