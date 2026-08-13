@@ -362,7 +362,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 		if (plid <= 0) {
 			throw new BadRequestException(
-				"Exporting the portlet " + portletId + " requires a plid");
+				"Exporting the portlet " + portletId + " requires a PLID");
 		}
 
 		return _postPortletExportProcess(

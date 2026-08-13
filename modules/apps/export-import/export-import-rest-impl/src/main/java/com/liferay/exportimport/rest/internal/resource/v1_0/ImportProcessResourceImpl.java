@@ -324,7 +324,7 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 
 		if (plid <= 0) {
 			throw new BadRequestException(
-				"Importing the portlet " + portletId + " requires a plid");
+				"Importing the portlet " + portletId + " requires a PLID");
 		}
 
 		return _postPortletImportProcess(
