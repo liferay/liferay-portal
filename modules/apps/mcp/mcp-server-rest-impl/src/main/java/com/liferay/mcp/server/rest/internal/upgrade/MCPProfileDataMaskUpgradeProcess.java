@@ -12,8 +12,10 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -23,7 +25,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,24 +58,16 @@ public class MCPProfileDataMaskUpgradeProcess extends UpgradeProcess {
 			ObjectDefinition dataMaskObjectDefinition)
 		throws Exception {
 
-		List<ObjectEntry> systemDataMaskObjectEntries = new ArrayList<>();
-
-		List<Long> primaryKeys = _objectEntryLocalService.getPrimaryKeys(
-			new Long[] {0L}, dataMaskObjectDefinition.getCompanyId(),
-			dataMaskObjectDefinition.getUserId(),
-			dataMaskObjectDefinition.getObjectDefinitionId(),
-			_filterFactory.create(
-				"maskType eq 'system'", dataMaskObjectDefinition),
-			false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		Collections.sort(primaryKeys);
-
-		for (long primaryKey : primaryKeys) {
-			systemDataMaskObjectEntries.add(
-				_objectEntryLocalService.getObjectEntry(primaryKey));
-		}
-
-		return systemDataMaskObjectEntries;
+		return TransformUtil.transform(
+			_objectEntryLocalService.getPrimaryKeys(
+				new Long[] {0L}, dataMaskObjectDefinition.getCompanyId(),
+				dataMaskObjectDefinition.getUserId(),
+				dataMaskObjectDefinition.getObjectDefinitionId(),
+				_filterFactory.create(
+					"maskType eq 'system'", dataMaskObjectDefinition),
+				false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				new Sort[] {new Sort("id", Sort.LONG_TYPE, false)}),
+			_objectEntryLocalService::getObjectEntry);
 	}
 
 	private void _upgradeCompany(long companyId) throws Exception {

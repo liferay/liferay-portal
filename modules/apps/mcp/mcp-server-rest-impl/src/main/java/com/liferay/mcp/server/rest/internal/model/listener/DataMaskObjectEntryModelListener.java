@@ -219,9 +219,8 @@ public class DataMaskObjectEntryModelListener
 		int maxExecutionOrder = 0;
 
 		if (!valuesList.isEmpty()) {
-			maxExecutionOrder = Math.max(
-				maxExecutionOrder,
-				MapUtil.getInteger(valuesList.get(0), "executionOrder"));
+			maxExecutionOrder = MapUtil.getInteger(
+				valuesList.get(0), "executionOrder");
 		}
 
 		_objectEntryLocalService.addObjectEntry(
