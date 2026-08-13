@@ -7665,10 +7665,14 @@ public class PortalImpl implements Portal {
 			String currentLocalePath =
 				StringPool.SLASH + currentLocale.toLanguageTag();
 
-			if (layoutURL.startsWith(currentLocalePath)) {
+			if (layoutURL.startsWith(currentLocalePath + StringPool.SLASH) ||
+				layoutURL.equals(currentLocalePath)) {
+
 				layoutURL = layoutURL.substring(currentLocalePath.length());
 			}
-			else if (layoutURL.startsWith(i18nPath)) {
+			else if (layoutURL.startsWith(i18nPath + StringPool.SLASH) ||
+					 layoutURL.equals(i18nPath)) {
+
 				layoutURL = layoutURL.substring(i18nPath.length());
 			}
 		}
