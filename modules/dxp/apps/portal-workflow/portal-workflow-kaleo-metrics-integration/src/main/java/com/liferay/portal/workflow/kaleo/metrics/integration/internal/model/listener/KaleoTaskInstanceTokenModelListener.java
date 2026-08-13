@@ -8,7 +8,7 @@ package com.liferay.portal.workflow.kaleo.metrics.integration.internal.model.lis
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
-import com.liferay.portal.workflow.kaleo.metrics.integration.internal.helper.IndexerHelper;
+import com.liferay.portal.workflow.kaleo.metrics.integration.helper.IndexerHelper;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
