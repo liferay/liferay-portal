@@ -5,13 +5,27 @@
 
 package com.liferay.portal.kernel.servlet;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.model.PortletApp;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 
 import jakarta.servlet.ServletContext;
 
 import java.io.IOException;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Minhchau Dang
@@ -41,11 +55,9 @@ public class ResourceUtil {
 			return new ObjectValuePair<>(servletContext, resourceURL);
 		}
 
-		servletContext = PortletResourcesUtil.getPathServletContext(
-			requestPath);
+		servletContext = getPathServletContext(requestPath);
 
-		resourceURL = PortletResourcesUtil.getResource(
-			servletContext, requestPath);
+		resourceURL = getResource(servletContext, requestPath);
 
 		if (resourceURL != null) {
 			return new ObjectValuePair<>(servletContext, resourceURL);
@@ -59,6 +71,16 @@ public class ResourceUtil {
 
 		if (resourceURL != null) {
 			return new ObjectValuePair<>(servletContext, resourceURL);
+		}
+
+		return null;
+	}
+
+	public static ServletContext getPathServletContext(String path) {
+		for (ServletContext servletContext : _servletContexts.values()) {
+			if (path.startsWith(servletContext.getContextPath())) {
+				return servletContext;
+			}
 		}
 
 		return null;
@@ -79,6 +101,29 @@ public class ResourceUtil {
 		return objectValuePair.getKey();
 	}
 
+	public static URL getResource(ServletContext servletContext, String path) {
+		if (servletContext == null) {
+			return null;
+		}
+
+		path = PortalWebResourcesUtil.stripContextPath(servletContext, path);
+
+		try {
+			URL url = servletContext.getResource(path);
+
+			if (url != null) {
+				return url;
+			}
+		}
+		catch (MalformedURLException malformedURLException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(malformedURLException);
+			}
+		}
+
+		return null;
+	}
+
 	public static URL getResourceURL(
 			String requestPath, String requestURI,
 			ServletContext defaultServletContext)
@@ -92,6 +137,57 @@ public class ResourceUtil {
 		}
 
 		return objectValuePair.getValue();
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(ResourceUtil.class);
+
+	private static final BundleContext _bundleContext =
+		SystemBundleUtil.getBundleContext();
+	private static final ServiceTracker<Portlet, Portlet> _serviceTracker;
+	private static final Map<ServiceReference<Portlet>, ServletContext>
+		_servletContexts = new ConcurrentHashMap<>();
+
+	private static class PortletResourcesServiceTrackerCustomizer
+		implements ServiceTrackerCustomizer<Portlet, Portlet> {
+
+		@Override
+		public Portlet addingService(
+			ServiceReference<Portlet> serviceReference) {
+
+			Portlet portlet = _bundleContext.getService(serviceReference);
+
+			PortletApp portletApp = portlet.getPortletApp();
+
+			if (portletApp.isWARFile()) {
+				_servletContexts.put(
+					serviceReference, portletApp.getServletContext());
+			}
+
+			return portlet;
+		}
+
+		@Override
+		public void modifiedService(
+			ServiceReference<Portlet> serviceReference, Portlet portlet) {
+		}
+
+		@Override
+		public void removedService(
+			ServiceReference<Portlet> serviceReference, Portlet portlet) {
+
+			_bundleContext.ungetService(serviceReference);
+
+			_servletContexts.remove(serviceReference);
+		}
+
+	}
+
+	static {
+		_serviceTracker = new ServiceTracker<>(
+			_bundleContext, Portlet.class,
+			new PortletResourcesServiceTrackerCustomizer());
+
+		_serviceTracker.open();
 	}
 
 }
