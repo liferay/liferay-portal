@@ -1,10 +1,12 @@
+@import '_atlas-custom-properties-variables';
+
 .lfr-objects__modal-add-object-field-enable-translations-toggle {
 	display: flex;
 	gap: 10px;
 	margin-bottom: 20px;
 
 	&-icon {
-		color: #a7a9bc;
+		color: $gray-500;
 	}
 }
 

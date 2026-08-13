@@ -8,7 +8,7 @@
 
 	.data-set {
 		.management-bar-wrapper {
-			background-color: #fff;
+			background-color: $white;
 			top: calc(var(--control-menu-container-height, 56px) + 4rem + 48px);
 		}
 	}
