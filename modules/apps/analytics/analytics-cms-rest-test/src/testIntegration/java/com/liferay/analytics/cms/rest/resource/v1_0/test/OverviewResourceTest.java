@@ -214,7 +214,6 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 			"Invalid range end: not a date",
 			() -> overviewResource.getContentOverview(
 				null, null, "not a date", null, _getRangeDate(-7)));
-
 		_assertBadRequest(
 			"Invalid range start: not a date",
 			() -> overviewResource.getContentOverview(
