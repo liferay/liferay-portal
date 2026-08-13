@@ -398,7 +398,8 @@
 
 		<!-- Finder methods -->
 
-		<finder name="LayoutPageTemplateStructureRelElementVariationERC" return-type="Collection">
+		<finder name="G_LPTSREVERC" return-type="Collection">
+			<finder-column name="groupId" />
 			<finder-column name="layoutPageTemplateStructureRelElementVariationERC" />
 		</finder>
 		<finder name="C_AEERC" return-type="Collection">

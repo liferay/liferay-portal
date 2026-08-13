@@ -70,11 +70,12 @@ public class
 	@Override
 	public void
 		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			long groupId,
 			String layoutPageTemplateStructureRelElementVariationERC) {
 
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
-			removeByLayoutPageTemplateStructureRelElementVariationERC(
-				layoutPageTemplateStructureRelElementVariationERC);
+			removeByG_LPTSREVERC(
+				groupId, layoutPageTemplateStructureRelElementVariationERC);
 	}
 
 	@Override
@@ -89,11 +90,12 @@ public class
 	@Override
 	public List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
 		getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			long groupId,
 			String layoutPageTemplateStructureRelElementVariationERC) {
 
 		return layoutPageTemplateStructureRelElementVariationAudienceEntryRelPersistence.
-			findByLayoutPageTemplateStructureRelElementVariationERC(
-				layoutPageTemplateStructureRelElementVariationERC);
+			findByG_LPTSREVERC(
+				groupId, layoutPageTemplateStructureRelElementVariationERC);
 	}
 
 	@Reference
