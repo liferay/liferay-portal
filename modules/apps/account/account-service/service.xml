@@ -229,8 +229,10 @@
 	<exceptions>
 		<exception>AccountEntryDomains</exception>
 		<exception>AccountEntryEmailAddress</exception>
+		<exception>AccountEntryExternalReferenceCode</exception>
 		<exception>AccountEntryName</exception>
 		<exception>AccountEntryStatus</exception>
+		<exception>AccountEntryTaxIdNumber</exception>
 		<exception>AccountEntryType</exception>
 		<exception>AccountEntryUserRelEmailAddress</exception>
 		<exception>AccountGroupName</exception>
