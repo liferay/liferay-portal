@@ -1301,8 +1301,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 	protected static class APIToken {
 
-		public String getCreationDate() {
-			return _creationDate;
+		public String getCreationDateString() {
+			return _creationDateString;
 		}
 
 		public String getHash() {
@@ -1326,7 +1326,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		private APIToken(JSONObject jsonObject) {
-			_creationDate = jsonObject.getString("api.token.creation.date");
+			_creationDateString = jsonObject.getString(
+				"api.token.creation.date");
 			_hash = jsonObject.getString("api.token.hash");
 			_name = jsonObject.getString("api.token.name");
 			_token = jsonObject.getString("api.token");
@@ -1335,7 +1336,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		private APIToken(String itemReference) {
-			_creationDate = _getSecret(
+			_creationDateString = _getSecret(
 				itemReference, "api.token.creation.date");
 			_hash = _getSecret(itemReference, "api.token.hash");
 			_name = _getSecret(itemReference, "api.token.name");
@@ -1350,7 +1351,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 					itemReference, "/", itemFieldLabel));
 		}
 
-		private final String _creationDate;
+		private final String _creationDateString;
 		private final String _hash;
 		private final String _name;
 		private final String _token;

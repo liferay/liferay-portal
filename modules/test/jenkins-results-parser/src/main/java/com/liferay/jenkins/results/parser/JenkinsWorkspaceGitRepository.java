@@ -152,7 +152,8 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 				tokenListElement);
 
 			Dom4JUtil.getNewElement(
-				"creationDate", hashedTokenElement, apiToken.getCreationDate());
+				"creationDate", hashedTokenElement,
+				apiToken.getCreationDateString());
 			Dom4JUtil.getNewElement(
 				"name", hashedTokenElement, apiToken.getName());
 			Dom4JUtil.getNewElement(
