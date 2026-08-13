@@ -533,6 +533,11 @@ public class ObjectEntryModelListenerTest {
 		}
 
 		@Override
+		public long[] getCommerceChannelIds(long companyId, long[] groupIds) {
+			return new long[0];
+		}
+
+		@Override
 		public Long[] getCommerceChannelIds(
 			String analyticsChannelId, long companyId) {
 

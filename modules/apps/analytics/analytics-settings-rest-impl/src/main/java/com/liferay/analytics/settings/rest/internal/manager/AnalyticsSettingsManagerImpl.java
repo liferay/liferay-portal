@@ -13,6 +13,7 @@ import com.liferay.analytics.settings.rest.constants.FieldOrderConstants;
 import com.liferay.analytics.settings.rest.constants.FieldPeopleConstants;
 import com.liferay.analytics.settings.rest.constants.FieldProductConstants;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -93,6 +94,30 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 
 		return _configurationProvider.getCompanyConfiguration(
 			AnalyticsConfiguration.class, companyId);
+	}
+
+	@Override
+	public long[] getCommerceChannelIds(long companyId, long[] groupIds) {
+		if (groupIds.length == 0) {
+			return new long[0];
+		}
+
+		return TransformUtil.transformToLongArray(
+			_groupLocalService.getGroups(
+				companyId, _CLASS_NAME_COMMERCE_CHANNEL, 0),
+			group -> {
+				UnicodeProperties typeSettingsUnicodeProperties =
+					group.getTypeSettingsProperties();
+
+				long groupId = GetterUtil.getLong(
+					typeSettingsUnicodeProperties.getProperty("siteGroupId"));
+
+				if (ArrayUtil.contains(groupIds, groupId)) {
+					return group.getClassPK();
+				}
+
+				return null;
+			});
 	}
 
 	@Override
