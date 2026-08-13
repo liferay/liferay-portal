@@ -37,7 +37,12 @@ export default async function createGlobalConfig() {
 		}
 
 		allDependencies = {...allDependencies, ...dependencies};
-		allImports[name] = exports;
+
+		// Copy the array because 'exports' belongs to the cached
+		// 'node-scripts.config.js' module and appending the submodules to it
+		// would leak them into every later read of that project's exports.
+
+		allImports[name] = [...exports];
 
 		if (submodules) {
 			allImports[name].push(
