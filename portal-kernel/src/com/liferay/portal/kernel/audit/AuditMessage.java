@@ -377,6 +377,8 @@ public class AuditMessage implements Serializable {
 		).put(
 			_EVENT_TYPE, _eventType
 		).put(
+			_GROUP_ID, _groupId
+		).put(
 			_MESSAGE, _message
 		).put(
 			_SERVER_NAME, _serverName
@@ -385,7 +387,9 @@ public class AuditMessage implements Serializable {
 		).put(
 			_SESSION_ID, _sessionID
 		).put(
-			_TIMESTAMP, _getDateFormat().format(new Date())
+			_TIMESTAMP,
+			_getDateFormat().format(
+				(_timestamp != null) ? _timestamp : new Date())
 		).put(
 			_USER_EMAIL_ADDRESS, _userEmailAddress
 		).put(
