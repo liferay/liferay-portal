@@ -253,7 +253,7 @@ public class JenkinsCohort {
 				continue;
 			}
 
-			buildCount += jenkinsMaster.getStartedBuildCountAfter(date, false);
+			buildCount += jenkinsMaster.getStartedBuildsCountAfter(date, false);
 		}
 
 		return buildCount;
@@ -271,7 +271,7 @@ public class JenkinsCohort {
 				continue;
 			}
 
-			buildCount += jenkinsMaster.getStartedBuildCountAfter(date, true);
+			buildCount += jenkinsMaster.getStartedBuildsCountAfter(date, true);
 		}
 
 		return buildCount;

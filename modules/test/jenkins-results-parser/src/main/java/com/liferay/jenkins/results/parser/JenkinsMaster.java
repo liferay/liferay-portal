@@ -265,21 +265,21 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public int getAvailableSlavesCount(String labelExpression) {
-		int idleNodeCount = _getIdleNodeCount(labelExpression);
+		int idleNodesCount = _getIdleNodesCount(labelExpression);
 		int queueCount = _getQueueCount(labelExpression);
 		int recentBatchSizesTotal = _getRecentBatchSizesTotal(labelExpression);
 
-		return idleNodeCount - queueCount - recentBatchSizesTotal;
+		return idleNodesCount - queueCount - recentBatchSizesTotal;
 	}
 
 	public float getAverageQueueLength(String labelExpression) {
-		int busyNodeCount = _getBusyNodeCount(labelExpression);
+		int busyNodesCount = _getBusyNodesCount(labelExpression);
 		int queueCount = _getQueueCount(labelExpression);
 		int recentBatchSizesTotal = _getRecentBatchSizesTotal(labelExpression);
-		int usableNodeCount = _getUsableNodeCount(labelExpression);
+		int usableNodesCount = _getUsableNodesCount(labelExpression);
 
-		return ((float)busyNodeCount + queueCount + recentBatchSizesTotal) /
-			usableNodeCount;
+		return ((float)busyNodesCount + queueCount + recentBatchSizesTotal) /
+			usableNodesCount;
 	}
 
 	public List<AWSFleetCloud> getAWSFleetClouds() {
@@ -864,7 +864,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return _slavesPerHost;
 	}
 
-	public int getStartedBuildCountAfter(Date date, boolean topLevelBuilds) {
+	public int getStartedBuildsCountAfter(Date date, boolean topLevelBuilds) {
 		if (_buildCountJSONObject == null) {
 			try {
 				_buildCountJSONObject = JenkinsResultsParserUtil.toJSONObject(
@@ -881,7 +881,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			return 0;
 		}
 
-		int buildCount = 0;
+		int buildsCount = 0;
 
 		for (int i = 0; i < jobsJSONArray.length(); i++) {
 			JSONObject jobJSONObject = jobsJSONArray.optJSONObject(i);
@@ -919,12 +919,12 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 				Date buildDate = new Date(buildJSONObject.getLong("timestamp"));
 
 				if (buildDate.after(date)) {
-					buildCount++;
+					buildsCount++;
 				}
 			}
 		}
 
-		return buildCount;
+		return buildsCount;
 	}
 
 	public String getURL() {
@@ -1711,8 +1711,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return retryable.executeWithRetries();
 	}
 
-	private int _getBusyNodeCount(String labelExpression) {
-		int busyNodeCount = 0;
+	private int _getBusyNodesCount(String labelExpression) {
+		int busyNodesCount = 0;
 
 		List<JenkinsNode> jenkinsNodes = new ArrayList<>();
 
@@ -1725,15 +1725,15 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 					labelExpression, jenkinsNode.getAssignedLabels()) &&
 				!jenkinsNode.isIdle() && !jenkinsNode.isOffline()) {
 
-				busyNodeCount++;
+				busyNodesCount++;
 			}
 		}
 
-		return busyNodeCount;
+		return busyNodesCount;
 	}
 
-	private int _getIdleNodeCount(String labelExpression) {
-		int idleNodeCount = 0;
+	private int _getIdleNodesCount(String labelExpression) {
+		int idleNodesCount = 0;
 
 		List<JenkinsNode> jenkinsNodes = new ArrayList<>();
 
@@ -1754,14 +1754,14 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 					labelExpression, jenkinsNode.getAssignedLabels()) &&
 				jenkinsNode.isIdle() && !jenkinsNode.isOffline()) {
 
-				idleNodeCount++;
+				idleNodesCount++;
 			}
 		}
 
 		List<AWSFleetCloud> awsFleetClouds = getAWSFleetClouds();
 
 		if (awsFleetClouds.isEmpty()) {
-			return idleNodeCount;
+			return idleNodesCount;
 		}
 
 		for (AWSFleetCloud awsFleetCloud : awsFleetClouds) {
@@ -1769,18 +1769,18 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 				continue;
 			}
 
-			int idleAWSFleetCloudSlaveCount = awsFleetCloud.getMaxSize();
+			int idleAWSFleetCloudSlavesCount = awsFleetCloud.getMaxSize();
 
 			for (JenkinsSlave jenkinsSlave : awsFleetCloud.getJenkinsSlaves()) {
 				if (!jenkinsSlave.isIdle() || jenkinsSlave.isOffline()) {
-					idleAWSFleetCloudSlaveCount--;
+					idleAWSFleetCloudSlavesCount--;
 				}
 			}
 
-			idleNodeCount += idleAWSFleetCloudSlaveCount;
+			idleNodesCount += idleAWSFleetCloudSlavesCount;
 		}
 
-		return idleNodeCount;
+		return idleNodesCount;
 	}
 
 	private List<String> _getLabels(String labelExpression) {
@@ -1888,11 +1888,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return recentBatchSizesTotal;
 	}
 
-	private int _getUsableNodeCount(String labelExpression) {
-		int usableNodeCount = 0;
+	private int _getUsableNodesCount(String labelExpression) {
+		int usableNodesCount = 0;
 
 		if (_matchesLabels(labelExpression, getAssignedLabels())) {
-			usableNodeCount++;
+			usableNodesCount++;
 		}
 
 		for (JenkinsSlave jenkinsSlave : getJenkinsSlaves()) {
@@ -1901,17 +1901,17 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 				_matchesLabels(
 					labelExpression, jenkinsSlave.getAssignedLabels())) {
 
-				usableNodeCount++;
+				usableNodesCount++;
 			}
 		}
 
 		for (AWSFleetCloud awsFleetCloud : getAWSFleetClouds()) {
 			if (_matchesLabels(labelExpression, awsFleetCloud.getLabels())) {
-				usableNodeCount += awsFleetCloud.getMaxSize();
+				usableNodesCount += awsFleetCloud.getMaxSize();
 			}
 		}
 
-		return usableNodeCount;
+		return usableNodesCount;
 	}
 
 	private boolean _isRunningOnJenkinsMaster() {
