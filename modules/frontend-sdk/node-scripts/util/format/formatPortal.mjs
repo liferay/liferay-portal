@@ -12,6 +12,7 @@ import formatConfigFileNames from './formatters/formatConfigFileNames.mjs';
 import formatGlobalNodeScriptsConfig from './formatters/formatGlobalNodeScriptsConfig.mjs';
 import formatIgnoreFilePatterns from './formatters/formatIgnoreFilePatterns.mjs';
 import formatNodeScriptsHash from './formatters/formatNodeScriptsHash.mjs';
+import formatPackageJSONExplicitVersions from './formatters/formatPackageJSONExplicitVersions.mjs';
 import formatPackageJSONFiles from './formatters/formatPackageJSONFiles.mjs';
 import formatPackageJSONVersionAlignment from './formatters/formatPackageJSONVersionAlignment.mjs';
 import formatSourceFiles from './formatters/formatSourceFiles.mjs';
@@ -70,6 +71,10 @@ export default async function formatPortal(check, files) {
 		!!files.find((file) => file.endsWith('/node-scripts.config.js'))
 	) {
 		const packageJSONs = await getPackageJSONs(true);
+
+		if (!(await formatPackageJSONExplicitVersions(packageJSONs))) {
+			checksPassed = false;
+		}
 
 		if (!(await formatPackageJSONVersionAlignment(packageJSONs))) {
 			checksPassed = false;
