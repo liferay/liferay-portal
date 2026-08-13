@@ -64,11 +64,11 @@ test(
 
 			await test.step('Read the assigned categories', async () => {
 				await expect(
-					page.getByText('Decision Maker', {exact: true})
+					projectPage.getInfoCategory('Decision Maker')
 				).toBeVisible();
 
 				await expect(
-					page.getByText('Awareness', {exact: true})
+					projectPage.getInfoCategory('Awareness')
 				).toBeVisible();
 			});
 
@@ -90,11 +90,11 @@ test(
 				);
 
 				await expect(
-					page.getByText('Champion', {exact: true})
+					projectPage.getInfoCategory('Champion')
 				).toBeVisible();
 
 				await expect(
-					page.getByText('Awareness', {exact: true})
+					projectPage.getInfoCategory('Awareness')
 				).toBeHidden();
 			});
 
@@ -116,11 +116,11 @@ test(
 				);
 
 				await expect(
-					page.getByText('Decision Maker', {exact: true})
+					projectPage.getInfoCategory('Decision Maker')
 				).toBeHidden();
 
 				await expect(
-					page.getByText('Champion', {exact: true})
+					projectPage.getInfoCategory('Champion')
 				).toBeHidden();
 			});
 		}

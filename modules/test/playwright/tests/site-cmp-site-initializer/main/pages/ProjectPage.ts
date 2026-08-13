@@ -74,6 +74,12 @@ export class ProjectPage {
 		return this.page.getByRole('menuitem', {name: filter});
 	}
 
+	getInfoCategory(categoryName: string): Locator {
+		return this.page
+			.locator('.lfr-cmp__info-categories')
+			.getByText(categoryName, {exact: true});
+	}
+
 	getMatrixCell(
 		persona: string,
 		funnelStage: string,
