@@ -970,10 +970,10 @@ definition {
 				locator1 = "Select#ANY",
 				value1 = "Web Content Article");
 
-			AssertSelectedLabel(
+			AssertTextEquals.assertPartialText(
 				key_selectFieldLabel = "Item Subtype",
 				locator1 = "Select#ANY",
-				value1 = "-Not Selected-");
+				value1 = "ID:");
 		}
 	}
 
