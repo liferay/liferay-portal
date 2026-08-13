@@ -19,6 +19,7 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
@@ -41,6 +43,7 @@ import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +54,13 @@ import org.junit.runner.RunWith;
 @FeatureFlag("LPD-96666")
 @RunWith(Arquillian.class)
 public class LinkResourceTest extends BaseLinkResourceTestCase {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	@Override
@@ -107,10 +117,6 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 			clusterKey,
 			_getClusterKey(groupId, objectEntry2.getExternalReferenceCode()));
 	}
-
-	@Rule
-	public PermissionCheckerMethodTestRule permissionCheckerMethodTestRule =
-		PermissionCheckerMethodTestRule.INSTANCE;
 
 	private ObjectEntry _addPIMBaseSKUObjectEntry(long groupId)
 		throws Exception {
