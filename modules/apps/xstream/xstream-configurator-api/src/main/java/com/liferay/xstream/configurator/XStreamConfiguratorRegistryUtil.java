@@ -8,21 +8,20 @@ package com.liferay.xstream.configurator;
 import com.liferay.exportimport.kernel.xstream.XStreamAlias;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.AggregateClassLoader;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
@@ -64,61 +63,34 @@ public class XStreamConfiguratorRegistryUtil {
 	}
 
 	private static Set<Class<?>> _getAliases() {
-		return new HashSet<>(_xstreamAliases.keySet());
+		return new HashSet<>(_serviceTrackerMap.keySet());
 	}
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
 	private static final AtomicLong _modifiedCount = new AtomicLong(0);
-	private static final ServiceTracker<XStreamAlias, XStreamAlias>
-		_serviceTracker;
-	private static final Map<Class<?>, String> _xstreamAliases =
-		new ConcurrentHashMap<>();
+
+	private static final ServiceTrackerMap<Class<?>, XStreamAlias>
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			_bundleContext, XStreamAlias.class, null,
+			(serviceReference, emitter) -> {
+				XStreamAlias xStreamAlias = _bundleContext.getService(
+					serviceReference);
+
+				try {
+					if (xStreamAlias != null) {
+						emitter.emit(xStreamAlias.getClazz());
+					}
+				}
+				finally {
+					_bundleContext.ungetService(serviceReference);
+				}
+			});
+
 	private static final ServiceTrackerList<XStreamConfigurator>
 		_xStreamConfigurators;
 
-	private static class XStreamAliasServiceTrackerCustomizer
-		implements ServiceTrackerCustomizer<XStreamAlias, XStreamAlias> {
-
-		@Override
-		public XStreamAlias addingService(
-			ServiceReference<XStreamAlias> serviceReference) {
-
-			XStreamAlias xStreamAlias = _bundleContext.getService(
-				serviceReference);
-
-			_xstreamAliases.put(
-				xStreamAlias.getClazz(), xStreamAlias.getName());
-
-			return xStreamAlias;
-		}
-
-		@Override
-		public void modifiedService(
-			ServiceReference<XStreamAlias> serviceReference,
-			XStreamAlias xStreamAlias) {
-		}
-
-		@Override
-		public void removedService(
-			ServiceReference<XStreamAlias> serviceReference,
-			XStreamAlias xStreamAlias) {
-
-			_bundleContext.ungetService(serviceReference);
-
-			_xstreamAliases.remove(xStreamAlias.getClazz());
-		}
-
-	}
-
 	static {
-		_serviceTracker = new ServiceTracker<>(
-			_bundleContext, XStreamAlias.class,
-			new XStreamConfiguratorRegistryUtil.
-				XStreamAliasServiceTrackerCustomizer());
-
-		_serviceTracker.open();
-
 		Bundle bundle = FrameworkUtil.getBundle(
 			XStreamConfiguratorRegistryUtil.class);
 
