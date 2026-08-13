@@ -16,9 +16,9 @@ function main {
 		exit 1
 	fi
 
-	_check_utils az helm jq terraform
+	check_utils az helm jq terraform
 
-	_validate_config_json "${1}"
+	validate_config_json "${1}"
 
 	echo "This will destroy the AKS cluster and the Liferay platform."
 	echo ""
@@ -34,18 +34,18 @@ function main {
 		exit 1
 	fi
 
-	_generate_tfvars "${1}" "aks"
+	generate_tfvars "${1}" "aks"
 
-	_generate_tfvars "${1}" "platform"
+	generate_tfvars "${1}" "platform"
 
-	_az_login "${1}"
+	az_login "${1}"
 
 	local terraform_args=()
 
 	while IFS= read -r terraform_arg
 	do
 		terraform_args+=("${terraform_arg}")
-	done < <(_get_terraform_args "${1}")
+	done < <(get_terraform_args "${1}")
 
 	local has_remote_tfstate=false
 
@@ -68,12 +68,12 @@ function main {
 		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${1}")"
 		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${1}")"
 
-		_generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
+		generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 	else
-		_generate_local_backend_overrides
+		generate_local_backend_overrides
 	fi
 
-	_connect_to_cluster
+	connect_to_cluster
 
 	_uninstall_liferay_platform_chart
 
@@ -124,7 +124,7 @@ function _delete_tfstate_storage {
 }
 
 function _destroy_azure_aks {
-	_pushd "${_ROOT_CLOUD_DIR}/terraform/azure/aks"
+	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/aks"
 
 	echo "Destroying the Azure AKS cluster."
 
@@ -134,11 +134,11 @@ function _destroy_azure_aks {
 
 	echo "Azure AKS cluster teardown complete."
 
-	_popd
+	pop_directory
 }
 
 function _destroy_azure_platform {
-	_pushd "${_ROOT_CLOUD_DIR}/terraform/azure/platform"
+	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/platform"
 
 	echo "Destroying the Liferay platform."
 
@@ -148,7 +148,7 @@ function _destroy_azure_platform {
 
 	echo "Liferay platform teardown complete."
 
-	_popd
+	pop_directory
 }
 
 function _uninstall_liferay_platform_chart {

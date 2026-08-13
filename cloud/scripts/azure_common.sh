@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-_SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-_ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
+ROOT_CLOUD_DIR=$(cd "${SCRIPTS_DIR}/.." && pwd)
 
-readonly _ROOT_CLOUD_DIR _SCRIPTS_DIR
+readonly ROOT_CLOUD_DIR SCRIPTS_DIR
 
-function _az_login {
+function az_login {
 	local configuration_json_file="${1}"
 
 	local subscription_id
@@ -28,7 +28,7 @@ function _az_login {
 	az account set --subscription "${subscription_id}"
 }
 
-function _check_utils {
+function check_utils {
 	for util in "${@}"
 	do
 		if (! command -v "${util}" &> /dev/null)
@@ -40,8 +40,8 @@ function _check_utils {
 	done
 }
 
-function _connect_to_cluster {
-	_pushd "${_ROOT_CLOUD_DIR}/terraform/azure/aks"
+function connect_to_cluster {
+	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/aks"
 
 	echo "Connecting to the AKS cluster."
 
@@ -54,15 +54,15 @@ function _connect_to_cluster {
 		--overwrite-existing \
 		--resource-group "$(terraform output -raw resource_group_name)"
 
-	_popd
+	pop_directory
 }
 
-function _generate_local_backend_overrides {
+function generate_local_backend_overrides {
 	local directory
 
 	for directory in aks platform
 	do
-		cat > "${_ROOT_CLOUD_DIR}/terraform/azure/${directory}/backend_override.tf" <<EOF
+		cat > "${ROOT_CLOUD_DIR}/terraform/azure/${directory}/backend_override.tf" <<EOF
 terraform {
 	backend "local" {}
 }
@@ -70,7 +70,7 @@ EOF
 	done
 }
 
-function _generate_remote_backend_overrides {
+function generate_remote_backend_overrides {
 	local container_name="${1}"
 	local deployment_name="${2}"
 	local region="${3}"
@@ -81,7 +81,7 @@ function _generate_remote_backend_overrides {
 
 	for directory in aks platform
 	do
-		cat > "${_ROOT_CLOUD_DIR}/terraform/azure/${directory}/backend_override.tf" <<EOF
+		cat > "${ROOT_CLOUD_DIR}/terraform/azure/${directory}/backend_override.tf" <<EOF
 terraform {
 	backend "azurerm" {
 		container_name="${container_name}"
@@ -95,11 +95,11 @@ EOF
 	done
 }
 
-function _generate_tfvars {
+function generate_tfvars {
 	local configuration_json_file="${1}"
 	local module="${2}"
 
-	local tfvars_file="${_ROOT_CLOUD_DIR}/terraform/azure/${module}/config.auto.tfvars.json"
+	local tfvars_file="${ROOT_CLOUD_DIR}/terraform/azure/${module}/config.auto.tfvars.json"
 
 	echo "Generating ${tfvars_file} from ${configuration_json_file}."
 
@@ -108,7 +108,7 @@ function _generate_tfvars {
 	echo "${tfvars_file} was generated successfully."
 }
 
-function _get_terraform_args {
+function get_terraform_args {
 	local configuration_json_file="${1}"
 
 	local auto_approve
@@ -137,15 +137,15 @@ function _get_terraform_args {
 	fi
 }
 
-function _popd {
+function pop_directory {
 	popd > /dev/null
 }
 
-function _pushd {
+function push_directory {
 	pushd "${1}" > /dev/null
 }
 
-function _validate_config_json {
+function validate_config_json {
 	local configuration_json_file="${1}"
 
 	if [[ ! -f ${configuration_json_file} ]]
