@@ -48,7 +48,11 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Service Builder](validations/service-builder.md)
 
+1. [Go Generate](validations/go-generate.md)
+
 1. [Source Format](validations/source-format.md)
+
+1. [Go Source Format](validations/go-source-format.md)
 
 1. [Module Registration](validations/module-registration.md)
 
