@@ -85,13 +85,13 @@ public class DDMDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNamesSafeCloseable =
-			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
+		_classNamesSavepointSafeCloseable =
+			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_classNamesSafeCloseable.close();
+		_classNamesSavepointSafeCloseable.close();
 	}
 
 	@Test
@@ -449,7 +449,7 @@ public class DDMDataCleanupPreupgradeProcessTest
 	private static Connection _connection;
 	private static DBInspector _dbInspector;
 
-	private SafeCloseable _classNamesSafeCloseable;
+	private SafeCloseable _classNamesSavepointSafeCloseable;
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;

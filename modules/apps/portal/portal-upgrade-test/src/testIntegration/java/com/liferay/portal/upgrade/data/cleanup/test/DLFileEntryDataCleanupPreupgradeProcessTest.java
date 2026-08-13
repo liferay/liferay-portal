@@ -92,24 +92,24 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNamesSafeCloseable =
-			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
+		_classNamesSavepointSafeCloseable =
+			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
 
 		_connection = DataAccess.getConnection();
 
 		_dbInspector = new DBInspector(_connection);
 
-		_systemEventsSafeCloseable =
-			DataCleanupTestUtil.setSystemEventsSavepointWithSafeCloseable();
+		_systemEventsSavepointSafeCloseable =
+			DataCleanupTestUtil.getSystemEventsSavepointSafeCloseable();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_classNamesSafeCloseable.close();
+		_classNamesSavepointSafeCloseable.close();
 
 		DataAccess.cleanUp(_connection);
 
-		_systemEventsSafeCloseable.close();
+		_systemEventsSavepointSafeCloseable.close();
 	}
 
 	@Test
@@ -314,7 +314,7 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 	@Inject
 	private AssetEntryPersistence _assetEntryPersistence;
 
-	private SafeCloseable _classNamesSafeCloseable;
+	private SafeCloseable _classNamesSavepointSafeCloseable;
 	private Connection _connection;
 	private DBInspector _dbInspector;
 
@@ -345,6 +345,6 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 	@Inject
 	private DLFileVersionPreviewLocalService _dlFileVersionPreviewLocalService;
 
-	private SafeCloseable _systemEventsSafeCloseable;
+	private SafeCloseable _systemEventsSavepointSafeCloseable;
 
 }

@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class DataCleanupTestUtil {
 
-	public static SafeCloseable setClassNamesSavepointWithSafeCloseable() {
+	public static SafeCloseable getClassNamesSavepointSafeCloseable() {
 		List<ClassName> classNames = ClassNameLocalServiceUtil.getClassNames(
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
@@ -37,7 +37,7 @@ public class DataCleanupTestUtil {
 		};
 	}
 
-	public static SafeCloseable setResourceActionsSavepointWithSafeCloseable() {
+	public static SafeCloseable getResourceActionsSavepointSafeCloseable() {
 		List<ResourceAction> resourceActions =
 			ResourceActionLocalServiceUtil.getResourceActions(
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
@@ -55,7 +55,7 @@ public class DataCleanupTestUtil {
 		};
 	}
 
-	public static SafeCloseable setSystemEventsSavepointWithSafeCloseable() {
+	public static SafeCloseable getSystemEventsSavepointSafeCloseable() {
 		List<SystemEvent> systemEvents =
 			SystemEventLocalServiceUtil.getSystemEvents(
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);

@@ -63,14 +63,14 @@ public class JournalDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNamesSafeCloseable =
-			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
+		_classNamesSavepointSafeCloseable =
+			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
 		_group = GroupTestUtil.addGroup();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_classNamesSafeCloseable.close();
+		_classNamesSavepointSafeCloseable.close();
 
 		if (_group != null) {
 			_groupLocalService.deleteGroup(_group);
@@ -177,7 +177,7 @@ public class JournalDataCleanupPreupgradeProcessTest
 		_ddmStructureLocalService.deleteStructure(ddmStructure);
 	}
 
-	private SafeCloseable _classNamesSafeCloseable;
+	private SafeCloseable _classNamesSavepointSafeCloseable;
 
 	@Inject
 	private DDMFieldLocalService _ddmFieldLocalService;

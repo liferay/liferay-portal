@@ -62,24 +62,24 @@ public class CompanyDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNamesSafeCloseable =
-			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
+		_classNamesSavepointSafeCloseable =
+			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
 
 		_connection = DataAccess.getConnection();
 
 		_dbInspector = new DBInspector(_connection);
 
-		_resourceActionsSafeCloseable =
-			DataCleanupTestUtil.setResourceActionsSavepointWithSafeCloseable();
+		_resourceActionsSavepointSafeCloseable =
+			DataCleanupTestUtil.getResourceActionsSavepointSafeCloseable();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_classNamesSafeCloseable.close();
+		_classNamesSavepointSafeCloseable.close();
 
 		DataAccess.cleanUp(_connection);
 
-		_resourceActionsSafeCloseable.close();
+		_resourceActionsSavepointSafeCloseable.close();
 	}
 
 	@Test
@@ -229,7 +229,7 @@ public class CompanyDataCleanupPreupgradeProcessTest
 		}
 	}
 
-	private SafeCloseable _classNamesSafeCloseable;
+	private SafeCloseable _classNamesSavepointSafeCloseable;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
@@ -240,6 +240,6 @@ public class CompanyDataCleanupPreupgradeProcessTest
 	@Inject
 	private MultiVMPool _multiVMPool;
 
-	private SafeCloseable _resourceActionsSafeCloseable;
+	private SafeCloseable _resourceActionsSavepointSafeCloseable;
 
 }

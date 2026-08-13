@@ -61,16 +61,16 @@ public class ContactDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNamesSafeCloseable =
-			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
-		_systemEventsSafeCloseable =
-			DataCleanupTestUtil.setSystemEventsSavepointWithSafeCloseable();
+		_classNamesSavepointSafeCloseable =
+			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
+		_systemEventsSavepointSafeCloseable =
+			DataCleanupTestUtil.getSystemEventsSavepointSafeCloseable();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_classNamesSafeCloseable.close();
-		_systemEventsSafeCloseable.close();
+		_classNamesSavepointSafeCloseable.close();
+		_systemEventsSavepointSafeCloseable.close();
 	}
 
 	@Test
@@ -159,7 +159,7 @@ public class ContactDataCleanupPreupgradeProcessTest
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
-	private SafeCloseable _classNamesSafeCloseable;
+	private SafeCloseable _classNamesSavepointSafeCloseable;
 
 	@Inject
 	private EmailAddressLocalService _emailAddressLocalService;
@@ -170,7 +170,7 @@ public class ContactDataCleanupPreupgradeProcessTest
 	@Inject
 	private PhoneLocalService _phoneLocalService;
 
-	private SafeCloseable _systemEventsSafeCloseable;
+	private SafeCloseable _systemEventsSavepointSafeCloseable;
 
 	@Inject
 	private UserLocalService _userLocalService;
