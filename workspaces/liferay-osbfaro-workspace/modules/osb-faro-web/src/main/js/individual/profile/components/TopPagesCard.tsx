@@ -54,6 +54,7 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 	} = useQuery<SitesTopPagesQueryData, SitesTopPagesQueryVariables>(
 		SitesTopPagesQuery,
 		{
+			skip: !individualId,
 			variables: {
 				...getSafeRangeSelectors(rangeSelectors),
 				channelId,

@@ -21,21 +21,21 @@ import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
 export interface ITopCategory {
-	downloadsMetric: {value: number};
+	downloadsMetric?: {value: number};
 	id: string;
-	impressionsMetric: {value: number};
+	impressionsMetric?: {value: number};
 	name: string;
-	viewsMetric: {value: number};
+	viewsMetric?: {value: number};
 	vocabularyId: string;
 	vocabularyName: string;
 }
 
 export interface ITopTag {
-	downloadsMetric: {value: number};
+	downloadsMetric?: {value: number};
 	id: string;
-	impressionsMetric: {value: number};
+	impressionsMetric?: {value: number};
 	name: string;
-	viewsMetric: {value: number};
+	viewsMetric?: {value: number};
 }
 
 export type TaxonomyItem = ITopCategory | ITopTag;
@@ -138,7 +138,9 @@ const TabContent: React.FC<ITabContentProps> = ({
 									</ClayTable.Cell>
 								)}
 								<ClayTable.Cell>
-									{toThousands(item[selectedMetric]?.value)}
+									{toThousands(
+										item[selectedMetric]?.value ?? 0
+									)}
 								</ClayTable.Cell>
 							</ClayTable.Row>
 						))}
@@ -220,12 +222,20 @@ const TopCategoriesAndTagsWithData: React.FC<
 
 	const items = data?.items ?? [];
 
+	/**
+	 * `useRequest` starts out loading and never settles while the request is
+	 * skipped, so a card with nothing to scope by would spin forever. Report it
+	 * as done instead, which lands the card on its empty state.
+	 */
+
+	const isLoading = loading && !skipRequest;
+
 	const tabContent = (
 		<TabContent
 			groupBy={groupBy}
 			isCategory={isCategory}
 			items={items}
-			loading={loading}
+			loading={isLoading}
 			selectedMetric={selectedMetric}
 			setGroupBy={setGroupBy}
 		/>

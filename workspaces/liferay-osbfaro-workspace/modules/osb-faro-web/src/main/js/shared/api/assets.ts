@@ -10,11 +10,11 @@ export type TopAssetObjectType = 'content' | 'file';
 export interface ITopAsset {
 	assetTitle: string;
 	assetType?: string;
-	downloadsMetric: {value: number};
+	downloadsMetric?: {value: number};
 	id: string;
-	impressionsMetric: {value: number};
+	impressionsMetric?: {value: number};
 	mimeType?: string;
-	viewsMetric: {value: number};
+	viewsMetric?: {value: number};
 }
 
 interface IFetchAccountTopAssets {

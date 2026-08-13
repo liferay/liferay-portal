@@ -26,8 +26,6 @@ import {useRequest} from 'shared/hooks/useRequest';
 
 const TABS = ['content', 'files'] as const;
 
-// TODO(LPD-91217): confirm `objectType` values once backend lands.
-
 const TAB_OBJECT_TYPES: Record<(typeof TABS)[number], TopAssetObjectType> = {
 	content: 'content',
 	files: 'file',
@@ -183,7 +181,7 @@ const TopAssetsTabContent: React.FC<ITopAssetsTabContentProps> = ({
 									</ClayTable.Cell>
 									<ClayTable.Cell>
 										{toThousands(
-											asset[selectedMetric].value
+											asset[selectedMetric]?.value ?? 0
 										)}
 									</ClayTable.Cell>
 								</ClayTable.Row>
@@ -282,12 +280,20 @@ const TopAssetsWithData: React.FC<ITopAssetsWithDataProps> = ({
 
 	const assets = data?.items ?? [];
 
+	/**
+	 * `useRequest` starts out loading and never settles while the request is
+	 * skipped, so a card with nothing to scope by would spin forever. Report it
+	 * as done instead, which lands the card on its empty state.
+	 */
+
+	const isLoading = loading && !skipRequest;
+
 	const tabContent = (
 		<TopAssetsTabContent
 			assets={assets}
 			groupBy={groupBy}
 			isFiles={TABS[activeTab] === 'files'}
-			loading={loading}
+			loading={isLoading}
 			metrics={metrics}
 			routeQueries={routeQueries}
 			setGroupBy={setGroupBy}
