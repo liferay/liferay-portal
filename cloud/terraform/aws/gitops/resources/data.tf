@@ -1,5 +1,8 @@
 data "aws_caller_identity" "current" {
 }
+data "aws_efs_file_system" "marketplace" {
+	creation_token="${var.deployment_name}-marketplace"
+}
 data "aws_eks_cluster" "cluster" {
 	name=local.cluster_name
 	region=var.region

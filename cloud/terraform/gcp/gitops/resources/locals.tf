@@ -50,6 +50,8 @@ locals {
 		sql="roles/cloudsql.admin"
 		storage="roles/storage.admin"
 	}
+	filestore_ip=try(data.google_filestore_instance.marketplace.networks[0].ip_addresses[0], "")
+	filestore_zone=try(data.google_compute_zones.available.names[0], "")
 	gateway_class_name="liferay-gateway-class"
 	gateway_name="${var.infrastructure_git_repo_config.target.slugProjectId}-${var.infrastructure_git_repo_config.target.slugEnvironmentId}-gateway"
 	git_repo_auth_configs=merge(

@@ -271,6 +271,10 @@ resource "kubernetes_manifest" "infrastructure_provider_application" {
 									value=var.gateway_namespace
 								},
 								{
+									name="liferay-dxp-operator.marketplace.csi.volumeHandle"
+									value=data.aws_efs_file_system.marketplace.file_system_id
+								},
+								{
 									name="liferayServiceAccountRoleName"
 									value=local.liferay_service_account_role_name
 								},
@@ -378,6 +382,10 @@ resource "kubernetes_manifest" "liferay_applicationset" {
 							{
 								helm={
 									parameters=[
+										{
+											name="${local.liferay_helm_chart_config.values_scope_prefix}marketplace.csi.volumeHandle"
+											value=data.aws_efs_file_system.marketplace.file_system_id
+										},
 										{
 											name="${local.liferay_helm_chart_config.values_scope_prefix}network.gatewayName"
 											value=local.gateway_name

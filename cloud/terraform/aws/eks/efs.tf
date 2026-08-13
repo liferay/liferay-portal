@@ -1,9 +1,9 @@
 resource "aws_efs_file_system" "this" {
-	creation_token="${var.deployment_name}-lpkg"
+	creation_token="${var.deployment_name}-marketplace"
 	encrypted=true
 	kms_key_id=aws_kms_key.efs.arn
 	tags={
-		Name="${var.deployment_name}-lpkg"
+		Name="${var.deployment_name}-marketplace"
 	}
 }
 resource "aws_efs_mount_target" "this" {

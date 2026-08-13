@@ -64,7 +64,10 @@ override_data {
 }
 run "should_include_required_prefixes_for_the_marketplace_chart_to_gateway_name" {
 	assert {
-		condition=kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.sources[0].helm.parameters[0].name == "liferay-aws.liferay-default.network.gatewayName"
+		condition=length([
+			for p in kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-aws.liferay-default.network.gatewayName"
+		]) == 1
 		error_message="The liferay-aws-marketplace chart must include prefixes for both liferay-aws and liferay-default charts to gatewayName Helm parameter"
 	}
 	command=plan
@@ -110,7 +113,10 @@ run "should_pass_cluster_identity_to_the_provider_application" {
 }
 run "should_scope_liferay_applicationset_helm_values_by_prefix" {
 	assert {
-		condition=kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.sources[0].helm.parameters[0].name == "liferay-default.network.gatewayName"
+		condition=length([
+			for p in kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-default.network.gatewayName"
+		]) == 1
 		error_message="The liferay-aws chart must include prefix for liferay-default chart at gatewayName Helm parameter"
 	}
 	command=plan
