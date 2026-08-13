@@ -70,7 +70,7 @@ public class TokenIntrospectionTest extends BaseClientTestCase {
 					HashMapBuilder.put(
 						"client_id", applicationClientId
 					).put(
-						"client_secret", "oauthTestApplicationSecret"
+						"client_secret", CLIENT_SECRET
 					).put(
 						"token", token
 					).build())));

@@ -55,7 +55,7 @@ public class OAuth2AuthorizationClientTest extends BaseClientTestCase {
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
 		formData.add("client_id", "oauthTestApplication");
-		formData.add("client_secret", "oauthTestApplicationSecret");
+		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "client_credentials");
 
 		String tokenString = parseTokenString(

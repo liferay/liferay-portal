@@ -341,7 +341,7 @@ public abstract class BaseClientTestCase {
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
 		formData.add("client_id", clientId);
-		formData.add("client_secret", "oauthTestApplicationSecret");
+		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "client_credentials");
 
 		return invocationBuilder.post(Entity.form(formData));
@@ -355,7 +355,7 @@ public abstract class BaseClientTestCase {
 				new MultivaluedHashMap<>();
 
 			formData.add("client_id", clientId);
-			formData.add("client_secret", "oauthTestApplicationSecret");
+			formData.add("client_secret", CLIENT_SECRET);
 			formData.add("grant_type", "client_credentials");
 			formData.add("scope", scope);
 
@@ -463,7 +463,7 @@ public abstract class BaseClientTestCase {
 				new MultivaluedHashMap<>();
 
 			formData.add("client_id", clientId);
-			formData.add("client_secret", "oauthTestApplicationSecret");
+			formData.add("client_secret", CLIENT_SECRET);
 			formData.add("code", authorizationCode);
 			formData.add("grant_type", "authorization_code");
 
@@ -542,7 +542,7 @@ public abstract class BaseClientTestCase {
 				new MultivaluedHashMap<>();
 
 			formData.add("client_id", clientId);
-			formData.add("client_secret", "oauthTestApplicationSecret");
+			formData.add("client_secret", CLIENT_SECRET);
 			formData.add("grant_type", "password");
 			formData.add("password", password);
 			formData.add("username", userName);
@@ -560,7 +560,7 @@ public abstract class BaseClientTestCase {
 				new MultivaluedHashMap<>();
 
 			formData.add("client_id", clientId);
-			formData.add("client_secret", "oauthTestApplicationSecret");
+			formData.add("client_secret", CLIENT_SECRET);
 			formData.add("grant_type", "password");
 			formData.add("password", password);
 			formData.add("scope", scope);
@@ -699,6 +699,8 @@ public abstract class BaseClientTestCase {
 		return _oAuth2AuthorizationLocalService.updateOAuth2Authorization(
 			oAuth2Authorization);
 	}
+
+	protected static final String CLIENT_SECRET = RandomTestUtil.randomString();
 
 	private static Set<String> _originalRestrictedHeaderSet;
 	private static final Pattern _pAuthTokenPattern = Pattern.compile(

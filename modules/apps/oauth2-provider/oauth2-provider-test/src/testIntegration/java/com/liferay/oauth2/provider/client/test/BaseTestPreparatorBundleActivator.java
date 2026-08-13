@@ -209,7 +209,7 @@ public abstract class BaseTestPreparatorBundleActivator
 		throws PortalException {
 
 		return createOAuth2Application(
-			companyId, user, clientId, "oauthTestApplicationSecret",
+			companyId, user, clientId, BaseClientTestCase.CLIENT_SECRET,
 			allowedGrantTypesList,
 			Collections.singletonList(
 				"http://redirecturi:" + PortalUtil.getPortalServerPort(false)),
@@ -223,7 +223,7 @@ public abstract class BaseTestPreparatorBundleActivator
 		throws PortalException {
 
 		return createOAuth2Application(
-			companyId, user, clientId, "oauthTestApplicationSecret",
+			companyId, user, clientId, BaseClientTestCase.CLIENT_SECRET,
 			allowedGrantTypesList,
 			Collections.singletonList(
 				"http://redirecturi:" + PortalUtil.getPortalServerPort(false)),
@@ -237,7 +237,7 @@ public abstract class BaseTestPreparatorBundleActivator
 		throws PortalException {
 
 		return createOAuth2Application(
-			companyId, user, clientId, "oauthTestApplicationSecret",
+			companyId, user, clientId, BaseClientTestCase.CLIENT_SECRET,
 			allowedGrantTypesList, OAuthConstants.TOKEN_ENDPOINT_AUTH_POST,
 			null, name,
 			Collections.singletonList(

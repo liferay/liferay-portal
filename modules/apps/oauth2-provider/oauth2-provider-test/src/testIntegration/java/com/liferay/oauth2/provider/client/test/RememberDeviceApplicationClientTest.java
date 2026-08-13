@@ -136,7 +136,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 					new MultivaluedHashMap<>();
 
 				formData.add("client_id", applicationClientId);
-				formData.add("client_secret", "oauthTestApplicationSecret");
+				formData.add("client_secret", CLIENT_SECRET);
 				formData.add("code", authorizationCodeString);
 				formData.add("grant_type", "authorization_code");
 
@@ -276,7 +276,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 					new MultivaluedHashMap<>();
 
 				formData.add("client_id", applicationClientId);
-				formData.add("client_secret", "oauthTestApplicationSecret");
+				formData.add("client_secret", CLIENT_SECRET);
 				formData.add("code", parseAuthorizationCodeString(response1));
 				formData.add("grant_type", "authorization_code");
 
@@ -309,7 +309,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 					new MultivaluedHashMap<>();
 
 				formData.add("client_id", applicationClientId);
-				formData.add("client_secret", "oauthTestApplicationSecret");
+				formData.add("client_secret", CLIENT_SECRET);
 				formData.add("code", parseAuthorizationCodeString(response2));
 				formData.add("grant_type", "authorization_code");
 
@@ -392,7 +392,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 					new MultivaluedHashMap<>();
 
 				formData.add("client_id", applicationClientId);
-				formData.add("client_secret", "oauthTestApplicationSecret");
+				formData.add("client_secret", CLIENT_SECRET);
 				formData.add("code", parseAuthorizationCodeString(response2));
 				formData.add("grant_type", "authorization_code");
 
@@ -439,7 +439,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 						new MultivaluedHashMap<>();
 
 					formData.add("client_id", applicationClientId);
-					formData.add("client_secret", "oauthTestApplicationSecret");
+					formData.add("client_secret", CLIENT_SECRET);
 					formData.add(
 						"code", parseAuthorizationCodeString(response));
 					formData.add("grant_type", "authorization_code");
@@ -569,7 +569,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 					new MultivaluedHashMap<>();
 
 				formData1.add("client_id", applicationClientId);
-				formData1.add("client_secret", "oauthTestApplicationSecret");
+				formData1.add("client_secret", CLIENT_SECRET);
 				formData1.add("code", parseAuthorizationCodeString(response1));
 				formData1.add("grant_type", "authorization_code");
 
@@ -601,7 +601,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 						new MultivaluedHashMap<>();
 
 					formData.add("client_id", applicationClientId);
-					formData.add("client_secret", "oauthTestApplicationSecret");
+					formData.add("client_secret", CLIENT_SECRET);
 					formData.add(
 						"code", parseAuthorizationCodeString(response2));
 					formData.add("grant_type", "authorization_code");
@@ -767,7 +767,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 					new MultivaluedHashMap<>();
 
 				formData.add("client_id", applicationClientId);
-				formData.add("client_secret", "oauthTestApplicationSecret");
+				formData.add("client_secret", CLIENT_SECRET);
 				formData.add("grant_type", "authorization_code");
 				formData.add("code", authorizationCodeString);
 

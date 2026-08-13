@@ -60,12 +60,12 @@ public abstract class BaseTokenEndpointTestCase extends BaseClientTestCase {
 			clientAuthentications.put(
 				TEST_CLIENT_ID_1,
 				new ClientPasswordClientAuthentication(
-					TEST_CLIENT_ID_1, _TEST_CLIENT_SECRET));
+					TEST_CLIENT_ID_1, CLIENT_SECRET));
 			clientAuthentications.put(
 				TEST_CLIENT_ID_2,
 				new JWTAssertionClientAuthentication(
 					getTokenWebTarget(), TEST_CLIENT_ID_2, false,
-					TEST_CLIENT_ID_2, _TEST_CLIENT_SECRET, true));
+					TEST_CLIENT_ID_2, CLIENT_SECRET, true));
 			clientAuthentications.put(
 				TEST_CLIENT_ID_3,
 				new JWTAssertionClientAuthentication(
@@ -83,23 +83,21 @@ public abstract class BaseTokenEndpointTestCase extends BaseClientTestCase {
 			clientAuthentications.put(
 				TEST_CLIENT_ID_5,
 				new ClientPasswordClientAuthentication(
-					TEST_CLIENT_ID_5, _TEST_CLIENT_SECRET));
+					TEST_CLIENT_ID_5, CLIENT_SECRET));
 			clientAuthentications.put(
 				TEST_CLIENT_ID_6,
 				new ClientPasswordClientAuthentication(
-					TEST_CLIENT_ID_6, _TEST_CLIENT_SECRET));
+					TEST_CLIENT_ID_6, CLIENT_SECRET));
 
 			createOAuth2ApplicationWithClientSecretPost(
-				user.getCompanyId(), user, TEST_CLIENT_ID_1,
-				_TEST_CLIENT_SECRET,
+				user.getCompanyId(), user, TEST_CLIENT_ID_1, CLIENT_SECRET,
 				Arrays.asList(
 					GrantType.RESOURCE_OWNER_PASSWORD, GrantType.REFRESH_TOKEN,
 					GrantType.JWT_BEARER),
 				Arrays.asList(
 					"everything", "everything.read", "everything.write"));
 			createOAuth2ApplicationWithClientSecretJWT(
-				user.getCompanyId(), user, TEST_CLIENT_ID_2,
-				_TEST_CLIENT_SECRET,
+				user.getCompanyId(), user, TEST_CLIENT_ID_2, CLIENT_SECRET,
 				Arrays.asList(
 					GrantType.RESOURCE_OWNER_PASSWORD, GrantType.REFRESH_TOKEN,
 					GrantType.JWT_BEARER),
@@ -121,16 +119,14 @@ public abstract class BaseTokenEndpointTestCase extends BaseClientTestCase {
 				Arrays.asList(
 					"everything", "everything.read", "everything.write"));
 			createOAuth2ApplicationWithClientSecretPost(
-				user.getCompanyId(), user, TEST_CLIENT_ID_5,
-				_TEST_CLIENT_SECRET,
+				user.getCompanyId(), user, TEST_CLIENT_ID_5, CLIENT_SECRET,
 				Arrays.asList(
 					GrantType.RESOURCE_OWNER_PASSWORD, GrantType.REFRESH_TOKEN,
 					GrantType.JWT_BEARER),
 				Arrays.asList(
 					"everything", "everything.read", "everything.write"));
 			createOAuth2ApplicationWithClientSecretPost(
-				user.getCompanyId(), user, TEST_CLIENT_ID_6,
-				_TEST_CLIENT_SECRET,
+				user.getCompanyId(), user, TEST_CLIENT_ID_6, CLIENT_SECRET,
 				Arrays.asList(
 					GrantType.RESOURCE_OWNER_PASSWORD, GrantType.REFRESH_TOKEN,
 					GrantType.JWT_BEARER),
@@ -200,9 +196,6 @@ public abstract class BaseTokenEndpointTestCase extends BaseClientTestCase {
 		return getInvocationBuilder(
 			null, getTokenWebTarget(), Function.identity());
 	}
-
-	private static final String _TEST_CLIENT_SECRET =
-		"oauthTestApplicationSecret";
 
 	private static final String _TEST_CLIENT_SECRET_NOT_BASE64 =
 		"secret-2527c3ad-be54-dcea-18a3-ab349ff637ac";

@@ -68,7 +68,7 @@ public class RefreshTokenAuthorizationGrantTest
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
 		formData.add("client_id", "oauthTestApplication");
-		formData.add("client_secret", "oauthTestApplicationSecret");
+		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "refresh_token");
 		formData.add("refresh_token", jsonObject.getString("refresh_token"));
 

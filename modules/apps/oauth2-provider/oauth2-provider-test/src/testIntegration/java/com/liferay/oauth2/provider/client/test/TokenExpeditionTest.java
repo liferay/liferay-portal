@@ -105,7 +105,7 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 			formData = new MultivaluedHashMap<>();
 
 			formData.add("client_id", "wrong");
-			formData.add("client_secret", "oauthTestApplicationSecret");
+			formData.add("client_secret", CLIENT_SECRET);
 			formData.add("grant_type", "client_credentials");
 
 			errorString = parseError(
@@ -117,7 +117,7 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 		formData = new MultivaluedHashMap<>();
 
 		formData.add("client_id", "oauthTestApplication");
-		formData.add("client_secret", "oauthTestApplicationSecret");
+		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "client_credentials");
 
 		WebTarget webTarget = getWebTarget("/annotated");

@@ -55,7 +55,7 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
 		formData.add("client_id", "oauthTestApplicationRO");
-		formData.add("client_secret", "oauthTestApplicationSecret");
+		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "password");
 		formData.add("password", PropsValues.DEFAULT_ADMIN_PASSWORD);
 		formData.add("username", _user.getEmailAddress());
