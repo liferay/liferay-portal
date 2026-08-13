@@ -5,6 +5,8 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+
 export class NotificationsPage {
 	readonly page: Page;
 	readonly backButton: Locator;
@@ -56,15 +58,27 @@ export class NotificationsPage {
 	}
 
 	async goto(userName: string = 'Test Test') {
-		await this.page.getByLabel(`${userName} User Profile`).click();
 
 		// The control panel sidebar can hold a menu item also named
 		// Notifications, the push notifications portlet's entry, so stay
-		// inside the dropdown this click just opened.
+		// inside the profile dropdown. A click dispatched before the
+		// dropdown's scripts attach opens nothing, so click until the
+		// dropdown holds the item about to be used.
 
-		await this.page
+		const notificationsMenuItem = this.page
 			.locator('.dropdown-menu.show')
-			.getByRole('menuitem', {name: 'Notifications'})
-			.click();
+			.getByRole('menuitem', {name: 'Notifications'});
+
+		await clickAndExpectToBeVisible({
+			target: notificationsMenuItem,
+			trigger: this.page.getByLabel(`${userName} User Profile`),
+		});
+
+		await notificationsMenuItem.click();
+
+		await this.page.waitForURL(
+			/com_liferay_notifications_web_portlet_NotificationsPortlet/,
+			{waitUntil: 'commit'}
+		);
 	}
 }
