@@ -6,12 +6,10 @@
 package com.liferay.portal.util;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.model.impl.ThemeImpl;
 
 /**
@@ -27,13 +25,6 @@ public class ThemeFactoryUtil {
 	public static String getDefaultRegularThemeId(long companyId) {
 		String defaultRegularThemeId = PrefsPropsUtil.getString(
 			companyId, PropsKeys.DEFAULT_REGULAR_THEME_ID);
-
-		if (defaultRegularThemeId.equals(
-				PropsUtil.get(PropsKeys.DEFAULT_REGULAR_THEME_ID)) &&
-			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57922")) {
-
-			defaultRegularThemeId = "classic2_WAR_classic2theme";
-		}
 
 		return PortalUtil.getJsSafePortletId(defaultRegularThemeId);
 	}
