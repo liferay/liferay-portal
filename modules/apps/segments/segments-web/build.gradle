@@ -10,6 +10,7 @@ dependencies {
 	compileOnly project(":apps:analytics:analytics-settings-rest-api")
 	compileOnly project(":apps:application-list:application-list-api")
 	compileOnly project(":apps:asset:asset-tags-item-selector-api")
+	compileOnly project(":apps:audiences:audiences-api")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:frontend-js:frontend-js-loader-modules-extender-api")
