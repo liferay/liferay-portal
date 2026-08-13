@@ -644,30 +644,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 	}
 
-	private void _testGetSiteSitePageRenderedPagePortalURL(
-			String friendlyURL, String virtualHostname)
-		throws Exception {
-
-		int port = PortalUtil.getPortalServerPort(false);
-
-		SitePageResource sitePageResource = SitePageResource.builder(
-		).authentication(
-			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
-		).endpoint(
-			virtualHostname, port, "http"
-		).build();
-
-		String pageHTML = sitePageResource.getSiteSitePageRenderedPage(
-			testGroup.getGroupId(), friendlyURL);
-
-		Assert.assertTrue(
-			pageHTML,
-			pageHTML.contains(
-				StringBundler.concat(
-					"getPortalURL: () => 'http://", virtualHostname, ":", port,
-					"'")));
-	}
-
 	private String _getRandomFriendlyURL() {
 		String urlTitle = StringUtil.toLowerCase(
 			RandomTestUtil.randomString(
@@ -934,7 +910,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			layout.getFriendlyURL(), StringPool.SLASH);
 
 		_testGetSiteSitePageRenderedPagePortalURL(friendlyURL, "127.0.0.1");
-		_testGetSiteSitePageRenderedPagePortalURL(friendlyURL, testCompany.getVirtualHostname());
+		_testGetSiteSitePageRenderedPagePortalURL(
+			friendlyURL, testCompany.getVirtualHostname());
 
 		_virtualHostLocalService.updateVirtualHosts(
 			layout.getCompanyId(), layoutSet.getLayoutSetId(), new TreeMap<>());
@@ -952,6 +929,30 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testGetSiteSitePageRenderedPagePortalURL(friendlyURL, "127.0.0.1");
 
 		GroupTestUtil.deleteGroup(group);
+	}
+
+	private void _testGetSiteSitePageRenderedPagePortalURL(
+			String friendlyURL, String virtualHostname)
+		throws Exception {
+
+		int port = PortalUtil.getPortalServerPort(false);
+
+		SitePageResource sitePageResource = SitePageResource.builder(
+		).authentication(
+			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			virtualHostname, port, "http"
+		).build();
+
+		String pageHTML = sitePageResource.getSiteSitePageRenderedPage(
+			testGroup.getGroupId(), friendlyURL);
+
+		Assert.assertTrue(
+			pageHTML,
+			pageHTML.contains(
+				StringBundler.concat(
+					"getPortalURL: () => 'http://", virtualHostname, ":", port,
+					"'")));
 	}
 
 	private void _testGetSiteSitePagesPagePageSet() throws Exception {
