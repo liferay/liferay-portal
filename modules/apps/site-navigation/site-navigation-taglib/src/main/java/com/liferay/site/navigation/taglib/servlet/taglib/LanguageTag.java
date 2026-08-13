@@ -222,8 +222,27 @@ public class LanguageTag extends IncludeTag {
 		}
 
 		try {
-			return PortalUtil.getChangeLanguageURLs(
-				currentURL, httpServletRequest, locales, themeDisplay);
+			Map<Locale, String> changeLanguageURLs =
+				PortalUtil.getChangeLanguageURLs(
+					currentURL, httpServletRequest, locales, themeDisplay);
+
+			String portalURL = themeDisplay.getPortalURL();
+
+			Map<Locale, String> relativeChangeLanguageURLs = new HashMap<>();
+
+			for (Map.Entry<Locale, String> entry :
+					changeLanguageURLs.entrySet()) {
+
+				String url = entry.getValue();
+
+				if (url.startsWith(portalURL)) {
+					url = url.substring(portalURL.length());
+				}
+
+				relativeChangeLanguageURLs.put(entry.getKey(), url);
+			}
+
+			return relativeChangeLanguageURLs;
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
