@@ -149,7 +149,7 @@ public class ResourceUtil {
 	private static final Map<ServiceReference<Portlet>, ServletContext>
 		_servletContexts = new ConcurrentHashMap<>();
 
-	private static class PortletResourcesServiceTrackerCustomizer
+	private static class ResourcesServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer<Portlet, Portlet> {
 
 		@Override
@@ -187,7 +187,7 @@ public class ResourceUtil {
 	static {
 		_serviceTracker = new ServiceTracker<>(
 			_bundleContext, Portlet.class,
-			new PortletResourcesServiceTrackerCustomizer());
+			new ResourcesServiceTrackerCustomizer());
 
 		_serviceTracker.open();
 	}
