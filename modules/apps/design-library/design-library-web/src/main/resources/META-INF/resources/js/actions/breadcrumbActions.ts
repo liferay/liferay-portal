@@ -4,11 +4,11 @@
  */
 
 import {openModal} from 'frontend-js-components-web';
-import {sub} from 'frontend-js-web';
+import {navigate} from 'frontend-js-web';
 
 import DesignLibraryConnectedSitesModal from '../modal/DesignLibraryConnectedSitesModal';
 import DesignLibraryManageMembersModal from '../modal/DesignLibraryManageMembersModal';
-import confirmAndDeleteEntryAction from '../props_transformer/actions/confirmAndDeleteEntryAction';
+import confirmAndDeleteEntriesAction from '../props_transformer/actions/confirmAndDeleteEntriesAction';
 
 export function confirmDeleteDesignLibrary({
 	descriptiveName,
@@ -19,24 +19,18 @@ export function confirmDeleteDesignLibrary({
 	href: string;
 	redirect?: string;
 }) {
-	confirmAndDeleteEntryAction({
-		bodyHTML: `
-			<p>${Liferay.Language.get('delete-design-library-confirmation-body-main')}</p>
-			<p>${Liferay.Language.get('delete-design-library-confirmation-body-warning')}</p>
-		`,
-		deleteAction: {
-			href,
-			method: 'DELETE',
+	confirmAndDeleteEntriesAction({
+		items: [
+			{
+				actions: {delete: {href, method: 'DELETE'}},
+				name: descriptiveName,
+			},
+		],
+		loadData: () => {
+			if (redirect) {
+				navigate(redirect);
+			}
 		},
-		redirect,
-		successMessage: sub(
-			Liferay.Language.get('x-was-successfully-deleted'),
-			`<strong>${Liferay.Util.escapeHTML(descriptiveName)}</strong>`
-		),
-		title: sub(
-			Liferay.Language.get('delete-design-library-confirmation-title'),
-			descriptiveName
-		),
 	});
 }
 

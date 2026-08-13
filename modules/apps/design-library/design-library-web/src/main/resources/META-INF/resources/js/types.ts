@@ -19,6 +19,7 @@ interface Creator {
 }
 
 export interface DesignLibrary {
+	actions?: {delete?: {href: string; method: string}};
 	assetLibraryKey: string;
 	creator: Creator;
 	dateModified: string;
