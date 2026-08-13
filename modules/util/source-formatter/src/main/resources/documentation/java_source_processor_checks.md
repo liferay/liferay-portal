@@ -208,7 +208,6 @@ JavaUpgradeModelPermissionsCheck | [Upgrade](upgrade_checks.md#upgrade-checks) |
 JavaUpgradeVersionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Verifies that the correct upgrade versions are used in classes that implement `UpgradeStepRegistrator`. |
 JavaVariableTypeCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on the modifiers on variables. |
 JavaVerifyUpgradeConnectionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases where `DataAccess.getConnection` is used (instead of using the available global variable `connection`). |
-JavaVirtualThreadsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that virtual threads are not used (e.g., Executors.newVirtualThreadPerTaskExecutor(), Thread.ofVirtual(), Thread.startVirtualThread()). |
 JavaXMLSecurityCheck | [Security](security_checks.md#security-checks) | Finds possible XXE or Quadratic Blowup security vulnerabilities. |
 JavadocCheck | [Javadoc](javadoc_checks.md#javadoc-checks) | Performs several checks on javadoc. |
 [JavadocStyleCheck](https://checkstyle.sourceforge.io/checks/javadoc/javadocstyle.html) | [Javadoc](javadoc_checks.md#javadoc-checks) | Validates Javadoc comments to help ensure they are well formed. |
@@ -334,5 +333,6 @@ UpgradeRemovedAPICheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Finds cas
 ValidatorIsNullCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Ensures that only variable of type `Long`, `Serializable` or `String` is passed to method `com.liferay.portal.kernel.util.Validator.isNull`. |
 VariableDeclarationAsUsedCheck | [Performance](performance_checks.md#performance-checks) | Finds cases where a variable declaration can be inlined or moved closer to where it is used. |
 VariableNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks that variable names follow naming conventions. |
+VirtualThreadsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that virtual threads are not used (e.g., Executors.newVirtualThreadPerTaskExecutor(), Thread.ofVirtual(), Thread.startVirtualThread()). |
 [WhitespaceAfterCheck](https://checkstyle.sourceforge.io/checks/whitespace/whitespaceafter.html) | [Styling](styling_checks.md#styling-checks) | Checks that a token is followed by whitespace, with the exception that it does not check for whitespace after the semicolon of an empty for iterator. |
 [WhitespaceAroundCheck](https://checkstyle.sourceforge.io/checks/whitespace/whitespacearound.html) | [Styling](styling_checks.md#styling-checks) | Checks that a token is surrounded by whitespace. |
