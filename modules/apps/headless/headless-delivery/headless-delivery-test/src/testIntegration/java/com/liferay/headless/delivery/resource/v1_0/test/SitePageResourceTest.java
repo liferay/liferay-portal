@@ -644,7 +644,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 	}
 
-	private void _assertPortalURL(String friendlyURL, String host)
+	private void _testGetSiteSitePageRenderedPagePortalURL(
+			String friendlyURL, String virtualHostname)
 		throws Exception {
 
 		int port = PortalUtil.getPortalServerPort(false);
@@ -653,7 +654,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 		).endpoint(
-			host, port, "http"
+			virtualHostname, port, "http"
 		).build();
 
 		String pageHTML = sitePageResource.getSiteSitePageRenderedPage(
@@ -663,7 +664,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			pageHTML,
 			pageHTML.contains(
 				StringBundler.concat(
-					"getPortalURL: () => 'http://", host, ":", port, "'")));
+					"getPortalURL: () => 'http://", virtualHostname, ":", port,
+					"'")));
 	}
 
 	private String _getRandomFriendlyURL() {
@@ -925,14 +927,14 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_virtualHostLocalService.updateVirtualHosts(
 			layout.getCompanyId(), layoutSet.getLayoutSetId(),
 			TreeMapBuilder.put(
-				_LOOPBACK_VIRTUAL_HOSTNAME, StringPool.BLANK
+				"127.0.0.1", StringPool.BLANK
 			).build());
 
 		String friendlyURL = StringUtil.removeFirst(
 			layout.getFriendlyURL(), StringPool.SLASH);
 
-		_assertPortalURL(friendlyURL, testCompany.getVirtualHostname());
-		_assertPortalURL(friendlyURL, _LOOPBACK_VIRTUAL_HOSTNAME);
+		_testGetSiteSitePageRenderedPagePortalURL(friendlyURL, "127.0.0.1");
+		_testGetSiteSitePageRenderedPagePortalURL(friendlyURL, testCompany.getVirtualHostname());
 
 		_virtualHostLocalService.updateVirtualHosts(
 			layout.getCompanyId(), layoutSet.getLayoutSetId(), new TreeMap<>());
@@ -944,10 +946,10 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_virtualHostLocalService.updateVirtualHosts(
 			group.getCompanyId(), layoutSet.getLayoutSetId(),
 			TreeMapBuilder.put(
-				_LOOPBACK_VIRTUAL_HOSTNAME, StringPool.BLANK
+				"127.0.0.1", StringPool.BLANK
 			).build());
 
-		_assertPortalURL(friendlyURL, _LOOPBACK_VIRTUAL_HOSTNAME);
+		_testGetSiteSitePageRenderedPagePortalURL(friendlyURL, "127.0.0.1");
 
 		GroupTestUtil.deleteGroup(group);
 	}
@@ -2502,8 +2504,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	private static final String _CLASS_NAME_EXCEPTION_MAPPER =
 		"com.liferay.headless.delivery.internal.resource.v1_0." +
 			"SitePageResourceImpl";
-
-	private static final String _LOOPBACK_VIRTUAL_HOSTNAME = "127.0.0.1";
 
 	private static final PagePermission _PAGE_PERMISSIONS =
 		new PagePermission() {
