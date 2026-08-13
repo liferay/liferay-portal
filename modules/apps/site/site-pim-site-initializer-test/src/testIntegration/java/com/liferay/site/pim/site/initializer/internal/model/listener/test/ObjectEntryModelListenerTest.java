@@ -9,15 +9,19 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.entry.folder.util.ObjectEntryFolderThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -66,6 +70,77 @@ public class ObjectEntryModelListenerTest {
 	}
 
 	@Test
+	public void testOnAfterRemove() throws Exception {
+		long groupId = _addSpaceDepotEntryGroupId();
+
+		long objectEntryFolderId = _getObjectEntryFolderId(
+			groupId,
+			PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
+
+		ObjectEntry objectEntry1 = _addPIMBaseSKUObjectEntry(
+			groupId, objectEntryFolderId);
+
+		_addPIMLinkObjectEntry(
+			groupId, objectEntry1.getModelClassName(),
+			objectEntry1.getExternalReferenceCode());
+
+		ObjectEntry objectEntry2 = _addPIMBaseSKUObjectEntry(
+			groupId, objectEntryFolderId);
+
+		_addPIMLinkObjectEntry(
+			groupId, objectEntry2.getModelClassName(),
+			objectEntry2.getExternalReferenceCode());
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry1.getObjectEntryId());
+
+		Assert.assertEquals(
+			0,
+			_getValuesListCount(
+				objectEntry1.getExternalReferenceCode(),
+				objectEntry1.getModelClassName(), groupId));
+		Assert.assertEquals(
+			1,
+			_getValuesListCount(
+				objectEntry2.getExternalReferenceCode(),
+				objectEntry2.getModelClassName(), groupId));
+	}
+
+	@Test
+	public void testOnAfterUpdate() throws Exception {
+		long groupId = _addSpaceDepotEntryGroupId();
+
+		ObjectEntry objectEntry = _addPIMBaseSKUObjectEntry(
+			groupId,
+			_getObjectEntryFolderId(
+				groupId,
+				PIMObjectEntryFolderConstants.
+					EXTERNAL_REFERENCE_CODE_PRODUCTS));
+
+		String externalReferenceCode = objectEntry.getExternalReferenceCode();
+
+		_addPIMLinkObjectEntry(
+			groupId, objectEntry.getModelClassName(), externalReferenceCode);
+
+		String newExternalReferenceCode = RandomTestUtil.randomString();
+
+		objectEntry.setExternalReferenceCode(newExternalReferenceCode);
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		Assert.assertEquals(
+			0,
+			_getValuesListCount(
+				externalReferenceCode, objectEntry.getModelClassName(),
+				groupId));
+		Assert.assertEquals(
+			1,
+			_getValuesListCount(
+				newExternalReferenceCode, objectEntry.getModelClassName(),
+				groupId));
+	}
+
+	@Test
 	public void testOnBeforeCreate() throws Exception {
 		_testOnBeforeCreateMovesEntryToProductsFolder();
 		_testOnBeforeCreateRecreatesMissingProductsFolder();
@@ -99,11 +174,7 @@ public class ObjectEntryModelListenerTest {
 			long groupId, String className, String externalReferenceCode)
 		throws Exception {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
-					TestPropsValues.getCompanyId());
+		ObjectDefinition objectDefinition = _getPIMLinkObjectDefinition();
 
 		_objectEntryLocalService.addObjectEntry(
 			groupId, TestPropsValues.getUserId(),
@@ -143,6 +214,33 @@ public class ObjectEntryModelListenerTest {
 					TestPropsValues.getCompanyId());
 
 		return objectEntryFolder.getObjectEntryFolderId();
+	}
+
+	private ObjectDefinition _getPIMLinkObjectDefinition() throws Exception {
+		return _objectDefinitionLocalService.
+			fetchObjectDefinitionByExternalReferenceCode(
+				PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
+				TestPropsValues.getCompanyId());
+	}
+
+	private int _getValuesListCount(
+			String classExternalReferenceCode, String className, long groupId)
+		throws Exception {
+
+		ObjectDefinition objectDefinition = _getPIMLinkObjectDefinition();
+
+		return _objectEntryLocalService.getValuesListCount(
+			TestPropsValues.getCompanyId(), new Long[] {groupId},
+			new Long[] {objectDefinition.getObjectDefinitionId()},
+			_filterFactory.create(
+				StringBundler.concat(
+					"(sourceClassExternalReferenceCode eq '",
+					classExternalReferenceCode, "' and sourceClassName eq '",
+					className, "') or (",
+					"targetClassExternalReferenceCode eq '",
+					classExternalReferenceCode, "' and targetClassName eq '",
+					className, "')"),
+				objectDefinition));
 	}
 
 	private void _testOnBeforeCreateMovesEntryToProductsFolder()
@@ -256,6 +354,11 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject(
+		filter = "filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT
+	)
+	private FilterFactory<Predicate> _filterFactory;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
