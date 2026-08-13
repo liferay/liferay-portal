@@ -11,7 +11,8 @@
 	},
 	"description": "ClayToolbar component",
 	"devDependencies": {
-		"cross-env": "7.0.0"
+		"cross-env": "7.0.0",
+		"prettier": "3.2.5"
 	},
 	"files": [
 		"lib"
