@@ -303,7 +303,7 @@ public class JenkinsStopBuildUtilTest
 
 		UrlReader urlReader = mockUrlReader();
 
-		AtomicInteger readCount = new AtomicInteger();
+		AtomicInteger readsCount = new AtomicInteger();
 
 		Mockito.doAnswer(
 			invocation -> {
@@ -311,7 +311,7 @@ public class JenkinsStopBuildUtilTest
 
 				JSONObject jsonObject = new JSONObject();
 
-				if (readCount.getAndIncrement() < buildingResultsCount) {
+				if (readsCount.getAndIncrement() < buildingResultsCount) {
 					jsonObject.put("result", JSONObject.NULL);
 				}
 				else {
