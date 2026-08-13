@@ -25,6 +25,7 @@ export class DataMigrationCenterPage {
 	readonly attributeCodeCheckBox: Locator;
 	readonly importStrategySelector: Locator;
 	readonly fileSelector: Locator;
+	readonly nameInput: Locator;
 	readonly nextButton: Locator;
 	readonly scopeSelector: Locator;
 	readonly startImportButton: () => Promise<Locator>;
@@ -54,6 +55,7 @@ export class DataMigrationCenterPage {
 		this.fileSelector = page.locator(
 			'#_com_liferay_batch_planner_web_internal_portlet_BatchPlannerPortlet_importFile'
 		);
+		this.nameInput = page.getByLabel('Name', {exact: true});
 		this.nextButton = page.getByRole('button', {name: 'Next'});
 		this.scopeSelector = page.getByLabel('Scope', {exact: true});
 		this.updateStrategySelector = page.getByLabel('Update Strategy');
@@ -116,10 +118,16 @@ export class DataMigrationCenterPage {
 		entitType: string,
 		filePath: string,
 		importStrategy: string,
-		updateStrategy: string
+		updateStrategy: string,
+		name?: string
 	) {
 		await this.selectFile(filePath);
 		await this.selectEntityType(entitType);
+
+		if (name) {
+			await this.nameInput.fill(name);
+		}
+
 		await this.importStrategySelector.selectOption(importStrategy);
 		await this.updateStrategySelector.selectOption(updateStrategy);
 

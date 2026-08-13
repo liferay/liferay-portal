@@ -15,6 +15,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import createTempFile from '../../../utils/createTempFile';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {dataMigrationCenterPagesTest} from './fixtures/dataMigrationCenterPagesTest';
@@ -1667,6 +1668,76 @@ test('cannot see relationship nested field', async ({
 
 	await expect(page.getByText('testRelationship')).not.toBeVisible();
 });
+
+test(
+	'escapes the plan title in the plan list and plan details views',
+	{tag: '@LPD-101831'},
+	async ({apiHelpers, dataMigrationCenterPage, page}) => {
+		const planNameSuffix = getRandomInt();
+		const planName = `<img src=x onerror="window.xss=1"> ${planNameSuffix}`;
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const {body: objectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition(
+				companyObjectDefinition
+			);
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		// Import a file under a plan name carrying an HTML payload
+
+		await dataMigrationCenterPage.goto();
+		await dataMigrationCenterPage.goToImportFile();
+
+		await dataMigrationCenterPage.importFile(
+			OBJECT_ENTRY_ENTITY_TYPE,
+			path.join(__dirname, '/dependencies/object_entries.csv'),
+			'UPSERT',
+			'UPDATE',
+			planName
+		);
+
+		await expect(
+			page.getByText('The import process completed successfully.')
+		).toBeVisible();
+
+		// Check the plan list view
+
+		await dataMigrationCenterPage.gotoPage();
+
+		const planLink = page
+			.getByRole('table')
+			.getByRole('link', {name: new RegExp(`${planNameSuffix}$`)});
+
+		await expect(planLink).toBeVisible();
+
+		await expect(page.locator('img[src="x"]')).toHaveCount(0);
+		await expect(planLink).toHaveText(planName);
+
+		const planId = new URL(
+			await planLink.getAttribute('href'),
+			page.url()
+		).searchParams.get(
+			'_com_liferay_batch_planner_web_internal_portlet_BatchPlannerPortlet_batchPlannerPlanId'
+		);
+
+		// Check the plan details view
+
+		await planLink.click();
+
+		await expect(page.getByText('Batch Engine Task Details')).toBeVisible();
+
+		await expect(page.locator('img[src="x"]')).toHaveCount(0);
+		await expect(page.getByText(planName, {exact: true})).toBeVisible();
+
+		await apiHelpers.delete(`/o/batch-planner/v1.0/plans/${planId}`);
+	}
+);
 
 test.describe('can rely on anyOf form validation', () => {
 	const studentObjectDefinition: ObjectDefinition = {
