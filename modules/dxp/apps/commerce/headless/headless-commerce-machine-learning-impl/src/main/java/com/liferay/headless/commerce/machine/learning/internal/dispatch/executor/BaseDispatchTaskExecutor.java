@@ -15,6 +15,7 @@ import com.liferay.dispatch.service.DispatchLogLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.text.DateFormat;
@@ -42,16 +43,13 @@ public abstract class BaseDispatchTaskExecutor
 		AnalyticsConfiguration analyticsConfiguration =
 			analyticsSettingsManager.getAnalyticsConfiguration(companyId);
 
-		for (String analyticsChannelId :
-				analyticsConfiguration.
-					commerceSyncEnabledAnalyticsChannelIds()) {
+		for (long commerceChannelId :
+				analyticsSettingsManager.getCommerceChannelIds(
+					companyId,
+					GetterUtil.getLongValues(
+						analyticsConfiguration.syncedGroupIds()))) {
 
-			for (Long commerceChannelId :
-					analyticsSettingsManager.getCommerceChannelIds(
-						analyticsChannelId, companyId)) {
-
-				filterStrings.add(filterFunction.apply(commerceChannelId));
-			}
+			filterStrings.add(filterFunction.apply(commerceChannelId));
 		}
 
 		return StringUtil.merge(filterStrings, " or ");
