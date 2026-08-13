@@ -70,7 +70,7 @@ DigitalSignatureConfiguration digitalSignatureConfiguration = (DigitalSignatureC
 
 	<div class="form-group row">
 		<div class="col-md-6">
-			<aui:select label="environment" name="environment" required="<%= !Objects.equals(digitalSignatureConfiguration.siteSettingsStrategy(), "always-override") %>" value="<%= digitalSignatureConfiguration.environment() %>">
+			<aui:select label="environment" name="environment" required='<%= !Objects.equals(digitalSignatureConfiguration.siteSettingsStrategy(), "always-override") %>' value="<%= digitalSignatureConfiguration.environment() %>">
 				<aui:option label="" value="" />
 
 				<%
