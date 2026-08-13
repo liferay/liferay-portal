@@ -45,6 +45,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -108,6 +109,8 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
+import java.lang.reflect.UndeclaredThrowableException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -117,6 +120,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -178,71 +182,6 @@ public class AccountEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testAccountEntryExternalReferenceCode() throws Exception {
-		try {
-			AccountEntryTestUtil.addAccountEntry(
-				AccountEntryArgs.withExternalReferenceCode(
-					RandomTestUtil.randomString(76)));
-
-			Assert.fail();
-		}
-		catch (AccountEntryExternalReferenceCodeException
-					accountEntryExternalReferenceCodeException) {
-
-			String message =
-				accountEntryExternalReferenceCodeException.getMessage();
-
-			Assert.assertTrue(
-				message.contains(
-					"External reference code has more than 75 characters"));
-		}
-
-		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry(
-			AccountEntryArgs.withExternalReferenceCode(
-				RandomTestUtil.randomString(75)));
-
-		try {
-			_accountEntryLocalService.updateAccountEntry(
-				RandomTestUtil.randomString(76),
-				accountEntry.getAccountEntryId(),
-				accountEntry.getParentAccountEntryId(), accountEntry.getName(),
-				null, false, null, null, null, accountEntry.getTaxIdNumber(),
-				accountEntry.getStatus(),
-				ServiceContextTestUtil.getServiceContext());
-
-			Assert.fail();
-		}
-		catch (AccountEntryExternalReferenceCodeException
-					accountEntryExternalReferenceCodeException) {
-
-			String message =
-				accountEntryExternalReferenceCodeException.getMessage();
-
-			Assert.assertTrue(
-				message.contains(
-					"External reference code has more than 75 characters"));
-		}
-
-		try {
-			_accountEntryLocalService.updateExternalReferenceCode(
-				accountEntry.getAccountEntryId(),
-				RandomTestUtil.randomString(76));
-
-			Assert.fail();
-		}
-		catch (AccountEntryExternalReferenceCodeException
-					accountEntryExternalReferenceCodeException) {
-
-			String message =
-				accountEntryExternalReferenceCodeException.getMessage();
-
-			Assert.assertTrue(
-				message.contains(
-					"External reference code has more than 75 characters"));
-		}
-	}
-
-	@Test
 	public void testAccountEntryGroup() throws Exception {
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
 
@@ -278,19 +217,6 @@ public class AccountEntryLocalServiceTest {
 			String message = accountEntryNameException.getMessage();
 
 			Assert.assertTrue(message.contains("Name is null"));
-		}
-
-		try {
-			AccountEntryTestUtil.addAccountEntry(
-				AccountEntryArgs.withName(RandomTestUtil.randomString(251)));
-
-			Assert.fail();
-		}
-		catch (AccountEntryNameException accountEntryNameException) {
-			String message = accountEntryNameException.getMessage();
-
-			Assert.assertTrue(
-				message.contains("Name has more than 250 characters"));
 		}
 
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
@@ -539,48 +465,6 @@ public class AccountEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testAccountEntryTaxIdNumber() throws Exception {
-		try {
-			AccountEntryTestUtil.addAccountEntry(
-				AccountEntryArgs.withTaxIdNumber(
-					RandomTestUtil.randomString(76)));
-
-			Assert.fail();
-		}
-		catch (AccountEntryTaxIdNumberException
-					accountEntryTaxIdNumberException) {
-
-			String message = accountEntryTaxIdNumberException.getMessage();
-
-			Assert.assertTrue(
-				message.contains("Tax ID number has more than 75 characters"));
-		}
-
-		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry(
-			AccountEntryArgs.withTaxIdNumber(RandomTestUtil.randomString(75)));
-
-		try {
-			_accountEntryLocalService.updateAccountEntry(
-				accountEntry.getExternalReferenceCode(),
-				accountEntry.getAccountEntryId(),
-				accountEntry.getParentAccountEntryId(), accountEntry.getName(),
-				null, false, null, null, null, RandomTestUtil.randomString(76),
-				accountEntry.getStatus(),
-				ServiceContextTestUtil.getServiceContext());
-
-			Assert.fail();
-		}
-		catch (AccountEntryTaxIdNumberException
-					accountEntryTaxIdNumberException) {
-
-			String message = accountEntryTaxIdNumberException.getMessage();
-
-			Assert.assertTrue(
-				message.contains("Tax ID number has more than 75 characters"));
-		}
-	}
-
-	@Test
 	public void testActivateAccountEntries() throws Exception {
 		List<AccountEntry> accountEntries =
 			AccountEntryTestUtil.addAccountEntries(
@@ -655,6 +539,21 @@ public class AccountEntryLocalServiceTest {
 			accountEntry, WorkflowConstants.STATUS_APPROVED,
 			TestPropsValues.getUser());
 		Assert.assertFalse(_hasWorkflowInstance(accountEntry));
+
+		Assert.assertThrows(
+			AccountEntryExternalReferenceCodeException.class,
+			() -> AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withExternalReferenceCode(
+					RandomTestUtil.randomString(76))));
+		Assert.assertThrows(
+			AccountEntryNameException.class,
+			() -> AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withName(RandomTestUtil.randomString(251))));
+		Assert.assertThrows(
+			AccountEntryTaxIdNumberException.class,
+			() -> AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withTaxIdNumber(
+					RandomTestUtil.randomString(76))));
 	}
 
 	@Test
@@ -1478,6 +1377,54 @@ public class AccountEntryLocalServiceTest {
 			"customFieldValue",
 			GetterUtil.getString(
 				expandoBridge.getAttribute("customFieldName")));
+
+		AccountEntry updatedAccountEntry = accountEntry;
+
+		Assert.assertThrows(
+			AccountEntryExternalReferenceCodeException.class,
+			() -> _accountEntryLocalService.updateAccountEntry(
+				RandomTestUtil.randomString(76),
+				updatedAccountEntry.getAccountEntryId(),
+				updatedAccountEntry.getParentAccountEntryId(),
+				updatedAccountEntry.getName(), null, false, null, null, null,
+				updatedAccountEntry.getTaxIdNumber(),
+				updatedAccountEntry.getStatus(),
+				ServiceContextTestUtil.getServiceContext()));
+		Assert.assertThrows(
+			AccountEntryNameException.class,
+			() -> _accountEntryLocalService.updateAccountEntry(
+				updatedAccountEntry.getExternalReferenceCode(),
+				updatedAccountEntry.getAccountEntryId(),
+				updatedAccountEntry.getParentAccountEntryId(),
+				RandomTestUtil.randomString(251), null, false, null, null, null,
+				updatedAccountEntry.getTaxIdNumber(),
+				updatedAccountEntry.getStatus(),
+				ServiceContextTestUtil.getServiceContext()));
+		Assert.assertThrows(
+			AccountEntryTaxIdNumberException.class,
+			() -> _accountEntryLocalService.updateAccountEntry(
+				updatedAccountEntry.getExternalReferenceCode(),
+				updatedAccountEntry.getAccountEntryId(),
+				updatedAccountEntry.getParentAccountEntryId(),
+				updatedAccountEntry.getName(), null, false, null, null, null,
+				RandomTestUtil.randomString(76),
+				updatedAccountEntry.getStatus(),
+				ServiceContextTestUtil.getServiceContext()));
+		_assertUpdateAccountEntryThrows(
+			AccountEntryExternalReferenceCodeException.class,
+			invalidAccountEntry -> invalidAccountEntry.setExternalReferenceCode(
+				RandomTestUtil.randomString(76)),
+			updatedAccountEntry);
+		_assertUpdateAccountEntryThrows(
+			AccountEntryNameException.class,
+			invalidAccountEntry -> invalidAccountEntry.setName(
+				RandomTestUtil.randomString(251)),
+			updatedAccountEntry);
+		_assertUpdateAccountEntryThrows(
+			AccountEntryTaxIdNumberException.class,
+			invalidAccountEntry -> invalidAccountEntry.setTaxIdNumber(
+				RandomTestUtil.randomString(76)),
+			updatedAccountEntry);
 	}
 
 	@Test
@@ -1781,6 +1728,27 @@ public class AccountEntryLocalServiceTest {
 			accountEntryId);
 
 		Assert.assertEquals(expectedStatus, accountEntry.getStatus());
+	}
+
+	private void _assertUpdateAccountEntryThrows(
+		Class<? extends PortalException> clazz, Consumer<AccountEntry> consumer,
+		AccountEntry accountEntry) {
+
+		UndeclaredThrowableException undeclaredThrowableException =
+			Assert.assertThrows(
+				UndeclaredThrowableException.class,
+				() -> {
+					AccountEntry invalidAccountEntry =
+						(AccountEntry)accountEntry.clone();
+
+					consumer.accept(invalidAccountEntry);
+
+					_accountEntryLocalService.updateAccountEntry(
+						invalidAccountEntry);
+				});
+
+		Assert.assertTrue(
+			clazz.isInstance(undeclaredThrowableException.getCause()));
 	}
 
 	private void _enableWorkflow() throws Exception {

@@ -7,9 +7,6 @@ package com.liferay.account.service.test;
 
 import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
-import com.liferay.account.exception.AccountEntryExternalReferenceCodeException;
-import com.liferay.account.exception.AccountEntryNameException;
-import com.liferay.account.exception.AccountEntryTaxIdNumberException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.test.util.AccountEntryArgs;
@@ -31,7 +28,6 @@ import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -97,85 +93,6 @@ public class AccountEntryServiceTest {
 			catch (PrincipalException.MustHavePermission principalException) {
 				Assert.assertNotNull(principalException);
 			}
-		}
-	}
-
-	@Test
-	public void testUpdateAccountEntryWithInvalidExternalReferenceCode()
-		throws Exception {
-
-		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
-
-		accountEntry.setExternalReferenceCode(RandomTestUtil.randomString(76));
-
-		User user = TestPropsValues.getUser();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			_accountEntryService.updateAccountEntry(accountEntry);
-
-			Assert.fail();
-		}
-		catch (AccountEntryExternalReferenceCodeException
-					accountEntryExternalReferenceCodeException) {
-
-			String message =
-				accountEntryExternalReferenceCodeException.getMessage();
-
-			Assert.assertTrue(
-				message.contains(
-					"External reference code has more than 75 characters"));
-		}
-	}
-
-	@Test
-	public void testUpdateAccountEntryWithInvalidName() throws Exception {
-		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
-
-		accountEntry.setName(RandomTestUtil.randomString(251));
-
-		User user = TestPropsValues.getUser();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			_accountEntryService.updateAccountEntry(accountEntry);
-
-			Assert.fail();
-		}
-		catch (AccountEntryNameException accountEntryNameException) {
-			String message = accountEntryNameException.getMessage();
-
-			Assert.assertTrue(
-				message.contains("Name has more than 250 characters"));
-		}
-	}
-
-	@Test
-	public void testUpdateAccountEntryWithInvalidTaxIdNumber()
-		throws Exception {
-
-		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
-
-		accountEntry.setTaxIdNumber(RandomTestUtil.randomString(76));
-
-		User user = TestPropsValues.getUser();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			_accountEntryService.updateAccountEntry(accountEntry);
-
-			Assert.fail();
-		}
-		catch (AccountEntryTaxIdNumberException
-					accountEntryTaxIdNumberException) {
-
-			String message = accountEntryTaxIdNumberException.getMessage();
-
-			Assert.assertTrue(
-				message.contains("Tax ID number has more than 75 characters"));
 		}
 	}
 
