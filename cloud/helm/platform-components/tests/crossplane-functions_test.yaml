@@ -16,7 +16,7 @@ tests:
                 equal:
                     path: spec.deploymentTemplate.spec.template.spec.containers[0].resources.limits.memory
                     value: 256Mi
-        it: Appends additional cloud-specific functions
+        it: Appends additional cloud specific functions
         set:
             operatorApplications:
                 crossplane:

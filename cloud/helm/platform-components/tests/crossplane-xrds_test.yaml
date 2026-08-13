@@ -42,7 +42,7 @@ tests:
                     path: spec.names.kind
                     value: LiferayOverlay
                 template: templates/crossplane-xrd-liferayoverlay.yaml
-        it: Defines the cloud-agnostic infrastructure APIs under the shared group
+        it: Defines the cloud agnostic infrastructure APIs under the shared group
     -   asserts:
             -   hasDocuments:
                     count: 0
