@@ -29,7 +29,6 @@ import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -279,7 +278,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		DynamicQuery dynamicQuery = _getDynamicQuery(
 			creatorId, groupId, portletId, search, status);
 
-		_setSorts(dynamicQuery, sorts);
+		BackgroundTaskUtil.addOrders(dynamicQuery, sorts);
 
 		return _backgroundTaskLocalService.dynamicQuery(
 			dynamicQuery, pagination.getStartPosition(),
@@ -489,43 +488,6 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 		return _toExportProcess(
 			_backgroundTaskLocalService.getBackgroundTask(backgroundTaskId));
-	}
-
-	private void _setSorts(DynamicQuery dynamicQuery, Sort[] sorts) {
-		if (sorts == null) {
-			dynamicQuery.addOrder(OrderFactoryUtil.desc("createDate"));
-
-			return;
-		}
-
-		for (Sort sort : sorts) {
-			String fieldName = sort.getFieldName();
-
-			fieldName = StringUtil.removeSubstring(fieldName, "_sortable");
-
-			if (fieldName.equals("creator")) {
-				fieldName = "userName";
-			}
-			else if (fieldName.equals("dateCompleted")) {
-				fieldName = "completionDate";
-			}
-			else if (fieldName.equals("dateCreated")) {
-				fieldName = "createDate";
-			}
-			else if (fieldName.equals("dateModified")) {
-				fieldName = "modifiedDate";
-			}
-			else if (fieldName.equals("id")) {
-				fieldName = "backgroundTaskId";
-			}
-
-			if (sort.isReverse()) {
-				dynamicQuery.addOrder(OrderFactoryUtil.desc(fieldName));
-			}
-			else {
-				dynamicQuery.addOrder(OrderFactoryUtil.asc(fieldName));
-			}
-		}
 	}
 
 	private ExportProcess _toExportProcess(BackgroundTask backgroundTask) {
