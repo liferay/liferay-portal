@@ -74,6 +74,18 @@
 		<available file="build.xml" />
 	</condition>
 
+	<condition property="download.artifact.private">
+		<and>
+			<or>
+				<isset property="artifact.private" />
+				<istrue value="${download.artifact.private.override}" />
+			</or>
+			<not>
+				<equals arg1="${build.repository.private.username}" arg2="" />
+			</not>
+		</and>
+	</condition>
+
 	<target if="artifact.hotfix" name="copy-hotfix-artifact">
 		<copy
 			todir="${dist.dir}"
@@ -104,15 +116,7 @@
 
 	<target depends="get-artifact-properties-releng" name="download-artifact" unless="artifact.exclude">
 		<if>
-			<and>
-				<or>
-					<contains string="${basedir}" substring="dxp${file.separator}" />
-					<istrue value="${download.artifact.private.override}" />
-				</or>
-				<not>
-					<equals arg1="${build.repository.private.username}" arg2="" />
-				</not>
-			</and>
+			<isset property="download.artifact.private" />
 			<then>
 				<get
 					dest="${dist.dir}"
@@ -147,15 +151,7 @@
 		<mkdir dir="${artifact.location.dest.dir}" />
 
 		<if>
-			<and>
-				<or>
-					<contains string="${basedir}" substring="dxp${file.separator}" />
-					<istrue value="${download.artifact.private.override}" />
-				</or>
-				<not>
-					<equals arg1="${build.repository.private.username}" arg2="" />
-				</not>
-			</and>
+			<isset property="download.artifact.private" />
 			<then>
 				<get
 					dest="${artifact.location.dest.dir}"
@@ -180,15 +176,7 @@
 			<isset property="artifact.sources.url" />
 			<then>
 				<if>
-					<and>
-						<or>
-							<contains string="${basedir}" substring="dxp${file.separator}" />
-							<istrue value="${download.artifact.private.override}" />
-						</or>
-						<not>
-							<equals arg1="${build.repository.private.username}" arg2="" />
-						</not>
-					</and>
+					<isset property="download.artifact.private" />
 					<then>
 						<get
 							dest="${dist.dir}/sources"
