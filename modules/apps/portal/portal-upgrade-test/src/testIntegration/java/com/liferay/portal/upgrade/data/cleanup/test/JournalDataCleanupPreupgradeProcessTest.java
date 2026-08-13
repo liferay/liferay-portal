@@ -16,16 +16,14 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFeed;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -38,9 +36,9 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.data.cleanup.JournalDataCleanupPreupgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.test.util.DataCleanupTestUtil;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -65,8 +63,8 @@ public class JournalDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNames = _classNameLocalService.getClassNames(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		_classNamesSafeCloseable =
+			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
 		_group = GroupTestUtil.addGroup();
 	}
 
@@ -76,14 +74,7 @@ public class JournalDataCleanupPreupgradeProcessTest
 			_groupLocalService.deleteGroup(_group);
 		}
 
-		for (ClassName className :
-				_classNameLocalService.getClassNames(
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			if (!_classNames.contains(className)) {
-				_classNameLocalService.deleteClassName(className);
-			}
-		}
+		_classNamesSafeCloseable.close();
 	}
 
 	@Test
@@ -186,10 +177,7 @@ public class JournalDataCleanupPreupgradeProcessTest
 		_ddmStructureLocalService.deleteStructure(ddmStructure);
 	}
 
-	@Inject
-	private ClassNameLocalService _classNameLocalService;
-
-	private List<ClassName> _classNames;
+	private SafeCloseable _classNamesSafeCloseable;
 
 	@Inject
 	private DDMFieldLocalService _ddmFieldLocalService;

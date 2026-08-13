@@ -11,14 +11,12 @@ import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
@@ -31,6 +29,7 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.data.cleanup.DDMStorageLinkDataCleanupPreupgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.test.util.DataCleanupTestUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -61,20 +60,13 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNames = _classNameLocalService.getClassNames(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		_classNamesSafeCloseable =
+			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		for (ClassName className :
-				_classNameLocalService.getClassNames(
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			if (!_classNames.contains(className)) {
-				_classNameLocalService.deleteClassName(className);
-			}
-		}
+		_classNamesSafeCloseable.close();
 	}
 
 	@Test
@@ -237,10 +229,7 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 		}
 	}
 
-	@Inject
-	private ClassNameLocalService _classNameLocalService;
-
-	private List<ClassName> _classNames;
+	private SafeCloseable _classNamesSafeCloseable;
 
 	@Inject
 	private DDMFieldLocalService _ddmFieldLocalService;

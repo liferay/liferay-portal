@@ -6,14 +6,12 @@
 package com.liferay.portal.upgrade.data.cleanup.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.ListTypeConstants;
-import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -21,7 +19,6 @@ import com.liferay.portal.kernel.service.EmailAddressLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.PhoneLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WebsiteLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -33,6 +30,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.data.cleanup.ContactDataCleanupPreupgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.test.util.DataCleanupTestUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,31 +61,17 @@ public class ContactDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNames = _classNameLocalService.getClassNames(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		_systemEvents = _systemEventLocalService.getSystemEvents(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		_classNamesSafeCloseable =
+			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
+		_systemEventsSafeCloseable =
+			DataCleanupTestUtil.setSystemEventsSavepointWithSafeCloseable();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		for (ClassName className :
-				_classNameLocalService.getClassNames(
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+		_systemEventsSafeCloseable.close();
 
-			if (!_classNames.contains(className)) {
-				_classNameLocalService.deleteClassName(className);
-			}
-		}
-
-		for (SystemEvent systemEvent :
-				_systemEventLocalService.getSystemEvents(
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			if (!_systemEvents.contains(systemEvent)) {
-				_systemEventLocalService.deleteSystemEvent(systemEvent);
-			}
-		}
+		_classNamesSafeCloseable.close();
 	}
 
 	@Test
@@ -176,7 +160,7 @@ public class ContactDataCleanupPreupgradeProcessTest
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
-	private List<ClassName> _classNames;
+	private SafeCloseable _classNamesSafeCloseable;
 
 	@Inject
 	private EmailAddressLocalService _emailAddressLocalService;
@@ -187,10 +171,7 @@ public class ContactDataCleanupPreupgradeProcessTest
 	@Inject
 	private PhoneLocalService _phoneLocalService;
 
-	@Inject
-	private SystemEventLocalService _systemEventLocalService;
-
-	private List<SystemEvent> _systemEvents;
+	private SafeCloseable _systemEventsSafeCloseable;
 
 	@Inject
 	private UserLocalService _userLocalService;

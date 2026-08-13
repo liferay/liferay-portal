@@ -11,16 +11,11 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.instance.lifecycle.PortalInstanceLifecycleManager;
-import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -30,6 +25,7 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.data.cleanup.CompanyDataCleanupPreupgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.test.util.DataCleanupTestUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -66,39 +62,24 @@ public class CompanyDataCleanupPreupgradeProcessTest
 
 	@Before
 	public void setUp() throws Exception {
-		_classNames = _classNameLocalService.getClassNames(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		_classNamesSafeCloseable =
+			DataCleanupTestUtil.setClassNamesSavepointWithSafeCloseable();
 
 		_connection = DataAccess.getConnection();
 
 		_dbInspector = new DBInspector(_connection);
 
-		_resourceActions = _resourceActionLocalService.getResourceActions(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		_resourceActionsSafeCloseable =
+			DataCleanupTestUtil.setResourceActionsSavepointWithSafeCloseable();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		DataAccess.cleanUp(_connection);
 
-		for (ClassName className :
-				_classNameLocalService.getClassNames(
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+		_resourceActionsSafeCloseable.close();
 
-			if (!_classNames.contains(className)) {
-				_classNameLocalService.deleteClassName(className);
-			}
-		}
-
-		for (ResourceAction resourceAction :
-				_resourceActionLocalService.getResourceActions(
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			if (!_resourceActions.contains(resourceAction)) {
-				_resourceActionLocalService.deleteResourceAction(
-					resourceAction);
-			}
-		}
+		_classNamesSafeCloseable.close();
 	}
 
 	@Test
@@ -248,10 +229,7 @@ public class CompanyDataCleanupPreupgradeProcessTest
 		}
 	}
 
-	@Inject
-	private ClassNameLocalService _classNameLocalService;
-
-	private List<ClassName> _classNames;
+	private SafeCloseable _classNamesSafeCloseable;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
@@ -262,9 +240,6 @@ public class CompanyDataCleanupPreupgradeProcessTest
 	@Inject
 	private MultiVMPool _multiVMPool;
 
-	@Inject
-	private ResourceActionLocalService _resourceActionLocalService;
-
-	private List<ResourceAction> _resourceActions;
+	private SafeCloseable _resourceActionsSafeCloseable;
 
 }
