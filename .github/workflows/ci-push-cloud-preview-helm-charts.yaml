@@ -96,7 +96,7 @@ jobs:
                     set -o pipefail
 
                     function main {
-                        echo "registry_path_segment=g${GITHUB_SHA::7}" >> ${GITHUB_OUTPUT}
+                        echo "registry_path_segment=${GITHUB_SHA::7}" >> ${GITHUB_OUTPUT}
                     }
 
                     main "${@}"
