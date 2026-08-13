@@ -54,10 +54,12 @@ public class AnalyticsSettingsManagerTest {
 	public void setUp() throws Exception {
 		_analyticsChannelId1 = RandomTestUtil.randomString(8);
 		_analyticsChannelId2 = RandomTestUtil.randomString(8);
-		_commerceChannelGroup1 = _addCommerceChannelGroup();
-		_commerceChannelGroup2 = _addCommerceChannelGroup();
 		_siteGroup1 = GroupTestUtil.addGroup();
 		_siteGroup2 = GroupTestUtil.addGroup();
+		_commerceChannelGroup1 = _addCommerceChannelGroup(
+			_siteGroup1.getGroupId());
+		_commerceChannelGroup2 = _addCommerceChannelGroup(
+			_siteGroup2.getGroupId());
 	}
 
 	@After
@@ -82,113 +84,13 @@ public class AnalyticsSettingsManagerTest {
 			Arrays.toString(emptyCommerceChannelIds), 0,
 			emptyCommerceChannelIds.length);
 
-		String[] updateCommerceChannelIds =
-			_analyticsSettingsManager.updateCommerceChannelIds(
-				_analyticsChannelId1, TestPropsValues.getCompanyId(),
-				new Long[] {_commerceChannelGroup1.getClassPK()});
-
-		Assert.assertArrayEquals(
-			Arrays.toString(updateCommerceChannelIds),
-			ArrayUtil.sortedUnique(updateCommerceChannelIds),
-			ArrayUtil.sortedUnique(
-				new String[] {
-					String.valueOf(_commerceChannelGroup1.getClassPK())
-				}));
-
 		_analyticsSettingsManager.updateCompanyConfiguration(
 			TestPropsValues.getCompanyId(),
 			HashMapBuilder.<String, Object>put(
-				"syncedCommerceChannelIds", updateCommerceChannelIds
-			).build());
-
-		updateCommerceChannelIds =
-			_analyticsSettingsManager.updateCommerceChannelIds(
-				_analyticsChannelId2, TestPropsValues.getCompanyId(),
-				new Long[] {_commerceChannelGroup2.getClassPK()});
-
-		Assert.assertArrayEquals(
-			Arrays.toString(updateCommerceChannelIds),
-			ArrayUtil.sortedUnique(updateCommerceChannelIds),
-			ArrayUtil.sortedUnique(
-				new String[] {
-					String.valueOf(_commerceChannelGroup1.getClassPK()),
-					String.valueOf(_commerceChannelGroup2.getClassPK())
-				}));
-
-		_analyticsSettingsManager.updateCompanyConfiguration(
-			TestPropsValues.getCompanyId(),
-			HashMapBuilder.<String, Object>put(
-				"syncedCommerceChannelIds", updateCommerceChannelIds
-			).build());
-
-		IdempotentRetryAssert.retryAssert(
-			5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
-			() -> {
-				Long[] commerceChannelIds =
-					_analyticsSettingsManager.getCommerceChannelIds(
-						_analyticsChannelId1, TestPropsValues.getCompanyId());
-
-				Assert.assertEquals(
-					Arrays.toString(commerceChannelIds), 1,
-					commerceChannelIds.length);
-
-				return null;
-			});
-
-		updateCommerceChannelIds =
-			_analyticsSettingsManager.updateCommerceChannelIds(
-				_analyticsChannelId1, TestPropsValues.getCompanyId(),
-				new Long[] {
-					_commerceChannelGroup1.getClassPK(),
-					_commerceChannelGroup2.getClassPK()
-				});
-
-		Assert.assertArrayEquals(
-			Arrays.toString(updateCommerceChannelIds),
-			ArrayUtil.sortedUnique(updateCommerceChannelIds),
-			ArrayUtil.sortedUnique(
-				new String[] {
-					String.valueOf(_commerceChannelGroup1.getClassPK()),
-					String.valueOf(_commerceChannelGroup2.getClassPK())
-				}));
-
-		_analyticsSettingsManager.updateCompanyConfiguration(
-			TestPropsValues.getCompanyId(),
-			HashMapBuilder.<String, Object>put(
-				"syncedCommerceChannelIds", updateCommerceChannelIds
-			).build());
-
-		IdempotentRetryAssert.retryAssert(
-			5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
-			() -> {
-				Long[] commerceChannelIds =
-					_analyticsSettingsManager.getCommerceChannelIds(
-						_analyticsChannelId1, TestPropsValues.getCompanyId());
-
-				Assert.assertEquals(
-					Arrays.toString(commerceChannelIds), 2,
-					commerceChannelIds.length);
-
-				return null;
-			});
-
-		updateCommerceChannelIds =
-			_analyticsSettingsManager.updateCommerceChannelIds(
-				_analyticsChannelId1, TestPropsValues.getCompanyId(),
-				new Long[] {_commerceChannelGroup1.getClassPK()});
-
-		Assert.assertArrayEquals(
-			Arrays.toString(updateCommerceChannelIds),
-			ArrayUtil.sortedUnique(updateCommerceChannelIds),
-			ArrayUtil.sortedUnique(
-				new String[] {
-					String.valueOf(_commerceChannelGroup1.getClassPK())
-				}));
-
-		_analyticsSettingsManager.updateCompanyConfiguration(
-			TestPropsValues.getCompanyId(),
-			HashMapBuilder.<String, Object>put(
-				"syncedCommerceChannelIds", updateCommerceChannelIds
+				"syncedGroupIds",
+				_analyticsSettingsManager.updateSiteIds(
+					_analyticsChannelId1, TestPropsValues.getCompanyId(),
+					new Long[] {_siteGroup1.getGroupId()})
 			).build());
 
 		IdempotentRetryAssert.retryAssert(
@@ -207,6 +109,14 @@ public class AnalyticsSettingsManagerTest {
 
 				return null;
 			});
+
+		Long[] otherCommerceChannelIds =
+			_analyticsSettingsManager.getCommerceChannelIds(
+				_analyticsChannelId2, TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(
+			Arrays.toString(otherCommerceChannelIds), 0,
+			otherCommerceChannelIds.length);
 	}
 
 	@Ignore
@@ -462,14 +372,14 @@ public class AnalyticsSettingsManagerTest {
 			});
 	}
 
-	private Group _addCommerceChannelGroup() throws Exception {
+	private Group _addCommerceChannelGroup(long siteGroupId) throws Exception {
 		return _groupLocalService.addGroup(
 			StringPool.BLANK, TestPropsValues.getUserId(), 0,
 			"com.liferay.commerce.product.model.CommerceChannel",
 			RandomTestUtil.randomLong(), 0,
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
-			GroupConstants.TYPE_SITE_OPEN, null, false,
+			GroupConstants.TYPE_SITE_OPEN, "siteGroupId=" + siteGroupId, false,
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
 			"/" + RandomTestUtil.randomString(6), false, false, true,
 			ServiceContextTestUtil.getServiceContext());
