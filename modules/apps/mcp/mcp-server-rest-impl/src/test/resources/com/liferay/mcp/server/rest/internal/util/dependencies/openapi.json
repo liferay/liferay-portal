@@ -241,6 +241,17 @@
 					{
 						"description": "This is the description",
 						"in": "query",
+						"name": "aggregationTerms",
+						"schema": {
+							"items": {
+								"type": "string"
+							},
+							"type": "array"
+						}
+					},
+					{
+						"description": "This is the description",
+						"in": "query",
 						"name": "filter",
 						"schema": {
 							"type": "string"

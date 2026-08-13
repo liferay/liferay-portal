@@ -1,5 +1,12 @@
 {
 	"properties": {
+		"aggregationTerms": {
+			"description": "This is the description",
+			"items": {
+				"type": "string"
+			},
+			"type": "array"
+		},
 		"fields": {
 			"description": "Fields to include in the response. Pass only the fields the user actually needs.",
 			"items": {

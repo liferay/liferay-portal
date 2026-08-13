@@ -1,5 +1,12 @@
 {
 	"properties": {
+		"aggregationTerms": {
+			"description": "This is the description",
+			"items": {
+				"type": "string"
+			},
+			"type": "array"
+		},
 		"filter": {
 			"description": "This is the description",
 			"type": "string"
