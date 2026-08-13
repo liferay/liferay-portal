@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 
 import java.security.GeneralSecurityException;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,21 +59,28 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 
 		byte[] saltBytes = pbkdf2EncryptionConfiguration.getSaltBytes();
 
-		byte[] secretKeyBytes = _generateDerivedKey(
-			pbkdf2EncryptionConfiguration.getKeySize(),
-			pbkdf2EncryptionConfiguration.getMacAlgorithm(),
-			plaintextPassword.getBytes(),
-			pbkdf2EncryptionConfiguration.getRounds(), saltBytes);
+		byte[] plaintextPasswordBytes = plaintextPassword.getBytes();
 
-		ByteBuffer byteBuffer = ByteBuffer.allocate(
-			(2 * 4) + saltBytes.length + secretKeyBytes.length);
+		try {
+			byte[] secretKeyBytes = _generateDerivedKey(
+				pbkdf2EncryptionConfiguration.getKeySize(),
+				pbkdf2EncryptionConfiguration.getMacAlgorithm(),
+				plaintextPasswordBytes,
+				pbkdf2EncryptionConfiguration.getRounds(), saltBytes);
 
-		byteBuffer.putInt(pbkdf2EncryptionConfiguration.getKeySize());
-		byteBuffer.putInt(pbkdf2EncryptionConfiguration.getRounds());
-		byteBuffer.put(saltBytes);
-		byteBuffer.put(secretKeyBytes);
+			ByteBuffer byteBuffer = ByteBuffer.allocate(
+				(2 * 4) + saltBytes.length + secretKeyBytes.length);
 
-		return Base64.encode(byteBuffer.array());
+			byteBuffer.putInt(pbkdf2EncryptionConfiguration.getKeySize());
+			byteBuffer.putInt(pbkdf2EncryptionConfiguration.getRounds());
+			byteBuffer.put(saltBytes);
+			byteBuffer.put(secretKeyBytes);
+
+			return Base64.encode(byteBuffer.array());
+		}
+		finally {
+			Arrays.fill(plaintextPasswordBytes, (byte)0);
+		}
 	}
 
 	@Override
@@ -112,6 +120,8 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 
 		byte[] derivedKeyBytes = new byte[derivedKeyLength];
 
+		byte[] nextMacBytes = null;
+
 		try {
 			Mac mac = Mac.getInstance(macAlgorithm);
 
@@ -130,8 +140,9 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 
 			int blockCount = (int)Math.ceil(
 				(double)derivedKeyLength / macLength);
-			byte[] nextMacBytes = new byte[macLength];
 			int offset = 0;
+
+			nextMacBytes = new byte[macLength];
 
 			for (int i = 1; i <= blockCount; i++) {
 				BigEndianCodec.putInt(blockBytes, saltBytes.length, i);
@@ -140,34 +151,45 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 
 				byte[] derivedBlockBytes = macBytes.clone();
 
-				for (int j = 1; j < rounds; j++) {
-					mac.update(macBytes);
+				try {
+					for (int j = 1; j < rounds; j++) {
+						mac.update(macBytes);
 
-					mac.doFinal(nextMacBytes, 0);
+						mac.doFinal(nextMacBytes, 0);
 
-					for (int k = 0; k < derivedBlockBytes.length; k++) {
-						derivedBlockBytes[k] ^= nextMacBytes[k];
+						for (int k = 0; k < derivedBlockBytes.length; k++) {
+							derivedBlockBytes[k] ^= nextMacBytes[k];
+						}
+
+						byte[] tempBytes = macBytes;
+
+						macBytes = nextMacBytes;
+
+						nextMacBytes = tempBytes;
 					}
 
-					byte[] tempBytes = macBytes;
+					int length = Math.min(macLength, derivedKeyLength - offset);
 
-					macBytes = nextMacBytes;
+					System.arraycopy(
+						derivedBlockBytes, 0, derivedKeyBytes, offset, length);
 
-					nextMacBytes = tempBytes;
+					offset += length;
 				}
-
-				int length = Math.min(macLength, derivedKeyLength - offset);
-
-				System.arraycopy(
-					derivedBlockBytes, 0, derivedKeyBytes, offset, length);
-
-				offset += length;
+				finally {
+					Arrays.fill(derivedBlockBytes, (byte)0);
+					Arrays.fill(macBytes, (byte)0);
+				}
 			}
 		}
 		catch (GeneralSecurityException generalSecurityException) {
 			throw new PwdEncryptorException.InvalidAlgorithm(
 				"Unable to derive key using " + macAlgorithm,
 				generalSecurityException);
+		}
+		finally {
+			if (nextMacBytes != null) {
+				Arrays.fill(nextMacBytes, (byte)0);
+			}
 		}
 
 		return derivedKeyBytes;

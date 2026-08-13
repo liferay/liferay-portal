@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.UnsupportedEncodingException;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.osgi.service.component.annotations.Component;
@@ -42,14 +43,23 @@ public class CryptPasswordEncryptor implements PasswordEncryptor {
 
 		byte[] saltBytes = getSalt(encryptedPassword);
 
+		byte[] plaintextPasswordBytes = null;
+
 		try {
-			return Crypt.crypt(
-				saltBytes, plaintextPassword.getBytes(DigesterUtil.ENCODING));
+			plaintextPasswordBytes = plaintextPassword.getBytes(
+				DigesterUtil.ENCODING);
+
+			return Crypt.crypt(saltBytes, plaintextPasswordBytes);
 		}
 		catch (UnsupportedEncodingException unsupportedEncodingException) {
 			throw new PwdEncryptorException.UnsupportedEncoding(
 				unsupportedEncodingException.getMessage(),
 				unsupportedEncodingException);
+		}
+		finally {
+			if (plaintextPasswordBytes != null) {
+				Arrays.fill(plaintextPasswordBytes, (byte)0);
+			}
 		}
 	}
 

@@ -20,6 +20,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import java.util.Arrays;
+
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -44,16 +46,22 @@ public class SSHAPasswordEncryptor implements PasswordEncryptor {
 
 		byte[] saltBytes = getSaltBytes(encryptedPassword);
 
+		byte[] plaintextPasswordBytes = null;
+		byte[] saltedPlaintextPasswordBytes = null;
+
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance(
 				PropsValues.FIPS_ENABLED ? DigesterUtil.SHA_256 :
 					DigesterUtil.SHA_1);
 
-			byte[] plaintextPasswordBytes = plaintextPassword.getBytes(
+			plaintextPasswordBytes = plaintextPassword.getBytes(
 				DigesterUtil.ENCODING);
 
+			saltedPlaintextPasswordBytes = ArrayUtil.append(
+				plaintextPasswordBytes, saltBytes);
+
 			byte[] messageDigestBytes = messageDigest.digest(
-				ArrayUtil.append(plaintextPasswordBytes, saltBytes));
+				saltedPlaintextPasswordBytes);
 
 			return Base64.encode(
 				ArrayUtil.append(messageDigestBytes, saltBytes));
@@ -67,6 +75,15 @@ public class SSHAPasswordEncryptor implements PasswordEncryptor {
 			throw new PwdEncryptorException.UnsupportedEncoding(
 				unsupportedEncodingException.getMessage(),
 				unsupportedEncodingException);
+		}
+		finally {
+			if (plaintextPasswordBytes != null) {
+				Arrays.fill(plaintextPasswordBytes, (byte)0);
+			}
+
+			if (saltedPlaintextPasswordBytes != null) {
+				Arrays.fill(saltedPlaintextPasswordBytes, (byte)0);
+			}
 		}
 	}
 
