@@ -7,16 +7,20 @@ package com.liferay.oauth2.provider.client.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.constants.GrantType;
+import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.service.OAuth2ScopeGrantLocalService;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.ws.rs.client.Invocation;
@@ -51,46 +55,28 @@ public class SecurityTest extends BaseClientTestCase {
 
 	@Test
 	public void testEscapeOAuth2ApplicationName() {
-		Function<WebTarget, Invocation.Builder> invocationBuilderFunction =
-			getAuthenticatedInvocationBuilderFunction(
-				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
-				null);
-
-		Response response = getCodeFunction(
+		String bodyString = getAuthorizationPageBodyString(
 			webTarget -> webTarget.queryParam(
 				"client_id", "oauthTestApplicationUnescapedName"
 			).queryParam(
 				"response_type", "code"
-			),
-			true
-		).apply(
-			invocationBuilderFunction
-		);
+			));
 
-		URI uri = response.getLocation();
+		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
+		Assert.assertTrue(
+			bodyString.contains(HtmlUtil.escape(_INJECTED_SCRIPT)));
+	}
 
-		if (uri == null) {
-			throw new IllegalArgumentException(
-				"Authorization service response missing \"Location\" header " +
-					"from which the authorization page URL is extracted");
-		}
-
-		WebTarget webTarget = getWebTarget();
-
-		webTarget = webTarget.path(uri.getPath());
-
-		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
-			uri.getRawQuery());
-
-		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-			webTarget = webTarget.queryParam(
-				entry.getKey(), (Object[])entry.getValue());
-		}
-
-		Invocation.Builder invocationBuilder = invocationBuilderFunction.apply(
-			webTarget);
-
-		String bodyString = getBodyAsString(invocationBuilder.get());
+	@Test
+	public void testEscapeOAuth2ScopeDescription() {
+		String bodyString = getAuthorizationPageBodyString(
+			webTarget -> webTarget.queryParam(
+				"client_id", "oauthTestApplicationUnescapedScope"
+			).queryParam(
+				"response_type", "code"
+			).queryParam(
+				"scope", _SCOPE_ALIAS
+			));
 
 		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
 		Assert.assertTrue(
@@ -250,6 +236,46 @@ public class SecurityTest extends BaseClientTestCase {
 				this::parseError));
 	}
 
+	protected String getAuthorizationPageBodyString(
+		Function<WebTarget, WebTarget> authorizeRequestFunction) {
+
+		Function<WebTarget, Invocation.Builder> invocationBuilderFunction =
+			getAuthenticatedInvocationBuilderFunction(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+				null);
+
+		Response response = getCodeFunction(
+			authorizeRequestFunction, true
+		).apply(
+			invocationBuilderFunction
+		);
+
+		URI uri = response.getLocation();
+
+		if (uri == null) {
+			throw new IllegalArgumentException(
+				"Authorization service response missing \"Location\" header " +
+					"from which the authorization page URL is extracted");
+		}
+
+		WebTarget webTarget = getWebTarget();
+
+		webTarget = webTarget.path(uri.getPath());
+
+		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
+			uri.getRawQuery());
+
+		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+			webTarget = webTarget.queryParam(
+				entry.getKey(), (Object[])entry.getValue());
+		}
+
+		Invocation.Builder invocationBuilder = invocationBuilderFunction.apply(
+			webTarget);
+
+		return getBodyAsString(invocationBuilder.get());
+	}
+
 	protected String getBodyAsString(Response response) {
 		return response.readEntity(String.class);
 	}
@@ -288,6 +314,15 @@ public class SecurityTest extends BaseClientTestCase {
 
 	private static final String _INJECTED_SCRIPT = "<script>alert(1)</script>";
 
+	private static final String _SCOPE_ALIAS =
+		SecurityTest._SCOPE_APPLICATION_NAME + ".everything.read";
+
+	private static final String _SCOPE_APPLICATION_NAME =
+		"Liferay.Captcha.REST";
+
+	@Inject
+	private OAuth2ScopeGrantLocalService _oAuth2ScopeGrantLocalService;
+
 	private User _user;
 
 	private class SecurityTestPreparatorBundleActivator
@@ -322,6 +357,25 @@ public class SecurityTest extends BaseClientTestCase {
 				companyId, _user, "oauthTestApplicationUnescapedName",
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				_INJECTED_SCRIPT, Collections.singletonList("everything"));
+
+			OAuth2Application oAuth2Application = createOAuth2Application(
+				companyId, _user, "oauthTestApplicationUnescapedScope",
+				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
+				Collections.singletonList(_SCOPE_ALIAS));
+
+			_oAuth2ScopeGrantLocalService.createOAuth2ScopeGrant(
+				companyId,
+				oAuth2Application.getOAuth2ApplicationScopeAliasesId(),
+				_SCOPE_APPLICATION_NAME, "com.liferay.captcha.rest.impl", "GET",
+				Collections.singletonList(_SCOPE_ALIAS));
+
+			registerScopeDescriptor(
+				(scope, locale) -> _INJECTED_SCRIPT,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"osgi.jaxrs.name", _SCOPE_APPLICATION_NAME
+				).put(
+					"service.ranking", Integer.MAX_VALUE
+				).build());
 		}
 
 	}
