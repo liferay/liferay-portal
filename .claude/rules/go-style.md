@@ -1,13 +1,13 @@
 ---
 
 paths:
-  - "**/*.go"
+  - "cloud/operator/**/*.go"
 
 ---
 
 # Go Style
 
-These conventions apply to every Go file in the repository. They depart from the Go ecosystem defaults in naming and ordering, and they carry the same philosophy as the canonical rules in `pr-reviewer/rules` — whole word names, alphabetical ordering, blank line delimited groups, complete sentence messages — expressed in the mechanics Go needs. For prose and general style not specific to Go, follow `pr-reviewer/rules`.
+These conventions apply to every Go file under `cloud/operator`, which holds the only Go module in the repository. They depart from the Go ecosystem defaults in naming and ordering, and they carry the same philosophy as the canonical rules in `pr-reviewer/rules` — whole word names, alphabetical ordering, blank line delimited groups, complete sentence messages — expressed in the mechanics Go needs. A Go file outside that module, such as a Gradle plugin test fixture, is not governed by them. For prose and general style not specific to Go, follow `pr-reviewer/rules`.
 
 `gofmt` owns whitespace, alignment, and import sorting; the rules below cover only what it does not enforce. When a rule here and `gofmt` disagree, `gofmt` wins.
 
@@ -34,15 +34,17 @@ return controllerruntime.NewControllerManagedBy(
 
 A short chain that carries no arguments of its own stays inline — `logger.V(1).Info(...)`, `liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment)`. The broken form is for builders, where each call takes arguments and the chain is the structure of the statement.
 
+Rule 402 allows a chain only on a builder or on a fluent type from the list that `ChainingCheck` maintains, and Go has no equivalent list. `Status()` and `V(1)` are the exception: each returns a narrowed view of the same object rather than a new value to inspect, and the controller runtime and logr APIs are built to be called that way. Everything else follows rule 402 — assign the intermediate result to a named local and call the next method on it.
+
 ## Declaration Order
 
 A file declares its members in one fixed sequence:
 
 1. `import` block.
 
-1. `const` declarations, sorted alphabetically. A single constant needs no parentheses.
+1. `const` declarations, sorted alphabetically. A single constant needs no parentheses. A block whose values come from `iota` keeps its semantic order, since the position of a name determines its value.
 
-1. Functions — exported names first, then unexported, alphabetical within each group. Methods and plain functions share one sequence: the receiver is not a grouping key, so `licenseChecksum` sorts between `finishAfter` and `parsePrivateKey` even though its neighbors are methods.
+1. Functions — exported names first, then unexported, alphabetical within each group. Methods and plain functions share one sequence: the receiver is not a grouping key, so a plain function takes its alphabetical slot among the methods rather than a block of its own. `init` and `main` sort alphabetically among the unexported functions like any other name.
 
 1. `type` declarations, sorted alphabetically.
 
@@ -50,7 +52,7 @@ A file declares its members in one fixed sequence:
 
 Every fixed set of named members is alphabetical: struct field declarations, composite literal fields, string keyed map literals, interface methods, and the key value pairs passed to a structured logger.
 
-Function parameters are alphabetical by name, which overrides the Go idiom of placing `context.Context` first — the context parameter sorts into its alphabetical slot like any other, as does `t *testing.T`. A variadic parameter is forced last, since the language requires it.
+Function parameters are alphabetical by name, which overrides the Go idiom of placing `context.Context` first — the context parameter sorts into its alphabetical slot like any other, as does `t *testing.T`. A variadic parameter is forced last, since the language requires it. A signature the compiler fixes — a method that satisfies an interface, or a callback a package defines — keeps the order that signature imposes, since no other order compiles. Rename its parameters to the full word form and leave the order alone.
 
 **Rationale:** The reader finds the entry points at the top and the data definitions at the bottom, mirroring how Liferay places fields beneath methods in a Java class. One absolute order means a member's position is predictable and every addition has exactly one correct home.
 
@@ -206,10 +208,10 @@ The result is used below, so the assignment stands on its own line:
 
 Only the error is consumed, so the inline initializer is correct:
 
-```diff
- if error := reconciler.Create(context, secret); error != nil {
- 	return error
- }
+```go
+if error := reconciler.Create(context, secret); error != nil {
+	return error
+}
 ```
 
 ## Formatting
@@ -220,7 +222,7 @@ Only the error is consumed, so the inline initializer is correct:
 cd <go-module-root> && gofmt -w .
 ```
 
-Do not hand format against it. The `format-source` skill owns the full workflow.
+Do not hand format against it. The `format-source` skill covers the file types the portal source formatter processes and does not run `gofmt`, so running `gofmt` over the module is the Go half of that workflow and belongs to whoever edits the file.
 
 ## Generated Files
 
@@ -278,11 +280,13 @@ Three kinds of message, three forms.
 
 **Structured logger messages** are capitalized and carry no terminal period. Prefer `Unable to <verb>` for failures. The message is a fixed label — every variable belongs in the key value pairs that follow it, not interpolated into the message.
 
-**User facing messages** — a `metav1.Condition` message, a recorded event, an admission response — are complete sentences with terminal punctuation, since a person reads them out of `kubectl describe`.
+**User facing messages** — a `metav1.Condition` message, a recorded event, an admission response — are complete sentences with terminal punctuation, since a person reads them out of `kubectl describe`. Report a failure in the active voice with `Unable to`, and state a failed existence or precondition check in the present tense: `does not exist` rather than `was not found`.
 
 **Error values** built with `fmt.Errorf` or `errors.New` are lowercase with no terminal period, so they compose cleanly when a caller wraps them with `%w`. Where the package has a natural subject, lead with it as a `subject: detail` prefix.
 
-**Rationale:** Logger messages are grep keys and read best as stable labels, which is why the variables move to the key value pairs; user facing text follows rule 703 and rule 707 like any other prose the product shows; error values are fragments that get concatenated, so they start lowercase and end without punctuation.
+**Rationale:** Logger messages are grep keys and read best as stable labels, which is why the variables move to the key value pairs; error values are fragments that get concatenated, so they start lowercase and end without punctuation.
+
+A user facing message is product prose that a person reads, not a log or an exception message, so rule 707 governs it and rule 703 does not. Rule 703 rejects the lone sentence that ends with a period, and that is exactly the form a condition message wants. Logger messages and error values are what rule 703 does govern, and both forms above already satisfy it by carrying no terminal period at all.
 
 ```diff
 -setupLog.Error(error, "couldn't start manager.")
@@ -298,7 +302,7 @@ Three kinds of message, three forms.
  metav1.Condition{
 -	Message: "workload statefulset not found",
 +	Message: fmt.Sprintf(
-+		"Workload StatefulSet %q was not found.",
++		"Workload StatefulSet %q does not exist.",
 +		liferayEnvironment.Spec.WorkloadRef.Name,
 +	),
  	Reason: "WorkloadNotFound",
@@ -330,7 +334,7 @@ Naming after the type wins even when the name shadows the type or an imported pa
 
 Two names keep their conventional short form, because the language or the standard library fixes them:
 
-- `ok`, the second result of a comma-ok type assertion, map index, or channel receive.
+- `ok`, the second result of a comma ok type assertion, map index, or channel receive.
 
 - `t`, the `*testing.T` parameter.
 
