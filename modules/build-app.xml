@@ -499,6 +499,8 @@
 				excludes="${build.modules.excludes}"
 				includes="${app.module.dirs}"
 			/>
+			<property name="build.repository.private.password" value="${build.repository.private.password}" />
+			<property name="build.repository.private.username" value="${build.repository.private.username}" />
 			<property name="liferay.releng.app.title" value="${Liferay-Releng-App-Title}" />
 			<property name="lp.version.major" value="${lp.version.major}" />
 			<property name="lpkg.title.prefix" value="${lpkg.title.prefix}" />
