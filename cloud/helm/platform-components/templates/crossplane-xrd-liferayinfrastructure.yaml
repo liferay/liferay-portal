@@ -1,0 +1,128 @@
+{{- if .Values.operatorApplications.crossplane.enabled -}}
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: ServerSideApply=true,SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: liferayinfrastructure-xrd
+    name: liferayinfrastructures.liferay.com
+spec:
+    defaultCompositionRef:
+        name: liferay-infrastructure
+    group: liferay.com
+    names:
+        kind: LiferayInfrastructure
+        plural: liferayinfrastructures
+        shortNames:
+            -   lfrinfra
+            -   lri
+        singular: liferayinfrastructure
+    versions:
+        -   name: v1alpha1
+            referenceable: true
+            schema:
+                openAPIV3Schema:
+                    properties:
+                        spec:
+                            properties:
+                                backup:
+                                    properties:
+                                        enabled:
+                                            default: false
+                                            type: boolean
+                                    type: object
+                                cmk:
+                                    default:
+                                        enabled: false
+                                    properties:
+                                        enabled:
+                                            default: false
+                                            type: boolean
+                                    type: object
+                                commonTags:
+                                    additionalProperties:
+                                        type: string
+                                    default: {}
+                                    type: object
+                                database:
+                                    properties:
+                                        highAvailability:
+                                            default: false
+                                            type: boolean
+                                        instanceType:
+                                            type: string
+                                        region:
+                                            type: string
+                                        rootPasswordSecretName:
+                                            type: string
+                                        storageGB:
+                                            type: integer
+                                        version:
+                                            type: string
+                                    required:
+                                        -   instanceType
+                                        -   rootPasswordSecretName
+                                        -   storageGB
+                                        -   version
+                                    type: object
+                                environmentId:
+                                    type: string
+                                forceDestroy:
+                                    default: false
+                                    type: boolean
+                                orphanOnDelete:
+                                    default: false
+                                    type: boolean
+                                overlayAccess:
+                                    properties:
+                                        enabled:
+                                            default: false
+                                            type: boolean
+                                    type: object
+                                projectId:
+                                    type: string
+                                region:
+                                    type: string
+                                restorePhase:
+                                    enum:
+                                        -   none
+                                        -   promoting
+                                        -   provisioning
+                                    type: string
+                                storage:
+                                    properties:
+                                        enableVersioning:
+                                            default: true
+                                            type: boolean
+                                        region:
+                                            type: string
+                                        tags:
+                                            additionalProperties:
+                                                type: string
+                                            default: {}
+                                            type: object
+                                    type: object
+                                targetActiveDataPlane:
+                                    enum:
+                                        -   blue
+                                        -   green
+                                    type: string
+                            required:
+                                -   database
+                                -   environmentId
+                                -   projectId
+                                -   region
+                                -   storage
+                            type: object
+                        status:
+                            properties:
+                                managedServiceDetailsReady:
+                                    default: false
+                                    type: boolean
+                            type: object
+                    type: object
+            served: true
+{{- end -}}
