@@ -89,6 +89,30 @@ public class PIMLinkUtil {
 	}
 
 	public static List<Map<String, Serializable>>
+			getValuesListByClassExternalReferenceCode(
+				String classExternalReferenceCode, String className,
+				long companyId, FilterFactory<Predicate> filterFactory,
+				long groupId)
+		throws PortalException {
+
+		ObjectDefinition objectDefinition = getPIMLinkObjectDefinition(
+			companyId);
+
+		return ObjectEntryLocalServiceUtil.getValuesList(
+			groupId, companyId, 0, objectDefinition.getObjectDefinitionId(),
+			filterFactory.create(
+				StringBundler.concat(
+					"(sourceClassExternalReferenceCode eq '",
+					classExternalReferenceCode, "' and sourceClassName eq '",
+					className, "') or (",
+					"targetClassExternalReferenceCode eq '",
+					classExternalReferenceCode, "' and targetClassName eq '",
+					className, "')"),
+				objectDefinition),
+			null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	public static List<Map<String, Serializable>>
 			getValuesListByClusterKeyAndType(
 				String clusterKey, long companyId, long groupId, String type,
 				FilterFactory<Predicate> filterFactory)
