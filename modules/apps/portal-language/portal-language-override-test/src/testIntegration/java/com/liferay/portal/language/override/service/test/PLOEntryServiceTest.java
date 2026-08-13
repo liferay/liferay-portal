@@ -44,16 +44,13 @@ public class PLOEntryServiceTest {
 
 		PrincipalThreadLocal.setName(user.getUserId());
 
-		try {
-			PLOEntry ploEntry = _ploEntryService.addOrUpdatePLOEntry(
-				null, RandomTestUtil.randomString(), "en_US",
-				RandomTestUtil.randomString());
+		PLOEntry ploEntry = _ploEntryService.addOrUpdatePLOEntry(
+			null, RandomTestUtil.randomString(), "en_US",
+			RandomTestUtil.randomString());
 
-			Assert.assertEquals(user.getUserId(), ploEntry.getUserId());
-		}
-		finally {
-			PrincipalThreadLocal.setName(name);
-		}
+		Assert.assertEquals(user.getUserId(), ploEntry.getUserId());
+
+		PrincipalThreadLocal.setName(name);
 	}
 
 	@Inject
