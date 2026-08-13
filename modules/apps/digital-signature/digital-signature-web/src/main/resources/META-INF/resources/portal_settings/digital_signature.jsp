@@ -9,8 +9,6 @@
 
 <%
 DigitalSignatureConfiguration digitalSignatureConfiguration = (DigitalSignatureConfiguration)request.getAttribute(DigitalSignatureConfiguration.class.getName());
-
-boolean alwaysOverride = Objects.equals(digitalSignatureConfiguration.siteSettingsStrategy(), "always-override");
 %>
 
 <div class="row">
@@ -72,7 +70,7 @@ boolean alwaysOverride = Objects.equals(digitalSignatureConfiguration.siteSettin
 
 	<div class="form-group row">
 		<div class="col-md-6">
-			<aui:select label="environment" name="environment" required="<%= !alwaysOverride %>" value="<%= digitalSignatureConfiguration.environment() %>">
+			<aui:select label="environment" name="environment" required="<%= !Objects.equals(digitalSignatureConfiguration.siteSettingsStrategy(), "always-override") %>" value="<%= digitalSignatureConfiguration.environment() %>">
 				<aui:option label="" value="" />
 
 				<%
