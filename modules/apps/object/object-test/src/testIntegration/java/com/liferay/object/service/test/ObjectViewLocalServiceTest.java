@@ -292,19 +292,18 @@ public class ObjectViewLocalServiceTest {
 	public void testFetchObjectView() throws Exception {
 		ObjectView objectView = _addObjectView();
 
-		Assert.assertEquals(
-			objectView,
+		Assert.assertNull(
 			_objectViewLocalService.fetchObjectView(
-				objectView.getExternalReferenceCode(),
+				RandomTestUtil.randomString(),
 				_objectDefinition.getObjectDefinitionId()));
 		Assert.assertNull(
 			_objectViewLocalService.fetchObjectView(
 				objectView.getExternalReferenceCode(),
 				RandomTestUtil.randomLong()));
-
-		Assert.assertNull(
+		Assert.assertEquals(
+			objectView,
 			_objectViewLocalService.fetchObjectView(
-				RandomTestUtil.randomString(),
+				objectView.getExternalReferenceCode(),
 				_objectDefinition.getObjectDefinitionId()));
 
 		_deleteObjectFields();
