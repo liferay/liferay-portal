@@ -49,6 +49,29 @@ export interface DesignLibrary {
 	siteId: number;
 }
 
+export interface DesignLibraryItemData {
+	entryClassName?: string;
+	type?: string | number;
+}
+
+export type DesignLibraryResourceCreationItem = {
+	id: string;
+	label: string;
+	module: string;
+	moduleProps: Record<string, unknown>;
+};
+
+export interface DesignLibraryResourceType {
+	color: string;
+	creationItems?: DesignLibraryResourceCreationItem[];
+	defaultActionId: string;
+	entryClassName: string;
+	key: string;
+	label: string;
+	symbol: string;
+	type?: string | null;
+}
+
 export interface EntryActions {
 	delete?: DeleteAction;
 }

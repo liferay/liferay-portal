@@ -36,6 +36,33 @@ const READ_ONLY_ITEM = {
 	embedded: {externalReferenceCode: 'read-only-erc', name: 'Read Only'},
 };
 
+const STYLE_BOOK_RESOURCE_TYPE = {
+	color: 'purple',
+	defaultActionId: 'edit',
+	entryClassName: 'com.liferay.style.book.model.StyleBookEntry',
+	key: 'style-book',
+	label: 'Style Book',
+	symbol: 'book',
+};
+
+const FRAGMENT_RESOURCE_TYPE = {
+	color: 'pink',
+	defaultActionId: 'view',
+	entryClassName: 'com.liferay.fragment.model.FragmentCollection',
+	key: 'fragment',
+	label: 'Fragment Set',
+	symbol: 'cards2',
+};
+
+function creationItem(id: string, label: string) {
+	return {
+		id,
+		label,
+		module: `http://localhost/${id}`,
+		moduleProps: {},
+	};
+}
+
 function getBulkAction(id: string) {
 	const {bulkActions} = DesignLibraryAssetsFDSPropsTransformer(BASE_PROPS);
 
@@ -49,12 +76,18 @@ describe('DesignLibraryAssetsFDSPropsTransformer', () => {
 		jest.clearAllMocks();
 	});
 
-	it('builds the creation menu from the design asset creation items', () => {
+	it('builds the creation menu from the contributed creation items', () => {
 		const {creationMenu} = DesignLibraryAssetsFDSPropsTransformer({
 			...BASE_PROPS,
 			additionalProps: {
-				addStyleBookEntryURL: '/style-book',
-				canAddStyleBook: true,
+				resourceTypes: [
+					{
+						...STYLE_BOOK_RESOURCE_TYPE,
+						creationItems: [
+							creationItem('add-style-book', 'new-style-book'),
+						],
+					},
+				],
 			},
 		});
 
@@ -63,11 +96,56 @@ describe('DesignLibraryAssetsFDSPropsTransformer', () => {
 		]);
 	});
 
-	it('adds an empty creation menu when creation is not allowed', () => {
+	it('orders the creation menu by contributor', () => {
+		const {creationMenu} = DesignLibraryAssetsFDSPropsTransformer({
+			...BASE_PROPS,
+			additionalProps: {
+				resourceTypes: [
+					{
+						...STYLE_BOOK_RESOURCE_TYPE,
+						creationItems: [
+							creationItem('add-style-book', 'new-style-book'),
+						],
+					},
+					{
+						...FRAGMENT_RESOURCE_TYPE,
+						creationItems: [
+							creationItem(
+								'add-basic-fragment',
+								'new-basic-fragment'
+							),
+							creationItem(
+								'add-fragment-set',
+								'new-fragment-set'
+							),
+						],
+					},
+				],
+			},
+		});
+
+		expect(creationMenu?.primaryItems.map((item) => item.label)).toEqual([
+			'new-style-book',
+			'new-basic-fragment',
+			'new-fragment-set',
+		]);
+	});
+
+	it('omits the creation menu when no type contributes creation items', () => {
+		expect(
+			DesignLibraryAssetsFDSPropsTransformer({
+				...BASE_PROPS,
+				additionalProps: {
+					resourceTypes: [STYLE_BOOK_RESOURCE_TYPE],
+				},
+			}).creationMenu
+		).toBeUndefined();
+	});
+
+	it('omits the creation menu when there are no resource types', () => {
 		expect(
 			DesignLibraryAssetsFDSPropsTransformer(BASE_PROPS).creationMenu
-				?.primaryItems
-		).toEqual([]);
+		).toBeUndefined();
 	});
 
 	it('exposes the table view', () => {

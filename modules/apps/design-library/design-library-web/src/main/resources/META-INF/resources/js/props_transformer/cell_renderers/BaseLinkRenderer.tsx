@@ -22,9 +22,14 @@ export function BaseLinkRenderer({
 	action,
 	itemData,
 	stickerClassName,
+	stickerStyle,
 	symbol,
 	value,
-}: BaseLinkRendererProps & {stickerClassName: string; symbol: string}) {
+}: BaseLinkRendererProps & {
+	stickerClassName: string;
+	stickerStyle?: React.CSSProperties;
+	symbol: string;
+}) {
 	if (!action || !action?.href) {
 		return <>{value}</>;
 	}
@@ -41,6 +46,7 @@ export function BaseLinkRenderer({
 					'inline-item-before',
 					stickerClassName
 				)}
+				style={stickerStyle}
 			>
 				<ClayIcon symbol={symbol} />
 			</ClaySticker>

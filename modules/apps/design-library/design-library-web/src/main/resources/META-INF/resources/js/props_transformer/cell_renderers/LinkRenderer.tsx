@@ -18,12 +18,14 @@ export default function LinkRenderer({
 	itemData,
 	options: {actionId},
 	stickerClassName,
+	stickerStyle,
 	symbol,
 	...props
 }: BaseLinkRendererProps & {
 	actions: ActionItem[];
 	options: {actionId: string};
 	stickerClassName: string;
+	stickerStyle?: React.CSSProperties;
 	symbol: string;
 }) {
 	const {infoPanelOpen, selectable, selectedItemsKey, selectedItemsValue} =
@@ -46,6 +48,7 @@ export default function LinkRenderer({
 			action={action}
 			itemData={itemData}
 			stickerClassName={stickerClassName}
+			stickerStyle={stickerStyle}
 			symbol={symbol}
 		/>
 	);

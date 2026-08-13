@@ -5,18 +5,8 @@
 
 import React from 'react';
 
-import {FRAGMENT_COLLECTION_ENTRY_CLASS_NAME} from '../../constants';
-
-const ResourceTypeRenderer = ({
-	itemData,
-}: {
-	itemData?: {entryClassName?: string};
-}) => {
-	if (itemData?.entryClassName === FRAGMENT_COLLECTION_ENTRY_CLASS_NAME) {
-		return <span>{Liferay.Language.get('fragment-set')}</span>;
-	}
-
-	return <span>{Liferay.Language.get('style-book')}</span>;
-};
+const ResourceTypeRenderer = ({label}: {label?: string}) => (
+	<span>{label || ''}</span>
+);
 
 export default ResourceTypeRenderer;
