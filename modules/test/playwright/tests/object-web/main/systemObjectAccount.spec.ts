@@ -15,6 +15,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {generateObjectFields} from '../utils/generateObjectFields';
 
 const test = mergeTests(
@@ -745,7 +746,7 @@ test('edit title field on system account', async ({
 
 		await page.getByRole('button', {name: 'Save'}).click();
 
-		await page.waitForLoadState('networkidle');
+		await waitForAlert(page, 'The object was saved successfully.');
 
 		await expect(titleFieldGroup.getByRole('combobox')).toHaveText(/Type/);
 
@@ -755,7 +756,7 @@ test('edit title field on system account', async ({
 
 		await page.getByRole('button', {name: 'Save'}).click();
 
-		await page.waitForLoadState('networkidle');
+		await waitForAlert(page, 'The object was saved successfully.');
 	}
 	finally {
 		await objectDefinitionAPIClient.patchObjectDefinition(
