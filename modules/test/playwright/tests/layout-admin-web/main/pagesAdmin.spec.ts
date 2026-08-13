@@ -1316,6 +1316,43 @@ test(
 );
 
 test(
+	'View the XSS is escaped when store it in a searched page name',
+	{
+		tag: '@LPD-101829',
+	},
+	async ({apiHelpers, page, pagesAdminPage, site}) => {
+
+		// Add listener with expect so it fails when a browser dialog is shown
+
+		page.on('dialog', async (dialog) => {
+			dialog.accept();
+
+			expect(
+				dialog.message(),
+				'This alert should not be shown'
+			).toBeNull();
+		});
+
+		const keywords = getRandomString();
+
+		const title = `${keywords} <img src=x onerror=alert(123)>`;
+
+		await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title,
+		});
+
+		// Search so the pages list renders the flattened view
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await pagesAdminPage.searchPage(keywords);
+
+		await expect(page.getByRole('link', {name: title})).toBeVisible();
+	}
+);
+
+test(
 	'toastData parameter is escaped to avoid Javascript execution',
 	{
 		tag: '@LPD-35827',

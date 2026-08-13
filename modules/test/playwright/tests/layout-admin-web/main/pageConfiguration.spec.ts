@@ -4,6 +4,7 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
 import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
@@ -15,6 +16,7 @@ import {masterPagesPagesTest} from '../../../fixtures/masterPagesPagesTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageSelectorPagesTest} from '../../../fixtures/pageSelectorPagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
+import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {liferayConfig} from '../../../liferay.config';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
@@ -38,6 +40,7 @@ const test = mergeTests(
 	pageSelectorPagesTest,
 	pagesAdminPagesTest,
 	pagesPagesTest,
+	siteSettingsPagesTest,
 	systemSettingsPageTest
 );
 
@@ -1569,6 +1572,72 @@ test.describe('SEO configuration', () => {
 					`meta[property="og:image:alt"][content="${imageAltDescription}"]`
 				)
 			).toBeAttached();
+		}
+	);
+
+	test(
+		'Escape the site open graph image title to avoid XSS injections',
+		{
+			tag: '@LPD-101829',
+		},
+		async ({apiHelpers, page, site, siteSettingsPage}) => {
+			const keywords = getRandomString();
+
+			const title = `${keywords} "><img src=x onerror=alert(123)>`;
+
+			await apiHelpers.headlessDelivery.postDocument(
+				site.id,
+				createReadStream(
+					path.join(__dirname, '/dependencies/thumbnail.jpg')
+				),
+				{title}
+			);
+
+			await siteSettingsPage.goToSiteSetting(
+				'Pages',
+				'Open Graph',
+				site.friendlyUrlPath
+			);
+
+			await page.getByLabel('Enable Open Graph').check();
+
+			const iframe = page.frameLocator('iframe[title="Select Image"]');
+
+			const documentCard = iframe.getByText(keywords);
+
+			await clickAndExpectToBeVisible({
+				target: documentCard,
+				timeout: 2000,
+				trigger: page.getByRole('button', {
+					exact: true,
+					name: 'Select',
+				}),
+			});
+
+			await documentCard.click();
+
+			await siteSettingsPage.saveConfiguration();
+
+			// Listen only now, so the item selector cannot trip it
+
+			page.on('dialog', async (dialog) => {
+				await dialog.accept();
+
+				expect(
+					dialog.message(),
+					'This alert should not be shown'
+				).toBeNull();
+			});
+
+			await siteSettingsPage.goToSiteSetting(
+				'Pages',
+				'Open Graph',
+				site.friendlyUrlPath
+			);
+
+			await expect(
+				page.getByPlaceholder('image', {exact: true})
+			).toHaveValue(title);
 		}
 	);
 });
