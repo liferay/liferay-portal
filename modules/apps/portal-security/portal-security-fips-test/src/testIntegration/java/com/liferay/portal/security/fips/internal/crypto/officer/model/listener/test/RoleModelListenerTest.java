@@ -142,8 +142,6 @@ public class RoleModelListenerTest {
 				_passwordPolicyLocalService.fetchPasswordPolicyByUserId(
 					user.getUserId());
 
-			Assert.assertNotNull(passwordPolicy);
-
 			Assert.assertEquals(10, passwordPolicy.getMaxFailure());
 			Assert.assertFalse(passwordPolicy.isDefaultPolicy());
 

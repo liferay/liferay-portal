@@ -39,7 +39,7 @@ public class PasswordPolicyModelListener
 
 		throw new ModelListenerException(
 			new RequiredPasswordPolicyException(
-				"Password Policy \"" +
+				"Password policy \"" +
 					FIPSConstants.PASSWORD_POLICY_NAME_CRYPTO_OFFICER +
 						"\" is required in FIPS mode"));
 	}
