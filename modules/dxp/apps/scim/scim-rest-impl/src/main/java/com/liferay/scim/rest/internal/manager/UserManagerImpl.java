@@ -589,15 +589,17 @@ public class UserManagerImpl implements UserManager {
 			portalUser.getContactId());
 
 		for (ScimAddress scimAddress : scimUser.getAddresses()) {
+			if (Validator.isNull(scimAddress.getLocality())) {
+				continue;
+			}
+
 			String streetAddress = scimAddress.getStreetAddress();
 
 			if (Validator.isNull(streetAddress)) {
 				streetAddress = scimAddress.getFormatted();
 			}
 
-			if (Validator.isNull(streetAddress) ||
-				Validator.isNull(scimAddress.getLocality())) {
-
+			if (Validator.isNull(streetAddress)) {
 				continue;
 			}
 
