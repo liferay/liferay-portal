@@ -6,6 +6,7 @@
 package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.constants.DepotActionKeys;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
@@ -19,6 +20,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -89,6 +91,27 @@ public class ViewDesignLibraryAdminDisplayContextTest {
 	@After
 	public void tearDown() {
 		_languageUtilMockedStatic.close();
+	}
+
+	@Test
+	public void testGetBulkActionDropdownItems() {
+		List<DropdownItem> bulkActionDropdownItems =
+			_viewDesignLibraryAdminDisplayContext.getBulkActionDropdownItems();
+
+		Assert.assertEquals(
+			bulkActionDropdownItems.toString(), 1,
+			bulkActionDropdownItems.size());
+
+		DropdownItem dropdownItem = bulkActionDropdownItems.get(0);
+
+		Assert.assertEquals("delete", dropdownItem.get("label"));
+		Assert.assertEquals("trash", dropdownItem.get("icon"));
+
+		Map<String, Object> data = (Map<String, Object>)dropdownItem.get(
+			"data");
+
+		Assert.assertEquals("delete", data.get("id"));
+		Assert.assertNull(data.get("method"));
 	}
 
 	@Test
