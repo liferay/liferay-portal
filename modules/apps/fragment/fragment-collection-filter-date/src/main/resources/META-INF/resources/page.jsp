@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <label class="control-label <%= fragmentCollectionFilterDateDisplayContext.isShowLabel() ? "" : "sr-only" %>" for="<portlet:namespace />dateInput">
-	<%= fragmentCollectionFilterDateDisplayContext.getLabel() %>
+	<%= HtmlUtil.escape(fragmentCollectionFilterDateDisplayContext.getLabel()) %>
 </label>
 
 <div className="date-picker">

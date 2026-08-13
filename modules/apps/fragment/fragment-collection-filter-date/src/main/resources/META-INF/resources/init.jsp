@@ -10,7 +10,8 @@
 <%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/react" prefix="react" %>
 
-<%@ page import="com.liferay.fragment.collection.filter.date.display.context.FragmentCollectionFilterDateDisplayContext" %>
+<%@ page import="com.liferay.fragment.collection.filter.date.display.context.FragmentCollectionFilterDateDisplayContext" %><%@
+page import="com.liferay.portal.kernel.util.HtmlUtil" %>
 
 <%
 FragmentCollectionFilterDateDisplayContext fragmentCollectionFilterDateDisplayContext = (FragmentCollectionFilterDateDisplayContext)request.getAttribute(FragmentCollectionFilterDateDisplayContext.class.getName());
