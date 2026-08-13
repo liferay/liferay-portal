@@ -92,9 +92,9 @@ public class SecurityTest extends BaseClientTestCase {
 
 		String bodyString = getBodyAsString(invocationBuilder.get());
 
-		Assert.assertFalse(bodyString.contains(_APPLICATION_NAME));
+		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
 		Assert.assertTrue(
-			bodyString.contains(HtmlUtil.escape(_APPLICATION_NAME)));
+			bodyString.contains(HtmlUtil.escape(_INJECTED_SCRIPT)));
 	}
 
 	@Test
@@ -286,7 +286,7 @@ public class SecurityTest extends BaseClientTestCase {
 		return response.getHeaderString("x-frame-options");
 	}
 
-	private static final String _APPLICATION_NAME = "<script>alert(1)</script>";
+	private static final String _INJECTED_SCRIPT = "<script>alert(1)</script>";
 
 	private User _user;
 
@@ -321,7 +321,7 @@ public class SecurityTest extends BaseClientTestCase {
 			createOAuth2Application(
 				companyId, _user, "oauthTestApplicationUnescapedName",
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
-				_APPLICATION_NAME, Collections.singletonList("everything"));
+				_INJECTED_SCRIPT, Collections.singletonList("everything"));
 		}
 
 	}
