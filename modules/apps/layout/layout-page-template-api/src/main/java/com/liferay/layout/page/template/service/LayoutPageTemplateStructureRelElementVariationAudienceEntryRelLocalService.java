@@ -142,6 +142,7 @@ public interface
 
 	public void
 		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			long groupId,
 			String layoutPageTemplateStructureRelElementVariationERC);
 
 	public void
@@ -313,6 +314,7 @@ public interface
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
 		getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			long groupId,
 			String layoutPageTemplateStructureRelElementVariationERC);
 
 	/**
@@ -406,4 +408,4 @@ public interface
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1186327494
+// LIFERAY-SERVICE-BUILDER-HASH:-1459376752

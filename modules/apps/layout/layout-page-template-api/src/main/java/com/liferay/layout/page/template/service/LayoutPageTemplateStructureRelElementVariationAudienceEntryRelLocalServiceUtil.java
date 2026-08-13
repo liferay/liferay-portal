@@ -142,11 +142,12 @@ public class
 
 	public static void
 		deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+			long groupId,
 			String layoutPageTemplateStructureRelElementVariationERC) {
 
 		getService().
 			deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-				layoutPageTemplateStructureRelElementVariationERC);
+				groupId, layoutPageTemplateStructureRelElementVariationERC);
 	}
 
 	public static void
@@ -379,11 +380,12 @@ public class
 	public static List
 		<LayoutPageTemplateStructureRelElementVariationAudienceEntryRel>
 			getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+				long groupId,
 				String layoutPageTemplateStructureRelElementVariationERC) {
 
 		return getService().
 			getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-				layoutPageTemplateStructureRelElementVariationERC);
+				groupId, layoutPageTemplateStructureRelElementVariationERC);
 	}
 
 	/**
@@ -490,4 +492,4 @@ public class
 				LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:310072702
+// LIFERAY-SERVICE-BUILDER-HASH:-576015336

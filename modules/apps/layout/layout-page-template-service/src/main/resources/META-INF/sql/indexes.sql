@@ -1,6 +1,6 @@
 create index IX_11CEFB3 on LPTSREVAudienceEntryRel (companyId, audienceEntryERC[$COLUMN_LENGTH:75$]);
 create unique index IX_BB3F862 on LPTSREVAudienceEntryRel (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_3530024E on LPTSREVAudienceEntryRel (lptsRelElementVariationERC[$COLUMN_LENGTH:75$]);
+create index IX_BFC958B6 on LPTSREVAudienceEntryRel (groupId, lptsRelElementVariationERC[$COLUMN_LENGTH:75$]);
 create unique index IX_B988F085 on LPTSREVAudienceEntryRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create unique index IX_D4E7D564 on LPTSRelElementVariation (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
