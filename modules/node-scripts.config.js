@@ -3,828 +3,515 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-/** AUTO-GENERATED: DO NOT EDIT 
- * 
+/** AUTO-GENERATED: DO NOT EDIT
+ *
  * This is generated based on each module's `node-scripts.config.js`
- * 
-*/
+ *
+ */
 
 module.exports = {
-	hash: '5bf41d051497c45561f48d97660675d26d834c3f0e2bc15f32e97d4591c8fef1',
+	hash: '02af141ac4c76a96102d8ea45680fb91bcfb31519feede94f6d0b17167594c64',
 	imports: {
-	"@liferay/accessibility-menu-web": [
-	],
-	"@liferay/accessibility-settings-state-web": [
-	],
-	"@liferay/account-validator-vies-web": [
-	],
-	"@liferay/address-web": [
-	],
-	"@liferay/ai-creator-openai-web": [
-	],
-	"@liferay/ai-hub-cell-js-components-web": [
-		"./renderAIAssistantTrigger"
-	],
-	"@liferay/analytics-reports-js-components-web": [
-	],
-	"@liferay/analytics-settings-web": [
-	],
-	"@liferay/application-list-taglib": [
-	],
-	"@liferay/asset-categories-item-selector-web": [
-	],
-	"@liferay/audiences-web": [
-	],
-	"@liferay/batch-planner-web": [
-	],
-	"@liferay/captcha-taglib": [
-	],
-	"@liferay/change-tracking-rest-client-js": [
-	],
-	"@liferay/client-extension-web": [
-	],
-	"@liferay/comment-taglib": [
-	],
-	"@liferay/commerce-account-web": [
-	],
-	"@liferay/commerce-address-web": [
-	],
-	"@liferay/commerce-availability-estimate-web": [
-	],
-	"@liferay/commerce-cart-content-web": [
-	],
-	"@liferay/commerce-catalog-web": [
-	],
-	"@liferay/commerce-channel-web": [
-	],
-	"@liferay/commerce-checkout-web": [
-	],
-	"@liferay/commerce-client-extension-web": [
-	],
-	"@liferay/commerce-fragment-impl": [
-	],
-	"@liferay/commerce-order-content-web": [
-	],
-	"@liferay/commerce-order-rule-web": [
-	],
-	"@liferay/commerce-order-web": [
-	],
-	"@liferay/commerce-payment-web": [
-	],
-	"@liferay/commerce-pricing-web": [
-	],
-	"@liferay/commerce-product-asset-categories-navigation-web": [
-	],
-	"@liferay/commerce-product-asset-categories-web": [
-	],
-	"@liferay/commerce-product-content-category-web": [
-	],
-	"@liferay/commerce-product-definitions-web": [
-	],
-	"@liferay/commerce-product-measurement-unit-web": [
-	],
-	"@liferay/commerce-product-search-web": [
-	],
-	"@liferay/commerce-product-tax-category-web": [
-	],
-	"@liferay/commerce-product-type-grouped-web": [
-	],
-	"@liferay/commerce-product-type-virtual-order-content-web": [
-	],
-	"@liferay/commerce-product-type-virtual-web": [
-	],
-	"@liferay/commerce-shipment-web": [
-	],
-	"@liferay/commerce-shipping-engine-fixed-web": [
-	],
-	"@liferay/commerce-shop-by-diagram-web": [
-	],
-	"@liferay/commerce-taglib": [
-	],
-	"@liferay/commerce-tax-engine-fixed-web": [
-	],
-	"@liferay/commerce-term-web": [
-	],
-	"@liferay/commerce-warehouse-web": [
-	],
-	"@liferay/configuration-admin-web": [
-	],
-	"@liferay/content-dashboard-document-library-impl": [
-	],
-	"@liferay/content-dashboard-web": [
-	],
-	"@liferay/content-site-generator-web": [
-	],
-	"@liferay/cookies-banner-web": [
-	],
-	"@liferay/cookies-sample-web": [
-	],
-	"@liferay/design-library-web": [
-	],
-	"@liferay/dialect-theme": [
-	],
-	"@liferay/digital-signature-web": [
-	],
-	"@liferay/dispatch-web": [
-	],
-	"@liferay/document-library-opener-google-drive-web": [
-	],
-	"@liferay/document-library-preview-css": [
-	],
-	"@liferay/document-library-taglib": [
-	],
-	"@liferay/document-library-web": [
-	],
-	"@liferay/expando-taglib": [
-	],
-	"@liferay/feature-flag-web": [
-	],
-	"@liferay/flags-taglib": [
-	],
-	"@liferay/fragment-collection-filter-category": [
-	],
-	"@liferay/fragment-collection-filter-date": [
-	],
-	"@liferay/fragment-collection-filter-keyword": [
-	],
-	"@liferay/fragment-collection-filter-tags": [
-	],
-	"@liferay/fragment-impl": [
-		"./api"
-	],
-	"@liferay/fragment-renderer-collection-filter-impl": [
-	],
-	"@liferay/fragment-video-streaming": [
-	],
-	"@liferay/friendly-url-taglib": [
-	],
-	"@liferay/friendly-url-web": [
-	],
-	"@liferay/frontend-css-cadmin-web": [
-	],
-	"@liferay/frontend-css-common": [
-	],
-	"@liferay/frontend-data-set-admin-web": [
-	],
-	"@liferay/frontend-data-set-fragment-web": [
-	],
-	"@liferay/frontend-data-set-sample-web": [
-	],
-	"@liferay/frontend-data-set-taglib": [
-	],
-	"@liferay/frontend-data-set-web": [
-		"./api"
-	],
-	"@liferay/frontend-editor-ckeditor4-sample-web": [
-	],
-	"@liferay/frontend-editor-ckeditor5-sample-web": [
-	],
-	"@liferay/frontend-icons-web": [
-	],
-	"@liferay/frontend-js-audiences-web": [
-		"./custom-attributes"
-	],
-	"@liferay/frontend-js-bootstrap-support-web": [
-	],
-	"@liferay/frontend-js-charts-sample-web": [
-	],
-	"@liferay/frontend-js-charts-web": [
-	],
-	"@liferay/frontend-js-clay-web": [
-		"@clayui/alert",
-		"@clayui/autocomplete",
-		"@clayui/badge",
-		"@clayui/breadcrumb",
-		"@clayui/button",
-		"@clayui/card",
-		"@clayui/color-picker",
-		"@clayui/core",
-		"@clayui/data-provider",
-		"@clayui/date-picker",
-		"@clayui/drop-down",
-		"@clayui/empty-state",
-		"@clayui/form",
-		"@clayui/icon",
-		"@clayui/label",
-		"@clayui/layout",
-		"@clayui/link",
-		"@clayui/list",
-		"@clayui/loading-indicator",
-		"@clayui/localized-input",
-		"@clayui/management-toolbar",
-		"@clayui/modal",
-		"@clayui/multi-select",
-		"@clayui/multi-step-nav",
-		"@clayui/nav",
-		"@clayui/navigation-bar",
-		"@clayui/pagination",
-		"@clayui/pagination-bar",
-		"@clayui/panel",
-		"@clayui/popover",
-		"@clayui/progress-bar",
-		"@clayui/provider",
-		"@clayui/shared",
-		"@clayui/slider",
-		"@clayui/sticker",
-		"@clayui/table",
-		"@clayui/tabs",
-		"@clayui/time-picker",
-		"@clayui/toolbar",
-		"@clayui/tooltip",
-		"@clayui/upper-toolbar",
-		"@clayui/css/lib/css/atlas.css",
-		"@clayui/css/lib/css/base.css",
-		"@clayui/css/lib/css/cadmin.css"
-	],
-	"@liferay/frontend-js-codemirror-web": [
-		"codemirror/addon/fold/foldgutter.css",
-		"codemirror/addon/hint/show-hint.css",
-		"codemirror/lib/codemirror.css"
-	],
-	"@liferay/frontend-js-components-sample-web": [
-	],
-	"@liferay/frontend-js-dependencies-web": [
-		"@liferay/js-api",
-		"@liferay/js-api/data-set",
-		"cropperjs/dist/cropper.css",
-		"graphql-hooks-memcache",
-		"graphql-hooks",
-		"highlight.js/styles/monokai-sublime.css",
-		"qrcode",
-		"react-dropzone",
-		"react-transition-group",
-		"uuid",
-		"react-flow-renderer",
-		"react-helmet",
-		"axe-core",
-		"clipboard",
-		"cropperjs",
-		"dagre",
-		"date-fns",
-		"dom-align",
-		"fuzzy",
-		"highlight.js",
-		"highlight.js/lib/core",
-		"highlight.js/lib/languages/java",
-		"highlight.js/lib/languages/javascript",
-		"highlight.js/lib/languages/plaintext",
-		"libphonenumber-js",
-		"liferay-ckeditor",
-		"moment",
-		"moment/min/moment-with-locales",
-		"numeral",
-		"object-hash",
-		"qs",
-		"react-router",
-		"react-text-mask",
-		"text-mask-addons",
-		"text-mask-core",
-		"ua-parser-js"
-	],
-	"@liferay/frontend-js-importmaps-extender": [
-	],
-	"@liferay/frontend-js-item-selector-sample-web": [
-	],
-	"@liferay/frontend-js-item-selector-web": [
-	],
-	"@liferay/frontend-js-react-web": [
-		"classnames",
-		"formik",
-		"prop-types",
-		"react",
-		"react-16",
-		"react-18",
-		"react-dnd-html5-backend",
-		"react-dnd",
-		"react-dom",
-		"react-dom/client",
-		"react-dom-16",
-		"react-dom-18",
-		"react-dom-18/client"
-	],
-	"@liferay/frontend-js-state-web": [
-		"./react"
-	],
-	"@liferay/frontend-js-walkthrough-sample-web": [
-	],
-	"@liferay/frontend-js-walkthrough-web": [
-	],
-	"@liferay/frontend-taglib": [
-	],
-	"@liferay/frontend-theme-dialect-style-guide-sample-web": [
-	],
-	"@liferay/headless-admin-taxonomy-client-js": [
-	],
-	"@liferay/headless-builder-web": [
-	],
-	"@liferay/image-uploader-web": [
-	],
-	"@liferay/journal-content-web": [
-	],
-	"@liferay/journal-taglib": [
-	],
-	"@liferay/launch-web": [
-	],
-	"@liferay/layout-content-page-editor-web": [
-	],
-	"@liferay/layout-content-web": [
-	],
-	"@liferay/layout-js-components-web": [
-	],
-	"@liferay/layout-locked-layouts-web": [
-	],
-	"@liferay/layout-page-template-admin-web": [
-	],
-	"@liferay/layout-page-template-item-selector-web": [
-	],
-	"@liferay/layout-type-controller-embedded": [
-	],
-	"@liferay/layout-type-controller-panel": [
-	],
-	"@liferay/layout-utility-page-terms-of-use": [
-	],
-	"@liferay/liferay-classic-2-theme": [
-	],
-	"@liferay/liferay-cms-theme": [
-	],
-	"@liferay/locked-items-web": [
-	],
-	"@liferay/login-web": [
-	],
-	"@liferay/map-common": [
-	],
-	"@liferay/map-google-maps": [
-	],
-	"@liferay/map-openstreetmap": [
-	],
-	"@liferay/marketplace-js-components-web": [
-	],
-	"@liferay/marketplace-settings-web": [
-	],
-	"@liferay/mcp-server-web": [
-	],
-	"@liferay/microblogs-web": [
-	],
-	"@liferay/monitoring-web": [
-	],
-	"@liferay/multi-factor-authentication-fido2-web": [
-	],
-	"@liferay/notification-web": [
-	],
-	"@liferay/oauth-client-admin-web": [
-	],
-	"@liferay/oauth2-provider-web": [
-		"./client",
-		"./global"
-	],
-	"@liferay/object-admin-rest-client-js": [
-	],
-	"@liferay/object-dynamic-data-mapping-form-field-type": [
-	],
-	"@liferay/object-js-components-web": [
-	],
-	"@liferay/object-web": [
-	],
-	"@liferay/osb-patcher-web": [
-	],
-	"@liferay/portal-company-log-web": [
-	],
-	"@liferay/portal-defaultpermissions-web": [
-	],
-	"@liferay/portal-instances-web": [
-	],
-	"@liferay/portal-search-similar-results-web": [
-	],
-	"@liferay/portal-security-script-management-web": [
-	],
-	"@liferay/portal-settings-web": [
-	],
-	"@liferay/portal-tools-rest-builder-test-client-js": [
-	],
-	"@liferay/portal-url-builder-impl": [
-	],
-	"@liferay/portal-workflow-instance-tracker-web": [
-	],
-	"@liferay/portal-workflow-taglib": [
-	],
-	"@liferay/product-analytics-web": [
-	],
-	"@liferay/product-navigation-control-menu-theme-contributor": [
-	],
-	"@liferay/product-navigation-product-menu-theme-contributor": [
-	],
-	"@liferay/product-navigation-site-administration": [
-	],
-	"@liferay/product-navigation-user-personal-bar-web": [
-	],
-	"@liferay/saml-web": [
-	],
-	"@liferay/saved-content-taglib": [
-	],
-	"@liferay/saved-content-web": [
-	],
-	"@liferay/scim-configuration-web": [
-	],
-	"@liferay/search-experiences-web": [
-	],
-	"@liferay/site-cmp-site-initializer": [
-	],
-	"@liferay/site-cms-site-initializer": [
-	],
-	"@liferay/site-cms-standalone-site-initializer": [
-	],
-	"@liferay/site-dsr-site-initializer": [
-	],
-	"@liferay/site-navigation-menu-item-display-page": [
-	],
-	"@liferay/site-navigation-menu-item-vocabulary": [
-	],
-	"@liferay/site-navigation-taglib": [
-	],
-	"@liferay/site-pim-site-initializer": [
-	],
-	"@liferay/site-sitemap-web": [
-	],
-	"@liferay/social-activities-taglib": [
-	],
-	"@liferay/social-bookmark-facebook": [
-	],
-	"@liferay/social-bookmark-linkedin": [
-	],
-	"@liferay/social-bookmark-twitter": [
-	],
-	"@liferay/staging-configuration-web": [
-	],
-	"@liferay/subscription-web": [
-	],
-	"@liferay/template-taglib": [
-	],
-	"@liferay/template-web": [
-	],
-	"@liferay/trash-taglib": [
-	],
-	"@liferay/wiki-navigation-web": [
-	],
-	"account-admin-web": [
-	],
-	"adaptive-media-image-js-web": [
-	],
-	"adaptive-media-web": [
-	],
-	"analytics-client-js": [
-	],
-	"analytics-reports-web": [
-	],
-	"announcements-web": [
-	],
-	"asset-categories-admin-web": [
-	],
-	"asset-list-web": [
-	],
-	"asset-publisher-web": [
-	],
-	"asset-taglib": [
-	],
-	"asset-tags-admin-web": [
-	],
-	"blogs-web": [
-	],
-	"bookmarks-web": [
-	],
-	"calendar-web": [
-	],
-	"change-tracking-web": [
-	],
-	"click-to-chat-web": [
-	],
-	"commerce-cart-taglib": [
-	],
-	"commerce-dashboard-web": [
-	],
-	"commerce-frontend-js": [
-	],
-	"commerce-frontend-taglib": [
-	],
-	"commerce-organization-web": [
-	],
-	"commerce-product-content-web": [
-	],
-	"commerce-product-options-web": [
-	],
-	"contacts-web": [
-	],
-	"data-engine-js-components-web": [
-	],
-	"data-engine-rest-impl": [
-	],
-	"data-engine-taglib": [
-	],
-	"depot-web": [
-	],
-	"document-library-opener-onedrive-web": [
-	],
-	"document-library-preview-audio": [
-	],
-	"document-library-preview-document": [
-	],
-	"document-library-preview-image": [
-	],
-	"document-library-video": [
-	],
-	"dynamic-data-lists-web": [
-	],
-	"dynamic-data-mapping-data-provider-web": [
-	],
-	"dynamic-data-mapping-form-builder": [
-	],
-	"dynamic-data-mapping-form-field-type": [
-		"leaflet/dist/leaflet.css",
-		"./api"
-	],
-	"dynamic-data-mapping-form-renderer": [
-	],
-	"dynamic-data-mapping-form-web": [
-	],
-	"dynamic-data-mapping-web": [
-	],
-	"expando-web": [
-	],
-	"exportimport-web": [
-	],
-	"fragment-renderer-react-impl": [
-	],
-	"fragment-web": [
-	],
-	"frontend-editor-alloyeditor-web": [
-	],
-	"frontend-editor-ckeditor-web": [
-		"@ckeditor/ckeditor5-adapter-ckfinder/dist/index.js",
-		"@ckeditor/ckeditor5-alignment/dist/index.js",
-		"@ckeditor/ckeditor5-autoformat/dist/index.js",
-		"@ckeditor/ckeditor5-autosave/dist/index.js",
-		"@ckeditor/ckeditor5-basic-styles/dist/index.js",
-		"@ckeditor/ckeditor5-block-quote/dist/index.js",
-		"@ckeditor/ckeditor5-bookmark/dist/index.js",
-		"@ckeditor/ckeditor5-case-change/dist/index.js",
-		"@ckeditor/ckeditor5-ckbox/dist/index.js",
-		"@ckeditor/ckeditor5-ckfinder/dist/index.js",
-		"@ckeditor/ckeditor5-clipboard/dist/index.js",
-		"@ckeditor/ckeditor5-cloud-services/dist/index.js",
-		"@ckeditor/ckeditor5-code-block/dist/index.js",
-		"@ckeditor/ckeditor5-core/dist/index.js",
-		"@ckeditor/ckeditor5-document-outline/dist/index.js",
-		"@ckeditor/ckeditor5-easy-image/dist/index.js",
-		"@ckeditor/ckeditor5-editor-balloon/dist/index.js",
-		"@ckeditor/ckeditor5-editor-classic/dist/index.js",
-		"@ckeditor/ckeditor5-editor-decoupled/dist/index.js",
-		"@ckeditor/ckeditor5-editor-inline/dist/index.js",
-		"@ckeditor/ckeditor5-editor-multi-root/dist/index.js",
-		"@ckeditor/ckeditor5-email/dist/index.js",
-		"@ckeditor/ckeditor5-emoji/dist/index.js",
-		"@ckeditor/ckeditor5-engine/dist/index.js",
-		"@ckeditor/ckeditor5-enter/dist/index.js",
-		"@ckeditor/ckeditor5-essentials/dist/index.js",
-		"@ckeditor/ckeditor5-export-inline-styles/dist/index.js",
-		"@ckeditor/ckeditor5-find-and-replace/dist/index.js",
-		"@ckeditor/ckeditor5-font/dist/index.js",
-		"@ckeditor/ckeditor5-format-painter/dist/index.js",
-		"@ckeditor/ckeditor5-fullscreen/dist/index.js",
-		"@ckeditor/ckeditor5-heading/dist/index.js",
-		"@ckeditor/ckeditor5-highlight/dist/index.js",
-		"@ckeditor/ckeditor5-horizontal-line/dist/index.js",
-		"@ckeditor/ckeditor5-html-embed/dist/index.js",
-		"@ckeditor/ckeditor5-html-support/dist/index.js",
-		"@ckeditor/ckeditor5-icons/dist/index.js",
-		"@ckeditor/ckeditor5-image/dist/index.js",
-		"@ckeditor/ckeditor5-indent/dist/index.js",
-		"@ckeditor/ckeditor5-language/dist/index.js",
-		"@ckeditor/ckeditor5-line-height/dist/index.js",
-		"@ckeditor/ckeditor5-link/dist/index.js",
-		"@ckeditor/ckeditor5-list/dist/index.js",
-		"@ckeditor/ckeditor5-markdown-gfm/dist/index.js",
-		"@ckeditor/ckeditor5-media-embed/dist/index.js",
-		"@ckeditor/ckeditor5-mention/dist/index.js",
-		"@ckeditor/ckeditor5-merge-fields/dist/index.js",
-		"@ckeditor/ckeditor5-minimap/dist/index.js",
-		"@ckeditor/ckeditor5-page-break/dist/index.js",
-		"@ckeditor/ckeditor5-paragraph/dist/index.js",
-		"@ckeditor/ckeditor5-paste-from-office/dist/index.js",
-		"@ckeditor/ckeditor5-paste-from-office-enhanced/dist/index.js",
-		"@ckeditor/ckeditor5-react",
-		"@ckeditor/ckeditor5-remove-format/dist/index.js",
-		"@ckeditor/ckeditor5-restricted-editing/dist/index.js",
-		"@ckeditor/ckeditor5-select-all/dist/index.js",
-		"@ckeditor/ckeditor5-show-blocks/dist/index.js",
-		"@ckeditor/ckeditor5-slash-command/dist/index.js",
-		"@ckeditor/ckeditor5-source-editing/dist/index.js",
-		"@ckeditor/ckeditor5-source-editing-enhanced/dist/index.js",
-		"@ckeditor/ckeditor5-special-characters/dist/index.js",
-		"@ckeditor/ckeditor5-style/dist/index.js",
-		"@ckeditor/ckeditor5-table/dist/index.js",
-		"@ckeditor/ckeditor5-template/dist/index.js",
-		"@ckeditor/ckeditor5-typing/dist/index.js",
-		"@ckeditor/ckeditor5-ui/dist/index.js",
-		"@ckeditor/ckeditor5-undo/dist/index.js",
-		"@ckeditor/ckeditor5-upload/dist/index.js",
-		"@ckeditor/ckeditor5-utils/dist/index.js",
-		"@ckeditor/ckeditor5-watchdog/dist/index.js",
-		"@ckeditor/ckeditor5-widget/dist/index.js",
-		"@ckeditor/ckeditor5-word-count/dist/index.js",
-		"@codemirror/autocomplete",
-		"@codemirror/commands",
-		"@codemirror/lang-html",
-		"@codemirror/lang-markdown",
-		"@codemirror/language",
-		"@codemirror/state",
-		"@codemirror/theme-one-dark",
-		"@codemirror/view",
-		"ckeditor5/ckeditor5.css",
-		"ckeditor5-premium-features/ckeditor5-premium-features.css",
-		"eventsource",
-		"frontend-editor-ckeditor-web/plugins/DocumentLinkSelector"
-	],
-	"frontend-js-aui-web": [
-	],
-	"frontend-js-clay-sample-web": [
-	],
-	"frontend-js-components-web": [
-	],
-	"frontend-js-loader-modules-extender": [
-	],
-	"frontend-js-lodash-web": [
-	],
-	"frontend-js-recharts": [
-		"recharts"
-	],
-	"frontend-js-spa-web": [
-	],
-	"frontend-js-svg4everybody-web": [
-	],
-	"frontend-js-tooltip-support-web": [
-	],
-	"frontend-js-web": [
-		"./legacy"
-	],
-	"frontend-taglib-clay": [
-	],
-	"frontend-taglib-clay-sample-web": [
-	],
-	"frontend-taglib-clay-test-alert-toast-sample-web": [
-	],
-	"frontend-theme-classic-style-guide-sample-web": [
-	],
-	"headless-discovery-web": [
-	],
-	"invitation-invite-members-web": [
-	],
-	"item-selector-taglib": [
-	],
-	"item-selector-upload-web": [
-	],
-	"item-selector-url-web": [
-	],
-	"item-selector-web": [
-	],
-	"journal-article-dynamic-data-mapping-form-field-type": [
-	],
-	"journal-web": [
-	],
-	"knowledge-base-web": [
-	],
-	"layout-admin-web": [
-	],
-	"layout-dynamic-data-mapping-form-field-type": [
-	],
-	"layout-reports-web": [
-	],
-	"layout-seo-web": [
-	],
-	"layout-set-prototype-web": [
-	],
-	"layout-taglib": [
-		"./render"
-	],
-	"liferay-admin-theme": [
-	],
-	"liferay-classic-theme": [
-	],
-	"liferay-frontend-theme-styled": [
-	],
-	"liferay-frontend-theme-unstyled": [
-	],
-	"marketplace-store-web": [
-	],
-	"message-boards-web": [
-	],
-	"minium-theme": [
-	],
-	"multi-factor-authentication-timebased-otp-web": [
-	],
-	"my-sites-web": [
-	],
-	"my-subscriptions-web": [
-	],
-	"notifications-web": [
-	],
-	"password-policies-admin-web": [
-	],
-	"portal-reports-engine-console-web": [
-	],
-	"portal-search-admin-web": [
-	],
-	"portal-search-ranking-web": [
-	],
-	"portal-search-synonyms-web": [
-	],
-	"portal-search-web": [
-		"./search-bar"
-	],
-	"portal-template-react-renderer-impl": [
-	],
-	"portal-workflow-kaleo-designer-web": [
-	],
-	"portal-workflow-kaleo-forms-web": [
-	],
-	"portal-workflow-metrics-web": [
-	],
-	"portal-workflow-task-web": [
-	],
-	"portal-workflow-web": [
-	],
-	"portlet-configuration-css-web": [
-	],
-	"portlet-configuration-web": [
-	],
-	"product-navigation-applications-menu-web": [
-	],
-	"product-navigation-control-menu": [
-	],
-	"product-navigation-control-menu-web": [
-	],
-	"product-navigation-simulation-device": [
-	],
-	"product-navigation-taglib": [
-	],
-	"questions-web": [
-	],
-	"ratings-taglib": [
-	],
-	"redirect-web": [
-	],
-	"roles-admin-web": [
-	],
-	"segments-experiment-web": [
-	],
-	"segments-simulation-web": [
-	],
-	"segments-web": [
-	],
-	"server-admin-web": [
-	],
-	"sharing-taglib": [
-	],
-	"sharing-web": [
-	],
-	"site-admin-web": [
-	],
-	"site-membership-web": [
-	],
-	"site-navigation-admin-web": [
-	],
-	"site-navigation-item-selector-web": [
-	],
-	"site-navigation-menu-item-layout": [
-	],
-	"site-navigation-menu-web": [
-	],
-	"site-teams-web": [
-	],
-	"social-bookmarks-taglib": [
-	],
-	"speedwell-theme": [
-	],
-	"staging-bar-web": [
-	],
-	"staging-processes-web": [
-	],
-	"staging-taglib": [
-	],
-	"style-book-web": [
-	],
-	"translation-web": [
-	],
-	"trash-web": [
-	],
-	"user-associated-data-web": [
-	],
-	"user-groups-admin-web": [
-	],
-	"users-admin-web": [
-	],
-	"wiki-web": [
-	]
-},
-	
+		'@liferay/accessibility-menu-web': [],
+		'@liferay/accessibility-settings-state-web': [],
+		'@liferay/account-validator-vies-web': [],
+		'@liferay/address-web': [],
+		'@liferay/ai-creator-openai-web': [],
+		'@liferay/ai-hub-cell-js-components-web': [
+			'./renderAIAssistantTrigger',
+		],
+		'@liferay/analytics-reports-js-components-web': [],
+		'@liferay/analytics-settings-web': [],
+		'@liferay/application-list-taglib': [],
+		'@liferay/asset-categories-item-selector-web': [],
+		'@liferay/audiences-web': [],
+		'@liferay/batch-planner-web': [],
+		'@liferay/captcha-taglib': [],
+		'@liferay/change-tracking-rest-client-js': [],
+		'@liferay/client-extension-web': [],
+		'@liferay/comment-taglib': [],
+		'@liferay/commerce-account-web': [],
+		'@liferay/commerce-address-web': [],
+		'@liferay/commerce-availability-estimate-web': [],
+		'@liferay/commerce-cart-content-web': [],
+		'@liferay/commerce-catalog-web': [],
+		'@liferay/commerce-channel-web': [],
+		'@liferay/commerce-checkout-web': [],
+		'@liferay/commerce-client-extension-web': [],
+		'@liferay/commerce-fragment-impl': [],
+		'@liferay/commerce-order-content-web': [],
+		'@liferay/commerce-order-rule-web': [],
+		'@liferay/commerce-order-web': [],
+		'@liferay/commerce-payment-web': [],
+		'@liferay/commerce-pricing-web': [],
+		'@liferay/commerce-product-asset-categories-navigation-web': [],
+		'@liferay/commerce-product-asset-categories-web': [],
+		'@liferay/commerce-product-content-category-web': [],
+		'@liferay/commerce-product-definitions-web': [],
+		'@liferay/commerce-product-measurement-unit-web': [],
+		'@liferay/commerce-product-search-web': [],
+		'@liferay/commerce-product-tax-category-web': [],
+		'@liferay/commerce-product-type-grouped-web': [],
+		'@liferay/commerce-product-type-virtual-order-content-web': [],
+		'@liferay/commerce-product-type-virtual-web': [],
+		'@liferay/commerce-shipment-web': [],
+		'@liferay/commerce-shipping-engine-fixed-web': [],
+		'@liferay/commerce-shop-by-diagram-web': [],
+		'@liferay/commerce-taglib': [],
+		'@liferay/commerce-tax-engine-fixed-web': [],
+		'@liferay/commerce-term-web': [],
+		'@liferay/commerce-warehouse-web': [],
+		'@liferay/configuration-admin-web': [],
+		'@liferay/content-dashboard-document-library-impl': [],
+		'@liferay/content-dashboard-web': [],
+		'@liferay/content-site-generator-web': [],
+		'@liferay/cookies-banner-web': [],
+		'@liferay/cookies-sample-web': [],
+		'@liferay/design-library-web': [],
+		'@liferay/dialect-theme': [],
+		'@liferay/digital-signature-web': [],
+		'@liferay/dispatch-web': [],
+		'@liferay/document-library-opener-google-drive-web': [],
+		'@liferay/document-library-preview-css': [],
+		'@liferay/document-library-taglib': [],
+		'@liferay/document-library-web': [],
+		'@liferay/expando-taglib': [],
+		'@liferay/feature-flag-web': [],
+		'@liferay/flags-taglib': [],
+		'@liferay/fragment-collection-filter-category': [],
+		'@liferay/fragment-collection-filter-date': [],
+		'@liferay/fragment-collection-filter-keyword': [],
+		'@liferay/fragment-collection-filter-tags': [],
+		'@liferay/fragment-impl': ['./api'],
+		'@liferay/fragment-renderer-collection-filter-impl': [],
+		'@liferay/fragment-video-streaming': [],
+		'@liferay/friendly-url-taglib': [],
+		'@liferay/friendly-url-web': [],
+		'@liferay/frontend-css-cadmin-web': [],
+		'@liferay/frontend-css-common': [],
+		'@liferay/frontend-data-set-admin-web': [],
+		'@liferay/frontend-data-set-fragment-web': [],
+		'@liferay/frontend-data-set-sample-web': [],
+		'@liferay/frontend-data-set-taglib': [],
+		'@liferay/frontend-data-set-web': ['./api'],
+		'@liferay/frontend-editor-ckeditor4-sample-web': [],
+		'@liferay/frontend-editor-ckeditor5-sample-web': [],
+		'@liferay/frontend-icons-web': [],
+		'@liferay/frontend-js-audiences-web': ['./custom-attributes'],
+		'@liferay/frontend-js-bootstrap-support-web': [],
+		'@liferay/frontend-js-charts-sample-web': [],
+		'@liferay/frontend-js-charts-web': [],
+		'@liferay/frontend-js-clay-web': [
+			'@clayui/alert',
+			'@clayui/autocomplete',
+			'@clayui/badge',
+			'@clayui/breadcrumb',
+			'@clayui/button',
+			'@clayui/card',
+			'@clayui/color-picker',
+			'@clayui/core',
+			'@clayui/data-provider',
+			'@clayui/date-picker',
+			'@clayui/drop-down',
+			'@clayui/empty-state',
+			'@clayui/form',
+			'@clayui/icon',
+			'@clayui/label',
+			'@clayui/layout',
+			'@clayui/link',
+			'@clayui/list',
+			'@clayui/loading-indicator',
+			'@clayui/localized-input',
+			'@clayui/management-toolbar',
+			'@clayui/modal',
+			'@clayui/multi-select',
+			'@clayui/multi-step-nav',
+			'@clayui/nav',
+			'@clayui/navigation-bar',
+			'@clayui/pagination',
+			'@clayui/pagination-bar',
+			'@clayui/panel',
+			'@clayui/popover',
+			'@clayui/progress-bar',
+			'@clayui/provider',
+			'@clayui/shared',
+			'@clayui/slider',
+			'@clayui/sticker',
+			'@clayui/table',
+			'@clayui/tabs',
+			'@clayui/time-picker',
+			'@clayui/toolbar',
+			'@clayui/tooltip',
+			'@clayui/upper-toolbar',
+			'@clayui/css/lib/css/atlas.css',
+			'@clayui/css/lib/css/base.css',
+			'@clayui/css/lib/css/cadmin.css',
+		],
+		'@liferay/frontend-js-codemirror-web': [
+			'codemirror/addon/fold/foldgutter.css',
+			'codemirror/addon/hint/show-hint.css',
+			'codemirror/lib/codemirror.css',
+		],
+		'@liferay/frontend-js-components-sample-web': [],
+		'@liferay/frontend-js-dependencies-web': [
+			'@liferay/js-api',
+			'@liferay/js-api/data-set',
+			'cropperjs/dist/cropper.css',
+			'graphql-hooks-memcache',
+			'graphql-hooks',
+			'highlight.js/styles/monokai-sublime.css',
+			'qrcode',
+			'react-dropzone',
+			'react-transition-group',
+			'uuid',
+			'react-flow-renderer',
+			'react-helmet',
+			'axe-core',
+			'clipboard',
+			'cropperjs',
+			'dagre',
+			'date-fns',
+			'dom-align',
+			'fuzzy',
+			'highlight.js',
+			'highlight.js/lib/core',
+			'highlight.js/lib/languages/java',
+			'highlight.js/lib/languages/javascript',
+			'highlight.js/lib/languages/plaintext',
+			'libphonenumber-js',
+			'liferay-ckeditor',
+			'moment',
+			'moment/min/moment-with-locales',
+			'numeral',
+			'object-hash',
+			'qs',
+			'react-router',
+			'react-text-mask',
+			'text-mask-addons',
+			'text-mask-core',
+			'ua-parser-js',
+		],
+		'@liferay/frontend-js-importmaps-extender': [],
+		'@liferay/frontend-js-item-selector-sample-web': [],
+		'@liferay/frontend-js-item-selector-web': [],
+		'@liferay/frontend-js-react-web': [
+			'classnames',
+			'formik',
+			'prop-types',
+			'react',
+			'react-16',
+			'react-18',
+			'react-dnd-html5-backend',
+			'react-dnd',
+			'react-dom',
+			'react-dom/client',
+			'react-dom-16',
+			'react-dom-18',
+			'react-dom-18/client',
+		],
+		'@liferay/frontend-js-state-web': ['./react'],
+		'@liferay/frontend-js-walkthrough-sample-web': [],
+		'@liferay/frontend-js-walkthrough-web': [],
+		'@liferay/frontend-taglib': [],
+		'@liferay/frontend-theme-dialect-style-guide-sample-web': [],
+		'@liferay/headless-admin-taxonomy-client-js': [],
+		'@liferay/headless-builder-web': [],
+		'@liferay/image-uploader-web': [],
+		'@liferay/journal-content-web': [],
+		'@liferay/journal-taglib': [],
+		'@liferay/launch-web': [],
+		'@liferay/layout-content-page-editor-web': [],
+		'@liferay/layout-content-web': [],
+		'@liferay/layout-js-components-web': [],
+		'@liferay/layout-locked-layouts-web': [],
+		'@liferay/layout-page-template-admin-web': [],
+		'@liferay/layout-page-template-item-selector-web': [],
+		'@liferay/layout-type-controller-embedded': [],
+		'@liferay/layout-type-controller-panel': [],
+		'@liferay/layout-utility-page-terms-of-use': [],
+		'@liferay/liferay-cms-theme': [],
+		'@liferay/locked-items-web': [],
+		'@liferay/login-web': [],
+		'@liferay/map-common': [],
+		'@liferay/map-google-maps': [],
+		'@liferay/map-openstreetmap': [],
+		'@liferay/marketplace-js-components-web': [],
+		'@liferay/marketplace-settings-web': [],
+		'@liferay/mcp-server-web': [],
+		'@liferay/microblogs-web': [],
+		'@liferay/monitoring-web': [],
+		'@liferay/multi-factor-authentication-fido2-web': [],
+		'@liferay/notification-web': [],
+		'@liferay/oauth-client-admin-web': [],
+		'@liferay/oauth2-provider-web': ['./client', './global'],
+		'@liferay/object-admin-rest-client-js': [],
+		'@liferay/object-dynamic-data-mapping-form-field-type': [],
+		'@liferay/object-js-components-web': [],
+		'@liferay/object-web': [],
+		'@liferay/osb-patcher-web': [],
+		'@liferay/portal-company-log-web': [],
+		'@liferay/portal-defaultpermissions-web': [],
+		'@liferay/portal-instances-web': [],
+		'@liferay/portal-search-similar-results-web': [],
+		'@liferay/portal-security-script-management-web': [],
+		'@liferay/portal-settings-web': [],
+		'@liferay/portal-tools-rest-builder-test-client-js': [],
+		'@liferay/portal-url-builder-impl': [],
+		'@liferay/portal-workflow-instance-tracker-web': [],
+		'@liferay/portal-workflow-taglib': [],
+		'@liferay/product-analytics-web': [],
+		'@liferay/product-navigation-control-menu-theme-contributor': [],
+		'@liferay/product-navigation-product-menu-theme-contributor': [],
+		'@liferay/product-navigation-site-administration': [],
+		'@liferay/product-navigation-user-personal-bar-web': [],
+		'@liferay/saml-web': [],
+		'@liferay/saved-content-taglib': [],
+		'@liferay/saved-content-web': [],
+		'@liferay/scim-configuration-web': [],
+		'@liferay/search-experiences-web': [],
+		'@liferay/site-cmp-site-initializer': [],
+		'@liferay/site-cms-site-initializer': [],
+		'@liferay/site-cms-standalone-site-initializer': [],
+		'@liferay/site-dsr-site-initializer': [],
+		'@liferay/site-navigation-menu-item-display-page': [],
+		'@liferay/site-navigation-menu-item-vocabulary': [],
+		'@liferay/site-navigation-taglib': [],
+		'@liferay/site-pim-site-initializer': [],
+		'@liferay/site-sitemap-web': [],
+		'@liferay/social-activities-taglib': [],
+		'@liferay/social-bookmark-facebook': [],
+		'@liferay/social-bookmark-linkedin': [],
+		'@liferay/social-bookmark-twitter': [],
+		'@liferay/staging-configuration-web': [],
+		'@liferay/subscription-web': [],
+		'@liferay/template-taglib': [],
+		'@liferay/template-web': [],
+		'@liferay/trash-taglib': [],
+		'@liferay/wiki-navigation-web': [],
+		'account-admin-web': [],
+		'adaptive-media-image-js-web': [],
+		'adaptive-media-web': [],
+		'analytics-client-js': [],
+		'analytics-reports-web': [],
+		'announcements-web': [],
+		'asset-categories-admin-web': [],
+		'asset-list-web': [],
+		'asset-publisher-web': [],
+		'asset-taglib': [],
+		'asset-tags-admin-web': [],
+		'blogs-web': [],
+		'bookmarks-web': [],
+		'calendar-web': [],
+		'change-tracking-web': [],
+		'click-to-chat-web': [],
+		'commerce-cart-taglib': [],
+		'commerce-dashboard-web': [],
+		'commerce-frontend-js': [],
+		'commerce-frontend-taglib': [],
+		'commerce-organization-web': [],
+		'commerce-product-content-web': [],
+		'commerce-product-options-web': [],
+		'contacts-web': [],
+		'data-engine-js-components-web': [],
+		'data-engine-rest-impl': [],
+		'data-engine-taglib': [],
+		'depot-web': [],
+		'document-library-opener-onedrive-web': [],
+		'document-library-preview-audio': [],
+		'document-library-preview-document': [],
+		'document-library-preview-image': [],
+		'document-library-video': [],
+		'dynamic-data-lists-web': [],
+		'dynamic-data-mapping-data-provider-web': [],
+		'dynamic-data-mapping-form-builder': [],
+		'dynamic-data-mapping-form-field-type': [
+			'leaflet/dist/leaflet.css',
+			'./api',
+		],
+		'dynamic-data-mapping-form-renderer': [],
+		'dynamic-data-mapping-form-web': [],
+		'dynamic-data-mapping-web': [],
+		'expando-web': [],
+		'exportimport-web': [],
+		'fragment-renderer-react-impl': [],
+		'fragment-web': [],
+		'frontend-editor-alloyeditor-web': [],
+		'frontend-editor-ckeditor-web': [
+			'@ckeditor/ckeditor5-adapter-ckfinder/dist/index.js',
+			'@ckeditor/ckeditor5-alignment/dist/index.js',
+			'@ckeditor/ckeditor5-autoformat/dist/index.js',
+			'@ckeditor/ckeditor5-autosave/dist/index.js',
+			'@ckeditor/ckeditor5-basic-styles/dist/index.js',
+			'@ckeditor/ckeditor5-block-quote/dist/index.js',
+			'@ckeditor/ckeditor5-bookmark/dist/index.js',
+			'@ckeditor/ckeditor5-case-change/dist/index.js',
+			'@ckeditor/ckeditor5-ckbox/dist/index.js',
+			'@ckeditor/ckeditor5-ckfinder/dist/index.js',
+			'@ckeditor/ckeditor5-clipboard/dist/index.js',
+			'@ckeditor/ckeditor5-cloud-services/dist/index.js',
+			'@ckeditor/ckeditor5-code-block/dist/index.js',
+			'@ckeditor/ckeditor5-core/dist/index.js',
+			'@ckeditor/ckeditor5-document-outline/dist/index.js',
+			'@ckeditor/ckeditor5-easy-image/dist/index.js',
+			'@ckeditor/ckeditor5-editor-balloon/dist/index.js',
+			'@ckeditor/ckeditor5-editor-classic/dist/index.js',
+			'@ckeditor/ckeditor5-editor-decoupled/dist/index.js',
+			'@ckeditor/ckeditor5-editor-inline/dist/index.js',
+			'@ckeditor/ckeditor5-editor-multi-root/dist/index.js',
+			'@ckeditor/ckeditor5-email/dist/index.js',
+			'@ckeditor/ckeditor5-emoji/dist/index.js',
+			'@ckeditor/ckeditor5-engine/dist/index.js',
+			'@ckeditor/ckeditor5-enter/dist/index.js',
+			'@ckeditor/ckeditor5-essentials/dist/index.js',
+			'@ckeditor/ckeditor5-export-inline-styles/dist/index.js',
+			'@ckeditor/ckeditor5-find-and-replace/dist/index.js',
+			'@ckeditor/ckeditor5-font/dist/index.js',
+			'@ckeditor/ckeditor5-format-painter/dist/index.js',
+			'@ckeditor/ckeditor5-fullscreen/dist/index.js',
+			'@ckeditor/ckeditor5-heading/dist/index.js',
+			'@ckeditor/ckeditor5-highlight/dist/index.js',
+			'@ckeditor/ckeditor5-horizontal-line/dist/index.js',
+			'@ckeditor/ckeditor5-html-embed/dist/index.js',
+			'@ckeditor/ckeditor5-html-support/dist/index.js',
+			'@ckeditor/ckeditor5-icons/dist/index.js',
+			'@ckeditor/ckeditor5-image/dist/index.js',
+			'@ckeditor/ckeditor5-indent/dist/index.js',
+			'@ckeditor/ckeditor5-language/dist/index.js',
+			'@ckeditor/ckeditor5-line-height/dist/index.js',
+			'@ckeditor/ckeditor5-link/dist/index.js',
+			'@ckeditor/ckeditor5-list/dist/index.js',
+			'@ckeditor/ckeditor5-markdown-gfm/dist/index.js',
+			'@ckeditor/ckeditor5-media-embed/dist/index.js',
+			'@ckeditor/ckeditor5-mention/dist/index.js',
+			'@ckeditor/ckeditor5-merge-fields/dist/index.js',
+			'@ckeditor/ckeditor5-minimap/dist/index.js',
+			'@ckeditor/ckeditor5-page-break/dist/index.js',
+			'@ckeditor/ckeditor5-paragraph/dist/index.js',
+			'@ckeditor/ckeditor5-paste-from-office/dist/index.js',
+			'@ckeditor/ckeditor5-paste-from-office-enhanced/dist/index.js',
+			'@ckeditor/ckeditor5-react',
+			'@ckeditor/ckeditor5-remove-format/dist/index.js',
+			'@ckeditor/ckeditor5-restricted-editing/dist/index.js',
+			'@ckeditor/ckeditor5-select-all/dist/index.js',
+			'@ckeditor/ckeditor5-show-blocks/dist/index.js',
+			'@ckeditor/ckeditor5-slash-command/dist/index.js',
+			'@ckeditor/ckeditor5-source-editing/dist/index.js',
+			'@ckeditor/ckeditor5-source-editing-enhanced/dist/index.js',
+			'@ckeditor/ckeditor5-special-characters/dist/index.js',
+			'@ckeditor/ckeditor5-style/dist/index.js',
+			'@ckeditor/ckeditor5-table/dist/index.js',
+			'@ckeditor/ckeditor5-template/dist/index.js',
+			'@ckeditor/ckeditor5-typing/dist/index.js',
+			'@ckeditor/ckeditor5-ui/dist/index.js',
+			'@ckeditor/ckeditor5-undo/dist/index.js',
+			'@ckeditor/ckeditor5-upload/dist/index.js',
+			'@ckeditor/ckeditor5-utils/dist/index.js',
+			'@ckeditor/ckeditor5-watchdog/dist/index.js',
+			'@ckeditor/ckeditor5-widget/dist/index.js',
+			'@ckeditor/ckeditor5-word-count/dist/index.js',
+			'@codemirror/autocomplete',
+			'@codemirror/commands',
+			'@codemirror/lang-html',
+			'@codemirror/lang-markdown',
+			'@codemirror/language',
+			'@codemirror/state',
+			'@codemirror/theme-one-dark',
+			'@codemirror/view',
+			'ckeditor5/ckeditor5.css',
+			'ckeditor5-premium-features/ckeditor5-premium-features.css',
+			'eventsource',
+			'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector',
+		],
+		'frontend-js-aui-web': [],
+		'frontend-js-clay-sample-web': [],
+		'frontend-js-components-web': [],
+		'frontend-js-loader-modules-extender': [],
+		'frontend-js-lodash-web': [],
+		'frontend-js-recharts': ['recharts'],
+		'frontend-js-spa-web': [],
+		'frontend-js-svg4everybody-web': [],
+		'frontend-js-tooltip-support-web': [],
+		'frontend-js-web': ['./legacy'],
+		'frontend-taglib-clay': [],
+		'frontend-taglib-clay-sample-web': [],
+		'frontend-taglib-clay-test-alert-toast-sample-web': [],
+		'frontend-theme-classic-style-guide-sample-web': [],
+		'headless-discovery-web': [],
+		'invitation-invite-members-web': [],
+		'item-selector-taglib': [],
+		'item-selector-upload-web': [],
+		'item-selector-url-web': [],
+		'item-selector-web': [],
+		'journal-article-dynamic-data-mapping-form-field-type': [],
+		'journal-web': [],
+		'knowledge-base-web': [],
+		'layout-admin-web': [],
+		'layout-dynamic-data-mapping-form-field-type': [],
+		'layout-reports-web': [],
+		'layout-seo-web': [],
+		'layout-set-prototype-web': [],
+		'layout-taglib': ['./render'],
+		'liferay-admin-theme': [],
+		'liferay-classic-theme': [],
+		'liferay-frontend-theme-styled': [],
+		'liferay-frontend-theme-unstyled': [],
+		'marketplace-store-web': [],
+		'message-boards-web': [],
+		'minium-theme': [],
+		'multi-factor-authentication-timebased-otp-web': [],
+		'my-sites-web': [],
+		'my-subscriptions-web': [],
+		'notifications-web': [],
+		'password-policies-admin-web': [],
+		'portal-reports-engine-console-web': [],
+		'portal-search-admin-web': [],
+		'portal-search-ranking-web': [],
+		'portal-search-synonyms-web': [],
+		'portal-search-web': ['./search-bar'],
+		'portal-template-react-renderer-impl': [],
+		'portal-workflow-kaleo-designer-web': [],
+		'portal-workflow-kaleo-forms-web': [],
+		'portal-workflow-metrics-web': [],
+		'portal-workflow-task-web': [],
+		'portal-workflow-web': [],
+		'portlet-configuration-css-web': [],
+		'portlet-configuration-web': [],
+		'product-navigation-applications-menu-web': [],
+		'product-navigation-control-menu': [],
+		'product-navigation-control-menu-web': [],
+		'product-navigation-simulation-device': [],
+		'product-navigation-taglib': [],
+		'questions-web': [],
+		'ratings-taglib': [],
+		'redirect-web': [],
+		'roles-admin-web': [],
+		'segments-experiment-web': [],
+		'segments-simulation-web': [],
+		'segments-web': [],
+		'server-admin-web': [],
+		'sharing-taglib': [],
+		'sharing-web': [],
+		'site-admin-web': [],
+		'site-membership-web': [],
+		'site-navigation-admin-web': [],
+		'site-navigation-item-selector-web': [],
+		'site-navigation-menu-item-layout': [],
+		'site-navigation-menu-web': [],
+		'site-teams-web': [],
+		'social-bookmarks-taglib': [],
+		'speedwell-theme': [],
+		'staging-bar-web': [],
+		'staging-processes-web': [],
+		'staging-taglib': [],
+		'style-book-web': [],
+		'translation-web': [],
+		'trash-web': [],
+		'user-associated-data-web': [],
+		'user-groups-admin-web': [],
+		'users-admin-web': [],
+		'wiki-web': [],
+	},
+
 	// The following symbols override the actual symbols that listed packages export. This is
 	// sometimes necessary when:
 	//
@@ -849,87 +536,59 @@ module.exports = {
 	//
 
 	symbols: {
-	"@clayui/core": [
-		"Body",
-		"Button",
-		"ButtonWithIcon",
-		"Cell",
-		"FocusTrap",
-		"Head",
-		"Heading",
-		"Icon",
-		"IconSelector",
-		"KeyboardArrowsIndicator",
-		"LanguagePicker",
-		"Modal",
-		"ModalContext",
-		"Nav",
-		"Option",
-		"OverlayMask",
-		"Picker",
-		"Provider",
-		"ResizeHandle",
-		"Row",
-		"SidePanel",
-		"SidePanelWithDrilldown",
-		"Table",
-		"Text",
-		"TextHighlight",
-		"TreeView",
-		"VerticalBar",
-		"VerticalNav",
-		"__EXPERIMENTAL_MENU",
-		"__NOT_PUBLIC_COLLECTION",
-		"__NOT_PUBLIC_LIVE_ANNOUNCER",
-		"useModal",
-		"useProvider"
-	],
-	"@clayui/date-picker": [
-		"FirstDayOfWeek",
-		"default"
-	],
-	"@clayui/provider": [
-		"Provider",
-		"__UNSTABLE_DataClient",
-		"useProvider"
-	],
-	"@codemirror/autocomplete": [
-		"*"
-	],
-	"@codemirror/commands": [
-		"*"
-	],
-	"@codemirror/lang-html": [
-		"*"
-	],
-	"@codemirror/lang-markdown": [
-		"*"
-	],
-	"@codemirror/language": [
-		"*"
-	],
-	"@codemirror/state": [
-		"*"
-	],
-	"@codemirror/theme-one-dark": [
-		"*"
-	],
-	"@codemirror/view": [
-		"*"
-	],
-	"frontend-editor-ckeditor-web/plugins/DocumentLinkSelector": [
-		"default"
-	],
-	"prop-types": [
-		"*",
-		"bigint",
-		"default"
-	],
-	"qrcode": [
-		"create",
-		"toCanvas",
-		"toString",
-		"toDataURL"
-	]
-},
+		'@clayui/core': [
+			'Body',
+			'Button',
+			'ButtonWithIcon',
+			'Cell',
+			'FocusTrap',
+			'Head',
+			'Heading',
+			'Icon',
+			'IconSelector',
+			'KeyboardArrowsIndicator',
+			'LanguagePicker',
+			'Modal',
+			'ModalContext',
+			'Nav',
+			'Option',
+			'OverlayMask',
+			'Picker',
+			'Provider',
+			'ResizeHandle',
+			'Row',
+			'SidePanel',
+			'SidePanelWithDrilldown',
+			'Table',
+			'Text',
+			'TextHighlight',
+			'TreeView',
+			'VerticalBar',
+			'VerticalNav',
+			'__EXPERIMENTAL_MENU',
+			'__NOT_PUBLIC_COLLECTION',
+			'__NOT_PUBLIC_LIVE_ANNOUNCER',
+			'useModal',
+			'useProvider',
+		],
+		'@clayui/date-picker': ['FirstDayOfWeek', 'default'],
+		'@clayui/provider': [
+			'Provider',
+			'__UNSTABLE_DataClient',
+			'useProvider',
+		],
+		'@codemirror/autocomplete': ['*'],
+		'@codemirror/commands': ['*'],
+		'@codemirror/lang-html': ['*'],
+		'@codemirror/lang-markdown': ['*'],
+		'@codemirror/language': ['*'],
+		'@codemirror/state': ['*'],
+		'@codemirror/theme-one-dark': ['*'],
+		'@codemirror/view': ['*'],
+		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector': [
+			'default',
+		],
+		'prop-types': ['*', 'bigint', 'default'],
+		'qrcode': ['create', 'toCanvas', 'toString', 'toDataURL'],
+	},
 };
