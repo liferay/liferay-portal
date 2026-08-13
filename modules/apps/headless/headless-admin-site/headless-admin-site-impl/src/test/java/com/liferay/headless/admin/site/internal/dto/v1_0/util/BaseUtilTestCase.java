@@ -59,37 +59,19 @@ public abstract class BaseUtilTestCase {
 	protected static InfoItemReference mockInfoItemReference()
 		throws Exception {
 
-		InfoItemObjectProvider<Object> infoItemObjectProvider = Mockito.mock(
-			InfoItemObjectProvider.class);
+		InfoItemReference infoItemReference = Mockito.mock(
+			InfoItemReference.class);
 
 		InfoItemDetailsProvider<Object> infoItemDetailsProvider = Mockito.mock(
 			InfoItemDetailsProvider.class);
 
-		Mockito.when(
-			infoItemServiceRegistry.getFirstInfoItemService(
-				Mockito.eq(InfoItemDetailsProvider.class), Mockito.any(),
-				Mockito.any())
-		).thenReturn(
-			infoItemDetailsProvider
-		);
-
-		Mockito.when(
-			infoItemServiceRegistry.getFirstInfoItemService(
-				Mockito.eq(InfoItemObjectProvider.class), Mockito.any(),
-				Mockito.any())
-		).thenReturn(
-			infoItemObjectProvider
-		);
-
-		Mockito.when(
-			infoItemObjectProvider.getInfoItem(
-				Mockito.eq(SCOPE_GROUP_ID),
-				Mockito.any(InfoItemIdentifier.class))
-		).thenReturn(
-			Mockito.mock(Object.class)
-		);
-
 		InfoItemDetails infoItemDetails = Mockito.mock(InfoItemDetails.class);
+
+		Mockito.when(
+			infoItemDetails.getInfoItemReference()
+		).thenReturn(
+			infoItemReference
+		);
 
 		Mockito.when(
 			infoItemDetailsProvider.getInfoItemDetails(
@@ -99,13 +81,31 @@ public abstract class BaseUtilTestCase {
 			infoItemDetails
 		);
 
-		InfoItemReference infoItemReference = Mockito.mock(
-			InfoItemReference.class);
+		Mockito.when(
+			infoItemServiceRegistry.getFirstInfoItemService(
+				Mockito.eq(InfoItemDetailsProvider.class), Mockito.any(),
+				Mockito.any())
+		).thenReturn(
+			infoItemDetailsProvider
+		);
+
+		InfoItemObjectProvider<Object> infoItemObjectProvider = Mockito.mock(
+			InfoItemObjectProvider.class);
 
 		Mockito.when(
-			infoItemDetails.getInfoItemReference()
+			infoItemObjectProvider.getInfoItem(
+				Mockito.eq(SCOPE_GROUP_ID),
+				Mockito.any(InfoItemIdentifier.class))
 		).thenReturn(
-			infoItemReference
+			Mockito.mock(Object.class)
+		);
+
+		Mockito.when(
+			infoItemServiceRegistry.getFirstInfoItemService(
+				Mockito.eq(InfoItemObjectProvider.class), Mockito.any(),
+				Mockito.any())
+		).thenReturn(
+			infoItemObjectProvider
 		);
 
 		return infoItemReference;
