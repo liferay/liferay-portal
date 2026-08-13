@@ -9,7 +9,7 @@
 
 <div class="form-group form-group-sm">
 	<label class="control-label <%= fragmentCollectionFilterKeywordDisplayContext.isShowLabel() ? "" : "sr-only" %>" for="<%= fragmentCollectionFilterKeywordDisplayContext.getFragmentEntryLinkNamespace() %>keywordsInput">
-		<%= fragmentCollectionFilterKeywordDisplayContext.getLabel() %>
+		<%= HtmlUtil.escape(fragmentCollectionFilterKeywordDisplayContext.getLabel()) %>
 	</label>
 
 	<div class="input-group">
