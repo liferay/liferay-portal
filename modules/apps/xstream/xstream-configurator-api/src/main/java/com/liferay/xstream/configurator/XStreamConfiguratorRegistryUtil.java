@@ -30,10 +30,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class XStreamConfiguratorRegistryUtil {
 
-	public static Set<Class<?>> getAliases() {
-		return new HashSet<>(_xstreamAliases.keySet());
-	}
-
 	public static ClassLoader getConfiguratorsClassLoader(
 		ClassLoader masterClassLoader) {
 
@@ -47,7 +43,7 @@ public class XStreamConfiguratorRegistryUtil {
 
 		// Temporary code to fetch class loaders from the old framework too
 
-		Set<Class<?>> aliases = getAliases();
+		Set<Class<?>> aliases = _getAliases();
 
 		if (!aliases.isEmpty()) {
 			for (Class<?> clazz : aliases) {
@@ -65,6 +61,10 @@ public class XStreamConfiguratorRegistryUtil {
 
 	public static List<XStreamConfigurator> getXStreamConfigurators() {
 		return _xStreamConfigurators.toList();
+	}
+
+	private static Set<Class<?>> _getAliases() {
+		return new HashSet<>(_xstreamAliases.keySet());
 	}
 
 	private static final BundleContext _bundleContext =
