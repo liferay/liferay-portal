@@ -213,6 +213,19 @@ public class UpdateLanguageAction implements Action {
 					currentLayoutFriendlyURL.length(),
 				layoutURL);
 		}
+		else {
+			Group group = layout.getGroup();
+
+			String groupFriendlyURL = group.getFriendlyURL();
+
+			int groupFriendlyURLIndex = layoutURL.indexOf(groupFriendlyURL);
+
+			if (groupFriendlyURLIndex != -1) {
+				mappingPart = _getMappingPart(
+					groupFriendlyURLIndex + groupFriendlyURL.length(),
+					layoutURL);
+			}
+		}
 
 		if (themeDisplay.isI18n()) {
 			String i18nPath = themeDisplay.getI18nPath();
