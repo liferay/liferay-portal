@@ -92,7 +92,6 @@ public class LanguageTagTest {
 	public void testGetLanguageEntries() throws Exception {
 		Layout layout = _addLayout();
 
-		_testGetLanguageEntriesWhenSignedIn(layout);
 		_testGetLanguageEntriesWithAnotherLocaleFriendlyURL(layout);
 		_testGetLanguageEntriesWithDefaultPageMappingPart(layout);
 
@@ -108,6 +107,7 @@ public class LanguageTagTest {
 
 		_testGetLanguageEntriesWithoutLocalePrependFriendlyURLStyle(layout);
 		_testGetLanguageEntriesWithRedirectParameter(layout);
+		_testGetLanguageEntriesWithSignedInUser(layout);
 		_testGetLanguageEntriesWithVirtualHostname(layout);
 	}
 
@@ -286,18 +286,6 @@ public class LanguageTagTest {
 			localePrependFriendlyURLStyle);
 
 		portletPreferences.store();
-	}
-
-	private void _testGetLanguageEntriesWhenSignedIn(Layout layout)
-		throws Exception {
-
-		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
-
-		themeDisplay.setSignedIn(true);
-
-		Assert.assertEquals(
-			_UPDATE_LANGUAGE_PATH + "?languageId=fr_FR",
-			_getURL(_getLanguageEntries(themeDisplay), LocaleUtil.FRANCE));
 	}
 
 	private void _testGetLanguageEntriesWithAnotherLocaleFriendlyURL(
@@ -568,6 +556,18 @@ public class LanguageTagTest {
 					_getThemeDisplay(layout, LocaleUtil.US), null,
 					"?redirect=" + RandomTestUtil.randomString()),
 				LocaleUtil.FRANCE));
+	}
+
+	private void _testGetLanguageEntriesWithSignedInUser(Layout layout)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
+
+		themeDisplay.setSignedIn(true);
+
+		Assert.assertEquals(
+			_UPDATE_LANGUAGE_PATH + "?languageId=fr_FR",
+			_getURL(_getLanguageEntries(themeDisplay), LocaleUtil.FRANCE));
 	}
 
 	private void _testGetLanguageEntriesWithVirtualHostname(Layout layout)
