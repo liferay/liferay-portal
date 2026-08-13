@@ -27,6 +27,7 @@ package org.springframework.web.util;
  * @author Juergen Hoeller
  * @author Rob Harrop
  * @author Rossen Stoyanchev
+ * @author Sebastien Deleuze
  * @since 1.1.1
  */
 public abstract class JavaScriptUtils {
@@ -89,6 +90,12 @@ public abstract class JavaScriptUtils {
 			else if (c == '\u2029') {
 				filtered.append("\\u2029");
 			}
+			else if (c == '`') {
+				filtered.append("\\u0060");
+			}
+			else if (c == '$') {
+				filtered.append("\\u0024");
+			}
 			else {
 				filtered.append(c);
 			}
@@ -99,3 +106,5 @@ public abstract class JavaScriptUtils {
 	}
 
 }
+
+/* @generated */

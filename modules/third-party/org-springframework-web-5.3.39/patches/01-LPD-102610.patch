@@ -1,0 +1,32 @@
+diff --git a/org/springframework/web/util/JavaScriptUtils.java b/org/springframework/web/util/JavaScriptUtils.java
+index 8f59646..8739c3a 100644
+--- a/org/springframework/web/util/JavaScriptUtils.java
++++ b/org/springframework/web/util/JavaScriptUtils.java
+@@ -27,6 +27,7 @@ package org.springframework.web.util;
+  * @author Juergen Hoeller
+  * @author Rob Harrop
+  * @author Rossen Stoyanchev
++ * @author Sebastien Deleuze
+  * @since 1.1.1
+  */
+ public abstract class JavaScriptUtils {
+@@ -89,6 +90,12 @@ public abstract class JavaScriptUtils {
+ 			else if (c == '\u2029') {
+ 				filtered.append("\\u2029");
+ 			}
++			else if (c == '`') {
++				filtered.append("\\u0060");
++			}
++			else if (c == '$') {
++				filtered.append("\\u0024");
++			}
+ 			else {
+ 				filtered.append(c);
+ 			}
+@@ -99,3 +106,5 @@ public abstract class JavaScriptUtils {
+ 	}
+ 
+ }
++
++/* @generated */
+\ No newline at end of file
