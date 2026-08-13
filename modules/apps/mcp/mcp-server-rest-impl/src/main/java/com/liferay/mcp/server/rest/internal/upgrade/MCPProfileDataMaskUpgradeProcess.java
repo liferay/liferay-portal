@@ -84,6 +84,10 @@ public class MCPProfileDataMaskUpgradeProcess extends UpgradeProcess {
 					MCPServerConstants.EXTERNAL_REFERENCE_CODE_DATA_MASK,
 					companyId);
 
+		if (dataMaskObjectDefinition == null) {
+			return;
+		}
+
 		List<ObjectEntry> systemDataMaskObjectEntries =
 			_getSystemDataMaskObjectEntries(dataMaskObjectDefinition);
 
@@ -97,6 +101,10 @@ public class MCPProfileDataMaskUpgradeProcess extends UpgradeProcess {
 					MCPServerConstants.
 						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
 					companyId);
+
+		if (mcpServerProfileDataMaskObjectDefinition == null) {
+			return;
+		}
 
 		Map<String, Set<String>> dataMaskExternalReferenceCodesMap =
 			new HashMap<>();
@@ -133,6 +141,10 @@ public class MCPProfileDataMaskUpgradeProcess extends UpgradeProcess {
 					MCPServerConstants.
 						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE,
 					companyId);
+
+		if (mcpServerProfileObjectDefinition == null) {
+			return;
+		}
 
 		for (ObjectEntry mcpServerProfileObjectEntry :
 				_objectEntryLocalService.getObjectEntries(
