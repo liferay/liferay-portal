@@ -55,9 +55,9 @@ public class ResourceUtil {
 			return new ObjectValuePair<>(servletContext, resourceURL);
 		}
 
-		servletContext = getPathServletContext(requestPath);
+		servletContext = _getPathServletContext(requestPath);
 
-		resourceURL = getResource(servletContext, requestPath);
+		resourceURL = _getResource(servletContext, requestPath);
 
 		if (resourceURL != null) {
 			return new ObjectValuePair<>(servletContext, resourceURL);
@@ -71,16 +71,6 @@ public class ResourceUtil {
 
 		if (resourceURL != null) {
 			return new ObjectValuePair<>(servletContext, resourceURL);
-		}
-
-		return null;
-	}
-
-	public static ServletContext getPathServletContext(String path) {
-		for (ServletContext servletContext : _servletContexts.values()) {
-			if (path.startsWith(servletContext.getContextPath())) {
-				return servletContext;
-			}
 		}
 
 		return null;
@@ -101,7 +91,34 @@ public class ResourceUtil {
 		return objectValuePair.getKey();
 	}
 
-	public static URL getResource(ServletContext servletContext, String path) {
+	public static URL getResourceURL(
+			String requestPath, String requestURI,
+			ServletContext defaultServletContext)
+		throws IOException {
+
+		ObjectValuePair<ServletContext, URL> objectValuePair =
+			getObjectValuePair(requestPath, requestURI, defaultServletContext);
+
+		if (objectValuePair == null) {
+			return null;
+		}
+
+		return objectValuePair.getValue();
+	}
+
+	private static ServletContext _getPathServletContext(String path) {
+		for (ServletContext servletContext : _servletContexts.values()) {
+			if (path.startsWith(servletContext.getContextPath())) {
+				return servletContext;
+			}
+		}
+
+		return null;
+	}
+
+	private static URL _getResource(
+		ServletContext servletContext, String path) {
+
 		if (servletContext == null) {
 			return null;
 		}
@@ -122,21 +139,6 @@ public class ResourceUtil {
 		}
 
 		return null;
-	}
-
-	public static URL getResourceURL(
-			String requestPath, String requestURI,
-			ServletContext defaultServletContext)
-		throws IOException {
-
-		ObjectValuePair<ServletContext, URL> objectValuePair =
-			getObjectValuePair(requestPath, requestURI, defaultServletContext);
-
-		if (objectValuePair == null) {
-			return null;
-		}
-
-		return objectValuePair.getValue();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(ResourceUtil.class);
