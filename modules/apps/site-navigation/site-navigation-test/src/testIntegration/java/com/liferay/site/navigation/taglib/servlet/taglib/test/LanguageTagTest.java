@@ -98,6 +98,7 @@ public class LanguageTagTest {
 		_testGetLanguageEntriesWithDisplayPage();
 
 		_testGetLanguageEntriesWithFormAction(layout);
+		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 1);
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 2);
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 3);
 		_testGetLanguageEntriesWithLocalizedVirtualHostname(layout);
