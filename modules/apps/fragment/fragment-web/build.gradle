@@ -21,6 +21,7 @@ dependencies {
 	compileOnly project(":apps:fragment:fragment-collection-item-selector-api")
 	compileOnly project(":apps:fragment:fragment-item-selector-api")
 	compileOnly project(":apps:fragment:fragment-service")
+	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-react")
