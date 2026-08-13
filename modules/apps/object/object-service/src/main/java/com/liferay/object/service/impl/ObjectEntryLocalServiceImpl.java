@@ -208,8 +208,6 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ReindexCacheThreadLocal;
@@ -1572,7 +1570,6 @@ public class ObjectEntryLocalServiceImpl
 		return objectEntryPersistence.dslQueryCount(dslQuery);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.REQUIRED)
 	public ObjectEntry getOrAddEmptyObjectEntry(
 			String externalReferenceCode, long groupId, long userId,
@@ -1608,6 +1605,8 @@ public class ObjectEntryLocalServiceImpl
 				true, objectDefinition, _objectFieldLocalService),
 			new HashMap<>(), objectEntry.getObjectEntryId(), false,
 			new HashMap<>());
+
+		_reindex(objectEntry);
 
 		return objectEntry;
 	}
@@ -2022,7 +2021,6 @@ public class ObjectEntryLocalServiceImpl
 			true, false);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ObjectEntry moveObjectEntryToTrash(
 			long userId, ObjectEntry objectEntry, ServiceContext serviceContext)
@@ -2091,7 +2089,6 @@ public class ObjectEntryLocalServiceImpl
 		}
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ObjectEntry restoreObjectEntryFromTrash(
 			long userId, ObjectEntry objectEntry, ServiceContext serviceContext)
@@ -2229,7 +2226,6 @@ public class ObjectEntryLocalServiceImpl
 			assetLinkEntryIds, priority, null);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ObjectEntry updateModifiedDate(long objectEntryId, Date modifiedDate)
 		throws PortalException {
@@ -2240,6 +2236,8 @@ public class ObjectEntryLocalServiceImpl
 		objectEntry.setModifiedDate(modifiedDate);
 
 		objectEntry = objectEntryPersistence.update(objectEntry);
+
+		_reindex(objectEntry);
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionPersistence.findByPrimaryKey(
