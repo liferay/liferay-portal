@@ -57,8 +57,12 @@ export default async function createGlobalConfig() {
 
 	const sha256 = crypto.createHash('sha256');
 
+	// Hash the serialized form instead of the objects themselves because
+	// objectSF() sorts keys, which keeps the hash independent of the order in
+	// which the projects were discovered.
+
 	const hash = sha256
-		.update(JSON.stringify(allImports) + JSON.stringify(allSymbols))
+		.update(objectSF(allImports) + objectSF(allSymbols))
 		.digest('hex');
 
 	return {
