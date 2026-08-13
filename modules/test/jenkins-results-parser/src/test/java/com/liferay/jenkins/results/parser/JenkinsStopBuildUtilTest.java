@@ -41,10 +41,7 @@ public class JenkinsStopBuildUtilTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_username = RandomTestUtil.randomString();
-		_password = RandomTestUtil.randomString();
-
-		_setUpBuildProperties(_username, _password);
+		_setUpBuildProperties(_USERNAME, _PASSWORD);
 
 		_httpServer = HttpServer.create(
 			new InetSocketAddress(InetAddress.getByName("localhost"), 0), 0);
@@ -202,7 +199,7 @@ public class JenkinsStopBuildUtilTest
 		Assert.assertEquals("POST", _requestMethods.get(0));
 
 		String encodedString = JenkinsStopBuildUtil.encodeAuthorizationFields(
-			_username, _password);
+			_USERNAME, _PASSWORD);
 
 		Assert.assertEquals("Basic " + encodedString, _authorizations.get(0));
 	}
@@ -335,14 +332,16 @@ public class JenkinsStopBuildUtilTest
 
 	private static final int _MAXIMUM_RESULT_READS = 7;
 
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
+	private static final String _USERNAME = RandomTestUtil.randomString();
+
 	private final List<String> _authorizations = new ArrayList<>();
 	private String _buildURL;
 	private HttpServer _httpServer;
-	private String _password;
 	private final List<String> _postedPaths = new ArrayList<>();
 	private final List<String> _readURLs = new ArrayList<>();
 	private final List<String> _requestMethods = new ArrayList<>();
 	private int _responseCode = 200;
-	private String _username;
 
 }
