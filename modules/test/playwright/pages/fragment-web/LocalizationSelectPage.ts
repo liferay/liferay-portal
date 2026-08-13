@@ -142,11 +142,29 @@ export class LocalizationSelectPage {
 	}
 
 	async switchLanguage(languageId: string) {
+		const option = this.page.locator('.dropdown-item', {
+			hasText: languageId,
+		});
+
 		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.locator('.dropdown-item', {hasText: languageId}),
+			target: option,
 			trigger: this.trigger,
 		});
+
+		// The CMS theme compiles clay's atlas-custom-properties flavor, which
+		// sets pointer-events: none on .dropdown-item.active, so the selected
+		// option cannot be clicked. Remove this guard once that divergence is
+		// resolved.
+
+		if ((await option.getAttribute('aria-selected')) === 'true') {
+			await clickAndExpectToBeHidden({
+				target: option,
+				trigger: this.trigger,
+			});
+		}
+		else {
+			await option.click();
+		}
 
 		await expect(this.trigger).toHaveText(languageId);
 	}
