@@ -15,32 +15,7 @@ import {createChannel} from '../../../osb-faro-web/main/utils/channel';
 import {createDataSource} from '../../../osb-faro-web/main/utils/data-source';
 import {acceptsCookiesBanner} from '../../../osb-faro-web/main/utils/portal';
 
-export const PROPERTY_COMMERCE_CHANNEL_COLUMN_INDEX = 1;
-export const PROPERTY_SITE_COLUMN_INDEX = 2;
-
-enum TabName {
-	Channel = 'Channel',
-	Sites = 'Sites',
-}
-
-async function switchToTab({page, tabName}: {page: Page; tabName: TabName}) {
-	await page.getByRole('tab', {name: tabName}).click();
-
-	if (tabName === TabName.Channel) {
-		await page
-			.getByText(
-				'Channels can only be assigned to a single property at a time'
-			)
-			.waitFor({state: 'visible'});
-	}
-	else {
-		await page
-			.getByText(
-				'Sites can only be assigned to a single property at a time'
-			)
-			.waitFor({state: 'visible'});
-	}
-}
+export const PROPERTY_SITE_COLUMN_INDEX = 1;
 
 export async function connectToAnalyticsCloud(
 	page: Page,
@@ -85,22 +60,6 @@ export async function disconnectFromAnalyticsCloud(page: Page) {
 
 		await waitForAlert(page, 'Workspace disconnected.');
 	}
-}
-
-export async function enableCommerceChannel({
-	channelName,
-	page,
-}: {
-	channelName: string;
-	page: Page;
-}) {
-	const channel = await findChannel({channelName, page});
-
-	const commerceChannelSwitchButton = channel.locator('.toggle-switch-check');
-
-	await commerceChannelSwitchButton.click();
-
-	await expect(channel.locator('td:nth-child(2)')).not.toHaveText('-');
 }
 
 export async function expectPropertyColumn({
@@ -257,7 +216,6 @@ export async function syncAnalyticsCloud({
 	apiHelpers,
 	channel,
 	channelName,
-	commerceChannelName,
 	organizationName,
 	page,
 	project,
@@ -267,7 +225,6 @@ export async function syncAnalyticsCloud({
 	apiHelpers: ApiHelpers;
 	channel?: any;
 	channelName?: string;
-	commerceChannelName?: string;
 	organizationName?: string;
 	page: Page;
 	project?: any;
@@ -299,19 +256,6 @@ export async function syncAnalyticsCloud({
 		page,
 		siteName,
 	});
-
-	if (commerceChannelName) {
-		await enableCommerceChannel({
-			channelName: channel.name,
-			page,
-		});
-
-		await syncCommerce({
-			channelName: channel.name,
-			commerceChannelName,
-			page,
-		});
-	}
 
 	await goNextStep(page);
 
@@ -389,48 +333,6 @@ export async function syncContactsData({
 	}
 }
 
-export async function syncCommerce({
-	channelName,
-	commerceChannelName,
-	page,
-}: {
-	channelName: string;
-	commerceChannelName: string;
-	page: Page;
-}) {
-	const channel = await findChannel({channelName, page});
-
-	await clickAndExpectToBeVisible({
-		target: page.getByRole('dialog'),
-		trigger: channel.locator("[role='assign-button']"),
-	});
-
-	await switchToTab({page, tabName: TabName.Channel});
-
-	await page
-		.locator('.active')
-		.getByPlaceholder('Search')
-		.fill(commerceChannelName);
-
-	await page.locator('.active').getByRole('button', {name: 'Search'}).click();
-
-	await expect(page.locator('span[data-testid="loading"]')).toBeHidden();
-
-	const channelTable = page.locator('[data-testid="channel"]');
-
-	await expect(channelTable).toBeVisible();
-
-	const checkbox = channelTable.locator(
-		'tbody tr:first-child input[type="checkbox"]'
-	);
-
-	await checkbox.check();
-
-	await page.locator('.modal .modal-item-last button.btn-primary').click();
-
-	await waitForAlert(page, 'Properties settings have been saved.');
-}
-
 export async function toggleSiteSync({
 	channelName,
 	page,
@@ -449,11 +351,13 @@ export async function toggleSiteSync({
 		trigger: channel.locator('button'),
 	});
 
-	await switchToTab({page, tabName: TabName.Sites});
+	await page
+		.getByText('Sites can only be assigned to a single property at a time')
+		.waitFor({state: 'visible'});
 
-	await page.locator('.active').getByPlaceholder('Search').fill(siteName);
+	await page.locator('.modal').getByPlaceholder('Search').fill(siteName);
 
-	await page.locator('.active').getByRole('button', {name: 'Search'}).click();
+	await page.locator('.modal').getByRole('button', {name: 'Search'}).click();
 
 	await expect(page.locator('span[data-testid="loading"]')).toBeHidden();
 

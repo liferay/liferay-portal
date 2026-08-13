@@ -12,7 +12,6 @@ interface DataSourceLiferayAnalyticsURL {
 interface Channel {
 	channelId: string;
 	dataSources?: {
-		commerceChannelIds?: number[];
 		dataSourceId?: string;
 		siteIds?: number[];
 	}[];

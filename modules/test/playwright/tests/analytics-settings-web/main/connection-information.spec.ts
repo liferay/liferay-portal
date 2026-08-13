@@ -13,12 +13,10 @@ import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
 import {gotoLatestLiferayDXPDataSource} from '../../osb-faro-web/main/utils/data-source';
 import {
-	PROPERTY_COMMERCE_CHANNEL_COLUMN_INDEX,
 	PROPERTY_SITE_COLUMN_INDEX,
 	expectPropertyColumn,
 	goToSettingsStep,
 	syncAnalyticsCloud,
-	syncCommerce,
 	toggleSiteSync,
 } from './utils/analytics-settings';
 
@@ -34,7 +32,7 @@ export const test = mergeTests(
 );
 
 test(
-	'Modify the sites and channels synchronized in the property review sidebar',
+	'Modify the sites synchronized in the property review sidebar',
 	{
 		tag: '@LRAC-11044',
 	},
@@ -43,16 +41,9 @@ test(
 			name: getRandomString(),
 		});
 
-		const commerceChannel1 =
-			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
-				siteGroupId: site1.id,
-			});
-
 		await syncAnalyticsCloud({
 			apiHelpers,
 			channel,
-			commerceChannelName: commerceChannel1.name,
 			page,
 			project,
 			siteName: site1.name,
@@ -62,22 +53,9 @@ test(
 			name: getRandomString(),
 		});
 
-		const commerceChannel2 =
-			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
-				siteGroupId: site2.id,
-			});
-
 		await goToSettingsStep({
 			page,
 			stepName: 'Properties',
-		});
-
-		await expectPropertyColumn({
-			channelName: channel.name,
-			expectedValue: '1',
-			index: PROPERTY_COMMERCE_CHANNEL_COLUMN_INDEX,
-			page,
 		});
 
 		await expectPropertyColumn({
@@ -91,19 +69,6 @@ test(
 			channelName: channel.name,
 			page,
 			siteName: site2.name,
-		});
-
-		await syncCommerce({
-			channelName: channel.name,
-			commerceChannelName: commerceChannel2.name,
-			page,
-		});
-
-		await expectPropertyColumn({
-			channelName: channel.name,
-			expectedValue: '2',
-			index: PROPERTY_COMMERCE_CHANNEL_COLUMN_INDEX,
-			page,
 		});
 
 		await expectPropertyColumn({
