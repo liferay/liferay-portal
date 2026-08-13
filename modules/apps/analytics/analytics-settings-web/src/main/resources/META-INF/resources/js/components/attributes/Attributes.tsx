@@ -11,14 +11,10 @@ import React, {useEffect, useMemo, useState} from 'react';
 
 import {
 	fetchAccountsFields,
-	fetchOrdersFields,
 	fetchPeopleFields,
-	fetchProductsFields,
 	fetchSelectedFields,
 	updateAccountsFields,
-	updateOrdersFields,
 	updatePeopleFields,
-	updateProductsFields,
 } from '../../utils/api';
 import Loading from '../Loading';
 import {TFormattedItems} from '../table/types';
@@ -26,9 +22,7 @@ import Modal, {TRawItem} from './Modal';
 
 enum EFields {
 	Account = 'account',
-	Order = 'order',
 	People = 'people',
-	Product = 'product',
 }
 
 const Attributes: React.FC = () => {
@@ -42,24 +36,12 @@ const Attributes: React.FC = () => {
 		onOpenChange: onOpenChangePeopleAttributes,
 		open: openPeopleAttributes,
 	} = useModal();
-	const {
-		observer: observerProductsAttributes,
-		onOpenChange: onOpenChangeProductsAttributes,
-		open: openProductsAttributes,
-	} = useModal();
-	const {
-		observer: observerOrderAttributes,
-		onOpenChange: onOpenChangeOrderAttributes,
-		open: openOrderAttributes,
-	} = useModal();
 
 	const [selectedFields, setSelectedFields] = useState<{
 		[key in EFields]: number | React.ReactNode;
 	}>({
 		[EFields.Account]: <Loading inline />,
-		[EFields.Order]: <Loading inline />,
 		[EFields.People]: <Loading inline />,
-		[EFields.Product]: <Loading inline />,
 	});
 
 	const syncData = async () => {
@@ -103,7 +85,7 @@ const Attributes: React.FC = () => {
 	}, []);
 
 	const attributesList = useMemo(() => {
-		const {account, order, people, product} = selectedFields;
+		const {account, people} = selectedFields;
 
 		return [
 			{
@@ -118,24 +100,10 @@ const Attributes: React.FC = () => {
 				onOpenModal: () => onOpenChangeAccountsAttributes(true),
 				title: Liferay.Language.get('account'),
 			},
-			{
-				count: product,
-				icon: 'categories',
-				onOpenModal: () => onOpenChangeProductsAttributes(true),
-				title: Liferay.Language.get('products'),
-			},
-			{
-				count: order,
-				icon: 'shopping-cart',
-				onOpenModal: () => onOpenChangeOrderAttributes(true),
-				title: Liferay.Language.get('order[buy]'),
-			},
 		];
 	}, [
 		onOpenChangeAccountsAttributes,
-		onOpenChangeOrderAttributes,
 		onOpenChangePeopleAttributes,
-		onOpenChangeProductsAttributes,
 		selectedFields,
 	]);
 
@@ -190,23 +158,6 @@ const Attributes: React.FC = () => {
 				/>
 			)}
 
-			{openOrderAttributes && (
-				<Modal
-					observer={observerOrderAttributes}
-					onCancel={() => onOpenChangeOrderAttributes(false)}
-					onSubmit={(items) =>
-						handleSubmit({
-							closeFn: onOpenChangeOrderAttributes,
-							items,
-							key: EFields.Order,
-							updateFn: updateOrdersFields,
-						})
-					}
-					requestFn={fetchOrdersFields}
-					title={Liferay.Language.get('sync-order-attributes')}
-				/>
-			)}
-
 			{openPeopleAttributes && (
 				<Modal
 					observer={observerPeopleAttributes}
@@ -221,23 +172,6 @@ const Attributes: React.FC = () => {
 					}
 					requestFn={fetchPeopleFields}
 					title={Liferay.Language.get('sync-people-attributes')}
-				/>
-			)}
-
-			{openProductsAttributes && (
-				<Modal
-					observer={observerProductsAttributes}
-					onCancel={() => onOpenChangeProductsAttributes(false)}
-					onSubmit={(items) =>
-						handleSubmit({
-							closeFn: onOpenChangeProductsAttributes,
-							items,
-							key: EFields.Product,
-							updateFn: updateProductsFields,
-						})
-					}
-					requestFn={fetchProductsFields}
-					title={Liferay.Language.get('sync-product-attributes')}
 				/>
 			)}
 		</>

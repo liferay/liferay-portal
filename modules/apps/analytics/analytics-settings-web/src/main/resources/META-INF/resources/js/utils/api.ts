@@ -178,29 +178,11 @@ export function fetchAccountsFields(params: TTableRequestParams) {
 	);
 }
 
-export function fetchOrdersFields(params: TTableRequestParams) {
-	const queryString = serializeTableRequestParams(params);
-
-	return request(
-		`/fields/orders?${queryString.replace('keywords', 'keyword')}`,
-		{method: 'GET'}
-	);
-}
-
 export function fetchPeopleFields(params: TTableRequestParams) {
 	const queryString = serializeTableRequestParams(params);
 
 	return request(
 		`/fields/people?${queryString.replace('keywords', 'keyword')}`,
-		{method: 'GET'}
-	);
-}
-
-export function fetchProductsFields(params: TTableRequestParams) {
-	const queryString = serializeTableRequestParams(params);
-
-	return request(
-		`/fields/products?${queryString.replace('keywords', 'keyword')}`,
 		{method: 'GET'}
 	);
 }
@@ -221,22 +203,8 @@ export function updateAccountsFields(fields: TField[]) {
 	});
 }
 
-export function updateOrdersFields(fields: TField[]) {
-	return request('/fields/orders', {
-		body: JSON.stringify(fields),
-		method: 'PATCH',
-	});
-}
-
 export function updatePeopleFields(fields: TField[]) {
 	return request('/fields/people', {
-		body: JSON.stringify(fields),
-		method: 'PATCH',
-	});
-}
-
-export function updateProductsFields(fields: TField[]) {
-	return request('/fields/products', {
 		body: JSON.stringify(fields),
 		method: 'PATCH',
 	});
