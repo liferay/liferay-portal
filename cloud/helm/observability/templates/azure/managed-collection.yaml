@@ -11,9 +11,9 @@ metadata:
     name: {{ printf "%s-liferay" (include "observability.fullname" .) | trunc 63 | trimSuffix "-" }}
     namespace: {{ include "observability.namespace" . | quote }}
 spec:
-    labelLimit: {{ $azure.labelLimit }}
-    labelNameLengthLimit: {{ $azure.labelNameLengthLimit }}
-    labelValueLengthLimit: {{ $azure.labelValueLengthLimit }}
+    labelLimit: 63
+    labelNameLengthLimit: 511
+    labelValueLengthLimit: 1023
     namespaceSelector:
         any: true
     podMetricsEndpoints:
