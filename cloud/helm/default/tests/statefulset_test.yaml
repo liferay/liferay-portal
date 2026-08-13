@@ -46,6 +46,25 @@ tests:
                 -   name: FOO
                     value: bar
     -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: JMX_AGENT_PORT
+                        value: "12345"
+                    path: spec.template.spec.containers[0].env
+            -   contains:
+                    any: true
+                    content:
+                        containerPort: 12345
+                        name: metrics
+                        protocol: TCP
+                    path: spec.template.spec.containers[0].ports
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Exposes the JMX agent port under the name the metrics collectors select
+    -   asserts:
             -   equal:
                     path: spec.volumeClaimTemplates[0].spec.storageClassName
                     value: hyperdisk-balanced-rwo
