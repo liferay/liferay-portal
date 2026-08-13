@@ -10,20 +10,10 @@ import OrderableTable from '../components/OrderableTable';
 import {getDataMasks} from '../services/getDataMasks';
 import {getProfileDataMasks} from '../services/getProfileDataMasks';
 import {patchProfileDataMask} from '../services/patchProfileDataMask';
-import {DataMask, Profile} from '../types';
+import {DataMask, Profile, ProfileDataMaskRow} from '../types';
 import {openErrorToast} from '../utils';
 import AddDataMasksModal from './AddDataMasksModal';
 import RemoveDataMaskModal from './RemoveDataMaskModal';
-
-export interface ProfileDataMaskRow {
-	dataMaskExternalReferenceCode: string;
-	description: string;
-	executionOrder: number;
-	externalReferenceCode: string;
-	id: number;
-	name: string;
-	type: string;
-}
 
 interface ProfileDataMasksProps {
 	profile: Profile;

@@ -81,6 +81,16 @@ export type ProfileDataMask = {
 	mcpServerProfileExternalReferenceCode: string;
 };
 
+export type ProfileDataMaskRow = {
+	dataMaskExternalReferenceCode: string;
+	description: string;
+	executionOrder: number;
+	externalReferenceCode: string;
+	id: number;
+	name: string;
+	type: string;
+};
+
 export type ProfileFormValues = {
 	description: string;
 	name: string;
