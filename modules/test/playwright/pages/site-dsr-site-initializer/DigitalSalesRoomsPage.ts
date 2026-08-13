@@ -31,6 +31,8 @@ export class DigitalSalesRoomsPage {
 	readonly noResultsFoundMessage: Locator;
 	readonly page: Page;
 	readonly restoreMenuItem: Locator;
+	readonly roomBannerHeading: Locator;
+	readonly roomBannerHeadingImage: Locator;
 	readonly roomsLink: Locator;
 	readonly saveAsTemplateMenuItem: Locator;
 	readonly shareMenuItem: Locator;
@@ -88,6 +90,8 @@ export class DigitalSalesRoomsPage {
 		this.noResultsFoundMessage = page.getByText('No Results Found');
 		this.page = page;
 		this.restoreMenuItem = page.getByRole('menuitem', {name: 'Restore'});
+		this.roomBannerHeading = page.locator('.dsr-header-banner h1');
+		this.roomBannerHeadingImage = this.roomBannerHeading.locator('img');
 		this.roomsLink = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Rooms',

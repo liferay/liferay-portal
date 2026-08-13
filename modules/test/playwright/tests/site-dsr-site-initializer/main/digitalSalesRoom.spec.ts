@@ -2254,3 +2254,71 @@ test(
 		);
 	}
 );
+
+test(
+	'A room name containing markup is escaped in the room banner',
+	{tag: '@LPD-102192'},
+	async ({
+		apiHelpers,
+		digitalSalesRoomsPage,
+		editDigitalSalesRoomPage,
+		page,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const suffix = `A${getRandomInt()}`;
+
+		const roomName = `<img src=x onerror="alert('x')">${suffix}`;
+
+		const dialogHandler = async (dialog) => {
+			if (dialog.type() === 'alert') {
+				throw new Error('XSS');
+			}
+		};
+
+		page.on('dialog', dialogHandler);
+
+		await test.step('Create a room whose name contains markup', async () => {
+			await digitalSalesRoomsPage.goToRoomsPage();
+
+			await expect(
+				digitalSalesRoomsPage.digitalSalesRoomsTable.searchInput
+			).toBeVisible();
+
+			await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+
+			await editDigitalSalesRoomPage.addDigitalSalesRoom({
+				accountName: account.name,
+				friendlyURL: `/${suffix.toLowerCase()}`,
+				roomName,
+			});
+		});
+
+		await test.step('The banner renders the name as inert text in edit mode', async () => {
+			await expect(
+				digitalSalesRoomsPage.roomBannerHeadingImage
+			).toHaveCount(0);
+			await expect(digitalSalesRoomsPage.roomBannerHeading).toHaveText(
+				roomName
+			);
+		});
+
+		await test.step('The banner renders the name as inert text in view mode', async () => {
+			await digitalSalesRoomsPage.goToRoomsPage();
+
+			await digitalSalesRoomsPage.clickRowActionsMenuItem(
+				roomName,
+				digitalSalesRoomsPage.viewMenuItem
+			);
+
+			await expect(
+				digitalSalesRoomsPage.roomBannerHeadingImage
+			).toHaveCount(0);
+			await expect(digitalSalesRoomsPage.roomBannerHeading).toHaveText(
+				roomName
+			);
+		});
+	}
+);
