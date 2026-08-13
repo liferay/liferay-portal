@@ -27,6 +27,10 @@ clusterIdentity:
 clusterSecretStore:
     enabled: false
     provider: {}
+gateway:
+    envoyProxy:
+        podAnnotations: {}
+        serviceAnnotations: {}
 gitops:
     infrastructureRepository:
         credentialsSecretName: liferay-credentials-gitops

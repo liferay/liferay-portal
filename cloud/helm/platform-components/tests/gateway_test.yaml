@@ -1,0 +1,115 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Liferay Gateway
+templates:
+    -   templates/gateway.yaml
+tests:
+    -   asserts:
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyService.annotations["service.beta.kubernetes.io/azure-load-balancer-internal"]
+                    value: "true"
+        it: Annotates the Envoy service for an internal load balancer
+        set:
+            gateway:
+                envoyProxy:
+                    serviceAnnotations:
+                        service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    -   asserts:
+            -   documentIndex: 0
+                equal:
+                    path: metadata.namespace
+                    value: custom-system
+            -   documentIndex: 1
+                equal:
+                    path: spec.parametersRef.namespace
+                    value: custom-system
+        it: Follows the Envoy Gateway namespace
+        set:
+            operatorApplications.envoyGateway.namespace: custom-system
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the gateway when the Envoy Gateway operator is disabled
+        set:
+            operatorApplications.envoyGateway.enabled: false
+    -   asserts:
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyDeployment.pod.annotations["iam.gke.io/gcp-service-account"]
+                    value: envoy-proxy@example.iam.gserviceaccount.com
+        it: Passes the pod annotations through to the Envoy proxy pods
+        set:
+            gateway:
+                envoyProxy:
+                    podAnnotations:
+                        iam.gke.io/gcp-service-account: envoy-proxy@example.iam.gserviceaccount.com
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+            -   documentIndex: 0
+                isKind:
+                    of: EnvoyProxy
+            -   documentIndex: 0
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-90"
+            -   documentIndex: 0
+                equal:
+                    path: metadata.name
+                    value: liferay-proxy-config
+            -   documentIndex: 0
+                equal:
+                    path: metadata.namespace
+                    value: envoy-gateway-system
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyDeployment.pod.topologySpreadConstraints[0].labelSelector.matchLabels["app.kubernetes.io/name"]
+                    value: envoy
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyDeployment.replicas
+                    value: 3
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyHpa.maxReplicas
+                    value: 10
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyHpa.minReplicas
+                    value: 3
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyService.externalTrafficPolicy
+                    value: Local
+            -   documentIndex: 0
+                equal:
+                    path: spec.provider.kubernetes.envoyService.type
+                    value: LoadBalancer
+            -   documentIndex: 0
+                notExists:
+                    path: spec.provider.kubernetes.envoyDeployment.pod.annotations
+            -   documentIndex: 0
+                notExists:
+                    path: spec.provider.kubernetes.envoyService.annotations
+            -   documentIndex: 1
+                isKind:
+                    of: GatewayClass
+            -   documentIndex: 1
+                equal:
+                    path: metadata.name
+                    value: liferay-gateway-class
+            -   documentIndex: 1
+                equal:
+                    path: spec.controllerName
+                    value: gateway.envoyproxy.io/gatewayclass-controller
+            -   documentIndex: 1
+                equal:
+                    path: spec.parametersRef.name
+                    value: liferay-proxy-config
+            -   documentIndex: 1
+                equal:
+                    path: spec.parametersRef.namespace
+                    value: envoy-gateway-system
+        it: Renders the Envoy proxy configuration and the gateway class

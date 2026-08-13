@@ -1,0 +1,67 @@
+{{- if .Values.operatorApplications.envoyGateway.enabled -}}
+{{- $envoyProxy := .Values.gateway.envoyProxy }}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: liferay-proxy-config
+    name: liferay-proxy-config
+    namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
+spec:
+    provider:
+        kubernetes:
+            envoyDeployment:
+                pod:
+                    {{- with $envoyProxy.podAnnotations }}
+                    annotations:
+                        {{- toYaml . | nindent 24 }}
+                    {{- end }}
+                    topologySpreadConstraints:
+                        -   labelSelector:
+                                matchLabels:
+                                    app.kubernetes.io/name: envoy
+                            maxSkew: 1
+                            topologyKey: kubernetes.io/hostname
+                            whenUnsatisfiable: ScheduleAnyway
+                replicas: 3
+            envoyHpa:
+                maxReplicas: 10
+                metrics:
+                    -   resource:
+                            name: cpu
+                            target:
+                                averageUtilization: 75
+                                type: Utilization
+                        type: Resource
+                minReplicas: 3
+            envoyService:
+                {{- with $envoyProxy.serviceAnnotations }}
+                annotations:
+                    {{- toYaml . | nindent 20 }}
+                {{- end }}
+                externalTrafficPolicy: Local
+                type: LoadBalancer
+        type: Kubernetes
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: liferay-gateway-class
+    name: liferay-gateway-class
+spec:
+    controllerName: gateway.envoyproxy.io/gatewayclass-controller
+    parametersRef:
+        group: gateway.envoyproxy.io
+        kind: EnvoyProxy
+        name: liferay-proxy-config
+        namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
+{{- end -}}

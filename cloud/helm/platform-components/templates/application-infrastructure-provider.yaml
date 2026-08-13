@@ -29,10 +29,6 @@ spec:
                         value: {{ .Values.operatorApplications.crossplane.namespace | quote }}
                     -   name: deploymentName
                         value: {{ .Values.clusterIdentity.deploymentName | quote }}
-                    -   name: gateway.className
-                        value: liferay-gateway-class
-                    -   name: gateway.namespace
-                        value: {{ .Values.operatorApplications.envoyGateway.namespace | quote }}
                     {{- with .Values.infrastructureProvider.parameters }}
                     {{- toYaml . | nindent 20 }}
                     {{- end }}
