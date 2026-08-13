@@ -1,0 +1,25 @@
+import com.liferay.gradle.plugins.patcher.PatchTask
+
+apply plugin: "com.liferay.patcher"
+
+task patch(type: PatchTask)
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+dependencies {
+	compileOnly group: "org.springframework", name: "spring-core", version: "5.3.39"
+}
+
+jarSources {
+	mustRunAfter patch
+}
+
+patch {
+	ext {
+		autoClean = false
+	}
+
+	fileNames "org/springframework/util/AntPathMatcher.java"
+	originalLibModuleName = "spring-core"
+}
