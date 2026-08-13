@@ -10,6 +10,7 @@ import {PLAYWRIGHT_DIR} from '../locations.mjs';
 import formatAPISubmodules from './formatters/formatAPISubmodules.mjs';
 import formatConfigFileNames from './formatters/formatConfigFileNames.mjs';
 import formatGlobalNodeScriptsConfig from './formatters/formatGlobalNodeScriptsConfig.mjs';
+import formatGlobalPackageJSON from './formatters/formatGlobalPackageJSON.mjs';
 import formatIgnoreFilePatterns from './formatters/formatIgnoreFilePatterns.mjs';
 import formatNodeScriptsHash from './formatters/formatNodeScriptsHash.mjs';
 import formatPackageJSONExplicitVersions from './formatters/formatPackageJSONExplicitVersions.mjs';
@@ -71,6 +72,10 @@ export default async function formatPortal(check, files) {
 		!!files.find((file) => file.endsWith('/node-scripts.config.js'))
 	) {
 		const packageJSONs = await getPackageJSONs(true);
+
+		if (!(await formatGlobalPackageJSON(packageJSONs))) {
+			checksPassed = false;
+		}
 
 		if (!(await formatPackageJSONExplicitVersions(packageJSONs))) {
 			checksPassed = false;
