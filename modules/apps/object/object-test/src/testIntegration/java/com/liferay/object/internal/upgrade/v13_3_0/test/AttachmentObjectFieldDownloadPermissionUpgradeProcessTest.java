@@ -246,6 +246,7 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 
 		String className = objectDefinition.getClassName();
 		long companyId = objectDefinition.getCompanyId();
+
 		String primKey = String.valueOf(objectEntry.getObjectEntryId());
 
 		_setResourcePermissions(
