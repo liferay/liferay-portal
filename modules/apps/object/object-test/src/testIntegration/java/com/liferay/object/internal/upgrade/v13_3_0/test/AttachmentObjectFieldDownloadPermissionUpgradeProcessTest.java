@@ -228,9 +228,6 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(objectField));
 
-		String className = objectDefinition.getClassName();
-		long companyId = objectDefinition.getCompanyId();
-
 		ObjectEntry objectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
 				RandomTestUtil.randomString(), 0, TestPropsValues.getUserId(),
@@ -247,6 +244,8 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
+		String className = objectDefinition.getClassName();
+		long companyId = objectDefinition.getCompanyId();
 		String primKey = String.valueOf(objectEntry.getObjectEntryId());
 
 		_setResourcePermissions(
