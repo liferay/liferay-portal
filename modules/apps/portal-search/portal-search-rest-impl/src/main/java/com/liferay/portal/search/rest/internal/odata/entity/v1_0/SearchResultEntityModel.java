@@ -125,7 +125,8 @@ public class SearchResultEntityModel implements EntityModel {
 							LocaleUtil.toLanguageId(locale)));
 
 					return sortableFieldName.concat(".keyword_lowercase");
-				}));
+				}),
+			new StringEntityField("type", locale -> "type"));
 	}
 
 	@Override
