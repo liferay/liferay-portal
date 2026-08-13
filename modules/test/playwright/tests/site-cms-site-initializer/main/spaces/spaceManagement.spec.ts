@@ -10,6 +10,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {waitForAlert} from '../../../../utils/waitForAlert';
+import {PermissionsPage} from '../../permissions/pages/PermissionsPage';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
 const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
@@ -151,14 +152,9 @@ test(
 
 		await spaceRow.getByRole('button', {name: 'Actions'}).click();
 
-		await page
-			.getByRole('menuitem', {exact: true, name: 'Permissions'})
-			.click();
+		const permissionsPage = new PermissionsPage(page);
 
-		await page
-			.getByRole('menuitem', {exact: true, name: 'Permissions'})
-			.last()
-			.click();
+		await permissionsPage.openFromActionsMenu();
 
 		await expect(
 			page.getByRole('dialog').getByRole('heading', {name: 'Permissions'})

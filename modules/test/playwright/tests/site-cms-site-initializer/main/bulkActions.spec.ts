@@ -3297,14 +3297,7 @@ test(
 					.getByRole('button', {name: `${contentName} Actions`})
 					.click();
 
-				await page
-					.getByRole('menuitem', {exact: true, name: 'Permissions'})
-					.click();
-
-				await page
-					.getByRole('menuitem', {exact: true, name: 'Permissions'})
-					.last()
-					.click();
+				await permissionsPage.openFromActionsMenu();
 
 				await permissionsPage.checkPermissionsAndSave(
 					overriddenPermissions
@@ -3342,14 +3335,7 @@ test(
 					.getByRole('button', {name: `${contentName} Actions`})
 					.click();
 
-				await page
-					.getByRole('menuitem', {exact: true, name: 'Permissions'})
-					.click();
-
-				await page
-					.getByRole('menuitem', {exact: true, name: 'Permissions'})
-					.last()
-					.click();
+				await permissionsPage.openFromActionsMenu();
 
 				await permissionsPage.verifyPermissions([
 					{
@@ -3446,14 +3432,7 @@ test(
 					.getByRole('button', {name: `${contentName} Actions`})
 					.click();
 
-				await page
-					.getByRole('menuitem', {exact: true, name: 'Permissions'})
-					.click();
-
-				await page
-					.getByRole('menuitem', {exact: true, name: 'Permissions'})
-					.last()
-					.click();
+				await permissionsPage.openFromActionsMenu();
 
 				await permissionsPage.verifyPermissions(expected);
 			}

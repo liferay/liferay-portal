@@ -54,6 +54,17 @@ export class PermissionsPage {
 		await this.permissionsModalCloseButton.click();
 	}
 
+	async openFromActionsMenu() {
+		const permissionsMenuItems = this.page.getByRole('menuitem', {
+			exact: true,
+			name: 'Permissions',
+		});
+
+		await permissionsMenuItems.first().click();
+
+		await permissionsMenuItems.nth(1).click();
+	}
+
 	async verifyPermissions(
 		permissions: Array<{action: string; checked: boolean; role: string}>
 	) {
