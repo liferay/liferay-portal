@@ -6,7 +6,7 @@
 {{- $suffix := ternary "" (printf "-%s" .name) (eq .name "") }}
 {{- $marketplace := .statefulset.marketplace | default dict }}
 {{- $marketplaceClaimName := printf "%s-marketplace" (include "liferay.name" .root) }}
-{{- $marketplaceVolumeName := "liferay-lpkg" }}
+{{- $marketplaceVolumeName := "liferay-marketplace" }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

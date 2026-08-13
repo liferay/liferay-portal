@@ -1,4 +1,4 @@
-suite: LPKG Sync Sidecar
+suite: Marketplace Sync Sidecar
 templates:
     -   templates/configmap.yaml
     -   templates/liferay-init-scripts-cm.yaml
@@ -9,24 +9,24 @@ tests:
             -   contains:
                     any: true
                     content:
-                        name: liferay-lpkg-sync
+                        name: liferay-marketplace-sync
                     path: spec.template.spec.initContainers
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Adds the LPKG sync sidecar when marketplace is enabled
+        it: Adds the marketplace sync sidecar when marketplace is enabled
         set:
             marketplace.enabled: true
     -   asserts:
             -   equal:
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].restartPolicy
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-marketplace-sync")].restartPolicy
                     value: Always
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Runs the LPKG sync sidecar as a native sidecar
+        it: Runs the marketplace sync sidecar as a native sidecar
         set:
             marketplace.enabled: true
     -   asserts:
@@ -36,33 +36,33 @@ tests:
                         mountPath: /liferay-init-scripts/deploy-sync.sh
                         name: liferay-init-scripts-default
                         subPath: deploy-sync.sh
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].volumeMounts
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-marketplace-sync")].volumeMounts
             -   contains:
                     any: true
                     content:
-                        mountPath: /lpkg
-                        name: liferay-lpkg
+                        mountPath: /marketplace
+                        name: liferay-marketplace
                         readOnly: true
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].volumeMounts
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-marketplace-sync")].volumeMounts
             -   contains:
                     any: true
                     content:
                         mountPath: /opt/liferay
                         name: liferay-persistent-volume
                         subPath: liferay
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].volumeMounts
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-marketplace-sync")].volumeMounts
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Mounts the LPKG volume, sync script, and deploy folder
+        it: Mounts the marketplace volume, sync script, and deploy folder
         set:
             marketplace.enabled: true
     -   asserts:
             -   contains:
                     any: true
                     content:
-                        name: liferay-lpkg
+                        name: liferay-marketplace
                         persistentVolumeClaim:
                             claimName: liferay-default-marketplace
                     path: spec.template.spec.volumes
@@ -70,7 +70,7 @@ tests:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Links the LPKG volume with the marketplace claim
+        it: Links the marketplace volume with the marketplace claim
         set:
             marketplace.enabled: true
     -   asserts:
@@ -78,31 +78,31 @@ tests:
                     any: true
                     content:
                         name: LIFERAY_SYNC_SOURCE
-                        value: /lpkg
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].env
+                        value: /marketplace
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-marketplace-sync")].env
             -   contains:
                     any: true
                     content:
                         name: LIFERAY_SYNC_DEST
                         value: /opt/liferay/deploy
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].env
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-marketplace-sync")].env
             -   contains:
                     any: true
                     content:
                         name: LIFERAY_SYNC_PATTERN
                         value: "*.lpkg"
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].env
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-marketplace-sync")].env
             -   contains:
                     any: true
                     content:
                         name: LIFERAY_SYNC_INTERVAL
                         value: "120"
-                    path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].env
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-marketplace-sync")].env
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Passes the LPKG sync configuration to the sidecar
+        it: Passes the marketplace sync configuration to the sidecar
         set:
             marketplace.enabled: true
             marketplace.syncInterval: 120
@@ -110,13 +110,13 @@ tests:
             -   notContains:
                     any: true
                     content:
-                        name: liferay-lpkg-sync
+                        name: liferay-marketplace-sync
                     path: spec.template.spec.initContainers
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Omits the LPKG sync sidecar when marketplace is disabled
+        it: Omits the marketplace sync sidecar when marketplace is disabled
         set:
             marketplace.enabled: false
     -   asserts:

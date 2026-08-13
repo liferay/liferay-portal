@@ -1,0 +1,46 @@
+{{- if and .Values.marketplace.enabled .Values.marketplace.csi.driver .Values.marketplace.csi.volumeHandle }}
+{{- $claimName := printf "%s-marketplace" (include "liferay.name" .) }}
+{{- $volumeName := printf "%s-marketplace" (include "liferay.namespace" .) }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    labels:
+        app: {{ include "liferay.name" . }}
+        component: storage
+    name: {{ $volumeName }}
+spec:
+    accessModes:
+        -   ReadWriteMany
+    capacity:
+        storage: {{ .Values.marketplace.size }}
+    claimRef:
+        name: {{ $claimName }}
+        namespace: {{ include "liferay.namespace" . }}
+    csi:
+        driver: {{ .Values.marketplace.csi.driver }}
+        volumeHandle: {{ .Values.marketplace.csi.volumeHandle }}
+        {{- with .Values.marketplace.csi.volumeAttributes }}
+        volumeAttributes:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: ""
+    volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    labels:
+        app: {{ include "liferay.name" . }}
+        component: storage
+    name: {{ $claimName }}
+    namespace: {{ include "liferay.namespace" . }}
+spec:
+    accessModes:
+        -   ReadWriteMany
+    resources:
+        requests:
+            storage: {{ .Values.marketplace.size }}
+    storageClassName: ""
+    volumeName: {{ $volumeName }}
+{{- end }}

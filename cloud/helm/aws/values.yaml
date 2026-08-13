@@ -207,6 +207,8 @@ liferay-default:
     license:
         enabled: true
     marketplace:
+        csi:
+            driver: efs.csi.aws.com
         enabled: true
         size: 10Gi
         storageClassName: efs-sc

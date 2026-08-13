@@ -130,6 +130,11 @@ liferay-default:
     license:
         enabled: true
     marketplace:
+        csi:
+            driver: filestore.csi.storage.gke.io
+            volumeAttributes:
+                protocol: NFS_V3
+                volume: marketplace
         enabled: true
         size: 10Gi
         storageClassName: filestore-sc

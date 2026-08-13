@@ -10,7 +10,7 @@ tests:
             -   contains:
                     any: true
                     content:
-                        name: liferay-lpkg
+                        name: liferay-marketplace
                         persistentVolumeClaim:
                             claimName: liferay-default-marketplace
                     path: spec.template.spec.volumes
@@ -60,7 +60,7 @@ tests:
             -   contains:
                     any: true
                     content:
-                        name: liferay-lpkg
+                        name: liferay-marketplace
                         persistentVolumeClaim:
                             claimName: liferay-default-marketplace
                     path: spec.template.spec.volumes
@@ -68,7 +68,7 @@ tests:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Links the LPKG volume with the marketplace claim
+        it: Links the marketplace volume with the marketplace claim
         set:
             marketplace.enabled: true
     -   asserts:
