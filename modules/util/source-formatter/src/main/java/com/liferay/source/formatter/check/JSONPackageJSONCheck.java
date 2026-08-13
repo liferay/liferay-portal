@@ -72,7 +72,6 @@ public class JSONPackageJSONCheck extends BaseFileCheck {
 			absolutePath.endsWith("commerce-theme-speedwell/package.json") ||
 			absolutePath.endsWith("frontend-theme-admin/package.json") ||
 			absolutePath.endsWith("frontend-theme-ai-hub/package.json") ||
-			absolutePath.endsWith("frontend-theme-classic-2/package.json") ||
 			absolutePath.endsWith("frontend-theme-classic/package.json") ||
 			absolutePath.endsWith("frontend-theme-cms/package.json") ||
 			absolutePath.endsWith("frontend-theme-dialect/package.json") ||
