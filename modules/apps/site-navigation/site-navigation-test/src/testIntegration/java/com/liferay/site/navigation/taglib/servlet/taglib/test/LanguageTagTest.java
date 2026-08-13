@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -71,6 +72,7 @@ import org.springframework.mock.web.MockServletContext;
 /**
  * @author Georgel Pop
  */
+@FeatureFlag("LPD-76594")
 @LanguageIds(
 	availableLanguageIds = {"en_US", "fr_FR"}, defaultLanguageId = "en_US"
 )
