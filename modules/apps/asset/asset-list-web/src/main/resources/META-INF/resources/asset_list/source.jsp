@@ -153,7 +153,7 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 						}
 					%>
 
-						<aui:option label="<%= String.valueOf(assetSelectedClassTypeId) %>" selected="<%= !anyAssetSubtype && (assetSelectedClassTypeIds.length == 1) && !noAssetSubtypeSelected %>" value="<%= assetSelectedClassTypeId %>" />
+						<aui:option label='<%= LanguageUtil.format(request, "id-x", String.valueOf(assetSelectedClassTypeId)) %>' selected="<%= !anyAssetSubtype && (assetSelectedClassTypeIds.length == 1) && !noAssetSubtypeSelected %>" value="<%= assetSelectedClassTypeId %>" />
 
 					<%
 					}
