@@ -110,7 +110,7 @@ public class ViewExpiredAssetsSectionDisplayContext
 			).setHref(
 				"#"
 			).setIcon(
-				"date"
+				"date-time"
 			).setLabel(
 				language.get(httpServletRequest, "update-expiration-date")
 			).build(

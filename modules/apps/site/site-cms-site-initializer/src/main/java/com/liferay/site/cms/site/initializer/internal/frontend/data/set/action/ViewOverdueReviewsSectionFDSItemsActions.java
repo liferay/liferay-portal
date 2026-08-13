@@ -45,7 +45,7 @@ public class ViewOverdueReviewsSectionFDSItemsActions
 			FDSActionDropdownItemBuilder.setHref(
 				"#"
 			).setIcon(
-				"date"
+				"date-time"
 			).setLabel(
 				LanguageUtil.get(httpServletRequest, "update-review-date")
 			).setPermissionKey(

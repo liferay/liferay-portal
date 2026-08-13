@@ -45,7 +45,7 @@ public class ViewExpiredAssetsSectionFDSItemsActions
 			FDSActionDropdownItemBuilder.setHref(
 				"#"
 			).setIcon(
-				"date"
+				"date-time"
 			).setLabel(
 				LanguageUtil.get(httpServletRequest, "update-expiration-date")
 			).setPermissionKey(

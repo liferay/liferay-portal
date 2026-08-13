@@ -110,7 +110,7 @@ public class ViewOverdueReviewsSectionDisplayContext
 			).setHref(
 				"#"
 			).setIcon(
-				"date"
+				"date-time"
 			).setLabel(
 				language.get(httpServletRequest, "update-review-date")
 			).build(
