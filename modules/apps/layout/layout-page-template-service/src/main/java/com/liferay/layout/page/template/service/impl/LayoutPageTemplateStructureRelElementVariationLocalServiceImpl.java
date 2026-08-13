@@ -103,7 +103,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 
 		_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 			deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-				externalReferenceCode);
+				groupId, externalReferenceCode);
 
 		for (String audienceEntryERC : audienceEntryERCs) {
 			if (Validator.isNull(audienceEntryERC)) {
@@ -134,7 +134,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 				deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-					externalReferenceCode);
+					groupId, externalReferenceCode);
 		}
 	}
 
@@ -156,6 +156,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 				deleteLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+					layoutPageTemplateStructureRelElementVariation.getGroupId(),
 					layoutPageTemplateStructureRelElementVariation.
 						getExternalReferenceCode());
 		}
@@ -264,6 +265,8 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceImpl
 				layoutPageTemplateStructureRelElementVariationAudienceEntryRels =
 					_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 						getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
+							layoutPageTemplateStructureRelElementVariation.
+								getGroupId(),
 							existingExternalReferenceCode);
 
 			for (LayoutPageTemplateStructureRelElementVariationAudienceEntryRel

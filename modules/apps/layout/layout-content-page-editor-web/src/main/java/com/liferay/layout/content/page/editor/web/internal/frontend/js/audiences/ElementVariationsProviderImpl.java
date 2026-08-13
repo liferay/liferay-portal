@@ -190,6 +190,8 @@ public class ElementVariationsProviderImpl
 					_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 						getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
 							layoutPageTemplateStructureRelElementVariation.
+								getGroupId(),
+							layoutPageTemplateStructureRelElementVariation.
 								getExternalReferenceCode())));
 
 		return StringBundler.concat(

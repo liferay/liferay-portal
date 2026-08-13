@@ -82,7 +82,7 @@ public class AudiencesEntryModelListenerTest {
 			layoutPageTemplateStructureRelElementVariationAudienceEntryRels =
 				_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 					getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-						externalReferenceCode);
+						_group.getGroupId(), externalReferenceCode);
 
 		Assert.assertEquals(
 			layoutPageTemplateStructureRelElementVariationAudienceEntryRels.
@@ -97,7 +97,7 @@ public class AudiencesEntryModelListenerTest {
 		layoutPageTemplateStructureRelElementVariationAudienceEntryRels =
 			_layoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalService.
 				getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-					externalReferenceCode);
+					_group.getGroupId(), externalReferenceCode);
 
 		Assert.assertEquals(
 			layoutPageTemplateStructureRelElementVariationAudienceEntryRels.

@@ -24,7 +24,7 @@ public class LayoutPageTemplateStructureRelElementVariationImpl
 			_audienceEntryERCs = TransformUtil.transform(
 				LayoutPageTemplateStructureRelElementVariationAudienceEntryRelLocalServiceUtil.
 					getLayoutPageTemplateStructureRelElementVariationAudienceEntryRels(
-						getExternalReferenceCode()),
+						getGroupId(), getExternalReferenceCode()),
 				LayoutPageTemplateStructureRelElementVariationAudienceEntryRel::
 					getAudienceEntryERC);
 
