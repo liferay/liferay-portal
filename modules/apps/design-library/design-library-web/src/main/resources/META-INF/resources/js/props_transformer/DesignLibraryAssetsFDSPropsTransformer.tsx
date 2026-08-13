@@ -6,56 +6,62 @@
 import {IFrontendDataSetProps} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
-import {
-	FRAGMENT_COLLECTION_ENTRY_CLASS_NAME,
-	TableCellContentType,
-} from '../constants';
+import {TableCellContentType} from '../constants';
+import getCreationMenuItems from '../getCreationMenuItems';
+import {DesignLibraryResourceType} from '../types';
 import {
 	AuthorRenderer,
 	FromNowDateTimeRenderer,
 	LinkRenderer,
 	ResourceTypeRenderer,
 } from './cell_renderers';
-import getDesignAssetCreationItems, {
-	DesignAssetCreationProps,
-} from './getDesignAssetCreationItems';
+import findResourceType from './findResourceType';
 
 export default function DesignLibraryAssetsFDSPropsTransformer(
 	props: IFrontendDataSetProps & {
-		additionalProps?: DesignAssetCreationProps;
+		additionalProps?: {resourceTypes?: DesignLibraryResourceType[]};
 	}
 ): IFrontendDataSetProps {
+	const resourceTypes: DesignLibraryResourceType[] =
+		props.additionalProps?.resourceTypes || [];
+
+	const primaryItems = getCreationMenuItems(resourceTypes);
+
 	return {
 		...props,
-		creationMenu: {
-			primaryItems: getDesignAssetCreationItems(
-				props.additionalProps || {}
-			),
-		},
+		creationMenu: primaryItems.length ? {primaryItems} : undefined,
 		customRenderers: {
 			tableCell: [
 				{
 					component: (rendererProps: any) => {
-						const isFragmentCollection =
-							rendererProps?.itemData?.entryClassName ===
-							FRAGMENT_COLLECTION_ENTRY_CLASS_NAME;
+						const resourceType = findResourceType(
+							resourceTypes,
+							rendererProps?.itemData
+						);
 
 						return (
 							<LinkRenderer
 								{...rendererProps}
 								options={{
-									actionId: isFragmentCollection
-										? 'view'
+									actionId: resourceType
+										? resourceType.defaultActionId
 										: 'edit',
 								}}
-								stickerClassName={
-									isFragmentCollection
-										? 'design-library-fds-sticker-fragment-set'
-										: 'design-library-fds-sticker-stylebook'
+								stickerClassName="design-library-fds-sticker"
+								stickerStyle={
+									{
+										'--design-library-sticker-color': `var(--${
+											resourceType
+												? resourceType.color
+												: 'secondary'
+										})`,
+									} as React.CSSProperties
 								}
-								symbol={getSymbol(
-									rendererProps?.itemData?.entryClassName
-								)}
+								symbol={
+									resourceType
+										? resourceType.symbol
+										: 'documents-and-media'
+								}
 							/>
 						);
 					},
@@ -68,7 +74,16 @@ export default function DesignLibraryAssetsFDSPropsTransformer(
 					type: 'internal',
 				},
 				{
-					component: ResourceTypeRenderer,
+					component: (rendererProps: any) => (
+						<ResourceTypeRenderer
+							label={
+								findResourceType(
+									resourceTypes,
+									rendererProps?.itemData
+								)?.label
+							}
+						/>
+					),
 					name: TableCellContentType.RESOURCE_TYPE,
 					type: 'internal',
 				},
@@ -124,12 +139,4 @@ export default function DesignLibraryAssetsFDSPropsTransformer(
 			},
 		],
 	};
-}
-
-function getSymbol(entryClassName?: string): string {
-	if (entryClassName === FRAGMENT_COLLECTION_ENTRY_CLASS_NAME) {
-		return 'squares';
-	}
-
-	return 'book';
 }

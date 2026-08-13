@@ -8,14 +8,15 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import React from 'react';
 
-import getDesignAssetCreationItems, {
-	DesignAssetCreationProps,
-} from './props_transformer/getDesignAssetCreationItems';
+import getCreationMenuItems from './getCreationMenuItems';
+import {DesignLibraryResourceType} from './types';
 
-export default function DesignLibraryAssetsSectionHeader(
-	props: DesignAssetCreationProps
-) {
-	const creationItems = getDesignAssetCreationItems(props);
+export default function DesignLibraryAssetsSectionHeader({
+	resourceTypes = [],
+}: {
+	resourceTypes?: DesignLibraryResourceType[];
+}) {
+	const creationItems = getCreationMenuItems(resourceTypes);
 
 	return (
 		<div className="align-items-center d-flex justify-content-between mb-3">
