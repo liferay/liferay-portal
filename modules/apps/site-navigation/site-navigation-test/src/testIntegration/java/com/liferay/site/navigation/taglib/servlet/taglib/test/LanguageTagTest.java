@@ -443,16 +443,15 @@ public class LanguageTagTest {
 
 		layoutSet.setVirtualHostnames(
 			TreeMapBuilder.put(
-				_VIRTUAL_HOSTNAME, StringPool.BLANK
+				"fr.mysite.com", LocaleUtil.toLanguageId(LocaleUtil.FRANCE)
 			).put(
-				_VIRTUAL_HOSTNAME_FRENCH,
-				LocaleUtil.toLanguageId(LocaleUtil.FRANCE)
+				"mysite.com", StringPool.BLANK
 			).build());
 
 		try {
 			Assert.assertEquals(
 				StringBundler.concat(
-					"http://", _VIRTUAL_HOSTNAME_FRENCH, StringPool.COLON,
+					"http://fr.mysite.com:",
 					PortalUtil.getPortalServerPort(false), "/fr",
 					layout.getFriendlyURL(LocaleUtil.FRANCE)),
 				_getURL(
@@ -576,7 +575,7 @@ public class LanguageTagTest {
 
 		layoutSet.setVirtualHostnames(
 			TreeMapBuilder.put(
-				_VIRTUAL_HOSTNAME, StringPool.BLANK
+				"mysite.com", StringPool.BLANK
 			).build());
 
 		try {
@@ -602,10 +601,6 @@ public class LanguageTagTest {
 
 	private static final String _UPDATE_LANGUAGE_PATH =
 		"/c/portal/update_language";
-
-	private static final String _VIRTUAL_HOSTNAME = "mysite.com";
-
-	private static final String _VIRTUAL_HOSTNAME_FRENCH = "fr.mysite.com";
 
 	@Inject
 	private FriendlyURLNormalizer _friendlyURLNormalizer;
