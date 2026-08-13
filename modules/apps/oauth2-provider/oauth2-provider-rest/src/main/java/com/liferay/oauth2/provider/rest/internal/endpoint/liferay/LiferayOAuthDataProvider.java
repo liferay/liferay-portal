@@ -845,7 +845,7 @@ public class LiferayOAuthDataProvider
 
 		if (oAuth2Application != null) {
 			clientId = oAuth2Application.getClientId();
-			clientSecret = oAuth2Application.getClientSecret();
+			clientSecret = _resolveClientSecret(oAuth2Application);
 			externalReferenceCode =
 				oAuth2Application.getExternalReferenceCode();
 		}
@@ -1541,7 +1541,7 @@ public class LiferayOAuthDataProvider
 	private Client _populateClient(
 		OAuth2Application oAuth2Application, MessageContext messageContext) {
 
-		String clientSecret = oAuth2Application.getClientSecret();
+		String clientSecret = _resolveClientSecret(oAuth2Application);
 
 		if (Validator.isBlank(clientSecret)) {
 			clientSecret = null;
@@ -1702,6 +1702,16 @@ public class LiferayOAuthDataProvider
 			String.valueOf(companyId));
 
 		return userSubject;
+	}
+
+	private String _resolveClientSecret(OAuth2Application oAuth2Application) {
+		try {
+			return _oAuth2ApplicationLocalService.resolveClientSecret(
+				oAuth2Application);
+		}
+		catch (PortalException portalException) {
+			throw new RuntimeException(portalException);
+		}
 	}
 
 	private long _toCXFTime(Date dateCreated) {

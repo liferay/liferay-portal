@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.constants.ClientProfile;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
+import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
@@ -97,7 +98,8 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 				oAuth2Application.getClientId()
 			).put(
 				externalReferenceCode + ".oauth2.headless.server.client.secret",
-				oAuth2Application.getClientSecret()
+				_oAuth2ApplicationLocalService.resolveClientSecret(
+					oAuth2Application)
 			).put(
 				externalReferenceCode + ".oauth2.headless.server.scopes",
 				StringUtil.merge(scopeAliasesList, StringPool.NEW_LINE)
@@ -133,7 +135,8 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 			serviceUser = userLocalService.getUserById(
 				companyId, oAuth2Application.getClientCredentialUserId());
 			clientId = oAuth2Application.getClientId();
-			clientSecret = oAuth2Application.getClientSecret();
+			clientSecret = _oAuth2ApplicationLocalService.resolveClientSecret(
+				oAuth2Application);
 		}
 		else {
 			serviceUser = _getServiceUser(
@@ -218,6 +221,9 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OAuth2ProviderApplicationHeadlessServerConfigurationFactory.class);
+
+	@Reference
+	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 	@Reference
 	private ScopeLocator _scopeLocator;

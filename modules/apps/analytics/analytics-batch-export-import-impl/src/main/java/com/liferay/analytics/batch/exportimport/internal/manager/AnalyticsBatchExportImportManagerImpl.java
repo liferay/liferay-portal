@@ -607,7 +607,9 @@ public class AnalyticsBatchExportImportManagerImpl
 
 		options.addPart("oAuthClientId", oAuth2Application.getClientId());
 		options.addPart(
-			"oAuthClientSecret", oAuth2Application.getClientSecret());
+			"oAuthClientSecret",
+			_oAuth2ApplicationLocalService.resolveClientSecret(
+				oAuth2Application));
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			new String(Base64.decode(analyticsConfiguration.token())));

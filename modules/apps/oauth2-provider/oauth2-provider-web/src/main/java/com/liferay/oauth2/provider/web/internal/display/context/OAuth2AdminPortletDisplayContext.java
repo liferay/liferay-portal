@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration;
 import com.liferay.oauth2.provider.constants.ClientProfile;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalServiceUtil;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationService;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationServiceUtil;
@@ -54,6 +55,13 @@ public class OAuth2AdminPortletDisplayContext
 
 		_resourceBundle = ResourceBundleUtil.getBundle(
 			"content.Language", themeDisplay.getLocale(), getClass());
+	}
+
+	public String getClientSecret(OAuth2Application oAuth2Application)
+		throws PortalException {
+
+		return OAuth2ApplicationLocalServiceUtil.resolveClientSecret(
+			oAuth2Application);
 	}
 
 	public String getExtraPropertiesContent(

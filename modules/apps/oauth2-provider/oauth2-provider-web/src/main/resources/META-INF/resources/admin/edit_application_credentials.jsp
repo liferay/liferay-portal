@@ -13,7 +13,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2Application();
 
 String clientId = (oAuth2Application == null) ? "" : oAuth2Application.getClientId();
-String clientSecret = (oAuth2Application == null) ? "" : oAuth2Application.getClientSecret();
+String clientSecret = (oAuth2Application == null) ? "" : oAuth2AdminPortletDisplayContext.getClientSecret(oAuth2Application);
 String externalReferenceCode = (oAuth2Application == null) ? "" : oAuth2Application.getExternalReferenceCode();
 %>
 

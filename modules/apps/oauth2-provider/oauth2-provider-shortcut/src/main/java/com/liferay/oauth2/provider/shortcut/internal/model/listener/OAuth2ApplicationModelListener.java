@@ -8,6 +8,7 @@ package com.liferay.oauth2.provider.shortcut.internal.model.listener;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -39,12 +40,9 @@ public class OAuth2ApplicationModelListener
 		throws ModelListenerException {
 
 		if (!_isAnalyticsEnabled(oAuth2Application.getCompanyId()) ||
-			(StringUtil.equals(
-				originalOAuth2Application.getClientId(),
-				oAuth2Application.getClientId()) &&
-			 StringUtil.equals(
-				 originalOAuth2Application.getClientSecret(),
-				 oAuth2Application.getClientSecret()))) {
+			!StringUtil.equals(
+				oAuth2Application.getExternalReferenceCode(),
+				"ANALYTICS-CLOUD")) {
 
 			return;
 		}
@@ -163,7 +161,9 @@ public class OAuth2ApplicationModelListener
 
 		options.addPart("oAuthClientId", oAuth2Application.getClientId());
 		options.addPart(
-			"oAuthClientSecret", oAuth2Application.getClientSecret());
+			"oAuthClientSecret",
+			_oAuth2ApplicationLocalService.resolveClientSecret(
+				oAuth2Application));
 		options.setLocation(
 			StringUtil.replace(
 				jsonObject.getString("url"), "data_source/connect",
@@ -191,5 +191,8 @@ public class OAuth2ApplicationModelListener
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 }
