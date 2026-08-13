@@ -56,7 +56,43 @@ public class OAuth2ApplicationLDPDomainUpgradeProcessTest {
 	public void setUp() throws Exception {
 		_user = TestPropsValues.getUser();
 
-		_setUpOAuth2Application();
+		OAuth2Application oAuth2Application =
+			_oAuth2ApplicationLocalService.
+				fetchOAuth2ApplicationByExternalReferenceCode(
+					_EXTERNAL_REFERENCE_CODE, _user.getCompanyId());
+
+		if (oAuth2Application == null) {
+			_oAuth2ApplicationLocalService.addOrUpdateOAuth2Application(
+				_EXTERNAL_REFERENCE_CODE, _user.getUserId(),
+				_user.getScreenName(),
+				Collections.singletonList(GrantType.CLIENT_CREDENTIALS),
+				"client_secret_post", _user.getUserId(),
+				OAuth2SecureRandomGenerator.generateClientId(),
+				ClientProfile.HEADLESS_SERVER.id(),
+				OAuth2SecureRandomGenerator.generateClientSecret(), null, null,
+				_HOME_PAGE_URL_ORIGINAL, 0, null, RandomTestUtil.randomString(),
+				null, Collections.singletonList(_REDIRECT_URI_ORIGINAL), false,
+				false,
+				builder -> {
+				},
+				new ServiceContext());
+
+			return;
+		}
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"update OAuth2Application set homePageURL = ?, redirectURIs " +
+					"= ? where oAuth2ApplicationId = ?")) {
+
+			preparedStatement.setString(1, _HOME_PAGE_URL_ORIGINAL);
+			preparedStatement.setString(2, _REDIRECT_URI_ORIGINAL);
+			preparedStatement.setLong(
+				3, oAuth2Application.getOAuth2ApplicationId());
+
+			preparedStatement.executeUpdate();
+		}
 	}
 
 	@Test
@@ -110,46 +146,6 @@ public class OAuth2ApplicationLDPDomainUpgradeProcessTest {
 			_upgradeStepRegistrator, _CLASS_NAME);
 
 		upgradeProcess.upgrade();
-	}
-
-	private void _setUpOAuth2Application() throws Exception {
-		OAuth2Application oAuth2Application =
-			_oAuth2ApplicationLocalService.
-				fetchOAuth2ApplicationByExternalReferenceCode(
-					_EXTERNAL_REFERENCE_CODE, _user.getCompanyId());
-
-		if (oAuth2Application == null) {
-			_oAuth2ApplicationLocalService.addOrUpdateOAuth2Application(
-				_EXTERNAL_REFERENCE_CODE, _user.getUserId(),
-				_user.getScreenName(),
-				Collections.singletonList(GrantType.CLIENT_CREDENTIALS),
-				"client_secret_post", _user.getUserId(),
-				OAuth2SecureRandomGenerator.generateClientId(),
-				ClientProfile.HEADLESS_SERVER.id(),
-				OAuth2SecureRandomGenerator.generateClientSecret(), null, null,
-				_HOME_PAGE_URL_ORIGINAL, 0, null, RandomTestUtil.randomString(),
-				null, Collections.singletonList(_REDIRECT_URI_ORIGINAL), false,
-				false,
-				builder -> {
-				},
-				new ServiceContext());
-
-			return;
-		}
-
-		try (Connection connection = DataAccess.getConnection();
-
-			PreparedStatement preparedStatement = connection.prepareStatement(
-				"update OAuth2Application set homePageURL = ?, redirectURIs " +
-					"= ? where oAuth2ApplicationId = ?")) {
-
-			preparedStatement.setString(1, _HOME_PAGE_URL_ORIGINAL);
-			preparedStatement.setString(2, _REDIRECT_URI_ORIGINAL);
-			preparedStatement.setLong(
-				3, oAuth2Application.getOAuth2ApplicationId());
-
-			preparedStatement.executeUpdate();
-		}
 	}
 
 	private static final String _CLASS_NAME =
