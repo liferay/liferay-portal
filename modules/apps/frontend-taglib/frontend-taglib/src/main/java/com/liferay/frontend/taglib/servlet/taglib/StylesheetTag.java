@@ -67,7 +67,7 @@ public class StylesheetTag extends AttributesTagSupport {
 		sb.append(
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
 				httpServletRequest));
-		sb.append(" rel=\"stylesheet\" type=\"text/css\"></link>");
+		sb.append(" rel=\"stylesheet\" type=\"text/css\">");
 
 		outputData.addDataSB(_getOutputKey(), WebKeys.PAGE_TOP, sb);
 

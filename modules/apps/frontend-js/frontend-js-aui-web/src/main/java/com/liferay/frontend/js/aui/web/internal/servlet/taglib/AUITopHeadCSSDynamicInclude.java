@@ -50,7 +50,7 @@ public class AUITopHeadCSSDynamicInclude extends BaseDynamicInclude {
 		printWriter.print(
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
 				httpServletRequest));
-		printWriter.print(" rel=\"stylesheet\"></link>\n");
+		printWriter.print(" rel=\"stylesheet\">\n");
 	}
 
 	@Override
