@@ -9,7 +9,9 @@ import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 import com.liferay.portal.kernel.internal.configuration.ConfigurationFactoryImpl;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -43,35 +45,25 @@ public class FaroProjectImplTest {
 	public void testIsAllowedIPAddress() throws Exception {
 		FaroProject faroProject = new FaroProjectImpl();
 
-		faroProject.setIpAddresses(
-			JSONUtil.put(
-				"192.168.0.159/0"
-			).toString());
+		faroProject.setIpAddresses(_getIpAddresses("192.168.0.159/0"));
 
 		Assert.assertTrue(faroProject.isAllowedIPAddress("1.2.3.4"));
 		Assert.assertTrue(faroProject.isAllowedIPAddress("192.168.0.159"));
 
-		faroProject.setIpAddresses(
-			JSONUtil.put(
-				"192.168.1.0/24"
-			).toString());
+		faroProject.setIpAddresses(_getIpAddresses("192.168.1.0/24"));
 
 		Assert.assertTrue(faroProject.isAllowedIPAddress("192.168.1.104"));
 		Assert.assertFalse(faroProject.isAllowedIPAddress("192.168.0.104"));
 
 		faroProject.setIpAddresses(
-			JSONUtil.putAll(
-				"192.168.1.159", "192.168.1.161"
-			).toString());
+			_getIpAddresses("192.168.1.159", "192.168.1.161"));
 
 		Assert.assertTrue(faroProject.isAllowedIPAddress("192.168.1.159"));
 		Assert.assertFalse(faroProject.isAllowedIPAddress("192.168.1.160"));
 		Assert.assertTrue(faroProject.isAllowedIPAddress("192.168.1.161"));
 
 		faroProject.setIpAddresses(
-			JSONUtil.putAll(
-				"192.168.0.159", "192.168.1.0/24"
-			).toString());
+			_getIpAddresses("192.168.0.159", "192.168.1.0/24"));
 
 		Assert.assertTrue(faroProject.isAllowedIPAddress("192.168.0.159"));
 		Assert.assertFalse(faroProject.isAllowedIPAddress("192.168.0.160"));
@@ -83,32 +75,35 @@ public class FaroProjectImplTest {
 		FaroProject faroProject = new FaroProjectImpl();
 
 		faroProject.setSubscription(
-			JSONUtil.put(
-				"name", "Liferay Analytics Cloud Business"
-			).toString());
+			_getSubscription("Liferay Analytics Cloud Business"));
 
 		Assert.assertFalse(faroProject.isDataPlatform());
 
 		faroProject.setSubscription(
-			JSONUtil.put(
-				"name", "Liferay Data Platform (Private Beta)"
-			).toString());
+			_getSubscription("Liferay Data Platform (Private Beta)"));
 
 		Assert.assertTrue(faroProject.isDataPlatform());
 
 		faroProject.setSubscription(
-			JSONUtil.put(
-				"name", "Liferay Data Platform Enterprise"
-			).toString());
+			_getSubscription("Liferay Data Platform Enterprise"));
 
 		Assert.assertTrue(faroProject.isDataPlatform());
 
-		faroProject.setSubscription(
-			JSONUtil.put(
-				"name", "Liferay Data Platform"
-			).toString());
+		faroProject.setSubscription(_getSubscription("Liferay Data Platform"));
 
 		Assert.assertTrue(faroProject.isDataPlatform());
+	}
+
+	private String _getIpAddresses(String... ipAddresses) {
+		JSONArray jsonArray = JSONUtil.putAll(ipAddresses);
+
+		return jsonArray.toString();
+	}
+
+	private String _getSubscription(String name) {
+		JSONObject jsonObject = JSONUtil.put("name", name);
+
+		return jsonObject.toString();
 	}
 
 }
