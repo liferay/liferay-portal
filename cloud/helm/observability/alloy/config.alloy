@@ -1,8 +1,11 @@
 {{- $cloud := include "observability.cloudProvider" . -}}
 {{- $interval := .Values.alloy.scrapeInterval -}}
 {{- $remoteWrite := .Values.alloy.remoteWrite -}}
-{{- if and (ne $cloud "aws") (ne $cloud "gcp") (not $remoteWrite.url) -}}
-{{- fail "alloy.remoteWrite.url is required when cloudProvider is not aws or gcp" -}}
+{{- if and (ne $cloud "aws") (ne $cloud "azure") (ne $cloud "gcp") (not $remoteWrite.url) -}}
+{{- fail "alloy.remoteWrite.url is required when cloud provider is not AWS, Azure, or GCP" -}}
+{{- end -}}
+{{- if and (eq $cloud "azure") (not $remoteWrite.url) -}}
+{{- fail "alloy should be disabled when using Azure as a cloud provider" -}}
 {{- end -}}
 {{- if and (eq $cloud "aws") (not .Values.aws.ampWorkspaceURL) -}}
 {{- fail "aws.ampWorkspaceURL is required when cloudProvider is aws" -}}
