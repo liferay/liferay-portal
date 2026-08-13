@@ -1062,6 +1062,21 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return false;
 	}
 
+	public void reload() {
+		String reloadURL = JenkinsResultsParserUtil.getLocalURL(
+			getURL() + "/reload");
+
+		try {
+			JenkinsResultsParserUtil.toString(
+				reloadURL, JenkinsResultsParserUtil.HttpRequestMethod.POST,
+				false);
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to reload " + getName(), ioException);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return JenkinsResultsParserUtil.combine(
