@@ -7,17 +7,15 @@ package com.liferay.mcp.server.rest.internal.upgrade.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -40,6 +38,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Alberto Javier Moreno Lage
  */
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-63311"))
 @RunWith(Arquillian.class)
 public class MCPProfileDataMaskUpgradeProcessTest {
 
@@ -63,38 +62,74 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 		String mcpServerProfileExternalReferenceCode =
 			_mcpServerProfileObjectEntry.getExternalReferenceCode();
 
-		for (ObjectEntry mcpServerProfileDataMaskObjectEntry :
-				_getMCPServerProfileDataMaskObjectEntries(
-					mcpServerProfileExternalReferenceCode)) {
-
-			MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
-				"Deleted by test.", mcpServerProfileDataMaskObjectEntry);
-		}
+		_deleteMCPServerProfileDataMaskObjectEntries(
+			_SYSTEM_DATA_MASK_EXTERNAL_REFERENCE_CODES,
+			mcpServerProfileExternalReferenceCode);
 
 		List<ObjectEntry> mcpServerProfileDataMaskObjectEntries =
-			_getMCPServerProfileDataMaskObjectEntries(
+			MCPServerTestUtil.getMCPServerProfileDataMaskObjectEntries(
 				mcpServerProfileExternalReferenceCode);
 
 		Assert.assertEquals(
 			mcpServerProfileDataMaskObjectEntries.toString(), 0,
 			mcpServerProfileDataMaskObjectEntries.size());
 
+		ObjectEntry defaultMCPServerProfileObjectEntry =
+			MCPServerTestUtil.fetchMCPServerProfileObjectEntry("default");
+
 		UpgradeStep upgradeStep = _getUpgradeStep();
 
 		upgradeStep.upgrade();
 
 		_assertUpgrade(mcpServerProfileExternalReferenceCode);
+		_assertUpgrade(
+			defaultMCPServerProfileObjectEntry.getExternalReferenceCode());
 
 		upgradeStep.upgrade();
 
 		_assertUpgrade(mcpServerProfileExternalReferenceCode);
+		_assertUpgrade(
+			defaultMCPServerProfileObjectEntry.getExternalReferenceCode());
+
+		String[] dataMaskExternalReferenceCodes = {
+			"L_DATA_MASK_IBAN", "L_DATA_MASK_IPV4", "L_DATA_MASK_IPV6"
+		};
+
+		_deleteMCPServerProfileDataMaskObjectEntries(
+			dataMaskExternalReferenceCodes,
+			mcpServerProfileExternalReferenceCode);
+
+		upgradeStep.upgrade();
+
+		mcpServerProfileDataMaskObjectEntries =
+			MCPServerTestUtil.getMCPServerProfileDataMaskObjectEntries(
+				mcpServerProfileExternalReferenceCode);
+
+		Assert.assertEquals(
+			mcpServerProfileDataMaskObjectEntries.toString(),
+			_SYSTEM_DATA_MASK_EXTERNAL_REFERENCE_CODES.length,
+			mcpServerProfileDataMaskObjectEntries.size());
+
+		int executionOrder = _SYSTEM_DATA_MASK_EXTERNAL_REFERENCE_CODES.length;
+
+		for (String dataMaskExternalReferenceCode :
+				dataMaskExternalReferenceCodes) {
+
+			executionOrder++;
+
+			Assert.assertEquals(
+				executionOrder,
+				MCPServerTestUtil.getMCPServerProfileDataMaskExecutionOrder(
+					dataMaskExternalReferenceCode,
+					mcpServerProfileExternalReferenceCode));
+		}
 	}
 
 	private void _assertUpgrade(String mcpServerProfileExternalReferenceCode)
 		throws Exception {
 
 		List<ObjectEntry> mcpServerProfileDataMaskObjectEntries =
-			_getMCPServerProfileDataMaskObjectEntries(
+			MCPServerTestUtil.getMCPServerProfileDataMaskObjectEntries(
 				mcpServerProfileExternalReferenceCode);
 
 		Assert.assertEquals(
@@ -116,35 +151,25 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 		}
 	}
 
-	private List<ObjectEntry> _getMCPServerProfileDataMaskObjectEntries(
+	private void _deleteMCPServerProfileDataMaskObjectEntries(
+			String[] dataMaskExternalReferenceCodes,
 			String mcpServerProfileExternalReferenceCode)
 		throws Exception {
 
-		List<ObjectEntry> mcpServerProfileDataMaskObjectEntries =
-			new ArrayList<>();
+		for (ObjectEntry mcpServerProfileDataMaskObjectEntry :
+				MCPServerTestUtil.getMCPServerProfileDataMaskObjectEntries(
+					mcpServerProfileExternalReferenceCode)) {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_MCP_SERVER_PROFILE_DATA_MASK",
-					TestPropsValues.getCompanyId());
+			if (ArrayUtil.contains(
+					dataMaskExternalReferenceCodes,
+					MapUtil.getString(
+						mcpServerProfileDataMaskObjectEntry.getValues(),
+						"dataMaskExternalReferenceCode"))) {
 
-		for (ObjectEntry objectEntry :
-				_objectEntryLocalService.getObjectEntries(
-					0, objectDefinition.getObjectDefinitionId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			Map<String, Serializable> values = objectEntry.getValues();
-
-			if (Objects.equals(
-					mcpServerProfileExternalReferenceCode,
-					values.get("mcpServerProfileExternalReferenceCode"))) {
-
-				mcpServerProfileDataMaskObjectEntries.add(objectEntry);
+				MCPServerTestUtil.deleteMCPServerProfileDataMaskObjectEntry(
+					"Deleted by test.", mcpServerProfileDataMaskObjectEntry);
 			}
 		}
-
-		return mcpServerProfileDataMaskObjectEntries;
 	}
 
 	private UpgradeStep _getUpgradeStep() {
@@ -184,12 +209,6 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 
 	@DeleteAfterTestRun
 	private ObjectEntry _mcpServerProfileObjectEntry;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Inject
-	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.mcp.server.rest.internal.upgrade.registry.MCPServerRestUpgradeStepRegistrator"

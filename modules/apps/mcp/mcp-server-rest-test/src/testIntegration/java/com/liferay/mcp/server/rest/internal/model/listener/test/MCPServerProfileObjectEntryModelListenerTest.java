@@ -7,12 +7,9 @@ package com.liferay.mcp.server.rest.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -28,10 +25,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -76,7 +71,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		List<ObjectEntry> mcpServerProfileDataMaskObjectEntries =
-			_getMCPServerProfileDataMaskObjectEntries(
+			MCPServerTestUtil.getMCPServerProfileDataMaskObjectEntries(
 				mcpServerProfileObjectEntry.getExternalReferenceCode());
 
 		Assert.assertEquals(
@@ -160,43 +155,12 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		}
 	}
 
-	private List<ObjectEntry> _getMCPServerProfileDataMaskObjectEntries(
-			String mcpServerProfileExternalReferenceCode)
-		throws Exception {
-
-		List<ObjectEntry> mcpServerProfileDataMaskObjectEntries =
-			new ArrayList<>();
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_MCP_SERVER_PROFILE_DATA_MASK",
-					TestPropsValues.getCompanyId());
-
-		for (ObjectEntry objectEntry :
-				_objectEntryLocalService.getObjectEntries(
-					0, objectDefinition.getObjectDefinitionId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			Map<String, Serializable> values = objectEntry.getValues();
-
-			if (Objects.equals(
-					mcpServerProfileExternalReferenceCode,
-					values.get("mcpServerProfileExternalReferenceCode"))) {
-
-				mcpServerProfileDataMaskObjectEntries.add(objectEntry);
-			}
-		}
-
-		return mcpServerProfileDataMaskObjectEntries;
-	}
-
 	private int _getMCPServerProfileDataMasksCount(
 			String mcpServerProfileExternalReferenceCode)
 		throws Exception {
 
 		List<ObjectEntry> mcpServerProfileDataMaskObjectEntries =
-			_getMCPServerProfileDataMaskObjectEntries(
+			MCPServerTestUtil.getMCPServerProfileDataMaskObjectEntries(
 				mcpServerProfileExternalReferenceCode);
 
 		return mcpServerProfileDataMaskObjectEntries.size();
@@ -208,9 +172,6 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		"L_DATA_MASK_NATIONAL_ID_BSN", "L_DATA_MASK_NATIONAL_ID_DNI_NIF",
 		"L_DATA_MASK_NATIONAL_ID_SSN", "L_DATA_MASK_PHONE_NUMBER"
 	};
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
