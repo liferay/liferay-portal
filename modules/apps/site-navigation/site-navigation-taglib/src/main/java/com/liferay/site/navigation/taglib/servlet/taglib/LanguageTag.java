@@ -6,6 +6,7 @@
 package com.liferay.site.navigation.taglib.servlet.taglib;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -199,7 +200,10 @@ public class LanguageTag extends IncludeTag {
 	private Map<Locale, String> _getChangeLanguageURLs(
 		Collection<Locale> locales, ThemeDisplay themeDisplay) {
 
-		if (themeDisplay.isSignedIn() || Validator.isNotNull(_formAction)) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-76594") ||
+			themeDisplay.isSignedIn() || Validator.isNotNull(_formAction)) {
+
 			return null;
 		}
 
