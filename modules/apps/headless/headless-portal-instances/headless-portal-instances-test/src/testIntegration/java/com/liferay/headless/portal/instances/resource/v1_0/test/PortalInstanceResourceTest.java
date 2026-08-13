@@ -904,8 +904,7 @@ public class PortalInstanceResourceTest
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
+				_CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL,
 				LoggerTestUtil.ERROR)) {
 
 			portalInstanceResource.postPortalInstanceExport(
