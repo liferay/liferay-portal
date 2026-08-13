@@ -52,7 +52,7 @@ jobs:
 
                         local registry_path="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${sanitized_branch}"
 
-                        local image_ref="${registry_path}/${{inputs.image_name}}:${version}-g${GITHUB_SHA::7}${{inputs.image_tag_suffix}}"
+                        local image_ref="${registry_path}/${{inputs.image_name}}:${version}-g${GITHUB_SHA::7}"
 
                         docker \
                             build \
@@ -72,10 +72,6 @@ on:
         inputs:
             image_name:
                 required: true
-                type: string
-            image_tag_suffix:
-                default: ""
-                required: false
                 type: string
             sparse_checkout:
                 required: true
