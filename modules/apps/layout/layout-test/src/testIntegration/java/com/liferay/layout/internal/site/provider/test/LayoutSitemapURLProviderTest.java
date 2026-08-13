@@ -13,7 +13,9 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -313,6 +315,26 @@ public class LayoutSitemapURLProviderTest {
 			).build());
 	}
 
+	@Test
+	@TestInfo("LPD-102025")
+	public void testLayoutSitemapURLProviderWithoutPermissionChecker()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId(), false);
+
+		Element rootElement = _getRootElement();
+
+		_visitLayoutWithoutPermissionChecker(layout.getUuid(), rootElement);
+
+		Assert.assertFalse(rootElement.hasContent());
+
+		_layoutSitemapURLProvider.visitLayout(
+			rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
+
+		Assert.assertTrue(rootElement.hasContent());
+	}
+
 	private void _assertVisitLayout(Map<Locale, String> robotsMap)
 		throws Exception {
 
@@ -372,6 +394,25 @@ public class LayoutSitemapURLProviderTest {
 		_themeDisplay.setSignedIn(true);
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
 		_themeDisplay.setUser(TestPropsValues.getUser());
+	}
+
+	private void _visitLayoutWithoutPermissionChecker(
+			String layoutUuid, Element rootElement)
+		throws Exception {
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(null);
+
+			_layoutSitemapURLProvider.visitLayout(
+				rootElement, layoutUuid, _layoutSet, _themeDisplay);
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
 	}
 
 	@DeleteAfterTestRun
