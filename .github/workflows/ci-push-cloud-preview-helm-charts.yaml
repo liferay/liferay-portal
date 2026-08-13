@@ -11,7 +11,7 @@ jobs:
         steps:
             -   name: Check repository
                 run: |
-                    echo "The canonical repository was detected. All Helm charts will be pushed."
+                    echo "The repository is cloudnative-team/liferay-portal. All Helm charts will be pushed."
     push-aws:
         needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml

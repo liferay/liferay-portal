@@ -140,7 +140,7 @@ jobs:
         steps:
             -   name: Check repository
                 run: |
-                    echo "The canonical repository was detected. The release pipeline will continue."
+                    echo "The repository is cloudnative-team/liferay-portal. The release pipeline will continue."
     promote-rc-aws:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-aws.result == 'success'}}
         needs:
