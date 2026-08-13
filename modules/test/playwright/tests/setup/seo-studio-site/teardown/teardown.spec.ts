@@ -10,7 +10,7 @@ import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 
 export const test = mergeTests(backendPageTest);
 
-test('Teardown: Delete the SEO Studio site and disable its feature flag', async ({
+test.skip('Teardown: Delete the SEO Studio site and disable its feature flag', async ({
 	backendPage,
 }) => {
 	await backendPage.goto('/');

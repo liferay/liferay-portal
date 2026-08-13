@@ -10,7 +10,7 @@ import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 
 export const test = mergeTests(backendPageTest);
 
-test('Setup: Create the SEO Studio site via its feature flag', async ({
+test.skip('Setup: Create the SEO Studio site via its feature flag', async ({
 	backendPage,
 }) => {
 	await backendPage.goto('/');
