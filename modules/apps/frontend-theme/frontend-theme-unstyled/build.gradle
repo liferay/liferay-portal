@@ -102,6 +102,7 @@ buildClay {
 				}
 				else if (line == "// INSERT CUSTOM VARS") {
 					line = '''\
+
 @import "../liferay_variables_custom";
 @import "../liferay_variables";'''
 				}
@@ -116,54 +117,6 @@ buildClay {
 				if (line == "// INSERT @use rules") {
 					line = '''\
 @use "sass:math" as *;'''
-				}
-
-				return line
-			}
-		}
-		else if (name in ["_atlas-custom-properties.scss"]) {
-			filter {
-				String line ->
-
-				if (line == "// INSERT @use rules") {
-					line = '''\
-@use "sass:math" as *;'''
-				}
-				else if (line == "// INSERT CUSTOM VARS") {
-					line = '''\
-@import "../clay_variables";'''
-				}
-				else if (line == "// INSERT CUSTOM EXTENSIONS") {
-					line = '''\
-@import "variables";
-
-@import "../liferay_variables_custom";
-@import "../liferay_variables";
-
-@import "../clay_custom";
-@import "../liferay_custom";'''
-				}
-
-				return line
-			}
-		}
-		else if (name in ["_atlas-custom-properties-variables.scss"]) {
-			filter {
-				String line ->
-
-				if (line == "// INSERT @use rules") {
-					line = '''\
-@use "sass:math" as *;'''
-				}
-				else if (line == "// INSERT CUSTOM BASE VARS") {
-					line = '''\
-@import "../clay_variables";'''
-				}
-				else if (line == "// INSERT CUSTOM VARS") {
-					line = '''\
-
-@import "../liferay_variables_custom";
-@import "../liferay_variables";'''
 				}
 
 				return line
