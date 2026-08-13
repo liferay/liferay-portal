@@ -98,7 +98,7 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 				oAuth2Application.getClientId()
 			).put(
 				externalReferenceCode + ".oauth2.headless.server.client.secret",
-				_oAuth2ApplicationLocalService.resolveClientSecret(
+				_oAuth2ApplicationLocalService.getPlaintextClientSecret(
 					oAuth2Application)
 			).put(
 				externalReferenceCode + ".oauth2.headless.server.scopes",
@@ -135,8 +135,9 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 			serviceUser = userLocalService.getUserById(
 				companyId, oAuth2Application.getClientCredentialUserId());
 			clientId = oAuth2Application.getClientId();
-			clientSecret = _oAuth2ApplicationLocalService.resolveClientSecret(
-				oAuth2Application);
+			clientSecret =
+				_oAuth2ApplicationLocalService.getPlaintextClientSecret(
+					oAuth2Application);
 		}
 		else {
 			serviceUser = _getServiceUser(

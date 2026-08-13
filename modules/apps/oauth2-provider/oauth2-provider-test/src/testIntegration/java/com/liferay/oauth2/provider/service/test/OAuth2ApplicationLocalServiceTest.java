@@ -87,7 +87,7 @@ public class OAuth2ApplicationLocalServiceTest {
 	}
 
 	@Test
-	public void testResolveClientSecret() throws Exception {
+	public void testGetPlaintextClientSecret() throws Exception {
 		try (AutoCloseable autoCloseable =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
 					PropsValues.class, "FIPS_ENABLED", true)) {
@@ -98,7 +98,7 @@ public class OAuth2ApplicationLocalServiceTest {
 
 			Assert.assertEquals(
 				clientSecret,
-				_oAuth2ApplicationLocalService.resolveClientSecret(
+				_oAuth2ApplicationLocalService.getPlaintextClientSecret(
 					_oAuth2Application));
 
 			String storedClientSecret = _oAuth2Application.getClientSecret();
@@ -110,7 +110,7 @@ public class OAuth2ApplicationLocalServiceTest {
 	}
 
 	@Test
-	public void testResolveClientSecretWhenDisabled() throws Exception {
+	public void testGetPlaintextClientSecretWhenDisabled() throws Exception {
 		String clientSecret = RandomTestUtil.randomString();
 
 		_oAuth2Application = _addOAuth2Application(clientSecret);
@@ -118,7 +118,7 @@ public class OAuth2ApplicationLocalServiceTest {
 		Assert.assertEquals(clientSecret, _oAuth2Application.getClientSecret());
 		Assert.assertEquals(
 			clientSecret,
-			_oAuth2ApplicationLocalService.resolveClientSecret(
+			_oAuth2ApplicationLocalService.getPlaintextClientSecret(
 				_oAuth2Application));
 	}
 

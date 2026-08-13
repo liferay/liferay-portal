@@ -465,11 +465,11 @@ public class OAuth2ApplicationLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static String resolveClientSecret(
+	public static String getPlaintextClientSecret(
 			OAuth2Application oAuth2Application)
 		throws PortalException {
 
-		return getService().resolveClientSecret(oAuth2Application);
+		return getService().getPlaintextClientSecret(oAuth2Application);
 	}
 
 	public static OAuth2Application updateExternalReferenceCode(
@@ -551,4 +551,4 @@ public class OAuth2ApplicationLocalServiceUtil {
 			OAuth2ApplicationLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1893607907
+// LIFERAY-SERVICE-BUILDER-HASH:-2022099425

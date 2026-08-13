@@ -361,7 +361,8 @@ public interface OAuth2ApplicationLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	public String resolveClientSecret(OAuth2Application oAuth2Application)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public String getPlaintextClientSecret(OAuth2Application oAuth2Application)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -409,4 +410,4 @@ public interface OAuth2ApplicationLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-613623196
+// LIFERAY-SERVICE-BUILDER-HASH:-962047129

@@ -60,7 +60,7 @@ public class OAuth2AdminPortletDisplayContext
 	public String getClientSecret(OAuth2Application oAuth2Application)
 		throws PortalException {
 
-		return OAuth2ApplicationLocalServiceUtil.resolveClientSecret(
+		return OAuth2ApplicationLocalServiceUtil.getPlaintextClientSecret(
 			oAuth2Application);
 	}
 

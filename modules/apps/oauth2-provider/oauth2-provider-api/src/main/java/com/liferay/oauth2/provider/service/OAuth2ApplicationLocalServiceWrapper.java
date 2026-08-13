@@ -532,12 +532,12 @@ public class OAuth2ApplicationLocalServiceWrapper
 	}
 
 	@Override
-	public String resolveClientSecret(
+	public String getPlaintextClientSecret(
 			com.liferay.oauth2.provider.model.OAuth2Application
 				oAuth2Application)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _oAuth2ApplicationLocalService.resolveClientSecret(
+		return _oAuth2ApplicationLocalService.getPlaintextClientSecret(
 			oAuth2Application);
 	}
 
@@ -647,4 +647,4 @@ public class OAuth2ApplicationLocalServiceWrapper
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1985616372
+// LIFERAY-SERVICE-BUILDER-HASH:1297684656

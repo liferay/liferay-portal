@@ -509,7 +509,7 @@ public class OAuth2ApplicationLocalServiceImpl
 	}
 
 	@Override
-	public String resolveClientSecret(OAuth2Application oAuth2Application)
+	public String getPlaintextClientSecret(OAuth2Application oAuth2Application)
 		throws PortalException {
 
 		String clientSecret = oAuth2Application.getClientSecret();
