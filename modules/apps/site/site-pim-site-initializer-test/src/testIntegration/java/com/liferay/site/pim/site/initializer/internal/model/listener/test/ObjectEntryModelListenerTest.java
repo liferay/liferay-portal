@@ -20,6 +20,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -37,6 +38,9 @@ import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import java.io.Serializable;
+
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -171,18 +175,22 @@ public class ObjectEntryModelListenerTest {
 
 		ObjectDefinition objectDefinition = _getPIMLinkObjectDefinition();
 
-		return _objectEntryLocalService.getValuesListCount(
-			TestPropsValues.getCompanyId(), new Long[] {groupId},
-			new Long[] {objectDefinition.getObjectDefinitionId()},
-			_filterFactory.create(
-				StringBundler.concat(
-					"(sourceClassExternalReferenceCode eq '",
-					classExternalReferenceCode, "' and sourceClassName eq '",
-					className, "') or (",
-					"targetClassExternalReferenceCode eq '",
-					classExternalReferenceCode, "' and targetClassName eq '",
-					className, "')"),
-				objectDefinition));
+		List<Map<String, Serializable>> valuesList =
+			_objectEntryLocalService.getValuesList(
+				groupId, TestPropsValues.getCompanyId(), 0,
+				objectDefinition.getObjectDefinitionId(),
+				_filterFactory.create(
+					StringBundler.concat(
+						"(sourceClassExternalReferenceCode eq '",
+						classExternalReferenceCode,
+						"' and sourceClassName eq '", className,
+						"') or (targetClassExternalReferenceCode eq '",
+						classExternalReferenceCode,
+						"' and targetClassName eq '", className, "')"),
+					objectDefinition),
+				null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		return valuesList.size();
 	}
 
 	private void _testOnBeforeCreateMovesEntryToProductsFolder()
