@@ -169,7 +169,10 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 			_analyticsCloudClient.updateAnalyticsChannel(
 				channel.getChannelId(),
 				transform(
-					dataSource.getCommerceChannelIds(),
+					ArrayUtil.toArray(
+						_analyticsSettingsManager.getCommerceChannelIds(
+							contextUser.getCompanyId(),
+							ArrayUtil.toArray(dataSource.getSiteIds()))),
 					commerceChannelId -> _groupLocalService.fetchGroup(
 						contextUser.getCompanyId(),
 						_commerceChannelClassNameIdSupplier.get(),
@@ -190,11 +193,6 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 		_analyticsSettingsManager.updateCompanyConfiguration(
 			contextUser.getCompanyId(),
 			HashMapBuilder.<String, Object>put(
-				"syncedCommerceChannelIds",
-				_analyticsSettingsManager.updateCommerceChannelIds(
-					channel.getChannelId(), contextCompany.getCompanyId(),
-					analyticsDataSource.getCommerceChannelIds())
-			).put(
 				"syncedGroupIds",
 				_analyticsSettingsManager.updateSiteIds(
 					channel.getChannelId(), contextCompany.getCompanyId(),
