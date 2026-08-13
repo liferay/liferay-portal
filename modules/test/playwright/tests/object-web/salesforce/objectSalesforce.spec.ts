@@ -16,6 +16,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import getFormContainerDefinition from '../../layout-content-page-editor-web/main/utils/getFormContainerDefinition';
@@ -149,13 +150,16 @@ test('Assert CRUD with created custom object using Salesforce storage type', asy
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 		await waitForAlert(page);
-		await viewObjectEntriesPage.backButton.click();
 	});
 
 	await test.step('Read Object Entry', async () => {
-		await expect(
-			page.getByRole('cell', {exact: true, name: objectFieldValue})
-		).toBeVisible();
+		await clickAndExpectToBeVisible({
+			target: page.getByRole('cell', {
+				exact: true,
+				name: objectFieldValue,
+			}),
+			trigger: viewObjectEntriesPage.backButton,
+		});
 	});
 
 	await test.step('Update Object Entry', async () => {
@@ -173,11 +177,14 @@ test('Assert CRUD with created custom object using Salesforce storage type', asy
 
 		await viewObjectEntriesPage.saveObjectEntryButton.click();
 		await expect(viewObjectEntriesPage.successMessage).toBeVisible();
-		await viewObjectEntriesPage.backButton.click();
 
-		await expect(
-			page.getByRole('cell', {exact: true, name: objectFieldUpdatedValue})
-		).toBeVisible();
+		await clickAndExpectToBeVisible({
+			target: page.getByRole('cell', {
+				exact: true,
+				name: objectFieldUpdatedValue,
+			}),
+			trigger: viewObjectEntriesPage.backButton,
+		});
 	});
 
 	await test.step('Delete Object Entry', async () => {
