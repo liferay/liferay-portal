@@ -5,7 +5,7 @@
 	<compatibility>
 		<version>7.4.0+</version>
 	</compatibility>
-	<theme id="prism" name="Prism">
+	<theme id="classic2" name="Classic 2">
 		<template-extension>ftl</template-extension>
 		<settings>
 			<setting configurable="false" key="color-palette" value="primary,success,danger,warning,info,dark,gray-dark,secondary,light,lighter,white" />

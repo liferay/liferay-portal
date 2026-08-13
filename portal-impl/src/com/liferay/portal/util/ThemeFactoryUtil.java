@@ -33,7 +33,7 @@ public class ThemeFactoryUtil {
 			(FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57922") ||
 			 FeatureFlagManagerUtil.isEnabled(companyId, "LPD-84497"))) {
 
-			defaultRegularThemeId = "prism_WAR_prismtheme";
+			defaultRegularThemeId = "classic2_WAR_classic2theme";
 		}
 
 		return PortalUtil.getJsSafePortletId(defaultRegularThemeId);
