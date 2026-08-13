@@ -63,8 +63,14 @@ export function objectToFormData(object: object) {
 	return object;
 }
 
-export function sub(str: string) {
-	return str;
+export function sub(str: string, ...params: unknown[]) {
+	return params
+		.flat()
+		.reduce(
+			(result: string, param, index) =>
+				result.split(`{${index}}`).join(String(param)),
+			str
+		);
 }
 
 export const mockFetch = jest.fn(() => {

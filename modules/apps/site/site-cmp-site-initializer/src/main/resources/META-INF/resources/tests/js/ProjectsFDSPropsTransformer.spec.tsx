@@ -4,10 +4,26 @@
  */
 
 import '@testing-library/jest-dom';
+import {deleteItemAction} from '@liferay/site-cms-site-initializer';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
 import ProjectsFDSPropsTransformer from '../../js/components/props_transformer/ProjectsFDSPropsTransformer';
+
+jest.mock('@liferay/site-cms-site-initializer', () => ({
+	SimpleActionLinkRenderer: jest.requireActual(
+		'@liferay/site-cms-site-initializer/src/main/resources/META-INF/resources/js/main_view/props_transformer/cell_renderers/SimpleActionLinkRenderer'
+	).default,
+	addOnClickToCreationMenuItems: jest.fn(),
+	deleteItemAction: jest.fn(),
+}));
+
+const liferayLanguageGet = Liferay.Language.get;
+
+Liferay.Language.get = (key: string) =>
+	key === 'delete-project-confirmation-body'
+		? 'You are about to delete the project "{0}."'
+		: liferayLanguageGet(key);
 
 const PROJECT_TITLE = 'Summer Campaign';
 
@@ -64,6 +80,27 @@ function renderTitleCell(itemActions: Record<string, unknown>) {
 }
 
 describe('ProjectsFDSPropsTransformer', () => {
+	it('escapes the project title in the delete confirmation message', async () => {
+		const {onActionDropdownItemClick} =
+			ProjectsFDSPropsTransformer(baseProps);
+
+		await onActionDropdownItemClick({
+			action: {data: {id: 'delete'}},
+			itemData: {
+				embedded: {title: '<script>alert(1)</script>'},
+			} as any,
+			loadData: jest.fn(),
+		});
+
+		const [confirmationMessage] = (deleteItemAction as jest.Mock).mock
+			.calls[0];
+
+		expect(confirmationMessage).toContain(
+			'&lt;script&gt;alert(1)&lt;&#047;script&gt;'
+		);
+		expect(confirmationMessage).not.toContain('<script>');
+	});
+
 	it('links the project title for a user who can only view the project', () => {
 		renderTitleCell({get: {}});
 

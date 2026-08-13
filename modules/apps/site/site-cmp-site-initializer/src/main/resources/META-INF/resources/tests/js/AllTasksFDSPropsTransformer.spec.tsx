@@ -7,15 +7,26 @@ import BulkEditWorkflowAssigneeModalContent from '../../js/components/modal/Bulk
 import BulkEditWorkflowDueDateModalContent from '../../js/components/modal/BulkEditWorkflowDueDateModalContent';
 import AllTasksFDSPropsTransformer from '../../js/components/props_transformer/AllTasksFDSPropsTransformer';
 
+const mockDeleteItemAction = jest.fn();
 const mockOpenCMPModal = jest.fn();
+
+jest.mock('@liferay/site-cms-site-initializer', () => ({
+	SimpleActionLinkRenderer: jest.fn(),
+	addOnClickToCreationMenuItems: jest.fn(),
+	deleteAssetEntriesBulkAction: jest.fn(),
+	deleteItemAction: (...args: any[]) => mockDeleteItemAction(...args),
+}));
 
 jest.mock('../../js/utils/openCMPModal', () => ({
 	openCMPModal: (...args: any[]) => mockOpenCMPModal(...args),
 }));
 
-// The project-task assignee modals pull in the item selector, which is not
-// importable under jsdom; stub them since these tests exercise only the
-// workflow-task path.
+const liferayLanguageGet = Liferay.Language.get;
+
+Liferay.Language.get = (key: string) =>
+	key === 'delete-task-confirmation-body'
+		? 'You are about to delete the task "{0}."'
+		: liferayLanguageGet(key);
 
 jest.mock('../../js/components/modal/BulkEditAssigneeModalContent', () => ({
 	__esModule: true,
@@ -141,6 +152,26 @@ describe('AllTasksFDSPropsTransformer', () => {
 				allItemsSelectedActive: true,
 			})
 		).toBe(false);
+	});
+
+	it('escapes the task title in the delete confirmation message', async () => {
+		const result = AllTasksFDSPropsTransformer(baseProps as any);
+
+		await (result as any).onActionDropdownItemClick({
+			action: {data: {id: 'delete'}},
+			itemData: {
+				...projectItem,
+				embedded: {title: '<script>alert(1)</script>'},
+			},
+			loadData: jest.fn(),
+		});
+
+		const [confirmationMessage] = mockDeleteItemAction.mock.calls[0];
+
+		expect(confirmationMessage).toContain(
+			'&lt;script&gt;alert(1)&lt;&#047;script&gt;'
+		);
+		expect(confirmationMessage).not.toContain('<script>');
 	});
 
 	it('keeps update-state and delete bulk actions enabled when a project task is selected', () => {
