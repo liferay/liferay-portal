@@ -20,6 +20,7 @@ locals {
 	crossplane_iam_grantable_role_definition_ids=[
 		basename(data.azurerm_role_definition.key_vault_crypto_service_encryption_user.role_definition_id),
 		basename(data.azurerm_role_definition.storage_blob_data_contributor.role_definition_id),
+		basename(data.azurerm_role_definition.storage_blob_data_reader.role_definition_id),
 	]
 	crossplane_iam_role_assignment_condition=join(" AND ", [
 		for clause in [

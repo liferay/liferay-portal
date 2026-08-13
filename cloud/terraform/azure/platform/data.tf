@@ -23,3 +23,6 @@ data "azurerm_role_definition" "key_vault_crypto_service_encryption_user" {
 data "azurerm_role_definition" "storage_blob_data_contributor" {
 	name="Storage Blob Data Contributor"
 }
+data "azurerm_role_definition" "storage_blob_data_reader" {
+	name="Storage Blob Data Reader"
+}
