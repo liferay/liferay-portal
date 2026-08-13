@@ -150,6 +150,7 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcess
 		ResourceAction resourceAction =
 			_resourceActionLocalService.fetchResourceAction(
 				className, actionId);
+
 		ResourceAction viewResourceAction =
 			_resourceActionLocalService.fetchResourceAction(
 				className, ActionKeys.VIEW);
