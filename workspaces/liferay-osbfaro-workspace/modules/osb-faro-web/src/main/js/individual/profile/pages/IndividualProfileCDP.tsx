@@ -181,7 +181,16 @@ const IndividualProfileCDP: React.FC<IIndividualProfileCDPProps> = ({
 				groupId={groupId}
 				individualId={individualId}
 				individualName={individual.get('name')}
-			/>
+				loading={dataSourceLoading}
+				showEmptyState={showEmptyState}
+			>
+				<ProfileCDPEmptyState
+					authorized={authorized}
+					dataSourceData={dataSourceData}
+					groupId={groupId}
+					pageDisplay={false}
+				/>
+			</EngagementSummary>
 
 			<IndividualDetailsCDP
 				groupId={groupId}

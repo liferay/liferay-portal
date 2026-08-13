@@ -9,9 +9,12 @@ import {useQueryParams} from 'shared/hooks/useQueryParams';
 
 interface IEngagementSummaryProps {
 	channelId: string;
+	children?: React.ReactNode;
 	groupId: string;
 	individualId: string;
 	individualName?: string;
+	loading?: boolean;
+	showEmptyState?: boolean;
 }
 
 /**
@@ -23,13 +26,16 @@ interface IEngagementSummaryProps {
 
 const EngagementSummary: React.FC<IEngagementSummaryProps> = ({
 	channelId,
+	children: emptyState,
 	groupId,
 	individualId,
 	individualName,
+	loading,
+	showEmptyState,
 }) => {
 	const query = useQueryParams();
 
-	return (
+	const sectionContent = (
 		<BasePage.Context.Provider
 			value={{
 				filters: {},
@@ -41,12 +47,6 @@ const EngagementSummary: React.FC<IEngagementSummaryProps> = ({
 				},
 			}}
 		>
-			<SectionHeader
-				className="mb-3 mt-2"
-				icon="display-content"
-				title={Liferay.Language.get('engagement-summary')}
-			/>
-
 			<ClayLayout.Row>
 				<ClayLayout.Col size={12}>
 					<TopPagesCard className="top-pages-card-root" />
@@ -70,6 +70,18 @@ const EngagementSummary: React.FC<IEngagementSummaryProps> = ({
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 		</BasePage.Context.Provider>
+	);
+
+	return (
+		<>
+			<SectionHeader
+				className="mb-3 mt-2"
+				icon="display-content"
+				title={Liferay.Language.get('engagement-summary')}
+			/>
+
+			{showEmptyState && !loading ? emptyState : sectionContent}
+		</>
 	);
 };
 
