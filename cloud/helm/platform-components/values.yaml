@@ -226,6 +226,13 @@ operatorApplications:
                 readOnlyRootFilesystem: true
                 runAsGroup: 65532
                 runAsUser: 65532
+    dxpOperator:
+        enabled: true
+        namespace: dxp-operator-system
+        repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
+        targetRevision: 0.0.1
+        values:
+            fullnameOverride: dxp-operator
     eckOperator:
         chart: eck-operator
         enabled: true

@@ -215,8 +215,6 @@ tests:
             -   equal:
                     path: spec.destinations
                     value:
-                        -   namespace: dxp-operator-system
-                            server: https://kubernetes.default.svc
                         -   namespace: liferay-*
                             server: https://kubernetes.default.svc
                         -   namespace: crossplane-system
@@ -263,7 +261,7 @@ tests:
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
             -   lengthEqual:
-                    count: 7
+                    count: 8
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
             -   equal:
@@ -275,6 +273,8 @@ tests:
                         -   https://argoproj.github.io/argo-helm/*
                         -   https://charts.crossplane.io/stable
                         -   https://charts.crossplane.io/stable/*
+                        -   oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
+                        -   oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator/*
                         -   https://helm.elastic.co
                         -   https://helm.elastic.co/*
                         -   oci://docker.io/envoyproxy/gateway-helm

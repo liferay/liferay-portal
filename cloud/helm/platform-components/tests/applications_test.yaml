@@ -6,6 +6,7 @@ templates:
     -   templates/application-ack-prometheusservice.yaml
     -   templates/application-argo-workflows.yaml
     -   templates/application-crossplane.yaml
+    -   templates/application-dxp-operator.yaml
     -   templates/application-eck-operator.yaml
     -   templates/application-envoy-gateway.yaml
     -   templates/application-external-secrets.yaml
@@ -137,6 +138,41 @@ tests:
                     path: spec.syncPolicy.managedNamespaceMetadata.labels["pod-security.kubernetes.io/enforce"]
                     value: restricted
                 template: templates/application-crossplane.yaml
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-100"
+                template: templates/application-dxp-operator.yaml
+            -   equal:
+                    path: spec.destination.namespace
+                    value: dxp-operator-system
+                template: templates/application-dxp-operator.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-dxp-operator.yaml
+            -   notExists:
+                    path: spec.source.chart
+                template: templates/application-dxp-operator.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.fullnameOverride
+                    value: dxp-operator
+                template: templates/application-dxp-operator.yaml
+            -   equal:
+                    path: spec.source.path
+                    value: .
+                template: templates/application-dxp-operator.yaml
+            -   equal:
+                    path: spec.source.repoURL
+                    value: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
+                template: templates/application-dxp-operator.yaml
+            -   equal:
+                    path: spec.source.targetRevision
+                    value: 0.0.1
+                template: templates/application-dxp-operator.yaml
+            -   equal:
+                    path: spec.syncPolicy.managedNamespaceMetadata.labels["pod-security.kubernetes.io/enforce"]
+                    value: restricted
+                template: templates/application-dxp-operator.yaml
             -   equal:
                     path: spec.destination.namespace
                     value: elastic-system

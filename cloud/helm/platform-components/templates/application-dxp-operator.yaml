@@ -1,0 +1,6 @@
+{{- $operatorApplication := dict
+    "name" "dxp-operator"
+    "namespaceLabels" (dict "pod-security.kubernetes.io/enforce" "restricted")
+    "syncWave" "-100"
+-}}
+{{- include "liferay-platform.operatorApplication" (list . (merge $operatorApplication .Values.operatorApplications.dxpOperator)) }}
