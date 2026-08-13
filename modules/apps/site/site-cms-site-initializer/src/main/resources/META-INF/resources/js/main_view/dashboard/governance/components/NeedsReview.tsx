@@ -90,14 +90,33 @@ export function NeedsReview({
 
 	const groupId = space.siteId;
 
-	const {expiringSoonHref, upcomingReviewsHref} = useMemo(
-		() => ({
+	const {expiringSoonHref, upcomingReviewsHref} = useMemo(() => {
+		const spaceFilters = groupId
+			? [
+					{
+						id: FDS_FILTER_ID.SCOPE_GROUP_ID,
+						selectedData: {
+							exclude: false,
+							selectedItems: [
+								{label: space.label, value: groupId},
+							],
+						},
+					},
+				]
+			: [];
+
+		return {
 			expiringSoonHref: getAllSectionHref(
 				additionalProps.allSectionFDSName,
 				{
-					filters: Object.entries(
-						QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.EXPIRING_SOON]()
-					).map(([id, selectedData]) => ({id, selectedData})),
+					filters: [
+						...Object.entries(
+							QUICK_FILTER_UPDATES[
+								QUICK_FILTER_TYPES.EXPIRING_SOON
+							]()
+						).map(([id, selectedData]) => ({id, selectedData})),
+						...spaceFilters,
+					],
 				}
 			),
 			upcomingReviewsHref: getAllSectionHref(
@@ -108,13 +127,13 @@ export function NeedsReview({
 							id: FDS_FILTER_ID.DATE_REVIEW,
 							selectedData: getUpcomingReviewsSelectedData(),
 						},
+						...spaceFilters,
 					],
 					sorts: [{direction: 'asc', key: FDS_FILTER_ID.DATE_REVIEW}],
 				}
 			),
-		}),
-		[additionalProps.allSectionFDSName]
-	);
+		};
+	}, [additionalProps.allSectionFDSName, groupId, space.label]);
 
 	const title = Liferay.Language.get('needs-review');
 

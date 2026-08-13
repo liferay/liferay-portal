@@ -73,16 +73,18 @@ function getFilters(filterId: string) {
 	return config?.filters;
 }
 
-function getWindowInDays(selectedData: any) {
+function getWindowInDays({from, to}: any) {
 	const toUTC = ({day, month, year}: any) =>
 		Date.UTC(year, month - 1, day) / (1000 * 60 * 60 * 24);
 
-	return toUTC(selectedData.to) - toUTC(selectedData.from);
+	return toUTC(to) - toUTC(from);
 }
 
-function renderNeedsReview() {
+function renderNeedsReview(
+	space: {label?: string; siteId?: number; value: string} = {value: 'all'}
+) {
 	return render(
-		<GovernanceContext.Provider value={{space: {value: 'all'}} as any}>
+		<GovernanceContext.Provider value={{space} as any}>
 			<NeedsReview additionalProps={ADDITIONAL_PROPS} />
 		</GovernanceContext.Provider>
 	);
@@ -162,6 +164,37 @@ describe('[CMS Dashboard] NeedsReview', () => {
 		expect(getWindowInDays(selectedData)).toBe(
 			EXPIRING_SOON_THRESHOLD_DAYS
 		);
+	});
+
+	it('filters both view all links by the selected space', () => {
+		renderNeedsReview({label: 'My Space', siteId: 12345, value: '999'});
+
+		const configs = getSerializedConfigs();
+
+		expect(configs).toHaveLength(2);
+
+		for (const config of configs) {
+			const spaceFilter = config.filters.find(
+				({id}: {id: string}) => id === FDS_FILTER_ID.SCOPE_GROUP_ID
+			);
+
+			expect(spaceFilter.selectedData).toEqual({
+				exclude: false,
+				selectedItems: [{label: 'My Space', value: 12345}],
+			});
+		}
+	});
+
+	it('leaves the view all links unscoped when all spaces is selected', () => {
+		renderNeedsReview();
+
+		for (const config of getSerializedConfigs()) {
+			expect(
+				config.filters?.some(
+					({id}: {id: string}) => id === FDS_FILTER_ID.SCOPE_GROUP_ID
+				)
+			).toBeFalsy();
+		}
 	});
 
 	it('renders the review date on one card and the status on the other', () => {

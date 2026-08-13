@@ -99,5 +99,6 @@ export type WorkflowStatus =
 export const FDS_FILTER_ID = {
 	DATE_EXPIRATION: 'dateExpiration',
 	DATE_REVIEW: 'dateReview',
+	SCOPE_GROUP_ID: 'scopeGroupId',
 	STATUS: 'status',
 } as const;
