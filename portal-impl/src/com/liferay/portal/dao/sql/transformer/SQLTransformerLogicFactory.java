@@ -48,7 +48,7 @@ public class SQLTransformerLogicFactory {
 			}
 
 			@Override
-			public void populateSqlFunctions(Configuration configuration) {
+			public void populateSQLFunctions(Configuration configuration) {
 			}
 
 		};

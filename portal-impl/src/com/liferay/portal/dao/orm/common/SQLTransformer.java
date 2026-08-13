@@ -26,8 +26,8 @@ import org.hibernate.cfg.Configuration;
  */
 public class SQLTransformer {
 
-	public static void populateSqlFunctions(Configuration configuration) {
-		_sqlTransformerLogic.populateSqlFunctions(configuration);
+	public static void populateSQLFunctions(Configuration configuration) {
+		_sqlTransformerLogic.populateSQLFunctions(configuration);
 	}
 
 	public static void reloadSQLTransformer() {

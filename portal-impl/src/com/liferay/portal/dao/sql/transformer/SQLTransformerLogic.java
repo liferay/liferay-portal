@@ -17,6 +17,6 @@ public interface SQLTransformerLogic {
 
 	public Function<String, String>[] getFunctions();
 
-	public void populateSqlFunctions(Configuration configuration);
+	public void populateSQLFunctions(Configuration configuration);
 
 }

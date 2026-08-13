@@ -31,7 +31,7 @@ public abstract class BaseSQLTransformerLogic implements SQLTransformerLogic {
 	}
 
 	@Override
-	public void populateSqlFunctions(Configuration configuration) {
+	public void populateSQLFunctions(Configuration configuration) {
 		Function<String, String> castClobTextFunction =
 			getCastClobTextFunction();
 
