@@ -5,7 +5,10 @@
 
 package com.liferay.site.navigation.taglib.servlet.taglib;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portletdisplaytemplate.PortletDisplayTemplateManagerUtil;
@@ -19,6 +22,8 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.navigation.taglib.internal.servlet.ServletContextUtil;
@@ -191,6 +196,48 @@ public class LanguageTag extends IncludeTag {
 		return SKIP_BODY;
 	}
 
+	private Map<Locale, String> _getChangeLanguageURLs(
+		Collection<Locale> locales, ThemeDisplay themeDisplay) {
+
+		if (themeDisplay.isSignedIn() || Validator.isNotNull(_formAction)) {
+			return null;
+		}
+
+		int localePrependFriendlyURLStyle = PrefsPropsUtil.getInteger(
+			themeDisplay.getCompanyId(),
+			PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE);
+
+		if ((localePrependFriendlyURLStyle == 0) ||
+			(themeDisplay.getLayout() == null)) {
+
+			return null;
+		}
+
+		HttpServletRequest httpServletRequest = getRequest();
+
+		String currentURL = PortalUtil.getCurrentURL(httpServletRequest);
+
+		if (_hasRedirectParameter(currentURL)) {
+			return null;
+		}
+
+		try {
+			return PortalUtil.getChangeLanguageURLs(
+				currentURL, httpServletRequest, locales, themeDisplay);
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Unable to build the change language URLs for \"",
+						currentURL, "\""),
+					exception);
+			}
+
+			return null;
+		}
+	}
+
 	private long _getDisplayStyleGroupId() {
 		HttpServletRequest httpServletRequest = getRequest();
 
@@ -273,28 +320,35 @@ public class LanguageTag extends IncludeTag {
 			}
 		}
 
-		Locale currentLocale = null;
+		HttpServletRequest httpServletRequest = getRequest();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		Locale currentLocale = themeDisplay.getLocale();
 
 		if (Validator.isNotNull(_languageId)) {
 			currentLocale = LocaleUtil.fromLanguageId(_languageId);
 		}
-		else {
-			HttpServletRequest httpServletRequest = getRequest();
 
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			currentLocale = themeDisplay.getLocale();
-		}
+		Map<Locale, String> changeLanguageURLs = _getChangeLanguageURLs(
+			locales, themeDisplay);
 
 		for (Locale locale : locales) {
 			boolean disabled = false;
 			String url = null;
 
 			if (!LocaleUtil.equals(locale, currentLocale)) {
-				url = HttpComponentsUtil.setParameter(
-					formAction, parameterName, LocaleUtil.toLanguageId(locale));
+				if (changeLanguageURLs != null) {
+					url = changeLanguageURLs.get(locale);
+				}
+
+				if (Validator.isNull(url)) {
+					url = HttpComponentsUtil.setParameter(
+						formAction, parameterName,
+						LocaleUtil.toLanguageId(locale));
+				}
 			}
 			else if (!displayCurrentLocale) {
 				disabled = true;
@@ -349,7 +403,26 @@ public class LanguageTag extends IncludeTag {
 		return name;
 	}
 
+	private boolean _hasRedirectParameter(String url) {
+		if (!url.contains("redirect")) {
+			return false;
+		}
+
+		for (String parameterName :
+				HttpComponentsUtil.getParameterNames(
+					HttpComponentsUtil.getQueryString(url))) {
+
+			if (parameterName.endsWith("redirect")) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private static final String _PAGE = "/language/page.jsp";
+
+	private static final Log _log = LogFactoryUtil.getLog(LanguageTag.class);
 
 	private String _ddmTemplateGroupKey;
 	private String _ddmTemplateKey;
