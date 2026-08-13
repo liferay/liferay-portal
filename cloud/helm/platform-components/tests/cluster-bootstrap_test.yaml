@@ -6,46 +6,6 @@ templates:
     -   templates/cluster-bootstrap.yaml
 tests:
     -   asserts:
-            -   documentIndex: 0
-                equal:
-                    path: spec.template.spec.containers[0].image
-                    value: registry.k8s.io/pause:3.9
-            -   documentIndex: 0
-                equal:
-                    path: spec.template.spec.initContainers[0].image
-                    value: alpine:3
-            -   documentIndex: 0
-                equal:
-                    path: spec.template.spec.initContainers[0].securityContext.privileged
-                    value: true
-            -   documentIndex: 0
-                equal:
-                    path: spec.template.spec.initContainers[0].resources.requests.memory
-                    value: 8Mi
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.template.spec.initContainers[0].command[2]
-                    pattern: vm.max_map_count=1048576
-        it: Applies the sysctl script through a privileged init container
-    -   asserts:
-            -   documentIndex: 0
-                equal:
-                    path: metadata.labels["liferay.com/project"]
-                    value: liferay-cloud-native
-            -   documentIndex: 0
-                equal:
-                    path: metadata.labels["app.kubernetes.io/name"]
-                    value: cluster-bootstrap
-            -   documentIndex: 1
-                equal:
-                    path: metadata.labels["liferay.com/project"]
-                    value: liferay-cloud-native
-            -   documentIndex: 1
-                equal:
-                    path: metadata.labels["app.kubernetes.io/name"]
-                    value: cluster-bootstrap-system
-        it: Labels both resources with the platform labels
-    -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the bootstrap when disabled
@@ -55,25 +15,61 @@ tests:
             -   hasDocuments:
                     count: 2
             -   documentIndex: 0
+                isKind:
+                    of: DaemonSet
+            -   documentIndex: 0
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-110"
+            -   documentIndex: 0
+                equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: cluster-bootstrap
+            -   documentIndex: 0
+                equal:
+                    path: metadata.labels["liferay.com/project"]
+                    value: liferay-cloud-native
+            -   documentIndex: 0
                 equal:
                     path: metadata.namespace
                     value: cluster-bootstrap-system
             -   documentIndex: 0
                 equal:
+                    path: spec.template.spec.containers[0].image
+                    value: registry.k8s.io/pause:3.9
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.template.spec.initContainers[0].command[2]
+                    pattern: vm.max_map_count=1048576
+            -   documentIndex: 0
+                equal:
+                    path: spec.template.spec.initContainers[0].image
+                    value: alpine:3
+            -   documentIndex: 0
+                equal:
+                    path: spec.template.spec.initContainers[0].resources.requests.memory
+                    value: 8Mi
+            -   documentIndex: 0
+                equal:
+                    path: spec.template.spec.initContainers[0].securityContext.privileged
+                    value: true
+            -   documentIndex: 1
+                isKind:
+                    of: Namespace
+            -   documentIndex: 1
+                equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
                     value: "-110"
-            -   documentIndex: 0
-                isKind:
-                    of: DaemonSet
+            -   documentIndex: 1
+                equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: cluster-bootstrap-system
+            -   documentIndex: 1
+                equal:
+                    path: metadata.labels["liferay.com/project"]
+                    value: liferay-cloud-native
             -   documentIndex: 1
                 equal:
                     path: metadata.name
                     value: cluster-bootstrap-system
-            -   documentIndex: 1
-                equal:
-                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-                    value: "-110"
-            -   documentIndex: 1
-                isKind:
-                    of: Namespace
         it: Renders the bootstrap DaemonSet and its namespace by default

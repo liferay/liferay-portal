@@ -78,11 +78,6 @@ tests:
             -   equal:
                     path: spec.sources[0].helm.valueFiles
                     value:
-                        -   $values/liferay/system/infrastructure-provider.yaml
-                template: templates/application-infrastructure-provider.yaml
-            -   equal:
-                    path: spec.sources[0].helm.valueFiles
-                    value:
                         -   $values/liferay/system/observability.yaml
                 template: templates/application-observability.yaml
         it: Layers the values files from the base directory to the environment directory
@@ -96,20 +91,6 @@ tests:
                 repoURL: oci://example-registry/liferay-azure
             observability:
                 enabled: true
-    -   asserts:
-            -   equal:
-                    path: metadata.labels["app.kubernetes.io/name"]
-                    value: operator-appproject
-                template: templates/appproject-operator.yaml
-            -   equal:
-                    path: metadata.name
-                    value: liferay-operator
-                template: templates/appproject-operator.yaml
-            -   equal:
-                    path: metadata.namespace
-                    value: argocd-system
-                template: templates/appproject-operator.yaml
-        it: Names the operator AppProject liferay-operator in the release namespace
     -   asserts:
             -   hasDocuments:
                     count: 0
@@ -135,18 +116,6 @@ tests:
                         value: liferay-test
                     path: spec.sources[0].helm.parameters
                 template: templates/application-infrastructure-provider.yaml
-            -   equal:
-                    path: spec.destination.namespace
-                    value: crossplane-system
-                template: templates/application-infrastructure-provider.yaml
-            -   equal:
-                    path: spec.sources[1].ref
-                    value: values
-                template: templates/application-infrastructure-provider.yaml
-            -   equal:
-                    path: metadata.name
-                    value: liferay-infrastructure
-                template: templates/appproject-infrastructure.yaml
         it: Passes the cluster identity to the infrastructure provider application
         set:
             clusterIdentity:
@@ -172,9 +141,43 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 1
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: spec.destination.namespace
+                    value: crossplane-system
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: spec.sources[0].helm.valueFiles
+                    value:
+                        -   $values/liferay/system/infrastructure-provider.yaml
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: spec.sources[1].ref
+                    value: values
+                template: templates/application-infrastructure-provider.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.project
+                    value: liferay-infrastructure
+                template: templates/applicationset-infrastructure.yaml
+            -   contains:
+                    content:
+                        name: gateway.className
+                        value: liferay-gateway-class
+                    path: spec.template.spec.sources[0].helm.parameters
                 template: templates/applicationset-infrastructure.yaml
             -   hasDocuments:
                     count: 1
+                template: templates/applicationset-liferay.yaml
+            -   equal:
+                    path: spec.template.spec.project
+                    value: liferay-application
+                template: templates/applicationset-liferay.yaml
+            -   equal:
+                    path: spec.template.spec.sources[1].ref
+                    value: values
                 template: templates/applicationset-liferay.yaml
             -   hasDocuments:
                     count: 1
@@ -182,40 +185,87 @@ tests:
             -   hasDocuments:
                     count: 1
                 template: templates/appproject-application.yaml
-        it: Renders every ApplicationSet and the application AppProject by default
-    -   asserts:
-            -   contains:
-                    content: https://github.com/example/liferay-gitops.git
-                    path: spec.sourceRepos
-                template: templates/appproject-infrastructure.yaml
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: liferay-appproject
+                template: templates/appproject-application.yaml
             -   equal:
                     path: metadata.name
                     value: liferay-application
                 template: templates/appproject-application.yaml
-        it: Renders the AppProjects with the GitOps repository whitelisted
-        set:
-            gitops:
-                repository:
-                    url: https://github.com/example/liferay-gitops.git
-            infrastructure:
-                repoURL: oci://example-registry/liferay-azure-infrastructure
-            liferay:
-                repoURL: oci://example-registry/liferay-azure
-    -   asserts:
-            -   hasDocuments:
-                    count: 1
-                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: metadata.namespace
+                    value: argocd-system
+                template: templates/appproject-application.yaml
             -   hasDocuments:
                     count: 1
                 template: templates/appproject-infrastructure.yaml
-        it: Renders the infrastructure AppProject and provider application by default
-    -   asserts:
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: infrastructure-appproject
+                template: templates/appproject-infrastructure.yaml
+            -   equal:
+                    path: metadata.name
+                    value: liferay-infrastructure
+                template: templates/appproject-infrastructure.yaml
+            -   equal:
+                    path: metadata.namespace
+                    value: argocd-system
+                template: templates/appproject-infrastructure.yaml
+            -   equal:
+                    path: spec.destinations
+                    value:
+                        -   namespace: dxp-operator-system
+                            server: https://kubernetes.default.svc
+                        -   namespace: liferay-*
+                            server: https://kubernetes.default.svc
+                        -   namespace: crossplane-system
+                            server: https://kubernetes.default.svc
+                        -   namespace: envoy-gateway-system
+                            server: https://kubernetes.default.svc
+                        -   namespace: observability
+                            server: https://kubernetes.default.svc
+                template: templates/appproject-infrastructure.yaml
+            -   contains:
+                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+            -   contains:
+                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability/*
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
                     value: "-110"
                 template: templates/appproject-operator.yaml
-        it: Syncs the operator AppProject before the operator applications
-    -   asserts:
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: operator-appproject
+                template: templates/appproject-operator.yaml
+            -   equal:
+                    path: metadata.name
+                    value: liferay-operator
+                template: templates/appproject-operator.yaml
+            -   equal:
+                    path: metadata.namespace
+                    value: argocd-system
+                template: templates/appproject-operator.yaml
+            -   contains:
+                    content:
+                        namespace: ack-system
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+            -   contains:
+                    content:
+                        namespace: keda-system
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+            -   lengthEqual:
+                    count: 7
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
             -   equal:
                     path: spec.sourceRepos
                     value:
@@ -234,67 +284,22 @@ tests:
                         -   https://kedacore.github.io/charts
                         -   https://kedacore.github.io/charts/*
                 template: templates/appproject-operator.yaml
-            -   contains:
-                    content:
-                        namespace: ack-system
-                        server: https://kubernetes.default.svc
-                    path: spec.destinations
-                template: templates/appproject-operator.yaml
-            -   contains:
-                    content:
-                        namespace: keda-system
-                        server: https://kubernetes.default.svc
-                    path: spec.destinations
-                template: templates/appproject-operator.yaml
-            -   lengthEqual:
-                    count: 7
-                    path: spec.destinations
-                template: templates/appproject-operator.yaml
-        it: Whitelists every operator chart repository and namespace on the operator AppProject
-    -   asserts:
-            -   contains:
-                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability
-                    path: spec.sourceRepos
-                template: templates/appproject-infrastructure.yaml
-            -   contains:
-                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability/*
-                    path: spec.sourceRepos
-                template: templates/appproject-infrastructure.yaml
-            -   contains:
-                    content:
-                        namespace: observability
-                        server: https://kubernetes.default.svc
-                    path: spec.destinations
-                template: templates/appproject-infrastructure.yaml
-        it: Whitelists the observability repository and namespace on the infrastructure AppProject
+        it: Renders the ApplicationSets and AppProjects by default
     -   asserts:
             -   equal:
                     path: spec.generators[0].git.repoURL
                     value: https://github.com/example/liferay-gitops.git
                 template: templates/applicationset-infrastructure.yaml
-            -   equal:
-                    path: spec.template.spec.project
-                    value: liferay-infrastructure
-                template: templates/applicationset-infrastructure.yaml
-            -   equal:
-                    path: spec.template.spec.project
-                    value: liferay-application
-                template: templates/applicationset-liferay.yaml
-            -   equal:
-                    path: spec.template.spec.sources[1].ref
-                    value: values
-                template: templates/applicationset-liferay.yaml
             -   contains:
-                    content:
-                        name: gateway.className
-                        value: liferay-gateway-class
-                    path: spec.template.spec.sources[0].helm.parameters
-                template: templates/applicationset-infrastructure.yaml
-        it: Wires the ApplicationSets to the GitOps values repository
+                    content: https://github.com/example/liferay-gitops.git
+                    path: spec.sourceRepos
+                template: templates/appproject-application.yaml
+            -   contains:
+                    content: https://github.com/example/liferay-gitops.git
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+        it: Wires the ApplicationSets and AppProjects to the GitOps repository
         set:
-            clusterIdentity:
-                deploymentName: liferay-test
-                region: eastus
             gitops:
                 repository:
                     url: https://github.com/example/liferay-gitops.git

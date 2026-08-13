@@ -13,145 +13,6 @@ templates:
     -   templates/pdb-envoy-proxy.yaml
 tests:
     -   asserts:
-            -   equal:
-                    path: spec.source.helm.valuesObject.controller.resources.requests.cpu
-                    value: 15m
-                template: templates/application-argo-workflows.yaml
-            -   equal:
-                    path: spec.source.helm.valuesObject.controller.workflowDefaults.spec.securityContext.runAsUser
-                    value: 8737
-                template: templates/application-argo-workflows.yaml
-            -   equal:
-                    path: spec.source.helm.valuesObject.executor.image.tag
-                    value: v4.0.4-nonroot
-                template: templates/application-argo-workflows.yaml
-        it: Applies the Argo Workflows resources and nonroot hardening
-    -   asserts:
-            -   equal:
-                    path: spec.source.helm.valuesObject.resourcesCrossplane.limits.memory
-                    value: 2Gi
-                template: templates/application-crossplane.yaml
-            -   equal:
-                    path: spec.source.helm.valuesObject.securityContextCrossplane.readOnlyRootFilesystem
-                    value: true
-                template: templates/application-crossplane.yaml
-            -   equal:
-                    path: spec.syncPolicy.managedNamespaceMetadata.labels["pod-security.kubernetes.io/enforce"]
-                    value: restricted
-                template: templates/application-crossplane.yaml
-        it: Applies the Crossplane resources and restricted pod security
-    -   asserts:
-            -   equal:
-                    path: spec.source.helm.valuesObject.config.envoyGateway.extensionApis.enableBackend
-                    value: false
-                template: templates/application-envoy-gateway.yaml
-            -   equal:
-                    path: spec.source.helm.valuesObject.deployment.replicas
-                    value: 2
-                template: templates/application-envoy-gateway.yaml
-        it: Applies the Envoy Gateway replica and extension API settings
-    -   asserts:
-            -   equal:
-                    path: spec.source.helm.valuesObject.resources.limits.memory
-                    value: 512Mi
-                template: templates/application-external-secrets.yaml
-            -   equal:
-                    path: spec.source.helm.valuesObject.webhook.resources.limits.memory
-                    value: 256Mi
-                template: templates/application-external-secrets.yaml
-        it: Applies the External Secrets resources
-    -   asserts:
-            -   equal:
-                    path: metadata.labels["app.kubernetes.io/name"]
-                    value: crossplane
-                template: templates/application-crossplane.yaml
-            -   equal:
-                    path: metadata.labels["liferay.com/project"]
-                    value: liferay-cloud-native
-                template: templates/application-crossplane.yaml
-            -   notExists:
-                    path: metadata.labels["app.kubernetes.io/part-of"]
-                template: templates/application-crossplane.yaml
-        it: Applies the minimal common label set to the applications
-    -   asserts:
-            -   equal:
-                    path: spec.project
-                    value: liferay-operator
-                template: templates/application-ack-prometheusservice.yaml
-            -   equal:
-                    path: spec.project
-                    value: liferay-operator
-                template: templates/application-argo-workflows.yaml
-            -   equal:
-                    path: spec.project
-                    value: liferay-operator
-                template: templates/application-crossplane.yaml
-            -   equal:
-                    path: spec.project
-                    value: liferay-operator
-                template: templates/application-eck-operator.yaml
-            -   equal:
-                    path: spec.project
-                    value: liferay-operator
-                template: templates/application-envoy-gateway.yaml
-            -   equal:
-                    path: spec.project
-                    value: liferay-operator
-                template: templates/application-external-secrets.yaml
-            -   equal:
-                    path: spec.project
-                    value: liferay-operator
-                template: templates/application-keda.yaml
-        it: Assigns every operator application to the liferay-operator project
-        set:
-            observability.enabled: true
-            operatorApplications.ackPrometheusService.enabled: true
-            operatorApplications.keda.enabled: true
-    -   asserts:
-            -   equal:
-                    path: metadata.namespace
-                    value: envoy-gateway-system
-                template: templates/pdb-envoy-proxy.yaml
-            -   equal:
-                    path: spec.maxUnavailable
-                    value: 1
-                template: templates/pdb-envoy-proxy.yaml
-        it: Creates the Envoy proxy PodDisruptionBudget
-    -   asserts:
-            -   equal:
-                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-                    value: "-100"
-                template: templates/application-external-secrets.yaml
-            -   equal:
-                    path: spec.source.helm.valuesObject.installCRDs
-                    value: true
-                template: templates/application-external-secrets.yaml
-        it: Installs External Secrets Operator with CRDs in the first wave
-    -   asserts:
-            -   equal:
-                    path: spec.source.helm.valuesObject.installCRDs
-                    value: true
-                template: templates/application-eck-operator.yaml
-            -   equal:
-                    path: spec.destination.namespace
-                    value: elastic-system
-                template: templates/application-eck-operator.yaml
-            -   equal:
-                    path: spec.syncPolicy.managedNamespaceMetadata.labels["pod-security.kubernetes.io/enforce"]
-                    value: restricted
-                template: templates/application-eck-operator.yaml
-        it: Installs the ECK operator with CRDs in the restricted elastic-system namespace
-    -   asserts:
-            -   hasDocuments:
-                    count: 0
-                template: templates/application-keda.yaml
-        it: Omits KEDA by default
-    -   asserts:
-            -   hasDocuments:
-                    count: 0
-                template: templates/application-ack-prometheusservice.yaml
-        it: Omits the ACK Prometheus service controller by default
-    -   asserts:
             -   hasDocuments:
                     count: 0
                 template: templates/application-ack-prometheusservice.yaml
@@ -166,35 +27,12 @@ tests:
         set:
             operatorApplications.envoyGateway.enabled: false
     -   asserts:
-            -   equal:
-                    path: spec.source.chart
-                    value: crossplane
-                template: templates/application-crossplane.yaml
-            -   equal:
-                    path: spec.source.repoURL
-                    value: https://charts.crossplane.io/stable
-                template: templates/application-crossplane.yaml
-            -   equal:
-                    path: spec.source.targetRevision
-                    value: 2.1.3
-                template: templates/application-crossplane.yaml
-        it: Points the Crossplane application at the upstream chart
-    -   asserts:
-            -   notExists:
-                    path: spec.source.chart
-                template: templates/application-envoy-gateway.yaml
-            -   equal:
-                    path: spec.source.path
-                    value: .
-                template: templates/application-envoy-gateway.yaml
-            -   equal:
-                    path: spec.source.repoURL
-                    value: oci://docker.io/envoyproxy/gateway-helm
-                template: templates/application-envoy-gateway.yaml
-        it: Points the Envoy Gateway application at the full OCI chart path
-    -   asserts:
             -   hasDocuments:
                     count: 1
+                template: templates/application-keda.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
                 template: templates/application-keda.yaml
             -   equal:
                     path: spec.source.helm.valuesObject.resources.operator.limits.memory
@@ -211,6 +49,10 @@ tests:
             -   equal:
                     path: spec.destination.namespace
                     value: ack-system
+                template: templates/application-ack-prometheusservice.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
                 template: templates/application-ack-prometheusservice.yaml
             -   notExists:
                     path: spec.source.chart
@@ -236,3 +78,133 @@ tests:
                     values:
                         aws:
                             region: us-west-2
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/application-ack-prometheusservice.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-argo-workflows.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.controller.resources.requests.cpu
+                    value: 15m
+                template: templates/application-argo-workflows.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.controller.workflowDefaults.spec.securityContext.runAsUser
+                    value: 8737
+                template: templates/application-argo-workflows.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.executor.image.tag
+                    value: v4.0.4-nonroot
+                template: templates/application-argo-workflows.yaml
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: crossplane
+                template: templates/application-crossplane.yaml
+            -   notExists:
+                    path: metadata.labels["app.kubernetes.io/part-of"]
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: metadata.labels["liferay.com/project"]
+                    value: liferay-cloud-native
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.source.chart
+                    value: crossplane
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.resourcesCrossplane.limits.memory
+                    value: 2Gi
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.securityContextCrossplane.readOnlyRootFilesystem
+                    value: true
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.source.repoURL
+                    value: https://charts.crossplane.io/stable
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.source.targetRevision
+                    value: 2.1.3
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.syncPolicy.managedNamespaceMetadata.labels["pod-security.kubernetes.io/enforce"]
+                    value: restricted
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.destination.namespace
+                    value: elastic-system
+                template: templates/application-eck-operator.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-eck-operator.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.installCRDs
+                    value: true
+                template: templates/application-eck-operator.yaml
+            -   equal:
+                    path: spec.syncPolicy.managedNamespaceMetadata.labels["pod-security.kubernetes.io/enforce"]
+                    value: restricted
+                template: templates/application-eck-operator.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-envoy-gateway.yaml
+            -   notExists:
+                    path: spec.source.chart
+                template: templates/application-envoy-gateway.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.config.envoyGateway.extensionApis.enableBackend
+                    value: false
+                template: templates/application-envoy-gateway.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.deployment.replicas
+                    value: 2
+                template: templates/application-envoy-gateway.yaml
+            -   equal:
+                    path: spec.source.path
+                    value: .
+                template: templates/application-envoy-gateway.yaml
+            -   equal:
+                    path: spec.source.repoURL
+                    value: oci://docker.io/envoyproxy/gateway-helm
+                template: templates/application-envoy-gateway.yaml
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-100"
+                template: templates/application-external-secrets.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-external-secrets.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.installCRDs
+                    value: true
+                template: templates/application-external-secrets.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.resources.limits.memory
+                    value: 512Mi
+                template: templates/application-external-secrets.yaml
+            -   equal:
+                    path: spec.source.helm.valuesObject.webhook.resources.limits.memory
+                    value: 256Mi
+                template: templates/application-external-secrets.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/application-keda.yaml
+            -   equal:
+                    path: metadata.namespace
+                    value: envoy-gateway-system
+                template: templates/pdb-envoy-proxy.yaml
+            -   equal:
+                    path: spec.maxUnavailable
+                    value: 1
+                template: templates/pdb-envoy-proxy.yaml
+        it: Renders the operator applications by default

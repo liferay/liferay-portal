@@ -1,0 +1,55 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Crossplane XRDs
+templates:
+    -   templates/crossplane-xrd-liferayinfrastructure.yaml
+    -   templates/crossplane-xrd-liferayoverlay.yaml
+tests:
+    -   asserts:
+            -   isKind:
+                    of: CompositeResourceDefinition
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-90"
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: metadata.name
+                    value: liferayinfrastructures.liferay.com
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.defaultCompositionRef.name
+                    value: liferay-infrastructure
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.group
+                    value: liferay.com
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: spec.names.kind
+                    value: LiferayInfrastructure
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   equal:
+                    path: metadata.name
+                    value: liferayoverlays.liferay.com
+                template: templates/crossplane-xrd-liferayoverlay.yaml
+            -   equal:
+                    path: spec.defaultCompositionRef.name
+                    value: liferay-overlay
+                template: templates/crossplane-xrd-liferayoverlay.yaml
+            -   equal:
+                    path: spec.names.kind
+                    value: LiferayOverlay
+                template: templates/crossplane-xrd-liferayoverlay.yaml
+        it: Defines the cloud-agnostic infrastructure APIs under the shared group
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/crossplane-xrd-liferayinfrastructure.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/crossplane-xrd-liferayoverlay.yaml
+        it: Omits the XRDs when Crossplane is disabled
+        set:
+            operatorApplications.crossplane.enabled: false

@@ -74,7 +74,7 @@ tests:
                     path: spec.generators[0].git.revision
                     value: v1.2.3
                 template: templates/applicationset-infrastructure.yaml
-        it: Follows the pinned main revision when only one repository is configured
+        it: Falls back to the pinned main revision when only one repository is configured
         set:
             gitops:
                 repository:

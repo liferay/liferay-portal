@@ -16,7 +16,7 @@ tests:
                 equal:
                     path: spec.deploymentTemplate.spec.template.spec.containers[0].resources.limits.memory
                     value: 256Mi
-        it: Appends additional cloud specific functions
+        it: Appends additional cloud-specific functions
         set:
             operatorApplications:
                 crossplane:
@@ -30,6 +30,44 @@ tests:
                                     cpu: 15m
                                     memory: 128Mi
     -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the functions when Crossplane is disabled
+        set:
+            operatorApplications.crossplane.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 8
+            -   documentIndex: 0
+                isKind:
+                    of: Function
+            -   documentIndex: 0
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-options"]
+                    value: SkipDryRunOnMissingResource=true
+            -   documentIndex: 0
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-90"
+            -   documentIndex: 0
+                equal:
+                    path: metadata.name
+                    value: function-auto-ready
+            -   documentIndex: 0
+                equal:
+                    path: spec.package
+                    value: xpkg.upbound.io/upbound/function-auto-ready:v0.6.0
+            -   documentIndex: 0
+                equal:
+                    path: spec.runtimeConfigRef.name
+                    value: function-auto-ready-runtime-config
+            -   documentIndex: 1
+                isKind:
+                    of: DeploymentRuntimeConfig
+            -   documentIndex: 1
+                equal:
+                    path: metadata.name
+                    value: function-auto-ready-runtime-config
             -   documentIndex: 1
                 equal:
                     path: spec.deploymentTemplate.spec.selector.matchLabels["pkg.crossplane.io/function"]
@@ -54,42 +92,6 @@ tests:
                 equal:
                     path: spec.deploymentTemplate.spec.template.spec.securityContext.runAsNonRoot
                     value: true
-            -   documentIndex: 5
-                equal:
-                    path: spec.deploymentTemplate.spec.template.spec.containers[0].resources.limits.memory
-                    value: 512Mi
-        it: Hardens the function runtimes and disables OpenTelemetry injection
-    -   asserts:
-            -   hasDocuments:
-                    count: 0
-        it: Omits the functions when Crossplane is disabled
-        set:
-            operatorApplications.crossplane.enabled: false
-    -   asserts:
-            -   hasDocuments:
-                    count: 8
-            -   documentIndex: 0
-                equal:
-                    path: metadata.name
-                    value: function-auto-ready
-            -   documentIndex: 0
-                equal:
-                    path: spec.package
-                    value: xpkg.upbound.io/upbound/function-auto-ready:v0.6.0
-            -   documentIndex: 0
-                equal:
-                    path: spec.runtimeConfigRef.name
-                    value: function-auto-ready-runtime-config
-            -   documentIndex: 0
-                isKind:
-                    of: Function
-            -   documentIndex: 1
-                equal:
-                    path: metadata.name
-                    value: function-auto-ready-runtime-config
-            -   documentIndex: 1
-                isKind:
-                    of: DeploymentRuntimeConfig
             -   documentIndex: 2
                 equal:
                     path: spec.package
@@ -106,6 +108,10 @@ tests:
                 equal:
                     path: metadata.name
                     value: function-go-templating-runtime-config
+            -   documentIndex: 5
+                equal:
+                    path: spec.deploymentTemplate.spec.template.spec.containers[0].resources.limits.memory
+                    value: 512Mi
             -   documentIndex: 6
                 equal:
                     path: spec.package
@@ -114,14 +120,4 @@ tests:
                 equal:
                     path: metadata.name
                     value: function-tag-manager-runtime-config
-        it: Renders the default functions with runtime configs
-    -   asserts:
-            -   documentIndex: 0
-                equal:
-                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-                    value: "-90"
-            -   documentIndex: 0
-                equal:
-                    path: metadata.annotations["argocd.argoproj.io/sync-options"]
-                    value: SkipDryRunOnMissingResource=true
-        it: Syncs the functions after Crossplane and before the provider
+        it: Renders the default functions with hardened runtime configs
