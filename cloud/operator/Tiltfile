@@ -25,13 +25,13 @@ docker_build_with_restart(
     target="dev",
 )
 
-environment_names = [
-    "non-production",
-    "production",
-    "uat",
-]
+environments = {
+    "non-production": {"desired_replicas": 1},
+    "production": {"desired_replicas": 3},
+    "uat": {"desired_replicas": 1},
+}
 
-def environment_yaml(name):
+def environment_yaml(name, desired_replicas):
 	namespace = "liferay-" + name
 	workload = name + "-liferay"
 
@@ -53,7 +53,7 @@ def environment_yaml(name):
 	        "    activationCodeSecretRef:",
 	        "        key: activationCode",
 	        "        name: " + name + "-activation",
-	        "    desiredReplicas: 3",
+	        "    desiredReplicas: " + str(desired_replicas),
 	        "    dxpVersion: 2026.q3.0",
 	        "    environmentName: \"" + name + "\"",
 	        "    marketplaceVolume:",
@@ -68,7 +68,7 @@ def environment_yaml(name):
 	        "    name: " + workload,
 	        "    namespace: " + namespace,
 	        "spec:",
-	        "    replicas: 3",
+	        "    replicas: " + str(desired_replicas),
 	        "    selector:",
 	        "        matchLabels:",
 	        "            app: " + workload,
@@ -84,7 +84,7 @@ def environment_yaml(name):
 	    ]
 	)
 
-for name in environment_names:
+for name, values in environments.items():
 	namespace = "liferay-" + name
 	workload = name + "-liferay"
 
@@ -128,7 +128,7 @@ for name in environment_names:
 	    workload=workload,
 	)
 
-	k8s_yaml(blob(environment_yaml(name)))
+	k8s_yaml(blob(environment_yaml(name, values["desired_replicas"])))
 
 k8s_resource(
     labels=["operator"],
