@@ -33,11 +33,11 @@ public class AuditMessageTest {
 	@Test
 	public void testToJSONObject() throws Exception {
 		long groupId = RandomTestUtil.randomLong();
-		Date timestamp = RandomTestUtil.nextDate();
+		Date timestampDate = RandomTestUtil.nextDate();
 
 		AuditMessage auditMessage = new AuditMessage(
 			groupId, RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
-			RandomTestUtil.randomString(), timestamp,
+			RandomTestUtil.randomString(), timestampDate,
 			JSONFactoryUtil.createJSONObject(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
@@ -49,9 +49,10 @@ public class AuditMessageTest {
 
 		Assert.assertEquals(groupId, jsonObject.getLong("groupId"));
 		Assert.assertEquals(
-			dateFormat.format(timestamp), jsonObject.getString("timestamp"));
+			dateFormat.format(timestampDate),
+			jsonObject.getString("timestamp"));
 
-		auditMessage.setTimestamp(null);
+		auditMessage.setTimestampDate(null);
 
 		jsonObject = auditMessage.toJSONObject();
 
@@ -60,7 +61,7 @@ public class AuditMessageTest {
 		auditMessage = new AuditMessage(jsonObject.toString());
 
 		Assert.assertEquals(groupId, auditMessage.getGroupId());
-		Assert.assertNotNull(auditMessage.getTimestamp());
+		Assert.assertNotNull(auditMessage.getTimestampDate());
 	}
 
 }

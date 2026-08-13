@@ -280,7 +280,7 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 		auditEvent.setCompanyId(auditMessage.getCompanyId());
 		auditEvent.setUserId(auditMessage.getUserId());
 		auditEvent.setUserName(auditMessage.getUserName());
-		auditEvent.setCreateDate(auditMessage.getTimestamp());
+		auditEvent.setCreateDate(auditMessage.getTimestampDate());
 		auditEvent.setAccountEntryId(auditMessage.getAccountEntryId());
 		auditEvent.setAdditionalInfo(
 			String.valueOf(auditMessage.getAdditionalInfo()));

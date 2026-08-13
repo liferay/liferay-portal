@@ -34,18 +34,18 @@ public class AuditMessage implements Serializable {
 
 	public AuditMessage(
 		long groupId, long companyId, long userId, String userName,
-		Date timestamp, JSONObject additionalInfoJSONObject, String className,
-		String classPK, String eventType, String message) {
+		Date timestampDate, JSONObject additionalInfoJSONObject,
+		String className, String classPK, String eventType, String message) {
 
 		this(
-			groupId, companyId, userId, userName, timestamp, 0,
+			groupId, companyId, userId, userName, timestampDate, 0,
 			additionalInfoJSONObject, className, classPK, null, eventType,
 			message);
 	}
 
 	public AuditMessage(
 		long groupId, long companyId, long userId, String userName,
-		Date timestamp, long accountEntryId,
+		Date timestampDate, long accountEntryId,
 		JSONObject additionalInfoJSONObject, String className, String classPK,
 		String contextName, String eventType, String message) {
 
@@ -53,7 +53,7 @@ public class AuditMessage implements Serializable {
 		_companyId = companyId;
 		_userId = userId;
 		_userName = userName;
-		_timestamp = (timestamp != null) ? timestamp : new Date();
+		_timestampDate = (timestampDate != null) ? timestampDate : new Date();
 		_accountEntryId = accountEntryId;
 		_additionalInfoJSONObject =
 			(additionalInfoJSONObject != null) ? additionalInfoJSONObject :
@@ -109,12 +109,12 @@ public class AuditMessage implements Serializable {
 	}
 
 	public AuditMessage(
-		long companyId, long userId, String userName, Date timestamp,
+		long companyId, long userId, String userName, Date timestampDate,
 		JSONObject additionalInfoJSONObject, String className, String classPK,
 		String eventType, String message) {
 
 		this(
-			0, companyId, userId, userName, timestamp, 0,
+			0, companyId, userId, userName, timestampDate, 0,
 			additionalInfoJSONObject, className, classPK, null, eventType,
 			message);
 	}
@@ -193,7 +193,7 @@ public class AuditMessage implements Serializable {
 			_sessionID = jsonObject.getString(_SESSION_ID);
 		}
 
-		_timestamp = GetterUtil.getDate(
+		_timestampDate = GetterUtil.getDate(
 			jsonObject.getString(_TIMESTAMP), _getDateFormat());
 		_userEmailAddress = jsonObject.getString(_USER_EMAIL_ADDRESS);
 		_userId = jsonObject.getLong(_USER_ID);
@@ -257,8 +257,8 @@ public class AuditMessage implements Serializable {
 		return _sessionID;
 	}
 
-	public Date getTimestamp() {
-		return _timestamp;
+	public Date getTimestampDate() {
+		return _timestampDate;
 	}
 
 	public String getUserEmailAddress() {
@@ -337,8 +337,8 @@ public class AuditMessage implements Serializable {
 		_sessionID = sessionID;
 	}
 
-	public void setTimestamp(Date timestamp) {
-		_timestamp = timestamp;
+	public void setTimestampDate(Date timestampDate) {
+		_timestampDate = timestampDate;
 	}
 
 	public void setUserEmailAddress(String userEmailAddress) {
@@ -389,7 +389,7 @@ public class AuditMessage implements Serializable {
 		).put(
 			_TIMESTAMP,
 			_getDateFormat().format(
-				(_timestamp != null) ? _timestamp : new Date())
+				(_timestampDate != null) ? _timestampDate : new Date())
 		).put(
 			_USER_EMAIL_ADDRESS, _userEmailAddress
 		).put(
@@ -461,7 +461,7 @@ public class AuditMessage implements Serializable {
 	private String _serverName;
 	private int _serverPort;
 	private String _sessionID;
-	private Date _timestamp;
+	private Date _timestampDate;
 	private String _userEmailAddress;
 	private long _userId = -1;
 	private String _userLogin;
