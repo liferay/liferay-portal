@@ -503,8 +503,6 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 
 		Assert.assertFalse(workflowDefinition.isSystem());
 
-		// Overload without a system parameter
-
 		workflowDefinition =
 			_workflowDefinitionManager.deployWorkflowDefinition(
 				bytes, TestPropsValues.getCompanyId(), null, name,
