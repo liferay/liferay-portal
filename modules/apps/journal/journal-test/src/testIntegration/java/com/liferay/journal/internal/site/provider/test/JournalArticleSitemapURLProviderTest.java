@@ -26,10 +26,14 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -41,6 +45,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -343,6 +348,64 @@ public class JournalArticleSitemapURLProviderTest {
 	}
 
 	@Test
+	@TestInfo("LPD-102047")
+	public void testJournalArticleSitemapURLProviderDefaultLayoutWhenGuestUserCannotViewLayout()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId());
+
+		_addArticleWithLayoutUuid(layout);
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(layout.getPlid()), ActionKeys.VIEW);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(
+				_userLocalService.getGuestUser(_group.getCompanyId()));
+
+		Assert.assertFalse(
+			_layoutModelResourcePermission.contains(
+				permissionChecker, layout, ActionKeys.VIEW));
+
+		Element rootElement = _getRootElement();
+
+		_visitLayoutSet(permissionChecker, rootElement);
+
+		Assert.assertFalse(rootElement.hasContent());
+	}
+
+	@Test
+	@TestInfo("LPD-102047")
+	public void testJournalArticleSitemapURLProviderDefaultLayoutWhenGuestUserCanViewLayout()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId());
+
+		JournalArticle article = _addArticleWithLayoutUuid(layout);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(
+				_userLocalService.getGuestUser(_group.getCompanyId()));
+
+		Assert.assertTrue(
+			_journalArticleModelResourcePermission.contains(
+				permissionChecker, article, ActionKeys.VIEW));
+		Assert.assertTrue(
+			_layoutModelResourcePermission.contains(
+				permissionChecker, layout, ActionKeys.VIEW));
+
+		Element rootElement = _getRootElement();
+
+		_visitLayoutSet(permissionChecker, rootElement);
+
+		Assert.assertTrue(rootElement.hasContent());
+	}
+
+	@Test
 	@TestInfo("LPD-102025")
 	public void testJournalArticleSitemapURLProviderDefaultLayoutWithoutPermissionChecker()
 		throws Exception {
@@ -613,6 +676,12 @@ public class JournalArticleSitemapURLProviderTest {
 	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Inject(
+		filter = "model.class.name=com.liferay.journal.model.JournalArticle"
+	)
+	private ModelResourcePermission<JournalArticle>
+		_journalArticleModelResourcePermission;
+
+	@Inject(
 		filter = "component.name=com.liferay.journal.internal.site.provider.JournalArticleSitemapURLProvider",
 		type = SitemapURLProvider.class
 	)
@@ -623,6 +692,9 @@ public class JournalArticleSitemapURLProviderTest {
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject(filter = "model.class.name=com.liferay.portal.kernel.model.Layout")
+	private ModelResourcePermission<Layout> _layoutModelResourcePermission;
 
 	@Inject
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
