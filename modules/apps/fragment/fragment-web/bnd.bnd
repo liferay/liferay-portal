@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Fragment Web
 Bundle-SymbolicName: com.liferay.fragment.web
-Bundle-Version: 4.0.148
+Bundle-Version: 4.0.149
 Web-ContextPath: /fragment-web
 -dsannotations-options: inherit
