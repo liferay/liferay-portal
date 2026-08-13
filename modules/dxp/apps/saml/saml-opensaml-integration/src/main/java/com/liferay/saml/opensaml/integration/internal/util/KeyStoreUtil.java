@@ -5,6 +5,8 @@
 
 package com.liferay.saml.opensaml.integration.internal.util;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.saml.runtime.credential.KeyStoreManager;
 import com.liferay.saml.runtime.exception.CredentialAuthException;
@@ -14,12 +16,33 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.UnrecoverableKeyException;
 
+import java.util.Arrays;
+
+import javax.security.auth.DestroyFailedException;
+
 import org.opensaml.security.credential.UsageType;
 
 /**
  * @author João Victor Alves
  */
 public class KeyStoreUtil {
+
+	public static void destroyPasswordProtection(
+		KeyStore.PasswordProtection keyStorePasswordProtection) {
+
+		if (keyStorePasswordProtection == null) {
+			return;
+		}
+
+		try {
+			keyStorePasswordProtection.destroy();
+		}
+		catch (DestroyFailedException destroyFailedException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(destroyFailedException);
+			}
+		}
+	}
 
 	public static String getAlias(String entityId, UsageType usageType) {
 		if (usageType.equals(UsageType.SIGNING)) {
@@ -37,11 +60,14 @@ public class KeyStoreUtil {
 			KeyStoreManager keyStoreManager)
 		throws CredentialAuthException {
 
+		char[] certificateKeyPasswordChars = null;
 		KeyStore.PasswordProtection keyStorePasswordProtection = null;
 
 		if (certificateKeyPassword != null) {
+			certificateKeyPasswordChars = certificateKeyPassword.toCharArray();
+
 			keyStorePasswordProtection = new KeyStore.PasswordProtection(
-				certificateKeyPassword.toCharArray());
+				certificateKeyPasswordChars);
 		}
 
 		try {
@@ -92,6 +118,13 @@ public class KeyStoreUtil {
 					companyId, clazz.getSimpleName()),
 				generalSecurityException);
 		}
+		finally {
+			if (certificateKeyPasswordChars != null) {
+				Arrays.fill(certificateKeyPasswordChars, '\0');
+			}
+
+			destroyPasswordProtection(keyStorePasswordProtection);
+		}
 	}
 
 	private static <T> T _getCauseThrowable(
@@ -113,5 +146,7 @@ public class KeyStoreUtil {
 
 		return null;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(KeyStoreUtil.class);
 
 }

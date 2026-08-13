@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -69,11 +70,15 @@ public class FileSystemKeyStoreManagerImpl extends BaseKeyStoreManagerImpl {
 
 		String samlKeyStorePassword = getSamlKeyStorePassword();
 
+		char[] samlKeyStorePasswordChars = samlKeyStorePassword.toCharArray();
+
 		try (FileOutputStream fileOutputStream = new FileOutputStream(
 				samlKeyStoreFile)) {
 
-			_keyStore.store(
-				fileOutputStream, samlKeyStorePassword.toCharArray());
+			_keyStore.store(fileOutputStream, samlKeyStorePasswordChars);
+		}
+		finally {
+			Arrays.fill(samlKeyStorePasswordChars, '\0');
 		}
 	}
 
@@ -135,8 +140,13 @@ public class FileSystemKeyStoreManagerImpl extends BaseKeyStoreManagerImpl {
 	private void _doLoadKeyStore() throws Exception {
 		String samlKeyStorePassword = getSamlKeyStorePassword();
 
+		char[] samlKeyStorePasswordChars = samlKeyStorePassword.toCharArray();
+
 		try (InputStream inputStream = _getInputStream()) {
-			_keyStore.load(inputStream, samlKeyStorePassword.toCharArray());
+			_keyStore.load(inputStream, samlKeyStorePasswordChars);
+		}
+		finally {
+			Arrays.fill(samlKeyStorePasswordChars, '\0');
 		}
 	}
 

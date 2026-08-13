@@ -54,7 +54,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAKey;
 
+import java.util.Arrays;
 import java.util.Calendar;
+
+import javax.security.auth.DestroyFailedException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -182,6 +185,7 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 			"selectKeyStoreAlias");
 
 		KeyStore keyStore = null;
+		KeyStore.PasswordProtection keyStorePasswordProtection = null;
 		KeyStore.PrivateKeyEntry privateKeyEntry = null;
 
 		try {
@@ -201,8 +205,11 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 				throw new IllegalArgumentException();
 			}
 
+			keyStorePasswordProtection = new KeyStore.PasswordProtection(
+				password);
+
 			privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(
-				selectKeyStoreAlias, new KeyStore.PasswordProtection(password));
+				selectKeyStoreAlias, keyStorePasswordProtection);
 		}
 		catch (IOException ioException) {
 			if (ioException.getCause() instanceof UnrecoverableKeyException) {
@@ -247,6 +254,20 @@ public class UpdateCertificateMVCActionCommand extends BaseMVCActionCommand {
 			SessionErrors.add(actionRequest, "certificateException");
 
 			return;
+		}
+		finally {
+			Arrays.fill(password, '\0');
+
+			if (keyStorePasswordProtection != null) {
+				try {
+					keyStorePasswordProtection.destroy();
+				}
+				catch (DestroyFailedException destroyFailedException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(destroyFailedException);
+					}
+				}
+			}
 		}
 
 		X509Certificate x509Certificate =

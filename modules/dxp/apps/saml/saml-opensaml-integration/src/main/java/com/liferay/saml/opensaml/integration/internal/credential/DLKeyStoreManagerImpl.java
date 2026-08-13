@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -46,7 +47,15 @@ public class DLKeyStoreManagerImpl extends BaseKeyStoreManagerImpl {
 
 			String samlKeyStorePassword = getSamlKeyStorePassword();
 
-			keyStore.load(inputStream, samlKeyStorePassword.toCharArray());
+			char[] samlKeyStorePasswordChars =
+				samlKeyStorePassword.toCharArray();
+
+			try {
+				keyStore.load(inputStream, samlKeyStorePasswordChars);
+			}
+			finally {
+				Arrays.fill(samlKeyStorePasswordChars, '\0');
+			}
 		}
 		catch (NoSuchFileException noSuchFileException) {
 
@@ -88,8 +97,14 @@ public class DLKeyStoreManagerImpl extends BaseKeyStoreManagerImpl {
 
 		String samlKeyStorePassword = getSamlKeyStorePassword();
 
-		keyStore.store(
-			byteArrayOutputStream, samlKeyStorePassword.toCharArray());
+		char[] samlKeyStorePasswordChars = samlKeyStorePassword.toCharArray();
+
+		try {
+			keyStore.store(byteArrayOutputStream, samlKeyStorePasswordChars);
+		}
+		finally {
+			Arrays.fill(samlKeyStorePasswordChars, '\0');
+		}
 
 		if (_store.hasFile(
 				getCompanyId(), CompanyConstants.SYSTEM, _SAML_KEYSTORE_PATH,
