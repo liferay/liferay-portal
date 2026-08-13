@@ -21,11 +21,11 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Admin.User)",
 		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.name=Liferay.Headless.Admin.User.AccountEntryExternalReferenceCodeExceptionMapper"
+		"osgi.jaxrs.name=Liferay.Headless.Admin.User.AccountExternalReferenceCodeExceptionMapper"
 	},
 	service = ExceptionMapper.class
 )
-public class AccountEntryExternalReferenceCodeExceptionMapper
+public class AccountExternalReferenceCodeExceptionMapper
 	extends BaseExceptionMapper<AccountEntryExternalReferenceCodeException> {
 
 	@Override

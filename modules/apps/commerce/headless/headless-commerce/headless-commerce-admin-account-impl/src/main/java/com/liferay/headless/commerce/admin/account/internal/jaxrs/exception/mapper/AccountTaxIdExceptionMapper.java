@@ -3,29 +3,35 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.headless.admin.user.internal.jaxrs.exception.mapper;
+package com.liferay.headless.commerce.admin.account.internal.jaxrs.exception.mapper;
 
 import com.liferay.account.exception.AccountEntryTaxIdNumberException;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Tancredi Covioli
  */
 @Component(
 	property = {
-		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Admin.User)",
+		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Account)",
 		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.name=Liferay.Headless.Admin.User.AccountEntryTaxIdNumberExceptionMapper"
+		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Account.AccountTaxIdExceptionMapper"
 	},
 	service = ExceptionMapper.class
 )
-public class AccountEntryTaxIdNumberExceptionMapper
+@Provider
+public class AccountTaxIdExceptionMapper
 	extends BaseExceptionMapper<AccountEntryTaxIdNumberException> {
 
 	@Override
@@ -34,7 +40,15 @@ public class AccountEntryTaxIdNumberExceptionMapper
 
 		return new Problem(
 			Response.Status.BAD_REQUEST,
-			"The account tax ID number is invalid");
+			_language.get(
+				_acceptLanguage.getPreferredLocale(),
+				"the-account-tax-id-is-invalid"));
 	}
+
+	@Context
+	private AcceptLanguage _acceptLanguage;
+
+	@Reference
+	private Language _language;
 
 }

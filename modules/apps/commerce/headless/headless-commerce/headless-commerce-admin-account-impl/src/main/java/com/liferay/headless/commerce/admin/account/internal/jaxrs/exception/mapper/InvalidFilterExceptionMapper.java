@@ -5,14 +5,19 @@
 
 package com.liferay.headless.commerce.admin.account.internal.jaxrs.exception.mapper;
 
-import com.liferay.headless.commerce.core.exception.mapper.BaseExceptionMapper;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.odata.filter.InvalidFilterException;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
+import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
@@ -30,13 +35,20 @@ public class InvalidFilterExceptionMapper
 	extends BaseExceptionMapper<InvalidFilterException> {
 
 	@Override
-	public String getErrorDescription() {
-		return "Filters do not support such field";
+	protected Problem getProblem(
+		InvalidFilterException invalidFilterException) {
+
+		return new Problem(
+			Response.Status.BAD_REQUEST,
+			_language.get(
+				_acceptLanguage.getPreferredLocale(),
+				"filters-do-not-support-such-field"));
 	}
 
-	@Override
-	public Response.Status getStatus() {
-		return Response.Status.BAD_REQUEST;
-	}
+	@Context
+	private AcceptLanguage _acceptLanguage;
+
+	@Reference
+	private Language _language;
 
 }
