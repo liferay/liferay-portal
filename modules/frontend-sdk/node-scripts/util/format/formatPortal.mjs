@@ -16,6 +16,7 @@ import formatIgnoreFilePatterns from './formatters/formatIgnoreFilePatterns.mjs'
 import formatNodeScriptsHash from './formatters/formatNodeScriptsHash.mjs';
 import formatPackageJSONExplicitVersions from './formatters/formatPackageJSONExplicitVersions.mjs';
 import formatPackageJSONFiles from './formatters/formatPackageJSONFiles.mjs';
+import formatPackageJSONForbidAlloyUI from './formatters/formatPackageJSONForbidAlloyUI.mjs';
 import formatPackageJSONTypesLocation from './formatters/formatPackageJSONTypesLocation.mjs';
 import formatPackageJSONVersionAlignment from './formatters/formatPackageJSONVersionAlignment.mjs';
 import formatSourceFiles from './formatters/formatSourceFiles.mjs';
@@ -84,6 +85,10 @@ export default async function formatPortal(check, files) {
 		}
 
 		if (!(await formatPackageJSONTypesLocation(packageJSONs))) {
+			checksPassed = false;
+		}
+
+		if (!(await formatPackageJSONForbidAlloyUI(packageJSONs))) {
 			checksPassed = false;
 		}
 
