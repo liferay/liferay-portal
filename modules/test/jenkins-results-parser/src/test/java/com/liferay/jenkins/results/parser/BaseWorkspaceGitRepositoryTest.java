@@ -25,7 +25,7 @@ import org.mockito.verification.VerificationMode;
 /**
  * @author Michael Hashimoto
  */
-public class WorkspaceGitRepositoryTest
+public class BaseWorkspaceGitRepositoryTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
