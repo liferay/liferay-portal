@@ -1,4 +1,4 @@
-@import 'atlas-variables';
+@import 'atlas-custom-properties/_variables';
 
 .lfr__notification-template {
 	&-basic-info {
@@ -6,7 +6,7 @@
 	}
 
 	&-container {
-		background-color: #f1f2f5;
+		background-color: $gray-200;
 	}
 
 	&-cards {
