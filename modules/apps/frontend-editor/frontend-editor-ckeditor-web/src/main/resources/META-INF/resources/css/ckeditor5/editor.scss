@@ -104,7 +104,11 @@
 	--ck-color-panel-background: var(--ck-color-base-background);
 	--ck-color-panel-border: var(--ck-color-base-border);
 
-	--ck-color-toolbar-background: var(--ck-color-base-background);
+	--ck-color-table-caption-highlighted-background: #{$yellow};
+	--ck-color-table-focused-cell-background: #{unquote(
+			'hsl(from #{$blue-l3} h s l / 0.3)'
+		)};
+
 	--ck-color-toolbar-border: var(--ck-color-base-border);
 
 	--ck-color-tooltip-background: var(--ck-color-base-text);
@@ -121,6 +125,38 @@
 
 	--ck-color-highlight-background: #{$yellow};
 	--ck-color-light-red: #{$pink-l4};
+
+	--ck-color-widget-hover-border: #{$yellow};
+	--ck-color-widget-blurred-border: #{$light-d2};
+
+	--ck-color-image-upload-icon: #{$white};
+	--ck-color-image-upload-icon-background: #{$green};
+	--ck-color-image-caption-highlighted-background: #{$yellow};
+
+	--ck-color-upload-placeholder-loader: #{$gray-500};
+
+	--ck-content-font-color: #{$black};
+
+	--ck-content-color-image-caption-background: #{$gray-100};
+	--ck-content-color-image-caption-text: #{$gray-900};
+	--ck-content-color-mention-background: #{unquote(
+			'hsl(from #{$pink-d3} h s l / 0.1)'
+		)};
+	--ck-content-color-mention-text: #{$pink-d3};
+	--ck-content-color-table-caption-background: #{$gray-100};
+	--ck-content-color-table-caption-text: #{$gray-900};
+
+	--ck-style-panel-button-label-background: #{$gray-200};
+
+	--ck-style-panel-button-hover-label-background: #{$gray-300};
+
+	--ck-style-panel-button-hover-border-color: #{$gray-500};
+
+	--ck-table-content-default-border-color: #{$gray-400};
+	--ck-table-layout-default-border-color: #{$gray-400};
+	--ck-table-selected-cell-background: #{unquote(
+			'hsl(from #{$blue-l3} h s l / 0.3)'
+		)};
 }
 
 .lfr-ck {
