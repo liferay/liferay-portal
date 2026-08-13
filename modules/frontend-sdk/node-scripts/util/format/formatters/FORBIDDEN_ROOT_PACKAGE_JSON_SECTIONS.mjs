@@ -8,5 +8,6 @@
  * explaining what to use instead.
  */
 export default {
+	dependencies: "use 'devDependencies' -if allowed in your case- instead",
 	resolutions: "use explicit versions in 'package.json' files instead",
 };
