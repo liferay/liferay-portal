@@ -17,6 +17,10 @@ interface AddStyleBookModalProps {
 	namespace: string;
 }
 
+export const AddStyleBookEntryDesignLibraryModalContent: (
+	props: AddStyleBookModalProps
+) => ReactElement;
+
 export const AddStyleBookModalContent: (
 	props: AddStyleBookModalProps
 ) => ReactElement;
