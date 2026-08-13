@@ -73,6 +73,10 @@ spec:
                         {{- toYaml . | nindent 24 }}
                     {{- end }}
                     volumeMounts:
+                        {{- if .Values.marketplace.enabled }}
+                        -   mountPath: {{ .Values.marketplace.mountPath }}
+                            name: marketplace
+                        {{- end }}
                         -   mountPath: /tmp/k8s-webhook-server/serving-certs
                             name: webhook-certs
                             readOnly: true
@@ -94,6 +98,11 @@ spec:
                 {{- toYaml . | nindent 16 }}
             {{- end }}
             volumes:
+                {{- if .Values.marketplace.enabled }}
+                -   name: marketplace
+                    persistentVolumeClaim:
+                        claimName: {{ .Values.marketplace.claimName }}
+                {{- end }}
                 -   name: webhook-certs
                     secret:
                         secretName: {{ include "dxp-operator.webhookServiceName" . }}

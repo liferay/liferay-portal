@@ -27,6 +27,15 @@ global:
 liferay-dxp-operator:
     enabled: true
     fullnameOverride: dxp-operator
+    marketplace:
+        claimName: dxp-operator-marketplace
+        csi:
+            driver: filestore.csi.storage.gke.io
+            volumeAttributes:
+                protocol: NFS_V3
+                volume: marketplace
+        enabled: true
+        mountPath: /marketplace
     namespaceOverride: dxp-operator-system
 liferay-subchart-backup-controller:
     enabled: true

@@ -9,6 +9,15 @@ image:
     pullSecrets: []
     repository: us-central1-docker.pkg.dev/external-assets-nonprd/liferay-cloud-native/liferay-dxp-operator
     tag: 0.0.1
+marketplace:
+    claimName: ""
+    csi:
+        driver: ""
+        volumeAttributes: {}
+        volumeHandle: ""
+    enabled: false
+    mountPath: /marketplace
+    size: 10Gi
 metrics:
     port: 8080
 nameOverride: ""

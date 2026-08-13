@@ -1,0 +1,48 @@
+{{- if and .Values.marketplace.enabled .Values.marketplace.csi.driver .Values.marketplace.csi.volumeHandle }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-110"
+    labels:
+        app: liferay
+        component: storage
+    name: {{ .Values.marketplace.claimName }}
+spec:
+    accessModes:
+        -   ReadWriteMany
+    capacity:
+        storage: {{ .Values.marketplace.size }}
+    claimRef:
+        name: {{ .Values.marketplace.claimName }}
+        namespace: {{ include "dxp-operator.namespace" . }}
+    csi:
+        driver: {{ .Values.marketplace.csi.driver }}
+        volumeHandle: {{ .Values.marketplace.csi.volumeHandle }}
+        {{- with .Values.marketplace.csi.volumeAttributes }}
+        volumeAttributes:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+    persistentVolumeReclaimPolicy: Retain
+    storageClassName: ""
+    volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-110"
+    labels:
+        app: liferay
+        component: storage
+    name: {{ .Values.marketplace.claimName }}
+    namespace: {{ include "dxp-operator.namespace" . }}
+spec:
+    accessModes:
+        -   ReadWriteMany
+    resources:
+        requests:
+            storage: {{ .Values.marketplace.size }}
+    storageClassName: ""
+    volumeName: {{ .Values.marketplace.claimName }}
+{{- end }}
