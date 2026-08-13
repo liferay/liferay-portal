@@ -61,19 +61,37 @@ public class ViewResourcesDesignLibraryDisplayContext
 
 	public String getAPIURL() {
 		Set<String> entryClassNames = new LinkedHashSet<>();
+		List<String> typeExpressions = new ArrayList<>();
 
 		for (DesignLibraryResourceTypeContributor
 				designLibraryResourceTypeContributor :
 					_getViewableDesignLibraryResourceTypeContributors()) {
 
-			entryClassNames.add(
-				designLibraryResourceTypeContributor.getEntryClassName());
+			String entryClassName =
+				designLibraryResourceTypeContributor.getEntryClassName();
+
+			entryClassNames.add(entryClassName);
+
+			long classNameId = PortalUtil.getClassNameId(entryClassName);
+
+			String type = designLibraryResourceTypeContributor.getType();
+
+			if (type == null) {
+				typeExpressions.add("classNameId eq " + classNameId);
+			}
+			else {
+				typeExpressions.add(
+					StringBundler.concat(
+						"(classNameId eq ", classNameId, " and type eq '", type,
+						"')"));
+			}
 		}
 
 		return StringBundler.concat(
 			"/o/search/v1.0/search?emptySearch=true&entryClassNames=",
 			StringUtil.merge(entryClassNames, StringPool.COMMA),
-			"&filter=groupIds/any(g:g eq ", depotEntry.getGroupId(), ")",
+			"&filter=groupIds/any(g:g eq ", depotEntry.getGroupId(), ") and (",
+			StringUtil.merge(typeExpressions, " or "), ")",
 			"&nestedFields=embedded");
 	}
 
