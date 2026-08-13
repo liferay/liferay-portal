@@ -422,6 +422,13 @@ aws:
     ampWorkspaceID: ""
     ampWorkspaceURL: ""
     region: ""
+azure:
+    labelLimit: 63
+    labelNameLengthLimit: 511
+    labelValueLengthLimit: 1023
+    scrape:
+        liferay:
+            portName: metrics
 centralHub:
     argoWorkflowsURL: ""
     argocdURL: ""

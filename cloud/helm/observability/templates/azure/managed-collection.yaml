@@ -1,0 +1,4 @@
+{{- if eq (include "observability.cloudProvider" .) "azure" -}}
+{{- $azure := .Values.azure -}}
+{{- $scrape := .Values.alloy.scrape -}}
+{{- $interval := .Values.alloy.scrapeInterval -}}
