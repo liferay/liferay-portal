@@ -1,5 +1,5 @@
 @import 'admin';
-@import 'atlas-variables';
+@import 'atlas-custom-properties/_variables';
 
 // ---------- Configuration ----------
 
@@ -296,7 +296,7 @@
 .knowledge-base-portlet {
 	a.text-default,
 	a.text-default:hover {
-		color: #869cad;
+		color: $gray-500;
 	}
 
 	.lfr-panel-container {
@@ -315,14 +315,14 @@
 	.kb-entity-body {
 		.kb-article-asset-entries {
 			.kb-info {
-				color: #7d7d7d;
+				color: $gray-600;
 			}
 
 			.kb-most-popular-column,
 			.kb-most-recent-column {
 				.kb-header {
-					border-bottom: 1px solid #ccc;
-					color: #555;
+					border-bottom: 1px solid $gray-400;
+					color: $gray-700;
 					font-weight: bold;
 				}
 			}
@@ -337,7 +337,7 @@
 		.kb-article-comments,
 		.kb-template-comments {
 			.kb-all-comments {
-				color: #7d7d7d;
+				color: $gray-600;
 				font-weight: bold;
 			}
 
@@ -351,21 +351,21 @@
 			}
 
 			.kb-no {
-				color: red;
+				color: $danger;
 			}
 
 			.kb-question {
-				color: #999;
+				color: $gray-500;
 			}
 
 			.kb-yes {
-				color: green;
+				color: $success;
 			}
 		}
 	}
 
 	.kb-entity-header {
-		border-bottom: 1px solid #ccc;
+		border-bottom: 1px solid $gray-400;
 
 		.kb-title {
 			font-weight: bold;

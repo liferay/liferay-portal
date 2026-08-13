@@ -1,3 +1,5 @@
+@import 'atlas-custom-properties/_variables';
+
 @import 'atlas-variables';
 
 $productMenuTransitionDuration: 0.5s;
@@ -200,7 +202,7 @@ $toolbarZIndex: 971;
 					}
 
 					> .tbar-item:first-child {
-						border-top: solid thin #e7e7ed;
+						border-top: solid thin $gray-300;
 						order: 1;
 						width: 100%;
 					}
