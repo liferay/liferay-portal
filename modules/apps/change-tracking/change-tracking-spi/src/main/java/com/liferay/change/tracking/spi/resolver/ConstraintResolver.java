@@ -65,6 +65,22 @@ public interface ConstraintResolver<T extends CTModel<T>> {
 	public String[] getUniqueIndexColumnNames();
 
 	/**
+	 * Returns <code>true</code> if modified models are checked for unique
+	 * index conflicts, in addition to added models.
+	 *
+	 * Only added models are checked by default. Enable this for models whose
+	 * unique index covers a column that is changed after the model is added,
+	 * such as an ordering position. Enabling it runs one additional query per
+	 * modified model, so leave it disabled unless the model needs it.
+	 *
+	 * @return <code>true</code> if modified models are checked for unique
+	 *         index conflicts; <code>false</code> otherwise
+	 */
+	public default boolean isModificationConflictCheckEnabled() {
+		return false;
+	}
+
+	/**
 	 * Called when publishing would cause a constraint violation with both rows
 	 * involved accessible from the context.
 	 *
