@@ -839,7 +839,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistOffline
 		return error
 	}
 
-	if bytes.Equal(secret.Data["offline-request"], []byte(payload)) {
+	existing := secret.Data["offline-request"]
+
+	if len(existing) > 0 && !provisioning.PayloadExpired(string(existing)) {
 		return nil
 	}
 

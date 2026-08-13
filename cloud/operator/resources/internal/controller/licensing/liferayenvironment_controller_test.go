@@ -483,6 +483,45 @@ func TestReconcileOfflineAwaitsActivationBundle(t *testing.T) {
 	}
 }
 
+func TestReconcileOfflineRequestIsWriteOnce(t *testing.T) {
+	environment := pendingEnvironment()
+	environment.Spec.Offline = true
+
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(
+		&stubProvisioning{}, t,
+		&corev1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "liferay-dev",
+				UID:  "dev-namespace-uid",
+			},
+		},
+		environment,
+	)
+
+	first := string(getSecret(
+		"dev-identity", liferayEnvironmentReconciler, t,
+	).Data["offline-request"])
+
+	if _, error := liferayEnvironmentReconciler.Reconcile(
+		context.Background(), controllerruntime.Request{
+			NamespacedName: types.NamespacedName{
+				Name:      "dev",
+				Namespace: "liferay-dev",
+			},
+		},
+	); error != nil {
+		t.Fatalf("Unexpected error on second reconcile: %v", error)
+	}
+
+	second := string(getSecret(
+		"dev-identity", liferayEnvironmentReconciler, t,
+	).Data["offline-request"])
+
+	if first != second {
+		t.Error("offline-request payload changed on re-reconcile; want write-once")
+	}
+}
+
 func TestReconcileOfflineStoresRequestInIdentitySecret(t *testing.T) {
 	environment := pendingEnvironment()
 	environment.Spec.Offline = true
