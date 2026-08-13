@@ -34,7 +34,9 @@ jobs:
                     set -o pipefail
 
                     function main {
-                        local target_image_ref="${HELM_CHART_REGISTRY_PRODUCTION}/${{inputs.chart_name}}:${{inputs.chart_version}}"
+                        local source_image_ref="${{inputs.source_image_ref}}"
+
+                        local target_image_ref="${HELM_CHART_REGISTRY_PRODUCTION}/${source_image_ref##*/}"
 
                         oras \
                             cp \
@@ -42,7 +44,7 @@ jobs:
                             --from-username oauth2accesstoken \
                             --to-password "${{steps.auth_production.outputs.auth_token}}" \
                             --to-username oauth2accesstoken \
-                            "${{inputs.source_image_ref}}" \
+                            "${source_image_ref}" \
                             "${target_image_ref}"
 
                         local image_digest
@@ -64,12 +66,6 @@ jobs:
 on:
     workflow_call:
         inputs:
-            chart_name:
-                required: true
-                type: string
-            chart_version:
-                required: true
-                type: string
             source_image_ref:
                 required: true
                 type: string

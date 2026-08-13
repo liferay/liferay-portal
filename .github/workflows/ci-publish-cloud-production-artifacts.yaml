@@ -141,8 +141,6 @@ jobs:
             -   push-rc-aws
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-aws
-            chart_version: ${{needs.push-rc-aws.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-aws.outputs.image_ref}}
     promote-rc-aws-infrastructure:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-aws-infrastructure.result == 'success'}}
@@ -151,8 +149,6 @@ jobs:
             -   push-rc-aws-infrastructure
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-aws-infrastructure
-            chart_version: ${{needs.push-rc-aws-infrastructure.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-aws-infrastructure.outputs.image_ref}}
     promote-rc-aws-infrastructure-provider:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-aws-infrastructure-provider.result == 'success'}}
@@ -161,8 +157,6 @@ jobs:
             -   push-rc-aws-infrastructure-provider
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-aws-infrastructure-provider
-            chart_version: ${{needs.push-rc-aws-infrastructure-provider.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-aws-infrastructure-provider.outputs.image_ref}}
     promote-rc-bootstrap-aws:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-bootstrap-aws.result == 'success'}}
@@ -189,8 +183,6 @@ jobs:
             -   push-rc-default
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-default
-            chart_version: ${{needs.push-rc-default.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-default.outputs.image_ref}}
     promote-rc-gcp:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-gcp.result == 'success'}}
@@ -199,8 +191,6 @@ jobs:
             -   push-rc-gcp
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-gcp
-            chart_version: ${{needs.push-rc-gcp.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-gcp.outputs.image_ref}}
     promote-rc-gcp-infrastructure:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-gcp-infrastructure.result == 'success'}}
@@ -209,8 +199,6 @@ jobs:
             -   push-rc-gcp-infrastructure
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-gcp-infrastructure
-            chart_version: ${{needs.push-rc-gcp-infrastructure.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-gcp-infrastructure.outputs.image_ref}}
     promote-rc-gcp-infrastructure-provider:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-gcp-infrastructure-provider.result == 'success'}}
@@ -219,8 +207,6 @@ jobs:
             -   push-rc-gcp-infrastructure-provider
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-gcp-infrastructure-provider
-            chart_version: ${{needs.push-rc-gcp-infrastructure-provider.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-gcp-infrastructure-provider.outputs.image_ref}}
     promote-rc-observability:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-observability.result == 'success'}}
@@ -229,8 +215,6 @@ jobs:
             -   push-rc-observability
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: observability
-            chart_version: ${{needs.push-rc-observability.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-observability.outputs.image_ref}}
     promote-rc-platform:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-platform.result == 'success'}}
@@ -239,8 +223,6 @@ jobs:
             -   push-rc-platform
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-platform
-            chart_version: ${{needs.push-rc-platform.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-platform.outputs.image_ref}}
     promote-rc-platform-components:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-platform-components.result == 'success'}}
@@ -249,8 +231,6 @@ jobs:
             -   push-rc-platform-components
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
-            chart_name: liferay-platform-components
-            chart_version: ${{needs.push-rc-platform-components.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-platform-components.outputs.image_ref}}
     publish-aws-marketplace:
         env:
