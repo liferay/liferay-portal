@@ -7636,7 +7636,7 @@ public class PortalImpl implements Portal {
 
 		if (Validator.isNotNull(currentLayoutFriendlyURL)) {
 			currentLayoutFriendlyURLIndex = layoutURL.indexOf(
-				currentLayoutFriendlyURL);
+				currentLayoutFriendlyURL + StringPool.SLASH);
 		}
 
 		if (currentLayoutFriendlyURLIndex != -1) {
@@ -7645,7 +7645,7 @@ public class PortalImpl implements Portal {
 					currentLayoutFriendlyURL.length(),
 				layoutURL);
 		}
-		else {
+		else if (!layoutURL.endsWith(currentLayoutFriendlyURL)) {
 			Group group = layout.getGroup();
 
 			String groupFriendlyURL = group.getFriendlyURL();
@@ -7711,7 +7711,8 @@ public class PortalImpl implements Portal {
 			String changeLanguageURL = null;
 
 			if (!Validator.isBlank(themeDisplay.getPathMain()) &&
-				layoutURL.startsWith(themeDisplay.getPathMain())) {
+				layoutURL.startsWith(
+					themeDisplay.getPathMain() + StringPool.SLASH)) {
 
 				changeLanguageURL = layoutURL;
 			}
