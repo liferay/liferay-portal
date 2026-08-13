@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.site.navigation.taglib.servlet.taglib.LanguageTag;
 
@@ -70,6 +71,9 @@ import org.springframework.mock.web.MockServletContext;
 /**
  * @author Georgel Pop
  */
+@LanguageIds(
+	availableLanguageIds = {"en_US", "fr_FR"}, defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 public class LanguageTagTest {
 
@@ -80,11 +84,7 @@ public class LanguageTagTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		_group = GroupTestUtil.updateDisplaySettings(
-			group.getGroupId(), Arrays.asList(LocaleUtil.FRANCE, LocaleUtil.US),
-			LocaleUtil.US);
+		_group = GroupTestUtil.addGroup();
 	}
 
 	@Test
