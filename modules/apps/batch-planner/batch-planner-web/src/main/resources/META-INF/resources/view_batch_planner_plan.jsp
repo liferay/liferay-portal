@@ -36,7 +36,7 @@ BatchPlannerPlanDisplay batchPlannerPlanDisplay = (BatchPlannerPlanDisplay)reque
 						<clay:col
 							md="8"
 						>
-							<%= batchPlannerPlanDisplay.getTitle() %>
+							<%= HtmlUtil.escape(batchPlannerPlanDisplay.getTitle()) %>
 						</clay:col>
 					</clay:row>
 

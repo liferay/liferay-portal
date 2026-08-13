@@ -49,7 +49,7 @@ SearchContainer<BatchPlannerPlanDisplay> batchPlannerPlanDisplaySearchContainer 
 					).buildPortletURL()
 				%>'
 				name="name"
-				value="<%= batchPlannerPlanDisplay.getTitle() %>"
+				value="<%= HtmlUtil.escape(batchPlannerPlanDisplay.getTitle()) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
