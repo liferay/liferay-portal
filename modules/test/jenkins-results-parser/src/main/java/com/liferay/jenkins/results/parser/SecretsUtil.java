@@ -887,7 +887,7 @@ public abstract class SecretsUtil {
 		new ConcurrentHashMap<>();
 	private static boolean _connectSecretsLoaded;
 	private static String _connectURL;
-	private static BearerHTTPAuthorization _httpAuthorization;
+	private static HTTPAuthorization _httpAuthorization;
 	private static final Pattern _inlineSecretReferencePattern =
 		Pattern.compile(
 			"op://(?<vaultName>[^/<\\n]*)/(?<itemTitle>[^/<\\n]*)/" +
