@@ -208,35 +208,10 @@ public class UpdateLanguageAction implements Action {
 		}
 
 		if (currentLayoutFriendlyURLIndex != -1) {
-			int fromIndex =
+			mappingPart = _getMappingPart(
 				currentLayoutFriendlyURLIndex +
-					currentLayoutFriendlyURL.length();
-
-			List<FriendlyURLMapper> friendlyURLMappers =
-				PortletLocalServiceUtil.getFriendlyURLMappers();
-
-			for (FriendlyURLMapper friendlyURLMapper : friendlyURLMappers) {
-				if (friendlyURLMapper.isCheckMappingWithPrefix()) {
-					continue;
-				}
-
-				String mappingPath =
-					StringPool.SLASH + friendlyURLMapper.getMapping();
-
-				int mappingIndex = layoutURL.indexOf(mappingPath, fromIndex);
-
-				if (mappingIndex == -1) {
-					continue;
-				}
-
-				int mappingEndIndex = mappingIndex + mappingPath.length();
-
-				if ((mappingEndIndex == layoutURL.length()) ||
-					(layoutURL.charAt(mappingEndIndex) == CharPool.SLASH)) {
-
-					mappingPart = layoutURL.substring(mappingIndex);
-				}
-			}
+					currentLayoutFriendlyURL.length(),
+				layoutURL);
 		}
 
 		if (themeDisplay.isI18n()) {
@@ -368,6 +343,38 @@ public class UpdateLanguageAction implements Action {
 		}
 
 		return false;
+	}
+
+	private String _getMappingPart(int fromIndex, String url) {
+		String mappingPart = StringPool.BLANK;
+
+		List<FriendlyURLMapper> friendlyURLMappers =
+			PortletLocalServiceUtil.getFriendlyURLMappers();
+
+		for (FriendlyURLMapper friendlyURLMapper : friendlyURLMappers) {
+			if (friendlyURLMapper.isCheckMappingWithPrefix()) {
+				continue;
+			}
+
+			String mappingPath =
+				StringPool.SLASH + friendlyURLMapper.getMapping();
+
+			int mappingIndex = url.indexOf(mappingPath, fromIndex);
+
+			if (mappingIndex == -1) {
+				continue;
+			}
+
+			int mappingEndIndex = mappingIndex + mappingPath.length();
+
+			if ((mappingEndIndex == url.length()) ||
+				(url.charAt(mappingEndIndex) == CharPool.SLASH)) {
+
+				mappingPart = url.substring(mappingIndex);
+			}
+		}
+
+		return mappingPart;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
