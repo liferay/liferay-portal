@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-source "$(dirname "${BASH_SOURCE[0]}")/azure_common.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/_azure_common.sh"
 
 function main {
 	if [ ${#} -eq 0 ]
