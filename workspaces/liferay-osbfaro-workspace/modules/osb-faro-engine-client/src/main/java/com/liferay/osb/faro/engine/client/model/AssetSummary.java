@@ -57,6 +57,10 @@ public class AssetSummary {
 		return _mimeType;
 	}
 
+	public String getObjectType() {
+		return _objectType;
+	}
+
 	public Metric getReadsMetric() {
 		return _readsMetric;
 	}
@@ -107,6 +111,10 @@ public class AssetSummary {
 		_mimeType = mimeType;
 	}
 
+	public void setObjectType(String objectType) {
+		_objectType = objectType;
+	}
+
 	public void setReadsMetric(Metric readsMetric) {
 		_readsMetric = readsMetric;
 	}
@@ -125,6 +133,7 @@ public class AssetSummary {
 	private Map<String, Object> _embeddedResources = new HashMap<>();
 	private Metric _impressionsMetric;
 	private String _mimeType;
+	private String _objectType;
 	private Metric _readsMetric;
 	private Metric _viewsMetric;
 
