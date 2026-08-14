@@ -169,11 +169,6 @@ public class ObjectDefinitionTestUtil {
 	}
 
 	public static String getUniqueRandomClassName() throws Exception {
-
-		// Draw until the name is free, as
-		// ObjectDefinitionLocalServiceImpl._getUniqueClassName does, so a
-		// generated name does not conflict with one already taken.
-
 		while (true) {
 			String className = StringBundler.concat(
 				ObjectDefinitionConstants.
