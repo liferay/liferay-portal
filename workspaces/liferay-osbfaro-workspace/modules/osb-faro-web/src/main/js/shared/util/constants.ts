@@ -28,6 +28,17 @@ export enum EventNames {
 	View = 'view',
 }
 
+/**
+ * The coarse classification the engine stores next to each asset's `assetType`.
+ * Every asset is either authored content (blogs, web content, forms, object
+ * entries) or an uploaded file (documents and media).
+ */
+
+export enum AssetObjectTypes {
+	Content = 'content',
+	File = 'file',
+}
+
 export enum AssetTypes {
 	Asset = 'Asset',
 	Blog = 'Blog',

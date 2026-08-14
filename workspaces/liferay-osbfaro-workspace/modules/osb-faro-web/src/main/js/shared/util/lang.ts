@@ -1,5 +1,6 @@
 import {
 	AcquisitionTypes,
+	AssetObjectTypes,
 	AssetTypes,
 	CompositionTypes,
 	DataSourceTypes,
@@ -66,6 +67,11 @@ export const ACQUISITION_LABEL_MAP = {
 	[AcquisitionTypes.Channel]: Liferay.Language.get('channel'),
 	[AcquisitionTypes.Referrer]: Liferay.Language.get('referrer'),
 	[AcquisitionTypes.SourceMedium]: Liferay.Language.get('source-medium'),
+};
+
+export const ASSET_OBJECT_TYPE_LANG_MAP = {
+	[AssetObjectTypes.Content]: Liferay.Language.get('content'),
+	[AssetObjectTypes.File]: Liferay.Language.get('file'),
 };
 
 export const ASSET_TYPE_LANG_MAP = {

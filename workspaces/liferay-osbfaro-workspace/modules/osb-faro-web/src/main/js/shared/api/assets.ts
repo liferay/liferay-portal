@@ -1,11 +1,10 @@
 import sendRequest from 'shared/util/request';
+import {AssetObjectTypes} from 'shared/util/constants';
 
 export type TopAssetMetric =
 	| 'downloadsMetric'
 	| 'impressionsMetric'
 	| 'viewsMetric';
-
-export type TopAssetObjectType = 'content' | 'file';
 
 export interface ITopAsset {
 	assetTitle: string;
@@ -21,10 +20,7 @@ interface IFetchAccountTopAssets {
 	accountId: string;
 	channelId: string;
 	groupId: string;
-
-	// TODO(LPD-91217): confirm `objectType` query param name once backend lands.
-
-	objectType?: TopAssetObjectType;
+	objectType?: AssetObjectTypes;
 	rangeEnd?: string | null;
 	rangeKey?: number | null;
 	rangeStart?: string | null;
@@ -61,7 +57,7 @@ interface IFetchIndividualTopAssets {
 	channelId: string;
 	groupId: string;
 	individualId: string;
-	objectType?: TopAssetObjectType;
+	objectType?: AssetObjectTypes;
 	rangeEnd?: string | null;
 	rangeKey?: number | null;
 	rangeStart?: string | null;
