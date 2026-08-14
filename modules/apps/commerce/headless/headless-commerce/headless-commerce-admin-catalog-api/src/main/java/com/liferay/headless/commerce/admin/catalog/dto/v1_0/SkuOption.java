@@ -101,6 +101,56 @@ public class SkuOption implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _keySupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the product option this selection answers; it takes precedence over `optionId` and over the numeric form of `key`, and it names the product option link rather than the global option template. During an import, when no product option carries the code and `key` names an existing option, an empty product option is created and completed when the product option itself is imported. Outside an import, a code that matches nothing fails the request with a 404 error.",
+		example = "AB-34098-789-N"
+	)
+	public String getOptionExternalReferenceCode() {
+		if (_optionExternalReferenceCodeSupplier != null) {
+			optionExternalReferenceCode =
+				_optionExternalReferenceCodeSupplier.get();
+
+			_optionExternalReferenceCodeSupplier = null;
+		}
+
+		return optionExternalReferenceCode;
+	}
+
+	public void setOptionExternalReferenceCode(
+		String optionExternalReferenceCode) {
+
+		this.optionExternalReferenceCode = optionExternalReferenceCode;
+
+		_optionExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setOptionExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			optionExternalReferenceCodeUnsafeSupplier) {
+
+		_optionExternalReferenceCodeSupplier = () -> {
+			try {
+				return optionExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the product option this selection answers; it takes precedence over `optionId` and over the numeric form of `key`, and it names the product option link rather than the global option template. During an import, when no product option carries the code and `key` names an existing option, an empty product option is created and completed when the product option itself is imported. Outside an import, a code that matches nothing fails the request with a 404 error."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String optionExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _optionExternalReferenceCodeSupplier;
+
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal numeric identifier of the product option this selection answers.",
@@ -147,6 +197,57 @@ public class SkuOption implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Long> _optionIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the chosen product option value; it takes precedence over `optionValueId` and over the numeric form of `value`, and it names the product option value link rather than the global option value. During an import, when no product option value carries the code, an empty product option value is created under the resolved product option and completed when the product option value itself is imported. Outside an import, a code that matches nothing fails the request with a 404 error.",
+		example = "AB-34098-789-N"
+	)
+	public String getOptionValueExternalReferenceCode() {
+		if (_optionValueExternalReferenceCodeSupplier != null) {
+			optionValueExternalReferenceCode =
+				_optionValueExternalReferenceCodeSupplier.get();
+
+			_optionValueExternalReferenceCodeSupplier = null;
+		}
+
+		return optionValueExternalReferenceCode;
+	}
+
+	public void setOptionValueExternalReferenceCode(
+		String optionValueExternalReferenceCode) {
+
+		this.optionValueExternalReferenceCode =
+			optionValueExternalReferenceCode;
+
+		_optionValueExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setOptionValueExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			optionValueExternalReferenceCodeUnsafeSupplier) {
+
+		_optionValueExternalReferenceCodeSupplier = () -> {
+			try {
+				return optionValueExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the chosen product option value; it takes precedence over `optionValueId` and over the numeric form of `value`, and it names the product option value link rather than the global option value. During an import, when no product option value carries the code, an empty product option value is created under the resolved product option and completed when the product option value itself is imported. Outside an import, a code that matches nothing fails the request with a 404 error."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String optionValueExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _optionValueExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
@@ -284,6 +385,22 @@ public class SkuOption implements Serializable {
 			sb.append("\"");
 		}
 
+		String optionExternalReferenceCode = getOptionExternalReferenceCode();
+
+		if (optionExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(optionExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		Long optionId = getOptionId();
 
 		if (optionId != null) {
@@ -294,6 +411,23 @@ public class SkuOption implements Serializable {
 			sb.append("\"optionId\": ");
 
 			sb.append(optionId);
+		}
+
+		String optionValueExternalReferenceCode =
+			getOptionValueExternalReferenceCode();
+
+		if (optionValueExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionValueExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(optionValueExternalReferenceCode));
+
+			sb.append("\"");
 		}
 
 		Long optionValueId = getOptionValueId();
@@ -446,4 +580,4 @@ public class SkuOption implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-286901120
+// LIFERAY-REST-BUILDER-HASH:2003290456

@@ -44,6 +44,31 @@ public class SkuOption implements Cloneable, Serializable {
 
 	protected String key;
 
+	public String getOptionExternalReferenceCode() {
+		return optionExternalReferenceCode;
+	}
+
+	public void setOptionExternalReferenceCode(
+		String optionExternalReferenceCode) {
+
+		this.optionExternalReferenceCode = optionExternalReferenceCode;
+	}
+
+	public void setOptionExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			optionExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			optionExternalReferenceCode =
+				optionExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String optionExternalReferenceCode;
+
 	public Long getOptionId() {
 		return optionId;
 	}
@@ -64,6 +89,32 @@ public class SkuOption implements Cloneable, Serializable {
 	}
 
 	protected Long optionId;
+
+	public String getOptionValueExternalReferenceCode() {
+		return optionValueExternalReferenceCode;
+	}
+
+	public void setOptionValueExternalReferenceCode(
+		String optionValueExternalReferenceCode) {
+
+		this.optionValueExternalReferenceCode =
+			optionValueExternalReferenceCode;
+	}
+
+	public void setOptionValueExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			optionValueExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			optionValueExternalReferenceCode =
+				optionValueExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String optionValueExternalReferenceCode;
 
 	public Long getOptionValueId() {
 		return optionValueId;
@@ -139,4 +190,4 @@ public class SkuOption implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1519871843
+// LIFERAY-REST-BUILDER-HASH:1234365472
