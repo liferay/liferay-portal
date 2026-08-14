@@ -73,6 +73,11 @@ public class DataListViewResourceImpl extends BaseDataListViewResourceImpl {
 	public void deleteDataDefinitionDataListView(Long dataDefinitionId)
 		throws Exception {
 
+		DataDefinitionPermissionUtil.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			_ddmStructureLocalService.getStructure(dataDefinitionId),
+			ActionKeys.DELETE);
+
 		for (DEDataListView deDataListView :
 				_deDataListViewLocalService.getDEDataListViews(
 					dataDefinitionId)) {
