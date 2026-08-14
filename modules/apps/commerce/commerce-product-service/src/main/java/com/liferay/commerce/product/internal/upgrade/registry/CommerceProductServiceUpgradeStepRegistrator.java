@@ -717,6 +717,11 @@ public class CommerceProductServiceUpgradeStepRegistrator
 
 			});
 
+		registry.register(
+			"6.7.0", "6.8.0",
+			new com.liferay.commerce.product.internal.upgrade.v6_8_0.
+				CommerceProductStatusUpgradeProcess());
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
