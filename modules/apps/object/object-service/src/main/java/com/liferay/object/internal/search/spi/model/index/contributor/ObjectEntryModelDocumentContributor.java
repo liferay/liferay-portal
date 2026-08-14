@@ -316,11 +316,11 @@ public class ObjectEntryModelDocumentContributor
 				valueString = String.valueOf(fieldValue);
 			}
 
-			if (objectField.isIndexedAsKeyword()) {
-				_addMultiValuedKeywordField(
-					fieldArray, fieldName,
-					StringUtil.split(valueString, StringPool.COMMA_AND_SPACE));
+			_addMultiValuedKeywordField(
+				fieldArray, fieldName,
+				StringUtil.split(valueString, StringPool.COMMA_AND_SPACE));
 
+			if (objectField.isIndexedAsKeyword()) {
 				_appendToContent(
 					locale, fieldName, textEmbeddingContentHelper, valueString);
 
