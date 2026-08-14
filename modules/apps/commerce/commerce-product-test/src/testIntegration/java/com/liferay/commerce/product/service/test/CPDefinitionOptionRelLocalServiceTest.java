@@ -8,6 +8,7 @@ package com.liferay.commerce.product.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.exception.CPDefinitionOptionRelPriceTypeException;
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionRelException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -22,6 +23,8 @@ import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -33,6 +36,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -347,6 +351,113 @@ public class CPDefinitionOptionRelLocalServiceTest {
 				cpDefinitionOptionValueRel.getName(
 					cpDefinitionOptionRel.getDefaultLanguageId()),
 				strings.get(1)));
+	}
+
+	@Test
+	public void testGetOrAddEmptyCPDefinitionOptionRel() throws Exception {
+		frutillaRule.scenario(
+			"Get or add an empty product definition option"
+		).given(
+			"An existing product, product option and external reference code"
+		).when(
+			"An empty product definition option is requested"
+		).then(
+			"A NoSuchCPDefinitionOptionRelException is thrown while lazy " +
+				"referencing is disabled"
+		).and(
+			"An empty stub with the given external reference code is " +
+				"returned while lazy referencing is enabled"
+		).and(
+			"The same product definition option is resolved on subsequent " +
+				"requests"
+		).and(
+			"The empty status is cleared once the stub is updated"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_commerceCatalog.getGroupId());
+
+		String commerceOptionTypeKey =
+			CPTestUtil.getDefaultCommerceOptionTypeKey(false);
+
+		CPOption cpOption = CPTestUtil.addCPOption(
+			_commerceCatalog.getGroupId(), commerceOptionTypeKey, false);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_cpDefinitionOptionRelLocalService.
+				getOrAddEmptyCPDefinitionOptionRel(
+					externalReferenceCode, _serviceContext.getCompanyId(),
+					_serviceContext.getUserId(),
+					cpDefinition.getCPDefinitionId(), cpOption.getCPOptionId(),
+					commerceOptionTypeKey);
+
+			Assert.fail();
+		}
+		catch (NoSuchCPDefinitionOptionRelException
+					noSuchCPDefinitionOptionRelException) {
+
+			Assert.assertNotNull(noSuchCPDefinitionOptionRelException);
+		}
+
+		CPDefinitionOptionRel cpDefinitionOptionRel = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			cpDefinitionOptionRel =
+				_cpDefinitionOptionRelLocalService.
+					getOrAddEmptyCPDefinitionOptionRel(
+						externalReferenceCode, _serviceContext.getCompanyId(),
+						_serviceContext.getUserId(),
+						cpDefinition.getCPDefinitionId(),
+						cpOption.getCPOptionId(), commerceOptionTypeKey);
+
+			_cpDefinitionOptionRels.add(cpDefinitionOptionRel);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY,
+				cpDefinitionOptionRel.getStatus());
+			Assert.assertEquals(
+				externalReferenceCode,
+				cpDefinitionOptionRel.getExternalReferenceCode());
+			Assert.assertEquals(
+				cpDefinition.getCPDefinitionId(),
+				cpDefinitionOptionRel.getCPDefinitionId());
+			Assert.assertEquals(
+				cpDefinition.getGroupId(), cpDefinitionOptionRel.getGroupId());
+			Assert.assertEquals(
+				cpOption.getCPOptionId(),
+				cpDefinitionOptionRel.getCPOptionId());
+			Assert.assertEquals(
+				commerceOptionTypeKey,
+				cpDefinitionOptionRel.getCommerceOptionTypeKey());
+
+			CPDefinitionOptionRel resolvedCPDefinitionOptionRel =
+				_cpDefinitionOptionRelLocalService.
+					getOrAddEmptyCPDefinitionOptionRel(
+						externalReferenceCode, _serviceContext.getCompanyId(),
+						_serviceContext.getUserId(),
+						cpDefinition.getCPDefinitionId(),
+						cpOption.getCPOptionId(), commerceOptionTypeKey);
+
+			Assert.assertEquals(
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+				resolvedCPDefinitionOptionRel.getCPDefinitionOptionRelId());
+		}
+
+		cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.updateCPDefinitionOptionRel(
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+				cpOption.getCPOptionId(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(), commerceOptionTypeKey,
+				0, false, false, false, _serviceContext);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED,
+			cpDefinitionOptionRel.getStatus());
 	}
 
 	@Test
