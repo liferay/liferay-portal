@@ -34,7 +34,6 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
-import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.definition.util.ObjectDefinitionValidationThreadLocal;
 import com.liferay.object.exception.DuplicateObjectDefinitionExternalReferenceCodeException;
 import com.liferay.object.exception.NoSuchObjectDefinitionException;
@@ -2087,7 +2086,7 @@ public class ObjectDefinitionLocalServiceTest {
 		objectDefinition =
 			_objectDefinitionLocalService.addSystemObjectDefinition(
 				null, TestPropsValues.getUserId(), 0,
-				ObjectDefinitionUtil.generateRandomClassName(), null, true,
+				ObjectDefinitionTestUtil.getUniqueRandomClassName(), null, true,
 				false, true, false, true, false, false, false, false, false,
 				null, RandomTestUtil.randomLocaleStringMap(), true, "Test",
 				null, null, null, null, RandomTestUtil.randomLocaleStringMap(),
@@ -5215,7 +5214,7 @@ public class ObjectDefinitionLocalServiceTest {
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.addSystemObjectDefinition(
 				null, TestPropsValues.getUserId(), 0,
-				ObjectDefinitionUtil.generateRandomClassName(), null,
+				ObjectDefinitionTestUtil.getUniqueRandomClassName(), null,
 				enableCategorization, false, true, false, true, false, true,
 				false, false, false, null,
 				RandomTestUtil.randomLocaleStringMap(), true, "Test", null,

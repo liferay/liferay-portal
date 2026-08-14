@@ -7,14 +7,15 @@ package com.liferay.object.test.util;
 
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
-import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
+import com.liferay.portal.kernel.security.RandomUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -133,13 +134,12 @@ public class ObjectDefinitionTestUtil {
 		throws Exception {
 
 		return ObjectDefinitionLocalServiceUtil.addSystemObjectDefinition(
-			null, userId, 0, ObjectDefinitionUtil.generateRandomClassName(),
-			dbTableName, true, false, true, false, true, false, false, false,
-			false, false, null, labelMap, true, name, null, null,
-			pkObjectFieldDBColumnName, pkObjectFieldName, pluralLabelMap, false,
-			scope, titleObjectFieldName, version,
-			WorkflowConstants.STATUS_DRAFT, Collections.emptyList(),
-			objectFields, Collections.emptyList());
+			null, userId, 0, getUniqueRandomClassName(), dbTableName, true,
+			false, true, false, true, false, false, false, false, false, null,
+			labelMap, true, name, null, null, pkObjectFieldDBColumnName,
+			pkObjectFieldName, pluralLabelMap, false, scope,
+			titleObjectFieldName, version, WorkflowConstants.STATUS_DRAFT,
+			Collections.emptyList(), objectFields, Collections.emptyList());
 	}
 
 	public static ObjectDefinition addUnmodifiableSystemObjectDefinition(
@@ -166,6 +166,32 @@ public class ObjectDefinitionTestUtil {
 
 	public static String getRandomName() {
 		return "A" + RandomTestUtil.randomString();
+	}
+
+	public static String getUniqueRandomClassName() throws Exception {
+
+		// Draw until the name is free, as
+		// ObjectDefinitionLocalServiceImpl._getUniqueClassName does, so a
+		// generated name does not conflict with one already taken.
+
+		while (true) {
+			String className = StringBundler.concat(
+				ObjectDefinitionConstants.
+					CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION,
+				StringUtil.toUpperCase(StringUtil.randomId(1)),
+				RandomUtil.nextInt(10),
+				StringUtil.toUpperCase(StringUtil.randomId(1)),
+				RandomUtil.nextInt(10));
+
+			ObjectDefinition objectDefinition =
+				ObjectDefinitionLocalServiceUtil.
+					fetchObjectDefinitionByClassName(
+						TestPropsValues.getCompanyId(), className);
+
+			if (objectDefinition == null) {
+				return className;
+			}
+		}
 	}
 
 	public static ObjectDefinition publishObjectDefinition() throws Exception {

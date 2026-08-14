@@ -10,13 +10,13 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
-import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectFolderLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -98,7 +98,7 @@ public class CMPPermissionsObjectDefinitionLocalServiceWrapperTest {
 			ObjectDefinitionLocalServiceUtil.addSystemObjectDefinition(
 				null, TestPropsValues.getUserId(),
 				objectFolder.getObjectFolderId(),
-				ObjectDefinitionUtil.generateRandomClassName(), null, true,
+				ObjectDefinitionTestUtil.getUniqueRandomClassName(), null, true,
 				false, true, false, true, false, false, false, false, false,
 				null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),

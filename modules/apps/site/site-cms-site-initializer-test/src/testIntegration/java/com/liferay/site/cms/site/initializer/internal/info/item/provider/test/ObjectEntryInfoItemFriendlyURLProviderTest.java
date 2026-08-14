@@ -17,7 +17,6 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
-import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -25,6 +24,7 @@ import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -89,7 +89,7 @@ public class ObjectEntryInfoItemFriendlyURLProviderTest {
 			_objectDefinitionLocalService.addSystemObjectDefinition(
 				null, TestPropsValues.getUserId(),
 				objectFolder.getObjectFolderId(),
-				ObjectDefinitionUtil.generateRandomClassName(), null, true,
+				ObjectDefinitionTestUtil.getUniqueRandomClassName(), null, true,
 				false, true, false, true, false, false, false, false, false,
 				null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
