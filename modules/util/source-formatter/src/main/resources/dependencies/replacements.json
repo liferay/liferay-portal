@@ -6454,6 +6454,17 @@
 	},
 	{
 		"classNames": [
+			"LayoutLocalService",
+			"LayoutLocalServiceUtil",
+			"LayoutService",
+			"LayoutServiceUtil"
+		],
+		"from": "updateLayout(long paramName, boolean paramName, long paramName, String paramName)",
+		"issueKey": "LPD-102569",
+		"to": "updateTypeSettings(param#0#, param#1#, param#2#, param#3#)"
+	},
+	{
+		"classNames": [
 			"CPDefinitionInventoryEngine"
 		],
 		"from": "getMinStockQuantity(CPInstance paramName)",
