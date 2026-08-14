@@ -358,6 +358,8 @@ public class AuditMessage implements Serializable {
 	}
 
 	public JSONObject toJSONObject() {
+		DateFormat dateFormat = _getDateFormat();
+
 		return JSONUtil.put(
 			_ACCOUNT_ENTRY_ID, _accountEntryId
 		).put(
@@ -388,7 +390,7 @@ public class AuditMessage implements Serializable {
 			_SESSION_ID, _sessionID
 		).put(
 			_TIMESTAMP,
-			_getDateFormat().format(
+			dateFormat.format(
 				(_timestampDate != null) ? _timestampDate : new Date())
 		).put(
 			_USER_EMAIL_ADDRESS, _userEmailAddress
