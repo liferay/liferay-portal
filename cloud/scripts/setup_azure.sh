@@ -180,11 +180,11 @@ function _install_liferay_platform_chart {
 		'($configuration[0].platform.values // {}) * {
 			platformComponents: {
 				values: (($configuration[0].platformComponents.values // {}) * {
-					deploymentContext: $terraform_outputs.deployment_context.value,
 					clusterSecretStore: {
 						enabled: true,
 						provider: $terraform_outputs.cluster_secret_store_provider.value
 					},
+					deploymentContext: $terraform_outputs.deployment_context.value,
 					operatorApplications: {
 						externalSecrets: {
 							values: {

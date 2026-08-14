@@ -116,7 +116,7 @@ tests:
                         value: liferay-test
                     path: spec.sources[0].helm.parameters
                 template: templates/application-infrastructure-provider.yaml
-        it: Passes the cluster identity to the infrastructure provider application
+        it: Passes the deployment context to the infrastructure provider application
         set:
             deploymentContext:
                 deploymentName: liferay-test

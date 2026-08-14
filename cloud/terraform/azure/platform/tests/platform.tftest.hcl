@@ -22,15 +22,15 @@ override_module {
 run "should_assemble_the_deployment_context" {
 	assert {
 		condition=join(",", keys(local.deployment_context)) == "crossplaneDataClientId,crossplaneIamClientId,deploymentName,oidcIssuerUrl,region,resourceGroupName,subscriptionId,tenantId"
-		error_message="The cluster identity must carry exactly the keys the infrastructure provider consumes"
+		error_message="The deployment context must carry exactly the keys the infrastructure provider consumes"
 	}
 	assert {
 		condition=local.deployment_context.deploymentName == "liferay-test"
-		error_message="The cluster identity must carry the deployment name"
+		error_message="The deployment context must carry the deployment name"
 	}
 	assert {
 		condition=local.deployment_context.region == "eastus"
-		error_message="The cluster identity must carry the deployment region"
+		error_message="The deployment context must carry the deployment region"
 	}
 	command=plan
 }
@@ -182,11 +182,11 @@ run "should_wire_the_platform_identities" {
 	}
 	assert {
 		condition=local.deployment_context.crossplaneDataClientId == azurerm_user_assigned_identity.crossplane_data.client_id
-		error_message="The cluster identity must carry the Crossplane data identity client ID"
+		error_message="The deployment context must carry the Crossplane data identity client ID"
 	}
 	assert {
 		condition=local.deployment_context.crossplaneIamClientId == azurerm_user_assigned_identity.crossplane_iam.client_id
-		error_message="The cluster identity must carry the Crossplane IAM identity client ID"
+		error_message="The deployment context must carry the Crossplane IAM identity client ID"
 	}
 	assert {
 		condition=output.external_secrets_client_id == azurerm_user_assigned_identity.external_secrets.client_id

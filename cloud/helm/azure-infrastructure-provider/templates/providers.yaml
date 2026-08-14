@@ -1,12 +1,12 @@
 {{- if .Values.providers.enabled -}}
 {{- $providers := list
-    (dict "name" "provider-azure-authorization" "runtimeConfigName" "azure-authorization-config" )
+    (dict "name" "provider-azure-authorization" "runtimeConfigName" "azure-authorization-config")
     (dict "name" "provider-azure-dbforpostgresql" "runtimeConfigName" "azure-dbforpostgresql-config")
     (dict "name" "provider-azure-keyvault" "runtimeConfigName" "azure-keyvault-config")
     (dict "name" "provider-azure-managedidentity" "runtimeConfigName" "azure-managedidentity-config")
     (dict "name" "provider-azure-network" "runtimeConfigName" "azure-network-config")
     (dict "name" "provider-azure-storage" "runtimeConfigName" "azure-storage-config")
-    (dict "name" "provider-family-azure" "runtimeConfigName" "azure-family-config" )
+    (dict "name" "provider-family-azure" "runtimeConfigName" "azure-family-config")
 -}}
 {{- range $provider := $providers }}
 ---

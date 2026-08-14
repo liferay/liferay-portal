@@ -45,7 +45,7 @@ tests:
                         value: vpc-0123456789
                     path: spec.sources[0].helm.parameters
                 template: templates/application-infrastructure-provider.yaml
-        it: Appends the passed parameters after the cluster identity
+        it: Appends the passed parameters after the deployment context
         set:
             deploymentContext:
                 deploymentName: liferay-test

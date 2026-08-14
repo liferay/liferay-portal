@@ -21,12 +21,12 @@ spec:
         -   {{- include "liferay-platform.chartSource" .Values.infrastructureProvider | nindent 12 }}
             helm:
                 parameters:
+                    -   name: crossplaneNamespace
+                        value: {{ .Values.operatorApplications.crossplane.namespace | quote }}
                     {{- range $key, $value := .Values.deploymentContext }}
                     -   name: deploymentContext.{{ $key }}
                         value: {{ $value | quote }}
                     {{- end }}
-                    -   name: crossplaneNamespace
-                        value: {{ .Values.operatorApplications.crossplane.namespace | quote }}
                     -   name: deploymentName
                         value: {{ .Values.deploymentContext.deploymentName | quote }}
                     {{- with .Values.infrastructureProvider.parameters }}

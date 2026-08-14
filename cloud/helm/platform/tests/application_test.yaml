@@ -7,14 +7,14 @@ templates:
 tests:
     -   asserts:
             -   equal:
-                    path: spec.sources[0].helm.valuesObject.deploymentContext.deploymentName
-                    value: liferay-test
-            -   equal:
                     path: spec.sources[0].helm.valuesObject.clusterSecretStore.enabled
                     value: true
             -   equal:
                     path: spec.sources[0].helm.valuesObject.clusterSecretStore.provider.azurekv.vaultUrl
                     value: https://liferay-test-vault.vault.azure.net
+            -   equal:
+                    path: spec.sources[0].helm.valuesObject.deploymentContext.deploymentName
+                    value: liferay-test
             -   equal:
                     path: spec.sources[0].helm.valuesObject.gitops.repository.url
                     value: https://github.com/example/liferay-gitops.git
