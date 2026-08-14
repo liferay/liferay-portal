@@ -54,10 +54,14 @@ public class AnalyticsSettingsManagerTest {
 	public void setUp() throws Exception {
 		_analyticsChannelId1 = RandomTestUtil.randomString(8);
 		_analyticsChannelId2 = RandomTestUtil.randomString(8);
+
 		_siteGroup1 = GroupTestUtil.addGroup();
-		_siteGroup2 = GroupTestUtil.addGroup();
+
 		_commerceChannelGroup1 = _addCommerceChannelGroup(
 			_siteGroup1.getGroupId());
+
+		_siteGroup2 = GroupTestUtil.addGroup();
+
 		_commerceChannelGroup2 = _addCommerceChannelGroup(
 			_siteGroup2.getGroupId());
 	}
@@ -66,7 +70,6 @@ public class AnalyticsSettingsManagerTest {
 	public void tearDown() throws Exception {
 		_analyticsSettingsManager.deleteCompanyConfiguration(
 			TestPropsValues.getCompanyId());
-
 		_groupLocalService.deleteGroup(_commerceChannelGroup1);
 		_groupLocalService.deleteGroup(_commerceChannelGroup2);
 		_groupLocalService.deleteGroup(_siteGroup1);
