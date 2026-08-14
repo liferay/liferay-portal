@@ -276,13 +276,7 @@ test.describe('Style Book Token Validation and Publication Workflow', () => {
 	test(
 		'Assert that the token changes from style book should be applied to the usages.',
 		{tag: '@LPS-136199'},
-		async ({
-			page,
-			pageEditorPage,
-			pagesAdminPage,
-			site,
-			styleBooksPage,
-		}) => {
+		async ({pageEditorPage, pagesAdminPage, site, styleBooksPage}) => {
 			const pageName = getRandomString();
 
 			await test.step('Create a content page and add a heading', async () => {
@@ -329,9 +323,9 @@ test.describe('Style Book Token Validation and Publication Workflow', () => {
 			});
 
 			await test.step('Apply the new style book to the page and assert that the custom token is being applied', async () => {
-				await page.goto(
-					`/web${site.friendlyUrlPath}/${pageName}?p_l_mode=edit`
-				);
+				await pagesAdminPage.goto(site.friendlyUrlPath);
+
+				await pagesAdminPage.editPage(pageName);
 
 				await pageEditorPage.selectStyleBook(STYLEBOOK_NAME);
 
