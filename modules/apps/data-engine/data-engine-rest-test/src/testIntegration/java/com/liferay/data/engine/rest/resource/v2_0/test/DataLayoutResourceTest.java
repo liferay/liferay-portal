@@ -28,20 +28,24 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,6 +87,14 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			testGroup.getGroupId());
 		_irrelevantDataDefinition = DataDefinitionTestUtil.addDataDefinition(
 			irrelevantGroup.getGroupId());
+	}
+
+	@Override
+	@Test
+	public void testDeleteDataDefinitionDataLayout() throws Exception {
+		super.testDeleteDataDefinitionDataLayout();
+
+		_testDeleteDataDefinitionDataLayoutWithoutPermissions();
 	}
 
 	@Override
@@ -538,6 +550,14 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			_dataDefinition.getId(), randomDataLayout());
 	}
 
+	private long _getDataLayoutsCount(long dataDefinitionId) throws Exception {
+		Page<DataLayout> page =
+			dataLayoutResource.getDataDefinitionDataLayoutsPage(
+				dataDefinitionId, null, Pagination.of(1, 10), null);
+
+		return page.getTotalCount();
+	}
+
 	private DataLayout _randomDataLayout(boolean withVisualProperties) {
 		DataLayout dataLayout = randomDataLayout();
 
@@ -589,6 +609,74 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 			).build());
 
 		return dataLayout;
+	}
+
+	private void _testDeleteDataDefinitionDataLayoutWithoutPermissions()
+		throws Exception {
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		DataDefinitionResource dataDefinitionResource =
+			DataDefinitionResource.builder(
+			).authentication(
+				adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), "journal",
+				new DataDefinition() {
+					{
+						availableLanguageIds = new String[] {"en_US"};
+						dataDefinitionFields = new DataDefinitionField[] {
+							new DataDefinitionField() {
+								{
+									fieldType = "text";
+									label = new HashMap<>(
+										RandomTestUtil.
+											randomLanguageIdStringMap());
+									name = "text";
+								}
+							}
+						};
+						dataDefinitionKey = RandomTestUtil.randomString();
+						defaultLanguageId = "en_US";
+						name = new HashMap<>(
+							RandomTestUtil.randomLanguageIdStringMap());
+						siteId = testGroup.getGroupId();
+					}
+				});
+
+		dataLayoutResource.postDataDefinitionDataLayout(
+			dataDefinition.getId(),
+			DataLayoutTestUtil.createDataLayout(
+				dataDefinition.getId(), RandomTestUtil.randomString(),
+				testGroup.getGroupId()));
+
+		User user = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
+		DataLayoutResource userDataLayoutResource = DataLayoutResource.builder(
+		).authentication(
+			user.getEmailAddress(), user.getPasswordUnencrypted()
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		assertHttpResponseStatusCode(
+			403,
+			userDataLayoutResource.deleteDataDefinitionDataLayoutHttpResponse(
+				dataDefinition.getId()));
+
+		Assert.assertEquals(1, _getDataLayoutsCount(dataDefinition.getId()));
 	}
 
 	private void _testGetDataDefinitionDataLayoutsPage(
