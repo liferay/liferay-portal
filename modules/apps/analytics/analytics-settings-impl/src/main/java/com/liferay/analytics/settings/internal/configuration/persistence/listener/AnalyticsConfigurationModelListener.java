@@ -98,6 +98,14 @@ public class AnalyticsConfigurationModelListener
 				"previousSyncedContactFieldNames", syncedContactFieldNames);
 		}
 
+		String[] syncedGroupIds = analyticsConfiguration.syncedGroupIds();
+
+		if (syncedGroupIds == null) {
+			syncedGroupIds = new String[0];
+		}
+
+		properties.put("previousSyncedGroupIds", syncedGroupIds);
+
 		String[] syncedOrderFieldNames =
 			analyticsConfiguration.syncedOrderFieldNames();
 

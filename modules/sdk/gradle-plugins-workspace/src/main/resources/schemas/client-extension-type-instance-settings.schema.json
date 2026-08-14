@@ -320,6 +320,12 @@
 					},
 					"type": "array"
 				},
+				"previousSyncedGroupIds": {
+					"items": {
+						"type": "string"
+					},
+					"type": "array"
+				},
 				"previousSyncedOrderFieldNames": {
 					"items": {
 						"type": "string"

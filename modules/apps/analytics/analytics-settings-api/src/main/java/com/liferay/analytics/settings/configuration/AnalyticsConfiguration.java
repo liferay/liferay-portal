@@ -97,6 +97,9 @@ public interface AnalyticsConfiguration {
 	public String[] previousSyncedContactFieldNames();
 
 	@Meta.AD(required = false)
+	public String[] previousSyncedGroupIds();
+
+	@Meta.AD(required = false)
 	public String[] previousSyncedOrderFieldNames();
 
 	@Meta.AD(required = false)
