@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -78,86 +77,15 @@ public class FragmentEntryLinkConfigurationUpgradeProcessTest {
 			_upgradeStepRegistrator,
 			"FragmentEntryLinkConfigurationUpgradeProcess");
 
-		Class<?> clazz = upgradeProcess.getClass();
-
-		Map<Long, String> expectedConfigurations = new HashMap<>();
-
-		Map<String, String> rendererKeyResourceNames = HashMapBuilder.put(
-			"com.liferay.fragment.internal.renderer." +
-				"ContentFlagsFragmentRenderer",
-			"dependencies/content_flags_configuration.json"
-		).put(
-			"com.liferay.fragment.internal.renderer." +
-				"ContentObjectFragmentRenderer",
-			"dependencies/content_object_configuration.json"
-		).put(
-			"com.liferay.fragment.internal.renderer." +
-				"ContentRatingsFragmentRenderer",
-			"dependencies/content_ratings_configuration.json"
-		).put(
-			"com.liferay.fragment.renderer.menu.display.internal." +
-				"MenuDisplayFragmentRenderer",
-			"dependencies/menu_display_configuration.json"
-		).build();
-
-		for (Map.Entry<String, String> entry :
-				rendererKeyResourceNames.entrySet()) {
-
-			FragmentRenderer fragmentRenderer =
-				_fragmentRendererRegistry.getFragmentRenderer(entry.getKey());
-
-			FragmentEntryLink backfilledFragmentEntryLink =
-				ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-					StringPool.BLANK, fragmentRenderer, _draftLayout, null, 0,
-					_segmentsExperienceId);
-			FragmentEntryLink preservedFragmentEntryLink =
-				ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-					StringPool.BLANK, fragmentRenderer, _draftLayout, null, 1,
-					_segmentsExperienceId);
-
-			_nullifyConfiguration(
-				backfilledFragmentEntryLink.getFragmentEntryLinkId());
-
-			expectedConfigurations.put(
-				backfilledFragmentEntryLink.getFragmentEntryLinkId(),
-				StringUtil.read(clazz.getResourceAsStream(entry.getValue())));
-			expectedConfigurations.put(
-				preservedFragmentEntryLink.getFragmentEntryLinkId(),
-				preservedFragmentEntryLink.getConfiguration());
-		}
-
-		FragmentRenderer collectionFilterFragmentRenderer =
-			_fragmentRendererRegistry.getFragmentRenderer(
-				"com.liferay.fragment.renderer.collection.filter.internal." +
-					"CollectionFilterFragmentRenderer");
-
-		FragmentEntryLink nullifiedFragmentEntryLink =
-			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				StringPool.BLANK, collectionFilterFragmentRenderer,
-				_draftLayout, null, 0, _segmentsExperienceId);
-		FragmentEntryLink unmodifiedFragmentEntryLink =
-			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-				StringPool.BLANK, collectionFilterFragmentRenderer,
-				_draftLayout, null, 1, _segmentsExperienceId);
-
-		_nullifyConfiguration(
-			nullifiedFragmentEntryLink.getFragmentEntryLinkId());
-
-		expectedConfigurations.put(
-			nullifiedFragmentEntryLink.getFragmentEntryLinkId(),
-			StringPool.BLANK);
-		expectedConfigurations.put(
-			unmodifiedFragmentEntryLink.getFragmentEntryLinkId(),
-			unmodifiedFragmentEntryLink.getConfiguration());
+		Map<Long, String> configurationsMap = _getConfigurationsMap(
+			upgradeProcess.getClass());
 
 		upgradeProcess.upgrade();
 
 		_entityCache.clearCache();
 		_multiVMPool.clear();
 
-		for (Map.Entry<Long, String> entry :
-				expectedConfigurations.entrySet()) {
-
+		for (Map.Entry<Long, String> entry : configurationsMap.entrySet()) {
 			FragmentEntryLink fragmentEntryLink =
 				_fragmentEntryLinkLocalService.getFragmentEntryLink(
 					entry.getKey());
@@ -165,6 +93,89 @@ public class FragmentEntryLinkConfigurationUpgradeProcessTest {
 			Assert.assertEquals(
 				entry.getValue(), fragmentEntryLink.getConfiguration());
 		}
+	}
+
+	private void _addConfigurations(
+			Class<?> clazz, Map<Long, String> configurationsMap,
+			String rendererKey, String resourceName)
+		throws Exception {
+
+		FragmentRenderer fragmentRenderer =
+			_fragmentRendererRegistry.getFragmentRenderer(rendererKey);
+
+		FragmentEntryLink backfilledFragmentEntryLink =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				StringPool.BLANK, fragmentRenderer, _draftLayout, null, 0,
+				_segmentsExperienceId);
+		FragmentEntryLink preservedFragmentEntryLink =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				StringPool.BLANK, fragmentRenderer, _draftLayout, null, 1,
+				_segmentsExperienceId);
+
+		_nullifyConfiguration(
+			backfilledFragmentEntryLink.getFragmentEntryLinkId());
+
+		configurationsMap.put(
+			backfilledFragmentEntryLink.getFragmentEntryLinkId(),
+			StringUtil.read(
+				clazz.getResourceAsStream(
+					"dependencies/" + resourceName + ".json")));
+		configurationsMap.put(
+			preservedFragmentEntryLink.getFragmentEntryLinkId(),
+			preservedFragmentEntryLink.getConfiguration());
+	}
+
+	private Map<Long, String> _getConfigurationsMap(Class<?> clazz)
+		throws Exception {
+
+		Map<Long, String> configurationsMap = new HashMap<>();
+
+		_addConfigurations(
+			clazz, configurationsMap,
+			"com.liferay.fragment.internal.renderer." +
+				"ContentFlagsFragmentRenderer",
+			"content_flags_configuration");
+		_addConfigurations(
+			clazz, configurationsMap,
+			"com.liferay.fragment.internal.renderer." +
+				"ContentObjectFragmentRenderer",
+			"content_object_configuration");
+		_addConfigurations(
+			clazz, configurationsMap,
+			"com.liferay.fragment.internal.renderer." +
+				"ContentRatingsFragmentRenderer",
+			"content_ratings_configuration");
+		_addConfigurations(
+			clazz, configurationsMap,
+			"com.liferay.fragment.renderer.menu.display.internal." +
+				"MenuDisplayFragmentRenderer",
+			"menu_display_configuration");
+
+		FragmentRenderer fragmentRenderer =
+			_fragmentRendererRegistry.getFragmentRenderer(
+				"com.liferay.fragment.renderer.collection.filter.internal." +
+					"CollectionFilterFragmentRenderer");
+
+		FragmentEntryLink nullifiedFragmentEntryLink =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				StringPool.BLANK, fragmentRenderer, _draftLayout, null, 0,
+				_segmentsExperienceId);
+		FragmentEntryLink unmodifiedFragmentEntryLink =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				StringPool.BLANK, fragmentRenderer, _draftLayout, null, 1,
+				_segmentsExperienceId);
+
+		_nullifyConfiguration(
+			nullifiedFragmentEntryLink.getFragmentEntryLinkId());
+
+		configurationsMap.put(
+			nullifiedFragmentEntryLink.getFragmentEntryLinkId(),
+			StringPool.BLANK);
+		configurationsMap.put(
+			unmodifiedFragmentEntryLink.getFragmentEntryLinkId(),
+			unmodifiedFragmentEntryLink.getConfiguration());
+
+		return configurationsMap;
 	}
 
 	private void _nullifyConfiguration(long fragmentEntryLinkId)
