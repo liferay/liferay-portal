@@ -88,28 +88,28 @@ public class CompanyInfoLocalServiceTest {
 
 	@Test
 	public void testUpdateCompanyInfoKey() {
-		_company.setKey(RandomTestUtil.randomString());
+		String key = RandomTestUtil.randomString();
+
+		_company.setKey(key);
 
 		_company = _companyLocalService.updateCompany(_company);
 
 		CompanyInfo companyInfo = _companyInfoLocalService.fetchCompany(
 			_company.getCompanyId());
 
-		Assert.assertEquals(companyInfo.getKey(), _company.getKey());
+		Assert.assertEquals(key, companyInfo.getKey());
 	}
 
 	@Test
 	public void testUpdateCompanyInfoKeyObj() {
-		_company.setKey(RandomTestUtil.randomString());
+		String key = RandomTestUtil.randomString();
+
+		_company.setKey(key);
 
 		_company = _companyLocalService.updateCompany(_company);
 
-		CompanyInfo companyInfo = _companyInfoLocalService.fetchCompany(
-			_company.getCompanyId());
-
 		Assert.assertEquals(
-			_encryptor.deserializeKey(companyInfo.getKey()),
-			_company.getKeyObj());
+			_encryptor.deserializeKey(key), _company.getKeyObj());
 	}
 
 	private static Company _company;

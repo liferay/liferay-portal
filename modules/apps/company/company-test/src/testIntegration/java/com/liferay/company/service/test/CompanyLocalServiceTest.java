@@ -1663,15 +1663,23 @@ public class CompanyLocalServiceTest {
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						company.getCompanyId())) {
 
+				String legalName = RandomTestUtil.randomString();
+
 				company = _companyLocalService.updateCompany(
 					company.getCompanyId(), company.getVirtualHostname(),
 					company.getMx(), company.getHomeURL(), true, null, name,
-					company.getLegalName(), company.getLegalId(),
-					company.getLegalType(), company.getSicCode(),
-					company.getTickerSymbol(), company.getIndustry(),
-					company.getType(), company.getSize());
+					legalName, company.getLegalId(), company.getLegalType(),
+					company.getSicCode(), company.getTickerSymbol(),
+					company.getIndustry(), company.getType(),
+					company.getSize());
 
 				Assert.assertFalse(expectFailure);
+
+				company = _companyLocalService.getCompany(
+					company.getCompanyId());
+
+				Assert.assertEquals(legalName, company.getLegalName());
+				Assert.assertEquals(name, company.getName());
 			}
 			catch (CompanyNameException companyNameException) {
 				if (_log.isDebugEnabled()) {
