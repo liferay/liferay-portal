@@ -31,6 +31,16 @@
 				<Layout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t][%c{1}:%L] %m%n" type="PatternLayout" />
 			</FilePattern>
 		</Appender>
+
+		<Appender filePattern="@liferay.home@/logs/fips-audit.%d{yyyy-MM-dd}{UTC}.ndjson" filePermissions="rw-------" ignoreExceptions="false" immediateFlush="true" name="FIPS_AUDIT_FILE" type="RollingFile">
+			<Filter type="FIPSAuditFilter" />
+
+			<Layout type="FIPSAuditNDJSONLayout" />
+
+			<TimeBasedTriggeringPolicy />
+
+			<DirectWriteRolloverStrategy />
+		</Appender>
 	</Appenders>
 
 	<Loggers>
@@ -83,6 +93,11 @@
 		<Logger level="INFO" name="com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.deploy" />
 		<Logger level="WARN" name="com.liferay.portal.kernel.internal.configuration.ConfigurationImpl" />
+
+		<Logger additivity="false" level="INFO" name="com.liferay.portal.kernel.internal.log4j.FIPSLog4jUtil">
+			<AppenderRef ref="FIPS_AUDIT_FILE" />
+		</Logger>
+
 		<Logger level="ERROR" name="com.liferay.portal.kernel.lar" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.messaging.config.DefaultMessagingConfigurator" />
 		<Logger level="ERROR" name="com.liferay.portal.kernel.model.Image" />

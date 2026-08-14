@@ -76,7 +76,7 @@ public class Log4JUtil {
 		}
 		else {
 			priorities = Log4jConfigUtil.configureLog4J(
-				urlContent, "TEXT_FILE", "XML_FILE");
+				urlContent, "FIPS_AUDIT_FILE", "TEXT_FILE", "XML_FILE");
 		}
 
 		for (Map.Entry<String, String> entry : priorities.entrySet()) {
