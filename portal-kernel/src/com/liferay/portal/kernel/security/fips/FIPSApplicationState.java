@@ -10,6 +10,7 @@ package com.liferay.portal.kernel.security.fips;
  */
 public enum FIPSApplicationState {
 
-	ERROR, INITIALIZING, OPERATIONAL, POWER_OFF, SELF_TEST
+	ERROR, INITIALIZING, KEY_CSP_ENTRY, OPERATIONAL, POWER_OFF, QUIESCENT,
+	SELF_TEST
 
 }
