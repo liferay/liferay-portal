@@ -138,9 +138,15 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 							return new SkuOption() {
 								{
 									setKey(cpDefinitionOptionRel::getKey);
+									setOptionExternalReferenceCode(
+										cpDefinitionOptionRel::
+											getExternalReferenceCode);
 									setOptionId(
 										cpDefinitionOptionRel::
 											getCPDefinitionOptionRelId);
+									setOptionValueExternalReferenceCode(
+										cpDefinitionOptionValueRel::
+											getExternalReferenceCode);
 									setOptionValueId(
 										cpDefinitionOptionValueRel::
 											getCPDefinitionOptionValueRelId);

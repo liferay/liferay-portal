@@ -20,6 +20,7 @@ import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureService;
+import com.liferay.commerce.product.service.CPOptionService;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
@@ -524,7 +525,7 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 		CPInstance cpInstance = SkuUtil.addOrUpdateCPInstance(
 			_cpInstanceService, sku, cpDefinition,
 			_cpDefinitionOptionRelService, _cpDefinitionOptionValueRelService,
-			serviceContext);
+			_cpOptionService, serviceContext);
 
 		serviceContext.setExpandoBridgeAttributes(null);
 
@@ -969,6 +970,9 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 
 	@Reference
 	private CPInstanceUnitOfMeasureService _cpInstanceUnitOfMeasureService;
+
+	@Reference
+	private CPOptionService _cpOptionService;
 
 	@Reference
 	private CPTypeRegistry _cpTypeRegistry;
