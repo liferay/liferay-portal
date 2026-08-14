@@ -108,6 +108,48 @@ public class GeneralConfig implements Serializable {
 	@JsonIgnore
 	private Supplier<ApplicationDecorator> _applicationDecoratorSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getApplicationDecoratorId() {
+		if (_applicationDecoratorIdSupplier != null) {
+			applicationDecoratorId = _applicationDecoratorIdSupplier.get();
+
+			_applicationDecoratorIdSupplier = null;
+		}
+
+		return applicationDecoratorId;
+	}
+
+	public void setApplicationDecoratorId(String applicationDecoratorId) {
+		this.applicationDecoratorId = applicationDecoratorId;
+
+		_applicationDecoratorIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setApplicationDecoratorId(
+		UnsafeSupplier<String, Exception>
+			applicationDecoratorIdUnsafeSupplier) {
+
+		_applicationDecoratorIdSupplier = () -> {
+			try {
+				return applicationDecoratorIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String applicationDecoratorId;
+
+	@JsonIgnore
+	private Supplier<String> _applicationDecoratorIdSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The localized custom titles."
 	)
@@ -234,6 +276,22 @@ public class GeneralConfig implements Serializable {
 
 			sb.append("\"");
 			sb.append(applicationDecorator);
+			sb.append("\"");
+		}
+
+		String applicationDecoratorId = getApplicationDecoratorId();
+
+		if (applicationDecoratorId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"applicationDecoratorId\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(applicationDecoratorId));
+
 			sb.append("\"");
 		}
 
@@ -400,4 +458,4 @@ public class GeneralConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:709702621
+// LIFERAY-REST-BUILDER-HASH:-556157769

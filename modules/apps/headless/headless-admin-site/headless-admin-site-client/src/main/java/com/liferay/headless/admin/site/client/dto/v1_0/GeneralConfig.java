@@ -58,6 +58,28 @@ public class GeneralConfig implements Cloneable, Serializable {
 
 	protected ApplicationDecorator applicationDecorator;
 
+	public String getApplicationDecoratorId() {
+		return applicationDecoratorId;
+	}
+
+	public void setApplicationDecoratorId(String applicationDecoratorId) {
+		this.applicationDecoratorId = applicationDecoratorId;
+	}
+
+	public void setApplicationDecoratorId(
+		UnsafeSupplier<String, Exception>
+			applicationDecoratorIdUnsafeSupplier) {
+
+		try {
+			applicationDecoratorId = applicationDecoratorIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String applicationDecoratorId;
+
 	public Map<String, String> getCustomTitle_i18n() {
 		return customTitle_i18n;
 	}
@@ -166,4 +188,4 @@ public class GeneralConfig implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-351304785
+// LIFERAY-REST-BUILDER-HASH:-1138492604
