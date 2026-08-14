@@ -5,6 +5,7 @@
 
 package com.liferay.frontend.js.aui.web.internal.servlet.taglib;
 
+import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -55,6 +56,24 @@ public class AUITopHeadCSSDynamicIncludeTest {
 			"<link data-senna-track=\"permanent\" href=\"" + href +
 				"\" rel=\"stylesheet\">\n",
 			mockHttpServletResponse.getContentAsString());
+	}
+
+	@Test
+	@TestInfo("LPD-102542")
+	public void testRegister() {
+		AUITopHeadCSSDynamicInclude auiTopHeadCSSDynamicInclude =
+			new AUITopHeadCSSDynamicInclude();
+
+		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry =
+			Mockito.mock(DynamicInclude.DynamicIncludeRegistry.class);
+
+		auiTopHeadCSSDynamicInclude.register(dynamicIncludeRegistry);
+
+		Mockito.verify(
+			dynamicIncludeRegistry
+		).register(
+			"/html/common/themes/top_head.jsp#post"
+		);
 	}
 
 	private AbsolutePortalURLBuilderFactory _getAbsolutePortalURLBuilderFactory(
