@@ -10,6 +10,7 @@ import createGlobalConfig from '../../createGlobalConfig.mjs';
 import {MODULES_DIR} from '../../locations.mjs';
 import print from '../../print.mjs';
 import projectScopeRequire from '../../projectScopeRequire.mjs';
+import formatSourceFile from '../util/formatSourceFile.mjs';
 
 export default async function formatGlobalNodeScriptsConfig(check) {
 	let checksPassed = true;
@@ -47,6 +48,27 @@ export default async function formatGlobalNodeScriptsConfig(check) {
 			);
 
 			await fs.writeFile(globalConfigPath, newGlobalConfig, 'utf-8');
+
+			// createGlobalConfig() emits the file in its own layout, so format
+			// it here instead of leaving it to formatSourceFiles(): that one
+			// only visits the files it was given, and the regeneration may
+			// well be the reason this one needs formatting at all.
+			//
+			// Anything but success means the generated content is not valid
+			// JavaScript or breaks a rule nothing can fix automatically, which
+			// is a defect in this tool rather than in the formatted branch.
+
+			if (
+				!(await formatSourceFile(
+					globalConfigPath,
+					{eslint: false, prettier: false},
+					{check: false}
+				))
+			) {
+				throw new Error(
+					`Unable to format ${globalConfigPath}, so createGlobalConfig() produced invalid content`
+				);
+			}
 
 			print(
 				2,
