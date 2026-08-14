@@ -5,7 +5,7 @@
 
 package com.liferay.headless.commerce.machine.learning.internal.dispatch.executor;
 
-import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
+import com.liferay.analytics.settings.rest.constants.FieldProductConstants;
 import com.liferay.dispatch.executor.DispatchTaskExecutor;
 import com.liferay.dispatch.executor.DispatchTaskExecutorOutput;
 import com.liferay.dispatch.executor.DispatchTaskStatus;
@@ -77,18 +77,13 @@ public class AnalyticsUploadProductDispatchTaskExecutor
 			return;
 		}
 
-		AnalyticsConfiguration analyticsConfiguration =
-			analyticsSettingsManager.getAnalyticsConfiguration(
-				dispatchTrigger.getCompanyId());
-
 		Date resourceLastModifiedDate = getLatestSuccessfulDispatchLogEndDate(
 			dispatchTrigger.getDispatchTriggerId());
 
 		analyticsBatchExportImportManager.exportToAnalyticsCloud(
 			CategoryBatchEngineTaskItemDelegate.KEY,
 			dispatchTrigger.getCompanyId(),
-			Arrays.asList(analyticsConfiguration.syncedCategoryFieldNames()),
-			null,
+			Arrays.asList(FieldProductConstants.FIELD_CATEGORY_NAMES), null,
 			message -> updateDispatchLog(
 				dispatchLog.getDispatchLogId(), dispatchTaskExecutorOutput,
 				message),
@@ -98,7 +93,7 @@ public class AnalyticsUploadProductDispatchTaskExecutor
 		analyticsBatchExportImportManager.exportToAnalyticsCloud(
 			ProductBatchEngineTaskItemDelegate.KEY,
 			dispatchTrigger.getCompanyId(),
-			Arrays.asList(analyticsConfiguration.syncedProductFieldNames()),
+			Arrays.asList(FieldProductConstants.FIELD_PRODUCT_NAMES),
 			filterString,
 			message -> updateDispatchLog(
 				dispatchLog.getDispatchLogId(), dispatchTaskExecutorOutput,
@@ -109,8 +104,7 @@ public class AnalyticsUploadProductDispatchTaskExecutor
 		analyticsBatchExportImportManager.exportToAnalyticsCloud(
 			ProductChannelBatchEngineTaskItemDelegate.KEY,
 			dispatchTrigger.getCompanyId(),
-			Arrays.asList(
-				analyticsConfiguration.syncedProductChannelFieldNames()),
+			Arrays.asList(FieldProductConstants.FIELD_PRODUCT_CHANNEL_NAMES),
 			getCommerceChannelFilterString(
 				dispatchTrigger.getCompanyId(),
 				commerceChannelId ->

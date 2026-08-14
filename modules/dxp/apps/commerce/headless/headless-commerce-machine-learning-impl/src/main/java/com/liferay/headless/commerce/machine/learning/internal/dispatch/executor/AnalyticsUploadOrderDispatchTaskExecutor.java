@@ -5,7 +5,7 @@
 
 package com.liferay.headless.commerce.machine.learning.internal.dispatch.executor;
 
-import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
+import com.liferay.analytics.settings.rest.constants.FieldOrderConstants;
 import com.liferay.dispatch.executor.DispatchTaskExecutor;
 import com.liferay.dispatch.executor.DispatchTaskExecutorOutput;
 import com.liferay.dispatch.executor.DispatchTaskStatus;
@@ -59,17 +59,13 @@ public class AnalyticsUploadOrderDispatchTaskExecutor
 			return;
 		}
 
-		AnalyticsConfiguration analyticsConfiguration =
-			analyticsSettingsManager.getAnalyticsConfiguration(
-				dispatchTrigger.getCompanyId());
-
 		analyticsBatchExportImportManager.exportToAnalyticsCloud(
 			OrderBatchEngineTaskItemDelegate.KEY,
 			dispatchTrigger.getCompanyId(),
 			Arrays.asList(
 				ArrayUtil.append(
-					analyticsConfiguration.syncedOrderFieldNames(),
-					analyticsConfiguration.syncedOrderItemFieldNames())),
+					FieldOrderConstants.FIELD_ORDER_NAMES,
+					FieldOrderConstants.FIELD_ORDER_ITEM_NAMES)),
 			filterString,
 			message -> updateDispatchLog(
 				dispatchLog.getDispatchLogId(), dispatchTaskExecutorOutput,
