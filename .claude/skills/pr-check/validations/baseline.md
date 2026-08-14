@@ -2,60 +2,114 @@
 
 ## Trigger
 
-An exported package API changed: Java under an `*-api` module, `portal-impl`, or `portal-kernel`, a `bnd.bnd` with an `Export-Package`, or a `packageinfo`. The bnd baseline task diffs the exported API against the last release and fails on a missing, excessive, or insufficient `Bundle-Version`/`packageinfo` bump. No drift check catches that, since the `bnd.bnd` carrying the bump never changes.
+Always. The bnd baseline task diffs each exported API against the last release and fails on a missing, excessive, or insufficient `Bundle-Version` or `packageinfo` bump.
+
+Do not narrow it to the branch diff. The comparison target is resolved from Nexus on every run, so a module that the branch never touched can start failing between one run and the next.
 
 ## Match
 
-`^modules/.+-api/.+\.java$|^portal-kernel/src/.+\.java$|^portal-impl/src/.+\.java$|(^|/)bnd\.bnd$|(^|/)packageinfo$`
-
-## Selection
-
-The Nexus baseline task runs on `*-api` modules whose `bnd.bnd` declares `Export-Package` (the task does nothing otherwise) and whose `Bundle-Version` is above `1.0.0` (baseline is skipped below that). It also runs on `portal-impl` and `portal-kernel`. Both apply the `BaselinePlugin` through `modules/build-portal.gradle` and resolve as standalone Gradle projects, so the same task baselines their Ant-built jars. The local version check below is the no-network fallback and covers the same paths.
+`.`
 
 ## Command
 
-### Module Task
-
-Run the Nexus baseline task per selected `*-api` module, with its directory converted to a Gradle project path:
-
 ```bash
-("${REPO_ROOT}/gradlew" \
-	--project-dir "${REPO_ROOT}/modules" \
-	-Dbaseline.ignoreFailures=true \
-	:<path>:baseline)
+(cd "${REPO_ROOT}" && ant baseline-all -Dbaseline.all.ant.projects=<true|false>)
 ```
 
-A nonempty `modules/<module>/build/reports/baseline/baseline.log` is a FAIL. An empty log is a PASS. The task builds the module jar and resolves the last released artifact from Nexus, so it requires network access.
+Pass `false` only when **Full Portal Build** ran in this same pr-check, which baselines the seven top level Ant projects already. Otherwise omit the property; it defaults to `true`.
 
-### Portal Impl and Portal Kernel
+Two prerequisites:
 
-Both run as standalone Gradle projects that apply the `BaselinePlugin`. The task baselines the Ant-built jar in the project directory, so build that jar with `ant jar` first, then run the baseline task (substitute `portal-kernel` for the kernel side):
+- Each baseline resolves the last released artifact from Nexus, so the run needs network access. Use the local check below when there is none.
+- Treat both a finding and a pass against a project that has not been cleanly built on this branch as unproven. Rerun after `ant all`.
+
+## Interpretation
+
+Read `git status`, not the exit code. The baseline task repairs what it finds, so the first run rewrites the tree and every run after it passes.
+
+Baseline has five warnings, and they do not all reach the tree in the same shape:
+
+| Warning | What Lands in the Tree |
+| --- | --- |
+| `VERSION INCREASE REQUIRED` | version raised |
+| `VERSION INCREASE SUGGESTED` | version raised |
+| `EXCESSIVE VERSION INCREASE` | version **lowered** |
+| `PACKAGE ADDED, MISSING PACKAGEINFO` | **new, untracked** packageinfo |
+| `PACKAGE REMOVED, UNNECESSARY PACKAGEINFO` | packageinfo **deleted** |
+
+All five concern the version of an exported package, recorded in its `packageinfo`. `Bundle-Version` is not among them, so do not read a passing run as evidence that it is right. An inflated one is caught only by the classification below.
+
+List each changed file with both of its versions. Do not read a bare diff of the version lines, which drops the filename and cannot tell an addition, a deletion, and a lowering apart:
 
 ```bash
-(cd "${REPO_ROOT}/portal-impl" && ant jar)
+version() {
+	sed -nE 's/^(Bundle-Version:[[:space:]]*|version[[:space:]]+)//p' | head -1
+}
 
-("${REPO_ROOT}/gradlew" \
-	--project-dir "${REPO_ROOT}/portal-impl" \
-	-Dbaseline.ignoreFailures=true \
-	baseline)
+git status --porcelain -uall -- '*bnd.bnd' '*packageinfo' |
+while read -r status path; do
+	case "${status}" in
+	D)    old=$(git show "HEAD:${path}" | version) ; new="<removed>" ;;
+	'??') old="<added>" ; new=$(version < "${path}") ;;
+	*)    old=$(git show "HEAD:${path}" | version) ; new=$(version < "${path}") ;;
+	esac
+
+	printf '%s\t%s\t%s\n' "${old:-<none>}" "${new:-<none>}" "${path}"
+done
 ```
 
-A nonempty `baseline-reports/portal-impl.log` is a FAIL. Like the module task, it resolves the last released artifact from Nexus, so it needs network access.
+Keep `-uall`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`. Keep reading removal from the status letter, not from a missing version line.
 
-### Local Version Check
+Classify each row, comparing segments as numbers so that `9.5.1` to `10.0.0` counts as a rise and `1.9.0` to `1.10.0` does not:
 
-This needs no network and reports an advisory note, never a PASS or FAIL.
+- Identical versions are not a finding.
+- The first segment rises: **major**.
+- The second or third rises: **minor** or **micro**.
+- Any segment falls: **lowered**.
+- `<added>`: a newly exported package.
+- `<removed>`: an exported package is gone.
+- `<none>` on either side: the file held no version line. Repeat the run rather than classifying it.
 
-Look at each changed `.java` under an `*-api` module's `src/main/java`, `portal-impl/src`, or `portal-kernel/src`. When its diff adds or removes a `public` or `protected` line, the exported API changed, so the version should be bumped too. The bump shows up in the diff as a changed `packageinfo`, or a changed `bnd.bnd` `Bundle-Version` for an `*-api` module. If neither changed, flag the package, since the API changed but the version did not.
+## Autocommit
+
+**Minor or micro only.** Stage the version files and commit them, resolving `<TICKET>` from the branch name the way [commit.md](../../../rules/commit.md) does:
+
+```bash
+paths=$(git status --porcelain -uall -- '*bnd.bnd' '*packageinfo' | cut -c4-)
+
+[ -n "${paths}" ] && printf '%s\n' "${paths}" | git add --pathspec-from-file=-
+
+git commit --message "${TICKET} Semantic versioning"
+```
+
+Collect the paths first. Passing the globs to `git add` fails when one matches nothing, and piping into it races for `index.lock`.
+
+Commit a bump owed to a package that this branch never touched under this branch's ticket as well, and report it, since the pull request then carries a semantic versioning fix that its author did not write.
+
+**Major, lowered, or removed.** Do not commit. Fail this validation and report each one with its file and both versions. Each is a breaking change that the developer has to decide on:
+
+- **Major**: report it as needing a breaking change section in the commit message.
+- **Lowered**: report it as `EXCESSIVE VERSION INCREASE`.
+- **Removed**: report it as `PACKAGE REMOVED, UNNECESSARY PACKAGEINFO`. It arrives as a bare file deletion carrying no version, so name the file.
+
+**A newly exported package.** Report it and leave it uncommitted. It belongs in the commit that adds the package.
+
+When several appear in one run, fail on the strictest and leave every safe bump uncommitted with it, so the whole set is reviewed together.
+
+## Local Version Check
+
+This needs no network and reports an advisory note, never a PASS or FAIL. Use it when the baseline run above cannot reach Nexus.
+
+Look at each changed `.java` under an `*-api` module's `src/main/java`, `portal-impl/src`, or `portal-kernel/src`. When its diff adds or removes a `public` or `protected` line, the exported API changed, so the version should be bumped too. The bump shows up in the diff as a changed `packageinfo`, or a changed `bnd.bnd` `Bundle-Version` for an `*-api` module. If neither changed, flag the package.
 
 Flag a lowered `packageinfo` or `Bundle-Version` that has no matching `public` or `protected` removal.
 
 ## Checklist
 
 ```
-- [ ] (One subitem per exporting module:) Baseline <module path>
+- [ ] Baseline
 ```
 
 ## Time Estimate
 
-~30 sec - 1 min per module. The local version check is instant.
+~30 sec for the whole repository on a warm Gradle daemon whose module jars are already built. Around 45 sec when jars must be rebuilt first, and around 80 sec on a cold daemon.
