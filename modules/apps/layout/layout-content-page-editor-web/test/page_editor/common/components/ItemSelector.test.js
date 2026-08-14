@@ -6,6 +6,7 @@
 import '@testing-library/jest-dom';
 import {State} from '@liferay/frontend-js-state-web';
 import {fireEvent, render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {pageContentsAtom} from '../../../../src/main/resources/META-INF/resources/page_editor/app/utils/usePageContents';
@@ -30,9 +31,11 @@ jest.mock(
 );
 
 function renderItemSelector({
+	onItemSelect = () => {},
 	pageContents = [],
 	selectedItemClassPK = '',
 	selectedItemTitle = '',
+	...props
 }) {
 	State.writeAtom(pageContentsAtom, {
 		data: pageContents,
@@ -42,7 +45,7 @@ function renderItemSelector({
 	return render(
 		<ItemSelector
 			label="itemSelectorLabel"
-			onItemSelect={() => {}}
+			onItemSelect={onItemSelect}
 			selectedItem={
 				selectedItemTitle
 					? {
@@ -52,6 +55,7 @@ function renderItemSelector({
 					: null
 			}
 			transformValueCallback={() => {}}
+			{...props}
 		/>
 	);
 }
@@ -164,6 +168,154 @@ describe('ItemSelector', () => {
 		expect(screen.queryByText('Mapped Collection')).not.toBeInTheDocument();
 
 		expect(openItemSelector).not.toBeCalled();
+	});
+
+	it('does not show recent page contents of a different type when itemType is set', async () => {
+		renderItemSelector({
+			itemType: 'com.liferay.portal.kernel.repository.model.FileEntry',
+			pageContents: [
+				{
+					className: 'com.liferay.journal.model.JournalArticle',
+					classPK: '001',
+					title: 'Web Content Title',
+				},
+				{
+					className:
+						'com.liferay.portal.kernel.repository.model.FileEntry',
+					classPK: '002',
+					title: 'Document Title',
+				},
+			],
+		});
+
+		await userEvent.click(
+			screen.getByLabelText('select-itemSelectorLabel')
+		);
+
+		expect(screen.getByText('Document Title')).toBeInTheDocument();
+		expect(screen.queryByText('Web Content Title')).not.toBeInTheDocument();
+
+		expect(openItemSelector).not.toBeCalled();
+	});
+
+	it('selects a recent page content matching itemType', async () => {
+		const onItemSelect = jest.fn();
+
+		renderItemSelector({
+			itemType: 'com.liferay.portal.kernel.repository.model.FileEntry',
+			onItemSelect,
+			pageContents: [
+				{
+					className:
+						'com.liferay.portal.kernel.repository.model.FileEntry',
+					classPK: '002',
+					title: 'Document Title',
+				},
+			],
+		});
+
+		await userEvent.click(
+			screen.getByLabelText('select-itemSelectorLabel')
+		);
+
+		await userEvent.click(screen.getByText('Document Title'));
+
+		expect(onItemSelect).toBeCalledWith(
+			expect.objectContaining({title: 'Document Title'})
+		);
+	});
+
+	it('opens the item selector when no recent page content matches itemType', async () => {
+		renderItemSelector({
+			itemType: 'com.liferay.portal.kernel.repository.model.FileEntry',
+			pageContents: [
+				{
+					className: 'com.liferay.journal.model.JournalArticle',
+					classPK: '001',
+					title: 'Web Content Title',
+				},
+			],
+		});
+
+		await userEvent.click(
+			screen.getByLabelText('select-itemSelectorLabel')
+		);
+
+		expect(openItemSelector).toBeCalled();
+	});
+
+	it('does not show recent page contents of a different subtype when itemSubtype is set', async () => {
+		renderItemSelector({
+			itemSubtype: '123',
+			itemType: 'com.liferay.journal.model.JournalArticle',
+			pageContents: [
+				{
+					className: 'com.liferay.journal.model.JournalArticle',
+					classPK: '001',
+					classTypeId: 123,
+					title: 'Matching Subtype Title',
+				},
+				{
+					className: 'com.liferay.journal.model.JournalArticle',
+					classPK: '002',
+					classTypeId: 456,
+					title: 'Other Subtype Title',
+				},
+			],
+		});
+
+		await userEvent.click(
+			screen.getByLabelText('select-itemSelectorLabel')
+		);
+
+		expect(screen.getByText('Matching Subtype Title')).toBeInTheDocument();
+		expect(
+			screen.queryByText('Other Subtype Title')
+		).not.toBeInTheDocument();
+
+		expect(openItemSelector).not.toBeCalled();
+	});
+
+	it('opens the item selector when itemSubtype cannot be matched to a class type', async () => {
+		renderItemSelector({
+			itemSubtype: 'BASIC-WEB-CONTENT',
+			itemType: 'com.liferay.journal.model.JournalArticle',
+			pageContents: [
+				{
+					className: 'com.liferay.journal.model.JournalArticle',
+					classPK: '001',
+					classTypeId: 123,
+					title: 'Web Content Title',
+				},
+			],
+		});
+
+		await userEvent.click(
+			screen.getByLabelText('select-itemSelectorLabel')
+		);
+
+		expect(openItemSelector).toBeCalled();
+	});
+
+	it('opens the item selector when mimeTypes are set', async () => {
+		renderItemSelector({
+			itemType: 'com.liferay.portal.kernel.repository.model.FileEntry',
+			mimeTypes: ['image/png'],
+			pageContents: [
+				{
+					className:
+						'com.liferay.portal.kernel.repository.model.FileEntry',
+					classPK: '002',
+					title: 'Document Title',
+				},
+			],
+		});
+
+		await userEvent.click(
+			screen.getByLabelText('select-itemSelectorLabel')
+		);
+
+		expect(openItemSelector).toBeCalled();
 	});
 
 	it('removes selected item correctly when clear button is clicked', () => {
