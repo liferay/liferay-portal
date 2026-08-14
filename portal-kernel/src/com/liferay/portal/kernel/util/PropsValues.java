@@ -888,6 +888,12 @@ public class PropsValues {
 					PropsKeys.
 						FIELD_ENABLE_COM_LIFERAY_PORTAL_KERNEL_MODEL_ORGANIZATION_STATUS));
 
+	public static final String FIPS_AUDIT_DEPLOYMENT_INSTANCE_ID =
+		PropsUtil.get(PropsKeys.FIPS_AUDIT_DEPLOYMENT_INSTANCE_ID);
+
+	public static final String FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID =
+		PropsUtil.get(PropsKeys.FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID);
+
 	public static final boolean FIPS_ENABLED = GetterUtil.getBoolean(
 		PropsUtil.get(PropsKeys.FIPS_ENABLED));
 
