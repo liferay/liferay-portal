@@ -45,15 +45,22 @@ public class WorkflowDefinitionGroovyScriptUsesFactoryTest
 	public void testHasUses() throws Exception {
 		Assert.assertFalse(_groovyScriptUsesFactory.hasUses());
 
+		_deployWorkflowDefinition("message-boards-user-stats-moderation");
+
+		Assert.assertFalse(_groovyScriptUsesFactory.hasUses());
+
+		_deployWorkflowDefinition("Site Member Single Approver");
+
+		Assert.assertTrue(_groovyScriptUsesFactory.hasUses());
+	}
+
+	private void _deployWorkflowDefinition(String name) throws Exception {
 		_workflowDefinitionManager.deployWorkflowDefinition(
 			FileUtil.getBytes(
 				getResourceInputStream(
 					"single-approver-site-member-workflow-definition.xml")),
-			TestPropsValues.getCompanyId(), RandomTestUtil.randomString(),
-			"Site Member Single Approver", StringPool.BLANK,
-			TestPropsValues.getUserId());
-
-		Assert.assertTrue(_groovyScriptUsesFactory.hasUses());
+			TestPropsValues.getCompanyId(), RandomTestUtil.randomString(), name,
+			StringPool.BLANK, TestPropsValues.getUserId());
 	}
 
 	@Inject(
