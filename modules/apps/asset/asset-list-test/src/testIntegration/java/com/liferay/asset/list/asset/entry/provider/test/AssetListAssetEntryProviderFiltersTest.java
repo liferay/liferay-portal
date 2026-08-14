@@ -95,7 +95,34 @@ public class AssetListAssetEntryProviderFiltersTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_listTypeDefinition = _addListTypeDefinition();
+		_listTypeDefinition =
+			_listTypeDefinitionLocalService.addListTypeDefinition(
+				null, TestPropsValues.getUserId(),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				false,
+				Arrays.asList(
+					ListTypeEntryUtil.createListTypeEntry(
+						_LIST_TYPE_ENTRY_KEY_1,
+						Collections.singletonMap(
+							LocaleUtil.US, _LIST_TYPE_ENTRY_KEY_1)),
+					ListTypeEntryUtil.createListTypeEntry(
+						_LIST_TYPE_ENTRY_KEY_2,
+						Collections.singletonMap(
+							LocaleUtil.US, _LIST_TYPE_ENTRY_KEY_2)),
+					ListTypeEntryUtil.createListTypeEntry(
+						_LIST_TYPE_ENTRY_KEY_3,
+						Collections.singletonMap(
+							LocaleUtil.US, _LIST_TYPE_ENTRY_KEY_3))),
+				new ServiceContext());
+
+		ObjectFieldSetting objectFieldSetting =
+			_objectFieldSettingLocalService.createObjectFieldSetting(0L);
+
+		objectFieldSetting.setName(
+			ObjectFieldSettingConstants.NAME_TIME_STORAGE);
+		objectFieldSetting.setValue(
+			ObjectFieldSettingConstants.VALUE_USE_INPUT_AS_ENTERED);
 
 		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
 			Arrays.asList(
@@ -108,12 +135,7 @@ public class AssetListAssetEntryProviderFiltersTest {
 					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
 					ObjectFieldConstants.DB_TYPE_DATE_TIME, true, false, null,
 					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_DATE_TIME,
-					Collections.singletonList(
-						_createObjectFieldSetting(
-							ObjectFieldSettingConstants.NAME_TIME_STORAGE,
-							ObjectFieldSettingConstants.
-								VALUE_USE_INPUT_AS_ENTERED)),
-					false),
+					Collections.singletonList(objectFieldSetting), false),
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
 					ObjectFieldConstants.DB_TYPE_INTEGER, true, false, null,
@@ -204,10 +226,35 @@ public class AssetListAssetEntryProviderFiltersTest {
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId()));
 
-		List<Long> actualClassPKs = _getFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_getCommonFieldFilterJSONObject(
-					"contains", Field.TITLE, title)));
+		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
+			_group.getGroupId(), 0);
+
+		_assetListEntryLocalService.updateAssetListEntryTypeSettings(
+			assetListEntry.getAssetListEntryId(),
+			SegmentsEntryConstants.ID_DEFAULT,
+			UnicodePropertiesBuilder.create(
+				true
+			).put(
+				"anyAssetType", "true"
+			).put(
+				"filters",
+				_buildFiltersJSONArray(
+					_getCommonFieldFilterJSONObject(
+						"contains", Field.TITLE, title)
+				).toString()
+			).build(
+			).toString());
+
+		InfoPage<AssetEntry> infoPage =
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				_assetListEntryLocalService.getAssetListEntry(
+					assetListEntry.getAssetListEntryId()),
+				new long[] {SegmentsEntryConstants.ID_DEFAULT}, null, null,
+				StringPool.BLANK, StringPool.BLANK, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		List<Long> actualClassPKs = TransformUtil.transform(
+			infoPage.getPageItems(), AssetEntry::getClassPK);
 
 		Assert.assertEquals(
 			actualClassPKs.toString(), 2, actualClassPKs.size());
@@ -766,28 +813,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 			assetListEntry.getAssetListEntryId());
 	}
 
-	private ListTypeDefinition _addListTypeDefinition() throws Exception {
-		return _listTypeDefinitionLocalService.addListTypeDefinition(
-			null, TestPropsValues.getUserId(),
-			Collections.singletonMap(
-				LocaleUtil.US, RandomTestUtil.randomString()),
-			false,
-			Arrays.asList(
-				ListTypeEntryUtil.createListTypeEntry(
-					_LIST_TYPE_ENTRY_KEY_1,
-					Collections.singletonMap(
-						LocaleUtil.US, _LIST_TYPE_ENTRY_KEY_1)),
-				ListTypeEntryUtil.createListTypeEntry(
-					_LIST_TYPE_ENTRY_KEY_2,
-					Collections.singletonMap(
-						LocaleUtil.US, _LIST_TYPE_ENTRY_KEY_2)),
-				ListTypeEntryUtil.createListTypeEntry(
-					_LIST_TYPE_ENTRY_KEY_3,
-					Collections.singletonMap(
-						LocaleUtil.US, _LIST_TYPE_ENTRY_KEY_3))),
-			new ServiceContext());
-	}
-
 	private ObjectEntry _addObjectEntry(Map<String, Serializable> values)
 		throws Exception {
 
@@ -870,18 +895,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 		);
 	}
 
-	private ObjectFieldSetting _createObjectFieldSetting(
-		String name, String value) {
-
-		ObjectFieldSetting objectFieldSetting =
-			_objectFieldSettingLocalService.createObjectFieldSetting(0L);
-
-		objectFieldSetting.setName(name);
-		objectFieldSetting.setValue(value);
-
-		return objectFieldSetting;
-	}
-
 	private JSONObject _getCommonFieldFilterJSONObject(
 		String operatorName, String propertyName, Object value) {
 
@@ -892,36 +905,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 		).put(
 			"value", value
 		);
-	}
-
-	private List<Long> _getFilteredClassPKs(JSONArray filtersJSONArray)
-		throws Exception {
-
-		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
-			_group.getGroupId(), 0);
-
-		_assetListEntryLocalService.updateAssetListEntryTypeSettings(
-			assetListEntry.getAssetListEntryId(),
-			SegmentsEntryConstants.ID_DEFAULT,
-			UnicodePropertiesBuilder.create(
-				true
-			).put(
-				"anyAssetType", "true"
-			).put(
-				"filters", filtersJSONArray.toString()
-			).build(
-			).toString());
-
-		InfoPage<AssetEntry> infoPage =
-			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
-				_assetListEntryLocalService.getAssetListEntry(
-					assetListEntry.getAssetListEntryId()),
-				new long[] {SegmentsEntryConstants.ID_DEFAULT}, null, null,
-				StringPool.BLANK, StringPool.BLANK, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-		return TransformUtil.transform(
-			infoPage.getPageItems(), AssetEntry::getClassPK);
 	}
 
 	private static final String _LIST_TYPE_ENTRY_KEY_1 =
