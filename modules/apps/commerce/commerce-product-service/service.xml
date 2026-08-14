@@ -760,6 +760,7 @@
 		<column name="key" type="String" />
 		<column name="priceType" type="String" />
 		<column name="typeSettings" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
@@ -828,6 +829,7 @@
 		<column name="priority" type="double" />
 		<column name="quantity" type="BigDecimal" />
 		<column name="unitOfMeasureKey" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
