@@ -74,25 +74,7 @@ public class BasicComponentFragmentCollectionContributorTest {
 	@Test
 	@TestInfo("LPD-51802")
 	public void testAccordionAccessibility() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		FragmentEntry fragmentEntry =
-			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-accordion");
-
-		Document document = Jsoup.parseBodyFragment(
-			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
-				_fragmentEntryLinkService.addFragmentEntryLink(
-					null, _group.getGroupId(), null,
-					fragmentEntry.getExternalReferenceCode(), null, 0,
-					layout.getPlid(), fragmentEntry.getCss(),
-					fragmentEntry.getHtml(), fragmentEntry.getJs(),
-					fragmentEntry.getConfiguration(), StringPool.BLANK,
-					StringPool.BLANK, 0, null, fragmentEntry.getType(),
-					ServiceContextTestUtil.getServiceContext(
-						_group.getGroupId())),
-				_getFragmentEntryProcessorContext(
-					layout, LocaleUtil.getMostRelevantLocale())));
+		Document document = _getDocument("BASIC_COMPONENT-accordion");
 
 		Elements elements = document.select("[aria-controls]");
 
@@ -107,13 +89,26 @@ public class BasicComponentFragmentCollectionContributorTest {
 	@Test
 	@TestInfo("LPD-26242")
 	public void testSliderAccessibility() throws Exception {
+		Document document = _getDocument("BASIC_COMPONENT-slider");
+
+		Elements elements = document.select("[aria-controls]");
+
+		Assert.assertFalse(elements.toString(), elements.isEmpty());
+
+		for (Element element : elements) {
+			Assert.assertNotNull(
+				document.getElementById(element.attr("aria-controls")));
+		}
+	}
+
+	private Document _getDocument(String fragmentEntryKey) throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		FragmentEntry fragmentEntry =
 			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-slider");
+				fragmentEntryKey);
 
-		Document document = Jsoup.parseBodyFragment(
+		return Jsoup.parseBodyFragment(
 			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
 				_fragmentEntryLinkService.addFragmentEntryLink(
 					null, _group.getGroupId(), null,
@@ -126,15 +121,6 @@ public class BasicComponentFragmentCollectionContributorTest {
 						_group.getGroupId())),
 				_getFragmentEntryProcessorContext(
 					layout, LocaleUtil.getMostRelevantLocale())));
-
-		Elements elements = document.select("[aria-controls]");
-
-		Assert.assertFalse(elements.toString(), elements.isEmpty());
-
-		for (Element element : elements) {
-			Assert.assertNotNull(
-				document.getElementById(element.attr("aria-controls")));
-		}
 	}
 
 	private FragmentEntryProcessorContext _getFragmentEntryProcessorContext(
