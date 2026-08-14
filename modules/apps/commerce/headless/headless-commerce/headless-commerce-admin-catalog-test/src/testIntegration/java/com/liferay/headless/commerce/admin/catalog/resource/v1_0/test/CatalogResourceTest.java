@@ -314,7 +314,6 @@ public class CatalogResourceTest extends BaseCatalogResourceTestCase {
 			RandomTestUtil.randomString(), null,
 			RandomTestUtil.randomString() + "@liferay.com", null, null,
 			AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER, 0, _serviceContext);
-
 		AccountEntry accountEntry2 = _accountEntryLocalService.addAccountEntry(
 			StringUtil.toLowerCase(RandomTestUtil.randomString()),
 			_user.getUserId(), 0, RandomTestUtil.randomString(),

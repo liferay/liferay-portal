@@ -43,7 +43,6 @@ public class CatalogDTOConverter
 
 		AccountEntry accountEntry = _accountEntryLocalService.fetchAccountEntry(
 			commerceCatalog.getAccountEntryId());
-
 		CommerceCurrency commerceCurrency =
 			_commerceCurrencyLocalService.getCommerceCurrency(
 				commerceCatalog.getCompanyId(),

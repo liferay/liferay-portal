@@ -746,14 +746,14 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			_group.getExternalReferenceCode(), journalArticle);
 
 		Assert.assertEquals(
-			(Long)journalArticle.getResourcePrimKey(),
-			postSkuVirtualSettings.getTermsOfUseJournalArticleId());
-		Assert.assertEquals(
 			_group.getExternalReferenceCode(),
 			postSkuVirtualSettings.
 				getTermsOfUseJournalArticleGroupExternalReferenceCode());
 		Assert.assertNotEquals(
 			(Long)catalogJournalArticle.getResourcePrimKey(),
+			postSkuVirtualSettings.getTermsOfUseJournalArticleId());
+		Assert.assertEquals(
+			(Long)journalArticle.getResourcePrimKey(),
 			postSkuVirtualSettings.getTermsOfUseJournalArticleId());
 	}
 
