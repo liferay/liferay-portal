@@ -587,6 +587,7 @@ grafana-alloy:
             privileged: false
             readOnlyRootFilesystem: false
     controller:
+        priorityClassName: system-node-critical
         type: daemonset
         volumes:
             extra:
@@ -651,6 +652,7 @@ prometheus-node-exporter:
                             matchLabels:
                                 kubernetes.io/metadata.name: gmp-system
                     -   podSelector: {}
+    priorityClassName: system-node-critical
     prometheus:
         monitor:
             enabled: false
