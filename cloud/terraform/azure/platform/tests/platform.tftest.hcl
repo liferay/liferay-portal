@@ -23,7 +23,7 @@ override_module {
 run "should_align_the_karpenter_node_pool_with_the_system_machine_type" {
 	assert {
 		condition=one([for requirement in kubernetes_manifest.karpenter_node_pool.manifest.spec.template.spec.requirements : requirement.values if requirement.key == "karpenter.azure.com/sku-name"]) == ["Standard_D16s_v3"]
-		error_message="The Karpenter node pool must pin its SKU to the machine type driving the system node pool"
+		error_message="The Karpenter node pool must pin its SKU to the VM size driving the system node pool"
 	}
 	assert {
 		condition=kubernetes_manifest.karpenter_node_pool.manifest.spec.weight > 0
@@ -33,9 +33,21 @@ run "should_align_the_karpenter_node_pool_with_the_system_machine_type" {
 		condition=try(kubernetes_manifest.karpenter_node_pool.manifest.spec.disruption.consolidateAfter, "") != ""
 		error_message="The Karpenter node pool must set a consolidateAfter, which the karpenter.sh/v1 CRD rejects the object without"
 	}
+	assert {
+		condition=kubernetes_manifest.karpenter_node_pool.manifest.spec.template.spec.nodeClassRef.name == kubernetes_manifest.karpenter_node_class.manifest.metadata.name
+		error_message="The Karpenter node pool must reference the node class this module declares, because disabling the default node pools tears down the one auto-provisioning generates"
+	}
 	command=plan
-	variables {
-		machine_type="Standard_D16s_v3"
+	override_data {
+		target=data.azurerm_kubernetes_cluster.aks
+		values={
+			agent_pool_profile=[
+				{
+					name="system"
+					vm_size="Standard_D16s_v3"
+				},
+			]
+		}
 	}
 }
 run "should_assemble_the_deployment_context" {

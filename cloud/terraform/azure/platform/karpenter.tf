@@ -1,3 +1,16 @@
+resource "kubernetes_manifest" "karpenter_node_class" {
+	manifest={
+		apiVersion="karpenter.azure.com/v1beta1"
+		kind="AKSNodeClass"
+		metadata={
+			name="general-purpose"
+		}
+		spec={
+			imageFamily="Ubuntu"
+			osDiskSizeGB=128
+		}
+	}
+}
 resource "kubernetes_manifest" "karpenter_node_pool" {
 	manifest={
 		apiVersion="karpenter.sh/v1"
@@ -16,13 +29,13 @@ resource "kubernetes_manifest" "karpenter_node_pool" {
 					nodeClassRef={
 						group="karpenter.azure.com"
 						kind="AKSNodeClass"
-						name="default"
+						name=kubernetes_manifest.karpenter_node_class.manifest.metadata.name
 					}
 					requirements=[
 						{
 							key="karpenter.azure.com/sku-name"
 							operator="In"
-							values=[var.machine_type]
+							values=[local.system_node_pool_vm_size]
 						},
 						{
 							key="karpenter.sh/capacity-type"

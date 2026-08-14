@@ -51,4 +51,9 @@ locals {
 		namespace="external-secrets-system"
 	}
 	resource_group_name=var.deployment_name
+	system_node_pool_vm_size=one([
+		for agent_pool_profile in data.azurerm_kubernetes_cluster.aks.agent_pool_profile :
+		agent_pool_profile.vm_size
+		if agent_pool_profile.name == "system"
+	])
 }
