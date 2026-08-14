@@ -17,9 +17,32 @@ components:
             type: object
         LinkReference:
             properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    readOnly: true
+                    type: object
                 className:
                     type: string
+                code:
+                    readOnly: true
+                    type: string
                 externalReferenceCode:
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    readOnly: true
+                    type: string
+                status:
+                    readOnly: true
+                    type: string
+                type:
+                    readOnly: true
                     type: string
             required:
                 -   className
@@ -65,6 +88,46 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["Link"]
+        get:
+            operationId: getScopeScopeKeyLinksPage
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: className
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/LinkReference"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/LinkReference"
+                                type: array
+            tags: ["LinkReference"]
         post:
             operationId: postScopeScopeKeyLink
             parameters:
