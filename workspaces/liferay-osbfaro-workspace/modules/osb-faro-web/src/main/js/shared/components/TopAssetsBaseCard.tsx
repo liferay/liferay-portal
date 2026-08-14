@@ -15,9 +15,10 @@ import GroupByPicker, {
 } from 'shared/components/GroupByPicker';
 import React, {useState} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
+import {AssetObjectTypes} from 'shared/util/constants';
 import {getMimeType} from 'assets/components/mime-type';
 import {getSafeRangeSelectors} from 'shared/util/util';
-import {ITopAsset, TopAssetMetric, TopAssetObjectType} from 'shared/api/assets';
+import {ITopAsset, TopAssetMetric} from 'shared/api/assets';
 import {RangeSelectors, SafeRangeSelectors} from 'shared/types';
 import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
@@ -26,9 +27,9 @@ import {useRequest} from 'shared/hooks/useRequest';
 
 const TABS = ['content', 'files'] as const;
 
-const TAB_OBJECT_TYPES: Record<(typeof TABS)[number], TopAssetObjectType> = {
-	content: 'content',
-	files: 'file',
+const TAB_OBJECT_TYPES: Record<(typeof TABS)[number], AssetObjectTypes> = {
+	content: AssetObjectTypes.Content,
+	files: AssetObjectTypes.File,
 };
 
 const TAB_GROUP_BY_METRICS: Record<(typeof TABS)[number], GroupByMetric[]> = {
@@ -54,7 +55,7 @@ const getAssetRoute = (assetType?: string) =>
 export interface ITopAssetsRequestVariables extends SafeRangeSelectors {
 	channelId: string;
 	groupId: string;
-	objectType: TopAssetObjectType;
+	objectType: AssetObjectTypes;
 	selectedMetric: TopAssetMetric;
 }
 
@@ -252,6 +253,8 @@ const TopAssetsWithData: React.FC<ITopAssetsWithDataProps> = ({
 
 	const selectedMetric = GROUP_BY_TO_METRIC[groupBy];
 
+	const objectType = TAB_OBJECT_TYPES[TABS[activeTab]];
+
 	const metrics = TAB_GROUP_BY_METRICS[TABS[activeTab]];
 
 	const handleActiveTabChange = (index: number) => {
@@ -273,7 +276,7 @@ const TopAssetsWithData: React.FC<ITopAssetsWithDataProps> = ({
 			...dataSourceParams,
 			channelId,
 			groupId,
-			objectType: TAB_OBJECT_TYPES[TABS[activeTab]],
+			objectType,
 			selectedMetric,
 		},
 	});
@@ -326,6 +329,7 @@ const TopAssetsWithData: React.FC<ITopAssetsWithDataProps> = ({
 								setUriQueryValues(
 									{
 										...routeQueries,
+										objectType,
 										orderBy: selectedMetric,
 									},
 									toRoute(Routes.ASSETS, {
