@@ -19,6 +19,8 @@ tests:
             -   equal:
                     path: data
                     value:
+                        databasePrivateDnsZoneId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com
+                        databaseSubnetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Network/virtualNetworks/liferay-test-vnet/subnets/liferay-test-database-subnet
                         deploymentName: liferay-test
                         oidcIssuerUrl: https://oidc.example.com/tenant/
                         region: eastus
@@ -33,4 +35,4 @@ tests:
                     value: environment-config
             -   isKind:
                     of: EnvironmentConfig
-        it: Renders the environment config with exactly the deployment context the compositions consume
+        it: Renders the environment config with the deployment context and derived network ids the compositions consume

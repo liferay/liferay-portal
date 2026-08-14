@@ -1,6 +1,4 @@
 {{- $deploymentContext := .Values.deploymentContext -}}
-{{- $privateDnsZoneName := "privatelink.postgres.database.azure.com" -}}
-{{- $virtualNetworkName := printf "%s-vnet" $deploymentContext.deploymentName -}}
 apiVersion: network.azure.m.upbound.io/v1beta1
 kind: PrivateDNSZone
 metadata:
@@ -9,7 +7,7 @@ metadata:
         argocd.argoproj.io/sync-wave: "-90"
     labels:
         app: liferay
-    name: {{ $privateDnsZoneName }}
+    name: {{ include "network.databasePrivateDnsZoneName" $ }}
 spec:
     forProvider:
         resourceGroupName: {{ $deploymentContext.resourceGroupName | quote }}
@@ -25,10 +23,10 @@ metadata:
     name: {{ $deploymentContext.deploymentName }}-database-dns-link
 spec:
     forProvider:
-        privateDnsZoneName: {{ $privateDnsZoneName }}
+        privateDnsZoneName: {{ include "network.databasePrivateDnsZoneName" $ }}
         registrationEnabled: false
         resourceGroupName: {{ $deploymentContext.resourceGroupName | quote }}
-        virtualNetworkId: {{ printf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s" $deploymentContext.subscriptionId $deploymentContext.resourceGroupName $virtualNetworkName | quote }}
+        virtualNetworkId: {{ include "network.virtualNetworkId" $ }}
 ---
 apiVersion: network.azure.m.upbound.io/v1beta1
 kind: Subnet
@@ -38,7 +36,7 @@ metadata:
         argocd.argoproj.io/sync-wave: "-90"
     labels:
         app: liferay
-    name: {{ $deploymentContext.deploymentName }}-database-subnet
+    name: {{ include "network.databaseSubnetName" $ }}
 spec:
     forProvider:
         addressPrefixes:
@@ -50,4 +48,4 @@ spec:
                             -   Microsoft.Network/virtualNetworks/subnets/join/action
                         name: Microsoft.DBforPostgreSQL/flexibleServers
         resourceGroupName: {{ $deploymentContext.resourceGroupName | quote }}
-        virtualNetworkName: {{ $virtualNetworkName | quote }}
+        virtualNetworkName: {{ include "network.virtualNetworkName" $ }}
