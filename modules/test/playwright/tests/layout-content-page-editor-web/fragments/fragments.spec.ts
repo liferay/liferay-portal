@@ -1307,9 +1307,8 @@ test.describe('Tabs Fragment', () => {
 
 		let dropdownButton = page.getByLabel('Current Selection: Tab 1');
 
-		await expect(dropdownButton).toHaveAttribute(
-			'aria-activedescendant',
-			''
+		await expect(dropdownButton).not.toHaveAttribute(
+			'aria-activedescendant'
 		);
 		await expect(dropdownButton).toHaveAttribute('aria-expanded', 'false');
 		await expect(dropdownButton).toHaveAttribute(

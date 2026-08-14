@@ -102,7 +102,7 @@ public class BasicComponentFragmentCollectionContributorTest {
 	}
 
 	@Test
-	@TestInfo("LPD-102545")
+	@TestInfo({"LPD-102545", "LPD-102546"})
 	public void testTabsAccessibility() throws Exception {
 		Document document = _getDocument("BASIC_COMPONENT-tabs");
 
@@ -111,6 +111,10 @@ public class BasicComponentFragmentCollectionContributorTest {
 		Assert.assertEquals(elements.toString(), 4, elements.size());
 
 		elements = document.select("[role=tab] [tabindex]");
+
+		Assert.assertEquals(elements.toString(), 0, elements.size());
+
+		elements = document.select("[aria-activedescendant]");
 
 		Assert.assertEquals(elements.toString(), 0, elements.size());
 	}
