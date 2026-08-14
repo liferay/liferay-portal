@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.async.Async;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.CompanyInfo;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.ContactConstants;
 import com.liferay.portal.kernel.model.Group;
@@ -411,10 +412,11 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 							company.setName(name);
 
+							CompanyInfo companyInfo = company.getCompanyInfo();
+
 							company = companyPersistence.update(company);
 
-							_companyInfoPersistence.update(
-								company.getCompanyInfo());
+							_companyInfoPersistence.update(companyInfo);
 						}
 
 						String lowerCaseVirtualHostname =
@@ -652,13 +654,14 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 						company.setName(name);
 						company.setNew(true);
 
+						CompanyInfo companyInfo = company.getCompanyInfo();
+
 						company = companyPersistence.update(company);
 
 						company = updateVirtualHostname(
 							company.getCompanyId(), lowerCaseVirtualHostname);
 
-						_companyInfoPersistence.update(
-							company.getCompanyInfo());
+						_companyInfoPersistence.update(companyInfo);
 
 						return _addDBPartitionCompany(company);
 					});
@@ -1136,9 +1139,11 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 	@Override
 	public Company updateCompany(Company company) {
+		CompanyInfo companyInfo = company.getCompanyInfo();
+
 		company = super.updateCompany(company);
 
-		_companyInfoPersistence.update(company.getCompanyInfo());
+		_companyInfoPersistence.update(companyInfo);
 
 		return company;
 	}
@@ -1263,11 +1268,13 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		company.setType(type);
 		company.setSize(size);
 
+		CompanyInfo companyInfo = company.getCompanyInfo();
+
 		companyPersistence.update(company);
 
 		company = updateVirtualHostname(companyId, virtualHostname);
 
-		_companyInfoPersistence.update(company.getCompanyInfo());
+		_companyInfoPersistence.update(companyInfo);
 
 		return company;
 	}
