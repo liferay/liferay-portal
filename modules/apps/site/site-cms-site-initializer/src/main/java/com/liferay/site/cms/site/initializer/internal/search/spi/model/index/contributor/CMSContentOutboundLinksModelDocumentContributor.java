@@ -112,8 +112,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 
 			if (!outboundLinks.isEmpty()) {
 				document.addKeyword(
-					CMSOutboundLinksUtil.FIELD_NAME,
-					outboundLinks.toArray(new String[0]));
+					"outboundLinks", outboundLinks.toArray(new String[0]));
 			}
 		}
 		catch (Exception exception) {

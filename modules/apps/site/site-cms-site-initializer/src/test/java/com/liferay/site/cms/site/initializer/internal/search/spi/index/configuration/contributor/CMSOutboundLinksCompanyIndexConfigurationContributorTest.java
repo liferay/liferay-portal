@@ -6,12 +6,10 @@
 package com.liferay.site.cms.site.initializer.internal.search.spi.index.configuration.contributor;
 
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.spi.index.configuration.contributor.helper.MappingsHelper;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.site.cms.site.initializer.util.CMSOutboundLinksUtil;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -52,12 +50,10 @@ public class CMSOutboundLinksCompanyIndexConfigurationContributorTest {
 		);
 
 		Assert.assertEquals(
-			StringBundler.concat(
-				"{\"properties\":{\"", CMSOutboundLinksUtil.FIELD_NAME,
-				"\":{\"type\":\"keyword\"}}}"),
+			"{\"properties\": {\"outboundLinks\": {\"type\": \"keyword\"}}}",
 			StringUtil.removeChars(
 				argumentCaptor.getValue(), CharPool.NEW_LINE, CharPool.RETURN,
-				CharPool.SPACE, CharPool.TAB));
+				CharPool.TAB));
 	}
 
 }

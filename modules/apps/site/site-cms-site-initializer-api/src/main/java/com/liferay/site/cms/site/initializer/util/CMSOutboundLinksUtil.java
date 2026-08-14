@@ -13,8 +13,6 @@ import com.liferay.petra.string.StringPool;
  */
 public class CMSOutboundLinksUtil {
 
-	public static final String FIELD_NAME = "outboundLinks";
-
 	public static String getObjectEntryExternalReferenceCodeToken(
 		String externalReferenceCode) {
 

@@ -163,8 +163,7 @@ public class AssetStatisticsResourceImpl
 
 			booleanQuery.addShouldQueryClauses(
 				_createTermsQuery(
-					CMSOutboundLinksUtil.FIELD_NAME,
-					values.toArray(new String[0])));
+					"outboundLinks", values.toArray(new String[0])));
 		}
 
 		booleanQuery.setMinimumShouldMatch(1);
