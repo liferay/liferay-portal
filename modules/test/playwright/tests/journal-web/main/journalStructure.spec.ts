@@ -124,3 +124,63 @@ test(
 		).toBeDisabled();
 	}
 );
+
+test(
+	'HTML in the name of a highlighted structure is not executed',
+	{
+		tag: '@LPD-101973',
+	},
+	async ({apiHelpers, journalPage, page, site}) => {
+		page.on('dialog', (dialog) => {
+			dialog.accept();
+
+			expect(
+				dialog.message(),
+				'This alert should not be shown'
+			).toBeNull();
+		});
+
+		const structurePrefix = getRandomString();
+		const structureName = `${structurePrefix} <img src=x onerror=alert(1)>`;
+
+		await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [{name: 'TextFieldTest', repeatable: false}],
+				name: structureName,
+			})
+		);
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await page
+			.getByTestId('headerOptions')
+			.getByLabel('Options')
+			.and(page.locator('[aria-haspopup]'))
+			.click();
+
+		await page.getByRole('menuitem', {name: 'Configuration'}).click();
+
+		await page.getByLabel('Select Highlighted Structures').click();
+
+		await page
+			.frameLocator('iframe[title="Select Structures"]')
+			.getByLabel(structurePrefix)
+			.click();
+
+		await page.getByRole('button', {name: 'Add'}).click();
+
+		await expect(page.getByText(structurePrefix)).toBeVisible();
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		await page.getByText('Success:You have successfully').waitFor();
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await page.locator('a[href*="highlightedDDMStructureId"]').click();
+
+		await expect(page.locator('h2.sheet-title')).toHaveText(structureName);
+	}
+);
