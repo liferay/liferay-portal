@@ -337,7 +337,7 @@ public class CPTestUtil {
 		if (cpDefinitionOptionRel == null) {
 			cpDefinitionOptionRel =
 				CPDefinitionOptionRelLocalServiceUtil.addCPDefinitionOptionRel(
-					cpDefinitionId, cpOptionId,
+					null, cpDefinitionId, cpOptionId,
 					RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.randomLocaleStringMap(),
 					CPConstants.PRODUCT_OPTION_SELECT_DATE_KEY,
@@ -347,7 +347,7 @@ public class CPTestUtil {
 
 		return CPDefinitionOptionValueRelLocalServiceUtil.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRel.getCPDefinitionOptionRelId(), key,
+				null, cpDefinitionOptionRel.getCPDefinitionOptionRelId(), key,
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(), name
 				).build(),
@@ -369,7 +369,7 @@ public class CPTestUtil {
 		if (cpDefinitionOptionRel == null) {
 			cpDefinitionOptionRel =
 				CPDefinitionOptionRelLocalServiceUtil.addCPDefinitionOptionRel(
-					cpDefinitionId, cpOptionId,
+					null, cpDefinitionId, cpOptionId,
 					RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.randomLocaleStringMap(),
 					getDefaultCommerceOptionTypeKey(true),
@@ -380,7 +380,7 @@ public class CPTestUtil {
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
 			CPDefinitionOptionValueRelLocalServiceUtil.
 				addCPDefinitionOptionValueRel(
-					cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+					null, cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.randomDouble(), serviceContext);
@@ -1480,7 +1480,7 @@ public class CPTestUtil {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			CPDefinitionOptionRelLocalServiceUtil.addCPDefinitionOptionRel(
-				parentCPDefinition.getCPDefinitionId(),
+				null, parentCPDefinition.getCPDefinitionId(),
 				priceableCPOption.getCPOptionId(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(),
@@ -1494,6 +1494,7 @@ public class CPTestUtil {
 				CPDefinitionOptionValueRel cpInstanceOptionValueRel =
 					CPDefinitionOptionValueRelLocalServiceUtil.
 						addCPDefinitionOptionValueRel(
+							null,
 							cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 							RandomTestUtil.randomString(),
 							RandomTestUtil.randomLocaleStringMap(),

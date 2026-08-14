@@ -72,7 +72,7 @@ public class CPInstanceOptionValueRelTableReferenceDefinitionTest
 		_cpDefinitionOptionValueRel =
 			_cpDefinitionOptionValueRelLocalService.
 				addCPDefinitionOptionValueRel(
-					_cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+					null, _cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 					CPInstanceOptionValueRelTableReferenceDefinitionTest.class.
 						getSimpleName(),
 					RandomTestUtil.randomLocaleStringMap(),

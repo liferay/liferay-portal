@@ -235,7 +235,8 @@ public class CPOptionLocalServiceTest {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			_cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-				cpDefinition.getCPDefinitionId(), cpOption.getCPOptionId(),
+				null, cpDefinition.getCPDefinitionId(),
+				cpOption.getCPOptionId(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(),
 				CPConstants.PRODUCT_OPTION_SELECT_DATE_KEY,

@@ -180,7 +180,7 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 
 			return _cpDefinitionOptionValueRelService.
 				addCPDefinitionOptionValueRel(
-					cpDefinitionOptionRelId, key, nameMap, priority,
+					null, cpDefinitionOptionRelId, key, nameMap, priority,
 					serviceContext);
 		}
 

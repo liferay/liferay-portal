@@ -66,7 +66,8 @@ public class ProductOptionValueResourceTest
 
 		_cpDefinitionOptionRel =
 			_cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-				_cpDefinition.getCPDefinitionId(), _cpOption.getCPOptionId(),
+				null, _cpDefinition.getCPDefinitionId(),
+				_cpOption.getCPOptionId(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(),
 				CPConstants.PRODUCT_OPTION_DATE_KEY,

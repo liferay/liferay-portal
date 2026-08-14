@@ -99,7 +99,7 @@ public class ProductOptionUtil {
 		if (cpDefinitionOptionRel == null) {
 			cpDefinitionOptionRel =
 				cpDefinitionOptionRelService.addCPDefinitionOptionRel(
-					cpDefinitionId, cpOption.getCPOptionId(),
+					null, cpDefinitionId, cpOption.getCPOptionId(),
 					LanguageUtils.getLocalizedMap(nameMap),
 					LanguageUtils.getLocalizedMap(descriptionMap),
 					GetterUtil.get(
