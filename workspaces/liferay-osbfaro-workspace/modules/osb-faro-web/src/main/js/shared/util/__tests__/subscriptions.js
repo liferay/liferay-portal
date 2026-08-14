@@ -76,6 +76,12 @@ describe('subscriptions', () => {
 			).toEqual('Liferay Data Platform Enterprise');
 		});
 
+		it('should return the label for the Liferay Digital Sales Room plan', () => {
+			expect(
+				getPlanLabel(SubscriptionNames.LiferayDigitalSalesRoom)
+			).toEqual('Liferay Digital Sales Room');
+		});
+
 		it('should return an empty string for an unknown plan', () => {
 			expect(getPlanLabel('something-unknown')).toEqual('');
 		});
