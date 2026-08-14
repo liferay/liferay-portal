@@ -101,6 +101,20 @@ public class BasicComponentFragmentCollectionContributorTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-102545")
+	public void testTabsAccessibility() throws Exception {
+		Document document = _getDocument("BASIC_COMPONENT-tabs");
+
+		Elements elements = document.select("[role=tab]");
+
+		Assert.assertEquals(elements.toString(), 4, elements.size());
+
+		elements = document.select("[role=tab] [tabindex]");
+
+		Assert.assertEquals(elements.toString(), 0, elements.size());
+	}
+
 	private Document _getDocument(String fragmentEntryKey) throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
