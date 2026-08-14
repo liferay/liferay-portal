@@ -75,12 +75,12 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceTest {
 		String externalReferenceCode = RandomTestUtil.randomString();
 
 		_addLayoutPageTemplateStructureRelElementVariation(
-			audienceEntryERC, externalReferenceCode, _group);
+			externalReferenceCode, _group, audienceEntryERC);
 
 		Group group = GroupTestUtil.addGroup();
 
 		_addLayoutPageTemplateStructureRelElementVariation(
-			RandomTestUtil.randomString(), externalReferenceCode, group);
+			externalReferenceCode, group, RandomTestUtil.randomString());
 
 		_layoutPageTemplateStructureRelElementVariationLocalService.
 			deleteLayoutPageTemplateStructureRelElementVariation(
@@ -111,7 +111,7 @@ public class LayoutPageTemplateStructureRelElementVariationLocalServiceTest {
 	}
 
 	private void _addLayoutPageTemplateStructureRelElementVariation(
-			String audienceEntryERC, String externalReferenceCode, Group group)
+			String externalReferenceCode, Group group, String audienceEntryERC)
 		throws Exception {
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
