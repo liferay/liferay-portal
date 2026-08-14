@@ -155,19 +155,14 @@ public class AuthVerifierPipelineTest {
 	public void testVerifyRequestWithIncompleteSetupUser()
 		throws PortalException {
 
-		_user.setType(UserConstants.TYPE_REGULAR);
-
-		// Email address not verified
-
 		_user.setPasswordReset(false);
 		_user.setEmailAddressVerified(false);
+		_user.setType(UserConstants.TYPE_REGULAR);
 
 		_assertAuthVerifierResultForUser(
 			AuthVerifierResult.State.SUCCESS, true);
 		_assertAuthVerifierResultForUser(
 			AuthVerifierResult.State.UNSUCCESSFUL, false);
-
-		// Password reset required
 
 		_user.setPasswordReset(true);
 		_user.setEmailAddressVerified(true);
