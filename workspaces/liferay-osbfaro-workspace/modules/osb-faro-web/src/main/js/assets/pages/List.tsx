@@ -7,6 +7,8 @@ import ClaySticker from '@clayui/sticker';
 import FaroConstants, {RangeKeyTimeRanges} from 'shared/util/constants';
 import React, {useMemo, useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
+import {ASSET_OBJECT_TYPE_LANG_MAP} from 'shared/util/lang';
+import {AssetObjectTypes} from 'shared/util/constants';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import {FrontendDataSet, pagination} from 'shared/components/FrontendDataSet';
 import {getMimeType} from 'assets/components/mime-type';
@@ -26,6 +28,8 @@ import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
 const {cur: DEFAULT_CUR} = FaroConstants.pagination;
+
+const OBJECT_TYPES = Object.values(AssetObjectTypes);
 
 const mapRoutes = {
 	blog: Routes.ASSETS_BLOGS_OVERVIEW,
@@ -97,6 +101,9 @@ const getAssetURL = ({
 const columns = {
 	assetMetricRenderer: ({value}: {value: {value: number}}) => (
 		<span>{toThousands(value.value)}</span>
+	),
+	assetObjectTypeRenderer: ({value}: {value?: AssetObjectTypes}) => (
+		<span>{(value && ASSET_OBJECT_TYPE_LANG_MAP[value]) || ''}</span>
 	),
 	assetTitleRenderer:
 		({
@@ -187,6 +194,12 @@ const TABLE_FIELDS = [
 		sortable: true,
 	},
 	{
+		contentRenderer: 'assetObjectTypeRenderer',
+		fieldName: 'objectType',
+		label: Liferay.Language.get('object-type'),
+		sortable: true,
+	},
+	{
 		contentRenderer: 'assetMetricRenderer',
 		fieldName: 'viewsMetric',
 		label: Liferay.Language.get('views'),
@@ -220,6 +233,10 @@ const List = () => {
 	const orderBy = searchParams.get('orderBy');
 	const segmentId = searchParams.get('segmentId');
 	const segmentName = searchParams.get('segmentName');
+
+	const objectType = OBJECT_TYPES.find(
+		(value) => value === searchParams.get('objectType')
+	);
 
 	const sortableFields = TABLE_FIELDS.filter((field) => field.sortable);
 
@@ -306,6 +323,27 @@ const List = () => {
 				type: 'selection',
 			},
 			{
+				entityFieldType: 'string',
+				id: 'objectType',
+				items: OBJECT_TYPES.map((value) => ({
+					label: ASSET_OBJECT_TYPE_LANG_MAP[value],
+					value,
+				})),
+				label: Liferay.Language.get('object-type'),
+				multiple: false,
+				...(objectType && {
+					preloadedData: {
+						selectedItems: [
+							{
+								label: ASSET_OBJECT_TYPE_LANG_MAP[objectType],
+								value: objectType,
+							},
+						],
+					},
+				}),
+				type: 'selection',
+			},
+			{
 				apiURL: `/o/faro/contacts/${groupId}/asset-summary-tags?channelId=${channelId}&${rangeSelectorParams}`,
 				autocompleteEnabled: true,
 				entityFieldType: 'string',
@@ -345,6 +383,7 @@ const List = () => {
 			channelId,
 			groupId,
 			LDPEnabled,
+			objectType,
 			rangeSelectorParams,
 			segmentId,
 			segmentName,
@@ -401,6 +440,8 @@ const List = () => {
 						apiURL={`/o/faro/contacts/${groupId}/asset-summary?channelId=${channelId}&${rangeSelectorParams}`}
 						customDataRenderers={{
 							assetMetricRenderer: columns.assetMetricRenderer,
+							assetObjectTypeRenderer:
+								columns.assetObjectTypeRenderer,
 							assetTitleRenderer: columns.assetTitleRenderer({
 								accountId,
 								accountName,
@@ -422,6 +463,7 @@ const List = () => {
 							{
 								filters: [
 									'assetType',
+									'objectType',
 									'tags/id',
 									'categories/id',
 									'mimeType',
