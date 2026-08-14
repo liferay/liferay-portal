@@ -181,6 +181,127 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 		<antcall target="deploy" />
 	</target>
 
+	<target name="baseline-all">
+		<property name="baseline.all.ant.projects" value="true" />
+		<property name="baseline.all.ignore.failures" value="false" />
+		<property name="baseline.all.report" value="false" />
+
+		<fileset
+			dir="${project.dir}/modules"
+			id="baseline.all.bnd.files"
+		>
+			<include name="**/bnd.bnd" />
+			<exclude name="**/.*/**" />
+			<exclude name="**/_node-scripts/**" />
+			<exclude name="**/build/**" />
+			<exclude name="**/node_modules/**" />
+			<exclude name="**/node_modules_cache/**" />
+			<exclude name="sdk/**" />
+			<exclude name="test/**" />
+			<exclude name="third-party/**" />
+			<exclude name="util/**" />
+			<contains text="Export-Package:" />
+		</fileset>
+
+		<pathconvert pathsep=" " property="baseline.all.dirs" refid="baseline.all.bnd.files">
+			<regexpmapper from="^.*/modules/(.*)/bnd\.bnd$" handledirsep="true" to="\1" />
+		</pathconvert>
+
+		<for delimiter=" " list="${baseline.all.dirs}" param="baseline.all.dir">
+			<sequential>
+				<delete file="${project.dir}/modules/@{baseline.all.dir}/build/reports/baseline/baseline.log" quiet="true" />
+			</sequential>
+		</for>
+
+		<propertyregex
+			global="true"
+			input="${baseline.all.dirs}"
+			override="true"
+			property="baseline.all.tasks"
+			regexp="/"
+			replace=":"
+		/>
+
+		<propertyregex
+			global="true"
+			input="${baseline.all.tasks}"
+			override="true"
+			property="baseline.all.tasks"
+			regexp="([^ ]+)"
+			replace=":\1:baseline"
+		/>
+
+		<parallel threadCount="2">
+			<sequential>
+				<if>
+					<equals arg1="${baseline.all.ant.projects}" arg2="true" />
+					<then>
+						<delete quiet="true">
+							<fileset
+								dir="${project.dir}/baseline-reports"
+								erroronmissingdir="false"
+								includes="*.log"
+							/>
+						</delete>
+
+						<for list="portal-kernel,portal-impl,portal-test,util-bridges,util-java,util-slf4j,util-taglib" param="baseline.all.project.dir">
+							<sequential>
+								<ant antfile="${project.dir}/@{baseline.all.project.dir}/build.xml" dir="${project.dir}/@{baseline.all.project.dir}" inheritall="false" target="jar" />
+
+								<gradle-execute dir="${project.dir}/@{baseline.all.project.dir}" failonerror="false" forcedcacheenabled="false" stacktrace="false" task="baseline">
+									<arg value="--quiet" />
+									<arg value="-Dbaseline.ignoreFailures=${baseline.all.ignore.failures}" />
+								</gradle-execute>
+							</sequential>
+						</for>
+
+						<fileset
+							dir="${project.dir}/baseline-reports"
+							erroronmissingdir="false"
+							id="baseline.all.log.files"
+							includes="*.log"
+						/>
+
+						<pathconvert pathsep="," property="baseline.all.log.files" refid="baseline.all.log.files" setonempty="false" />
+
+						<if>
+							<isset property="baseline.all.log.files" />
+							<then>
+								<concat>
+									<fileset
+										dir="${project.dir}/baseline-reports"
+										includes="*.log"
+									/>
+								</concat>
+
+								<fail message="Semantic versioning is incorrect." />
+							</then>
+						</if>
+					</then>
+				</if>
+			</sequential>
+			<sequential>
+				<gradle-execute dir="${project.dir}/modules" forcedcacheenabled="false" stacktrace="false" task="">
+					<arg value="--continue" />
+					<arg value="--parallel" />
+					<arg value="--quiet" />
+					<arg line="${baseline.all.tasks}" />
+					<arg value="-Dbaseline.ignoreFailures=${baseline.all.ignore.failures}" />
+				</gradle-execute>
+			</sequential>
+		</parallel>
+
+		<if>
+			<equals arg1="${baseline.all.report}" arg2="true" />
+			<then>
+				<gradle-execute dir="${project.dir}/modules/test/semantic-versioning-test" forcedcacheenabled="false" stacktrace="false" task="test">
+					<arg value="-Dmodules.test.class.group=${baseline.all.tasks}" />
+					<arg value="-Dproject.dir=${project.dir}" />
+				</gradle-execute>
+			</then>
+		</if>
+	</target>
+
 	<target name="baseline-current-branch">
 		<java
 			classname="com.liferay.portal.tools.GitUtil"
