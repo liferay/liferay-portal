@@ -16,8 +16,23 @@ mock_provider "azurerm" {
 		}
 	}
 }
+mock_provider "kubernetes" {}
 override_module {
 	target=module.argocd
+}
+run "should_align_the_karpenter_node_pool_with_the_system_machine_type" {
+	assert {
+		condition=one([for requirement in kubernetes_manifest.karpenter_node_pool.manifest.spec.template.spec.requirements : requirement.values if requirement.key == "karpenter.azure.com/sku-name"]) == ["Standard_D16s_v3"]
+		error_message="The Karpenter node pool must pin its SKU to the machine type driving the system node pool"
+	}
+	assert {
+		condition=kubernetes_manifest.karpenter_node_pool.manifest.spec.weight > 0
+		error_message="The Karpenter node pool must outweigh the node pools auto-provisioning generates by default"
+	}
+	command=plan
+	variables {
+		machine_type="Standard_D16s_v3"
+	}
 }
 run "should_assemble_the_deployment_context" {
 	assert {

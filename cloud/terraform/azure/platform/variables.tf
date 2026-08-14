@@ -29,6 +29,10 @@ variable "cluster_secret_store" {
 variable "deployment_name" {
 	type=string
 }
+variable "machine_type" {
+	default="Standard_D4ds_v4"
+	type=string
+}
 variable "region" {
 	type=string
 }
