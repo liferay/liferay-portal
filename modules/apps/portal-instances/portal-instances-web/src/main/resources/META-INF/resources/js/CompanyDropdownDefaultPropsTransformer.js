@@ -6,6 +6,7 @@
 import {openToast} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 
+import openCopyCompanyModal from './openCopyCompanyModal';
 import openDeleteCompanyModal from './openDeleteCompanyModal';
 import openExportCompanyModal from './openExportCompanyModal';
 
@@ -19,6 +20,13 @@ const showUnexpectedErrorToast = () => {
 };
 
 const ACTIONS = {
+	copyInstance(itemData, portletNamespace) {
+		openCopyCompanyModal({
+			portletNamespace,
+			url: itemData.copyURL,
+		});
+	},
+
 	deleteInstance(itemData) {
 		openDeleteCompanyModal({
 			onDelete: () => {
