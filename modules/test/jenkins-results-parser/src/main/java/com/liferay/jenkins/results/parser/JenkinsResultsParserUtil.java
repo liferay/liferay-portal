@@ -3745,7 +3745,9 @@ public class JenkinsResultsParserUtil {
 				UrlReader.getResponseHeader(
 					"Location", getJenkinsHTTPAuthorization(),
 					HttpRequestMethod.POST, sb.toString(), requestHeaders,
-					timeout, combine(jenkinsJobURL, "/buildWithParameters")));
+					timeout,
+					combine(
+						getLocalURL(jenkinsJobURL), "/buildWithParameters")));
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
