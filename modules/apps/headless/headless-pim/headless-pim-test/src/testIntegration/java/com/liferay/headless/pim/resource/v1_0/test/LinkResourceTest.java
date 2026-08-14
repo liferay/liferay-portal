@@ -7,7 +7,6 @@ package com.liferay.headless.pim.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.pim.client.dto.v1_0.Link;
 import com.liferay.headless.pim.client.dto.v1_0.LinkReference;
 import com.liferay.object.model.ObjectDefinition;
@@ -76,7 +75,7 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 		linkResource.postScopeScopeKeyLink(
 			String.valueOf(depotEntry.getGroupId()),
 			_toLink(
-				objectEntry1, Collections.singletonList(objectEntry2), _TYPE));
+				_TYPE, objectEntry1, Collections.singletonList(objectEntry2)));
 
 		Assert.assertNotNull(
 			_getClusterKey(
@@ -111,7 +110,7 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 		linkResource.postScopeScopeKeyLink(
 			String.valueOf(depotEntry.getGroupId()),
 			_toLink(
-				objectEntry1, Collections.singletonList(objectEntry2), _TYPE));
+				_TYPE, objectEntry1, Collections.singletonList(objectEntry2)));
 
 		String clusterKey = _getClusterKey(
 			depotEntry.getGroupId(), objectEntry1.getExternalReferenceCode());
@@ -154,35 +153,33 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 	}
 
 	private Link _toLink(
-		ObjectEntry sourceObjectEntry, List<ObjectEntry> targetObjectEntries,
-		String type) {
+		String linkType, ObjectEntry sourceObjectEntry,
+		List<ObjectEntry> targetObjectEntries) {
 
-		Link link = new Link();
-
-		link.setSourceLinkReference(_toLinkReference(sourceObjectEntry));
-		link.setTargetLinkReferences(
-			TransformUtil.transformToArray(
-				targetObjectEntries, this::_toLinkReference,
-				LinkReference.class));
-		link.setType(type);
-
-		return link;
+		return new Link() {
+			{
+				setSourceLinkReference(_toLinkReference(sourceObjectEntry));
+				setTargetLinkReferences(
+					TransformUtil.transformToArray(
+						targetObjectEntries,
+						LinkResourceTest.this::_toLinkReference,
+						LinkReference.class));
+				setType(() -> linkType);
+			}
+		};
 	}
 
 	private LinkReference _toLinkReference(ObjectEntry objectEntry) {
-		LinkReference linkReference = new LinkReference();
-
-		linkReference.setClassName(objectEntry.getModelClassName());
-		linkReference.setExternalReferenceCode(
-			objectEntry.getExternalReferenceCode());
-
-		return linkReference;
+		return new LinkReference() {
+			{
+				setClassName(objectEntry.getModelClassName());
+				setExternalReferenceCode(
+					objectEntry.getExternalReferenceCode());
+			}
+		};
 	}
 
 	private static final String _TYPE = "variant";
-
-	@Inject
-	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
