@@ -6,7 +6,6 @@
 package com.liferay.analytics.settings.rest.internal.graphql.query.v1_0;
 
 import com.liferay.analytics.settings.rest.dto.v1_0.Channel;
-import com.liferay.analytics.settings.rest.dto.v1_0.CommerceChannel;
 import com.liferay.analytics.settings.rest.dto.v1_0.ContactAccountGroup;
 import com.liferay.analytics.settings.rest.dto.v1_0.ContactConfiguration;
 import com.liferay.analytics.settings.rest.dto.v1_0.ContactOrganization;
@@ -16,7 +15,6 @@ import com.liferay.analytics.settings.rest.dto.v1_0.FieldSummary;
 import com.liferay.analytics.settings.rest.dto.v1_0.RecommendationConfiguration;
 import com.liferay.analytics.settings.rest.dto.v1_0.Site;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
-import com.liferay.analytics.settings.rest.resource.v1_0.CommerceChannelResource;
 import com.liferay.analytics.settings.rest.resource.v1_0.ContactAccountGroupResource;
 import com.liferay.analytics.settings.rest.resource.v1_0.ContactConfigurationResource;
 import com.liferay.analytics.settings.rest.resource.v1_0.ContactOrganizationResource;
@@ -62,14 +60,6 @@ public class Query {
 
 		_channelResourceComponentServiceObjects =
 			channelResourceComponentServiceObjects;
-	}
-
-	public static void setCommerceChannelResourceComponentServiceObjects(
-		ComponentServiceObjects<CommerceChannelResource>
-			commerceChannelResourceComponentServiceObjects) {
-
-		_commerceChannelResourceComponentServiceObjects =
-			commerceChannelResourceComponentServiceObjects;
 	}
 
 	public static void setContactAccountGroupResourceComponentServiceObjects(
@@ -157,29 +147,6 @@ public class Query {
 				channelResource.getChannelsPage(
 					keywords, Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(channelResource, sortsString))));
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {commerceChannels(keywords: ___, page: ___, pageSize: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
-	 */
-	@GraphQLField
-	public CommerceChannelPage commerceChannels(
-			@GraphQLName("keywords") String keywords,
-			@GraphQLName("pageSize") int pageSize,
-			@GraphQLName("page") int page,
-			@GraphQLName("sort") String sortsString)
-		throws Exception {
-
-		return _applyComponentServiceObjects(
-			_commerceChannelResourceComponentServiceObjects,
-			this::_populateResourceContext,
-			commerceChannelResource -> new CommerceChannelPage(
-				commerceChannelResource.getCommerceChannelsPage(
-					keywords, Pagination.of(page, pageSize),
-					_sortsBiFunction.apply(
-						commerceChannelResource, sortsString))));
 	}
 
 	/**
@@ -379,39 +346,6 @@ public class Query {
 
 		@GraphQLField
 		protected java.util.Collection<Channel> items;
-
-		@GraphQLField
-		protected long lastPage;
-
-		@GraphQLField
-		protected long page;
-
-		@GraphQLField
-		protected long pageSize;
-
-		@GraphQLField
-		protected long totalCount;
-
-	}
-
-	@GraphQLName("CommerceChannelPage")
-	public class CommerceChannelPage {
-
-		public CommerceChannelPage(Page commerceChannelPage) {
-			actions = commerceChannelPage.getActions();
-
-			items = commerceChannelPage.getItems();
-			lastPage = commerceChannelPage.getLastPage();
-			page = commerceChannelPage.getPage();
-			pageSize = commerceChannelPage.getPageSize();
-			totalCount = commerceChannelPage.getTotalCount();
-		}
-
-		@GraphQLField
-		protected Map<String, Map<String, String>> actions;
-
-		@GraphQLField
-		protected java.util.Collection<CommerceChannel> items;
 
 		@GraphQLField
 		protected long lastPage;
@@ -730,26 +664,6 @@ public class Query {
 	}
 
 	private void _populateResourceContext(
-			CommerceChannelResource commerceChannelResource)
-		throws Exception {
-
-		commerceChannelResource.setContextAcceptLanguage(_acceptLanguage);
-		commerceChannelResource.setContextCompany(_company);
-		commerceChannelResource.setContextHttpServletRequest(
-			_httpServletRequest);
-		commerceChannelResource.setContextHttpServletResponse(
-			_httpServletResponse);
-		commerceChannelResource.setContextUriInfo(_uriInfo);
-		commerceChannelResource.setContextUser(_user);
-		commerceChannelResource.setGroupLocalService(_groupLocalService);
-		commerceChannelResource.setResourceActionLocalService(
-			_resourceActionLocalService);
-		commerceChannelResource.setResourcePermissionLocalService(
-			_resourcePermissionLocalService);
-		commerceChannelResource.setRoleLocalService(_roleLocalService);
-	}
-
-	private void _populateResourceContext(
 			ContactAccountGroupResource contactAccountGroupResource)
 		throws Exception {
 
@@ -907,8 +821,6 @@ public class Query {
 
 	private static ComponentServiceObjects<ChannelResource>
 		_channelResourceComponentServiceObjects;
-	private static ComponentServiceObjects<CommerceChannelResource>
-		_commerceChannelResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ContactAccountGroupResource>
 		_contactAccountGroupResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ContactConfigurationResource>
@@ -943,4 +855,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1119865160
+// LIFERAY-REST-BUILDER-HASH:-1416026813

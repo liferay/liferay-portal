@@ -47,47 +47,6 @@ public class DataSource implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long[] getCommerceChannelIds() {
-		if (_commerceChannelIdsSupplier != null) {
-			commerceChannelIds = _commerceChannelIdsSupplier.get();
-
-			_commerceChannelIdsSupplier = null;
-		}
-
-		return commerceChannelIds;
-	}
-
-	public void setCommerceChannelIds(Long[] commerceChannelIds) {
-		this.commerceChannelIds = commerceChannelIds;
-
-		_commerceChannelIdsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setCommerceChannelIds(
-		UnsafeSupplier<Long[], Exception> commerceChannelIdsUnsafeSupplier) {
-
-		_commerceChannelIdsSupplier = () -> {
-			try {
-				return commerceChannelIdsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long[] commerceChannelIds;
-
-	@JsonIgnore
-	private Supplier<Long[]> _commerceChannelIdsSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
 	public String getDataSourceId() {
 		if (_dataSourceIdSupplier != null) {
 			dataSourceId = _dataSourceIdSupplier.get();
@@ -195,28 +154,6 @@ public class DataSource implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
-
-		Long[] commerceChannelIds = getCommerceChannelIds();
-
-		if (commerceChannelIds != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"commerceChannelIds\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < commerceChannelIds.length; i++) {
-				sb.append(commerceChannelIds[i]);
-
-				if ((i + 1) < commerceChannelIds.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
 
 		String dataSourceId = getDataSourceId();
 
@@ -357,4 +294,4 @@ public class DataSource implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1683061336
+// LIFERAY-REST-BUILDER-HASH:1281929022

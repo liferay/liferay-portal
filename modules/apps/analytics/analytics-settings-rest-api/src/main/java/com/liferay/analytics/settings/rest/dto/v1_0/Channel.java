@@ -95,47 +95,6 @@ public class Channel implements Serializable {
 	private Supplier<String> _channelIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Boolean getCommerceSyncEnabled() {
-		if (_commerceSyncEnabledSupplier != null) {
-			commerceSyncEnabled = _commerceSyncEnabledSupplier.get();
-
-			_commerceSyncEnabledSupplier = null;
-		}
-
-		return commerceSyncEnabled;
-	}
-
-	public void setCommerceSyncEnabled(Boolean commerceSyncEnabled) {
-		this.commerceSyncEnabled = commerceSyncEnabled;
-
-		_commerceSyncEnabledSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setCommerceSyncEnabled(
-		UnsafeSupplier<Boolean, Exception> commerceSyncEnabledUnsafeSupplier) {
-
-		_commerceSyncEnabledSupplier = () -> {
-			try {
-				return commerceSyncEnabledUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean commerceSyncEnabled;
-
-	@JsonIgnore
-	private Supplier<Boolean> _commerceSyncEnabledSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
 	public Date getCreateDate() {
 		if (_createDateSupplier != null) {
 			createDate = _createDateSupplier.get();
@@ -304,18 +263,6 @@ public class Channel implements Serializable {
 			sb.append("\"");
 		}
 
-		Boolean commerceSyncEnabled = getCommerceSyncEnabled();
-
-		if (commerceSyncEnabled != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"commerceSyncEnabled\": ");
-
-			sb.append(commerceSyncEnabled);
-		}
-
 		Date createDate = getCreateDate();
 
 		if (createDate != null) {
@@ -471,4 +418,4 @@ public class Channel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1610531846
+// LIFERAY-REST-BUILDER-HASH:1251132878

@@ -95,7 +95,7 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/analytics-settings-rest/v1.0/channels' -d $'{"channelId": ___, "commerceSyncEnabled": ___, "createDate": ___, "dataSources": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/analytics-settings-rest/v1.0/channels' -d $'{"channelId": ___, "createDate": ___, "dataSources": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Channel")}
@@ -112,7 +112,7 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/analytics-settings-rest/v1.0/channels' -d $'{"channelId": ___, "commerceSyncEnabled": ___, "createDate": ___, "dataSources": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/analytics-settings-rest/v1.0/channels' -d $'{"channelId": ___, "createDate": ___, "dataSources": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Channel")}
@@ -578,4 +578,4 @@ public abstract class BaseChannelResourceImpl
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1582588237
+// LIFERAY-REST-BUILDER-HASH:962772571

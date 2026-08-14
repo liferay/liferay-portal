@@ -25,27 +25,6 @@ public class DataSource implements Cloneable, Serializable {
 		return DataSourceSerDes.toDTO(json);
 	}
 
-	public Long[] getCommerceChannelIds() {
-		return commerceChannelIds;
-	}
-
-	public void setCommerceChannelIds(Long[] commerceChannelIds) {
-		this.commerceChannelIds = commerceChannelIds;
-	}
-
-	public void setCommerceChannelIds(
-		UnsafeSupplier<Long[], Exception> commerceChannelIdsUnsafeSupplier) {
-
-		try {
-			commerceChannelIds = commerceChannelIdsUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Long[] commerceChannelIds;
-
 	public String getDataSourceId() {
 		return dataSourceId;
 	}
@@ -120,4 +99,4 @@ public class DataSource implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1545543902
+// LIFERAY-REST-BUILDER-HASH:-1350641007

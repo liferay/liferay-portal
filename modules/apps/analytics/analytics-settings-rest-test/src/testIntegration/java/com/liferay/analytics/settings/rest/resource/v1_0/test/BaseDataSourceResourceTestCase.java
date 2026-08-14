@@ -296,16 +296,6 @@ public abstract class BaseDataSourceResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals(
-					"commerceChannelIds", additionalAssertFieldName)) {
-
-				if (dataSource.getCommerceChannelIds() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("dataSourceId", additionalAssertFieldName)) {
 				if (dataSource.getDataSourceId() == null) {
 					valid = false;
@@ -475,19 +465,6 @@ public abstract class BaseDataSourceResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals(
-					"commerceChannelIds", additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						dataSource1.getCommerceChannelIds(),
-						dataSource2.getCommerceChannelIds())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals("dataSourceId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						dataSource1.getDataSourceId(),
@@ -648,11 +625,6 @@ public abstract class BaseDataSourceResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
-
-		if (entityFieldName.equals("commerceChannelIds")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
 
 		if (entityFieldName.equals("dataSourceId")) {
 			Object object = dataSource.getDataSourceId();
@@ -989,4 +961,4 @@ public abstract class BaseDataSourceResourceTestCase {
 		_dataSourceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2010588884
+// LIFERAY-REST-BUILDER-HASH:209428717

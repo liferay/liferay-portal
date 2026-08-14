@@ -89,8 +89,6 @@ public class OpenAPIResourceImpl {
 
 			add(ChannelResourceImpl.class);
 
-			add(CommerceChannelResourceImpl.class);
-
 			add(ContactAccountGroupResourceImpl.class);
 
 			add(ContactConfigurationResourceImpl.class);
@@ -114,4 +112,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-220481523
+// LIFERAY-REST-BUILDER-HASH:-1058658225
