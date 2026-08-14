@@ -12,7 +12,6 @@ import com.liferay.portal.configuration.persistence.listener.ConfigurationModelL
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.security.script.management.configuration.GroovyScriptUsesCheckThreadLocal;
@@ -20,7 +19,6 @@ import com.liferay.portal.security.script.management.configuration.ScriptManagem
 import com.liferay.portal.security.script.management.groovy.script.uses.factory.GroovyScriptUsesFactory;
 
 import java.util.Dictionary;
-import java.util.Locale;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -42,7 +40,7 @@ public class ScriptManagementConfigurationModelListener
 	public void onBeforeDelete(String pid)
 		throws ConfigurationModelListenerException {
 
-		_checkActiveGroovyScriptUses();
+		_checkActiveGroovyScriptUses(null);
 	}
 
 	@Override
@@ -55,7 +53,7 @@ public class ScriptManagementConfigurationModelListener
 			return;
 		}
 
-		_checkActiveGroovyScriptUses();
+		_checkActiveGroovyScriptUses(properties);
 	}
 
 	@Activate
@@ -69,7 +67,8 @@ public class ScriptManagementConfigurationModelListener
 		_serviceTrackerList.close();
 	}
 
-	private void _checkActiveGroovyScriptUses()
+	private void _checkActiveGroovyScriptUses(
+			Dictionary<String, Object> properties)
 		throws ConfigurationModelListenerException {
 
 		if (!GroovyScriptUsesCheckThreadLocal.isEnabled()) {
@@ -84,25 +83,19 @@ public class ScriptManagementConfigurationModelListener
 		catch (Exception exception) {
 			throw new ConfigurationModelListenerException(
 				exception, ScriptManagementConfiguration.class, getClass(),
-				null);
+				properties);
 		}
 
 		if (!hasGroovyScriptUses) {
 			return;
 		}
 
-		Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
-
-		if (locale == null) {
-			locale = LocaleUtil.getDefault();
-		}
-
 		throw new ConfigurationModelListenerException(
 			_language.get(
-				locale,
+				LocaleUtil.getMostRelevantLocale(),
 				"resolve-all-active-scripting-uses-before-proceeding-you-can-" +
 					"deactivate-the-source-entity-or-remove-the-script"),
-			ScriptManagementConfiguration.class, getClass(), null);
+			ScriptManagementConfiguration.class, getClass(), properties);
 	}
 
 	private boolean _hasGroovyScriptUses() throws Exception {

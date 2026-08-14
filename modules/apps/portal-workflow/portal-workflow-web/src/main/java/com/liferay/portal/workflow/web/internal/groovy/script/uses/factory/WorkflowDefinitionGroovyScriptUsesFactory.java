@@ -44,11 +44,7 @@ public class WorkflowDefinitionGroovyScriptUsesFactory
 			_workflowDefinitionManager.getActiveWorkflowDefinitions(
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
 			workflowDefinition -> {
-				if (!WorkflowDefinitionGroovyScriptUseDetector.detect(
-						workflowDefinition.getContent(), _jsonFactory) ||
-					_isMessageBoardsUserStatsModeration(
-						workflowDefinition.getName())) {
-
+				if (!_hasGroovyScriptUse(workflowDefinition)) {
 					return null;
 				}
 
@@ -73,16 +69,23 @@ public class WorkflowDefinitionGroovyScriptUsesFactory
 				_workflowDefinitionManager.getActiveWorkflowDefinitions(
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-			if (WorkflowDefinitionGroovyScriptUseDetector.detect(
-					workflowDefinition.getContent(), _jsonFactory) &&
-				!_isMessageBoardsUserStatsModeration(
-					workflowDefinition.getName())) {
-
+			if (_hasGroovyScriptUse(workflowDefinition)) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	private boolean _hasGroovyScriptUse(WorkflowDefinition workflowDefinition)
+		throws Exception {
+
+		if (_isMessageBoardsUserStatsModeration(workflowDefinition.getName())) {
+			return false;
+		}
+
+		return WorkflowDefinitionGroovyScriptUseDetector.detect(
+			workflowDefinition.getContent(), _jsonFactory);
 	}
 
 	private boolean _isMessageBoardsUserStatsModeration(
