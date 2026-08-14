@@ -396,7 +396,7 @@ public class AWSKMSSystemCryptoProviderTest {
 
 		ReflectionTestUtil.setFieldValue(
 			_awsKMSSystemCryptoProvider, "_configuration",
-			new BaseAWSKMSCryptoProvider.Configuration(
+			new AWSKMSCryptoProviderContext(
 				null, _awsClientManager,
 				new AWSKMSFIPSValidator("AES_256_GCM", fipsEnforced), enabled,
 				keyARNTemplate, RandomTestUtil.randomString(), false));
