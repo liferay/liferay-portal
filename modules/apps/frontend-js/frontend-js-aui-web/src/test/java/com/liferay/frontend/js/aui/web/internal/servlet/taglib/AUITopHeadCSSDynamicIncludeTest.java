@@ -34,19 +34,18 @@ public class AUITopHeadCSSDynamicIncludeTest {
 	@Test
 	@TestInfo("LPD-102542")
 	public void testInclude() throws Exception {
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
 		AUITopHeadCSSDynamicInclude auiTopHeadCSSDynamicInclude =
 			new AUITopHeadCSSDynamicInclude();
-
 		String href = RandomTestUtil.randomString();
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
 
 		ReflectionTestUtil.setFieldValue(
 			auiTopHeadCSSDynamicInclude, "_absolutePortalURLBuilderFactory",
 			_getAbsolutePortalURLBuilderFactory(href, mockHttpServletRequest));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
 
 		auiTopHeadCSSDynamicInclude.include(
 			mockHttpServletRequest, mockHttpServletResponse,

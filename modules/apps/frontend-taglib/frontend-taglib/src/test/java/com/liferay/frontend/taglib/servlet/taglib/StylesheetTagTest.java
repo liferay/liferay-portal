@@ -52,17 +52,16 @@ public class StylesheetTagTest {
 	@Test
 	@TestInfo("LPD-102542")
 	public void testDoEndTag() throws Exception {
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		StylesheetTag stylesheetTag = new StylesheetTag();
 
 		String bundleSymbolicName = RandomTestUtil.randomString();
 		String css = RandomTestUtil.randomString();
 		String href = RandomTestUtil.randomString();
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
 
 		_setUpServicesProvider(
 			bundleSymbolicName, css, href, mockHttpServletRequest);
-
-		StylesheetTag stylesheetTag = new StylesheetTag();
 
 		stylesheetTag.setBundle(bundleSymbolicName);
 		stylesheetTag.setCss(css);
@@ -86,12 +85,9 @@ public class StylesheetTagTest {
 		String bundleSymbolicName, String css, String href,
 		MockHttpServletRequest mockHttpServletRequest) {
 
-		AbsolutePortalURLBuilderFactory absolutePortalURLBuilderFactory =
-			Mockito.mock(AbsolutePortalURLBuilderFactory.class);
+		Bundle bundle = Mockito.mock(Bundle.class);
 
 		String webContextPath = RandomTestUtil.randomString();
-
-		Bundle bundle = Mockito.mock(Bundle.class);
 
 		Mockito.when(
 			bundle.getHeaders(StringPool.BLANK)
@@ -125,6 +121,9 @@ public class StylesheetTagTest {
 		).thenReturn(
 			webContextStylesheetAbsolutePortalURLBuilder
 		);
+
+		AbsolutePortalURLBuilderFactory absolutePortalURLBuilderFactory =
+			Mockito.mock(AbsolutePortalURLBuilderFactory.class);
 
 		Mockito.when(
 			absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
