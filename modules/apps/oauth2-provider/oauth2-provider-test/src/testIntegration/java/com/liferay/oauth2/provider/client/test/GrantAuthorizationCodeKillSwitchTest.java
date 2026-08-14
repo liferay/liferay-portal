@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -48,7 +49,7 @@ public class GrantAuthorizationCodeKillSwitchTest extends BaseClientTestCase {
 					null,
 					getCodeFunction(
 						webTarget -> webTarget.queryParam(
-							"client_id", "oauthTestApplicationCode"
+							"client_id", _CLIENT_ID_CODE
 						).queryParam(
 							"response_type", "code"
 						)))));
@@ -58,6 +59,8 @@ public class GrantAuthorizationCodeKillSwitchTest extends BaseClientTestCase {
 	protected BundleActivator getBundleActivator() {
 		return new GrantKillClientCredentialsSwitchTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
 
 	private User _user;
 
@@ -81,7 +84,7 @@ public class GrantAuthorizationCodeKillSwitchTest extends BaseClientTestCase {
 				).build());
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationCode",
+				companyId, _user, _CLIENT_ID_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				Collections.singletonList("everything"));
 		}

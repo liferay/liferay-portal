@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -50,7 +51,7 @@ public class GrantAuthorizationCodePKCEKillSwitchTest
 					null,
 					getCodeFunction(
 						webTarget -> webTarget.queryParam(
-							"client_id", "oauthTestApplicationCodePKCE"
+							"client_id", _CLIENT_ID_CODE_PKCE
 						).queryParam(
 							"code_challenge", "NotChecked"
 						).queryParam(
@@ -62,6 +63,9 @@ public class GrantAuthorizationCodePKCEKillSwitchTest
 	protected BundleActivator getBundleActivator() {
 		return new GrantKillClientCredentialsSwitchTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID_CODE_PKCE =
+		RandomTestUtil.randomString();
 
 	private User _user;
 
@@ -85,7 +89,7 @@ public class GrantAuthorizationCodePKCEKillSwitchTest
 				).build());
 
 			createOAuth2ApplicationWithNone(
-				companyId, _user, "oauthTestApplicationCodePKCE",
+				companyId, _user, _CLIENT_ID_CODE_PKCE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
 				Collections.singletonList(
 					"http://redirecturi:" +

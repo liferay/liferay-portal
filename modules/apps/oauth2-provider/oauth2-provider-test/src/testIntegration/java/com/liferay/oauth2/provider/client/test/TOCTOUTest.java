@@ -14,6 +14,7 @@ import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalSer
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -63,7 +64,7 @@ public class TOCTOUTest extends BaseClientTestCase {
 		WebTarget webTarget1 = getWebTarget("/annotated");
 
 		String token = getToken(
-			"oauthTestApplicationCode", null,
+			_CLIENT_ID_CODE, null,
 			getAuthorizationCodeBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 				null),
@@ -108,7 +109,7 @@ public class TOCTOUTest extends BaseClientTestCase {
 		webTarget2InvocationBuilder = authorize(
 			webTarget2.request(),
 			getToken(
-				"oauthTestApplicationCode", null,
+				_CLIENT_ID_CODE, null,
 				getAuthorizationCodeBiFunction(
 					_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 					null, "everything.read"),
@@ -157,7 +158,7 @@ public class TOCTOUTest extends BaseClientTestCase {
 		webTarget2InvocationBuilder = authorize(
 			webTarget2.request(),
 			getToken(
-				"oauthTestApplicationCode", null,
+				_CLIENT_ID_CODE, null,
 				getAuthorizationCodeBiFunction(
 					_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 					null),
@@ -171,6 +172,8 @@ public class TOCTOUTest extends BaseClientTestCase {
 	protected BundleActivator getBundleActivator() {
 		return new SecurityTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
 
 	private User _user;
 
@@ -226,7 +229,7 @@ public class TOCTOUTest extends BaseClientTestCase {
 			_user = UserTestUtil.getAdminUser(companyId);
 
 			OAuth2Application oAuth2Application = createOAuth2Application(
-				companyId, _user, "oauthTestApplicationCode",
+				companyId, _user, _CLIENT_ID_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				Collections.singletonList("everything.read"));
 

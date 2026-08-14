@@ -106,7 +106,7 @@ public class SecurityTest extends BaseClientTestCase {
 					null,
 					getCodeFunction(
 						webTarget -> webTarget.queryParam(
-							"client_id", "oauthTestApplicationCode"
+							"client_id", _CLIENT_ID_CODE
 						).queryParam(
 							"response_type", "code"
 						)))));
@@ -126,7 +126,7 @@ public class SecurityTest extends BaseClientTestCase {
 					null,
 					getCodeFunction(
 						webTarget -> webTarget.queryParam(
-							"client_id", "oauthTestApplicationCode"
+							"client_id", _CLIENT_ID_CODE
 						).queryParam(
 							"response_type", "code"
 						)))));
@@ -143,7 +143,7 @@ public class SecurityTest extends BaseClientTestCase {
 				null,
 				getCodeFunction(
 					webTarget -> webTarget.queryParam(
-						"client_id", "oauthTestApplicationCodePKCE"
+						"client_id", _CLIENT_ID_CODE_PKCE
 					).queryParam(
 						"code_challenge", "correctCodeChallenge"
 					).queryParam(
@@ -155,7 +155,7 @@ public class SecurityTest extends BaseClientTestCase {
 		Assert.assertEquals(
 			"invalid_grant",
 			getToken(
-				"oauthTestApplicationCodePKCE", null,
+				_CLIENT_ID_CODE_PKCE, null,
 				getExchangeAuthorizationCodePKCEBiFunction(
 					authorizationCode, null, "wrongCodeVerifier"),
 				this::parseError));
@@ -174,7 +174,7 @@ public class SecurityTest extends BaseClientTestCase {
 				null,
 				getCodeFunction(
 					webTarget -> webTarget.queryParam(
-						"client_id", "oauthTestApplicationCode"
+						"client_id", _CLIENT_ID_CODE
 					).queryParam(
 						"response_type", "code"
 					).queryParam(
@@ -193,7 +193,7 @@ public class SecurityTest extends BaseClientTestCase {
 			_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD, null,
 			getCodeFunction(
 				webTarget -> webTarget.queryParam(
-					"client_id", "oauthTestApplicationCode"
+					"client_id", _CLIENT_ID_CODE
 				).queryParam(
 					"redirect_uri",
 					"http://invalid:" + PortalUtil.getPortalServerPort(false)
@@ -216,7 +216,7 @@ public class SecurityTest extends BaseClientTestCase {
 				null,
 				getCodeFunction(
 					webTarget -> webTarget.queryParam(
-						"client_id", "oauthTestApplicationCode"
+						"client_id", _CLIENT_ID_CODE
 					).queryParam(
 						"redirect_uri",
 						"http://redirecturi:" +
@@ -230,7 +230,7 @@ public class SecurityTest extends BaseClientTestCase {
 		Assert.assertEquals(
 			"invalid_grant",
 			getToken(
-				"oauthTestApplicationCode", null,
+				_CLIENT_ID_CODE, null,
 				getExchangeAuthorizationCodeBiFunction(
 					authorizationCode,
 					"http://invalid:" + PortalUtil.getPortalServerPort(false)),
@@ -313,6 +313,11 @@ public class SecurityTest extends BaseClientTestCase {
 		return response.getHeaderString("x-frame-options");
 	}
 
+	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_CODE_PKCE =
+		RandomTestUtil.randomString();
+
 	private static final String _CLIENT_ID_DEFAULT_USER =
 		RandomTestUtil.randomString();
 
@@ -345,12 +350,12 @@ public class SecurityTest extends BaseClientTestCase {
 			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationCode",
+				companyId, _user, _CLIENT_ID_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				Collections.singletonList("everything"));
 
 			createOAuth2ApplicationWithNone(
-				companyId, _user, "oauthTestApplicationCodePKCE",
+				companyId, _user, _CLIENT_ID_CODE_PKCE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
 				Collections.singletonList(
 					"http://redirecturi:" +

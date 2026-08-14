@@ -47,7 +47,7 @@ public class TokenIntrospectionTest extends BaseClientTestCase {
 
 	@Test
 	public void testTokenIntrospectionApplicationCode() {
-		String applicationClientId = "oauthTestApplicationCode";
+		String applicationClientId = _CLIENT_ID_CODE;
 
 		String token = getToken(
 			applicationClientId, null,
@@ -87,7 +87,7 @@ public class TokenIntrospectionTest extends BaseClientTestCase {
 
 	@Test
 	public void testTokenIntrospectionApplicationCodePKCE() {
-		String applicationClientId = "oauthTestApplicationCodePKCE";
+		String applicationClientId = _CLIENT_ID_CODE_PKCE;
 
 		String token = getToken(
 			applicationClientId, null,
@@ -126,6 +126,11 @@ public class TokenIntrospectionTest extends BaseClientTestCase {
 			TokenIntrospectionTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_CODE_PKCE =
+		RandomTestUtil.randomString();
+
 	private User _user;
 
 	private class TokenIntrospectionTestPreparatorBundleActivator
@@ -138,11 +143,11 @@ public class TokenIntrospectionTest extends BaseClientTestCase {
 			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationCode",
+				companyId, _user, _CLIENT_ID_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE), false,
 				Collections.singletonList("everything"), false);
 			createOAuth2ApplicationWithNone(
-				companyId, _user, "oauthTestApplicationCodePKCE",
+				companyId, _user, _CLIENT_ID_CODE_PKCE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
 				Collections.singletonList(
 					"http://redirecturi:" +

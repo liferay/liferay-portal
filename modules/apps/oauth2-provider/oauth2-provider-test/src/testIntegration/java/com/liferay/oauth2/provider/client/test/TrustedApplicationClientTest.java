@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -48,7 +49,7 @@ public class TrustedApplicationClientTest extends BaseClientTestCase {
 			_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD, null,
 			getCodeFunction(
 				webTarget -> webTarget.queryParam(
-					"client_id", "oauthTestApplicationCode"
+					"client_id", _CLIENT_ID_CODE
 				).queryParam(
 					"redirect_uri",
 					"http://redirecturi:" +
@@ -66,7 +67,7 @@ public class TrustedApplicationClientTest extends BaseClientTestCase {
 			_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD, null,
 			getCodeFunction(
 				webTarget -> webTarget.queryParam(
-					"client_id", "oauthTestApplicationCodePKCE"
+					"client_id", _CLIENT_ID_CODE_PKCE
 				).queryParam(
 					"redirect_uri",
 					"http://redirecturi:" +
@@ -126,6 +127,11 @@ public class TrustedApplicationClientTest extends BaseClientTestCase {
 			TrustedApplicationClientTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_CODE_PKCE =
+		RandomTestUtil.randomString();
+
 	private String _host;
 	private User _user;
 
@@ -143,11 +149,11 @@ public class TrustedApplicationClientTest extends BaseClientTestCase {
 			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationCode",
+				companyId, _user, _CLIENT_ID_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE), false,
 				Collections.singletonList("everything"), false);
 			createOAuth2ApplicationWithNone(
-				companyId, _user, "oauthTestApplicationCodePKCE",
+				companyId, _user, _CLIENT_ID_CODE_PKCE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
 				Collections.singletonList(
 					"http://redirecturi:" +

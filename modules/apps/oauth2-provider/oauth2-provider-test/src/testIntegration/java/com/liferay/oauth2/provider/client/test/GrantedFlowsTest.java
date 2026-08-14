@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -76,7 +77,7 @@ public class GrantedFlowsTest extends BaseClientTestCase {
 		Assert.assertEquals("unauthorized_client", errorString);
 
 		tokenString = getToken(
-			"oauthTestApplicationCode", null,
+			_CLIENT_ID_CODE, null,
 			getAuthorizationCodeBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 				null),
@@ -94,7 +95,7 @@ public class GrantedFlowsTest extends BaseClientTestCase {
 		Assert.assertEquals("unauthorized_client", errorString);
 
 		tokenString = getToken(
-			"oauthTestApplicationCodePKCE", null,
+			_CLIENT_ID_CODE_PKCE, null,
 			getAuthorizationCodePKCEBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 				null),
@@ -108,6 +109,11 @@ public class GrantedFlowsTest extends BaseClientTestCase {
 		return new AnnotatedApplicationTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_CODE_PKCE =
+		RandomTestUtil.randomString();
+
 	private User _user;
 
 	private class AnnotatedApplicationTestPreparatorBundleActivator
@@ -120,12 +126,12 @@ public class GrantedFlowsTest extends BaseClientTestCase {
 			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationCode",
+				companyId, _user, _CLIENT_ID_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				Collections.singletonList("everything"));
 
 			createOAuth2ApplicationWithNone(
-				companyId, _user, "oauthTestApplicationCodePKCE",
+				companyId, _user, _CLIENT_ID_CODE_PKCE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
 				Collections.singletonList(
 					"http://redirecturi:" +

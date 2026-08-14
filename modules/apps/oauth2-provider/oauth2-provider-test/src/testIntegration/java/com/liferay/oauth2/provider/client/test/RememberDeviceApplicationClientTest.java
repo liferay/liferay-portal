@@ -50,7 +50,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testCookieResponseApplicationCode() {
-		String applicationClientId = "oauthTestApplicationCode";
+		String applicationClientId = _CLIENT_ID_CODE;
 
 		Response response = getCodeResponse(
 			_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD, null,
@@ -74,7 +74,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testCookieResponseApplicationCodePKCE() {
-		String applicationClientId = "oauthTestApplicationCodePKCE";
+		String applicationClientId = _CLIENT_ID_CODE_PKCE;
 
 		Response response = getCodeResponse(
 			_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD, null,
@@ -816,6 +816,11 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 		return multivaluedMap;
 	}
 
+	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_CODE_PKCE =
+		RandomTestUtil.randomString();
+
 	private static final String _COOKIE_NAME_PREFIX = "OAUTH2_REMEMBER_DEVICE_";
 
 	@Inject
@@ -833,11 +838,11 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationCode",
+				companyId, _user, _CLIENT_ID_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE), false,
 				Collections.singletonList("everything"), false);
 			createOAuth2ApplicationWithNone(
-				companyId, _user, "oauthTestApplicationCodePKCE",
+				companyId, _user, _CLIENT_ID_CODE_PKCE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
 				Collections.singletonList(
 					"http://redirecturi:" +
