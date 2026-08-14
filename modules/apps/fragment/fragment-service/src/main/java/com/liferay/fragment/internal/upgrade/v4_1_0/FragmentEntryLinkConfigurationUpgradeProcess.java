@@ -8,12 +8,9 @@ package com.liferay.fragment.internal.upgrade.v4_1_0;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.sql.PreparedStatement;
-
-import java.util.Map;
 
 /**
  * @author Lourdes Fernández Besada
@@ -32,39 +29,45 @@ public class FragmentEntryLinkConfigurationUpgradeProcess
 						"configuration = '' or configuration = '{}' or ",
 						"configuration = '[]')"))) {
 
-			Map<String, String> rendererKeyResourceNames = HashMapBuilder.put(
+			_addBatch(
+				preparedStatement,
 				"com.liferay.fragment.internal.renderer." +
 					"ContentFlagsFragmentRenderer",
-				"dependencies/content_flags_configuration.json"
-			).put(
+				"content_flags_configuration");
+			_addBatch(
+				preparedStatement,
 				"com.liferay.fragment.internal.renderer." +
 					"ContentObjectFragmentRenderer",
-				"dependencies/content_object_configuration.json"
-			).put(
+				"content_object_configuration");
+			_addBatch(
+				preparedStatement,
 				"com.liferay.fragment.internal.renderer." +
 					"ContentRatingsFragmentRenderer",
-				"dependencies/content_ratings_configuration.json"
-			).put(
+				"content_ratings_configuration");
+			_addBatch(
+				preparedStatement,
 				"com.liferay.fragment.renderer.menu.display.internal." +
 					"MenuDisplayFragmentRenderer",
-				"dependencies/menu_display_configuration.json"
-			).build();
-
-			for (Map.Entry<String, String> entry :
-					rendererKeyResourceNames.entrySet()) {
-
-				preparedStatement.setString(
-					1,
-					StringUtil.read(
-						FragmentEntryLinkConfigurationUpgradeProcess.class.
-							getResourceAsStream(entry.getValue())));
-				preparedStatement.setString(2, entry.getKey());
-
-				preparedStatement.addBatch();
-			}
+				"menu_display_configuration");
 
 			preparedStatement.executeBatch();
 		}
+	}
+
+	private void _addBatch(
+			PreparedStatement preparedStatement, String rendererKey,
+			String resourceName)
+		throws Exception {
+
+		preparedStatement.setString(
+			1,
+			StringUtil.read(
+				FragmentEntryLinkConfigurationUpgradeProcess.class.
+					getResourceAsStream(
+						"dependencies/" + resourceName + ".json")));
+		preparedStatement.setString(2, rendererKey);
+
+		preparedStatement.addBatch();
 	}
 
 }
