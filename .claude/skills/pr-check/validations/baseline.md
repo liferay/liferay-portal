@@ -16,7 +16,7 @@ Do not narrow it to the branch diff. The comparison target is resolved from Nexu
 (cd "${REPO_ROOT}" && ant baseline-all)
 ```
 
-Leave `baseline.all.ant.projects` at its default of `true`. Passing `false` drops the seven top level Ant projects — `portal-kernel`, `portal-impl`, `portal-test`, `util-bridges`, `util-java`, `util-slf4j`, and `util-taglib` — from the run. **Full Portal Build** is not a reason to pass it: `ant all` is `clean` plus `compile` plus `deploy` and baselines nothing. The target builds each of those jars itself before baselining it, so there is no build to arrange first.
+Leave `baseline.all.ant.projects` at its default of `true`. Passing `false` drops the seven top level Ant projects — `portal-kernel`, `portal-impl`, `portal-test`, `util-bridges`, `util-java`, `util-slf4j`, and `util-taglib` — from the run. Pass it only when **Full Portal Build** ran in this same pr-check: `ant all` starts with `clean`, so each of those jars is rebuilt, and the `jar` target baselines it on the way through.
 
 Two prerequisites:
 
