@@ -207,7 +207,7 @@ export class ExportImportPage {
 			});
 		this.taskStatusLabel = (taskName, taskStatus = 'success') => {
 			const taskStatusTexts: Record<taskStatus, string> = {
-				completedWithErrors: 'Completed with errors',
+				completedWithErrors: 'Completed With Errors',
 				success: 'Successful',
 			};
 
