@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 
 import java.security.KeyStore;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -272,6 +273,8 @@ public class OpenSearchConnection {
 	}
 
 	private SSLContext _createSSLContext() {
+		char[] truststorePasswordChars = _truststorePassword.toCharArray();
+
 		try {
 			Path path = Paths.get(_truststorePath);
 
@@ -279,18 +282,21 @@ public class OpenSearchConnection {
 
 			KeyStore keyStore = KeyStore.getInstance(_truststoreType);
 
-			keyStore.load(inputStream, _truststorePassword.toCharArray());
+			keyStore.load(inputStream, truststorePasswordChars);
 
 			SSLContextBuilder sslContextBuilder = SSLContexts.custom();
 
 			sslContextBuilder.loadKeyMaterial(
-				keyStore, _truststorePassword.toCharArray());
+				keyStore, truststorePasswordChars);
 			sslContextBuilder.loadTrustMaterial(keyStore, null);
 
 			return sslContextBuilder.build();
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
+		}
+		finally {
+			Arrays.fill(truststorePasswordChars, '\0');
 		}
 	}
 

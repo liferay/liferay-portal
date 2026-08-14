@@ -43,6 +43,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.security.MessageDigest;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import javax.crypto.Mac;
@@ -252,12 +253,17 @@ public class CompletePaymentAuthorizeNetServlet extends HttpServlet {
 
 		Mac mac = Mac.getInstance("HmacSHA512");
 
-		mac.init(
-			new SecretKeySpec(
-				signatureKey.getBytes(StandardCharsets.UTF_8),
-				mac.getAlgorithm()));
+		byte[] signatureKeyBytes = signatureKey.getBytes(
+			StandardCharsets.UTF_8);
 
-		return StringUtil.bytesToHexString(mac.doFinal(bytes));
+		try {
+			mac.init(new SecretKeySpec(signatureKeyBytes, mac.getAlgorithm()));
+
+			return StringUtil.bytesToHexString(mac.doFinal(bytes));
+		}
+		finally {
+			Arrays.fill(signatureKeyBytes, (byte)0);
+		}
 	}
 
 	private boolean _isValidSignature(
