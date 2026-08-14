@@ -5,13 +5,15 @@
 
 import ClayButton from '@clayui/button';
 import {ClayCheckbox} from '@clayui/form';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
-import {openModal} from 'frontend-js-components-web';
-import React, {useState} from 'react';
+import {openModal, openToast} from 'frontend-js-components-web';
+import React, {useRef, useState} from 'react';
 
 type Status = 'danger' | 'info' | 'warning';
 
 type Props = {
+	blocking?: boolean;
 	buttonLabel: string;
 	cancelButtonLabel?: string;
 	center?: boolean;
@@ -26,7 +28,7 @@ type Props = {
 };
 
 export default function openConfirmModal(props: Props) {
-	if (props.optOutConfig) {
+	if (props.blocking || props.optOutConfig) {
 		return openStatefulConfirmModal(props);
 	}
 	else {
@@ -89,9 +91,11 @@ function openStandardConfirmModal({
 }
 
 async function openStatefulConfirmModal({
+	blocking,
 	buttonLabel,
 	cancelButtonLabel,
 	center,
+	hideCancel,
 	onCancel = () => Promise.resolve(),
 	onCloseFocusElement,
 	onConfirm = () => Promise.resolve(),
@@ -100,9 +104,7 @@ async function openStatefulConfirmModal({
 	text,
 	title,
 }: Props) {
-	const {label: optOutLabel, sessionKey} = optOutConfig!;
-
-	if (await isOptedOut(sessionKey)) {
+	if (optOutConfig && (await isOptedOut(optOutConfig.sessionKey))) {
 		return true;
 	}
 
@@ -111,22 +113,41 @@ async function openStatefulConfirmModal({
 			center,
 			contentComponent: ({closeModal}: {closeModal: () => void}) =>
 				StatefulModalContent({
+					blocking,
 					body: text,
 					buttonLabel,
 					cancelButtonLabel,
+					hideCancel,
 					onCancel: () => {
 						closeModal();
 
 						onCancel().then(() => resolve(false));
 					},
-					onConfirm: () => {
-						closeModal();
+					onConfirm: async () => {
+						if (blocking) {
+							try {
+								await onConfirm();
+							}
+							catch (error) {
+								openToast({
+									message: Liferay.Language.get(
+										'an-unexpected-error-occurred'
+									),
+									type: 'danger',
+								});
+							}
 
-						onConfirm().then(() => resolve(true));
+							closeModal();
+						}
+						else {
+							closeModal();
+
+							await onConfirm();
+						}
+
+						resolve(true);
 					},
-
-					optOutLabel,
-					sessionKey,
+					optOutConfig,
 					status,
 					title,
 				}),
@@ -151,71 +172,123 @@ function optOut(key: string) {
 }
 
 function StatefulModalContent({
+	blocking,
 	body,
 	buttonLabel,
 	cancelButtonLabel,
+	hideCancel,
 	onCancel,
 	onConfirm,
-	optOutLabel = Liferay.Language.get('do-not-show-me-this-again'),
-	sessionKey,
+	optOutConfig,
 	status,
 	title,
 }: {
+	blocking?: boolean;
 	body?: string;
 	buttonLabel: string;
 	cancelButtonLabel?: string;
+	hideCancel?: boolean;
 	onCancel: () => void;
-	onConfirm: () => void;
-	optOutLabel?: string;
-	sessionKey: string;
+	onConfirm: () => Promise<void>;
+	optOutConfig?: {label?: string; sessionKey: string};
 	status?: Status;
 	title: string;
 }) {
+	const {
+		label: optOutLabel = Liferay.Language.get('do-not-show-me-this-again'),
+	} = optOutConfig ?? {};
+
 	const [disable, setDisable] = useState(false);
+	const [pending, setPending] = useState(false);
+
+	const pendingRef = useRef(false);
 
 	return (
 		<>
 			<ClayModal.Header>{title}</ClayModal.Header>
 
 			<ClayModal.Body>
-				{body ? <p className="mb-0 text-secondary">{body}</p> : null}
+				{body ? (
+					<div
+						className="text-secondary"
+						dangerouslySetInnerHTML={{__html: body}}
+					/>
+				) : null}
 			</ClayModal.Body>
 
 			<ClayModal.Footer
 				first={
-					<ClayCheckbox
-						checked={disable}
-						label={optOutLabel}
-						onChange={({target: {checked}}) => setDisable(checked)}
-					/>
+					optOutConfig ? (
+						<ClayCheckbox
+							checked={disable}
+							label={optOutLabel}
+							onChange={({target: {checked}}) =>
+								setDisable(checked)
+							}
+						/>
+					) : undefined
 				}
 				last={
 					<ClayButton.Group spaced>
-						<ClayButton
-							autoFocus
-							displayType="secondary"
-							onClick={() => {
-								onCancel();
+						{hideCancel ? null : (
+							<ClayButton
+								autoFocus
+								disabled={pending}
+								displayType="secondary"
+								onClick={() => {
+									onCancel();
 
-								if (disable) {
-									optOut(sessionKey);
-								}
-							}}
-						>
-							{cancelButtonLabel ||
-								Liferay.Language.get('cancel')}
-						</ClayButton>
+									if (disable && optOutConfig) {
+										optOut(optOutConfig.sessionKey);
+									}
+								}}
+							>
+								{cancelButtonLabel ||
+									Liferay.Language.get('cancel')}
+							</ClayButton>
+						)}
 
 						<ClayButton
+							disabled={pending}
 							displayType={status}
-							onClick={() => {
-								onConfirm();
+							onClick={async () => {
+								if (disable && optOutConfig) {
+									optOut(optOutConfig.sessionKey);
+								}
 
-								if (disable) {
-									optOut(sessionKey);
+								if (!blocking) {
+									await onConfirm();
+
+									return;
+								}
+
+								if (pendingRef.current) {
+									return;
+								}
+
+								pendingRef.current = true;
+
+								setPending(true);
+
+								try {
+									await onConfirm();
+								}
+								finally {
+									pendingRef.current = false;
+
+									setPending(false);
 								}
 							}}
 						>
+							{pending ? (
+								<span className="inline-item inline-item-before">
+									<ClayLoadingIndicator
+										displayType="light"
+										size="sm"
+									/>
+								</span>
+							) : null}
+
 							{buttonLabel}
 						</ClayButton>
 					</ClayButton.Group>
