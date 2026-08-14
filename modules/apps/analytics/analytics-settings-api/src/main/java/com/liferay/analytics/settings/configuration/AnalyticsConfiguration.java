@@ -91,13 +91,7 @@ public interface AnalyticsConfiguration {
 	public String[] previousSyncedGroupIds();
 
 	@Meta.AD(required = false)
-	public String[] previousSyncedOrderFieldNames();
-
-	@Meta.AD(required = false)
 	public String[] previousSyncedOrganizationIds();
-
-	@Meta.AD(required = false)
-	public String[] previousSyncedProductFieldNames();
 
 	@Meta.AD(required = false)
 	public String[] previousSyncedUserFieldNames();
@@ -124,28 +118,13 @@ public interface AnalyticsConfiguration {
 	public String[] syncedAccountGroupIds();
 
 	@Meta.AD(required = false)
-	public String[] syncedCategoryFieldNames();
-
-	@Meta.AD(required = false)
 	public String[] syncedContactFieldNames();
 
 	@Meta.AD(required = false)
 	public String[] syncedGroupIds();
 
 	@Meta.AD(required = false)
-	public String[] syncedOrderFieldNames();
-
-	@Meta.AD(required = false)
-	public String[] syncedOrderItemFieldNames();
-
-	@Meta.AD(required = false)
 	public String[] syncedOrganizationIds();
-
-	@Meta.AD(required = false)
-	public String[] syncedProductChannelFieldNames();
-
-	@Meta.AD(required = false)
-	public String[] syncedProductFieldNames();
 
 	@Meta.AD(required = false)
 	public String[] syncedUserFieldNames();

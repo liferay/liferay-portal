@@ -85,14 +85,6 @@ public class AnalyticsConfigurationModelListener
 
 		properties.put("previousSyncedGroupIds", syncedGroupIds);
 
-		String[] syncedOrderFieldNames =
-			analyticsConfiguration.syncedOrderFieldNames();
-
-		if (ArrayUtil.isNotEmpty(syncedOrderFieldNames)) {
-			properties.put(
-				"previousSyncedOrderFieldNames", syncedOrderFieldNames);
-		}
-
 		String[] syncedOrganizationIds =
 			analyticsConfiguration.syncedOrganizationIds();
 
@@ -106,14 +98,6 @@ public class AnalyticsConfigurationModelListener
 		}
 		else if (analyticsConfiguration.syncAllContacts()) {
 			properties.put("previousSyncedOrganizationIds", new String[0]);
-		}
-
-		String[] syncedProductFieldNames =
-			analyticsConfiguration.syncedProductFieldNames();
-
-		if (ArrayUtil.isNotEmpty(syncedProductFieldNames)) {
-			properties.put(
-				"previousSyncedProductFieldNames", syncedProductFieldNames);
 		}
 
 		String[] syncedUserFieldNames =

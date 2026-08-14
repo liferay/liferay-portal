@@ -308,19 +308,7 @@
 					},
 					"type": "array"
 				},
-				"previousSyncedOrderFieldNames": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
 				"previousSyncedOrganizationIds": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
-				"previousSyncedProductFieldNames": {
 					"items": {
 						"type": "string"
 					},
@@ -362,12 +350,6 @@
 					},
 					"type": "array"
 				},
-				"syncedCategoryFieldNames": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
 				"syncedContactFieldNames": {
 					"items": {
 						"type": "string"
@@ -380,31 +362,7 @@
 					},
 					"type": "array"
 				},
-				"syncedOrderFieldNames": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
-				"syncedOrderItemFieldNames": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
 				"syncedOrganizationIds": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
-				"syncedProductChannelFieldNames": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
-				"syncedProductFieldNames": {
 					"items": {
 						"type": "string"
 					},

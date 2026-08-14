@@ -672,52 +672,6 @@ public class AnalyticsConfigurationRegistryImpl
 		return false;
 	}
 
-	private boolean _isSyncedOrderFieldsChanged(
-		Dictionary<String, ?> dictionary) {
-
-		String[] previousSyncedOrderFieldNames = GetterUtil.getStringValues(
-			dictionary.get("previousSyncedOrderFieldNames"));
-
-		Arrays.sort(previousSyncedOrderFieldNames);
-
-		String[] syncedOrderFieldNames = GetterUtil.getStringValues(
-			dictionary.get("syncedOrderFieldNames"));
-
-		Arrays.sort(syncedOrderFieldNames);
-
-		if ((previousSyncedOrderFieldNames.length != 0) &&
-			!Arrays.equals(
-				previousSyncedOrderFieldNames, syncedOrderFieldNames)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _isSyncedProductFieldsChanged(
-		Dictionary<String, ?> dictionary) {
-
-		String[] previousSyncedProductFieldNames = GetterUtil.getStringValues(
-			dictionary.get("previousSyncedProductFieldNames"));
-
-		Arrays.sort(previousSyncedProductFieldNames);
-
-		String[] syncedProductFieldNames = GetterUtil.getStringValues(
-			dictionary.get("syncedProductFieldNames"));
-
-		Arrays.sort(syncedProductFieldNames);
-
-		if ((previousSyncedProductFieldNames.length != 0) &&
-			!Arrays.equals(
-				previousSyncedProductFieldNames, syncedProductFieldNames)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private boolean _isSyncedSiteSettingsChanged(
 		Dictionary<String, ?> dictionary) {
 
@@ -844,20 +798,6 @@ public class AnalyticsConfigurationRegistryImpl
 						unscheduleDispatchTriggerNames,
 						AnalyticsDXPEntityBatchExporterConstants.
 							DISPATCH_TRIGGER_NAME_ORDER,
-						AnalyticsDXPEntityBatchExporterConstants.
-							DISPATCH_TRIGGER_NAME_PRODUCT);
-				}
-			}
-
-			if (_isSyncedSiteSettingsEnabled(dictionary)) {
-				if (_isSyncedOrderFieldsChanged(dictionary)) {
-					refreshDispatchTriggerNames.add(
-						AnalyticsDXPEntityBatchExporterConstants.
-							DISPATCH_TRIGGER_NAME_ORDER);
-				}
-
-				if (_isSyncedProductFieldsChanged(dictionary)) {
-					refreshDispatchTriggerNames.add(
 						AnalyticsDXPEntityBatchExporterConstants.
 							DISPATCH_TRIGGER_NAME_PRODUCT);
 				}

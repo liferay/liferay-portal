@@ -9,9 +9,7 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.constants.FieldAccountConstants;
-import com.liferay.analytics.settings.rest.constants.FieldOrderConstants;
 import com.liferay.analytics.settings.rest.constants.FieldPeopleConstants;
-import com.liferay.analytics.settings.rest.constants.FieldProductConstants;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
@@ -428,18 +426,7 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 	private static final Map<String, String[]> _defaults = HashMapBuilder.put(
 		"syncedAccountFieldNames", FieldAccountConstants.FIELD_ACCOUNT_DEFAULTS
 	).put(
-		"syncedCategoryFieldNames", FieldProductConstants.FIELD_CATEGORY_NAMES
-	).put(
 		"syncedContactFieldNames", FieldPeopleConstants.FIELD_CONTACT_DEFAULTS
-	).put(
-		"syncedOrderFieldNames", FieldOrderConstants.FIELD_ORDER_NAMES
-	).put(
-		"syncedOrderItemFieldNames", FieldOrderConstants.FIELD_ORDER_ITEM_NAMES
-	).put(
-		"syncedProductChannelFieldNames",
-		FieldProductConstants.FIELD_PRODUCT_CHANNEL_NAMES
-	).put(
-		"syncedProductFieldNames", FieldProductConstants.FIELD_PRODUCT_NAMES
 	).put(
 		"syncedUserFieldNames", FieldPeopleConstants.FIELD_USER_DEFAULTS
 	).build();
