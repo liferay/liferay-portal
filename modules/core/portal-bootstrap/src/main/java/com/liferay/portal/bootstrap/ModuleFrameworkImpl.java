@@ -356,6 +356,10 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 		if (Boolean.parseBoolean(System.getenv("LIFERAY_CLEAN_OSGI_STATE"))) {
 			_cleanOSGiStateFolder();
 		}
+
+		if (PropsValues.FIPS_ENABLED) {
+			FIPSApplicationStateMachineUtil.powerOff("Portal");
+		}
 	}
 
 	@Override
