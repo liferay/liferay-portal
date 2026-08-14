@@ -68,8 +68,6 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				analyticsChannelsPage.getItems(),
 				analyticsChannel -> _channelDTOConverter.toDTO(
 					new ChannelDTOConverterContext(
-						analyticsConfiguration.
-							commerceSyncEnabledAnalyticsChannelIds(),
 						analyticsConfiguration.liferayAnalyticsDataSourceId(),
 						analyticsChannel.getId(),
 						contextAcceptLanguage.getPreferredLocale()),
@@ -83,46 +81,11 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId());
 
-		String[] commerceSyncEnabledAnalyticsChannelIds =
-			analyticsConfiguration.commerceSyncEnabledAnalyticsChannelIds();
-
-		if (channel.getCommerceSyncEnabled() != null) {
-			boolean commerceSyncEnabled = ArrayUtil.contains(
-				commerceSyncEnabledAnalyticsChannelIds, channel.getChannelId());
-
-			if (channel.getCommerceSyncEnabled() && !commerceSyncEnabled) {
-				commerceSyncEnabledAnalyticsChannelIds = ArrayUtil.append(
-					commerceSyncEnabledAnalyticsChannelIds,
-					channel.getChannelId());
-
-				_analyticsSettingsManager.updateCompanyConfiguration(
-					contextCompany.getCompanyId(),
-					HashMapBuilder.<String, Object>put(
-						"commerceSyncEnabledAnalyticsChannelIds",
-						commerceSyncEnabledAnalyticsChannelIds
-					).build());
-			}
-
-			if (!channel.getCommerceSyncEnabled() && commerceSyncEnabled) {
-				commerceSyncEnabledAnalyticsChannelIds = ArrayUtil.remove(
-					commerceSyncEnabledAnalyticsChannelIds,
-					channel.getChannelId());
-
-				_analyticsSettingsManager.updateCompanyConfiguration(
-					contextCompany.getCompanyId(),
-					HashMapBuilder.<String, Object>put(
-						"commerceSyncEnabledAnalyticsChannelIds",
-						commerceSyncEnabledAnalyticsChannelIds
-					).build());
-			}
-		}
-
 		DataSource[] dataSources = channel.getDataSources();
 
 		if (ArrayUtil.isEmpty(dataSources)) {
 			return _channelDTOConverter.toDTO(
 				new ChannelDTOConverterContext(
-					commerceSyncEnabledAnalyticsChannelIds,
 					analyticsConfiguration.liferayAnalyticsDataSourceId(),
 					channel.getChannelId(),
 					contextAcceptLanguage.getPreferredLocale()),
@@ -207,7 +170,6 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 
 		return _channelDTOConverter.toDTO(
 			new ChannelDTOConverterContext(
-				commerceSyncEnabledAnalyticsChannelIds,
 				analyticsConfiguration.liferayAnalyticsDataSourceId(),
 				channel.getChannelId(),
 				contextAcceptLanguage.getPreferredLocale()),
@@ -222,7 +184,6 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 
 		return _channelDTOConverter.toDTO(
 			new ChannelDTOConverterContext(
-				analyticsConfiguration.commerceSyncEnabledAnalyticsChannelIds(),
 				analyticsConfiguration.liferayAnalyticsDataSourceId(),
 				channel.getChannelId(),
 				contextAcceptLanguage.getPreferredLocale()),

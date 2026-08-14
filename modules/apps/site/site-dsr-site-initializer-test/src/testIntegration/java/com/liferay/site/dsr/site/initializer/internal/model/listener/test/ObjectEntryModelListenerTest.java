@@ -572,14 +572,6 @@ public class ObjectEntryModelListenerTest {
 		}
 
 		@Override
-		public String[] updateCommerceChannelIds(
-			String analyticsChannelId, long companyId,
-			Long[] dataSourceCommerceChannelIds) {
-
-			return new String[0];
-		}
-
-		@Override
 		public void updateCompanyConfiguration(
 			long companyId, Map<String, Object> properties) {
 		}

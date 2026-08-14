@@ -14,10 +14,6 @@ import java.util.Date;
  */
 public class AnalyticsDataSource {
 
-	public Long[] getCommerceChannelIds() {
-		return _commerceChannelIds;
-	}
-
 	public Date getCreateDate() {
 		return _createDate;
 	}
@@ -49,10 +45,6 @@ public class AnalyticsDataSource {
 
 	public String getWorkspaceURL() {
 		return _workspaceURL;
-	}
-
-	public void setCommerceChannelIds(Long[] commerceChannelIds) {
-		_commerceChannelIds = commerceChannelIds;
 	}
 
 	public void setCreateDate(Date createDate) {
@@ -87,7 +79,6 @@ public class AnalyticsDataSource {
 		_workspaceURL = workspaceURL;
 	}
 
-	private Long[] _commerceChannelIds;
 	private Date _createDate;
 	private Long _id;
 	private String _name;

@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.settings.SettingsDescriptor;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
@@ -48,12 +47,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -255,42 +252,6 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 	}
 
 	@Override
-	public String[] updateCommerceChannelIds(
-			String analyticsChannelId, long companyId,
-			Long[] dataSourceCommerceChannelIds)
-		throws Exception {
-
-		_updateTypeSetting(
-			analyticsChannelId, _commerceChannelClassNameIdSupplier.get(),
-			companyId, dataSourceCommerceChannelIds, false);
-
-		AnalyticsConfiguration analyticsConfiguration =
-			getAnalyticsConfiguration(companyId);
-
-		Set<String> commerceChannelIds = SetUtil.fromArray(
-			analyticsConfiguration.syncedCommerceChannelIds());
-
-		for (Long dataSourceCommerceChannelId : dataSourceCommerceChannelIds) {
-			commerceChannelIds.add(String.valueOf(dataSourceCommerceChannelId));
-		}
-
-		Long[] removeCommerceChannelIds = ArrayUtil.filter(
-			getCommerceChannelIds(analyticsChannelId, companyId),
-			commerceChannelId -> !ArrayUtil.contains(
-				dataSourceCommerceChannelIds, commerceChannelId));
-
-		_updateTypeSetting(
-			analyticsChannelId, _commerceChannelClassNameIdSupplier.get(),
-			companyId, removeCommerceChannelIds, true);
-
-		return ArrayUtil.filter(
-			commerceChannelIds.toArray(new String[0]),
-			commerceChannelId -> !ArrayUtil.contains(
-				removeCommerceChannelIds,
-				GetterUtil.getLong(commerceChannelId)));
-	}
-
-	@Override
 	public void updateCompanyConfiguration(
 			long companyId, Map<String, Object> properties)
 		throws Exception {
@@ -364,13 +325,6 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 				removeSiteIds, GetterUtil.getLong(siteId)));
 	}
 
-	@Activate
-	protected void activate(Map<String, Object> properties) {
-		_commerceChannelClassNameIdSupplier =
-			_classNameLocalService.getClassNameIdSupplier(
-				_CLASS_NAME_COMMERCE_CHANNEL);
-	}
-
 	private String _getConfigurationPid() {
 		Class<?> clazz = AnalyticsConfiguration.class;
 
@@ -423,48 +377,6 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 		}
 
 		return map;
-	}
-
-	private <T> void _updateTypeSetting(
-			String analyticsChannelId, long classNameId, long companyId,
-			T[] classPKs, boolean remove)
-		throws Exception {
-
-		for (T classPK : classPKs) {
-			Group group = _groupLocalService.fetchGroup(
-				companyId, classNameId, GetterUtil.getLong(classPK));
-
-			if (group == null) {
-				continue;
-			}
-
-			UnicodeProperties typeSettingsUnicodeProperties =
-				group.getTypeSettingsProperties();
-
-			if (remove) {
-				if (!analyticsChannelId.equals(
-						typeSettingsUnicodeProperties.get(
-							"analyticsChannelId"))) {
-
-					continue;
-				}
-
-				typeSettingsUnicodeProperties.remove("analyticsChannelId");
-			}
-			else {
-				if (analyticsChannelId.equals(
-						typeSettingsUnicodeProperties.get(
-							"analyticsChannelId"))) {
-
-					continue;
-				}
-
-				typeSettingsUnicodeProperties.setProperty(
-					"analyticsChannelId", analyticsChannelId);
-			}
-
-			_groupLocalService.updateGroup(group);
-		}
 	}
 
 	private <T> void _updateTypeSetting(
@@ -531,11 +443,6 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 	).put(
 		"syncedUserFieldNames", FieldPeopleConstants.FIELD_USER_DEFAULTS
 	).build();
-
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
-
-	private Supplier<Long> _commerceChannelClassNameIdSupplier;
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
