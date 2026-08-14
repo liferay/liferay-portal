@@ -48,6 +48,13 @@
 				padding-right: var(--cms-info-panel-width);
 			}
 		}
+
+		// On a CMP project's Assets tab the info panel is scoped to the tab
+		// panel, so the push padding belongs there.
+
+		.tab-panel-item.c-slideout-push-end {
+			padding-right: var(--cms-info-panel-width);
+		}
 	}
 }
 

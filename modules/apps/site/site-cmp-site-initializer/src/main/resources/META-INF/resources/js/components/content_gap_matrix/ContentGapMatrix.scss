@@ -136,6 +136,7 @@ $content-gap-cell-tiers: (
 }
 
 .lfr-cmp__content-gap-matrix-card {
+	padding: 1.5rem;
 	width: 100%;
 }
 
@@ -152,7 +153,6 @@ $content-gap-cell-tiers: (
 	border-radius: 0.5rem;
 	border-style: solid;
 	border-width: 0.0625rem;
-	margin: 1.5rem;
 	padding: 1.5rem;
 
 	.empty-state {
@@ -180,7 +180,7 @@ $content-gap-cell-tiers: (
 	align-items: flex-start;
 	display: flex;
 	justify-content: space-between;
-	margin: 1.5rem;
+	margin-bottom: 1.5rem;
 }
 
 .lfr-cmp__content-gap-matrix-header-stats {
