@@ -1,0 +1,66 @@
+{{- $runtimeConfigs := list
+    (dict "clientIdKey" "crossplaneIamClientId" "name" "azure-authorization-config" "provider" "provider-azure-authorization" "serviceAccountName" "crossplane-iam")
+    (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-dbforpostgresql-config" "provider" "provider-azure-dbforpostgresql" "serviceAccountName" "crossplane-data")
+    (dict "clientIdKey" "crossplaneDataClientId" "memoryLimit" "1Gi" "cpuRequest" "500m" "name" "azure-family-config" "provider" "provider-family-azure" "serviceAccountName" "crossplane-data")
+    (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-keyvault-config" "provider" "provider-azure-keyvault" "serviceAccountName" "crossplane-data")
+    (dict "clientIdKey" "crossplaneIamClientId" "name" "azure-managedidentity-config" "provider" "provider-azure-managedidentity" "serviceAccountName" "crossplane-iam")
+    (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-network-config" "provider" "provider-azure-network" "serviceAccountName" "crossplane-data")
+    (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-storage-config" "provider" "provider-azure-storage" "serviceAccountName" "crossplane-data")
+-}}
+{{- range $runtimeConfig := $runtimeConfigs }}
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-100"
+    name: {{ $runtimeConfig.name }}
+spec:
+    deploymentTemplate:
+        spec:
+            selector:
+                matchLabels:
+                    pkg.crossplane.io/provider: {{ $runtimeConfig.provider }}
+            template:
+                metadata:
+                    annotations:
+                        instrumentation.opentelemetry.io/inject-dotnet: "false"
+                        instrumentation.opentelemetry.io/inject-java: "false"
+                        instrumentation.opentelemetry.io/inject-nodejs: "false"
+                        instrumentation.opentelemetry.io/inject-python: "false"
+                        sidecar.opentelemetry.io/inject: "false"
+                    labels:
+                        azure.workload.identity/use: "true"
+                        pkg.crossplane.io/provider: {{ $runtimeConfig.provider }}
+                spec:
+                    containers:
+                        -   name: package-runtime
+                            resources:
+                                limits:
+                                    cpu: 1000m
+                                    memory: {{ $runtimeConfig.memoryLimit | default "2Gi" }}
+                                requests:
+                                    cpu: {{ $runtimeConfig.cpuRequest | default "250m" }}
+                                    memory: 512Mi
+                            securityContext:
+                                allowPrivilegeEscalation: false
+                                capabilities:
+                                    drop:
+                                        -   ALL
+                                privileged: false
+                                readOnlyRootFilesystem: true
+                    securityContext:
+                        fsGroup: 2000
+                        runAsGroup: 2000
+                        runAsNonRoot: true
+                        runAsUser: 2000
+                        seccompProfile:
+                            type: RuntimeDefault
+                    serviceAccountName: {{ $runtimeConfig.serviceAccountName }}
+    serviceAccountTemplate:
+        metadata:
+            annotations:
+                azure.workload.identity/client-id: {{ index $.Values.deploymentContext $runtimeConfig.clientIdKey | quote }}
+            name: {{ $runtimeConfig.serviceAccountName }}
+{{- end }}

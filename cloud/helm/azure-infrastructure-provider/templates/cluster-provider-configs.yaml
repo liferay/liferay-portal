@@ -1,0 +1,20 @@
+{{- $providerConfigs := list
+    (dict "clientIdKey" "crossplaneDataClientId" "name" "default")
+    (dict "clientIdKey" "crossplaneIamClientId" "name" "iam")
+-}}
+{{- range $providerConfig := $providerConfigs }}
+---
+apiVersion: azure.m.upbound.io/v1beta1
+kind: ClusterProviderConfig
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    name: {{ $providerConfig.name }}
+spec:
+    clientID: {{ index $.Values.deploymentContext $providerConfig.clientIdKey | quote }}
+    credentials:
+        source: OIDCTokenFile
+    subscriptionID: {{ $.Values.deploymentContext.subscriptionId | quote }}
+    tenantID: {{ $.Values.deploymentContext.tenantId | quote }}
+{{- end }}

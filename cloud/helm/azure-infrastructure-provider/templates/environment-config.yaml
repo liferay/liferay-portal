@@ -1,0 +1,11 @@
+apiVersion: apiextensions.crossplane.io/v1beta1
+data:
+    {{- range $key := list "deploymentName" "oidcIssuerUrl" "region" "resourceGroupName" "subscriptionId" "tenantId" }}
+    {{ $key }}: {{ index $.Values.deploymentContext $key | quote }}
+    {{- end }}
+kind: EnvironmentConfig
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-100"
+    name: environment-config

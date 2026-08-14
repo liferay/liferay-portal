@@ -1,0 +1,26 @@
+{{- if .Values.providers.enabled -}}
+{{- $providers := list
+    (dict "name" "provider-azure-authorization" "runtimeConfigName" "azure-authorization-config" )
+    (dict "name" "provider-azure-dbforpostgresql" "runtimeConfigName" "azure-dbforpostgresql-config")
+    (dict "name" "provider-azure-keyvault" "runtimeConfigName" "azure-keyvault-config")
+    (dict "name" "provider-azure-managedidentity" "runtimeConfigName" "azure-managedidentity-config")
+    (dict "name" "provider-azure-network" "runtimeConfigName" "azure-network-config")
+    (dict "name" "provider-azure-storage" "runtimeConfigName" "azure-storage-config")
+    (dict "name" "provider-family-azure" "runtimeConfigName" "azure-family-config" )
+-}}
+{{- range $provider := $providers }}
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: ServerSideApply=true,SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-100"
+    name: {{ $provider.name }}
+spec:
+    package: xpkg.upbound.io/upbound/{{ $provider.name }}:v2.7.0
+    runtimeConfigRef:
+        name: {{ $provider.runtimeConfigName }}
+    skipDependencyResolution: true
+{{- end }}
+{{- end -}}

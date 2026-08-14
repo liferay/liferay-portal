@@ -1,0 +1,30 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: Providers
+templates:
+    -   templates/providers.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the providers when they are disabled
+        set:
+            providers:
+                enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 7
+            -   documentIndex: 0
+                equal:
+                    path: spec.package
+                    value: xpkg.upbound.io/upbound/provider-azure-authorization:v2.7.0
+            -   documentIndex: 0
+                equal:
+                    path: spec.runtimeConfigRef.name
+                    value: azure-authorization-config
+            -   documentIndex: 6
+                equal:
+                    path: metadata.name
+                    value: provider-family-azure
+        it: Renders the Azure provider family by default
