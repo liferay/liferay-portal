@@ -52,14 +52,14 @@ public class
 	public void setUp() throws Exception {
 		super.setUp();
 
+		_audiencesEntry = _audiencesEntryLocalService.addAudiencesEntry(
+			null, TestPropsValues.getUserId(), StringPool.BLANK,
+			RandomTestUtil.randomString());
+
 		_layout = LayoutTestUtil.addTypeContentLayout(group);
 
 		_segmentsExperience = SegmentsTestUtil.addSegmentsExperience(
 			group.getGroupId(), _layout.getPlid());
-
-		_audiencesEntry = _audiencesEntryLocalService.addAudiencesEntry(
-			null, TestPropsValues.getUserId(), StringPool.BLANK,
-			RandomTestUtil.randomString());
 	}
 
 	@Override
