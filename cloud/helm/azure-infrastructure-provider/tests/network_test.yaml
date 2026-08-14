@@ -1,0 +1,60 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+set:
+    deploymentContext:
+        deploymentName: liferay-test
+        resourceGroupName: liferay-test
+        subscriptionId: 00000000-0000-0000-0000-000000000000
+suite: Network Managed Resources
+templates:
+    -   templates/network.yaml
+tests:
+    -   asserts:
+            -   documentIndex: 0
+                equal:
+                    path: metadata.name
+                    value: privatelink.postgres.database.azure.com
+            -   documentIndex: 0
+                isKind:
+                    of: PrivateDNSZone
+            -   documentIndex: 1
+                equal:
+                    path: spec.forProvider.privateDnsZoneName
+                    value: privatelink.postgres.database.azure.com
+            -   documentIndex: 1
+                equal:
+                    path: spec.forProvider.virtualNetworkId
+                    value: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Network/virtualNetworks/liferay-test-vnet
+            -   documentIndex: 1
+                isKind:
+                    of: PrivateDNSZoneVirtualNetworkLink
+            -   contains:
+                    content: 10.0.16.0/20
+                    path: spec.forProvider.addressPrefixes
+                documentIndex: 2
+            -   documentIndex: 2
+                equal:
+                    path: metadata.name
+                    value: liferay-test-database-subnet
+            -   documentIndex: 2
+                equal:
+                    path: spec.forProvider.delegation[0].serviceDelegation[0].name
+                    value: Microsoft.DBforPostgreSQL/flexibleServers
+            -   documentIndex: 2
+                equal:
+                    path: spec.forProvider.virtualNetworkName
+                    value: liferay-test-vnet
+            -   documentIndex: 2
+                isKind:
+                    of: Subnet
+        it: Creates the delegated database subnet and linked private DNS zone in the deployment virtual network
+    -   asserts:
+            -   contains:
+                    content: 172.16.16.0/20
+                    path: spec.forProvider.addressPrefixes
+                documentIndex: 2
+        it: Follows a database subnet CIDR override
+        set:
+            network:
+                databaseSubnetCidr: 172.16.16.0/20

@@ -1,0 +1,53 @@
+{{- $deploymentContext := .Values.deploymentContext -}}
+{{- $privateDnsZoneName := "privatelink.postgres.database.azure.com" -}}
+{{- $virtualNetworkName := printf "%s-vnet" $deploymentContext.deploymentName -}}
+apiVersion: network.azure.m.upbound.io/v1beta1
+kind: PrivateDNSZone
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        app: liferay
+    name: {{ $privateDnsZoneName }}
+spec:
+    forProvider:
+        resourceGroupName: {{ $deploymentContext.resourceGroupName | quote }}
+---
+apiVersion: network.azure.m.upbound.io/v1beta1
+kind: PrivateDNSZoneVirtualNetworkLink
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        app: liferay
+    name: {{ $deploymentContext.deploymentName }}-database-dns-link
+spec:
+    forProvider:
+        privateDnsZoneName: {{ $privateDnsZoneName }}
+        registrationEnabled: false
+        resourceGroupName: {{ $deploymentContext.resourceGroupName | quote }}
+        virtualNetworkId: {{ printf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s" $deploymentContext.subscriptionId $deploymentContext.resourceGroupName $virtualNetworkName | quote }}
+---
+apiVersion: network.azure.m.upbound.io/v1beta1
+kind: Subnet
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        app: liferay
+    name: {{ $deploymentContext.deploymentName }}-database-subnet
+spec:
+    forProvider:
+        addressPrefixes:
+            -   {{ .Values.network.databaseSubnetCidr | quote }}
+        delegation:
+            -   name: database-flexible-server
+                serviceDelegation:
+                    -   actions:
+                            -   Microsoft.Network/virtualNetworks/subnets/join/action
+                        name: Microsoft.DBforPostgreSQL/flexibleServers
+        resourceGroupName: {{ $deploymentContext.resourceGroupName | quote }}
+        virtualNetworkName: {{ $virtualNetworkName | quote }}
