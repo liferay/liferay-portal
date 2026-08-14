@@ -19,8 +19,8 @@ public class FieldOrderConstants {
 
 	public static final String[] FIELD_ORDER_NAMES = {
 		"accountExternalReferenceCode", "accountId", "channelId", "createDate",
-		"currencyCode", "customFields", "externalReferenceCode", "id",
-		"modifiedDate", "orderDate", "orderItems", "orderStatus",
+		"currencyCode", "customFields", "externalReferenceCode", "groupId",
+		"id", "modifiedDate", "orderDate", "orderItems", "orderStatus",
 		"orderTypeExternalReferenceCode", "orderTypeId", "paymentMethod",
 		"paymentStatus", "status", "total", "userId"
 	};

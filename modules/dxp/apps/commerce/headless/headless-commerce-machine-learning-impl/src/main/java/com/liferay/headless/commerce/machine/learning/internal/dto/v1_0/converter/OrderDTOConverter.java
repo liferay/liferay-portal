@@ -55,6 +55,10 @@ public class OrderDTOConverter implements DTOConverter<CommerceOrder, Order> {
 			return null;
 		}
 
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.fetchCommerceChannelByGroupClassPK(
+				commerceOrder.getGroupId());
+
 		return new Order() {
 			{
 				setAccountExternalReferenceCode(
@@ -65,15 +69,7 @@ public class OrderDTOConverter implements DTOConverter<CommerceOrder, Order> {
 						return accountEntry.getExternalReferenceCode();
 					});
 				setAccountId(commerceOrder::getCommerceAccountId);
-				setChannelId(
-					() -> {
-						CommerceChannel commerceChannel =
-							_commerceChannelLocalService.
-								fetchCommerceChannelByGroupClassPK(
-									commerceOrder.getGroupId());
-
-						return commerceChannel.getCommerceChannelId();
-					});
+				setChannelId(commerceChannel::getCommerceChannelId);
 				setCreateDate(commerceOrder::getCreateDate);
 				setCurrencyCode(
 					() -> {
@@ -91,6 +87,7 @@ public class OrderDTOConverter implements DTOConverter<CommerceOrder, Order> {
 					});
 				setExternalReferenceCode(
 					commerceOrder::getExternalReferenceCode);
+				setGroupId(commerceChannel::getSiteGroupId);
 				setId(commerceOrder::getCommerceOrderId);
 				setModifiedDate(commerceOrder::getModifiedDate);
 				setOrderDate(commerceOrder::getOrderDate);
