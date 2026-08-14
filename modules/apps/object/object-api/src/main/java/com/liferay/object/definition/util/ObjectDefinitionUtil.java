@@ -16,7 +16,6 @@ import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
-import com.liferay.portal.kernel.security.RandomUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -28,20 +27,6 @@ import java.util.Map;
  * @author Alejandro Tardín
  */
 public class ObjectDefinitionUtil {
-
-	public static String generateRandomClassName() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(
-			ObjectDefinitionConstants.
-				CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION);
-		sb.append(StringUtil.toUpperCase(StringUtil.randomId(1)));
-		sb.append(RandomUtil.nextInt(10));
-		sb.append(StringUtil.toUpperCase(StringUtil.randomId(1)));
-		sb.append(RandomUtil.nextInt(10));
-
-		return sb.toString();
-	}
 
 	public static String getItemClassName(ObjectDefinition objectDefinition) {
 		if (objectDefinition.isSystem()) {
