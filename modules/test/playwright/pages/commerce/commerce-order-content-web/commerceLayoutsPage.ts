@@ -159,7 +159,9 @@ export class CommerceLayoutsPage {
 		this.deleteEntriesButton = page
 			.getByLabel('Delete Entries- Loading')
 			.getByRole('button', {name: 'Delete'});
-		this.deleteLayoutModal = page.locator('#deleteLayoutModalDeleteButton');
+		this.deleteLayoutModal = page
+			.locator('.modal-footer')
+			.getByRole('button', {name: 'Delete'});
 		this.deleteMenuItemModal = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Delete',
