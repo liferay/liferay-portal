@@ -8,6 +8,7 @@ import {TreeView as ClayTreeView} from '@clayui/core';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
+import {openConfirmModal} from '@liferay/layout-js-components-web';
 import {openModal, openToast} from 'frontend-js-components-web';
 import {fetch, navigate, sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
@@ -448,6 +449,35 @@ TreeItem.propTypes = {
 	selectedLayoutId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
+async function deleteLayout(url) {
+	try {
+		const response = await fetch(url, {method: 'post'});
+
+		const {errorMessage, redirectURL} = await response.json();
+
+		if (errorMessage) {
+			openErrorToast(errorMessage);
+
+			return;
+		}
+
+		openToast({
+			message: Liferay.Language.get(
+				'your-request-processed-successfully'
+			),
+			toastProps: {
+				autoClose: 5000,
+			},
+			type: 'success',
+		});
+
+		navigate(redirectURL);
+	}
+	catch (error) {
+		openErrorToast();
+	}
+}
+
 function normalizeActions(actions, namespace) {
 	return actions.map((group) => ({
 		...group,
@@ -460,69 +490,26 @@ function normalizeActions(actions, namespace) {
 				nextItem.onClick = (event) => {
 					event.preventDefault();
 
+					if (item.id === ACTION_DELETE) {
+						openConfirmModal({
+							blocking: true,
+							buttonLabel: Liferay.Language.get('delete'),
+							onConfirm: () => deleteLayout(item.data.url),
+							status: 'danger',
+							text: item.data.message,
+							title: item.data.modalTitle,
+						});
+
+						return;
+					}
+
 					let modalData = {
 						id: `${namespace}pagesTreeModal`,
 						title: item.data.modalTitle,
 						url: item.data.url,
 					};
 
-					if (item.id === ACTION_DELETE) {
-						delete modalData.url;
-
-						modalData = {
-							...modalData,
-							bodyHTML: item.data.message,
-							buttons: [
-								{
-									autoFocus: true,
-									displayType: 'secondary',
-									label: Liferay.Language.get('cancel'),
-									type: 'cancel',
-								},
-								{
-									displayType: 'danger',
-									label: Liferay.Language.get('delete'),
-									onClick: ({processClose}) => {
-										processClose();
-
-										fetch(item.data.url, {
-											method: 'post',
-										})
-											.then((response) => response.json())
-											.then(
-												({
-													errorMessage,
-													redirectURL,
-												}) => {
-													if (errorMessage) {
-														openErrorToast(
-															errorMessage
-														);
-													}
-													else {
-														openToast({
-															message:
-																Liferay.Language.get(
-																	'your-request-processed-successfully'
-																),
-															toastProps: {
-																autoClose: 5000,
-															},
-															type: 'success',
-														});
-
-														navigate(redirectURL);
-													}
-												}
-											)
-											.catch(() => openErrorToast());
-									},
-								},
-							],
-							status: 'danger',
-						};
-					}
-					else if (item.id === ACTION_COPY_PAGE) {
+					if (item.id === ACTION_COPY_PAGE) {
 						modalData = {
 							...modalData,
 							containerProps: {
