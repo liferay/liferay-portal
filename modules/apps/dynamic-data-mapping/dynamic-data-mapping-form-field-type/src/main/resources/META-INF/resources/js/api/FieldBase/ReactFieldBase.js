@@ -238,9 +238,7 @@ export default function FieldBase({
 				<input
 					data-field-name={`${fieldName}${instanceId}`}
 					data-languageid={locale}
-					data-translated={
-						!!localizedValueEdited?.[editingLanguageId]
-					}
+					data-translated={!!localizedValueEdited?.[locale]}
 					key={locale}
 					type="hidden"
 					value={normalizeInputValue(type, value)}
@@ -519,7 +517,7 @@ export default function FieldBase({
 						...field,
 						localizedValue: {
 							...field.localizedValue,
-							[editingLanguageId]: field.value,
+							[editingLanguageId]: field.value ?? '',
 						},
 						localizedValueEdited: {
 							...field.localizedValueEdited,
