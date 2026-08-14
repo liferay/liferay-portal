@@ -18,7 +18,10 @@ import com.liferay.list.type.service.persistence.ListTypeEntryPersistence;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
@@ -99,6 +102,31 @@ public class ListTypeDefinitionLocalServiceImpl
 		_updateResourcePermissions(listTypeDefinition, serviceContext);
 
 		return listTypeDefinition;
+	}
+
+	@Override
+	public void deleteCompanyListTypeDefinitions(long companyId)
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
+
+		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setPerformActionMethod(
+			(ListTypeDefinition listTypeDefinition) -> {
+				try {
+					listTypeDefinitionLocalService.deleteListTypeDefinition(
+						listTypeDefinition);
+				}
+				catch (PortalException portalException) {
+					_log.error(
+						"Unable to delete list type definition " +
+							listTypeDefinition.getListTypeDefinitionId(),
+						portalException);
+				}
+			});
+
+		actionableDynamicQuery.performActions();
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -372,6 +400,9 @@ public class ListTypeDefinitionLocalServiceImpl
 				"Name is null for locale " + defaultLocale.getDisplayName());
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ListTypeDefinitionLocalServiceImpl.class);
 
 	@Reference
 	private EmptyModelManager _emptyModelManager;

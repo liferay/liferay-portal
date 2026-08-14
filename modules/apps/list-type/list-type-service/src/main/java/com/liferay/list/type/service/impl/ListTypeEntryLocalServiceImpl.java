@@ -19,7 +19,10 @@ import com.liferay.list.type.service.base.ListTypeEntryLocalServiceBaseImpl;
 import com.liferay.list.type.service.persistence.ListTypeDefinitionPersistence;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -82,6 +85,31 @@ public class ListTypeEntryLocalServiceImpl
 		return _addListTypeEntry(
 			externalReferenceCode, user, listTypeDefinitionId, key, nameMap,
 			WorkflowConstants.STATUS_APPROVED, system);
+	}
+
+	@Override
+	public void deleteCompanyListTypeEntries(long companyId)
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
+
+		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setPerformActionMethod(
+			(ListTypeEntry listTypeEntry) -> {
+				try {
+					listTypeEntryLocalService.deleteListTypeEntry(
+						listTypeEntry);
+				}
+				catch (PortalException portalException) {
+					_log.error(
+						"Unable to delete list type entry " +
+							listTypeEntry.getListTypeEntryId(),
+						portalException);
+				}
+			});
+
+		actionableDynamicQuery.performActions();
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -337,6 +365,9 @@ public class ListTypeEntryLocalServiceImpl
 				"Name is null for locale " + locale.getDisplayName());
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ListTypeEntryLocalServiceImpl.class);
 
 	@Reference
 	private EmptyModelManager _emptyModelManager;
