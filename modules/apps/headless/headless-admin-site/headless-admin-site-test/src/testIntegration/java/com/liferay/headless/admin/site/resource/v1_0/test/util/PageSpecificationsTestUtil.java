@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.navigation.constants.SiteNavigationMenuPortletKeys;
@@ -1173,8 +1174,14 @@ public class PageSpecificationsTestUtil {
 
 		GeneralConfig generalConfig = new GeneralConfig();
 
-		generalConfig.setApplicationDecorator(
-			() -> _getRandomApplicationDecorator());
+		GeneralConfig.ApplicationDecorator applicationDecorator =
+			_getRandomApplicationDecorator();
+
+		if (applicationDecorator != null) {
+			generalConfig.setApplicationDecorator(applicationDecorator);
+			generalConfig.setApplicationDecoratorId(
+				StringUtil.toLowerCase(applicationDecorator.getValue()));
+		}
 
 		generalConfig.setUseCustomTitle(RandomTestUtil.randomBoolean());
 
