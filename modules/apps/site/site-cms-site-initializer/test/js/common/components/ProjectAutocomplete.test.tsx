@@ -84,6 +84,16 @@ describe('ProjectAutocomplete', () => {
 		await waitFor(() => expect(input).toHaveValue(''));
 	});
 
+	it('clears the input when the menu closes with an exact title typed', async () => {
+		const {input} = renderComponent();
+
+		await userEvent.type(input, GOV_DIGITAL.title, {delay: null});
+
+		await userEvent.click(document.body);
+
+		await waitFor(() => expect(input).toHaveValue(''));
+	});
+
 	it('keeps the input focused after a project is selected', async () => {
 		const {input} = renderComponent();
 

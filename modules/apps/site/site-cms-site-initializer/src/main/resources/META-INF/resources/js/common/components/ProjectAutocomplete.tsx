@@ -57,7 +57,17 @@ export default function ProjectAutocomplete({
 				loading: Liferay.Language.get('loading'),
 				notFound: Liferay.Language.get('no-results-found'),
 			}}
-			onActiveChange={setActive}
+			onActiveChange={(nextActive) => {
+				setActive(nextActive);
+
+				// Clay keeps text that exactly matches a project when the
+				// menu closes. Clear it so leaving the field always empties
+				// it, the same as partial text.
+
+				if (!nextActive) {
+					setValue('');
+				}
+			}}
 			onChange={(nextValue) => {
 				if (selectingRef.current) {
 					selectingRef.current = false;
