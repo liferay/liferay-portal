@@ -143,13 +143,13 @@ public class UpdateLanguageActionTest {
 		_testGetRedirectWithFriendlyURL(true);
 		_testGetRedirectWithGroupFriendlyURLWithPortletURLMapping();
 		_testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping();
-		_testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(
-			_sourceLocale);
-		_testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(null);
 		_testGetRedirectWithPortletFriendlyURL(_sourceLocale);
 		_testGetRedirectWithPortletFriendlyURL(null);
 		_testGetRedirectWithPortletURLMapping(_sourceLocale);
 		_testGetRedirectWithPortletURLMapping(null);
+		_testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(
+			_sourceLocale);
+		_testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(null);
 	}
 
 	@Test
