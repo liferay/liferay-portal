@@ -31,7 +31,10 @@ export default function ItemSelector({
 	eventName,
 	helpText,
 	itemSelectorURL,
+	itemSubtype,
+	itemType,
 	label,
+	mimeTypes,
 	modalProps,
 	onBeforeItemSelect = DEFAULT_BEFORE_ITEM_SELECT,
 	onItemSelect,
@@ -86,6 +89,26 @@ export default function ItemSelector({
 			return transformedMappedItems;
 		}
 
+		const isAllowedMappedItem = (item) => {
+			if (!itemType) {
+				return true;
+			}
+
+			if (mimeTypes?.length) {
+				return false;
+			}
+
+			if (item.className !== itemType) {
+				return false;
+			}
+
+			if (itemSubtype) {
+				return String(item.classTypeId) === String(itemSubtype);
+			}
+
+			return true;
+		};
+
 		const transformMappedItem = (item) => ({
 			'data-item-id': getEditableId(item),
 			'label': item.title,
@@ -93,8 +116,9 @@ export default function ItemSelector({
 		});
 
 		if (quickMappedInfoItems.length) {
-			transformedMappedItems =
-				quickMappedInfoItems.map(transformMappedItem);
+			transformedMappedItems = quickMappedInfoItems
+				.filter(isAllowedMappedItem)
+				.map(transformMappedItem);
 		}
 		else if (pageContents.length) {
 			transformedMappedItems = pageContents
@@ -102,6 +126,7 @@ export default function ItemSelector({
 					(pageContent) =>
 						pageContent.type !== Liferay.Language.get('collection')
 				)
+				.filter(isAllowedMappedItem)
 				.map(transformMappedItem);
 		}
 
@@ -127,7 +152,10 @@ export default function ItemSelector({
 
 		return transformedMappedItems;
 	}, [
+		itemSubtype,
+		itemType,
 		label,
+		mimeTypes,
 		onItemSelect,
 		openModal,
 		pageContents,
@@ -298,7 +326,10 @@ ItemSelector.propTypes = {
 	eventName: PropTypes.string,
 	helpText: PropTypes.string,
 	itemSelectorURL: PropTypes.string,
+	itemSubtype: PropTypes.string,
+	itemType: PropTypes.string,
 	label: PropTypes.string.isRequired,
+	mimeTypes: PropTypes.arrayOf(PropTypes.string),
 	modalProps: PropTypes.object,
 	onBeforeItemSelect: PropTypes.func,
 	onItemSelect: PropTypes.func.isRequired,
