@@ -7,6 +7,7 @@
 		"@clayui/label": "^3.166.0",
 		"@clayui/link": "^3.166.0",
 		"@clayui/loading-indicator": "^3.166.0",
+		"@liferay/layout-js-components-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
