@@ -421,6 +421,30 @@ public class AssetStatisticsResourceTest
 				WorkflowConstants.STATUS_EXPIRED, serviceContext);
 
 			_assertBrokenLinksCount(depotEntry.getGroupId(), 1);
+
+			_addObjectEntry(
+				_getImageHTML(targetObjectEntry.getExternalReferenceCode()),
+				depotEntry, objectDefinition);
+
+			_assertBrokenLinksCount(depotEntry.getGroupId(), 2);
+
+			ObjectEntry otherTargetObjectEntry = _addObjectEntry(
+				depotEntry, objectDefinition);
+
+			_objectEntryLocalService.updateStatus(
+				TestPropsValues.getUserId(),
+				otherTargetObjectEntry.getObjectEntryId(),
+				WorkflowConstants.STATUS_EXPIRED, serviceContext);
+
+			String imageHTML = _getImageHTML(
+				targetObjectEntry.getExternalReferenceCode());
+			String otherImageHTML = _getImageHTML(
+				otherTargetObjectEntry.getExternalReferenceCode());
+
+			_addObjectEntry(
+				imageHTML + otherImageHTML, depotEntry, objectDefinition);
+
+			_assertBrokenLinksCount(depotEntry.getGroupId(), 3);
 		}
 		finally {
 			_depotEntryLocalService.deleteDepotEntry(
