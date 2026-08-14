@@ -31,9 +31,11 @@ definition {
 
 		MenuItem.click(menuItem = "Basic Web Content");
 
-		AssertVisible(locator1 = "TextInput#TITLE");
-
 		WaitForVisible(locator1 = "WCEditWebContent#SIDEBAR");
+
+		WaitForVisible(locator1 = "Sidebar#FORM_BUILDER");
+
+		AssertVisible(locator1 = "TextInput#TITLE");
 	}
 
 	@summary = "Default summary"
