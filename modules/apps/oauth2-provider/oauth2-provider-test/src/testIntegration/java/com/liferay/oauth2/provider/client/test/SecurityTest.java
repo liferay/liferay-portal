@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -57,7 +58,7 @@ public class SecurityTest extends BaseClientTestCase {
 	public void testEscapeOAuth2ApplicationName() {
 		String bodyString = getAuthorizationPageBodyString(
 			webTarget -> webTarget.queryParam(
-				"client_id", "oauthTestApplicationUnescapedName"
+				"client_id", _CLIENT_ID_UNESCAPED_NAME
 			).queryParam(
 				"response_type", "code"
 			));
@@ -71,7 +72,7 @@ public class SecurityTest extends BaseClientTestCase {
 	public void testEscapeOAuth2ScopeDescription() {
 		String bodyString = getAuthorizationPageBodyString(
 			webTarget -> webTarget.queryParam(
-				"client_id", "oauthTestApplicationUnescapedScope"
+				"client_id", _CLIENT_ID_UNESCAPED_SCOPE
 			).queryParam(
 				"response_type", "code"
 			).queryParam(
@@ -88,7 +89,7 @@ public class SecurityTest extends BaseClientTestCase {
 		Assert.assertEquals(
 			"invalid_grant",
 			getToken(
-				"oauthTestApplicationDefaultUser", null,
+				_CLIENT_ID_DEFAULT_USER, null,
 				this::getClientCredentialsResponse, this::parseError));
 	}
 
@@ -312,6 +313,15 @@ public class SecurityTest extends BaseClientTestCase {
 		return response.getHeaderString("x-frame-options");
 	}
 
+	private static final String _CLIENT_ID_DEFAULT_USER =
+		RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_UNESCAPED_NAME =
+		RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_UNESCAPED_SCOPE =
+		RandomTestUtil.randomString();
+
 	private static final String _INJECTED_SCRIPT = "<script>alert(1)</script>";
 
 	private static final String _SCOPE_ALIAS =
@@ -350,16 +360,15 @@ public class SecurityTest extends BaseClientTestCase {
 			Company company = CompanyLocalServiceUtil.getCompany(companyId);
 
 			createOAuth2Application(
-				companyId, company.getGuestUser(),
-				"oauthTestApplicationDefaultUser");
+				companyId, company.getGuestUser(), _CLIENT_ID_DEFAULT_USER);
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationUnescapedName",
+				companyId, _user, _CLIENT_ID_UNESCAPED_NAME,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				_INJECTED_SCRIPT, Collections.singletonList("everything"));
 
 			OAuth2Application oAuth2Application = createOAuth2Application(
-				companyId, _user, "oauthTestApplicationUnescapedScope",
+				companyId, _user, _CLIENT_ID_UNESCAPED_SCOPE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				Collections.singletonList(_SCOPE_ALIAS));
 
