@@ -36,7 +36,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 			<clay:sheet
 				size="full"
 			>
-				<h2 class="sheet-title"><%= selectSiteInitializerDisplayContext.getTitle() %></h2>
+				<h2 class="sheet-title"><%= HtmlUtil.escape(selectSiteInitializerDisplayContext.getTitle()) %></h2>
 
 				<div class="sheet-text">
 					<liferay-ui:message key="select-the-template-to-create-your-site" />
