@@ -204,6 +204,10 @@ public class DefaultWorkflowEngineImpl
 				kaleoInstanceToken, kaleoTimerInstanceToken, workflowContext,
 				serviceContext);
 
+			if (kaleoTimerInstanceToken.isCompleted()) {
+				return executionContext;
+			}
+
 			if (PrincipalThreadLocal.getUserId() == 0) {
 				PrincipalThreadLocal.setName(serviceContext.getUserId());
 			}
