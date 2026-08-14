@@ -9247,178 +9247,6 @@ information. Make sure to commit in all format-javadoc results.
 		<run-modules-integration-test database.type="sqlserver" database.version="2022" />
 	</target>
 
-	<target name="modules-semantic-versioning">
-		<propertycopy from="app.server.${app.server.type}.version" name="app.server.version" />
-
-		<run-batch-test>
-			<test-action>
-				<loadresource property="modules.baseline.task.groups">
-					<filterchain>
-						<tokenfilter>
-							<replaceregex flags="g" pattern="(\S+ ){${test.module.groups.size}}" replace="\0," />
-						</tokenfilter>
-					</filterchain>
-					<propertyresource name="modules.test.class.group" />
-				</loadresource>
-
-				<get-gradle-module-dir-task-names gradle.task.names="${modules.baseline.task.groups}" />
-
-				<for delimiter="|" list="${gradle.module.dir.task.names}" param="gradle.module.dir.task.name" trim="true">
-					<sequential>
-						<local name="gradle.module.dir" />
-						<local name="gradle.task.name" />
-
-						<propertyregex
-							input="@{gradle.module.dir.task.name}"
-							override="true"
-							property="gradle.module.dir"
-							regexp="([^=]+)=([^=]+)"
-							replace="\1"
-						/>
-
-						<propertyregex
-							input="@{gradle.module.dir.task.name}"
-							override="true"
-							property="gradle.task.name"
-							regexp="([^=]+)=([^=]+)"
-							replace="\2"
-						/>
-
-						<execute-gradle-task gradle.task.module.dir="${gradle.module.dir}" gradle.task.name="${gradle.task.name}">
-							<action>
-								<gradle-execute dir="${gradle.module.dir}" forcedcacheenabled="false" task="${gradle.task.name}">
-									<arg value="--continue" />
-									<arg value="--parallel" />
-									<arg value="-Dbaseline.ignoreFailures=true" />
-								</gradle-execute>
-							</action>
-							<action-fail>
-								<local name="baseline.log.files.content" />
-
-								<beanshell>
-									<![CDATA[
-										import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
-
-										File projectDir = new File(project.getProperty("project.dir"));
-
-										File baseDir = new File(projectDir, project.getProperty("gradle.module.dir"));
-
-										StringBuilder sb = new StringBuilder();
-
-										for (File baselineFile : JenkinsResultsParserUtil.findFiles(baseDir, "baseline.log")) {
-											sb.append("\n> ");
-											sb.append(JenkinsResultsParserUtil.getPathRelativeTo(baselineFile, projectDir));
-											sb.append("\n\n");
-											sb.append(JenkinsResultsParserUtil.read(baselineFile));
-											sb.append("\n");
-										}
-
-										if (sb.length() > 0) {
-											project.setProperty("baseline.log.files.content", sb.toString());
-										}
-									]]>
-								</beanshell>
-
-								<if>
-									<isset property="baseline.log.files.content" />
-									<then>
-										<generate-backend-batch-junit-report-gradle-task
-											gradle.task.failure.count="1"
-											gradle.task.failure.message="${gradle.module.dir} failed semantic versioning. Please check the logs for details."
-											gradle.task.failure.stacktrace="${baseline.log.files.content}"
-											gradle.task.module.dir="${gradle.module.dir}"
-											gradle.task.name="${gradle.task.name}"
-											gradle.task.start.time="${gradle.task.start.time}"
-										/>
-									</then>
-								</if>
-							</action-fail>
-						</execute-gradle-task>
-					</sequential>
-				</for>
-
-				<echo>Checking for baseline log files.</echo>
-
-				<gradle-execute dir="modules/test/semantic-versioning-test" task="test">
-					<arg value="-Dmodules.test.class.group=${modules.test.class.group}" />
-					<arg value="-Dproject.dir=${project.dir}" />
-				</gradle-execute>
-
-				<echo>Check for baseline log files completed.</echo>
-			</test-action>
-
-			<test-set-up>
-				<fail message="Please set the property ${modules.test.class.group}" unless="modules.test.class.group" />
-
-				<if>
-					<and>
-						<or>
-							<available file="liferay-portal-bundle-${app.server.type}.tar.gz" />
-							<available file="liferay-portal-bundle-${app.server.type}-${app.server.version}.tar.gz" />
-						</or>
-						<available file="liferay-portal-source.tar.gz" />
-					</and>
-					<then>
-						<local name="bundle.src.file.name" />
-
-						<condition else="liferay-portal-bundle-${app.server.type}.tar.gz" property="bundle.src.file.name" value="liferay-portal-bundle-${app.server.type}-${app.server.version}.tar.gz">
-							<available file="liferay-portal-bundle-${app.server.type}-${app.server.version}.tar.gz" />
-						</condition>
-
-						<execute>
-							tar --extract --gzip --file=${bundle.src.file.name}
-						</execute>
-
-						<antcall inheritAll="false" target="compile" />
-
-						<antcall inheritAll="false" target="install-portal-snapshots" />
-
-						<echo>tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/build/system.packages.extra.mf --gzip --to-stdout --verbose > modules/core/portal-bootstrap/system.packages.extra.mf</echo>
-
-						<execute>
-							<![CDATA[
-								mkdir -p modules/core/portal-bootstrap
-
-								tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/build/system.packages.extra.mf --gzip --to-stdout --verbose > modules/core/portal-bootstrap/system.packages.extra.mf
-							]]>
-						</execute>
-
-						<echo>tar -zxvf liferay-portal-source.tar.gz --wildcards '*.profile-dxp.properties'</echo>
-
-						<trycatch property="tar.failure">
-							<try>
-								<execute>
-									<![CDATA[
-										tar -zxvf liferay-portal-source.tar.gz --wildcards '*.profile-dxp.properties'
-									]]>
-								</execute>
-							</try>
-							<catch>
-								<echo>${tar.failure}</echo>
-							</catch>
-						</trycatch>
-					</then>
-					<else>
-						<prepare-test-build />
-					</else>
-				</if>
-
-				<echo>Deleting stale baseline log files.</echo>
-
-				<for param="log.file">
-					<fileset
-						dir="${project.dir}"
-					>
-						<include name="modules/**/baseline.log" />
-					</fileset>
-					<sequential>
-						<delete file="@{log.file}" />
-					</sequential>
-				</for>
-			</test-set-up>
-		</run-batch-test>
-	</target>
-
 	<target name="modules-unit">
 		<run-batch-test>
 			<test-action>
@@ -10293,51 +10121,48 @@ ${output.content}</echo>
 	</target>
 
 	<target name="semantic-versioning">
+		<propertycopy from="app.server.${app.server.type}.version" name="app.server.version" />
+
 		<run-batch-test>
 			<test-action>
-				<echo>Checking for baseline log files.</echo>
-
-				<var name="log.files" unset="true" />
-
-				<fileset
-					dir="${project.dir}"
-					id="log.files"
-				>
-					<include name="baseline-reports/*.log" />
-					<include name="modules/**/baseline.log" />
-				</fileset>
-
-				<pathconvert pathsep="," property="log.files" refid="log.files" />
-
-				<for list="${log.files}" param="log.file">
-					<sequential>
-						<print-file file.name="@{log.file}" />
-					</sequential>
-				</for>
-
-				<if>
-					<not>
-						<equals arg1="${log.files}" arg2="" />
-					</not>
-					<then>
-						<fail message="Semantic versioning is incorrect." />
-					</then>
-				</if>
-
-				<echo>Check for baseline log files completed.</echo>
+				<ant antfile="${project.dir}/build.xml" dir="${project.dir}" inheritall="false" target="baseline-all">
+					<property name="baseline.all.ant.projects" value="true" />
+					<property name="baseline.all.ignore.failures" value="true" />
+					<property name="baseline.all.report" value="true" />
+				</ant>
 			</test-action>
 
 			<test-set-up>
 				<if>
-					<available file="liferay-portal-source.tar.gz" />
+					<and>
+						<or>
+							<available file="liferay-portal-bundle-${app.server.type}.tar.gz" />
+							<available file="liferay-portal-bundle-${app.server.type}-${app.server.version}.tar.gz" />
+						</or>
+						<available file="liferay-portal-source.tar.gz" />
+					</and>
 					<then>
-						<echo>tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/build/system.packages.extra.mf --gzip --verbose
-tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/lib/biz.aQute.bnd.annotation.jar --gzip --verbose</echo>
+						<local name="bundle.src.file.name" />
+
+						<condition else="liferay-portal-bundle-${app.server.type}.tar.gz" property="bundle.src.file.name" value="liferay-portal-bundle-${app.server.type}-${app.server.version}.tar.gz">
+							<available file="liferay-portal-bundle-${app.server.type}-${app.server.version}.tar.gz" />
+						</condition>
+
+						<execute>
+							tar --extract --gzip --file=${bundle.src.file.name}
+						</execute>
+
+						<antcall inheritAll="false" target="compile" />
+
+						<antcall inheritAll="false" target="install-portal-snapshots" />
+
+						<echo>tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/build/system.packages.extra.mf --gzip --to-stdout --verbose > modules/core/portal-bootstrap/system.packages.extra.mf</echo>
 
 						<execute>
 							<![CDATA[
-								tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/build/system.packages.extra.mf --gzip --verbose
-								tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/lib/biz.aQute.bnd.annotation.jar --gzip --verbose
+								mkdir -p modules/core/portal-bootstrap
+
+								tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/build/system.packages.extra.mf --gzip --to-stdout --verbose > modules/core/portal-bootstrap/system.packages.extra.mf
 							]]>
 						</execute>
 
@@ -10356,6 +10181,9 @@ tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/
 							</catch>
 						</trycatch>
 					</then>
+					<else>
+						<prepare-test-build />
+					</else>
 				</if>
 
 				<echo>Deleting stale baseline log files.</echo>
@@ -10364,28 +10192,12 @@ tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/
 					<fileset
 						dir="${project.dir}"
 					>
-						<include name="baseline-reports/*.log" />
 						<include name="modules/**/baseline.log" />
 					</fileset>
 					<sequential>
 						<delete file="@{log.file}" />
 					</sequential>
 				</for>
-
-				<echo file="build.${user.name}.properties">baseline.jar.report.level=persist</echo>
-
-				<antcall inheritAll="false" target="compile" />
-
-				<antcall inheritAll="false" target="jar" />
-
-				<prepare-test-bundles unit="false" />
-
-				<antcall inheritAll="false" target="compile-test" />
-
-				<echo if:set="env.JENKINS_HOME">ANT_OPTS=${env.ANT_OPTS}</echo>
-
-				<antcall if:set="env.JENKINS_HOME" inheritAll="false" target="clean-up-db2-processes" />
-				<antcall if:set="env.JENKINS_HOME" inheritAll="false" target="clean-up-java-processes" />
 			</test-set-up>
 		</run-batch-test>
 	</target>
