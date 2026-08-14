@@ -182,13 +182,13 @@ public class AssetStatisticsResourceImpl
 	private long _getBrokenLinksCount(
 		Long[] groupIds, Long[] objectDefinitionIds) {
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-82226")) {
+
+			return 0;
+		}
+
 		try {
-			if (!FeatureFlagManagerUtil.isEnabled(
-					contextCompany.getCompanyId(), "LPD-82226")) {
-
-				return 0;
-			}
-
 			List<String> expiredAssetTokens = _getExpiredAssetTokens(
 				objectDefinitionIds);
 
@@ -224,8 +224,8 @@ public class AssetStatisticsResourceImpl
 			return searchResponse.getCount();
 		}
 		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to get the broken links count", exception);
 			}
 
 			return 0;
