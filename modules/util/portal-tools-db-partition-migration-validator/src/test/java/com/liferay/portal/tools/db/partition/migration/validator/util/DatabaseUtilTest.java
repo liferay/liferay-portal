@@ -40,6 +40,22 @@ public class DatabaseUtilTest extends BaseTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-102648")
+	public void testExportLiferayDatabaseWithCompanyNamesInOtherSchemas()
+		throws Exception {
+
+		mockGetCatalogs(Arrays.asList("Schema1", "Schema2"));
+		mockGetCompanyNames(Collections.singletonList(_company1));
+		mockGetCompanyNames(
+			Collections.singletonList(_company2), "Schema2.CompanyInfo");
+
+		LiferayDatabase liferayDatabase = DatabaseUtil.exportLiferayDatabase(
+			connection, _COMPANY_ID);
+
+		_assert(liferayDatabase, true);
+	}
+
+	@Test
 	@TestInfo("LPD-6742")
 	public void testExportLiferayDatabaseWithDefaultCompany() throws Exception {
 		LiferayDatabase liferayDatabase = DatabaseUtil.exportLiferayDatabase(
