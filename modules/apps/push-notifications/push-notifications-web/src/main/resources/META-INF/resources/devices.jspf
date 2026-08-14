@@ -40,7 +40,7 @@ pushNotificationsDeviceSearchContainer.setResultsAndTotal(() -> PushNotification
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand table-title"
 				name="full-name"
-				value="<%= deviceUser.getFullName() %>"
+				value="<%= HtmlUtil.escape(deviceUser.getFullName()) %>"
 			/>
 
 			<liferay-ui:search-container-column-text
