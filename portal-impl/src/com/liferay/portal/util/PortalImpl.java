@@ -7627,7 +7627,7 @@ public class PortalImpl implements Portal {
 
 		Locale currentLocale = themeDisplay.getLocale();
 
-		String mappingPart = StringPool.BLANK;
+		String portletFriendlyURLMappingPath = StringPool.BLANK;
 
 		String currentLayoutFriendlyURL = layout.getFriendlyURL(currentLocale);
 
@@ -7639,7 +7639,7 @@ public class PortalImpl implements Portal {
 		}
 
 		if (currentLayoutFriendlyURLIndex != -1) {
-			mappingPart = _getMappingPart(
+			portletFriendlyURLMappingPath = _getPortletFriendlyURLMappingPath(
 				currentLayoutFriendlyURLIndex +
 					currentLayoutFriendlyURL.length(),
 				layoutURL);
@@ -7652,7 +7652,7 @@ public class PortalImpl implements Portal {
 			int groupFriendlyURLIndex = layoutURL.indexOf(groupFriendlyURL);
 
 			if (groupFriendlyURLIndex != -1) {
-				mappingPart = _getMappingPart(
+				portletFriendlyURLMappingPath = _getPortletFriendlyURLMappingPath(
 					groupFriendlyURLIndex + groupFriendlyURL.length(),
 					layoutURL);
 			}
@@ -7756,8 +7756,8 @@ public class PortalImpl implements Portal {
 					changeLanguageURL += curFriendlyURLSeparatorPart;
 				}
 
-				if (Validator.isNotNull(mappingPart)) {
-					changeLanguageURL += mappingPart;
+				if (Validator.isNotNull(portletFriendlyURLMappingPath)) {
+					changeLanguageURL += portletFriendlyURLMappingPath;
 				}
 			}
 
@@ -7972,8 +7972,8 @@ public class PortalImpl implements Portal {
 		return sb.toString();
 	}
 
-	private String _getMappingPart(int fromIndex, String url) {
-		String mappingPart = StringPool.BLANK;
+	private String _getPortletFriendlyURLMappingPath(int fromIndex, String url) {
+		String portletFriendlyURLMappingPath = StringPool.BLANK;
 
 		List<FriendlyURLMapper> friendlyURLMappers =
 			PortletLocalServiceUtil.getFriendlyURLMappers();
@@ -7997,11 +7997,11 @@ public class PortalImpl implements Portal {
 			if ((mappingEndIndex == url.length()) ||
 				(url.charAt(mappingEndIndex) == CharPool.SLASH)) {
 
-				mappingPart = url.substring(mappingIndex);
+				portletFriendlyURLMappingPath = url.substring(mappingIndex);
 			}
 		}
 
-		return mappingPart;
+		return portletFriendlyURLMappingPath;
 	}
 
 	private String _getPortalURL(
