@@ -27,7 +27,7 @@ type Props = {
 
 export default function openConfirmModal(props: Props) {
 	if (props.optOutConfig) {
-		return openOptOutConfirmModal(props);
+		return openStatefulConfirmModal(props);
 	}
 	else {
 		return openStandardConfirmModal(props);
@@ -88,7 +88,7 @@ function openStandardConfirmModal({
 	});
 }
 
-async function openOptOutConfirmModal({
+async function openStatefulConfirmModal({
 	buttonLabel,
 	cancelButtonLabel,
 	center,
@@ -110,7 +110,7 @@ async function openOptOutConfirmModal({
 		openModal({
 			center,
 			contentComponent: ({closeModal}: {closeModal: () => void}) =>
-				ModalContent({
+				StatefulModalContent({
 					body: text,
 					buttonLabel,
 					cancelButtonLabel,
@@ -150,7 +150,7 @@ function optOut(key: string) {
 	Liferay.Util.Session.set(key, 'true');
 }
 
-function ModalContent({
+function StatefulModalContent({
 	body,
 	buttonLabel,
 	cancelButtonLabel,
