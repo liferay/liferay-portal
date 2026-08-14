@@ -4659,6 +4659,8 @@ components:
                         applicationDecorator:
                             enum: [Barebone, Borderless, Decorate]
                             type: string
+                        applicationDecoratorId:
+                            type: string
                         customTitle_i18n:
                             additionalProperties:
                                 type: string
