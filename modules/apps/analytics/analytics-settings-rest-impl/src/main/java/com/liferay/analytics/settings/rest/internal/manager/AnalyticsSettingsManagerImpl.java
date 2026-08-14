@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionary;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -62,11 +61,8 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 	public void deleteCompanyConfiguration(long companyId)
 		throws ConfigurationException {
 
-		List<Group> groups = ListUtil.concat(
-			_groupLocalService.getGroups(
-				companyId, GroupConstants.ANY_PARENT_GROUP_ID, true),
-			_groupLocalService.getGroups(
-				companyId, _CLASS_NAME_COMMERCE_CHANNEL, 0));
+		List<Group> groups = _groupLocalService.getGroups(
+			companyId, GroupConstants.ANY_PARENT_GROUP_ID, true);
 
 		for (Group group : groups) {
 			UnicodeProperties typeSettingsUnicodeProperties =
@@ -99,7 +95,8 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 
 		return TransformUtil.transformToLongArray(
 			_groupLocalService.getGroups(
-				companyId, _CLASS_NAME_COMMERCE_CHANNEL, 0),
+				companyId, "com.liferay.commerce.product.model.CommerceChannel",
+				0),
 			group -> {
 				UnicodeProperties typeSettingsUnicodeProperties =
 					group.getTypeSettingsProperties();
@@ -405,9 +402,6 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 			_groupLocalService.updateGroup(group);
 		}
 	}
-
-	private static final String _CLASS_NAME_COMMERCE_CHANNEL =
-		"com.liferay.commerce.product.model.CommerceChannel";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AnalyticsSettingsManagerImpl.class);
