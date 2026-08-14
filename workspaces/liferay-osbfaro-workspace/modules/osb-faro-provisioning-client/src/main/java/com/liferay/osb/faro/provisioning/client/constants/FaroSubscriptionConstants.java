@@ -86,6 +86,12 @@ public class FaroSubscriptionConstants {
 					-1, 100000, null, 50, 2000000, 3, -1, -1,
 					ProductConstants.DATA_PLATFORM_PRODUCT_ENTRY_NAME, -1, 20)
 			).put(
+				ProductConstants.DIGITAL_SALES_ROOM_PRODUCT_ENTRY_NAME,
+				new FaroSubscriptionPlan(
+					null,
+					ProductConstants.DIGITAL_SALES_ROOM_PRODUCT_ENTRY_NAME, -1,
+					-1)
+			).put(
 				ProductConstants.ENTERPRISE_CONTACTS_PRODUCT_ENTRY_NAME,
 				new FaroSubscriptionPlan(
 					ProductConstants.ENTERPRISE_PRODUCT_ENTRY_NAME,
