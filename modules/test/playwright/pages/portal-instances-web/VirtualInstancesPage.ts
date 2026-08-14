@@ -10,6 +10,7 @@ import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenu
 
 export class VirtualInstancesPage {
 	private addInstanceFrame: FrameLocator;
+	private copyInstanceFrame: FrameLocator;
 
 	readonly addInstanceActive: Locator;
 	readonly addInstanceAddButton: Locator;
@@ -21,6 +22,13 @@ export class VirtualInstancesPage {
 	readonly addInstanceVirtualHost: Locator;
 	readonly addInstanceVirtualInstanceInitializer: Locator;
 	readonly addInstanceWebIdField: Locator;
+	readonly copyInstanceCancelButton: Locator;
+	readonly copyInstanceDestinationCompanyIdField: Locator;
+	readonly copyInstanceErrorMessage: Locator;
+	readonly copyInstanceNameField: Locator;
+	readonly copyInstanceSubmitButton: Locator;
+	readonly copyInstanceVirtualHostField: Locator;
+	readonly copyInstanceWebIdField: Locator;
 	readonly globalMenuPage: GlobalMenuPage;
 	readonly errorMessage: Locator;
 	readonly errorMessageScreenName: Locator;
@@ -33,6 +41,9 @@ export class VirtualInstancesPage {
 	constructor(page: Page) {
 		this.addInstanceFrame = page.frameLocator(
 			'iframe[title="Add Instance"]'
+		);
+		this.copyInstanceFrame = page.frameLocator(
+			'iframe[title="Copy Instance"]'
 		);
 
 		this.addInstanceActive = this.addInstanceFrame.getByText('Active');
@@ -52,6 +63,22 @@ export class VirtualInstancesPage {
 		this.addInstanceVirtualInstanceInitializer =
 			this.addInstanceFrame.getByLabel('Virtual Instance Initializer');
 		this.addInstanceWebIdField = this.addInstanceFrame.getByLabel('Web ID');
+		this.copyInstanceCancelButton = page
+			.getByRole('dialog', {name: 'Copy Instance'})
+			.getByRole('button', {exact: true, name: 'Cancel'});
+		this.copyInstanceDestinationCompanyIdField =
+			this.copyInstanceFrame.getByLabel('Destination Company ID');
+		this.copyInstanceErrorMessage = this.copyInstanceFrame.getByText(
+			'Please enter a valid destination company ID'
+		);
+		this.copyInstanceNameField = this.copyInstanceFrame.getByLabel('Name');
+		this.copyInstanceSubmitButton = page
+			.getByRole('dialog', {name: 'Copy Instance'})
+			.getByRole('button', {exact: true, name: 'Copy'});
+		this.copyInstanceVirtualHostField =
+			this.copyInstanceFrame.getByLabel('Virtual Host');
+		this.copyInstanceWebIdField =
+			this.copyInstanceFrame.getByLabel('Web ID');
 		this.globalMenuPage = new GlobalMenuPage(page);
 		this.errorMessage = this.addInstanceFrame.getByText(
 			'Error:Please enter a valid'
@@ -183,5 +210,50 @@ export class VirtualInstancesPage {
 
 	async goto() {
 		await this.globalMenuPage.goToControlPanel('Virtual Instances');
+	}
+
+	async openCopyVirtualInstanceModal(name: string) {
+		await this.globalMenuPage.goToControlPanel('Virtual Instances');
+
+		const row = await this.page.getByRole('row').filter({hasText: name});
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: 'Copy'}),
+			trigger: row.getByRole('button', {name: 'Show Actions'}),
+		});
+
+		// Sometimes the frame loads slowly
+
+		await this.page.waitForTimeout(1000);
+	}
+
+	async submitCopyVirtualInstance({
+		destinationCompanyId,
+		name,
+		virtualHost,
+		webId,
+	}: {
+		destinationCompanyId: string;
+		name: string;
+		virtualHost: string;
+		webId: string;
+	}) {
+		await this.copyInstanceNameField.fill(name);
+		await this.copyInstanceVirtualHostField.fill(virtualHost);
+		await this.copyInstanceWebIdField.fill(webId);
+		await this.copyInstanceDestinationCompanyIdField.fill(
+			destinationCompanyId
+		);
+
+		await Promise.all([
+			this.page.waitForResponse(
+				(response) => response.url().includes('copy_instance'),
+				{timeout: 30 * 1000}
+			),
+			this.copyInstanceSubmitButton.click(),
+		]);
+
+		await this.page.waitForTimeout(1000);
 	}
 }
