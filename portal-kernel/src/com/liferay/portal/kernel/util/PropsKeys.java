@@ -1079,6 +1079,12 @@ public interface PropsKeys {
 		FIELD_ENABLE_COM_LIFERAY_PORTAL_KERNEL_MODEL_ORGANIZATION_STATUS =
 			"field.enable.com.liferay.portal.kernel.model.Organization.status";
 
+	public static final String FIPS_AUDIT_DEPLOYMENT_INSTANCE_ID =
+		"fips.audit.deployment.instance.id";
+
+	public static final String FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID =
+		"fips.audit.provider.cmvp.certificate.id";
+
 	public static final String FIPS_ENABLED = "fips.enabled";
 
 	public static final String FULL_PAGE_DISPLAYABLE = "full.page.displayable";
