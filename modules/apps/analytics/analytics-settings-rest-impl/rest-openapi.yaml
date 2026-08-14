@@ -4,8 +4,6 @@ components:
             properties:
                 channelId:
                     type: string
-                commerceSyncEnabled:
-                    type: boolean
                 createDate:
                     format: date
                     type: string
@@ -15,17 +13,6 @@ components:
                     type: array
                 name:
                     minLength: 3
-                    type: string
-        CommerceChannel:
-            properties:
-                channelName:
-                    type: string
-                id:
-                    format: int64
-                    type: integer
-                name:
-                    type: string
-                siteName:
                     type: string
         ContactAccountGroup:
             properties:
@@ -74,11 +61,6 @@ components:
                     type: boolean
         DataSource:
             properties:
-                commerceChannelIds:
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
                 dataSourceId:
                     type: string
                 siteIds:
@@ -244,40 +226,6 @@ paths:
                     description:
                         Unexpected error
             tags: ["Channel"]
-    "/commerce-channels":
-        get:
-            operationId: getCommerceChannelsPage
-            parameters:
-                -   in: query
-                    name: keywords
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/CommerceChannel"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/CommerceChannel"
-                                type: array
-            tags: ["CommerceChannel"]
     "/configuration/wizard-mode":
         post:
             responses:

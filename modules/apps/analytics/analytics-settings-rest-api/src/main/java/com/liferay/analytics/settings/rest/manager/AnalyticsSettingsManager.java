@@ -44,11 +44,6 @@ public interface AnalyticsSettingsManager {
 	public boolean syncedContactSettingsEnabled(long companyId)
 		throws Exception;
 
-	public String[] updateCommerceChannelIds(
-			String analyticsChannelId, long companyId,
-			Long[] dataSourceCommerceChannelIds)
-		throws Exception;
-
 	public void updateCompanyConfiguration(
 			long companyId, Map<String, Object> properties)
 		throws Exception;
