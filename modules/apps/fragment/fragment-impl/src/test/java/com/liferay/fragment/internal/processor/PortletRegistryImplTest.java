@@ -337,6 +337,38 @@ public class PortletRegistryImplTest {
 
 	@Test
 	@TestInfo("LPD-97875")
+	public void testGetFragmentEntryLinkPortletIdsFreeMarkerRuntimeTagInBlockForm() {
+		String instanceId = RandomTestUtil.randomString();
+		String portletName = RandomTestUtil.randomString();
+
+		String expectedPortletId = PortletIdCodec.encode(
+			PortletIdCodec.decodePortletName(portletName),
+			PortletIdCodec.decodeUserId(portletName), instanceId);
+
+		_assertGetFragmentEntryLinkPortletIds(
+			_getFragmentEntryLink(
+				StringBundler.concat(
+					"<div class=\"fragment_1\">",
+					"[@liferay_portlet.runtime instanceId=\"", instanceId,
+					"\" portletName=\"", portletName, "\"]",
+					RandomTestUtil.randomString(),
+					"[/@liferay_portlet.runtime]</div>"),
+				RandomTestUtil.randomString()),
+			expectedPortletId);
+		_assertGetFragmentEntryLinkPortletIds(
+			_getFragmentEntryLink(
+				StringBundler.concat(
+					"<div class=\"fragment_1\">",
+					"[@liferay_portlet[\"runtime\"] instanceId=\"", instanceId,
+					"\" portletName=\"", portletName, "\"]",
+					RandomTestUtil.randomString(),
+					"[/@liferay_portlet[\"runtime\"]]</div>"),
+				RandomTestUtil.randomString()),
+			expectedPortletId);
+	}
+
+	@Test
+	@TestInfo("LPD-97875")
 	public void testGetFragmentEntryLinkPortletIdsFreeMarkerRuntimeTagNameInSingleQuotes() {
 		String instanceId = RandomTestUtil.randomString();
 		String portletName = RandomTestUtil.randomString();
@@ -469,6 +501,34 @@ public class PortletRegistryImplTest {
 					instanceId1, "\" portletName=\"", portletName1, "\" /]",
 					RandomTestUtil.randomString(),
 					"[@liferay_portlet[\"runtime\"] instanceId=\"", instanceId2,
+					"\" portletName=\"", portletName2, "\" /]</div>"),
+				RandomTestUtil.randomString()),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName1),
+				PortletIdCodec.decodeUserId(portletName1), instanceId1),
+			PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName2),
+				PortletIdCodec.decodeUserId(portletName2), instanceId2));
+	}
+
+	@Test
+	@TestInfo("LPD-97875")
+	public void testGetFragmentEntryLinkPortletIdsMultipleFreeMarkerRuntimeTagsInBlockForm() {
+		String instanceId1 = RandomTestUtil.randomString();
+		String instanceId2 = RandomTestUtil.randomString();
+		String portletName1 = RandomTestUtil.randomString();
+		String portletName2 = RandomTestUtil.randomString();
+
+		_assertGetFragmentEntryLinkPortletIds(
+			_getFragmentEntryLink(
+				StringBundler.concat(
+					"<div class=\"fragment_1\">",
+					"[@liferay_portlet.runtime instanceId=\"", instanceId1,
+					"\" portletName=\"", portletName1, "\"]",
+					RandomTestUtil.randomString(),
+					"[/@liferay_portlet.runtime]",
+					RandomTestUtil.randomString(),
+					"[@liferay_portlet.runtime instanceId=\"", instanceId2,
 					"\" portletName=\"", portletName2, "\" /]</div>"),
 				RandomTestUtil.randomString()),
 			PortletIdCodec.encode(
