@@ -7652,9 +7652,10 @@ public class PortalImpl implements Portal {
 			int groupFriendlyURLIndex = layoutURL.indexOf(groupFriendlyURL);
 
 			if (groupFriendlyURLIndex != -1) {
-				portletFriendlyURLMappingPath = _getPortletFriendlyURLMappingPath(
-					groupFriendlyURLIndex + groupFriendlyURL.length(),
-					layoutURL);
+				portletFriendlyURLMappingPath =
+					_getPortletFriendlyURLMappingPath(
+						groupFriendlyURLIndex + groupFriendlyURL.length(),
+						layoutURL);
 			}
 		}
 
@@ -7972,38 +7973,6 @@ public class PortalImpl implements Portal {
 		return sb.toString();
 	}
 
-	private String _getPortletFriendlyURLMappingPath(int fromIndex, String url) {
-		String portletFriendlyURLMappingPath = StringPool.BLANK;
-
-		List<FriendlyURLMapper> friendlyURLMappers =
-			PortletLocalServiceUtil.getFriendlyURLMappers();
-
-		for (FriendlyURLMapper friendlyURLMapper : friendlyURLMappers) {
-			if (friendlyURLMapper.isCheckMappingWithPrefix()) {
-				continue;
-			}
-
-			String mappingPath =
-				StringPool.SLASH + friendlyURLMapper.getMapping();
-
-			int mappingIndex = url.indexOf(mappingPath, fromIndex);
-
-			if (mappingIndex == -1) {
-				continue;
-			}
-
-			int mappingEndIndex = mappingIndex + mappingPath.length();
-
-			if ((mappingEndIndex == url.length()) ||
-				(url.charAt(mappingEndIndex) == CharPool.SLASH)) {
-
-				portletFriendlyURLMappingPath = url.substring(mappingIndex);
-			}
-		}
-
-		return portletFriendlyURLMappingPath;
-	}
-
 	private String _getPortalURL(
 		String serverName, int serverPort, boolean secure) {
 
@@ -8189,6 +8158,40 @@ public class PortalImpl implements Portal {
 		}
 
 		return new LayoutQueryStringComposite(null, friendlyURL, queryString);
+	}
+
+	private String _getPortletFriendlyURLMappingPath(
+		int fromIndex, String url) {
+
+		String portletFriendlyURLMappingPath = StringPool.BLANK;
+
+		List<FriendlyURLMapper> friendlyURLMappers =
+			PortletLocalServiceUtil.getFriendlyURLMappers();
+
+		for (FriendlyURLMapper friendlyURLMapper : friendlyURLMappers) {
+			if (friendlyURLMapper.isCheckMappingWithPrefix()) {
+				continue;
+			}
+
+			String mappingPath =
+				StringPool.SLASH + friendlyURLMapper.getMapping();
+
+			int mappingIndex = url.indexOf(mappingPath, fromIndex);
+
+			if (mappingIndex == -1) {
+				continue;
+			}
+
+			int mappingEndIndex = mappingIndex + mappingPath.length();
+
+			if ((mappingEndIndex == url.length()) ||
+				(url.charAt(mappingEndIndex) == CharPool.SLASH)) {
+
+				portletFriendlyURLMappingPath = url.substring(mappingIndex);
+			}
+		}
+
+		return portletFriendlyURLMappingPath;
 	}
 
 	private String _getPortletTitle(
