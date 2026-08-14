@@ -31,7 +31,7 @@ podSecurityContext:
 probes:
     port: 8081
 provisioning:
-    baseURL: https://webserver-lrprovisioning.lfr.cloud
+    baseURL: https://api.one.liferay.com
 rbac:
     create: true
 replicaCount: 1

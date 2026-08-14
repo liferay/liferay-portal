@@ -121,7 +121,7 @@ type config struct {
 	MarketplaceDir      string        `env:"MARKETPLACE_DIR" envDefault:"/marketplace"`
 	MetricsAddress      string        `env:"METRICS_ADDRESS" envDefault:":8080"`
 	ProbeAddress        string        `env:"PROBE_ADDRESS" envDefault:":8081"`
-	ProvisioningBaseURL string        `env:"PROVISIONING_BASE_URL" envDefault:"https://webserver-lrprovisioning.lfr.cloud"`
+	ProvisioningBaseURL string        `env:"PROVISIONING_BASE_URL" envDefault:"https://api.one.liferay.com"`
 	RetryInitialDelay   time.Duration `env:"RETRY_INITIAL_DELAY" envDefault:"30s"`
 	RetryMaxDelay       time.Duration `env:"RETRY_MAX_DELAY" envDefault:"30m"`
 }

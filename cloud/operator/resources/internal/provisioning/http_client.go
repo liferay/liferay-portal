@@ -48,7 +48,7 @@ func (httpClient *HTTPClient) Activate(
 
 	response, error := httpClient.post(
 		context, token, fmt.Sprintf(
-			"%s/o/provisioning-rest/v1.0/cloud/environments/%s/activation",
+			"%s/cloud/v1/environments/%s/activation",
 			httpClient.BaseURL, activationRequest.EnvironmentID,
 		),
 	)
@@ -129,7 +129,7 @@ func (httpClient *HTTPClient) Manifest(
 
 	response, error := httpClient.post(
 		context, token, fmt.Sprintf(
-			"%s/o/provisioning-rest/v1.0/cloud/environments/%s/manifest",
+			"%s/cloud/v1/environments/%s/manifest",
 			httpClient.BaseURL, manifestRequest.EnvironmentID,
 		),
 	)
