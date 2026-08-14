@@ -321,6 +321,54 @@ public class AnalyticsSettingsManagerTest {
 	}
 
 	@Test
+	public void testPreviousSyncedGroupIds() throws Exception {
+		_analyticsSettingsManager.updateCompanyConfiguration(
+			TestPropsValues.getCompanyId(),
+			HashMapBuilder.<String, Object>put(
+				"syncedGroupIds",
+				new String[] {String.valueOf(_siteGroup1.getGroupId())}
+			).build());
+
+		IdempotentRetryAssert.retryAssert(
+			5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+			() -> {
+				AnalyticsConfiguration analyticsConfiguration =
+					_analyticsSettingsManager.getAnalyticsConfiguration(
+						TestPropsValues.getCompanyId());
+
+				Assert.assertArrayEquals(
+					new String[] {String.valueOf(_siteGroup1.getGroupId())},
+					analyticsConfiguration.syncedGroupIds());
+
+				return null;
+			});
+
+		_analyticsSettingsManager.updateCompanyConfiguration(
+			TestPropsValues.getCompanyId(),
+			HashMapBuilder.<String, Object>put(
+				"syncedGroupIds",
+				new String[] {String.valueOf(_siteGroup2.getGroupId())}
+			).build());
+
+		IdempotentRetryAssert.retryAssert(
+			5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+			() -> {
+				AnalyticsConfiguration analyticsConfiguration =
+					_analyticsSettingsManager.getAnalyticsConfiguration(
+						TestPropsValues.getCompanyId());
+
+				Assert.assertArrayEquals(
+					new String[] {String.valueOf(_siteGroup1.getGroupId())},
+					analyticsConfiguration.previousSyncedGroupIds());
+				Assert.assertArrayEquals(
+					new String[] {String.valueOf(_siteGroup2.getGroupId())},
+					analyticsConfiguration.syncedGroupIds());
+
+				return null;
+			});
+	}
+
+	@Test
 	public void testUpdateCompanyConfiguration() throws Exception {
 		AnalyticsConfiguration analyticsConfiguration1 =
 			_analyticsSettingsManager.getAnalyticsConfiguration(
