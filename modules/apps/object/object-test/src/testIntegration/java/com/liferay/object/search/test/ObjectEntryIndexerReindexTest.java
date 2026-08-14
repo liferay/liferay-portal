@@ -30,6 +30,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.ReindexCacheThreadLocal;
@@ -326,7 +327,7 @@ public class ObjectEntryIndexerReindexTest {
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
-		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+		ObjectEntry headObjectEntry = _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -338,9 +339,9 @@ public class ObjectEntryIndexerReindexTest {
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
-		objectEntry = _objectEntryLocalService.updateObjectEntry(
-			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
-			objectEntry.getObjectEntryFolderId(),
+		headObjectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), headObjectEntry.getObjectEntryId(),
+			headObjectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "approvedValue"
 			).build(),
@@ -348,31 +349,32 @@ public class ObjectEntryIndexerReindexTest {
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
-		objectEntry = _objectEntryLocalService.updateObjectEntry(
-			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
-			objectEntry.getObjectEntryFolderId(),
+		headObjectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), headObjectEntry.getObjectEntryId(),
+			headObjectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", "draftValue"
 			).build(),
 			serviceContext);
 
-		ObjectEntry latestApprovedObjectEntry =
+		ObjectEntry nonheadObjectEntry =
 			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
-				objectEntry.getObjectEntryId());
+				headObjectEntry.getObjectEntryId());
 
 		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED,
-			latestApprovedObjectEntry.getStatus());
+			WorkflowConstants.STATUS_APPROVED, nonheadObjectEntry.getStatus());
+		Assert.assertFalse(nonheadObjectEntry.isHead());
 
 		PrincipalThreadLocal.setName(null);
 
-		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-			objectEntry.getModelClassName());
+		Indexer<ObjectEntry> objectDefinitionIndexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(
+				headObjectEntry.getModelClassName());
 
 		try (SafeCloseable safeCloseable =
 				ReindexCacheThreadLocal.openReindexMode()) {
 
-			indexer.reindexCompany(_user.getCompanyId());
+			objectDefinitionIndexer.reindexCompany(_user.getCompanyId());
 		}
 
 		SearchResponse searchResponse = search(
@@ -394,7 +396,7 @@ public class ObjectEntryIndexerReindexTest {
 			0, searchResponse.getCount());
 
 		_objectEntryLocalService.moveObjectEntryToTrash(
-			TestPropsValues.getUserId(), objectEntry,
+			TestPropsValues.getUserId(), headObjectEntry,
 			ServiceContextTestUtil.getServiceContext());
 
 		searchResponse = search(
@@ -416,6 +418,33 @@ public class ObjectEntryIndexerReindexTest {
 			0, searchResponse.getCount());
 
 		PrincipalThreadLocal.setName(originalName);
+
+		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			ObjectEntry.class.getName());
+
+		IndexWriterHelperUtil.updateDocument(
+			nonheadObjectEntry.getCompanyId(),
+			indexer.getDocument(nonheadObjectEntry));
+
+		searchResponse = search(
+			objectDefinition.getClassName(), "approvedValue",
+			WorkflowConstants.STATUS_ANY);
+
+		Assert.assertEquals(
+			searchResponse.getRequestString() + "->" +
+				searchResponse.getDocuments(),
+			1, searchResponse.getCount());
+
+		indexer.reindex(nonheadObjectEntry);
+
+		searchResponse = search(
+			objectDefinition.getClassName(), "approvedValue",
+			WorkflowConstants.STATUS_ANY);
+
+		Assert.assertEquals(
+			searchResponse.getRequestString() + "->" +
+				searchResponse.getDocuments(),
+			0, searchResponse.getCount());
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
