@@ -337,16 +337,27 @@ public class PortletRegistryImpl implements PortletRegistry {
 	}
 
 	private int _getMacroEndIndex(String html, int index) {
+		int openBracketCount = 0;
+
 		while (index < html.length()) {
 			char c = html.charAt(index);
 
 			if ((c == CharPool.APOSTROPHE) || (c == CharPool.QUOTE)) {
 				index = _getQuotedStringEndIndex(index + 1, c, html);
 			}
-			else if ((c == CharPool.FORWARD_SLASH) &&
-					 html.startsWith(StringPool.CLOSE_BRACKET, index + 1)) {
+			else if (c == CharPool.OPEN_BRACKET) {
+				openBracketCount++;
+			}
+			else if (c == CharPool.CLOSE_BRACKET) {
+				if (openBracketCount == 0) {
+					if (html.charAt(index - 1) == CharPool.FORWARD_SLASH) {
+						return index - 1;
+					}
 
-				return index;
+					return index;
+				}
+
+				openBracketCount--;
 			}
 
 			index++;
