@@ -120,13 +120,14 @@ public class PageSpecificationVersionResourceTest
 
 	@Override
 	@Test
-	@TestInfo("LPD-90200")
+	@TestInfo({"LPD-90200", "LPD-102622"})
 	public void testPostSiteSitePagePageSpecificationVersionRestore()
 		throws Exception {
 
 		super.testPostSiteSitePagePageSpecificationVersionRestore();
 
 		_testPostSiteSitePagePageSpecificationVersionRestore();
+		_testPostSiteSitePagePageSpecificationVersionRestoreMismatchedSitePage();
 	}
 
 	@Override
@@ -568,6 +569,31 @@ public class PageSpecificationVersionResourceTest
 				pageElements.length, draftLayout.getPlid(),
 				draftLayoutSegmentsExperienceId);
 		}
+	}
+
+	private void _testPostSiteSitePagePageSpecificationVersionRestoreMismatchedSitePage()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+
+		PageSpecificationVersion pageSpecificationVersion =
+			_addPageSpecificationVersion();
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() ->
+				pageSpecificationVersionResource.
+					postSiteSitePagePageSpecificationVersionRestore(
+						testGroup.getExternalReferenceCode(),
+						layout.getExternalReferenceCode(),
+						pageSpecificationVersion.getExternalReferenceCode()));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		Assert.assertEquals(
+			"The page specification version must belong to the site page",
+			problem.getTitle());
 	}
 
 	@Inject
