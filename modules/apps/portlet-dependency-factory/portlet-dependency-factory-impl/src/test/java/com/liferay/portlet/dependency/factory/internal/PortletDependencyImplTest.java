@@ -33,30 +33,20 @@ public class PortletDependencyImplTest {
 		AbsolutePortalURLBuilder absolutePortalURLBuilder = Mockito.mock(
 			AbsolutePortalURLBuilder.class);
 
-		PortletDependencyImpl portletDependencyImpl = new PortletDependencyImpl(
-			"main.css", null, null, null, absolutePortalURLBuilder);
-
 		String cssURL = RandomTestUtil.randomString();
 
-		_setUpAbsolutePortalURLBuilder(
-			absolutePortalURLBuilder, portletDependencyImpl, cssURL);
-
-		Assert.assertEquals(
+		_testToStringBundler(
+			absolutePortalURLBuilder,
 			"<link href=\"" + cssURL + "\" type=\"text/css\">",
-			String.valueOf(portletDependencyImpl.toStringBundler()));
-
-		portletDependencyImpl = new PortletDependencyImpl(
-			"main.js", null, null, null, absolutePortalURLBuilder);
+			RandomTestUtil.randomString() + ".css", cssURL);
 
 		String javaScriptURL = RandomTestUtil.randomString();
 
-		_setUpAbsolutePortalURLBuilder(
-			absolutePortalURLBuilder, portletDependencyImpl, javaScriptURL);
-
-		Assert.assertEquals(
+		_testToStringBundler(
+			absolutePortalURLBuilder,
 			"<script src=\"" + javaScriptURL +
 				"\" type=\"text/javascript\"></script>",
-			String.valueOf(portletDependencyImpl.toStringBundler()));
+			RandomTestUtil.randomString() + ".js", javaScriptURL);
 	}
 
 	private void _setUpAbsolutePortalURLBuilder(
@@ -80,6 +70,21 @@ public class PortletDependencyImplTest {
 		).thenReturn(
 			portletDependencyAbsolutePortalURLBuilder
 		);
+	}
+
+	private void _testToStringBundler(
+		AbsolutePortalURLBuilder absolutePortalURLBuilder,
+		String expectedMarkup, String fileName, String url) {
+
+		PortletDependencyImpl portletDependencyImpl = new PortletDependencyImpl(
+			fileName, null, null, null, absolutePortalURLBuilder);
+
+		_setUpAbsolutePortalURLBuilder(
+			absolutePortalURLBuilder, portletDependencyImpl, url);
+
+		Assert.assertEquals(
+			expectedMarkup,
+			String.valueOf(portletDependencyImpl.toStringBundler()));
 	}
 
 }
