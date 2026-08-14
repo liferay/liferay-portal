@@ -250,13 +250,20 @@ public class WidgetPageWidgetInstanceDTOConverter
 											null),
 										null);
 
-									if (value == null) {
+									if ((value == null) ||
+										(!value.equals("barebone") &&
+										 !value.equals("borderless") &&
+										 !value.equals("decorate"))) {
+
 										return null;
 									}
 
 									return ApplicationDecorator.create(
 										StringUtil.upperCaseFirstLetter(value));
 								});
+							setApplicationDecoratorId(
+								() -> portletPreferences.getValue(
+									"portletSetupPortletDecoratorId", null));
 							setCustomTitle_i18n(
 								() -> _getCustomTitleMap(
 									layout.getGroupId(), portletPreferences));

@@ -644,7 +644,12 @@ public class LayoutUtil {
 		GeneralConfig generalConfig =
 			widgetLookAndFeelConfig.getGeneralConfig();
 
-		if (generalConfig.getApplicationDecorator() != null) {
+		if (generalConfig.getApplicationDecoratorId() != null) {
+			map.put(
+				"portletSetupPortletDecoratorId",
+				generalConfig.getApplicationDecoratorId());
+		}
+		else if (generalConfig.getApplicationDecorator() != null) {
 			map.put(
 				"portletSetupPortletDecoratorId",
 				StringUtil.lowerCase(
