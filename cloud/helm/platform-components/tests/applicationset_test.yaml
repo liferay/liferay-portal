@@ -112,13 +112,13 @@ tests:
     -   asserts:
             -   contains:
                     content:
-                        name: clusterIdentity.deploymentName
+                        name: deploymentContext.deploymentName
                         value: liferay-test
                     path: spec.sources[0].helm.parameters
                 template: templates/application-infrastructure-provider.yaml
         it: Passes the cluster identity to the infrastructure provider application
         set:
-            clusterIdentity:
+            deploymentContext:
                 deploymentName: liferay-test
             infrastructureProvider:
                 repoURL: oci://example-registry/liferay-azure-infrastructure-provider

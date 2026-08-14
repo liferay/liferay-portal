@@ -19,17 +19,17 @@ mock_provider "azurerm" {
 override_module {
 	target=module.argocd
 }
-run "should_assemble_the_cluster_identity" {
+run "should_assemble_the_deployment_context" {
 	assert {
-		condition=join(",", keys(local.cluster_identity)) == "crossplaneDataClientId,crossplaneIamClientId,deploymentName,oidcIssuerUrl,region,resourceGroupName,subscriptionId,tenantId"
+		condition=join(",", keys(local.deployment_context)) == "crossplaneDataClientId,crossplaneIamClientId,deploymentName,oidcIssuerUrl,region,resourceGroupName,subscriptionId,tenantId"
 		error_message="The cluster identity must carry exactly the keys the infrastructure provider consumes"
 	}
 	assert {
-		condition=local.cluster_identity.deploymentName == "liferay-test"
+		condition=local.deployment_context.deploymentName == "liferay-test"
 		error_message="The cluster identity must carry the deployment name"
 	}
 	assert {
-		condition=local.cluster_identity.region == "eastus"
+		condition=local.deployment_context.region == "eastus"
 		error_message="The cluster identity must carry the deployment region"
 	}
 	command=plan
@@ -181,11 +181,11 @@ run "should_wire_the_platform_identities" {
 		error_message="The federated credentials must trust the cluster OIDC issuer"
 	}
 	assert {
-		condition=local.cluster_identity.crossplaneDataClientId == azurerm_user_assigned_identity.crossplane_data.client_id
+		condition=local.deployment_context.crossplaneDataClientId == azurerm_user_assigned_identity.crossplane_data.client_id
 		error_message="The cluster identity must carry the Crossplane data identity client ID"
 	}
 	assert {
-		condition=local.cluster_identity.crossplaneIamClientId == azurerm_user_assigned_identity.crossplane_iam.client_id
+		condition=local.deployment_context.crossplaneIamClientId == azurerm_user_assigned_identity.crossplane_iam.client_id
 		error_message="The cluster identity must carry the Crossplane IAM identity client ID"
 	}
 	assert {
@@ -193,8 +193,8 @@ run "should_wire_the_platform_identities" {
 		error_message="The External Secrets client ID must be published so the bootstrap can annotate the service account"
 	}
 	assert {
-		condition=output.cluster_identity == local.cluster_identity
-		error_message="The cluster identity must be published for the bootstrap to place under clusterIdentity"
+		condition=output.deployment_context == local.deployment_context
+		error_message="The deployment context must be published for the bootstrap to place under deploymentContext"
 	}
 	assert {
 		condition=output.cluster_secret_store_provider == local.cluster_secret_store_provider

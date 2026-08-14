@@ -46,7 +46,7 @@ spec:
                             -   name: projectId
                                 value: {{ $layout.projectId | quote }}
                             -   name: region
-                                value: {{ .Values.clusterIdentity.region | quote }}
+                                value: {{ .Values.deploymentContext.region | quote }}
                             -   name: secretStoreName
                                 value: {{ include "liferay-platform.clusterSecretStoreName" . | quote }}
                             {{- with .Values.infrastructure.parameters }}

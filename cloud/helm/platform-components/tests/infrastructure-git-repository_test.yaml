@@ -138,7 +138,7 @@ tests:
                 template: templates/externalsecret-git-repository.yaml
         it: Splits the infrastructure sources from the application repository
         set:
-            clusterIdentity:
+            deploymentContext:
                 deploymentName: liferay-test
             gitops:
                 infrastructureRepository:

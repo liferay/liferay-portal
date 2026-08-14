@@ -21,7 +21,7 @@ clusterBootstrap:
         requests:
             cpu: 1m
             memory: 8Mi
-clusterIdentity:
+deploymentContext:
     deploymentName: ""
     region: ""
 clusterSecretStore:

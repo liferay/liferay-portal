@@ -7,7 +7,7 @@ templates:
 tests:
     -   asserts:
             -   equal:
-                    path: spec.sources[0].helm.valuesObject.clusterIdentity.deploymentName
+                    path: spec.sources[0].helm.valuesObject.deploymentContext.deploymentName
                     value: liferay-test
             -   equal:
                     path: spec.sources[0].helm.valuesObject.clusterSecretStore.enabled
@@ -25,7 +25,7 @@ tests:
         set:
             platformComponents:
                 values:
-                    clusterIdentity:
+                    deploymentContext:
                         deploymentName: liferay-test
                     clusterSecretStore:
                         enabled: true

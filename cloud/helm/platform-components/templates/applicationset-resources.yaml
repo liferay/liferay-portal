@@ -42,7 +42,7 @@ spec:
                             -   name: projectId
                                 value: {{ $layout.projectId | quote }}
                             -   name: region
-                                value: {{ .Values.clusterIdentity.region | quote }}
+                                value: {{ .Values.deploymentContext.region | quote }}
                             {{- with .Values.infrastructure.parameters }}
                             {{- toYaml . | nindent 28 }}
                             {{- end }}

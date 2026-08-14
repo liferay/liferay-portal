@@ -1,5 +1,5 @@
 locals {
-	cluster_identity={
+	deployment_context={
 		crossplaneDataClientId=azurerm_user_assigned_identity.crossplane_data.client_id
 		crossplaneIamClientId=azurerm_user_assigned_identity.crossplane_iam.client_id
 		deploymentName=var.deployment_name

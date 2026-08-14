@@ -1,4 +1,4 @@
-clusterIdentity:
+deploymentContext:
     deploymentName: liferay-render
     region: local
 gitops:

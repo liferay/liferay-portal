@@ -45,7 +45,7 @@ spec:
                     helm:
                         parameters:
                             -   name: global.deploymentName
-                                value: {{ .Values.clusterIdentity.deploymentName | quote }}
+                                value: {{ .Values.deploymentContext.deploymentName | quote }}
                             -   name: global.liferayServiceAccount.create
                                 value: "true"
                             -   name: global.liferayServiceAccount.name

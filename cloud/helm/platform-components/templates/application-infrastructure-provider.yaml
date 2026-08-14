@@ -21,14 +21,14 @@ spec:
         -   {{- include "liferay-platform.chartSource" .Values.infrastructureProvider | nindent 12 }}
             helm:
                 parameters:
-                    {{- range $key, $value := .Values.clusterIdentity }}
-                    -   name: clusterIdentity.{{ $key }}
+                    {{- range $key, $value := .Values.deploymentContext }}
+                    -   name: deploymentContext.{{ $key }}
                         value: {{ $value | quote }}
                     {{- end }}
                     -   name: crossplaneNamespace
                         value: {{ .Values.operatorApplications.crossplane.namespace | quote }}
                     -   name: deploymentName
-                        value: {{ .Values.clusterIdentity.deploymentName | quote }}
+                        value: {{ .Values.deploymentContext.deploymentName | quote }}
                     {{- with .Values.infrastructureProvider.parameters }}
                     {{- toYaml . | nindent 20 }}
                     {{- end }}

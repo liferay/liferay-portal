@@ -24,7 +24,7 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Appends no extra parameters when none are passed
         set:
-            clusterIdentity:
+            deploymentContext:
                 deploymentName: liferay-test
             infrastructureProvider:
                 parameters: null
@@ -35,7 +35,7 @@ tests:
     -   asserts:
             -   contains:
                     content:
-                        name: clusterIdentity.deploymentName
+                        name: deploymentContext.deploymentName
                         value: liferay-test
                     path: spec.sources[0].helm.parameters
                 template: templates/application-infrastructure-provider.yaml
@@ -47,7 +47,7 @@ tests:
                 template: templates/application-infrastructure-provider.yaml
         it: Appends the passed parameters after the cluster identity
         set:
-            clusterIdentity:
+            deploymentContext:
                 deploymentName: liferay-test
             infrastructureProvider:
                 parameters:
@@ -81,7 +81,7 @@ tests:
                 template: templates/applicationset-resources.yaml
         it: Appends the passed parameters to both applications rendering the infrastructure chart
         set:
-            clusterIdentity:
+            deploymentContext:
                 deploymentName: liferay-test
             infrastructure:
                 parameters:

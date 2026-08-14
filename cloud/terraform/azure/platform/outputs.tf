@@ -1,5 +1,5 @@
-output "cluster_identity" {
-	value=local.cluster_identity
+output "deployment_context" {
+	value=local.deployment_context
 }
 output "cluster_secret_store_provider" {
 	value=local.cluster_secret_store_provider
