@@ -62,6 +62,16 @@ public class FIPSModeValidator {
 				_allowedTLSProtocols, SetUtil.fromArray(tlsProtocols)));
 	}
 
+	public static Provider getProvider() {
+		Provider[] providers = Security.getProviders();
+
+		if (ArrayUtil.isEmpty(providers)) {
+			return null;
+		}
+
+		return providers[0];
+	}
+
 	public static boolean isNotAllowedAlgorithm(String algorithm) {
 		if (!PropsValues.FIPS_ENABLED) {
 			return false;
