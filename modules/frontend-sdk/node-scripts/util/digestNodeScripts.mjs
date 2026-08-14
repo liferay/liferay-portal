@@ -9,6 +9,17 @@ import fs from 'fs/promises';
 import path from 'path';
 
 import {NODE_SCRIPTS_DIR} from './locations.mjs';
+import {SASS_BINARY_CACHE_DIR} from './sass/util/installSassBinary.mjs';
+
+// The Sass compiler is downloaded into the node-scripts tree, so it must be
+// skipped: otherwise a release of the compiler shipping any JavaScript would
+// make this hash depend on whether the binary happens to be installed.
+
+const SASS_BINARY_CACHE_GLOB =
+	path
+		.relative(NODE_SCRIPTS_DIR, SASS_BINARY_CACHE_DIR)
+		.split(path.sep)
+		.join('/') + '/**';
 
 export default async function digestNodeScripts() {
 	const sha256 = crypto.createHash('sha256');
@@ -16,7 +27,7 @@ export default async function digestNodeScripts() {
 	let files = await fg(['**/*.mjs', '**/*.js'], {
 		absolute: true,
 		cwd: NODE_SCRIPTS_DIR,
-		ignore: ['util/sass/binary/**', 'node_modules/**'],
+		ignore: [SASS_BINARY_CACHE_GLOB, 'node_modules/**'],
 	});
 
 	files = files.filter((file) => !path.basename(file).startsWith('.'));

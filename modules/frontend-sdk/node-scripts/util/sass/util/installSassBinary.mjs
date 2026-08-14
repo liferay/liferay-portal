@@ -15,6 +15,10 @@ import fileExists from '../../fileExists.mjs';
 import print from '../../print.mjs';
 import getSassBinaryArchMap from './getSassBinaryArchMap.mjs';
 
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+
+export const SASS_BINARY_CACHE_DIR = path.join(__dirname, 'binary');
+
 export default async function installSassBinary() {
 	const archMap = await getSassBinaryArchMap();
 
@@ -22,9 +26,7 @@ export default async function installSassBinary() {
 		return null;
 	}
 
-	const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-
-	const downloadPath = path.join(__dirname, 'binary');
+	const downloadPath = SASS_BINARY_CACHE_DIR;
 
 	const sassBinaryPath = path.join(downloadPath, archMap.binary);
 
