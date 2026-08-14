@@ -44,7 +44,7 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 
 				const url = new URL(itemData?.deleteLayoutURL);
 
-				fetch(
+				return fetch(
 					addParams(
 						{
 							[`_${url.searchParams.get('p_p_id')}_rowIds`]:

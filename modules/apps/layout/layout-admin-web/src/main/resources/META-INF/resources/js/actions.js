@@ -41,7 +41,7 @@ const ACTIONS = {
 		openDeleteLayoutModal({
 			message,
 			onDelete: () => {
-				fetch(deleteLayoutURL, {
+				return fetch(deleteLayoutURL, {
 					method: 'post',
 				})
 					.then((response) => response.json())
