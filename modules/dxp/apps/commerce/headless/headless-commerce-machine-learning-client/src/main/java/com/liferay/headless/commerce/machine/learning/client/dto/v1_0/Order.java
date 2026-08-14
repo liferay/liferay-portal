@@ -180,6 +180,27 @@ public class Order implements Cloneable, Serializable {
 
 	protected String externalReferenceCode;
 
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
+	}
+
+	public void setGroupId(
+		UnsafeSupplier<Long, Exception> groupIdUnsafeSupplier) {
+
+		try {
+			groupId = groupIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long groupId;
+
 	public Long getId() {
 		return id;
 	}
@@ -466,4 +487,4 @@ public class Order implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1119383462
+// LIFERAY-REST-BUILDER-HASH:-1438533019

@@ -139,6 +139,16 @@ public class OrderSerDes {
 			sb.append("\"");
 		}
 
+		if (order.getGroupId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"groupId\": ");
+
+			sb.append(order.getGroupId());
+		}
+
 		if (order.getId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -361,6 +371,13 @@ public class OrderSerDes {
 				String.valueOf(order.getExternalReferenceCode()));
 		}
 
+		if (order.getGroupId() == null) {
+			map.put("groupId", null);
+		}
+		else {
+			map.put("groupId", String.valueOf(order.getGroupId()));
+		}
+
 		if (order.getId() == null) {
 			map.put("id", null);
 		}
@@ -493,6 +510,9 @@ public class OrderSerDes {
 
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "groupId")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
@@ -582,6 +602,12 @@ public class OrderSerDes {
 				if (jsonParserFieldValue != null) {
 					order.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "groupId")) {
+				if (jsonParserFieldValue != null) {
+					order.setGroupId(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -745,4 +771,4 @@ public class OrderSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-570275343
+// LIFERAY-REST-BUILDER-HASH:-768997598
