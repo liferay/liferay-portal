@@ -116,17 +116,6 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 	}
 
 	@Override
-	public Long[] getCommerceChannelIds(
-			String analyticsChannelId, long companyId)
-		throws Exception {
-
-		return ArrayUtil.toArray(
-			getCommerceChannelIds(
-				companyId,
-				ArrayUtil.toArray(getSiteIds(analyticsChannelId, companyId))));
-	}
-
-	@Override
 	public Long[] getSiteIds(String analyticsChannelId, long companyId)
 		throws Exception {
 

@@ -26,10 +26,6 @@ public interface AnalyticsSettingsManager {
 
 	public long[] getCommerceChannelIds(long companyId, long[] groupIds);
 
-	public Long[] getCommerceChannelIds(
-			String analyticsChannelId, long companyId)
-		throws Exception;
-
 	public Long[] getSiteIds(String analyticsChannelId, long companyId)
 		throws Exception;
 

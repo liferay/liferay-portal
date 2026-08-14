@@ -92,8 +92,13 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				_analyticsCloudClient.updateAnalyticsChannel(
 					channel.getChannelId(),
 					transform(
-						_analyticsSettingsManager.getCommerceChannelIds(
-							channel.getChannelId(), contextUser.getCompanyId()),
+						ArrayUtil.toArray(
+							_analyticsSettingsManager.getCommerceChannelIds(
+								contextUser.getCompanyId(),
+								ArrayUtil.toArray(
+									_analyticsSettingsManager.getSiteIds(
+										channel.getChannelId(),
+										contextUser.getCompanyId())))),
 						commerceChannelId -> _groupLocalService.fetchGroup(
 							contextUser.getCompanyId(),
 							_commerceChannelClassNameIdSupplier.get(),

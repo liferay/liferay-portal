@@ -76,50 +76,36 @@ public class AnalyticsSettingsManagerTest {
 		_groupLocalService.deleteGroup(_siteGroup2);
 	}
 
-	@Ignore
 	@Test
 	public void testGetCommerceChannelIds() throws Exception {
-		Long[] emptyCommerceChannelIds =
+		long[] emptyCommerceChannelIds =
 			_analyticsSettingsManager.getCommerceChannelIds(
-				_analyticsChannelId1, TestPropsValues.getCompanyId());
+				TestPropsValues.getCompanyId(), new long[0]);
 
 		Assert.assertEquals(
 			Arrays.toString(emptyCommerceChannelIds), 0,
 			emptyCommerceChannelIds.length);
 
-		_analyticsSettingsManager.updateCompanyConfiguration(
-			TestPropsValues.getCompanyId(),
-			HashMapBuilder.<String, Object>put(
-				"syncedGroupIds",
-				_analyticsSettingsManager.updateSiteIds(
-					_analyticsChannelId1, TestPropsValues.getCompanyId(),
-					new Long[] {_siteGroup1.getGroupId()})
-			).build());
-
-		IdempotentRetryAssert.retryAssert(
-			5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
-			() -> {
-				Long[] commerceChannelIds =
-					_analyticsSettingsManager.getCommerceChannelIds(
-						_analyticsChannelId1, TestPropsValues.getCompanyId());
-
-				Assert.assertEquals(
-					Arrays.toString(commerceChannelIds), 1,
-					commerceChannelIds.length);
-				Assert.assertEquals(
-					_commerceChannelGroup1.getClassPK(),
-					(long)commerceChannelIds[0]);
-
-				return null;
-			});
-
-		Long[] otherCommerceChannelIds =
+		long[] commerceChannelIds =
 			_analyticsSettingsManager.getCommerceChannelIds(
-				_analyticsChannelId2, TestPropsValues.getCompanyId());
+				TestPropsValues.getCompanyId(),
+				new long[] {_siteGroup1.getGroupId()});
 
 		Assert.assertEquals(
-			Arrays.toString(otherCommerceChannelIds), 0,
-			otherCommerceChannelIds.length);
+			Arrays.toString(commerceChannelIds), 1, commerceChannelIds.length);
+		Assert.assertEquals(
+			_commerceChannelGroup1.getClassPK(), commerceChannelIds[0]);
+
+		long[] bothCommerceChannelIds =
+			_analyticsSettingsManager.getCommerceChannelIds(
+				TestPropsValues.getCompanyId(),
+				new long[] {
+					_siteGroup1.getGroupId(), _siteGroup2.getGroupId()
+				});
+
+		Assert.assertEquals(
+			Arrays.toString(bothCommerceChannelIds), 2,
+			bothCommerceChannelIds.length);
 	}
 
 	@Ignore

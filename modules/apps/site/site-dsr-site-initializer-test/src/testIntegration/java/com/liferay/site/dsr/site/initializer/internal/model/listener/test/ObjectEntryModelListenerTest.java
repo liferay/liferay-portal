@@ -538,13 +538,6 @@ public class ObjectEntryModelListenerTest {
 		}
 
 		@Override
-		public Long[] getCommerceChannelIds(
-			String analyticsChannelId, long companyId) {
-
-			return new Long[0];
-		}
-
-		@Override
 		public Long[] getSiteIds(String analyticsChannelId, long companyId) {
 			return new Long[0];
 		}
