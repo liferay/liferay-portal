@@ -152,33 +152,6 @@ public class AssetStatisticsResourceImpl
 		};
 	}
 
-	private BooleanQuery _getOutboundLinksBooleanQuery(
-		List<String> outboundLinkTokens) {
-
-		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
-
-		for (int i = 0; i < outboundLinkTokens.size(); i += _MAX_TERMS_COUNT) {
-			List<String> values = outboundLinkTokens.subList(
-				i, Math.min(i + _MAX_TERMS_COUNT, outboundLinkTokens.size()));
-
-			booleanQuery.addShouldQueryClauses(
-				_getTermsQuery(
-					"outboundLinks", values.toArray(new String[0])));
-		}
-
-		booleanQuery.setMinimumShouldMatch(1);
-
-		return booleanQuery;
-	}
-
-	private TermsQuery _getTermsQuery(String fieldName, String... values) {
-		TermsQuery termsQuery = QueriesUtil.terms(fieldName);
-
-		termsQuery.addValues(values);
-
-		return termsQuery;
-	}
-
 	private long _getBrokenLinksCount(
 		Long[] groupIds, Long[] objectDefinitionIds) {
 
@@ -301,6 +274,32 @@ public class AssetStatisticsResourceImpl
 		}
 
 		return new Long[] {groupId};
+	}
+
+	private BooleanQuery _getOutboundLinksBooleanQuery(
+		List<String> outboundLinkTokens) {
+
+		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
+
+		for (int i = 0; i < outboundLinkTokens.size(); i += _MAX_TERMS_COUNT) {
+			List<String> values = outboundLinkTokens.subList(
+				i, Math.min(i + _MAX_TERMS_COUNT, outboundLinkTokens.size()));
+
+			booleanQuery.addShouldQueryClauses(
+				_getTermsQuery("outboundLinks", values.toArray(new String[0])));
+		}
+
+		booleanQuery.setMinimumShouldMatch(1);
+
+		return booleanQuery;
+	}
+
+	private TermsQuery _getTermsQuery(String fieldName, String... values) {
+		TermsQuery termsQuery = QueriesUtil.terms(fieldName);
+
+		termsQuery.addValues(values);
+
+		return termsQuery;
 	}
 
 	private AssetStatistics _toAssetStatistics() {
