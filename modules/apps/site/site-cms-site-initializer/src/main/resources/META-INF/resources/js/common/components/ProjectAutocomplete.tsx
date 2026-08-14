@@ -4,7 +4,7 @@
  */
 
 import Autocomplete from '@clayui/autocomplete';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 
 import {CMPProject} from '../services/ProjectLinkService';
 
@@ -27,6 +27,12 @@ export default function ProjectAutocomplete({
 }: ProjectAutocompleteProps) {
 	const [active, setActive] = useState(false);
 	const [value, setValue] = useState('');
+
+	// Differentiates selecting a project versus typing in onChange, so the
+	// input can be cleared after a selection. Clay writes the selected
+	// title into the input by default.
+
+	const selectingRef = useRef(false);
 
 	const filteredProjects = useMemo(() => {
 		const query = value.trim().toLowerCase();
@@ -52,7 +58,18 @@ export default function ProjectAutocomplete({
 				notFound: Liferay.Language.get('no-results-found'),
 			}}
 			onActiveChange={setActive}
-			onChange={setValue}
+			onChange={(nextValue) => {
+				if (selectingRef.current) {
+					selectingRef.current = false;
+
+					setValue('');
+
+					return;
+				}
+
+				setValue(nextValue);
+			}}
+			onClick={() => setActive(true)}
 			onItemsChange={() => {}}
 			placeholder={Liferay.Language.get('search-or-select-a-project')}
 			value={value}
@@ -61,16 +78,8 @@ export default function ProjectAutocomplete({
 				<Autocomplete.Item
 					aria-label={project.title}
 					key={project.id}
-					onClick={(event) => {
-
-						// Clay would otherwise replace the input with the
-						// project title. The field is a picker rather than a
-						// text field, so it is cleared for the next selection.
-
-						event.preventDefault();
-
-						setActive(false);
-						setValue('');
+					onClick={() => {
+						selectingRef.current = true;
 
 						onSelect(project);
 					}}

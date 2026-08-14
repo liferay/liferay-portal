@@ -84,6 +84,18 @@ describe('ProjectAutocomplete', () => {
 		await waitFor(() => expect(input).toHaveValue(''));
 	});
 
+	it('keeps the input focused after a project is selected', async () => {
+		const {input} = renderComponent();
+
+		await userEvent.click(input);
+
+		await userEvent.click(
+			await screen.findByRole('option', {name: /GOV Digital/})
+		);
+
+		expect(input).toHaveFocus();
+	});
+
 	it('offers every project when the input is focused', async () => {
 		const {input} = renderComponent();
 
