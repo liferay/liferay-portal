@@ -152,7 +152,7 @@ public class AssetStatisticsResourceImpl
 		};
 	}
 
-	private BooleanQuery _createOutboundLinksBooleanQuery(
+	private BooleanQuery _getOutboundLinksBooleanQuery(
 		List<String> outboundLinkTokens) {
 
 		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
@@ -162,7 +162,7 @@ public class AssetStatisticsResourceImpl
 				i, Math.min(i + _MAX_TERMS_COUNT, outboundLinkTokens.size()));
 
 			booleanQuery.addShouldQueryClauses(
-				_createTermsQuery(
+				_getTermsQuery(
 					"outboundLinks", values.toArray(new String[0])));
 		}
 
@@ -171,7 +171,7 @@ public class AssetStatisticsResourceImpl
 		return booleanQuery;
 	}
 
-	private TermsQuery _createTermsQuery(String fieldName, String... values) {
+	private TermsQuery _getTermsQuery(String fieldName, String... values) {
 		TermsQuery termsQuery = QueriesUtil.terms(fieldName);
 
 		termsQuery.addValues(values);
@@ -199,9 +199,9 @@ public class AssetStatisticsResourceImpl
 			BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
 
 			booleanQuery.addFilterQueryClauses(
-				_createOutboundLinksBooleanQuery(expiredAssetTokens),
-				_createTermsQuery("cms_section", "contents", "files"),
-				_createTermsQuery(
+				_getOutboundLinksBooleanQuery(expiredAssetTokens),
+				_getTermsQuery("cms_section", "contents", "files"),
+				_getTermsQuery(
 					Field.STATUS,
 					ArrayUtil.toStringArray(CMSWorkflowConstants.STATUSES)),
 				QueriesUtil.term("rootDescendantNode", false));
