@@ -39,6 +39,7 @@ ComponentAnnotationCheck | .java | Performs several checks on classes with @Comp
 ConfigurableCreateConfigurableCallCheck | .java | Checks illegal call to `Configurable.createConfigurable`. |
 ConsumerTypeAnnotationCheck | .java | Performs several checks on classes with @ConsumerType annotation. |
 [CreatingThreadsForDBAccessCheck](check/creating_threads_for_db_access_check.md#creatingthreadsfordbaccesscheck) | .java | Finds cases where `CompanyInheritableThreadLocalCallable` should be used when creating threads for DB access. |
+CredentialBufferCheck | .java | Finds buffers that are derived from a `String` and passed straight into a credential API, leaving no reference to clear. |
 DTOEnumCreationCheck | .java | Checks the creation of DTO enum. |
 DatabaseMetaDataCheck | .java | Checks usages of `java.sql.DatabaseMetaData`. |
 DatabaseMetaDataSupportsBatchUpdatesCallCheck | .java | Checks illegal call to `DatabaseMetaData.supportsBatchUpdates`. |

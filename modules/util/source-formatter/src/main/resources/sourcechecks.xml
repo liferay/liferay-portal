@@ -486,6 +486,11 @@
 			<description name="Finds imports of non-FIPS BouncyCastle packages." />
 			<property name="enabled" value="false" />
 		</check>
+		<check name="CredentialBufferCheck">
+			<category name="Bug Prevention" />
+			<description name="Finds buffers that are derived from a `String` and passed straight into a credential API, leaving no reference to clear." />
+			<property name="enabled" value="false" />
+		</check>
 		<check name="EmptyCollectionCheck">
 			<category name="Styling" />
 			<description name="Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`." />
