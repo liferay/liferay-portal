@@ -13,6 +13,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.test.util.DLTestUtil;
@@ -39,6 +40,7 @@ import com.liferay.headless.admin.site.client.dto.v1_0.FragmentImage;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentImageValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentInstance;
 import com.liferay.headless.admin.site.client.dto.v1_0.FriendlyUrlHistory;
+import com.liferay.headless.admin.site.client.dto.v1_0.GeneralConfig;
 import com.liferay.headless.admin.site.client.dto.v1_0.ImageFragmentEditableElementValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.LinkToPagePageSettings;
@@ -59,8 +61,11 @@ import com.liferay.headless.admin.site.client.dto.v1_0.SitePageNavigationSetting
 import com.liferay.headless.admin.site.client.dto.v1_0.SitemapSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetInstancePageElementDefinition;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetLookAndFeelConfig;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSection;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSettings;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageSpecification;
+import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageWidgetInstance;
 import com.liferay.headless.admin.site.client.http.HttpInvoker;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
@@ -313,6 +318,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					LayoutTypePortletConstants.COLUMN_PREFIX + "1",
 					RandomTestUtil.randomString()
 				).buildString()));
+
+		_testGetSiteSitePageWithCustomApplicationDecorator();
 	}
 
 	@Override
@@ -384,6 +391,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				SitePage.Type.CONTENT_PAGE,
 				StringUtil.toLowerCase(RandomTestUtil.randomString())));
 
+		_testPostSiteSitePageWithApplicationDecorator();
 		_testPostSiteSitePageWithPageElements();
 		_testPostSiteSitePageWithPageSpecifications();
 		_testPostSiteSitePageWithContentPageSpecification();
@@ -2036,6 +2044,29 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		};
 	}
 
+	private List<WidgetPageWidgetInstance> _getWidgetPageWidgetInstances(
+		SitePage sitePage) {
+
+		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
+			new ArrayList<>();
+
+		PageSpecification[] pageSpecifications =
+			sitePage.getPageSpecifications();
+
+		WidgetPageSpecification widgetPageSpecification =
+			(WidgetPageSpecification)pageSpecifications[0];
+
+		for (WidgetPageSection widgetPageSection :
+				widgetPageSpecification.getWidgetPageSections()) {
+
+			Collections.addAll(
+				widgetPageWidgetInstances,
+				widgetPageSection.getWidgetPageWidgetInstances());
+		}
+
+		return widgetPageWidgetInstances;
+	}
+
 	private SitePage _postSiteSitePageWithPageSpecificationsWithCustomFields(
 			SitePage.Type type)
 		throws Exception {
@@ -2205,6 +2236,45 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_assertSitePage(layout, sitePage);
 		_testGetSiteSitePageWithNestedFields(sitePage);
+	}
+
+	private void _testGetSiteSitePageWithCustomApplicationDecorator()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		LayoutTestUtil.addPortletToLayout(
+			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
+			HashMapBuilder.put(
+				"portletSetupPortletDecoratorId", new String[] {"encadre"}
+			).build());
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		SitePage sitePage = sitePageResource.getSiteSitePage(
+			testGroup.getExternalReferenceCode(),
+			layout.getExternalReferenceCode());
+
+		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
+			_getWidgetPageWidgetInstances(sitePage);
+
+		Assert.assertEquals(
+			widgetPageWidgetInstances.toString(), 1,
+			widgetPageWidgetInstances.size());
+
+		WidgetPageWidgetInstance widgetPageWidgetInstance =
+			widgetPageWidgetInstances.get(0);
+
+		WidgetLookAndFeelConfig widgetLookAndFeelConfig =
+			widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
+
+		GeneralConfig generalConfig =
+			widgetLookAndFeelConfig.getGeneralConfig();
+
+		Assert.assertNull(generalConfig.getApplicationDecorator());
+		Assert.assertEquals(
+			"encadre", generalConfig.getApplicationDecoratorId());
 	}
 
 	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
@@ -2936,6 +3006,87 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_layoutLocalService.getLayoutByExternalReferenceCode(
 				sitePage.getExternalReferenceCode(), testGroup.getGroupId()),
 			postSitePage);
+	}
+
+	private void _testPostSiteSitePageWithApplicationDecorator()
+		throws Exception {
+
+		_testPostSiteSitePageWithApplicationDecorator(
+			GeneralConfig.ApplicationDecorator.DECORATE, null,
+			GeneralConfig.ApplicationDecorator.DECORATE, "decorate");
+		_testPostSiteSitePageWithApplicationDecorator(
+			GeneralConfig.ApplicationDecorator.DECORATE, "encadre", null,
+			"encadre");
+		_testPostSiteSitePageWithApplicationDecorator(
+			null, "decorate", GeneralConfig.ApplicationDecorator.DECORATE,
+			"decorate");
+		_testPostSiteSitePageWithApplicationDecorator(
+			null, "encadre", null, "encadre");
+	}
+
+	private void _testPostSiteSitePageWithApplicationDecorator(
+			GeneralConfig.ApplicationDecorator applicationDecorator,
+			String applicationDecoratorId,
+			GeneralConfig.ApplicationDecorator expectedApplicationDecorator,
+			String expectedApplicationDecoratorId)
+		throws Exception {
+
+		SitePage randomSitePage = _getRandomSitePage(SitePage.Type.WIDGET_PAGE);
+
+		WidgetPageSettings widgetPageSettings =
+			(WidgetPageSettings)randomSitePage.getPageSettings();
+
+		widgetPageSettings.setLayoutTemplateId("1_column");
+
+		randomSitePage.setPageSpecifications(
+			PageSpecificationsTestUtil.getWidgetPageSpecifications(
+				null, widgetPageSettings.getLayoutTemplateId(),
+				randomSitePage.getExternalReferenceCode()));
+
+		for (WidgetPageWidgetInstance widgetPageWidgetInstance :
+				_getWidgetPageWidgetInstances(randomSitePage)) {
+
+			WidgetLookAndFeelConfig widgetLookAndFeelConfig =
+				new WidgetLookAndFeelConfig();
+
+			GeneralConfig generalConfig = new GeneralConfig();
+
+			generalConfig.setApplicationDecorator(applicationDecorator);
+			generalConfig.setApplicationDecoratorId(applicationDecoratorId);
+
+			widgetLookAndFeelConfig.setGeneralConfig(generalConfig);
+
+			widgetPageWidgetInstance.setWidgetLookAndFeelConfig(
+				widgetLookAndFeelConfig);
+		}
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecifications");
+
+		SitePage sitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false, randomSitePage);
+
+		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
+			_getWidgetPageWidgetInstances(sitePage);
+
+		Assert.assertFalse(widgetPageWidgetInstances.isEmpty());
+
+		for (WidgetPageWidgetInstance widgetPageWidgetInstance :
+				widgetPageWidgetInstances) {
+
+			WidgetLookAndFeelConfig widgetLookAndFeelConfig =
+				widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
+
+			GeneralConfig generalConfig =
+				widgetLookAndFeelConfig.getGeneralConfig();
+
+			Assert.assertEquals(
+				expectedApplicationDecorator,
+				generalConfig.getApplicationDecorator());
+			Assert.assertEquals(
+				expectedApplicationDecoratorId,
+				generalConfig.getApplicationDecoratorId());
+		}
 	}
 
 	private void _testPostSiteSitePageWithContentPageSpecification()
