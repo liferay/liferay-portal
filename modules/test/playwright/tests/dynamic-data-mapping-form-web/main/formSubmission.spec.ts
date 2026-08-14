@@ -25,39 +25,54 @@ export const test = mergeTests(
 	virtualInstancesPagesTest
 );
 
+const COUNTRIES_API_URL = `${liferayConfig.environment.baseUrl}/api/jsonws/country/get-countries`;
+
 const DEFAULT_VIRTUAL_INSTANCE_NAME = 'www.able.com';
 
 const deleteAfterTestVirtualInstances = new Set<string>();
 let hasDataProvider: boolean = false;
 
-test.afterEach(async ({formsPage, virtualInstancesPage}) => {
-	await formsPage.goTo();
-
-	await deleteItems(formsPage);
-
-	if (hasDataProvider) {
-		await formsPage.page.waitForLoadState();
-
-		await formsPage.dataProvidersTab.click();
+test.afterEach(
+	async ({
+		dataProvidersConfigurationPage,
+		formsPage,
+		virtualInstancesPage,
+	}) => {
+		await formsPage.goTo();
 
 		await deleteItems(formsPage);
 
-		hasDataProvider = false;
-	}
+		if (hasDataProvider) {
+			await formsPage.page.waitForLoadState();
 
-	for (const virtualInstanceName of deleteAfterTestVirtualInstances) {
-		await virtualInstancesPage.deleteVirtualInstance(virtualInstanceName);
+			await formsPage.dataProvidersTab.click();
 
-		deleteAfterTestVirtualInstances.delete(virtualInstanceName);
+			await deleteItems(formsPage);
+
+			await dataProvidersConfigurationPage.setAccessLocalNetwork(false);
+
+			hasDataProvider = false;
+		}
+
+		for (const virtualInstanceName of deleteAfterTestVirtualInstances) {
+			await virtualInstancesPage.deleteVirtualInstance(
+				virtualInstanceName
+			);
+
+			deleteAfterTestVirtualInstances.delete(virtualInstanceName);
+		}
 	}
-});
+);
 
 test.describe('Manage forms through submission page', () => {
 	test('assert that data provider works on virtual instance', async ({
 		browser,
+		dataProvidersConfigurationPage,
 		virtualInstancesPage,
 	}) => {
 		test.slow();
+
+		hasDataProvider = true;
 
 		await virtualInstancesPage.addNewVirtualInstance(
 			DEFAULT_VIRTUAL_INSTANCE_NAME
@@ -77,8 +92,6 @@ test.describe('Manage forms through submission page', () => {
 			`@${DEFAULT_VIRTUAL_INSTANCE_NAME}.com`
 		);
 
-		hasDataProvider = true;
-
 		const dataProviderName = 'DataProvider' + getRandomString();
 		const formTitle = 'FormTitle' + getRandomInt();
 		const virtualInstanceDataProviderPage = new DataProviderPage(
@@ -93,7 +106,9 @@ test.describe('Manage forms through submission page', () => {
 			new FormBuilderFieldSettingsSidePanelPage(virtualInstancePage);
 		const virtualInstanceFormsPage = new FormsPage(virtualInstancePage);
 
-		await test.step('create a data provider with region input and population output', async () => {
+		await dataProvidersConfigurationPage.setAccessLocalNetwork(true);
+
+		await test.step('create a data provider with a country name list output', async () => {
 			await virtualInstanceFormsPage.goTo();
 
 			await virtualInstanceFormsPage.dataProvidersTab.click();
@@ -105,11 +120,23 @@ test.describe('Manage forms through submission page', () => {
 			);
 
 			await virtualInstanceDataProviderPage.urlInputField.fill(
-				'https://restcountries.com/v3.1/all?fields=name'
+				COUNTRIES_API_URL
+			);
+
+			await virtualInstanceDataProviderPage.userNameInputField.fill(
+				'test@liferay.com'
+			);
+
+			await virtualInstanceDataProviderPage.passwordInputField.fill(
+				liferayConfig.environment.password
+			);
+
+			await virtualInstanceDataProviderPage.timeoutInputField.fill(
+				'30000'
 			);
 
 			await virtualInstanceDataProviderPage.outputPathField.fill(
-				'$..name.common'
+				'$..nameCurrentValue'
 			);
 
 			await virtualInstanceDataProviderPage.selectOutputType('List');
@@ -125,7 +152,7 @@ test.describe('Manage forms through submission page', () => {
 			).toBeVisible();
 		});
 
-		await test.step('create a form with region and population fields and publish it', async () => {
+		await test.step('create a form with a select from list field and publish it', async () => {
 			await virtualInstancePage.setViewportSize({
 				height: 1080,
 				width: 1920,
@@ -212,6 +239,7 @@ test.describe('Manage forms through submission page', () => {
 
 	test('can submit manual entry while using data provider autofill rule', async ({
 		dataProviderPage,
+		dataProvidersConfigurationPage,
 		formBuilderPage,
 		formBuilderSidePanelPage,
 		formsPage,
@@ -222,8 +250,11 @@ test.describe('Manage forms through submission page', () => {
 
 		const dataProviderName = 'DataProvider' + getRandomString();
 		const formTitle = 'FormTitle' + getRandomInt();
+		const manualCountryName = 'Country' + getRandomInt();
 
-		await test.step('create a data provider with region input and population output', async () => {
+		await dataProvidersConfigurationPage.setAccessLocalNetwork(true);
+
+		await test.step('create a data provider with active input and country name output', async () => {
 			await formsPage.goTo();
 
 			await formsPage.dataProvidersTab.click();
@@ -233,50 +264,60 @@ test.describe('Manage forms through submission page', () => {
 			await dataProviderPage.nameInputField.fill(dataProviderName);
 
 			await dataProviderPage.urlInputField.fill(
-				'https://restcountries.com/v3.1/region/{region}'
+				`${COUNTRIES_API_URL}/active/{active}`
 			);
 
-			await dataProviderPage.inputParameterField.fill('region');
+			await dataProviderPage.userNameInputField.fill('test@liferay.com');
+
+			await dataProviderPage.passwordInputField.fill(
+				liferayConfig.environment.password
+			);
+
+			await dataProviderPage.timeoutInputField.fill('30000');
+
+			await dataProviderPage.inputParameterField.fill('active');
 
 			await dataProviderPage.selectInputType('Text');
 
-			await dataProviderPage.inputLabelField.fill('Region');
+			await dataProviderPage.inputLabelField.fill('Active');
 
-			await dataProviderPage.outputPathField.fill('$[0].population');
+			await dataProviderPage.outputPathField.fill(
+				'$[0].nameCurrentValue'
+			);
 
 			await dataProviderPage.selectOutputType('Text');
 
-			await dataProviderPage.outputLabelField.fill('Population');
+			await dataProviderPage.outputLabelField.fill('Country');
 
 			await dataProviderPage.saveButton.click();
 
 			await expect(page.getByText('Success:Your request')).toBeVisible();
 		});
 
-		await test.step('create a form with region and population fields', async () => {
+		await test.step('create a form with active and country fields', async () => {
 			await formBuilderPage.goToNew();
 
 			await formBuilderPage.fillFormTitle(formTitle);
 
 			await formBuilderSidePanelPage.addFieldByDoubleClick('Text');
 
-			await formBuilderSidePanelPage.label.fill('Region');
+			await formBuilderSidePanelPage.label.fill('Active');
 
 			await formBuilderSidePanelPage.advancedTab.click();
 
-			await formBuilderSidePanelPage.fieldReference.fill('Region');
+			await formBuilderSidePanelPage.fieldReference.fill('Active');
 
-			await formBuilderSidePanelPage.predefinedValueField.fill('europe');
+			await formBuilderSidePanelPage.predefinedValueField.fill('true');
 
 			await formBuilderSidePanelPage.backButton.click();
 
 			await formBuilderSidePanelPage.addFieldByDoubleClick('Text');
 
-			await formBuilderSidePanelPage.label.fill('Population');
+			await formBuilderSidePanelPage.label.fill('Country');
 
 			await formBuilderSidePanelPage.advancedTab.click();
 
-			await formBuilderSidePanelPage.fieldReference.fill('Population');
+			await formBuilderSidePanelPage.fieldReference.fill('Country');
 		});
 
 		await test.step('create a rule to autofill fields with data from provider', async () => {
@@ -284,7 +325,7 @@ test.describe('Manage forms through submission page', () => {
 
 			await rulesBuilderPage.addElementsButton.click();
 
-			await rulesBuilderPage.selectConditionLeftFormField('Region');
+			await rulesBuilderPage.selectConditionLeftFormField('Active');
 
 			await rulesBuilderPage.selectConditionOperator('Is Not Empty');
 
@@ -292,14 +333,14 @@ test.describe('Manage forms through submission page', () => {
 
 			await rulesBuilderPage.selectAutofillDataProvider(dataProviderName);
 
-			await rulesBuilderPage.selectDataProviderInput('Region');
+			await rulesBuilderPage.selectDataProviderInput('Active');
 
-			await rulesBuilderPage.selectDataProviderOutput('Population');
+			await rulesBuilderPage.selectDataProviderOutput('Country');
 
 			await rulesBuilderPage.saveButton.click();
 		});
 
-		await test.step('go to for submission, override autofilled value and assert that it is persisted', async () => {
+		await test.step('go to form submission, override autofilled value and assert that it is persisted', async () => {
 			await formBuilderPage.formTab.click();
 
 			await formBuilderPage.clickPublishFormButton();
@@ -309,7 +350,9 @@ test.describe('Manage forms through submission page', () => {
 
 			await page.goto(formSubmissionURL, {waitUntil: 'networkidle'});
 
-			await page.getByLabel('Population').fill('123456');
+			await expect(page.getByLabel('Country')).not.toHaveValue('');
+
+			await page.getByLabel('Country').fill(manualCountryName);
 
 			await page.getByRole('button', {name: 'Submit'}).click();
 
@@ -325,7 +368,7 @@ test.describe('Manage forms through submission page', () => {
 
 			await formBuilderPage.entriesTab.click();
 
-			await expect(page.getByText('123456')).toBeVisible();
+			await expect(page.getByText(manualCountryName)).toBeVisible();
 		});
 	});
 

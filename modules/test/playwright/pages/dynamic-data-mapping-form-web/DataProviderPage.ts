@@ -22,9 +22,11 @@ export class DataProviderPage {
 	readonly userNameInputField: Locator;
 
 	constructor(page: Page) {
-		this.addNewDataProviderLink = page.getByRole('link', {
-			name: 'REST Data Provider',
-		});
+		this.addNewDataProviderLink = page
+			.getByRole('link', {
+				name: 'REST Data Provider',
+			})
+			.first();
 		this.inputLabelField = page
 			.getByLabel('inputs')
 			.getByPlaceholder('Enter a label.');

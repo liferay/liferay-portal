@@ -6,6 +6,7 @@
 import {test} from '@playwright/test';
 
 import {DataProviderPage} from '../pages/dynamic-data-mapping-form-web/DataProviderPage';
+import {DataProvidersConfigurationPage} from '../pages/dynamic-data-mapping-form-web/DataProvidersConfigurationPage';
 import {FormBuilderFieldSettingsSidePanelPage} from '../pages/dynamic-data-mapping-form-web/FormBuilderFieldSettingsSidePanelPage';
 import {FormBuilderPage} from '../pages/dynamic-data-mapping-form-web/FormBuilderPage';
 import {FormBuilderSidePanelPage} from '../pages/dynamic-data-mapping-form-web/FormBuilderSidePanelPage';
@@ -21,6 +22,7 @@ import {ConfigurationTabPage} from '../pages/portal-workflow-kaleo-designer-web/
 const formsPagesTest = test.extend<{
 	configurationTabPage: ConfigurationTabPage;
 	dataProviderPage: DataProviderPage;
+	dataProvidersConfigurationPage: DataProvidersConfigurationPage;
 	formBuilderFieldSettingsSidePanelPage: FormBuilderFieldSettingsSidePanelPage;
 	formBuilderPage: FormBuilderPage;
 	formBuilderSidePanelPage: FormBuilderSidePanelPage;
@@ -37,6 +39,9 @@ const formsPagesTest = test.extend<{
 	},
 	dataProviderPage: async ({page}, use) => {
 		await use(new DataProviderPage(page));
+	},
+	dataProvidersConfigurationPage: async ({page}, use) => {
+		await use(new DataProvidersConfigurationPage(page));
 	},
 	formBuilderFieldSettingsSidePanelPage: async ({page}, use) => {
 		await use(new FormBuilderFieldSettingsSidePanelPage(page));
