@@ -29,6 +29,10 @@ run "should_align_the_karpenter_node_pool_with_the_system_machine_type" {
 		condition=kubernetes_manifest.karpenter_node_pool.manifest.spec.weight > 0
 		error_message="The Karpenter node pool must outweigh the node pools auto-provisioning generates by default"
 	}
+	assert {
+		condition=try(kubernetes_manifest.karpenter_node_pool.manifest.spec.disruption.consolidateAfter, "") != ""
+		error_message="The Karpenter node pool must set a consolidateAfter, which the karpenter.sh/v1 CRD rejects the object without"
+	}
 	command=plan
 	variables {
 		machine_type="Standard_D16s_v3"

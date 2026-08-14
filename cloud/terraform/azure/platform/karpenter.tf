@@ -7,6 +7,7 @@ resource "kubernetes_manifest" "karpenter_node_pool" {
 		}
 		spec={
 			disruption={
+				consolidateAfter="1m"
 				consolidationPolicy="WhenEmptyOrUnderutilized"
 			}
 			template={

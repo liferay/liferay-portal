@@ -72,6 +72,7 @@ resource "azurerm_kubernetes_cluster" "main" {
 		service_cidr=var.service_cidr
 	}
 	node_provisioning_profile {
+		default_node_pools="None"
 		mode="Auto"
 	}
 }
