@@ -40,17 +40,6 @@ public class AnalyticsConfigurationModelListener
 			analyticsConfiguration.
 				contentRecommenderUserPersonalizationEnabled());
 
-		String[] commerceSyncEnabledAnalyticsChannelIds =
-			analyticsConfiguration.commerceSyncEnabledAnalyticsChannelIds();
-
-		if (commerceSyncEnabledAnalyticsChannelIds == null) {
-			commerceSyncEnabledAnalyticsChannelIds = new String[0];
-		}
-
-		properties.put(
-			"previousCommerceSyncEnabledAnalyticsChannelIds",
-			commerceSyncEnabledAnalyticsChannelIds);
-
 		properties.put(
 			"previousSyncAllAccounts",
 			analyticsConfiguration.syncAllAccounts());
@@ -79,16 +68,6 @@ public class AnalyticsConfigurationModelListener
 		else if (analyticsConfiguration.syncAllAccounts()) {
 			properties.put("previousSyncedAccountGroupIds", new String[0]);
 		}
-
-		String[] syncedCommerceChannelIds =
-			analyticsConfiguration.syncedCommerceChannelIds();
-
-		if (syncedCommerceChannelIds == null) {
-			syncedCommerceChannelIds = new String[0];
-		}
-
-		properties.put(
-			"previousSyncedCommerceChannelIds", syncedCommerceChannelIds);
 
 		String[] syncedContactFieldNames =
 			analyticsConfiguration.syncedContactFieldNames();

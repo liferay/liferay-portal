@@ -223,12 +223,6 @@
 		},
 		{
 			"properties": {
-				"commerceSyncEnabledAnalyticsChannelIds": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
 				"contentRecommenderMostPopularItemsEnabled": {
 					"type": "boolean"
 				},
@@ -278,12 +272,6 @@
 				"pid": {
 					"const": "com.liferay.analytics.settings.configuration.AnalyticsConfiguration"
 				},
-				"previousCommerceSyncEnabledAnalyticsChannelIds": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
 				"previousContentRecommenderMostPopularItemsEnabled": {
 					"type": "boolean"
 				},
@@ -303,12 +291,6 @@
 					"type": "array"
 				},
 				"previousSyncedAccountGroupIds": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
-				"previousSyncedCommerceChannelIds": {
 					"items": {
 						"type": "string"
 					},
@@ -381,12 +363,6 @@
 					"type": "array"
 				},
 				"syncedCategoryFieldNames": {
-					"items": {
-						"type": "string"
-					},
-					"type": "array"
-				},
-				"syncedCommerceChannelIds": {
 					"items": {
 						"type": "string"
 					},

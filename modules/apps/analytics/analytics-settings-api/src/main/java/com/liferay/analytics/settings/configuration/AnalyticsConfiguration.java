@@ -25,9 +25,6 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface AnalyticsConfiguration {
 
 	@Meta.AD(required = false)
-	public String[] commerceSyncEnabledAnalyticsChannelIds();
-
-	@Meta.AD(required = false)
 	public boolean contentRecommenderMostPopularItemsEnabled();
 
 	@Meta.AD(required = false)
@@ -70,9 +67,6 @@ public interface AnalyticsConfiguration {
 	public String liferayAnalyticsURL();
 
 	@Meta.AD(required = false)
-	public String[] previousCommerceSyncEnabledAnalyticsChannelIds();
-
-	@Meta.AD(required = false)
 	public boolean previousContentRecommenderMostPopularItemsEnabled();
 
 	@Meta.AD(required = false)
@@ -89,9 +83,6 @@ public interface AnalyticsConfiguration {
 
 	@Meta.AD(required = false)
 	public String[] previousSyncedAccountGroupIds();
-
-	@Meta.AD(required = false)
-	public String[] previousSyncedCommerceChannelIds();
 
 	@Meta.AD(required = false)
 	public String[] previousSyncedContactFieldNames();
@@ -134,9 +125,6 @@ public interface AnalyticsConfiguration {
 
 	@Meta.AD(required = false)
 	public String[] syncedCategoryFieldNames();
-
-	@Meta.AD(required = false)
-	public String[] syncedCommerceChannelIds();
 
 	@Meta.AD(required = false)
 	public String[] syncedContactFieldNames();
