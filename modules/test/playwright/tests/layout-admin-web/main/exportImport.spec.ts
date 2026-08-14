@@ -309,7 +309,7 @@ test(
 				exact: true,
 			});
 			const treeNodes = page.locator(
-				'.page-editor__page-structure__tree-node__name'
+				'.page-editor__page-structure__tree-node__mask'
 			);
 
 			const getConfigurationScreenshot = async (
@@ -327,48 +327,59 @@ test(
 				});
 			};
 
-			let clicked = 0;
+			const visitedItemIds = new Set<string>();
 
 			await expect(treeNodes.first()).toBeVisible();
 
-			while (true) {
-				const count = await treeNodes.count();
+			// Selecting a node expands it, so the tree grows while it is
+			// traversed. Address each node by its item id instead of its
+			// position, so a node inserted mid traversal cannot make the click
+			// and the name read land on different nodes.
 
-				if (clicked === count) {
+			while (true) {
+				const itemIds = await treeNodes.evaluateAll((elements) =>
+					elements.map((element) => element.dataset.itemId)
+				);
+
+				const nextItemId = itemIds.find(
+					(itemId) => !visitedItemIds.has(itemId)
+				);
+
+				if (!nextItemId) {
 					break;
 				}
 
-				for (let i = clicked; i < count; i++) {
-					await treeNodes.nth(i).scrollIntoViewIfNeeded();
-					await treeNodes.nth(i).click({force: true});
+				visitedItemIds.add(nextItemId);
 
-					const text = await treeNodes.nth(i).innerText();
+				const treeNode = page.locator(
+					`.page-editor__page-structure__tree-node__mask[data-item-id="${nextItemId}"]`
+				);
 
-					if (text.includes('element-text')) {
-						screenshots.push(
-							await getConfigurationScreenshot('Mapping')
-						);
+				await treeNode.scrollIntoViewIfNeeded();
+				await treeNode.click();
 
-						screenshots.push(
-							await getConfigurationScreenshot('Link')
-						);
-					}
-					else if (!text.includes('Module')) {
-						screenshots.push(
-							await getConfigurationScreenshot('General')
-						);
+				const name = await treeNode.getAttribute('aria-label');
 
-						screenshots.push(
-							await getConfigurationScreenshot('Styles')
-						);
+				if (name.includes('element-text')) {
+					screenshots.push(
+						await getConfigurationScreenshot('Mapping')
+					);
 
-						screenshots.push(
-							await getConfigurationScreenshot('Advanced')
-						);
-					}
+					screenshots.push(await getConfigurationScreenshot('Link'));
 				}
+				else if (!name.includes('Module')) {
+					screenshots.push(
+						await getConfigurationScreenshot('General')
+					);
 
-				clicked = count;
+					screenshots.push(
+						await getConfigurationScreenshot('Styles')
+					);
+
+					screenshots.push(
+						await getConfigurationScreenshot('Advanced')
+					);
+				}
 			}
 		};
 
