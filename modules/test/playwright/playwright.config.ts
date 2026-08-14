@@ -198,6 +198,7 @@ import {config as productNavigationApplicationsMenuConfig} from './tests/product
 import {config as productNavigationControlMenuWeb} from './tests/product-navigation-control-menu-web/main/config';
 import {config as productNavigationProductMenuWeb} from './tests/product-navigation-product-menu-web/main/config';
 import {config as productNavigationUserPersonalBarWebConfig} from './tests/product-navigation-user-personal-bar-web/main/config';
+import {config as pushNotificationsWebConfig} from './tests/push-notifications-web/main/config';
 import {config as questionsWebConfig} from './tests/questions-web/main/config';
 import {config as redirectWebConfig} from './tests/redirect-web/main/config';
 import {config as rolesAdminWebConfig} from './tests/roles-admin-web/main/config';
@@ -459,6 +460,7 @@ export default defineConfig({
 		productNavigationControlMenuWeb,
 		productNavigationProductMenuWeb,
 		productNavigationUserPersonalBarWebConfig,
+		pushNotificationsWebConfig,
 		questionsWebConfig,
 		redirectWebConfig,
 		rolesAdminWebConfig,
