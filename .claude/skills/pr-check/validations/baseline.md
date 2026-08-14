@@ -13,17 +13,17 @@ Do not narrow it to the branch diff. The comparison target is resolved from Nexu
 ## Command
 
 ```bash
-(cd "${REPO_ROOT}" && ant baseline-all -Dbaseline.all.ant.projects=<true|false>)
+(cd "${REPO_ROOT}" && ant baseline-all)
 ```
 
-Pass `false` only when **Full Portal Build** ran in this same pr-check, which baselines the seven top level Ant projects already. Otherwise omit the property; it defaults to `true`.
+Leave `baseline.all.ant.projects` at its default of `true`. Passing `false` drops the seven top level Ant projects — `portal-kernel`, `portal-impl`, `portal-test`, `util-bridges`, `util-java`, `util-slf4j`, and `util-taglib` — from the run. **Full Portal Build** is not a reason to pass it: `ant all` is `clean` plus `compile` plus `deploy` and baselines nothing. The target builds each of those jars itself before baselining it, so there is no build to arrange first.
 
 Two prerequisites:
 
 - Each baseline resolves the last released artifact from Nexus, so the run needs network access. Use the local check below when there is none.
 - Treat both a finding and a pass against a project that has not been cleanly built on this branch as unproven. Rerun after `ant all`.
 
-## Interpretation
+### Interpretation
 
 Read `git status`, not the exit code. The baseline task repairs what it finds, so the first run rewrites the tree and every run after it passes.
 
@@ -70,19 +70,25 @@ Classify each row, comparing segments as numbers so that `9.5.1` to `10.0.0` cou
 - `<removed>`: an exported package is gone.
 - `<none>` on either side: the file held no version line. Repeat the run rather than classifying it.
 
+### Local Version Check
+
+This needs no network and reports an advisory note, never a PASS or FAIL. Use it when the baseline run above cannot reach Nexus.
+
+Look at each changed `.java` under an `*-api` module's `src/main/java`, `portal-impl/src`, or `portal-kernel/src`. When its diff adds or removes a `public` or `protected` line, the exported API changed, so the version should be bumped too. The bump shows up in the diff as a changed `packageinfo`, or a changed `bnd.bnd` `Bundle-Version` for an `*-api` module. If neither changed, flag the package.
+
+Flag a lowered `packageinfo` or `Bundle-Version` that has no matching `public` or `protected` removal.
+
 ## Autocommit
 
-**Minor or micro only.** Stage the version files and commit them, resolving `<TICKET>` from the branch name the way [commit.md](../../../rules/commit.md) does:
+**Minor or micro only, and only when the run produced nothing else.** Stage those files and commit them, resolving `<TICKET>` from the branch name the way [commit.md](../../../rules/commit.md) does. `${paths}` is the classified subset from the Interpretation step, one path per line — not a rescan of `git status`, which would sweep in the findings below:
 
 ```bash
-paths=$(git status --porcelain -uall -- '*bnd.bnd' '*packageinfo' | cut -c4-)
-
-[ -n "${paths}" ] && printf '%s\n' "${paths}" | git add --pathspec-from-file=-
+printf '%s\n' "${paths}" | git add --pathspec-from-file=-
 
 git commit --message "${TICKET} Semantic versioning"
 ```
 
-Collect the paths first. Passing the globs to `git add` fails when one matches nothing, and piping into it races for `index.lock`.
+Collect the paths into a variable first, rather than passing the globs to `git add`, which fails when one of them matches nothing. Skip the commit when `${paths}` is empty; `git commit` with nothing staged fails, and there is nothing to record.
 
 Commit a bump owed to a package that this branch never touched under this branch's ticket as well, and report it, since the pull request then carries a semantic versioning fix that its author did not write.
 
@@ -96,14 +102,6 @@ Commit a bump owed to a package that this branch never touched under this branch
 
 When several appear in one run, fail on the strictest and leave every safe bump uncommitted with it, so the whole set is reviewed together.
 
-## Local Version Check
-
-This needs no network and reports an advisory note, never a PASS or FAIL. Use it when the baseline run above cannot reach Nexus.
-
-Look at each changed `.java` under an `*-api` module's `src/main/java`, `portal-impl/src`, or `portal-kernel/src`. When its diff adds or removes a `public` or `protected` line, the exported API changed, so the version should be bumped too. The bump shows up in the diff as a changed `packageinfo`, or a changed `bnd.bnd` `Bundle-Version` for an `*-api` module. If neither changed, flag the package.
-
-Flag a lowered `packageinfo` or `Bundle-Version` that has no matching `public` or `protected` removal.
-
 ## Checklist
 
 ```
@@ -113,3 +111,5 @@ Flag a lowered `packageinfo` or `Bundle-Version` that has no matching `public` o
 ## Time Estimate
 
 ~30 sec for the whole repository on a warm Gradle daemon whose module jars are already built. Around 45 sec when jars must be rebuilt first, and around 80 sec on a cold daemon.
+
+Those figures assume a tree that has been built before, where most of the roughly 590 exporting modules resolve as up to date. A first run in a tree that has never been built pays the jar build for every one of them and takes far longer.
