@@ -91,19 +91,10 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 					contextAcceptLanguage.getPreferredLocale()),
 				_analyticsCloudClient.updateAnalyticsChannel(
 					channel.getChannelId(),
-					transform(
-						ArrayUtil.toArray(
-							_analyticsSettingsManager.getCommerceChannelIds(
-								contextUser.getCompanyId(),
-								ArrayUtil.toArray(
-									_analyticsSettingsManager.getSiteIds(
-										channel.getChannelId(),
-										contextUser.getCompanyId())))),
-						commerceChannelId -> _groupLocalService.fetchGroup(
-							contextUser.getCompanyId(),
-							_commerceChannelClassNameIdSupplier.get(),
-							commerceChannelId),
-						Group.class),
+					_getCommerceChannelGroups(
+						_analyticsSettingsManager.getSiteIds(
+							channel.getChannelId(),
+							contextUser.getCompanyId())),
 					_configurationProvider.getCompanyConfiguration(
 						AnalyticsConfiguration.class,
 						contextUser.getCompanyId()),
@@ -136,16 +127,7 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 		AnalyticsChannel analyticsChannel =
 			_analyticsCloudClient.updateAnalyticsChannel(
 				channel.getChannelId(),
-				transform(
-					ArrayUtil.toArray(
-						_analyticsSettingsManager.getCommerceChannelIds(
-							contextUser.getCompanyId(),
-							ArrayUtil.toArray(dataSource.getSiteIds()))),
-					commerceChannelId -> _groupLocalService.fetchGroup(
-						contextUser.getCompanyId(),
-						_commerceChannelClassNameIdSupplier.get(),
-						commerceChannelId),
-					Group.class),
+				_getCommerceChannelGroups(dataSource.getSiteIds()),
 				_configurationProvider.getCompanyConfiguration(
 					AnalyticsConfiguration.class, contextUser.getCompanyId()),
 				dataSource.getDataSourceId(),
@@ -221,6 +203,16 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 		}
 
 		throw new RuntimeException("Unable to get analytics data source");
+	}
+
+	private Group[] _getCommerceChannelGroups(Long[] siteIds) {
+		return transform(
+			_analyticsSettingsManager.getCommerceChannelIds(
+				contextUser.getCompanyId(), ArrayUtil.toArray(siteIds)),
+			commerceChannelId -> _groupLocalService.fetchGroup(
+				contextUser.getCompanyId(),
+				_commerceChannelClassNameIdSupplier.get(), commerceChannelId),
+			Group.class);
 	}
 
 	private AnalyticsCloudClient _analyticsCloudClient;
