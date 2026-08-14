@@ -189,12 +189,12 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
+			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject(
 					"contains", Field.TITLE, title)),
 			objectEntry1);
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
+			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject("eq", Field.TITLE, title)),
 			objectEntry1);
 
@@ -204,17 +204,17 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
+			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject(
 					"gt", Field.CREATE_DATE, "2000-01-01")),
 			objectEntry1, objectEntry2);
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
+			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject(
 					"lt", Field.CREATE_DATE, "2000-01-01")));
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
+			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject(
 					"not-contains", Field.TITLE, title)),
 			objectEntry2);
@@ -238,7 +238,7 @@ public class AssetListAssetEntryProviderFiltersTest {
 				"anyAssetType", "true"
 			).put(
 				"filters",
-				_buildFiltersJSONArray(
+				_getFiltersJSONArray(
 					_getCommonFieldFilterJSONObject(
 						"contains", Field.TITLE, title)
 				).toString()
@@ -277,8 +277,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"between", _OBJECT_FIELD_NAME_DATE,
 					JSONUtil.putAll("2026-01-01", "2026-03-01"))),
 			objectEntry1);
@@ -294,8 +294,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"between", _OBJECT_FIELD_NAME_DATE_TIME,
 					JSONUtil.putAll("2026-01-15 00:00", "2026-01-15 23:59"))),
 			objectEntry2);
@@ -316,8 +316,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"eq", _OBJECT_FIELD_NAME_INTEGER,
 					String.valueOf(priority))),
 			objectEntry1);
@@ -325,9 +325,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 		String title = StringUtil.toLowerCase(RandomTestUtil.randomString());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
-					"not-eq", _OBJECT_FIELD_NAME_TEXT, title)),
+			_getFiltersJSONArray(
+				_getFilterJSONObject("not-eq", _OBJECT_FIELD_NAME_TEXT, title)),
 			objectEntry1);
 
 		ObjectEntry objectEntry2 = _addObjectEntry(
@@ -338,12 +337,12 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject("eq", _OBJECT_FIELD_NAME_TEXT, title)),
+			_getFiltersJSONArray(
+				_getFilterJSONObject("eq", _OBJECT_FIELD_NAME_TEXT, title)),
 			objectEntry2);
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"not-eq", _OBJECT_FIELD_NAME_INTEGER,
 					String.valueOf(priority))),
 			objectEntry2);
@@ -371,7 +370,7 @@ public class AssetListAssetEntryProviderFiltersTest {
 					_group.getGroupId(), TestPropsValues.getUserId()));
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
+			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject(
 					"eq", "externalReferenceCode", externalReferenceCode)),
 			objectEntry);
@@ -390,8 +389,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
 			objectEntry1);
 
@@ -401,8 +400,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"not-contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
 			objectEntry2);
 	}
@@ -437,10 +436,10 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"contains", _OBJECT_FIELD_NAME_TEXT, title),
-				_buildFilterJSONObject(
+				_getFilterJSONObject(
 					"eq", _OBJECT_FIELD_NAME_INTEGER,
 					String.valueOf(priority))),
 			objectEntry1);
@@ -464,8 +463,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"not-contains", _OBJECT_FIELD_NAME_TEXT, title)),
 			objectEntry2);
 
@@ -477,8 +476,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"not-contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
 			objectEntry1, objectEntry2);
 	}
@@ -496,8 +495,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 		int priority1 = RandomTestUtil.randomInt(101, 200);
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"lt", _OBJECT_FIELD_NAME_INTEGER,
 					String.valueOf(priority1))),
 			objectEntry1);
@@ -508,8 +507,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"le", _OBJECT_FIELD_NAME_INTEGER,
 					String.valueOf(priority1))),
 			objectEntry1, objectEntry2);
@@ -522,21 +521,21 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"between", _OBJECT_FIELD_NAME_INTEGER,
 					JSONUtil.putAll(
 						String.valueOf(priority1), String.valueOf(priority2)))),
 			objectEntry2, objectEntry3);
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"ge", _OBJECT_FIELD_NAME_INTEGER,
 					String.valueOf(priority1))),
 			objectEntry2, objectEntry3);
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"gt", _OBJECT_FIELD_NAME_INTEGER,
 					String.valueOf(priority1))),
 			objectEntry3);
@@ -553,8 +552,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildPicklistFilter(
+			_getFiltersJSONArray(
+				_getPicklistFilterJSONObject(
 					_OBJECT_FIELD_NAME_PICKLIST, "any",
 					_LIST_TYPE_ENTRY_KEY_1)),
 			objectEntry1);
@@ -565,8 +564,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildPicklistFilter(
+			_getFiltersJSONArray(
+				_getPicklistFilterJSONObject(
 					_OBJECT_FIELD_NAME_PICKLIST, "any", _LIST_TYPE_ENTRY_KEY_1,
 					_LIST_TYPE_ENTRY_KEY_2)),
 			objectEntry1, objectEntry2);
@@ -579,14 +578,14 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildPicklistFilter(
+			_getFiltersJSONArray(
+				_getPicklistFilterJSONObject(
 					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, "all",
 					_LIST_TYPE_ENTRY_KEY_1, _LIST_TYPE_ENTRY_KEY_2)),
 			objectEntry3);
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildPicklistFilter(
+			_getFiltersJSONArray(
+				_getPicklistFilterJSONObject(
 					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, "any",
 					_LIST_TYPE_ENTRY_KEY_1)),
 			objectEntry3);
@@ -599,15 +598,15 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildPicklistFilter(
+			_getFiltersJSONArray(
+				_getPicklistFilterJSONObject(
 					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, "all",
 					_LIST_TYPE_ENTRY_KEY_2)),
 			objectEntry3, objectEntry4);
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildPicklistFilter(
+			_getFiltersJSONArray(
+				_getPicklistFilterJSONObject(
 					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, "any",
 					_LIST_TYPE_ENTRY_KEY_3)),
 			objectEntry4);
@@ -624,14 +623,14 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
+			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject(
 					"eq", Field.STATUS,
 					String.valueOf(WorkflowConstants.STATUS_APPROVED))),
 			objectEntry);
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
+			_getFiltersJSONArray(
 				_getCommonFieldFilterJSONObject(
 					"not-eq", Field.STATUS,
 					String.valueOf(WorkflowConstants.STATUS_APPROVED))));
@@ -650,8 +649,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"contains", _OBJECT_FIELD_NAME_TEXT, title)),
 			objectEntry1);
 
@@ -661,8 +660,8 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).build());
 
 		_assertFilteredClassPKs(
-			_buildFiltersJSONArray(
-				_buildFilterJSONObject(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
 					"not-contains", _OBJECT_FIELD_NAME_TEXT, title)),
 			objectEntry2);
 	}
@@ -852,7 +851,19 @@ public class AssetListAssetEntryProviderFiltersTest {
 			actualClassPKs.containsAll(expectedClassPKs));
 	}
 
-	private JSONObject _buildFilterJSONObject(
+	private JSONObject _getCommonFieldFilterJSONObject(
+		String operatorName, String propertyName, Object value) {
+
+		return JSONUtil.put(
+			"operatorName", operatorName
+		).put(
+			"propertyName", propertyName
+		).put(
+			"value", value
+		);
+	}
+
+	private JSONObject _getFilterJSONObject(
 		String operatorName, String propertyName, Object value) {
 
 		return JSONUtil.put(
@@ -869,11 +880,11 @@ public class AssetListAssetEntryProviderFiltersTest {
 		);
 	}
 
-	private JSONArray _buildFiltersJSONArray(JSONObject... filterJSONObjects) {
+	private JSONArray _getFiltersJSONArray(JSONObject... filterJSONObjects) {
 		return JSONUtil.putAll((Object[])filterJSONObjects);
 	}
 
-	private JSONObject _buildPicklistFilter(
+	private JSONObject _getPicklistFilterJSONObject(
 		String propertyName, String quantifier, String... keys) {
 
 		return JSONUtil.put(
@@ -892,18 +903,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 			JSONUtil.putAll(
 				(Object[])TransformUtil.transform(
 					keys, key -> JSONUtil.put("value", key), JSONObject.class))
-		);
-	}
-
-	private JSONObject _getCommonFieldFilterJSONObject(
-		String operatorName, String propertyName, Object value) {
-
-		return JSONUtil.put(
-			"operatorName", operatorName
-		).put(
-			"propertyName", propertyName
-		).put(
-			"value", value
 		);
 	}
 
