@@ -1,5 +1,5 @@
-deploymentContext: {}
 crossplaneNamespace: crossplane-system
+deploymentContext: {}
 network:
     databaseSubnetCidr: 10.0.16.0/20
 providers:

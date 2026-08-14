@@ -25,13 +25,13 @@ tests:
         set:
             platformComponents:
                 values:
-                    deploymentContext:
-                        deploymentName: liferay-test
                     clusterSecretStore:
                         enabled: true
                         provider:
                             azurekv:
                                 vaultUrl: https://liferay-test-vault.vault.azure.net
+                    deploymentContext:
+                        deploymentName: liferay-test
                     gitops:
                         repository:
                             url: https://github.com/example/liferay-gitops.git

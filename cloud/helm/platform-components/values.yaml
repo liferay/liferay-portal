@@ -21,12 +21,12 @@ clusterBootstrap:
         requests:
             cpu: 1m
             memory: 8Mi
-deploymentContext:
-    deploymentName: ""
-    region: ""
 clusterSecretStore:
     enabled: false
     provider: {}
+deploymentContext:
+    deploymentName: ""
+    region: ""
 gateway:
     envoyProxy:
         podAnnotations: {}
