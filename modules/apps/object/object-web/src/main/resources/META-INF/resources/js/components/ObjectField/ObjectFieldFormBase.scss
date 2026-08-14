@@ -1,4 +1,4 @@
-@import '_atlas-custom-properties-variables';
+@import 'atlas-variables';
 
 .lfr-objects__object-field-form-base {
 	&-container {
@@ -18,7 +18,7 @@
 
 	&-mandatory-toggle {
 		align-items: center;
-		color: $gray-600;
+		color: #6b6c7e;
 		display: flex;
 		gap: 0.5rem;
 	}
