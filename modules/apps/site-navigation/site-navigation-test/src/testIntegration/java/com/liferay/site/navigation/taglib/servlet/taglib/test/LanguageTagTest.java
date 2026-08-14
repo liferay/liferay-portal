@@ -95,7 +95,8 @@ public class LanguageTagTest {
 		Layout layout = _addLayout();
 
 		_testGetLanguageEntriesWithAnotherLocaleFriendlyURL(layout);
-		_testGetLanguageEntriesWithDefaultPageMappingPart(layout);
+		_testGetLanguageEntriesWithDefaultPagePortletFriendlyURLMappingPath(
+			layout);
 
 		_testGetLanguageEntriesWithDisplayPage();
 
@@ -104,7 +105,7 @@ public class LanguageTagTest {
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 2);
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 3);
 		_testGetLanguageEntriesWithLocalizedVirtualHostname(layout);
-		_testGetLanguageEntriesWithMappingPart(layout);
+		_testGetLanguageEntriesWithPortletFriendlyURLMappingPath(layout);
 
 		_testGetLanguageEntriesWithoutLayout();
 
@@ -305,29 +306,31 @@ public class LanguageTagTest {
 				LocaleUtil.FRANCE));
 
 		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART,
+			layout, LocaleUtil.FRANCE, _PORTLET_FRIENDLY_URL_MAPPING_PATH,
 			_getURL(
 				_getLanguageEntriesForURL(
 					StringBundler.concat(
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 						_group.getFriendlyURL(),
 						layout.getFriendlyURL(LocaleUtil.FRANCE),
-						_FRIENDLY_URL_MAPPING_PART),
+						_PORTLET_FRIENDLY_URL_MAPPING_PATH),
 					null, themeDisplay),
 				LocaleUtil.FRANCE));
 	}
 
-	private void _testGetLanguageEntriesWithDefaultPageMappingPart(
-			Layout layout)
+	private void
+			_testGetLanguageEntriesWithDefaultPagePortletFriendlyURLMappingPath(
+				Layout layout)
 		throws Exception {
 
 		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART,
+			layout, LocaleUtil.FRANCE, _PORTLET_FRIENDLY_URL_MAPPING_PATH,
 			_getURL(
 				_getLanguageEntriesForURL(
 					StringBundler.concat(
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-						_group.getFriendlyURL(), _FRIENDLY_URL_MAPPING_PART),
+						_group.getFriendlyURL(),
+						_PORTLET_FRIENDLY_URL_MAPPING_PATH),
 					null, _getThemeDisplay(layout, LocaleUtil.US)),
 				LocaleUtil.FRANCE));
 	}
@@ -455,45 +458,6 @@ public class LanguageTagTest {
 		}
 	}
 
-	private void _testGetLanguageEntriesWithMappingPart(Layout layout)
-		throws Exception {
-
-		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART,
-			_getURL(
-				_getLanguageEntries(
-					_FRIENDLY_URL_MAPPING_PART, null, themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART + "?foo=bar",
-			_getURL(
-				_getLanguageEntries(
-					_FRIENDLY_URL_MAPPING_PART + "?foo=bar", null,
-					themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, "/tags/new%20york",
-			_getURL(
-				_getLanguageEntries("/tags/new%20york", null, themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, "/tags",
-			_getURL(
-				_getLanguageEntries("/tags", null, themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, "/-/blogs/blog-1",
-			_getURL(
-				_getLanguageEntries("/-/blogs/blog-1", null, themeDisplay),
-				LocaleUtil.FRANCE));
-	}
-
 	private void _testGetLanguageEntriesWithoutLayout() throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -533,6 +497,47 @@ public class LanguageTagTest {
 			_setLocalePrependFriendlyURLStyle(
 				localePrependFriendlyURLStyleValue);
 		}
+	}
+
+	private void _testGetLanguageEntriesWithPortletFriendlyURLMappingPath(
+			Layout layout)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, _PORTLET_FRIENDLY_URL_MAPPING_PATH,
+			_getURL(
+				_getLanguageEntries(
+					_PORTLET_FRIENDLY_URL_MAPPING_PATH, null, themeDisplay),
+				LocaleUtil.FRANCE));
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE,
+			_PORTLET_FRIENDLY_URL_MAPPING_PATH + "?foo=bar",
+			_getURL(
+				_getLanguageEntries(
+					_PORTLET_FRIENDLY_URL_MAPPING_PATH + "?foo=bar", null,
+					themeDisplay),
+				LocaleUtil.FRANCE));
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/tags/new%20york",
+			_getURL(
+				_getLanguageEntries("/tags/new%20york", null, themeDisplay),
+				LocaleUtil.FRANCE));
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/tags",
+			_getURL(
+				_getLanguageEntries("/tags", null, themeDisplay),
+				LocaleUtil.FRANCE));
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/-/blogs/blog-1",
+			_getURL(
+				_getLanguageEntries("/-/blogs/blog-1", null, themeDisplay),
+				LocaleUtil.FRANCE));
 	}
 
 	private void _testGetLanguageEntriesWithRedirectParameter(Layout layout)
@@ -584,7 +589,8 @@ public class LanguageTagTest {
 
 	private static final String _FORM_ACTION = "/custom/view";
 
-	private static final String _FRIENDLY_URL_MAPPING_PART = "/tags/mytag";
+	private static final String _PORTLET_FRIENDLY_URL_MAPPING_PATH =
+		"/tags/mytag";
 
 	private static final String _UPDATE_LANGUAGE_PATH =
 		"/c/portal/update_language";
