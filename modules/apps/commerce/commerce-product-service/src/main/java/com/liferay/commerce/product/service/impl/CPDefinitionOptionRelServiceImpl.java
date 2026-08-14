@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -64,25 +65,6 @@ public class CPDefinitionOptionRelServiceImpl
 
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			String infoItemServiceKey, double priority,
-			boolean definedExternally, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			String typeSettings, ServiceContext serviceContext)
-		throws PortalException {
-
-		_checkCommerceCatalog(cpDefinitionId, ActionKeys.UPDATE);
-
-		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, infoItemServiceKey, priority,
-			definedExternally, facetable, required, skuContributor,
-			importOptionValue, priceType, typeSettings, serviceContext);
-	}
-
-	@Override
-	public CPDefinitionOptionRel addCPDefinitionOptionRel(
 			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -90,6 +72,26 @@ public class CPDefinitionOptionRelServiceImpl
 
 		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
 			cpDefinitionId, cpOptionId, true, serviceContext);
+	}
+
+	@Override
+	public CPDefinitionOptionRel addCPDefinitionOptionRel(
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String commerceOptionTypeKey, String infoItemServiceKey,
+			double priority, boolean definedExternally, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, String typeSettings,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		_checkCommerceCatalog(cpDefinitionId, ActionKeys.UPDATE);
+
+		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
+			externalReferenceCode, cpDefinitionId, cpOptionId, nameMap,
+			descriptionMap, commerceOptionTypeKey, infoItemServiceKey, priority,
+			definedExternally, facetable, required, skuContributor,
+			importOptionValue, priceType, typeSettings, serviceContext);
 	}
 
 	@Override
@@ -268,6 +270,23 @@ public class CPDefinitionOptionRelServiceImpl
 
 		return cpDefinitionOptionRelPersistence.countByC_SC(
 			cpDefinitionId, skuContributor);
+	}
+
+	@Override
+	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
+			String commerceOptionTypeKey)
+		throws PortalException {
+
+		_checkCommerceCatalog(cpDefinitionId, ActionKeys.UPDATE);
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		return cpDefinitionOptionRelLocalService.
+			getOrAddEmptyCPDefinitionOptionRel(
+				externalReferenceCode, permissionChecker.getCompanyId(),
+				permissionChecker.getUserId(), cpDefinitionId, cpOptionId,
+				commerceOptionTypeKey);
 	}
 
 	@Override

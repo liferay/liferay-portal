@@ -27,6 +27,15 @@ public class CPDefinitionLocalServiceCircularDependencyUtil {
 		return cpDefinitionLocalService.copyCPDefinition(cpDefinitionId);
 	}
 
+	public static CPDefinition getCPDefinition(long cpDefinitionId)
+		throws PortalException {
+
+		CPDefinitionLocalService cpDefinitionLocalService =
+			_cpDefinitionLocalServiceSnapshot.get();
+
+		return cpDefinitionLocalService.getCPDefinition(cpDefinitionId);
+	}
+
 	public static boolean isVersionable(long cpDefinitionId) {
 		CPDefinitionLocalService cpDefinitionLocalService =
 			_cpDefinitionLocalServiceSnapshot.get();

@@ -26,6 +26,7 @@ import com.liferay.commerce.product.service.persistence.CPInstancePersistence;
 import com.liferay.commerce.product.service.persistence.CPOptionPersistence;
 import com.liferay.commerce.product.util.CPJSONUtil;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -62,9 +63,11 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -119,19 +122,28 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		throws PortalException {
 
 		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
+			null, cpDefinitionId, cpOptionId, nameMap, descriptionMap,
 			commerceOptionTypeKey, priority, facetable, required,
 			skuContributor, importOptionValue, null, serviceContext);
+	}
+
+	@Override
+	public CPDefinitionOptionRel addCPDefinitionOptionRel(
+			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
+		throws PortalException {
+
+		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
+			cpDefinitionId, cpOptionId, true, serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			ServiceContext serviceContext)
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String commerceOptionTypeKey, double priority, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, ServiceContext serviceContext)
 		throws PortalException {
 
 		// Commerce product definition option rel
@@ -152,7 +164,8 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 		_validatePriceType(cpDefinitionOptionRel, false, priceType);
 
-		if (CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
+		if (!_emptyModelManager.isEmptyModel() &&
+			CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
 				cpDefinitionId, serviceContext.getRequest())) {
 
 			CPDefinition newCPDefinition =
@@ -167,6 +180,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 				"versionable#" + cpDefinitionId, Boolean.FALSE);
 		}
 
+		cpDefinitionOptionRel.setExternalReferenceCode(externalReferenceCode);
 		cpDefinitionOptionRel.setGroupId(groupId);
 		cpDefinitionOptionRel.setCompanyId(user.getCompanyId());
 		cpDefinitionOptionRel.setUserId(user.getUserId());
@@ -182,6 +196,14 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		cpDefinitionOptionRel.setSkuContributor(skuContributor);
 		cpDefinitionOptionRel.setKey(cpOption.getKey());
 		cpDefinitionOptionRel.setPriceType(priceType);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			cpDefinitionOptionRel.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			cpDefinitionOptionRel.setStatus(WorkflowConstants.STATUS_APPROVED);
+		}
+
 		cpDefinitionOptionRel.setExpandoBridgeAttributes(serviceContext);
 
 		cpDefinitionOptionRel = cpDefinitionOptionRelPersistence.update(
@@ -216,12 +238,13 @@ public class CPDefinitionOptionRelLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			String infoItemServiceKey, double priority,
-			boolean definedExternally, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			String typeSettings, ServiceContext serviceContext)
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String commerceOptionTypeKey, String infoItemServiceKey,
+			double priority, boolean definedExternally, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, String typeSettings,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Commerce product definition option rel
@@ -242,7 +265,8 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 		_validatePriceType(cpDefinitionOptionRel, definedExternally, priceType);
 
-		if (CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
+		if (!_emptyModelManager.isEmptyModel() &&
+			CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
 				cpDefinitionId, serviceContext.getRequest())) {
 
 			CPDefinition newCPDefinition =
@@ -257,6 +281,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 				"versionable#" + cpDefinitionId, Boolean.FALSE);
 		}
 
+		cpDefinitionOptionRel.setExternalReferenceCode(externalReferenceCode);
 		cpDefinitionOptionRel.setGroupId(groupId);
 		cpDefinitionOptionRel.setCompanyId(user.getCompanyId());
 		cpDefinitionOptionRel.setUserId(user.getUserId());
@@ -284,6 +309,14 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		}
 
 		cpDefinitionOptionRel.setTypeSettings(typeSettings);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			cpDefinitionOptionRel.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			cpDefinitionOptionRel.setStatus(WorkflowConstants.STATUS_APPROVED);
+		}
+
 		cpDefinitionOptionRel.setExpandoBridgeAttributes(serviceContext);
 
 		cpDefinitionOptionRel = cpDefinitionOptionRelPersistence.update(
@@ -313,15 +346,6 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		_reindexCPDefinition(cpDefinitionId);
 
 		return cpDefinitionOptionRel;
-	}
-
-	@Override
-	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
-		throws PortalException {
-
-		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, true, serviceContext);
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -736,6 +760,36 @@ public class CPDefinitionOptionRelLocalServiceImpl
 	}
 
 	@Override
+	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long companyId, long userId,
+			long cpDefinitionId, long cpOptionId, String commerceOptionTypeKey)
+		throws PortalException {
+
+		CPDefinition cpDefinition =
+			CPDefinitionLocalServiceCircularDependencyUtil.getCPDefinition(
+				cpDefinitionId);
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setScopeGroupId(cpDefinition.getGroupId());
+		serviceContext.setUserId(userId);
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPDefinitionOptionRel.class, companyId,
+			() -> cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
+				externalReferenceCode, cpDefinitionId, cpOptionId,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				null, commerceOptionTypeKey, 0, false, false, false, false,
+				null, serviceContext),
+			externalReferenceCode,
+			this::fetchCPDefinitionOptionRelByExternalReferenceCode,
+			this::getCPDefinitionOptionRelByExternalReferenceCode,
+			CPDefinitionOptionRel.class.getName());
+	}
+
+	@Override
 	public boolean hasCPDefinitionPriceContributorCPDefinitionOptionRels(
 		long cpDefinitionId) {
 
@@ -894,7 +948,8 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 		_validatePriceType(cpDefinitionOptionRel, definedExternally, priceType);
 
-		if (CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
+		if (!_emptyModelManager.isEmptyModel() &&
+			CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
 				cpDefinitionOptionRel.getCPDefinitionId(),
 				serviceContext.getRequest())) {
 
@@ -919,6 +974,13 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		cpDefinitionOptionRel.setSkuContributor(skuContributor);
 		cpDefinitionOptionRel.setPriceType(priceType);
 		cpDefinitionOptionRel.setTypeSettings(typeSettings);
+		cpDefinitionOptionRel.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				cpDefinitionOptionRel.getExternalReferenceCode(),
+				cpDefinitionOptionRel.getModelClassName(),
+				cpDefinitionOptionRel.getCompanyId(), 0,
+				cpDefinitionOptionRel.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 		cpDefinitionOptionRel.setExpandoBridgeAttributes(serviceContext);
 
 		cpDefinitionOptionRel = cpDefinitionOptionRelPersistence.update(
@@ -1255,6 +1317,9 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 	@Reference
 	private CPOptionPersistence _cpOptionPersistence;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;

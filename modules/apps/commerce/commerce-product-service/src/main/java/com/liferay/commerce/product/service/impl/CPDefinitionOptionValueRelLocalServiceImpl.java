@@ -38,6 +38,7 @@ import com.liferay.commerce.product.service.persistence.CPOptionPersistence;
 import com.liferay.commerce.product.service.persistence.CPOptionValuePersistence;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.info.pagination.Pagination;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -77,6 +78,7 @@ import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -119,7 +121,7 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 		return cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, cpOptionValue.getKey(),
+				null, cpDefinitionOptionRelId, cpOptionValue.getKey(),
 				cpOptionValue.getNameMap(), cpOptionValue.getPriority(),
 				serviceContext);
 	}
@@ -127,10 +129,11 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, long cpInstanceId, String key,
-			Map<Locale, String> nameMap, boolean preselected,
-			BigDecimal deltaPrice, double priority, BigDecimal quantity,
-			String unitOfMeasureKey, ServiceContext serviceContext)
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			long cpInstanceId, String key, Map<Locale, String> nameMap,
+			boolean preselected, BigDecimal deltaPrice, double priority,
+			BigDecimal quantity, String unitOfMeasureKey,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Commerce product definition option value rel
@@ -152,7 +155,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			cpDefinitionOptionValueRelPersistence.create(
 				cpDefinitionOptionValueRelId);
 
-		if (CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
+		if (!_emptyModelManager.isEmptyModel() &&
+			CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
 				cpDefinitionOptionRel.getCPDefinitionId(),
 				serviceContext.getRequest())) {
 
@@ -172,6 +176,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			_updateCPDefinitionOptionValueRelCPInstance(
 				cpDefinitionOptionValueRel, cpInstanceId);
 
+		cpDefinitionOptionValueRel.setExternalReferenceCode(
+			externalReferenceCode);
 		cpDefinitionOptionValueRel.setGroupId(
 			cpDefinitionOptionRel.getGroupId());
 		cpDefinitionOptionValueRel.setCompanyId(user.getCompanyId());
@@ -191,6 +197,16 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		cpDefinitionOptionValueRel.setQuantity(
 			BigDecimalUtil.get(quantity, BigDecimal.ONE));
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(unitOfMeasureKey);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			cpDefinitionOptionValueRel.setStatus(
+				WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			cpDefinitionOptionValueRel.setStatus(
+				WorkflowConstants.STATUS_APPROVED);
+		}
+
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 
 		_validateLinkedCPDefinitionOptionValueRel(cpDefinitionOptionValueRel);
@@ -225,8 +241,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, String key,
-			Map<Locale, String> nameMap, double priority,
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			String key, Map<Locale, String> nameMap, double priority,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -248,7 +264,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			cpDefinitionOptionValueRelPersistence.create(
 				cpDefinitionOptionValueRelId);
 
-		if (CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
+		if (!_emptyModelManager.isEmptyModel() &&
+			CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
 				cpDefinitionOptionRel.getCPDefinitionId(),
 				serviceContext.getRequest())) {
 
@@ -264,6 +281,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 				cpDefinitionOptionRel.getCPDefinitionOptionRelId();
 		}
 
+		cpDefinitionOptionValueRel.setExternalReferenceCode(
+			externalReferenceCode);
 		cpDefinitionOptionValueRel.setGroupId(
 			cpDefinitionOptionRel.getGroupId());
 		cpDefinitionOptionValueRel.setCompanyId(user.getCompanyId());
@@ -280,6 +299,16 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 		cpDefinitionOptionValueRel.setPriority(priority);
 		cpDefinitionOptionValueRel.setQuantity(BigDecimal.ZERO);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			cpDefinitionOptionValueRel.setStatus(
+				WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			cpDefinitionOptionValueRel.setStatus(
+				WorkflowConstants.STATUS_APPROVED);
+		}
+
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 
 		_validateLinkedCPDefinitionOptionValueRel(cpDefinitionOptionValueRel);
@@ -645,6 +674,33 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	}
 
 	@Override
+	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
+			String externalReferenceCode, long companyId, long userId,
+			long cpDefinitionOptionRelId)
+		throws PortalException {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setUserId(userId);
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPDefinitionOptionValueRel.class, companyId,
+			() ->
+				cpDefinitionOptionValueRelLocalService.
+					addCPDefinitionOptionValueRel(
+						externalReferenceCode, cpDefinitionOptionRelId,
+						externalReferenceCode,
+						Collections.singletonMap(
+							LocaleUtil.getSiteDefault(), externalReferenceCode),
+						0, serviceContext),
+			externalReferenceCode,
+			this::fetchCPDefinitionOptionValueRelByExternalReferenceCode,
+			this::getCPDefinitionOptionValueRelByExternalReferenceCode,
+			CPDefinitionOptionValueRel.class.getName());
+	}
+
+	@Override
 	public boolean hasCPDefinitionOptionValueRels(
 		long cpDefinitionOptionRelId) {
 
@@ -835,7 +891,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
 			cpDefinitionOptionRel, cpInstanceId, key, unitOfMeasureKey);
 
-		if (CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
+		if (!_emptyModelManager.isEmptyModel() &&
+			CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
 				cpDefinitionOptionRel.getCPDefinitionId(),
 				serviceContext.getRequest())) {
 
@@ -867,6 +924,13 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 		cpDefinitionOptionValueRel.setQuantity(quantity);
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(unitOfMeasureKey);
+		cpDefinitionOptionValueRel.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				cpDefinitionOptionValueRel.getExternalReferenceCode(),
+				cpDefinitionOptionValueRel.getModelClassName(),
+				cpDefinitionOptionValueRel.getCompanyId(), 0,
+				cpDefinitionOptionValueRel.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 
 		_validateLinkedCPDefinitionOptionValueRel(cpDefinitionOptionValueRel);
@@ -1397,6 +1461,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 	@Reference
 	private CPOptionValuePersistence _cpOptionValuePersistence;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
