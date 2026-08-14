@@ -492,6 +492,28 @@ describe('TopAssets', () => {
 
 			expect(pushedURL).toContain('orderBy=viewsMetric');
 		});
+
+		it('should pass the Content objectType from the Content tab', () => {
+			renderTopAssets();
+
+			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+
+			const pushedURL = mockPush.mock.calls[0][0];
+
+			expect(pushedURL).toContain('objectType=content');
+		});
+
+		it('should pass the File objectType from the Files tab', () => {
+			renderTopAssets();
+
+			fireEvent.click(screen.getByRole('tab', {name: 'Files'}));
+
+			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
+
+			const pushedURL = mockPush.mock.calls[0][0];
+
+			expect(pushedURL).toContain('objectType=file');
+		});
 	});
 
 	describe('loading state', () => {

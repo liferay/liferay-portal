@@ -101,6 +101,39 @@ exports[`List rendering should match the snapshot 1`] = `
             null
           </div>
           <div
+            data-testid="fds-fields"
+          >
+            [{"contentRenderer":"assetTitleRenderer","fieldName":"assetTitle","label":"Title","sortable":true,"truncate":true},{"fieldName":"assetType","label":"Type","sortable":true},{"contentRenderer":"assetObjectTypeRenderer","fieldName":"objectType","label":"Object Type","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"viewsMetric","label":"Views","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"impressionsMetric","label":"Impressions","sortable":true},{"contentRenderer":"assetMetricRenderer","fieldName":"downloadsMetric","label":"Downloads","sortable":true}]
+          </div>
+          <div
+            data-testid="fds-object-type-cells"
+          >
+            <div
+              data-testid="fds-object-type-cell-undefined"
+            >
+              <span />
+            </div>
+            <div
+              data-testid="fds-object-type-cell-content"
+            >
+              <span>
+                Content
+              </span>
+            </div>
+            <div
+              data-testid="fds-object-type-cell-file"
+            >
+              <span>
+                File
+              </span>
+            </div>
+            <div
+              data-testid="fds-object-type-cell-unknown"
+            >
+              <span />
+            </div>
+          </div>
+          <div
             data-testid="fds-empty-state"
           >
             <div
@@ -134,12 +167,12 @@ exports[`List rendering should match the snapshot 1`] = `
           <div
             data-testid="fds-filters"
           >
-            [{"apiURL":"/o/faro/contacts/23/account/search?channelId=123&filter=(rangeKey eq '30')","autocompleteEnabled":true,"entityFieldType":"string","id":"accountIds","itemKey":"id","itemLabel":"accountName","label":"Accounts","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/individual_segment/search?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"segmentIds","itemKey":"id","itemLabel":"name","label":"Segments","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-types?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"assetType","itemKey":"name","itemLabel":"name","label":"Type","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-tags?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"tags/id","itemKey":"id","itemLabel":"name","label":"Tags","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-categories?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"categories/id","itemKey":"id","itemLabel":"name","label":"Categories","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-mime-types?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"mimeType","itemKey":"id","itemLabel":"name","label":"File Type","multiple":true,"type":"selection"}]
+            [{"apiURL":"/o/faro/contacts/23/account/search?channelId=123&filter=(rangeKey eq '30')","autocompleteEnabled":true,"entityFieldType":"string","id":"accountIds","itemKey":"id","itemLabel":"accountName","label":"Accounts","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/individual_segment/search?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"segmentIds","itemKey":"id","itemLabel":"name","label":"Segments","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-types?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"assetType","itemKey":"name","itemLabel":"name","label":"Type","multiple":true,"type":"selection"},{"entityFieldType":"string","id":"objectType","items":[{"label":"Content","value":"content"},{"label":"File","value":"file"}],"label":"Object Type","multiple":false,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-tags?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"tags/id","itemKey":"id","itemLabel":"name","label":"Tags","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-categories?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"categories/id","itemKey":"id","itemLabel":"name","label":"Categories","multiple":true,"type":"selection"},{"apiURL":"/o/faro/contacts/23/asset-summary-mime-types?channelId=123&rangeKey=30","autocompleteEnabled":true,"entityFieldType":"string","id":"mimeType","itemKey":"id","itemLabel":"name","label":"File Type","multiple":true,"type":"selection"}]
           </div>
           <div
             data-testid="fds-grouped-filters"
           >
-            [{"filters":["assetType","tags/id","categories/id","mimeType"],"label":"Filter By"},{"filters":["accountIds","segmentIds"],"label":"Filter by People"}]
+            [{"filters":["assetType","objectType","tags/id","categories/id","mimeType"],"label":"Filter By"},{"filters":["accountIds","segmentIds"],"label":"Filter by People"}]
           </div>
           <button
             data-testid="trigger-info-panel"

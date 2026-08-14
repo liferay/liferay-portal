@@ -1,6 +1,7 @@
 jest.mock('shared/util/request');
 
 import sendRequest from 'shared/util/request';
+import {AssetObjectTypes} from 'shared/util/constants';
 import {fetchIndividualTopAssets} from '../assets';
 
 describe('Assets API', () => {
@@ -14,7 +15,7 @@ describe('Assets API', () => {
 				channelId: '123',
 				groupId: '456',
 				individualId: 'ind-1',
-				objectType: 'content',
+				objectType: AssetObjectTypes.Content,
 				rangeKey: 30,
 				selectedMetric: 'impressionsMetric',
 			});

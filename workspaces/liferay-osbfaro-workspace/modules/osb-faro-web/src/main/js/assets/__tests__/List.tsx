@@ -14,13 +14,16 @@ jest.unmock('react-dom');
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
 	FrontendDataSet: ({
+		customDataRenderers,
 		emptyState,
 		filters,
 		groupedFilters,
 		id,
 		itemsActions,
 		sorts,
+		views,
 	}: {
+		customDataRenderers?: {[key: string]: React.FC<any>};
 		emptyState?: {
 			description?: React.ReactNode;
 			image?: string;
@@ -31,9 +34,32 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		id: string;
 		itemsActions?: Array<{onClick?: (item: any) => void}>;
 		sorts?: any[];
+		views?: Array<{schema: {fields: any[]}}>;
 	}) => (
 		<div data-testid="fds-component" id={id}>
 			<div data-testid="fds-sorts">{JSON.stringify(sorts ?? null)}</div>
+
+			<div data-testid="fds-fields">
+				{JSON.stringify(views?.[0]?.schema?.fields ?? null)}
+			</div>
+
+			<div data-testid="fds-object-type-cells">
+				{[undefined, 'content', 'file', 'unknown'].map((value) => {
+					const ObjectTypeCell =
+						customDataRenderers?.assetObjectTypeRenderer;
+
+					return (
+						ObjectTypeCell && (
+							<div
+								data-testid={`fds-object-type-cell-${value}`}
+								key={String(value)}
+							>
+								<ObjectTypeCell value={value} />
+							</div>
+						)
+					);
+				})}
+			</div>
 
 			{emptyState && (
 				<div data-testid="fds-empty-state">
@@ -470,10 +496,159 @@ describe('List', () => {
 		});
 	});
 
+	describe('object type column', () => {
+		const getFields = () =>
+			JSON.parse(screen.getByTestId('fds-fields').textContent);
+
+		const getObjectTypeField = () => {
+			renderList();
+
+			return getFields().find(
+				(field: {fieldName: string}) => field.fieldName === 'objectType'
+			);
+		};
+
+		it('should add an object type column to the table', () => {
+			expect(getObjectTypeField()).toBeDefined();
+		});
+
+		it('should label the object type column "Object Type"', () => {
+			expect(getObjectTypeField().label).toBe('Object Type');
+		});
+
+		it('should make the object type column sortable', () => {
+			expect(getObjectTypeField().sortable).toBe(true);
+		});
+
+		it('should place the object type column after the type column', () => {
+			renderList();
+
+			const fieldNames = getFields().map(
+				(field: {fieldName: string}) => field.fieldName
+			);
+
+			expect(fieldNames).toEqual([
+				'assetTitle',
+				'assetType',
+				'objectType',
+				'viewsMetric',
+				'impressionsMetric',
+				'downloadsMetric',
+			]);
+		});
+
+		it('should render the content object type as "Content"', () => {
+			renderList();
+
+			expect(
+				screen.getByTestId('fds-object-type-cell-content')
+			).toHaveTextContent('Content');
+		});
+
+		it('should render the file object type as "File"', () => {
+			renderList();
+
+			expect(
+				screen.getByTestId('fds-object-type-cell-file')
+			).toHaveTextContent('File');
+		});
+
+		it('should render nothing when the asset carries no object type', () => {
+			renderList();
+
+			expect(
+				screen.getByTestId('fds-object-type-cell-undefined')
+			).toHaveTextContent('');
+		});
+
+		it('should render nothing for an unrecognized object type', () => {
+			renderList();
+
+			expect(
+				screen.getByTestId('fds-object-type-cell-unknown')
+			).toHaveTextContent('');
+		});
+	});
+
+	describe('object type filter', () => {
+		const getFilters = () =>
+			JSON.parse(screen.getByTestId('fds-filters').textContent);
+
+		const getObjectTypeFilter = (queryString?: string) => {
+			renderList({queryString});
+
+			return getFilters().find(
+				(filter: {id: string}) => filter.id === 'objectType'
+			);
+		};
+
+		it('should pass the object type filter to FrontendDataSet', () => {
+			expect(getObjectTypeFilter()).toBeDefined();
+		});
+
+		it('should label the object type filter "Object Type"', () => {
+			expect(getObjectTypeFilter().label).toBe('Object Type');
+		});
+
+		it('should offer Content and File as the only options', () => {
+			expect(getObjectTypeFilter().items).toEqual([
+				{label: 'Content', value: 'content'},
+				{label: 'File', value: 'file'},
+			]);
+		});
+
+		it('should only allow one object type at a time', () => {
+			expect(getObjectTypeFilter().multiple).toBe(false);
+		});
+
+		it('should group the object type filter under "Filter By"', () => {
+			renderList();
+
+			const groupedFilters = JSON.parse(
+				screen.getByTestId('fds-grouped-filters').textContent
+			);
+
+			expect(groupedFilters[0].filters).toEqual([
+				'assetType',
+				'objectType',
+				'tags/id',
+				'categories/id',
+				'mimeType',
+			]);
+		});
+
+		it('should not preload the filter when no objectType is in the URL', () => {
+			expect(getObjectTypeFilter().preloadedData).toBeUndefined();
+		});
+
+		it('should preload Content from the objectType URL param', () => {
+			expect(
+				getObjectTypeFilter('?objectType=content').preloadedData
+			).toEqual({
+				selectedItems: [{label: 'Content', value: 'content'}],
+			});
+		});
+
+		it('should preload File from the objectType URL param', () => {
+			expect(
+				getObjectTypeFilter('?objectType=file').preloadedData
+			).toEqual({
+				selectedItems: [{label: 'File', value: 'file'}],
+			});
+		});
+
+		it('should ignore an unknown objectType URL param', () => {
+			expect(
+				getObjectTypeFilter('?objectType=folder').preloadedData
+			).toBeUndefined();
+		});
+	});
+
 	describe('sort by metric (orderBy)', () => {
 		const SORTABLE_KEYS = [
 			'assetTitle',
 			'assetType',
+			'objectType',
 			'viewsMetric',
 			'impressionsMetric',
 			'downloadsMetric',
@@ -594,6 +769,7 @@ describe('List', () => {
 				expect(groupedFilters[0].label).toBe('Filter By');
 				expect(groupedFilters[0].filters).toEqual([
 					'assetType',
+					'objectType',
 					'tags/id',
 					'categories/id',
 					'mimeType',
