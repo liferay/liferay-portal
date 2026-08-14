@@ -114,6 +114,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 		AWSClientManager<AWSKMS> awsClientManager =
 			configuration.getAWSClientManager();
+		int pendingWindowInDays = configuration.getPendingWindowInDays();
 
 		try {
 			awsClientManager.execute(
@@ -123,7 +124,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 						).withKeyId(
 							keyARN
 						).withPendingWindowInDays(
-							30
+							pendingWindowInDays
 						));
 
 					if (aliasName != null) {
@@ -407,6 +408,8 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 			properties.get("fipsEnforced"));
 		String keyARNTemplate = GetterUtil.getString(
 			properties.get("keyARNTemplate"));
+		int pendingWindowInDays = GetterUtil.getInteger(
+			properties.get("pendingWindowInDays"), 30);
 		String region = GetterUtil.getString(properties.get("awsRegion"));
 		boolean useFIPSEndpoint = GetterUtil.getBoolean(
 			properties.get("useFIPSEndpoint"));
@@ -433,7 +436,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		_configuration = new AWSKMSCryptoProviderContext(
 			accountId, awsClientManager,
 			new AWSKMSFIPSValidator(cipherMode, fipsEnforced), enabled,
-			keyARNTemplate, region, useFIPSEndpoint);
+			keyARNTemplate, pendingWindowInDays, region, useFIPSEndpoint);
 
 		if (_log.isInfoEnabled()) {
 			_log.info(

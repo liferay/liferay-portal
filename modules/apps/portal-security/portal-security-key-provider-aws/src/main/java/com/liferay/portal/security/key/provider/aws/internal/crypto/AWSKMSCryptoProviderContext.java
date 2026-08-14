@@ -18,13 +18,15 @@ public class AWSKMSCryptoProviderContext {
 	public AWSKMSCryptoProviderContext(
 		String accountId, AWSClientManager<AWSKMS> awsClientManager,
 		AWSKMSFIPSValidator awsKMSFIPSValidator, boolean enabled,
-		String keyARNTemplate, String region, boolean useFIPSEndpoint) {
+		String keyARNTemplate, int pendingWindowInDays, String region,
+		boolean useFIPSEndpoint) {
 
 		_accountId = accountId;
 		_awsClientManager = awsClientManager;
 		_awsKMSFIPSValidator = awsKMSFIPSValidator;
 		_enabled = enabled;
 		_keyARNTemplate = keyARNTemplate;
+		_pendingWindowInDays = pendingWindowInDays;
 		_region = region;
 		_useFIPSEndpoint = useFIPSEndpoint;
 	}
@@ -45,6 +47,10 @@ public class AWSKMSCryptoProviderContext {
 		return _keyARNTemplate;
 	}
 
+	public int getPendingWindowInDays() {
+		return _pendingWindowInDays;
+	}
+
 	public String getRegion() {
 		return _region;
 	}
@@ -62,6 +68,7 @@ public class AWSKMSCryptoProviderContext {
 	private final AWSKMSFIPSValidator _awsKMSFIPSValidator;
 	private final boolean _enabled;
 	private final String _keyARNTemplate;
+	private final int _pendingWindowInDays;
 	private final String _region;
 	private final boolean _useFIPSEndpoint;
 

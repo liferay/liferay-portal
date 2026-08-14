@@ -38,6 +38,12 @@ public interface AWSKMSCompanyCryptoProviderConfiguration {
 	@Meta.AD(deflt = "", name = "key-arn-template", required = false)
 	public String keyARNTemplate();
 
+	@Meta.AD(
+		deflt = "30", max = "30", min = "7", name = "pending-window-in-days",
+		required = false
+	)
+	public int pendingWindowInDays();
+
 	@Meta.AD(deflt = "false", name = "use-fips-endpoint", required = false)
 	public boolean useFIPSEndpoint();
 
