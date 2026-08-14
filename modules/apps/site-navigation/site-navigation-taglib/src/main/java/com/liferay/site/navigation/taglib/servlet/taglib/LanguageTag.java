@@ -226,13 +226,13 @@ public class LanguageTag extends IncludeTag {
 		}
 
 		try {
+			Map<Locale, String> relativeChangeLanguageURLs = new HashMap<>();
+
 			Map<Locale, String> changeLanguageURLs =
 				PortalUtil.getChangeLanguageURLs(
 					currentURL, httpServletRequest, locales, themeDisplay);
 
 			String portalURL = themeDisplay.getPortalURL();
-
-			Map<Locale, String> relativeChangeLanguageURLs = new HashMap<>();
 
 			for (Map.Entry<Locale, String> entry :
 					changeLanguageURLs.entrySet()) {
