@@ -94,6 +94,18 @@ public class DefaultStyleBookEntryUtil {
 		return LanguageUtil.get(locale, "styles-by-default");
 	}
 
+	public static boolean isStyleBookEntryApplicable(
+		FrontendTokenDefinition frontendTokenDefinition,
+		StyleBookEntry styleBookEntry) {
+
+		if ((frontendTokenDefinition == null) || (styleBookEntry == null)) {
+			return false;
+		}
+
+		return Objects.equals(
+			frontendTokenDefinition.getThemeId(), styleBookEntry.getThemeId());
+	}
+
 	private static StyleBookEntry _getMasterLayoutStyleBookEntry(
 		Layout layout) {
 
@@ -118,18 +130,9 @@ public class DefaultStyleBookEntryUtil {
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry =
 			_frontendTokenDefinitionRegistrySnapshot.get();
 
-		FrontendTokenDefinition frontendTokenDefinition =
-			frontendTokenDefinitionRegistry.getFrontendTokenDefinition(layout);
-
-		if ((frontendTokenDefinition != null) &&
-			Objects.equals(
-				frontendTokenDefinition.getThemeId(),
-				styleBookEntry.getThemeId())) {
-
-			return true;
-		}
-
-		return false;
+		return isStyleBookEntryApplicable(
+			frontendTokenDefinitionRegistry.getFrontendTokenDefinition(layout),
+			styleBookEntry);
 	}
 
 	private static final Snapshot<FrontendTokenDefinitionRegistry>

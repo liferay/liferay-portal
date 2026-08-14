@@ -8,6 +8,7 @@ package com.liferay.layout.content.page.editor.web.internal.util;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenMapping;
+import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.model.StyleBookEntry;
+import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
 
 import java.util.HashMap;
@@ -49,7 +51,8 @@ public class StyleBookEntryUtil {
 			_getFrontendTokenValuesJSONObject(styleBookEntry);
 
 		JSONObject frontendTokenDefinitionJSONObject =
-			frontendTokenDefinition.getJSONObject(locale);
+			_getFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinition, locale, styleBookEntry);
 
 		JSONArray frontendTokenCategoriesJSONArray =
 			frontendTokenDefinitionJSONObject.getJSONArray(
@@ -105,6 +108,34 @@ public class StyleBookEntryUtil {
 			styleBookEntry -> _getStyleBookEntryMap(
 				frontendTokenDefinition, groupId, includeFrontendTokensValues,
 				scopeGroups, styleBookEntry, themeDisplay));
+	}
+
+	private static JSONObject _getFrontendTokenDefinitionJSONObject(
+			FrontendTokenDefinition frontendTokenDefinition, Locale locale,
+			StyleBookEntry styleBookEntry)
+		throws Exception {
+
+		JSONObject frontendTokenDefinitionJSONObject =
+			frontendTokenDefinition.getJSONObject(locale);
+
+		if (!DefaultStyleBookEntryUtil.isStyleBookEntryApplicable(
+				frontendTokenDefinition, styleBookEntry)) {
+
+			return frontendTokenDefinitionJSONObject;
+		}
+
+		JSONObject overrideFrontendTokenDefinitionJSONObject =
+			FrontendTokenDefinitionUtil.parseFrontendTokenDefinitionJSONObject(
+				styleBookEntry.getFrontendTokenDefinition());
+
+		if (overrideFrontendTokenDefinitionJSONObject == null) {
+			return frontendTokenDefinitionJSONObject;
+		}
+
+		return FrontendTokenDefinitionUtil.
+			getMergedFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinitionJSONObject,
+				overrideFrontendTokenDefinitionJSONObject);
 	}
 
 	private static JSONObject _getFrontendTokenValuesJSONObject(

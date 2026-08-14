@@ -71,74 +71,8 @@ public class StyleBookEntryUtilTest {
 
 	@Test
 	public void testGetFrontendTokensValues() throws Exception {
-		FrontendTokenDefinition frontendTokenDefinition =
-			_mockFrontendTokenDefinition(_THEME_ID);
-
-		Locale locale = LocaleUtil.getDefault();
-
-		Assert.assertEquals(
-			_DEFAULT_VALUE,
-			_getFrontendTokenValue(
-				"successColor",
-				StyleBookEntryUtil.getFrontendTokensValues(
-					frontendTokenDefinition, locale, null)));
-		Assert.assertEquals(
-			_DEFAULT_VALUE,
-			_getFrontendTokenValue(
-				"successColor",
-				StyleBookEntryUtil.getFrontendTokensValues(
-					frontendTokenDefinition, locale,
-					_mockStyleBookEntry(JSONFactoryUtil.createJSONObject()))));
-		Assert.assertEquals(
-			"#34F787",
-			_getFrontendTokenValue(
-				"successColor",
-				StyleBookEntryUtil.getFrontendTokensValues(
-					frontendTokenDefinition, locale,
-					_mockStyleBookEntry(
-						JSONUtil.put(
-							"successColor",
-							JSONUtil.put("value", "#34F787"))))));
-		Assert.assertEquals(
-			"#34F787",
-			_getFrontendTokenValue(
-				"successColor",
-				StyleBookEntryUtil.getFrontendTokensValues(
-					_mockFrontendTokenDefinition(null), locale,
-					_mockStyleBookEntry(
-						JSONUtil.put(
-							"successColor",
-							JSONUtil.put("value", "#34F787"))))));
-		Assert.assertEquals(
-			"#34F787",
-			_getFrontendTokenValue(
-				"successColor",
-				StyleBookEntryUtil.getFrontendTokensValues(
-					frontendTokenDefinition, locale,
-					_mockStyleBookEntry(
-						JSONUtil.put(
-							_THEME_ID + ":successColor",
-							JSONUtil.put("value", "#34F787"))))));
-		Assert.assertEquals(
-			"#NEWVAL",
-			_getFrontendTokenValue(
-				"successColor",
-				StyleBookEntryUtil.getFrontendTokensValues(
-					frontendTokenDefinition, locale,
-					_mockStyleBookEntry(
-						JSONUtil.put(
-							_THEME_ID + ":successColor",
-							JSONUtil.put("value", "#NEWVAL")
-						).put(
-							"successColor", JSONUtil.put("value", "#OLDVAL")
-						)))));
-
-		Map<String, Object> frontendTokensValues =
-			StyleBookEntryUtil.getFrontendTokensValues(
-				null, locale,
-				_mockStyleBookEntry(JSONFactoryUtil.createJSONObject()));
-
-		Assert.assertTrue(frontendTokensValues.isEmpty());
+		_testGetFrontendTokensValuesWithCustomDefinition();
+		_testGetFrontendTokensValuesWithDefaultDefinition();
 	}
 
 	@Test
@@ -303,13 +237,17 @@ public class StyleBookEntryUtilTest {
 											"value", "success"
 										))
 								).put(
-									"name", "successColor"
+									"name", _SUCCESS_COLOR_TOKEN_NAME
 								))
 						).put(
 							"label", "Theme Colors"
+						).put(
+							"name", "themeColors"
 						))
 				).put(
 					"label", "Color System"
+				).put(
+					"name", "colorSystem"
 				)));
 
 		Mockito.when(
@@ -383,6 +321,28 @@ public class StyleBookEntryUtilTest {
 		return styleBookEntry;
 	}
 
+	private StyleBookEntry _mockStyleBookEntry(
+		JSONObject frontendTokensValuesJSONObject,
+		String overrideFrontendTokenDefinitionJSON, String themeId) {
+
+		StyleBookEntry styleBookEntry = _mockStyleBookEntry(
+			frontendTokensValuesJSONObject);
+
+		Mockito.when(
+			styleBookEntry.getFrontendTokenDefinition()
+		).thenReturn(
+			overrideFrontendTokenDefinitionJSON
+		);
+
+		Mockito.when(
+			styleBookEntry.getThemeId()
+		).thenReturn(
+			themeId
+		);
+
+		return styleBookEntry;
+	}
+
 	private StyleBookEntry _mockStyleBookEntry(long groupId) {
 		StyleBookEntry styleBookEntry = Mockito.mock(StyleBookEntry.class);
 
@@ -431,7 +391,199 @@ public class StyleBookEntryUtilTest {
 		return themeDisplay;
 	}
 
+	private void _testGetFrontendTokensValuesWithCustomDefinition()
+		throws Exception {
+
+		FrontendTokenDefinition frontendTokenDefinition =
+			_mockFrontendTokenDefinition(_THEME_ID);
+
+		Locale locale = LocaleUtil.getDefault();
+
+		JSONObject customFrontendTokenDefinitionJSONObject = JSONUtil.put(
+			"frontendTokenCategories",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"frontendTokenSets",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"frontendTokens",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"defaultValue", "#CUSTOM1"
+								).put(
+									"editorType", "ColorPicker"
+								).put(
+									"label", "success"
+								).put(
+									"mappings",
+									JSONUtil.putAll(
+										JSONUtil.put(
+											"type", "cssVariable"
+										).put(
+											"value", "success"
+										))
+								).put(
+									"name", _SUCCESS_COLOR_TOKEN_NAME
+								),
+								JSONUtil.put(
+									"defaultValue", "#CUSTOM2"
+								).put(
+									"editorType", "ColorPicker"
+								).put(
+									"label", "warning"
+								).put(
+									"mappings",
+									JSONUtil.putAll(
+										JSONUtil.put(
+											"type", "cssVariable"
+										).put(
+											"value", "warning"
+										))
+								).put(
+									"name", "warningColor"
+								))
+						).put(
+							"name", "themeColors"
+						))
+				).put(
+					"name", "colorSystem"
+				)));
+
+		Map<String, Object> frontendTokensValues =
+			StyleBookEntryUtil.getFrontendTokensValues(
+				frontendTokenDefinition, locale,
+				_mockStyleBookEntry(
+					JSONFactoryUtil.createJSONObject(),
+					customFrontendTokenDefinitionJSONObject.toString(),
+					_THEME_ID));
+
+		Assert.assertEquals(
+			frontendTokensValues.toString(), 2, frontendTokensValues.size());
+		Assert.assertEquals(
+			"#CUSTOM1",
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME, frontendTokensValues));
+		Assert.assertEquals(
+			"#CUSTOM2",
+			_getFrontendTokenValue("warningColor", frontendTokensValues));
+
+		frontendTokensValues = StyleBookEntryUtil.getFrontendTokensValues(
+			frontendTokenDefinition, locale,
+			_mockStyleBookEntry(
+				JSONFactoryUtil.createJSONObject(),
+				customFrontendTokenDefinitionJSONObject.toString(),
+				"other_WAR_othertheme"));
+
+		Assert.assertEquals(
+			frontendTokensValues.toString(), 1, frontendTokensValues.size());
+		Assert.assertEquals(
+			_DEFAULT_VALUE,
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME, frontendTokensValues));
+
+		frontendTokensValues = StyleBookEntryUtil.getFrontendTokensValues(
+			frontendTokenDefinition, locale,
+			_mockStyleBookEntry(
+				JSONFactoryUtil.createJSONObject(), null, _THEME_ID));
+
+		Assert.assertEquals(
+			frontendTokensValues.toString(), 1, frontendTokensValues.size());
+		Assert.assertEquals(
+			_DEFAULT_VALUE,
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME, frontendTokensValues));
+
+		frontendTokensValues = StyleBookEntryUtil.getFrontendTokensValues(
+			frontendTokenDefinition, locale,
+			_mockStyleBookEntry(
+				JSONFactoryUtil.createJSONObject(), "{not valid json",
+				_THEME_ID));
+
+		Assert.assertEquals(
+			frontendTokensValues.toString(), 1, frontendTokensValues.size());
+		Assert.assertEquals(
+			_DEFAULT_VALUE,
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME, frontendTokensValues));
+	}
+
+	private void _testGetFrontendTokensValuesWithDefaultDefinition()
+		throws Exception {
+
+		FrontendTokenDefinition frontendTokenDefinition =
+			_mockFrontendTokenDefinition(_THEME_ID);
+
+		Locale locale = LocaleUtil.getDefault();
+
+		Assert.assertEquals(
+			_DEFAULT_VALUE,
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME,
+				StyleBookEntryUtil.getFrontendTokensValues(
+					frontendTokenDefinition, locale, null)));
+		Assert.assertEquals(
+			_DEFAULT_VALUE,
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME,
+				StyleBookEntryUtil.getFrontendTokensValues(
+					frontendTokenDefinition, locale,
+					_mockStyleBookEntry(JSONFactoryUtil.createJSONObject()))));
+		Assert.assertEquals(
+			"#34F787",
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME,
+				StyleBookEntryUtil.getFrontendTokensValues(
+					frontendTokenDefinition, locale,
+					_mockStyleBookEntry(
+						JSONUtil.put(
+							_SUCCESS_COLOR_TOKEN_NAME,
+							JSONUtil.put("value", "#34F787"))))));
+		Assert.assertEquals(
+			"#34F787",
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME,
+				StyleBookEntryUtil.getFrontendTokensValues(
+					_mockFrontendTokenDefinition(null), locale,
+					_mockStyleBookEntry(
+						JSONUtil.put(
+							_SUCCESS_COLOR_TOKEN_NAME,
+							JSONUtil.put("value", "#34F787"))))));
+		Assert.assertEquals(
+			"#34F787",
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME,
+				StyleBookEntryUtil.getFrontendTokensValues(
+					frontendTokenDefinition, locale,
+					_mockStyleBookEntry(
+						JSONUtil.put(
+							_THEME_ID + ":" + _SUCCESS_COLOR_TOKEN_NAME,
+							JSONUtil.put("value", "#34F787"))))));
+		Assert.assertEquals(
+			"#NEWVAL",
+			_getFrontendTokenValue(
+				_SUCCESS_COLOR_TOKEN_NAME,
+				StyleBookEntryUtil.getFrontendTokensValues(
+					frontendTokenDefinition, locale,
+					_mockStyleBookEntry(
+						JSONUtil.put(
+							_SUCCESS_COLOR_TOKEN_NAME,
+							JSONUtil.put("value", "#OLDVAL")
+						).put(
+							_THEME_ID + ":" + _SUCCESS_COLOR_TOKEN_NAME,
+							JSONUtil.put("value", "#NEWVAL")
+						)))));
+
+		Map<String, Object> frontendTokensValues =
+			StyleBookEntryUtil.getFrontendTokensValues(
+				null, locale,
+				_mockStyleBookEntry(JSONFactoryUtil.createJSONObject()));
+
+		Assert.assertTrue(frontendTokensValues.isEmpty());
+	}
+
 	private static final String _DEFAULT_VALUE = "#287d3c";
+
+	private static final String _SUCCESS_COLOR_TOKEN_NAME = "successColor";
 
 	private static final String _THEME_ID = "classic_WAR_classictheme";
 
