@@ -82,6 +82,13 @@ public class ListTypeEntryLocalServiceWrapper
 		return _listTypeEntryLocalService.createPersistedModel(primaryKeyObj);
 	}
 
+	@Override
+	public void deleteCompanyListTypeEntries(long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_listTypeEntryLocalService.deleteCompanyListTypeEntries(companyId);
+	}
+
 	/**
 	 * Deletes the list type entry from the database. Also notifies the appropriate model listeners.
 	 *
@@ -515,4 +522,4 @@ public class ListTypeEntryLocalServiceWrapper
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-94440552
+// LIFERAY-SERVICE-BUILDER-HASH:-883952857

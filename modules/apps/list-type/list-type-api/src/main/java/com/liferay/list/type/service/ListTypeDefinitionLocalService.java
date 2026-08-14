@@ -103,6 +103,9 @@ public interface ListTypeDefinitionLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	public void deleteCompanyListTypeDefinitions(long companyId)
+		throws PortalException;
+
 	/**
 	 * Deletes the list type definition from the database. Also notifies the appropriate model listeners.
 	 *
@@ -342,4 +345,4 @@ public interface ListTypeDefinitionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1190439811
+// LIFERAY-SERVICE-BUILDER-HASH:-266332551

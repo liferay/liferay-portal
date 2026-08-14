@@ -96,6 +96,12 @@ public class ListTypeDefinitionLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
+	public static void deleteCompanyListTypeDefinitions(long companyId)
+		throws PortalException {
+
+		getService().deleteCompanyListTypeDefinitions(companyId);
+	}
+
 	/**
 	 * Deletes the list type definition from the database. Also notifies the appropriate model listeners.
 	 *
@@ -413,4 +419,4 @@ public class ListTypeDefinitionLocalServiceUtil {
 			ListTypeDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1971662102
+// LIFERAY-SERVICE-BUILDER-HASH:1354570347

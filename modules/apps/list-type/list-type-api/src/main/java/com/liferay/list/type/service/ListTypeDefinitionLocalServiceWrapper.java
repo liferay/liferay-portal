@@ -96,6 +96,14 @@ public class ListTypeDefinitionLocalServiceWrapper
 			primaryKeyObj);
 	}
 
+	@Override
+	public void deleteCompanyListTypeDefinitions(long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_listTypeDefinitionLocalService.deleteCompanyListTypeDefinitions(
+			companyId);
+	}
+
 	/**
 	 * Deletes the list type definition from the database. Also notifies the appropriate model listeners.
 	 *
@@ -478,4 +486,4 @@ public class ListTypeDefinitionLocalServiceWrapper
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-331628677
+// LIFERAY-SERVICE-BUILDER-HASH:-1481808487

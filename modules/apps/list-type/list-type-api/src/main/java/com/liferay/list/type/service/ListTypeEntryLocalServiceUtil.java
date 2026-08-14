@@ -83,6 +83,12 @@ public class ListTypeEntryLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
+	public static void deleteCompanyListTypeEntries(long companyId)
+		throws PortalException {
+
+		getService().deleteCompanyListTypeEntries(companyId);
+	}
+
 	/**
 	 * Deletes the list type entry from the database. Also notifies the appropriate model listeners.
 	 *
@@ -440,4 +446,4 @@ public class ListTypeEntryLocalServiceUtil {
 			ListTypeEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:278398604
+// LIFERAY-SERVICE-BUILDER-HASH:1502413707
