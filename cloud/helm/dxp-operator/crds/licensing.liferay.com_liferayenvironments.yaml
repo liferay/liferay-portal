@@ -118,6 +118,7 @@ spec:
                                         state:
                                             enum:
                                             -   Downloaded
+                                            -   Downloading
                                             -   Failed
                                             type: string
                                         virtualEntryId:
