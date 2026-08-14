@@ -8,6 +8,8 @@ import {
 	ConfigProvider,
 	FormProvider,
 	PageProvider,
+	pagesStructureReducer,
+	useFormState,
 } from 'data-engine-js-components-web';
 import React from 'react';
 
@@ -272,6 +274,96 @@ describe('ReactFieldBase', () => {
 		});
 
 		expect(container).toMatchSnapshot();
+	});
+
+	it('marks the editing language as edited when the field has no value', () => {
+		const FieldBaseFromFormState = () => {
+			const {pages} = useFormState();
+
+			const [field] = pages[0].rows[0].columns[0].fields;
+
+			return <FieldBase {...field} />;
+		};
+
+		render(
+			<FormProvider
+				initialState={{
+					editingLanguageId: 'ca_ES',
+					pages: [
+						{
+							rows: [
+								{
+									columns: [
+										{
+											fields: [
+												{
+													fieldName: 'content',
+													instanceId: 'instance_id',
+													localizedValue: {
+														en_US: '',
+													},
+													localizedValueEdited: {
+														en_US: true,
+													},
+													name: 'content_ca_ES',
+													type: 'text',
+												},
+											],
+										},
+									],
+								},
+							],
+						},
+					],
+				}}
+				reducers={[pagesStructureReducer]}
+			>
+				<FieldBaseFromFormState />
+			</FormProvider>
+		);
+
+		expect(
+			document.querySelector('[name="content_ca_ES_edited"]')
+		).toHaveValue('false');
+
+		const [, markAsTranslated] = Liferay.on.mock.calls
+			.filter(
+				([eventName]) => eventName === 'inputLocalized:markAsTranslated'
+			)
+			.pop();
+
+		act(() => {
+			markAsTranslated();
+		});
+
+		expect(
+			document.querySelector('[name="content_ca_ES_edited"]')
+		).toHaveValue('true');
+	});
+
+	it('renders data-translated for each language from its own localizedValueEdited entry', () => {
+		render(
+			<FormProvider
+				initialState={{editingLanguageId: 'en_US', pages: []}}
+			>
+				<PageProvider value={{editingLanguageId: 'en_US'}}>
+					<FieldBase
+						fieldName="field_name"
+						instanceId="instance_id"
+						localizedValue={{ca_ES: '', en_US: 'test_en_US'}}
+						localizedValueEdited={{ca_ES: true}}
+						name="test_name_en_US"
+					/>
+				</PageProvider>
+			</FormProvider>
+		);
+
+		expect(
+			document.querySelector('[data-languageid="ca_ES"]')
+		).toHaveAttribute('data-translated', 'true');
+		expect(
+			document.querySelector('[data-languageid="en_US"]')
+		).toHaveAttribute('data-translated', 'false');
 	});
 
 	it('renders the add button when repeatable is true', () => {
