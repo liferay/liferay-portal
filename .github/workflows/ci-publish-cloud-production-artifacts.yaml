@@ -13,6 +13,7 @@ jobs:
             -   push-rc-aws
             -   push-rc-aws-infrastructure
             -   push-rc-aws-infrastructure-provider
+            -   push-rc-azure-infrastructure-provider
             -   push-rc-bootstrap-aws
             -   push-rc-bootstrap-gcp
             -   push-rc-default
@@ -55,6 +56,15 @@ jobs:
         with:
             chart_name: liferay-aws-infrastructure-provider
             working_directory: ./cloud/helm/aws-infrastructure-provider
+    check-azure-infrastructure-provider:
+        needs:
+            -   test-cloud-helm-chart
+            -   test-cloud-helm-chart-smoke
+            -   test-cloud-terraform
+        uses: ./.github/workflows/ci-reusable-check-helm-chart-version.yaml
+        with:
+            chart_name: liferay-azure-infrastructure-provider
+            working_directory: ./cloud/helm/azure-infrastructure-provider
     check-bootstrap-aws:
         needs:
             -   test-cloud-helm-chart
@@ -165,6 +175,14 @@ jobs:
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
             source_image_ref: ${{needs.push-rc-aws-infrastructure-provider.outputs.image_ref}}
+    promote-rc-azure-infrastructure-provider:
+        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-azure-infrastructure-provider.result == 'success'}}
+        needs:
+            -   approve-release
+            -   push-rc-azure-infrastructure-provider
+        uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
+        with:
+            source_image_ref: ${{needs.push-rc-azure-infrastructure-provider.outputs.image_ref}}
     promote-rc-bootstrap-aws:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-bootstrap-aws.result == 'success'}}
         needs:
@@ -352,6 +370,13 @@ jobs:
         with:
             chart_name: liferay-aws-infrastructure-provider
             working_directory: ./cloud/helm/aws-infrastructure-provider
+    push-rc-azure-infrastructure-provider:
+        if: ${{needs.check-azure-infrastructure-provider.outputs.should_release == 'true'}}
+        needs: check-azure-infrastructure-provider
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-azure-infrastructure-provider
+            working_directory: ./cloud/helm/azure-infrastructure-provider
     push-rc-bootstrap-aws:
         if: ${{needs.check-bootstrap-aws.outputs.should_release == 'true'}}
         needs: check-bootstrap-aws
@@ -420,6 +445,7 @@ jobs:
             -   promote-rc-aws
             -   promote-rc-aws-infrastructure
             -   promote-rc-aws-infrastructure-provider
+            -   promote-rc-azure-infrastructure-provider
             -   promote-rc-bootstrap-aws
             -   promote-rc-bootstrap-gcp
             -   promote-rc-default
@@ -433,6 +459,7 @@ jobs:
             -   push-rc-aws
             -   push-rc-aws-infrastructure
             -   push-rc-aws-infrastructure-provider
+            -   push-rc-azure-infrastructure-provider
             -   push-rc-bootstrap-aws
             -   push-rc-bootstrap-gcp
             -   push-rc-default
@@ -461,6 +488,7 @@ jobs:
                     DIGEST_liferay_aws: ${{needs.promote-rc-aws.outputs.image_digest}}
                     DIGEST_liferay_aws_infrastructure: ${{needs.promote-rc-aws-infrastructure.outputs.image_digest}}
                     DIGEST_liferay_aws_infrastructure_provider: ${{needs.promote-rc-aws-infrastructure-provider.outputs.image_digest}}
+                    DIGEST_liferay_azure_infrastructure_provider: ${{needs.promote-rc-azure-infrastructure-provider.outputs.image_digest}}
                     DIGEST_liferay_default: ${{needs.promote-rc-default.outputs.image_digest}}
                     DIGEST_liferay_gcp: ${{needs.promote-rc-gcp.outputs.image_digest}}
                     DIGEST_liferay_gcp_infrastructure: ${{needs.promote-rc-gcp-infrastructure.outputs.image_digest}}
@@ -471,6 +499,7 @@ jobs:
                     VERSION_liferay_aws: ${{needs.push-rc-aws.outputs.chart_version}}
                     VERSION_liferay_aws_infrastructure: ${{needs.push-rc-aws-infrastructure.outputs.chart_version}}
                     VERSION_liferay_aws_infrastructure_provider: ${{needs.push-rc-aws-infrastructure-provider.outputs.chart_version}}
+                    VERSION_liferay_azure_infrastructure_provider: ${{needs.push-rc-azure-infrastructure-provider.outputs.chart_version}}
                     VERSION_liferay_default: ${{needs.push-rc-default.outputs.chart_version}}
                     VERSION_liferay_gcp: ${{needs.push-rc-gcp.outputs.chart_version}}
                     VERSION_liferay_gcp_infrastructure: ${{needs.push-rc-gcp-infrastructure.outputs.chart_version}}

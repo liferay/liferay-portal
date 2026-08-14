@@ -30,6 +30,12 @@ jobs:
         with:
             chart_name: liferay-aws-infrastructure-provider
             working_directory: ./cloud/helm/aws-infrastructure-provider
+    push-azure-infrastructure-provider:
+        needs: check-repository
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-azure-infrastructure-provider
+            working_directory: ./cloud/helm/azure-infrastructure-provider
     push-default:
         needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
