@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 export class EditObjectViewPage {
 	readonly addButton: Locator;
@@ -79,6 +79,19 @@ export class EditObjectViewPage {
 		}
 
 		await this.saveFilter.dispatchEvent('click');
+
+		if (filterValues) {
+
+			// Saving the filter rebuilds the side panel, and the rebuild is
+			// still in flight when the dispatch returns. A caller that clicks
+			// the view's own Save next binds a button that is torn out from
+			// under it, and retries against a panel that keeps rebuilding until
+			// the test times out. Wait for the filter form to go, which is what
+			// a saved filter produces. A filter with no value cannot save and
+			// keeps its form open to report that, so leave that case alone.
+
+			await expect(this.sidePanel.getByLabel('New Filter')).toBeHidden();
+		}
 	}
 
 	async addDefaultSort(columnName: string, sortOrder: string) {
