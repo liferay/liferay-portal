@@ -180,6 +180,54 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 			PortalInstancePool.getDefaultCompanyId(), _objectDefinition, 0);
 	}
 
+	@Test
+	public void testUpdateClassNameWhenCompanyIsNotInPortalInstancePool()
+		throws Exception {
+
+		Company company = CompanyTestUtil.addCompany();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
+
+			User user = UserTestUtil.getAdminUser(company.getCompanyId());
+
+			ObjectDefinition objectDefinition =
+				_objectDefinitionLocalService.addCustomObjectDefinition(
+					null, user.getUserId(), 0, null, true, false, true, false,
+					true, false, true, true, true, null,
+					RandomTestUtil.randomLocaleStringMap(),
+					"A" + RandomTestUtil.randomString(), null, null,
+					RandomTestUtil.randomLocaleStringMap(), true,
+					ObjectDefinitionConstants.SCOPE_COMPANY,
+					ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+					Collections.emptyList(),
+					Collections.singletonList(
+						new TextObjectFieldBuilder(
+						).labelMap(
+							RandomTestUtil.randomLocaleStringMap()
+						).name(
+							StringUtil.randomId()
+						).build()),
+					Collections.emptyList(), new ServiceContext());
+
+			PortalInstancePool.remove(company.getCompanyId());
+
+			ObjectDefinition updatedObjectDefinition =
+				_objectDefinitionLocalService.updateClassName(
+					objectDefinition.getObjectDefinitionId());
+
+			Assert.assertNotEquals(
+				objectDefinition.getClassName(),
+				updatedObjectDefinition.getClassName());
+		}
+		finally {
+			PortalInstancePool.add(company);
+
+			_companyLocalService.deleteCompany(company);
+		}
+	}
+
 	private void _assertResourceActionsCount(
 		long companyId, ObjectDefinition objectDefinition,
 		int resourceActionsCount) {
