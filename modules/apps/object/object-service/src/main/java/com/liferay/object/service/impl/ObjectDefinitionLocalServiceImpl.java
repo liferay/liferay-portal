@@ -2356,11 +2356,20 @@ public class ObjectDefinitionLocalServiceImpl
 	}
 
 	private int _getObjectDefinitionsCountByClassName(String className) {
-		AtomicInteger atomicInteger = new AtomicInteger(0);
+		long currentCompanyId = CompanyThreadLocal.getCompanyId();
+
+		AtomicInteger atomicInteger = new AtomicInteger(
+			objectDefinitionPersistence.countByClassName(className));
 
 		_companyLocalService.forEachCompanyId(
-			companyId -> atomicInteger.addAndGet(
-				objectDefinitionPersistence.countByClassName(className)));
+			companyId -> {
+				if (companyId == currentCompanyId) {
+					return;
+				}
+
+				atomicInteger.addAndGet(
+					objectDefinitionPersistence.countByClassName(className));
+			});
 
 		return atomicInteger.get();
 	}
