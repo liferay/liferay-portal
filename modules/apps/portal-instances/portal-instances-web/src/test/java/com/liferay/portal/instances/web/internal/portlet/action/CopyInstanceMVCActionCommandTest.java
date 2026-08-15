@@ -5,6 +5,7 @@
 
 package com.liferay.portal.instances.web.internal.portlet.action;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
@@ -18,12 +19,15 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.CompanyService;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -53,6 +57,12 @@ public class CopyInstanceMVCActionCommandTest {
 
 	@Before
 	public void setUp() {
+		Mockito.when(
+			_company.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
 		Mockito.when(
 			_company.getWebId()
 		).thenReturn(
@@ -101,16 +111,40 @@ public class CopyInstanceMVCActionCommandTest {
 			}
 		);
 
+		_sessionMessagesMockedStatic = Mockito.mockStatic(
+			SessionMessages.class);
+
 		ReflectionTestUtil.setFieldValue(
 			_copyInstanceMVCActionCommand, "_companyService", _companyService);
 		ReflectionTestUtil.setFieldValue(
 			_copyInstanceMVCActionCommand, "_language", _language);
+		ReflectionTestUtil.setFieldValue(
+			_copyInstanceMVCActionCommand, "_portal", _portal);
 	}
 
 	@After
 	public void tearDown() {
 		_featureFlagManagerUtilMockedStatic.close();
 		_jsonPortletResponseUtilMockedStatic.close();
+		_sessionMessagesMockedStatic.close();
+	}
+
+	@Test
+	public void testClearedHiddenDefaultSuccessMessageOnSuccess()
+		throws Exception {
+
+		_sessionMessagesMockedStatic.when(
+			() -> SessionMessages.contains(
+				Mockito.any(PortletRequest.class), Mockito.anyString())
+		).thenReturn(
+			true
+		);
+
+		_assertCopyDBPartitionCompany(
+			_DESTINATION_COMPANY_ID, _getMockActionRequest());
+
+		_sessionMessagesMockedStatic.verify(
+			() -> SessionMessages.clear(Mockito.any(PortletRequest.class)));
 	}
 
 	@Test
@@ -120,25 +154,13 @@ public class CopyInstanceMVCActionCommandTest {
 	}
 
 	@Test
-	public void testErrorForBlankName() throws Exception {
+	public void testErrorForBlankField() throws Exception {
 		_assertError(
 			"please-enter-a-valid-name",
 			_getMockActionRequest("name", StringPool.SPACE));
-
-		Mockito.verifyNoInteractions(_companyService);
-	}
-
-	@Test
-	public void testErrorForBlankVirtualHostname() throws Exception {
 		_assertError(
 			"please-enter-a-valid-virtual-host",
 			_getMockActionRequest("virtualHostname", StringPool.SPACE));
-
-		Mockito.verifyNoInteractions(_companyService);
-	}
-
-	@Test
-	public void testErrorForBlankWebId() throws Exception {
 		_assertError(
 			"please-enter-a-valid-web-id",
 			_getMockActionRequest("webId", StringPool.SPACE));
@@ -147,22 +169,16 @@ public class CopyInstanceMVCActionCommandTest {
 	}
 
 	@Test
-	public void testErrorForCompanyNameException() throws Exception {
+	public void testErrorForCompanyException() throws Exception {
 		_setUpFailedCopyDBPartitionCompany(new CompanyNameException());
 
 		_assertError("please-enter-a-valid-name", _getMockActionRequest());
-	}
 
-	@Test
-	public void testErrorForCompanyVirtualHostException() throws Exception {
 		_setUpFailedCopyDBPartitionCompany(new CompanyVirtualHostException());
 
 		_assertError(
 			"please-enter-a-valid-virtual-host", _getMockActionRequest());
-	}
 
-	@Test
-	public void testErrorForCompanyWebIdException() throws Exception {
 		_setUpFailedCopyDBPartitionCompany(new CompanyWebIdException());
 
 		_assertError("please-enter-a-valid-web-id", _getMockActionRequest());
@@ -175,21 +191,13 @@ public class CopyInstanceMVCActionCommandTest {
 		_assertError(
 			"please-enter-a-valid-destination-company-id",
 			_getMockActionRequest());
-	}
-
-	@Test
-	public void testErrorForIllegalArgumentExceptionOnBlankDestinationCompanyId()
-		throws Exception {
-
-		_setUpFailedCopyDBPartitionCompany(new IllegalArgumentException());
-
 		_assertError(
 			"an-unexpected-error-occurred",
 			_getMockActionRequest("destinationCompanyId", StringPool.BLANK));
 	}
 
 	@Test
-	public void testErrorForMalformedDestinationCompanyId() throws Exception {
+	public void testErrorForInvalidDestinationCompanyId() throws Exception {
 		String suffix = RandomTestUtil.randomString(
 			NumericStringRandomizerBumper.INSTANCE);
 
@@ -197,20 +205,6 @@ public class CopyInstanceMVCActionCommandTest {
 			"please-enter-a-valid-destination-company-id",
 			_getMockActionRequest(
 				"destinationCompanyId", _DESTINATION_COMPANY_ID + suffix));
-
-		Mockito.verifyNoInteractions(_companyService);
-	}
-
-	@Test
-	public void testErrorForMustBeOmniadminException() throws Exception {
-		_setUpFailedCopyDBPartitionCompany(
-			new PrincipalException.MustBeOmniadmin(_permissionChecker));
-
-		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
-	}
-
-	@Test
-	public void testErrorForNegativeDestinationCompanyId() throws Exception {
 		_assertError(
 			"please-enter-a-valid-destination-company-id",
 			_getMockActionRequest(
@@ -225,37 +219,49 @@ public class CopyInstanceMVCActionCommandTest {
 		_setUpFailedCopyDBPartitionCompany(new RuntimeException());
 
 		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
+
+		_setUpFailedCopyDBPartitionCompany(
+			new PrincipalException.MustBeOmniadmin(_permissionChecker));
+
+		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
 	}
 
 	@Test
 	public void testErrorForUnsupportedOperationException() throws Exception {
 		_setUpFailedCopyDBPartitionCompany(new UnsupportedOperationException());
 
-		_assertError(
-			"database-partitioning-must-be-enabled", _getMockActionRequest());
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"DATABASE_PARTITION_ENABLED", false)) {
+
+			_assertError(
+				"database-partitioning-must-be-enabled",
+				_getMockActionRequest());
+		}
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"DATABASE_PARTITION_ENABLED", true)) {
+
+			_assertError(
+				"copying-an-instance-is-already-in-progress",
+				_getMockActionRequest());
+		}
 	}
 
 	@Test
-	public void testErrorForWrappedCompanyNameException() throws Exception {
+	public void testErrorForWrappedCompanyException() throws Exception {
 		_setUpFailedCopyDBPartitionCompany(
 			new PortalException(new CompanyNameException()));
 
 		_assertError("please-enter-a-valid-name", _getMockActionRequest());
-	}
-
-	@Test
-	public void testErrorForWrappedCompanyVirtualHostException()
-		throws Exception {
 
 		_setUpFailedCopyDBPartitionCompany(
 			new PortalException(new CompanyVirtualHostException()));
 
 		_assertError(
 			"please-enter-a-valid-virtual-host", _getMockActionRequest());
-	}
 
-	@Test
-	public void testErrorForWrappedCompanyWebIdException() throws Exception {
 		_setUpFailedCopyDBPartitionCompany(
 			new PortalException(new CompanyWebIdException()));
 
@@ -310,9 +316,7 @@ public class CopyInstanceMVCActionCommandTest {
 		_copyInstanceMVCActionCommand.doProcessAction(
 			mockActionRequest, new MockActionResponse());
 
-		Assert.assertEquals(
-			"the-instance-was-copied-to-x:" + _COMPANY_WEB_ID,
-			_jsonObject.getString("successMessage"));
+		Assert.assertEquals(_COMPANY_ID, _jsonObject.getLong("companyId"));
 
 		Assert.assertEquals(0, _hideDefaultSuccessMessageCount);
 
@@ -329,18 +333,25 @@ public class CopyInstanceMVCActionCommandTest {
 			() -> JSONPortletResponseUtil.writeJSON(
 				Mockito.any(ActionRequest.class),
 				Mockito.any(ActionResponse.class), Mockito.eq(_jsonObject)));
+
+		_sessionMessagesMockedStatic.verify(
+			() -> SessionMessages.add(
+				mockActionRequest, "requestProcessed",
+				"the-instance-was-copied-to-x:" + _COMPANY_WEB_ID));
 	}
 
 	private void _assertError(
 			String expectedError, MockActionRequest mockActionRequest)
 		throws Exception {
 
+		_hideDefaultSuccessMessageCount = 0;
+
 		_copyInstanceMVCActionCommand.doProcessAction(
 			mockActionRequest, new MockActionResponse());
 
 		Assert.assertEquals(expectedError, _jsonObject.getString("error"));
 		Assert.assertEquals(1, _hideDefaultSuccessMessageCount);
-		Assert.assertFalse(_jsonObject.has("successMessage"));
+		Assert.assertFalse(_jsonObject.has("companyId"));
 
 		_jsonPortletResponseUtilMockedStatic.verify(
 			() -> JSONPortletResponseUtil.writeJSON(
@@ -375,14 +386,17 @@ public class CopyInstanceMVCActionCommandTest {
 	private void _setUpFailedCopyDBPartitionCompany(Exception exception)
 		throws Exception {
 
-		Mockito.when(
-			_companyService.copyDBPartitionCompany(
-				Mockito.anyLong(), Mockito.nullable(Long.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString())
-		).thenThrow(
+		Mockito.doThrow(
 			exception
+		).when(
+			_companyService
+		).copyDBPartitionCompany(
+			Mockito.anyLong(), Mockito.nullable(Long.class),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString()
 		);
 	}
+
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final String _COMPANY_WEB_ID = RandomTestUtil.randomString();
 
@@ -423,5 +437,7 @@ public class CopyInstanceMVCActionCommandTest {
 	private final Language _language = Mockito.mock(Language.class);
 	private final PermissionChecker _permissionChecker = Mockito.mock(
 		PermissionChecker.class);
+	private final Portal _portal = Mockito.mock(Portal.class);
+	private MockedStatic<SessionMessages> _sessionMessagesMockedStatic;
 
 }

@@ -192,6 +192,10 @@ export class VirtualInstancesPage {
 		await this.page.waitForTimeout(1000);
 	}
 
+	copyInstanceSuccessMessage(webId: string) {
+		return this.page.getByText(`The instance was copied to ${webId}.`);
+	}
+
 	async deleteVirtualInstance(name: string) {
 		await this.globalMenuPage.goToControlPanel('Virtual Instances');
 

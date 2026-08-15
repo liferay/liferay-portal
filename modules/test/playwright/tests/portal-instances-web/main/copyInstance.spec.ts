@@ -62,3 +62,49 @@ test(
 		}
 	}
 );
+
+test(
+	'LPD-92620 Copying an instance shows the copy success message',
+	{tag: '@LPD-92620'},
+	async ({virtualInstancesPage}) => {
+		test.setTimeout(360000);
+
+		const name = getRandomString();
+		const copyWebId = getRandomString();
+
+		let copied = false;
+		let created = false;
+
+		try {
+			await virtualInstancesPage.addNewVirtualInstance(name);
+
+			created = true;
+
+			await virtualInstancesPage.openCopyVirtualInstanceModal(name);
+
+			// A blank destination company ID copies into a new instance
+
+			await virtualInstancesPage.submitCopyVirtualInstance({
+				destinationCompanyId: '',
+				name: copyWebId,
+				virtualHost: copyWebId,
+				webId: copyWebId,
+			});
+
+			await expect(
+				virtualInstancesPage.copyInstanceSuccessMessage(copyWebId)
+			).toBeVisible();
+
+			copied = true;
+		}
+		finally {
+			if (copied) {
+				await virtualInstancesPage.deleteVirtualInstance(copyWebId);
+			}
+
+			if (created) {
+				await virtualInstancesPage.deleteVirtualInstance(name);
+			}
+		}
+	}
+);
