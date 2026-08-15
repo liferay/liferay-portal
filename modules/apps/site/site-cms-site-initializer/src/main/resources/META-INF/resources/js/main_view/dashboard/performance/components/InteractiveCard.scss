@@ -20,22 +20,5 @@
 	&:hover:not(.active) {
 		background-color: $light-l1;
 		border-color: $secondary-l0;
-
-		.cms-dashboard__interactive-card__hover-content {
-			opacity: 1;
-		}
-
-		.cms-dashboard__interactive-card__metric:has(
-				~ .cms-dashboard__interactive-card__hover-content
-			)
-			> div:nth-of-type(2) {
-			opacity: 0;
-		}
-	}
-
-	&__hover-content {
-		bottom: 0;
-		left: 0;
-		opacity: 0;
 	}
 }
