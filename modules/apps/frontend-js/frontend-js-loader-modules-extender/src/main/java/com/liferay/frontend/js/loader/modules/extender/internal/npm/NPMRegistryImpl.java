@@ -24,9 +24,6 @@ import com.liferay.frontend.js.loader.modules.extender.npm.NPMRegistryUpdate;
 import com.liferay.frontend.js.loader.modules.extender.npm.NPMRegistryUpdatesListener;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
-import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapper;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.string.StringBundler;
@@ -233,14 +230,19 @@ public class NPMRegistryImpl implements NPMRegistry {
 			}
 		}
 
-		for (String resolvedId : _serviceTrackerMap.keySet()) {
-			String value = _serviceTrackerMap.getService(resolvedId);
+		for (JSConfigGeneratorPackage jsConfigGeneratorPackage :
+				_serviceTrackerList) {
 
-			if (resolvedId.equals(moduleName) ||
-				moduleName.startsWith(resolvedId + StringPool.SLASH)) {
+			String name = jsConfigGeneratorPackage.getName();
+
+			if (name.equals(moduleName) ||
+				moduleName.startsWith(name + StringPool.SLASH)) {
 
 				return mapModuleName(
-					value + moduleName.substring(resolvedId.length()));
+					StringBundler.concat(
+						name, StringPool.AT,
+						jsConfigGeneratorPackage.getVersion(),
+						moduleName.substring(name.length())));
 			}
 		}
 
@@ -337,7 +339,7 @@ public class NPMRegistryImpl implements NPMRegistry {
 
 		_applyVersioning = details.applyVersioning();
 
-		_serviceTrackerMap = _openPartialMatchMap();
+		_serviceTrackerList = _openServiceTrackerList();
 	}
 
 	@Deactivate
@@ -346,7 +348,7 @@ public class NPMRegistryImpl implements NPMRegistry {
 			_npmRegistryUpdatesListeners.close();
 		}
 
-		_serviceTrackerMap.close();
+		_serviceTrackerList.close();
 
 		_activation.set(Boolean.TRUE);
 
@@ -363,9 +365,9 @@ public class NPMRegistryImpl implements NPMRegistry {
 		if (details.applyVersioning() != _applyVersioning) {
 			_applyVersioning = details.applyVersioning();
 
-			_serviceTrackerMap.close();
+			_serviceTrackerList.close();
 
-			_serviceTrackerMap = _openPartialMatchMap();
+			_serviceTrackerList = _openServiceTrackerList();
 		}
 	}
 
@@ -468,15 +470,47 @@ public class NPMRegistryImpl implements NPMRegistry {
 		}
 	}
 
-	private ServiceTrackerMap<String, String> _openPartialMatchMap() {
-		ServletContextServiceTrackerCustomizer customizer =
-			new ServletContextServiceTrackerCustomizer();
+	private ServiceTrackerList<JSConfigGeneratorPackage>
+		_openServiceTrackerList() {
 
-		return ServiceTrackerMapFactory.openSingleValueMap(
+		return ServiceTrackerListFactory.open(
 			_bundleContext, ServletContext.class,
 			"(&(objectClass=" + ServletContext.class.getName() +
 				")(osgi.web.contextpath=*))",
-			customizer, customizer);
+			new ServiceTrackerCustomizer
+				<ServletContext, JSConfigGeneratorPackage>() {
+
+				@Override
+				public JSConfigGeneratorPackage addingService(
+					ServiceReference<ServletContext> serviceReference) {
+
+					Bundle bundle = serviceReference.getBundle();
+
+					URL url = bundle.getEntry(Details.CONFIG_JSON);
+
+					if (url == null) {
+						return null;
+					}
+
+					return new JSConfigGeneratorPackage(
+						_applyVersioning, bundle,
+						(String)serviceReference.getProperty(
+							"osgi.web.contextpath"));
+				}
+
+				@Override
+				public void modifiedService(
+					ServiceReference<ServletContext> serviceReference,
+					JSConfigGeneratorPackage jsConfigGeneratorPackage) {
+				}
+
+				@Override
+				public void removedService(
+					ServiceReference<ServletContext> serviceReference,
+					JSConfigGeneratorPackage jsConfigGeneratorPackage) {
+				}
+
+			});
 	}
 
 	private void _processLegacyBridges(Bundle bundle) {
@@ -536,7 +570,8 @@ public class NPMRegistryImpl implements NPMRegistry {
 
 	private ServiceTrackerList<NPMRegistryUpdatesListener>
 		_npmRegistryUpdatesListeners;
-	private volatile ServiceTrackerMap<String, String> _serviceTrackerMap;
+	private volatile ServiceTrackerList<JSConfigGeneratorPackage>
+		_serviceTrackerList;
 
 	private static class DataBag {
 
@@ -629,68 +664,6 @@ public class NPMRegistryImpl implements NPMRegistry {
 
 				_notifyNPMRegistryUpdatesListeners();
 			}
-		}
-
-	}
-
-	private class ServletContextServiceTrackerCustomizer
-		implements ServiceReferenceMapper<String, ServletContext>,
-				   ServiceTrackerCustomizer<ServletContext, String> {
-
-		@Override
-		public String addingService(
-			ServiceReference<ServletContext> serviceReference) {
-
-			JSConfigGeneratorPackage jsConfigGeneratorPackage =
-				_getJSConfigGeneratorPackage(serviceReference);
-
-			if (jsConfigGeneratorPackage == null) {
-				return null;
-			}
-
-			return jsConfigGeneratorPackage.getName() + StringPool.AT +
-				jsConfigGeneratorPackage.getVersion();
-		}
-
-		@Override
-		public void map(
-			ServiceReference<ServletContext> serviceReference,
-			Emitter<String> emitter) {
-
-			JSConfigGeneratorPackage jsConfigGeneratorPackage =
-				_getJSConfigGeneratorPackage(serviceReference);
-
-			if (jsConfigGeneratorPackage != null) {
-				emitter.emit(jsConfigGeneratorPackage.getName());
-			}
-		}
-
-		@Override
-		public void modifiedService(
-			ServiceReference<ServletContext> serviceReference,
-			String resolvedId) {
-		}
-
-		@Override
-		public void removedService(
-			ServiceReference<ServletContext> serviceReference,
-			String resolvedId) {
-		}
-
-		private JSConfigGeneratorPackage _getJSConfigGeneratorPackage(
-			ServiceReference<ServletContext> serviceReference) {
-
-			Bundle bundle = serviceReference.getBundle();
-
-			URL url = bundle.getEntry(Details.CONFIG_JSON);
-
-			if (url == null) {
-				return null;
-			}
-
-			return new JSConfigGeneratorPackage(
-				_applyVersioning, bundle,
-				(String)serviceReference.getProperty("osgi.web.contextpath"));
 		}
 
 	}
