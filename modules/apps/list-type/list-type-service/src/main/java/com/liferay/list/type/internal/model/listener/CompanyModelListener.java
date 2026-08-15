@@ -8,7 +8,6 @@ package com.liferay.list.type.internal.model.listener;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -30,16 +29,16 @@ public class CompanyModelListener extends BaseModelListener<Company> {
 			_listTypeDefinitionLocalService.deleteCompanyListTypeDefinitions(
 				company.getCompanyId());
 		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 
 		try {
 			_listTypeEntryLocalService.deleteCompanyListTypeEntries(
 				company.getCompanyId());
 		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 	}
 
