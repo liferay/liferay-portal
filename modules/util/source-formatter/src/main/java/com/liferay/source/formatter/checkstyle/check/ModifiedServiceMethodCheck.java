@@ -12,6 +12,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
 
+import java.util.List;
+
 /**
  * @author Alan Huang
  */
@@ -50,6 +52,12 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 		DetailAST firstChildDetailAST = typeDetailAST.getFirstChild();
 
 		if (firstChildDetailAST.getType() != TokenTypes.LITERAL_VOID) {
+			return;
+		}
+
+		List<DetailAST> parameterDefs = getParameterDefs(detailAST);
+
+		if (parameterDefs.size() != 2) {
 			return;
 		}
 
