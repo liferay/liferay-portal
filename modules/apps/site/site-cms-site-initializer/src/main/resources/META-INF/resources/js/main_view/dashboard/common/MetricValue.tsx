@@ -14,6 +14,42 @@ import {
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
+type Trend = {
+	classification: TrendClassification;
+	percentage: number;
+};
+
+const Trend = ({classification, percentage}: Trend) => {
+	const formattedPercentage = getPercentage(percentage);
+	const statsIcon = getStatsIcon(percentage);
+
+	return (
+		<div>
+			<Text color={getStatsColor(classification)} size={3}>
+				{statsIcon && (
+					<span className="mr-1">
+						<ClayIcon symbol={statsIcon} />
+					</span>
+				)}
+
+				<span>{formattedPercentage}%</span>
+			</Text>
+
+			<Text color="secondary" size={3}>
+				<span
+					className="text-lowercase"
+					dangerouslySetInnerHTML={{
+						__html: sub(
+							Liferay.Language.get('x-vs-previous-period'),
+							`<span class='hide'>${formattedPercentage}</span>`
+						),
+					}}
+				/>
+			</Text>
+		</div>
+	);
+};
+
 const MetricValue = ({
 	textWeight = 'semi-bold',
 	trend,
@@ -21,17 +57,10 @@ const MetricValue = ({
 	valueClassName,
 }: {
 	textWeight?: React.ComponentProps<typeof Text>['weight'];
-	trend: {
-		classification: TrendClassification;
-		percentage: number;
-	};
+	trend?: Trend;
 	value: React.ReactNode;
 	valueClassName?: string;
 }) => {
-	const percentage = getPercentage(trend.percentage);
-	const statsColor = getStatsColor(trend.classification);
-	const statsIcon = getStatsIcon(trend.percentage);
-
 	return (
 		<>
 			<div className={valueClassName}>
@@ -40,29 +69,7 @@ const MetricValue = ({
 				</Text>
 			</div>
 
-			<div>
-				<Text color={statsColor} size={3}>
-					{statsIcon && (
-						<span className="mr-1">
-							<ClayIcon symbol={statsIcon} />
-						</span>
-					)}
-
-					<span>{percentage}%</span>
-				</Text>
-
-				<Text color="secondary" size={3}>
-					<span
-						className="text-lowercase"
-						dangerouslySetInnerHTML={{
-							__html: sub(
-								Liferay.Language.get('x-vs-previous-period'),
-								`<span class='hide'>${percentage}</span>`
-							),
-						}}
-					/>
-				</Text>
-			</div>
+			{trend ? <Trend {...trend} /> : null}
 		</>
 	);
 };

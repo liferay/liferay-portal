@@ -46,6 +46,35 @@ describe('InteractiveCard', () => {
 		expect(screen.queryByText('31.9k')).not.toBeInTheDocument();
 	});
 
+	it('renders a zero value through the metric rather than as bare text', () => {
+		const {container} = renderComponent({
+			color: 'red',
+			icon: 'link',
+			title: 'Broken Links',
+			value: 0,
+		});
+
+		const metric = container.querySelector(
+			'.cms-dashboard__interactive-card__metric'
+		);
+
+		expect(metric).not.toBeEmptyDOMElement();
+		expect(metric?.firstElementChild).toHaveClass('text-lowercase');
+		expect(screen.getByText('0')).toBeInTheDocument();
+	});
+
+	it('renders no metric when there is no value', () => {
+		const {container} = renderComponent({
+			color: 'red',
+			icon: 'link',
+			title: 'Broken Links',
+		});
+
+		expect(
+			container.querySelector('.cms-dashboard__interactive-card__metric')
+		).toBeEmptyDOMElement();
+	});
+
 	it('marks the card as active', () => {
 		renderComponent({
 			active: true,
