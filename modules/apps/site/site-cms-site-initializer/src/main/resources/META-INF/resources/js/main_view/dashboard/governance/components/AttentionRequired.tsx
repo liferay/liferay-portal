@@ -4,7 +4,6 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import {TrendClassification} from '@liferay/analytics-reports-js-components-web';
 import {navigate} from 'frontend-js-web';
 import React, {useContext, useEffect, useState} from 'react';
 
@@ -15,15 +14,9 @@ import InteractiveCard, {
 import {GovernanceContext} from '../GovernanceContext';
 import GovernanceService, {AssetStatistics} from '../GovernanceService';
 
-const placeholderTrend = {
-	classification: TrendClassification.Positive,
-	percentage: 22.5,
-};
-
 type AttentionCard = {
 	color: MetricColor;
 	description: string;
-	hoverContent: React.ReactNode;
 	icon: string;
 	statKey: keyof AssetStatistics;
 	title: string;
@@ -35,7 +28,6 @@ const ATTENTION_CARDS: AttentionCard[] = [
 		description: Liferay.Language.get(
 			'these-are-references-to-broken-links-across-the-selected-spaces'
 		),
-		hoverContent: reviewText(Liferay.Language.get('review-broken-links')),
 		icon: 'link',
 		statKey: 'brokenLinksCount',
 		title: Liferay.Language.get('broken-links'),
@@ -45,7 +37,6 @@ const ATTENTION_CARDS: AttentionCard[] = [
 		description: Liferay.Language.get(
 			'these-are-expired-assets-across-the-selected-spaces'
 		),
-		hoverContent: reviewText(Liferay.Language.get('review-expired-assets')),
 		icon: 'warning-full',
 		statKey: 'expiredCount',
 		title: Liferay.Language.get('expired-assets'),
@@ -55,9 +46,6 @@ const ATTENTION_CARDS: AttentionCard[] = [
 		description: Liferay.Language.get(
 			'these-are-assets-with-overdue-reviews-across-the-selected-spaces'
 		),
-		hoverContent: reviewText(
-			Liferay.Language.get('review-overdue-reviews')
-		),
 		icon: 'date-time',
 		statKey: 'reviewDateOverdueCount',
 		title: Liferay.Language.get('overdue-reviews'),
@@ -66,9 +54,6 @@ const ATTENTION_CARDS: AttentionCard[] = [
 		color: 'purple',
 		description: Liferay.Language.get(
 			'these-are-assets-with-pending-workflows-across-the-selected-spaces'
-		),
-		hoverContent: reviewText(
-			Liferay.Language.get('review-pending-workflows')
 		),
 		icon: 'flag-empty',
 		statKey: 'pendingCount',
@@ -116,14 +101,7 @@ export function AttentionRequired() {
 
 			<ClayLayout.Row aria-label={title} className="mt-3" role="group">
 				{ATTENTION_CARDS.map(
-					({
-						color,
-						description,
-						hoverContent,
-						icon,
-						statKey,
-						title,
-					}) => {
+					({color, description, icon, statKey, title}) => {
 						const sectionPath = SECTION_PATHS[statKey];
 
 						return (
@@ -136,7 +114,6 @@ export function AttentionRequired() {
 								<InteractiveCard
 									color={color}
 									description={description}
-									hoverContent={hoverContent}
 									icon={icon}
 									loading={loading}
 									onClick={
@@ -145,7 +122,6 @@ export function AttentionRequired() {
 											: undefined
 									}
 									title={title}
-									trend={placeholderTrend}
 									value={statistics?.[statKey] || 0}
 								/>
 							</ClayLayout.Col>
@@ -155,8 +131,4 @@ export function AttentionRequired() {
 			</ClayLayout.Row>
 		</>
 	);
-}
-
-function reviewText(key: string) {
-	return <span className="text-2 text-primary text-underline">{key}</span>;
 }
