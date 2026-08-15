@@ -19,9 +19,12 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.CompanyService;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -60,13 +63,24 @@ public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
 		try {
 			Company company = _copyInstance(actionRequest);
 
+			if (SessionMessages.contains(
+					actionRequest,
+					_portal.getPortletId(actionRequest) +
+						SessionMessages.
+							KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE)) {
+
+				SessionMessages.clear(actionRequest);
+			}
+
+			SessionMessages.add(
+				actionRequest, "requestProcessed",
+				_language.format(
+					actionRequest.getLocale(), "the-instance-was-copied-to-x",
+					company.getWebId()));
+
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse,
-				JSONUtil.put(
-					"successMessage",
-					_language.format(
-						actionRequest.getLocale(),
-						"the-instance-was-copied-to-x", company.getWebId())));
+				JSONUtil.put("companyId", company.getCompanyId()));
 		}
 		catch (Exception exception) {
 			_log.error("Unable to copy portal instance", exception);
@@ -83,7 +97,12 @@ public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
 				}
 			}
 			else if (exception instanceof UnsupportedOperationException) {
-				errorMessage = "database-partitioning-must-be-enabled";
+				if (PropsValues.DATABASE_PARTITION_ENABLED) {
+					errorMessage = "copying-an-instance-is-already-in-progress";
+				}
+				else {
+					errorMessage = "database-partitioning-must-be-enabled";
+				}
 			}
 			else {
 				Throwable causeThrowable = exception.getCause();
@@ -169,5 +188,8 @@ public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private Portal _portal;
 
 }

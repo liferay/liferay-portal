@@ -69,7 +69,7 @@ export default function ({namespace}) {
 				return response.json();
 			})
 			.then((responseJSON) => {
-				if (responseJSON.successMessage) {
+				if (responseJSON.companyId) {
 					const opener = getOpener();
 
 					opener.Liferay.fire('closeModal', {
