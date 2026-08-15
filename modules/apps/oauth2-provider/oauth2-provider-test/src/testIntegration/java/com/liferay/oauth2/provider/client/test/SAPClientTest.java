@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.internal.test.TestSAPApplication;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -43,28 +44,25 @@ public class SAPClientTest extends BaseClientTestCase {
 		WebTarget webTarget = getWebTarget("SAP/AUTHORIZED_OAUTH2_SAP");
 
 		Invocation.Builder builder = authorize(
-			webTarget.request(), getToken("oauthTestApplication"));
+			webTarget.request(), getToken(_CLIENT_ID));
 
 		Assert.assertTrue(builder.get(Boolean.class));
 
 		webTarget = getWebTarget("SAP/CUSTOM_SAP");
 
-		builder = authorize(
-			webTarget.request(), getToken("oauthTestApplication"));
+		builder = authorize(webTarget.request(), getToken(_CLIENT_ID));
 
 		Assert.assertFalse(builder.get(Boolean.class));
 
 		webTarget = getWebTarget("CUSTOM_SAP/AUTHORIZED_OAUTH2_SAP");
 
-		builder = authorize(
-			webTarget.request(), getToken("oauthTestApplication"));
+		builder = authorize(webTarget.request(), getToken(_CLIENT_ID));
 
 		Assert.assertFalse(builder.get(Boolean.class));
 
 		webTarget = getWebTarget("CUSTOM_SAP/CUSTOM_SAP");
 
-		builder = authorize(
-			webTarget.request(), getToken("oauthTestApplication"));
+		builder = authorize(webTarget.request(), getToken(_CLIENT_ID));
 
 		Assert.assertTrue(builder.get(Boolean.class));
 	}
@@ -73,6 +71,8 @@ public class SAPClientTest extends BaseClientTestCase {
 	protected BundleActivator getBundleActivator() {
 		return new SAPTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
 	private class SAPTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -98,8 +98,7 @@ public class SAPClientTest extends BaseClientTestCase {
 				).build());
 
 			createOAuth2Application(
-				companyId, user, "oauthTestApplication",
-				Collections.singletonList("GET"));
+				companyId, user, _CLIENT_ID, Collections.singletonList("GET"));
 
 			createServiceAccessProfile(
 				user.getUserId(), "#is*", false, true, "CUSTOM_SAP");

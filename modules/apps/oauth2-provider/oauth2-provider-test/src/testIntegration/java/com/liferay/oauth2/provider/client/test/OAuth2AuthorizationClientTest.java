@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -54,7 +55,7 @@ public class OAuth2AuthorizationClientTest extends BaseClientTestCase {
 
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
-		formData.add("client_id", "oauthTestApplication");
+		formData.add("client_id", _CLIENT_ID);
 		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "client_credentials");
 
@@ -85,6 +86,8 @@ public class OAuth2AuthorizationClientTest extends BaseClientTestCase {
 		return new ExpiredAuthorizationTestPreparator();
 	}
 
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
 	private class ExpiredAuthorizationTestPreparator
 		extends BaseTestPreparatorBundleActivator {
 
@@ -102,7 +105,7 @@ public class OAuth2AuthorizationClientTest extends BaseClientTestCase {
 					"oauth2.scope.checker.type", "annotations"
 				).build());
 
-			createOAuth2Application(companyId, user, "oauthTestApplication");
+			createOAuth2Application(companyId, user, _CLIENT_ID);
 		}
 
 	}

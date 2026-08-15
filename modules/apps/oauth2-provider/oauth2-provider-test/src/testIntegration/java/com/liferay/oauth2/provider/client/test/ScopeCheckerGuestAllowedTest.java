@@ -13,6 +13,7 @@ import com.liferay.oauth2.provider.internal.test.TestApplication;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -122,11 +123,13 @@ public class ScopeCheckerGuestAllowedTest extends BaseClientTestCase {
 		}
 
 		invocationBuilder = authorize(
-			webTarget.request(), getToken("oauthTestApplication"));
+			webTarget.request(), getToken(_CLIENT_ID));
 
 		Assert.assertEquals(
 			expectedValidTokenResponse, invocationBuilder.get(String.class));
 	}
+
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
 	private static final String[] _INVALID_TOKENS = {
 		OAuth2AuthorizationConstants.ACCESS_TOKEN_CONTENT_EXPIRED_TOKEN,
@@ -203,7 +206,7 @@ public class ScopeCheckerGuestAllowedTest extends BaseClientTestCase {
 			User user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, user, "oauthTestApplication",
+				companyId, user, _CLIENT_ID,
 				Collections.singletonList(GrantType.CLIENT_CREDENTIALS),
 				Arrays.asList("everything.read", "GET"));
 

@@ -11,6 +11,7 @@ import com.liferay.oauth2.provider.internal.test.TestApplication;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -51,7 +52,7 @@ public class NarrowDownScopeClientTest extends BaseClientTestCase {
 		Assert.assertEquals(
 			"GET",
 			getToken(
-				"oauthTestApplication", null,
+				_CLIENT_ID, null,
 				getAuthorizationCodeBiFunction(
 					_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 					null, "GET"),
@@ -60,12 +61,11 @@ public class NarrowDownScopeClientTest extends BaseClientTestCase {
 		Assert.assertEquals(
 			"GET",
 			getToken(
-				"oauthTestApplication", null,
-				getClientCredentialsResponseBiFunction("GET"),
+				_CLIENT_ID, null, getClientCredentialsResponseBiFunction("GET"),
 				this::parseScopeString));
 
 		Response response = getToken(
-			"oauthTestApplication", null,
+			_CLIENT_ID, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 				"GET"),
@@ -86,7 +86,7 @@ public class NarrowDownScopeClientTest extends BaseClientTestCase {
 		Assert.assertEquals(403, postResponse.getStatus());
 
 		String scopeString = getToken(
-			"oauthTestApplication", null,
+			_CLIENT_ID, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
 			this::parseScopeString);
@@ -98,7 +98,7 @@ public class NarrowDownScopeClientTest extends BaseClientTestCase {
 		Assert.assertEquals(
 			"invalid_grant",
 			getToken(
-				"oauthTestApplication", null,
+				_CLIENT_ID, null,
 				getResourceOwnerPasswordBiFunction(
 					_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 					"GET POST PUT"),
@@ -109,6 +109,8 @@ public class NarrowDownScopeClientTest extends BaseClientTestCase {
 	protected BundleActivator getBundleActivator() {
 		return new NarrowDownScopeTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
 	private User _user;
 
@@ -128,7 +130,7 @@ public class NarrowDownScopeClientTest extends BaseClientTestCase {
 				).build());
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplication",
+				companyId, _user, _CLIENT_ID,
 				Arrays.asList(
 					GrantType.AUTHORIZATION_CODE, GrantType.CLIENT_CREDENTIALS,
 					GrantType.RESOURCE_OWNER_PASSWORD),

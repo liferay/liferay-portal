@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -44,7 +45,7 @@ public class RevokedTokenTest extends BaseClientTestCase {
 		WebTarget webTarget = getJsonWebTarget("user", "get-current-user");
 
 		String tokenString = getToken(
-			"oauthTestApplication", null,
+			_CLIENT_ID, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
 			this::parseTokenString);
@@ -74,6 +75,8 @@ public class RevokedTokenTest extends BaseClientTestCase {
 		return new RevokedTokenTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
 	private User _user;
 
 	private class RevokedTokenTestPreparatorBundleActivator
@@ -86,7 +89,7 @@ public class RevokedTokenTest extends BaseClientTestCase {
 			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplication",
+				companyId, _user, _CLIENT_ID,
 				Collections.singletonList("everything.read"));
 		}
 

@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -59,7 +60,7 @@ public class OAuth2WebServerServletTest extends BaseClientTestCase {
 
 	@Test
 	public void test() throws Exception {
-		String tokenString = getToken("oauthTestApplication");
+		String tokenString = getToken(_CLIENT_ID);
 
 		WebTarget webTarget = getWebTarget("/preview-url");
 
@@ -108,6 +109,8 @@ public class OAuth2WebServerServletTest extends BaseClientTestCase {
 					PortalUtil.getPortalServerPort(false), path)));
 	}
 
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
 	private static final String _TEST_FILE_CONTENT = "Test File Content";
 
 	@Inject
@@ -140,7 +143,7 @@ public class OAuth2WebServerServletTest extends BaseClientTestCase {
 				).build());
 
 			createOAuth2Application(
-				TestPropsValues.getCompanyId(), user, "oauthTestApplication",
+				TestPropsValues.getCompanyId(), user, _CLIENT_ID,
 				Collections.singletonList(GrantType.CLIENT_CREDENTIALS),
 				Arrays.asList("GET", "everything.read.documents.download"));
 		}

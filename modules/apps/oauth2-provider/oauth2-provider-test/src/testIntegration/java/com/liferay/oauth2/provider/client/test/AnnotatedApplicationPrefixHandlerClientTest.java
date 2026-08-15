@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -45,7 +46,7 @@ public class AnnotatedApplicationPrefixHandlerClientTest
 		WebTarget webTarget = getWebTarget("/annotated");
 
 		Invocation.Builder builder = authorize(
-			webTarget.request(), getToken("oauthTestApplication"));
+			webTarget.request(), getToken(_CLIENT_ID));
 
 		Assert.assertEquals("everything.read", builder.get(String.class));
 	}
@@ -54,6 +55,8 @@ public class AnnotatedApplicationPrefixHandlerClientTest
 	protected BundleActivator getBundleActivator() {
 		return new AnnotatedApplicationPrefixHandlerTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
 	private class AnnotatedApplicationPrefixHandlerTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -77,7 +80,7 @@ public class AnnotatedApplicationPrefixHandlerClientTest
 				new TestAnnotatedApplication(), "annotated", properties);
 
 			createOAuth2Application(
-				companyId, user, "oauthTestApplication",
+				companyId, user, _CLIENT_ID,
 				Collections.singletonList("test/everything"));
 		}
 

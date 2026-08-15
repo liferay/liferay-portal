@@ -11,6 +11,7 @@ import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -68,6 +69,8 @@ public class ExpiredAuthorizationsAfterlifeTest extends BaseClientTestCase {
 		return new ExpiredAuthorizationsAfterlifeTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
 	@Inject
 	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
 
@@ -86,8 +89,7 @@ public class ExpiredAuthorizationsAfterlifeTest extends BaseClientTestCase {
 			User user = UserTestUtil.getAdminUser(companyId);
 
 			OAuth2Application oAuth2Application = createOAuth2Application(
-				companyId, user, "oauthTestApplication",
-				Arrays.asList("everything.read"));
+				companyId, user, _CLIENT_ID, Arrays.asList("everything.read"));
 
 			addOAuth2Authorization(
 				companyId, user, oAuth2Application, "accessToken1", new Date(),

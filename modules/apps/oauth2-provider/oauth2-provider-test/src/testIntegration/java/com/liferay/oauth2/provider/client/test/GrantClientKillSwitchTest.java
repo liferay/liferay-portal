@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -39,14 +40,16 @@ public class GrantClientKillSwitchTest extends BaseClientTestCase {
 		Assert.assertEquals(
 			"unauthorized_client",
 			getToken(
-				"oauthTestApplication", null,
-				this::getClientCredentialsResponse, this::parseError));
+				_CLIENT_ID, null, this::getClientCredentialsResponse,
+				this::parseError));
 	}
 
 	@Override
 	protected BundleActivator getBundleActivator() {
 		return new GrantKillClientCredentialsSwitchTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
 	private class GrantKillClientCredentialsSwitchTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -67,7 +70,7 @@ public class GrantClientKillSwitchTest extends BaseClientTestCase {
 					"oauth2.scope.checker.type", "annotations"
 				).build());
 
-			createOAuth2Application(companyId, user, "oauthTestApplication");
+			createOAuth2Application(companyId, user, _CLIENT_ID);
 		}
 
 	}

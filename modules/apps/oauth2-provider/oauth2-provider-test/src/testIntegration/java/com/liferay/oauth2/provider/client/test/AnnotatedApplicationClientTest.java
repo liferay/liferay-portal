@@ -11,6 +11,7 @@ import com.liferay.oauth2.provider.internal.test.TestInterfaceAnnotatedApplicati
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -74,7 +75,7 @@ public class AnnotatedApplicationClientTest extends BaseClientTestCase {
 		invocationBuilder = authorize(
 			invocationBuilder,
 			getToken(
-				"oauthTestApplication", null,
+				_CLIENT_ID, null,
 				getClientCredentialsResponseBiFunction(StringPool.BLANK),
 				this::parseTokenString));
 
@@ -95,7 +96,7 @@ public class AnnotatedApplicationClientTest extends BaseClientTestCase {
 		invocationBuilder = authorize(
 			webTarget.request(),
 			getToken(
-				"oauthTestApplication", null,
+				_CLIENT_ID, null,
 				getClientCredentialsResponseBiFunction("everything.write"),
 				this::parseTokenString));
 
@@ -106,7 +107,7 @@ public class AnnotatedApplicationClientTest extends BaseClientTestCase {
 		invocationBuilder = authorize(
 			webTarget.request(),
 			getToken(
-				"oauthTestApplication", null,
+				_CLIENT_ID, null,
 				getClientCredentialsResponseBiFunction("everything.read"),
 				this::parseTokenString));
 
@@ -115,6 +116,8 @@ public class AnnotatedApplicationClientTest extends BaseClientTestCase {
 		Assert.assertEquals(
 			"everything.read", invocationBuilder.get(String.class));
 	}
+
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
 	private class AnnotatedApplicationTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -140,7 +143,7 @@ public class AnnotatedApplicationClientTest extends BaseClientTestCase {
 				new TestAnnotatedApplication(), "annotated-impl", properties);
 
 			createOAuth2Application(
-				companyId, user, "oauthTestApplication",
+				companyId, user, _CLIENT_ID,
 				Arrays.asList(
 					"everything", "everything.read", "everything.write"));
 		}

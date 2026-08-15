@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -83,7 +84,7 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 
 			formData = new MultivaluedHashMap<>();
 
-			formData.add("client_id", "oauthTestApplication");
+			formData.add("client_id", _CLIENT_ID);
 			formData.add("client_secret", "");
 			formData.add("grant_type", "client_credentials");
 
@@ -93,7 +94,7 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 
 			formData = new MultivaluedHashMap<>();
 
-			formData.add("client_id", "oauthTestApplication");
+			formData.add("client_id", _CLIENT_ID);
 			formData.add("client_secret", "wrong");
 			formData.add("grant_type", "client_credentials");
 
@@ -116,7 +117,7 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 
 		formData = new MultivaluedHashMap<>();
 
-		formData.add("client_id", "oauthTestApplication");
+		formData.add("client_id", _CLIENT_ID);
 		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "client_credentials");
 
@@ -158,6 +159,8 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 		return new TokenExpeditionTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
 	private class TokenExpeditionTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
 
@@ -175,7 +178,7 @@ public class TokenExpeditionTest extends BaseClientTestCase {
 					"oauth2.scope.checker.type", "annotations"
 				).build());
 
-			createOAuth2Application(companyId, user, "oauthTestApplication");
+			createOAuth2Application(companyId, user, _CLIENT_ID);
 		}
 
 	}

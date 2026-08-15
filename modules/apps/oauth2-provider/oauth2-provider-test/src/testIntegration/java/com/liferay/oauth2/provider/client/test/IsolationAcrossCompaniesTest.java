@@ -11,6 +11,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.log.LogCapture;
@@ -45,7 +46,7 @@ public class IsolationAcrossCompaniesTest extends BaseClientTestCase {
 	public void testAnnotated() throws Exception {
 		WebTarget webTarget = getWebTarget("/annotated");
 
-		String tokenString = getToken("oauthTestApplication", "host1.xyz");
+		String tokenString = getToken(_CLIENT_ID, "host1.xyz");
 
 		Invocation.Builder builder = authorize(
 			webTarget.request(), tokenString);
@@ -73,7 +74,7 @@ public class IsolationAcrossCompaniesTest extends BaseClientTestCase {
 	public void testNoScopes() throws Exception {
 		WebTarget webTarget = getWebTarget("/no-scopes");
 
-		String tokenString = getToken("oauthTestApplication", "host1.xyz");
+		String tokenString = getToken(_CLIENT_ID, "host1.xyz");
 
 		Invocation.Builder builder = authorize(
 			webTarget.request(), tokenString);
@@ -102,6 +103,8 @@ public class IsolationAcrossCompaniesTest extends BaseClientTestCase {
 		return new IsolationAccrossCompaniesTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
 	private class IsolationAccrossCompaniesTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
 
@@ -128,7 +131,7 @@ public class IsolationAcrossCompaniesTest extends BaseClientTestCase {
 				createOAuth2Application(
 					company1.getCompanyId(),
 					UserTestUtil.getAdminUser(company1.getCompanyId()),
-					"oauthTestApplication");
+					_CLIENT_ID);
 			}
 
 			Company company2 = createCompany("host2");
@@ -140,7 +143,7 @@ public class IsolationAcrossCompaniesTest extends BaseClientTestCase {
 				createOAuth2Application(
 					company2.getCompanyId(),
 					UserTestUtil.getAdminUser(company2.getCompanyId()),
-					"oauthTestApplication");
+					_CLIENT_ID);
 			}
 		}
 

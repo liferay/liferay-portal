@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
 import com.liferay.oauth2.provider.internal.test.TestApplication;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -46,7 +47,7 @@ public class AnnotationsAndHttpPrefixApplicationClientTest
 
 	@Test
 	public void test() throws Exception {
-		String tokenString = getToken("oauthTestApplication");
+		String tokenString = getToken(_CLIENT_ID);
 
 		WebTarget webTarget = getWebTarget("/methods");
 
@@ -90,6 +91,8 @@ public class AnnotationsAndHttpPrefixApplicationClientTest
 	protected BundleActivator getBundleActivator() {
 		return new AnnotationsAndHttpPrefixTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
 	private class AnnotationsAndHttpPrefixTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -154,7 +157,7 @@ public class AnnotationsAndHttpPrefixApplicationClientTest
 				annotatedApplicationProperties);
 
 			createOAuth2Application(
-				companyId, user, "oauthTestApplication",
+				companyId, user, _CLIENT_ID,
 				Arrays.asList("annotations/everything", "methods/everything"));
 
 			createOAuth2Application(

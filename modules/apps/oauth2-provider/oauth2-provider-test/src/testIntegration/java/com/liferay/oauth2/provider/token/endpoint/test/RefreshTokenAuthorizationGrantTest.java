@@ -13,6 +13,7 @@ import com.liferay.oauth2.provider.internal.test.RefreshTokenAuthorizationGrant;
 import com.liferay.oauth2.provider.internal.test.TestAnnotatedApplication;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -46,7 +47,7 @@ public class RefreshTokenAuthorizationGrantTest
 	@Test
 	public void test() throws Exception {
 		JSONObject jsonObject = getToken(
-			"oauthTestApplication", null,
+			_CLIENT_ID, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
 			this::parseJSONObject);
@@ -67,7 +68,7 @@ public class RefreshTokenAuthorizationGrantTest
 
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
-		formData.add("client_id", "oauthTestApplication");
+		formData.add("client_id", _CLIENT_ID);
 		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "refresh_token");
 		formData.add("refresh_token", jsonObject.getString("refresh_token"));
@@ -108,6 +109,8 @@ public class RefreshTokenAuthorizationGrantTest
 		return new TokenExpeditionTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
 	private User _user;
 
 	private class TokenExpeditionTestPreparatorBundleActivator
@@ -128,7 +131,7 @@ public class RefreshTokenAuthorizationGrantTest
 				).build());
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplication",
+				companyId, _user, _CLIENT_ID,
 				Arrays.asList(
 					GrantType.RESOURCE_OWNER_PASSWORD, GrantType.REFRESH_TOKEN),
 				Collections.singletonList("everything"));
