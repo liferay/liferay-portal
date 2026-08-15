@@ -29,35 +29,8 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 		String className = JavaSourceUtil.getClassName(getAbsolutePath());
 
 		if (className.equals("ServiceTrackerCustomizerFactory") ||
-			!AnnotationUtil.containsAnnotation(detailAST, "Override")) {
+			!_isOverrideModifiedService(detailAST)) {
 
-			return;
-		}
-
-		String methodName = getName(detailAST);
-
-		if (!methodName.equals("modifiedService")) {
-			return;
-		}
-
-		DetailAST modifiersDetailAST = detailAST.findFirstToken(
-			TokenTypes.MODIFIERS);
-
-		if (!modifiersDetailAST.branchContains(TokenTypes.LITERAL_PUBLIC)) {
-			return;
-		}
-
-		DetailAST typeDetailAST = detailAST.findFirstToken(TokenTypes.TYPE);
-
-		DetailAST firstChildDetailAST = typeDetailAST.getFirstChild();
-
-		if (firstChildDetailAST.getType() != TokenTypes.LITERAL_VOID) {
-			return;
-		}
-
-		List<DetailAST> parameterDefs = getParameterDefs(detailAST);
-
-		if (parameterDefs.size() != 2) {
 			return;
 		}
 
@@ -67,7 +40,7 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 			return;
 		}
 
-		firstChildDetailAST = slistDetailAST.getFirstChild();
+		DetailAST firstChildDetailAST = slistDetailAST.getFirstChild();
 
 		if (!_isMethodCall(firstChildDetailAST, "removedService")) {
 			return;
@@ -108,6 +81,41 @@ public class ModifiedServiceMethodCheck extends BaseCheck {
 
 		return StringUtil.equals(
 			getMethodName(detailAST.getFirstChild()), methodName);
+	}
+
+	private boolean _isOverrideModifiedService(DetailAST detailAST) {
+		if (!AnnotationUtil.containsAnnotation(detailAST, "Override")) {
+			return false;
+		}
+
+		String methodName = getName(detailAST);
+
+		if (!methodName.equals("modifiedService")) {
+			return false;
+		}
+
+		DetailAST modifiersDetailAST = detailAST.findFirstToken(
+			TokenTypes.MODIFIERS);
+
+		if (!modifiersDetailAST.branchContains(TokenTypes.LITERAL_PUBLIC)) {
+			return false;
+		}
+
+		DetailAST typeDetailAST = detailAST.findFirstToken(TokenTypes.TYPE);
+
+		DetailAST firstChildDetailAST = typeDetailAST.getFirstChild();
+
+		if (firstChildDetailAST.getType() != TokenTypes.LITERAL_VOID) {
+			return false;
+		}
+
+		List<DetailAST> parameterDefs = getParameterDefs(detailAST);
+
+		if (parameterDefs.size() != 2) {
+			return false;
+		}
+
+		return true;
 	}
 
 	private static final String _MSG_INCORRECT_METHOD_DECLARATION =
