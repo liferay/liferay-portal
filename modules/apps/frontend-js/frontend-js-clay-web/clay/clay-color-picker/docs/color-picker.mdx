@@ -54,3 +54,29 @@ Color Picker is delivered in 4 different ways: default colors, custom colors, na
 -   **Small**: use the [`small`](#api-small) API to size the color picker input to match other small inputs.
 
 We recommend that you review the [use cases in the Storybook](https://storybook.clayui.com/?path=/story/design-system-components-colorpicker--default).
+
+## Accessibility
+
+The saturation and brightness map in the custom color editor is operable from the keyboard. Focus its handle and:
+
+-   **Arrow keys** move one step: left and right along saturation, up and down along brightness.
+-   **Shift + Arrow keys** move ten steps at a time.
+-   **Page Up** and **Page Down** move brightness ten steps at a time.
+-   **Home** and **End** take saturation to its minimum and maximum.
+
+The handle is a `slider` that reports the current saturation as its value, and both values through `aria-valuetext`. Its labels can be translated through the `ariaLabels` attribute, where the component replaces `{0}` with the saturation and `{1}` with the brightness.
+
+```jsx
+<ClayColorPicker
+	ariaLabels={{
+		saturationAndBrightness: 'Saturation and brightness',
+		saturationAndBrightnessIs: 'Saturation {0}%, brightness {1}%',
+		selectColor: 'Select a color',
+		selectionIs: 'Color selection is {0}',
+	}}
+	colors={colors}
+	onColorsChange={setColors}
+	onChange={setColor}
+	value={color}
+/>
+```

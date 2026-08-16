@@ -357,6 +357,79 @@ describe('Interactions', () => {
 			expect(handleColorsChange.mock.calls[0][0][0]).toBe('5BB0A5');
 		});
 
+		it('describes the gradient map handle as a slider', () => {
+			const handle = document.querySelector(
+				'.clay-color-map-pointer'
+			) as HTMLElement;
+
+			expect(handle.getAttribute('role')).toBe('slider');
+			expect(handle.getAttribute('aria-label')).toBe(
+				'Saturation and brightness'
+			);
+			expect(handle.getAttribute('aria-valuemin')).toBe('0');
+			expect(handle.getAttribute('aria-valuemax')).toBe('100');
+			expect(handle.getAttribute('aria-valuenow')).toBe('0');
+			expect(handle.getAttribute('aria-valuetext')).toBe(
+				'Saturation 0%, brightness 100%'
+			);
+		});
+
+		it('changes the color from the gradient map with the arrow keys', () => {
+			const handle = document.querySelector(
+				'.clay-color-map-pointer'
+			) as HTMLElement;
+
+			fireEvent.keyDown(handle, {key: 'ArrowRight'});
+
+			expect(handleColorsChange).toBeCalledTimes(1);
+			expect(handleColorsChange.mock.calls[0][0][0]).toBe('FFFCFC');
+		});
+
+		it('moves ten steps at a time with shift', () => {
+			const handle = document.querySelector(
+				'.clay-color-map-pointer'
+			) as HTMLElement;
+
+			fireEvent.keyDown(handle, {key: 'ArrowRight', shiftKey: true});
+
+			expect(handleColorsChange).toBeCalledTimes(1);
+			expect(handleColorsChange.mock.calls[0][0][0]).toBe('FFE6E6');
+		});
+
+		it('takes a saturation of one percent as one percent', () => {
+			const handle = document.querySelector(
+				'.clay-color-map-pointer'
+			) as HTMLElement;
+
+			// A fraction of 1 would be read as the whole of it, which is
+			// what the Editor's conversion prevents.
+
+			fireEvent.keyDown(handle, {key: 'ArrowRight'});
+
+			expect(handleColorsChange.mock.calls[0][0][0]).not.toBe('FF0000');
+		});
+
+		it('reaches the extremes with Home and End', () => {
+			const handle = document.querySelector(
+				'.clay-color-map-pointer'
+			) as HTMLElement;
+
+			fireEvent.keyDown(handle, {key: 'End'});
+
+			expect(handleColorsChange).toBeCalledTimes(1);
+			expect(handleColorsChange.mock.calls[0][0][0]).toBe('FF0000');
+		});
+
+		it('leaves keys it does not answer to alone', () => {
+			const handle = document.querySelector(
+				'.clay-color-map-pointer'
+			) as HTMLElement;
+
+			fireEvent.keyDown(handle, {key: 'a'});
+
+			expect(handleColorsChange).not.toBeCalled();
+		});
+
 		it('changes the color by changing the hue', () => {
 			const [hueSlider] = getAllByRole(
 				document.body,

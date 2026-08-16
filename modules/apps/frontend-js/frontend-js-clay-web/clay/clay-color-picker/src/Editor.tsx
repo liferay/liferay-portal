@@ -122,6 +122,15 @@ function RGBInput({name, onChange, value}: RGBInputProps) {
 }
 
 type Props = {
+
+	/**
+	 * Labels for the aria attributes
+	 */
+	ariaLabels: {
+		saturationAndBrightness?: string;
+		saturationAndBrightnessIs?: string;
+	};
+
 	color: Instance;
 	colors: Array<string>;
 	hex: string;
@@ -135,6 +144,7 @@ type Props = {
 };
 
 export function Editor({
+	ariaLabels,
 	color,
 	colors,
 	hex,
@@ -174,14 +184,20 @@ export function Editor({
 			/>
 			<div className="clay-color-map-group">
 				<GradientSelector
+					ariaLabels={ariaLabels}
 					color={color}
 					hue={hue}
 					onChange={(saturation, visibility) => {
+
+						// As fractions rather than as percentages: tinycolor
+						// reads a value of 1 or less as a fraction, so a
+						// saturation of 1% would otherwise arrive as 100%.
+
 						onColorChange(
 							tinycolor({
 								h: hue,
-								s: saturation,
-								v: visibility,
+								s: saturation / 100,
+								v: visibility / 100,
 							}).setAlpha(color.getAlpha())
 						);
 					}}
