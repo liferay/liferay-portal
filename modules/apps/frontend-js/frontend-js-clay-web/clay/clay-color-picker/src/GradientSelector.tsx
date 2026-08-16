@@ -135,12 +135,14 @@ function ClayColorPickerGradientSelector({
 				backgroundImage: `linear-gradient(to top, #000, rgba(0, 0, 0, 0)), linear-gradient(to right, #FFF, rgba(255, 255, 255, 0))`,
 			}}
 		>
+
 			{/*
-			  * The handle is the control: it carries the name, the values
-			  * and the keys, so the map can be operated without dragging
-			  * it (WCAG 2.1.1, 2.5.7 and 4.1.2). The pointer path above is
-			  * untouched.
-			  */}
+			 * The handle is the control: it carries the name, the values
+			 * and the keys, so the map can be operated without dragging
+			 * it (WCAG 2.1.1, 2.5.7 and 4.1.2). The pointer path above is
+			 * untouched.
+			 */}
+
 			<button
 				aria-label={ariaLabels?.saturationAndBrightness}
 				aria-valuemax={MAX}
