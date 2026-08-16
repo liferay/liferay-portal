@@ -3118,6 +3118,17 @@ test.describe('Manage object relationships with system objects', () => {
 				await relationshipTab.click();
 			};
 
+			const getRelatedUserRow = (userAccount: TUserAccount) =>
+				page
+					.getByRole('row')
+					.filter({
+						hasText: new RegExp(
+							`${userAccount.givenName}|${userAccount.id}`,
+							'i'
+						),
+					})
+					.first();
+
 			const selectExistingRelationshipEntry = async (
 				userAccount: TUserAccount
 			) => {
@@ -3130,18 +3141,19 @@ test.describe('Manage object relationships with system objects', () => {
 
 				await expect(relationshipEntry).toBeVisible();
 				await relationshipEntry.click();
-			};
 
-			const getRelatedUserRow = (userAccount: TUserAccount) =>
-				page
-					.getByRole('row')
-					.filter({
-						hasText: new RegExp(
-							`${userAccount.givenName}|${userAccount.id}`,
-							'i'
-						),
-					})
-					.first();
+				// Selecting relates the user and closes the picker, and the
+				// relating is still in flight when the click resolves. The next
+				// step opens the tab with a goto, which tears down the frame the
+				// post belongs to and cancels it. Wait for the picker to go and
+				// the row to appear.
+
+				await expect(
+					page.locator('iframe[title="Select"]')
+				).toBeHidden();
+
+				await expect(getRelatedUserRow(userAccount)).toBeVisible();
+			};
 
 			for (const entryLabel of ['Entry A', 'Entry B']) {
 				await openEntryRelationshipTab(entryLabel);
