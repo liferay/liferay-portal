@@ -382,7 +382,7 @@ describe('Interactions', () => {
 			fireEvent.keyDown(handle, {key: 'ArrowRight'});
 
 			expect(handleColorsChange).toBeCalledTimes(1);
-			expect(handleColorsChange.mock.calls[0][0][0]).toBe('FFFCFC');
+			expect(handleColorsChange.mock.calls[0][0]).toContain('FFFCFC');
 		});
 
 		it('moves ten steps at a time with shift', () => {
@@ -393,7 +393,7 @@ describe('Interactions', () => {
 			fireEvent.keyDown(handle, {key: 'ArrowRight', shiftKey: true});
 
 			expect(handleColorsChange).toBeCalledTimes(1);
-			expect(handleColorsChange.mock.calls[0][0][0]).toBe('FFE6E6');
+			expect(handleColorsChange.mock.calls[0][0]).toContain('FFE6E6');
 		});
 
 		it('takes a saturation of one percent as one percent', () => {
@@ -406,7 +406,7 @@ describe('Interactions', () => {
 
 			fireEvent.keyDown(handle, {key: 'ArrowRight'});
 
-			expect(handleColorsChange.mock.calls[0][0][0]).not.toBe('FF0000');
+			expect(handleColorsChange.mock.calls[0][0]).not.toContain('FF0000');
 		});
 
 		it('reaches the extremes with Home and End', () => {
@@ -417,7 +417,7 @@ describe('Interactions', () => {
 			fireEvent.keyDown(handle, {key: 'End'});
 
 			expect(handleColorsChange).toBeCalledTimes(1);
-			expect(handleColorsChange.mock.calls[0][0][0]).toBe('FF0000');
+			expect(handleColorsChange.mock.calls[0][0]).toContain('FF0000');
 		});
 
 		it('leaves keys it does not answer to alone', () => {

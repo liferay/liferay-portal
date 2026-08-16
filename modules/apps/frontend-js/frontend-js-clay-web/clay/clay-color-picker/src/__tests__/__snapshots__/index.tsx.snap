@@ -275,7 +275,13 @@ exports[`Interactions color editor interactions ability to change color of click
             style="background-color: rgb(255, 0, 0);"
           >
             <button
+              aria-label="Saturation and brightness"
+              aria-valuemax="100"
+              aria-valuemin="0"
+              aria-valuenow="0"
+              aria-valuetext="Saturation 0%, brightness 100%"
               class="clay-color-map-pointer clay-color-pointer"
+              role="slider"
               style="background: rgb(255, 255, 255); left: -7px; top: -7px;"
               type="button"
             />
