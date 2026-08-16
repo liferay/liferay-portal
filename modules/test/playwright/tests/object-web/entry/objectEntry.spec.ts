@@ -4554,12 +4554,8 @@ test.describe('Manage object entries through View Object Entries', () => {
 			.getByPlaceholder('Create an expression.')
 			.fill(textFieldName);
 
-		await objectFieldsPage.editFieldSaveButton.click();
-
-		await waitForAlert(
-			page,
-			'Success:The object field was updated successfully'
-		);
+		const {navigation} =
+			await objectFieldsPage.saveObjectFieldReturningNavigation();
 
 		const applicationName =
 			'c/' + objectDefinition.name.toLowerCase() + 's';
@@ -4570,6 +4566,11 @@ test.describe('Manage object entries through View Object Entries', () => {
 			{[textFieldName]: firstItemName},
 			applicationName
 		);
+
+		// The save's navigation has had the entry seeding to land in; consume
+		// it before the next address is asked for, or the two collide.
+
+		await navigation;
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 

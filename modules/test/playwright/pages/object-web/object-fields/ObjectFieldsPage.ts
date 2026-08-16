@@ -252,6 +252,33 @@ export class ObjectFieldsPage {
 		await waitForPageToBeLoaded(this.page);
 	}
 
+	/**
+	 * Saves the field and hands back the navigation the save starts. The
+	 * success message renders before that navigation commits, so a caller that
+	 * cannot tolerate it in flight, such as one that asks for another address
+	 * next, awaits the returned promise at the point it needs it. Ten seconds
+	 * is generous headroom for that navigation and fails loud, rather than
+	 * quietly at the default half minute.
+	 *
+	 * The caller must await it. The promise is deliberately not swallowed: if
+	 * the save ever stops navigating, the wait fails and says so, rather than
+	 * passing quietly and leaving the collision it guards against unguarded.
+	 */
+	async saveObjectFieldReturningNavigation() {
+		const navigation = this.page.waitForNavigation({
+			timeout: 10000,
+			waitUntil: 'load',
+		});
+
+		await this.editFieldSaveButton.click();
+
+		// Wrapped, because awaiting this method would otherwise flatten the
+		// promise and wait for the navigation here, which is what the caller is
+		// being given the chance to avoid.
+
+		return {navigation};
+	}
+
 	async selectDefaultValue(value: string) {
 		await this.selectOptionButton.click();
 
