@@ -240,6 +240,13 @@ export class ViewObjectDefinitionsPage {
 			.getByRole('button', {exact: true, name: 'Import'})
 			.click();
 
+		// The import is done when the listing request behind it answers, and a
+		// definition carrying many fields can take longer to import than the
+		// modal is given to disappear below. Wait for that answer first, so the
+		// modal is only timed once the work it is covering has finished.
+
+		const response = await responsePromise;
+
 		await this.page
 			.locator('.modal-body')
 			.waitFor({state: 'hidden', timeout: 10000});
@@ -249,8 +256,6 @@ export class ViewObjectDefinitionsPage {
 				hasText: 'The object definition failed to import.',
 			})
 		).toBeHidden();
-
-		const response = await responsePromise;
 
 		const {items} = await response.json();
 
