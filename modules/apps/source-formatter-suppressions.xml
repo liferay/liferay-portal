@@ -64,6 +64,20 @@
 		<suppress checks="InnerExceptionClassCheck" files="object/object-api/src/main/java/com/liferay/object/exception/ObjectValidationRuleEngineException\.java" />
 		<suppress checks="InnerExceptionClassCheck" files="portal/portal-json-web-service-client/src/main/java/com/liferay/portal/json/web/service/client/JSONWebServiceTransportException\.java" />
 		<suppress checks="InnerExceptionClassCheck" files="portal-workflow/portal-workflow-kaleo-definition-api/src/main/java/com/liferay/portal/workflow/kaleo/definition/exception/KaleoDefinitionValidationException\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="application-list/application-list-api/src/main/java/com/liferay/application/list/adapter/PortletPanelAppAdapterServiceTrackerCustomizer\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="export-import/export-import-api/src/main/java/com/liferay/exportimport/content/processor/ExportImportContentProcessorRegistryUtil\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="export-import/export-import-api/src/main/java/com/liferay/exportimport/portlet/preferences/processor/ExportImportPortletPreferencesProcessorRegistryUtil\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="export-import/export-import-api/src/main/java/com/liferay/exportimport/staged/model/repository/StagedModelRepositoryRegistryUtil\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="frontend-js/frontend-js-spa-web/src/main/java/com/liferay/frontend/js/spa/web/internal/servlet/taglib/SPATopHeadJSPDynamicInclude\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="headless/headless-builder/headless-builder-impl/src/main/java/com/liferay/headless/builder/internal/object/deployer/APIPropertyObjectDefinitionDeployerImpl\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-remote/portal-remote-json-web-service-web/src/main/java/com/liferay/portal/remote/json/web/service/web/internal/JSONWebServiceActionsManagerImpl\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-search/portal-search/src/main/java/com/liferay/portal/search/internal/osgi/util/tracker/ModelSearchConfiguratorServiceTrackerCustomizer\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-validation/portal-validation-api/src/main/java/com/liferay/portal/validation/ModelValidatorRegistryUtil\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-workflow/portal-workflow-api/src/main/java/com/liferay/portal/workflow/definition/link/update/handler/WorkflowDefinitionLinkUpdateHandlerRegistryUtil\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="segments/segments-service/src/main/java/com/liferay/segments/internal/context/RequestContextMapperImpl\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="site-navigation/site-navigation-menu-item-display-page/src/main/java/com/liferay/site/navigation/menu/item/display/page/internal/type/provider/DisplayPageSiteNavigationMenuItemTypeProviderTracker\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="template/template-service/src/main/java/com/liferay/template/internal/info/item/provider/TemplateInfoItemCapabilitiesProviderTracker\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="websocket/websocket-whiteboard/src/main/java/com/liferay/websocket/whiteboard/internal/WebSocketEndpointTracker\.java" />
 	</checkstyle>
 	<source-check>
 		<suppress checks="JavaReferenceAnnotationsCheck" files="feature-flag/feature-flag-web/src/main/java/com/liferay/feature/flag/web/internal/feature/flag/FeatureFlagManagerImpl\.java" />

@@ -54,6 +54,13 @@
 		<suppress checks="MissingDeprecatedCheck" files="portal-kernel/src/com/liferay/portal/kernel/util/StringUtil\.java" />
 		<suppress checks="MissingModifierCheck" files="portal-impl/src/com/liferay/portal/spring/transaction/TransactionStatusAdapter\.java" />
 		<suppress checks="MissingModifierCheck" files="portal-impl/test/unit/com/liferay/portal/kernel/spring/osgi/OSGiBeanPropertiesTest\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-impl/src/com/liferay/portal/deploy/hot/CustomJspBagRegistryUtil\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-impl/src/com/liferay/portal/security/auth/MVCPortletAuthTokenWhitelist\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-impl/src/com/liferay/portal/service/impl/CompanyLocalServiceImpl\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-impl/src/com/liferay/portal/service/impl/PortletLocalServiceImpl\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-kernel/src/com/liferay/portal/kernel/editor/configuration/BaseEditorProvider\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-kernel/src/com/liferay/portal/kernel/security/auth/BaseAuthTokenWhitelist\.java" />
+		<suppress checks="ModifiedServiceMethodCheck" files="portal-kernel/src/com/liferay/portal/kernel/servlet/filters/invoker/InvokerFilterHelper\.java" />
 		<suppress checks="StaticVariableNameCheck" files="portal-impl/src/com/liferay/portal/language/LanguageResources\.java" />
 		<suppress checks="StaticVariableNameCheck" files="portal-impl/src/com/liferay/portal/security/auth/AuthVerifierPipeline\.java" />
 		<suppress checks="StaticVariableNameCheck" files="portal-kernel/src/com/liferay/portal/kernel/backgroundtask/BackgroundTaskResult\.java" />
