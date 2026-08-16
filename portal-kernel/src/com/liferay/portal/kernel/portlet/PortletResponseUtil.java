@@ -6,17 +6,16 @@
 package com.liferay.portal.kernel.portlet;
 
 import com.liferay.petra.io.StreamUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.ContentDispositionUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.MimeResponse;
@@ -284,35 +283,6 @@ public class PortletResponseUtil {
 			return;
 		}
 
-		String contentDispositionFileName = "filename=\"" + fileName + "\"";
-
-		// If necessary for non-ASCII characters, encode based on RFC 2184.
-		// However, not all browsers support RFC 2184. See LEP-3127.
-
-		boolean ascii = true;
-
-		for (int i = 0; i < fileName.length(); i++) {
-			if (!Validator.isAscii(fileName.charAt(i))) {
-				ascii = false;
-
-				break;
-			}
-		}
-
-		try {
-			if (!ascii) {
-				String encodedFileName = URLCodec.encodeURL(fileName, true);
-
-				contentDispositionFileName =
-					"filename*=UTF-8''" + encodedFileName;
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(exception);
-			}
-		}
-
 		if (Validator.isNull(contentDispositionType)) {
 			String extension = GetterUtil.getString(
 				FileUtil.getExtension(fileName));
@@ -346,9 +316,8 @@ public class PortletResponseUtil {
 
 		mimeResponse.setProperty(
 			HttpHeaders.CONTENT_DISPOSITION,
-			StringBundler.concat(
-				contentDispositionType, StringPool.SEMICOLON, StringPool.SPACE,
-				contentDispositionFileName));
+			ContentDispositionUtil.getContentDispositionHeaderValue(
+				contentDispositionType, fileName));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.RandomAccessInputStream;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.ServletOutputStream;
@@ -447,27 +446,6 @@ public class ServletResponseUtil {
 			return;
 		}
 
-		String contentDispositionFileName = "filename=\"" + fileName + "\"";
-
-		// If necessary for non-ASCII characters, encode based on RFC 2184.
-		// However, not all browsers support RFC 2184. See LEP-3127.
-
-		boolean ascii = true;
-
-		for (int i = 0; i < fileName.length(); i++) {
-			if (!Validator.isAscii(fileName.charAt(i))) {
-				ascii = false;
-
-				break;
-			}
-		}
-
-		if (!ascii) {
-			String encodedFileName = URLCodec.encodeURL(fileName, true);
-
-			contentDispositionFileName = "filename*=UTF-8''" + encodedFileName;
-		}
-
 		if (Validator.isNull(contentDispositionType)) {
 			String extension = GetterUtil.getString(
 				FileUtil.getExtension(fileName));
@@ -518,19 +496,17 @@ public class ServletResponseUtil {
 			}
 		}
 
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(contentDispositionType);
-		sb.append(StringPool.SEMICOLON);
-		sb.append(StringPool.SPACE);
-		sb.append(contentDispositionFileName);
+		String contentDisposition =
+			ContentDispositionUtil.getContentDispositionHeaderValue(
+				contentDispositionType, fileName);
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Setting content disposition header " + sb.toString());
+			_log.debug(
+				"Setting content disposition header " + contentDisposition);
 		}
 
 		httpServletResponse.setHeader(
-			HttpHeaders.CONTENT_DISPOSITION, sb.toString());
+			HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
 	}
 
 	protected static void setHeaders(
