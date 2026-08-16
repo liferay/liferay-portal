@@ -22,6 +22,7 @@ import {ObjectFieldsPage} from '../../../pages/object-web/object-fields/ObjectFi
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {waitForSearchToBeReady} from '../../../utils/waitForSearchToBeReady';
 import {AsyncArray} from '../utils/AsyncArray';
 import {generateObjectFields} from '../utils/generateObjectFields';
 import {postListTypeDefinitionListTypeEntries} from '../utils/postListTypeDefinitionListTypeEntries';
@@ -2513,6 +2514,9 @@ test.describe('Create Object Fields', () => {
 			.getByRole('search')
 			.getByRole('searchbox', {name: 'Search'})
 			.fill('Cancel Field');
+
+		await waitForSearchToBeReady(page);
+
 		await page.keyboard.press('Enter');
 
 		await expect(page.getByText('No Results Found')).toBeVisible();
