@@ -56,6 +56,8 @@ const DEFAULT_COLORS = [
 const BLANK_COLORS = Array(12).fill('FFFFFF');
 
 const DEFAULT_ARIA_LABELS = {
+	saturationAndBrightness: 'Saturation and brightness',
+	saturationAndBrightnessIs: 'Saturation {0}%, brightness {1}%',
 	selectColor: 'Select a color',
 	selectionIs: 'Color selection is {0}',
 };
@@ -73,6 +75,8 @@ interface IProps
 	 * Labels for the aria attributes
 	 */
 	ariaLabels?: {
+		saturationAndBrightness?: string;
+		saturationAndBrightnessIs?: string;
 		selectColor: string;
 		selectionIs: string;
 	};
@@ -406,6 +410,10 @@ function ColorPicker({
 
 						{onColorsChange && customEditorActive && (
 							<Editor
+								ariaLabels={{
+									...DEFAULT_ARIA_LABELS,
+									...ariaLabels,
+								}}
 								color={color}
 								colors={customColors}
 								hex={state.hex}
