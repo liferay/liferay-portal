@@ -75,9 +75,16 @@ const APIGUI = () => {
 	);
 
 	const requestInterceptor = (req) => {
-		req.headers['x-csrf-token'] = document.querySelector(
-			'meta[name="csrf-token"]'
-		).content;
+		const requestOrigin = new URL(req.url, window.location.href).origin;
+
+		if (
+			requestOrigin === origin ||
+			requestOrigin === window.location.origin
+		) {
+			req.headers['x-csrf-token'] = document.querySelector(
+				'meta[name="csrf-token"]'
+			).content;
+		}
 
 		for (let i = 0; i < headers.length; i++) {
 			const header = headers[i];
@@ -309,13 +316,13 @@ const APIGUI = () => {
 					</ClayModal>
 				)}
 
-				{!origin ? (
+				{!endpoints.length ? (
 					<LoadingSpinner />
 				) : showGraphQL ? (
 					<ClayLayout.Row className="vh-100">
 						<GraphiQL fetcher={graphQLFetcher} />
 					</ClayLayout.Row>
-				) : endpoint && !endpoint.startsWith(origin) ? (
+				) : endpoint && !endpoints.includes(endpoint) ? (
 					<ClayAlert className="mt-4" displayType="danger">
 						Forbidden access.
 					</ClayAlert>
