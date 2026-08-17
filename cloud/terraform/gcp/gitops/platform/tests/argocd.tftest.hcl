@@ -72,66 +72,90 @@ run "should_enable_per_component_network_policies_without_the_global_toggle" {
 		error_message="dex.networkPolicy.create must be true so the chart renders its scoped NetworkPolicy"
 	}
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).applicationSet.networkPolicy.create == true && yamldecode(helm_release.argocd.values[0]).applicationSet.metrics.enabled == true
-		error_message="applicationSet needs both networkPolicy.create and metrics.enabled — the chart's template ANDs (create OR global.create) with (metrics.enabled OR ingress.enabled), so metrics.enabled alone or networkPolicy.create alone is not enough"
-	}
-	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).notifications.networkPolicy.create == true && yamldecode(helm_release.argocd.values[0]).notifications.metrics.enabled == true
-		error_message="notifications needs both networkPolicy.create and metrics.enabled — same AND condition as applicationSet"
-	}
-	assert {
 		condition=yamldecode(helm_release.argocd.values[0]).server.networkPolicy.create == false
 		error_message="server.networkPolicy.create must stay false — the chart's own argocd-server NetworkPolicy is unconditionally ingress: [{}] (allow from anywhere); the manual extraObjects policy is the only thing that should govern this pod's ingress"
 	}
+	assert {
+		condition=!contains(keys(yamldecode(helm_release.argocd.values[0]).applicationSet), "metrics") && !contains(keys(yamldecode(helm_release.argocd.values[0]).applicationSet), "networkPolicy")
+		error_message="applicationSet.metrics.enabled must stay untouched (chart default is false) — turning it on to get a chart-native NetworkPolicy also turns on the chart's Prometheus metrics server as a side effect. The applicationset-controller's ingress is covered by a manual extraObjects policy instead, so networkPolicy.create here would be a no-op anyway"
+	}
+	assert {
+		condition=!contains(keys(yamldecode(helm_release.argocd.values[0]).notifications), "metrics") && !contains(keys(yamldecode(helm_release.argocd.values[0]).notifications), "networkPolicy")
+		error_message="notifications.metrics.enabled must stay untouched (chart default is false) — same reasoning as applicationSet: the manual extraObjects policy covers its ingress instead"
+	}
 	command=plan
 }
-run "should_scope_the_manual_argocd_server_networkpolicy_correctly" {
+run "should_scope_the_manual_network_policies_correctly" {
 	assert {
-		condition=length(yamldecode(helm_release.argocd.values[0]).extraObjects) == 2
-		error_message="Two extra manifests are expected: the scoped argocd-server policy and the namespace-wide default-deny that replaces the chart's own (unusable) global.defaultDenyIngress"
+		condition=length(yamldecode(helm_release.argocd.values[0]).extraObjects) == 4
+		error_message="Four extra manifests are expected: scoped ingress policies for argocd-server, argocd-applicationset-controller, argocd-notifications-controller, plus the namespace-wide default-deny"
 	}
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).extraObjects[0].kind == "NetworkPolicy"
-		error_message="The first extraObjects entry must be a NetworkPolicy"
+		condition=alltrue([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o.kind == "NetworkPolicy"])
+		error_message="Every extraObjects entry must be a NetworkPolicy"
 	}
 	assert {
-		condition=!contains(keys(yamldecode(helm_release.argocd.values[0]).extraObjects[0].metadata), "namespace")
-		error_message="The extraObjects NetworkPolicy must omit metadata.namespace so it inherits the Helm release namespace"
+		condition=alltrue([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : !contains(keys(o.metadata), "namespace")])
+		error_message="Every extraObjects NetworkPolicy must omit metadata.namespace so it inherits the Helm release namespace"
 	}
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).extraObjects[0].spec.podSelector.matchLabels["app.kubernetes.io/name"] == "argocd-server"
-		error_message="The first NetworkPolicy must select the argocd-server pods"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.podSelector.matchLabels["app.kubernetes.io/name"] == "argocd-server"
+		error_message="argocd-server-ingress must select the argocd-server pods"
 	}
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).extraObjects[0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.gateway_namespace
-		error_message="The first ingress rule must allow only the configured gateway namespace"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.gateway_namespace
+		error_message="argocd-server-ingress's first rule must allow only the configured gateway namespace"
 	}
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).extraObjects[0].spec.ingress[0].from[0].podSelector.matchLabels["gateway.envoyproxy.io/owning-gateway-namespace"] == var.argocd_namespace
-		error_message="The Gateway ingress rule must scope to the Envoy proxy that owns this namespace's Gateway, not any proxy in envoy-gateway-system"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress[0].from[0].podSelector.matchLabels["gateway.envoyproxy.io/owning-gateway-namespace"] == var.argocd_namespace
+		error_message="argocd-server-ingress's Gateway rule must scope to the Envoy proxy that owns this namespace's Gateway, not any proxy in envoy-gateway-system"
 	}
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).extraObjects[0].spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_namespace
-		error_message="The second ingress rule must allow only the observability namespace for metrics scraping"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_namespace
+		error_message="argocd-server-ingress's second rule must allow only the observability namespace for metrics scraping"
 	}
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).extraObjects[1].kind == "NetworkPolicy" && yamldecode(helm_release.argocd.values[0]).extraObjects[1].spec.podSelector == {}
-		error_message="The second extraObjects entry must be a namespace-wide default-deny (empty podSelector matches every pod in the namespace)"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-applicationset-controller-ingress"][0].spec.podSelector.matchLabels["app.kubernetes.io/name"] == "argocd-applicationset-controller"
+		error_message="argocd-applicationset-controller-ingress must select the argocd-applicationset-controller pods"
 	}
 	assert {
-		condition=!contains(keys(yamldecode(helm_release.argocd.values[0]).extraObjects[1].spec), "ingress")
-		error_message="The default-deny policy must declare zero ingress rules — any ingress key at all would allow something"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-applicationset-controller-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_namespace && [for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-applicationset-controller-ingress"][0].spec.ingress[0].ports[0].port == "metrics"
+		error_message="argocd-applicationset-controller-ingress must allow only the observability namespace, only on the metrics port"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-notifications-controller-ingress"][0].spec.podSelector.matchLabels["app.kubernetes.io/name"] == "argocd-notifications-controller"
+		error_message="argocd-notifications-controller-ingress must select the argocd-notifications-controller pods"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-notifications-controller-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_namespace && [for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-notifications-controller-ingress"][0].spec.ingress[0].ports[0].port == "metrics"
+		error_message="argocd-notifications-controller-ingress must allow only the observability namespace, only on the metrics port"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "default-deny-ingress"][0].spec.podSelector == {}
+		error_message="default-deny-ingress must have an empty podSelector (matches every pod in the namespace)"
+	}
+	assert {
+		condition=!contains(keys([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "default-deny-ingress"][0].spec), "ingress")
+		error_message="default-deny-ingress must declare zero ingress rules — any ingress key at all would allow something"
 	}
 	command=plan
 }
 run "should_honor_custom_gateway_and_observability_namespaces" {
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).extraObjects[0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-gateway"
-		error_message="A custom gateway_namespace must flow into the argocd-server NetworkPolicy"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-gateway"
+		error_message="A custom gateway_namespace must flow into argocd-server-ingress"
 	}
 	assert {
-		condition=yamldecode(helm_release.argocd.values[0]).extraObjects[0].spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
-		error_message="A custom observability_namespace must flow into the argocd-server NetworkPolicy"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
+		error_message="A custom observability_namespace must flow into argocd-server-ingress"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-applicationset-controller-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
+		error_message="A custom observability_namespace must also flow into argocd-applicationset-controller-ingress"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-notifications-controller-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
+		error_message="A custom observability_namespace must also flow into argocd-notifications-controller-ingress"
 	}
 	command=plan
 	variables {
