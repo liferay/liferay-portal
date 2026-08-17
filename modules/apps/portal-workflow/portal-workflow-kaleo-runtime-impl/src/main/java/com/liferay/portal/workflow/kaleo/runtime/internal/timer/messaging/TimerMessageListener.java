@@ -94,15 +94,40 @@ public class TimerMessageListener extends BaseMessageListener {
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
+		long kaleoTimerInstanceTokenId = message.getLong(
+			"kaleoTimerInstanceTokenId");
+
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_getKaleoTimerInstanceToken(message);
+			_kaleoTimerInstanceTokenLocalService.fetchKaleoTimerInstanceToken(
+				kaleoTimerInstanceTokenId);
+
+		if (kaleoTimerInstanceToken == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to find Kaleo timer instance token " +
+						kaleoTimerInstanceTokenId);
+			}
+
+			SchedulerEngineHelperUtil.delete(
+				SchedulerUtil.getGroupName(
+					message.getLong("companyId"), kaleoTimerInstanceTokenId),
+				StorageType.PERSISTED);
+
+			return;
+		}
 
 		if (kaleoTimerInstanceToken.isCompleted()) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Skipping completed Kaleo timer instance token " +
-						kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId());
+						kaleoTimerInstanceTokenId);
 			}
+
+			SchedulerEngineHelperUtil.delete(
+				SchedulerUtil.getGroupName(
+					kaleoTimerInstanceToken.getCompanyId(),
+					kaleoTimerInstanceTokenId),
+				StorageType.PERSISTED);
 
 			return;
 		}
@@ -115,8 +140,7 @@ public class TimerMessageListener extends BaseMessageListener {
 
 		try {
 			_workflowEngine.executeTimerWorkflowInstance(
-				kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId(),
-				serviceContext, workflowContext);
+				kaleoTimerInstanceTokenId, serviceContext, workflowContext);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -129,19 +153,9 @@ public class TimerMessageListener extends BaseMessageListener {
 			SchedulerEngineHelperUtil.delete(
 				SchedulerUtil.getGroupName(
 					kaleoTimerInstanceToken.getCompanyId(),
-					kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId()),
+					kaleoTimerInstanceTokenId),
 				StorageType.PERSISTED);
 		}
-	}
-
-	private KaleoTimerInstanceToken _getKaleoTimerInstanceToken(Message message)
-		throws Exception {
-
-		long kaleoTimerInstanceTokenId = message.getLong(
-			"kaleoTimerInstanceTokenId");
-
-		return _kaleoTimerInstanceTokenLocalService.getKaleoTimerInstanceToken(
-			kaleoTimerInstanceTokenId);
 	}
 
 	private static final int _MAXIMUM_QUEUE_SIZE = 200;
