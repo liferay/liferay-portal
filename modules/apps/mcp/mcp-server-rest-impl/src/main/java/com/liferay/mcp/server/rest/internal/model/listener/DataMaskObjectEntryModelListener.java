@@ -182,13 +182,13 @@ public class DataMaskObjectEntryModelListener
 		throws PortalException {
 
 		long companyId = dataMaskObjectEntry.getCompanyId();
-		long userId = dataMaskObjectEntry.getUserId();
-		long objectDefinitionId =
-			mcpServerProfileDataMaskObjectDefinition.getObjectDefinitionId();
 		String dataMaskExternalReferenceCode =
 			dataMaskObjectEntry.getExternalReferenceCode();
 		String mcpServerProfileExternalReferenceCode =
 			mcpServerProfileObjectEntry.getExternalReferenceCode();
+		long objectDefinitionId =
+			mcpServerProfileDataMaskObjectDefinition.getObjectDefinitionId();
+		long userId = dataMaskObjectEntry.getUserId();
 
 		int count = _objectEntryLocalService.getValuesListCount(
 			new Long[] {0L}, companyId, userId, objectDefinitionId,
