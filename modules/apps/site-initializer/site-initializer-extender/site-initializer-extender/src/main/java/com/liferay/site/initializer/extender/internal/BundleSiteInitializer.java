@@ -2823,6 +2823,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 					parentResourcePath + "page.json", _servletContext),
 				stringUtilReplaceValues));
 
+		_languageKeyResolver.expand(
+			serviceContext.getCompanyId(), pageJSONObject);
+
 		Map<Locale, String> nameMap = new HashMap<>(
 			SiteInitializerUtil.toMap(pageJSONObject.getString("name_i18n")));
 
