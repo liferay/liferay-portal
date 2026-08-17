@@ -82,6 +82,23 @@ public class HTTPEndpointMonitorTest
 	}
 
 	@Test
+	public void testExecuteLatencyMaximumWithZeroThreshold() throws Exception {
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderOutput(
+			_MILLIS_LATENCY, RandomTestUtil.randomString(), _URL, urlReader);
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty(
+			"monitor[a].threshold[latency.maximum.millis]", "0");
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+	}
+
+	@Test
 	public void testExecuteMissingFailureMessage() throws Exception {
 		UrlReader urlReader = mockUrlReader();
 
@@ -136,7 +153,7 @@ public class HTTPEndpointMonitorTest
 
 		Assert.assertNotNull(metrics.get("latency.millis"));
 
-		verifyUrlReaderRead(false, 54000, urlReader);
+		verifyUrlReaderRead(false, 0, 54000, urlReader);
 	}
 
 	@Test
@@ -197,6 +214,13 @@ public class HTTPEndpointMonitorTest
 	}
 
 	@Test
+	public void testHTTPEndpointMonitorAtSignBeyondAuthority() {
+		_testHTTPEndpointMonitorAtSignBeyondAuthority("#");
+		_testHTTPEndpointMonitorAtSignBeyondAuthority("/");
+		_testHTTPEndpointMonitorAtSignBeyondAuthority("?");
+	}
+
+	@Test
 	public void testHTTPEndpointMonitorUserInfo() {
 		_testHTTPEndpointMonitorUserInfo("");
 		_testHTTPEndpointMonitorUserInfo("//");
@@ -227,6 +251,21 @@ public class HTTPEndpointMonitorTest
 		monitorProperties.setProperty("monitor[a].type", "http-endpoint");
 
 		return monitorProperties;
+	}
+
+	private void _testHTTPEndpointMonitorAtSignBeyondAuthority(
+		String separator) {
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[url]",
+			JenkinsResultsParserUtil.combine(
+				"https://", RandomTestUtil.randomString(), separator,
+				RandomTestUtil.randomString(), "@",
+				RandomTestUtil.randomString()));
+
+		_newHTTPEndpointMonitor(monitorProperties);
 	}
 
 	private String _testHTTPEndpointMonitorExpectedIllegalArgumentException(

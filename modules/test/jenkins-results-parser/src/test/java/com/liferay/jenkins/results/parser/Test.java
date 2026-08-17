@@ -273,14 +273,15 @@ public class Test {
 	}
 
 	protected void verifyUrlReaderRead(
-			boolean checkCache, int timeoutMillis, UrlReader urlReader)
+			boolean checkCache, int maxRetries, int timeoutMillis,
+			UrlReader urlReader)
 		throws Exception {
 
 		Mockito.verify(
 			urlReader
 		).doRead(
 			Mockito.eq(checkCache), Mockito.any(), Mockito.any(),
-			Mockito.anyInt(), Mockito.any(), Mockito.anyInt(),
+			Mockito.eq(maxRetries), Mockito.any(), Mockito.anyInt(),
 			Mockito.eq(timeoutMillis), Mockito.anyString()
 		);
 	}
