@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
+import {liferayConfig} from '../../../liferay.config';
 import {headlessDiscoveryPagesTest} from './fixtures/headlessDiscoveryPagesTest';
 
 export const test = mergeTests(headlessDiscoveryPagesTest, loginTest());
@@ -53,5 +54,73 @@ test(
 		await expect(page.getByText(`Forbidden access.`)).toBeVisible({
 			timeout: 3000,
 		});
+	}
+);
+
+test(
+	'Rejects an endpoint that is not a published OpenAPI document',
+	{tag: '@LPD-102660'},
+	async ({page}) => {
+		const {baseUrl} = liferayConfig.environment;
+
+		const forbiddenEndpoints = [
+			[
+				'A host that only starts with the portal origin',
+				`${baseUrl}.attacker.test/openapi.json`,
+			],
+			[
+				'A host smuggled in the user information',
+				`${baseUrl}@attacker.test/openapi.json`,
+			],
+			[
+				'A document hosted on the portal itself',
+				`${baseUrl}/documents/0/0/attacker/openapi.json`,
+			],
+		];
+
+		for (const [title, forbiddenEndpoint] of forbiddenEndpoints) {
+			await test.step(title, async () => {
+				await page.goto(`/o/api?endpoint=${forbiddenEndpoint}`);
+
+				await expect(page.getByText('Forbidden access.')).toBeVisible({
+					timeout: 10000,
+				});
+			});
+		}
+	}
+);
+
+test(
+	'Renders an endpoint published by the portal',
+	{tag: '@LPD-102660'},
+	async ({apiExplorer, page}) => {
+		await apiExplorer.goToApplication('headless-delivery/v1.0');
+
+		await expect(page.getByText('Forbidden access.')).toBeHidden();
+		await expect(
+			apiExplorer.getOperationBlock('getSiteBlogPostingsPage')
+		).toBeVisible();
+	}
+);
+
+test(
+	'Sends the CSRF token to an endpoint published by the portal',
+	{tag: '@LPD-102660'},
+	async ({apiExplorer, page}) => {
+		const requestHeaders: Array<Record<string, string>> = [];
+
+		page.on('request', (request) => {
+			const {pathname} = new URL(request.url());
+
+			if (pathname.endsWith('/openapi.json')) {
+				requestHeaders.push(request.headers());
+			}
+		});
+
+		await apiExplorer.goToApplication('headless-delivery/v1.0');
+
+		await expect.poll(() => requestHeaders.length).toBeGreaterThan(0);
+
+		expect(requestHeaders[0]['x-csrf-token']).toBeTruthy();
 	}
 );
