@@ -51,143 +51,146 @@ public class MCPProfileDataMaskUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		_companyLocalService.forEachCompanyId(this::_upgradeCompany);
-	}
+		_companyLocalService.forEachCompanyId(
+			companyId -> {
+				ObjectDefinition dataMaskObjectDefinition =
+					_objectDefinitionLocalService.
+						fetchObjectDefinitionByExternalReferenceCode(
+							MCPServerConstants.
+								EXTERNAL_REFERENCE_CODE_DATA_MASK,
+							companyId);
 
-	private List<ObjectEntry> _getSystemDataMaskObjectEntries(
-			ObjectDefinition dataMaskObjectDefinition)
-		throws Exception {
-
-		return TransformUtil.transform(
-			_objectEntryLocalService.getPrimaryKeys(
-				new Long[] {0L}, dataMaskObjectDefinition.getCompanyId(),
-				dataMaskObjectDefinition.getUserId(),
-				dataMaskObjectDefinition.getObjectDefinitionId(),
-				_filterFactory.create(
-					"maskType eq 'system'", dataMaskObjectDefinition),
-				false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				new Sort[] {new Sort("id", Sort.LONG_TYPE, false)}),
-			_objectEntryLocalService::getObjectEntry);
-	}
-
-	private void _upgradeCompany(long companyId) throws Exception {
-		ObjectDefinition dataMaskObjectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					MCPServerConstants.EXTERNAL_REFERENCE_CODE_DATA_MASK,
-					companyId);
-
-		if (dataMaskObjectDefinition == null) {
-			return;
-		}
-
-		List<ObjectEntry> systemDataMaskObjectEntries =
-			_getSystemDataMaskObjectEntries(dataMaskObjectDefinition);
-
-		if (systemDataMaskObjectEntries.isEmpty()) {
-			return;
-		}
-
-		ObjectDefinition mcpServerProfileDataMaskObjectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					MCPServerConstants.
-						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
-					companyId);
-
-		if (mcpServerProfileDataMaskObjectDefinition == null) {
-			return;
-		}
-
-		Map<String, Set<String>> dataMaskExternalReferenceCodesMap =
-			new HashMap<>();
-		Map<String, Integer> maxExecutionOrders = new HashMap<>();
-
-		for (Map<String, Serializable> values :
-				_objectEntryLocalService.getValuesList(
-					0, companyId,
-					mcpServerProfileDataMaskObjectDefinition.getUserId(),
-					mcpServerProfileDataMaskObjectDefinition.
-						getObjectDefinitionId(),
-					null, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
-			String mcpServerProfileExternalReferenceCode = GetterUtil.getString(
-				values.get("mcpServerProfileExternalReferenceCode"));
-
-			Set<String> dataMaskExternalReferenceCodes =
-				dataMaskExternalReferenceCodesMap.computeIfAbsent(
-					mcpServerProfileExternalReferenceCode,
-					externalReferenceCode -> new HashSet<>());
-
-			dataMaskExternalReferenceCodes.add(
-				GetterUtil.getString(
-					values.get("dataMaskExternalReferenceCode")));
-
-			maxExecutionOrders.merge(
-				mcpServerProfileExternalReferenceCode,
-				MapUtil.getInteger(values, "executionOrder"), Math::max);
-		}
-
-		ObjectDefinition mcpServerProfileObjectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					MCPServerConstants.
-						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE,
-					companyId);
-
-		if (mcpServerProfileObjectDefinition == null) {
-			return;
-		}
-
-		for (ObjectEntry mcpServerProfileObjectEntry :
-				_objectEntryLocalService.getObjectEntries(
-					0, mcpServerProfileObjectDefinition.getObjectDefinitionId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
-
-			String mcpServerProfileExternalReferenceCode =
-				mcpServerProfileObjectEntry.getExternalReferenceCode();
-
-			Set<String> dataMaskExternalReferenceCodes =
-				dataMaskExternalReferenceCodesMap.getOrDefault(
-					mcpServerProfileExternalReferenceCode,
-					Collections.emptySet());
-
-			int executionOrder = maxExecutionOrders.getOrDefault(
-				mcpServerProfileExternalReferenceCode, 0);
-
-			for (ObjectEntry systemDataMaskObjectEntry :
-					systemDataMaskObjectEntries) {
-
-				String dataMaskExternalReferenceCode =
-					systemDataMaskObjectEntry.getExternalReferenceCode();
-
-				if (dataMaskExternalReferenceCodes.contains(
-						dataMaskExternalReferenceCode)) {
-
-					continue;
+				if (dataMaskObjectDefinition == null) {
+					return;
 				}
 
-				executionOrder++;
+				List<ObjectEntry> systemDataMaskObjectEntries =
+					TransformUtil.transform(
+						_objectEntryLocalService.getPrimaryKeys(
+							new Long[] {0L},
+							dataMaskObjectDefinition.getCompanyId(),
+							dataMaskObjectDefinition.getUserId(),
+							dataMaskObjectDefinition.getObjectDefinitionId(),
+							_filterFactory.create(
+								"maskType eq 'system'",
+								dataMaskObjectDefinition),
+							false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+							new Sort[] {new Sort("id", Sort.LONG_TYPE, false)}),
+						_objectEntryLocalService::getObjectEntry);
 
-				_objectEntryLocalService.addObjectEntry(
-					0, systemDataMaskObjectEntry.getUserId(),
-					mcpServerProfileDataMaskObjectDefinition.
-						getObjectDefinitionId(),
-					ObjectEntryFolderConstants.
-						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-					null,
-					HashMapBuilder.<String, Serializable>put(
-						"dataMaskExternalReferenceCode",
-						dataMaskExternalReferenceCode
-					).put(
-						"executionOrder", executionOrder
-					).put(
-						"mcpServerProfileExternalReferenceCode",
-						mcpServerProfileExternalReferenceCode
-					).build(),
-					new ServiceContext());
-			}
-		}
+				if (systemDataMaskObjectEntries.isEmpty()) {
+					return;
+				}
+
+				ObjectDefinition mcpServerProfileDataMaskObjectDefinition =
+					_objectDefinitionLocalService.
+						fetchObjectDefinitionByExternalReferenceCode(
+							MCPServerConstants.
+								EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
+							companyId);
+
+				if (mcpServerProfileDataMaskObjectDefinition == null) {
+					return;
+				}
+
+				Map<String, Set<String>> dataMaskExternalReferenceCodesMap =
+					new HashMap<>();
+				Map<String, Integer> maxExecutionOrders = new HashMap<>();
+
+				for (Map<String, Serializable> values :
+						_objectEntryLocalService.getValuesList(
+							0, companyId,
+							mcpServerProfileDataMaskObjectDefinition.
+								getUserId(),
+							mcpServerProfileDataMaskObjectDefinition.
+								getObjectDefinitionId(),
+							null, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+							null)) {
+
+					String mcpServerProfileExternalReferenceCode =
+						GetterUtil.getString(
+							values.get(
+								"mcpServerProfileExternalReferenceCode"));
+
+					Set<String> dataMaskExternalReferenceCodes =
+						dataMaskExternalReferenceCodesMap.computeIfAbsent(
+							mcpServerProfileExternalReferenceCode,
+							externalReferenceCode -> new HashSet<>());
+
+					dataMaskExternalReferenceCodes.add(
+						GetterUtil.getString(
+							values.get("dataMaskExternalReferenceCode")));
+
+					maxExecutionOrders.merge(
+						mcpServerProfileExternalReferenceCode,
+						MapUtil.getInteger(values, "executionOrder"),
+						Math::max);
+				}
+
+				ObjectDefinition mcpServerProfileObjectDefinition =
+					_objectDefinitionLocalService.
+						fetchObjectDefinitionByExternalReferenceCode(
+							MCPServerConstants.
+								EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE,
+							companyId);
+
+				if (mcpServerProfileObjectDefinition == null) {
+					return;
+				}
+
+				for (ObjectEntry mcpServerProfileObjectEntry :
+						_objectEntryLocalService.getObjectEntries(
+							0,
+							mcpServerProfileObjectDefinition.
+								getObjectDefinitionId(),
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+					String mcpServerProfileExternalReferenceCode =
+						mcpServerProfileObjectEntry.getExternalReferenceCode();
+
+					Set<String> dataMaskExternalReferenceCodes =
+						dataMaskExternalReferenceCodesMap.getOrDefault(
+							mcpServerProfileExternalReferenceCode,
+							Collections.emptySet());
+
+					int executionOrder = maxExecutionOrders.getOrDefault(
+						mcpServerProfileExternalReferenceCode, 0);
+
+					for (ObjectEntry systemDataMaskObjectEntry :
+							systemDataMaskObjectEntries) {
+
+						String dataMaskExternalReferenceCode =
+							systemDataMaskObjectEntry.
+								getExternalReferenceCode();
+
+						if (dataMaskExternalReferenceCodes.contains(
+								dataMaskExternalReferenceCode)) {
+
+							continue;
+						}
+
+						executionOrder++;
+
+						_objectEntryLocalService.addObjectEntry(
+							0, systemDataMaskObjectEntry.getUserId(),
+							mcpServerProfileDataMaskObjectDefinition.
+								getObjectDefinitionId(),
+							ObjectEntryFolderConstants.
+								PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+							null,
+							HashMapBuilder.<String, Serializable>put(
+								"dataMaskExternalReferenceCode",
+								dataMaskExternalReferenceCode
+							).put(
+								"executionOrder", executionOrder
+							).put(
+								"mcpServerProfileExternalReferenceCode",
+								mcpServerProfileExternalReferenceCode
+							).build(),
+							new ServiceContext());
+					}
+				}
+			});
 	}
 
 	private final CompanyLocalService _companyLocalService;
