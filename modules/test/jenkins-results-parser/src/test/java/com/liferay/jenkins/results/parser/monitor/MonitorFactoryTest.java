@@ -21,6 +21,23 @@ public class MonitorFactoryTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testNewMonitorHTTPEndpoint() {
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[url]",
+			"https://" + RandomTestUtil.randomString());
+		monitorProperties.setProperty("monitor[a].type", "http-endpoint");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof HTTPEndpointMonitor);
+	}
+
+	@Test
 	public void testNewMonitorJobHealth() {
 		String masterName = RandomTestUtil.randomString();
 
