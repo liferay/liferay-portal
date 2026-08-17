@@ -93,9 +93,28 @@ export class ViewObjectDefinitionsPage {
 	async changeObjectActivateStatus(objectDefinitionName: string) {
 		await this.clickEditObjectDefinitionLink(objectDefinitionName);
 
-		await this.page.getByRole('switch', {name: 'Activate Object'}).click();
+		const saveButton = this.page.getByRole('button', {name: 'Save'});
 
-		await this.page.getByRole('button', {name: 'Save'}).click();
+		const toggle = this.page.getByRole('switch', {
+			name: 'Activate Object',
+		});
+
+		// The details form mounts with an enabled Activate Object toggle
+		// before the object definition has been fetched, and the fetch
+		// overwrites whatever the toggle holds by then, so a flip made too
+		// early is silently undone and saved away as a success. Save stays
+		// disabled until the fetch lands, so wait there, then flip the settled
+		// value and check the flip survived.
+
+		await expect(saveButton).toBeEnabled();
+
+		const toggled = await toggle.isChecked();
+
+		await toggle.click();
+
+		await expect(toggle).toBeChecked({checked: !toggled});
+
+		await saveButton.click();
 
 		await waitForAlert(
 			this.page,
