@@ -48,10 +48,17 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class ContentSecurityPolicyFilter extends BasePortalFilter {
 
+	public static final String SKIP_FILTER =
+		ContentSecurityPolicyFilter.class.getName() + "#SKIP_FILTER";
+
 	@Override
 	public boolean isFilterEnabled(
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
+
+		if (httpServletRequest.getAttribute(SKIP_FILTER) != null) {
+			return false;
+		}
 
 		if (CompanyThreadLocal.getCompanyId() == 0) {
 			if (_log.isDebugEnabled()) {
@@ -84,6 +91,8 @@ public class ContentSecurityPolicyFilter extends BasePortalFilter {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, FilterChain filterChain)
 		throws Exception {
+
+		httpServletRequest.setAttribute(SKIP_FILTER, Boolean.TRUE);
 
 		String nonce = _contentSecurityPolicyNonceManager.setNonce(
 			httpServletRequest);
