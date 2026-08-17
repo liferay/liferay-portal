@@ -85,7 +85,10 @@ public class DDMFormValuesInfoFieldValuesProviderImpl
 			for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
 				if (StringUtil.equals(
 						ddmFormFieldValue.getType(),
-						DDMFormFieldTypeConstants.FIELDSET)) {
+						DDMFormFieldTypeConstants.FIELDSET) ||
+					StringUtil.equals(
+						ddmFormFieldValue.getType(),
+						DDMFormFieldTypeConstants.SEPARATOR)) {
 
 					continue;
 				}
