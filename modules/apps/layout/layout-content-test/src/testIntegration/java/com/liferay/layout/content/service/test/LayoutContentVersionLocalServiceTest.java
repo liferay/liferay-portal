@@ -11,7 +11,9 @@ import com.liferay.layout.content.exception.LayoutContentVersionNameException;
 import com.liferay.layout.content.exception.RequiredLayoutContentVersionException;
 import com.liferay.layout.content.exception.UnsupportedLayoutLayoutContentVersionException;
 import com.liferay.layout.content.model.LayoutContentVersion;
+import com.liferay.layout.content.model.LayoutContentVersionPreview;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
+import com.liferay.layout.content.service.LayoutContentVersionPreviewLocalService;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
@@ -145,25 +147,25 @@ public class LayoutContentVersionLocalServiceTest {
 	@Test
 	public void testDeleteLayoutContentVersion() throws Exception {
 		LayoutContentVersion approvedLayoutContentVersion =
-			_layoutContentVersionLocalService.addLayoutContentVersion(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				RandomTestUtil.randomString(),
-				RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
-				WorkflowConstants.STATUS_APPROVED);
+			_addLayoutContentVersion(WorkflowConstants.STATUS_APPROVED);
+
+		LayoutContentVersionPreview approvedLayoutContentVersionPreview =
+			_addLayoutContentVersionPreview(
+				approvedLayoutContentVersion.getLayoutContentVersionId());
 
 		LayoutContentVersion latestApprovedLayoutContentVersion =
-			_layoutContentVersionLocalService.addLayoutContentVersion(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				RandomTestUtil.randomString(),
-				RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
-				WorkflowConstants.STATUS_APPROVED);
+			_addLayoutContentVersion(WorkflowConstants.STATUS_APPROVED);
+
+		LayoutContentVersionPreview latestApprovedLayoutContentVersionPreview =
+			_addLayoutContentVersionPreview(
+				latestApprovedLayoutContentVersion.getLayoutContentVersionId());
 
 		LayoutContentVersion draftLayoutContentVersion =
-			_layoutContentVersionLocalService.addLayoutContentVersion(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				RandomTestUtil.randomString(),
-				RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
-				WorkflowConstants.STATUS_DRAFT);
+			_addLayoutContentVersion(WorkflowConstants.STATUS_DRAFT);
+
+		LayoutContentVersionPreview draftLayoutContentVersionPreview =
+			_addLayoutContentVersionPreview(
+				draftLayoutContentVersion.getLayoutContentVersionId());
 
 		_layoutContentVersionLocalService.deleteLayoutContentVersion(
 			approvedLayoutContentVersion.getLayoutContentVersionId());
@@ -171,6 +173,11 @@ public class LayoutContentVersionLocalServiceTest {
 		Assert.assertNull(
 			_layoutContentVersionLocalService.fetchLayoutContentVersion(
 				approvedLayoutContentVersion.getLayoutContentVersionId()));
+		Assert.assertNull(
+			_layoutContentVersionPreviewLocalService.
+				fetchLayoutContentVersionPreview(
+					approvedLayoutContentVersionPreview.
+						getLayoutContentVersionPreviewId()));
 
 		Assert.assertThrows(
 			RequiredLayoutContentVersionException.class,
@@ -182,6 +189,11 @@ public class LayoutContentVersionLocalServiceTest {
 			_layoutContentVersionLocalService.fetchLayoutContentVersion(
 				latestApprovedLayoutContentVersion.
 					getLayoutContentVersionId()));
+		Assert.assertNotNull(
+			_layoutContentVersionPreviewLocalService.
+				fetchLayoutContentVersionPreview(
+					latestApprovedLayoutContentVersionPreview.
+						getLayoutContentVersionPreviewId()));
 
 		_layoutContentVersionLocalService.deleteLayoutContentVersion(
 			draftLayoutContentVersion.getLayoutContentVersionId());
@@ -189,6 +201,11 @@ public class LayoutContentVersionLocalServiceTest {
 		Assert.assertNull(
 			_layoutContentVersionLocalService.fetchLayoutContentVersion(
 				draftLayoutContentVersion.getLayoutContentVersionId()));
+		Assert.assertNull(
+			_layoutContentVersionPreviewLocalService.
+				fetchLayoutContentVersionPreview(
+					draftLayoutContentVersionPreview.
+						getLayoutContentVersionPreviewId()));
 	}
 
 	@Test
@@ -244,6 +261,27 @@ public class LayoutContentVersionLocalServiceTest {
 			expectedMessage, LayoutContentVersionNameException.class,
 			() -> _layoutContentVersionLocalService.updateLayoutContentVersion(
 				layoutContentVersion.getLayoutContentVersionId(), null));
+	}
+
+	private LayoutContentVersion _addLayoutContentVersion(int status)
+		throws Exception {
+
+		return _layoutContentVersionLocalService.addLayoutContentVersion(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
+			status);
+	}
+
+	private LayoutContentVersionPreview _addLayoutContentVersionPreview(
+			long layoutContentVersionId)
+		throws Exception {
+
+		return _layoutContentVersionPreviewLocalService.
+			addLayoutContentVersionPreview(
+				TestPropsValues.getUserId(), layoutContentVersionId,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString());
 	}
 
 	private <T extends PortalException> void _assertPortalException(
@@ -355,6 +393,10 @@ public class LayoutContentVersionLocalServiceTest {
 
 	@Inject
 	private LayoutContentVersionLocalService _layoutContentVersionLocalService;
+
+	@Inject
+	private LayoutContentVersionPreviewLocalService
+		_layoutContentVersionPreviewLocalService;
 
 	@Inject
 	private LayoutUtilityPageEntryLocalService
