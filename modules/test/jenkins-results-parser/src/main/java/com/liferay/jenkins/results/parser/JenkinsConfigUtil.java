@@ -96,7 +96,7 @@ public class JenkinsConfigUtil {
 		String output = jenkinsMaster.executeSSHCommand(
 			JenkinsResultsParserUtil.combine(
 				"grep -l '<id>", emailAddress, "</id>' ",
-				_JENKINS_USERS_DIR_PATH, "/*/config.xml"));
+				_JENKINS_USERS_DIR_PATH, "/*/config.xml || true"));
 
 		for (String line : output.split("\n")) {
 			line = line.trim();
