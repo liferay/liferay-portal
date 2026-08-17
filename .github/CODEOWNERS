@@ -307,6 +307,10 @@ modules/apps/portal-search-opensearch2/    @liferay-search
 modules/apps/portal-security/    @liferay-appsec
 modules/apps/portal-security/portal-security-content-security-policy    @liferay-frontend
 modules/apps/portal-security/portal-security-content-security-policy-test    @liferay-frontend
+modules/apps/portal-security/portal-security-script-management-api    @liferay-bpm
+modules/apps/portal-security/portal-security-script-management-test    @liferay-bpm
+modules/apps/portal-security/portal-security-script-management-test-util    @liferay-bpm
+modules/apps/portal-security/portal-security-script-management-web    @liferay-bpm
 modules/apps/portal-security-audit/    @liferay-appsec
 modules/apps/portal-security-sso/    @liferay-appsec
 modules/apps/portal-settings/    @liferay-appsec
