@@ -26,9 +26,9 @@ const getContent = (isOnline, status) => {
 	if (status === SERVICE_NETWORK_STATUS_TYPES.draftSaved) {
 		return (
 			<ClayIcon
-				aria-label={Liferay.Language.get('saved')}
+				aria-label={Liferay.Language.get('saved-as-draft')}
 				className="text-success"
-				data-title={Liferay.Language.get('saved')}
+				data-title={Liferay.Language.get('saved-as-draft')}
 				symbol="check-circle"
 			/>
 		);

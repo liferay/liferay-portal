@@ -62,7 +62,7 @@ export default function ToolbarActionsDropdown({discardDraftFormRef}) {
 									},
 								]
 							: null,
-						label: Liferay.Language.get('history'),
+						label: Liferay.Language.get('draft-history'),
 						symbolLeft: 'time',
 						type: 'contextual',
 					},

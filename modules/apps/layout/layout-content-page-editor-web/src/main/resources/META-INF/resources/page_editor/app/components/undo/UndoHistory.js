@@ -119,13 +119,13 @@ export default function UndoHistory() {
 				onActiveChange={setActive}
 				trigger={
 					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('history')}
+						aria-label={Liferay.Language.get('draft-history')}
 						aria-pressed={active}
 						disabled={!undoHistory.length && !redoHistory.length}
 						displayType="secondary"
 						size="sm"
 						symbol="time"
-						title={Liferay.Language.get('history')}
+						title={Liferay.Language.get('draft-history')}
 					/>
 				}
 			>
