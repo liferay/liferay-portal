@@ -1,4 +1,10 @@
 {
+	"database-migration": {
+		"en_US": {
+			"message": "DB Migration Importer Tool",
+			"url": "https://learn.liferay.com/w/dxp/self-hosted-installation-and-upgrades/upgrading-liferay/migrating-the-database/migrating-your-database-to-postgresql"
+		}
+	},
 	"mail": {
 		"en_US": {
 			"message": "Help me connect to a mail server.",

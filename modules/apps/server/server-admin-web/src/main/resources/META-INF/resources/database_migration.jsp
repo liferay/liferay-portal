@@ -12,8 +12,26 @@
 <liferay-ui:error exception="<%= CaptchaTextException.class %>" message="text-verification-failed" />
 <liferay-ui:error key="databaseSchemaExportFailed" message="unable-to-export-the-database-schema" />
 
+<%
+LearnMessage learnMessage = LearnMessageUtil.getLearnMessage("database-migration", themeDisplay.getLanguageId(), "server-admin-web");
+
+String learnMessageURL = learnMessage.getURL();
+
+String anchorCloseTag = StringPool.BLANK;
+String anchorOpenTag = StringPool.BLANK;
+
+if (Validator.isNotNull(learnMessageURL)) {
+	anchorCloseTag = "</a>";
+	anchorOpenTag = StringBundler.concat("<a class=\"text-underline\" href=\"", learnMessageURL, "\" target=\"_blank\">");
+}
+%>
+
 <div class="sheet">
 	<div class="panel-group panel-group-flush">
+		<p class="sheet-text">
+			<%= LanguageUtil.format(request, "exports-current-database-schema-as-sql-files-for-use-with-our-db-migration-importer-tool", new Object[] {anchorOpenTag, anchorCloseTag}, false) %>
+		</p>
+
 		<aui:input cssClass="lfr-input-text-container" label="export-files-path" name="exportFilesPath" required="<%= true %>" type="text" />
 
 		<liferay-captcha:captcha />
