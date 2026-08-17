@@ -56,21 +56,17 @@ public class SecurityTest extends BaseClientTestCase {
 
 	@Test
 	public void testEscapeOAuth2ApplicationName() {
-		String bodyString = getAuthorizationPageBodyString(
+		_assertAuthorizationPageEscapesInjectedScript(
 			webTarget -> webTarget.queryParam(
 				"client_id", _CLIENT_ID_UNESCAPED_NAME
 			).queryParam(
 				"response_type", "code"
 			));
-
-		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
-		Assert.assertTrue(
-			bodyString.contains(HtmlUtil.escape(_INJECTED_SCRIPT)));
 	}
 
 	@Test
 	public void testEscapeOAuth2ScopeDescription() {
-		String bodyString = getAuthorizationPageBodyString(
+		_assertAuthorizationPageEscapesInjectedScript(
 			webTarget -> webTarget.queryParam(
 				"client_id", _CLIENT_ID_UNESCAPED_SCOPE
 			).queryParam(
@@ -78,10 +74,6 @@ public class SecurityTest extends BaseClientTestCase {
 			).queryParam(
 				"scope", _SCOPE_ALIAS
 			));
-
-		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
-		Assert.assertTrue(
-			bodyString.contains(HtmlUtil.escape(_INJECTED_SCRIPT)));
 	}
 
 	@Test
@@ -237,46 +229,6 @@ public class SecurityTest extends BaseClientTestCase {
 				this::parseError));
 	}
 
-	protected String getAuthorizationPageBodyString(
-		Function<WebTarget, WebTarget> authorizeRequestFunction) {
-
-		Function<WebTarget, Invocation.Builder> invocationBuilderFunction =
-			getAuthenticatedInvocationBuilderFunction(
-				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
-				null);
-
-		Response response = getCodeFunction(
-			authorizeRequestFunction, true
-		).apply(
-			invocationBuilderFunction
-		);
-
-		URI uri = response.getLocation();
-
-		if (uri == null) {
-			throw new IllegalArgumentException(
-				"Authorization service response missing \"Location\" header " +
-					"from which the authorization page URL is extracted");
-		}
-
-		WebTarget webTarget = getWebTarget();
-
-		webTarget = webTarget.path(uri.getPath());
-
-		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
-			uri.getRawQuery());
-
-		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-			webTarget = webTarget.queryParam(
-				entry.getKey(), (Object[])entry.getValue());
-		}
-
-		Invocation.Builder invocationBuilder = invocationBuilderFunction.apply(
-			webTarget);
-
-		return getBodyAsString(invocationBuilder.get());
-	}
-
 	protected String getBodyAsString(Response response) {
 		return response.readEntity(String.class);
 	}
@@ -313,6 +265,50 @@ public class SecurityTest extends BaseClientTestCase {
 		return response.getHeaderString("x-frame-options");
 	}
 
+	private void _assertAuthorizationPageEscapesInjectedScript(
+		Function<WebTarget, WebTarget> authorizeRequestFunction) {
+
+		Function<WebTarget, Invocation.Builder> invocationBuilderFunction =
+			getAuthenticatedInvocationBuilderFunction(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+				null);
+
+		Response response = getCodeFunction(
+			authorizeRequestFunction, true
+		).apply(
+			invocationBuilderFunction
+		);
+
+		URI uri = response.getLocation();
+
+		if (uri == null) {
+			throw new IllegalArgumentException(
+				"Authorization service response missing \"Location\" header " +
+					"from which the authorization page URL is extracted");
+		}
+
+		WebTarget webTarget = getWebTarget();
+
+		webTarget = webTarget.path(uri.getPath());
+
+		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
+			uri.getRawQuery());
+
+		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+			webTarget = webTarget.queryParam(
+				entry.getKey(), (Object[])entry.getValue());
+		}
+
+		Invocation.Builder invocationBuilder = invocationBuilderFunction.apply(
+			webTarget);
+
+		String bodyString = getBodyAsString(invocationBuilder.get());
+
+		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
+		Assert.assertTrue(
+			bodyString.contains(HtmlUtil.escape(_INJECTED_SCRIPT)));
+	}
+
 	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
 
 	private static final String _CLIENT_ID_CODE_PKCE =
@@ -330,7 +326,7 @@ public class SecurityTest extends BaseClientTestCase {
 	private static final String _INJECTED_SCRIPT = "<script>alert(1)</script>";
 
 	private static final String _SCOPE_ALIAS =
-		SecurityTest._SCOPE_APPLICATION_NAME + ".everything.read";
+		"Liferay.Captcha.REST.everything.read";
 
 	private static final String _SCOPE_APPLICATION_NAME =
 		"Liferay.Captcha.REST";
