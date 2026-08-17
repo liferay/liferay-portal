@@ -3,7 +3,7 @@
 	"hidden": false,
 	"name": "Rooms",
 	"name_i18n": {
-		"en_US": "Rooms"
+		"[$FOR_EACH_LANGUAGE_ID$]": "rooms"
 	},
 	"permissions": [
 		{

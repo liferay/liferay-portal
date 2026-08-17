@@ -3,7 +3,7 @@
 	"hidden": true,
 	"name": "Timeline",
 	"name_i18n": {
-		"en_US": "Timeline"
+		"[$FOR_EACH_LANGUAGE_ID$]": "timeline"
 	},
 	"permissions": [
 		{

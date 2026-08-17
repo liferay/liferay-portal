@@ -18,18 +18,27 @@
 				"pageElements": [
 					{
 						"definition": {
+							"cssClasses": [
+								"font-weight-semi-bold",
+								"mb-0",
+								"text-7",
+								"text-dark"
+							],
 							"fragment": {
-								"key": "BASIC_COMPONENT-html"
+								"key": "BASIC_COMPONENT-heading"
 							},
 							"fragmentConfig": {
+								"headingLevel": "h2"
 							},
 							"fragmentFields": [
 								{
-									"id": "element-html",
+									"id": "element-text",
 									"value": {
-										"html": {
+										"fragmentLink": {
+										},
+										"text": {
 											"value_i18n": {
-												"en_US": "<h2 class=\"font-weight-semi-bold mb-0 text-7 text-dark\">Rooms</h2>"
+												"[$FOR_EACH_LANGUAGE_ID$]": "rooms"
 											}
 										}
 									}
