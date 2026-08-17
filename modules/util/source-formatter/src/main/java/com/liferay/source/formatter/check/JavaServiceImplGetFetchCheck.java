@@ -29,10 +29,12 @@ public class JavaServiceImplGetFetchCheck extends BaseJavaTermCheck {
 		String fileName, String absolutePath, JavaTerm javaTerm,
 		String fileContent) {
 
+		String content = javaTerm.getContent();
+
 		String className = JavaSourceUtil.getClassName(fileName);
 
 		if (!className.endsWith("ServiceImpl")) {
-			return javaTerm.getContent();
+			return content;
 		}
 
 		JavaMethod javaMethod = (JavaMethod)javaTerm;
@@ -40,13 +42,27 @@ public class JavaServiceImplGetFetchCheck extends BaseJavaTermCheck {
 		String methodName = javaMethod.getName();
 
 		if (!methodName.startsWith("get")) {
-			return javaTerm.getContent();
+			return content;
 		}
 
 		JavaSignature javaSignature = javaMethod.getSignature();
 
-		if (_isSkippedReturnType(javaSignature.getReturnType())) {
-			return javaTerm.getContent();
+		String returnType = javaSignature.getReturnType();
+
+		if (returnType == null) {
+			return content;
+		}
+
+		returnType = returnType.trim();
+
+		if (returnType.endsWith("[]") || returnType.contains("<")) {
+			return content;
+		}
+
+		for (String skippedReturnType : _SKIPPED_RETURN_TYPES) {
+			if (returnType.equals(skippedReturnType)) {
+				return content;
+			}
 		}
 
 		// Flag only a method whose entire body is a plain
@@ -54,7 +70,9 @@ public class JavaServiceImplGetFetchCheck extends BaseJavaTermCheck {
 		// variable, or fallback is consciously handling the nullability, so it
 		// is not a naive "get" that merely exposes a nullable fetch.
 
-		if (_returnsSimpleFetch(javaMethod.getContent())) {
+		Matcher matcher = _simpleDirectFetchPattern.matcher(content);
+
+		if (matcher.find()) {
 			addMessage(
 				fileName,
 				StringBundler.concat(
@@ -66,38 +84,12 @@ public class JavaServiceImplGetFetchCheck extends BaseJavaTermCheck {
 				javaTerm.getLineNumber());
 		}
 
-		return javaTerm.getContent();
+		return content;
 	}
 
 	@Override
 	protected String[] getCheckableJavaTermNames() {
 		return new String[] {JAVA_METHOD};
-	}
-
-	private boolean _isSkippedReturnType(String returnType) {
-		if (returnType == null) {
-			return true;
-		}
-
-		returnType = returnType.trim();
-
-		if (returnType.endsWith("[]") || returnType.contains("<")) {
-			return true;
-		}
-
-		for (String skippedReturnType : _SKIPPED_RETURN_TYPES) {
-			if (returnType.equals(skippedReturnType)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean _returnsSimpleFetch(String content) {
-		Matcher matcher = _simpleDirectFetchPattern.matcher(content);
-
-		return matcher.find();
 	}
 
 	private static final String[] _SKIPPED_RETURN_TYPES = {
