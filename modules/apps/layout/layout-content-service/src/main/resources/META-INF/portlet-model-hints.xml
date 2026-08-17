@@ -35,7 +35,9 @@
 		<field name="modifiedDate" type="Date" />
 		<field name="layoutContentVersionId" type="long" />
 		<field name="segmentsExperienceERC" type="String" />
-		<field name="html" type="String" />
+		<field name="html" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 		<field name="languageId" type="String" />
 	</model>
 </model-hints>
