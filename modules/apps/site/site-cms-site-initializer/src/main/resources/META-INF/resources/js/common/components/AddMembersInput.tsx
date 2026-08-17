@@ -71,7 +71,7 @@ export default function AddMembersInput({
 			);
 		}
 
-		if (filter) {
+		if (filter && selectValue === MemberType.USERS) {
 			filters.push(filter);
 		}
 
