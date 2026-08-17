@@ -55,47 +55,9 @@ public class HTTPEndpointMonitorTest
 
 	@Test
 	public void testExecuteLatencyMaximumWithinBound() throws Exception {
-		UrlReader urlReader = mockUrlReader();
-
-		setUrlReaderOutput(RandomTestUtil.randomString(), _URL, urlReader);
-
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.setProperty(
-			"monitor[a].threshold[latency.maximum.millis]", "60000");
-
-		MonitorResult monitorResult = _execute(monitorProperties);
-
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
-	}
-
-	@Test
-	public void testExecuteLatencyMaximumWithoutThreshold() throws Exception {
-		UrlReader urlReader = mockUrlReader();
-
-		setUrlReaderOutput(
-			_MILLIS_LATENCY, RandomTestUtil.randomString(), _URL, urlReader);
-
-		MonitorResult monitorResult = _execute(_newMonitorProperties());
-
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
-	}
-
-	@Test
-	public void testExecuteLatencyMaximumWithZeroThreshold() throws Exception {
-		UrlReader urlReader = mockUrlReader();
-
-		setUrlReaderOutput(
-			_MILLIS_LATENCY, RandomTestUtil.randomString(), _URL, urlReader);
-
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.setProperty(
-			"monitor[a].threshold[latency.maximum.millis]", "0");
-
-		MonitorResult monitorResult = _execute(monitorProperties);
-
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+		_testExecuteLatencyMaximumWithinBound(null);
+		_testExecuteLatencyMaximumWithinBound("0");
+		_testExecuteLatencyMaximumWithinBound("60000");
 	}
 
 	@Test
@@ -253,6 +215,28 @@ public class HTTPEndpointMonitorTest
 		return monitorProperties;
 	}
 
+	private void _testExecuteLatencyMaximumWithinBound(
+			String latencyMaximumMillis)
+		throws Exception {
+
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderOutput(
+			_MILLIS_LATENCY, RandomTestUtil.randomString(), _URL, urlReader);
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		if (latencyMaximumMillis != null) {
+			monitorProperties.setProperty(
+				"monitor[a].threshold[latency.maximum.millis]",
+				latencyMaximumMillis);
+		}
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+	}
+
 	private void _testHTTPEndpointMonitorAtSignBeyondAuthority(
 		String separator) {
 
@@ -324,6 +308,7 @@ public class HTTPEndpointMonitorTest
 
 	private static final long _MILLIS_LATENCY = 50;
 
-	private static final String _URL = "https://repository.liferay.com";
+	private static final String _URL =
+		"https://" + RandomTestUtil.randomString();
 
 }
