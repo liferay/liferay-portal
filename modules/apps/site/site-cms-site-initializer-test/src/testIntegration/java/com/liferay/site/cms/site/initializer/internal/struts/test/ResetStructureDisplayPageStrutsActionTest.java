@@ -28,11 +28,14 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -42,6 +45,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -154,6 +158,48 @@ public class ResetStructureDisplayPageStrutsActionTest {
 			draftLayout, typeSettingsUnicodeProperties.toString());
 
 		_testExecute(classNameId, 0, httpServletRequest);
+	}
+
+	@Test
+	@TestInfo("LPD-102260")
+	public void testExecuteWithoutUpdatePermission() throws Exception {
+		long classNameId = _portal.getClassNameId(
+			_objectDefinition.getClassName());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group.getGroupId(), classNameId, null, true,
+				WorkflowConstants.STATUS_APPROVED);
+
+		User user = UserTestUtil.addUser(_company);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_resetStructureDisplayPageStrutsAction.execute(
+				_getMockHttpServletRequest(), new MockHttpServletResponse());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertTrue(
+				exception instanceof PrincipalException.MustHavePermission);
+
+			Assert.assertTrue(
+				StringUtil.startsWith(
+					exception.getMessage(),
+					"User " + user.getUserId() +
+						" must have UPDATE permission for"));
+		}
+
+		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				fetchDefaultLayoutPageTemplateEntry(
+					_group.getGroupId(), classNameId, 0);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+			defaultLayoutPageTemplateEntry.getLayoutPageTemplateEntryId());
 	}
 
 	private HttpServletRequest _getMockHttpServletRequest() throws Exception {
