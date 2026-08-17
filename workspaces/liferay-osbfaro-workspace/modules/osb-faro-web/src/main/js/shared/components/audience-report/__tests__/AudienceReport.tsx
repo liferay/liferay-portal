@@ -2,18 +2,21 @@ import AudienceReport from '../AudienceReport';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
+import {InMemoryCache} from '@apollo/client';
 import {MemoryRouter, Route} from 'react-router-dom';
 import {MetricName} from 'shared/types/MetricName';
 import {
 	mockAudienceReportReq,
 	mockPreferenceReq,
+	mockSegmentReq,
 	mockTimeRangeReq,
 } from 'test/graphql-data';
 import {MockedProvider} from '@apollo/client/testing';
 import {Name} from '../types';
-import {PageAudienceReportQuery} from '../queries';
+import {PageAudienceReportQuery, PageSegmentQuery} from '../queries';
 import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
+import {typePolicies} from 'shared/apollo/cache';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
@@ -60,24 +63,29 @@ const WrappedComponent = ({queryProps}: {queryProps: any}) => (
 			<Route path="/workspace/:groupId/:channelId/:title/:touchpoint">
 				<MockedProvider
 					{...({freezeResults: false} as any)}
+					cache={new InMemoryCache({typePolicies})}
 					mocks={[
 						mockTimeRangeReq(),
 						mockPreferenceReq(),
 						mockAudienceReportReq({queryProps}),
+						mockSegmentReq({queryProps}),
 					]}
 				>
 					<AudienceReport
+						AudienceReportQuery={PageAudienceReportQuery(
+							queryProps
+						)}
 						filters={{devices: [], location: []}}
 						mapper={(result: any) =>
 							result?.[queryProps.name]?.[queryProps.metricName]
 						}
 						name={Name.Page}
-						Query={PageAudienceReportQuery(queryProps)}
 						rangeSelectors={{
 							rangeEnd: '',
 							rangeKey: RangeKeyTimeRanges.Last30Days,
 							rangeStart: '',
 						}}
+						SegmentQuery={PageSegmentQuery(queryProps)}
 					/>
 				</MockedProvider>
 			</Route>
