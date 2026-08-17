@@ -6,11 +6,13 @@
 package com.liferay.layout.content.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.layout.content.exception.DuplicateLayoutContentVersionPreviewException;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.model.LayoutContentVersionPreview;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.content.service.LayoutContentVersionPreviewLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -98,6 +100,26 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 		Assert.assertEquals(
 			segmentsExperienceERC,
 			layoutContentVersionPreview.getSegmentsExperienceERC());
+
+		DuplicateLayoutContentVersionPreviewException
+			duplicateLayoutContentVersionPreviewException = Assert.assertThrows(
+				DuplicateLayoutContentVersionPreviewException.class,
+				() ->
+					_layoutContentVersionPreviewLocalService.
+						addLayoutContentVersionPreview(
+							TestPropsValues.getUserId(),
+							_layoutContentVersion.getLayoutContentVersionId(),
+							RandomTestUtil.randomString(), languageId,
+							segmentsExperienceERC));
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"Duplicate layout content version preview for layout content ",
+				"version ", _layoutContentVersion.getLayoutContentVersionId(),
+				", language ID ", languageId,
+				", and segments experience external reference code ",
+				segmentsExperienceERC),
+			duplicateLayoutContentVersionPreviewException.getMessage());
 	}
 
 	@Test
