@@ -1,0 +1,106 @@
+{{- $databaseSpec := $xr.spec.database -}}
+{{- $observedDatabaseDataPlanes := list -}}
+
+{{- range $dataPlane := list "blue" "green" -}}
+    {{- if hasKey $observedResources (printf "liferay-db-%s" $dataPlane) -}}
+        {{- $observedDatabaseDataPlanes = append $observedDatabaseDataPlanes $dataPlane -}}
+    {{- end -}}
+{{- end }}
+
+{{- range $i, $dataPlane := $dataPlanes }}
+{{- $databaseServerName := printf "%s-%s" $baseName $dataPlane }}
+{{- if $i }}
+---
+{{- end }}
+apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
+kind: FlexibleServer
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-primary-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $databaseServerName }}
+spec:
+    forProvider:
+        administratorLogin: {{ $databaseAdminUser }}
+        administratorPasswordSecretRef:
+            key: password
+            name: {{ $databaseSpec.rootPasswordSecretName }}
+        autoGrowEnabled: true
+        backupRetentionDays: 7
+        {{- if $cmkEnabled }}
+        customerManagedKey:
+            keyVaultKeyId: {{ $cmkKeyVaultKeyId }}
+            primaryUserAssignedIdentityId: {{ $cmkIdentityId }}
+        {{- end }}
+        delegatedSubnetId: {{ $env.databaseSubnetId }}
+        {{- if $databaseSpec.highAvailability }}
+        highAvailability:
+            mode: ZoneRedundant
+        {{- end }}
+        {{- if $cmkEnabled }}
+        identity:
+            identityIds:
+                -   {{ $cmkIdentityId }}
+            type: UserAssigned
+        {{- end }}
+        location: {{ $region }}
+        privateDnsZoneId: {{ $env.databasePrivateDnsZoneId }}
+        publicNetworkAccessEnabled: false
+        resourceGroupName: {{ $env.resourceGroupName }}
+        skuName: {{ $databaseSpec.instanceType }}
+        storageMb: {{ mul ($databaseSpec.storageGB | default 32) 1024 }}
+        tags:
+            {{- $backupTargetTags | toYaml | nindent 12 }}
+            active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
+        version: {{ $databaseSpec.version | default "16" | quote }}
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
+kind: FlexibleServerDatabase
+metadata:
+    annotations:
+        crossplane.io/external-name: lportal
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
+spec:
+    forProvider:
+        charset: UTF8
+        collation: en_US.utf8
+        serverIdSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+    managementPolicies: ["Create", "Observe", "Update"]
+{{- end }}
+{{- range $dataPlane := list "blue" "green" }}
+{{- if or (has $dataPlane $dataPlanes) (has $dataPlane $observedDatabaseDataPlanes) }}
+---
+apiVersion: protection.crossplane.io/v1beta1
+kind: Usage
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: usage-server-by-database-{{ $dataPlane }}
+    name: {{ $xr.metadata.name }}-server-by-database-{{ $dataPlane }}
+    namespace: {{ $namespace }}
+spec:
+    by:
+        apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
+        kind: FlexibleServerDatabase
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+    of:
+        apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
+        kind: FlexibleServer
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+{{- end }}
+{{- end }}

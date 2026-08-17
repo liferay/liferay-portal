@@ -1,0 +1,83 @@
+{{- $cmkIdentityPrincipalId := dig "liferay-cmk-identity" "resource" "status" "atProvider" "principalId" "" $observedResources -}}
+{{- if $cmkEnabled }}
+apiVersion: managedidentity.azure.m.upbound.io/v1beta1
+kind: UserAssignedIdentity
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-cmk-identity
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-cmk
+spec:
+    forProvider:
+        location: {{ $region }}
+        name: {{ $baseName }}-cmk
+        resourceGroupName: {{ $env.resourceGroupName }}
+        tags:
+            {{- $tags | toYaml | nindent 12 }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+---
+apiVersion: keyvault.azure.m.upbound.io/v1beta1
+kind: Vault
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-key-vault
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $keyVaultName }}
+spec:
+    forProvider:
+        location: {{ $region }}
+        purgeProtectionEnabled: true
+        rbacAuthorizationEnabled: true
+        resourceGroupName: {{ $env.resourceGroupName }}
+        skuName: standard
+        tags:
+            {{- $tags | toYaml | nindent 12 }}
+        tenantId: {{ $env.tenantId }}
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: keyvault.azure.m.upbound.io/v1beta1
+kind: Key
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-key
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-key
+spec:
+    forProvider:
+        keyOpts:
+            -   unwrapKey
+            -   wrapKey
+        keySize: 2048
+        keyType: RSA
+        keyVaultIdSelector:
+            matchControllerRef: true
+        name: {{ $baseName }}-key
+    managementPolicies: {{ $managementPolicies }}
+{{- if $cmkIdentityPrincipalId }}
+---
+apiVersion: authorization.azure.m.upbound.io/v1beta1
+kind: RoleAssignment
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-cmk-role-assignment
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $xr.metadata.name }}-cmk-encryption-user
+spec:
+    forProvider:
+        principalId: {{ $cmkIdentityPrincipalId }}
+        principalType: ServicePrincipal
+        roleDefinitionName: Key Vault Crypto Service Encryption User
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.KeyVault/vaults/{{ $keyVaultName }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+{{- end }}
+{{- end }}

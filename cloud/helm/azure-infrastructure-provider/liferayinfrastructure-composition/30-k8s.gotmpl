@@ -1,0 +1,113 @@
+{{- $activeDatabaseFqdn := dig (printf "database-primary-%s" $activeDataPlane) "resource" "status" "atProvider" "fqdn" "" $observedResources -}}
+{{- $databasePort := "5432" -}}
+{{- $identityClientId := dig "liferay-identity" "resource" "status" "atProvider" "clientId" "" $observedResources -}}
+
+{{- $isReady := ne $activeDatabaseFqdn "" }}
+
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $baseName }}-document-library-connection-details-secret
+        gotemplating.fn.crossplane.io/composition-resource-name: document-library-connection-details-secret
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-document-library-connection-details-secret
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                LIFERAY_DOCLIB_CONTAINER_NAME: {{ "document-library" | b64enc | quote }}
+                LIFERAY_DOCLIB_STORAGE_ACCOUNT_NAME: {{ printf "%s%s" $storageAccountBase (trunc 1 $activeDataPlane) | b64enc | quote }}
+            kind: Secret
+            metadata:
+                labels:
+                    {{- $tags | toYaml | nindent 20 }}
+                name: document-library-connection-details
+                namespace: {{ $namespace }}
+            type: Opaque
+    managementPolicies: {{ $managementPolicies }}
+{{- if $identityClientId }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-ksa
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $xr.metadata.name }}-ksa
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+                annotations:
+                    azure.workload.identity/client-id: {{ $identityClientId }}
+                labels:
+                    {{- $tags | toYaml | nindent 20 }}
+                name: liferay-default
+                namespace: {{ $namespace }}
+{{- end }}
+{{- if $isReady }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $baseName }}-database-connection-details-secret
+        gotemplating.fn.crossplane.io/composition-resource-name: database-connection-details-secret
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-database-connection-details-secret
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                DATABASE_ENDPOINT: {{ $activeDatabaseFqdn | b64enc | quote }}
+                DATABASE_PORT: {{ $databasePort | b64enc | quote }}
+                DATABASE_USERNAME: {{ $databaseAdminUser | b64enc | quote }}
+            kind: Secret
+            metadata:
+                labels:
+                    {{- $tags | toYaml | nindent 20 }}
+                name: database-connection-details
+                namespace: {{ $namespace }}
+            type: Opaque
+    managementPolicies: {{ $managementPolicies }}
+{{- end }}
+{{- if $overlayAccess.enabled }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $baseName }}-overlay-bucket-details-secret
+        gotemplating.fn.crossplane.io/composition-resource-name: overlay-bucket-details-secret
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-overlay-bucket-details-secret
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                LIFERAY_OVERLAY_CONTAINER_NAME: {{ "overlay" | b64enc | quote }}
+                LIFERAY_OVERLAY_STORAGE_ACCOUNT_NAME: {{ $overlayStorageAccountName | b64enc | quote }}
+            kind: Secret
+            metadata:
+                labels:
+                    {{- $tags | toYaml | nindent 20 }}
+                name: overlay-bucket-details
+                namespace: {{ $namespace }}
+            type: Opaque
+    managementPolicies: {{ $managementPolicies }}
+{{- end }}
+---
+apiVersion: liferay.com/v1alpha1
+kind: LiferayInfrastructure
+status:
+    managedServiceDetailsReady: {{ $isReady }}

@@ -1,0 +1,103 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: Compositions
+templates:
+    -   templates/compositions.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+            -   equal:
+                    path: spec.compositeTypeRef.apiVersion
+                    value: liferay.com/v1alpha1
+            -   equal:
+                    path: spec.pipeline[0].functionRef.name
+                    value: function-environment-configs
+            -   equal:
+                    path: spec.pipeline[1].functionRef.name
+                    value: function-go-templating
+            -   equal:
+                    path: spec.pipeline[2].functionRef.name
+                    value: function-auto-ready
+            -   isKind:
+                    of: Composition
+            -   documentIndex: 0
+                equal:
+                    path: metadata.labels["liferay.com/interface"]
+                    value: liferay-infrastructure
+            -   documentIndex: 0
+                equal:
+                    path: metadata.name
+                    value: liferay-infrastructure
+            -   documentIndex: 0
+                equal:
+                    path: spec.compositeTypeRef.kind
+                    value: LiferayInfrastructure
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: FlexibleServer"
+            -   documentIndex: 1
+                equal:
+                    path: metadata.labels["liferay.com/interface"]
+                    value: liferay-overlay
+            -   documentIndex: 1
+                equal:
+                    path: metadata.name
+                    value: liferay-overlay
+            -   documentIndex: 1
+                equal:
+                    path: spec.compositeTypeRef.kind
+                    value: LiferayOverlay
+            -   documentIndex: 1
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: Account"
+        it: Implements the shared Liferay APIs through the packaged function pipeline
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "name: database-connection-details"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "name: document-library-connection-details"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "name: overlay-bucket-details"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "DATABASE_ENDPOINT"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "DATABASE_PORT"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "DATABASE_USERNAME"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "LIFERAY_DOCLIB_CONTAINER_NAME"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "LIFERAY_DOCLIB_STORAGE_ACCOUNT_NAME"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "LIFERAY_OVERLAY_CONTAINER_NAME"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "LIFERAY_OVERLAY_STORAGE_ACCOUNT_NAME"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "DATABASE_PASSWORD"
+        it: Publishes the connection details contract without copying the database password

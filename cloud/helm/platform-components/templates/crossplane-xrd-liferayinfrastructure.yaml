@@ -54,8 +54,6 @@ spec:
                                             type: boolean
                                         instanceType:
                                             type: string
-                                        region:
-                                            type: string
                                         rootPasswordSecretName:
                                             type: string
                                         storageGB:
@@ -97,8 +95,6 @@ spec:
                                         enableVersioning:
                                             default: true
                                             type: boolean
-                                        region:
-                                            type: string
                                         tags:
                                             additionalProperties:
                                                 type: string

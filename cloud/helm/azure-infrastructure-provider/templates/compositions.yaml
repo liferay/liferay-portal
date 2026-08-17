@@ -1,0 +1,50 @@
+{{- $compositions := list
+    (dict "directory" "liferayinfrastructure-composition" "kind" "LiferayInfrastructure" "name" "liferay-infrastructure")
+    (dict "directory" "liferayoverlay-composition" "kind" "LiferayOverlay" "name" "liferay-overlay")
+-}}
+{{- range $composition := $compositions }}
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-100"
+    labels:
+        liferay.com/interface: {{ $composition.name }}
+    name: {{ $composition.name }}
+spec:
+    compositeTypeRef:
+        apiVersion: liferay.com/v1alpha1
+        kind: {{ $composition.kind }}
+    mode: Pipeline
+    pipeline:
+        -   functionRef:
+                name: function-environment-configs
+            input:
+                apiVersion: environmentconfigs.fn.crossplane.io/v1beta1
+                kind: Input
+                spec:
+                    environmentConfigs:
+                        -   ref:
+                                name: environment-config
+                            type: Reference
+            step: environment-configs
+        -   functionRef:
+                name: function-go-templating
+            input:
+                apiVersion: gotemplating.fn.crossplane.io/v1beta1
+                inline:
+                    template: |
+                        {{- $.Files.Get (printf "%s/00-globals.gotmpl" $composition.directory) | nindent 24 }}
+                        {{- range $path, $_ := $.Files.Glob (printf "%s/[1-9]*" $composition.directory) }}
+                        ---
+                        {{ $.Files.Get $path | nindent 24 }}
+                        {{- end }}
+                kind: Input
+                source: Inline
+            step: go-templating
+        -   functionRef:
+                name: function-auto-ready
+            step: auto-detect-ready-composed-resources
+{{- end }}

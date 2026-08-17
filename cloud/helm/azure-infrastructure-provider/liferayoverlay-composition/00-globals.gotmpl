@@ -1,0 +1,9 @@
+{{- $env := index .context "apiextensions.crossplane.io/environment" -}}
+{{- $xr := .observed.composite.resource -}}
+
+{{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
+{{- $projectId := $xr.spec.projectId -}}
+{{- $region := $xr.spec.region -}}
+
+{{- $overlayStorageAccountName := printf "%.9s%.6sovl%s" ($env.deploymentName | replace "-" "" | lower) ($projectId | replace "-" "" | lower) (printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6) -}}
+{{- $tags := merge ($xr.spec.commonTags | default dict) (dict "app" "liferay" "deployment-name" $env.deploymentName "project-id" $projectId) -}}

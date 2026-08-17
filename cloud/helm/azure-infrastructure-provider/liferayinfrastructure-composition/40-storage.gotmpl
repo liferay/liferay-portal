@@ -1,0 +1,61 @@
+{{- $storage := $xr.spec.storage | default dict -}}
+
+{{- range $i, $dataPlane := $dataPlanes }}
+{{- $storageAccountName := printf "%s%s" $storageAccountBase (trunc 1 $dataPlane) }}
+{{- if $i }}
+---
+{{- end }}
+apiVersion: storage.azure.m.upbound.io/v1beta1
+kind: Account
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-storage-account-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $storageAccountName }}
+spec:
+    forProvider:
+        accountReplicationType: LRS
+        accountTier: Standard
+        allowNestedItemsToBePublic: false
+        blobProperties:
+            containerDeleteRetentionPolicy:
+                days: 7
+            deleteRetentionPolicy:
+                days: 7
+            versioningEnabled: {{ hasKey $storage "enableVersioning" | ternary $storage.enableVersioning true }}
+        {{- if $cmkEnabled }}
+        customerManagedKey:
+            keyVaultKeyId: {{ $cmkKeyVaultKeyId }}
+            userAssignedIdentityId: {{ $cmkIdentityId }}
+        identity:
+            identityIds:
+                -   {{ $cmkIdentityId }}
+            type: UserAssigned
+        {{- end }}
+        location: {{ $region }}
+        resourceGroupName: {{ $env.resourceGroupName }}
+        tags:
+            {{- merge (dict) $backupTargetTags ($storage.tags | default dict) | toYaml | nindent 12 }}
+            active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: storage.azure.m.upbound.io/v1beta1
+kind: Container
+metadata:
+    annotations:
+        crossplane.io/external-name: document-library
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-storage-container-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $storageAccountName }}-document-library
+spec:
+    forProvider:
+        storageAccountIdSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+    managementPolicies: {{ $managementPolicies }}
+{{- end }}

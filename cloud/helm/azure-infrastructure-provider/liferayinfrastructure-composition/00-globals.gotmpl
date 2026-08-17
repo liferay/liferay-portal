@@ -1,0 +1,39 @@
+{{- $databaseAdminUser := "liferay_database_admin" -}}
+{{- $env := index .context "apiextensions.crossplane.io/environment" -}}
+{{- $observedResources := .observed.resources | default dict -}}
+{{- $xr := .observed.composite.resource -}}
+
+{{- $cmkEnabled := $xr.spec.cmk.enabled -}}
+{{- $environmentId := $xr.spec.environmentId -}}
+{{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
+{{- $namespace := $xr.metadata.namespace -}}
+{{- $overlayAccess := $xr.spec.overlayAccess | default dict -}}
+{{- $projectId := $xr.spec.projectId -}}
+{{- $region := $xr.spec.region -}}
+{{- $restorePhase := $xr.spec.restorePhase | default "none" -}}
+{{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
+
+{{- $activeDataPlane := $targetActiveDataPlane -}}
+{{- $dataPlanes := list $targetActiveDataPlane -}}
+{{- $tags := merge ($xr.spec.commonTags | default dict) (dict "app" "liferay" "deployment-name" $env.deploymentName "environment-id" $environmentId "project-id" $projectId) -}}
+{{- $overlayStorageAccountName := printf "%.9s%.6sovl%s" ($env.deploymentName | replace "-" "" | lower) ($projectId | replace "-" "" | lower) (printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6) -}}
+{{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
+{{- $targetInactiveDataPlane := (eq $targetActiveDataPlane "blue") | ternary "green" "blue" -}}
+
+{{- if (eq $restorePhase "promoting") -}}
+    {{- $dataPlanes = list "blue" "green" -}}
+{{- else if (eq $restorePhase "provisioning") -}}
+    {{- $activeDataPlane = $targetInactiveDataPlane -}}
+    {{- $dataPlanes = list "blue" "green" -}}
+{{- end }}
+
+{{- $backupTargetTags := merge (dict) $tags (dict "should-back-up" "true") -}}
+{{- $uidHash := printf "%s-%s-%s" $env.subscriptionId $env.deploymentName $projectIdFull | sha256sum | trunc 6 -}}
+
+{{- $baseName := printf "%.18s-%s" $projectIdFull $uidHash -}}
+{{- $storageAccountBase := printf "%.15s%s" ($projectIdFull | replace "-" "" | lower) $uidHash -}}
+
+{{- $cmkIdentityId := printf "/subscriptions/%s/resourceGroups/%s/providers/Microsoft.ManagedIdentity/userAssignedIdentities/%s-cmk" $env.subscriptionId $env.resourceGroupName $baseName -}}
+{{- $keyVaultName := printf "%s-kv" $storageAccountBase -}}
+
+{{- $cmkKeyVaultKeyId := printf "https://%s.vault.azure.net/keys/%s-key" $keyVaultName $baseName -}}

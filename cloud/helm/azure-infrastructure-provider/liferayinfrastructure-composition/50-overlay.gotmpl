@@ -1,0 +1,20 @@
+{{- if and $overlayAccess.enabled $identityPrincipalId }}
+apiVersion: authorization.azure.m.upbound.io/v1beta1
+kind: RoleAssignment
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-identity-overlay-role-assignment
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $xr.metadata.name }}-overlay-reader
+spec:
+    forProvider:
+        principalId: {{ $identityPrincipalId }}
+        principalType: ServicePrincipal
+        roleDefinitionName: Storage Blob Data Reader
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.Storage/storageAccounts/{{ $overlayStorageAccountName }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+{{- end }}

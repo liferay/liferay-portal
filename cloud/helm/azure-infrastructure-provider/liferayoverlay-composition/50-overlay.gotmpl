@@ -1,0 +1,39 @@
+apiVersion: storage.azure.m.upbound.io/v1beta1
+kind: Account
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-overlay-storage-account
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $overlayStorageAccountName }}
+spec:
+    forProvider:
+        accountReplicationType: LRS
+        accountTier: Standard
+        allowNestedItemsToBePublic: false
+        blobProperties:
+            containerDeleteRetentionPolicy:
+                days: 7
+            deleteRetentionPolicy:
+                days: 7
+            versioningEnabled: true
+        location: {{ $region }}
+        resourceGroupName: {{ $env.resourceGroupName }}
+        tags:
+            {{- $tags | toYaml | nindent 12 }}
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: storage.azure.m.upbound.io/v1beta1
+kind: Container
+metadata:
+    annotations:
+        crossplane.io/external-name: overlay
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-overlay-storage-container
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $overlayStorageAccountName }}-overlay
+spec:
+    forProvider:
+        storageAccountIdRef:
+            name: {{ $overlayStorageAccountName }}
+    managementPolicies: {{ $managementPolicies }}
