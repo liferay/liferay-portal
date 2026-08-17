@@ -213,18 +213,6 @@ function buildActionItems({
 }) {
 	const items: ActionItems = [];
 
-	if (version?.actions?.delete) {
-		items.push({
-			label: Liferay.Language.get('delete-version'),
-			onClick: (event) => {
-				event.stopPropagation();
-
-				onDelete?.(version);
-			},
-			symbolLeft: 'trash',
-		});
-	}
-
 	if (version?.actions?.restore) {
 		items.push({
 			label: Liferay.Language.get('restore-version'),
@@ -234,6 +222,22 @@ function buildActionItems({
 				onRestore?.(version);
 			},
 			symbolLeft: 'restore',
+		});
+	}
+
+	if (version?.actions?.delete) {
+		if (items.length) {
+			items.push({type: 'divider'});
+		}
+
+		items.push({
+			label: Liferay.Language.get('delete-version'),
+			onClick: (event) => {
+				event.stopPropagation();
+
+				onDelete?.(version);
+			},
+			symbolLeft: 'trash',
 		});
 	}
 
