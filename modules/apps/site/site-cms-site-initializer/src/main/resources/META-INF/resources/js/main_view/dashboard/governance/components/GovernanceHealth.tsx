@@ -8,6 +8,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React, {useContext} from 'react';
 
 import HelpTooltipIcon from '../../../../common/components/forms/HelpTooltipIcon';
+import {getImage} from '../../../../common/utils/getImage';
 import {GovernanceContext} from '../GovernanceContext';
 import getGovernanceHealth from '../getGovernanceHealth';
 
@@ -38,6 +39,9 @@ export function GovernanceHealth() {
 		<section
 			aria-label={title}
 			className="align-items-center cms-governance-health d-flex justify-content-between my-4 pl-4 pr-5 py-3 rounded-lg"
+			style={{
+				backgroundImage: `url(${getImage('governance_health_banner.svg')})`,
+			}}
 		>
 			<div className="mb-2">
 				<div className="align-items-center d-flex my-1">
