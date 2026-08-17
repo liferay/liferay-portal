@@ -11,6 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {compareScreenshots} from '../../../utils/compareScreenshots';
 import getRandomString from '../../../utils/getRandomString';
 import {getSiteHomePageScreenshot} from '../../../utils/getSiteHomePageScreenshot';
+import {waitForFDS} from '../../../utils/waitFor';
 import {pagesPagesTest} from '../../layout-admin-web/main/fixtures/pagesPagesTest';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 
@@ -107,13 +108,29 @@ const test = mergeTests(
 			await test.step('Assert the import only reports missing references', async () => {
 				await exportImportPage.goToImportDetails(exportName);
 
-				await expect(
-					page.getByRole('cell', {name: 'Missing Reference'}).first()
-				).toBeVisible();
+				await exportImportPage.filterReportBy(
+					'Type',
+					'Missing Reference'
+				);
+
+				await waitForFDS({page});
 
 				await expect(
-					page.getByRole('cell', {exact: true, name: 'Error'})
-				).toHaveCount(0);
+					page
+						.getByRole('cell', {
+							exact: true,
+							name: 'Missing Reference',
+						})
+						.first()
+				).toBeVisible();
+
+				await exportImportPage.excludeReportFilter();
+
+				await waitForFDS({empty: true, page});
+
+				await expect(page.getByText('No Results Found')).toBeVisible();
+
+				await exportImportPage.removeReportFilter();
 			});
 
 			await test.step('Assert the exportable items from site 1 and site 2 are equal', async () => {
