@@ -580,6 +580,22 @@ test.describe('Profiles - Data Masks tab', () => {
 			const name = profileName();
 			const profile = await createProfile(apiHelpers, name);
 
+			const getMaskExternalReferenceCodes = async () => {
+				const response = await apiHelpers.get(
+					`${apiHelpers.baseUrl}${PROFILE_DATA_MASKS_API}?filter=mcpServerProfileExternalReferenceCode eq '${profile.externalReferenceCode}'&pageSize=200&sort=executionOrder:asc`
+				);
+
+				return (response?.items ?? []).map(
+					(item: {dataMaskExternalReferenceCode?: string}) =>
+						item.dataMaskExternalReferenceCode
+				);
+			};
+
+			const maskExternalReferenceCodes =
+				await getMaskExternalReferenceCodes();
+
+			expect(maskExternalReferenceCodes.length).toBeGreaterThan(1);
+
 			await profilesPage.goto();
 			await profilesPage.search(name);
 			await profilesPage.clickAction(name, 'Edit');
@@ -600,15 +616,11 @@ test.describe('Profiles - Data Masks tab', () => {
 			await profilesPage.page.keyboard.press('Enter');
 
 			await expect(async () => {
-				const response = await apiHelpers.get(
-					`${apiHelpers.baseUrl}${PROFILE_DATA_MASKS_API}?filter=mcpServerProfileExternalReferenceCode eq '${profile.externalReferenceCode}'&pageSize=200&sort=executionOrder:asc`
-				);
-
-				const orders = (response?.items ?? []).map(
-					(item: {executionOrder?: number}) => item.executionOrder
-				);
-
-				expect(orders[0]).toBe(0);
+				expect(await getMaskExternalReferenceCodes()).toEqual([
+					maskExternalReferenceCodes[1],
+					maskExternalReferenceCodes[0],
+					...maskExternalReferenceCodes.slice(2),
+				]);
 			}).toPass({timeout: 15000});
 		}
 	);
