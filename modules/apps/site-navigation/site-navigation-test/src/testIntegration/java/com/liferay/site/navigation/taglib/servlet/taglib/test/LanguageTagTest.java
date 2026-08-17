@@ -95,7 +95,8 @@ public class LanguageTagTest {
 		Layout layout = _addLayout();
 
 		_testGetLanguageEntriesWithAnotherLocaleFriendlyURL(layout);
-		_testGetLanguageEntriesWithDefaultPageFriendlyURLMappingPath(layout);
+		_testGetLanguageEntriesWithDefaultLayoutWithFriendlyURLMappingPath(
+			layout);
 
 		_testGetLanguageEntriesWithDisplayPage();
 		_testGetLanguageEntriesWithFormAction(layout);
@@ -314,8 +315,9 @@ public class LanguageTagTest {
 				LocaleUtil.FRANCE));
 	}
 
-	private void _testGetLanguageEntriesWithDefaultPageFriendlyURLMappingPath(
-			Layout layout)
+	private void
+			_testGetLanguageEntriesWithDefaultLayoutWithFriendlyURLMappingPath(
+				Layout layout)
 		throws Exception {
 
 		_assertLocalizedURL(
