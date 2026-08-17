@@ -17,34 +17,21 @@ import java.util.regex.Pattern;
 /**
  * @author Shuyang Zhou
  */
-public class JavaServiceGetFetchCheck extends BaseServiceImplCheck {
+public class JavaServiceImplGetFetchCheck extends BaseJavaTermCheck {
 
 	@Override
-	public boolean isModuleSourceCheck() {
+	public boolean isLiferaySourceCheck() {
 		return false;
 	}
 
 	@Override
 	protected String doProcess(
-			String fileName, String absolutePath, JavaTerm javaTerm,
-			String fileContent)
-		throws Exception {
+		String fileName, String absolutePath, JavaTerm javaTerm,
+		String fileContent) {
 
 		String className = JavaSourceUtil.getClassName(fileName);
 
 		if (!className.endsWith("ServiceImpl")) {
-			return javaTerm.getContent();
-		}
-
-		for (String allowedFileName :
-				getAttributeValues(_ALLOWED_FILE_NAMES_KEY, absolutePath)) {
-
-			if (absolutePath.endsWith(allowedFileName)) {
-				return javaTerm.getContent();
-			}
-		}
-
-		if (!(javaTerm instanceof JavaMethod)) {
 			return javaTerm.getContent();
 		}
 
@@ -82,6 +69,11 @@ public class JavaServiceGetFetchCheck extends BaseServiceImplCheck {
 		return javaTerm.getContent();
 	}
 
+	@Override
+	protected String[] getCheckableJavaTermNames() {
+		return new String[] {JAVA_METHOD};
+	}
+
 	private boolean _isSkippedReturnType(String returnType) {
 		if (returnType == null) {
 			return true;
@@ -107,8 +99,6 @@ public class JavaServiceGetFetchCheck extends BaseServiceImplCheck {
 
 		return matcher.find();
 	}
-
-	private static final String _ALLOWED_FILE_NAMES_KEY = "allowedFileNames";
 
 	private static final String[] _SKIPPED_RETURN_TYPES = {
 		"boolean", "byte", "char", "double", "float", "int", "long", "Number",

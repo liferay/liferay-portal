@@ -685,10 +685,6 @@
 			<category name="Bug Prevention" />
 			<description name="Checks for nested annotations inside `@see`." />
 		</check>
-		<check name="JavaServiceGetFetchCheck">
-			<category name="Bug Prevention" />
-			<description name="Flags a get-named service method that returns a nullable fetch result, betraying the non-null promise its name implies." />
-		</check>
 		<check name="JavaServiceImplCheck">
 			<category name="Bug Prevention" />
 			<description name="Ensures that `afterPropertiesSet` and `destroy` methods in `*ServiceImpl` always call the method with the same name in the superclass." />
@@ -929,6 +925,10 @@
 		<check name="JavaRunSQLCheck">
 			<category name="Styling" />
 			<description name="Applies rules to enforce consistency in code style." />
+		</check>
+		<check name="JavaServiceImplGetFetchCheck">
+			<category name="Bug Prevention" />
+			<description name="Flags a get-named service method that returns a nullable fetch result, betraying the non-null promise its name implies." />
 		</check>
 		<check name="JavaServiceObjectCheck">
 			<category name="Styling" />
