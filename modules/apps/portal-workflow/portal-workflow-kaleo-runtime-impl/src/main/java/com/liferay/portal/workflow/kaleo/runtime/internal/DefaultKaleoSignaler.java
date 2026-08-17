@@ -276,8 +276,27 @@ public class DefaultKaleoSignaler
 						kaleoInstanceTokenLocalService.getKaleoInstanceTokens(
 							kaleoInstance.getKaleoInstanceId())) {
 
+					long kaleoInstanceTokenId =
+						kaleoInstanceToken.getKaleoInstanceTokenId();
+
+					try {
+						kaleoTimerInstanceTokenLocalService.
+							completeKaleoTimerInstanceTokens(
+								kaleoInstanceTokenId,
+								executionContext.getServiceContext());
+					}
+					catch (PortalException portalException) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"Unable to complete Kaleo timer instance " +
+									"tokens for Kaleo instance token " +
+										kaleoInstanceTokenId,
+								portalException);
+						}
+					}
+
 					kaleoInstanceTokenLocalService.completeKaleoInstanceToken(
-						kaleoInstanceToken.getKaleoInstanceTokenId());
+						kaleoInstanceTokenId);
 				}
 
 				kaleoInstanceLocalService.completeKaleoInstance(
