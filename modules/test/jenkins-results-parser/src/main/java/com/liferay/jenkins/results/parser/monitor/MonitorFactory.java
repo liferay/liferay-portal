@@ -15,10 +15,14 @@ public class MonitorFactory {
 	public static Monitor newMonitor(MonitorConfig monitorConfig) {
 		String type = monitorConfig.getType();
 
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(type) &&
-			type.equals("job-health")) {
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(type)) {
+			if (type.equals("http-endpoint")) {
+				return new HTTPEndpointMonitor(monitorConfig);
+			}
 
-			return new JobHealthMonitor(monitorConfig);
+			if (type.equals("job-health")) {
+				return new JobHealthMonitor(monitorConfig);
+			}
 		}
 
 		throw new IllegalArgumentException("Unknown monitor type: " + type);
