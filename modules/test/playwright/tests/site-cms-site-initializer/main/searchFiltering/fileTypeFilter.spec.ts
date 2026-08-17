@@ -78,3 +78,60 @@ test(
 		});
 	}
 );
+
+test(
+	'Filtering the Files section by Folder excludes files',
+	{tag: '@LPD-102741'},
+	async ({apiHelpers, assetsPage, page}) => {
+		const fileTitle = `${getRandomString()}.txt`;
+		const folderTitle = getRandomString();
+
+		await test.step('Create a folder and a file in a fresh Space', async () => {
+			const space =
+				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+					name: `Space ${getRandomString()}`,
+					type: 'Space',
+				});
+
+			await apiHelpers.objectFolder.createObjectEntryFolder({
+				scopeKey: space.name,
+				title: folderTitle,
+			});
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					file: {
+						fileBase64:
+							Buffer.from('plain text content').toString(
+								'base64'
+							),
+						name: fileTitle,
+					},
+					objectEntryFolderExternalReferenceCode: 'L_FILES',
+					title: fileTitle,
+				},
+				'cms/basic-documents',
+				space.name
+			);
+		});
+
+		await test.step('Both the folder and the file are visible before filtering', async () => {
+			await assetsPage.gotoFiles();
+
+			await assetsPage.changeVisualizationMode('Table');
+
+			await expect(assetsPage.getItem(folderTitle)).toBeVisible();
+			await expect(assetsPage.getItem(fileTitle)).toBeVisible();
+		});
+
+		await test.step('Filtering by Type Folder shows only the folder', async () => {
+			await applyFDSSelectionFilter(page, {
+				filter: 'Type',
+				value: 'Folder',
+			});
+
+			await expect(assetsPage.getItem(folderTitle)).toBeVisible();
+			await expect(assetsPage.getItem(fileTitle)).toBeHidden();
+		});
+	}
+);
