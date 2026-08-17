@@ -131,21 +131,45 @@ export class GlobalMenuPage {
 			name: categoryName,
 		});
 
+		// aria-expanded is the trigger's own open state, so it reads true as
+		// soon as the menu opens, even while the category list is still
+		// loading. Reading the list's contents instead reads "closed" for
+		// that whole load and re-clicks the trigger, which toggles the menu
+		// shut again. The pair may still start over: a caller's earlier step
+		// can have a navigation in flight, and when it lands it replaces the
+		// document and takes the open menu with it. That navigation belongs
+		// to the caller and cannot be waited on from here, so the fresh
+		// document gets asked again.
+
 		await expect(async () => {
-			if (!(await this.categoriesList.isVisible())) {
+			if (
+				(await this.globalMenuButton.getAttribute('aria-expanded', {
+					timeout: 5000,
+				})) !== 'true'
+			) {
 				await this.globalMenuButton.click();
+
+				// Five seconds a look, so the loop asks again often instead
+				// of staring out the default before the next ask.
+
+				await expect(this.globalMenuButton).toHaveAttribute(
+					'aria-expanded',
+					'true',
+					{timeout: 5000}
+				);
 			}
 
-			await expect(menuItem).toBeVisible({timeout: 2000});
+			await expect(menuItem).toBeVisible({timeout: 5000});
 
-			const isActive = (
-				(await menuItem.getAttribute('class', {timeout: 2000})) || ''
-			).includes('active');
+			// The menu marks the category that owns the current page with
+			// aria-current, and an item already marked needs no navigation.
 
-			if (!isActive) {
-				await menuItem.click();
-
-				await expect(this.categoriesList).toBeHidden({timeout: 2000});
+			if (
+				(await menuItem.getAttribute('aria-current', {
+					timeout: 5000,
+				})) !== 'page'
+			) {
+				await menuItem.click({timeout: 5000});
 			}
 		}).toPass();
 
