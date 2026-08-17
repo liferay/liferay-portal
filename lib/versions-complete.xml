@@ -745,7 +745,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.google.docs.jar!org.freemarker.jar</file-name>
-				<version>2.3.33.LIFERAY-PATCHED-3</version>
+				<version>2.3.33.LIFERAY-PATCHED-2</version>
 				<project-name>org.freemarker.freemarker</project-name>
 				<licenses>
 					<license>
@@ -3119,24 +3119,24 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!log4j-api.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Apache Log4j API</project-name>
-				<project-url>https://logging.apache.org/log4j/2.x/</project-url>
+				<project-url>https://www.apache.org/</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache-2.0</license-name>
+						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!log4j-core.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Apache Log4j Core</project-name>
-				<project-url>https://logging.apache.org/log4j/2.x/</project-url>
+				<project-url>https://www.apache.org/</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache-2.0</license-name>
+						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
@@ -3179,7 +3179,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!org.apache.commons.logging.jar</file-name>
-				<version>1.2.LIFERAY-PATCHED-3</version>
+				<version>1.2.LIFERAY-PATCHED-2</version>
 				<project-name>Apache Commons Logging</project-name>
 				<project-url>http://commons.apache.org/proper/commons-logging/</project-url>
 				<licenses>
@@ -3756,7 +3756,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.store.gcs.jar!org.apache.commons.logging.jar</file-name>
-				<version>1.2.LIFERAY-PATCHED-3</version>
+				<version>1.2.LIFERAY-PATCHED-2</version>
 				<project-name>Apache Commons Logging</project-name>
 				<project-url>http://commons.apache.org/proper/commons-logging/</project-url>
 				<licenses>
@@ -4038,7 +4038,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.store.s3.jar!org.apache.commons.logging.jar</file-name>
-				<version>1.2.LIFERAY-PATCHED-3</version>
+				<version>1.2.LIFERAY-PATCHED-2</version>
 				<project-name>Apache Commons Logging</project-name>
 				<project-url>http://commons.apache.org/proper/commons-logging/</project-url>
 				<licenses>
@@ -4178,7 +4178,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.template.freemarker.jar!org.freemarker.jar</file-name>
-				<version>2.3.33.LIFERAY-PATCHED-3</version>
+				<version>2.3.33.LIFERAY-PATCHED-2</version>
 				<project-name>org.freemarker.freemarker</project-name>
 				<licenses>
 					<license>
@@ -4554,24 +4554,24 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tools.db.partition.migration.validator.jar!log4j-api.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Apache Log4j API</project-name>
-				<project-url>https://logging.apache.org/log4j/2.x/</project-url>
+				<project-url>https://www.apache.org/</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache-2.0</license-name>
+						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tools.db.partition.migration.validator.jar!log4j-core.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Apache Log4j Core</project-name>
-				<project-url>https://logging.apache.org/log4j/2.x/</project-url>
+				<project-url>https://www.apache.org/</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache-2.0</license-name>
+						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
@@ -7892,7 +7892,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/freemarker.jar</file-name>
-				<version>2.3.33.LIFERAY-PATCHED-3</version>
+				<version>2.3.33.LIFERAY-PATCHED-2</version>
 				<project-name>FreeMarker</project-name>
 				<project-url>http://www.freemarker.org</project-url>
 				<licenses>
@@ -8146,7 +8146,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/log4j-1.2-api.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Log4j 1.x Compatibility API</project-name>
 				<project-url>http://logging.apache.org/log4j</project-url>
 				<licenses>
@@ -8680,7 +8680,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/commons-logging.jar</file-name>
-				<version>1.2.LIFERAY-PATCHED-3</version>
+				<version>1.2.LIFERAY-PATCHED-2</version>
 				<project-name>Commons Logging</project-name>
 				<project-url>http://commons.apache.org/logging</project-url>
 				<licenses>
@@ -8878,7 +8878,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/log4j-api.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Log4j API</project-name>
 				<project-url>http://logging.apache.org/log4j</project-url>
 				<licenses>
@@ -8890,7 +8890,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/log4j-core.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Log4j Core</project-name>
 				<project-url>http://logging.apache.org/log4j</project-url>
 				<licenses>
