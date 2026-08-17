@@ -7,6 +7,8 @@ package com.liferay.portal.security.auth;
 
 import java.io.Serializable;
 
+import java.util.Arrays;
+
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -31,9 +33,16 @@ public class PortalCallbackHandler implements CallbackHandler, Serializable {
 				nameCallback.setName(_name);
 			}
 			else if (callback instanceof PasswordCallback) {
-				PasswordCallback passCallback = (PasswordCallback)callback;
+				PasswordCallback passwordCallback = (PasswordCallback)callback;
 
-				passCallback.setPassword(_password.toCharArray());
+				char[] passwordChars = _password.toCharArray();
+
+				try {
+					passwordCallback.setPassword(passwordChars);
+				}
+				finally {
+					Arrays.fill(passwordChars, '\0');
+				}
 			}
 		}
 	}
