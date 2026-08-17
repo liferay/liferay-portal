@@ -208,11 +208,13 @@ export default function CreateTagsModalContent({
 						setSpaceInputError={setSpaceInputError}
 					/>
 
-					<CategorizationProjects
-						checkboxText="tag"
-						setProjectInputError={setProjectInputError}
-						setSelectedProjects={setSelectedProjects}
-					/>
+					{Liferay.FeatureFlags['LPD-58677'] && (
+						<CategorizationProjects
+							checkboxText="tag"
+							setProjectInputError={setProjectInputError}
+							setSelectedProjects={setSelectedProjects}
+						/>
+					)}
 				</div>
 			</ClayModal.Body>
 

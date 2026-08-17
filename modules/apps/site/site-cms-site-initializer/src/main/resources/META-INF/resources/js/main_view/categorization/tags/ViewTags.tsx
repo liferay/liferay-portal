@@ -76,16 +76,20 @@ export default function ViewTags({
 			multiple: true,
 			type: 'selection',
 		},
-		{
-			apiURL: "/o/headless-asset-library/v1.0/asset-libraries?filter=type eq 'Project'",
-			entityFieldType: 'string',
-			id: 'projects',
-			itemKey: 'siteId',
-			itemLabel: 'name',
-			label: Liferay.Language.get('project'),
-			multiple: true,
-			type: 'selection',
-		},
+		...(Liferay.FeatureFlags['LPD-58677']
+			? [
+					{
+						apiURL: "/o/headless-asset-library/v1.0/asset-libraries?filter=type eq 'Project'",
+						entityFieldType: 'string',
+						id: 'projects',
+						itemKey: 'siteId',
+						itemLabel: 'name',
+						label: Liferay.Language.get('project'),
+						multiple: true,
+						type: 'selection',
+					},
+				]
+			: []),
 	];
 
 	const views = [
