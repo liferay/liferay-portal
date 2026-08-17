@@ -464,8 +464,7 @@ public class StyleBookEntryLocalServiceImpl
 				oldDefaultStyleBookEntry);
 
 			if (oldDefaultDraftStyleBookEntry != null) {
-				oldDefaultDraftStyleBookEntry.setDefaultStyleBookEntry(
-					defaultStyleBookEntry);
+				oldDefaultDraftStyleBookEntry.setDefaultStyleBookEntry(false);
 
 				updateDraft(oldDefaultDraftStyleBookEntry);
 			}
