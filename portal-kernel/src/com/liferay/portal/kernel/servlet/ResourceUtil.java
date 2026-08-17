@@ -5,6 +5,8 @@
 
 package com.liferay.portal.kernel.servlet;
 
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
@@ -19,12 +21,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
@@ -107,7 +105,7 @@ public class ResourceUtil {
 	}
 
 	private static ServletContext _getPathServletContext(String path) {
-		for (ServletContext servletContext : _servletContexts.values()) {
+		for (ServletContext servletContext : _portletServiceTrackerList) {
 			if (path.startsWith(servletContext.getContextPath())) {
 				return servletContext;
 			}
@@ -145,51 +143,44 @@ public class ResourceUtil {
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
-	private static final ServiceTracker<Portlet, Portlet> _serviceTracker;
-	private static final Map<ServiceReference<Portlet>, ServletContext>
-		_servletContexts = new ConcurrentHashMap<>();
 
-	private static class ResourcesServiceTrackerCustomizer
-		implements ServiceTrackerCustomizer<Portlet, Portlet> {
+	private static final ServiceTrackerList<ServletContext>
+		_portletServiceTrackerList = ServiceTrackerListFactory.open(
+			_bundleContext, Portlet.class, null,
+			new ServiceTrackerCustomizer<Portlet, ServletContext>() {
 
-		@Override
-		public Portlet addingService(
-			ServiceReference<Portlet> serviceReference) {
+				@Override
+				public ServletContext addingService(
+					ServiceReference<Portlet> serviceReference) {
 
-			Portlet portlet = _bundleContext.getService(serviceReference);
+					Portlet portlet = _bundleContext.getService(
+						serviceReference);
 
-			PortletApp portletApp = portlet.getPortletApp();
+					PortletApp portletApp = portlet.getPortletApp();
 
-			if (portletApp.isWARFile()) {
-				_servletContexts.put(
-					serviceReference, portletApp.getServletContext());
-			}
+					if (portletApp.isWARFile()) {
+						return portletApp.getServletContext();
+					}
 
-			return portlet;
-		}
+					_bundleContext.ungetService(serviceReference);
 
-		@Override
-		public void modifiedService(
-			ServiceReference<Portlet> serviceReference, Portlet portlet) {
-		}
+					return null;
+				}
 
-		@Override
-		public void removedService(
-			ServiceReference<Portlet> serviceReference, Portlet portlet) {
+				@Override
+				public void modifiedService(
+					ServiceReference<Portlet> serviceReference,
+					ServletContext servletContext) {
+				}
 
-			_bundleContext.ungetService(serviceReference);
+				@Override
+				public void removedService(
+					ServiceReference<Portlet> serviceReference,
+					ServletContext servletContext) {
 
-			_servletContexts.remove(serviceReference);
-		}
+					_bundleContext.ungetService(serviceReference);
+				}
 
-	}
-
-	static {
-		_serviceTracker = new ServiceTracker<>(
-			_bundleContext, Portlet.class,
-			new ResourcesServiceTrackerCustomizer());
-
-		_serviceTracker.open();
-	}
+			});
 
 }
