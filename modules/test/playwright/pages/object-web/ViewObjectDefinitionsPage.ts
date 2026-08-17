@@ -11,7 +11,6 @@ import path from 'path';
 import {gotoWithRetry} from '../../utils/gotoWithRetry';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {getTempDir} from '../../utils/temp';
-import {waitForAlert} from '../../utils/waitForAlert';
 import {waitForSearchToBeReady} from '../../utils/waitForSearchToBeReady';
 
 export class ViewObjectDefinitionsPage {
@@ -114,12 +113,36 @@ export class ViewObjectDefinitionsPage {
 
 		await expect(toggle).toBeChecked({checked: !toggled});
 
+		// The save answers with its PUT, shows its toast, and only then
+		// schedules a page reload a second later, so neither the click nor
+		// the toast says the work is done. Wait for the save's own answer,
+		// then consume the reload it schedules, so the caller's next
+		// navigation cannot collide with it. Ten seconds is generous headroom
+		// for that timer and fails loud, rather than quietly at the default
+		// half minute.
+
+		const saveResponse = this.page.waitForResponse(
+			(response) =>
+				response
+					.url()
+					.includes(
+						'/o/object-admin/v1.0/object-definitions/by-external-reference-code/'
+					) && response.request().method() === 'PUT'
+		);
+
+		// The reload is waited on through the page's load event, which fires
+		// once per real document load: the same-document navigation the
+		// portlet fires around the save does not fire it, and the redirect
+		// the reload answers with first collapses into the one load of the
+		// final address.
+
+		const reload = this.page.waitForEvent('load', {timeout: 10000});
+
 		await saveButton.click();
 
-		await waitForAlert(
-			this.page,
-			`Success:The object was saved successfully.`
-		);
+		await saveResponse;
+
+		await reload;
 	}
 
 	async clickEditObjectDefinitionLink(
