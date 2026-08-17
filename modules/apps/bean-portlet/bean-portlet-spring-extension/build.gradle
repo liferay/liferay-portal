@@ -2,7 +2,7 @@ dependencies {
 	compileOnly group: "com.liferay", name: "jakarta.enterprise.cdi", version: "4.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "jakarta.enterprise.cdi-el", version: "4.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
+	compileOnly group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.19.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"

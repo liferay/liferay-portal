@@ -7,7 +7,7 @@ dependencies {
 	compileInclude group: "com.google.cloud.opentelemetry", name: "detector-resources-support", version: "0.33.0"
 	compileInclude group: "com.google.cloud.opentelemetry", name: "exporter-metrics", version: "0.33.0"
 	compileInclude group: "com.google.cloud.opentelemetry", name: "shared-resourcemapping", version: "0.33.0"
-	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
+	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
 	compileInclude group: "io.opentelemetry", name: "opentelemetry-api", version: "1.46.0"
 	compileInclude group: "io.opentelemetry", name: "opentelemetry-api-incubator", version: "1.46.0-alpha"
 	compileInclude group: "io.opentelemetry", name: "opentelemetry-context", version: "1.46.0"

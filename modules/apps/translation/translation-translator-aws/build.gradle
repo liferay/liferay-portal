@@ -23,7 +23,7 @@ dependencies {
 	compileInclude group: "software.amazon.awssdk", name: "utils", version: "2.25.53"
 	compileInclude group: "software.amazon.eventstream", name: "eventstream", version: "1.0.1"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
-	compileOnly group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
+	compileOnly group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"

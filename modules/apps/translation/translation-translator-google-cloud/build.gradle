@@ -28,7 +28,7 @@ dependencies {
 	compileOnly group: "com.google.protobuf", name: "protobuf-java", version: "3.25.5"
 	compileOnly group: "com.google.protobuf", name: "protobuf-java-util", version: "3.25.5"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
-	compileOnly group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
+	compileOnly group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileOnly group: "io.grpc", name: "grpc-alts", version: "1.75.0"

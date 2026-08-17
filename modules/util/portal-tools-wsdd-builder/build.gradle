@@ -20,7 +20,7 @@ copyCSS {
 dependencies {
 	api group: "axis", name: "axis-wsdl4j", version: "1.5.1"
 	api group: "com.liferay", name: "org.apache.axis", version: "1.4.LIFERAY-PATCHED-8"
-	api group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
+	api group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
 	api group: "commons-discovery", name: "commons-discovery", version: "0.2"
 	api group: "jakarta.activation", name: "jakarta.activation-api", version: "2.1.3"
 	api group: "jakarta.mail", name: "jakarta.mail-api", version: "2.1.3"

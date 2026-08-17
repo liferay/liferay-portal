@@ -60,7 +60,7 @@ dependencies {
 	compileInclude group: "com.ibm.cos", name: "ibm-cos-java-sdk-core", version: "2.14.0"
 	compileInclude group: "com.ibm.cos", name: "ibm-cos-java-sdk-kms", version: "2.14.0"
 	compileInclude group: "com.ibm.cos", name: "ibm-cos-java-sdk-s3", version: "2.14.0"
-	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
+	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
 	compileInclude group: "software.amazon.awssdk", name: "annotations", version: "2.39.6"
 	compileInclude group: "software.amazon.awssdk", name: "arns", version: "2.39.6"
 	compileInclude group: "software.amazon.awssdk", name: "auth", version: "2.39.6"

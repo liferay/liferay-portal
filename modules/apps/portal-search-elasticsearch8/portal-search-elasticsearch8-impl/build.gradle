@@ -32,7 +32,7 @@ dependencies {
 	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-smile", version: "2.18.2"
 	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.2"
-	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
+	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
 	compileInclude group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileInclude group: "io.opentelemetry", name: "opentelemetry-api", version: "1.57.0"
 	compileInclude group: "io.opentelemetry", name: "opentelemetry-common", version: "1.57.0"
