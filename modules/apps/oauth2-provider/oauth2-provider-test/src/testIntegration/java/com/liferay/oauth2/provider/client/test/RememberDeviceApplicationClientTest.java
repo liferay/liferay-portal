@@ -101,7 +101,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testRememberApplicationCode() {
-		String applicationClientId = "oauthTestRememberApplicationCode";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -171,7 +171,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testRememberApplicationCodePKCE() {
-		String applicationClientId = "oauthTestRememberApplicationCodePKCE";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE_PKCE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -247,7 +247,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testRequestTokenInvalidatePreviousTokenRememberApplicationCode() {
-		String applicationClientId = "oauthTestRememberApplicationCode";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -324,7 +324,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testRequestTokenInvalidatePreviousTokenRememberApplicationCodePKCE() {
-		String applicationClientId = "oauthTestRememberApplicationCodePKCE";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE_PKCE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -409,7 +409,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 	public void testRevokeTokenInvalidateCookieRememberApplicationCode()
 		throws PortalException {
 
-		String applicationClientId = "oauthTestRememberApplicationCode";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -472,7 +472,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 	public void testRevokeTokenInvalidateCookieRememberApplicationCodePKCE()
 		throws PortalException {
 
-		String applicationClientId = "oauthTestRememberApplicationCodePKCE";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE_PKCE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -540,7 +540,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testSingleUseCookieRememberApplicationCode() {
-		String applicationClientId = "oauthTestRememberApplicationCode";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -632,7 +632,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testSingleUseCookieRememberApplicationCodePKCE() {
-		String applicationClientId = "oauthTestRememberApplicationCodePKCE";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE_PKCE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -736,7 +736,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 
 	@Test
 	public void testUseExistingDifferentCookieRememberApplicationCode() {
-		String applicationClientId = "oauthTestRememberApplicationCode";
+		String applicationClientId = _CLIENT_ID_REMEMBER_CODE;
 
 		String cookieName = _COOKIE_NAME_PREFIX.concat(applicationClientId);
 
@@ -775,7 +775,7 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 			},
 			this::parseTokenString);
 
-		String applicationClientIdPKCE = "oauthTestRememberApplicationCodePKCE";
+		String applicationClientIdPKCE = _CLIENT_ID_REMEMBER_CODE_PKCE;
 
 		Assert.assertNull(
 			parseAuthorizationCodeString(
@@ -821,6 +821,12 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 	private static final String _CLIENT_ID_CODE_PKCE =
 		RandomTestUtil.randomString();
 
+	private static final String _CLIENT_ID_REMEMBER_CODE =
+		RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_REMEMBER_CODE_PKCE =
+		RandomTestUtil.randomString();
+
 	private static final String _COOKIE_NAME_PREFIX = "OAUTH2_REMEMBER_DEVICE_";
 
 	@Inject
@@ -849,11 +855,11 @@ public class RememberDeviceApplicationClientTest extends BaseClientTestCase {
 						PortalUtil.getPortalServerPort(false)),
 				false, Collections.singletonList("everything"), false);
 			createOAuth2Application(
-				companyId, _user, "oauthTestRememberApplicationCode",
+				companyId, _user, _CLIENT_ID_REMEMBER_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE), true,
 				Collections.singletonList("everything"), false);
 			createOAuth2ApplicationWithNone(
-				companyId, _user, "oauthTestRememberApplicationCodePKCE",
+				companyId, _user, _CLIENT_ID_REMEMBER_CODE_PKCE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
 				Collections.singletonList(
 					"http://redirecturi:" +

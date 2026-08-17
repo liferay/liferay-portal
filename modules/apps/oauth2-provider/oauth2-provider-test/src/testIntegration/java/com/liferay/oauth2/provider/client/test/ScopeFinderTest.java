@@ -49,7 +49,7 @@ public class ScopeFinderTest extends BaseClientTestCase {
 	@Test
 	public void testUnavailableAssignedScopeAliases() throws Exception {
 		String token = getToken(
-			"oauthTestClientCredentials", null,
+			_CLIENT_ID_CLIENT_CREDENTIALS, null,
 			this::getClientCredentialsResponse, this::parseTokenString);
 
 		Assert.assertNotNull(token);
@@ -78,7 +78,7 @@ public class ScopeFinderTest extends BaseClientTestCase {
 		invocationBuilder = authorize(
 			webTarget.request(),
 			getToken(
-				"oauthTestClientCredentials", null,
+				_CLIENT_ID_CLIENT_CREDENTIALS, null,
 				this::getClientCredentialsResponse, this::parseTokenString));
 
 		Assert.assertEquals(
@@ -129,6 +129,9 @@ public class ScopeFinderTest extends BaseClientTestCase {
 
 	private static final String _CLIENT_ID = RandomTestUtil.randomString();
 
+	private static final String _CLIENT_ID_CLIENT_CREDENTIALS =
+		RandomTestUtil.randomString();
+
 	private long _oAuth2ApplicationId;
 
 	@Inject
@@ -168,7 +171,7 @@ public class ScopeFinderTest extends BaseClientTestCase {
 			User user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, user, "oauthTestClientCredentials",
+				companyId, user, _CLIENT_ID_CLIENT_CREDENTIALS,
 				Collections.singletonList(GrantType.CLIENT_CREDENTIALS),
 				Collections.singletonList("everything.read"));
 

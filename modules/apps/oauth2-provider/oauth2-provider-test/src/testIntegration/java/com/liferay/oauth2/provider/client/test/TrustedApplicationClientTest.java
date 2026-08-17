@@ -88,7 +88,7 @@ public class TrustedApplicationClientTest extends BaseClientTestCase {
 			_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD, null,
 			getCodeFunction(
 				webTarget -> webTarget.queryParam(
-					"client_id", "oauthTestTrustedApplicationCode"
+					"client_id", _CLIENT_ID_TRUSTED_CODE
 				).queryParam(
 					"redirect_uri",
 					"http://redirecturi:" +
@@ -106,7 +106,7 @@ public class TrustedApplicationClientTest extends BaseClientTestCase {
 			_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD, null,
 			getCodeFunction(
 				webTarget -> webTarget.queryParam(
-					"client_id", "oauthTestTrustedApplicationCodePKCE"
+					"client_id", _CLIENT_ID_TRUSTED_CODE_PKCE
 				).queryParam(
 					"redirect_uri",
 					"http://redirecturi:" +
@@ -130,6 +130,12 @@ public class TrustedApplicationClientTest extends BaseClientTestCase {
 	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
 
 	private static final String _CLIENT_ID_CODE_PKCE =
+		RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_TRUSTED_CODE =
+		RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_TRUSTED_CODE_PKCE =
 		RandomTestUtil.randomString();
 
 	private String _host;
@@ -160,11 +166,11 @@ public class TrustedApplicationClientTest extends BaseClientTestCase {
 						PortalUtil.getPortalServerPort(false)),
 				false, Collections.singletonList("everything"), false);
 			createOAuth2Application(
-				companyId, _user, "oauthTestTrustedApplicationCode",
+				companyId, _user, _CLIENT_ID_TRUSTED_CODE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE), false,
 				Collections.singletonList("everything"), true);
 			createOAuth2ApplicationWithNone(
-				companyId, _user, "oauthTestTrustedApplicationCodePKCE",
+				companyId, _user, _CLIENT_ID_TRUSTED_CODE_PKCE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
 				Collections.singletonList(
 					"http://redirecturi:" +

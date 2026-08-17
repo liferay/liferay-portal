@@ -56,8 +56,7 @@ public class DisabledUserClientTest extends BaseClientTestCase {
 
 		webTarget = getWebTarget("/users");
 
-		builder = authorize(
-			webTarget.request(), getToken("oauthTestApplicationDisabled"));
+		builder = authorize(webTarget.request(), getToken(_CLIENT_ID_DISABLED));
 
 		response = builder.get();
 
@@ -70,6 +69,9 @@ public class DisabledUserClientTest extends BaseClientTestCase {
 	}
 
 	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_DISABLED =
+		RandomTestUtil.randomString();
 
 	private class DisabledUserTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -92,7 +94,7 @@ public class DisabledUserClientTest extends BaseClientTestCase {
 			createOAuth2Application(
 				companyId, user, _CLIENT_ID, Arrays.asList("GET"));
 			createOAuth2Application(
-				companyId, disabledUser, "oauthTestApplicationDisabled",
+				companyId, disabledUser, _CLIENT_ID_DISABLED,
 				Arrays.asList("GET"));
 		}
 

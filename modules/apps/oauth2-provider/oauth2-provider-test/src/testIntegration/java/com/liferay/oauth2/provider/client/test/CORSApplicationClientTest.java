@@ -54,7 +54,7 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
 
-		formData.add("client_id", "oauthTestApplicationRO");
+		formData.add("client_id", _CLIENT_ID_RO);
 		formData.add("client_secret", CLIENT_SECRET);
 		formData.add("grant_type", "password");
 		formData.add("password", PropsValues.DEFAULT_ADMIN_PASSWORD);
@@ -73,7 +73,7 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 		WebTarget webTarget = getJsonWebTarget("user", "get-current-user");
 
 		String tokenString = getToken(
-			"oauthTestApplicationRO", null,
+			_CLIENT_ID_RO, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
 			this::parseTokenString);
@@ -128,7 +128,7 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 		WebTarget webTarget = getJsonWebTarget("user", "get-current-user");
 
 		String tokenString = getToken(
-			"oauthTestApplicationRO", null,
+			_CLIENT_ID_RO, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
 			this::parseTokenString);
@@ -167,6 +167,8 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 		return new CORSApplicationTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID_RO = RandomTestUtil.randomString();
+
 	private User _user;
 
 	private class CORSApplicationTestPreparatorBundleActivator
@@ -179,7 +181,7 @@ public class CORSApplicationClientTest extends BaseClientTestCase {
 			_user = UserTestUtil.getAdminUser(companyId);
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationRO",
+				companyId, _user, _CLIENT_ID_RO,
 				Collections.singletonList("everything.read"));
 		}
 

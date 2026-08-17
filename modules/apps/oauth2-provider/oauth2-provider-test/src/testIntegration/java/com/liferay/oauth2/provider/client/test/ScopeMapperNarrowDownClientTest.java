@@ -64,7 +64,7 @@ public class ScopeMapperNarrowDownClientTest extends BaseClientTestCase {
 		Assert.assertEquals("invalid_grant", error);
 
 		String scopeString = getToken(
-			"oauthTestApplicationNarrowed", null,
+			_CLIENT_ID_NARROWED, null,
 			getClientCredentialsResponseBiFunction("everything"),
 			this::parseScopeString);
 
@@ -73,7 +73,7 @@ public class ScopeMapperNarrowDownClientTest extends BaseClientTestCase {
 		invocationBuilder = authorize(
 			webTarget.request(),
 			getToken(
-				"oauthTestApplicationNarrowed", null,
+				_CLIENT_ID_NARROWED, null,
 				getClientCredentialsResponseBiFunction("everything"),
 				this::parseTokenString));
 
@@ -81,7 +81,7 @@ public class ScopeMapperNarrowDownClientTest extends BaseClientTestCase {
 			"everything.read", invocationBuilder.get(String.class));
 
 		scopeString = getToken(
-			"oauthTestApplicationNarrowed", null,
+			_CLIENT_ID_NARROWED, null,
 			getClientCredentialsResponseBiFunction("everything.read"),
 			this::parseScopeString);
 
@@ -90,7 +90,7 @@ public class ScopeMapperNarrowDownClientTest extends BaseClientTestCase {
 		invocationBuilder = authorize(
 			webTarget.request(),
 			getToken(
-				"oauthTestApplicationNarrowed", null,
+				_CLIENT_ID_NARROWED, null,
 				getClientCredentialsResponseBiFunction("everything.read"),
 				this::parseTokenString));
 
@@ -104,6 +104,9 @@ public class ScopeMapperNarrowDownClientTest extends BaseClientTestCase {
 	}
 
 	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_NARROWED =
+		RandomTestUtil.randomString();
 
 	private class ScopeMapperNarrowDownClientTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -135,7 +138,7 @@ public class ScopeMapperNarrowDownClientTest extends BaseClientTestCase {
 				Collections.singletonList("everything"));
 
 			createOAuth2Application(
-				companyId, user, "oauthTestApplicationNarrowed",
+				companyId, user, _CLIENT_ID_NARROWED,
 				Arrays.asList("everything", "everything.read"));
 		}
 

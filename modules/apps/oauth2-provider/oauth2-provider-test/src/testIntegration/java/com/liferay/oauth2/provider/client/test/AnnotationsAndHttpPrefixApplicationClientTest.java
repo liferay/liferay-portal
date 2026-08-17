@@ -62,7 +62,7 @@ public class AnnotationsAndHttpPrefixApplicationClientTest
 
 		Assert.assertEquals("everything.read", builder.get(String.class));
 
-		tokenString = getToken("oauthTestApplicationWrong");
+		tokenString = getToken(_CLIENT_ID_WRONG);
 
 		webTarget = getWebTarget("/methods");
 
@@ -93,6 +93,9 @@ public class AnnotationsAndHttpPrefixApplicationClientTest
 	}
 
 	private static final String _CLIENT_ID = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_WRONG =
+		RandomTestUtil.randomString();
 
 	private class AnnotationsAndHttpPrefixTestPreparatorBundleActivator
 		extends BaseTestPreparatorBundleActivator {
@@ -161,7 +164,7 @@ public class AnnotationsAndHttpPrefixApplicationClientTest
 				Arrays.asList("annotations/everything", "methods/everything"));
 
 			createOAuth2Application(
-				companyId, user, "oauthTestApplicationWrong",
+				companyId, user, _CLIENT_ID_WRONG,
 				Collections.singletonList("everything"));
 		}
 

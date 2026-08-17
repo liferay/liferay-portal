@@ -10,6 +10,7 @@ import com.liferay.portal.json.JSONObjectImpl;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -71,7 +72,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 		}
 
 		String tokenString = getToken(
-			"oauthTestApplicationRO", null,
+			_CLIENT_ID_RO, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
 			this::parseTokenString);
@@ -106,7 +107,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 		}
 
 		String token = getToken(
-			"oauthTestApplicationRW", null,
+			_CLIENT_ID_RW, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 				"everything.write"),
@@ -142,6 +143,10 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 		return new JsonWebServiceTestPreparatorBundleActivator();
 	}
 
+	private static final String _CLIENT_ID_RO = RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_RW = RandomTestUtil.randomString();
+
 	private User _user;
 
 	private class JsonWebServiceTestPreparatorBundleActivator
@@ -156,11 +161,11 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 			createCompany("testcompany");
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationRO",
+				companyId, _user, _CLIENT_ID_RO,
 				Collections.singletonList("everything.read"));
 
 			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationRW",
+				companyId, _user, _CLIENT_ID_RW,
 				Arrays.asList("everything.read", "everything.write"));
 		}
 

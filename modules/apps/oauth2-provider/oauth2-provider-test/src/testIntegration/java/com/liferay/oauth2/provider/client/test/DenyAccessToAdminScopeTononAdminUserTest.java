@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ScopeGrantLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -48,8 +49,8 @@ public class DenyAccessToAdminScopeTononAdminUserTest
 			"o/headless-admin-workflow/v1.0/workflow-definitions");
 
 		String tokenString = getToken(
-			"oauthTestApplicationAdmin", null,
-			this::getClientCredentialsResponse, this::parseTokenString);
+			_CLIENT_ID_ADMIN, null, this::getClientCredentialsResponse,
+			this::parseTokenString);
 
 		Invocation.Builder invocationBuilder = authorize(
 			webTarget.request(), tokenString);
@@ -58,7 +59,7 @@ public class DenyAccessToAdminScopeTononAdminUserTest
 
 		Assert.assertEquals(200, response.getStatus());
 
-		tokenString = getToken("oauthTestApplicationNonAdmin");
+		tokenString = getToken(_CLIENT_ID_NONADMIN);
 
 		invocationBuilder = authorize(webTarget.request(), tokenString);
 
@@ -71,6 +72,12 @@ public class DenyAccessToAdminScopeTononAdminUserTest
 	protected BundleActivator getBundleActivator() {
 		return new DenyAccessToAdminScopeTononAdminUserTestPreparatorBundleActivator();
 	}
+
+	private static final String _CLIENT_ID_ADMIN =
+		RandomTestUtil.randomString();
+
+	private static final String _CLIENT_ID_NONADMIN =
+		RandomTestUtil.randomString();
 
 	@Inject
 	private OAuth2ScopeGrantLocalService _oAuth2ScopeGrantLocalService;
@@ -85,7 +92,7 @@ public class DenyAccessToAdminScopeTononAdminUserTest
 
 			OAuth2Application oauth2AdminApp = createOAuth2Application(
 				companyId, UserTestUtil.getAdminUser(companyId),
-				"oauthTestApplicationAdmin",
+				_CLIENT_ID_ADMIN,
 				Collections.singletonList(
 					"Liferay.Headless.Admin.Workflow.everything"));
 
@@ -98,8 +105,7 @@ public class DenyAccessToAdminScopeTononAdminUserTest
 					"Liferay.Headless.Admin.Workflow.everything"));
 
 			OAuth2Application oauth2RegularUserApp = createOAuth2Application(
-				companyId, UserTestUtil.addUser(),
-				"oauthTestApplicationNonAdmin",
+				companyId, UserTestUtil.addUser(), _CLIENT_ID_NONADMIN,
 				Collections.singletonList(
 					"Liferay.Headless.Admin.Workflow.everything"));
 
