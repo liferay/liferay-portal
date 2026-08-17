@@ -330,7 +330,7 @@ public abstract class BaseTestPreparatorBundleActivator
 				companyId, user.getUserId(), user.getFullName(),
 				allowedGrantTypesList, clientAuthenticationMethod,
 				user.getUserId(), clientId, 0, clientSecret,
-				"test oauth application",
+				RandomTestUtil.randomString(),
 				Collections.singletonList("token.introspection"),
 				"http://localhost:" + PortalUtil.getPortalServerPort(false), 0,
 				jwks, name,
