@@ -93,10 +93,17 @@ func TestFilesystemCache(t *testing.T) {
 			}
 
 			if testCase.wantFile {
-				if _, error := os.Stat(
-					filepath.Join(directory, "1.lpkg"),
-				); error != nil {
+				fileInfo, error := os.Stat(filepath.Join(directory, "1.lpkg"))
+
+				if error != nil {
 					t.Fatalf("Expected 1.lpkg on disk: %v", error)
+				}
+
+				if mode := fileInfo.Mode().Perm(); mode != 0o644 {
+					t.Errorf(
+						"1.lpkg mode = %#o, want 0644 so the workload can read it",
+						mode,
+					)
 				}
 			}
 

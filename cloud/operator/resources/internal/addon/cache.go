@@ -80,6 +80,12 @@ func (filesystemCache *FilesystemCache) Save(
 		)
 	}
 
+	if error := os.Chmod(temporaryPath, 0o644); error != nil {
+		os.Remove(temporaryPath)
+
+		return error
+	}
+
 	return os.Rename(temporaryPath, filesystemCache.path(virtualEntryID))
 }
 
