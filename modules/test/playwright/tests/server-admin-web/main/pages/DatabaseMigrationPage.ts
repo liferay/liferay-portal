@@ -22,7 +22,7 @@ export class DatabaseMigrationPage {
 		this.page = page;
 
 		this.description = page.locator('.sheet-text');
-		this.errorAlert = page.locator('.alert-danger');
+		this.errorAlert = page.locator('.alert-danger[role="alert"]');
 		this.exportButton = page.getByRole('button', {
 			exact: true,
 			name: 'Export',
