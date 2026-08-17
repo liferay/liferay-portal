@@ -16,10 +16,10 @@ describe('NetworkStatusBar', () => {
 	it('renders saved status when the status is 0 (draftSaved)', () => {
 		renderComponent({status: 0});
 
-		const savedIcon = screen.getByLabelText('saved');
+		const savedIcon = screen.getByLabelText('saved-as-draft');
 
 		expect(savedIcon).toBeInTheDocument();
-		expect(savedIcon).toHaveAttribute('data-title', 'saved');
+		expect(savedIcon).toHaveAttribute('data-title', 'saved-as-draft');
 	});
 
 	it('renders error status when the status is 1 (error)', () => {

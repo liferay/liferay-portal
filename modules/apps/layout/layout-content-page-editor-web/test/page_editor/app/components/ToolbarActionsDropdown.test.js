@@ -107,9 +107,14 @@ describe('ToolbarActionsDropdown', () => {
 	it('renders ToolbarActionsDropdown component', () => {
 		renderComponent();
 
-		['undo', 'redo', 'history', 'show-sidebars', 'discard-draft'].forEach(
-			(dropdownItem) =>
-				expect(screen.getByText(dropdownItem)).toBeInTheDocument()
+		[
+			'undo',
+			'redo',
+			'draft-history',
+			'show-sidebars',
+			'discard-draft',
+		].forEach((dropdownItem) =>
+			expect(screen.getByText(dropdownItem)).toBeInTheDocument()
 		);
 	});
 
@@ -206,7 +211,7 @@ describe('ToolbarActionsDropdown', () => {
 
 			renderComponent();
 
-			expect(screen.getByText('history')).toBeDisabled();
+			expect(screen.getByText('draft-history')).toBeDisabled();
 		});
 	});
 
