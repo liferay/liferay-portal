@@ -178,7 +178,39 @@ definition {
 
 		PortletEntry.publish();
 
+		// The publish answers through the browser, so read the persisted
+		// status back over the API before touching the list: a Draft here
+		// means the publish itself was lost, and an Approved here with a
+		// missing row after points at the list's rendering instead. The raw
+		// answer is echoed before any parsing, so a refused or empty answer
+		// names itself instead of dying inside the path lookup.
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userPassword = PropsUtil.get("default.admin.password");
+
+		var curl = '''
+			${portalURL}/o/object-admin/v1.0/object-definitions?filter=name%20eq%20%27CustomObject73%27 \
+				-u test@liferay.com:${userPassword} \
+				-H accept:application/json
+		''';
+
+		var objectDefinitionsResponse = JSONCurlUtil.get(${curl});
+
+		echo("Object definitions answer after publish: ${objectDefinitionsResponse}");
+
+		var objectDefinitionStatus = JSONCurlUtil.get(${curl}, "$.items[0].status.label");
+
+		echo("Persisted status after publish: ${objectDefinitionStatus}");
+
+		TestUtils.assertEquals(
+			actual = ${objectDefinitionStatus},
+			expected = "approved");
+
 		ObjectAdmin.openObjectAdmin();
+
+		while ((IsElementNotPresent(key_label = "Custom Object 73", locator1 = "ObjectAdmin#OBJECT_STATUS")) && (maxIterations = "10")) {
+			Refresh();
+		}
 
 		AssertTextEquals(
 			key_label = "Custom Object 73",
