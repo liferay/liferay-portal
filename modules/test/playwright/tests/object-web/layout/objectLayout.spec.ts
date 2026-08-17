@@ -802,11 +802,9 @@ test.describe('Manage custom layouts through object layout tab', () => {
 
 			await objectLayoutsPage.openObjectLayoutConfiguration(layoutName);
 
-			await objectLayoutsPage.layoutTab.click();
+			await objectLayoutsPage.setObjectLayoutAsDefault();
 
-			await objectLayoutsPage.iframeLocator
-				.getByLabel('Mark as Default')
-				.click();
+			await objectLayoutsPage.layoutTab.click();
 
 			await objectLayoutsPage.createObjectLayoutTab('Field Tab');
 
