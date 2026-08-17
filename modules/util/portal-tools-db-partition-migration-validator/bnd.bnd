@@ -2,9 +2,6 @@ Bundle-Name: Liferay Portal Tools DB Partition Migration Validator
 Bundle-SymbolicName: com.liferay.portal.tools.db.partition.migration.validator
 Bundle-Version: 1.0.0
 Main-Class: com.liferay.portal.tools.db.partition.migration.validator.DBPartitionMigrationValidator
--bundleannotations:\
-	!org.apache.logging.log4j.*,\
-	*
 -includeresource:\
 	@com.liferay.petra.concurrent-*.jar!/com/liferay/petra/concurrent/DCLSingleton.class,\
 	@com.liferay.petra.io-*.jar!/com/liferay/petra/io/unsync/BoundaryCheckerUtil.class,\

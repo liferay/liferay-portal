@@ -147,8 +147,5 @@ Import-Package:\
 	org.joda.time.format,\
 	\
 	*
--bundleannotations:\
-	!org.apache.logging.log4j.*,\
-	*
 -dsannotations-options: inherit
 -fixupmessages: Classes found in the wrong directory: ...;is:=ignore
