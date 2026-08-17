@@ -327,4 +327,53 @@ describe('AddMembersInput', () => {
 			})
 		);
 	});
+
+	it('builds the apiURL with the filter for users', async () => {
+		await renderComponent({
+			filter: 'groupIds in (123)',
+		});
+
+		await userEvent.click(
+			screen.getByPlaceholderText('enter-name-or-email')
+		);
+
+		await waitFor(() => {
+			expect(mockFetch).toHaveBeenCalledWith(
+				expect.stringContaining('groupIds'),
+				expect.objectContaining({
+					headers: expect.any(Object),
+				})
+			);
+		});
+	});
+
+	it('builds the apiURL without the filter for groups', async () => {
+		const excludeMembers = [
+			{id: '123', name: 'Excluded Group'},
+		] as UserGroup[];
+
+		await renderComponent({
+			excludeMembers,
+			filter: 'groupIds in (123)',
+			selectValue: MemberType.GROUPS,
+		});
+
+		await userEvent.click(
+			screen.getByPlaceholderText('enter-name-or-email')
+		);
+
+		await waitFor(() => {
+			expect(mockFetch).toHaveBeenCalledWith(
+				expect.stringContaining(`userGroupId+ne+%27123%27`),
+				expect.objectContaining({
+					headers: expect.any(Object),
+				})
+			);
+		});
+
+		expect(mockFetch).not.toHaveBeenCalledWith(
+			expect.stringContaining('groupIds'),
+			expect.anything()
+		);
+	});
 });
