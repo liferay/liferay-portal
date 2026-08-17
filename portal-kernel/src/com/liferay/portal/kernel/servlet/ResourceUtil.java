@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.ServletContext;
 
@@ -67,8 +68,31 @@ public class ResourceUtil {
 			return new ObjectValuePair<>(servletContext, resourceURL);
 		}
 
-		servletContext = DynamicResourceIncludeUtil.getPathServletContext(
-			requestPath);
+		servletContext = null;
+
+		for (ServletContext curServletContext :
+				_servletContextServiceTrackerList) {
+
+			String contextPath = curServletContext.getContextPath();
+
+			if (Validator.isNotNull(contextPath) &&
+				requestPath.startsWith(contextPath)) {
+
+				if (servletContext == null) {
+					servletContext = curServletContext;
+				}
+				else {
+					String servletContextContextPath =
+						servletContext.getContextPath();
+
+					if (contextPath.length() >
+							servletContextContextPath.length()) {
+
+						servletContext = curServletContext;
+					}
+				}
+			}
+		}
 
 		resourceURL = PortalWebResourcesUtil.getResource(
 			servletContext, requestPath);
@@ -151,5 +175,9 @@ public class ResourceUtil {
 				}
 
 			});
+
+	private static final ServiceTrackerList<ServletContext>
+		_servletContextServiceTrackerList = ServiceTrackerListFactory.open(
+			_bundleContext, ServletContext.class);
 
 }
