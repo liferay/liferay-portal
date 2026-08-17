@@ -5,6 +5,8 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {gotoWithRetry} from '../../../utils/gotoWithRetry';
+import {PORTLET_URLS} from '../../../utils/portletUrls';
 import {ViewObjectDefinitionsPage} from '../ViewObjectDefinitionsPage';
 
 export class ViewObjectActionsPage {
@@ -12,6 +14,7 @@ export class ViewObjectActionsPage {
 	readonly addObjectActionButton: Locator;
 	readonly frontendDataSetItems: Locator;
 	readonly lastExecutionCell: Locator;
+	readonly page: Page;
 	readonly viewObjectDefinitionsPage: ViewObjectDefinitionsPage;
 
 	constructor(page: Page) {
@@ -21,7 +24,24 @@ export class ViewObjectActionsPage {
 			.first();
 		this.frontendDataSetItems = page.locator('div.table-list-title a');
 		this.lastExecutionCell = page.locator('.cell-status');
+		this.page = page;
 		this.viewObjectDefinitionsPage = new ViewObjectDefinitionsPage(page);
+	}
+
+	async gotoByObjectDefinitionId(objectDefinitionId: number) {
+
+		// The tab is asked for by address, so the page arrives freshly loaded
+		// and unscrolled, with every row below the sticky toolbar band
+		// instead of under it.
+
+		const portletId =
+			'com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet';
+
+		await gotoWithRetry(
+			this.page,
+			`/group/guest${PORTLET_URLS.objects}&p_p_lifecycle=0&_${portletId}_mvcRenderCommandName=%2Fobject_definitions%2Fedit_object_definition&_${portletId}_objectDefinitionId=${objectDefinitionId}&_${portletId}_screenNavigationCategoryKey=actions`,
+			{waitUntil: 'load'}
+		);
 	}
 
 	async goto(objectDefinitionLabel: string) {

@@ -710,7 +710,9 @@ test.describe('Object Action CRUD', () => {
 
 			apiHelpers.data.push({id: objectAction.id, type: 'objectAction'});
 
-			await viewObjectActionsPage.goto(objectDefinition.label['en_US']);
+			await viewObjectActionsPage.gotoByObjectDefinitionId(
+				objectDefinition.id
+			);
 
 			await expect(page.getByRole('cell', {name: 'Yes'})).toBeVisible();
 
