@@ -6,11 +6,15 @@
 package com.liferay.object.internal.search.spi.model.index.contributor.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
+import com.liferay.object.field.builder.MultiselectPicklistObjectFieldBuilder;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -21,6 +25,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -28,7 +33,9 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.FieldArray;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -39,6 +46,7 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.portal.test.rule.Inject;
@@ -49,6 +57,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -331,6 +340,92 @@ public class ObjectEntryModelDocumentContributorTest {
 	}
 
 	@Test
+	public void testContributeWithMultiselectPicklistObjectField()
+		throws Exception {
+
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionLocalService.addListTypeDefinition(
+				null, TestPropsValues.getUserId(),
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				false, Collections.emptyList(), new ServiceContext());
+
+		for (String listTypeEntryKey : _LIST_TYPE_ENTRY_KEYS) {
+			_listTypeEntryLocalService.addListTypeEntry(
+				null, TestPropsValues.getUserId(),
+				listTypeDefinition.getListTypeDefinitionId(), listTypeEntryKey,
+				Collections.singletonMap(
+					LocaleUtil.US, RandomTestUtil.randomString()),
+				listTypeDefinition.isSystem());
+		}
+
+		String keywordIndexedObjectFieldName =
+			"a" + RandomTestUtil.randomString();
+		String textIndexedObjectFieldName = "a" + RandomTestUtil.randomString();
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Arrays.asList(
+					new MultiselectPicklistObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).listTypeDefinitionId(
+						listTypeDefinition.getListTypeDefinitionId()
+					).name(
+						keywordIndexedObjectFieldName
+					).build(),
+					new MultiselectPicklistObjectFieldBuilder(
+					).indexed(
+						true
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).listTypeDefinitionId(
+						listTypeDefinition.getListTypeDefinitionId()
+					).name(
+						textIndexedObjectFieldName
+					).build()),
+				false);
+
+		ModelDocumentContributor<ObjectEntry>
+			objectEntryModelDocumentContributor =
+				_getObjectEntryModelDocumentContributor(objectDefinition);
+
+		Document document = new DocumentImpl();
+
+		String objectFieldValue = StringUtil.merge(
+			_LIST_TYPE_ENTRY_KEYS, StringPool.COMMA_AND_SPACE);
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				keywordIndexedObjectFieldName, objectFieldValue
+			).put(
+				textIndexedObjectFieldName, objectFieldValue
+			).build());
+
+		objectEntryModelDocumentContributor.contribute(document, objectEntry);
+
+		_testContributeWithMultiselectPicklistObjectField(
+			document, keywordIndexedObjectFieldName);
+		_testContributeWithMultiselectPicklistObjectField(
+			document, textIndexedObjectFieldName);
+
+		Field valueField = _getNestedField(
+			document, textIndexedObjectFieldName, "value_en_US");
+
+		Assert.assertEquals(objectFieldValue, valueField.getValue());
+
+		valueField = _getNestedField(
+			document, textIndexedObjectFieldName, "value_keyword_lowercase");
+
+		Assert.assertEquals(objectFieldValue, valueField.getValue());
+	}
+
+	@Test
 	public void testContributeWithNonlocalizedFields() throws Exception {
 		String objectFieldName = "a" + RandomTestUtil.randomString();
 
@@ -400,6 +495,38 @@ public class ObjectEntryModelDocumentContributorTest {
 				StringBundler.concat(objectFieldName, ": ", expectedValue)));
 	}
 
+	private Field _getNestedField(
+		Document document, String objectFieldName, String valueFieldName) {
+
+		FieldArray fieldArray = (FieldArray)document.getField(
+			"nestedFieldArray");
+
+		for (Field field : fieldArray.getFields()) {
+			Field valueField = null;
+
+			String fieldName = null;
+
+			for (Field childField : field.getFields()) {
+				if (StringUtil.equals(childField.getName(), "fieldName")) {
+					fieldName = childField.getValue();
+				}
+				else if (StringUtil.equals(
+							childField.getName(), valueFieldName)) {
+
+					valueField = childField;
+				}
+			}
+
+			if (StringUtil.equals(fieldName, objectFieldName) &&
+				(valueField != null)) {
+
+				return valueField;
+			}
+		}
+
+		return null;
+	}
+
 	private ModelDocumentContributor<ObjectEntry>
 			_getObjectEntryModelDocumentContributor(
 				ObjectDefinition objectDefinition)
@@ -421,8 +548,31 @@ public class ObjectEntryModelDocumentContributorTest {
 		return bundleContext.getService(serviceReferences.get(0));
 	}
 
+	private void _testContributeWithMultiselectPicklistObjectField(
+		Document document, String objectFieldName) {
+
+		Field valueKeywordField = _getNestedField(
+			document, objectFieldName, "value_keyword");
+
+		String[] expectedValues = _LIST_TYPE_ENTRY_KEYS.clone();
+
+		StringUtil.lowerCase(expectedValues);
+
+		Assert.assertArrayEquals(expectedValues, valueKeywordField.getValues());
+	}
+
+	private static final String[] _LIST_TYPE_ENTRY_KEYS = {
+		"listTypeEntryKey1", "listTypeEntryKey2"
+	};
+
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+
+	@Inject
+	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
