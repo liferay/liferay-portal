@@ -63,7 +63,6 @@ const config = {
 					alias: {
 						assets: resolveModule('assets'),
 						'cerebro-shared': resolveModule('cerebro-shared'),
-						commerce: resolveModule('commerce'),
 						contacts: resolveModule('contacts'),
 						'custom-types': resolveModule('custom-types'),
 						'event-analysis': resolveModule('event-analysis'),
