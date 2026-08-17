@@ -279,8 +279,7 @@ public class TimerExecutorTest {
 
 		Assert.assertNull(
 			SchedulerEngineHelperUtil.getScheduledJob(
-				schedulerGroupName, schedulerGroupName,
-				StorageType.PERSISTED));
+				schedulerGroupName, schedulerGroupName, StorageType.PERSISTED));
 	}
 
 	private KaleoInstanceToken _addKaleoInstanceToken(KaleoTask kaleoTask)
