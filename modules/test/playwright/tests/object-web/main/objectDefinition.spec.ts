@@ -1177,6 +1177,8 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 
 		await editObjectDetailsPage.goToDetailsTab();
 
+		await editObjectDetailsPage.waitForDetailsFormLoaded();
+
 		await editObjectDetailsPage.labelInput.fill(label);
 
 		await editObjectDetailsPage.publishButton.click();

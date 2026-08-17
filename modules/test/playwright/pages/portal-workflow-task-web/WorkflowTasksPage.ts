@@ -46,6 +46,14 @@ export class WorkflowTasksPage {
 		await this.goto(siteUrl);
 
 		await this.assignedToMyRolesLink.click();
+
+		// The tab is its own full navigation, so returning at the click hands
+		// the caller the list still on screen, whose rows go stale when the
+		// tab lands. Wait for the tab's address so the caller reads the tab.
+
+		await this.page.waitForURL(/tabs1=assigned-to-my-roles/);
+
+		await this.page.waitForLoadState();
 	}
 
 	async approve(articleTitle: string) {
