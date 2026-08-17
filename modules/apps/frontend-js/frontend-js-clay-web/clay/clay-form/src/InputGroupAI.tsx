@@ -8,6 +8,7 @@ import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React from 'react';
 
+import ClayForm from './Form';
 import ClayInput from './Input';
 
 export type TAIState = 'focused' | 'result' | 'result-readonly' | 'working';
@@ -62,6 +63,7 @@ interface IProps
 	messages?: {
 		retry?: string;
 		submit?: string;
+		suggestion?: string;
 		working?: string;
 	};
 
@@ -80,14 +82,16 @@ interface IProps
 const DEFAULT_MESSAGES = {
 	retry: 'Retry',
 	submit: 'Submit',
+	suggestion: 'Suggestion',
 	working: 'Working on it...',
 };
 
 /**
  * Multiline prompt input for AI interactions. Renders as an `input-group-ai`
- * with an auto-growing textarea and a submit button, plus a retry button and
- * readonly behavior depending on `aiState`. Passing `children` replaces the
- * default submit and retry buttons with custom controls.
+ * with an auto-growing textarea and a submit button, plus a retry button, a
+ * suggestion label, and readonly behavior depending on `aiState`. Passing
+ * `children` replaces the default submit and retry buttons with custom
+ * controls.
  *
  * Pressing `Enter` submits the closest enclosing form; `Shift + Enter`
  * inserts a line break. Textarea props (`value`, `onChange`, `placeholder`,
@@ -131,12 +135,16 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 			[ref]
 		);
 
-		const {retry, submit, working} = {...DEFAULT_MESSAGES, ...messages};
+		const {retry, submit, suggestion, working} = {
+			...DEFAULT_MESSAGES,
+			...messages,
+		};
 
 		if (!aiState && focused) {
 			aiState = 'focused';
 		}
 
+		const isResult = aiState === 'result' || aiState === 'result-readonly';
 		const isWorking = aiState === 'working';
 
 		const displayValue = isWorking ? working : value;
@@ -234,6 +242,19 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 							</div>
 						</div>
 					</div>
+
+					{isResult && (
+						<ClayForm.FeedbackGroup>
+							<ClayForm.Text>
+								<ClayForm.FeedbackIndicator
+									spritemap={spritemap}
+									symbol="stars"
+								/>
+
+								{suggestion}
+							</ClayForm.Text>
+						</ClayForm.FeedbackGroup>
+					)}
 				</ClayInput.GroupItem>
 
 				{children ?? (
