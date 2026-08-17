@@ -121,6 +121,10 @@ public class LayoutServiceContextHelperTest {
 		try (AutoCloseable autoCloseable =
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
 					layout)) {
+
+			Assert.assertEquals(
+				LocaleUtil.fromLanguageId(layout.getDefaultLanguageId()),
+				httpServletRequest.getAttribute(WebKeys.LOCALE));
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
