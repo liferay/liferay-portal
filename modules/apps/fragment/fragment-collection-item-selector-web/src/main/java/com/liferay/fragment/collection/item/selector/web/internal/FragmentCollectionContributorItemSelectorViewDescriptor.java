@@ -44,6 +44,9 @@ public class FragmentCollectionContributorItemSelectorViewDescriptor
 			fragmentCollectionContributorRegistry;
 		_httpServletRequest = httpServletRequest;
 		_portletURL = portletURL;
+
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	@Override
@@ -51,7 +54,7 @@ public class FragmentCollectionContributorItemSelectorViewDescriptor
 		FragmentCollectionContributor fragmentCollectionContributor) {
 
 		return new FragmentCollectionContributorItemDescriptor(
-			fragmentCollectionContributor);
+			fragmentCollectionContributor, _themeDisplay.getLocale());
 	}
 
 	@Override
@@ -101,7 +104,8 @@ public class FragmentCollectionContributorItemSelectorViewDescriptor
 					fragmentCollectionContributors,
 					fragmentCollectionContributor -> {
 						String lowerCaseName = StringUtil.toLowerCase(
-							fragmentCollectionContributor.getName());
+							fragmentCollectionContributor.getName(
+								_themeDisplay.getLocale()));
 
 						return lowerCaseName.contains(
 							StringUtil.toLowerCase(keywords));
@@ -137,14 +141,10 @@ public class FragmentCollectionContributorItemSelectorViewDescriptor
 			_fragmentCollectionContributorRegistry.
 				getFragmentCollectionContributors();
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		Collections.sort(
 			fragmentCollectionContributors,
 			new FragmentCollectionContributorNameComparator(
-				themeDisplay.getLocale(), orderByAsc));
+				_themeDisplay.getLocale(), orderByAsc));
 
 		return fragmentCollectionContributors;
 	}
@@ -158,5 +158,6 @@ public class FragmentCollectionContributorItemSelectorViewDescriptor
 		_fragmentCollectionContributorRegistry;
 	private final HttpServletRequest _httpServletRequest;
 	private final PortletURL _portletURL;
+	private final ThemeDisplay _themeDisplay;
 
 }

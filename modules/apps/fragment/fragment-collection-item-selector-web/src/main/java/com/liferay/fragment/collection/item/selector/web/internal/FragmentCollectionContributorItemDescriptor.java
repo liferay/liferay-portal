@@ -20,9 +20,11 @@ public class FragmentCollectionContributorItemDescriptor
 	implements ItemSelectorViewDescriptor.ItemDescriptor {
 
 	public FragmentCollectionContributorItemDescriptor(
-		FragmentCollectionContributor fragmentCollectionContributor) {
+		FragmentCollectionContributor fragmentCollectionContributor,
+		Locale locale) {
 
 		_fragmentCollectionContributor = fragmentCollectionContributor;
+		_locale = locale;
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class FragmentCollectionContributorItemDescriptor
 		).put(
 			"groupId", CompanyConstants.SYSTEM
 		).put(
-			"name", _fragmentCollectionContributor.getName()
+			"name", _fragmentCollectionContributor.getName(_locale)
 		).toString();
 	}
 
@@ -54,7 +56,7 @@ public class FragmentCollectionContributorItemDescriptor
 
 	@Override
 	public String getTitle(Locale locale) {
-		return _fragmentCollectionContributor.getName();
+		return _fragmentCollectionContributor.getName(locale);
 	}
 
 	@Override
@@ -63,5 +65,6 @@ public class FragmentCollectionContributorItemDescriptor
 	}
 
 	private final FragmentCollectionContributor _fragmentCollectionContributor;
+	private final Locale _locale;
 
 }

@@ -265,7 +265,9 @@ public class EditStyleBookEntryDisplayContext {
 						TransformUtil.transformToArray(
 							filteredFragmentCollectionContributors,
 							fragmentCollectionContributor -> JSONUtil.put(
-								"name", fragmentCollectionContributor.getName()
+								"name",
+								fragmentCollectionContributor.getName(
+									_themeDisplay.getLocale())
 							).put(
 								"url",
 								_getFragmentCollectionPreviewURL(

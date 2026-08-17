@@ -16,10 +16,12 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.web.internal.constants.StyleBookWebKeys;
 
@@ -44,6 +46,8 @@ public class PreviewFragmentCollectionDisplayContext {
 			(FragmentCollectionContributorRegistry)
 				httpServletRequest.getAttribute(
 					StyleBookWebKeys.FRAGMENT_COLLECTION_CONTRIBUTOR_TRACKER);
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 	}
 
 	public String getFragmentCollectionKey() {
@@ -77,7 +81,7 @@ public class PreviewFragmentCollectionDisplayContext {
 
 		if (fragmentCollectionContributor != null) {
 			fragmentEntries = fragmentCollectionContributor.getFragmentEntries(
-				_httpServletRequest.getLocale());
+				_themeDisplay.getLocale());
 		}
 
 		for (FragmentEntry fragmentEntry : fragmentEntries) {
@@ -91,8 +95,7 @@ public class PreviewFragmentCollectionDisplayContext {
 				).put(
 					"label",
 					LanguageUtil.get(
-						_httpServletRequest.getLocale(),
-						fragmentEntry.getName())
+						_themeDisplay.getLocale(), fragmentEntry.getName())
 				).put(
 					"previewURL",
 					_getFragmentEntryRenderURL(
@@ -145,5 +148,6 @@ public class PreviewFragmentCollectionDisplayContext {
 	private String _fragmentCollectionKey;
 	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
+	private final ThemeDisplay _themeDisplay;
 
 }
