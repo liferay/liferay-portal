@@ -8,11 +8,14 @@ import React from 'react';
 import {GovernanceContextProvider} from './GovernanceContext';
 import {AttentionRequired} from './components/AttentionRequired';
 import {Filters} from './components/Filters';
+import {GovernanceHealth} from './components/GovernanceHealth';
 
 export default function GovernanceDashboard() {
 	return (
 		<GovernanceContextProvider>
 			<Filters />
+
+			<GovernanceHealth />
 
 			<AttentionRequired />
 		</GovernanceContextProvider>
