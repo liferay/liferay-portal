@@ -60,19 +60,15 @@ export function Result() {
 			<ClayForm onSubmit={(event) => event.preventDefault()}>
 				<ClayInputGroupAI
 					aiState="result"
+					messages={{
+						suggestion: 'This is a custom suggestion.',
+					}}
 					onChange={(event) => setValue(event.target.value)}
 					onRetryClick={() =>
 						setValue('Another generated suggestion')
 					}
 					value={value}
 				/>
-
-				<ClayForm.FeedbackGroup>
-					<ClayForm.Text>
-						<ClayForm.FeedbackIndicator symbol="stars" />
-						Suggestion
-					</ClayForm.Text>
-				</ClayForm.FeedbackGroup>
 			</ClayForm>
 		</div>
 	);
