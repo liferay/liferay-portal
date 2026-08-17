@@ -12,12 +12,6 @@ resource "helm_release" "argocd" {
 		yamlencode(
 			{
 				applicationSet={
-					metrics={
-						enabled=true
-					}
-					networkPolicy={
-						create=true
-					}
 					resources={
 						limits={
 							memory="768Mi"
@@ -104,6 +98,86 @@ resource "helm_release" "argocd" {
 							labels=merge(
 								local.common_labels,
 								{
+									"app.kubernetes.io/name"="argocd-applicationset-controller"
+								})
+							name="argocd-applicationset-controller-ingress"
+						}
+						spec={
+							ingress=[
+								{
+									from=[
+										{
+											namespaceSelector={
+												matchLabels={
+													"kubernetes.io/metadata.name"=var.observability_namespace
+												}
+											}
+										},
+									]
+									ports=[
+										{
+											port="metrics"
+											protocol="TCP"
+										},
+									]
+								},
+							]
+							podSelector={
+								matchLabels={
+									"app.kubernetes.io/instance"="argocd"
+									"app.kubernetes.io/name"="argocd-applicationset-controller"
+								}
+							}
+							policyTypes=["Ingress"]
+						}
+					},
+					{
+						apiVersion="networking.k8s.io/v1"
+						kind="NetworkPolicy"
+						metadata={
+							labels=merge(
+								local.common_labels,
+								{
+									"app.kubernetes.io/name"="argocd-notifications-controller"
+								})
+							name="argocd-notifications-controller-ingress"
+						}
+						spec={
+							ingress=[
+								{
+									from=[
+										{
+											namespaceSelector={
+												matchLabels={
+													"kubernetes.io/metadata.name"=var.observability_namespace
+												}
+											}
+										},
+									]
+									ports=[
+										{
+											port="metrics"
+											protocol="TCP"
+										},
+									]
+								},
+							]
+							podSelector={
+								matchLabels={
+									"app.kubernetes.io/instance"="argocd"
+									"app.kubernetes.io/name"="argocd-notifications-controller"
+								}
+							}
+							policyTypes=["Ingress"]
+						}
+					},
+					{
+						apiVersion="networking.k8s.io/v1"
+						kind="NetworkPolicy"
+						metadata={
+							labels=merge(
+								local.common_labels,
+								{
 									"app.kubernetes.io/name"="argocd-server"
 								})
 							name="argocd-server-ingress"
@@ -168,9 +242,9 @@ resource "helm_release" "argocd" {
 							labels=merge(
 								local.common_labels,
 								{
-									"app.kubernetes.io/name"="argocd-namespace-default-deny"
+									"app.kubernetes.io/name"="default-deny-ingress"
 								})
-							name="argocd-namespace-default-deny"
+							name="default-deny-ingress"
 						}
 						spec={
 							podSelector={}
@@ -180,12 +254,6 @@ resource "helm_release" "argocd" {
 				]
 				installCRDs=true
 				notifications={
-					metrics={
-						enabled=true
-					}
-					networkPolicy={
-						create=true
-					}
 					resources={
 						limits={
 							memory="256Mi"
