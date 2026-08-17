@@ -7627,7 +7627,7 @@ public class PortalImpl implements Portal {
 
 		Locale currentLocale = themeDisplay.getLocale();
 
-		String portletFriendlyURLMappingPath = StringPool.BLANK;
+		String friendlyURLMappingPath = StringPool.BLANK;
 
 		String currentLayoutFriendlyURL = layout.getFriendlyURL(currentLocale);
 
@@ -7639,7 +7639,7 @@ public class PortalImpl implements Portal {
 		}
 
 		if (currentLayoutFriendlyURLIndex != -1) {
-			portletFriendlyURLMappingPath = _getPortletFriendlyURLMappingPath(
+			friendlyURLMappingPath = _getFriendlyURLMappingPath(
 				currentLayoutFriendlyURLIndex +
 					currentLayoutFriendlyURL.length(),
 				layoutURL);
@@ -7652,10 +7652,9 @@ public class PortalImpl implements Portal {
 			int groupFriendlyURLIndex = layoutURL.indexOf(groupFriendlyURL);
 
 			if (groupFriendlyURLIndex != -1) {
-				portletFriendlyURLMappingPath =
-					_getPortletFriendlyURLMappingPath(
-						groupFriendlyURLIndex + groupFriendlyURL.length(),
-						layoutURL);
+				friendlyURLMappingPath = _getFriendlyURLMappingPath(
+					groupFriendlyURLIndex + groupFriendlyURL.length(),
+					layoutURL);
 			}
 		}
 
@@ -7757,8 +7756,8 @@ public class PortalImpl implements Portal {
 					changeLanguageURL += curFriendlyURLSeparatorPart;
 				}
 
-				if (Validator.isNotNull(portletFriendlyURLMappingPath)) {
-					changeLanguageURL += portletFriendlyURLMappingPath;
+				if (Validator.isNotNull(friendlyURLMappingPath)) {
+					changeLanguageURL += friendlyURLMappingPath;
 				}
 			}
 
@@ -8160,10 +8159,8 @@ public class PortalImpl implements Portal {
 		return new LayoutQueryStringComposite(null, friendlyURL, queryString);
 	}
 
-	private String _getPortletFriendlyURLMappingPath(
-		int fromIndex, String url) {
-
-		String portletFriendlyURLMappingPath = StringPool.BLANK;
+	private String _getFriendlyURLMappingPath(int fromIndex, String url) {
+		String friendlyURLMappingPath = StringPool.BLANK;
 
 		List<FriendlyURLMapper> friendlyURLMappers =
 			PortletLocalServiceUtil.getFriendlyURLMappers();
@@ -8187,11 +8184,11 @@ public class PortalImpl implements Portal {
 			if ((mappingEndIndex == url.length()) ||
 				(url.charAt(mappingEndIndex) == CharPool.SLASH)) {
 
-				portletFriendlyURLMappingPath = url.substring(mappingIndex);
+				friendlyURLMappingPath = url.substring(mappingIndex);
 			}
 		}
 
-		return portletFriendlyURLMappingPath;
+		return friendlyURLMappingPath;
 	}
 
 	private String _getPortletTitle(
