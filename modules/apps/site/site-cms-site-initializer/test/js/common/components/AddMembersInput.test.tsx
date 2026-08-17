@@ -25,7 +25,12 @@ const DEFAULT_PROPS: AddMembersInputApi = {
 };
 
 const renderComponent = async (
-	props?: Partial<AddMembersInputApi>
+	props?: Partial<
+		AddMembersInputApi & {
+			userAccountsAPIURL: string;
+			userGroupsAPIURL: string;
+		}
+	>
 ): Promise<RenderResult> => {
 	const mergedProps = {
 		...DEFAULT_PROPS,
@@ -261,6 +266,28 @@ describe('AddMembersInput', () => {
 		});
 	});
 
+	it('builds the apiURL from userGroupsAPIURL for groups', async () => {
+		await renderComponent({
+			selectValue: MemberType.GROUPS,
+			userGroupsAPIURL: `${location.origin}/o/headless-cmp/v1.0/projects/42/user-groups`,
+		});
+
+		await userEvent.click(
+			screen.getByPlaceholderText('enter-name-or-email')
+		);
+
+		await waitFor(() => {
+			expect(mockFetch).toHaveBeenCalledWith(
+				expect.stringContaining(
+					'/o/headless-cmp/v1.0/projects/42/user-groups'
+				),
+				expect.objectContaining({
+					headers: expect.any(Object),
+				})
+			);
+		});
+	});
+
 	it('builds the apiURL with excludeMembers for users and excludes them from the UI', async () => {
 		const excludeMembers = [
 			{id: '123', name: 'Excluded User'},
@@ -375,5 +402,27 @@ describe('AddMembersInput', () => {
 			expect.stringContaining('groupIds'),
 			expect.anything()
 		);
+	});
+
+	it('excludes members from the UI when the groups apiURL is overridden', async () => {
+		const excludeMembers = [{id: '1', name: 'Group 1'}] as UserGroup[];
+
+		await renderComponent({
+			excludeMembers,
+			selectValue: MemberType.GROUPS,
+			userGroupsAPIURL: `${location.origin}/o/headless-cmp/v1.0/projects/42/user-groups`,
+		});
+
+		await userEvent.click(
+			screen.getByPlaceholderText('enter-name-or-email')
+		);
+
+		expect(
+			await screen.findByRole('option', {name: /Group 2/})
+		).toBeInTheDocument();
+
+		expect(
+			screen.queryByRole('option', {name: /Group 1/})
+		).not.toBeInTheDocument();
 	});
 });

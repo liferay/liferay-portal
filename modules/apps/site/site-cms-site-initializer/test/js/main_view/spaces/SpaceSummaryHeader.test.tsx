@@ -144,6 +144,40 @@ describe('SpaceSummaryHeader', () => {
 			}
 		);
 
+		it('forwards the CMP project object entry id to onOpenMembersModal', async () => {
+			const onOpenMembersModal = jest.fn();
+
+			const spaceModalProps = {
+				action: SpaceSummaryHeaderActions.OPEN_MEMBERS_MODAL,
+				assetLibraryCreatorUserId: '123',
+				cmpProjectObjectEntryId: 42,
+				externalReferenceCode: '789',
+			};
+
+			const props = {
+				...defaultProps,
+				onOpenMembersModal,
+				permissions: {
+					hasAssignMembersPermission: true,
+					hasConnectSitesPermission: false,
+				},
+				spaceModalProps,
+			};
+
+			render(<SpaceSummaryHeader {...props} />);
+
+			const button = await waitFor(() =>
+				screen.getByRole('button', {name: defaultProps.label})
+			);
+
+			await userEvent.click(button);
+
+			expect(onOpenMembersModal).toHaveBeenCalledWith(
+				expect.objectContaining({cmpProjectObjectEntryId: 42}),
+				expect.any(Function)
+			);
+		});
+
 		it('is replaced by onOpenMembersModal when the prop is provided', async () => {
 			const onOpenMembersModal = jest.fn();
 

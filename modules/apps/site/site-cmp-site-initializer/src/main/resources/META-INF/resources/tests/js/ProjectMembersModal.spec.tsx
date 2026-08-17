@@ -57,6 +57,34 @@ describe('ProjectMembersModal', () => {
 		);
 	});
 
+	it('builds the user groups URL from the project id', () => {
+		render(
+			<ProjectMembersModal
+				assetLibraryCreatorUserId="1"
+				cmpProjectObjectEntryId={42}
+				externalReferenceCode="ERC"
+				hasAssignMembersPermission={true}
+			/>
+		);
+
+		const {renderAddMembersInput} = mockManageMembersModal.mock.calls[0][0];
+
+		render(
+			renderAddMembersInput({
+				excludeMembers: [],
+				onAutocompleteItemSelected: jest.fn(),
+				onSelectChange: jest.fn(),
+				selectValue: 'groups',
+			})
+		);
+
+		const props = mockAddMembersInput.mock.calls[0][0];
+
+		expect(props.userGroupsAPIURL).toBe(
+			`${location.origin}/o/headless-cmp/v1.0/projects/42/user-groups`
+		);
+	});
+
 	it('renders the shared ManageMembersModal with the project configuration', () => {
 		render(
 			<ProjectMembersModal
