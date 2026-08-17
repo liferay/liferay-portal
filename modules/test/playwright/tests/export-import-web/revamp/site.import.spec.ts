@@ -168,11 +168,13 @@ testWithWiki(
 					name,
 				});
 
-				await expect(page.getByLabel('Page Templates')).not.toHaveCount(
-					0
-				);
+				await expect(
+					page.getByLabel('Page Templates', {exact: true}).first()
+				).toBeAttached();
 
-				await expect(page.getByLabel('Wiki')).toHaveCount(0);
+				await expect(
+					page.getByLabel('Wiki', {exact: true})
+				).not.toBeAttached();
 			}
 		);
 	}
