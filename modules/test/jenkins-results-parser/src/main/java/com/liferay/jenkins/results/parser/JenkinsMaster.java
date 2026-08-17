@@ -180,7 +180,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 		try {
 			process = JenkinsResultsParserUtil.executeBashCommands(
-				false, new File("."), _SSH_COMMAND_TIMEOUT, scpCommand);
+				true, new File("."), _SSH_COMMAND_TIMEOUT, scpCommand);
 		}
 		catch (IOException | TimeoutException exception) {
 			throw new RuntimeException(
@@ -215,7 +215,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 		try {
 			process = JenkinsResultsParserUtil.executeBashCommands(
-				false, new File("."), _SSH_COMMAND_TIMEOUT, sshCommand);
+				true, new File("."), _SSH_COMMAND_TIMEOUT, sshCommand);
 		}
 		catch (IOException | TimeoutException exception) {
 			throw new RuntimeException(
