@@ -513,6 +513,22 @@ describe('VersionHistory', () => {
 		expect(screen.getByText('no-results-found')).toBeInTheDocument();
 	});
 
+	it('filters the versions by version number', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent();
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		await userEvent.type(screen.getByLabelText('search-form'), '2');
+
+		expect(screen.getAllByRole('option')).toHaveLength(1);
+		expect(screen.getByText('Home Halloween')).toBeInTheDocument();
+	});
+
 	it('only renders the actions menu for versions with a delete action', async () => {
 		mockLargeScreen();
 		mockVersions(DELETABLE_VERSIONS);
