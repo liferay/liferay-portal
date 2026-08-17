@@ -176,22 +176,8 @@ public class TimerExecutorTest {
 
 	@Test
 	public void testExecuteTimerNotifications() throws Exception {
-		KaleoTask kaleoTask = _getKaleoTask("Timer Notification");
-
-		Assert.assertNotNull(kaleoTask);
-
-		KaleoInstanceToken kaleoInstanceToken = _addKaleoInstanceToken(
-			kaleoTask);
-
-		KaleoTaskInstanceToken kaleoTaskInstanceToken =
-			_addKaleoTaskInstanceToken(kaleoInstanceToken, kaleoTask);
-
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_kaleoTimerInstanceTokenLocalService.addKaleoTimerInstanceToken(
-				kaleoInstanceToken.getKaleoInstanceTokenId(),
-				kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
-				_getKaleoTimerId(kaleoTask), RandomTestUtil.randomString(),
-				_workflowContext, _serviceContext);
+			_addKaleoTimerInstanceToken("Timer Notification");
 
 		_executeTimer(kaleoTimerInstanceToken);
 
@@ -207,22 +193,13 @@ public class TimerExecutorTest {
 
 	@Test
 	public void testExecuteTimerReassignments() throws Exception {
-		KaleoTask kaleoTask = _getKaleoTask("Timer Reassignment");
-
-		Assert.assertNotNull(kaleoTask);
-
-		KaleoInstanceToken kaleoInstanceToken = _addKaleoInstanceToken(
-			kaleoTask);
+		KaleoTimerInstanceToken kaleoTimerInstanceToken =
+			_addKaleoTimerInstanceToken("Timer Reassignment");
 
 		KaleoTaskInstanceToken kaleoTaskInstanceToken =
-			_addKaleoTaskInstanceToken(kaleoInstanceToken, kaleoTask);
+			kaleoTimerInstanceToken.getKaleoTaskInstanceToken();
 
-		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_kaleoTimerInstanceTokenLocalService.addKaleoTimerInstanceToken(
-				kaleoInstanceToken.getKaleoInstanceTokenId(),
-				kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
-				_getKaleoTimerId(kaleoTask), RandomTestUtil.randomString(),
-				_workflowContext, _serviceContext);
+		Assert.assertNotNull(kaleoTaskInstanceToken);
 
 		List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances =
 			_kaleoTaskAssignmentInstanceLocalService.
@@ -242,7 +219,6 @@ public class TimerExecutorTest {
 				getKaleoTaskAssignmentInstances(
 					kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId());
 
-		Assert.assertTrue(ListUtil.isNotEmpty(kaleoTaskAssignmentInstances));
 		Assert.assertEquals(
 			kaleoTaskAssignmentInstances.toString(), 1,
 			kaleoTaskAssignmentInstances.size());
@@ -262,22 +238,8 @@ public class TimerExecutorTest {
 	public void testExecuteTimerWithCompletedKaleoTimerInstanceToken()
 		throws Exception {
 
-		KaleoTask kaleoTask = _getKaleoTask("Timer Reassignment");
-
-		Assert.assertNotNull(kaleoTask);
-
-		KaleoInstanceToken kaleoInstanceToken = _addKaleoInstanceToken(
-			kaleoTask);
-
-		KaleoTaskInstanceToken kaleoTaskInstanceToken =
-			_addKaleoTaskInstanceToken(kaleoInstanceToken, kaleoTask);
-
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_kaleoTimerInstanceTokenLocalService.addKaleoTimerInstanceToken(
-				kaleoInstanceToken.getKaleoInstanceTokenId(),
-				kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
-				_getKaleoTimerId(kaleoTask), RandomTestUtil.randomString(),
-				_workflowContext, _serviceContext);
+			_addKaleoTimerInstanceToken("Timer Notification");
 
 		Message message = _getMessage(kaleoTimerInstanceToken);
 
@@ -285,13 +247,12 @@ public class TimerExecutorTest {
 			kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId(),
 			_serviceContext);
 
+		int initialInboxSize = MailServiceTestUtil.getInboxSize();
+
 		_messageListener.receive(message);
 
-		Assert.assertTrue(
-			ListUtil.isEmpty(
-				_kaleoTaskAssignmentInstanceLocalService.
-					getKaleoTaskAssignmentInstances(
-						kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId())));
+		Assert.assertEquals(
+			initialInboxSize, MailServiceTestUtil.getInboxSize());
 	}
 
 	private KaleoInstanceToken _addKaleoInstanceToken(KaleoTask kaleoTask)
@@ -312,6 +273,24 @@ public class TimerExecutorTest {
 			kaleoInstanceToken.getKaleoInstanceTokenId(),
 			kaleoTask.getKaleoTaskId(), kaleoTask.getName(),
 			Collections.emptyList(), null, _workflowContext, _serviceContext);
+	}
+
+	private KaleoTimerInstanceToken _addKaleoTimerInstanceToken(String taskName)
+		throws Exception {
+
+		KaleoTask kaleoTask = _getKaleoTask(taskName);
+
+		KaleoInstanceToken kaleoInstanceToken = _addKaleoInstanceToken(
+			kaleoTask);
+
+		KaleoTaskInstanceToken kaleoTaskInstanceToken =
+			_addKaleoTaskInstanceToken(kaleoInstanceToken, kaleoTask);
+
+		return _kaleoTimerInstanceTokenLocalService.addKaleoTimerInstanceToken(
+			kaleoInstanceToken.getKaleoInstanceTokenId(),
+			kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
+			_getKaleoTimerId(kaleoTask), RandomTestUtil.randomString(),
+			_workflowContext, _serviceContext);
 	}
 
 	private void _executeTimer(KaleoTimerInstanceToken kaleoTimerInstanceToken)
