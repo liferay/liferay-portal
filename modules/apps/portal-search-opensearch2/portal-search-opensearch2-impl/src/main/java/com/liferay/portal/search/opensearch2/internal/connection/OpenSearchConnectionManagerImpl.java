@@ -180,8 +180,8 @@ public class OpenSearchConnectionManagerImpl
 			openSearchConnectionsHolder.getOpenSearchConnection(connectionId);
 
 		if (openSearchConnection != null) {
-			if (_log.isInfoEnabled()) {
-				_log.info("Returning connection with ID: " + connectionId);
+			if (_log.isDebugEnabled()) {
+				_log.debug("Returning connection with ID: " + connectionId);
 			}
 
 			return openSearchConnection;
@@ -233,13 +233,13 @@ public class OpenSearchConnectionManagerImpl
 	protected OpenSearchConnection getOpenSearchConnection(
 		String connectionId, boolean preferLocalCluster) {
 
-		if (_log.isInfoEnabled()) {
-			_log.info("Connection requested for ID: " + connectionId);
+		if (_log.isDebugEnabled()) {
+			_log.debug("Connection requested for ID: " + connectionId);
 		}
 
 		if (!Validator.isBlank(connectionId)) {
-			if (_log.isInfoEnabled()) {
-				_log.info("Getting connection with ID: " + connectionId);
+			if (_log.isDebugEnabled()) {
+				_log.debug("Getting connection with ID: " + connectionId);
 			}
 
 			return getOpenSearchConnection(connectionId);
@@ -249,8 +249,8 @@ public class OpenSearchConnectionManagerImpl
 			String localClusterConnectionId = getLocalClusterConnectionId();
 
 			if (localClusterConnectionId != null) {
-				if (_log.isInfoEnabled()) {
-					_log.info(
+				if (_log.isDebugEnabled()) {
+					_log.debug(
 						"Getting local cluster connection with ID: " +
 							localClusterConnectionId);
 				}
@@ -262,8 +262,8 @@ public class OpenSearchConnectionManagerImpl
 		String remoteClusterConnectionId =
 			openSearchConfigurationWrapper.remoteClusterConnectionId();
 
-		if (_log.isInfoEnabled()) {
-			_log.info(
+		if (_log.isDebugEnabled()) {
+			_log.debug(
 				"Getting remote cluster connection with ID: " +
 					remoteClusterConnectionId);
 		}
