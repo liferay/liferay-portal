@@ -19,7 +19,8 @@ describe('GovernanceService.getAssetStatistics', () => {
 		GovernanceService.getAssetStatistics('123');
 
 		expect(getSpy).toHaveBeenCalledWith(
-			'/o/headless-cms/v1.0/asset-statistics?assetLibraryId=123'
+			'/o/headless-cms/v1.0/asset-statistics?assetLibraryId=123',
+			undefined
 		);
 	});
 
@@ -31,7 +32,23 @@ describe('GovernanceService.getAssetStatistics', () => {
 		GovernanceService.getAssetStatistics();
 
 		expect(getSpy).toHaveBeenCalledWith(
-			'/o/headless-cms/v1.0/asset-statistics'
+			'/o/headless-cms/v1.0/asset-statistics',
+			undefined
+		);
+	});
+
+	it('passes the abort signal to the request', () => {
+		const getSpy = jest
+			.spyOn(ApiHelper, 'get')
+			.mockResolvedValue({data: {}, error: null} as any);
+
+		const {signal} = new AbortController();
+
+		GovernanceService.getAssetStatistics(undefined, signal);
+
+		expect(getSpy).toHaveBeenCalledWith(
+			'/o/headless-cms/v1.0/asset-statistics',
+			signal
 		);
 	});
 });

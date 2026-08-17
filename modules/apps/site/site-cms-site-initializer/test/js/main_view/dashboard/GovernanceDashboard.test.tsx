@@ -89,7 +89,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		await waitFor(() =>
 			expect(
 				mockedGovernanceService.getAssetStatistics
-			).toHaveBeenCalledWith(undefined)
+			).toHaveBeenCalledWith(undefined, expect.any(AbortSignal))
 		);
 	});
 
@@ -99,7 +99,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		await waitFor(() =>
 			expect(
 				mockedGovernanceService.getAssetStatistics
-			).toHaveBeenCalledWith(undefined)
+			).toHaveBeenCalledWith(undefined, expect.any(AbortSignal))
 		);
 
 		await userEvent.click(
@@ -115,7 +115,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		await waitFor(() =>
 			expect(
 				mockedGovernanceService.getAssetStatistics
-			).toHaveBeenCalledWith('02')
+			).toHaveBeenCalledWith('02', expect.any(AbortSignal))
 		);
 	});
 

@@ -5,14 +5,14 @@
 
 import ClayLayout from '@clayui/layout';
 import {navigate} from 'frontend-js-web';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 
 import {SectionHeader} from '../../common/SectionHeader';
 import InteractiveCard, {
 	MetricColor,
 } from '../../performance/components/InteractiveCard';
 import {GovernanceContext} from '../GovernanceContext';
-import GovernanceService, {AssetStatistics} from '../GovernanceService';
+import {AssetStatistics} from '../GovernanceService';
 
 type AttentionCard = {
 	color: MetricColor;
@@ -68,26 +68,13 @@ const SECTION_PATHS: Partial<Record<keyof AssetStatistics, string>> = {
 };
 
 export function AttentionRequired() {
-	const [loading, setLoading] = useState(true);
-	const {space} = useContext(GovernanceContext);
-	const [statistics, setStatistics] = useState<AssetStatistics>();
+	const {
+		loadingStatistics: loading,
+		space,
+		statistics,
+	} = useContext(GovernanceContext);
 
 	const title = Liferay.Language.get('attention-required');
-
-	useEffect(() => {
-		async function fetchStatistics() {
-			setLoading(true);
-
-			const {data} = await GovernanceService.getAssetStatistics(
-				space.value === 'all' ? undefined : space.value
-			);
-
-			setStatistics(data ?? undefined);
-			setLoading(false);
-		}
-
-		fetchStatistics();
-	}, [space]);
 
 	const openSection = (path: string) => {
 		const url = `${Liferay.ThemeDisplay.getPathFriendlyURLPublic()}/cms/${path}`;

@@ -18,11 +18,12 @@ export type AssetStatistics = {
 	upcomingReviewCount: number;
 };
 
-function getAssetStatistics(assetLibraryId?: string) {
+function getAssetStatistics(assetLibraryId?: string, signal?: AbortSignal) {
 	const query = assetLibraryId ? `?assetLibraryId=${assetLibraryId}` : '';
 
 	return ApiHelper.get<AssetStatistics>(
-		`/o/headless-cms/v1.0/asset-statistics${query}`
+		`/o/headless-cms/v1.0/asset-statistics${query}`,
+		signal
 	);
 }
 
