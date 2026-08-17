@@ -72,7 +72,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 		}
 
 		String tokenString = getToken(
-			_CLIENT_ID_RO, null,
+			_CLIENT_ID_READ_ONLY, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD),
 			this::parseTokenString);
@@ -107,7 +107,7 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 		}
 
 		String token = getToken(
-			_CLIENT_ID_RW, null,
+			_CLIENT_ID_READ_WRITE, null,
 			getResourceOwnerPasswordBiFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 				"everything.write"),
@@ -143,9 +143,11 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 		return new JsonWebServiceTestPreparatorBundleActivator();
 	}
 
-	private static final String _CLIENT_ID_RO = RandomTestUtil.randomString();
+	private static final String _CLIENT_ID_READ_ONLY =
+		RandomTestUtil.randomString();
 
-	private static final String _CLIENT_ID_RW = RandomTestUtil.randomString();
+	private static final String _CLIENT_ID_READ_WRITE =
+		RandomTestUtil.randomString();
 
 	private User _user;
 
@@ -161,11 +163,11 @@ public class JsonWebServiceTest extends BaseClientTestCase {
 			createCompany("testcompany");
 
 			createOAuth2Application(
-				companyId, _user, _CLIENT_ID_RO,
+				companyId, _user, _CLIENT_ID_READ_ONLY,
 				Collections.singletonList("everything.read"));
 
 			createOAuth2Application(
-				companyId, _user, _CLIENT_ID_RW,
+				companyId, _user, _CLIENT_ID_READ_WRITE,
 				Arrays.asList("everything.read", "everything.write"));
 		}
 
