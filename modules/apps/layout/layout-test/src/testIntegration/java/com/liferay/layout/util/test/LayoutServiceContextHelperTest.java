@@ -100,9 +100,7 @@ public class LayoutServiceContextHelperTest {
 
 	@Test
 	@TestInfo("LPD-102690")
-	public void testGetServiceContextAutoCloseableRestoresLocale()
-		throws Exception {
-
+	public void testGetServiceContextAutoCloseableLocale() throws Exception {
 		ServiceContext serviceContext = new ServiceContext();
 
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
