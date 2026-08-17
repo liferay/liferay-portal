@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -66,7 +65,6 @@ import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
@@ -87,6 +85,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.DataCleanupTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -198,7 +197,8 @@ public class CompanyLocalServiceTest {
 		_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 			PortalInstancePool.getDefaultCompanyId());
 
-		_initializeClassNames();
+		_classNamesSavepointSafeCloseable =
+			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
 
 		_modelListeners = _registerModelListeners();
 
@@ -228,7 +228,8 @@ public class CompanyLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_initializeClassNames();
+		_classNamesSavepointSafeCloseable =
+			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
 	}
 
 	@After
@@ -1367,14 +1368,7 @@ public class CompanyLocalServiceTest {
 	}
 
 	private static void _cleanUpData() throws Exception {
-		List<ClassName> classNames = ListUtil.remove(
-			_classNameLocalService.getClassNames(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			_classNames);
-
-		for (ClassName className : classNames) {
-			_classNameLocalService.deleteClassName(className);
-		}
+		_classNamesSavepointSafeCloseable.close();
 
 		_resetBackgroundTaskThreadLocal();
 
@@ -1395,11 +1389,6 @@ public class CompanyLocalServiceTest {
 		serviceContext.setCompanyId(companyId);
 
 		return serviceContext;
-	}
-
-	private static void _initializeClassNames() throws Exception {
-		_classNames = _classNameLocalService.getClassNames(
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 	}
 
 	private static List<String> _registerModelListeners() {
@@ -1748,11 +1737,7 @@ public class CompanyLocalServiceTest {
 		CompanyLocalServiceTest.class);
 
 	private static BundleContext _bundleContext;
-
-	@Inject
-	private static ClassNameLocalService _classNameLocalService;
-
-	private static List<ClassName> _classNames;
+	private static SafeCloseable _classNamesSavepointSafeCloseable;
 	private static Company _company;
 
 	@Inject
