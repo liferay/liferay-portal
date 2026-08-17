@@ -55,11 +55,14 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcess
 					"ObjectDefinition.objectDefinitionId = ",
 					"ObjectField.objectDefinitionId where ",
 					"ObjectField.businessType = ? and ObjectDefinition.status ",
-					"= ?"))) {
+					"= ? and not (ObjectDefinition.system_ = ? and ",
+					"ObjectDefinition.modifiable = ?)"))) {
 
 			preparedStatement.setString(
 				1, ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
 			preparedStatement.setInt(2, WorkflowConstants.STATUS_APPROVED);
+			preparedStatement.setBoolean(3, true);
+			preparedStatement.setBoolean(4, false);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				while (resultSet.next()) {
