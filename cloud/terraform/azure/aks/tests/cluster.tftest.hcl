@@ -156,7 +156,7 @@ run "should_harden_cluster_defaults" {
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.node_provisioning_profile[0].default_node_pools == "None"
-		error_message="Node auto-provisioning must not generate default node pools, so only the node pools this repository declares can provision nodes"
+		error_message="Node auto-provisioning must not generate default node pools"
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.node_provisioning_profile[0].mode == "Auto"

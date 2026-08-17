@@ -23,19 +23,19 @@ override_module {
 run "should_align_the_karpenter_node_pool_with_the_system_machine_type" {
 	assert {
 		condition=one([for requirement in kubernetes_manifest.karpenter_node_pool.manifest.spec.template.spec.requirements : requirement.values if requirement.key == "karpenter.azure.com/sku-name"]) == ["Standard_D16s_v3"]
-		error_message="The Karpenter node pool must pin its SKU to the VM size driving the system node pool"
+		error_message="The Karpenter node pool must use the specified machine type"
 	}
 	assert {
 		condition=kubernetes_manifest.karpenter_node_pool.manifest.spec.weight > 0
-		error_message="The Karpenter node pool must outweigh the node pools auto-provisioning generates by default"
+		error_message="The Karpenter node pool must have high priority"
 	}
 	assert {
 		condition=try(kubernetes_manifest.karpenter_node_pool.manifest.spec.disruption.consolidateAfter, "") != ""
-		error_message="The Karpenter node pool must set a consolidateAfter, which the karpenter.sh/v1 CRD rejects the object without"
+		error_message="The Karpenter node pool must set a consolidateAfter"
 	}
 	assert {
 		condition=kubernetes_manifest.karpenter_node_pool.manifest.spec.template.spec.nodeClassRef.name == kubernetes_manifest.karpenter_node_class.manifest.metadata.name
-		error_message="The Karpenter node pool must reference the node class this module declares, because disabling the default node pools tears down the one auto-provisioning generates"
+		error_message="The Karpenter node pool must reference the node class this module declares"
 	}
 	command=plan
 	override_data {
