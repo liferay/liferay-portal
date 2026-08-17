@@ -5,7 +5,7 @@
 
 package com.liferay.frontend.data.set.admin.web.internal.portlet.action;
 
-import com.liferay.frontend.data.set.admin.web.internal.constants.FDSAdminPortletKeys;
+import com.liferay.frontend.data.set.constants.FDSAdminPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 
 import jakarta.portlet.RenderRequest;

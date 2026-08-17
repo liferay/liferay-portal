@@ -5,6 +5,8 @@
 
 package com.liferay.frontend.data.set.admin.web.internal.constants;
 
+import com.liferay.frontend.data.set.constants.FDSAdminPortletKeys;
+
 /**
  * @author Daniel Sanz
  */

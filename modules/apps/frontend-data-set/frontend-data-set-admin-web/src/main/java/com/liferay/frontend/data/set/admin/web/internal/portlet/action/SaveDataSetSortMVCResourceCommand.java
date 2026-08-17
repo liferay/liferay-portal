@@ -5,7 +5,7 @@
 
 package com.liferay.frontend.data.set.admin.web.internal.portlet.action;
 
-import com.liferay.frontend.data.set.admin.web.internal.constants.FDSAdminPortletKeys;
+import com.liferay.frontend.data.set.constants.FDSAdminPortletKeys;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
