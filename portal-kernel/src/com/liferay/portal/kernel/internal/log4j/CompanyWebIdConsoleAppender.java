@@ -97,27 +97,21 @@ public final class CompanyWebIdConsoleAppender extends AbstractAppender {
 		}
 
 		@PluginBuilderAttribute("bufferedIo")
-		@SuppressWarnings("log4j.public.setter")
 		private boolean _bufferedIo = true;
 
 		@PluginBuilderAttribute("bufferSize")
-		@SuppressWarnings("log4j.public.setter")
 		private int _bufferSize = Constants.ENCODER_BYTE_BUFFER_SIZE;
 
 		@PluginBuilderAttribute("direct")
-		@SuppressWarnings("log4j.public.setter")
 		private boolean _direct;
 
 		@PluginBuilderAttribute("follow")
-		@SuppressWarnings("log4j.public.setter")
 		private boolean _follow;
 
 		@PluginBuilderAttribute("immediateFlush")
-		@SuppressWarnings("log4j.public.setter")
 		private boolean _immediateFlush = true;
 
 		@PluginBuilderAttribute("target")
-		@SuppressWarnings("log4j.public.setter")
 		private ConsoleAppender.Target _target =
 			ConsoleAppender.Target.SYSTEM_OUT;
 

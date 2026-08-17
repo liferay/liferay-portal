@@ -81,11 +81,9 @@ public final class LiferayXmlLayout extends AbstractStringLayout {
 		}
 
 		@PluginBuilderAttribute("locationInfo")
-		@SuppressWarnings("log4j.public.setter")
 		private boolean _locationInfo;
 
 		@PluginBuilderAttribute("properties")
-		@SuppressWarnings("log4j.public.setter")
 		private boolean _properties;
 
 	}
