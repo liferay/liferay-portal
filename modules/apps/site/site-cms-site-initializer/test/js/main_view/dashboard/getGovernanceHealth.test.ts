@@ -20,12 +20,11 @@ const NO_ISSUES: AssetStatistics = {
 };
 
 describe('getGovernanceHealth', () => {
-	it('scores a perfect hundred when nothing needs attention', () => {
-		expect(getGovernanceHealth(NO_ISSUES)).toEqual({
-			freshness: 100,
-			reliability: 100,
-			score: 100,
-		});
+	it('scores every metric it has data for at a hundred when nothing needs attention', () => {
+		const {freshness, reliability} = getGovernanceHealth(NO_ISSUES);
+
+		expect(reliability).toBe(100);
+		expect(freshness).toBe(100);
 	});
 
 	it('penalises each reliability issue five points', () => {
@@ -50,7 +49,32 @@ describe('getGovernanceHealth', () => {
 		expect(freshness).toBe(79);
 	});
 
+	it('leaves originality out of the score until its count arrives', () => {
+		const {originality, score} = getGovernanceHealth(NO_ISSUES);
+
+		expect(originality).toBeUndefined();
+		expect(score).toBe(100);
+	});
+
+	it('scores originality as soon as its count arrives', () => {
+		const {originality, score} = getGovernanceHealth({
+			...NO_ISSUES,
+			duplicatedCount: 10,
+		});
+
+		expect(originality).toBe(80);
+		expect(score).toBe(97);
+	});
+
+	it('penalises each draft four points', () => {
+		const {flow} = getGovernanceHealth({...NO_ISSUES, inDraftCount: 3});
+
+		expect(flow).toBe(88);
+	});
+
 	it('weighs reliability twice as much as freshness', () => {
+		const baseline = getGovernanceHealth(NO_ISSUES);
+
 		const brokenLinksOnly = getGovernanceHealth({
 			...NO_ISSUES,
 			brokenLinksCount: 6,
@@ -64,8 +88,8 @@ describe('getGovernanceHealth', () => {
 		expect(brokenLinksOnly.reliability).toBe(70);
 		expect(expiringOnly.freshness).toBe(70);
 
-		expect(brokenLinksOnly.score).toBe(80);
-		expect(expiringOnly.score).toBe(90);
+		expect(baseline.score - brokenLinksOnly.score).toBe(14);
+		expect(baseline.score - expiringOnly.score).toBe(7);
 	});
 
 	it('never scores below zero however many issues there are', () => {
@@ -75,6 +99,6 @@ describe('getGovernanceHealth', () => {
 		});
 
 		expect(reliability).toBe(0);
-		expect(score).toBe(33);
+		expect(score).toBe(53);
 	});
 });

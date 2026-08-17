@@ -8,6 +8,7 @@ import ApiHelper from '../../../common/services/ApiHelper';
 export type AssetStatistics = {
 	approvedCount: number;
 	brokenLinksCount: number;
+	duplicatedCount?: number;
 	expiredCount: number;
 	expiringSoonCount: number;
 	inDraftCount: number;
@@ -18,13 +19,34 @@ export type AssetStatistics = {
 	upcomingReviewCount: number;
 };
 
-function getAssetStatistics(assetLibraryId?: string, signal?: AbortSignal) {
-	const query = assetLibraryId ? `?assetLibraryId=${assetLibraryId}` : '';
+async function getAssetStatistics(
+	assetLibraryId?: string,
+	signal?: AbortSignal
+) {
+	const scope = assetLibraryId ? `assetLibraryId=${assetLibraryId}&` : '';
 
-	return ApiHelper.get<AssetStatistics>(
-		`/o/headless-cms/v1.0/asset-statistics${query}`,
-		signal
-	);
+	const [statistics, similarityClusters] = await Promise.all([
+		ApiHelper.get<AssetStatistics>(
+			`/o/headless-cms/v1.0/asset-statistics?${scope}`,
+			signal
+		),
+		ApiHelper.get<{totalCount: number}>(
+			`/o/headless-cms/v1.0/similarity-clusters?${scope}pageSize=1`,
+			signal
+		),
+	]);
+
+	if (!statistics.data) {
+		return statistics;
+	}
+
+	return {
+		...statistics,
+		data: {
+			...statistics.data,
+			duplicatedCount: similarityClusters.data?.totalCount,
+		},
+	};
 }
 
 export default {getAssetStatistics};

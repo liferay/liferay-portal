@@ -7,6 +7,7 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import {Text} from '@clayui/core';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayPopover from '@clayui/popover';
+import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import React, {useContext, useState} from 'react';
 
 import {getImage} from '../../../../common/utils/getImage';
@@ -16,6 +17,8 @@ import getGovernanceHealth from '../getGovernanceHealth';
 import './GovernanceHealth.scss';
 
 const MAX_SCORE = 100;
+
+const NO_SCORE = '—';
 
 const METRICS = [
 	Liferay.Language.get('reliability-help'),
@@ -58,10 +61,12 @@ function ScoreHelp({title}: {title: string}) {
 	);
 }
 
-function SubScore({label, value}: {label: string; value: number}) {
+function SubScore({label, value}: {label: string; value?: number}) {
 	return (
 		<div className="cms-governance-health__sub-score">
-			<span className="d-block font-weight-bold text-7">{value}</span>
+			<span className="d-block font-weight-bold text-7">
+				{isNullOrUndefined(value) ? NO_SCORE : value}
+			</span>
 
 			<span className="d-block font-weight-semi-bold text-2 text-secondary">
 				{label}
@@ -110,7 +115,7 @@ export function GovernanceHealth() {
 			</div>
 
 			{health ? (
-				<div className="c-gap-5 d-flex mr-md-3 mt-3 mt-md-4">
+				<div className="c-gap-4 c-gap-md-5 d-flex flex-wrap mr-md-3 mt-3 mt-md-4">
 					<SubScore
 						label={Liferay.Language.get('reliability')}
 						value={health.reliability}
@@ -119,6 +124,16 @@ export function GovernanceHealth() {
 					<SubScore
 						label={Liferay.Language.get('freshness')}
 						value={health.freshness}
+					/>
+
+					<SubScore
+						label={Liferay.Language.get('flow')}
+						value={health.flow}
+					/>
+
+					<SubScore
+						label={Liferay.Language.get('originality')}
+						value={health.originality}
 					/>
 				</div>
 			) : null}
