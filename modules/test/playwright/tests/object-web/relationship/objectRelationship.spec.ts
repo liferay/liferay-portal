@@ -3516,16 +3516,8 @@ test.describe('Manage object relationship entries', () => {
 				'Relationship'
 			);
 
-			const saveButton = objectLayoutsPage.iframeLocator
-				.getByRole('button', {name: 'Save'})
-				.first();
-
-			await expect(saveButton).toBeVisible();
-			await saveButton.dispatchEvent('click');
-			await waitForAlert(
-				page,
-				'Success:The object layout was updated successfully'
-			);
+			const {reload} =
+				await objectLayoutsPage.saveObjectLayoutReturningReload();
 
 			const restPath1 = `c/${objectDefinition1.name.toLowerCase()}s`;
 			const restPath2 = `c/${objectDefinition2.name.toLowerCase()}s`;
@@ -3548,6 +3540,11 @@ test.describe('Manage object relationship entries', () => {
 					relatedExternalReferenceCode: entryB.externalReferenceCode,
 				}
 			);
+
+			// The layout save's reload has had the entry seeding to land in;
+			// consume it before the first navigation.
+
+			await reload;
 
 			const openObjectEntry = async (
 				className: string,
@@ -3681,17 +3678,8 @@ test.describe('Manage object relationship entries', () => {
 				'Relationship'
 			);
 
-			const saveButton = page
-				.frameLocator('iframe')
-				.getByRole('button', {name: 'Save'})
-				.first();
-
-			await expect(saveButton).toBeVisible();
-			await saveButton.dispatchEvent('click');
-			await waitForAlert(
-				page,
-				'Success:The object layout was updated successfully'
-			);
+			const {reload} =
+				await objectLayoutsPage.saveObjectLayoutReturningReload();
 
 			const restPath = `c/${objectDefinition.name.toLowerCase()}s`;
 
@@ -3704,6 +3692,11 @@ test.describe('Manage object relationship entries', () => {
 				{[textFieldName]: 'Entry B'},
 				restPath
 			);
+
+			// The layout save's reload has had the entry seeding to land in;
+			// consume it before the first navigation.
+
+			await reload;
 
 			const openEntryRelationshipTab = async (entryLabel: string) => {
 				await viewObjectEntriesPage.goto(objectDefinition.className);
@@ -4074,18 +4067,10 @@ test.describe('Manage object relationship entries', () => {
 					'Relationship'
 				);
 
-				const saveButton = objectLayoutsPage.iframeLocator
-					.getByRole('button', {name: 'Save'})
-					.first();
+				const {reload} =
+					await objectLayoutsPage.saveObjectLayoutReturningReload();
 
-				await expect(saveButton).toBeVisible();
-
-				await saveButton.dispatchEvent('click');
-
-				await waitForAlert(
-					page,
-					'Success:The object layout was updated successfully'
-				);
+				await reload;
 
 				restPath = `c/${objectDefinition.name.toLowerCase()}s`;
 			});
@@ -4234,17 +4219,8 @@ test.describe('Manage object relationship entries', () => {
 				'Relationship'
 			);
 
-			const saveButton = page
-				.frameLocator('iframe')
-				.getByRole('button', {name: 'Save'})
-				.first();
-
-			await expect(saveButton).toBeVisible();
-			await saveButton.dispatchEvent('click');
-			await waitForAlert(
-				page,
-				'Success:The object layout was updated successfully'
-			);
+			const {reload} =
+				await objectLayoutsPage.saveObjectLayoutReturningReload();
 
 			const restPath = `c/${objectDefinition.name.toLowerCase()}s`;
 
@@ -4252,6 +4228,11 @@ test.describe('Manage object relationship entries', () => {
 				{[textFieldName]: 'Entry Test'},
 				restPath
 			);
+
+			// The layout save's reload has had the entry seeding to land in;
+			// consume it before the first navigation.
+
+			await reload;
 
 			const openEntryRelationshipTab = async (entryLabel: string) => {
 				await viewObjectEntriesPage.goto(objectDefinition.className);
@@ -4434,18 +4415,10 @@ test.describe('Manage object relationship entries', () => {
 					'Relationship'
 				);
 
-				const saveButton = objectLayoutsPage.iframeLocator
-					.getByRole('button', {name: 'Save'})
-					.first();
+				const {reload} =
+					await objectLayoutsPage.saveObjectLayoutReturningReload();
 
-				await expect(saveButton).toBeVisible();
-
-				await saveButton.dispatchEvent('click');
-
-				await waitForAlert(
-					page,
-					'Success:The object layout was updated successfully'
-				);
+				await reload;
 			});
 
 			await test.step('create entries A and B and associate entry B to entry A', async () => {
@@ -4629,18 +4602,10 @@ test.describe('Manage object relationship entries', () => {
 						'Relationship'
 					);
 
-					const saveButton = objectLayoutsPage.iframeLocator
-						.getByRole('button', {name: 'Save'})
-						.first();
+					const {reload} =
+						await objectLayoutsPage.saveObjectLayoutReturningReload();
 
-					await expect(saveButton).toBeVisible();
-
-					await saveButton.dispatchEvent('click');
-
-					await waitForAlert(
-						page,
-						'Success:The object layout was updated successfully'
-					);
+					await reload;
 				};
 
 				await setupLayout(objectDefinition1, 'textField');
@@ -4972,18 +4937,10 @@ test.describe('Manage object relationship entries', () => {
 					'Relationship'
 				);
 
-				const saveButton = objectLayoutsPage.iframeLocator
-					.getByRole('button', {name: 'Save'})
-					.first();
+				const {reload} =
+					await objectLayoutsPage.saveObjectLayoutReturningReload();
 
-				await expect(saveButton).toBeVisible();
-
-				await saveButton.dispatchEvent('click');
-
-				await waitForAlert(
-					page,
-					'Success:The object layout was updated successfully'
-				);
+				await reload;
 			};
 
 			await setupLayout(objectDefinition1, 'textField');
@@ -5137,18 +5094,8 @@ test.describe('Manage object relationship entries', () => {
 				'Relationship'
 			);
 
-			const saveButton = objectLayoutsPage.iframeLocator
-				.getByRole('button', {name: 'Save'})
-				.first();
-
-			await expect(saveButton).toBeVisible();
-
-			await saveButton.dispatchEvent('click');
-
-			await waitForAlert(
-				page,
-				'Success:The object layout was updated successfully'
-			);
+			const {reload} =
+				await objectLayoutsPage.saveObjectLayoutReturningReload();
 
 			const applicationName1 = `c/${objectDefinition1.name.toLowerCase()}s`;
 
@@ -5156,6 +5103,11 @@ test.describe('Manage object relationship entries', () => {
 				{['textField']: 'Entry 1'},
 				applicationName1
 			);
+
+			// The layout save's reload has had the entry seeding to land in;
+			// consume it before the first navigation.
+
+			await reload;
 
 			const openEntry1Details = async () => {
 				await viewObjectEntriesPage.goto(objectDefinition1.className);
