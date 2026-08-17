@@ -18,6 +18,7 @@ import (
 	"maps"
 	"math"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
@@ -59,15 +60,17 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
 	request controllerruntime.Request,
 ) (controllerruntime.Result, error) {
-	logger := logf.FromContext(context)
-
 	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{}
 
-	if error := liferayEnvironmentReconciler.Get(context, request.NamespacedName, liferayEnvironment); error != nil {
+	if error := liferayEnvironmentReconciler.Get(
+		context, request.NamespacedName, liferayEnvironment,
+	); error != nil {
 		return controllerruntime.Result{}, client.IgnoreNotFound(error)
 	}
 
-	environmentID, error := liferayEnvironmentReconciler.resolveEnvironmentID(context, liferayEnvironment.Namespace)
+	environmentID, error := liferayEnvironmentReconciler.resolveEnvironmentID(
+		context, liferayEnvironment.Namespace,
+	)
 
 	if error != nil {
 		return controllerruntime.Result{}, error
@@ -81,278 +84,43 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 	liferayEnvironment.Status.EnvironmentID = environmentID
 
-	privateKey, error := liferayEnvironmentReconciler.ensureIdentity(context, liferayEnvironment)
+	privateKey, error := liferayEnvironmentReconciler.ensureIdentity(
+		context, liferayEnvironment,
+	)
 
 	if error != nil {
 		return controllerruntime.Result{}, error
 	}
 
 	if liferayEnvironment.Spec.Offline {
-		publicKey, error := publicKeyBase64(privateKey)
+		result, error := liferayEnvironmentReconciler.handleOfflineActivation(context, environmentID, liferayEnvironment, privateKey)
 
-		if error != nil {
-			return controllerruntime.Result{}, error
+		if error != nil || !result.IsZero() {
+			return result, error
 		}
+	} else {
+		result, error := liferayEnvironmentReconciler.handleOnlineActivation(context, environmentID, liferayEnvironment, privateKey)
 
-		offlineActivationPayload, error := provisioning.OfflineActivationPayload(
-			provisioning.ActivationRequest{
-				EnvironmentID:   environmentID,
-				EnvironmentName: liferayEnvironment.Spec.EnvironmentName,
-				PublicKey:       publicKey,
-			},
-			privateKey,
-		)
-
-		if error != nil {
-			return controllerruntime.Result{}, error
+		if error != nil || !result.IsZero() {
+			return result, error
 		}
-
-		if error := liferayEnvironmentReconciler.persistOfflineRequest(
-			context, liferayEnvironment, offlineActivationPayload,
-		); error != nil {
-			return controllerruntime.Result{}, error
-		}
-
-		logger.V(1).Info("Awaiting offline activation bundle", "environmentID", environmentID)
-
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: "Waiting for the offline activation bundle to be provided",
-				Reason:  "AwaitingOfflineActivationBundle",
-				Status:  metav1.ConditionFalse,
-				Type:    conditionActivated,
-			},
-		)
-
-		liferayEnvironment.Status.Phase = "Pending"
-
-		return liferayEnvironmentReconciler.finishAfter(
-			context, liferayEnvironment, 15*time.Second,
-		)
 	}
 
-	if liferayEnvironment.Status.ActivatedAt == nil {
-		publicKey, error := publicKeyBase64(privateKey)
+	entitlements, error := liferayEnvironmentReconciler.readEntitlements(context, liferayEnvironment)
 
-		if error != nil {
-			return controllerruntime.Result{}, error
-		}
-
-		activationCode, error := liferayEnvironmentReconciler.readActivationCode(context, liferayEnvironment)
-
-		if errors.IsNotFound(error) {
-			logger.V(1).Info("Awaiting activation code", "environmentID", environmentID)
-
-			meta.SetStatusCondition(
-				&liferayEnvironment.Status.Conditions,
-				metav1.Condition{
-					Message: "Waiting for the activation code secret to be created",
-					Reason:  "AwaitingActivationCode",
-					Status:  metav1.ConditionFalse,
-					Type:    conditionActivated,
-				},
-			)
-
-			liferayEnvironment.Status.Phase = "Pending"
-
-			return liferayEnvironmentReconciler.finishAfter(
-				context, liferayEnvironment, 15*time.Second,
-			)
-		}
-
-		if error != nil {
-			return controllerruntime.Result{}, error
-		}
-
-		logger.Info(
-			"Activating environment",
-			"environmentID", environmentID,
-			"environmentName", liferayEnvironment.Spec.EnvironmentName,
-		)
-
-		if error := liferayEnvironmentReconciler.Provisioning.Activate(
-			provisioning.ActivationRequest{
-				ActivationCode:  activationCode,
-				EnvironmentID:   environmentID,
-				EnvironmentName: liferayEnvironment.Spec.EnvironmentName,
-				PublicKey:       publicKey,
-			}, context, privateKey); error != nil {
-			logger.Error(error, "Activation rejected", "environmentID", environmentID)
-
-			meta.SetStatusCondition(
-				&liferayEnvironment.Status.Conditions,
-				metav1.Condition{
-					Message: error.Error(),
-					Reason:  "ActivationRejected",
-					Status:  metav1.ConditionFalse,
-					Type:    conditionActivated,
-				},
-			)
-
-			liferayEnvironment.Status.ConsecutiveFailures++
-			liferayEnvironment.Status.Phase = "Degraded"
-
-			return liferayEnvironmentReconciler.finishWithBackoff(
-				context, liferayEnvironment,
-			)
-		}
-
-		now := metav1.Now()
-
-		liferayEnvironment.Status.ActivatedAt = &now
-
-		logger.Info("Environment activated", "environmentID", environmentID)
-
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Reason: "Activated",
-				Status: metav1.ConditionTrue,
-				Type:   conditionActivated,
-			},
-		)
+	if error != nil {
+		return controllerruntime.Result{}, error
 	}
 
-	entitlements, error := liferayEnvironmentReconciler.Provisioning.Manifest(
+	result, error := liferayEnvironmentReconciler.enforceLicense(
 		context,
-		provisioning.ManifestRequest{
-			DxpVersion:    liferayEnvironmentReconciler.resolveDxpVersion(liferayEnvironment),
-			EnvironmentID: environmentID,
-		},
-		privateKey,
+		entitlements,
+		environmentID,
+		liferayEnvironment,
 	)
 
-	if error != nil {
-		logger.Error(error, "Entitlements fetch failed", "environmentID", environmentID)
-
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: error.Error(),
-				Reason:  "EntitlementsFetchFailed",
-				Status:  metav1.ConditionFalse,
-				Type:    conditionProvisioningReachable,
-			},
-		)
-
-		liferayEnvironment.Status.ConsecutiveFailures++
-
-		if liferayEnvironment.Status.UnreachableSince == nil {
-			unreachableSince := metav1.NewTime(time.Now())
-
-			liferayEnvironment.Status.UnreachableSince = &unreachableSince
-		}
-
-		liferayEnvironment.Status.Phase = "Degraded"
-
-		if error := liferayEnvironmentReconciler.enforceGracePeriod(
-			context, liferayEnvironment,
-		); error != nil {
-			return controllerruntime.Result{}, error
-		}
-
-		return liferayEnvironmentReconciler.finishWithBackoff(
-			context, liferayEnvironment,
-		)
-	}
-
-	logger.Info(
-		"Entitlements fetched",
-		"environmentID", environmentID,
-		"maxClusterNodes", entitlements.MaxClusterNodes,
-	)
-
-	meta.SetStatusCondition(
-		&liferayEnvironment.Status.Conditions,
-		metav1.Condition{
-			Reason: "Reachable",
-			Status: metav1.ConditionTrue,
-			Type:   conditionProvisioningReachable,
-		},
-	)
-
-	liferayEnvironment.Status.ConsecutiveFailures = 0
-
-	liferayEnvironmentReconciler.clearUnreachable(context, liferayEnvironment)
-
-	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(context, entitlements, liferayEnvironment); error != nil {
-		return controllerruntime.Result{}, error
-	}
-
-	now := metav1.Now()
-
-	liferayEnvironment.Status.License.Checksum = licenseChecksum(entitlements.LicenseXML)
-	liferayEnvironment.Status.License.LastVerified = &now
-	liferayEnvironment.Status.License.MaxClusterNodes = entitlements.MaxClusterNodes
-
-	expirationDate, error := license.ExpirationDate(entitlements.LicenseXML)
-
-	if error != nil {
-		logger.Error(error, "License validation failed", "environmentID", environmentID)
-
-		liferayEnvironment.Status.License.ValidUntil = nil
-
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: error.Error(),
-				Reason:  "Invalid",
-				Status:  metav1.ConditionFalse,
-				Type:    conditionLicenseValid,
-			},
-		)
-
-		liferayEnvironment.Status.Phase = "Degraded"
-
-		return liferayEnvironmentReconciler.finishAfter(
-			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
-		)
-	}
-
-	validUntil := metav1.NewTime(expirationDate)
-
-	liferayEnvironment.Status.License.ValidUntil = &validUntil
-
-	if now.After(expirationDate) {
-		logger.Info(
-			"License expired",
-			"environmentID", environmentID,
-			"expirationDate", expirationDate,
-		)
-
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: fmt.Sprintf(
-					"License expired on %s.", expirationDate.Format(time.RFC3339),
-				),
-				Reason: "Expired",
-				Status: metav1.ConditionFalse,
-				Type:   conditionLicenseValid,
-			},
-		)
-
-		liferayEnvironment.Status.Phase = "Degraded"
-
-		return liferayEnvironmentReconciler.finishAfter(
-			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
-		)
-	}
-
-	meta.SetStatusCondition(
-		&liferayEnvironment.Status.Conditions,
-		metav1.Condition{
-			Reason: "Valid",
-			Status: metav1.ConditionTrue,
-			Type:   conditionLicenseValid,
-		},
-	)
-
-	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
-		context, liferayEnvironment, entitlements.MaxClusterNodes,
-	); error != nil {
-		return controllerruntime.Result{}, error
+	if error != nil || !result.IsZero() {
+		return result, error
 	}
 
 	apps, pending := liferayEnvironmentReconciler.Syncer.Sync(
@@ -504,6 +272,92 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceGracePe
 	)
 
 	return nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense(
+	context context.Context,
+	entitlements *provisioning.Entitlements,
+	environmentID string,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) (controllerruntime.Result, error) {
+	logger := logf.FromContext(context)
+
+	now := metav1.Now()
+
+	liferayEnvironment.Status.License.Checksum = licenseChecksum(entitlements.LicenseXML)
+	liferayEnvironment.Status.License.LastVerified = &now
+	liferayEnvironment.Status.License.MaxClusterNodes = entitlements.MaxClusterNodes
+
+	expirationDate, error := license.ExpirationDate(entitlements.LicenseXML)
+
+	if error != nil {
+		logger.Error(error, "License validation failed", "environmentID", environmentID)
+
+		liferayEnvironment.Status.License.ValidUntil = nil
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: error.Error(),
+				Reason:  "Invalid",
+				Status:  metav1.ConditionFalse,
+				Type:    conditionLicenseValid,
+			},
+		)
+
+		liferayEnvironment.Status.Phase = "Degraded"
+
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		)
+	}
+
+	validUntil := metav1.NewTime(expirationDate)
+
+	liferayEnvironment.Status.License.ValidUntil = &validUntil
+
+	if now.After(expirationDate) {
+		logger.Info(
+			"License expired",
+			"environmentID", environmentID,
+			"expirationDate", expirationDate,
+		)
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"License expired on %s.", expirationDate.Format(time.RFC3339),
+				),
+				Reason: "Expired",
+				Status: metav1.ConditionFalse,
+				Type:   conditionLicenseValid,
+			},
+		)
+
+		liferayEnvironment.Status.Phase = "Degraded"
+
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		)
+	}
+
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Reason: "Valid",
+			Status: metav1.ConditionTrue,
+			Type:   conditionLicenseValid,
+		},
+	)
+
+	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+		context, liferayEnvironment, entitlements.MaxClusterNodes,
+	); error != nil {
+		return controllerruntime.Result{}, error
+	}
+
+	return controllerruntime.Result{}, nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplicaCeiling(
@@ -744,6 +598,172 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishWithBack
 	)
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineActivation(
+	context context.Context,
+	environmentID string,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	privateKey *rsa.PrivateKey,
+) (controllerruntime.Result, error) {
+	logger := logf.FromContext(context)
+
+	if liferayEnvironment.Status.ActivatedAt == nil {
+		publicKey, error := publicKeyBase64(privateKey)
+
+		if error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		activationCode, error := liferayEnvironmentReconciler.readActivationCode(context, liferayEnvironment)
+
+		if errors.IsNotFound(error) {
+			logger.V(1).Info("Awaiting activation code", "environmentID", environmentID)
+
+			meta.SetStatusCondition(
+				&liferayEnvironment.Status.Conditions,
+				metav1.Condition{
+					Message: "Waiting for the activation code secret to be created",
+					Reason:  "AwaitingActivationCode",
+					Status:  metav1.ConditionFalse,
+					Type:    conditionActivated,
+				},
+			)
+
+			liferayEnvironment.Status.Phase = "Pending"
+
+			result, error := liferayEnvironmentReconciler.finishAfter(
+				context, liferayEnvironment, 15*time.Second,
+			)
+
+			return result, error
+		}
+
+		if error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		logger.Info(
+			"Activating environment",
+			"environmentID", environmentID,
+			"environmentName", liferayEnvironment.Spec.EnvironmentName,
+		)
+
+		if error := liferayEnvironmentReconciler.Provisioning.Activate(
+			provisioning.ActivationRequest{
+				ActivationCode:  activationCode,
+				EnvironmentID:   environmentID,
+				EnvironmentName: liferayEnvironment.Spec.EnvironmentName,
+				PublicKey:       publicKey,
+			}, context, privateKey); error != nil {
+			logger.Error(error, "Activation rejected", "environmentID", environmentID)
+
+			meta.SetStatusCondition(
+				&liferayEnvironment.Status.Conditions,
+				metav1.Condition{
+					Message: error.Error(),
+					Reason:  "ActivationRejected",
+					Status:  metav1.ConditionFalse,
+					Type:    conditionActivated,
+				},
+			)
+
+			liferayEnvironment.Status.ConsecutiveFailures++
+			liferayEnvironment.Status.Phase = "Degraded"
+
+			result, error := liferayEnvironmentReconciler.finishWithBackoff(
+				context, liferayEnvironment,
+			)
+
+			return result, error
+		}
+
+		now := metav1.Now()
+
+		liferayEnvironment.Status.ActivatedAt = &now
+
+		logger.Info("Environment activated", "environmentID", environmentID)
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Reason: "Activated",
+				Status: metav1.ConditionTrue,
+				Type:   conditionActivated,
+			},
+		)
+	}
+
+	entitlements, error := liferayEnvironmentReconciler.Provisioning.Manifest(
+		context,
+		provisioning.ManifestRequest{
+			DxpVersion:    liferayEnvironmentReconciler.resolveDxpVersion(liferayEnvironment),
+			EnvironmentID: environmentID,
+		},
+		privateKey,
+	)
+
+	if error != nil {
+		logger.Error(error, "Entitlements fetch failed", "environmentID", environmentID)
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: error.Error(),
+				Reason:  "EntitlementsFetchFailed",
+				Status:  metav1.ConditionFalse,
+				Type:    conditionProvisioningReachable,
+			},
+		)
+
+		liferayEnvironment.Status.ConsecutiveFailures++
+
+		if liferayEnvironment.Status.UnreachableSince == nil {
+			unreachableSince := metav1.NewTime(time.Now())
+
+			liferayEnvironment.Status.UnreachableSince = &unreachableSince
+		}
+
+		liferayEnvironment.Status.Phase = "Degraded"
+
+		if error := liferayEnvironmentReconciler.enforceGracePeriod(
+			context, liferayEnvironment,
+		); error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		result, error := liferayEnvironmentReconciler.finishWithBackoff(
+			context, liferayEnvironment,
+		)
+
+		return result, error
+	}
+
+	logger.Info(
+		"Entitlements fetched",
+		"environmentID", environmentID,
+		"maxClusterNodes", entitlements.MaxClusterNodes,
+	)
+
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Reason: "Reachable",
+			Status: metav1.ConditionTrue,
+			Type:   conditionProvisioningReachable,
+		},
+	)
+
+	liferayEnvironment.Status.ConsecutiveFailures = 0
+
+	liferayEnvironmentReconciler.clearUnreachable(context, liferayEnvironment)
+
+	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(
+		context, entitlements, liferayEnvironment); error != nil {
+		return controllerruntime.Result{}, error
+	}
+
+	return controllerruntime.Result{}, nil
+}
+
 func licenseChecksum(licenseXML []byte) string {
 	sum := sha256.Sum256(licenseXML)
 
@@ -847,46 +867,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistEntitle
 	return nil
 }
 
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistOfflineRequest(
-	context context.Context,
-	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-	payload string,
-) error {
-	identityName := liferayEnvironment.Name + identitySecretSuffix
-
-	secret := &corev1.Secret{}
-
-	if error := liferayEnvironmentReconciler.Get(
-		context, types.NamespacedName{
-			Name:      identityName,
-			Namespace: liferayEnvironment.Namespace,
-		}, secret); error != nil {
-		return error
-	}
-
-	existing := secret.Data["offline-request"]
-
-	if len(existing) > 0 && !provisioning.PayloadExpired(string(existing)) {
-		return nil
-	}
-
-	if secret.Data == nil {
-		secret.Data = map[string][]byte{}
-	}
-
-	secret.Data["offline-request"] = []byte(payload)
-
-	if error := liferayEnvironmentReconciler.Update(context, secret); error != nil {
-		return error
-	}
-
-	logf.FromContext(context).Info(
-		"Stored offline request in identity secret", "secret", identityName,
-	)
-
-	return nil
-}
-
 func publicKeyBase64(privateKey *rsa.PrivateKey) (string, error) {
 	publicBytes, error := x509.MarshalPKIXPublicKey(&privateKey.PublicKey)
 
@@ -923,6 +903,63 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readActivation
 	}
 
 	return string(code), nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readEntitlements(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) (*provisioning.Entitlements, error) {
+	entitlementsName := liferayEnvironment.Name + entitlementsSecretSuffix
+
+	key := types.NamespacedName{
+		Name:      entitlementsName,
+		Namespace: liferayEnvironment.Namespace,
+	}
+
+	secret := &corev1.Secret{}
+
+	if error := liferayEnvironmentReconciler.Get(context, key, secret); error != nil {
+		return nil, error
+	}
+
+	addOnsJSON, ok := secret.Data["add-ons.json"]
+
+	if !ok {
+		return nil, fmt.Errorf(
+			"entitlements secret %q missing key %q", entitlementsName, "add-ons.json")
+	}
+
+	var addOns []provisioning.AddOn
+
+	if error := json.Unmarshal(addOnsJSON, &addOns); error != nil {
+		return nil, fmt.Errorf("entitlements secret: decode add-ons.json: %w", error)
+	}
+
+	licenseXML, ok := secret.Data["license.xml"]
+
+	if !ok {
+		return nil, fmt.Errorf(
+			"entitlements secret %q missing key %q", entitlementsName, "license.xml")
+	}
+
+	maxClusterNodesBytes, ok := secret.Data["maxClusterNodes"]
+
+	if !ok {
+		return nil, fmt.Errorf(
+			"entitlements secret %q missing key %q", entitlementsName, "maxClusterNodes")
+	}
+
+	maxClusterNodes, error := strconv.ParseInt(string(maxClusterNodesBytes), 10, 32)
+
+	if error != nil {
+		return nil, fmt.Errorf("entitlements secret: parse maxClusterNodes: %w", error)
+	}
+
+	return &provisioning.Entitlements{
+		AddOns:          addOns,
+		LicenseXML:      licenseXML,
+		MaxClusterNodes: int32(maxClusterNodes),
+	}, nil
 }
 
 func resolveDesiredReplicas(

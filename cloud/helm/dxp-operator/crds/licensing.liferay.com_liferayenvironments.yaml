@@ -92,6 +92,8 @@ spec:
                                 type: string
                             offline:
                                 type: boolean
+                            offlineActivationBundle:
+                                type: string
                             workloadRef:
                                 properties:
                                     name:

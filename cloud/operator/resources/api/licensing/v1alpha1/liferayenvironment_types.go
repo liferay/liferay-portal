@@ -82,6 +82,9 @@ type LiferayEnvironmentSpec struct {
 	// +optional
 	Offline bool `json:"offline,omitempty"`
 
+	// +optional
+	OfflineActivationBundle string `json:"offlineActivationBundle,omitempty"`
+
 	// +kubebuilder:validation:Required
 	WorkloadRef WorkloadRef `json:"workloadRef"`
 }

@@ -164,6 +164,30 @@ k8s_yaml(
     )
 )
 
+# Local dev override: stand in for the shared marketplace volume with a local-path
+# PVC so an offline activation bundle can be dropped at
+# /marketplace/<namespace>/<environmentID>/ for testing.
+k8s_yaml(
+    blob(
+        "\n".join(
+            [
+                "apiVersion: v1",
+                "kind: PersistentVolumeClaim",
+                "metadata:",
+                "    name: marketplace-dev",
+                "    namespace: liferay-system",
+                "spec:",
+                "    accessModes:",
+                "    -   ReadWriteOnce",
+                "    resources:",
+                "        requests:",
+                "            storage: 1Gi",
+                "    storageClassName: local-path",
+            ]
+        )
+    )
+)
+
 k8s_yaml(
     helm(
         "../helm/dxp-operator",
@@ -174,6 +198,9 @@ k8s_yaml(
             "gracePeriod=10m",
             "heartbeatInterval=30s",
             "image.repository=liferay/liferay-dxp-operator",
+            "marketplace.claimName=marketplace-dev",
+            "marketplace.enabled=true",
+            "podSecurityContext.fsGroup=65532",
             "provisioning.baseURL=https://api.one-uat.liferay.com",
             "retry.maxDelay=1m",
             "securityContext.readOnlyRootFilesystem=false",

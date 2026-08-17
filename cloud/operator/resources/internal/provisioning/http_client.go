@@ -108,6 +108,20 @@ func (httpClient *HTTPClient) DownloadAddOn(
 	return response.Body, nil
 }
 
+func EntitlementsFromResponse(entitlementsResponse EntitlementsResponse) (*Entitlements, error) {
+	licenseXML, error := base64.StdEncoding.DecodeString(entitlementsResponse.LicenseXML)
+
+	if error != nil {
+		return nil, fmt.Errorf("entitlements: decode licenseXML: %w", error)
+	}
+
+	return &Entitlements{
+		AddOns:          entitlementsResponse.AddOns,
+		LicenseXML:      licenseXML,
+		MaxClusterNodes: entitlementsResponse.MaxClusterNodes,
+	}, nil
+}
+
 func (httpClient *HTTPClient) Manifest(
 	context context.Context,
 	manifestRequest ManifestRequest,
@@ -152,19 +166,7 @@ func (httpClient *HTTPClient) Manifest(
 		return nil, fmt.Errorf("entitlements: decode response: %w", error)
 	}
 
-	licenseXML, error := base64.StdEncoding.DecodeString(entitlementsResponse.LicenseXML)
-
-	if error != nil {
-		return nil, fmt.Errorf("entitlements: decode licenseXML: %w", error)
-	}
-
-	entitlements := &Entitlements{
-		AddOns:          entitlementsResponse.AddOns,
-		LicenseXML:      licenseXML,
-		MaxClusterNodes: entitlementsResponse.MaxClusterNodes,
-	}
-
-	return entitlements, nil
+	return EntitlementsFromResponse(entitlementsResponse)
 }
 
 func NewHTTPClient(baseURL string) *HTTPClient {

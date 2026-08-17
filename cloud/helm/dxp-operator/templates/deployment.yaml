@@ -31,6 +31,8 @@ spec:
                             value: {{ .Values.gracePeriod | quote }}
                         -   name: HEARTBEAT_INTERVAL
                             value: {{ .Values.heartbeatInterval | quote }}
+                        -   name: MARKETPLACE_MOUNT_PATH
+                            value: {{ .Values.marketplace.mountPath | quote }}
                         -   name: METRICS_ADDRESS
                             value: {{ printf ":%d" (int .Values.metrics.port) | quote }}
                         -   name: PROBE_ADDRESS
