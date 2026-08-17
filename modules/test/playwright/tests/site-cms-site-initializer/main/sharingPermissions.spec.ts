@@ -8,7 +8,7 @@ import {Locator, Page, expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitch, userData} from '../../../utils/performLogin';
+import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
 const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
@@ -103,7 +103,7 @@ test(
 		});
 
 		await test.step('Switch to the user and open the Share modal', async () => {
-			await performUserSwitch(page, user.alternateName);
+			await performUserSwitchViaApi(page, user.alternateName);
 
 			await sharedWithMePage.goto();
 
@@ -193,7 +193,7 @@ test(
 		});
 
 		await test.step('Switch to the user and open the Share modal', async () => {
-			await performUserSwitch(page, user.alternateName);
+			await performUserSwitchViaApi(page, user.alternateName);
 
 			await sharedWithMePage.goto();
 
