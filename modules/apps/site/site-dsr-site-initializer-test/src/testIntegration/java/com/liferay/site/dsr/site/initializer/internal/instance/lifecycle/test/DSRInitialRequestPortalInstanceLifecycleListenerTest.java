@@ -6,8 +6,14 @@
 package com.liferay.site.dsr.site.initializer.internal.instance.lifecycle.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -25,6 +31,9 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.List;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -120,7 +129,8 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 
 		CompanyTestUtil.resetCompanyLocales(
 			_company.getCompanyId(),
-			ListUtil.fromArray(LocaleUtil.ITALY, LocaleUtil.US),
+			ListUtil.fromArray(
+				LocaleUtil.ITALY, LocaleUtil.SPAIN, LocaleUtil.US),
 			LocaleUtil.ITALY);
 
 		_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
@@ -128,7 +138,30 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
 			group.getGroupId(), false, "/home");
 
-		Assert.assertEquals("Home", layout.getName(LocaleUtil.ITALY));
+		Assert.assertEquals(
+			LanguageUtil.get(LocaleUtil.ITALY, "home"),
+			layout.getName(LocaleUtil.ITALY));
+		Assert.assertEquals(
+			LanguageUtil.get(LocaleUtil.SPAIN, "home"),
+			layout.getName(LocaleUtil.SPAIN));
+
+		Assert.assertEquals(
+			ListUtil.fromArray(
+				LanguageUtil.get(LocaleUtil.SPAIN, "home"),
+				LanguageUtil.get(LocaleUtil.SPAIN, "digital-sales-rooms")),
+			_getEditableFragmentEntryValues(
+				"element-text", layout.fetchDraftLayout(), LocaleUtil.SPAIN));
+		Assert.assertEquals(
+			ListUtil.fromArray(LanguageUtil.get(LocaleUtil.SPAIN, "view-all")),
+			_getEditableFragmentEntryValues(
+				"link", layout.fetchDraftLayout(), LocaleUtil.SPAIN));
+
+		layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			group.getGroupId(), false, "/rooms");
+
+		Assert.assertEquals(
+			LanguageUtil.get(LocaleUtil.SPAIN, "rooms"),
+			layout.getName(LocaleUtil.SPAIN));
 
 		Assert.assertNotNull(
 			_objectDefinitionLocalService.
@@ -136,6 +169,28 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 					"L_DSR_ROOM", _company.getCompanyId()));
 
 		IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
+	}
+
+	private List<String> _getEditableFragmentEntryValues(
+		String id, Layout layout, Locale locale) {
+
+		return TransformUtil.transform(
+			FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinksByPlid(
+				layout.getGroupId(), layout.getPlid()),
+			fragmentEntryLink -> {
+				JSONObject jsonObject = JSONUtil.getValueAsJSONObject(
+					fragmentEntryLink.getEditableValuesJSONObject(),
+					"JSONObject/" +
+						FragmentEntryProcessorConstants.
+							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+					"JSONObject/" + id);
+
+				if (jsonObject == null) {
+					return null;
+				}
+
+				return jsonObject.getString(LocaleUtil.toLanguageId(locale));
+			});
 	}
 
 	@DeleteAfterTestRun
