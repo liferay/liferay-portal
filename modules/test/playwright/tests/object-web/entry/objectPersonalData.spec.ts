@@ -110,6 +110,14 @@ test('can anonymize object entries', async ({
 
 	await personalDataErasurePage.anonymizeButton.click();
 
+	// The anonymize confirmation submits through the same queued form
+	// submission as the delete, so leaving for the users list here can kill
+	// it before it commits. The success alerts render after its redirect, one
+	// per anonymized application, so waiting for the first proves the
+	// anonymize reached the server.
+
+	await waitForAlert(page, undefined, {first: true});
+
 	await usersAndOrganizationsPage.goToUsers();
 
 	await usersAndOrganizationsPage.filterUsers('inactive');
