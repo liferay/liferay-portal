@@ -16,6 +16,7 @@ import com.liferay.oauth2.provider.internal.test.JWTAssertionClientAuthenticatio
 import com.liferay.oauth2.provider.internal.test.util.JWTAssertionUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Base64;
@@ -177,17 +178,23 @@ public abstract class BaseTokenEndpointTestCase extends BaseClientTestCase {
 		return parseJsonField(response, "refresh_token");
 	}
 
-	protected static final String TEST_CLIENT_ID_1 = "test_client_id_1";
+	protected static final String TEST_CLIENT_ID_1 =
+		RandomTestUtil.randomString();
 
-	protected static final String TEST_CLIENT_ID_2 = "test_client_id_2";
+	protected static final String TEST_CLIENT_ID_2 =
+		RandomTestUtil.randomString();
 
-	protected static final String TEST_CLIENT_ID_3 = "test_client_id_3";
+	protected static final String TEST_CLIENT_ID_3 =
+		RandomTestUtil.randomString();
 
-	protected static final String TEST_CLIENT_ID_4 = "test_client_id_4";
+	protected static final String TEST_CLIENT_ID_4 =
+		RandomTestUtil.randomString();
 
-	protected static final String TEST_CLIENT_ID_5 = "test_client_id_5";
+	protected static final String TEST_CLIENT_ID_5 =
+		RandomTestUtil.randomString();
 
-	protected static final String TEST_CLIENT_ID_6 = "test_client_id_6";
+	protected static final String TEST_CLIENT_ID_6 =
+		RandomTestUtil.randomString();
 
 	protected static final Map<String, ClientAuthentication>
 		clientAuthentications = new HashMap<>();
