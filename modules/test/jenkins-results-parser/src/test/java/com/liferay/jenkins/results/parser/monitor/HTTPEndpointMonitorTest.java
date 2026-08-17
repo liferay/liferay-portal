@@ -267,23 +267,23 @@ public class HTTPEndpointMonitorTest
 	private void _testHTTPEndpointMonitorUserInfo(String urlPrefix) {
 		Properties monitorProperties = _newMonitorProperties();
 
+		String password = RandomTestUtil.randomString();
+
 		monitorProperties.setProperty(
 			"monitor[a].parameter[url]",
 			JenkinsResultsParserUtil.combine(
-				urlPrefix, RandomTestUtil.randomString(), ":", _PASSWORD, "@",
+				urlPrefix, RandomTestUtil.randomString(), ":", password, "@",
 				RandomTestUtil.randomString()));
 
 		String message =
 			_testHTTPEndpointMonitorExpectedIllegalArgumentException(
 				monitorProperties);
 
-		Assert.assertFalse(message.contains(_PASSWORD));
+		Assert.assertFalse(message.contains(password));
 		Assert.assertTrue(message.contains("[REDACTED]"));
 	}
 
 	private static final long _MILLIS_LATENCY = 50;
-
-	private static final String _PASSWORD = "correct-horse-battery-staple";
 
 	private static final String _URL = "https://repository.liferay.com";
 
