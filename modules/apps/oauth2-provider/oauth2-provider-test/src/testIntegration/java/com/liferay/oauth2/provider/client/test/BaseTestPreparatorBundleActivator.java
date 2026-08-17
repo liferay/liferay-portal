@@ -238,11 +238,10 @@ public abstract class BaseTestPreparatorBundleActivator
 
 		return createOAuth2Application(
 			companyId, user, clientId, BaseClientTestCase.CLIENT_SECRET,
-			allowedGrantTypesList, OAuthConstants.TOKEN_ENDPOINT_AUTH_POST,
-			null, name,
+			allowedGrantTypesList, name,
 			Collections.singletonList(
 				"http://redirecturi:" + PortalUtil.getPortalServerPort(false)),
-			false, scopeAliasesList, false);
+			scopeAliasesList);
 	}
 
 	protected OAuth2Application createOAuth2Application(
@@ -279,6 +278,18 @@ public abstract class BaseTestPreparatorBundleActivator
 
 		return createOAuth2Application(
 			companyId, user, clientId, clientSecret, allowedGrantTypesList,
+			redirectURIsList, false, scopeAliasesList, false);
+	}
+
+	protected OAuth2Application createOAuth2Application(
+			long companyId, User user, String clientId, String clientSecret,
+			List<GrantType> allowedGrantTypesList, String name,
+			List<String> redirectURIsList, List<String> scopeAliasesList)
+		throws PortalException {
+
+		return createOAuth2Application(
+			companyId, user, clientId, clientSecret, allowedGrantTypesList,
+			OAuthConstants.TOKEN_ENDPOINT_AUTH_POST, null, name,
 			redirectURIsList, false, scopeAliasesList, false);
 	}
 
