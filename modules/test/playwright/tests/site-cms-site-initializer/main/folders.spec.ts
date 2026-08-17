@@ -4,6 +4,7 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -11,7 +12,9 @@ import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisibl
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
+import {getTempDir} from '../../../utils/temp';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {checkInZip} from '../../../utils/zip';
 import {PermissionsPage} from '../permissions/pages/PermissionsPage';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
@@ -612,5 +615,89 @@ test(
 		await expect(
 			page.getByRole('menuitem', {exact: true, name: 'Folder'})
 		).toBeHidden();
+	}
+);
+
+test(
+	'Downloads a folder as a zip holding its files and its subfolders',
+	{tag: '@LPD-102727'},
+	async ({apiHelpers, assetsPage, page}) => {
+		const folderTitle = getRandomString();
+
+		const folder = await apiHelpers.objectFolder.createObjectEntryFolder({
+			scopeKey: 'Default',
+			title: folderTitle,
+		});
+
+		const subfolderTitle = getRandomString();
+
+		const subfolder = await apiHelpers.objectFolder.createObjectEntryFolder(
+			{
+				parentObjectEntryFolderExternalReferenceCode:
+					folder.externalReferenceCode,
+				scopeKey: 'Default',
+				title: subfolderTitle,
+			}
+		);
+
+		const fileName = `${getRandomString()}.txt`;
+		const subfolderFileName = `${getRandomString()}.txt`;
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				file: {
+					fileBase64:
+						Buffer.from(getRandomString()).toString('base64'),
+					name: fileName,
+				},
+				objectEntryFolderExternalReferenceCode:
+					folder.externalReferenceCode,
+				title: getRandomString(),
+			},
+			'cms/basic-documents',
+			'Default'
+		);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				file: {
+					fileBase64:
+						Buffer.from(getRandomString()).toString('base64'),
+					name: subfolderFileName,
+				},
+				objectEntryFolderExternalReferenceCode:
+					subfolder.externalReferenceCode,
+				title: getRandomString(),
+			},
+			'cms/basic-documents',
+			'Default'
+		);
+
+		await assetsPage.gotoFiles();
+
+		const downloadPromise = page.waitForEvent('download');
+
+		await assetsPage.execCardItemAction({
+			action: 'Download',
+			filter: folderTitle,
+		});
+
+		const download = await downloadPromise;
+
+		expect(download.suggestedFilename()).toBe(`${folderTitle}.zip`);
+
+		const filePath = path.join(getTempDir(), download.suggestedFilename());
+
+		await download.saveAs(filePath);
+
+		expect(await checkInZip(filePath, `${folderTitle}/${fileName}`)).toBe(
+			true
+		);
+		expect(
+			await checkInZip(
+				filePath,
+				`${folderTitle}/${subfolderTitle}/${subfolderFileName}`
+			)
+		).toBe(true);
 	}
 );
