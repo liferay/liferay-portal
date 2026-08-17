@@ -1,3 +1,4 @@
+@import 'atlas-custom-properties/_variables';
 @import 'atlas-variables';
 @import 'cadmin-variables';
 
@@ -224,7 +225,7 @@
 		}
 
 		.cke_editable {
-			background-color: white;
+			background-color: $white;
 		}
 
 		.entry-subtitle {
