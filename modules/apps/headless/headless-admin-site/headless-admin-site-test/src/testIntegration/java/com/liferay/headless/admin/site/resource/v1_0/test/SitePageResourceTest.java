@@ -3013,13 +3013,13 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_testPostSiteSitePageWithApplicationDecorator(
 			GeneralConfig.ApplicationDecorator.DECORATE, null,
-			GeneralConfig.ApplicationDecorator.DECORATE, "decorate");
+			GeneralConfig.ApplicationDecorator.DECORATE, null);
 		_testPostSiteSitePageWithApplicationDecorator(
 			GeneralConfig.ApplicationDecorator.DECORATE, "encadre", null,
 			"encadre");
 		_testPostSiteSitePageWithApplicationDecorator(
 			null, "decorate", GeneralConfig.ApplicationDecorator.DECORATE,
-			"decorate");
+			null);
 		_testPostSiteSitePageWithApplicationDecorator(
 			null, "encadre", null, "encadre");
 	}
