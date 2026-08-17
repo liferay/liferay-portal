@@ -90,6 +90,17 @@ const RESTORABLE_VERSIONS = [
 	VERSIONS[1],
 ];
 
+const RESTORABLE_DELETABLE_VERSIONS = [
+	{
+		...VERSIONS[0],
+		actions: {
+			delete: {href: '/delete/HOME_V_2', method: 'DELETE'},
+			restore: {href: '/restore/HOME_V_2', method: 'POST'},
+		},
+	},
+	VERSIONS[1],
+];
+
 const mockFetch = fetch as jest.Mock;
 const mockHideProductMenu = hideProductMenuIfPresent as jest.Mock;
 const mockOpenConfirmModal = openConfirmModal as jest.Mock;
@@ -622,6 +633,32 @@ describe('VersionHistory', () => {
 		expect(
 			screen.queryByRole('menuitem', {name: 'delete-version'})
 		).not.toBeInTheDocument();
+	});
+
+	it('offers the restore action before the delete action, split by a divider', async () => {
+		mockLargeScreen();
+		mockVersions(RESTORABLE_DELETABLE_VERSIONS);
+
+		renderComponent();
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const [, version] = screen.getAllByRole('option');
+
+		await openActions(version);
+
+		const [restore, remove] = screen.getAllByRole('menuitem');
+
+		expect(restore).toHaveTextContent('restore-version');
+		expect(remove).toHaveTextContent('delete-version');
+
+		expect(
+			restore.querySelector('.lexicon-icon-restore')
+		).toBeInTheDocument();
+
+		expect(screen.getByRole('separator')).toBeInTheDocument();
 	});
 
 	it('restores the version once the confirmation is accepted', async () => {
