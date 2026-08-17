@@ -398,6 +398,46 @@ public class LanguageTagTest {
 				LocaleUtil.FRANCE));
 	}
 
+	private void _testGetLanguageEntriesWithFriendlyURLMappingPath(
+			Layout layout)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
+			_getURL(
+				_getLanguageEntries(
+					_FRIENDLY_URL_MAPPING_PATH, null, themeDisplay),
+				LocaleUtil.FRANCE));
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH + "?foo=bar",
+			_getURL(
+				_getLanguageEntries(
+					_FRIENDLY_URL_MAPPING_PATH + "?foo=bar", null,
+					themeDisplay),
+				LocaleUtil.FRANCE));
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/tags/new%20york",
+			_getURL(
+				_getLanguageEntries("/tags/new%20york", null, themeDisplay),
+				LocaleUtil.FRANCE));
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/tags",
+			_getURL(
+				_getLanguageEntries("/tags", null, themeDisplay),
+				LocaleUtil.FRANCE));
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, "/-/blogs/blog-1",
+			_getURL(
+				_getLanguageEntries("/-/blogs/blog-1", null, themeDisplay),
+				LocaleUtil.FRANCE));
+	}
+
 	private void _testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(
 			Layout layout, int localePrependFriendlyURLStyle)
 		throws Exception {
@@ -496,47 +536,6 @@ public class LanguageTagTest {
 		}
 	}
 
-	private void _testGetLanguageEntriesWithFriendlyURLMappingPath(
-			Layout layout)
-		throws Exception {
-
-		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
-			_getURL(
-				_getLanguageEntries(
-					_FRIENDLY_URL_MAPPING_PATH, null, themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE,
-			_FRIENDLY_URL_MAPPING_PATH + "?foo=bar",
-			_getURL(
-				_getLanguageEntries(
-					_FRIENDLY_URL_MAPPING_PATH + "?foo=bar", null,
-					themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, "/tags/new%20york",
-			_getURL(
-				_getLanguageEntries("/tags/new%20york", null, themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, "/tags",
-			_getURL(
-				_getLanguageEntries("/tags", null, themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, "/-/blogs/blog-1",
-			_getURL(
-				_getLanguageEntries("/-/blogs/blog-1", null, themeDisplay),
-				LocaleUtil.FRANCE));
-	}
-
 	private void _testGetLanguageEntriesWithRedirectParameter(Layout layout)
 		throws Exception {
 
@@ -586,8 +585,7 @@ public class LanguageTagTest {
 
 	private static final String _FORM_ACTION = "/custom/view";
 
-	private static final String _FRIENDLY_URL_MAPPING_PATH =
-		"/tags/mytag";
+	private static final String _FRIENDLY_URL_MAPPING_PATH = "/tags/mytag";
 
 	private static final String _UPDATE_LANGUAGE_PATH =
 		"/c/portal/update_language";
