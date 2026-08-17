@@ -4,5 +4,7 @@
  */
 
 export default function getAPIExplorerURL(restApplication: string) {
-	return `${Liferay.ThemeDisplay.getPortalURL()}/o/api?endpoint=${Liferay.ThemeDisplay.getPortalURL()}/o${restApplication}/openapi.json`;
+	const baseURL = `${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}`;
+
+	return `${baseURL}/o/api?endpoint=${baseURL}/o${restApplication}/openapi.json`;
 }
