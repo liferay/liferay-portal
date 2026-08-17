@@ -705,19 +705,19 @@ public class UpdateLanguageActionTest {
 			Locale sourceLocale)
 		throws Exception {
 
-		String portletFriendlyURLMappingPath =
+		String friendlyURLMappingPath =
 			"/tags/" + RandomTestUtil.randomString();
 
 		_testGetRedirect(
 			sourceLocale,
 			StringBundler.concat(
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-				_group.getFriendlyURL(), portletFriendlyURLMappingPath),
+				_group.getFriendlyURL(), friendlyURLMappingPath),
 			_targetLocale,
 			StringBundler.concat(
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 				_group.getFriendlyURL(), _layout.getFriendlyURL(_targetLocale),
-				portletFriendlyURLMappingPath),
+				friendlyURLMappingPath),
 			false);
 	}
 
