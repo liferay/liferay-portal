@@ -12,6 +12,7 @@ import com.liferay.object.internal.uad.constants.ObjectUADConstants;
 import com.liferay.object.internal.uad.util.ObjectEntryUADUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.search.StrictObjectReindexThreadLocal;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -19,6 +20,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.user.associated.data.anonymizer.DynamicQueryUADAnonymizer;
 
@@ -42,7 +45,8 @@ public class ObjectEntryUADAnonymizer
 
 	@Override
 	public void autoAnonymize(
-		ObjectEntry objectEntry, long userId, User anonymousUser) {
+			ObjectEntry objectEntry, long userId, User anonymousUser)
+		throws PortalException {
 
 		if (objectEntry.getUserId() == userId) {
 			objectEntry.setUserId(anonymousUser.getUserId());
@@ -55,6 +59,18 @@ public class ObjectEntryUADAnonymizer
 		}
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		if (_objectDefinition.isEnableIndexSearch()) {
+			Indexer<ObjectEntry> indexer = IndexerRegistryUtil.getIndexer(
+				_objectDefinition.getClassName());
+
+			try (SafeCloseable safeCloseable =
+					StrictObjectReindexThreadLocal.
+						setStrictObjectReindexWithSafeCloseable(true)) {
+
+				indexer.reindex(objectEntry);
+			}
+		}
 
 		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
 			_objectDefinition.getClassName(), objectEntry.getObjectEntryId());

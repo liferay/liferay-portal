@@ -730,6 +730,9 @@ public class ObjectDefinitionTreeUtil {
 			return;
 		}
 
+		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			objectDefinition.getClassName());
+
 		_performActions(
 			true, objectDefinition, objectEntryLocalService, false,
 			objectEntry -> {
@@ -745,6 +748,8 @@ public class ObjectDefinitionTreeUtil {
 				}
 
 				objectEntryLocalService.updateObjectEntry(objectEntry);
+
+				indexer.reindex(objectEntry);
 			});
 	}
 
