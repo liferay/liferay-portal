@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -35,6 +37,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Georgel Pop
@@ -91,6 +95,39 @@ public class LayoutServiceContextHelperTest {
 			Assert.assertEquals("http", httpServletRequest.getScheme());
 			Assert.assertNotNull(httpServletRequest.getServletContext());
 			Assert.assertNotNull(httpServletRequest.getSession());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-102690")
+	public void testGetServiceContextAutoCloseableRestoresLocale()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			GroupTestUtil.addGroup());
+
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		httpServletRequest.setAttribute(WebKeys.LOCALE, LocaleUtil.GERMANY);
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			try (AutoCloseable autoCloseable =
+					_layoutServiceContextHelper.getServiceContextAutoCloseable(
+						layout)) {
+			}
+
+			Assert.assertEquals(
+				LocaleUtil.GERMANY,
+				httpServletRequest.getAttribute(WebKeys.LOCALE));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
