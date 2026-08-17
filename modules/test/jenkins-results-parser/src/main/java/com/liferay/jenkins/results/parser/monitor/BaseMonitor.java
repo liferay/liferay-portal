@@ -29,15 +29,7 @@ public abstract class BaseMonitor implements Monitor {
 	}
 
 	protected int getAttemptTimeoutMillis() {
-		long timeoutSeconds = _monitorConfig.getTimeoutSeconds();
-
-		if (timeoutSeconds <= 0) {
-			timeoutSeconds = _SECONDS_TIMEOUT_DEFAULT;
-		}
-
-		timeoutSeconds = Math.min(timeoutSeconds, Integer.MAX_VALUE / 1000);
-
-		return (int)((timeoutSeconds * 1000) / 3);
+		return (int)(_getTimeoutMillis() / 3);
 	}
 
 	protected String getInvalidValueMessage(
@@ -89,12 +81,28 @@ public abstract class BaseMonitor implements Monitor {
 		return value;
 	}
 
+	protected int getSingleAttemptTimeoutMillis() {
+		long timeoutMillis = _getTimeoutMillis();
+
+		return (int)(timeoutMillis - (timeoutMillis / 10));
+	}
+
 	private String _getKey(String category, String name) {
 		return JenkinsResultsParserUtil.combine(
 			"monitor[", _monitorConfig.getId(), "].", category, "[", name, "]");
 	}
 
-	private static final long _SECONDS_TIMEOUT_DEFAULT = 60;
+	private long _getTimeoutMillis() {
+		long timeoutSeconds = _monitorConfig.getTimeoutSeconds();
+
+		if (timeoutSeconds <= 0) {
+			timeoutSeconds = MonitorConfig.SECONDS_TIMEOUT_DEFAULT;
+		}
+
+		timeoutSeconds = Math.min(timeoutSeconds, Integer.MAX_VALUE / 1000);
+
+		return timeoutSeconds * 1000;
+	}
 
 	private final MonitorConfig _monitorConfig;
 
