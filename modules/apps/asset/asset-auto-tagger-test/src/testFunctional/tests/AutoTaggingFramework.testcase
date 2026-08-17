@@ -69,7 +69,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Assets",
 			configurationName = "TensorFlow Image Auto Tagging",
-			configurationScope = "Virtual Instance Scope");
+			configurationScope = "System Scope");
 
 		FormFields.viewCheckboxChecked(fieldName = "enabled");
 

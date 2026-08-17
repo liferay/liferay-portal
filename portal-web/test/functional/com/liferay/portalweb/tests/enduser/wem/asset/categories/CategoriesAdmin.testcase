@@ -28,7 +28,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Assets",
 				configurationName = "Categorization",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			SystemSettings.editTextSetting(
 				settingName = "Maximum Number of Categories per Vocabulary",
@@ -109,7 +109,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Assets",
 				configurationName = "Categorization",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			SystemSettings.editTextSetting(
 				settingName = "Maximum Number of Categories per Vocabulary",

@@ -1759,7 +1759,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Catalog",
 				configurationName = "Friendly URL",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			Type(
 				key_labelName = "Product URL Separator",

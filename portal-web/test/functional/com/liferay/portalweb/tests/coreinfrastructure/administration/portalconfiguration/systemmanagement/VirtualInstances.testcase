@@ -558,7 +558,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Users",
 			configurationName = "Personal Menu",
-			configurationScope = "Virtual Instance Scope");
+			configurationScope = "System Scope");
 
 		PortalSettings.editConfigurationUsersPersonalMenuShowInControlMenu(toggleSwitchLabel = "Show in Control Menu");
 

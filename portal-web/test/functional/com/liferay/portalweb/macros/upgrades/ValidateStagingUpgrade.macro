@@ -34,14 +34,14 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Infrastructure",
 			configurationName = "Export/Import, Staging",
-			configurationScope = "Virtual Instance Scope");
+			configurationScope = "System Scope");
 
 		SystemSettings.openSystemSettingsAdmin();
 
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Infrastructure",
 			configurationName = "Staging",
-			configurationScope = "Virtual Instance Scope");
+			configurationScope = "System Scope");
 
 		PortalSettings.gotoConfiguration(
 			configurationCategory = "Infrastructure",

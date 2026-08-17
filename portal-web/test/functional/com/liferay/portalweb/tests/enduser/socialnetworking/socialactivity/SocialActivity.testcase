@@ -46,7 +46,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "User Activity",
 			configurationName = "Social Activity",
-			configurationScope = "Virtual Instance Scope");
+			configurationScope = "System Scope");
 
 		FormFields.viewCheckboxChecked(fieldName = "enableUserSocialActivityTracking");
 
@@ -103,7 +103,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "User Activity",
 			configurationName = "Social Activity",
-			configurationScope = "Virtual Instance Scope");
+			configurationScope = "System Scope");
 
 		FormFields.disableCheckbox(fieldName = "enable");
 

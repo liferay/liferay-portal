@@ -27,7 +27,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Security Tools",
 				configurationName = "Portal Cross-Origin Resource Sharing (CORS)",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			ValidateCORSUpgrade.viewPortalCORS(
 				header = "Test-Header",

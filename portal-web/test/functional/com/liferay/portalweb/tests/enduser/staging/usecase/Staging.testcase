@@ -253,7 +253,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Infrastructure",
 				configurationName = "Export/Import, Staging",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			AssertNotChecked.assertNotCheckedNotVisible(
 				key_settingFieldName = "Show Advanced Staging Configuration by Default",
@@ -385,7 +385,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Infrastructure",
 				configurationName = "Export/Import, Staging",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 		}
 
 		task ("When: Enable advanced staging configuration checkbox") {
@@ -656,7 +656,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "Infrastructure",
 				configurationName = "Export/Import, Staging",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			SystemSettings.configureSystemSetting(
 				enableSetting = "true",
@@ -2459,7 +2459,7 @@ definition {
 		SystemSettings.gotoConfiguration(
 			configurationCategory = "Infrastructure",
 			configurationName = "Export/Import, Staging",
-			configurationScope = "Virtual Instance Scope");
+			configurationScope = "System Scope");
 
 		SystemSettings.configureSystemSetting(
 			enableSetting = "true",
