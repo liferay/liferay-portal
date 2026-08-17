@@ -141,15 +141,15 @@ public class UpdateLanguageActionTest {
 		_testGetRedirectWithControlPanelURL(true);
 		_testGetRedirectWithFriendlyURL(false);
 		_testGetRedirectWithFriendlyURL(true);
-		_testGetRedirectWithGroupFriendlyURLWithPortletURLMapping();
-		_testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping();
+		_testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping();
+		_testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping();
 		_testGetRedirectWithPortletFriendlyURL(_sourceLocale);
 		_testGetRedirectWithPortletFriendlyURL(null);
-		_testGetRedirectWithPortletURLMapping(_sourceLocale);
-		_testGetRedirectWithPortletURLMapping(null);
-		_testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(
+		_testGetRedirectWithFriendlyURLMapping(_sourceLocale);
+		_testGetRedirectWithFriendlyURLMapping(null);
+		_testGetRedirectWithoutLayoutFriendlyURLWithFriendlyURLMapping(
 			_sourceLocale);
-		_testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(null);
+		_testGetRedirectWithoutLayoutFriendlyURLWithFriendlyURLMapping(null);
 	}
 
 	@Test
@@ -556,19 +556,20 @@ public class UpdateLanguageActionTest {
 			"/" + _sourceLocale.getLanguage() + sourceURL);
 	}
 
-	private void _testGetRedirectWithGroupFriendlyURLWithPortletURLMapping()
+	private void _testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping()
 		throws Exception {
 
-		_testGetRedirectWithGroupFriendlyURLWithPortletURLMapping(
+		_testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping(
 			"questions", _sourceLocale);
-		_testGetRedirectWithGroupFriendlyURLWithPortletURLMapping(
+		_testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping(
 			"questions", null);
-		_testGetRedirectWithGroupFriendlyURLWithPortletURLMapping(
+		_testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping(
 			"tags", _sourceLocale);
-		_testGetRedirectWithGroupFriendlyURLWithPortletURLMapping("tags", null);
+		_testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping(
+			"tags", null);
 	}
 
-	private void _testGetRedirectWithGroupFriendlyURLWithPortletURLMapping(
+	private void _testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping(
 			String mapping, Locale sourceLocale)
 		throws Exception {
 
@@ -652,20 +653,20 @@ public class UpdateLanguageActionTest {
 			sourceLocale, sourceURL, targetLocale, targetURL, virtualHost);
 	}
 
-	private void _testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping()
+	private void _testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping()
 		throws Exception {
 
-		_testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping(
+		_testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping(
 			"questions", _sourceLocale);
-		_testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping(
+		_testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping(
 			"questions", null);
-		_testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping(
+		_testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping(
 			"tags", _sourceLocale);
-		_testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping(
+		_testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping(
 			"tags", null);
 	}
 
-	private void _testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping(
+	private void _testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping(
 			String mapping, Locale sourceLocale)
 		throws Exception {
 
@@ -701,7 +702,7 @@ public class UpdateLanguageActionTest {
 			false);
 	}
 
-	private void _testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(
+	private void _testGetRedirectWithoutLayoutFriendlyURLWithFriendlyURLMapping(
 			Locale sourceLocale)
 		throws Exception {
 
@@ -738,7 +739,7 @@ public class UpdateLanguageActionTest {
 			path, sourceLocale, _targetLocale, false);
 	}
 
-	private void _testGetRedirectWithPortletURLMapping(Locale sourceLocale)
+	private void _testGetRedirectWithFriendlyURLMapping(Locale sourceLocale)
 		throws Exception {
 
 		_testGetRedirectWithLayoutFriendlyURL(
