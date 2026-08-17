@@ -107,7 +107,9 @@ public class LayoutServiceContextHelperTest {
 
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		httpServletRequest.setAttribute(WebKeys.LOCALE, LocaleUtil.GERMANY);
+		Locale locale = LocaleUtil.GERMANY;
+
+		httpServletRequest.setAttribute(WebKeys.LOCALE, locale);
 
 		serviceContext.setRequest(httpServletRequest);
 
@@ -123,8 +125,7 @@ public class LayoutServiceContextHelperTest {
 			}
 
 			Assert.assertEquals(
-				LocaleUtil.GERMANY,
-				httpServletRequest.getAttribute(WebKeys.LOCALE));
+				locale, httpServletRequest.getAttribute(WebKeys.LOCALE));
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
