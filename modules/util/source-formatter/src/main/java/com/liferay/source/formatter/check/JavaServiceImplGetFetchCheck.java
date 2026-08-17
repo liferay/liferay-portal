@@ -65,24 +65,25 @@ public class JavaServiceImplGetFetchCheck extends BaseJavaTermCheck {
 			}
 		}
 
-		// Flag only a method whose entire body is a plain
+		// Flags only a method whose entire body is a plain
 		// "return x.fetchY(...);". A body with any branch, throw, local
 		// variable, or fallback is consciously handling the nullability, so it
 		// is not a naive "get" that merely exposes a nullable fetch.
 
 		Matcher matcher = _simpleDirectFetchPattern.matcher(content);
 
-		if (matcher.find()) {
-			addMessage(
-				fileName,
-				StringBundler.concat(
-					"The \"", methodName,
-					"\" method returns a nullable fetch result, which its ",
-					"\"get\" name promises will never be null; return a ",
-					"throwing find (raising a NoSuch*Exception) or rename the ",
-					"method to \"fetch\""),
-				javaTerm.getLineNumber());
+		if (!matcher.find()) {
+			return content;
 		}
+
+		addMessage(
+			fileName,
+			StringBundler.concat(
+				"Method \"", methodName, "\" returns a nullable fetch result, ",
+				"which its \"get\" name promises will never be null; return a ",
+				"throwing find (raising a NoSuch*Exception) or rename the ",
+				"method to \"fetch\""),
+			javaTerm.getLineNumber());
 
 		return content;
 	}
