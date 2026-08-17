@@ -11,6 +11,7 @@ import com.liferay.layout.content.exception.LayoutContentVersionNameException;
 import com.liferay.layout.content.exception.RequiredLayoutContentVersionException;
 import com.liferay.layout.content.exception.UnsupportedLayoutLayoutContentVersionException;
 import com.liferay.layout.content.model.LayoutContentVersion;
+import com.liferay.layout.content.service.LayoutContentVersionPreviewLocalService;
 import com.liferay.layout.content.service.base.LayoutContentVersionLocalServiceBaseImpl;
 import com.liferay.layout.content.util.comparator.LayoutContentVersionVersionComparator;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -169,6 +170,9 @@ public class LayoutContentVersionLocalServiceImpl
 			throw new RequiredLayoutContentVersionException();
 		}
 
+		_layoutContentVersionPreviewLocalService.
+			deleteLayoutContentVersionPreviews(layoutContentVersionId);
+
 		return layoutContentVersionPersistence.remove(layoutContentVersionId);
 	}
 
@@ -306,6 +310,10 @@ public class LayoutContentVersionLocalServiceImpl
 			throw new UnsupportedLayoutLayoutContentVersionException();
 		}
 	}
+
+	@Reference
+	private LayoutContentVersionPreviewLocalService
+		_layoutContentVersionPreviewLocalService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
