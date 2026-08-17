@@ -103,18 +103,18 @@ public class LayoutServiceContextHelperTest {
 	public void testGetServiceContextAutoCloseableRestoresLocale()
 		throws Exception {
 
-		Layout layout = LayoutTestUtil.addTypeContentLayout(
-			GroupTestUtil.addGroup());
+		ServiceContext serviceContext = new ServiceContext();
 
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
 		httpServletRequest.setAttribute(WebKeys.LOCALE, LocaleUtil.GERMANY);
 
-		ServiceContext serviceContext = new ServiceContext();
-
 		serviceContext.setRequest(httpServletRequest);
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			GroupTestUtil.addGroup());
 
 		try {
 			try (AutoCloseable autoCloseable =
