@@ -544,50 +544,52 @@ test.describe('Three columns layout', () => {
 		page,
 		widgetPagePage,
 	}) => {
-		await test.step('Add portlet to the first column in the page layout', async () => {
-			await widgetPagePage.addPortlet(CLAY_PORTLET_NAME);
 
-			await expectPortletInColumn({
-				columnNumber: 1,
-				page,
-				portletName: CLAY_PORTLET_NAME,
-			});
+		// Add portlet to the first column in the page layout
+
+		await widgetPagePage.addPortlet(CLAY_PORTLET_NAME);
+
+		await expectPortletInColumn({
+			columnNumber: 1,
+			page,
+			portletName: CLAY_PORTLET_NAME,
 		});
 
-		await test.step('Drag and drop portlet to another column in page', async () => {
-			await widgetPagePage.dragPortlet({
-				portletName: CLAY_PORTLET_NAME,
-				target: page
-					.getByRole('main')
-					.locator('.portlet-column .portlet-dropzone.empty')
-					.first(),
-				topperSelector: '.portlet .portlet-topper',
-			});
+		// Drag and drop portlet to another column in page
 
-			await expectPortletInColumn({
-				columnNumber: 2,
-				page,
-				portletName: CLAY_PORTLET_NAME,
-			});
+		await widgetPagePage.dragPortlet({
+			portletName: CLAY_PORTLET_NAME,
+			target: page
+				.getByRole('main')
+				.locator('.portlet-column .portlet-dropzone.empty')
+				.first(),
+			topperSelector: '.portlet .portlet-topper',
+		});
+
+		await expectPortletInColumn({
+			columnNumber: 2,
+			page,
+			portletName: CLAY_PORTLET_NAME,
 		});
 	});
 
 	test('Portlet can be removed', async ({page, widgetPagePage}) => {
-		await test.step('Add portlet to the page layout', async () => {
-			await widgetPagePage.addPortlet(CLAY_PORTLET_NAME);
 
-			expect(
-				getPortletByName({page, portletName: CLAY_PORTLET_NAME})
-			).toBeVisible();
-		});
+		// Add portlet to the page layout
 
-		await test.step('Delete portlet from the page', async () => {
-			await widgetPagePage.deletePortlet(CLAY_PORTLET_NAME);
+		await widgetPagePage.addPortlet(CLAY_PORTLET_NAME);
 
-			expect(
-				getPortletByName({page, portletName: CLAY_PORTLET_NAME})
-			).toBeHidden();
-		});
+		expect(
+			getPortletByName({page, portletName: CLAY_PORTLET_NAME})
+		).toBeVisible();
+
+		// Delete portlet from the page
+
+		await widgetPagePage.deletePortlet(CLAY_PORTLET_NAME);
+
+		expect(
+			getPortletByName({page, portletName: CLAY_PORTLET_NAME})
+		).toBeHidden();
 	});
 
 	test('Portlets have defined limits in the 3-column page layout.', async ({
@@ -597,48 +599,48 @@ test.describe('Three columns layout', () => {
 		const MESSAGE_BOARDS_PORTLET_NAME = 'Message Boards';
 		const DOCUMENTS_AND_MEDIA_PORTLET_NAME = 'Documents and Media';
 
-		await test.step('Add portlet to the third column in the page layout', async () => {
-			await widgetPagePage.addPortlet(DOCUMENTS_AND_MEDIA_PORTLET_NAME);
+		// Add portlet to the third column in the page layout
 
-			await widgetPagePage.dragPortlet({
-				portletName: DOCUMENTS_AND_MEDIA_PORTLET_NAME,
-				target: page.locator('#layout-column_column-3'),
-				topperSelector: '.portlet .portlet-topper',
-			});
+		await widgetPagePage.addPortlet(DOCUMENTS_AND_MEDIA_PORTLET_NAME);
+
+		await widgetPagePage.dragPortlet({
+			portletName: DOCUMENTS_AND_MEDIA_PORTLET_NAME,
+			target: page.locator('#layout-column_column-3'),
+			topperSelector: '.portlet .portlet-topper',
 		});
 
-		await test.step('Add portlet to the second column', async () => {
-			await widgetPagePage.addPortlet(MESSAGE_BOARDS_PORTLET_NAME);
+		// Add portlet to the second column
 
-			await widgetPagePage.dragPortlet({
-				portletName: MESSAGE_BOARDS_PORTLET_NAME,
-				target: page.locator('#layout-column_column-2'),
-				topperSelector: '.portlet .portlet-topper',
-			});
+		await widgetPagePage.addPortlet(MESSAGE_BOARDS_PORTLET_NAME);
+
+		await widgetPagePage.dragPortlet({
+			portletName: MESSAGE_BOARDS_PORTLET_NAME,
+			target: page.locator('#layout-column_column-2'),
+			topperSelector: '.portlet .portlet-topper',
 		});
 
-		await test.step('Add portlet to the first column', async () => {
-			await widgetPagePage.addPortlet(CLAY_PORTLET_NAME);
+		// Add portlet to the first column
+
+		await widgetPagePage.addPortlet(CLAY_PORTLET_NAME);
+
+		// Verify that all portlets are in the correct column
+
+		await expectPortletInColumn({
+			columnNumber: 1,
+			page,
+			portletName: CLAY_PORTLET_NAME,
 		});
 
-		await test.step('Verify that all portlets are in the correct column', async () => {
-			await expectPortletInColumn({
-				columnNumber: 1,
-				page,
-				portletName: CLAY_PORTLET_NAME,
-			});
+		await expectPortletInColumn({
+			columnNumber: 2,
+			page,
+			portletName: MESSAGE_BOARDS_PORTLET_NAME,
+		});
 
-			await expectPortletInColumn({
-				columnNumber: 2,
-				page,
-				portletName: MESSAGE_BOARDS_PORTLET_NAME,
-			});
-
-			await expectPortletInColumn({
-				columnNumber: 3,
-				page,
-				portletName: DOCUMENTS_AND_MEDIA_PORTLET_NAME,
-			});
+		await expectPortletInColumn({
+			columnNumber: 3,
+			page,
+			portletName: DOCUMENTS_AND_MEDIA_PORTLET_NAME,
 		});
 	});
 });
