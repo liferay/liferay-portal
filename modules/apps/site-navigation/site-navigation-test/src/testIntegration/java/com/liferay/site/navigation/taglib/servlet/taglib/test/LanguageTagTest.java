@@ -98,20 +98,17 @@ public class LanguageTagTest {
 		_testGetLanguageEntriesWithDefaultPageFriendlyURLMappingPath(layout);
 
 		_testGetLanguageEntriesWithDisplayPage();
-
 		_testGetLanguageEntriesWithFormAction(layout);
+		_testGetLanguageEntriesWithFriendlyURLMappingPath(layout);
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 1);
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 2);
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 3);
 		_testGetLanguageEntriesWithLocalizedVirtualHostname(layout);
-		_testGetLanguageEntriesWithFriendlyURLMappingPath(layout);
-
-		_testGetLanguageEntriesWithoutLayout();
-
-		_testGetLanguageEntriesWithoutLocalePrependFriendlyURLStyle(layout);
 		_testGetLanguageEntriesWithRedirectParameter(layout);
 		_testGetLanguageEntriesWithSignedInUser(layout);
 		_testGetLanguageEntriesWithVirtualHostname(layout);
+		_testGetLanguageEntriesWithoutLayout();
+		_testGetLanguageEntriesWithoutLocalePrependFriendlyURLStyle(layout);
 	}
 
 	private Layout _addLayout() throws Exception {
