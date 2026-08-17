@@ -1344,19 +1344,35 @@ public class ObjectEntryRelatedObjectsResourceTest {
 		Assert.assertEquals(
 			displayDate, relatedObjectEntryJSONObject.getString("displayDate"));
 
-		JSONObject jsonObject = _invokeNestedObjectEntry(
-			Http.Method.PATCH,
-			JSONUtil.put(
-				"externalReferenceCode",
-				relatedObjectEntryJSONObject.getString(
-					"externalReferenceCode")),
-			_addObjectRelationship(
-				_objectDefinition1, _objectDefinition2,
-				ObjectRelationshipConstants.TYPE_MANY_TO_MANY));
+		ObjectRelationship objectRelationship = _addObjectRelationship(
+			_objectDefinition1, _objectDefinition2,
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		Assert.assertEquals(displayDate, jsonObject.getString("displayDate"));
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			_toBody(
+				_objectEntry1.getExternalReferenceCode(),
+				JSONUtil.put(
+					"externalReferenceCode",
+					relatedObjectEntryJSONObject.getString(
+						"externalReferenceCode")),
+				objectRelationship),
+			_getEndpoint(
+				_objectEntry1.getExternalReferenceCode(), _objectDefinition1,
+				null),
+			Http.Method.PATCH);
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+
 		Assert.assertEquals(
-			_OBJECT_FIELD_VALUE_2, jsonObject.getString(_OBJECT_FIELD_NAME_2));
+			displayDate, nestedObjectEntryJSONObject.getString("displayDate"));
+		Assert.assertEquals(
+			_OBJECT_FIELD_VALUE_2,
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_2));
 	}
 
 	@Test
@@ -1388,21 +1404,35 @@ public class ObjectEntryRelatedObjectsResourceTest {
 					_objectEntry1.getPrimaryKey()),
 				Http.Method.POST);
 
-		JSONObject jsonObject = _invokeNestedObjectEntry(
-			Http.Method.PATCH,
-			JSONUtil.put(
-				_OBJECT_FIELD_NAME_2, _NEW_OBJECT_FIELD_VALUE_1
-			).put(
-				"externalReferenceCode",
-				relatedObjectEntryJSONObject.getString("externalReferenceCode")
-			),
-			objectRelationship);
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			_toBody(
+				_objectEntry1.getExternalReferenceCode(),
+				JSONUtil.put(
+					_OBJECT_FIELD_NAME_2, _NEW_OBJECT_FIELD_VALUE_1
+				).put(
+					"externalReferenceCode",
+					relatedObjectEntryJSONObject.getString(
+						"externalReferenceCode")
+				),
+				objectRelationship),
+			_getEndpoint(
+				_objectEntry1.getExternalReferenceCode(), _objectDefinition1,
+				null),
+			Http.Method.PATCH);
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
 			_NEW_OBJECT_FIELD_VALUE_1,
-			jsonObject.getString(_OBJECT_FIELD_NAME_2));
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_2));
 		Assert.assertEquals(
-			_OBJECT_FIELD_VALUE_3, jsonObject.getString(objectField.getName()));
+			_OBJECT_FIELD_VALUE_3,
+			nestedObjectEntryJSONObject.getString(objectField.getName()));
 	}
 
 	@Test
@@ -1448,28 +1478,46 @@ public class ObjectEntryRelatedObjectsResourceTest {
 
 		String keyword = "x" + RandomTestUtil.randomString();
 
-		JSONObject jsonObject = _invokeNestedObjectEntry(
-			Http.Method.PATCH,
-			JSONUtil.put(
-				_OBJECT_FIELD_NAME_2, _NEW_OBJECT_FIELD_VALUE_1
-			).put(
-				"externalReferenceCode", objectEntry.getExternalReferenceCode()
-			).put(
-				"keywords", JSONUtil.putAll(keyword)
-			),
-			_addObjectRelationship(
-				_objectDefinition1, objectDefinition,
-				ObjectRelationshipConstants.TYPE_MANY_TO_MANY));
+		ObjectRelationship objectRelationship = _addObjectRelationship(
+			_objectDefinition1, objectDefinition,
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			_toBody(
+				_objectEntry1.getExternalReferenceCode(),
+				JSONUtil.put(
+					_OBJECT_FIELD_NAME_2, _NEW_OBJECT_FIELD_VALUE_1
+				).put(
+					"externalReferenceCode",
+					objectEntry.getExternalReferenceCode()
+				).put(
+					"keywords", JSONUtil.putAll(keyword)
+				),
+				objectRelationship),
+			_getEndpoint(
+				_objectEntry1.getExternalReferenceCode(), _objectDefinition1,
+				null),
+			Http.Method.PATCH);
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			_OBJECT_FIELD_VALUE_1, jsonObject.getString(_OBJECT_FIELD_NAME_1));
+			_OBJECT_FIELD_VALUE_1,
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_1));
 		Assert.assertEquals(
 			_NEW_OBJECT_FIELD_VALUE_1,
-			jsonObject.getString(_OBJECT_FIELD_NAME_2));
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_2));
 		Assert.assertEquals(
-			_OBJECT_FIELD_VALUE_3, jsonObject.getString(_OBJECT_FIELD_NAME_3));
+			_OBJECT_FIELD_VALUE_3,
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_3));
 
-		JSONArray keywordsJSONArray = jsonObject.getJSONArray("keywords");
+		JSONArray keywordsJSONArray = nestedObjectEntryJSONObject.getJSONArray(
+			"keywords");
 
 		Assert.assertEquals(1, keywordsJSONArray.length());
 		Assert.assertEquals(keyword, keywordsJSONArray.getString(0));
@@ -1544,22 +1592,37 @@ public class ObjectEntryRelatedObjectsResourceTest {
 
 		String externalReferenceCode = RandomTestUtil.randomString();
 
-		JSONObject jsonObject = _invokeNestedObjectEntry(
-			Http.Method.PATCH,
-			JSONUtil.put(
-				_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2
-			).put(
-				"externalReferenceCode", externalReferenceCode
-			),
-			_addObjectRelationship(
-				_objectDefinition1, _objectDefinition2,
-				ObjectRelationshipConstants.TYPE_MANY_TO_MANY));
+		ObjectRelationship objectRelationship = _addObjectRelationship(
+			_objectDefinition1, _objectDefinition2,
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			_toBody(
+				_objectEntry1.getExternalReferenceCode(),
+				JSONUtil.put(
+					_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2
+				).put(
+					"externalReferenceCode", externalReferenceCode
+				),
+				objectRelationship),
+			_getEndpoint(
+				_objectEntry1.getExternalReferenceCode(), _objectDefinition1,
+				null),
+			Http.Method.PATCH);
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
 			externalReferenceCode,
-			jsonObject.getString("externalReferenceCode"));
+			nestedObjectEntryJSONObject.getString("externalReferenceCode"));
 		Assert.assertEquals(
-			_OBJECT_FIELD_VALUE_2, jsonObject.getString(_OBJECT_FIELD_NAME_2));
+			_OBJECT_FIELD_VALUE_2,
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_2));
 
 		JSONObject relatedObjectEntryJSONObject =
 			HTTPTestUtil.invokeToJSONObject(
@@ -1690,21 +1753,36 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2
 			).build());
 
-		JSONObject jsonObject = _invokeNestedObjectEntry(
-			Http.Method.PATCH,
-			JSONUtil.put(
-				"externalReferenceCode",
-				relatedSiteObjectEntry.getExternalReferenceCode()),
-			siteObjectDefinition, siteObjectEntry,
-			_addObjectRelationship(
-				siteObjectDefinition, relatedSiteObjectDefinition,
-				ObjectRelationshipConstants.TYPE_MANY_TO_MANY),
-			String.valueOf(TestPropsValues.getGroupId()));
+		ObjectRelationship objectRelationship = _addObjectRelationship(
+			siteObjectDefinition, relatedSiteObjectDefinition,
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			_toBody(
+				siteObjectEntry.getExternalReferenceCode(),
+				JSONUtil.put(
+					"externalReferenceCode",
+					relatedSiteObjectEntry.getExternalReferenceCode()),
+				objectRelationship),
+			_getEndpoint(
+				siteObjectEntry.getExternalReferenceCode(),
+				siteObjectDefinition,
+				String.valueOf(TestPropsValues.getGroupId())),
+			Http.Method.PATCH);
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			_OBJECT_FIELD_VALUE_1, jsonObject.getString(_OBJECT_FIELD_NAME_1));
+			_OBJECT_FIELD_VALUE_1,
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_1));
 		Assert.assertEquals(
-			_OBJECT_FIELD_VALUE_2, jsonObject.getString(_OBJECT_FIELD_NAME_2));
+			_OBJECT_FIELD_VALUE_2,
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_2));
 	}
 
 	@Test
@@ -2101,21 +2179,39 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				objectField.getName(), _OBJECT_FIELD_VALUE_3
 			).build());
 
-		JSONObject jsonObject = _invokeNestedObjectEntry(
-			Http.Method.PUT,
-			JSONUtil.put(
-				"externalReferenceCode",
-				objectEntry.getExternalReferenceCode()),
-			_addObjectRelationship(
-				_objectDefinition1, _objectDefinition2,
-				ObjectRelationshipConstants.TYPE_MANY_TO_MANY));
+		ObjectRelationship objectRelationship = _addObjectRelationship(
+			_objectDefinition1, _objectDefinition2,
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
-		Assert.assertFalse(jsonObject.isNull(_OBJECT_FIELD_NAME_2));
-		Assert.assertFalse(jsonObject.isNull(objectField.getName()));
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			_toBody(
+				_objectEntry1.getExternalReferenceCode(),
+				JSONUtil.put(
+					"externalReferenceCode",
+					objectEntry.getExternalReferenceCode()),
+				objectRelationship),
+			_getEndpoint(
+				_objectEntry1.getExternalReferenceCode(), _objectDefinition1,
+				null),
+			Http.Method.PUT);
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+
+		Assert.assertFalse(
+			nestedObjectEntryJSONObject.isNull(_OBJECT_FIELD_NAME_2));
+		Assert.assertFalse(
+			nestedObjectEntryJSONObject.isNull(objectField.getName()));
 		Assert.assertEquals(
-			StringPool.BLANK, jsonObject.getString(_OBJECT_FIELD_NAME_2));
+			StringPool.BLANK,
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_2));
 		Assert.assertEquals(
-			StringPool.BLANK, jsonObject.getString(objectField.getName()));
+			StringPool.BLANK,
+			nestedObjectEntryJSONObject.getString(objectField.getName()));
 	}
 
 	@Test
@@ -2679,43 +2775,6 @@ public class ObjectEntryRelatedObjectsResourceTest {
 		return systemObjectEntryJSONObject.getString("id");
 	}
 
-	private JSONObject _invokeNestedObjectEntry(
-			Http.Method method, JSONObject nestedObjectEntryJSONObject,
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
-			ObjectRelationship objectRelationship, String scopeKey)
-		throws Exception {
-
-		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				"externalReferenceCode", objectEntry.getExternalReferenceCode()
-			).put(
-				objectRelationship.getName(),
-				JSONUtil.putAll(nestedObjectEntryJSONObject)
-			).toString(),
-			_getEndpoint(
-				objectEntry.getExternalReferenceCode(), objectDefinition,
-				scopeKey),
-			method);
-
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship.getName());
-
-		Assert.assertNotNull(jsonObject.toString(), jsonArray);
-		Assert.assertEquals(jsonObject.toString(), 1, jsonArray.length());
-
-		return jsonArray.getJSONObject(0);
-	}
-
-	private JSONObject _invokeNestedObjectEntry(
-			Http.Method method, JSONObject nestedObjectEntryJSONObject,
-			ObjectRelationship objectRelationship)
-		throws Exception {
-
-		return _invokeNestedObjectEntry(
-			method, nestedObjectEntryJSONObject, _objectDefinition1,
-			_objectEntry1, objectRelationship, null);
-	}
-
 	private ObjectDefinition _publishModifiableSystemObjectDefinition(
 			String objectFieldName)
 		throws Exception {
@@ -2977,20 +3036,35 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				_OBJECT_FIELD_NAME_2, _OBJECT_FIELD_VALUE_2
 			).build());
 
-		JSONObject jsonObject = _invokeNestedObjectEntry(
-			Http.Method.PATCH,
-			JSONUtil.put(
-				"externalReferenceCode",
-				objectEntry.getExternalReferenceCode()),
-			_addObjectRelationship(_objectDefinition1, objectDefinition, type));
+		ObjectRelationship objectRelationship = _addObjectRelationship(
+			_objectDefinition1, objectDefinition, type);
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			_toBody(
+				_objectEntry1.getExternalReferenceCode(),
+				JSONUtil.put(
+					"externalReferenceCode",
+					objectEntry.getExternalReferenceCode()),
+				objectRelationship),
+			_getEndpoint(
+				_objectEntry1.getExternalReferenceCode(), _objectDefinition1,
+				null),
+			Http.Method.PATCH);
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			_OBJECT_FIELD_VALUE_2, jsonObject.getString(_OBJECT_FIELD_NAME_2));
+			_OBJECT_FIELD_VALUE_2,
+			nestedObjectEntryJSONObject.getString(_OBJECT_FIELD_NAME_2));
 
-		JSONObject i18nJSONObject = jsonObject.getJSONObject(
+		JSONObject i18nJSONObject = nestedObjectEntryJSONObject.getJSONObject(
 			_OBJECT_FIELD_NAME_1 + "_i18n");
 
-		Assert.assertNotNull(jsonObject.toString(), i18nJSONObject);
 		Assert.assertEquals(
 			_OBJECT_FIELD_VALUE_1, i18nJSONObject.getString("en_US"));
 		Assert.assertEquals(
@@ -3362,6 +3436,18 @@ public class ObjectEntryRelatedObjectsResourceTest {
 			objectRelationship.getName(),
 			manyToOne ? JSONFactoryUtil.createJSONObject() :
 				JSONFactoryUtil.createJSONArray()
+		).toString();
+	}
+
+	private String _toBody(
+		String externalReferenceCode, JSONObject nestedObjectEntryJSONObject,
+		ObjectRelationship objectRelationship) {
+
+		return JSONUtil.put(
+			"externalReferenceCode", externalReferenceCode
+		).put(
+			objectRelationship.getName(),
+			JSONUtil.putAll(nestedObjectEntryJSONObject)
 		).toString();
 	}
 
