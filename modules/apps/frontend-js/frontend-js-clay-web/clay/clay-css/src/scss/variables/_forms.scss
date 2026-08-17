@@ -2457,6 +2457,10 @@ $input-group-ai: map-deep-merge(
 				margin-top: 0,
 			),
 		),
+
+		'.form-text': (
+			color: $purple,
+		),
 	),
 	$input-group-ai
 );
