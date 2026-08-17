@@ -58,7 +58,9 @@ export class EditVocabularyPage {
 			name: 'Make this vocabulary available in all spaces',
 		});
 		this.spaceSelector = this.page.getByLabel('Space Selector');
-		this.visibilitySelector = this.page.getByLabel('Visibility');
+		this.visibilitySelector = this.page.getByLabel('Visibility', {
+			exact: true,
+		});
 	}
 
 	async goto() {
