@@ -63,6 +63,37 @@
 			<finder-column name="status" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="LayoutContentVersionPreview" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="layoutContentVersionPreviewId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="layoutContentVersionId" type="long" />
+		<column name="html" type="String" />
+		<column name="languageId" type="String" />
+		<column name="segmentsExperienceERC" type="String" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="createDate" />
+		</order>
+	</entity>
 	<exceptions>
 		<exception>LayoutContentVersionExternalReferenceCode</exception>
 		<exception>LayoutContentVersionName</exception>
