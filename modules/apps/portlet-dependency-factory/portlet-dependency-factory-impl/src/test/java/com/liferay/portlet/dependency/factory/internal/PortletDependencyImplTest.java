@@ -50,7 +50,6 @@ public class PortletDependencyImplTest {
 			RandomTestUtil.randomString() + ".js", javaScriptURL);
 
 		_testToStringBundlerWithMarkup(absolutePortalURLBuilder);
-
 		_testToStringBundlerWithUnknownType(absolutePortalURLBuilder);
 	}
 
