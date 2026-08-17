@@ -172,27 +172,20 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		String sourceFilePath = JenkinsResultsParserUtil.getCanonicalPath(
 			sourceFile);
 
-		String scpCommand = JenkinsResultsParserUtil.combine(
-			"scp ", _SSH_OPTIONS, " ", sourceFilePath, " ", _SSH_USER_NAME, "@",
-			getName(), ":", targetFilePath);
+		_executeSCPCommand(
+			JenkinsResultsParserUtil.combine(
+				sourceFilePath, " ", _SSH_USER_NAME, "@", getName(), ":",
+				targetFilePath));
+	}
 
-		Process process = null;
+	public void copyRemoteFile(String sourceFilePath, File targetFile) {
+		String targetFilePath = JenkinsResultsParserUtil.getCanonicalPath(
+			targetFile);
 
-		try {
-			process = JenkinsResultsParserUtil.executeBashCommands(
-				true, new File("."), _SSH_COMMAND_TIMEOUT, scpCommand);
-		}
-		catch (IOException | TimeoutException exception) {
-			throw new RuntimeException(
-				"Unable to execute command " + scpCommand, exception);
-		}
-
-		if (process.exitValue() != 0) {
-			throw new RuntimeException(
-				JenkinsResultsParserUtil.combine(
-					"Unable to copy ", sourceFilePath, " to ", getName(), ":",
-					targetFilePath));
-		}
+		_executeSCPCommand(
+			JenkinsResultsParserUtil.combine(
+				_SSH_USER_NAME, "@", getName(), ":", sourceFilePath, " ",
+				targetFilePath));
 	}
 
 	@Override
@@ -1572,6 +1565,27 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		catch (Exception exception) {
 			throw new RuntimeException(
 				"Unable to determine URL for master " + _masterName, exception);
+		}
+	}
+
+	private void _executeSCPCommand(String scpArguments) {
+		String scpCommand = JenkinsResultsParserUtil.combine(
+			"scp ", _SSH_OPTIONS, " ", scpArguments);
+
+		Process process = null;
+
+		try {
+			process = JenkinsResultsParserUtil.executeBashCommands(
+				true, new File("."), _SSH_COMMAND_TIMEOUT, scpCommand);
+		}
+		catch (IOException | TimeoutException exception) {
+			throw new RuntimeException(
+				"Unable to execute command " + scpCommand, exception);
+		}
+
+		if (process.exitValue() != 0) {
+			throw new RuntimeException(
+				"Unable to execute command " + scpCommand);
 		}
 	}
 
