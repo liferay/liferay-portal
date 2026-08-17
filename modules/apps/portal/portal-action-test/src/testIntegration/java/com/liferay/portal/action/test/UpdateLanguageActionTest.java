@@ -556,6 +556,14 @@ public class UpdateLanguageActionTest {
 			"/" + _sourceLocale.getLanguage() + sourceURL);
 	}
 
+	private void _testGetRedirectWithFriendlyURLMapping(Locale sourceLocale)
+		throws Exception {
+
+		_testGetRedirectWithLayoutFriendlyURL(
+			"/tags/" + RandomTestUtil.randomString(), sourceLocale,
+			_targetLocale, false);
+	}
+
 	private void _testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping()
 		throws Exception {
 
@@ -737,14 +745,6 @@ public class UpdateLanguageActionTest {
 
 		_testGetRedirectWithLayoutFriendlyURL(
 			path, sourceLocale, _targetLocale, false);
-	}
-
-	private void _testGetRedirectWithFriendlyURLMapping(Locale sourceLocale)
-		throws Exception {
-
-		_testGetRedirectWithLayoutFriendlyURL(
-			"/tags/" + RandomTestUtil.randomString(), sourceLocale,
-			_targetLocale, false);
 	}
 
 	private void _updateLayoutFriendlyURL(String suffix) throws Exception {
