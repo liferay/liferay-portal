@@ -2,7 +2,12 @@ import AudienceReport from './AudienceReport';
 import BaseCard from 'shared/components/base-card';
 import Card from '../Card';
 import React from 'react';
-import {AssetAudienceReportQuery, PageAudienceReportQuery} from './queries';
+import {
+	AssetAudienceReportQuery,
+	AssetSegmentQuery,
+	PageAudienceReportQuery,
+	PageSegmentQuery,
+} from './queries';
 import {IAudienceReportBaseCardProps, Name} from './types';
 import {ReportContainer} from '../download-report/DownloadPDFReport';
 
@@ -12,6 +17,9 @@ function AudienceReportBaseCard({
 }: IAudienceReportBaseCardProps) {
 	const AudienceReportQuery =
 		name === Name.Page ? PageAudienceReportQuery : AssetAudienceReportQuery;
+
+	const SegmentQuery =
+		name === Name.Page ? PageSegmentQuery : AssetSegmentQuery;
 
 	return (
 		<BaseCard
@@ -32,16 +40,20 @@ function AudienceReportBaseCard({
 					<AudienceReport
 						{...props}
 						accountId={accountId}
+						AudienceReportQuery={AudienceReportQuery({
+							metricName,
+							name,
+						})}
 						experienceId={experienceId}
 						filters={filters}
 						mapper={(result: any) => result?.[name]?.[metricName]}
 						name={name}
-						Query={AudienceReportQuery({
+						rangeSelectors={rangeSelectors}
+						segmentId={segmentId}
+						SegmentQuery={SegmentQuery({
 							metricName,
 							name,
 						})}
-						rangeSelectors={rangeSelectors}
-						segmentId={segmentId}
 					/>
 				</Card.Body>
 			)}

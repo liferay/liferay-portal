@@ -27,23 +27,19 @@ const AudienceReportTitle: React.FC<IInfoPopoverProps> = ({content, title}) => (
 	</div>
 );
 
-interface IAudienceReportWithDataProps<TRawData>
+interface IAudienceReportWithDataProps
 	extends Partial<IAudienceReportBaseCardProps> {
-	mapper: (data: TRawData) => TData;
-	data: TRawData;
 	name: Name;
+	result: TData;
 }
 
-function AudienceReportWithData<TRawData>({
-	data,
+function AudienceReportWithData({
 	knownIndividualsTitle,
-	mapper,
 	name,
+	result,
 	segmentsTitle = Liferay.Language.get('viewer-segments'),
 	uniqueVisitorsTitle = Liferay.Language.get('visitors'),
-}: IAudienceReportWithDataProps<TRawData>) {
-	const result: TData = mapper(data);
-
+}: IAudienceReportWithDataProps) {
 	const {knownIndividuals, segments, uniqueVisitors} = formatData(result);
 
 	return (
@@ -100,45 +96,72 @@ function AudienceReportWithData<TRawData>({
 interface IAudienceReportProps<TRawData>
 	extends Partial<IAudienceReportBaseCardProps> {
 	accountId?: string | null;
+	AudienceReportQuery: DocumentNode;
 	experienceId?: string | null;
 	filters: RawFilters;
 	rangeSelectors: RangeSelectors;
 	segmentId?: string | null;
-	Query: DocumentNode;
+	SegmentQuery: DocumentNode;
 	mapper: (data: TRawData) => TData;
 	name: Name;
 }
 
 function AudienceReport<TRawData>({
-	Query,
+	AudienceReportQuery,
+	SegmentQuery,
 	accountId,
 	experienceId,
 	filters,
+	mapper,
 	rangeSelectors,
 	segmentId,
 	...otherProps
 }: IAudienceReportProps<TRawData>) {
 	const {assetId, channelId, title, touchpoint} = useParams();
-	const {data, error, loading} = useQuery(Query, {
+
+	const variables = {
+		assetId,
+		touchpoint: getSafeTouchpoint(touchpoint as string),
+		...(accountId && {accountId}),
+		...(experienceId && {experienceId}),
+		...(segmentId && {segmentId}),
+		...(otherProps.name !== Name.ObjectEntry && {
+			channelId,
+			title: getSafeDecodedURIComponent(title as string),
+		}),
+		...getFilters(filters),
+		...getSafeRangeSelectors(rangeSelectors),
+	};
+
+	const {
+		data: audienceReportData,
+		error: audienceReportError,
+		loading: audienceReportLoading,
+	} = useQuery(AudienceReportQuery, {
 		fetchPolicy: fetchPolicyDefinition(rangeSelectors),
-		variables: {
-			assetId,
-			touchpoint: getSafeTouchpoint(touchpoint as string),
-			...(accountId && {accountId}),
-			...(experienceId && {experienceId}),
-			...(segmentId && {segmentId}),
-			...(otherProps.name !== Name.ObjectEntry && {
-				channelId,
-				title: getSafeDecodedURIComponent(title as string),
-			}),
-			...getFilters(filters),
-			...getSafeRangeSelectors(rangeSelectors),
-		},
+		variables,
 	});
 
+	const {
+		data: segmentData,
+		error: segmentError,
+		loading: segmentLoading,
+	} = useQuery(SegmentQuery, {
+		fetchPolicy: fetchPolicyDefinition(rangeSelectors),
+		variables,
+	});
+
+	const result = {
+		...mapper(audienceReportData),
+		...mapper(segmentData),
+	} as TData;
+
 	return (
-		<AudienceReportStateRenderer error={error!} loading={loading}>
-			<AudienceReportWithData {...otherProps} data={data} />
+		<AudienceReportStateRenderer
+			error={(audienceReportError ?? segmentError)!}
+			loading={audienceReportLoading || segmentLoading}
+		>
+			<AudienceReportWithData {...otherProps} result={result} />
 		</AudienceReportStateRenderer>
 	);
 }

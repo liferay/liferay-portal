@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import {DocumentNode} from '@apollo/client';
 import {Name} from './types';
 
 const AudienceReportFragment = gql`
@@ -10,6 +11,11 @@ const AudienceReportFragment = gql`
 			segmentedAnonymousUsersCount
 			segmentedKnownUsersCount
 		}
+	}
+`;
+
+const SegmentFragment = gql`
+	fragment segmentFragment on Metric {
 		segment {
 			metrics {
 				value
@@ -20,14 +26,18 @@ const AudienceReportFragment = gql`
 	}
 `;
 
-export const PageAudienceReportQuery = ({
-	metricName,
-	name,
-}: {
+interface IQueryProps {
 	metricName: string;
 	name: Name;
-}) => gql`
-	query ${name}AudienceReportQuery(
+}
+
+const getPageQuery = (
+	{metricName, name}: IQueryProps,
+	fragment: DocumentNode,
+	fragmentName: string,
+	operationName: string
+) => gql`
+	query ${name}${operationName}(
 		$accountId: String
 		$channelId: String
 		$devices: String
@@ -54,22 +64,21 @@ export const PageAudienceReportQuery = ({
 			title: $title
 		) {
 			${metricName} {
-				...audienceReportFragment
+				...${fragmentName}
 			}
 		}
 	}
 
-	${AudienceReportFragment}
+	${fragment}
 `;
 
-export const AssetAudienceReportQuery = ({
-	metricName,
-	name,
-}: {
-	metricName: string;
-	name: Name;
-}) => gql`
-	query ${name}AudienceReportQuery(
+const getAssetQuery = (
+	{metricName, name}: IQueryProps,
+	fragment: DocumentNode,
+	fragmentName: string,
+	operationName: string
+) => gql`
+	query ${name}${operationName}(
 		$accountId: String
 		$assetId: String!
 		$channelId: String
@@ -99,10 +108,42 @@ export const AssetAudienceReportQuery = ({
 			assetTitle
 			urls
 			${metricName} {
-				...audienceReportFragment
+				...${fragmentName}
 			}
 		}
 	}
 
-	${AudienceReportFragment}
+	${fragment}
 `;
+
+export const AssetAudienceReportQuery = (queryProps: IQueryProps) =>
+	getAssetQuery(
+		queryProps,
+		AudienceReportFragment,
+		'audienceReportFragment',
+		'AudienceReportQuery'
+	);
+
+export const AssetSegmentQuery = (queryProps: IQueryProps) =>
+	getAssetQuery(
+		queryProps,
+		SegmentFragment,
+		'segmentFragment',
+		'SegmentQuery'
+	);
+
+export const PageAudienceReportQuery = (queryProps: IQueryProps) =>
+	getPageQuery(
+		queryProps,
+		AudienceReportFragment,
+		'audienceReportFragment',
+		'AudienceReportQuery'
+	);
+
+export const PageSegmentQuery = (queryProps: IQueryProps) =>
+	getPageQuery(
+		queryProps,
+		SegmentFragment,
+		'segmentFragment',
+		'SegmentQuery'
+	);
