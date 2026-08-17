@@ -44,26 +44,34 @@ public class JenkinsConfigUtil {
 		String jenkinsMasterUserConfigFilePath =
 			_getJenkinsMasterUserConfigFilePath(jenkinsMaster, emailAddress);
 
+		File backupUserConfigFile = null;
+
 		try {
-			_backupJenkinsMasterUserConfigFile(
+			backupUserConfigFile = _backupJenkinsMasterUserConfigFile(
 				jenkinsMaster, jenkinsMasterUserConfigFilePath);
 
-			_copyUserConfigFileToJenkinsMaster(
-				jenkinsMaster, userConfigFile, jenkinsMasterUserConfigFilePath);
+			jenkinsMaster.copyFile(
+				userConfigFile, jenkinsMasterUserConfigFilePath);
 
 			jenkinsMaster.reload();
 
 			_validateAPITokens(jenkinsMaster, jenkinsUserID);
+
+			backupUserConfigFile.delete();
 		}
 		catch (Exception exception1) {
-			try {
-				_restoreJenkinsMasterUserConfigFile(
-					jenkinsMaster, jenkinsMasterUserConfigFilePath);
+			if (backupUserConfigFile != null) {
+				try {
+					jenkinsMaster.copyFile(
+						backupUserConfigFile, jenkinsMasterUserConfigFilePath);
 
-				jenkinsMaster.reload();
-			}
-			catch (Exception exception2) {
-				exception1.addSuppressed(exception2);
+					jenkinsMaster.reload();
+
+					backupUserConfigFile.delete();
+				}
+				catch (Exception exception2) {
+					exception1.addSuppressed(exception2);
+				}
 			}
 
 			throw exception1;
@@ -73,21 +81,31 @@ public class JenkinsConfigUtil {
 		}
 	}
 
-	private static void _backupJenkinsMasterUserConfigFile(
+	private static File _backupJenkinsMasterUserConfigFile(
 		JenkinsMaster jenkinsMaster, String userConfigFilePath) {
 
-		String backupUserConfigFilePath = userConfigFilePath + ".bak";
+		File backupUserConfigFile = null;
 
-		jenkinsMaster.executeSSHCommand(
-			JenkinsResultsParserUtil.combine(
-				"cp ", userConfigFilePath, " ", backupUserConfigFilePath));
-	}
+		try {
+			backupUserConfigFile = File.createTempFile(
+				"user-config-backup-", ".xml");
 
-	private static void _copyUserConfigFileToJenkinsMaster(
-		JenkinsMaster jenkinsMaster, File userConfigFile,
-		String userConfigFilePath) {
+			jenkinsMaster.copyRemoteFile(
+				userConfigFilePath, backupUserConfigFile);
 
-		jenkinsMaster.copyFile(userConfigFile, userConfigFilePath);
+			return backupUserConfigFile;
+		}
+		catch (Exception exception) {
+			if (backupUserConfigFile != null) {
+				backupUserConfigFile.delete();
+			}
+
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to back up ", jenkinsMaster.getName(), ":",
+					userConfigFilePath),
+				exception);
+		}
 	}
 
 	private static String _getJenkinsMasterUserConfigFilePath(
@@ -110,16 +128,6 @@ public class JenkinsConfigUtil {
 			JenkinsResultsParserUtil.combine(
 				"Unable to find user config for ", emailAddress, " in ",
 				jenkinsMaster.getName(), ":", _JENKINS_USERS_DIR_PATH));
-	}
-
-	private static void _restoreJenkinsMasterUserConfigFile(
-		JenkinsMaster jenkinsMaster, String userConfigFilePath) {
-
-		String backupUserConfigFilePath = userConfigFilePath + ".bak";
-
-		jenkinsMaster.executeSSHCommand(
-			JenkinsResultsParserUtil.combine(
-				"cp ", backupUserConfigFilePath, " ", userConfigFilePath));
 	}
 
 	private static void _validateAPITokens(
