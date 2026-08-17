@@ -130,11 +130,53 @@ describe('BasicRendering', () => {
 		expect(screen.getByRole('button', {name: 'Retry'})).toBeInTheDocument();
 	});
 
+	it('only renders the suggestion label in the result states', () => {
+		const {rerender} = render(
+			<ClayInputGroupAI onChange={() => {}} value="Hello" />
+		);
+
+		expect(screen.queryByText('Suggestion')).not.toBeInTheDocument();
+
+		rerender(
+			<ClayInputGroupAI
+				aiState="working"
+				onChange={() => {}}
+				value="Hello"
+			/>
+		);
+
+		expect(screen.queryByText('Suggestion')).not.toBeInTheDocument();
+
+		rerender(
+			<ClayInputGroupAI
+				aiState="result"
+				onChange={() => {}}
+				value="Hello"
+			/>
+		);
+
+		expect(screen.getByText('Suggestion')).toBeInTheDocument();
+
+		rerender(
+			<ClayInputGroupAI
+				aiState="result-readonly"
+				onChange={() => {}}
+				value="Hello"
+			/>
+		);
+
+		expect(screen.getByText('Suggestion')).toBeInTheDocument();
+	});
+
 	it('renders custom messages', () => {
 		render(
 			<ClayInputGroupAI
 				aiState="result"
-				messages={{retry: 'Reintentar', submit: 'Enviar'}}
+				messages={{
+					retry: 'Reintentar',
+					submit: 'Enviar',
+					suggestion: 'Sugerencia',
+				}}
 				onChange={() => {}}
 				onRetryClick={() => {}}
 				value=""
@@ -147,6 +189,7 @@ describe('BasicRendering', () => {
 		expect(
 			screen.getByRole('button', {name: 'Reintentar'})
 		).toBeInTheDocument();
+		expect(screen.getByText('Sugerencia')).toBeInTheDocument();
 	});
 });
 
