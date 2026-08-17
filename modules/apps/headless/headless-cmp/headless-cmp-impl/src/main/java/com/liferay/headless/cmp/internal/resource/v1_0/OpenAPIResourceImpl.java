@@ -93,9 +93,11 @@ public class OpenAPIResourceImpl {
 
 			add(UserAccountResourceImpl.class);
 
+			add(UserGroupResourceImpl.class);
+
 			add(OpenAPIResourceImpl.class);
 		}
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:228611432
+// LIFERAY-REST-BUILDER-HASH:-724985126

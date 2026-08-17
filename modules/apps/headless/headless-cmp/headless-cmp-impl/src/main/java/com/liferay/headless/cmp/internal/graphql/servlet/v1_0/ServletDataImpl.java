@@ -11,10 +11,12 @@ import com.liferay.headless.cmp.internal.resource.v1_0.ContentCoverageResourceIm
 import com.liferay.headless.cmp.internal.resource.v1_0.TaskAssigneeResourceImpl;
 import com.liferay.headless.cmp.internal.resource.v1_0.TaskStatisticsResourceImpl;
 import com.liferay.headless.cmp.internal.resource.v1_0.UserAccountResourceImpl;
+import com.liferay.headless.cmp.internal.resource.v1_0.UserGroupResourceImpl;
 import com.liferay.headless.cmp.resource.v1_0.ContentCoverageResource;
 import com.liferay.headless.cmp.resource.v1_0.TaskAssigneeResource;
 import com.liferay.headless.cmp.resource.v1_0.TaskStatisticsResource;
 import com.liferay.headless.cmp.resource.v1_0.UserAccountResource;
+import com.liferay.headless.cmp.resource.v1_0.UserGroupResource;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.vulcan.graphql.servlet.ServletData;
 
@@ -48,6 +50,8 @@ public class ServletDataImpl implements ServletData {
 			_taskStatisticsResourceComponentServiceObjects);
 		Query.setUserAccountResourceComponentServiceObjects(
 			_userAccountResourceComponentServiceObjects);
+		Query.setUserGroupResourceComponentServiceObjects(
+			_userGroupResourceComponentServiceObjects);
 	}
 
 	public String getApplicationName() {
@@ -109,6 +113,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							UserAccountResourceImpl.class,
 							"getProjectUserAccountsPage"));
+					put(
+						"query#projectUserGroups",
+						new ObjectValuePair<>(
+							UserGroupResourceImpl.class,
+							"getProjectUserGroupsPage"));
 				}
 			};
 
@@ -128,5 +137,9 @@ public class ServletDataImpl implements ServletData {
 	private ComponentServiceObjects<UserAccountResource>
 		_userAccountResourceComponentServiceObjects;
 
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<UserGroupResource>
+		_userGroupResourceComponentServiceObjects;
+
 }
-// LIFERAY-REST-BUILDER-HASH:13625904
+// LIFERAY-REST-BUILDER-HASH:-672860236

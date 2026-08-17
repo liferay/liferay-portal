@@ -9,10 +9,12 @@ import com.liferay.headless.cmp.dto.v1_0.ContentCoverage;
 import com.liferay.headless.cmp.dto.v1_0.TaskAssignee;
 import com.liferay.headless.cmp.dto.v1_0.TaskStatistics;
 import com.liferay.headless.cmp.dto.v1_0.UserAccount;
+import com.liferay.headless.cmp.dto.v1_0.UserGroup;
 import com.liferay.headless.cmp.resource.v1_0.ContentCoverageResource;
 import com.liferay.headless.cmp.resource.v1_0.TaskAssigneeResource;
 import com.liferay.headless.cmp.resource.v1_0.TaskStatisticsResource;
 import com.liferay.headless.cmp.resource.v1_0.UserAccountResource;
+import com.liferay.headless.cmp.resource.v1_0.UserGroupResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -74,6 +76,14 @@ public class Query {
 
 		_userAccountResourceComponentServiceObjects =
 			userAccountResourceComponentServiceObjects;
+	}
+
+	public static void setUserGroupResourceComponentServiceObjects(
+		ComponentServiceObjects<UserGroupResource>
+			userGroupResourceComponentServiceObjects) {
+
+		_userGroupResourceComponentServiceObjects =
+			userGroupResourceComponentServiceObjects;
 	}
 
 	/**
@@ -167,6 +177,27 @@ public class Query {
 			this::_populateResourceContext,
 			userAccountResource -> new UserAccountPage(
 				userAccountResource.getProjectUserAccountsPage(
+					projectId, search, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {projectUserGroups(page: ___, pageSize: ___, projectId: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public UserGroupPage projectUserGroups(
+			@GraphQLName("projectId") Long projectId,
+			@GraphQLName("search") String search,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_userGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			userGroupResource -> new UserGroupPage(
+				userGroupResource.getProjectUserGroupsPage(
 					projectId, search, Pagination.of(page, pageSize))));
 	}
 
@@ -302,6 +333,39 @@ public class Query {
 
 	}
 
+	@GraphQLName("UserGroupPage")
+	public class UserGroupPage {
+
+		public UserGroupPage(Page userGroupPage) {
+			actions = userGroupPage.getActions();
+
+			items = userGroupPage.getItems();
+			lastPage = userGroupPage.getLastPage();
+			page = userGroupPage.getPage();
+			pageSize = userGroupPage.getPageSize();
+			totalCount = userGroupPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<UserGroup> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
 	private <T, R, E1 extends Throwable, E2 extends Throwable> R
 			_applyComponentServiceObjects(
 				ComponentServiceObjects<T> componentServiceObjects,
@@ -398,6 +462,23 @@ public class Query {
 		userAccountResource.setRoleLocalService(_roleLocalService);
 	}
 
+	private void _populateResourceContext(UserGroupResource userGroupResource)
+		throws Exception {
+
+		userGroupResource.setContextAcceptLanguage(_acceptLanguage);
+		userGroupResource.setContextCompany(_company);
+		userGroupResource.setContextHttpServletRequest(_httpServletRequest);
+		userGroupResource.setContextHttpServletResponse(_httpServletResponse);
+		userGroupResource.setContextUriInfo(_uriInfo);
+		userGroupResource.setContextUser(_user);
+		userGroupResource.setGroupLocalService(_groupLocalService);
+		userGroupResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		userGroupResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
+		userGroupResource.setRoleLocalService(_roleLocalService);
+	}
+
 	private static ComponentServiceObjects<ContentCoverageResource>
 		_contentCoverageResourceComponentServiceObjects;
 	private static ComponentServiceObjects<TaskAssigneeResource>
@@ -406,6 +487,8 @@ public class Query {
 		_taskStatisticsResourceComponentServiceObjects;
 	private static ComponentServiceObjects<UserAccountResource>
 		_userAccountResourceComponentServiceObjects;
+	private static ComponentServiceObjects<UserGroupResource>
+		_userGroupResourceComponentServiceObjects;
 
 	private AcceptLanguage _acceptLanguage;
 	private com.liferay.portal.kernel.model.Company _company;
@@ -424,4 +507,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1466939021
+// LIFERAY-REST-BUILDER-HASH:339825133
