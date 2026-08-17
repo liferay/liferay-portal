@@ -199,12 +199,12 @@ public class Test {
 		);
 	}
 
-	protected void setUrlReaderOutput(
-			String standardOut, String url, UrlReader urlReader)
+	protected void setUrlReaderException(
+			Exception exception, String url, UrlReader urlReader)
 		throws Exception {
 
-		Mockito.doAnswer(
-			invocation -> new ByteArrayInputStream(standardOut.getBytes())
+		Mockito.doThrow(
+			exception
 		).when(
 			urlReader
 		).doRead(
@@ -213,6 +213,34 @@ public class Test {
 			Mockito.argThat(
 				readURL -> (readURL != null) && readURL.contains(url))
 		);
+	}
+
+	protected void setUrlReaderOutput(
+			long delayMillis, String standardOut, String url,
+			UrlReader urlReader)
+		throws Exception {
+
+		Mockito.doAnswer(
+			invocation -> {
+				JenkinsResultsParserUtil.sleep(delayMillis);
+
+				return new ByteArrayInputStream(standardOut.getBytes());
+			}
+		).when(
+			urlReader
+		).doRead(
+			Mockito.anyBoolean(), Mockito.any(), Mockito.any(),
+			Mockito.anyInt(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.argThat(
+				readURL -> (readURL != null) && readURL.contains(url))
+		);
+	}
+
+	protected void setUrlReaderOutput(
+			String standardOut, String url, UrlReader urlReader)
+		throws Exception {
+
+		setUrlReaderOutput(0, standardOut, url, urlReader);
 	}
 
 	protected void testEquals(Object expected, Object actual) {
@@ -242,6 +270,19 @@ public class Test {
 			"file:" +
 				JenkinsResultsParserUtil.getCanonicalPath(dependenciesDir),
 			"${dependencies.url}/" + path);
+	}
+
+	protected void verifyUrlReaderRead(
+			boolean checkCache, int timeoutMillis, UrlReader urlReader)
+		throws Exception {
+
+		Mockito.verify(
+			urlReader
+		).doRead(
+			Mockito.eq(checkCache), Mockito.any(), Mockito.any(),
+			Mockito.anyInt(), Mockito.any(), Mockito.anyInt(),
+			Mockito.eq(timeoutMillis), Mockito.anyString()
+		);
 	}
 
 	protected List<File> dependenciesDirs = getDependenciesDirs(

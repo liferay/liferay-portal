@@ -113,17 +113,9 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		String queueItemAPIURL = "http://test-9-1/queue/item/7800/api/json";
 
-		Mockito.doThrow(
-			new FileNotFoundException(queueItemAPIURL)
-		).when(
-			urlReader
-		).doRead(
-			Mockito.anyBoolean(), Mockito.any(), Mockito.any(),
-			Mockito.anyInt(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
-			Mockito.argThat(
-				readURL ->
-					(readURL != null) && readURL.contains(queueItemAPIURL))
-		);
+		setUrlReaderException(
+			new FileNotFoundException(queueItemAPIURL), queueItemAPIURL,
+			urlReader);
 
 		ByteArrayOutputStream byteArrayOutputStream =
 			new ByteArrayOutputStream();

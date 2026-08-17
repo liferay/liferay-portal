@@ -18,8 +18,6 @@ import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Test;
 
-import org.mockito.Mockito;
-
 /**
  * @author Calum Ragan
  */
@@ -157,20 +155,10 @@ public class BuildQueueRebalancerTest
 
 		UrlReader urlReader = mockUrlReader();
 
-		Mockito.doThrow(
-			new IOException("Connection refused")
-		).when(
-			urlReader
-		).doRead(
-			Mockito.anyBoolean(), Mockito.any(), Mockito.any(),
-			Mockito.anyInt(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
-			Mockito.argThat(
-				readURL ->
-					(readURL != null) &&
-					readURL.contains(
-						_BLACKLISTED_JENKINS_MASTER_NAME +
-							".liferay.com/queue/api/json"))
-		);
+		setUrlReaderException(
+			new IOException("Connection refused"),
+			_BLACKLISTED_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
+			urlReader);
 
 		setUrlReaderOutput(
 			String.valueOf(
