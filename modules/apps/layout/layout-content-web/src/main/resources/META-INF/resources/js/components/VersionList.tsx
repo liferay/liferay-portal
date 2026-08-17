@@ -233,7 +233,7 @@ function buildActionItems({
 
 				onRestore?.(version);
 			},
-			symbolLeft: 'undo',
+			symbolLeft: 'restore',
 		});
 	}
 
