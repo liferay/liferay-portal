@@ -31,6 +31,8 @@ export class ExportImportDataSelectionPage {
 	}
 
 	async getExportableItems() {
+		await this.waitForContent();
+
 		const exportableItems = new Map<string, number>();
 
 		const labels = await this.section.locator('label').all();
@@ -64,6 +66,8 @@ export class ExportImportDataSelectionPage {
 	}
 
 	async selectOnlyObjectDefinition(label: string) {
+		await this.waitForContent();
+
 		const checkboxes = await this.section.getByRole('checkbox').all();
 
 		for (const checkbox of checkboxes) {
@@ -73,5 +77,9 @@ export class ExportImportDataSelectionPage {
 		await this.expandSection('Objects');
 
 		await this.section.getByRole('checkbox', {name: label}).check();
+	}
+
+	async waitForContent() {
+		await this.section.getByRole('checkbox').first().waitFor();
 	}
 }

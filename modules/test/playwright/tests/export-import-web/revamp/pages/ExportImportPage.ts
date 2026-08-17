@@ -164,13 +164,14 @@ export class ExportImportPage {
 	async excludeReportFilter() {
 		await this.filterButton.click();
 		await this.excludeSwitch.check();
-		await this.showResultsButton.click();
 
 		const responsePromise = this.page.waitForResponse(
 			(response) =>
 				response.url().includes('report-entries') &&
 				response.status() === 200
 		);
+
+		await this.showResultsButton.click();
 
 		await responsePromise;
 	}
