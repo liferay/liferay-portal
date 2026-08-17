@@ -95,6 +95,10 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 			throw new NoSuchProductPurchaseException();
 		}
 
+		if (!_isConsumableProductPurchase(productPurchase)) {
+			return;
+		}
+
 		productConsumption.setEndDate(productPurchase.getEndDate());
 		productConsumption.setExternalLinks(
 			new ExternalLink[] {_createExternalLink(date, groupId)});
@@ -314,6 +318,10 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 			throw new NoSuchProductPurchaseException();
 		}
 
+		if (!_isConsumableProductPurchase(productPurchase)) {
+			return true;
+		}
+
 		List<ProductConsumption> productConsumptions =
 			KoroneikiHttpUtil.getProductConsumptions(account.getKey(), 1, 100);
 
@@ -488,6 +496,14 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		}
 
 		return false;
+	}
+
+	private boolean _isConsumableProductPurchase(
+		ProductPurchase productPurchase) {
+
+		return !Objects.equals(
+			productPurchase.getProductKey(),
+			ProductConstants.DIGITAL_SALES_ROOM_PRODUCT_ENTRY_ID);
 	}
 
 	@Reference
