@@ -544,7 +544,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/log4j-1.2-api.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Log4j 1.x Compatibility API</project-name>
 				<project-url>http://logging.apache.org/log4j</project-url>
 				<licenses>
@@ -1262,7 +1262,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/log4j-api.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Log4j API</project-name>
 				<project-url>http://logging.apache.org/log4j</project-url>
 				<licenses>
@@ -1274,7 +1274,7 @@
 			</library>
 			<library>
 				<file-name>lib/portal/log4j-core.jar</file-name>
-				<version>2.25.5</version>
+				<version>2.20.0</version>
 				<project-name>Log4j Core</project-name>
 				<project-url>http://logging.apache.org/log4j</project-url>
 				<licenses>
