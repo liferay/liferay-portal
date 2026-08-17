@@ -56,6 +56,7 @@ const Row = ({
 	onDragCrossover,
 	onDrop,
 	query,
+	reorderable,
 }: {
 	actions?: Array<IAction>;
 	fields: Array<IField>;
@@ -64,10 +65,12 @@ const Row = ({
 	onDragCrossover: Function;
 	onDrop: Function;
 	query: string;
+	reorderable: boolean;
 }) => {
 	const tableRowRef = useRef<HTMLTableRowElement>(null);
 
 	const [{isDragging}, dragRef] = useDrag({
+		canDrag: () => reorderable,
 		collect: (monitor) => ({
 			isDragging: monitor.isDragging(),
 		}),
@@ -137,7 +140,7 @@ const Row = ({
 	const [, dropRef] = useDrop({
 		accept: ROW_DRAGGABLE,
 		hover(item: {index: number; type: string}, monitor) {
-			if (!tableRowRef.current || !onDragCrossover) {
+			if (!tableRowRef.current || !onDragCrossover || !reorderable) {
 				return;
 			}
 
@@ -198,6 +201,7 @@ const Row = ({
 						Liferay.Language.get('drag-x'),
 						item.label || Liferay.Language.get('item')
 					)}
+					disabled={!reorderable}
 					displayType={null}
 					onBlur={onBlur}
 					onKeyDown={onKeyDown}
@@ -301,6 +305,7 @@ const Table = ({
 	onDragCrossover,
 	onDrop,
 	query,
+	reorderable,
 }: {
 	actions?: Array<IAction>;
 	fields: Array<IField>;
@@ -308,6 +313,7 @@ const Table = ({
 	onDragCrossover: Function;
 	onDrop: Function;
 	query: string;
+	reorderable: boolean;
 }) => {
 	const [, dropRef] = useDrop({
 		accept: ROW_DRAGGABLE,
@@ -347,6 +353,7 @@ const Table = ({
 						onDragCrossover={onDragCrossover}
 						onDrop={onDrop}
 						query={query}
+						reorderable={reorderable}
 					/>
 				))}
 			</ClayTable.Body>
@@ -388,6 +395,8 @@ const OrderableTable = ({
 		initialItems.map((item) => item.externalReferenceCode).join(',')
 	);
 	const [query, setQuery] = useState('');
+
+	const reorderable = !query;
 
 	useEffect(() => setItems(initialItems), [initialItems]);
 
@@ -503,13 +512,14 @@ const OrderableTable = ({
 									.map((item) => item.externalReferenceCode)
 									.join(',');
 
-								if (newOrder !== order) {
+								if (reorderable && newOrder !== order) {
 									setOrder(newOrder);
 
 									onOrderChange({order: newOrder});
 								}
 							}}
 							query={query}
+							reorderable={reorderable}
 						/>
 					</DndProvider>
 				) : query ? (
