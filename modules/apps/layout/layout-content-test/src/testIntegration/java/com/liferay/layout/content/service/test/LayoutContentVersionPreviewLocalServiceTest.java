@@ -1,0 +1,198 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.layout.content.service.test;
+
+import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.layout.content.model.LayoutContentVersion;
+import com.liferay.layout.content.model.LayoutContentVersionPreview;
+import com.liferay.layout.content.service.LayoutContentVersionLocalService;
+import com.liferay.layout.content.service.LayoutContentVersionPreviewLocalService;
+import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+/**
+ * @author Lourdes Fernández Besada
+ */
+@FeatureFlag("LPD-10622")
+@RunWith(Arquillian.class)
+public class LayoutContentVersionPreviewLocalServiceTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	public void setUp() throws Exception {
+		_group = GroupTestUtil.addGroup();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		_layoutContentVersion =
+			_layoutContentVersionLocalService.addLayoutContentVersion(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				RandomTestUtil.randomString(),
+				RandomTestUtil.randomLocaleStringMap(), draftLayout.getPlid(),
+				WorkflowConstants.STATUS_APPROVED);
+	}
+
+	@Test
+	public void testAddLayoutContentVersionPreview() throws Exception {
+		User user = _userLocalService.getUser(TestPropsValues.getUserId());
+		String html = RandomTestUtil.randomString();
+		String languageId = RandomTestUtil.randomString();
+		String segmentsExperienceERC = RandomTestUtil.randomString();
+
+		LayoutContentVersionPreview layoutContentVersionPreview =
+			_layoutContentVersionPreviewLocalService.
+				addLayoutContentVersionPreview(
+					user.getUserId(),
+					_layoutContentVersion.getLayoutContentVersionId(), html,
+					languageId, segmentsExperienceERC);
+
+		Assert.assertEquals(
+			_layoutContentVersion.getGroupId(),
+			layoutContentVersionPreview.getGroupId());
+		Assert.assertEquals(
+			_layoutContentVersion.getCompanyId(),
+			layoutContentVersionPreview.getCompanyId());
+		Assert.assertEquals(
+			user.getUserId(), layoutContentVersionPreview.getUserId());
+		Assert.assertEquals(
+			user.getFullName(), layoutContentVersionPreview.getUserName());
+		Assert.assertEquals(html, layoutContentVersionPreview.getHtml());
+		Assert.assertEquals(
+			languageId, layoutContentVersionPreview.getLanguageId());
+		Assert.assertEquals(
+			_layoutContentVersion.getLayoutContentVersionId(),
+			layoutContentVersionPreview.getLayoutContentVersionId());
+		Assert.assertEquals(
+			segmentsExperienceERC,
+			layoutContentVersionPreview.getSegmentsExperienceERC());
+	}
+
+	@Test
+	public void testDeleteLayoutContentVersionPreviews() throws Exception {
+		_addLayoutContentVersionPreviews(2);
+
+		List<LayoutContentVersionPreview> layoutContentVersionPreviews =
+			_layoutContentVersionPreviewLocalService.
+				getLayoutContentVersionPreviews(
+					_layoutContentVersion.getLayoutContentVersionId());
+
+		Assert.assertEquals(
+			layoutContentVersionPreviews.toString(), 2,
+			layoutContentVersionPreviews.size());
+
+		_layoutContentVersionPreviewLocalService.
+			deleteLayoutContentVersionPreviews(
+				_layoutContentVersion.getLayoutContentVersionId());
+
+		layoutContentVersionPreviews =
+			_layoutContentVersionPreviewLocalService.
+				getLayoutContentVersionPreviews(
+					_layoutContentVersion.getLayoutContentVersionId());
+
+		Assert.assertTrue(
+			layoutContentVersionPreviews.toString(),
+			layoutContentVersionPreviews.isEmpty());
+	}
+
+	@Test
+	public void testFetchLayoutContentVersionPreview() throws Exception {
+		String html = RandomTestUtil.randomString();
+		String languageId = RandomTestUtil.randomString();
+		String segmentsExperienceERC = RandomTestUtil.randomString();
+
+		_layoutContentVersionPreviewLocalService.addLayoutContentVersionPreview(
+			TestPropsValues.getUserId(),
+			_layoutContentVersion.getLayoutContentVersionId(), html, languageId,
+			segmentsExperienceERC);
+
+		LayoutContentVersionPreview layoutContentVersionPreview =
+			_layoutContentVersionPreviewLocalService.
+				fetchLayoutContentVersionPreview(
+					_layoutContentVersion.getLayoutContentVersionId(),
+					languageId, segmentsExperienceERC);
+
+		Assert.assertEquals(html, layoutContentVersionPreview.getHtml());
+
+		Assert.assertNull(
+			_layoutContentVersionPreviewLocalService.
+				fetchLayoutContentVersionPreview(
+					_layoutContentVersion.getLayoutContentVersionId(),
+					RandomTestUtil.randomString(), segmentsExperienceERC));
+	}
+
+	@Test
+	public void testGetLayoutContentVersionPreviews() throws Exception {
+		_addLayoutContentVersionPreviews(2);
+
+		List<LayoutContentVersionPreview> layoutContentVersionPreviews =
+			_layoutContentVersionPreviewLocalService.
+				getLayoutContentVersionPreviews(
+					_layoutContentVersion.getLayoutContentVersionId());
+
+		Assert.assertEquals(
+			layoutContentVersionPreviews.toString(), 2,
+			layoutContentVersionPreviews.size());
+	}
+
+	private void _addLayoutContentVersionPreviews(int count) throws Exception {
+		String segmentsExperienceERC = RandomTestUtil.randomString();
+
+		for (int i = 0; i < count; i++) {
+			_layoutContentVersionPreviewLocalService.
+				addLayoutContentVersionPreview(
+					TestPropsValues.getUserId(),
+					_layoutContentVersion.getLayoutContentVersionId(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), segmentsExperienceERC);
+		}
+	}
+
+	@DeleteAfterTestRun
+	private Group _group;
+
+	private LayoutContentVersion _layoutContentVersion;
+
+	@Inject
+	private LayoutContentVersionLocalService _layoutContentVersionLocalService;
+
+	@Inject
+	private LayoutContentVersionPreviewLocalService
+		_layoutContentVersionPreviewLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+}
