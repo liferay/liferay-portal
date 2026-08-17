@@ -59,7 +59,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 
 		Assert.assertEquals(
 			_SYSTEM_DATA_MASK_EXTERNAL_REFERENCE_CODES.length,
-			_getMCPServerProfileDataMasksCount(
+			_getMCPServerProfileDataMaskObjectEntriesCount(
 				mcpServerProfileObjectEntry.getExternalReferenceCode()));
 
 		MCPServerTestUtil.addDataMaskObjectEntry(
@@ -105,7 +105,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 
 		Assert.assertEquals(
 			_SYSTEM_DATA_MASK_EXTERNAL_REFERENCE_CODES.length,
-			_getMCPServerProfileDataMasksCount(
+			_getMCPServerProfileDataMaskObjectEntriesCount(
 				mcpServerProfileObjectEntryExternalReferenceCode));
 
 		ObjectEntry dataMaskObjectEntry =
@@ -145,7 +145,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 
 			Assert.assertEquals(
 				0,
-				_getMCPServerProfileDataMasksCount(
+				_getMCPServerProfileDataMaskObjectEntriesCount(
 					mcpServerProfileObjectEntryExternalReferenceCode));
 
 			Assert.assertEquals(
@@ -155,7 +155,7 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		}
 	}
 
-	private int _getMCPServerProfileDataMasksCount(
+	private int _getMCPServerProfileDataMaskObjectEntriesCount(
 			String mcpServerProfileExternalReferenceCode)
 		throws Exception {
 
