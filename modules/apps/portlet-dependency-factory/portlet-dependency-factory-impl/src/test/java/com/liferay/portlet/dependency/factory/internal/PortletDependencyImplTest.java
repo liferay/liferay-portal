@@ -5,6 +5,7 @@
 
 package com.liferay.portlet.dependency.factory.internal;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -47,6 +48,10 @@ public class PortletDependencyImplTest {
 			"<script src=\"" + javaScriptURL +
 				"\" type=\"text/javascript\"></script>",
 			RandomTestUtil.randomString() + ".js", javaScriptURL);
+
+		_testToStringBundlerWithMarkup(absolutePortalURLBuilder);
+
+		_testToStringBundlerWithUnknownType(absolutePortalURLBuilder);
 	}
 
 	private void _setUpAbsolutePortalURLBuilder(
@@ -84,6 +89,35 @@ public class PortletDependencyImplTest {
 
 		Assert.assertEquals(
 			expectedMarkup,
+			String.valueOf(portletDependencyImpl.toStringBundler()));
+	}
+
+	private void _testToStringBundlerWithMarkup(
+		AbsolutePortalURLBuilder absolutePortalURLBuilder) {
+
+		String markup = RandomTestUtil.randomString();
+
+		PortletDependencyImpl portletDependencyImpl = new PortletDependencyImpl(
+			null, null, null, markup, absolutePortalURLBuilder);
+
+		Assert.assertEquals(
+			markup, String.valueOf(portletDependencyImpl.toStringBundler()));
+	}
+
+	private void _testToStringBundlerWithUnknownType(
+		AbsolutePortalURLBuilder absolutePortalURLBuilder) {
+
+		String name = RandomTestUtil.randomString();
+		String scope = RandomTestUtil.randomString();
+		String version = RandomTestUtil.randomString();
+
+		PortletDependencyImpl portletDependencyImpl = new PortletDependencyImpl(
+			name, scope, version, null, absolutePortalURLBuilder);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<!-- Unknown portlet resource dependency type name=\"", name,
+				"\" scope=\"", scope, "\" version=\"", version, "\" -->"),
 			String.valueOf(portletDependencyImpl.toStringBundler()));
 	}
 
