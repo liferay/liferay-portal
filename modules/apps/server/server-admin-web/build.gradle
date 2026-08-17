@@ -9,7 +9,7 @@ dependencies {
 	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
-	compileOnly group: "org.apache.logging.log4j", name: "log4j-api", version: "2.25.5"
+	compileOnly group: "org.apache.logging.log4j", name: "log4j-api", version: "2.20.0"
 	compileOnly group: "org.codehaus.groovy", name: "groovy-all", version: "2.4.21"
 	compileOnly group: "org.jfree", name: "jcommon", version: "1.0.24"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"

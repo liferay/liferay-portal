@@ -1,5 +1,5 @@
 dependencies {
-	compileOnly group: "org.apache.logging.log4j", name: "log4j-api", version: "2.25.5"
-	compileOnly group: "org.apache.logging.log4j", name: "log4j-core", version: "2.25.5"
+	compileOnly group: "org.apache.logging.log4j", name: "log4j-api", version: "2.20.0"
+	compileOnly group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
 	compileOnly project(":core:petra:petra-io")
 }

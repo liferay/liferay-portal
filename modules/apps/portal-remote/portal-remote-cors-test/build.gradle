@@ -3,8 +3,8 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.rs.client", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "org.apache.logging.log4j", name: "log4j-api", version: "2.25.5"
-	testIntegrationImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.25.5"
+	testIntegrationImplementation group: "org.apache.logging.log4j", name: "log4j-api", version: "2.20.0"
+	testIntegrationImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")

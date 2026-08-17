@@ -37,7 +37,7 @@ copyCSS {
 }
 
 dependencies {
-	api group: "org.apache.logging.log4j", name: "log4j-core", version: "2.25.5"
+	api group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
 	api group: "com.liferay", name: "org.freemarker", transitive: false, version: "2.3.33.LIFERAY-PATCHED-2"
 	api group: "com.puppycrawl.tools", name: "checkstyle", version: "8.43"
 	api group: "com.thoughtworks.qdox", name: "qdox", version: "2.0-M5"

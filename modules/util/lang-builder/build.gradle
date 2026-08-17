@@ -20,7 +20,7 @@ copyCSS {
 dependencies {
 	api group: "commons-io", name: "commons-io", version: "2.19.0"
 	api group: "io.github.firemaples", name: "microsoft-translator-java-api", version: "0.8.3"
-	api group: "org.apache.logging.log4j", name: "log4j-core", version: "2.25.5"
+	api group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.io", version: "5.0.6"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.lang", version: "1.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.nio", version: "1.0.0"
