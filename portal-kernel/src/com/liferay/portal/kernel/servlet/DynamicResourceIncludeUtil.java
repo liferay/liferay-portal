@@ -7,15 +7,10 @@ package com.liferay.portal.kernel.servlet;
 
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.ServletContext;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * @author Leonardo Barros
@@ -50,32 +45,6 @@ public class DynamicResourceIncludeUtil {
 
 		return pathServletContext;
 	}
-
-	public static URL getResource(ServletContext servletContext, String path) {
-		if (servletContext == null) {
-			return null;
-		}
-
-		path = PortalWebResourcesUtil.stripContextPath(servletContext, path);
-
-		try {
-			URL url = servletContext.getResource(path);
-
-			if (url != null) {
-				return url;
-			}
-		}
-		catch (MalformedURLException malformedURLException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(malformedURLException);
-			}
-		}
-
-		return null;
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DynamicResourceIncludeUtil.class);
 
 	private static final ServiceTrackerList<ServletContext> _servletContexts =
 		ServiceTrackerListFactory.open(
