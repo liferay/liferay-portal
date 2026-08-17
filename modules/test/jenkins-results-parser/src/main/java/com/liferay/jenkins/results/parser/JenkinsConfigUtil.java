@@ -55,11 +55,18 @@ public class JenkinsConfigUtil {
 
 			_validateAPITokens(jenkinsMaster, jenkinsUserID);
 		}
-		catch (Exception exception) {
-			_restoreJenkinsMasterUserConfigFile(
-				jenkinsMaster, jenkinsMasterUserConfigFilePath);
+		catch (Exception exception1) {
+			try {
+				_restoreJenkinsMasterUserConfigFile(
+					jenkinsMaster, jenkinsMasterUserConfigFilePath);
 
-			throw exception;
+				jenkinsMaster.reload();
+			}
+			catch (Exception exception2) {
+				exception1.addSuppressed(exception2);
+			}
+
+			throw exception1;
 		}
 		finally {
 			userConfigFile.delete();
