@@ -299,15 +299,15 @@ public class BaseWorkspaceGitRepositoryTest
 			String jobName, boolean gitArchiveEnabled, boolean snapshot)
 		throws Exception {
 
-		Map<String, String> environmentValues = new HashMap<>();
+		Map<String, String> environmentMap = new HashMap<>();
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(jobName)) {
-			environmentValues.put("JOB_NAME", jobName);
+			environmentMap.put("JOB_NAME", jobName);
 		}
 
-		environmentValues.put("MASTER_NETWORK_NAME", "aws-network");
+		environmentMap.put("MASTER_NETWORK_NAME", "aws-network");
 
-		mockEnvironment(environmentValues);
+		mockEnvironment(environmentMap);
 
 		Properties buildProperties = new Properties();
 

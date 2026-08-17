@@ -43,24 +43,24 @@ public class PortalWorkspaceGitRepositoryTest
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
-		Map<String, String> environmentValues = Collections.emptyMap();
+		Map<String, String> environmentMap = Collections.emptyMap();
 
 		_testGetPortalTestProperties(
-			"url.0", "version.0", environmentValues, null);
+			"url.0", "version.0", environmentMap, null);
 		_testGetPortalTestProperties(
-			"url.1", "version.1", environmentValues, "master");
+			"url.1", "version.1", environmentMap, "master");
 		_testGetPortalTestProperties(
-			"url.2", "version.2", environmentValues, "7.0.x");
+			"url.2", "version.2", environmentMap, "7.0.x");
 
-		environmentValues = Collections.singletonMap(
+		environmentMap = Collections.singletonMap(
 			"PORTAL_LATEST_BUNDLE_VERSION", "version.env");
 
 		_testGetPortalTestProperties(
-			"url.env", "version.env", environmentValues, null);
+			"url.env", "version.env", environmentMap, null);
 		_testGetPortalTestProperties(
-			"url.env", "version.env", environmentValues, "7.0.x");
+			"url.env", "version.env", environmentMap, "7.0.x");
 		_testGetPortalTestProperties(
-			"url.env", "version.env", environmentValues, "master");
+			"url.env", "version.env", environmentMap, "master");
 	}
 
 	@Test
@@ -135,10 +135,10 @@ public class PortalWorkspaceGitRepositoryTest
 
 	private void _testGetPortalTestProperties(
 			String bundleURL, String bundleVersion,
-			Map<String, String> environmentValues, String upstreamBranchName)
+			Map<String, String> environmentMap, String upstreamBranchName)
 		throws Exception {
 
-		mockEnvironment(environmentValues);
+		mockEnvironment(environmentMap);
 
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			_newPortalWorkspaceGitRepository();
@@ -166,19 +166,19 @@ public class PortalWorkspaceGitRepositoryTest
 			boolean binariesCacheEnabled, String ciTestSuite, String jobName)
 		throws Exception {
 
-		Map<String, String> environmentValues = new HashMap<>();
+		Map<String, String> environmentMap = new HashMap<>();
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(ciTestSuite)) {
-			environmentValues.put("CI_TEST_SUITE", ciTestSuite);
+			environmentMap.put("CI_TEST_SUITE", ciTestSuite);
 		}
 
-		environmentValues.put("MASTER_NETWORK_NAME", "aws-network");
+		environmentMap.put("MASTER_NETWORK_NAME", "aws-network");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(jobName)) {
-			environmentValues.put("JOB_NAME", jobName);
+			environmentMap.put("JOB_NAME", jobName);
 		}
 
-		mockEnvironment(environmentValues);
+		mockEnvironment(environmentMap);
 
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			_newPortalWorkspaceGitRepository();

@@ -124,13 +124,11 @@ public class Test {
 		return true;
 	}
 
-	protected Environment mockEnvironment(
-		Map<String, String> environmentValues) {
-
+	protected Environment mockEnvironment(Map<String, String> environmentMap) {
 		Environment environment = Mockito.mock(Environment.class);
 
 		Mockito.doAnswer(
-			invocation -> environmentValues.get(invocation.getArgument(0))
+			invocation -> environmentMap.get(invocation.getArgument(0))
 		).when(
 			environment
 		).doGet(
@@ -138,7 +136,7 @@ public class Test {
 		);
 
 		Mockito.doReturn(
-			environmentValues
+			environmentMap
 		).when(
 			environment
 		).doGetAll();
