@@ -6,8 +6,6 @@ templates:
     -   templates/compositions.yaml
 tests:
     -   asserts:
-            -   hasDocuments:
-                    count: 2
             -   equal:
                     path: spec.compositeTypeRef.apiVersion
                     value: liferay.com/v1alpha1
@@ -20,6 +18,8 @@ tests:
             -   equal:
                     path: spec.pipeline[2].functionRef.name
                     value: function-auto-ready
+            -   hasDocuments:
+                    count: 2
             -   isKind:
                     of: Composition
             -   documentIndex: 0
@@ -59,18 +59,6 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "name: database-connection-details"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "name: document-library-connection-details"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "name: overlay-bucket-details"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: "DATABASE_ENDPOINT"
             -   documentIndex: 0
                 matchRegex:
@@ -96,6 +84,18 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "LIFERAY_OVERLAY_STORAGE_ACCOUNT_NAME"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "name: database-connection-details"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "name: document-library-connection-details"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "name: overlay-bucket-details"
             -   documentIndex: 0
                 notMatchRegex:
                     path: spec.pipeline[1].input.inline.template

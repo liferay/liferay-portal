@@ -35,4 +35,4 @@ tests:
                     value: environment-config
             -   isKind:
                     of: EnvironmentConfig
-        it: Renders the environment config with the deployment context and derived network ids the compositions consume
+        it: Renders the environment config with the deployment context and derived network IDs the compositions consume
