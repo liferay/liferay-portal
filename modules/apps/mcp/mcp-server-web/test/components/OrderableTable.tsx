@@ -17,17 +17,37 @@ const ITEMS = [
 	{externalReferenceCode: 'MASK_3', name: 'Email Alias'},
 ];
 
-function renderTable(onOrderChange = jest.fn()) {
-	return render(
+function OrderableTableWrapper({
+	items,
+	onOrderChange,
+}: {
+	items: Array<any>;
+	onOrderChange: (args: {order: string}) => void;
+}) {
+	return (
 		<OrderableTable
 			fields={[{label: 'Name', name: 'name'}]}
-			items={ITEMS}
+			items={items}
 			noItemsButtonLabel="add"
 			noItemsDescription="no items yet"
 			noItemsTitle="no items"
 			onOrderChange={onOrderChange}
 		/>
 	);
+}
+
+function renderTable(onOrderChange = jest.fn()) {
+	return render(
+		<OrderableTableWrapper items={ITEMS} onOrderChange={onOrderChange} />
+	);
+}
+
+async function reorderFirstRow() {
+	const [dragButton] = screen.getAllByRole('button', {name: /drag/i});
+
+	dragButton.focus();
+
+	await userEvent.keyboard('{Enter}{ArrowDown}{Enter}');
 }
 
 describe('OrderableTable', () => {
@@ -51,6 +71,42 @@ describe('OrderableTable', () => {
 		})) {
 			expect(dragButton).toBeEnabled();
 		}
+	});
+
+	it('reorders the items with the keyboard', async () => {
+		const onOrderChange = jest.fn();
+
+		renderTable(onOrderChange);
+
+		await reorderFirstRow();
+
+		expect(onOrderChange).toHaveBeenCalledWith({
+			order: 'MASK_2,MASK_1,MASK_3',
+		});
+	});
+
+	it('reorders again after the items come back in their previous order', async () => {
+		const onOrderChange = jest.fn();
+
+		const {rerender} = render(
+			<OrderableTableWrapper
+				items={ITEMS}
+				onOrderChange={onOrderChange}
+			/>
+		);
+
+		await reorderFirstRow();
+
+		rerender(
+			<OrderableTableWrapper
+				items={[...ITEMS]}
+				onOrderChange={onOrderChange}
+			/>
+		);
+
+		await reorderFirstRow();
+
+		expect(onOrderChange).toHaveBeenCalledTimes(2);
 	});
 
 	it('prevents reordering a partial list while searching', async () => {

@@ -398,7 +398,12 @@ const OrderableTable = ({
 
 	const reorderable = !query;
 
-	useEffect(() => setItems(initialItems), [initialItems]);
+	useEffect(() => {
+		setItems(initialItems);
+		setOrder(
+			initialItems.map((item) => item.externalReferenceCode).join(',')
+		);
+	}, [initialItems]);
 
 	const onSearch = (query: string) => {
 		setQuery(query);
