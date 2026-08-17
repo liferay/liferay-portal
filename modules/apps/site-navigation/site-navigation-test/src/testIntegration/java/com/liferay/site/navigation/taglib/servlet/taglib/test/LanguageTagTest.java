@@ -97,7 +97,7 @@ public class LanguageTagTest {
 		_testGetLanguageEntriesWithDefaultLayoutWithFriendlyURLMappingPath(
 			layout);
 
-		_testGetLanguageEntriesWithDisplayPage();
+		_testGetLanguageEntriesWithDisplayPageTemplate();
 		_testGetLanguageEntriesWithFormAction(layout);
 		_testGetLanguageEntriesWithFriendlyURLMappingPath(layout);
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(layout, 1);
@@ -300,7 +300,9 @@ public class LanguageTagTest {
 				LocaleUtil.FRANCE));
 	}
 
-	private void _testGetLanguageEntriesWithDisplayPage() throws Exception {
+	private void _testGetLanguageEntriesWithDisplayPageTemplate()
+		throws Exception {
+
 		Map<Locale, String> friendlyURLMap = HashMapBuilder.put(
 			LocaleUtil.FRANCE, _getRandomFriendlyURL()
 		).put(
