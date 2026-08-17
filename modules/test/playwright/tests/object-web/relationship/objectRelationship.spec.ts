@@ -257,15 +257,29 @@ test.describe('Manage object relationships through Model Builder', () => {
 			type: 'One to Many',
 		});
 
-		await page.waitForTimeout(500);
+		// The badge showing the relationship count is rebuilt from a refetch
+		// the second relationship's save schedules, so right after the save the
+		// diagram still shows the single relationship's edge. That edge's label
+		// is random digits, so filtering edges by the text 2 matches it whenever
+		// the label contains a 2, and the click opens the sidebar instead of the
+		// menu, which only a click on the badge itself renders. Match the badge
+		// by its exact text, which the label cannot equal, and wait for it: the
+		// badge appearing is the save's rebuild finishing.
 
-		await modelBuilderDiagramPage.clickObjectRelationshipEdge('2');
+		const manyRelationshipsEdge =
+			modelBuilderDiagramPage.objectRelationshipEdges.filter({
+				has: page.getByText('2', {exact: true}),
+			});
 
-		expect(
+		await expect(manyRelationshipsEdge).toBeVisible();
+
+		await manyRelationshipsEdge.click();
+
+		await expect(
 			page.getByRole('menuitem', {name: objectRelationship1Label})
 		).toBeVisible();
 
-		expect(
+		await expect(
 			page.getByRole('menuitem', {name: objectRelationship2Label})
 		).toBeVisible();
 	});
