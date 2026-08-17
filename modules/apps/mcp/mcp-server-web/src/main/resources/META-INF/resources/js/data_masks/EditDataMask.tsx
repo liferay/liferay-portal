@@ -137,16 +137,6 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 				<ReplacementConfigurationSection readOnly={readOnly} />
 
 				<ClayLayout.SheetFooter>
-					<ClayButton
-						displayType="secondary"
-						onClick={() => navigate(backURL)}
-						type="button"
-					>
-						{readOnly
-							? Liferay.Language.get('close')
-							: Liferay.Language.get('cancel')}
-					</ClayButton>
-
 					{!readOnly && (
 						<ClayButton
 							disabled={formik.isSubmitting}
@@ -156,6 +146,16 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 							{Liferay.Language.get('save')}
 						</ClayButton>
 					)}
+
+					<ClayButton
+						displayType="secondary"
+						onClick={() => navigate(backURL)}
+						type="button"
+					>
+						{readOnly
+							? Liferay.Language.get('close')
+							: Liferay.Language.get('cancel')}
+					</ClayButton>
 				</ClayLayout.SheetFooter>
 			</Form>
 		</FormikProvider>
