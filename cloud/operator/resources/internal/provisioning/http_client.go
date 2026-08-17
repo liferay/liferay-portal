@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"io"
 	"maps"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -21,8 +22,11 @@ import (
 )
 
 const (
+	downloadIdleTimeout                = 60 * time.Second
+	downloadResponseHeaderTimeout      = 30 * time.Second
 	offlineActivationPayloadExpiration = 90 * 24 * time.Hour
 	provisioningRequestExpiration      = 60 * time.Second
+	requestTimeout                     = 30 * time.Second
 )
 
 func (httpClient *HTTPClient) Activate(
@@ -89,13 +93,21 @@ func (httpClient *HTTPClient) DownloadAddOn(
 		return nil, error
 	}
 
-	response, error := httpClient.post(
-		context, token, downloadRequest.DownloadURL,
+	response, error := httpClient.send(
+		httpClient.DownloadClient, context, token, downloadRequest.DownloadURL,
 	)
 
 	if error != nil {
 		return nil, error
 	}
+
+	logger := logf.FromContext(context)
+
+	logger.V(1).Info(
+		"Add-on download response",
+		"status", response.StatusCode,
+		"url", downloadRequest.DownloadURL,
+	)
 
 	if response.StatusCode != http.StatusOK {
 		response.Body.Close()
@@ -171,8 +183,9 @@ func (httpClient *HTTPClient) Manifest(
 
 func NewHTTPClient(baseURL string) *HTTPClient {
 	return &HTTPClient{
-		BaseURL: strings.TrimRight(baseURL, "/"),
-		Client:  &http.Client{Timeout: 30 * time.Second},
+		BaseURL:        strings.TrimRight(baseURL, "/"),
+		Client:         &http.Client{Timeout: requestTimeout},
+		DownloadClient: newDownloadClient(downloadIdleTimeout),
 	}
 }
 
@@ -220,6 +233,16 @@ func PayloadExpired(payload string) bool {
 	return time.Now().Unix() >= claims.Exp
 }
 
+func (idleTimeoutConn *idleTimeoutConn) Read(bytes []byte) (int, error) {
+	if error := idleTimeoutConn.SetReadDeadline(
+		time.Now().Add(idleTimeoutConn.idleTimeout),
+	); error != nil {
+		return 0, error
+	}
+
+	return idleTimeoutConn.Conn.Read(bytes)
+}
+
 func decodeJWTPayload(token string) string {
 	segments := strings.Split(token, ".")
 
@@ -250,6 +273,29 @@ func encodeSegment(bytes []byte) string {
 	return base64.RawURLEncoding.EncodeToString(bytes)
 }
 
+func newDownloadClient(idleTimeout time.Duration) *http.Client {
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+
+	dialContext := transport.DialContext
+
+	transport.DialContext = func(
+		context context.Context, network string, address string,
+	) (net.Conn, error) {
+		connection, error := dialContext(context, network, address)
+
+		if error != nil {
+			return nil, error
+		}
+
+		return &idleTimeoutConn{Conn: connection, idleTimeout: idleTimeout}, nil
+	}
+
+	transport.DisableKeepAlives = true
+	transport.ResponseHeaderTimeout = downloadResponseHeaderTimeout
+
+	return &http.Client{Transport: transport}
+}
+
 func (httpClient *HTTPClient) post(
 	context context.Context,
 	token string,
@@ -257,23 +303,7 @@ func (httpClient *HTTPClient) post(
 ) (*http.Response, error) {
 	logger := logf.FromContext(context)
 
-	logger.V(1).Info(
-		"Provisioning POST",
-		"payload", redactSensitive(decodeJWTPayload(token)),
-		"url", url,
-	)
-
-	request, error := http.NewRequestWithContext(
-		context, http.MethodPost, url, bytes.NewReader([]byte(token)),
-	)
-
-	if error != nil {
-		return nil, error
-	}
-
-	request.Header.Set("Content-Type", "text/plain")
-
-	response, error := httpClient.Client.Do(request)
+	response, error := httpClient.send(httpClient.Client, context, token, url)
 
 	if error != nil {
 		return nil, error
@@ -327,6 +357,33 @@ func redactSensitive(payload string) string {
 	}
 
 	return string(marshaled)
+}
+
+func (httpClient *HTTPClient) send(
+	client *http.Client,
+	context context.Context,
+	token string,
+	url string,
+) (*http.Response, error) {
+	logger := logf.FromContext(context)
+
+	logger.V(1).Info(
+		"Provisioning POST",
+		"payload", redactSensitive(decodeJWTPayload(token)),
+		"url", url,
+	)
+
+	request, error := http.NewRequestWithContext(
+		context, http.MethodPost, url, bytes.NewReader([]byte(token)),
+	)
+
+	if error != nil {
+		return nil, error
+	}
+
+	request.Header.Set("Content-Type", "text/plain")
+
+	return client.Do(request)
 }
 
 func signJWT(
@@ -383,6 +440,13 @@ func signJWT(
 }
 
 type HTTPClient struct {
-	BaseURL string
-	Client  *http.Client
+	BaseURL        string
+	Client         *http.Client
+	DownloadClient *http.Client
+}
+
+type idleTimeoutConn struct {
+	net.Conn
+
+	idleTimeout time.Duration
 }

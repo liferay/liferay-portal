@@ -113,6 +113,110 @@ func TestDownloadAddOn(t *testing.T) {
 	}
 }
 
+func TestDownloadAddOnTimesOutOnlyWhenIdle(t *testing.T) {
+	privateKey, error := rsa.GenerateKey(rand.Reader, 2048)
+
+	if error != nil {
+		t.Fatalf("Unable to generate key: %v", error)
+	}
+
+	testCases := map[string]struct {
+		chunkGap    time.Duration
+		chunks      int
+		idleTimeout time.Duration
+		wantError   bool
+	}{
+		"a stalled transfer fails": {
+			chunkGap:    800 * time.Millisecond,
+			chunks:      2,
+			idleTimeout: 100 * time.Millisecond,
+			wantError:   true,
+		},
+		"a transfer longer in total than the idle timeout succeeds": {
+			chunkGap:    100 * time.Millisecond,
+			chunks:      6,
+			idleTimeout: 400 * time.Millisecond,
+			wantError:   false,
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			server := httptest.NewServer(
+				http.HandlerFunc(
+					func(responseWriter http.ResponseWriter, request *http.Request) {
+						io.ReadAll(request.Body)
+
+						for chunk := range testCase.chunks {
+							if chunk > 0 {
+								time.Sleep(testCase.chunkGap)
+							}
+
+							responseWriter.Write([]byte("lpkg"))
+
+							responseWriter.(http.Flusher).Flush()
+						}
+					},
+				),
+			)
+
+			defer server.Close()
+
+			httpClient := NewHTTPClient(server.URL)
+			httpClient.DownloadClient = newDownloadClient(testCase.idleTimeout)
+
+			reader, error := httpClient.DownloadAddOn(
+				context.Background(),
+				DownloadRequest{
+					DownloadURL:    server.URL,
+					EnvironmentID:  "env-123",
+					VirtualEntryID: 456,
+				},
+				privateKey,
+			)
+
+			if error != nil {
+				t.Fatalf("Unexpected error: %v", error)
+			}
+
+			defer reader.Close()
+
+			downloaded, error := io.ReadAll(reader)
+
+			if testCase.wantError {
+				if error == nil {
+					t.Fatal("io.ReadAll error = nil, want a read deadline failure")
+				}
+
+				return
+			}
+
+			if error != nil {
+				t.Fatalf("Unable to read body: %v", error)
+			}
+
+			if want := testCase.chunks * len("lpkg"); len(downloaded) != want {
+				t.Errorf("Body length = %d, want %d", len(downloaded), want)
+			}
+		})
+	}
+}
+
+func TestNewHTTPClientGivesDownloadsNoTotalTimeout(t *testing.T) {
+	httpClient := NewHTTPClient("https://provisioning.example.com")
+
+	if timeout := httpClient.Client.Timeout; timeout != requestTimeout {
+		t.Errorf("Client.Timeout = %s, want %s", timeout, requestTimeout)
+	}
+
+	if timeout := httpClient.DownloadClient.Timeout; timeout != 0 {
+		t.Errorf(
+			"DownloadClient.Timeout = %s, want 0 so a large add-on is not cut off",
+			timeout,
+		)
+	}
+}
+
 func TestOfflineActivationPayload(t *testing.T) {
 	privateKey, error := rsa.GenerateKey(rand.Reader, 2048)
 
