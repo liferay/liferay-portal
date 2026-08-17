@@ -13,6 +13,7 @@ import ClayModal, {useModal} from '@clayui/modal';
 import React, {useMemo, useState} from 'react';
 
 import AutoSearch from '../components/AutoSearch';
+import Highlight from '../components/Highlight';
 import {postProfileDataMask} from '../services/postProfileDataMask';
 import {DataMask, DataMaskTreeItem} from '../types';
 import {
@@ -29,26 +30,6 @@ interface AddDataMasksModalProps {
 	onAdded: () => void;
 	onClose: () => void;
 	profileExternalReferenceCode: string;
-}
-
-function Highlight({query, text}: {query: string; text: string}) {
-	const index = query ? text.toLowerCase().indexOf(query.toLowerCase()) : -1;
-
-	if (index < 0) {
-		return <span className="font-weight-normal pl-1 text-3">{text}</span>;
-	}
-
-	return (
-		<span className="font-weight-normal pl-1 text-3">
-			{text.substring(0, index)}
-
-			<mark className="bg-transparent border-0 font-weight-bold p-0 shadow-none">
-				{text.substring(index, index + query.length)}
-			</mark>
-
-			{text.substring(index + query.length)}
-		</span>
-	);
 }
 
 export default function AddDataMasksModal({
@@ -202,10 +183,12 @@ export default function AddDataMasksModal({
 											checked
 										/>
 
-										<Highlight
-											query={query}
-											text={item.name}
-										/>
+										<span className="font-weight-normal pl-1 text-3">
+											<Highlight
+												query={query}
+												text={item.name}
+											/>
+										</span>
 									</TreeView.ItemStack>
 
 									<TreeView.Group items={item.children}>
@@ -216,10 +199,12 @@ export default function AddDataMasksModal({
 													checked
 												/>
 
-												<Highlight
-													query={query}
-													text={child.name}
-												/>
+												<span className="font-weight-normal pl-1 text-3">
+													<Highlight
+														query={query}
+														text={child.name}
+													/>
+												</span>
 											</TreeView.Item>
 										)}
 									</TreeView.Group>

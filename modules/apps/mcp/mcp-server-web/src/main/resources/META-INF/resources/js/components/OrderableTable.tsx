@@ -11,12 +11,11 @@ import ClayLayout from '@clayui/layout';
 import ClayTable from '@clayui/table';
 import classNames from 'classnames';
 import {ManagementToolbar} from 'frontend-js-components-web';
-import fuzzy from 'fuzzy';
 import React, {useEffect, useRef, useState} from 'react';
 import {DndProvider, useDrag, useDrop} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
-import {FUZZY_OPTIONS} from '../utils/constants';
+import Highlight from './Highlight';
 import Search from './Search';
 
 import '../../css/components/OrderableTable.scss';
@@ -223,28 +222,17 @@ const Row = ({
 					);
 				}
 
-				const itemFieldValue = String(item[field.name]);
-
-				const fuzzyMatch = fuzzy.match(
-					query,
-					itemFieldValue,
-					FUZZY_OPTIONS
-				);
-
 				return (
 					<ClayTable.Cell
 						headingTitle={field.headingTitle}
 						key={field.name}
 					>
-						{fuzzyMatch ? (
-							<span
-								dangerouslySetInnerHTML={{
-									__html: fuzzyMatch.rendered,
-								}}
+						<span>
+							<Highlight
+								query={query}
+								text={String(item[field.name])}
 							/>
-						) : (
-							<span>{itemFieldValue}</span>
-						)}
+						</span>
 					</ClayTable.Cell>
 				);
 			})}
