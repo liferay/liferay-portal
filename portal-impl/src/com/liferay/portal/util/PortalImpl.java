@@ -7786,6 +7786,38 @@ public class PortalImpl implements Portal {
 		return _LOCALHOST;
 	}
 
+	private String _getFriendlyURLMappingPath(int fromIndex, String url) {
+		String friendlyURLMappingPath = StringPool.BLANK;
+
+		List<FriendlyURLMapper> friendlyURLMappers =
+			PortletLocalServiceUtil.getFriendlyURLMappers();
+
+		for (FriendlyURLMapper friendlyURLMapper : friendlyURLMappers) {
+			if (friendlyURLMapper.isCheckMappingWithPrefix()) {
+				continue;
+			}
+
+			String mappingPath =
+				StringPool.SLASH + friendlyURLMapper.getMapping();
+
+			int mappingIndex = url.indexOf(mappingPath, fromIndex);
+
+			if (mappingIndex == -1) {
+				continue;
+			}
+
+			int mappingEndIndex = mappingIndex + mappingPath.length();
+
+			if ((mappingEndIndex == url.length()) ||
+				(url.charAt(mappingEndIndex) == CharPool.SLASH)) {
+
+				friendlyURLMappingPath = url.substring(mappingIndex);
+			}
+		}
+
+		return friendlyURLMappingPath;
+	}
+
 	private String _getGroupFriendlyURL(
 			Group group, LayoutSet layoutSet, ThemeDisplay themeDisplay,
 			boolean canonicalURL, boolean controlPanel)
@@ -8157,38 +8189,6 @@ public class PortalImpl implements Portal {
 		}
 
 		return new LayoutQueryStringComposite(null, friendlyURL, queryString);
-	}
-
-	private String _getFriendlyURLMappingPath(int fromIndex, String url) {
-		String friendlyURLMappingPath = StringPool.BLANK;
-
-		List<FriendlyURLMapper> friendlyURLMappers =
-			PortletLocalServiceUtil.getFriendlyURLMappers();
-
-		for (FriendlyURLMapper friendlyURLMapper : friendlyURLMappers) {
-			if (friendlyURLMapper.isCheckMappingWithPrefix()) {
-				continue;
-			}
-
-			String mappingPath =
-				StringPool.SLASH + friendlyURLMapper.getMapping();
-
-			int mappingIndex = url.indexOf(mappingPath, fromIndex);
-
-			if (mappingIndex == -1) {
-				continue;
-			}
-
-			int mappingEndIndex = mappingIndex + mappingPath.length();
-
-			if ((mappingEndIndex == url.length()) ||
-				(url.charAt(mappingEndIndex) == CharPool.SLASH)) {
-
-				friendlyURLMappingPath = url.substring(mappingIndex);
-			}
-		}
-
-		return friendlyURLMappingPath;
 	}
 
 	private String _getPortletTitle(
