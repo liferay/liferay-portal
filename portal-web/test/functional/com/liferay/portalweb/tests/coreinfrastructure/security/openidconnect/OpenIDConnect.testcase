@@ -154,7 +154,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect Provider Connection",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			while (IsElementNotPresent(key_rowEntry = "Okta", locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME")) {
 
@@ -624,7 +624,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect Provider Connection",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			while (IsElementNotPresent(key_rowEntry = "Okta", locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME")) {
 
@@ -812,7 +812,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect Provider Connection",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			while (IsElementNotPresent(key_rowEntry = "Auth0", locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME")) {
 
@@ -869,7 +869,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect Provider Connection",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			while (IsElementNotPresent(key_rowEntry = "Azure", locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME")) {
 
@@ -963,7 +963,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect Provider Connection",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			while (IsElementNotPresent(key_rowEntry = "PingOne", locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME")) {
 
@@ -1028,7 +1028,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect Provider Connection",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			OpenIDConnect.addProvider(
 				customAuthorizationRequestParameters = ${customAuthorizationRequestParameters},
@@ -1460,7 +1460,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect Provider Connection",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			while (IsElementNotPresent(key_rowEntry = "liferay-pkce", locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME")) {
 
@@ -1516,7 +1516,7 @@ definition {
 			SystemSettings.gotoConfiguration(
 				configurationCategory = "SSO",
 				configurationName = "OpenID Connect Provider Connection",
-				configurationScope = "Virtual Instance Scope");
+				configurationScope = "System Scope");
 
 			while (IsElementNotPresent(key_rowEntry = "liferay-system-level", locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME")) {
 
