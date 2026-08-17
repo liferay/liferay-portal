@@ -157,7 +157,9 @@ export default function VersionHistory({config}: Props) {
 			? [{key: CURRENT_KEY, ...config.layout}]
 			: []),
 		...versions
-			.filter(({creator, name}) => matches(name, creator?.name))
+			.filter(({creator, name, version}) =>
+				matches(name, creator?.name, String(version))
+			)
 			.map((version) => ({
 				key: version.externalReferenceCode,
 				name: version.name,
