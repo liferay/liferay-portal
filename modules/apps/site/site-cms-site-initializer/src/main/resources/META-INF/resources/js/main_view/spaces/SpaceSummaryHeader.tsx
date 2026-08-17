@@ -33,6 +33,7 @@ export type SpaceSummaryHeaderPermissions = {
 type SpaceModalPropsType = {
 	action: SpaceSummaryHeaderActions;
 	assetLibraryCreatorUserId: string;
+	cmpProjectObjectEntryId?: number;
 	externalReferenceCode: string;
 	filter?: string;
 };
@@ -143,11 +144,16 @@ export default function SpaceSummaryHeader({
 	};
 
 	const openMembersModal = (props: SpaceModalPropsType) => {
-		const {assetLibraryCreatorUserId, externalReferenceCode, filter} =
-			props;
+		const {
+			assetLibraryCreatorUserId,
+			cmpProjectObjectEntryId,
+			externalReferenceCode,
+			filter,
+		} = props;
 
 		const data: ManageMembersData = {
 			assetLibraryCreatorUserId,
+			cmpProjectObjectEntryId,
 			externalReferenceCode,
 			filter,
 			hasAssignMembersPermission: Boolean(

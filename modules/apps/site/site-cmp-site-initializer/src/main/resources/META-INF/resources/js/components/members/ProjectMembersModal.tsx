@@ -41,6 +41,11 @@ export default function ProjectMembersModal({
 							? `${location.origin}/o/headless-cmp/v1.0/projects/${cmpProjectObjectEntryId}/user-accounts`
 							: undefined
 					}
+					userGroupsAPIURL={
+						cmpProjectObjectEntryId
+							? `${location.origin}/o/headless-cmp/v1.0/projects/${cmpProjectObjectEntryId}/user-groups`
+							: undefined
+					}
 				/>
 			)}
 		/>

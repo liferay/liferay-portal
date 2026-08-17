@@ -8,6 +8,7 @@ import SpaceMembersModal from '../../spaces/SpaceMembersModal';
 
 export interface ManageMembersData {
 	assetLibraryCreatorUserId: string;
+	cmpProjectObjectEntryId?: number;
 	externalReferenceCode: string;
 	filter?: string;
 	hasAssignMembersPermission: boolean;
