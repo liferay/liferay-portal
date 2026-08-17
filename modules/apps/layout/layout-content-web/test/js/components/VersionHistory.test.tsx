@@ -628,7 +628,7 @@ describe('VersionHistory', () => {
 		mockLargeScreen();
 		mockVersions(RESTORABLE_VERSIONS);
 
-		renderComponent();
+		renderComponent({hasDraft: true});
 
 		await waitFor(() =>
 			expect(screen.getAllByRole('option')).toHaveLength(3)
@@ -652,12 +652,40 @@ describe('VersionHistory', () => {
 		);
 	});
 
+	it('restores the version without confirmation when there is no draft', async () => {
+		mockLargeScreen();
+		mockVersions(RESTORABLE_VERSIONS);
+
+		renderComponent();
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const [, restorable] = screen.getAllByRole('option');
+
+		await openActions(restorable);
+
+		await userEvent.click(
+			screen.getByRole('menuitem', {name: 'restore-version'})
+		);
+
+		await waitFor(() =>
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/restore/HOME_V_2',
+				expect.objectContaining({method: 'POST'})
+			)
+		);
+
+		expect(mockOpenConfirmModal).not.toHaveBeenCalled();
+	});
+
 	it('does not restore the version when the confirmation is dismissed', async () => {
 		mockLargeScreen();
 		mockVersions(RESTORABLE_VERSIONS);
 		mockOpenConfirmModal.mockResolvedValue(false);
 
-		renderComponent();
+		renderComponent({hasDraft: true});
 
 		await waitFor(() =>
 			expect(screen.getAllByRole('option')).toHaveLength(3)
