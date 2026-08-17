@@ -23,10 +23,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
-const (
-	addOnsPrefix = "add-ons/"
-	manifestName = "manifest.json"
-)
+const manifestName = "manifest.json"
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) awaitOfflineActivationBundle(
 	context context.Context,
@@ -182,7 +179,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 
 func hasAddOns(zipReader *zip.Reader) bool {
 	for _, file := range zipReader.File {
-		if strings.HasPrefix(file.Name, addOnsPrefix) {
+		if strings.HasPrefix(file.Name, addon.AddOnsPrefix) {
 			return true
 		}
 	}
@@ -317,7 +314,7 @@ func readOfflineActivationBundle(path string) (*provisioning.Entitlements, error
 	}
 
 	if !hasAddOns(zipReader) {
-		return nil, fmt.Errorf("offline activation bundle: missing %q directory", addOnsPrefix)
+		return nil, fmt.Errorf("offline activation bundle: missing %q directory", addon.AddOnsPrefix)
 	}
 
 	manifestFile := findManifest(zipReader)

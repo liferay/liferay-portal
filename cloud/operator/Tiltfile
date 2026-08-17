@@ -164,9 +164,6 @@ k8s_yaml(
     )
 )
 
-# Local dev override: stand in for the shared marketplace volume with a local-path
-# PVC so an offline activation bundle can be dropped at
-# /marketplace/<namespace>/ for testing.
 k8s_yaml(
     blob(
         "\n".join(

@@ -605,7 +605,18 @@ func TestReconcileOfflineExtractsAddOnsFromBundle(t *testing.T) {
 		map[string]string{
 			"add-ons/app-1.lpkg": lpkgContent,
 			"manifest.json": fmt.Sprintf(
-				`{"add-ons":[{"productId":"app-1","productName":"App One","virtualEntryId":42,"sha256Checksum":%q}],"licenseXML":%q,"maxClusterNodes":3}`,
+				`{
+					"add-ons": [
+						{
+							"productId": "app-1",
+							"productName": "App One",
+							"virtualEntryId": 42,
+							"sha256Checksum": %q
+						}
+					],
+					"licenseXML": %q,
+					"maxClusterNodes": 3
+				}`,
 				hex.EncodeToString(checksum[:]),
 				base64.StdEncoding.EncodeToString([]byte(licenseXML)),
 			),
@@ -675,7 +686,11 @@ func TestReconcileOfflineLicensesFromBundle(t *testing.T) {
 		map[string]string{
 			"add-ons/app.lpkg": "PK-fake-lpkg",
 			"manifest.json": fmt.Sprintf(
-				`{"add-ons":[],"licenseXML":%q,"maxClusterNodes":3}`,
+				`{
+					"add-ons": [],
+					"licenseXML": %q,
+					"maxClusterNodes": 3
+				}`,
 				base64.StdEncoding.EncodeToString([]byte(licenseXML)),
 			),
 		},

@@ -9,7 +9,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
-const addOnsPrefix = "add-ons/"
+const AddOnsPrefix = "add-ons/"
 
 func Extract(
 	addOns []provisioning.AddOn,
@@ -47,7 +47,7 @@ func extract(addOn provisioning.AddOn, cache Cache, zipReader *zip.Reader) error
 		return nil
 	}
 
-	entry, error := zipReader.Open(addOnsPrefix + addOn.ProductID + ".lpkg")
+	entry, error := zipReader.Open(AddOnsPrefix + addOn.ProductID + ".lpkg")
 
 	if error != nil {
 		return error

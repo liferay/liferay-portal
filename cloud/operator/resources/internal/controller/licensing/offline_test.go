@@ -18,7 +18,16 @@ func TestReadOfflineActivationBundleParsesAWellFormedBundle(t *testing.T) {
 		map[string]string{
 			"add-ons/app.lpkg": "PK-fake",
 			"manifest.json": fmt.Sprintf(
-				`{"add-ons":[{"productId":"fake","sha256Checksum":"0000"}],"licenseXML":%q,"maxClusterNodes":3}`,
+				`{
+					"add-ons": [
+						{
+							"productId": "fake",
+							"sha256Checksum": "0000"
+						}
+					],
+					"licenseXML": %q,
+					"maxClusterNodes": 3
+				}`,
 				base64.StdEncoding.EncodeToString([]byte(licenseXML)),
 			),
 		},
@@ -62,7 +71,10 @@ func TestReadOfflineActivationBundleRejectsANonZipFile(t *testing.T) {
 
 func TestReadOfflineActivationBundleRejectsMalformedBundles(t *testing.T) {
 	validManifest := fmt.Sprintf(
-		`{"licenseXML":%q,"maxClusterNodes":1}`,
+		`{
+				"licenseXML": %q,
+				"maxClusterNodes": 1
+			}`,
 		base64.StdEncoding.EncodeToString([]byte("<licenses/>")),
 	)
 
@@ -75,7 +87,10 @@ func TestReadOfflineActivationBundleRejectsMalformedBundles(t *testing.T) {
 		},
 		"undecodable license": {
 			"add-ons/app.lpkg": "PK-fake",
-			"manifest.json":    `{"licenseXML":"@@not-base64@@","maxClusterNodes":1}`,
+			"manifest.json": `{
+					"licenseXML": "@@not-base64@@",
+					"maxClusterNodes": 1
+				}`,
 		},
 		"unparsable manifest json": {
 			"add-ons/app.lpkg": "PK-fake",

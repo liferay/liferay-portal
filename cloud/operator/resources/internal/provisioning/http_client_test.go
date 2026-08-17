@@ -177,7 +177,9 @@ func TestPayloadExpired(t *testing.T) {
 	}
 
 	withoutExp := "header." +
-		base64.RawURLEncoding.EncodeToString([]byte(`{"iss":"issuer"}`)) + ".signature"
+		base64.RawURLEncoding.EncodeToString([]byte(`{
+			"iss": "issuer"
+		}`)) + ".signature"
 
 	testCases := map[string]struct {
 		token string
