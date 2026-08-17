@@ -4,16 +4,13 @@
  */
 
 import {Page, expect, mergeTests} from '@playwright/test';
-import fs from 'fs/promises';
-import * as path from 'path';
-import {getComparator} from 'playwright-core/lib/utils';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {compareScreenshots} from '../../../utils/compareScreenshots';
 import getRandomString from '../../../utils/getRandomString';
 import {getSiteHomePageScreenshot} from '../../../utils/getSiteHomePageScreenshot';
-import {getTempDir} from '../../../utils/temp';
 import {pagesPagesTest} from '../../layout-admin-web/main/fixtures/pagesPagesTest';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 
@@ -131,29 +128,19 @@ const test = mergeTests(
 			});
 
 			await test.step('Assert the home page screenshots from site 1 and site 2 are equal', async () => {
-				const comparator = getComparator('image/png');
-
-				const buffer = comparator(
+				compareScreenshots(
 					await getSiteHomePageScreenshot(page, site1.name, {
 						mask: mask?.(page),
 					}),
 					await getSiteHomePageScreenshot(page, site2.name, {
 						mask: mask?.(page),
-					})
+					}),
+					{
+						errorMessage:
+							'The site 1 and site 2 home pages differ.',
+						writeDiff: true,
+					}
 				);
-
-				if (buffer !== null && buffer.diff !== undefined) {
-					const diffPath = path.join(
-						getTempDir(),
-						`${site1.name}-diff.png`
-					);
-
-					await fs.writeFile(diffPath, buffer.diff);
-
-					throw new Error(
-						`The site 1 and site 2 home pages differ. Check the screenshot diff at "${diffPath}".`
-					);
-				}
 			});
 		}
 	);

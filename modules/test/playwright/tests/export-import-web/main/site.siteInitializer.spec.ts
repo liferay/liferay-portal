@@ -9,19 +9,16 @@ import {
 	ObjectRelationshipAPI,
 } from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
-import fs from 'fs/promises';
-import * as path from 'path';
-import {getComparator} from 'playwright-core/lib/utils';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {styleBookPageTest} from '../../../fixtures/styleBookPageTest';
 import {uiElementsPageTest} from '../../../fixtures/uiElementsTest';
+import {compareScreenshots} from '../../../utils/compareScreenshots';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {getSiteHomePageScreenshot} from '../../../utils/getSiteHomePageScreenshot';
-import {getTempDir} from '../../../utils/temp';
 import {pagesPagesTest} from '../../layout-admin-web/main/fixtures/pagesPagesTest';
 import {companyExportImportPageTest} from './fixtures/companyExportImportPagesTest';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
@@ -73,9 +70,7 @@ const testWithClaritySiteInitializerFF = mergeTests(
 
 		await stagingPage.enableLocalStaging();
 
-		const comparator = getComparator('image/png');
-
-		const buffer = comparator(
+		compareScreenshots(
 			await getSiteHomePageScreenshot(page, site.name, {
 				mask: page.getByTestId('notificationsCount'),
 				staging: false,
@@ -83,16 +78,12 @@ const testWithClaritySiteInitializerFF = mergeTests(
 			await getSiteHomePageScreenshot(page, site.name, {
 				mask: page.getByTestId('notificationsCount'),
 				staging: true,
-			})
+			}),
+			{
+				errorMessage: 'The live and staging pages differ.',
+				writeDiff: true,
+			}
 		);
-
-		if (buffer !== null && buffer.diff !== undefined) {
-			const diffPath = path.join(getTempDir(), `${site.name}-diff.png`);
-			await fs.writeFile(diffPath, buffer.diff);
-			throw new Error(
-				`The live and staging pages differ. Check the screenshot diff at "${diffPath}".`
-			);
-		}
 	});
 });
 
@@ -309,23 +300,15 @@ testWithClaritySiteInitializerFF(
 			);
 
 			await test.step('Assert the home page screenshots from site 1 and site 2 are equal', async () => {
-				const comparator = getComparator('image/png');
-
-				const buffer = comparator(
+				compareScreenshots(
 					await getSiteHomePageScreenshot(page, site1.name),
-					await getSiteHomePageScreenshot(page, site2.name)
+					await getSiteHomePageScreenshot(page, site2.name),
+					{
+						errorMessage:
+							'The site 1 and site 2 home pages differ.',
+						writeDiff: true,
+					}
 				);
-
-				if (buffer !== null && buffer.diff !== undefined) {
-					const diffPath = path.join(
-						getTempDir(),
-						`${site1.name}-diff.png`
-					);
-					await fs.writeFile(diffPath, buffer.diff);
-					throw new Error(
-						`The site 1 and site 2 home pages differ. Check the screenshot diff at "${diffPath}".`
-					);
-				}
 			});
 		}
 		finally {
