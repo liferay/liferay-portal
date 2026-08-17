@@ -110,7 +110,7 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 
 		String objectDefinitionDBTableName = objectDefinition.getDBTableName();
 
-		String invalidObjectDefinitionDBTableName = StringUtil.toUpperCase(
+		String invalidObjectDefinitionDBTableName = StringUtil.toLowerCase(
 			objectDefinitionDBTableName);
 
 		try (Connection connection = DataAccess.getConnection();
