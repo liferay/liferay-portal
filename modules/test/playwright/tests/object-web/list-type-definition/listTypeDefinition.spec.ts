@@ -92,7 +92,36 @@ async function importPicklistFromFile(
 
 	await expect(page.getByLabel('External Reference Code')).not.toBeEmpty();
 
+	// Clicking Import fires a reference code check and then either imports and
+	// reloads the page, or, when the reference code already exists, asks about
+	// overwriting instead. Returning at the click leaves that chain in flight,
+	// and the caller's next navigation cancels it, so the picklist is silently
+	// never imported. Wait for whichever outcome the click reaches: the reload
+	// only ever happens after the import commits, and the overwrite prompt is
+	// the caller's to answer.
+
+	const importNavigation = page.waitForNavigation({waitUntil: 'load'}).then(
+		() => 'imported',
+		() => null
+	);
+
+	const overwritePrompt = page
+		.getByRole('heading', {name: 'Update Existing Picklist'})
+		.waitFor({state: 'visible'})
+		.then(
+			() => 'prompted',
+			() => null
+		);
+
 	await page.getByRole('button', {exact: true, name: 'Import'}).click();
+
+	const outcome = await Promise.race([importNavigation, overwritePrompt]);
+
+	if (outcome === null) {
+		throw new Error(
+			'The import neither reloaded the page nor asked about overwriting'
+		);
+	}
 }
 
 test.describe('manage export/import of picklists', () => {
@@ -156,8 +185,6 @@ test.describe('manage export/import of picklists', () => {
 				filePath,
 				importedPicklistName
 			);
-
-			await page.waitForLoadState('networkidle');
 
 			await listTypeDefinitionPage.goto();
 
@@ -283,8 +310,6 @@ test.describe('manage export/import of picklists', () => {
 				importedPicklistName
 			);
 
-			await page.waitForLoadState('networkidle');
-
 			await listTypeDefinitionPage.goto();
 
 			const [importedListTypeDefinition] =
@@ -406,8 +431,6 @@ test.describe('manage export/import of picklists', () => {
 				filePath,
 				importedPicklistName
 			);
-
-			await page.waitForLoadState('networkidle');
 
 			await listTypeDefinitionPage.goto();
 
