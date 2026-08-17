@@ -13,6 +13,23 @@ templates:
     -   templates/appproject-operator.yaml
 tests:
     -   asserts:
+            -   contains:
+                    content: oci://us-central1-docker.pkg.dev/external-assets-nonprd/liferay-helm-chart
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+            -   contains:
+                    content: oci://us-central1-docker.pkg.dev/external-assets-nonprd/liferay-helm-chart/**
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+            -   notContains:
+                    content: oci://us-central1-docker.pkg.dev/external-assets-nonprd/liferay-helm-chart/lcd-12345/abc1234/liferay-azure-infrastructure-provider
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+        it: Collapses a commit pinned chart URL to its registry repository
+        set:
+            infrastructureProvider:
+                repoURL: oci://us-central1-docker.pkg.dev/external-assets-nonprd/liferay-helm-chart/lcd-12345/abc1234/liferay-azure-infrastructure-provider
+    -   asserts:
             -   equal:
                     path: spec.template.metadata.name
                     value: "{{path[1]}}-{{path[3]}}-infra"
@@ -110,6 +127,15 @@ tests:
             infrastructureProvider.enabled: false
             liferay.enabled: false
     -   asserts:
+            -   isEmpty:
+                    path: spec.sourceRepos
+                template: templates/appproject-application.yaml
+            -   notContains:
+                    content: /**
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+        it: Omits the unset repository URLs from the AppProject source repositories
+    -   asserts:
             -   contains:
                     content:
                         name: deploymentContext.deploymentName
@@ -128,7 +154,7 @@ tests:
                     path: spec.sourceRepos
                 template: templates/appproject-operator.yaml
             -   contains:
-                    content: https://charts.example.com/*
+                    content: https://charts.example.com/**
                     path: spec.sourceRepos
                 template: templates/appproject-operator.yaml
             -   notContains:
@@ -225,11 +251,11 @@ tests:
                             server: https://kubernetes.default.svc
                 template: templates/appproject-infrastructure.yaml
             -   contains:
-                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability
+                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart
                     path: spec.sourceRepos
                 template: templates/appproject-infrastructure.yaml
             -   contains:
-                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability/*
+                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/**
                     path: spec.sourceRepos
                 template: templates/appproject-infrastructure.yaml
             -   equal:
@@ -268,21 +294,21 @@ tests:
                     path: spec.sourceRepos
                     value:
                         -   oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart
-                        -   oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart/*
+                        -   oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart/**
                         -   https://argoproj.github.io/argo-helm
-                        -   https://argoproj.github.io/argo-helm/*
+                        -   https://argoproj.github.io/argo-helm/**
                         -   https://charts.crossplane.io/stable
-                        -   https://charts.crossplane.io/stable/*
-                        -   oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
-                        -   oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator/*
+                        -   https://charts.crossplane.io/stable/**
+                        -   oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart
+                        -   oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/**
                         -   https://helm.elastic.co
-                        -   https://helm.elastic.co/*
+                        -   https://helm.elastic.co/**
                         -   oci://docker.io/envoyproxy/gateway-helm
-                        -   oci://docker.io/envoyproxy/gateway-helm/*
+                        -   oci://docker.io/envoyproxy/gateway-helm/**
                         -   https://charts.external-secrets.io
-                        -   https://charts.external-secrets.io/*
+                        -   https://charts.external-secrets.io/**
                         -   https://kedacore.github.io/charts
-                        -   https://kedacore.github.io/charts/*
+                        -   https://kedacore.github.io/charts/**
                 template: templates/appproject-operator.yaml
         it: Renders the ApplicationSets and AppProjects by default
     -   asserts:

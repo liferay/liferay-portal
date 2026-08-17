@@ -1,8 +1,9 @@
-{{- $sourceRepos := list (include "liferay-platform.infrastructureRepositoryURL" .) -}}
-{{- range $url := list .Values.infrastructure.repoURL .Values.infrastructureProvider.repoURL .Values.observability.repoURL -}}
-{{- $sourceRepos = append $sourceRepos $url -}}
-{{- $sourceRepos = append $sourceRepos (printf "%s/*" $url) -}}
-{{- end -}}
+{{- $repoURLs := list
+    (include "liferay-platform.infrastructureRepositoryURL" .)
+    .Values.infrastructure.repoURL
+    .Values.infrastructureProvider.repoURL
+    .Values.observability.repoURL
+-}}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -29,4 +30,4 @@ spec:
         -   namespace: {{ .Values.observability.namespace }}
             server: https://kubernetes.default.svc
     sourceRepos:
-        {{- $sourceRepos | toYaml | nindent 8 }}
+        {{- include "liferay-platform.sourceRepos" $repoURLs | nindent 8 }}

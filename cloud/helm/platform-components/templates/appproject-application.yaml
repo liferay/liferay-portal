@@ -1,4 +1,3 @@
-{{- $sourceRepos := list .Values.gitops.repository.url .Values.liferay.repoURL (printf "%s/*" .Values.liferay.repoURL) -}}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -20,4 +19,4 @@ spec:
         -   namespace: liferay-*
             server: https://kubernetes.default.svc
     sourceRepos:
-        {{- $sourceRepos | toYaml | nindent 8 }}
+        {{- include "liferay-platform.sourceRepos" (list .Values.gitops.repository.url .Values.liferay.repoURL) | nindent 8 }}

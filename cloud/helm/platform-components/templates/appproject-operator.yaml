@@ -1,3 +1,7 @@
+{{- $repoURLs := list -}}
+{{- range $operatorApplication := .Values.operatorApplications -}}
+{{- $repoURLs = append $repoURLs $operatorApplication.repoURL -}}
+{{- end -}}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -20,7 +24,4 @@ spec:
             server: https://kubernetes.default.svc
         {{- end }}
     sourceRepos:
-        {{- range $operatorApplication := .Values.operatorApplications }}
-        -   {{ $operatorApplication.repoURL }}
-        -   {{ $operatorApplication.repoURL }}/*
-        {{- end }}
+        {{- include "liferay-platform.sourceRepos" $repoURLs | nindent 8 }}

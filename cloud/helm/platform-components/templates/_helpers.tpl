@@ -89,3 +89,28 @@ spec:
             -   ServerSideApply=true
 {{- end -}}
 {{- end -}}
+
+{{- define "liferay-platform.sourceRepoBase" -}}
+{{- if hasPrefix "oci://" . -}}
+{{- $parts := splitList "/" (trimPrefix "oci://" .) -}}
+{{- if gt (len $parts) 3 -}}
+{{- printf "oci://%s" (join "/" (slice $parts 0 3)) -}}
+{{- else -}}
+{{- . -}}
+{{- end -}}
+{{- else -}}
+{{- . -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "liferay-platform.sourceRepos" -}}
+{{- $sourceRepos := list -}}
+{{- range $url := . -}}
+{{- if $url -}}
+{{- $base := include "liferay-platform.sourceRepoBase" $url -}}
+{{- $sourceRepos = append $sourceRepos $base -}}
+{{- $sourceRepos = append $sourceRepos (printf "%s/**" $base) -}}
+{{- end -}}
+{{- end -}}
+{{- toYaml (uniq $sourceRepos) -}}
+{{- end -}}
