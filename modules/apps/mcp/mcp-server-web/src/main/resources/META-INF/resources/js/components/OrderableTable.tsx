@@ -406,7 +406,7 @@ const OrderableTable = ({
 	const onSearch = (query: string) => {
 		setQuery(query);
 
-		const regexp = new RegExp(query, 'i');
+		const lowerCaseQuery = query.toLowerCase();
 
 		setItems(
 			query
@@ -415,10 +415,14 @@ const OrderableTable = ({
 							if (field.contentRenderer?.textMatch) {
 								return String(
 									field.contentRenderer.textMatch(item)
-								).match(regexp);
+								)
+									.toLowerCase()
+									.includes(lowerCaseQuery);
 							}
 
-							return String(item[field.name]).match(regexp);
+							return String(item[field.name])
+								.toLowerCase()
+								.includes(lowerCaseQuery);
 						})
 					) || []
 				: initialItems
