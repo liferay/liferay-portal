@@ -50,7 +50,15 @@ public class ResourceUtil {
 			return new ObjectValuePair<>(servletContext, resourceURL);
 		}
 
-		servletContext = _getPathServletContext(requestPath);
+		for (ServletContext portletServletContext : _portletServiceTrackerList) {
+			if (requestPath.startsWith(
+					portletServletContext.getContextPath())) {
+
+				servletContext = portletServletContext;
+
+				break;
+			}
+		}
 
 		resourceURL = PortalWebResourcesUtil.getResource(
 			servletContext, requestPath);
@@ -100,16 +108,6 @@ public class ResourceUtil {
 		}
 
 		return objectValuePair.getValue();
-	}
-
-	private static ServletContext _getPathServletContext(String path) {
-		for (ServletContext servletContext : _portletServiceTrackerList) {
-			if (path.startsWith(servletContext.getContextPath())) {
-				return servletContext;
-			}
-		}
-
-		return null;
 	}
 
 	private static final BundleContext _bundleContext =
