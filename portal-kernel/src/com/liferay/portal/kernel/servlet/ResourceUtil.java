@@ -33,42 +33,35 @@ public class ResourceUtil {
 			ServletContext defaultServletContext)
 		throws IOException {
 
-		ServletContext servletContext = defaultServletContext;
-
-		URL resourceURL = servletContext.getResource(requestURI);
+		URL resourceURL = defaultServletContext.getResource(requestURI);
 
 		if (resourceURL != null) {
-			return new ObjectValuePair<>(servletContext, resourceURL);
+			return new ObjectValuePair<>(defaultServletContext, resourceURL);
 		}
 
-		servletContext = PortalWebResourcesUtil.getPathServletContext(
-			requestPath);
+		ObjectValuePair<ServletContext, URL> objectValuePair =
+			_getObjectValuePair(
+				requestPath,
+				PortalWebResourcesUtil.getPathServletContext(requestPath));
 
-		resourceURL = PortalWebResourcesUtil.getResource(
-			servletContext, requestPath);
-
-		if (resourceURL != null) {
-			return new ObjectValuePair<>(servletContext, resourceURL);
+		if (objectValuePair != null) {
+			return objectValuePair;
 		}
 
-		for (ServletContext portletServletContext : _portletServiceTrackerList) {
-			if (requestPath.startsWith(
-					portletServletContext.getContextPath())) {
+		for (ServletContext servletContext : _portletServiceTrackerList) {
+			if (requestPath.startsWith(servletContext.getContextPath())) {
+				objectValuePair = _getObjectValuePair(
+					requestPath, servletContext);
 
-				servletContext = portletServletContext;
+				if (objectValuePair != null) {
+					return objectValuePair;
+				}
 
 				break;
 			}
 		}
 
-		resourceURL = PortalWebResourcesUtil.getResource(
-			servletContext, requestPath);
-
-		if (resourceURL != null) {
-			return new ObjectValuePair<>(servletContext, resourceURL);
-		}
-
-		servletContext = null;
+		ServletContext servletContext = null;
 
 		for (ServletContext curServletContext :
 				_servletContextServiceTrackerList) {
@@ -94,14 +87,7 @@ public class ResourceUtil {
 			}
 		}
 
-		resourceURL = PortalWebResourcesUtil.getResource(
-			servletContext, requestPath);
-
-		if (resourceURL != null) {
-			return new ObjectValuePair<>(servletContext, resourceURL);
-		}
-
-		return null;
+		return _getObjectValuePair(requestPath, servletContext);
 	}
 
 	public static ServletContext getPathServletContext(
@@ -132,6 +118,19 @@ public class ResourceUtil {
 		}
 
 		return objectValuePair.getValue();
+	}
+
+	private static ObjectValuePair<ServletContext, URL> _getObjectValuePair(
+		String requestPath, ServletContext servletContext) {
+
+		URL resourceURL = PortalWebResourcesUtil.getResource(
+			servletContext, requestPath);
+
+		if (resourceURL != null) {
+			return new ObjectValuePair<>(servletContext, resourceURL);
+		}
+
+		return null;
 	}
 
 	private static final BundleContext _bundleContext =
