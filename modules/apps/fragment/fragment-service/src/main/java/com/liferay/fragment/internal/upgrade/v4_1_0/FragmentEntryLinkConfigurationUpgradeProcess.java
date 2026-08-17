@@ -6,6 +6,7 @@
 package com.liferay.fragment.internal.upgrade.v4_1_0;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -23,11 +24,12 @@ public class FragmentEntryLinkConfigurationUpgradeProcess
 		try (PreparedStatement preparedStatement =
 				AutoBatchPreparedStatementUtil.autoBatch(
 					connection,
-					StringBundler.concat(
-						"update FragmentEntryLink set configuration = ? where ",
-						"rendererKey = ? and (configuration is null or ",
-						"configuration = '' or configuration = '{}' or ",
-						"configuration = '[]')"))) {
+					SQLTransformer.transform(
+						StringBundler.concat(
+							"update FragmentEntryLink set configuration = ? ",
+							"where rendererKey = ? and (configuration is null ",
+							"or CAST_CLOB_TEXT(configuration) in ('', '{}', ",
+							"'[]'))")))) {
 
 			_addBatch(
 				preparedStatement,
