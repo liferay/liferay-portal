@@ -44,8 +44,8 @@ spec:
         delegation:
             -   name: database-flexible-server
                 serviceDelegation:
-                    -   actions:
-                            -   Microsoft.Network/virtualNetworks/subnets/join/action
-                        name: Microsoft.DBforPostgreSQL/flexibleServers
+                    actions:
+                        -   Microsoft.Network/virtualNetworks/subnets/join/action
+                    name: Microsoft.DBforPostgreSQL/flexibleServers
         resourceGroupName: {{ $deploymentContext.resourceGroupName | quote }}
         virtualNetworkName: {{ include "network.virtualNetworkName" $ }}
