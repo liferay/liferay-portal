@@ -37,7 +37,7 @@ export default function ResponsivePanel({
 					className="pb-0 px-3"
 					messages={{closeAriaLabel: Liferay.Language.get('close')}}
 				>
-					<SidePanel.Title className="m-0">
+					<SidePanel.Title className="font-weight-semi-bold m-0">
 						{Liferay.Language.get('version-history')}
 					</SidePanel.Title>
 				</SidePanel.Header>
