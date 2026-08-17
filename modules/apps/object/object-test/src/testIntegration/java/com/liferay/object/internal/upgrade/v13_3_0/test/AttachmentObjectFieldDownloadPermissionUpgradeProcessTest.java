@@ -5,6 +5,7 @@
 
 package com.liferay.object.internal.upgrade.v13_3_0.test;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -18,7 +19,9 @@ import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -76,6 +79,7 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 	public void testUpgrade() throws Exception {
 		_testUpgradeWithDraftObjectDefinition();
 		_testUpgradeWithPublishedObjectDefinition();
+		_testUpgradeWithUnmodifiableSystemObjectDefinition();
 	}
 
 	private DLFileEntry _addDLFileEntry() throws Exception {
@@ -130,6 +134,15 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 			_hasResourcePermission(
 				actionId, className, companyId, primKey,
 				RoleConstants.POWER_USER));
+	}
+
+	private void _assertNoDownloadPLOEntries(String actionId, long companyId) {
+		for (Locale locale : _language.getCompanyAvailableLocales(companyId)) {
+			Assert.assertNull(
+				_ploEntryLocalService.fetchPLOEntry(
+					companyId, "action." + actionId,
+					LocaleUtil.toLanguageId(locale)));
+		}
 	}
 
 	private ObjectField _createAttachmentObjectField() {
@@ -211,14 +224,7 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 			_resourceActionLocalService.fetchResourceAction(
 				objectDefinition.getClassName(), actionId));
 
-		long companyId = objectDefinition.getCompanyId();
-
-		for (Locale locale : _language.getCompanyAvailableLocales(companyId)) {
-			Assert.assertNull(
-				_ploEntryLocalService.fetchPLOEntry(
-					companyId, "action." + actionId,
-					LocaleUtil.toLanguageId(locale)));
-		}
+		_assertNoDownloadPLOEntries(actionId, objectDefinition.getCompanyId());
 	}
 
 	private void _testUpgradeWithPublishedObjectDefinition() throws Exception {
@@ -295,6 +301,44 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 		_assertHasResourcePermissions(actionId, className, companyId, primKey);
 	}
 
+	private void _testUpgradeWithUnmodifiableSystemObjectDefinition()
+		throws Exception {
+
+		ObjectDefinition accountEntryObjectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				TestPropsValues.getCompanyId(),
+				AccountEntry.class.getSimpleName());
+
+		Assert.assertTrue(
+			accountEntryObjectDefinition.isUnmodifiableSystemObject());
+
+		ObjectField objectField = _createAttachmentObjectField();
+
+		objectField.setUserId(TestPropsValues.getUserId());
+		objectField.setObjectDefinitionId(
+			accountEntryObjectDefinition.getObjectDefinitionId());
+
+		objectField = ObjectFieldUtil.addCustomObjectField(objectField);
+
+		String actionId = objectField.getAttachmentDownloadActionKey();
+
+		UpgradeProcess upgradeProcess = _getUpgradeProcess();
+
+		upgradeProcess.upgrade();
+
+		_entityCache.clearCache();
+
+		Assert.assertNull(
+			_resourceActionLocalService.fetchResourceAction(
+				accountEntryObjectDefinition.getClassName(), actionId));
+
+		_assertNoDownloadPLOEntries(
+			actionId, accountEntryObjectDefinition.getCompanyId());
+
+		_objectFieldLocalService.deleteObjectField(
+			objectField.getObjectFieldId());
+	}
+
 	private static final String _CLASS_NAME =
 		"com.liferay.object.internal.upgrade.v13_3_0." +
 			"AttachmentObjectFieldDownloadPermissionUpgradeProcess";
@@ -312,7 +356,13 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 	private Language _language;
 
 	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Inject
 	private PLOEntryLocalService _ploEntryLocalService;
