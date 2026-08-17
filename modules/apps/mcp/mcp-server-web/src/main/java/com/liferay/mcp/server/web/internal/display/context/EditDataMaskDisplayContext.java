@@ -33,6 +33,8 @@ public class EditDataMaskDisplayContext {
 	public String getBackURL() {
 		return PortletURLBuilder.createRenderURL(
 			_liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/mcp_server/view_data_masks"
 		).buildString();
 	}
 
