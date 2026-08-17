@@ -7,9 +7,11 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import React, {useEffect, useState} from 'react';
 
 function SideNavigationColorSchemeButton({
+	className,
 	colorScheme: initialColorScheme,
 	colorSchemeSessionKey,
 }: {
+	className?: string;
 	colorScheme: 'dark' | 'light';
 	colorSchemeSessionKey: string;
 }) {
@@ -69,7 +71,7 @@ function SideNavigationColorSchemeButton({
 			aria-label={label}
 			aria-pressed={colorScheme === 'dark'}
 			borderless
-			className="c-ml-2"
+			className={className}
 			displayType="secondary"
 			monospaced
 			onClick={toggle}

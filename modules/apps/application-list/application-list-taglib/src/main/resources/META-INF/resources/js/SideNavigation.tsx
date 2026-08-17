@@ -136,10 +136,13 @@ function SideNavigation({
 			position="fixed"
 		>
 			<SidePanel.Header
-				className="c-mt-2 c-mx-1 c-px-2"
+				className="c-mt-2 c-mx-1 c-px-2 side-navigation-header"
 				closeButtonProps={
 					Liferay.FeatureFlags['LPD-57922']
-						? {className: 'sr-only sr-only-focusable'}
+						? {
+								className:
+									'btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm side-navigation-close-button',
+							}
 						: undefined
 				}
 				data-qa-id="sideNavigationHeader"
@@ -176,6 +179,7 @@ function SideNavigation({
 
 					{Liferay.FeatureFlags['LPD-57922'] && (
 						<SideNavigationColorSchemeButton
+							className="c-ml-2"
 							colorScheme={colorScheme}
 							colorSchemeSessionKey={colorSchemeSessionKey}
 						/>

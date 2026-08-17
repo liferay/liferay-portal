@@ -1,4 +1,5 @@
 @import 'atlas-custom-properties/_variables';
+@import 'cadmin-variables';
 
 .side-navigation-container {
 	--skeleton-shimmer-color: var(--light-l1);
@@ -43,6 +44,25 @@
 				inset: 0;
 				position: absolute;
 				transform: translateX(-100%);
+			}
+		}
+	}
+}
+
+html#{$cadmin-selector} {
+	.side-navigation-header {
+		.side-navigation-close-button {
+			margin-bottom: auto;
+			margin-top: auto;
+
+			@include media-breakpoint-up(lg) {
+				@include sr-only();
+				@include sr-only-focusable();
+
+				&:active,
+				&:focus {
+					position: absolute;
+				}
 			}
 		}
 	}

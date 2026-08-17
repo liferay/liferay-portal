@@ -92,6 +92,18 @@ html#{$cadmin-selector} {
 		}
 
 		.product-menu {
+			.product-menu-close-button {
+				@include media-breakpoint-up(lg, $cadmin-grid-breakpoints) {
+					@include sr-only();
+					@include sr-only-focusable();
+
+					&:active,
+					&:focus {
+						position: absolute;
+					}
+				}
+			}
+
 			.sidebar-header {
 				line-height: 32px;
 				padding-bottom: 8px;
