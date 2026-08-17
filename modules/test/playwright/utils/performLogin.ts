@@ -76,7 +76,18 @@ async function performLogin(
 	await page.getByLabel('Password').fill(password);
 	await page.getByLabel('Remember Me').setChecked(rememberMe);
 
-	await page.getByRole('button', {name: 'Sign In'}).last().click();
+	// Two buttons on the page carry the name Sign In, the personal bar
+	// trigger and the prompt's own submit, and the prompt can re-render under
+	// the click: a pick by ordinal that is re-resolved in that window matches
+	// the only survivor, the trigger, which submits nothing. Scoped to the
+	// sign in form, the pick can only ever resolve to the submit, and the
+	// click's own wait for it to be enabled is the form's readiness signal,
+	// because the script that enables it attaches the submit handler first.
+
+	await page
+		.locator('form.sign-in-form')
+		.getByRole('button', {name: 'Sign In'})
+		.click();
 
 	await expect(page.getByLabel(`${name} ${surname}`)).toBeVisible({
 		timeout: 30 * 1000,
