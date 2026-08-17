@@ -229,8 +229,10 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		try {
-			return JenkinsResultsParserUtil.readInputStream(
+			String output = JenkinsResultsParserUtil.readInputStream(
 				process.getInputStream());
+
+			return output.replace("Finished executing Bash commands.", "");
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
