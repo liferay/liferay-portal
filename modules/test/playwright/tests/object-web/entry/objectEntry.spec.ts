@@ -5300,6 +5300,17 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 			await expect(viewObjectEntriesPage.successMessage).toBeVisible();
 
+			// The save fires its toast before it navigates to the saved entry,
+			// and the remounted relationship field publishes an empty hidden
+			// input until its option fetch resolves, so a read taken here can
+			// see the render before the save or the field before its value.
+			// Land on the saved entry and reload so the read is the persisted
+			// value.
+
+			await page.waitForURL(/externalReferenceCode=/);
+
+			await page.reload();
+
 			const fieldContainer = page.locator(
 				'[data-field-name="r_objectRelationshipName_CProductId"]'
 			);
@@ -5319,6 +5330,17 @@ test.describe('Manage object entries through View Object Entries', () => {
 			await viewObjectEntriesPage.saveObjectEntryButton.click();
 
 			await expect(viewObjectEntriesPage.successMessage).toBeVisible();
+
+			// The save fires its toast before it navigates to the saved entry,
+			// and the remounted relationship field publishes an empty hidden
+			// input until its option fetch resolves, so a read taken here can
+			// see the render before the save or the field before its value.
+			// Land on the saved entry and reload so the read is the persisted
+			// value.
+
+			await page.waitForURL(/externalReferenceCode=/);
+
+			await page.reload();
 
 			await expect(relationshipInput).not.toHaveValue('');
 
