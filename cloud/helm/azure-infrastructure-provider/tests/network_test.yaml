@@ -39,7 +39,7 @@ tests:
                     value: liferay-test-database-subnet
             -   documentIndex: 2
                 equal:
-                    path: spec.forProvider.delegation[0].serviceDelegation[0].name
+                    path: spec.forProvider.delegation[0].serviceDelegation.name
                     value: Microsoft.DBforPostgreSQL/flexibleServers
             -   documentIndex: 2
                 equal:

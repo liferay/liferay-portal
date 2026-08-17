@@ -59,31 +59,31 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "DATABASE_ENDPOINT"
+                    pattern: DATABASE_ENDPOINT
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "DATABASE_PORT"
+                    pattern: DATABASE_PORT
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "DATABASE_USERNAME"
+                    pattern: DATABASE_USERNAME
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "LIFERAY_DOCLIB_CONTAINER_NAME"
+                    pattern: LIFERAY_DOCLIB_CONTAINER_NAME
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "LIFERAY_DOCLIB_STORAGE_ACCOUNT_NAME"
+                    pattern: LIFERAY_DOCLIB_STORAGE_ACCOUNT_NAME
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "LIFERAY_OVERLAY_CONTAINER_NAME"
+                    pattern: LIFERAY_OVERLAY_CONTAINER_NAME
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "LIFERAY_OVERLAY_STORAGE_ACCOUNT_NAME"
+                    pattern: LIFERAY_OVERLAY_STORAGE_ACCOUNT_NAME
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -99,5 +99,5 @@ tests:
             -   documentIndex: 0
                 notMatchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "DATABASE_PASSWORD"
+                    pattern: DATABASE_PASSWORD
         it: Publishes the connection details contract without copying the database password

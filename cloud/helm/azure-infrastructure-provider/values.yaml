@@ -1,5 +1,13 @@
 crossplaneNamespace: crossplane-system
-deploymentContext: {}
+deploymentContext:
+    crossplaneDataClientId: ""
+    crossplaneIamClientId: ""
+    deploymentName: ""
+    oidcIssuerUrl: ""
+    region: ""
+    resourceGroupName: ""
+    subscriptionId: ""
+    tenantId: ""
 network:
     databaseSubnetCidr: 10.0.16.0/20
 providers:
