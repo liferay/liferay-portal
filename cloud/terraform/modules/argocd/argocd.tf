@@ -55,6 +55,7 @@ resource "helm_release" "argocd" {
 								])
 						}
 						params={
+							"controller.sync.timeout.seconds"="900"
 							"server.insecure"="true"
 						}
 					}
