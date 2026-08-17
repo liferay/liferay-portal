@@ -58,10 +58,10 @@ const metricRootMerge = {
 	site: metricRootField,
 };
 
-export default new InMemoryCache({
-	typePolicies: {
-		Query: {
-			fields: metricRootMerge,
-		},
+export const typePolicies = {
+	Query: {
+		fields: metricRootMerge,
 	},
-});
+};
+
+export default new InMemoryCache({typePolicies});
