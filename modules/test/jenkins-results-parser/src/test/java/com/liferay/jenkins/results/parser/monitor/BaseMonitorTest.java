@@ -39,14 +39,14 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	public void testGetSingleAttemptTimeoutMillis() {
 		BaseMonitor baseMonitor = _newBaseMonitor(10);
 
-		testEquals(9000, baseMonitor.getSingleAttemptTimeoutMillis());
+		testEquals(4500, baseMonitor.getSingleAttemptTimeoutMillis());
 	}
 
 	@Test
 	public void testGetSingleAttemptTimeoutMillisClampedTimeout() {
 		BaseMonitor baseMonitor = _newBaseMonitor(Long.MAX_VALUE);
 
-		testEquals(1932734700, baseMonitor.getSingleAttemptTimeoutMillis());
+		testEquals(966367350, baseMonitor.getSingleAttemptTimeoutMillis());
 	}
 
 	private BaseMonitor _newBaseMonitor(long timeoutSeconds) {

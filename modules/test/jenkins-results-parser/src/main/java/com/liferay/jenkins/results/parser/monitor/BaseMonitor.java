@@ -84,7 +84,7 @@ public abstract class BaseMonitor implements Monitor {
 	protected int getSingleAttemptTimeoutMillis() {
 		long timeoutMillis = _getTimeoutMillis();
 
-		return (int)(timeoutMillis - (timeoutMillis / 10));
+		return (int)((timeoutMillis - (timeoutMillis / 10)) / 2);
 	}
 
 	private String _getKey(String category, String name) {

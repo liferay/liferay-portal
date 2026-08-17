@@ -153,7 +153,7 @@ public class HTTPEndpointMonitorTest
 
 		Assert.assertNotNull(metrics.get("latency.millis"));
 
-		verifyUrlReaderRead(false, 0, 54000, urlReader);
+		verifyUrlReaderRead(false, 0, 27000, urlReader);
 	}
 
 	@Test
