@@ -94,7 +94,6 @@ public class LanguageTagTest {
 	public void testGetLanguageEntries() throws Exception {
 		Layout layout = _addLayout();
 
-		_testGetLanguageEntriesWithAnotherLocaleFriendlyURL(layout);
 		_testGetLanguageEntriesWithDefaultLayoutWithFriendlyURLMappingPath(
 			layout);
 
@@ -285,36 +284,6 @@ public class LanguageTagTest {
 		portletPreferences.store();
 	}
 
-	private void _testGetLanguageEntriesWithAnotherLocaleFriendlyURL(
-			Layout layout)
-		throws Exception {
-
-		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, StringPool.BLANK,
-			_getURL(
-				_getLanguageEntriesForURL(
-					StringBundler.concat(
-						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-						_group.getFriendlyURL(),
-						layout.getFriendlyURL(LocaleUtil.FRANCE)),
-					null, themeDisplay),
-				LocaleUtil.FRANCE));
-
-		_assertLocalizedURL(
-			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
-			_getURL(
-				_getLanguageEntriesForURL(
-					StringBundler.concat(
-						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-						_group.getFriendlyURL(),
-						layout.getFriendlyURL(LocaleUtil.FRANCE),
-						_FRIENDLY_URL_MAPPING_PATH),
-					null, themeDisplay),
-				LocaleUtil.FRANCE));
-	}
-
 	private void
 			_testGetLanguageEntriesWithDefaultLayoutWithFriendlyURLMappingPath(
 				Layout layout)
@@ -402,6 +371,18 @@ public class LanguageTagTest {
 		throws Exception {
 
 		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
+
+		_assertLocalizedURL(
+			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
+			_getURL(
+				_getLanguageEntriesForURL(
+					StringBundler.concat(
+						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+						_group.getFriendlyURL(),
+						layout.getFriendlyURL(LocaleUtil.FRANCE),
+						_FRIENDLY_URL_MAPPING_PATH),
+					null, themeDisplay),
+				LocaleUtil.FRANCE));
 
 		_assertLocalizedURL(
 			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
