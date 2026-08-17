@@ -13,6 +13,7 @@ import (
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
+	addon "github.com/liferay/liferay-portal/cloud/operator/internal/addon"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	corev1 "k8s.io/api/core/v1"
 	meta "k8s.io/apimachinery/pkg/api/meta"
@@ -53,6 +54,41 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) awaitOfflineAc
 	)
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) extractOfflineAddOns(
+	cache addon.Cache,
+	context context.Context,
+	entitlements *provisioning.Entitlements,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) ([]licensingv1alpha1.AppStatus, error) {
+	if len(entitlements.AddOns) == 0 {
+		return []licensingv1alpha1.AppStatus{}, nil
+	}
+
+	file, error := os.Open(
+		liferayEnvironmentReconciler.offlineActivationBundlePath(liferayEnvironment),
+	)
+
+	if error != nil {
+		return nil, error
+	}
+
+	defer file.Close()
+
+	fileInfo, error := file.Stat()
+
+	if error != nil {
+		return nil, error
+	}
+
+	zipReader, error := zip.NewReader(file, fileInfo.Size())
+
+	if error != nil {
+		return nil, fmt.Errorf("offline activation bundle: open zip: %w", error)
+	}
+
+	return addon.Extract(entitlements.AddOns, cache, context, zipReader), nil
+}
+
 func findManifest(zipReader *zip.Reader) *zip.File {
 	for _, file := range zipReader.File {
 		if file.Name == manifestName {
@@ -83,11 +119,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 		)
 	}
 
-	offlineActivationBundlePath := filepath.Join(
-		liferayEnvironmentReconciler.MarketplaceDir,
-		liferayEnvironment.Namespace,
-		environmentID,
-		liferayEnvironment.Spec.OfflineActivationBundle,
+	offlineActivationBundlePath := liferayEnvironmentReconciler.offlineActivationBundlePath(
+		liferayEnvironment,
 	)
 
 	entitlements, error := readOfflineActivationBundle(offlineActivationBundlePath)
@@ -159,6 +192,15 @@ func hasAddOns(zipReader *zip.Reader) bool {
 
 func isOfflineActivationBundleNotFound(error error) bool {
 	return errors.Is(error, errOfflineActivationBundleNotFound)
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) offlineActivationBundlePath(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) string {
+	return filepath.Join(
+		liferayEnvironmentReconciler.environmentDir(liferayEnvironment.Namespace),
+		liferayEnvironment.Spec.OfflineActivationBundle,
+	)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistOfflineRequest(

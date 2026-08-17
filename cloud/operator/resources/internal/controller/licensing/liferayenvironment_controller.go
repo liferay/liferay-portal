@@ -123,19 +123,32 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		return result, error
 	}
 
-	apps, pending := liferayEnvironmentReconciler.Syncer.Sync(
-		entitlements.AddOns,
-		addon.NewFilesystemCache(
-			filepath.Join(
-				liferayEnvironmentReconciler.MarketplaceDir,
-				liferayEnvironment.Namespace,
-			),
-		),
-		context,
-		environmentID,
-		liferayEnvironment.Namespace,
-		privateKey,
+	cache := addon.NewFilesystemCache(
+		liferayEnvironmentReconciler.environmentDir(liferayEnvironment.Namespace),
 	)
+
+	apps := []licensingv1alpha1.AppStatus{}
+
+	pending := false
+
+	if liferayEnvironment.Spec.Offline {
+		apps, error = liferayEnvironmentReconciler.extractOfflineAddOns(
+			cache, context, entitlements, liferayEnvironment,
+		)
+
+		if error != nil {
+			return controllerruntime.Result{}, error
+		}
+	} else {
+		apps, pending = liferayEnvironmentReconciler.Syncer.Sync(
+			entitlements.AddOns,
+			cache,
+			context,
+			environmentID,
+			liferayEnvironment.Namespace,
+			privateKey,
+		)
+	}
 
 	liferayEnvironment.Status.Apps = apps
 
@@ -567,6 +580,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureNamespac
 	)
 
 	return liferayEnvironmentReconciler.Update(context, namespace)
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) environmentDir(
+	namespace string,
+) string {
+	return filepath.Join(liferayEnvironmentReconciler.MarketplaceMountPath, namespace)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
@@ -1005,12 +1024,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnviron
 type LiferayEnvironmentReconciler struct {
 	client.Client
 
-	GracePeriod       time.Duration
-	HeartbeatInterval time.Duration
-	MarketplaceDir    string
-	Provisioning      provisioning.Client
-	Recorder          record.EventRecorder
-	RetryInitialDelay time.Duration
-	RetryMaxDelay     time.Duration
-	Syncer            *addon.Syncer
+	GracePeriod          time.Duration
+	HeartbeatInterval    time.Duration
+	MarketplaceMountPath string
+	Provisioning         provisioning.Client
+	Recorder             record.EventRecorder
+	RetryInitialDelay    time.Duration
+	RetryMaxDelay        time.Duration
+	Syncer               *addon.Syncer
 }
