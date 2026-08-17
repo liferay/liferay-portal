@@ -497,6 +497,8 @@ public class LayoutServiceContextHelperImpl
 			).put(
 				WebKeys.LAYOUT, _httpServletRequest.getAttribute(WebKeys.LAYOUT)
 			).put(
+				WebKeys.LOCALE, _httpServletRequest.getAttribute(WebKeys.LOCALE)
+			).put(
 				WebKeys.THEME_DISPLAY,
 				_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
 			).put(
