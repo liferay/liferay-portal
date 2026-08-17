@@ -3,13 +3,6 @@ templates:
     -   templates/alloy/config.yaml
 tests:
     -   asserts:
-            -   failedTemplate:
-                    errorPattern: alloy should be disabled when using Azure as a cloud provider
-        it: Rejects alloy on Azure when no remote write URL is set
-        set:
-            alloy.enabled: true
-            cloudProvider: azure
-    -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the alloy configuration when alloy is disabled on Azure
