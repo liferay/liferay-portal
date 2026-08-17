@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
@@ -48,21 +50,27 @@ public class ResetStructureDisplayPageStrutsAction implements StrutsAction {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
+		long objectDefinitionId = ParamUtil.getLong(
+			httpServletRequest, "objectDefinitionId");
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		_objectDefinitionModelResourcePermission.check(
+			themeDisplay.getPermissionChecker(), objectDefinitionId,
+			ActionKeys.UPDATE);
+
 		_write(
 			httpServletResponse, _jsonFactory.createJSONObject(),
 			HttpServletResponse.SC_OK);
 
 		ObjectDefinition objectDefinition =
-			_objectDefinitionService.getObjectDefinition(
-				ParamUtil.getLong(httpServletRequest, "objectDefinitionId"));
+			_objectDefinitionService.getObjectDefinition(objectDefinitionId);
 
 		if ((objectDefinition == null) || !objectDefinition.isApproved()) {
 			return null;
 		}
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
 
 		Group group = _groupLocalService.getGroup(
 			themeDisplay.getCompanyId(), GroupConstants.CMS);
@@ -118,6 +126,12 @@ public class ResetStructureDisplayPageStrutsAction implements StrutsAction {
 	@Reference
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.object.model.ObjectDefinition)"
+	)
+	private ModelResourcePermission<ObjectDefinition>
+		_objectDefinitionModelResourcePermission;
 
 	@Reference
 	private ObjectDefinitionService _objectDefinitionService;
