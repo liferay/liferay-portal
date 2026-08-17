@@ -14,6 +14,8 @@ import java.util.Map;
  */
 public class MonitorConfig {
 
+	public static final long SECONDS_TIMEOUT_DEFAULT = 60;
+
 	public MonitorConfig(
 		String id, long intervalSeconds, Map<String, String> parameters,
 		Severity severity, Map<String, String> thresholds, long timeoutSeconds,

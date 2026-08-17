@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MonitorRunner {
 
 	public MonitorRunner() {
-		this(60 * 1000);
+		this(MonitorConfig.SECONDS_TIMEOUT_DEFAULT * 1000);
 	}
 
 	public MonitorRunner(long defaultTimeoutMillis) {

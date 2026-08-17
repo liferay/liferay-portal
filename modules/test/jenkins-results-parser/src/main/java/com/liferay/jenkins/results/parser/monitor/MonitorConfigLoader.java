@@ -129,7 +129,10 @@ public class MonitorConfigLoader {
 			_getParameters(buildProperties, id),
 			_getSeverity(buildProperties, id),
 			_getThresholds(buildProperties, id),
-			_getLongProperty(buildProperties, 60, id, "timeout"), type);
+			_getLongProperty(
+				buildProperties, MonitorConfig.SECONDS_TIMEOUT_DEFAULT, id,
+				"timeout"),
+			type);
 	}
 
 	private static Map<String, String> _getParameters(
