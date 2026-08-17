@@ -119,6 +119,46 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		);
 	});
 
+	it('explains what the score measures in a popover', async () => {
+		render(<GovernanceDashboard />);
+
+		const button = await screen.findByRole('button', {
+			name: 'about-governance-health',
+		});
+
+		expect(
+			screen.queryByText('governance-health-help')
+		).not.toBeInTheDocument();
+
+		await userEvent.click(button);
+
+		expect(
+			await screen.findByText('governance-health-help')
+		).toBeInTheDocument();
+
+		expect(screen.getByText('reliability-help')).toBeInTheDocument();
+
+		expect(screen.getByText('flow-help')).toBeInTheDocument();
+	});
+
+	it('closes the popover with the escape key', async () => {
+		render(<GovernanceDashboard />);
+
+		const button = await screen.findByRole('button', {
+			name: 'about-governance-health',
+		});
+
+		await userEvent.click(button);
+
+		expect(button).toHaveAttribute('aria-expanded', 'true');
+
+		await userEvent.keyboard('{Escape}');
+
+		await waitFor(() =>
+			expect(button).toHaveAttribute('aria-expanded', 'false')
+		);
+	});
+
 	it('has no accessibility violations', async () => {
 		const {container} = render(<GovernanceDashboard />);
 

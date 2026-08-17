@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
 import {Text} from '@clayui/core';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import React, {useContext} from 'react';
+import ClayPopover from '@clayui/popover';
+import React, {useContext, useState} from 'react';
 
-import HelpTooltipIcon from '../../../../common/components/forms/HelpTooltipIcon';
 import {getImage} from '../../../../common/utils/getImage';
 import {GovernanceContext} from '../GovernanceContext';
 import getGovernanceHealth from '../getGovernanceHealth';
@@ -15,6 +16,47 @@ import getGovernanceHealth from '../getGovernanceHealth';
 import './GovernanceHealth.scss';
 
 const MAX_SCORE = 100;
+
+const METRICS = [
+	Liferay.Language.get('reliability-help'),
+	Liferay.Language.get('freshness-help'),
+	Liferay.Language.get('flow-help'),
+	Liferay.Language.get('originality-help'),
+];
+
+function ScoreHelp({title}: {title: string}) {
+	const [show, setShow] = useState(false);
+
+	return (
+		<ClayPopover
+			alignPosition="right-top"
+			closeOnClickOutside
+			disableScroll
+			header={title}
+			onShowChange={setShow}
+			show={show}
+			trigger={
+				<ClayButtonWithIcon
+					aria-expanded={show}
+					aria-haspopup="dialog"
+					aria-label={Liferay.Language.get('about-governance-health')}
+					className="text-secondary"
+					displayType="unstyled"
+					size="sm"
+					symbol="question-circle"
+				/>
+			}
+		>
+			<p>{Liferay.Language.get('governance-health-help')}</p>
+
+			<ul className="mb-0 pl-4">
+				{METRICS.map((metric) => (
+					<li key={metric}>{metric}</li>
+				))}
+			</ul>
+		</ClayPopover>
+	);
+}
 
 function SubScore({label, value}: {label: string; value: number}) {
 	return (
@@ -38,7 +80,7 @@ export function GovernanceHealth() {
 	return (
 		<section
 			aria-label={title}
-			className="align-items-center cms-governance-health d-flex justify-content-between my-4 pl-4 pr-5 py-3 rounded-lg"
+			className="align-items-md-center cms-governance-health d-flex flex-column flex-md-row justify-content-between my-4 pl-4 pr-4 pr-md-5 py-3 rounded-lg"
 			style={{
 				backgroundImage: `url(${getImage('governance_health_banner.svg')})`,
 			}}
@@ -49,12 +91,7 @@ export function GovernanceHealth() {
 						{title}
 					</Text>
 
-					<HelpTooltipIcon
-						className="ml-2 mt-1 text-4"
-						message={Liferay.Language.get(
-							'the-governance-health-score-summarizes-how-well-the-content-in-the-selected-spaces-is-maintained'
-						)}
-					/>
+					<ScoreHelp title={title} />
 				</div>
 
 				{loadingStatistics ? (
@@ -73,7 +110,7 @@ export function GovernanceHealth() {
 			</div>
 
 			{health ? (
-				<div className="c-gap-5 d-flex mr-3 mt-4">
+				<div className="c-gap-5 d-flex mr-md-3 mt-3 mt-md-4">
 					<SubScore
 						label={Liferay.Language.get('reliability')}
 						value={health.reliability}
