@@ -62,16 +62,6 @@ public class PortletResourcesUtil {
 		return null;
 	}
 
-	public static URL getResource(String path) {
-		ServletContext servletContext = getPathServletContext(path);
-
-		if (servletContext != null) {
-			return getResource(servletContext, path);
-		}
-
-		return null;
-	}
-
 	private PortletResourcesUtil() {
 	}
 

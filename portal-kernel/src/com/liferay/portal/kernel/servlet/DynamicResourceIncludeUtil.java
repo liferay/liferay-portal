@@ -74,16 +74,6 @@ public class DynamicResourceIncludeUtil {
 		return null;
 	}
 
-	public static URL getResource(String path) {
-		ServletContext servletContext = getPathServletContext(path);
-
-		if (servletContext != null) {
-			return getResource(servletContext, path);
-		}
-
-		return null;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		DynamicResourceIncludeUtil.class);
 
