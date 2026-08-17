@@ -10,7 +10,6 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {wikiPagesTest} from '../../../fixtures/wikiPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
 import {normalizeRestPath} from '../../../utils/normalizeRestPath';
@@ -32,8 +31,7 @@ const testWithWiki = mergeTests(
 	featureFlagsTest({
 		'LPD-35013': {enabled: true},
 		'LPD-57655': {enabled: true},
-	}),
-	wikiPagesTest
+	})
 );
 
 async function addWidgetPageTemplate(apiHelpers: DataApiHelpers, site: Site) {
@@ -120,7 +118,6 @@ testWithWiki(
 		exportImportPage,
 		page,
 		site,
-		wikiPage,
 	}) => {
 		let folderPath: string;
 
@@ -129,9 +126,7 @@ testWithWiki(
 		await testWithWiki.step(
 			'Add a wiki node and a widget page template',
 			async () => {
-				await wikiPage.goto(site.friendlyUrlPath);
-
-				await wikiPage.createNewWikiNode(getRandomString());
+				await apiHelpers.headlessDelivery.postWikiNode(site.id);
 
 				await addWidgetPageTemplate(apiHelpers, site);
 			}
