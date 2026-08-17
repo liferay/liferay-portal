@@ -118,18 +118,16 @@ public class LayoutServiceContextHelperTest {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(
 			GroupTestUtil.addGroup());
 
-		try {
-			try (AutoCloseable autoCloseable =
-					_layoutServiceContextHelper.getServiceContextAutoCloseable(
-						layout)) {
-			}
-
-			Assert.assertEquals(
-				locale, httpServletRequest.getAttribute(WebKeys.LOCALE));
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+
+		Assert.assertEquals(
+			locale, httpServletRequest.getAttribute(WebKeys.LOCALE));
 	}
 
 	@Inject
