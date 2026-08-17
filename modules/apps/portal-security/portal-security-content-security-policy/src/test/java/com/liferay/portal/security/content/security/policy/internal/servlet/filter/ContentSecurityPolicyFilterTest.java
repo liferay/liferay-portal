@@ -11,6 +11,7 @@ import com.liferay.portal.security.content.security.policy.internal.configuratio
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,6 +49,23 @@ public class ContentSecurityPolicyFilterTest {
 		_testIsExcludedURIPath(
 			new String[] {"/group"}, true, null, "/group/guest/home");
 		_testIsExcludedURIPath(new String[0], true, null, "/GROUP/guest/home");
+	}
+
+	@Test
+	public void testIsFilterEnabledSkipsAlreadyFilteredRequest() {
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+
+		Mockito.when(
+			httpServletRequest.getAttribute(
+				ContentSecurityPolicyFilter.SKIP_FILTER)
+		).thenReturn(
+			Boolean.TRUE
+		);
+
+		Assert.assertFalse(
+			_contentSecurityPolicyFilter.isFilterEnabled(
+				httpServletRequest, Mockito.mock(HttpServletResponse.class)));
 	}
 
 	private void _testIsExcludedURIPath(
