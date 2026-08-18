@@ -11,7 +11,7 @@ import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.depot.model.DepotEntryGroupRelModel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
-import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.depot.service.DepotEntryService;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -44,7 +44,7 @@ public class ConnectionInfoResourceImpl extends BaseConnectionInfoResourceImpl {
 
 		List<Long> groupIds = transform(
 			_depotEntryGroupRelLocalService.getDepotEntryGroupRels(
-				_depotEntryLocalService.getGroupDepotEntry(depotEntryGroupId)),
+				_depotEntryService.getGroupDepotEntry(depotEntryGroupId)),
 			DepotEntryGroupRelModel::getToGroupId);
 
 		return _toConnectionInfo(
@@ -94,6 +94,6 @@ public class ConnectionInfoResourceImpl extends BaseConnectionInfoResourceImpl {
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
 
 	@Reference
-	private DepotEntryLocalService _depotEntryLocalService;
+	private DepotEntryService _depotEntryService;
 
 }
