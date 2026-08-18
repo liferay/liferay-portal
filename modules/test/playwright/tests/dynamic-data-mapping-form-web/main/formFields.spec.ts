@@ -498,7 +498,7 @@ test.describe('Manage fields through Form Builder page', () => {
 			await formBuilderSidePanelPage.advancedTab.click();
 
 			richTextPredefinedValueIframe = page
-				.getByRole('textbox', {name: 'Predefined Value'})
+				.locator('[data-field-name="predefinedValue"]')
 				.frameLocator('iframe');
 
 			await richTextPredefinedValueIframe.getByRole('paragraph').click();
@@ -528,7 +528,9 @@ test.describe('Manage fields through Form Builder page', () => {
 			await formBuilderPage.formTab.click();
 
 			await expect(
-				page.getByRole('textbox', {name: 'Rich Text'})
+				page.locator('.ddm-field .form-group label.ddm-label', {
+					hasText: 'Rich Text',
+				})
 			).toBeVisible();
 
 			await formBuilderPage.openFieldSettings('Rich Text');

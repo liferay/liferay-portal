@@ -159,6 +159,16 @@ test(
 );
 
 test(
+	'Editable is named after the field it edits',
+	{tag: ['@LPD-34688']},
+	async ({classicPage}) => {
+		await expect(
+			classicPage.editableFrame.getByRole('textbox', {name: 'Content'})
+		).toBeVisible();
+	}
+);
+
+test(
 	'Editor voice label is human readable',
 	{tag: ['@LPD-53923']},
 	async ({classicPage: _classicPage, page}) => {

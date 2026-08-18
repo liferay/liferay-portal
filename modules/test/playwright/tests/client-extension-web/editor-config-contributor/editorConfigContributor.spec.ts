@@ -132,10 +132,9 @@ test('CKEditor is still usable after deploying Client Extension @LPD-31017', asy
 		await journalEditArticlePage.goto();
 
 		const editorTextBox = page
-			.frameLocator(
-				'internal:role=textbox[name="Content"i] >> iframe[title="editor"]'
-			)
-			.getByRole('textbox');
+			.locator('.edit-article-panel')
+			.frameLocator('iframe[title="editor"]')
+			.getByRole('textbox', {name: 'Content'});
 
 		await editorTextBox.click();
 		await editorTextBox.fill('LPD-31017');

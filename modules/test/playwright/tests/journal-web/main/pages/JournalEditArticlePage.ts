@@ -297,7 +297,7 @@ export class JournalEditArticlePage {
 		// CKEditor 4 instance whose editable lives inside an iframe.
 
 		const ckEditor4Content = this.page
-			.getByRole('textbox', {exact: true, name: 'Content'})
+			.getByTestId('content')
 			.frameLocator('iframe.cke_wysiwyg_frame')
 			.locator('body');
 

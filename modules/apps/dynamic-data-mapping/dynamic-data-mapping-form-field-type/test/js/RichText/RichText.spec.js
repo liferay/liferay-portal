@@ -43,13 +43,12 @@ describe('RichText component', () => {
 		expect(richTextContainer.hasAttribute('aria-invalid')).toBe(false);
 	});
 
-	it('has aria-label attribute when it is rendered', () => {
-		const {getByRole} = render(
-			<RichText label="RichText Label" name="RichTextName" />
+	it('does not announce its container as a text box', () => {
+		render(<RichText label="RichText Label" name="RichTextName" />);
+
+		const richTextContainer = document.getElementById(
+			'RichTextNameContainer'
 		);
-
-		const richTextElement = getByRole('textbox');
-
-		expect(richTextElement).toHaveAttribute('aria-label', 'RichText Label');
+		expect(richTextContainer).not.toHaveAttribute('role');
 	});
 });

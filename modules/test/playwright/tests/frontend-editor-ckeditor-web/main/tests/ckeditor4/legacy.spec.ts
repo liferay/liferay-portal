@@ -23,6 +23,18 @@ test.beforeEach(async ({ckeditor4SamplePage}) => {
 	await ckeditor4SamplePage.gotoTab(TabName.LEGACY);
 });
 
+test(
+	'Editable is named after the field it edits',
+	{tag: ['@LPD-34688']},
+	async ({page}) => {
+		await expect(
+			page
+				.frameLocator('iframe[title="editor"]')
+				.getByRole('textbox', {name: 'Content'})
+		).toBeVisible();
+	}
+);
+
 test('XSS injection doesnt get invoked', async ({page}) => {
 	await test.step('Click on the "Go to XSS" button', async () => {
 		const gotToXSSViewButton = page.getByText('Go to XSS View');

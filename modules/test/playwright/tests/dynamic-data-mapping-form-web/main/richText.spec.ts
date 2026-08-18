@@ -158,6 +158,60 @@ baseTest(
 	}
 );
 
+baseTest(
+	'Names and marks each editor after its own field when a page has two of them',
+	{tag: ['@LPD-34688']},
+	async ({formBuilderPage, formBuilderSidePanelPage, page}) => {
+		const optionalLabel = getRandomString();
+		const requiredLabel = getRandomString();
+
+		await formBuilderPage.goToNew();
+
+		await expect(formBuilderPage.newFormHeading).toBeVisible();
+
+		// Add an optional rich text field, then a required one below it
+
+		await formBuilderSidePanelPage.addFieldByDoubleClick('Rich Text');
+
+		await formBuilderSidePanelPage.label.fill(optionalLabel);
+
+		await formBuilderSidePanelPage.backButton.click();
+
+		await formBuilderSidePanelPage.addFieldByDoubleClick('Rich Text');
+
+		await formBuilderSidePanelPage.label.fill(requiredLabel);
+
+		await formBuilderSidePanelPage.requiredFieldToggleSwitch.click();
+
+		await page.waitForTimeout(1000);
+
+		await formBuilderPage.clickPublishFormButton();
+
+		const formSubmissionURL = await formBuilderPage.getFormSubmissionURL();
+
+		await page.goto(formSubmissionURL);
+
+		// Each editable is named after the field it edits, so a wrong order
+		// fails these lookups rather than passing silently
+
+		const richTextFrames = page.frameLocator('iframe.cke_wysiwyg_frame');
+
+		const optionalEditable = richTextFrames
+			.first()
+			.getByRole('textbox', {name: optionalLabel});
+
+		const requiredEditable = richTextFrames
+			.last()
+			.getByRole('textbox', {name: requiredLabel});
+
+		// Only the required field's own editable is announced as required
+
+		await expect(requiredEditable).toHaveAttribute('aria-required', 'true');
+
+		await expect(optionalEditable).not.toHaveAttribute('aria-required');
+	}
+);
+
 xssBypassTest(
 	'Can add scripts to the rich text field @LPD-31212',
 	async ({formBuilderPage, formBuilderSidePanelPage}) => {
