@@ -953,6 +953,23 @@ public class SectionDisplayContextUtil {
 		return jsonArray;
 	}
 
+	public static List<FDSActionDropdownItem>
+		getNeedsReviewFDSActionDropdownItems(
+			HttpServletRequest httpServletRequest) {
+
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			getFDSActionDropdownItems(httpServletRequest);
+
+		fdsActionDropdownItems.add(
+			getScheduleDateFDSActionDropdownItem(
+				httpServletRequest, "update-expiration-date"));
+		fdsActionDropdownItems.add(
+			getScheduleDateFDSActionDropdownItem(
+				httpServletRequest, "update-review-date"));
+
+		return fdsActionDropdownItems;
+	}
+
 	public static Map<String, String> getObjectDefinitionCssClasses() {
 		return HashMapBuilder.put(
 			"default", "content-icon-custom-structure"

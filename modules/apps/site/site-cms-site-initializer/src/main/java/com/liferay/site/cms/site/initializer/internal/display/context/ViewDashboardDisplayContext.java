@@ -7,7 +7,6 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.document.library.configuration.DLConfiguration;
-import com.liferay.frontend.data.set.action.FDSItemsActions;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
@@ -52,8 +51,7 @@ public class ViewDashboardDisplayContext {
 		ObjectDefinitionService objectDefinitionService,
 		RoleLocalService roleLocalService, ThemeDisplay themeDisplay,
 		TranslationInfoItemFieldValuesExporterRegistry
-			translationInfoItemFieldValuesExporterRegistry,
-		FDSItemsActions viewNeedsReviewSectionFDSItemsActions) {
+			translationInfoItemFieldValuesExporterRegistry) {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
 		_dlConfiguration = dlConfiguration;
@@ -64,8 +62,6 @@ public class ViewDashboardDisplayContext {
 		_themeDisplay = themeDisplay;
 		_translationInfoItemFieldValuesExporterRegistry =
 			translationInfoItemFieldValuesExporterRegistry;
-		_viewNeedsReviewSectionFDSItemsActions =
-			viewNeedsReviewSectionFDSItemsActions;
 	}
 
 	public Map<String, Object> getConstants() {
@@ -191,8 +187,8 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"fdsActionDropdownItems",
 			() ->
-				_viewNeedsReviewSectionFDSItemsActions.
-					getFDSActionDropdownItems(_httpServletRequest)
+				SectionDisplayContextUtil.getNeedsReviewFDSActionDropdownItems(
+					_httpServletRequest)
 		).put(
 			"fileMimeTypeCssClasses",
 			() -> {
@@ -276,6 +272,5 @@ public class ViewDashboardDisplayContext {
 	private final ThemeDisplay _themeDisplay;
 	private final TranslationInfoItemFieldValuesExporterRegistry
 		_translationInfoItemFieldValuesExporterRegistry;
-	private final FDSItemsActions _viewNeedsReviewSectionFDSItemsActions;
 
 }
