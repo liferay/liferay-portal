@@ -66,6 +66,12 @@ jobs:
         with:
             chart_name: liferay-gcp-infrastructure-provider
             working_directory: ./cloud/helm/gcp-infrastructure-provider
+    push-infrastructure:
+        needs: check-repository
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-infrastructure
+            working_directory: ./cloud/helm/infrastructure
     push-observability:
         needs: check-repository
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml

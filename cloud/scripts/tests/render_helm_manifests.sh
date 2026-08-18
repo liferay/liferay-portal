@@ -26,6 +26,7 @@ function main {
 		gcp
 		gcp-infrastructure
 		gcp-infrastructure-provider
+		infrastructure
 		observability
 		platform
 		platform-components
