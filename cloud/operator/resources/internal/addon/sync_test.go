@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"fmt"
 	"io"
+	"slices"
 	"testing"
 	"time"
 
@@ -80,6 +81,61 @@ func (fakeCache *fakeCache) Save(
 	fakeCache.saved[virtualEntryID] = expectedChecksum
 
 	return nil
+}
+
+func TestSummarize(t *testing.T) {
+	testCases := map[string]struct {
+		apps []licensingv1alpha1.AppStatus
+		want Summary
+	}{
+		"a downloaded add-on is neither pending nor failing": {
+			apps: []licensingv1alpha1.AppStatus{
+				{Name: "Alpha", State: stateDownloaded},
+			},
+			want: Summary{Entitled: 1},
+		},
+		"a downloading add-on is pending": {
+			apps: []licensingv1alpha1.AppStatus{
+				{Name: "Alpha", State: stateDownloaded},
+				{Name: "Bravo", State: stateDownloading},
+			},
+			want: Summary{Entitled: 2, Pending: 1},
+		},
+		"failing add-ons are listed alphabetically": {
+			apps: []licensingv1alpha1.AppStatus{
+				{Name: "Delta", State: stateFailed},
+				{Name: "Bravo", State: stateFailed},
+			},
+			want: Summary{Entitled: 2, Failed: []string{"Bravo", "Delta"}},
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			summary := Summarize(testCase.apps)
+
+			if summary.Entitled != testCase.want.Entitled {
+				t.Errorf(
+					"Entitled = %d, want %d", summary.Entitled,
+					testCase.want.Entitled,
+				)
+			}
+
+			if summary.Pending != testCase.want.Pending {
+				t.Errorf(
+					"Pending = %d, want %d", summary.Pending,
+					testCase.want.Pending,
+				)
+			}
+
+			if !slices.Equal(summary.Failed, testCase.want.Failed) {
+				t.Errorf(
+					"Failed = %v, want %v", summary.Failed,
+					testCase.want.Failed,
+				)
+			}
+		})
+	}
 }
 
 func TestSyncBacksOffWhileNextRetryInFuture(t *testing.T) {

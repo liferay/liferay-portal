@@ -899,6 +899,91 @@ func TestReconcileOfflineStoresRequestInIdentitySecret(t *testing.T) {
 	}
 }
 
+func TestReconcileReportsAddOnsNotReadyWhenDownloadFails(t *testing.T) {
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(
+		&stubProvisioning{
+			downloadError: fmt.Errorf("boom"),
+			entitlements:  addOnEntitlements("abc123"),
+		}, t,
+		developmentObjects()...,
+	)
+
+	reconcile(liferayEnvironmentReconciler, t)
+
+	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
+
+	condition := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionAddOnsReady,
+	)
+
+	if condition == nil || condition.Status != metav1.ConditionFalse || condition.Reason != "DownloadsFailing" {
+		t.Errorf("AddOnsReady condition = %v, want False/DownloadsFailing", condition)
+	}
+
+	if !strings.Contains(condition.Message, "Sample Add-on") {
+		t.Errorf(
+			"AddOnsReady message = %q, want the failing add-on named",
+			condition.Message,
+		)
+	}
+
+	if liferayEnvironment.Status.Phase != "Ready" {
+		t.Errorf(
+			"Phase = %q, want Ready despite the failing add-on",
+			liferayEnvironment.Status.Phase,
+		)
+	}
+
+	licenseValid := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionLicenseValid,
+	)
+
+	if licenseValid == nil || licenseValid.Status != metav1.ConditionTrue {
+		t.Errorf("LicenseValid condition = %v, want True", licenseValid)
+	}
+}
+
+func TestReconcileReportsAddOnsReadyWhenDownloaded(t *testing.T) {
+	body := []byte("PK\x03\x04 sample lpkg")
+
+	sum := sha256.Sum256(body)
+
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(
+		&stubProvisioning{
+			downloadBody: body,
+			entitlements: addOnEntitlements(hex.EncodeToString(sum[:])),
+		}, t,
+		developmentObjects()...,
+	)
+
+	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
+
+	condition := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionAddOnsReady,
+	)
+
+	if condition == nil || condition.Status != metav1.ConditionFalse || condition.Reason != "Downloading" {
+		t.Errorf(
+			"AddOnsReady condition = %v, want False/Downloading on the first pass",
+			condition,
+		)
+	}
+
+	reconcile(liferayEnvironmentReconciler, t)
+
+	condition = meta.FindStatusCondition(
+		getEnvironment(liferayEnvironmentReconciler, t).Status.Conditions,
+		conditionAddOnsReady,
+	)
+
+	if condition == nil || condition.Status != metav1.ConditionTrue || condition.Reason != "Downloaded" {
+		t.Errorf(
+			"AddOnsReady condition = %v, want True/Downloaded once cached",
+			condition,
+		)
+	}
+}
+
 func TestReconcileResetsAddOnBackoffOnSuccess(t *testing.T) {
 	body := []byte("PK\x03\x04 sample lpkg")
 

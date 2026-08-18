@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"maps"
 	"path/filepath"
+	"strings"
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
@@ -40,6 +41,7 @@ import (
 
 const (
 	conditionActivated             = "Activated"
+	conditionAddOnsReady           = "AddOnsReady"
 	conditionGracePeriodExpired    = "GracePeriodExpired"
 	conditionLicenseValid          = "LicenseValid"
 	conditionProvisioningReachable = "ProvisioningReachable"
@@ -151,6 +153,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		)
 	}
 
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		addOnsReadyCondition(addon.Summarize(apps)),
+	)
+
 	liferayEnvironment.Status.Apps = apps
 
 	liferayEnvironment.Status.Phase = "Ready"
@@ -184,6 +191,45 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManag
 	).Complete(
 		liferayEnvironmentReconciler,
 	)
+}
+
+func addOnsReadyCondition(summary addon.Summary) metav1.Condition {
+	if len(summary.Failed) > 0 {
+		names := make([]string, 0, len(summary.Failed))
+
+		for _, name := range summary.Failed {
+			names = append(names, fmt.Sprintf("%q", name))
+		}
+
+		return metav1.Condition{
+			Message: fmt.Sprintf(
+				"Unable to download %d of %d entitled add-ons: %s.",
+				len(summary.Failed), summary.Entitled,
+				strings.Join(names, ", "),
+			),
+			Reason: "DownloadsFailing",
+			Status: metav1.ConditionFalse,
+			Type:   conditionAddOnsReady,
+		}
+	}
+
+	if summary.Pending > 0 {
+		return metav1.Condition{
+			Message: fmt.Sprintf(
+				"Downloads are in progress for %d of %d entitled add-ons.",
+				summary.Pending, summary.Entitled,
+			),
+			Reason: "Downloading",
+			Status: metav1.ConditionFalse,
+			Type:   conditionAddOnsReady,
+		}
+	}
+
+	return metav1.Condition{
+		Reason: "Downloaded",
+		Status: metav1.ConditionTrue,
+		Type:   conditionAddOnsReady,
+	}
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) clearUnreachable(

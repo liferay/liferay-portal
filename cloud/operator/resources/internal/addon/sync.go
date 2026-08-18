@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rsa"
 	"io"
+	"slices"
 	"strconv"
 	"sync"
 	"time"
@@ -41,6 +42,26 @@ func NewSyncer(
 
 func (goRunner GoRunner) Run(task func()) {
 	go task()
+}
+
+func Summarize(apps []licensingv1alpha1.AppStatus) Summary {
+	var summary Summary
+
+	for _, appStatus := range apps {
+		summary.Entitled++
+
+		if appStatus.State == stateDownloading {
+			summary.Pending++
+		}
+
+		if appStatus.State == stateFailed {
+			summary.Failed = append(summary.Failed, appStatus.Name)
+		}
+	}
+
+	slices.Sort(summary.Failed)
+
+	return summary
 }
 
 func (syncer *Syncer) Sync(
@@ -271,6 +292,12 @@ type GoRunner struct{}
 
 type Runner interface {
 	Run(task func())
+}
+
+type Summary struct {
+	Entitled int
+	Failed   []string
+	Pending  int
 }
 
 type SyncRequest struct {

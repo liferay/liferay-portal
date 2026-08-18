@@ -49,6 +49,7 @@ type LicenseStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:printcolumn:JSONPath=`.spec.workloadRef.name`,name="Workload",type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="Activated")].status`,name="Activated",type=string
+// +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="AddOnsReady")].status`,name="Add-Ons",type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.license.maxClusterNodes`,name="Max",type=integer
 // +kubebuilder:printcolumn:JSONPath=`.status.license.validUntil`,name="Valid-Until",type=string
 // +kubebuilder:printcolumn:JSONPath=`.spec.desiredReplicas`,name="Desired",type=integer
