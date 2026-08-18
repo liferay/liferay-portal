@@ -16,6 +16,7 @@ import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.type.NotificationType;
 import com.liferay.notification.type.NotificationTypeServiceTracker;
+import com.liferay.object.exception.ObjectEntryExpirationDateException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
@@ -137,6 +138,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		_checkPermission(group, userAccount.getRoleKey());
 
+		_validate(userAccount.getMembershipExpirationDate());
+
 		User user = _userLocalService.getUser(userAccountId);
 
 		_userGroupRoleLocalService.deleteUserGroupRoles(
@@ -172,6 +175,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		if (Validator.isNull(userAccount.getEmailAddress())) {
 			throw new ValidationException("Email Address is null");
 		}
+
+		_validate(userAccount.getMembershipExpirationDate());
 
 		ObjectEntry objectEntry = _getObjectEntry(true, roomId);
 
@@ -466,6 +471,14 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
 				contextUser),
 			user);
+	}
+
+	private void _validate(Date expirationDate) throws Exception {
+		if ((expirationDate != null) && expirationDate.before(new Date())) {
+			throw new ObjectEntryExpirationDateException(
+				"Expiration date must be a future date",
+				"expiration-date-must-be-a-future-date");
+		}
 	}
 
 	@Reference

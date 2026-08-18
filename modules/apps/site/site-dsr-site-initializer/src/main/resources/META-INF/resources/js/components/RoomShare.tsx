@@ -131,6 +131,14 @@ function isEmailAddressValid(email: string) {
 	return emailRegex.test(email);
 }
 
+function isPastDate(date: string): boolean {
+	if (!date) {
+		return false;
+	}
+
+	return date < getDateInputValue(new Date().toISOString());
+}
+
 function RoomShare({
 	canAssignAllRoles = false,
 	closeModal,
@@ -232,6 +240,17 @@ function RoomShare({
 			return;
 		}
 
+		if (isPastDate(expirationDate)) {
+			openToast({
+				message: Liferay.Language.get(
+					'expiration-date-must-be-a-future-date'
+				),
+				type: 'danger',
+			});
+
+			return;
+		}
+
 		setLoading(true);
 
 		try {
@@ -319,6 +338,17 @@ function RoomShare({
 			roleKey?: string;
 			userId: number;
 		}) => {
+			if (isPastDate(getDateInputValue(membershipExpirationDate))) {
+				openToast({
+					message: Liferay.Language.get(
+						'expiration-date-must-be-a-future-date'
+					),
+					type: 'danger',
+				});
+
+				return;
+			}
+
 			setLoading(true);
 
 			try {

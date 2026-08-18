@@ -7,6 +7,7 @@ package com.liferay.headless.dsr.internal.resource.v1_0;
 
 import com.liferay.headless.dsr.dto.v1_0.InvitedMember;
 import com.liferay.headless.dsr.resource.v1_0.InvitedMemberResource;
+import com.liferay.object.exception.ObjectEntryExpirationDateException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
@@ -109,15 +110,20 @@ public class InvitedMemberResourceImpl extends BaseInvitedMemberResourceImpl {
 
 		_checkPermission(group, invitedMember.getRoleKey());
 
+		Date expirationDate = invitedMember.getMembershipExpirationDate();
+
+		if ((expirationDate != null) && expirationDate.before(new Date())) {
+			throw new ObjectEntryExpirationDateException(
+				"Expiration date must be a future date",
+				"expiration-date-must-be-a-future-date");
+		}
+
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			ticket.getExtraInfo());
 
-		if (invitedMember.getMembershipExpirationDate() != null) {
-			Date membershipExpirationDate =
-				invitedMember.getMembershipExpirationDate();
-
+		if (expirationDate != null) {
 			jsonObject.put(
-				"membershipExpirationDate", membershipExpirationDate.getTime());
+				"membershipExpirationDate", expirationDate.getTime());
 		}
 		else {
 			jsonObject.remove("membershipExpirationDate");
