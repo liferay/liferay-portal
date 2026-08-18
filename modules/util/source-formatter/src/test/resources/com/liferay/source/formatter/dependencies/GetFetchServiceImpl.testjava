@@ -1,0 +1,29 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.PasswordPolicy;
+import com.liferay.portal.kernel.service.persistence.PasswordPolicyPersistence;
+import com.liferay.portal.kernel.util.PropsValues;
+
+/**
+ * @author Shuyang Zhou
+ */
+public class GetFetchServiceImpl {
+
+	public PasswordPolicy getDefaultPasswordPolicy(long companyId)
+		throws PortalException {
+
+		return passwordPolicyPersistence.fetchByC_N(
+			companyId, PropsValues.PASSWORDS_DEFAULT_POLICY_NAME);
+	}
+
+	@BeanReference(type = PasswordPolicyPersistence.class)
+	protected PasswordPolicyPersistence passwordPolicyPersistence;
+
+}

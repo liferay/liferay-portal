@@ -981,15 +981,15 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testServiceGetFetch() throws Exception {
+	public void testServiceImplGetFetch() throws Exception {
 		test(
-			"GetFetchLocalServiceImpl.testjava",
+			"GetFetchServiceImpl.testjava",
 			StringBundler.concat(
-				"The \"getDirectFetch\" method returns a nullable fetch ",
+				"Method \"getDefaultPasswordPolicy\" returns a nullable fetch ",
 				"result, which its \"get\" name promises will never be null; ",
 				"return a throwing find (raising a NoSuch*Exception) or ",
 				"rename the method to \"fetch\""),
-			17);
+			19);
 	}
 
 	@Test
