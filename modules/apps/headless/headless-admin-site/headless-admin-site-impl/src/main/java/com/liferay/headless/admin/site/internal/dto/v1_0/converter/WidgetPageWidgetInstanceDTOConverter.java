@@ -247,7 +247,7 @@ public class WidgetPageWidgetInstanceDTOConverter
 		GeneralConfig generalConfig = new GeneralConfig();
 
 		generalConfig.setApplicationDecorator(() -> applicationDecorator);
-		generalConfig.setApplicationDecoratorId(
+		generalConfig.setCustomApplicationDecorator(
 			() -> {
 				if (applicationDecorator != null) {
 					return null;

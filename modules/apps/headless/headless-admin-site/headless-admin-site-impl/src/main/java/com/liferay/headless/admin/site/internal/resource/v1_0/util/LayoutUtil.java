@@ -645,7 +645,7 @@ public class LayoutUtil {
 			widgetLookAndFeelConfig.getGeneralConfig();
 
 		String portletSetupPortletDecoratorId =
-			generalConfig.getApplicationDecoratorId();
+			generalConfig.getCustomApplicationDecorator();
 
 		if ((portletSetupPortletDecoratorId == null) &&
 			(generalConfig.getApplicationDecorator() != null)) {
