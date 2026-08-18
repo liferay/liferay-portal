@@ -12,6 +12,7 @@ import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryGroupRelService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.depot.test.util.DepotTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -42,6 +44,7 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
 
 /**
@@ -56,6 +59,56 @@ public class DepotEntryGroupRelServiceTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Test
+	public void testDepotEntryGroupRelWithoutToGroupPermissions()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		DepotEntry depotEntry = _addDepotEntry();
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), group.getGroupId());
+
+		try {
+			DepotTestUtil.withAssetLibraryAdministrator(
+				depotEntry,
+				user -> {
+					PermissionChecker permissionChecker =
+						PermissionThreadLocal.getPermissionChecker();
+
+					try {
+						PermissionThreadLocal.setPermissionChecker(
+							_permissionCheckerFactory.create(user));
+
+						_assertMustHaveUpdatePermission(
+							user.getUserId(),
+							() ->
+								_depotEntryGroupRelService.
+									addDepotEntryGroupRel(
+										depotEntry.getDepotEntryId(),
+										group.getGroupId()));
+
+						_assertMustHaveUpdatePermission(
+							user.getUserId(),
+							() ->
+								_depotEntryGroupRelService.
+									deleteDepotEntryGroupRel(
+										depotEntryGroupRel.
+											getDepotEntryGroupRelId()));
+					}
+					finally {
+						PermissionThreadLocal.setPermissionChecker(
+							permissionChecker);
+					}
+				});
+		}
+		finally {
+			_groupLocalService.deleteGroup(group);
+		}
+	}
 
 	@Test
 	public void testGetDepotEntryGroupRelsWithoutPermissions()
@@ -158,6 +211,21 @@ public class DepotEntryGroupRelServiceTest {
 		_depotEntries.add(depotEntry);
 
 		return depotEntry;
+	}
+
+	private void _assertMustHaveUpdatePermission(
+		long userId, ThrowingRunnable throwingRunnable) {
+
+		PrincipalException.MustHavePermission principalException =
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class, throwingRunnable);
+
+		String message = principalException.getMessage();
+
+		Assert.assertTrue(
+			message,
+			message.contains(
+				"User " + userId + " must have UPDATE permission for"));
 	}
 
 	@DeleteAfterTestRun
