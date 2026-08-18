@@ -18,7 +18,7 @@ test(
 		await databaseMigrationPage.goto();
 
 		await expect(databaseMigrationPage.description).toContainText(
-			'Exports current database schema as SQL files. For use with our DB Migration Importer Tool.'
+			'Exports the current database schema as SQL files for use with the DB Migration Importer Tool.'
 		);
 	}
 );

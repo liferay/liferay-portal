@@ -29,7 +29,7 @@ if (Validator.isNotNull(learnMessageURL)) {
 <div class="sheet">
 	<div class="panel-group panel-group-flush">
 		<p class="sheet-text">
-			<%= LanguageUtil.format(request, "exports-current-database-schema-as-sql-files-for-use-with-our-db-migration-importer-tool", new Object[] {anchorOpenTag, anchorCloseTag}, false) %>
+			<%= LanguageUtil.format(request, "exports-the-current-database-schema-as-sql-files-for-use-with-the-db-migration-importer-tool", new Object[] {anchorOpenTag, anchorCloseTag}, false) %>
 		</p>
 
 		<aui:input cssClass="lfr-input-text-container" label="export-files-path" name="exportFilesPath" required="<%= true %>" type="text" />
