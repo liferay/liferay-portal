@@ -17,6 +17,7 @@ import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {styleBookPageTest} from '../../../fixtures/styleBookPageTest';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 import {StyleBooksPage} from '../../../pages/style-book-web/StyleBooksPage';
+import {checkAccessibility} from '../../../utils/checkAccessibility';
 import getRandomString from '../../../utils/getRandomString';
 import {
 	disableSystemFeatureFlag,
@@ -337,6 +338,25 @@ test(
 			);
 			await expect(overlay).toHaveCSS('cursor', 'not-allowed');
 			await expect(overlay).toHaveCSS('z-index', '100000');
+		});
+	}
+);
+
+test(
+	'Style book editor page preview iframe has an accessible title',
+	{tag: '@LPD-102257'},
+	async ({page, site, styleBooksPage}) => {
+		await test.step('Open the Style Book editor', async () => {
+			await styleBooksPage.goto(site.friendlyUrlPath);
+
+			await styleBooksPage.create(getRandomString());
+		});
+
+		await test.step('Assert the preview iframe has an accessible title', async () => {
+			await checkAccessibility({
+				page,
+				selectors: ['iframe.style-book-editor__page-preview-frame'],
+			});
 		});
 	}
 );
