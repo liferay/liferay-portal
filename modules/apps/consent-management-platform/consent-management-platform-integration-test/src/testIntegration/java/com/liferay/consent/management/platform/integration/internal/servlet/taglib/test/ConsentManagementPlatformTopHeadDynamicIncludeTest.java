@@ -7,6 +7,7 @@ package com.liferay.consent.management.platform.integration.internal.servlet.tag
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.consent.management.platform.integration.configuration.ConsentManagementPlatformConfiguration;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -89,11 +90,14 @@ public class ConsentManagementPlatformTopHeadDynamicIncludeTest {
 			_createMockHttpServletRequest(nonce), mockHttpServletResponse,
 			StringPool.BLANK);
 
-		Assert.assertEquals(
-			2,
-			StringUtil.count(
-				mockHttpServletResponse.getContentAsString(),
-				"nonce=\"" + nonce + "\""));
+		content = mockHttpServletResponse.getContentAsString();
+
+		String nonceAttribute = "nonce=\"" + nonce + "\"";
+
+		Assert.assertEquals(3, StringUtil.count(content, nonceAttribute));
+		Assert.assertTrue(content.contains("<SCRIPT " + nonceAttribute));
+		Assert.assertTrue(content.contains("<link " + nonceAttribute));
+		Assert.assertTrue(content.contains("<script " + nonceAttribute));
 	}
 
 	private MockHttpServletRequest _createMockHttpServletRequest(String nonce)
@@ -122,10 +126,11 @@ public class ConsentManagementPlatformTopHeadDynamicIncludeTest {
 	private static final String _SCRIPT_CONSENT_MAPPING =
 		"<SCRIPT id=\"liferay-cmp-consent-mapping\">/* mapping */</SCRIPT>";
 
-	private static final String _SCRIPT_TAG =
-		"<script data-cbid=\"000000\" id=\"Cookiebot\" " +
-			"src=\"https://consent.cookiebot.com/uc.js\" " +
-				"type=\"text/javascript\"></script>";
+	private static final String _SCRIPT_TAG = StringBundler.concat(
+		"<link as=\"script\" href=\"https://consent.cookiebot.com/uc.js\" ",
+		"rel=\"preload\"><script data-cbid=\"000000\" id=\"Cookiebot\" ",
+		"src=\"https://consent.cookiebot.com/uc.js\" ",
+		"type=\"text/javascript\"></script>");
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
