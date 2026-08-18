@@ -6462,6 +6462,14 @@
 	},
 	{
 		"classNames": [
+			"CommerceInventoryEngine"
+		],
+		"from": "getAvailabilityStatus(long paramName, long paramName, long paramName, BigDecimal paramName, String paramName, String paramName)",
+		"issueKey": "LPD-102782",
+		"to": "getAvailabilityStatus(param#0#, 0, param#1#, param#2#, param#3#, param#4#, param#5#)"
+	},
+	{
+		"classNames": [
 			"CommerceOrderLocalService",
 			"CommerceOrderLocalServiceUtil",
 			"CommerceOrderLocalServiceWrapper",
