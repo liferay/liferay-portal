@@ -88,6 +88,8 @@ test.describe.serial('View Custom Object1 after upgrade', () => {
 		});
 
 		await test.step('Edit object definition details', async () => {
+			await editObjectDetailsPage.waitForDetailsFormLoaded();
+
 			await editObjectDetailsPage.labelInput.fill(
 				'Custom Object1 Updated'
 			);
