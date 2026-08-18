@@ -37,6 +37,8 @@ spec:
                             value: {{ .Values.marketplace.mountPath | quote }}
                         -   name: METRICS_ADDRESS
                             value: {{ printf ":%d" (int .Values.metrics.port) | quote }}
+                        -   name: OPERATOR_SERVICE_ACCOUNT
+                            value: {{ printf "system:serviceaccount:%s:%s" .Release.Namespace (include "dxp-operator.serviceAccountName" .) | quote }}
                         -   name: PROBE_ADDRESS
                             value: {{ printf ":%d" (int .Values.probes.port) | quote }}
                         -   name: PROVISIONING_BASE_URL

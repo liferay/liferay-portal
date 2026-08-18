@@ -22,6 +22,15 @@ func (statefulSetScaleValidator *StatefulSetScaleValidator) Handle(
 ) admission.Response {
 	logger := logf.FromContext(context)
 
+	if statefulSetScaleValidator.ServiceAccount != "" &&
+		request.UserInfo.Username == statefulSetScaleValidator.ServiceAccount {
+
+		return admission.Allowed(
+			"the licensing operator enforces the replica ceiling itself and is " +
+				"exempt from this webhook",
+		)
+	}
+
 	requestedReplicas, workloadName, error := statefulSetScaleValidator.getRequestedReplicas(
 		request,
 	)
@@ -125,6 +134,7 @@ func (statefulSetScaleValidator *StatefulSetScaleValidator) getRequestedReplicas
 }
 
 type StatefulSetScaleValidator struct {
-	Client  client.Client
-	Decoder admission.Decoder
+	Client         client.Client
+	Decoder        admission.Decoder
+	ServiceAccount string
 }

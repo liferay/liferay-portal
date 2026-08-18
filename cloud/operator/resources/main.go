@@ -92,8 +92,9 @@ func main() {
 		licensingwebhook.WebhookPath,
 		&admission.Webhook{
 			Handler: &licensingwebhook.StatefulSetScaleValidator{
-				Client:  manager.GetClient(),
-				Decoder: admission.NewDecoder(manager.GetScheme()),
+				Client:         manager.GetClient(),
+				Decoder:        admission.NewDecoder(manager.GetScheme()),
+				ServiceAccount: config.OperatorServiceAccount,
 			},
 		},
 	)
@@ -118,16 +119,17 @@ func main() {
 }
 
 type config struct {
-	Debug                bool          `env:"DEBUG" envDefault:"false"`
-	DownloadPollInterval time.Duration `env:"DOWNLOAD_POLL_INTERVAL" envDefault:"15s"`
-	GracePeriod          time.Duration `env:"GRACE_PERIOD" envDefault:"168h"`
-	HeartbeatInterval    time.Duration `env:"HEARTBEAT_INTERVAL" envDefault:"10m"`
-	MarketplaceMountPath string        `env:"MARKETPLACE_MOUNT_PATH" envDefault:"/marketplace"`
-	MetricsAddress       string        `env:"METRICS_ADDRESS" envDefault:":8080"`
-	ProbeAddress         string        `env:"PROBE_ADDRESS" envDefault:":8081"`
-	ProvisioningBaseURL  string        `env:"PROVISIONING_BASE_URL" envDefault:"https://api.one.liferay.com"`
-	RetryInitialDelay    time.Duration `env:"RETRY_INITIAL_DELAY" envDefault:"30s"`
-	RetryMaxDelay        time.Duration `env:"RETRY_MAX_DELAY" envDefault:"30m"`
+	Debug                  bool          `env:"DEBUG" envDefault:"false"`
+	DownloadPollInterval   time.Duration `env:"DOWNLOAD_POLL_INTERVAL" envDefault:"15s"`
+	GracePeriod            time.Duration `env:"GRACE_PERIOD" envDefault:"168h"`
+	HeartbeatInterval      time.Duration `env:"HEARTBEAT_INTERVAL" envDefault:"10m"`
+	MarketplaceMountPath   string        `env:"MARKETPLACE_MOUNT_PATH" envDefault:"/marketplace"`
+	MetricsAddress         string        `env:"METRICS_ADDRESS" envDefault:":8080"`
+	OperatorServiceAccount string        `env:"OPERATOR_SERVICE_ACCOUNT"`
+	ProbeAddress           string        `env:"PROBE_ADDRESS" envDefault:":8081"`
+	ProvisioningBaseURL    string        `env:"PROVISIONING_BASE_URL" envDefault:"https://api.one.liferay.com"`
+	RetryInitialDelay      time.Duration `env:"RETRY_INITIAL_DELAY" envDefault:"30s"`
+	RetryMaxDelay          time.Duration `env:"RETRY_MAX_DELAY" envDefault:"30m"`
 }
 
 var scheme = runtime.NewScheme()

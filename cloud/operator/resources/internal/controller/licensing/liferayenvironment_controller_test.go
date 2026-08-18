@@ -866,6 +866,120 @@ func TestReconcileOfflineRequestIsWriteOnce(t *testing.T) {
 	}
 }
 
+func TestReconcileOfflineRestoresCeilingAfterOwnerMatches(t *testing.T) {
+	marketplaceMountPath := t.TempDir()
+
+	licenseXML := virtualClusterLicenseXML(
+		"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+	)
+
+	writeOfflineActivationBundle(
+		map[string]string{
+			"add-ons/app.lpkg": "PK-fake-lpkg",
+			"manifest.json": fmt.Sprintf(
+				`{
+					"add-ons": [],
+					"licenseXML": %q,
+					"maxClusterNodes": 3
+				}`,
+				base64.StdEncoding.EncodeToString([]byte(licenseXML)),
+			),
+		},
+		filepath.Join(
+			marketplaceMountPath, "liferay-dev", "bundle.zip",
+		),
+		t,
+	)
+
+	activatedAt := metav1.Now()
+
+	environment := pendingEnvironment()
+	environment.Spec.DesiredReplicas = pointerInt32(3)
+	environment.Spec.Offline = true
+	environment.Spec.OfflineActivationBundle = "bundle.zip"
+	environment.Status.ActivatedAt = &activatedAt
+	environment.Status.License.MaxClusterNodes = pointerInt32(0)
+	environment.Status.Phase = "Degraded"
+
+	meta.SetStatusCondition(
+		&environment.Status.Conditions,
+		metav1.Condition{
+			Message: "License was issued for a different environment.",
+			Reason:  "EnvironmentMismatch",
+			Status:  metav1.ConditionFalse,
+			Type:    conditionLicenseValid,
+		},
+	)
+
+	meta.SetStatusCondition(
+		&environment.Status.Conditions,
+		metav1.Condition{
+			Message: "Requested 3 replicas exceeds the licensed maximum of 0; capping to 0.",
+			Reason:  "ExceedsLicensedMaximum",
+			Status:  metav1.ConditionFalse,
+			Type:    conditionReplicasCountValid,
+		},
+	)
+
+	liferayEnvironmentReconciler, _ := reconcileOfflineActivationBundle(
+		marketplaceMountPath, t,
+		&corev1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "liferay-dev",
+				UID:  "dev-namespace-uid",
+			},
+		},
+		&appsv1.StatefulSet{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "dev-liferay",
+				Namespace: "liferay-dev",
+			},
+			Spec: appsv1.StatefulSetSpec{
+				Replicas: pointerInt32(0),
+			},
+		},
+		environment,
+	)
+
+	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
+
+	if liferayEnvironment.Status.Phase != "Ready" {
+		t.Errorf("Phase = %q, want Ready after the owner matches again", liferayEnvironment.Status.Phase)
+	}
+
+	if liferayEnvironment.Status.License.MaxClusterNodes == nil ||
+		*liferayEnvironment.Status.License.MaxClusterNodes != 3 {
+		t.Errorf(
+			"License.MaxClusterNodes = %v, want the restored 3",
+			liferayEnvironment.Status.License.MaxClusterNodes,
+		)
+	}
+
+	if licenseValid := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionLicenseValid,
+	); licenseValid == nil || licenseValid.Status != metav1.ConditionTrue ||
+		licenseValid.Reason != "Valid" {
+
+		t.Errorf("LicenseValid condition = %v, want True/Valid", licenseValid)
+	}
+
+	if replicasValid := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionReplicasCountValid,
+	); replicasValid == nil || replicasValid.Status != metav1.ConditionTrue ||
+		replicasValid.Reason != "WithinLicensedLimit" {
+
+		t.Errorf(
+			"ReplicasCountValid condition = %v, want True/WithinLicensedLimit", replicasValid,
+		)
+	}
+
+	statefulSet := getStatefulSet(liferayEnvironmentReconciler, t)
+
+	assertReplicasEqual(
+		statefulSet.Spec.Replicas, pointerInt32(3), "statefulSet.spec.replicas", t,
+	)
+}
+
 func TestReconcileOfflineStoresRequestInIdentitySecret(t *testing.T) {
 	environment := pendingEnvironment()
 	environment.Spec.Offline = true

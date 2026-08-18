@@ -9,6 +9,7 @@ import (
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	admissionv1 "k8s.io/api/admission/v1"
 	appsv1 "k8s.io/api/apps/v1"
+	authenticationv1 "k8s.io/api/authentication/v1"
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -27,6 +28,7 @@ func TestHandle(t *testing.T) {
 		maxClusterNodes         int32
 		otherEnvironments       []client.Object
 		request                 admission.Request
+		serviceAccount          string
 		unknownLimit            bool
 	}{
 		"create over limit is denied": {
@@ -61,6 +63,17 @@ func TestHandle(t *testing.T) {
 			licensed:        true,
 			maxClusterNodes: 2,
 			request:         createRequest("liferay-default", "liferay-test", pointerInt32(1), "liferay-default", t),
+		},
+		"operator scale over the licensed limit is allowed": {
+			expectedAllowed:         true,
+			expectedMessageContains: "exempt from this webhook",
+			licensed:                true,
+			maxClusterNodes:         0,
+			request: operatorScaleRequest(
+				"liferay-default", "liferay-test", 3,
+				"system:serviceaccount:liferay-system:liferay-dxp-operator", t,
+			),
+			serviceAccount: "system:serviceaccount:liferay-system:liferay-dxp-operator",
 		},
 		"scale in an unlicensed namespace is allowed": {
 			expectedAllowed:         true,
@@ -156,6 +169,8 @@ func TestHandle(t *testing.T) {
 				objects = append(objects, testCase.otherEnvironments...)
 
 				statefulSetScaleValidator := newValidator(objects...)
+
+				statefulSetScaleValidator.ServiceAccount = testCase.serviceAccount
 
 				response := statefulSetScaleValidator.Handle(context.Background(), testCase.request)
 
@@ -278,6 +293,24 @@ func newValidator(objects ...client.Object) *StatefulSetScaleValidator {
 		).Build(),
 		Decoder: admission.NewDecoder(scheme),
 	}
+}
+
+func operatorScaleRequest(
+	name string,
+	namespace string,
+	replicas int32,
+	username string,
+	t *testing.T,
+) admission.Request {
+	t.Helper()
+
+	request := scaleRequest(name, namespace, replicas, t)
+
+	request.UserInfo = authenticationv1.UserInfo{
+		Username: username,
+	}
+
+	return request
 }
 
 func pointerInt32(value int32) *int32 {
