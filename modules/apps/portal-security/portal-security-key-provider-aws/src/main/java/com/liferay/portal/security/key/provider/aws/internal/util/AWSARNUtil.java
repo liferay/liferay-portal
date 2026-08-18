@@ -18,7 +18,7 @@ public class AWSARNUtil {
 		String region) {
 
 		if (Validator.isNull(arnTemplate) || (identifier == null) ||
-			identifier.startsWith("arn:") || identifier.startsWith("alias/")) {
+			identifier.startsWith("alias/") || identifier.startsWith("arn:")) {
 
 			return identifier;
 		}
