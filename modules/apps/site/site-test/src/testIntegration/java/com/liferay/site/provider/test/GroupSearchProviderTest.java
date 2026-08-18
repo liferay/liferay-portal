@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -75,6 +76,50 @@ public class GroupSearchProviderTest {
 			_originalGroupsComplexSQLClassNames);
 
 		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
+	}
+
+	@Test
+	public void testSearchGroupsWithUpdateActionId() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addGroupUser(group, RoleConstants.SITE_MEMBER);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(group, user));
+		mockLiferayPortletActionRequest.setParameter(
+			"keywords", group.getGroupKey());
+
+		GroupSearch viewGroupSearch = new GroupSearch(
+			mockLiferayPortletActionRequest, new MockLiferayPortletURL());
+
+		GroupSearchProvider.setResultsAndTotal(
+			ActionKeys.VIEW,
+			Arrays.asList(
+				Company.class.getName(), Group.class.getName(),
+				Organization.class.getName()),
+			null, viewGroupSearch, mockLiferayPortletActionRequest);
+
+		_assertGroupSearch(group, viewGroupSearch);
+
+		GroupSearch updateGroupSearch = new GroupSearch(
+			mockLiferayPortletActionRequest, new MockLiferayPortletURL());
+
+		GroupSearchProvider.setResultsAndTotal(
+			ActionKeys.UPDATE,
+			Arrays.asList(
+				Company.class.getName(), Group.class.getName(),
+				Organization.class.getName()),
+			null, updateGroupSearch, mockLiferayPortletActionRequest);
+
+		List<Group> results = updateGroupSearch.getResults();
+
+		Assert.assertEquals(results.toString(), 0, results.size());
 	}
 
 	@Test
@@ -157,7 +202,7 @@ public class GroupSearchProviderTest {
 	}
 
 	private void _assertGroupSearch(
-		Group childGroup1, GroupSearch groupSearch) {
+		Group expectedGroup, GroupSearch groupSearch) {
 
 		List<Group> results = groupSearch.getResults();
 
@@ -165,7 +210,7 @@ public class GroupSearchProviderTest {
 
 		Group group = results.get(0);
 
-		Assert.assertEquals(childGroup1.getGroupId(), group.getGroupId());
+		Assert.assertEquals(expectedGroup.getGroupId(), group.getGroupId());
 	}
 
 	private ThemeDisplay _getThemeDisplay(Group group, User user)
