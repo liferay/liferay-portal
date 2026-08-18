@@ -344,7 +344,9 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 				}
 			}
 		}
-		else if (StringUtil.equals(name, User.class.getName())) {
+		else if (StringUtil.equals(name, User.class.getName()) &&
+				 StringUtil.equals(actionId, ActionKeys.VIEW)) {
+
 			try {
 				if (_isDepotGroupAdmin(groupId)) {
 					return true;
