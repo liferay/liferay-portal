@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -388,7 +389,8 @@ public class PLOEntryLocalServiceTest {
 		Assert.assertEquals(
 			ploEntry.getPloEntryId(), unchangedPLOEntry.getPloEntryId());
 		Assert.assertEquals(mvccVersion, unchangedPLOEntry.getMvccVersion());
-		Assert.assertEquals(modifiedDate, unchangedPLOEntry.getModifiedDate());
+		Assert.assertTrue(
+			DateUtil.equals(modifiedDate, unchangedPLOEntry.getModifiedDate()));
 	}
 
 	private void _testAddOrUpdatePLOEntryOnNewExternalReferenceCode()

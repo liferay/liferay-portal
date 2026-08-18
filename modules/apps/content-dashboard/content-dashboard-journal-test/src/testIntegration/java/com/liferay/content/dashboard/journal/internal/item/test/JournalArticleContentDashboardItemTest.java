@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -601,9 +602,10 @@ public class JournalArticleContentDashboardItemTest {
 			_contentDashboardItemFactory.create(
 				journalArticle.getResourcePrimKey());
 
-		Assert.assertEquals(
-			journalArticle.getModifiedDate(),
-			contentDashboardItem.getModifiedDate());
+		Assert.assertTrue(
+			DateUtil.equals(
+				journalArticle.getModifiedDate(),
+				contentDashboardItem.getModifiedDate()));
 	}
 
 	@Test

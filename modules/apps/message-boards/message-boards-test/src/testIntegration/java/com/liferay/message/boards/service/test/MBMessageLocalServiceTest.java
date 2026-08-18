@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
@@ -528,7 +529,8 @@ public class MBMessageLocalServiceTest {
 			mbMessage.getMessageId());
 
 		Assert.assertEquals(user.getFullName(), mbMessage.getUserName());
-		Assert.assertEquals(expectedModifiedDate, mbMessage.getModifiedDate());
+		Assert.assertTrue(
+			DateUtil.equals(expectedModifiedDate, mbMessage.getModifiedDate()));
 	}
 
 	protected MBMessage addMessage() throws Exception {

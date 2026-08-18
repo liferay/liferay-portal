@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -992,7 +993,8 @@ public class LayoutCTTest {
 
 		Assert.assertNotNull(productionLayout);
 
-		Assert.assertEquals(modifiedDate, productionLayout.getModifiedDate());
+		Assert.assertTrue(
+			DateUtil.equals(modifiedDate, productionLayout.getModifiedDate()));
 	}
 
 	@Test

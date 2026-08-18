@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -236,7 +237,8 @@ public class JournalArticleLocalServiceCheckArticlesTest {
 
 		article = _journalArticleLocalService.getArticle(article.getId());
 
-		Assert.assertEquals(modifiedDate, article.getModifiedDate());
+		Assert.assertTrue(
+			DateUtil.equals(modifiedDate, article.getModifiedDate()));
 
 		updatedArticle.setExpirationDate(
 			new Date(System.currentTimeMillis() - (Time.HOUR * 2)));

@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -320,9 +321,10 @@ public class BlogsEntryContentDashboardItemTest {
 		ContentDashboardItem contentDashboardItem =
 			_contentDashboardItemFactory.create(blogsEntry.getEntryId());
 
-		Assert.assertEquals(
-			blogsEntry.getModifiedDate(),
-			contentDashboardItem.getModifiedDate());
+		Assert.assertTrue(
+			DateUtil.equals(
+				blogsEntry.getModifiedDate(),
+				contentDashboardItem.getModifiedDate()));
 	}
 
 	@Test
