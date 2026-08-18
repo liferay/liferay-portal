@@ -14,6 +14,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
+import com.liferay.portal.kernel.util.HtmlUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -110,9 +111,9 @@ public class ScopedCSSVariablesTopHeadDynamicInclude
 
 			for (Map.Entry<String, String> entry : cssVariables.entrySet()) {
 				printWriter.print("\t\t--");
-				printWriter.print(entry.getKey());
+				printWriter.print(HtmlUtil.escapeCSS(entry.getKey()));
 				printWriter.print(": ");
-				printWriter.print(entry.getValue());
+				printWriter.print(HtmlUtil.escapeCSS(entry.getValue()));
 				printWriter.print(";\n");
 			}
 
