@@ -259,7 +259,9 @@ test(
 			type: 'objectDefinition',
 		});
 
-		await viewObjectActionsPage.goto(objectDefinition.label['en_US']);
+		await viewObjectActionsPage.gotoByObjectDefinitionId(
+			objectDefinition.id
+		);
 
 		await editObjectActionPage.addNewAction({
 			notificationTemplateName,
