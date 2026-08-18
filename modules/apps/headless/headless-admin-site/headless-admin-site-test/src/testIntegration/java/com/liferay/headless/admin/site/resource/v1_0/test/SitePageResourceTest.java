@@ -2243,10 +2243,13 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
 
+		String customApplicationDecorator = RandomTestUtil.randomString();
+
 		LayoutTestUtil.addPortletToLayout(
 			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
 			HashMapBuilder.put(
-				"portletSetupPortletDecoratorId", new String[] {"encadre"}
+				"portletSetupPortletDecoratorId",
+				new String[] {customApplicationDecorator}
 			).build());
 
 		SitePageResource sitePageResource = _getSitePageResource(
@@ -2270,7 +2273,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		Assert.assertNull(generalConfig.getApplicationDecorator());
 		Assert.assertEquals(
-			"encadre", generalConfig.getCustomApplicationDecorator());
+			customApplicationDecorator,
+			generalConfig.getCustomApplicationDecorator());
 
 		Assert.assertEquals(
 			widgetPageWidgetInstances.toString(), 1,
@@ -3011,17 +3015,27 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	private void _testPostSiteSitePageWithApplicationDecorator()
 		throws Exception {
 
+		GeneralConfig.ApplicationDecorator[] applicationDecorators =
+			GeneralConfig.ApplicationDecorator.values();
+
+		GeneralConfig.ApplicationDecorator applicationDecorator =
+			applicationDecorators
+				[RandomTestUtil.randomInt(0, applicationDecorators.length - 1)];
+
 		_testPostSiteSitePageWithApplicationDecorator(
-			GeneralConfig.ApplicationDecorator.DECORATE, null,
-			GeneralConfig.ApplicationDecorator.DECORATE, null);
+			applicationDecorator, null, applicationDecorator, null);
+
+		String customApplicationDecorator = RandomTestUtil.randomString();
+
 		_testPostSiteSitePageWithApplicationDecorator(
-			GeneralConfig.ApplicationDecorator.DECORATE, "encadre", null,
-			"encadre");
+			applicationDecorator, customApplicationDecorator, null,
+			customApplicationDecorator);
+
 		_testPostSiteSitePageWithApplicationDecorator(
-			null, "decorate", GeneralConfig.ApplicationDecorator.DECORATE,
-			null);
+			null, StringUtil.lowerCase(applicationDecorator.getValue()),
+			applicationDecorator, null);
 		_testPostSiteSitePageWithApplicationDecorator(
-			null, "encadre", null, "encadre");
+			null, customApplicationDecorator, null, customApplicationDecorator);
 	}
 
 	private void _testPostSiteSitePageWithApplicationDecorator(
