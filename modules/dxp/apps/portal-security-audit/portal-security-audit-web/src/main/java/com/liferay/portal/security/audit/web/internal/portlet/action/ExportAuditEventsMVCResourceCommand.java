@@ -9,6 +9,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -71,9 +72,7 @@ public class ExportAuditEventsMVCResourceCommand
 		_columns = GetterUtil.getStringValues(properties.get("columns"));
 
 		if (ArrayUtil.isEmpty(_columns)) {
-			Set<String> keys = _functions.keySet();
-
-			_columns = keys.toArray(new String[0]);
+			_columns = _getDefaultColumns();
 		}
 	}
 
@@ -89,7 +88,8 @@ public class ExportAuditEventsMVCResourceCommand
 					SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
 
 			String auditEventsCSV = _getAuditEventsCSV(
-				_columns, resourceRequest, resourceResponse);
+				_getColumns(_portal.getCompanyId(resourceRequest)),
+				resourceRequest, resourceResponse);
 
 			PortletResponseUtil.sendFile(
 				resourceRequest, resourceResponse, "audit_events.csv",
@@ -210,6 +210,20 @@ public class ExportAuditEventsMVCResourceCommand
 		progressTracker.finish(resourceRequest);
 
 		return csv;
+	}
+
+	private String[] _getColumns(long companyId) {
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+			return _getDefaultColumns();
+		}
+
+		return _columns;
+	}
+
+	private String[] _getDefaultColumns() {
+		Set<String> keys = _functions.keySet();
+
+		return keys.toArray(new String[0]);
 	}
 
 	private String _getEmailAddress(AuditEvent auditEvent) {
