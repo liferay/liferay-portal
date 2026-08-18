@@ -2,13 +2,43 @@ import com.liferay.gradle.plugins.patcher.PatchTask
 
 apply plugin: "com.liferay.patcher"
 
+task jarManifest
+task jarPatched(type: Zip)
 task patch(type: PatchTask)
 
 dependencies {
 	api group: "org.springframework", name: "spring-beans", version: "5.3.39"
-	api group: "org.springframework", name: "spring-context", version: "5.3.39"
 	api group: "org.springframework", name: "spring-core", version: "5.3.39"
 	api group: "org.springframework", name: "spring-expression", version: "5.3.39"
+	compileOnly group: "org.springframework", name: "spring-context", transitive: false, version: "5.3.39"
+}
+
+jar {
+	dependsOn jarPatched
+	finalizedBy jarManifest
+	setActions([])
+}
+
+jarManifest {
+	doLast {
+		ant.jar(destfile: jar.archivePath, update: true)
+	}
+}
+
+jarPatched {
+	archiveFileName = jar.archiveFileName
+	destinationDirectory = jar.destinationDirectory
+	duplicatesStrategy = "exclude"
+	exclude "org/springframework/remoting/**"
+	from sourceSets.main.output
+
+	from {
+		zipTree(configurations.compileOnly.singleFile)
+	}
+
+	mustRunAfter compileJava
+	mustRunAfter generatePomFileForMavenPublication
+	mustRunAfter processResources
 }
 
 jarSources {
