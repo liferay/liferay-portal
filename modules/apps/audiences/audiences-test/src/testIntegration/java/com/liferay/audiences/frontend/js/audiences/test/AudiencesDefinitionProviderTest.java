@@ -47,7 +47,7 @@ public class AudiencesDefinitionProviderTest {
 		AudiencesEntry audiencesEntry =
 			_audiencesEntryLocalService.addAudiencesEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				"{\"conjunction\": \"AND\", \"rules\": []}",
+				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
 				RandomTestUtil.randomString());
 
 		AudiencesDefinition audiencesDefinition =
@@ -74,7 +74,66 @@ public class AudiencesDefinitionProviderTest {
 		Assert.assertEquals(
 			HashedFilesUtil.computeHash(content),
 			audiencesDefinition.getHash());
+
+		AudiencesEntry unregisteredAudiencesEntry =
+			_audiencesEntryLocalService.addAudiencesEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
+				RandomTestUtil.randomString());
+
+		unregisteredAudiencesEntry.setJSON(
+			JSONUtil.put(
+				"conjunction", "AND"
+			).put(
+				"rules",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"conjunction", "OR"
+					).put(
+						"rules",
+						JSONUtil.putAll(
+							_getRuleJSONObject(_UNREGISTERED_CUSTOM_ATTRIBUTE))
+					))
+			).toString());
+
+		_audiencesEntryLocalService.updateAudiencesEntry(
+			unregisteredAudiencesEntry);
+
+		audiencesDefinition =
+			_audiencesDefinitionProvider.getAudiencesDefinition(
+				TestPropsValues.getCompanyId());
+
+		content = audiencesDefinition.getContent();
+
+		Assert.assertEquals(
+			objectMapper.readTree(expectedContentJSONObject.toString()),
+			objectMapper.readTree(content));
 	}
+
+	private String _getCriteriaJSON(String attribute) {
+		return JSONUtil.put(
+			"conjunction", "AND"
+		).put(
+			"rules", JSONUtil.putAll(_getRuleJSONObject(attribute))
+		).toString();
+	}
+
+	private JSONObject _getRuleJSONObject(String attribute) {
+		return JSONUtil.put(
+			"attribute", attribute
+		).put(
+			"operator", "eq"
+		).put(
+			"value", true
+		);
+	}
+
+	private static final String _REGISTERED_CUSTOM_ATTRIBUTE =
+		"custom:/o/frontend-js-audiences-web/__liferay__" +
+			"/custom-attributes.js#signed_in";
+
+	private static final String _UNREGISTERED_CUSTOM_ATTRIBUTE =
+		"custom:data:text/javascript,export function run(){return true}#run";
 
 	@Inject
 	private AudiencesDefinitionProvider _audiencesDefinitionProvider;
