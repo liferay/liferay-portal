@@ -82,18 +82,18 @@ public class JenkinsCohort {
 		return blacklistedJenkinsMasters;
 	}
 
-	public int getIdleJenkinsSlaveCount() {
-		int idleJenkinsSlaveCount = 0;
+	public int getIdleJenkinsSlavesCount() {
+		int idleJenkinsSlavesCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
 			update();
 		}
 
 		for (JenkinsMaster jenkinsMaster : _jenkinsMastersMap.values()) {
-			idleJenkinsSlaveCount += jenkinsMaster.getIdleJenkinsSlavesCount();
+			idleJenkinsSlavesCount += jenkinsMaster.getIdleJenkinsSlavesCount();
 		}
 
-		return idleJenkinsSlaveCount;
+		return idleJenkinsSlavesCount;
 	}
 
 	public List<JenkinsMaster> getJenkinsMasters() {
@@ -177,38 +177,38 @@ public class JenkinsCohort {
 		return networkNames;
 	}
 
-	public int getOfflineJenkinsSlaveCount() {
-		int offlineJenkinsSlaveCount = 0;
+	public int getOfflineJenkinsSlavesCount() {
+		int offlineJenkinsSlavesCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
 			update();
 		}
 
 		for (JenkinsMaster jenkinsMaster : _jenkinsMastersMap.values()) {
-			offlineJenkinsSlaveCount +=
+			offlineJenkinsSlavesCount +=
 				jenkinsMaster.getOfflineJenkinsSlavesCount();
 		}
 
-		return offlineJenkinsSlaveCount;
+		return offlineJenkinsSlavesCount;
 	}
 
-	public int getOnlineJenkinsSlaveCount() {
-		int onlineJenkinsSlaveCount = 0;
+	public int getOnlineJenkinsSlavesCount() {
+		int onlineJenkinsSlavesCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
 			update();
 		}
 
 		for (JenkinsMaster jenkinsMaster : _jenkinsMastersMap.values()) {
-			onlineJenkinsSlaveCount +=
+			onlineJenkinsSlavesCount +=
 				jenkinsMaster.getOnlineJenkinsSlavesCount();
 		}
 
-		return onlineJenkinsSlaveCount;
+		return onlineJenkinsSlavesCount;
 	}
 
-	public int getQueuedBuildCount() {
-		int queuedBuildCount = 0;
+	public int getQueuedBuildsCount() {
+		int queuedBuildsCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
 			update();
@@ -217,15 +217,15 @@ public class JenkinsCohort {
 		for (JenkinsCohortJob jenkinsCohortJob :
 				_jenkinsCohortJobsMap.values()) {
 
-			queuedBuildCount =
-				queuedBuildCount + jenkinsCohortJob.getQueuedBuildCount();
+			queuedBuildsCount =
+				queuedBuildsCount + jenkinsCohortJob.getQueuedBuildsCount();
 		}
 
-		return queuedBuildCount;
+		return queuedBuildsCount;
 	}
 
-	public int getRunningBuildCount() {
-		int runningBuildCount = 0;
+	public int getRunningBuildsCount() {
+		int runningBuildsCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
 			update();
@@ -234,14 +234,14 @@ public class JenkinsCohort {
 		for (JenkinsCohortJob jenkinsCohortJob :
 				_jenkinsCohortJobsMap.values()) {
 
-			runningBuildCount =
-				runningBuildCount + jenkinsCohortJob.getRunningBuildCount();
+			runningBuildsCount =
+				runningBuildsCount + jenkinsCohortJob.getRunningBuildsCount();
 		}
 
-		return runningBuildCount;
+		return runningBuildsCount;
 	}
 
-	public int getStartedDownstreamBuildCountAfter(Date date) {
+	public int getStartedDownstreamBuildsCountAfter(Date date) {
 		int buildsCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
@@ -260,7 +260,7 @@ public class JenkinsCohort {
 		return buildsCount;
 	}
 
-	public int getStartedTopLevelBuildCountAfter(Date date) {
+	public int getStartedTopLevelBuildsCountAfter(Date date) {
 		int buildsCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
@@ -358,9 +358,9 @@ public class JenkinsCohort {
 
 		nodeDataTableJSONArray.put(
 			Arrays.asList(
-				getRunningBuildCount(), getOnlineJenkinsSlaveCount(),
-				getQueuedBuildCount(), getOfflineJenkinsSlaveCount(),
-				getIdleJenkinsSlaveCount()));
+				getRunningBuildsCount(), getOnlineJenkinsSlavesCount(),
+				getQueuedBuildsCount(), getOfflineJenkinsSlavesCount(),
+				getIdleJenkinsSlavesCount()));
 
 		sb.append(nodeDataTableJSONArray.toString());
 
@@ -380,21 +380,21 @@ public class JenkinsCohort {
 				Arrays.asList(
 					jenkinsCohortJob.getJobName(),
 					_createJSONArray(
-						jenkinsCohortJob.getTotalBuildCount(),
-						_formatBuildCountText(
-							jenkinsCohortJob.getTotalBuildCount(),
+						jenkinsCohortJob.getTotalBuildsCount(),
+						_formatBuildsCountText(
+							jenkinsCohortJob.getTotalBuildsCount(),
 							jenkinsCohortJob.getTotalBuildPercentage())),
 					_createJSONArray(
-						jenkinsCohortJob.getRunningBuildCount(),
-						_formatBuildCountText(
-							jenkinsCohortJob.getRunningBuildCount(),
+						jenkinsCohortJob.getRunningBuildsCount(),
+						_formatBuildsCountText(
+							jenkinsCohortJob.getRunningBuildsCount(),
 							jenkinsCohortJob.getRunningBuildPercentage())),
 					_createJSONArray(
-						jenkinsCohortJob.getQueuedBuildCount(),
-						_formatBuildCountText(
-							jenkinsCohortJob.getQueuedBuildCount(),
+						jenkinsCohortJob.getQueuedBuildsCount(),
+						_formatBuildsCountText(
+							jenkinsCohortJob.getQueuedBuildsCount(),
 							jenkinsCohortJob.getQueuedBuildPercentage())),
-					jenkinsCohortJob.getTopLevelBuildCount()));
+					jenkinsCohortJob.getTopLevelBuildsCount()));
 		}
 
 		sb.append(buildLoadDataTableJSONArray.toString());
@@ -515,11 +515,11 @@ public class JenkinsCohort {
 		JSONArray timestampsJSONArray = jsonObject.optJSONArray(
 			"timestamps", new JSONArray());
 
-		int timestampCount = timestampsJSONArray.length();
+		int timestampsCount = timestampsJSONArray.length();
 
 		long previousTimestamp = currentTimestamp;
 
-		if (timestampCount > 0) {
+		if (timestampsCount > 0) {
 			previousTimestamp = timestampsJSONArray.getLong(
 				timestampsJSONArray.length() - 1);
 		}
@@ -527,28 +527,29 @@ public class JenkinsCohort {
 		Date previousDate = new Date(previousTimestamp);
 
 		_addNodeData(
-			jsonObject, timestampCount, "downstream_started_builds",
-			getStartedDownstreamBuildCountAfter(previousDate));
+			jsonObject, timestampsCount, "downstream_started_builds",
+			getStartedDownstreamBuildsCountAfter(previousDate));
 
 		_addNodeData(
-			jsonObject, timestampCount, "idle_nodes",
-			getIdleJenkinsSlaveCount());
+			jsonObject, timestampsCount, "idle_nodes",
+			getIdleJenkinsSlavesCount());
 		_addNodeData(
-			jsonObject, timestampCount, "occupied_nodes",
-			getRunningBuildCount());
+			jsonObject, timestampsCount, "occupied_nodes",
+			getRunningBuildsCount());
 		_addNodeData(
-			jsonObject, timestampCount, "offline_nodes",
-			getOfflineJenkinsSlaveCount());
+			jsonObject, timestampsCount, "offline_nodes",
+			getOfflineJenkinsSlavesCount());
 		_addNodeData(
-			jsonObject, timestampCount, "online_nodes",
-			getOnlineJenkinsSlaveCount());
+			jsonObject, timestampsCount, "online_nodes",
+			getOnlineJenkinsSlavesCount());
 		_addNodeData(
-			jsonObject, timestampCount, "queued_builds", getQueuedBuildCount());
+			jsonObject, timestampsCount, "queued_builds",
+			getQueuedBuildsCount());
 		_addNodeData(
-			jsonObject, timestampCount, "timestamps", currentTimestamp);
+			jsonObject, timestampsCount, "timestamps", currentTimestamp);
 		_addNodeData(
-			jsonObject, timestampCount, "top_level_started_builds",
-			getStartedTopLevelBuildCountAfter(previousDate));
+			jsonObject, timestampsCount, "top_level_started_builds",
+			getStartedTopLevelBuildsCountAfter(previousDate));
 
 		if (JenkinsResultsParserUtil.isCloudCINode()) {
 			jsonObject.put("asg_primary_labels", getASGPrimaryLabels());
@@ -576,16 +577,16 @@ public class JenkinsCohort {
 				}
 
 				_addNodeData(
-					jsonObject, timestampCount,
+					jsonObject, timestampsCount,
 					"idle_nodes__" + asgPrimaryLabel, idleNodes);
 				_addNodeData(
-					jsonObject, timestampCount,
+					jsonObject, timestampsCount,
 					"occupied_nodes__" + asgPrimaryLabel, occupiedNodes);
 				_addNodeData(
-					jsonObject, timestampCount,
+					jsonObject, timestampsCount,
 					"offline_nodes__" + asgPrimaryLabel, offlineNodes);
 				_addNodeData(
-					jsonObject, timestampCount,
+					jsonObject, timestampsCount,
 					"queued_builds__" + asgPrimaryLabel, queuedBuilds);
 			}
 		}
@@ -598,11 +599,11 @@ public class JenkinsCohort {
 	}
 
 	private void _addNodeData(
-		JSONObject jsonObject, int recordCount, String key, long value) {
+		JSONObject jsonObject, int recordsCount, String key, long value) {
 
 		JSONArray jsonArray = jsonObject.optJSONArray(key, new JSONArray());
 
-		while (jsonArray.length() < recordCount) {
+		while (jsonArray.length() < recordsCount) {
 			jsonArray.put(0);
 		}
 
@@ -672,10 +673,10 @@ public class JenkinsCohort {
 				duration, JenkinsResultsParserUtil.toDurationString(duration)));
 	}
 
-	private String _formatBuildCountText(
-		int buildCount, String buildPercentage) {
+	private String _formatBuildsCountText(
+		int buildsCount, String buildPercentage) {
 
-		return buildCount + " (" + buildPercentage + ")";
+		return buildsCount + " (" + buildPercentage + ")";
 	}
 
 	private List<JenkinsMaster> _getAvailableJenkinsMasters(
@@ -877,32 +878,32 @@ public class JenkinsCohort {
 			return _jenkinsCohortJobName;
 		}
 
-		public int getQueuedBuildCount() {
-			return _queuedTopLevelBuildsJsonMap.size() +
-				_queuedOtherBuildsJsonMap.size();
-		}
-
 		public String getQueuedBuildPercentage() {
 			return CISystemStatusReportUtil.getPercentage(
-				getQueuedBuildCount(),
-				JenkinsCohort.this.getQueuedBuildCount());
+				getQueuedBuildsCount(),
+				JenkinsCohort.this.getQueuedBuildsCount());
+		}
+
+		public int getQueuedBuildsCount() {
+			return _queuedTopLevelBuildsJsonMap.size() +
+				_queuedOtherBuildsJsonMap.size();
 		}
 
 		public Map<String, JSONObject> getQueuedTopLevelBuildsJsonMap() {
 			return _queuedTopLevelBuildsJsonMap;
 		}
 
-		public int getRunningBuildCount() {
+		public String getRunningBuildPercentage() {
+			return CISystemStatusReportUtil.getPercentage(
+				getRunningBuildsCount(),
+				JenkinsCohort.this.getRunningBuildsCount());
+		}
+
+		public int getRunningBuildsCount() {
 			return _topLevelBuildURLs.size() + _otherBuildURLs.size();
 		}
 
-		public String getRunningBuildPercentage() {
-			return CISystemStatusReportUtil.getPercentage(
-				getRunningBuildCount(),
-				JenkinsCohort.this.getRunningBuildCount());
-		}
-
-		public int getTopLevelBuildCount() {
+		public int getTopLevelBuildsCount() {
 			return _topLevelBuildURLs.size() +
 				_queuedTopLevelBuildsJsonMap.size();
 		}
@@ -911,15 +912,15 @@ public class JenkinsCohort {
 			return _topLevelBuildURLs;
 		}
 
-		public int getTotalBuildCount() {
-			return getQueuedBuildCount() + getRunningBuildCount();
-		}
-
 		public String getTotalBuildPercentage() {
 			return CISystemStatusReportUtil.getPercentage(
-				getTotalBuildCount(),
-				JenkinsCohort.this.getRunningBuildCount() +
-					JenkinsCohort.this.getQueuedBuildCount());
+				getTotalBuildsCount(),
+				JenkinsCohort.this.getRunningBuildsCount() +
+					JenkinsCohort.this.getQueuedBuildsCount());
+		}
+
+		public int getTotalBuildsCount() {
+			return getQueuedBuildsCount() + getRunningBuildsCount();
 		}
 
 		private final String _jenkinsCohortJobName;
