@@ -180,6 +180,10 @@ public class GetFileActionHelper {
 			}
 		}
 
+		DLFileEntryPermission.check(
+			themeDisplay.getPermissionChecker(), fileEntry,
+			ActionKeys.DOWNLOAD);
+
 		FileVersion fileVersion = fileEntry.getFileVersion(version);
 
 		InputStream inputStream = fileVersion.getContentStream(true);
