@@ -6,7 +6,6 @@
 
 package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 
-import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.Portal;
@@ -34,17 +33,13 @@ public class ViewCategoriesJSPSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return new ViewCategoriesDisplayContext(
-			_assetVocabularyLocalService, httpServletRequest,
-			_layoutLocalService, language, _portal);
+			httpServletRequest, _layoutLocalService, language, _portal);
 	}
 
 	@Override
 	protected String getJSPPath() {
 		return "/view_categories.jsp";
 	}
-
-	@Reference
-	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

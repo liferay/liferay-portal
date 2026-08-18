@@ -7,7 +7,6 @@
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetCategory;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
@@ -44,12 +43,10 @@ import java.util.Map;
 public class ViewCategoriesDisplayContext {
 
 	public ViewCategoriesDisplayContext(
-		AssetVocabularyLocalService assetVocabularyLocalService,
 		HttpServletRequest httpServletRequest,
 		LayoutLocalService layoutLocalService, Language language,
 		Portal portal) {
 
-		_assetVocabularyLocalService = assetVocabularyLocalService;
 		_httpServletRequest = httpServletRequest;
 		_layoutLocalService = layoutLocalService;
 		_language = language;
@@ -278,7 +275,6 @@ public class ViewCategoriesDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewCategoriesDisplayContext.class);
 
-	private final AssetVocabularyLocalService _assetVocabularyLocalService;
 	private Long _categoryId;
 	private final HttpServletRequest _httpServletRequest;
 	private final Language _language;
