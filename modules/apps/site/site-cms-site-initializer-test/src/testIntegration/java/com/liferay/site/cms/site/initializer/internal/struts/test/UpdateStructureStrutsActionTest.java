@@ -18,13 +18,23 @@ import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -170,7 +180,8 @@ public class UpdateStructureStrutsActionTest {
 		String name = StringUtil.randomId();
 
 		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(_objectDefinition3);
+			_getMockHttpServletRequest(
+				_objectDefinition3, TestPropsValues.getUser());
 
 		mockHttpServletRequest.setParameter(
 			"objectRelationships",
@@ -239,7 +250,8 @@ public class UpdateStructureStrutsActionTest {
 			new MockHttpServletResponse();
 
 		_updateStructureStrutsAction.execute(
-			_getMockHttpServletRequest(_objectDefinition1),
+			_getMockHttpServletRequest(
+				_objectDefinition1, TestPropsValues.getUser()),
 			mockHttpServletResponse);
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -253,6 +265,72 @@ public class UpdateStructureStrutsActionTest {
 		Assert.assertNotNull(
 			_objectRelationshipLocalService.fetchObjectRelationship(
 				objectRelationship.getObjectRelationshipId()));
+	}
+
+	@Test
+	@TestInfo("LPD-102138")
+	public void testExecuteDoesNotDeleteUnauthorizedObjectRelationships()
+		throws Exception {
+
+		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		_objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		com.liferay.object.model.ObjectRelationship objectRelationship =
+			_addEdgeObjectRelationship(_objectDefinition2, _objectDefinition3);
+
+		_user = UserTestUtil.addUser();
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(),
+			com.liferay.object.model.ObjectDefinition.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_objectDefinition1.getObjectDefinitionId()),
+			_role.getRoleId(),
+			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
+
+		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(_objectDefinition1, _user);
+
+		mockHttpServletRequest.setParameter(
+			"deletedObjectRelationships",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"objectDefinitionERC",
+					_objectDefinition2.getExternalReferenceCode()
+				).put(
+					"objectRelationshipERC",
+					objectRelationship.getExternalReferenceCode()
+				)
+			).toString());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			_updateStructureStrutsAction.execute(
+				mockHttpServletRequest, mockHttpServletResponse);
+		}
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(
+			jsonObject.toString(), "PrincipalException.MustHavePermission",
+			jsonObject.getString("type"));
+
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship.getObjectRelationshipId()));
+
+		_deleteEdgeObjectRelationship(objectRelationship);
 	}
 
 	private com.liferay.object.model.ObjectRelationship
@@ -293,7 +371,8 @@ public class UpdateStructureStrutsActionTest {
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
-			com.liferay.object.model.ObjectDefinition objectDefinition)
+			com.liferay.object.model.ObjectDefinition objectDefinition,
+			User user)
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -304,7 +383,7 @@ public class UpdateStructureStrutsActionTest {
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setLocale(LocaleUtil.US);
-		themeDisplay.setUser(TestPropsValues.getUser());
+		themeDisplay.setUser(user);
 
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
@@ -380,7 +459,19 @@ public class UpdateStructureStrutsActionTest {
 	@Inject
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@DeleteAfterTestRun
+	private Role _role;
+
 	@Inject(filter = "path=/cms/update-structure")
 	private StrutsAction _updateStructureStrutsAction;
+
+	@DeleteAfterTestRun
+	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
