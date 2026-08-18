@@ -24,7 +24,7 @@ type AppStatus struct {
 	// +optional
 	NextRetry *metav1.Time `json:"nextRetry,omitempty"`
 
-	// +kubebuilder:validation:Enum=Downloaded;Downloading;Failed
+	// +kubebuilder:validation:Enum=Downloaded;Downloading;Failed;Orphaned
 	// +optional
 	State string `json:"state,omitempty"`
 

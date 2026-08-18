@@ -20,6 +20,7 @@ const (
 	stateDownloaded  = "Downloaded"
 	stateDownloading = "Downloading"
 	stateFailed      = "Failed"
+	stateOrphaned    = "Orphaned"
 )
 
 func NewSyncer(
@@ -48,6 +49,10 @@ func Summarize(apps []licensingv1alpha1.AppStatus) Summary {
 	var summary Summary
 
 	for _, appStatus := range apps {
+		if appStatus.State == stateOrphaned {
+			continue
+		}
+
 		summary.Entitled++
 
 		if appStatus.State == stateDownloading {
@@ -75,11 +80,18 @@ func (syncer *Syncer) Sync(
 		priorByVirtualEntryID[appStatus.VirtualEntryID] = appStatus
 	}
 
-	apps := make([]licensingv1alpha1.AppStatus, 0, len(syncRequest.AddOns))
+	entitled := make(map[int64]bool, len(syncRequest.AddOns))
+
+	apps := make(
+		[]licensingv1alpha1.AppStatus, 0,
+		len(syncRequest.AddOns)+len(syncRequest.Current),
+	)
 
 	requeueAfter := time.Duration(0)
 
 	for _, addOn := range syncRequest.AddOns {
+		entitled[addOn.VirtualEntryID] = true
+
 		appStatus, hint := syncer.reconcileAddOn(
 			addOn, syncRequest.Cache, syncRequest.Context,
 			syncRequest.EnvironmentID, syncRequest.Namespace, syncRequest.Now,
@@ -89,6 +101,14 @@ func (syncer *Syncer) Sync(
 		apps = append(apps, appStatus)
 
 		requeueAfter = soonest(hint, requeueAfter)
+	}
+
+	for _, appStatus := range syncRequest.Current {
+		if entitled[appStatus.VirtualEntryID] {
+			continue
+		}
+
+		apps = append(apps, orphan(appStatus, syncRequest.Context))
 	}
 
 	return apps, requeueAfter
@@ -151,6 +171,25 @@ func newAppStatus(
 		Name:           addOn.ProductName,
 		State:          state,
 		VirtualEntryID: addOn.VirtualEntryID,
+	}
+}
+
+func orphan(
+	appStatus licensingv1alpha1.AppStatus, context context.Context,
+) licensingv1alpha1.AppStatus {
+	if appStatus.State != stateOrphaned {
+		logf.FromContext(context).Info(
+			"Entitlement removed; leaving the cached add-on in place",
+			"productName", appStatus.Name,
+			"virtualEntryId", appStatus.VirtualEntryID,
+		)
+	}
+
+	return licensingv1alpha1.AppStatus{
+		Checksum:       appStatus.Checksum,
+		Name:           appStatus.Name,
+		State:          stateOrphaned,
+		VirtualEntryID: appStatus.VirtualEntryID,
 	}
 }
 

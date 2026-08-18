@@ -899,6 +899,43 @@ func TestReconcileOfflineStoresRequestInIdentitySecret(t *testing.T) {
 	}
 }
 
+func TestReconcileOrphansRemovedEntitlement(t *testing.T) {
+	entitlements := &provisioning.Entitlements{
+		LicenseXML:      []byte(virtualClusterLicenseXML("Friday, March 2, 2029 12:00:00 AM GMT", 3)),
+		MaxClusterNodes: 3,
+	}
+
+	provisioningClient := &stubProvisioning{entitlements: entitlements}
+
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(
+		provisioningClient, t,
+		developmentObjectsWithApps(
+			[]licensingv1alpha1.AppStatus{
+				{
+					Checksum:       "abc123",
+					Name:           "Sample Add-on",
+					State:          "Downloaded",
+					VirtualEntryID: 77,
+				},
+			},
+		)...,
+	)
+
+	if provisioningClient.downloadCalled {
+		t.Error("DownloadAddOn was called for a removed entitlement")
+	}
+
+	appStatus := getEnvironment(liferayEnvironmentReconciler, t).Status.Apps[0]
+
+	if appStatus.State != "Orphaned" {
+		t.Errorf("State = %q, want Orphaned", appStatus.State)
+	}
+
+	if appStatus.VirtualEntryID != 77 {
+		t.Errorf("VirtualEntryID = %d, want 77", appStatus.VirtualEntryID)
+	}
+}
+
 func TestReconcileReportsAddOnsNotReadyWhenDownloadFails(t *testing.T) {
 	liferayEnvironmentReconciler, _ := reconcileEnvironment(
 		&stubProvisioning{

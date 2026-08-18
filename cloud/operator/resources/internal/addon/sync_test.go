@@ -101,6 +101,13 @@ func TestSummarize(t *testing.T) {
 			},
 			want: Summary{Entitled: 2, Pending: 1},
 		},
+		"an orphaned add-on is not entitled": {
+			apps: []licensingv1alpha1.AppStatus{
+				{Name: "Alpha", State: stateDownloaded},
+				{Name: "Charlie", State: stateOrphaned},
+			},
+			want: Summary{Entitled: 1},
+		},
 		"failing add-ons are listed alphabetically": {
 			apps: []licensingv1alpha1.AppStatus{
 				{Name: "Delta", State: stateFailed},
@@ -332,6 +339,46 @@ func TestSyncEscalatesBackoffOnRepeatedFailure(t *testing.T) {
 
 	if !secondFailure.NextRetry.After(firstFailure.NextRetry.Time) {
 		t.Error("NextRetry did not advance on the second failure")
+	}
+}
+
+func TestSyncMarksRemovedEntitlementOrphaned(t *testing.T) {
+	cache := &fakeCache{}
+	downloader := &fakeDownloader{}
+	runner := &manualRunner{}
+	syncer := newTestSyncer(downloader, runner)
+
+	current := []licensingv1alpha1.AppStatus{
+		{
+			Checksum:       "abc123",
+			Name:           "Sample Add-on",
+			State:          stateDownloaded,
+			VirtualEntryID: 99,
+		},
+	}
+
+	apps, requeueAfter := syncer.Sync(
+		newSyncRequest(nil, cache, current, baseTime()),
+	)
+
+	if len(apps) != 1 {
+		t.Fatalf("Apps length = %d, want 1", len(apps))
+	}
+
+	if apps[0].State != stateOrphaned {
+		t.Errorf("State = %q, want %q", apps[0].State, stateOrphaned)
+	}
+
+	if apps[0].VirtualEntryID != 99 {
+		t.Errorf("VirtualEntryID = %d, want 99", apps[0].VirtualEntryID)
+	}
+
+	if requeueAfter != 0 {
+		t.Errorf("RequeueAfter = %s, want 0", requeueAfter)
+	}
+
+	if len(cache.saved) != 0 {
+		t.Error("A removed entitlement must not be saved to the cache")
 	}
 }
 
