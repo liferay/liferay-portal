@@ -200,11 +200,11 @@ public class Test {
 	}
 
 	protected void setUrlReaderException(
-			Exception exception, String url, UrlReader urlReader)
+			IOException ioException, String url, UrlReader urlReader)
 		throws Exception {
 
 		Mockito.doThrow(
-			exception
+			ioException
 		).when(
 			urlReader
 		).doRead(
