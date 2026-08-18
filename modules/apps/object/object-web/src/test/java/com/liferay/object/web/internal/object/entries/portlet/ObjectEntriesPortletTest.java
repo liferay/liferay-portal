@@ -49,16 +49,16 @@ public class ObjectEntriesPortletTest {
 		_testGetObjectDefinition(
 			_objectDefinition, _OBJECT_DEFINITION_ID, null);
 		_testGetObjectDefinition(
-			_objectDefinition, _RELATED_OBJECT_DEFINITION_ID, null);
+			_objectDefinition, _RELATED_OBJECT_DEFINITION_ID,
+			_getObjectRelationship(
+				_OBJECT_DEFINITION_ID, _UNRELATED_OBJECT_DEFINITION_ID));
 		_testGetObjectDefinition(
 			_objectDefinition, _RELATED_OBJECT_DEFINITION_ID,
 			_getObjectRelationship(
 				_UNRELATED_OBJECT_DEFINITION_ID,
 				_RELATED_OBJECT_DEFINITION_ID));
 		_testGetObjectDefinition(
-			_objectDefinition, _RELATED_OBJECT_DEFINITION_ID,
-			_getObjectRelationship(
-				_OBJECT_DEFINITION_ID, _UNRELATED_OBJECT_DEFINITION_ID));
+			_objectDefinition, _RELATED_OBJECT_DEFINITION_ID, null);
 		_testGetObjectDefinition(
 			_relatedObjectDefinition, _RELATED_OBJECT_DEFINITION_ID,
 			_getObjectRelationship(

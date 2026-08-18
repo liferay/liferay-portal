@@ -53,9 +53,9 @@ public class ObjectEntryPortletURLUtilTest {
 	@Test
 	@TestInfo("LPD-102111")
 	public void testGetRelatedObjectEntryPortletURL() {
-		_testGetRelatedObjectEntryPortletURL(_portletURL, _PORTLET_ID, false);
 		_testGetRelatedObjectEntryPortletURL(
 			_controlPanelPortletURL, _PORTLET_ID, true);
+		_testGetRelatedObjectEntryPortletURL(_portletURL, _PORTLET_ID, false);
 		_testGetRelatedObjectEntryPortletURL(
 			_objectDefinitionControlPanelPortletURL, null, false);
 	}

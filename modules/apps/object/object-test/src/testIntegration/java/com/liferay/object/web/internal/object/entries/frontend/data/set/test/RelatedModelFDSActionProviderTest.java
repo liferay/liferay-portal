@@ -207,7 +207,6 @@ public class RelatedModelFDSActionProviderTest {
 
 		ObjectDefinition parentObjectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition();
-
 		ObjectDefinition childObjectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition();
 
