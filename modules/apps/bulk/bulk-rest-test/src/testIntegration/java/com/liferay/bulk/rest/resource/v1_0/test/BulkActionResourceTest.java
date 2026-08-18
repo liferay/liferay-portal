@@ -214,6 +214,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		return _depotEntryLocalService.updateDepotEntry(
 			depotEntry.getDepotEntryId(), nameMap, null, Collections.emptyMap(),
+			null,
 			UnicodePropertiesBuilder.put(
 				"trashEnabled", trashEnabled
 			).build(),

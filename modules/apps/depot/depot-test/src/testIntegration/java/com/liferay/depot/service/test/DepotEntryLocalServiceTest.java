@@ -307,7 +307,7 @@ public class DepotEntryLocalServiceTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), "newDescription"
 			).build(),
-			Collections.emptyMap(),
+			Collections.emptyMap(), null,
 			UnicodePropertiesBuilder.put(
 				PropsKeys.LOCALES,
 				LocaleUtil.toLanguageId(LocaleUtil.getDefault())
@@ -342,7 +342,7 @@ public class DepotEntryLocalServiceTest {
 			).put(
 				LocaleUtil.fromLanguageId("es_ES"), "nuevaDescripcion"
 			).build(),
-			Collections.emptyMap(),
+			Collections.emptyMap(), null,
 			UnicodePropertiesBuilder.put(
 				PropsKeys.LOCALES,
 				StringUtil.merge(LocaleUtil.toLanguageIds(availableLocales))
@@ -370,7 +370,7 @@ public class DepotEntryLocalServiceTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), "newDescription"
 			).build(),
-			Collections.emptyMap(),
+			Collections.emptyMap(), null,
 			UnicodePropertiesBuilder.put(
 				"inheritLocales", "true"
 			).build(),
@@ -399,7 +399,7 @@ public class DepotEntryLocalServiceTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), "newName"
 			).build(),
-			Collections.emptyMap(), Collections.emptyMap(),
+			Collections.emptyMap(), Collections.emptyMap(), null,
 			UnicodePropertiesBuilder.put(
 				PropsKeys.LOCALES,
 				LocaleUtil.toLanguageId(LocaleUtil.getDefault())
@@ -419,7 +419,7 @@ public class DepotEntryLocalServiceTest {
 
 		_depotEntryLocalService.updateDepotEntry(
 			depotEntry.getDepotEntryId(), new HashMap<>(),
-			Collections.emptyMap(), Collections.emptyMap(),
+			Collections.emptyMap(), Collections.emptyMap(), null,
 			new UnicodeProperties(),
 			ServiceContextTestUtil.getServiceContext());
 
@@ -445,7 +445,7 @@ public class DepotEntryLocalServiceTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), "description"
 			).build(),
-			Collections.emptyMap(),
+			Collections.emptyMap(), null,
 			UnicodePropertiesBuilder.put(
 				PropsKeys.LOCALES,
 				LocaleUtil.toLanguageId(LocaleUtil.getDefault())
@@ -475,7 +475,7 @@ public class DepotEntryLocalServiceTest {
 			).put(
 				LocaleUtil.fromLanguageId("es_ES"), "descripcion"
 			).build(),
-			Collections.emptyMap(),
+			Collections.emptyMap(), null,
 			UnicodePropertiesBuilder.put(
 				"inheritLocales", "false"
 			).build(),

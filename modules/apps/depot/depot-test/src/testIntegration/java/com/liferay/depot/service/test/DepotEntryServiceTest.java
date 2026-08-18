@@ -201,7 +201,7 @@ public class DepotEntryServiceTest {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			Collections.emptyMap(), new UnicodeProperties(),
+			Collections.emptyMap(), null, new UnicodeProperties(),
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId(), user.getUserId()));
 	}
