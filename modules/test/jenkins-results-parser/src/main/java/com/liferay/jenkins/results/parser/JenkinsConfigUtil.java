@@ -111,7 +111,7 @@ public class JenkinsConfigUtil {
 	private static String _getJenkinsMasterUserConfigFilePath(
 		JenkinsMaster jenkinsMaster, String emailAddress) {
 
-		String output = jenkinsMaster.executeSSHCommand(
+		String output = jenkinsMaster.executeBashCommand(
 			JenkinsResultsParserUtil.combine(
 				"grep --files-with-matches '<id>", emailAddress, "</id>' ",
 				_JENKINS_USERS_DIR_PATH, "/*/config.xml || true"));

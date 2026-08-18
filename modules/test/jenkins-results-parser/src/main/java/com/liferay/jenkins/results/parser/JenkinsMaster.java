@@ -174,10 +174,12 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		String targetFilePath = JenkinsResultsParserUtil.getCanonicalPath(
 			targetFile);
 
-		_executeSCPCommand(
-			JenkinsResultsParserUtil.combine(
-				_SSH_USER_NAME, "@", getName(), ":", sourceFilePath),
-			targetFilePath);
+		if (!_isRunningOnJenkinsMaster()) {
+			sourceFilePath = JenkinsResultsParserUtil.combine(
+				_SSH_USER_NAME, "@", getName(), ":", sourceFilePath);
+		}
+
+		_executeSCPCommand(sourceFilePath, targetFilePath);
 	}
 
 	public void copyFileToJenkinsMaster(
@@ -186,10 +188,12 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		String sourceFilePath = JenkinsResultsParserUtil.getCanonicalPath(
 			sourceFile);
 
-		_executeSCPCommand(
-			sourceFilePath,
-			JenkinsResultsParserUtil.combine(
-				_SSH_USER_NAME, "@", getName(), ":", targetFilePath));
+		if (!_isRunningOnJenkinsMaster()) {
+			targetFilePath = JenkinsResultsParserUtil.combine(
+				_SSH_USER_NAME, "@", getName(), ":", targetFilePath);
+		}
+
+		_executeSCPCommand(sourceFilePath, targetFilePath);
 	}
 
 	@Override
@@ -203,7 +207,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return Objects.equals(jenkinsMaster.getName(), getName());
 	}
 
-	public String executeSSHCommand(String command) {
+	public String executeBashCommand(String command) {
 		String sshCommand = JenkinsResultsParserUtil.combine(
 			"ssh ", _SSH_OPTIONS, " ", _SSH_USER_NAME, "@", getName(), " \"",
 			command, "\"");
@@ -211,8 +215,15 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		Process process = null;
 
 		try {
-			process = JenkinsResultsParserUtil.executeBashCommands(
-				true, new File("."), _SSH_COMMAND_TIMEOUT, sshCommand);
+			if (_isRunningOnJenkinsMaster()) {
+				process = JenkinsResultsParserUtil.executeBashCommands(
+					new File("."), true, false, _SSH_COMMAND_TIMEOUT, command);
+			}
+			else {
+				process = JenkinsResultsParserUtil.executeBashCommands(
+					new File("."), true, false, _SSH_COMMAND_TIMEOUT,
+					sshCommand);
+			}
 		}
 		catch (IOException | TimeoutException exception) {
 			throw new RuntimeException(
@@ -1828,6 +1839,10 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		return usableNodeCount;
+	}
+
+	private boolean _isRunningOnJenkinsMaster() {
+		return Objects.equals(System.getenv("HOSTNAME"), getName());
 	}
 
 	private boolean _isTopLevelJobName(String jobName) {
