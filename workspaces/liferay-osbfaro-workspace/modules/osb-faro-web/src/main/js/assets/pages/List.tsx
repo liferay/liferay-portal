@@ -5,10 +5,12 @@ import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import FaroConstants, {RangeKeyTimeRanges} from 'shared/util/constants';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {ASSET_OBJECT_TYPE_LANG_MAP} from 'shared/util/lang';
 import {AssetObjectTypes} from 'shared/util/constants';
+import {CSVType} from 'shared/components/download-report/utils';
+import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import {FrontendDataSet, pagination} from 'shared/components/FrontendDataSet';
 import {getMimeType} from 'assets/components/mime-type';
@@ -255,6 +257,13 @@ const List = () => {
 
 	const [infoPanelData, setInfoPanelData] = useState<any>(null);
 
+	// The data set reports the filters and search it is showing through
+	// additionalAPIURLParametersTransformer, which runs on every data load
+	// rather than during render, so it is kept in a ref and read on demand by
+	// the CSV export (a state update here would re-trigger the same load).
+
+	const fdsQueryRef = useRef({filter: '', query: ''});
+
 	let rangeSelectorParams = `rangeKey=${rangeSelectors.rangeKey}`;
 
 	if (rangeSelectors.rangeKey === RangeKeyTimeRanges.CustomRange) {
@@ -410,6 +419,16 @@ const List = () => {
 
 			<BasePage.SubHeader fluid>
 				<div className="d-flex justify-content-end w-100">
+					<div className="mr-1">
+						<DownloadStaticCSVReport
+							disabled={false}
+							getFDSQuery={() => fdsQueryRef.current}
+							rangeSelectors={rangeSelectors}
+							type={CSVType.Asset}
+							typeLang={Liferay.Language.get('assets')}
+						/>
+					</div>
+
 					<DropdownRangeKey
 						legacy={false}
 						onRangeSelectorChange={(rangeSelectors) => {
@@ -437,6 +456,28 @@ const List = () => {
 			<BasePage.Body fluid sidebarOpened={!!infoPanelData}>
 				<Card minHeight={300}>
 					<FrontendDataSet
+
+						// Not a real transformation: this reports the query the
+						// data set is about to send so the CSV export can match
+						// what is on screen, and hands back the additional
+						// parameters unchanged.
+
+						additionalAPIURLParametersTransformer={(
+							loadDataArgs
+						) => {
+							const {odataFiltersStrings = [], searchParam = ''} =
+								loadDataArgs;
+
+							fdsQueryRef.current = {
+								filter: odataFiltersStrings
+									.filter(Boolean)
+									.map((odataString) => `(${odataString})`)
+									.join(' and '),
+								query: searchParam,
+							};
+
+							return loadDataArgs.additionalAPIURLParameters;
+						}}
 						apiURL={`/o/faro/contacts/${groupId}/asset-summary?channelId=${channelId}&${rangeSelectorParams}`}
 						customDataRenderers={{
 							assetMetricRenderer: columns.assetMetricRenderer,

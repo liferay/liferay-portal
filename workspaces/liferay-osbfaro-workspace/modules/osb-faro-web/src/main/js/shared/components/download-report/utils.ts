@@ -13,6 +13,7 @@ export function formatDate(date: string | Date) {
 }
 
 export enum CSVType {
+	Asset = 'asset',
 	Blog = 'blog',
 	Document = 'document',
 	Event = 'event',
@@ -27,26 +28,32 @@ export enum CSVType {
 export function useDownloadCSV({
 	assetId,
 	assetType,
+	filter,
 	individualId,
+	objectType,
 	segmentId,
 	type,
 }: {
 	assetId?: string;
 	assetType?: string;
+	filter?: string;
 	individualId?: string;
+	objectType?: string;
 	segmentId?: string;
 	type: CSVType;
 }) {
 	const {channelId, groupId, title} = useParams();
 
 	return (
-		rangeSelectors: RangeSelectors = DEFAULT_RANGE_SELECTORS as unknown as RangeSelectors
+		rangeSelectors: RangeSelectors = DEFAULT_RANGE_SELECTORS as unknown as RangeSelectors,
+		overrides: {filter?: string; query?: string} = {}
 	) => {
 		const searchParams = new URLSearchParams(location.search);
 
 		const field = searchParams.get('field');
-		const query = searchParams.get('query');
+		const query = overrides.query ?? searchParams.get('query');
 		const sortOrder = searchParams.get('sortOrder');
+		const resolvedFilter = overrides.filter ?? filter;
 
 		let url = `/o/faro/main/${groupId}/reports/export/csv/${type}?channelId=${channelId}`;
 
@@ -63,7 +70,9 @@ export function useDownloadCSV({
 			assetId: assetId && encodeURIComponent(assetId),
 			assetTitle: title,
 			assetType,
+			filter: resolvedFilter && encodeURIComponent(resolvedFilter),
 			individualId,
+			objectType,
 			orderByFields:
 				field && sortOrder
 					? encodeURIComponent(

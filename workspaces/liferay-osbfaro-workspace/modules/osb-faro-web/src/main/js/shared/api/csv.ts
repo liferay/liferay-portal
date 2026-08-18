@@ -11,9 +11,12 @@ export const fetchCount = ({
 	assetId?: string;
 	assetType?: string;
 	channelId: string;
+	filter?: string;
 	fromDate?: string;
 	groupId: string;
 	individualId?: string;
+	objectType?: string;
+	query?: string;
 	segmentId?: string;
 	rangeKey?: string;
 	toDate?: string;
