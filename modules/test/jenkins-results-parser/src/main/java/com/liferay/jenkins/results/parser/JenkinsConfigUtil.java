@@ -10,7 +10,10 @@ import java.io.IOException;
 
 import java.util.List;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 /**
  * @author Michael Hashimoto
@@ -18,25 +21,23 @@ import org.dom4j.Element;
 public class JenkinsConfigUtil {
 
 	public static void updateJenkinsMasterUserConfig(
-		JenkinsMaster jenkinsMaster, String jenkinsUserID,
-		JenkinsWorkspaceGitRepository jenkinsWorkspaceGitRepository) {
+		JenkinsMaster jenkinsMaster, String jenkinsUserName) {
 
-		Element userConfigElement =
-			jenkinsWorkspaceGitRepository.getUserConfigElement(
-				jenkinsMaster, jenkinsUserID);
+		Element userConfigElement = _getUserConfigElement(
+			jenkinsMaster.getName(), jenkinsUserName);
 
 		if (userConfigElement == null) {
 			throw new RuntimeException(
 				JenkinsResultsParserUtil.combine(
-					"Unable to find user config for ", jenkinsUserID, " in ",
-					jenkinsWorkspaceGitRepository.getName()));
+					"Unable to find user config for ", jenkinsUserName, " on ",
+					jenkinsMaster.getName()));
 		}
 
 		String emailAddress = userConfigElement.elementText("id");
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(emailAddress)) {
 			throw new RuntimeException(
-				"Unable to find email address for " + jenkinsUserID);
+				"Unable to find email address for " + jenkinsUserName);
 		}
 
 		File userConfigFile = _writeUserConfigFile(userConfigElement);
@@ -53,9 +54,9 @@ public class JenkinsConfigUtil {
 			jenkinsMaster.copyFileToJenkinsMaster(
 				userConfigFile, userConfigFilePath);
 
-			jenkinsMaster.reloadUser(jenkinsUserID);
+			jenkinsMaster.reloadUser(jenkinsUserName);
 
-			_validateAPITokens(jenkinsMaster, jenkinsUserID);
+			_validateAPITokens(jenkinsMaster, jenkinsUserName);
 
 			JenkinsResultsParserUtil.delete(backupUserConfigFile);
 		}
@@ -65,7 +66,7 @@ public class JenkinsConfigUtil {
 					jenkinsMaster.copyFileToJenkinsMaster(
 						backupUserConfigFile, userConfigFilePath);
 
-					jenkinsMaster.reloadUser(jenkinsUserID);
+					jenkinsMaster.reloadUser(jenkinsUserName);
 
 					JenkinsResultsParserUtil.delete(backupUserConfigFile);
 				}
@@ -130,15 +131,128 @@ public class JenkinsConfigUtil {
 				jenkinsMaster.getName(), ":", _JENKINS_USERS_DIR_PATH));
 	}
 
+	private static Element _getUserConfigElement(
+		String jenkinsMasterName, String jenkinsUserName) {
+
+		File userConfigFile = _getUserConfigFile(
+			jenkinsMasterName, jenkinsUserName);
+
+		if (userConfigFile == null) {
+			return null;
+		}
+
+		String userConfigFilePath = JenkinsResultsParserUtil.getCanonicalPath(
+			userConfigFile);
+
+		String userConfigContent = null;
+
+		try {
+			userConfigContent = SecretsUtil.replaceSecrets(
+				JenkinsResultsParserUtil.read(userConfigFile));
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to read " + userConfigFilePath, ioException);
+		}
+
+		Document document = null;
+
+		try {
+			document = Dom4JUtil.parse(userConfigContent);
+		}
+		catch (DocumentException documentException) {
+			throw new RuntimeException(
+				"Unable to parse " + userConfigFilePath, documentException);
+		}
+
+		try {
+			_setAPITokenElements(document, jenkinsMasterName, jenkinsUserName);
+		}
+		catch (RuntimeException runtimeException) {
+			throw new RuntimeException(
+				"Unable to set API tokens in " + userConfigFilePath,
+				runtimeException);
+		}
+
+		return document.getRootElement();
+	}
+
+	private static File _getUserConfigFile(
+		String jenkinsMasterName, String jenkinsUserName) {
+
+		File jenkinsGitRepositoryDir = new File(
+			JenkinsResultsParserUtil.getBaseGitRepositoryDir(),
+			JenkinsResultsParserUtil.JENKINS_REPOSITORY_NAME);
+
+		for (String mastersDirName : _MASTERS_DIR_NAMES) {
+			File userConfigFile = new File(
+				jenkinsGitRepositoryDir,
+				JenkinsResultsParserUtil.combine(
+					mastersDirName, "/", jenkinsMasterName, "/users/",
+					jenkinsUserName, "/config.xml"));
+
+			if (userConfigFile.exists()) {
+				return userConfigFile;
+			}
+		}
+
+		return null;
+	}
+
+	private static void _setAPITokenElements(
+		Document document, String jenkinsMasterName, String jenkinsUserName) {
+
+		JenkinsUser jenkinsUser = JenkinsUserFactory.getJenkinsUser(
+			jenkinsMasterName, jenkinsUserName);
+
+		List<JenkinsUser.APIToken> apiTokens = jenkinsUser.getAPITokens();
+
+		if (apiTokens.isEmpty()) {
+			return;
+		}
+
+		Node tokenListNode = Dom4JUtil.getNodeByXPath(
+			document, _TOKEN_LIST_XPATH);
+
+		if (!(tokenListNode instanceof Element)) {
+			throw new RuntimeException("Unable to find " + _TOKEN_LIST_XPATH);
+		}
+
+		Element tokenListElement = (Element)tokenListNode;
+
+		tokenListElement.clearContent();
+
+		for (JenkinsUser.APIToken apiToken : apiTokens) {
+			Element hashedTokenElement = Dom4JUtil.getNewElement(
+				"jenkins.security.apitoken.ApiTokenStore_-HashedToken",
+				tokenListElement);
+
+			Dom4JUtil.getNewElement(
+				"creationDate", hashedTokenElement,
+				apiToken.getCreationDateString());
+			Dom4JUtil.getNewElement(
+				"name", hashedTokenElement, apiToken.getName());
+			Dom4JUtil.getNewElement(
+				"uuid", hashedTokenElement, apiToken.getUUID());
+
+			Element valueElement = Dom4JUtil.getNewElement(
+				"value", hashedTokenElement);
+
+			Dom4JUtil.getNewElement("hash", valueElement, apiToken.getHash());
+			Dom4JUtil.getNewElement(
+				"version", valueElement, apiToken.getVersion());
+		}
+	}
+
 	private static void _validateAPITokens(
-		JenkinsMaster jenkinsMaster, String jenkinsUserID) {
+		JenkinsMaster jenkinsMaster, String jenkinsUserName) {
 
 		List<JenkinsUser.APIToken> apiTokens = jenkinsMaster.getAPITokens(
-			jenkinsUserID);
+			jenkinsUserName);
 
 		if ((apiTokens == null) || apiTokens.isEmpty()) {
 			throw new RuntimeException(
-				"Unable to find API tokens for " + jenkinsUserID);
+				"Unable to find API tokens for " + jenkinsUserName);
 		}
 
 		String nodeNameURL = JenkinsResultsParserUtil.getLocalURL(
@@ -153,14 +267,14 @@ public class JenkinsConfigUtil {
 				throw new RuntimeException(
 					JenkinsResultsParserUtil.combine(
 						"Unable to validate API token ", apiToken.getName(),
-						" for ", jenkinsUserID, " against ", nodeNameURL),
+						" for ", jenkinsUserName, " against ", nodeNameURL),
 					ioException);
 			}
 
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					"Successfully validated API token ", apiToken.getName(),
-					" for ", jenkinsUserID));
+					" for ", jenkinsUserName));
 		}
 	}
 
@@ -186,5 +300,13 @@ public class JenkinsConfigUtil {
 
 	private static final String _JENKINS_USERS_DIR_PATH =
 		"/opt/java/jenkins/users";
+
+	private static final String[] _MASTERS_DIR_NAMES = {
+		"masters/generated", "masters/static"
+	};
+
+	private static final String _TOKEN_LIST_XPATH =
+		"/user/properties/jenkins.security.ApiTokenProperty/tokenStore" +
+			"/tokenList";
 
 }

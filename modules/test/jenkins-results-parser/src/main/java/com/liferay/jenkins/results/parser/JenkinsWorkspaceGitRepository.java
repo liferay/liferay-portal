@@ -8,13 +8,7 @@ package com.liferay.jenkins.results.parser;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.List;
 import java.util.Properties;
-
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.Node;
 
 import org.json.JSONObject;
 
@@ -56,41 +50,6 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		return _commandsBuildProperties;
 	}
 
-	public Element getUserConfigElement(
-		JenkinsMaster jenkinsMaster, String jenkinsUserID) {
-
-		String userConfigFilePath = _getUserConfigFilePath(
-			jenkinsMaster.getName(), jenkinsUserID);
-
-		if (userConfigFilePath == null) {
-			return null;
-		}
-
-		String userConfigContent = SecretsUtil.replaceSecrets(
-			getFileContent(userConfigFilePath));
-
-		Document document = null;
-
-		try {
-			document = Dom4JUtil.parse(userConfigContent);
-		}
-		catch (DocumentException documentException) {
-			throw new RuntimeException(
-				"Unable to parse " + userConfigFilePath, documentException);
-		}
-
-		try {
-			_setAPITokenElements(document, jenkinsMaster, jenkinsUserID);
-		}
-		catch (RuntimeException runtimeException) {
-			throw new RuntimeException(
-				"Unable to set API tokens in " + userConfigFilePath,
-				runtimeException);
-		}
-
-		return document.getRootElement();
-	}
-
 	protected JenkinsWorkspaceGitRepository(JSONObject jsonObject) {
 		super(jsonObject);
 	}
@@ -106,75 +65,6 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
 		super(remoteGitRef, upstreamBranchName);
 	}
-
-	private String _getUserConfigFilePath(
-		String masterName, String jenkinsUserID) {
-
-		for (String mastersDirName : _MASTERS_DIR_NAMES) {
-			String userConfigFilePath = JenkinsResultsParserUtil.combine(
-				mastersDirName, "/", masterName, "/users/", jenkinsUserID,
-				"/config.xml");
-
-			File userConfigFile = new File(getDirectory(), userConfigFilePath);
-
-			if (userConfigFile.exists()) {
-				return userConfigFilePath;
-			}
-		}
-
-		return null;
-	}
-
-	private void _setAPITokenElements(
-		Document document, JenkinsMaster jenkinsMaster, String jenkinsUserID) {
-
-		List<JenkinsUser.APIToken> apiTokens = jenkinsMaster.getAPITokens(
-			jenkinsUserID);
-
-		if ((apiTokens == null) || apiTokens.isEmpty()) {
-			return;
-		}
-
-		Node tokenListNode = Dom4JUtil.getNodeByXPath(
-			document, _TOKEN_LIST_XPATH);
-
-		if (!(tokenListNode instanceof Element)) {
-			throw new RuntimeException("Unable to find " + _TOKEN_LIST_XPATH);
-		}
-
-		Element tokenListElement = (Element)tokenListNode;
-
-		tokenListElement.clearContent();
-
-		for (JenkinsUser.APIToken apiToken : apiTokens) {
-			Element hashedTokenElement = Dom4JUtil.getNewElement(
-				"jenkins.security.apitoken.ApiTokenStore_-HashedToken",
-				tokenListElement);
-
-			Dom4JUtil.getNewElement(
-				"creationDate", hashedTokenElement,
-				apiToken.getCreationDateString());
-			Dom4JUtil.getNewElement(
-				"name", hashedTokenElement, apiToken.getName());
-			Dom4JUtil.getNewElement(
-				"uuid", hashedTokenElement, apiToken.getUUID());
-
-			Element valueElement = Dom4JUtil.getNewElement(
-				"value", hashedTokenElement);
-
-			Dom4JUtil.getNewElement("hash", valueElement, apiToken.getHash());
-			Dom4JUtil.getNewElement(
-				"version", valueElement, apiToken.getVersion());
-		}
-	}
-
-	private static final String[] _MASTERS_DIR_NAMES = {
-		"masters/generated", "masters/static"
-	};
-
-	private static final String _TOKEN_LIST_XPATH =
-		"/user/properties/jenkins.security.ApiTokenProperty/tokenStore" +
-			"/tokenList";
 
 	private Properties _commandsBuildProperties;
 
