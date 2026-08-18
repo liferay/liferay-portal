@@ -445,12 +445,13 @@ paths:
             operationId: getObjectEntryAcquisitionChannelsPage
             parameters:
                 -   in: query
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
                     name: groupId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: objectEntryId
+                    required: true
                     schema:
                         format: int64
                         type: integer
@@ -477,12 +478,13 @@ paths:
             operationId: getObjectEntryHistogramMetric
             parameters:
                 -   in: query
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
                     name: groupId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: objectEntryId
+                    required: true
                     schema:
                         format: int64
                         type: integer
@@ -511,12 +513,13 @@ paths:
             operationId: getObjectEntryMetric
             parameters:
                 -   in: query
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
                     name: groupId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: objectEntryId
+                    required: true
                     schema:
                         format: int64
                         type: integer
@@ -545,12 +548,13 @@ paths:
             operationId: getObjectEntryTopPages
             parameters:
                 -   in: query
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
                     name: groupId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: objectEntryId
+                    required: true
                     schema:
                         format: int64
                         type: integer
