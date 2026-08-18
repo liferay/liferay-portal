@@ -393,7 +393,9 @@ const Settings = ({
 
 				<ClayLayout.SheetSection>
 					<h3 className="sheet-subtitle">
-						{Liferay.Language.get('user-customization')}
+						{Liferay.Language.get(
+							'management-bar-and-search-customization'
+						)}
 					</h3>
 
 					<ClayLayout.Row className="align-items-center justify-content-between mb-4">
@@ -449,17 +451,19 @@ const Settings = ({
 						</ClayLayout.Col>
 					</ClayLayout.Row>
 
-					<ClayLayout.Row className="align-items-center justify-content-between mb-4">
+					<ClayLayout.Row className="align-items-center justify-content-between">
 						<ClayLayout.Col size={9}>
 							<div>
 								<label htmlFor="search-as-you-type-toggle">
-									{Liferay.Language.get('search-as-you-type')}
+									{Liferay.Language.get(
+										'enable-search-as-you-type'
+									)}
 								</label>
 							</div>
 
 							<div>
 								{Liferay.Language.get(
-									'search-as-you-type-help'
+									'enable-search-as-you-type-help'
 								)}
 							</div>
 						</ClayLayout.Col>
@@ -473,6 +477,12 @@ const Settings = ({
 							/>
 						</ClayLayout.Col>
 					</ClayLayout.Row>
+				</ClayLayout.SheetSection>
+
+				<ClayLayout.SheetSection>
+					<h3 className="sheet-subtitle">
+						{Liferay.Language.get('user-views-customization')}
+					</h3>
 
 					<ClayLayout.Row className="align-items-center justify-content-between mb-4">
 						<ClayLayout.Col size={9}>
