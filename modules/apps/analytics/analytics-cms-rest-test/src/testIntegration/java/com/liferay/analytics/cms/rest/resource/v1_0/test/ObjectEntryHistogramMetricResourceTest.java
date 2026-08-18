@@ -34,6 +34,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.ws.rs.BadRequestException;
+
 import java.io.Serializable;
 
 import java.util.Arrays;
@@ -91,6 +93,38 @@ public class ObjectEntryHistogramMetricResourceTest
 	@Test
 	public void testGetObjectEntryHistogramMetric() throws Exception {
 		_testGetObjectEntryHistogramMetric();
+	}
+
+	@Test
+	public void testGetObjectEntryHistogramMetricWithUnsyncedGroup()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.nextLong()
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			Assert.assertThrows(
+				BadRequestException.class,
+				() ->
+					_objectEntryHistogramMetricResource.
+						getObjectEntryHistogramMetric(
+							testGroup.getGroupId(),
+							_objectEntry.getObjectEntryId(),
+							RandomTestUtil.nextInt(),
+							new String[] {"downloadsMetric"}));
+		}
 	}
 
 	private void _testGetObjectEntryHistogramMetric() throws Exception {

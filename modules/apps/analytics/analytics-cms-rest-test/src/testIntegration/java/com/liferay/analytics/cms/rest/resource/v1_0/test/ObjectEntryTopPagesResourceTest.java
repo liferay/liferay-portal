@@ -34,6 +34,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.ws.rs.BadRequestException;
+
 import java.io.Serializable;
 
 import java.util.Arrays;
@@ -91,6 +93,32 @@ public class ObjectEntryTopPagesResourceTest
 	@Test
 	public void testGetObjectEntryTopPages() throws Exception {
 		_testGetObjectEntryTopPages();
+	}
+
+	@Test
+	public void testGetObjectEntryTopPagesWithUnsyncedGroup() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.nextLong()
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			Assert.assertThrows(
+				BadRequestException.class,
+				() -> _objectEntryTopPagesResource.getObjectEntryTopPages(
+					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
+					30));
+		}
 	}
 
 	private void _testGetObjectEntryTopPages() throws Exception {

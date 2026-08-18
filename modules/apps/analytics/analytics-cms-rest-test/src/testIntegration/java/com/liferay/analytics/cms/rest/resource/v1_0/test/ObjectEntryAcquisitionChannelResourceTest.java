@@ -34,6 +34,8 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.pagination.Page;
 
+import jakarta.ws.rs.BadRequestException;
+
 import java.io.Serializable;
 
 import java.util.Collections;
@@ -91,6 +93,37 @@ public class ObjectEntryAcquisitionChannelResourceTest
 	@Test
 	public void testGetObjectEntryAcquisitionChannelsPage() throws Exception {
 		_testGetObjectEntryAcquisitionChannelsPage();
+	}
+
+	@Test
+	public void testGetObjectEntryAcquisitionChannelsPageWithUnsyncedGroup()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.nextLong()
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			Assert.assertThrows(
+				BadRequestException.class,
+				() ->
+					_objectEntryAcquisitionChannelResource.
+						getObjectEntryAcquisitionChannelsPage(
+							testGroup.getGroupId(),
+							_objectEntry.getObjectEntryId(),
+							RandomTestUtil.randomInt()));
+		}
 	}
 
 	private void _testGetObjectEntryAcquisitionChannelsPage() throws Exception {
