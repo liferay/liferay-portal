@@ -442,9 +442,6 @@ ports:
     -   containerPort: 8080
         name: http
         protocol: TCP
-    -   containerPort: 12345
-        name: metrics
-        protocol: TCP
 pullSecrets: []
 readinessProbe:
     failureThreshold: 2
