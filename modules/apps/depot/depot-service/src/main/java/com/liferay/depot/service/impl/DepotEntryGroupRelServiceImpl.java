@@ -42,6 +42,9 @@ public class DepotEntryGroupRelServiceImpl
 		_depotEntryModelResourcePermission.check(
 			getPermissionChecker(), depotEntryId, ActionKeys.UPDATE);
 
+		GroupPermissionUtil.check(
+			getPermissionChecker(), toGroupId, ActionKeys.UPDATE);
+
 		return depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			depotEntryId, toGroupId);
 	}
@@ -57,6 +60,10 @@ public class DepotEntryGroupRelServiceImpl
 
 		_depotEntryModelResourcePermission.check(
 			getPermissionChecker(), depotEntryGroupRel.getDepotEntryId(),
+			ActionKeys.UPDATE);
+
+		GroupPermissionUtil.check(
+			getPermissionChecker(), depotEntryGroupRel.getToGroupId(),
 			ActionKeys.UPDATE);
 
 		return depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
