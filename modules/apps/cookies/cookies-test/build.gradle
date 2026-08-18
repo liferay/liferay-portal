@@ -8,6 +8,7 @@ dependencies {
 	testImplementation project(":apps:cookies:cookies-api")
 	testImplementation project(":apps:cookies:cookies-impl")
 	testImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
+	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	testImplementation project(":apps:static:portal:portal-upgrade-api")
 	testImplementation project(":core:petra:petra-string")
 	testIntegrationImplementation project(":apps:consent-management-platform:consent-management-platform-integration-api")
