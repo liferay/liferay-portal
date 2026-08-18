@@ -6,14 +6,15 @@
 package com.liferay.commerce.order.web.internal.portlet.action;
 
 import com.liferay.commerce.constants.CommercePortletKeys;
+import com.liferay.commerce.exception.NoSuchOrderAttachmentException;
 import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.order.web.internal.display.context.EditCommerceOrderAttachmentDisplayContext;
-import com.liferay.commerce.service.CommerceOrderAttachmentLocalService;
+import com.liferay.commerce.service.CommerceOrderAttachmentService;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -42,40 +43,53 @@ public class EditCommerceOrderAttachmentMVCRenderCommand
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		CommerceOrderAttachment commerceOrderAttachment = null;
+		try {
+			CommerceOrderAttachment commerceOrderAttachment = null;
 
-		long attachmentId = ParamUtil.getLong(renderRequest, "attachmentId");
+			long attachmentId = ParamUtil.getLong(
+				renderRequest, "attachmentId");
 
-		if (attachmentId > 0) {
-			try {
+			if (attachmentId > 0) {
 				commerceOrderAttachment =
-					_commerceOrderAttachmentLocalService.
+					_commerceOrderAttachmentService.
 						fetchCommerceOrderAttachment(attachmentId);
 			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(exception);
-				}
-			}
-		}
 
-		renderRequest.setAttribute(
-			EditCommerceOrderAttachmentDisplayContext.class.getName(),
-			new EditCommerceOrderAttachmentDisplayContext(
-				commerceOrderAttachment,
-				ParamUtil.getLong(renderRequest, "commerceOrderId"),
-				_portal.getHttpServletRequest(renderRequest),
-				_listTypeDefinitionLocalService, _listTypeEntryLocalService));
+			long commerceOrderId = ParamUtil.getLong(
+				renderRequest, "commerceOrderId");
+
+			if ((commerceOrderAttachment != null) &&
+				(commerceOrderAttachment.getCommerceOrderId() !=
+					commerceOrderId)) {
+
+				throw new NoSuchOrderAttachmentException();
+			}
+
+			renderRequest.setAttribute(
+				EditCommerceOrderAttachmentDisplayContext.class.getName(),
+				new EditCommerceOrderAttachmentDisplayContext(
+					commerceOrderAttachment, commerceOrderId,
+					_portal.getHttpServletRequest(renderRequest),
+					_listTypeDefinitionLocalService,
+					_listTypeEntryLocalService));
+		}
+		catch (Exception exception) {
+			if (exception instanceof NoSuchOrderAttachmentException ||
+				exception instanceof PrincipalException) {
+
+				SessionErrors.add(renderRequest, exception.getClass());
+
+				return "/error.jsp";
+			}
+
+			throw new PortletException(exception);
+		}
 
 		return "/commerce_order/edit_commerce_order_attachment.jsp";
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		EditCommerceOrderAttachmentMVCRenderCommand.class);
-
 	@Reference
-	private CommerceOrderAttachmentLocalService
-		_commerceOrderAttachmentLocalService;
+	private CommerceOrderAttachmentService _commerceOrderAttachmentService;
 
 	@Reference
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;

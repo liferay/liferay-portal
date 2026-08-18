@@ -201,7 +201,7 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 				"liferay-commerce:info-box:fieldValue",
 				_getFieldValue(
 					commerceOrder, field, httpServletRequest,
-					fragmentRendererContext.getLocale()));
+					fragmentRendererContext.getLocale(), permissionChecker));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:info-box:fieldValueType",
 				_getEditableFieldValueType(field));
@@ -477,7 +477,8 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 
 	private String _getFieldValue(
 			CommerceOrder commerceOrder, String field,
-			HttpServletRequest httpServletRequest, Locale locale)
+			HttpServletRequest httpServletRequest, Locale locale,
+			PermissionChecker permissionChecker)
 		throws PortalException {
 
 		if (field.equals("accountInfo")) {
@@ -554,7 +555,7 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 		}
 		else if (field.equals("purchaseOrderDocument")) {
 			FileEntry fileEntry = _getPurchaseOrderDocumentFileEntry(
-				commerceOrder);
+				commerceOrder, permissionChecker);
 
 			if (fileEntry == null) {
 				return StringPool.BLANK;
@@ -623,7 +624,8 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 				).build();
 
 			CommerceOrderAttachment commerceOrderAttachment =
-				_getPurchaseOrderDocumentCommerceOrderAttachment(commerceOrder);
+				_getPurchaseOrderDocumentCommerceOrderAttachment(
+					commerceOrder, permissionChecker);
 
 			if (commerceOrderAttachment == null) {
 				return additionalProps;
@@ -652,7 +654,8 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 			return additionalProps;
 		}
 
-		FileEntry fileEntry = _getPurchaseOrderDocumentFileEntry(commerceOrder);
+		FileEntry fileEntry = _getPurchaseOrderDocumentFileEntry(
+			commerceOrder, permissionChecker);
 
 		if (fileEntry == null) {
 			return Collections.emptyMap();
@@ -669,8 +672,10 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 	}
 
 	private CommerceOrderAttachment
-		_getPurchaseOrderDocumentCommerceOrderAttachment(
-			CommerceOrder commerceOrder) {
+			_getPurchaseOrderDocumentCommerceOrderAttachment(
+				CommerceOrder commerceOrder,
+				PermissionChecker permissionChecker)
+		throws PortalException {
 
 		for (CommerceOrderAttachment commerceOrderAttachment :
 				_commerceOrderAttachmentLocalService.
@@ -680,9 +685,16 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 						OrderByComparatorFactoryUtil.create(
 							"CommerceOrderAttachment", "priority", false))) {
 
-			if (Objects.equals(
+			if (!Objects.equals(
 					commerceOrderAttachment.getType(),
 					"purchaseOrderDocument")) {
+
+				continue;
+			}
+
+			if (_commerceOrderAttachmentModelResourcePermission.contains(
+					permissionChecker, commerceOrderAttachment,
+					ActionKeys.VIEW)) {
 
 				return commerceOrderAttachment;
 			}
@@ -692,14 +704,15 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 	}
 
 	private FileEntry _getPurchaseOrderDocumentFileEntry(
-			CommerceOrder commerceOrder)
+			CommerceOrder commerceOrder, PermissionChecker permissionChecker)
 		throws PortalException {
 
 		if (FeatureFlagManagerUtil.isEnabled(
 				commerceOrder.getCompanyId(), "LPD-6252")) {
 
 			CommerceOrderAttachment commerceOrderAttachment =
-				_getPurchaseOrderDocumentCommerceOrderAttachment(commerceOrder);
+				_getPurchaseOrderDocumentCommerceOrderAttachment(
+					commerceOrder, permissionChecker);
 
 			if (commerceOrderAttachment == null) {
 				return null;
@@ -773,6 +786,12 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 	@Reference
 	private CommerceOrderAttachmentLocalService
 		_commerceOrderAttachmentLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceOrderAttachment)"
+	)
+	private ModelResourcePermission<CommerceOrderAttachment>
+		_commerceOrderAttachmentModelResourcePermission;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
