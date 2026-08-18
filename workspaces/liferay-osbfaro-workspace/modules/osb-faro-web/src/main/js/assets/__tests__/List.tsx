@@ -14,6 +14,7 @@ jest.unmock('react-dom');
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
 	FrontendDataSet: ({
+		additionalAPIURLParametersTransformer,
 		customDataRenderers,
 		emptyState,
 		filters,
@@ -23,6 +24,7 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		sorts,
 		views,
 	}: {
+		additionalAPIURLParametersTransformer?: (loadDataArgs: any) => any;
 		customDataRenderers?: {[key: string]: React.FC<any>};
 		emptyState?: {
 			description?: React.ReactNode;
@@ -35,160 +37,231 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		itemsActions?: Array<{onClick?: (item: any) => void}>;
 		sorts?: any[];
 		views?: Array<{schema: {fields: any[]}}>;
-	}) => (
-		<div data-testid="fds-component" id={id}>
-			<div data-testid="fds-sorts">{JSON.stringify(sorts ?? null)}</div>
+	}) => {
+		const [transformerResult, setTransformerResult] = React.useState('');
 
-			<div data-testid="fds-fields">
-				{JSON.stringify(views?.[0]?.schema?.fields ?? null)}
-			</div>
+		return (
+			<div data-testid="fds-component" id={id}>
+				<button
+					data-testid="fds-run-transformer"
+					onClick={() => {
+						setTransformerResult(
+							String(
+								additionalAPIURLParametersTransformer?.({
+									additionalAPIURLParameters: 'unchanged=1',
+									odataFiltersStrings: [
+										"assetType eq 'blog'",
+										undefined,
+									],
+									searchParam: 'liferay',
+								})
+							)
+						);
+					}}
+				>
+					{'Run Transformer'}
+				</button>
 
-			<div data-testid="fds-object-type-cells">
-				{[undefined, 'content', 'file', 'unknown'].map((value) => {
-					const ObjectTypeCell =
-						customDataRenderers?.assetObjectTypeRenderer;
-
-					return (
-						ObjectTypeCell && (
-							<div
-								data-testid={`fds-object-type-cell-${value}`}
-								key={String(value)}
-							>
-								<ObjectTypeCell value={value} />
-							</div>
-						)
-					);
-				})}
-			</div>
-
-			{emptyState && (
-				<div data-testid="fds-empty-state">
-					<div data-testid="fds-empty-state-title">
-						{emptyState.title}
-					</div>
-
-					<div data-testid="fds-empty-state-description">
-						{emptyState.description}
-					</div>
+				<div data-testid="fds-transformer-result">
+					{transformerResult}
 				</div>
-			)}
-			<div data-testid="fds-filters">{JSON.stringify(filters)}</div>
 
-			<div data-testid="fds-grouped-filters">
-				{JSON.stringify(groupedFilters)}
+				<div data-testid="fds-sorts">
+					{JSON.stringify(sorts ?? null)}
+				</div>
+
+				<div data-testid="fds-fields">
+					{JSON.stringify(views?.[0]?.schema?.fields ?? null)}
+				</div>
+
+				<div data-testid="fds-object-type-cells">
+					{[undefined, 'content', 'file', 'unknown'].map((value) => {
+						const ObjectTypeCell =
+							customDataRenderers?.assetObjectTypeRenderer;
+
+						return (
+							ObjectTypeCell && (
+								<div
+									data-testid={`fds-object-type-cell-${value}`}
+									key={String(value)}
+								>
+									<ObjectTypeCell value={value} />
+								</div>
+							)
+						);
+					})}
+				</div>
+
+				{emptyState && (
+					<div data-testid="fds-empty-state">
+						<div data-testid="fds-empty-state-title">
+							{emptyState.title}
+						</div>
+
+						<div data-testid="fds-empty-state-description">
+							{emptyState.description}
+						</div>
+					</div>
+				)}
+				<div data-testid="fds-filters">{JSON.stringify(filters)}</div>
+
+				<div data-testid="fds-grouped-filters">
+					{JSON.stringify(groupedFilters)}
+				</div>
+
+				<button
+					data-testid="trigger-info-panel"
+					onClick={() =>
+						itemsActions?.[0]?.onClick?.({
+							itemData: {
+								assetCategories: [],
+								assetTags: [],
+								assetTitle: 'Test Asset Title',
+								assetType: 'blog',
+								id: 'asset-id-1',
+								mimeType: 'blog',
+							},
+						})
+					}
+				>
+					{'Open Info Panel'}
+				</button>
+
+				<button
+					data-testid="trigger-info-panel-no-mime"
+					onClick={() =>
+						itemsActions?.[0]?.onClick?.({
+							itemData: {
+								assetCategories: [],
+								assetTags: [],
+								assetTitle: 'Asset Without Mime',
+								assetType: 'document',
+								id: 'asset-id-2',
+							},
+						})
+					}
+				>
+					{'Open Info Panel No Mime'}
+				</button>
+
+				<button
+					data-testid="trigger-info-panel-no-title"
+					onClick={() =>
+						itemsActions?.[0]?.onClick?.({
+							itemData: {
+								assetCategories: [],
+								assetTags: [],
+								assetType: 'folder',
+								id: 'fallback-id-3',
+								mimeType: 'folder',
+							},
+						})
+					}
+				>
+					{'Open Info Panel No Title'}
+				</button>
+
+				<button
+					data-testid="trigger-info-panel-with-items"
+					onClick={() =>
+						itemsActions?.[0]?.onClick?.({
+							itemData: {
+								assetCategories: [
+									{
+										id: 'cat-1',
+										name: 'Category One',
+										vocabularyId: 'vocab-1',
+									},
+									{
+										id: 'cat-2',
+										name: 'Category Two',
+										vocabularyId: 'vocab-1',
+									},
+								],
+								assetTags: [{id: 'tag-1', name: 'Tag One'}],
+								assetTitle: 'Rich Asset',
+								assetType: 'webContent',
+								assetVocabularies: [
+									{id: 'vocab-1', name: 'Topic'},
+								],
+								id: 'asset-id-4',
+								mimeType: 'basic-web-content',
+							},
+						})
+					}
+				>
+					{'Open Info Panel With Items'}
+				</button>
+
+				<button
+					data-testid="trigger-info-panel-empty-vocab"
+					onClick={() =>
+						itemsActions?.[0]?.onClick?.({
+							itemData: {
+								assetCategories: [
+									{
+										id: 'cat-1',
+										name: 'Category One',
+										vocabularyId: 'vocab-1',
+									},
+								],
+								assetTags: [],
+								assetTitle: 'Asset With Empty Vocab',
+								assetType: 'blog',
+								assetVocabularies: [
+									{id: 'vocab-1', name: 'Topics'},
+									{id: 'vocab-2', name: 'Genres'},
+								],
+								id: 'asset-id-5',
+								mimeType: 'blog',
+							},
+						})
+					}
+				>
+					{'Open Info Panel Empty Vocab'}
+				</button>
 			</div>
+		);
+	},
+}));
 
-			<button
-				data-testid="trigger-info-panel"
-				onClick={() =>
-					itemsActions?.[0]?.onClick?.({
-						itemData: {
-							assetCategories: [],
-							assetTags: [],
-							assetTitle: 'Test Asset Title',
-							assetType: 'blog',
-							id: 'asset-id-1',
-							mimeType: 'blog',
-						},
-					})
-				}
-			>
-				{'Open Info Panel'}
-			</button>
+jest.mock('shared/components/download-report/DownloadStaticCSVReport', () => ({
+	DownloadStaticCSVReport: ({
+		getFDSQuery,
+		rangeSelectors,
+		type,
+	}: {
+		getFDSQuery?: () => {filter: string; query: string};
+		rangeSelectors?: any;
+		type?: string;
+	}) => {
+		const [fdsQueryResult, setFDSQueryResult] = React.useState('');
 
-			<button
-				data-testid="trigger-info-panel-no-mime"
-				onClick={() =>
-					itemsActions?.[0]?.onClick?.({
-						itemData: {
-							assetCategories: [],
-							assetTags: [],
-							assetTitle: 'Asset Without Mime',
-							assetType: 'document',
-							id: 'asset-id-2',
-						},
-					})
-				}
-			>
-				{'Open Info Panel No Mime'}
-			</button>
+		return (
+			<div data-testid="download-csv">
+				<div data-testid="download-csv-type">{type}</div>
 
-			<button
-				data-testid="trigger-info-panel-no-title"
-				onClick={() =>
-					itemsActions?.[0]?.onClick?.({
-						itemData: {
-							assetCategories: [],
-							assetTags: [],
-							assetType: 'folder',
-							id: 'fallback-id-3',
-							mimeType: 'folder',
-						},
-					})
-				}
-			>
-				{'Open Info Panel No Title'}
-			</button>
+				<div data-testid="download-csv-range-selectors">
+					{JSON.stringify(rangeSelectors ?? null)}
+				</div>
 
-			<button
-				data-testid="trigger-info-panel-with-items"
-				onClick={() =>
-					itemsActions?.[0]?.onClick?.({
-						itemData: {
-							assetCategories: [
-								{
-									id: 'cat-1',
-									name: 'Category One',
-									vocabularyId: 'vocab-1',
-								},
-								{
-									id: 'cat-2',
-									name: 'Category Two',
-									vocabularyId: 'vocab-1',
-								},
-							],
-							assetTags: [{id: 'tag-1', name: 'Tag One'}],
-							assetTitle: 'Rich Asset',
-							assetType: 'webContent',
-							assetVocabularies: [{id: 'vocab-1', name: 'Topic'}],
-							id: 'asset-id-4',
-							mimeType: 'basic-web-content',
-						},
-					})
-				}
-			>
-				{'Open Info Panel With Items'}
-			</button>
+				<button
+					data-testid="download-csv-call-get-fds-query"
+					onClick={() =>
+						setFDSQueryResult(
+							JSON.stringify(getFDSQuery?.() ?? null)
+						)
+					}
+				>
+					{'Call getFDSQuery'}
+				</button>
 
-			<button
-				data-testid="trigger-info-panel-empty-vocab"
-				onClick={() =>
-					itemsActions?.[0]?.onClick?.({
-						itemData: {
-							assetCategories: [
-								{
-									id: 'cat-1',
-									name: 'Category One',
-									vocabularyId: 'vocab-1',
-								},
-							],
-							assetTags: [],
-							assetTitle: 'Asset With Empty Vocab',
-							assetType: 'blog',
-							assetVocabularies: [
-								{id: 'vocab-1', name: 'Topics'},
-								{id: 'vocab-2', name: 'Genres'},
-							],
-							id: 'asset-id-5',
-							mimeType: 'blog',
-						},
-					})
-				}
-			>
-				{'Open Info Panel Empty Vocab'}
-			</button>
-		</div>
-	),
+				<div data-testid="download-csv-fds-query-result">
+					{fdsQueryResult}
+				</div>
+			</div>
+		);
+	},
 }));
 
 jest.mock('shared/components/dropdown-range-key/DropdownRangeKey', () => ({
@@ -641,6 +714,64 @@ describe('List', () => {
 			expect(
 				getObjectTypeFilter('?objectType=folder').preloadedData
 			).toBeUndefined();
+		});
+	});
+
+	describe('Download CSV', () => {
+		it('should render the Download CSV button for the asset type', () => {
+			renderList();
+
+			expect(screen.getByTestId('download-csv-type')).toHaveTextContent(
+				'asset'
+			);
+		});
+
+		it('should pass the current rangeSelectors to the Download CSV button', () => {
+			renderList();
+
+			expect(
+				screen.getByTestId('download-csv-range-selectors')
+			).toHaveTextContent(RangeKeyTimeRanges.Last30Days);
+		});
+
+		it('should return an empty filter and query before the data set reports any', () => {
+			renderList();
+
+			fireEvent.click(
+				screen.getByTestId('download-csv-call-get-fds-query')
+			);
+
+			expect(
+				screen.getByTestId('download-csv-fds-query-result')
+			).toHaveTextContent(JSON.stringify({filter: '', query: ''}));
+		});
+
+		it('should capture the filter and query the data set reports and expose them via getFDSQuery', () => {
+			renderList();
+
+			fireEvent.click(screen.getByTestId('fds-run-transformer'));
+			fireEvent.click(
+				screen.getByTestId('download-csv-call-get-fds-query')
+			);
+
+			expect(
+				screen.getByTestId('download-csv-fds-query-result')
+			).toHaveTextContent(
+				JSON.stringify({
+					filter: "(assetType eq 'blog')",
+					query: 'liferay',
+				})
+			);
+		});
+
+		it('should pass the additionalAPIURLParameters through unchanged', () => {
+			renderList();
+
+			fireEvent.click(screen.getByTestId('fds-run-transformer'));
+
+			expect(
+				screen.getByTestId('fds-transformer-result')
+			).toHaveTextContent('unchanged=1');
 		});
 	});
 

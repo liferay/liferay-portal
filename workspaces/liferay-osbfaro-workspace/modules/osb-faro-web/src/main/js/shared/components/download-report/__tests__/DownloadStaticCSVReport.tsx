@@ -29,17 +29,31 @@ jest.mock('shared/api', () => ({
 	},
 }));
 
+const mockedGenerateURL = jest.fn(() => 'http://test-url.com');
+
 jest.mock('../utils', () => {
 	const original = jest.requireActual('../utils');
 	return {
 		...original,
-		useDownloadCSV: jest.fn(() => () => 'http://test-url.com'),
+		useDownloadCSV: jest.fn(() => mockedGenerateURL),
 	};
 });
 
 jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
 
-const DefaultComponent = () => (
+const {useDownloadCSV: mockedUseDownloadCSV} = jest.requireMock('../utils');
+
+const DefaultComponent = ({
+	getFDSQuery,
+	objectType,
+	rangeSelectors,
+	type = CSVType.Individual,
+}: {
+	getFDSQuery?: () => {filter: string; query: string};
+	objectType?: string;
+	rangeSelectors?: any;
+	type?: CSVType;
+}) => (
 	<Provider store={mockStore()}>
 		<MemoryRouter initialEntries={['/workspace/123/456/individuals']}>
 			<Route path="/workspace/:groupId/:channelId/individuals">
@@ -52,7 +66,10 @@ const DefaultComponent = () => (
 				>
 					<DownloadStaticCSVReport
 						disabled={false}
-						type={CSVType.Individual}
+						getFDSQuery={getFDSQuery}
+						objectType={objectType}
+						rangeSelectors={rangeSelectors}
+						type={type}
 						typeLang="Individuals"
 					/>
 				</MockedProvider>
@@ -202,6 +219,133 @@ describe('DownloadStaticCSVReport', () => {
 					'it-was-not-possible-to-generate-a-csv-file-at-this-moment.-please-try-again-later'
 				),
 			});
+		});
+	});
+
+	it('passes objectType and type to the useDownloadCSV hook', () => {
+		render(
+			<DefaultComponent objectType="ObjectType1" type={CSVType.Asset} />
+		);
+
+		expect(mockedUseDownloadCSV).toHaveBeenCalledWith(
+			expect.objectContaining({
+				objectType: 'ObjectType1',
+				type: CSVType.Asset,
+			})
+		);
+	});
+
+	it('reads the filter and query from getFDSQuery and forwards them to the export URL and count request', async () => {
+		const getFDSQuery = jest.fn(() => ({
+			filter: "(assetType eq 'blog')",
+			query: 'liferay',
+		}));
+		const rangeSelectors = {
+			rangeEnd: '',
+			rangeKey: '30',
+			rangeStart: '',
+		};
+
+		(API.csv.fetchCSV as jest.Mock).mockReturnValue(
+			Promise.resolve({ok: true})
+		);
+		(API.csv.fetchCount as jest.Mock).mockReturnValue(
+			Promise.resolve(9000)
+		);
+
+		render(
+			<DefaultComponent
+				getFDSQuery={getFDSQuery}
+				rangeSelectors={rangeSelectors}
+			/>
+		);
+
+		fireEvent.click(
+			screen.getByRole('button', {
+				name: /download report/i,
+			})
+		);
+
+		await waitFor(() =>
+			expect(screen.getByTestId('submit')).toBeInTheDocument()
+		);
+
+		fireEvent.click(screen.getByTestId('submit'));
+
+		await waitFor(() => {
+			expect(mockedGenerateURL).toHaveBeenCalledWith(rangeSelectors, {
+				filter: "(assetType eq 'blog')",
+				query: 'liferay',
+			});
+		});
+
+		expect(API.csv.fetchCount).toHaveBeenCalledWith(
+			expect.objectContaining({
+				filter: "(assetType eq 'blog')",
+				query: 'liferay',
+			})
+		);
+		expect(getFDSQuery).toHaveBeenCalledTimes(1);
+	});
+
+	it('forwards an undefined filter and query when getFDSQuery is not provided', async () => {
+		(API.csv.fetchCSV as jest.Mock).mockReturnValue(
+			Promise.resolve({ok: true})
+		);
+		(API.csv.fetchCount as jest.Mock).mockReturnValue(
+			Promise.resolve(9000)
+		);
+
+		render(<DefaultComponent />);
+
+		fireEvent.click(
+			screen.getByRole('button', {
+				name: /download report/i,
+			})
+		);
+
+		await waitFor(() =>
+			expect(screen.getByTestId('submit')).toBeInTheDocument()
+		);
+
+		fireEvent.click(screen.getByTestId('submit'));
+
+		await waitFor(() => {
+			expect(mockedGenerateURL).toHaveBeenCalledWith(undefined, {
+				filter: undefined,
+				query: undefined,
+			});
+		});
+	});
+
+	it('requests the count for the type being exported instead of a hardcoded type', async () => {
+		(API.csv.fetchCSV as jest.Mock).mockReturnValue(
+			Promise.resolve({ok: true})
+		);
+		(API.csv.fetchCount as jest.Mock).mockReturnValue(
+			Promise.resolve(9000)
+		);
+
+		render(<DefaultComponent type={CSVType.Asset} />);
+
+		fireEvent.click(
+			screen.getByRole('button', {
+				name: /download report/i,
+			})
+		);
+
+		await waitFor(() =>
+			expect(screen.getByTestId('submit')).toBeInTheDocument()
+		);
+
+		fireEvent.click(screen.getByTestId('submit'));
+
+		await waitFor(() => {
+			expect(API.csv.fetchCount).toHaveBeenCalledWith(
+				expect.objectContaining({
+					type: CSVType.Asset,
+				})
+			);
 		});
 	});
 });

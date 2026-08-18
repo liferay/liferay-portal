@@ -63,6 +63,32 @@ exports[`List rendering should match the snapshot 1`] = `
           class="d-flex justify-content-end w-100"
         >
           <div
+            class="mr-1"
+          >
+            <div
+              data-testid="download-csv"
+            >
+              <div
+                data-testid="download-csv-type"
+              >
+                asset
+              </div>
+              <div
+                data-testid="download-csv-range-selectors"
+              >
+                {"rangeEnd":null,"rangeKey":"30","rangeStart":null}
+              </div>
+              <button
+                data-testid="download-csv-call-get-fds-query"
+              >
+                Call getFDSQuery
+              </button>
+              <div
+                data-testid="download-csv-fds-query-result"
+              />
+            </div>
+          </div>
+          <div
             data-testid="dropdown-range-key"
           >
             <span
@@ -95,6 +121,14 @@ exports[`List rendering should match the snapshot 1`] = `
           data-testid="fds-component"
           id="assetTable"
         >
+          <button
+            data-testid="fds-run-transformer"
+          >
+            Run Transformer
+          </button>
+          <div
+            data-testid="fds-transformer-result"
+          />
           <div
             data-testid="fds-sorts"
           >
