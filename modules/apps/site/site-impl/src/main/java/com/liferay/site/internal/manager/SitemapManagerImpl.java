@@ -369,8 +369,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			}
 
 			return _getAssetTypeSitemap(
-				assetTypeClassNameId, groupId, page, privateLayout,
-				themeDisplay);
+				assetTypeClassNameId, groupId, page, themeDisplay);
 		}
 
 		if (Validator.isNull(layoutUuid) &&
@@ -488,7 +487,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			ThemeDisplay themeDisplay = _createThemeDisplay(companyId, groupId);
 
 			_regenerateAssetTypeSitemap(
-				assetTypeClassNameId, groupId, false, themeDisplay);
+				assetTypeClassNameId, groupId, themeDisplay);
 
 			_getIndexSitemap(groupId, false, themeDisplay);
 
@@ -638,13 +637,13 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	private void _addSitemapElement(
 		String assetTypeKey, Element element, long groupId, Date modifiedDate,
-		int page, boolean privateLayout, String url) {
+		int page, String url) {
 
 		Element sitemapElement = element.addElement("sitemap");
 
 		Element locElement = sitemapElement.addElement("loc");
 
-		StringBundler sb = new StringBundler(10);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append(url);
 		sb.append(_portal.getPathContext());
@@ -652,8 +651,6 @@ public class SitemapManagerImpl implements SitemapManager {
 		sb.append(assetTypeKey);
 		sb.append(".xml?groupId=");
 		sb.append(groupId);
-		sb.append("&privateLayout=");
-		sb.append(privateLayout);
 
 		if (page > 0) {
 			sb.append("&page=");
@@ -827,8 +824,7 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private void _generateAssetTypeSitemap(
-			long assetTypeClassNameId, long groupId, boolean privateLayout,
-			ThemeDisplay themeDisplay,
+			long assetTypeClassNameId, long groupId, ThemeDisplay themeDisplay,
 			UnsafeBiConsumer<Integer, String, PortalException> unsafeBiConsumer)
 		throws PortalException {
 
@@ -859,8 +855,7 @@ public class SitemapManagerImpl implements SitemapManager {
 				_serviceTrackerMap.getService(assetTypeClassNameId);
 
 			for (LayoutSet curLayoutSet :
-					_getLayoutSets(
-						groupId, null, privateLayout, themeDisplay)) {
+					_getLayoutSets(groupId, null, false, themeDisplay)) {
 
 				sitemapURLProvider.visitLayoutSet(
 					rootElement, curLayoutSet, themeDisplay);
@@ -910,7 +905,7 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	private String _getAssetTypeSitemap(
 			long assetTypeClassNameId, long groupId, int page,
-			boolean privateLayout, ThemeDisplay themeDisplay)
+			ThemeDisplay themeDisplay)
 		throws PortalException {
 
 		long companyId = themeDisplay.getCompanyId();
@@ -921,7 +916,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			String[] xml = {null};
 
 			_generateAssetTypeSitemap(
-				assetTypeClassNameId, groupId, privateLayout, themeDisplay,
+				assetTypeClassNameId, groupId, themeDisplay,
 				(curPage, curXML) -> {
 					if (curPage == page) {
 						xml[0] = curXML;
@@ -936,8 +931,12 @@ public class SitemapManagerImpl implements SitemapManager {
 		if (!_sitemapStorageHelper.hasSitemapFile(
 				companyId, groupId, assetTypeKey, page)) {
 
+			if (page != 1) {
+				return null;
+			}
+
 			_regenerateAssetTypeSitemap(
-				assetTypeClassNameId, groupId, privateLayout, themeDisplay);
+				assetTypeClassNameId, groupId, themeDisplay);
 		}
 
 		try {
@@ -1056,8 +1055,7 @@ public class SitemapManagerImpl implements SitemapManager {
 							companyId, groupId, assetTypeKey, 1)) {
 
 						_regenerateAssetTypeSitemap(
-							assetTypeClassNameId, groupId, privateLayout,
-							themeDisplay);
+							assetTypeClassNameId, groupId, themeDisplay);
 					}
 
 					assetTypePageCount = _getAssetTypePageCount(
@@ -1067,8 +1065,7 @@ public class SitemapManagerImpl implements SitemapManager {
 					int[] assetTypePageCountArray = {0};
 
 					_generateAssetTypeSitemap(
-						assetTypeClassNameId, groupId, privateLayout,
-						themeDisplay,
+						assetTypeClassNameId, groupId, themeDisplay,
 						(page, xml) -> assetTypePageCountArray[0]++);
 
 					assetTypePageCount = assetTypePageCountArray[0];
@@ -1080,14 +1077,13 @@ public class SitemapManagerImpl implements SitemapManager {
 				if (assetTypePageCount <= 1) {
 					_addSitemapElement(
 						assetTypeKey, rootElement, groupId,
-						assetTypeModifiedDate, 0, privateLayout, portalURL);
+						assetTypeModifiedDate, 0, portalURL);
 				}
 				else {
 					for (int page = 1; page <= assetTypePageCount; page++) {
 						_addSitemapElement(
 							assetTypeKey, rootElement, groupId,
-							assetTypeModifiedDate, page, privateLayout,
-							portalURL);
+							assetTypeModifiedDate, page, portalURL);
 					}
 				}
 			}
@@ -1329,8 +1325,7 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	private void _regenerateAssetTypeSitemap(
-			long assetTypeClassNameId, long groupId, boolean privateLayout,
-			ThemeDisplay themeDisplay)
+			long assetTypeClassNameId, long groupId, ThemeDisplay themeDisplay)
 		throws PortalException {
 
 		long companyId = themeDisplay.getCompanyId();
@@ -1348,7 +1343,7 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 
 		_generateAssetTypeSitemap(
-			assetTypeClassNameId, groupId, privateLayout, themeDisplay,
+			assetTypeClassNameId, groupId, themeDisplay,
 			(page, xml) -> _sitemapStorageHelper.storeSitemapFile(
 				companyId, groupId, assetTypeKey, page, xml));
 	}
@@ -1546,8 +1541,7 @@ public class SitemapManagerImpl implements SitemapManager {
 						portalURL, _portal.getPathContext(),
 						"/sitemap.xml?p_l_id=", layout.getPlid(),
 						"&layoutUuid=", layout.getUuid(), "&groupId=",
-						layoutSet.getGroupId(), "&privateLayout=",
-						layout.isPrivateLayout()));
+						layoutSet.getGroupId()));
 
 				_removeOldestElement(element, sitemapElement);
 			}
