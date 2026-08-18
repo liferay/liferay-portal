@@ -54,6 +54,8 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 	@Before
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
+
 		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
 
 		UnicodeProperties unicodeProperties = group.getTypeSettingsProperties();
@@ -69,6 +71,8 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 	@After
 	@Override
 	public void tearDown() throws Exception {
+		super.tearDown();
+
 		UnicodeProperties unicodeProperties =
 			_group.getTypeSettingsProperties();
 
