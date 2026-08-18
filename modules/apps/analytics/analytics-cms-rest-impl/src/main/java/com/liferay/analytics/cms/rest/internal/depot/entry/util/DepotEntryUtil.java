@@ -10,9 +10,9 @@ import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.model.DepotEntryTable;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.depot.service.DepotEntryService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -25,36 +25,19 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Thiago Buarque
  */
 public class DepotEntryUtil {
 
-	public static List<DepotEntry> getDepotEntries(
-			long companyId, Long depotEntryId)
+	public static List<DepotEntry> getAdministeredDepotEntries(
+			long companyId, Long... depotEntryIds)
 		throws PortalException {
 
-		List<DepotEntry> depotEntries = new ArrayList<>();
-
-		if (depotEntryId == null) {
-			depotEntries.addAll(_getDepotEntries(companyId, null));
-		}
-		else {
-			DepotEntryService depotEntryService =
-				_depotEntryServiceSnapshot.get();
-
-			depotEntries.add(depotEntryService.getDepotEntry(depotEntryId));
-		}
-
-		return depotEntries;
-	}
-
-	public static List<DepotEntry> getDepotEntries(
-			long companyId, Long[] depotEntryIds)
-		throws PortalException {
-
-		return _getDepotEntries(companyId, depotEntryIds);
+		return _getDepotEntries(
+			ActionKeys.VIEW_SITE_ADMINISTRATION, companyId, depotEntryIds);
 	}
 
 	public static Long[] getGroupIds(List<DepotEntry> depotEntries) {
@@ -78,11 +61,18 @@ public class DepotEntryUtil {
 		return groupIds.toArray(new Long[0]);
 	}
 
-	private static List<DepotEntry> _filterViewableDepotEntries(
-			List<DepotEntry> depotEntries)
+	public static List<DepotEntry> getViewableDepotEntries(
+			long companyId, Long... depotEntryIds)
 		throws PortalException {
 
-		List<DepotEntry> viewableDepotEntries = new ArrayList<>();
+		return _getDepotEntries(ActionKeys.VIEW, companyId, depotEntryIds);
+	}
+
+	private static List<DepotEntry> _filterDepotEntries(
+			String actionId, List<DepotEntry> depotEntries)
+		throws PortalException {
+
+		List<DepotEntry> filteredDepotEntries = new ArrayList<>();
 
 		ModelResourcePermission<DepotEntry> modelResourcePermission =
 			_depotEntryModelResourcePermissionSnapshot.get();
@@ -91,25 +81,24 @@ public class DepotEntryUtil {
 
 		for (DepotEntry depotEntry : depotEntries) {
 			if (modelResourcePermission.contains(
-					permissionChecker, depotEntry, ActionKeys.VIEW) ||
-				modelResourcePermission.contains(
-					permissionChecker, depotEntry,
-					ActionKeys.VIEW_SITE_ADMINISTRATION)) {
+					permissionChecker, depotEntry, actionId)) {
 
-				viewableDepotEntries.add(depotEntry);
+				filteredDepotEntries.add(depotEntry);
 			}
 			else if (_log.isInfoEnabled()) {
 				_log.info(
-					"User does not have access to view depot entry " +
-						depotEntry.getDepotEntryId());
+					StringBundler.concat(
+						"User does not have the ", actionId,
+						" permission on depot entry ",
+						depotEntry.getDepotEntryId()));
 			}
 		}
 
-		return viewableDepotEntries;
+		return filteredDepotEntries;
 	}
 
 	private static List<DepotEntry> _getDepotEntries(
-			long companyId, Long[] depotEntryIds)
+			String actionId, long companyId, Long[] depotEntryIds)
 		throws PortalException {
 
 		DepotEntryLocalService depotEntryLocalService =
@@ -117,9 +106,13 @@ public class DepotEntryUtil {
 
 		Predicate predicate = DepotEntryTable.INSTANCE.companyId.eq(companyId);
 
-		if (ArrayUtil.isNotEmpty(depotEntryIds)) {
+		Long[] filteredDepotEntryIds = ArrayUtil.filter(
+			depotEntryIds, Objects::nonNull);
+
+		if (ArrayUtil.isNotEmpty(filteredDepotEntryIds)) {
 			predicate = predicate.and(
-				DepotEntryTable.INSTANCE.depotEntryId.in(depotEntryIds));
+				DepotEntryTable.INSTANCE.depotEntryId.in(
+					filteredDepotEntryIds));
 		}
 
 		List<DepotEntry> depotEntries = depotEntryLocalService.dslQuery(
@@ -131,7 +124,7 @@ public class DepotEntryUtil {
 				predicate
 			));
 
-		return _filterViewableDepotEntries(depotEntries);
+		return _filterDepotEntries(actionId, depotEntries);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DepotEntryUtil.class);
@@ -146,8 +139,5 @@ public class DepotEntryUtil {
 		_depotEntryModelResourcePermissionSnapshot = new Snapshot<>(
 			DepotEntryUtil.class, Snapshot.cast(ModelResourcePermission.class),
 			"(model.class.name=com.liferay.depot.model.DepotEntry)");
-	private static final Snapshot<DepotEntryService>
-		_depotEntryServiceSnapshot = new Snapshot<>(
-			DepotEntryUtil.class, DepotEntryService.class);
 
 }
