@@ -25,7 +25,7 @@ export type PageContent = {
 	className: string;
 	classNameId: string;
 	classPK: string;
-	classTypeId: string;
+	classTypeId: number;
 	externalReferenceCode: string;
 	icon: string;
 	isRestricted: boolean;
