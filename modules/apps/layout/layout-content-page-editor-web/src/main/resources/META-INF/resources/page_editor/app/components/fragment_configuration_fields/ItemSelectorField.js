@@ -7,7 +7,7 @@ import ClayForm from '@clayui/form';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
 import {useId} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 
 import ItemSelector from '../../../common/components/ItemSelector';
 import {ConfigurationFieldPropTypes} from '../../../prop_types/index';
@@ -29,15 +29,29 @@ export function ItemSelectorField({field, onValueSelect, value = {}}) {
 		? collectionItem
 		: value;
 
+	const isAllowedMappedItem = useCallback(
+		(item) =>
+			!typeOptions.itemType || item.className === typeOptions.itemType,
+		[typeOptions.itemType]
+	);
+
+	// A page content only carries a class name, so the recent items can be
+	// filtered by itemType alone. An itemSubtype may be declared as a class
+	// type key instead of an ID, and no mime type is available, so neither can
+	// be checked here. When either is declared the recent items are hidden and
+	// the button falls back to the item selector, which applies every
+	// restriction.
+
+	const areMappedItemsFilterable =
+		!typeOptions.itemSubtype && !typeOptions.mimeTypes?.length;
+
 	return (
 		<>
 			<ItemSelector
 				helpText={field.description}
+				isAllowedMappedItem={isAllowedMappedItem}
 				itemSelectorURL={typeOptions.infoItemSelectorURL}
-				itemSubtype={typeOptions.itemSubtype}
-				itemType={typeOptions.itemType}
 				label={field.label}
-				mimeTypes={typeOptions.mimeTypes}
 				modalProps={{height: '60vh', size: typeOptions.modalSize}}
 				onItemSelect={(item) => {
 					onValueSelect(field.name, item);
@@ -53,6 +67,7 @@ export function ItemSelectorField({field, onValueSelect, value = {}}) {
 						: value
 				}
 				showEditControls={!isWithinCollection}
+				showMappedItems={areMappedItemsFilterable}
 				transformValueCallback={itemSelectorValueToInfoItem}
 			/>
 

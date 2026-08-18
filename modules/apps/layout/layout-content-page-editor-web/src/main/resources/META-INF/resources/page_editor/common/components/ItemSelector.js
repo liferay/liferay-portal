@@ -22,6 +22,8 @@ import {openItemSelector} from '../openItemSelector';
 
 const DEFAULT_BEFORE_ITEM_SELECT = () => {};
 
+const DEFAULT_IS_ALLOWED_MAPPED_ITEM = () => true;
+
 const DEFAULT_OPTIONS_MENU_ITEMS = [];
 
 const DEFAULT_QUICK_MAPPED_INFO_ITEMS = [];
@@ -30,11 +32,9 @@ export default function ItemSelector({
 	className,
 	eventName,
 	helpText,
+	isAllowedMappedItem = DEFAULT_IS_ALLOWED_MAPPED_ITEM,
 	itemSelectorURL,
-	itemSubtype,
-	itemType,
 	label,
-	mimeTypes,
 	modalProps,
 	onBeforeItemSelect = DEFAULT_BEFORE_ITEM_SELECT,
 	onItemSelect,
@@ -89,26 +89,6 @@ export default function ItemSelector({
 			return transformedMappedItems;
 		}
 
-		const isAllowedMappedItem = (item) => {
-			if (!itemType) {
-				return true;
-			}
-
-			if (mimeTypes?.length) {
-				return false;
-			}
-
-			if (item.className !== itemType) {
-				return false;
-			}
-
-			if (itemSubtype) {
-				return String(item.classTypeId) === String(itemSubtype);
-			}
-
-			return true;
-		};
-
 		const transformMappedItem = (item) => ({
 			'data-item-id': getEditableId(item),
 			'label': item.title,
@@ -152,10 +132,8 @@ export default function ItemSelector({
 
 		return transformedMappedItems;
 	}, [
-		itemSubtype,
-		itemType,
+		isAllowedMappedItem,
 		label,
-		mimeTypes,
 		onItemSelect,
 		openModal,
 		pageContents,
@@ -325,11 +303,9 @@ ItemSelector.propTypes = {
 	className: PropTypes.string,
 	eventName: PropTypes.string,
 	helpText: PropTypes.string,
+	isAllowedMappedItem: PropTypes.func,
 	itemSelectorURL: PropTypes.string,
-	itemSubtype: PropTypes.string,
-	itemType: PropTypes.string,
 	label: PropTypes.string.isRequired,
-	mimeTypes: PropTypes.arrayOf(PropTypes.string),
 	modalProps: PropTypes.object,
 	onBeforeItemSelect: PropTypes.func,
 	onItemSelect: PropTypes.func.isRequired,

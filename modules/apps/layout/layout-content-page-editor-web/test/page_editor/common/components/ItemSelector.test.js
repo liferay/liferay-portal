@@ -170,9 +170,11 @@ describe('ItemSelector', () => {
 		expect(openItemSelector).not.toBeCalled();
 	});
 
-	it('does not show recent page contents of a different type when itemType is set', async () => {
+	it('does not show recent page contents rejected by isAllowedMappedItem', async () => {
 		renderItemSelector({
-			itemType: 'com.liferay.portal.kernel.repository.model.FileEntry',
+			isAllowedMappedItem: (item) =>
+				item.className ===
+				'com.liferay.portal.kernel.repository.model.FileEntry',
 			pageContents: [
 				{
 					className: 'com.liferay.journal.model.JournalArticle',
@@ -198,11 +200,11 @@ describe('ItemSelector', () => {
 		expect(openItemSelector).not.toBeCalled();
 	});
 
-	it('selects a recent page content matching itemType', async () => {
+	it('selects a recent page content allowed by isAllowedMappedItem', async () => {
 		const onItemSelect = jest.fn();
 
 		renderItemSelector({
-			itemType: 'com.liferay.portal.kernel.repository.model.FileEntry',
+			isAllowedMappedItem: () => true,
 			onItemSelect,
 			pageContents: [
 				{
@@ -225,9 +227,9 @@ describe('ItemSelector', () => {
 		);
 	});
 
-	it('opens the item selector when no recent page content matches itemType', async () => {
+	it('opens the item selector when isAllowedMappedItem rejects every recent page content', async () => {
 		renderItemSelector({
-			itemType: 'com.liferay.portal.kernel.repository.model.FileEntry',
+			isAllowedMappedItem: () => false,
 			pageContents: [
 				{
 					className: 'com.liferay.journal.model.JournalArticle',
@@ -241,79 +243,28 @@ describe('ItemSelector', () => {
 			screen.getByLabelText('select-itemSelectorLabel')
 		);
 
+		expect(screen.queryByText('Web Content Title')).not.toBeInTheDocument();
+
 		expect(openItemSelector).toBeCalled();
 	});
 
-	it('does not show recent page contents of a different subtype when itemSubtype is set', async () => {
+	it('opens the item selector when showMappedItems is false', async () => {
 		renderItemSelector({
-			itemSubtype: '123',
-			itemType: 'com.liferay.journal.model.JournalArticle',
 			pageContents: [
 				{
 					className: 'com.liferay.journal.model.JournalArticle',
 					classPK: '001',
-					classTypeId: 123,
-					title: 'Matching Subtype Title',
-				},
-				{
-					className: 'com.liferay.journal.model.JournalArticle',
-					classPK: '002',
-					classTypeId: 456,
-					title: 'Other Subtype Title',
-				},
-			],
-		});
-
-		await userEvent.click(
-			screen.getByLabelText('select-itemSelectorLabel')
-		);
-
-		expect(screen.getByText('Matching Subtype Title')).toBeInTheDocument();
-		expect(
-			screen.queryByText('Other Subtype Title')
-		).not.toBeInTheDocument();
-
-		expect(openItemSelector).not.toBeCalled();
-	});
-
-	it('opens the item selector when itemSubtype cannot be matched to a class type', async () => {
-		renderItemSelector({
-			itemSubtype: 'BASIC-WEB-CONTENT',
-			itemType: 'com.liferay.journal.model.JournalArticle',
-			pageContents: [
-				{
-					className: 'com.liferay.journal.model.JournalArticle',
-					classPK: '001',
-					classTypeId: 123,
 					title: 'Web Content Title',
 				},
 			],
+			showMappedItems: false,
 		});
 
 		await userEvent.click(
 			screen.getByLabelText('select-itemSelectorLabel')
 		);
 
-		expect(openItemSelector).toBeCalled();
-	});
-
-	it('opens the item selector when mimeTypes are set', async () => {
-		renderItemSelector({
-			itemType: 'com.liferay.portal.kernel.repository.model.FileEntry',
-			mimeTypes: ['image/png'],
-			pageContents: [
-				{
-					className:
-						'com.liferay.portal.kernel.repository.model.FileEntry',
-					classPK: '002',
-					title: 'Document Title',
-				},
-			],
-		});
-
-		await userEvent.click(
-			screen.getByLabelText('select-itemSelectorLabel')
-		);
+		expect(screen.queryByText('Web Content Title')).not.toBeInTheDocument();
 
 		expect(openItemSelector).toBeCalled();
 	});
