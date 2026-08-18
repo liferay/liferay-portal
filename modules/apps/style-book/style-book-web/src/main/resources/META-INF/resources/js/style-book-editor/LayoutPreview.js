@@ -83,6 +83,7 @@ export default React.memo(function LayoutPreview() {
 							}}
 							ref={iframeRef}
 							src={previewLayout?.url}
+							title={Liferay.Language.get('page-preview')}
 						/>
 					</>
 				) : (
