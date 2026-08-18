@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page} from '@playwright/test';
+import {Page, expect} from '@playwright/test';
 
 import {DataApiHelpers} from '../../../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../../../liferay.config';
@@ -153,6 +153,20 @@ export async function createEventStructure(
 	};
 }
 
+async function expandPanel(page: Page, name: string, contentSelector: string) {
+	await expect(async () => {
+		const panelToggle = page.getByRole('button', {name});
+
+		if ((await panelToggle.getAttribute('aria-expanded')) !== 'true') {
+			await panelToggle.click();
+		}
+
+		await expect(page.locator(contentSelector)).toHaveClass(/show/, {
+			timeout: 2000,
+		});
+	}).toPass();
+}
+
 /**
  * Creates a dynamic collection through the Collections editor UI: sets the item
  * type, scopes it to the given Space, and adds a tag or category filter. Returns
@@ -183,7 +197,7 @@ export async function createDynamicCollectionWithFilterViaUI(
 
 	// Scope to the Space
 
-	await page.getByRole('button', {name: 'Scope'}).click();
+	await expandPanel(page, 'Scope', '#scopeContent');
 	await page.getByRole('button', {name: 'Select Site'}).click();
 	await page
 		.getByRole('menuitem', {name: 'Other Site, Asset Library, or'})
@@ -194,11 +208,13 @@ export async function createDynamicCollectionWithFilterViaUI(
 	await scopeFrame.getByRole('link', {name: 'Spaces'}).click();
 	await scopeFrame.getByRole('link', {exact: true, name: spaceName}).click();
 
+	await expect(page.locator('#scopeContent')).toContainText(spaceName);
+
 	// Add the tag / category filter. The condition row defaults to "Tags"; the
 	// "of the following" select chooses the property. The filter value picker is
 	// opened by the last "Select" button (the first one belongs to Scope).
 
-	await page.getByRole('button', {name: 'Filter'}).click();
+	await expandPanel(page, 'Filter', '#filterContent');
 
 	await page.getByLabel('of the following').selectOption(filterProperty);
 
