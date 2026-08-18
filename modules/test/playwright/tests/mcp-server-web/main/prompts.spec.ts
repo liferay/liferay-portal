@@ -62,21 +62,7 @@ const test = baseTest.extend<{
 		await use(async () => {
 			const name = promptName();
 
-			const prompt = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					description: `Created by Playwright ${name}`,
-					identifier: name,
-					name,
-					prompt: 'Prompt body created by Playwright',
-				},
-				PROMPTS_API
-			);
-
-			apiHelpers.data.push({
-				applicationName: PROMPTS_API,
-				id: prompt.id,
-				type: 'objectEntry',
-			});
+			await createPrompt(apiHelpers, name);
 
 			return name;
 		});
