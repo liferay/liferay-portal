@@ -24,7 +24,6 @@ import com.liferay.account.service.test.util.AccountGroupTestUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
-import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
@@ -214,7 +213,7 @@ public class AccountEntryLocalServiceTest {
 		catch (AccountEntryNameException accountEntryNameException) {
 			String message = accountEntryNameException.getMessage();
 
-			Assert.assertTrue(message.contains("Name is null"));
+			Assert.assertTrue(message.contains("Account entry name is null"));
 		}
 
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
@@ -232,7 +231,7 @@ public class AccountEntryLocalServiceTest {
 		catch (AccountEntryNameException accountEntryNameException) {
 			String message = accountEntryNameException.getMessage();
 
-			Assert.assertTrue(message.contains("Name is null"));
+			Assert.assertTrue(message.contains("Account entry name is null"));
 		}
 	}
 
@@ -676,41 +675,6 @@ public class AccountEntryLocalServiceTest {
 		_assertStatus(
 			accountEntry.getAccountEntryId(),
 			WorkflowConstants.STATUS_INACTIVE);
-	}
-
-	@Test(expected = SystemException.class)
-	public void testDefaultUpdateAccountEntryWithInvalidExternalReferenceCode() {
-		AccountEntry accountEntry =
-			_accountEntryLocalService.createAccountEntry(
-				_counterLocalService.increment());
-
-		accountEntry.setExternalReferenceCode(RandomTestUtil.randomString(76));
-		accountEntry.setName(RandomTestUtil.randomString());
-
-		_accountEntryLocalService.updateAccountEntry(accountEntry);
-	}
-
-	@Test(expected = SystemException.class)
-	public void testDefaultUpdateAccountEntryWithInvalidName() {
-		AccountEntry accountEntry =
-			_accountEntryLocalService.createAccountEntry(
-				_counterLocalService.increment());
-
-		accountEntry.setName(RandomTestUtil.randomString(251));
-
-		_accountEntryLocalService.updateAccountEntry(accountEntry);
-	}
-
-	@Test(expected = SystemException.class)
-	public void testDefaultUpdateAccountEntryWithInvalidTaxIdNumber() {
-		AccountEntry accountEntry =
-			_accountEntryLocalService.createAccountEntry(
-				_counterLocalService.increment());
-
-		accountEntry.setName(RandomTestUtil.randomString());
-		accountEntry.setTaxIdNumber(RandomTestUtil.randomString(76));
-
-		_accountEntryLocalService.updateAccountEntry(accountEntry);
 	}
 
 	@Test
@@ -1443,6 +1407,41 @@ public class AccountEntryLocalServiceTest {
 				RandomTestUtil.randomString(76),
 				updatedAccountEntry.getStatus(),
 				ServiceContextTestUtil.getServiceContext()));
+		Assert.assertThrows(
+			SystemException.class,
+			() -> {
+				AccountEntry invalidAccountEntry =
+					(AccountEntry)updatedAccountEntry.clone();
+
+				invalidAccountEntry.setExternalReferenceCode(
+					RandomTestUtil.randomString(76));
+
+				_accountEntryLocalService.updateAccountEntry(
+					invalidAccountEntry);
+			});
+		Assert.assertThrows(
+			SystemException.class,
+			() -> {
+				AccountEntry invalidAccountEntry =
+					(AccountEntry)updatedAccountEntry.clone();
+
+				invalidAccountEntry.setName(RandomTestUtil.randomString(251));
+
+				_accountEntryLocalService.updateAccountEntry(
+					invalidAccountEntry);
+			});
+		Assert.assertThrows(
+			SystemException.class,
+			() -> {
+				AccountEntry invalidAccountEntry =
+					(AccountEntry)updatedAccountEntry.clone();
+
+				invalidAccountEntry.setTaxIdNumber(
+					RandomTestUtil.randomString(76));
+
+				_accountEntryLocalService.updateAccountEntry(
+					invalidAccountEntry);
+			});
 	}
 
 	@Test
@@ -1879,9 +1878,6 @@ public class AccountEntryLocalServiceTest {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
-
-	@Inject
-	private CounterLocalService _counterLocalService;
 
 	@Inject
 	private JSONFactory _jsonFactory;
