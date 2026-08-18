@@ -50,26 +50,18 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	private BaseMonitor _newBaseMonitor(long timeoutSeconds) {
-		return new TestBaseMonitor(
+		return new BaseMonitor(
 			new MonitorConfig(
 				RandomTestUtil.randomString(), 0, null,
 				MonitorConfig.Severity.MEDIUM, null, timeoutSeconds,
-				RandomTestUtil.randomString()));
-	}
+				RandomTestUtil.randomString())) {
 
-	private static class TestBaseMonitor extends BaseMonitor {
+			@Override
+			public MonitorResult execute() {
+				return null;
+			}
 
-		@Override
-		public MonitorResult execute() {
-			return new MonitorResult(
-				RandomTestUtil.randomString(), null, MonitorResult.Status.OK,
-				System.currentTimeMillis());
-		}
-
-		private TestBaseMonitor(MonitorConfig monitorConfig) {
-			super(monitorConfig);
-		}
-
+		};
 	}
 
 }
