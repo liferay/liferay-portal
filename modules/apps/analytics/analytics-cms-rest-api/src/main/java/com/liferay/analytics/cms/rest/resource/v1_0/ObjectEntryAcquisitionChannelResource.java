@@ -44,7 +44,7 @@ public interface ObjectEntryAcquisitionChannelResource {
 
 	public Page<ObjectEntryAcquisitionChannel>
 			getObjectEntryAcquisitionChannelsPage(
-				String externalReferenceCode, Long groupId, Integer rangeKey)
+				Long groupId, Long objectEntryId, Integer rangeKey)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -135,4 +135,4 @@ public interface ObjectEntryAcquisitionChannelResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-466860613
+// LIFERAY-REST-BUILDER-HASH:-1611508521

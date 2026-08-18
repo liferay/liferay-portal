@@ -42,7 +42,7 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ObjectEntryMetricResource {
 
 	public ObjectEntryMetric getObjectEntryMetric(
-			String externalReferenceCode, Long groupId, Integer rangeKey,
+			Long groupId, Long objectEntryId, Integer rangeKey,
 			String[] selectedMetrics)
 		throws Exception;
 
@@ -134,4 +134,4 @@ public interface ObjectEntryMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1331841229
+// LIFERAY-REST-BUILDER-HASH:936431319

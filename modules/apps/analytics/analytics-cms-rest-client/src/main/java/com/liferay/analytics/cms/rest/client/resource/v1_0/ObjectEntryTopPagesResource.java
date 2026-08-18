@@ -33,11 +33,11 @@ public interface ObjectEntryTopPagesResource {
 	}
 
 	public ObjectEntryTopPages getObjectEntryTopPages(
-			String externalReferenceCode, Long groupId, Integer rangeKey)
+			Long groupId, Long objectEntryId, Integer rangeKey)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getObjectEntryTopPagesHttpResponse(
-			String externalReferenceCode, Long groupId, Integer rangeKey)
+			Long groupId, Long objectEntryId, Integer rangeKey)
 		throws Exception;
 
 	public static class Builder {
@@ -150,12 +150,12 @@ public interface ObjectEntryTopPagesResource {
 		implements ObjectEntryTopPagesResource {
 
 		public ObjectEntryTopPages getObjectEntryTopPages(
-				String externalReferenceCode, Long groupId, Integer rangeKey)
+				Long groupId, Long objectEntryId, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getObjectEntryTopPagesHttpResponse(
-					externalReferenceCode, groupId, rangeKey);
+					groupId, objectEntryId, rangeKey);
 
 			String content = httpResponse.getContent();
 
@@ -217,7 +217,7 @@ public interface ObjectEntryTopPagesResource {
 		}
 
 		public HttpInvoker.HttpResponse getObjectEntryTopPagesHttpResponse(
-				String externalReferenceCode, Long groupId, Integer rangeKey)
+				Long groupId, Long objectEntryId, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -241,14 +241,13 @@ public interface ObjectEntryTopPagesResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (externalReferenceCode != null) {
-				httpInvoker.parameter(
-					"externalReferenceCode",
-					String.valueOf(externalReferenceCode));
-			}
-
 			if (groupId != null) {
 				httpInvoker.parameter("groupId", String.valueOf(groupId));
+			}
+
+			if (objectEntryId != null) {
+				httpInvoker.parameter(
+					"objectEntryId", String.valueOf(objectEntryId));
 			}
 
 			if (rangeKey != null) {
@@ -280,4 +279,4 @@ public interface ObjectEntryTopPagesResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1792027034
+// LIFERAY-REST-BUILDER-HASH:757738308

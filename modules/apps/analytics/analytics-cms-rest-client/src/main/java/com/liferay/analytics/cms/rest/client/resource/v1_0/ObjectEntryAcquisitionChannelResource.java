@@ -35,12 +35,12 @@ public interface ObjectEntryAcquisitionChannelResource {
 
 	public Page<ObjectEntryAcquisitionChannel>
 			getObjectEntryAcquisitionChannelsPage(
-				String externalReferenceCode, Long groupId, Integer rangeKey)
+				Long groupId, Long objectEntryId, Integer rangeKey)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getObjectEntryAcquisitionChannelsPageHttpResponse(
-				String externalReferenceCode, Long groupId, Integer rangeKey)
+				Long groupId, Long objectEntryId, Integer rangeKey)
 		throws Exception;
 
 	public static class Builder {
@@ -154,13 +154,12 @@ public interface ObjectEntryAcquisitionChannelResource {
 
 		public Page<ObjectEntryAcquisitionChannel>
 				getObjectEntryAcquisitionChannelsPage(
-					String externalReferenceCode, Long groupId,
-					Integer rangeKey)
+					Long groupId, Long objectEntryId, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getObjectEntryAcquisitionChannelsPageHttpResponse(
-					externalReferenceCode, groupId, rangeKey);
+					groupId, objectEntryId, rangeKey);
 
 			String content = httpResponse.getContent();
 
@@ -224,8 +223,7 @@ public interface ObjectEntryAcquisitionChannelResource {
 
 		public HttpInvoker.HttpResponse
 				getObjectEntryAcquisitionChannelsPageHttpResponse(
-					String externalReferenceCode, Long groupId,
-					Integer rangeKey)
+					Long groupId, Long objectEntryId, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -249,14 +247,13 @@ public interface ObjectEntryAcquisitionChannelResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (externalReferenceCode != null) {
-				httpInvoker.parameter(
-					"externalReferenceCode",
-					String.valueOf(externalReferenceCode));
-			}
-
 			if (groupId != null) {
 				httpInvoker.parameter("groupId", String.valueOf(groupId));
+			}
+
+			if (objectEntryId != null) {
+				httpInvoker.parameter(
+					"objectEntryId", String.valueOf(objectEntryId));
 			}
 
 			if (rangeKey != null) {
@@ -288,4 +285,4 @@ public interface ObjectEntryAcquisitionChannelResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:306801295
+// LIFERAY-REST-BUILDER-HASH:-281335297

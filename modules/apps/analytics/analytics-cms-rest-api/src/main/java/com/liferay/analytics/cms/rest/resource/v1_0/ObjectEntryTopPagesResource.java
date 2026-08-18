@@ -42,7 +42,7 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ObjectEntryTopPagesResource {
 
 	public ObjectEntryTopPages getObjectEntryTopPages(
-			String externalReferenceCode, Long groupId, Integer rangeKey)
+			Long groupId, Long objectEntryId, Integer rangeKey)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -133,4 +133,4 @@ public interface ObjectEntryTopPagesResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-958632373
+// LIFERAY-REST-BUILDER-HASH:165953447

@@ -51,11 +51,11 @@ public abstract class BaseObjectEntryMetricResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "externalReferenceCode"
+				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "groupId"
+				name = "objectEntryId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -78,12 +78,12 @@ public abstract class BaseObjectEntryMetricResourceImpl
 	@Override
 	public ObjectEntryMetric getObjectEntryMetric(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.QueryParam("externalReferenceCode")
-			String externalReferenceCode,
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("groupId")
 			Long groupId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("objectEntryId")
+			Long objectEntryId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("rangeKey")
 			Integer rangeKey,
@@ -540,4 +540,4 @@ public abstract class BaseObjectEntryMetricResourceImpl
 		LogFactoryUtil.getLog(BaseObjectEntryMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1455254226
+// LIFERAY-REST-BUILDER-HASH:705794894

@@ -51,11 +51,11 @@ public abstract class BaseObjectEntryTopPagesResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "externalReferenceCode"
+				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "groupId"
+				name = "objectEntryId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -76,12 +76,12 @@ public abstract class BaseObjectEntryTopPagesResourceImpl
 	@Override
 	public ObjectEntryTopPages getObjectEntryTopPages(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.QueryParam("externalReferenceCode")
-			String externalReferenceCode,
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("groupId")
 			Long groupId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.QueryParam("objectEntryId")
+			Long objectEntryId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("rangeKey")
 			Integer rangeKey)
@@ -535,4 +535,4 @@ public abstract class BaseObjectEntryTopPagesResourceImpl
 		LogFactoryUtil.getLog(BaseObjectEntryTopPagesResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-254909352
+// LIFERAY-REST-BUILDER-HASH:-1616016456

@@ -198,8 +198,7 @@ public abstract class BaseObjectEntryAcquisitionChannelResourceTestCase {
 	public void testGetObjectEntryAcquisitionChannelsPage() throws Exception {
 		Page<ObjectEntryAcquisitionChannel> page =
 			objectEntryAcquisitionChannelResource.
-				getObjectEntryAcquisitionChannelsPage(
-					RandomTestUtil.randomString(), null, null);
+				getObjectEntryAcquisitionChannelsPage(null, null, null);
 
 		long totalCount = page.getTotalCount();
 
@@ -984,4 +983,4 @@ public abstract class BaseObjectEntryAcquisitionChannelResourceTestCase {
 			_objectEntryAcquisitionChannelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1212791594
+// LIFERAY-REST-BUILDER-HASH:-1511523125

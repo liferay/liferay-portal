@@ -53,11 +53,11 @@ public abstract class BaseObjectEntryAcquisitionChannelResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "externalReferenceCode"
+				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "groupId"
+				name = "objectEntryId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -79,12 +79,12 @@ public abstract class BaseObjectEntryAcquisitionChannelResourceImpl
 	public Page<ObjectEntryAcquisitionChannel>
 			getObjectEntryAcquisitionChannelsPage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-				@jakarta.validation.constraints.NotNull
-				@jakarta.ws.rs.QueryParam("externalReferenceCode")
-				String externalReferenceCode,
-				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 				@jakarta.ws.rs.QueryParam("groupId")
 				Long groupId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.QueryParam("objectEntryId")
+				Long objectEntryId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 				@jakarta.ws.rs.QueryParam("rangeKey")
 				Integer rangeKey)
@@ -539,4 +539,4 @@ public abstract class BaseObjectEntryAcquisitionChannelResourceImpl
 			BaseObjectEntryAcquisitionChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2035675190
+// LIFERAY-REST-BUILDER-HASH:1154306428

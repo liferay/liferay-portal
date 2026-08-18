@@ -33,12 +33,12 @@ public interface ObjectEntryHistogramMetricResource {
 	}
 
 	public ObjectEntryHistogramMetric getObjectEntryHistogramMetric(
-			String externalReferenceCode, Long groupId, Integer rangeKey,
+			Long groupId, Long objectEntryId, Integer rangeKey,
 			String[] selectedMetrics)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getObjectEntryHistogramMetricHttpResponse(
-			String externalReferenceCode, Long groupId, Integer rangeKey,
+			Long groupId, Long objectEntryId, Integer rangeKey,
 			String[] selectedMetrics)
 		throws Exception;
 
@@ -152,13 +152,13 @@ public interface ObjectEntryHistogramMetricResource {
 		implements ObjectEntryHistogramMetricResource {
 
 		public ObjectEntryHistogramMetric getObjectEntryHistogramMetric(
-				String externalReferenceCode, Long groupId, Integer rangeKey,
+				Long groupId, Long objectEntryId, Integer rangeKey,
 				String[] selectedMetrics)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getObjectEntryHistogramMetricHttpResponse(
-					externalReferenceCode, groupId, rangeKey, selectedMetrics);
+					groupId, objectEntryId, rangeKey, selectedMetrics);
 
 			String content = httpResponse.getContent();
 
@@ -221,8 +221,8 @@ public interface ObjectEntryHistogramMetricResource {
 
 		public HttpInvoker.HttpResponse
 				getObjectEntryHistogramMetricHttpResponse(
-					String externalReferenceCode, Long groupId,
-					Integer rangeKey, String[] selectedMetrics)
+					Long groupId, Long objectEntryId, Integer rangeKey,
+					String[] selectedMetrics)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -246,14 +246,13 @@ public interface ObjectEntryHistogramMetricResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (externalReferenceCode != null) {
-				httpInvoker.parameter(
-					"externalReferenceCode",
-					String.valueOf(externalReferenceCode));
-			}
-
 			if (groupId != null) {
 				httpInvoker.parameter("groupId", String.valueOf(groupId));
+			}
+
+			if (objectEntryId != null) {
+				httpInvoker.parameter(
+					"objectEntryId", String.valueOf(objectEntryId));
 			}
 
 			if (rangeKey != null) {
@@ -292,4 +291,4 @@ public interface ObjectEntryHistogramMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1861222899
+// LIFERAY-REST-BUILDER-HASH:-670395531

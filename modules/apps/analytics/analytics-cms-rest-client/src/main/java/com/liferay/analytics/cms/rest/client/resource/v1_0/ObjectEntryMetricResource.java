@@ -33,12 +33,12 @@ public interface ObjectEntryMetricResource {
 	}
 
 	public ObjectEntryMetric getObjectEntryMetric(
-			String externalReferenceCode, Long groupId, Integer rangeKey,
+			Long groupId, Long objectEntryId, Integer rangeKey,
 			String[] selectedMetrics)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getObjectEntryMetricHttpResponse(
-			String externalReferenceCode, Long groupId, Integer rangeKey,
+			Long groupId, Long objectEntryId, Integer rangeKey,
 			String[] selectedMetrics)
 		throws Exception;
 
@@ -152,13 +152,13 @@ public interface ObjectEntryMetricResource {
 		implements ObjectEntryMetricResource {
 
 		public ObjectEntryMetric getObjectEntryMetric(
-				String externalReferenceCode, Long groupId, Integer rangeKey,
+				Long groupId, Long objectEntryId, Integer rangeKey,
 				String[] selectedMetrics)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getObjectEntryMetricHttpResponse(
-					externalReferenceCode, groupId, rangeKey, selectedMetrics);
+					groupId, objectEntryId, rangeKey, selectedMetrics);
 
 			String content = httpResponse.getContent();
 
@@ -220,7 +220,7 @@ public interface ObjectEntryMetricResource {
 		}
 
 		public HttpInvoker.HttpResponse getObjectEntryMetricHttpResponse(
-				String externalReferenceCode, Long groupId, Integer rangeKey,
+				Long groupId, Long objectEntryId, Integer rangeKey,
 				String[] selectedMetrics)
 			throws Exception {
 
@@ -245,14 +245,13 @@ public interface ObjectEntryMetricResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (externalReferenceCode != null) {
-				httpInvoker.parameter(
-					"externalReferenceCode",
-					String.valueOf(externalReferenceCode));
-			}
-
 			if (groupId != null) {
 				httpInvoker.parameter("groupId", String.valueOf(groupId));
+			}
+
+			if (objectEntryId != null) {
+				httpInvoker.parameter(
+					"objectEntryId", String.valueOf(objectEntryId));
 			}
 
 			if (rangeKey != null) {
@@ -291,4 +290,4 @@ public interface ObjectEntryMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2091173732
+// LIFERAY-REST-BUILDER-HASH:1175488708

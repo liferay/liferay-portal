@@ -42,7 +42,7 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ObjectEntryHistogramMetricResource {
 
 	public ObjectEntryHistogramMetric getObjectEntryHistogramMetric(
-			String externalReferenceCode, Long groupId, Integer rangeKey,
+			Long groupId, Long objectEntryId, Integer rangeKey,
 			String[] selectedMetrics)
 		throws Exception;
 
@@ -134,4 +134,4 @@ public interface ObjectEntryHistogramMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-239160787
+// LIFERAY-REST-BUILDER-HASH:-521610103
