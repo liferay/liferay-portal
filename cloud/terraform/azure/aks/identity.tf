@@ -6,6 +6,14 @@ resource "azurerm_federated_identity_credential" "observability" {
 	subject="system:serviceaccount:${var.observability_config.namespace}:grafana"
 	user_assigned_identity_id=azurerm_user_assigned_identity.observability[0].id
 }
+resource "azurerm_federated_identity_credential" "observability_alloy" {
+	audience=["api://AzureADTokenExchange"]
+	count=var.observability_config.enabled ? 1 : 0
+	issuer=azurerm_kubernetes_cluster.main.oidc_issuer_url
+	name="${var.deployment_name}-alloy"
+	subject="system:serviceaccount:${var.observability_config.namespace}:liferay-alloy"
+	user_assigned_identity_id=azurerm_user_assigned_identity.observability[0].id
+}
 resource "azurerm_role_assignment" "cluster_network_contributor" {
 	principal_id=azurerm_user_assigned_identity.cluster.principal_id
 	role_definition_name="Network Contributor"
@@ -16,6 +24,12 @@ resource "azurerm_role_assignment" "observability_monitoring_data_reader" {
 	principal_id=azurerm_user_assigned_identity.observability[0].principal_id
 	role_definition_name="Monitoring Data Reader"
 	scope=azurerm_monitor_workspace.main[0].id
+}
+resource "azurerm_role_assignment" "observability_monitoring_metrics_publisher" {
+	count=var.observability_config.enabled ? 1 : 0
+	principal_id=azurerm_user_assigned_identity.observability[0].principal_id
+	role_definition_name="Monitoring Metrics Publisher"
+	scope=azurerm_monitor_data_collection_rule.main[0].id
 }
 resource "azurerm_role_assignment" "workload_storage" {
 	for_each=toset(local.storage_scopes)

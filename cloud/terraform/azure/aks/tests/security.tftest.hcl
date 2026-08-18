@@ -47,6 +47,10 @@ run "should_create_observability_identity_when_enabled" {
 		condition=one(azurerm_federated_identity_credential.observability[0].audience) == "api://AzureADTokenExchange"
 		error_message="The observability federated credential must use the Azure AD token exchange audience"
 	}
+	assert {
+		condition=azurerm_federated_identity_credential.observability_alloy[0].subject == "system:serviceaccount:observability:liferay-alloy"
+		error_message="The alloy federated credential must bind the liferay-alloy service account in the observability namespace"
+	}
 	command=plan
 	variables {
 		observability_config={
@@ -64,11 +68,27 @@ run "should_grant_cluster_network_contributor" {
 run "should_grant_monitoring_data_reader_on_the_workspace" {
 	assert {
 		condition=azurerm_role_assignment.observability_monitoring_data_reader[0].role_definition_name == "Monitoring Data Reader"
-		error_message="The observability identity must only be granted the Monitoring Data Reader role"
+		error_message="The observability identity must be granted the Monitoring Data Reader role to query the workspace"
 	}
 	assert {
 		condition=azurerm_role_assignment.observability_monitoring_data_reader[0].scope == azurerm_monitor_workspace.main[0].id
 		error_message="The Monitoring Data Reader grant must be scoped to the Azure Monitor workspace"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
+run "should_grant_monitoring_metrics_publisher_on_the_data_collection_rule" {
+	assert {
+		condition=azurerm_role_assignment.observability_monitoring_metrics_publisher[0].role_definition_name == "Monitoring Metrics Publisher"
+		error_message="The observability identity must be granted the Monitoring Metrics Publisher role to remote write metrics"
+	}
+	assert {
+		condition=azurerm_role_assignment.observability_monitoring_metrics_publisher[0].scope == azurerm_monitor_data_collection_rule.main[0].id
+		error_message="The Monitoring Metrics Publisher grant must be scoped to the Prometheus data collection rule"
 	}
 	command=plan
 	variables {
@@ -86,12 +106,12 @@ run "should_not_create_acr_pull_role_by_default" {
 }
 run "should_not_create_observability_identity_by_default" {
 	assert {
-		condition=length(azurerm_user_assigned_identity.observability) == 0 && length(azurerm_federated_identity_credential.observability) == 0
+		condition=length(azurerm_user_assigned_identity.observability) == 0 && length(azurerm_federated_identity_credential.observability) == 0 && length(azurerm_federated_identity_credential.observability_alloy) == 0
 		error_message="No observability identity or federated credential must be created when observability is disabled"
 	}
 	assert {
-		condition=length(azurerm_role_assignment.observability_monitoring_data_reader) == 0
-		error_message="No Monitoring Data Reader grant must be created when observability is disabled"
+		condition=length(azurerm_role_assignment.observability_monitoring_data_reader) == 0 && length(azurerm_role_assignment.observability_monitoring_metrics_publisher) == 0
+		error_message="No monitoring grant must be created when observability is disabled"
 	}
 	assert {
 		condition=output.observability_identity_client_id == ""
@@ -110,6 +130,10 @@ run "should_override_observability_namespace" {
 	assert {
 		condition=azurerm_federated_identity_credential.observability[0].subject == "system:serviceaccount:metrics:grafana"
 		error_message="A custom observability namespace must drive the federated credential subject"
+	}
+	assert {
+		condition=azurerm_federated_identity_credential.observability_alloy[0].subject == "system:serviceaccount:metrics:liferay-alloy"
+		error_message="A custom observability namespace must drive the alloy federated credential subject"
 	}
 	command=plan
 	variables {

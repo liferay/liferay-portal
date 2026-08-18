@@ -19,6 +19,12 @@ output "oidc_issuer_url" {
 output "private_subnet_ids" {
 	value=[azurerm_subnet.main.id]
 }
+output "prometheus_data_collection_rule_id" {
+	value=try(azurerm_monitor_data_collection_rule.main[0].immutable_id, "")
+}
+output "prometheus_metrics_ingestion_endpoint" {
+	value=try(azurerm_monitor_data_collection_endpoint.main[0].metrics_ingestion_endpoint, "")
+}
 output "prometheus_workspace_endpoint" {
 	value=try(azurerm_monitor_workspace.main[0].query_endpoint, "")
 }

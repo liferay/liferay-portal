@@ -43,7 +43,27 @@ run "should_disable_ingestion_by_default" {
 		condition=output.prometheus_workspace_endpoint == "" && output.prometheus_workspace_id == ""
 		error_message="Prometheus workspace outputs must be empty when observability is disabled"
 	}
+	assert {
+		condition=output.prometheus_data_collection_rule_id == "" && output.prometheus_metrics_ingestion_endpoint == ""
+		error_message="Remote write outputs must be empty when observability is disabled"
+	}
 	command=plan
+}
+run "should_expose_remote_write_outputs_when_enabled" {
+	assert {
+		condition=output.prometheus_metrics_ingestion_endpoint == "https://liferay-test-prometheus-dce-abcd.eastus-1.metrics.ingest.monitor.azure.com"
+		error_message="The metrics ingestion endpoint output must expose the data collection endpoint that receives remote write requests"
+	}
+	assert {
+		condition=output.prometheus_data_collection_rule_id == "dcr-00000000000000000000000000000000"
+		error_message="The data collection rule output must expose the immutable ID that the remote write URL embeds"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
 }
 run "should_name_ingestion_resources_when_enabled" {
 	assert {
