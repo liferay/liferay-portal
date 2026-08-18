@@ -11,18 +11,27 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -87,13 +96,46 @@ public class ViewCategoriesDisplayContextTest
 			Collections.emptyMap(), _assetVocabulary.getVocabularyId(), false,
 			new String[0],
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		_restrictedAssetVocabulary = _assetVocabularyLocalService.addVocabulary(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		_restrictedAssetCategory = _assetCategoryLocalService.addCategory(
+			null, TestPropsValues.getUserId(), group.getGroupId(), 0,
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(),
+			_restrictedAssetVocabulary.getVocabularyId(), false, new String[0],
+			serviceContext);
 	}
 
 	@Test
-	@TestInfo("LPD-83779")
+	@TestInfo({"LPD-83779", "LPD-102143"})
 	public void testGetBreadcrumbProps() throws Exception {
 		_testGetBreadcrumbPropsUsesAssetCategoryTitle();
 		_testGetBreadcrumbPropsUsesAssetVocabularyTitle();
+		_testGetBreadcrumbPropsWithoutAssetCategoryViewPermission();
+		_testGetBreadcrumbPropsWithoutAssetVocabularyViewPermission();
+	}
+
+	private void _assertViewPermissionRequired(
+		PrincipalException.MustHavePermission principalException) {
+
+		Assert.assertTrue(
+			principalException.getMessage(),
+			StringUtil.startsWith(
+				principalException.getMessage(),
+				StringBundler.concat(
+					"User ", _user.getUserId(),
+					" must have VIEW permission for")));
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
@@ -171,6 +213,51 @@ public class ViewCategoriesDisplayContextTest
 			jsonObject.getString("label"));
 	}
 
+	private void _testGetBreadcrumbPropsWithoutAssetCategoryViewPermission()
+		throws Exception {
+
+		_user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			ReflectionTestUtil.invoke(
+				_getViewCategoriesDisplayContext(
+					_getMockHttpServletRequest(
+						_restrictedAssetCategory.getCategoryId(),
+						LocaleUtil.getDefault(),
+						_restrictedAssetVocabulary.getVocabularyId())),
+				"getBreadcrumbProps", new Class<?>[0]);
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertViewPermissionRequired(principalException);
+		}
+	}
+
+	private void _testGetBreadcrumbPropsWithoutAssetVocabularyViewPermission()
+		throws Exception {
+
+		_user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			ReflectionTestUtil.invoke(
+				_getViewCategoriesDisplayContext(
+					_getMockHttpServletRequest(
+						0, LocaleUtil.getDefault(),
+						_restrictedAssetVocabulary.getVocabularyId())),
+				"getBreadcrumbProps", new Class<?>[0]);
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			_assertViewPermissionRequired(principalException);
+		}
+	}
+
 	private AssetCategory _assetCategory;
 
 	@Inject
@@ -180,6 +267,12 @@ public class ViewCategoriesDisplayContextTest
 
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	private AssetCategory _restrictedAssetCategory;
+	private AssetVocabulary _restrictedAssetVocabulary;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 	@Inject(
 		filter = "component.name=com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewCategoriesJSPSectionFragmentRenderer"
