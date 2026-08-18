@@ -28,8 +28,8 @@ public class FrontendTokenDefinitionUtil {
 	public static List<String> getFrontendTokenNames(
 		String frontendTokenDefinition) {
 
-		JSONObject frontendTokenDefinitionJSONObject = _parse(
-			frontendTokenDefinition);
+		JSONObject frontendTokenDefinitionJSONObject =
+			parseFrontendTokenDefinitionJSONObject(frontendTokenDefinition);
 
 		if (frontendTokenDefinitionJSONObject == null) {
 			return Collections.emptyList();
@@ -92,6 +92,26 @@ public class FrontendTokenDefinitionUtil {
 			overrideFrontendTokenCategoriesJSONArray, 0);
 
 		return mergedFrontendTokenDefinitionJSONObject;
+	}
+
+	public static JSONObject parseFrontendTokenDefinitionJSONObject(
+		String frontendTokenDefinition) {
+
+		if (Validator.isNull(frontendTokenDefinition)) {
+			return null;
+		}
+
+		try {
+			return JSONFactoryUtil.createJSONObject(frontendTokenDefinition);
+		}
+		catch (JSONException jsonException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to parse frontend token definition", jsonException);
+			}
+
+			return null;
+		}
 	}
 
 	private static JSONObject _clone(JSONObject jsonObject) {
@@ -220,24 +240,6 @@ public class FrontendTokenDefinitionUtil {
 		}
 
 		return jsonArray;
-	}
-
-	private static JSONObject _parse(String frontendTokenDefinition) {
-		if (Validator.isNull(frontendTokenDefinition)) {
-			return null;
-		}
-
-		try {
-			return JSONFactoryUtil.createJSONObject(frontendTokenDefinition);
-		}
-		catch (JSONException jsonException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to parse frontend token definition", jsonException);
-			}
-
-			return null;
-		}
 	}
 
 	private static final String[] _CHILD_ARRAY_KEYS = {
