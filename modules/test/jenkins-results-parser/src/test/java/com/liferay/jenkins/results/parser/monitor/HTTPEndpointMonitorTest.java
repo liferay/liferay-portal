@@ -55,9 +55,9 @@ public class HTTPEndpointMonitorTest
 
 	@Test
 	public void testExecuteLatencyMaximumWithinBound() throws Exception {
-		_testExecuteLatencyMaximumWithinBound(null);
 		_testExecuteLatencyMaximumWithinBound("0");
 		_testExecuteLatencyMaximumWithinBound("60000");
+		_testExecuteLatencyMaximumWithinBound(null);
 	}
 
 	@Test
