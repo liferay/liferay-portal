@@ -266,10 +266,10 @@ public class SectionDisplayContextUtil {
 			));
 		fdsActionDropdownItems.add(
 			getScheduleDateFDSActionDropdownItem(
-				httpServletRequest, "update-expiration-date"));
+				"update-expiration-date", httpServletRequest));
 		fdsActionDropdownItems.add(
 			getScheduleDateFDSActionDropdownItem(
-				httpServletRequest, "update-review-date"));
+				"update-review-date", httpServletRequest));
 
 		return fdsActionDropdownItems;
 	}
@@ -931,6 +931,10 @@ public class SectionDisplayContextUtil {
 				String w3cLanguageId = LocaleUtil.toW3cLanguageId(
 					currentLocale);
 
+				String symbol =
+					com.liferay.portal.kernel.util.StringUtil.toLowerCase(
+						w3cLanguageId);
+
 				jsonArray.put(
 					JSONUtil.put(
 						"displayName",
@@ -944,9 +948,7 @@ public class SectionDisplayContextUtil {
 					).put(
 						"name", currentLocale.getDisplayName()
 					).put(
-						"symbol",
-						com.liferay.portal.kernel.util.StringUtil.toLowerCase(
-							w3cLanguageId)
+						"symbol", symbol
 					));
 			});
 
@@ -962,10 +964,10 @@ public class SectionDisplayContextUtil {
 
 		fdsActionDropdownItems.add(
 			getScheduleDateFDSActionDropdownItem(
-				httpServletRequest, "update-expiration-date"));
+				"update-expiration-date", httpServletRequest));
 		fdsActionDropdownItems.add(
 			getScheduleDateFDSActionDropdownItem(
-				httpServletRequest, "update-review-date"));
+				"update-review-date", httpServletRequest));
 
 		return fdsActionDropdownItems;
 	}
@@ -1029,7 +1031,7 @@ public class SectionDisplayContextUtil {
 	}
 
 	public static FDSActionDropdownItem getScheduleDateFDSActionDropdownItem(
-		HttpServletRequest httpServletRequest, String actionId) {
+		String actionId, HttpServletRequest httpServletRequest) {
 
 		return FDSActionDropdownItemBuilder.setHref(
 			StringPool.POUND

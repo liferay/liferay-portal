@@ -19,11 +19,11 @@ export type AssetStatistics = {
 	upcomingReviewCount: number;
 };
 
-const SEARCH_URL = '/o/search/v1.0/search';
+const NEEDS_REVIEW_PAGE_SIZE = 8;
 
 const NESTED_FIELDS = 'embedded,systemProperties.objectDefinitionBrief';
 
-const NEEDS_REVIEW_PAGE_SIZE = 8;
+const SEARCH_URL = '/o/search/v1.0/search';
 
 async function getAssetStatistics(
 	assetLibraryId?: string,
