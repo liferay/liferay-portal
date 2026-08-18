@@ -133,7 +133,7 @@ public class JenkinsConfigUtil {
 	private static void _validateAPITokens(
 		JenkinsMaster jenkinsMaster, String jenkinsUserID) {
 
-		List<JenkinsMaster.APIToken> apiTokens = jenkinsMaster.getAPITokens(
+		List<JenkinsUser.APIToken> apiTokens = jenkinsMaster.getAPITokens(
 			jenkinsUserID);
 
 		if ((apiTokens == null) || apiTokens.isEmpty()) {
@@ -144,7 +144,7 @@ public class JenkinsConfigUtil {
 		String nodeNameURL = JenkinsResultsParserUtil.getLocalURL(
 			jenkinsMaster.getURL() + "/api/json?tree=nodeName");
 
-		for (JenkinsMaster.APIToken apiToken : apiTokens) {
+		for (JenkinsUser.APIToken apiToken : apiTokens) {
 			try {
 				JenkinsResultsParserUtil.toJSONObject(
 					nodeNameURL, false, apiToken.getHTTPAuthorization());

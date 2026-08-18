@@ -128,7 +128,7 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	private void _setAPITokenElements(
 		Document document, JenkinsMaster jenkinsMaster, String jenkinsUserID) {
 
-		List<JenkinsMaster.APIToken> apiTokens = jenkinsMaster.getAPITokens(
+		List<JenkinsUser.APIToken> apiTokens = jenkinsMaster.getAPITokens(
 			jenkinsUserID);
 
 		if ((apiTokens == null) || apiTokens.isEmpty()) {
@@ -146,7 +146,7 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
 		tokenListElement.clearContent();
 
-		for (JenkinsMaster.APIToken apiToken : apiTokens) {
+		for (JenkinsUser.APIToken apiToken : apiTokens) {
 			Element hashedTokenElement = Dom4JUtil.getNewElement(
 				"jenkins.security.apitoken.ApiTokenStore_-HashedToken",
 				tokenListElement);
