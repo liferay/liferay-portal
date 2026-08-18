@@ -57,7 +57,7 @@ CookiesBannerDisplayContext cookiesBannerDisplayContext = (CookiesBannerDisplayC
 						<%= HtmlUtil.escape(cookiesBannerDisplayContext.getContent(locale)) %>
 
 						<clay:link
-							href="<%= HtmlUtil.escape(cookiesBannerDisplayContext.getPrivacyPolicyLink()) %>"
+							href="<%= HtmlUtil.escapeHREF(cookiesBannerDisplayContext.getPrivacyPolicyLink()) %>"
 							label="<%= HtmlUtil.escape(cookiesBannerDisplayContext.getLinkDisplayText(locale)) %>"
 						/>
 					</p>

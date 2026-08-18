@@ -48,7 +48,7 @@ if (!portletName.equals(UsersAdminPortletKeys.MY_ACCOUNT)) {
 			<%= HtmlUtil.escape(cookiesBannerConfigurationDisplayContext.getDescription(locale)) %>
 
 			<clay:link
-				href="<%= HtmlUtil.escape(cookiesBannerConfigurationDisplayContext.getCookiePolicyLink()) %>"
+				href="<%= HtmlUtil.escapeHREF(cookiesBannerConfigurationDisplayContext.getCookiePolicyLink()) %>"
 				label="<%= HtmlUtil.escape(cookiesBannerConfigurationDisplayContext.getLinkDisplayText(locale)) %>"
 				target="_blank"
 			/>
