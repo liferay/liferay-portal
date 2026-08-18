@@ -7,8 +7,8 @@ package com.liferay.site.cms.site.initializer.internal.util;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -35,8 +35,8 @@ public class CategorizationBreadcrumbUtil {
 				true, assetVocabularyId, themeDisplay);
 		}
 
-		AssetCategory assetCategory =
-			AssetCategoryLocalServiceUtil.getAssetCategory(categoryId);
+		AssetCategory assetCategory = AssetCategoryServiceUtil.getCategory(
+			categoryId);
 
 		return _getBreadcrumbsJSONArray(
 			assetCategory, themeDisplay
@@ -53,8 +53,8 @@ public class CategorizationBreadcrumbUtil {
 			long categoryId, ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		AssetCategory assetCategory =
-			AssetCategoryLocalServiceUtil.getAssetCategory(categoryId);
+		AssetCategory assetCategory = AssetCategoryServiceUtil.getCategory(
+			categoryId);
 
 		return _getBreadcrumbsJSONArray(
 			assetCategory, themeDisplay
@@ -124,8 +124,7 @@ public class CategorizationBreadcrumbUtil {
 			));
 
 		AssetVocabulary assetVocabulary =
-			AssetVocabularyLocalServiceUtil.getAssetVocabulary(
-				assetVocabularyId);
+			AssetVocabularyServiceUtil.getVocabulary(assetVocabularyId);
 
 		return jsonArray.put(
 			JSONUtil.put(
