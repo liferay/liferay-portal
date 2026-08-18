@@ -16,15 +16,15 @@ import {AssetMetrics} from './components/cms/asset-metrics/AssetMetrics';
 import '../css/cms_performance.scss';
 
 interface ICMSPerformanceProps extends React.HTMLAttributes<HTMLElement> {
-	externalReferenceCode?: string;
 	objectEntryFolderExternalReferenceCode?: string;
+	objectEntryId?: number;
 	onConnectSites: (loadData: () => void) => void;
 	scopeId?: number;
 }
 
 const CMSPerformance: React.FC<ICMSPerformanceProps> = ({
-	externalReferenceCode,
 	objectEntryFolderExternalReferenceCode,
+	objectEntryId,
 	onConnectSites,
 	scopeId,
 }) => {
@@ -36,10 +36,10 @@ const CMSPerformance: React.FC<ICMSPerformanceProps> = ({
 			>
 				<ContextProvider
 					customState={{
-						externalReferenceCode: String(externalReferenceCode),
 						objectEntryFolderExternalReferenceCode: String(
 							objectEntryFolderExternalReferenceCode
 						),
+						objectEntryId: Number(objectEntryId),
 						scopeId: String(scopeId),
 					}}
 				>

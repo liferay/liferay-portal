@@ -157,10 +157,10 @@ const TrafficChannelsContent = ({data}: {data: TrafficChannelsApiResponse}) => {
 };
 
 export function TrafficChannels() {
-	const {externalReferenceCode, filters} = useContext(Context);
+	const {filters, objectEntryId} = useContext(Context);
 	const queryParams = buildQueryString({
-		externalReferenceCode,
 		groupId: filters.channel,
+		objectEntryId,
 		rangeKey: filters.rangeSelector.rangeKey,
 	});
 

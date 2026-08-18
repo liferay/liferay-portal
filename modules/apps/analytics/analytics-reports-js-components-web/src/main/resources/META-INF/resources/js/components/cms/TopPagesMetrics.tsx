@@ -104,11 +104,11 @@ const TopPagesMetricsTable: React.FC<TopPagesMetricsTableProps> = ({data}) => {
 };
 
 const TopPagesMetrics: React.FC = () => {
-	const {externalReferenceCode, filters} = useContext(Context);
+	const {filters, objectEntryId} = useContext(Context);
 
 	const queryString = buildQueryString({
-		externalReferenceCode,
 		groupId: filters.channel,
+		objectEntryId,
 		rangeKey: filters.rangeSelector.rangeKey,
 	});
 

@@ -24,15 +24,12 @@ export type AssetMetricProps = {
 };
 
 const CMSOverviewMetrics = () => {
-	const {
-		externalReferenceCode,
-		filters,
-		objectEntryFolderExternalReferenceCode,
-	} = useContext(Context);
+	const {filters, objectEntryFolderExternalReferenceCode, objectEntryId} =
+		useContext(Context);
 
 	const queryString = buildQueryString({
-		externalReferenceCode,
 		groupId: filters.channel,
+		objectEntryId,
 		rangeKey: filters.rangeSelector.rangeKey,
 		selectedMetrics:
 			assetMetrics[objectEntryFolderExternalReferenceCode as AssetTypes],

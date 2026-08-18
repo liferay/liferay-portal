@@ -14,20 +14,16 @@ import {
 
 const PerformanceTabContent = () => {
 	const {
-		asset: {
-			externalReferenceCode,
-			objectEntryFolderExternalReferenceCode,
-			scopeId,
-		},
+		asset: {id, objectEntryFolderExternalReferenceCode, scopeId},
 		assetLibrary: {externalReferenceCode: assetLibraryERC = ''} = {},
 	} = useContext<IAssetTypeInfoPanelContext>(AssetTypeInfoPanelContext);
 
 	return (
 		<CMSPerformance
-			externalReferenceCode={externalReferenceCode}
 			objectEntryFolderExternalReferenceCode={
 				objectEntryFolderExternalReferenceCode
 			}
+			objectEntryId={id}
 			onConnectSites={(loadData) =>
 				manageConnectedSitesAction(
 					{
