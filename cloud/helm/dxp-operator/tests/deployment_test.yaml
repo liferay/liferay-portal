@@ -140,6 +140,13 @@ tests:
             probes.port: 9091
     -   asserts:
             -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="DOWNLOAD_POLL_INTERVAL")].value
+                    value: 45s
+        it: Propagates the download poll interval as a quoted environment variable
+        set:
+            downloadPollInterval: 45s
+    -   asserts:
+            -   equal:
                     path: spec.template.spec.containers[0].env[?(@.name=="HEARTBEAT_INTERVAL")].value
                     value: 30m
         it: Propagates the heartbeat interval as a quoted environment variable

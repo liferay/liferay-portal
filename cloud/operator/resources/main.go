@@ -77,7 +77,10 @@ func main() {
 			Recorder:             manager.GetEventRecorderFor("liferayenvironment-controller"),
 			RetryInitialDelay:    config.RetryInitialDelay,
 			RetryMaxDelay:        config.RetryMaxDelay,
-			Syncer:               addon.NewSyncer(provisioningClient, addon.GoRunner{}),
+			Syncer: addon.NewSyncer(
+				provisioningClient, config.DownloadPollInterval,
+				config.RetryInitialDelay, config.RetryMaxDelay, addon.GoRunner{},
+			),
 		},
 	); error != nil {
 		controller.SetupLog.Error(error, "Unable to set up controllers")
@@ -116,6 +119,7 @@ func main() {
 
 type config struct {
 	Debug                bool          `env:"DEBUG" envDefault:"false"`
+	DownloadPollInterval time.Duration `env:"DOWNLOAD_POLL_INTERVAL" envDefault:"15s"`
 	GracePeriod          time.Duration `env:"GRACE_PERIOD" envDefault:"168h"`
 	HeartbeatInterval    time.Duration `env:"HEARTBEAT_INTERVAL" envDefault:"10m"`
 	MarketplaceMountPath string        `env:"MARKETPLACE_MOUNT_PATH" envDefault:"/marketplace"`

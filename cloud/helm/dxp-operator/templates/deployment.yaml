@@ -27,6 +27,8 @@ spec:
                 -   env:
                         -   name: DEBUG
                             value: {{ .Values.debug | quote }}
+                        -   name: DOWNLOAD_POLL_INTERVAL
+                            value: {{ .Values.downloadPollInterval | quote }}
                         -   name: GRACE_PERIOD
                             value: {{ .Values.gracePeriod | quote }}
                         -   name: HEARTBEAT_INTERVAL

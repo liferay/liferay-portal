@@ -7,8 +7,17 @@ import (
 	"fmt"
 	"io"
 	"testing"
+	"time"
 
+	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
+
+const (
+	testPollInterval      = 15 * time.Second
+	testRetryInitialDelay = 30 * time.Second
+	testRetryMaxDelay     = 30 * time.Minute
 )
 
 func (fakeDownloader *fakeDownloader) DownloadAddOn(
@@ -73,56 +82,141 @@ func (fakeCache *fakeCache) Save(
 	return nil
 }
 
-func TestSyncDoesNotRelaunchInFlightDownload(t *testing.T) {
+func TestSyncBacksOffWhileNextRetryInFuture(t *testing.T) {
 	addOn := sampleAddOn()
+
+	now := baseTime()
+	nextRetry := atOffset(now, 5*time.Minute)
 
 	cache := &fakeCache{}
 	downloader := &fakeDownloader{bodies: map[int64][]byte{42: []byte("lpkg")}}
 	runner := &manualRunner{}
-	syncer := NewSyncer(downloader, runner)
+	syncer := newTestSyncer(downloader, runner)
 
-	syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
-	)
-
-	apps, pending := syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
-	)
-
-	if !pending {
-		t.Error("pending = false, want true while the download is in flight")
+	current := []licensingv1alpha1.AppStatus{
+		{
+			Checksum:            "abc123",
+			ConsecutiveFailures: 2,
+			Message:             "boom",
+			NextRetry:           &nextRetry,
+			State:               stateFailed,
+			VirtualEntryID:      42,
+		},
 	}
+
+	apps, requeueAfter := syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, current, now),
+	)
+
+	if len(runner.tasks) != 0 {
+		t.Errorf("Queued tasks = %d, want 0 while backing off", len(runner.tasks))
+	}
+
+	if apps[0].State != stateFailed {
+		t.Errorf("State = %q, want %q", apps[0].State, stateFailed)
+	}
+
+	if apps[0].ConsecutiveFailures != 2 {
+		t.Errorf("ConsecutiveFailures = %d, want 2", apps[0].ConsecutiveFailures)
+	}
+
+	if apps[0].Message != "boom" {
+		t.Errorf("Message = %q, want %q while backing off", apps[0].Message, "boom")
+	}
+
+	if apps[0].NextRetry == nil {
+		t.Error("NextRetry = nil, want the pending deadline while backing off")
+	}
+
+	if requeueAfter != 5*time.Minute {
+		t.Errorf("RequeueAfter = %s, want 5m", requeueAfter)
+	}
+}
+
+func TestSyncClearsFailureMessageWhileRetrying(t *testing.T) {
+	addOn := sampleAddOn()
+
+	now := baseTime()
+	nextRetry := atOffset(now, -time.Minute)
+
+	cache := &fakeCache{}
+	downloader := &fakeDownloader{bodies: map[int64][]byte{42: []byte("lpkg")}}
+	runner := &manualRunner{}
+	syncer := newTestSyncer(downloader, runner)
+
+	current := []licensingv1alpha1.AppStatus{
+		{
+			Checksum:            "abc123",
+			ConsecutiveFailures: 2,
+			Message:             "add-on download: unexpected status 503",
+			NextRetry:           &nextRetry,
+			State:               stateFailed,
+			VirtualEntryID:      42,
+		},
+	}
+
+	apps, _ := syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, current, now),
+	)
+
+	assertRetryInProgress(apps[0], t)
+
+	apps, _ = syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, apps, now),
+	)
+
+	assertRetryInProgress(apps[0], t)
+}
+
+func TestSyncDoesNotRelaunchInFlightDownload(t *testing.T) {
+	addOn := sampleAddOn()
+
+	now := baseTime()
+
+	cache := &fakeCache{}
+	downloader := &fakeDownloader{bodies: map[int64][]byte{42: []byte("lpkg")}}
+	runner := &manualRunner{}
+	syncer := newTestSyncer(downloader, runner)
+
+	syncer.Sync(newSyncRequest([]provisioning.AddOn{addOn}, cache, nil, now))
+
+	apps, requeueAfter := syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, nil, now),
+	)
 
 	if apps[0].State != stateDownloading {
 		t.Errorf("State = %q, want %q", apps[0].State, stateDownloading)
 	}
 
 	if len(runner.tasks) != 1 {
-		t.Errorf("queued tasks = %d, want 1 without a relaunch", len(runner.tasks))
+		t.Errorf("Queued tasks = %d, want 1 without a relaunch", len(runner.tasks))
+	}
+
+	if requeueAfter != testPollInterval {
+		t.Errorf("RequeueAfter = %s, want the poll interval", requeueAfter)
 	}
 }
 
 func TestSyncDownloadsNewAddOnAndReportsDownloaded(t *testing.T) {
 	addOn := sampleAddOn()
 
+	now := baseTime()
+
 	cache := &fakeCache{}
 	downloader := &fakeDownloader{bodies: map[int64][]byte{42: []byte("lpkg")}}
 	runner := &manualRunner{}
-	syncer := NewSyncer(downloader, runner)
+	syncer := newTestSyncer(downloader, runner)
 
-	apps, pending := syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
+	apps, requeueAfter := syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, nil, now),
 	)
-
-	if !pending {
-		t.Error("pending = false, want true while the download is queued")
-	}
 
 	if apps[0].State != stateDownloading {
 		t.Errorf("State = %q, want %q", apps[0].State, stateDownloading)
+	}
+
+	if requeueAfter != testPollInterval {
+		t.Errorf("RequeueAfter = %s, want the poll interval", requeueAfter)
 	}
 
 	runner.flush()
@@ -131,17 +225,16 @@ func TestSyncDownloadsNewAddOnAndReportsDownloaded(t *testing.T) {
 		t.Errorf("DownloadAddOn calls = %d, want 1", downloader.calls[42])
 	}
 
-	apps, pending = syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
+	apps, requeueAfter = syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, apps, now),
 	)
-
-	if pending {
-		t.Error("pending = true, want false once the download completed")
-	}
 
 	if apps[0].State != stateDownloaded {
 		t.Errorf("State = %q, want %q", apps[0].State, stateDownloaded)
+	}
+
+	if requeueAfter != 0 {
+		t.Errorf("RequeueAfter = %s, want 0 once downloaded", requeueAfter)
 	}
 
 	if _, saved := cache.saved[42]; !saved {
@@ -149,33 +242,101 @@ func TestSyncDownloadsNewAddOnAndReportsDownloaded(t *testing.T) {
 	}
 }
 
+func TestSyncEscalatesBackoffOnRepeatedFailure(t *testing.T) {
+	addOn := sampleAddOn()
+
+	cache := &fakeCache{}
+	downloader := &fakeDownloader{errors: map[int64]error{42: fmt.Errorf("boom")}}
+	runner := &manualRunner{}
+	syncer := newTestSyncer(downloader, runner)
+
+	firstFailure := recordFailure(
+		syncer, addOn, cache, runner, nil, baseTime(),
+	)
+
+	if firstFailure.ConsecutiveFailures != 1 {
+		t.Fatalf(
+			"ConsecutiveFailures = %d, want 1 after the first failure",
+			firstFailure.ConsecutiveFailures,
+		)
+	}
+
+	secondFailure := recordFailure(
+		syncer, addOn, cache, runner,
+		[]licensingv1alpha1.AppStatus{firstFailure},
+		atOffset(*firstFailure.NextRetry, time.Second),
+	)
+
+	if secondFailure.ConsecutiveFailures != 2 {
+		t.Errorf(
+			"ConsecutiveFailures = %d, want 2 after the second failure",
+			secondFailure.ConsecutiveFailures,
+		)
+	}
+
+	if !secondFailure.NextRetry.After(firstFailure.NextRetry.Time) {
+		t.Error("NextRetry did not advance on the second failure")
+	}
+}
+
 func TestSyncReDownloadsWhenChecksumChanged(t *testing.T) {
 	addOn := sampleAddOn()
+
+	now := baseTime()
 
 	cache := &fakeCache{seeded: map[int64]string{42: "stale"}}
 	downloader := &fakeDownloader{bodies: map[int64][]byte{42: []byte("lpkg")}}
 	runner := &manualRunner{}
-	syncer := NewSyncer(downloader, runner)
+	syncer := newTestSyncer(downloader, runner)
 
-	_, pending := syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
+	_, requeueAfter := syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, nil, now),
 	)
 
-	if !pending {
-		t.Error("pending = false, want true when the checksum changed")
+	if requeueAfter != testPollInterval {
+		t.Errorf("RequeueAfter = %s, want the poll interval", requeueAfter)
 	}
 
 	runner.flush()
 
+	if downloader.calls[42] != 1 {
+		t.Errorf("DownloadAddOn calls = %d, want 1", downloader.calls[42])
+	}
+}
+
+func TestSyncReDownloadsWhenChecksumChangedDuringBackoff(t *testing.T) {
+	addOn := sampleAddOn()
+
+	now := baseTime()
+	nextRetry := atOffset(now, 5*time.Minute)
+
+	cache := &fakeCache{}
+	downloader := &fakeDownloader{bodies: map[int64][]byte{42: []byte("lpkg")}}
+	runner := &manualRunner{}
+	syncer := newTestSyncer(downloader, runner)
+
+	current := []licensingv1alpha1.AppStatus{
+		{
+			Checksum:            "stale",
+			ConsecutiveFailures: 2,
+			NextRetry:           &nextRetry,
+			State:               stateFailed,
+			VirtualEntryID:      42,
+		},
+	}
+
 	apps, _ := syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, current, now),
 	)
 
-	if apps[0].State != stateDownloaded {
-		t.Errorf("State = %q, want %q", apps[0].State, stateDownloaded)
+	if apps[0].State != stateDownloading {
+		t.Errorf(
+			"State = %q, want %q despite the future NextRetry",
+			apps[0].State, stateDownloading,
+		)
 	}
+
+	runner.flush()
 
 	if downloader.calls[42] != 1 {
 		t.Errorf("DownloadAddOn calls = %d, want 1", downloader.calls[42])
@@ -188,27 +349,22 @@ func TestSyncReportsDownloadedWhenCachePresent(t *testing.T) {
 	cache := &fakeCache{seeded: map[int64]string{42: "abc123"}}
 	downloader := &fakeDownloader{}
 	runner := &manualRunner{}
-	syncer := NewSyncer(downloader, runner)
+	syncer := newTestSyncer(downloader, runner)
 
-	apps, pending := syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
+	apps, requeueAfter := syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, nil, baseTime()),
 	)
-
-	if pending {
-		t.Error("pending = true, want false when the cache already holds the add-on")
-	}
 
 	if apps[0].State != stateDownloaded {
 		t.Errorf("State = %q, want %q", apps[0].State, stateDownloaded)
 	}
 
-	if downloader.calls[42] != 0 {
-		t.Errorf("DownloadAddOn calls = %d, want 0", downloader.calls[42])
+	if requeueAfter != 0 {
+		t.Errorf("RequeueAfter = %s, want 0", requeueAfter)
 	}
 
-	if len(runner.tasks) != 0 {
-		t.Errorf("queued tasks = %d, want 0", len(runner.tasks))
+	if downloader.calls[42] != 0 {
+		t.Errorf("DownloadAddOn calls = %d, want 0", downloader.calls[42])
 	}
 }
 
@@ -218,26 +374,20 @@ func TestSyncReportsFailedOnDownloadError(t *testing.T) {
 	cache := &fakeCache{}
 	downloader := &fakeDownloader{errors: map[int64]error{42: fmt.Errorf("boom")}}
 	runner := &manualRunner{}
-	syncer := NewSyncer(downloader, runner)
+	syncer := newTestSyncer(downloader, runner)
 
-	syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
-	)
+	failure := recordFailure(syncer, addOn, cache, runner, nil, baseTime())
 
-	runner.flush()
-
-	apps, pending := syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
-	)
-
-	if pending {
-		t.Error("pending = true, want false after a failed download")
+	if failure.State != stateFailed {
+		t.Errorf("State = %q, want %q", failure.State, stateFailed)
 	}
 
-	if apps[0].State != stateFailed {
-		t.Errorf("State = %q, want %q", apps[0].State, stateFailed)
+	if failure.Message == "" {
+		t.Error("Message is empty, want the download error surfaced")
+	}
+
+	if failure.NextRetry == nil {
+		t.Error("NextRetry is nil, want it scheduled after the failure")
 	}
 
 	if _, saved := cache.saved[42]; saved {
@@ -251,23 +401,131 @@ func TestSyncReportsFailedWhenSaveRejected(t *testing.T) {
 	cache := &fakeCache{saveError: fmt.Errorf("checksum mismatch")}
 	downloader := &fakeDownloader{bodies: map[int64][]byte{42: []byte("lpkg")}}
 	runner := &manualRunner{}
-	syncer := NewSyncer(downloader, runner)
+	syncer := newTestSyncer(downloader, runner)
 
-	syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
-	)
+	failure := recordFailure(syncer, addOn, cache, runner, nil, baseTime())
 
-	runner.flush()
+	if failure.State != stateFailed {
+		t.Errorf("State = %q, want %q", failure.State, stateFailed)
+	}
+
+	if failure.Message == "" {
+		t.Error("Message is empty, want the save error surfaced")
+	}
+}
+
+func TestSyncResetsBackoffWhenDownloaded(t *testing.T) {
+	addOn := sampleAddOn()
+
+	now := baseTime()
+	nextRetry := atOffset(now, 5*time.Minute)
+
+	cache := &fakeCache{seeded: map[int64]string{42: "abc123"}}
+	downloader := &fakeDownloader{}
+	runner := &manualRunner{}
+	syncer := newTestSyncer(downloader, runner)
+
+	current := []licensingv1alpha1.AppStatus{
+		{
+			Checksum:            "abc123",
+			ConsecutiveFailures: 3,
+			Message:             "boom",
+			NextRetry:           &nextRetry,
+			State:               stateFailed,
+			VirtualEntryID:      42,
+		},
+	}
 
 	apps, _ := syncer.Sync(
-		[]provisioning.AddOn{addOn}, cache, context.Background(), "env-1",
-		"liferay-dev", nil,
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, current, now),
 	)
 
-	if apps[0].State != stateFailed {
-		t.Errorf("State = %q, want %q", apps[0].State, stateFailed)
+	if apps[0].State != stateDownloaded {
+		t.Errorf("State = %q, want %q", apps[0].State, stateDownloaded)
 	}
+
+	if apps[0].ConsecutiveFailures != 0 {
+		t.Errorf("ConsecutiveFailures = %d, want 0", apps[0].ConsecutiveFailures)
+	}
+
+	if apps[0].Message != "" {
+		t.Errorf("Message = %q, want empty", apps[0].Message)
+	}
+
+	if apps[0].NextRetry != nil {
+		t.Error("NextRetry is set, want nil once downloaded")
+	}
+}
+
+func TestSyncRetriesWhenNextRetryElapsed(t *testing.T) {
+	addOn := sampleAddOn()
+
+	now := baseTime()
+	nextRetry := atOffset(now, -time.Minute)
+
+	cache := &fakeCache{}
+	downloader := &fakeDownloader{bodies: map[int64][]byte{42: []byte("lpkg")}}
+	runner := &manualRunner{}
+	syncer := newTestSyncer(downloader, runner)
+
+	current := []licensingv1alpha1.AppStatus{
+		{
+			Checksum:            "abc123",
+			ConsecutiveFailures: 1,
+			NextRetry:           &nextRetry,
+			State:               stateFailed,
+			VirtualEntryID:      42,
+		},
+	}
+
+	apps, _ := syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, current, now),
+	)
+
+	if apps[0].State != stateDownloading {
+		t.Errorf("State = %q, want %q once the backoff elapsed", apps[0].State, stateDownloading)
+	}
+
+	if len(runner.tasks) != 1 {
+		t.Errorf("Queued tasks = %d, want 1", len(runner.tasks))
+	}
+}
+
+func assertRetryInProgress(
+	appStatus licensingv1alpha1.AppStatus, t *testing.T,
+) {
+	t.Helper()
+
+	if appStatus.State != stateDownloading {
+		t.Errorf("State = %q, want %q", appStatus.State, stateDownloading)
+	}
+
+	if appStatus.ConsecutiveFailures != 2 {
+		t.Errorf(
+			"ConsecutiveFailures = %d, want 2 carried into the retry",
+			appStatus.ConsecutiveFailures,
+		)
+	}
+
+	if appStatus.Message != "" {
+		t.Errorf(
+			"Message = %q, want empty while retrying", appStatus.Message,
+		)
+	}
+
+	if appStatus.NextRetry != nil {
+		t.Errorf(
+			"NextRetry = %v, want nil while retrying", appStatus.NextRetry,
+		)
+	}
+}
+
+func atOffset(base metav1.Time, offset time.Duration) metav1.Time {
+	return metav1.NewTime(base.Add(offset))
+}
+
+func baseTime() metav1.Time {
+	return metav1.NewTime(time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC))
 }
 
 func (manualRunner *manualRunner) flush() {
@@ -278,6 +536,50 @@ func (manualRunner *manualRunner) flush() {
 	for _, task := range tasks {
 		task()
 	}
+}
+
+func newSyncRequest(
+	addOns []provisioning.AddOn,
+	cache Cache,
+	current []licensingv1alpha1.AppStatus,
+	now metav1.Time,
+) SyncRequest {
+	return SyncRequest{
+		AddOns:        addOns,
+		Cache:         cache,
+		Context:       context.Background(),
+		Current:       current,
+		EnvironmentID: "env-1",
+		Namespace:     "liferay-dev",
+		Now:           now,
+		PrivateKey:    nil,
+	}
+}
+
+func newTestSyncer(downloader Downloader, runner Runner) *Syncer {
+	return NewSyncer(
+		downloader, testPollInterval, testRetryInitialDelay, testRetryMaxDelay,
+		runner,
+	)
+}
+
+func recordFailure(
+	syncer *Syncer,
+	addOn provisioning.AddOn,
+	cache Cache,
+	runner *manualRunner,
+	current []licensingv1alpha1.AppStatus,
+	now metav1.Time,
+) licensingv1alpha1.AppStatus {
+	syncer.Sync(newSyncRequest([]provisioning.AddOn{addOn}, cache, current, now))
+
+	runner.flush()
+
+	apps, _ := syncer.Sync(
+		newSyncRequest([]provisioning.AddOn{addOn}, cache, current, now),
+	)
+
+	return apps[0]
 }
 
 func sampleAddOn() provisioning.AddOn {

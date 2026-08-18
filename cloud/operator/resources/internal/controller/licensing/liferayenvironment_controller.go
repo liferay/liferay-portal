@@ -16,12 +16,12 @@ import (
 	"encoding/pem"
 	"fmt"
 	"maps"
-	"math"
 	"path/filepath"
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	addon "github.com/liferay/liferay-portal/cloud/operator/internal/addon"
+	backoff "github.com/liferay/liferay-portal/cloud/operator/internal/backoff"
 	license "github.com/liferay/liferay-portal/cloud/operator/internal/license"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	appsv1 "k8s.io/api/apps/v1"
@@ -44,7 +44,6 @@ const (
 	conditionLicenseValid          = "LicenseValid"
 	conditionProvisioningReachable = "ProvisioningReachable"
 	conditionReplicasCountValid    = "ReplicasCountValid"
-	downloadPollInterval           = 15 * time.Second
 	entitlementsSecretSuffix       = "-entitlements"
 	environmentLabel               = "licensing.liferay.com/environment"
 	gracePeriodReplicaCeiling      = 1
@@ -125,7 +124,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 	apps := []licensingv1alpha1.AppStatus{}
 
-	pending := false
+	now := metav1.Now()
+
+	requeueAfter := time.Duration(0)
 
 	if liferayEnvironment.Spec.Offline {
 		apps, error = liferayEnvironmentReconciler.extractOfflineAddOns(
@@ -136,13 +137,17 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 			return controllerruntime.Result{}, error
 		}
 	} else {
-		apps, pending = liferayEnvironmentReconciler.Syncer.Sync(
-			entitlements.AddOns,
-			cache,
-			context,
-			environmentID,
-			liferayEnvironment.Namespace,
-			privateKey,
+		apps, requeueAfter = liferayEnvironmentReconciler.Syncer.Sync(
+			addon.SyncRequest{
+				AddOns:        entitlements.AddOns,
+				Cache:         cache,
+				Context:       context,
+				Current:       liferayEnvironment.Status.Apps,
+				EnvironmentID: environmentID,
+				Namespace:     liferayEnvironment.Namespace,
+				Now:           now,
+				PrivateKey:    privateKey,
+			},
 		)
 	}
 
@@ -150,10 +155,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 	liferayEnvironment.Status.Phase = "Ready"
 
-	requeueAfter := liferayEnvironmentReconciler.HeartbeatInterval
-
-	if pending {
-		requeueAfter = downloadPollInterval
+	if requeueAfter == 0 {
+		requeueAfter = liferayEnvironmentReconciler.HeartbeatInterval
 	}
 
 	return liferayEnvironmentReconciler.finishAfter(
@@ -181,20 +184,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManag
 	).Complete(
 		liferayEnvironmentReconciler,
 	)
-}
-
-func backoffDuration(
-	consecutiveFailures int32,
-	retryInitialDelay time.Duration,
-	retryMaxDelay time.Duration,
-) time.Duration {
-	backoff := float64(retryInitialDelay) * math.Pow(2, float64(max(consecutiveFailures-1, 0)))
-
-	if backoff >= float64(retryMaxDelay) {
-		return retryMaxDelay
-	}
-
-	return time.Duration(backoff)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) clearUnreachable(
@@ -605,7 +594,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishWithBack
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) (controllerruntime.Result, error) {
 	return liferayEnvironmentReconciler.finishAfter(
-		context, liferayEnvironment, backoffDuration(
+		context, liferayEnvironment, backoff.Duration(
 			liferayEnvironment.Status.ConsecutiveFailures,
 			liferayEnvironmentReconciler.RetryInitialDelay,
 			liferayEnvironmentReconciler.RetryMaxDelay,

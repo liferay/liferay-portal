@@ -69,47 +69,6 @@ func (inlineRunner inlineRunner) Run(task func()) {
 	task()
 }
 
-func TestBackoffDuration(t *testing.T) {
-	retryInitialDelay := 30 * time.Second
-	retryMaxDelay := 30 * time.Minute
-
-	testCases := map[string]struct {
-		consecutiveFailures int32
-		expected            time.Duration
-	}{
-		"caps backoff at the maximum": {
-			consecutiveFailures: 20,
-			expected:            retryMaxDelay,
-		},
-		"first failure uses the initial delay": {
-			consecutiveFailures: 1,
-			expected:            retryInitialDelay,
-		},
-		"second failure doubles the initial delay": {
-			consecutiveFailures: 2,
-			expected:            2 * retryInitialDelay,
-		},
-		"third failure quadruples the initial delay": {
-			consecutiveFailures: 3,
-			expected:            4 * retryInitialDelay,
-		},
-		"zero failures uses the initial delay": {
-			consecutiveFailures: 0,
-			expected:            retryInitialDelay,
-		},
-	}
-
-	for name, testCase := range testCases {
-		t.Run(name, func(t *testing.T) {
-			if actual := backoffDuration(
-				testCase.consecutiveFailures, retryInitialDelay, retryMaxDelay,
-			); actual != testCase.expected {
-				t.Errorf("backoffDuration = %s, want %s", actual, testCase.expected)
-			}
-		})
-	}
-}
-
 func TestEnforceReplicaCeiling(t *testing.T) {
 	testCases := map[string]struct {
 		desiredReplicas   *int32
@@ -275,6 +234,54 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 	}
 }
 
+func TestReconcileBacksOffFailedAddOn(t *testing.T) {
+	body := []byte("PK\x03\x04 sample lpkg")
+
+	sum := sha256.Sum256(body)
+
+	checksum := hex.EncodeToString(sum[:])
+
+	nextRetry := metav1.NewTime(metav1.Now().Add(5 * time.Minute))
+
+	provisioningClient := &stubProvisioning{
+		downloadBody: body,
+		entitlements: addOnEntitlements(checksum),
+	}
+
+	liferayEnvironmentReconciler, result := reconcileEnvironment(
+		provisioningClient, t,
+		developmentObjectsWithApps(
+			[]licensingv1alpha1.AppStatus{
+				{
+					Checksum:            checksum,
+					ConsecutiveFailures: 2,
+					NextRetry:           &nextRetry,
+					State:               "Failed",
+					VirtualEntryID:      77,
+				},
+			},
+		)...,
+	)
+
+	if provisioningClient.downloadCalled {
+		t.Error("DownloadAddOn was called; the add-on should still be backing off")
+	}
+
+	appStatus := getEnvironment(liferayEnvironmentReconciler, t).Status.Apps[0]
+
+	if appStatus.State != "Failed" {
+		t.Errorf("State = %q, want Failed while backing off", appStatus.State)
+	}
+
+	if appStatus.ConsecutiveFailures != 2 {
+		t.Errorf("ConsecutiveFailures = %d, want 2 unchanged", appStatus.ConsecutiveFailures)
+	}
+
+	if (result.RequeueAfter <= 0) || (result.RequeueAfter > 5*time.Minute) {
+		t.Errorf("RequeueAfter = %s, want within the 5m backoff", result.RequeueAfter)
+	}
+}
+
 func TestReconcileBacksOffWhenActivationRejected(t *testing.T) {
 	objects := []client.Object{
 		&corev1.Namespace{
@@ -437,7 +444,7 @@ func TestReconcileDownloadsAddOns(t *testing.T) {
 		t.Errorf("State = %q, want Downloading on the first pass", state)
 	}
 
-	if result.RequeueAfter != downloadPollInterval {
+	if result.RequeueAfter != 15*time.Second {
 		t.Errorf("RequeueAfter = %s, want the download poll interval", result.RequeueAfter)
 	}
 
@@ -485,7 +492,7 @@ func TestReconcileIsNotBlockedByAddOns(t *testing.T) {
 		t.Errorf("Phase = %q, want Ready despite the broken add-on", liferayEnvironment.Status.Phase)
 	}
 
-	if result.RequeueAfter != downloadPollInterval {
+	if result.RequeueAfter != 15*time.Second {
 		t.Errorf("RequeueAfter = %s, want the download poll interval", result.RequeueAfter)
 	}
 
@@ -892,6 +899,47 @@ func TestReconcileOfflineStoresRequestInIdentitySecret(t *testing.T) {
 	}
 }
 
+func TestReconcileResetsAddOnBackoffOnSuccess(t *testing.T) {
+	body := []byte("PK\x03\x04 sample lpkg")
+
+	sum := sha256.Sum256(body)
+
+	checksum := hex.EncodeToString(sum[:])
+
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(
+		&stubProvisioning{downloadBody: body, entitlements: addOnEntitlements(checksum)}, t,
+		developmentObjectsWithApps(
+			[]licensingv1alpha1.AppStatus{
+				{
+					Checksum:            checksum,
+					ConsecutiveFailures: 3,
+					Message:             "boom",
+					State:               "Failed",
+					VirtualEntryID:      77,
+				},
+			},
+		)...,
+	)
+
+	appStatus := reconcileApp(liferayEnvironmentReconciler, t)
+
+	if appStatus.State != "Downloaded" {
+		t.Errorf("State = %q, want Downloaded", appStatus.State)
+	}
+
+	if appStatus.ConsecutiveFailures != 0 {
+		t.Errorf("ConsecutiveFailures = %d, want 0 after success", appStatus.ConsecutiveFailures)
+	}
+
+	if appStatus.Message != "" {
+		t.Errorf("Message = %q, want empty after success", appStatus.Message)
+	}
+
+	if appStatus.NextRetry != nil {
+		t.Error("NextRetry is set, want nil after success")
+	}
+}
+
 func TestReconcileRestoresReplicasWhenProvisioningRecovers(t *testing.T) {
 	unreachableSince := metav1.NewTime(time.Now().Add(-8 * 24 * time.Hour))
 
@@ -1007,6 +1055,64 @@ func TestReconcileRetainsLastKnownGoodWhenProvisioningUnreachable(t *testing.T) 
 	}
 }
 
+func TestReconcileRetriesFailedAddOnAfterBackoff(t *testing.T) {
+	body := []byte("PK\x03\x04 sample lpkg")
+
+	sum := sha256.Sum256(body)
+
+	checksum := hex.EncodeToString(sum[:])
+
+	nextRetry := metav1.NewTime(metav1.Now().Add(-time.Minute))
+
+	provisioningClient := &stubProvisioning{
+		downloadBody: body,
+		entitlements: addOnEntitlements(checksum),
+	}
+
+	reconcileEnvironment(
+		provisioningClient, t,
+		developmentObjectsWithApps(
+			[]licensingv1alpha1.AppStatus{
+				{
+					Checksum:            checksum,
+					ConsecutiveFailures: 1,
+					NextRetry:           &nextRetry,
+					State:               "Failed",
+					VirtualEntryID:      77,
+				},
+			},
+		)...,
+	)
+
+	if !provisioningClient.downloadCalled {
+		t.Error("DownloadAddOn was not called; the elapsed backoff should retry")
+	}
+}
+
+func TestReconcileSurfacesAddOnError(t *testing.T) {
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(
+		&stubProvisioning{
+			downloadError: fmt.Errorf("boom"),
+			entitlements:  addOnEntitlements("abc123"),
+		}, t,
+		developmentObjects()...,
+	)
+
+	appStatus := reconcileApp(liferayEnvironmentReconciler, t)
+
+	if appStatus.State != "Failed" {
+		t.Errorf("State = %q, want Failed", appStatus.State)
+	}
+
+	if appStatus.Message == "" {
+		t.Error("Message is empty, want the download error surfaced in status.apps")
+	}
+
+	if appStatus.ConsecutiveFailures != 1 {
+		t.Errorf("ConsecutiveFailures = %d, want 1", appStatus.ConsecutiveFailures)
+	}
+}
+
 func TestReconcileWritesExpiredLicenseThrough(t *testing.T) {
 	expiredLicenseXML := virtualClusterLicenseXML(
 		"Wednesday, January 1, 2020 12:00:00 AM GMT", 1,
@@ -1111,6 +1217,21 @@ func activatedEnvironment() *licensingv1alpha1.LiferayEnvironment {
 	}
 }
 
+func addOnEntitlements(checksum string) *provisioning.Entitlements {
+	return &provisioning.Entitlements{
+		AddOns: []provisioning.AddOn{
+			{
+				DownloadURL:    "https://example.com/marketplace/virtual-entry/77",
+				ProductName:    "Sample Add-on",
+				SHA256Checksum: checksum,
+				VirtualEntryID: 77,
+			},
+		},
+		LicenseXML:      []byte(virtualClusterLicenseXML("Friday, March 2, 2029 12:00:00 AM GMT", 3)),
+		MaxClusterNodes: 3,
+	}
+}
+
 func assertReplicasEqual(actual *int32, expected *int32, field string, t *testing.T) {
 	t.Helper()
 
@@ -1152,6 +1273,18 @@ func developmentObjects() []client.Object {
 		},
 		activatedEnvironment(),
 	}
+}
+
+func developmentObjectsWithApps(
+	apps []licensingv1alpha1.AppStatus,
+) []client.Object {
+	objects := developmentObjects()
+
+	environment := objects[len(objects)-1].(*licensingv1alpha1.LiferayEnvironment)
+
+	environment.Status.Apps = apps
+
+	return objects
 }
 
 func getEnvironment(
@@ -1288,6 +1421,16 @@ func reconcile(
 	return result
 }
 
+func reconcileApp(
+	liferayEnvironmentReconciler *LiferayEnvironmentReconciler, t *testing.T,
+) licensingv1alpha1.AppStatus {
+	t.Helper()
+
+	reconcile(liferayEnvironmentReconciler, t)
+
+	return getEnvironment(liferayEnvironmentReconciler, t).Status.Apps[0]
+}
+
 func reconcileEnvironment(
 	provisioningClient provisioning.Client,
 	t *testing.T,
@@ -1304,7 +1447,10 @@ func reconcileEnvironment(
 		Recorder:             record.NewFakeRecorder(10),
 		RetryInitialDelay:    30 * time.Second,
 		RetryMaxDelay:        30 * time.Minute,
-		Syncer:               addon.NewSyncer(provisioningClient, inlineRunner{}),
+		Syncer: addon.NewSyncer(
+			provisioningClient, 15*time.Second, 30*time.Second, 30*time.Minute,
+			inlineRunner{},
+		),
 	}
 
 	result, error := liferayEnvironmentReconciler.Reconcile(

@@ -13,7 +13,16 @@ type AppStatus struct {
 	Checksum string `json:"checksum,omitempty"`
 
 	// +optional
+	ConsecutiveFailures int32 `json:"consecutiveFailures,omitempty"`
+
+	// +optional
+	Message string `json:"message,omitempty"`
+
+	// +optional
 	Name string `json:"name,omitempty"`
+
+	// +optional
+	NextRetry *metav1.Time `json:"nextRetry,omitempty"`
 
 	// +kubebuilder:validation:Enum=Downloaded;Downloading;Failed
 	// +optional
