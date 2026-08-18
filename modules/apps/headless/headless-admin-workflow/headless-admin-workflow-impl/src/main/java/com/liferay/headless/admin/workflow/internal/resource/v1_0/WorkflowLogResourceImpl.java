@@ -126,7 +126,7 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 
 		if (kaleoInstance.getCompanyId() != contextCompany.getCompanyId()) {
 			throw new NoSuchInstanceException(
-				"No KaleoInstance exists with the primary key " +
+				"No Kaleo instance exists with the primary key " +
 					kaleoInstanceId);
 		}
 
