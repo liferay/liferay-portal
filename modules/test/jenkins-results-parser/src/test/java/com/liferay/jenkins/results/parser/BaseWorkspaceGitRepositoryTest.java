@@ -144,46 +144,46 @@ public class BaseWorkspaceGitRepositoryTest
 		String jobName = "downstream-job";
 
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(jobName, false, false));
+			_isSnapshotAfterUploadGitArchives(false, jobName, false));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, false, true));
+			_isSnapshotAfterUploadGitArchives(false, jobName, true));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, true, false));
+			_isSnapshotAfterUploadGitArchives(true, jobName, false));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, true, true));
+			_isSnapshotAfterUploadGitArchives(true, jobName, true));
 
 		jobName = "root-cause-analysis-tool";
 
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(jobName, false, false));
+			_isSnapshotAfterUploadGitArchives(false, jobName, false));
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(jobName, true, false));
+			_isSnapshotAfterUploadGitArchives(true, jobName, false));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, false, true));
+			_isSnapshotAfterUploadGitArchives(false, jobName, true));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, true, true));
+			_isSnapshotAfterUploadGitArchives(true, jobName, true));
 
 		jobName = "root-cause-analysis-tool-batch";
 
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(jobName, false, false));
+			_isSnapshotAfterUploadGitArchives(false, jobName, false));
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(jobName, true, false));
+			_isSnapshotAfterUploadGitArchives(true, jobName, false));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, false, true));
+			_isSnapshotAfterUploadGitArchives(false, jobName, true));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, true, true));
+			_isSnapshotAfterUploadGitArchives(true, jobName, true));
 
 		jobName = "top-level-job";
 
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(jobName, false, false));
+			_isSnapshotAfterUploadGitArchives(false, jobName, false));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, false, true));
+			_isSnapshotAfterUploadGitArchives(false, jobName, true));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, true, false));
+			_isSnapshotAfterUploadGitArchives(true, jobName, false));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(jobName, true, true));
+			_isSnapshotAfterUploadGitArchives(true, jobName, true));
 	}
 
 	@Test
@@ -296,7 +296,7 @@ public class BaseWorkspaceGitRepositoryTest
 	}
 
 	private boolean _isSnapshotAfterUploadGitArchives(
-			String jobName, boolean gitArchiveEnabled, boolean snapshot)
+			boolean gitArchiveEnabled, String jobName, boolean snapshot)
 		throws Exception {
 
 		Map<String, String> environmentMap = new HashMap<>();
