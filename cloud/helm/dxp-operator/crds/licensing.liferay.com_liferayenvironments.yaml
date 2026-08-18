@@ -22,6 +22,9 @@ spec:
         -   jsonPath: .status.conditions[?(@.type=="Activated")].status
             name: Activated
             type: string
+        -   jsonPath: .status.conditions[?(@.type=="AddOnsReady")].status
+            name: Add-Ons
+            type: string
         -   jsonPath: .status.license.maxClusterNodes
             name: Max
             type: integer
