@@ -39,6 +39,11 @@ public class AdvancedSystemFDSEntry implements SystemFDSEntry {
 	}
 
 	@Override
+	public boolean getRecentSearches() {
+		return true;
+	}
+
+	@Override
 	public String getRESTApplication() {
 		return "/c/fdssamples";
 	}
