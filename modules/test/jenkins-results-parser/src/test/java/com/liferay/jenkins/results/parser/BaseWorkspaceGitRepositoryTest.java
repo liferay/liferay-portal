@@ -17,6 +17,7 @@ import java.util.Set;
 import org.json.JSONObject;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 import org.mockito.InOrder;
@@ -89,6 +90,9 @@ public class BaseWorkspaceGitRepositoryTest
 		_testPrepareGitWorkingDirectory(true, false, true);
 		_testPrepareGitWorkingDirectory(true, true, false);
 		_testPrepareGitWorkingDirectory(true, true, true);
+
+		_testPrepareGitWorkingDirectory(false, "merge-portal-subrepository");
+		_testPrepareGitWorkingDirectory(true, "test-portal-upstream");
 	}
 
 	@Test
@@ -545,18 +549,8 @@ public class BaseWorkspaceGitRepositoryTest
 	}
 
 	private void _testPrepareGitWorkingDirectory(
-			boolean buildCachingEnabled, boolean gitArchiveEnabled,
-			boolean snapshot)
+			boolean gitArchiveEnabled, boolean snapshot)
 		throws Exception {
-
-		Properties buildProperties = new Properties();
-
-		buildProperties.setProperty(
-			"build.caching.enabled", String.valueOf(buildCachingEnabled));
-		buildProperties.setProperty(
-			"git.archive.enabled", String.valueOf(gitArchiveEnabled));
-
-		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
 			_newDefaultWorkspaceGitRepository();
@@ -598,6 +592,45 @@ public class BaseWorkspaceGitRepositoryTest
 			defaultWorkspaceGitRepository,
 			_getVerificationMode(gitArchiveEnabled)
 		).promoteGitArchive();
+	}
+
+	private void _testPrepareGitWorkingDirectory(
+			boolean buildCachingEnabled, boolean gitArchiveEnabled,
+			boolean snapshot)
+		throws Exception {
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"build.caching.enabled", String.valueOf(buildCachingEnabled));
+		buildProperties.setProperty(
+			"git.archive.enabled", String.valueOf(gitArchiveEnabled));
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		_testPrepareGitWorkingDirectory(gitArchiveEnabled, snapshot);
+	}
+
+	private void _testPrepareGitWorkingDirectory(
+			boolean gitArchiveEnabled, String jobName)
+		throws Exception {
+
+		File commandsDir = new File(
+			JenkinsResultsParserUtil.getJenkinsRepositoryDir(), "commands");
+
+		Assume.assumeTrue(
+			JenkinsResultsParserUtil.getCanonicalPath(commandsDir) +
+				" does not exist",
+			commandsDir.isDirectory());
+
+		JenkinsResultsParserUtil.setBuildProperties(
+			JenkinsResultsParserUtil.getProperties(
+				new File(commandsDir, "build.properties"),
+				new File(commandsDir, "build-aws.properties")));
+
+		_setUpEnvironment(jobName, null);
+
+		_testPrepareGitWorkingDirectory(gitArchiveEnabled, true);
 	}
 
 	private void _testValidateSHAInRemoteGitRef(
