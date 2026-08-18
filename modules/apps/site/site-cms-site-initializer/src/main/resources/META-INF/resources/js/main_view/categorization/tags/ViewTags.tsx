@@ -76,7 +76,8 @@ export default function ViewTags({
 			multiple: true,
 			type: 'selection',
 		},
-		...(Liferay.FeatureFlags['LPD-58677']
+		...(Liferay.FeatureFlags['LPD-58677'] &&
+		Liferay.FeatureFlags['LPD-99403']
 			? [
 					{
 						apiURL: "/o/headless-asset-library/v1.0/asset-libraries?filter=type eq 'Project'",
