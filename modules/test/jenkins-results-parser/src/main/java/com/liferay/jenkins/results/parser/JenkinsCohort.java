@@ -242,7 +242,7 @@ public class JenkinsCohort {
 	}
 
 	public int getStartedDownstreamBuildCountAfter(Date date) {
-		int buildCount = 0;
+		int buildsCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
 			update();
@@ -253,14 +253,15 @@ public class JenkinsCohort {
 				continue;
 			}
 
-			buildCount += jenkinsMaster.getStartedBuildsCountAfter(date, false);
+			buildsCount += jenkinsMaster.getStartedBuildsCountAfter(
+				date, false);
 		}
 
-		return buildCount;
+		return buildsCount;
 	}
 
 	public int getStartedTopLevelBuildCountAfter(Date date) {
-		int buildCount = 0;
+		int buildsCount = 0;
 
 		if (_jenkinsCohortJobsMap.isEmpty()) {
 			update();
@@ -271,10 +272,10 @@ public class JenkinsCohort {
 				continue;
 			}
 
-			buildCount += jenkinsMaster.getStartedBuildsCountAfter(date, true);
+			buildsCount += jenkinsMaster.getStartedBuildsCountAfter(date, true);
 		}
 
-		return buildCount;
+		return buildsCount;
 	}
 
 	public void update() {
