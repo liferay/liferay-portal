@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Analytics Test Utilities
+Bundle-SymbolicName: com.liferay.analytics.test.util
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.analytics.test.util

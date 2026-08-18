@@ -1,0 +1,10 @@
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
+	compileOnly project(":apps:analytics:analytics-settings-api")
+	compileOnly project(":apps:portal-configuration:portal-configuration-test-util")
+}
+
+liferay {
+	deployDir = file("${liferayHome}/osgi/test")
+}
