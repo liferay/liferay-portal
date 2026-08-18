@@ -110,6 +110,16 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			workloadExists:    true,
 			workloadReplicas:  nil,
 		},
+		"downgrades to zero when the ceiling is zero": {
+			desiredReplicas:   pointerInt32(3),
+			expectedCondition: metav1.ConditionFalse,
+			expectedEffective: pointerInt32(0),
+			expectedReason:    "ExceedsLicensedMaximum",
+			expectedReplicas:  pointerInt32(0),
+			maxClusterNodes:   0,
+			workloadExists:    true,
+			workloadReplicas:  pointerInt32(3),
+		},
 		"reports when the workload does not exist": {
 			desiredReplicas:   pointerInt32(3),
 			expectedCondition: metav1.ConditionUnknown,
@@ -129,16 +139,6 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 			maxClusterNodes:   3,
 			workloadExists:    true,
 			workloadReplicas:  pointerInt32(5),
-		},
-		"skips enforcement when the ceiling is unknown": {
-			desiredReplicas:   pointerInt32(3),
-			expectedCondition: metav1.ConditionUnknown,
-			expectedEffective: nil,
-			expectedReason:    "MaxClusterNodesUnknown",
-			expectedReplicas:  pointerInt32(3),
-			maxClusterNodes:   0,
-			workloadExists:    true,
-			workloadReplicas:  pointerInt32(3),
 		},
 		"within the licensed limit": {
 			desiredReplicas:   pointerInt32(2),
@@ -425,7 +425,9 @@ func TestReconcileDownloadsAddOns(t *testing.T) {
 				VirtualEntryID: 77,
 			},
 		},
-		LicenseXML:      []byte(virtualClusterLicenseXML("Friday, March 2, 2029 12:00:00 AM GMT", 3)),
+		LicenseXML: []byte(virtualClusterLicenseXML(
+			"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+		)),
 		MaxClusterNodes: 3,
 	}
 
@@ -478,7 +480,9 @@ func TestReconcileIsNotBlockedByAddOns(t *testing.T) {
 				SHA256Checksum: "0000",
 			},
 		},
-		LicenseXML:      []byte(virtualClusterLicenseXML("Friday, March 2, 2029 12:00:00 AM GMT", 3)),
+		LicenseXML: []byte(virtualClusterLicenseXML(
+			"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+		)),
 		MaxClusterNodes: 3,
 	}
 
@@ -606,7 +610,9 @@ func TestReconcileOfflineExtractsAddOnsFromBundle(t *testing.T) {
 
 	checksum := sha256.Sum256([]byte(lpkgContent))
 
-	licenseXML := virtualClusterLicenseXML("Friday, March 2, 2029 12:00:00 AM GMT", 3)
+	licenseXML := virtualClusterLicenseXML(
+		"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+	)
 
 	writeOfflineActivationBundle(
 		map[string]string{
@@ -687,7 +693,9 @@ func TestReconcileOfflineExtractsAddOnsFromBundle(t *testing.T) {
 func TestReconcileOfflineLicensesFromBundle(t *testing.T) {
 	marketplaceMountPath := t.TempDir()
 
-	licenseXML := virtualClusterLicenseXML("Friday, March 2, 2029 12:00:00 AM GMT", 3)
+	licenseXML := virtualClusterLicenseXML(
+		"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+	)
 
 	writeOfflineActivationBundle(
 		map[string]string{
@@ -745,9 +753,10 @@ func TestReconcileOfflineLicensesFromBundle(t *testing.T) {
 		t.Error("ActivatedAt = nil, want it set after licensing from the bundle")
 	}
 
-	if liferayEnvironment.Status.License.MaxClusterNodes != 3 {
+	if liferayEnvironment.Status.License.MaxClusterNodes == nil ||
+		*liferayEnvironment.Status.License.MaxClusterNodes != 3 {
 		t.Errorf(
-			"License.MaxClusterNodes = %d, want 3",
+			"License.MaxClusterNodes = %v, want 3",
 			liferayEnvironment.Status.License.MaxClusterNodes,
 		)
 	}
@@ -936,6 +945,47 @@ func TestReconcileOrphansRemovedEntitlement(t *testing.T) {
 	}
 }
 
+func TestReconcileRejectsLicenseIssuedForAnotherEnvironment(t *testing.T) {
+	entitlements := &provisioning.Entitlements{
+		LicenseXML: []byte(virtualClusterLicenseXML(
+			"Friday, March 2, 2029 12:00:00 AM GMT", 3, "some-other-environment-uid",
+		)),
+		MaxClusterNodes: 3,
+	}
+
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(
+		&stubProvisioning{entitlements: entitlements}, t, developmentObjects()...,
+	)
+
+	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
+
+	if liferayEnvironment.Status.Phase != "Degraded" {
+		t.Errorf("Phase = %q, want Degraded", liferayEnvironment.Status.Phase)
+	}
+
+	condition := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionLicenseValid,
+	)
+
+	if condition == nil || condition.Status != metav1.ConditionFalse ||
+		condition.Reason != "EnvironmentMismatch" {
+
+		t.Errorf("LicenseValid condition = %v, want False/EnvironmentMismatch", condition)
+	}
+
+	if maxClusterNodes := liferayEnvironment.Status.License.MaxClusterNodes; maxClusterNodes == nil ||
+		*maxClusterNodes != 0 {
+
+		t.Errorf("License.MaxClusterNodes = %v, want a clamped 0", maxClusterNodes)
+	}
+
+	statefulSet := getStatefulSet(liferayEnvironmentReconciler, t)
+
+	assertReplicasEqual(
+		statefulSet.Spec.Replicas, pointerInt32(0), "statefulSet.spec.replicas", t,
+	)
+}
+
 func TestReconcileReportsAddOnsNotReadyWhenDownloadFails(t *testing.T) {
 	liferayEnvironmentReconciler, _ := reconcileEnvironment(
 		&stubProvisioning{
@@ -1101,7 +1151,9 @@ func TestReconcileRestoresReplicasWhenProvisioningRecovers(t *testing.T) {
 
 	provisioningClient := &stubProvisioning{
 		entitlements: &provisioning.Entitlements{
-			LicenseXML:      []byte(virtualClusterLicenseXML("Friday, March 2, 2029 12:00:00 AM GMT", 3)),
+			LicenseXML: []byte(virtualClusterLicenseXML(
+				"Friday, March 2, 2029 12:00:00 AM GMT", 3, "dev-namespace-uid",
+			)),
 			MaxClusterNodes: 3,
 		},
 	}
@@ -1237,7 +1289,7 @@ func TestReconcileSurfacesAddOnError(t *testing.T) {
 
 func TestReconcileWritesExpiredLicenseThrough(t *testing.T) {
 	expiredLicenseXML := virtualClusterLicenseXML(
-		"Wednesday, January 1, 2020 12:00:00 AM GMT", 1,
+		"Wednesday, January 1, 2020 12:00:00 AM GMT", 1, "dev-namespace-uid",
 	)
 
 	provisioningClient := &stubProvisioning{
@@ -1609,14 +1661,17 @@ func reconcileOfflineActivationBundle(
 	return liferayEnvironmentReconciler, reconcile(liferayEnvironmentReconciler, t)
 }
 
-func virtualClusterLicenseXML(expirationDate string, maxClusterNodes int32) string {
+func virtualClusterLicenseXML(
+	expirationDate string, maxClusterNodes int32, owner string,
+) string {
 	return fmt.Sprintf(
 		"<licenses><license>"+
+			"<owner>%s</owner>"+
 			"<expiration-date>%s</expiration-date>"+
 			"<license-type>virtual-cluster</license-type>"+
 			"<max-cluster-nodes>%d</max-cluster-nodes>"+
 			"</license></licenses>",
-		expirationDate, maxClusterNodes,
+		owner, expirationDate, maxClusterNodes,
 	)
 }
 

@@ -27,6 +27,7 @@ func TestHandle(t *testing.T) {
 		maxClusterNodes         int32
 		otherEnvironments       []client.Object
 		request                 admission.Request
+		unknownLimit            bool
 	}{
 		"create over limit is denied": {
 			expectedAllowed:         false,
@@ -111,12 +112,20 @@ func TestHandle(t *testing.T) {
 			maxClusterNodes:         2,
 			request:                 malformedRequest("liferay-default", "liferay-test", "scale"),
 		},
+		"scale with a zero limit is denied": {
+			expectedAllowed:         false,
+			expectedMessageContains: "exceeds licensed maxClusterNodes 0",
+			licensed:                true,
+			maxClusterNodes:         0,
+			request:                 scaleRequest("liferay-default", "liferay-test", 1, t),
+		},
 		"scale with unknown limit is allowed": {
 			expectedAllowed:         true,
 			expectedMessageContains: "not yet available",
 			licensed:                true,
 			maxClusterNodes:         0,
 			request:                 scaleRequest("liferay-default", "liferay-test", 1, t),
+			unknownLimit:            true,
 		},
 		"scale within limit is allowed": {
 			expectedAllowed: true,
@@ -133,12 +142,15 @@ func TestHandle(t *testing.T) {
 				var objects []client.Object
 
 				if testCase.licensed {
-					objects = append(
-						objects,
-						licensedEnvironment(
-							testCase.maxClusterNodes, "test-env", "liferay-default",
-						),
+					environment := licensedEnvironment(
+						testCase.maxClusterNodes, "test-env", "liferay-default",
 					)
+
+					if testCase.unknownLimit {
+						environment.Status.License.MaxClusterNodes = nil
+					}
+
+					objects = append(objects, environment)
 				}
 
 				objects = append(objects, testCase.otherEnvironments...)
@@ -229,7 +241,7 @@ func licensedEnvironment(
 		},
 		Status: licensingv1alpha1.LiferayEnvironmentStatus{
 			License: licensingv1alpha1.LicenseStatus{
-				MaxClusterNodes: maxClusterNodes,
+				MaxClusterNodes: &maxClusterNodes,
 			},
 		},
 	}

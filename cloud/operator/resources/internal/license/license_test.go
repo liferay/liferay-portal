@@ -4,6 +4,19 @@ import (
 	"testing"
 )
 
+const distinctOwnersLicenseXML = `<?xml version="1.0"?>
+<licenses>
+    <license>
+		<license-type>enterprise</license-type>
+		<owner>Fry Some Animal</owner>
+    </license>
+    <license>
+		<license-type>virtual-cluster</license-type>
+		<max-cluster-nodes>3</max-cluster-nodes>
+		<owner>env-uid-123</owner>
+    </license>
+</licenses>`
+
 const missingExpirationDateLicenseXML = `<?xml version="1.0"?>
 <licenses>
     <license>
@@ -78,6 +91,24 @@ func TestExpirationDateSkipsNonVirtualClusterLicenses(t *testing.T) {
 
 func TestExpirationDateWhenNoVirtualClusterLicenseReturnsError(t *testing.T) {
 	if _, error := ExpirationDate([]byte(missingExpirationDateLicenseXML)); error == nil {
+		t.Fatal("Expected an error, got nil")
+	}
+}
+
+func TestOwnerReturnsVirtualClusterOwner(t *testing.T) {
+	owner, error := Owner([]byte(distinctOwnersLicenseXML))
+
+	if error != nil {
+		t.Fatalf("Unexpected error: %v", error)
+	}
+
+	if owner != "env-uid-123" {
+		t.Errorf("Owner = %q, want the virtual-cluster owner env-uid-123", owner)
+	}
+}
+
+func TestOwnerWhenNoVirtualClusterLicenseReturnsError(t *testing.T) {
+	if _, error := Owner([]byte(missingExpirationDateLicenseXML)); error == nil {
 		t.Fatal("Expected an error, got nil")
 	}
 }

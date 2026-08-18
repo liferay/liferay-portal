@@ -40,7 +40,7 @@ type LicenseStatus struct {
 	LastVerified *metav1.Time `json:"lastVerified,omitempty"`
 
 	// +optional
-	MaxClusterNodes int32 `json:"maxClusterNodes,omitempty"`
+	MaxClusterNodes *int32 `json:"maxClusterNodes,omitempty"`
 
 	// +optional
 	ValidUntil *metav1.Time `json:"validUntil,omitempty"`

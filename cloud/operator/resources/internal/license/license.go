@@ -38,9 +38,28 @@ func ExpirationDate(licenseXML []byte) (time.Time, error) {
 	return time.Time{}, fmt.Errorf("license: no virtual-cluster license found")
 }
 
+func Owner(licenseXML []byte) (string, error) {
+	var licenseSet licenseSet
+
+	if error := xml.Unmarshal(licenseXML, &licenseSet); error != nil {
+		return "", fmt.Errorf("license.xml parse error: %w", error)
+	}
+
+	for _, licenseEntry := range licenseSet.Licenses {
+		if licenseEntry.LicenseType != licenseTypeVirtualCluster {
+			continue
+		}
+
+		return licenseEntry.Owner, nil
+	}
+
+	return "", fmt.Errorf("license: no virtual-cluster license found")
+}
+
 type licenseEntry struct {
 	ExpirationDate string `xml:"expiration-date"`
 	LicenseType    string `xml:"license-type"`
+	Owner          string `xml:"owner"`
 }
 
 type licenseSet struct {

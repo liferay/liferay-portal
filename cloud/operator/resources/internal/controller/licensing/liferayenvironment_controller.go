@@ -330,7 +330,72 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 
 	liferayEnvironment.Status.License.Checksum = licenseChecksum(entitlements.LicenseXML)
 	liferayEnvironment.Status.License.LastVerified = &now
-	liferayEnvironment.Status.License.MaxClusterNodes = entitlements.MaxClusterNodes
+
+	owner, error := license.Owner(entitlements.LicenseXML)
+
+	if error != nil {
+		logger.Error(error, "License validation failed", "environmentID", environmentID)
+
+		liferayEnvironment.Status.License.MaxClusterNodes = nil
+		liferayEnvironment.Status.License.ValidUntil = nil
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: error.Error(),
+				Reason:  "Invalid",
+				Status:  metav1.ConditionFalse,
+				Type:    conditionLicenseValid,
+			},
+		)
+
+		liferayEnvironment.Status.Phase = "Degraded"
+
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		)
+	}
+
+	if owner != environmentID {
+		logger.Info(
+			"License was issued for a different environment",
+			"environmentID", environmentID, "owner", owner,
+		)
+
+		blocked := int32(0)
+
+		liferayEnvironment.Status.License.MaxClusterNodes = &blocked
+		liferayEnvironment.Status.License.ValidUntil = nil
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"License owner %q does not match this environment %q.",
+					owner, environmentID,
+				),
+				Reason: "EnvironmentMismatch",
+				Status: metav1.ConditionFalse,
+				Type:   conditionLicenseValid,
+			},
+		)
+
+		liferayEnvironment.Status.Phase = "Degraded"
+
+		if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+			context, liferayEnvironment, 0,
+		); error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		)
+	}
+
+	maxClusterNodes := entitlements.MaxClusterNodes
+
+	liferayEnvironment.Status.License.MaxClusterNodes = &maxClusterNodes
 
 	expirationDate, error := license.ExpirationDate(entitlements.LicenseXML)
 
@@ -410,22 +475,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 	maxClusterNodes int32,
 ) error {
 	logger := logf.FromContext(context)
-
-	if maxClusterNodes <= 0 {
-		liferayEnvironment.Status.EffectiveReplicas = nil
-
-		meta.SetStatusCondition(
-			&liferayEnvironment.Status.Conditions,
-			metav1.Condition{
-				Message: "The licensed maximum cluster node count is not yet known.",
-				Reason:  "MaxClusterNodesUnknown",
-				Status:  metav1.ConditionUnknown,
-				Type:    conditionReplicasCountValid,
-			},
-		)
-
-		return nil
-	}
 
 	statefulSet := &appsv1.StatefulSet{}
 
