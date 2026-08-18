@@ -1,0 +1,31 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Lucas Ferruccio
+ */
+public class LPD_102782 {
+
+	public void method(
+		long companyId, long commerceCatalogGroupId,
+		long commerceChannelGroupId, BigDecimal minStockQuantity, String sku,
+		String unitOfMeasureKey) {
+
+		_commerceInventoryEngine.getAvailabilityStatus(
+			123, commerceCatalogGroupId, commerceChannelGroupId,
+			minStockQuantity, sku, unitOfMeasureKey);
+		_commerceInventoryEngine.getAvailabilityStatus(
+			companyId, commerceCatalogGroupId, commerceChannelGroupId,
+			minStockQuantity, sku, unitOfMeasureKey);
+	}
+
+	@Reference
+	private CommerceInventoryEngine _commerceInventoryEngine;
+
+}
