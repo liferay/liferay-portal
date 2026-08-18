@@ -2270,7 +2270,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		Assert.assertNull(generalConfig.getApplicationDecorator());
 		Assert.assertEquals(
-			"encadre", generalConfig.getApplicationDecoratorId());
+			"encadre", generalConfig.getCustomApplicationDecorator());
 
 		Assert.assertEquals(
 			widgetPageWidgetInstances.toString(), 1,
@@ -3026,9 +3026,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	private void _testPostSiteSitePageWithApplicationDecorator(
 			GeneralConfig.ApplicationDecorator applicationDecorator,
-			String applicationDecoratorId,
+			String customApplicationDecorator,
 			GeneralConfig.ApplicationDecorator expectedApplicationDecorator,
-			String expectedApplicationDecoratorId)
+			String expectedCustomApplicationDecorator)
 		throws Exception {
 
 		SitePage randomSitePage = _getRandomSitePage(SitePage.Type.WIDGET_PAGE);
@@ -3052,7 +3052,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			GeneralConfig generalConfig = new GeneralConfig();
 
 			generalConfig.setApplicationDecorator(applicationDecorator);
-			generalConfig.setApplicationDecoratorId(applicationDecoratorId);
+			generalConfig.setCustomApplicationDecorator(
+				customApplicationDecorator);
 
 			widgetLookAndFeelConfig.setGeneralConfig(generalConfig);
 
@@ -3082,8 +3083,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				expectedApplicationDecorator,
 				generalConfig.getApplicationDecorator());
 			Assert.assertEquals(
-				expectedApplicationDecoratorId,
-				generalConfig.getApplicationDecoratorId());
+				expectedCustomApplicationDecorator,
+				generalConfig.getCustomApplicationDecorator());
 		}
 
 		Assert.assertEquals(
