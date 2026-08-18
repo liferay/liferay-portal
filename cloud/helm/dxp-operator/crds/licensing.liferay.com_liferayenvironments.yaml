@@ -133,6 +133,7 @@ spec:
                                             -   Downloaded
                                             -   Downloading
                                             -   Failed
+                                            -   Orphaned
                                             type: string
                                         virtualEntryId:
                                             format: int64
