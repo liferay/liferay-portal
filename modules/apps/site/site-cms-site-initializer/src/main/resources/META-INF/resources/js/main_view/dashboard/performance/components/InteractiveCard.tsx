@@ -39,9 +39,9 @@ const STICKER_DISPLAY_TYPES: Record<
 
 type Props = {
 	active?: boolean;
-	color: MetricColor;
+	color?: MetricColor;
 	description?: string;
-	icon: string;
+	icon?: string;
 	loading?: boolean;
 	onClick?: () => void;
 	title: string;
@@ -83,13 +83,15 @@ export default function InteractiveCard({
 					</Text>
 				</div>
 
-				<ClaySticker
-					borderless
-					className="flex-shrink-0"
-					displayType={STICKER_DISPLAY_TYPES[color]}
-				>
-					<ClayIcon symbol={icon} />
-				</ClaySticker>
+				{color && icon ? (
+					<ClaySticker
+						borderless
+						className="flex-shrink-0"
+						displayType={STICKER_DISPLAY_TYPES[color]}
+					>
+						<ClayIcon symbol={icon} />
+					</ClaySticker>
+				) : null}
 			</div>
 
 			{description ? (

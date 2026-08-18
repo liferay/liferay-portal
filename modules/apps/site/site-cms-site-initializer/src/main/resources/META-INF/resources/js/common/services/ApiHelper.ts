@@ -209,12 +209,17 @@ async function batch({
 	}
 }
 
-async function post<T>(url: string, data?: Record<string, any>) {
+async function post<T>(
+	url: string,
+	data?: Record<string, any>,
+	signal?: AbortSignal
+) {
 	return handleRequest<T>(() =>
 		fetch(url, {
 			body: JSON.stringify(data),
 			headers: HEADERS,
 			method: 'POST',
+			signal,
 		})
 	);
 }

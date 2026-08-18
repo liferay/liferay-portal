@@ -19,6 +19,12 @@ export type AssetStatistics = {
 	upcomingReviewCount: number;
 };
 
+const DUPLICATE_TITLES_AGGREGATION_NAME = 'duplicateTitles';
+
+const MAX_FACET_TERMS = 10000;
+
+const MINIMUM_DUPLICATE_FREQUENCY = 2;
+
 const NEEDS_REVIEW_PAGE_SIZE = 8;
 
 const NESTED_FIELDS = 'embedded,systemProperties.objectDefinitionBrief';
@@ -75,4 +81,78 @@ function getSearchURL(filter: string, sort: string, groupId?: number) {
 	return `${SEARCH_URL}?${searchParams}`;
 }
 
-export default {getAssetStatistics, getSearchURL};
+async function getCMSEntryClassNames(
+	ercContentStructures: string,
+	ercFileTypes: string,
+	signal?: AbortSignal
+) {
+	const filter = encodeURIComponent(
+		`objectFolderExternalReferenceCode eq '${ercContentStructures}' or objectFolderExternalReferenceCode eq '${ercFileTypes}'`
+	);
+
+	const {data} = await ApiHelper.get<{items: {className: string}[]}>(
+		`/o/object-admin/v1.0/object-definitions?filter=${filter}&pageSize=-1`,
+		signal
+	);
+
+	return (data?.items ?? []).map(({className}) => className).join(',');
+}
+
+async function getDuplicateTopicsCount({
+	entryClassNames,
+	signal,
+	siteId,
+}: {
+	entryClassNames: string;
+	signal?: AbortSignal;
+	siteId?: number;
+}) {
+	if (!entryClassNames) {
+		return undefined;
+	}
+
+	const searchParams = new URLSearchParams({
+		entryClassNames,
+		pageSize: '1',
+	});
+
+	if (siteId) {
+		searchParams.set('filter', `groupIds/any(g:g eq ${siteId})`);
+	}
+
+	const {data} = await ApiHelper.post<{
+		searchFacets?: Record<string, {frequency: number}[]>;
+	}>(
+		`/o/search/v1.0/search?${searchParams}`,
+		{
+			attributes: {'search.empty.search': true},
+			facetConfigurations: [
+				{
+					aggregationName: DUPLICATE_TITLES_AGGREGATION_NAME,
+					attributes: {
+						field: `localized_title_${Liferay.ThemeDisplay.getLanguageId()}_sortable.keyword_lowercase`,
+					},
+					frequencyThreshold: MINIMUM_DUPLICATE_FREQUENCY,
+					maxTerms: MAX_FACET_TERMS,
+					name: 'custom',
+				},
+			],
+		},
+		signal
+	);
+
+	if (!data) {
+		return undefined;
+	}
+
+	const terms = data.searchFacets?.[DUPLICATE_TITLES_AGGREGATION_NAME] ?? [];
+
+	return terms.reduce((count, {frequency}) => count + frequency, 0);
+}
+
+export default {
+	getAssetStatistics,
+	getCMSEntryClassNames,
+	getDuplicateTopicsCount,
+	getSearchURL,
+};
