@@ -1,0 +1,85 @@
+{{- include "search.validateEngine" . -}}
+{{- if and .Values.enabled (eq .Values.search.engine "elasticsearch") }}
+{{- $search := .Values.search.elasticsearch -}}
+{{- $env := list -}}
+{{- range $name, $value := $search.env -}}
+{{- $env = append $env (dict "name" $name "value" ($value | toString)) -}}
+{{- end -}}
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-25"
+    name: {{ include "elasticsearch.name" . }}
+    namespace: {{ include "elasticsearch.namespace" . }}
+spec:
+    http:
+        tls:
+            selfSignedCertificate:
+                disabled: true
+    nodeSets:
+        -   count: {{ $search.nodeCount }}
+            name: default
+            podTemplate:
+                metadata:
+                    annotations:
+                        instrumentation.opentelemetry.io/inject-dotnet: "false"
+                        instrumentation.opentelemetry.io/inject-java: "false"
+                        instrumentation.opentelemetry.io/inject-nodejs: "false"
+                        instrumentation.opentelemetry.io/inject-python: "false"
+                        sidecar.opentelemetry.io/inject: "false"
+                spec:
+                    containers:
+                        -   env:
+                                {{- $env | toYaml | nindent 32 }}
+                            name: elasticsearch
+                            resources:
+                                {{- $search.resources | toYaml | nindent 32 }}
+                            securityContext:
+                                {{- include "elasticsearch.containerSecurityContext" . | nindent 32 }}
+                    initContainers:
+                        -   command:
+                                -   sh
+                                -   -c
+                                -   |
+                                    elasticsearch-plugin \
+                                        install \
+                                        --batch \
+                                        analysis-icu \
+                                        analysis-kuromoji \
+                                        analysis-smartcn \
+                                        analysis-stempel
+                            name: install-plugins
+                            securityContext:
+                                {{- include "elasticsearch.containerSecurityContext" . | nindent 32 }}
+                    securityContext:
+                        fsGroup: 1000
+                        runAsGroup: 1000
+                        runAsNonRoot: true
+                        runAsUser: 1000
+                        seccompProfile:
+                            type: RuntimeDefault
+            volumeClaimTemplates:
+                -   metadata:
+                        name: elasticsearch-data
+                    spec:
+                        accessModes:
+                            -   ReadWriteOnce
+                        resources:
+                            requests:
+                                storage: {{ $search.volumeSize | quote }}
+                        {{- with .Values.persistence.storageClassName }}
+                        storageClassName: {{ . | quote }}
+                        {{- end }}
+    version: {{ $search.version | quote }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-28"
+    labels:
+        name: {{ include "elasticsearch.namespace" . }}
+        pod-security.kubernetes.io/enforce: restricted
+    name: {{ include "elasticsearch.namespace" . }}
+{{- end -}}

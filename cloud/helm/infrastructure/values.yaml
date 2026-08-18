@@ -1,0 +1,18 @@
+enabled: true
+persistence:
+    storageClassName: ""
+search:
+    elasticsearch:
+        env:
+            ES_JAVA_OPTS: -Xms4g -Xmx4g
+        nodeCount: 1
+        resources:
+            limits:
+                cpu: 1000m
+                memory: 8Gi
+            requests:
+                cpu: 500m
+                memory: 4Gi
+        version: 8.19.11
+        volumeSize: 10Gi
+    engine: elasticsearch

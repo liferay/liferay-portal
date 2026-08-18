@@ -1,0 +1,164 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Elasticsearch
+templates:
+    -   templates/elasticsearch.yaml
+tests:
+    -   asserts:
+            -   contains:
+                    content:
+                        name: ES_JAVA_OPTS
+                        value: -Xms4g -Xmx4g
+                    path: spec.nodeSets[0].podTemplate.spec.containers[0].env
+            -   contains:
+                    content:
+                        name: ES_SETTING_ONE
+                        value: one
+                    path: spec.nodeSets[0].podTemplate.spec.containers[0].env
+            -   contains:
+                    content:
+                        name: ES_SETTING_TWO
+                        value: two
+                    path: spec.nodeSets[0].podTemplate.spec.containers[0].env
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Adds every configured environment variable to the default env
+        set:
+            search.elasticsearch.env:
+                ES_SETTING_ONE: one
+                ES_SETTING_TWO: two
+    -   asserts:
+            -   contains:
+                    content:
+                        name: ES_JAVA_OPTS
+                        value: -Xms4g -Xmx4g
+                    path: spec.nodeSets[0].podTemplate.spec.containers[0].env
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Applies the default JVM options
+    -   asserts:
+            -   documentSelector:
+                    path: kind
+                    value: Elasticsearch
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-25"
+            -   documentSelector:
+                    path: kind
+                    value: Namespace
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-28"
+        it: Assigns the Elasticsearch resources their sync waves
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: "Unsupported search engine: typo"
+        it: Fails when the search engine is unsupported
+        set:
+            search.engine: typo
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: my-release-es
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace-elasticsearch
+            -   equal:
+                    path: spec.nodeSets[0].count
+                    value: 1
+            -   equal:
+                    path: spec.version
+                    value: 8.19.11
+            -   isKind:
+                    of: Elasticsearch
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Names the Elasticsearch resource after the release and dedicated namespace
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the Elasticsearch resources when the chart is disabled
+        set:
+            enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the Elasticsearch resources when the engine is OpenSearch
+        set:
+            search.engine: opensearch
+    -   asserts:
+            -   notExists:
+                    path: spec.nodeSets[0].volumeClaimTemplates[0].spec.storageClassName
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Omits the data volume storage class by default
+    -   asserts:
+            -   contains:
+                    content:
+                        name: ES_JAVA_OPTS
+                        value: -Xms8g -Xmx8g
+                    path: spec.nodeSets[0].podTemplate.spec.containers[0].env
+            -   notContains:
+                    content:
+                        name: ES_JAVA_OPTS
+                        value: -Xms4g -Xmx4g
+                    path: spec.nodeSets[0].podTemplate.spec.containers[0].env
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Overrides the default JVM options
+        set:
+            search.elasticsearch.env:
+                ES_JAVA_OPTS: -Xms8g -Xmx8g
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: my-namespace-elasticsearch
+            -   isKind:
+                    of: Namespace
+        documentSelector:
+            path: kind
+            value: Namespace
+        it: Provisions the dedicated Elasticsearch namespace
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+        it: Renders both the Elasticsearch resource and its namespace by default
+    -   asserts:
+            -   equal:
+                    path: spec.nodeSets[0].volumeClaimTemplates[0].spec.storageClassName
+                    value: managed-csi
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Requests the configured data volume storage class
+        set:
+            persistence.storageClassName: managed-csi
+    -   asserts:
+            -   equal:
+                    path: metadata.labels["pod-security.kubernetes.io/enforce"]
+                    value: restricted
+        documentSelector:
+            path: kind
+            value: Namespace
+        it: Restricts the Elasticsearch namespace to the restricted pod security standard
+    -   asserts:
+            -   equal:
+                    path: spec.nodeSets[0].podTemplate.metadata.annotations
+                    value:
+                        instrumentation.opentelemetry.io/inject-dotnet: "false"
+                        instrumentation.opentelemetry.io/inject-java: "false"
+                        instrumentation.opentelemetry.io/inject-nodejs: "false"
+                        instrumentation.opentelemetry.io/inject-python: "false"
+                        sidecar.opentelemetry.io/inject: "false"
+            -   notExists:
+                    path: metadata.annotations["sidecar.opentelemetry.io/inject"]
+        documentSelector:
+            path: kind
+            value: Elasticsearch
+        it: Suppresses OpenTelemetry instrumentation on the Elasticsearch pods
