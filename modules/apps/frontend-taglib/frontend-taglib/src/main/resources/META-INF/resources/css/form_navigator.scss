@@ -1,3 +1,5 @@
+@import 'atlas-custom-properties/_variables';
+
 @import 'atlas-variables';
 
 .taglib-form-navigator {
@@ -50,19 +52,19 @@
 							}
 
 							.message {
-								color: #000;
+								color: $black;
 								display: inline-block;
 								opacity: 0.7;
 							}
 
 							.number {
-								background: #333;
+								background: $gray-800;
 								font-size: 18px;
 								opacity: 1;
 							}
 
 							.tab-icon {
-								color: #333;
+								color: $gray-800;
 								display: inline-block;
 							}
 						}
@@ -90,9 +92,9 @@
 						}
 
 						.number {
-							background: #ccc;
+							background: $gray-400;
 							clear: both;
-							color: #fff;
+							color: $white;
 							display: inline-block;
 							font-size: 14px;
 							font-weight: bold;
@@ -103,7 +105,7 @@
 						}
 
 						.message {
-							color: #000;
+							color: $black;
 							font-size: 12px;
 							margin-left: -5px;
 						}
