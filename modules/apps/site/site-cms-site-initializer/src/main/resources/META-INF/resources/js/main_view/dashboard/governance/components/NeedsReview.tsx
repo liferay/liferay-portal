@@ -12,7 +12,10 @@ import React, {useContext, useMemo} from 'react';
 
 import StatusLabel from '../../../../common/components/StatusLabel';
 import {ISearchAssetObjectEntry} from '../../../../common/types/AssetType';
-import {FDS_FILTER_ID} from '../../../../common/utils/constants';
+import {
+	FDS_FILTER_ID,
+	UPCOMING_REVIEWS_THRESHOLD_MONTHS,
+} from '../../../../common/utils/constants';
 import dateFormat from '../../../../common/utils/dateFormat';
 import toDatePart from '../../../../common/utils/toDatePart';
 import {QUICK_FILTER_TYPES} from '../../../quick_filters/constants';
@@ -63,11 +66,23 @@ function renderExpiringStatus(item: ISearchAssetObjectEntry) {
 }
 
 function getUpcomingReviewsSelectedData() {
-	const to = new Date();
+	const from = toDatePart(new Date());
 
-	to.setMonth(to.getMonth() + 1);
+	const monthIndex = from.month - 1 + UPCOMING_REVIEWS_THRESHOLD_MONTHS;
 
-	return {exclude: false, from: toDatePart(new Date()), to: toDatePart(to)};
+	const month = (monthIndex % 12) + 1;
+	const year = from.year + Math.floor(monthIndex / 12);
+
+	return {
+		exclude: false,
+		from,
+		to: {
+			...from,
+			day: Math.min(from.day, new Date(year, month, 0).getDate()),
+			month,
+			year,
+		},
+	};
 }
 
 function getAllSectionHref(

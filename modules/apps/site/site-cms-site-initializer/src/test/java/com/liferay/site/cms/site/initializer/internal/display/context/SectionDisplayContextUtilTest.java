@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -13,6 +14,14 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+
+import java.util.List;
+import java.util.TimeZone;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -20,6 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
@@ -50,8 +60,29 @@ public class SectionDisplayContextUtilTest {
 			true
 		);
 
+		Mockito.when(
+			_themeDisplay.getTimeZone()
+		).thenReturn(
+			TimeZone.getTimeZone(_TIME_ZONE_ID)
+		);
+
 		_mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _themeDisplay);
+	}
+
+	@Test
+	public void testGetExpiringSoonFilterStringBoundsTheExpirationDate() {
+		String filterString =
+			SectionDisplayContextUtil.getExpiringSoonFilterString(
+				_mockHttpServletRequest);
+
+		Assert.assertTrue(filterString.contains("dateExpiration gt now()"));
+
+		Instant instant = Instant.now();
+
+		_assertThresholdInstant(
+			instant.plus(7, ChronoUnit.DAYS), filterString,
+			"dateExpiration le ");
 	}
 
 	@Test
@@ -60,8 +91,6 @@ public class SectionDisplayContextUtilTest {
 			SectionDisplayContextUtil.getExpiringSoonFilterString(
 				_mockHttpServletRequest);
 
-		Assert.assertTrue(filterString.contains("dateExpiration gt now()"));
-		Assert.assertTrue(filterString.contains("dateExpiration le "));
 		Assert.assertTrue(
 			filterString.contains(
 				"status eq " + WorkflowConstants.STATUS_APPROVED));
@@ -74,8 +103,72 @@ public class SectionDisplayContextUtilTest {
 				_mockHttpServletRequest);
 
 		Assert.assertTrue(filterString.contains("dateReview gt now()"));
-		Assert.assertTrue(filterString.contains("dateReview le "));
+
+		TimeZone timeZone = TimeZone.getTimeZone(_TIME_ZONE_ID);
+
+		ZonedDateTime zonedDateTime = ZonedDateTime.now(timeZone.toZoneId());
+
+		ZonedDateTime thresholdZonedDateTime = zonedDateTime.plusMonths(1);
+
+		_assertThresholdInstant(
+			thresholdZonedDateTime.toInstant(), filterString, "dateReview le ");
 	}
+
+	@Test
+	public void testGetUpcomingReviewsFilterStringScopesNonadministrators()
+		throws Exception {
+
+		Mockito.when(
+			_roleLocalService.hasUserRole(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyString(),
+				Mockito.anyBoolean())
+		).thenReturn(
+			false
+		);
+
+		try (MockedStatic<DepotEntryLocalServiceUtil>
+				depotEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					DepotEntryLocalServiceUtil.class)) {
+
+			depotEntryLocalServiceUtilMockedStatic.when(
+				() -> DepotEntryLocalServiceUtil.getDepotEntryGroupIds(
+					Mockito.anyLong(), Mockito.anyLong(), Mockito.anyInt())
+			).thenReturn(
+				List.of(42L, 7L)
+			);
+
+			String filterString =
+				SectionDisplayContextUtil.getUpcomingReviewsFilterString(
+					_mockHttpServletRequest);
+
+			Assert.assertTrue(
+				filterString.contains("groupIds/any(g:g in (42,7))"));
+		}
+	}
+
+	private void _assertThresholdInstant(
+		Instant expectedInstant, String filterString, String prefix) {
+
+		int index = filterString.indexOf(prefix);
+
+		Assert.assertTrue(index >= 0);
+
+		String thresholdDateString = filterString.substring(
+			index + prefix.length());
+
+		index = thresholdDateString.indexOf(' ');
+
+		if (index >= 0) {
+			thresholdDateString = thresholdDateString.substring(0, index);
+		}
+
+		Duration duration = Duration.between(
+			expectedInstant, Instant.parse(thresholdDateString));
+
+		Assert.assertTrue(Math.abs(duration.getSeconds()) < 60);
+	}
+
+	private static final String _TIME_ZONE_ID = "America/Los_Angeles";
 
 	private final MockHttpServletRequest _mockHttpServletRequest =
 		new MockHttpServletRequest();

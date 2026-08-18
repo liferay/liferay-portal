@@ -24,6 +24,8 @@ export const FDS_EVENT_UPDATE_DISPLAY = 'fds-update-display';
 
 export const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
+export const UPCOMING_REVIEWS_THRESHOLD_MONTHS = 1;
+
 export const ASSET_STATUS = {
 	APPROVED: 'approved',
 	DENIED: 'denied',

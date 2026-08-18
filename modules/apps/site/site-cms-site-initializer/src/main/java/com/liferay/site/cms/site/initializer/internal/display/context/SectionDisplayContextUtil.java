@@ -66,7 +66,6 @@ import jakarta.portlet.ActionRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -77,6 +76,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 /**
  * @author Daniel Sanz
@@ -515,7 +515,7 @@ public class SectionDisplayContextUtil {
 		return appendGroupIds(
 			StringBundler.concat(
 				"dateExpiration gt now() and dateExpiration le ",
-				_getThresholdDateString(), " and status eq ",
+				_getExpirationThresholdDateString(), " and status eq ",
 				WorkflowConstants.STATUS_APPROVED, " and ",
 				_CMS_CONTENT_FILTER_STRING),
 			httpServletRequest);
@@ -1034,7 +1034,7 @@ public class SectionDisplayContextUtil {
 			appendStatus(
 				StringBundler.concat(
 					"dateReview gt now() and dateReview le ",
-					_getReviewThresholdDateString(), " and ",
+					_getReviewThresholdDateString(httpServletRequest), " and ",
 					_CMS_CONTENT_FILTER_STRING)),
 			httpServletRequest);
 	}
@@ -1345,6 +1345,15 @@ public class SectionDisplayContextUtil {
 		return jsonArray;
 	}
 
+	private static String _getExpirationThresholdDateString() {
+		return Instant.now(
+		).plus(
+			7, ChronoUnit.DAYS
+		).truncatedTo(
+			ChronoUnit.SECONDS
+		).toString();
+	}
+
 	private static Map<String, String> _getFileMimeTypeMultimediaCssClasses(
 		String[] mimeTypes) {
 
@@ -1508,12 +1517,20 @@ public class SectionDisplayContextUtil {
 		);
 	}
 
-	private static String _getReviewThresholdDateString() {
-		Instant instant = ZonedDateTime.now(
-			ZoneOffset.UTC
-		).plusMonths(
-			_REVIEW_THRESHOLD_MONTHS
-		).toInstant();
+	private static String _getReviewThresholdDateString(
+		HttpServletRequest httpServletRequest) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		TimeZone timeZone = themeDisplay.getTimeZone();
+
+		ZonedDateTime zonedDateTime = ZonedDateTime.now(timeZone.toZoneId());
+
+		ZonedDateTime thresholdZonedDateTime = zonedDateTime.plusMonths(1);
+
+		Instant instant = thresholdZonedDateTime.toInstant();
 
 		return instant.truncatedTo(
 			ChronoUnit.SECONDS
@@ -1533,16 +1550,6 @@ public class SectionDisplayContextUtil {
 		return new String[] {rootObjectEntryFolderExternalReferenceCode};
 	}
 
-	private static String _getThresholdDateString() {
-		Instant instant = Instant.now();
-
-		return instant.plus(
-			_THRESHOLD_DAYS, ChronoUnit.DAYS
-		).truncatedTo(
-			ChronoUnit.SECONDS
-		).toString();
-	}
-
 	private static final String _CMS_CONTENT_FILTER_STRING =
 		StringBundler.concat(
 			"(cmsSection eq 'contents' or cmsSection eq 'files') and ",
@@ -1553,10 +1560,6 @@ public class SectionDisplayContextUtil {
 
 	private static final String _CMS_WORKFLOW_STATUSES_STRING =
 		StringUtil.merge(CMSWorkflowConstants.STATUSES, ", ");
-
-	private static final int _REVIEW_THRESHOLD_MONTHS = 1;
-
-	private static final int _THRESHOLD_DAYS = 7;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SectionDisplayContextUtil.class);
