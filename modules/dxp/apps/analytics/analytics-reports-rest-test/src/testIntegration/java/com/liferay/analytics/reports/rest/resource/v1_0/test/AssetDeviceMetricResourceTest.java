@@ -25,6 +25,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.ws.rs.ForbiddenException;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -85,6 +87,7 @@ public class AssetDeviceMetricResourceTest
 	@Test
 	public void testGetGroupAssetMetricAssetTypeDevice() throws Exception {
 		_testGetGroupAssetMetricAssetTypeDevice();
+		_testGetGroupAssetMetricAssetTypeDeviceWithAnalyticsCloudNotConnected();
 	}
 
 	@Ignore
@@ -149,6 +152,13 @@ public class AssetDeviceMetricResourceTest
 			ReflectionTestUtil.setFieldValue(
 				_assetDeviceMetricResource, "_http", _http);
 		}
+	}
+
+	private void _testGetGroupAssetMetricAssetTypeDeviceWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() -> _assetDeviceMetricResource.getGroupAssetMetricAssetTypeDevice(
+				TestPropsValues.getGroupId(), "blog", "1", "ALL", 30));
 	}
 
 	@Inject

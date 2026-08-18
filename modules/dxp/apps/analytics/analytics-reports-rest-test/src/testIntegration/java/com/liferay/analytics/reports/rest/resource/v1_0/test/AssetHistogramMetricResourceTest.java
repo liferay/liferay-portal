@@ -25,6 +25,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.ws.rs.ForbiddenException;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -85,6 +87,7 @@ public class AssetHistogramMetricResourceTest
 	@Test
 	public void testGetGroupAssetMetricAssetTypeHistogram() throws Exception {
 		_testGetGroupAssetMetricAssetTypeHistogram();
+		_testGetGroupAssetMetricAssetTypeHistogramWithAnalyticsCloudNotConnected();
 	}
 
 	@Ignore
@@ -153,6 +156,15 @@ public class AssetHistogramMetricResourceTest
 			ReflectionTestUtil.setFieldValue(
 				_assetHistogramMetricResource, "_http", _http);
 		}
+	}
+
+	private void _testGetGroupAssetMetricAssetTypeHistogramWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() ->
+				_assetHistogramMetricResource.
+					getGroupAssetMetricAssetTypeHistogram(
+						TestPropsValues.getGroupId(), "blog", "1", "ALL", 30));
 	}
 
 	@Inject
