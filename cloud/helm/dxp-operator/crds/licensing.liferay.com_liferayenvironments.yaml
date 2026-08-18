@@ -115,7 +115,15 @@ spec:
                                     properties:
                                         checksum:
                                             type: string
+                                        consecutiveFailures:
+                                            format: int32
+                                            type: integer
+                                        message:
+                                            type: string
                                         name:
+                                            type: string
+                                        nextRetry:
+                                            format: date-time
                                             type: string
                                         state:
                                             enum:
