@@ -62,9 +62,11 @@ public class ReportFaroController extends BaseFaroController {
 			@QueryParam("assetTitle") String assetTitle,
 			@QueryParam("assetType") String assetType,
 			@QueryParam("channelId") String channelId,
+			@QueryParam("filter") String filterString,
 			@QueryParam("fromDate") String fromDateString,
 			@PathParam("groupId") long groupId,
 			@QueryParam("individualId") String individualId,
+			@QueryParam("objectType") String objectType,
 			@DefaultValue(StringPool.BLANK) @QueryParam("orderByFields")
 				FaroParam<List<OrderByField>> orderByFieldsFaroParam,
 			@QueryParam("query") String query,
@@ -75,9 +77,9 @@ public class ReportFaroController extends BaseFaroController {
 		throws Exception {
 
 		Object result = _buildQueryParameters(
-			assetId, assetType, channelId, fromDateString, individualId,
-			orderByFieldsFaroParam, query, rangeKey, segmentId, toDateString,
-			type);
+			assetId, assetType, channelId, filterString, fromDateString,
+			individualId, objectType, orderByFieldsFaroParam, query, rangeKey,
+			segmentId, toDateString, type);
 
 		Map<String, List<String>> queryParameters;
 
@@ -146,9 +148,11 @@ public class ReportFaroController extends BaseFaroController {
 			@QueryParam("assetId") String assetId,
 			@QueryParam("assetType") String assetType,
 			@QueryParam("channelId") String channelId,
+			@QueryParam("filter") String filterString,
 			@QueryParam("fromDate") String fromDateString,
 			@PathParam("groupId") long groupId,
 			@QueryParam("individualId") String individualId,
+			@QueryParam("objectType") String objectType,
 			@QueryParam("query") String query,
 			@QueryParam("rangeKey") String rangeKey,
 			@QueryParam("segmentId") String segmentId,
@@ -157,8 +161,9 @@ public class ReportFaroController extends BaseFaroController {
 		throws Exception {
 
 		Object result = _buildQueryParameters(
-			assetId, assetType, channelId, fromDateString, individualId, null,
-			query, rangeKey, segmentId, toDateString, type);
+			assetId, assetType, channelId, filterString, fromDateString,
+			individualId, objectType, null, query, rangeKey, segmentId,
+			toDateString, type);
 
 		if (!(result instanceof Map<?, ?>)) {
 			return result;
@@ -174,16 +179,17 @@ public class ReportFaroController extends BaseFaroController {
 	}
 
 	private Object _buildQueryParameters(
-		String assetId, String assetType, String channelId,
-		String fromDateString, String individualId,
+		String assetId, String assetType, String channelId, String filterString,
+		String fromDateString, String individualId, String objectType,
 		FaroParam<List<OrderByField>> orderByFieldsFaroParam, String query,
 		String rangeKey, String segmentId, String toDateString, String type) {
 
 		if (!_csvExportTypes.contains(type)) {
 			return _reportFaroControllerResponseFactory.create(
-				"The \"type\" query parameter must be either \"blog\", " +
-					"\"document\", \"event\", \"form\", \"individual\", " +
-						"\"journal\", \"membership\", or \"page\".",
+				"The \"type\" query parameter must be either \"asset\", " +
+					"\"blog\", \"document\", \"event\", \"form\", " +
+						"\"individual\", \"journal\", \"membership\", or " +
+							"\"page\".",
 				Response.Status.BAD_REQUEST);
 		}
 
@@ -221,6 +227,16 @@ public class ReportFaroController extends BaseFaroController {
 							orderByField.getOrderBy();
 					})
 			);
+
+		if (Validator.isNotNull(filterString)) {
+			hashMapWrapper.put(
+				"filter", Collections.singletonList(filterString));
+		}
+
+		if (Validator.isNotNull(objectType)) {
+			hashMapWrapper.put(
+				"objectType", Collections.singletonList(objectType));
+		}
 
 		if (Validator.isNotNull(segmentId)) {
 			hashMapWrapper.put(
@@ -305,7 +321,7 @@ public class ReportFaroController extends BaseFaroController {
 		ReportFaroController.class);
 
 	private static final Set<String> _csvExportTypes = SetUtil.fromArray(
-		"blog", "document", "event", "form", "individual", "journal",
+		"asset", "blog", "document", "event", "form", "individual", "journal",
 		"membership", "page", "search-terms");
 	private static final DateTimeFormatter _dateDateTimeFormatter =
 		DateTimeFormatter.ofPattern(DateUtil.PATTERN_DATE);
