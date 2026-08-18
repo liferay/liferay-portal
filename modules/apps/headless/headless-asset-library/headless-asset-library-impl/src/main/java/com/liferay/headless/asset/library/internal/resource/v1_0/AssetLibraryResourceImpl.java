@@ -365,9 +365,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				group = _groupLocalService.updateGroup(group);
 			}
 
-			_updateDLSizeLimitConfiguration(
-				assetLibrary, group.getGroupId(), mimeTypeSizeLimits);
-
 			DepotEntry updatedDepotEntry = _depotEntryService.updateDepotEntry(
 				depotEntry.getDepotEntryId(), nameMap, descriptionMap,
 				_getDepotAppCustomizationMap(
@@ -380,6 +377,9 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				serviceContext);
 
 			_updateFriendlyURL(assetLibrary, group.getGroupId());
+
+			_updateDLSizeLimitConfiguration(
+				assetLibrary, group.getGroupId(), mimeTypeSizeLimits);
 
 			return updatedDepotEntry;
 		}
