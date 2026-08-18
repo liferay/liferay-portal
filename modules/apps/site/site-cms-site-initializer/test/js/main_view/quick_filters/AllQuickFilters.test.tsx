@@ -9,6 +9,8 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import AllQuickFilters from '../../../../src/main/resources/META-INF/resources/js/main_view/quick_filters/AllQuickFilters';
+import {QUICK_FILTER_TYPES} from '../../../../src/main/resources/META-INF/resources/js/main_view/quick_filters/constants';
+import {QUICK_FILTER_UPDATES} from '../../../../src/main/resources/META-INF/resources/js/main_view/quick_filters/quickFilterUpdates';
 import {mockFetch} from '../../__mocks__/frontend-js-web';
 
 const mockSetAllFDSState = jest.fn();
@@ -140,15 +142,20 @@ describe('AllQuickFilters', () => {
 	});
 
 	it('marks the Expiring Soon quick filter when the page loads with its filters', async () => {
+		const expiringSoonUpdates =
+			QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.EXPIRING_SOON]();
+
 		mockFDSState.filters = [
 			{
 				active: true,
 				id: 'status',
-				selectedData: {
-					selectedItems: [{label: 'approved', value: 0}],
-				},
+				selectedData: expiringSoonUpdates.status,
 			},
-			{active: true, id: 'dateExpiration', selectedData: {}},
+			{
+				active: true,
+				id: 'dateExpiration',
+				selectedData: expiringSoonUpdates.dateExpiration,
+			},
 			{active: false, id: 'dateReview', selectedData: {}},
 		];
 
@@ -174,14 +181,17 @@ describe('AllQuickFilters', () => {
 		).toBeInTheDocument();
 	});
 
-	it('marks the Review Date Overdue quick filter when the page loads with a review date range without a start', async () => {
+	it('marks the Review Date Overdue quick filter when the page loads with its filters', async () => {
+		const reviewDateOverdueUpdates =
+			QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.REVIEW_DATE_OVERDUE]();
+
 		mockFDSState.filters = [
 			{active: false, id: 'status', selectedData: {selectedItems: []}},
 			{active: false, id: 'dateExpiration', selectedData: {}},
 			{
 				active: true,
 				id: 'dateReview',
-				selectedData: {exclude: false, from: null, to: {year: 2026}},
+				selectedData: reviewDateOverdueUpdates.dateReview,
 			},
 		];
 
@@ -198,6 +208,111 @@ describe('AllQuickFilters', () => {
 				pressed: true,
 			})
 		).toBeInTheDocument();
+	});
+
+	it('marks the Expiring Soon quick filter when the dashboard link adds a space filter', async () => {
+		const expiringSoonUpdates =
+			QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.EXPIRING_SOON]();
+
+		mockFDSState.filters = [
+			{
+				active: true,
+				id: 'status',
+				selectedData: expiringSoonUpdates.status,
+			},
+			{
+				active: true,
+				id: 'dateExpiration',
+				selectedData: expiringSoonUpdates.dateExpiration,
+			},
+			{active: false, id: 'dateReview', selectedData: {}},
+			{
+				active: true,
+				id: 'scopeGroupId',
+				selectedData: {
+					exclude: false,
+					selectedItems: [{label: 'My Space', value: 12345}],
+				},
+			},
+		];
+
+		mockFetch.mockResolvedValueOnce({
+			json: async () => ({totalCount: 17}),
+			ok: true,
+		} as Response);
+
+		render(<AllQuickFilters />);
+
+		expect(
+			await screen.findByRole('button', {
+				name: /expiring-soon/,
+				pressed: true,
+			})
+		).toBeInTheDocument();
+	});
+
+	it('marks no quick filter when a hand-set review date upper bound is not today', async () => {
+		mockFDSState.filters = [
+			{active: false, id: 'status', selectedData: {selectedItems: []}},
+			{active: false, id: 'dateExpiration', selectedData: {}},
+			{
+				active: true,
+				id: 'dateReview',
+				selectedData: {
+					exclude: false,
+					from: null,
+					to: {day: 1, month: 1, year: 2030},
+				},
+			},
+		];
+
+		mockFetch.mockResolvedValueOnce({
+			json: async () => ({totalCount: 17}),
+			ok: true,
+		} as Response);
+
+		render(<AllQuickFilters />);
+
+		await screen.findByRole('button', {name: /review-date-overdue/});
+
+		expect(screen.queryAllByRole('button', {pressed: true})).toHaveLength(
+			0
+		);
+	});
+
+	it('marks no quick filter when a hand-set expiration range does not match the upcoming window', async () => {
+		mockFDSState.filters = [
+			{
+				active: true,
+				id: 'status',
+				selectedData: {
+					selectedItems: [{label: 'approved', value: 0}],
+				},
+			},
+			{
+				active: true,
+				id: 'dateExpiration',
+				selectedData: {
+					exclude: false,
+					from: {day: 1, month: 1, year: 2020},
+					to: {day: 1, month: 1, year: 2021},
+				},
+			},
+			{active: false, id: 'dateReview', selectedData: {}},
+		];
+
+		mockFetch.mockResolvedValueOnce({
+			json: async () => ({totalCount: 17}),
+			ok: true,
+		} as Response);
+
+		render(<AllQuickFilters />);
+
+		await screen.findByRole('button', {name: /expiring-soon/});
+
+		expect(screen.queryAllByRole('button', {pressed: true})).toHaveLength(
+			0
+		);
 	});
 
 	it('marks no quick filter when the page loads with an upcoming review date range', async () => {

@@ -17,7 +17,6 @@ import {
 	CMSSiteInitializerFDSNames,
 	FDS_EVENT_DISPLAY_UPDATED,
 	FDS_FILTER_ID,
-	WORKFLOW_STATUS,
 } from '../../common/utils/constants';
 import {allFDSAtom} from './atoms';
 import {QUICK_FILTER_TYPES, QuickFilterType} from './constants';
@@ -33,49 +32,84 @@ interface QuickFilterCounts {
 	total: number;
 }
 
-function getSelectedStatus(filter?: IBaseFilterState) {
-	const selectedData = filter?.selectedData as
-		| {selectedItems?: Array<{value: number}>}
-		| undefined;
+type QuickFilterSelectedData = {
+	exclude?: boolean;
+	from?: {day: number; month: number; year: number} | null;
+	selectedItems?: Array<{value: number}>;
+	to?: {day: number; month: number; year: number} | null;
+};
 
-	return selectedData?.selectedItems?.[0]?.value;
+function isSameDateBound(
+	actualBound?: QuickFilterSelectedData['from'],
+	expectedBound?: QuickFilterSelectedData['from']
+) {
+	if (!actualBound || !expectedBound) {
+		return !actualBound && !expectedBound;
+	}
+
+	return (
+		actualBound.day === expectedBound.day &&
+		actualBound.month === expectedBound.month &&
+		actualBound.year === expectedBound.year
+	);
+}
+
+function matchesSelectedData(
+	actualData?: IBaseFilterState['selectedData'],
+	expectedData?: IBaseFilterState['selectedData']
+) {
+	if (!actualData || !expectedData) {
+		return false;
+	}
+
+	const actual = actualData as QuickFilterSelectedData;
+	const expected = expectedData as QuickFilterSelectedData;
+
+	if (Boolean(actual.exclude) !== Boolean(expected.exclude)) {
+		return false;
+	}
+
+	if (expected.selectedItems) {
+		const actualValues =
+			actual.selectedItems?.map(({value}) => value) ?? [];
+		const expectedValues = expected.selectedItems.map(({value}) => value);
+
+		return (
+			actualValues.length === expectedValues.length &&
+			expectedValues.every((value) => actualValues.includes(value))
+		);
+	}
+
+	return (
+		isSameDateBound(actual.from, expected.from) &&
+		isSameDateBound(actual.to, expected.to)
+	);
 }
 
 function getActiveQuickFilter(filters: readonly IBaseFilterState[] = []) {
-	const activeFilters = filters.filter(({active}) => active);
-
-	const statusFilter = activeFilters.find(
-		({id}) => id === FDS_FILTER_ID.STATUS
+	const activeFilters = filters.filter(
+		({active, id}) => active && id !== FDS_FILTER_ID.SCOPE_GROUP_ID
 	);
 
-	const status = getSelectedStatus(statusFilter);
-
-	const dateReviewFilter = activeFilters.find(
-		({id}) => id === FDS_FILTER_ID.DATE_REVIEW
-	);
-
-	const dateReviewSelectedData = dateReviewFilter?.selectedData as
-		| {from?: unknown}
-		| undefined;
-
-	if (dateReviewFilter && !dateReviewSelectedData?.from && !statusFilter) {
-		return QUICK_FILTER_TYPES.REVIEW_DATE_OVERDUE;
+	if (!activeFilters.length) {
+		return null;
 	}
 
-	if (
-		activeFilters.some(({id}) => id === FDS_FILTER_ID.DATE_EXPIRATION) &&
-		status === WORKFLOW_STATUS.APPROVED
-	) {
-		return QUICK_FILTER_TYPES.EXPIRING_SOON;
-	}
+	for (const quickFilterType of Object.values(QUICK_FILTER_TYPES)) {
+		const filterUpdates = QUICK_FILTER_UPDATES[quickFilterType]();
 
-	if (activeFilters.length === 1 && statusFilter) {
-		if (status === WORKFLOW_STATUS.DRAFT) {
-			return QUICK_FILTER_TYPES.IN_DRAFT;
-		}
+		const filterIds = Object.keys(filterUpdates);
 
-		if (status === WORKFLOW_STATUS.EXPIRED) {
-			return QUICK_FILTER_TYPES.EXPIRED;
+		if (
+			activeFilters.length === filterIds.length &&
+			activeFilters.every((filter) =>
+				matchesSelectedData(
+					filter.selectedData,
+					filterUpdates[filter.id]
+				)
+			)
+		) {
+			return quickFilterType;
 		}
 	}
 
