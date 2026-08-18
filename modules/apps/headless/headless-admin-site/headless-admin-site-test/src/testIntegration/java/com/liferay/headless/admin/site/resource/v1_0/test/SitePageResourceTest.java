@@ -2047,24 +2047,18 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	private List<WidgetPageWidgetInstance> _getWidgetPageWidgetInstances(
 		SitePage sitePage) {
 
-		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
-			new ArrayList<>();
-
 		PageSpecification[] pageSpecifications =
 			sitePage.getPageSpecifications();
 
 		WidgetPageSpecification widgetPageSpecification =
 			(WidgetPageSpecification)pageSpecifications[0];
 
-		for (WidgetPageSection widgetPageSection :
-				widgetPageSpecification.getWidgetPageSections()) {
-
-			Collections.addAll(
-				widgetPageWidgetInstances,
-				widgetPageSection.getWidgetPageWidgetInstances());
-		}
-
-		return widgetPageWidgetInstances;
+		return ListUtil.fromArray(
+			ArrayUtil.append(
+				TransformUtil.transform(
+					widgetPageSpecification.getWidgetPageSections(),
+					WidgetPageSection::getWidgetPageWidgetInstances,
+					WidgetPageWidgetInstance[].class)));
 	}
 
 	private SitePage _postSiteSitePageWithPageSpecificationsWithCustomFields(
