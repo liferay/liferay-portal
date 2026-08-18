@@ -8,6 +8,7 @@ package com.liferay.analytics.cms.rest.resource.v1_0.test;
 import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceAssetConsumption;
 import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceAssetConsumptionItem;
 import com.liferay.analytics.cms.rest.client.pagination.Pagination;
+import com.liferay.analytics.cms.rest.client.resource.v1_0.PerformanceAssetConsumptionResource;
 import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
@@ -16,17 +17,22 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.log.LogCapture;
@@ -77,6 +83,7 @@ public class PerformanceAssetConsumptionResourceTest
 		_testGetPerformanceAssetConsumptionGroupByStructure();
 		_testGetPerformanceAssetConsumptionResponse();
 		_testGetPerformanceAssetConsumptionURL();
+		_testGetPerformanceAssetConsumptionWithDepotEntryMemberUser();
 		_testGetPerformanceAssetConsumptionWithInvalidGroupBy();
 	}
 
@@ -97,6 +104,26 @@ public class PerformanceAssetConsumptionResourceTest
 		return depotEntry;
 	}
 
+	private void _assertNoRequest(
+			AnalyticsCloudHttpServer analyticsCloudHttpServer,
+			UnsafeConsumer<Long[], Exception> unsafeConsumer)
+		throws Exception {
+
+		DepotEntry depotEntry1 = _depotEntries.get(0);
+		DepotEntry depotEntry2 = _depotEntries.get(1);
+
+		Long[][] depotEntryIdsArray = {
+			null, {depotEntry1.getDepotEntryId()},
+			{depotEntry1.getDepotEntryId(), depotEntry2.getDepotEntryId()}
+		};
+
+		for (Long[] depotEntryIds : depotEntryIdsArray) {
+			unsafeConsumer.accept(depotEntryIds);
+
+			Assert.assertNull(analyticsCloudHttpServer.getLocation());
+		}
+	}
+
 	private void _assertParameter(
 		String expectedValue, String name, String url) {
 
@@ -104,6 +131,32 @@ public class PerformanceAssetConsumptionResourceTest
 			expectedValue,
 			URLCodec.decodeURL(
 				HttpComponentsUtil.getParameter(url, name, false)));
+	}
+
+	private PerformanceAssetConsumptionResource
+			_getPerformanceAssetConsumptionResource()
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntries.get(0);
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(depotEntry.getGroupId());
+
+		_userLocalService.updatePassword(
+			user.getUserId(), password, password, false, true);
+
+		_users.add(user);
+
+		return PerformanceAssetConsumptionResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private void _testGetPerformanceAssetConsumptionGroupByStructure()
@@ -327,6 +380,36 @@ public class PerformanceAssetConsumptionResourceTest
 		}
 	}
 
+	private void _testGetPerformanceAssetConsumptionWithDepotEntryMemberUser()
+		throws Exception {
+
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/objectEntry/asset-consumption",
+					() -> "{}");
+
+			AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
+
+			PerformanceAssetConsumptionResource
+				performanceAssetConsumptionResource =
+					_getPerformanceAssetConsumptionResource();
+
+			_assertNoRequest(
+				analyticsCloudHttpServer,
+				depotEntryIds ->
+					performanceAssetConsumptionResource.
+						getPerformanceAssetConsumption(
+							null, depotEntryIds, "tag",
+							RandomTestUtil.nextInt(), null, null, null,
+							Pagination.of(1, 10)));
+		}
+	}
+
 	private void _testGetPerformanceAssetConsumptionWithInvalidGroupBy()
 		throws Exception {
 
@@ -357,5 +440,11 @@ public class PerformanceAssetConsumptionResourceTest
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	@DeleteAfterTestRun
+	private final List<User> _users = new ArrayList<>();
 
 }
