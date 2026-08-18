@@ -941,27 +941,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public synchronized boolean isAvailable() {
-		if ((_availableTimestamp == -1) ||
-			((System.currentTimeMillis() - _availableTimestamp) >
-				_AVAILABLE_TIMEOUT)) {
-
-			try {
-				JenkinsResultsParserUtil.toJSONObject(
-					getURL() + "/api/json?tree=mode", false, 1, 1, 1000);
-
-				_available = true;
-			}
-			catch (Exception exception) {
-				System.out.println(getName() + " is unreachable.");
-
-				_available = false;
-			}
-			finally {
-				_availableTimestamp = System.currentTimeMillis();
-			}
+		if (isBlacklisted()) {
+			return false;
 		}
 
-		return _available;
+		return _isReachable();
 	}
 
 	public boolean isBlacklisted() {
@@ -1076,7 +1060,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 		_labelExpressionLabels.clear();
 
-		if (!isAvailable()) {
+		if (!_isReachable()) {
 			_assignedLabels.clear();
 			_buildURLs.clear();
 			_busyExecutorsCount = 0;
@@ -1914,6 +1898,30 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		return usableNodesCount;
+	}
+
+	private synchronized boolean _isReachable() {
+		if ((_availableTimestamp == -1) ||
+			((System.currentTimeMillis() - _availableTimestamp) >
+				_AVAILABLE_TIMEOUT)) {
+
+			try {
+				JenkinsResultsParserUtil.toJSONObject(
+					getURL() + "/api/json?tree=mode", false, 1, 1, 1000);
+
+				_available = true;
+			}
+			catch (Exception exception) {
+				System.out.println(getName() + " is unreachable.");
+
+				_available = false;
+			}
+			finally {
+				_availableTimestamp = System.currentTimeMillis();
+			}
+		}
+
+		return _available;
 	}
 
 	private boolean _isRunningOnJenkinsMaster() {
