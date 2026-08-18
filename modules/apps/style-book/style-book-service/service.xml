@@ -79,6 +79,7 @@
 		<exception>DuplicateStyleBookEntryName</exception>
 		<exception>StyleBookEntryFile</exception>
 		<exception>StyleBookEntryFrontendTokenDefinition</exception>
+		<exception>StyleBookEntryFrontendTokensValues</exception>
 		<exception>StyleBookEntryName</exception>
 		<exception>StyleBookEntryThemeId</exception>
 	</exceptions>
