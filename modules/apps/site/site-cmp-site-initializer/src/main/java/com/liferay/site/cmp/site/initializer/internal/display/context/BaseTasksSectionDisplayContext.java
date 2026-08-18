@@ -147,7 +147,7 @@ public abstract class BaseTasksSectionDisplayContext
 			).setMethod(
 				"post"
 			).setPermissionKey(
-				"update-due-date"
+				"update"
 			).build(
 				"update-due-date"
 			),
@@ -159,6 +159,8 @@ public abstract class BaseTasksSectionDisplayContext
 				"user"
 			).setLabel(
 				LanguageUtil.get(httpServletRequest, "assign-to-...")
+			).setPermissionKey(
+				"update"
 			).build(
 				"assign-to"
 			),
@@ -171,7 +173,7 @@ public abstract class BaseTasksSectionDisplayContext
 			).setMethod(
 				"post"
 			).setPermissionKey(
-				"update-state"
+				"update"
 			).build(
 				"update-state"
 			),
@@ -183,6 +185,8 @@ public abstract class BaseTasksSectionDisplayContext
 				"trash"
 			).setLabel(
 				LanguageUtil.get(httpServletRequest, "delete")
+			).setPermissionKey(
+				"delete"
 			).build(
 				"delete"
 			));
