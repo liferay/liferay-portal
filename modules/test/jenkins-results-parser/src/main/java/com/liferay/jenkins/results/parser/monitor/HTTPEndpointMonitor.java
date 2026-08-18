@@ -22,16 +22,17 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 	public HTTPEndpointMonitor(MonitorConfig monitorConfig) {
 		super(monitorConfig);
 
-		_url = getRequiredParameter("url", monitorConfig.getParameters());
+		_endpointURL = getRequiredParameter(
+			"url", monitorConfig.getParameters());
 
-		if (_hasUserInfo(_url)) {
+		if (_hasUserInfo(_endpointURL)) {
 			throw new IllegalArgumentException(
 				getInvalidValueMessage("parameter", "url", "[REDACTED]"));
 		}
 
-		if (!JenkinsResultsParserUtil.isURL(_url)) {
+		if (!JenkinsResultsParserUtil.isURL(_endpointURL)) {
 			throw new IllegalArgumentException(
-				getInvalidValueMessage("parameter", "url", _url));
+				getInvalidValueMessage("parameter", "url", _endpointURL));
 		}
 
 		_latencyMaximumMillis = getLongValue(
@@ -48,7 +49,7 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 
 		try {
 			JenkinsResultsParserUtil.toString(
-				_url, false, 0, 0, getSingleAttemptTimeoutMillis());
+				_endpointURL, false, 0, 0, getSingleAttemptTimeoutMillis());
 		}
 		catch (Exception exception) {
 			return new MonitorResult(
@@ -67,7 +68,7 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
-					"Endpoint ", _url, " responded in ",
+					"Endpoint ", _endpointURL, " responded in ",
 					String.valueOf(latencyMillis),
 					" ms, exceeding its maximum latency of ",
 					String.valueOf(_latencyMaximumMillis), " ms"),
@@ -75,14 +76,15 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 		}
 
 		return new MonitorResult(
-			JenkinsResultsParserUtil.combine("Endpoint ", _url, " is OK"),
+			JenkinsResultsParserUtil.combine(
+				"Endpoint ", _endpointURL, " is OK"),
 			metrics, MonitorResult.Status.OK, currentTimeMillis);
 	}
 
 	private String _getFailureMessage(Exception exception) {
 		if (exception instanceof FileNotFoundException) {
 			return JenkinsResultsParserUtil.combine(
-				"Endpoint ", _url, " was not found");
+				"Endpoint ", _endpointURL, " was not found");
 		}
 
 		String message = exception.getMessage();
@@ -97,12 +99,12 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 
 		if (matcher.find()) {
 			return JenkinsResultsParserUtil.combine(
-				"Endpoint ", _url, " returned the response code ",
+				"Endpoint ", _endpointURL, " returned the response code ",
 				matcher.group("responseCode"));
 		}
 
 		return JenkinsResultsParserUtil.combine(
-			"Unable to read ", _url, ": ", message);
+			"Unable to read ", _endpointURL, ": ", message);
 	}
 
 	private boolean _hasUserInfo(String url) {
@@ -116,7 +118,7 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 	private static final Pattern _userInfoPattern = Pattern.compile(
 		"(//|[^/?#]*://)?[^/?#]*@.*");
 
+	private final String _endpointURL;
 	private final long _latencyMaximumMillis;
-	private final String _url;
 
 }
