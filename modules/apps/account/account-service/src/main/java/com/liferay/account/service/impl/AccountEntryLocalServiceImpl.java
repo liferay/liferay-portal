@@ -1253,12 +1253,12 @@ public class AccountEntryLocalServiceImpl
 
 			throw new AccountEntryExternalReferenceCodeException(
 				StringBundler.concat(
-					"External reference code length cannot exceed ", maxLength,
-					" characters"));
+					"Account entry external reference code length cannot ",
+					"exceed ", maxLength, " characters"));
 		}
 
 		if (Validator.isNull(name)) {
-			throw new AccountEntryNameException("Name is null");
+			throw new AccountEntryNameException("Account entry name is null");
 		}
 
 		maxLength = ModelHintsUtil.getMaxLength(
@@ -1267,7 +1267,8 @@ public class AccountEntryLocalServiceImpl
 		if (name.length() > maxLength) {
 			throw new AccountEntryNameException(
 				StringBundler.concat(
-					"Name length cannot exceed ", maxLength, " characters"));
+					"Account entry name length cannot exceed ", maxLength,
+					" characters"));
 		}
 
 		maxLength = ModelHintsUtil.getMaxLength(
@@ -1278,8 +1279,8 @@ public class AccountEntryLocalServiceImpl
 
 			throw new AccountEntryTaxIdNumberException(
 				StringBundler.concat(
-					"Tax ID number length cannot exceed ", maxLength,
-					" characters"));
+					"Account entry tax ID number length cannot exceed ",
+					maxLength, " characters"));
 		}
 	}
 
