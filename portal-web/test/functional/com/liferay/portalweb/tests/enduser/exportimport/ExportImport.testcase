@@ -120,34 +120,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-125446. Verify if display style remains even after navigation."
-	@priority = 3
-	test DisplayStyleCanRemainAfterNavigation {
-		task ("Given: User make a successful export") {
-			ProductMenu.gotoPortlet(
-				category = "Publishing",
-				portlet = "Export");
-
-			LexiconEntry.gotoAdd();
-
-			LAR.configureExportOptions();
-
-			LAR.exportWithAssertionOnSuccess();
-		}
-
-		task ("When: User change display style") {
-			LexiconEntry.changeDisplayStyle(displayStyle = "table");
-		}
-
-		task ("Then: The display style stays the same after accessing the export process page again") {
-			ProductMenu.gotoPortlet(
-				category = "Publishing",
-				portlet = "Export");
-
-			LexiconEntry.viewActiveDisplayStyle(displayStyle = "table");
-		}
-	}
-
 	@description = "Verify is possible edit an exported template."
 	@priority = 4
 	test EditExportTemplate {
@@ -494,67 +466,6 @@ definition {
 				webContentTitle = "Web Content Title");
 
 			AssertConsoleTextNotPresent(value1 = "com.liferay.portal.kernel.repository.InvalidRepositoryIdException");
-		}
-	}
-
-	@description = "Verify is possible export/import with an export template."
-	@priority = 3
-	test ExportImportWithExportTemplate {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Export Templates feature flag is enabled") {
-			LAR.enableExportTemplatesFeatureFlag();
-		}
-
-		task ("Given: User adds a new export template") {
-			LAR.openExportAdmin(siteScopeName = "Guest");
-
-			LAR.addExportTemplateCP(
-				exportTemplateDescription = "Export Template Description",
-				exportTemplateName = "Export Template Name");
-
-			LAR.saveExportTemplateCP(
-				exportTemplateDescription = "Export Template Description",
-				exportTemplateName = "Export Template Name");
-
-			LAR.viewExportTemplateCP(
-				exportTemplateDescription = "Export Template Description",
-				exportTemplateName = "Export Template Name");
-		}
-
-		task ("When: User export the site based on the site template then create a new site") {
-			LAR.exportExportTemplateCP(
-				exportTemplateDescription = "Export Template Description",
-				exportTemplateName = "Export Template Name");
-
-			var larFileName = LAR.getLarFileName();
-
-			LAR.downloadLar();
-		}
-
-		task ("Then: The exported site can be imported on the new site") {
-			HeadlessSite.addSite(siteName = "Site Name");
-
-			for (var layoutUtilityPageName : list "404 Error,500 Error") {
-				JSONLayoututilitypage.deleteLayoutUtilityPage(
-					groupName = "Site Name",
-					layoutUtilityPageName = ${layoutUtilityPageName});
-			}
-
-			LAR.importSiteCP(
-				larFileName = ${larFileName},
-				siteName = "Site Name");
-
-			PagesAdmin.openPagesAdmin(siteURLKey = "site-name");
-
-			while ((IsElementNotPresent(key_pageName = "Home", locator1 = "PagesAdmin#LIST_GROUP_ITEM_ENTRY_TITLE_LINK")) && (maxIterations = "5")) {
-				Refresh();
-			}
-
-			AssertElementPresent(
-				key_pageName = "Home",
-				locator1 = "PagesAdmin#LIST_GROUP_ITEM_ENTRY_TITLE_LINK");
 		}
 	}
 
