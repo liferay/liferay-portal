@@ -84,6 +84,17 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 	@Override
 	@Test
 	public void testGetGroupAssetMetric() throws Exception {
+		_testGetGroupAssetMetric();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetGroupAssetMetric() throws Exception {
+		super.testGraphQLGetGroupAssetMetric();
+	}
+
+	private void _testGetGroupAssetMetric() throws Exception {
 		try (AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
@@ -173,13 +184,6 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 			ReflectionTestUtil.setFieldValue(
 				_assetMetricResource, "_http", _http);
 		}
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetGroupAssetMetric() throws Exception {
-		super.testGraphQLGetGroupAssetMetric();
 	}
 
 	@Inject
