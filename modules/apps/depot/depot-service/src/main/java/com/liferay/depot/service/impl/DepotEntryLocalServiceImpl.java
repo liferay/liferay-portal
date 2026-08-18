@@ -379,7 +379,7 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 	public DepotEntry updateDepotEntry(
 			long depotEntryId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap,
-			Map<String, Boolean> depotAppCustomizationMap,
+			Map<String, Boolean> depotAppCustomizationMap, String friendlyURL,
 			UnicodeProperties typeSettingsUnicodeProperties,
 			ServiceContext serviceContext)
 		throws PortalException {
@@ -436,10 +436,14 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 			nameMap.put(locale, defaultName);
 		}
 
+		if (Validator.isNull(friendlyURL)) {
+			friendlyURL = group.getFriendlyURL();
+		}
+
 		group = _groupLocalService.updateGroup(
 			depotEntry.getGroupId(), group.getParentGroupId(), nameMap,
 			descriptionMap, group.getType(), null, group.isManualMembership(),
-			group.getMembershipRestriction(), group.getFriendlyURL(),
+			group.getMembershipRestriction(), friendlyURL,
 			group.isInheritContent(), group.isActive(), serviceContext);
 
 		_groupLocalService.updateGroup(
