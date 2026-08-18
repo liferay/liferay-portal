@@ -5515,15 +5515,8 @@ public class JenkinsResultsParserUtil {
 			String url, HttpRequestMethod httpRequestMethod)
 		throws IOException {
 
-		return toString(url, httpRequestMethod, true);
-	}
-
-	public static String toString(
-			String url, HttpRequestMethod httpRequestMethod, boolean checkCache)
-		throws IOException {
-
 		return toString(
-			url, checkCache, _RETRIES_SIZE_MAX_DEFAULT, httpRequestMethod, null,
+			url, true, _RETRIES_SIZE_MAX_DEFAULT, httpRequestMethod, null,
 			_SECONDS_RETRY_PERIOD_DEFAULT, _MILLIS_TIMEOUT_DEFAULT, null,
 			false);
 	}
