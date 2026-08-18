@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
  * @author Shuyang Zhou
@@ -53,6 +54,32 @@ public class ReflectionTestUtil {
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
+	}
+
+	public static <T> T invoke(
+		Object instance, String methodName, Class<?>[] parameterTypes,
+		Object... parameters) {
+
+		Class<?> clazz = instance.getClass();
+
+		while (clazz != null) {
+			try {
+				Method method = clazz.getDeclaredMethod(
+					methodName, parameterTypes);
+
+				method.setAccessible(true);
+
+				return (T)method.invoke(instance, parameters);
+			}
+			catch (NoSuchMethodException noSuchMethodException) {
+				clazz = clazz.getSuperclass();
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		}
+
+		throw new RuntimeException("Unable to find method " + methodName);
 	}
 
 	public static void setFieldValue(
