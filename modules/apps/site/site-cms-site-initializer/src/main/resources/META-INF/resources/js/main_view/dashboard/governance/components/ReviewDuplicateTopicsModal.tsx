@@ -11,6 +11,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import ClaySticker from '@clayui/sticker';
 import {
+	EConfigInURLBehavior,
 	FrontendDataSet,
 	IItemsActions,
 	TSort,
@@ -310,6 +311,7 @@ export default function ReviewDuplicateTopicsModal({
 					<FrontendDataSet
 						additionalAPIURLParameters={`emptySearch=true&entryClassNames=${entryClassNames}&nestedFields=${DUPLICATE_TOPICS_NESTED_FIELDS}`}
 						apiURL={`${API_URL}?${filterQueryString}`}
+						configInURLBehavior={EConfigInURLBehavior.OFF}
 						hideManagementBarInEmptyState={true}
 						id={FDS_ID}
 						itemsActions={itemsActions}
