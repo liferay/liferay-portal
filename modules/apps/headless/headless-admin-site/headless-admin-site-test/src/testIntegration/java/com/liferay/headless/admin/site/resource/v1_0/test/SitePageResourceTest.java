@@ -2203,6 +2203,29 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		};
 	}
 
+	private void _setWidgetPageWidgetInstancesApplicationDecorator(
+		GeneralConfig.ApplicationDecorator applicationDecorator,
+		String customApplicationDecorator, SitePage sitePage) {
+
+		for (WidgetPageWidgetInstance widgetPageWidgetInstance :
+				_getWidgetPageWidgetInstances(sitePage)) {
+
+			WidgetLookAndFeelConfig widgetLookAndFeelConfig =
+				new WidgetLookAndFeelConfig();
+
+			GeneralConfig generalConfig = new GeneralConfig();
+
+			generalConfig.setApplicationDecorator(applicationDecorator);
+			generalConfig.setCustomApplicationDecorator(
+				customApplicationDecorator);
+
+			widgetLookAndFeelConfig.setGeneralConfig(generalConfig);
+
+			widgetPageWidgetInstance.setWidgetLookAndFeelConfig(
+				widgetLookAndFeelConfig);
+		}
+	}
+
 	private void _testDeleteSiteSitePage(Layout... layouts) throws Exception {
 		for (Layout layout : layouts) {
 			sitePageResource.deleteSiteSitePage(
@@ -3061,23 +3084,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				null, widgetPageSettings.getLayoutTemplateId(),
 				randomSitePage.getExternalReferenceCode()));
 
-		for (WidgetPageWidgetInstance widgetPageWidgetInstance :
-				_getWidgetPageWidgetInstances(randomSitePage)) {
-
-			WidgetLookAndFeelConfig widgetLookAndFeelConfig =
-				new WidgetLookAndFeelConfig();
-
-			GeneralConfig generalConfig = new GeneralConfig();
-
-			generalConfig.setApplicationDecorator(applicationDecorator);
-			generalConfig.setCustomApplicationDecorator(
-				customApplicationDecorator);
-
-			widgetLookAndFeelConfig.setGeneralConfig(generalConfig);
-
-			widgetPageWidgetInstance.setWidgetLookAndFeelConfig(
-				widgetLookAndFeelConfig);
-		}
+		_setWidgetPageWidgetInstancesApplicationDecorator(
+			applicationDecorator, customApplicationDecorator, randomSitePage);
 
 		SitePageResource sitePageResource = _getSitePageResource(
 			"pageSpecifications");
