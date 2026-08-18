@@ -37,9 +37,9 @@ public class ContentDispositionUtilTest {
 	@Test
 	public void testGetContentDispositionHeaderValueEncodesQuotes() {
 		Assert.assertEquals(
-			"attachment; filename*=UTF-8''a%22%3B%20filename%3D%22evil.lar",
+			"attachment; filename*=UTF-8''a%22%3B%20filename%3D%22sample.lar",
 			ContentDispositionUtil.getContentDispositionHeaderValue(
-				"a\"; filename=\"evil.lar"));
+				"a\"; filename=\"sample.lar"));
 	}
 
 	@Test
