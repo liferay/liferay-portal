@@ -6358,6 +6358,14 @@
 	},
 	{
 		"classNames": [
+			"CPDefinitionInventoryEngine"
+		],
+		"from": "getMinStockQuantity(CPInstance paramName)",
+		"issueKey": "LPD-102781",
+		"to": "getMinStockQuantity(0, param#0#)"
+	},
+	{
+		"classNames": [
 			"CommerceOrderLocalService",
 			"CommerceOrderLocalServiceUtil",
 			"CommerceOrderLocalServiceWrapper",
