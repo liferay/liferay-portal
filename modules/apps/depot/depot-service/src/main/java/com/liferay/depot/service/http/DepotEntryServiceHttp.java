@@ -450,6 +450,7 @@ public class DepotEntryServiceHttp {
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			java.util.Map<String, Boolean> depotAppCustomizationMap,
+			String friendlyURL,
 			com.liferay.portal.kernel.util.UnicodeProperties
 				typeSettingsUnicodeProperties,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -462,8 +463,8 @@ public class DepotEntryServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, depotEntryId, nameMap, descriptionMap,
-				depotAppCustomizationMap, typeSettingsUnicodeProperties,
-				serviceContext);
+				depotAppCustomizationMap, friendlyURL,
+				typeSettingsUnicodeProperties, serviceContext);
 
 			Object returnObj = null;
 
@@ -530,10 +531,10 @@ public class DepotEntryServiceHttp {
 	private static final Class<?>[] _updateDepotEntryParameterTypes10 =
 		new Class[] {
 			long.class, java.util.Map.class, java.util.Map.class,
-			java.util.Map.class,
+			java.util.Map.class, String.class,
 			com.liferay.portal.kernel.util.UnicodeProperties.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-851994723
+// LIFERAY-SERVICE-BUILDER-HASH:-1871780588

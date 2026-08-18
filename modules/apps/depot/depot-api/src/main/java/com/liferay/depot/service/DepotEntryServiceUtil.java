@@ -113,7 +113,7 @@ public class DepotEntryServiceUtil {
 	public static DepotEntry updateDepotEntry(
 			long depotEntryId, Map<java.util.Locale, String> nameMap,
 			Map<java.util.Locale, String> descriptionMap,
-			Map<String, Boolean> depotAppCustomizationMap,
+			Map<String, Boolean> depotAppCustomizationMap, String friendlyURL,
 			com.liferay.portal.kernel.util.UnicodeProperties
 				typeSettingsUnicodeProperties,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -121,7 +121,7 @@ public class DepotEntryServiceUtil {
 
 		return getService().updateDepotEntry(
 			depotEntryId, nameMap, descriptionMap, depotAppCustomizationMap,
-			typeSettingsUnicodeProperties, serviceContext);
+			friendlyURL, typeSettingsUnicodeProperties, serviceContext);
 	}
 
 	public static DepotEntryService getService() {
@@ -132,4 +132,4 @@ public class DepotEntryServiceUtil {
 		new Snapshot<>(DepotEntryServiceUtil.class, DepotEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1376930221
+// LIFERAY-SERVICE-BUILDER-HASH:-1117226626

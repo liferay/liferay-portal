@@ -123,6 +123,7 @@ public class DepotEntryServiceWrapper
 			long depotEntryId, java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			java.util.Map<String, Boolean> depotAppCustomizationMap,
+			String friendlyURL,
 			com.liferay.portal.kernel.util.UnicodeProperties
 				typeSettingsUnicodeProperties,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -130,7 +131,7 @@ public class DepotEntryServiceWrapper
 
 		return _depotEntryService.updateDepotEntry(
 			depotEntryId, nameMap, descriptionMap, depotAppCustomizationMap,
-			typeSettingsUnicodeProperties, serviceContext);
+			friendlyURL, typeSettingsUnicodeProperties, serviceContext);
 	}
 
 	@Override
@@ -146,4 +147,4 @@ public class DepotEntryServiceWrapper
 	private DepotEntryService _depotEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1245536009
+// LIFERAY-SERVICE-BUILDER-HASH:-598259630
