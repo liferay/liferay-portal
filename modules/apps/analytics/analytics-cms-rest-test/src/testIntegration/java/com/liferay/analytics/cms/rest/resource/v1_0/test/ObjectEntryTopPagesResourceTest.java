@@ -14,6 +14,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -93,6 +94,7 @@ public class ObjectEntryTopPagesResourceTest
 	@Test
 	public void testGetObjectEntryTopPages() throws Exception {
 		_testGetObjectEntryTopPages();
+		_testGetObjectEntryTopPagesWithInvalidObjectEntryId();
 	}
 
 	@Test
@@ -244,6 +246,32 @@ public class ObjectEntryTopPagesResourceTest
 		finally {
 			ReflectionTestUtil.setFieldValue(
 				_objectEntryTopPagesResource, "_http", _http);
+		}
+	}
+
+	private void _testGetObjectEntryTopPagesWithInvalidObjectEntryId()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.nextLong()
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			Assert.assertThrows(
+				NoSuchObjectEntryException.class,
+				() -> _objectEntryTopPagesResource.getObjectEntryTopPages(
+					null, RandomTestUtil.nextLong(), 30));
 		}
 	}
 

@@ -14,6 +14,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -93,6 +94,7 @@ public class ObjectEntryHistogramMetricResourceTest
 	@Test
 	public void testGetObjectEntryHistogramMetric() throws Exception {
 		_testGetObjectEntryHistogramMetric();
+		_testGetObjectEntryHistogramMetricWithInvalidObjectEntryId();
 	}
 
 	@Test
@@ -275,6 +277,36 @@ public class ObjectEntryHistogramMetricResourceTest
 		finally {
 			ReflectionTestUtil.setFieldValue(
 				_objectEntryHistogramMetricResource, "_http", _http);
+		}
+	}
+
+	private void _testGetObjectEntryHistogramMetricWithInvalidObjectEntryId()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.nextLong()
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			Assert.assertThrows(
+				NoSuchObjectEntryException.class,
+				() ->
+					_objectEntryHistogramMetricResource.
+						getObjectEntryHistogramMetric(
+							null, RandomTestUtil.nextLong(),
+							RandomTestUtil.nextInt(),
+							new String[] {"downloadsMetric"}));
 		}
 	}
 

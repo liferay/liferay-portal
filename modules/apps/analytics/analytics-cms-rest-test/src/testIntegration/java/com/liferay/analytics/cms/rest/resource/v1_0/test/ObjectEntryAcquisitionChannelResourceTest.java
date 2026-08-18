@@ -12,6 +12,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -93,6 +94,7 @@ public class ObjectEntryAcquisitionChannelResourceTest
 	@Test
 	public void testGetObjectEntryAcquisitionChannelsPage() throws Exception {
 		_testGetObjectEntryAcquisitionChannelsPage();
+		_testGetObjectEntryAcquisitionChannelsPageWithInvalidObjectEntryId();
 	}
 
 	@Test
@@ -232,6 +234,35 @@ public class ObjectEntryAcquisitionChannelResourceTest
 		finally {
 			ReflectionTestUtil.setFieldValue(
 				_objectEntryAcquisitionChannelResource, "_http", _http);
+		}
+	}
+
+	private void _testGetObjectEntryAcquisitionChannelsPageWithInvalidObjectEntryId()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.nextLong()
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			Assert.assertThrows(
+				NoSuchObjectEntryException.class,
+				() ->
+					_objectEntryAcquisitionChannelResource.
+						getObjectEntryAcquisitionChannelsPage(
+							null, RandomTestUtil.nextLong(),
+							RandomTestUtil.randomInt()));
 		}
 	}
 
