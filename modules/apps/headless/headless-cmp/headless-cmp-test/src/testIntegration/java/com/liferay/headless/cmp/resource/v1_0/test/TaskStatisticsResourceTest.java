@@ -7,12 +7,18 @@ package com.liferay.headless.cmp.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.cmp.client.dto.v1_0.TaskStatistics;
+import com.liferay.headless.cmp.client.resource.v1_0.TaskStatisticsResource;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -105,6 +111,8 @@ public class TaskStatisticsResourceTest
 			1, GetterUtil.getLong(taskStatistics2.getOverdueCount()));
 		Assert.assertEquals(
 			1, GetterUtil.getLong(taskStatistics2.getTotalCount()));
+
+		_testGetProjectTaskStatisticsWithoutViewPermission();
 	}
 
 	@Override
@@ -146,6 +154,30 @@ public class TaskStatisticsResourceTest
 				"state", state
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private void _testGetProjectTaskStatisticsWithoutViewPermission()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		TaskStatisticsResource userTaskStatisticsResource =
+			TaskStatisticsResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		assertHttpResponseStatusCode(
+			404,
+			userTaskStatisticsResource.getProjectTaskStatisticsHttpResponse(
+				_cmpProjectObjectEntry1.getObjectEntryId()));
 	}
 
 	private ObjectEntry _cmpProjectObjectEntry1;
