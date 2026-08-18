@@ -2437,7 +2437,7 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 				objectDefinition.name
 			);
 
-			expect(
+			await expect(
 				page.getByRole('switch', {name: 'Activate Object'})
 			).not.toBeChecked();
 
