@@ -58,16 +58,16 @@ public class GeneralConfigSerDes {
 			sb.append("\"");
 		}
 
-		if (generalConfig.getApplicationDecoratorId() != null) {
+		if (generalConfig.getCustomApplicationDecorator() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"applicationDecoratorId\": ");
+			sb.append("\"customApplicationDecorator\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(generalConfig.getApplicationDecoratorId()));
+			sb.append(_escape(generalConfig.getCustomApplicationDecorator()));
 
 			sb.append("\"");
 		}
@@ -120,13 +120,13 @@ public class GeneralConfigSerDes {
 				String.valueOf(generalConfig.getApplicationDecorator()));
 		}
 
-		if (generalConfig.getApplicationDecoratorId() == null) {
-			map.put("applicationDecoratorId", null);
+		if (generalConfig.getCustomApplicationDecorator() == null) {
+			map.put("customApplicationDecorator", null);
 		}
 		else {
 			map.put(
-				"applicationDecoratorId",
-				String.valueOf(generalConfig.getApplicationDecoratorId()));
+				"customApplicationDecorator",
+				String.valueOf(generalConfig.getCustomApplicationDecorator()));
 		}
 
 		if (generalConfig.getCustomTitle_i18n() == null) {
@@ -169,7 +169,7 @@ public class GeneralConfigSerDes {
 				return false;
 			}
 			else if (Objects.equals(
-						jsonParserFieldName, "applicationDecoratorId")) {
+						jsonParserFieldName, "customApplicationDecorator")) {
 
 				return false;
 			}
@@ -196,10 +196,10 @@ public class GeneralConfigSerDes {
 				}
 			}
 			else if (Objects.equals(
-						jsonParserFieldName, "applicationDecoratorId")) {
+						jsonParserFieldName, "customApplicationDecorator")) {
 
 				if (jsonParserFieldValue != null) {
-					generalConfig.setApplicationDecoratorId(
+					generalConfig.setCustomApplicationDecorator(
 						(String)jsonParserFieldValue);
 				}
 			}
@@ -296,4 +296,4 @@ public class GeneralConfigSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:884216752
+// LIFERAY-REST-BUILDER-HASH:-1196747280

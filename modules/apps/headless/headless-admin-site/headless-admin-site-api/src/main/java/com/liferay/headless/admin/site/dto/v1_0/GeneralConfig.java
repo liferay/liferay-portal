@@ -109,30 +109,33 @@ public class GeneralConfig implements Serializable {
 	private Supplier<ApplicationDecorator> _applicationDecoratorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public String getApplicationDecoratorId() {
-		if (_applicationDecoratorIdSupplier != null) {
-			applicationDecoratorId = _applicationDecoratorIdSupplier.get();
+	public String getCustomApplicationDecorator() {
+		if (_customApplicationDecoratorSupplier != null) {
+			customApplicationDecorator =
+				_customApplicationDecoratorSupplier.get();
 
-			_applicationDecoratorIdSupplier = null;
+			_customApplicationDecoratorSupplier = null;
 		}
 
-		return applicationDecoratorId;
+		return customApplicationDecorator;
 	}
 
-	public void setApplicationDecoratorId(String applicationDecoratorId) {
-		this.applicationDecoratorId = applicationDecoratorId;
+	public void setCustomApplicationDecorator(
+		String customApplicationDecorator) {
 
-		_applicationDecoratorIdSupplier = null;
+		this.customApplicationDecorator = customApplicationDecorator;
+
+		_customApplicationDecoratorSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setApplicationDecoratorId(
+	public void setCustomApplicationDecorator(
 		UnsafeSupplier<String, Exception>
-			applicationDecoratorIdUnsafeSupplier) {
+			customApplicationDecoratorUnsafeSupplier) {
 
-		_applicationDecoratorIdSupplier = () -> {
+		_customApplicationDecoratorSupplier = () -> {
 			try {
-				return applicationDecoratorIdUnsafeSupplier.get();
+				return customApplicationDecoratorUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -145,10 +148,10 @@ public class GeneralConfig implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String applicationDecoratorId;
+	protected String customApplicationDecorator;
 
 	@JsonIgnore
-	private Supplier<String> _applicationDecoratorIdSupplier;
+	private Supplier<String> _customApplicationDecoratorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The localized custom titles."
@@ -279,18 +282,18 @@ public class GeneralConfig implements Serializable {
 			sb.append("\"");
 		}
 
-		String applicationDecoratorId = getApplicationDecoratorId();
+		String customApplicationDecorator = getCustomApplicationDecorator();
 
-		if (applicationDecoratorId != null) {
+		if (customApplicationDecorator != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"applicationDecoratorId\": ");
+			sb.append("\"customApplicationDecorator\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(applicationDecoratorId));
+			sb.append(_escape(customApplicationDecorator));
 
 			sb.append("\"");
 		}
@@ -458,4 +461,4 @@ public class GeneralConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-556157769
+// LIFERAY-REST-BUILDER-HASH:1889198987
