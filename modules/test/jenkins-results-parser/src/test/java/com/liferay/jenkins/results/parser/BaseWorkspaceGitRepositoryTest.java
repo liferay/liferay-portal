@@ -47,6 +47,12 @@ public class BaseWorkspaceGitRepositoryTest
 	}
 
 	@Test
+	public void testFetchCommitFileSHA() throws Exception {
+		_testFetchCommitFileSHA(false);
+		_testFetchCommitFileSHA(true);
+	}
+
+	@Test
 	public void testGetGitWorkingDirectory() throws Exception {
 		_testGetGitWorkingDirectory(false, false, false, false);
 		_testGetGitWorkingDirectory(false, false, false, true);
@@ -419,6 +425,36 @@ public class BaseWorkspaceGitRepositoryTest
 		Mockito.verify(
 			defaultWorkspaceGitRepository, Mockito.times(1)
 		).downloadGitArchive();
+	}
+
+	private void _testFetchCommitFileSHA(boolean commitFileIsSHA)
+		throws Exception {
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository();
+
+		defaultWorkspaceGitRepository.setCommitFileIsSHA(commitFileIsSHA);
+
+		String senderBranchSHA =
+			defaultWorkspaceGitRepository.getSenderBranchSHA();
+
+		String fetchCommand = "git fetch -f --depth=1 upstream";
+
+		Shell shell = mockShell();
+
+		setShellCommandOutput(fetchCommand, shell, "");
+
+		ReflectionTestUtil.invoke(
+			defaultWorkspaceGitRepository, "_fetchCommitFileSHA",
+			new Class<?>[0]);
+
+		Mockito.verify(
+			shell, _getVerificationMode(commitFileIsSHA)
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(
+					executionRequest, fetchCommand, senderBranchSHA))
+		);
 	}
 
 	private void _testGetGitWorkingDirectory(
