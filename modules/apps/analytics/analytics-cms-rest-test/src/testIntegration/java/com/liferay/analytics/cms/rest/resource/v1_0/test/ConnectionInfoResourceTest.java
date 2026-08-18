@@ -6,6 +6,8 @@
 package com.liferay.analytics.cms.rest.resource.v1_0.test;
 
 import com.liferay.analytics.cms.rest.client.dto.v1_0.ConnectionInfo;
+import com.liferay.analytics.cms.rest.client.problem.Problem;
+import com.liferay.analytics.cms.rest.client.resource.v1_0.ConnectionInfoResource;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
@@ -14,15 +16,19 @@ import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -75,6 +81,11 @@ public class ConnectionInfoResourceTest
 	@Override
 	@Test
 	public void testGetConnectionInfo() throws Exception {
+		_testGetConnectionInfo();
+		_testGetConnectionInfoWithoutViewPermission();
+	}
+
+	private void _testGetConnectionInfo() throws Exception {
 		Assert.assertEquals(
 			new ConnectionInfo() {
 				{
@@ -169,6 +180,29 @@ public class ConnectionInfoResourceTest
 		}
 	}
 
+	private void _testGetConnectionInfoWithoutViewPermission()
+		throws Exception {
+
+		_user = UserTestUtil.addUser(
+			testCompany, PropsValues.DEFAULT_ADMIN_PASSWORD);
+
+		ConnectionInfoResource connectionInfoResource =
+			ConnectionInfoResource.builder(
+			).authentication(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> connectionInfoResource.getConnectionInfo(
+				_depotEntry1.getGroupId()));
+	}
+
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry1;
 
@@ -185,5 +219,8 @@ public class ConnectionInfoResourceTest
 	private Group _group;
 
 	private ServiceContext _serviceContext;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
