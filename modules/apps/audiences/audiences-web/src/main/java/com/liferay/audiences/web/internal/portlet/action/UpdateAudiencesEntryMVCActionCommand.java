@@ -6,7 +6,7 @@
 package com.liferay.audiences.web.internal.portlet.action;
 
 import com.liferay.audiences.constants.AudiencesPortletKeys;
-import com.liferay.audiences.exception.AudiencesEntryAttributeException;
+import com.liferay.audiences.exception.AudiencesEntryJSONAttributeException;
 import com.liferay.audiences.exception.AudiencesEntryJSONException;
 import com.liferay.audiences.exception.AudiencesEntryNameException;
 import com.liferay.audiences.exception.DuplicateAudiencesEntryExternalReferenceCodeException;
@@ -93,7 +93,7 @@ public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 	private JSONObject _getErrorJSONObject(
 		Exception exception, ThemeDisplay themeDisplay) {
 
-		if (exception instanceof AudiencesEntryAttributeException) {
+		if (exception instanceof AudiencesEntryJSONAttributeException) {
 			return JSONUtil.put(
 				"other",
 				_language.get(

@@ -8,7 +8,7 @@ package com.liferay.audiences.service.impl;
 import com.liferay.audiences.criteria.AudiencesCriteria;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
 import com.liferay.audiences.criteria.AudiencesCriteriaType;
-import com.liferay.audiences.exception.AudiencesEntryAttributeException;
+import com.liferay.audiences.exception.AudiencesEntryJSONAttributeException;
 import com.liferay.audiences.exception.AudiencesEntryJSONException;
 import com.liferay.audiences.exception.AudiencesEntryNameException;
 import com.liferay.audiences.model.AudiencesEntry;
@@ -167,7 +167,7 @@ public class AudiencesEntryLocalServiceImpl
 			if (attribute.startsWith("custom:") &&
 				!validAttributes.contains(attribute)) {
 
-				throw new AudiencesEntryAttributeException(
+				throw new AudiencesEntryJSONAttributeException(
 					StringBundler.concat(
 						"Attribute \"", attribute,
 						"\" is not a valid custom attribute"));

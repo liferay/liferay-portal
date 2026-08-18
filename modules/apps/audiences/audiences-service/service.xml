@@ -40,6 +40,7 @@
 	</entity>
 	<exceptions>
 		<exception>AudiencesEntryJSON</exception>
+		<exception>AudiencesEntryJSONAttribute</exception>
 		<exception>AudiencesEntryName</exception>
 	</exceptions>
 </service-builder>
