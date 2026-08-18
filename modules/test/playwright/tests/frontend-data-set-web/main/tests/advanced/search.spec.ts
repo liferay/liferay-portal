@@ -259,6 +259,8 @@ test('Search Bar is shown/hidden according to FDS configuration', async ({
 	const erc =
 		'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-advanced';
 
+	let createdDataSet = false;
+
 	await test.step('Check that the search bar is shown by default', async () => {
 		await expect(fdsSamplePage.managementToolbar.searchInput).toBeVisible();
 	});
@@ -284,6 +286,8 @@ test('Search Bar is shown/hidden according to FDS configuration', async ({
 				showSearch: false,
 				snapshotsEnabled: true,
 			});
+
+			createdDataSet = true;
 		}
 	});
 
@@ -296,9 +300,14 @@ test('Search Bar is shown/hidden according to FDS configuration', async ({
 	});
 
 	await test.step('Reset FDS configuration', async () => {
-		await dataSetManagerApiHelpers.updateDataSet({
-			erc,
-			showSearch: true,
-		});
+		if (createdDataSet) {
+			await dataSetManagerApiHelpers.deleteDataSet({erc});
+		}
+		else {
+			await dataSetManagerApiHelpers.updateDataSet({
+				erc,
+				showSearch: true,
+			});
+		}
 	});
 });
