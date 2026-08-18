@@ -18,7 +18,6 @@ import (
 	"maps"
 	"math"
 	"path/filepath"
-	"strconv"
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
@@ -92,27 +91,24 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		return controllerruntime.Result{}, error
 	}
 
+	var entitlements *provisioning.Entitlements
+	var result controllerruntime.Result
+
 	if liferayEnvironment.Spec.Offline {
-		result, error := liferayEnvironmentReconciler.handleOfflineActivation(context, environmentID, liferayEnvironment, privateKey)
-
-		if error != nil || !result.IsZero() {
-			return result, error
-		}
+		entitlements, result, error = liferayEnvironmentReconciler.handleOfflineActivation(
+			context, environmentID, liferayEnvironment, privateKey,
+		)
 	} else {
-		result, error := liferayEnvironmentReconciler.handleOnlineActivation(context, environmentID, liferayEnvironment, privateKey)
-
-		if error != nil || !result.IsZero() {
-			return result, error
-		}
+		entitlements, result, error = liferayEnvironmentReconciler.handleOnlineActivation(
+			context, environmentID, liferayEnvironment, privateKey,
+		)
 	}
 
-	entitlements, error := liferayEnvironmentReconciler.readEntitlements(context, liferayEnvironment)
-
-	if error != nil {
-		return controllerruntime.Result{}, error
+	if error != nil || !result.IsZero() {
+		return result, error
 	}
 
-	result, error := liferayEnvironmentReconciler.enforceLicense(
+	result, error = liferayEnvironmentReconciler.enforceLicense(
 		context,
 		entitlements,
 		environmentID,
@@ -622,14 +618,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	environmentID string,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	privateKey *rsa.PrivateKey,
-) (controllerruntime.Result, error) {
+) (*provisioning.Entitlements, controllerruntime.Result, error) {
 	logger := logf.FromContext(context)
 
 	if liferayEnvironment.Status.ActivatedAt == nil {
 		publicKey, error := publicKeyBase64(privateKey)
 
 		if error != nil {
-			return controllerruntime.Result{}, error
+			return nil, controllerruntime.Result{}, error
 		}
 
 		activationCode, error := liferayEnvironmentReconciler.readActivationCode(context, liferayEnvironment)
@@ -653,11 +649,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 				context, liferayEnvironment, 15*time.Second,
 			)
 
-			return result, error
+			return nil, result, error
 		}
 
 		if error != nil {
-			return controllerruntime.Result{}, error
+			return nil, controllerruntime.Result{}, error
 		}
 
 		logger.Info(
@@ -692,7 +688,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 				context, liferayEnvironment,
 			)
 
-			return result, error
+			return nil, result, error
 		}
 
 		now := metav1.Now()
@@ -746,14 +742,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 		if error := liferayEnvironmentReconciler.enforceGracePeriod(
 			context, liferayEnvironment,
 		); error != nil {
-			return controllerruntime.Result{}, error
+			return nil, controllerruntime.Result{}, error
 		}
 
 		result, error := liferayEnvironmentReconciler.finishWithBackoff(
 			context, liferayEnvironment,
 		)
 
-		return result, error
+		return nil, result, error
 	}
 
 	logger.Info(
@@ -777,10 +773,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 
 	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(
 		context, entitlements, liferayEnvironment); error != nil {
-		return controllerruntime.Result{}, error
+		return nil, controllerruntime.Result{}, error
 	}
 
-	return controllerruntime.Result{}, nil
+	return entitlements, controllerruntime.Result{}, nil
 }
 
 func licenseChecksum(licenseXML []byte) string {
@@ -922,63 +918,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readActivation
 	}
 
 	return string(code), nil
-}
-
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readEntitlements(
-	context context.Context,
-	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-) (*provisioning.Entitlements, error) {
-	entitlementsName := liferayEnvironment.Name + entitlementsSecretSuffix
-
-	key := types.NamespacedName{
-		Name:      entitlementsName,
-		Namespace: liferayEnvironment.Namespace,
-	}
-
-	secret := &corev1.Secret{}
-
-	if error := liferayEnvironmentReconciler.Get(context, key, secret); error != nil {
-		return nil, error
-	}
-
-	addOnsJSON, ok := secret.Data["add-ons.json"]
-
-	if !ok {
-		return nil, fmt.Errorf(
-			"entitlements secret %q missing key %q", entitlementsName, "add-ons.json")
-	}
-
-	var addOns []provisioning.AddOn
-
-	if error := json.Unmarshal(addOnsJSON, &addOns); error != nil {
-		return nil, fmt.Errorf("entitlements secret: decode add-ons.json: %w", error)
-	}
-
-	licenseXML, ok := secret.Data["license.xml"]
-
-	if !ok {
-		return nil, fmt.Errorf(
-			"entitlements secret %q missing key %q", entitlementsName, "license.xml")
-	}
-
-	maxClusterNodesBytes, ok := secret.Data["maxClusterNodes"]
-
-	if !ok {
-		return nil, fmt.Errorf(
-			"entitlements secret %q missing key %q", entitlementsName, "maxClusterNodes")
-	}
-
-	maxClusterNodes, error := strconv.ParseInt(string(maxClusterNodesBytes), 10, 32)
-
-	if error != nil {
-		return nil, fmt.Errorf("entitlements secret: parse maxClusterNodes: %w", error)
-	}
-
-	return &provisioning.Entitlements{
-		AddOns:          addOns,
-		LicenseXML:      licenseXML,
-		MaxClusterNodes: int32(maxClusterNodes),
-	}, nil
 }
 
 func resolveDesiredReplicas(

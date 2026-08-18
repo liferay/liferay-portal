@@ -101,19 +101,21 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 	environmentID string,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	privateKey *rsa.PrivateKey,
-) (controllerruntime.Result, error) {
+) (*provisioning.Entitlements, controllerruntime.Result, error) {
 	logger := logf.FromContext(context)
 
 	if error := liferayEnvironmentReconciler.publishOfflineRequest(
 		context, environmentID, liferayEnvironment, privateKey,
 	); error != nil {
-		return controllerruntime.Result{}, error
+		return nil, controllerruntime.Result{}, error
 	}
 
 	if liferayEnvironment.Spec.OfflineActivationBundle == "" {
-		return liferayEnvironmentReconciler.awaitOfflineActivationBundle(
+		result, error := liferayEnvironmentReconciler.awaitOfflineActivationBundle(
 			context, environmentID, liferayEnvironment,
 		)
+
+		return nil, result, error
 	}
 
 	offlineActivationBundlePath := liferayEnvironmentReconciler.offlineActivationBundlePath(
@@ -123,9 +125,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 	entitlements, error := readOfflineActivationBundle(offlineActivationBundlePath)
 
 	if isOfflineActivationBundleNotFound(error) {
-		return liferayEnvironmentReconciler.awaitOfflineActivationBundle(
+		result, error := liferayEnvironmentReconciler.awaitOfflineActivationBundle(
 			context, environmentID, liferayEnvironment,
 		)
+
+		return nil, result, error
 	}
 
 	if error != nil {
@@ -146,9 +150,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 
 		liferayEnvironment.Status.Phase = "Degraded"
 
-		return liferayEnvironmentReconciler.finishAfter(
+		result, error := liferayEnvironmentReconciler.finishAfter(
 			context, liferayEnvironment, 15*time.Second,
 		)
+
+		return nil, result, error
 	}
 
 	if liferayEnvironment.Status.ActivatedAt == nil {
@@ -171,10 +177,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOfflineA
 	)
 
 	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(context, entitlements, liferayEnvironment); error != nil {
-		return controllerruntime.Result{}, error
+		return nil, controllerruntime.Result{}, error
 	}
 
-	return controllerruntime.Result{}, nil
+	return entitlements, controllerruntime.Result{}, nil
 }
 
 func hasAddOns(zipReader *zip.Reader) bool {
