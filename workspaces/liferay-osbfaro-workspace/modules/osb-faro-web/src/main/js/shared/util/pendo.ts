@@ -1,8 +1,22 @@
 import {FaroEnv} from './constants';
 import {Project, User} from './records';
 
+// LPD-101615: Pendo is temporarily disabled because Analytics Cloud has no
+// user consent flow yet. Tracking users without consent is not compliant
+// with our own consent model (the DXP tracking script asks first) nor with
+// consent regulations. The guard disables both the identify payload and the
+// pendo.js agent request (`script` is injected by external-scripts.js on
+// every page load, so it must return the inert stub too). Remove the
+// constant once the consent banner ships.
+
+const PENDO_TRACKING_ENABLED: boolean = false;
+
 export class Pendo {
 	initialize({currentUser, project}: {currentUser: User; project: Project}) {
+		if (!PENDO_TRACKING_ENABLED) {
+			return;
+		}
+
 		const data = {
 			account: {
 				...(project.corpProjectUuid && {
@@ -27,7 +41,7 @@ export class Pendo {
 	}
 
 	get script() {
-		if (FARO_ENV === FaroEnv.Production) {
+		if (PENDO_TRACKING_ENABLED && FARO_ENV === FaroEnv.Production) {
 			return `(function(apiKey){
 			(function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=o._q||[];
 				v=['initialize','identify','updateOptions','pageLoad','track'];for(w=0,x=v.length;w<x;++w)(function(m){
