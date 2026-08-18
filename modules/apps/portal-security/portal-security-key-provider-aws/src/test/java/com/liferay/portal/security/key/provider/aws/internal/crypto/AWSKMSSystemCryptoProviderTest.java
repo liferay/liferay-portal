@@ -69,7 +69,7 @@ public class AWSKMSSystemCryptoProviderTest {
 			}
 		);
 
-		_setConfiguration(true, false);
+		_setAWSKMSCryptoProviderContext(true, false);
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class AWSKMSSystemCryptoProviderTest {
 	public void testDecryptRejectsUnapprovedOriginUnderEnforcement()
 		throws Exception {
 
-		_setConfiguration(true, true);
+		_setAWSKMSCryptoProviderContext(true, true);
 
 		Mockito.when(
 			_awsKMS.describeKey(Mockito.any(DescribeKeyRequest.class))
@@ -121,7 +121,7 @@ public class AWSKMSSystemCryptoProviderTest {
 	public void testDecryptUnderEnforcementWithApprovedOrigin()
 		throws Exception {
 
-		_setConfiguration(true, true);
+		_setAWSKMSCryptoProviderContext(true, true);
 
 		byte[] plaintext = RandomTestUtil.randomBytes();
 
@@ -161,7 +161,7 @@ public class AWSKMSSystemCryptoProviderTest {
 
 	@Test(expected = CryptoException.class)
 	public void testDecryptWhenDisabled() throws Exception {
-		_setConfiguration(false, false);
+		_setAWSKMSCryptoProviderContext(false, false);
 
 		_awsKMSSystemCryptoProvider.decrypt(
 			RandomTestUtil.randomBytes(), CompanyConstants.SYSTEM,
@@ -305,7 +305,8 @@ public class AWSKMSSystemCryptoProviderTest {
 	public void testGetKeyIdentifiers() throws Exception {
 		String aliasPrefix = "alias/liferay/";
 
-		_setConfiguration(true, false, aliasPrefix + "{companyId}/");
+		_setAWSKMSCryptoProviderContext(
+			true, false, aliasPrefix + "{companyId}/");
 
 		String keyIdentifier1 = RandomTestUtil.randomString();
 		String keyIdentifier2 = RandomTestUtil.randomString();
@@ -348,7 +349,7 @@ public class AWSKMSSystemCryptoProviderTest {
 			ProviderStatus.OPERATIONAL,
 			_awsKMSSystemCryptoProvider.getProviderStatus());
 
-		_setConfiguration(false, false);
+		_setAWSKMSCryptoProviderContext(false, false);
 
 		Assert.assertEquals(
 			ProviderStatus.DEGRADED,
@@ -387,15 +388,17 @@ public class AWSKMSSystemCryptoProviderTest {
 			RandomTestUtil.randomString());
 	}
 
-	private void _setConfiguration(boolean enabled, boolean fipsEnforced) {
-		_setConfiguration(enabled, fipsEnforced, null);
+	private void _setAWSKMSCryptoProviderContext(
+		boolean enabled, boolean fipsEnforced) {
+
+		_setAWSKMSCryptoProviderContext(enabled, fipsEnforced, null);
 	}
 
-	private void _setConfiguration(
+	private void _setAWSKMSCryptoProviderContext(
 		boolean enabled, boolean fipsEnforced, String keyARNTemplate) {
 
 		ReflectionTestUtil.setFieldValue(
-			_awsKMSSystemCryptoProvider, "_configuration",
+			_awsKMSSystemCryptoProvider, "_awsKMSCryptoProviderContext",
 			new AWSKMSCryptoProviderContext(
 				null, _awsClientManager,
 				new AWSKMSFIPSValidator("AES_256_GCM", fipsEnforced), enabled,
