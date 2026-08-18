@@ -5,9 +5,7 @@
 
 package com.liferay.audiences.service.impl;
 
-import com.liferay.audiences.criteria.AudiencesCriteria;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
-import com.liferay.audiences.criteria.AudiencesCriteriaType;
 import com.liferay.audiences.exception.AudiencesEntryJSONAttributeException;
 import com.liferay.audiences.exception.AudiencesEntryJSONException;
 import com.liferay.audiences.exception.AudiencesEntryNameException;
@@ -25,11 +23,9 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -156,7 +152,7 @@ public class AudiencesEntryLocalServiceImpl
 	}
 
 	private void _validateAttributes(
-			JSONObject jsonObject, Set<String> validAttributes)
+			JSONObject jsonObject, Set<String> customAudiencesCriteriaKeys)
 		throws PortalException {
 
 		JSONArray rulesJSONArray = jsonObject.getJSONArray("rules");
@@ -165,7 +161,7 @@ public class AudiencesEntryLocalServiceImpl
 			String attribute = jsonObject.getString("attribute");
 
 			if (attribute.startsWith("custom:") &&
-				!validAttributes.contains(attribute)) {
+				!customAudiencesCriteriaKeys.contains(attribute)) {
 
 				throw new AudiencesEntryJSONAttributeException(
 					StringBundler.concat(
@@ -178,7 +174,7 @@ public class AudiencesEntryLocalServiceImpl
 
 		for (int i = 0; i < rulesJSONArray.length(); i++) {
 			_validateAttributes(
-				rulesJSONArray.getJSONObject(i), validAttributes);
+				rulesJSONArray.getJSONObject(i), customAudiencesCriteriaKeys);
 		}
 	}
 
@@ -189,21 +185,10 @@ public class AudiencesEntryLocalServiceImpl
 			return;
 		}
 
-		Set<String> validAttributes = new HashSet<>();
-
-		for (AudiencesCriteriaType audiencesCriteriaType :
-				_audiencesCriteriaProvider.getAudiencesCriteriaTypes(
-					companyId, LocaleUtil.getSiteDefault())) {
-
-			for (AudiencesCriteria audiencesCriteria :
-					audiencesCriteriaType.getAudiencesCriterias()) {
-
-				validAttributes.add(audiencesCriteria.getKey());
-			}
-		}
-
 		_validateAttributes(
-			_jsonFactory.createJSONObject(json), validAttributes);
+			_jsonFactory.createJSONObject(json),
+			_audiencesCriteriaProvider.getCustomAudiencesCriteriaKeys(
+				companyId));
 	}
 
 	private static final JSONValidator _criteriaJSONValidator =

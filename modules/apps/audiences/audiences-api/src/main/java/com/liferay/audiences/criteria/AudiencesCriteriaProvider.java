@@ -7,13 +7,19 @@ package com.liferay.audiences.criteria;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * @author Eudaldo Alonso
  */
+@ProviderType
 public interface AudiencesCriteriaProvider {
 
 	public List<AudiencesCriteriaType> getAudiencesCriteriaTypes(
 		long companyId, Locale locale);
+
+	public Set<String> getCustomAudiencesCriteriaKeys(long companyId);
 
 }

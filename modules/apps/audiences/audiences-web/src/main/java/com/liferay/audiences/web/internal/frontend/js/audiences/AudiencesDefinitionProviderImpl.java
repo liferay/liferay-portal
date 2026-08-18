@@ -5,9 +5,7 @@
 
 package com.liferay.audiences.web.internal.frontend.js.audiences;
 
-import com.liferay.audiences.criteria.AudiencesCriteria;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
-import com.liferay.audiences.criteria.AudiencesCriteriaType;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.frontend.js.audiences.AudiencesDefinition;
@@ -25,10 +23,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,13 +60,15 @@ public class AudiencesDefinitionProviderImpl
 				OrderByComparatorFactoryUtil.create(
 					"AudiencesEntry", "createDate", true));
 
-		Set<String> validAttributes = _getValidAttributes(companyId);
+		Set<String> customAudiencesCriteriaKeys =
+			_audiencesCriteriaProvider.getCustomAudiencesCriteriaKeys(
+				companyId);
 
 		for (AudiencesEntry audiencesEntry : audiencesEntries) {
 			JSONObject jsonObject = _getAudiencesEntryJSONObject(
 				audiencesEntry);
 
-			if (!_hasValidAttributes(jsonObject, validAttributes)) {
+			if (!_hasValidAttributes(jsonObject, customAudiencesCriteriaKeys)) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						StringBundler.concat(
@@ -127,25 +125,8 @@ public class AudiencesDefinitionProviderImpl
 		return _jsonFactory.createJSONObject();
 	}
 
-	private Set<String> _getValidAttributes(long companyId) {
-		Set<String> validAttributes = new HashSet<>();
-
-		for (AudiencesCriteriaType audiencesCriteriaType :
-				_audiencesCriteriaProvider.getAudiencesCriteriaTypes(
-					companyId, LocaleUtil.getSiteDefault())) {
-
-			for (AudiencesCriteria audiencesCriteria :
-					audiencesCriteriaType.getAudiencesCriterias()) {
-
-				validAttributes.add(audiencesCriteria.getKey());
-			}
-		}
-
-		return validAttributes;
-	}
-
 	private boolean _hasValidAttributes(
-		JSONObject jsonObject, Set<String> validAttributes) {
+		JSONObject jsonObject, Set<String> customAudiencesCriteriaKeys) {
 
 		JSONArray rulesJSONArray = jsonObject.getJSONArray("rules");
 
@@ -153,7 +134,7 @@ public class AudiencesDefinitionProviderImpl
 			String attribute = jsonObject.getString("attribute");
 
 			if (attribute.startsWith("custom:") &&
-				!validAttributes.contains(attribute)) {
+				!customAudiencesCriteriaKeys.contains(attribute)) {
 
 				return false;
 			}
@@ -163,7 +144,8 @@ public class AudiencesDefinitionProviderImpl
 
 		for (int i = 0; i < rulesJSONArray.length(); i++) {
 			if (!_hasValidAttributes(
-					rulesJSONArray.getJSONObject(i), validAttributes)) {
+					rulesJSONArray.getJSONObject(i),
+					customAudiencesCriteriaKeys)) {
 
 				return false;
 			}

@@ -12,6 +12,7 @@ import com.liferay.audiences.criteria.AudiencesCriteriaType;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -31,6 +32,7 @@ import com.liferay.segments.test.util.SegmentsTestUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -75,13 +77,49 @@ public class AudiencesCriteriaProviderTest {
 	}
 
 	@Test
+	public void testGetCustomAudiencesCriteriaKeys() throws Exception {
+		String symbol = RandomTestUtil.randomString();
+		String url = "http://" + RandomTestUtil.randomString() + ".com";
+
+		ClientExtensionEntry clientExtensionEntry = _addClientExtensionEntry(
+			RandomTestUtil.randomString(), symbol, url);
+
+		Set<String> customAudiencesCriteriaKeys =
+			_audiencesCriteriaProvider.getCustomAudiencesCriteriaKeys(
+				TestPropsValues.getCompanyId());
+
+		Assert.assertTrue(
+			customAudiencesCriteriaKeys.toString(),
+			customAudiencesCriteriaKeys.contains(
+				StringBundler.concat(
+					"custom:", url, StringPool.POUND, symbol)));
+		Assert.assertTrue(
+			customAudiencesCriteriaKeys.toString(),
+			customAudiencesCriteriaKeys.contains(
+				"custom:" + _GENERAL_ATTRIBUTES_URL + "#language"));
+		Assert.assertTrue(
+			customAudiencesCriteriaKeys.toString(),
+			customAudiencesCriteriaKeys.contains(
+				"custom:" + _GENERAL_ATTRIBUTES_URL + "#signed_in"));
+		Assert.assertFalse(
+			customAudiencesCriteriaKeys.toString(),
+			customAudiencesCriteriaKeys.contains("url"));
+
+		_clientExtensionEntryLocalService.deleteClientExtensionEntry(
+			clientExtensionEntry);
+
+		_clientExtensionEntries.remove(clientExtensionEntry);
+	}
+
+	@Test
 	public void testGetCustomAudiencesCriteriaTypeWithCustomAttribute()
 		throws Exception {
 
 		String name = RandomTestUtil.randomString();
 		String symbol = RandomTestUtil.randomString();
 
-		_addClientExtensionEntry(name, symbol);
+		_addClientExtensionEntry(
+			name, symbol, "http://" + RandomTestUtil.randomString() + ".com");
 
 		List<AudiencesCriteriaType> audiencesCriteriaTypes =
 			_audiencesCriteriaProvider.getAudiencesCriteriaTypes(
@@ -177,10 +215,11 @@ public class AudiencesCriteriaProviderTest {
 			segmentsEntry.getName(LocaleUtil.getDefault()), option.getLabel());
 	}
 
-	private void _addClientExtensionEntry(String name, String symbol)
+	private ClientExtensionEntry _addClientExtensionEntry(
+			String name, String symbol, String url)
 		throws Exception {
 
-		_clientExtensionEntries.add(
+		ClientExtensionEntry clientExtensionEntry =
 			_clientExtensionEntryLocalService.addClientExtensionEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				StringPool.BLANK,
@@ -196,8 +235,12 @@ public class AudiencesCriteriaProviderTest {
 				).put(
 					"types", "string"
 				).put(
-					"url", "http://" + RandomTestUtil.randomString() + ".com"
-				).buildString()));
+					"url", url
+				).buildString());
+
+		_clientExtensionEntries.add(clientExtensionEntry);
+
+		return clientExtensionEntry;
 	}
 
 	private SegmentsEntry _addSegmentsEntry() throws Exception {
