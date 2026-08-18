@@ -908,6 +908,10 @@ public class WebServerServlet extends HttpServlet {
 			HttpServletResponse httpServletResponse)
 		throws IOException, ServletException {
 
+		httpServletResponse.setHeader(
+			HttpHeaders.CACHE_CONTROL,
+			HttpHeaders.CACHE_CONTROL_NO_CACHE_VALUE);
+
 		if (!user.isGuestUser()) {
 			PortalUtil.sendError(
 				HttpServletResponse.SC_UNAUTHORIZED, (Exception)throwable,
