@@ -27,7 +27,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
-import com.liferay.site.pim.site.initializer.link.PIMLink;
+import com.liferay.site.pim.site.initializer.link.PIMLinkRelatedEntry;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -61,19 +61,21 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 			throw new UnsupportedOperationException();
 		}
 
-		List<PIMLink> pimLinks = _pimLinkEngine.getPIMLinks(
-			_getFilterString(),
-			_getObjectEntry(
-				className, externalReferenceCode, _getGroupId(scopeKey)));
+		List<PIMLinkRelatedEntry> pimLinkRelatedEntries =
+			_pimLinkEngine.getPIMLinkRelatedEntries(
+				_getFilterString(),
+				_getObjectEntry(
+					className, externalReferenceCode, _getGroupId(scopeKey)));
 
 		return Page.of(
 			transform(
 				ListUtil.subList(
-					pimLinks, pagination.getStartPosition(),
+					pimLinkRelatedEntries, pagination.getStartPosition(),
 					pagination.getEndPosition()),
-				pimLink -> _toLinkReference(
-					pimLink.getObjectEntry(), pimLink.getType())),
-			pagination, pimLinks.size());
+				pimLinkRelatedEntry -> _toLinkReference(
+					pimLinkRelatedEntry.getObjectEntry(),
+					pimLinkRelatedEntry.getType())),
+			pagination, pimLinkRelatedEntries.size());
 	}
 
 	private Map<String, Map<String, String>> _getActions(

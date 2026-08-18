@@ -10,9 +10,9 @@ import com.liferay.object.model.ObjectEntry;
 /**
  * @author Stefano Motta
  */
-public class PIMLink {
+public class PIMLinkRelatedEntry {
 
-	public PIMLink(ObjectEntry objectEntry, String type) {
+	public PIMLinkRelatedEntry(ObjectEntry objectEntry, String type) {
 		_objectEntry = objectEntry;
 		_type = type;
 	}

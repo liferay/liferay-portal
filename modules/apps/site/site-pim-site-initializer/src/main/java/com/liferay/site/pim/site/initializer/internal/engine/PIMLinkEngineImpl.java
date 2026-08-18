@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
 import com.liferay.site.pim.site.initializer.internal.util.PIMLinkUtil;
-import com.liferay.site.pim.site.initializer.link.PIMLink;
+import com.liferay.site.pim.site.initializer.link.PIMLinkRelatedEntry;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
 import com.liferay.site.pim.site.initializer.link.PIMLinkTypeRegistry;
 
@@ -108,7 +108,7 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 	}
 
 	@Override
-	public List<PIMLink> getPIMLinks(
+	public List<PIMLinkRelatedEntry> getPIMLinkRelatedEntries(
 			String filterString, ObjectEntry objectEntry)
 		throws PortalException {
 
@@ -128,7 +128,7 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 			objectEntry.getCompanyId(), _filterFactory, predicateString,
 			objectEntry.getGroupId());
 
-		List<PIMLink> pimLinks = new ArrayList<>(
+		List<PIMLinkRelatedEntry> pimLinkRelatedEntries = new ArrayList<>(
 			TransformUtil.transform(
 				valuesList,
 				values -> {
@@ -149,7 +149,7 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 						return null;
 					}
 
-					return new PIMLink(
+					return new PIMLinkRelatedEntry(
 						pimLinkObjectEntry, MapUtil.getString(values, "type"));
 				}));
 
@@ -168,11 +168,11 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 		ListUtil.distinct(clusterKeys);
 
 		if (clusterKeys.isEmpty()) {
-			return pimLinks;
+			return pimLinkRelatedEntries;
 		}
 
 		return ListUtil.concat(
-			pimLinks,
+			pimLinkRelatedEntries,
 			TransformUtil.transform(
 				PIMLinkUtil.getValuesList(
 					objectEntry.getCompanyId(), _filterFactory,
@@ -203,7 +203,7 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 						return null;
 					}
 
-					return new PIMLink(
+					return new PIMLinkRelatedEntry(
 						pimLinkObjectEntry, MapUtil.getString(values, "type"));
 				}));
 	}

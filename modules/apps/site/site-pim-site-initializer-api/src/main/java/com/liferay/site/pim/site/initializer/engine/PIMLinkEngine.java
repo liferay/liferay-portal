@@ -7,7 +7,7 @@ package com.liferay.site.pim.site.initializer.engine;
 
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.site.pim.site.initializer.link.PIMLink;
+import com.liferay.site.pim.site.initializer.link.PIMLinkRelatedEntry;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public interface PIMLinkEngine {
 	public void deletePIMLink(ObjectEntry objectEntry, String type)
 		throws PortalException;
 
-	public List<PIMLink> getPIMLinks(
+	public List<PIMLinkRelatedEntry> getPIMLinkRelatedEntries(
 			String filterString, ObjectEntry objectEntry)
 		throws PortalException;
 

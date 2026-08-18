@@ -26,7 +26,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
-import com.liferay.site.pim.site.initializer.link.PIMLink;
+import com.liferay.site.pim.site.initializer.link.PIMLinkRelatedEntry;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
 import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
@@ -120,10 +120,10 @@ public class PIMLinkEngineTest {
 			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
 				depotEntry.getGroupId());
 
-		List<PIMLink> pimLinks = _pimLinkEngine.getPIMLinks(
-			null, sourceObjectEntry);
+		List<PIMLinkRelatedEntry> pimLinkRelatedEntries =
+			_pimLinkEngine.getPIMLinkRelatedEntries(null, sourceObjectEntry);
 
-		Assert.assertTrue(pimLinks.isEmpty());
+		Assert.assertTrue(pimLinkRelatedEntries.isEmpty());
 
 		ObjectEntry targetObjectEntry1 =
 			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
@@ -136,23 +136,29 @@ public class PIMLinkEngineTest {
 			sourceObjectEntry,
 			Arrays.asList(targetObjectEntry1, targetObjectEntry2), _TYPE);
 
-		pimLinks = _pimLinkEngine.getPIMLinks(null, sourceObjectEntry);
+		pimLinkRelatedEntries = _pimLinkEngine.getPIMLinkRelatedEntries(
+			null, sourceObjectEntry);
 
-		Assert.assertEquals(pimLinks.toString(), 2, pimLinks.size());
-		Assert.assertFalse(_containsPIMLink(pimLinks, sourceObjectEntry));
-		Assert.assertTrue(_containsPIMLink(pimLinks, targetObjectEntry1));
-		Assert.assertTrue(_containsPIMLink(pimLinks, targetObjectEntry2));
+		Assert.assertEquals(
+			pimLinkRelatedEntries.toString(), 2, pimLinkRelatedEntries.size());
+		Assert.assertFalse(
+			_containsPIMLink(pimLinkRelatedEntries, sourceObjectEntry));
+		Assert.assertTrue(
+			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry1));
+		Assert.assertTrue(
+			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry2));
 
-		pimLinks = _pimLinkEngine.getPIMLinks(
+		pimLinkRelatedEntries = _pimLinkEngine.getPIMLinkRelatedEntries(
 			"type in ('" + _TYPE + "')", sourceObjectEntry);
 
-		Assert.assertEquals(pimLinks.toString(), 2, pimLinks.size());
+		Assert.assertEquals(
+			pimLinkRelatedEntries.toString(), 2, pimLinkRelatedEntries.size());
 
-		pimLinks = _pimLinkEngine.getPIMLinks(
+		pimLinkRelatedEntries = _pimLinkEngine.getPIMLinkRelatedEntries(
 			"type in ('" + RandomTestUtil.randomString() + "')",
 			sourceObjectEntry);
 
-		Assert.assertTrue(pimLinks.isEmpty());
+		Assert.assertTrue(pimLinkRelatedEntries.isEmpty());
 
 		ObjectEntry targetObjectEntry3 =
 			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
@@ -162,32 +168,42 @@ public class PIMLinkEngineTest {
 			sourceObjectEntry, Collections.singletonList(targetObjectEntry3),
 			TestPIMLinkType.TYPE);
 
-		pimLinks = _pimLinkEngine.getPIMLinks(null, sourceObjectEntry);
+		pimLinkRelatedEntries = _pimLinkEngine.getPIMLinkRelatedEntries(
+			null, sourceObjectEntry);
 
-		Assert.assertEquals(pimLinks.toString(), 3, pimLinks.size());
+		Assert.assertEquals(
+			pimLinkRelatedEntries.toString(), 3, pimLinkRelatedEntries.size());
 
-		pimLinks = _pimLinkEngine.getPIMLinks(
+		pimLinkRelatedEntries = _pimLinkEngine.getPIMLinkRelatedEntries(
 			"type in ('" + _TYPE + "')", sourceObjectEntry);
 
-		Assert.assertEquals(pimLinks.toString(), 2, pimLinks.size());
-		Assert.assertTrue(_containsPIMLink(pimLinks, targetObjectEntry1));
-		Assert.assertFalse(_containsPIMLink(pimLinks, targetObjectEntry3));
+		Assert.assertEquals(
+			pimLinkRelatedEntries.toString(), 2, pimLinkRelatedEntries.size());
+		Assert.assertTrue(
+			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry1));
+		Assert.assertFalse(
+			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry3));
 
-		pimLinks = _pimLinkEngine.getPIMLinks(
+		pimLinkRelatedEntries = _pimLinkEngine.getPIMLinkRelatedEntries(
 			"not (type in ('" + _TYPE + "'))", sourceObjectEntry);
 
-		Assert.assertEquals(pimLinks.toString(), 1, pimLinks.size());
-		Assert.assertFalse(_containsPIMLink(pimLinks, targetObjectEntry1));
-		Assert.assertTrue(_containsPIMLink(pimLinks, targetObjectEntry3));
+		Assert.assertEquals(
+			pimLinkRelatedEntries.toString(), 1, pimLinkRelatedEntries.size());
+		Assert.assertFalse(
+			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry1));
+		Assert.assertTrue(
+			_containsPIMLink(pimLinkRelatedEntries, targetObjectEntry3));
 	}
 
 	private boolean _containsPIMLink(
-		List<PIMLink> pimLinks, ObjectEntry objectEntry) {
+		List<PIMLinkRelatedEntry> pimLinkRelatedEntries,
+		ObjectEntry objectEntry) {
 
 		return ListUtil.exists(
-			pimLinks,
-			pimLink -> {
-				ObjectEntry pimLinkObjectEntry = pimLink.getObjectEntry();
+			pimLinkRelatedEntries,
+			pimLinkRelatedEntry -> {
+				ObjectEntry pimLinkObjectEntry =
+					pimLinkRelatedEntry.getObjectEntry();
 
 				return Objects.equals(
 					pimLinkObjectEntry.getExternalReferenceCode(),
