@@ -10,6 +10,8 @@ import com.liferay.analytics.cms.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.analytics.cms.rest.resource.v1_0.ObjectEntryMetricResource;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.Http;
 
@@ -29,7 +31,7 @@ public class ObjectEntryMetricResourceImpl
 
 	@Override
 	public ObjectEntryMetric getObjectEntryMetric(
-			String externalReferenceCode, Long groupId, Integer rangeKey,
+			Long groupId, Long objectEntryId, Integer rangeKey,
 			String[] selectedMetrics)
 		throws Exception {
 
@@ -41,10 +43,14 @@ public class ObjectEntryMetricResourceImpl
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_http);
 
+		ObjectEntry objectEntry = _objectEntryService.getObjectEntry(
+			objectEntryId);
+
 		return analyticsCloudClient.getObjectEntryMetric(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			externalReferenceCode, groupId, rangeKey, selectedMetrics);
+			objectEntry.getExternalReferenceCode(), groupId, rangeKey,
+			selectedMetrics);
 	}
 
 	@Reference
@@ -52,5 +58,8 @@ public class ObjectEntryMetricResourceImpl
 
 	@Reference
 	private Http _http;
+
+	@Reference
+	private ObjectEntryService _objectEntryService;
 
 }

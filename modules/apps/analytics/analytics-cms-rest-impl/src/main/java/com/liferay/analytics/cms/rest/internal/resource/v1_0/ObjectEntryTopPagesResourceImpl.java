@@ -10,6 +10,8 @@ import com.liferay.analytics.cms.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.analytics.cms.rest.resource.v1_0.ObjectEntryTopPagesResource;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.Http;
 
@@ -29,7 +31,7 @@ public class ObjectEntryTopPagesResourceImpl
 
 	@Override
 	public ObjectEntryTopPages getObjectEntryTopPages(
-			String externalReferenceCode, Long groupId, Integer rangeKey)
+			Long groupId, Long objectEntryId, Integer rangeKey)
 		throws Exception {
 
 		LicenseManagerUtil.checkFreeTier();
@@ -40,10 +42,13 @@ public class ObjectEntryTopPagesResourceImpl
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_http);
 
+		ObjectEntry objectEntry = _objectEntryService.getObjectEntry(
+			objectEntryId);
+
 		return analyticsCloudClient.getObjectEntryTopPages(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			externalReferenceCode, groupId, rangeKey);
+			objectEntry.getExternalReferenceCode(), groupId, rangeKey);
 	}
 
 	@Reference
@@ -51,5 +56,8 @@ public class ObjectEntryTopPagesResourceImpl
 
 	@Reference
 	private Http _http;
+
+	@Reference
+	private ObjectEntryService _objectEntryService;
 
 }
