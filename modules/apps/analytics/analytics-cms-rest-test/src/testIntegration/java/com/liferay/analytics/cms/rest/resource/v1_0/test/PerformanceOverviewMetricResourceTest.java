@@ -203,6 +203,9 @@ public class PerformanceOverviewMetricResourceTest
 			_assertMetric(
 				performanceOverviewMetric.getViewsMetric(), "viewsMetric", 1, 2,
 				Trend.Classification.POSITIVE, 100);
+
+			DepotEntryTestUtil.assertGroupIds(
+				_depotEntries, analyticsCloudHttpServer.getLocation());
 		}
 	}
 

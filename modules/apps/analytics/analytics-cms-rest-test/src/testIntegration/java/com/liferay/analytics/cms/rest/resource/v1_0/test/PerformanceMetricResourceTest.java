@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -137,15 +136,11 @@ public class PerformanceMetricResourceTest
 
 			String location = analyticsCloudHttpServer.getLocation();
 
+			DepotEntryTestUtil.assertGroupIds(_depotEntries, location);
+
 			_assertParameter(metricType, "assetSummaryMetricType", location);
 			_assertParameter(
 				String.valueOf(dataSourceId), "dataSourceId", location);
-			_assertParameter(
-				StringUtil.merge(
-					TransformUtil.transformToArray(
-						_depotEntries, DepotEntry::getGroupId, Long.class),
-					StringPool.COMMA),
-				"groupIds", location);
 			_assertParameter(String.valueOf(rangeKey), "rangeKey", location);
 
 			return performanceMetric;
@@ -249,15 +244,11 @@ public class PerformanceMetricResourceTest
 
 			String location = analyticsCloudHttpServer.getLocation();
 
+			DepotEntryTestUtil.assertGroupIds(_depotEntries, location);
+
 			_assertParameter(metricType, "assetSummaryMetricType", location);
 			_assertParameter(
 				String.valueOf(dataSourceId), "dataSourceId", location);
-			_assertParameter(
-				StringUtil.merge(
-					TransformUtil.transformToArray(
-						_depotEntries, DepotEntry::getGroupId, Long.class),
-					StringPool.COMMA),
-				"groupIds", location);
 			_assertParameter(String.valueOf(rangeKey), "rangeKey", location);
 		}
 	}

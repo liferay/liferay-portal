@@ -166,6 +166,9 @@ public class PerformanceHistogramMetricResourceTest
 			Metric[] metrics = histogram.getMetrics();
 
 			Assert.assertEquals(Arrays.toString(metrics), 2, metrics.length);
+
+			DepotEntryTestUtil.assertGroupIds(
+				_depotEntries, analyticsCloudHttpServer.getLocation());
 		}
 	}
 

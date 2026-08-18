@@ -16,6 +16,7 @@ import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -199,11 +200,15 @@ public class PerformanceTopAssetResourceTest
 			String sortFieldName2 = RandomTestUtil.randomString();
 
 			performanceTopAssetResource.getPerformanceTopAssetExport(
-				null, rangeKey, search, filterString,
+				TransformUtil.transformToArray(
+					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+				rangeKey, search, filterString,
 				StringBundler.concat(
 					sortFieldName1, ":desc,", sortFieldName2, ":asc"));
 
 			String location = analyticsCloudHttpServer.getLocation();
+
+			DepotEntryTestUtil.assertGroupIds(_depotEntries, location);
 
 			_assertParameter(dataSourceId, "dataSourceId", location);
 			_assertParameter(filterString, "filter", location);
@@ -385,12 +390,15 @@ public class PerformanceTopAssetResourceTest
 			String sortFieldName2 = RandomTestUtil.randomString();
 
 			performanceTopAssetResource.getPerformanceTopAssetPage(
-				null, rangeKey, search, filterString,
-				Pagination.of(page, pageSize),
+				TransformUtil.transformToArray(
+					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+				rangeKey, search, filterString, Pagination.of(page, pageSize),
 				StringBundler.concat(
 					sortFieldName1, ":desc,", sortFieldName2, ":asc"));
 
 			String location = analyticsCloudHttpServer.getLocation();
+
+			DepotEntryTestUtil.assertGroupIds(_depotEntries, location);
 
 			_assertParameter(dataSourceId, "dataSourceId", location);
 			_assertParameter(filterString, "filter", location);

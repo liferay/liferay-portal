@@ -17,7 +17,6 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -26,7 +25,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -315,17 +313,13 @@ public class PerformanceAssetConsumptionResourceTest
 
 			String location = analyticsCloudHttpServer.getLocation();
 
+			DepotEntryTestUtil.assertGroupIds(_depotEntries, location);
+
 			_assertParameter("viewsMetric", "assetSummaryMetricType", location);
 			_assertParameter(
 				String.valueOf(categoryId), "categoryId", location);
 			_assertParameter(dataSourceId, "dataSourceId", location);
 			_assertParameter("tag", "groupBy", location);
-			_assertParameter(
-				StringUtil.merge(
-					TransformUtil.transformToArray(
-						_depotEntries, DepotEntry::getGroupId, Long.class),
-					StringPool.COMMA),
-				"groupIds", location);
 			_assertParameter(
 				objectDefinition.getName(), "objectType", location);
 			_assertParameter(String.valueOf(page - 1), "page", location);
