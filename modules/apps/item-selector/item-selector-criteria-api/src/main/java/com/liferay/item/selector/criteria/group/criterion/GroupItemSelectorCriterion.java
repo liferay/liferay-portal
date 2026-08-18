@@ -6,6 +6,7 @@
 package com.liferay.item.selector.criteria.group.criterion;
 
 import com.liferay.item.selector.BaseItemSelectorCriterion;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 
 /**
  * @author Adolfo Pérez
@@ -17,6 +18,10 @@ public class GroupItemSelectorCriterion extends BaseItemSelectorCriterion {
 
 	public GroupItemSelectorCriterion(boolean privateLayout) {
 		_privateLayout = privateLayout;
+	}
+
+	public String getActionId() {
+		return _actionId;
 	}
 
 	public int getDepotEntryType() {
@@ -85,6 +90,10 @@ public class GroupItemSelectorCriterion extends BaseItemSelectorCriterion {
 
 	public boolean isPrivateLayout() {
 		return _privateLayout;
+	}
+
+	public void setActionId(String actionId) {
+		_actionId = actionId;
 	}
 
 	public void setAllowNavigation(boolean allowNavigation) {
@@ -159,6 +168,7 @@ public class GroupItemSelectorCriterion extends BaseItemSelectorCriterion {
 		_target = target;
 	}
 
+	private String _actionId = ActionKeys.VIEW;
 	private boolean _allowNavigation = true;
 	private int _depotEntryType;
 	private long[] _excludedGroupIds;

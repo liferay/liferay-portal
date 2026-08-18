@@ -11,8 +11,10 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.site.item.selector.display.context.SitesItemSelectorViewDisplayContext;
 import com.liferay.site.manager.RecentGroupManager;
 import com.liferay.site.search.GroupSearch;
@@ -20,6 +22,9 @@ import com.liferay.site.search.GroupSearch;
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Julio Camarero
@@ -66,12 +71,26 @@ public class RecentSitesItemSelectorViewDisplayContext
 		GroupItemSelectorCriterion groupItemSelectorCriterion =
 			getGroupItemSelectorCriterion();
 
-		groupSearch.setResultsAndTotal(
-			ListUtil.filter(
-				_recentGroupManager.getRecentGroups(httpServletRequest),
-				group -> !ArrayUtil.contains(
+		List<Group> groups = new ArrayList<>();
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		for (Group group :
+				_recentGroupManager.getRecentGroups(httpServletRequest)) {
+
+			if (!ArrayUtil.contains(
 					groupItemSelectorCriterion.getExcludedGroupIds(),
-					group.getGroupId())));
+					group.getGroupId()) &&
+				GroupPermissionUtil.contains(
+					permissionChecker, group,
+					groupItemSelectorCriterion.getActionId())) {
+
+				groups.add(group);
+			}
+		}
+
+		groupSearch.setResultsAndTotal(groups);
 
 		return groupSearch;
 	}

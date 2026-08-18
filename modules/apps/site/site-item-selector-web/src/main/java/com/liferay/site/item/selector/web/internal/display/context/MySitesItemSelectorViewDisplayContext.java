@@ -94,7 +94,7 @@ public class MySitesItemSelectorViewDisplayContext
 					ctCollectionId)) {
 
 			GroupSearchProvider.setResultsAndTotal(
-				_getClassNames(),
+				groupItemSelectorCriterion.getActionId(), _getClassNames(),
 				groupItemSelectorCriterion.getExcludedGroupIds(), _groupSearch,
 				_portletRequest);
 		}

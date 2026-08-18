@@ -27,6 +27,7 @@ import com.liferay.site.search.GroupSearch;
 
 import jakarta.portlet.PortletRequest;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -40,6 +41,16 @@ public class GroupSearchProvider {
 			GroupSearch groupSearch, PortletRequest portletRequest)
 		throws PortalException {
 
+		setResultsAndTotal(
+			ActionKeys.VIEW, classNames, excludedGroupIds, groupSearch,
+			portletRequest);
+	}
+
+	public static void setResultsAndTotal(
+			String actionId, List<String> classNames, long[] excludedGroupIds,
+			GroupSearch groupSearch, PortletRequest portletRequest)
+		throws PortalException {
+
 		long parentGroupId = _getParentGroupId(portletRequest);
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
@@ -50,7 +61,7 @@ public class GroupSearchProvider {
 
 			groupSearch.setResultsAndTotal(
 				ListUtil.sort(
-					_getAllGroups(classNames, portletRequest),
+					_getAllGroups(actionId, classNames, portletRequest),
 					groupSearch.getOrderByComparator()));
 		}
 		else if (_isSearch(portletRequest)) {
@@ -62,7 +73,7 @@ public class GroupSearchProvider {
 					themeDisplay.getCompanyId(), classNameIds,
 					_getKeywords(portletRequest),
 					_getGroupParams(
-						classNames, excludedGroupIds, portletRequest,
+						actionId, classNames, excludedGroupIds, portletRequest,
 						parentGroupId),
 					groupSearch.getStart(), groupSearch.getEnd(),
 					groupSearch.getOrderByComparator()),
@@ -70,7 +81,7 @@ public class GroupSearchProvider {
 					themeDisplay.getCompanyId(), classNameIds,
 					_getKeywords(portletRequest),
 					_getGroupParams(
-						classNames, excludedGroupIds, portletRequest,
+						actionId, classNames, excludedGroupIds, portletRequest,
 						parentGroupId)));
 		}
 		else {
@@ -86,7 +97,7 @@ public class GroupSearchProvider {
 					themeDisplay.getCompanyId(), classNameIds, groupId,
 					_getKeywords(portletRequest),
 					_getGroupParams(
-						classNames, excludedGroupIds, portletRequest,
+						actionId, classNames, excludedGroupIds, portletRequest,
 						parentGroupId),
 					groupSearch.getStart(), groupSearch.getEnd(),
 					groupSearch.getOrderByComparator()),
@@ -94,13 +105,14 @@ public class GroupSearchProvider {
 					themeDisplay.getCompanyId(), classNameIds, groupId,
 					_getKeywords(portletRequest),
 					_getGroupParams(
-						classNames, excludedGroupIds, portletRequest,
+						actionId, classNames, excludedGroupIds, portletRequest,
 						parentGroupId)));
 		}
 	}
 
 	private static List<Group> _getAllGroups(
-			List<String> classNames, PortletRequest portletRequest)
+			String actionId, List<String> classNames,
+			PortletRequest portletRequest)
 		throws PortalException {
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
@@ -120,17 +132,34 @@ public class GroupSearchProvider {
 			groups.add(GroupLocalServiceUtil.getGroup(groupId));
 		}
 
-		return groups;
+		if (actionId.equals(ActionKeys.VIEW)) {
+			return groups;
+		}
+
+		List<Group> permittedGroups = new ArrayList<>(groups.size());
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		for (Group group : groups) {
+			if (GroupPermissionUtil.contains(
+					permissionChecker, group, actionId)) {
+
+				permittedGroups.add(group);
+			}
+		}
+
+		return permittedGroups;
 	}
 
 	private static LinkedHashMap<String, Object> _getGroupParams(
-			List<String> classNames, long[] excludedGroupIds,
+			String actionId, List<String> classNames, long[] excludedGroupIds,
 			PortletRequest portletRequest, long parentGroupId)
 		throws PortalException {
 
 		LinkedHashMap<String, Object> groupParams =
 			LinkedHashMapBuilder.<String, Object>put(
-				"actionId", ActionKeys.VIEW
+				"actionId", actionId
 			).put(
 				"excludedGroupIds", ListUtil.fromArray(excludedGroupIds)
 			).put(
@@ -140,7 +169,8 @@ public class GroupSearchProvider {
 		if (_isSearch(portletRequest)) {
 			if (_isFilterManageableGroups(portletRequest)) {
 				groupParams.put(
-					"groupsTree", _getAllGroups(classNames, portletRequest));
+					"groupsTree",
+					_getAllGroups(actionId, classNames, portletRequest));
 			}
 			else if (parentGroupId > 0) {
 				List<Group> groupsTree = ListUtil.fromArray(

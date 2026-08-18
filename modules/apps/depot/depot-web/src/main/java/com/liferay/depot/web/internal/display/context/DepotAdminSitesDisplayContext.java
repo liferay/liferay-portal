@@ -144,6 +144,7 @@ public class DepotAdminSitesDisplayContext {
 		SiteItemSelectorCriterion siteItemSelectorCriterion =
 			new SiteItemSelectorCriterion();
 
+		siteItemSelectorCriterion.setActionId(ActionKeys.UPDATE);
 		siteItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			new URLItemSelectorReturnType());
 
