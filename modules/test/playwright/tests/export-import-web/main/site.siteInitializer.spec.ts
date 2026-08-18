@@ -20,12 +20,10 @@ import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {getSiteHomePageScreenshot} from '../../../utils/getSiteHomePageScreenshot';
 import {pagesPagesTest} from '../../layout-admin-web/main/fixtures/pagesPagesTest';
-import {companyExportImportPageTest} from './fixtures/companyExportImportPagesTest';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 import {stagingPageTest} from './fixtures/stagingPageTest';
 
 const test = mergeTests(
-	companyExportImportPageTest,
 	dataApiHelpersTest,
 	exportImportPagesTest,
 	featureFlagsTest({

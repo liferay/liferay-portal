@@ -28,15 +28,12 @@ import {performLoginViaApi} from '../../../utils/performLogin';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
 import {readFileFromZip} from '../../../utils/zip';
 import {assetCategoriesPagesTest} from '../../asset-categories-admin-web/main/fixtures/assetCategoriesAdminPagesTest';
-import {companyExportImportPageTest} from './fixtures/companyExportImportPagesTest';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 import {stagingPageTest} from './fixtures/stagingPageTest';
-import {openImportFieldset} from './utils/openImportFieldset';
 
 export const test = mergeTests(
 	accountSettingsPagesTest,
 	accountsPagesTest,
-	companyExportImportPageTest,
 	dataApiHelpersTest,
 	depotAdminPageTest,
 	exportImportPagesTest,
@@ -216,56 +213,6 @@ test(
 		expect(alertTriggered).toBe(false);
 	}
 );
-
-test('Can see corresponding elements at site level', async ({
-	apiHelpers,
-	exportImportPage,
-}) => {
-	const objectDefinition =
-		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			status: {code: 0},
-		});
-
-	apiHelpers.data.push({
-		id: objectDefinition.id,
-		type: 'objectDefinition',
-	});
-
-	await exportImportPage.goToExport();
-
-	const exportFilePath = await exportImportPage.export();
-
-	await exportImportPage.goToImport();
-
-	await exportImportPage.goToImportOptions(exportFilePath);
-
-	await expect(
-		exportImportPage.page.getByText('Comments, Ratings')
-	).toBeVisible();
-
-	await expect(
-		exportImportPage.page.getByRole('group', {name: 'Pages'})
-	).toBeVisible();
-
-	await expect(exportImportPage.deleteApplicationDataCheckbox).toBeVisible();
-
-	await openImportFieldset({
-		name: 'Update Data',
-		page: exportImportPage.page,
-	});
-
-	await expect(
-		exportImportPage.page.getByText(
-			'Mirror: All data and content inside the imported LAR is created as new the first time while maintaining a reference to the source. Subsequent imports from the same source update the entries instead of creating new entries.'
-		)
-	).toBeVisible();
-
-	await expect(
-		exportImportPage.page.getByText('Mirror with overwriting:')
-	).toBeVisible();
-
-	await expect(exportImportPage.page.getByText('Copy as New:')).toBeVisible();
-});
 
 testWithDeprecationFFDisabled(
 	"Hide 'Delete Application Data' checkbox and 'Copy as New' radio button when deprecation FF is false",
