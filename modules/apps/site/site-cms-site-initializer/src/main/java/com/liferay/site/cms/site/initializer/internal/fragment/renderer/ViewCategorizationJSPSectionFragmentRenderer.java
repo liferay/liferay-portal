@@ -47,6 +47,10 @@ public class ViewCategorizationJSPSectionFragmentRenderer
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
+		if (!fragmentRendererContext.isViewMode()) {
+			return;
+		}
+
 		try {
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(

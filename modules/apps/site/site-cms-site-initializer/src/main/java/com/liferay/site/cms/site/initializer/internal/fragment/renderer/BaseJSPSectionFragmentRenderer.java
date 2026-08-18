@@ -45,6 +45,10 @@ public abstract class BaseJSPSectionFragmentRenderer<T>
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
+		if (fragmentRendererContext.isIndexMode()) {
+			return;
+		}
+
 		try {
 			RequestDispatcher requestDispatcher =
 				servletContext.getRequestDispatcher(getJSPPath());

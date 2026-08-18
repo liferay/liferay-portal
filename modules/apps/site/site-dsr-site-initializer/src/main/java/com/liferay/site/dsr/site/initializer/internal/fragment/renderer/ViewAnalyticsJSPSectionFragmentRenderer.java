@@ -48,6 +48,10 @@ public class ViewAnalyticsJSPSectionFragmentRenderer
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
+		if (!fragmentRendererContext.isViewMode()) {
+			return;
+		}
+
 		try {
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
