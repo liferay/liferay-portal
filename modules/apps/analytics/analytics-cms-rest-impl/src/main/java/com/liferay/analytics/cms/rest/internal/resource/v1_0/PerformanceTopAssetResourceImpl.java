@@ -71,7 +71,7 @@ public class PerformanceTopAssetResourceImpl
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getDepotEntries(
+			DepotEntryUtil.getAdministeredDepotEntries(
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
@@ -108,7 +108,7 @@ public class PerformanceTopAssetResourceImpl
 			_http);
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getDepotEntries(
+			DepotEntryUtil.getAdministeredDepotEntries(
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		Page<PerformanceTopAsset> performanceTopAssetPage =

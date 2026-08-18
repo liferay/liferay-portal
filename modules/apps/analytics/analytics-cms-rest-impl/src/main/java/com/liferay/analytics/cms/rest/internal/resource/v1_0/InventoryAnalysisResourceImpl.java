@@ -72,7 +72,7 @@ public class InventoryAnalysisResourceImpl
 
 		LicenseManagerUtil.checkFreeTier();
 
-		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+		List<DepotEntry> depotEntries = DepotEntryUtil.getViewableDepotEntries(
 			contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {

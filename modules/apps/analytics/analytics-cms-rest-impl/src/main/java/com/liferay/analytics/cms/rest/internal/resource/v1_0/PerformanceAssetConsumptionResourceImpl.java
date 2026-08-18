@@ -52,7 +52,7 @@ public class PerformanceAssetConsumptionResourceImpl
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getDepotEntries(
+			DepotEntryUtil.getAdministeredDepotEntries(
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		String objectType = null;

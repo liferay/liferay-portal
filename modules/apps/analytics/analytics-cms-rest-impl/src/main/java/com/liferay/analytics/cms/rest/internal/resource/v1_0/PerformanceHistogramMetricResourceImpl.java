@@ -49,7 +49,7 @@ public class PerformanceHistogramMetricResourceImpl
 				contextCompany.getCompanyId()),
 			Arrays.asList(
 				DepotEntryUtil.getGroupIds(
-					DepotEntryUtil.getDepotEntries(
+					DepotEntryUtil.getAdministeredDepotEntries(
 						contextCompany.getCompanyId(), depotEntryIds))),
 			rangeKey, selectedMetric);
 	}

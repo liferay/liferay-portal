@@ -59,7 +59,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 		LicenseManagerUtil.checkFreeTier();
 
-		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+		List<DepotEntry> depotEntries = DepotEntryUtil.getViewableDepotEntries(
 			contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {
@@ -85,7 +85,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 		LicenseManagerUtil.checkFreeTier();
 
-		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+		List<DepotEntry> depotEntries = DepotEntryUtil.getViewableDepotEntries(
 			contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {

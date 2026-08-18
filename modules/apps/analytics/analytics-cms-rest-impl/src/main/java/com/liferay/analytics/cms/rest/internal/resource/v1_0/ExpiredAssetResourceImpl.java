@@ -61,7 +61,7 @@ public class ExpiredAssetResourceImpl extends BaseExpiredAssetResourceImpl {
 		LicenseManagerUtil.checkFreeTier();
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getDepotEntries(
+			DepotEntryUtil.getViewableDepotEntries(
 				contextCompany.getCompanyId(), depotEntryId));
 
 		Locale locale = LocaleUtil.fromLanguageId(languageId, true, false);

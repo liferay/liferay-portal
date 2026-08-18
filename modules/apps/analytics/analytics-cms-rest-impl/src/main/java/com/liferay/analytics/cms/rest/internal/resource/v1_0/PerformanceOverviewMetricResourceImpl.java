@@ -42,7 +42,7 @@ public class PerformanceOverviewMetricResourceImpl
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getDepotEntries(
+			DepotEntryUtil.getAdministeredDepotEntries(
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
