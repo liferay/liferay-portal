@@ -1472,7 +1472,7 @@ test.describe('Styles Configuration', () => {
 
 		// Check Saved icon is not visible at the beggining
 
-		await expect(page.getByLabel('Saved')).not.toBeVisible();
+		await expect(page.getByLabel('Saved as Draft')).not.toBeVisible();
 
 		// Change Margin Top with custom value and check change is applied
 

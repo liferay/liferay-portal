@@ -2228,7 +2228,9 @@ export class PageEditorPage {
 	}
 
 	async waitForChangesSaved({timeout}: {timeout?: number} = {}) {
-		await this.page.getByLabel('Saved', {exact: true}).waitFor({timeout});
+		await this.page
+			.getByLabel('Saved as Draft', {exact: true})
+			.waitFor({timeout});
 
 		await this.page
 			.getByText(
