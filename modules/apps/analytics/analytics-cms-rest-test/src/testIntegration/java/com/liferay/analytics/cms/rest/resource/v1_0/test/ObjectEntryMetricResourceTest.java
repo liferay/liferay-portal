@@ -91,6 +91,10 @@ public class ObjectEntryMetricResourceTest
 	@Override
 	@Test
 	public void testGetObjectEntryMetric() throws Exception {
+		_testGetObjectEntryMetric();
+	}
+
+	private void _testGetObjectEntryMetric() throws Exception {
 		long dataSourceId = RandomTestUtil.nextLong();
 
 		try (CompanyConfigurationTemporarySwapper

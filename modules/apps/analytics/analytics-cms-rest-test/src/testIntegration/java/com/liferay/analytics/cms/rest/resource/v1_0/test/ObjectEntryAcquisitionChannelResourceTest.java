@@ -90,6 +90,10 @@ public class ObjectEntryAcquisitionChannelResourceTest
 	@Override
 	@Test
 	public void testGetObjectEntryAcquisitionChannelsPage() throws Exception {
+		_testGetObjectEntryAcquisitionChannelsPage();
+	}
+
+	private void _testGetObjectEntryAcquisitionChannelsPage() throws Exception {
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(

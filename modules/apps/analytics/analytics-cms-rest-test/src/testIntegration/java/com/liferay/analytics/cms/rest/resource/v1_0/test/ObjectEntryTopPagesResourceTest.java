@@ -90,6 +90,10 @@ public class ObjectEntryTopPagesResourceTest
 	@Override
 	@Test
 	public void testGetObjectEntryTopPages() throws Exception {
+		_testGetObjectEntryTopPages();
+	}
+
+	private void _testGetObjectEntryTopPages() throws Exception {
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(

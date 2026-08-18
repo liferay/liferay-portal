@@ -90,6 +90,10 @@ public class ObjectEntryHistogramMetricResourceTest
 	@Override
 	@Test
 	public void testGetObjectEntryHistogramMetric() throws Exception {
+		_testGetObjectEntryHistogramMetric();
+	}
+
+	private void _testGetObjectEntryHistogramMetric() throws Exception {
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(
