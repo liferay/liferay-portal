@@ -73,11 +73,11 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		AWSKMSCryptoProviderContext awsKMSCryptoProviderContext =
 			_getAWSKMSCryptoProviderContext(companyId);
 
-		String keyARN = _getKey(
+		String keyId = _getKeyId(
 			companyId, awsKMSCryptoProviderContext, keyIdentifier);
 
 		ServiceIndicator serviceIndicator = _getServiceIndicator(
-			awsKMSCryptoProviderContext, keyARN, "AWS.KMS.Decrypt");
+			awsKMSCryptoProviderContext, keyId, "AWS.KMS.Decrypt");
 
 		AWSClientManager<AWSKMS> awsClientManager =
 			awsKMSCryptoProviderContext.getAWSClientManager();
@@ -89,7 +89,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 					).withCiphertextBlob(
 						ByteBuffer.wrap(ciphertext)
 					).withKeyId(
-						keyARN
+						keyId
 					)));
 
 			return new CryptoServiceResult<>(
@@ -98,7 +98,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		}
 		catch (Exception exception) {
 			throw new CryptoException(
-				"Unable to decrypt with AWS KMS key " + keyARN, exception);
+				"Unable to decrypt with AWS KMS key " + keyId, exception);
 		}
 	}
 
@@ -109,10 +109,10 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		AWSKMSCryptoProviderContext awsKMSCryptoProviderContext =
 			_getAWSKMSCryptoProviderContext(companyId);
 
-		String keyARN = _getKey(
+		String keyId = _getKeyId(
 			companyId, awsKMSCryptoProviderContext, keyIdentifier);
 
-		String aliasName = _getAliasName(keyARN);
+		String aliasName = _getAliasName(keyId);
 
 		AWSClientManager<AWSKMS> awsClientManager =
 			awsKMSCryptoProviderContext.getAWSClientManager();
@@ -125,7 +125,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 					awsKMS.scheduleKeyDeletion(
 						new ScheduleKeyDeletionRequest(
 						).withKeyId(
-							keyARN
+							keyId
 						).withPendingWindowInDays(
 							pendingWindowInDays
 						));
@@ -153,7 +153,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		}
 		catch (Exception exception) {
 			throw new CryptoException(
-				"Unable to schedule deletion for AWS KMS key " + keyARN,
+				"Unable to schedule deletion for AWS KMS key " + keyId,
 				exception);
 		}
 	}
@@ -171,11 +171,11 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 		awsKMSFIPSValidator.validateCipherMode();
 
-		String keyARN = _getKey(
+		String keyId = _getKeyId(
 			companyId, awsKMSCryptoProviderContext, keyIdentifier);
 
 		ServiceIndicator serviceIndicator = _getServiceIndicator(
-			awsKMSCryptoProviderContext, keyARN, "AWS.KMS.Encrypt");
+			awsKMSCryptoProviderContext, keyId, "AWS.KMS.Encrypt");
 
 		AWSClientManager<AWSKMS> awsClientManager =
 			awsKMSCryptoProviderContext.getAWSClientManager();
@@ -185,7 +185,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 				awsKMS -> awsKMS.encrypt(
 					new EncryptRequest(
 					).withKeyId(
-						keyARN
+						keyId
 					).withPlaintext(
 						ByteBuffer.wrap(plaintext)
 					)));
@@ -196,7 +196,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		}
 		catch (Exception exception) {
 			throw new CryptoException(
-				"Unable to encrypt with AWS KMS key " + keyARN, exception);
+				"Unable to encrypt with AWS KMS key " + keyId, exception);
 		}
 	}
 
@@ -205,8 +205,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 			long companyId, String keyIdentifier)
 		throws CryptoException {
 
-		throw new CryptoException(
-			"Exporting key material from AWS KMS is not supported");
+		throw new CryptoException("Exporting key material is not supported");
 	}
 
 	@Override
@@ -270,12 +269,12 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		AWSKMSCryptoProviderContext awsKMSCryptoProviderContext =
 			_getAWSKMSCryptoProviderContext(companyId);
 
-		String keyARN = _getKey(
+		String keyId = _getKeyId(
 			companyId, awsKMSCryptoProviderContext, keyIdentifier);
 
 		try {
 			KeyMetadata keyMetadata = _getKeyMetadata(
-				awsKMSCryptoProviderContext, keyARN);
+				awsKMSCryptoProviderContext, keyId);
 
 			String algorithm = GetterUtil.getString(
 				keyMetadata.getKeySpec(), "SYMMETRIC_DEFAULT");
@@ -292,11 +291,11 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 			return new CryptoKey(
 				algorithm, cipherSpec, createTime,
 				new KeyReference(
-					keyARN, getProviderId(), KeyReference.Type.CRYPTO));
+					keyId, getProviderId(), KeyReference.Type.CRYPTO));
 		}
 		catch (Exception exception) {
 			throw new CryptoException(
-				"Unable to describe AWS KMS key " + keyARN, exception);
+				"Unable to describe AWS KMS key " + keyId, exception);
 		}
 	}
 
@@ -501,7 +500,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		throws CryptoException {
 
 		String aliasName = _getAliasName(
-			_getKey(companyId, awsKMSCryptoProviderContext, keyIdentifier));
+			_getKeyId(companyId, awsKMSCryptoProviderContext, keyIdentifier));
 
 		AWSClientManager<AWSKMS> awsClientManager =
 			awsKMSCryptoProviderContext.getAWSClientManager();
@@ -582,7 +581,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		return awsKMSCryptoProviderContext;
 	}
 
-	private String _getKey(
+	private String _getKeyId(
 			long companyId,
 			AWSKMSCryptoProviderContext awsKMSCryptoProviderContext,
 			String keyIdentifier)
@@ -603,7 +602,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 	private KeyMetadata _getKeyMetadata(
 			AWSKMSCryptoProviderContext awsKMSCryptoProviderContext,
-			String keyARN)
+			String keyId)
 		throws Exception {
 
 		AWSClientManager<AWSKMS> awsClientManager =
@@ -613,7 +612,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 			awsKMS -> awsKMS.describeKey(
 				new DescribeKeyRequest(
 				).withKeyId(
-					keyARN
+					keyId
 				)));
 
 		return describeKeyResult.getKeyMetadata();
@@ -621,10 +620,10 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 	private String _getKeyOrigin(
 			AWSKMSCryptoProviderContext awsKMSCryptoProviderContext,
-			String keyARN)
+			String keyId)
 		throws CryptoException {
 
-		String keyOrigin = _keyOrigins.get(keyARN);
+		String keyOrigin = _keyOrigins.get(keyId);
 
 		if (keyOrigin != null) {
 			return keyOrigin;
@@ -632,19 +631,19 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 		try {
 			KeyMetadata keyMetadata = _getKeyMetadata(
-				awsKMSCryptoProviderContext, keyARN);
+				awsKMSCryptoProviderContext, keyId);
 
 			keyOrigin = keyMetadata.getOrigin();
 		}
 		catch (Exception exception) {
 			throw new CryptoException(
-				"Unable to describe AWS KMS key " + keyARN +
+				"Unable to describe AWS KMS key " + keyId +
 					" for FIPS validation",
 				exception);
 		}
 
-		if (keyARN.contains(":key/")) {
-			_keyOrigins.put(keyARN, keyOrigin);
+		if (keyId.contains(":key/")) {
+			_keyOrigins.put(keyId, keyOrigin);
 		}
 
 		return keyOrigin;
@@ -680,7 +679,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 	private ServiceIndicator _getServiceIndicator(
 			AWSKMSCryptoProviderContext awsKMSCryptoProviderContext,
-			String keyARN, String securityFunctionName)
+			String keyId, String securityFunctionName)
 		throws CryptoException {
 
 		AWSKMSFIPSValidator awsKMSFIPSValidator =
@@ -691,7 +690,7 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 				false, securityFunctionName);
 		}
 
-		String keyOrigin = _getKeyOrigin(awsKMSCryptoProviderContext, keyARN);
+		String keyOrigin = _getKeyOrigin(awsKMSCryptoProviderContext, keyId);
 
 		awsKMSFIPSValidator.validateKeyOrigin(keyOrigin);
 
