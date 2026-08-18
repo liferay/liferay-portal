@@ -9,6 +9,8 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceFragmentRendererKeys;
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
@@ -21,10 +23,15 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -80,42 +87,56 @@ public class InfoBoxFragmentRendererTest {
 			_user.getUserId(),
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _user.getUserId()));
-
-		_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
-			_user.getUserId(), _commerceChannel.getGroupId(),
-			_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(), 0);
 	}
 
 	@Test
 	public void testGetPurchaseOrderDocumentAdditionalProps() throws Exception {
-		Assert.assertEquals(
-			Collections.emptyMap(),
-			_getPurchaseOrderDocumentAdditionalProps(
-				PermissionThreadLocal.getPermissionChecker()));
+		_testGetPurchaseOrderDocumentAdditionalProps();
+		_testGetPurchaseOrderDocumentAdditionalPropsRestricted();
+	}
 
-		_commerceOrderLocalService.addAttachmentFileEntry(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_commerceOrder.getCommerceOrderId(), RandomTestUtil.randomString(),
-			new ByteArrayInputStream("Liferay".getBytes()));
+	private CommerceOrder _addCommerceOrder() throws Exception {
+		return _commerceOrderLocalService.addCommerceOrder(
+			_user.getUserId(), _commerceChannel.getGroupId(),
+			_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(), 0);
+	}
 
-		Map<String, Object> additionalProps =
-			_getPurchaseOrderDocumentAdditionalProps(
-				PermissionThreadLocal.getPermissionChecker());
+	private Map<String, Object> _getPurchaseOrderDocumentAdditionalProps(
+			PermissionChecker permissionChecker)
+		throws Exception {
 
-		Assert.assertNotNull(additionalProps.get("downloadURL"));
-		Assert.assertFalse(additionalProps.containsKey("fdsId"));
-		Assert.assertFalse(additionalProps.containsKey("isOwner"));
-		Assert.assertNotNull(additionalProps.get("value"));
+		return ReflectionTestUtil.invoke(
+			_infoBoxFragmentRenderer,
+			"_getPurchaseOrderDocumentAdditionalProps",
+			new Class<?>[] {CommerceOrder.class, PermissionChecker.class},
+			_commerceOrder, permissionChecker);
+	}
+
+	private Object _getPurchaseOrderDocumentFileEntry(
+			PermissionChecker permissionChecker)
+		throws Exception {
+
+		return ReflectionTestUtil.invoke(
+			_infoBoxFragmentRenderer, "_getPurchaseOrderDocumentFileEntry",
+			new Class<?>[] {CommerceOrder.class, PermissionChecker.class},
+			_commerceOrder, permissionChecker);
+	}
+
+	private void _testGetPurchaseOrderDocumentAdditionalProps()
+		throws Exception {
 
 		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					FeatureFlagConstants.getKey("LPD-6252"),
 					Boolean.TRUE.toString())) {
 
+			_commerceOrder = _addCommerceOrder();
+
 			CommerceOrderAttachmentTestUtil.initialize(getClass());
 
-			additionalProps = _getPurchaseOrderDocumentAdditionalProps(
-				PermissionThreadLocal.getPermissionChecker());
+			Map<String, Object> additionalProps =
+				_getPurchaseOrderDocumentAdditionalProps(
+					PermissionThreadLocal.getPermissionChecker());
 
 			Assert.assertFalse(additionalProps.containsKey("downloadURL"));
 			Assert.assertEquals(
@@ -148,7 +169,24 @@ public class InfoBoxFragmentRendererTest {
 				commerceOrderAttachment.getCommerceOrderAttachmentId(),
 				additionalProps.get("value"));
 
-			User user = UserTestUtil.addOmniadminUser();
+			Role role = _roleLocalService.addRole(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				null, 0, RandomTestUtil.randomString(), null, null,
+				RoleConstants.TYPE_REGULAR, null,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				_commerceOrder.getCompanyId(),
+				CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_GROUP,
+				String.valueOf(_accountEntry.getAccountEntryGroupId()),
+				role.getRoleId(),
+				new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+
+			User user = UserTestUtil.addUser();
+
+			_roleLocalService.addUserRole(user.getUserId(), role);
 
 			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 					user, PermissionCheckerFactoryUtil.create(user))) {
@@ -156,21 +194,147 @@ public class InfoBoxFragmentRendererTest {
 				additionalProps = _getPurchaseOrderDocumentAdditionalProps(
 					PermissionThreadLocal.getPermissionChecker());
 
+				Assert.assertNotNull(additionalProps.get("downloadURL"));
+				Assert.assertEquals(
+					CommerceFragmentRendererKeys.ORDER_ATTACHMENTS_DATA_SET +
+						"-pendingOrderAttachments",
+					additionalProps.get("fdsId"));
 				Assert.assertFalse(
 					GetterUtil.getBoolean(additionalProps.get("isOwner")));
+				Assert.assertEquals(
+					commerceOrderAttachment.getCommerceOrderAttachmentId(),
+					additionalProps.get("value"));
+
+				Assert.assertNotNull(
+					_getPurchaseOrderDocumentFileEntry(
+						PermissionThreadLocal.getPermissionChecker()));
 			}
 		}
+
+		_commerceOrder = _addCommerceOrder();
+
+		Assert.assertEquals(
+			Collections.emptyMap(),
+			_getPurchaseOrderDocumentAdditionalProps(
+				PermissionThreadLocal.getPermissionChecker()));
+
+		_commerceOrderLocalService.addAttachmentFileEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			_commerceOrder.getCommerceOrderId(), RandomTestUtil.randomString(),
+			new ByteArrayInputStream("Liferay".getBytes()));
+
+		Map<String, Object> additionalProps =
+			_getPurchaseOrderDocumentAdditionalProps(
+				PermissionThreadLocal.getPermissionChecker());
+
+		Assert.assertNotNull(additionalProps.get("downloadURL"));
+		Assert.assertFalse(additionalProps.containsKey("fdsId"));
+		Assert.assertFalse(additionalProps.containsKey("isOwner"));
+		Assert.assertNotNull(additionalProps.get("value"));
 	}
 
-	private Map<String, Object> _getPurchaseOrderDocumentAdditionalProps(
-			PermissionChecker permissionChecker)
+	private void _testGetPurchaseOrderDocumentAdditionalPropsRestricted()
 		throws Exception {
 
-		return ReflectionTestUtil.invoke(
-			_infoBoxFragmentRenderer,
-			"_getPurchaseOrderDocumentAdditionalProps",
-			new Class<?>[] {CommerceOrder.class, PermissionChecker.class},
-			_commerceOrder, permissionChecker);
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-6252"),
+					Boolean.TRUE.toString())) {
+
+			_commerceOrder = _addCommerceOrder();
+
+			CommerceOrderAttachmentTestUtil.initialize(getClass());
+
+			CommerceOrderAttachment commerceOrderAttachment =
+				_commerceOrderAttachmentLocalService.addCommerceOrderAttachment(
+					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+					_commerceOrder.getCommerceOrderId(),
+					RandomTestUtil.nextDouble(), true,
+					RandomTestUtil.randomString(), "purchaseOrderDocument",
+					RandomTestUtil.randomString(),
+					new ByteArrayInputStream("Liferay".getBytes()));
+
+			Map<String, Object> additionalProps =
+				_getPurchaseOrderDocumentAdditionalProps(
+					PermissionThreadLocal.getPermissionChecker());
+
+			Assert.assertNotNull(additionalProps.get("downloadURL"));
+			Assert.assertEquals(
+				CommerceFragmentRendererKeys.ORDER_ATTACHMENTS_DATA_SET +
+					"-pendingOrderAttachments",
+				additionalProps.get("fdsId"));
+			Assert.assertTrue(
+				GetterUtil.getBoolean(additionalProps.get("isOwner")));
+			Assert.assertEquals(
+				commerceOrderAttachment.getCommerceOrderAttachmentId(),
+				additionalProps.get("value"));
+
+			Role role = _roleLocalService.addRole(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				null, 0, RandomTestUtil.randomString(), null, null,
+				RoleConstants.TYPE_REGULAR, null,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				_commerceOrder.getCompanyId(),
+				CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_GROUP,
+				String.valueOf(_accountEntry.getAccountEntryGroupId()),
+				role.getRoleId(),
+				new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+
+			User user = UserTestUtil.addUser();
+
+			_roleLocalService.addUserRole(user.getUserId(), role);
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					user, PermissionCheckerFactoryUtil.create(user))) {
+
+				additionalProps = _getPurchaseOrderDocumentAdditionalProps(
+					PermissionThreadLocal.getPermissionChecker());
+
+				Assert.assertFalse(additionalProps.containsKey("downloadURL"));
+				Assert.assertEquals(
+					CommerceFragmentRendererKeys.ORDER_ATTACHMENTS_DATA_SET +
+						"-pendingOrderAttachments",
+					additionalProps.get("fdsId"));
+				Assert.assertFalse(additionalProps.containsKey("isOwner"));
+				Assert.assertFalse(additionalProps.containsKey("value"));
+
+				Assert.assertNull(
+					_getPurchaseOrderDocumentFileEntry(
+						PermissionThreadLocal.getPermissionChecker()));
+			}
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				_commerceOrder.getCompanyId(),
+				CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_GROUP,
+				String.valueOf(_accountEntry.getAccountEntryGroupId()),
+				role.getRoleId(),
+				new String[] {
+					CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS,
+					CommerceOrderActionKeys.
+						VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS
+				});
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					user, PermissionCheckerFactoryUtil.create(user))) {
+
+				additionalProps = _getPurchaseOrderDocumentAdditionalProps(
+					PermissionThreadLocal.getPermissionChecker());
+
+				Assert.assertNotNull(additionalProps.get("downloadURL"));
+				Assert.assertEquals(
+					commerceOrderAttachment.getCommerceOrderAttachmentId(),
+					additionalProps.get("value"));
+
+				Assert.assertNotNull(
+					_getPurchaseOrderDocumentFileEntry(
+						PermissionThreadLocal.getPermissionChecker()));
+			}
+		}
 	}
 
 	private AccountEntry _accountEntry;
@@ -191,6 +355,12 @@ public class InfoBoxFragmentRendererTest {
 		filter = "component.name=com.liferay.commerce.order.content.web.internal.fragment.renderer.InfoBoxFragmentRenderer"
 	)
 	private FragmentRenderer _infoBoxFragmentRenderer;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	private User _user;
 
