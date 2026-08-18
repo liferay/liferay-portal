@@ -21,13 +21,6 @@
 }
 
 .portlet-layouts-admin {
-	.card-page-item-directory {
-		@include media-breakpoint-up(lg) {
-			flex-basis: 33.33333%;
-			max-width: 33.33333%;
-		}
-	}
-
 	.customization-settings #main-content .portlet-column {
 		border: 1px solid $primary;
 		text-align: center;
