@@ -18,9 +18,9 @@ export class ExportImportDataSelectionPage {
 		this.section = page.locator('[data-testid="data-selection-section"]');
 
 		this.collapseSectionButton = (name) =>
-			this.section.getByRole('button', {name: `Collapse ${name}`});
+			page.getByRole('button', {exact: true, name: `Collapse ${name}`});
 		this.expandSectionButton = (name) =>
-			this.section.getByRole('button', {name: `Expand ${name}`});
+			page.getByRole('button', {exact: true, name: `Expand ${name}`});
 	}
 
 	async expandSection(name: string) {
