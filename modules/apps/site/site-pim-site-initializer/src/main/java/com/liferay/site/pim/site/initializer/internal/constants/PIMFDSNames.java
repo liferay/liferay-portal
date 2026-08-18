@@ -13,6 +13,14 @@ public class PIMFDSNames {
 	public static final String CONNECTORS =
 		PIMSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-connectors";
 
+	public static final String PRODUCT_RELATIONSHIP_SELECTOR =
+		PIMSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-product-relationship-selector";
+
+	public static final String PRODUCT_RELATIONSHIPS =
+		PIMSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-product-relationships";
+
 	public static final String PRODUCTS =
 		PIMSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-products";
 

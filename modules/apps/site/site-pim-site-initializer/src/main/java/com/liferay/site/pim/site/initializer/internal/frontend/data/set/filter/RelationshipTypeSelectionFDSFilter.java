@@ -5,15 +5,12 @@
 
 package com.liferay.site.pim.site.initializer.internal.frontend.data.set.filter;
 
-import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
-import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.internal.constants.PIMFDSNames;
+import com.liferay.site.pim.site.initializer.link.PIMLinkTypeRegistry;
 
 import java.util.List;
 import java.util.Locale;
@@ -22,26 +19,20 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Balazs Breier
+ * @author Stefano Motta
  */
 @Component(
 	property = {
-		"frontend.data.set.name=" + PIMFDSNames.PRODUCT_RELATIONSHIP_SELECTOR,
-		"frontend.data.set.name=" + PIMFDSNames.PRODUCTS,
+		"frontend.data.set.name=" + PIMFDSNames.PRODUCT_RELATIONSHIPS,
 		"service.ranking:Integer=100"
 	},
 	service = FDSFilter.class
 )
-public class ObjectDefinitionSelectionFDSFilter extends BaseSelectionFDSFilter {
-
-	@Override
-	public String getEntityFieldType() {
-		return FDSEntityFieldTypes.STRING;
-	}
+public class RelationshipTypeSelectionFDSFilter extends BaseSelectionFDSFilter {
 
 	@Override
 	public String getId() {
-		return "objectDefinitionExternalReferenceCode";
+		return "type";
 	}
 
 	@Override
@@ -54,18 +45,12 @@ public class ObjectDefinitionSelectionFDSFilter extends BaseSelectionFDSFilter {
 		Locale locale) {
 
 		return TransformUtil.transform(
-			_objectDefinitionService.getCMSObjectDefinitions(
-				CompanyThreadLocal.getCompanyId(),
-				new String[] {
-					PIMObjectFolderConstants.
-						EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES
-				}),
-			objectDefinition -> new SelectionFDSFilterItem(
-				objectDefinition.getLabel(locale),
-				objectDefinition.getExternalReferenceCode()));
+			_pimLinkTypeRegistry.getPIMLinkTypes(),
+			pimLinkType -> new SelectionFDSFilterItem(
+				pimLinkType.getLabel(locale), pimLinkType.getType()));
 	}
 
 	@Reference
-	private ObjectDefinitionService _objectDefinitionService;
+	private PIMLinkTypeRegistry _pimLinkTypeRegistry;
 
 }
