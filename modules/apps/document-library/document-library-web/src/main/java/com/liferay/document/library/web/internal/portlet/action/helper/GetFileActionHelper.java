@@ -111,6 +111,10 @@ public class GetFileActionHelper {
 
 		name = FileUtil.stripExtension(name);
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
 		FileEntry fileEntry = null;
 
 		if (Validator.isNotNull(uuid) && (groupId > 0)) {
@@ -147,15 +151,11 @@ public class GetFileActionHelper {
 				}
 
 				if (dlFileEntry != null) {
-					ThemeDisplay themeDisplay =
-						(ThemeDisplay)httpServletRequest.getAttribute(
-							WebKeys.THEME_DISPLAY);
+					fileEntry = new LiferayFileEntry(dlFileEntry);
 
 					DLFileEntryPermission.check(
-						themeDisplay.getPermissionChecker(), dlFileEntry,
+						themeDisplay.getPermissionChecker(), fileEntry,
 						ActionKeys.VIEW);
-
-					fileEntry = new LiferayFileEntry(dlFileEntry);
 				}
 			}
 		}

@@ -5,7 +5,6 @@
 
 package com.liferay.document.library.web.internal.security.permission.resource;
 
-import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -18,26 +17,14 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 public class DLFileEntryPermission {
 
 	public static void check(
-			PermissionChecker permissionChecker, DLFileEntry fileEntry,
+			PermissionChecker permissionChecker, FileEntry fileEntry,
 			String actionId)
 		throws PortalException {
 
-		ModelResourcePermission<DLFileEntry> modelResourcePermission =
-			_dlFileEntryModelResourcePermissionSnapshot.get();
+		ModelResourcePermission<FileEntry> modelResourcePermission =
+			_fileEntryModelResourcePermissionSnapshot.get();
 
 		modelResourcePermission.check(permissionChecker, fileEntry, actionId);
-	}
-
-	public static boolean contains(
-			PermissionChecker permissionChecker, DLFileEntry dlFileEntry,
-			String actionId)
-		throws PortalException {
-
-		ModelResourcePermission<DLFileEntry> modelResourcePermission =
-			_dlFileEntryModelResourcePermissionSnapshot.get();
-
-		return modelResourcePermission.contains(
-			permissionChecker, dlFileEntry, actionId);
 	}
 
 	public static boolean contains(
@@ -64,13 +51,6 @@ public class DLFileEntryPermission {
 			permissionChecker, fileEntryId, actionId);
 	}
 
-	private static final Snapshot<ModelResourcePermission<DLFileEntry>>
-		_dlFileEntryModelResourcePermissionSnapshot = new Snapshot<>(
-			DLFileEntryPermission.class,
-			Snapshot.cast(ModelResourcePermission.class),
-			"(model.class.name=com.liferay.document.library.kernel.model." +
-				"DLFileEntry)",
-			true);
 	private static final Snapshot<ModelResourcePermission<FileEntry>>
 		_fileEntryModelResourcePermissionSnapshot = new Snapshot<>(
 			DLFileEntryPermission.class,
