@@ -165,6 +165,14 @@ function _install_liferay_platform_chart {
 
 	echo "Applying the Liferay platform root application."
 
+	local aks_outputs
+
+	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/aks"
+
+	aks_outputs=$(terraform output -json)
+
+	pop_directory
+
 	local terraform_outputs
 
 	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/platform"
@@ -173,7 +181,16 @@ function _install_liferay_platform_chart {
 
 	pop_directory
 
+	local tenant_id
+
+	tenant_id=$(jq --raw-output '.tenant_id' "${configuration_json_file}")
+
+	local observability_parameters
+
+	observability_parameters=$(get_observability_parameters "${aks_outputs}" "${tenant_id}")
+
 	jq \
+		--argjson observability_parameters "${observability_parameters}" \
 		--argjson terraform_outputs "${terraform_outputs}" \
 		--null-input \
 		--slurpfile configuration "${configuration_json_file}" \
@@ -185,6 +202,9 @@ function _install_liferay_platform_chart {
 						provider: $terraform_outputs.cluster_secret_store_provider.value
 					},
 					deploymentContext: $terraform_outputs.deployment_context.value,
+					observability: {
+						parameters: ($observability_parameters + ($configuration[0].platformComponents.values.observability.parameters // []))
+					},
 					operatorApplications: {
 						externalSecrets: {
 							values: {
