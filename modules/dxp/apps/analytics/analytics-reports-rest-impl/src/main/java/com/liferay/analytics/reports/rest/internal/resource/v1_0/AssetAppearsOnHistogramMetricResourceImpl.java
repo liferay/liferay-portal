@@ -44,6 +44,9 @@ public class AssetAppearsOnHistogramMetricResourceImpl
 				String identityType, Integer rangeKey)
 		throws Exception {
 
+		AnalyticsSettingsManagerUtil.checkAnalyticsEnabled(
+			_analyticsSettingsManager, contextCompany.getCompanyId());
+
 		Group group = _groupLocalService.getGroup(groupId);
 
 		AnalyticsSettingsManagerUtil.checkSiteIdSynced(

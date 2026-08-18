@@ -41,6 +41,9 @@ public class AssetMetricResourceImpl extends BaseAssetMetricResourceImpl {
 			Integer rangeKey, String[] selectedMetrics)
 		throws Exception {
 
+		AnalyticsSettingsManagerUtil.checkAnalyticsEnabled(
+			_analyticsSettingsManager, contextCompany.getCompanyId());
+
 		Group group = _groupLocalService.getGroup(groupId);
 
 		AnalyticsSettingsManagerUtil.checkSiteIdSynced(
