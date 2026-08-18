@@ -16,10 +16,10 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.time.LocalDate;
 
@@ -50,8 +50,7 @@ public class TaskStatisticsResourceImpl extends BaseTaskStatisticsResourceImpl {
 		}
 
 		return _toTaskStatistics(
-			_objectEntryLocalService.getObjectEntry(
-				GetterUtil.getLong(projectId)),
+			_objectEntryService.getObjectEntry(projectId),
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_TASK", contextCompany.getCompanyId()));
@@ -136,5 +135,8 @@ public class TaskStatisticsResourceImpl extends BaseTaskStatisticsResourceImpl {
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectEntryService _objectEntryService;
 
 }
