@@ -369,14 +369,13 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				depotEntry.getDepotEntryId(), nameMap, descriptionMap,
 				_getDepotAppCustomizationMap(
 					depotEntry.getCompanyId(), externalReferenceCode),
+				assetLibrary.getFriendlyURL(),
 				UnicodePropertiesBuilder.create(
 					group.getTypeSettingsProperties(), true
 				).putAll(
 					unicodeProperties
 				).build(),
 				serviceContext);
-
-			_updateFriendlyURL(assetLibrary, group.getGroupId());
 
 			_updateDLSizeLimitConfiguration(
 				assetLibrary, group.getGroupId(), mimeTypeSizeLimits);

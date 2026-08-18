@@ -75,6 +75,7 @@ public class EditDepotEntryMVCActionCommand extends BaseMVCActionCommand {
 				_localization.getLocalizationMap(
 					actionRequest, "description", group.getDescriptionMap()),
 				_toStringBooleanMap(depotAppCustomizationUnicodeProperties),
+				null,
 				PropertiesParamUtil.getProperties(
 					actionRequest, "TypeSettingsProperties--"),
 				ServiceContextFactory.getInstance(

@@ -2214,7 +2214,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 							PortletKeys.TRANSLATION),
 						true)
 				).build(),
-				unicodeProperties, serviceContext);
+				null, unicodeProperties, serviceContext);
 
 			Group scopeGroup = serviceContext.getScopeGroup();
 
