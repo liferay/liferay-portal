@@ -5,6 +5,7 @@
 
 package com.liferay.portal.vulcan.internal.jaxrs.lifecycle;
 
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -64,9 +65,10 @@ public class SafeReleaseInstanceResourceProviderTest {
 
 	@Test
 	public void testReleaseInstanceToleratesUnregisteredRegistration() {
+		String message = RandomTestUtil.randomString();
+
 		IllegalArgumentException illegalArgumentException =
-			new IllegalArgumentException(
-				"The service parameter was not provided by this object");
+			new IllegalArgumentException(message);
 
 		AtomicInteger releaseCounter = new AtomicInteger();
 
@@ -90,9 +92,7 @@ public class SafeReleaseInstanceResourceProviderTest {
 
 			LogEntry logEntry = logEntries.get(0);
 
-			Assert.assertEquals(
-				"The service parameter was not provided by this object",
-				logEntry.getMessage());
+			Assert.assertEquals(message, logEntry.getMessage());
 			Assert.assertSame(
 				illegalArgumentException, logEntry.getThrowable());
 		}
