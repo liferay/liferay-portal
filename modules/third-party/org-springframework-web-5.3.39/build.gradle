@@ -2,13 +2,43 @@ import com.liferay.gradle.plugins.patcher.PatchTask
 
 apply plugin: "com.liferay.patcher"
 
+task jarManifest
+task jarPatched(type: Zip)
 task patch(type: PatchTask)
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 dependencies {
-	compileOnly group: "org.springframework", name: "spring-web", version: "5.3.39"
+	compileOnly group: "org.springframework", name: "spring-web", transitive: false, version: "5.3.39"
+}
+
+jar {
+	dependsOn jarPatched
+	finalizedBy jarManifest
+	setActions([])
+}
+
+jarManifest {
+	doLast {
+		ant.jar(destfile: jar.archivePath, update: true)
+	}
+}
+
+jarPatched {
+	archiveFileName = jar.archiveFileName
+	destinationDirectory = jar.destinationDirectory
+	duplicatesStrategy = "exclude"
+	exclude "org/springframework/remoting/**"
+	from sourceSets.main.output
+
+	from {
+		zipTree(configurations.compileOnly.singleFile)
+	}
+
+	mustRunAfter compileJava
+	mustRunAfter generatePomFileForMavenPublication
+	mustRunAfter processResources
 }
 
 jarSources {
