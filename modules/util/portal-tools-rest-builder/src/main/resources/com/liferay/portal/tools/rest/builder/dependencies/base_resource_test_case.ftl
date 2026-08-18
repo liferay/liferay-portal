@@ -113,7 +113,11 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
-import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
+
+<#if freeMarkerTool.isVersionCompatible(configYAML, 16)>
+	import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
+</#if>
+
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -219,7 +223,9 @@ public abstract class Base${schemaName}ResourceTestCase {
 	public static void setUpClass() throws Exception {
 		_format = FastDateFormatFactoryUtil.getSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-		JAXRSWhiteboardTestUtil.ensureReady();
+		<#if freeMarkerTool.isVersionCompatible(configYAML, 16)>
+			JAXRSWhiteboardTestUtil.ensureReady();
+		</#if>
 	}
 
 	@Before
