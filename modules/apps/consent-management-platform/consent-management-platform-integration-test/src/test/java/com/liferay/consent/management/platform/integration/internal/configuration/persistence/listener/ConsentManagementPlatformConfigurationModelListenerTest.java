@@ -59,7 +59,6 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 			_getInvalidElementName("<style>body { display: none; }</style>"));
 		Assert.assertEquals(
 			"svg", _getInvalidElementName("<svg onload=\"alert(1)\"></svg>"));
-
 		Assert.assertNull(
 			_getInvalidElementName("<Link as=\"script\" rel=\"preload\">"));
 		Assert.assertNull(

@@ -50,7 +50,6 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 		_saveConfiguration(_SCRIPT_TAG);
 
 		Assert.assertEquals(_SCRIPT_TAG, _fetchScriptTag());
-
 		Assert.assertThrows(
 			ConfigurationModelListenerException.class,
 			() -> _saveConfiguration("<base href=\"https://liferay.com\">"));

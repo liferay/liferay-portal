@@ -53,10 +53,10 @@ public class CookiesPolicyLinkConfigurationModelListener
 		String policyLink = GetterUtil.getString(properties.get(name));
 
 		if (Validator.isNull(policyLink) ||
-			StringUtil.startsWith(policyLink, Http.HTTP_WITH_SLASH) ||
-			StringUtil.startsWith(policyLink, Http.HTTPS_WITH_SLASH) ||
 			(StringUtil.startsWith(policyLink, CharPool.SLASH) &&
-			 !StringUtil.startsWith(policyLink, StringPool.DOUBLE_SLASH))) {
+			 !StringUtil.startsWith(policyLink, StringPool.DOUBLE_SLASH)) ||
+			StringUtil.startsWith(policyLink, Http.HTTP_WITH_SLASH) ||
+			StringUtil.startsWith(policyLink, Http.HTTPS_WITH_SLASH)) {
 
 			return;
 		}

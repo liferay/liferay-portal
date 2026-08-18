@@ -43,9 +43,8 @@ public class ConsentManagementPlatformConfigurationModelListener
 	}
 
 	private String _getInvalidElementName(String html) {
-		Matcher matcher = _elementPattern.matcher(html);
-
 		int index = 0;
+		Matcher matcher = _elementPattern.matcher(html);
 
 		while ((index = html.indexOf(CharPool.LESS_THAN, index)) != -1) {
 			matcher.region(index, html.length());

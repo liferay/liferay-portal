@@ -90,7 +90,6 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 
 		Assert.assertEquals(
 			policyLink, _fetchPolicyLink(configurationClass, name));
-
 		Assert.assertThrows(
 			ConfigurationModelListenerException.class,
 			() -> _saveConfiguration(
