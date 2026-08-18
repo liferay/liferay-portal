@@ -369,12 +369,12 @@ public class BaseWorkspaceGitRepositoryTest
 
 		workingDirectory.mkdir();
 
+		JSONObject jsonObject = new JSONObject();
+
 		String baseBranchSHA = RandomTestUtil.randomSHA();
 		String baseBranchUsername = RandomTestUtil.randomString();
 		String repositoryName = RandomTestUtil.randomString();
 		String senderBranchSHA = RandomTestUtil.randomSHA();
-
-		JSONObject jsonObject = new JSONObject();
 
 		jsonObject.put(
 			"base_branch_head_sha", baseBranchSHA
