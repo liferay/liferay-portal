@@ -74,6 +74,11 @@ public class DDMFormInstanceCTUpgradeProcessTest
 	}
 
 	@Override
+	protected void deleteCTModel(long primaryKey) throws Exception {
+		_ddmFormInstanceLocalService.deleteFormInstance(primaryKey);
+	}
+
+	@Override
 	protected CTService<?> getCTService() {
 		return _ddmFormInstanceLocalService;
 	}

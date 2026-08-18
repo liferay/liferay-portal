@@ -71,6 +71,12 @@ public class DDMDataProviderInstanceCTUpgradeProcessTest
 	}
 
 	@Override
+	protected void deleteCTModel(long primaryKey) throws Exception {
+		_ddmDataProviderInstanceLocalService.deleteDataProviderInstance(
+			primaryKey);
+	}
+
+	@Override
 	protected CTService<?> getCTService() {
 		return _ddmDataProviderInstanceLocalService;
 	}
