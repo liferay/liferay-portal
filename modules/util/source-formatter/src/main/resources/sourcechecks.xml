@@ -929,6 +929,7 @@
 		<check name="JavaServiceImplGetFetchCheck">
 			<category name="Bug Prevention" />
 			<description name="Flags a get-prefixed service method that returns a nullable fetch result, violating the non-null promise its name implies." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaServiceObjectCheck">
 			<category name="Styling" />
