@@ -338,6 +338,7 @@ alloy:
     enabled: false
     iam:
         awsRoleArn: ""
+        azureClientId: ""
         gcpServiceAccount: ""
     remoteWrite:
         basicAuth:
@@ -423,9 +424,10 @@ aws:
     ampWorkspaceURL: ""
     region: ""
 azure:
-    scrape:
-        liferay:
-            portName: metrics
+    remoteWrite:
+        dataCollectionRuleId: ""
+        metricsIngestionEndpoint: ""
+        tenantId: ""
 centralHub:
     argoWorkflowsURL: ""
     argocdURL: ""
@@ -591,6 +593,8 @@ grafana-alloy:
             privileged: false
             readOnlyRootFilesystem: false
     controller:
+        podLabels:
+            azure.workload.identity/use: "true"
         priorityClassName: system-node-critical
         type: daemonset
         volumes:

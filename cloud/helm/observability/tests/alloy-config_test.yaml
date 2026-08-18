@@ -16,11 +16,54 @@ tests:
             alloy.enabled: true
             cloudProvider: alibaba
     -   asserts:
-            -   matchRegex:
-                    path: data["config.alloy"]
-                    pattern: url = "https://example.com/write"
-        it: Renders the alloy configuration when Azure sets a remote write URL
+            -   failedTemplate:
+                    errorPattern: azure.remoteWrite.dataCollectionRuleId is required when cloudProvider is azure
+        it: Rejects Azure without a data collection rule ID
         set:
             alloy.enabled: true
-            alloy.remoteWrite.url: https://example.com/write
+            azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com
+            azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: azure.remoteWrite.metricsIngestionEndpoint is required when cloudProvider is azure
+        it: Rejects Azure without a metrics ingestion endpoint
+        set:
+            alloy.enabled: true
+            azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
+            azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: azure.remoteWrite.tenantId is required when cloudProvider is azure
+        it: Rejects Azure without a tenant ID
+        set:
+            alloy.enabled: true
+            azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
+            azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: azuread \{\s+cloud = "AzurePublic"\s+sdk \{\s+tenant_id = "00000000-0000-0000-0000-000000000000"
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: url = "https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com/dataCollectionRules/dcr-00000000000000000000000000000000/streams/Microsoft-PrometheusMetrics/api/v1/write\?api-version=2023-04-24"
+        it: Renders the Azure remote write endpoint with Entra workload identity
+        set:
+            alloy.enabled: true
+            azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
+            azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com
+            azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: url = "https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com/dataCollectionRules/
+        it: Trims a trailing slash from the Azure metrics ingestion endpoint
+        set:
+            alloy.enabled: true
+            azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
+            azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com/
+            azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
