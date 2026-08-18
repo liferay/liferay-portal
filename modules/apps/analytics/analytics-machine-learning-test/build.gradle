@@ -3,6 +3,7 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.test.integration", version: "default"
 	testIntegrationImplementation project(":apps:analytics:analytics-machine-learning-api")
 	testIntegrationImplementation project(":apps:analytics:analytics-settings-api")
+	testIntegrationImplementation project(":apps:analytics:analytics-test-util")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")

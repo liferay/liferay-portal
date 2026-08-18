@@ -1,5 +1,6 @@
 dependencies {
 	testIntegrationImplementation project(":apps:analytics:analytics-settings-api")
+	testIntegrationImplementation project(":apps:analytics:analytics-test-util")
 	testIntegrationImplementation project(":apps:blogs:blogs-api")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:journal:journal-api")

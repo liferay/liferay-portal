@@ -10,6 +10,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:analytics:analytics-cms-rest-api")
 	testIntegrationImplementation project(":apps:analytics:analytics-cms-rest-client")
 	testIntegrationImplementation project(":apps:analytics:analytics-settings-api")
+	testIntegrationImplementation project(":apps:analytics:analytics-test-util")
 	testIntegrationImplementation project(":apps:asset:asset-entry-rel-api")
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
