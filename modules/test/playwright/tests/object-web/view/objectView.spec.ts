@@ -21,6 +21,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {generateObjectEntryValues} from '../utils/generateObjectEntry';
 import {generateObjectFields} from '../utils/generateObjectFields';
+import {getFreshObjectRelationshipName} from '../utils/getFreshObjectRelationshipName';
 
 export const test = mergeTests(
 	globalMenuPagesTest,
@@ -688,9 +689,10 @@ test(
 					label: {
 						en_US: 'objectRelationshipLabel' + getRandomInt(),
 					},
-					name:
-						'objectRelationshipName' +
-						Math.floor(Math.random() * 99),
+					name: await getFreshObjectRelationshipName(apiHelpers, [
+						'L_ACCOUNT',
+						objectDefinition.externalReferenceCode!,
+					]),
 					objectDefinitionExternalReferenceCode1: 'L_ACCOUNT',
 					objectDefinitionExternalReferenceCode2:
 						objectDefinition.externalReferenceCode,
@@ -786,9 +788,10 @@ test(
 					label: {
 						en_US: 'objectRelationshipLabel' + getRandomInt(),
 					},
-					name:
-						'objectRelationshipName' +
-						Math.floor(Math.random() * 99),
+					name: await getFreshObjectRelationshipName(apiHelpers, [
+						objectDefinition1.externalReferenceCode!,
+						objectDefinition2.externalReferenceCode!,
+					]),
 					objectDefinitionExternalReferenceCode1:
 						objectDefinition1.externalReferenceCode,
 					objectDefinitionExternalReferenceCode2:
@@ -875,7 +878,10 @@ test('can create an object custom view using object relationship entry', async (
 				label: {
 					en_US: 'objectRelationshipLabel' + getRandomInt(),
 				},
-				name: 'objectRelationshipName' + Math.floor(Math.random() * 99),
+				name: await getFreshObjectRelationshipName(apiHelpers, [
+					objectDefinition1.externalReferenceCode!,
+					objectDefinition2.externalReferenceCode!,
+				]),
 				objectDefinitionExternalReferenceCode1:
 					objectDefinition1.externalReferenceCode,
 				objectDefinitionExternalReferenceCode2:
@@ -1034,9 +1040,10 @@ test(
 					label: {
 						en_US: 'objectRelationshipLabel' + getRandomInt(),
 					},
-					name:
-						'objectRelationshipName' +
-						Math.floor(Math.random() * 99),
+					name: await getFreshObjectRelationshipName(apiHelpers, [
+						'L_USER',
+						objectDefinition.externalReferenceCode!,
+					]),
 					objectDefinitionExternalReferenceCode1: 'L_USER',
 					objectDefinitionExternalReferenceCode2:
 						objectDefinition.externalReferenceCode,
@@ -1261,9 +1268,10 @@ test(
 					label: {
 						en_US: 'objectRelationshipLabel' + getRandomInt(),
 					},
-					name:
-						'objectRelationshipName' +
-						Math.floor(Math.random() * 99),
+					name: await getFreshObjectRelationshipName(apiHelpers, [
+						'L_USER',
+						objectDefinition.externalReferenceCode!,
+					]),
 					objectDefinitionExternalReferenceCode1: 'L_USER',
 					objectDefinitionExternalReferenceCode2:
 						objectDefinition.externalReferenceCode,
@@ -1628,9 +1636,10 @@ test(
 					label: {
 						en_US: 'objectRelationshipLabel' + getRandomInt(),
 					},
-					name:
-						'objectRelationshipName' +
-						Math.floor(Math.random() * 99),
+					name: await getFreshObjectRelationshipName(apiHelpers, [
+						'L_USER',
+						objectDefinition.externalReferenceCode!,
+					]),
 					objectDefinitionExternalReferenceCode1: 'L_USER',
 					objectDefinitionExternalReferenceCode2:
 						objectDefinition.externalReferenceCode,
@@ -2034,9 +2043,10 @@ test(
 					label: {
 						en_US: 'objectRelationshipLabel' + getRandomInt(),
 					},
-					name:
-						'objectRelationshipName' +
-						Math.floor(Math.random() * 99),
+					name: await getFreshObjectRelationshipName(apiHelpers, [
+						objectDefinitionA.externalReferenceCode!,
+						objectDefinitionB.externalReferenceCode!,
+					]),
 					objectDefinitionExternalReferenceCode1:
 						objectDefinitionA.externalReferenceCode,
 					objectDefinitionExternalReferenceCode2:
@@ -2926,7 +2936,14 @@ test(
 				objectDefinitionA.externalReferenceCode,
 				{
 					label: {en_US: 'Relationship A' + getRandomInt()},
-					name: 'relationshipA' + getRandomInt(),
+					name: await getFreshObjectRelationshipName(
+						apiHelpers,
+						[
+							objectDefinitionA.externalReferenceCode!,
+							objectDefinitionC.externalReferenceCode!,
+						],
+						'relationshipA'
+					),
 					objectDefinitionExternalReferenceCode1:
 						objectDefinitionA.externalReferenceCode,
 					objectDefinitionExternalReferenceCode2:
@@ -2948,7 +2965,14 @@ test(
 				objectDefinitionB.externalReferenceCode,
 				{
 					label: {en_US: 'Relationship B' + getRandomInt()},
-					name: 'relationshipB' + getRandomInt(),
+					name: await getFreshObjectRelationshipName(
+						apiHelpers,
+						[
+							objectDefinitionB.externalReferenceCode!,
+							objectDefinitionC.externalReferenceCode!,
+						],
+						'relationshipB'
+					),
 					objectDefinitionExternalReferenceCode1:
 						objectDefinitionB.externalReferenceCode,
 					objectDefinitionExternalReferenceCode2:

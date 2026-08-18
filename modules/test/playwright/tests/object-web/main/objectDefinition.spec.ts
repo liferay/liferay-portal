@@ -36,6 +36,7 @@ import getFragmentDefinition from '../../layout-content-page-editor-web/main/uti
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import {localizationPagesTest} from '../../site-admin-web/main/fixtures/localizationPagesTest';
 import {generateObjectFields} from '../utils/generateObjectFields';
+import {getFreshObjectRelationshipName} from '../utils/getFreshObjectRelationshipName';
 
 const test = mergeTests(
 	collectionsPagesTest,
@@ -597,8 +598,13 @@ test.describe('Manage object definitions through Model Builder', () => {
 
 		const objectRelationshipLabel =
 			'objectRelationshipLabel' + getRandomInt();
-		const objectRelationshipName =
-			'objectRelationshipName' + Math.floor(Math.random() * 99);
+		const objectRelationshipName = await getFreshObjectRelationshipName(
+			apiHelpers,
+			[
+				objectDefinition1.externalReferenceCode!,
+				objectDefinition2.externalReferenceCode!,
+			]
+		);
 
 		const objectRelationshipAPIClient = await apiHelpers.buildRestClient(
 			ObjectRelationshipAPI
@@ -1119,7 +1125,10 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 					label: {
 						en_US: 'objectRelationshipLabel' + getRandomInt(),
 					},
-					name: 'objectRelationshipName' + getRandomInt(),
+					name: await getFreshObjectRelationshipName(apiHelpers, [
+						'L_ACCOUNT',
+						objectDefinition.externalReferenceCode!,
+					]),
 					objectDefinitionExternalReferenceCode1: 'L_ACCOUNT',
 					objectDefinitionExternalReferenceCode2:
 						objectDefinition.externalReferenceCode,
@@ -1907,7 +1916,11 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 					await apiHelpers.buildRestClient(ObjectRelationshipAPI);
 
 				relationshipLabel = 'Relationship';
-				relationshipName = 'relationship' + getRandomInt();
+				relationshipName = await getFreshObjectRelationshipName(
+					apiHelpers,
+					['L_ACCOUNT', objectDefinition.externalReferenceCode!],
+					'relationship'
+				);
 
 				await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
 					'L_ACCOUNT',

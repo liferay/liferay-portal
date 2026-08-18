@@ -21,6 +21,7 @@ import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {generateObjectEntryValues} from '../utils/generateObjectEntry';
 import {generateObjectFields} from '../utils/generateObjectFields';
+import {getFreshObjectRelationshipName} from '../utils/getFreshObjectRelationshipName';
 import getRandomObjectFieldText from '../utils/getRandomObjectFieldText';
 
 export const test = mergeTests(
@@ -284,9 +285,13 @@ test.describe('Manage custom layouts through object layout tab', () => {
 				await apiHelpers.buildRestClient(ObjectRelationshipAPI);
 
 			const objectRelationshipName1 =
-				'objectRelationshipName' + Math.floor(Math.random() * 99);
+				await getFreshObjectRelationshipName(apiHelpers, [
+					objectDefinition.externalReferenceCode!,
+				]);
 			const objectRelationshipName2 =
-				'objectRelationshipName' + Math.floor(Math.random() * 99);
+				await getFreshObjectRelationshipName(apiHelpers, [
+					objectDefinition.externalReferenceCode!,
+				]);
 
 			const {body: objectRelationship1} =
 				await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
@@ -533,9 +538,10 @@ test.describe('Manage custom layouts through object layout tab', () => {
 					label: {
 						en_US: 'objectRelationshipLabel' + getRandomInt(),
 					},
-					name:
-						'objectRelationshipName' +
-						Math.floor(Math.random() * 99),
+					name: await getFreshObjectRelationshipName(apiHelpers, [
+						objectDefinition.externalReferenceCode!,
+						objectDefinition2.externalReferenceCode!,
+					]),
 					objectDefinitionExternalReferenceCode1:
 						objectDefinition.externalReferenceCode,
 					objectDefinitionExternalReferenceCode2:
@@ -909,7 +915,11 @@ test.describe('Manage custom layouts through object layout tab', () => {
 					label: {
 						en_US: 'Relationship' + getRandomInt(),
 					},
-					name: 'relationship' + getRandomInt(),
+					name: await getFreshObjectRelationshipName(
+						apiHelpers,
+						[objectDefinition.externalReferenceCode!],
+						'relationship'
+					),
 					objectDefinitionExternalReferenceCode1:
 						objectDefinition.externalReferenceCode,
 					objectDefinitionExternalReferenceCode2:
@@ -1364,7 +1374,11 @@ test.describe('Manage custom layouts through object layout tab', () => {
 					label: {
 						en_US: 'Relationship' + getRandomInt(),
 					},
-					name: 'relationship' + getRandomInt(),
+					name: await getFreshObjectRelationshipName(
+						apiHelpers,
+						[objectDefinition.externalReferenceCode!],
+						'relationship'
+					),
 					objectDefinitionExternalReferenceCode1:
 						objectDefinition.externalReferenceCode,
 					objectDefinitionExternalReferenceCode2:
