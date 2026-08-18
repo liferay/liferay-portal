@@ -19,6 +19,18 @@ export type AssetStatistics = {
 	upcomingReviewCount: number;
 };
 
+export type DuplicateTitle = {
+	frequency: number;
+	term: string;
+};
+
+export type DuplicateTopicAsset = {
+	dateModified: string;
+	embedded?: {id: number};
+	entryClassName: string;
+	title: string;
+};
+
 const DUPLICATE_TITLES_AGGREGATION_NAME = 'duplicateTitles';
 
 const MAX_FACET_TERMS = 10000;
@@ -98,7 +110,7 @@ async function getCMSEntryClassNames(
 	return (data?.items ?? []).map(({className}) => className).join(',');
 }
 
-async function getDuplicateTopicsCount({
+async function getDuplicateTitles({
 	entryClassNames,
 	signal,
 	siteId,
@@ -106,7 +118,7 @@ async function getDuplicateTopicsCount({
 	entryClassNames: string;
 	signal?: AbortSignal;
 	siteId?: number;
-}) {
+}): Promise<DuplicateTitle[] | undefined> {
 	if (!entryClassNames) {
 		return undefined;
 	}
@@ -121,7 +133,7 @@ async function getDuplicateTopicsCount({
 	}
 
 	const {data} = await ApiHelper.post<{
-		searchFacets?: Record<string, {frequency: number}[]>;
+		searchFacets?: Record<string, DuplicateTitle[]>;
 	}>(
 		`/o/search/v1.0/search?${searchParams}`,
 		{
@@ -145,14 +157,31 @@ async function getDuplicateTopicsCount({
 		return undefined;
 	}
 
-	const terms = data.searchFacets?.[DUPLICATE_TITLES_AGGREGATION_NAME] ?? [];
+	return data.searchFacets?.[DUPLICATE_TITLES_AGGREGATION_NAME] ?? [];
+}
 
-	return terms.reduce((count, {frequency}) => count + frequency, 0);
+async function getDuplicateTopicsCount({
+	entryClassNames,
+	signal,
+	siteId,
+}: {
+	entryClassNames: string;
+	signal?: AbortSignal;
+	siteId?: number;
+}) {
+	const titles = await getDuplicateTitles({entryClassNames, signal, siteId});
+
+	if (!titles) {
+		return undefined;
+	}
+
+	return titles.reduce((count, {frequency}) => count + frequency, 0);
 }
 
 export default {
 	getAssetStatistics,
 	getCMSEntryClassNames,
+	getDuplicateTitles,
 	getDuplicateTopicsCount,
 	getSearchURL,
 };

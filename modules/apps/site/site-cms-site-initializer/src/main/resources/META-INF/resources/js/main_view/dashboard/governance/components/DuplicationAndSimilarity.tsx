@@ -7,10 +7,13 @@ import ClayLayout from '@clayui/layout';
 import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import React, {useContext, useEffect, useState} from 'react';
 
+import {openCMSModal} from '../../../../common/utils/openCMSModal';
 import {SectionHeader} from '../../common/SectionHeader';
 import InteractiveCard from '../../performance/components/InteractiveCard';
 import {GovernanceContext} from '../GovernanceContext';
 import GovernanceService from '../GovernanceService';
+import {GovernanceAdditionalProps} from '../types';
+import ReviewDuplicateTopicsModal from './ReviewDuplicateTopicsModal';
 
 type DuplicationCard = {
 	description: string;
@@ -49,8 +52,10 @@ const DUPLICATION_CARDS: DuplicationCard[] = [
 const UNAVAILABLE_VALUE = '—';
 
 export function DuplicationAndSimilarity({
+	additionalProps,
 	constants,
 }: {
+	additionalProps?: GovernanceAdditionalProps;
 	constants: {[key: string]: string};
 }) {
 	const {space} = useContext(GovernanceContext);
@@ -110,6 +115,24 @@ export function DuplicationAndSimilarity({
 
 	const title = Liferay.Language.get('duplication-and-similarity');
 
+	const openReviewModal = () => {
+		if (!entryClassNames) {
+			return;
+		}
+
+		openCMSModal({
+			contentComponent: ({closeModal}: {closeModal: () => void}) => (
+				<ReviewDuplicateTopicsModal
+					additionalProps={additionalProps}
+					closeModal={closeModal}
+					entryClassNames={entryClassNames}
+					siteId={space.siteId}
+				/>
+			),
+			size: 'full-screen',
+		});
+	};
+
 	return (
 		<div aria-label={title} className="py-4" role="group">
 			<SectionHeader icon="copy" title={title} />
@@ -128,6 +151,11 @@ export function DuplicationAndSimilarity({
 							<InteractiveCard
 								description={description}
 								loading={loading && Boolean(metric)}
+								onClick={
+									metric === 'duplicateTopics'
+										? openReviewModal
+										: undefined
+								}
 								title={title}
 								value={
 									isNullOrUndefined(value)

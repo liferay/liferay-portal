@@ -32,7 +32,10 @@ export default function GovernanceDashboard({
 
 			<NeedsReview additionalProps={additionalProps} />
 
-			<DuplicationAndSimilarity constants={constants} />
+			<DuplicationAndSimilarity
+				additionalProps={additionalProps}
+				constants={constants}
+			/>
 		</GovernanceContextProvider>
 	);
 }
