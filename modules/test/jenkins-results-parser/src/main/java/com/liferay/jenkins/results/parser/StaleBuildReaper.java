@@ -117,12 +117,18 @@ public class StaleBuildReaper {
 			List<JenkinsMaster.RunningBuild> runningBuilds =
 				jenkinsMaster.getRunningBuilds();
 
+			int maxRunningBuildsCount =
+				jenkinsMaster.getMaxRunningBuildsCount();
+
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					jenkinsMaster.getName(), " reports at most ",
-					String.valueOf(jenkinsMaster.getMaxRunningBuildsCount()),
-					" running build(s). Enumerated ",
-					String.valueOf(runningBuilds.size()), "."));
+					String.valueOf(maxRunningBuildsCount), " ",
+					JenkinsResultsParserUtil.getNounForm(
+						maxRunningBuildsCount, "running builds",
+						"running build"),
+					". Enumerated ", String.valueOf(runningBuilds.size()),
+					"."));
 
 			for (JenkinsMaster.RunningBuild runningBuild : runningBuilds) {
 				List<Reason> reasons = _getReasons(
