@@ -32,7 +32,6 @@ import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.Table;
@@ -48,6 +47,7 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -648,7 +648,7 @@ public class AccountEntryLocalServiceImpl
 				accountEntry.getTaxIdNumber());
 		}
 		catch (PortalException portalException) {
-			return ReflectionUtil.throwException(portalException);
+			throw new SystemException(portalException);
 		}
 
 		return super.updateAccountEntry(accountEntry);

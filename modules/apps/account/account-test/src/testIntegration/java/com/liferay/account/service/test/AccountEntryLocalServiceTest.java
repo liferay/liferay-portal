@@ -24,6 +24,7 @@ import com.liferay.account.service.test.util.AccountGroupTestUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
@@ -45,7 +46,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -109,8 +110,6 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
-import java.lang.reflect.UndeclaredThrowableException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -120,7 +119,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.function.Consumer;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -678,6 +676,41 @@ public class AccountEntryLocalServiceTest {
 		_assertStatus(
 			accountEntry.getAccountEntryId(),
 			WorkflowConstants.STATUS_INACTIVE);
+	}
+
+	@Test(expected = SystemException.class)
+	public void testDefaultUpdateAccountEntryWithInvalidExternalReferenceCode() {
+		AccountEntry accountEntry =
+			_accountEntryLocalService.createAccountEntry(
+				_counterLocalService.increment());
+
+		accountEntry.setExternalReferenceCode(RandomTestUtil.randomString(76));
+		accountEntry.setName(RandomTestUtil.randomString());
+
+		_accountEntryLocalService.updateAccountEntry(accountEntry);
+	}
+
+	@Test(expected = SystemException.class)
+	public void testDefaultUpdateAccountEntryWithInvalidName() {
+		AccountEntry accountEntry =
+			_accountEntryLocalService.createAccountEntry(
+				_counterLocalService.increment());
+
+		accountEntry.setName(RandomTestUtil.randomString(251));
+
+		_accountEntryLocalService.updateAccountEntry(accountEntry);
+	}
+
+	@Test(expected = SystemException.class)
+	public void testDefaultUpdateAccountEntryWithInvalidTaxIdNumber() {
+		AccountEntry accountEntry =
+			_accountEntryLocalService.createAccountEntry(
+				_counterLocalService.increment());
+
+		accountEntry.setName(RandomTestUtil.randomString());
+		accountEntry.setTaxIdNumber(RandomTestUtil.randomString(76));
+
+		_accountEntryLocalService.updateAccountEntry(accountEntry);
 	}
 
 	@Test
@@ -1410,21 +1443,6 @@ public class AccountEntryLocalServiceTest {
 				RandomTestUtil.randomString(76),
 				updatedAccountEntry.getStatus(),
 				ServiceContextTestUtil.getServiceContext()));
-		_assertUpdateAccountEntryThrows(
-			AccountEntryExternalReferenceCodeException.class,
-			invalidAccountEntry -> invalidAccountEntry.setExternalReferenceCode(
-				RandomTestUtil.randomString(76)),
-			updatedAccountEntry);
-		_assertUpdateAccountEntryThrows(
-			AccountEntryNameException.class,
-			invalidAccountEntry -> invalidAccountEntry.setName(
-				RandomTestUtil.randomString(251)),
-			updatedAccountEntry);
-		_assertUpdateAccountEntryThrows(
-			AccountEntryTaxIdNumberException.class,
-			invalidAccountEntry -> invalidAccountEntry.setTaxIdNumber(
-				RandomTestUtil.randomString(76)),
-			updatedAccountEntry);
 	}
 
 	@Test
@@ -1730,27 +1748,6 @@ public class AccountEntryLocalServiceTest {
 		Assert.assertEquals(expectedStatus, accountEntry.getStatus());
 	}
 
-	private void _assertUpdateAccountEntryThrows(
-		Class<? extends PortalException> clazz, Consumer<AccountEntry> consumer,
-		AccountEntry accountEntry) {
-
-		UndeclaredThrowableException undeclaredThrowableException =
-			Assert.assertThrows(
-				UndeclaredThrowableException.class,
-				() -> {
-					AccountEntry invalidAccountEntry =
-						(AccountEntry)accountEntry.clone();
-
-					consumer.accept(invalidAccountEntry);
-
-					_accountEntryLocalService.updateAccountEntry(
-						invalidAccountEntry);
-				});
-
-		Assert.assertTrue(
-			clazz.isInstance(undeclaredThrowableException.getCause()));
-	}
-
 	private void _enableWorkflow() throws Exception {
 		_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
 			null, TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
@@ -1882,6 +1879,9 @@ public class AccountEntryLocalServiceTest {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private CounterLocalService _counterLocalService;
 
 	@Inject
 	private JSONFactory _jsonFactory;
