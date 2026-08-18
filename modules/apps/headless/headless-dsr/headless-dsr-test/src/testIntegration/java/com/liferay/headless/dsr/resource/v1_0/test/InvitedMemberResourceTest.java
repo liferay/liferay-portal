@@ -301,6 +301,25 @@ public class InvitedMemberResourceTest
 		Assert.assertEquals(
 			DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR,
 			patchedInvitedMember.getRoleKey());
+
+		try {
+			_invitedMemberDSRSellerResource.patchRoomInvitedMember(
+				_objectEntry.getObjectEntryId(), invitedMember1.getId(),
+				new InvitedMember() {
+					{
+						membershipExpirationDate = new Date(
+							System.currentTimeMillis() - Time.DAY);
+					}
+				});
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(
+				"Expiration date must be a future date.", problem.getTitle());
+		}
 	}
 
 	@Override

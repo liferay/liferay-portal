@@ -182,6 +182,25 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			});
 
 		Assert.assertNull(patchUserAccount.getMembershipExpirationDate());
+
+		try {
+			userAccountResource.patchRoomUserAccount(
+				_objectEntry.getObjectEntryId(), postUserAccount.getId(),
+				new UserAccount() {
+					{
+						membershipExpirationDate = new Date(
+							System.currentTimeMillis() - Time.DAY);
+					}
+				});
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(
+				"Expiration date must be a future date.", problem.getTitle());
+		}
 	}
 
 	@Override
@@ -484,6 +503,26 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		Ticket ticket = _fetchExpireMembershipTicket(user.getUserId());
 
 		Assert.assertEquals(expirationDate, ticket.getExpirationDate());
+
+		try {
+			userAccountResource.postRoomUserAccount(
+				_objectEntry.getObjectEntryId(),
+				new UserAccount() {
+					{
+						emailAddress = user.getEmailAddress();
+						membershipExpirationDate = new Date(
+							System.currentTimeMillis() - Time.DAY);
+					}
+				});
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(
+				"Expiration date must be a future date.", problem.getTitle());
+		}
 	}
 
 	private AccountEntry _accountEntry;
