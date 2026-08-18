@@ -49,6 +49,12 @@ boolean required = GetterUtil.getBoolean((String)request.getAttribute(CKEditorCo
 boolean skipEditorLoading = GetterUtil.getBoolean((String)request.getAttribute(CKEditorConstants.ATTRIBUTE_NAMESPACE + ":skipEditorLoading"));
 String toolbarSet = (String)request.getAttribute(CKEditorConstants.ATTRIBUTE_NAMESPACE + ":toolbarSet");
 
+String ariaLabel = StringPool.BLANK;
+
+if (Validator.isNotNull(placeholder)) {
+	ariaLabel = LanguageUtil.get(request, placeholder);
+}
+
 if (!inlineEdit) {
 	name = namespace + name;
 }
@@ -341,6 +347,19 @@ name = HtmlUtil.escapeJS(name);
 	};
 
 	window['<%= name %>']._setStyles = function () {
+		<c:if test="<%= Validator.isNotNull(ariaLabel) %>">
+			var ckEditorInstance = CKEDITOR.instances['<%= name %>'];
+
+			var editable = ckEditorInstance && ckEditorInstance.editable();
+
+			if (editable) {
+				editable.setAttribute(
+					'aria-label',
+					'<%= HtmlUtil.escapeJS(ariaLabel) %>'
+				);
+			}
+		</c:if>
+
 		var ckEditor = A.one('#cke_<%= name %>');
 
 		if (ckEditor) {

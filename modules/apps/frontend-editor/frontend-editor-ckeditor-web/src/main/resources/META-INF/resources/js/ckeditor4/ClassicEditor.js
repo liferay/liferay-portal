@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types';
-import React, {forwardRef} from 'react';
+import React, {forwardRef, useCallback, useEffect, useRef} from 'react';
 
 import BaseEditor from './BaseEditor';
 
@@ -25,14 +25,62 @@ const ClassicEditor = forwardRef(
 		},
 		ref
 	) => {
+		const editableARIAAttributesRef = useRef({
+			ariaInvalid,
+			ariaLabel,
+			ariaRequired,
+		});
+		const editorInstanceRef = useRef();
+
+		/**
+		 * The identity of this callback has to stay stable. CKEditor's `on`
+		 * deduplicates listeners by function, so a stable identity is what
+		 * keeps `contentDom` from accumulating one listener per call, and the
+		 * current attributes are read from a ref so that the listener never
+		 * applies the values a past render closed over.
+		 */
+
+		const setEditableARIAAttributes = useCallback(() => {
+			const editable = editorInstanceRef.current?.editable();
+
+			if (!editable) {
+				return;
+			}
+
+			const {ariaInvalid, ariaLabel, ariaRequired} =
+				editableARIAAttributesRef.current;
+
+			if (ariaLabel) {
+				editable.setAttribute('aria-label', ariaLabel);
+			}
+
+			if (ariaInvalid) {
+				editable.setAttribute('aria-invalid', 'true');
+			}
+			else {
+				editable.removeAttribute('aria-invalid');
+			}
+
+			if (ariaRequired) {
+				editable.setAttribute('aria-required', 'true');
+			}
+			else {
+				editable.removeAttribute('aria-required');
+			}
+		}, []);
+
+		useEffect(() => {
+			editableARIAAttributesRef.current = {
+				ariaInvalid,
+				ariaLabel,
+				ariaRequired,
+			};
+
+			setEditableARIAAttributes();
+		}, [ariaInvalid, ariaLabel, ariaRequired, setEditableARIAAttributes]);
+
 		return (
-			<div
-				{...(ariaInvalid ? {'aria-invalid': 'true'} : {})}
-				aria-label={ariaLabel}
-				className={className}
-				id={`${name}Container`}
-				role="textbox"
-			>
+			<div className={className} id={`${name}Container`}>
 				{title && (
 					<label className="control-label" htmlFor={name}>
 						{title}
@@ -59,6 +107,8 @@ const ClassicEditor = forwardRef(
 						};
 					}}
 					onInstanceReady={({editor}) => {
+						editorInstanceRef.current = editor;
+
 						const loadData = () => {
 							editor.setData(contents, {
 								callback: () => {
@@ -94,26 +144,9 @@ const ClassicEditor = forwardRef(
 							loadData();
 						}
 
-						const iframe = document.querySelector(
-							'iframe.cke_wysiwyg_frame'
-						);
+						setEditableARIAAttributes();
 
-						if (iframe) {
-							iframe.onload = function () {
-								const iframeDocument = iframe.contentDocument;
-								const iframeBody =
-									iframeDocument.querySelector(
-										'body.cke_editable'
-									);
-
-								if (iframeBody) {
-									iframeBody.setAttribute(
-										'aria-required',
-										ariaRequired
-									);
-								}
-							};
-						}
+						editor.on('contentDom', setEditableARIAAttributes);
 					}}
 					ref={ref}
 					{...otherProps}

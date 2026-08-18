@@ -31,6 +31,8 @@ if (data != null) {
 		module="{ClassicEditor} from frontend-editor-ckeditor-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
+				"ariaLabel", LanguageUtil.get(request, placeholder)
+			).put(
 				"contents", contents
 			).put(
 				"editorConfig", editorConfigJSONObject
