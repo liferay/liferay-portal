@@ -13,6 +13,7 @@ import InteractiveCard, {
 } from '../../performance/components/InteractiveCard';
 import {GovernanceContext} from '../GovernanceContext';
 import {AssetStatistics} from '../GovernanceService';
+import getCMSSectionURL from '../getCMSSectionURL';
 
 type AttentionCard = {
 	color: MetricColor;
@@ -77,7 +78,7 @@ export function AttentionRequired() {
 	const title = Liferay.Language.get('attention-required');
 
 	const openSection = (path: string) => {
-		const url = `${Liferay.ThemeDisplay.getPathFriendlyURLPublic()}/cms/${path}`;
+		const url = getCMSSectionURL(path);
 
 		navigate(space.siteId ? `${url}?groupId=${space.siteId}` : url);
 	};

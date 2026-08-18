@@ -14,6 +14,7 @@ import StatusLabel from '../../../../common/components/StatusLabel';
 import {ISearchAssetObjectEntry} from '../../../../common/types/AssetType';
 import {
 	FDS_FILTER_ID,
+	NO_VALUE,
 	UPCOMING_REVIEWS_THRESHOLD_MONTHS,
 } from '../../../../common/utils/constants';
 import dateFormat from '../../../../common/utils/dateFormat';
@@ -23,10 +24,9 @@ import {QUICK_FILTER_UPDATES} from '../../../quick_filters/quickFilterUpdates';
 import {SectionHeader} from '../../common/SectionHeader';
 import {GovernanceContext} from '../GovernanceContext';
 import GovernanceService from '../GovernanceService';
+import getCMSSectionURL from '../getCMSSectionURL';
 import {GovernanceAdditionalProps} from '../types';
 import NeedsReviewCard from './NeedsReviewCard';
-
-const NO_VALUE = '--';
 
 function formatReviewDate(reviewDate?: string) {
 	if (!reviewDate) {
@@ -93,7 +93,7 @@ function getAllSectionHref(
 		[getConfigParamName(fdsName)]: serializeFDSConfig(config),
 	});
 
-	return `${Liferay.ThemeDisplay.getPathFriendlyURLPublic()}/cms/all?${searchParams}`;
+	return `${getCMSSectionURL('all')}?${searchParams}`;
 }
 
 export function NeedsReview({

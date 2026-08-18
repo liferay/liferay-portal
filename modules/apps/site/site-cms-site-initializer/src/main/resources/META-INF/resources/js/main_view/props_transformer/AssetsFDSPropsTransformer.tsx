@@ -23,6 +23,7 @@ import {
 } from '../../common/types/AssetType';
 import {
 	CMSSiteInitializerFDSNames,
+	NO_VALUE,
 	OBJECT_ENTRY_CLASS_NAME,
 	OBJECT_ENTRY_FOLDER_CLASS_NAME,
 } from '../../common/utils/constants';
@@ -361,7 +362,7 @@ export default function AssetsFDSPropsTransformer({
 							itemData?.entryClassName ===
 							OBJECT_ENTRY_FOLDER_CLASS_NAME
 						) {
-							return '--';
+							return NO_VALUE;
 						}
 
 						return (
