@@ -1308,6 +1308,34 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					groupId));
 	}
 
+	private void _assertWidgetPageWidgetInstances(
+		GeneralConfig.ApplicationDecorator applicationDecorator, int count,
+		String customApplicationDecorator, SitePage sitePage) {
+
+		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
+			_getWidgetPageWidgetInstances(sitePage);
+
+		for (WidgetPageWidgetInstance widgetPageWidgetInstance :
+				widgetPageWidgetInstances) {
+
+			WidgetLookAndFeelConfig widgetLookAndFeelConfig =
+				widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
+
+			GeneralConfig generalConfig =
+				widgetLookAndFeelConfig.getGeneralConfig();
+
+			Assert.assertEquals(
+				applicationDecorator, generalConfig.getApplicationDecorator());
+			Assert.assertEquals(
+				customApplicationDecorator,
+				generalConfig.getCustomApplicationDecorator());
+		}
+
+		Assert.assertEquals(
+			widgetPageWidgetInstances.toString(), count,
+			widgetPageWidgetInstances.size());
+	}
+
 	private void _assertWidgetSitePage(Layout layout, SitePage sitePage) {
 		Assert.assertEquals(SitePage.Type.WIDGET_PAGE, sitePage.getType());
 
@@ -2253,26 +2281,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			testGroup.getExternalReferenceCode(),
 			layout.getExternalReferenceCode());
 
-		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
-			_getWidgetPageWidgetInstances(sitePage);
-
-		WidgetPageWidgetInstance widgetPageWidgetInstance =
-			widgetPageWidgetInstances.get(0);
-
-		WidgetLookAndFeelConfig widgetLookAndFeelConfig =
-			widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
-
-		GeneralConfig generalConfig =
-			widgetLookAndFeelConfig.getGeneralConfig();
-
-		Assert.assertNull(generalConfig.getApplicationDecorator());
-		Assert.assertEquals(
-			customApplicationDecorator,
-			generalConfig.getCustomApplicationDecorator());
-
-		Assert.assertEquals(
-			widgetPageWidgetInstances.toString(), 1,
-			widgetPageWidgetInstances.size());
+		_assertWidgetPageWidgetInstances(
+			null, 1, customApplicationDecorator, sitePage);
 	}
 
 	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
@@ -3075,29 +3085,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		SitePage sitePage = sitePageResource.postSiteSitePage(
 			testGroup.getExternalReferenceCode(), false, randomSitePage);
 
-		List<WidgetPageWidgetInstance> widgetPageWidgetInstances =
-			_getWidgetPageWidgetInstances(sitePage);
-
-		for (WidgetPageWidgetInstance widgetPageWidgetInstance :
-				widgetPageWidgetInstances) {
-
-			WidgetLookAndFeelConfig widgetLookAndFeelConfig =
-				widgetPageWidgetInstance.getWidgetLookAndFeelConfig();
-
-			GeneralConfig generalConfig =
-				widgetLookAndFeelConfig.getGeneralConfig();
-
-			Assert.assertEquals(
-				expectedApplicationDecorator,
-				generalConfig.getApplicationDecorator());
-			Assert.assertEquals(
-				expectedCustomApplicationDecorator,
-				generalConfig.getCustomApplicationDecorator());
-		}
-
-		Assert.assertEquals(
-			widgetPageWidgetInstances.toString(), 3,
-			widgetPageWidgetInstances.size());
+		_assertWidgetPageWidgetInstances(
+			expectedApplicationDecorator, 3, expectedCustomApplicationDecorator,
+			sitePage);
 	}
 
 	private void _testPostSiteSitePageWithContentPageSpecification()
