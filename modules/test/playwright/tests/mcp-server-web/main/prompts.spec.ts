@@ -74,6 +74,7 @@ const test = baseTest.extend<{
 
 createFDSTableTests(test, {
 	columns: ['Name', 'Identifier', 'Description', 'Status', 'Last Modified'],
+	name: 'Prompts',
 	rowActions: ['Edit', 'Duplicate', 'Delete'],
 	sortOptions: ['Name', 'Last Modified'],
 	tag: '@LPD-98309',

@@ -104,6 +104,7 @@ const test = baseTest.extend<{
 
 createFDSTableTests(test, {
 	columns: ['Title', 'Type', 'Description', 'Last Modified'],
+	name: 'Data Masks',
 	rowActions: ['Edit', 'Duplicate', 'Delete'],
 	sortOptions: ['Title', 'Last Modified'],
 	tag: '@LPD-90205',

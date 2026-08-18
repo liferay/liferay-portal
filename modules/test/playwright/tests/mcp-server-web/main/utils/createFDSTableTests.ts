@@ -10,6 +10,7 @@ import getRandomString from '../../../../utils/getRandomString';
 
 export interface FDSTableOptions {
 	columns: string[];
+	name: string;
 	rowActions: string[];
 	sortOptions: string[];
 	tag: string | string[];
@@ -29,9 +30,9 @@ export function createFDSTableTests<
 	},
 	TWorkerArgs,
 >(test: TestType<TArgs, TWorkerArgs>, options: FDSTableOptions) {
-	const {columns, rowActions, sortOptions, tag} = options;
+	const {columns, name, rowActions, sortOptions, tag} = options;
 
-	test.describe('FDS table', () => {
+	test.describe(`${name} - FDS Table`, () => {
 		let seededItemName: string;
 
 		// Seed one item so the FDS renders the table instead of the empty state
