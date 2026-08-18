@@ -156,10 +156,10 @@ public class BaseWorkspaceGitRepositoryTest
 
 		Assert.assertFalse(
 			_isSnapshotAfterUploadGitArchives(false, jobName, false));
-		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(true, jobName, false));
 		Assert.assertTrue(
 			_isSnapshotAfterUploadGitArchives(false, jobName, true));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives(true, jobName, false));
 		Assert.assertTrue(
 			_isSnapshotAfterUploadGitArchives(true, jobName, true));
 
@@ -167,10 +167,10 @@ public class BaseWorkspaceGitRepositoryTest
 
 		Assert.assertFalse(
 			_isSnapshotAfterUploadGitArchives(false, jobName, false));
-		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(true, jobName, false));
 		Assert.assertTrue(
 			_isSnapshotAfterUploadGitArchives(false, jobName, true));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives(true, jobName, false));
 		Assert.assertTrue(
 			_isSnapshotAfterUploadGitArchives(true, jobName, true));
 
