@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<tags>
-	<asset class-name="com.liferay.portal.model.LayoutFriendlyURL" class-pk="20563" tags="" />
-	<asset class-name="com.liferay.portal.model.Layout" class-pk="20185" tags="" />
-	<asset class-name="com.liferay.portal.model.LayoutFriendlyURL" class-pk="20186" tags="" />
-	<asset class-name="com.liferay.portal.model.Layout" class-pk="20562" tags="" />
-</tags>

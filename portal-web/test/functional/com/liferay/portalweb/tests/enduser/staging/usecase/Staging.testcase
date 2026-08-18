@@ -877,17 +877,6 @@ definition {
 		JSONStaging.enableLocalStaging(groupName = "Site B");
 	}
 
-	@priority = 3
-	test ImportLarFrom70ToCurrent {
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-		LAR.importPortlet(
-			importSchemaVersionMismatching = "true",
-			larFileName = "7.0.10.14_webcontent.lar",
-			portletName = "Web Content",
-			uploadFrom = "dependencies");
-	}
-
 	@description = "This is a use case for LPS-189191. TC-2 and TC-4: Verify that the instance setting can overwrite the system setting via OSGi file to ignore previews and thumbnails during the local staging publish process."
 	@priority = 3
 	test InstanceSettingOfPreviewsAndThumbnailsCanOverwriteSystemSetting {

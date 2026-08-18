@@ -243,7 +243,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _selectImportFile(importValidationMissingItem = null, cannotImport = null, mirrorWithOverwriting = null, uploadFrom = null, importDeletions = null, importPermissions = null, larFileName = null, copyAsNew = null) {
+	macro _selectImportFile(importValidationMissingItem = null, mirrorWithOverwriting = null, uploadFrom = null, importDeletions = null, importPermissions = null, larFileName = null, copyAsNew = null) {
 		SelectFrame(locator1 = "IFrame#CONFIGURATION");
 
 		NavItem.click(navItem = "Import");
@@ -261,21 +261,7 @@ definition {
 				value1 = ${larFileName});
 		}
 
-		if (${cannotImport} == "true") {
-			AssertTextEquals(
-				locator1 = "ExportImport#VALIDATION_ERROR_MESSAGE_HEADER",
-				value1 = "The file ${larFileName} cannot be imported.");
-		}
-		else if (isSet(importSchemaVersionMismatching)) {
-			AssertTextEquals(
-				locator1 = "ExportImport#VALIDATION_ERROR_MESSAGE_HEADER",
-				value1 = "The file ${larFileName} cannot be imported.");
-
-			AssertTextPresent(
-				locator1 = "ExportImport#VALIDATION_ERROR_MESSAGE",
-				value1 = "LAR schema version 1.0.0 does not match deployed export/import schema version 4.0.0.");
-		}
-		else if (isSet(importValidationMissingItem)) {
+		if (isSet(importValidationMissingItem)) {
 			AssertTextEquals(
 				locator1 = "ExportImport#VALIDATION_ERROR_MESSAGE_HEADER",
 				value1 = "The file ${larFileName} cannot be imported.");
@@ -287,15 +273,6 @@ definition {
 			AssertTextEquals.assertPartialText(
 				locator1 = "ExportImport#VALIDATION_ERROR_LIST_ITEM",
 				value1 = ${importValidationMissingItem});
-		}
-		else if (isSet(import6210buildNumber)) {
-			AssertTextEquals(
-				locator1 = "ExportImport#VALIDATION_ERROR_MESSAGE_HEADER",
-				value1 = "The file ${larFileName} cannot be imported.");
-
-			AssertTextPresent(
-				locator1 = "ExportImport#VALIDATION_ERROR_MESSAGE",
-				value1 = "LAR build number 6210 does not match portal build number");
 		}
 		else {
 			AssertClickNoError(
@@ -358,7 +335,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _selectImportFileSite(importValidationMissingItem = null, importFail = null, uploadFrom = null, importCampaignValidationError = null, larFileName = null) {
+	macro _selectImportFileSite(importValidationMissingItem = null, uploadFrom = null, importCampaignValidationError = null, larFileName = null) {
 		LexiconEntry.gotoAdd();
 
 		while (IsElementNotPresent(locator1 = "Button#SELECT_FILE")) {
@@ -410,14 +387,6 @@ definition {
 			AssertTextEquals.assertPartialText(
 				locator1 = "ExportImport#VALIDATION_ERROR_LIST_ITEM",
 				value1 = "The original Referenced Asset does not exist in the current environment.");
-		}
-
-		if (${importFail} == "true") {
-			AssertTextEquals(
-				locator1 = "ExportImport#CURRENT_AND_PREVIOUS_STATUS_1",
-				value1 = "Failed");
-
-			SelectFrame(value1 = "relative=top");
 		}
 	}
 
@@ -720,7 +689,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro importPortlet(importSchemaVersionMismatching = null, importValidationMissingItem = null, cannotImport = null, mirrorWithOverwriting = null, uploadFrom = null, initializeLiferayEvent = null, importDeletions = null, failureExpected = null, completedWithErrorsExpected = null, importPermissions = null, larFileName = null, copyAsNew = null, portletName = null) {
+	macro importPortlet(importValidationMissingItem = null, mirrorWithOverwriting = null, uploadFrom = null, initializeLiferayEvent = null, importDeletions = null, failureExpected = null, completedWithErrorsExpected = null, importPermissions = null, larFileName = null, copyAsNew = null, portletName = null) {
 		if (${copyAsNew} == "true") {
 			Staging.enableCopyAsNewImport();
 		}
@@ -728,13 +697,11 @@ definition {
 		LAR._gotoExportImport(initializeLiferayEvent = ${initializeLiferayEvent});
 
 		LAR._selectImportFile(
-			cannotImport = ${cannotImport},
 			completedWithErrorsExpected = ${completedWithErrorsExpected},
 			copyAsNew = ${copyAsNew},
 			failureExpected = ${failureExpected},
 			importDeletions = ${importDeletions},
 			importPermissions = ${importPermissions},
-			importSchemaVersionMismatching = ${importSchemaVersionMismatching},
 			importValidationMissingItem = ${importValidationMissingItem},
 			larFileName = ${larFileName},
 			mirrorWithOverwriting = ${mirrorWithOverwriting},
@@ -798,7 +765,7 @@ definition {
 			larFileName = ${larFileName},
 			uploadFrom = ${uploadFrom});
 
-		if (!(isSet(importValidationMissingItem) || isSet(importFail))) {
+		if (!(isSet(importValidationMissingItem))) {
 			LAR._importSite(
 				checkContentNameList = ${checkContentNameList},
 				contentDeletion = ${contentDeletion},

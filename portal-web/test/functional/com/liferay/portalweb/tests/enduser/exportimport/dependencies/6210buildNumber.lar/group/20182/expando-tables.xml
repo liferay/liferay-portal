@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-
-<expando-tables>
-	<expando-table class-name="com.liferay.portal.model.Layout" />
-	<expando-table class-name="com.liferay.portal.model.LayoutFriendlyURL" />
-</expando-tables>

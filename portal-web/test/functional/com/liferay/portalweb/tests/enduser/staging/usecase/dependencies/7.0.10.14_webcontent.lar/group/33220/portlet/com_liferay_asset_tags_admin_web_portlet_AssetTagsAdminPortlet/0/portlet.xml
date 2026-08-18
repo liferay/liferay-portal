@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-
-<portlet old-plid="0" portlet-id="com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet" private-layout="false" root-portlet-id="com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet" scope-group-id="33220" scope-layout-type="" scope-layout-uuid="" self-path="/group/33220/portlet/com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet/0/portlet.xml">
-	<portlet-data path="/group/33220/portlet/com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet/33220/portlet-data.xml" />
-</portlet>
