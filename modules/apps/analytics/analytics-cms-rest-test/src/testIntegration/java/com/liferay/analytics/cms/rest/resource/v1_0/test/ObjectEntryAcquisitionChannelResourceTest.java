@@ -18,6 +18,11 @@ import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -25,6 +30,7 @@ import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
@@ -95,6 +101,7 @@ public class ObjectEntryAcquisitionChannelResourceTest
 	public void testGetObjectEntryAcquisitionChannelsPage() throws Exception {
 		_testGetObjectEntryAcquisitionChannelsPage();
 		_testGetObjectEntryAcquisitionChannelsPageWithInvalidObjectEntryId();
+		_testGetObjectEntryAcquisitionChannelsPageWithoutViewPermission();
 	}
 
 	@Test
@@ -266,6 +273,46 @@ public class ObjectEntryAcquisitionChannelResourceTest
 		}
 	}
 
+	private void _testGetObjectEntryAcquisitionChannelsPageWithoutViewPermission()
+		throws Exception {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.nextLong()
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			_user = UserTestUtil.addUser();
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() ->
+					_objectEntryAcquisitionChannelResource.
+						getObjectEntryAcquisitionChannelsPage(
+							null, _objectEntry.getObjectEntryId(),
+							RandomTestUtil.randomInt()));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;
 
@@ -284,5 +331,8 @@ public class ObjectEntryAcquisitionChannelResourceTest
 	@Inject
 	private ObjectEntryAcquisitionChannelResource
 		_objectEntryAcquisitionChannelResource;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }

@@ -20,6 +20,11 @@ import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -27,6 +32,7 @@ import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
@@ -95,6 +101,7 @@ public class ObjectEntryTopPagesResourceTest
 	public void testGetObjectEntryTopPages() throws Exception {
 		_testGetObjectEntryTopPages();
 		_testGetObjectEntryTopPagesWithInvalidObjectEntryId();
+		_testGetObjectEntryTopPagesWithoutViewPermission();
 	}
 
 	@Test
@@ -275,6 +282,43 @@ public class ObjectEntryTopPagesResourceTest
 		}
 	}
 
+	private void _testGetObjectEntryTopPagesWithoutViewPermission()
+		throws Exception {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId",
+							RandomTestUtil.nextLong()
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							"http://" + RandomTestUtil.randomString()
+						).build())) {
+
+			_user = UserTestUtil.addUser();
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _objectEntryTopPagesResource.getObjectEntryTopPages(
+					null, _objectEntry.getObjectEntryId(), 30));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;
 
@@ -292,5 +336,8 @@ public class ObjectEntryTopPagesResourceTest
 
 	@Inject
 	private ObjectEntryTopPagesResource _objectEntryTopPagesResource;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
