@@ -61,7 +61,7 @@ public class DataMaskObjectEntryModelListenerTest {
 			MCPServerTestUtil.getMCPServerProfileDataMaskObjectEntries(
 				defaultMCPServerProfileExternalReferenceCode);
 
-		int mcpServerProfileDataMasksCount =
+		int mcpServerProfileDataMaskObjectEntriesCount =
 			mcpServerProfileDataMaskObjectEntries.size();
 
 		_customDataMaskObjectEntry = MCPServerTestUtil.addDataMaskObjectEntry(
@@ -73,7 +73,7 @@ public class DataMaskObjectEntryModelListenerTest {
 
 		Assert.assertEquals(
 			mcpServerProfileDataMaskObjectEntries.toString(),
-			mcpServerProfileDataMasksCount,
+			mcpServerProfileDataMaskObjectEntriesCount,
 			mcpServerProfileDataMaskObjectEntries.size());
 
 		String dataMaskExternalReferenceCode = RandomTestUtil.randomString();
@@ -85,7 +85,7 @@ public class DataMaskObjectEntryModelListenerTest {
 
 		try {
 			Assert.assertEquals(
-				mcpServerProfileDataMasksCount + 1,
+				mcpServerProfileDataMaskObjectEntriesCount + 1,
 				MCPServerTestUtil.getMCPServerProfileDataMaskExecutionOrder(
 					dataMaskExternalReferenceCode,
 					defaultMCPServerProfileExternalReferenceCode));
