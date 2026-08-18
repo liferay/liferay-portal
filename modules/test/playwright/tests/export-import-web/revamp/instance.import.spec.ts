@@ -18,6 +18,8 @@ import performLogin, {
 	userData,
 } from '../../../utils/performLogin';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
+import {assertImportWizardControls} from './utils/assertImportWizardControls';
+import {exportAndDownloadLar} from './utils/exportAndDownloadLar';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -337,5 +339,56 @@ test(
 				externalReferenceCode: objectEntry.externalReferenceCode,
 			})
 		).toEqual({status: 'NOT_FOUND'});
+	}
+);
+
+test(
+	'Can see corresponding import wizard controls at instance level',
+	{tag: '@LPD-100545'},
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		globalMenuPage,
+		page,
+	}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{externalReferenceCode: '', textField: getRandomString()},
+			normalizeRestPath(objectDefinition.restContextPath)
+		);
+
+		await globalMenuPage.goToApplications('Export');
+
+		await exportImportPage.clickNew();
+
+		await exportImportDataSelectionPage.selectOnlyObjectDefinition(
+			objectDefinition.name
+		);
+
+		const {folderPath, name} = await exportAndDownloadLar(exportImportPage);
+
+		await globalMenuPage.goToApplications('Import');
+
+		await assertImportWizardControls({
+			contentLabel: objectDefinition.name,
+			exportImportDataSelectionPage,
+			exportImportPage,
+			folderPath,
+			hasCommentsAndRatings: false,
+			hasMirrorWithOverwriting: false,
+			hasSiteBuilder: false,
+			name,
+			page,
+		});
 	}
 );

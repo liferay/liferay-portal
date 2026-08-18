@@ -14,6 +14,8 @@ import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
 import {normalizeRestPath} from '../../../utils/normalizeRestPath';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
+import {assertImportWizardControls} from './utils/assertImportWizardControls';
+import {exportAndDownloadLar} from './utils/exportAndDownloadLar';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -229,5 +231,38 @@ test(
 		});
 
 		await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+	}
+);
+
+test(
+	'Can see corresponding import wizard controls at site level',
+	{tag: '@LPD-100545'},
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		page,
+		site,
+	}) => {
+		await apiHelpers.headlessDelivery.postBlog(site.id);
+
+		await exportImportPage.goToExport(site.friendlyUrlPath);
+
+		await exportImportPage.clickNew();
+
+		const {folderPath, name} = await exportAndDownloadLar(exportImportPage);
+
+		await exportImportPage.goToImport(site.friendlyUrlPath);
+
+		await assertImportWizardControls({
+			exportImportDataSelectionPage,
+			exportImportPage,
+			folderPath,
+			hasCommentsAndRatings: true,
+			hasMirrorWithOverwriting: true,
+			hasSiteBuilder: true,
+			name,
+			page,
+		});
 	}
 );

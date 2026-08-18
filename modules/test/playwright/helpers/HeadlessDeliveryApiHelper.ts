@@ -175,6 +175,18 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
+	async postAssetLibraryDocument(
+		assetLibraryId: number | string,
+		file: fs.ReadStream,
+		document?: TDocument
+	) {
+		return this._postDocument(
+			`asset-libraries/${assetLibraryId}`,
+			file,
+			document
+		);
+	}
+
 	async postBlog(
 		siteId: number | string,
 		blog?: {
@@ -517,28 +529,7 @@ export class HeadlessDeliveryApiHelper {
 		file: fs.ReadStream,
 		document?: TDocument
 	) {
-		document = {
-			description: getRandomString(),
-			externalReferenceCode: getRandomString(),
-			fileName: getRandomString(),
-			title: getRandomString(),
-			viewableBy: 'Anyone',
-			...(document || {}),
-		};
-
-		return this.apiHelpers.post(
-			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/documents`,
-			{
-				failOnStatusCode: true,
-				headers: {
-					...(await this.apiHelpers.getCSRFTokenHeader()),
-				},
-				multipart: {
-					document: JSON.stringify(document),
-					file,
-				},
-			}
-		);
+		return this._postDocument(`sites/${siteId}`, file, document);
 	}
 
 	async postDocumentFolder(
@@ -570,27 +561,10 @@ export class HeadlessDeliveryApiHelper {
 		file: fs.ReadStream,
 		document?: TDocument
 	) {
-		document = {
-			description: getRandomString(),
-			externalReferenceCode: getRandomString(),
-			fileName: getRandomString(),
-			title: getRandomString(),
-			viewableBy: 'Anyone',
-			...(document || {}),
-		};
-
-		return this.apiHelpers.post(
-			`${this.apiHelpers.baseUrl}${this.basePath}/document-folders/${documentFolderId}/documents`,
-			{
-				failOnStatusCode: true,
-				headers: {
-					...(await this.apiHelpers.getCSRFTokenHeader()),
-				},
-				multipart: {
-					document: JSON.stringify(document),
-					file,
-				},
-			}
+		return this._postDocument(
+			`document-folders/${documentFolderId}`,
+			file,
+			document
 		);
 	}
 
@@ -681,6 +655,35 @@ export class HeadlessDeliveryApiHelper {
 			{
 				data: blog,
 				failOnStatusCode: true,
+			}
+		);
+	}
+
+	private async _postDocument(
+		scopePath: string,
+		file: fs.ReadStream,
+		document?: TDocument
+	) {
+		document = {
+			description: getRandomString(),
+			externalReferenceCode: getRandomString(),
+			fileName: getRandomString(),
+			title: getRandomString(),
+			viewableBy: 'Anyone',
+			...(document || {}),
+		};
+
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/${scopePath}/documents`,
+			{
+				failOnStatusCode: true,
+				headers: {
+					...(await this.apiHelpers.getCSRFTokenHeader()),
+				},
+				multipart: {
+					document: JSON.stringify(document),
+					file,
+				},
 			}
 		);
 	}
