@@ -168,7 +168,7 @@ public class JenkinsConfigUtil {
 			JenkinsResultsParserUtil.write(
 				userConfigFile,
 				JenkinsResultsParserUtil.combine(
-					_XML_DECLARATION, "\n\n",
+					"<?xml version=\"1.0\"?>\n\n",
 					Dom4JUtil.format(userConfigElement)));
 		}
 		catch (IOException ioException) {
@@ -181,7 +181,5 @@ public class JenkinsConfigUtil {
 
 	private static final String _JENKINS_USERS_DIR_PATH =
 		"/opt/java/jenkins/users";
-
-	private static final String _XML_DECLARATION = "<?xml version=\"1.0\"?>";
 
 }
