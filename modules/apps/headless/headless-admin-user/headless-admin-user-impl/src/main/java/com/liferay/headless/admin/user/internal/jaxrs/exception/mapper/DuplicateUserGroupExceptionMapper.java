@@ -6,13 +6,17 @@
 package com.liferay.headless.admin.user.internal.jaxrs.exception.mapper;
 
 import com.liferay.portal.kernel.exception.DuplicateUserGroupException;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Erick Monteiro
@@ -34,7 +38,15 @@ public class DuplicateUserGroupExceptionMapper
 
 		return new Problem(
 			Response.Status.CONFLICT,
-			"A user group already exists with the same name");
+			_language.get(
+				_acceptLanguage.getPreferredLocale(),
+				"a-user-group-already-exists-with-the-same-name"));
 	}
+
+	@Context
+	private AcceptLanguage _acceptLanguage;
+
+	@Reference
+	private Language _language;
 
 }

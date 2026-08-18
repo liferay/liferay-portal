@@ -6,13 +6,17 @@
 package com.liferay.headless.admin.user.internal.jaxrs.exception.mapper;
 
 import com.liferay.account.exception.DuplicateAccountEntryOrganizationRelException;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Stefano Motta
@@ -35,7 +39,15 @@ public class DuplicateAccountEntryOrganizationRelExceptionMapper
 
 		return new Problem(
 			Response.Status.CONFLICT,
-			"The organization relation already exists");
+			_language.get(
+				_acceptLanguage.getPreferredLocale(),
+				"the-organization-relation-already-exists"));
 	}
+
+	@Context
+	private AcceptLanguage _acceptLanguage;
+
+	@Reference
+	private Language _language;
 
 }

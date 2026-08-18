@@ -6,13 +6,17 @@
 package com.liferay.headless.admin.user.internal.jaxrs.exception.mapper;
 
 import com.liferay.account.exception.AccountGroupNameException;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Stefano Motta
@@ -33,7 +37,16 @@ public class AccountGroupNameExceptionMapper
 		AccountGroupNameException accountGroupNameException) {
 
 		return new Problem(
-			Response.Status.BAD_REQUEST, "The account group name is invalid");
+			Response.Status.BAD_REQUEST,
+			_language.get(
+				_acceptLanguage.getPreferredLocale(),
+				"the-account-group-name-is-invalid"));
 	}
+
+	@Context
+	private AcceptLanguage _acceptLanguage;
+
+	@Reference
+	private Language _language;
 
 }
