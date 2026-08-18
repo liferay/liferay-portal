@@ -5,8 +5,11 @@
 
 package com.liferay.portal.vulcan.internal.jaxrs.lifecycle;
 
-import java.util.HashSet;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.cxf.jaxrs.lifecycle.ResourceProvider;
 import org.apache.cxf.message.Message;
@@ -43,11 +46,28 @@ public class SafeReleaseInstanceResourceProvider implements ResourceProvider {
 	@Override
 	public void releaseInstance(Message message, Object object) {
 		if (_instances.remove(object)) {
-			_resourceProvider.releaseInstance(message, object);
+			try {
+				_resourceProvider.releaseInstance(message, object);
+			}
+			catch (IllegalArgumentException illegalArgumentException) {
+
+				// The service registration backing this instance was
+				// unregistered while the request was in flight, so there is
+				// nothing left to release the instance to, and the instance
+				// is abandoned to garbage collection. Rethrowing would
+				// replace the response the request already produced.
+
+				if (_log.isDebugEnabled()) {
+					_log.debug(illegalArgumentException);
+				}
+			}
 		}
 	}
 
-	private final Set<Object> _instances = new HashSet<>();
+	private static final Log _log = LogFactoryUtil.getLog(
+		SafeReleaseInstanceResourceProvider.class);
+
+	private final Set<Object> _instances = ConcurrentHashMap.newKeySet();
 	private final ResourceProvider _resourceProvider;
 
 }
