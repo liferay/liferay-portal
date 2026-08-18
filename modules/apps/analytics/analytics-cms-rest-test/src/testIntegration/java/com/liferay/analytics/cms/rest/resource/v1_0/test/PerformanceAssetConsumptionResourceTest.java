@@ -9,27 +9,20 @@ import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceAssetConsumptio
 import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceAssetConsumptionItem;
 import com.liferay.analytics.cms.rest.client.pagination.Pagination;
 import com.liferay.analytics.cms.rest.client.resource.v1_0.PerformanceAssetConsumptionResource;
+import com.liferay.analytics.cms.rest.resource.v1_0.test.util.DepotEntryTestUtil;
 import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -87,41 +80,9 @@ public class PerformanceAssetConsumptionResourceTest
 		_testGetPerformanceAssetConsumptionWithInvalidGroupBy();
 	}
 
-	private DepotEntry _addDepotEntry() throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			DepotConstants.TYPE_ASSET_LIBRARY,
-			ServiceContextTestUtil.getServiceContext(
-				testGroup.getGroupId(), TestPropsValues.getUserId()));
-
-		_depotEntries.add(depotEntry);
-
-		return depotEntry;
-	}
-
-	private void _assertNoRequest(
-			AnalyticsCloudHttpServer analyticsCloudHttpServer,
-			UnsafeConsumer<Long[], Exception> unsafeConsumer)
-		throws Exception {
-
-		DepotEntry depotEntry1 = _depotEntries.get(0);
-		DepotEntry depotEntry2 = _depotEntries.get(1);
-
-		Long[][] depotEntryIdsArray = {
-			null, {depotEntry1.getDepotEntryId()},
-			{depotEntry1.getDepotEntryId(), depotEntry2.getDepotEntryId()}
-		};
-
-		for (Long[] depotEntryIds : depotEntryIdsArray) {
-			unsafeConsumer.accept(depotEntryIds);
-
-			Assert.assertNull(analyticsCloudHttpServer.getLocation());
-		}
+	private void _addDepotEntry() throws Exception {
+		_depotEntries.add(
+			DepotEntryTestUtil.addDepotEntry(testGroup.getGroupId()));
 	}
 
 	private void _assertParameter(
@@ -137,14 +98,10 @@ public class PerformanceAssetConsumptionResourceTest
 			_getPerformanceAssetConsumptionResource()
 		throws Exception {
 
-		DepotEntry depotEntry = _depotEntries.get(0);
-
 		String password = RandomTestUtil.randomString();
 
-		User user = UserTestUtil.addUser(depotEntry.getGroupId());
-
-		_userLocalService.updatePassword(
-			user.getUserId(), password, password, false, true);
+		User user = DepotEntryTestUtil.addDepotEntryMemberUser(
+			_depotEntries.get(0), password);
 
 		_users.add(user);
 
@@ -399,8 +356,8 @@ public class PerformanceAssetConsumptionResourceTest
 				performanceAssetConsumptionResource =
 					_getPerformanceAssetConsumptionResource();
 
-			_assertNoRequest(
-				analyticsCloudHttpServer,
+			DepotEntryTestUtil.assertNoRequest(
+				analyticsCloudHttpServer, _depotEntries,
 				depotEntryIds ->
 					performanceAssetConsumptionResource.
 						getPerformanceAssetConsumption(
@@ -436,13 +393,7 @@ public class PerformanceAssetConsumptionResourceTest
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
 
 	@Inject
-	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Inject
-	private UserLocalService _userLocalService;
 
 	@DeleteAfterTestRun
 	private final List<User> _users = new ArrayList<>();
