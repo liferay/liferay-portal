@@ -13,6 +13,7 @@ import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Http;
 
 import org.osgi.service.component.annotations.Component;
@@ -41,6 +42,12 @@ public class ObjectEntryHistogramMetricResourceImpl
 		AnalyticsSettingsManagerUtil.checkAnalyticsEnabled(
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
+		if (groupId != null) {
+			AnalyticsSettingsManagerUtil.checkSiteIdSynced(
+				_analyticsSettingsManager,
+				_groupLocalService.getGroup(groupId));
+		}
+
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_http);
 
@@ -56,6 +63,9 @@ public class ObjectEntryHistogramMetricResourceImpl
 
 	@Reference
 	private AnalyticsSettingsManager _analyticsSettingsManager;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Http _http;
