@@ -17,6 +17,7 @@ import com.liferay.headless.asset.library.client.pagination.Page;
 import com.liferay.headless.asset.library.client.pagination.Pagination;
 import com.liferay.headless.asset.library.client.permission.Permission;
 import com.liferay.headless.asset.library.client.problem.Problem;
+import com.liferay.headless.asset.library.client.resource.v1_0.AssetLibraryResource;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
@@ -30,12 +31,15 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -165,6 +169,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-102154")
 	public void testPatchAssetLibrary() throws Exception {
 		super.testPatchAssetLibrary();
 
@@ -172,6 +177,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		_testPatchAssetLibrarySettings();
 		_testPatchAssetLibraryFriendlyURL();
 		_testPatchAssetLibraryFriendlyURLValidation();
+		_testPatchAssetLibraryWithoutUpdatePermission();
 	}
 
 	@Override
@@ -724,6 +730,78 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			trashEnabled, trashEntriesMaxAge, useCustomLanguages);
 	}
 
+	private void _testPatchAssetLibraryWithoutUpdatePermission()
+		throws Exception {
+
+		AssetLibrary assetLibrary = _postAssetLibraryWithSettings(
+			true, _getAvailableLanguageIds(LocaleUtil.US),
+			_language.getLanguageId(LocaleUtil.US),
+			RandomTestUtil.randomString(), new MimeTypeLimit[0], true, true,
+			RandomTestUtil.randomInt(), true);
+
+		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
+			assetLibrary.getId());
+
+		String password = RandomTestUtil.randomString();
+
+		_user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {depotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		Settings settings = new Settings();
+
+		settings.setMimeTypeLimits(
+			new MimeTypeLimit[] {
+				new MimeTypeLimit() {
+					{
+						maximumSize = 1;
+						mimeType = "image/png";
+					}
+				}
+			});
+
+		AssetLibrary patchAssetLibrary = new AssetLibrary();
+
+		patchAssetLibrary.setSettings(settings);
+
+		AssetLibraryResource userAssetLibraryResource =
+			AssetLibraryResource.builder(
+			).authentication(
+				_user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		try {
+			userAssetLibraryResource.patchAssetLibrary(
+				assetLibrary.getExternalReferenceCode(), patchAssetLibrary);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+
+		assetLibrary = assetLibraryResource.getAssetLibrary(
+			assetLibrary.getExternalReferenceCode());
+
+		settings = assetLibrary.getSettings();
+
+		MimeTypeLimit[] mimeTypeLimits = settings.getMimeTypeLimits();
+
+		Assert.assertEquals(
+			Arrays.toString(mimeTypeLimits), 0, mimeTypeLimits.length);
+	}
+
 	private void _testPostAssetLibrary(MimeTypeLimit[] mimeTypeLimits)
 		throws Exception {
 
@@ -901,5 +979,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
