@@ -51,10 +51,10 @@ public class DeleteExpiredMembershipTicketsSchedulerJobConfiguration
 							"expirationDate", new Date()))));
 			actionableDynamicQuery.setPerformActionMethod(
 				(Ticket ticket) -> {
-					_ticketLocalService.deleteTicket(ticket);
-
 					if (ticket.getType() ==
 							DSRTicketConstants.TYPE_INVITE_MEMBER) {
+
+						_ticketLocalService.deleteTicket(ticket);
 
 						return;
 					}
@@ -72,6 +72,8 @@ public class DeleteExpiredMembershipTicketsSchedulerJobConfiguration
 						new long[] {userId}, groupId);
 
 					_userLocalService.deleteGroupUser(groupId, userId);
+
+					_ticketLocalService.deleteTicket(ticket);
 				});
 
 			actionableDynamicQuery.performActions();
