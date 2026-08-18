@@ -168,24 +168,28 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 	}
 
-	public void copyFile(File sourceFile, String targetFilePath) {
-		String sourceFilePath = JenkinsResultsParserUtil.getCanonicalPath(
-			sourceFile);
+	public void copyFileFromJenkinsMaster(
+		String sourceFilePath, File targetFile) {
 
-		_executeSCPCommand(
-			JenkinsResultsParserUtil.combine(
-				sourceFilePath, " ", _SSH_USER_NAME, "@", getName(), ":",
-				targetFilePath));
-	}
-
-	public void copyRemoteFile(String sourceFilePath, File targetFile) {
 		String targetFilePath = JenkinsResultsParserUtil.getCanonicalPath(
 			targetFile);
 
 		_executeSCPCommand(
 			JenkinsResultsParserUtil.combine(
-				_SSH_USER_NAME, "@", getName(), ":", sourceFilePath, " ",
-				targetFilePath));
+				_SSH_USER_NAME, "@", getName(), ":", sourceFilePath),
+			targetFilePath);
+	}
+
+	public void copyFileToJenkinsMaster(
+		File sourceFile, String targetFilePath) {
+
+		String sourceFilePath = JenkinsResultsParserUtil.getCanonicalPath(
+			sourceFile);
+
+		_executeSCPCommand(
+			sourceFilePath,
+			JenkinsResultsParserUtil.combine(
+				_SSH_USER_NAME, "@", getName(), ":", targetFilePath));
 	}
 
 	@Override
@@ -1568,9 +1572,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 	}
 
-	private void _executeSCPCommand(String scpArguments) {
+	private void _executeSCPCommand(
+		String sourceFilePath, String targetFilePath) {
+
 		String scpCommand = JenkinsResultsParserUtil.combine(
-			"scp ", _SSH_OPTIONS, " ", scpArguments);
+			"scp ", _SSH_OPTIONS, " ", sourceFilePath, " ", targetFilePath);
 
 		Process process = null;
 

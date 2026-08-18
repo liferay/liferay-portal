@@ -50,24 +50,24 @@ public class JenkinsConfigUtil {
 			backupUserConfigFile = _backupJenkinsMasterUserConfigFile(
 				jenkinsMaster, jenkinsMasterUserConfigFilePath);
 
-			jenkinsMaster.copyFile(
+			jenkinsMaster.copyFileToJenkinsMaster(
 				userConfigFile, jenkinsMasterUserConfigFilePath);
 
 			jenkinsMaster.reload();
 
 			_validateAPITokens(jenkinsMaster, jenkinsUserID);
 
-			backupUserConfigFile.delete();
+			JenkinsResultsParserUtil.delete(backupUserConfigFile);
 		}
 		catch (Exception exception1) {
 			if (backupUserConfigFile != null) {
 				try {
-					jenkinsMaster.copyFile(
+					jenkinsMaster.copyFileToJenkinsMaster(
 						backupUserConfigFile, jenkinsMasterUserConfigFilePath);
 
 					jenkinsMaster.reload();
 
-					backupUserConfigFile.delete();
+					JenkinsResultsParserUtil.delete(backupUserConfigFile);
 				}
 				catch (Exception exception2) {
 					exception1.addSuppressed(exception2);
@@ -90,7 +90,7 @@ public class JenkinsConfigUtil {
 			backupUserConfigFile = File.createTempFile(
 				"user-config-backup-", ".xml");
 
-			jenkinsMaster.copyRemoteFile(
+			jenkinsMaster.copyFileFromJenkinsMaster(
 				userConfigFilePath, backupUserConfigFile);
 
 			return backupUserConfigFile;
