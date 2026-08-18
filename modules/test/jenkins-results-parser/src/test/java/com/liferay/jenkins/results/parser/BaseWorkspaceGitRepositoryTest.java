@@ -62,6 +62,13 @@ public class BaseWorkspaceGitRepositoryTest
 	}
 
 	@Test
+	public void testGetProperties() throws Exception {
+		_testGetProperties("7.4.x", "7.4.x");
+		_testGetProperties("base", RandomTestUtil.randomString());
+		_testGetProperties("master", "master");
+	}
+
+	@Test
 	public void testIsFullDotGitDirArchiveRequired() throws Exception {
 		Assert.assertFalse(_isFullDotGitDirArchiveRequired("liferay-portal"));
 		Assert.assertFalse(
@@ -505,6 +512,36 @@ public class BaseWorkspaceGitRepositoryTest
 		testSame(
 			gitWorkingDirectory,
 			defaultWorkspaceGitRepository.getGitWorkingDirectory());
+	}
+
+	private void _testGetProperties(
+			String expectedPropertyValue, String upstreamBranchName)
+		throws Exception {
+
+		mockEnvironment(Collections.<String, String>emptyMap());
+
+		Properties buildProperties = new Properties();
+
+		String propertyName = RandomTestUtil.randomString();
+		String propertyType = RandomTestUtil.randomString();
+
+		String basePropertyName = propertyType + "[" + propertyName + "]";
+
+		buildProperties.setProperty(basePropertyName + "[7.4.x]", "7.4.x");
+		buildProperties.setProperty(basePropertyName + "[master]", "master");
+		buildProperties.setProperty(basePropertyName, "base");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository();
+
+		defaultWorkspaceGitRepository.addPropertyOption(upstreamBranchName);
+
+		Properties properties = defaultWorkspaceGitRepository.getProperties(
+			propertyType);
+
+		testEquals(expectedPropertyValue, properties.getProperty(propertyName));
 	}
 
 	private void _testPrepareGitWorkingDirectory(
