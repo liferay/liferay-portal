@@ -5,6 +5,7 @@
 
 package com.liferay.style.book.web.internal.handler;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -13,6 +14,7 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryNameException;
+import com.liferay.style.book.exception.StyleBookEntryFrontendTokensValuesException;
 import com.liferay.style.book.exception.StyleBookEntryNameException;
 
 import jakarta.portlet.ActionRequest;
@@ -39,6 +41,18 @@ public class StyleBookEntryExceptionRequestHandlerUtil {
 				themeDisplay.getRequest(),
 				"a-style-book-with-this-name-already-exists.-please-enter-a-" +
 					"different-name");
+		}
+		else if (portalException instanceof
+					StyleBookEntryFrontendTokensValuesException.
+						MustNotContainInvalidCharacters) {
+
+			errorMessage = LanguageUtil.format(
+				themeDisplay.getRequest(),
+				"the-x-cannot-contain-the-following-invalid-characters-x",
+				new String[] {
+					LanguageUtil.get(themeDisplay.getRequest(), "value"),
+					StringPool.LESS_THAN
+				});
 		}
 		else if (portalException instanceof StyleBookEntryNameException) {
 			errorMessage = LanguageUtil.get(

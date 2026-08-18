@@ -5,6 +5,7 @@
 
 package com.liferay.style.book.exception;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 
 /**
@@ -13,21 +14,35 @@ import com.liferay.portal.kernel.exception.PortalException;
 public class StyleBookEntryFrontendTokensValuesException
 	extends PortalException {
 
-	public StyleBookEntryFrontendTokensValuesException() {
+	public static class MustBeValidJSON
+		extends StyleBookEntryFrontendTokensValuesException {
+
+		public MustBeValidJSON(Throwable throwable) {
+			super("Unable to parse frontend tokens values", throwable);
+		}
+
 	}
 
-	public StyleBookEntryFrontendTokensValuesException(String msg) {
+	public static class MustNotContainInvalidCharacters
+		extends StyleBookEntryFrontendTokensValuesException {
+
+		public MustNotContainInvalidCharacters(String key) {
+			super(
+				StringBundler.concat(
+					"Frontend token value \"", key,
+					"\" contains invalid characters"));
+		}
+
+	}
+
+	private StyleBookEntryFrontendTokensValuesException(String msg) {
 		super(msg);
 	}
 
-	public StyleBookEntryFrontendTokensValuesException(
+	private StyleBookEntryFrontendTokensValuesException(
 		String msg, Throwable throwable) {
 
 		super(msg, throwable);
-	}
-
-	public StyleBookEntryFrontendTokensValuesException(Throwable throwable) {
-		super(throwable);
 	}
 
 }
