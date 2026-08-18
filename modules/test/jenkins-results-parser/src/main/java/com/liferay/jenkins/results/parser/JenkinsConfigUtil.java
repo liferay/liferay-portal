@@ -53,7 +53,7 @@ public class JenkinsConfigUtil {
 			jenkinsMaster.copyFileToJenkinsMaster(
 				userConfigFile, jenkinsMasterUserConfigFilePath);
 
-			jenkinsMaster.reload();
+			jenkinsMaster.reloadUser(jenkinsUserID);
 
 			_validateAPITokens(jenkinsMaster, jenkinsUserID);
 
@@ -65,7 +65,7 @@ public class JenkinsConfigUtil {
 					jenkinsMaster.copyFileToJenkinsMaster(
 						backupUserConfigFile, jenkinsMasterUserConfigFilePath);
 
-					jenkinsMaster.reload();
+					jenkinsMaster.reloadUser(jenkinsUserID);
 
 					JenkinsResultsParserUtil.delete(backupUserConfigFile);
 				}
@@ -156,6 +156,11 @@ public class JenkinsConfigUtil {
 						" for ", jenkinsUserID, " against ", nodeNameURL),
 					ioException);
 			}
+
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Successfully validated API token ", apiToken.getName(),
+					" for ", jenkinsUserID));
 		}
 	}
 

@@ -1083,19 +1083,33 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return false;
 	}
 
-	public void reload() {
-		String reloadURL = JenkinsResultsParserUtil.getLocalURL(
-			getURL() + "/reload");
+	public void reloadUser(String jenkinsUserID) {
+		String apiTokenUserID = null;
 
-		try {
-			JenkinsResultsParserUtil.toString(
-				reloadURL, JenkinsResultsParserUtil.HttpRequestMethod.POST,
-				false);
+		for (APIToken apiToken : getAPITokens(jenkinsUserID)) {
+			apiTokenUserID = apiToken.getUserID();
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(apiTokenUserID)) {
+				break;
+			}
 		}
-		catch (IOException ioException) {
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(apiTokenUserID)) {
 			throw new RuntimeException(
-				"Unable to reload " + getName(), ioException);
+				"Unable to find API token for " + jenkinsUserID);
 		}
+
+		JenkinsResultsParserUtil.executeJenkinsScript(
+			getName(),
+			JenkinsResultsParserUtil.combine(
+				"hudson.model.User user = hudson.model.User.getById('",
+				apiTokenUserID, "', false)\n", "if (user == null) {\n",
+				"throw new RuntimeException('Unable to find user ",
+				apiTokenUserID, "')\n", "}\n", "user.load()"));
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Successfully reloaded ", jenkinsUserID, " for ", getURL()));
 	}
 
 	@Override
