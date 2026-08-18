@@ -2,6 +2,9 @@
 
 <suppressions>
 	<checkstyle>
+		<suppress checks="ResourceTestInjectionCheck" files="analytics-reports-rest-test/src/testIntegration/java/com/liferay/analytics/reports/rest/resource/v1_0/test/AssetAppearsOnHistogramMetricResourceTest\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="analytics-reports-rest-test/src/testIntegration/java/com/liferay/analytics/reports/rest/resource/v1_0/test/AssetDeviceMetricResourceTest\.java" />
+		<suppress checks="ResourceTestInjectionCheck" files="analytics-reports-rest-test/src/testIntegration/java/com/liferay/analytics/reports/rest/resource/v1_0/test/AssetHistogramMetricResourceTest\.java" />
 		<suppress checks="ResourceTestInjectionCheck" files="analytics-reports-rest-test/src/testIntegration/java/com/liferay/analytics/reports/rest/resource/v1_0/test/AssetMetricResourceTest\.java" />
 	</checkstyle>
 </suppressions>
