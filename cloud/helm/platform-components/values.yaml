@@ -285,7 +285,7 @@ operatorApplications:
         enabled: true
         namespace: external-secrets-system
         repoURL: https://charts.external-secrets.io
-        targetRevision: 1.0.0
+        targetRevision: 2.9.0
         values:
             certController:
                 resources:
