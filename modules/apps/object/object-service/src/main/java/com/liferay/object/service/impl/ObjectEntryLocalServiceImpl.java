@@ -2489,7 +2489,9 @@ public class ObjectEntryLocalServiceImpl
 		_reindex(objectEntry);
 
 		if ((status == WorkflowConstants.STATUS_EXPIRED) ||
-			originalObjectEntry.isDraft() || originalObjectEntry.isPending()) {
+			originalObjectEntry.isDraft() || originalObjectEntry.isPending() ||
+			(originalObjectEntry.isScheduled() &&
+			 (status == WorkflowConstants.STATUS_APPROVED))) {
 
 			int count = _objectEntryVersionPersistence.countByObjectEntryId(
 				objectEntry.getObjectEntryId());
