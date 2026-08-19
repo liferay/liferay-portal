@@ -10,13 +10,17 @@ import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.expression.Expression;
 import com.liferay.petra.sql.dsl.spi.expression.DSLFunction;
 import com.liferay.petra.sql.dsl.spi.expression.DSLFunctionType;
+import com.liferay.petra.sql.dsl.spi.expression.NullExpression;
 import com.liferay.petra.sql.dsl.spi.expression.Scalar;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
+import com.liferay.portal.kernel.util.LocaleUtil;
 
 import java.sql.Clob;
+
+import java.util.Locale;
 
 /**
  * @author Thiago Buarque
@@ -25,6 +29,14 @@ public class ObjectEntryVersionTitleExpressionUtil {
 
 	public static Expression<Clob> getLocalizedTitleExpression(
 		String languageId) {
+
+		Locale locale = LocaleUtil.fromLanguageId(languageId, true, false);
+
+		if (locale == null) {
+			return (Expression<Clob>)(Expression<?>)NullExpression.INSTANCE;
+		}
+
+		String validLanguageId = LocaleUtil.toLanguageId(locale);
 
 		Column<ObjectEntryVersionTable, Clob> contentColumn =
 			ObjectEntryVersionTable.INSTANCE.content;
@@ -47,7 +59,8 @@ public class ObjectEntryVersionTitleExpressionUtil {
 					new DSLFunctionType("CAST(", " AS LONGVARCHAR)"),
 					new Scalar<>(
 						StringBundler.concat(
-							"\"", languageId, "\"\\s*:\\s*\"([^\"]*)\""))));
+							"\"", validLanguageId,
+							"\"\\s*:\\s*\"([^\"]*)\""))));
 
 			return new DSLFunction<>(
 				new DSLFunctionType("REGEXP_REPLACE(", ")"), dslFunction2,
@@ -55,14 +68,15 @@ public class ObjectEntryVersionTitleExpressionUtil {
 					new DSLFunctionType("CAST(", " AS LONGVARCHAR)"),
 					new Scalar<>(
 						StringBundler.concat(
-							"^\"", languageId, "\"\\s*:\\s*\"([^\"]*)\"$"))),
+							"^\"", validLanguageId,
+							"\"\\s*:\\s*\"([^\"]*)\"$"))),
 				new DSLFunction<>(
 					new DSLFunctionType("CAST(", " AS LONGVARCHAR)"),
 					new Scalar<>("$1")));
 		}
 
 		return _getPropertyValueExpression(
-			contentColumn, "properties.title_i18n." + languageId);
+			contentColumn, "properties.title_i18n." + validLanguageId);
 	}
 
 	public static Expression<Clob> getTitleExpression() {
@@ -128,8 +142,8 @@ public class ObjectEntryVersionTitleExpressionUtil {
 		}
 
 		return new DSLFunction<>(
-			new DSLFunctionType("JSON_VALUE(", ")"), columnExpression,
-			new Scalar<>("$." + propertyPath));
+			new DSLFunctionType("JSON_VALUE(", ", '$." + propertyPath + "')"),
+			columnExpression);
 	}
 
 }
