@@ -108,16 +108,52 @@ public class JenkinsConfigUtil {
 		String localUserConfigFilePath =
 			JenkinsResultsParserUtil.getCanonicalPath(localUserConfigFile);
 
+		String userConfigContent = null;
+
 		try {
-			JenkinsResultsParserUtil.write(
-				localUserConfigFile,
-				JenkinsResultsParserUtil.combine(
-					"<?xml version=\"1.0\"?>\n\n",
-					Dom4JUtil.format(userConfigElement)));
+			userConfigContent = JenkinsResultsParserUtil.combine(
+				"<?xml version=\"1.0\"?>\n\n",
+				Dom4JUtil.format(userConfigElement));
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
-				"Unable to write " + localUserConfigFilePath, ioException);
+				"Unable to format the user config for " + jenkinsUserName,
+				ioException);
+		}
+
+		if (userConfigContent.contains("op://")) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to resolve secrets in the user config for ",
+					jenkinsUserName, " on ", jenkinsMasterName));
+		}
+
+		File backupUserConfigFile = _createLocalBackupUserConfigFile(
+			localUserConfigFile);
+
+		try {
+			JenkinsResultsParserUtil.write(
+				localUserConfigFile, userConfigContent);
+
+			if (backupUserConfigFile != null) {
+				JenkinsResultsParserUtil.delete(backupUserConfigFile);
+			}
+		}
+		catch (Exception exception1) {
+			if (backupUserConfigFile != null) {
+				try {
+					JenkinsResultsParserUtil.copy(
+						backupUserConfigFile, localUserConfigFile);
+
+					JenkinsResultsParserUtil.delete(backupUserConfigFile);
+				}
+				catch (Exception exception2) {
+					exception1.addSuppressed(exception2);
+				}
+			}
+
+			throw new RuntimeException(
+				"Unable to write " + localUserConfigFilePath, exception1);
 		}
 
 		System.out.println(
@@ -174,6 +210,37 @@ public class JenkinsConfigUtil {
 		}
 
 		return candidateUserConfigFile;
+	}
+
+	private static File _createLocalBackupUserConfigFile(
+		File localUserConfigFile) {
+
+		if (!localUserConfigFile.exists()) {
+			return null;
+		}
+
+		File backupUserConfigFile = null;
+
+		try {
+			backupUserConfigFile = File.createTempFile(
+				"backup-user-config-", ".xml");
+
+			JenkinsResultsParserUtil.copy(
+				localUserConfigFile, backupUserConfigFile);
+
+			return backupUserConfigFile;
+		}
+		catch (Exception exception) {
+			if (backupUserConfigFile != null) {
+				backupUserConfigFile.delete();
+			}
+
+			throw new RuntimeException(
+				"Unable to back up " +
+					JenkinsResultsParserUtil.getCanonicalPath(
+						localUserConfigFile),
+				exception);
+		}
 	}
 
 	private static File _getJenkinsUsersDir() {
