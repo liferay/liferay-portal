@@ -84,18 +84,6 @@ run "should_derive_cluster_name_from_deployment_name" {
 	}
 	command=plan
 }
-run "should_enable_monitor_metrics_when_observability_enabled" {
-	assert {
-		condition=length(azurerm_kubernetes_cluster.main.monitor_metrics) == 1
-		error_message="Enabling observability must enable the managed Prometheus add-on on the cluster"
-	}
-	command=plan
-	variables {
-		observability_config={
-			enabled=true
-		}
-	}
-}
 run "should_enable_private_cluster" {
 	assert {
 		condition=azurerm_kubernetes_cluster.main.private_cluster_enabled == true
@@ -193,13 +181,6 @@ run "should_not_create_api_server_access_profile_for_private_cluster" {
 		api_authorized_ip_ranges=["1.2.3.4/32"]
 		private_cluster=true
 	}
-}
-run "should_not_enable_monitor_metrics_by_default" {
-	assert {
-		condition=length(azurerm_kubernetes_cluster.main.monitor_metrics) == 0
-		error_message="The managed Prometheus add-on must not be enabled by default"
-	}
-	command=plan
 }
 run "should_override_machine_type" {
 	assert {

@@ -40,13 +40,6 @@ resource "azurerm_kubernetes_cluster" "main" {
 		}
 		for_each=!var.private_cluster && length(var.api_authorized_ip_ranges) > 0 ? [1] : []
 	}
-	dynamic "monitor_metrics" {
-		content {
-			annotations_allowed=var.observability_config.annotations_allowed
-			labels_allowed=var.observability_config.labels_allowed
-		}
-		for_each=var.observability_config.enabled ? [1] : []
-	}
 	identity {
 		identity_ids=[azurerm_user_assigned_identity.cluster.id]
 		type="UserAssigned"

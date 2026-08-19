@@ -5,11 +5,6 @@ mock_provider "azurerm" {
 			rbac_authorization_enabled=true
 		}
 	}
-	mock_data "azurerm_kubernetes_cluster" {
-		defaults={
-			id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.ContainerService/managedClusters/liferay-test-aks"
-		}
-	}
 	mock_data "azurerm_resource_group" {
 		defaults={
 			id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test"
@@ -129,10 +124,6 @@ run "should_create_ingestion_resources_when_enabled" {
 		condition=length(azurerm_monitor_data_collection_rule.main) == 1
 		error_message="A data collection rule must be created when observability is enabled"
 	}
-	assert {
-		condition=length(azurerm_monitor_data_collection_rule_association.main) == 1
-		error_message="A data collection rule association must be created when observability is enabled"
-	}
 	command=plan
 	variables {
 		observability_config={
@@ -199,10 +190,6 @@ run "should_disable_ingestion_by_default" {
 	assert {
 		condition=length(azurerm_monitor_data_collection_endpoint.main) == 0 && length(azurerm_monitor_data_collection_rule.main) == 0
 		error_message="No data collection resources must be created when observability is disabled"
-	}
-	assert {
-		condition=length(azurerm_monitor_data_collection_rule_association.main) == 0
-		error_message="No data collection rule association must be created when observability is disabled"
 	}
 	assert {
 		condition=output.prometheus_data_collection_rule_id == "" && output.prometheus_metrics_ingestion_endpoint == ""
@@ -392,10 +379,6 @@ run "should_route_metrics_to_the_workspace" {
 	assert {
 		condition=azurerm_monitor_data_collection_rule.main[0].data_collection_endpoint_id == azurerm_monitor_data_collection_endpoint.main[0].id
 		error_message="The data collection rule must reference the Prometheus data collection endpoint"
-	}
-	assert {
-		condition=azurerm_monitor_data_collection_rule_association.main[0].target_resource_id == data.azurerm_kubernetes_cluster.aks.id
-		error_message="The data collection rule association must target the AKS cluster"
 	}
 	command=plan
 	variables {

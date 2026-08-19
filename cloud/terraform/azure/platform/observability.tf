@@ -31,12 +31,6 @@ resource "azurerm_monitor_data_collection_rule" "main" {
 	resource_group_name=local.resource_group_name
 	tags=local.tags
 }
-resource "azurerm_monitor_data_collection_rule_association" "main" {
-	count=var.observability_config.enabled ? 1 : 0
-	data_collection_rule_id=azurerm_monitor_data_collection_rule.main[0].id
-	name="${var.deployment_name}-prometheus"
-	target_resource_id=data.azurerm_kubernetes_cluster.aks.id
-}
 resource "azurerm_monitor_workspace" "main" {
 	count=var.observability_config.enabled ? 1 : 0
 	location=data.azurerm_resource_group.liferay.location
