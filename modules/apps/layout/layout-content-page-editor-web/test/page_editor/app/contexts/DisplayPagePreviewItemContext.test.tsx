@@ -14,7 +14,7 @@ import {
 } from '../../../../src/main/resources/META-INF/resources/page_editor/app/contexts/DisplayPagePreviewItemContext';
 
 function getHook() {
-	const wrapper = ({children}) => (
+	const wrapper = ({children}: {children: React.ReactNode}) => (
 		<DisplayPagePreviewItemContextProvider>
 			{children}
 		</DisplayPagePreviewItemContextProvider>
