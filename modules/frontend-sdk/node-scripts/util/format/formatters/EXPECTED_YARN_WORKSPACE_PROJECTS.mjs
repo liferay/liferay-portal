@@ -170,6 +170,7 @@ export default [
 	'@liferay/layout-type-controller-panel',
 	'@liferay/layout-utility-page-terms-of-use',
 	'@liferay/liferay-cms-theme',
+	'@liferay/liferay-prism-theme',
 	'@liferay/locked-items-web',
 	'@liferay/login-web',
 	'@liferay/map-common',
