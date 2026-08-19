@@ -924,35 +924,30 @@ public class SectionDisplayContextUtil {
 	public static JSONArray getLocalesJSONArray(
 		Locale locale, Collection<Locale> locales) {
 
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		locales.forEach(
+		return JSONUtil.toJSONArray(
+			locales,
 			currentLocale -> {
 				String w3cLanguageId = LocaleUtil.toW3cLanguageId(
 					currentLocale);
 
-				String symbol =
+				return JSONUtil.put(
+					"displayName",
+					LocaleUtil.getLocaleDisplayName(currentLocale, locale)
+				).put(
+					"id", LocaleUtil.toLanguageId(currentLocale)
+				).put(
+					"label", w3cLanguageId
+				).put(
+					"languageId", LocaleUtil.toLanguageId(currentLocale)
+				).put(
+					"name", currentLocale.getDisplayName()
+				).put(
+					"symbol",
 					com.liferay.portal.kernel.util.StringUtil.toLowerCase(
-						w3cLanguageId);
-
-				jsonArray.put(
-					JSONUtil.put(
-						"displayName",
-						LocaleUtil.getLocaleDisplayName(currentLocale, locale)
-					).put(
-						"id", LocaleUtil.toLanguageId(currentLocale)
-					).put(
-						"label", w3cLanguageId
-					).put(
-						"languageId", LocaleUtil.toLanguageId(currentLocale)
-					).put(
-						"name", currentLocale.getDisplayName()
-					).put(
-						"symbol", symbol
-					));
-			});
-
-		return jsonArray;
+						w3cLanguageId)
+				);
+			},
+			_log);
 	}
 
 	public static List<FDSActionDropdownItem>
