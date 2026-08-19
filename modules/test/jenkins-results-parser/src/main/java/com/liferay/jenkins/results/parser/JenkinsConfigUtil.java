@@ -235,11 +235,11 @@ public class JenkinsConfigUtil {
 				backupUserConfigFile.delete();
 			}
 
+			String localUserConfigFilePath =
+				JenkinsResultsParserUtil.getCanonicalPath(localUserConfigFile);
+
 			throw new RuntimeException(
-				"Unable to back up " +
-					JenkinsResultsParserUtil.getCanonicalPath(
-						localUserConfigFile),
-				exception);
+				"Unable to back up " + localUserConfigFilePath, exception);
 		}
 	}
 
