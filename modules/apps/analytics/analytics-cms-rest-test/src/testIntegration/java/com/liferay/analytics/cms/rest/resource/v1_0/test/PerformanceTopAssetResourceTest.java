@@ -65,6 +65,8 @@ public class PerformanceTopAssetResourceTest
 	@Override
 	@Test
 	public void testGetPerformanceTopAssetExport() throws Exception {
+		_testGetPerformanceTopAssetExportWithAnalyticsCloudNotConnected();
+
 		String dataSourceId = RandomTestUtil.randomString();
 
 		try (AnalyticsCompanyConfigurationTemporarySwapper
@@ -81,18 +83,11 @@ public class PerformanceTopAssetResourceTest
 		}
 	}
 
-	@Test
-	public void testGetPerformanceTopAssetExportWithAnalyticsCloudNotConnected() {
-		Assert.assertThrows(
-			ForbiddenException.class,
-			() -> _performanceTopAssetResource.getPerformanceTopAssetExport(
-				null, RandomTestUtil.nextInt(), RandomTestUtil.randomString(),
-				null, null));
-	}
-
 	@Override
 	@Test
 	public void testGetPerformanceTopAssetPage() throws Exception {
+		_testGetPerformanceTopAssetPageWithAnalyticsCloudNotConnected();
+
 		String dataSourceId = RandomTestUtil.randomString();
 
 		try (AnalyticsCompanyConfigurationTemporarySwapper
@@ -107,15 +102,6 @@ public class PerformanceTopAssetResourceTest
 			ReflectionTestUtil.setFieldValue(
 				_performanceTopAssetResource, "_http", _http);
 		}
-	}
-
-	@Test
-	public void testGetPerformanceTopAssetPageWithAnalyticsCloudNotConnected() {
-		Assert.assertThrows(
-			ForbiddenException.class,
-			() -> _performanceTopAssetResource.getPerformanceTopAssetPage(
-				null, RandomTestUtil.nextInt(), RandomTestUtil.randomString(),
-				null, Pagination.of(1, 10), null));
 	}
 
 	@Override
@@ -263,6 +249,14 @@ public class PerformanceTopAssetResourceTest
 		_assertParameter(sb.toString(), "sort", location);
 	}
 
+	private void _testGetPerformanceTopAssetExportWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() -> _performanceTopAssetResource.getPerformanceTopAssetExport(
+				null, RandomTestUtil.nextInt(), RandomTestUtil.randomString(),
+				null, null));
+	}
+
 	private void _testGetPerformanceTopAssetPageResponse() throws Exception {
 		String assetId = RandomTestUtil.randomString();
 		String assetTitle = RandomTestUtil.randomString();
@@ -391,6 +385,14 @@ public class PerformanceTopAssetResourceTest
 		}
 
 		_assertParameter(sb.toString(), "sort", location);
+	}
+
+	private void _testGetPerformanceTopAssetPageWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() -> _performanceTopAssetResource.getPerformanceTopAssetPage(
+				null, RandomTestUtil.nextInt(), RandomTestUtil.randomString(),
+				null, Pagination.of(1, 10), null));
 	}
 
 	@Inject

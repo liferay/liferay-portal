@@ -72,6 +72,11 @@ public class PerformanceHistogramMetricResourceTest
 	@Override
 	@Test
 	public void testGetPerformanceHistogramMetric() throws Exception {
+		_testGetPerformanceHistogramMetric();
+		_testGetPerformanceHistogramMetricWithAnalyticsCloudNotConnected();
+	}
+
+	private void _testGetPerformanceHistogramMetric() throws Exception {
 		try (AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
@@ -145,8 +150,7 @@ public class PerformanceHistogramMetricResourceTest
 		}
 	}
 
-	@Test
-	public void testGetPerformanceHistogramMetricWithAnalyticsCloudNotConnected() {
+	private void _testGetPerformanceHistogramMetricWithAnalyticsCloudNotConnected() {
 		Assert.assertThrows(
 			ForbiddenException.class,
 			() ->

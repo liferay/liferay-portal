@@ -71,6 +71,27 @@ public class PerformanceOverviewMetricResourceTest
 	@Override
 	@Test
 	public void testGetPerformanceOverviewMetric() throws Exception {
+		_testGetPerformanceOverviewMetric();
+		_testGetPerformanceOverviewMetricWithAnalyticsCloudNotConnected();
+	}
+
+	private void _assertMetric(
+		Metric metric, String metricType, double previousValue, double value,
+		Trend.Classification classification, double percentage) {
+
+		Assert.assertEquals(metricType, metric.getMetricType());
+		Assert.assertEquals(previousValue, metric.getPreviousValue(), 0);
+		Assert.assertEquals(value, metric.getValue(), 0);
+
+		Trend trend = metric.getTrend();
+
+		Assert.assertEquals(
+			classification.toString(),
+			String.valueOf(trend.getClassification()));
+		Assert.assertEquals(percentage, trend.getPercentage(), 0);
+	}
+
+	private void _testGetPerformanceOverviewMetric() throws Exception {
 		try (AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
@@ -165,30 +186,13 @@ public class PerformanceOverviewMetricResourceTest
 		}
 	}
 
-	@Test
-	public void testGetPerformanceOverviewMetricWithAnalyticsCloudNotConnected() {
+	private void _testGetPerformanceOverviewMetricWithAnalyticsCloudNotConnected() {
 		Assert.assertThrows(
 			ForbiddenException.class,
 			() ->
 				_performanceOverviewMetricResource.getPerformanceOverviewMetric(
 					new Long[] {_depotEntry.getDepotEntryId()},
 					RandomTestUtil.nextInt()));
-	}
-
-	private void _assertMetric(
-		Metric metric, String metricType, double previousValue, double value,
-		Trend.Classification classification, double percentage) {
-
-		Assert.assertEquals(metricType, metric.getMetricType());
-		Assert.assertEquals(previousValue, metric.getPreviousValue(), 0);
-		Assert.assertEquals(value, metric.getValue(), 0);
-
-		Trend trend = metric.getTrend();
-
-		Assert.assertEquals(
-			classification.toString(),
-			String.valueOf(trend.getClassification()));
-		Assert.assertEquals(percentage, trend.getPercentage(), 0);
 	}
 
 	@DeleteAfterTestRun
