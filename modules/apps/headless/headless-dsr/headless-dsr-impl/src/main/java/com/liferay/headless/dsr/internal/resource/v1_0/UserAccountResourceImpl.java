@@ -8,6 +8,7 @@ package com.liferay.headless.dsr.internal.resource.v1_0;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.headless.dsr.dto.v1_0.UserAccount;
 import com.liferay.headless.dsr.internal.dto.v1_0.converter.UserAccountDTOConverterContext;
+import com.liferay.headless.dsr.internal.util.DSRRoleUtil;
 import com.liferay.headless.dsr.internal.util.TicketUtil;
 import com.liferay.headless.dsr.resource.v1_0.UserAccountResource;
 import com.liferay.login.web.constants.LoginPortletKeys;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -142,8 +144,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		User user = _userLocalService.getUser(userAccountId);
 
-		_userGroupRoleLocalService.deleteUserGroupRoles(
-			new long[] {user.getUserId()}, group.getGroupId());
+		_checkManageMemberPermission(group, user.getUserId());
 
 		if (Validator.isNotNull(userAccount.getRoleKey())) {
 			Role role = _roleLocalService.getRole(
@@ -156,6 +157,9 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 						RoleConstants.getTypeLabel(role.getType()), " is not ",
 						RoleConstants.getTypeLabel(RoleConstants.TYPE_SITE)));
 			}
+
+			_userGroupRoleLocalService.deleteUserGroupRoles(
+				new long[] {user.getUserId()}, group.getGroupId());
 
 			_userGroupRoleLocalService.addUserGroupRoles(
 				user.getUserId(), group.getGroupId(),
@@ -368,6 +372,36 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				"userId", userId
 			).toString(),
 			membershipExpirationDate, new ServiceContext());
+	}
+
+	private void _checkManageMemberPermission(Group group, long userId)
+		throws Exception {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker.isGroupAdmin(group.getGroupId()) ||
+			permissionChecker.isGroupOwner(group.getGroupId())) {
+
+			return;
+		}
+
+		String contextUserRoleName = DSRRoleUtil.getHighestRoleName(
+			group.getGroupId(), _userGroupRoleLocalService,
+			contextUser.getUserId());
+		String userRoleName = DSRRoleUtil.getHighestRoleName(
+			group.getGroupId(), _userGroupRoleLocalService, userId);
+
+		if ((userId != contextUser.getUserId()) &&
+			DSRRoleUtil.isManageableRoleName(
+				contextUserRoleName, userRoleName)) {
+
+			return;
+		}
+
+		throw new PrincipalException.MustHavePermission(
+			permissionChecker, Group.class.getName(), group.getGroupId(),
+			ActionKeys.ASSIGN_MEMBERS);
 	}
 
 	private void _checkPermission(Group group, String roleKey)

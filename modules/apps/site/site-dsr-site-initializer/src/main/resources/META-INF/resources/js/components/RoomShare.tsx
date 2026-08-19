@@ -46,6 +46,11 @@ const ASSIGNABLE_ROLE_KEYS_BY_ROLE_KEY: Record<string, string[]> = {
 	'DSR Room Collaborator': ['DSR Content Contributor', 'Site Member'],
 };
 const EXPIRATION_WARNING_DAYS = 7;
+const MANAGEABLE_ROLE_KEYS: Record<string, string[]> = {
+	'DSR Content Contributor': ['Site Member'],
+	'DSR Room Collaborator': ['DSR Content Contributor', 'Site Member'],
+};
+const MEMBER_ROLE_KEY = 'Site Member';
 const OWNER_ROLE_KEY = 'Site Owner';
 
 function getDateInputValue(membershipExpirationDate?: string): string {
@@ -157,7 +162,7 @@ function RoomShare({
 	const [expirationDatePickerExpanded, setExpirationDatePickerExpanded] =
 		useState(false);
 	const [loading, setLoading] = useState(false);
-	const [roleKey, setRoleKey] = useState('Site Member');
+	const [roleKey, setRoleKey] = useState(MEMBER_ROLE_KEY);
 	const [users, setUsers] = useState<IUserAccount[]>([]);
 	const currentUserId = Number(Liferay.ThemeDisplay.getUserId());
 	const minExpirationDate = getDateInputValue(new Date().toISOString());
@@ -176,6 +181,9 @@ function RoomShare({
 	const assignableRoles = DSR_SITE_ROLES.filter((role) =>
 		assignableRoleKeys.includes(role.key)
 	);
+
+	const manageableRoleKeys =
+		MANAGEABLE_ROLE_KEYS[currentUserRoleKey ?? ''] ?? [];
 
 	const loadUsers = useCallback(async () => {
 		setLoading(true);
@@ -267,7 +275,7 @@ function RoomShare({
 
 			setEmailAddresses([]);
 			setExpirationDate('');
-			setRoleKey('Site Member');
+			setRoleKey(MEMBER_ROLE_KEY);
 
 			openToast({
 				message:
@@ -413,7 +421,11 @@ function RoomShare({
 			return true;
 		}
 
-		return assignableRoles.some((role) => role.key === user.roleKey);
+		if (user.id === currentUserId) {
+			return false;
+		}
+
+		return manageableRoleKeys.includes(user.roleKey ?? MEMBER_ROLE_KEY);
 	};
 
 	const renderContent = () => {
