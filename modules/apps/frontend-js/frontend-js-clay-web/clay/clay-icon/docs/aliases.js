@@ -1108,6 +1108,14 @@ export const iconsData = [
 		name: 'flag-full',
 	},
 	{
+		aliases: ['mirror', 'reflection', 'symmetry'],
+		name: 'flip-horizontal',
+	},
+	{
+		aliases: ['mirror', 'symmetry', 'vertically'],
+		name: 'flip-vertical',
+	},
+	{
 		aliases: ['closed', 'locked', 'permissions', 'private'],
 		name: 'folder-lock-line',
 	},
