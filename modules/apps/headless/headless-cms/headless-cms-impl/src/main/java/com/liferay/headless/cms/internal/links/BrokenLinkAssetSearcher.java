@@ -9,20 +9,25 @@ import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.query.BooleanQuery;
 import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.portal.search.query.TermsQuery;
+import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
 import com.liferay.site.cms.site.initializer.util.CMSOutboundLinksUtil;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Jürgen Kappler
@@ -39,40 +44,20 @@ public class BrokenLinkAssetSearcher {
 	}
 
 	public long getCount(
-		long companyId, Long[] groupIds, List<String> outboundLinkTokens) {
-
-		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
-
-		booleanQuery.addFilterQueryClauses(
-			_getOutboundLinksBooleanQuery(outboundLinkTokens),
-			_getTermsQuery("cms_section", "contents", "files"),
-			_getTermsQuery(
-				Field.STATUS,
-				ArrayUtil.toStringArray(CMSWorkflowConstants.STATUSES)),
-			QueriesUtil.term("rootDescendantNode", false));
+		long companyId, Long[] groupIds, Set<String> outboundLinkTokens) {
 
 		SearchResponse searchResponse = _searcher.search(
-			_searchRequestBuilderFactory.builder(
-			).companyId(
-				companyId
-			).emptySearchEnabled(
-				true
-			).groupIds(
-				ArrayUtil.toArray(groupIds)
-			).query(
-				booleanQuery
-			).withSearchContext(
-				searchContext -> searchContext.setAttribute(
-					Field.STATUS, WorkflowConstants.STATUS_ANY)
+			_getSearchRequestBuilder(
+				companyId, groupIds, outboundLinkTokens
 			).build());
 
 		return searchResponse.getCount();
 	}
 
-	public List<String> getExpiredAssetTokens(
+	public Map<String, Long> getExpiredAssetObjectEntryIds(
 		long companyId, Long[] objectDefinitionIds) {
 
-		List<String> expiredAssetTokens = new ArrayList<>();
+		Map<String, Long> objectEntryIds = new LinkedHashMap<>();
 
 		List<Object[]> results = _objectEntryLocalService.dslQuery(
 			DSLQueryFactoryUtil.select(
@@ -93,19 +78,56 @@ public class BrokenLinkAssetSearcher {
 			));
 
 		for (Object[] objects : results) {
-			expiredAssetTokens.add(
+			long objectEntryId = GetterUtil.getLong(objects[1]);
+
+			objectEntryIds.put(
 				CMSOutboundLinksUtil.getObjectEntryExternalReferenceCodeToken(
-					GetterUtil.getString(objects[0])));
-			expiredAssetTokens.add(
-				CMSOutboundLinksUtil.getObjectEntryIdToken(
-					GetterUtil.getLong(objects[1])));
+					GetterUtil.getString(objects[0])),
+				objectEntryId);
+			objectEntryIds.put(
+				CMSOutboundLinksUtil.getObjectEntryIdToken(objectEntryId),
+				objectEntryId);
 		}
 
-		return expiredAssetTokens;
+		return objectEntryIds;
+	}
+
+	public SearchResponse search(
+		long companyId, Long[] groupIds, String languageId,
+		Set<String> outboundLinkTokens, Pagination pagination, String search,
+		Sort[] sorts) {
+
+		SearchRequestBuilder searchRequestBuilder = _getSearchRequestBuilder(
+			companyId, groupIds, outboundLinkTokens);
+
+		int startPosition = Math.min(
+			pagination.getStartPosition(), _MAX_RESULT_WINDOW);
+
+		searchRequestBuilder.addSelectedFieldNames(
+			"outboundLinks", Field.ENTRY_CLASS_PK, "objectDefinitionId",
+			"objectEntryTitle",
+			Field.getLocalizedName(languageId, "objectEntryTitle")
+		).from(
+			startPosition
+		).size(
+			Math.min(
+				pagination.getPageSize(), _MAX_RESULT_WINDOW - startPosition)
+		);
+
+		if (ArrayUtil.isNotEmpty(sorts)) {
+			searchRequestBuilder.withSearchContext(
+				searchContext -> searchContext.setSorts(sorts));
+		}
+
+		if (search != null) {
+			searchRequestBuilder.queryString(search);
+		}
+
+		return _searcher.search(searchRequestBuilder.build());
 	}
 
 	private BooleanQuery _getOutboundLinksBooleanQuery(
-		List<String> outboundLinkTokens) {
+		Set<String> outboundLinkTokens) {
 
 		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
 
@@ -125,6 +147,34 @@ public class BrokenLinkAssetSearcher {
 		return booleanQuery;
 	}
 
+	private SearchRequestBuilder _getSearchRequestBuilder(
+		long companyId, Long[] groupIds, Set<String> outboundLinkTokens) {
+
+		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
+
+		booleanQuery.addFilterQueryClauses(
+			_getOutboundLinksBooleanQuery(outboundLinkTokens),
+			_getTermsQuery("cms_section", "contents", "files"),
+			_getTermsQuery(
+				Field.STATUS,
+				ArrayUtil.toStringArray(CMSWorkflowConstants.STATUSES)),
+			QueriesUtil.term("rootDescendantNode", false));
+
+		return _searchRequestBuilderFactory.builder(
+		).companyId(
+			companyId
+		).emptySearchEnabled(
+			true
+		).groupIds(
+			ArrayUtil.toArray(groupIds)
+		).query(
+			booleanQuery
+		).withSearchContext(
+			searchContext -> searchContext.setAttribute(
+				Field.STATUS, WorkflowConstants.STATUS_ANY)
+		);
+	}
+
 	private TermsQuery _getTermsQuery(String fieldName, String... values) {
 		TermsQuery termsQuery = QueriesUtil.terms(fieldName);
 
@@ -132,6 +182,8 @@ public class BrokenLinkAssetSearcher {
 
 		return termsQuery;
 	}
+
+	private static final int _MAX_RESULT_WINDOW = 10000;
 
 	private static final int _TERMS_QUERY_CHUNK_SIZE = 4096;
 

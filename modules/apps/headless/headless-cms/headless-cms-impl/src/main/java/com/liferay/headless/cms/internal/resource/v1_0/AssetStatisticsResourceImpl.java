@@ -29,7 +29,7 @@ import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -163,16 +163,17 @@ public class AssetStatisticsResourceImpl
 					_objectEntryLocalService, _searcher,
 					_searchRequestBuilderFactory);
 
-			List<String> expiredAssetTokens =
-				brokenLinkAssetSearcher.getExpiredAssetTokens(
+			Map<String, Long> expiredAssetObjectEntryIds =
+				brokenLinkAssetSearcher.getExpiredAssetObjectEntryIds(
 					contextCompany.getCompanyId(), objectDefinitionIds);
 
-			if (expiredAssetTokens.isEmpty()) {
+			if (expiredAssetObjectEntryIds.isEmpty()) {
 				return 0;
 			}
 
 			return brokenLinkAssetSearcher.getCount(
-				contextCompany.getCompanyId(), groupIds, expiredAssetTokens);
+				contextCompany.getCompanyId(), groupIds,
+				expiredAssetObjectEntryIds.keySet());
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
