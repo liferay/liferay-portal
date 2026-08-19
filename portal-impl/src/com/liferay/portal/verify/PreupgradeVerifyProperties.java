@@ -2073,6 +2073,7 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 		"struts.portlet.request.processor",
 		"table.mapper.cache.mapping.table.names", "tck.url",
 		"transaction.manager.impl", "transaction.isolation.counter",
+		"upgrade.concurrent.process.future.list.max.size",
 		"user.groups.copy.layouts.to.user.personal.site",
 		"user.groups.indexer.enabled", "users.form.add.identification",
 		"users.indexer.enabled", "users.form.add.main",

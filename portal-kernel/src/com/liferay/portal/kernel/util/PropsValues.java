@@ -2372,11 +2372,6 @@ public class PropsValues {
 		GetterUtil.getInteger(
 			PropsUtil.get(PropsKeys.UPGRADE_CONCURRENT_FETCH_SIZE));
 
-	public static final int UPGRADE_CONCURRENT_PROCESS_FUTURE_LIST_MAX_SIZE =
-		GetterUtil.getInteger(
-			PropsUtil.get(
-				PropsKeys.UPGRADE_CONCURRENT_PROCESS_FUTURE_LIST_MAX_SIZE));
-
 	public static final boolean UPGRADE_DATABASE_DL_STORAGE_CHECK_DISABLED =
 		GetterUtil.getBoolean(
 			PropsUtil.get(
