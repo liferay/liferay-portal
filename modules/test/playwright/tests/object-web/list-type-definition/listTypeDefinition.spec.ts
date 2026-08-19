@@ -1126,7 +1126,6 @@ test.describe('manage picklists inside the picklists portlet', () => {
 	test('ensure picklist entry keys starting with upper case are correctly rendered in the entries', async ({
 		apiHelpers,
 		listTypeDefinitionPage,
-		page,
 	}) => {
 		const listTypeDefinition: ListTypeDefinition =
 			await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
@@ -1158,39 +1157,33 @@ test.describe('manage picklists inside the picklists portlet', () => {
 
 		const [responseEntries]: ListTypeEntry[] = response.listTypeEntries;
 
-		const frameElement = await page.$('iframe');
-		const frame = await frameElement.contentFrame();
-		await frame.waitForLoadState('networkidle');
+		// Read the table through assertions rather than a snapshot of its
+		// texts. The rows arrive with the data set's own render, which no load
+		// state marks, so a snapshot taken too early holds an empty list and
+		// the comparison then reports the expected value as undefined. Only the
+		// three leading cells are asserted, since the table also carries an
+		// item actions column that is not part of what this test states.
 
-		const listTypeDefinitionHeader =
-			await listTypeDefinitionPage.frameLocator
-				.locator('.fds th')
-				.allInnerTexts();
-
-		const listTypeDefinitionContent =
-			await listTypeDefinitionPage.frameLocator
-				.locator('.fds td')
-				.allInnerTexts();
-
-		const listTypeDefinitionHeaderTemplate = [
+		const listTypeDefinitionHeaders = [
 			'Name',
 			'Key',
 			'External Reference Code',
 		];
 
-		const listTypeDefinitionContentTemplate = [
+		const listTypeDefinitionEntry = [
 			listTypeDefinitionEntryName,
 			listTypeDefinitionEntryKey,
 			responseEntries.externalReferenceCode,
 		];
 
-		for (let i = 0; i < 3; i++) {
-			expect(listTypeDefinitionHeaderTemplate[i]).toBe(
-				listTypeDefinitionHeader[i]
-			);
-			expect(listTypeDefinitionContentTemplate[i]).toBe(
-				listTypeDefinitionContent[i]
-			);
+		for (let i = 0; i < listTypeDefinitionHeaders.length; i++) {
+			await expect(
+				listTypeDefinitionPage.frameLocator.locator('.fds th').nth(i)
+			).toHaveText(listTypeDefinitionHeaders[i]);
+
+			await expect(
+				listTypeDefinitionPage.frameLocator.locator('.fds td').nth(i)
+			).toHaveText(listTypeDefinitionEntry[i]);
 		}
 	});
 
