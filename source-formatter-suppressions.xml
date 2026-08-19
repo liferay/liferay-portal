@@ -134,6 +134,7 @@
 		<suppress checks="JavaXMLSecurityCheck" files="portal-impl/src/com/liferay/portal/util/InitUtil.java" />
 		<suppress checks="JavaXMLSecurityCheck" files="portal-impl/src/com/liferay/portal/xml/SAXReaderFactory\.java" />
 		<suppress checks="JavaXMLSecurityCheck" files="portal-kernel/src/com/liferay/portal/kernel/internal/log4j/Log4jConfigUtil\.java" />
+		<suppress checks="JavaXMLSecurityCheck" files="portal-kernel/src/com/liferay/portal/kernel/internal/security/fips/FIPSModeHelperUtil\.java" />
 		<suppress checks="JavaXMLSecurityCheck" files="util-java/src/com/liferay/util/xml/XMLMergerRunner\.java" />
 		<suppress checks="JSPIllegalSyntaxCheck" files="modules/apps/portal-remote/portal-remote-json-web-service-web/src/main/resources/META-INF/resources/action\.jsp" />
 		<suppress checks="JSPLanguageKeysCheck" files="portal-web/docroot/html/portal/saml/.*" />
