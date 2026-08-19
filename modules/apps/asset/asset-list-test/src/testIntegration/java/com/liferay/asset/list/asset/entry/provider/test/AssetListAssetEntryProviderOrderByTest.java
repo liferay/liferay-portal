@@ -7,6 +7,7 @@ package com.liferay.asset.list.asset.entry.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
@@ -28,6 +29,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
@@ -35,9 +38,13 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.view.count.ViewCountManager;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -47,7 +54,10 @@ import com.liferay.segments.constants.SegmentsEntryConstants;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -104,6 +114,113 @@ public class AssetListAssetEntryProviderOrderByTest {
 			_objectDefinitionLocalService.updateTitleObjectFieldId(
 				_objectDefinition.getObjectDefinitionId(),
 				titleObjectField.getObjectFieldId());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageOrderedByCommonFieldDisplayDate()
+		throws Exception {
+
+		long now = System.currentTimeMillis();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"displayDate", new Date(now - Time.DAY)
+			).build());
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"displayDate", new Date(now - (3 * Time.DAY))
+			).build());
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"displayDate", new Date(now - (2 * Time.DAY))
+			).build());
+
+		_assertOrderedObjectEntries(
+			"displayDate", "ASC", objectEntry2, objectEntry3, objectEntry1);
+		_assertOrderedObjectEntries(
+			"displayDate", "DESC", objectEntry1, objectEntry3, objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageOrderedByCommonFieldExpirationDate()
+		throws Exception {
+
+		long now = System.currentTimeMillis();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"expirationDate", new Date(now + (30 * Time.DAY))
+			).build());
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"expirationDate", new Date(now + (10 * Time.DAY))
+			).build());
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"expirationDate", new Date(now + (20 * Time.DAY))
+			).build());
+
+		_assertOrderedObjectEntries(
+			"expirationDate", "ASC", objectEntry2, objectEntry3, objectEntry1);
+		_assertOrderedObjectEntries(
+			"expirationDate", "DESC", objectEntry1, objectEntry3, objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageOrderedByCommonFieldUserName()
+		throws Exception {
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			_addUser("Charlie"),
+			HashMapBuilder.<String, Serializable>put(
+				"title", RandomTestUtil.randomString()
+			).build());
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			_addUser("Alpha"),
+			HashMapBuilder.<String, Serializable>put(
+				"title", RandomTestUtil.randomString()
+			).build());
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			_addUser("Bravo"),
+			HashMapBuilder.<String, Serializable>put(
+				"title", RandomTestUtil.randomString()
+			).build());
+
+		_assertOrderedObjectEntries(
+			Field.USER_NAME, "ASC", objectEntry2, objectEntry3, objectEntry1);
+		_assertOrderedObjectEntries(
+			Field.USER_NAME, "DESC", objectEntry1, objectEntry3, objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageOrderedByCommonFieldViewCount()
+		throws Exception {
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"title", RandomTestUtil.randomString()
+			).build());
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"title", RandomTestUtil.randomString()
+			).build());
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"title", RandomTestUtil.randomString()
+			).build());
+
+		_incrementViewCount(objectEntry1, 30);
+		_incrementViewCount(objectEntry2, 10);
+		_incrementViewCount(objectEntry3, 20);
+
+		_assertOrderedObjectEntries(
+			"viewCount", "ASC", objectEntry2, objectEntry3, objectEntry1);
+		_assertOrderedObjectEntries(
+			"viewCount", "DESC", objectEntry1, objectEntry3, objectEntry2);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
@@ -211,16 +328,38 @@ public class AssetListAssetEntryProviderOrderByTest {
 			assetListEntry.getAssetListEntryId());
 	}
 
-	private ObjectEntry _addObjectEntry(Map<String, Serializable> values)
+	private ObjectEntry _addObjectEntry(
+			long userId, Map<String, Serializable> values)
 		throws Exception {
 
 		return _objectEntryLocalService.addObjectEntry(
-			_group.getGroupId(), TestPropsValues.getUserId(),
+			_group.getGroupId(), userId,
 			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null, values,
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+				_group.getGroupId(), userId));
+	}
+
+	private ObjectEntry _addObjectEntry(Map<String, Serializable> values)
+		throws Exception {
+
+		return _addObjectEntry(TestPropsValues.getUserId(), values);
+	}
+
+	private long _addUser(String firstName) throws Exception {
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			StringPool.BLANK,
+			firstName + RandomTestUtil.nextLong() + "@liferay.com",
+			firstName + RandomTestUtil.nextLong(), LocaleUtil.getDefault(),
+			firstName, RandomTestUtil.randomString(),
+			new long[] {_group.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		_users.add(user);
+
+		return user.getUserId();
 	}
 
 	private void _assertOrderedObjectEntries(
@@ -258,6 +397,22 @@ public class AssetListAssetEntryProviderOrderByTest {
 		).toString();
 	}
 
+	private void _incrementViewCount(ObjectEntry objectEntry, int increment)
+		throws Exception {
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			_objectDefinition.getClassName(), objectEntry.getObjectEntryId());
+
+		_viewCountManager.incrementViewCount(
+			assetEntry.getCompanyId(), _portal.getClassNameId(AssetEntry.class),
+			assetEntry.getEntryId(), increment);
+
+		_assetEntryLocalService.reindex(Collections.singletonList(assetEntry));
+	}
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
+
 	@Inject
 	private AssetListAssetEntryProvider _assetListAssetEntryProvider;
 
@@ -281,5 +436,11 @@ public class AssetListAssetEntryProviderOrderByTest {
 
 	@Inject
 	private Portal _portal;
+
+	@DeleteAfterTestRun
+	private final List<User> _users = new ArrayList<>();
+
+	@Inject
+	private ViewCountManager _viewCountManager;
 
 }
