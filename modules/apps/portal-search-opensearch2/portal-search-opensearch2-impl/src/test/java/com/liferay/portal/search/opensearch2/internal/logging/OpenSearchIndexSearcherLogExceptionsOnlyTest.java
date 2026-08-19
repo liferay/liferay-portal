@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.TermQuery;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchIndexSearcher;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
 import com.liferay.portal.search.opensearch2.internal.connection.TestOpenSearchConnectionManager;
@@ -22,6 +21,7 @@ import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -73,9 +73,7 @@ public class OpenSearchIndexSearcherLogExceptionsOnlyTest
 		return LiferayOpenSearchIndexingFixtureFactory.builder(
 		).testOpenSearchConnectionManager(
 			new TestOpenSearchConnectionManager(
-				HashMapBuilder.<String, Object>put(
-					"logExceptionsOnly", true
-				).build())
+				Collections.singletonMap("logExceptionsOnly", true))
 		).build();
 	}
 
