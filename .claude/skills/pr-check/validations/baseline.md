@@ -18,10 +18,17 @@ Do not narrow it to the branch diff. The comparison target is resolved from Nexu
 
 Leave `baseline.all.ant.projects` at its default of `true`. Passing `false` drops the seven top level Ant projects — `portal-kernel`, `portal-impl`, `portal-test`, `util-bridges`, `util-java`, `util-slf4j`, and `util-taglib` — from the run. Pass it only when **Full Portal Build** ran in this same pr-check: `ant all` starts with `clean`, so each of those jars is rebuilt, and the `jar` target baselines it on the way through.
 
-Two prerequisites:
+Three prerequisites:
 
 - Each baseline resolves the last released artifact from Nexus, so the run needs network access. Use the local check below when there is none.
-- Treat both a finding and a pass against a project that has not been cleanly built on this branch as unproven. Rerun after `ant all`.
+- A project that has not been cleanly built on this branch cannot be baselined at all. Rerun after `ant all`, which rebuilds all seven and baselines each one through the `jar` target.
+- Silence is not a pass. The report is written **only on a finding**, and the seven Ant projects run under `failonerror="false"`, so a run that compared nothing leaves exactly what a clean one leaves. With no `portal-kernel.jar` in the tree it never runs at all, which is how LPD-93274 shipped.
+
+Confirm each Ant project actually baselined by running it alone, where the exit status is not swallowed. Fail when a jar is missing, when `gradlew` exits non-zero, or when the output carries `Could not resolve` — a baseline that did not run is not one that passed.
+
+```bash
+("${REPO_ROOT}/gradlew" --console=plain --project-dir "${REPO_ROOT}/<project>" baseline)
+```
 
 ### Interpretation
 
@@ -72,11 +79,13 @@ Classify each row, comparing segments as numbers so that `9.5.1` to `10.0.0` cou
 
 ### Local Version Check
 
-This needs no network and reports an advisory note, never a PASS or FAIL. Use it when the baseline run above cannot reach Nexus.
+This needs no network and **fails** rather than advises. Run it on every pass, not only when the baseline cannot reach Nexus — it is the half that cannot silently compare nothing.
 
-Look at each changed `.java` under an `*-api` module's `src/main/java`, `portal-impl/src`, or `portal-kernel/src`. When its diff adds or removes a `public` or `protected` line, the exported API changed, so the version should be bumped too. The bump shows up in the diff as a changed `packageinfo`, or a changed `bnd.bnd` `Bundle-Version` for an `*-api` module. If neither changed, flag the package.
+Look at each changed `.java` under an `*-api` module's `src/main/java`, `portal-impl/src`, or `portal-kernel/src`. When its diff adds or removes a `public` or `protected` line, the exported API changed, so the version has to be bumped too. The bump shows up in the diff as a changed `packageinfo` in that package's directory, or a changed `bnd.bnd` `Bundle-Version` for an `*-api` module. When neither changed, fail and name the package.
 
-Flag a lowered `packageinfo` or `Bundle-Version` that has no matching `public` or `protected` removal.
+Fail as well on a lowered `packageinfo` or `Bundle-Version` that has no matching `public` or `protected` removal.
+
+A newly exported package needs its own `packageinfo`, so a diff adding the package without one fails here too.
 
 ## Autocommit
 
@@ -110,6 +119,6 @@ When several appear in one run, fail on the strictest and leave every safe bump 
 
 ## Time Estimate
 
-~30 sec for the whole repository on a warm Gradle daemon whose module jars are already built. Around 45 sec when jars must be rebuilt first, and around 80 sec on a cold daemon.
+~30 sec for the whole repository on a warm Gradle daemon whose module jars are already built. Around 45 sec when jars must be rebuilt first, and around 80 sec on a cold daemon. Add ~30 sec for the seven Ant project confirmations, plus a few seconds for the static local check.
 
 Those figures assume a tree that has been built before, where most of the roughly 590 exporting modules resolve as up to date. A first run in a tree that has never been built pays the jar build for every one of them and takes far longer.
