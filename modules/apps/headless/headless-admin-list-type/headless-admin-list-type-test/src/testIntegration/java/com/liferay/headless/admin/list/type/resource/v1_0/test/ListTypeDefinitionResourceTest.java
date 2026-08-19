@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.odata.entity.EntityField;
@@ -36,6 +37,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -77,6 +79,68 @@ public class ListTypeDefinitionResourceTest
 						listTypeDefinition2, entityField.getName(), 1);
 				}
 			});
+	}
+
+	@Override
+	@Test
+	public void testPatchListTypeDefinition() throws Exception {
+		super.testPatchListTypeDefinition();
+
+		ListTypeDefinition postListTypeDefinition =
+			testPatchListTypeDefinition_addListTypeDefinition();
+
+		ListTypeDefinition patchListTypeDefinition =
+			listTypeDefinitionResource.patchListTypeDefinition(
+				postListTypeDefinition.getId(),
+				new ListTypeDefinition() {
+					{
+						listTypeEntries = ArrayUtil.append(
+							postListTypeDefinition.getListTypeEntries(),
+							new ListTypeEntry() {
+								{
+									key = RandomTestUtil.randomString();
+									name_i18n =
+										RandomTestUtil.
+											randomLanguageIdStringMap();
+								}
+							});
+					}
+				});
+
+		ListTypeDefinition getListTypeDefinition =
+			listTypeDefinitionResource.getListTypeDefinition(
+				patchListTypeDefinition.getId());
+
+		ListTypeEntry[] listTypeEntries =
+			getListTypeDefinition.getListTypeEntries();
+
+		Assert.assertEquals(
+			Arrays.toString(listTypeEntries), 2, listTypeEntries.length);
+
+		String patchedName = RandomTestUtil.randomString();
+
+		patchListTypeDefinition =
+			listTypeDefinitionResource.patchListTypeDefinition(
+				postListTypeDefinition.getId(),
+				new ListTypeDefinition() {
+					{
+						name_i18n = Collections.singletonMap(
+							"en-US", patchedName);
+					}
+				});
+
+		getListTypeDefinition =
+			listTypeDefinitionResource.getListTypeDefinition(
+				patchListTypeDefinition.getId());
+
+		Assert.assertEquals(
+			Collections.singletonMap("en-US", patchedName),
+			getListTypeDefinition.getName_i18n());
+
+		listTypeEntries = getListTypeDefinition.getListTypeEntries();
+
+		Assert.assertEquals(
+			Arrays.toString(listTypeEntries), 2, listTypeEntries.length);
 	}
 
 	@Test
