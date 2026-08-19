@@ -12,6 +12,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutFriendlyURLRandomizerBumper;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
@@ -97,15 +98,12 @@ public class LanguageTagTest {
 		_testGetLanguageEntriesWithDisplayPageTemplate();
 		_testGetLanguageEntriesWithFormAction();
 		_testGetLanguageEntriesWithFriendlyURLMappingPath();
-		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(1);
-		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(2);
-		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(3);
+		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle();
 		_testGetLanguageEntriesWithLocalizedVirtualHostname();
 		_testGetLanguageEntriesWithRedirectParameter();
 		_testGetLanguageEntriesWithSignedInUser();
 		_testGetLanguageEntriesWithVirtualHostname();
 		_testGetLanguageEntriesWithoutLayout();
-		_testGetLanguageEntriesWithoutLocalePrependFriendlyURLStyle();
 	}
 
 	private Layout _addLayout() throws Exception {
@@ -408,35 +406,54 @@ public class LanguageTagTest {
 				LocaleUtil.FRANCE));
 	}
 
-	private void _testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(
-			int localePrependFriendlyURLStyle)
+	private void _testGetLanguageEntriesWithLocalePrependFriendlyURLStyle()
 		throws Exception {
 
 		String localePrependFriendlyURLStyleValue =
 			_getLocalePrependFriendlyURLStyle();
 
 		try {
-			_setLocalePrependFriendlyURLStyle(
-				String.valueOf(localePrependFriendlyURLStyle));
+			_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(
+				"0",
+				(locale, url) -> Assert.assertEquals(
+					StringBundler.concat(
+						_UPDATE_LANGUAGE_PATH, "?languageId=",
+						LocaleUtil.toLanguageId(locale)),
+					url));
 
-			_assertLocalizedURL(
-				_layout, LocaleUtil.FRANCE, StringPool.BLANK,
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(_layout, LocaleUtil.US)),
-					LocaleUtil.FRANCE));
+			for (String localePrependFriendlyURLStyle :
+					List.of("1", "2", "3")) {
 
-			_assertLocalizedURL(
-				_layout, LocaleUtil.US, StringPool.BLANK,
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(_layout, LocaleUtil.FRANCE)),
-					LocaleUtil.US));
+				_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(
+					localePrependFriendlyURLStyle,
+					(locale, url) -> _assertLocalizedURL(
+						_layout, locale, StringPool.BLANK, url));
+			}
 		}
 		finally {
 			_setLocalePrependFriendlyURLStyle(
 				localePrependFriendlyURLStyleValue);
 		}
+	}
+
+	private void _testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(
+			String localePrependFriendlyURLStyle,
+			UnsafeBiConsumer<Locale, String, Exception> unsafeBiConsumer)
+		throws Exception {
+
+		_setLocalePrependFriendlyURLStyle(localePrependFriendlyURLStyle);
+
+		unsafeBiConsumer.accept(
+			LocaleUtil.FRANCE,
+			_getURL(
+				_getLanguageEntries(_getThemeDisplay(_layout, LocaleUtil.US)),
+				LocaleUtil.FRANCE));
+		unsafeBiConsumer.accept(
+			LocaleUtil.US,
+			_getURL(
+				_getLanguageEntries(
+					_getThemeDisplay(_layout, LocaleUtil.FRANCE)),
+				LocaleUtil.US));
 	}
 
 	private void _testGetLanguageEntriesWithLocalizedVirtualHostname()
@@ -475,34 +492,6 @@ public class LanguageTagTest {
 		Assert.assertEquals(
 			_UPDATE_LANGUAGE_PATH + "?languageId=fr_FR",
 			_getURL(_getLanguageEntries(themeDisplay), LocaleUtil.FRANCE));
-	}
-
-	private void _testGetLanguageEntriesWithoutLocalePrependFriendlyURLStyle()
-		throws Exception {
-
-		String localePrependFriendlyURLStyleValue =
-			_getLocalePrependFriendlyURLStyle();
-
-		try {
-			_setLocalePrependFriendlyURLStyle("0");
-
-			Assert.assertEquals(
-				_UPDATE_LANGUAGE_PATH + "?languageId=fr_FR",
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(_layout, LocaleUtil.US)),
-					LocaleUtil.FRANCE));
-			Assert.assertEquals(
-				_UPDATE_LANGUAGE_PATH + "?languageId=en_US",
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(_layout, LocaleUtil.FRANCE)),
-					LocaleUtil.US));
-		}
-		finally {
-			_setLocalePrependFriendlyURLStyle(
-				localePrependFriendlyURLStyleValue);
-		}
 	}
 
 	private void _testGetLanguageEntriesWithRedirectParameter()
