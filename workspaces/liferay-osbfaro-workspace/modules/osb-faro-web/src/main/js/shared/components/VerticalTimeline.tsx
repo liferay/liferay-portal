@@ -148,6 +148,22 @@ const DataSourceLabel: FC<{applicationId?: string; isWebhook: boolean}> = ({
 		</ClayLabel>
 	) : null;
 
+const BecameKnownLabel: FC = () => (
+	<ClayLabel
+		className="became-known-label flex-shrink-0 font-weight-semi-bold m-0"
+		displayType="success"
+		withClose={false}
+	>
+		<ClayLabel.ItemBefore>
+			<ClayIcon symbol="user" />
+		</ClayLabel.ItemBefore>
+
+		<ClayLabel.ItemExpand>
+			{Liferay.Language.get('became-known')}
+		</ClayLabel.ItemExpand>
+	</ClayLabel>
+);
+
 const ExternalLink: FC<{url: string}> = ({url}) => (
 	<ClayLink
 		className="subtitle align-items-center align-self-start d-inline-flex font-weight-normal mw-100 text-secondary"
@@ -238,6 +254,7 @@ const SessionRow: FC<IRowProps<VerticalTimelineSession>> = ({
 	item: {
 		applicationId,
 		attributes,
+		becameKnown,
 		browserName,
 		device,
 		endTime,
@@ -293,6 +310,8 @@ const SessionRow: FC<IRowProps<VerticalTimelineSession>> = ({
 				</div>
 
 				<div className="row-details ml-auto pl-3 d-flex align-items-center">
+					{becameKnown && <BecameKnownLabel />}
+
 					{LDPEnabled && (
 						<DataSourceLabel
 							applicationId={applicationId}

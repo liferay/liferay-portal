@@ -4,6 +4,7 @@ export default () => ({
 	userSessions: [
 		{
 			__typename: 'UserSession',
+			becameKnown: false,
 			browserName: 'Default Browser',
 			completeDate: 'Fri May 08 18:00:15 GMT 2026',
 			contentLanguageId: null,
@@ -61,6 +62,7 @@ export default () => ({
 		},
 		{
 			__typename: 'UserSession',
+			becameKnown: true,
 			browserName: 'Chrome Mobile',
 			completeDate: 'Thu May 07 20:15:10 GMT 2026',
 			contentLanguageId: 'en-US',
@@ -99,6 +101,7 @@ export default () => ({
 		},
 		{
 			__typename: 'UserSession',
+			becameKnown: false,
 			browserName: 'Chrome',
 			completeDate: 'Thu May 07 19:57:32 GMT 2026',
 			contentLanguageId: 'en-US',
@@ -248,6 +251,7 @@ export default () => ({
 		},
 		{
 			__typename: 'UserSession',
+			becameKnown: false,
 			browserName: 'Default Browser',
 			completeDate: 'Thu May 07 21:15:44 GMT 2026',
 			contentLanguageId: null,

@@ -17,6 +17,7 @@ export interface UserSessionEvent {
 }
 
 export interface UserSession {
+	becameKnown: boolean;
 	browserName: string;
 	completeDate: Date;
 	contentLanguageID: string;
@@ -78,6 +79,7 @@ export default gql`
 		) {
 			userSessions {
 				... on UserSession {
+					becameKnown
 					browserName
 					completeDate
 					contentLanguageId

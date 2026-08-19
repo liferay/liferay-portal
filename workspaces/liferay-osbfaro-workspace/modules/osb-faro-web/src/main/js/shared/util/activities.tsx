@@ -66,6 +66,7 @@ export type VerticalTimelinePageGroup = {
 export type VerticalTimelineSession = {
 	applicationId: string;
 	attributes: Record<string, unknown>;
+	becameKnown?: boolean;
 	browserName?: string;
 	device: string;
 	endTime?: Date | string | null;
@@ -455,6 +456,7 @@ export const formatSessions = (
 					timezoneOffset: session.timezoneOffset,
 					userAgent: session.userAgent,
 				},
+				becameKnown: session.becameKnown,
 				browserName: session.browserName,
 				device: session.deviceType,
 				endTime: session.completeDate,
