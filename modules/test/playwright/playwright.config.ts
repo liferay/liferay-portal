@@ -175,6 +175,7 @@ import {config as portalDefaultPermissionsWebConfig} from './tests/portal-defaul
 import {config as portalImplMainConfig} from './tests/portal-impl/main/config';
 import {config as portalImplPortletConfig} from './tests/portal-impl/portlet/config';
 import {config as portalInstancesWebDatabasePartitionConfig} from './tests/portal-instances-web/main-database-partition/config';
+import {config as portalInstancesWebConfig} from './tests/portal-instances-web/main/config';
 import {config as portalLanguageOverrideWebClientExtensionConfig} from './tests/portal-language-override-web/client-extension/config';
 import {config as portalLanguageOverrideWebConfig} from './tests/portal-language-override-web/main/config';
 import {config as portalSearchAdminWebConfig} from './tests/portal-search-admin-web/main/config';
@@ -437,6 +438,7 @@ export default defineConfig({
 		portalDefaultPermissionsWebConfig,
 		portalImplMainConfig,
 		portalImplPortletConfig,
+		portalInstancesWebConfig,
 		portalInstancesWebDatabasePartitionConfig,
 		portalLanguageOverrideWebClientExtensionConfig,
 		portalLanguageOverrideWebConfig,
