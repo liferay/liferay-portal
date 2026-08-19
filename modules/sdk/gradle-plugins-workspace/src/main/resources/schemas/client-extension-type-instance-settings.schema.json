@@ -3098,10 +3098,6 @@
 					"default": false,
 					"type": "boolean"
 				},
-				"jenkinsToken": {
-					"default": "",
-					"type": "string"
-				},
 				"jenkinsURL": {
 					"default": "",
 					"type": "string"
