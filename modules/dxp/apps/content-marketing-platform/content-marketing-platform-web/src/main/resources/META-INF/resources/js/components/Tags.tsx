@@ -12,10 +12,12 @@ const Tags = ({
 	cmsGroupId,
 	hasUpdatePermission,
 	objectEntryKeywords,
+	projectGroupId,
 }: {
 	cmsGroupId: number;
 	hasUpdatePermission: boolean;
 	objectEntryKeywords: string[];
+	projectGroupId?: number;
 }) => {
 	const [formId, setFormId] = useState<string | undefined>();
 	const [keywords, setKeywords] = useState<string[]>(objectEntryKeywords);
@@ -45,6 +47,7 @@ const Tags = ({
 						keywords,
 					} as IAssetObjectEntry
 				}
+				projectGroupId={projectGroupId}
 				updateObjectEntry={async ({
 					keywords,
 				}: Partial<IAssetObjectEntry>): Promise<void> => {

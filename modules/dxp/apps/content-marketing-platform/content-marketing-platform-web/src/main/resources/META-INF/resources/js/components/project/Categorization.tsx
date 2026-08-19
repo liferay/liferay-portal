@@ -18,6 +18,7 @@ interface CategorizationProps {
 	hasUpdatePermission: boolean;
 	objectEntryKeywords: string[];
 	personasVocabularyERC: string;
+	projectGroupId?: number;
 	selectedFunnelStageCategories: Category[];
 	selectedPersonaCategories: Category[];
 }
@@ -28,6 +29,7 @@ export default function Categorization({
 	hasUpdatePermission,
 	objectEntryKeywords,
 	personasVocabularyERC,
+	projectGroupId,
 	selectedFunnelStageCategories,
 	selectedPersonaCategories,
 }: CategorizationProps) {
@@ -107,6 +109,7 @@ export default function Categorization({
 							keywords,
 						} as IAssetObjectEntry
 					}
+					projectGroupId={projectGroupId}
 					updateObjectEntry={async ({
 						keywords: updatedKeywords,
 					}: Partial<IAssetObjectEntry>): Promise<void> => {
