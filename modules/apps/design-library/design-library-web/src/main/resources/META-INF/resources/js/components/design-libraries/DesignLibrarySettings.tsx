@@ -8,7 +8,7 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayPanel from '@clayui/panel';
 import {useFormik} from 'formik';
 import {openToast, useId} from 'frontend-js-components-web';
-import {navigate} from 'frontend-js-web';
+import {escapeHTML, navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import DesignLibraryService from '../../services/DesignLibraryService';
@@ -68,9 +68,9 @@ export default function DesignLibrarySettings({
 				);
 
 				openToast({
-					message: Liferay.Util.sub(
+					message: sub(
 						Liferay.Language.get('x-was-saved-successfully'),
-						name as string
+						`<strong>${escapeHTML(name as string)}</strong>`
 					),
 					type: 'success',
 				});
