@@ -317,6 +317,22 @@ describe('activities', () => {
 
 			expect(session.duration).toBeUndefined();
 		});
+
+		it('marks the session the individual became known in', () => {
+			const [, session] = formatSessions([
+				data.mockSession(0, {becameKnown: true})
+			]);
+
+			expect(session.becameKnown).toBe(true);
+		});
+
+		it('leaves the sessions unmarked when the individual is still anonymous', () => {
+			const [, session] = formatSessions([
+				data.mockSession(0, {becameKnown: false})
+			]);
+
+			expect(session.becameKnown).toBe(false);
+		});
 	});
 
 	describe('getActivityLabel', () => {

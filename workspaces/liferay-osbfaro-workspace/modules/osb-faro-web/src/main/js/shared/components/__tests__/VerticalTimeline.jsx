@@ -185,6 +185,28 @@ describe('VerticalTimeline', () => {
 			expect(screen.queryByText('DXP')).not.toBeInTheDocument();
 		});
 
+		it('shows the became known label for the session the individual was identified in', () => {
+			renderTimeline({items: [{...SESSION_ITEM, becameKnown: true}]});
+
+			expect(screen.getByText('Became Known')).toBeInTheDocument();
+		});
+
+		it('hides the became known label for every other session', () => {
+			renderTimeline({items: [SESSION_ITEM]});
+
+			expect(screen.queryByText('Became Known')).not.toBeInTheDocument();
+		});
+
+		it('lays the became known icon out beside its text', () => {
+			renderTimeline({items: [{...SESSION_ITEM, becameKnown: true}]});
+
+			const label = screen.getByText('Became Known').closest('.label');
+
+			expect(
+				label.querySelector('.label-item-before .lexicon-icon')
+			).toBeInTheDocument();
+		});
+
 		it('hides the data source label when the workspace is not on the LDP plan', () => {
 			renderTimeline({
 				items: [{...SESSION_ITEM, applicationId: 'WebContent'}],
