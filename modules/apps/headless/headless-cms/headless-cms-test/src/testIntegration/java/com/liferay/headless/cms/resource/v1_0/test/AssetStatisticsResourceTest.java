@@ -408,7 +408,7 @@ public class AssetStatisticsResourceTest
 
 			_assertBrokenLinksCount(depotEntry.getGroupId(), 1);
 
-			_addObjectEntry(
+			ObjectEntry referringObjectEntry = _addObjectEntry(
 				CMSOutboundLinkTestUtil.getImageHTML(
 					targetObjectEntry.getExternalReferenceCode()),
 				depotEntry, objectDefinition);
@@ -432,6 +432,13 @@ public class AssetStatisticsResourceTest
 				imageHTML + otherImageHTML, depotEntry, objectDefinition);
 
 			_assertBrokenLinksCount(depotEntry.getGroupId(), 3);
+
+			_objectEntryLocalService.updateStatus(
+				TestPropsValues.getUserId(),
+				referringObjectEntry.getObjectEntryId(),
+				WorkflowConstants.STATUS_EXPIRED, serviceContext);
+
+			_assertBrokenLinksCount(depotEntry.getGroupId(), 2);
 		}
 		finally {
 			_depotEntryLocalService.deleteDepotEntry(
