@@ -99,7 +99,6 @@ public class LanguageTagTest {
 		_testGetLanguageEntriesWithFormAction();
 		_testGetLanguageEntriesWithFriendlyURLMappingPath();
 		_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle();
-		_testGetLanguageEntriesWithLocalizedVirtualHostname();
 		_testGetLanguageEntriesWithRedirectParameter();
 		_testGetLanguageEntriesWithSignedInUser();
 		_testGetLanguageEntriesWithVirtualHostname();
@@ -456,32 +455,6 @@ public class LanguageTagTest {
 				LocaleUtil.US));
 	}
 
-	private void _testGetLanguageEntriesWithLocalizedVirtualHostname()
-		throws Exception {
-
-		LayoutSet layoutSet = _layout.getLayoutSet();
-
-		layoutSet.setVirtualHostnames(
-			TreeMapBuilder.put(
-				RandomTestUtil.randomString(),
-				LocaleUtil.toLanguageId(LocaleUtil.FRANCE)
-			).put(
-				RandomTestUtil.randomString(), StringPool.BLANK
-			).build());
-
-		try {
-			_assertLocalizedURL(
-				_layout, LocaleUtil.FRANCE, StringPool.BLANK,
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(_layout, LocaleUtil.US)),
-					LocaleUtil.FRANCE));
-		}
-		finally {
-			layoutSet.setVirtualHostnames(new TreeMap<>());
-		}
-	}
-
 	private void _testGetLanguageEntriesWithoutLayout() throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -519,14 +492,29 @@ public class LanguageTagTest {
 	private void _testGetLanguageEntriesWithVirtualHostname() throws Exception {
 		LayoutSet layoutSet = _layout.getLayoutSet();
 
-		layoutSet.setVirtualHostnames(
-			TreeMapBuilder.put(
-				RandomTestUtil.randomString(), StringPool.BLANK
-			).build());
-
 		try {
+			layoutSet.setVirtualHostnames(
+				TreeMapBuilder.put(
+					RandomTestUtil.randomString(), StringPool.BLANK
+				).build());
+
+			String url = _getURL(
+				_getLanguageEntries(_getThemeDisplay(_layout, LocaleUtil.US)),
+				LocaleUtil.FRANCE);
+
 			_assertLocalizedURL(
-				_layout, LocaleUtil.FRANCE, StringPool.BLANK,
+				_layout, LocaleUtil.FRANCE, StringPool.BLANK, url);
+
+			layoutSet.setVirtualHostnames(
+				TreeMapBuilder.put(
+					RandomTestUtil.randomString(), StringPool.BLANK
+				).put(
+					RandomTestUtil.randomString(),
+					LocaleUtil.toLanguageId(LocaleUtil.FRANCE)
+				).build());
+
+			Assert.assertEquals(
+				url,
 				_getURL(
 					_getLanguageEntries(
 						_getThemeDisplay(_layout, LocaleUtil.US)),
