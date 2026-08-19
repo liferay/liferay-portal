@@ -1,0 +1,17 @@
+.assignee-input__dropdown-menu {
+	left: 0;
+	max-height: 20rem;
+	overflow-y: auto;
+	position: absolute;
+	top: 0;
+}
+
+.assignee-input__dropdown-menu .dropdown-item.active {
+	background-color: transparent;
+}
+
+.assignee-input__dropdown-menu .dropdown-item.active[aria-selected='true'],
+.assignee-input__dropdown-menu .dropdown-item[aria-selected='true'] {
+	background-color: var(--primary-l3);
+	color: var(--gray-900);
+}

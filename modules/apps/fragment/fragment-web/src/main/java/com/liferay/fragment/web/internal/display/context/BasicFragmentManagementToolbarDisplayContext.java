@@ -17,6 +17,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.info.field.type.AssigneeInfoFieldType;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.DateTimeInfoFieldType;
@@ -330,11 +331,12 @@ public class BasicFragmentManagementToolbarDisplayContext
 	}
 
 	private static final InfoFieldType[] _INFO_FIELD_TYPES = {
-		BooleanInfoFieldType.INSTANCE, CaptchaInfoFieldType.INSTANCE,
-		DateInfoFieldType.INSTANCE, DateTimeInfoFieldType.INSTANCE,
-		EmailInfoFieldType.INSTANCE, FileInfoFieldType.INSTANCE,
-		FormButtonInfoFieldType.INSTANCE, FriendlyURLInfoFieldType.INSTANCE,
-		HTMLInfoFieldType.INSTANCE, LocalizationSelectInfoFieldType.INSTANCE,
+		AssigneeInfoFieldType.INSTANCE, BooleanInfoFieldType.INSTANCE,
+		CaptchaInfoFieldType.INSTANCE, DateInfoFieldType.INSTANCE,
+		DateTimeInfoFieldType.INSTANCE, EmailInfoFieldType.INSTANCE,
+		FileInfoFieldType.INSTANCE, FormButtonInfoFieldType.INSTANCE,
+		FriendlyURLInfoFieldType.INSTANCE, HTMLInfoFieldType.INSTANCE,
+		LocalizationSelectInfoFieldType.INSTANCE,
 		LongTextInfoFieldType.INSTANCE, MultiselectInfoFieldType.INSTANCE,
 		NumberInfoFieldType.INSTANCE, PhoneNumberInfoFieldType.INSTANCE,
 		RelationshipInfoFieldType.INSTANCE, SelectInfoFieldType.INSTANCE,

@@ -7,6 +7,7 @@ package com.liferay.fragment.internal.helper;
 
 import com.liferay.fragment.configuration.DefaultInputFragmentEntryConfiguration;
 import com.liferay.fragment.helper.DefaultInputFragmentEntryConfigurationProvider;
+import com.liferay.info.field.type.AssigneeInfoFieldType;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.DateTimeInfoFieldType;
@@ -127,6 +128,9 @@ public class DefaultInputFragmentEntryConfigurationProviderImpl
 
 	private static final JSONObject _defaultInputFragmentEntryKeysJSONObject =
 		JSONUtil.put(
+			AssigneeInfoFieldType.INSTANCE.getName(),
+			JSONUtil.put("key", "INPUTS-assignee-input")
+		).put(
 			BooleanInfoFieldType.INSTANCE.getName(),
 			JSONUtil.put("key", "INPUTS-checkbox")
 		).put(

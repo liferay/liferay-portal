@@ -1,0 +1,13 @@
+{
+	"cacheable": false,
+	"fragmentEntryKey": "assignee-input",
+	"icon": "users",
+	"name": "assignee",
+	"thumbnail": "assignee.svg",
+	"type": "input",
+	"typeOptions": {
+		"fieldTypes": [
+			"assignee"
+		]
+	}
+}

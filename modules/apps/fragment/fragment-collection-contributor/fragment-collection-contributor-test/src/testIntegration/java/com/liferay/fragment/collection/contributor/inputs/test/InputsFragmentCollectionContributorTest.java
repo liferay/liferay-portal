@@ -38,8 +38,8 @@ public class InputsFragmentCollectionContributorTest {
 	}
 
 	private static final String[] _FRAGMENT_ENTRY_KEYS = {
-		"INPUTS-captcha", "INPUTS-checkbox", "INPUTS-date-input",
-		"INPUTS-date-time-input", "INPUTS-file-upload",
+		"INPUTS-assignee-input", "INPUTS-captcha", "INPUTS-checkbox",
+		"INPUTS-date-input", "INPUTS-date-time-input", "INPUTS-file-upload",
 		"INPUTS-multiselect-list", "INPUTS-numeric-input",
 		"INPUTS-rich-text-input", "INPUTS-select-from-list", "INPUTS-stepper",
 		"INPUTS-submit-button", "INPUTS-text-input", "INPUTS-textarea"

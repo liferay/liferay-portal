@@ -10,6 +10,7 @@ import com.liferay.fragment.helper.DefaultInputFragmentEntryConfigurationProvide
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.fragment.web.internal.info.field.type.FormButtonInfoFieldType;
+import com.liferay.info.field.type.AssigneeInfoFieldType;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.DateTimeInfoFieldType;
@@ -165,14 +166,14 @@ public class ConfigurationDisplayContext {
 	}
 
 	private static final InfoFieldType[] _INFO_FIELD_TYPES = {
-		BooleanInfoFieldType.INSTANCE, DateInfoFieldType.INSTANCE,
-		DateTimeInfoFieldType.INSTANCE, EmailInfoFieldType.INSTANCE,
-		FileInfoFieldType.INSTANCE, FormButtonInfoFieldType.INSTANCE,
-		FriendlyURLInfoFieldType.INSTANCE, HTMLInfoFieldType.INSTANCE,
-		LongTextInfoFieldType.INSTANCE, MultiselectInfoFieldType.INSTANCE,
-		NumberInfoFieldType.INSTANCE, PhoneNumberInfoFieldType.INSTANCE,
-		RelationshipInfoFieldType.INSTANCE, SelectInfoFieldType.INSTANCE,
-		TextInfoFieldType.INSTANCE
+		AssigneeInfoFieldType.INSTANCE, BooleanInfoFieldType.INSTANCE,
+		DateInfoFieldType.INSTANCE, DateTimeInfoFieldType.INSTANCE,
+		EmailInfoFieldType.INSTANCE, FileInfoFieldType.INSTANCE,
+		FormButtonInfoFieldType.INSTANCE, FriendlyURLInfoFieldType.INSTANCE,
+		HTMLInfoFieldType.INSTANCE, LongTextInfoFieldType.INSTANCE,
+		MultiselectInfoFieldType.INSTANCE, NumberInfoFieldType.INSTANCE,
+		PhoneNumberInfoFieldType.INSTANCE, RelationshipInfoFieldType.INSTANCE,
+		SelectInfoFieldType.INSTANCE, TextInfoFieldType.INSTANCE
 	};
 
 	private final DefaultInputFragmentEntryConfigurationProvider
