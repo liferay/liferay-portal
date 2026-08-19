@@ -66,7 +66,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	}
 
 	@Test
-	public void testAddDocument() throws Exception {
+	public void testAddDocument() {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
