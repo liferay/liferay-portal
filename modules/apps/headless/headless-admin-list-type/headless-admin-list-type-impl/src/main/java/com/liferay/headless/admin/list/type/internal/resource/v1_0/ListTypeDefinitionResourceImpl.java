@@ -259,6 +259,17 @@ public class ListTypeDefinitionResourceImpl
 		return postListTypeDefinition(listTypeDefinition);
 	}
 
+	@Override
+	protected void preparePatch(
+		ListTypeDefinition listTypeDefinition,
+		ListTypeDefinition existingListTypeDefinition) {
+
+		if (listTypeDefinition.getListTypeEntries() != null) {
+			existingListTypeDefinition.setListTypeEntries(
+				listTypeDefinition::getListTypeEntries);
+		}
+	}
+
 	private ServiceContext _createServiceContext(
 			ListTypeDefinition listTypeDefinition)
 		throws Exception {
