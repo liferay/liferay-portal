@@ -11,6 +11,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.cms.client.dto.v1_0.AssetStatistics;
 import com.liferay.headless.cms.client.resource.v1_0.AssetStatisticsResource;
+import com.liferay.headless.cms.resource.v1_0.test.util.CMSOutboundLinkTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.field.util.ObjectFieldUtil;
@@ -21,7 +22,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -387,15 +387,6 @@ public class AssetStatisticsResourceTest
 				"L_CMS_BASIC_WEB_CONTENT", cmsGroup.getCompanyId());
 	}
 
-	private String _getImageHTML(String externalReferenceCode) {
-		return StringBundler.concat(
-			"<img src=\"/documents/20125/0/image.jpg/", StringUtil.randomId(),
-			"?download=true&amp;objectDefinitionExternalReferenceCode=",
-			"L_CMS_BASIC_DOCUMENT&amp;objectEntryExternalReferenceCode=",
-			externalReferenceCode,
-			"&amp;objectFieldExternalReferenceCode=FILE\">");
-	}
-
 	private void _testGetAssetStatisticsBrokenLinksCount() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext();
@@ -410,7 +401,8 @@ public class AssetStatisticsResourceTest
 				depotEntry, objectDefinition);
 
 			_addObjectEntry(
-				_getImageHTML(targetObjectEntry.getExternalReferenceCode()),
+				CMSOutboundLinkTestUtil.getImageHTML(
+					targetObjectEntry.getExternalReferenceCode()),
 				depotEntry, objectDefinition);
 
 			_assertBrokenLinksCount(depotEntry.getGroupId(), 0);
@@ -423,7 +415,8 @@ public class AssetStatisticsResourceTest
 			_assertBrokenLinksCount(depotEntry.getGroupId(), 1);
 
 			_addObjectEntry(
-				_getImageHTML(targetObjectEntry.getExternalReferenceCode()),
+				CMSOutboundLinkTestUtil.getImageHTML(
+					targetObjectEntry.getExternalReferenceCode()),
 				depotEntry, objectDefinition);
 
 			_assertBrokenLinksCount(depotEntry.getGroupId(), 2);
@@ -436,9 +429,9 @@ public class AssetStatisticsResourceTest
 				otherTargetObjectEntry.getObjectEntryId(),
 				WorkflowConstants.STATUS_EXPIRED, serviceContext);
 
-			String imageHTML = _getImageHTML(
+			String imageHTML = CMSOutboundLinkTestUtil.getImageHTML(
 				targetObjectEntry.getExternalReferenceCode());
-			String otherImageHTML = _getImageHTML(
+			String otherImageHTML = CMSOutboundLinkTestUtil.getImageHTML(
 				otherTargetObjectEntry.getExternalReferenceCode());
 
 			_addObjectEntry(
