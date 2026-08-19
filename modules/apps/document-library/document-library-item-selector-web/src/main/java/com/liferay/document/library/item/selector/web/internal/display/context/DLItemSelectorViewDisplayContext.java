@@ -473,11 +473,11 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 		if (_isEverywhereScopeFilter()) {
 			return SiteConnectedGroupGroupProviderUtil.
 				getCurrentAndAncestorSiteAndDepotGroupIds(
-					_themeDisplay.getScopeGroupId());
+					_getStagingAwareGroupId());
 		}
 
 		return PortalUtil.getCurrentAndAncestorSiteGroupIds(
-			_themeDisplay.getScopeGroupId());
+			_getStagingAwareGroupId());
 	}
 
 	private Hits _getHits() throws PortalException {
