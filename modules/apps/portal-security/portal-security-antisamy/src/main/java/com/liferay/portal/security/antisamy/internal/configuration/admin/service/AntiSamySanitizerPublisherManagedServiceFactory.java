@@ -47,9 +47,11 @@ public class AntiSamySanitizerPublisherManagedServiceFactory
 			return;
 		}
 
-		String className = _classNames.get(pid);
+		String className = _classNames.remove(pid);
 
-		_antiSamySanitizerImpl.removePolicy(className);
+		if (className != null) {
+			_antiSamySanitizerImpl.removePolicy(className);
+		}
 	}
 
 	@Override

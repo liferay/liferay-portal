@@ -23,9 +23,9 @@ import java.io.InputStream;
 import java.net.URL;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
@@ -109,7 +109,11 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 
 			AntiSamy antiSamy = new AntiSamy();
 
-			Policy policy = _policies.get(className);
+			Policy policy = null;
+
+			if (Validator.isNotNull(className)) {
+				policy = _policies.get(className);
+			}
 
 			if (policy != null) {
 				cleanResults = antiSamy.scan(content, policy, AntiSamy.SAX);
@@ -185,7 +189,7 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 		AntiSamySanitizerImpl.class);
 
 	private final List<String> _blacklist = new ArrayList<>();
-	private final Map<String, Policy> _policies = new HashMap<>();
+	private final Map<String, Policy> _policies = new ConcurrentHashMap<>();
 	private final DCLSingleton<Policy> _policyDCLSingleton =
 		new DCLSingleton<>();
 	private final URL _url;
