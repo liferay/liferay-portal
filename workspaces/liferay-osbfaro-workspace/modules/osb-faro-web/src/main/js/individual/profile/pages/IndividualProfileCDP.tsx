@@ -149,6 +149,7 @@ const IndividualProfileCDP: React.FC<IIndividualProfileCDPProps> = ({
 		<>
 			<IndividualAttributesCDP
 				contactId={individualId}
+				knownSinceDate={individual.get('knownSinceDate')}
 				loading={dataSourceLoading}
 				propertiesData={individual.get('properties')}
 				showEmptyState={showEmptyState}
