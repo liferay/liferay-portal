@@ -943,16 +943,20 @@ public class ProjectFaroController extends BaseFaroController {
 		else {
 			_validateFriendlyURL(friendlyURL);
 
-			try {
-				_groupLocalService.updateFriendlyURL(groupId, friendlyURL);
-			}
-			catch (GroupFriendlyURLException groupFriendlyURLException) {
-				_log.error(groupFriendlyURLException);
+			Group group = _groupLocalService.getGroup(groupId);
 
-				throw new FaroValidationException(
-					"friendlyURL",
-					_getFriendlyURLErrorMessage(
-						groupFriendlyURLException.getType()));
+			if (!StringUtil.equals(group.getFriendlyURL(), friendlyURL)) {
+				try {
+					_groupLocalService.updateFriendlyURL(groupId, friendlyURL);
+				}
+				catch (GroupFriendlyURLException groupFriendlyURLException) {
+					_log.error(groupFriendlyURLException);
+
+					throw new FaroValidationException(
+						"friendlyURL",
+						_getFriendlyURLErrorMessage(
+							groupFriendlyURLException.getType()));
+				}
 			}
 		}
 
