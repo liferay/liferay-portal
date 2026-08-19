@@ -65,7 +65,7 @@
 				/>
 			</div>
 
-			<div id="<portlet:namespace />assetFilterBuilderWrapper">
+			<fieldset id="<portlet:namespace />assetFilterBuilderWrapper">
 				<react:component
 					module="{AssetFilterBuilder} from asset-list-web"
 					props='<%=
@@ -86,7 +86,7 @@
 						).build()
 					%>'
 				/>
-			</div>
+			</fieldset>
 
 			<liferay-frontend:component
 				context='<%=

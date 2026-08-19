@@ -30,6 +30,14 @@ export default function ({namespace}) {
 
 		assetWrapper.classList.toggle('hide', showCollection);
 		collectionWrapper.classList.toggle('hide', !showCollection);
+
+		// A hidden wrapper still submits its fields, so keep the asset filter
+		// builder out of the form while the collection filter builder is in
+		// use. Never do the same to the collection filter builder: type
+		// settings are merged on save, so its input has to keep submitting an
+		// empty value to clear the stored filters.
+
+		assetWrapper.disabled = showCollection;
 	};
 
 	updateVisibility();
