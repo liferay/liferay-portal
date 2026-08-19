@@ -181,6 +181,8 @@ public class CompanyLocalServiceTest {
 
 		_bundleContext = bundle.getBundleContext();
 
+		_classNamesSavepointSafeCloseable =
+			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
 		_connection = DataAccess.getConnection();
 
 		_db = DBManagerUtil.getDB();
@@ -194,13 +196,9 @@ public class CompanyLocalServiceTest {
 
 		_dbPartitionDB = ReflectionTestUtil.getFieldValue(
 			DBPartitionUtil.class, "_dbPartitionDB");
+		_modelListeners = _registerModelListeners();
 		_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 			PortalInstancePool.getDefaultCompanyId());
-
-		_classNamesSavepointSafeCloseable =
-			DataCleanupTestUtil.getClassNamesSavepointSafeCloseable();
-
-		_modelListeners = _registerModelListeners();
 
 		_deletedCompany = _addCompany();
 
