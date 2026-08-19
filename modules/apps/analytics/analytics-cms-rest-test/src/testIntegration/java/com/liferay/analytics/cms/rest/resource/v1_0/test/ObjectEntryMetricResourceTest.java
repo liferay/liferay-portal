@@ -100,24 +100,8 @@ public class ObjectEntryMetricResourceTest
 	public void testGetObjectEntryMetric() throws Exception {
 		_testGetObjectEntryMetric();
 		_testGetObjectEntryMetricWithInvalidObjectEntryId();
+		_testGetObjectEntryMetricWithUnsyncedGroup();
 		_testGetObjectEntryMetricWithoutViewPermission();
-	}
-
-	@Test
-	public void testGetObjectEntryMetricWithUnsyncedGroup() throws Exception {
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false)) {
-
-			Assert.assertThrows(
-				BadRequestException.class,
-				() -> _objectEntryMetricResource.getObjectEntryMetric(
-					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
-					RandomTestUtil.nextInt(),
-					new String[] {"downloadsMetric", "viewsMetric"}));
-		}
 	}
 
 	private void _testGetObjectEntryMetric() throws Exception {
@@ -299,6 +283,22 @@ public class ObjectEntryMetricResourceTest
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
+	private void _testGetObjectEntryMetricWithUnsyncedGroup() throws Exception {
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), false)) {
+
+			Assert.assertThrows(
+				BadRequestException.class,
+				() -> _objectEntryMetricResource.getObjectEntryMetric(
+					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
+					RandomTestUtil.nextInt(),
+					new String[] {"downloadsMetric", "viewsMetric"}));
 		}
 	}
 

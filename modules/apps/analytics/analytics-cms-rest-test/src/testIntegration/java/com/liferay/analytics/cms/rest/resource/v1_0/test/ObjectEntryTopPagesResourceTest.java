@@ -99,23 +99,8 @@ public class ObjectEntryTopPagesResourceTest
 	public void testGetObjectEntryTopPages() throws Exception {
 		_testGetObjectEntryTopPages();
 		_testGetObjectEntryTopPagesWithInvalidObjectEntryId();
+		_testGetObjectEntryTopPagesWithUnsyncedGroup();
 		_testGetObjectEntryTopPagesWithoutViewPermission();
-	}
-
-	@Test
-	public void testGetObjectEntryTopPagesWithUnsyncedGroup() throws Exception {
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false)) {
-
-			Assert.assertThrows(
-				BadRequestException.class,
-				() -> _objectEntryTopPagesResource.getObjectEntryTopPages(
-					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
-					30));
-		}
 	}
 
 	private void _testGetObjectEntryTopPages() throws Exception {
@@ -271,6 +256,23 @@ public class ObjectEntryTopPagesResourceTest
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
+	private void _testGetObjectEntryTopPagesWithUnsyncedGroup()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), false)) {
+
+			Assert.assertThrows(
+				BadRequestException.class,
+				() -> _objectEntryTopPagesResource.getObjectEntryTopPages(
+					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
+					30));
 		}
 	}
 

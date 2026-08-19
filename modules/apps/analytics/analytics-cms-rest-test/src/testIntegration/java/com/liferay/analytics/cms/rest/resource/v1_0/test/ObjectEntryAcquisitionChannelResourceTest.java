@@ -99,28 +99,8 @@ public class ObjectEntryAcquisitionChannelResourceTest
 	public void testGetObjectEntryAcquisitionChannelsPage() throws Exception {
 		_testGetObjectEntryAcquisitionChannelsPage();
 		_testGetObjectEntryAcquisitionChannelsPageWithInvalidObjectEntryId();
+		_testGetObjectEntryAcquisitionChannelsPageWithUnsyncedGroup();
 		_testGetObjectEntryAcquisitionChannelsPageWithoutViewPermission();
-	}
-
-	@Test
-	public void testGetObjectEntryAcquisitionChannelsPageWithUnsyncedGroup()
-		throws Exception {
-
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false)) {
-
-			Assert.assertThrows(
-				BadRequestException.class,
-				() ->
-					_objectEntryAcquisitionChannelResource.
-						getObjectEntryAcquisitionChannelsPage(
-							testGroup.getGroupId(),
-							_objectEntry.getObjectEntryId(),
-							RandomTestUtil.randomInt()));
-		}
 	}
 
 	private void _testGetObjectEntryAcquisitionChannelsPage() throws Exception {
@@ -265,6 +245,26 @@ public class ObjectEntryAcquisitionChannelResourceTest
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
+	private void _testGetObjectEntryAcquisitionChannelsPageWithUnsyncedGroup()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), false)) {
+
+			Assert.assertThrows(
+				BadRequestException.class,
+				() ->
+					_objectEntryAcquisitionChannelResource.
+						getObjectEntryAcquisitionChannelsPage(
+							testGroup.getGroupId(),
+							_objectEntry.getObjectEntryId(),
+							RandomTestUtil.randomInt()));
 		}
 	}
 

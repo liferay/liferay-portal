@@ -99,29 +99,8 @@ public class ObjectEntryHistogramMetricResourceTest
 	public void testGetObjectEntryHistogramMetric() throws Exception {
 		_testGetObjectEntryHistogramMetric();
 		_testGetObjectEntryHistogramMetricWithInvalidObjectEntryId();
+		_testGetObjectEntryHistogramMetricWithUnsyncedGroup();
 		_testGetObjectEntryHistogramMetricWithoutViewPermission();
-	}
-
-	@Test
-	public void testGetObjectEntryHistogramMetricWithUnsyncedGroup()
-		throws Exception {
-
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false)) {
-
-			Assert.assertThrows(
-				BadRequestException.class,
-				() ->
-					_objectEntryHistogramMetricResource.
-						getObjectEntryHistogramMetric(
-							testGroup.getGroupId(),
-							_objectEntry.getObjectEntryId(),
-							RandomTestUtil.nextInt(),
-							new String[] {"downloadsMetric"}));
-		}
 	}
 
 	private void _testGetObjectEntryHistogramMetric() throws Exception {
@@ -310,6 +289,27 @@ public class ObjectEntryHistogramMetricResourceTest
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+	}
+
+	private void _testGetObjectEntryHistogramMetricWithUnsyncedGroup()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), false)) {
+
+			Assert.assertThrows(
+				BadRequestException.class,
+				() ->
+					_objectEntryHistogramMetricResource.
+						getObjectEntryHistogramMetric(
+							testGroup.getGroupId(),
+							_objectEntry.getObjectEntryId(),
+							RandomTestUtil.nextInt(),
+							new String[] {"downloadsMetric"}));
 		}
 	}
 
