@@ -43,11 +43,13 @@ public class AntiSamySanitizerImplTest {
 	@Test
 	public void testSanitize() throws Exception {
 		_testSanitize(
+			StringPool.BLANK,
 			"<p><a href=\"test\" rel=\"noopener noreferrer\" " +
 				"target=\"_blank\"></a></p>",
 			"<p><a href=\"test\" rel=\"noopener noreferrer\" " +
 				"target=\"_blank\"></a></p>");
 		_testSanitize(
+			StringPool.BLANK,
 			"This little text should not have a space removed but it happens " +
 				"right here.",
 			"This little text should not have a space removed but it happens " +
@@ -81,6 +83,16 @@ public class AntiSamySanitizerImplTest {
 		finally {
 			ConfigurationTestUtil.deleteFactoryConfiguration(pid, factoryPid);
 		}
+
+		Assert.assertEquals(StringPool.BLANK, _sanitize(className, svg));
+	}
+
+	@Test
+	@TestInfo("LPD-103042")
+	public void testSanitizeWithNullClassName() throws Exception {
+		String value = RandomTestUtil.randomString();
+
+		_testSanitize(null, value, value);
 	}
 
 	private String _sanitize(String className, String value) throws Exception {
@@ -89,7 +101,8 @@ public class AntiSamySanitizerImplTest {
 			ContentTypes.TEXT_HTML, new String[0], value, new HashMap<>());
 	}
 
-	private void _testSanitize(String expectedValue, String value)
+	private void _testSanitize(
+			String className, String expectedValue, String value)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -97,12 +110,7 @@ public class AntiSamySanitizerImplTest {
 					"AntiSamySanitizerImpl",
 				LoggerTestUtil.WARN)) {
 
-			Assert.assertEquals(
-				expectedValue,
-				_sanitizer.sanitize(
-					TestPropsValues.getCompanyId(), 0, 0, StringPool.BLANK, 0,
-					ContentTypes.TEXT_HTML, new String[0], value,
-					new HashMap<>()));
+			Assert.assertEquals(expectedValue, _sanitize(className, value));
 
 			Assert.assertTrue(ListUtil.isEmpty(logCapture.getLogEntries()));
 		}
