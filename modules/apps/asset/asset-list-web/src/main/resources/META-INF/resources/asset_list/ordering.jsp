@@ -43,6 +43,10 @@
 
 					<%
 					String orderByColumn1 = editAssetListDisplayContext.getOrderByColumn1();
+
+					if (orderByColumn1.startsWith(StringPool.OPEN_CURLY_BRACE)) {
+						orderByColumn1 = "modified";
+					}
 					%>
 
 					<div class="h5"><liferay-ui:message key="order-by" /></div>
@@ -94,6 +98,10 @@
 
 					<%
 					String orderByColumn2 = editAssetListDisplayContext.getOrderByColumn2();
+
+					if (orderByColumn2.startsWith(StringPool.OPEN_CURLY_BRACE)) {
+						orderByColumn2 = "title";
+					}
 					%>
 
 					<div class="h5">
