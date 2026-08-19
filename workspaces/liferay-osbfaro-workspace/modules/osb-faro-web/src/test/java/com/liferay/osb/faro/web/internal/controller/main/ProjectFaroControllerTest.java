@@ -9,12 +9,19 @@ import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.osb.faro.provisioning.client.internal.ProvisioningClientImpl;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
 import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
+import com.liferay.osb.faro.web.internal.exception.FaroException;
+import com.liferay.portal.cache.BasePortalCache;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.ws.rs.core.Response;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,6 +48,56 @@ public class ProjectFaroControllerTest {
 		ReflectionTestUtils.setField(
 			_projectFaroController, "_provisioningClient",
 			new ProvisioningClientImpl());
+
+		ReflectionTestUtils.setField(
+			_projectFaroController, "_provisionBackoffPortalCache",
+			new TestPortalCache());
+	}
+
+	@Test
+	public void testCheckProvisionBackoffWhenFailureRecordedWithinWindow() {
+		String corpProjectUuid = RandomTestUtil.randomString();
+
+		ReflectionTestUtils.invokeMethod(
+			_projectFaroController, "_putProvisionBackoff", corpProjectUuid,
+			new Exception());
+
+		try {
+			ReflectionTestUtils.invokeMethod(
+				_projectFaroController, "_checkProvisionBackoff",
+				corpProjectUuid);
+
+			Assert.fail();
+		}
+		catch (FaroException faroException) {
+			Response response = faroException.getResponse();
+
+			Assert.assertEquals(
+				Response.Status.TOO_MANY_REQUESTS.getStatusCode(),
+				response.getStatus());
+			Assert.assertNotNull(response.getHeaderString("Retry-After"));
+		}
+	}
+
+	@Test
+	public void testCheckProvisionBackoffWhenFailureWasCleared() {
+		String corpProjectUuid = RandomTestUtil.randomString();
+
+		ReflectionTestUtils.invokeMethod(
+			_projectFaroController, "_putProvisionBackoff", corpProjectUuid,
+			new Exception());
+		ReflectionTestUtils.invokeMethod(
+			_projectFaroController, "_clearProvisionBackoff", corpProjectUuid);
+
+		ReflectionTestUtils.invokeMethod(
+			_projectFaroController, "_checkProvisionBackoff", corpProjectUuid);
+	}
+
+	@Test
+	public void testCheckProvisionBackoffWhenNoFailureWasRecorded() {
+		ReflectionTestUtils.invokeMethod(
+			_projectFaroController, "_checkProvisionBackoff",
+			RandomTestUtil.randomString());
 	}
 
 	@Test
@@ -214,5 +271,67 @@ public class ProjectFaroControllerTest {
 
 	private final ProjectFaroController _projectFaroController =
 		new ProjectFaroController();
+
+	private static class TestPortalCache extends BasePortalCache<String, Long> {
+
+		public TestPortalCache() {
+			super(null);
+		}
+
+		@Override
+		public List<String> getKeys() {
+			return new ArrayList<>(_map.keySet());
+		}
+
+		@Override
+		public String getPortalCacheName() {
+			return TestPortalCache.class.getName();
+		}
+
+		@Override
+		public void removeAll() {
+			_map.clear();
+		}
+
+		@Override
+		protected Long doGet(String key) {
+			return _map.get(key);
+		}
+
+		@Override
+		protected void doPut(String key, Long value, int timeToLive) {
+			_map.put(key, value);
+		}
+
+		@Override
+		protected Long doPutIfAbsent(String key, Long value, int timeToLive) {
+			return _map.putIfAbsent(key, value);
+		}
+
+		@Override
+		protected void doRemove(String key) {
+			_map.remove(key);
+		}
+
+		@Override
+		protected boolean doRemove(String key, Long value) {
+			return _map.remove(key, value);
+		}
+
+		@Override
+		protected Long doReplace(String key, Long value, int timeToLive) {
+			return _map.replace(key, value);
+		}
+
+		@Override
+		protected boolean doReplace(
+			String key, Long oldValue, Long newValue, int timeToLive) {
+
+			return _map.replace(key, oldValue, newValue);
+		}
+
+		private final Map<String, Long> _map = new ConcurrentHashMap<>();
+
+	}
 
 }
