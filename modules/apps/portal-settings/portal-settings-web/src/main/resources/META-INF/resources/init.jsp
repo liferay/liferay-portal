@@ -34,6 +34,7 @@ page import="com.liferay.portal.kernel.exception.NoSuchRegionException" %><%@
 page import="com.liferay.portal.kernel.exception.PhoneNumberException" %><%@
 page import="com.liferay.portal.kernel.exception.PhoneNumberExtensionException" %><%@
 page import="com.liferay.portal.kernel.exception.WebsiteURLException" %><%@
+page import="com.liferay.portal.kernel.frontend.esm.FrontendESMUtil" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.*" %><%@

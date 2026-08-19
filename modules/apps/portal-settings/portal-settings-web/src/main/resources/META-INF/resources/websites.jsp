@@ -100,12 +100,14 @@
 			<aui:input name="websitesIndexes" type="hidden" value="<%= StringUtil.merge(websitesIndexes) %>" />
 		</aui:fieldset>
 
-		<aui:script use="liferay-auto-fields">
-			new Liferay.AutoFields({
+		<aui:script type="module">
+			import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+			autoFields({
 				contentBox: '#<portlet:namespace />websites',
 				fieldIndexes: '<portlet:namespace />websitesIndexes',
 				namespace: '<portlet:namespace />',
-			}).render();
+			});
 		</aui:script>
 	</c:when>
 	<c:otherwise>

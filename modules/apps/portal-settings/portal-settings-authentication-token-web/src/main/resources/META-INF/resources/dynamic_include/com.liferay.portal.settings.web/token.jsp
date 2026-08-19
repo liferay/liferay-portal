@@ -69,11 +69,13 @@ String userTokenName = tokenConfiguration.userTokenName();
 	</aui:fieldset>
 </aui:fieldset>
 
-<aui:script use="liferay-auto-fields">
-	new Liferay.AutoFields({
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+	autoFields({
 		contentBox: '#<portlet:namespace />authenticationCookies',
 		fieldIndexes:
 			'<portlet:namespace /><%= PortalSettingsTokenConstants.FORM_PARAMETER_NAMESPACE %>authenticationCookiesIndexes',
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 </aui:script>

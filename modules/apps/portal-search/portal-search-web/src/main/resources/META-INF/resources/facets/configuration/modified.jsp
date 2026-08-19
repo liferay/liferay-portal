@@ -41,11 +41,13 @@ JSONArray rangesJSONArray = dataJSONObject.getJSONArray("ranges");
 	<aui:input name='<%= searchFacet.getClassName() + "rangesIndexes" %>' type="hidden" value="<%= StringUtil.merge(rangesIndexes) %>" />
 </aui:fieldset>
 
-<aui:script use="liferay-auto-fields">
-	var autoFields = new Liferay.AutoFields({
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+	autoFields({
 		contentBox: 'fieldset#<portlet:namespace />rangesId',
 		fieldIndexes:
 			'<portlet:namespace /><%= searchFacet.getClassName() %>rangesIndexes',
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 </aui:script>

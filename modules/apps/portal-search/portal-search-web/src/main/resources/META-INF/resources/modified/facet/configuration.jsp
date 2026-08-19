@@ -13,9 +13,11 @@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/template" prefix="liferay-template" %><%@
+taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
+page import="com.liferay.portal.kernel.frontend.esm.FrontendESMUtil" %><%@
 page import="com.liferay.portal.kernel.json.JSONArray" %><%@
 page import="com.liferay.portal.kernel.json.JSONObject" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
@@ -28,6 +30,8 @@ page import="com.liferay.portal.search.web.internal.modified.facet.portlet.Modif
 page import="com.liferay.portal.search.web.internal.modified.facet.portlet.ModifiedFacetPortletPreferences" %><%@
 page import="com.liferay.portal.search.web.internal.modified.facet.portlet.ModifiedFacetPortletPreferencesImpl" %><%@
 page import="com.liferay.portal.search.web.internal.util.PortletPreferencesJspUtil" %>
+
+<liferay-theme:defineObjects />
 
 <portlet:defineObjects />
 
@@ -134,12 +138,14 @@ JSONArray rangesJSONArray = modifiedFacetPortletPreferences.getRangesJSONArray()
 	</liferay-frontend:edit-form-footer>
 </liferay-frontend:edit-form>
 
-<aui:script use="liferay-auto-fields">
-	new Liferay.AutoFields({
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+	autoFields({
 		contentBox: 'fieldset#<portlet:namespace />rangesId',
 		fieldIndexes: '<portlet:namespace />rangesIndexes',
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 </aui:script>
 
 <liferay-frontend:component

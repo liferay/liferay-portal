@@ -10,6 +10,7 @@ import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import getCN from 'classnames';
 import {sub} from 'frontend-js-web';
+import {autoFields} from 'frontend-js-web/auto_fields';
 import React, {useEffect, useState} from 'react';
 
 import InputSets, {useInputSets} from '../shared/input_sets/index';
@@ -261,16 +262,14 @@ function SortConfigurationOptions({
 			return;
 		}
 
-		AUI().use('liferay-auto-fields', () => {
-			new Liferay.AutoFields({
-				contentBox: `#${namespace}fieldsId`,
-				namespace: `${namespace}`,
-			}).render();
+		autoFields({
+			contentBox: `#${namespace}fieldsId`,
+			namespace,
 		});
 	}, [namespace, view]);
 
 	/**
-	 * Since the classic view is controlled by the Liferay.AutoFields component,
+	 * Since the classic view is controlled by the AutoFields component,
 	 * the `classicFields` state isn't updated when items are added or removed.
 	 * This is needed to grab the current values when switching to the new view
 	 * or submitting the form.

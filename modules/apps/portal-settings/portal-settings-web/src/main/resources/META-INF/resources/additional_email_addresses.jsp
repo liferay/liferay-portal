@@ -100,12 +100,14 @@
 			<aui:input name="emailAddressesIndexes" type="hidden" value="<%= StringUtil.merge(emailAddressesIndexes) %>" />
 		</aui:fieldset>
 
-		<aui:script use="liferay-auto-fields">
-			new Liferay.AutoFields({
+		<aui:script type="module">
+			import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+			autoFields({
 				contentBox: '#<portlet:namespace />additionalEmailAddresses',
 				fieldIndexes: '<portlet:namespace />emailAddressesIndexes',
 				namespace: '<portlet:namespace />',
-			}).render();
+			});
 		</aui:script>
 	</c:when>
 	<c:otherwise>

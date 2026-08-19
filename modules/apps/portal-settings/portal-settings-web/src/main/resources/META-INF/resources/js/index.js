@@ -4,33 +4,26 @@
  */
 
 import {CountryRegionDynamicSelect} from '@liferay/address-web';
+import {autoFields} from 'frontend-js-web/auto_fields';
 
 function main({namespace}) {
-	AUI().use('liferay-auto-fields', () => {
-		new Liferay.AutoFields({
-			contentBox: `#${namespace}addresses`,
-			fieldIndexes: `${namespace}addressesIndexes`,
-			namespace,
-			on: {
-				clone(event) {
-					const guid = event.guid;
-					const row = event.row;
+	autoFields({
+		contentBox: `#${namespace}addresses`,
+		fieldIndexes: `${namespace}addressesIndexes`,
+		namespace,
+		on: {
+			clone(event) {
 
-					const dynamicSelects = row.one(
-						'select[data-componentType=dynamic_select]'
-					);
+				// The row is produced with cloneNode, which does not carry
+				// listeners over, so the change listener the original select
+				// had is already gone.
 
-					if (dynamicSelects) {
-						dynamicSelects.detach('change');
-					}
-
-					CountryRegionDynamicSelect.default({
-						countrySelect: `${namespace}addressCountryId${guid}`,
-						regionSelect: `${namespace}addressRegionId${guid}`,
-					});
-				},
+				CountryRegionDynamicSelect.default({
+					countrySelect: `${namespace}addressCountryId${event.guid}`,
+					regionSelect: `${namespace}addressRegionId${event.guid}`,
+				});
 			},
-		}).render();
+		},
 	});
 }
 

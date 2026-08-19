@@ -1,6 +1,7 @@
 {
 	"dependencies": {
-		"@liferay/address-web": "*"
+		"@liferay/address-web": "*",
+		"frontend-js-web": "*"
 	},
 	"main": "js/index.js",
 	"name": "@liferay/portal-settings-web",
