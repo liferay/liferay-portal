@@ -63,3 +63,11 @@
 		}
 	}
 }
+
+.dropdown-caption:has([id^='autocomplete-exclude-']) {
+	display: none;
+
+	+ .dropdown-divider {
+		display: none;
+	}
+}
