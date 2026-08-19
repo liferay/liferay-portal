@@ -34,9 +34,6 @@ tests:
                         -   apiGroups: [""]
                             resources: ["secrets", "serviceaccounts"]
                             verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-                        -   apiGroups: ["elasticsearch.k8s.elastic.co"]
-                            resources: ["elasticsearches"]
-                            verbs: ["get", "list", "watch"]
             -   documentIndex: 1
                 isKind:
                     of: ClusterRoleBinding
