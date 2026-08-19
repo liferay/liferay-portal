@@ -40,6 +40,7 @@ dependencies {
 	testImplementation project(":apps:portal-search:portal-search-test-util")
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
+	testImplementation project(":core:petra:petra-lang")
 }
 
 test {

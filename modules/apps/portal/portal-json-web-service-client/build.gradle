@@ -15,4 +15,5 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
+	testImplementation project(":core:petra:petra-lang")
 }
