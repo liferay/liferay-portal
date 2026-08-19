@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React, {useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
 import useTypeProperties from '../../hooks/useTypeProperties';
@@ -31,6 +31,22 @@ function normalizeDateTime(value: string) {
 	const date = new Date(normalized.replace(' ', 'T'));
 
 	return Number.isNaN(date.getTime()) ? '' : normalized;
+}
+
+function createEmptyConditions(): FilterCondition[] {
+	return [{id: uuidv4()}];
+}
+
+/**
+ * A condition on a field of a specific item type only exists for that item
+ * type. Conditions on the asset fields and on the common fields apply to every
+ * item type, so they are worth keeping when the source changes.
+ */
+function isTypeSpecificCondition(condition: FilterCondition): boolean {
+	return (
+		condition.classNameId !== undefined &&
+		condition.classTypeId !== undefined
+	);
 }
 
 function serializeValue(
@@ -88,7 +104,7 @@ export default function CollectionFilterBuilder({
 					...condition,
 					id: uuidv4(),
 				}))
-			: [{id: uuidv4()}]
+			: createEmptyConditions()
 	);
 
 	const properties = useTypeProperties(initialProperties);
@@ -162,11 +178,54 @@ export default function CollectionFilterBuilder({
 				return true;
 			});
 
-	const handleChange = (newConditions: FilterCondition[]) => {
-		setConditions(newConditions);
+	const handleChange = useCallback(
+		(newConditions: FilterCondition[]) => {
+			setConditions(newConditions);
 
-		onChange?.(newConditions);
-	};
+			onChange?.(newConditions);
+		},
+		[onChange]
+	);
+
+	useEffect(() => {
+
+		// An item type that uses the asset filter builder instead displays none
+		// of this, and the type settings are merged rather than replaced on save,
+		// so drop everything and let the empty value clear what was stored.
+		// Otherwise keep the conditions the new item type can still offer rather
+		// than making the user build them again.
+
+		const handleFilterVisibilityChange = ({
+			showCollection,
+		}: {
+			showCollection: boolean;
+		}) =>
+			setConditions((conditions) => {
+				if (!showCollection) {
+					return createEmptyConditions();
+				}
+
+				const keptConditions = conditions.filter(
+					(condition) => !isTypeSpecificCondition(condition)
+				);
+
+				return keptConditions.length
+					? keptConditions
+					: createEmptyConditions();
+			});
+
+		Liferay.on(
+			`${namespace}filterVisibilityChange`,
+			handleFilterVisibilityChange
+		);
+
+		return () => {
+			Liferay.detach(
+				`${namespace}filterVisibilityChange`,
+				handleFilterVisibilityChange
+			);
+		};
+	}, [namespace]);
 
 	return (
 		<>

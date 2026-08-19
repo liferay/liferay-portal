@@ -38,15 +38,27 @@ export default function ({namespace}) {
 		// empty value to clear the stored filters.
 
 		assetWrapper.disabled = showCollection;
+
+		return showCollection;
 	};
 
 	updateVisibility();
 
-	Liferay.on(namespace + 'sourceChange', updateVisibility);
+	// The collection filter builder cannot tell on its own whether it is the one
+	// in use, and it has to keep submitting to clear what it stored. Announce
+	// the outcome only for a source change: nothing should discard a stored
+	// filter merely because the collection was opened.
+
+	const onSourceChange = () =>
+		Liferay.fire(`${namespace}filterVisibilityChange`, {
+			showCollection: updateVisibility(),
+		});
+
+	Liferay.on(namespace + 'sourceChange', onSourceChange);
 
 	return {
 		destroy() {
-			Liferay.detach(namespace + 'sourceChange', updateVisibility);
+			Liferay.detach(namespace + 'sourceChange', onSourceChange);
 		},
 	};
 }
