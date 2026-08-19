@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {sub} from 'frontend-js-web';
+import {escapeHTML, sub} from 'frontend-js-web';
 import {Dispatch} from 'react';
 
 import openToast from '../../toast/openToast';
@@ -26,7 +26,7 @@ function showMemberToast(
 	type: 'danger' | 'success'
 ) {
 	openToast({
-		message: sub(message, [`<strong>${name}</strong>`]),
+		message: sub(message, [`<strong>${escapeHTML(name)}</strong>`]),
 		type,
 	});
 }
