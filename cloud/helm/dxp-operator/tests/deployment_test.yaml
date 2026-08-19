@@ -83,20 +83,13 @@ tests:
                         name: health
                         protocol: TCP
                     path: spec.template.spec.containers[0].ports
-            -   contains:
-                    content:
-                        containerPort: 9092
-                        name: webhook
-                        protocol: TCP
-                    path: spec.template.spec.containers[0].ports
             -   lengthEqual:
-                    count: 3
+                    count: 2
                     path: spec.template.spec.containers[0].ports
-        it: Exposes a container port for the metrics, probe, and webhook ports
+        it: Exposes a container port for the metrics and probe ports
         set:
             metrics.port: 9090
             probes.port: 9091
-            webhook.port: 9092
     -   asserts:
             -   equal:
                     path: spec.template.spec.serviceAccountName

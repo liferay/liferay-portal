@@ -150,8 +150,8 @@ k8s_resource(
     labels=["operator"],
     new_name="operator-infra",
     objects=[
-        "liferay-dxp-operator-webhook:secret",
-        "liferay-dxp-operator-webhook:validatingwebhookconfiguration",
+        "liferay-dxp-operator-statefulset-scale:validatingadmissionpolicy",
+        "liferay-dxp-operator-statefulset-scale:validatingadmissionpolicybinding",
         "liferay-dxp-operator:clusterrole",
         "liferay-dxp-operator:clusterrolebinding",
         "liferay-dxp-operator:serviceaccount",

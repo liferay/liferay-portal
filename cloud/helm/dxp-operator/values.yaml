@@ -58,6 +58,3 @@ serviceAccount:
     create: true
     name: ""
 tolerations: []
-webhook:
-    certificateValidityDays: 3650
-    port: 9443
