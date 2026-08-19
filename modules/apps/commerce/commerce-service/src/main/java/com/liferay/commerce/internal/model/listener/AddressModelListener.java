@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.util.GroupThreadLocal;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,6 +42,10 @@ public class AddressModelListener extends BaseModelListener<Address> {
 
 	@Override
 	public void onBeforeRemove(Address address) throws ModelListenerException {
+		if (GroupThreadLocal.isDeleteInProcess()) {
+			return;
+		}
+
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
