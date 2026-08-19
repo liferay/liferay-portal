@@ -11,11 +11,13 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {ApiHelpers} from '../../../helpers/ApiHelpers';
+import {ApiHelpers, DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {LocalizationSelectPage} from '../../../pages/fragment-web/LocalizationSelectPage';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
+import {ContentsPage} from './pages/ContentsPage';
 
 async function getSampleStructureDefinition(apiHelpers: ApiHelpers) {
 	const assetLibraries =
@@ -283,5 +285,144 @@ test(
 		await expect(page.getByLabel('Title')).toHaveValue(spanishTitle);
 
 		await expect(page.getByLabel('Picklist')).toHaveValue('Apple');
+	}
+);
+
+async function createSampleStructureContent(
+	apiHelpers: DataApiHelpers,
+	contentsPage: ContentsPage,
+	contentTitle: string
+) {
+	const objectDefinitionAPIClient =
+		await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+	const sampleStructureDefinition =
+		await getSampleStructureDefinition(apiHelpers);
+
+	const {
+		body: {id: structureId},
+	} = await objectDefinitionAPIClient.postObjectDefinition(
+		sampleStructureDefinition
+	);
+
+	apiHelpers.data.push({id: structureId, type: 'objectDefinition'});
+
+	await contentsPage.goto();
+
+	await contentsPage.createContent(sampleStructureDefinition.label.en_US);
+
+	// Every field carries a default language value, because Mark as Translated
+	// copies that value into the translation and a field left empty in the
+	// default language is never counted as translated.
+
+	await contentsPage.fillData([
+		{label: 'Title', value: contentTitle},
+		{label: 'Long Text', value: 'This is a fruit'},
+		{label: 'Date', value: '2026-08-08'},
+		{label: 'Boolean', type: 'Checkbox', value: true},
+		{label: 'Picklist', type: 'Picklist', value: 'Banana'},
+	]);
+
+	await contentsPage.saveContent();
+}
+
+test(
+	'Translating every field marks the language as translated',
+	{tag: '@LPD-103031'},
+	async ({apiHelpers, contentsPage, page}) => {
+		const contentTitle = getRandomString();
+
+		await createSampleStructureContent(
+			apiHelpers,
+			contentsPage,
+			contentTitle
+		);
+
+		await contentsPage.goto();
+
+		await contentsPage.translateContent(contentTitle);
+
+		const targetLocalizationSelectPage = new LocalizationSelectPage(
+			page,
+			1
+		);
+
+		await targetLocalizationSelectPage.switchLanguage('es-ES');
+
+		expect(
+			await targetLocalizationSelectPage.getLanguageStatus('es-ES')
+		).not.toBe('translated');
+
+		await contentsPage.fillData([
+			{label: 'Title', nth: 1, value: `Spanish ${contentTitle}`},
+			{label: 'Long Text', nth: 1, value: 'Esto es una fruta'},
+			{label: 'Date', nth: 1, value: '2026-08-15'},
+			{label: 'Boolean', nth: 1, type: 'Checkbox', value: false},
+			{label: 'Picklist', nth: 1, type: 'Picklist', value: 'Apple'},
+		]);
+
+		expect(
+			await targetLocalizationSelectPage.getLanguageStatus('es-ES')
+		).toBe('translated');
+
+		const markAsTranslatedMenuItem = page.getByRole('menuitem', {
+			name: 'Mark as Translated',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: markAsTranslatedMenuItem,
+			trigger: targetLocalizationSelectPage.actionsDropdownTrigger,
+		});
+
+		await expect(markAsTranslatedMenuItem).toBeDisabled();
+	}
+);
+
+test(
+	'A language can be marked as translated and the translation reset',
+	{tag: '@LPD-103031'},
+	async ({apiHelpers, contentsPage, page}) => {
+		const contentTitle = getRandomString();
+
+		await createSampleStructureContent(
+			apiHelpers,
+			contentsPage,
+			contentTitle
+		);
+
+		await contentsPage.goto();
+
+		await contentsPage.translateContent(contentTitle);
+
+		const targetLocalizationSelectPage = new LocalizationSelectPage(
+			page,
+			1
+		);
+
+		// No field is translated, so this is the manual override, and the
+		// helper asserts the language ends up translated.
+
+		await targetLocalizationSelectPage.markAsTranslated('es-ES');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Reset Translation'}),
+			trigger: targetLocalizationSelectPage.actionsDropdownTrigger,
+		});
+
+		await expect(
+			page.getByText(
+				'translation will be deleted and content fields will be set to default language'
+			)
+		).toBeVisible();
+
+		await page
+			.locator('.modal-footer')
+			.getByRole('button', {exact: true, name: 'Delete'})
+			.click();
+
+		expect(
+			await targetLocalizationSelectPage.getLanguageStatus('es-ES')
+		).toBe('not-translated');
 	}
 );
