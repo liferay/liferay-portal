@@ -16,7 +16,6 @@ import com.liferay.object.constants.ObjectActionConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.dynamic.data.mapping.expression.ObjectEntryDDMExpressionFieldAccessor;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
-import com.liferay.object.exception.LockedObjectActionException;
 import com.liferay.object.exception.ObjectActionExecutorKeyException;
 import com.liferay.object.internal.action.util.ObjectEntryVariablesUtil;
 import com.liferay.object.internal.dynamic.data.mapping.expression.ObjectEntryDDMExpressionParameterAccessor;
@@ -29,7 +28,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -39,6 +37,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -327,22 +326,20 @@ public class ObjectActionEngineImpl implements ObjectActionEngine {
 	}
 
 	private void _updateObjectActionStatus(
-			ObjectAction objectAction, int status)
-		throws PortalException {
+		ObjectAction objectAction, int status) {
 
 		if (objectAction.getStatus() == status) {
 			return;
 		}
 
-		try {
-			_objectActionLocalService.updateStatus(
-				objectAction.getObjectActionId(), status);
-		}
-		catch (PortalException portalException) {
-			if (!(portalException instanceof LockedObjectActionException)) {
-				throw portalException;
-			}
-		}
+		// The status write waits for the surrounding transaction to commit,
+		// so it can neither fail that transaction nor record an outcome for
+		// an execution whose effects roll back with it. Without a
+		// surrounding transaction the callback runs at once.
+
+		TransactionCallbackUtil.registerCommitCallback(
+			() -> _objectActionLocalService.updateStatus(
+				objectAction.getObjectActionId(), status));
 	}
 
 	private void _updatePayloadJSONObject(

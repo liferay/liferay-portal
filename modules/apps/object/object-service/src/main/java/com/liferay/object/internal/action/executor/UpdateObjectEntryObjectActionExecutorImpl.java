@@ -29,6 +29,7 @@ import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -137,8 +138,15 @@ public class UpdateObjectEntryObjectActionExecutorImpl
 				});
 		}
 		catch (Exception exception) {
-			_objectActionLocalService.updateStatus(
-				objectActionId, ObjectActionConstants.STATUS_FAILED);
+
+			// The status write waits for the surrounding transaction to
+			// commit, so the rethrow below cannot roll it back with the rest
+			// of the transaction's work. Without a surrounding transaction
+			// the callback runs at once.
+
+			TransactionCallbackUtil.registerCommitCallback(
+				() -> _objectActionLocalService.updateStatus(
+					objectActionId, ObjectActionConstants.STATUS_FAILED));
 
 			throw exception;
 		}
