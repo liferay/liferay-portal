@@ -168,16 +168,16 @@ public class GetFileActionHelper {
 			fileEntry = DLAppServiceUtil.getFileEntry(fileEntryId);
 		}
 
-		if (Validator.isNull(version)) {
-			if ((fileEntry != null) &&
-				Validator.isNotNull(fileEntry.getVersion())) {
+		if ((fileEntry == null) ||
+			(Validator.isNull(version) &&
+			 Validator.isNull(fileEntry.getVersion()))) {
 
-				version = fileEntry.getVersion();
-			}
-			else {
-				throw new NoSuchFileEntryException(
-					"{fileEntryId=" + fileEntryId + "}");
-			}
+			throw new NoSuchFileEntryException(
+				"{fileEntryId=" + fileEntryId + "}");
+		}
+
+		if (Validator.isNull(version)) {
+			version = fileEntry.getVersion();
 		}
 
 		DLFileEntryPermission.check(
