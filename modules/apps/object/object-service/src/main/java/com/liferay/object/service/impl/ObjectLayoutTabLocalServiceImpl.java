@@ -107,7 +107,7 @@ public class ObjectLayoutTabLocalServiceImpl
 			ObjectLayoutTab objectLayoutTab = objectLayoutTabs.get(i);
 
 			_serviceRegistrations.computeIfAbsent(
-				_getServiceRegistrationKey(objectLayoutTab),
+				_getServiceRegistrationKey(objectDefinition, objectLayoutTab),
 				serviceRegistrationKey -> _bundleContext.registerService(
 					new String[] {
 						ScreenNavigationCategory.class.getName(),
@@ -127,14 +127,47 @@ public class ObjectLayoutTabLocalServiceImpl
 		}
 	}
 
+	@Override
+	public void unregisterObjectLayoutTabScreenNavigationCategories(
+		ObjectDefinition objectDefinition) {
+
+		for (String serviceRegistrationKey : _serviceRegistrations.keySet()) {
+			if (!serviceRegistrationKey.startsWith(
+					_getServiceRegistrationKey(objectDefinition) +
+						StringPool.POUND)) {
+
+				continue;
+			}
+
+			ServiceRegistration<?> serviceRegistration =
+				_serviceRegistrations.remove(serviceRegistrationKey);
+
+			if (serviceRegistration == null) {
+				continue;
+			}
+
+			serviceRegistration.unregister();
+		}
+	}
+
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 	}
 
-	private String _getServiceRegistrationKey(ObjectLayoutTab objectLayoutTab) {
+	private String _getServiceRegistrationKey(
+		ObjectDefinition objectDefinition) {
+
 		return StringBundler.concat(
-			objectLayoutTab.getCompanyId(), StringPool.POUND,
+			objectDefinition.getCompanyId(), StringPool.POUND,
+			objectDefinition.getObjectDefinitionId());
+	}
+
+	private String _getServiceRegistrationKey(
+		ObjectDefinition objectDefinition, ObjectLayoutTab objectLayoutTab) {
+
+		return StringBundler.concat(
+			_getServiceRegistrationKey(objectDefinition), StringPool.POUND,
 			objectLayoutTab.getObjectLayoutTabId());
 	}
 
