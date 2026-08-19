@@ -937,6 +937,9 @@ public abstract class BaseJSONWebServiceClientImpl
 				},
 				null);
 		}
+		catch (SecurityException securityException) {
+			throw securityException;
+		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

@@ -128,6 +128,13 @@ public class FIPSModeValidator {
 			"Key size " + keySize + " is not allowed in FIPS mode");
 	}
 
+	public static void validateTLSVerification(boolean verified) {
+		if (PropsValues.FIPS_ENABLED && !verified) {
+			throw new SecurityException(
+				"TLS verification must be enabled in FIPS mode");
+		}
+	}
+
 	public static void validateURL(String url) {
 		if (!PropsValues.FIPS_ENABLED ||
 			(Validator.isNotNull(url) &&
@@ -380,6 +387,10 @@ public class FIPSModeValidator {
 		validateAlgorithm(
 			PropsUtil.get(PropsKeys.COMPANY_ENCRYPTION_ALGORITHM));
 		validateAlgorithm(PropsValues.TUNNELING_SERVLET_ENCRYPTION_ALGORITHM);
+
+		validateTLSVerification(
+			GetterUtil.getBoolean(
+				PropsUtil.get(PropsKeys.TUNNEL_UTIL_VERIFY_SSL_HOSTNAME)));
 
 		_validatePasswordsEncryptionAlgorithm(
 			PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM));

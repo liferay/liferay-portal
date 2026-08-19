@@ -5,7 +5,9 @@
 
 package com.liferay.portal.json.web.service.client.internal;
 
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -22,6 +24,11 @@ import javax.net.ssl.X509TrustManager;
 public class X509TrustManagerImpl implements X509TrustManager {
 
 	public X509TrustManagerImpl() {
+		if (PropsValues.FIPS_ENABLED) {
+			throw new SecurityException(
+				"Self signed certificates are not allowed in FIPS mode");
+		}
+
 		try {
 			_defaultX509TrustManager = _getX509TrustManager(null);
 			_extraX509TrustManager = null;
@@ -34,6 +41,8 @@ public class X509TrustManagerImpl implements X509TrustManager {
 
 	public X509TrustManagerImpl(
 		KeyStore keyStore, boolean trustSelfSignedCertificates) {
+
+		FIPSModeValidator.validateTLSVerification(!trustSelfSignedCertificates);
 
 		try {
 			_defaultX509TrustManager = _getX509TrustManager(null);

@@ -403,6 +403,9 @@ public interface PropsKeys {
 	public static final String CHANGE_TRACKING_DELETION_PROTECTION_ENABLED =
 		"change.tracking.deletion.protection.enabled";
 
+	public static final String CLUSTER_LINK_AUTH_KEYSTORE_TYPE =
+		"cluster.link.auth.keystore.type";
+
 	public static final String CLUSTER_LINK_AUTH_VALUE =
 		"cluster.link.auth.value";
 
@@ -2695,6 +2698,9 @@ public interface PropsKeys {
 
 	public static final String TUNNEL_SERVLET_HIDE_EXCEPTION_DATA =
 		"tunnel.servlet.hide.exception.data";
+
+	public static final String TUNNEL_UTIL_VERIFY_SSL_HOSTNAME =
+		"com.liferay.portal.kernel.service.http.TunnelUtil.verify.ssl.hostname";
 
 	public static final String TUNNELING_SERVLET_ENCRYPTION_ALGORITHM =
 		"tunneling.servlet.encryption.algorithm";
