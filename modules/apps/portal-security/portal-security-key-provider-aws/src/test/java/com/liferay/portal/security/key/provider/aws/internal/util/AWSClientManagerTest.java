@@ -48,6 +48,16 @@ public class AWSClientManagerTest {
 		).shutdown();
 	}
 
+	@Test
+	public void testConstructorResolvesRegionFromSupplier() throws Exception {
+		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
+			(awsCredentialsProvider, endpointConfiguration, region) ->
+				new Object(),
+			"kms-fips.{region}.amazonaws.com", null, () -> "us-west-2", false);
+
+		Assert.assertEquals("us-west-2", awsClientManager.getRegion());
+	}
+
 	@Test(expected = IllegalStateException.class)
 	public void testExecuteAfterCloseThrows() throws Exception {
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
@@ -123,6 +133,20 @@ public class AWSClientManagerTest {
 		awsClientManager.execute(client -> client);
 
 		Assert.assertEquals(1, builds.get());
+	}
+
+	@Test
+	public void testUpdateConfigurationToleratesUnresolvableRegion()
+		throws Exception {
+
+		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
+			(awsCredentialsProvider, endpointConfiguration, region) ->
+				new Object(),
+			"kms-fips.{region}.amazonaws.com", "us-east-1", () -> null, false);
+
+		awsClientManager.updateConfiguration(null, false);
+
+		Assert.assertNull(awsClientManager.getRegion());
 	}
 
 }
