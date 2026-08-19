@@ -45,7 +45,7 @@ public abstract class BaseAssetHistogramMetricResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/analytics-reports-rest/v1.0{groupId}/asset-metrics/{assetType}/histogram'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/analytics-reports-rest/v1.0/{groupId}/asset-metrics/{assetType}/histogram'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -79,7 +79,7 @@ public abstract class BaseAssetHistogramMetricResourceImpl
 		}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("{groupId}/asset-metrics/{assetType}/histogram")
+	@jakarta.ws.rs.Path("/{groupId}/asset-metrics/{assetType}/histogram")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public AssetHistogramMetric getGroupAssetMetricAssetTypeHistogram(
@@ -548,4 +548,4 @@ public abstract class BaseAssetHistogramMetricResourceImpl
 		LogFactoryUtil.getLog(BaseAssetHistogramMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:298378149
+// LIFERAY-REST-BUILDER-HASH:1326964345

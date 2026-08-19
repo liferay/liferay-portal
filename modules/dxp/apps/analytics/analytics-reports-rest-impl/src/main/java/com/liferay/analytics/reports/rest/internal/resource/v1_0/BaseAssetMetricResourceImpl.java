@@ -45,7 +45,7 @@ public abstract class BaseAssetMetricResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/analytics-reports-rest/v1.0{groupId}/asset-metrics/{assetType}'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/analytics-reports-rest/v1.0/{groupId}/asset-metrics/{assetType}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -79,7 +79,7 @@ public abstract class BaseAssetMetricResourceImpl
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "AssetMetric")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("{groupId}/asset-metrics/{assetType}")
+	@jakarta.ws.rs.Path("/{groupId}/asset-metrics/{assetType}")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public AssetMetric getGroupAssetMetric(
@@ -551,4 +551,4 @@ public abstract class BaseAssetMetricResourceImpl
 		LogFactoryUtil.getLog(BaseAssetMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:476383878
+// LIFERAY-REST-BUILDER-HASH:132271136

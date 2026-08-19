@@ -45,7 +45,7 @@ public abstract class BaseAssetDeviceMetricResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/analytics-reports-rest/v1.0{groupId}/asset-metrics/{assetType}/devices'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/analytics-reports-rest/v1.0/{groupId}/asset-metrics/{assetType}/devices'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -77,7 +77,7 @@ public abstract class BaseAssetDeviceMetricResourceImpl
 		}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("{groupId}/asset-metrics/{assetType}/devices")
+	@jakarta.ws.rs.Path("/{groupId}/asset-metrics/{assetType}/devices")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public AssetDeviceMetric getGroupAssetMetricAssetTypeDevice(
@@ -546,4 +546,4 @@ public abstract class BaseAssetDeviceMetricResourceImpl
 		LogFactoryUtil.getLog(BaseAssetDeviceMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:728675865
+// LIFERAY-REST-BUILDER-HASH:-564453255

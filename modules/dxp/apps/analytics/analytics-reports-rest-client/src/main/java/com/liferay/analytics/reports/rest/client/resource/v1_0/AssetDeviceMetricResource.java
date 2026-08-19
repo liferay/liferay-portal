@@ -263,7 +263,7 @@ public interface AssetDeviceMetricResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/analytics-reports-rest/v1.0{groupId}/asset-metrics/{assetType}/devices");
+						"/o/analytics-reports-rest/v1.0/{groupId}/asset-metrics/{assetType}/devices");
 
 			httpInvoker.path("groupId", groupId);
 			httpInvoker.path("assetType", assetType);
@@ -288,4 +288,4 @@ public interface AssetDeviceMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-442822872
+// LIFERAY-REST-BUILDER-HASH:-842315555

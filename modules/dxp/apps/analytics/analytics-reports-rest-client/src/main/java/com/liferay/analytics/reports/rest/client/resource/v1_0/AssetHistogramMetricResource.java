@@ -263,7 +263,7 @@ public interface AssetHistogramMetricResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/analytics-reports-rest/v1.0{groupId}/asset-metrics/{assetType}/histogram");
+						"/o/analytics-reports-rest/v1.0/{groupId}/asset-metrics/{assetType}/histogram");
 
 			httpInvoker.path("groupId", groupId);
 			httpInvoker.path("assetType", assetType);
@@ -288,4 +288,4 @@ public interface AssetHistogramMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:380733175
+// LIFERAY-REST-BUILDER-HASH:514882404
