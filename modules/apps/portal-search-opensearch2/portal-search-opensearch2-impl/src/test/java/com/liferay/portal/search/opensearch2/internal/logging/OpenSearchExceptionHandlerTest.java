@@ -162,7 +162,7 @@ public class OpenSearchExceptionHandlerTest {
 		LogEntry logEntry = logEntries.get(0);
 
 		Assert.assertEquals(logLevel, logEntry.getPriority());
-
+		Assert.assertEquals(searchException.toString(), logEntry.getMessage());
 		Assert.assertSame(searchException, logEntry.getThrowable());
 	}
 
