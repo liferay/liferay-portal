@@ -394,6 +394,25 @@ public class ObjectEntryInfoItemExceptionRequestHandler {
 		}
 
 		if (exception instanceof
+				ObjectEntryValuesException.RequiredLanguageId) {
+
+			ObjectEntryValuesException.RequiredLanguageId
+				objectEntryValuesException =
+					(ObjectEntryValuesException.RequiredLanguageId)exception;
+
+			String infoFieldUniqueId = _getInfoFieldUniqueId(
+				groupId, infoItemFormProvider, objectDefinition,
+				objectEntryValuesException.getObjectFieldName());
+
+			if (infoFieldUniqueId == null) {
+				throw new InfoFormException();
+			}
+
+			throw new InfoFormValidationException.RequiredInfoField(
+				infoFieldUniqueId);
+		}
+
+		if (exception instanceof
 				ObjectEntryValuesException.UniqueValueConstraintViolation) {
 
 			ObjectEntryValuesException.UniqueValueConstraintViolation

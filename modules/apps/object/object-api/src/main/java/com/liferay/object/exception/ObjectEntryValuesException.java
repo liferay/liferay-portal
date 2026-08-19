@@ -452,7 +452,15 @@ public class ObjectEntryValuesException extends PortalException {
 					"No value was provided for the language ID \"%s\" in the " +
 						"required object field \"%s\".",
 					languageId, objectFieldName));
+
+			_objectFieldName = objectFieldName;
 		}
+
+		public String getObjectFieldName() {
+			return _objectFieldName;
+		}
+
+		private final String _objectFieldName;
 
 	}
 
