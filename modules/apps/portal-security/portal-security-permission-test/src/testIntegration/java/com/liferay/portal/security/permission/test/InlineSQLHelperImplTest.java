@@ -338,9 +338,7 @@ public class InlineSQLHelperImplTest {
 	}
 
 	@Test
-	public void testIsDisabledForCompanyAdminWithNewCompany()
-		throws Exception {
-
+	public void testIsDisabledForCompanyAdminWithNewCompany() throws Exception {
 		_company = CompanyTestUtil.addCompany();
 
 		_user = UserTestUtil.addCompanyAdminUser(_company);
