@@ -12,7 +12,6 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.RoleService;
@@ -120,9 +119,13 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 					0, 20, UserFirstNameComparator.getInstance(true));
 			}
 
+			if (StringUtil.equalsIgnoreCase(type, "User")) {
+				users = _filterAssignableUsers(users);
+			}
+
 			taskAssignees.addAll(
 				transform(
-					_getUsers(users, type),
+					users,
 					user -> new TaskAssignee() {
 						{
 							setExternalReferenceCode(
@@ -151,25 +154,27 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 		return Page.of(taskAssignees);
 	}
 
-	private List<User> _getUsers(List<User> users, String type)
+	private List<User> _filterAssignableUsers(List<User> users)
 		throws Exception {
-
-		if (!StringUtil.equalsIgnoreCase(type, "User")) {
-			return users;
-		}
 
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
+		if (permissionChecker.isOmniadmin()) {
+			return users;
+		}
+
 		List<User> assignableUsers = new ArrayList<>(users.size());
 
 		for (User user : users) {
-			if (UserPermissionUtil.contains(
-					permissionChecker, user.getUserId(),
-					user.getOrganizationIds(), ActionKeys.UPDATE)) {
+			if (_portal.isOmniadmin(user) ||
+				(!permissionChecker.isCompanyAdmin() &&
+				 _portal.isCompanyAdmin(user))) {
 
-				assignableUsers.add(user);
+				continue;
 			}
+
+			assignableUsers.add(user);
 		}
 
 		return assignableUsers;

@@ -149,11 +149,7 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 			null, null, RoleConstants.TYPE_DEPOT,
 			DepotRolesConstants.SUBTYPE_PROJECT, null);
 
-		User user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(), "John",
-			"Doe", new long[] {_depotEntry.getGroupId()},
-			ServiceContextTestUtil.getServiceContext());
+		User user = _addUser(_depotEntry.getGroupId(), "John", "Doe");
 
 		Page<TaskAssignee> page = taskAssigneeResource.getTaskAssigneesPage(
 			"Custom", null);
@@ -197,20 +193,22 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 		_assertTaskAssigneeType(
 			"User", taskAssigneeResource.getTaskAssigneesPage(null, "User"));
 
-		_testGetTaskAssigneesPageHidesAdministratorFromSpaceAdministrator();
 		_testGetTaskAssigneesPageWithAppDisabled();
 		_testGetTaskAssigneesPageWithAppExpired();
+		_testGetTaskAssigneesPageWithSpaceAdministrator();
 	}
 
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"externalReferenceCode", "name", "type"};
 	}
 
-	private User _addUser(long groupId, String lastName) throws Exception {
+	private User _addUser(long groupId, String firstName, String lastName)
+		throws Exception {
+
 		return UserTestUtil.addUser(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), lastName, new long[] {groupId},
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(), firstName,
+			lastName, new long[] {groupId},
 			ServiceContextTestUtil.getServiceContext());
 	}
 
@@ -247,8 +245,37 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 				objectEntry.getObjectEntryId(), null, null));
 	}
 
-	private void
-			_testGetTaskAssigneesPageHidesAdministratorFromSpaceAdministrator()
+	private void _testGetTaskAssigneesPageWithAppDisabled() throws Exception {
+		try (AutoCloseable autoCloseable =
+				CMPLicenseTestUtil.withAppDisabled()) {
+
+			assertHttpResponseStatusCode(
+				400,
+				taskAssigneeResource.getTaskAssigneesPageHttpResponse(
+					null, null));
+		}
+
+		assertHttpResponseStatusCode(
+			200,
+			taskAssigneeResource.getTaskAssigneesPageHttpResponse(null, null));
+	}
+
+	private void _testGetTaskAssigneesPageWithAppExpired() throws Exception {
+		try (AutoCloseable autoCloseable =
+				CMPLicenseTestUtil.withAppExpired()) {
+
+			assertHttpResponseStatusCode(
+				400,
+				taskAssigneeResource.getTaskAssigneesPageHttpResponse(
+					null, null));
+		}
+
+		assertHttpResponseStatusCode(
+			200,
+			taskAssigneeResource.getTaskAssigneesPageHttpResponse(null, null));
+	}
+
+	private void _testGetTaskAssigneesPageWithSpaceAdministrator()
 		throws Exception {
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
@@ -260,7 +287,8 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 
 		String lastName = RandomTestUtil.randomString();
 
-		User administratorUser = _addUser(groupId, lastName);
+		User administratorUser = _addUser(
+			groupId, RandomTestUtil.randomString(), lastName);
 
 		Role administratorRole = _roleLocalService.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.ADMINISTRATOR);
@@ -269,7 +297,8 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 			administratorUser.getUserId(),
 			new long[] {administratorRole.getRoleId()});
 
-		User assignableUser = _addUser(groupId, lastName);
+		User assignableUser = _addUser(
+			groupId, RandomTestUtil.randomString(), lastName);
 
 		User spaceAdministratorUser = UserTestUtil.addUser(
 			testCompany, PropsValues.DEFAULT_ADMIN_PASSWORD);
@@ -322,36 +351,6 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 					taskAssigneeResource.getTaskAssigneesPage(
 						lastName, "User")),
 				administratorUser.getUserId()));
-	}
-
-	private void _testGetTaskAssigneesPageWithAppDisabled() throws Exception {
-		try (AutoCloseable autoCloseable =
-				CMPLicenseTestUtil.withAppDisabled()) {
-
-			assertHttpResponseStatusCode(
-				400,
-				taskAssigneeResource.getTaskAssigneesPageHttpResponse(
-					null, null));
-		}
-
-		assertHttpResponseStatusCode(
-			200,
-			taskAssigneeResource.getTaskAssigneesPageHttpResponse(null, null));
-	}
-
-	private void _testGetTaskAssigneesPageWithAppExpired() throws Exception {
-		try (AutoCloseable autoCloseable =
-				CMPLicenseTestUtil.withAppExpired()) {
-
-			assertHttpResponseStatusCode(
-				400,
-				taskAssigneeResource.getTaskAssigneesPageHttpResponse(
-					null, null));
-		}
-
-		assertHttpResponseStatusCode(
-			200,
-			taskAssigneeResource.getTaskAssigneesPageHttpResponse(null, null));
 	}
 
 	@DeleteAfterTestRun
