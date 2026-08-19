@@ -5,4 +5,3 @@ Import-Package:\
 	!javax.xml.bind,\
 	\
 	*
-Liferay-Releng-Module-Group-Title: Portal Security Key
