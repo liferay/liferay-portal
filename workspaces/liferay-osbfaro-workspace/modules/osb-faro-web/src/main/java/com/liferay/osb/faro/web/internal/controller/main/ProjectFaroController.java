@@ -310,8 +310,10 @@ public class ProjectFaroController extends BaseFaroController {
 			FaroParam
 				<List<String>> incidentReportEmailAddressesFaroParam,
 			@FormParam("name") String name,
-			@FormParam("offeringEntries") FaroParam<List<OSBOfferingEntry>>
-				offeringEntriesFaroParam,
+			@DefaultValue(JSONConstants.NULL_JSON_ARRAY)
+			@FormParam("offeringEntries")
+			FaroParam
+				<List<OSBOfferingEntry>> offeringEntriesFaroParam,
 			@FormParam("ownerEmailAddress") String ownerEmailAddress,
 			@FormParam("serverLocation") String serverLocation,
 			@DefaultValue("UTC") @FormParam("timeZoneId") String timeZoneId)
