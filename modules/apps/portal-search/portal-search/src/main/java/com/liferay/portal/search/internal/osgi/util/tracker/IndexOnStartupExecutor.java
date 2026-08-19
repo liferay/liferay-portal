@@ -114,7 +114,7 @@ public class IndexOnStartupExecutor
 									currentBundleContext.getService(
 										serviceReference);
 
-								boolean indexerIndexOnStartup =
+								boolean indexOnStartup =
 									GetterUtil.getBoolean(
 										serviceReference.getProperty(
 											PropsKeys.INDEX_ON_STARTUP),
@@ -122,7 +122,7 @@ public class IndexOnStartupExecutor
 
 								String className = indexer.getClassName();
 
-								if (indexerIndexOnStartup &&
+								if (indexOnStartup &&
 									Validator.isNotNull(className) &&
 									!_isBaseSearcher(indexer.getClass())) {
 
