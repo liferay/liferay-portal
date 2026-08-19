@@ -11,6 +11,7 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {ApiHelpers, DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {LocalizationSelectPage} from '../../../pages/fragment-web/LocalizationSelectPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
@@ -152,7 +153,12 @@ async function getSampleStructureDefinition(apiHelpers: ApiHelpers) {
 	return SAMPLE_STRUCTURE_DEFINITION;
 }
 
-const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
+const test = mergeTests(
+	cmsPagesTest,
+	dataApiHelpersTest,
+	loginTest(),
+	systemSettingsPageTest
+);
 
 test(
 	'Can translate a content with side by side view',
@@ -424,5 +430,162 @@ test(
 		expect(
 			await targetLocalizationSelectPage.getLanguageStatus('es-ES')
 		).toBe('not-translated');
+	}
+);
+
+test(
+	'Auto translate fills the translation once a translator is configured',
+	{tag: '@LPD-103031'},
+	async ({apiHelpers, contentsPage, page, systemSettingsPage}) => {
+		const contentTitle = getRandomString();
+
+		await createSampleStructureContent(
+			apiHelpers,
+			contentsPage,
+			contentTitle
+		);
+
+		const setAutoTranslation = async ({
+			enabled,
+			key,
+		}: {
+			enabled: boolean;
+			key?: string;
+		}) => {
+			await systemSettingsPage.goToSystemSetting(
+				'Translation',
+				'Translator Using Google Cloud'
+			);
+
+			if (enabled) {
+				await page.getByLabel('Enabled').check();
+			}
+			else {
+				await page.getByLabel('Enabled').uncheck();
+			}
+
+			if (key) {
+				await page.getByLabel('Service Account Private Key').fill(key);
+			}
+
+			await systemSettingsPage.saveAndWaitForAlert();
+		};
+
+		const openTranslationSide = async () => {
+			await contentsPage.goto();
+
+			await contentsPage.translateContent(contentTitle);
+
+			const targetLocalizationSelectPage = new LocalizationSelectPage(
+				page,
+				1
+			);
+
+			await targetLocalizationSelectPage.switchLanguage('es-ES');
+
+			return targetLocalizationSelectPage;
+		};
+
+		const autoTranslateMenuItem = page.getByRole('menuitem', {
+			name: 'Auto Translate',
+		});
+
+		await test.step('Auto Translate is not offered while no translator is configured', async () => {
+			const targetLocalizationSelectPage = await openTranslationSide();
+
+			await clickAndExpectToBeVisible({
+				target: page.getByRole('menuitem', {
+					name: 'Mark as Translated',
+				}),
+				trigger: targetLocalizationSelectPage.actionsDropdownTrigger,
+			});
+
+			await expect(autoTranslateMenuItem).toHaveCount(0);
+		});
+
+		try {
+			await test.step('Auto Translate fills the translation side from the response', async () => {
+				await setAutoTranslation({
+					enabled: true,
+					key: '{"type": "service_account"}',
+				});
+
+				const targetLocalizationSelectPage =
+					await openTranslationSide();
+
+				// The response echoes the requested field names, so the stub
+				// stays valid whatever the structure carries.
+
+				await page.route(
+					'**/o/translation/auto_translate',
+					async (route) => {
+						const {fields} = route.request().postDataJSON();
+
+						await route.fulfill({
+							body: JSON.stringify({
+								fields: Object.fromEntries(
+									Object.keys(fields).map((name) => [
+										name,
+										'Traducido',
+									])
+								),
+							}),
+							contentType: 'application/json',
+							status: 200,
+						});
+					}
+				);
+
+				await targetLocalizationSelectPage.autoTranslate('es-ES');
+
+				await expect(page.getByLabel('Title').nth(1)).toHaveValue(
+					'Traducido'
+				);
+				await expect(page.getByLabel('Long Text').nth(1)).toHaveValue(
+					'Traducido'
+				);
+			});
+
+			await test.step('A failing auto translation reports the error', async () => {
+				await page.route(
+					'**/o/translation/auto_translate',
+					async (route) => {
+						await route.fulfill({
+							body: JSON.stringify({
+								error: {
+									message: 'The translation key is invalid',
+								},
+							}),
+							contentType: 'application/json',
+							status: 200,
+						});
+					}
+				);
+
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: autoTranslateMenuItem,
+					trigger: page.getByLabel('Localization Actions'),
+				});
+
+				// The previous step translated the language, so the content
+				// override confirmation is always raised here.
+
+				const continueButton = page
+					.locator('.modal-footer')
+					.getByText('Continue');
+
+				await expect(continueButton).toBeVisible();
+
+				await continueButton.click();
+
+				await expect(
+					page.getByText('The translation key is invalid')
+				).toBeVisible();
+			});
+		}
+		finally {
+			await setAutoTranslation({enabled: false});
+		}
 	}
 );
