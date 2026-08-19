@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -83,46 +82,13 @@ public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
 				JSONUtil.put("companyId", company.getCompanyId()));
 		}
 		catch (Exception exception) {
-			_log.error("Unable to copy portal instance", exception);
+			String errorMessage = _getErrorMessage(exception);
 
-			String errorMessage = "an-unexpected-error-occurred";
-
-			if (exception instanceof IllegalArgumentException) {
-				String destinationCompanyId = ParamUtil.getString(
-					actionRequest, "destinationCompanyId");
-
-				if (Validator.isNotNull(destinationCompanyId)) {
-					errorMessage =
-						"please-enter-a-valid-destination-company-id";
-				}
+			if (errorMessage.equals(_ERROR_UNEXPECTED)) {
+				_log.error("Unable to copy portal instance", exception);
 			}
-			else if (exception instanceof UnsupportedOperationException) {
-				if (PropsValues.DATABASE_PARTITION_ENABLED) {
-					errorMessage = "copying-an-instance-is-already-in-progress";
-				}
-				else {
-					errorMessage = "database-partitioning-must-be-enabled";
-				}
-			}
-			else {
-				Throwable causeThrowable = exception.getCause();
-
-				if ((exception instanceof CompanyNameException) ||
-					(causeThrowable instanceof CompanyNameException)) {
-
-					errorMessage = "please-enter-a-valid-name";
-				}
-				else if ((exception instanceof CompanyVirtualHostException) ||
-						 (causeThrowable instanceof
-							 CompanyVirtualHostException)) {
-
-					errorMessage = "please-enter-a-valid-virtual-host";
-				}
-				else if ((exception instanceof CompanyWebIdException) ||
-						 (causeThrowable instanceof CompanyWebIdException)) {
-
-					errorMessage = "please-enter-a-valid-web-id";
-				}
+			else if (_log.isDebugEnabled()) {
+				_log.debug("Unable to copy portal instance", exception);
 			}
 
 			JSONPortletResponseUtil.writeJSON(
@@ -177,8 +143,64 @@ public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
 			throw new IllegalArgumentException();
 		}
 
-		return GetterUtil.getLong(destinationCompanyId);
+		try {
+			return Long.parseLong(destinationCompanyId);
+		}
+		catch (NumberFormatException numberFormatException) {
+			throw new IllegalArgumentException(numberFormatException);
+		}
 	}
+
+	private String _getErrorMessage(Exception exception) {
+		String message = GetterUtil.getString(exception.getMessage());
+
+		if (exception instanceof IllegalArgumentException) {
+			if (message.endsWith("is the default company ID")) {
+				return "the-default-instance-cannot-be-copied";
+			}
+
+			return "please-enter-a-valid-destination-company-id";
+		}
+
+		if (exception instanceof UnsupportedOperationException) {
+			if (message.equals(
+					"Company in copy process company ID is not null")) {
+
+				return "copying-an-instance-is-already-in-progress";
+			}
+
+			if (message.equals("Database partitioning must be enabled")) {
+				return "database-partitioning-must-be-enabled";
+			}
+
+			return _ERROR_UNEXPECTED;
+		}
+
+		Throwable throwable = exception.getCause();
+
+		if ((exception instanceof CompanyNameException) ||
+			(throwable instanceof CompanyNameException)) {
+
+			return "please-enter-a-valid-name";
+		}
+
+		if ((exception instanceof CompanyVirtualHostException) ||
+			(throwable instanceof CompanyVirtualHostException)) {
+
+			return "please-enter-a-valid-virtual-host";
+		}
+
+		if ((exception instanceof CompanyWebIdException) ||
+			(throwable instanceof CompanyWebIdException)) {
+
+			return "please-enter-a-valid-web-id";
+		}
+
+		return _ERROR_UNEXPECTED;
+	}
+
+	private static final String _ERROR_UNEXPECTED =
+		"an-unexpected-error-occurred";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CopyInstanceMVCActionCommand.class);

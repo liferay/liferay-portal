@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -65,6 +66,7 @@ public class CompanyActionDropdownItems {
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
+						() -> PropsValues.DATABASE_PARTITION_ENABLED,
 						dropdownItem -> {
 							dropdownItem.putData("action", "copyInstance");
 							dropdownItem.putData(
