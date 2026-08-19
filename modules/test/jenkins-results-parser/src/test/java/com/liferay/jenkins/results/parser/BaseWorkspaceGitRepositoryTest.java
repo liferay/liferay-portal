@@ -82,17 +82,16 @@ public class BaseWorkspaceGitRepositoryTest
 
 	@Test
 	public void testPrepareGitWorkingDirectory() throws Exception {
+		_testPrepareGitWorkingDirectory(false, "merge-portal-subrepository");
 		_testPrepareGitWorkingDirectory(false, false, false);
 		_testPrepareGitWorkingDirectory(false, false, true);
 		_testPrepareGitWorkingDirectory(false, true, false);
 		_testPrepareGitWorkingDirectory(false, true, true);
+		_testPrepareGitWorkingDirectory(true, "test-portal-upstream");
 		_testPrepareGitWorkingDirectory(true, false, false);
 		_testPrepareGitWorkingDirectory(true, false, true);
 		_testPrepareGitWorkingDirectory(true, true, false);
 		_testPrepareGitWorkingDirectory(true, true, true);
-
-		_testPrepareGitWorkingDirectory(false, "merge-portal-subrepository");
-		_testPrepareGitWorkingDirectory(true, "test-portal-upstream");
 	}
 
 	@Test
