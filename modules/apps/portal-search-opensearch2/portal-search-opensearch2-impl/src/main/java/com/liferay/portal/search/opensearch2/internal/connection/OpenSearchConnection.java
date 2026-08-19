@@ -39,7 +39,9 @@ import org.opensearch.client.json.JsonpMapper;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.OpenSearchTransport;
+import org.opensearch.client.transport.httpclient5.ApacheHttpClient5Transport;
 import org.opensearch.client.transport.httpclient5.ApacheHttpClient5TransportBuilder;
+import org.opensearch.client.transport.httpclient5.internal.Node;
 
 /**
  * @author Michael C. Han
@@ -303,6 +305,17 @@ public class OpenSearchConnection {
 	private OpenSearchTransport _createTransport() {
 		return ApacheHttpClient5TransportBuilder.builder(
 			_getHttpHosts()
+		).setFailureListener(
+			new ApacheHttpClient5Transport.FailureListener() {
+
+				@Override
+				public void onFailure(Node node) {
+					if (_log.isWarnEnabled()) {
+						_log.warn("Marked node as unavailable: " + node);
+					}
+				}
+
+			}
 		).setCompressionEnabled(
 			_compressionEnabled
 		).setMapper(
