@@ -82,6 +82,8 @@ test.describe('Personalized Variation', () => {
 					itemType: 'Web Content Article',
 				});
 
+				await collectionsPage.save();
+
 				await collectionsPage.addPersonalizedVariation(segmentName);
 
 				await collectionsPage.selectAssets([webContentTitle]);
@@ -169,6 +171,8 @@ test.describe('Personalized Variation', () => {
 					itemSubtype: 'All Subtypes',
 					itemType: 'Web Content Article',
 				});
+
+				await collectionsPage.save();
 
 				await collectionsPage.selectAssets([webContentTitle]);
 

@@ -44,6 +44,8 @@ test.describe('Selection and Display', () => {
 
 			await test.step('Restrict the collection to every item type except Blogs Entry and Web Content Article', async () => {
 				await collectionsPage.restrictSourceItemTypes(excludedTypes);
+
+				await collectionsPage.save();
 			});
 
 			await test.step('Open the Type filter in the asset entries item selector', async () => {
@@ -100,6 +102,8 @@ test.describe('Selection and Display', () => {
 					itemSubtype: 'Basic Web Content',
 					itemType: 'Web Content Article',
 				});
+
+				await collectionsPage.save();
 			});
 
 			await test.step('Select the web content article', async () => {
@@ -165,6 +169,8 @@ test.describe('Personalized Variation', () => {
 					itemSubtype: 'All Subtypes',
 					itemType: 'Web Content Article',
 				});
+
+				await collectionsPage.save();
 
 				await collectionsPage.addPersonalizedVariation(segmentName);
 			});

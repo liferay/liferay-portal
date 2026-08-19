@@ -416,6 +416,8 @@ test.describe('Source', () => {
 					itemSubtype: documentTypeName,
 					itemType: 'Document',
 				});
+
+				await collectionsPage.save();
 			});
 
 			await test.step('Create a user who administers the site', async () => {

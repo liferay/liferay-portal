@@ -35,6 +35,8 @@ export class CollectionsPage {
 			itemType: 'Web Content Article',
 		});
 
+		await this.save();
+
 		return {
 			classPK: await this.getCollectionClassPK(name, siteUrl),
 		};
@@ -58,9 +60,7 @@ export class CollectionsPage {
 
 		await this.page.getByPlaceholder('Title').fill(name);
 
-		await this.page.getByRole('button', {name: 'Save'}).click();
-
-		await waitForAlert(this.page);
+		await this.save();
 	}
 
 	/**
@@ -162,14 +162,13 @@ export class CollectionsPage {
 
 		await this.page.getByPlaceholder('Title').fill(newName);
 
-		await this.page.getByRole('button', {name: 'Save'}).click();
-
-		await waitForAlert(this.page);
+		await this.save();
 	}
 
 	/**
 	 * Restricts the collection to multiple item types by choosing "Select
-	 * Types" and moving the given types out of the "In Use" list, then saves.
+	 * Types" and moving the given types out of the "In Use" list. Call `save`
+	 * to persist it.
 	 */
 	async restrictSourceItemTypes(excludedTypes: string[]) {
 		await this.page
@@ -189,15 +188,11 @@ export class CollectionsPage {
 				})
 				.click();
 		}
-
-		await this.page.getByRole('button', {name: 'Save'}).click();
-
-		await waitForAlert(this.page);
 	}
 
 	/**
-	 * Configures the collection to a single item type (and optional subtype),
-	 * then saves.
+	 * Configures the collection to a single item type (and optional subtype).
+	 * Call `save` to persist it.
 	 */
 	async configureSourceItemType({
 		itemSubtype,
@@ -219,14 +214,11 @@ export class CollectionsPage {
 
 			await subtypeSelect.selectOption({label: itemSubtype});
 		}
-
-		await this.page.getByRole('button', {name: 'Save'}).click();
-
-		await waitForAlert(this.page);
 	}
 
 	/**
-	 * On a collection's edit page, saves the collection.
+	 * Saves the collection, from its edit page or from the dialog that creates
+	 * or renames it, and waits for the confirmation alert.
 	 */
 	async save() {
 		await this.page.getByRole('button', {name: 'Save'}).click();
