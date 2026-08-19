@@ -178,6 +178,54 @@ test(
 );
 
 test(
+	'Can see a payment integration description before and after activating it',
+	{tag: ['@LPD-102685']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		page,
+	}) => {
+		const testChannel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				currencyCode: 'USD',
+				name: `Test Channel ${getRandomString()}`,
+				siteGroupId: site.id,
+				type: 'site',
+			});
+
+		await commerceAdminChannelsPage.goto();
+
+		await (
+			await commerceAdminChannelsPage.channelsTableRowLink(
+				testChannel.name
+			)
+		).click();
+
+		const paymentMethodRow = page.getByRole('row').filter({
+			has: page.getByRole('link', {exact: true, name: 'PayPal'}),
+		});
+
+		await test.step('See the description before the integration is configured', async () => {
+			await expect(
+				paymentMethodRow.getByText('Pay via PayPal.')
+			).toBeVisible();
+		});
+
+		await test.step('See the description after activating without one', async () => {
+			await commerceAdminChannelDetailsPage.activateChannelConfiguration(
+				'PayPal',
+				'Payment Methods'
+			);
+
+			await expect(
+				paymentMethodRow.getByText('Pay via PayPal.')
+			).toBeVisible();
+		});
+	}
+);
+
+test(
 	'Offline payment method can be used to place an order',
 	{tag: ['@LPD-85008']},
 	async ({
