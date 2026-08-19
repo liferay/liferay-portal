@@ -3115,11 +3115,13 @@ test.describe('Manage object entries through View Object Entries', () => {
 			objectLayoutTabName: 'Field Tab',
 		});
 
-		await objectLayoutsPage.createObjectRelationshipTab(
+		const {reload} = await objectLayoutsPage.createObjectRelationshipTab(
 			objectLayoutName,
 			'Relationship Tab',
 			'Relationship'
 		);
+
+		await reload;
 
 		await editObjectDetailsPage.goto(objectDefinition.name);
 
@@ -3585,11 +3587,13 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		await objectLayoutsPage.saveAddFieldButton.click();
 
-		await objectLayoutsPage.createObjectRelationshipTab(
+		const {reload} = await objectLayoutsPage.createObjectRelationshipTab(
 			objectLayoutName,
 			objectRelationshipTabName,
 			objectRelationshipLabel
 		);
+
+		await reload;
 
 		await viewObjectEntriesPage.goto(objectDefinition2.className);
 

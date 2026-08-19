@@ -195,6 +195,14 @@ export class ObjectLayoutsPage {
 		await this.saveTabButton.click();
 	}
 
+	/**
+	 * Adds the relationship tab and returns the reload the layout save
+	 * schedules on the parent window. The caller must await it before its next
+	 * navigation, or the reload lands on whatever runs next and cancels it.
+	 * It is handed back rather than awaited here because the save's success
+	 * alert does not survive the reload, so a caller that reads the alert has
+	 * to read it first.
+	 */
 	async createObjectRelationshipTab(
 		objectLayoutName: string,
 		objectLayoutTabName: string,
@@ -204,7 +212,14 @@ export class ObjectLayoutsPage {
 
 		await this.addRelationshipTab(objectLayoutTabName, relationshipField);
 
+		const reload = this.page.waitForNavigation({
+			timeout: 10000,
+			waitUntil: 'load',
+		});
+
 		await this.saveUpdateLayoutButton.click();
+
+		return {reload};
 	}
 
 	async createObjectLayoutContent({

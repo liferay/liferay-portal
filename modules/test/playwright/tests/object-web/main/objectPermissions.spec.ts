@@ -218,11 +218,14 @@ test(
 				objectLayoutTabName: 'Field Tab',
 			});
 
-			await objectLayoutsPage.createObjectRelationshipTab(
-				objectLayoutName,
-				'Relationship Tab',
-				objectRelationship.label['en_US']
-			);
+			const {reload} =
+				await objectLayoutsPage.createObjectRelationshipTab(
+					objectLayoutName,
+					'Relationship Tab',
+					objectRelationship.label['en_US']
+				);
+
+			await reload;
 
 			await editObjectDetailsPage.goto(parentObjectDefinition.name);
 
