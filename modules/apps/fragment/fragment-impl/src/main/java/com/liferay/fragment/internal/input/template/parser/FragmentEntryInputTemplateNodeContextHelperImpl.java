@@ -1004,6 +1004,10 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			infoField.getUniqueId());
 
 		if (!(infoParameterMapValue instanceof RelatedInfoFieldValue<?>)) {
+			if (infoParameterMapValue == null) {
+				return StringPool.BLANK;
+			}
+
 			if (infoParameterMapValue instanceof Map) {
 				return _parseLocalizedValues(
 					infoField, (Map<Locale, ?>)infoParameterMapValue);
