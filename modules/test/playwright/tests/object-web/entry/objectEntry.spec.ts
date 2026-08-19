@@ -6033,17 +6033,25 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		await viewObjectEntriesPage.clickAddObjectEntry(
-			objectDefinition.label['en_US']
-		);
+		// The form the click opens is what asks for the accounts, so the wait
+		// for that answer is registered before the click. Registered after, it
+		// only ever matches a second ask, and the test asserts there is only
+		// one, so it waited out its whole budget exactly when the answer came
+		// promptly.
 
-		await page.waitForResponse(
+		const accountsResponsePromise = page.waitForResponse(
 			(response) =>
 				response
 					.url()
 					.includes('/o/headless-admin-user/v1.0/accounts') &&
 				response.request().method() === 'GET'
 		);
+
+		await viewObjectEntriesPage.clickAddObjectEntry(
+			objectDefinition.label['en_US']
+		);
+
+		await accountsResponsePromise;
 
 		expect(apiCalls).toBe(1);
 		expect(apiURL).not.toContain('pageSize=-1');
