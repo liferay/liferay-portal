@@ -1265,10 +1265,20 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 					await editObjectDetailsPage.entryTitleField.textContent()
 				)?.trim() ?? '';
 
+			// The option already selected cannot be clicked: its own list item
+			// intercepts the pointer, so a run that finds the field already on
+			// the option it means to choose retries that click until the test
+			// times out. Choose one the field is not already on.
+
+			const entryTitleFieldName =
+				originalEntryTitleField === 'Screen Name'
+					? 'Email Address'
+					: 'Screen Name';
+
 			await editObjectDetailsPage.entryTitleField.click();
 
 			await page
-				.getByRole('option', {exact: true, name: 'Screen Name'})
+				.getByRole('option', {exact: true, name: entryTitleFieldName})
 				.click();
 
 			await editObjectDetailsPage.saveObjectDefinition();
@@ -1278,7 +1288,7 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 			await editObjectDetailsPage.goToDetailsTab();
 
 			await expect(editObjectDetailsPage.entryTitleField).toContainText(
-				'Screen Name'
+				entryTitleFieldName
 			);
 
 			// User is a system object shared by the whole run, so put its title
