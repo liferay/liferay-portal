@@ -19,6 +19,7 @@ import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.internal.configuration.AssetListConfiguration;
 import com.liferay.asset.list.internal.util.AssetListFiltersUtil;
+import com.liferay.asset.list.internal.util.AssetListOrderByColumnUtil;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRelModel;
@@ -261,15 +262,19 @@ public class AssetListAssetEntryProviderImpl
 			}
 		}
 
-		String orderByColumn1 = GetterUtil.getString(
-			unicodeProperties.getProperty("orderByColumn1", "priority"));
+		assetEntryQuery.setOrderByCol1(
+			_getOrderByColumn(
+				assetListEntry.getCompanyId(), "priority",
+				GetterUtil.getString(
+					unicodeProperties.getProperty(
+						"orderByColumn1", "priority"))));
 
-		assetEntryQuery.setOrderByCol1(orderByColumn1);
-
-		String orderByColumn2 = GetterUtil.getString(
-			unicodeProperties.getProperty("orderByColumn2", "modifiedDate"));
-
-		assetEntryQuery.setOrderByCol2(orderByColumn2);
+		assetEntryQuery.setOrderByCol2(
+			_getOrderByColumn(
+				assetListEntry.getCompanyId(), "modifiedDate",
+				GetterUtil.getString(
+					unicodeProperties.getProperty(
+						"orderByColumn2", "modifiedDate"))));
 
 		assetEntryQuery.setOrderByType1(
 			GetterUtil.getString(
@@ -970,6 +975,25 @@ public class AssetListAssetEntryProviderImpl
 		searchContext.setKeywords(keywords);
 
 		return searchContext;
+	}
+
+	private String _getOrderByColumn(
+		long companyId, String defaultOrderByColumn, String orderByColumn) {
+
+		if (!orderByColumn.startsWith(StringPool.OPEN_CURLY_BRACE)) {
+			return orderByColumn;
+		}
+
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-74731")) {
+			orderByColumn = AssetListOrderByColumnUtil.toOrderByColumn(
+				companyId, orderByColumn);
+		}
+
+		if (orderByColumn.startsWith(StringPool.OPEN_CURLY_BRACE)) {
+			return defaultOrderByColumn;
+		}
+
+		return orderByColumn;
 	}
 
 	private long[] _getReferencedModelsGroupIds(long[] groupIds) {
