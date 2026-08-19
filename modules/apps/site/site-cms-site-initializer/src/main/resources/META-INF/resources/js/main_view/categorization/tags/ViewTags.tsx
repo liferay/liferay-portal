@@ -80,11 +80,11 @@ export default function ViewTags({
 		Liferay.FeatureFlags['LPD-99403']
 			? [
 					{
-						apiURL: "/o/headless-asset-library/v1.0/asset-libraries?filter=type eq 'Project'",
+						apiURL: "/o/search/v1.0/search?emptySearch=true&nestedFields=embedded&filter=objectDefinitionExternalReferenceCode eq 'l_cmp_project' and status in (0, 1)",
 						entityFieldType: 'string',
 						id: 'projects',
-						itemKey: 'siteId',
-						itemLabel: 'name',
+						itemKey: 'embedded.scopeId',
+						itemLabel: 'embedded.title',
 						label: Liferay.Language.get('project'),
 						multiple: true,
 						type: 'selection',
