@@ -2528,14 +2528,23 @@ test.describe('Create Object Fields', () => {
 
 		await page.getByRole('button', {name: 'Cancel'}).click();
 
-		await page
+		// Cancelling the modal only starts its close. The close lands later
+		// and returns focus to the element that opened the modal, so wait for
+		// the modal's own field to be gone before touching the page beneath,
+		// and give the Enter to the search box itself rather than to whatever
+		// holds focus by then.
+
+		await expect(objectFieldsPage.objectFieldLabelInput).toBeHidden();
+
+		const searchInput = page
 			.getByRole('search')
-			.getByRole('searchbox', {name: 'Search'})
-			.fill('Cancel Field');
+			.getByRole('searchbox', {name: 'Search'});
+
+		await searchInput.fill('Cancel Field');
 
 		await waitForSearchToBeReady(page);
 
-		await page.keyboard.press('Enter');
+		await searchInput.press('Enter');
 
 		await expect(page.getByText('No Results Found')).toBeVisible();
 	});
