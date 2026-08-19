@@ -49,6 +49,7 @@ public class StylebookEntryStagedModelRepository
 			styleBookEntry.getExternalReferenceCode(), userId,
 			styleBookEntry.getGroupId(),
 			styleBookEntry.isDefaultStyleBookEntry(),
+			styleBookEntry.getFrontendTokenDefinition(),
 			styleBookEntry.getFrontendTokensValues(), styleBookEntry.getName(),
 			styleBookEntry.getStyleBookEntryKey(), styleBookEntry.getThemeId(),
 			serviceContext);
