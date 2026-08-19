@@ -199,6 +199,18 @@ public class AssetListTypePropertiesUtil {
 			_log);
 	}
 
+	private static boolean _isSortable(String businessType) {
+		if (businessType.equals(ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT) ||
+			businessType.equals(
+				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST) ||
+			businessType.equals(ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private static JSONObject _toPropertyJSONObject(
 		long classNameId, long classTypeId, Locale locale,
 		ObjectField objectField, String type) {
@@ -230,6 +242,8 @@ public class AssetListTypePropertiesUtil {
 					),
 					_log);
 			}
+		).put(
+			"sortable", _isSortable(objectField.getBusinessType())
 		).put(
 			"type", type
 		);
