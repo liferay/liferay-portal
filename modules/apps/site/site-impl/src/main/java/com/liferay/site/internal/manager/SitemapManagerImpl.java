@@ -37,9 +37,11 @@ import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -1089,11 +1091,24 @@ public class SitemapManagerImpl implements SitemapManager {
 			}
 		}
 		else {
-			for (LayoutSet layoutSet :
-					_getLayoutSets(
-						groupId, null, privateLayout, themeDisplay)) {
+			PermissionChecker originalPermissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
 
-				_visitLayoutSet(rootElement, layoutSet, themeDisplay);
+			try {
+				PermissionThreadLocal.setPermissionChecker(
+					_permissionCheckerFactory.create(
+						_userLocalService.getGuestUser(companyId)));
+
+				for (LayoutSet layoutSet :
+						_getLayoutSets(
+							groupId, null, privateLayout, themeDisplay)) {
+
+					_visitLayoutSet(rootElement, layoutSet, themeDisplay);
+				}
+			}
+			finally {
+				PermissionThreadLocal.setPermissionChecker(
+					originalPermissionChecker);
 			}
 		}
 
@@ -1512,6 +1527,9 @@ public class SitemapManagerImpl implements SitemapManager {
 			return;
 		}
 
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
 		String portalURL = themeDisplay.getPortalURL();
 
 		Map<String, LayoutTypeController> layoutTypeControllers =
@@ -1543,7 +1561,10 @@ public class SitemapManagerImpl implements SitemapManager {
 						LayoutTypePortletConstants.SITEMAP_INCLUDE),
 					true);
 
-				if (!sitemapInclude) {
+				if (!sitemapInclude || (permissionChecker == null) ||
+					!_layoutModelResourcePermission.contains(
+						permissionChecker, layout, ActionKeys.VIEW)) {
+
 					continue;
 				}
 
@@ -1642,6 +1663,11 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.model.Layout)"
+	)
+	private ModelResourcePermission<Layout> _layoutModelResourcePermission;
 
 	@Reference
 	private LayoutSetLocalService _layoutSetLocalService;
