@@ -87,6 +87,14 @@ public class Individual {
 		return _id;
 	}
 
+	public Date getKnownSinceDate() {
+		if (_knownSinceDate == null) {
+			return null;
+		}
+
+		return new Date(_knownSinceDate.getTime());
+	}
+
 	public Date getLastActivityDate() {
 		if (_lastActivityDate == null) {
 			return null;
@@ -169,6 +177,12 @@ public class Individual {
 
 	public void setId(String id) {
 		_id = id;
+	}
+
+	public void setKnownSinceDate(Date knownSinceDate) {
+		if (knownSinceDate != null) {
+			_knownSinceDate = new Date(knownSinceDate.getTime());
+		}
 	}
 
 	public void setLastActivityDate(Date lastActivityDate) {
@@ -362,6 +376,7 @@ public class Individual {
 	private Map<String, Object> _embeddedResources = new HashMap<>();
 	private Date _firstActivityDate;
 	private String _id;
+	private Date _knownSinceDate;
 	private Date _lastActivityDate;
 	private String _lastSessionCountry;
 	private String _profileType;

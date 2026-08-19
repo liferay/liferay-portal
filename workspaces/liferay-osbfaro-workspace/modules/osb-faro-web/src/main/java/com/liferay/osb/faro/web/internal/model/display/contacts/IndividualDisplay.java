@@ -51,6 +51,7 @@ public class IndividualDisplay implements FaroEntityDisplay {
 		_dateCreated = individual.getDateCreated();
 		_firstActivityDate = individual.getFirstActivityDate();
 		_id = individual.getId();
+		_knownSinceDate = individual.getKnownSinceDate();
 		_lastActivityDate = individual.getLastActivityDate();
 		_lastSessionCountry = individual.getLastSessionCountry();
 
@@ -140,6 +141,7 @@ public class IndividualDisplay implements FaroEntityDisplay {
 	@JsonIgnore
 	private Individual _individual;
 
+	private Date _knownSinceDate;
 	private Date _lastActivityDate;
 	private String _lastSessionCountry;
 	private String _name;
