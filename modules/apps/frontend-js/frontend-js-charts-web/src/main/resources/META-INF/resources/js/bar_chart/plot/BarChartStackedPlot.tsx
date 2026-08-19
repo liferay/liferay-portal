@@ -7,7 +7,7 @@ import React from 'react';
 
 import BarChartStackedSegment from './BarChartStackedSegment';
 
-import type {BarDatum} from '../types';
+import type {BarDatum, FocusableBarElement} from '../types';
 import type {StackedBarChartGeometry} from './geometry';
 
 interface Props {
@@ -21,7 +21,7 @@ interface Props {
 	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
 	onLeave: (index: number) => void;
 	palette: string[] | null;
-	setBarRef: (index: number, element: SVGGraphicsElement | null) => void;
+	setBarRef: (index: number, element: FocusableBarElement | null) => void;
 	width: number;
 }
 

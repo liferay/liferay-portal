@@ -23,7 +23,7 @@ import {getBarChartGeometry, getStackedBarChartGeometry} from './plot/geometry';
 
 import '../../css/BarChart.scss';
 
-import type {BarChartProps} from './types';
+import type {BarChartProps, FocusableBarElement} from './types';
 
 const DEFAULT_WIDTH = 480;
 
@@ -53,7 +53,7 @@ export default function BarChart({
 	const [focusIndex, setFocusIndex] = useState<number | null>(null);
 	const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 	const activeIndex = focusIndex ?? hoverIndex;
-	const barRefs = useRef<Array<SVGGraphicsElement | null>>([]);
+	const barRefs = useRef<Array<FocusableBarElement | null>>([]);
 	const rootRef = useRef<HTMLElement>(null);
 
 	// A stacked meter with no explicit `width` fills its container. We measure
@@ -183,7 +183,7 @@ export default function BarChart({
 	);
 
 	const setBarRef = useCallback(
-		(index: number, element: SVGGraphicsElement | null) => {
+		(index: number, element: FocusableBarElement | null) => {
 			barRefs.current[index] = element;
 		},
 		[]

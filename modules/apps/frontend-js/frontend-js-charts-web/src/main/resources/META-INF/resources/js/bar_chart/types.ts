@@ -20,6 +20,12 @@ export interface BarDatum {
 }
 
 /**
+ * A chart element that can take keyboard focus: the bar shape itself or, when
+ * its datum has an `href`, the `<a>` wrapping it.
+ */
+export type FocusableBarElement = Element & HTMLOrSVGElement;
+
+/**
  * Horizontal placement of the chart canvas and the legend within the figure
  * when a `width` cap leaves free space. `start` (default) keeps everything
  * flush-left like the other charts; `center` / `end` shift the block together.

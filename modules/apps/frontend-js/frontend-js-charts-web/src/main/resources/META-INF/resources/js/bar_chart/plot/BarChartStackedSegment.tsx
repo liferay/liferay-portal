@@ -8,7 +8,7 @@ import React from 'react';
 
 import {stackedSegmentPath} from './geometry';
 
-import type {BarDatum} from '../types';
+import type {BarDatum, FocusableBarElement} from '../types';
 import type {StackedSegmentLayout} from './geometry';
 
 const TOOLTIP_CHAR_WIDTH = 7.5;
@@ -27,7 +27,7 @@ interface Props {
 	onHover: (index: number) => void;
 	onKeyDown: (event: React.KeyboardEvent, index: number) => void;
 	onLeave: (index: number) => void;
-	setBarRef: (index: number, element: SVGGraphicsElement | null) => void;
+	setBarRef: (index: number, element: FocusableBarElement | null) => void;
 
 	/** Coordinate-space width used to keep the tooltip box inside the viewport. */
 	width: number;
@@ -109,12 +109,7 @@ export default function BarChartStackedSegment({
 					onKeyDown={(event) => onKeyDown(event, index)}
 					onMouseEnter={() => onHover(index)}
 					onMouseLeave={() => onLeave(index)}
-					ref={(element) =>
-						setBarRef(
-							index,
-							element as Element | null as SVGAElement | null
-						)
-					}
+					ref={(element) => setBarRef(index, element)}
 					tabIndex={0}
 				>
 					<path {...shapeProps} />
