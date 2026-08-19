@@ -553,7 +553,7 @@ public class DateEntryTest {
 		return results.get(0);
 	}
 
-	private static final long _COMPANY_ID = RandomTestUtil.nextLong();
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final int _MICROSECONDS = RandomTestUtil.randomInt(500, 999);
 
