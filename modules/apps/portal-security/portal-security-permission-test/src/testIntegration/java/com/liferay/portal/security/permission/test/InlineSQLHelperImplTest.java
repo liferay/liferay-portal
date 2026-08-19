@@ -338,7 +338,7 @@ public class InlineSQLHelperImplTest {
 	}
 
 	@Test
-	public void testIsNotEnabledForCompanyAdminWithNewCompany()
+	public void testIsDisabledForCompanyAdminWithNewCompany()
 		throws Exception {
 
 		_company = CompanyTestUtil.addCompany();
@@ -351,7 +351,7 @@ public class InlineSQLHelperImplTest {
 	}
 
 	@Test
-	public void testIsNotEnabledForOmniadmin() throws Exception {
+	public void testIsDisabledForOmniadmin() throws Exception {
 		Role role = _roleLocalService.getRole(
 			_user.getCompanyId(), RoleConstants.ADMINISTRATOR);
 
@@ -363,7 +363,7 @@ public class InlineSQLHelperImplTest {
 	}
 
 	@Test
-	public void testIsNotEnabledSiteAdmin() throws Exception {
+	public void testIsDisabledSiteAdmin() throws Exception {
 		_addGroupRole(_groupOne, RoleConstants.SITE_ADMINISTRATOR);
 
 		_setPermissionChecker();

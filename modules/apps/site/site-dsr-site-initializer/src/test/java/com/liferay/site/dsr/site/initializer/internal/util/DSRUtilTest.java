@@ -59,7 +59,7 @@ public class DSRUtilTest {
 
 	@Test
 	public void testIsExpired() {
-		_testIsExpiredWhenAppIsNotEnabled();
+		_testIsExpiredWhenAppIsDisabled();
 		_testIsExpiredWhenExpired();
 		_testIsExpiredWhenExpiringSoon();
 		_testIsExpiredWhenLicenseIsUnlimited();
@@ -106,7 +106,7 @@ public class DSRUtilTest {
 		Assert.assertEquals(Integer.valueOf(30), DSRUtil.getExpirationDays());
 	}
 
-	private void _testIsExpiredWhenAppIsNotEnabled() {
+	private void _testIsExpiredWhenAppIsDisabled() {
 		_setUpLicenseManagerUtil(false, null);
 
 		Assert.assertTrue(DSRUtil.isExpired());

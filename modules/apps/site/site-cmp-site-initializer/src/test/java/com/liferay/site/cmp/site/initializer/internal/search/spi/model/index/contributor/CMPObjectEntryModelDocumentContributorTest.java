@@ -50,7 +50,7 @@ public class CMPObjectEntryModelDocumentContributorTest {
 	}
 
 	@Test
-	public void testContributeWhenCMPIsNotEnabled() {
+	public void testContributeWhenCMPIsDisabled() {
 		try (MockedStatic<LicenseManagerUtil> licenseManagerUtilMockedStatic =
 				Mockito.mockStatic(LicenseManagerUtil.class)) {
 
