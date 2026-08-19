@@ -8,7 +8,6 @@ package com.liferay.cookies.internal.configuration.persistence.listener;
 import com.liferay.cookies.configuration.banner.CookiesBannerConfiguration;
 import com.liferay.cookies.configuration.consent.CookiesConsentConfiguration;
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -40,21 +39,40 @@ public class CookiesPolicyLinkConfigurationModelListener
 		throws ConfigurationModelListenerException {
 
 		_validatePolicyLink(
-			CookiesBannerConfiguration.class, "privacyPolicyLink", properties);
+			CookiesBannerConfiguration.class, properties, "privacyPolicyLink");
 		_validatePolicyLink(
-			CookiesConsentConfiguration.class, "cookiePolicyLink", properties);
+			CookiesConsentConfiguration.class, properties, "cookiePolicyLink");
+	}
+
+	private boolean _isSiteRelative(String policyLink) {
+		if (!StringUtil.startsWith(policyLink, CharPool.SLASH)) {
+			return false;
+		}
+
+		if (policyLink.length() == 1) {
+			return true;
+		}
+
+		// A browser resolves both "//liferay.com" and "/\liferay.com" to an
+		// authority
+
+		char c = policyLink.charAt(1);
+
+		if ((c == CharPool.BACK_SLASH) || (c == CharPool.SLASH)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	private void _validatePolicyLink(
-			Class<?> configurationClass, String name,
-			Dictionary<String, Object> properties)
+			Class<?> configurationClass, Dictionary<String, Object> properties,
+			String propertyName)
 		throws ConfigurationModelListenerException {
 
-		String policyLink = GetterUtil.getString(properties.get(name));
+		String policyLink = GetterUtil.getString(properties.get(propertyName));
 
-		if (Validator.isNull(policyLink) ||
-			(StringUtil.startsWith(policyLink, CharPool.SLASH) &&
-			 !StringUtil.startsWith(policyLink, StringPool.DOUBLE_SLASH)) ||
+		if (Validator.isNull(policyLink) || _isSiteRelative(policyLink) ||
 			StringUtil.startsWith(policyLink, Http.HTTP_WITH_SLASH) ||
 			StringUtil.startsWith(policyLink, Http.HTTPS_WITH_SLASH)) {
 
@@ -65,7 +83,8 @@ public class CookiesPolicyLinkConfigurationModelListener
 			ResourceBundleUtil.getString(
 				ResourceBundleUtil.getModuleAndPortalResourceBundle(
 					LocaleUtil.getMostRelevantLocale(), getClass()),
-				"please-enter-a-valid-url"),
+				"please-enter-an-http-url-an-https-url-or-a-path-that-begins-" +
+					"with-a-single-slash"),
 			configurationClass, getClass(), properties);
 	}
 

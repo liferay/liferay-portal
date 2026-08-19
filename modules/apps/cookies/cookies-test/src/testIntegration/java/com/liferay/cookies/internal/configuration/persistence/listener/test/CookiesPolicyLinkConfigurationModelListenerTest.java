@@ -11,6 +11,7 @@ import com.liferay.cookies.configuration.consent.CookiesConsentConfiguration;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -49,14 +50,15 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 	@Test
 	public void testOnBeforeSave() throws Exception {
 		_testOnBeforeSave(
-			CookiesBannerConfiguration.class, "privacyPolicyLink",
-			"/web/guest/privacy");
+			CookiesBannerConfiguration.class, "/web/guest/privacy",
+			"privacyPolicyLink");
 		_testOnBeforeSave(
-			CookiesConsentConfiguration.class, "cookiePolicyLink",
-			"https://liferay.com/cookie-policy");
+			CookiesConsentConfiguration.class,
+			"https://liferay.com/cookie-policy", "cookiePolicyLink");
 	}
 
-	private Object _fetchPolicyLink(Class<?> configurationClass, String name)
+	private String _fetchPolicyLink(
+			Class<?> configurationClass, String propertyName)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
@@ -66,47 +68,47 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 
 		Dictionary<String, Object> properties = configuration.getProperties();
 
-		return properties.get(name);
+		return GetterUtil.getString(properties.get(propertyName));
 	}
 
 	private void _saveConfiguration(
-			Class<?> configurationClass, String name, String policyLink)
+			Class<?> configurationClass, String policyLink, String propertyName)
 		throws Exception {
 
 		ConfigurationTestUtil.saveConfiguration(
 			configurationClass.getName(),
 			HashMapDictionaryBuilder.<String, Object>put(
-				name, policyLink
+				propertyName, policyLink
 			).put(
 				"companyId", TestPropsValues.getCompanyId()
 			).build());
 	}
 
 	private void _testOnBeforeSave(
-			Class<?> configurationClass, String name, String policyLink)
+			Class<?> configurationClass, String policyLink, String propertyName)
 		throws Exception {
 
-		_saveConfiguration(configurationClass, name, policyLink);
+		_saveConfiguration(configurationClass, policyLink, propertyName);
 
 		Assert.assertEquals(
-			policyLink, _fetchPolicyLink(configurationClass, name));
+			policyLink, _fetchPolicyLink(configurationClass, propertyName));
 		Assert.assertThrows(
 			ConfigurationModelListenerException.class,
 			() -> _saveConfiguration(
-				configurationClass, name, "//liferay.com"));
+				configurationClass, "//liferay.com", propertyName));
 		Assert.assertThrows(
 			ConfigurationModelListenerException.class,
 			() -> _saveConfiguration(
-				configurationClass, name,
-				"data:text/html,<script>alert(1)</script>"));
+				configurationClass, "data:text/html,<script>alert(1)</script>",
+				propertyName));
 		Assert.assertThrows(
 			ConfigurationModelListenerException.class,
 			() -> _saveConfiguration(
-				configurationClass, name,
-				"javascript:alert(document.domain)//cm-xss"));
+				configurationClass, "javascript:alert(document.domain)//cm-xss",
+				propertyName));
 
 		Assert.assertEquals(
-			policyLink, _fetchPolicyLink(configurationClass, name));
+			policyLink, _fetchPolicyLink(configurationClass, propertyName));
 	}
 
 	@Inject

@@ -41,79 +41,88 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 				Mockito.mockStatic(ResourceBundleUtil.class)) {
 
 			_assertInvalidPolicyLink(
-				CookiesBannerConfiguration.class, "privacyPolicyLink",
-				"//liferay.com");
+				CookiesBannerConfiguration.class, "//liferay.com",
+				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
-				CookiesBannerConfiguration.class, "privacyPolicyLink",
-				"JavaScript:alert(document.domain)");
+				CookiesBannerConfiguration.class, "/\\liferay.com",
+				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
-				CookiesBannerConfiguration.class, "privacyPolicyLink",
-				"data:text/html,<script>alert(1)</script>");
+				CookiesBannerConfiguration.class,
+				"JavaScript:alert(document.domain)", "privacyPolicyLink");
 			_assertInvalidPolicyLink(
-				CookiesBannerConfiguration.class, "privacyPolicyLink",
-				"javascript:alert(document.domain)//cm-xss");
+				CookiesBannerConfiguration.class,
+				"data:text/html,<script>alert(1)</script>",
+				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
-				CookiesConsentConfiguration.class, "cookiePolicyLink",
-				"//liferay.com");
+				CookiesBannerConfiguration.class,
+				"javascript:alert(document.domain)//cm-xss",
+				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
-				CookiesConsentConfiguration.class, "cookiePolicyLink",
-				"data:text/html,<script>alert(1)</script>");
+				CookiesConsentConfiguration.class, "//liferay.com",
+				"cookiePolicyLink");
 			_assertInvalidPolicyLink(
-				CookiesConsentConfiguration.class, "cookiePolicyLink",
-				"javascript:alert(1)//cm-xss2");
+				CookiesConsentConfiguration.class, "/\\liferay.com",
+				"cookiePolicyLink");
 			_assertInvalidPolicyLink(
-				CookiesConsentConfiguration.class, "cookiePolicyLink",
-				"vbscript:msgbox(1)");
+				CookiesConsentConfiguration.class,
+				"data:text/html,<script>alert(1)</script>", "cookiePolicyLink");
+			_assertInvalidPolicyLink(
+				CookiesConsentConfiguration.class,
+				"javascript:alert(1)//cm-xss2", "cookiePolicyLink");
+			_assertInvalidPolicyLink(
+				CookiesConsentConfiguration.class, "vbscript:msgbox(1)",
+				"cookiePolicyLink");
 		}
 	}
 
 	@Test
 	public void testOnBeforeSaveValidPolicyLink() throws Exception {
 		_assertValidPolicyLink(
-			CookiesBannerConfiguration.class, "privacyPolicyLink",
-			"/web/guest/privacy");
+			CookiesBannerConfiguration.class, "/web/guest/privacy",
+			"privacyPolicyLink");
 		_assertValidPolicyLink(
-			CookiesBannerConfiguration.class, "privacyPolicyLink",
-			"HTTPS://liferay.com");
+			CookiesBannerConfiguration.class, "HTTPS://liferay.com",
+			"privacyPolicyLink");
 		_assertValidPolicyLink(
-			CookiesBannerConfiguration.class, "privacyPolicyLink",
-			StringPool.BLANK);
+			CookiesBannerConfiguration.class, StringPool.BLANK,
+			"privacyPolicyLink");
 		_assertValidPolicyLink(
-			CookiesBannerConfiguration.class, "privacyPolicyLink",
-			"http://liferay.com");
+			CookiesBannerConfiguration.class, "http://liferay.com",
+			"privacyPolicyLink");
 		_assertValidPolicyLink(
-			CookiesBannerConfiguration.class, "privacyPolicyLink",
-			"https://liferay.com");
+			CookiesBannerConfiguration.class, "https://liferay.com",
+			"privacyPolicyLink");
 		_assertValidPolicyLink(
-			CookiesBannerConfiguration.class, "privacyPolicyLink", null);
+			CookiesConsentConfiguration.class, "/web/guest/cookie-policy",
+			"cookiePolicyLink");
 		_assertValidPolicyLink(
-			CookiesConsentConfiguration.class, "cookiePolicyLink",
-			"/web/guest/cookie-policy");
+			CookiesConsentConfiguration.class, "HTTPS://liferay.com",
+			"cookiePolicyLink");
 		_assertValidPolicyLink(
-			CookiesConsentConfiguration.class, "cookiePolicyLink",
-			"HTTPS://liferay.com");
+			CookiesConsentConfiguration.class, StringPool.BLANK,
+			"cookiePolicyLink");
 		_assertValidPolicyLink(
-			CookiesConsentConfiguration.class, "cookiePolicyLink",
-			StringPool.BLANK);
+			CookiesConsentConfiguration.class, "http://liferay.com",
+			"cookiePolicyLink");
 		_assertValidPolicyLink(
-			CookiesConsentConfiguration.class, "cookiePolicyLink",
-			"http://liferay.com");
+			CookiesConsentConfiguration.class, "https://liferay.com",
+			"cookiePolicyLink");
+
 		_assertValidPolicyLink(
-			CookiesConsentConfiguration.class, "cookiePolicyLink",
-			"https://liferay.com");
+			CookiesBannerConfiguration.class, "privacyPolicyLink");
 		_assertValidPolicyLink(
-			CookiesConsentConfiguration.class, "cookiePolicyLink", null);
+			CookiesConsentConfiguration.class, "cookiePolicyLink");
 	}
 
 	private void _assertInvalidPolicyLink(
-		Class<?> configurationClass, String name, String policyLink) {
+		Class<?> configurationClass, String policyLink, String propertyName) {
 
 		ConfigurationModelListenerException
 			configurationModelListenerException = Assert.assertThrows(
 				ConfigurationModelListenerException.class,
 				() -> _configurationModelListener.onBeforeSave(
 					configurationClass.getName(),
-					_createProperties(name, policyLink)));
+					_createProperties(policyLink, propertyName)));
 
 		Assert.assertEquals(
 			configurationClass,
@@ -121,27 +130,35 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 	}
 
 	private void _assertValidPolicyLink(
-			Class<?> configurationClass, String name, String policyLink)
+			Class<?> configurationClass, String propertyName)
 		throws Exception {
 
-		Dictionary<String, Object> properties = _createProperties(
-			name, policyLink);
+		Dictionary<String, Object> properties = new HashMapDictionary<>();
 
 		_configurationModelListener.onBeforeSave(
 			configurationClass.getName(), properties);
 
-		Assert.assertEquals(policyLink, properties.get(name));
+		Assert.assertNull(properties.get(propertyName));
+	}
+
+	private void _assertValidPolicyLink(
+			Class<?> configurationClass, String policyLink, String propertyName)
+		throws Exception {
+
+		Dictionary<String, Object> properties = _createProperties(
+			policyLink, propertyName);
+
+		_configurationModelListener.onBeforeSave(
+			configurationClass.getName(), properties);
+
+		Assert.assertEquals(policyLink, properties.get(propertyName));
 	}
 
 	private Dictionary<String, Object> _createProperties(
-		String name, String policyLink) {
-
-		if (policyLink == null) {
-			return new HashMapDictionary<>();
-		}
+		String policyLink, String propertyName) {
 
 		return HashMapDictionaryBuilder.<String, Object>put(
-			name, policyLink
+			propertyName, policyLink
 		).build();
 	}
 
