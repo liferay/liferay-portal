@@ -110,29 +110,21 @@ long[] selectedClassTypePKs = editVocabularySettingsDisplayContext.getSelectedCl
 	<aui:input name="indexes" type="hidden" value="<%= StringUtil.merge(indexes) %>" />
 </liferay-frontend:fieldset>
 
-<aui:script sandbox="<%= true %>">
-	let autoFields = null;
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
 
-	AUI().use('liferay-auto-fields', (A) => {
-		const extraFields = A.one('#<portlet:namespace />extraFields');
-
-		autoFields = new Liferay.AutoFields({
-			contentBox: '#<portlet:namespace />extraFields',
-			fieldIndexes: '<portlet:namespace />indexes',
-			minimumRows: 1,
-			namespace: '<portlet:namespace />',
-			on: {
-				clone: function (event) {
-					const row = event.row.getDOM();
-
-					row.querySelectorAll('.subtype-select').forEach((child) => {
-						child.classList.add('hide');
-					});
-				},
+	const autoFieldsInstance = autoFields({
+		contentBox: '#<portlet:namespace />extraFields',
+		fieldIndexes: '<portlet:namespace />indexes',
+		minimumRows: 1,
+		namespace: '<portlet:namespace />',
+		on: {
+			clone(event) {
+				event.row.querySelectorAll('.subtype-select').forEach((child) => {
+					child.classList.add('hide');
+				});
 			},
-		}).render();
-
-		extraFields.setData('autoFieldsInstance', autoFields);
+		},
 	});
 
 	const form = document.getElementById('<portlet:namespace />fm');
@@ -156,7 +148,7 @@ long[] selectedClassTypePKs = editVocabularySettingsDisplayContext.getSelectedCl
 				select.closest('.subtype-select').classList.remove('hide');
 			}
 
-			autoFields.save(A.one('#<portlet:namespace />fm'));
+			autoFieldsInstance.save(form);
 		}
 	);
 </aui:script>

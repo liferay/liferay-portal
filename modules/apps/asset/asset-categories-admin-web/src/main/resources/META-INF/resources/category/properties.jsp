@@ -121,18 +121,12 @@ renderResponse.setTitle(category.getTitle(locale));
 	</liferay-frontend:edit-form-footer>
 </liferay-frontend:edit-form>
 
-<aui:script use="liferay-auto-fields">
-	var autoFields = new Liferay.AutoFields({
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+	autoFields({
 		contentBox: '#<portlet:namespace />categoryPropertiesId',
 		fieldIndexes: '<portlet:namespace />categoryPropertiesIndexes',
 		namespace: '<portlet:namespace />',
-	}).render();
-
-	var categoryPropertiesTrigger = A.one(
-		'#<portlet:namespace />categoryPropertiesId'
-	);
-
-	if (categoryPropertiesTrigger) {
-		categoryPropertiesTrigger.setData('autoFieldsInstance', autoFields);
-	}
+	});
 </aui:script>

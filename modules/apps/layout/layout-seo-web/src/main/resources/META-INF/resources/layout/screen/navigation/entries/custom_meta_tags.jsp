@@ -99,12 +99,14 @@ LayoutsSEODisplayContext layoutsSEODisplayContext = (LayoutsSEODisplayContext)re
 	</liferay-frontend:edit-form-footer>
 </liferay-frontend:edit-form>
 
-<aui:script use="liferay-auto-fields">
-	new Liferay.AutoFields({
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+	autoFields({
 		contentBox: '#<portlet:namespace />properties',
 		fieldIndexes: '<portlet:namespace />propertiesIndexes',
 		namespace: '<portlet:namespace />',
 		sortable: true,
 		sortableHandle: '.field-row',
-	}).render();
+	});
 </aui:script>
