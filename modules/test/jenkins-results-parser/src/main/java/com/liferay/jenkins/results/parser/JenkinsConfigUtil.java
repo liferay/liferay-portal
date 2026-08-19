@@ -41,17 +41,17 @@ public class JenkinsConfigUtil {
 
 		File userConfigFile = _writeUserConfigFile(userConfigElement);
 
-		String jenkinsMasterUserConfigFilePath =
-			_getJenkinsMasterUserConfigFilePath(jenkinsMaster, emailAddress);
+		String userConfigFilePath = _getUserConfigFilePath(
+			jenkinsMaster, emailAddress);
 
 		File backupUserConfigFile = null;
 
 		try {
-			backupUserConfigFile = _backupJenkinsMasterUserConfigFile(
-				jenkinsMaster, jenkinsMasterUserConfigFilePath);
+			backupUserConfigFile = _createBackupUserConfigFile(
+				jenkinsMaster, userConfigFilePath);
 
 			jenkinsMaster.copyFileToJenkinsMaster(
-				userConfigFile, jenkinsMasterUserConfigFilePath);
+				userConfigFile, userConfigFilePath);
 
 			jenkinsMaster.reloadUser(jenkinsUserID);
 
@@ -63,7 +63,7 @@ public class JenkinsConfigUtil {
 			if (backupUserConfigFile != null) {
 				try {
 					jenkinsMaster.copyFileToJenkinsMaster(
-						backupUserConfigFile, jenkinsMasterUserConfigFilePath);
+						backupUserConfigFile, userConfigFilePath);
 
 					jenkinsMaster.reloadUser(jenkinsUserID);
 
@@ -81,14 +81,14 @@ public class JenkinsConfigUtil {
 		}
 	}
 
-	private static File _backupJenkinsMasterUserConfigFile(
+	private static File _createBackupUserConfigFile(
 		JenkinsMaster jenkinsMaster, String userConfigFilePath) {
 
 		File backupUserConfigFile = null;
 
 		try {
 			backupUserConfigFile = File.createTempFile(
-				"user-config-backup-", ".xml");
+				"backup-user-config-", ".xml");
 
 			jenkinsMaster.copyFileFromJenkinsMaster(
 				userConfigFilePath, backupUserConfigFile);
@@ -108,7 +108,7 @@ public class JenkinsConfigUtil {
 		}
 	}
 
-	private static String _getJenkinsMasterUserConfigFilePath(
+	private static String _getUserConfigFilePath(
 		JenkinsMaster jenkinsMaster, String emailAddress) {
 
 		String output = jenkinsMaster.executeBashCommand(
