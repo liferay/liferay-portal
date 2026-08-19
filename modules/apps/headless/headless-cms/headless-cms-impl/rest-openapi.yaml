@@ -65,6 +65,28 @@ components:
                     type: string
                 url:
                     type: string
+        BrokenLinkAsset:
+            properties:
+                brokenLinkTitle:
+                    readOnly: true
+                    type: string
+                brokenLinksCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                href:
+                    readOnly: true
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                objectDefinitionExternalReferenceCode:
+                    readOnly: true
+                    type: string
+                title:
+                    readOnly: true
+                    type: string
         ResetAssetPermissionAction:
             allOf:
                 -   $ref: "#/components/schemas/AssetPermissionAction"
@@ -158,3 +180,42 @@ paths:
                                     $ref: "#/components/schemas/AssetUsage"
                                 type: array
             tags: ["AssetUsage"]
+    "/broken-link-assets":
+        get:
+            operationId: getBrokenLinkAssetsPage
+            parameters:
+                -   in: query
+                    name: assetLibraryId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/BrokenLinkAsset"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/BrokenLinkAsset"
+                                type: array
+            tags: ["BrokenLinkAsset"]
