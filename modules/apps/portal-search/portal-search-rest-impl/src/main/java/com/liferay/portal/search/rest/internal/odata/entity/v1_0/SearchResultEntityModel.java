@@ -103,6 +103,8 @@ public class SearchResultEntityModel implements EntityModel {
 			new IntegerEntityField(
 				"cmpTaskCMPProjectId", locale -> "cmpTaskCMPProjectId"),
 			new IntegerEntityField("creatorId", locale -> Field.USER_ID),
+			new IntegerEntityField(
+				"entryClassPK", locale -> Field.ENTRY_CLASS_PK),
 			new IntegerEntityField("folderId", locale -> Field.FOLDER_ID),
 			new IntegerEntityField(
 				"objectDefinitionId", locale -> "objectDefinitionId"),
