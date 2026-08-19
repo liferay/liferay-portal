@@ -46,9 +46,18 @@ This guidance applies to the ClayUI monorepo area under
 yarn run format
 yarn run checkFormat
 yarn test
-yarn run storybook
-yarn run storybook:build
 yarn run build
+```
+
+### Storybook (`clay/storybook/`)
+
+Storybook is a standalone project with its own lockfile, outside the yarn
+monorepo, so it is installed and run on its own:
+
+```bash
+yarn
+yarn run storybook
+yarn run build-storybook
 ```
 
 ### Clay Package (`clay/clay-*/`)

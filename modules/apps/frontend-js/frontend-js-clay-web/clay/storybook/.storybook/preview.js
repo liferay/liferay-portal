@@ -5,12 +5,11 @@
 
 (async () => {
 	try {
-		if (process.env.NODE_ENV === 'development') {
-			await import('@clayui/css/src/scss/atlas.scss');
-		}
-		else {
-			await import('@clayui/css/lib/css/atlas.css');
-		}
+
+		// The stylesheet is compiled from the Clay CSS sources next door, so
+		// that a change to them shows up in the preview.
+
+		await import('@clayui/css/src/scss/atlas.scss');
 	}
 	catch (error) {
 		console.error(`${error.name}: ${error.message}`);
