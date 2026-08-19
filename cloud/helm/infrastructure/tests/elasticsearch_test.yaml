@@ -51,7 +51,7 @@ tests:
                     value: Namespace
                 equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-                    value: "-28"
+                    value: "-25"
         it: Assigns the Elasticsearch resources their sync waves
     -   asserts:
             -   failedTemplate:
