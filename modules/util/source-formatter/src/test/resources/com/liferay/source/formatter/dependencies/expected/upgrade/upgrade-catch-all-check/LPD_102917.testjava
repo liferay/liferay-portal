@@ -1,0 +1,80 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalServiceUtil;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Lucas Ferruccio
+ */
+public class LPD_102917 {
+
+	public void method(
+			long userId, long groupId, long billingAddressId,
+			long commerceAccountId, long commerceCurrencyId,
+			long commerceOrderTypeId, long commerceShippingMethodId,
+			long shippingAddressId, String commercePaymentMethodKey,
+			int orderDateMonth, int orderDateDay, int orderDateYear,
+			int orderDateHour, int orderDateMinute, int orderStatus,
+			int paymentStatus, String purchaseOrderNumber,
+			BigDecimal shippingAmount, String shippingOptionName,
+			BigDecimal shippingWithTaxAmount, BigDecimal subtotal,
+			BigDecimal subtotalWithTaxAmount, BigDecimal taxAmount,
+			BigDecimal total, BigDecimal totalWithTaxAmount,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		CommerceOrderLocalServiceUtil.addCommerceOrder(
+			123, groupId, billingAddressId, commerceAccountId,
+			commerceCurrencyId, commerceOrderTypeId, commerceShippingMethodId,
+			shippingAddressId, commercePaymentMethodKey, orderDateMonth,
+			orderDateDay, orderDateYear, orderDateHour, orderDateMinute,
+			orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, shippingWithTaxAmount, subtotal,
+			subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount,
+			serviceContext);
+		CommerceOrderLocalServiceUtil.addCommerceOrder(userId, groupId, billingAddressId, commerceAccountId, CommerceCurrencyLocalServiceUtil.fetchCommerceCurrency(commerceCurrencyId).getCode(), commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, null, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, shippingOptionName, shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
+		_commerceOrderLocalService.addCommerceOrder(userId, groupId, billingAddressId, commerceAccountId, CommerceCurrencyLocalServiceUtil.fetchCommerceCurrency(commerceCurrencyId).getCode(), commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, null, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, shippingOptionName, shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
+		_commerceOrderLocalServiceWrapper.addCommerceOrder(userId, groupId, billingAddressId, commerceAccountId, CommerceCurrencyLocalServiceUtil.fetchCommerceCurrency(commerceCurrencyId).getCode(), commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, null, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, shippingOptionName, shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
+	}
+
+	public void method(
+			long userId, long groupId, long billingAddressId,
+			long commerceAccountId, long commerceCurrencyId,
+			long commerceOrderTypeId, long commerceShippingMethodId,
+			long shippingAddressId, String commercePaymentMethodKey,
+			String name, int orderDateMonth, int orderDateDay,
+			int orderDateYear, int orderDateHour, int orderDateMinute,
+			int orderStatus, int paymentStatus, String purchaseOrderNumber,
+			BigDecimal shippingAmount, String shippingOptionName,
+			BigDecimal shippingWithTaxAmount, BigDecimal subtotal,
+			BigDecimal subtotalWithTaxAmount, BigDecimal taxAmount,
+			BigDecimal total, BigDecimal totalWithTaxAmount,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		CommerceOrderLocalServiceUtil.addCommerceOrder(
+			123, groupId, billingAddressId, commerceAccountId,
+			commerceCurrencyId, commerceOrderTypeId, commerceShippingMethodId,
+			shippingAddressId, commercePaymentMethodKey, name, orderDateMonth,
+			orderDateDay, orderDateYear, orderDateHour, orderDateMinute,
+			orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, shippingWithTaxAmount, subtotal,
+			subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount,
+			serviceContext);
+		CommerceOrderLocalServiceUtil.addCommerceOrder(userId, groupId, billingAddressId, commerceAccountId, CommerceCurrencyLocalServiceUtil.fetchCommerceCurrency(commerceCurrencyId).getCode(), commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, name, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, shippingOptionName, shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
+		_commerceOrderLocalService.addCommerceOrder(userId, groupId, billingAddressId, commerceAccountId, CommerceCurrencyLocalServiceUtil.fetchCommerceCurrency(commerceCurrencyId).getCode(), commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, name, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, shippingOptionName, shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
+		_commerceOrderLocalServiceWrapper.addCommerceOrder(userId, groupId, billingAddressId, commerceAccountId, CommerceCurrencyLocalServiceUtil.fetchCommerceCurrency(commerceCurrencyId).getCode(), commerceOrderTypeId, commerceShippingMethodId, shippingAddressId, commercePaymentMethodKey, name, orderDateMonth, orderDateDay, orderDateYear, orderDateHour, orderDateMinute, orderStatus, paymentStatus, purchaseOrderNumber, shippingAmount, shippingOptionName, shippingWithTaxAmount, subtotal, subtotalWithTaxAmount, taxAmount, total, totalWithTaxAmount, serviceContext);
+	}
+
+	@Reference
+	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	private CommerceOrderLocalServiceWrapper _commerceOrderLocalServiceWrapper;
+
+}
