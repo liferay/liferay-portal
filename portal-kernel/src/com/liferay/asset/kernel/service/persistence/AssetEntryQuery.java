@@ -44,8 +44,9 @@ public class AssetEntryQuery {
 	public static String checkOrderByCol(String orderByCol) {
 		if (ArrayUtil.contains(ORDER_BY_COLUMNS, orderByCol) ||
 			((orderByCol != null) &&
-			 orderByCol.startsWith(
-				 DDMStructureManager.STRUCTURE_INDEXER_FIELD_PREFIX))) {
+			 (orderByCol.startsWith(
+				 DDMStructureManager.STRUCTURE_INDEXER_FIELD_PREFIX) ||
+			  orderByCol.startsWith("nestedFieldArray.")))) {
 
 			return orderByCol;
 		}
