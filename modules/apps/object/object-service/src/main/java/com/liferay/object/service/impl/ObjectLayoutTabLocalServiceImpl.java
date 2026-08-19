@@ -78,28 +78,6 @@ public class ObjectLayoutTabLocalServiceImpl
 	}
 
 	@Override
-	public ObjectLayoutTab deleteObjectLayoutTab(long objectLayoutTabId)
-		throws PortalException {
-
-		ObjectLayoutTab objectLayoutTab =
-			objectLayoutTabPersistence.findByPrimaryKey(objectLayoutTabId);
-
-		return deleteObjectLayoutTab(objectLayoutTab);
-	}
-
-	@Override
-	public ObjectLayoutTab deleteObjectLayoutTab(
-		ObjectLayoutTab objectLayoutTab) {
-
-		objectLayoutTabPersistence.remove(objectLayoutTab);
-
-		objectLayoutTabLocalService.
-			unregisterObjectLayoutTabScreenNavigationCategory(objectLayoutTab);
-
-		return objectLayoutTab;
-	}
-
-	@Override
 	public void deleteObjectRelationshipObjectLayoutTabs(
 			long objectRelationshipId)
 		throws PortalException {
@@ -146,22 +124,6 @@ public class ObjectLayoutTabLocalServiceImpl
 						"screen.navigation.entry.order:Integer",
 						objectLayoutTab.getObjectLayoutId()
 					).build()));
-		}
-	}
-
-	@Clusterable
-	@Override
-	public void unregisterObjectLayoutTabScreenNavigationCategory(
-		ObjectLayoutTab objectLayoutTab) {
-
-		ServiceRegistration<?> serviceRegistration = _serviceRegistrations.get(
-			_getServiceRegistrationKey(objectLayoutTab));
-
-		if (serviceRegistration != null) {
-			serviceRegistration.unregister();
-
-			_serviceRegistrations.remove(
-				_getServiceRegistrationKey(objectLayoutTab));
 		}
 	}
 
