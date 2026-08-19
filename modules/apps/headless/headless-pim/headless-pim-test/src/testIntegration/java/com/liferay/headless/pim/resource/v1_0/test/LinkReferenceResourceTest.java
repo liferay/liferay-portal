@@ -13,10 +13,12 @@ import com.liferay.headless.pim.client.pagination.Page;
 import com.liferay.headless.pim.client.pagination.Pagination;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
 import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
@@ -96,10 +98,13 @@ public class LinkReferenceResourceTest
 
 		ObjectEntry targetObjectEntry1 =
 			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-				depotEntry.getGroupId());
+				depotEntry.getGroupId(), "sku-alpha", null, "Product",
+				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
 		ObjectEntry targetObjectEntry2 =
 			PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-				depotEntry.getGroupId());
+				depotEntry.getGroupId(), RandomTestUtil.randomString(), null,
+				"Beta Product",
+				PIMObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCTS);
 
 		_pimLinkEngine.addPIMLinks(
 			sourceObjectEntry,
@@ -116,6 +121,33 @@ public class LinkReferenceResourceTest
 
 		_assertLinkReference(linkReferences, targetObjectEntry1);
 		_assertLinkReference(linkReferences, targetObjectEntry2);
+
+		page = _getLinkReferencesPage(
+			sourceObjectEntry, Pagination.of(1, 20), "alpha");
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		_assertLinkReference(
+			(List<LinkReference>)page.getItems(), targetObjectEntry1);
+
+		page = _getLinkReferencesPage(
+			sourceObjectEntry, Pagination.of(1, 20), "beta");
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		page = _getLinkReferencesPage(
+			sourceObjectEntry, Pagination.of(1, 20), "product");
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		_assertLinkReference(
+			(List<LinkReference>)page.getItems(), targetObjectEntry2);
+
+		page = _getLinkReferencesPage(
+			sourceObjectEntry, Pagination.of(1, 20),
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(0, page.getTotalCount());
 	}
 
 	@Override
@@ -190,10 +222,17 @@ public class LinkReferenceResourceTest
 			ObjectEntry objectEntry, Pagination pagination)
 		throws Exception {
 
+		return _getLinkReferencesPage(objectEntry, pagination, null);
+	}
+
+	private Page<LinkReference> _getLinkReferencesPage(
+			ObjectEntry objectEntry, Pagination pagination, String search)
+		throws Exception {
+
 		return linkReferenceResource.getScopeScopeKeyLinksPage(
 			String.valueOf(objectEntry.getGroupId()),
 			objectEntry.getModelClassName(),
-			objectEntry.getExternalReferenceCode(), pagination);
+			objectEntry.getExternalReferenceCode(), search, pagination);
 	}
 
 	private static final String _TYPE = "variant";
