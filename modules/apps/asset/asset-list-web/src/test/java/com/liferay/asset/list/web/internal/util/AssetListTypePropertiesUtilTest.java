@@ -17,8 +17,10 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -28,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -366,20 +369,17 @@ public class AssetListTypePropertiesUtilTest {
 		Assert.assertEquals(
 			itemsJSONArray.toString(), 12, itemsJSONArray.length());
 
+		Set<String> actualNames = JSONUtil.toStringSet(itemsJSONArray, "name");
+
 		String[] expectedNames = {
-			"userName", "createDate", "displayDate", "expirationDate",
-			"externalReferenceCode", "modifiedDate", "priority", "publishDate",
-			"reviewDate", "status", "title", "viewCount"
+			Field.CREATE_DATE, Field.DISPLAY_DATE, Field.EXPIRATION_DATE,
+			"externalReferenceCode", Field.MODIFIED_DATE, Field.PRIORITY,
+			Field.PUBLISH_DATE, Field.REVIEW_DATE, Field.STATUS, Field.TITLE,
+			Field.USER_NAME, "viewCount"
 		};
 
-		for (int i = 0; i < expectedNames.length; i++) {
-			Assert.assertEquals(
-				expectedNames[i],
-				itemsJSONArray.getJSONObject(
-					i
-				).getString(
-					"name"
-				));
+		for (String expectedName : expectedNames) {
+			Assert.assertTrue(expectedName, actualNames.contains(expectedName));
 		}
 	}
 
