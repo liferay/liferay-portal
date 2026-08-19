@@ -132,6 +132,13 @@
 		font-weight: 400;
 	}
 
+	&__tip-hint {
+		fill: $white;
+		fill-opacity: 0.85;
+		font-size: 0.6875rem;
+		font-weight: 400;
+	}
+
 	// Alignment: place the capped chart block within its container. `start`
 	// (default) needs no rule — block flow keeps it flush-left, matching the
 	// other charts.

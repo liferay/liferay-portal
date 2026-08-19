@@ -13,6 +13,8 @@ import type {StackedSegmentLayout} from './geometry';
 
 const TOOLTIP_CHAR_WIDTH = 7.5;
 const TOOLTIP_HEIGHT = 28;
+const TOOLTIP_HINT_CHAR_WIDTH = 6;
+const TOOLTIP_HINT_LINE_HEIGHT = 14;
 const TOOLTIP_PADDING_X = 12;
 
 interface Props {
@@ -46,10 +48,19 @@ export default function BarChartStackedSegment({
 }: Props) {
 	const label = datum.description ?? `${datum.label}: ${datum.value}`;
 
+	const hint = datum.href ? Liferay.Language.get('opens-link') : null;
+
 	const segmentWidth = Math.max(0, layout.width);
 
+	const tooltipHeight = hint
+		? TOOLTIP_HEIGHT + TOOLTIP_HINT_LINE_HEIGHT
+		: TOOLTIP_HEIGHT;
 	const tooltipWidth =
-		label.length * TOOLTIP_CHAR_WIDTH + TOOLTIP_PADDING_X * 2;
+		Math.max(
+			label.length * TOOLTIP_CHAR_WIDTH,
+			(hint?.length ?? 0) * TOOLTIP_HINT_CHAR_WIDTH
+		) +
+		TOOLTIP_PADDING_X * 2;
 	const centerX = layout.x + segmentWidth / 2;
 
 	// Keep the tooltip box inside the viewport but let its pointer track the
@@ -59,7 +70,7 @@ export default function BarChartStackedSegment({
 		4,
 		Math.min(centerX - tooltipWidth / 2, width - tooltipWidth - 4)
 	);
-	const tooltipY = layout.rowY - 10 - TOOLTIP_HEIGHT;
+	const tooltipY = layout.rowY - 10 - tooltipHeight;
 	const pointerX = Math.max(
 		tooltipX + 10,
 		Math.min(centerX, tooltipX + tooltipWidth - 10)
@@ -127,7 +138,7 @@ export default function BarChartStackedSegment({
 				<g className="charts-bar-chart__tip" pointerEvents="none">
 					<rect
 						className="charts-bar-chart__tip-bg"
-						height={TOOLTIP_HEIGHT}
+						height={tooltipHeight}
 						rx={6}
 						width={tooltipWidth}
 						x={tooltipX}
@@ -136,7 +147,7 @@ export default function BarChartStackedSegment({
 
 					<path
 						className="charts-bar-chart__tip-bg"
-						d={`M ${pointerX - 6} ${tooltipY + TOOLTIP_HEIGHT} L ${pointerX + 6} ${tooltipY + TOOLTIP_HEIGHT} L ${pointerX} ${tooltipY + TOOLTIP_HEIGHT + 6} Z`}
+						d={`M ${pointerX - 6} ${tooltipY + tooltipHeight} L ${pointerX + 6} ${tooltipY + tooltipHeight} L ${pointerX} ${tooltipY + tooltipHeight + 6} Z`}
 					/>
 
 					<text
@@ -147,6 +158,17 @@ export default function BarChartStackedSegment({
 					>
 						{label}
 					</text>
+
+					{hint && (
+						<text
+							className="charts-bar-chart__tip-hint"
+							textAnchor="middle"
+							x={tooltipX + tooltipWidth / 2}
+							y={tooltipY + TOOLTIP_HEIGHT + 4}
+						>
+							{hint}
+						</text>
+					)}
 				</g>
 			)}
 		</g>
