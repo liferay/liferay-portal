@@ -135,7 +135,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('shows the four sub-scores next to the global score', async () => {
-		render(<GovernanceDashboard />);
+		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
 
 		const banner = await screen.findByRole('region', {
 			name: 'governance-health',
@@ -161,7 +161,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('explains what the score measures in a popover', async () => {
-		render(<GovernanceDashboard />);
+		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
 
 		const button = await screen.findByRole('button', {
 			name: 'about-governance-health',
@@ -183,7 +183,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('closes the popover with the escape key', async () => {
-		render(<GovernanceDashboard />);
+		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
 
 		const button = await screen.findByRole('button', {
 			name: 'about-governance-health',
