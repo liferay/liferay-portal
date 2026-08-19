@@ -80,6 +80,7 @@ test(
 		apiHelpers,
 		exportImportStagingInstanceSettingsPage,
 		page,
+		pageEditorPage,
 		portletPublishToLivePage,
 	}) => {
 		const site = await apiHelpers.headlessAdminSite.postSite({
@@ -91,6 +92,11 @@ test(
 			options: {type: 'content'},
 			title: getRandomString(),
 		});
+
+		// Publish the page so it can be reached through its live friendly URL
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+		await pageEditorPage.publishPage();
 
 		await exportImportStagingInstanceSettingsPage.goto();
 		await exportImportStagingInstanceSettingsPage.checkConfigurationOption({
@@ -145,6 +151,7 @@ test(
 		apiHelpers,
 		exportImportStagingSystemSettingsPage,
 		page,
+		pageEditorPage,
 		portletPublishToLivePage,
 	}) => {
 		const site = await apiHelpers.headlessAdminSite.postSite({
@@ -156,6 +163,11 @@ test(
 			options: {type: 'content'},
 			title: getRandomString(),
 		});
+
+		// Publish the page so it can be reached through its live friendly URL
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+		await pageEditorPage.publishPage();
 
 		await exportImportStagingSystemSettingsPage.goto();
 		await exportImportStagingSystemSettingsPage.checkConfigurationOption({
@@ -282,6 +294,7 @@ test(
 		apiHelpers,
 		exportImportStagingInstanceSettingsPage,
 		page,
+		pageEditorPage,
 		portletPublishToLivePage,
 	}) => {
 		const site = await apiHelpers.headlessAdminSite.postSite({
@@ -293,6 +306,11 @@ test(
 			options: {type: 'content'},
 			title: getRandomString(),
 		});
+
+		// Publish the page so it can be reached through its live friendly URL
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+		await pageEditorPage.publishPage();
 
 		await exportImportStagingInstanceSettingsPage.goto();
 		await exportImportStagingInstanceSettingsPage.checkConfigurationOption({
