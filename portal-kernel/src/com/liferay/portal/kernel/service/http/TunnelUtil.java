@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.HttpPrincipal;
 import com.liferay.portal.kernel.security.auth.tunnel.TunnelAuthenticationManagerUtil;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.util.AggregateClassLoader;
@@ -120,6 +121,8 @@ public class TunnelUtil {
 		if (!_VERIFY_SSL_HOSTNAME &&
 			(httpURLConnection instanceof HttpsURLConnection)) {
 
+			FIPSModeValidator.validateTLSVerification(_VERIFY_SSL_HOSTNAME);
+
 			HttpsURLConnection httpsURLConnection =
 				(HttpsURLConnection)httpURLConnection;
 
@@ -144,7 +147,7 @@ public class TunnelUtil {
 	}
 
 	private static final boolean _VERIFY_SSL_HOSTNAME = GetterUtil.getBoolean(
-		PropsUtil.get(TunnelUtil.class.getName() + ".verify.ssl.hostname"));
+		PropsUtil.get(PropsKeys.TUNNEL_UTIL_VERIFY_SSL_HOSTNAME));
 
 	private static final Log _log = LogFactoryUtil.getLog(TunnelUtil.class);
 
