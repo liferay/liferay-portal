@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -124,6 +125,11 @@ public class CommercePaymentMethodFDSDataProvider
 				description = commercePaymentMethodGroupRel.getDescription(
 					themeDisplay.getLocale());
 				name = commercePaymentMethodGroupRel.getName(
+					themeDisplay.getLocale());
+			}
+
+			if (Validator.isNull(description)) {
+				description = commercePaymentIntegration.getDescription(
 					themeDisplay.getLocale());
 			}
 

@@ -17,6 +17,7 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -71,15 +72,42 @@ public class CommercePaymentMethodGroupRelsDisplayContext {
 	}
 
 	public String getCommercePaymentMethodEngineDescription(Locale locale) {
+		String commercePaymentMethodEngineKey =
+			getCommercePaymentMethodEngineKey();
+
 		CommercePaymentMethod commercePaymentMethod =
 			_commercePaymentMethodRegistry.getCommercePaymentMethod(
-				getCommercePaymentMethodEngineKey());
+				commercePaymentMethodEngineKey);
 
-		if (commercePaymentMethod == null) {
+		if (commercePaymentMethod != null) {
+			return commercePaymentMethod.getDescription(locale);
+		}
+
+		if (_commercePaymentMethodGroupRel != null) {
+			String description = _commercePaymentMethodGroupRel.getDescription(
+				locale);
+
+			if (Validator.isNotNull(description)) {
+				return description;
+			}
+		}
+
+		CommercePaymentIntegration commercePaymentIntegration =
+			_commercePaymentIntegrationRegistry.getCommercePaymentIntegration(
+				commercePaymentMethodEngineKey);
+
+		if (commercePaymentIntegration == null) {
+			commercePaymentIntegration =
+				_commercePaymentIntegrationRegistry.
+					getCommercePaymentIntegration(
+						getCommercePaymentIntegrationKey());
+		}
+
+		if (commercePaymentIntegration == null) {
 			return StringPool.BLANK;
 		}
 
-		return commercePaymentMethod.getDescription(locale);
+		return commercePaymentIntegration.getDescription(locale);
 	}
 
 	public String getCommercePaymentMethodEngineKey() {
