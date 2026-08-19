@@ -159,7 +159,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	@Test
 	public void testDeleteDocument() throws SearchException {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
+				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.WARN)) {
 
 			SearchContext searchContext = new SearchContext();
 
