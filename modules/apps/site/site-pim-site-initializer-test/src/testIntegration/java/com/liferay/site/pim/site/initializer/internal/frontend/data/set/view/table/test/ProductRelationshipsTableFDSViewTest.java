@@ -43,7 +43,8 @@ public class ProductRelationshipsTableFDSViewTest {
 
 		FDSView fdsView = fdsViews.get(0);
 
-		FDSTableSchema fdsTableSchema = fdsView.getFDSTableSchema(LocaleUtil.US);
+		FDSTableSchema fdsTableSchema = fdsView.getFDSTableSchema(
+			LocaleUtil.US);
 
 		Map<String, FDSTableSchemaField> fdsTableSchemaFieldsMap =
 			fdsTableSchema.getFDSTableSchemaFieldsMap();
