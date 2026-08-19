@@ -384,7 +384,7 @@ if (ParamUtil.getBoolean(request, "showHeader", true)) {
 								});
 							}
 
-							Liferay.Util.fetch(
+							return Liferay.Util.fetch(
 								'<%= objectEntryDisplayContext.getAPIURL() %>',
 								{
 									body: JSON.stringify(values),
@@ -412,30 +412,61 @@ if (ParamUtil.getBoolean(request, "showHeader", true)) {
 											type: 'success',
 										});
 
-										response.json().then((payload) => {
-											const portletURL =
-												Liferay.Util.PortletURL.createPortletURL(
-													'<%= currentURLObj %>',
-													{
-														externalReferenceCode:
-															payload.externalReferenceCode,
-													}
-												);
+										response
+											.json()
+											.catch(() => null)
+											.then((payload) => {
+												if (
+													payload &&
+													payload.externalReferenceCode
+												) {
+													const portletURL =
+														Liferay.Util.PortletURL.createPortletURL(
+															'<%= currentURLObj %>',
+															{
+																externalReferenceCode:
+																	payload.externalReferenceCode,
+															}
+														);
 
-											Liferay.Util.navigate(
-												portletURL.toString()
-											);
-										});
+													Liferay.Util.navigate(
+														portletURL.toString()
+													);
+												}
+												else {
+													Liferay.Util.navigate(
+														'<%= currentURLObj %>'
+													);
+												}
+											});
 									}
 									else {
-										return response.json();
+										return response.json().catch(() => {
+											throw new Error(
+												'<liferay-ui:message key="an-unexpected-error-occurred" />'
+											);
+										});
 									}
 								})
 								.then((response) => {
 									if (response && response.detail) {
-										const errorMessageArray = JSON.parse(
-											response.detail
-										);
+										let errorMessageArray;
+
+										try {
+											errorMessageArray = JSON.parse(
+												response.detail
+											);
+										}
+										catch (error) {
+											errorMessageArray = null;
+										}
+
+										if (!Array.isArray(errorMessageArray)) {
+											throw new Error(
+												response.title ||
+													'<liferay-ui:message key="an-unexpected-error-occurred" />'
+											);
+										}
 
 										const alertClassName =
 											'<portlet:namespace />alert';
