@@ -303,12 +303,6 @@ public class DepotPermissionCheckerWrapperTest {
 						PermissionChecker permissionChecker =
 							_permissionCheckerFactory.create(user);
 
-						Assert.assertTrue(
-							permissionChecker.hasPermission(
-								null, User.class.getName(),
-								assetLibraryMemberUser.getUserId(),
-								ActionKeys.VIEW));
-
 						Assert.assertFalse(
 							permissionChecker.hasPermission(
 								null, User.class.getName(), _user.getUserId(),
@@ -321,6 +315,11 @@ public class DepotPermissionCheckerWrapperTest {
 							permissionChecker.hasPermission(
 								null, User.class.getName(), _user.getUserId(),
 								ActionKeys.UPDATE));
+						Assert.assertTrue(
+							permissionChecker.hasPermission(
+								null, User.class.getName(),
+								assetLibraryMemberUser.getUserId(),
+								ActionKeys.VIEW));
 					}));
 	}
 
