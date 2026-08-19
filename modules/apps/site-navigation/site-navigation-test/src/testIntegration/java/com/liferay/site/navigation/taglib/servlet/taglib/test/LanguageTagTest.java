@@ -492,18 +492,24 @@ public class LanguageTagTest {
 	private void _testGetLanguageEntriesWithVirtualHostname() throws Exception {
 		LayoutSet layoutSet = _layout.getLayoutSet();
 
+		String url = _getURL(
+			_getLanguageEntries(_getThemeDisplay(_layout, LocaleUtil.US)),
+			LocaleUtil.FRANCE);
+
+		_assertLocalizedURL(_layout, LocaleUtil.FRANCE, StringPool.BLANK, url);
+
 		try {
 			layoutSet.setVirtualHostnames(
 				TreeMapBuilder.put(
 					RandomTestUtil.randomString(), StringPool.BLANK
 				).build());
 
-			String url = _getURL(
-				_getLanguageEntries(_getThemeDisplay(_layout, LocaleUtil.US)),
-				LocaleUtil.FRANCE);
-
-			_assertLocalizedURL(
-				_layout, LocaleUtil.FRANCE, StringPool.BLANK, url);
+			Assert.assertEquals(
+				url,
+				_getURL(
+					_getLanguageEntries(
+						_getThemeDisplay(_layout, LocaleUtil.US)),
+					LocaleUtil.FRANCE));
 
 			layoutSet.setVirtualHostnames(
 				TreeMapBuilder.put(
