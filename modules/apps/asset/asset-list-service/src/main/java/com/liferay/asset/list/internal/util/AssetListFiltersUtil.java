@@ -6,10 +6,7 @@
 package com.liferay.asset.list.internal.util;
 
 import com.liferay.object.constants.ObjectFieldConstants;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
-import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
-import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -29,7 +26,6 @@ import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -92,32 +88,6 @@ public class AssetListFiltersUtil {
 		};
 	}
 
-	private static ObjectDefinition _fetchObjectDefinition(
-		long classNameId, long companyId) {
-
-		if (classNameId <= 0) {
-			return null;
-		}
-
-		return ObjectDefinitionLocalServiceUtil.
-			fetchObjectDefinitionByClassName(
-				companyId, PortalUtil.getClassName(classNameId));
-	}
-
-	private static ObjectField _fetchObjectField(
-		long classNameId, long companyId, String name) {
-
-		ObjectDefinition objectDefinition = _fetchObjectDefinition(
-			classNameId, companyId);
-
-		if (objectDefinition == null) {
-			return null;
-		}
-
-		return ObjectFieldLocalServiceUtil.fetchObjectField(
-			objectDefinition.getObjectDefinitionId(), name);
-	}
-
 	private static String _getCommonFieldName(
 		Locale locale, String propertyName) {
 
@@ -134,50 +104,6 @@ public class AssetListFiltersUtil {
 
 	private static String _getCommonFieldType(String propertyName) {
 		return _commonFieldTypesMap.get(propertyName);
-	}
-
-	private static String _getSubfield(Locale locale, ObjectField objectField) {
-		if (objectField.isIndexedAsKeyword()) {
-			return "nestedFieldArray.value_keyword";
-		}
-
-		String dbType = objectField.getDBType();
-
-		if (ObjectFieldConstants.DB_TYPE_BIG_DECIMAL.equals(dbType) ||
-			ObjectFieldConstants.DB_TYPE_DOUBLE.equals(dbType)) {
-
-			return "nestedFieldArray.value_double";
-		}
-
-		if (ObjectFieldConstants.DB_TYPE_BOOLEAN.equals(dbType)) {
-			return "nestedFieldArray.value_boolean";
-		}
-
-		if (ObjectFieldConstants.DB_TYPE_DATE.equals(dbType) ||
-			ObjectFieldConstants.DB_TYPE_DATE_TIME.equals(dbType)) {
-
-			return "nestedFieldArray.value_date";
-		}
-
-		if (ObjectFieldConstants.DB_TYPE_INTEGER.equals(dbType)) {
-			return "nestedFieldArray.value_integer";
-		}
-
-		if (ObjectFieldConstants.DB_TYPE_LONG.equals(dbType)) {
-			return "nestedFieldArray.value_long";
-		}
-
-		if (objectField.isLocalized()) {
-			return Field.getLocalizedName(locale, "nestedFieldArray.value");
-		}
-
-		String indexedLanguageId = objectField.getIndexedLanguageId();
-
-		if (Validator.isNotNull(indexedLanguageId)) {
-			return "nestedFieldArray.value_" + indexedLanguageId;
-		}
-
-		return "nestedFieldArray.value_text";
 	}
 
 	private static boolean _isCommonFieldRow(JSONObject jsonObject) {
@@ -342,7 +268,7 @@ public class AssetListFiltersUtil {
 			return null;
 		}
 
-		ObjectField objectField = _fetchObjectField(
+		ObjectField objectField = AssetListObjectFieldUtil.fetchObjectField(
 			jsonObject.getLong("classNameId"), companyId, propertyName);
 
 		if (objectField == null) {
@@ -351,7 +277,8 @@ public class AssetListFiltersUtil {
 
 		String operatorName = jsonObject.getString("operatorName", "contains");
 
-		String subfield = _getSubfield(locale, objectField);
+		String subfield = AssetListObjectFieldUtil.getFilterSubfield(
+			locale, objectField);
 
 		Query query = _toValueQuery(
 			jsonObject, objectField, operatorName, subfield, value);
