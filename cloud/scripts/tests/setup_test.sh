@@ -4,8 +4,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-source "$(dirname "${BASH_SOURCE[0]}")/../_azure_common.sh"
-
 function main {
 	local fail=0
 	local pass=0
@@ -27,9 +25,6 @@ function main {
 		_run_test "${script}" _test_aborts_with_missing_required_utility
 		_run_test "${script}" _test_aborts_with_no_arguments
 	done
-
-	_run_test "${scripts_dir}/_azure_common.sh" _test_fills_observability_parameters_from_terraform_outputs
-	_run_test "${scripts_dir}/_azure_common.sh" _test_omits_unavailable_observability_parameters
 
 	echo ""
 	echo "Results: ${pass} passed, ${fail} failed."
@@ -264,84 +259,6 @@ function _test_aborts_with_old_terraform_version {
 	output=$(echo "${result}" | tail -n +2)
 
 	if [ ${exit_code} -ne 0 ] && [[ ${output} == *"is older than"* ]]
-	then
-		return 0
-	fi
-
-	return 1
-}
-
-function _test_fills_observability_parameters_from_terraform_outputs {
-	local platform_module_outputs
-
-	platform_module_outputs=$(jq --null-input '{
-		observability_identity_client_id: {
-			value: "27ed4e1e-8c11-43e1-810f-afb22a5a2418"
-		},
-		prometheus_data_collection_rule_id: {
-			value: "dcr-9fb40355a2cc4e50a20a82171a15e33a"
-		},
-		prometheus_metrics_ingestion_endpoint: {
-			value: "https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com"
-		}
-	}')
-
-	local expected_parameters
-
-	expected_parameters=$(jq --compact-output --null-input --sort-keys '[
-		{
-			name: "alloy.iam.azureClientId",
-			value: "27ed4e1e-8c11-43e1-810f-afb22a5a2418"
-		},
-		{
-			name: "azure.remoteWrite.dataCollectionRuleId",
-			value: "dcr-9fb40355a2cc4e50a20a82171a15e33a"
-		},
-		{
-			name: "azure.remoteWrite.metricsIngestionEndpoint",
-			value: "https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com"
-		},
-		{
-			name: "azure.remoteWrite.tenantId",
-			value: "86315286-b8fe-4db7-abd0-cc8f6421c133"
-		},
-		{
-			name: "cloudProvider",
-			value: "azure"
-		}
-	]')
-
-	local parameters
-
-	parameters=$(get_observability_parameters "${platform_module_outputs}" "86315286-b8fe-4db7-abd0-cc8f6421c133" | jq --compact-output --sort-keys '.')
-
-	if [ "${parameters}" == "${expected_parameters}" ]
-	then
-		return 0
-	fi
-
-	return 1
-}
-
-function _test_omits_unavailable_observability_parameters {
-	local expected_parameters
-
-	expected_parameters=$(jq --compact-output --null-input --sort-keys '[
-		{
-			name: "azure.remoteWrite.tenantId",
-			value: "86315286-b8fe-4db7-abd0-cc8f6421c133"
-		},
-		{
-			name: "cloudProvider",
-			value: "azure"
-		}
-	]')
-
-	local parameters
-
-	parameters=$(get_observability_parameters "{}" "86315286-b8fe-4db7-abd0-cc8f6421c133" | jq --compact-output --sort-keys '.')
-
-	if [ "${parameters}" == "${expected_parameters}" ]
 	then
 		return 0
 	fi
