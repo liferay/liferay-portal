@@ -318,6 +318,10 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 						return true;
 					}
 
+					if (!_supportedRoleActionIds.contains(actionId)) {
+						return null;
+					}
+
 					if (_isDepotGroupAdmin(groupId)) {
 						String subtype = _getSubtype(
 							_groupLocalService.fetchGroup(groupId));
@@ -557,6 +561,8 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 			ActionKeys.DELETE, ActionKeys.PUBLISH_STAGING, ActionKeys.UPDATE,
 			ActionKeys.VIEW, ActionKeys.VIEW_MEMBERS,
 			ActionKeys.VIEW_SITE_ADMINISTRATION, ActionKeys.VIEW_STAGING));
+	private static final Set<String> _supportedRoleActionIds = new HashSet<>(
+		Arrays.asList(ActionKeys.ASSIGN_MEMBERS, ActionKeys.VIEW));
 
 	private final ModelResourcePermission<DepotEntry>
 		_depotEntryModelResourcePermission;
