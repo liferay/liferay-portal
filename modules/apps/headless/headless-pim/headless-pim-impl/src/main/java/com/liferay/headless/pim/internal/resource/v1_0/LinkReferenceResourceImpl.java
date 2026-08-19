@@ -6,6 +6,7 @@
 package com.liferay.headless.pim.internal.resource.v1_0;
 
 import com.liferay.headless.pim.dto.v1_0.LinkReference;
+import com.liferay.headless.pim.dto.v1_0.Status;
 import com.liferay.headless.pim.resource.v1_0.LinkReferenceResource;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -15,6 +16,7 @@ import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -28,6 +30,8 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.GroupUtil;
 import com.liferay.site.pim.site.initializer.engine.PIMLinkEngine;
 import com.liferay.site.pim.site.initializer.link.PIMLinkRelatedEntry;
+import com.liferay.site.pim.site.initializer.link.PIMLinkType;
+import com.liferay.site.pim.site.initializer.link.PIMLinkTypeRegistry;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -73,8 +77,8 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 					pimLinkRelatedEntries, pagination.getStartPosition(),
 					pagination.getEndPosition()),
 				pimLinkRelatedEntry -> _toLinkReference(
-					pimLinkRelatedEntry.getObjectEntry(),
-					pimLinkRelatedEntry.getType())),
+					pimLinkRelatedEntry.getType(),
+					pimLinkRelatedEntry.getObjectEntry())),
 			pagination, pimLinkRelatedEntries.size());
 	}
 
@@ -138,6 +142,16 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 			objectDefinition.getObjectDefinitionId());
 	}
 
+	private String _getTypeLabel(String linkType) {
+		PIMLinkType pimLinkType = _pimLinkTypeRegistry.getPIMLinkType(linkType);
+
+		if (pimLinkType == null) {
+			return linkType;
+		}
+
+		return pimLinkType.getLabel(contextAcceptLanguage.getPreferredLocale());
+	}
+
 	private boolean _hasUpdatePermission(ObjectEntry objectEntry)
 		throws Exception {
 
@@ -150,7 +164,8 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 			objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
 	}
 
-	private LinkReference _toLinkReference(ObjectEntry objectEntry, String type)
+	private LinkReference _toLinkReference(
+			String linkType, ObjectEntry objectEntry)
 		throws Exception {
 
 		Map<String, Serializable> values = _objectEntryLocalService.getValues(
@@ -158,16 +173,27 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 
 		return new LinkReference() {
 			{
-				setActions(() -> _getActions(objectEntry, type));
+				setActions(() -> _getActions(objectEntry, linkType));
 				setClassName(objectEntry::getModelClassName);
 				setCode(() -> MapUtil.getString(values, "code"));
 				setExternalReferenceCode(objectEntry::getExternalReferenceCode);
 				setId(objectEntry::getObjectEntryId);
 				setName(() -> MapUtil.getString(values, "name"));
 				setStatus(
-					() -> WorkflowConstants.getStatusLabel(
-						objectEntry.getStatus()));
-				setType(() -> type);
+					() -> new Status() {
+						{
+							setCode(objectEntry::getStatus);
+							setLabel(
+								() -> WorkflowConstants.getStatusLabel(
+									objectEntry.getStatus()));
+							setLabel_i18n(
+								() -> LanguageUtil.get(
+									contextAcceptLanguage.getPreferredLocale(),
+									WorkflowConstants.getStatusLabel(
+										objectEntry.getStatus())));
+						}
+					});
+				setType(() -> _getTypeLabel(linkType));
 			}
 		};
 	}
@@ -183,5 +209,8 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 
 	@Reference
 	private PIMLinkEngine _pimLinkEngine;
+
+	@Reference
+	private PIMLinkTypeRegistry _pimLinkTypeRegistry;
 
 }
