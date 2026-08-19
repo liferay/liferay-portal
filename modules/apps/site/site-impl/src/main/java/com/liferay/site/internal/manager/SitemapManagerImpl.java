@@ -1214,21 +1214,36 @@ public class SitemapManagerImpl implements SitemapManager {
 			ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		Document document = _createSitemapDocument(
-			"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
 
-		Element rootElement = document.getRootElement();
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				_permissionCheckerFactory.create(
+					_userLocalService.getGuestUser(
+						themeDisplay.getCompanyId())));
 
-		_initEntriesAndSize(rootElement);
+			Document document = _createSitemapDocument(
+				"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
 
-		_visitLayoutSets(
-			rootElement,
-			_getLayoutSets(groupId, layoutUuid, privateLayout, themeDisplay),
-			layoutUuid, themeDisplay);
+			Element rootElement = document.getRootElement();
 
-		_removeEntriesAndSize(rootElement);
+			_initEntriesAndSize(rootElement);
 
-		return document.asXML();
+			_visitLayoutSets(
+				rootElement,
+				_getLayoutSets(
+					groupId, layoutUuid, privateLayout, themeDisplay),
+				layoutUuid, themeDisplay);
+
+			_removeEntriesAndSize(rootElement);
+
+			return document.asXML();
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
 	}
 
 	private List<SitemapURLProvider> _getSitemapURLProviders() {

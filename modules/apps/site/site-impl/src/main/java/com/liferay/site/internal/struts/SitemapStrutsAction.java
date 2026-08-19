@@ -65,11 +65,7 @@ public class SitemapStrutsAction implements StrutsAction {
 					groupId = group.getLiveGroupId();
 				}
 
-				boolean privateLayout = ParamUtil.getBoolean(
-					httpServletRequest, "privateLayout");
-
-				layoutSet = _layoutSetLocalService.getLayoutSet(
-					groupId, privateLayout);
+				layoutSet = _layoutSetLocalService.getLayoutSet(groupId, false);
 			}
 			else {
 				String host = _portal.getHost(httpServletRequest);
