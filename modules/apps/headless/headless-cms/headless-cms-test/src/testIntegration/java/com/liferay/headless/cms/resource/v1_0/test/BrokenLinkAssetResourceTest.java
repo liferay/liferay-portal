@@ -14,12 +14,25 @@ import com.liferay.headless.cms.client.pagination.Page;
 import com.liferay.headless.cms.client.pagination.Pagination;
 import com.liferay.headless.cms.client.resource.v1_0.BrokenLinkAssetResource;
 import com.liferay.headless.cms.resource.v1_0.test.util.CMSOutboundLinkTestUtil;
+import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.field.builder.RichTextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFolder;
+import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFolderLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -41,11 +54,14 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -84,6 +100,7 @@ public class BrokenLinkAssetResourceTest
 		_testGetBrokenLinkAssetsPageWithDuplicateTitles();
 		_testGetBrokenLinkAssetsPageWithExpiredAssetInAnotherSpace();
 		_testGetBrokenLinkAssetsPageWithExpiredAssetInHiddenSpace();
+		_testGetBrokenLinkAssetsPageWithRelationshipReference();
 	}
 
 	@Override
@@ -172,6 +189,31 @@ public class BrokenLinkAssetResourceTest
 		_assertTitleOrder(depotEntry, "bbb", "aaa", "title:desc");
 	}
 
+	private ObjectDefinition _addCMSObjectDefinition() throws Exception {
+		ObjectFolder objectFolder =
+			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+				TestPropsValues.getCompanyId());
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				true, false, false, ObjectDefinitionTestUtil.getRandomName(),
+				Collections.singletonList(_buildRichTextObjectField()),
+				objectFolder.getObjectFolderId(),
+				ObjectDefinitionConstants.SCOPE_DEPOT,
+				TestPropsValues.getUserId());
+
+		_objectDefinitionSettingLocalService.addObjectDefinitionSetting(
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS, "true");
+
+		_objectDefinitions.add(objectDefinition);
+
+		return objectDefinition;
+	}
+
 	private ObjectEntry _addExpiredObjectEntry(
 			DepotEntry depotEntry, ObjectDefinition objectDefinition,
 			ServiceContext serviceContext)
@@ -189,8 +231,8 @@ public class BrokenLinkAssetResourceTest
 	}
 
 	private ObjectEntry _addObjectEntry(
-			String content, DepotEntry depotEntry,
-			ObjectDefinition objectDefinition, String title)
+			DepotEntry depotEntry, ObjectDefinition objectDefinition,
+			Map<String, Serializable> values)
 		throws Exception {
 
 		ObjectEntryFolder objectEntryFolder =
@@ -202,7 +244,17 @@ public class BrokenLinkAssetResourceTest
 		return _objectEntryLocalService.addObjectEntry(
 			depotEntry.getGroupId(), depotEntry.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
-			objectEntryFolder.getObjectEntryFolderId(), "en_US",
+			objectEntryFolder.getObjectEntryFolderId(), "en_US", values,
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _addObjectEntry(
+			String content, DepotEntry depotEntry,
+			ObjectDefinition objectDefinition, String title)
+		throws Exception {
+
+		return _addObjectEntry(
+			depotEntry, objectDefinition,
 			HashMapBuilder.<String, Serializable>put(
 				"content_i18n",
 				HashMapBuilder.put(
@@ -213,8 +265,7 @@ public class BrokenLinkAssetResourceTest
 				HashMapBuilder.put(
 					"en_US", title
 				).build()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
+			).build());
 	}
 
 	private DepotEntry _addSpaceDepotEntry(ServiceContext serviceContext)
@@ -258,6 +309,19 @@ public class BrokenLinkAssetResourceTest
 
 		Assert.assertEquals(
 			expectedSecondTitle, secondBrokenLinkAsset.getTitle());
+	}
+
+	private ObjectField _buildRichTextObjectField() throws Exception {
+		return new RichTextObjectFieldBuilder(
+		).indexed(
+			true
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).name(
+			"content"
+		).userId(
+			TestPropsValues.getUserId()
+		).build();
 	}
 
 	private ObjectDefinition _getBasicWebContentObjectDefinition()
@@ -462,6 +526,57 @@ public class BrokenLinkAssetResourceTest
 			referencingTitle, spaceMemberBrokenLinkAsset.getTitle());
 	}
 
+	private void _testGetBrokenLinkAssetsPageWithRelationshipReference()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry depotEntry = _addSpaceDepotEntry(serviceContext);
+
+		ObjectDefinition objectDefinition =
+			_getBasicWebContentObjectDefinition();
+
+		ObjectEntry expiredObjectEntry = _addExpiredObjectEntry(
+			depotEntry, objectDefinition, serviceContext);
+
+		ObjectDefinition referencingObjectDefinition =
+			_addCMSObjectDefinition();
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, objectDefinition,
+				referencingObjectDefinition);
+
+		_addObjectEntry(
+			depotEntry, referencingObjectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				ObjectRelationshipUtil.getObjectRelationshipFieldName(
+					objectDefinition, objectRelationship.getName()),
+				expiredObjectEntry.getObjectEntryId()
+			).build());
+
+		Page<BrokenLinkAsset> brokenLinkAssetsPage =
+			brokenLinkAssetResource.getBrokenLinkAssetsPage(
+				depotEntry.getDepotEntryId(), null, null, null);
+
+		Assert.assertEquals(1, brokenLinkAssetsPage.getTotalCount());
+
+		List<BrokenLinkAsset> brokenLinkAssets =
+			(List<BrokenLinkAsset>)brokenLinkAssetsPage.getItems();
+
+		BrokenLinkAsset brokenLinkAsset = brokenLinkAssets.get(0);
+
+		Assert.assertEquals(
+			1, GetterUtil.getInteger(brokenLinkAsset.getBrokenLinksCount()));
+		Assert.assertEquals(
+			expiredObjectEntry.getTitleValue("en_US", true),
+			brokenLinkAsset.getBrokenLinkTitle());
+		Assert.assertEquals(
+			referencingObjectDefinition.getExternalReferenceCode(),
+			brokenLinkAsset.getObjectDefinitionExternalReferenceCode());
+	}
+
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
 
@@ -471,11 +586,24 @@ public class BrokenLinkAssetResourceTest
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
+	@DeleteAfterTestRun
+	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
+
+	@Inject
+	private ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
+
 	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFolderLocalService _objectFolderLocalService;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@DeleteAfterTestRun
 	private User _spaceMemberUser;
