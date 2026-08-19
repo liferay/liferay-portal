@@ -23,7 +23,7 @@ public interface JenkinsUser {
 
 	public JenkinsResultsParserUtil.HTTPAuthorization getHTTPAuthorization();
 
-	public String getJenkinsMasterHostname();
+	public String getJenkinsMasterName();
 
 	public String getJenkinsUserID();
 

@@ -11,9 +11,9 @@ package com.liferay.jenkins.results.parser;
 public class DefaultJenkinsUser extends BaseJenkinsUser {
 
 	protected DefaultJenkinsUser(
-		String jenkinsMasterHostname, String jenkinsUserName) {
+		String jenkinsMasterName, String jenkinsUserName) {
 
-		super(jenkinsMasterHostname, jenkinsUserName);
+		super(jenkinsMasterName, jenkinsUserName);
 	}
 
 }

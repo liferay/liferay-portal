@@ -24,10 +24,10 @@ public class JenkinsUserFactory {
 	}
 
 	public static synchronized JenkinsUser getJenkinsUser(
-		String jenkinsMasterHostname, String jenkinsUserName) {
+		String jenkinsMasterName, String jenkinsUserName) {
 
 		String key = JenkinsResultsParserUtil.combine(
-			jenkinsMasterHostname, "/", jenkinsUserName);
+			jenkinsMasterName, "/", jenkinsUserName);
 
 		JenkinsUser jenkinsUser = _jenkinsUsers.get(key);
 
@@ -36,7 +36,7 @@ public class JenkinsUserFactory {
 		}
 
 		jenkinsUser = new DefaultJenkinsUser(
-			jenkinsMasterHostname, jenkinsUserName);
+			jenkinsMasterName, jenkinsUserName);
 
 		_jenkinsUsers.put(key, jenkinsUser);
 

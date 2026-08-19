@@ -62,15 +62,15 @@ public abstract class BaseJenkinsUser implements JenkinsUser {
 			throw new RuntimeException(
 				JenkinsResultsParserUtil.combine(
 					"Unable to find API tokens for ", getJenkinsUserName(),
-					" on ", getJenkinsMasterHostname()));
+					" on ", getJenkinsMasterName()));
 		}
 
 		return primaryAPIToken.getHTTPAuthorization();
 	}
 
 	@Override
-	public String getJenkinsMasterHostname() {
-		return _jenkinsMasterHostname;
+	public String getJenkinsMasterName() {
+		return _jenkinsMasterName;
 	}
 
 	@Override
@@ -112,22 +112,21 @@ public abstract class BaseJenkinsUser implements JenkinsUser {
 	@Override
 	public String toString() {
 		return JenkinsResultsParserUtil.combine(
-			_jenkinsUserName, "@", _jenkinsMasterHostname);
+			_jenkinsUserName, "@", _jenkinsMasterName);
 	}
 
 	protected BaseJenkinsUser(
-		String jenkinsMasterHostname, String jenkinsUserName) {
+		String jenkinsMasterName, String jenkinsUserName) {
 
-		if (JenkinsResultsParserUtil.isNullOrEmpty(jenkinsMasterHostname)) {
-			throw new IllegalArgumentException(
-				"Jenkins master hostname is null");
+		if (JenkinsResultsParserUtil.isNullOrEmpty(jenkinsMasterName)) {
+			throw new IllegalArgumentException("Jenkins master name is null");
 		}
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(jenkinsUserName)) {
 			throw new IllegalArgumentException("Jenkins user name is null");
 		}
 
-		_jenkinsMasterHostname = jenkinsMasterHostname;
+		_jenkinsMasterName = jenkinsMasterName;
 		_jenkinsUserName = jenkinsUserName;
 	}
 
@@ -182,7 +181,7 @@ public abstract class BaseJenkinsUser implements JenkinsUser {
 	private List<APIToken> _apiTokens;
 	private SecretsUtil.Item _item;
 	private String _itemReference;
-	private final String _jenkinsMasterHostname;
+	private final String _jenkinsMasterName;
 	private String _jenkinsUserID;
 	private final String _jenkinsUserName;
 
