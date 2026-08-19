@@ -36,6 +36,8 @@ module.exports = {
 	},
 	main: './src/main/resources/META-INF/resources/main/index.js',
 	submodules: {
+		auto_fields:
+			'./src/main/resources/META-INF/resources/auto_fields/index.js',
 		legacy: './src/main/resources/META-INF/resources/legacy/index.ts',
 	},
 	typescript: {
