@@ -71,21 +71,25 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 	public void testDeleteObsoleteExportBackgroundTasks() throws Exception {
 		long layoutExportBackgroundTaskId =
 			ExportImportTestUtil.exportLayoutsInBackground(_group, _layout);
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(
+			layoutExportBackgroundTaskId);
+
 		long portletExportBackgroundTaskId =
 			ExportImportTestUtil.exportPortletInfoInBackground(
 				_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(
-			layoutExportBackgroundTaskId);
-		ExportImportTestUtil.assertBackgroundTaskSuccessful(
 			portletExportBackgroundTaskId);
 
 		long layoutExportAttachmentsFolderId = _getAttachmentsFolderId(
 			layoutExportBackgroundTaskId);
+
+		_updateBackgroundTaskModifiedDateToPast(layoutExportBackgroundTaskId);
+
 		long portletExportAttachmentsFolderId = _getAttachmentsFolderId(
 			portletExportBackgroundTaskId);
 
-		_updateBackgroundTaskModifiedDateToPast(layoutExportBackgroundTaskId);
 		_updateBackgroundTaskModifiedDateToPast(portletExportBackgroundTaskId);
 
 		long freshLayoutExportBackgroundTaskId =
@@ -99,6 +103,9 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 
 		unsafeRunnable.run();
 
+		Assert.assertNotNull(
+			_backgroundTaskLocalService.fetchBackgroundTask(
+				freshLayoutExportBackgroundTaskId));
 		Assert.assertNull(
 			_backgroundTaskLocalService.fetchBackgroundTask(
 				layoutExportBackgroundTaskId));
@@ -113,19 +120,18 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 			_dlFolderLocalService.fetchDLFolder(
 				portletExportAttachmentsFolderId));
 
-		Assert.assertNotNull(
-			_backgroundTaskLocalService.fetchBackgroundTask(
-				freshLayoutExportBackgroundTaskId));
 	}
 
 	@Test
 	@TestInfo("LPS-166514")
 	public void testDeleteObsoleteImportBackgroundTasks() throws Exception {
 		long layoutImportBackgroundTaskId = _importLayoutsInBackground();
-		long portletImportBackgroundTaskId = _importPortletInfoInBackground();
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(
 			layoutImportBackgroundTaskId);
+
+		long portletImportBackgroundTaskId = _importPortletInfoInBackground();
+
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(
 			portletImportBackgroundTaskId);
 
@@ -142,16 +148,15 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 
 		unsafeRunnable.run();
 
+		Assert.assertNotNull(
+			_backgroundTaskLocalService.fetchBackgroundTask(
+				freshLayoutImportBackgroundTaskId));
 		Assert.assertNull(
 			_backgroundTaskLocalService.fetchBackgroundTask(
 				layoutImportBackgroundTaskId));
 		Assert.assertNull(
 			_backgroundTaskLocalService.fetchBackgroundTask(
 				portletImportBackgroundTaskId));
-
-		Assert.assertNotNull(
-			_backgroundTaskLocalService.fetchBackgroundTask(
-				freshLayoutImportBackgroundTaskId));
 	}
 
 	private long _getAttachmentsFolderId(long backgroundTaskId)
