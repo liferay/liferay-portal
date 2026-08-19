@@ -25,20 +25,7 @@ import ActionList from './components/ActionList';
 import '../../../css/Actions.scss';
 import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
 import sortItems from '../../utils/sortItems';
-import {IOrderable} from '../../utils/types';
-
-export enum EActionTarget {
-	ASYNC = 'async',
-	HEADLESS = 'headless',
-	LINK = 'link',
-	MODAL = 'modal',
-	SIDEPANEL = 'sidePanel',
-}
-
-export enum EActionType {
-	CREATION = 'creation',
-	ITEM = 'item',
-}
+import {EActionTarget, EActionType, IOrderable} from '../../utils/types';
 
 const SECTIONS = {
 	CREATION_ACTIONS: 'creation-actions',

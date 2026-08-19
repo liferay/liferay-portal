@@ -24,8 +24,8 @@ import {
 import getDataSetResourceURL from '../../../utils/getDataSetResourceURL';
 import openDefaultFailureToast from '../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../utils/openDefaultSuccessToast';
-import {IDataSet} from '../../../utils/types';
-import {EActionTarget, EActionType, IAction} from '../Actions';
+import {EActionTarget, EActionType, IDataSet} from '../../../utils/types';
+import {IAction} from '../Actions';
 
 enum EAsyncActionMethod {
 	DELETE = 'DELETE',
