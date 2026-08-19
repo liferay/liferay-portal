@@ -1012,6 +1012,11 @@ public class ObjectDefinitionResourceImpl
 
 		existingObjectDefinition.setObjectDefinitionSettings(
 			objectDefinition::getObjectDefinitionSettings);
+
+		if (objectDefinition.getObjectFields() != null) {
+			existingObjectDefinition.setObjectFields(
+				objectDefinition::getObjectFields);
+		}
 	}
 
 	private void _addListTypeDefinition(ObjectDefinition objectDefinition)
