@@ -50,7 +50,7 @@ public class OpenSearchExceptionHandlerTest {
 			openSearchExceptionHandler.handleDeleteDocumentException(
 				searchException);
 
-			_assertLogCapture(logCapture, searchException, LoggerTestUtil.INFO);
+			_assertLogCapture(logCapture, LoggerTestUtil.INFO, searchException);
 		}
 	}
 
@@ -71,7 +71,7 @@ public class OpenSearchExceptionHandlerTest {
 			openSearchExceptionHandler.handleDeleteDocumentException(
 				searchException);
 
-			_assertLogCapture(logCapture, searchException, LoggerTestUtil.INFO);
+			_assertLogCapture(logCapture, LoggerTestUtil.INFO, searchException);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class OpenSearchExceptionHandlerTest {
 				searchException);
 
 			_assertLogCapture(
-				logCapture, searchException, LoggerTestUtil.ERROR);
+				logCapture, LoggerTestUtil.ERROR, searchException);
 		}
 	}
 
@@ -147,13 +147,13 @@ public class OpenSearchExceptionHandlerTest {
 			openSearchExceptionHandler.logOrThrow(searchException);
 
 			_assertLogCapture(
-				logCapture, searchException, LoggerTestUtil.ERROR);
+				logCapture, LoggerTestUtil.ERROR, searchException);
 		}
 	}
 
 	private void _assertLogCapture(
-		LogCapture logCapture, SearchException searchException,
-		String logLevel) {
+		LogCapture logCapture, String logLevel,
+		SearchException searchException) {
 
 		List<LogEntry> logEntries = logCapture.getLogEntries();
 
