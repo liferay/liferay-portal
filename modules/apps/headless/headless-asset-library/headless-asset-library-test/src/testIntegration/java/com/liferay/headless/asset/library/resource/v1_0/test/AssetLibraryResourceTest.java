@@ -173,16 +173,16 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	public void testPatchAssetLibrary() throws Exception {
 		super.testPatchAssetLibrary();
 
+		_testPatchAssetLibraryExternalReferenceCodeAndFriendlyURL();
+		_testPatchAssetLibraryFriendlyURLChanged();
+		_testPatchAssetLibraryFriendlyURLUnchanged();
+		_testPatchAssetLibraryFriendlyURLValidation();
+		_testPatchAssetLibraryName();
+		_testPatchAssetLibraryNameAndFriendlyURLChanged();
+		_testPatchAssetLibraryNameAndFriendlyURLUnchanged();
 		_testPatchAssetLibraryPermissions();
 		_testPatchAssetLibrarySettings();
-		_testPatchAssetLibraryFriendlyURLValidation();
 		_testPatchAssetLibraryWithoutUpdatePermission();
-		_testPatchAssetLibraryName();
-		_testPatchAssetLibraryFriendlyURLUnchanged();
-		_testPatchAssetLibraryFriendlyURLChanged();
-		_testPatchAssetLibraryNameAndFriendlyURLUnchanged();
-		_testPatchAssetLibraryNameAndFriendlyURLChanged();
-		_testPatchAssetLibraryExternalReferenceCodeAndFriendlyURL();
 	}
 
 	@Override
@@ -191,6 +191,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	public void testPostAssetLibrary() throws Exception {
 		super.testPostAssetLibrary();
 
+		_testPostAssetLibrary(new MimeTypeLimit[0]);
 		_testPostAssetLibrary(
 			new MimeTypeLimit[] {
 				new MimeTypeLimit() {
@@ -200,7 +201,6 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 					}
 				}
 			});
-		_testPostAssetLibrary(new MimeTypeLimit[0]);
 		_testPostAssetLibraryFriendlyURL();
 		_testPostAssetLibraryWithDuplicateExternalReferenceCode();
 		_testPostAssetLibraryWithExternalReferenceCode();
