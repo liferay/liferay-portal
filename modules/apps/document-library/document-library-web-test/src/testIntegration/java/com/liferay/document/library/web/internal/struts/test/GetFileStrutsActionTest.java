@@ -90,6 +90,7 @@ public class GetFileStrutsActionTest {
 		_testGetFileByTitleWithViewAndDownloadPermission();
 		_testGetFileByUuidWithOnlyViewPermission();
 		_testGetFileByUuidWithViewAndDownloadPermission();
+		_testGetFileWithVersionAndWithoutIdentifier();
 	}
 
 	private FileEntry _addFileEntry() throws Exception {
@@ -133,6 +134,14 @@ public class GetFileStrutsActionTest {
 		Assert.assertArrayEquals(
 			TestDataConstants.TEST_BYTE_ARRAY,
 			mockHttpServletResponse.getContentAsByteArray());
+	}
+
+	private void _assertNotFound(
+		MockHttpServletResponse mockHttpServletResponse) {
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_NOT_FOUND,
+			mockHttpServletResponse.getStatus());
 	}
 
 	private void _assertRedirectedToLogin(
@@ -381,6 +390,18 @@ public class GetFileStrutsActionTest {
 			_getMockHttpServletResponse(
 				_getFileEntryUuidParameters(fileEntry),
 				_addUser(fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
+	}
+
+	private void _testGetFileWithVersionAndWithoutIdentifier()
+		throws Exception {
+
+		_assertNotFound(
+			_getMockHttpServletResponse(
+				HashMapBuilder.put(
+					"version", "1.0"
+				).build(),
+				_addUser(
+					_addFileEntry(), ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
 	}
 
 	@Inject
