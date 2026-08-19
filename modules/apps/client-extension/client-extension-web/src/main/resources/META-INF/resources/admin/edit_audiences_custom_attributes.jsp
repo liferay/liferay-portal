@@ -56,10 +56,12 @@ AudiencesCustomAttributesCET audiencesCustomAttributesCET = editClientExtensionE
 
 </div>
 
-<aui:script use="liferay-auto-fields">
-	new Liferay.AutoFields({
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+	autoFields({
 		contentBox: '#<portlet:namespace />_symbols_field',
 		minimumRows: 1,
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 </aui:script>

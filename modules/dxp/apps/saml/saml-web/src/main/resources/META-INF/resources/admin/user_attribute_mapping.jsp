@@ -71,13 +71,15 @@ String userIdentifierExpression = attributeMappingDisplayContext.getUserIdentifi
 				<aui:input name='<%= "attribute:" + prefix + ":userAttributeMappingsIndexes" %>' type="hidden" value="<%= StringUtil.merge(userAttributeMappingsIndexes) %>" />
 			</div>
 
-			<aui:script use="liferay-auto-fields">
-				new Liferay.AutoFields({
+			<aui:script type="module">
+				import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+				autoFields({
 					contentBox: '#<portlet:namespace /><%= userAttributeMappingsContentBox %>',
 					fieldIndexes:
 						'<portlet:namespace />attribute:<%= prefix %>:userAttributeMappingsIndexes',
 					namespace: '<portlet:namespace />',
-				}).render();
+				});
 			</aui:script>
 		</aui:field-wrapper>
 

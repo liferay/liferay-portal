@@ -149,7 +149,7 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 	);
 </aui:script>
 
-<aui:script use="autocomplete,autocomplete-filters,io-base,liferay-auto-fields">
+<aui:script use="autocomplete,autocomplete-filters,io-base">
 	var REGEX_DOT = /\./g;
 
 	var actionMethodNamesCache = {};
@@ -336,26 +336,30 @@ renderResponse.setTitle((sapEntry == null) ? LanguageUtil.get(request, "new-serv
 		});
 	};
 
-	new Liferay.AutoFields({
-		contentBox:
-			'#<portlet:namespace />allowedServiceSignaturesFriendlyContentBox',
-		namespace: '<portlet:namespace />',
-		on: {
-			clone: function (event) {
-				var rowNode = event.row;
+	import(
+		'<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>'
+	).then(({autoFields}) => {
+		autoFields({
+			contentBox:
+				'#<portlet:namespace />allowedServiceSignaturesFriendlyContentBox',
+			namespace: '<portlet:namespace />',
+			on: {
+				clone(event) {
+					var rowNode = A.one(event.row);
 
-				var serviceClassNameInput = rowNode.one('.service-class-name');
+					var serviceClassNameInput = rowNode.one('.service-class-name');
 
-				serviceClassNameInput.attr({
-					'data-context-name': '',
-					'data-service-class-name': '',
-				});
+					serviceClassNameInput.attr({
+						'data-context-name': '',
+						'data-service-class-name': '',
+					});
 
-				initAutoCompleteRow(rowNode);
+					initAutoCompleteRow(rowNode);
+				},
+				delete: updateAdvancedModeTextarea,
 			},
-			delete: updateAdvancedModeTextarea,
-		},
-	}).render();
+		});
+	});
 
 	var rows = A.all(
 		'#<portlet:namespace />allowedServiceSignaturesFriendlyContentBox .lfr-form-row'

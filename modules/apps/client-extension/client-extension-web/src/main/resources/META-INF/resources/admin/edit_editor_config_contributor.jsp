@@ -87,22 +87,24 @@ EditorConfigContributorCET editorConfigContributorCET = editClientExtensionEntry
 
 </div>
 
-<aui:script use="liferay-auto-fields">
-	new Liferay.AutoFields({
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+	autoFields({
 		contentBox: '#<portlet:namespace />_portletNames_field',
 		minimumRows: 1,
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 
-	new Liferay.AutoFields({
+	autoFields({
 		contentBox: '#<portlet:namespace />_editorNames_field',
 		minimumRows: 1,
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 
-	new Liferay.AutoFields({
+	autoFields({
 		contentBox: '#<portlet:namespace />_editorConfigKeys_field',
 		minimumRows: 1,
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 </aui:script>

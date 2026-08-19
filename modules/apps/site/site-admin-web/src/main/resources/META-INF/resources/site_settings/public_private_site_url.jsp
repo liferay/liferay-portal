@@ -320,27 +320,29 @@ if (privateVirtualHostnames.isEmpty()) {
 	</c:if>
 </aui:fieldset>
 
-<aui:script use="liferay-auto-fields">
-	new Liferay.AutoFields({
+<aui:script type="module">
+	import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+	autoFields({
 		contentBox: '#<portlet:namespace />publicVirtualHostFields',
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 
-	new Liferay.AutoFields({
+	autoFields({
 		contentBox: '#<portlet:namespace />privateVirtualHostFields',
 		namespace: '<portlet:namespace />',
-	}).render();
+	});
 
 	<c:if test="<%= liveGroup.hasStagingGroup() %>">
-		new Liferay.AutoFields({
+		autoFields({
 			contentBox: '#<portlet:namespace />stagingPublicVirtualHostFields',
 			namespace: '<portlet:namespace />',
-		}).render();
+		});
 
-		new Liferay.AutoFields({
+		autoFields({
 			contentBox: '#<portlet:namespace />stagingPrivateVirtualHostFields',
 			namespace: '<portlet:namespace />',
-		}).render();
+		});
 	</c:if>
 </aui:script>
 

@@ -198,12 +198,14 @@ renderResponse.setTitle((oAuthClientEntry == null) ? LanguageUtil.get(request, "
 						<aui:input name="customClaimsIndexes" type="hidden" />
 					</div>
 
-					<aui:script use="liferay-auto-fields">
-						new Liferay.AutoFields({
+					<aui:script type="module">
+						import {autoFields} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "auto_fields") %>';
+
+						autoFields({
 							contentBox: '#<portlet:namespace />customClaimsContentBox',
 							fieldIndexes: '<portlet:namespace />customClaimsIndexes',
 							namespace: '<portlet:namespace />',
-						}).render();
+						});
 					</aui:script>
 				</c:if>
 			</aui:fieldset>
