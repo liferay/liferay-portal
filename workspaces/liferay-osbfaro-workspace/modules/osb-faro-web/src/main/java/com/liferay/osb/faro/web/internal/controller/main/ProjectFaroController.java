@@ -933,32 +933,7 @@ public class ProjectFaroController extends BaseFaroController {
 				timeZoneId)
 		throws Exception {
 
-		if ((friendlyURL == null) || Validator.isBlank(friendlyURL.trim())) {
-			Group group = _groupLocalService.getGroup(groupId);
-
-			group.setFriendlyURL(null);
-
-			_groupLocalService.updateGroup(group);
-		}
-		else {
-			_validateFriendlyURL(friendlyURL);
-
-			Group group = _groupLocalService.getGroup(groupId);
-
-			if (!StringUtil.equals(group.getFriendlyURL(), friendlyURL)) {
-				try {
-					_groupLocalService.updateFriendlyURL(groupId, friendlyURL);
-				}
-				catch (GroupFriendlyURLException groupFriendlyURLException) {
-					_log.error(groupFriendlyURLException);
-
-					throw new FaroValidationException(
-						"friendlyURL",
-						_getFriendlyURLErrorMessage(
-							groupFriendlyURLException.getType()));
-				}
-			}
-		}
+		_updateFriendlyURL(friendlyURL, groupId);
 
 		FaroProject faroProject =
 			faroProjectLocalService.getFaroProjectByGroupId(groupId);
@@ -1751,6 +1726,40 @@ public class ProjectFaroController extends BaseFaroController {
 		}
 
 		return false;
+	}
+
+	private void _updateFriendlyURL(String friendlyURL, long groupId)
+		throws Exception {
+
+		if ((friendlyURL == null) || Validator.isBlank(friendlyURL.trim())) {
+			Group group = _groupLocalService.getGroup(groupId);
+
+			group.setFriendlyURL(null);
+
+			_groupLocalService.updateGroup(group);
+
+			return;
+		}
+
+		_validateFriendlyURL(friendlyURL);
+
+		Group group = _groupLocalService.getGroup(groupId);
+
+		if (StringUtil.equals(group.getFriendlyURL(), friendlyURL)) {
+			return;
+		}
+
+		try {
+			_groupLocalService.updateFriendlyURL(groupId, friendlyURL);
+		}
+		catch (GroupFriendlyURLException groupFriendlyURLException) {
+			_log.error(groupFriendlyURLException);
+
+			throw new FaroValidationException(
+				"friendlyURL",
+				_getFriendlyURLErrorMessage(
+					groupFriendlyURLException.getType()));
+		}
 	}
 
 	private void _validateCorpProjectUuid(String corpProjectUuid)
