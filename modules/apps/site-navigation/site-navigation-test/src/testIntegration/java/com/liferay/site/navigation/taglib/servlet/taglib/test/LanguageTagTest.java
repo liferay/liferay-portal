@@ -89,7 +89,18 @@ public class LanguageTagTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_layout = _addLayout();
+		_layout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId(), false,
+			HashMapBuilder.put(
+				LocaleUtil.FRANCE, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.FRANCE, StringPool.SLASH + _getRandomFriendlyURL()
+			).put(
+				LocaleUtil.US, StringPool.SLASH + _getRandomFriendlyURL()
+			).build());
 	}
 
 	@Test
@@ -103,21 +114,6 @@ public class LanguageTagTest {
 		_testGetLanguageEntriesWithSignedInUser();
 		_testGetLanguageEntriesWithVirtualHostname();
 		_testGetLanguageEntriesWithoutLayout();
-	}
-
-	private Layout _addLayout() throws Exception {
-		return LayoutTestUtil.addTypePortletLayout(
-			_group.getGroupId(), false,
-			HashMapBuilder.put(
-				LocaleUtil.FRANCE, RandomTestUtil.randomString()
-			).put(
-				LocaleUtil.US, RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.FRANCE, StringPool.SLASH + _getRandomFriendlyURL()
-			).put(
-				LocaleUtil.US, StringPool.SLASH + _getRandomFriendlyURL()
-			).build());
 	}
 
 	private void _assertLocalizedURL(
@@ -196,15 +192,6 @@ public class LanguageTagTest {
 			Arrays.asList(LocaleUtil.FRANCE, LocaleUtil.US), true,
 			(formAction == null) ? _UPDATE_LANGUAGE_PATH : formAction,
 			"languageId");
-	}
-
-	private String _getLocalePrependFriendlyURLStyle() throws Exception {
-		PortletPreferences portletPreferences = PrefsPropsUtil.getPreferences(
-			_group.getCompanyId());
-
-		return portletPreferences.getValue(
-			PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE,
-			String.valueOf(PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE));
 	}
 
 	private String _getRandomFriendlyURL() {
@@ -312,27 +299,26 @@ public class LanguageTagTest {
 				journalArticle.getDDMStructureKey(), true,
 				WorkflowConstants.STATUS_APPROVED);
 
-		String frenchURL = _getURL(
-			_getLanguageEntriesForURL(
-				StringBundler.concat(
-					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-					_group.getFriendlyURL(),
-					FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
-					friendlyURLMap.get(LocaleUtil.US)),
-				null,
-				_getThemeDisplay(
-					LayoutLocalServiceUtil.getLayout(
-						layoutPageTemplateEntry.getPlid()),
-					LocaleUtil.US)),
-			LocaleUtil.FRANCE);
-
 		Assert.assertEquals(
 			StringBundler.concat(
 				"/fr", PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 				_group.getFriendlyURL(),
 				FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
 				friendlyURLMap.get(LocaleUtil.FRANCE)),
-			frenchURL);
+			_getURL(
+				_getLanguageEntriesForURL(
+					StringBundler.concat(
+						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+						_group.getFriendlyURL(),
+						FriendlyURLResolverConstants.
+							URL_SEPARATOR_JOURNAL_ARTICLE,
+						friendlyURLMap.get(LocaleUtil.US)),
+					null,
+					_getThemeDisplay(
+						LayoutLocalServiceUtil.getLayout(
+							layoutPageTemplateEntry.getPlid()),
+						LocaleUtil.US)),
+				LocaleUtil.FRANCE));
 	}
 
 	private void _testGetLanguageEntriesWithFormAction() throws Exception {
@@ -402,8 +388,12 @@ public class LanguageTagTest {
 	private void _testGetLanguageEntriesWithLocalePrependFriendlyURLStyle()
 		throws Exception {
 
-		String localePrependFriendlyURLStyleValue =
-			_getLocalePrependFriendlyURLStyle();
+		PortletPreferences portletPreferences = PrefsPropsUtil.getPreferences(
+			_group.getCompanyId());
+
+		String localePrependFriendlyURLStyleValue = portletPreferences.getValue(
+			PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE,
+			String.valueOf(PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE));
 
 		try {
 			_testGetLanguageEntriesWithLocalePrependFriendlyURLStyle(
