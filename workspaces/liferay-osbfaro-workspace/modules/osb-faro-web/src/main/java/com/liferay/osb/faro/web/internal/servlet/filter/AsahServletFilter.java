@@ -39,6 +39,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = {
 		"osgi.http.whiteboard.filter.name=com.liferay.osb.faro.web.internal.servlet.filter.AsahServletFilter",
 		"osgi.http.whiteboard.filter.pattern=/cerebro/graphql/*",
+		"osgi.http.whiteboard.filter.pattern=/proxy/demo-data-uploads/*",
 		"osgi.http.whiteboard.filter.pattern=/proxy/download/*"
 	},
 	service = Filter.class

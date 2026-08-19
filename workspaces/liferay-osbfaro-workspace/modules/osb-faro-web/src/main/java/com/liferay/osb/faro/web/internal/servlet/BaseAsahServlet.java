@@ -5,16 +5,26 @@
 
 package com.liferay.osb.faro.web.internal.servlet;
 
+import com.liferay.osb.faro.engine.client.constants.OSBAsahHeaderConstants;
 import com.liferay.osb.faro.engine.client.util.EngineServiceURLUtil;
 import com.liferay.osb.faro.engine.client.util.TokenUtil;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.web.internal.util.FaroProjectThreadLocal;
+import com.liferay.petra.io.StreamUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import java.util.Map;
 
@@ -58,6 +68,47 @@ public abstract class BaseAsahServlet extends HttpServlet {
 		return DigestUtils.sha256Hex(
 			TokenUtil.getOSBAsahSecurityToken() +
 				url.substring(0, url.lastIndexOf(uri.getPath())));
+	}
+
+	protected HttpURLConnection openHttpURLConnection(
+			HttpServletRequest httpServletRequest, String contextPath)
+		throws IOException, URISyntaxException {
+
+		URI uri = buildURI(
+			httpServletRequest,
+			StringUtil.removeSubstring(
+				httpServletRequest.getRequestURI(), contextPath));
+
+		URL url = uri.toURL();
+
+		HttpURLConnection httpURLConnection =
+			(HttpURLConnection)url.openConnection();
+
+		httpURLConnection.setRequestMethod(httpServletRequest.getMethod());
+		httpURLConnection.setRequestProperty(
+			OSBAsahHeaderConstants.FARO_BACKEND_SECURITY_SIGNATURE,
+			getSecuritySignature(uri));
+		httpURLConnection.setRequestProperty(
+			OSBAsahHeaderConstants.PROJECT_ID, getProjectId());
+
+		return httpURLConnection;
+	}
+
+	protected void transferRequestBody(
+			HttpServletRequest httpServletRequest,
+			HttpURLConnection httpURLConnection)
+		throws IOException {
+
+		httpURLConnection.setDoOutput(true);
+		httpURLConnection.setRequestProperty(
+			HttpHeaders.CONTENT_TYPE,
+			httpServletRequest.getHeader(HttpHeaders.CONTENT_TYPE));
+
+		try (OutputStream outputStream = httpURLConnection.getOutputStream();
+			InputStream inputStream = httpServletRequest.getInputStream()) {
+
+			StreamUtil.transfer(inputStream, outputStream);
+		}
 	}
 
 	private static final long serialVersionUID = 1L;

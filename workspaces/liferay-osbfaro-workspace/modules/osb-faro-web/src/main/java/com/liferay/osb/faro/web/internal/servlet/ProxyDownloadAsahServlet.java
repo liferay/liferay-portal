@@ -5,26 +5,19 @@
 
 package com.liferay.osb.faro.web.internal.servlet;
 
-import com.liferay.osb.faro.engine.client.constants.OSBAsahHeaderConstants;
-import com.liferay.petra.io.StreamUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
-import java.net.URI;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -49,32 +42,22 @@ public class ProxyDownloadAsahServlet extends BaseAsahServlet {
 		throws IOException {
 
 		try {
-			URI uri = buildURI(
-				httpServletRequest,
-				StringUtil.removeSubstring(
-					httpServletRequest.getRequestURI(), "/o/proxy/download"));
+			HttpURLConnection httpURLConnection = openHttpURLConnection(
+				httpServletRequest, "/o/proxy/download");
 
-			URL url = uri.toURL();
-
-			URLConnection urlConnection = url.openConnection();
-
-			urlConnection.setRequestProperty(
-				OSBAsahHeaderConstants.FARO_BACKEND_SECURITY_SIGNATURE,
-				getSecuritySignature(uri));
-			urlConnection.setRequestProperty(
-				OSBAsahHeaderConstants.PROJECT_ID, getProjectId());
-
-			urlConnection.connect();
+			httpURLConnection.connect();
 
 			httpServletResponse.setContentLength(
-				urlConnection.getContentLength());
-			httpServletResponse.setContentType(urlConnection.getContentType());
+				httpURLConnection.getContentLength());
+			httpServletResponse.setContentType(
+				httpURLConnection.getContentType());
 			httpServletResponse.setHeader(
 				HttpHeaders.CONTENT_DISPOSITION,
-				urlConnection.getHeaderField(HttpHeaders.CONTENT_DISPOSITION));
+				httpURLConnection.getHeaderField(
+					HttpHeaders.CONTENT_DISPOSITION));
 
 			ServletResponseUtil.write(
-				httpServletResponse, urlConnection.getInputStream());
+				httpServletResponse, httpURLConnection.getInputStream());
 		}
 		catch (URISyntaxException uriSyntaxException) {
 			if (_log.isDebugEnabled()) {
@@ -90,33 +73,13 @@ public class ProxyDownloadAsahServlet extends BaseAsahServlet {
 		throws IOException {
 
 		try {
-			URI uri = buildURI(
-				httpServletRequest,
-				StringUtil.removeSubstring(
-					httpServletRequest.getRequestURI(), "/o/proxy/download"));
+			HttpURLConnection httpURLConnection = openHttpURLConnection(
+				httpServletRequest, "/o/proxy/download");
 
-			URL url = uri.toURL();
-
-			URLConnection urlConnection = url.openConnection();
-
-			urlConnection.setDoOutput(true);
-			urlConnection.setRequestProperty(
-				HttpHeaders.CONTENT_TYPE,
-				httpServletRequest.getHeader(HttpHeaders.CONTENT_TYPE));
-			urlConnection.setRequestProperty(
-				OSBAsahHeaderConstants.FARO_BACKEND_SECURITY_SIGNATURE,
-				getSecuritySignature(uri));
-			urlConnection.setRequestProperty(
-				OSBAsahHeaderConstants.PROJECT_ID, getProjectId());
-
-			try (OutputStream outputStream = urlConnection.getOutputStream();
-				InputStream inputStream = httpServletRequest.getInputStream()) {
-
-				StreamUtil.transfer(inputStream, outputStream);
-			}
+			transferRequestBody(httpServletRequest, httpURLConnection);
 
 			ServletResponseUtil.write(
-				httpServletResponse, urlConnection.getInputStream());
+				httpServletResponse, httpURLConnection.getInputStream());
 		}
 		catch (URISyntaxException uriSyntaxException) {
 			if (_log.isDebugEnabled()) {
