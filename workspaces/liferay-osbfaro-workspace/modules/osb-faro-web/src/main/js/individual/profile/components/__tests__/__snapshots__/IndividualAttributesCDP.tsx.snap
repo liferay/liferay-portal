@@ -375,6 +375,32 @@ exports[`IndividualAttributesCDP should render 1`] = `
                   </span>
                 </div>
               </div>
+              <div
+                class="col-12 col-md-4 col-sm-6 align-items-start d-flex mb-2"
+              >
+                <span
+                  class="sticker flex-shrink-0 mr-3 sticker-unstyled sticker-lg"
+                >
+                  <span
+                    class="sticker-overlay"
+                  />
+                </span>
+                <div
+                  class="d-flex flex-column mt-1"
+                >
+                  <span
+                    class="text-3 text-secondary"
+                  >
+                    Known Since Date
+                  </span>
+                  <span
+                    class="font-weight-semi-bold text-break text-dark"
+                    style="word-break: break-all;"
+                  >
+                    -
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

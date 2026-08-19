@@ -51,6 +51,17 @@ describe('IndividualAttributesCDP', () => {
 		expect(getByText('Jan 1, 2020')).toBeTruthy();
 	});
 
+	it('should correctly format the known since date', () => {
+		const {getByText} = render(
+			<IndividualAttributesCDP
+				knownSinceDate="2026-03-04T10:15:00.000Z"
+				propertiesData={fromJS(mockProperties)}
+			/>
+		);
+
+		expect(getByText('Mar 4, 2026')).toBeTruthy();
+	});
+
 	it('should display the fallback dash for missing values', () => {
 		const {getAllByText} = render(
 			<IndividualAttributesCDP propertiesData={fromJS({})} />
