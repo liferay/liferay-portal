@@ -39,14 +39,24 @@ components:
                     readOnly: true
                     type: string
                 status:
+                    $ref: "#/components/schemas/Status"
                     readOnly: true
-                    type: string
                 type:
                     readOnly: true
                     type: string
             required:
                 -   className
                 -   externalReferenceCode
+            type: object
+        Status:
+            properties:
+                code:
+                    format: int32
+                    type: integer
+                label:
+                    type: string
+                label_i18n:
+                    type: string
             type: object
 info:
     description:
