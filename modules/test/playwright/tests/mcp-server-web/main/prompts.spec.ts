@@ -65,6 +65,7 @@ const test = baseTest.extend<{
 			const prompt = await apiHelpers.objectEntry.postObjectEntry(
 				{
 					description: `Created by Playwright ${name}`,
+					identifier: name,
 					name,
 					prompt: 'Prompt body created by Playwright',
 				},
