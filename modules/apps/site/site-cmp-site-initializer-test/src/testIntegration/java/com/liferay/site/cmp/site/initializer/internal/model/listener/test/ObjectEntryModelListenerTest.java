@@ -23,11 +23,13 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -316,7 +318,12 @@ public class ObjectEntryModelListenerTest {
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
 			cmpProjectObjectEntry.getGroupId(), user2.getUserId());
 
-		_testOnAfterUpdateWhenProjectManagerAndProjectSponsorAreUnchanged();
+		_testOnAfterUpdateWhenProjectManagerAndProjectSponsorAreUnchanged(
+			cmpProjectObjectEntry);
+		_testOnAfterUpdateWhenProjectManagerAndProjectSponsorChange(
+			cmpProjectObjectEntry);
+		_testOnAfterUpdateWhenProjectManagerIsClearedWithoutUserUpdatePermission(
+			cmpProjectObjectEntry);
 	}
 
 	@Test
@@ -414,6 +421,18 @@ public class ObjectEntryModelListenerTest {
 		}
 	}
 
+	private void _assertRevokedFromProject(
+		ObjectEntry cmpProjectObjectEntry, User user) {
+
+		_assertUserGroupRoles(
+			0, Collections.emptyList(), cmpProjectObjectEntry.getGroupId(),
+			user.getUserId());
+
+		Assert.assertFalse(
+			_groupLocalService.hasUserGroup(
+				user.getUserId(), cmpProjectObjectEntry.getGroupId()));
+	}
+
 	private void _assertUserGroupRoles(
 		int expectedCount, List<String> expectedUserGroupRoleNames,
 		long groupId, long userId) {
@@ -453,46 +472,253 @@ public class ObjectEntryModelListenerTest {
 			cmpProjectObjectEntry.getGroupId(), user2.getUserId());
 	}
 
-	private void _testOnAfterUpdateWhenProjectManagerAndProjectSponsorAreUnchanged()
+	private void
+			_testOnAfterUpdateWhenProjectManagerAndProjectSponsorAreUnchanged(
+				ObjectEntry cmpProjectObjectEntry)
 		throws Exception {
 
-		ObjectEntry cmpProjectObjectEntry =
-			CMPTestUtil.addCMPProjectObjectEntry();
+		// Assigning the manager and sponsor grants both roles
 
 		User projectManagerUser = UserTestUtil.addUser(
 			cmpProjectObjectEntry.getGroupId());
+		User projectSponsorUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
 
-		Map<String, Serializable> values = cmpProjectObjectEntry.getValues();
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, projectManagerUser.getUserId(),
+			projectSponsorUser.getUserId());
 
-		values.put(
-			"r_userToCMPProjectManager_userId", projectManagerUser.getUserId());
-
-		cmpProjectObjectEntry =
-			_objectEntryLocalService.partialUpdateObjectEntry(
-				TestPropsValues.getUserId(),
-				cmpProjectObjectEntry.getObjectEntryId(),
-				cmpProjectObjectEntry.getObjectEntryFolderId(), values,
-				ServiceContextTestUtil.getServiceContext());
-
-		User user = UserTestUtil.addUser();
-
-		UserTestUtil.setUser(user);
+		// Updating another field as an administrator keeps both roles
 
 		String description = RandomTestUtil.randomString();
 
-		cmpProjectObjectEntry =
-			_objectEntryLocalService.partialUpdateObjectEntry(
-				user.getUserId(), cmpProjectObjectEntry.getObjectEntryId(),
-				cmpProjectObjectEntry.getObjectEntryFolderId(),
-				HashMapBuilder.<String, Serializable>put(
-					"description", description
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
+		cmpProjectObjectEntry = _updateDescription(
+			cmpProjectObjectEntry, description, TestPropsValues.getUserId());
 
 		Assert.assertEquals(
 			description,
 			MapUtil.getString(
 				cmpProjectObjectEntry.getValues(), "description"));
+
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
+			cmpProjectObjectEntry.getGroupId(), projectManagerUser.getUserId());
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
+			cmpProjectObjectEntry.getGroupId(), projectSponsorUser.getUserId());
+
+		// Updating another field as a restricted user keeps both roles
+
+		User user = UserTestUtil.addUser();
+
+		UserTestUtil.setUser(user);
+
+		description = RandomTestUtil.randomString();
+
+		cmpProjectObjectEntry = _updateDescription(
+			cmpProjectObjectEntry, description, user.getUserId());
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			description,
+			MapUtil.getString(
+				cmpProjectObjectEntry.getValues(), "description"));
+
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
+			cmpProjectObjectEntry.getGroupId(), projectManagerUser.getUserId());
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
+			cmpProjectObjectEntry.getGroupId(), projectSponsorUser.getUserId());
+	}
+
+	private void _testOnAfterUpdateWhenProjectManagerAndProjectSponsorChange(
+			ObjectEntry cmpProjectObjectEntry)
+		throws Exception {
+
+		// Clearing a holder with another project role keeps role and membership
+
+		User user = UserTestUtil.addUser(cmpProjectObjectEntry.getGroupId());
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, user.getUserId(), 0);
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			DepotRolesConstants.PROJECT_CONTRIBUTOR);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			user.getUserId(), cmpProjectObjectEntry.getGroupId(),
+			new long[] {role.getRoleId()});
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, 0, 0);
+
+		_assertUserGroupRoles(
+			1,
+			Collections.singletonList(DepotRolesConstants.PROJECT_CONTRIBUTOR),
+			cmpProjectObjectEntry.getGroupId(), user.getUserId());
+
+		Assert.assertTrue(
+			_groupLocalService.hasUserGroup(
+				user.getUserId(), cmpProjectObjectEntry.getGroupId()));
+
+		// Clearing the manager and sponsor revokes without replacing
+
+		User clearedProjectManagerUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+		User clearedProjectSponsorUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, clearedProjectManagerUser.getUserId(),
+			clearedProjectSponsorUser.getUserId());
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, 0, 0);
+
+		_assertRevokedFromProject(
+			cmpProjectObjectEntry, clearedProjectManagerUser);
+		_assertRevokedFromProject(
+			cmpProjectObjectEntry, clearedProjectSponsorUser);
+
+		// Reassigning the manager and sponsor revokes the previous holders
+
+		User originalProjectManagerUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+		User originalProjectSponsorUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, originalProjectManagerUser.getUserId(),
+			originalProjectSponsorUser.getUserId());
+
+		User projectManagerUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+		User projectSponsorUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, projectManagerUser.getUserId(),
+			projectSponsorUser.getUserId());
+
+		_assertRevokedFromProject(
+			cmpProjectObjectEntry, originalProjectManagerUser);
+		_assertRevokedFromProject(
+			cmpProjectObjectEntry, originalProjectSponsorUser);
+
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
+			cmpProjectObjectEntry.getGroupId(), projectManagerUser.getUserId());
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
+			cmpProjectObjectEntry.getGroupId(), projectSponsorUser.getUserId());
+	}
+
+	private void
+			_testOnAfterUpdateWhenProjectManagerIsClearedWithoutUserUpdatePermission(
+				ObjectEntry cmpProjectObjectEntry)
+		throws Exception {
+
+		User projectManagerUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, projectManagerUser.getUserId(), 0);
+
+		User user = UserTestUtil.addUser();
+
+		UserTestUtil.setUser(user);
+
+		try {
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				user.getUserId(), cmpProjectObjectEntry.getObjectEntryId(),
+				cmpProjectObjectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"r_userToCMPProjectManager_userId", 0
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			Assert.assertTrue(
+				modelListenerException.getCause() instanceof
+					PrincipalException.MustHavePermission);
+		}
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
+			cmpProjectObjectEntry.getGroupId(), projectManagerUser.getUserId());
+
+		Assert.assertTrue(
+			_groupLocalService.hasUserGroup(
+				projectManagerUser.getUserId(),
+				cmpProjectObjectEntry.getGroupId()));
+
+		UserTestUtil.setUser(projectManagerUser);
+
+		try {
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				projectManagerUser.getUserId(),
+				cmpProjectObjectEntry.getObjectEntryId(),
+				cmpProjectObjectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"r_userToCMPProjectManager_userId", 0
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			Assert.assertTrue(
+				modelListenerException.getCause() instanceof
+					PrincipalException.MustHavePermission);
+		}
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
+			cmpProjectObjectEntry.getGroupId(), projectManagerUser.getUserId());
+
+		Assert.assertTrue(
+			_groupLocalService.hasUserGroup(
+				projectManagerUser.getUserId(),
+				cmpProjectObjectEntry.getGroupId()));
+	}
+
+	private ObjectEntry _updateDescription(
+			ObjectEntry cmpProjectObjectEntry, String description, long userId)
+		throws Exception {
+
+		return _objectEntryLocalService.partialUpdateObjectEntry(
+			userId, cmpProjectObjectEntry.getObjectEntryId(),
+			cmpProjectObjectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"description", description
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _updateProjectManagerProjectSponsor(
+			ObjectEntry cmpProjectObjectEntry, long projectManagerUserId,
+			long projectSponsorUserId)
+		throws Exception {
+
+		return _objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(),
+			cmpProjectObjectEntry.getObjectEntryId(),
+			cmpProjectObjectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"r_userToCMPProjectManager_userId", projectManagerUserId
+			).put(
+				"r_userToCMPProjectSponsor_userId", projectSponsorUserId
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	@DeleteAfterTestRun
@@ -518,5 +744,8 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private StagingLocalService _stagingLocalService;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 }
