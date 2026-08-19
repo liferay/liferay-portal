@@ -121,11 +121,7 @@ public class GitRepositoryFactory {
 					"Unable to find git directory name " + gitDirectoryName);
 			}
 
-			if (gitRepositoryName.equals("liferay-jenkins-ee")) {
-				workspaceGitRepository = new JenkinsWorkspaceGitRepository(
-					pullRequest, gitUpstreamBranchName);
-			}
-			else if (gitRepositoryName.matches("liferay-plugins(-ee)?")) {
+			if (gitRepositoryName.matches("liferay-plugins(-ee)?")) {
 				workspaceGitRepository = new PluginsWorkspaceGitRepository(
 					pullRequest, gitUpstreamBranchName);
 			}
@@ -215,11 +211,7 @@ public class GitRepositoryFactory {
 					repositoryName, upstreamBranchName),
 				"/", gitRepositoryName, "/tree/", upstreamBranchName));
 
-		if (gitRepositoryName.equals("liferay-jenkins-ee")) {
-			workspaceGitRepository = new JenkinsWorkspaceGitRepository(
-				remoteGitRef, upstreamBranchName);
-		}
-		else if (gitRepositoryName.matches("liferay-plugins(-ee)?")) {
+		if (gitRepositoryName.matches("liferay-plugins(-ee)?")) {
 			workspaceGitRepository = new PluginsWorkspaceGitRepository(
 				remoteGitRef, upstreamBranchName);
 		}
@@ -270,10 +262,6 @@ public class GitRepositoryFactory {
 
 			if (repositoryName == null) {
 				throw new RuntimeException("Invalid JSONObject " + jsonObject);
-			}
-			else if (repositoryName.equals("liferay-jenkins-ee")) {
-				workspaceGitRepository = new JenkinsWorkspaceGitRepository(
-					jsonObject);
 			}
 			else if (repositoryName.matches("liferay-plugins(-ee)?")) {
 				workspaceGitRepository = new PluginsWorkspaceGitRepository(
