@@ -56,7 +56,13 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	public void tearDown() throws Exception {
 		super.tearDown();
 
-		getIndexWriter().deleteDocument(createSearchContext(), _UID);
+		IndexWriter indexWriter = getIndexWriter();
+
+		if (indexWriter == null) {
+			return;
+		}
+
+		indexWriter.deleteDocument(createSearchContext(), _UID);
 	}
 
 	@Test
