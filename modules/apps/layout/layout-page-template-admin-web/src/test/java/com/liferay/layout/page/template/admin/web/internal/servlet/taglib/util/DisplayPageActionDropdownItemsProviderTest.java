@@ -90,6 +90,27 @@ public class DisplayPageActionDropdownItemsProviderTest {
 	}
 
 	@Test
+	public void testGetActionDropdownItemsExportDisplayPageURL()
+		throws Exception {
+
+		_setUpLayoutPageTemplateEntryPermission(false);
+
+		DisplayPageActionDropdownItemsProvider
+			displayPageActionDropdownItemsProvider =
+				new DisplayPageActionDropdownItemsProvider(
+					false, false, _layoutPageTemplateEntry, _renderRequest,
+					_renderResponse);
+
+		displayPageActionDropdownItemsProvider.getActionDropdownItems();
+
+		Mockito.verify(
+			_exportDisplayPageURL
+		).setCopyCurrentRenderParameters(
+			false
+		);
+	}
+
+	@Test
 	public void testGetActionDropdownItemsWithoutUpdatePermission()
 		throws Exception {
 
@@ -321,7 +342,7 @@ public class DisplayPageActionDropdownItemsProviderTest {
 		Mockito.when(
 			afterResourceIDStep.buildResourceURL()
 		).thenReturn(
-			Mockito.mock(LiferayPortletURL.class)
+			_exportDisplayPageURL
 		);
 	}
 
@@ -361,6 +382,8 @@ public class DisplayPageActionDropdownItemsProviderTest {
 		_assetDisplayPageEntryServiceUtilMockedStatic = Mockito.mockStatic(
 			AssetDisplayPageEntryServiceUtil.class);
 	private final Layout _draftLayout = Mockito.mock(Layout.class);
+	private final LiferayPortletURL _exportDisplayPageURL = Mockito.mock(
+		LiferayPortletURL.class);
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
 	private final InfoItemServiceRegistry _infoItemServiceRegistry =
