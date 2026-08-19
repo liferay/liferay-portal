@@ -358,7 +358,6 @@ public class LanguageTagTest {
 						_group.getFriendlyURL(), _FRIENDLY_URL_MAPPING_PATH),
 					null, themeDisplay),
 				LocaleUtil.FRANCE));
-
 		_assertLocalizedURL(
 			_layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
 			_getURL(
@@ -370,14 +369,12 @@ public class LanguageTagTest {
 						_FRIENDLY_URL_MAPPING_PATH),
 					null, themeDisplay),
 				LocaleUtil.FRANCE));
-
 		_assertLocalizedURL(
 			_layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
 			_getURL(
 				_getLanguageEntries(
 					_FRIENDLY_URL_MAPPING_PATH, null, themeDisplay),
 				LocaleUtil.FRANCE));
-
 		_assertLocalizedURL(
 			_layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH + "?foo=bar",
 			_getURL(
@@ -385,19 +382,16 @@ public class LanguageTagTest {
 					_FRIENDLY_URL_MAPPING_PATH + "?foo=bar", null,
 					themeDisplay),
 				LocaleUtil.FRANCE));
-
 		_assertLocalizedURL(
 			_layout, LocaleUtil.FRANCE, "/tags/new%20york",
 			_getURL(
 				_getLanguageEntries("/tags/new%20york", null, themeDisplay),
 				LocaleUtil.FRANCE));
-
 		_assertLocalizedURL(
 			_layout, LocaleUtil.FRANCE, "/tags",
 			_getURL(
 				_getLanguageEntries("/tags", null, themeDisplay),
 				LocaleUtil.FRANCE));
-
 		_assertLocalizedURL(
 			_layout, LocaleUtil.FRANCE, "/-/blogs/blog-1",
 			_getURL(
