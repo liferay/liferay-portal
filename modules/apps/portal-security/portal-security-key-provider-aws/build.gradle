@@ -1,9 +1,9 @@
 dependencies {
 	compileInclude group: "com.amazonaws", name: "aws-java-sdk-core", version: "1.12.719"
 	compileInclude group: "com.amazonaws", name: "aws-java-sdk-kms", version: "1.12.719"
-	compileInclude group: "com.amazonaws", name: "aws-java-sdk-secretsmanager", version: "1.12.778"
-	compileInclude group: "com.amazonaws", name: "aws-java-sdk-sts", version: "1.12.778"
-	compileInclude group: "com.amazonaws", name: "jmespath-java", version: "1.12.778"
+	compileInclude group: "com.amazonaws", name: "aws-java-sdk-secretsmanager", version: "1.12.719"
+	compileInclude group: "com.amazonaws", name: "aws-java-sdk-sts", version: "1.12.719"
+	compileInclude group: "com.amazonaws", name: "jmespath-java", version: "1.12.719"
 	compileInclude group: "software.amazon.ion", name: "ion-java", version: "1.0.2"
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "6.4.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
