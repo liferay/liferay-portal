@@ -71,12 +71,13 @@ public class BrokenLinkAssetResourceImpl
 			throw new UnsupportedOperationException();
 		}
 
+		Long[] spaceGroupIds = CMSGroupUtil.getSpaceGroupIds(
+			contextCompany.getCompanyId(), _depotEntryService,
+			contextUser.getUserId());
+
 		Long[] selectedSpaceGroupIds = CMSGroupUtil.getSelectedSpaceGroupIds(
 			assetLibraryId, contextCompany.getCompanyId(),
-			_depotEntryLocalService, groupLocalService,
-			CMSGroupUtil.getSpaceGroupIds(
-				contextCompany.getCompanyId(), _depotEntryService,
-				contextUser.getUserId()));
+			_depotEntryLocalService, groupLocalService, spaceGroupIds);
 
 		if (ArrayUtil.isEmpty(selectedSpaceGroupIds)) {
 			return Page.of(Collections.emptyList());
@@ -106,7 +107,8 @@ public class BrokenLinkAssetResourceImpl
 
 		Map<String, Long> expiredAssetObjectEntryIds =
 			brokenLinkAssetSearcher.getExpiredAssetObjectEntryIds(
-				contextCompany.getCompanyId(), objectDefinitionIds);
+				contextCompany.getCompanyId(), objectDefinitionIds,
+				spaceGroupIds);
 
 		if (expiredAssetObjectEntryIds.isEmpty()) {
 			return Page.of(Collections.emptyList());

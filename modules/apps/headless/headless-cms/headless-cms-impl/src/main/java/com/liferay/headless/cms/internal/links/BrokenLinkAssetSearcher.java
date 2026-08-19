@@ -55,29 +55,14 @@ public class BrokenLinkAssetSearcher {
 	}
 
 	public Map<String, Long> getExpiredAssetObjectEntryIds(
-		long companyId, Long[] objectDefinitionIds) {
+		long companyId, Long[] objectDefinitionIds, Long[] spaceGroupIds) {
 
 		Map<String, Long> objectEntryIds = new LinkedHashMap<>();
 
-		List<Object[]> results = _objectEntryLocalService.dslQuery(
-			DSLQueryFactoryUtil.select(
-				ObjectEntryTable.INSTANCE.externalReferenceCode,
-				ObjectEntryTable.INSTANCE.objectEntryId
-			).from(
-				ObjectEntryTable.INSTANCE
-			).where(
-				ObjectEntryTable.INSTANCE.companyId.eq(
-					companyId
-				).and(
-					ObjectEntryTable.INSTANCE.objectDefinitionId.in(
-						objectDefinitionIds)
-				).and(
-					ObjectEntryTable.INSTANCE.status.eq(
-						WorkflowConstants.STATUS_EXPIRED)
-				)
-			));
+		for (Object[] objects :
+				_getExpiredAssetObjects(
+					companyId, objectDefinitionIds, spaceGroupIds)) {
 
-		for (Object[] objects : results) {
 			long objectEntryId = GetterUtil.getLong(objects[1]);
 
 			objectEntryIds.put(
@@ -124,6 +109,30 @@ public class BrokenLinkAssetSearcher {
 		}
 
 		return _searcher.search(searchRequestBuilder.build());
+	}
+
+	private List<Object[]> _getExpiredAssetObjects(
+		long companyId, Long[] objectDefinitionIds, Long[] spaceGroupIds) {
+
+		return _objectEntryLocalService.dslQuery(
+			DSLQueryFactoryUtil.select(
+				ObjectEntryTable.INSTANCE.externalReferenceCode,
+				ObjectEntryTable.INSTANCE.objectEntryId
+			).from(
+				ObjectEntryTable.INSTANCE
+			).where(
+				ObjectEntryTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					ObjectEntryTable.INSTANCE.groupId.in(spaceGroupIds)
+				).and(
+					ObjectEntryTable.INSTANCE.objectDefinitionId.in(
+						objectDefinitionIds)
+				).and(
+					ObjectEntryTable.INSTANCE.status.eq(
+						WorkflowConstants.STATUS_EXPIRED)
+				)
+			));
 	}
 
 	private BooleanQuery _getOutboundLinksBooleanQuery(

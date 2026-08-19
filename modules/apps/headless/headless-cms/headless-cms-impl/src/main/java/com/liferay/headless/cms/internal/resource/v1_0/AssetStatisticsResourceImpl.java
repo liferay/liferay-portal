@@ -49,14 +49,15 @@ public class AssetStatisticsResourceImpl
 	public AssetStatistics getAssetStatistics(Long assetLibraryId)
 		throws Exception {
 
-		Long[] groupIds = CMSGroupUtil.getSelectedSpaceGroupIds(
-			assetLibraryId, contextCompany.getCompanyId(),
-			_depotEntryLocalService, groupLocalService,
-			CMSGroupUtil.getSpaceGroupIds(
-				contextCompany.getCompanyId(), _depotEntryService,
-				contextUser.getUserId()));
+		Long[] spaceGroupIds = CMSGroupUtil.getSpaceGroupIds(
+			contextCompany.getCompanyId(), _depotEntryService,
+			contextUser.getUserId());
 
-		if (ArrayUtil.isEmpty(groupIds)) {
+		Long[] selectedSpaceGroupIds = CMSGroupUtil.getSelectedSpaceGroupIds(
+			assetLibraryId, contextCompany.getCompanyId(),
+			_depotEntryLocalService, groupLocalService, spaceGroupIds);
+
+		if (ArrayUtil.isEmpty(selectedSpaceGroupIds)) {
 			return _toAssetStatistics();
 		}
 
@@ -80,19 +81,21 @@ public class AssetStatisticsResourceImpl
 			{
 				setApprovedCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.eq(
 							WorkflowConstants.STATUS_APPROVED)));
 				setBrokenLinksCount(
-					() -> _getBrokenLinksCount(groupIds, objectDefinitionIds));
+					() -> _getBrokenLinksCount(
+						objectDefinitionIds, selectedSpaceGroupIds,
+						spaceGroupIds));
 				setExpiredCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.eq(
 							WorkflowConstants.STATUS_EXPIRED)));
 				setExpiringSoonCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.eq(
 							WorkflowConstants.STATUS_APPROVED
 						).and(
@@ -103,17 +106,17 @@ public class AssetStatisticsResourceImpl
 						)));
 				setInDraftCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.eq(
 							WorkflowConstants.STATUS_DRAFT)));
 				setPendingCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.eq(
 							WorkflowConstants.STATUS_PENDING)));
 				setReviewDateOverdueCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.reviewDate.lt(
 							date
 						).and(
@@ -122,17 +125,17 @@ public class AssetStatisticsResourceImpl
 						)));
 				setScheduledCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.eq(
 							WorkflowConstants.STATUS_SCHEDULED)));
 				setTotalCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.in(
 							CMSWorkflowConstants.STATUSES)));
 				setUpcomingReviewCount(
 					() -> _getCount(
-						groupIds, objectDefinitionIds,
+						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.reviewDate.gt(
 							date
 						).and(
@@ -149,7 +152,8 @@ public class AssetStatisticsResourceImpl
 	}
 
 	private long _getBrokenLinksCount(
-		Long[] groupIds, Long[] objectDefinitionIds) {
+		Long[] objectDefinitionIds, Long[] selectedSpaceGroupIds,
+		Long[] spaceGroupIds) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-82226")) {
@@ -165,14 +169,15 @@ public class AssetStatisticsResourceImpl
 
 			Map<String, Long> expiredAssetObjectEntryIds =
 				brokenLinkAssetSearcher.getExpiredAssetObjectEntryIds(
-					contextCompany.getCompanyId(), objectDefinitionIds);
+					contextCompany.getCompanyId(), objectDefinitionIds,
+					spaceGroupIds);
 
 			if (expiredAssetObjectEntryIds.isEmpty()) {
 				return 0;
 			}
 
 			return brokenLinkAssetSearcher.getCount(
-				contextCompany.getCompanyId(), groupIds,
+				contextCompany.getCompanyId(), selectedSpaceGroupIds,
 				expiredAssetObjectEntryIds.keySet());
 		}
 		catch (Exception exception) {
