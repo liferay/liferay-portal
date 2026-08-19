@@ -18,7 +18,8 @@ function setStoredValue(value: string) {
 
 describe('recentSearches', () => {
 	afterEach(() => {
-		localStorage.clear();
+		recentSearches.clear(FDS_NAME);
+		recentSearches.clear(OTHER_FDS_NAME);
 	});
 
 	describe('add', () => {
@@ -162,9 +163,20 @@ describe('recentSearches', () => {
 		});
 
 		it('returns queries stored before a page reload', () => {
-			setStoredValue(JSON.stringify(['pantalon', 'camiseta']));
+			recentSearches.add(FDS_NAME, 'camiseta');
+			recentSearches.add(FDS_NAME, 'pantalon');
 
-			expect(recentSearches.get(FDS_NAME)).toEqual([
+			// A reload leaves the module registry behind, so a freshly imported
+			// API reads the queries the way the next page load does
+
+			let reloadedRecentSearches!: typeof recentSearches;
+
+			jest.isolateModules(() => {
+				reloadedRecentSearches =
+					require('../../src/main/resources/META-INF/resources/utils/recentSearches').default;
+			});
+
+			expect(reloadedRecentSearches.get(FDS_NAME)).toEqual([
 				'pantalon',
 				'camiseta',
 			]);
