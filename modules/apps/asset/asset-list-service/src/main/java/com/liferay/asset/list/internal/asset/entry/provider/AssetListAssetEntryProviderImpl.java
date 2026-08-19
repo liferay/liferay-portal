@@ -264,16 +264,15 @@ public class AssetListAssetEntryProviderImpl
 
 		assetEntryQuery.setOrderByCol1(
 			_getOrderByColumn(
-				assetListEntry.getCompanyId(), "priority",
-				GetterUtil.getString(
-					unicodeProperties.getProperty(
-						"orderByColumn1", "priority"))));
-		assetEntryQuery.setOrderByCol2(
-			_getOrderByColumn(
 				assetListEntry.getCompanyId(), Field.MODIFIED_DATE,
 				GetterUtil.getString(
 					unicodeProperties.getProperty(
-						"orderByColumn2", Field.MODIFIED_DATE))));
+						"orderByColumn1", Field.MODIFIED_DATE))));
+		assetEntryQuery.setOrderByCol2(
+			_getOrderByColumn(
+				assetListEntry.getCompanyId(), "title",
+				GetterUtil.getString(
+					unicodeProperties.getProperty("orderByColumn2", "title"))));
 
 		assetEntryQuery.setOrderByType1(
 			GetterUtil.getString(
