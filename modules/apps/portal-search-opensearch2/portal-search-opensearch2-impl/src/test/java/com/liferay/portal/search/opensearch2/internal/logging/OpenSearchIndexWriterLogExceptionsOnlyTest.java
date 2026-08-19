@@ -52,8 +52,9 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 		OpenSearchTestRule.INSTANCE;
 
 	@After
-	public void tearDownOpenSearchIndexWriterLogExceptionsOnlyTest()
-		throws SearchException {
+	@Override
+	public void tearDown() throws Exception {
+		super.tearDown();
 
 		getIndexWriter().deleteDocument(createSearchContext(), _UID);
 	}
