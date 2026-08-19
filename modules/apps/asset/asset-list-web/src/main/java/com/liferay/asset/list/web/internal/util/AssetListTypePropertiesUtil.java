@@ -5,6 +5,7 @@
 
 package com.liferay.asset.list.web.internal.util;
 
+import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.List;
@@ -92,90 +94,29 @@ public class AssetListTypePropertiesUtil {
 
 	private static JSONArray _getCommonFieldsItemsJSONArray(Locale locale) {
 		return JSONUtil.putAll(
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "author-name")
-			).put(
-				"name", Field.USER_NAME
-			).put(
-				"type", "text"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "created-date")
-			).put(
-				"name", Field.CREATE_DATE
-			).put(
-				"type", "date"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "display-date")
-			).put(
-				"name", Field.DISPLAY_DATE
-			).put(
-				"type", "date"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "expiration-date")
-			).put(
-				"name", Field.EXPIRATION_DATE
-			).put(
-				"type", "date"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "external-reference-code")
-			).put(
-				"name", "externalReferenceCode"
-			).put(
-				"type", "text"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "modified-date")
-			).put(
-				"name", Field.MODIFIED_DATE
-			).put(
-				"type", "date"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "priority")
-			).put(
-				"name", Field.PRIORITY
-			).put(
-				"type", "decimal"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "publish-date")
-			).put(
-				"name", Field.PUBLISH_DATE
-			).put(
-				"type", "date"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "review-date")
-			).put(
-				"name", Field.REVIEW_DATE
-			).put(
-				"type", "date"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "status")
-			).put(
-				"name", Field.STATUS
-			).put(
-				"type", "integer"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "title")
-			).put(
-				"name", Field.TITLE
-			).put(
-				"type", "text"
-			),
-			JSONUtil.put(
-				"label", LanguageUtil.get(locale, "view-count")
-			).put(
-				"name", "viewCount"
-			).put(
-				"type", "integer"
-			));
+			_toCommonFieldJSONObject(
+				"author-name", locale, Field.USER_NAME, "text"),
+			_toCommonFieldJSONObject(
+				"created-date", locale, Field.CREATE_DATE, "date"),
+			_toCommonFieldJSONObject(
+				"display-date", locale, Field.DISPLAY_DATE, "date"),
+			_toCommonFieldJSONObject(
+				"expiration-date", locale, Field.EXPIRATION_DATE, "date"),
+			_toCommonFieldJSONObject(
+				"external-reference-code", locale, "externalReferenceCode",
+				"text"),
+			_toCommonFieldJSONObject(
+				"modified-date", locale, Field.MODIFIED_DATE, "date"),
+			_toCommonFieldJSONObject(
+				"priority", locale, Field.PRIORITY, "decimal"),
+			_toCommonFieldJSONObject(
+				"publish-date", locale, Field.PUBLISH_DATE, "date"),
+			_toCommonFieldJSONObject(
+				"review-date", locale, Field.REVIEW_DATE, "date"),
+			_toCommonFieldJSONObject("status", locale, Field.STATUS, "integer"),
+			_toCommonFieldJSONObject("title", locale, Field.TITLE, "text"),
+			_toCommonFieldJSONObject(
+				"view-count", locale, "viewCount", "integer"));
 	}
 
 	private static JSONArray _getItemsJSONArray(
@@ -207,6 +148,21 @@ public class AssetListTypePropertiesUtil {
 		}
 
 		return true;
+	}
+
+	private static JSONObject _toCommonFieldJSONObject(
+		String labelKey, Locale locale, String name, String type) {
+
+		return JSONUtil.put(
+			"label", LanguageUtil.get(locale, labelKey)
+		).put(
+			"name", name
+		).put(
+			"sortable",
+			ArrayUtil.contains(AssetEntryQuery.ORDER_BY_COLUMNS, name)
+		).put(
+			"type", type
+		);
 	}
 
 	private static JSONObject _toPropertyJSONObject(
