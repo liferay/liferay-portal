@@ -108,6 +108,90 @@ describe('BarChart', () => {
 		expect(segments[0]).toHaveAttribute('aria-label', 'Jan: 12');
 	});
 
+	it('renders a stacked segment with an href as a link', () => {
+		render(
+			<BarChart
+				data={[
+					{href: '/drafts', label: 'Draft', value: 12},
+					{label: 'Others', value: 3},
+				]}
+				stacked
+				title="Content progress"
+			/>
+		);
+
+		const link = screen.getByRole('link', {name: 'Draft: 12'});
+
+		expect(link).toHaveAttribute('href', '/drafts');
+
+		expect(screen.getByRole('img')).toHaveAttribute(
+			'aria-label',
+			'Others: 3'
+		);
+	});
+
+	it('moves focus between linked and plain segments with the arrow keys', () => {
+		render(
+			<BarChart
+				data={[
+					{href: '/drafts', label: 'Draft', value: 12},
+					{label: 'Others', value: 3},
+				]}
+				stacked
+				title="Content progress"
+			/>
+		);
+
+		const link = screen.getByRole('link');
+
+		link.focus();
+
+		fireEvent.keyDown(link, {key: 'ArrowRight'});
+
+		expect(screen.getByRole('img')).toHaveFocus();
+	});
+
+	it('appends the opens-link hint to the tooltip of a linked segment', () => {
+		render(
+			<BarChart
+				data={[{href: '/drafts', label: 'Draft', value: 12}]}
+				stacked
+				title="Content progress"
+			/>
+		);
+
+		fireEvent.mouseEnter(screen.getByRole('link'));
+
+		expect(
+			screen.getByText('Draft: 12', {selector: 'text'})
+		).toBeInTheDocument();
+		expect(screen.getByText('opens-link')).toBeInTheDocument();
+	});
+
+	it('keeps the tooltip hint out of segments without an href', () => {
+		render(<BarChart data={DATA} stacked title="Monthly visits" />);
+
+		fireEvent.mouseEnter(screen.getAllByRole('img')[0]);
+
+		expect(screen.getByText('Jan: 12')).toBeInTheDocument();
+		expect(screen.queryByText('opens-link')).not.toBeInTheDocument();
+	});
+
+	it('has no accessibility violations when segments link', async () => {
+		const {container} = render(
+			<BarChart
+				data={[
+					{href: '/drafts', label: 'Draft', value: 12},
+					{label: 'Others', value: 3},
+				]}
+				stacked
+				title="Content progress"
+			/>
+		);
+
+		await checkAccessibility({bestPractices: true, context: container});
+	});
+
 	it('forces the categorical scheme and drops the axis when stacked', () => {
 		const {container} = render(
 			<BarChart
