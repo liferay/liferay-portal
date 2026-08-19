@@ -98,7 +98,7 @@ boolean hasOutgoingLinkPages = ListUtil.isNotEmpty(outgoingLinkPages);
 											<c:when test="<%= outgoingLinkPage.isNew() %>">
 												<dt class="h5">
 													<div class="h4 text-truncate">
-														<a class="text-default" href="<%= HtmlUtil.escape(outgoingLinkPage.getTitle()) %>"><%= HtmlUtil.escape(outgoingLinkPage.getTitle()) %></a>
+														<a class="text-default" href="<%= HtmlUtil.escapeHREF(outgoingLinkPage.getTitle()) %>"><%= HtmlUtil.escape(outgoingLinkPage.getTitle()) %></a>
 													</div>
 												</dt>
 											</c:when>
