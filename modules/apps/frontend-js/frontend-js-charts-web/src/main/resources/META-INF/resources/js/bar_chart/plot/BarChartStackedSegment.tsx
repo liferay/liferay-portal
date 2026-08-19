@@ -93,6 +93,18 @@ export default function BarChartStackedSegment({
 		} as React.CSSProperties,
 	};
 
+	const interactionProps = {
+		'aria-label': label,
+		'onBlur': () => onLeave(index),
+		'onFocus': () => onFocus(index),
+		'onKeyDown': (event: React.KeyboardEvent) => onKeyDown(event, index),
+		'onMouseEnter': () => onHover(index),
+		'onMouseLeave': () => onLeave(index),
+		'ref': (element: FocusableBarElement | null) =>
+			setBarRef(index, element),
+		'tabIndex': 0,
+	};
+
 	return (
 		<g
 			className={classNames('charts-bar-chart__bar-group', {
@@ -101,32 +113,14 @@ export default function BarChartStackedSegment({
 		>
 			{datum.href ? (
 				<a
-					aria-label={label}
+					{...interactionProps}
 					className="charts-bar-chart__bar-link"
 					href={datum.href}
-					onBlur={() => onLeave(index)}
-					onFocus={() => onFocus(index)}
-					onKeyDown={(event) => onKeyDown(event, index)}
-					onMouseEnter={() => onHover(index)}
-					onMouseLeave={() => onLeave(index)}
-					ref={(element) => setBarRef(index, element)}
-					tabIndex={0}
 				>
 					<path {...shapeProps} />
 				</a>
 			) : (
-				<path
-					{...shapeProps}
-					aria-label={label}
-					onBlur={() => onLeave(index)}
-					onFocus={() => onFocus(index)}
-					onKeyDown={(event) => onKeyDown(event, index)}
-					onMouseEnter={() => onHover(index)}
-					onMouseLeave={() => onLeave(index)}
-					ref={(element) => setBarRef(index, element)}
-					role="img"
-					tabIndex={0}
-				/>
+				<path {...shapeProps} {...interactionProps} role="img" />
 			)}
 
 			{active && (
