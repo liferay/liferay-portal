@@ -77,8 +77,9 @@ function getUpcomingReviewsSelectedData() {
 		exclude: false,
 		from,
 		to: {
-			...from,
 			day: Math.min(from.day, new Date(year, month, 0).getDate()),
+			hour: from.hour,
+			minute: from.minute,
 			month,
 			year,
 		},
