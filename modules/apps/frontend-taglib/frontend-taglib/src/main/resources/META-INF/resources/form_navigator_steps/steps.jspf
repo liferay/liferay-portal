@@ -388,8 +388,6 @@
 
 		formNode.on('blur', updateSectionError, 'input, select, textarea');
 
-		formNode.on('autofields:update', updateSectionError);
-
 		formNode
 			.getDOMNode()
 			.addEventListener('autofields:update', updateSectionError);

@@ -32,19 +32,6 @@
 				combine: COMBINE,
 				filter: Liferay.AUI.getFilterConfig(),
 				modules: {
-					'liferay-auto-fields': {
-						path: 'auto_fields.js',
-						requires: [
-							'aui-base',
-							'aui-data-set-deprecated',
-							'aui-parse-content',
-							'base',
-							'liferay-form',
-							'liferay-menu',
-							'liferay-portlet-base',
-							'sortable',
-						],
-					},
 					'liferay-form': {
 						path: 'form.js',
 						requires: ['aui-base', 'aui-form-validator'],
