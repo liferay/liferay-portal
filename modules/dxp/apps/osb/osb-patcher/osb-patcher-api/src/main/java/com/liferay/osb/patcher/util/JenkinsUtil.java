@@ -697,7 +697,6 @@ public class JenkinsUtil {
 		}
 
 		options.addPart("patcher.user.id", String.valueOf(user.getUserId()));
-		options.addPart("token", patcherConfiguration.jenkinsToken());
 
 		String jenkinsURL = getJenkinsURL(user.getCompanyId());
 
@@ -755,11 +754,6 @@ public class JenkinsUtil {
 
 			return "the-build-cannot-send-request-because-the-jenkins-build-" +
 				"with-parameters-path-is-not-set";
-		}
-
-		if (Validator.isNull(patcherConfiguration.jenkinsToken())) {
-			return "the-build-cannot-send-request-because-the-jenkins-token-" +
-				"is-not-set";
 		}
 
 		if (Validator.isNull(patcherConfiguration.jenkinsURL())) {

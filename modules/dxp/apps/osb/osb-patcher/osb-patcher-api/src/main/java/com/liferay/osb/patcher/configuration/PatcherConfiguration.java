@@ -48,9 +48,6 @@ public interface PatcherConfiguration {
 	@Meta.AD(deflt = "", required = false)
 	public boolean jenkinsLoadBalancerEnabled();
 
-	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
-	public String jenkinsToken();
-
 	@Meta.AD(deflt = "", required = false)
 	public String jenkinsURL();
 
