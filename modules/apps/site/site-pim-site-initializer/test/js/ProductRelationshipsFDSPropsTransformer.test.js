@@ -4,6 +4,7 @@
  */
 
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/ProductRelationshipsFDSPropsTransformer';
+import ProductRelationshipSelectorNameRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorNameRenderer';
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	addOnClickToCreationMenuItems: (items) =>
@@ -41,6 +42,17 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		expect(result.creationMenu.primaryItems[0].onClick).toEqual(
 			expect.any(Function)
 		);
+	});
+
+	it('registers the product name cell renderer', () => {
+		const result = propsTransformer({});
+
+		const [renderer] = result.customRenderers.tableCell;
+
+		expect(renderer.component).toBe(
+			ProductRelationshipSelectorNameRenderer
+		);
+		expect(renderer.name).toBe('nameTableCellRenderer');
 	});
 
 	it('preserves the other props and omits items actions when none are given', () => {
