@@ -3,17 +3,27 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {VIEWPORT_SIZES} from '../config/constants/viewportSizes';
+import {ColumnLayoutDataItem} from '../../types/layout_data/ColumnLayoutDataItem';
+import {VIEWPORT_SIZES, ViewportSize} from '../config/constants/viewportSizes';
 
-const ORDERED_VIEWPORT_SIZES = [
+type ColumnConfig = ColumnLayoutDataItem['config'] &
+	Partial<Record<ViewportSize, {size?: number}>>;
+
+const ORDERED_VIEWPORT_SIZES: ViewportSize[] = [
 	VIEWPORT_SIZES.desktop,
 	VIEWPORT_SIZES.tablet,
 	VIEWPORT_SIZES.landscapeMobile,
 	VIEWPORT_SIZES.portraitMobile,
 ];
 
-export function getResponsiveColumnSize(config, viewportSize) {
-	const getViewportSize = (config, viewportSize) => {
+export function getResponsiveColumnSize(
+	config: ColumnConfig,
+	viewportSize: ViewportSize
+) {
+	const getViewportSize = (
+		config: ColumnConfig,
+		viewportSize: ViewportSize
+	): ViewportSize => {
 		const viewportSizePosition =
 			ORDERED_VIEWPORT_SIZES.indexOf(viewportSize);
 
@@ -34,5 +44,7 @@ export function getResponsiveColumnSize(config, viewportSize) {
 
 	const newViewportSize = getViewportSize(config, viewportSize);
 
-	return config[newViewportSize] ? config[newViewportSize].size : config.size;
+	const responsiveConfig = config[newViewportSize];
+
+	return responsiveConfig ? responsiveConfig.size : config.size;
 }
