@@ -1361,12 +1361,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				null),
 			Http.Method.PATCH);
 
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship.getName());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+		JSONObject nestedObjectEntryJSONObject =
+			_getNestedObjectEntryJSONObject(jsonObject, objectRelationship);
 
 		Assert.assertEquals(
 			displayDate, nestedObjectEntryJSONObject.getString("displayDate"));
@@ -1420,12 +1416,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				null),
 			Http.Method.PATCH);
 
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship.getName());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+		JSONObject nestedObjectEntryJSONObject =
+			_getNestedObjectEntryJSONObject(jsonObject, objectRelationship);
 
 		Assert.assertEquals(
 			_NEW_OBJECT_FIELD_VALUE_1,
@@ -1499,12 +1491,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				null),
 			Http.Method.PATCH);
 
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship.getName());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+		JSONObject nestedObjectEntryJSONObject =
+			_getNestedObjectEntryJSONObject(jsonObject, objectRelationship);
 
 		Assert.assertEquals(
 			_OBJECT_FIELD_VALUE_1,
@@ -1610,12 +1598,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				null),
 			Http.Method.PATCH);
 
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship.getName());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+		JSONObject nestedObjectEntryJSONObject =
+			_getNestedObjectEntryJSONObject(jsonObject, objectRelationship);
 
 		Assert.assertEquals(
 			externalReferenceCode,
@@ -1691,12 +1675,9 @@ public class ObjectEntryRelatedObjectsResourceTest {
 					"externalReferenceCode")),
 			Http.Method.PATCH);
 
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			nestedObjectRelationship.getName());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+		JSONObject nestedObjectEntryJSONObject =
+			_getNestedObjectEntryJSONObject(
+				jsonObject, nestedObjectRelationship);
 
 		Assert.assertEquals(
 			_OBJECT_FIELD_VALUE_2,
@@ -1770,12 +1751,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				String.valueOf(TestPropsValues.getGroupId())),
 			Http.Method.PATCH);
 
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship.getName());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+		JSONObject nestedObjectEntryJSONObject =
+			_getNestedObjectEntryJSONObject(jsonObject, objectRelationship);
 
 		Assert.assertEquals(
 			_OBJECT_FIELD_VALUE_1,
@@ -2195,12 +2172,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				null),
 			Http.Method.PUT);
 
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship.getName());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+		JSONObject nestedObjectEntryJSONObject =
+			_getNestedObjectEntryJSONObject(jsonObject, objectRelationship);
 
 		Assert.assertFalse(
 			nestedObjectEntryJSONObject.isNull(_OBJECT_FIELD_NAME_2));
@@ -2745,6 +2718,18 @@ public class ObjectEntryRelatedObjectsResourceTest {
 			objectEntryId, "?nestedFields=", objectRelationship.getName());
 	}
 
+	private JSONObject _getNestedObjectEntryJSONObject(
+		JSONObject jsonObject, ObjectRelationship objectRelationship) {
+
+		JSONArray jsonArray = jsonObject.getJSONArray(
+			objectRelationship.getName());
+
+		Assert.assertNotNull(jsonObject.toString(), jsonArray);
+		Assert.assertEquals(jsonObject.toString(), 1, jsonArray.length());
+
+		return jsonArray.getJSONObject(0);
+	}
+
 	private String _getSystemObjectEntryId(
 			String customObjectEntryId, boolean manyToOne,
 			ObjectRelationship objectRelationship)
@@ -3051,12 +3036,8 @@ public class ObjectEntryRelatedObjectsResourceTest {
 				null),
 			Http.Method.PATCH);
 
-		JSONArray jsonArray = jsonObject.getJSONArray(
-			objectRelationship.getName());
-
-		Assert.assertEquals(1, jsonArray.length());
-
-		JSONObject nestedObjectEntryJSONObject = jsonArray.getJSONObject(0);
+		JSONObject nestedObjectEntryJSONObject =
+			_getNestedObjectEntryJSONObject(jsonObject, objectRelationship);
 
 		Assert.assertEquals(
 			_OBJECT_FIELD_VALUE_2,
@@ -3065,6 +3046,7 @@ public class ObjectEntryRelatedObjectsResourceTest {
 		JSONObject i18nJSONObject = nestedObjectEntryJSONObject.getJSONObject(
 			_OBJECT_FIELD_NAME_1 + "_i18n");
 
+		Assert.assertNotNull(jsonObject.toString(), i18nJSONObject);
 		Assert.assertEquals(
 			_OBJECT_FIELD_VALUE_1, i18nJSONObject.getString("en_US"));
 		Assert.assertEquals(
