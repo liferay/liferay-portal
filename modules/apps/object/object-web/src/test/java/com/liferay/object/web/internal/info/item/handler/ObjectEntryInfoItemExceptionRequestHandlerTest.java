@@ -11,6 +11,7 @@ import com.liferay.info.exception.InfoFormValidationException;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.provider.InfoItemFormProvider;
+import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.portal.kernel.exception.DuplicateExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
@@ -43,6 +44,7 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 		_testHandleInfoFormExceptionWhenAssetCategoryExceptionTypeIsTooManyCategories();
 		_testHandleInfoFormExceptionWhenDuplicateExternalReferenceCode();
 		_testHandleInfoFormExceptionWhenDuplicateFriendlyURL();
+		_testHandleInfoFormExceptionWhenRequiredLanguageId();
 	}
 
 	private InfoItemFormProvider<?> _mockInfoItemFormProvider()
@@ -149,6 +151,21 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 						new ModelListenerException(
 							new GroupFriendlyURLException(
 								GroupFriendlyURLException.DUPLICATE)),
+						0, _mockInfoItemFormProvider(),
+						Mockito.mock(ObjectDefinition.class)));
+	}
+
+	private void _testHandleInfoFormExceptionWhenRequiredLanguageId()
+		throws Exception {
+
+		Assert.assertThrows(
+			InfoFormValidationException.RequiredInfoField.class,
+			() ->
+				ObjectEntryInfoItemExceptionRequestHandler.
+					handleInfoFormException(
+						new ObjectEntryValuesException.RequiredLanguageId(
+							RandomTestUtil.randomString(),
+							RandomTestUtil.randomString()),
 						0, _mockInfoItemFormProvider(),
 						Mockito.mock(ObjectDefinition.class)));
 	}
