@@ -109,9 +109,9 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 
 			AntiSamy antiSamy = new AntiSamy();
 
-			if (_isConfigured(className, classPK)) {
-				Policy policy = _policies.get(className);
+			Policy policy = _policies.get(className);
 
+			if (policy != null) {
 				cleanResults = antiSamy.scan(content, policy, AntiSamy.SAX);
 			}
 			else {
@@ -143,18 +143,6 @@ public class AntiSamySanitizerImpl implements Sanitizer {
 			throw new IllegalStateException(
 				"Unable to initialize policy", exception);
 		}
-	}
-
-	private boolean _isConfigured(String className, long classPK) {
-		String classNameAndClassPK = className + StringPool.POUND + classPK;
-
-		for (String policyClassName : _policies.keySet()) {
-			if (classNameAndClassPK.startsWith(policyClassName)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private boolean _isWhitelisted(String className, long classPK) {
