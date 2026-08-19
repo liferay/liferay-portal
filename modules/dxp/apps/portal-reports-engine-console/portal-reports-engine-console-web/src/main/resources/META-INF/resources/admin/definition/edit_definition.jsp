@@ -171,7 +171,7 @@ else {
 				</clay:row>
 
 				<aui:field-wrapper>
-					<div class="report-tags" />
+					<div class="report-tags"></div>
 				</aui:field-wrapper>
 			</aui:fieldset>
 

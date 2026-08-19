@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <div xmlns:th="http://www.thymeleaf.org">
 	<form th:id="|${namespace}mainForm|" th:action="${mainFormActionURL}" class="user-form" method="post" th:object="${user}">
-		<span class="portlet-msg-error" th:if="${#fields.hasGlobalErrors()}" th:errors="*{global}" />
-		<p class="caption" th:text="#{personal-information}" />
+		<span class="portlet-msg-error" th:if="${#fields.hasGlobalErrors()}" th:errors="*{global}"></span>
+		<p class="caption" th:text="#{personal-information}"></p>
 		<fieldset>
 			<div class="form-group">
-				<label th:for="|${namespace}firstName|" path="firstName" th:text="#{first-name}" />
+				<label th:for="|${namespace}firstName|" path="firstName" th:text="#{first-name}"></label>
 				<input th:id="|${namespace}firstName|" class="form-control" th:field="*{firstName}" />
-				<span class="portlet-msg-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" />
+				<span class="portlet-msg-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
 			</div>
 			<div class="form-group">
-				<label th:for="|${namespace}lastName|" path="lastName" th:text="#{last-name}" />
+				<label th:for="|${namespace}lastName|" path="lastName" th:text="#{last-name}"></label>
 				<input th:id="|${namespace}lastName|" class="form-control" th:field="*{lastName}" />
-				<span class="portlet-msg-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" />
+				<span class="portlet-msg-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
 			</div>
 		</fieldset>
 		<hr />

@@ -118,7 +118,7 @@
 				</div>
 
 				<article>
-					<a id="introduction" />
+					<a id="introduction"></a>
 
 					<h3><@liferay_ui["message"] key="introduction"/></h3>
 
@@ -128,7 +128,7 @@
 						</#if>
 					</div>
 
-					<a id="prerequisites" />
+					<a id="prerequisites"></a>
 
 					<h3><@liferay_ui["message"] key="prerequisites"/></h3>
 
@@ -148,7 +148,7 @@
 						</div>
 					</#if>
 
-					<a id="steps" />
+					<a id="steps"></a>
 
 					<h3><@liferay_ui["message"] key="steps"/></h3>
 
@@ -206,7 +206,7 @@
 						</ol>
 					</#if>
 
-					<a id="conclusion" />
+					<a id="conclusion"></a>
 
 					<h3><@liferay_ui["message"] key="conclusion"/></h3>
 
@@ -214,7 +214,7 @@
 						${Conclusion.getData()}
 					</#if>
 
-					<a id="tips" />
+					<a id="tips"></a>
 
 					<h3><@liferay_ui["message"] key="tips"/></h3>
 

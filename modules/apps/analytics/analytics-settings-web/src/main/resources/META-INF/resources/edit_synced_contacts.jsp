@@ -79,7 +79,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 				<input class="toggle-switch-check" name="<portlet:namespace />syncAllContacts" type="checkbox" <%= syncAllContacts ? "checked" : "" %> />
 
 				<span aria-hidden="true" class="toggle-switch-bar">
-					<span class="toggle-switch-handle" />
+					<span class="toggle-switch-handle"></span>
 				</span>
 				<span class="toggle-switch-text toggle-switch-text-right">
 					<liferay-ui:message arguments="<%= analyticsUsersManager.getCompanyUsersCount(themeDisplay.getCompanyId()) %>" key="sync-all-x-contacts" />

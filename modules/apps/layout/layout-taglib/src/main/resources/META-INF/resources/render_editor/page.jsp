@@ -64,7 +64,7 @@ boolean required = GetterUtil.getBoolean(request.getAttribute("liferay-layout:re
 										</a>
 
 										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__redo_icon" />
+											<div class="cke_button_icon cke_button__redo_icon"></div>
 										</a>
 									</div>
 								</div>
@@ -82,23 +82,11 @@ boolean required = GetterUtil.getBoolean(request.getAttribute("liferay-layout:re
 										</a>
 
 										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__italic_icon" />
+											<div class="cke_button_icon cke_button__italic_icon"></div>
 										</a>
 
 										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__underline_icon" />
-										</a>
-									</div>
-								</div>
-
-								<div>
-									<div class="cke_toolgroup mb-0">
-										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__bulletedlist_icon" />
-										</a>
-
-										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__numberedlist_icon" />
+											<div class="cke_button_icon cke_button__underline_icon"></div>
 										</a>
 									</div>
 								</div>
@@ -106,27 +94,11 @@ boolean required = GetterUtil.getBoolean(request.getAttribute("liferay-layout:re
 								<div>
 									<div class="cke_toolgroup mb-0">
 										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__link_icon" />
+											<div class="cke_button_icon cke_button__bulletedlist_icon"></div>
 										</a>
 
 										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__unlink_icon" />
-										</a>
-									</div>
-								</div>
-
-								<div>
-									<div class="cke_toolgroup mb-0">
-										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__table_icon" />
-										</a>
-
-										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__image_icon" />
-										</a>
-
-										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__videoselector_icon" />
+											<div class="cke_button_icon cke_button__numberedlist_icon"></div>
 										</a>
 									</div>
 								</div>
@@ -134,7 +106,35 @@ boolean required = GetterUtil.getBoolean(request.getAttribute("liferay-layout:re
 								<div>
 									<div class="cke_toolgroup mb-0">
 										<a class="cke_button cke_button_disabled">
-											<div class="cke_button_icon cke_button__source_icon" />
+											<div class="cke_button_icon cke_button__link_icon"></div>
+										</a>
+
+										<a class="cke_button cke_button_disabled">
+											<div class="cke_button_icon cke_button__unlink_icon"></div>
+										</a>
+									</div>
+								</div>
+
+								<div>
+									<div class="cke_toolgroup mb-0">
+										<a class="cke_button cke_button_disabled">
+											<div class="cke_button_icon cke_button__table_icon"></div>
+										</a>
+
+										<a class="cke_button cke_button_disabled">
+											<div class="cke_button_icon cke_button__image_icon"></div>
+										</a>
+
+										<a class="cke_button cke_button_disabled">
+											<div class="cke_button_icon cke_button__videoselector_icon"></div>
+										</a>
+									</div>
+								</div>
+
+								<div>
+									<div class="cke_toolgroup mb-0">
+										<a class="cke_button cke_button_disabled">
+											<div class="cke_button_icon cke_button__source_icon"></div>
 
 											<div class="cke_button_label cke_button__source_label">
 												Source
