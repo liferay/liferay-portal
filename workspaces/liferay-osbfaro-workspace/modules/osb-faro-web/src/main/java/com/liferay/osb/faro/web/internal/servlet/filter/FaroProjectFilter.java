@@ -75,7 +75,7 @@ public class FaroProjectFilter extends BaseFilter {
 			if (!Objects.equals(
 					subscriptionName,
 					ProductConstants.
-						DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_NAME)) {
+						PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA)) {
 
 				filterChain.doFilter(httpServletRequest, httpServletResponse);
 

@@ -89,7 +89,7 @@ public class OSBAccountEntryUtil {
 		String productEntryId = ProductConstants.getProductEntryId(name);
 
 		if (productEntryId == null) {
-			return ProductConstants.BASIC_PRODUCT_ENTRY_ID;
+			return ProductConstants.PRODUCT_ENTRY_ID_BASIC;
 		}
 
 		return productEntryId;

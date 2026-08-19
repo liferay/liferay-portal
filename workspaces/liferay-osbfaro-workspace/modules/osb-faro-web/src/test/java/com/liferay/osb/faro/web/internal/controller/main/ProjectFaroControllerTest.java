@@ -52,7 +52,7 @@ public class ProjectFaroControllerTest {
 		OSBOfferingEntry osbOfferingEntry = offeringEntries.get(0);
 
 		Assert.assertEquals(
-			ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID,
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE,
 			osbOfferingEntry.getProductEntryId());
 		Assert.assertEquals(1, osbOfferingEntry.getQuantity());
 		Assert.assertNotNull(osbOfferingEntry.getStartDate());
@@ -60,16 +60,16 @@ public class ProjectFaroControllerTest {
 
 	@Test
 	public void testCreateOSBAccountEntry2() throws Exception {
-		_assert("1-BusinessTest", ProductConstants.BUSINESS_PRODUCT_ENTRY_ID);
+		_assert("1-BusinessTest", ProductConstants.PRODUCT_ENTRY_ID_BUSINESS);
 		_assert(
 			"2-BusinessLXCTest",
-			ProductConstants.LXC_BUSINESS_PRODUCT_ENTRY_ID);
+			ProductConstants.PRODUCT_ENTRY_ID_LXC_BUSINESS);
 		_assert(
-			"3-EnterpriseTest", ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID);
+			"3-EnterpriseTest", ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
 		_assert(
 			"4-EnterpriseLXCTest",
-			ProductConstants.LXC_ENTERPRISE_PRODUCT_ENTRY_ID);
-		_assert("5-ProLXCTest", ProductConstants.LXC_PRO_PRODUCT_ENTRY_ID);
+			ProductConstants.PRODUCT_ENTRY_ID_LXC_ENTERPRISE);
+		_assert("5-ProLXCTest", ProductConstants.PRODUCT_ENTRY_ID_LXC_PRO);
 	}
 
 	private void _assert(String corpProjectUuid, String productEntryId)

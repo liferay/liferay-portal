@@ -39,7 +39,7 @@ public class OSBAccountEntryUtilTest {
 		OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
 
 		osbOfferingEntry.setProductEntryId(
-			ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID);
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
 		osbOfferingEntry.setQuantity(1);
 
 		OSBAccountEntry osbAccountEntry = OSBAccountEntryBuilder.setName(
@@ -59,7 +59,7 @@ public class OSBAccountEntryUtilTest {
 		OSBOfferingEntry rebuiltOSBOfferingEntry = offeringEntries.get(0);
 
 		Assert.assertEquals(
-			ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID,
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE,
 			rebuiltOSBOfferingEntry.getProductEntryId());
 	}
 
@@ -68,7 +68,7 @@ public class OSBAccountEntryUtilTest {
 		OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
 
 		osbOfferingEntry.setProductEntryId(
-			ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID);
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
 		osbOfferingEntry.setQuantity(1);
 		osbOfferingEntry.setStartDate(new Date());
 		osbOfferingEntry.setStatus(
@@ -101,7 +101,7 @@ public class OSBAccountEntryUtilTest {
 		OSBOfferingEntry rebuiltOSBOfferingEntry = offeringEntries.get(0);
 
 		Assert.assertEquals(
-			ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID,
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE,
 			rebuiltOSBOfferingEntry.getProductEntryId());
 		Assert.assertEquals(1, rebuiltOSBOfferingEntry.getQuantity());
 		Assert.assertEquals(

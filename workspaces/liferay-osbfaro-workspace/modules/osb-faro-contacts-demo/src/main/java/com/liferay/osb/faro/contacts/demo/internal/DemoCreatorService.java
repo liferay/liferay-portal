@@ -132,11 +132,11 @@ public abstract class DemoCreatorService {
 			OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
 
 			String productEntryId =
-				ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID;
+				ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE;
 
 			if (FaroPropsValues.FARO_DEMO_DATA_PLATFORM_ENABLED) {
 				productEntryId =
-					ProductConstants.DATA_PLATFORM_ENTERPRISE_PRODUCT_ENTRY_ID;
+					ProductConstants.PRODUCT_ENTRY_ID_DATA_PLATFORM_ENTERPRISE;
 			}
 
 			osbOfferingEntry.setProductEntryId(productEntryId);

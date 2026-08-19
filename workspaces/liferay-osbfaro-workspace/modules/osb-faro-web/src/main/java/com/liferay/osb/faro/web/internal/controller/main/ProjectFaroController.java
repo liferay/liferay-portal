@@ -1073,11 +1073,11 @@ public class ProjectFaroController extends BaseFaroController {
 				if (trial) {
 					osbOfferingEntry.setProductEntryId(
 						ProductConstants.
-							DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_ID);
+							PRODUCT_ENTRY_ID_DATA_PLATFORM_PRIVATE_BETA);
 				}
 				else {
 					osbOfferingEntry.setProductEntryId(
-						ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID);
+						ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
 				}
 
 				osbOfferingEntry.setQuantity(1);
@@ -1098,7 +1098,7 @@ public class ProjectFaroController extends BaseFaroController {
 
 					osbOfferingEntry.setProductEntryId(
 						ProductConstants.
-							DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_ID);
+							PRODUCT_ENTRY_ID_DATA_PLATFORM_PRIVATE_BETA);
 					osbOfferingEntry.setQuantity(1);
 					osbOfferingEntry.setStartDate(
 						new Date(faroProject.getCreateTime()));
@@ -1735,13 +1735,13 @@ public class ProjectFaroController extends BaseFaroController {
 
 		if (StringUtil.equals(
 				faroSubscriptionDisplay.getName(),
-				ProductConstants.BASIC_PRODUCT_ENTRY_NAME) ||
+				ProductConstants.PRODUCT_ENTRY_NAME_BASIC) ||
 			StringUtil.equals(
 				faroSubscriptionDisplay.getName(),
-				ProductConstants.BUSINESS_PRODUCT_ENTRY_NAME) ||
+				ProductConstants.PRODUCT_ENTRY_NAME_BUSINESS) ||
 			StringUtil.equals(
 				faroSubscriptionDisplay.getName(),
-				ProductConstants.ENTERPRISE_PRODUCT_ENTRY_NAME)) {
+				ProductConstants.PRODUCT_ENTRY_NAME_ENTERPRISE)) {
 
 			return true;
 		}

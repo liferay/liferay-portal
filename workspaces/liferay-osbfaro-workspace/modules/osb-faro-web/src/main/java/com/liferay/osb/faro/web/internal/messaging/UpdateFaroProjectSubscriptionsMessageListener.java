@@ -283,7 +283,7 @@ public class UpdateFaroProjectSubscriptionsMessageListener
 			}
 		}
 
-		return ProductConstants.BASIC_PRODUCT_ENTRY_ID;
+		return ProductConstants.PRODUCT_ENTRY_ID_BASIC;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

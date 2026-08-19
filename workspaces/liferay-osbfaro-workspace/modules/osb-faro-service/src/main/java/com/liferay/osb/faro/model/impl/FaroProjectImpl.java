@@ -96,13 +96,13 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 			if (StringUtil.equals(
 					name,
 					ProductConstants.
-						DATA_PLATFORM_ENTERPRISE_PRODUCT_ENTRY_NAME) ||
+						PRODUCT_ENTRY_NAME_DATA_PLATFORM_ENTERPRISE) ||
 				StringUtil.equals(
 					name,
 					ProductConstants.
-						DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_NAME) ||
+						PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA) ||
 				StringUtil.equals(
-					name, ProductConstants.DATA_PLATFORM_PRODUCT_ENTRY_NAME)) {
+					name, ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM)) {
 
 				return true;
 			}
@@ -124,7 +124,7 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 
 			return StringUtil.equals(
 				jsonObject.getString("name"),
-				ProductConstants.BASIC_PRODUCT_ENTRY_NAME);
+				ProductConstants.PRODUCT_ENTRY_NAME_BASIC);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
