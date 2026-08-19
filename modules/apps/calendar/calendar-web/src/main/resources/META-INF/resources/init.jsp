@@ -136,6 +136,14 @@ page import="java.util.TimeZone" %>
 
 <portlet:defineObjects />
 
+<liferay-util:html-top
+	outputKey="com.liferay.calendar.web#/init.jsp"
+>
+	<aui:script type="module">
+		import '@liferay/language/calendar-web/all.js';
+	</aui:script>
+</liferay-util:html-top>
+
 <%
 int defaultDuration = GetterUtil.getInteger(portletPreferences.getValue("defaultDuration", null), 60);
 String defaultView = portletPreferences.getValue("defaultView", "week");
