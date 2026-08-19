@@ -226,6 +226,173 @@ export class CollectionsPage {
 	}
 
 	/**
+	 * On a collection's edit page, saves the collection.
+	 */
+	async save() {
+		await this.page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(this.page);
+	}
+
+	/**
+	 * On a collection's edit page, picks one of the two ordering columns. Call
+	 * `save` to persist it. Only available with the LPD-74731 feature flag
+	 * enabled, which replaces the ordering selects with pickers fed by the item
+	 * type's properties.
+	 */
+	async setOrderByColumn({
+		column,
+		field,
+		fieldGroup,
+	}: {
+		column: 'And Then By' | 'Order By';
+		field: string;
+		fieldGroup: string;
+	}) {
+		const picker = this.page.getByLabel(column);
+
+		await clickAndExpectToBeVisible({
+			target: picker,
+			trigger: this.page.getByRole('button', {
+				exact: true,
+				name: 'Ordering',
+			}),
+		});
+
+		await picker.click();
+
+		// As in the filter, a field label only identifies a property within its
+		// group.
+
+		await this.page
+			.getByRole('group', {name: fieldGroup})
+			.getByRole('option', {exact: true, name: field})
+			.click();
+	}
+
+	/**
+	 * On a collection's edit page, adds one condition per entry to the Filter
+	 * section. Call `save` to persist them. Only available with the LPD-74731
+	 * feature flag
+	 * enabled, which replaces the tags and categories rules with the condition
+	 * builder.
+	 */
+	async addFilterConditions(
+		conditions: Array<{
+			field: string;
+			fieldGroup: string;
+			operator: string;
+			quantifier: string;
+			value: string;
+		}>
+	) {
+		const conditionBuilder = this.page.locator('.condition-builder');
+
+		await clickAndExpectToBeVisible({
+			target: conditionBuilder,
+			trigger: this.page.getByRole('button', {
+				exact: true,
+				name: 'Filter',
+			}),
+		});
+
+		for (const [
+			index,
+			{field, fieldGroup, operator, quantifier, value},
+		] of conditions.entries()) {
+			if (index) {
+				await this.page
+					.getByRole('button', {name: 'Add Filter'})
+					.click();
+			}
+
+			// Scope the controls to the row being filled in.
+
+			const row = conditionBuilder
+				.locator('.condition-builder__row')
+				.nth(index);
+
+			// Select Field
+
+			await row.getByLabel('Field').click();
+
+			await this.page
+				.getByRole('group', {name: fieldGroup})
+				.getByRole('option', {exact: true, name: field})
+				.click();
+
+			// Select Operator + Quantifier
+
+			for (const [label, option] of [
+				['Operator', operator],
+				['Quantifier', quantifier],
+			]) {
+				await row.getByLabel(label).click();
+
+				await this.page
+					.getByRole('option', {exact: true, name: option})
+					.click();
+			}
+
+			// Provide Value
+
+			await row.getByLabel('Value').fill(value);
+		}
+	}
+
+	/**
+	 * On a collection's edit page, restricts the collection's scope to a Space
+	 * through the Scope section. Call `save` to persist it.
+	 */
+	async scopeToSpace(spaceName: string) {
+		const selectSiteButton = this.page.getByRole('button', {
+			name: 'Select Site',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: selectSiteButton,
+			trigger: this.page.getByRole('button', {
+				exact: true,
+				name: 'Scope',
+			}),
+		});
+
+		await selectSiteButton.click();
+
+		await this.page
+			.getByRole('menuitem', {name: 'Other Site, Asset Library, or'})
+			.click();
+
+		const scopeFrame = this.page
+			.locator('iframe[title="Scope"]')
+			.contentFrame();
+
+		await scopeFrame.getByRole('link', {name: 'Spaces'}).click();
+
+		await scopeFrame
+			.getByRole('link', {exact: true, name: spaceName})
+			.click();
+	}
+
+	/**
+	 * On a collection's edit page, opens the View Items modal for the default
+	 * variation and returns the frame that lists the resolved items.
+	 */
+	async openViewItems() {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: 'View Items'}),
+			trigger: this.page.getByRole('button', {name: 'Show Actions'}),
+		});
+
+		const viewItemsIframe = this.page.locator('iframe[title="View Items"]');
+
+		await viewItemsIframe.waitFor();
+
+		return viewItemsIframe.contentFrame();
+	}
+
+	/**
 	 * On a manual collection's edit page, clicks "Select" to open the asset
 	 * entries item selector modal and returns the modal dialog locator.
 	 */
