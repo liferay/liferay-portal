@@ -139,6 +139,15 @@ k8s_resource(
 
 k8s_resource(
     labels=["operator"],
+    new_name="marketplace-dev",
+    objects=[
+        "marketplace-dev:persistentvolumeclaim",
+    ],
+    resource_deps=["operator-infra"],
+)
+
+k8s_resource(
+    labels=["operator"],
     new_name="operator-infra",
     objects=[
         "liferay-dxp-operator-webhook:secret",
@@ -149,15 +158,6 @@ k8s_resource(
         "liferay-system:namespace",
         "liferayenvironments.licensing.liferay.com:customresourcedefinition",
     ],
-)
-
-k8s_resource(
-    labels=["operator"],
-    new_name="marketplace-dev",
-    objects=[
-        "marketplace-dev:persistentvolumeclaim",
-    ],
-    resource_deps=["operator-infra"],
 )
 
 k8s_yaml(
