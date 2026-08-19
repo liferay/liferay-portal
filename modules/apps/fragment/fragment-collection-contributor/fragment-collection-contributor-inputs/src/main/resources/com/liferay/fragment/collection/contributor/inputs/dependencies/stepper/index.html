@@ -1,14 +1,14 @@
 <ol class="m-0 multi-step-nav [#if configuration.showTitles]multi-step-indicator-label-top[/#if] stepper-fragment">
 	[#list 1..configuration.numberOfSteps as i]
 		<li class="m-0 multi-step-item [#if i!=configuration.numberOfSteps]multi-step-item-expand[/#if]">
-			<div class="multi-step-divider" />
+			<div class="multi-step-divider"></div>
 
 			<div class="multi-step-indicator">
 				[#if configuration.showTitles]
 					<div class="multi-step-indicator-label" data-lfr-editable-id="step-${i}-text" data-lfr-editable-type="text">Step ${i}</div>
 				[/#if]
 
-				<button class="btn btn-unstyled multi-step-icon" data-multi-step-icon="${configuration.showNumbers?then(i, '')}" type="button" />
+				<button class="btn btn-unstyled multi-step-icon" data-multi-step-icon="${configuration.showNumbers?then(i, '')}" type="button"></button>
 			</div>
 		</li>
 	[/#list]

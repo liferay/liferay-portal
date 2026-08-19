@@ -79,7 +79,7 @@
 				[#if !input.readOnly]
 					<div class="input-group-item input-group-item-shrink">
 						<div class="[#if !loading]d-none[/#if]" id="${fragmentElementId}-loading-indicator">
-							<span class="loading-animation loading-animation-sm m-0" />
+							<span class="loading-animation loading-animation-sm m-0"></span>
 						</div>
 
 						<button [#if !values?has_content || loading]aria-hidden="true"[/#if] aria-label="${languageUtil.get(locale, "clear-all")}" class="component-action btn btn-monospaced btn-outline-borderless btn-outline-secondary lfr-portal-tooltip [#if !values?has_content || loading]d-none[/#if]" id="${fragmentElementId}-clear-button" title="${languageUtil.get(locale, "clear-all")}" type="button">
@@ -99,7 +99,7 @@
 		</div>
 
 		[#if !input.readOnly]
-			<div id="${fragmentElementId}-hidden-input-container" />
+			<div id="${fragmentElementId}-hidden-input-container"></div>
 
 			<div class="d-none dropdown-menu dropdown-menu-select dropdown-menu-indicator-start multiselector-dropdown__dropdown-menu" id="${fragmentElementId}-dropdown" role="presentation">
 				<p class="d-none mb-0 px-3 py-2 text-muted" id="${fragmentElementId}-no-results-message">
@@ -110,7 +110,7 @@
 					${languageUtil.get(locale, "loading")}
 				</p>
 
-			<ul aria-labelledby="${fragmentElementId}-label" class="list-unstyled" id="${fragmentElementId}-option-list" role="listbox" />
+			<ul aria-labelledby="${fragmentElementId}-label" class="list-unstyled" id="${fragmentElementId}-option-list" role="listbox"></ul>
 			</div>
 		[/#if]
 
@@ -136,7 +136,7 @@
 
 <template class="label-template">
 	<span class="label label-secondary" role="row" tabindex="-1">
-		<span class="label-item label-item-expand" role="gridcell" tabindex="-1" />
+		<span class="label-item label-item-expand" role="gridcell" tabindex="-1"></span>
 
 		<span class="label-item label-item-after" role="gridcell">
 			<button aria-label="${languageUtil.get(locale, "remove-item")}" class="close" tabindex="0" type="button">
@@ -151,7 +151,7 @@
 <template class="option-template">
 	<li role="presentation">
 		<button class="dropdown-item" role="option" tabindex="-1" type="button">
-			<span class="option-label" />
+			<span class="option-label"></span>
 		</button>
 	</li>
 </template>
@@ -164,7 +164,7 @@
 					<use xlink:href="${siteSpritemap}#check-small" />
 				</svg>
 			</span>
-			<span class="option-label" />
+			<span class="option-label"></span>
 		</button>
 	</li>
 </template>
