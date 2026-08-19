@@ -13,16 +13,14 @@
 <liferay-ui:error key="databaseSchemaExportFailed" message="unable-to-export-the-database-schema" />
 
 <%
-LearnMessage learnMessage = LearnMessageUtil.getLearnMessage("database-migration", themeDisplay.getLanguageId(), "server-admin-web");
-
-String learnMessageURL = learnMessage.getURL();
-
 String anchorCloseTag = StringPool.BLANK;
 String anchorOpenTag = StringPool.BLANK;
 
-if (Validator.isNotNull(learnMessageURL)) {
+LearnMessage learnMessage = LearnMessageUtil.getLearnMessage("database-migration", themeDisplay.getLanguageId(), "server-admin-web");
+
+if (Validator.isNotNull(learnMessage.getURL())) {
 	anchorCloseTag = "</a>";
-	anchorOpenTag = StringBundler.concat("<a class=\"text-underline\" href=\"", learnMessageURL, "\" target=\"_blank\">");
+	anchorOpenTag = StringBundler.concat("<a class=\"text-underline\" href=\"", learnMessage.getURL(), "\" target=\"_blank\">");
 }
 %>
 
