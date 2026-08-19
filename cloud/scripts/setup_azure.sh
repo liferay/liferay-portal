@@ -155,25 +155,25 @@ function _create_tfstate_storage {
 }
 
 function _get_observability_parameters {
-	local platform_outputs=${1}
+	local platform_module_outputs=${1}
 	local tenant_id=${2}
 
 	jq \
 		--arg tenant_id "${tenant_id}" \
-		--argjson platform_outputs "${platform_outputs}" \
+		--argjson platform_module_outputs "${platform_module_outputs}" \
 		--null-input \
 		'[
 			{
 				name: "alloy.iam.azureClientId",
-				value: ($platform_outputs.observability_identity_client_id.value // "")
+				value: ($platform_module_outputs.observability_identity_client_id.value // "")
 			},
 			{
 				name: "azure.remoteWrite.dataCollectionRuleId",
-				value: ($platform_outputs.prometheus_data_collection_rule_id.value // "")
+				value: ($platform_module_outputs.prometheus_data_collection_rule_id.value // "")
 			},
 			{
 				name: "azure.remoteWrite.metricsIngestionEndpoint",
-				value: ($platform_outputs.prometheus_metrics_ingestion_endpoint.value // "")
+				value: ($platform_module_outputs.prometheus_metrics_ingestion_endpoint.value // "")
 			},
 			{
 				name: "azure.remoteWrite.tenantId",
