@@ -19,6 +19,13 @@ export interface ErrorDetails extends Error {
 	type?: string;
 }
 
+interface ErrorResponseBody<T> {
+	detail?: string;
+	message?: string | T[];
+	title?: string;
+	type?: string;
+}
+
 interface HTTPMethod {
 	href: string;
 	method: string;
@@ -158,15 +165,7 @@ export async function deleteItem(url: string) {
 		window.location.reload();
 	}
 	else if (!response.ok) {
-		const {
-			title,
-		}: {
-			title?: string;
-		} = await response.json();
-
-		const errorMessage = title || Liferay.Language.get('an-error-occurred');
-
-		throw new Error(errorMessage);
+		await throwResponseError(response);
 	}
 }
 
@@ -507,22 +506,13 @@ export async function save<T>({
 		window.location.reload();
 	}
 	else if (!response.ok) {
-		const {
-			detail,
-			message,
-			title,
-			type,
-		}: {
-			detail?: string;
-			message?: string | T[];
-			title?: string;
-			type?: string;
-		} = await response.json();
+		const {detail, message, title, type}: ErrorResponseBody<T> =
+			(await parseJSON<ErrorResponseBody<T>>(response)) ?? {};
 
 		const errorMessage =
-			(type && ERRORS[type]) ??
-			title ??
-			message ??
+			(type && ERRORS[type]) ||
+			title ||
+			message ||
 			Liferay.Language.get('an-error-occurred');
 
 		const ErrorDetails = () => {
@@ -540,4 +530,23 @@ export async function save<T>({
 	if (returnValue) {
 		return (await response.json()) as T;
 	}
+}
+
+async function parseJSON<T>(response: Response): Promise<T | null> {
+	try {
+		return (await response.json()) as T;
+	}
+	catch (error) {
+		return null;
+	}
+}
+
+async function throwResponseError(response: Response): Promise<never> {
+	const {
+		title,
+	}: {
+		title?: string;
+	} = (await parseJSON<{title?: string}>(response)) ?? {};
+
+	throw new Error(title || Liferay.Language.get('an-error-occurred'));
 }

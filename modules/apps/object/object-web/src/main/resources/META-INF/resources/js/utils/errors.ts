@@ -41,7 +41,7 @@ export function getErrorMessage(errors: Error, errorMessages: Set<string>) {
 }
 
 export function handleErrors(
-	{detail, title}: Error,
+	{detail, message, title}: Error,
 	setErrors: (value: Error) => void
 ) {
 	if (detail) {
@@ -64,9 +64,9 @@ export function handleErrors(
 			});
 		}
 	}
-	else if (title) {
+	else if (title || message) {
 		openToast({
-			message: title as string,
+			message: (title || message) as string,
 			type: 'danger',
 		});
 	}

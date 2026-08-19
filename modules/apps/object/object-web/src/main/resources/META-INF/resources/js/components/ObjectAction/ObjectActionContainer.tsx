@@ -95,8 +95,22 @@ export function ObjectActionContainer({
 			openToast({message: successMessage});
 		}
 		catch (error) {
-			const {detail} = error as {detail?: string};
-			const details = JSON.parse(detail as string);
+			const {detail, message} = error as {
+				detail?: string;
+				message?: string;
+			};
+
+			if (!detail) {
+				openToast({
+					message:
+						message || Liferay.Language.get('an-error-occurred'),
+					type: 'danger',
+				});
+
+				return;
+			}
+
+			const details = JSON.parse(detail);
 			const newErrors: Error = {};
 
 			parseError(details, newErrors);

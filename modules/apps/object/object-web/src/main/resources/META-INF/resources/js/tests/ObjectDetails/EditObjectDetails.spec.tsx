@@ -41,6 +41,8 @@ jest.mock('frontend-js-web', () => ({
 	fetch: jest.fn(() =>
 		Promise.resolve({
 			json: () => Promise.resolve({}),
+			ok: true,
+			status: 200,
 		})
 	),
 }));
