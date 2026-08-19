@@ -8,7 +8,7 @@ import {Locator, Page, expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitch, userData} from '../../../utils/performLogin';
+import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
 const _PNG_BASE64 =
@@ -155,7 +155,7 @@ test(
 		});
 
 		await test.step('Switch to the user', async () => {
-			await performUserSwitch(page, user.alternateName);
+			await performUserSwitchViaApi(page, user.alternateName);
 
 			await sharedWithMePage.goto();
 		});
@@ -270,7 +270,7 @@ test(
 		});
 
 		await test.step('Verify that the user can see the shared assets', async () => {
-			await performUserSwitch(page, user.alternateName);
+			await performUserSwitchViaApi(page, user.alternateName);
 
 			await sharedWithMePage.expectAssetEntryToBeVisible(
 				objectEntryTitle
@@ -281,7 +281,7 @@ test(
 		});
 
 		await test.step('Delete the content and the folder so they go into the Recycle Bin', async () => {
-			await performUserSwitch(page, 'test');
+			await performUserSwitchViaApi(page, 'test');
 
 			await expect(
 				await apiHelpers.objectEntry.deleteObjectEntry(
@@ -298,7 +298,7 @@ test(
 		});
 
 		await test.step('Verify that the user can see deleted shared assets as "Not Visible"', async () => {
-			await performUserSwitch(page, user.alternateName);
+			await performUserSwitchViaApi(page, user.alternateName);
 
 			await sharedWithMePage.expectAssetEntryNotToBeVisible(
 				objectEntryTitle
@@ -377,7 +377,7 @@ test(
 		});
 
 		await test.step('Switch to the user', async () => {
-			await performUserSwitch(page, user.alternateName);
+			await performUserSwitchViaApi(page, user.alternateName);
 
 			await sharedWithMePage.goto();
 		});
