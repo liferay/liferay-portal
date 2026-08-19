@@ -74,7 +74,10 @@ export default function EditTagsModalContent({
 		const body = {
 			assetLibraries: selectedSpaces.map((scopeKey) => ({scopeKey})),
 			name: values.tagName,
-			projects: selectedProjects.map((scopeKey) => ({scopeKey})),
+			...(Liferay.FeatureFlags['LPD-58677'] &&
+				Liferay.FeatureFlags['LPD-99403'] && {
+					projects: selectedProjects.map((scopeKey) => ({scopeKey})),
+				}),
 		};
 
 		ApiHelper.put(editTagURL, body).then(({error, status}) => {
