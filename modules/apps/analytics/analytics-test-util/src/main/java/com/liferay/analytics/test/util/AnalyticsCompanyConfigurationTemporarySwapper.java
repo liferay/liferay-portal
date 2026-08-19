@@ -33,6 +33,16 @@ public class AnalyticsCompanyConfigurationTemporarySwapper
 			long companyId, String dataSourceId, boolean enableAllGroupIds)
 		throws Exception {
 
+		this(
+			companyId, dataSourceId, enableAllGroupIds,
+			"http://" + RandomTestUtil.randomString());
+	}
+
+	public AnalyticsCompanyConfigurationTemporarySwapper(
+			long companyId, String dataSourceId, boolean enableAllGroupIds,
+			String faroBackendURL)
+		throws Exception {
+
 		super(
 			companyId, AnalyticsConfiguration.class.getName(),
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -43,8 +53,7 @@ public class AnalyticsCompanyConfigurationTemporarySwapper
 				"liferayAnalyticsFaroBackendSecuritySignature",
 				RandomTestUtil.randomString()
 			).put(
-				"liferayAnalyticsFaroBackendURL",
-				"http://" + RandomTestUtil.randomString()
+				"liferayAnalyticsFaroBackendURL", faroBackendURL
 			).build());
 	}
 
