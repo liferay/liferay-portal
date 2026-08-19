@@ -10,6 +10,7 @@ interface IIndividual {
 	demographics: Map<string, any>;
 	firstActivityDate: string;
 	id: string;
+	knownSinceDate: string | null;
 	lastActivityDate: string;
 	lastSessionCountry: string | null;
 	name: string;
@@ -27,6 +28,7 @@ export default class Individual
 		demographics: Map(),
 		firstActivityDate: null,
 		id: null,
+		knownSinceDate: null,
 		lastActivityDate: null,
 		lastSessionCountry: null,
 		name: '',
@@ -43,6 +45,7 @@ export default class Individual
 	declare demographics: Map<string, any>;
 	declare firstActivityDate: string;
 	declare id: string;
+	declare knownSinceDate: string | null;
 	declare lastActivityDate: string;
 	declare lastSessionCountry: string | null;
 	declare name: string;
