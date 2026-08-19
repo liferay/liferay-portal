@@ -5,9 +5,15 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.json.JSONObject;
 
 /**
  * @author Michael Hashimoto
@@ -20,11 +26,30 @@ public abstract class BaseJenkinsUser implements JenkinsUser {
 			return _apiTokens;
 		}
 
-		List<APIToken> apiTokens = new ArrayList<>(loadAPITokens());
+		List<APIToken> apiTokens = new ArrayList<>();
+
+		String jenkinsUserID = getJenkinsUserID();
+
+		Set<String> itemFieldLabels = new HashSet<>();
+
+		for (SecretsUtil.ItemField itemField : _getItem().getItemFields()) {
+			String label = itemField.getLabel();
+
+			if ((label == null) ||
+				!label.startsWith(_API_TOKEN_JSON_LABEL_PREFIX) ||
+				!itemFieldLabels.add(label)) {
+
+				continue;
+			}
+
+			apiTokens.add(
+				new APIToken(
+					new JSONObject(itemField.getValue()), jenkinsUserID));
+		}
 
 		Collections.sort(apiTokens);
 
-		_apiTokens = Collections.unmodifiableList(apiTokens);
+		_apiTokens = apiTokens;
 
 		return _apiTokens;
 	}
@@ -46,6 +71,26 @@ public abstract class BaseJenkinsUser implements JenkinsUser {
 	@Override
 	public String getJenkinsMasterHostname() {
 		return _jenkinsMasterHostname;
+	}
+
+	@Override
+	public synchronized String getJenkinsUserID() {
+		if (_jenkinsUserID != null) {
+			return _jenkinsUserID;
+		}
+
+		SecretsUtil.ItemField itemField = _getItem().getItemField("user.id");
+
+		if (itemField == null) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to find item field ", _getItemReference(),
+					"/user.id"));
+		}
+
+		_jenkinsUserID = itemField.getValue();
+
+		return _jenkinsUserID;
 	}
 
 	@Override
@@ -86,10 +131,59 @@ public abstract class BaseJenkinsUser implements JenkinsUser {
 		_jenkinsUserName = jenkinsUserName;
 	}
 
-	protected abstract List<APIToken> loadAPITokens();
+	private synchronized SecretsUtil.Item _getItem() {
+		if (_item != null) {
+			return _item;
+		}
+
+		String itemReference = _getItemReference();
+
+		_item = SecretsUtil.getItem(itemReference);
+
+		if (_item == null) {
+			throw new RuntimeException("Unable to find item " + itemReference);
+		}
+
+		return _item;
+	}
+
+	private synchronized String _getItemReference() {
+		if (_itemReference != null) {
+			return _itemReference;
+		}
+
+		String propertyName = JenkinsResultsParserUtil.combine(
+			"jenkins.user.op.item[", getJenkinsUserName(), "]");
+
+		String itemReference = null;
+
+		try {
+			itemReference = JenkinsResultsParserUtil.getBuildProperty(
+				propertyName);
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to get property " + propertyName, ioException);
+		}
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(itemReference)) {
+			throw new RuntimeException(
+				"Unable to find property " + propertyName);
+		}
+
+		_itemReference = itemReference;
+
+		return _itemReference;
+	}
+
+	private static final String _API_TOKEN_JSON_LABEL_PREFIX =
+		"api.token.json.";
 
 	private List<APIToken> _apiTokens;
+	private SecretsUtil.Item _item;
+	private String _itemReference;
 	private final String _jenkinsMasterHostname;
+	private String _jenkinsUserID;
 	private final String _jenkinsUserName;
 
 }

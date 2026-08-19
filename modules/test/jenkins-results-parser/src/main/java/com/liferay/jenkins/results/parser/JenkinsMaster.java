@@ -1022,7 +1022,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return false;
 	}
 
-	public void reloadUser(String jenkinsUserName) {
+	public void reloadJenkinsUser(String jenkinsUserName) {
 		JenkinsUser jenkinsUser = JenkinsUserFactory.getJenkinsUser(
 			this, jenkinsUserName);
 
