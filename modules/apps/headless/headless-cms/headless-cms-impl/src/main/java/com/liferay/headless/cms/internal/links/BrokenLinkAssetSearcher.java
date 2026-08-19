@@ -169,6 +169,9 @@ public class BrokenLinkAssetSearcher {
 				ArrayUtil.toStringArray(CMSWorkflowConstants.STATUSES)),
 			QueriesUtil.term("rootDescendantNode", false));
 
+		booleanQuery.addMustNotQueryClauses(
+			QueriesUtil.term(Field.STATUS, WorkflowConstants.STATUS_EXPIRED));
+
 		return _searchRequestBuilderFactory.builder(
 		).companyId(
 			companyId
