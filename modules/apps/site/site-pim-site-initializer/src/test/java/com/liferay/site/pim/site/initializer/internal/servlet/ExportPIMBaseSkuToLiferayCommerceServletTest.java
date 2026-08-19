@@ -10,8 +10,11 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -63,6 +66,9 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			_exportPIMBaseSkuToLiferayCommerceServlet,
 			"_depotEntryLocalService", _depotEntryLocalService);
 		ReflectionTestUtil.setFieldValue(
+			_exportPIMBaseSkuToLiferayCommerceServlet, "_filterFactory",
+			_filterFactory);
+		ReflectionTestUtil.setFieldValue(
 			_exportPIMBaseSkuToLiferayCommerceServlet, "_jsonFactory",
 			_jsonFactory);
 		ReflectionTestUtil.setFieldValue(
@@ -86,6 +92,7 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 		_testDoGet();
 		_testDoGetWithMissingObjectDefinition();
 		_testDoGetWithMultipleDepotEntries();
+		_testDoGetWithVariantPIMLink();
 		_testDoGetWithPortalException();
 	}
 
@@ -97,6 +104,37 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			new MockHttpServletRequest(), mockHttpServletResponse);
 
 		return mockHttpServletResponse;
+	}
+
+	private ObjectEntry _mockObjectEntry(String code) throws Exception {
+		return _mockObjectEntry(code, code);
+	}
+
+	private ObjectEntry _mockObjectEntry(
+			String code, String externalReferenceCode)
+		throws Exception {
+
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			objectEntry.getExternalReferenceCode()
+		).thenReturn(
+			externalReferenceCode
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.getValues(objectEntry)
+		).thenReturn(
+			HashMapBuilder.<String, Serializable>put(
+				"code", code
+			).put(
+				"description", code + " description"
+			).put(
+				"name", code + " name"
+			).build()
+		);
+
+		return objectEntry;
 	}
 
 	private ObjectDefinition _setUpObjectDefinition() {
@@ -126,19 +164,7 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			String code, long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
-		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
-
-		Mockito.when(
-			_objectEntryLocalService.getValues(objectEntry)
-		).thenReturn(
-			HashMapBuilder.<String, Serializable>put(
-				"code", code
-			).put(
-				"description", code + " description"
-			).put(
-				"name", code + " name"
-			).build()
-		);
+		ObjectEntry objectEntry = _mockObjectEntry(code);
 
 		Mockito.when(
 			_objectEntryLocalService.getObjectEntries(
@@ -169,6 +195,55 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 				_COMPANY_ID, DepotConstants.TYPE_SPACE)
 		).thenReturn(
 			Arrays.asList(depotEntries)
+		);
+	}
+
+	private void _setUpVariantPIMLinks(
+			String clusterKey, String... externalReferenceCodes)
+		throws Exception {
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getObjectDefinitionId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
+					_COMPANY_ID)
+		).thenReturn(
+			objectDefinition
+		);
+
+		Predicate predicate = Mockito.mock(Predicate.class);
+
+		Mockito.when(
+			_filterFactory.create(
+				Mockito.anyString(), Mockito.eq(objectDefinition))
+		).thenReturn(
+			predicate
+		);
+
+		Mockito.when(
+			_objectEntryLocalService.getValuesList(
+				_GROUP_ID, _COMPANY_ID, 0,
+				objectDefinition.getObjectDefinitionId(), predicate, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)
+		).thenReturn(
+			TransformUtil.transform(
+				Arrays.asList(externalReferenceCodes),
+				externalReferenceCode ->
+					HashMapBuilder.<String, Serializable>put(
+						"clusterKey", clusterKey
+					).put(
+						"sourceClassExternalReferenceCode",
+						externalReferenceCode
+					).build())
 		);
 	}
 
@@ -303,6 +378,72 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			mockHttpServletResponse.getStatus());
 	}
 
+	private void _testDoGetWithVariantPIMLink() throws Exception {
+		ObjectDefinition objectDefinition = _setUpObjectDefinition();
+
+		ObjectEntry objectEntry1 = _mockObjectEntry("SKU-1", "ERC-1");
+		ObjectEntry objectEntry2 = _mockObjectEntry("SKU-2", "ERC-2");
+		ObjectEntry objectEntry3 = _mockObjectEntry("SKU-3", "ERC-3");
+
+		Mockito.when(
+			_objectEntryLocalService.getObjectEntries(
+				_GROUP_ID, objectDefinition.getObjectDefinitionId(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS)
+		).thenReturn(
+			Arrays.asList(objectEntry1, objectEntry2, objectEntry3)
+		);
+
+		_setUpSpaceDepotEntries(_GROUP_ID);
+
+		_setUpVariantPIMLinks("cluster-1", "ERC-1", "ERC-2");
+
+		MockHttpServletResponse mockHttpServletResponse = _get();
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(2, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			"ERC-1", jsonObject.getString("externalReferenceCode"));
+		Assert.assertEquals("simple", jsonObject.getString("productType"));
+
+		JSONObject nameJSONObject = jsonObject.getJSONObject("name");
+
+		Assert.assertEquals("SKU-1 name", nameJSONObject.getString("en_US"));
+
+		JSONArray skusJSONArray = jsonObject.getJSONArray("skus");
+
+		Assert.assertEquals(2, skusJSONArray.length());
+
+		JSONObject skuJSONObject = skusJSONArray.getJSONObject(0);
+
+		Assert.assertEquals("SKU-1", skuJSONObject.getString("sku"));
+
+		skuJSONObject = skusJSONArray.getJSONObject(1);
+
+		Assert.assertEquals("SKU-2", skuJSONObject.getString("sku"));
+
+		jsonObject = jsonArray.getJSONObject(1);
+
+		Assert.assertEquals(
+			"ERC-3", jsonObject.getString("externalReferenceCode"));
+		Assert.assertEquals("simple", jsonObject.getString("productType"));
+
+		skusJSONArray = jsonObject.getJSONArray("skus");
+
+		Assert.assertEquals(1, skusJSONArray.length());
+
+		skuJSONObject = skusJSONArray.getJSONObject(0);
+
+		Assert.assertEquals("SKU-3", skuJSONObject.getString("sku"));
+	}
+
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();
@@ -314,6 +455,8 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 	private final ExportPIMBaseSkuToLiferayCommerceServlet
 		_exportPIMBaseSkuToLiferayCommerceServlet =
 			new ExportPIMBaseSkuToLiferayCommerceServlet();
+	private final FilterFactory<Predicate> _filterFactory = Mockito.mock(
+		FilterFactory.class);
 	private final JSONFactory _jsonFactory = new JSONFactoryImpl();
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService =
 		Mockito.mock(ObjectDefinitionLocalService.class);
