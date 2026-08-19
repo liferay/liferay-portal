@@ -94,6 +94,7 @@ Immutable.Record {
   "demographics": Immutable.Map {},
   "firstActivityDate": null,
   "id": null,
+  "knownSinceDate": null,
   "lastActivityDate": null,
   "lastSessionCountry": null,
   "name": "",
