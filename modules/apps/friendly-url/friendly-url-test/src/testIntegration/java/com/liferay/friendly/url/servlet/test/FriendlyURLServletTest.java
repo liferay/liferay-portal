@@ -14,11 +14,13 @@ import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryCo
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.petra.io.BigEndianCodec;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -34,6 +36,9 @@ import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.ChecksumUtil;
+import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -50,6 +55,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -78,12 +84,19 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.redirect.model.RedirectEntry;
 import com.liferay.redirect.service.RedirectEntryLocalService;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -104,6 +117,7 @@ import org.junit.runner.RunWith;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
 
 /**
@@ -904,6 +918,52 @@ public class FriendlyURLServletTest {
 	}
 
 	@Test
+	public void testServiceForwardToPageNotFoundWith404OnMissingPrincipalName()
+		throws Exception {
+
+		ServletContext servletContext = _createServletContext();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest(servletContext, "GET", "/missing.png");
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.USER_ID, TestPropsValues.getUserId());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		ServletConfig originalServletConfig =
+			ReflectionTestUtil.getAndSetFieldValue(
+				_servlet, "config", new MockServletConfig(servletContext));
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"LAYOUT_FRIENDLY_URL_PAGE_NOT_FOUND",
+					StringBundler.concat(
+						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+						_group.getFriendlyURL(), _layout.getFriendlyURL()))) {
+
+			PrincipalThreadLocal.setName(null);
+
+			_portal.sendError(
+				HttpServletResponse.SC_NOT_FOUND,
+				new NoSuchLayoutException(
+					mockHttpServletRequest.getRequestURI()),
+				mockHttpServletRequest, mockHttpServletResponse);
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_servlet, "config", originalServletConfig);
+		}
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_NOT_FOUND,
+			mockHttpServletResponse.getStatus());
+		Assert.assertEquals(
+			getURL(_layout), mockHttpServletResponse.getForwardedUrl());
+	}
+
+	@Test
 	public void testServiceLinkToURLRedirect() throws Throwable {
 		_testServiceLinkToURLRedirect(
 			"?param=true",
@@ -1108,6 +1168,58 @@ public class FriendlyURLServletTest {
 		testGetRedirect(
 			httpServletRequest, new MockHttpServletResponse(), path,
 			expectedRedirect);
+	}
+
+	private ServletContext _createServletContext() {
+		return new MockServletContext() {
+
+			@Override
+			public RequestDispatcher getRequestDispatcher(String path) {
+				return new RequestDispatcher() {
+
+					@Override
+					public void forward(
+							ServletRequest servletRequest,
+							ServletResponse servletResponse)
+						throws IOException, ServletException {
+
+						MockHttpServletResponse mockHttpServletResponse =
+							(MockHttpServletResponse)servletResponse;
+
+						mockHttpServletResponse.setForwardedUrl(path);
+
+						if (!path.startsWith(Portal.PATH_MAIN)) {
+							MockHttpServletRequest mockHttpServletRequest =
+								(MockHttpServletRequest)servletRequest;
+
+							mockHttpServletRequest.setRequestURI(path);
+
+							_servlet.service(
+								mockHttpServletRequest,
+								mockHttpServletResponse);
+
+							return;
+						}
+
+						try {
+							GuestOrUserUtil.getUserId();
+						}
+						catch (PrincipalException principalException) {
+							mockHttpServletResponse.setStatus(
+								HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						}
+					}
+
+					@Override
+					public void include(
+						ServletRequest servletRequest,
+						ServletResponse servletResponse) {
+					}
+
+				};
+			}
+
+		};
 	}
 
 	private void _deactivateGroup(Group group) throws Exception {

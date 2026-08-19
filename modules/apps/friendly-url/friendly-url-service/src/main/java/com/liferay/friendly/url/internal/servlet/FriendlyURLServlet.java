@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.security.ChecksumUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -760,8 +761,21 @@ public class FriendlyURLServlet extends HttpServlet {
 							" to ", redirect.getPath()));
 				}
 
-				requestDispatcher.forward(
-					httpServletRequest, httpServletResponse);
+				String name = PrincipalThreadLocal.getName();
+
+				try {
+					long userId = portal.getUserId(httpServletRequest);
+
+					if (userId > 0) {
+						PrincipalThreadLocal.setName(userId);
+					}
+
+					requestDispatcher.forward(
+						httpServletRequest, httpServletResponse);
+				}
+				finally {
+					PrincipalThreadLocal.setName(name);
+				}
 			}
 		}
 		else {
