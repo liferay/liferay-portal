@@ -6,8 +6,8 @@
 import {devices} from '@playwright/test';
 
 export const config = {
-	name: 'portal-instances-web.main',
-	testDir: 'tests/portal-instances-web/main',
+	name: 'portal-instances-web.main-database-partition',
+	testDir: 'tests/portal-instances-web/main-database-partition',
 	use: {
 		...devices['Desktop Chrome'],
 		testIdAttribute: 'data-qa-id',
