@@ -21,7 +21,10 @@ import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
+import com.liferay.portal.kernel.service.ExceptionRetryAcceptor;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.spring.aop.Property;
+import com.liferay.portal.kernel.spring.aop.Retry;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -366,8 +369,17 @@ public interface ObjectActionLocalService
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
+	@Retry(
+		acceptor = ExceptionRetryAcceptor.class,
+		properties = {
+			@Property(
+				name = ExceptionRetryAcceptor.EXCEPTION_NAME,
+				value = "org.hibernate.StaleStateException"
+			)
+		}
+	)
 	public ObjectAction updateStatus(long objectActionId, int status)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1423158912
+// LIFERAY-SERVICE-BUILDER-HASH:-1017884659
