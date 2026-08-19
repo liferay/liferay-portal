@@ -20,6 +20,7 @@ patch {
 		autoClean = false
 	}
 
+	fileNames "org/springframework/core/annotation/AnnotationsScanner.java"
 	fileNames "org/springframework/util/AntPathMatcher.java"
 	originalLibModuleName = "spring-core"
 }
