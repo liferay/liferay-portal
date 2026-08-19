@@ -191,10 +191,7 @@ function setFocusedOption(
 	}
 
 	if (optionElement) {
-		listboxElement.setAttribute(
-			'aria-activedescendant',
-			optionElement.id
-		);
+		listboxElement.setAttribute('aria-activedescendant', optionElement.id);
 
 		optionElement.setAttribute('aria-selected', 'true');
 
