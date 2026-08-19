@@ -272,9 +272,9 @@ function _test_aborts_with_old_terraform_version {
 }
 
 function _test_fills_observability_parameters_from_terraform_outputs {
-	local aks_outputs
+	local platform_module_outputs
 
-	aks_outputs=$(jq --null-input '{
+	platform_module_outputs=$(jq --null-input '{
 		observability_identity_client_id: {
 			value: "27ed4e1e-8c11-43e1-810f-afb22a5a2418"
 		},
@@ -313,7 +313,7 @@ function _test_fills_observability_parameters_from_terraform_outputs {
 
 	local parameters
 
-	parameters=$(get_observability_parameters "${aks_outputs}" "86315286-b8fe-4db7-abd0-cc8f6421c133" | jq --compact-output --sort-keys '.')
+	parameters=$(get_observability_parameters "${platform_module_outputs}" "86315286-b8fe-4db7-abd0-cc8f6421c133" | jq --compact-output --sort-keys '.')
 
 	if [ "${parameters}" == "${expected_parameters}" ]
 	then

@@ -29,6 +29,12 @@ variable "cluster_secret_store" {
 variable "deployment_name" {
 	type=string
 }
+variable "observability_config" {
+	default={}
+	type=object({
+		enabled=optional(bool, false)
+	})
+}
 variable "region" {
 	type=string
 }

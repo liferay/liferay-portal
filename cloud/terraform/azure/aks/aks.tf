@@ -1,10 +1,3 @@
-resource "azurerm_federated_identity_credential" "liferay" {
-	audience=["api://AzureADTokenExchange"]
-	issuer=azurerm_kubernetes_cluster.main.oidc_issuer_url
-	name="${var.deployment_name}-liferay-default"
-	subject="system:serviceaccount:${local.deployment_namespace}:liferay-default"
-	user_assigned_identity_id=azurerm_user_assigned_identity.workload.id
-}
 resource "azurerm_kubernetes_cluster" "main" {
 	automatic_upgrade_channel="stable"
 	azure_policy_enabled=true

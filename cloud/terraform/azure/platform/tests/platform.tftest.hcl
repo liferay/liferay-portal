@@ -5,6 +5,11 @@ mock_provider "azurerm" {
 			rbac_authorization_enabled=true
 		}
 	}
+	mock_data "azurerm_kubernetes_cluster" {
+		defaults={
+			id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.ContainerService/managedClusters/liferay-test-aks"
+		}
+	}
 	mock_data "azurerm_resource_group" {
 		defaults={
 			id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test"
@@ -19,6 +24,29 @@ mock_provider "azurerm" {
 mock_provider "kubernetes" {}
 override_module {
 	target=module.argocd
+}
+override_resource {
+	override_during=plan
+	target=azurerm_monitor_data_collection_endpoint.main[0]
+	values={
+		id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Insights/dataCollectionEndpoints/liferay-test-prometheus-dce"
+		metrics_ingestion_endpoint="https://liferay-test-prometheus-dce-abcd.eastus-1.metrics.ingest.monitor.azure.com"
+	}
+}
+override_resource {
+	override_during=plan
+	target=azurerm_monitor_data_collection_rule.main[0]
+	values={
+		id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Insights/dataCollectionRules/liferay-test-prometheus-dcr"
+		immutable_id="dcr-00000000000000000000000000000000"
+	}
+}
+override_resource {
+	override_during=plan
+	target=azurerm_monitor_workspace.main[0]
+	values={
+		id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw"
+	}
 }
 run "should_align_the_karpenter_node_pool_with_the_system_machine_type" {
 	assert {
@@ -88,6 +116,62 @@ run "should_build_the_azure_key_vault_secret_store_provider" {
 	}
 	command=plan
 }
+run "should_create_ingestion_resources_when_enabled" {
+	assert {
+		condition=length(azurerm_monitor_workspace.main) == 1
+		error_message="An Azure Monitor workspace must be created when observability is enabled"
+	}
+	assert {
+		condition=length(azurerm_monitor_data_collection_endpoint.main) == 1
+		error_message="A data collection endpoint must be created when observability is enabled"
+	}
+	assert {
+		condition=length(azurerm_monitor_data_collection_rule.main) == 1
+		error_message="A data collection rule must be created when observability is enabled"
+	}
+	assert {
+		condition=length(azurerm_monitor_data_collection_rule_association.main) == 1
+		error_message="A data collection rule association must be created when observability is enabled"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
+run "should_create_observability_identity_when_enabled" {
+	assert {
+		condition=azurerm_user_assigned_identity.observability[0].name == "liferay-test-observability"
+		error_message="The observability identity name must be derived from deployment_name"
+	}
+	assert {
+		condition=azurerm_federated_identity_credential.observability[0].name == "grafana"
+		error_message="The observability federated credential must take the bare purpose name without a deployment name prefix"
+	}
+	assert {
+		condition=azurerm_federated_identity_credential.observability[0].subject == "system:serviceaccount:observability:grafana"
+		error_message="The observability federated credential must bind the grafana service account in the observability namespace"
+	}
+	assert {
+		condition=one(azurerm_federated_identity_credential.observability[0].audience) == "api://AzureADTokenExchange"
+		error_message="The observability federated credential must use the Azure AD token exchange audience"
+	}
+	assert {
+		condition=azurerm_federated_identity_credential.observability_alloy[0].name == "alloy"
+		error_message="The alloy federated credential must take the bare purpose name without a deployment name prefix"
+	}
+	assert {
+		condition=azurerm_federated_identity_credential.observability_alloy[0].subject == "system:serviceaccount:observability:liferay-alloy"
+		error_message="The alloy federated credential must bind the liferay-alloy service account in the observability namespace"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
 run "should_derive_azure_resource_names_from_the_deployment_name" {
 	assert {
 		condition=data.azurerm_kubernetes_cluster.aks.name == "liferay-test-aks"
@@ -106,6 +190,73 @@ run "should_derive_azure_resource_names_from_the_deployment_name" {
 		error_message="The External Secrets identity must derive its name from the deployment name"
 	}
 	command=plan
+}
+run "should_disable_ingestion_by_default" {
+	assert {
+		condition=length(azurerm_monitor_workspace.main) == 0
+		error_message="No Azure Monitor workspace must be created when observability is disabled"
+	}
+	assert {
+		condition=length(azurerm_monitor_data_collection_endpoint.main) == 0 && length(azurerm_monitor_data_collection_rule.main) == 0
+		error_message="No data collection resources must be created when observability is disabled"
+	}
+	assert {
+		condition=length(azurerm_monitor_data_collection_rule_association.main) == 0
+		error_message="No data collection rule association must be created when observability is disabled"
+	}
+	assert {
+		condition=output.prometheus_data_collection_rule_id == "" && output.prometheus_metrics_ingestion_endpoint == ""
+		error_message="Remote write outputs must be empty when observability is disabled"
+	}
+	command=plan
+}
+run "should_expose_remote_write_outputs_when_enabled" {
+	assert {
+		condition=output.prometheus_metrics_ingestion_endpoint == "https://liferay-test-prometheus-dce-abcd.eastus-1.metrics.ingest.monitor.azure.com"
+		error_message="The metrics ingestion endpoint output must expose the data collection endpoint that receives remote write requests"
+	}
+	assert {
+		condition=output.prometheus_data_collection_rule_id == "dcr-00000000000000000000000000000000"
+		error_message="The data collection rule output must expose the immutable ID that the remote write URL embeds"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
+run "should_grant_monitoring_data_reader_on_the_workspace" {
+	assert {
+		condition=azurerm_role_assignment.observability_monitoring_data_reader[0].role_definition_name == "Monitoring Data Reader"
+		error_message="The observability identity must be granted the Monitoring Data Reader role to query the workspace"
+	}
+	assert {
+		condition=azurerm_role_assignment.observability_monitoring_data_reader[0].scope == azurerm_monitor_workspace.main[0].id
+		error_message="The Monitoring Data Reader grant must be scoped to the Azure Monitor workspace"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
+run "should_grant_monitoring_metrics_publisher_on_the_data_collection_rule" {
+	assert {
+		condition=azurerm_role_assignment.observability_monitoring_metrics_publisher[0].role_definition_name == "Monitoring Metrics Publisher"
+		error_message="The observability identity must be granted the Monitoring Metrics Publisher role to remote write metrics"
+	}
+	assert {
+		condition=azurerm_role_assignment.observability_monitoring_metrics_publisher[0].scope == azurerm_monitor_data_collection_rule.main[0].id
+		error_message="The Monitoring Metrics Publisher grant must be scoped to the Prometheus data collection rule"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
 }
 run "should_inject_an_external_secret_store_provider" {
 	assert {
@@ -154,6 +305,41 @@ run "should_look_up_the_key_vault_from_the_configured_names" {
 		}
 	}
 }
+run "should_name_ingestion_resources_when_enabled" {
+	assert {
+		condition=azurerm_monitor_workspace.main[0].name == "liferay-test-amw"
+		error_message="The Azure Monitor workspace name must be derived from deployment_name"
+	}
+	assert {
+		condition=azurerm_monitor_data_collection_endpoint.main[0].name == "liferay-test-prometheus-dce"
+		error_message="The data collection endpoint name must be derived from deployment_name"
+	}
+	assert {
+		condition=azurerm_monitor_data_collection_rule.main[0].name == "liferay-test-prometheus-dcr"
+		error_message="The data collection rule name must be derived from deployment_name"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
+run "should_not_create_observability_identity_by_default" {
+	assert {
+		condition=length(azurerm_user_assigned_identity.observability) == 0 && length(azurerm_federated_identity_credential.observability) == 0 && length(azurerm_federated_identity_credential.observability_alloy) == 0
+		error_message="No observability identity or federated credential must be created when observability is disabled"
+	}
+	assert {
+		condition=length(azurerm_role_assignment.observability_monitoring_data_reader) == 0 && length(azurerm_role_assignment.observability_monitoring_metrics_publisher) == 0
+		error_message="No monitoring grant must be created when observability is disabled"
+	}
+	assert {
+		condition=output.observability_identity_client_id == ""
+		error_message="The observability identity client ID output must be empty when observability is disabled"
+	}
+	command=plan
+}
 run "should_reject_a_cluster_secret_store_with_both_branches" {
 	command=plan
 	expect_failures=[
@@ -192,6 +378,30 @@ run "should_reject_an_empty_cluster_secret_store" {
 	]
 	variables {
 		cluster_secret_store={}
+	}
+}
+run "should_route_metrics_to_the_workspace" {
+	assert {
+		condition=contains(azurerm_monitor_data_collection_rule.main[0].data_flow[0].streams, "Microsoft-PrometheusMetrics")
+		error_message="The data collection rule must forward the Microsoft-PrometheusMetrics stream"
+	}
+	assert {
+		condition=one(azurerm_monitor_data_collection_rule.main[0].destinations[0].monitor_account).monitor_account_id == azurerm_monitor_workspace.main[0].id
+		error_message="The data collection rule must send metrics to the Azure Monitor workspace"
+	}
+	assert {
+		condition=azurerm_monitor_data_collection_rule.main[0].data_collection_endpoint_id == azurerm_monitor_data_collection_endpoint.main[0].id
+		error_message="The data collection rule must reference the Prometheus data collection endpoint"
+	}
+	assert {
+		condition=azurerm_monitor_data_collection_rule_association.main[0].target_resource_id == data.azurerm_kubernetes_cluster.aks.id
+		error_message="The data collection rule association must target the AKS cluster"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
 	}
 }
 run "should_wire_the_platform_identities" {

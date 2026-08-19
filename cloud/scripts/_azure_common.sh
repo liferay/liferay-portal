@@ -108,39 +108,6 @@ function generate_tfvars {
 	echo "${tfvars_file} was generated successfully."
 }
 
-function get_observability_parameters {
-	local aks_outputs=${1}
-	local tenant_id=${2}
-
-	jq \
-		--argjson aks_outputs "${aks_outputs}" \
-		--arg tenant_id "${tenant_id}" \
-		--null-input \
-		'[
-			{
-				name: "alloy.iam.azureClientId",
-				value: ($aks_outputs.observability_identity_client_id.value // "")
-			},
-			{
-				name: "azure.remoteWrite.dataCollectionRuleId",
-				value: ($aks_outputs.prometheus_data_collection_rule_id.value // "")
-			},
-			{
-				name: "azure.remoteWrite.metricsIngestionEndpoint",
-				value: ($aks_outputs.prometheus_metrics_ingestion_endpoint.value // "")
-			},
-			{
-				name: "azure.remoteWrite.tenantId",
-				value: $tenant_id
-			},
-			{
-				name: "cloudProvider",
-				value: "azure"
-			}
-		]
-		| map(select(.value != ""))'
-}
-
 function get_terraform_args {
 	local configuration_json_file="${1}"
 

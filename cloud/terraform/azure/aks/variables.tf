@@ -25,7 +25,6 @@ variable "observability_config" {
 		annotations_allowed=optional(string)
 		enabled=optional(bool, false)
 		labels_allowed=optional(string)
-		namespace=optional(string, "observability")
 	})
 }
 variable "pod_cidr" {

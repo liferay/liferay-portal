@@ -56,4 +56,8 @@ locals {
 		agent_pool_profile.vm_size
 		if agent_pool_profile.name == "system"
 	])
+	tags={
+		deployment=var.deployment_name
+		region=var.region
+	}
 }

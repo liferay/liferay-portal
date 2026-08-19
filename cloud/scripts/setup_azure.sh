@@ -154,6 +154,39 @@ function _create_tfstate_storage {
 	fi
 }
 
+function _get_observability_parameters {
+	local platform_outputs=${1}
+	local tenant_id=${2}
+
+	jq \
+		--arg tenant_id "${tenant_id}" \
+		--argjson platform_outputs "${platform_outputs}" \
+		--null-input \
+		'[
+			{
+				name: "alloy.iam.azureClientId",
+				value: ($platform_outputs.observability_identity_client_id.value // "")
+			},
+			{
+				name: "azure.remoteWrite.dataCollectionRuleId",
+				value: ($platform_outputs.prometheus_data_collection_rule_id.value // "")
+			},
+			{
+				name: "azure.remoteWrite.metricsIngestionEndpoint",
+				value: ($platform_outputs.prometheus_metrics_ingestion_endpoint.value // "")
+			},
+			{
+				name: "azure.remoteWrite.tenantId",
+				value: $tenant_id
+			},
+			{
+				name: "cloudProvider",
+				value: "azure"
+			}
+		]
+		| map(select(.value != ""))'
+}
+
 function _install_liferay_platform_chart {
 	local configuration_json_file="${1}"
 
@@ -165,19 +198,11 @@ function _install_liferay_platform_chart {
 
 	echo "Applying the Liferay platform root application."
 
-	local aks_outputs
-
-	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/aks"
-
-	aks_outputs=$(terraform output -json)
-
-	pop_directory
-
-	local terraform_outputs
+	local platform_module_outputs
 
 	push_directory "${ROOT_CLOUD_DIR}/terraform/azure/platform"
 
-	terraform_outputs=$(terraform output -json)
+	platform_module_outputs=$(terraform output -json)
 
 	pop_directory
 
@@ -187,11 +212,11 @@ function _install_liferay_platform_chart {
 
 	local observability_parameters
 
-	observability_parameters=$(get_observability_parameters "${aks_outputs}" "${tenant_id}")
+	observability_parameters=$(_get_observability_parameters "${platform_module_outputs}" "${tenant_id}")
 
 	jq \
 		--argjson observability_parameters "${observability_parameters}" \
-		--argjson terraform_outputs "${terraform_outputs}" \
+		--argjson platform_module_outputs "${platform_module_outputs}" \
 		--null-input \
 		--slurpfile configuration "${configuration_json_file}" \
 		'($configuration[0].platform.values // {}) * {
@@ -199,9 +224,9 @@ function _install_liferay_platform_chart {
 				values: (($configuration[0].platformComponents.values // {}) * {
 					clusterSecretStore: {
 						enabled: true,
-						provider: $terraform_outputs.cluster_secret_store_provider.value
+						provider: $platform_module_outputs.cluster_secret_store_provider.value
 					},
-					deploymentContext: $terraform_outputs.deployment_context.value,
+					deploymentContext: $platform_module_outputs.deployment_context.value,
 					observability: {
 						parameters: ($observability_parameters + ($configuration[0].platformComponents.values.observability.parameters // []))
 					},
@@ -210,7 +235,7 @@ function _install_liferay_platform_chart {
 							values: {
 								serviceAccount: {
 									annotations: {
-										"azure.workload.identity/client-id": $terraform_outputs.external_secrets_client_id.value
+										"azure.workload.identity/client-id": $platform_module_outputs.external_secrets_client_id.value
 									}
 								}
 							}
