@@ -390,6 +390,10 @@
 
 		formNode.on('autofields:update', updateSectionError);
 
+		formNode
+			.getDOMNode()
+			.addEventListener('autofields:update', updateSectionError);
+
 		var updateSectionOnError = function (event) {
 			var form = event.form;
 
