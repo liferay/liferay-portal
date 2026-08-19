@@ -4,7 +4,7 @@
 
 Always. The bnd baseline task diffs each exported API against the last release and fails on a missing, excessive, or insufficient `Bundle-Version` or `packageinfo` bump.
 
-Do not narrow it to the branch diff. The comparison target is resolved from Nexus on every run, so a module that the branch never touched can start failing between one run and the next.
+Do not narrow the run to the branch diff. The comparison target is resolved from Nexus on every run, so a module the branch never touched can start failing between one run and the next. Narrow the verdict instead: a finding in a module the branch changed fails this validation, and a finding anywhere else is **inherited** — report it with both versions and let it not set the branch result. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead. Otherwise one stale version on master fails every pull request at once, stopping the developer least able to judge whether the bump is right.
 
 ## Match
 
