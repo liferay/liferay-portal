@@ -7,6 +7,14 @@ export interface BarDatum {
 
 	/** Optional descriptive text read by screen readers. Defaults to `${label}: ${value}`. */
 	description?: string;
+
+	/**
+	 * Optional URL that turns the segment into a real link (an SVG `<a>`).
+	 * Clicking it or pressing Enter navigates to the URL; hovering or
+	 * focusing it still just highlights the matching legend entry. Only the
+	 * stacked meter (`stacked={true}`) renders links today.
+	 */
+	href?: string;
 	label: string;
 	value: number;
 }

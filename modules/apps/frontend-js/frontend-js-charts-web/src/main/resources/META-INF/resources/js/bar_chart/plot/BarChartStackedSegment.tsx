@@ -65,39 +65,63 @@ export default function BarChartStackedSegment({
 		Math.min(centerX, tooltipX + tooltipWidth - 10)
 	);
 
+	const shapeProps = {
+		className: 'charts-bar-chart__bar',
+		d: stackedSegmentPath(
+			layout.x,
+			layout.rowY,
+			segmentWidth,
+			layout.thickness,
+			layout.rx,
+			layout.roundLeft,
+			layout.roundRight
+		),
+		style: {
+			'--charts-bar-delay': `${index * 60}ms`,
+			...(fill ? {'--charts-bar-fill': fill} : null),
+		} as React.CSSProperties,
+	};
+
 	return (
 		<g
 			className={classNames('charts-bar-chart__bar-group', {
 				'is-active': active,
 			})}
 		>
-			<path
-				aria-label={label}
-				className="charts-bar-chart__bar"
-				d={stackedSegmentPath(
-					layout.x,
-					layout.rowY,
-					segmentWidth,
-					layout.thickness,
-					layout.rx,
-					layout.roundLeft,
-					layout.roundRight
-				)}
-				onBlur={() => onLeave(index)}
-				onFocus={() => onFocus(index)}
-				onKeyDown={(event) => onKeyDown(event, index)}
-				onMouseEnter={() => onHover(index)}
-				onMouseLeave={() => onLeave(index)}
-				ref={(element) => setBarRef(index, element)}
-				role="img"
-				style={
-					{
-						'--charts-bar-delay': `${index * 60}ms`,
-						...(fill ? {'--charts-bar-fill': fill} : null),
-					} as React.CSSProperties
-				}
-				tabIndex={0}
-			/>
+			{datum.href ? (
+				<a
+					aria-label={label}
+					className="charts-bar-chart__bar-link"
+					href={datum.href}
+					onBlur={() => onLeave(index)}
+					onFocus={() => onFocus(index)}
+					onKeyDown={(event) => onKeyDown(event, index)}
+					onMouseEnter={() => onHover(index)}
+					onMouseLeave={() => onLeave(index)}
+					ref={(element) =>
+						setBarRef(
+							index,
+							element as Element | null as SVGAElement | null
+						)
+					}
+					tabIndex={0}
+				>
+					<path {...shapeProps} />
+				</a>
+			) : (
+				<path
+					{...shapeProps}
+					aria-label={label}
+					onBlur={() => onLeave(index)}
+					onFocus={() => onFocus(index)}
+					onKeyDown={(event) => onKeyDown(event, index)}
+					onMouseEnter={() => onHover(index)}
+					onMouseLeave={() => onLeave(index)}
+					ref={(element) => setBarRef(index, element)}
+					role="img"
+					tabIndex={0}
+				/>
+			)}
 
 			{active && (
 				<g className="charts-bar-chart__tip" pointerEvents="none">

@@ -71,7 +71,17 @@
 		outline-offset: 2px;
 	}
 
-	&--blue &__bar:focus-visible {
+	&__bar-link {
+		outline: none;
+	}
+
+	&__bar-link:focus-visible {
+		outline: 2px solid $primary-d2;
+		outline-offset: 1px;
+	}
+
+	&--blue &__bar:focus-visible,
+	&--blue &__bar-link:focus-visible &__bar {
 		fill: $chart-blue-d1;
 	}
 
