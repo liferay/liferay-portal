@@ -60,6 +60,8 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLException;
@@ -114,7 +116,9 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
@@ -313,44 +317,55 @@ public class ProjectFaroController extends BaseFaroController {
 			@DefaultValue("UTC") @FormParam("timeZoneId") String timeZoneId)
 		throws Exception {
 
-		User user = getUser();
+		_checkProvisionBackoff(corpProjectUuid);
 
-		FaroProject faroProject = _create(
-			corpProjectName, corpProjectUuid,
-			emailAddressDomainsFaroParam.getValue(), friendlyURL,
-			incidentReportEmailAddressesFaroParam.getValue(), name,
-			offeringEntriesFaroParam.getValue(), serverLocation,
-			FaroProjectConstants.STATE_UNCONFIGURED, timeZoneId);
+		try {
+			User user = getUser();
 
-		Role role = _roleLocalService.getRole(
-			user.getCompanyId(), RoleConstants.SITE_OWNER);
+			FaroProject faroProject = _create(
+				corpProjectName, corpProjectUuid,
+				emailAddressDomainsFaroParam.getValue(), friendlyURL,
+				incidentReportEmailAddressesFaroParam.getValue(), name,
+				offeringEntriesFaroParam.getValue(), serverLocation,
+				FaroProjectConstants.STATE_UNCONFIGURED, timeZoneId);
 
-		_faroUserLocalService.addFaroUser(
-			getUserId(), faroProject.getGroupId(), 0, role.getRoleId(),
-			ownerEmailAddress, FaroUserConstants.STATUS_PENDING, false);
+			Role role = _roleLocalService.getRole(
+				user.getCompanyId(), RoleConstants.SITE_OWNER);
 
-		if (_shouldSendCreatedWorkspaceEmail(faroProject)) {
-			_faroProjectLocalService.sendCreatedWorkspaceEmail(
-				faroProject.getWeDeployKey());
+			_faroUserLocalService.addFaroUser(
+				getUserId(), faroProject.getGroupId(), 0, role.getRoleId(),
+				ownerEmailAddress, FaroUserConstants.STATUS_PENDING, false);
+
+			if (_shouldSendCreatedWorkspaceEmail(faroProject)) {
+				_faroProjectLocalService.sendCreatedWorkspaceEmail(
+					faroProject.getWeDeployKey());
+			}
+
+			ProjectDisplay projectDisplay = null;
+
+			if (enableAutoConfiguration) {
+				projectDisplay = configure(
+					friendlyURL, faroProject.getGroupId(),
+					emailAddressDomainsFaroParam,
+					incidentReportEmailAddressesFaroParam, name, timeZoneId);
+			}
+			else {
+				projectDisplay = new ProjectDisplay(faroProject);
+			}
+
+			projectDisplay.setDataSourceAccessToken(
+				_dataSourceFaroController.generateDataSourceAccessToken(
+					faroProject.getGroupId(), faroProject.getFaroProjectId()));
+
+			_clearProvisionBackoff(corpProjectUuid);
+
+			return projectDisplay;
 		}
+		catch (Exception exception) {
+			_putProvisionBackoff(corpProjectUuid, exception);
 
-		ProjectDisplay projectDisplay = null;
-
-		if (enableAutoConfiguration) {
-			projectDisplay = configure(
-				friendlyURL, faroProject.getGroupId(),
-				emailAddressDomainsFaroParam,
-				incidentReportEmailAddressesFaroParam, name, timeZoneId);
+			throw exception;
 		}
-		else {
-			projectDisplay = new ProjectDisplay(faroProject);
-		}
-
-		projectDisplay.setDataSourceAccessToken(
-			_dataSourceFaroController.generateDataSourceAccessToken(
-				faroProject.getGroupId(), faroProject.getFaroProjectId()));
-
-		return projectDisplay;
 	}
 
 	@Path("/trial")
@@ -423,11 +438,24 @@ public class ProjectFaroController extends BaseFaroController {
 			return projectDisplay;
 		}
 
-		return _createUnprovisioned(
-			name, accountKey, accountName, corpProjectName, corpProjectUuid,
-			emailAddressDomainsFaroParam.getValue(), friendlyURL,
-			incidentReportEmailAddressesFaroParam.getValue(), ownerEmailAddress,
-			serverLocation, timeZoneId, trial);
+		_checkProvisionBackoff(corpProjectUuid);
+
+		try {
+			ProjectDisplay projectDisplay = _createUnprovisioned(
+				name, accountKey, accountName, corpProjectName, corpProjectUuid,
+				emailAddressDomainsFaroParam.getValue(), friendlyURL,
+				incidentReportEmailAddressesFaroParam.getValue(),
+				ownerEmailAddress, serverLocation, timeZoneId, trial);
+
+			_clearProvisionBackoff(corpProjectUuid);
+
+			return projectDisplay;
+		}
+		catch (Exception exception) {
+			_putProvisionBackoff(corpProjectUuid, exception);
+
+			throw exception;
+		}
 	}
 
 	@DELETE
@@ -1044,6 +1072,13 @@ public class ProjectFaroController extends BaseFaroController {
 			_faroProjectLocalService.updateFaroProject(faroProject));
 	}
 
+	@Activate
+	protected void activateProvisionBackoffPortalCache() {
+		_provisionBackoffPortalCache =
+			(PortalCache<String, Long>)_multiVMPool.getPortalCache(
+				_PROVISION_BACKOFF_PORTAL_CACHE_NAME);
+	}
+
 	protected OSBAccountEntry createOSBAccountEntry(boolean trial) {
 		return new OSBAccountEntry() {
 			{
@@ -1065,6 +1100,11 @@ public class ProjectFaroController extends BaseFaroController {
 				setOfferingEntries(Collections.singletonList(osbOfferingEntry));
 			}
 		};
+	}
+
+	@Deactivate
+	protected void deactivateProvisionBackoffPortalCache() {
+		_multiVMPool.removePortalCache(_PROVISION_BACKOFF_PORTAL_CACHE_NAME);
 	}
 
 	protected OSBAccountEntry getOSBAccountEntry(FaroProject faroProject)
@@ -1104,6 +1144,43 @@ public class ProjectFaroController extends BaseFaroController {
 		}
 
 		return _provisioningClient.getOSBAccountEntry(corpProjectUuid);
+	}
+
+	private void _checkProvisionBackoff(String corpProjectUuid) {
+		if (Validator.isNull(corpProjectUuid)) {
+			return;
+		}
+
+		Long retryAfterTime = _provisionBackoffPortalCache.get(corpProjectUuid);
+
+		if (retryAfterTime == null) {
+			return;
+		}
+
+		long now = System.currentTimeMillis();
+
+		if (now >= retryAfterTime) {
+			return;
+		}
+
+		long retryAfterSeconds =
+			((retryAfterTime - now) + (Time.SECOND - 1)) / Time.SECOND;
+
+		throw new FaroException(
+			"Too many failed provisioning attempts for corp project UUID " +
+				corpProjectUuid,
+			Response.Status.TOO_MANY_REQUESTS,
+			HashMapBuilder.<String, Object>put(
+				"Retry-After", String.valueOf(retryAfterSeconds)
+			).build());
+	}
+
+	private void _clearProvisionBackoff(String corpProjectUuid) {
+		if (Validator.isNull(corpProjectUuid)) {
+			return;
+		}
+
+		_provisionBackoffPortalCache.remove(corpProjectUuid);
 	}
 
 	private FaroProject _create(
@@ -1668,6 +1745,25 @@ public class ProjectFaroController extends BaseFaroController {
 		return true;
 	}
 
+	private void _putProvisionBackoff(
+		String corpProjectUuid, Exception exception) {
+
+		if (Validator.isNull(corpProjectUuid)) {
+			return;
+		}
+
+		_log.error(
+			"Unable to provision project for corp project UUID " +
+				corpProjectUuid,
+			exception);
+
+		_provisionBackoffPortalCache.put(
+			corpProjectUuid,
+			System.currentTimeMillis() +
+				FaroPropsValues.
+					OSB_FARO_PROJECT_PROVISION_BACKOFF_WINDOW_MILLIS);
+	}
+
 	private void _refreshProjectState(FaroProject faroProject)
 		throws Exception {
 
@@ -1874,6 +1970,9 @@ public class ProjectFaroController extends BaseFaroController {
 		}
 	}
 
+	private static final String _PROVISION_BACKOFF_PORTAL_CACHE_NAME =
+		ProjectFaroController.class.getName() + "_PROVISION_BACKOFF";
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		ProjectFaroController.class);
 
@@ -1916,10 +2015,15 @@ public class ProjectFaroController extends BaseFaroController {
 	private JSONFactory _jsonFactory;
 
 	@Reference
+	private MultiVMPool _multiVMPool;
+
+	@Reference
 	private PortalExecutorManager _portalExecutorManager;
 
 	@Reference
 	private ProjectUsageHelper _projectUsageHelper;
+
+	private PortalCache<String, Long> _provisionBackoffPortalCache;
 
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,

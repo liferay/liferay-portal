@@ -7,6 +7,7 @@ package com.liferay.osb.faro.util;
 
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Time;
 
 /**
  * @author Leilany Ulisses
@@ -104,6 +105,14 @@ public class FaroPropsValues {
 	public static final Integer OSB_FARO_CLAMAV_TIMEOUT = GetterUtil.getInteger(
 		PropsUtil.get("osb.faro.clamav.timeout"),
 		GetterUtil.getInteger(System.getenv("OSB_FARO_CLAMAV_TIMEOUT")));
+
+	public static final long OSB_FARO_PROJECT_PROVISION_BACKOFF_WINDOW_MILLIS =
+		GetterUtil.getLong(
+			PropsUtil.get("osb.faro.project.provision.backoff.window.millis"),
+			GetterUtil.getLong(
+				System.getenv(
+					"OSB_FARO_PROJECT_PROVISION_BACKOFF_WINDOW_MILLIS"),
+				Time.MINUTE * 5));
 
 	public static final boolean OSB_FARO_SUBSCRIPTION_PUSH_ENABLED =
 		GetterUtil.getBoolean(
