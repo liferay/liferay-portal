@@ -5,6 +5,7 @@
 
 import {addOnClickToCreationMenuItems} from '@liferay/site-cms-site-initializer';
 
+import ProductRelationshipSelectorNameRenderer from './cell_renderers/ProductRelationshipSelectorNameRenderer';
 import openProductRelationshipSelectorModal from './openProductRelationshipSelectorModal';
 
 const ACTIONS = {
@@ -28,6 +29,15 @@ export default function propsTransformer({
 				creationMenu.primaryItems,
 				ACTIONS
 			),
+		},
+		customRenderers: {
+			tableCell: [
+				{
+					component: ProductRelationshipSelectorNameRenderer,
+					name: 'nameTableCellRenderer',
+					type: 'internal',
+				},
+			],
 		},
 		itemsActions: itemsActions?.map((action) =>
 			action?.data?.id === 'delete'
