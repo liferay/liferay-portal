@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.site.dsr.site.initializer.constants.DSRRoleConstants;
 import com.liferay.site.dsr.site.initializer.constants.DSRTicketConstants;
 import com.liferay.site.dsr.site.initializer.test.util.DSRTestUtil;
 
@@ -107,32 +108,10 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_objectEntry = _objectEntryLocalService.getObjectEntry(
 			_objectEntry.getObjectEntryId());
 
-		long groupId = _getGroupId(_objectEntry);
-
 		String password = RandomTestUtil.randomString();
 
-		User user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			password, RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			new long[] {groupId}, ServiceContextTestUtil.getServiceContext());
-
-		Role role = _roleLocalService.getRole(
-			_objectEntry.getCompanyId(), RoleConstants.SITE_MEMBER);
-
-		_userGroupRoleLocalService.addUserGroupRoles(
-			new long[] {user.getUserId()}, groupId, role.getRoleId());
-
-		_userAccountSiteMemberResource = UserAccountResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
+		_siteMemberUserAccountResource = _getUserAccountResource(
+			password, _addRoomUser(password, RoleConstants.SITE_MEMBER));
 	}
 
 	@Override
@@ -201,6 +180,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			Assert.assertEquals(
 				"Expiration date must be a future date.", problem.getTitle());
 		}
+
+		_testPatchRoomUserAccountAsContentContributor();
+		_testPatchRoomUserAccountWithoutRoleKey();
 	}
 
 	@Override
@@ -240,6 +222,51 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		return _objectEntry.getObjectEntryId();
 	}
 
+	private User _addRoomUser(String password, String roleName)
+		throws Exception {
+
+		long groupId = _getGroupId(_objectEntry);
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {groupId}, ServiceContextTestUtil.getServiceContext());
+
+		Role role = _roleLocalService.getRole(
+			_objectEntry.getCompanyId(), roleName);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			new long[] {user.getUserId()}, groupId, role.getRoleId());
+
+		return user;
+	}
+
+	private void _assertPatchRoomUserAccountForbidden(
+			UserAccountResource userAccountResource, long userAccountId)
+		throws Exception {
+
+		try {
+			userAccountResource.patchRoomUserAccount(
+				_objectEntry.getObjectEntryId(), userAccountId,
+				new UserAccount() {
+					{
+						membershipExpirationDate = new Date(
+							((System.currentTimeMillis() + Time.DAY) / 1000) *
+								1000);
+					}
+				});
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			String message = problemException.getMessage();
+
+			Assert.assertTrue(message, message.contains("Forbidden"));
+		}
+	}
+
 	private Ticket _fetchExpireMembershipTicket(long userId) throws Exception {
 		for (Ticket ticket :
 				_ticketLocalService.getTickets(
@@ -263,6 +290,21 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			MapUtil.getLong(objectEntry.getValues(), "siteId"));
 
 		return group.getGroupId();
+	}
+
+	private UserAccountResource _getUserAccountResource(
+			String password, User user)
+		throws Exception {
+
+		return UserAccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private void _testDeleteRoomUserAccountWithMembershipExpirationDate()
@@ -314,6 +356,68 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 					Objects.equals(
 						userAccount.getMembershipExpirationDate(),
 						expirationDate)));
+	}
+
+	private void _testPatchRoomUserAccountAsContentContributor()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User contentContributorUser = _addRoomUser(
+			password, DSRRoleConstants.NAME_DSR_CONTENT_CONTRIBUTOR);
+
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password, contentContributorUser);
+
+		_assertPatchRoomUserAccountForbidden(
+			userAccountResource, contentContributorUser.getUserId());
+
+		User roomCollaboratorUser = _addRoomUser(
+			RandomTestUtil.randomString(),
+			DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR);
+
+		_assertPatchRoomUserAccountForbidden(
+			userAccountResource, roomCollaboratorUser.getUserId());
+
+		User siteMemberUser = _addRoomUser(
+			RandomTestUtil.randomString(), RoleConstants.SITE_MEMBER);
+
+		Date expirationDate = new Date(
+			((System.currentTimeMillis() + Time.DAY) / 1000) * 1000);
+
+		UserAccount userAccount = userAccountResource.patchRoomUserAccount(
+			_objectEntry.getObjectEntryId(), siteMemberUser.getUserId(),
+			new UserAccount() {
+				{
+					membershipExpirationDate = expirationDate;
+				}
+			});
+
+		Assert.assertEquals(
+			expirationDate, userAccount.getMembershipExpirationDate());
+	}
+
+	private void _testPatchRoomUserAccountWithoutRoleKey() throws Exception {
+		User user = _addRoomUser(
+			RandomTestUtil.randomString(),
+			DSRRoleConstants.NAME_DSR_CONTENT_CONTRIBUTOR);
+
+		Date expirationDate = new Date(
+			((System.currentTimeMillis() + Time.DAY) / 1000) * 1000);
+
+		UserAccount userAccount = userAccountResource.patchRoomUserAccount(
+			_objectEntry.getObjectEntryId(), user.getUserId(),
+			new UserAccount() {
+				{
+					membershipExpirationDate = expirationDate;
+				}
+			});
+
+		Assert.assertEquals(
+			expirationDate, userAccount.getMembershipExpirationDate());
+		Assert.assertEquals(
+			DSRRoleConstants.NAME_DSR_CONTENT_CONTRIBUTOR,
+			userAccount.getRoleKey());
 	}
 
 	private void _testPostRoomUserAccount() throws Exception {
@@ -435,7 +539,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 	private void _testPostRoomUserAccountSiteMember() throws Exception {
 		try {
-			_userAccountSiteMemberResource.postRoomUserAccount(
+			_siteMemberUserAccountResource.postRoomUserAccount(
 				testGetRoomUserAccountsPage_getRoomId(), randomUserAccount());
 			Assert.fail();
 		}
@@ -554,10 +658,10 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	@Inject
 	private RoleLocalService _roleLocalService;
 
+	private UserAccountResource _siteMemberUserAccountResource;
+
 	@Inject
 	private TicketLocalService _ticketLocalService;
-
-	private UserAccountResource _userAccountSiteMemberResource;
 
 	@Inject
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
