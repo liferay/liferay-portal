@@ -235,11 +235,13 @@ export class VirtualInstancesPage {
 	async submitCopyVirtualInstance({
 		destinationCompanyId,
 		name,
+		timeout = 30 * 1000,
 		virtualHost,
 		webId,
 	}: {
 		destinationCompanyId: string;
 		name: string;
+		timeout?: number;
 		virtualHost: string;
 		webId: string;
 	}) {
@@ -253,7 +255,7 @@ export class VirtualInstancesPage {
 		await Promise.all([
 			this.page.waitForResponse(
 				(response) => response.url().includes('copy_instance'),
-				{timeout: 30 * 1000}
+				{timeout}
 			),
 			this.copyInstanceSubmitButton.click(),
 		]);

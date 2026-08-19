@@ -5,7 +5,6 @@
 
 package com.liferay.portal.instances.web.internal.portlet.action;
 
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
@@ -24,7 +23,6 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockActionResponse;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
-import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
@@ -186,14 +184,21 @@ public class CopyInstanceMVCActionCommandTest {
 
 	@Test
 	public void testErrorForIllegalArgumentException() throws Exception {
-		_setUpFailedCopyDBPartitionCompany(new IllegalArgumentException());
+		_setUpFailedCopyDBPartitionCompany(
+			new IllegalArgumentException(
+				"Company ID " + _SOURCE_COMPANY_ID +
+					" is the default company ID"));
+
+		_assertError(
+			"the-default-instance-cannot-be-copied", _getMockActionRequest());
+
+		_setUpFailedCopyDBPartitionCompany(
+			new IllegalArgumentException(
+				"Company ID " + _DESTINATION_COMPANY_ID + " already exists"));
 
 		_assertError(
 			"please-enter-a-valid-destination-company-id",
 			_getMockActionRequest());
-		_assertError(
-			"an-unexpected-error-occurred",
-			_getMockActionRequest("destinationCompanyId", StringPool.BLANK));
 	}
 
 	@Test
@@ -205,11 +210,16 @@ public class CopyInstanceMVCActionCommandTest {
 			"please-enter-a-valid-destination-company-id",
 			_getMockActionRequest(
 				"destinationCompanyId", _DESTINATION_COMPANY_ID + suffix));
+
 		_assertError(
 			"please-enter-a-valid-destination-company-id",
 			_getMockActionRequest(
 				"destinationCompanyId",
 				StringPool.DASH + RandomTestUtil.randomLong()));
+		_assertError(
+			"please-enter-a-valid-destination-company-id",
+			_getMockActionRequest(
+				"destinationCompanyId", "9" + Long.MAX_VALUE));
 
 		Mockito.verifyNoInteractions(_companyService);
 	}
@@ -228,25 +238,30 @@ public class CopyInstanceMVCActionCommandTest {
 
 	@Test
 	public void testErrorForUnsupportedOperationException() throws Exception {
+		_setUpFailedCopyDBPartitionCompany(
+			new UnsupportedOperationException(
+				"Database partitioning must be enabled"));
+
+		_assertError(
+			"database-partitioning-must-be-enabled", _getMockActionRequest());
+
+		_setUpFailedCopyDBPartitionCompany(
+			new UnsupportedOperationException(
+				"Company in copy process company ID is not null"));
+
+		_assertError(
+			"copying-an-instance-is-already-in-progress",
+			_getMockActionRequest());
+
+		_setUpFailedCopyDBPartitionCompany(
+			new UnsupportedOperationException(
+				"Feature flag LPD-11342 is disabled"));
+
+		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
+
 		_setUpFailedCopyDBPartitionCompany(new UnsupportedOperationException());
 
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"DATABASE_PARTITION_ENABLED", false)) {
-
-			_assertError(
-				"database-partitioning-must-be-enabled",
-				_getMockActionRequest());
-		}
-
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"DATABASE_PARTITION_ENABLED", true)) {
-
-			_assertError(
-				"copying-an-instance-is-already-in-progress",
-				_getMockActionRequest());
-		}
+		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
 	}
 
 	@Test
@@ -282,6 +297,25 @@ public class CopyInstanceMVCActionCommandTest {
 			_getMockActionRequest(
 				"destinationCompanyId",
 				StringPool.SPACE + _DESTINATION_COMPANY_ID + StringPool.SPACE));
+	}
+
+	@Test
+	public void testUnclearedHiddenDefaultSuccessMessageOnSuccess()
+		throws Exception {
+
+		_sessionMessagesMockedStatic.when(
+			() -> SessionMessages.contains(
+				Mockito.any(PortletRequest.class), Mockito.anyString())
+		).thenReturn(
+			false
+		);
+
+		_assertCopyDBPartitionCompany(
+			_DESTINATION_COMPANY_ID, _getMockActionRequest());
+
+		_sessionMessagesMockedStatic.verify(
+			() -> SessionMessages.clear(Mockito.any(PortletRequest.class)),
+			Mockito.never());
 	}
 
 	@Test

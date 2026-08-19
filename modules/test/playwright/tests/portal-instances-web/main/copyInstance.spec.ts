@@ -87,6 +87,7 @@ test(
 			await virtualInstancesPage.submitCopyVirtualInstance({
 				destinationCompanyId: '',
 				name: copyWebId,
+				timeout: 180 * 1000,
 				virtualHost: copyWebId,
 				webId: copyWebId,
 			});
