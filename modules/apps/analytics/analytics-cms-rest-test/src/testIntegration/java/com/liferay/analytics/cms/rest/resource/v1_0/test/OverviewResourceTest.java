@@ -8,6 +8,8 @@ package com.liferay.analytics.cms.rest.resource.v1_0.test;
 import com.liferay.analytics.cms.rest.client.dto.v1_0.Overview;
 import com.liferay.analytics.cms.rest.client.dto.v1_0.Trend;
 import com.liferay.analytics.cms.rest.client.problem.Problem;
+import com.liferay.analytics.cms.rest.resource.v1_0.OverviewResource;
+import com.liferay.analytics.cms.rest.resource.v1_0.test.util.DepotEntryTestUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRel;
 import com.liferay.asset.entry.rel.service.AssetEntryAssetCategoryRelLocalService;
@@ -32,6 +34,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -218,6 +221,8 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 			"Invalid range start: not a date",
 			() -> overviewResource.getContentOverview(
 				null, null, _getRangeDate(0), null, "not a date"));
+
+		_testGetContentOverviewWithDepotEntryMemberUser();
 	}
 
 	@Override
@@ -301,6 +306,8 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 			},
 			overviewResource.getFileOverview(
 				null, null, null, null, _getRangeDate(-7)));
+
+		_testGetFileOverviewWithDepotEntryMemberUser();
 	}
 
 	private void _assertBadRequest(
@@ -343,6 +350,52 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
 			DepotConstants.TYPE_SPACE, _serviceContext);
+	}
+
+	private void _testGetContentOverviewWithDepotEntryMemberUser()
+		throws Exception {
+
+		OverviewResource overviewResource = ReflectionTestUtil.getFieldValue(
+			this, "_overviewResource");
+
+		Long totalCount = overviewResource.getContentOverview(
+			_depotEntry.getDepotEntryId(), null, null, 7, null
+		).getTotalCount();
+
+		Assert.assertTrue(totalCount > 0);
+		Assert.assertEquals(
+			totalCount,
+			DepotEntryTestUtil.withDepotEntryMemberUser(
+				_depotEntry,
+				() -> overviewResource.getContentOverview(
+					_depotEntry.getDepotEntryId(), null, null, 7, null
+				).getTotalCount()));
+	}
+
+	private void _testGetFileOverviewWithDepotEntryMemberUser()
+		throws Exception {
+
+		OverviewResource overviewResource = ReflectionTestUtil.getFieldValue(
+			this, "_overviewResource");
+
+		com.liferay.analytics.cms.rest.dto.v1_0.Overview overview1 =
+			overviewResource.getFileOverview(
+				_depotEntry.getDepotEntryId(), null, null, 7, null);
+
+		Long totalCount = overview1.getTotalCount();
+
+		Assert.assertTrue(totalCount > 0);
+		Assert.assertEquals(
+			totalCount,
+			DepotEntryTestUtil.withDepotEntryMemberUser(
+				_depotEntry,
+				() -> {
+					com.liferay.analytics.cms.rest.dto.v1_0.Overview overview2 =
+						overviewResource.getFileOverview(
+							_depotEntry.getDepotEntryId(), null, null, 7, null);
+
+					return overview2.getTotalCount();
+				}));
 	}
 
 	@DeleteAfterTestRun

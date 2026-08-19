@@ -10,6 +10,7 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
@@ -86,6 +87,25 @@ public class DepotEntryTestUtil {
 			unsafeConsumer.accept(depotEntryIds);
 
 			Assert.assertNull(analyticsCloudHttpServer.getLocation());
+		}
+	}
+
+	public static <T> T withDepotEntryMemberUser(
+			DepotEntry depotEntry, UnsafeSupplier<T, Exception> unsafeSupplier)
+		throws Exception {
+
+		User user = UserTestUtil.addUser(depotEntry.getGroupId());
+
+		try {
+			UserTestUtil.setUser(user);
+
+			return unsafeSupplier.get();
+		}
+		finally {
+			UserTestUtil.setUser(
+				UserTestUtil.getAdminUser(depotEntry.getCompanyId()));
+
+			UserLocalServiceUtil.deleteUser(user);
 		}
 	}
 
