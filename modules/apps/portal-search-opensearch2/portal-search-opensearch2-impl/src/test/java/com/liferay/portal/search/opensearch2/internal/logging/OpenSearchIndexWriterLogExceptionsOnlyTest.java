@@ -12,6 +12,10 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriter;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
+import com.liferay.portal.search.engine.adapter.index.DeleteIndexRequest;
+import com.liferay.portal.search.engine.adapter.index.IndicesExistsIndexRequest;
+import com.liferay.portal.search.engine.adapter.index.IndicesExistsIndexResponse;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchIndexWriter;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
 import com.liferay.portal.search.opensearch2.internal.connection.TestOpenSearchConnectionManager;
@@ -32,6 +36,7 @@ import java.util.function.Consumer;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -50,6 +55,26 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	@ClassRule
 	public static OpenSearchTestRule openSearchTestRule =
 		OpenSearchTestRule.INSTANCE;
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		String indexName = String.valueOf(_COMPANY_ID);
+
+		SearchEngineAdapter searchEngineAdapter = getSearchEngineAdapter();
+
+		IndicesExistsIndexResponse indicesExistsIndexResponse =
+			searchEngineAdapter.execute(
+				new IndicesExistsIndexRequest(indexName));
+
+		if (!indicesExistsIndexResponse.isExists()) {
+			return;
+		}
+
+		searchEngineAdapter.execute(new DeleteIndexRequest(indexName));
+	}
 
 	@After
 	@Override
