@@ -107,7 +107,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 				message -> Assert.assertTrue(
 					message + " does not contain " + expectedMessage,
 					message.contains(expectedMessage)),
-				logCapture, LoggerTestUtil.ERROR);
+				logCapture, LoggerTestUtil.ERROR, OpenSearchException.class);
 		}
 	}
 
@@ -177,7 +177,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 						"Request failed: [index_not_found_exception] no such ",
 						"index [", _COMPANY_ID, "]"),
 					message),
-				logCapture, LoggerTestUtil.ERROR);
+				logCapture, LoggerTestUtil.ERROR, OpenSearchException.class);
 		}
 	}
 
@@ -220,7 +220,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 			_assertLogCapture(
 				message -> Assert.assertEquals(expectedMessage, message),
-				logCapture, LoggerTestUtil.INFO);
+				logCapture, LoggerTestUtil.INFO, OpenSearchException.class);
 		}
 	}
 
@@ -287,7 +287,7 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 						"Request failed: [index_not_found_exception] no such ",
 						"index [", _COMPANY_ID, "]"),
 					message),
-				logCapture, LoggerTestUtil.ERROR);
+				logCapture, LoggerTestUtil.ERROR, OpenSearchException.class);
 		}
 	}
 
@@ -470,6 +470,13 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 	private void _assertLogCapture(
 		Consumer<String> consumer, LogCapture logCapture, String logLevel) {
 
+		_assertLogCapture(consumer, logCapture, logLevel, null);
+	}
+
+	private void _assertLogCapture(
+		Consumer<String> consumer, LogCapture logCapture, String logLevel,
+		Class<?> throwableClass) {
+
 		List<LogEntry> logEntries = logCapture.getLogEntries();
 
 		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
@@ -477,6 +484,16 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 		LogEntry logEntry = logEntries.get(0);
 
 		Assert.assertEquals(logLevel, logEntry.getPriority());
+
+		Throwable throwable = logEntry.getThrowable();
+
+		if (throwableClass == null) {
+			Assert.assertNull(String.valueOf(throwable), throwable);
+		}
+		else {
+			Assert.assertSame(throwableClass, throwable.getClass());
+		}
+
 		consumer.accept(logEntry.getMessage());
 	}
 
