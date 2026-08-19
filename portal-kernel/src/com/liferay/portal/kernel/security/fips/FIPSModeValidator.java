@@ -6,6 +6,7 @@
 package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,7 +98,12 @@ public class FIPSModeValidator {
 		_validateFIPSProvider(providers);
 		_validateProviders(providers);
 
-		_validateProperties();
+		_validatePortalProperties();
+
+		_validateRequiredValues(
+			Security::getProperty, _requiredSecurityProperties);
+		_validateAllowedValues(System::getProperty, _allowedSystemProperties);
+		_validateRequiredValues(System::getProperty, _requiredSystemProperties);
 	}
 
 	public static void validateAlgorithm(String algorithm) {
@@ -113,10 +120,12 @@ public class FIPSModeValidator {
 
 		validateAlgorithm(algorithm);
 
-		if ((keySize != 0) && !_allowedKeySizes.contains(keySize)) {
-			throw new SecurityException(
-				"AES key must be 128, 192, or 256 bits");
+		if ((keySize == 0) || _allowedSymmetricKeySizes.contains(keySize)) {
+			return;
 		}
+
+		throw new SecurityException(
+			"Key size " + keySize + " is not allowed in FIPS mode");
 	}
 
 	public static void validateURL(String url) {
@@ -155,6 +164,41 @@ public class FIPSModeValidator {
 		return plaintextSecretProperties;
 	}
 
+	private static boolean _isNotAllowedProviderName(String name) {
+		if (Validator.isNull(name)) {
+			return true;
+		}
+
+		return !_allowedProviderNames.containsKey(name);
+	}
+
+	private static void _validateAllowedValues(
+		Function<String, String> function,
+		Map<String, String[]> propertiesMap) {
+
+		for (Map.Entry<String, String[]> entry : propertiesMap.entrySet()) {
+			_validateAllowedValues(
+				entry.getValue(), entry.getKey(),
+				StringUtil.removeChar(
+					function.apply(entry.getKey()), CharPool.SPACE));
+		}
+	}
+
+	private static void _validateAllowedValues(
+		String[] allowedValues, String key, String value) {
+
+		if (ArrayUtil.containsAll(
+				allowedValues, StringUtil.split(value, CharPool.COMMA))) {
+
+			return;
+		}
+
+		throw new SecurityException(
+			StringBundler.concat(
+				"FIPS mode requires the property \"", key,
+				"\" to be set to only ", Arrays.toString(allowedValues)));
+	}
+
 	private static void _validateFIPSProvider(Provider[] providers) {
 		if (ArrayUtil.isEmpty(providers)) {
 			throw new SecurityException("There are no security providers");
@@ -164,7 +208,7 @@ public class FIPSModeValidator {
 
 		String name = provider.getName();
 
-		if (!_allowedProviderNames.containsKey(name)) {
+		if (_isNotAllowedProviderName(name)) {
 			throw new SecurityException(
 				"The first security provider must be an allowed FIPS provider");
 		}
@@ -263,9 +307,7 @@ public class FIPSModeValidator {
 			!upperCaseAlgorithm.contains("SHA256")) {
 
 			throw new SecurityException(
-				StringBundler.concat(
-					"Algorithm \"", algorithm,
-					"\" is not allowed in FIPS mode"));
+				"Algorithm \"" + algorithm + "\" is not allowed in FIPS mode");
 		}
 
 		int keySize = _PASSWORDS_ENCRYPTION_ALGORITHM_KEY_SIZE_MIN;
@@ -325,13 +367,12 @@ public class FIPSModeValidator {
 
 		if (!messages.isEmpty()) {
 			throw new SecurityException(
-				StringBundler.concat(
-					"A plaintext value for ", StringUtil.merge(messages, ", "),
-					" is not allowed in FIPS mode"));
+				"A plaintext value for " + StringUtil.merge(messages, ", ") +
+					" is not allowed in FIPS mode");
 		}
 	}
 
-	private static void _validateProperties() {
+	private static void _validatePortalProperties() {
 		if (GetterUtil.getBoolean(PropsUtil.get(PropsKeys.AUTH_MAC_ALLOW))) {
 			validateAlgorithm(PropsUtil.get(PropsKeys.AUTH_MAC_ALGORITHM));
 		}
@@ -367,6 +408,31 @@ public class FIPSModeValidator {
 				" are not allowed in FIPS mode for ", provider.getName()));
 	}
 
+	private static void _validateRequiredValues(
+		Function<String, String> function,
+		Map<String, String[]> propertiesMap) {
+
+		for (Map.Entry<String, String[]> entry : propertiesMap.entrySet()) {
+			_validateRequiredValues(
+				entry.getKey(), entry.getValue(),
+				StringUtil.removeChar(
+					function.apply(entry.getKey()), CharPool.SPACE));
+		}
+	}
+
+	private static void _validateRequiredValues(
+		String key, String[] requiredValues, String value) {
+
+		for (String requiredValue : requiredValues) {
+			if (!StringUtil.containsIgnoreCase(value, requiredValue)) {
+				throw new SecurityException(
+					StringBundler.concat(
+						"FIPS mode requires the property \"", key,
+						"\" to include \"", requiredValue, "\""));
+			}
+		}
+	}
+
 	private static final int _PASSWORDS_ENCRYPTION_ALGORITHM_KEY_SIZE_MIN = 112;
 
 	private static final int _PASSWORDS_ENCRYPTION_ALGORITHM_ROUNDS_MIN =
@@ -376,7 +442,6 @@ public class FIPSModeValidator {
 		"AES", "HmacSHA256", "HmacSHA384", "HmacSHA512", "PBKDF2WithHmacSHA256",
 		"PBKDF2WithHmacSHA384", "PBKDF2WithHmacSHA512", "SHA-256", "SHA-384",
 		"SHA-512");
-	private static final Set<Integer> _allowedKeySizes = Set.of(128, 192, 256);
 	private static final Map<String, List<String>> _allowedProviderNames =
 		Map.of(
 			"AmazonCorrettoCryptoProvider",
@@ -387,6 +452,10 @@ public class FIPSModeValidator {
 			List.of(
 				"BCJSSE", "JdkLDAP", "JdkSASL", "SUN", "SunJCE", "SunJGSS",
 				"SunSASL", "XMLDSig"));
+	private static final Set<Integer> _allowedSymmetricKeySizes = Set.of(
+		128, 192, 256);
+	private static final Map<String, String[]> _allowedSystemProperties =
+		Map.of("jdk.tls.client.protocols", new String[] {"TLSv1.2", "TLSv1.3"});
 	private static final Set<String> _allowedTLSCipherSuites = Set.of(
 		"TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384",
 		"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
@@ -397,5 +466,15 @@ public class FIPSModeValidator {
 		"TLSv1.2", "TLSv1.3");
 	private static final Pattern _pbkdf2Pattern = Pattern.compile(
 		"^[^/]*(?:/([0-9]+))?/([0-9]+)$");
+	private static final Map<String, String[]> _requiredSecurityProperties =
+		Map.of(
+			"jdk.tls.disabledAlgorithms",
+			new String[] {"SSLv3", "TLS_RSA_*", "TLSv1", "TLSv1.1"},
+			"ocsp.enable", new String[] {"true"},
+			"ssl.TrustManagerFactory.algorithm", new String[] {"PKIX"});
+	private static final Map<String, String[]> _requiredSystemProperties =
+		Map.of(
+			"com.sun.net.ssl.checkRevocation", new String[] {"true"},
+			"com.sun.security.enableCRLDP", new String[] {"true"});
 
 }
