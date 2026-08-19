@@ -27,8 +27,14 @@ export class ObjectAdminApiHelper {
 	}
 
 	async getAllObjectDefinitions() {
+
+		// Ask for every definition, not the first page of them: the default
+		// page holds twenty while an environment that has been worked in holds
+		// far more, and a caller looking for one by reference code then finds
+		// nothing.
+
 		return this.apiHelpers.get(
-			`${this.apiHelpers.baseUrl}${this.basePath}/object-definitions`
+			`${this.apiHelpers.baseUrl}${this.basePath}/object-definitions?page=-1`
 		);
 	}
 
