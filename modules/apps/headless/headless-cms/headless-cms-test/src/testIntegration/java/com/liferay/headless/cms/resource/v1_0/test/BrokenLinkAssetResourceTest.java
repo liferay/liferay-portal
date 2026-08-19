@@ -77,6 +77,7 @@ public class BrokenLinkAssetResourceTest
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
 		_testGetBrokenLinkAssetsPageWithDuplicateTitles();
+		_testGetBrokenLinkAssetsPageWithExpiredAssetInAnotherSpace();
 	}
 
 	@Override
@@ -324,6 +325,44 @@ public class BrokenLinkAssetResourceTest
 		String targetTitle = RandomTestUtil.randomString();
 
 		_testGetBrokenLinkAssetsPage(targetTitle, targetTitle);
+	}
+
+	private void _testGetBrokenLinkAssetsPageWithExpiredAssetInAnotherSpace()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry depotEntry = _addSpaceDepotEntry(serviceContext);
+		DepotEntry otherDepotEntry = _addSpaceDepotEntry(serviceContext);
+
+		ObjectDefinition objectDefinition =
+			_getBasicWebContentObjectDefinition();
+
+		ObjectEntry expiredObjectEntry = _addExpiredObjectEntry(
+			otherDepotEntry, objectDefinition, serviceContext);
+
+		String referencingTitle = RandomTestUtil.randomString();
+
+		_addObjectEntry(
+			CMSOutboundLinkTestUtil.getImageHTML(
+				expiredObjectEntry.getExternalReferenceCode()),
+			depotEntry, objectDefinition, referencingTitle);
+
+		Page<BrokenLinkAsset> brokenLinkAssetsPage =
+			brokenLinkAssetResource.getBrokenLinkAssetsPage(
+				depotEntry.getDepotEntryId(), null, null, null);
+
+		Assert.assertEquals(1, brokenLinkAssetsPage.getTotalCount());
+
+		List<BrokenLinkAsset> brokenLinkAssets =
+			(List<BrokenLinkAsset>)brokenLinkAssetsPage.getItems();
+
+		BrokenLinkAsset brokenLinkAsset = brokenLinkAssets.get(0);
+
+		Assert.assertEquals(
+			1, GetterUtil.getInteger(brokenLinkAsset.getBrokenLinksCount()));
+		Assert.assertEquals(referencingTitle, brokenLinkAsset.getTitle());
 	}
 
 	@DeleteAfterTestRun
