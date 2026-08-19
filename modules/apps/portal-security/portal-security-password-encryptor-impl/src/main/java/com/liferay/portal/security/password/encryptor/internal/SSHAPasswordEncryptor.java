@@ -40,12 +40,6 @@ public class SSHAPasswordEncryptor implements PasswordEncryptor {
 			String encryptedPassword, boolean upgradeHashSecurity)
 		throws PwdEncryptorException {
 
-		if (upgradeHashSecurity) {
-			encryptedPassword = null;
-		}
-
-		byte[] saltBytes = getSaltBytes(encryptedPassword);
-
 		byte[] plaintextPasswordBytes = null;
 		byte[] saltedPlaintextPasswordBytes = null;
 
@@ -56,6 +50,12 @@ public class SSHAPasswordEncryptor implements PasswordEncryptor {
 
 			plaintextPasswordBytes = plaintextPassword.getBytes(
 				DigesterUtil.ENCODING);
+
+			if (upgradeHashSecurity) {
+				encryptedPassword = null;
+			}
+
+			byte[] saltBytes = getSaltBytes(encryptedPassword);
 
 			saltedPlaintextPasswordBytes = ArrayUtil.append(
 				plaintextPasswordBytes, saltBytes);
