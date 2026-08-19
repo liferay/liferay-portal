@@ -1101,4 +1101,4 @@ public abstract class BaseSXPParameterContributorDefinitionResourceTestCase {
 			_sxpParameterContributorDefinitionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1493930634
+// LIFERAY-REST-BUILDER-HASH:-1569724980

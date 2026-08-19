@@ -840,4 +840,4 @@ public abstract class BasePublishPreviewResourceTestCase {
 		_publishPreviewResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:10249719
+// LIFERAY-REST-BUILDER-HASH:1198422367

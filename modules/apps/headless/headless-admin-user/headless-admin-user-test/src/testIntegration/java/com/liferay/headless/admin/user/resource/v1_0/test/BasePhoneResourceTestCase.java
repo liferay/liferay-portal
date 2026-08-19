@@ -2479,4 +2479,4 @@ public abstract class BasePhoneResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1926358202
+// LIFERAY-REST-BUILDER-HASH:-1887387510

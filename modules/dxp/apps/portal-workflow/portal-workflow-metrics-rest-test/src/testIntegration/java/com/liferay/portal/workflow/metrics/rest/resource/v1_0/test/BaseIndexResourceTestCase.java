@@ -937,4 +937,4 @@ public abstract class BaseIndexResourceTestCase {
 		_indexResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-462730893
+// LIFERAY-REST-BUILDER-HASH:66190643

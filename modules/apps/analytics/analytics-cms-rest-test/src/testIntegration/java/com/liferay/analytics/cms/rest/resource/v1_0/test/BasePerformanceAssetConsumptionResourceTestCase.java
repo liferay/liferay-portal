@@ -902,4 +902,4 @@ public abstract class BasePerformanceAssetConsumptionResourceTestCase {
 			_performanceAssetConsumptionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1808851412
+// LIFERAY-REST-BUILDER-HASH:1585409000

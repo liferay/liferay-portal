@@ -1037,4 +1037,4 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 		_assetStatisticsResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-583460990
+// LIFERAY-REST-BUILDER-HASH:-1448042726

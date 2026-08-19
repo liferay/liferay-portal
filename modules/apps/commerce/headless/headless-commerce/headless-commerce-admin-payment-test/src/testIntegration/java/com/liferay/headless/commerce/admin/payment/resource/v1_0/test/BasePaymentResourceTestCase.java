@@ -3888,4 +3888,4 @@ public abstract class BasePaymentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1834791019
+// LIFERAY-REST-BUILDER-HASH:2069239583

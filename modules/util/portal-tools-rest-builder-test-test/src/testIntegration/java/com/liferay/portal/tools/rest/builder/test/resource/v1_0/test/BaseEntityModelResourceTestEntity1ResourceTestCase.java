@@ -964,4 +964,4 @@ public abstract class BaseEntityModelResourceTestEntity1ResourceTestCase {
 			_entityModelResourceTestEntity1Resource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1370605316
+// LIFERAY-REST-BUILDER-HASH:1532347274

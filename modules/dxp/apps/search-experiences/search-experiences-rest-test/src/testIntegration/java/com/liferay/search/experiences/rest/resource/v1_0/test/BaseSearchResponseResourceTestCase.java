@@ -1083,4 +1083,4 @@ public abstract class BaseSearchResponseResourceTestCase {
 			_searchResponseResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1267842596
+// LIFERAY-REST-BUILDER-HASH:1526286982

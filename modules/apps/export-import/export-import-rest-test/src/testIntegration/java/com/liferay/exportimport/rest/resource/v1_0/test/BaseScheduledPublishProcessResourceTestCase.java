@@ -1674,4 +1674,4 @@ public abstract class BaseScheduledPublishProcessResourceTestCase {
 			ScheduledPublishProcessResource _scheduledPublishProcessResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1629459487
+// LIFERAY-REST-BUILDER-HASH:286661717

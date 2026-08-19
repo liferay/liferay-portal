@@ -1184,4 +1184,4 @@ public abstract class BaseProcessMetricResourceTestCase {
 			ProcessMetricResource _processMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:665765925
+// LIFERAY-REST-BUILDER-HASH:1227357919

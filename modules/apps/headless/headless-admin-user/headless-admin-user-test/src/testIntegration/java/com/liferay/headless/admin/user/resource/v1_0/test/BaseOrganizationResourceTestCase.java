@@ -8112,4 +8112,4 @@ public abstract class BaseOrganizationResourceTestCase {
 		_organizationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1236298735
+// LIFERAY-REST-BUILDER-HASH:2118077767

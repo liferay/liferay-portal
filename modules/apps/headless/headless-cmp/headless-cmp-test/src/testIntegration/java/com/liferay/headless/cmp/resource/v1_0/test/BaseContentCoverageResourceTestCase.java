@@ -876,4 +876,4 @@ public abstract class BaseContentCoverageResourceTestCase {
 		_contentCoverageResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-220918846
+// LIFERAY-REST-BUILDER-HASH:-1818262170

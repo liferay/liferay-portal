@@ -982,4 +982,4 @@ public abstract class BaseObjectEntryMetricResourceTestCase {
 			_objectEntryMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1923436524
+// LIFERAY-REST-BUILDER-HASH:721431744

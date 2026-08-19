@@ -951,4 +951,4 @@ public abstract class BaseCaptchaResourceTestCase {
 		_captchaResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1825876171
+// LIFERAY-REST-BUILDER-HASH:-896183819

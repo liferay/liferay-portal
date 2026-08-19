@@ -2842,4 +2842,4 @@ public abstract class BaseCartCommentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-159794487
+// LIFERAY-REST-BUILDER-HASH:1824240125

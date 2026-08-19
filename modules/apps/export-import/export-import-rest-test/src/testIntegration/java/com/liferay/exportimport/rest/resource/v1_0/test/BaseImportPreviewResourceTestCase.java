@@ -1175,4 +1175,4 @@ public abstract class BaseImportPreviewResourceTestCase {
 		_importPreviewResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-558585794
+// LIFERAY-REST-BUILDER-HASH:1362300636

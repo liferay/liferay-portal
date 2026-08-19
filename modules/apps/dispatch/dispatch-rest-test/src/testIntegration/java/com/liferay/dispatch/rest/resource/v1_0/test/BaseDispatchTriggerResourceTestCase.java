@@ -1723,4 +1723,4 @@ public abstract class BaseDispatchTriggerResourceTestCase {
 		_dispatchTriggerResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1588092456
+// LIFERAY-REST-BUILDER-HASH:1956562510

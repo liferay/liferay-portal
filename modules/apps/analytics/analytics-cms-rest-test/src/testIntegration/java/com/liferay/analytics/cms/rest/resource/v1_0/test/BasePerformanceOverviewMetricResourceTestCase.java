@@ -902,4 +902,4 @@ public abstract class BasePerformanceOverviewMetricResourceTestCase {
 		PerformanceOverviewMetricResource _performanceOverviewMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:928970038
+// LIFERAY-REST-BUILDER-HASH:-267532298

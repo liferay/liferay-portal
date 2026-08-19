@@ -3176,4 +3176,4 @@ public abstract class BaseRegionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1216458893
+// LIFERAY-REST-BUILDER-HASH:1277958029

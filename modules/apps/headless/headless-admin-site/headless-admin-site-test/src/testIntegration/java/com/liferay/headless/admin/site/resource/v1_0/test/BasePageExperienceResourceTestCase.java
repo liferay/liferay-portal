@@ -1527,4 +1527,4 @@ public abstract class BasePageExperienceResourceTestCase {
 		_pageExperienceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:240127262
+// LIFERAY-REST-BUILDER-HASH:846984412

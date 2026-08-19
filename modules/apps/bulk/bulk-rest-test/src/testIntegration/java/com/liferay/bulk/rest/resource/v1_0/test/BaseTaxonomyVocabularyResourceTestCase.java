@@ -958,4 +958,4 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 		_taxonomyVocabularyResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:653097417
+// LIFERAY-REST-BUILDER-HASH:603398661

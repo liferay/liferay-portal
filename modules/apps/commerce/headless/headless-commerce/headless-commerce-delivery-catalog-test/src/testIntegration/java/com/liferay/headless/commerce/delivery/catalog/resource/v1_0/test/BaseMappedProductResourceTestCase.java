@@ -1984,4 +1984,4 @@ public abstract class BaseMappedProductResourceTestCase {
 		MappedProductResource _mappedProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2135661329
+// LIFERAY-REST-BUILDER-HASH:-575874943

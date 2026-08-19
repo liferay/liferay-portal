@@ -3029,4 +3029,4 @@ public abstract class BaseBlogPostingImageResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-750457521
+// LIFERAY-REST-BUILDER-HASH:98455111

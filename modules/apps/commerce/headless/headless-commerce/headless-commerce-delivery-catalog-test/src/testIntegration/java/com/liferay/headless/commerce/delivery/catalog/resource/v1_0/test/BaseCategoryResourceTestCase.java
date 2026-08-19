@@ -1174,4 +1174,4 @@ public abstract class BaseCategoryResourceTestCase {
 		CategoryResource _categoryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1524997409
+// LIFERAY-REST-BUILDER-HASH:-633083465

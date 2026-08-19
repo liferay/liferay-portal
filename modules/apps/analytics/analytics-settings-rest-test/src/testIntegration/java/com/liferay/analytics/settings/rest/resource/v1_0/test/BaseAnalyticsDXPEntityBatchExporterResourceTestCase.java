@@ -692,4 +692,4 @@ public abstract class BaseAnalyticsDXPEntityBatchExporterResourceTestCase {
 			_analyticsDXPEntityBatchExporterResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:449751273
+// LIFERAY-REST-BUILDER-HASH:1572038377

@@ -2757,4 +2757,4 @@ public abstract class BaseExportProcessResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1124267225
+// LIFERAY-REST-BUILDER-HASH:-747273035

@@ -3140,4 +3140,4 @@ public abstract class BaseAttachmentResourceTestCase {
 			AttachmentResource _attachmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1064169648
+// LIFERAY-REST-BUILDER-HASH:-778216684

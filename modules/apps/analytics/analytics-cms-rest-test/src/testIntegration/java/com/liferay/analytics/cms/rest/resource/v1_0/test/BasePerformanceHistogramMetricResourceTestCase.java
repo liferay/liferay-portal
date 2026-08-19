@@ -827,4 +827,4 @@ public abstract class BasePerformanceHistogramMetricResourceTestCase {
 		PerformanceHistogramMetricResource _performanceHistogramMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1239931234
+// LIFERAY-REST-BUILDER-HASH:1053144910

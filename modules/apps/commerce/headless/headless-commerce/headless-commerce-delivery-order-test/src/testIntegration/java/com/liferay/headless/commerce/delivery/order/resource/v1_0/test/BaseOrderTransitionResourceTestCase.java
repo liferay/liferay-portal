@@ -1170,4 +1170,4 @@ public abstract class BaseOrderTransitionResourceTestCase {
 		OrderTransitionResource _orderTransitionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1885534223
+// LIFERAY-REST-BUILDER-HASH:-1244484715

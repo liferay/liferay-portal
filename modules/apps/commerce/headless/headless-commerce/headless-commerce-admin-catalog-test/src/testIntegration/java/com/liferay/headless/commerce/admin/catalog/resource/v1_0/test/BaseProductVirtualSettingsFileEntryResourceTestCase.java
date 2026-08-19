@@ -2114,4 +2114,4 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-101082303
+// LIFERAY-REST-BUILDER-HASH:-78377821

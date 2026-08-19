@@ -1830,4 +1830,4 @@ public abstract class BaseShippingFixedOptionOrderTypeResourceTestCase {
 			_shippingFixedOptionOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:634024446
+// LIFERAY-REST-BUILDER-HASH:-1169854316

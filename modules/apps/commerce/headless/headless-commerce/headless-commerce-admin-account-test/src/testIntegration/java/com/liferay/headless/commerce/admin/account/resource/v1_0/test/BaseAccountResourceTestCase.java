@@ -2975,4 +2975,4 @@ public abstract class BaseAccountResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1753001542
+// LIFERAY-REST-BUILDER-HASH:528439064

@@ -810,4 +810,4 @@ public abstract class BaseVisitFrequencyResourceTestCase {
 			_visitFrequencyResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-240781876
+// LIFERAY-REST-BUILDER-HASH:1779397328

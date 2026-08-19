@@ -2081,4 +2081,4 @@ public abstract class BaseProductChannelResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1821927395
+// LIFERAY-REST-BUILDER-HASH:1943052233

@@ -2239,4 +2239,4 @@ public abstract class BaseFragmentResourceTestCase {
 		_fragmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1098441790
+// LIFERAY-REST-BUILDER-HASH:-999662990

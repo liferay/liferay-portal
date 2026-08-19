@@ -961,4 +961,4 @@ public abstract class BaseEmbeddingProviderValidationResultResourceTestCase {
 			_embeddingProviderValidationResultResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-817748539
+// LIFERAY-REST-BUILDER-HASH:776978557

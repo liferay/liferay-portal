@@ -1851,4 +1851,4 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 			_paymentMethodGroupRelOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2143504994
+// LIFERAY-REST-BUILDER-HASH:-2034807256

@@ -818,4 +818,4 @@ public abstract class BaseFieldSummaryResourceTestCase {
 			_fieldSummaryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-689454202
+// LIFERAY-REST-BUILDER-HASH:-1320729932

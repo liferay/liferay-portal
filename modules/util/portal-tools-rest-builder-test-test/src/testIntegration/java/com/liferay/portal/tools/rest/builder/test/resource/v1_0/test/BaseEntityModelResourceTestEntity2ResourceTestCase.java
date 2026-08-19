@@ -1297,4 +1297,4 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1453303447
+// LIFERAY-REST-BUILDER-HASH:-759759311

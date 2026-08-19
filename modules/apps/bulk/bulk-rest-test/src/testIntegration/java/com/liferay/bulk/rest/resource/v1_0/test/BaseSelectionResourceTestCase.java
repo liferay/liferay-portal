@@ -784,4 +784,4 @@ public abstract class BaseSelectionResourceTestCase {
 		_selectionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-495706157
+// LIFERAY-REST-BUILDER-HASH:-1791200377

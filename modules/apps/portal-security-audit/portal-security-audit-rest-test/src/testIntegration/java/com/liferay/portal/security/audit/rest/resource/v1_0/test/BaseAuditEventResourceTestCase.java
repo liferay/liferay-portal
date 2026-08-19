@@ -1606,4 +1606,4 @@ public abstract class BaseAuditEventResourceTestCase {
 			_auditEventResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-267771397
+// LIFERAY-REST-BUILDER-HASH:-1291666865

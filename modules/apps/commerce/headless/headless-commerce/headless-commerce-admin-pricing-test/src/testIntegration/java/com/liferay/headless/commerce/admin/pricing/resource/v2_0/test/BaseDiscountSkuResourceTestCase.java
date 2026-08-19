@@ -2020,4 +2020,4 @@ public abstract class BaseDiscountSkuResourceTestCase {
 		DiscountSkuResource _discountSkuResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:557491330
+// LIFERAY-REST-BUILDER-HASH:1863025622

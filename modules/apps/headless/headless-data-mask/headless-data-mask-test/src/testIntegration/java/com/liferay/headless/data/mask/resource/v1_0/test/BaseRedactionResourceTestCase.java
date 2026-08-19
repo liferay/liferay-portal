@@ -883,4 +883,4 @@ public abstract class BaseRedactionResourceTestCase {
 		_redactionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1703231214
+// LIFERAY-REST-BUILDER-HASH:-1194360532

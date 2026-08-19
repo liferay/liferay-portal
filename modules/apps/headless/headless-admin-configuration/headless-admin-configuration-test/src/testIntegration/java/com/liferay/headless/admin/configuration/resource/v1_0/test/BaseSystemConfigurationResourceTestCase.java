@@ -1101,4 +1101,4 @@ public abstract class BaseSystemConfigurationResourceTestCase {
 		SystemConfigurationResource _systemConfigurationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-327591374
+// LIFERAY-REST-BUILDER-HASH:-1034181774

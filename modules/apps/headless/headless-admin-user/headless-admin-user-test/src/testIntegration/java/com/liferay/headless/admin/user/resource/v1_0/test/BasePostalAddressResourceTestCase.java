@@ -3864,4 +3864,4 @@ public abstract class BasePostalAddressResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1719397881
+// LIFERAY-REST-BUILDER-HASH:-143634137
