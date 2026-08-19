@@ -1,0 +1,22 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "int",
+					"defaultValue": "1",
+					"label": "number-of-links",
+					"localizable": true,
+					"name": "numberOfLinks",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"max": 3,
+							"type": "number"
+						}
+					}
+				}
+			]
+		}
+	]
+}
