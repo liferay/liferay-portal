@@ -98,7 +98,7 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 
 		if (!siteObjectDefinitionIds.isEmpty()) {
 			modifiedDate = _getLatestModifiedDate(
-				_getCurrentAndGroupConnectedDepotEntryGroupIds(groupId),
+				_getGroupIds(groupId),
 				siteObjectDefinitionIds.toArray(new Long[0]));
 		}
 
@@ -157,9 +157,8 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		}
 
 		_visitObjectEntries(
-			_getCurrentAndGroupConnectedDepotEntryGroupIds(
-				layoutSet.getGroupId()),
-			element, layout, objectDefinition, themeDisplay);
+			element, _getGroupIds(layoutSet.getGroupId()), layout,
+			objectDefinition, themeDisplay);
 	}
 
 	@Override
@@ -167,9 +166,7 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 			Element element, LayoutSet layoutSet, ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		long[] currentAndGroupConnectedDepotEntryGroupIds =
-			_getCurrentAndGroupConnectedDepotEntryGroupIds(
-				layoutSet.getGroupId());
+		long[] groupIds = _getGroupIds(layoutSet.getGroupId());
 
 		for (ObjectDefinition objectDefinition :
 				_sitemapConfigurationManager.getCompanySitemapObjectDefinitions(
@@ -199,14 +196,12 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 			}
 
 			_visitObjectEntries(
-				currentAndGroupConnectedDepotEntryGroupIds, element, layout,
-				objectDefinition, themeDisplay);
+				element, groupIds, layout, objectDefinition, themeDisplay);
 		}
 	}
 
 	private List<ObjectEntry> _getApprovedObjectEntries(
-			long[] currentAndGroupConnectedDepotEntryGroupIds,
-			ObjectDefinition objectDefinition)
+			long[] groupIds, ObjectDefinition objectDefinition)
 		throws PortalException {
 
 		if (Objects.equals(
@@ -222,7 +217,7 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 
 		List<ObjectEntry> objectEntries = new ArrayList<>();
 
-		for (long groupId : currentAndGroupConnectedDepotEntryGroupIds) {
+		for (long groupId : groupIds) {
 			objectEntries.addAll(
 				_objectEntryService.getObjectEntries(
 					groupId, objectDefinition.getObjectDefinitionId(),
@@ -255,18 +250,6 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		return availableLocales;
 	}
 
-	private long[] _getCurrentAndGroupConnectedDepotEntryGroupIds(long groupId)
-		throws PortalException {
-
-		return ArrayUtil.append(
-			new long[] {groupId},
-			ListUtil.toLongArray(
-				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS),
-				DepotEntry::getGroupId));
-	}
-
 	private String _getFriendlyURL(
 		String languageId, ObjectDefinition objectDefinition,
 		ObjectEntry objectEntry) {
@@ -283,6 +266,16 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		}
 
 		return String.valueOf(objectEntry.getObjectEntryId());
+	}
+
+	private long[] _getGroupIds(long groupId) throws PortalException {
+		return ArrayUtil.append(
+			new long[] {groupId},
+			ListUtil.toLongArray(
+				_depotEntryLocalService.getGroupConnectedDepotEntries(
+					groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS),
+				DepotEntry::getGroupId));
 	}
 
 	private Date _getLatestModifiedDate(
@@ -349,13 +342,12 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 	}
 
 	private void _visitObjectEntries(
-			long[] currentAndGroupConnectedDepotEntryGroupIds, Element element,
-			Layout layout, ObjectDefinition objectDefinition,
-			ThemeDisplay themeDisplay)
+			Element element, long[] groupIds, Layout layout,
+			ObjectDefinition objectDefinition, ThemeDisplay themeDisplay)
 		throws PortalException {
 
 		List<ObjectEntry> objectEntries = _getApprovedObjectEntries(
-			currentAndGroupConnectedDepotEntryGroupIds, objectDefinition);
+			groupIds, objectDefinition);
 
 		if (objectEntries.isEmpty()) {
 			return;
