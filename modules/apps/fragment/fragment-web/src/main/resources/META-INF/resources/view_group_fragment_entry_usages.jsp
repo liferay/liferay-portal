@@ -51,7 +51,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x",
 							<liferay-ui:search-container-column-text
 								cssClass="table-cell-expand table-cell-minw-200"
 								name="name"
-								value="<%= group.getDescriptiveName(locale) %>"
+								value="<%= HtmlUtil.escape(group.getDescriptiveName(locale)) %>"
 							/>
 
 							<liferay-ui:search-container-column-text

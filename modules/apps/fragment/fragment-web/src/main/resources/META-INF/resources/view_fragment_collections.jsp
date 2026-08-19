@@ -39,7 +39,7 @@ FragmentCollectionsDisplayContext fragmentCollectionsDisplayContext = (FragmentC
 
 				<liferay-ui:search-container-column-text
 					name="scope"
-					value="<%= group.getDescriptiveName(locale) %>"
+					value="<%= HtmlUtil.escape(group.getDescriptiveName(locale)) %>"
 				/>
 			</c:if>
 
