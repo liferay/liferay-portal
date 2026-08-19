@@ -34,9 +34,6 @@ public class OpenSearchExceptionHandler {
 		if (_logExceptionsOnly) {
 			_log.error(t, t);
 		}
-		else if (_logExceptionsOnly) {
-			_log.error(t, t);
-		}
 		else {
 			throw t;
 		}
