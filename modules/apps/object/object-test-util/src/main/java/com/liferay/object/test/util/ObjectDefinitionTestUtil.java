@@ -48,15 +48,6 @@ public class ObjectDefinitionTestUtil {
 	}
 
 	public static ObjectDefinition addCustomObjectDefinition(
-			List<ObjectField> objectFields, String scope)
-		throws Exception {
-
-		return _addCustomObjectDefinition(
-			getRandomName(), objectFields, 0, scope,
-			TestPropsValues.getUserId());
-	}
-
-	public static ObjectDefinition addCustomObjectDefinition(
 			long objectFolderId)
 		throws Exception {
 
@@ -77,9 +68,17 @@ public class ObjectDefinitionTestUtil {
 			long userId)
 		throws Exception {
 
-		return _addCustomObjectDefinition(
-			name, objectFields, objectFolderId,
-			ObjectDefinitionConstants.SCOPE_COMPANY, userId);
+		return ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
+			null, userId, objectFolderId, null, true, false, true, false, true,
+			false, false, false, false,
+			FriendlyURLResolverConstants.URL_SEPARATOR_Y_OBJECT_ENTRY,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			name, null, null,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			true, ObjectDefinitionConstants.SCOPE_COMPANY,
+			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+			Collections.emptyList(), objectFields, Collections.emptyList(),
+			new ServiceContext());
 	}
 
 	public static ObjectDefinition addCustomObjectDefinition(String name)
@@ -342,23 +341,6 @@ public class ObjectDefinitionTestUtil {
 		return ObjectDefinitionLocalServiceUtil.publishSystemObjectDefinition(
 			TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId());
-	}
-
-	private static ObjectDefinition _addCustomObjectDefinition(
-			String name, List<ObjectField> objectFields, long objectFolderId,
-			String scope, long userId)
-		throws Exception {
-
-		return ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-			null, userId, objectFolderId, null, true, false, true, false, true,
-			false, false, false, false,
-			FriendlyURLResolverConstants.URL_SEPARATOR_Y_OBJECT_ENTRY,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			name, null, null,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			true, scope, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-			Collections.emptyList(), objectFields, Collections.emptyList(),
-			new ServiceContext());
 	}
 
 }

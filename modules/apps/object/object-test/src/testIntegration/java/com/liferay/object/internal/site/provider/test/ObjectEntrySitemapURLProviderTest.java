@@ -25,6 +25,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
@@ -36,31 +37,26 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
+import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
@@ -69,21 +65,16 @@ import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.site.provider.SitemapURLProvider;
 
-import java.io.Serializable;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -103,86 +94,57 @@ public class ObjectEntrySitemapURLProviderTest {
 		new LiferayIntegrationTestRule(),
 		PermissionCheckerMethodTestRule.INSTANCE);
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
+	@Before
+	public void setUp() throws Exception {
+		FriendlyURLResolverRegistryUtil.removeURLSeparators();
+
+		_companyObjectDefinition = _publishObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+		_depotObjectDefinition = _publishObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_DEPOT);
+
 		_group = GroupTestUtil.addGroup();
+
+		LayoutTestUtil.addTypePortletLayout(_group);
 
 		_layoutSet = _layoutSetLocalService.getLayoutSet(
 			_group.getGroupId(), false);
 
-		_companyObjectDefinition = _publishCustomObjectDefinition(
-			ObjectDefinitionConstants.SCOPE_COMPANY);
-
-		_depotObjectDefinition = _publishCustomObjectDefinition(
-			ObjectDefinitionConstants.SCOPE_DEPOT);
-
-		_objectDefinitionSettingLocalService.addObjectDefinitionSetting(
-			TestPropsValues.getUserId(),
-			_depotObjectDefinition.getObjectDefinitionId(),
-			ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS,
-			StringPool.TRUE);
-
-		_siteObjectDefinition = _publishCustomObjectDefinition(
+		_siteObjectDefinition = _publishObjectDefinition(
 			ObjectDefinitionConstants.SCOPE_SITE);
-
 		_themeDisplay = _getThemeDisplay(_group, _layoutSet);
-
-		_companyConfigurationTemporarySwapper =
-			_getCompanyConfigurationTemporarySwapper(_companyObjectDefinition);
-
-		LayoutTestUtil.addTypePortletLayout(_group);
-	}
-
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		_companyConfigurationTemporarySwapper.close();
 	}
 
 	@Test
-	public void testGetModifiedDateWithObjectEntryInConnectedDepotEntry()
-		throws Exception {
-
-		_depotEntry = _addDepotEntry();
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getCompanyConfigurationTemporarySwapper(
-						_depotObjectDefinition)) {
-
-			_addObjectEntry(_depotEntry.getGroupId(), _depotObjectDefinition);
-
-			Assert.assertNull(
-				_objectEntrySitemapURLProvider.getModifiedDate(
-					TestPropsValues.getCompanyId(), _group.getGroupId()));
-
-			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-				_depotEntry.getDepotEntryId(), _group.getGroupId());
-
-			Assert.assertNotNull(
-				_objectEntrySitemapURLProvider.getModifiedDate(
-					TestPropsValues.getCompanyId(), _group.getGroupId()));
-		}
+	public void testGetModifiedDate() throws Exception {
+		_testGetModifiedDate(0, _companyObjectDefinition);
+		_testGetModifiedDate(_depotEntry.getGroupId(), _depotObjectDefinition);
+		_testGetModifiedDate(_group.getGroupId(), _siteObjectDefinition);
 	}
 
 	@Test
-	public void testIsIncludeWithSystemObjectDefinition() throws Exception {
-		_systemObjectDefinition =
+	public void testIsInclude() throws Exception {
+		ObjectDefinition systemObjectDefinition =
 			ObjectDefinitionTestUtil.publishSystemObjectDefinition();
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
 					_getCompanyConfigurationTemporarySwapper(
-						_systemObjectDefinition)) {
+						systemObjectDefinition)) {
 
 			Assert.assertFalse(
 				_objectEntrySitemapURLProvider.isInclude(
 					TestPropsValues.getCompanyId(), _group.getGroupId()));
 
 			_objectDefinitionLocalService.updateSystemObjectDefinition(
-				_systemObjectDefinition.getExternalReferenceCode(),
-				_systemObjectDefinition.getObjectDefinitionId(),
-				_systemObjectDefinition.getObjectFolderId(),
-				_systemObjectDefinition.getTitleObjectFieldId(),
+				systemObjectDefinition.getExternalReferenceCode(),
+				systemObjectDefinition.getObjectDefinitionId(),
+				systemObjectDefinition.getObjectFolderId(),
+				systemObjectDefinition.getTitleObjectFieldId(),
 				Collections.singletonList(
 					new ObjectDefinitionSettingBuilder(
 					).name(
@@ -200,206 +162,120 @@ public class ObjectEntrySitemapURLProviderTest {
 
 	@Test
 	public void testVisitLayout() throws Exception {
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_addDisplayPageTemplate();
-
-		Layout layout = _layoutLocalService.getLayout(
-			layoutPageTemplateEntry.getPlid());
-
-		ObjectEntry objectEntry = _addObjectEntry();
-
-		Element rootElement = _getRootElement();
-
-		_assertRootElement(
-			layout, _companyObjectDefinition, objectEntry, rootElement);
-
-		_updateObjectDefinition(false);
-
-		try {
-			rootElement = _getRootElement();
-
-			_objectEntrySitemapURLProvider.visitLayout(
-				rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
-
-			Assert.assertFalse(rootElement.hasContent());
-		}
-		finally {
-			_updateObjectDefinition(true);
-		}
-
-		_updateLayoutSEOEntry(true, layout);
-
-		try {
-			rootElement = _getRootElement();
-
-			_objectEntrySitemapURLProvider.visitLayout(
-				rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
-
-			Assert.assertFalse(rootElement.hasContent());
-		}
-		finally {
-			_updateLayoutSEOEntry(false, layout);
-		}
-	}
-
-	@Test
-	public void testVisitLayoutAsGuestUser() throws Exception {
-		ObjectEntry objectEntry = _addObjectEntry();
-
-		_addObjectEntry();
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_addDisplayPageTemplate();
-
-		_assertRootElementAsGuestUser(
-			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
-			_companyObjectDefinition, objectEntry);
-	}
-
-	@Test
-	public void testVisitLayoutAsGuestUserWithObjectEntryInConnectedDepotEntry()
-		throws Exception {
-
-		_depotEntry = _addDepotEntry();
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getCompanyConfigurationTemporarySwapper(
-						_depotObjectDefinition)) {
-
-			ObjectEntry objectEntry = _addObjectEntry(
-				_depotEntry.getGroupId(), _depotObjectDefinition);
-
-			_addObjectEntry(_depotEntry.getGroupId(), _depotObjectDefinition);
-
-			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-				_depotEntry.getDepotEntryId(), _group.getGroupId());
-
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_addDisplayPageTemplate(_depotObjectDefinition);
-
-			_assertRootElementAsGuestUser(
-				_layoutLocalService.getLayout(
-					layoutPageTemplateEntry.getPlid()),
-				_depotObjectDefinition, objectEntry);
-		}
+		_testVisitLayout(0, _companyObjectDefinition);
+		_testVisitLayout(_depotEntry.getGroupId(), _depotObjectDefinition);
+		_testVisitLayout(_group.getGroupId(), _siteObjectDefinition);
 	}
 
 	@Test
 	public void testVisitLayoutSet() throws Exception {
-		ObjectEntry objectEntry = _addObjectEntry();
-
-		try {
-			_addDisplayPageTemplate();
-
-			Element rootElement = _getRootElement();
-
-			_objectEntrySitemapURLProvider.visitLayoutSet(
-				rootElement, _layoutSet, _themeDisplay);
-
-			Assert.assertTrue(rootElement.hasContent());
-
-			_updateObjectDefinition(false);
-
-			rootElement = _getRootElement();
-
-			_objectEntrySitemapURLProvider.visitLayoutSet(
-				rootElement, _layoutSet, _themeDisplay);
-
-			Assert.assertFalse(rootElement.hasContent());
-		}
-		finally {
-			_updateObjectDefinition(true);
-
-			_objectEntryLocalService.deleteObjectEntry(objectEntry);
-		}
+		_testVisitLayoutSet(0, _companyObjectDefinition);
+		_testVisitLayoutSet(_depotEntry.getGroupId(), _depotObjectDefinition);
+		_testVisitLayoutSet(_group.getGroupId(), _siteObjectDefinition);
 	}
 
-	@Test
-	public void testVisitLayoutSetWithObjectEntryInParentSite()
+	private LayoutPageTemplateEntry _addDisplayPageTemplate(
+			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
-		_childGroup = GroupTestUtil.addGroup(_group.getGroupId());
+		return DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			groupId, _portal.getClassNameId(objectDefinition.getClassName()),
+			null, true, WorkflowConstants.STATUS_APPROVED);
+	}
 
-		LayoutTestUtil.addTypePortletLayout(_childGroup);
+	private ObjectEntry _addObjectEntry(
+			long groupId, ObjectDefinition objectDefinition)
+		throws Exception {
 
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getCompanyConfigurationTemporarySwapper(
-						_siteObjectDefinition)) {
+		return _objectEntryLocalService.addObjectEntry(
+			groupId, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			Collections.singletonMap(
+				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()),
+			ServiceContextTestUtil.getServiceContext());
+	}
 
-			ObjectEntry childObjectEntry = _addObjectEntry(
-				_childGroup.getGroupId(), _siteObjectDefinition);
-			ObjectEntry parentObjectEntry = _addObjectEntry(
-				_group.getGroupId(), _siteObjectDefinition);
+	private void _assertRootElement(
+			boolean expectedHasContent, Layout layout,
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
+		throws Exception {
 
-			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_childGroup.getGroupId(),
-				_portal.getClassNameId(_siteObjectDefinition.getClassName()),
-				null, true, WorkflowConstants.STATUS_APPROVED);
+		Element rootElement = _getRootElement();
 
-			LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
-				_childGroup.getGroupId(), false);
+		_objectEntrySitemapURLProvider.visitLayout(
+			rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
 
-			Element rootElement = _getRootElement();
+		Assert.assertEquals(expectedHasContent, rootElement.hasContent());
 
-			_objectEntrySitemapURLProvider.visitLayoutSet(
-				rootElement, layoutSet,
-				_getThemeDisplay(_childGroup, layoutSet));
+		if (!expectedHasContent) {
+			return;
+		}
 
-			List<String> objectEntryURLs = new ArrayList<>();
+		_assertRootElements(
+			objectDefinition, objectEntry, rootElement.elements());
+	}
 
-			for (Element element : rootElement.elements()) {
-				objectEntryURLs.add(element.elementText("loc"));
-			}
+	private void _assertRootElement(
+			boolean expectedHasContent, LayoutSet layoutSet,
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			ThemeDisplay themeDisplay)
+		throws Exception {
 
+		Element rootElement = _getRootElement();
+
+		_objectEntrySitemapURLProvider.visitLayoutSet(
+			rootElement, layoutSet, themeDisplay);
+
+		Assert.assertEquals(expectedHasContent, rootElement.hasContent());
+
+		if (!expectedHasContent) {
+			return;
+		}
+
+		_assertRootElements(
+			objectDefinition, objectEntry, rootElement.elements());
+	}
+
+	private void _assertRootElements(
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+		List<Element> rootElements) {
+
+		Set<Locale> availableLocales = _language.getAvailableLocales();
+
+		String[] availableLanguageIds = TransformUtil.transform(
+			objectDefinition.getAvailableLanguageIds(),
+			availableLanguageId -> {
+				if (availableLocales.contains(
+						LocaleUtil.fromLanguageId(availableLanguageId))) {
+
+					return availableLanguageId;
+				}
+
+				return null;
+			},
+			String.class);
+
+		Assert.assertEquals(
+			rootElements.toString(), availableLanguageIds.length,
+			rootElements.size());
+
+		String objectEntryFriendlyURL = StringUtil.toLowerCase(
+			StringBundler.concat(
+				StringPool.SLASH, objectDefinition.getFriendlyURLSeparator(),
+				StringPool.SLASH, objectEntry.getExternalReferenceCode()));
+
+		for (Element rootElement : rootElements) {
+			String objectEntryLocalizedURL = rootElement.elementText("loc");
+
+			Assert.assertNotNull(objectEntryLocalizedURL);
 			Assert.assertTrue(
-				objectEntryURLs.toString(),
-				_containsObjectEntry(childObjectEntry, objectEntryURLs));
-			Assert.assertFalse(
-				objectEntryURLs.toString(),
-				_containsObjectEntry(parentObjectEntry, objectEntryURLs));
+				objectEntryLocalizedURL.endsWith(objectEntryFriendlyURL));
 		}
 	}
 
-	@Test
-	public void testVisitLayoutWithObjectEntryInConnectedDepotEntry()
-		throws Exception {
-
-		_depotEntry = _addDepotEntry();
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getCompanyConfigurationTemporarySwapper(
-						_depotObjectDefinition)) {
-
-			ObjectEntry objectEntry = _addObjectEntry(
-				_depotEntry.getGroupId(), _depotObjectDefinition);
-
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_addDisplayPageTemplate(_depotObjectDefinition);
-
-			Layout layout = _layoutLocalService.getLayout(
-				layoutPageTemplateEntry.getPlid());
-
-			Element rootElement = _getRootElement();
-
-			_objectEntrySitemapURLProvider.visitLayout(
-				rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
-
-			Assert.assertFalse(rootElement.hasContent());
-
-			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-				_depotEntry.getDepotEntryId(), _group.getGroupId());
-
-			rootElement = _getRootElement();
-
-			_assertRootElement(
-				layout, _depotObjectDefinition, objectEntry, rootElement);
-		}
-	}
-
-	private static CompanyConfigurationTemporarySwapper
+	private CompanyConfigurationTemporarySwapper
 			_getCompanyConfigurationTemporarySwapper(
 				ObjectDefinition objectDefinition)
 		throws Exception {
@@ -414,8 +290,26 @@ public class ObjectEntrySitemapURLProviderTest {
 			).build());
 	}
 
-	private static ThemeDisplay _getThemeDisplay(
-			Group group, LayoutSet layoutSet)
+	private Element _getRootElement() {
+		Document document = _saxReader.createDocument();
+
+		document.setXMLEncoding("UTF-8");
+
+		Element rootElement = document.addElement(
+			"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
+
+		rootElement.addAttribute(
+			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		rootElement.addAttribute(
+			"xsi:schemaLocation",
+			"http://www.w3.org/1999/xhtml " +
+				"http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd");
+		rootElement.addAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
+
+		return rootElement;
+	}
+
+	private ThemeDisplay _getThemeDisplay(Group group, LayoutSet layoutSet)
 		throws Exception {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
@@ -443,16 +337,15 @@ public class ObjectEntrySitemapURLProviderTest {
 		return themeDisplay;
 	}
 
-	private static ObjectDefinition _publishCustomObjectDefinition(String scope)
+	private ObjectDefinition _publishObjectDefinition(String scope)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
 					new TextObjectFieldBuilder(
 					).labelMap(
-						LocalizedMapUtil.getLocalizedMap(
-							RandomTestUtil.randomString())
+						RandomTestUtil.randomLocaleStringMap()
 					).name(
 						_OBJECT_FIELD_NAME
 					).objectFieldSettings(
@@ -460,186 +353,166 @@ public class ObjectEntrySitemapURLProviderTest {
 					).build()),
 				scope);
 
-		_objectDefinitionLocalService.publishCustomObjectDefinition(
-			TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId());
+		if (StringUtil.equals(scope, ObjectDefinitionConstants.SCOPE_DEPOT)) {
+			_objectDefinitionSettingLocalService.addObjectDefinitionSetting(
+				TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS,
+				StringPool.TRUE);
+		}
 
 		return objectDefinition;
 	}
 
-	private DepotEntry _addDepotEntry() throws Exception {
-		return _depotEntryLocalService.addDepotEntry(
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			DepotConstants.TYPE_SPACE,
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private LayoutPageTemplateEntry _addDisplayPageTemplate() throws Exception {
-		return _addDisplayPageTemplate(_companyObjectDefinition);
-	}
-
-	private LayoutPageTemplateEntry _addDisplayPageTemplate(
-			ObjectDefinition objectDefinition)
-		throws Exception {
-
-		return DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			_group.getGroupId(),
-			_portal.getClassNameId(objectDefinition.getClassName()), null, true,
-			WorkflowConstants.STATUS_APPROVED);
-	}
-
-	private ObjectEntry _addObjectEntry() throws Exception {
-		return _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			_companyObjectDefinition.getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private ObjectEntry _addObjectEntry(
+	private void _testGetModifiedDate(
 			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
-		return _objectEntryLocalService.addObjectEntry(
-			groupId, TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			null,
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext(groupId));
-	}
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getCompanyConfigurationTemporarySwapper(
+						objectDefinition)) {
 
-	private void _assertRootElement(
-			Layout layout, ObjectDefinition objectDefinition,
-			ObjectEntry objectEntry, Element rootElement)
-		throws Exception {
+			_addObjectEntry(groupId, objectDefinition);
 
-		_objectEntrySitemapURLProvider.visitLayout(
-			rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
+			if (StringUtil.equals(
+					objectDefinition.getScope(),
+					ObjectDefinitionConstants.SCOPE_DEPOT)) {
 
-		Assert.assertTrue(rootElement.hasContent());
+				Assert.assertNull(
+					_objectEntrySitemapURLProvider.getModifiedDate(
+						TestPropsValues.getCompanyId(), _group.getGroupId()));
 
-		String[] availableLanguageIds = _getAvailableLanguageIds(
-			objectDefinition);
+				_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+					_depotEntry.getDepotEntryId(), _group.getGroupId());
+			}
 
-		List<Element> elements = rootElement.elements();
-
-		Assert.assertEquals(
-			elements.toString(), availableLanguageIds.length, elements.size());
-
-		String objectEntryFriendlyURL = StringUtil.toLowerCase(
-			StringBundler.concat(
-				StringPool.SLASH, _group.getGroupKey(),
-				FriendlyURLResolverConstants.URL_SEPARATOR_OBJECT_ENTRY,
-				objectEntry.getObjectEntryId()));
-
-		for (Element element : elements) {
-			String objectEntryLocalizedURL = element.elementText("loc");
-
-			Assert.assertNotNull(objectEntryLocalizedURL);
-			Assert.assertTrue(
-				objectEntryLocalizedURL.endsWith(objectEntryFriendlyURL));
+			Assert.assertNotNull(
+				_objectEntrySitemapURLProvider.getModifiedDate(
+					TestPropsValues.getCompanyId(), _group.getGroupId()));
 		}
 	}
 
-	private void _assertRootElementAsGuestUser(
-			Layout layout, ObjectDefinition objectDefinition,
-			ObjectEntry objectEntry)
+	private void _testVisitLayout(
+			long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
 
-		Role role = _roleLocalService.getRole(
-			_group.getCompanyId(), RoleConstants.GUEST);
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getCompanyConfigurationTemporarySwapper(
+						objectDefinition)) {
 
-		_resourcePermissionLocalService.setResourcePermissions(
-			_group.getCompanyId(), objectDefinition.getClassName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(objectEntry.getObjectEntryId()), role.getRoleId(),
-			new String[] {ActionKeys.VIEW});
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				_addDisplayPageTemplate(_group.getGroupId(), objectDefinition);
 
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+			Layout layout = _layoutLocalService.getLayout(
+				layoutPageTemplateEntry.getPlid());
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(
-					_userLocalService.getGuestUser(_group.getCompanyId())));
+			ObjectEntry objectEntry = _addObjectEntry(
+				groupId, objectDefinition);
+
+			if (StringUtil.equals(
+					objectDefinition.getScope(),
+					ObjectDefinitionConstants.SCOPE_DEPOT)) {
+
+				_assertRootElement(
+					false, layout, objectDefinition, objectEntry);
+
+				_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+					_depotEntry.getDepotEntryId(), _group.getGroupId());
+			}
+
+			_assertRootElement(true, layout, objectDefinition, objectEntry);
+
+			Role role = _roleLocalService.getRole(
+				_group.getCompanyId(), RoleConstants.GUEST);
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				_group.getCompanyId(), objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(objectEntry.getObjectEntryId()),
+				role.getRoleId(), new String[] {ActionKeys.VIEW});
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					_userLocalService.getGuestUser(
+						objectDefinition.getCompanyId()))) {
+
+				_assertRootElement(true, layout, objectDefinition, objectEntry);
+			}
+
+			_updateLayoutSEOEntry(true, layout);
+
+			_assertRootElement(false, layout, objectDefinition, objectEntry);
+
+			_updateLayoutSEOEntry(false, layout);
+
+			_updateObjectDefinition(false, objectDefinition);
+
+			_assertRootElement(false, layout, objectDefinition, objectEntry);
+
+			_updateObjectDefinition(true, objectDefinition);
+		}
+	}
+
+	private void _testVisitLayoutSet(
+			long groupId, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_getCompanyConfigurationTemporarySwapper(
+						objectDefinition)) {
+
+			_addDisplayPageTemplate(_group.getGroupId(), objectDefinition);
+
+			ObjectEntry objectEntry = _addObjectEntry(
+				groupId, objectDefinition);
+
+			if (StringUtil.equals(
+					objectDefinition.getScope(),
+					ObjectDefinitionConstants.SCOPE_DEPOT)) {
+
+				_assertRootElement(
+					false, _layoutSet, objectDefinition, objectEntry,
+					_themeDisplay);
+
+				_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+					_depotEntry.getDepotEntryId(), _group.getGroupId());
+			}
+
+			if (StringUtil.equals(
+					objectDefinition.getScope(),
+					ObjectDefinitionConstants.SCOPE_SITE)) {
+
+				Group childGroup = GroupTestUtil.addGroup(groupId);
+
+				LayoutTestUtil.addTypePortletLayout(childGroup);
+
+				_addDisplayPageTemplate(
+					childGroup.getGroupId(), objectDefinition);
+
+				ObjectEntry childObjectEntry = _addObjectEntry(
+					childGroup.getGroupId(), objectDefinition);
+
+				LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
+					childGroup.getGroupId(), false);
+
+				_assertRootElement(
+					true, layoutSet, objectDefinition, childObjectEntry,
+					_getThemeDisplay(childGroup, layoutSet));
+			}
 
 			_assertRootElement(
-				layout, objectDefinition, objectEntry, _getRootElement());
+				true, _layoutSet, objectDefinition, objectEntry, _themeDisplay);
+
+			_updateObjectDefinition(false, objectDefinition);
+
+			_assertRootElement(
+				false, _layoutSet, objectDefinition, objectEntry,
+				_themeDisplay);
+
+			_updateObjectDefinition(true, objectDefinition);
 		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
-		}
-	}
-
-	private boolean _containsObjectEntry(
-		ObjectEntry objectEntry, List<String> objectEntryURLs) {
-
-		for (String objectEntryURL : objectEntryURLs) {
-			if (objectEntryURL.endsWith(
-					String.valueOf(objectEntry.getObjectEntryId()))) {
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private String[] _getAvailableLanguageIds(
-		ObjectDefinition objectDefinition) {
-
-		Set<Locale> siteAvailableLocales = _language.getAvailableLocales(
-			_group.getGroupId());
-
-		if (SetUtil.isEmpty(siteAvailableLocales)) {
-			return new String[0];
-		}
-
-		List<String> availableLanguageIds = new ArrayList<>();
-
-		for (String availableLanguageId :
-				objectDefinition.getAvailableLanguageIds()) {
-
-			if (siteAvailableLocales.contains(
-					LocaleUtil.fromLanguageId(availableLanguageId))) {
-
-				availableLanguageIds.add(availableLanguageId);
-			}
-		}
-
-		return ArrayUtil.toStringArray(availableLanguageIds);
-	}
-
-	private Element _getRootElement() {
-		Document document = _saxReader.createDocument();
-
-		document.setXMLEncoding("UTF-8");
-
-		Element rootElement = document.addElement(
-			"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
-
-		rootElement.addAttribute(
-			"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		rootElement.addAttribute(
-			"xsi:schemaLocation",
-			"http://www.w3.org/1999/xhtml " +
-				"http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd");
-		rootElement.addAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
-
-		return rootElement;
 	}
 
 	private void _updateLayoutSEOEntry(
@@ -653,10 +526,12 @@ public class ObjectEntrySitemapURLProviderTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
-	private void _updateObjectDefinition(boolean active) throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.getObjectDefinition(
-				_companyObjectDefinition.getObjectDefinitionId());
+	private void _updateObjectDefinition(
+			boolean active, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		objectDefinition = _objectDefinitionLocalService.getObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
 
 		objectDefinition.setActive(active);
 
@@ -668,30 +543,7 @@ public class ObjectEntrySitemapURLProviderTest {
 	private static final String _PID_SITEMAP_COMPANY_CONFIGURATION =
 		"com.liferay.site.internal.configuration.SitemapCompanyConfiguration";
 
-	private static CompanyConfigurationTemporarySwapper
-		_companyConfigurationTemporarySwapper;
-	private static ObjectDefinition _companyObjectDefinition;
-	private static ObjectDefinition _depotObjectDefinition;
-	private static Group _group;
-	private static LayoutSet _layoutSet;
-
-	@Inject
-	private static LayoutSetLocalService _layoutSetLocalService;
-
-	@Inject
-	private static ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Inject
-	private static ObjectDefinitionSettingLocalService
-		_objectDefinitionSettingLocalService;
-
-	private static ObjectDefinition _siteObjectDefinition;
-	private static ThemeDisplay _themeDisplay;
-
-	@DeleteAfterTestRun
-	private Group _childGroup;
-
-	@DeleteAfterTestRun
+	private ObjectDefinition _companyObjectDefinition;
 	private DepotEntry _depotEntry;
 
 	@Inject
@@ -699,6 +551,9 @@ public class ObjectEntrySitemapURLProviderTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	private ObjectDefinition _depotObjectDefinition;
+	private Group _group;
 
 	@Inject
 	private Language _language;
@@ -708,6 +563,18 @@ public class ObjectEntrySitemapURLProviderTest {
 
 	@Inject
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
+
+	private LayoutSet _layoutSet;
+
+	@Inject
+	private LayoutSetLocalService _layoutSetLocalService;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
@@ -730,8 +597,8 @@ public class ObjectEntrySitemapURLProviderTest {
 	@Inject
 	private SAXReader _saxReader;
 
-	@DeleteAfterTestRun
-	private ObjectDefinition _systemObjectDefinition;
+	private ObjectDefinition _siteObjectDefinition;
+	private ThemeDisplay _themeDisplay;
 
 	@Inject
 	private UserLocalService _userLocalService;
