@@ -5,13 +5,16 @@
 
 package com.liferay.portal.security.fips.rest.internal.resource.v1_0;
 
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationState;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
 import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.security.fips.rest.dto.v1_0.FIPSHealthVerification;
 import com.liferay.portal.security.fips.rest.resource.v1_0.FIPSHealthVerificationResource;
+import com.liferay.portal.security.fips.util.FIPSUtil;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
@@ -36,10 +39,11 @@ public class FIPSHealthVerificationResourceImpl
 		throws Exception {
 
 		if (!PropsValues.FIPS_ENABLED) {
-			throw new WebApplicationException(
-				Response.status(
-					Response.Status.NOT_FOUND
-				).build());
+			throw new NotFoundException();
+		}
+
+		if (!FIPSUtil.hasCryptoOfficerRole(contextUser)) {
+			throw new PrincipalException();
 		}
 
 		FIPSHealthVerification fipsHealthVerification =

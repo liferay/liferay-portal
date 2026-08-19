@@ -8,6 +8,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:portal-odata:portal-odata-api")
+	compileOnly project(":apps:portal-security:portal-security-fips-api")
 	compileOnly project(":apps:portal-security:portal-security-fips-rest-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":core:petra:petra-function")
