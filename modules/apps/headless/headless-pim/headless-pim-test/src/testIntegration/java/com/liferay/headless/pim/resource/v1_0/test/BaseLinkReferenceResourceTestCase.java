@@ -176,7 +176,6 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		linkReference.setCode(regex);
 		linkReference.setExternalReferenceCode(regex);
 		linkReference.setName(regex);
-		linkReference.setStatus(regex);
 		linkReference.setType(regex);
 
 		String json = LinkReferenceSerDes.toJSON(linkReference);
@@ -189,7 +188,6 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		Assert.assertEquals(regex, linkReference.getCode());
 		Assert.assertEquals(regex, linkReference.getExternalReferenceCode());
 		Assert.assertEquals(regex, linkReference.getName());
-		Assert.assertEquals(regex, linkReference.getStatus());
 		Assert.assertEquals(regex, linkReference.getType());
 	}
 
@@ -1024,49 +1022,8 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		}
 
 		if (entityFieldName.equals("status")) {
-			Object object = linkReference.getStatus();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("type")) {
@@ -1169,7 +1126,6 @@ public abstract class BaseLinkReferenceResourceTestCase {
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
-				status = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				type = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
@@ -1395,4 +1351,4 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		_linkReferenceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1714626277
+// LIFERAY-REST-BUILDER-HASH:1001010558

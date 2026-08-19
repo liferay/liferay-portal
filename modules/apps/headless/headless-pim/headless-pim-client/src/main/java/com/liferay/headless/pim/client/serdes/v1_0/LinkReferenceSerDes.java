@@ -129,11 +129,7 @@ public class LinkReferenceSerDes {
 
 			sb.append("\"status\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(linkReference.getStatus()));
-
-			sb.append("\"");
+			sb.append(String.valueOf(linkReference.getStatus()));
 		}
 
 		if (linkReference.getType() != null) {
@@ -317,7 +313,8 @@ public class LinkReferenceSerDes {
 			}
 			else if (Objects.equals(jsonParserFieldName, "status")) {
 				if (jsonParserFieldValue != null) {
-					linkReference.setStatus((String)jsonParserFieldValue);
+					linkReference.setStatus(
+						StatusSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
@@ -406,4 +403,4 @@ public class LinkReferenceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1999339470
+// LIFERAY-REST-BUILDER-HASH:-147779517

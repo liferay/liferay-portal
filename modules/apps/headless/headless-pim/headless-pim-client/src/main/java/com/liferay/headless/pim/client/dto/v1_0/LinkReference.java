@@ -147,16 +147,16 @@ public class LinkReference implements Cloneable, Serializable {
 
 	protected String name;
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 
 	public void setStatus(
-		UnsafeSupplier<String, Exception> statusUnsafeSupplier) {
+		UnsafeSupplier<Status, Exception> statusUnsafeSupplier) {
 
 		try {
 			status = statusUnsafeSupplier.get();
@@ -166,7 +166,7 @@ public class LinkReference implements Cloneable, Serializable {
 		}
 	}
 
-	protected String status;
+	protected Status status;
 
 	public String getType() {
 		return type;
@@ -219,4 +219,4 @@ public class LinkReference implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1113957145
+// LIFERAY-REST-BUILDER-HASH:-144619496

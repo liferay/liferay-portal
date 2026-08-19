@@ -297,7 +297,8 @@ public class LinkReference implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public String getStatus() {
+	@Valid
+	public Status getStatus() {
 		if (_statusSupplier != null) {
 			status = _statusSupplier.get();
 
@@ -307,7 +308,7 @@ public class LinkReference implements Serializable {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 
 		_statusSupplier = null;
@@ -315,7 +316,7 @@ public class LinkReference implements Serializable {
 
 	@JsonIgnore
 	public void setStatus(
-		UnsafeSupplier<String, Exception> statusUnsafeSupplier) {
+		UnsafeSupplier<Status, Exception> statusUnsafeSupplier) {
 
 		_statusSupplier = () -> {
 			try {
@@ -332,10 +333,10 @@ public class LinkReference implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String status;
+	protected Status status;
 
 	@JsonIgnore
-	private Supplier<String> _statusSupplier;
+	private Supplier<Status> _statusSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getType() {
@@ -491,7 +492,7 @@ public class LinkReference implements Serializable {
 			sb.append("\"");
 		}
 
-		String status = getStatus();
+		Status status = getStatus();
 
 		if (status != null) {
 			if (sb.length() > 1) {
@@ -500,11 +501,7 @@ public class LinkReference implements Serializable {
 
 			sb.append("\"status\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(status));
-
-			sb.append("\"");
+			sb.append(String.valueOf(status));
 		}
 
 		String type = getType();
@@ -624,4 +621,4 @@ public class LinkReference implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1290158431
+// LIFERAY-REST-BUILDER-HASH:1978094870
