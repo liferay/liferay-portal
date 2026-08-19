@@ -5,6 +5,7 @@
 
 package com.liferay.object.info.field.type.util;
 
+import com.liferay.info.field.type.AssigneeInfoFieldType;
 import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.DateTimeInfoFieldType;
@@ -32,7 +33,13 @@ public class ObjectFieldInfoFieldTypeUtil {
 	public static InfoFieldType getInfoFieldType(ObjectField objectField) {
 		if (Objects.equals(
 				objectField.getBusinessType(),
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+				ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
+
+			return AssigneeInfoFieldType.INSTANCE;
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
 			return FileInfoFieldType.INSTANCE;
 		}
