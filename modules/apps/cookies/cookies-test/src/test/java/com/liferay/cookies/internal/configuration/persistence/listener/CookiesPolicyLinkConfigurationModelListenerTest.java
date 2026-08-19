@@ -45,10 +45,10 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 				"//liferay.com");
 			_assertInvalidPolicyLink(
 				CookiesBannerConfiguration.class, "privacyPolicyLink",
-				"data:text/html,<script>alert(1)</script>");
+				"JavaScript:alert(document.domain)");
 			_assertInvalidPolicyLink(
 				CookiesBannerConfiguration.class, "privacyPolicyLink",
-				"JavaScript:alert(document.domain)");
+				"data:text/html,<script>alert(1)</script>");
 			_assertInvalidPolicyLink(
 				CookiesBannerConfiguration.class, "privacyPolicyLink",
 				"javascript:alert(document.domain)//cm-xss");
@@ -69,18 +69,40 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 
 	@Test
 	public void testOnBeforeSaveValidPolicyLink() throws Exception {
-		_assertValidPolicyLink("cookiePolicyLink", "/web/guest/cookie-policy");
-		_assertValidPolicyLink("cookiePolicyLink", "http://liferay.com");
-		_assertValidPolicyLink("cookiePolicyLink", "HTTPS://liferay.com");
-		_assertValidPolicyLink("cookiePolicyLink", "https://liferay.com");
-		_assertValidPolicyLink("cookiePolicyLink", StringPool.BLANK);
-		_assertValidPolicyLink("cookiePolicyLink", null);
-		_assertValidPolicyLink("privacyPolicyLink", "/web/guest/privacy");
-		_assertValidPolicyLink("privacyPolicyLink", "http://liferay.com");
-		_assertValidPolicyLink("privacyPolicyLink", "HTTPS://liferay.com");
-		_assertValidPolicyLink("privacyPolicyLink", "https://liferay.com");
-		_assertValidPolicyLink("privacyPolicyLink", StringPool.BLANK);
-		_assertValidPolicyLink("privacyPolicyLink", null);
+		_assertValidPolicyLink(
+			CookiesBannerConfiguration.class, "privacyPolicyLink",
+			"/web/guest/privacy");
+		_assertValidPolicyLink(
+			CookiesBannerConfiguration.class, "privacyPolicyLink",
+			"HTTPS://liferay.com");
+		_assertValidPolicyLink(
+			CookiesBannerConfiguration.class, "privacyPolicyLink",
+			StringPool.BLANK);
+		_assertValidPolicyLink(
+			CookiesBannerConfiguration.class, "privacyPolicyLink",
+			"http://liferay.com");
+		_assertValidPolicyLink(
+			CookiesBannerConfiguration.class, "privacyPolicyLink",
+			"https://liferay.com");
+		_assertValidPolicyLink(
+			CookiesBannerConfiguration.class, "privacyPolicyLink", null);
+		_assertValidPolicyLink(
+			CookiesConsentConfiguration.class, "cookiePolicyLink",
+			"/web/guest/cookie-policy");
+		_assertValidPolicyLink(
+			CookiesConsentConfiguration.class, "cookiePolicyLink",
+			"HTTPS://liferay.com");
+		_assertValidPolicyLink(
+			CookiesConsentConfiguration.class, "cookiePolicyLink",
+			StringPool.BLANK);
+		_assertValidPolicyLink(
+			CookiesConsentConfiguration.class, "cookiePolicyLink",
+			"http://liferay.com");
+		_assertValidPolicyLink(
+			CookiesConsentConfiguration.class, "cookiePolicyLink",
+			"https://liferay.com");
+		_assertValidPolicyLink(
+			CookiesConsentConfiguration.class, "cookiePolicyLink", null);
 	}
 
 	private void _assertInvalidPolicyLink(
@@ -98,12 +120,17 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 			configurationModelListenerException.configurationClass);
 	}
 
-	private void _assertValidPolicyLink(String name, String policyLink)
+	private void _assertValidPolicyLink(
+			Class<?> configurationClass, String name, String policyLink)
 		throws Exception {
 
+		Dictionary<String, Object> properties = _createProperties(
+			name, policyLink);
+
 		_configurationModelListener.onBeforeSave(
-			CookiesBannerConfiguration.class.getName(),
-			_createProperties(name, policyLink));
+			configurationClass.getName(), properties);
+
+		Assert.assertEquals(policyLink, properties.get(name));
 	}
 
 	private Dictionary<String, Object> _createProperties(
