@@ -3,12 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-interface Editable {
-	classNameId?: string;
-	classPK?: string;
-	externalReferenceCode?: string;
-	fieldId?: string;
-}
+import {EditableValue} from '../../../types/editables/EditableValue';
 
 interface BaseMapped {
 	classNameId: string;
@@ -23,10 +18,10 @@ interface MappedWithERC extends BaseMapped {
 	externalReferenceCode: string;
 }
 
-type MappedEditable = MappedWithClassPK | MappedWithERC;
+type MappedEditable = EditableValue & (MappedWithClassPK | MappedWithERC);
 
 export default function isMappedToInfoItem(
-	editable: Editable | null
+	editable: EditableValue | null
 ): editable is MappedEditable {
 	if (!editable) {
 		return false;
