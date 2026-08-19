@@ -7,39 +7,45 @@ import React, {useCallback, useContext, useState} from 'react';
 
 import {deepEqual} from '../utils/checkDeepEqual';
 
-/**
- * @typedef PreviewItem
- * @property {string} label
- * @property {object} data
- */
+type PreviewItem = {
+	data: {
+		className?: string;
+		classNameId?: string;
+		classPK?: string;
+		externalReferenceCode?: string;
+		title?: string;
+	};
+	label: string;
+};
+
+type PreviewItemState = {
+	recentItemList: PreviewItem[];
+	selectedItem: PreviewItem | null;
+};
 
 const MAX_RECENT_ITEMS = 100;
 
-const SelectedItemStateContext = React.createContext({
-
-	/** @type {PreviewItem[]} */
+const INITIAL_STATE: PreviewItemState = {
 	recentItemList: [],
-
-	/** @type {PreviewItem|null} */
 	selectedItem: null,
-});
+};
 
-const SelectedItemDispatchContext = React.createContext(() => {});
+const SelectedItemStateContext = React.createContext(INITIAL_STATE);
 
-/**
- * @param {PreviewItem} itemA
- * @param {PreviewItem} itemB
- * @returns {boolean}
- */
-function itemsAreEqual(itemA, itemB) {
+const SelectedItemDispatchContext = React.createContext<
+	React.Dispatch<React.SetStateAction<PreviewItemState>>
+>(() => {});
+
+function itemsAreEqual(itemA: PreviewItem, itemB: PreviewItem) {
 	return deepEqual(itemA, itemB);
 }
 
-export function DisplayPagePreviewItemContextProvider({children}) {
-	const [state, setState] = useState(() => ({
-		recentItemList: [],
-		selectedItem: null,
-	}));
+export function DisplayPagePreviewItemContextProvider({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	const [state, setState] = useState(() => INITIAL_STATE);
 
 	return (
 		<SelectedItemDispatchContext.Provider value={setState}>
@@ -62,9 +68,7 @@ export function useSelectDisplayPagePreviewItem() {
 	const setState = useContext(SelectedItemDispatchContext);
 
 	return useCallback(
-
-		/** @param {PreviewItem|null} selectedItem */
-		(selectedItem) =>
+		(selectedItem: PreviewItem | null) =>
 			setState(({recentItemList}) => {
 				let nextRecentItemList = recentItemList;
 
