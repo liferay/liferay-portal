@@ -128,3 +128,54 @@ test(
 		});
 	}
 );
+
+test(
+	'Filtering the Contents section by Folder excludes contents',
+	{tag: '@LPD-102745'},
+	async ({apiHelpers, assetsPage, page}) => {
+		const contentTitle = `Content ${getRandomString()}`;
+		const folderTitle = getRandomString();
+
+		await test.step('Create a folder and a content in a fresh Space', async () => {
+			const space =
+				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+					name: `Space ${getRandomString()}`,
+					type: 'Space',
+				});
+
+			await apiHelpers.objectFolder.createObjectEntryFolder({
+				parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				scopeKey: space.name,
+				title: folderTitle,
+			});
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: contentTitle,
+				},
+				'cms/basic-web-contents',
+				space.name
+			);
+		});
+
+		await test.step('Both the folder and the content are visible before filtering', async () => {
+			await assetsPage.gotoContents();
+
+			await assetsPage.changeVisualizationMode('Table');
+
+			await expect(assetsPage.getItem(folderTitle)).toBeVisible();
+			await expect(assetsPage.getItem(contentTitle)).toBeVisible();
+		});
+
+		await test.step('Filtering by Type Folder shows only the folder', async () => {
+			await applyFDSSelectionFilter(page, {
+				filter: 'Type',
+				value: 'Folder',
+			});
+
+			await expect(assetsPage.getItem(folderTitle)).toBeVisible();
+			await expect(assetsPage.getItem(contentTitle)).toBeHidden();
+		});
+	}
+);
