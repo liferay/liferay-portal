@@ -287,6 +287,38 @@ public class DepotPermissionCheckerWrapperTest {
 	}
 
 	@Test
+	public void testHasPermissionWithRoleAndAssetLibraryAdministrator()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUserId());
+
+		DepotTestUtil.withAssetLibraryAdministrator(
+			depotEntry,
+			user -> {
+				PermissionChecker permissionChecker =
+					_permissionCheckerFactory.create(user);
+
+				Role role = _roleLocalService.getRole(
+					TestPropsValues.getCompanyId(),
+					DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						depotEntry.getGroupId(), Role.class.getName(),
+						role.getRoleId(), ActionKeys.ASSIGN_MEMBERS));
+
+				Assert.assertFalse(
+					permissionChecker.hasPermission(
+						0, Role.class.getName(), role.getRoleId(),
+						ActionKeys.DELETE));
+				Assert.assertFalse(
+					permissionChecker.hasPermission(
+						0, Role.class.getName(), role.getRoleId(),
+						ActionKeys.UPDATE));
+			});
+	}
+
+	@Test
 	public void testHasPermissionWithUserAndAssetLibraryAdministrator()
 		throws Exception {
 
