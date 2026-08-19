@@ -319,7 +319,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 					RandomTestUtil.randomString()
 				).buildString()));
 
-		_testGetSiteSitePageWithCustomApplicationDecorator();
+		_testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances();
 	}
 
 	@Override
@@ -391,13 +391,13 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				SitePage.Type.CONTENT_PAGE,
 				StringUtil.toLowerCase(RandomTestUtil.randomString())));
 
-		_testPostSiteSitePageWithApplicationDecorator();
 		_testPostSiteSitePageWithPageElements();
 		_testPostSiteSitePageWithPageSpecifications();
 		_testPostSiteSitePageWithContentPageSpecification();
 		_testPostSiteSitePageWithWidgetPageSettings();
 		_testPostSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
 		_testPostSiteSitePageWithWidgetPageTypeIsDeprecated();
+		_testPostSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances();
 	}
 
 	@Override
@@ -2283,7 +2283,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testGetSiteSitePageWithNestedFields(sitePage);
 	}
 
-	private void _testGetSiteSitePageWithCustomApplicationDecorator()
+	private void _testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances()
 		throws Exception {
 
 		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
@@ -3039,7 +3039,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			postSitePage);
 	}
 
-	private void _testPostSiteSitePageWithApplicationDecorator()
+	private void _testPostSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances()
 		throws Exception {
 
 		GeneralConfig.ApplicationDecorator[] applicationDecorators =
@@ -3049,27 +3049,28 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			applicationDecorators
 				[RandomTestUtil.randomInt(0, applicationDecorators.length - 1)];
 
-		_testPostSiteSitePageWithApplicationDecorator(
+		_testPostSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances(
 			applicationDecorator, null, applicationDecorator, null);
 
 		String customApplicationDecorator = RandomTestUtil.randomString();
 
-		_testPostSiteSitePageWithApplicationDecorator(
+		_testPostSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances(
 			applicationDecorator, customApplicationDecorator, null,
 			customApplicationDecorator);
 
-		_testPostSiteSitePageWithApplicationDecorator(
+		_testPostSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances(
 			null, StringUtil.lowerCase(applicationDecorator.getValue()),
 			applicationDecorator, null);
-		_testPostSiteSitePageWithApplicationDecorator(
+		_testPostSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances(
 			null, customApplicationDecorator, null, customApplicationDecorator);
 	}
 
-	private void _testPostSiteSitePageWithApplicationDecorator(
-			GeneralConfig.ApplicationDecorator applicationDecorator,
-			String customApplicationDecorator,
-			GeneralConfig.ApplicationDecorator expectedApplicationDecorator,
-			String expectedCustomApplicationDecorator)
+	private void
+			_testPostSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances(
+				GeneralConfig.ApplicationDecorator applicationDecorator,
+				String customApplicationDecorator,
+				GeneralConfig.ApplicationDecorator expectedApplicationDecorator,
+				String expectedCustomApplicationDecorator)
 		throws Exception {
 
 		SitePage randomSitePage = _getRandomSitePage(SitePage.Type.WIDGET_PAGE);
