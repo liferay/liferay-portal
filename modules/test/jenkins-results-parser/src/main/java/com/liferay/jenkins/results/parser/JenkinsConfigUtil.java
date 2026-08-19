@@ -20,49 +20,6 @@ import org.dom4j.Node;
  */
 public class JenkinsConfigUtil {
 
-	public static void updateCurrentJenkinsUser(
-		String jenkinsMasterName, String jenkinsUserName) {
-
-		Element userConfigElement = _getUserConfigElement(
-			jenkinsMasterName, jenkinsUserName);
-
-		if (userConfigElement == null) {
-			throw new RuntimeException(
-				JenkinsResultsParserUtil.combine(
-					"Unable to find user config for ", jenkinsUserName, " on ",
-					jenkinsMasterName));
-		}
-
-		String emailAddress = userConfigElement.elementText("id");
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(emailAddress)) {
-			throw new RuntimeException(
-				"Unable to find email address for " + jenkinsUserName);
-		}
-
-		File currentUserConfigFile = _getCurrentUserConfigFile(emailAddress);
-
-		String currentUserConfigFilePath =
-			JenkinsResultsParserUtil.getCanonicalPath(currentUserConfigFile);
-
-		try {
-			JenkinsResultsParserUtil.write(
-				currentUserConfigFile,
-				JenkinsResultsParserUtil.combine(
-					"<?xml version=\"1.0\"?>\n\n",
-					Dom4JUtil.format(userConfigElement)));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(
-				"Unable to write " + currentUserConfigFilePath, ioException);
-		}
-
-		System.out.println(
-			JenkinsResultsParserUtil.combine(
-				"Successfully updated ", currentUserConfigFilePath, " for ",
-				jenkinsUserName));
-	}
-
 	public static void updateLiveJenkinsUser(
 		JenkinsMaster jenkinsMaster, String jenkinsUserName) {
 
@@ -126,6 +83,49 @@ public class JenkinsConfigUtil {
 		}
 	}
 
+	public static void updateLocalJenkinsUser(
+		String jenkinsMasterName, String jenkinsUserName) {
+
+		Element userConfigElement = _getUserConfigElement(
+			jenkinsMasterName, jenkinsUserName);
+
+		if (userConfigElement == null) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to find user config for ", jenkinsUserName, " on ",
+					jenkinsMasterName));
+		}
+
+		String emailAddress = userConfigElement.elementText("id");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(emailAddress)) {
+			throw new RuntimeException(
+				"Unable to find email address for " + jenkinsUserName);
+		}
+
+		File localUserConfigFile = _getLocalUserConfigFile(emailAddress);
+
+		String localUserConfigFilePath =
+			JenkinsResultsParserUtil.getCanonicalPath(localUserConfigFile);
+
+		try {
+			JenkinsResultsParserUtil.write(
+				localUserConfigFile,
+				JenkinsResultsParserUtil.combine(
+					"<?xml version=\"1.0\"?>\n\n",
+					Dom4JUtil.format(userConfigElement)));
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to write " + localUserConfigFilePath, ioException);
+		}
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Successfully updated ", localUserConfigFilePath, " for ",
+				jenkinsUserName));
+	}
+
 	private static File _createBackupUserConfigFile(
 		JenkinsMaster jenkinsMaster, String userConfigFilePath) {
 
@@ -176,7 +176,39 @@ public class JenkinsConfigUtil {
 		return candidateUserConfigFile;
 	}
 
-	private static File _getCurrentUserConfigFile(String emailAddress) {
+	private static File _getJenkinsUsersDir() {
+		String jenkinsHome = System.getenv("JENKINS_HOME");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(jenkinsHome)) {
+			return new File(_JENKINS_USERS_DIR_PATH);
+		}
+
+		return new File(jenkinsHome, "users");
+	}
+
+	private static String _getLiveUserConfigFilePath(
+		JenkinsMaster jenkinsMaster, String emailAddress) {
+
+		String output = jenkinsMaster.executeBashCommand(
+			JenkinsResultsParserUtil.combine(
+				"grep --files-with-matches '<id>", emailAddress, "</id>' ",
+				_JENKINS_USERS_DIR_PATH, "/*/config.xml || true"));
+
+		for (String line : output.split("\n")) {
+			line = line.trim();
+
+			if (!line.isEmpty()) {
+				return line;
+			}
+		}
+
+		throw new RuntimeException(
+			JenkinsResultsParserUtil.combine(
+				"Unable to find user config for ", emailAddress, " in ",
+				jenkinsMaster.getName(), ":", _JENKINS_USERS_DIR_PATH));
+	}
+
+	private static File _getLocalUserConfigFile(String emailAddress) {
 		File jenkinsUsersDir = _getJenkinsUsersDir();
 
 		String jenkinsUsersDirPath = JenkinsResultsParserUtil.getCanonicalPath(
@@ -221,38 +253,6 @@ public class JenkinsConfigUtil {
 			JenkinsResultsParserUtil.combine(
 				"Unable to find user config for ", emailAddress, " in ",
 				jenkinsUsersDirPath));
-	}
-
-	private static File _getJenkinsUsersDir() {
-		String jenkinsHome = System.getenv("JENKINS_HOME");
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(jenkinsHome)) {
-			return new File(_JENKINS_USERS_DIR_PATH);
-		}
-
-		return new File(jenkinsHome, "users");
-	}
-
-	private static String _getLiveUserConfigFilePath(
-		JenkinsMaster jenkinsMaster, String emailAddress) {
-
-		String output = jenkinsMaster.executeBashCommand(
-			JenkinsResultsParserUtil.combine(
-				"grep --files-with-matches '<id>", emailAddress, "</id>' ",
-				_JENKINS_USERS_DIR_PATH, "/*/config.xml || true"));
-
-		for (String line : output.split("\n")) {
-			line = line.trim();
-
-			if (!line.isEmpty()) {
-				return line;
-			}
-		}
-
-		throw new RuntimeException(
-			JenkinsResultsParserUtil.combine(
-				"Unable to find user config for ", emailAddress, " in ",
-				jenkinsMaster.getName(), ":", _JENKINS_USERS_DIR_PATH));
 	}
 
 	private static Element _getUserConfigElement(
