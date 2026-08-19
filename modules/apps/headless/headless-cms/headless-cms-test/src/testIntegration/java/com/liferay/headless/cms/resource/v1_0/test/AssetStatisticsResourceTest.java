@@ -22,12 +22,9 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -379,12 +376,9 @@ public class AssetStatisticsResourceTest
 	private ObjectDefinition _getBasicWebContentObjectDefinition()
 		throws Exception {
 
-		Group cmsGroup = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-
 		return _objectDefinitionLocalService.
 			getObjectDefinitionByExternalReferenceCode(
-				"L_CMS_BASIC_WEB_CONTENT", cmsGroup.getCompanyId());
+				"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId());
 	}
 
 	private void _testGetAssetStatisticsBrokenLinksCount() throws Exception {
@@ -495,9 +489,6 @@ public class AssetStatisticsResourceTest
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
