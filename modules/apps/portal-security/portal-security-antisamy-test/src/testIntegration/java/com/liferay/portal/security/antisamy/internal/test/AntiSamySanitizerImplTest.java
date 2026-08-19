@@ -7,10 +7,14 @@ package com.liferay.portal.security.antisamy.internal.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -48,6 +52,41 @@ public class AntiSamySanitizerImplTest {
 				"right here.",
 			"This little text should not have a space removed but it happens " +
 				"right here.");
+	}
+
+	@Test
+	@TestInfo("LPD-103042")
+	public void testSanitizeWithConfiguredClassName() throws Exception {
+		String className = RandomTestUtil.randomString();
+		String factoryPid =
+			"com.liferay.portal.security.antisamy.configuration." +
+				"AntiSamyClassNameConfiguration";
+
+		String pid = ConfigurationTestUtil.createFactoryConfiguration(
+			factoryPid,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"className", className
+			).put(
+				"configurationFileURL",
+				"/META-INF/resources/fragment-sanitizer-configuration.xml"
+			).build());
+
+		String svg = "<svg><circle cx=\"1\"></circle></svg>";
+
+		try {
+			Assert.assertEquals(svg, _sanitize(className, svg));
+			Assert.assertEquals(
+				StringPool.BLANK, _sanitize(className + "Rel", svg));
+		}
+		finally {
+			ConfigurationTestUtil.deleteFactoryConfiguration(pid, factoryPid);
+		}
+	}
+
+	private String _sanitize(String className, String value) throws Exception {
+		return _sanitizer.sanitize(
+			TestPropsValues.getCompanyId(), 0, 0, className, 0,
+			ContentTypes.TEXT_HTML, new String[0], value, new HashMap<>());
 	}
 
 	private void _testSanitize(String expectedValue, String value)
