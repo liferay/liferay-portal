@@ -35,11 +35,8 @@ public class ConsentManagementPlatformConfigurationModelListener
 	public void onBeforeSave(String pid, Dictionary<String, Object> properties)
 		throws ConfigurationModelListenerException {
 
-		_validateElementNames(
-			GetterUtil.getString(properties.get("consentMappingScript")),
-			properties);
-		_validateElementNames(
-			GetterUtil.getString(properties.get("scriptTag")), properties);
+		_validateElementNames(properties, "consentMappingScript");
+		_validateElementNames(properties, "scriptTag");
 	}
 
 	private String _getInvalidElementName(String html) {
@@ -47,6 +44,22 @@ public class ConsentManagementPlatformConfigurationModelListener
 		Matcher matcher = _elementPattern.matcher(html);
 
 		while ((index = html.indexOf(CharPool.LESS_THAN, index)) != -1) {
+			if (html.startsWith("<!--", index)) {
+
+				// "<!-->" and "<!--->" close on the dashes of "<!--"
+
+				Matcher commentEndMatcher = _commentEndPattern.matcher(html);
+
+				if (commentEndMatcher.find(index + 2)) {
+					index = commentEndMatcher.end();
+				}
+				else {
+					index = html.length();
+				}
+
+				continue;
+			}
+
 			matcher.region(index, html.length());
 
 			if (!matcher.lookingAt()) {
@@ -63,17 +76,11 @@ public class ConsentManagementPlatformConfigurationModelListener
 				return elementName;
 			}
 
-			boolean scriptStartTag = false;
-
-			if (StringUtil.equalsIgnoreCase(elementName, "script") &&
-				!StringUtil.startsWith(matcher.group(), "</")) {
-
-				scriptStartTag = true;
-			}
-
 			index = matcher.end();
 
-			if (!scriptStartTag) {
+			if (!StringUtil.equalsIgnoreCase(elementName, "script") ||
+				StringUtil.startsWith(matcher.group(), "</")) {
+
 				continue;
 			}
 
@@ -91,8 +98,10 @@ public class ConsentManagementPlatformConfigurationModelListener
 	}
 
 	private void _validateElementNames(
-			String html, Dictionary<String, Object> properties)
+			Dictionary<String, Object> properties, String propertyName)
 		throws ConfigurationModelListenerException {
+
+		String html = GetterUtil.getString(properties.get(propertyName));
 
 		if (Validator.isNull(html)) {
 			return;
@@ -115,9 +124,10 @@ public class ConsentManagementPlatformConfigurationModelListener
 			properties);
 	}
 
+	private static final Pattern _commentEndPattern = Pattern.compile("--!?>");
 	private static final Pattern _elementPattern = Pattern.compile(
-		"</?([a-z][a-z0-9]*)", Pattern.CASE_INSENSITIVE);
+		"</?([a-z][a-z0-9-]*)", Pattern.CASE_INSENSITIVE);
 	private static final Pattern _scriptEndPattern = Pattern.compile(
-		"</script(?=[\\s>])", Pattern.CASE_INSENSITIVE);
+		"</script(?=[\\s/>])", Pattern.CASE_INSENSITIVE);
 
 }

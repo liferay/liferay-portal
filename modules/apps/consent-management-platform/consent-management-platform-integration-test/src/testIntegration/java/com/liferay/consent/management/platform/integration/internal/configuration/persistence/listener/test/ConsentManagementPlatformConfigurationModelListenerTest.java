@@ -12,6 +12,7 @@ import com.liferay.portal.configuration.persistence.listener.ConfigurationModelL
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -66,7 +67,7 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 		Assert.assertEquals(_SCRIPT_TAG, _fetchScriptTag());
 	}
 
-	private Object _fetchScriptTag() throws Exception {
+	private String _fetchScriptTag() throws Exception {
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			"(service.pid=" +
 				ConsentManagementPlatformConfiguration.class.getName() + ")");
@@ -75,7 +76,7 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 
 		Dictionary<String, Object> properties = configuration.getProperties();
 
-		return properties.get("scriptTag");
+		return GetterUtil.getString(properties.get("scriptTag"));
 	}
 
 	private void _saveConfiguration(String scriptTag) throws Exception {

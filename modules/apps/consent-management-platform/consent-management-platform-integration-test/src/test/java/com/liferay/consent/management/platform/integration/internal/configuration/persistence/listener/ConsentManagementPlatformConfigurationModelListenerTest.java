@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Dictionary;
+
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -37,7 +39,15 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 	public void testGetInvalidElementName() {
 		Assert.assertEquals(
 			"base",
+			_getInvalidElementName(
+				"<!-- x --!><base href=\"https://liferay.com\">"));
+		Assert.assertEquals(
+			"base",
 			_getInvalidElementName("<base href=\"https://liferay.com\">"));
+		Assert.assertEquals(
+			"base",
+			_getInvalidElementName(
+				"<script>x();</script/><base href=\"https://liferay.com\">"));
 		Assert.assertEquals(
 			"base",
 			_getInvalidElementName(
@@ -55,10 +65,21 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 				"<meta content=\"0;url=https://liferay.com\" " +
 					"http-equiv=\"refresh\">"));
 		Assert.assertEquals(
+			"meta",
+			_getInvalidElementName(
+				"<script>x();</script/ ><meta " +
+					"content=\"0;url=https://liferay.com\" " +
+						"http-equiv=\"refresh\">"));
+		Assert.assertEquals(
+			"my-widget", _getInvalidElementName("<my-widget></my-widget>"));
+		Assert.assertEquals(
 			"style",
 			_getInvalidElementName("<style>body { display: none; }</style>"));
 		Assert.assertEquals(
 			"svg", _getInvalidElementName("<svg onload=\"alert(1)\"></svg>"));
+		Assert.assertNull(
+			_getInvalidElementName(
+				"<!-- <base href=\"https://liferay.com\"> -->"));
 		Assert.assertNull(
 			_getInvalidElementName("<Link as=\"script\" rel=\"preload\">"));
 		Assert.assertNull(
@@ -76,37 +97,57 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 	}
 
 	@Test
-	public void testOnBeforeSave() throws Exception {
-		_configurationModelListener.onBeforeSave(
-			ConsentManagementPlatformConfiguration.class.getName(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"consentMappingScript", StringPool.BLANK
-			).put(
-				"scriptTag", _SCRIPT_TAG_COOKIEBOT
-			).build());
-
+	public void testOnBeforeSaveInvalidScript() {
 		try (MockedStatic<ResourceBundleUtil> resourceBundleUtilMockedStatic =
 				Mockito.mockStatic(ResourceBundleUtil.class)) {
 
-			Assert.assertThrows(
-				ConfigurationModelListenerException.class,
-				() -> _configurationModelListener.onBeforeSave(
-					ConsentManagementPlatformConfiguration.class.getName(),
-					HashMapDictionaryBuilder.<String, Object>put(
-						"consentMappingScript", StringPool.BLANK
-					).put(
-						"scriptTag", "<base href=\"https://liferay.com\">"
-					).build()));
-			Assert.assertThrows(
-				ConfigurationModelListenerException.class,
-				() -> _configurationModelListener.onBeforeSave(
-					ConsentManagementPlatformConfiguration.class.getName(),
-					HashMapDictionaryBuilder.<String, Object>put(
-						"consentMappingScript", "<iframe></iframe>"
-					).put(
-						"scriptTag", _SCRIPT_TAG_COOKIEBOT
-					).build()));
+			_assertInvalidScript("<iframe></iframe>", _SCRIPT_TAG_COOKIEBOT);
+			_assertInvalidScript(
+				StringPool.BLANK, "<base href=\"https://liferay.com\">");
 		}
+	}
+
+	@Test
+	public void testOnBeforeSaveValidScript() throws Exception {
+		_assertValidScript(StringPool.BLANK, _SCRIPT_TAG_COOKIEBOT);
+	}
+
+	private void _assertInvalidScript(
+		String consentMappingScript, String scriptTag) {
+
+		ConfigurationModelListenerException
+			configurationModelListenerException = Assert.assertThrows(
+				ConfigurationModelListenerException.class,
+				() -> _configurationModelListener.onBeforeSave(
+					ConsentManagementPlatformConfiguration.class.getName(),
+					_createProperties(consentMappingScript, scriptTag)));
+
+		Assert.assertEquals(
+			ConsentManagementPlatformConfiguration.class,
+			configurationModelListenerException.configurationClass);
+	}
+
+	private void _assertValidScript(
+			String consentMappingScript, String scriptTag)
+		throws Exception {
+
+		Dictionary<String, Object> properties = _createProperties(
+			consentMappingScript, scriptTag);
+
+		_configurationModelListener.onBeforeSave(
+			ConsentManagementPlatformConfiguration.class.getName(), properties);
+
+		Assert.assertEquals(scriptTag, properties.get("scriptTag"));
+	}
+
+	private Dictionary<String, Object> _createProperties(
+		String consentMappingScript, String scriptTag) {
+
+		return HashMapDictionaryBuilder.<String, Object>put(
+			"consentMappingScript", consentMappingScript
+		).put(
+			"scriptTag", scriptTag
+		).build();
 	}
 
 	private String _getInvalidElementName(String html) {
