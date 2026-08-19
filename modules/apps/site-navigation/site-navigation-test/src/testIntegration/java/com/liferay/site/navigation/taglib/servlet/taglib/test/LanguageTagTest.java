@@ -499,9 +499,11 @@ public class LanguageTagTest {
 		_assertLocalizedURL(_layout, LocaleUtil.FRANCE, StringPool.BLANK, url);
 
 		try {
+			String defaultVirtualHostname = RandomTestUtil.randomString();
+
 			layoutSet.setVirtualHostnames(
 				TreeMapBuilder.put(
-					RandomTestUtil.randomString(), StringPool.BLANK
+					defaultVirtualHostname, StringPool.BLANK
 				).build());
 
 			Assert.assertEquals(
@@ -511,11 +513,24 @@ public class LanguageTagTest {
 						_getThemeDisplay(_layout, LocaleUtil.US)),
 					LocaleUtil.FRANCE));
 
+			String groupVirtualHostnameURL = _getURL(
+				_getLanguageEntries(
+					_getThemeDisplay(
+						_layout, LocaleUtil.US,
+						"http://" + defaultVirtualHostname)),
+				LocaleUtil.FRANCE);
+
+			Assert.assertEquals(
+				"/fr" + _layout.getFriendlyURL(LocaleUtil.FRANCE),
+				groupVirtualHostnameURL);
+
+			String localizedVirtualHostname = RandomTestUtil.randomString();
+
 			layoutSet.setVirtualHostnames(
 				TreeMapBuilder.put(
-					RandomTestUtil.randomString(), StringPool.BLANK
+					defaultVirtualHostname, StringPool.BLANK
 				).put(
-					RandomTestUtil.randomString(),
+					localizedVirtualHostname,
 					LocaleUtil.toLanguageId(LocaleUtil.FRANCE)
 				).build());
 
@@ -524,6 +539,23 @@ public class LanguageTagTest {
 				_getURL(
 					_getLanguageEntries(
 						_getThemeDisplay(_layout, LocaleUtil.US)),
+					LocaleUtil.FRANCE));
+
+			Assert.assertEquals(
+				groupVirtualHostnameURL,
+				_getURL(
+					_getLanguageEntries(
+						_getThemeDisplay(
+							_layout, LocaleUtil.US,
+							"http://" + defaultVirtualHostname)),
+					LocaleUtil.FRANCE));
+			Assert.assertEquals(
+				groupVirtualHostnameURL,
+				_getURL(
+					_getLanguageEntries(
+						_getThemeDisplay(
+							_layout, LocaleUtil.US,
+							"http://" + localizedVirtualHostname)),
 					LocaleUtil.FRANCE));
 		}
 		finally {
