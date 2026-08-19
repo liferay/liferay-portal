@@ -12,7 +12,7 @@ import {
 	LearnResourcesContext,
 } from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React, {ComponentType, useEffect, useState} from 'react';
 
 import {DEFAULT_FETCH_HEADERS} from '../utils/constants';
 import getDataSetResourceURL from '../utils/getDataSetResourceURL';
@@ -28,7 +28,18 @@ import Settings from './settings/Settings';
 import Sorting from './sorting/Sorting';
 import VisualizationModes from './visualization_modes/VisualizationModes';
 
-const NAVIGATION_BAR_ITEMS = [
+interface INavigationBarItem {
+	Component: ComponentType<IDataSetSectionProps>;
+	label: string;
+
+	/**
+	 * Whether the section renders the field trees derived from the OpenAPI
+	 * schema. Only these sections wait for `getOpenApiData`.
+	 */
+	requiresFieldTreeItems?: boolean;
+}
+
+const NAVIGATION_BAR_ITEMS: INavigationBarItem[] = [
 	{
 		Component: Details,
 		label: Liferay.Language.get('details'),
@@ -36,14 +47,17 @@ const NAVIGATION_BAR_ITEMS = [
 	{
 		Component: VisualizationModes,
 		label: Liferay.Language.get('visualization-modes'),
+		requiresFieldTreeItems: true,
 	},
 	{
 		Component: Filters,
 		label: Liferay.Language.get('filters'),
+		requiresFieldTreeItems: true,
 	},
 	{
 		Component: Sorting,
 		label: Liferay.Language.get('sorting'),
+		requiresFieldTreeItems: true,
 	},
 	{
 		Component: Actions,
@@ -115,8 +129,12 @@ const DataSet = ({
 		Array<IFieldTreeItem>
 	>([]);
 	const [loading, setLoading] = useState(true);
+	const [loadingFieldTreeItems, setLoadingFieldTreeItems] = useState(true);
 
 	useEffect(() => {
+		setLoading(true);
+		setLoadingFieldTreeItems(true);
+
 		const getDataSet = async () => {
 			const url = getDataSetResourceURL({
 				dataSetERC,
@@ -128,33 +146,40 @@ const DataSet = ({
 
 			const responseJSON = await response.json();
 
-			if (responseJSON?.id) {
-				setDataSet(responseJSON);
-
-				const {restApplication, restSchema} = responseJSON;
-
-				getOpenApiData({restApplication, restSchema})
-					.then((oApiData) => {
-						if (oApiData) {
-							setFieldTreeItems(getFields(oApiData));
-
-							setFilterableFieldTreeItems(
-								getFilterableFields(oApiData)
-							);
-						}
-					})
-					.catch(openDefaultFailureToast)
-					.finally(() => setLoading(false));
-			}
-			else {
+			if (!responseJSON?.id) {
 				openDefaultFailureToast();
+
+				setLoading(false);
+				setLoadingFieldTreeItems(false);
+
+				return;
 			}
+
+			setDataSet(responseJSON);
+
+			setLoading(false);
+
+			const {restApplication, restSchema} = responseJSON;
+
+			getOpenApiData({restApplication, restSchema})
+				.then((oApiData) => {
+					if (oApiData) {
+						setFieldTreeItems(getFields(oApiData));
+
+						setFilterableFieldTreeItems(
+							getFilterableFields(oApiData)
+						);
+					}
+				})
+				.catch(openDefaultFailureToast)
+				.finally(() => setLoadingFieldTreeItems(false));
 		};
 
 		getDataSet();
 	}, [dataSetERC, fdsViewId]);
 
-	const Content = NAVIGATION_BAR_ITEMS[activeIndex].Component;
+	const {Component: Content, requiresFieldTreeItems} =
+		NAVIGATION_BAR_ITEMS[activeIndex];
 
 	return (
 		<LearnResourcesContext.Provider value={learnResources}>
@@ -174,7 +199,8 @@ const DataSet = ({
 					))}
 				</ClayNavigationBar>
 
-				{loading ? (
+				{loading ||
+				(requiresFieldTreeItems && loadingFieldTreeItems) ? (
 					<ClayLoadingIndicator />
 				) : (
 					dataSet && (
