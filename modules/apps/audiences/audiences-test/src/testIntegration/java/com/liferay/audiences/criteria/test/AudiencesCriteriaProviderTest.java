@@ -88,11 +88,9 @@ public class AudiencesCriteriaProviderTest {
 			_audiencesCriteriaProvider.getCustomAudiencesCriteriaKeys(
 				TestPropsValues.getCompanyId());
 
-		Assert.assertTrue(
+		Assert.assertFalse(
 			customAudiencesCriteriaKeys.toString(),
-			customAudiencesCriteriaKeys.contains(
-				StringBundler.concat(
-					"custom:", url, StringPool.POUND, symbol)));
+			customAudiencesCriteriaKeys.contains("url"));
 		Assert.assertTrue(
 			customAudiencesCriteriaKeys.toString(),
 			customAudiencesCriteriaKeys.contains(
@@ -101,9 +99,11 @@ public class AudiencesCriteriaProviderTest {
 			customAudiencesCriteriaKeys.toString(),
 			customAudiencesCriteriaKeys.contains(
 				"custom:" + _GENERAL_ATTRIBUTES_URL + "#signed_in"));
-		Assert.assertFalse(
+		Assert.assertTrue(
 			customAudiencesCriteriaKeys.toString(),
-			customAudiencesCriteriaKeys.contains("url"));
+			customAudiencesCriteriaKeys.contains(
+				StringBundler.concat(
+					"custom:", url, StringPool.POUND, symbol)));
 
 		_clientExtensionEntryLocalService.deleteClientExtensionEntry(
 			clientExtensionEntry);

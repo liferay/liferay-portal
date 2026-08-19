@@ -51,9 +51,9 @@ public class UpdateAudiencesEntryMVCActionCommandTest {
 	@Test
 	@TestInfo("LPD-102224")
 	public void testProcessAction() throws Exception {
+		_testProcessActionWithExistingAudiencesEntry();
 		_testProcessActionWithRegisteredCustomAttribute();
 		_testProcessActionWithUnregisteredCustomAttribute();
-		_testProcessActionWithExistingAudiencesEntry();
 	}
 
 	private void _assertInvalidCustomAttributeError(JSONObject jsonObject) {
