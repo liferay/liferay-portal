@@ -6,10 +6,13 @@
 package com.liferay.portal.security.fips.rest.internal.resource.v1_0;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationState;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.security.fips.rest.dto.v1_0.FIPSHealthVerification;
+import com.liferay.portal.security.fips.util.FIPSUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.ws.rs.WebApplicationException;
@@ -74,14 +77,33 @@ public class FIPSHealthVerificationResourceImplTest {
 
 	@Test
 	public void testPostFIPSHealthVerification() throws Exception {
-		FIPSHealthVerificationResourceImpl fipsHealthVerificationResourceImpl =
-			new FIPSHealthVerificationResourceImpl();
-
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable("FIPS_ENABLED", true);
 			MockedStatic<FIPSApplicationStateMachineUtil>
 				fipsApplicationStateMachineUtilMockedStatic =
-					Mockito.mockStatic(FIPSApplicationStateMachineUtil.class)) {
+					Mockito.mockStatic(FIPSApplicationStateMachineUtil.class);
+			MockedStatic<FIPSUtil> fipsUtilMockedStatic = Mockito.mockStatic(
+				FIPSUtil.class)) {
+
+			FIPSHealthVerificationResourceImpl
+				fipsHealthVerificationResourceImpl =
+					new FIPSHealthVerificationResourceImpl();
+
+			User user = Mockito.mock(User.class);
+
+			fipsHealthVerificationResourceImpl.setContextUser(user);
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				fipsHealthVerificationResourceImpl::postFIPSHealthVerification);
+
+			fipsApplicationStateMachineUtilMockedStatic.verifyNoInteractions();
+
+			fipsUtilMockedStatic.when(
+				() -> FIPSUtil.hasCryptoOfficerRole(user)
+			).thenReturn(
+				true
+			);
 
 			_testPostFIPSHealthVerification(
 				FIPSApplicationState.ERROR,
