@@ -12,6 +12,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.cms.client.dto.v1_0.BrokenLinkAsset;
 import com.liferay.headless.cms.client.pagination.Page;
 import com.liferay.headless.cms.client.pagination.Pagination;
+import com.liferay.headless.cms.client.resource.v1_0.BrokenLinkAssetResource;
 import com.liferay.headless.cms.resource.v1_0.test.util.CMSOutboundLinkTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -20,16 +21,20 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -78,6 +83,7 @@ public class BrokenLinkAssetResourceTest
 			RandomTestUtil.randomString());
 		_testGetBrokenLinkAssetsPageWithDuplicateTitles();
 		_testGetBrokenLinkAssetsPageWithExpiredAssetInAnotherSpace();
+		_testGetBrokenLinkAssetsPageWithExpiredAssetInHiddenSpace();
 	}
 
 	@Override
@@ -262,6 +268,28 @@ public class BrokenLinkAssetResourceTest
 				"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId());
 	}
 
+	private BrokenLinkAssetResource _getSpaceMemberBrokenLinkAssetResource(
+			DepotEntry depotEntry)
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		_spaceMemberUser = UserTestUtil.addUser(testCompany, password);
+
+		_userLocalService.addGroupUsers(
+			depotEntry.getGroupId(), new long[] {_spaceMemberUser.getUserId()});
+
+		return BrokenLinkAssetResource.builder(
+		).authentication(
+			_spaceMemberUser.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private void _testGetBrokenLinkAssetsPage(String... targetTitles)
 		throws Exception {
 
@@ -365,6 +393,75 @@ public class BrokenLinkAssetResourceTest
 		Assert.assertEquals(referencingTitle, brokenLinkAsset.getTitle());
 	}
 
+	private void _testGetBrokenLinkAssetsPageWithExpiredAssetInHiddenSpace()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry depotEntry = _addSpaceDepotEntry(serviceContext);
+		DepotEntry hiddenDepotEntry = _addSpaceDepotEntry(serviceContext);
+
+		ObjectDefinition objectDefinition =
+			_getBasicWebContentObjectDefinition();
+
+		ObjectEntry expiredObjectEntry = _addExpiredObjectEntry(
+			depotEntry, objectDefinition, serviceContext);
+		ObjectEntry hiddenExpiredObjectEntry = _addExpiredObjectEntry(
+			hiddenDepotEntry, objectDefinition, serviceContext);
+
+		String imageHTML = CMSOutboundLinkTestUtil.getImageHTML(
+			expiredObjectEntry.getExternalReferenceCode());
+		String hiddenImageHTML = CMSOutboundLinkTestUtil.getImageHTML(
+			hiddenExpiredObjectEntry.getExternalReferenceCode());
+
+		String referencingTitle = RandomTestUtil.randomString();
+
+		_addObjectEntry(
+			imageHTML + hiddenImageHTML, depotEntry, objectDefinition,
+			referencingTitle);
+
+		Page<BrokenLinkAsset> brokenLinkAssetsPage =
+			brokenLinkAssetResource.getBrokenLinkAssetsPage(
+				depotEntry.getDepotEntryId(), null, null, null);
+
+		Assert.assertEquals(1, brokenLinkAssetsPage.getTotalCount());
+
+		List<BrokenLinkAsset> brokenLinkAssets =
+			(List<BrokenLinkAsset>)brokenLinkAssetsPage.getItems();
+
+		BrokenLinkAsset brokenLinkAsset = brokenLinkAssets.get(0);
+
+		Assert.assertEquals(
+			2, GetterUtil.getInteger(brokenLinkAsset.getBrokenLinksCount()));
+		Assert.assertEquals(referencingTitle, brokenLinkAsset.getTitle());
+
+		BrokenLinkAssetResource spaceMemberBrokenLinkAssetResource =
+			_getSpaceMemberBrokenLinkAssetResource(depotEntry);
+
+		Page<BrokenLinkAsset> spaceMemberBrokenLinkAssetsPage =
+			spaceMemberBrokenLinkAssetResource.getBrokenLinkAssetsPage(
+				depotEntry.getDepotEntryId(), null, null, null);
+
+		Assert.assertEquals(1, spaceMemberBrokenLinkAssetsPage.getTotalCount());
+
+		List<BrokenLinkAsset> spaceMemberBrokenLinkAssets =
+			(List<BrokenLinkAsset>)spaceMemberBrokenLinkAssetsPage.getItems();
+
+		BrokenLinkAsset spaceMemberBrokenLinkAsset =
+			spaceMemberBrokenLinkAssets.get(0);
+
+		Assert.assertEquals(
+			1,
+			GetterUtil.getInteger(
+				spaceMemberBrokenLinkAsset.getBrokenLinksCount()));
+		Assert.assertEquals(
+			expiredObjectEntry.getTitleValue("en_US", true),
+			spaceMemberBrokenLinkAsset.getBrokenLinkTitle());
+		Assert.assertEquals(
+			referencingTitle, spaceMemberBrokenLinkAsset.getTitle());
+	}
+
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
 
@@ -379,5 +476,11 @@ public class BrokenLinkAssetResourceTest
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@DeleteAfterTestRun
+	private User _spaceMemberUser;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
