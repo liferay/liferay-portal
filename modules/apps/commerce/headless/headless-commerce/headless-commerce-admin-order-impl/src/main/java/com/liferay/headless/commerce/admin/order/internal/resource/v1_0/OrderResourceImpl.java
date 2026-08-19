@@ -313,7 +313,7 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 			}
 		}
 
-		AccountEntry accountEntry;
+		AccountEntry accountEntry = null;
 
 		if (order.getAccountId() != null) {
 			accountEntry = _accountEntryService.getAccountEntry(
