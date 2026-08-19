@@ -8,7 +8,7 @@ heartbeatInterval: 10m
 image:
     pullPolicy: IfNotPresent
     pullSecrets: []
-    repository: us-central1-docker.pkg.dev/external-assets-nonprd/liferay-cloud-native/liferay-dxp-operator
+    repository: us-central1-docker.pkg.dev/external-assets-prd/liferay-cloud-native/liferay-dxp-operator
     tag: 0.0.1
 marketplace:
     claimName: ""

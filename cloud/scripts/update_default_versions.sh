@@ -93,6 +93,12 @@ function _bump_operator_version {
 		--regexp-extended \
 		"${git_blame_line}s/\"liferay-dxp-operator\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-dxp-operator\": \"${new_version}\"/" \
 		"${_VERSIONS_JSON_FILE}"
+
+	sed \
+		--in-place \
+		--regexp-extended \
+		"/^image:/,/^[^[:space:]]/ s/^(    tag: ).*/\1${new_version}/" \
+		"${_ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
 }
 
 function _check_bootstrap {

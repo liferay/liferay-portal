@@ -5,6 +5,7 @@ jobs:
     push:
         outputs:
             image_ref: ${{steps.push.outputs.image_ref}}
+            version: ${{steps.push.outputs.version}}
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout code
@@ -63,6 +64,7 @@ jobs:
                         docker push "${image_ref}"
 
                         echo "image_ref=${image_ref}" >> ${GITHUB_OUTPUT}
+                        echo "version=${version}" >> ${GITHUB_OUTPUT}
                     }
 
                     main "${@}"
@@ -82,6 +84,8 @@ on:
         outputs:
             image_ref:
                 value: ${{jobs.push.outputs.image_ref}}
+            version:
+                value: ${{jobs.push.outputs.version}}
 permissions:
     contents: read
     id-token: write

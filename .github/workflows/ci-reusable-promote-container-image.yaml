@@ -1,0 +1,83 @@
+defaults:
+    run:
+        shell: bash
+jobs:
+    promote:
+        outputs:
+            image_digest: ${{steps.promote.outputs.image_digest}}
+        permissions:
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+            -   id: auth_nonproduction
+                name: Authenticate to Google Cloud (Non-production)
+                uses: google-github-actions/auth@v3
+                with:
+                    project_id: ${{vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
+                    workload_identity_provider: ${{vars.GCP_WORKLOAD_IDENTITY_PROVIDER_EXTERNAL_NONPRODUCTION}}
+            -   id: auth_production
+                name: Authenticate to Google Cloud (Production)
+                uses: google-github-actions/auth@v3
+                with:
+                    project_id: ${{vars.GCP_PROJECT_ID_EXTERNAL_PRODUCTION}}
+                    workload_identity_provider: ${{vars.GCP_WORKLOAD_IDENTITY_PROVIDER_EXTERNAL_PRODUCTION}}
+            -   name: Install ORAS
+                uses: oras-project/setup-oras@v1
+            -   env:
+                    CONTAINER_IMAGE_REGISTRY_PRODUCTION: ${{vars.CONTAINER_IMAGE_REGISTRY_PRODUCTION}}
+                id: promote
+                name: Promote container image
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local source_image_ref="${{inputs.source_image_ref}}"
+
+                        local target_image_ref="${CONTAINER_IMAGE_REGISTRY_PRODUCTION}/${{inputs.image_name}}:${{inputs.version}}"
+
+                        oras \
+                            cp \
+                            --from-password "${{steps.auth_nonproduction.outputs.auth_token}}" \
+                            --from-username oauth2accesstoken \
+                            --to-password "${{steps.auth_production.outputs.auth_token}}" \
+                            --to-username oauth2accesstoken \
+                            "${source_image_ref}" \
+                            "${target_image_ref}"
+
+                        local image_digest
+
+                        image_digest=$( \
+                            oras \
+                                manifest \
+                                fetch \
+                                --descriptor \
+                                --password "${{steps.auth_production.outputs.auth_token}}" \
+                                --username oauth2accesstoken \
+                                "${target_image_ref}" \
+                                | jq --raw-output '.digest')
+
+                        echo "image_digest=${image_digest}" >> ${GITHUB_OUTPUT}
+                    }
+
+                    main "${@}"
+on:
+    workflow_call:
+        inputs:
+            image_name:
+                required: true
+                type: string
+            source_image_ref:
+                required: true
+                type: string
+            version:
+                required: true
+                type: string
+        outputs:
+            image_digest:
+                value: ${{jobs.promote.outputs.image_digest}}
+permissions:
+    contents: read
+    id-token: write

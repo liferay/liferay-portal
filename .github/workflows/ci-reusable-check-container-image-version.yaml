@@ -1,0 +1,76 @@
+defaults:
+    run:
+        shell: bash
+jobs:
+    check:
+        outputs:
+            should_release: ${{steps.check.outputs.should_release}}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 1
+                    filter: tree:0
+                    show-progress: false
+                    sparse-checkout: cloud/scripts
+            -   id: auth_production
+                name: Authenticate to Google Cloud (Production)
+                uses: google-github-actions/auth@v3
+                with:
+                    project_id: ${{vars.GCP_PROJECT_ID_EXTERNAL_PRODUCTION}}
+                    workload_identity_provider: ${{vars.GCP_WORKLOAD_IDENTITY_PROVIDER_EXTERNAL_PRODUCTION}}
+            -   name: Install ORAS
+                uses: oras-project/setup-oras@v1
+            -   env:
+                    CONTAINER_IMAGE_REGISTRY_PRODUCTION: ${{vars.CONTAINER_IMAGE_REGISTRY_PRODUCTION}}
+                id: check
+                name: Check whether container image version is already published
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local version
+
+                        version=$(jq --arg key "${{inputs.image_name}}" --raw-output '.[$key]' ./cloud/scripts/versions.json)
+
+                        if [[ -z "${version}" ]] || [[ "${version}" == "null" ]]
+                        then
+                            echo "The version for ${{inputs.image_name}} cannot be read from cloud/scripts/versions.json." >&2
+
+                            exit 1
+                        fi
+
+                        local image_ref="${CONTAINER_IMAGE_REGISTRY_PRODUCTION}/${{inputs.image_name}}:${version}"
+
+                        if oras \
+                                manifest \
+                                fetch \
+                                --password "${{steps.auth_production.outputs.auth_token}}" \
+                                --username oauth2accesstoken \
+                                "${image_ref}" \
+                                > /dev/null 2>&1
+                        then
+                            echo "\`${image_ref}\` is already published. The release candidate will not be pushed." >> "${GITHUB_STEP_SUMMARY}"
+
+                            echo "should_release=false" >> ${GITHUB_OUTPUT}
+                        else
+                            echo "should_release=true" >> ${GITHUB_OUTPUT}
+                        fi
+                    }
+
+                    main "${@}"
+on:
+    workflow_call:
+        inputs:
+            image_name:
+                required: true
+                type: string
+        outputs:
+            should_release:
+                value: ${{jobs.check.outputs.should_release}}
+permissions:
+    contents: read
+    id-token: write

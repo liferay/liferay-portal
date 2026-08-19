@@ -5,7 +5,7 @@ defaults:
     run:
         shell: bash
 jobs:
-    push-rc-dxp-operator:
+    push-rc-image-dxp-operator:
         if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         uses: ./.github/workflows/ci-reusable-push-container-image.yaml
         with:

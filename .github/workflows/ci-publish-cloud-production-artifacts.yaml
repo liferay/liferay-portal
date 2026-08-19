@@ -17,9 +17,11 @@ jobs:
             -   push-rc-bootstrap-aws
             -   push-rc-bootstrap-gcp
             -   push-rc-default
+            -   push-rc-dxp-operator
             -   push-rc-gcp
             -   push-rc-gcp-infrastructure
             -   push-rc-gcp-infrastructure-provider
+            -   push-rc-image-dxp-operator
             -   push-rc-infrastructure
             -   push-rc-observability
             -   push-rc-platform
@@ -91,6 +93,15 @@ jobs:
         with:
             chart_name: liferay-default
             working_directory: ./cloud/helm/default
+    check-dxp-operator:
+        needs:
+            -   test-cloud-helm-chart
+            -   test-cloud-helm-chart-smoke
+            -   test-cloud-terraform
+        uses: ./.github/workflows/ci-reusable-check-helm-chart-version.yaml
+        with:
+            chart_name: liferay-dxp-operator
+            working_directory: ./cloud/helm/dxp-operator
     check-gcp:
         needs:
             -   test-cloud-helm-chart
@@ -118,6 +129,11 @@ jobs:
         with:
             chart_name: liferay-gcp-infrastructure-provider
             working_directory: ./cloud/helm/gcp-infrastructure-provider
+    check-image-dxp-operator:
+        needs: test-cloud-operator
+        uses: ./.github/workflows/ci-reusable-check-container-image-version.yaml
+        with:
+            image_name: liferay-dxp-operator
     check-infrastructure:
         needs:
             -   test-cloud-helm-chart
@@ -219,6 +235,15 @@ jobs:
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
             source_image_ref: ${{needs.push-rc-default.outputs.image_ref}}
+    promote-rc-dxp-operator:
+        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.promote-rc-image-dxp-operator.result != 'failure' && needs.push-rc-dxp-operator.result == 'success'}}
+        needs:
+            -   approve-release
+            -   promote-rc-image-dxp-operator
+            -   push-rc-dxp-operator
+        uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
+        with:
+            source_image_ref: ${{needs.push-rc-dxp-operator.outputs.image_ref}}
     promote-rc-gcp:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-gcp.result == 'success'}}
         needs:
@@ -243,6 +268,16 @@ jobs:
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
             source_image_ref: ${{needs.push-rc-gcp-infrastructure-provider.outputs.image_ref}}
+    promote-rc-image-dxp-operator:
+        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-image-dxp-operator.result == 'success'}}
+        needs:
+            -   approve-release
+            -   push-rc-image-dxp-operator
+        uses: ./.github/workflows/ci-reusable-promote-container-image.yaml
+        with:
+            image_name: liferay-dxp-operator
+            source_image_ref: ${{needs.push-rc-image-dxp-operator.outputs.image_ref}}
+            version: ${{needs.push-rc-image-dxp-operator.outputs.version}}
     promote-rc-infrastructure:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-infrastructure.result == 'success'}}
         needs:
@@ -414,6 +449,13 @@ jobs:
         with:
             chart_name: liferay-default
             working_directory: ./cloud/helm/default
+    push-rc-dxp-operator:
+        if: ${{needs.check-dxp-operator.outputs.should_release == 'true'}}
+        needs: check-dxp-operator
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-dxp-operator
+            working_directory: ./cloud/helm/dxp-operator
     push-rc-gcp:
         if: ${{needs.check-gcp.outputs.should_release == 'true'}}
         needs: check-gcp
@@ -435,6 +477,16 @@ jobs:
         with:
             chart_name: liferay-gcp-infrastructure-provider
             working_directory: ./cloud/helm/gcp-infrastructure-provider
+    push-rc-image-dxp-operator:
+        if: ${{needs.check-image-dxp-operator.outputs.should_release == 'true'}}
+        needs: check-image-dxp-operator
+        uses: ./.github/workflows/ci-reusable-push-container-image.yaml
+        with:
+            image_name: liferay-dxp-operator
+            sparse_checkout: |
+                cloud/operator
+                cloud/scripts
+            working_directory: ./cloud/operator
     push-rc-infrastructure:
         if: ${{needs.check-infrastructure.outputs.should_release == 'true'}}
         needs: check-infrastructure
@@ -474,9 +526,11 @@ jobs:
             -   promote-rc-bootstrap-aws
             -   promote-rc-bootstrap-gcp
             -   promote-rc-default
+            -   promote-rc-dxp-operator
             -   promote-rc-gcp
             -   promote-rc-gcp-infrastructure
             -   promote-rc-gcp-infrastructure-provider
+            -   promote-rc-image-dxp-operator
             -   promote-rc-infrastructure
             -   promote-rc-observability
             -   promote-rc-platform
@@ -489,9 +543,11 @@ jobs:
             -   push-rc-bootstrap-aws
             -   push-rc-bootstrap-gcp
             -   push-rc-default
+            -   push-rc-dxp-operator
             -   push-rc-gcp
             -   push-rc-gcp-infrastructure
             -   push-rc-gcp-infrastructure-provider
+            -   push-rc-image-dxp-operator
             -   push-rc-infrastructure
             -   push-rc-observability
             -   push-rc-platform
@@ -517,6 +573,7 @@ jobs:
                     DIGEST_liferay_aws_infrastructure_provider: ${{needs.promote-rc-aws-infrastructure-provider.outputs.image_digest}}
                     DIGEST_liferay_azure_infrastructure_provider: ${{needs.promote-rc-azure-infrastructure-provider.outputs.image_digest}}
                     DIGEST_liferay_default: ${{needs.promote-rc-default.outputs.image_digest}}
+                    DIGEST_liferay_dxp_operator: ${{needs.promote-rc-dxp-operator.outputs.image_digest}}
                     DIGEST_liferay_gcp: ${{needs.promote-rc-gcp.outputs.image_digest}}
                     DIGEST_liferay_gcp_infrastructure: ${{needs.promote-rc-gcp-infrastructure.outputs.image_digest}}
                     DIGEST_liferay_gcp_infrastructure_provider: ${{needs.promote-rc-gcp-infrastructure-provider.outputs.image_digest}}
@@ -524,11 +581,14 @@ jobs:
                     DIGEST_liferay_platform: ${{needs.promote-rc-platform.outputs.image_digest}}
                     DIGEST_liferay_platform_components: ${{needs.promote-rc-platform-components.outputs.image_digest}}
                     DIGEST_observability: ${{needs.promote-rc-observability.outputs.image_digest}}
+                    IMAGE_DIGEST_liferay_dxp_operator: ${{needs.promote-rc-image-dxp-operator.outputs.image_digest}}
+                    IMAGE_VERSION_liferay_dxp_operator: ${{needs.push-rc-image-dxp-operator.outputs.version}}
                     VERSION_liferay_aws: ${{needs.push-rc-aws.outputs.chart_version}}
                     VERSION_liferay_aws_infrastructure: ${{needs.push-rc-aws-infrastructure.outputs.chart_version}}
                     VERSION_liferay_aws_infrastructure_provider: ${{needs.push-rc-aws-infrastructure-provider.outputs.chart_version}}
                     VERSION_liferay_azure_infrastructure_provider: ${{needs.push-rc-azure-infrastructure-provider.outputs.chart_version}}
                     VERSION_liferay_default: ${{needs.push-rc-default.outputs.chart_version}}
+                    VERSION_liferay_dxp_operator: ${{needs.push-rc-dxp-operator.outputs.chart_version}}
                     VERSION_liferay_gcp: ${{needs.push-rc-gcp.outputs.chart_version}}
                     VERSION_liferay_gcp_infrastructure: ${{needs.push-rc-gcp-infrastructure.outputs.chart_version}}
                     VERSION_liferay_gcp_infrastructure_provider: ${{needs.push-rc-gcp-infrastructure-provider.outputs.chart_version}}
@@ -627,6 +687,7 @@ jobs:
                             liferay-aws-infrastructure \
                             liferay-aws-infrastructure-provider \
                             liferay-default \
+                            liferay-dxp-operator \
                             liferay-gcp \
                             liferay-gcp-infrastructure \
                             liferay-gcp-infrastructure-provider \
@@ -674,6 +735,29 @@ jobs:
                                         '.[$p] = {sha256: $s, version: $v}')
                         done
 
+                        local image
+                        local images="{}"
+
+                        for image in \
+                            liferay-dxp-operator
+                        do
+                            local digest_key="IMAGE_DIGEST_${image//-/_}"
+                            local version_key="IMAGE_VERSION_${image//-/_}"
+
+                            local digest="${!digest_key:-}"
+
+                            [[ -n "${digest}" ]] || continue
+
+                            images=$( \
+                                echo \
+                                    "${images}" \
+                                    | jq \
+                                        --arg d "${digest}" \
+                                        --arg i "${image}" \
+                                        --arg v "${!version_key:-}" \
+                                        '.[$i] = {digest: $d, version: $v}')
+                        done
+
                         local release_id
 
                         release_id="release-$(date --utc +%Y-%m-%dT%H-%M-%SZ)"
@@ -692,12 +776,14 @@ jobs:
                             --arg source_branch "${GITHUB_REF_NAME}" \
                             --argjson bootstraps "${bootstraps}" \
                             --argjson charts "${charts}" \
+                            --argjson images "${images}" \
                             --argjson included_lcd_tickets "${included_lcd_tickets}" \
                             --null-input \
                             '{
                                 base_commit: $base_commit,
                                 bootstraps: $bootstraps,
                                 charts: $charts,
+                                images: $images,
                                 included_lcd_tickets: $included_lcd_tickets,
                                 release_id: $release_id,
                                 release_ticket: $release_ticket,
@@ -758,6 +844,12 @@ jobs:
         permissions:
             contents: read
         uses: ./.github/workflows/ci-reusable-test-cloud-helm-chart-smoke.yaml
+    test-cloud-operator:
+        needs: check-repository
+        permissions:
+            checks: write
+            contents: read
+        uses: ./.github/workflows/ci-reusable-test-cloud-operator.yaml
     test-cloud-terraform:
         needs: check-repository
         permissions:
