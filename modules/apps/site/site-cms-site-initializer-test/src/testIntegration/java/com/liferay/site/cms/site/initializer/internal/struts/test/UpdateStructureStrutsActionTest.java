@@ -150,38 +150,49 @@ public class UpdateStructureStrutsActionTest {
 	@Test
 	@TestInfo("LPD-99742")
 	public void testExecuteDeletesObjectRelationships() throws Exception {
-		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition1 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition2 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
 
-		_objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition3 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
 
-		com.liferay.object.model.ObjectRelationship objectRelationship1 =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				_objectRelationshipLocalService, _objectDefinition1,
-				_objectDefinition3,
-				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
-				StringUtil.randomId(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship1 =
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService,
+					_serviceBuilderObjectDefinition1,
+					_serviceBuilderObjectDefinition3,
+					ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+					StringUtil.randomId(),
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
-		com.liferay.object.model.ObjectRelationship objectRelationship2 =
-			_addEdgeObjectRelationship(_objectDefinition1, _objectDefinition3);
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship2 = _addEdgeObjectRelationship(
+				_serviceBuilderObjectDefinition1,
+				_serviceBuilderObjectDefinition3);
 
-		com.liferay.object.model.ObjectRelationship objectRelationship3 =
-			_addEdgeObjectRelationship(_objectDefinition3, _objectDefinition2);
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship3 = _addEdgeObjectRelationship(
+				_serviceBuilderObjectDefinition3,
+				_serviceBuilderObjectDefinition2);
 
-		com.liferay.object.model.ObjectRelationship objectRelationship4 =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				_objectRelationshipLocalService, _objectDefinition1,
-				_objectDefinition3,
-				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
-				StringUtil.randomId(),
-				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship4 =
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService,
+					_serviceBuilderObjectDefinition1,
+					_serviceBuilderObjectDefinition3,
+					ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+					StringUtil.randomId(),
+					ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
 
 		String name = StringUtil.randomId();
 
 		MockHttpServletRequest mockHttpServletRequest =
 			_getMockHttpServletRequest(
-				_objectDefinition3, TestPropsValues.getUser());
+				_serviceBuilderObjectDefinition3, TestPropsValues.getUser());
 
 		mockHttpServletRequest.setParameter(
 			"objectRelationships",
@@ -193,10 +204,10 @@ public class UpdateStructureStrutsActionTest {
 					"name", name
 				).put(
 					"objectDefinitionExternalReferenceCode1",
-					_objectDefinition2.getExternalReferenceCode()
+					_serviceBuilderObjectDefinition2.getExternalReferenceCode()
 				).put(
 					"objectDefinitionExternalReferenceCode2",
-					_objectDefinition3.getExternalReferenceCode()
+					_serviceBuilderObjectDefinition3.getExternalReferenceCode()
 				).put(
 					"type", ObjectRelationshipConstants.TYPE_ONE_TO_MANY
 				)
@@ -215,43 +226,48 @@ public class UpdateStructureStrutsActionTest {
 
 		Assert.assertNull(
 			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship1.getObjectRelationshipId()));
+				serviceBuilderObjectRelationship1.getObjectRelationshipId()));
 
 		Assert.assertNotNull(
 			_objectRelationshipLocalService.
 				fetchObjectRelationshipByObjectDefinitionId(
-					_objectDefinition3.getObjectDefinitionId(), name));
+					_serviceBuilderObjectDefinition3.getObjectDefinitionId(),
+					name));
 		Assert.assertNotNull(
 			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship2.getObjectRelationshipId()));
+				serviceBuilderObjectRelationship2.getObjectRelationshipId()));
 		Assert.assertNotNull(
 			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship4.getObjectRelationshipId()));
+				serviceBuilderObjectRelationship4.getObjectRelationshipId()));
 		Assert.assertNotNull(
 			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship3.getObjectRelationshipId()));
+				serviceBuilderObjectRelationship3.getObjectRelationshipId()));
 
-		_deleteEdgeObjectRelationship(objectRelationship2);
-		_deleteEdgeObjectRelationship(objectRelationship3);
+		_deleteEdgeObjectRelationship(serviceBuilderObjectRelationship2);
+		_deleteEdgeObjectRelationship(serviceBuilderObjectRelationship3);
 	}
 
 	@Test
 	@TestInfo("LPD-92696")
 	public void testExecuteDoesNotDeleteObjectRelationships() throws Exception {
-		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition1 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition2 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
 
-		com.liferay.object.model.ObjectRelationship objectRelationship =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				_objectRelationshipLocalService, _objectDefinition1,
-				_objectDefinition2);
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship =
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService,
+					_serviceBuilderObjectDefinition1,
+					_serviceBuilderObjectDefinition2);
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
 		_updateStructureStrutsAction.execute(
 			_getMockHttpServletRequest(
-				_objectDefinition1, TestPropsValues.getUser()),
+				_serviceBuilderObjectDefinition1, TestPropsValues.getUser()),
 			mockHttpServletResponse);
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -261,10 +277,10 @@ public class UpdateStructureStrutsActionTest {
 
 		Assert.assertNotNull(
 			_objectFieldLocalService.fetchObjectField(
-				objectRelationship.getObjectFieldId2()));
+				serviceBuilderObjectRelationship.getObjectFieldId2()));
 		Assert.assertNotNull(
 			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship.getObjectRelationshipId()));
+				serviceBuilderObjectRelationship.getObjectRelationshipId()));
 	}
 
 	@Test
@@ -272,13 +288,18 @@ public class UpdateStructureStrutsActionTest {
 	public void testExecuteDoesNotDeleteUnauthorizedObjectRelationships()
 		throws Exception {
 
-		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition1 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition2 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
 
-		_objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition3 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
 
-		com.liferay.object.model.ObjectRelationship objectRelationship =
-			_addEdgeObjectRelationship(_objectDefinition2, _objectDefinition3);
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship = _addEdgeObjectRelationship(
+				_serviceBuilderObjectDefinition2,
+				_serviceBuilderObjectDefinition3);
 
 		_user = UserTestUtil.addUser();
 
@@ -288,24 +309,25 @@ public class UpdateStructureStrutsActionTest {
 			TestPropsValues.getCompanyId(),
 			com.liferay.object.model.ObjectDefinition.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(_objectDefinition1.getObjectDefinitionId()),
+			String.valueOf(
+				_serviceBuilderObjectDefinition1.getObjectDefinitionId()),
 			_role.getRoleId(),
 			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
 
 		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
 
 		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(_objectDefinition1, _user);
+			_getMockHttpServletRequest(_serviceBuilderObjectDefinition1, _user);
 
 		mockHttpServletRequest.setParameter(
 			"deletedObjectRelationships",
 			JSONUtil.putAll(
 				JSONUtil.put(
 					"objectDefinitionERC",
-					_objectDefinition2.getExternalReferenceCode()
+					_serviceBuilderObjectDefinition2.getExternalReferenceCode()
 				).put(
 					"objectRelationshipERC",
-					objectRelationship.getExternalReferenceCode()
+					serviceBuilderObjectRelationship.getExternalReferenceCode()
 				)
 			).toString());
 
@@ -328,50 +350,58 @@ public class UpdateStructureStrutsActionTest {
 
 		Assert.assertNotNull(
 			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship.getObjectRelationshipId()));
+				serviceBuilderObjectRelationship.getObjectRelationshipId()));
 
-		_deleteEdgeObjectRelationship(objectRelationship);
+		_deleteEdgeObjectRelationship(serviceBuilderObjectRelationship);
 	}
 
 	private com.liferay.object.model.ObjectRelationship
 			_addEdgeObjectRelationship(
-				com.liferay.object.model.ObjectDefinition objectDefinition1,
-				com.liferay.object.model.ObjectDefinition objectDefinition2)
+				com.liferay.object.model.ObjectDefinition
+					serviceBuilderObjectDefinition1,
+				com.liferay.object.model.ObjectDefinition
+					serviceBuilderObjectDefinition2)
 		throws Exception {
 
-		com.liferay.object.model.ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.addObjectRelationship(
-				null, TestPropsValues.getUserId(),
-				objectDefinition1.getObjectDefinitionId(),
-				objectDefinition2.getObjectDefinitionId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				StringUtil.randomId(), false,
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship =
+				_objectRelationshipLocalService.addObjectRelationship(
+					null, TestPropsValues.getUserId(),
+					serviceBuilderObjectDefinition1.getObjectDefinitionId(),
+					serviceBuilderObjectDefinition2.getObjectDefinitionId(), 0,
+					ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString()),
+					StringUtil.randomId(), false,
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
 
-		Assert.assertTrue(objectRelationship.isEdge());
+		Assert.assertTrue(serviceBuilderObjectRelationship.isEdge());
 
-		return objectRelationship;
+		return serviceBuilderObjectRelationship;
 	}
 
 	private void _deleteEdgeObjectRelationship(
-			com.liferay.object.model.ObjectRelationship objectRelationship)
+			com.liferay.object.model.ObjectRelationship
+				serviceBuilderObjectRelationship)
 		throws Exception {
 
-		com.liferay.object.model.ObjectRelationship updatedObjectRelationship =
-			_objectRelationshipLocalService.updateObjectRelationship(
-				objectRelationship.getExternalReferenceCode(),
-				objectRelationship.getObjectRelationshipId(),
-				objectRelationship.getParameterObjectFieldId(),
-				objectRelationship.getDeletionType(), false,
-				objectRelationship.getLabelMap(), null);
+		com.liferay.object.model.ObjectRelationship
+			updatedServiceBuilderObjectRelationship =
+				_objectRelationshipLocalService.updateObjectRelationship(
+					serviceBuilderObjectRelationship.getExternalReferenceCode(),
+					serviceBuilderObjectRelationship.getObjectRelationshipId(),
+					serviceBuilderObjectRelationship.
+						getParameterObjectFieldId(),
+					serviceBuilderObjectRelationship.getDeletionType(), false,
+					serviceBuilderObjectRelationship.getLabelMap(), null);
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
-			updatedObjectRelationship);
+			updatedServiceBuilderObjectRelationship);
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
-			com.liferay.object.model.ObjectDefinition objectDefinition,
+			com.liferay.object.model.ObjectDefinition
+				serviceBuilderObjectDefinition,
 			User user)
 		throws Exception {
 
@@ -390,7 +420,8 @@ public class UpdateStructureStrutsActionTest {
 
 		mockHttpServletRequest.setParameter(
 			"objectDefinition",
-			_getObjectDefinitionJSON(objectDefinition.getObjectDefinitionId()));
+			_getObjectDefinitionJSON(
+				serviceBuilderObjectDefinition.getObjectDefinitionId()));
 
 		return mockHttpServletRequest;
 	}
@@ -438,15 +469,6 @@ public class UpdateStructureStrutsActionTest {
 	@Inject
 	private JSONFactory _jsonFactory;
 
-	@DeleteAfterTestRun
-	private com.liferay.object.model.ObjectDefinition _objectDefinition1;
-
-	@DeleteAfterTestRun
-	private com.liferay.object.model.ObjectDefinition _objectDefinition2;
-
-	@DeleteAfterTestRun
-	private com.liferay.object.model.ObjectDefinition _objectDefinition3;
-
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
@@ -464,6 +486,18 @@ public class UpdateStructureStrutsActionTest {
 
 	@DeleteAfterTestRun
 	private Role _role;
+
+	@DeleteAfterTestRun
+	private com.liferay.object.model.ObjectDefinition
+		_serviceBuilderObjectDefinition1;
+
+	@DeleteAfterTestRun
+	private com.liferay.object.model.ObjectDefinition
+		_serviceBuilderObjectDefinition2;
+
+	@DeleteAfterTestRun
+	private com.liferay.object.model.ObjectDefinition
+		_serviceBuilderObjectDefinition3;
 
 	@Inject(filter = "path=/cms/update-structure")
 	private StrutsAction _updateStructureStrutsAction;
