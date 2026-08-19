@@ -1669,6 +1669,167 @@ test(
 );
 
 test(
+	'View site usages escapes the site name',
+	{tag: '@LPD-102106'},
+	async ({apiHelpers, fragmentsPage, page}) => {
+
+		// Create global fragment set
+
+		const globalSiteId = await getGlobalSiteId(apiHelpers);
+
+		const globalFragmentCollectionName = getRandomString();
+
+		const globalFragmentCollection =
+			await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+				{
+					groupId: globalSiteId,
+					name: globalFragmentCollectionName,
+				}
+			);
+
+		// Create global fragment
+
+		const fragmentEntryName = getRandomString();
+
+		await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+			fragmentCollectionId: globalFragmentCollection.fragmentCollectionId,
+			groupId: globalSiteId,
+			html: '<div class="fragment-name">Custom Fragment</div>',
+			name: fragmentEntryName,
+		});
+
+		// Create site with a name that injects markup
+
+		const siteName = `${getRandomString()}<img src=x onerror=alert(origin)>`;
+
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			friendlyUrlPath: `/${getRandomString()}`,
+			name: siteName,
+		});
+
+		try {
+
+			// Add layout with global fragment
+
+			await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getFragmentDefinition({
+						id: getRandomString(),
+						key: fragmentEntryName,
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			// Go to global site
+
+			await fragmentsPage.goto('/global');
+
+			await fragmentsPage.gotoFragmentSet(globalFragmentCollectionName);
+
+			page.on('dialog', () => {
+				throw new Error('XSS detected');
+			});
+
+			// Assert usages
+
+			await fragmentsPage.clickAction(
+				'View Site Usages',
+				fragmentEntryName
+			);
+
+			const nameCell = page.locator('td.lfr-name-column');
+
+			await expect(nameCell).toHaveText(siteName);
+			await expect(nameCell.locator('img')).toHaveCount(0);
+		}
+		finally {
+
+			// Clean up
+
+			await apiHelpers.headlessAdminSite.deleteSite(
+				site.externalReferenceCode
+			);
+
+			await apiHelpers.jsonWebServicesFragmentCollection.deleteFragmentCollection(
+				globalFragmentCollection.fragmentCollectionId
+			);
+		}
+	}
+);
+
+test(
+	'Export Fragment Set escapes the scope name',
+	{tag: '@LPD-102106'},
+	async ({apiHelpers, fragmentsPage, page}) => {
+
+		// Create site with a name that injects markup
+
+		const siteName = `${getRandomString()}<img src=x onerror=alert(origin)>`;
+
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			friendlyUrlPath: `/${getRandomString()}`,
+			name: siteName,
+		});
+
+		try {
+
+			// Create fragment set. Only a fragment set that has a fragment is
+			// exportable, so it needs one to be listed.
+
+			const fragmentCollectionName = getRandomString();
+
+			const fragmentCollection =
+				await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+					{
+						groupId: site.id,
+						name: fragmentCollectionName,
+					}
+				);
+
+			await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+				fragmentCollectionId: fragmentCollection.fragmentCollectionId,
+				groupId: site.id,
+				html: '<div class="fragment-name">Custom Fragment</div>',
+				name: getRandomString(),
+			});
+
+			// Go to fragment administration
+
+			await fragmentsPage.goto(site.friendlyUrlPath);
+
+			page.on('dialog', () => {
+				throw new Error('XSS detected');
+			});
+
+			// Open the export fragment set modal
+
+			await fragmentsPage.clickFragmentSetsAction('Export');
+
+			// Assert scope
+
+			const scopeCell = page
+				.frameLocator('iframe[title="Export Fragment Set"]')
+				.locator('tr')
+				.filter({hasText: fragmentCollectionName})
+				.locator('td.lfr-scope-column');
+
+			await expect(scopeCell).toHaveText(siteName);
+			await expect(scopeCell.locator('img')).toHaveCount(0);
+		}
+		finally {
+
+			// Clean up
+
+			await apiHelpers.headlessAdminSite.deleteSite(
+				site.externalReferenceCode
+			);
+		}
+	}
+);
+
+test(
 	'Preview cannot receive messages from other windows',
 	{tag: '@LPD-47375'},
 	async ({apiHelpers, context, fragmentsPage, page, site}) => {
