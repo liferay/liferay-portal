@@ -8,6 +8,7 @@ package com.liferay.headless.pim.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.headless.pim.client.dto.v1_0.LinkReference;
+import com.liferay.headless.pim.client.dto.v1_0.Status;
 import com.liferay.headless.pim.client.pagination.Page;
 import com.liferay.headless.pim.client.pagination.Pagination;
 import com.liferay.object.model.ObjectEntry;
@@ -155,8 +156,6 @@ public class LinkReferenceResourceTest
 		LinkReference linkReference = _getLinkReference(
 			linkReferences, objectEntry);
 
-		Assert.assertEquals("approved", linkReference.getStatus());
-
 		Map<String, Map<String, String>> actions = linkReference.getActions();
 
 		Map<String, String> deleteAction = actions.get("delete");
@@ -166,6 +165,10 @@ public class LinkReferenceResourceTest
 		Assert.assertTrue(href, href.contains("/links?className="));
 
 		Assert.assertEquals("DELETE", deleteAction.get("method"));
+
+		Status status = linkReference.getStatus();
+
+		Assert.assertEquals("approved", status.getLabel());
 	}
 
 	private LinkReference _getLinkReference(
