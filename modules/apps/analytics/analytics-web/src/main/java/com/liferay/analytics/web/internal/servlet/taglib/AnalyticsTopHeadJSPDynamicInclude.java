@@ -10,6 +10,7 @@ import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.web.internal.constants.AnalyticsWebKeys;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
 import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
+import com.liferay.portal.kernel.cookies.CookiesManager;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -85,7 +86,9 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 			_getLiferayAnalyticsChannelId(httpServletRequest, themeDisplay));
 		httpServletRequest.setAttribute(
 			AnalyticsWebKeys.ANALYTICS_CLIENT_CONFIG,
-			_serialize(_getAnalyticsCloudClientConfig(analyticsConfiguration)));
+			_serialize(
+				_getAnalyticsCloudClientConfig(
+					analyticsConfiguration, themeDisplay)));
 
 		if (GetterUtil.getBoolean(
 				PropsUtil.get(PropsKeys.ANALYTICS_CLOUD_MOCK_ENABLED))) {
@@ -136,7 +139,8 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 	}
 
 	private Map<String, String> _getAnalyticsCloudClientConfig(
-		AnalyticsConfiguration analyticsConfiguration) {
+		AnalyticsConfiguration analyticsConfiguration,
+		ThemeDisplay themeDisplay) {
 
 		if (GetterUtil.getBoolean(
 				PropsUtil.get(PropsKeys.ANALYTICS_CLOUD_MOCK_ENABLED))) {
@@ -147,6 +151,8 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		}
 
 		return HashMapBuilder.put(
+			"cookieDomain", () -> _getCookieDomain(themeDisplay)
+		).put(
 			"dataSourceId",
 			analyticsConfiguration.liferayAnalyticsDataSourceId()
 		).put(
@@ -157,6 +163,26 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		).put(
 			"projectId", analyticsConfiguration.liferayAnalyticsProjectId()
 		).build();
+	}
+
+	private String _getCookieDomain(ThemeDisplay themeDisplay) {
+		try {
+			String cookieDomain = _cookiesManager.getDomain(
+				themeDisplay.getServerName());
+
+			if (Validator.isNotNull(cookieDomain) &&
+				!Validator.isIPAddress(cookieDomain)) {
+
+				return cookieDomain;
+			}
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(illegalArgumentException);
+			}
+		}
+
+		return null;
 	}
 
 	private String _getLiferayAnalyticsChannelId(
@@ -278,6 +304,9 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Reference
 	private CookiesConfigurationProvider _cookiesConfigurationProvider;
+
+	@Reference
+	private CookiesManager _cookiesManager;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
