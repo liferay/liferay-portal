@@ -7,10 +7,13 @@ package com.liferay.osb.faro.web.internal.util;
 
 import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.Trend;
+import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.math.BigDecimal;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -20,6 +23,13 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
  * @author Leslie Wong
  */
 public class JSONUtilTest {
+
+	@Before
+	public void setUp() {
+		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
+
+		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+	}
 
 	@Test
 	public void testWriteValueAsStringExcludesNullMetricFields()
