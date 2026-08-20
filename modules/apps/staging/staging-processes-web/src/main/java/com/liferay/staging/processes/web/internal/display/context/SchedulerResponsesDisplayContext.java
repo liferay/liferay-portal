@@ -25,9 +25,9 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * @author Mariano Álvaro Sáiz
  */
-public class ScheduledPublishProcessesDisplayContext {
+public class SchedulerResponsesDisplayContext {
 
-	public ScheduledPublishProcessesDisplayContext(
+	public SchedulerResponsesDisplayContext(
 		Group group, HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse, long liveGroupId) {
 

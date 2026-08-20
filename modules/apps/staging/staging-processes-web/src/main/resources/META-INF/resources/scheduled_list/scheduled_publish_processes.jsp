@@ -8,13 +8,13 @@
 <%@ include file="/init.jsp" %>
 
 <%
-ScheduledPublishProcessesDisplayContext scheduledPublishProcessesDisplayContext = new ScheduledPublishProcessesDisplayContext(group, request, liferayPortletResponse, liveGroupId);
+SchedulerResponsesDisplayContext schedulerResponsesDisplayContext = new SchedulerResponsesDisplayContext(group, request, liferayPortletResponse, liveGroupId);
 %>
 
 <div id="<portlet:namespace />scheduledPublishProcessesSearchContainer">
 	<liferay-ui:search-container
 		id="scheduledPublishProcesses"
-		searchContainer="<%= scheduledPublishProcessesDisplayContext.getSearchContainer() %>"
+		searchContainer="<%= schedulerResponsesDisplayContext.getSearchContainer() %>"
 	>
 		<liferay-ui:search-container-row
 			className="com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse"
@@ -94,7 +94,7 @@ ScheduledPublishProcessesDisplayContext scheduledPublishProcessesDisplayContext 
 					</portlet:renderURL>
 
 					<portlet:actionURL name="/staging_processes/publish_layouts" var="deleteScheduledPublicationURL">
-						<portlet:param name="cmd" value="<%= scheduledPublishProcessesDisplayContext.getCmd() %>" />
+						<portlet:param name="cmd" value="<%= schedulerResponsesDisplayContext.getCmd() %>" />
 						<portlet:param name="stagingGroupId" value="<%= String.valueOf(stagingGroupId) %>" />
 						<portlet:param name="jobName" value="<%= schedulerResponse.getJobName() %>" />
 						<portlet:param name="redirect" value="<%= deleteScheduledPublicationRedirectURL %>" />
