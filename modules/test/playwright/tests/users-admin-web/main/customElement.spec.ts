@@ -11,17 +11,14 @@ import {liferayConfig} from '../../../liferay.config';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import {editCustomElementPageTest} from '../../client-extension-web/custom-element/fixtures/editCustomElementPageTest';
 import {WaitAction} from '../../client-extension-web/pages/EditClientExtensionsPage';
-import {componentsPageTest} from '../../configuration-admin-web/main/fixtures/ComponentsPageTest';
 
 export const test = mergeTests(
-	componentsPageTest,
 	editCustomElementPageTest,
 	globalMenuPagesTest,
 	loginTest()
 );
 
 test('LPD-39537 - Check that the name field of custom elements does not allow stored XSS injections', async ({
-	componentsPage,
 	editCustomElementPage,
 	globalMenuPage,
 	page,
@@ -40,7 +37,7 @@ test('LPD-39537 - Check that the name field of custom elements does not allow st
 
 	await globalMenuPage.goToControlPanel('Components');
 
-	await expect(componentsPage.helpLink).toBeVisible();
+	await expect(page.getByText(NAME)).toBeVisible();
 
 	page.on('dialog', async () => {
 		throw new Error('XSS detected');
