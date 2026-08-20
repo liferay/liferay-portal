@@ -1,0 +1,96 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Crossplane Providers
+templates:
+    -   templates/crossplane-providers.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.deploymentTemplate.spec.template.spec.serviceAccountName
+                    value: provider-kubernetes
+            -   equal:
+                    path: spec.serviceAccountTemplate.metadata.name
+                    value: provider-kubernetes
+        documentSelector:
+            path: metadata.name
+            value: provider-kubernetes-runtime-config
+        it: Binds provider-kubernetes to the service account the provider charts grant RBAC to
+    -   asserts:
+            -   equal:
+                    path: spec.deploymentTemplate.spec.template.metadata.annotations["sidecar.opentelemetry.io/inject"]
+                    value: "false"
+            -   equal:
+                    path: spec.deploymentTemplate.spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+                    value: true
+            -   equal:
+                    path: spec.deploymentTemplate.spec.template.spec.securityContext.runAsNonRoot
+                    value: true
+            -   equal:
+                    path: spec.deploymentTemplate.spec.template.spec.securityContext.seccompProfile.type
+                    value: RuntimeDefault
+        documentSelector:
+            path: metadata.name
+            value: provider-kubernetes-runtime-config
+        it: Hardens every provider runtime for the restricted pod security profile
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: provider-kubernetes-runtime-config
+                equal:
+                    path: spec.deploymentTemplate.spec.template.spec.containers[0].resources.limits.memory
+                    value: 2Gi
+            -   documentSelector:
+                    path: metadata.name
+                    value: provider-nop-runtime-config
+                notExists:
+                    path: spec.deploymentTemplate.spec.template.spec.containers[0].resources
+        it: Leaves the container resources to Crossplane only when a provider sets none
+        set:
+            operatorApplications.crossplane.providers.provider-nop:
+                package: xpkg.upbound.io/crossplane-contrib/provider-nop:v0.4.0
+    -   asserts:
+            -   notExists:
+                    path: spec.deploymentTemplate.spec.template.spec.serviceAccountName
+            -   notExists:
+                    path: spec.serviceAccountTemplate
+        documentSelector:
+            path: metadata.name
+            value: provider-nop-runtime-config
+        it: Leaves the service account to Crossplane when a provider needs no cloud identity
+        set:
+            operatorApplications.crossplane.providers.provider-nop:
+                package: xpkg.upbound.io/crossplane-contrib/provider-nop:v0.4.0
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the providers when Crossplane is disabled
+        set:
+            operatorApplications.crossplane.enabled: false
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-60"
+            -   equal:
+                    path: spec.credentials.source
+                    value: InjectedIdentity
+        documentSelector:
+            path: kind
+            value: ClusterProviderConfig
+        it: Points the default Kubernetes provider config at the injected identity
+    -   asserts:
+            -   hasDocuments:
+                    count: 3
+            -   documentSelector:
+                    path: metadata.name
+                    value: provider-kubernetes
+                equal:
+                    path: spec.package
+                    value: xpkg.upbound.io/upbound/provider-kubernetes:v1.2.0
+            -   documentSelector:
+                    path: metadata.name
+                    value: provider-kubernetes
+                equal:
+                    path: spec.runtimeConfigRef.name
+                    value: provider-kubernetes-runtime-config
+        it: Renders one provider and one runtime config for every configured provider

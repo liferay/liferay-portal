@@ -1,0 +1,47 @@
+{{- range $application := .Values.operatorApplications }}
+{{- if and $application.enabled (or (not $application.requiresObservability) $.Values.observability.enabled) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-100"
+    finalizers:
+        -   resources-finalizer.argocd.argoproj.io
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $application.name }}
+    name: {{ $application.name }}
+    namespace: {{ $.Release.Namespace }}
+spec:
+    destination:
+        namespace: {{ $application.namespace }}
+        server: https://kubernetes.default.svc
+    project: liferay-operator
+    source:
+        {{- include "liferay-platform.chartSource" $application | nindent 8 }}
+        {{- with $application.values }}
+        helm:
+            valuesObject:
+                {{- toYaml . | nindent 16 }}
+        {{- end }}
+    syncPolicy:
+        automated:
+            prune: true
+            selfHeal: true
+        {{- with $application.namespaceLabels }}
+        managedNamespaceMetadata:
+            labels:
+                {{- toYaml . | nindent 16 }}
+        {{- end }}
+        retry:
+            backoff:
+                duration: 30s
+                factor: 2
+                maxDuration: 10m
+            limit: 10
+        syncOptions:
+            -   CreateNamespace=true
+            -   ServerSideApply=true
+{{- end }}
+{{- end }}

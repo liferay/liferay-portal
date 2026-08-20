@@ -1,5 +1,0 @@
-{{- $operatorApplication := dict
-    "name" "keda"
-    "syncWave" "-100"
--}}
-{{- include "liferay-platform.operatorApplication" (list . (merge $operatorApplication .Values.operatorApplications.keda)) }}

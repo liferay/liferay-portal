@@ -12,6 +12,7 @@ metadata:
 spec:
     credentials:
         source: InjectedIdentity
+{{- range $name, $provider := .Values.operatorApplications.crossplane.providers }}
 ---
 apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
@@ -20,31 +21,28 @@ metadata:
         argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-90"
     labels:
-        {{- include "liferay-platform.labels" . | nindent 8 }}
-        app.kubernetes.io/name: kubernetes-config
-    name: kubernetes-config
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $name }}-runtime-config
+    name: {{ $name }}-runtime-config
 spec:
     deploymentTemplate:
         spec:
             selector:
                 matchLabels:
-                    pkg.crossplane.io/provider: provider-kubernetes
+                    pkg.crossplane.io/provider: {{ $name }}
             template:
                 metadata:
                     annotations:
-                        {{- include "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" . | nindent 24 }}
+                        {{- include "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" $ | nindent 24 }}
                     labels:
-                        pkg.crossplane.io/provider: provider-kubernetes
+                        pkg.crossplane.io/provider: {{ $name }}
                 spec:
                     containers:
                         -   name: package-runtime
+                            {{- with $provider.resources }}
                             resources:
-                                limits:
-                                    cpu: 1000m
-                                    memory: 2Gi
-                                requests:
-                                    cpu: 250m
-                                    memory: 512Mi
+                                {{- toYaml . | nindent 32 }}
+                            {{- end }}
                             securityContext:
                                 allowPrivilegeEscalation: false
                                 capabilities:
@@ -59,10 +57,14 @@ spec:
                         runAsUser: 2000
                         seccompProfile:
                             type: RuntimeDefault
-                    serviceAccountName: provider-kubernetes
+                    {{- with $provider.serviceAccountName }}
+                    serviceAccountName: {{ . }}
+                    {{- end }}
+    {{- with $provider.serviceAccountName }}
     serviceAccountTemplate:
         metadata:
-            name: provider-kubernetes
+            name: {{ . }}
+    {{- end }}
 ---
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
@@ -71,12 +73,13 @@ metadata:
         argocd.argoproj.io/sync-options: ServerSideApply=true,SkipDryRunOnMissingResource=true
         argocd.argoproj.io/sync-wave: "-90"
     labels:
-        {{- include "liferay-platform.labels" . | nindent 8 }}
-        app.kubernetes.io/name: provider-kubernetes
-    name: provider-kubernetes
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $name }}
+    name: {{ $name }}
 spec:
-    package: xpkg.upbound.io/upbound/provider-kubernetes:v1.2.0
+    package: {{ $provider.package }}
     runtimeConfigRef:
-        name: kubernetes-config
+        name: {{ $name }}-runtime-config
     skipDependencyResolution: true
+{{- end }}
 {{- end -}}

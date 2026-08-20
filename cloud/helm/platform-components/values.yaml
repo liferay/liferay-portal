@@ -97,13 +97,16 @@ observability:
 operatorApplications:
     ackPrometheusService:
         enabled: false
+        name: ack-prometheusservice
         namespace: ack-system
         repoURL: oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart
+        requiresObservability: true
         targetRevision: 1.4.1
         values: {}
     argoWorkflows:
         chart: argo-workflows
         enabled: true
+        name: argo-workflows
         namespace: argo-workflows-system
         repoURL: https://argoproj.github.io/argo-helm
         targetRevision: 1.0.10
@@ -190,7 +193,21 @@ operatorApplications:
                     requests:
                         cpu: 15m
                         memory: 128Mi
+        name: crossplane
         namespace: crossplane-system
+        namespaceLabels:
+            pod-security.kubernetes.io/enforce: restricted
+        providers:
+            provider-kubernetes:
+                package: xpkg.upbound.io/upbound/provider-kubernetes:v1.2.0
+                resources:
+                    limits:
+                        cpu: 1000m
+                        memory: 2Gi
+                    requests:
+                        cpu: 250m
+                        memory: 512Mi
+                serviceAccountName: provider-kubernetes
         repoURL: https://charts.crossplane.io/stable
         targetRevision: 2.1.3
         values:
@@ -232,7 +249,10 @@ operatorApplications:
                 runAsUser: 65532
     dxpOperator:
         enabled: true
+        name: dxp-operator
         namespace: dxp-operator-system
+        namespaceLabels:
+            pod-security.kubernetes.io/enforce: restricted
         repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
         targetRevision: 0.0.1
         values:
@@ -240,7 +260,10 @@ operatorApplications:
     eckOperator:
         chart: eck-operator
         enabled: true
+        name: eck-operator
         namespace: elastic-system
+        namespaceLabels:
+            pod-security.kubernetes.io/enforce: restricted
         repoURL: https://helm.elastic.co
         targetRevision: 3.2.0
         values:
@@ -268,6 +291,7 @@ operatorApplications:
                     type: RuntimeDefault
     envoyGateway:
         enabled: true
+        name: envoy-gateway
         namespace: envoy-gateway-system
         repoURL: oci://docker.io/envoyproxy/gateway-helm
         targetRevision: 1.6.3
@@ -283,6 +307,7 @@ operatorApplications:
     externalSecrets:
         chart: external-secrets
         enabled: true
+        name: external-secrets
         namespace: external-secrets-system
         repoURL: https://charts.external-secrets.io
         targetRevision: 2.9.0
@@ -311,6 +336,7 @@ operatorApplications:
     keda:
         chart: keda
         enabled: false
+        name: keda
         namespace: keda-system
         repoURL: https://kedacore.github.io/charts
         targetRevision: 2.19.0
