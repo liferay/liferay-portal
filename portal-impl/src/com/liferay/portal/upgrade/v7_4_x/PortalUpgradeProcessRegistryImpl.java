@@ -817,7 +817,10 @@ public class PortalUpgradeProcessRegistryImpl
 			new LayoutStagingExternalReferenceCodeUpgradeProcess());
 
 		upgradeVersionTreeMap.put(
-			new Version(38, 7, 7),
+			new Version(38, 7, 7), new DummyUpgradeProcess());
+
+		upgradeVersionTreeMap.put(
+			new Version(38, 7, 8),
 			UpgradeModulesFactory.create(
 				new String[] {"com.liferay.portal.security.audit.router"},
 				null));
