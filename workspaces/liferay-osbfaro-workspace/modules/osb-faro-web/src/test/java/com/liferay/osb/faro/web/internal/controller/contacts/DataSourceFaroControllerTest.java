@@ -191,6 +191,12 @@ public class DataSourceFaroControllerTest {
 
 	@Test
 	public void testCreateTypeSalesforce() throws Exception {
+		Mockito.when(
+			_faroProject.getSubscriptionName()
+		).thenReturn(
+			"Liferay Data Platform"
+		);
+
 		DataSource dataSource = Mockito.mock(DataSource.class);
 
 		Mockito.when(
