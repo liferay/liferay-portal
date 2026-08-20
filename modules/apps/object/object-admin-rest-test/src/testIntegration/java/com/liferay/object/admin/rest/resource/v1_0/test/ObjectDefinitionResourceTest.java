@@ -12,6 +12,8 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.test.rule.LazyReferencing;
 import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
+import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
+import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationRegistryUtil;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.object.admin.rest.client.dto.v1_0.ObjectAction;
@@ -77,6 +79,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -1817,49 +1820,10 @@ public class ObjectDefinitionResourceTest
 				}
 			});
 
-		ObjectLayoutRow[] finalObjectLayoutRows = {
-			new ObjectLayoutRow() {
-				{
-					objectLayoutColumns = new ObjectLayoutColumn[] {
-						new ObjectLayoutColumn() {
-							{
-								objectFieldName =
-									"r_relationshipName_c_objectDefinition1Id";
-								priority = 0;
-								size = 6;
-							}
-						}
-					};
-					priority = 0;
-				}
-			}
-		};
-
 		randomObjectDefinition.setObjectLayouts(
 			new ObjectLayout[] {
-				new ObjectLayout() {
-					{
-						defaultObjectLayout = true;
-						objectLayoutTabs = new ObjectLayoutTab[] {
-							new ObjectLayoutTab() {
-								{
-									objectLayoutBoxes = new ObjectLayoutBox[] {
-										new ObjectLayoutBox() {
-											{
-												collapsable = true;
-												objectLayoutRows =
-													finalObjectLayoutRows;
-												priority = 0;
-												type = Type.REGULAR;
-											}
-										}
-									};
-									priority = 0;
-								}
-							}
-						};
-					}
-				}
+				_createDefaultObjectLayout(
+					"r_relationshipName_c_objectDefinition1Id")
 			});
 
 		ObjectDefinition putObjectDefinition =
@@ -2048,6 +2012,7 @@ public class ObjectDefinitionResourceTest
 			},
 			null, objectField);
 
+		_testPutObjectDefinitionByExternalReferenceCodeWithDuplicateDefaultObjectLayout();
 		_testPutObjectDefinitionByExternalReferenceCodeWithSystemAggregationObjectField();
 		_testPutObjectDefinitionWithAllowStandaloneObjectEntry();
 		_testPutObjectDefinitionWithObjectViewExternalReferenceCode();
@@ -2465,6 +2430,19 @@ public class ObjectDefinitionResourceTest
 		}
 	}
 
+	private void _assertScreenNavigationCategories(
+			String className, int expectedSize)
+		throws Exception {
+
+		List<ScreenNavigationCategory> screenNavigationCategories =
+			ScreenNavigationRegistryUtil.getScreenNavigationCategories(
+				className, TestPropsValues.getUser(), null);
+
+		Assert.assertEquals(
+			screenNavigationCategories.toString(), expectedSize,
+			screenNavigationCategories.size());
+	}
+
 	private void _assertWorkflowDefinitionLinks(
 		ObjectDefinition objectDefinition,
 		WorkflowDefinitionLink[] workflowDefinitionLinks) {
@@ -2483,6 +2461,31 @@ public class ObjectDefinitionResourceTest
 			objectDefinitions,
 			objectDefinition -> Objects.equals(
 				objectDefinition.getId(), expectedObjectDefinition.getId()));
+	}
+
+	private ObjectLayout _createDefaultObjectLayout(String objectFieldName) {
+		ObjectLayout objectLayout = new ObjectLayout();
+
+		objectLayout.setDefaultObjectLayout(true);
+
+		ObjectLayoutBox objectLayoutBox = new ObjectLayoutBox();
+
+		objectLayoutBox.setCollapsable(true);
+		objectLayoutBox.setObjectLayoutRows(
+			new ObjectLayoutRow[] {_createObjectLayoutRow(objectFieldName)});
+		objectLayoutBox.setPriority(0);
+		objectLayoutBox.setType(ObjectLayoutBox.Type.REGULAR);
+
+		ObjectLayoutTab objectLayoutTab = new ObjectLayoutTab();
+
+		objectLayoutTab.setObjectLayoutBoxes(
+			new ObjectLayoutBox[] {objectLayoutBox});
+		objectLayoutTab.setPriority(0);
+
+		objectLayout.setObjectLayoutTabs(
+			new ObjectLayoutTab[] {objectLayoutTab});
+
+		return objectLayout;
 	}
 
 	private ObjectAction _createObjectAction(String externalReferenceCode) {
@@ -2506,6 +2509,23 @@ public class ObjectDefinitionResourceTest
 			).build());
 
 		return objectAction;
+	}
+
+	private ObjectLayoutRow _createObjectLayoutRow(String objectFieldName) {
+		ObjectLayoutRow objectLayoutRow = new ObjectLayoutRow();
+
+		ObjectLayoutColumn objectLayoutColumn = new ObjectLayoutColumn();
+
+		objectLayoutColumn.setObjectFieldName(objectFieldName);
+		objectLayoutColumn.setPriority(0);
+		objectLayoutColumn.setSize(6);
+
+		objectLayoutRow.setObjectLayoutColumns(
+			new ObjectLayoutColumn[] {objectLayoutColumn});
+
+		objectLayoutRow.setPriority(0);
+
+		return objectLayoutRow;
 	}
 
 	private ObjectRelationship _createObjectRelationship(
@@ -3506,6 +3526,65 @@ public class ObjectDefinitionResourceTest
 
 		_assertWorkflowDefinitionLinks(
 			_addObjectDefinition(objectDefinition), workflowDefinitionLinks);
+	}
+
+	private void _testPutObjectDefinitionByExternalReferenceCodeWithDuplicateDefaultObjectLayout()
+		throws Exception {
+
+		ObjectDefinition randomObjectDefinition = randomObjectDefinition();
+
+		ObjectField objectField = (ObjectField)ArrayUtil.getValue(
+			randomObjectDefinition.getObjectFields(), 0);
+
+		randomObjectDefinition.setObjectLayouts(
+			new ObjectLayout[] {
+				_createDefaultObjectLayout(objectField.getName())
+			});
+
+		randomObjectDefinition.setStatus(
+			new Status() {
+				{
+					code = WorkflowConstants.STATUS_APPROVED;
+				}
+			});
+
+		ObjectDefinition putObjectDefinition =
+			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
+				randomObjectDefinition.getExternalReferenceCode(),
+				randomObjectDefinition);
+
+		_objectDefinitions.add(
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				putObjectDefinition.getId()));
+
+		_assertScreenNavigationCategories(
+			putObjectDefinition.getClassName(), 1);
+
+		putObjectDefinition.setObjectLayouts(
+			new ObjectLayout[] {
+				_createDefaultObjectLayout(objectField.getName()),
+				_createDefaultObjectLayout(objectField.getName())
+			});
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"There can only be one default object layout",
+			() ->
+				objectDefinitionResource.
+					putObjectDefinitionByExternalReferenceCode(
+						putObjectDefinition.getExternalReferenceCode(),
+						putObjectDefinition));
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"There can only be one default object layout",
+			() ->
+				objectDefinitionResource.
+					putObjectDefinitionByExternalReferenceCode(
+						putObjectDefinition.getExternalReferenceCode(),
+						putObjectDefinition));
+
+		_assertScreenNavigationCategories(
+			putObjectDefinition.getClassName(), 1);
 	}
 
 	private void _testPutObjectDefinitionByExternalReferenceCodeWithSystemAggregationObjectField()

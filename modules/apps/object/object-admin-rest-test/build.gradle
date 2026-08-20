@@ -9,6 +9,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:feature-flag:feature-flag-test-util")
+	testIntegrationImplementation project(":apps:frontend-taglib:frontend-taglib")
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
