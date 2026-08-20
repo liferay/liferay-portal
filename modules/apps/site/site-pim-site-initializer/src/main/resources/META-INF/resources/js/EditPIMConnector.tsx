@@ -9,7 +9,7 @@ import ClayForm, {
 	ClayInput,
 	ClaySelectWithOption,
 } from '@clayui/form';
-import {Toolbar} from '@liferay/site-cms-site-initializer';
+import {RequiredMark, Toolbar} from '@liferay/site-cms-site-initializer';
 import {fetch, navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
@@ -126,6 +126,8 @@ export default function EditPIMConnector({
 					<ClayForm.Group>
 						<label htmlFor="pimConnectorName">
 							{Liferay.Language.get('name')}
+
+							<RequiredMark />
 						</label>
 
 						<ClayInput
@@ -140,6 +142,8 @@ export default function EditPIMConnector({
 					<ClayForm.Group>
 						<label htmlFor="pimConnectorKey">
 							{Liferay.Language.get('connector')}
+
+							<RequiredMark />
 						</label>
 
 						<ClaySelectWithOption

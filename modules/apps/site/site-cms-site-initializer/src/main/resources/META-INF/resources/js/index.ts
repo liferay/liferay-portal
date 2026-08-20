@@ -13,6 +13,7 @@ export {default as VerticalNavLayout} from './common/components/VerticalNavLayou
 export {default as FieldPicker} from './common/components/forms/FieldPicker';
 export {default as FieldText} from './common/components/forms/FieldText';
 export {default as FieldWrapper} from './common/components/forms/FieldWrapper';
+export {default as RequiredMark} from './common/components/forms/RequiredMark';
 export {required, validate} from './common/components/forms/validations';
 export {default as ApiHelper, RequestResult} from './common/services/ApiHelper';
 export {IAssetObjectEntry} from './common/types/AssetType';
