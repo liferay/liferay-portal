@@ -1126,3 +1126,122 @@ test.describe('Needs Review section', () => {
 		}
 	);
 });
+
+test.describe('Duplication and Similarity section', () => {
+	test(
+		'Groups the duplicated topics of the selected space by the title they repeat',
+		{tag: ['@LPD-102887', '@LPD-103246']},
+		async ({apiHelpers, page}) => {
+			const firstSpaceName = `space ${getRandomString()}`;
+			const secondSpaceName = `space ${getRandomString()}`;
+
+			const firstSpaceTitle = `duplicated ${getRandomString()}`;
+			const secondSpaceTitles = [
+				`Duplicated ${getRandomString()}`,
+				`duplicated ${getRandomString()}`,
+			];
+			const uniqueTitle = `unique ${getRandomString()}`;
+
+			const duplicateTopicsCard = page.getByRole('button', {
+				name: /Duplicate Topics/,
+			});
+
+			const duplicateTopicsCount = duplicateTopicsCard
+				.locator('.cms-dashboard__interactive-card__metric > div')
+				.first();
+
+			async function expectDuplicateTopicsCount(
+				spaceName: string,
+				count: string
+			) {
+
+				// The counter comes from a search aggregation, so the indexer may
+				// still be behind. Reloading gives the picker a clean state and
+				// refetches the counter for the space.
+
+				await expect(async () => {
+					await page.goto('/web/cms/dashboard');
+
+					await selectSpace(page, spaceName);
+
+					await expect(duplicateTopicsCount).toHaveText(count, {
+						timeout: 10000,
+					});
+				}).toPass({timeout: 90000});
+			}
+
+			await test.step('Create contents that repeat a title in two spaces', async () => {
+				for (const spaceName of [firstSpaceName, secondSpaceName]) {
+					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+						name: spaceName,
+						type: 'Space',
+					});
+				}
+
+				const postContent = (spaceName: string, title: string) =>
+					apiHelpers.objectEntry.postObjectEntry(
+						{
+							objectEntryFolderExternalReferenceCode:
+								'L_CONTENTS',
+							title,
+						},
+						APPLICATION_NAME,
+						spaceName
+					);
+
+				const contents = [
+					await postContent(firstSpaceName, firstSpaceTitle),
+					await postContent(firstSpaceName, firstSpaceTitle),
+					await postContent(firstSpaceName, uniqueTitle),
+					await postContent(secondSpaceName, secondSpaceTitles[0]),
+					await postContent(secondSpaceName, secondSpaceTitles[0]),
+					await postContent(secondSpaceName, secondSpaceTitles[0]),
+					await postContent(secondSpaceName, secondSpaceTitles[1]),
+					await postContent(secondSpaceName, secondSpaceTitles[1]),
+				];
+
+				for (const content of contents) {
+					apiHelpers.data.push({id: content.id, type: 'document'});
+
+					expect(content.id).toBeTruthy();
+				}
+			});
+
+			await test.step('Count only the contents of the selected space', async () => {
+				await expectDuplicateTopicsCount(firstSpaceName, '2');
+
+				await expectDuplicateTopicsCount(secondSpaceName, '5');
+			});
+
+			await test.step('Review the duplicates grouped by their title', async () => {
+				await duplicateTopicsCard.click();
+
+				const modal = page.locator('.modal-full-screen .modal-content');
+
+				await expect(
+					modal.getByText(`${secondSpaceTitles[0]} (3)`)
+				).toBeVisible();
+
+				await expect(
+					modal.getByText(`${secondSpaceTitles[1]} (2)`)
+				).toBeVisible();
+
+				await expect(
+					modal.getByText(secondSpaceTitles[0], {exact: true})
+				).toHaveCount(3);
+
+				await expect(modal.getByText(uniqueTitle)).toHaveCount(0);
+
+				await expect(
+					modal.getByRole('button', {name: /^Edit /})
+				).toHaveCount(5);
+
+				// Editing is the only action a row offers.
+
+				await expect(
+					modal.locator('.list-group-item button')
+				).toHaveCount(5);
+			});
+		}
+	);
+});

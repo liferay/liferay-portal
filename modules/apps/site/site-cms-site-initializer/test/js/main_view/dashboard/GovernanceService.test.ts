@@ -95,3 +95,121 @@ describe('GovernanceService.getAssetStatistics', () => {
 		expect(data?.duplicatedCount).toBeUndefined();
 	});
 });
+
+describe('GovernanceService.getDuplicateTopicsCount', () => {
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
+
+	const ENTRY_CLASS_NAMES =
+		'com.liferay.object.ObjectDefinition#A,com.liferay.object.ObjectDefinition#B';
+
+	function mockAggregation(
+		searchFacets: Record<string, {frequency: number}[]> | null
+	) {
+		return jest.spyOn(ApiHelper, 'post').mockResolvedValue({
+			data: searchFacets && {searchFacets},
+			error: searchFacets ? null : 'an-unexpected-error-occurred',
+		} as any);
+	}
+
+	it('counts the assets that share a title, not the groups', async () => {
+		mockAggregation({duplicateTitles: [{frequency: 3}, {frequency: 2}]});
+
+		expect(
+			await GovernanceService.getDuplicateTopicsCount({
+				entryClassNames: ENTRY_CLASS_NAMES,
+			})
+		).toBe(5);
+	});
+
+	it('counts no duplicate title when the aggregation comes back empty', async () => {
+		mockAggregation({});
+
+		expect(
+			await GovernanceService.getDuplicateTopicsCount({
+				entryClassNames: ENTRY_CLASS_NAMES,
+			})
+		).toBe(0);
+	});
+
+	it('reports no count when the request fails', async () => {
+		mockAggregation(null);
+
+		expect(
+			await GovernanceService.getDuplicateTopicsCount({
+				entryClassNames: ENTRY_CLASS_NAMES,
+			})
+		).toBeUndefined();
+	});
+
+	it('aggregates the titles of the CMS content types in the current language', async () => {
+		const postSpy = mockAggregation({duplicateTitles: []});
+
+		await GovernanceService.getDuplicateTopicsCount({
+			entryClassNames: ENTRY_CLASS_NAMES,
+		});
+
+		const [url, body] = postSpy.mock.calls[0];
+
+		expect(url).toContain(
+			'entryClassNames=com.liferay.object.ObjectDefinition%23A%2Ccom.liferay.object.ObjectDefinition%23B'
+		);
+
+		expect(body).toEqual({
+			attributes: {'search.empty.search': true},
+			facetConfigurations: [
+				expect.objectContaining({
+					attributes: {
+						field: 'localized_title_en_US_sortable.keyword_lowercase',
+					},
+					frequencyThreshold: 2,
+				}),
+			],
+		});
+	});
+
+	it('scopes the aggregation by the selected space', async () => {
+		const postSpy = mockAggregation({duplicateTitles: []});
+
+		await GovernanceService.getDuplicateTopicsCount({
+			entryClassNames: ENTRY_CLASS_NAMES,
+			siteId: 456,
+		});
+
+		expect(postSpy.mock.calls[0][0]).toContain(
+			'filter=groupIds%2Fany%28g%3Ag+eq+456%29'
+		);
+	});
+});
+
+describe('GovernanceService.getCMSEntryClassNames', () => {
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
+
+	it('asks for the CMS content types of the content structures and file types', async () => {
+		const getSpy = jest.spyOn(ApiHelper, 'get').mockResolvedValue({
+			data: {
+				items: [
+					{className: 'com.liferay.object.ObjectDefinition#A'},
+					{className: 'com.liferay.object.ObjectDefinition#B'},
+				],
+			},
+			error: null,
+		} as any);
+
+		const entryClassNames = await GovernanceService.getCMSEntryClassNames(
+			'ERC_CONTENT_STRUCTURES',
+			'ERC_FILE_TYPES'
+		);
+
+		expect(getSpy.mock.calls[0][0]).toContain(
+			"objectFolderExternalReferenceCode%20eq%20'ERC_CONTENT_STRUCTURES'%20or%20objectFolderExternalReferenceCode%20eq%20'ERC_FILE_TYPES'"
+		);
+
+		expect(entryClassNames).toBe(
+			'com.liferay.object.ObjectDefinition#A,com.liferay.object.ObjectDefinition#B'
+		);
+	});
+});
