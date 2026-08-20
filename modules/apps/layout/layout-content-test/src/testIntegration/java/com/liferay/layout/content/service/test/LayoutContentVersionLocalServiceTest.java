@@ -29,6 +29,8 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -37,6 +39,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -217,6 +220,18 @@ public class LayoutContentVersionLocalServiceTest {
 				RandomTestUtil.randomString(),
 				RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
 				WorkflowConstants.STATUS_DRAFT);
+
+		Locale locale = LocaleUtil.getDefault();
+		String name = RandomTestUtil.randomString();
+
+		LayoutContentVersion updatedLayoutContentVersion =
+			_layoutContentVersionLocalService.updateLayoutContentVersion(
+				layoutContentVersion.getLayoutContentVersionId(),
+				HashMapBuilder.put(
+					locale, name
+				).build());
+
+		Assert.assertEquals(name, updatedLayoutContentVersion.getName(locale));
 
 		String expectedMessage = "Name is null";
 
