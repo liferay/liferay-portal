@@ -4,11 +4,13 @@
 	<checkstyle>
 		<suppress checks="ClassNameIdCheck" files="layout-api/src/main/java/com/liferay/layout/util/structure/FormStyledLayoutStructureItem\.java" />
 		<suppress checks="IllegalImportsCheck" files="layout-content-page-editor-web/src/main/java/com/liferay/layout/content/page/editor/web/internal/adaptive/media/LayoutAdaptiveMediaProcessorImpl.java" />
-		<suppress checks="IllegalImportsCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/struts/GetPagePreviewStrutsAction.java" />
 		<suppress checks="IllegalImportsCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/template/util/DefaultLayoutConverter.java" />
 		<suppress checks="IllegalImportsCheck" files="layout-utility-page/layout-utility-page-status/src/main/java/com/liferay/layout/utility/page/status/internal/struts/StatusStrutsAction.java" />
 		<suppress checks="IllegalImportsCheck" files="layout-utility-page/layout-utility-page-terms-of-use/src/main/java/com/liferay/layout/utility/page/terms/of/use/internal/struts/TermsOfUseStrutsAction.java" />
 		<suppress checks="MethodNamingCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/util/LayoutServiceContextHelperImpl\.java" />
 		<suppress checks="VariableDeclarationAsUsedCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/struts/UpdateLayoutStrutsAction\.java" />
 	</checkstyle>
+	<source-check>
+		<suppress checks="IllegalImportsCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/renderer/LayoutPreviewRendererImpl\.java" />
+	</source-check>
 </suppressions>

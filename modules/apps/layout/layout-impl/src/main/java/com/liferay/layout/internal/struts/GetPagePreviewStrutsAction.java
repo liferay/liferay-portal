@@ -21,7 +21,7 @@ import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
-import com.liferay.petra.string.StringBundler;
+import com.liferay.layout.renderer.LayoutPreviewRenderer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
-import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -37,11 +36,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
-import com.liferay.portal.kernel.servlet.ServletContextPool;
-import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.theme.ThemeUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -53,10 +49,6 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -136,9 +128,8 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 
 			themeDisplay.setLocale(LocaleUtil.fromLanguageId(languageId));
 
-			Theme theme = layout.getTheme();
-
-			themeDisplay.setLookAndFeel(theme, layout.getColorScheme());
+			themeDisplay.setLookAndFeel(
+				layout.getTheme(), layout.getColorScheme());
 
 			themeDisplay.setSignedIn(false);
 
@@ -178,34 +169,8 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 				_includeInfoItemObjects(className, classPK, httpServletRequest);
 			}
 
-			layout.includeLayoutContent(
+			_layoutPreviewRenderer.render(
 				httpServletRequest, httpServletResponse);
-
-			Document document = Jsoup.parse(
-				ThemeUtil.include(
-					ServletContextPool.get(_portal.getServletContextName()),
-					httpServletRequest, httpServletResponse,
-					"portal_normal.ftl", theme, false));
-
-			Element element = document.getElementById("content");
-
-			if (element == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Replacing all body content because theme " +
-							theme.getThemeId() +
-								" lacks a tag with ID \"content\"");
-				}
-
-				element = document.body();
-			}
-
-			StringBundler sb = (StringBundler)httpServletRequest.getAttribute(
-				WebKeys.LAYOUT_CONTENT);
-
-			element.html(sb.toString());
-
-			ServletResponseUtil.write(httpServletResponse, document.html());
 		}
 		finally {
 			httpServletRequest.setAttribute(
@@ -360,6 +325,9 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 	@Reference
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+
+	@Reference
+	private LayoutPreviewRenderer _layoutPreviewRenderer;
 
 	@Reference
 	private Portal _portal;
