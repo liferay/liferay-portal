@@ -21,12 +21,6 @@ if (Validator.isNotNull(replyTo) && !replyTo.startsWith(PortalUtil.getPortalURL(
 }
 %>
 
-<aui:style type="text/css">
-	.bg-img-app {
-		background-image: url('<%= HtmlUtil.escapeAttribute(oAuth2AuthorizePortletDisplayContext.getThumbnailURL()) %>');
-	}
-</aui:style>
-
 <clay:container-fluid
 	cssClass="closed consent"
 >
@@ -34,7 +28,11 @@ if (Validator.isNotNull(replyTo) && !replyTo.startsWith(PortalUtil.getPortalURL(
 		<div class="sheet">
 			<div class="panel-group panel-group-flush">
 				<div class="panel-body">
-					<div class="app-icon aspect-ratio-bg-cover bg-img-app"></div>
+					<clay:sticker
+						cssClass="app-icon"
+						imageAlt=""
+						imageSrc="<%= HtmlUtil.escapeAttribute(oAuth2AuthorizePortletDisplayContext.getThumbnailURL()) %>"
+					/>
 
 					<liferay-user:user-portrait
 						user="<%= user %>"
