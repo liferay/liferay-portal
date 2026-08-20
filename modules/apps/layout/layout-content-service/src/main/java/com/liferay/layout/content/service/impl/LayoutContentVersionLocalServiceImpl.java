@@ -16,20 +16,30 @@ import com.liferay.layout.content.service.base.LayoutContentVersionLocalServiceB
 import com.liferay.layout.content.util.comparator.LayoutContentVersionVersionComparator;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.renderer.LayoutPreviewRenderer;
+import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.segments.model.SegmentsExperience;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.util.Date;
 import java.util.List;
@@ -107,7 +117,12 @@ public class LayoutContentVersionLocalServiceImpl
 		layoutContentVersion.setStatusByUserName(user.getFullName());
 		layoutContentVersion.setStatusDate(new Date());
 
-		return layoutContentVersionPersistence.update(layoutContentVersion);
+		layoutContentVersion = layoutContentVersionPersistence.update(
+			layoutContentVersion);
+
+		_addLayoutContentVersionPreviews(layout, layoutContentVersion, userId);
+
+		return layoutContentVersion;
 	}
 
 	@Override
@@ -257,6 +272,70 @@ public class LayoutContentVersionLocalServiceImpl
 		return layoutContentVersionPersistence.update(layoutContentVersion);
 	}
 
+	private void _addLayoutContentVersionPreviews(
+		Layout layout, LayoutContentVersion layoutContentVersion, long userId) {
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
+
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			for (SegmentsExperience segmentsExperience :
+					_segmentsExperienceLocalService.getSegmentsExperiences(
+						layout.getGroupId(), layout.getPlid())) {
+
+				_addLayoutContentVersionPreviews(
+					layout, layoutContentVersion, segmentsExperience,
+					serviceContext, userId);
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to add layout content version previews for PLID " +
+						layout.getPlid(),
+					exception);
+			}
+		}
+	}
+
+	private void _addLayoutContentVersionPreviews(
+		Layout layout, LayoutContentVersion layoutContentVersion,
+		SegmentsExperience segmentsExperience, ServiceContext serviceContext,
+		long userId) {
+
+		for (Locale locale :
+				_language.getAvailableLocales(layout.getGroupId())) {
+
+			try {
+				_layoutContentVersionPreviewLocalService.
+					addLayoutContentVersionPreview(
+						userId,
+						_layoutPreviewRenderer.render(
+							layout, locale,
+							segmentsExperience.getSegmentsExperienceId(),
+							serviceContext),
+						LocaleUtil.toLanguageId(locale),
+						layoutContentVersion.getLayoutContentVersionId(),
+						segmentsExperience.getExternalReferenceCode());
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Unable to add layout content version preview for ",
+							"language ID ", LocaleUtil.toLanguageId(locale),
+							", PLID ", layout.getPlid(),
+							", and segments experience ",
+							segmentsExperience.getSegmentsExperienceId()),
+						exception);
+				}
+			}
+		}
+	}
+
 	private int _getNextVersion(long plid) {
 		LayoutContentVersion layoutContentVersion =
 			layoutContentVersionPersistence.fetchByPlid_First(
@@ -314,6 +393,12 @@ public class LayoutContentVersionLocalServiceImpl
 		}
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutContentVersionLocalServiceImpl.class);
+
+	@Reference
+	private Language _language;
+
 	@Reference
 	private LayoutContentVersionPreviewLocalService
 		_layoutContentVersionPreviewLocalService;
@@ -324,6 +409,15 @@ public class LayoutContentVersionLocalServiceImpl
 	@Reference
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+
+	@Reference
+	private LayoutPreviewRenderer _layoutPreviewRenderer;
+
+	@Reference
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
+
+	@Reference
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
