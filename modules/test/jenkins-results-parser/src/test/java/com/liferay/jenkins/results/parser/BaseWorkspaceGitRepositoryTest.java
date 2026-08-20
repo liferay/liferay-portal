@@ -7,9 +7,11 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.File;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -78,6 +80,14 @@ public class BaseWorkspaceGitRepositoryTest
 			_isFullDotGitDirArchiveRequired("liferay-plugins-ee-6.2.x"));
 		Assert.assertTrue(
 			_isFullDotGitDirArchiveRequired("liferay-portal-ee-6.2.x"));
+	}
+
+	@Test
+	public void testPartitionLocalGitCommits() throws Exception {
+		_testPartitionLocalGitCommits(3, _newLocalGitCommits(0));
+		_testPartitionLocalGitCommits(3, _newLocalGitCommits(10));
+		_testPartitionLocalGitCommits(3, null);
+		_testPartitionLocalGitCommits(5, _newLocalGitCommits(3));
 	}
 
 	@Test
@@ -384,6 +394,23 @@ public class BaseWorkspaceGitRepositoryTest
 		return Mockito.spy(new DefaultWorkspaceGitRepository(jsonObject));
 	}
 
+	private List<LocalGitCommit> _newLocalGitCommits(int count) {
+		List<LocalGitCommit> localGitCommits = new ArrayList<>();
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		for (int i = 0; i < count; i++) {
+			localGitCommits.add(
+				GitCommitFactory.newLocalGitCommit(
+					RandomTestUtil.randomString(), gitWorkingDirectory,
+					RandomTestUtil.randomString(), RandomTestUtil.randomSHA(),
+					RandomTestUtil.randomLong()));
+		}
+
+		return localGitCommits;
+	}
+
 	private void _setUpEnvironment(String jobName, String jobVariant) {
 		Map<String, String> environmentMap = new HashMap<>();
 
@@ -545,6 +572,40 @@ public class BaseWorkspaceGitRepositoryTest
 			propertyType);
 
 		testEquals(expectedPropertyValue, properties.getProperty(propertyName));
+	}
+
+	private void _testPartitionLocalGitCommits(
+			int count, List<LocalGitCommit> localGitCommits)
+		throws Exception {
+
+		List<LocalGitCommit> expectedLocalGitCommits = new ArrayList<>();
+
+		if (localGitCommits != null) {
+			expectedLocalGitCommits.addAll(localGitCommits);
+		}
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository();
+
+		List<List<LocalGitCommit>> localGitCommitsLists =
+			defaultWorkspaceGitRepository.partitionLocalGitCommits(
+				localGitCommits, count);
+
+		Assert.assertTrue(
+			localGitCommitsLists.size() <= Math.min(
+				count, expectedLocalGitCommits.size()));
+
+		List<LocalGitCommit> actualLocalGitCommits = new ArrayList<>();
+
+		for (List<LocalGitCommit> localGitCommitsPartition :
+				localGitCommitsLists) {
+
+			Assert.assertFalse(localGitCommitsPartition.isEmpty());
+
+			actualLocalGitCommits.addAll(localGitCommitsPartition);
+		}
+
+		testEquals(expectedLocalGitCommits, actualLocalGitCommits);
 	}
 
 	private void _testPrepareGitWorkingDirectory(
