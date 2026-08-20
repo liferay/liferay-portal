@@ -26,6 +26,7 @@ page import="com.liferay.site.cms.site.initializer.internal.display.context.View
 page import="com.liferay.site.cms.site.initializer.internal.display.context.ViewAllSectionDisplayContext" %><%@
 page import="com.liferay.site.cms.site.initializer.internal.display.context.ViewAllSpacesDisplayContext" %><%@
 page import="com.liferay.site.cms.site.initializer.internal.display.context.ViewAssetDisplayContext" %><%@
+page import="com.liferay.site.cms.site.initializer.internal.display.context.ViewBrokenLinksSectionDisplayContext" %><%@
 page import="com.liferay.site.cms.site.initializer.internal.display.context.ViewBulkActionTaskReportDisplayContext" %><%@
 page import="com.liferay.site.cms.site.initializer.internal.display.context.ViewCategoriesDisplayContext" %><%@
 page import="com.liferay.site.cms.site.initializer.internal.display.context.ViewCategoryUsagesDisplayContext" %><%@

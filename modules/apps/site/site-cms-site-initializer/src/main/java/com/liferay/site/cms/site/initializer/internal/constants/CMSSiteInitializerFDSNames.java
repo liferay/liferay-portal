@@ -20,6 +20,10 @@ public class CMSSiteInitializerFDSNames {
 	public static final String ALL_SPACES_SECTION =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-allSpacesSection";
 
+	public static final String BROKEN_LINKS_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-brokenLinksSection";
+
 	public static final String BULK_ACTION_TASK_REPORT_SECTION =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
 			"-bulkActionTaskReportSection";
