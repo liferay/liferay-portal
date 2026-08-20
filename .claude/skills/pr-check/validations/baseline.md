@@ -4,7 +4,7 @@
 
 Always. The bnd baseline task diffs each exported API against the last release and fails on a missing, excessive, or insufficient `Bundle-Version` or `packageinfo` bump.
 
-Do not narrow the run to the branch diff. The comparison target is resolved from Nexus on every run, so a module the branch never touched can start failing between one run and the next. Narrow the verdict instead: a finding in a module the branch changed fails this validation, and a finding anywhere else is **inherited** — report it with both versions and let it not set the branch result. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead. Otherwise one stale version on master fails every pull request at once, stopping the developer least able to judge whether the bump is right.
+Do not narrow the run to the branch diff. The comparison target is resolved from Nexus on every run, so a module the branch never touched can start failing between one run and the next. Narrow the verdict instead, as **Command** sets out: only a module the branch changed can fail it. Otherwise one stale version on master fails every pull request at once, stopping the developer least able to judge whether the bump is right.
 
 ## Match
 
@@ -24,17 +24,21 @@ Three prerequisites:
 
 - Each baseline resolves the last released artifact from Nexus, so the run needs network access. Use the local check below when there is none.
 - A project that has not been cleanly built on this branch cannot be baselined at all. Rerun after `ant all`, which rebuilds all seven and baselines each one through the `jar` target.
-- Silence is not a pass. The report is written **only on a finding**, and the seven Ant projects run under `failonerror="false"`, so a run that compared nothing leaves exactly what a clean one leaves. With no `portal-kernel.jar` in the tree it never runs at all, which is how LPD-93274 shipped.
+- Silence is not a pass. The report is written **only on a finding**, and the seven Ant projects run under `failonerror="false"`, so a run that compared nothing leaves exactly what a clean one leaves. With no `portal-kernel.jar` in the tree it never runs at all, which is how LPD-93274 shipped. The `modules` run is not guarded that way, so its failure aborts the target and can cut the Ant loop short — a project may never be invoked at all, not merely have its result swallowed.
 
-Confirm each Ant project actually baselined by running it alone, where the exit status is not swallowed. Fail when a jar is missing, when `gradlew` exits non-zero, or when the output carries `Could not resolve` — a baseline that did not run is not one that passed.
+Confirm each Ant project actually baselined by running it alone, where the exit status is not swallowed. Fail when one of those seven is missing its jar, exits non-zero, or reports `Could not resolve` — a baseline that did not run is not one that passed. The `modules` run is different: it exits non-zero whenever any finding exists, so its exit status is not the verdict.
+
+A finding in a module the branch changed fails this validation. A finding in any other module is **inherited**: report it with both versions and do not fail the branch, whatever its severity. The severity rules under **Autocommit** decide what to do with a finding, never whose branch it belongs to. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead.
 
 ```bash
-("${REPO_ROOT}/gradlew" --console=plain --project-dir "${REPO_ROOT}/<project>" baseline)
+("${REPO_ROOT}/gradlew" --console=plain --project-dir "${REPO_ROOT}/<project>" baseline --rerun)
 ```
+
+Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a second, which is a cached verdict rather than a comparison — the same silence this section exists to reject. A genuine run prints `1 executed`.
 
 ### Interpretation
 
-Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands. Report the number of modules in scope alongside the result, since a pass that compared nothing otherwise looks like a clean one. The run is `--quiet`, so the count is not in the output — take it from the same fileset the target builds its task list from, every `bnd.bnd` under `modules` holding `Export-Package:` and outside `sdk`, `test`, `third-party`, and `util`, which is 593 today.
+Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands. Report the number of modules in scope alongside the result, since a pass that compared nothing otherwise looks like a clean one. Count the `:baseline` tasks the run echoes, 593 today, which covers the Gradle modules and not the seven Ant projects. That number drifts as modules gain and lose `Export-Package:`, so report what you counted rather than checking it against this figure.
 
 Baseline has five warnings, and they do not all reach the tree in the same shape:
 
@@ -48,7 +52,7 @@ Baseline has five warnings, and they do not all reach the tree in the same shape
 
 All five concern the version of an exported package, recorded in its `packageinfo`. `Bundle-Version` is not among them, so do not read a passing run as evidence that it is right. An inflated one is caught only by the classification below.
 
-For the paths those warnings named, list each changed file with both of its versions. This decides what to commit or restore, and it is also what catches an inflated `Bundle-Version`, which none of the warnings report. Take the file list from `git status --porcelain -uall -- '*bnd.bnd' '*packageinfo'`, and for each one read the version in `HEAD` against the version in the tree, from the `Bundle-Version:` or `version` line. Keep `-uall`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`, and read an addition or a removal from the status letter rather than from a missing version line — a bare diff of the version lines drops the filename and cannot tell an addition, a deletion, and a lowering apart.
+For the paths those warnings named, list each changed file with both of its versions. This decides what to commit or restore, and it is also what catches an inflated `Bundle-Version`, which none of the warnings report. A changed file that no warning row named is a repair left by an earlier aborted run: restore it and do not count it as a finding. Take the file list from `git status --porcelain -uall -- '*bnd.bnd' '*packageinfo'`, and for each one read the version in `HEAD` against the version in the tree, from the `Bundle-Version:` or `version` line. Keep `-uall`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`, and read an addition or a removal from the status letter rather than from a missing version line — a bare diff of the version lines drops the filename and cannot tell an addition, a deletion, and a lowering apart.
 
 Classify each row, comparing segments as numbers so that `9.5.1` to `10.0.0` counts as a rise and `1.9.0` to `1.10.0` does not:
 
@@ -66,7 +70,7 @@ This needs no network and **fails** rather than advises. Run it on every pass, n
 
 Look at each changed `.java` under an `*-api` module's `src/main/java`, `portal-impl/src`, or `portal-kernel/src`. When its diff adds or removes a `public` or `protected` line, the exported API changed, so the version has to be bumped too. The bump shows up in the diff as a changed `packageinfo` in that package's directory, or a changed `bnd.bnd` `Bundle-Version` for an `*-api` module. When neither changed, fail and name the package.
 
-Fail as well on a lowered `packageinfo` or `Bundle-Version` that has no matching `public` or `protected` removal.
+Fail as well on a lowered `packageinfo` or `Bundle-Version` that has no matching `public` or `protected` removal. Read this from the branch diff rather than the tree, or the baseline task's own repair reads as exactly that lowering and gets counted a second time.
 
 A newly exported package needs its own `packageinfo`, so a diff adding the package without one fails here too.
 
@@ -84,7 +88,7 @@ Collect the paths into a variable first, rather than passing the globs to `git a
 
 **Never commit a repair for a module outside the branch diff.** Report it with both versions, restore the file, and name the path restored. The bump belongs to whoever owns that module, every developer who runs the check would otherwise commit another copy of it, and the task rewrites in place, so anything left behind is swept into the next `git add -A` under the wrong ticket.
 
-**Major, lowered, or removed.** Do not commit. Fail this validation and report each one with its file and both versions. Each is a breaking change that the developer has to decide on:
+**Major, lowered, or removed, in a module the branch changed.** Do not commit. Fail this validation and report each one with its file and both versions. Each is a breaking change that the developer has to decide on:
 
 - **Major**: report it as needing a breaking change section in the commit message.
 - **Lowered**: report it as `EXCESSIVE VERSION INCREASE`.
@@ -92,7 +96,7 @@ Collect the paths into a variable first, rather than passing the globs to `git a
 
 **A newly exported package.** Report it and leave it uncommitted. It belongs in the commit that adds the package.
 
-When several appear in one run, fail on the strictest and leave every safe bump uncommitted with it, so the whole set is reviewed together.
+When several appear in one run, fail on the strictest the branch owns and leave every safe bump uncommitted with it, so the whole set is reviewed together.
 
 ## Checklist
 
