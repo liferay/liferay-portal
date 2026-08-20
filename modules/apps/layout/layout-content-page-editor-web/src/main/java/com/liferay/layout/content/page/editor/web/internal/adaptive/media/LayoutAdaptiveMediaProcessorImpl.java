@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.net.URI;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -156,7 +157,35 @@ public class LayoutAdaptiveMediaProcessorImpl
 		parentElement.prependChild(sourceElement);
 	}
 
-	private String _getMediaQuery(String elementId, long fileEntryId)
+	private String _getCSSSelector(
+		Map<String, Integer> layoutStructureItemIdCounts,
+		Element styledElement) {
+
+		String elementId = styledElement.attr("id");
+
+		if (Validator.isNotNull(elementId)) {
+			return StringPool.POUND + elementId;
+		}
+
+		String layoutStructureItemId = styledElement.attr(
+			"data-layout-structure-item-id");
+
+		if (Validator.isNull(layoutStructureItemId)) {
+			elementId = _ELEMENT_ID_PREFIX + StringUtil.randomId();
+		}
+		else {
+			elementId = StringBundler.concat(
+				_ELEMENT_ID_PREFIX, layoutStructureItemId, StringPool.DASH,
+				layoutStructureItemIdCounts.merge(
+					layoutStructureItemId, 1, Integer::sum));
+		}
+
+		styledElement.attr("id", elementId);
+
+		return StringPool.POUND + elementId;
+	}
+
+	private String _getMediaQuery(String cssSelector, long fileEntryId)
 		throws PortalException {
 
 		StringBundler sb = new StringBundler();
@@ -182,8 +211,7 @@ public class LayoutAdaptiveMediaProcessorImpl
 			}
 
 			sb.append(StringPool.OPEN_CURLY_BRACE);
-			sb.append(StringPool.POUND);
-			sb.append(elementId);
+			sb.append(cssSelector);
 			sb.append("{background-image: url(");
 			sb.append(mediaQuery.getSrc());
 			sb.append(") !important;}}");
@@ -205,6 +233,8 @@ public class LayoutAdaptiveMediaProcessorImpl
 	private void _replaceCSSProperties(Document document)
 		throws PortalException {
 
+		Map<String, Integer> layoutStructureItemIdCounts = new HashMap<>();
+
 		Elements styledElements = document.select("*[style]");
 
 		for (Element styledElement : styledElements) {
@@ -216,20 +246,15 @@ public class LayoutAdaptiveMediaProcessorImpl
 
 			StringBundler sb = new StringBundler();
 
-			String elementId = styledElement.attr("id");
-
-			if (Validator.isNull(elementId)) {
-				elementId = StringUtil.randomId();
-
-				styledElement.attr("id", elementId);
-			}
+			String cssSelector = _getCSSSelector(
+				layoutStructureItemIdCounts, styledElement);
 
 			Matcher matcher = _cssPropertyPattern.matcher(styleText);
 
 			while (matcher.find()) {
 				sb.append(
 					_getMediaQuery(
-						elementId, GetterUtil.getLong(matcher.group(1))));
+						cssSelector, GetterUtil.getLong(matcher.group(1))));
 			}
 
 			if (sb.length() > 0) {
@@ -239,6 +264,8 @@ public class LayoutAdaptiveMediaProcessorImpl
 			}
 		}
 	}
+
+	private static final String _ELEMENT_ID_PREFIX = "lfr-background-image-";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutAdaptiveMediaProcessorImpl.class);
