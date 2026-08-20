@@ -3387,6 +3387,78 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.portal.security.key.provider.aws.jar!aws-java-sdk-core.jar</file-name>
+				<version>1.12.719</version>
+				<project-name>AWS SDK for Java - Core</project-name>
+				<project-url>https://aws.amazon.com/sdkforjava</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>https://aws.amazon.com/apache2.0</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.security.key.provider.aws.jar!aws-java-sdk-kms.jar</file-name>
+				<version>1.12.719</version>
+				<project-name>AWS Java SDK for AWS KMS</project-name>
+				<project-url>https://aws.amazon.com/sdkforjava</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>https://aws.amazon.com/apache2.0</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.security.key.provider.aws.jar!aws-java-sdk-secretsmanager.jar</file-name>
+				<version>1.12.778</version>
+				<project-name>AWS Java SDK for AWS Secrets Manager</project-name>
+				<project-url>https://aws.amazon.com/sdkforjava</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>https://aws.amazon.com/apache2.0</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.security.key.provider.aws.jar!aws-java-sdk-sts.jar</file-name>
+				<version>1.12.778</version>
+				<project-name>AWS Java SDK for AWS STS</project-name>
+				<project-url>https://aws.amazon.com/sdkforjava</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>https://aws.amazon.com/apache2.0</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.security.key.provider.aws.jar!ion-java.jar</file-name>
+				<version>1.0.2</version>
+				<project-name>software.amazon.ion:ion-java</project-name>
+				<project-url>https://github.com/amznlabs/ion-java/</project-url>
+				<licenses>
+					<license>
+						<license-name>The Apache License, Version 2.0</license-name>
+						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.security.key.provider.aws.jar!jmespath-java.jar</file-name>
+				<version>1.12.778</version>
+				<project-name>JMES Path Query library</project-name>
+				<project-url>https://aws.amazon.com/sdkforjava</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>https://aws.amazon.com/apache2.0</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.portal.security.ldap.impl.jar!antlr-runtime.jar</file-name>
 				<version>3.5.3</version>
 				<project-name>ANTLR 3 Runtime</project-name>
@@ -4436,12 +4508,12 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tools.db.migration.importer.jar!mariadb-java-client.jar</file-name>
-				<version>3.2.0</version>
+				<version>3.5.10</version>
 				<project-name>mariadb-java-client</project-name>
 				<project-url>https://mariadb.com/kb/en/mariadb/about-mariadb-connector-j/</project-url>
 				<licenses>
 					<license>
-						<license-name>LGPL-2.1</license-name>
+						<license-name>LGPL-2.1-or-later</license-name>
 					</license>
 				</licenses>
 			</library>
@@ -8170,7 +8242,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/mariadb.jar</file-name>
-				<version>3.2.0</version>
+				<version>3.5.10</version>
 				<project-name>MariaDB Connector/J</project-name>
 				<project-url>https://downloads.mariadb.org/connector-java</project-url>
 				<licenses>
