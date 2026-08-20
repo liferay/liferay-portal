@@ -19,9 +19,11 @@ import {formatDateForUI} from '../../../utils/applyFDSDateTimeRangeFilter';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {generateFormulaObjectFields} from '../utils/generateFormulaObjectFields';
 import {generateObjectEntryValues} from '../utils/generateObjectEntry';
 import {generateObjectFields} from '../utils/generateObjectFields';
 import {getFreshObjectRelationshipName} from '../utils/getFreshObjectRelationshipName';
+import {postListTypeDefinitionListTypeEntries} from '../utils/postListTypeDefinitionListTypeEntries';
 
 export const test = mergeTests(
 	globalMenuPagesTest,
@@ -1711,8 +1713,94 @@ test(
 );
 
 test(
+	'can filter a picklist column with the excludes operator in custom view',
+	{tag: '@LPD-102828'},
+	async ({
+		apiHelpers,
+		editObjectViewPage,
+		objectViewPage,
+		page,
+		viewObjectEntriesPage,
+	}) => {
+		const {listTypeDefinition, listTypeEntries} =
+			await postListTypeDefinitionListTypeEntries({
+				apiHelpers,
+				listTypeEntriesLength: 2,
+			});
+
+		const [excludedListTypeEntry, listTypeEntry] = listTypeEntries;
+
+		const objectFields = generateObjectFields({
+			listTypeDefinitionExternalReferenceCode:
+				listTypeDefinition.externalReferenceCode,
+			objectFieldBusinessTypes: ['Picklist'],
+		});
+
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFields,
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const applicationName =
+			'c/' + objectDefinition.name.toLowerCase() + 's';
+
+		for (const listTypeEntryKey of [
+			excludedListTypeEntry.key,
+			listTypeEntry.key,
+		]) {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{[objectFields[0].name as string]: listTypeEntryKey},
+				applicationName
+			);
+		}
+
+		await objectViewPage.goto(objectDefinition.label['en_US']);
+
+		const viewName = 'CustomView' + getRandomInt();
+
+		await objectViewPage.createObjectView(viewName);
+
+		await page.getByRole('link', {name: viewName}).waitFor();
+
+		await page.getByRole('link', {name: viewName}).click();
+
+		await editObjectViewPage.markAsDefaultButton.check();
+
+		await editObjectViewPage.selectObjectFields([
+			objectFields[0].label.en_US,
+		]);
+
+		await editObjectViewPage.createFilter(
+			objectFields[0].label.en_US,
+			'Excludes',
+			excludedListTypeEntry.key
+		);
+
+		await editObjectViewPage.saveButton.last().click();
+
+		await page.waitForLoadState('networkidle');
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await expect(
+			page.getByRole('row').filter({hasText: listTypeEntry.key})
+		).toBeVisible();
+
+		await expect(
+			page.getByRole('row').filter({hasText: excludedListTypeEntry.key})
+		).toHaveCount(0);
+	}
+);
+
+test(
 	'can filter entries by create date in custom view',
-	{tag: '@LPS-169019'},
+	{tag: ['@LPD-102828', '@LPS-169019']},
 	async ({
 		apiHelpers,
 		editObjectViewPage,
@@ -2677,6 +2765,74 @@ test('can use external reference code field in view column', async ({
 });
 
 test(
+	'can view a formula field value on a custom view',
+	{tag: '@LPD-102828'},
+	async ({
+		apiHelpers,
+		editObjectViewPage,
+		objectViewPage,
+		page,
+		viewObjectEntriesPage,
+	}) => {
+		const {
+			firstObjectField,
+			formulaObjectField,
+			objectFields,
+			secondObjectField,
+		} = generateFormulaObjectFields({
+			objectFieldBusinessType: 'Decimal',
+			operator: '*',
+			output: 'Decimal',
+		});
+
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFields,
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		await objectViewPage.goto(objectDefinition.label['en_US']);
+
+		const viewName = 'CustomView' + getRandomInt();
+
+		await objectViewPage.createObjectView(viewName);
+
+		await page.getByRole('link', {name: viewName}).waitFor();
+
+		await page.getByRole('link', {name: viewName}).click();
+
+		await editObjectViewPage.markAsDefaultButton.check();
+
+		await editObjectViewPage.selectObjectFields([
+			formulaObjectField.label.en_US,
+		]);
+
+		await editObjectViewPage.saveButton.last().click();
+
+		await page.waitForLoadState('networkidle');
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				[firstObjectField.name as string]: 2468,
+				[secondObjectField.name as string]: 5,
+			},
+			'c/' + objectDefinition.name.toLowerCase() + 's'
+		);
+
+		await viewObjectEntriesPage.goto(objectDefinition.className);
+
+		await expect(
+			page.getByRole('cell', {exact: true, name: '12340'})
+		).toBeVisible();
+	}
+);
+
+test(
 	'can view entries of object in a table view defined as default',
 	{tag: '@LPS-144902'},
 	async ({apiHelpers, page, viewObjectEntriesPage}) => {
@@ -3094,6 +3250,52 @@ test('cannot create an object custom view using empty multiselectpicklist entry'
 		page.frameLocator('iframe').getByText('Required')
 	).toBeVisible();
 });
+
+test(
+	'cannot filter by external reference code field in custom view',
+	{tag: '@LPD-102828'},
+	async ({apiHelpers, editObjectViewPage, objectViewPage, page}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		await objectViewPage.goto(objectDefinition.label['en_US']);
+
+		const viewName = 'CustomView' + getRandomInt();
+
+		await objectViewPage.createObjectView(viewName);
+
+		await page.getByRole('link', {name: viewName}).waitFor();
+
+		await page.getByRole('link', {name: viewName}).click();
+
+		await editObjectViewPage.filtersTab.click();
+
+		await editObjectViewPage.newFilterButton.click();
+
+		await editObjectViewPage.filterBy.click();
+
+		await expect(
+			editObjectViewPage.sidePanel.getByRole('option', {
+				exact: true,
+				name: 'Status',
+			})
+		).toBeVisible();
+
+		await expect(
+			editObjectViewPage.sidePanel.getByRole('option', {
+				exact: true,
+				name: 'External Reference Code',
+			})
+		).toHaveCount(0);
+	}
+);
 
 test(
 	'cannot leave name field empty when creating a custom view',
