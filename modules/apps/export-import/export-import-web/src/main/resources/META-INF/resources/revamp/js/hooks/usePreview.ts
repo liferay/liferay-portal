@@ -20,11 +20,19 @@ export function usePreview(previewAPIURL: string, initialPreview?: Preview) {
 	const [loading, setLoading] = useState(!initialPreview);
 	const initialPreviewRef = useRef<Preview | undefined>(initialPreview);
 	const appliedDateFilterRef = useRef<NormalizedDateFilter>({});
+	const requestIdRef = useRef(0);
+
 	const loadPreview = useCallback((previewParams: PreviewParams) => {
+		const requestId = ++requestIdRef.current;
+
 		setLoading(true);
 		setError(null);
 
 		getPreview(previewParams).then((previewResponse) => {
+			if (requestId !== requestIdRef.current) {
+				return;
+			}
+
 			if (previewResponse.error !== null) {
 				setError(previewResponse.error);
 			}
@@ -57,6 +65,10 @@ export function usePreview(previewAPIURL: string, initialPreview?: Preview) {
 				dateFilterValues.range === Range.All &&
 				initialPreviewRef.current
 			) {
+				++requestIdRef.current;
+
+				setError(null);
+				setLoading(false);
 				setPreview(initialPreviewRef.current);
 
 				return;
