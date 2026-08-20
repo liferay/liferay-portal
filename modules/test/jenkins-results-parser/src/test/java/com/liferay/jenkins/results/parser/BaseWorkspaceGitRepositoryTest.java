@@ -166,6 +166,51 @@ public class BaseWorkspaceGitRepositoryTest
 	}
 
 	@Test
+	public void testStoreCommitHistory() throws Exception {
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		List<LocalGitCommit> localGitCommits = _newLocalGitCommits(5);
+
+		Mockito.doReturn(
+			localGitCommits
+		).when(
+			gitWorkingDirectory
+		).log(
+			0, WorkspaceGitRepository.COMMITS_HISTORY_GROUP_SIZE
+		);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository();
+
+		Mockito.doReturn(
+			gitWorkingDirectory
+		).when(
+			defaultWorkspaceGitRepository
+		).getGitWorkingDirectory();
+
+		List<String> expectedCommitSHAs = new ArrayList<>();
+
+		for (LocalGitCommit localGitCommit : localGitCommits.subList(0, 4)) {
+			expectedCommitSHAs.add(localGitCommit.getSHA());
+		}
+
+		defaultWorkspaceGitRepository.storeCommitHistory(
+			Collections.singletonList(
+				expectedCommitSHAs.get(expectedCommitSHAs.size() - 1)));
+
+		List<String> actualCommitSHAs = new ArrayList<>();
+
+		for (LocalGitCommit historicalLocalGitCommit :
+				defaultWorkspaceGitRepository.getHistoricalLocalGitCommits()) {
+
+			actualCommitSHAs.add(historicalLocalGitCommit.getSHA());
+		}
+
+		testEquals(expectedCommitSHAs, actualCommitSHAs);
+	}
+
+	@Test
 	public void testUploadGitArchives() throws Exception {
 		String jobName = "downstream-job";
 
