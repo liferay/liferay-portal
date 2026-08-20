@@ -6,21 +6,30 @@
 package com.liferay.oauth2.provider.client.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.url.provider.DLFileVersionURLProvider;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.model.OAuth2Authorization;
+import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ScopeGrantLocalService;
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
+import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -28,9 +37,13 @@ import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 
+import java.awt.image.BufferedImage;
+
 import java.net.URI;
 
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -42,6 +55,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.osgi.framework.BundleActivator;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Stian Sigvartsen
@@ -62,6 +76,29 @@ public class SecurityTest extends BaseClientTestCase {
 			).queryParam(
 				"response_type", "code"
 			));
+	}
+
+	@Test
+	public void testEscapeOAuth2ApplicationThumbnailURL() {
+		String bodyString = _getAuthorizationPageBodyString(
+			webTarget -> webTarget.queryParam(
+				"client_id", _CLIENT_ID_THUMBNAIL_URL
+			).queryParam(
+				"response_type", "code"
+			));
+
+		Assert.assertTrue(
+			bodyString.contains("src=\"" + _THUMBNAIL_URL_ESCAPED + "\""));
+	}
+
+	@Test
+	public void testEscapeOAuth2ApplicationThumbnailURLInImageTag()
+		throws Exception {
+
+		String bodyString = _getConnectedApplicationPageBodyString();
+
+		Assert.assertTrue(
+			bodyString.contains("src=\"" + _THUMBNAIL_URL_ESCAPED + "\""));
 	}
 
 	@Test
@@ -268,6 +305,17 @@ public class SecurityTest extends BaseClientTestCase {
 	private void _assertAuthorizationPageEscapesInjectedScript(
 		Function<WebTarget, WebTarget> authorizeRequestFunction) {
 
+		String bodyString = _getAuthorizationPageBodyString(
+			authorizeRequestFunction);
+
+		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
+		Assert.assertTrue(
+			bodyString.contains(HtmlUtil.escape(_INJECTED_SCRIPT)));
+	}
+
+	private String _getAuthorizationPageBodyString(
+		Function<WebTarget, WebTarget> authorizeRequestFunction) {
+
 		Function<WebTarget, Invocation.Builder> invocationBuilderFunction =
 			getAuthenticatedInvocationBuilderFunction(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
@@ -302,11 +350,51 @@ public class SecurityTest extends BaseClientTestCase {
 		Invocation.Builder invocationBuilder = invocationBuilderFunction.apply(
 			webTarget);
 
-		String bodyString = getBodyAsString(invocationBuilder.get());
+		return getBodyAsString(invocationBuilder.get());
+	}
 
-		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
-		Assert.assertTrue(
-			bodyString.contains(HtmlUtil.escape(_INJECTED_SCRIPT)));
+	private String _getConnectedApplicationPageBodyString() throws Exception {
+		URI uri = new URI(
+			PortalUtil.getControlPanelFullURL(
+				TestPropsValues.getGroupId(),
+				_CONNECTED_APPLICATIONS_PORTLET_ID,
+				HashMapBuilder.put(
+					"_" + _CONNECTED_APPLICATIONS_PORTLET_ID +
+						"_mvcRenderCommandName",
+					new String[] {
+						"/oauth2_provider/view_connected_applications"
+					}
+				).put(
+					"_" + _CONNECTED_APPLICATIONS_PORTLET_ID +
+						"_oAuth2ApplicationId",
+					new String[] {String.valueOf(_oAuth2ApplicationId)}
+				).put(
+					"_" + _CONNECTED_APPLICATIONS_PORTLET_ID +
+						"_oAuth2AuthorizationId",
+					new String[] {String.valueOf(_oAuth2AuthorizationId)}
+				).build()));
+
+		WebTarget webTarget = getWebTarget();
+
+		webTarget = webTarget.path(uri.getPath());
+
+		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
+			uri.getRawQuery());
+
+		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+			webTarget = webTarget.queryParam(
+				entry.getKey(), (Object[])entry.getValue());
+		}
+
+		Invocation.Builder invocationBuilder =
+			getAuthenticatedInvocationBuilderFunction(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+				null
+			).apply(
+				webTarget
+			);
+
+		return getBodyAsString(invocationBuilder.get());
 	}
 
 	private static final String _CLIENT_ID_CODE = RandomTestUtil.randomString();
@@ -317,11 +405,18 @@ public class SecurityTest extends BaseClientTestCase {
 	private static final String _CLIENT_ID_DEFAULT_USER =
 		RandomTestUtil.randomString();
 
+	private static final String _CLIENT_ID_THUMBNAIL_URL =
+		RandomTestUtil.randomString();
+
 	private static final String _CLIENT_ID_UNESCAPED_NAME =
 		RandomTestUtil.randomString();
 
 	private static final String _CLIENT_ID_UNESCAPED_SCOPE =
 		RandomTestUtil.randomString();
+
+	private static final String _CONNECTED_APPLICATIONS_PORTLET_ID =
+		"com_liferay_oauth2_provider_web_internal_portlet_" +
+			"OAuth2ConnectedApplicationsPortlet";
 
 	private static final String _INJECTED_SCRIPT = "<script>alert(1)</script>";
 
@@ -330,6 +425,21 @@ public class SecurityTest extends BaseClientTestCase {
 
 	private static final String _SCOPE_APPLICATION_NAME =
 		"Liferay.Captcha.REST";
+
+	private static final String _THUMBNAIL_URL =
+		"http://localhost/documents/1/2/icon.png?version=1.0&t=1&" +
+			"imageThumbnail=1'";
+
+	private static final String _THUMBNAIL_URL_ESCAPED =
+		"http://localhost/documents/1/2/icon.png?version=1.0&amp;t=1&amp;" +
+			"imageThumbnail=1&#39;";
+
+	private long _oAuth2ApplicationId;
+
+	@Inject
+	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
+
+	private long _oAuth2AuthorizationId;
 
 	@Inject
 	private OAuth2ScopeGrantLocalService _oAuth2ScopeGrantLocalService;
@@ -363,6 +473,8 @@ public class SecurityTest extends BaseClientTestCase {
 			createOAuth2Application(
 				companyId, company.getGuestUser(), _CLIENT_ID_DEFAULT_USER);
 
+			_createThumbnailURLOAuth2Application(companyId);
+
 			createOAuth2Application(
 				companyId, _user, _CLIENT_ID_UNESCAPED_NAME,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
@@ -386,6 +498,56 @@ public class SecurityTest extends BaseClientTestCase {
 				).put(
 					"service.ranking", Integer.MAX_VALUE
 				).build());
+		}
+
+		private void _createThumbnailURLOAuth2Application(long companyId)
+			throws Exception {
+
+			OAuth2Application oAuth2Application = createOAuth2Application(
+				companyId, _user, _CLIENT_ID_THUMBNAIL_URL,
+				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
+				Collections.singletonList("everything"));
+
+			_oAuth2ApplicationLocalService.updateIcon(
+				oAuth2Application.getOAuth2ApplicationId(),
+				new UnsyncByteArrayInputStream(
+					ImageToolUtil.getBytes(
+						new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB),
+						"png")));
+
+			ServiceRegistration<DLFileVersionURLProvider> serviceRegistration =
+				bundleContext.registerService(
+					DLFileVersionURLProvider.class,
+					new DLFileVersionURLProvider() {
+
+						@Override
+						public List<Type> getTypes() {
+							return Collections.singletonList(Type.THUMBNAIL);
+						}
+
+						@Override
+						public String getURL(
+							FileVersion fileVersion,
+							ThemeDisplay themeDisplay) {
+
+							return _THUMBNAIL_URL;
+						}
+
+					},
+					HashMapDictionaryBuilder.<String, Object>put(
+						"service.ranking", Integer.MAX_VALUE
+					).build());
+
+			autoCloseables.add(serviceRegistration::unregister);
+
+			OAuth2Authorization oAuth2Authorization = addOAuth2Authorization(
+				companyId, _user, oAuth2Application,
+				RandomTestUtil.randomString(), new Date(),
+				new Date(System.currentTimeMillis() + Time.HOUR));
+
+			_oAuth2ApplicationId = oAuth2Application.getOAuth2ApplicationId();
+			_oAuth2AuthorizationId =
+				oAuth2Authorization.getOAuth2AuthorizationId();
 		}
 
 	}
