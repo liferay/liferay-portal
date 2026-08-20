@@ -7,6 +7,7 @@ package com.liferay.portal.security.key.provider.aws.internal.util;
 
 import com.amazonaws.AmazonWebServiceClient;
 
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,7 +38,7 @@ public class AWSClientManagerTest {
 			new AWSClientManager<>(
 				(awsCredentialsProvider, endpointConfiguration, region) ->
 					amazonWebServiceClient,
-				"kms-fips.{region}.amazonaws.com", "us-east-1", false);
+				RandomTestUtil.randomString(), "us-east-1", false);
 
 		awsClientManager.execute(client -> client);
 
@@ -53,7 +54,7 @@ public class AWSClientManagerTest {
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
 			(awsCredentialsProvider, endpointConfiguration, region) ->
 				new Object(),
-			"kms-fips.{region}.amazonaws.com", null, () -> "us-west-2", false);
+			RandomTestUtil.randomString(), null, () -> "us-west-2", false);
 
 		Assert.assertEquals("us-west-2", awsClientManager.getRegion());
 	}
@@ -63,7 +64,7 @@ public class AWSClientManagerTest {
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
 			(awsCredentialsProvider, endpointConfiguration, region) ->
 				new Object(),
-			"kms-fips.{region}.amazonaws.com", "us-east-1", false);
+			RandomTestUtil.randomString(), "us-east-1", false);
 
 		awsClientManager.close();
 
@@ -80,7 +81,7 @@ public class AWSClientManagerTest {
 
 				return new Object();
 			},
-			"kms-fips.{region}.amazonaws.com", "us-east-1", false);
+			RandomTestUtil.randomString(), "us-east-1", false);
 
 		awsClientManager.execute(client -> client);
 		awsClientManager.execute(client -> client);
@@ -100,7 +101,7 @@ public class AWSClientManagerTest {
 
 				return new Object();
 			},
-			"kms-fips.{region}.amazonaws.com", "us-east-1", false);
+			RandomTestUtil.randomString(), "us-east-1", false);
 
 		awsClientManager.execute(client -> client);
 
@@ -124,7 +125,7 @@ public class AWSClientManagerTest {
 
 				return new Object();
 			},
-			"kms-fips.{region}.amazonaws.com", "us-east-1", false);
+			RandomTestUtil.randomString(), "us-east-1", false);
 
 		awsClientManager.execute(client -> client);
 
@@ -142,7 +143,7 @@ public class AWSClientManagerTest {
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
 			(awsCredentialsProvider, endpointConfiguration, region) ->
 				new Object(),
-			"kms-fips.{region}.amazonaws.com", "us-east-1", () -> null, false);
+			RandomTestUtil.randomString(), "us-east-1", () -> null, false);
 
 		awsClientManager.updateConfiguration(null, false);
 
