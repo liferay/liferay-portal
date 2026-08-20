@@ -100,6 +100,7 @@ async function createDataMask(
 
 createFDSTableTests(test, {
 	columns: ['Title', 'Path', 'Description', 'Last Modified'],
+	name: 'Profiles',
 	rowActions: ['Edit', 'Delete'],
 	sortOptions: ['Title', 'Last Modified'],
 	tag: '@LPD-99230',
