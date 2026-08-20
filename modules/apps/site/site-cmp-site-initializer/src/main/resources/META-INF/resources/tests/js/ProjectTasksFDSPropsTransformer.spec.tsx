@@ -41,10 +41,19 @@ const baseProps = {
 	additionalProps: {states: []},
 	apiURL: '/o/c/cmptasks',
 	bulkActions: [
-		{data: {id: 'assign-to'}, label: 'Assign To'},
-		{data: {id: 'delete'}, label: 'Delete'},
-		{data: {id: 'update-due-date'}, label: 'Update Due Date'},
-		{data: {id: 'update-state'}, label: 'Update State'},
+		{
+			data: {id: 'assign-to', permissionKey: 'update'},
+			label: 'Assign To',
+		},
+		{data: {id: 'delete', permissionKey: 'delete'}, label: 'Delete'},
+		{
+			data: {id: 'update-due-date', permissionKey: 'update'},
+			label: 'Update Due Date',
+		},
+		{
+			data: {id: 'update-state', permissionKey: 'update'},
+			label: 'Update State',
+		},
 	],
 	creationMenu: {primaryItems: []},
 	id: 'test-fds',
@@ -90,6 +99,14 @@ describe('ProjectTasksFDSPropsTransformer', () => {
 		expect(confirmationMessage).not.toContain('<script>');
 	});
 
+	it('hides a bulk action when a selected task lacks its permission', () => {
+		expect(
+			getBulkAction('delete').isVisible({
+				selectedItems: [{actions: {get: {}, update: {}}}],
+			})
+		).toBe(false);
+	});
+
 	it('hides the assign-to bulk action when all items are selected or the selected tasks belong to more than one project', () => {
 		expect(
 			getBulkAction('assign-to').isVisible({
@@ -101,8 +118,9 @@ describe('ProjectTasksFDSPropsTransformer', () => {
 			getBulkAction('assign-to').isVisible({
 				allItemsSelectedActive: false,
 				selectedItems: [
-					projectItem,
+					{...projectItem, actions: {update: {}}},
 					{
+						actions: {update: {}},
 						embedded: {
 							id: 2,
 							r_cmpProjectToCMPTasks_c_cmpProjectId: 789,
@@ -114,10 +132,22 @@ describe('ProjectTasksFDSPropsTransformer', () => {
 		).toBe(false);
 	});
 
+	it('keeps a bulk action visible when every selected task has its permission', () => {
+		expect(
+			getBulkAction('update-state').isVisible({
+				selectedItems: [
+					{actions: {get: {}, update: {}}},
+					{actions: {delete: {}, get: {}, update: {}}},
+				],
+			})
+		).toBe(true);
+	});
+
 	it('keeps the assign-to bulk action visible and opens the modal scoped to the project when the selected tasks belong to a single project', async () => {
 		const selectedItems = [
-			projectItem,
+			{...projectItem, actions: {update: {}}},
 			{
+				actions: {update: {}},
 				embedded: {id: 2, r_cmpProjectToCMPTasks_c_cmpProjectId: 456},
 				entryClassName: 'com.liferay.object.model.ObjectEntry',
 			},

@@ -46,10 +46,19 @@ const baseProps = {
 	additionalProps: {states: []},
 	apiURL: '/o/search/v1.0/search',
 	bulkActions: [
-		{data: {id: 'assign-to'}, label: 'Assign To'},
-		{data: {id: 'delete'}, label: 'Delete'},
-		{data: {id: 'update-due-date'}, label: 'Update Due Date'},
-		{data: {id: 'update-state'}, label: 'Update State'},
+		{
+			data: {id: 'assign-to', permissionKey: 'update'},
+			label: 'Assign To',
+		},
+		{data: {id: 'delete', permissionKey: 'delete'}, label: 'Delete'},
+		{
+			data: {id: 'update-due-date', permissionKey: 'update'},
+			label: 'Update Due Date',
+		},
+		{
+			data: {id: 'update-state', permissionKey: 'update'},
+			label: 'Update State',
+		},
 	],
 	creationMenu: {primaryItems: []},
 	id: 'test-fds',
@@ -174,6 +183,18 @@ describe('AllTasksFDSPropsTransformer', () => {
 		expect(confirmationMessage).not.toContain('<script>');
 	});
 
+	it('hides a bulk action when a selected project task lacks its permission', () => {
+		const selectedItems = [
+			{...projectItem, actions: {get: {}, update: {}}},
+		];
+
+		expect(getBulkAction('delete').isVisible({selectedItems})).toBe(false);
+
+		expect(getBulkAction('update-state').isVisible({selectedItems})).toBe(
+			true
+		);
+	});
+
 	it('hides the assign-to bulk action when all items are selected or the selected tasks belong to more than one project', () => {
 		expect(
 			getBulkAction('assign-to').isVisible({
@@ -185,8 +206,9 @@ describe('AllTasksFDSPropsTransformer', () => {
 			getBulkAction('assign-to').isVisible({
 				allItemsSelectedActive: false,
 				selectedItems: [
-					projectItem,
+					{...projectItem, actions: {update: {}}},
 					{
+						actions: {update: {}},
 						embedded: {
 							id: 2,
 							r_cmpProjectToCMPTasks_c_cmpProjectId: 789,
@@ -198,10 +220,32 @@ describe('AllTasksFDSPropsTransformer', () => {
 		).toBe(false);
 	});
 
+	it('keeps bulk actions visible for a workflow task selection, deferring update-state and delete to the disabled state', () => {
+		const selectedItems = [
+			{
+				...workflowItem,
+				actions: {assignToUser: {}, get: {}, updateDueDate: {}},
+			},
+		];
+
+		expect(getBulkAction('assign-to').isVisible({selectedItems})).toBe(
+			true
+		);
+		expect(
+			getBulkAction('update-due-date').isVisible({selectedItems})
+		).toBe(true);
+
+		expect(getBulkAction('delete').isVisible({selectedItems})).toBe(true);
+		expect(getBulkAction('update-state').isVisible({selectedItems})).toBe(
+			true
+		);
+	});
+
 	it('keeps the assign-to bulk action visible and opens the modal scoped to the project when the selected tasks belong to a single project', async () => {
 		const selectedItems = [
-			projectItem,
+			{...projectItem, actions: {update: {}}},
 			{
+				actions: {update: {}},
 				embedded: {id: 2, r_cmpProjectToCMPTasks_c_cmpProjectId: 456},
 				entryClassName: 'com.liferay.object.model.ObjectEntry',
 			},
