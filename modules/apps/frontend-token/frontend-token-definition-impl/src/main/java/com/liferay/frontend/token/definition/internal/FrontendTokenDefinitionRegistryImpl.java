@@ -146,14 +146,7 @@ public class FrontendTokenDefinitionRegistryImpl
 			return frontendTokenDefinition;
 		}
 
-		Map<String, FrontendTokenDefinition> frontendTokenDefinitions =
-			_frontendTokenDefinitionsMap.get(companyId);
-
-		if (frontendTokenDefinitions == null) {
-			return null;
-		}
-
-		return frontendTokenDefinitions.get(themeId);
+		return _frontendTokenDefinitionsMap.get(_getKey(companyId, themeId));
 	}
 
 	@Override
@@ -173,12 +166,16 @@ public class FrontendTokenDefinitionRegistryImpl
 					FrontendTokenDefinitionConstants.THEME_TYPE_GLOBAL));
 		}
 
-		Map<String, FrontendTokenDefinition> frontendTokenDefinitionsMap =
-			_frontendTokenDefinitionsMap.get(companyId);
+		String keyPrefix = companyId + StringPool.POUND;
 
-		if (frontendTokenDefinitionsMap != null) {
-			frontendTokenDefinitions.addAll(
-				frontendTokenDefinitionsMap.values());
+		for (Map.Entry<String, FrontendTokenDefinition> entry :
+				_frontendTokenDefinitionsMap.entrySet()) {
+
+			String key = entry.getKey();
+
+			if (key.startsWith(keyPrefix)) {
+				frontendTokenDefinitions.add(entry.getValue());
+			}
 		}
 
 		return frontendTokenDefinitions;
@@ -366,13 +363,10 @@ public class FrontendTokenDefinitionRegistryImpl
 			_frontendTokenDefinitionJSONValidator.validate(
 				themeCSSCET.getFrontendTokenDefinitionJSON());
 
-			Map<String, FrontendTokenDefinition> frontendTokenDefinitions =
-				_frontendTokenDefinitionsMap.computeIfAbsent(
+			_frontendTokenDefinitionsMap.put(
+				_getKey(
 					themeCSSCET.getCompanyId(),
-					entry -> new ConcurrentHashMap<>());
-
-			frontendTokenDefinitions.put(
-				themeCSSCET.getExternalReferenceCode(),
+					themeCSSCET.getExternalReferenceCode()),
 				new FrontendTokenDefinitionImpl(
 					jsonFactory.createJSONObject(
 						themeCSSCET.getFrontendTokenDefinitionJSON()),
@@ -460,27 +454,22 @@ public class FrontendTokenDefinitionRegistryImpl
 		}
 	}
 
-	private Map<String, FrontendTokenDefinition> _getFrontendTokenDefinitions(
-		long companyId) {
-
-		return _frontendTokenDefinitionsMap.getOrDefault(
-			companyId, new ConcurrentHashMap<>());
+	private String _getKey(long companyId, String themeId) {
+		return companyId + StringPool.POUND + themeId;
 	}
 
 	private FrontendTokenDefinition _getThemeCSSCETFrontendTokenDefinition(
 		long companyId, String externalReferenceCode) {
 
-		Map<String, FrontendTokenDefinition> frontendTokenDefinitions =
-			_getFrontendTokenDefinitions(companyId);
-
-		return frontendTokenDefinitions.get(externalReferenceCode);
+		return _frontendTokenDefinitionsMap.get(
+			_getKey(companyId, externalReferenceCode));
 	}
 
 	private void _removedService(ThemeCSSCET themeCSSCET) {
-		Map<String, FrontendTokenDefinition> frontendTokenDefinitions =
-			_getFrontendTokenDefinitions(themeCSSCET.getCompanyId());
-
-		frontendTokenDefinitions.remove(themeCSSCET.getExternalReferenceCode());
+		_frontendTokenDefinitionsMap.remove(
+			_getKey(
+				themeCSSCET.getCompanyId(),
+				themeCSSCET.getExternalReferenceCode()));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -554,7 +543,7 @@ public class FrontendTokenDefinitionRegistryImpl
 		_frontendTokenDefinitions = new ConcurrentHashMap<>();
 	private final DCLSingleton<Map<String, FrontendTokenDefinition>>
 		_frontendTokenDefinitionsDCLSingleton = new DCLSingleton<>();
-	private final Map<Long, Map<String, FrontendTokenDefinition>>
+	private final Map<String, FrontendTokenDefinition>
 		_frontendTokenDefinitionsMap = new ConcurrentHashMap<>();
 
 	@Reference
