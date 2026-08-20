@@ -81,22 +81,12 @@ public class ViewFolderSectionDisplayContext extends BaseSectionDisplayContext {
 			getRootObjectEntryFolderExternalReferenceCode(),
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
 
-		boolean rootFolder = false;
-
-		if (objectEntryFolder != null) {
-			rootFolder = Objects.equals(
-				objectEntryFolder.getExternalReferenceCode(),
-				getRootObjectEntryFolderExternalReferenceCode());
-		}
-
 		return new HashMapBuilder<>().putAll(
 			super.getAdditionalProps()
 		).put(
 			"breadcrumbProps", getBreadcrumbProps()
 		).put(
 			"galleryViewEnabled", !contentsFolder
-		).put(
-			"rootFolder", rootFolder
 		).put(
 			"rootObjectEntryFolderExternalReferenceCode",
 			getRootObjectEntryFolderExternalReferenceCode()

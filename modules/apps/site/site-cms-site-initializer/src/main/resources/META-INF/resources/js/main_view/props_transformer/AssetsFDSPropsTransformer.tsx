@@ -72,19 +72,16 @@ import transformFDSBulkActions from './utils/transformFDSBulkActions';
 import transformViewsItemsProps from './utils/transformViewsItemProps';
 import GalleryView from './views/GalleryView';
 
-/**
- * Transforms additionalAPIURLParameters to remove folderId filter when searching at root folder.
- * Hoisted outside component to avoid recreation
- */
+const FOLDER_ID_FILTER_REGEX = /^folderId eq (\d+)$/;
+
 export interface AdditionalAPIURLParametersTransformerArgs {
 	additionalAPIURLParameters: string;
-	rootFolder?: boolean;
 	searchParam: string;
 }
 const additionalAPIURLParametersTransformer = (
 	args: AdditionalAPIURLParametersTransformerArgs
 ): string | undefined => {
-	const {additionalAPIURLParameters, rootFolder, searchParam} = args;
+	const {additionalAPIURLParameters, searchParam} = args;
 
 	if (!additionalAPIURLParameters) {
 		return additionalAPIURLParameters;
@@ -112,16 +109,15 @@ const additionalAPIURLParametersTransformer = (
 	const cleanedFilters = filterContent
 		.split(/\s+and\s+/i)
 		.map((part) => part.trim())
-		.filter((part) => {
-			if (part === 'cmsRoot eq true') {
-				return false;
+		.filter((part) => part !== '' && part !== 'cmsRoot eq true')
+		.map((part) => {
+			const matches = part.match(FOLDER_ID_FILTER_REGEX);
+
+			if (matches) {
+				return `treePath/any(t:t eq '${matches[1]}')`;
 			}
 
-			if (rootFolder && part.startsWith('folderId eq')) {
-				return false;
-			}
-
-			return part !== '';
+			return part;
 		});
 
 	if (!cleanedFilters.length) {
@@ -170,7 +166,6 @@ export type AdditionalProps = {
 	objectEntryFolderExternalReferenceCode: string;
 	parentObjectEntryFolderExternalReferenceCode: string;
 	redirect: string;
-	rootFolder?: boolean;
 	rootObjectEntryFolderExternalReferenceCode: string;
 	showAdditionalItemInfo?: boolean;
 	trashEnabled?: boolean;
@@ -232,11 +227,8 @@ export default function AssetsFDSPropsTransformer({
 		mergedViews = [...nonDefaultViews, galleryViewRenderer];
 	}
 
-	const {
-		additionalAPIURLParameters,
-		rootFolder,
-		...remainingAdditionalProps
-	} = additionalProps || {};
+	const {additionalAPIURLParameters, ...remainingAdditionalProps} =
+		additionalProps || {};
 
 	const bulkActionAPIURL =
 		additionalAPIURLParameters && otherProps.apiURL
@@ -253,13 +245,7 @@ export default function AssetsFDSPropsTransformer({
 	return {
 		...otherProps,
 		additionalAPIURLParameters,
-		additionalAPIURLParametersTransformer: (
-			args: AdditionalAPIURLParametersTransformerArgs
-		) =>
-			additionalAPIURLParametersTransformer({
-				...args,
-				rootFolder,
-			}),
+		additionalAPIURLParametersTransformer,
 		additionalProps: remainingAdditionalProps,
 		bulkActions: transformFDSBulkActions(bulkActions),
 		creationMenu: {
