@@ -3,3 +3,5 @@ create unique index IX_D4C862E2 on LayoutContentVersion (groupId, externalRefere
 create index IX_813BD3E1 on LayoutContentVersion (groupId, status);
 create index IX_A2BB1180 on LayoutContentVersion (plid, status);
 create unique index IX_DC2DF6AE on LayoutContentVersion (plid, version);
+
+create unique index IX_CC10F2C6 on LayoutContentVersionPreview (layoutContentVersionId, segmentsExperienceERC[$COLUMN_LENGTH:75$], languageId[$COLUMN_LENGTH:75$]);

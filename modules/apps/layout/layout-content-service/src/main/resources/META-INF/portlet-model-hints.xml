@@ -24,4 +24,18 @@
 		<field name="statusByUserName" type="String" />
 		<field name="statusDate" type="Date" />
 	</model>
+	<model name="com.liferay.layout.content.model.LayoutContentVersionPreview">
+		<field name="mvccVersion" type="long" />
+		<field name="layoutContentVersionPreviewId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="layoutContentVersionId" type="long" />
+		<field name="segmentsExperienceERC" type="String" />
+		<field name="html" type="String" />
+		<field name="languageId" type="String" />
+	</model>
 </model-hints>
