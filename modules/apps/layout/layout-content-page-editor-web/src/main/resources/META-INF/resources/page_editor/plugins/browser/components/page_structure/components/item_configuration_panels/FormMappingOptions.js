@@ -6,6 +6,7 @@
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import {useControlledState} from '@liferay/layout-js-components-web';
+import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useMemo} from 'react';
 
@@ -22,6 +23,7 @@ import selectSegmentsExperienceId from '../../../../../../app/selectors/selectSe
 import {formIsMapped} from '../../../../../../app/utils/formIsMapped';
 import {hasLocalizationSelect} from '../../../../../../app/utils/hasLocalizationSelect';
 import {openAddLocalizationSelect} from '../../../../../../app/utils/openAddLocalizationSelect';
+import MappedFieldLabel from '../../../../../../common/components/MappedFieldLabel';
 import {openInfoFieldSelector} from '../../../../../../common/openInfoFieldSelector';
 
 export default function FormMappingOptions({
@@ -47,6 +49,8 @@ export default function FormMappingOptions({
 	);
 
 	const selectedType = formTypes.find(({value}) => value === classNameId);
+
+	const isMapped = formIsMapped(item);
 
 	const onSelect = useCallback(
 		(classNameId, classTypeId) => {
@@ -112,7 +116,10 @@ export default function FormMappingOptions({
 	return (
 		<>
 			<SelectField
-				className="mb-2"
+				className={classNames({
+					'mb-1 page-editor__mapped-field': isMapped,
+					'mb-2': !isMapped,
+				})}
 				field={{
 					hideLabel,
 					label: Liferay.Language.get('content-type'),
@@ -140,7 +147,9 @@ export default function FormMappingOptions({
 				value={classNameId}
 			/>
 
-			{formIsMapped(item) ? (
+			{isMapped ? <MappedFieldLabel className="mb-2" /> : null}
+
+			{isMapped ? (
 				<ClayButton
 					displayType="secondary"
 					onClick={() => onSelect(classNameId, classTypeId)}
