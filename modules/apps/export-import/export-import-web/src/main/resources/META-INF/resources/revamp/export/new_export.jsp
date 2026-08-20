@@ -15,12 +15,12 @@ if (liveGroup == null) {
 	liveGroupId = groupId;
 }
 
-ExportImportPreviewDisplayContext exportImportPreviewDisplayContext = (ExportImportPreviewDisplayContext)request.getAttribute(ExportImportWebKeys.EXPORT_IMPORT_PREVIEW_DISPLAY_CONTEXT);
+ExportImportProcessDisplayContext exportImportProcessDisplayContext = (ExportImportProcessDisplayContext)request.getAttribute(ExportImportWebKeys.EXPORT_IMPORT_PROCESS_DISPLAY_CONTEXT);
 
 portletDisplay.setShowBackIcon(true);
-portletDisplay.setURLBack(exportImportPreviewDisplayContext.getBackURL());
+portletDisplay.setURLBack(exportImportProcessDisplayContext.getBackURL());
 
-renderResponse.setTitle(exportImportPreviewDisplayContext.getExportTitle());
+renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 %>
 
 <clay:container-fluid
@@ -34,17 +34,17 @@ renderResponse.setTitle(exportImportPreviewDisplayContext.getExportTitle());
 		module="{NewExport} from exportimport-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"backURL", exportImportPreviewDisplayContext.getBackURL()
+				"backURL", exportImportProcessDisplayContext.getBackURL()
 			).put(
-				"commentsAndRatingsEnabled", exportImportPreviewDisplayContext.isCommentsAndRatingsEnabled()
+				"commentsAndRatingsEnabled", exportImportProcessDisplayContext.isCommentsAndRatingsEnabled()
 			).put(
-				"exportPreview", exportImportPreviewDisplayContext.getExportPreviewJSONObject()
+				"exportPreview", exportImportProcessDisplayContext.getExportPreviewJSONObject()
 			).put(
-				"exportPreviewAPIURL", exportImportPreviewDisplayContext.getExportPreviewAPIURL()
+				"exportPreviewAPIURL", exportImportProcessDisplayContext.getExportPreviewAPIURL()
 			).put(
-				"exportProcessAPIURL", exportImportPreviewDisplayContext.getExportProcessAPIURL()
+				"exportProcessAPIURL", exportImportProcessDisplayContext.getExportProcessAPIURL()
 			).put(
-				"lookAndFeelEnabled", exportImportPreviewDisplayContext.isLookAndFeelEnabled()
+				"lookAndFeelEnabled", exportImportProcessDisplayContext.isLookAndFeelEnabled()
 			).put(
 				"pageTreeModalConfiguration",
 				HashMapBuilder.<String, Object>put(

@@ -15,12 +15,12 @@ if (liveGroup == null) {
 	liveGroupId = groupId;
 }
 
-ExportImportPreviewDisplayContext exportImportPreviewDisplayContext = new ExportImportPreviewDisplayContext("/export_import/view_import_layouts", liveGroup, groupId, request, liferayPortletResponse, liveGroupId, privateLayout);
+ExportImportProcessDisplayContext exportImportProcessDisplayContext = new ExportImportProcessDisplayContext("/export_import/view_import_layouts", liveGroup, groupId, request, liferayPortletResponse, liveGroupId, privateLayout);
 
 portletDisplay.setShowBackIcon(true);
-portletDisplay.setURLBack(exportImportPreviewDisplayContext.getBackURL());
+portletDisplay.setURLBack(exportImportProcessDisplayContext.getBackURL());
 
-renderResponse.setTitle(exportImportPreviewDisplayContext.getImportTitle());
+renderResponse.setTitle(exportImportProcessDisplayContext.getImportTitle());
 %>
 
 <clay:container-fluid
@@ -34,17 +34,17 @@ renderResponse.setTitle(exportImportPreviewDisplayContext.getImportTitle());
 		module="{NewImport} from exportimport-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"backURL", exportImportPreviewDisplayContext.getBackURL()
+				"backURL", exportImportProcessDisplayContext.getBackURL()
 			).put(
-				"commentsAndRatingsEnabled", exportImportPreviewDisplayContext.isCommentsAndRatingsEnabled()
+				"commentsAndRatingsEnabled", exportImportProcessDisplayContext.isCommentsAndRatingsEnabled()
 			).put(
-				"importPreviewAPIURL", exportImportPreviewDisplayContext.getImportPreviewAPIURL()
+				"importPreviewAPIURL", exportImportProcessDisplayContext.getImportPreviewAPIURL()
 			).put(
-				"importProcessAPIURL", exportImportPreviewDisplayContext.getImportProcessAPIURL()
+				"importProcessAPIURL", exportImportProcessDisplayContext.getImportProcessAPIURL()
 			).put(
-				"lookAndFeelEnabled", exportImportPreviewDisplayContext.isLookAndFeelEnabled()
+				"lookAndFeelEnabled", exportImportProcessDisplayContext.isLookAndFeelEnabled()
 			).put(
-				"scope", exportImportPreviewDisplayContext.getScope()
+				"scope", exportImportProcessDisplayContext.getScope()
 			).build()
 		%>'
 	/>
