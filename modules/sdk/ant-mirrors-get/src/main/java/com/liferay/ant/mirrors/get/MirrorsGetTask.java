@@ -28,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -219,11 +218,8 @@ public class MirrorsGetTask extends Task {
 	}
 
 	protected File createReadLink(File cacheFile, File linkFile) {
-		Path cacheFilePath = cacheFile.toPath();
-		Path linkFilePath = linkFile.toPath();
-
 		try {
-			Files.createLink(linkFilePath, cacheFilePath);
+			Files.createLink(linkFile.toPath(), cacheFile.toPath());
 
 			return linkFile;
 		}
@@ -242,11 +238,8 @@ public class MirrorsGetTask extends Task {
 	protected boolean publish(File tempFile, File cacheFile)
 		throws IOException {
 
-		Path cacheFilePath = cacheFile.toPath();
-		Path tempFilePath = tempFile.toPath();
-
 		try {
-			Files.createLink(cacheFilePath, tempFilePath);
+			Files.createLink(cacheFile.toPath(), tempFile.toPath());
 
 			return true;
 		}
