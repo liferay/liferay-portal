@@ -114,11 +114,10 @@ public class IndexOnStartupExecutor
 									currentBundleContext.getService(
 										serviceReference);
 
-								boolean indexOnStartup =
-									GetterUtil.getBoolean(
-										serviceReference.getProperty(
-											PropsKeys.INDEX_ON_STARTUP),
-										true);
+								boolean indexOnStartup = GetterUtil.getBoolean(
+									serviceReference.getProperty(
+										PropsKeys.INDEX_ON_STARTUP),
+									true);
 
 								String className = indexer.getClassName();
 
