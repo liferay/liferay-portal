@@ -38,8 +38,6 @@ Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a s
 
 Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands.
 
-Report the number of Gradle modules compared alongside the result, since a pass that compared nothing otherwise looks like a clean one. The run is passed `--quiet`, so it prints no task lines: count the entries ending in `:baseline` in the command line it echoes, and report what you counted rather than a fixed figure.
-
 Baseline has five warnings, and they do not all reach the tree in the same shape:
 
 | Warning | What Lands in the Tree |
