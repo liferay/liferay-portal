@@ -126,8 +126,12 @@ public class FragmentEntryValidatorImpl implements FragmentEntryValidator {
 	private boolean _checkValidationRules(
 		String value, JSONObject validationJSONObject) {
 
-		if (Validator.isNull(value) || (validationJSONObject == null)) {
+		if (validationJSONObject == null) {
 			return true;
+		}
+
+		if (Validator.isNull(value)) {
+			return !validationJSONObject.getBoolean("required");
 		}
 
 		String type = validationJSONObject.getString("type");
@@ -176,6 +180,26 @@ public class FragmentEntryValidatorImpl implements FragmentEntryValidator {
 			_language.get(
 				LocaleUtil.getDefault(), "fragment-configuration-is-invalid"),
 			System.lineSeparator(), message);
+	}
+
+	private String _getValue(
+			JSONObject fieldJSONObject, JSONObject valuesJSONObject)
+		throws Exception {
+
+		String value = valuesJSONObject.getString(
+			fieldJSONObject.getString("name"));
+
+		if (!fieldJSONObject.getBoolean("localizable") ||
+			!JSONUtil.isJSONObject(value)) {
+
+			return value;
+		}
+
+		JSONObject valueJSONObject = _jsonFactory.createJSONObject(value);
+
+		return valueJSONObject.getString(
+			LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()),
+			fieldJSONObject.getString("defaultValue"));
 	}
 
 	private void _validateConfigurationValues(
@@ -239,18 +263,15 @@ public class FragmentEntryValidatorImpl implements FragmentEntryValidator {
 							fieldName + "\"");
 				}
 
-				if (valuesJSONObject != null) {
-					String value = valuesJSONObject.getString(fieldName);
+				if ((valuesJSONObject != null) &&
+					valuesJSONObject.has(fieldName) &&
+					!_checkValidationRules(
+						_getValue(fieldJSONObject, valuesJSONObject),
+						typeOptionsJSONObject.getJSONObject("validation"))) {
 
-					if (!_checkValidationRules(
-							value,
-							typeOptionsJSONObject.getJSONObject(
-								"validation"))) {
-
-						throw new FragmentEntryConfigurationException(
-							"Invalid configuration value for field \"" +
-								fieldName + "\"");
-					}
+					throw new FragmentEntryConfigurationException(
+						"Invalid configuration value for field \"" + fieldName +
+							"\"");
 				}
 
 				JSONObject dependencyJSONObject =

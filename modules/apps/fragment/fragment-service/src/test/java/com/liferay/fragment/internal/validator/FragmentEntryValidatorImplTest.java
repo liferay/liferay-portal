@@ -6,6 +6,7 @@
 package com.liferay.fragment.internal.validator;
 
 import com.liferay.fragment.exception.FragmentEntryConfigurationException;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -13,6 +14,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.language.LanguageImpl;
@@ -529,6 +531,36 @@ public class FragmentEntryValidatorImplTest {
 	}
 
 	@Test
+	public void testValidateConfigurationInvalidFieldTextTypeOptionsValidationRequiredDefaultValueEmpty()
+		throws Exception {
+
+		expectedException.expect(FragmentEntryConfigurationException.class);
+		expectedException.expectMessage(
+			new StringContains(
+				"Invalid default configuration value for field \"textField\""));
+
+		_fragmentEntryValidatorImpl.validateConfiguration(
+			_readJSONObject(
+				"configuration_invalid_field_text_typeoptions_validation_" +
+					"required_defaultvalue_empty.json"));
+	}
+
+	@Test
+	public void testValidateConfigurationInvalidFieldTextTypeOptionsValidationRequiredDefaultValueMissing()
+		throws Exception {
+
+		expectedException.expect(FragmentEntryConfigurationException.class);
+		expectedException.expectMessage(
+			new StringContains(
+				"Invalid default configuration value for field \"textField\""));
+
+		_fragmentEntryValidatorImpl.validateConfiguration(
+			_readJSONObject(
+				"configuration_invalid_field_text_typeoptions_validation_" +
+					"required_defaultvalue_missing.json"));
+	}
+
+	@Test
 	public void testValidateConfigurationValidComplete() throws Exception {
 		_fragmentEntryValidatorImpl.validateConfiguration(
 			_readJSONObject("configuration_valid_complete.json"));
@@ -786,6 +818,19 @@ public class FragmentEntryValidatorImplTest {
 	}
 
 	@Test
+	public void testValidateConfigurationValuesTextFieldTypeInvalidRequired()
+		throws Exception {
+
+		expectedException.expect(FragmentEntryConfigurationException.class);
+
+		_fragmentEntryValidatorImpl.validateConfigurationValues(
+			_readJSONObject(
+				"configuration_field_text_typeoptions_validation_required." +
+					"json"),
+			JSONUtil.put("textField", StringPool.BLANK));
+	}
+
+	@Test
 	public void testValidateConfigurationValuesTextFieldTypeInvalidURL()
 		throws Exception {
 
@@ -835,6 +880,55 @@ public class FragmentEntryValidatorImplTest {
 			_readJSONObject(
 				"configuration_field_text_typeoptions_validation_regexp.json"),
 			JSONUtil.put("regexpField", "test-256"));
+	}
+
+	@Test
+	public void testValidateConfigurationValuesTextFieldTypeValidRequired()
+		throws Exception {
+
+		_fragmentEntryValidatorImpl.validateConfigurationValues(
+			_readJSONObject(
+				"configuration_field_text_typeoptions_validation_required." +
+					"json"),
+			JSONUtil.put("textField", StringUtil.randomString()));
+	}
+
+	@Test
+	public void testValidateConfigurationValuesTextFieldTypeValidRequiredLocalizable()
+		throws Exception {
+
+		_fragmentEntryValidatorImpl.validateConfigurationValues(
+			_readJSONObject(
+				"configuration_field_text_typeoptions_validation_required_" +
+					"localizable.json"),
+			JSONUtil.put(
+				"textField",
+				JSONUtil.put(
+					LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()),
+					StringUtil.randomString())));
+	}
+
+	@Test
+	public void testValidateConfigurationValuesTextFieldTypeValidRequiredLocalizableTranslationOnly()
+		throws Exception {
+
+		_fragmentEntryValidatorImpl.validateConfigurationValues(
+			_readJSONObject(
+				"configuration_field_text_typeoptions_validation_required_" +
+					"localizable.json"),
+			JSONUtil.put(
+				"textField", JSONUtil.put("es_ES", StringUtil.randomString())));
+	}
+
+	@Test
+	public void testValidateConfigurationValuesTextFieldTypeValidRequiredUnsetValue()
+		throws Exception {
+
+		_fragmentEntryValidatorImpl.validateConfigurationValues(
+			_readJSONObject(
+				"configuration_field_text_typeoptions_validation_required." +
+					"json"),
+			JSONFactoryUtil.createJSONObject());
 	}
 
 	@Test

@@ -530,6 +530,10 @@
 											"title": "The Min Schema",
 											"type": "number"
 										},
+										"required": {
+											"title": "The Required Schema",
+											"type": "boolean"
+										},
 										"type": {
 											"const": "number"
 										}
@@ -550,6 +554,10 @@
 											"title": "The MaxLength Schema",
 											"type": "number"
 										},
+										"required": {
+											"title": "The Required Schema",
+											"type": "boolean"
+										},
 										"type": {
 											"enum": [
 												"email",
@@ -569,6 +577,10 @@
 										"regexp": {
 											"title": "The RegExp Schema",
 											"type": "string"
+										},
+										"required": {
+											"title": "The Required Schema",
+											"type": "boolean"
 										},
 										"type": {
 											"const": "pattern"

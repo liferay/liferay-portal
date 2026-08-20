@@ -1,0 +1,19 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": "",
+					"name": "textField",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"required": true,
+							"type": "text"
+						}
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": "Go Somewhere",
+					"localizable": true,
+					"name": "textField",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"required": true,
+							"type": "text"
+						}
+					}
+				}
+			]
+		}
+	]
+}
