@@ -1,5 +1,5 @@
 import ClayForm, {ClayCheckbox} from '@clayui/form';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-pro';
 import React, {useEffect, useMemo, useState} from 'react';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
