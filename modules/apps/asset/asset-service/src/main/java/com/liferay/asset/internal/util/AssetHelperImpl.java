@@ -657,6 +657,7 @@ public class AssetHelperImpl implements AssetHelper {
 
 		if (fieldType.equals(Field.CREATE_DATE) ||
 			fieldType.equals(Field.EXPIRATION_DATE) ||
+			fieldType.equals(Field.MODIFIED_DATE) ||
 			fieldType.equals(Field.PUBLISH_DATE) ||
 			fieldType.equals("modifiedDate")) {
 
