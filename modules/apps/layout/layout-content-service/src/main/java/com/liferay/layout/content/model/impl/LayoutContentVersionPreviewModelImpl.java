@@ -68,7 +68,7 @@ public class LayoutContentVersionPreviewModelImpl
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"layoutContentVersionId", Types.BIGINT},
-		{"segmentsExperienceERC", Types.VARCHAR}, {"html", Types.VARCHAR},
+		{"segmentsExperienceERC", Types.VARCHAR}, {"html", Types.CLOB},
 		{"languageId", Types.VARCHAR}
 	};
 
@@ -86,12 +86,12 @@ public class LayoutContentVersionPreviewModelImpl
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("layoutContentVersionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("segmentsExperienceERC", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("html", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("html", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("languageId", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table LayoutContentVersionPreview (mvccVersion LONG default 0 not null,layoutContentVersionPreviewId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,layoutContentVersionId LONG,segmentsExperienceERC VARCHAR(75) null,html VARCHAR(75) null,languageId VARCHAR(75) null)";
+		"create table LayoutContentVersionPreview (mvccVersion LONG default 0 not null,layoutContentVersionPreviewId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,layoutContentVersionId LONG,segmentsExperienceERC VARCHAR(75) null,html TEXT null,languageId VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table LayoutContentVersionPreview";
@@ -1016,4 +1016,4 @@ public class LayoutContentVersionPreviewModelImpl
 	private LayoutContentVersionPreview _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:100015157
+// LIFERAY-SERVICE-BUILDER-HASH:2082646516

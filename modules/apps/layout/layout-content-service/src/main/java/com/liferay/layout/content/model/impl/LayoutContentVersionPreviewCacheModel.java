@@ -169,7 +169,9 @@ public class LayoutContentVersionPreviewCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		layoutContentVersionPreviewId = objectInput.readLong();
@@ -185,7 +187,7 @@ public class LayoutContentVersionPreviewCacheModel
 
 		layoutContentVersionId = objectInput.readLong();
 		segmentsExperienceERC = objectInput.readUTF();
-		html = objectInput.readUTF();
+		html = (String)objectInput.readObject();
 		languageId = objectInput.readUTF();
 	}
 
@@ -221,10 +223,10 @@ public class LayoutContentVersionPreviewCacheModel
 		}
 
 		if (html == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(html);
+			objectOutput.writeObject(html);
 		}
 
 		if (languageId == null) {
@@ -249,4 +251,4 @@ public class LayoutContentVersionPreviewCacheModel
 	public String languageId;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1148801295
+// LIFERAY-SERVICE-BUILDER-HASH:-779370664

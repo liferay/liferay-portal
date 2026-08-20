@@ -31,6 +31,6 @@ create table LayoutContentVersionPreview (
 	modifiedDate DATE null,
 	layoutContentVersionId LONG,
 	segmentsExperienceERC VARCHAR(75) null,
-	html VARCHAR(75) null,
+	html TEXT null,
 	languageId VARCHAR(75) null
 );
