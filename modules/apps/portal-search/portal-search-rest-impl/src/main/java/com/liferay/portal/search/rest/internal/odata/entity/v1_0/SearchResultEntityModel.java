@@ -62,6 +62,8 @@ public class SearchResultEntityModel implements EntityModel {
 				new StringEntityField(
 					"objectFolderExternalReferenceCode",
 					locale -> "objectFolderExternalReferenceCode")),
+			new CollectionEntityField(
+				new StringEntityField("treePath", locale -> Field.TREE_PATH)),
 			new DateTimeEntityField(
 				"cmpDueDate", locale -> "cmpDueDate", locale -> "cmpDueDate"),
 			new DateTimeEntityField(
