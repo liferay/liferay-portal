@@ -628,25 +628,16 @@ public class MirrorsGetTask extends Task {
 					_deleteFile(mirrorsCacheFile);
 				}
 
-				if (publish(mirrorsCacheFile, mirrorsCacheTempFile)) {
-					if (mirrorsCacheTempFile.exists()) {
-						readFile = mirrorsCacheTempFile;
-					}
-					else {
-						readFile = mirrorsCacheFile;
-					}
+				if (!publish(mirrorsCacheFile, mirrorsCacheTempFile)) {
+					System.out.println(
+						mirrorsCacheFile.getPath() + " was already published.");
+				}
+
+				if (mirrorsCacheTempFile.exists()) {
+					readFile = mirrorsCacheTempFile;
 				}
 				else {
-					System.out.println(
-						mirrorsCacheFile.getPath() +
-							" was already published by another process.");
-
-					readFile = _getReadFile(
-						mirrorsCacheFile, mirrorsCacheLinkFile);
-
-					if (readFile == null) {
-						readFile = mirrorsCacheTempFile;
-					}
+					readFile = mirrorsCacheFile;
 				}
 			}
 
