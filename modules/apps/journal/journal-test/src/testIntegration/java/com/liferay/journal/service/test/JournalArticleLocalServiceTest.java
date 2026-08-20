@@ -313,6 +313,155 @@ public class JournalArticleLocalServiceTest {
 	}
 
 	@Test
+	public void testAddArticleWithDocumentLibraryFieldNormalizesValue()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
+			FileUtil.getBytes(getClass(), "dependencies/image.jpg"), null, null,
+			null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Group group = _groupLocalService.getGroup(fileEntry.getGroupId());
+
+		JSONObject itemSelectorJSONObject = _addDocumentLibraryFieldValue(
+			JSONUtil.put(
+				"classNameId",
+				PortalUtil.getClassNameId(FileEntry.class.getName())
+			).put(
+				"extension", fileEntry.getExtension()
+			).put(
+				"externalReferenceCode", fileEntry.getExternalReferenceCode()
+			).put(
+				"fileEntryId", String.valueOf(fileEntry.getFileEntryId())
+			).put(
+				"groupExternalReferenceCode", group.getExternalReferenceCode()
+			).put(
+				"groupId", String.valueOf(fileEntry.getGroupId())
+			).put(
+				"size", fileEntry.getSize()
+			).put(
+				"title", fileEntry.getTitle()
+			).put(
+				"type", "document"
+			).put(
+				"url", "/documents/d/image.jpg?t=1700000000000&imagePreview=1"
+			).put(
+				"uuid", fileEntry.getUuid()
+			));
+
+		JSONObject headlessJSONObject = _addDocumentLibraryFieldValue(
+			JSONUtil.put(
+				"alt", StringPool.BLANK
+			).put(
+				"classPK", fileEntry.getFileEntryId()
+			).put(
+				"description", StringPool.BLANK
+			).put(
+				"extension", fileEntry.getExtension()
+			).put(
+				"fileEntryId", fileEntry.getFileEntryId()
+			).put(
+				"groupId", fileEntry.getGroupId()
+			).put(
+				"name", fileEntry.getFileName()
+			).put(
+				"resourcePrimKey", fileEntry.getPrimaryKey()
+			).put(
+				"size", fileEntry.getSize()
+			).put(
+				"title", fileEntry.getTitle()
+			).put(
+				"type", "document"
+			).put(
+				"url", "/documents/d/image.jpg?version=1.0"
+			).put(
+				"uuid", fileEntry.getUuid()
+			));
+
+		Assert.assertEquals(
+			headlessJSONObject.toMap(), itemSelectorJSONObject.toMap());
+
+		Assert.assertEquals(
+			PortalUtil.getClassNameId(FileEntry.class.getName()),
+			itemSelectorJSONObject.getLong("classNameId"));
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(),
+			itemSelectorJSONObject.getLong("classPK"));
+		Assert.assertEquals(
+			fileEntry.getExtension(),
+			itemSelectorJSONObject.getString("extension"));
+		Assert.assertEquals(
+			fileEntry.getExternalReferenceCode(),
+			itemSelectorJSONObject.getString("externalReferenceCode"));
+		Assert.assertEquals(
+			fileEntry.getFileEntryId(),
+			itemSelectorJSONObject.getLong("fileEntryId"));
+		Assert.assertEquals(
+			group.getExternalReferenceCode(),
+			itemSelectorJSONObject.getString("groupExternalReferenceCode"));
+		Assert.assertEquals(
+			fileEntry.getGroupId(), itemSelectorJSONObject.getLong("groupId"));
+		Assert.assertEquals(
+			fileEntry.getFileName(), itemSelectorJSONObject.getString("name"));
+		Assert.assertEquals(
+			fileEntry.getSize(), itemSelectorJSONObject.getLong("size"));
+		Assert.assertEquals(
+			fileEntry.getTitle(), itemSelectorJSONObject.getString("title"));
+		Assert.assertEquals(
+			"document", itemSelectorJSONObject.getString("type"));
+		Assert.assertEquals(
+			fileEntry.getUuid(), itemSelectorJSONObject.getString("uuid"));
+	}
+
+	@Test
+	public void testAddArticleWithDocumentLibraryFieldPreservesUnknownKeys()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
+			FileUtil.getBytes(getClass(), "dependencies/image.jpg"), null, null,
+			null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		JSONObject jsonObject = _addDocumentLibraryFieldValue(
+			JSONUtil.put(
+				"groupId", fileEntry.getGroupId()
+			).put(
+				"html", "<video></video>"
+			).put(
+				"title", "Stale Title"
+			).put(
+				"uuid", fileEntry.getUuid()
+			));
+
+		Assert.assertEquals("<video></video>", jsonObject.getString("html"));
+		Assert.assertEquals(
+			fileEntry.getTitle(), jsonObject.getString("title"));
+	}
+
+	@Test
+	public void testAddArticleWithDocumentLibraryFieldWhenFileEntryIsMissing()
+		throws Exception {
+
+		JSONObject valueJSONObject = JSONUtil.put(
+			"groupId", _group.getGroupId()
+		).put(
+			"title", "Deleted Document"
+		).put(
+			"uuid", RandomTestUtil.randomString()
+		);
+
+		JSONObject jsonObject = _addDocumentLibraryFieldValue(valueJSONObject);
+
+		Assert.assertEquals(valueJSONObject.toString(), jsonObject.toString());
+	}
+
+	@Test
 	public void testAddArticleWithEmptyDefaultLanguageIdFriendlyURLWithAnotherLanguageIdFriendlyURL()
 		throws Exception {
 
@@ -2698,6 +2847,41 @@ public class JournalArticleLocalServiceTest {
 
 		Assert.assertEquals(
 			"Predefined Value", field.getValue(unavailableLocale));
+	}
+
+	private JSONObject _addDocumentLibraryFieldValue(JSONObject valueJSONObject)
+		throws Exception {
+
+		DataDefinition dataDefinition =
+			DataDefinitionTestUtil.addDataDefinition(
+				"journal", _dataDefinitionResourceFactory, _group.getGroupId(),
+				_readFileToString("ddm_form_with_document_library.json"),
+				TestPropsValues.getUser());
+
+		JournalArticle journalArticle =
+			JournalTestUtil.addArticleWithXMLContent(
+				_group.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+				StringUtil.replace(
+					_readFileToString(
+						"journal_article_content_with_document_library.xml"),
+					"[$DOCUMENT_JSON$]", valueJSONObject.toString()),
+				dataDefinition.getDataDefinitionKey(), null, LocaleUtil.US);
+
+		DDMFormValues ddmFormValues = journalArticle.getDDMFormValues();
+
+		Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+			ddmFormValues.getDDMFormFieldValuesMap(true);
+
+		List<DDMFormFieldValue> ddmFormFieldValues = ddmFormFieldValuesMap.get(
+			"Document47928126");
+
+		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
+
+		Value value = ddmFormFieldValue.getValue();
+
+		return _jsonFactory.createJSONObject(value.getString(LocaleUtil.US));
 	}
 
 	private FileEntry _addTempFileEntry(String fileName) throws Exception {
