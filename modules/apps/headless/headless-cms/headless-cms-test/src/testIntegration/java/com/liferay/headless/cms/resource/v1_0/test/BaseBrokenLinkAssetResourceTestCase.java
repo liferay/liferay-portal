@@ -1380,4 +1380,4 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 		_brokenLinkAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-955489855
+// LIFERAY-REST-BUILDER-HASH:735118085
