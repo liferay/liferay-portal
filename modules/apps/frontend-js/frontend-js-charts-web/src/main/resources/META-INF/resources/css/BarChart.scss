@@ -80,8 +80,7 @@
 		outline-offset: 1px;
 	}
 
-	&--blue &__bar:focus-visible,
-	&--blue &__bar-link:focus-visible &__bar {
+	&--blue &__bar:focus-visible {
 		fill: $chart-blue-d1;
 	}
 
