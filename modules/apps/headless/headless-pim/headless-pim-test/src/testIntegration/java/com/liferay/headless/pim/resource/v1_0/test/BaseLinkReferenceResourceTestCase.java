@@ -200,7 +200,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		Page<LinkReference> page =
 			linkReferenceResource.getScopeScopeKeyLinksPage(
 				scopeKey, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), Pagination.of(1, 10));
+				RandomTestUtil.randomString(), null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -210,7 +210,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 					irrelevantScopeKey, randomIrrelevantLinkReference());
 
 			page = linkReferenceResource.getScopeScopeKeyLinksPage(
-				irrelevantScopeKey, null, null,
+				irrelevantScopeKey, null, null, null,
 				Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -232,7 +232,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 				scopeKey, randomLinkReference());
 
 		page = linkReferenceResource.getScopeScopeKeyLinksPage(
-			scopeKey, null, null, Pagination.of(1, (int)totalCount + 2));
+			scopeKey, null, null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -257,7 +257,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 
 		Page<LinkReference> linkReferencesPage =
 			linkReferenceResource.getScopeScopeKeyLinksPage(
-				scopeKey, null, null, null);
+				scopeKey, null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			linkReferencesPage.getTotalCount());
@@ -281,7 +281,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<LinkReference> page1 =
 				linkReferenceResource.getScopeScopeKeyLinksPage(
-					scopeKey, null, null,
+					scopeKey, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -293,7 +293,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 
 			Page<LinkReference> page2 =
 				linkReferenceResource.getScopeScopeKeyLinksPage(
-					scopeKey, null, null,
+					scopeKey, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -303,7 +303,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 
 			Page<LinkReference> page3 =
 				linkReferenceResource.getScopeScopeKeyLinksPage(
-					scopeKey, null, null,
+					scopeKey, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -314,7 +314,8 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		else {
 			Page<LinkReference> page1 =
 				linkReferenceResource.getScopeScopeKeyLinksPage(
-					scopeKey, null, null, Pagination.of(1, totalCount + 2));
+					scopeKey, null, null, null,
+					Pagination.of(1, totalCount + 2));
 
 			List<LinkReference> linkReferences1 =
 				(List<LinkReference>)page1.getItems();
@@ -325,7 +326,8 @@ public abstract class BaseLinkReferenceResourceTestCase {
 
 			Page<LinkReference> page2 =
 				linkReferenceResource.getScopeScopeKeyLinksPage(
-					scopeKey, null, null, Pagination.of(2, totalCount + 2));
+					scopeKey, null, null, null,
+					Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -337,7 +339,7 @@ public abstract class BaseLinkReferenceResourceTestCase {
 
 			Page<LinkReference> page3 =
 				linkReferenceResource.getScopeScopeKeyLinksPage(
-					scopeKey, null, null,
+					scopeKey, null, null, null,
 					Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(
@@ -1351,4 +1353,4 @@ public abstract class BaseLinkReferenceResourceTestCase {
 		_linkReferenceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1547378872
+// LIFERAY-REST-BUILDER-HASH:-2013138734

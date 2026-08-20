@@ -45,7 +45,7 @@ public interface LinkReferenceResource {
 
 	public Page<LinkReference> getScopeScopeKeyLinksPage(
 			String scopeKey, String className, String externalReferenceCode,
-			Pagination pagination)
+			String search, Pagination pagination)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -136,4 +136,4 @@ public interface LinkReferenceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:999864919
+// LIFERAY-REST-BUILDER-HASH:87332526

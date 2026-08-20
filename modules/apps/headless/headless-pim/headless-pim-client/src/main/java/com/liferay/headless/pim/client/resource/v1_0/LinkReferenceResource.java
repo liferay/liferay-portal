@@ -36,12 +36,12 @@ public interface LinkReferenceResource {
 
 	public Page<LinkReference> getScopeScopeKeyLinksPage(
 			String scopeKey, String className, String externalReferenceCode,
-			Pagination pagination)
+			String search, Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getScopeScopeKeyLinksPageHttpResponse(
 			String scopeKey, String className, String externalReferenceCode,
-			Pagination pagination)
+			String search, Pagination pagination)
 		throws Exception;
 
 	public static class Builder {
@@ -155,12 +155,13 @@ public interface LinkReferenceResource {
 
 		public Page<LinkReference> getScopeScopeKeyLinksPage(
 				String scopeKey, String className, String externalReferenceCode,
-				Pagination pagination)
+				String search, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getScopeScopeKeyLinksPageHttpResponse(
-					scopeKey, className, externalReferenceCode, pagination);
+					scopeKey, className, externalReferenceCode, search,
+					pagination);
 
 			String content = httpResponse.getContent();
 
@@ -223,7 +224,7 @@ public interface LinkReferenceResource {
 
 		public HttpInvoker.HttpResponse getScopeScopeKeyLinksPageHttpResponse(
 				String scopeKey, String className, String externalReferenceCode,
-				Pagination pagination)
+				String search, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -255,6 +256,10 @@ public interface LinkReferenceResource {
 				httpInvoker.parameter(
 					"externalReferenceCode",
 					String.valueOf(externalReferenceCode));
+			}
+
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
 			}
 
 			if (pagination != null) {
@@ -291,4 +296,4 @@ public interface LinkReferenceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-989712688
+// LIFERAY-REST-BUILDER-HASH:-809604745

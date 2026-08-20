@@ -71,6 +71,10 @@ public abstract class BaseLinkReferenceResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "search"
 			)
 		}
 	)
@@ -96,6 +100,9 @@ public abstract class BaseLinkReferenceResourceImpl
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.QueryParam("externalReferenceCode")
 			String externalReferenceCode,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("search")
+			String search,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
@@ -547,4 +554,4 @@ public abstract class BaseLinkReferenceResourceImpl
 		LogFactoryUtil.getLog(BaseLinkReferenceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1870272485
+// LIFERAY-REST-BUILDER-HASH:313207932
