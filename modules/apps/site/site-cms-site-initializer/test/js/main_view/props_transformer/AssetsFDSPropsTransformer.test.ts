@@ -261,6 +261,63 @@ describe('AssetsFDSPropsTransformer', () => {
 		expect(folderItem.className).toBeUndefined();
 	});
 
+	describe('additionalAPIURLParametersTransformer', () => {
+		const FOLDER_PARAMETERS =
+			'emptySearch=true&filter=folderId eq 12345 and rootDescendantNode eq false and status in (0, 2, 3)&sort=dateModified:desc';
+
+		const SECTION_PARAMETERS =
+			"emptySearch=true&filter=cmsRoot eq true and cmsSection eq 'files' and rootDescendantNode eq false&sort=dateModified:desc";
+
+		const transform = (
+			additionalAPIURLParameters: string,
+			searchParam: string
+		) => {
+			const {additionalAPIURLParametersTransformer} =
+				AssetsFDSPropsTransformer({
+					additionalProps: {
+						...mockAdditionalProps,
+						additionalAPIURLParameters,
+					},
+					creationMenu: {primaryItems: []},
+					views: [],
+				});
+
+			return additionalAPIURLParametersTransformer({
+				additionalAPIURLParameters,
+				searchParam,
+			});
+		};
+
+		it('keeps the folder scope when there is no search term', () => {
+			expect(transform(FOLDER_PARAMETERS, '')).toBe(FOLDER_PARAMETERS);
+			expect(transform(FOLDER_PARAMETERS, '   ')).toBe(FOLDER_PARAMETERS);
+		});
+
+		it('widens the folder scope to the folder subtree when searching', () => {
+			expect(transform(FOLDER_PARAMETERS, 'bojler')).toBe(
+				"emptySearch=true&filter=treePath/any(t:t eq '12345') and rootDescendantNode eq false and status in (0, 2, 3)&sort=dateModified:desc"
+			);
+		});
+
+		it('drops the CMS root clause when searching in a section', () => {
+			expect(transform(SECTION_PARAMETERS, 'bojler')).toBe(
+				"emptySearch=true&filter=cmsSection eq 'files' and rootDescendantNode eq false&sort=dateModified:desc"
+			);
+		});
+
+		it('drops the filter when no clause survives', () => {
+			expect(
+				transform('emptySearch=true&filter=cmsRoot eq true', 'bojler')
+			).toBe('emptySearch=true');
+		});
+
+		it('keeps parameters without a filter untouched', () => {
+			expect(transform('emptySearch=true', 'bojler')).toBe(
+				'emptySearch=true'
+			);
+		});
+	});
+
 	describe('onActionDropdownItemClick', () => {
 		const mockEvent = {preventDefault: jest.fn()} as any;
 
