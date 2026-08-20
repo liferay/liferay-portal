@@ -6622,26 +6622,37 @@
 		"classNames": [
 			"AddressLocalService",
 			"AddressLocalServiceUtil",
-			"AddressService",
-			"AddressServiceUtil"
+			"AddressLocalServiceWrapper"
 		],
 		"from": "addAddress(long paramName, String paramName, long paramName, String paramName, String paramName, String paramName, String paramName, String paramName, long paramName, long paramName, long paramName, boolean paramName, boolean paramName)",
 		"issueKey": "LPS-193462",
 		"newImports": [
 			"com.liferay.portal.kernel.service.ServiceContextThreadLocal"
 		],
-		"to": "addAddress(null, param#0#, param#1#, param#2#, null, null, param#3#, param#4#, param#5#, param#6#, param#7#, param#8#, param#9#, param#10#, param#11#, param#12#, null, ServiceContextThreadLocal.getServiceContext())"
+		"to": "addAddress(null, param#0#, param#1#, param#2#, param#9#, param#10#, param#8#, param#6#, null, param#11#, null, param#12#, param#3#, param#4#, param#5#, null, param#7#, null, ServiceContextThreadLocal.getServiceContext())"
 	},
 	{
 		"classNames": [
 			"AddressLocalService",
 			"AddressLocalServiceUtil",
-			"AddressService",
-			"AddressServiceUtil"
+			"AddressLocalServiceWrapper"
 		],
 		"from": "addAddress(long paramName, String paramName, long paramName, String paramName, String paramName, String paramName, String paramName, String paramName, long paramName, long paramName, long paramName, boolean paramName, boolean paramName, ServiceContext paramName)",
 		"issueKey": "LPS-193462",
-		"to": "addAddress(null, param#0#, param#1#, param#2#, null, null, param#3#, param#4#, param#5#, param#6#, param#7#, param#8#, param#9#, param#10#, param#11#, param#12#, null, param#13#)"
+		"to": "addAddress(null, param#0#, param#1#, param#2#, param#9#, param#10#, param#8#, param#6#, null, param#11#, null, param#12#, param#3#, param#4#, param#5#, null, param#7#, null, param#13#)"
+	},
+	{
+		"classNames": [
+			"AddressService",
+			"AddressServiceUtil",
+			"AddressServiceWrapper"
+		],
+		"from": "addAddress(String paramName, long paramName, String paramName, String paramName, String paramName, String paramName, String paramName, long paramName, long paramName, long paramName, boolean paramName, boolean paramName)",
+		"issueKey": "LPS-193462",
+		"newImports": [
+			"com.liferay.portal.kernel.service.ServiceContextThreadLocal"
+		],
+		"to": "addAddress(null, param#0#, param#1#, param#8#, param#9#, param#7#, param#5#, null, param#10#, null, param#11#, param#2#, param#3#, param#4#, null, param#6#, null, ServiceContextThreadLocal.getServiceContext())"
 	},
 	{
 		"classNames": [
