@@ -1,0 +1,296 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.portal.security.audit.event.generators.internal.events.test;
+
+import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.audit.AuditRequestThreadLocal;
+import com.liferay.portal.kernel.events.LifecycleAction;
+import com.liferay.portal.kernel.events.LifecycleEvent;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.audit.AuditMessageProcessor;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
+import com.liferay.portal.security.auth.session.AuthenticatedSessionManagerUtil;
+import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.http.HttpSession;
+
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Objects;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
+
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+/**
+ * @author Álvaro Saugar
+ */
+@RunWith(Arquillian.class)
+public class LoginPostActionTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	public void setUp() throws Exception {
+		_user = UserTestUtil.addUser();
+
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		Dictionary<String, Object> properties = new Hashtable<>();
+
+		properties.put("eventTypes", "*");
+
+		_serviceRegistration = bundleContext.registerService(
+			AuditMessageProcessor.class,
+			auditMessage -> _auditMessages.add(auditMessage), properties);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		AuditRequestThreadLocal.removeAuditThreadLocal();
+
+		if (_serviceRegistration != null) {
+			_serviceRegistration.unregister();
+		}
+	}
+
+	@Test
+	public void testDoRunGeneratesOpaqueAuditSessionId() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			_createMockHttpServletRequest();
+
+		_runLoginPostAction(mockHttpServletRequest);
+
+		MockHttpServletRequest secondMockHttpServletRequest =
+			_createMockHttpServletRequest();
+
+		_runLoginPostAction(secondMockHttpServletRequest);
+
+		String auditSessionId = _getAuditSessionId(mockHttpServletRequest);
+		String secondAuditSessionId = _getAuditSessionId(
+			secondMockHttpServletRequest);
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+		HttpSession secondHttpSession =
+			secondMockHttpServletRequest.getSession();
+
+		Assert.assertNotEquals(httpSession.getId(), auditSessionId);
+		Assert.assertNotEquals(secondHttpSession.getId(), secondAuditSessionId);
+		Assert.assertNotEquals(auditSessionId, secondAuditSessionId);
+	}
+
+	@Test
+	public void testDoRunKeepsAuditSessionIdAcrossRequests() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			_createMockHttpServletRequest();
+
+		_runLoginPostAction(mockHttpServletRequest);
+
+		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+		String auditSessionId = auditMessage.getSessionID();
+
+		Assert.assertNotNull(auditSessionId);
+
+		MockHttpServletRequest secondMockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		secondMockHttpServletRequest.setSession(
+			mockHttpServletRequest.getSession());
+
+		_runAuditFilter(secondMockHttpServletRequest);
+
+		AuditRequestThreadLocal auditRequestThreadLocal =
+			AuditRequestThreadLocal.getAuditThreadLocal();
+
+		Assert.assertEquals(
+			auditSessionId, auditRequestThreadLocal.getSessionID());
+	}
+
+	@Test
+	public void testDoRunKeepsAuditSessionIdAcrossSessionRenewal()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_createMockHttpServletRequest();
+
+		_runLoginPostAction(mockHttpServletRequest);
+
+		String auditSessionId = _getAuditSessionId(mockHttpServletRequest);
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		String containerSessionId = httpSession.getId();
+
+		AuthenticatedSessionManagerUtil.renewSession(
+			mockHttpServletRequest, httpSession);
+
+		_runLoginPostAction(mockHttpServletRequest);
+
+		HttpSession renewedHttpSession = mockHttpServletRequest.getSession();
+
+		Assert.assertNotEquals(containerSessionId, renewedHttpSession.getId());
+
+		Assert.assertEquals(
+			auditSessionId, _getAuditSessionId(mockHttpServletRequest));
+
+		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
+
+		Assert.assertEquals(auditSessionId, auditMessage.getSessionID());
+
+		String[] sessionPhishingProtectedAttributes =
+			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES;
+
+		PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES = ArrayUtil.remove(
+			sessionPhishingProtectedAttributes, WebKeys.AUDIT_SESSION_ID);
+
+		try {
+			MockHttpServletRequest unprotectedMockHttpServletRequest =
+				_createMockHttpServletRequest();
+
+			_runLoginPostAction(unprotectedMockHttpServletRequest);
+
+			String unprotectedAuditSessionId = _getAuditSessionId(
+				unprotectedMockHttpServletRequest);
+
+			AuthenticatedSessionManagerUtil.renewSession(
+				unprotectedMockHttpServletRequest,
+				unprotectedMockHttpServletRequest.getSession());
+
+			_runLoginPostAction(unprotectedMockHttpServletRequest);
+
+			Assert.assertNotEquals(
+				unprotectedAuditSessionId,
+				_getAuditSessionId(unprotectedMockHttpServletRequest));
+		}
+		finally {
+			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES =
+				sessionPhishingProtectedAttributes;
+		}
+	}
+
+	private MockHttpServletRequest _createMockHttpServletRequest()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.COMPANY_ID, TestPropsValues.getCompanyId());
+		mockHttpServletRequest.setAttribute(WebKeys.USER, _user);
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		httpSession.setAttribute(WebKeys.USER_ID, _user.getUserId());
+
+		return mockHttpServletRequest;
+	}
+
+	private AuditMessage _fetchAuditMessage(String eventType) {
+		for (AuditMessage auditMessage : _auditMessages) {
+			if (Objects.equals(auditMessage.getEventType(), eventType)) {
+				return auditMessage;
+			}
+		}
+
+		return null;
+	}
+
+	private String _getAuditSessionId(
+		MockHttpServletRequest mockHttpServletRequest) {
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		return (String)httpSession.getAttribute(WebKeys.AUDIT_SESSION_ID);
+	}
+
+	private void _runAuditFilter(MockHttpServletRequest mockHttpServletRequest)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					TestPropsValues.getCompanyId())) {
+
+			InvokerFilterChain invokerFilterChain = new InvokerFilterChain(
+				(servletRequest, servletResponse) -> {
+				});
+
+			invokerFilterChain.addFilter(_filter);
+
+			invokerFilterChain.doFilter(
+				mockHttpServletRequest, new MockHttpServletResponse());
+		}
+	}
+
+	private void _runLoginPostAction(
+			MockHttpServletRequest mockHttpServletRequest)
+		throws Exception {
+
+		_auditMessages.clear();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					TestPropsValues.getCompanyId())) {
+
+			_lifecycleAction.processLifecycleEvent(
+				new LifecycleEvent(
+					mockHttpServletRequest, new MockHttpServletResponse()));
+		}
+	}
+
+	private final List<AuditMessage> _auditMessages = new ArrayList<>();
+
+	@Inject(
+		filter = "component.name=com.liferay.portal.security.audit.wiring.internal.servlet.filter.AuditFilter"
+	)
+	private Filter _filter;
+
+	@Inject(
+		filter = "component.name=com.liferay.portal.security.audit.event.generators.internal.events.LoginPostAction"
+	)
+	private LifecycleAction _lifecycleAction;
+
+	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
+
+	@DeleteAfterTestRun
+	private User _user;
+
+}

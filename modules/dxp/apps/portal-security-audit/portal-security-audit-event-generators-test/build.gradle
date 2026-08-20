@@ -1,4 +1,7 @@
 dependencies {
+	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
+	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-api")
 	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
