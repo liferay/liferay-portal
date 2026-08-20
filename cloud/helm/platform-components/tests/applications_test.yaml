@@ -79,7 +79,7 @@ tests:
                     value: 2
             -   equal:
                     path: spec.source.path
-                    value: "."
+                    value: .
             -   equal:
                     path: spec.source.repoURL
                     value: oci://docker.io/envoyproxy/gateway-helm
@@ -141,7 +141,7 @@ tests:
                     value: us-west-2
             -   equal:
                     path: spec.source.path
-                    value: "."
+                    value: .
             -   equal:
                     path: spec.source.repoURL
                     value: oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart
@@ -174,7 +174,7 @@ tests:
                     value: dxp-operator
             -   equal:
                     path: spec.source.path
-                    value: "."
+                    value: .
             -   equal:
                     path: spec.source.repoURL
                     value: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
