@@ -11,6 +11,11 @@
 				"repository": {
 					"url": "https://github.com/example/liferay-gitops.git"
 				}
+			},
+			"operatorApplications": {
+				"keda": {
+					"enabled": true
+				}
 			}
 		}
 	},
@@ -27,6 +32,12 @@
 					"name": "your-key-vault-name",
 					"resource_group_name": "your-key-vault-resource-group"
 				}
+			},
+			"keda_config": {
+				"enabled": true
+			},
+			"observability_config": {
+				"enabled": true
 			}
 		}
 	},
