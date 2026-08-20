@@ -27,22 +27,24 @@ export interface AssetListFDSProps {
 	itemsActions?: IItemsActions[];
 }
 
-interface AssetListFDSConfig {
-	renderSubtitle: (itemData: ISearchAssetObjectEntry) => React.ReactNode;
+interface AssetListFDSConfig<T> {
+	renderSubtitle: (itemData: T) => React.ReactNode;
+	requiresUpdatePermission?: boolean;
 	titleRendererName: string;
 }
 
-export function createAssetListFDSPropsBuilder({
+export function createAssetListFDSPropsBuilder<T = ISearchAssetObjectEntry>({
 	renderSubtitle,
+	requiresUpdatePermission = true,
 	titleRendererName,
-}: AssetListFDSConfig) {
+}: AssetListFDSConfig<T>) {
 	function TitleRenderer({
 		actions,
 		itemData,
 		value,
 	}: {
 		actions: ActionItem[];
-		itemData: ISearchAssetObjectEntry;
+		itemData: T;
 		value?: string;
 	}) {
 		return (
@@ -51,6 +53,7 @@ export function createAssetListFDSPropsBuilder({
 					actions={actions}
 					itemData={itemData}
 					options={{actionId: 'edit'}}
+					requiresUpdatePermission={requiresUpdatePermission}
 					value={value ?? ''}
 				/>
 
@@ -101,7 +104,7 @@ export function createAssetListFDSPropsBuilder({
 						item,
 						props,
 					}: {
-						item: ISearchAssetObjectEntry;
+						item: T;
 						props: Record<string, unknown>;
 					}) => ({
 						...props,
