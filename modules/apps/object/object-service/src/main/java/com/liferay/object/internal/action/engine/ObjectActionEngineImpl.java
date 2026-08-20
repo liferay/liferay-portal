@@ -17,6 +17,7 @@ import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.dynamic.data.mapping.expression.ObjectEntryDDMExpressionFieldAccessor;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.exception.ObjectActionExecutorKeyException;
+import com.liferay.object.internal.action.util.ObjectActionStatusUtil;
 import com.liferay.object.internal.action.util.ObjectEntryVariablesUtil;
 import com.liferay.object.internal.dynamic.data.mapping.expression.ObjectEntryDDMExpressionParameterAccessor;
 import com.liferay.object.model.ObjectAction;
@@ -37,7 +38,6 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -332,14 +332,9 @@ public class ObjectActionEngineImpl implements ObjectActionEngine {
 			return;
 		}
 
-		// The status write waits for the surrounding transaction to commit,
-		// so it can neither fail that transaction nor record an outcome for an
-		// execution whose effects roll back with it. Without a surrounding
-		// transaction, the callback runs immediately.
-
-		TransactionCallbackUtil.registerCommitCallback(
-			() -> _objectActionLocalService.updateStatus(
-				objectAction.getObjectActionId(), status));
+		ObjectActionStatusUtil.updateStatusAfterCommit(
+			_objectActionLocalService, objectAction.getObjectActionId(),
+			status);
 	}
 
 	private void _updatePayloadJSONObject(

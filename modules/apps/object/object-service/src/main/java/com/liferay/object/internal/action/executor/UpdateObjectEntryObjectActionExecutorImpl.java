@@ -12,6 +12,7 @@ import com.liferay.object.action.util.ObjectActionThreadLocal;
 import com.liferay.object.constants.ObjectActionConstants;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
+import com.liferay.object.internal.action.util.ObjectActionStatusUtil;
 import com.liferay.object.internal.action.util.ObjectEntryVariablesUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
@@ -29,7 +30,6 @@ import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -139,14 +139,12 @@ public class UpdateObjectEntryObjectActionExecutorImpl
 		}
 		catch (Exception exception) {
 
-			// The status write waits for the surrounding transaction to
-			// commit, so the rethrow below cannot roll it back with the rest
-			// of the transaction's work. Without a surrounding transaction,
-			// the callback runs immediately.
+			// The rethrow below cannot roll back the status write, which
+			// waits for the surrounding transaction to commit.
 
-			TransactionCallbackUtil.registerCommitCallback(
-				() -> _objectActionLocalService.updateStatus(
-					objectActionId, ObjectActionConstants.STATUS_FAILED));
+			ObjectActionStatusUtil.updateStatusAfterCommit(
+				_objectActionLocalService, objectActionId,
+				ObjectActionConstants.STATUS_FAILED);
 
 			throw exception;
 		}
