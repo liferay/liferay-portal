@@ -129,6 +129,15 @@ public class ObjectEntryFolderModelDocumentContributorTest {
 		Assert.assertEquals(
 			objectEntryFolder.getName(), document.get(Field.NAME));
 
+		Field treePathField = document.getField(Field.TREE_PATH);
+
+		Assert.assertArrayEquals(
+			new String[] {
+				StringPool.BLANK,
+				String.valueOf(parentObjectEntryFolder.getObjectEntryFolderId())
+			},
+			treePathField.getValues());
+
 		for (Map.Entry<String, String> entry : attributes.entrySet()) {
 			Assert.assertEquals(entry.getValue(), document.get(entry.getKey()));
 		}

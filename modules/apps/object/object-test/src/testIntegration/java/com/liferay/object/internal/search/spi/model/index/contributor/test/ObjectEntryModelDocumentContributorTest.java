@@ -16,11 +16,13 @@ import com.liferay.object.field.builder.MultiselectPicklistObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectEntryFolderTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Role;
@@ -370,6 +372,48 @@ public class ObjectEntryModelDocumentContributorTest {
 		Assert.assertNull(
 			document.getField(
 				Field.getLocalizedName(LocaleUtil.US, "objectEntryContent")));
+	}
+
+	@Test
+	public void testContributeWithObjectEntryFolder() throws Exception {
+		String objectFieldName = "a" + RandomTestUtil.randomString();
+
+		ObjectDefinition objectDefinition =
+			_addModifiableSystemObjectDefinition(false, objectFieldName);
+
+		ModelDocumentContributor<ObjectEntry>
+			objectEntryModelDocumentContributor =
+				_getObjectEntryModelDocumentContributor(objectDefinition);
+
+		Document document = new DocumentImpl();
+
+		ObjectEntryFolder parentObjectEntryFolder =
+			ObjectEntryFolderTestUtil.addObjectEntryFolder();
+
+		ObjectEntryFolder objectEntryFolder =
+			ObjectEntryFolderTestUtil.addObjectEntryFolder(
+				TestPropsValues.getGroupId(),
+				parentObjectEntryFolder.getObjectEntryFolderId());
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			TestPropsValues.getGroupId(), objectDefinition,
+			objectEntryFolder.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName, RandomTestUtil.randomString()
+			).build());
+
+		objectEntryModelDocumentContributor.contribute(document, objectEntry);
+
+		Field field = document.getField(Field.TREE_PATH);
+
+		Assert.assertArrayEquals(
+			new String[] {
+				StringPool.BLANK,
+				String.valueOf(
+					parentObjectEntryFolder.getObjectEntryFolderId()),
+				String.valueOf(objectEntryFolder.getObjectEntryFolderId())
+			},
+			field.getValues());
 	}
 
 	private ObjectDefinition _addModifiableSystemObjectDefinition(
