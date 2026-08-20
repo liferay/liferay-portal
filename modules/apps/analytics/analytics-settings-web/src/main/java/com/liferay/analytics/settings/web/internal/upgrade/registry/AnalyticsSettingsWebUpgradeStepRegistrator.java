@@ -7,12 +7,15 @@ package com.liferay.analytics.settings.web.internal.upgrade.registry;
 
 import com.liferay.analytics.settings.web.internal.upgrade.v1_0_2.AnalyticsDispatchTriggersUpgradeProcess;
 import com.liferay.analytics.settings.web.internal.upgrade.v1_0_3.AnalyticsAdministratorUserUpgradeProcess;
+import com.liferay.dispatch.executor.DispatchTaskClusterMode;
 import com.liferay.dispatch.executor.DispatchTaskExecutor;
 import com.liferay.dispatch.service.DispatchLogLocalService;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -54,6 +57,18 @@ public class AnalyticsSettingsWebUpgradeStepRegistrator
 			new AnalyticsAdministratorUserUpgradeProcess(
 				_companyLocalService, _configurationAdmin, _roleLocalService,
 				_userLocalService));
+
+		registry.register(
+			"1.0.3", "1.0.4",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update DispatchTrigger set dispatchTaskClusterMode = ",
+					DispatchTaskClusterMode.SINGLE_NODE_PERSISTED.getMode(),
+					" where dispatchTaskClusterMode = ",
+					DispatchTaskClusterMode.ALL_NODES.getMode(),
+					" and dispatchTaskExecutorType in ",
+					"('export-analytics-asset-entities', ",
+					"'export-analytics-dxp-entities')")));
 	}
 
 	@Reference
