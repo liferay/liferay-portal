@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -226,6 +227,76 @@ public class CheckObjectEntrySchedulerJobConfigurationTest {
 			Assert.assertTrue(objectEntry1.isApproved());
 			Assert.assertTrue(objectEntry2.isApproved());
 		}
+	}
+
+	@Test
+	public void testCheckObjectEntryDisplayDateWithObjectEntryVersioning()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				false, false, true,
+				List.of(
+					new TextObjectFieldBuilder(
+					).userId(
+						TestPropsValues.getUserId()
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						_OBJECT_FIELD_NAME
+					).build()),
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		Date date = new Date();
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME, RandomTestUtil.randomString()
+			).put(
+				"displayDate",
+				new Date(date.getTime() + TimeUnit.DAY.toMillis(1))
+			).build());
+
+		Assert.assertTrue(objectEntry.isScheduled());
+
+		List<ObjectEntryVersion> objectEntryVersions =
+			_objectEntryVersionLocalService.getObjectEntryVersions(
+				objectEntry.getObjectEntryId());
+
+		Assert.assertEquals(
+			objectEntryVersions.toString(), 1, objectEntryVersions.size());
+
+		ObjectEntryVersion objectEntryVersion = objectEntryVersions.get(0);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_SCHEDULED, objectEntryVersion.getStatus());
+
+		_updateDisplayDate(
+			new Date(date.getTime() - TimeUnit.DAY.toMillis(1)), objectEntry);
+
+		_jobExecutorUnsafeRunnable.run();
+
+		objectEntry = _objectEntryLocalService.getObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Assert.assertTrue(objectEntry.isApproved());
+
+		objectEntryVersions =
+			_objectEntryVersionLocalService.getObjectEntryVersions(
+				objectEntry.getObjectEntryId());
+
+		Assert.assertEquals(
+			objectEntryVersions.toString(), 1, objectEntryVersions.size());
+
+		objectEntryVersion = objectEntryVersions.get(0);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, objectEntryVersion.getStatus());
+		Assert.assertEquals(1, objectEntryVersion.getVersion());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test
