@@ -419,39 +419,41 @@ public class DataSourceFaroControllerTest {
 		ReflectionTestUtil.setFieldValue(
 			LanguageUtil.class, "_language", language);
 
-		MockedStatic<PermissionThreadLocal> permissionThreadLocalMockedStatic =
-			Mockito.mockStatic(PermissionThreadLocal.class);
+		try (MockedStatic<PermissionThreadLocal>
+				permissionThreadLocalMockedStatic = Mockito.mockStatic(
+					PermissionThreadLocal.class)) {
 
-		PermissionChecker permissionChecker = Mockito.mock(
-			PermissionChecker.class);
+			PermissionChecker permissionChecker = Mockito.mock(
+				PermissionChecker.class);
 
-		User user = Mockito.mock(User.class);
+			User user = Mockito.mock(User.class);
 
-		Mockito.when(
-			user.getLocale()
-		).thenReturn(
-			LocaleUtil.US
-		);
+			Mockito.when(
+				user.getLocale()
+			).thenReturn(
+				LocaleUtil.US
+			);
 
-		Mockito.when(
-			permissionChecker.getUser()
-		).thenReturn(
-			user
-		);
+			Mockito.when(
+				permissionChecker.getUser()
+			).thenReturn(
+				user
+			);
 
-		permissionThreadLocalMockedStatic.when(
-			PermissionThreadLocal::getPermissionChecker
-		).thenReturn(
-			permissionChecker
-		);
+			permissionThreadLocalMockedStatic.when(
+				PermissionThreadLocal::getPermissionChecker
+			).thenReturn(
+				permissionChecker
+			);
 
-		List<DataSourceMappingDisplay> dataSourceMappingDisplays =
-			_dataSourceFaroController.getDataSourceMappingDisplays(
-				32719, 32783, null);
+			List<DataSourceMappingDisplay> dataSourceMappingDisplays =
+				_dataSourceFaroController.getDataSourceMappingDisplays(
+					32719, 32783, null);
 
-		Assert.assertEquals(
-			dataSourceMappingDisplays.toString(), 13,
-			dataSourceMappingDisplays.size());
+			Assert.assertEquals(
+				dataSourceMappingDisplays.toString(), 13,
+				dataSourceMappingDisplays.size());
+		}
 	}
 
 	@Test
