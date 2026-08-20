@@ -5,8 +5,12 @@
 
 package com.liferay.layout.renderer;
 
+import com.liferay.portal.kernel.model.Layout;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Locale;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -18,7 +22,8 @@ public interface LayoutPreviewRenderer {
 
 	public String render(
 			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
+			HttpServletResponse httpServletResponse, Layout layout,
+			Locale locale, long segmentsExperienceId)
 		throws Exception;
 
 }

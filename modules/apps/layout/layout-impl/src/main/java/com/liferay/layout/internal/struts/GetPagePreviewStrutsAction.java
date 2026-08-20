@@ -28,28 +28,24 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
-import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -68,11 +64,9 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		ThemeDisplay currentThemeDisplay =
+		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)currentThemeDisplay.clone();
 
 		Layout layout = themeDisplay.getLayout();
 
@@ -80,18 +74,6 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 
 		if (selPlid > 0) {
 			layout = _layoutLocalService.fetchLayout(selPlid);
-
-			themeDisplay.setLayout(layout);
-
-			LayoutSet layoutSet = layout.getLayoutSet();
-
-			themeDisplay.setLayoutSet(layoutSet);
-			themeDisplay.setLookAndFeel(
-				layoutSet.getTheme(), layoutSet.getColorScheme());
-
-			themeDisplay.setPlid(layout.getPlid());
-			themeDisplay.setScopeGroupId(layout.getGroupId());
-			themeDisplay.setSiteGroupId(layout.getGroupId());
 		}
 
 		if (!_containsLayoutPreviewDraftPermission(
@@ -102,92 +84,32 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 			return null;
 		}
 
-		long[] currentSegmentsExperienceIds = GetterUtil.getLongValues(
-			httpServletRequest.getAttribute(
-				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS));
-		Layout currentLayout = (Layout)httpServletRequest.getAttribute(
-			WebKeys.LAYOUT);
-		boolean currentPortletDecorate = GetterUtil.getBoolean(
-			httpServletRequest.getAttribute(WebKeys.PORTLET_DECORATE));
+		String className = ParamUtil.getString(httpServletRequest, "className");
+		long classPK = ParamUtil.getLong(httpServletRequest, "classPK");
 
-		try {
-			long segmentsExperienceId = ParamUtil.getLong(
-				httpServletRequest, "segmentsExperienceId",
-				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(selPlid));
-
-			httpServletRequest.setAttribute(
-				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
-				new long[] {segmentsExperienceId});
-
-			httpServletRequest.setAttribute(
-				WebKeys.PORTLET_DECORATE, Boolean.FALSE);
-
-			String languageId = ParamUtil.getString(
-				httpServletRequest, "languageId",
-				LocaleUtil.toLanguageId(themeDisplay.getLocale()));
-
-			themeDisplay.setLocale(LocaleUtil.fromLanguageId(languageId));
-
-			themeDisplay.setLookAndFeel(
-				layout.getTheme(), layout.getColorScheme());
-
-			themeDisplay.setSignedIn(false);
-
-			User guestUser = _userLocalService.getGuestUser(
-				themeDisplay.getCompanyId());
-
-			themeDisplay.setUser(guestUser);
-
-			layout.setClassNameId(0);
-
-			String className = ParamUtil.getString(
-				httpServletRequest, "className");
-			long classPK = ParamUtil.getLong(httpServletRequest, "classPK");
-
-			if (layout.isTypeAssetDisplay() &&
-				(Validator.isNull(className) || (classPK <= 0))) {
-
-				layout.setType(LayoutConstants.TYPE_CONTENT);
-			}
-
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
-			ServiceContext clonedServiceContext =
-				(ServiceContext)serviceContext.clone();
-
-			clonedServiceContext.setPlid(layout.getPlid());
-			clonedServiceContext.setScopeGroupId(layout.getGroupId());
-
-			ServiceContextThreadLocal.pushServiceContext(clonedServiceContext);
-
-			httpServletRequest.setAttribute(WebKeys.LAYOUT, layout);
-			httpServletRequest.setAttribute(
-				WebKeys.THEME_DISPLAY, themeDisplay);
-
-			if (Validator.isNotNull(className) && (classPK > 0)) {
-				_includeInfoItemObjects(className, classPK, httpServletRequest);
-			}
-
-			String html = _layoutPreviewRenderer.render(
-				httpServletRequest, httpServletResponse);
-
-			if (html != null) {
-				ServletResponseUtil.write(httpServletResponse, html);
-			}
+		if (Validator.isNotNull(className) && (classPK > 0)) {
+			_includeInfoItemObjects(className, classPK, httpServletRequest);
 		}
-		finally {
-			httpServletRequest.setAttribute(
-				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
-				currentSegmentsExperienceIds);
-			httpServletRequest.setAttribute(WebKeys.LAYOUT, currentLayout);
-			httpServletRequest.setAttribute(
-				WebKeys.PORTLET_DECORATE, currentPortletDecorate);
-			httpServletRequest.setAttribute(
-				WebKeys.THEME_DISPLAY, currentThemeDisplay);
+		else if (layout.isTypeAssetDisplay()) {
+			layout.setType(LayoutConstants.TYPE_CONTENT);
+		}
 
-			ServiceContextThreadLocal.popServiceContext();
+		Locale locale = LocaleUtil.fromLanguageId(
+			ParamUtil.getString(
+				httpServletRequest, "languageId",
+				LocaleUtil.toLanguageId(themeDisplay.getLocale())));
+
+		long segmentsExperienceId = ParamUtil.getLong(
+			httpServletRequest, "segmentsExperienceId",
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				selPlid));
+
+		String html = _layoutPreviewRenderer.render(
+			httpServletRequest, httpServletResponse, layout, locale,
+			segmentsExperienceId);
+
+		if (html != null) {
+			ServletResponseUtil.write(httpServletResponse, html);
 		}
 
 		return null;
@@ -339,8 +261,5 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 
 	@Reference
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
