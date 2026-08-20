@@ -47,6 +47,7 @@ import {
 	getObjectEntryUIDateTimeFormat,
 	getUTCOffsetFormatted,
 } from '../utils/dateFormat';
+import {expectDocumentInStorageFolder} from '../utils/expectDocumentInStorageFolder';
 import {createFile, deleteFile} from '../utils/fileHelpers';
 import {generateObjectEntryValues} from '../utils/generateObjectEntry';
 import {generateObjectFields} from '../utils/generateObjectFields';
@@ -826,6 +827,323 @@ cmsTest.describe('Manage attachment ObjectField storage locations', () => {
 			await page.getByRole('img', {name: space.name}).click();
 
 			await expect(page.getByText('No Results Found')).toBeVisible();
+		}
+	);
+});
+
+test.describe('Manage attachment ObjectField documents and media storage', () => {
+	test(
+		'stores an uploaded attachment in documents and media',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, page, site, viewObjectEntriesPage}) => {
+			const storageFolderName = 'DMFolder' + getRandomInt();
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields: generateObjectFields({
+						objectFieldBusinessTypes: [
+							{
+								businessType: 'Attachment',
+								objectFieldSettings: [
+									{
+										name: 'fileSource',
+										value: 'userComputerToDocumentsAndMedia',
+									},
+									{
+										name: 'showFilesInLibrary',
+										value: true,
+									},
+									{
+										name: 'storageDLFolderPath',
+										value: `/${storageFolderName}`,
+									},
+								],
+							},
+						],
+					}),
+					scope: 'site',
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(
+				objectDefinition.className,
+				'en',
+				site.friendlyUrlPath
+			);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.selectFileFromUserComputer(
+				__dirname,
+				'astronaut.png'
+			);
+
+			await expect(page.getByText('astronaut.png').first()).toBeVisible();
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await expectDocumentInStorageFolder({
+				apiHelpers,
+				documentTitle: 'astronaut',
+				siteId: site.id,
+				storageFolderName,
+			});
+		}
+	);
+
+	test(
+		'can change the storage folder of a published object attachment field',
+		{tag: '@LPD-102828'},
+		async ({
+			apiHelpers,
+			objectFieldsPage,
+			page,
+			site,
+			viewObjectEntriesPage,
+		}) => {
+			const storageFolderName = 'DMFolder' + getRandomInt();
+			const updatedStorageFolderName = 'UpdatedDMFolder' + getRandomInt();
+
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: [
+					{
+						businessType: 'Attachment',
+						objectFieldSettings: [
+							{
+								name: 'fileSource',
+								value: 'userComputerToDocumentsAndMedia',
+							},
+							{name: 'showFilesInLibrary', value: true},
+							{
+								name: 'storageDLFolderPath',
+								value: `/${storageFolderName}`,
+							},
+						],
+					},
+				],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					scope: 'site',
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await objectFieldsPage.goto(objectDefinition.label['en_US']);
+
+			await objectFieldsPage.openObjectField(objectFields[0].label.en_US);
+
+			await objectFieldsPage.storageFolder.fill(
+				`/${updatedStorageFolderName}`
+			);
+
+			await objectFieldsPage.saveObjectField();
+
+			await viewObjectEntriesPage.goto(
+				objectDefinition.className,
+				'en',
+				site.friendlyUrlPath
+			);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.selectFileFromUserComputer(
+				__dirname,
+				'astronaut.png'
+			);
+
+			await expect(page.getByText('astronaut.png').first()).toBeVisible();
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await expectDocumentInStorageFolder({
+				apiHelpers,
+				documentTitle: 'astronaut',
+				siteId: site.id,
+				storageFolderName: updatedStorageFolderName,
+			});
+		}
+	);
+
+	test(
+		'can create a folder from the attachment item selector of a company scoped object',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields: generateObjectFields({
+						objectFieldBusinessTypes: [
+							{
+								businessType: 'Attachment',
+							},
+						],
+					}),
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.selectFileButton.click();
+
+			const objectFolderName = 'Folder' + getRandomInt();
+
+			await viewObjectEntriesPage.createItemSelectorFolder(
+				objectFolderName
+			);
+
+			const globalSite =
+				await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath(
+					'/global'
+				);
+
+			let documentFolderId: number | undefined;
+
+			await expect(async () => {
+				const documentFolder =
+					await apiHelpers.headlessDelivery.getSiteDocumentFolderByName(
+						globalSite.id,
+						objectFolderName
+					);
+
+				documentFolderId = documentFolder?.id;
+
+				expect(documentFolderId).toBeTruthy();
+			}).toPass({timeout: 15000});
+
+			apiHelpers.data.push({
+				id: documentFolderId,
+				type: 'documentFolder',
+			});
+
+			await expect(
+				viewObjectEntriesPage.selectFileIframe.getByText(
+					objectFolderName
+				)
+			).toBeVisible();
+		}
+	);
+
+	test(
+		'can create a folder from the attachment item selector of a site scoped object',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, site, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields: generateObjectFields({
+						objectFieldBusinessTypes: [
+							{
+								businessType: 'Attachment',
+							},
+						],
+					}),
+					scope: 'site',
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(
+				objectDefinition.className,
+				'en',
+				site.friendlyUrlPath
+			);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.selectFileButton.click();
+
+			const objectFolderName = 'Folder' + getRandomInt();
+
+			await viewObjectEntriesPage.createItemSelectorFolder(
+				objectFolderName
+			);
+
+			await expect(
+				viewObjectEntriesPage.selectFileIframe.getByText(
+					objectFolderName
+				)
+			).toBeVisible();
+		}
+	);
+
+	test(
+		'shows the site home folder by default in the attachment item selector',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, site, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields: generateObjectFields({
+						objectFieldBusinessTypes: [
+							{
+								businessType: 'Attachment',
+							},
+						],
+					}),
+					scope: 'site',
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await viewObjectEntriesPage.goto(
+				objectDefinition.className,
+				'en',
+				site.friendlyUrlPath
+			);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await viewObjectEntriesPage.selectFileButton.click();
+
+			await expect(
+				viewObjectEntriesPage.selectFileIframe.getByRole('link', {
+					name: 'Sites and Libraries',
+				})
+			).toBeVisible();
+
+			await expect(
+				viewObjectEntriesPage.selectFileIframe
+					.getByText(site.name)
+					.first()
+			).toBeVisible();
 		}
 	);
 });
@@ -4920,6 +5238,86 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await expect(page.getByRole('cell', {name: 'Test Test'})).toBeVisible();
 	});
 
+	test(
+		'auto increment continues from an imported entry value',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: [
+					'Text',
+					{
+						businessType: 'AutoIncrement',
+						objectFieldSettings: [
+							{name: 'initialValue', value: '1'},
+							{name: 'prefix', value: ''},
+							{name: 'suffix', value: '-Sneakers'},
+						],
+					},
+				],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const applicationName =
+				'c/' + objectDefinition.name.toLowerCase() + 's';
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{[objectFields[0].name as string]: 'Blue'},
+				applicationName
+			);
+
+			await apiHelpers.objectEntry.postObjectEntriesBatch(
+				applicationName,
+				[
+					{
+						[objectFields[0].name as string]: 'Red',
+						[objectFields[1].name as string]: '20-Sneakers',
+					},
+				]
+			);
+
+			await expect(async () => {
+				const objectEntries =
+					await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+						applicationName
+					);
+
+				expect(
+					objectEntries.items.map(
+						(objectEntry) =>
+							objectEntry[objectFields[1].name as string]
+					)
+				).toContain('20-Sneakers');
+			}).toPass({timeout: 15000});
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{[objectFields[0].name as string]: 'Black'},
+				applicationName
+			);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			for (const identification of [
+				'1-Sneakers',
+				'20-Sneakers',
+				'21-Sneakers',
+			]) {
+				await expect(
+					page.getByText(identification, {exact: true})
+				).toBeVisible();
+			}
+		}
+	);
+
 	test('cannot add translation to a non-translatable field', async ({
 		apiHelpers,
 		page,
@@ -4967,6 +5365,71 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		await expect(translationButton).toHaveCount(0);
 	});
+
+	test(
+		'cannot insert an invalid date in a date field',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const [dateObjectField] = generateObjectFields({
+				objectFieldBusinessTypes: ['Date'],
+			});
+
+			await apiHelpers.objectAdmin.postObjectDefinitionObjectFieldBatch(
+				objectDefinition.id,
+				[dateObjectField]
+			);
+
+			await expect(async () => {
+				const objectFields =
+					await apiHelpers.objectAdmin.getAllObjectDefinitionsFields(
+						objectDefinition.id
+					);
+
+				expect(objectFields.items.map(({name}) => name)).toContain(
+					dateObjectField.name
+				);
+			}).toPass({timeout: 15000});
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await page
+				.getByLabel(dateObjectField.label.en_US, {exact: true})
+				.fill('23/01/2020');
+
+			await page
+				.getByLabel('textField', {exact: true})
+				.fill('Entry Test');
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			const objectEntries =
+				await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+					'c/' + objectDefinition.name.toLowerCase() + 's'
+				);
+
+			const [objectEntry] = objectEntries.items;
+
+			expect(objectEntry.textField).toBe('Entry Test');
+
+			expect(objectEntry[dateObjectField.name as string]).toBeFalsy();
+		}
+	);
 
 	test('cannot view other users entry without view permission', async ({
 		apiHelpers,
