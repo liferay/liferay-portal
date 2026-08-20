@@ -182,6 +182,10 @@ public class ObjectDefinitionsDetailsDisplayContext
 					));
 			}
 
+			if (JSONUtil.isEmpty(itemsJSONArray)) {
+				continue;
+			}
+
 			jsonArray.put(
 				JSONUtil.put(
 					"items", itemsJSONArray

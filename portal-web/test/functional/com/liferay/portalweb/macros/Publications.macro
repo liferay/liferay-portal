@@ -158,7 +158,7 @@ definition {
 		}
 		else {
 			ApplicationsMenu.gotoPortlet(
-				category = "Publications",
+				category = "In Maintenance",
 				panel = "Applications",
 				portlet = "Publications");
 

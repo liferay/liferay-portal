@@ -76,7 +76,7 @@ definition {
 			locator1 = "MenuItem#ANY_MENU_ITEM");
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Publications",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Publications");
 
@@ -86,7 +86,7 @@ definition {
 	@summary = "Default summary"
 	macro assertNoPermissionToPublishPublication(publicationName = null) {
 		ApplicationsMenu.gotoPortlet(
-			category = "Publications",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Publications");
 

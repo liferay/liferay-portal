@@ -1,0 +1,36 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+/**
+ * @author Gabriel Prates
+ */
+public class LPD_98002 {
+
+	public void method() {
+		PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_BATCH_PLANNER;
+		PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_COMMERCE;
+		PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_COMMUNICATION;
+		PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_CONTENT;
+		PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_CUSTOM_APPS;
+		PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DESIGN;
+		PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_PERSONALIZATION;
+		PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_PUBLICATIONS;
+		SearchTuningPanelCategoryKeys.CONTROL_PANEL_SEARCH_TUNING;
+		SXPPanelCategoryKeys.CONTROL_PANEL_SEARCH_EXPERIENCES;
+		"applications_menu.applications.batch_planner";
+		"applications_menu.applications.commerce";
+		"applications_menu.applications.communication";
+		"applications_menu.applications.content";
+		"applications_menu.applications.custom.apps";
+		"applications_menu.applications.design";
+		"applications_menu.applications.personalization";
+		"applications_menu.applications.publications";
+		"control_panel.search_experiences";
+		"control_panel.search_tuning";
+	}
+
+}

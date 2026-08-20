@@ -13,6 +13,7 @@ import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Mario Leandro
@@ -65,6 +67,20 @@ public class HomeDisplayContext {
 
 	private List<Map<String, Object>> _getPropsItems() throws Exception {
 		List<Map<String, Object>> propsItems = new ArrayList<>();
+
+		List<Map<String, Object>> rootPropsItems = ListUtil.filter(
+			_getPropsItems(_panelCategory),
+			rootPropsItem -> !Objects.equals(
+				rootPropsItem.get("id"), _portletId));
+
+		if (!rootPropsItems.isEmpty()) {
+			propsItems.add(
+				HashMapBuilder.<String, Object>put(
+					"id", _panelCategory.getKey()
+				).put(
+					"items", rootPropsItems
+				).build());
+		}
 
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(

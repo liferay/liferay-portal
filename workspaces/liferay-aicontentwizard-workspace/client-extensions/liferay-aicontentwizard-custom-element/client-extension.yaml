@@ -23,7 +23,7 @@ liferay-aicontentwizard-custom-element-settings:
     instanceable: false
     name: Liferay AI Content Wizard Settings
     panelAppOrder: 700
-    panelCategoryKey: applications_menu.applications.custom.apps
+    panelCategoryKey: applications_menu.applications.developer-integration
     portletCategoryName: category.client-extensions
     properties:
         route: settings

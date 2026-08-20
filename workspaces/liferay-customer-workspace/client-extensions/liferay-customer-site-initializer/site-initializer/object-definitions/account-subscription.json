@@ -122,7 +122,7 @@
 		}
 	],
 	"panelAppOrder": 110,
-	"panelCategoryKey": "applications_menu.applications.content",
+	"panelCategoryKey": "applications_menu.applications.in-maintenance",
 	"pluralLabel": {
 		"en_US": "Account Subscriptions"
 	},

@@ -17,29 +17,12 @@ public interface PanelCategoryKeys {
 	public static final String APPLICATIONS_MENU_APPLICATIONS =
 		"applications_menu.applications";
 
-	public static final String APPLICATIONS_MENU_APPLICATIONS_BATCH_PLANNER =
-		"applications_menu.applications.batch_planner";
+	public static final String
+		APPLICATIONS_MENU_APPLICATIONS_DEVELOPER_INTEGRATION =
+			"applications_menu.applications.developer-integration";
 
-	public static final String APPLICATIONS_MENU_APPLICATIONS_COMMERCE =
-		"applications_menu.applications.commerce";
-
-	public static final String APPLICATIONS_MENU_APPLICATIONS_COMMUNICATION =
-		"applications_menu.applications.communication";
-
-	public static final String APPLICATIONS_MENU_APPLICATIONS_CONTENT =
-		"applications_menu.applications.content";
-
-	public static final String APPLICATIONS_MENU_APPLICATIONS_CUSTOM_APPS =
-		"applications_menu.applications.custom.apps";
-
-	public static final String APPLICATIONS_MENU_APPLICATIONS_DESIGN =
-		"applications_menu.applications.design";
-
-	public static final String APPLICATIONS_MENU_APPLICATIONS_PERSONALIZATION =
-		"applications_menu.applications.personalization";
-
-	public static final String APPLICATIONS_MENU_APPLICATIONS_PUBLICATIONS =
-		"applications_menu.applications.publications";
+	public static final String APPLICATIONS_MENU_APPLICATIONS_IN_MAINTENANCE =
+		"applications_menu.applications.in-maintenance";
 
 	public static final String COMMERCE = "commerce";
 

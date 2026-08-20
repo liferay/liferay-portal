@@ -113,7 +113,7 @@ definition {
 			userLoginFullName = "userfn userln");
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Content",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Asset Libraries");
 

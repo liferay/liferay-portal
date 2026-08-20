@@ -19,7 +19,7 @@
 			"type": "String"
 		}
 	],
-	"panelCategoryKey": "applications_menu.applications.content",
+	"panelCategoryKey": "applications_menu.applications.in-maintenance",
 	"pluralLabel": {
 		"en_US": "Opportunities Partner Role SF"
 	},

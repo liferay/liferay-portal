@@ -1,0 +1,32 @@
+[
+	{
+		"panelCategoryKey": "applications_menu.applications.batch_planner"
+	},
+	{
+		"panelCategoryKey": "applications_menu.applications.commerce"
+	},
+	{
+		"panelCategoryKey": "applications_menu.applications.communication"
+	},
+	{
+		"panelCategoryKey": "applications_menu.applications.content"
+	},
+	{
+		"panelCategoryKey": "applications_menu.applications.custom.apps"
+	},
+	{
+		"panelCategoryKey": "applications_menu.applications.design"
+	},
+	{
+		"panelCategoryKey": "applications_menu.applications.personalization"
+	},
+	{
+		"panelCategoryKey": "applications_menu.applications.publications"
+	},
+	{
+		"panelCategoryKey": "control_panel.search_experiences"
+	},
+	{
+		"panelCategoryKey": "control_panel.search_tuning"
+	}
+]

@@ -1,4 +1,0 @@
-Bundle-Name: Liferay Portal Search Tuning Web API
-Bundle-SymbolicName: com.liferay.portal.search.tuning.web.api
-Bundle-Version: 3.0.10
-Export-Package: com.liferay.portal.search.tuning.web.application.list.constants

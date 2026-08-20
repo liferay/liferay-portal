@@ -1,5 +1,5 @@
 {
-	"@generated": "eb319ae123c863a5d9c10cee56687b76d30965c7",
+	"@generated": "fa2f4a634f61518cd3b0260b7b3ae3fdfd322b8f",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -13,6 +13,9 @@
 		"paths": {
 			"@liferay/frontend-js-react-web": [
 				"../../../../../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"@liferay/layout-js-components-web": [
+				"../../../../../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
 			"frontend-js-components-web": [
 				"../../../../../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/index.ts"
@@ -42,6 +45,9 @@
 	"references": [
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../../../../../layout/layout-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"

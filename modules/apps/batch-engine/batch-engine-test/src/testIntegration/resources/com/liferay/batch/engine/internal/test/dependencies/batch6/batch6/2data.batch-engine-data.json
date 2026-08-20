@@ -192,7 +192,7 @@
 			],
 			"objectViews": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "Coupons"

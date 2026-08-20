@@ -32,7 +32,7 @@
 		}
 	],
 	"panelAppOrder": 250,
-	"panelCategoryKey": "applications_menu.applications.content",
+	"panelCategoryKey": "applications_menu.applications.in-maintenance",
 	"pluralLabel": {
 		"en_US": "Incident Report Contacts Analytics Cloud"
 	},

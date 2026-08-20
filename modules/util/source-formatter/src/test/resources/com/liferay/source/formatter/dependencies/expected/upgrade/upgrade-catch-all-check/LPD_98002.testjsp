@@ -1,0 +1,31 @@
+<%--
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+--%>
+
+<%@ page import="com.liferay.portal.search.web.application.list.constants.SearchPanelCategoryKeys" %>
+
+<%
+PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DEVELOPER_INTEGRATION;
+PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS;
+PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS;
+PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_IN_MAINTENANCE;
+PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DEVELOPER_INTEGRATION;
+PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS;
+PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS;
+PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_IN_MAINTENANCE;
+SearchPanelCategoryKeys.CONTROL_PANEL_SEARCH;
+SearchPanelCategoryKeys.CONTROL_PANEL_SEARCH;
+"applications_menu.applications.developer-integration";
+"applications_menu.applications";
+"applications_menu.applications";
+"applications_menu.applications.in-maintenance";
+"applications_menu.applications.developer-integration";
+"applications_menu.applications";
+"applications_menu.applications";
+"applications_menu.applications.in-maintenance";
+"control_panel.search";
+"control_panel.search";
+%>

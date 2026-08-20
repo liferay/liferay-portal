@@ -8,11 +8,7 @@ package com.liferay.product.navigation.control.panel.internal.application.list;
 import com.liferay.application.list.BasePanelCategory;
 import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.PanelCategoryKeys;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import java.util.Locale;
 
@@ -20,34 +16,26 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Mario Leandro
+ * @author Gabriel Prates
  */
 @Component(
 	property = {
 		"panel.category.key=" + PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS,
-		"panel.category.order:Integer=150"
+		"panel.category.order:Integer=2000"
 	},
 	service = PanelCategory.class
 )
-public class ApplicationsDesignPanelCategory extends BasePanelCategory {
+public class ApplicationsInMaintenancePanelCategory extends BasePanelCategory {
 
 	@Override
 	public String getKey() {
-		return PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DESIGN;
+		return PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_IN_MAINTENANCE;
 	}
 
 	@Override
 	public String getLabel(Locale locale) {
 		return _language.get(
-			locale, "category.applications_menu.applications.design");
-	}
-
-	@Override
-	public boolean isShow(PermissionChecker permissionChecker, Group group)
-		throws PortalException {
-
-		return FeatureFlagManagerUtil.isEnabled(
-			permissionChecker.getCompanyId(), "LPD-57283");
+			locale, "category.applications_menu.applications.in-maintenance");
 	}
 
 	@Reference

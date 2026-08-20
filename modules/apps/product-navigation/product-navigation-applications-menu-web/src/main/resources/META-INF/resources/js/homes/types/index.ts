@@ -13,7 +13,7 @@ export type CategoryItem = {
 export type CategoryItemGrouped = {
 	id: string;
 	items: Array<CategoryItem>;
-	label: string;
+	label?: string;
 };
 
 export type HomeProps = {

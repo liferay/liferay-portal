@@ -230,7 +230,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Account Notes"
 			},
@@ -460,7 +460,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "AI Hub Beta Private Access Requests"
 			},
@@ -647,7 +647,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Common License Keys"
 			},
@@ -907,7 +907,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Contracts"
 			},
@@ -1191,7 +1191,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "DSR Requests"
 			},
@@ -1421,7 +1421,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "DXP Free Activation Key Requests"
 			},
@@ -1570,7 +1570,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Entitlements"
 			},
@@ -1748,7 +1748,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Entitlement Definitions"
 			},
@@ -1870,7 +1870,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Get App Information"
 			},
@@ -2471,7 +2471,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "License Keys"
 			},
@@ -2539,7 +2539,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "License Types Descriptions"
 			},
@@ -2607,7 +2607,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Liferay Bundles"
 			},
@@ -2657,7 +2657,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "OAuth2 DXP Authorizations"
 			},
@@ -2905,7 +2905,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Product Feedbacks"
 			},
@@ -2982,7 +2982,7 @@
 					]
 				}
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Projects"
 			},
@@ -3059,7 +3059,7 @@
 					]
 				}
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Project Memberships"
 			},
@@ -3261,7 +3261,7 @@
 					]
 				}
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Properties"
 			},
@@ -3458,7 +3458,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Publisher Account Requests"
 			},
@@ -3508,7 +3508,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Publisher Assets"
 			},
@@ -3629,7 +3629,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Publisher Asset Attachments"
 			},
@@ -3957,7 +3957,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Publisher Details"
 			},
@@ -4080,7 +4080,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Publisher Sales Summaries"
 			},
@@ -4148,7 +4148,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Reports"
 			},
@@ -4270,7 +4270,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Sales Requests"
 			},
@@ -4357,7 +4357,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Subscription Entries"
 			},
@@ -4572,7 +4572,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Ticket Attachments"
 			},
@@ -4677,7 +4677,7 @@
 			],
 			"objectValidationRules": [
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "applications_menu.applications.in-maintenance",
 			"pluralLabel": {
 				"en_US": "Trial Extension Requests"
 			},

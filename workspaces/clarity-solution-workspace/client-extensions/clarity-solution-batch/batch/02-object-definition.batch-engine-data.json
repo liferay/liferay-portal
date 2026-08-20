@@ -524,7 +524,7 @@
 					]
 				}
 			],
-			"panelCategoryKey": "applications_menu.applications.custom.apps",
+			"panelCategoryKey": "applications_menu.applications.developer-integration",
 			"pluralLabel": {
 				"en_US": "U3A2 Distributor Applications"
 			},
@@ -667,7 +667,7 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "U3A2_DISTRIBUTOR_MANAGEMENT",
-			"panelCategoryKey": "applications_menu.applications.custom.apps",
+			"panelCategoryKey": "applications_menu.applications.developer-integration",
 			"pluralLabel": {
 				"en_US": "U3A2 Distributor Application Evaluations"
 			},

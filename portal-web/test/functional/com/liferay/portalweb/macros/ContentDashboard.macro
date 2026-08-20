@@ -336,7 +336,7 @@ definition {
 	@summary = "Default summary"
 	macro goToContentDashboard() {
 		ApplicationsMenu.gotoPortlet(
-			category = "Content",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Content Dashboard");
 

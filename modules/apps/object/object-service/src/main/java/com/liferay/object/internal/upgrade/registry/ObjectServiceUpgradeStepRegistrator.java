@@ -5,6 +5,7 @@
 
 package com.liferay.object.internal.upgrade.registry;
 
+import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.friendly.url.configuration.manager.FriendlyURLSeparatorConfigurationManager;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -56,6 +57,7 @@ import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.util.Localization;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
@@ -752,7 +754,30 @@ public class ObjectServiceUpgradeStepRegistrator
 				}
 
 			});
+
+		registry.register(
+			"13.4.0", "13.5.0",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update ObjectDefinition set panelCategoryKey = '",
+					PanelCategoryKeys.CONTROL_PANEL_OBJECT,
+					"' where panelCategoryKey in ('",
+					StringUtil.merge(_REMOVED_PANEL_CATEGORY_KEYS, "', '"),
+					"')")));
 	}
+
+	private static final String[] _REMOVED_PANEL_CATEGORY_KEYS = {
+		"applications_menu.applications.batch_planner",
+		"applications_menu.applications.commerce",
+		"applications_menu.applications.communication",
+		"applications_menu.applications.content",
+		"applications_menu.applications.custom.apps",
+		"applications_menu.applications.design",
+		"applications_menu.applications.personalization",
+		"applications_menu.applications.publications",
+		"applications_menu.applications.seo_studio",
+		"control_panel.search_experiences", "control_panel.search_tuning"
+	};
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;

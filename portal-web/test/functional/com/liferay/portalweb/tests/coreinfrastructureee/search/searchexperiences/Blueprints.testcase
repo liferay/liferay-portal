@@ -1388,7 +1388,7 @@ definition {
 			userLoginFullName = "userfn userln");
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Search Experiences",
+			category = "Search",
 			panel = "Applications",
 			portlet = "Blueprints");
 
@@ -1458,7 +1458,7 @@ definition {
 			userLoginFullName = "userfn userln");
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Search Experiences",
+			category = "Search",
 			panel = "Applications",
 			portlet = "Blueprints");
 
@@ -4744,7 +4744,7 @@ definition {
 		ApplicationsMenu.openApplicationsMenu();
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Search Experiences",
+			category = "Search",
 			panel = "Applications",
 			portlet = "Blueprints");
 
@@ -4757,7 +4757,7 @@ definition {
 		ApplicationsMenu.openApplicationsMenu();
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Search Experiences",
+			category = "Search",
 			panel = "Applications",
 			portlet = "Blueprints");
 
@@ -4825,7 +4825,7 @@ definition {
 		ApplicationsMenu.openApplicationsMenu();
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Search Experiences",
+			category = "Search",
 			panel = "Applications",
 			portlet = "Blueprints");
 
@@ -4838,7 +4838,7 @@ definition {
 		ApplicationsMenu.openApplicationsMenu();
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Search Experiences",
+			category = "Search",
 			panel = "Applications",
 			portlet = "Blueprints");
 

@@ -6059,6 +6059,202 @@
 		"to": "_sites.updateLayoutSetPrototypesLinks"
 	},
 	{
+		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_BATCH_PLANNER",
+		"issueKey": "LPD-98002",
+		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DEVELOPER_INTEGRATION",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_COMMERCE",
+		"issueKey": "LPD-98002",
+		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_COMMUNICATION",
+		"issueKey": "LPD-98002",
+		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_CONTENT",
+		"issueKey": "LPD-98002",
+		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_IN_MAINTENANCE",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_CUSTOM_APPS",
+		"issueKey": "LPD-98002",
+		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DEVELOPER_INTEGRATION",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DESIGN",
+		"issueKey": "LPD-98002",
+		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_PERSONALIZATION",
+		"issueKey": "LPD-98002",
+		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_PUBLICATIONS",
+		"issueKey": "LPD-98002",
+		"to": "PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_IN_MAINTENANCE",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bapplications_menu\\.applications\\.batch_planner(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "applications_menu.applications.developer-integration",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bapplications_menu\\.applications\\.commerce(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "applications_menu.applications",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bapplications_menu\\.applications\\.communication(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "applications_menu.applications",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bapplications_menu\\.applications\\.content(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "applications_menu.applications.in-maintenance",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bapplications_menu\\.applications\\.custom\\.apps(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "applications_menu.applications.developer-integration",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bapplications_menu\\.applications\\.design(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "applications_menu.applications",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bapplications_menu\\.applications\\.personalization(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "applications_menu.applications",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bapplications_menu\\.applications\\.publications(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "applications_menu.applications.in-maintenance",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bcontrol_panel\\.search_experiences(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "control_panel.search",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "regex:\\bcontrol_panel\\.search_tuning(?![\\w.-])",
+		"issueKey": "LPD-98002",
+		"to": "control_panel.search",
+		"validExtensions": [
+			"java",
+			"json",
+			"jsp"
+		]
+	},
+	{
+		"from": "SearchTuningPanelCategoryKeys.CONTROL_PANEL_SEARCH_TUNING",
+		"issueKey": "LPD-98002",
+		"newImports": [
+			"com.liferay.portal.search.web.application.list.constants.SearchPanelCategoryKeys"
+		],
+		"to": "SearchPanelCategoryKeys.CONTROL_PANEL_SEARCH",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
+		"from": "SXPPanelCategoryKeys.CONTROL_PANEL_SEARCH_EXPERIENCES",
+		"issueKey": "LPD-98002",
+		"newImports": [
+			"com.liferay.portal.search.web.application.list.constants.SearchPanelCategoryKeys"
+		],
+		"to": "SearchPanelCategoryKeys.CONTROL_PANEL_SEARCH",
+		"validExtensions": [
+			"java",
+			"jsp"
+		]
+	},
+	{
 		"from": "regex:MultiVMPoolUtil\\s*.\\s*getPortalCache\\(\\s*(?<prefixMethodName>[\\s\\S]*?)\\)",
 		"issueKey": "LPS-153962",
 		"newImports": [
