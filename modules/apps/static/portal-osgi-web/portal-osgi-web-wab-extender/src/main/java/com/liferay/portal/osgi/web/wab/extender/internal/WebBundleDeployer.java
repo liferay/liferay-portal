@@ -8,6 +8,7 @@ package com.liferay.portal.osgi.web.wab.extender.internal;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -72,7 +73,11 @@ public class WebBundleDeployer {
 			if (!featureFlagKeys.isEmpty()) {
 				return _bundleContext.registerService(
 					FeatureFlagListener.class,
-					new WarFeatureFlagListener(bundle, featureFlagKeys), null);
+					new WarFeatureFlagListener(bundle, featureFlagKeys),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"feature.flag.key",
+						featureFlagKeys.toArray(new String[0])
+					).build());
 			}
 
 			Set<String> portalProfileNames = SetUtil.fromArray(
