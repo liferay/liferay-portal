@@ -1118,48 +1118,22 @@ public class ObjectEntryVersionLocalServiceTest {
 				serviceContext);
 
 			Assert.assertEquals(status, objectEntry.getStatus());
+			Assert.assertEquals(2, objectEntry.getVersion());
 
-			if (workflowAction == WorkflowConstants.ACTION_PUBLISH) {
-				Assert.assertEquals(3, objectEntry.getVersion());
-
-				_assertEquals(
-					Arrays.asList(
-						_createObjectEntryVersion(
-							objectEntry.getExternalReferenceCode(),
-							JSONUtil.put(
-								"textObjectFieldName", "textObjectFieldValue1"),
-							WorkflowConstants.STATUS_SCHEDULED, 1),
-						_createObjectEntryVersion(
-							objectEntry.getExternalReferenceCode(),
-							JSONUtil.put(
-								"textObjectFieldName", "textObjectFieldValue2"),
-							WorkflowConstants.STATUS_SCHEDULED, 2),
-						_createObjectEntryVersion(
-							objectEntry.getExternalReferenceCode(),
-							JSONUtil.put(
-								"textObjectFieldName", "textObjectFieldValue3"),
-							WorkflowConstants.STATUS_APPROVED, 3)),
-					_objectEntryVersionLocalService.getObjectEntryVersions(
-						objectEntry.getObjectEntryId()));
-			}
-			else {
-				Assert.assertEquals(2, objectEntry.getVersion());
-
-				_assertEquals(
-					Arrays.asList(
-						_createObjectEntryVersion(
-							objectEntry.getExternalReferenceCode(),
-							JSONUtil.put(
-								"textObjectFieldName", "textObjectFieldValue1"),
-							WorkflowConstants.STATUS_SCHEDULED, 1),
-						_createObjectEntryVersion(
-							objectEntry.getExternalReferenceCode(),
-							JSONUtil.put(
-								"textObjectFieldName", "textObjectFieldValue3"),
-							WorkflowConstants.STATUS_DRAFT, 2)),
-					_objectEntryVersionLocalService.getObjectEntryVersions(
-						objectEntry.getObjectEntryId()));
-			}
+			_assertEquals(
+				Arrays.asList(
+					_createObjectEntryVersion(
+						objectEntry.getExternalReferenceCode(),
+						JSONUtil.put(
+							"textObjectFieldName", "textObjectFieldValue1"),
+						WorkflowConstants.STATUS_SCHEDULED, 1),
+					_createObjectEntryVersion(
+						objectEntry.getExternalReferenceCode(),
+						JSONUtil.put(
+							"textObjectFieldName", "textObjectFieldValue3"),
+						status, 2)),
+				_objectEntryVersionLocalService.getObjectEntryVersions(
+					objectEntry.getObjectEntryId()));
 
 			// Update object entry with null display date
 
@@ -1174,7 +1148,7 @@ public class ObjectEntryVersionLocalServiceTest {
 			Assert.assertEquals(status, objectEntry.getStatus());
 
 			if (workflowAction == WorkflowConstants.ACTION_PUBLISH) {
-				Assert.assertEquals(4, objectEntry.getVersion());
+				Assert.assertEquals(3, objectEntry.getVersion());
 
 				_assertEquals(
 					Arrays.asList(
@@ -1186,18 +1160,13 @@ public class ObjectEntryVersionLocalServiceTest {
 						_createObjectEntryVersion(
 							objectEntry.getExternalReferenceCode(),
 							JSONUtil.put(
-								"textObjectFieldName", "textObjectFieldValue2"),
-							WorkflowConstants.STATUS_SCHEDULED, 2),
-						_createObjectEntryVersion(
-							objectEntry.getExternalReferenceCode(),
-							JSONUtil.put(
 								"textObjectFieldName", "textObjectFieldValue3"),
-							WorkflowConstants.STATUS_APPROVED, 3),
+							WorkflowConstants.STATUS_APPROVED, 2),
 						_createObjectEntryVersion(
 							objectEntry.getExternalReferenceCode(),
 							JSONUtil.put(
 								"textObjectFieldName", "textObjectFieldValue4"),
-							WorkflowConstants.STATUS_APPROVED, 4)),
+							WorkflowConstants.STATUS_APPROVED, 3)),
 					_objectEntryVersionLocalService.getObjectEntryVersions(
 						objectEntry.getObjectEntryId()));
 			}
