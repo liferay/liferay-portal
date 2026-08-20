@@ -185,7 +185,9 @@ public class JournalContentCompatibilityConverterImpl
 			"dynamic-content");
 
 		for (Element dynamicContentElement : dynamicContentElements) {
-			if (Objects.equals(ddmFieldType, "list")) {
+			if (Objects.equals(ddmFieldType, "list") ||
+				Objects.equals(ddmFieldType, "multi-list")) {
+
 				continue;
 			}
 
