@@ -19,6 +19,7 @@ import {
 } from '../../utils/cmpTabPersistence';
 import {WORKFLOW_TASK_ACTION_LINK_ID} from '../../utils/constants';
 import {openCMPModal} from '../../utils/openCMPModal';
+import {transformFDSBulkActions} from '../../utils/transformFDSBulkActions';
 import {TaskAction, WorkflowTaskItemData} from '../../utils/types';
 import WORKFLOW_TASK_MODALS from '../../utils/workflowTaskModals';
 import BulkEditWorkflowAssigneeModalContent from '../modal/BulkEditWorkflowAssigneeModalContent';
@@ -72,7 +73,7 @@ export default function WorkflowTasksFDSPropsTransformer({
 	return {
 		...otherProps,
 		atom: cmpWorkflowTasksFDSAtom,
-		bulkActions: bulkActions.map((action) => ({
+		bulkActions: transformFDSBulkActions(bulkActions).map((action) => ({
 			...action,
 			isDisabled: ({
 				allItemsSelectedActive,
