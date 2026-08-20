@@ -24,10 +24,6 @@
 		right: -0.4rem;
 		width: 1.2rem;
 	}
-
-	#personal-menu-icon-wrapper .lexicon-icon {
-		margin-top: -.25rem;
-	}
 </aui:style>
 
 <li class="control-menu-nav-item">
