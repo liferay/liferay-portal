@@ -61,11 +61,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>BODY_FIELD_CONTENTEDITABLE_LINK_WITHOUT_UUID</td>
-	<td>//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//div[contains(@class,'ck-editor__editable_inline')]//a[contains(@href,'${key_fileName}') and not(contains(@href,'${key_fileName}/'))]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>BODY</td>
 	<td>//body[contains(@class,'cke_editable')]</td>
 	<td></td>
