@@ -36,18 +36,18 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testOnBeforeSaveInvalidPolicyLink() throws Exception {
+	public void testOnBeforeSaveInvalidPolicyLink() {
 		try (MockedStatic<ResourceBundleUtil> resourceBundleUtilMockedStatic =
 				Mockito.mockStatic(ResourceBundleUtil.class)) {
 
-			_assertInvalidPolicyLink(
-				CookiesBannerConfiguration.class, "/\t/liferay.com",
-				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
 				CookiesBannerConfiguration.class, "//liferay.com",
 				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
 				CookiesBannerConfiguration.class, "/\\liferay.com",
+				"privacyPolicyLink");
+			_assertInvalidPolicyLink(
+				CookiesBannerConfiguration.class, "/\t/liferay.com",
 				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
 				CookiesBannerConfiguration.class,
@@ -64,13 +64,13 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 				CookiesBannerConfiguration.class, "vbscript:msgbox(1)",
 				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
-				CookiesConsentConfiguration.class, "/\t/liferay.com",
-				"cookiePolicyLink");
-			_assertInvalidPolicyLink(
 				CookiesConsentConfiguration.class, "//liferay.com",
 				"cookiePolicyLink");
 			_assertInvalidPolicyLink(
 				CookiesConsentConfiguration.class, "/\\liferay.com",
+				"cookiePolicyLink");
+			_assertInvalidPolicyLink(
+				CookiesConsentConfiguration.class, "/\t/liferay.com",
 				"cookiePolicyLink");
 			_assertInvalidPolicyLink(
 				CookiesConsentConfiguration.class,
