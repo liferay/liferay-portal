@@ -609,17 +609,26 @@ function start_client_extension_spring_boot_application {
 
 		cd ${client_extension_dir}
 
-		local portal_url_hostname=$(echo ${LIFERAY_PORTAL_URL} | awk -F:// '{print $2}')
+		# The portal's Kubernetes agent owns the home's routes directory and
+		# rewrites its files from the company virtual host, which does not
+		# resolve the portal from here. The application reads the files once
+		# at boot through paths the workspace plugin derives from the home
+		# directory, so boot it against a private home whose routes only this
+		# script writes, and only after the portal's JWKS endpoint answers at
+		# the routed address.
 
-		echo "${portal_url_hostname}" > ${LIFERAY_HOME}/routes/default/dxp/com.liferay.lxc.dxp.domains
-		echo "${portal_url_hostname}" > ${LIFERAY_HOME}/routes/default/dxp/com.liferay.lxc.dxp.main.domain
-		echo "${portal_url_hostname}" > ${LIFERAY_HOME}/routes/default/dxp/com.liferay.lxc.dxp.mainDomain
+		local routes_home=$(mktemp -d)
 
-		local portal_url_scheme=$(echo ${LIFERAY_PORTAL_URL} | awk -F:// '{print $1}')
+		write_client_extension_dxp_routes "${routes_home}"
 
-		echo "${portal_url_scheme}" > ${LIFERAY_HOME}/routes/default/dxp/com.liferay.lxc.dxp.server.protocol
+		if ! curl --fail --output /dev/null --retry 12 --retry-all-errors --retry-delay 5 --silent "$(cat ${routes_home}/routes/default/dxp/com.liferay.lxc.dxp.server.protocol)://$(cat ${routes_home}/routes/default/dxp/com.liferay.lxc.dxp.mainDomain)/o/oauth2/jwks"
+		then
+			echo "The portal's JWKS endpoint does not answer at the routed address."
 
-		$(get_gradlew) bootRun -Pliferay.workspace.home.dir=${LIFERAY_HOME} &
+			exit 1
+		fi
+
+		$(get_gradlew) bootRun -Pliferay.workspace.home.dir=${routes_home} &
 
 		local sleep_duration=60
 		local sleep_interval=5
@@ -811,6 +820,22 @@ function wait_for_portal_log_inactivity {
 	done
 
 	echo "No portal activity detected in ${sleep_interval}s."
+}
+
+function write_client_extension_dxp_routes {
+	local routes_dir=${1}/routes/default/dxp
+
+	mkdir -p ${routes_dir}
+
+	local portal_url_hostname=$(echo ${LIFERAY_PORTAL_URL} | awk -F:// '{print $2}')
+
+	echo "${portal_url_hostname}" > ${routes_dir}/com.liferay.lxc.dxp.domains
+	echo "${portal_url_hostname}" > ${routes_dir}/com.liferay.lxc.dxp.main.domain
+	echo "${portal_url_hostname}" > ${routes_dir}/com.liferay.lxc.dxp.mainDomain
+
+	local portal_url_scheme=$(echo ${LIFERAY_PORTAL_URL} | awk -F:// '{print $1}')
+
+	echo "${portal_url_scheme}" > ${routes_dir}/com.liferay.lxc.dxp.server.protocol
 }
 
 main "${@}"
