@@ -77,8 +77,8 @@ public class FrontendTokenDefinitionRegistryImpl
 			classNameId, layout.getPlid());
 
 		if (cetExternalReferenceCode != null) {
-			return _getThemeCSSCETFrontendTokenDefinition(
-				layout.getCompanyId(), cetExternalReferenceCode);
+			return _frontendTokenDefinitionsMap.get(
+				_getKey(layout.getCompanyId(), cetExternalReferenceCode));
 		}
 
 		if (layout.getMasterLayoutPlid() > 0) {
@@ -86,8 +86,8 @@ public class FrontendTokenDefinitionRegistryImpl
 				classNameId, layout.getMasterLayoutPlid());
 
 			if (cetExternalReferenceCode != null) {
-				return _getThemeCSSCETFrontendTokenDefinition(
-					layout.getCompanyId(), cetExternalReferenceCode);
+				return _frontendTokenDefinitionsMap.get(
+					_getKey(layout.getCompanyId(), cetExternalReferenceCode));
 			}
 		}
 
@@ -98,8 +98,8 @@ public class FrontendTokenDefinitionRegistryImpl
 			layoutSet.getLayoutSetId());
 
 		if (cetExternalReferenceCode != null) {
-			return _getThemeCSSCETFrontendTokenDefinition(
-				layoutSet.getCompanyId(), cetExternalReferenceCode);
+			return _frontendTokenDefinitionsMap.get(
+				_getKey(layoutSet.getCompanyId(), cetExternalReferenceCode));
 		}
 
 		Theme theme = null;
@@ -426,8 +426,8 @@ public class FrontendTokenDefinitionRegistryImpl
 
 		if (externalReferenceCode != null) {
 			FrontendTokenDefinition frontendTokenDefinition =
-				_getThemeCSSCETFrontendTokenDefinition(
-					companyId, externalReferenceCode);
+				_frontendTokenDefinitionsMap.get(
+					_getKey(companyId, externalReferenceCode));
 
 			if (frontendTokenDefinition != null) {
 				return frontendTokenDefinition;
@@ -456,13 +456,6 @@ public class FrontendTokenDefinitionRegistryImpl
 
 	private String _getKey(long companyId, String themeId) {
 		return companyId + StringPool.POUND + themeId;
-	}
-
-	private FrontendTokenDefinition _getThemeCSSCETFrontendTokenDefinition(
-		long companyId, String externalReferenceCode) {
-
-		return _frontendTokenDefinitionsMap.get(
-			_getKey(companyId, externalReferenceCode));
 	}
 
 	private void _removedService(ThemeCSSCET themeCSSCET) {
