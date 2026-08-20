@@ -9,7 +9,10 @@ import com.liferay.analytics.batch.exportimport.AnalyticsDXPEntityBatchExporter;
 import com.liferay.analytics.batch.exportimport.constants.AnalyticsDXPEntityBatchExporterConstants;
 import com.liferay.analytics.settings.security.constants.AnalyticsSecurityConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.dispatch.executor.DispatchTaskClusterMode;
+import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
+import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -62,6 +65,55 @@ public class AnalyticsDXPEntityBatchExporterTest {
 				TestPropsValues.getCompanyId(),
 				AnalyticsDXPEntityBatchExporterConstants.
 					DISPATCH_TRIGGER_NAME_DXP_ENTITIES));
+	}
+
+	@Test
+	public void testScheduleExportTriggersSchedulesOnSingleNode()
+		throws Exception {
+
+		long companyId = TestPropsValues.getCompanyId();
+
+		_analyticsDXPEntityBatchExporter.unscheduleExportTriggers(
+			companyId,
+			new String[] {
+				AnalyticsDXPEntityBatchExporterConstants.
+					DISPATCH_TRIGGER_NAME_DXP_ENTITIES
+			});
+
+		try {
+			_analyticsDXPEntityBatchExporter.scheduleExportTriggers(
+				companyId,
+				new String[] {
+					AnalyticsDXPEntityBatchExporterConstants.
+						DISPATCH_TRIGGER_NAME_DXP_ENTITIES
+				});
+
+			DispatchTrigger dispatchTrigger =
+				_dispatchTriggerLocalService.fetchDispatchTrigger(
+					companyId,
+					AnalyticsDXPEntityBatchExporterConstants.
+						DISPATCH_TRIGGER_NAME_DXP_ENTITIES);
+
+			DispatchTaskClusterMode dispatchTaskClusterMode =
+				DispatchTaskClusterMode.NOT_APPLICABLE;
+
+			if (ClusterExecutorUtil.isEnabled()) {
+				dispatchTaskClusterMode =
+					DispatchTaskClusterMode.SINGLE_NODE_PERSISTED;
+			}
+
+			Assert.assertEquals(
+				dispatchTaskClusterMode.getMode(),
+				dispatchTrigger.getDispatchTaskClusterMode());
+		}
+		finally {
+			_analyticsDXPEntityBatchExporter.unscheduleExportTriggers(
+				companyId,
+				new String[] {
+					AnalyticsDXPEntityBatchExporterConstants.
+						DISPATCH_TRIGGER_NAME_DXP_ENTITIES
+				});
+		}
 	}
 
 	@Inject
