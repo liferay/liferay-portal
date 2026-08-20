@@ -217,87 +217,6 @@ public class MirrorsGetTask extends Task {
 		_verbose = verbose;
 	}
 
-	protected File createReadLink(File cacheFile, File linkFile) {
-		try {
-			Files.createLink(linkFile.toPath(), cacheFile.toPath());
-
-			return linkFile;
-		}
-		catch (NoSuchFileException noSuchFileException) {
-			return null;
-		}
-		catch (IOException | UnsupportedOperationException exception) {
-			if (cacheFile.exists()) {
-				return cacheFile;
-			}
-
-			return null;
-		}
-	}
-
-	protected boolean publish(File cacheFile, File tempFile)
-		throws IOException {
-
-		try {
-			Files.createLink(cacheFile.toPath(), tempFile.toPath());
-
-			return true;
-		}
-		catch (FileAlreadyExistsException fileAlreadyExistsException) {
-			return false;
-		}
-		catch (IOException | UnsupportedOperationException exception) {
-			if (cacheFile.exists()) {
-				return false;
-			}
-
-			return _publishByRename(cacheFile, tempFile);
-		}
-	}
-
-	protected void sweep(File cacheFile) {
-		File parentFile = cacheFile.getParentFile();
-
-		if (parentFile == null) {
-			return;
-		}
-
-		File[] files = parentFile.listFiles();
-
-		if (files == null) {
-			return;
-		}
-
-		Pattern pattern = _getOrphanPattern(cacheFile.getName());
-		long thresholdTime = System.currentTimeMillis() - MAX_AGE_MILLIS;
-
-		for (File file : files) {
-			Matcher matcher = pattern.matcher(file.getName());
-
-			if (!matcher.matches()) {
-				continue;
-			}
-
-			long time = Long.parseLong(matcher.group("timestamp"));
-
-			if (time > thresholdTime) {
-				continue;
-			}
-
-			file.delete();
-		}
-	}
-
-	protected File uniqueLinkFile(File cacheFile) {
-		return _uniqueFile(cacheFile, _LINK_MARKER);
-	}
-
-	protected File uniqueTempFile(File cacheFile) {
-		return _uniqueFile(cacheFile, "");
-	}
-
-	protected static final long MAX_AGE_MILLIS = 24 * 60 * 60 * 1000;
-
 	private void _copyFile(File sourceFile, File targetFile)
 		throws IOException {
 
@@ -327,6 +246,24 @@ public class MirrorsGetTask extends Task {
 			sb.append(" milliseconds.");
 
 			System.out.println(sb.toString());
+		}
+	}
+
+	private File _createReadLink(File cacheFile, File linkFile) {
+		try {
+			Files.createLink(linkFile.toPath(), cacheFile.toPath());
+
+			return linkFile;
+		}
+		catch (NoSuchFileException noSuchFileException) {
+			return null;
+		}
+		catch (IOException | UnsupportedOperationException exception) {
+			if (cacheFile.exists()) {
+				return cacheFile;
+			}
+
+			return null;
 		}
 	}
 
@@ -602,10 +539,10 @@ public class MirrorsGetTask extends Task {
 
 		File mirrorsCacheFile = _getMirrorsCacheFile();
 
-		File mirrorsCacheLinkFile = uniqueLinkFile(mirrorsCacheFile);
-		File mirrorsCacheTempFile = uniqueTempFile(mirrorsCacheFile);
+		File mirrorsCacheLinkFile = _uniqueLinkFile(mirrorsCacheFile);
+		File mirrorsCacheTempFile = _uniqueTempFile(mirrorsCacheFile);
 
-		sweep(mirrorsCacheFile);
+		_sweep(mirrorsCacheFile);
 
 		try {
 			File readFile = null;
@@ -628,7 +565,7 @@ public class MirrorsGetTask extends Task {
 					_deleteFile(mirrorsCacheFile);
 				}
 
-				if (!publish(mirrorsCacheFile, mirrorsCacheTempFile)) {
+				if (!_publish(mirrorsCacheFile, mirrorsCacheTempFile)) {
 					System.out.println(
 						mirrorsCacheFile.getPath() + " was already published.");
 				}
@@ -959,7 +896,7 @@ public class MirrorsGetTask extends Task {
 	private File _getReadFile(
 		File mirrorsCacheFile, File mirrorsCacheLinkFile) {
 
-		File readFile = createReadLink(mirrorsCacheFile, mirrorsCacheLinkFile);
+		File readFile = _createReadLink(mirrorsCacheFile, mirrorsCacheLinkFile);
 
 		if (mirrorsCacheFile.equals(readFile)) {
 			StringBuilder sb = new StringBuilder();
@@ -1360,6 +1297,26 @@ public class MirrorsGetTask extends Task {
 		return urlConnection;
 	}
 
+	private boolean _publish(File cacheFile, File tempFile)
+		throws IOException {
+
+		try {
+			Files.createLink(cacheFile.toPath(), tempFile.toPath());
+
+			return true;
+		}
+		catch (FileAlreadyExistsException fileAlreadyExistsException) {
+			return false;
+		}
+		catch (IOException | UnsupportedOperationException exception) {
+			if (cacheFile.exists()) {
+				return false;
+			}
+
+			return _publishByRename(cacheFile, tempFile);
+		}
+	}
+
 	private boolean _publishByRename(File cacheFile, File tempFile)
 		throws IOException {
 
@@ -1380,6 +1337,39 @@ public class MirrorsGetTask extends Task {
 		sb.append(".");
 
 		throw new IOException(sb.toString());
+	}
+
+	private void _sweep(File cacheFile) {
+		File parentFile = cacheFile.getParentFile();
+
+		if (parentFile == null) {
+			return;
+		}
+
+		File[] files = parentFile.listFiles();
+
+		if (files == null) {
+			return;
+		}
+
+		Pattern pattern = _getOrphanPattern(cacheFile.getName());
+		long thresholdTime = System.currentTimeMillis() - _MAX_AGE_MILLIS;
+
+		for (File file : files) {
+			Matcher matcher = pattern.matcher(file.getName());
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			long time = Long.parseLong(matcher.group("timestamp"));
+
+			if (time > thresholdTime) {
+				continue;
+			}
+
+			file.delete();
+		}
 	}
 
 	private int _toFile(URL url, File file) throws IOException {
@@ -1482,7 +1472,17 @@ public class MirrorsGetTask extends Task {
 		return new File(cacheFile.getParentFile(), sb.toString());
 	}
 
+	private File _uniqueLinkFile(File cacheFile) {
+		return _uniqueFile(cacheFile, _LINK_MARKER);
+	}
+
+	private File _uniqueTempFile(File cacheFile) {
+		return _uniqueFile(cacheFile, "");
+	}
+
 	private static final String _LINK_MARKER = "link";
+
+	private static final long _MAX_AGE_MILLIS = 24 * 60 * 60 * 1000;
 
 	private static final Pattern _basicAuthenticationURLPattern =
 		Pattern.compile("(https?://)([^:]+):([^@]+)@(.+)");
