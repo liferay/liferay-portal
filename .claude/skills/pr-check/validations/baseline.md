@@ -89,7 +89,7 @@ A newly exported package needs its own `packageinfo`, so a diff adding the packa
 
 ## Autocommit
 
-**Minor or micro only, and only when the run produced nothing else.** Stage those files and commit them, resolving `<TICKET>` from the branch name the way [commit.md](../../../rules/commit.md) does. `${paths}` is the classified subset from the Interpretation step, one path per line — not a rescan of `git status`, which would sweep in the findings below:
+**A module the branch changed, a minor or micro rise, and only when the run produced nothing else.** Stage those files and commit them, resolving `<TICKET>` from the branch name the way [commit.md](../../../rules/commit.md) does. `${paths}` is the classified subset from the Interpretation step, one path per line — not a rescan of `git status`, which would sweep in the findings below:
 
 ```bash
 printf '%s\n' "${paths}" | git add --pathspec-from-file=-
@@ -99,7 +99,7 @@ git commit --message "${TICKET} Semantic versioning"
 
 Collect the paths into a variable first, rather than passing the globs to `git add`, which fails when one of them matches nothing. Skip the commit when `${paths}` is empty; `git commit` with nothing staged fails, and there is nothing to record.
 
-Commit a bump owed to a package that this branch never touched under this branch's ticket as well, and report it, since the pull request then carries a semantic versioning fix that its author did not write.
+**Never commit a repair for a module outside the branch diff.** Report it with both versions, restore the file, and name the path restored. The bump belongs to whoever owns that module, every developer who runs the check would otherwise commit another copy of it, and the task rewrites in place, so anything left behind is swept into the next `git add -A` under the wrong ticket.
 
 **Major, lowered, or removed.** Do not commit. Fail this validation and report each one with its file and both versions. Each is a breaking change that the developer has to decide on:
 
