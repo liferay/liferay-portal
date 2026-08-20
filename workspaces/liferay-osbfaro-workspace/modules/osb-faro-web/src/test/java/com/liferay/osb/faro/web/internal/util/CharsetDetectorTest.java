@@ -5,8 +5,6 @@
 
 package com.liferay.osb.faro.web.internal.util;
 
-import com.liferay.portal.test.rule.LiferayUnitTestRule;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -18,19 +16,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * @author Alejo Ceballos
  */
 public class CharsetDetectorTest {
-
-	@ClassRule
-	@Rule
-	public static final LiferayUnitTestRule liferayUnitTestRule =
-		LiferayUnitTestRule.INSTANCE;
 
 	@Test
 	public void testReadUS_ASCII() throws IOException {

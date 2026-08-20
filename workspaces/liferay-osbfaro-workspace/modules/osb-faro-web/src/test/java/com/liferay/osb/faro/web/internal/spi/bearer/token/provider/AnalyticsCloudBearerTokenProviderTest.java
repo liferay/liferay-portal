@@ -5,22 +5,13 @@
 
 package com.liferay.osb.faro.web.internal.spi.bearer.token.provider;
 
-import com.liferay.portal.test.rule.LiferayUnitTestRule;
-
 import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * @author Eudaldo Alonso
  */
 public class AnalyticsCloudBearerTokenProviderTest {
-
-	@ClassRule
-	@Rule
-	public static final LiferayUnitTestRule liferayUnitTestRule =
-		LiferayUnitTestRule.INSTANCE;
 
 	@Test
 	public void testIsValid() {

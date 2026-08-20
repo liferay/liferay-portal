@@ -10,7 +10,6 @@ import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.util.DateUtil;
 import com.liferay.osb.faro.web.internal.context.GroupInfo;
-import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.ws.rs.core.Response;
 
@@ -18,8 +17,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -30,11 +27,6 @@ import org.springframework.test.util.ReflectionTestUtils;
  * @author Eudaldo Alonso
  */
 public class ReportFaroControllerTest {
-
-	@ClassRule
-	@Rule
-	public static final LiferayUnitTestRule liferayUnitTestRule =
-		LiferayUnitTestRule.INSTANCE;
 
 	@Before
 	public void setUp() throws Exception {
