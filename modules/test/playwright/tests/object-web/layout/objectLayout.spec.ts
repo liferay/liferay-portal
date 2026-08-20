@@ -19,6 +19,7 @@ import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {generateFormulaObjectFields} from '../utils/generateFormulaObjectFields';
 import {generateObjectEntryValues} from '../utils/generateObjectEntry';
 import {generateObjectFields} from '../utils/generateObjectFields';
 import {getFreshObjectRelationshipName} from '../utils/getFreshObjectRelationshipName';
@@ -67,42 +68,45 @@ test.describe('Manage custom layouts through object layout tab', () => {
 		).toBeVisible();
 	});
 
-	test('can add a field to the second column of a block', async ({
-		apiHelpers,
-		objectLayoutsPage,
-	}) => {
-		const objectDefinition =
-			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				status: {code: 0},
+	test(
+		'can add a field to the second column of a block',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectLayoutsPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
 			});
 
-		apiHelpers.data.push({
-			id: objectDefinition.id,
-			type: 'objectDefinition',
-		});
+			await objectLayoutsPage.goto(objectDefinition.name);
 
-		await objectLayoutsPage.goto(objectDefinition.name);
+			const objectLayoutName = getRandomString();
 
-		const objectLayoutName = getRandomString();
+			await objectLayoutsPage.createObjectLayout(objectLayoutName);
 
-		await objectLayoutsPage.createObjectLayout(objectLayoutName);
+			await objectLayoutsPage.openObjectLayoutConfiguration(
+				objectLayoutName
+			);
 
-		await objectLayoutsPage.openObjectLayoutConfiguration(objectLayoutName);
+			await objectLayoutsPage.createObjectLayoutTab(getRandomString());
 
-		await objectLayoutsPage.createObjectLayoutTab(getRandomString());
+			await objectLayoutsPage.createObjectLayoutBlock({
+				objectLayoutRegularBlockName: getRandomString(),
+			});
 
-		await objectLayoutsPage.createObjectLayoutBlock({
-			objectLayoutRegularBlockName: getRandomString(),
-		});
+			await objectLayoutsPage.openObjectLayoutObjectField();
 
-		await objectLayoutsPage.openObjectLayoutObjectField();
+			await objectLayoutsPage.addObjectLayoutObjectField('textField', 2);
 
-		await objectLayoutsPage.addObjectLayoutObjectField('textField', 2);
-
-		await expect(
-			objectLayoutsPage.layoutTabPanel.getByText('textField')
-		).toBeVisible();
-	});
+			await expect(
+				objectLayoutsPage.layoutTabPanel.getByText('textField')
+			).toBeVisible();
+		}
+	);
 
 	test('can add a field to the third column of a block', async ({
 		apiHelpers,
@@ -826,66 +830,69 @@ test.describe('Manage custom layouts through object layout tab', () => {
 		}
 	);
 
-	test("can update a layout's name", async ({
-		apiHelpers,
-		objectLayoutsPage,
-		page,
-	}) => {
-		const objectDefinition =
-			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				status: {code: 0},
+	test(
+		"can update a layout's name",
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectLayoutsPage, page}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
 			});
 
-		apiHelpers.data.push({
-			id: objectDefinition.id,
-			type: 'objectDefinition',
-		});
+			await objectLayoutsPage.goto(objectDefinition.name);
 
-		await objectLayoutsPage.goto(objectDefinition.name);
+			const objectLayoutName = getRandomString();
 
-		const objectLayoutName = getRandomString();
+			await objectLayoutsPage.createObjectLayout(objectLayoutName);
 
-		await objectLayoutsPage.createObjectLayout(objectLayoutName);
+			await objectLayoutsPage.createObjectLayoutContent({
+				objectFieldNames: ['textField'],
+				objectLayoutName,
+				objectLayoutRegularBlockName: getRandomString(),
+				objectLayoutTabName: getRandomString(),
+			});
 
-		await objectLayoutsPage.createObjectLayoutContent({
-			objectFieldNames: ['textField'],
-			objectLayoutName,
-			objectLayoutRegularBlockName: getRandomString(),
-			objectLayoutTabName: getRandomString(),
-		});
+			await objectLayoutsPage.setObjectLayoutAsDefault();
 
-		await objectLayoutsPage.setObjectLayoutAsDefault();
+			await objectLayoutsPage.iframeLocator
+				.getByRole('button', {name: 'Save'})
+				.first()
+				.click();
 
-		await objectLayoutsPage.iframeLocator
-			.getByRole('button', {name: 'Save'})
-			.first()
-			.click();
+			await waitForAlert(
+				page,
+				'The object layout was updated successfully'
+			);
 
-		await waitForAlert(page, 'The object layout was updated successfully');
+			await page.getByRole('link', {name: objectLayoutName}).click();
 
-		await page.getByRole('link', {name: objectLayoutName}).click();
+			await objectLayoutsPage.iframeLocator
+				.getByRole('tab', {name: 'Info'})
+				.click();
 
-		await objectLayoutsPage.iframeLocator
-			.getByRole('tab', {name: 'Info'})
-			.click();
+			const updatedObjectLayoutName = getRandomString();
 
-		const updatedObjectLayoutName = getRandomString();
+			await objectLayoutsPage.layoutInfoNameInput.fill(
+				updatedObjectLayoutName
+			);
 
-		await objectLayoutsPage.iframeLocator
-			.getByRole('textbox')
-			.fill(updatedObjectLayoutName);
+			await objectLayoutsPage.iframeLocator
+				.getByRole('button', {name: 'Save'})
+				.first()
+				.click();
 
-		await objectLayoutsPage.iframeLocator
-			.getByRole('button', {name: 'Save'})
-			.first()
-			.click();
+			await expect(
+				page.getByText(updatedObjectLayoutName).first()
+			).toBeVisible();
 
-		await waitForAlert(page, 'The object layout was updated successfully');
-
-		await expect(
-			page.getByText(updatedObjectLayoutName).first()
-		).toBeVisible();
-	});
+			await expect(page.getByText(objectLayoutName)).toHaveCount(0);
+		}
+	);
 
 	test('can update an entry on the relationship tab with update permission', async ({
 		apiHelpers,
@@ -1051,6 +1058,85 @@ test.describe('Manage custom layouts through object layout tab', () => {
 		).toBeVisible();
 	});
 
+	test(
+		'can view a formula field value on a custom layout',
+		{tag: '@LPD-102828'},
+		async ({
+			apiHelpers,
+			objectLayoutsPage,
+			page,
+			viewObjectEntriesPage,
+		}) => {
+			const {
+				firstObjectField,
+				formulaObjectField,
+				objectFields,
+				secondObjectField,
+			} = generateFormulaObjectFields({
+				objectFieldBusinessType: 'Decimal',
+				operator: '+',
+				output: 'Decimal',
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await objectLayoutsPage.goto(objectDefinition.name);
+
+			const objectLayoutName = getRandomString();
+
+			await objectLayoutsPage.createObjectLayout(objectLayoutName);
+
+			await objectLayoutsPage.openObjectLayoutConfiguration(
+				objectLayoutName
+			);
+
+			await objectLayoutsPage.setObjectLayoutAsDefault();
+
+			await objectLayoutsPage.layoutTab.click();
+
+			await objectLayoutsPage.createObjectLayoutTab(getRandomString());
+
+			await objectLayoutsPage.createObjectLayoutBlock({
+				objectLayoutRegularBlockName: getRandomString(),
+			});
+
+			for (const {label} of objectFields) {
+				await objectLayoutsPage.openObjectLayoutObjectField();
+
+				await objectLayoutsPage.addObjectLayoutObjectField(label.en_US);
+			}
+
+			await objectLayoutsPage.saveUpdateLayoutButton.click();
+
+			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					[firstObjectField.name as string]: 1234,
+					[secondObjectField.name as string]: 4321,
+				},
+				'c/' + objectDefinition.name.toLowerCase() + 's'
+			);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await page
+				.getByRole('link', {name: String(objectEntry.id)})
+				.click();
+
+			await expect(
+				page.getByLabel(formulaObjectField.label.en_US)
+			).toHaveValue('5555');
+		}
+	);
+
 	test('can view all fields of an object when creating its layout', async ({
 		apiHelpers,
 		objectLayoutsPage,
@@ -1173,6 +1259,46 @@ test.describe('Manage custom layouts through object layout tab', () => {
 			await expect(page.getByLabel('textField')).toBeVisible();
 		});
 	});
+
+	test(
+		'cannot add a field to a block when no field is selected',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectLayoutsPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await objectLayoutsPage.goto(objectDefinition.name);
+
+			const objectLayoutName = getRandomString();
+
+			await objectLayoutsPage.createObjectLayout(objectLayoutName);
+
+			await objectLayoutsPage.openObjectLayoutConfiguration(
+				objectLayoutName
+			);
+
+			await objectLayoutsPage.createObjectLayoutTab(getRandomString());
+
+			await objectLayoutsPage.createObjectLayoutBlock({
+				objectLayoutRegularBlockName: getRandomString(),
+			});
+
+			await objectLayoutsPage.addField.click();
+
+			await objectLayoutsPage.saveAddFieldButton.click();
+
+			await expect(
+				objectLayoutsPage.iframeLocator.getByText('Required')
+			).toBeVisible();
+		}
+	);
 
 	test('cannot add a Relationship tab as the first tab', async ({
 		apiHelpers,
