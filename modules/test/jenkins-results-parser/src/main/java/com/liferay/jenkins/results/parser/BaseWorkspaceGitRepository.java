@@ -253,11 +253,11 @@ public abstract class BaseWorkspaceGitRepository
 	public List<List<LocalGitCommit>> partitionLocalGitCommits(
 		List<LocalGitCommit> localGitCommits, int count) {
 
-		if (count <= 0) {
+		if (count <= 1) {
 			throw new IllegalArgumentException("Invalid count " + count);
 		}
 
-		if ((localGitCommits == null) || localGitCommits.isEmpty()) {
+		if (localGitCommits == null) {
 			return Collections.emptyList();
 		}
 
@@ -278,14 +278,13 @@ public abstract class BaseWorkspaceGitRepository
 		List<List<LocalGitCommit>> partitionedLocalGitCommits = new ArrayList<>(
 			count);
 
-		LocalGitCommit lastLocalGitCommit = localGitCommits.remove(
-			localGitCommits.size() - 1);
+		LocalGitCommit lastLocalGitCommit = localGitCommits.get(
+			localGitCommitsSize - 1);
 
-		if (!localGitCommits.isEmpty()) {
-			partitionedLocalGitCommits.addAll(
-				JenkinsResultsParserUtil.partitionByCount(
-					localGitCommits, count - 1));
-		}
+		partitionedLocalGitCommits.addAll(
+			JenkinsResultsParserUtil.partitionByCount(
+				localGitCommits.subList(0, localGitCommitsSize - 1),
+				count - 1));
 
 		partitionedLocalGitCommits.add(Lists.newArrayList(lastLocalGitCommit));
 
