@@ -10,12 +10,12 @@ tests:
                     count: 10
             -   documentIndex: 6
                 equal:
-                    path: spec.package
-                    value: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.9.0
-            -   documentIndex: 7
-                equal:
                     path: spec.deploymentTemplate.spec.template.spec.containers[0].resources.limits.memory
                     value: 256Mi
+            -   documentIndex: 7
+                equal:
+                    path: spec.package
+                    value: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.9.0
         it: Appends additional cloud specific functions
         set:
             operatorApplications:
@@ -40,84 +40,84 @@ tests:
                     count: 8
             -   documentIndex: 0
                 isKind:
-                    of: Function
-            -   documentIndex: 0
-                equal:
-                    path: metadata.annotations["argocd.argoproj.io/sync-options"]
-                    value: SkipDryRunOnMissingResource=true
-            -   documentIndex: 0
-                equal:
-                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-                    value: "-90"
-            -   documentIndex: 0
-                equal:
-                    path: metadata.name
-                    value: function-auto-ready
-            -   documentIndex: 0
-                equal:
-                    path: spec.package
-                    value: xpkg.upbound.io/upbound/function-auto-ready:v0.6.0
-            -   documentIndex: 0
-                equal:
-                    path: spec.runtimeConfigRef.name
-                    value: function-auto-ready-runtime-config
-            -   documentIndex: 1
-                isKind:
                     of: DeploymentRuntimeConfig
-            -   documentIndex: 1
+            -   documentIndex: 0
                 equal:
                     path: metadata.name
                     value: function-auto-ready-runtime-config
-            -   documentIndex: 1
+            -   documentIndex: 0
                 equal:
                     path: spec.deploymentTemplate.spec.selector.matchLabels["pkg.crossplane.io/function"]
                     value: function-auto-ready
-            -   documentIndex: 1
+            -   documentIndex: 0
                 equal:
                     path: spec.deploymentTemplate.spec.template.metadata.annotations["sidecar.opentelemetry.io/inject"]
                     value: "false"
-            -   documentIndex: 1
+            -   documentIndex: 0
                 equal:
                     path: spec.deploymentTemplate.spec.template.spec.containers[0].resources.limits.memory
                     value: 256Mi
-            -   documentIndex: 1
+            -   documentIndex: 0
                 equal:
                     path: spec.deploymentTemplate.spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
                     value: true
-            -   documentIndex: 1
+            -   documentIndex: 0
                 equal:
                     path: spec.deploymentTemplate.spec.template.spec.containers[0].securityContext.runAsUser
                     value: 65532
-            -   documentIndex: 1
+            -   documentIndex: 0
                 equal:
                     path: spec.deploymentTemplate.spec.template.spec.securityContext.runAsNonRoot
                     value: true
-            -   documentIndex: 2
+            -   documentIndex: 1
+                isKind:
+                    of: Function
+            -   documentIndex: 1
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-options"]
+                    value: SkipDryRunOnMissingResource=true
+            -   documentIndex: 1
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-90"
+            -   documentIndex: 1
+                equal:
+                    path: metadata.name
+                    value: function-auto-ready
+            -   documentIndex: 1
                 equal:
                     path: spec.package
-                    value: xpkg.upbound.io/crossplane-contrib/function-environment-configs:v0.6.0
-            -   documentIndex: 3
+                    value: xpkg.upbound.io/upbound/function-auto-ready:v0.6.0
+            -   documentIndex: 1
+                equal:
+                    path: spec.runtimeConfigRef.name
+                    value: function-auto-ready-runtime-config
+            -   documentIndex: 2
                 equal:
                     path: metadata.name
                     value: function-environment-configs-runtime-config
-            -   documentIndex: 4
+            -   documentIndex: 3
                 equal:
                     path: spec.package
-                    value: xpkg.upbound.io/crossplane-contrib/function-go-templating:v0.11.3
-            -   documentIndex: 5
+                    value: xpkg.upbound.io/crossplane-contrib/function-environment-configs:v0.6.0
+            -   documentIndex: 4
                 equal:
                     path: metadata.name
                     value: function-go-templating-runtime-config
-            -   documentIndex: 5
+            -   documentIndex: 4
                 equal:
                     path: spec.deploymentTemplate.spec.template.spec.containers[0].resources.limits.memory
                     value: 512Mi
-            -   documentIndex: 6
+            -   documentIndex: 5
                 equal:
                     path: spec.package
-                    value: xpkg.upbound.io/crossplane-contrib/function-tag-manager:v0.6.0
-            -   documentIndex: 7
+                    value: xpkg.upbound.io/crossplane-contrib/function-go-templating:v0.11.3
+            -   documentIndex: 6
                 equal:
                     path: metadata.name
                     value: function-tag-manager-runtime-config
+            -   documentIndex: 7
+                equal:
+                    path: spec.package
+                    value: xpkg.upbound.io/crossplane-contrib/function-tag-manager:v0.6.0
         it: Renders the default functions with hardened runtime configs

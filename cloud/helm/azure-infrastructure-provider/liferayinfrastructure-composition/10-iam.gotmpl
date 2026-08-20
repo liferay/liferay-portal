@@ -1,26 +1,30 @@
 {{- $identityName := printf "%s-identity" $xr.metadata.name }}
 {{- $identityPrincipalId := dig "liferay-identity" "resource" "status" "atProvider" "principalId" "" $observedResources }}
 
-apiVersion: managedidentity.azure.m.upbound.io/v1beta1
-kind: UserAssignedIdentity
+{{- if $identityPrincipalId }}
+{{- range $dataPlane := $dataPlanes }}
+apiVersion: authorization.azure.m.upbound.io/v1beta1
+kind: RoleAssignment
 metadata:
     annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: liferay-identity
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-storage-role-assignment-{{ $dataPlane }}
     labels:
         {{- $tags | toYaml | nindent 8 }}
-    name: {{ $identityName }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $xr.metadata.name }}-storage-{{ $dataPlane }}
 spec:
     forProvider:
-        location: {{ $region }}
-        name: {{ $identityName }}
-        resourceGroupName: {{ $env.resourceGroupName }}
-        tags:
-            {{- $tags | toYaml | nindent 12 }}
+        principalId: {{ $identityPrincipalId }}
+        principalType: ServicePrincipal
+        roleDefinitionName: Storage Blob Data Contributor
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.Storage/storageAccounts/{{ $storageAccountBase }}{{ trunc 1 $dataPlane }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
         kind: ClusterProviderConfig
         name: iam
 ---
+{{- end }}
+{{- end }}
 apiVersion: managedidentity.azure.m.upbound.io/v1beta1
 kind: FederatedIdentityCredential
 metadata:
@@ -42,27 +46,23 @@ spec:
     providerConfigRef:
         kind: ClusterProviderConfig
         name: iam
-{{- if $identityPrincipalId }}
-{{- range $dataPlane := $dataPlanes }}
 ---
-apiVersion: authorization.azure.m.upbound.io/v1beta1
-kind: RoleAssignment
+apiVersion: managedidentity.azure.m.upbound.io/v1beta1
+kind: UserAssignedIdentity
 metadata:
     annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: liferay-storage-role-assignment-{{ $dataPlane }}
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-identity
     labels:
         {{- $tags | toYaml | nindent 8 }}
-        dataPlane: {{ $dataPlane }}
-    name: {{ $xr.metadata.name }}-storage-{{ $dataPlane }}
+    name: {{ $identityName }}
 spec:
     forProvider:
-        principalId: {{ $identityPrincipalId }}
-        principalType: ServicePrincipal
-        roleDefinitionName: Storage Blob Data Contributor
-        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.Storage/storageAccounts/{{ $storageAccountBase }}{{ trunc 1 $dataPlane }}
+        location: {{ $region }}
+        name: {{ $identityName }}
+        resourceGroupName: {{ $env.resourceGroupName }}
+        tags:
+            {{- $tags | toYaml | nindent 12 }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
         kind: ClusterProviderConfig
         name: iam
-{{- end }}
-{{- end }}

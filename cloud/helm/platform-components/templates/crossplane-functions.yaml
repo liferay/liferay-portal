@@ -2,21 +2,6 @@
 {{- range $name, $function := .Values.operatorApplications.crossplane.functions }}
 ---
 apiVersion: pkg.crossplane.io/v1beta1
-kind: Function
-metadata:
-    annotations:
-        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-        argocd.argoproj.io/sync-wave: "-90"
-    labels:
-        {{- include "liferay-platform.labels" $ | nindent 8 }}
-        app.kubernetes.io/name: {{ $name }}
-    name: {{ $name }}
-spec:
-    package: {{ $function.package }}
-    runtimeConfigRef:
-        name: {{ $name }}-runtime-config
----
-apiVersion: pkg.crossplane.io/v1beta1
 kind: DeploymentRuntimeConfig
 metadata:
     annotations:
@@ -56,5 +41,20 @@ spec:
                         runAsNonRoot: true
                         seccompProfile:
                             type: RuntimeDefault
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: Function
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $name }}
+    name: {{ $name }}
+spec:
+    package: {{ $function.package }}
+    runtimeConfigRef:
+        name: {{ $name }}-runtime-config
 {{- end }}
 {{- end }}
