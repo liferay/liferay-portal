@@ -25,6 +25,10 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -33,6 +37,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -212,6 +217,93 @@ public class MirrorsGetTask extends Task {
 	public void setVerbose(boolean verbose) {
 		_verbose = verbose;
 	}
+
+	protected File createReadLink(File cacheFile, File linkFile) {
+		Path cacheFilePath = cacheFile.toPath();
+		Path linkFilePath = linkFile.toPath();
+
+		try {
+			Files.createLink(linkFilePath, cacheFilePath);
+
+			return linkFile;
+		}
+		catch (NoSuchFileException noSuchFileException) {
+			return null;
+		}
+		catch (IOException | UnsupportedOperationException exception) {
+			if (cacheFile.exists()) {
+				return cacheFile;
+			}
+
+			return null;
+		}
+	}
+
+	protected boolean publish(File tempFile, File cacheFile)
+		throws IOException {
+
+		Path cacheFilePath = cacheFile.toPath();
+		Path tempFilePath = tempFile.toPath();
+
+		try {
+			Files.createLink(cacheFilePath, tempFilePath);
+
+			return true;
+		}
+		catch (FileAlreadyExistsException fileAlreadyExistsException) {
+			return false;
+		}
+		catch (IOException | UnsupportedOperationException exception) {
+			if (cacheFile.exists()) {
+				return false;
+			}
+
+			return _publishByRename(tempFile, cacheFile);
+		}
+	}
+
+	protected void sweep(File cacheFile) {
+		File parentFile = cacheFile.getParentFile();
+
+		if (parentFile == null) {
+			return;
+		}
+
+		File[] files = parentFile.listFiles();
+
+		if (files == null) {
+			return;
+		}
+
+		Pattern pattern = _getOrphanPattern(cacheFile.getName());
+		long thresholdTime = System.currentTimeMillis() - MAX_AGE_MILLIS;
+
+		for (File file : files) {
+			Matcher matcher = pattern.matcher(file.getName());
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			long time = Long.parseLong(matcher.group("timestamp"));
+
+			if (time > thresholdTime) {
+				continue;
+			}
+
+			file.delete();
+		}
+	}
+
+	protected File uniqueLinkFile(File cacheFile) {
+		return _uniqueFile(cacheFile, _LINK_MARKER);
+	}
+
+	protected File uniqueTempFile(File cacheFile) {
+		return _uniqueFile(cacheFile, "");
+	}
+
+	protected static final long MAX_AGE_MILLIS = 24 * 60 * 60 * 1000;
 
 	private void _copyFile(File sourceFile, File targetFile)
 		throws IOException {
@@ -411,6 +503,83 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
+	private void _downloadMirrorsCacheTempFile(File mirrorsCacheTempFile)
+		throws IOException {
+
+		if (_tryLocalNetwork) {
+			File mirrorsMountFile = _getMirrorsMountFile();
+
+			if (mirrorsMountFile.isFile()) {
+				try {
+					_copyFile(mirrorsMountFile, mirrorsCacheTempFile);
+				}
+				catch (IOException ioException) {
+					_deleteFile(mirrorsCacheTempFile);
+
+					if (_verbose) {
+						System.out.println(
+							"Unable to copy from mirrors mount " +
+								mirrorsMountFile.getPath() + ".");
+					}
+				}
+			}
+		}
+
+		if (_isValidTempFile(mirrorsCacheTempFile)) {
+			return;
+		}
+
+		List<URL> urls = new ArrayList<>();
+
+		if (_tryLocalNetwork) {
+			String mirrorsHostname = _getMirrorsHostname();
+			URL nexusTomcatURL = _getNexusTomcatURL();
+
+			if (nexusTomcatURL != null) {
+				urls.add(nexusTomcatURL);
+			}
+			else if (!mirrorsHostname.isEmpty()) {
+				urls.add(_getMirrorsURL());
+			}
+		}
+
+		urls.add(_getLocalURL());
+
+		urls.removeAll(Collections.singleton(null));
+
+		for (URL url : urls) {
+			try {
+				_downloadFile(url, mirrorsCacheTempFile, _retries);
+			}
+			catch (IOException ioException) {
+				if (_verbose) {
+					System.out.println("Unable to connect to " + url + ".");
+				}
+			}
+
+			if (mirrorsCacheTempFile.exists()) {
+				return;
+			}
+		}
+
+		_downloadGCPFile(mirrorsCacheTempFile);
+
+		if (_isValidTempFile(mirrorsCacheTempFile)) {
+			return;
+		}
+
+		URL remoteURL = _getRemoteURL();
+
+		try {
+			_downloadFile(remoteURL, mirrorsCacheTempFile, _retries);
+		}
+		catch (IOException ioException) {
+			_deleteFile(mirrorsCacheTempFile);
+
+			throw ioException;
+		}
+	}
+
 	private void _execute() throws IOException {
 		if (_src.startsWith("file:")) {
 			File srcFile = new File(_src.substring("file:".length()));
@@ -440,112 +609,64 @@ public class MirrorsGetTask extends Task {
 
 		File mirrorsCacheFile = _getMirrorsCacheFile();
 
-		File mirrorsCacheTempFile = new File(
-			mirrorsCacheFile.getParentFile(),
-			System.currentTimeMillis() + mirrorsCacheFile.getName());
+		File mirrorsCacheLinkFile = uniqueLinkFile(mirrorsCacheFile);
+		File mirrorsCacheTempFile = uniqueTempFile(mirrorsCacheFile);
 
-		if (mirrorsCacheFile.exists() && !_force) {
-			if (_is7zFileName(_fileName)) {
-				_force = !_is7zFile(mirrorsCacheFile);
-			}
-			else if (_isTarGzFileName(_fileName)) {
-				_force = !_isTarGzFile(mirrorsCacheFile);
-			}
-			else if (_isZipFileName(_fileName)) {
-				_force = !_isZipFile(mirrorsCacheFile);
-			}
-		}
+		sweep(mirrorsCacheFile);
 
-		if (mirrorsCacheFile.exists() && _force) {
-			_deleteFile(mirrorsCacheFile);
-		}
+		try {
+			File readFile = null;
 
-		if (mirrorsCacheTempFile.exists()) {
-			_deleteFile(mirrorsCacheTempFile);
-		}
+			if (!_force) {
+				readFile = _getReadFile(mirrorsCacheFile, mirrorsCacheLinkFile);
 
-		if (!mirrorsCacheFile.exists()) {
-			if (_tryLocalNetwork) {
-				File mirrorsMountFile = _getMirrorsMountFile();
+				if ((readFile != null) && !_isValidFile(readFile)) {
+					_deleteFile(mirrorsCacheFile);
+					_deleteFile(mirrorsCacheLinkFile);
 
-				if (mirrorsMountFile.isFile()) {
-					try {
-						_copyFile(mirrorsMountFile, mirrorsCacheTempFile);
-					}
-					catch (IOException ioException) {
-						_deleteFile(mirrorsCacheTempFile);
-
-						if (_verbose) {
-							System.out.println(
-								"Unable to copy from mirrors mount " +
-									mirrorsMountFile.getPath() + ".");
-						}
-					}
+					readFile = null;
 				}
 			}
 
-			if (!mirrorsCacheTempFile.exists()) {
-				List<URL> urls = new ArrayList<>();
+			if (readFile == null) {
+				_downloadMirrorsCacheTempFile(mirrorsCacheTempFile);
 
-				if (_tryLocalNetwork) {
-					String mirrorsHostname = _getMirrorsHostname();
-					URL nexusTomcatURL = _getNexusTomcatURL();
-
-					if (nexusTomcatURL != null) {
-						urls.add(nexusTomcatURL);
-					}
-					else if (!mirrorsHostname.isEmpty()) {
-						urls.add(_getMirrorsURL());
-					}
+				if (_force) {
+					_deleteFile(mirrorsCacheFile);
 				}
 
-				urls.add(_getLocalURL());
-
-				urls.removeAll(Collections.singleton(null));
-
-				for (URL url : urls) {
-					try {
-						_downloadFile(url, mirrorsCacheTempFile, _retries);
-					}
-					catch (IOException ioException) {
-						if (_verbose) {
-							System.out.println(
-								"Unable to connect to " + url + ".");
-						}
-					}
-
+				if (publish(mirrorsCacheTempFile, mirrorsCacheFile)) {
 					if (mirrorsCacheTempFile.exists()) {
-						break;
+						readFile = mirrorsCacheTempFile;
+					}
+					else {
+						readFile = mirrorsCacheFile;
 					}
 				}
+				else {
+					System.out.println(
+						mirrorsCacheFile.getPath() +
+							" was already published by another process.");
 
-				if (!mirrorsCacheTempFile.exists()) {
-					_downloadGCPFile(mirrorsCacheTempFile);
+					readFile = _getReadFile(
+						mirrorsCacheFile, mirrorsCacheLinkFile);
 
-					if (!mirrorsCacheTempFile.exists()) {
-						URL remoteURL = _getRemoteURL();
-
-						try {
-							_downloadFile(
-								remoteURL, mirrorsCacheTempFile, _retries);
-						}
-						catch (IOException ioException) {
-							_deleteFile(mirrorsCacheTempFile);
-
-							throw ioException;
-						}
+					if (readFile == null) {
+						readFile = mirrorsCacheTempFile;
 					}
 				}
 			}
 
-			_moveFile(mirrorsCacheTempFile, mirrorsCacheFile);
+			if (_dest.exists() && _dest.isDirectory()) {
+				_copyFile(readFile, new File(_dest, _fileName));
+			}
+			else {
+				_copyFile(readFile, _dest);
+			}
 		}
-
-		if (_dest.exists() && _dest.isDirectory()) {
-			_copyFile(mirrorsCacheFile, new File(_dest, _fileName));
-		}
-		else {
-			_copyFile(mirrorsCacheFile, _dest);
+		finally {
+			_deleteFile(mirrorsCacheLinkFile);
+			_deleteFile(mirrorsCacheTempFile);
 		}
 	}
 
@@ -776,6 +897,17 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
+	private Pattern _getOrphanPattern(String fileName) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("(?<timestamp>\\d{13,18})(-[0-9a-fA-F-]{36}(-");
+		sb.append(_LINK_MARKER);
+		sb.append(")?-)?");
+		sb.append(Pattern.quote(fileName));
+
+		return Pattern.compile(sb.toString());
+	}
+
 	private String _getPassword() {
 		if (_password != null) {
 			return _password;
@@ -838,6 +970,25 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return processOutput.toString();
+	}
+
+	private File _getReadFile(
+		File mirrorsCacheFile, File mirrorsCacheLinkFile) {
+
+		File readFile = createReadLink(mirrorsCacheFile, mirrorsCacheLinkFile);
+
+		if (mirrorsCacheFile.equals(readFile)) {
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Unable to link ");
+			sb.append(mirrorsCacheFile.getPath());
+			sb.append(". Reading it directly is not safe when the mirrors ");
+			sb.append("cache is shared.");
+
+			System.out.println(sb.toString());
+		}
+
+		return readFile;
 	}
 
 	private URL _getRemoteURL() {
@@ -1042,6 +1193,22 @@ public class MirrorsGetTask extends Task {
 		return false;
 	}
 
+	private boolean _isValidFile(File file) throws IOException {
+		if (_is7zFileName(_fileName)) {
+			return _is7zFile(file);
+		}
+
+		if (_isTarGzFileName(_fileName)) {
+			return _isTarGzFile(file);
+		}
+
+		if (_isZipFileName(_fileName)) {
+			return _isZipFile(file);
+		}
+
+		return true;
+	}
+
 	private boolean _isValidMD5(File file, URL url) throws IOException {
 		if (_skipChecksum) {
 			return true;
@@ -1078,6 +1245,20 @@ public class MirrorsGetTask extends Task {
 		String localMD5 = project.getProperty("md5");
 
 		return remoteMD5.contains(localMD5);
+	}
+
+	private boolean _isValidTempFile(File file) throws IOException {
+		if (!file.exists()) {
+			return false;
+		}
+
+		if (_isValidFile(file)) {
+			return true;
+		}
+
+		_deleteFile(file);
+
+		return false;
 	}
 
 	private boolean _isZipFile(File file) throws IOException {
@@ -1131,20 +1312,6 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return false;
-	}
-
-	private void _moveFile(File sourceFile, File destFile) throws IOException {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("Moving ");
-		sb.append(sourceFile.getPath());
-		sb.append(" to ");
-		sb.append(destFile.getPath());
-		sb.append(".");
-
-		System.out.println(sb.toString());
-
-		sourceFile.renameTo(destFile);
 	}
 
 	private String _normalizePath(String path) {
@@ -1207,6 +1374,28 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return urlConnection;
+	}
+
+	private boolean _publishByRename(File tempFile, File cacheFile)
+		throws IOException {
+
+		if (tempFile.renameTo(cacheFile)) {
+			return true;
+		}
+
+		if (cacheFile.exists()) {
+			return false;
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Unable to publish ");
+		sb.append(tempFile.getPath());
+		sb.append(" to ");
+		sb.append(cacheFile.getPath());
+		sb.append(".");
+
+		throw new IOException(sb.toString());
 	}
 
 	private int _toFile(URL url, File file) throws IOException {
@@ -1290,6 +1479,26 @@ public class MirrorsGetTask extends Task {
 			}
 		}
 	}
+
+	private File _uniqueFile(File cacheFile, String marker) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(System.currentTimeMillis());
+		sb.append("-");
+		sb.append(UUID.randomUUID());
+		sb.append("-");
+
+		if (!marker.isEmpty()) {
+			sb.append(marker);
+			sb.append("-");
+		}
+
+		sb.append(cacheFile.getName());
+
+		return new File(cacheFile.getParentFile(), sb.toString());
+	}
+
+	private static final String _LINK_MARKER = "link";
 
 	private static final Pattern _basicAuthenticationURLPattern =
 		Pattern.compile("(https?://)([^:]+):([^@]+)@(.+)");
