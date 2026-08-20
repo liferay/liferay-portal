@@ -76,7 +76,6 @@ public class BrokenLinkAssetResourceTest
 		_testGetBrokenLinkAssetsPage(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
-
 		_testGetBrokenLinkAssetsPageWithDuplicateTitles();
 	}
 
@@ -272,7 +271,6 @@ public class BrokenLinkAssetResourceTest
 
 		ObjectDefinition objectDefinition =
 			_getBasicWebContentObjectDefinition();
-
 		StringBundler sb = new StringBundler(targetTitles.length);
 
 		for (String targetTitle : targetTitles) {
