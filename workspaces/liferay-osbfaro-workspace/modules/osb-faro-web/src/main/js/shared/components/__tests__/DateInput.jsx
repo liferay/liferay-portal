@@ -40,4 +40,21 @@ describe('DateInput', () => {
 
 		expect(getByDisplayValue('1970 01 01 00:00')).toBeTruthy();
 	});
+
+	// An empty value must read as empty so the mask placeholder shows, rather
+	// than as moment's "Invalid date" string.
+
+	it('should render an empty value as empty when a displayFormat is set', () => {
+		const {getByTestId} = render(
+			<WrapperComponent>
+				<DateInput
+					displayFormat='MMM D, YYYY'
+					onDateInputChange={jest.fn()}
+					value=''
+				/>
+			</WrapperComponent>
+		);
+
+		expect(getByTestId('date-input').value).toBe('');
+	});
 });

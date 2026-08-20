@@ -66,26 +66,21 @@ const DateInput: React.FC<IDateInputProps> = ({
 		}
 	};
 
+	const date = showTimeSelector
+		? applyTimeZone(value, timeZoneId)
+		: moment(value, format);
+
+	// The displayed text and the calendar highlight read the same parse, so an
+	// empty value leaves the mask placeholder visible on both instead of
+	// rendering moment's "Invalid date" string.
+
 	const getDateValue = (): string => {
 		if (!displayFormat) {
 			return value;
 		}
 
-		let date = value;
-
-		if (showTimeSelector) {
-			date = applyTimeZone(value, timeZoneId);
-		}
-		else {
-			date = moment(value);
-		}
-
-		return date.format(displayFormat);
+		return date.isValid() ? date.format(displayFormat) : '';
 	};
-
-	const date = showTimeSelector
-		? applyTimeZone(value, timeZoneId)
-		: moment(value, format);
 
 	const retentionPeriod = useRetentionPeriod();
 

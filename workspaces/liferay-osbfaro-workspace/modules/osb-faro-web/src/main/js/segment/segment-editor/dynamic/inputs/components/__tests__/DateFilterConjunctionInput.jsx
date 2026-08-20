@@ -123,6 +123,37 @@ describe('DateFilterConjunctionInput', () => {
 		expect(getByTestId('date-range-input')).toBeTruthy();
 	});
 
+	it('should clear the date when switching from between to a single date operator', () => {
+		const ControlledInput = () => {
+			const [conjunctionCriterion, setConjunctionCriterion] =
+				React.useState({
+					operatorName: FunctionalOperators.Between,
+					propertyName: 'day',
+					touched: false,
+					valid: true,
+					value: {end: '2020-12-20', start: '2020-12-12'}
+				});
+
+			return (
+				<DateFilterConjunctionInput
+					conjunctionCriterion={conjunctionCriterion}
+					onChange={setConjunctionCriterion}
+				/>
+			);
+		};
+
+		const {getByTestId, getByText} = render(
+			<WrapperComponent>
+				<ControlledInput />
+			</WrapperComponent>
+		);
+
+		fireEvent.click(getByText('between'));
+		fireEvent.click(getByText('after'));
+
+		expect(getByTestId('date-input').value).toBe('');
+	});
+
 	it('should emit an ISO date when picking a day for the between operator', () => {
 		const onChange = jest.fn();
 
