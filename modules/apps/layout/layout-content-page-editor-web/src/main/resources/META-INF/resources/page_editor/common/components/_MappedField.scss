@@ -1,0 +1,25 @@
+html#{$cadmin-selector} {
+	.cadmin {
+		.page-editor__mapped-field {
+			.form-control,
+			select.form-control {
+				background-color: $cadmin-pink-l5;
+				border-color: $cadmin-pink-l2;
+
+				&:active,
+				&:focus,
+				&:hover {
+					background-color: $cadmin-pink-l5;
+				}
+			}
+		}
+
+		.page-editor__mapped-field-label {
+			color: $cadmin-pink-d3;
+
+			&__icon {
+				color: $cadmin-pink-d2;
+			}
+		}
+	}
+}
