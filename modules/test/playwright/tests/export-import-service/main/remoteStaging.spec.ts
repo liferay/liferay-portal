@@ -493,11 +493,12 @@ test(
 				await expect(async () => {
 					await expect(contentCheckbox).not.toBeChecked();
 				}).toPass();
-				await contentCheckbox.check();
 
 				await portletStagingPage.publishStagingIframe
 					.getByLabel('Replicate Individual')
 					.check();
+
+				await contentCheckbox.check();
 
 				await portletStagingPage.publishToLive();
 
