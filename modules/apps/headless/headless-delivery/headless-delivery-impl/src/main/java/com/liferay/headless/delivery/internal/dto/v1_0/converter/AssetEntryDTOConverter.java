@@ -13,6 +13,7 @@ import com.liferay.asset.kernel.model.ClassTypeReader;
 import com.liferay.headless.delivery.dto.v1_0.AssetEntry;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -112,7 +113,7 @@ public class AssetEntryDTOConverter
 												getClassName()),
 									serviceBuilderAssetEntry.getClassPK(),
 									serviceBuilderAssetEntry.getClassName(),
-									null);
+									new String[] {RoleConstants.GUEST});
 
 							return permissions.toArray(new Permission[0]);
 						}));
