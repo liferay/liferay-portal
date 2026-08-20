@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -187,11 +188,13 @@ public class MasterLayoutManagementToolbarDisplayContext
 
 	private String _getExportMasterLayoutURL() {
 		LiferayPortletURL exportMasterLayoutURL =
-			(LiferayPortletURL)liferayPortletResponse.createResourceURL();
+			(LiferayPortletURL)ResourceURLBuilder.createResourceURL(
+				liferayPortletResponse
+			).setResourceID(
+				"/layout_page_template_admin/export_master_layouts"
+			).buildResourceURL();
 
 		exportMasterLayoutURL.setCopyCurrentRenderParameters(false);
-		exportMasterLayoutURL.setResourceID(
-			"/layout_page_template_admin/export_master_layouts");
 
 		return exportMasterLayoutURL.toString();
 	}
