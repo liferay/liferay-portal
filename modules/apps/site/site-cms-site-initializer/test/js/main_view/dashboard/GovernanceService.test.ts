@@ -213,3 +213,47 @@ describe('GovernanceService.getCMSEntryClassNames', () => {
 		);
 	});
 });
+
+describe('GovernanceService.getContentProgress', () => {
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
+
+	it('requests the status facet as an empty search', () => {
+		const postSpy = jest
+			.spyOn(ApiHelper, 'post')
+			.mockResolvedValue({data: {}, error: null} as any);
+
+		GovernanceService.getContentProgress('someFilter');
+
+		expect(postSpy).toHaveBeenCalledWith(
+			'/o/search/v1.0/search?filter=someFilter',
+			{
+				attributes: {'search.empty.search': true},
+				facetConfigurations: [
+					{
+						aggregationName: 'statusFacet',
+						attributes: {field: 'status'},
+						frequencyThreshold: 0,
+						maxTerms: 50,
+						name: 'custom',
+					},
+				],
+			}
+		);
+	});
+
+	it('scopes the filter by groupId when a space is given', () => {
+		const postSpy = jest
+			.spyOn(ApiHelper, 'post')
+			.mockResolvedValue({data: {}, error: null} as any);
+
+		GovernanceService.getContentProgress('someFilter', 123);
+
+		const [url] = postSpy.mock.calls[0];
+
+		expect(url).toBe(
+			'/o/search/v1.0/search?filter=someFilter+and+groupIds%2Fany%28g%3Ag+eq+123%29'
+		);
+	});
+});

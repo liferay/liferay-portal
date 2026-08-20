@@ -23,6 +23,13 @@ jest.mock(
 );
 
 jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/components/WorkflowAndContentProgress',
+	() => ({
+		WorkflowAndContentProgress: () => null,
+	})
+);
+
+jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService'
 );
 jest.mock(
