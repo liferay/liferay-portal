@@ -74,8 +74,26 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 					className, externalReferenceCode, _getGroupId(scopeKey)));
 
 		if (Validator.isNotNull(search)) {
-			pimLinkRelatedEntries = _filterBySearch(
-				pimLinkRelatedEntries, search);
+			pimLinkRelatedEntries = transform(
+				pimLinkRelatedEntries,
+				pimLinkRelatedEntry -> {
+					Map<String, Serializable> values =
+						_objectEntryLocalService.getValues(
+							pimLinkRelatedEntry.getObjectEntry());
+
+					String code = StringUtil.toLowerCase(
+						MapUtil.getString(values, "code"));
+					String name = StringUtil.toLowerCase(
+						MapUtil.getString(values, "name"));
+
+					if (code.contains(StringUtil.toLowerCase(search)) ||
+						name.contains(StringUtil.toLowerCase(search))) {
+
+						return pimLinkRelatedEntry;
+					}
+
+					return null;
+				});
 		}
 
 		return Page.of(
@@ -87,32 +105,6 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 					pimLinkRelatedEntry.getType(),
 					pimLinkRelatedEntry.getObjectEntry())),
 			pagination, pimLinkRelatedEntries.size());
-	}
-
-	private List<PIMLinkRelatedEntry> _filterBySearch(
-			List<PIMLinkRelatedEntry> pimLinkRelatedEntries, String search)
-		throws Exception {
-
-		return transform(
-			pimLinkRelatedEntries,
-			pimLinkRelatedEntry -> {
-				Map<String, Serializable> values =
-					_objectEntryLocalService.getValues(
-						pimLinkRelatedEntry.getObjectEntry());
-
-				String code = StringUtil.toLowerCase(
-					MapUtil.getString(values, "code"));
-				String name = StringUtil.toLowerCase(
-					MapUtil.getString(values, "name"));
-
-				if (code.contains(StringUtil.toLowerCase(search)) ||
-					name.contains(StringUtil.toLowerCase(search))) {
-
-					return pimLinkRelatedEntry;
-				}
-
-				return null;
-			});
 	}
 
 	private Map<String, Map<String, String>> _getActions(
