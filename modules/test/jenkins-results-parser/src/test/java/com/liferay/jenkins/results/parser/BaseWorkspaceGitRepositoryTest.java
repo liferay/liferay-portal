@@ -102,10 +102,12 @@ public class BaseWorkspaceGitRepositoryTest
 
 	@Test
 	public void testPartitionLocalGitCommits() throws Exception {
-		_testPartitionLocalGitCommits(3, _newLocalGitCommits(0));
-		_testPartitionLocalGitCommits(3, _newLocalGitCommits(10));
-		_testPartitionLocalGitCommits(3, null);
-		_testPartitionLocalGitCommits(5, _newLocalGitCommits(3));
+		_testPartitionLocalGitCommits(0, true, _newLocalGitCommits(5));
+		_testPartitionLocalGitCommits(1, true, _newLocalGitCommits(5));
+		_testPartitionLocalGitCommits(3, false, _newLocalGitCommits(0));
+		_testPartitionLocalGitCommits(3, false, _newLocalGitCommits(10));
+		_testPartitionLocalGitCommits(3, false, null);
+		_testPartitionLocalGitCommits(5, false, _newLocalGitCommits(3));
 	}
 
 	@Test
@@ -686,17 +688,34 @@ public class BaseWorkspaceGitRepositoryTest
 	}
 
 	private void _testPartitionLocalGitCommits(
-			int count, List<LocalGitCommit> localGitCommits)
+			int count, boolean exceptionThrown,
+			List<LocalGitCommit> localGitCommits)
 		throws Exception {
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository();
+
+		if (exceptionThrown) {
+			try {
+				defaultWorkspaceGitRepository.partitionLocalGitCommits(
+					localGitCommits, count);
+
+				Assert.fail("Expected IllegalArgumentException");
+			}
+			catch (IllegalArgumentException illegalArgumentException) {
+				testEquals(
+					"Invalid count " + count,
+					illegalArgumentException.getMessage());
+			}
+
+			return;
+		}
 
 		List<LocalGitCommit> expectedLocalGitCommits = new ArrayList<>();
 
 		if (localGitCommits != null) {
 			expectedLocalGitCommits.addAll(localGitCommits);
 		}
-
-		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
-			_newDefaultWorkspaceGitRepository();
 
 		List<List<LocalGitCommit>> localGitCommitsLists =
 			defaultWorkspaceGitRepository.partitionLocalGitCommits(
@@ -705,6 +724,10 @@ public class BaseWorkspaceGitRepositoryTest
 		Assert.assertTrue(
 			localGitCommitsLists.size() <= Math.min(
 				count, expectedLocalGitCommits.size()));
+
+		if (localGitCommits != null) {
+			testEquals(expectedLocalGitCommits, localGitCommits);
+		}
 
 		List<LocalGitCommit> actualLocalGitCommits = new ArrayList<>();
 
