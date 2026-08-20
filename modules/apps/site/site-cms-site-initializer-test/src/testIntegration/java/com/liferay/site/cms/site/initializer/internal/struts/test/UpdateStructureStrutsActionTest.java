@@ -301,8 +301,6 @@ public class UpdateStructureStrutsActionTest {
 				_serviceBuilderObjectDefinition2,
 				_serviceBuilderObjectDefinition3);
 
-		_user = UserTestUtil.addUser();
-
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		_resourcePermissionLocalService.setResourcePermissions(
@@ -313,6 +311,8 @@ public class UpdateStructureStrutsActionTest {
 				_serviceBuilderObjectDefinition1.getObjectDefinitionId()),
 			_role.getRoleId(),
 			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
+
+		_user = UserTestUtil.addUser();
 
 		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
 
