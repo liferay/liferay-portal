@@ -94,7 +94,23 @@ public class DepotEntryTestUtil {
 			DepotEntry depotEntry, UnsafeSupplier<T, Exception> unsafeSupplier)
 		throws Exception {
 
-		User user = UserTestUtil.addUser(depotEntry.getGroupId());
+		return _withUser(
+			depotEntry.getCompanyId(), unsafeSupplier,
+			UserTestUtil.addUser(depotEntry.getGroupId()));
+	}
+
+	public static <T> T withDepotEntryNonmemberUser(
+			DepotEntry depotEntry, UnsafeSupplier<T, Exception> unsafeSupplier)
+		throws Exception {
+
+		return _withUser(
+			depotEntry.getCompanyId(), unsafeSupplier, UserTestUtil.addUser());
+	}
+
+	private static <T> T _withUser(
+			long companyId, UnsafeSupplier<T, Exception> unsafeSupplier,
+			User user)
+		throws Exception {
 
 		try {
 			UserTestUtil.setUser(user);
@@ -102,8 +118,7 @@ public class DepotEntryTestUtil {
 			return unsafeSupplier.get();
 		}
 		finally {
-			UserTestUtil.setUser(
-				UserTestUtil.getAdminUser(depotEntry.getCompanyId()));
+			UserTestUtil.setUser(UserTestUtil.getAdminUser(companyId));
 
 			UserLocalServiceUtil.deleteUser(user);
 		}
