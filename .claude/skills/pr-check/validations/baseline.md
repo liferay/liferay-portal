@@ -38,7 +38,7 @@ Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a s
 
 ### Interpretation
 
-Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands. Report the number of modules in scope alongside the result, since a pass that compared nothing otherwise looks like a clean one. Count the `:baseline` tasks the run echoes, 593 today, which covers the Gradle modules and not the seven Ant projects. That number drifts as modules gain and lose `Export-Package:`, so report what you counted rather than checking it against this figure.
+Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands. Report the number of modules in scope alongside the result, since a pass that compared nothing otherwise looks like a clean one. The modules run is passed `--quiet`, so no task lines print and the list survives only in the command line the run echoes. Count the entries ending in `:baseline` there, which covers the Gradle modules and not the seven Ant projects. The failure block names the failed task again, so do not count it twice, and report what you counted rather than a fixed figure.
 
 Baseline has five warnings, and they do not all reach the tree in the same shape:
 
