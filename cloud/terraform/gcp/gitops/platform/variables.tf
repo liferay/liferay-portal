@@ -44,9 +44,14 @@ variable "keda_namespace" {
 	default="keda-system"
 	type=string
 }
-variable "observability_namespace" {
-	default="observability"
-	type=string
+variable "observability_config" {
+	default={}
+	type=object(
+		{
+			enabled=optional(bool, false)
+			namespace=optional(string, "observability")
+		}
+	)
 }
 variable "project_id" {
 	type=string

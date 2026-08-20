@@ -63,9 +63,6 @@ resource "helm_release" "argocd" {
 					}
 				}
 				controller={
-					networkPolicy={
-						create=true
-					}
 					resources={
 						limits={
 							memory="8Gi"
@@ -77,9 +74,6 @@ resource "helm_release" "argocd" {
 					}
 				}
 				dex={
-					networkPolicy={
-						create=true
-					}
 					resources={
 						limits={
 							memory="768Mi"
@@ -95,21 +89,49 @@ resource "helm_release" "argocd" {
 						apiVersion="networking.k8s.io/v1"
 						kind="NetworkPolicy"
 						metadata={
-							labels=merge(
-								local.common_labels,
+							labels=local.common_labels
+							name="argocd-application-controller"
+						}
+						spec={
+							ingress=var.observability_config.enabled ? [
 								{
-									"app.kubernetes.io/name"="argocd-applicationset-controller"
-								})
+									from=[
+										{
+											namespaceSelector={}
+										},
+									]
+									ports=[
+										{
+											port="metrics"
+											protocol="TCP"
+										},
+									]
+								},
+							] : []
+							podSelector={
+								matchLabels={
+									"app.kubernetes.io/instance"="argocd"
+									"app.kubernetes.io/name"="argocd-application-controller"
+								}
+							}
+							policyTypes=["Ingress"]
+						}
+					},
+					{
+						apiVersion="networking.k8s.io/v1"
+						kind="NetworkPolicy"
+						metadata={
+							labels=local.common_labels
 							name="argocd-applicationset-controller-ingress"
 						}
 						spec={
-							ingress=[
+							ingress=var.observability_config.enabled ? [
 								{
 									from=[
 										{
 											namespaceSelector={
 												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_namespace
+													"kubernetes.io/metadata.name"=var.observability_config.namespace
 												}
 											}
 										},
@@ -121,7 +143,7 @@ resource "helm_release" "argocd" {
 										},
 									]
 								},
-							]
+							] : []
 							podSelector={
 								matchLabels={
 									"app.kubernetes.io/instance"="argocd"
@@ -135,21 +157,74 @@ resource "helm_release" "argocd" {
 						apiVersion="networking.k8s.io/v1"
 						kind="NetworkPolicy"
 						metadata={
-							labels=merge(
-								local.common_labels,
-								{
-									"app.kubernetes.io/name"="argocd-notifications-controller"
-								})
+							labels=local.common_labels
+							name="argocd-dex-server"
+						}
+						spec={
+							ingress=concat(
+								[
+									{
+										from=[
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-server"
+													}
+												}
+											},
+										]
+										ports=[
+											{
+												port="http"
+												protocol="TCP"
+											},
+											{
+												port="grpc"
+												protocol="TCP"
+											},
+										]
+									},
+								],
+								var.observability_config.enabled ? [
+									{
+										from=[
+											{
+												namespaceSelector={}
+											},
+										]
+										ports=[
+											{
+												port="metrics"
+												protocol="TCP"
+											},
+										]
+									},
+								] : [])
+							podSelector={
+								matchLabels={
+									"app.kubernetes.io/instance"="argocd"
+									"app.kubernetes.io/name"="argocd-dex-server"
+								}
+							}
+							policyTypes=["Ingress"]
+						}
+					},
+					{
+						apiVersion="networking.k8s.io/v1"
+						kind="NetworkPolicy"
+						metadata={
+							labels=local.common_labels
 							name="argocd-notifications-controller-ingress"
 						}
 						spec={
-							ingress=[
+							ingress=var.observability_config.enabled ? [
 								{
 									from=[
 										{
 											namespaceSelector={
 												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_namespace
+													"kubernetes.io/metadata.name"=var.observability_config.namespace
 												}
 											}
 										},
@@ -161,7 +236,7 @@ resource "helm_release" "argocd" {
 										},
 									]
 								},
-							]
+							] : []
 							podSelector={
 								matchLabels={
 									"app.kubernetes.io/instance"="argocd"
@@ -175,57 +250,202 @@ resource "helm_release" "argocd" {
 						apiVersion="networking.k8s.io/v1"
 						kind="NetworkPolicy"
 						metadata={
-							labels=merge(
-								local.common_labels,
-								{
-									"app.kubernetes.io/name"="argocd-server"
-								})
+							labels=local.common_labels
+							name="argocd-redis"
+						}
+						spec={
+							ingress=concat(
+								[
+									{
+										from=[
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-server"
+													}
+												}
+											},
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-repo-server"
+													}
+												}
+											},
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-application-controller"
+													}
+												}
+											},
+										]
+										ports=[
+											{
+												port="redis"
+												protocol="TCP"
+											},
+										]
+									},
+								],
+								var.observability_config.enabled ? [
+									{
+										from=[
+											{
+												namespaceSelector={}
+											},
+										]
+										ports=[
+											{
+												port="metrics"
+												protocol="TCP"
+											},
+										]
+									},
+								] : [])
+							podSelector={
+								matchLabels={
+									"app.kubernetes.io/instance"="argocd"
+									"app.kubernetes.io/name"="argocd-redis"
+								}
+							}
+							policyTypes=["Ingress"]
+						}
+					},
+					{
+						apiVersion="networking.k8s.io/v1"
+						kind="NetworkPolicy"
+						metadata={
+							labels=local.common_labels
+							name="argocd-repo-server"
+						}
+						spec={
+							ingress=concat(
+								[
+									{
+										from=[
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-server"
+													}
+												}
+											},
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-application-controller"
+													}
+												}
+											},
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-notifications-controller"
+													}
+												}
+											},
+											{
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/instance"="argocd"
+														"app.kubernetes.io/name"="argocd-applicationset-controller"
+													}
+												}
+											},
+										]
+										ports=[
+											{
+												port="repo-server"
+												protocol="TCP"
+											},
+										]
+									},
+								],
+								var.observability_config.enabled ? [
+									{
+										from=[
+											{
+												namespaceSelector={}
+											},
+										]
+										ports=[
+											{
+												port="metrics"
+												protocol="TCP"
+											},
+										]
+									},
+								] : [])
+							podSelector={
+								matchLabels={
+									"app.kubernetes.io/instance"="argocd"
+									"app.kubernetes.io/name"="argocd-repo-server"
+								}
+							}
+							policyTypes=["Ingress"]
+						}
+					},
+					{
+						apiVersion="networking.k8s.io/v1"
+						kind="NetworkPolicy"
+						metadata={
+							labels=local.common_labels
 							name="argocd-server-ingress"
 						}
 						spec={
-							ingress=[
-								{
-									from=[
-										{
-											namespaceSelector={
-												matchLabels={
-													"kubernetes.io/metadata.name"=var.gateway_namespace
+							ingress=concat(
+								[
+									{
+										from=[
+											{
+												namespaceSelector={
+													matchLabels={
+														"kubernetes.io/metadata.name"=var.gateway_namespace
+													}
 												}
-											}
-											podSelector={
-												matchLabels={
-													"app.kubernetes.io/managed-by"="envoy-gateway"
-													"app.kubernetes.io/name"="envoy"
-													"gateway.envoyproxy.io/owning-gateway-namespace"=var.argocd_namespace
+												podSelector={
+													matchLabels={
+														"app.kubernetes.io/managed-by"="envoy-gateway"
+														"app.kubernetes.io/name"="envoy"
+														"gateway.envoyproxy.io/owning-gateway-namespace"=var.argocd_namespace
+													}
 												}
-											}
-										},
-									]
-									ports=[
-										{
-											port="server"
-											protocol="TCP"
-										},
-									]
-								},
-								{
-									from=[
-										{
-											namespaceSelector={
-												matchLabels={
-													"kubernetes.io/metadata.name"=var.observability_namespace
+											},
+										]
+										ports=[
+											{
+												port="server"
+												protocol="TCP"
+											},
+										]
+									},
+								],
+								var.observability_config.enabled ? [
+									{
+										from=[
+											{
+												namespaceSelector={
+													matchLabels={
+														"kubernetes.io/metadata.name"=var.observability_config.namespace
+													}
 												}
-											}
-										},
-									]
-									ports=[
-										{
-											port="metrics"
-											protocol="TCP"
-										},
-									]
-								},
-							]
+											},
+										]
+										ports=[
+											{
+												port="metrics"
+												protocol="TCP"
+											},
+										]
+									},
+								] : [])
 							podSelector={
 								matchLabels={
 									"app.kubernetes.io/instance"="argocd"
@@ -239,11 +459,7 @@ resource "helm_release" "argocd" {
 						apiVersion="networking.k8s.io/v1"
 						kind="NetworkPolicy"
 						metadata={
-							labels=merge(
-								local.common_labels,
-								{
-									"app.kubernetes.io/name"="default-deny-ingress"
-								})
+							labels=local.common_labels
 							name="default-deny-ingress"
 						}
 						spec={
@@ -265,9 +481,6 @@ resource "helm_release" "argocd" {
 					}
 				}
 				redis={
-					networkPolicy={
-						create=true
-					}
 					resources={
 						limits={
 							memory="256Mi"
@@ -283,9 +496,6 @@ resource "helm_release" "argocd" {
 						failureThreshold=6
 						periodSeconds=15
 						timeoutSeconds=10
-					}
-					networkPolicy={
-						create=true
 					}
 					readinessProbe={
 						periodSeconds=15
@@ -305,9 +515,6 @@ resource "helm_release" "argocd" {
 					livenessProbe={
 						initialDelaySeconds=90
 						timeoutSeconds=5
-					}
-					networkPolicy={
-						create=false
 					}
 					readinessProbe={
 						initialDelaySeconds=60
