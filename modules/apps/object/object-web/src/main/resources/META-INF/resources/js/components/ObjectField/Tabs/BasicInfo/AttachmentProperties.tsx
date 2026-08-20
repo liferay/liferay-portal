@@ -75,6 +75,7 @@ export function AttachmentProperties({
 							),
 							'/myDocumentsAndMediaFolder'
 						)}
+						id="storageDLFolderPath"
 						label={Liferay.Language.get('storage-folder')}
 						maxLength={255}
 						onBlur={(event) => {

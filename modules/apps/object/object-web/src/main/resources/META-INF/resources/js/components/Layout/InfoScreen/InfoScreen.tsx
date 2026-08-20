@@ -39,6 +39,7 @@ const InfoScreen: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 			<Input
 				disabled={isViewOnly}
 				error={error}
+				id="objectLayoutName"
 				label={Liferay.Language.get('name')}
 				name="name"
 				onChange={({target: {value}}) => {

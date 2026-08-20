@@ -117,6 +117,7 @@ export function MaxLengthProperties({
 							'1',
 							defaultMaxLengthText
 						)}
+						id="maxLength"
 						label={Liferay.Language.get(
 							'maximum-number-of-characters'
 						)}
