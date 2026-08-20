@@ -11,7 +11,7 @@
 KBArticleNavigationFragmentDisplayContext kbArticleNavigationFragmentDisplayContext = (KBArticleNavigationFragmentDisplayContext)request.getAttribute(KBArticleNavigationFragmentDisplayContext.class.getName());
 %>
 
-<nav class="kb-article-navigation">
+<nav class="font-weight-semi-bold kb-article-navigation text-3">
 
 	<%
 	request.setAttribute("view_navigation_kb_articles.jsp-level", 0);

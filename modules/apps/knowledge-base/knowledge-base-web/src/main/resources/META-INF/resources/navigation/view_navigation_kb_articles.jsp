@@ -16,8 +16,8 @@ long parentResourcePrimKey = (long)request.getAttribute("view_navigation_kb_arti
 for (KBArticle kbArticle : kbArticleNavigationFragmentDisplayContext.getKBArticles(parentResourcePrimKey, level)) {
 %>
 
-	<ul>
-		<li class="<%= kbArticleNavigationFragmentDisplayContext.getKBArticleCssClass(kbArticle, level) %>">
+	<ul class="list-unstyled <%= (level > 0) ? "pl-4" : StringPool.BLANK %>">
+		<li class="<%= kbArticleNavigationFragmentDisplayContext.getKBArticleCssClass(kbArticle, level) %> text-truncate">
 			<c:choose>
 				<c:when test="<%= kbArticleNavigationFragmentDisplayContext.isSelected(kbArticle) %>">
 					<span class="sr-only"><liferay-ui:message key="current-article" /></span>

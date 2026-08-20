@@ -28,8 +28,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -137,8 +135,6 @@ public class KBArticleNavigationFragmentRenderer implements FragmentRenderer {
 				fragmentRendererContext.getFragmentElementId();
 
 			printWriter.write("<div id=\"" + fragmentElementId + "\">");
-
-			_writeCss(fragmentElementId, printWriter);
 
 			httpServletRequest.setAttribute(
 				KBArticleNavigationFragmentDisplayContext.class.getName(),
@@ -271,21 +267,6 @@ public class KBArticleNavigationFragmentRenderer implements FragmentRenderer {
 			StringBundler.concat(
 				"<div class=\"portlet-msg-info\">",
 				_language.get(httpServletRequest, message), "</div>"));
-	}
-
-	private void _writeCss(String fragmentElementId, PrintWriter printWriter)
-		throws IOException {
-
-		printWriter.write(
-			StringUtil.replace(
-				StringUtil.read(
-					getClass(),
-					"/com/liferay/knowledge/base/web/internal/fragment" +
-						"/renderer/dependencies/styles.tmpl"),
-				"${", "}",
-				HashMapBuilder.put(
-					"fragmentElementId", fragmentElementId
-				).build()));
 	}
 
 	private static final int _MAX_NESTING_LEVEL = 3;
