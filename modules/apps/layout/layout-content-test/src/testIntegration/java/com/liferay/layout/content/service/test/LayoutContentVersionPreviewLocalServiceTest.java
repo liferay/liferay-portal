@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -68,6 +69,7 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-90030")
 	public void testAddLayoutContentVersionPreview() throws Exception {
 		User user = _userLocalService.getUser(TestPropsValues.getUserId());
 		String html = RandomTestUtil.randomString();
@@ -123,6 +125,7 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-90030")
 	public void testDeleteLayoutContentVersionPreviews() throws Exception {
 		_addLayoutContentVersionPreviews(2);
 
@@ -150,6 +153,7 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-90030")
 	public void testFetchLayoutContentVersionPreview() throws Exception {
 		String html = RandomTestUtil.randomString();
 		String languageId = RandomTestUtil.randomString();
@@ -176,6 +180,7 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-90030")
 	public void testGetLayoutContentVersionPreviews() throws Exception {
 		_addLayoutContentVersionPreviews(2);
 

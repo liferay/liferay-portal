@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -145,6 +146,7 @@ public class LayoutContentVersionLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-90030")
 	public void testDeleteLayoutContentVersion() throws Exception {
 		LayoutContentVersion approvedLayoutContentVersion =
 			_addLayoutContentVersion(WorkflowConstants.STATUS_APPROVED);
