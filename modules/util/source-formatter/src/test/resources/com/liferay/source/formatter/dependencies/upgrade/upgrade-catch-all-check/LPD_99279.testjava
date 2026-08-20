@@ -1,0 +1,44 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Jessyca Ferreira
+ */
+public class LPD_99279 {
+
+	public void method(
+		long userId, long parentAccountEntryId, String name, String description,
+		String[] domains, String emailAddress, byte[] logoBytes,
+		String taxIdNumber, String type, int status,
+		ServiceContext serviceContext) {
+
+		AccountEntryLocalServiceUtil.addAccountEntry(
+			123, parentAccountEntryId, name, description, domains, emailAddress,
+			logoBytes, taxIdNumber, type, status, serviceContext);
+		AccountEntryLocalServiceUtil.addAccountEntry(
+			userId, parentAccountEntryId, name, description, domains,
+			emailAddress, logoBytes, taxIdNumber, type, status, serviceContext);
+		AccountEntryServiceUtil.addAccountEntry(
+			userId, parentAccountEntryId, name, description, domains,
+			emailAddress, logoBytes, taxIdNumber, type, status, serviceContext);
+		_accountEntryLocalService.addAccountEntry(
+			userId, parentAccountEntryId, name, description, domains,
+			emailAddress, logoBytes, taxIdNumber, type, status, serviceContext);
+		_accountEntryService.addAccountEntry(
+			userId, parentAccountEntryId, name, description, domains,
+			emailAddress, logoBytes, taxIdNumber, type, status, serviceContext);
+	}
+
+	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
+
+}
