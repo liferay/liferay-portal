@@ -809,6 +809,13 @@ describe('odata', () => {
 			testConversionToAndFrom(testQuery);
 		});
 
+		it('should be able to translate a query string with a "between" day filter to a map and back to a string', () => {
+			const testQuery =
+				"(activities.filterByCount(filter='(applicationId eq ''WebContent'' and eventId eq ''webContentViewed'' and between(day,''2020-2-2'',''2020-2-3''))',operator='ge',value=1))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
 		it('should be able to translate a query string that contains a single quote', () => {
 			const testQuery = "(firstName eq 'o''hara')";
 
@@ -1193,6 +1200,14 @@ describe('odata', () => {
 			testConversionToAndFrom(
 				buildTagQuery(
 					"tags/id eq 'tag-id' and tags/name eq 'My Tag' and activityKey eq 'WebContent' and day gt '2023-01-01'"
+				)
+			);
+		});
+
+		it('should round-trip a tag filter with a "between" day filter', () => {
+			testConversionToAndFrom(
+				buildTagQuery(
+					"tags/id eq 'tag-id' and tags/name eq 'My Tag' and activityKey eq 'WebContent' and between(day,'2020-2-2','2020-2-3')"
 				)
 			);
 		});

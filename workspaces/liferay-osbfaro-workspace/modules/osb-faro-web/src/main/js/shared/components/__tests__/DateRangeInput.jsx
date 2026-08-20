@@ -3,8 +3,10 @@ import DateRangeInput from '../DateRangeInput';
 import mockStore from 'test/mock-store';
 import moment from 'moment';
 import React from 'react';
+import {cleanup, fireEvent, render} from '@testing-library/react';
 import {ApolloProvider} from '@apollo/client';
-import {cleanup, render} from '@testing-library/react';
+import {clickFirstSelectableDay} from 'test/helpers';
+import {getCustomDateFormat} from 'shared/util/date';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockPreferenceReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
@@ -26,25 +28,73 @@ jest.mock('react-router-dom', () => ({
 	})
 }));
 
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+const WrapperComponent = ({children}) => (
+	<ApolloProvider client={client}>
+		<Provider store={mockStore()}>
+			<MockedProvider mocks={[mockPreferenceReq()]}>
+				{children}
+			</MockedProvider>
+		</Provider>
+	</ApolloProvider>
+);
+
 describe('DateRangeInput', () => {
 	afterEach(cleanup);
 
 	it('renders', () => {
 		const {getByTestId} = render(
-			<ApolloProvider client={client}>
-				<Provider store={mockStore()}>
-					<MockedProvider mocks={[mockPreferenceReq()]}>
-						<DateRangeInput
-							value={{
-								end: moment(100000000000).format('YYYY-MM-DD'),
-								start: moment(0).format('YYYY-MM-DD')
-							}}
-						/>
-					</MockedProvider>
-				</Provider>
-			</ApolloProvider>
+			<WrapperComponent>
+				<DateRangeInput
+					value={{
+						end: moment(100000000000).format('YYYY-MM-DD'),
+						start: moment(0).format('YYYY-MM-DD')
+					}}
+				/>
+			</WrapperComponent>
 		);
 
 		expect(getByTestId('date-range-input')).toBeInTheDocument();
+	});
+
+	it('displays the range in the given display format', () => {
+		const {getByTestId} = render(
+			<WrapperComponent>
+				<DateRangeInput
+					displayFormat={getCustomDateFormat()}
+					value={{end: '2026-02-10', start: '2026-02-01'}}
+				/>
+			</WrapperComponent>
+		);
+
+		expect(getByTestId('date-range-input').value).toBe(
+			'Feb 1, 2026 to Feb 10, 2026'
+		);
+	});
+
+	// The emitted range is read back with `format`, so a `displayFormat` must
+	// never leak into it. It used to, which left the picker unable to read its
+	// own selection back.
+
+	it('emits the selected date in the value format, not the display format', () => {
+		const onChange = jest.fn();
+
+		const {getByTestId} = render(
+			<WrapperComponent>
+				<DateRangeInput
+					displayFormat={getCustomDateFormat()}
+					onChange={onChange}
+					value={{end: '', start: ''}}
+				/>
+			</WrapperComponent>
+		);
+
+		fireEvent.click(getByTestId('date-range-input'));
+
+		clickFirstSelectableDay();
+
+		expect(onChange).toHaveBeenCalledTimes(1);
+		expect(onChange.mock.calls[0][0].start).toMatch(ISO_DATE);
 	});
 });

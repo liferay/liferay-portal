@@ -104,6 +104,18 @@ export const waitForLoadingToBeRemoved = async (
 	);
 };
 
+export const clickFirstSelectableDay = () => {
+	const days = Array.prototype.slice.call(
+		document.body.querySelectorAll('.day-root')
+	);
+
+	fireEvent.click(
+		days.find(
+			(day) => !day.disabled && !day.classList.contains('outside-month')
+		)
+	);
+};
+
 export const selectDropdownItem = (labelText) => {
 	const overlay = getByTestId(document.body, 'overlay');
 	fireEvent.click(getByText(overlay, labelText));

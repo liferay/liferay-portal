@@ -3,6 +3,7 @@ import DateFilterConjunctionInput from '../DateFilterConjunctionInput';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {ApolloProvider} from '@apollo/client';
+import {clickFirstSelectableDay} from 'test/helpers';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {
 	FunctionalOperators,
@@ -120,5 +121,32 @@ describe('DateFilterConjunctionInput', () => {
 		);
 
 		expect(getByTestId('date-range-input')).toBeTruthy();
+	});
+
+	it('should emit an ISO date when picking a day for the between operator', () => {
+		const onChange = jest.fn();
+
+		const {getByTestId} = render(
+			<WrapperComponent>
+				<DateFilterConjunctionInput
+					conjunctionCriterion={{
+						operatorName: FunctionalOperators.Between,
+						propertyName: 'day',
+						touched: false,
+						valid: false,
+						value: {end: '', start: ''}
+					}}
+					onChange={onChange}
+				/>
+			</WrapperComponent>
+		);
+
+		fireEvent.click(getByTestId('date-range-input'));
+
+		clickFirstSelectableDay();
+
+		expect(onChange.mock.calls[0][0].value.start).toMatch(
+			/^\d{4}-\d{2}-\d{2}$/
+		);
 	});
 });

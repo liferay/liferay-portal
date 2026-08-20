@@ -191,6 +191,11 @@ const PARAM_REGEX = /\s+((?:criterionGroup|operator|value)=)/g;
 export const trimSpacesBeforeParams = (queryString: string): string =>
 	queryString.replace(PARAM_REGEX, '$1');
 
+const buildBetweenExpression = (
+	propertyName: string | undefined,
+	{end, start}: {end: string; start: string}
+): string => `between(${propertyName},'${start}','${end}')`;
+
 const buildRemoteFilterString = (
 	criterionGroup: any,
 	criterionType: RemoteCriterionType
@@ -244,7 +249,9 @@ const buildRemoteFilterString = (
 
 	if (dayItem) {
 		parts.push(
-			`${dayItem.propertyName} ${dayItem.operatorName} '${dayItem.value}'`
+			dayItem.operatorName === FunctionalOperators.Between
+				? buildBetweenExpression(dayItem.propertyName, dayItem.value)
+				: `${dayItem.propertyName} ${dayItem.operatorName} '${dayItem.value}'`
 		);
 	}
 
@@ -386,10 +393,8 @@ const buildQueryString = (
 				}
 				else if (isValueType(FunctionalOperators, operatorName)) {
 					if (operatorName === FunctionalOperators.Between) {
-						const {end, start} = parsedValue;
-
 						queryString = queryString.concat(
-							`between(${propertyName},'${start}','${end}')`
+							buildBetweenExpression(propertyName, parsedValue)
 						);
 					}
 					else {
@@ -928,9 +933,27 @@ const buildInnerFilterItems = (
 		}
 	}
 
+	// A date range is a function call, not a relational comparison, so it needs
+	// its own pattern. Without it the day item is dropped on reload and the
+	// conjunction falls back to "ever".
+
+	const dayBetweenMatch = innerFilter.match(
+		/between\(day,'([^']*)','([^']*)'\)/
+	);
+
 	const dayMatch = innerFilter.match(/day (gt|ge|lt|le|eq|ne) '([^']+)'/);
 
-	if (dayMatch) {
+	if (dayBetweenMatch) {
+		items.push({
+			operatorName: FunctionalOperators.Between,
+			propertyName: 'day',
+			rowId: generateRowId(),
+			touched: false,
+			valid: true,
+			value: {end: dayBetweenMatch[2], start: dayBetweenMatch[1]},
+		} as unknown as Criterion);
+	}
+	else if (dayMatch) {
 		items.push({
 			operatorName: dayMatch[1],
 			propertyName: 'day',
