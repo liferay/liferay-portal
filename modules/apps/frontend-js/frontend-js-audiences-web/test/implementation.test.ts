@@ -31,6 +31,9 @@ function mockAudiencesDefinition(audienceIds: string[]) {
 
 describe('implementation', () => {
 	afterEach(async () => {
+		jest.restoreAllMocks();
+
+		audiences.setLogEnabled(false);
 		store.clear();
 	});
 
@@ -96,6 +99,44 @@ describe('implementation', () => {
 			await audiences.runHandlers();
 
 			expect(runCount).toBe(1);
+		});
+
+		it('runs the remaining handlers when one handler throws', async () => {
+			audiences.setLogEnabled(true);
+
+			const consoleLog = jest
+				.spyOn(console, 'log')
+				.mockImplementation(() => {});
+
+			const executionOrder: string[] = [];
+
+			const brokenHandler = () => {
+				throw new Error('The handler is broken');
+			};
+
+			store.setAudienceIds(new Set(['first', 'broken', 'last']));
+
+			audiences.on('first', () => {
+				executionOrder.push('first');
+			});
+
+			audiences.on('broken', brokenHandler);
+
+			audiences.on('last', () => {
+				executionOrder.push('last');
+			});
+
+			await audiences.runHandlers();
+
+			expect(executionOrder).toEqual(['first', 'last']);
+
+			expect(consoleLog).toHaveBeenCalledWith(
+				expect.anything(),
+				expect.anything(),
+				expect.stringContaining(
+					"Unable to run handler 'brokenHandler' of audience 'broken'"
+				)
+			);
 		});
 	});
 

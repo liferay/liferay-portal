@@ -131,8 +131,8 @@ export async function runHandlers(): Promise<void> {
 				await handler();
 			}
 			catch (error) {
-				throw new Error(
-					`There was an error running handler '${handlerName}' of audience ` +
+				log(
+					`Unable to run handler '${handlerName}' of audience ` +
 						`'${audienceId}': ${getErrorMessage(error)}`
 				);
 			}
