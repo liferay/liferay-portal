@@ -32,7 +32,7 @@ Confirm each Ant project actually baselined by running it alone, where the exit 
 
 ### Interpretation
 
-Read `git status`, not the exit code. The baseline task repairs what it finds, so the first run rewrites the tree and every run after it passes.
+Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands. Report the number of modules in scope alongside the result, since a pass that compared nothing otherwise looks like a clean one. The run is `--quiet`, so the count is not in the output — take it from the same fileset the target builds its task list from, every `bnd.bnd` under `modules` holding `Export-Package:` and outside `sdk`, `test`, `third-party`, and `util`, which is 593 today.
 
 Baseline has five warnings, and they do not all reach the tree in the same shape:
 
@@ -46,26 +46,7 @@ Baseline has five warnings, and they do not all reach the tree in the same shape
 
 All five concern the version of an exported package, recorded in its `packageinfo`. `Bundle-Version` is not among them, so do not read a passing run as evidence that it is right. An inflated one is caught only by the classification below.
 
-List each changed file with both of its versions. Do not read a bare diff of the version lines, which drops the filename and cannot tell an addition, a deletion, and a lowering apart:
-
-```bash
-version() {
-	sed -nE 's/^(Bundle-Version:[[:space:]]*|version[[:space:]]+)//p' | head -1
-}
-
-git status --porcelain -uall -- '*bnd.bnd' '*packageinfo' |
-while read -r status path; do
-	case "${status}" in
-	D)    old=$(git show "HEAD:${path}" | version) ; new="<removed>" ;;
-	'??') old="<added>" ; new=$(version < "${path}") ;;
-	*)    old=$(git show "HEAD:${path}" | version) ; new=$(version < "${path}") ;;
-	esac
-
-	printf '%s\t%s\t%s\n' "${old:-<none>}" "${new:-<none>}" "${path}"
-done
-```
-
-Keep `-uall`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`. Keep reading removal from the status letter, not from a missing version line.
+For the paths those warnings named, list each changed file with both of its versions. This decides what to commit or restore, and it is also what catches an inflated `Bundle-Version`, which none of the warnings report. Take the file list from `git status --porcelain -uall -- '*bnd.bnd' '*packageinfo'`, and for each one read the version in `HEAD` against the version in the tree, from the `Bundle-Version:` or `version` line. Keep `-uall`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`, and read an addition or a removal from the status letter rather than from a missing version line — a bare diff of the version lines drops the filename and cannot tell an addition, a deletion, and a lowering apart.
 
 Classify each row, comparing segments as numbers so that `9.5.1` to `10.0.0` counts as a rise and `1.9.0` to `1.10.0` does not:
 
