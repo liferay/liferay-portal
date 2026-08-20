@@ -166,6 +166,39 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ContentCoverage"
             tags: ["ContentCoverage"]
+    "/projects/{projectId}/task-assignees":
+        get:
+            operationId: getProjectTaskAssigneesPage
+            parameters:
+                -   in: path
+                    name: projectId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: type
+                    schema:
+                        enum: [Role, User]
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/TaskAssignee"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/TaskAssignee"
+                                type: array
+            tags: ["TaskAssignee"]
     "/projects/{projectId}/task-statistics":
         get:
             operationId: getProjectTaskStatistics
