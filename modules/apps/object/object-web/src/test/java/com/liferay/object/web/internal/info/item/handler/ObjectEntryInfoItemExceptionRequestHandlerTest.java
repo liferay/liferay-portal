@@ -38,12 +38,13 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	@TestInfo({"LPD-96532", "LPD-97485"})
+	@TestInfo({"LPD-96532", "LPD-97485", "LPD-103252"})
 	public void testHandleInfoFormException() throws Exception {
 		_testHandleInfoFormExceptionWhenAssetCategoryExceptionTypeIsAtLeastOneCategory();
 		_testHandleInfoFormExceptionWhenAssetCategoryExceptionTypeIsTooManyCategories();
 		_testHandleInfoFormExceptionWhenDuplicateExternalReferenceCode();
 		_testHandleInfoFormExceptionWhenDuplicateFriendlyURL();
+		_testHandleInfoFormExceptionWhenInvalidValue();
 		_testHandleInfoFormExceptionWhenRequiredLanguageId();
 	}
 
@@ -151,6 +152,20 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 						new ModelListenerException(
 							new GroupFriendlyURLException(
 								GroupFriendlyURLException.DUPLICATE)),
+						0, _mockInfoItemFormProvider(),
+						Mockito.mock(ObjectDefinition.class)));
+	}
+
+	private void _testHandleInfoFormExceptionWhenInvalidValue()
+		throws Exception {
+
+		Assert.assertThrows(
+			InfoFormValidationException.InvalidInfoFieldValue.class,
+			() ->
+				ObjectEntryInfoItemExceptionRequestHandler.
+					handleInfoFormException(
+						new ObjectEntryValuesException.InvalidValue(
+							RandomTestUtil.randomString()),
 						0, _mockInfoItemFormProvider(),
 						Mockito.mock(ObjectDefinition.class)));
 	}
