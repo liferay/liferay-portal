@@ -82,7 +82,7 @@ public class TaskStatisticsResourceTest
 	public void testGetProjectTaskStatistics() throws Exception {
 		TaskStatistics taskStatistics1 =
 			taskStatisticsResource.getProjectTaskStatistics(
-				_cmpProjectObjectEntry1.getObjectEntryId(), null);
+				_cmpProjectObjectEntry1.getObjectEntryId());
 
 		Assert.assertEquals(
 			1, GetterUtil.getLong(taskStatistics1.getBlockedCount()));
@@ -95,7 +95,7 @@ public class TaskStatisticsResourceTest
 
 		TaskStatistics taskStatistics2 =
 			taskStatisticsResource.getProjectTaskStatistics(
-				_cmpProjectObjectEntry2.getObjectEntryId(), null);
+				_cmpProjectObjectEntry2.getObjectEntryId());
 
 		Assert.assertEquals(
 			0, GetterUtil.getLong(taskStatistics2.getBlockedCount()));
@@ -111,7 +111,7 @@ public class TaskStatisticsResourceTest
 	@Test
 	public void testGetTaskStatistics() throws Exception {
 		TaskStatistics taskStatistics =
-			taskStatisticsResource.getTaskStatistics(null);
+			taskStatisticsResource.getTaskStatistics();
 
 		Assert.assertEquals(
 			1, GetterUtil.getLong(taskStatistics.getBlockedCount()));

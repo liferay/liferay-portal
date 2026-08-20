@@ -19,7 +19,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.time.LocalDate;
@@ -41,8 +40,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class TaskStatisticsResourceImpl extends BaseTaskStatisticsResourceImpl {
 
 	@Override
-	public TaskStatistics getProjectTaskStatistics(
-			Long projectId, Filter filter)
+	public TaskStatistics getProjectTaskStatistics(Long projectId)
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
@@ -60,7 +58,7 @@ public class TaskStatisticsResourceImpl extends BaseTaskStatisticsResourceImpl {
 	}
 
 	@Override
-	public TaskStatistics getTaskStatistics(Filter filter) throws Exception {
+	public TaskStatistics getTaskStatistics() throws Exception {
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-58677")) {
 

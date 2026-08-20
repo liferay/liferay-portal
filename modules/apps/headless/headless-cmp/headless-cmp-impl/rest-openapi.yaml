@@ -176,10 +176,6 @@ paths:
                     schema:
                         format: int64
                         type: integer
-                -   in: query
-                    name: filter
-                    schema:
-                        type: string
             responses:
                 200:
                     content:
@@ -292,11 +288,6 @@ paths:
     "/task-statistics":
         get:
             operationId: getTaskStatistics
-            parameters:
-                -   in: query
-                    name: filter
-                    schema:
-                        type: string
             responses:
                 200:
                     content:
