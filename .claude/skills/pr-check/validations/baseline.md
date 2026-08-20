@@ -24,15 +24,15 @@ Three prerequisites:
 - A project that has not been cleanly built on this branch cannot be baselined at all. Rerun after `ant all`, which rebuilds all seven and baselines each one through the `jar` target.
 - Silence is not a pass. The report is written **only on a finding**, and the seven Ant projects run under `failonerror="false"`, so a run that compared nothing leaves exactly what a clean one leaves. With no `portal-kernel.jar` in the tree the baseline never runs at all.
 
-Confirm each Ant project actually baselined by running it alone, where the exit status is not swallowed. Do this even when the target failed, since the `modules` run can abort it before the loop reaches every project. Fail when one of the seven is missing its jar, exits non-zero, or reports `Could not resolve` — a baseline that did not run is not one that passed. The `modules` run exits non-zero whenever any finding exists, so its exit status is not the verdict.
-
-A finding in a module the branch changed fails this validation. A finding in any other module is **inherited**: report it with both versions and do not fail the branch, whatever its severity. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead.
+Confirm each Ant project actually baselined by running it alone, where a failure to run is not swallowed. Do this even when the target failed, since the `modules` run can abort it before the loop reaches every project.
 
 ```bash
 ("${REPO_ROOT}/gradlew" --console=plain --project-dir "${REPO_ROOT}/<project>" baseline --rerun)
 ```
 
-Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a second, a cached verdict rather than a comparison. A genuine run prints `1 executed`.
+Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a second, a cached verdict rather than a comparison. A genuine run prints `1 executed`. Fail when one of the seven is missing its jar, reports `Could not resolve`, or never prints `1 executed` — a baseline that did not run is not one that passed. A non-zero exit is not itself the verdict, since a project that ran and found something exits non-zero too.
+
+A finding in a module the branch changed fails this validation. A finding in any other module is **inherited**: report it with both versions and do not fail the branch, whatever its severity. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead.
 
 ### Interpretation
 
