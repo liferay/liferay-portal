@@ -6045,6 +6045,17 @@
 	},
 	{
 		"classNames": [
+			"AccountEntryLocalService",
+			"AccountEntryLocalServiceUtil",
+			"AccountEntryService",
+			"AccountEntryServiceUtil"
+		],
+		"from": "addAccountEntry(long paramName, long paramName, String paramName, String paramName, String[] paramName, String paramName, byte[] paramName, String paramName, String paramName, int paramName, ServiceContext paramName)",
+		"issueKey": "LPD-99279",
+		"to": "addAccountEntry(null, param#0#, param#1#, param#2#, param#3#, param#4#, param#5#, param#6#, param#7#, param#8#, param#9#, param#10#)"
+	},
+	{
+		"classNames": [
 			"CPDefinitionSpecificationOptionValueLocalService",
 			"CPDefinitionSpecificationOptionValueLocalServiceUtil",
 			"CPDefinitionSpecificationOptionValueService",
