@@ -277,13 +277,13 @@ public abstract class BaseWorkspaceGitRepository
 		List<List<LocalGitCommit>> localGitCommitsLists = new ArrayList<>(
 			count);
 
-		LocalGitCommit lastLocalGitCommit = localGitCommits.get(
-			localGitCommitsSize - 1);
-
 		localGitCommitsLists.addAll(
 			JenkinsResultsParserUtil.partitionByCount(
 				localGitCommits.subList(0, localGitCommitsSize - 1),
 				count - 1));
+
+		LocalGitCommit lastLocalGitCommit = localGitCommits.get(
+			localGitCommitsSize - 1);
 
 		localGitCommitsLists.add(Lists.newArrayList(lastLocalGitCommit));
 
