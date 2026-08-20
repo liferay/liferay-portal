@@ -29,6 +29,7 @@ import {
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {miniumSetUp} from '../../commerce/utils/commerce';
 import {mockedObjectFields} from '../dependencies/objectMockedFields';
+import {generateFormulaObjectFields} from '../utils/generateFormulaObjectFields';
 import {generateObjectFields} from '../utils/generateObjectFields';
 
 export const test = mergeTests(
@@ -584,6 +585,53 @@ test.describe('Object Action CRUD', () => {
 			).toBeVisible();
 
 			await expect(page.getByRole('cell', {name: 'Yes'})).toBeVisible();
+		}
+	);
+
+	test(
+		'Can create an action on a system object that adds a custom object entry',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectEntryValue = getRandomString();
+
+			const objectAction = await apiHelpers.objectAction.postRandomAction(
+				'L_ACCOUNT',
+				{
+					objectActionExecutorKey: 'add-object-entry',
+					objectActionTriggerKey: 'onAfterAdd',
+					parameters: {
+						objectDefinitionExternalReferenceCode:
+							objectDefinition.externalReferenceCode,
+						predefinedValues: [
+							{
+								businessType: 'Text',
+								inputAsValue: true,
+								label: {en_US: 'textField'},
+								name: 'textField',
+								value: objectEntryValue,
+							},
+						],
+					},
+				}
+			);
+
+			apiHelpers.data.push({id: objectAction.id, type: 'objectAction'});
+
+			await apiHelpers.headlessAdminUser.postAccount();
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await expect(page.getByText(objectEntryValue)).toBeVisible();
 		}
 	);
 
@@ -2868,6 +2916,76 @@ ObjectEntryLocalServiceUtil.updateObjectEntry(objectEntry.getUserId(), id, 0L, v
 				expect(updatedEntry.customObjectFieldActionTest).toBe(
 					'Action Test Works'
 				);
+			}).toPass();
+		}
+	);
+
+	test(
+		'Can run a Groovy Script action on an object with a formula field',
+		{tag: '@LPD-102828'},
+		async ({
+			apiHelpers,
+			page,
+			scriptManagementPage,
+			viewObjectActionsPage,
+		}) => {
+			await scriptManagementPage.enableScriptManagementConfiguration();
+
+			const {firstObjectField, objectFields, secondObjectField} =
+				generateFormulaObjectFields({
+					objectFieldBusinessType: 'Integer',
+					operator: '-',
+					output: 'Integer',
+				});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectActionLabel = getRandomString();
+
+			const objectAction = await apiHelpers.objectAction.postRandomAction(
+				objectDefinition.externalReferenceCode!,
+				{
+					label: {en_US: objectActionLabel},
+					objectActionExecutorKey: 'groovy',
+					objectActionTriggerKey: 'onAfterAdd',
+					parameters: {
+						lineCount: 1,
+						script: "println 'Success'",
+					},
+				}
+			);
+
+			apiHelpers.data.push({id: objectAction.id, type: 'objectAction'});
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					[firstObjectField.name as string]: 8,
+					[secondObjectField.name as string]: 4,
+				},
+				'c/' + objectDefinition.name.toLowerCase() + 's'
+			);
+
+			// The Groovy executor runs asynchronously after the entry is
+			// committed, so poll the actions page until the action's last
+			// execution status reflects 'Success'.
+
+			await expect(async () => {
+				await viewObjectActionsPage.goto(
+					objectDefinition.label['en_US']
+				);
+
+				await expect(
+					page.getByRole('row').filter({hasText: objectActionLabel})
+				).toContainText('Success');
 			}).toPass();
 		}
 	);
