@@ -188,27 +188,7 @@ public class LayoutAdaptiveMediaProcessorTest {
 
 	@Test
 	public void testContentPageAdaptiveMediaProcessModeAuto() throws Exception {
-		RenderFragmentLayoutTag renderFragmentLayoutTag =
-			new RenderFragmentLayoutTag();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.CTX, mockHttpServletRequest.getServletContext());
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-		mockHttpServletRequest.setMethod(HttpMethods.GET);
-
-		_themeDisplay.setRequest(mockHttpServletRequest);
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		renderFragmentLayoutTag.doTag(
-			mockHttpServletRequest, mockHttpServletResponse);
-
-		String content = mockHttpServletResponse.getContentAsString();
+		String content = _render();
 
 		Assert.assertThat(
 			content, CoreMatchers.containsString("(max-width:300px)"));
@@ -253,27 +233,7 @@ public class LayoutAdaptiveMediaProcessorTest {
 			_fragmentEntryLink.getFragmentEntryLinkId(),
 			editableValuesJSONObject.toString());
 
-		RenderFragmentLayoutTag renderFragmentLayoutTag =
-			new RenderFragmentLayoutTag();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.CTX, mockHttpServletRequest.getServletContext());
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-		mockHttpServletRequest.setMethod(HttpMethods.GET);
-
-		_themeDisplay.setRequest(mockHttpServletRequest);
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		renderFragmentLayoutTag.doTag(
-			mockHttpServletRequest, mockHttpServletResponse);
-
-		String content = mockHttpServletResponse.getContentAsString();
+		String content = _render();
 
 		Assert.assertThat(
 			content,
