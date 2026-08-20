@@ -10,25 +10,31 @@ import React from 'react';
 import UpdateDueDateModalContent from '../../js/components/modal/UpdateDueDateModalContent';
 
 jest.mock('../../js/components/DateField', () => ({
+	...(jest.requireActual('../../js/components/DateField') as object),
 	__esModule: true,
-	dateConfig: {momentFormat: 'MM/DD/YYYY'},
 	default: ({
+		errorMessage,
 		id,
 		initialValue,
 		onChange,
 	}: {
+		errorMessage?: string;
 		id: string;
 		initialValue?: string;
 		onChange: (value: string) => Promise<void> | void;
 		required?: boolean;
 	}) => (
-		<input
-			data-testid="mock-date-field"
-			defaultValue={initialValue}
-			id={id}
-			onChange={(event) => onChange(event.target.value)}
-			type="text"
-		/>
+		<>
+			<input
+				data-testid="mock-date-field"
+				defaultValue={initialValue}
+				id={id}
+				onChange={(event) => onChange(event.target.value)}
+				type="text"
+			/>
+
+			{errorMessage ? <span>{errorMessage}</span> : null}
+		</>
 	),
 }));
 
@@ -95,6 +101,27 @@ describe('UpdateDueDateModalContent', () => {
 		expect(mockLoadData).toHaveBeenCalled();
 	});
 
+	it('clears the due date when submitted with only whitespace', async () => {
+		mockPatchTaskById.mockResolvedValue({error: null});
+
+		const {getByTestId, getByText} = renderModal();
+
+		fireEvent.change(getByTestId('mock-date-field'), {
+			target: {value: '   '},
+		});
+
+		fireEvent.submit(getByText('update').closest('form')!);
+
+		await waitFor(() => {
+			expect(mockPatchTaskById).toHaveBeenCalledWith({
+				body: {dueDate: ''},
+				taskId: '123',
+			});
+		});
+
+		expect(mockCloseModal).toHaveBeenCalled();
+	});
+
 	it('hands the updated task to onTaskUpdated instead of reloading', async () => {
 		const updatedTask = {dueDate: '2026-08-20', id: 123};
 
@@ -125,7 +152,9 @@ describe('UpdateDueDateModalContent', () => {
 	});
 
 	it('shows an error toast and stays open when the patch fails', async () => {
-		mockPatchTaskById.mockResolvedValue({error: 'error'});
+		mockPatchTaskById.mockResolvedValue({
+			error: 'You do not have permission',
+		});
 
 		const {getByTestId, getByText} = renderModal();
 
@@ -136,7 +165,9 @@ describe('UpdateDueDateModalContent', () => {
 		fireEvent.submit(getByText('update').closest('form')!);
 
 		await waitFor(() => {
-			expect(mockDisplayErrorToast).toHaveBeenCalledWith('error');
+			expect(mockDisplayErrorToast).toHaveBeenCalledWith(
+				'You do not have permission'
+			);
 		});
 
 		expect(mockCloseModal).not.toHaveBeenCalled();
