@@ -70,9 +70,7 @@ public class RecentSitesItemSelectorViewDisplayContext
 
 		GroupItemSelectorCriterion groupItemSelectorCriterion =
 			getGroupItemSelectorCriterion();
-
 		List<Group> groups = new ArrayList<>();
-
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 

@@ -72,42 +72,34 @@ public class DepotEntryGroupRelServiceTest {
 			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 				depotEntry.getDepotEntryId(), group.getGroupId());
 
-		try {
-			DepotTestUtil.withAssetLibraryAdministrator(
-				depotEntry,
-				user -> {
-					PermissionChecker permissionChecker =
-						PermissionThreadLocal.getPermissionChecker();
+		DepotTestUtil.withAssetLibraryAdministrator(
+			depotEntry,
+			user -> {
+				PermissionChecker permissionChecker =
+					PermissionThreadLocal.getPermissionChecker();
 
-					try {
-						PermissionThreadLocal.setPermissionChecker(
-							_permissionCheckerFactory.create(user));
+				try {
+					PermissionThreadLocal.setPermissionChecker(
+						_permissionCheckerFactory.create(user));
 
-						_assertMustHaveUpdatePermission(
-							user.getUserId(),
-							() ->
-								_depotEntryGroupRelService.
-									addDepotEntryGroupRel(
-										depotEntry.getDepotEntryId(),
-										group.getGroupId()));
+					_assertMustHaveUpdatePermission(
+						user.getUserId(),
+						() -> _depotEntryGroupRelService.addDepotEntryGroupRel(
+							depotEntry.getDepotEntryId(), group.getGroupId()));
 
-						_assertMustHaveUpdatePermission(
-							user.getUserId(),
-							() ->
-								_depotEntryGroupRelService.
-									deleteDepotEntryGroupRel(
-										depotEntryGroupRel.
-											getDepotEntryGroupRelId()));
-					}
-					finally {
-						PermissionThreadLocal.setPermissionChecker(
-							permissionChecker);
-					}
-				});
-		}
-		finally {
-			_groupLocalService.deleteGroup(group);
-		}
+					_assertMustHaveUpdatePermission(
+						user.getUserId(),
+						() ->
+							_depotEntryGroupRelService.deleteDepotEntryGroupRel(
+								depotEntryGroupRel.getDepotEntryGroupRelId()));
+				}
+				finally {
+					PermissionThreadLocal.setPermissionChecker(
+						permissionChecker);
+				}
+			});
+
+		_groupLocalService.deleteGroup(group);
 	}
 
 	@Test
