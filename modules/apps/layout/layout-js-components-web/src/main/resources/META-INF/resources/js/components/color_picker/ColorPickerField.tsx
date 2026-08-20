@@ -206,6 +206,16 @@ export default function ColorPickerField({
 						>
 							{customEditorActive ? (
 								<ClayColorPicker.Editor
+									ariaLabels={{
+										saturationAndBrightness:
+											Liferay.Language.get(
+												'saturation-and-brightness'
+											),
+										saturationAndBrightnessIs:
+											Liferay.Language.get(
+												'saturation-x-brightness-x'
+											),
+									}}
 									color={color}
 									colors={customColors}
 									hex={state.hex}
