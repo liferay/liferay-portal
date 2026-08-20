@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/build-site/SKILL.md

@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/production-standards/SKILL.md

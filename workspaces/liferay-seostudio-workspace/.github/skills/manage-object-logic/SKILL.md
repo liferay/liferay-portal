@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/manage-object-logic/SKILL.md

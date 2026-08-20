@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/scaffold-client-extension/SKILL.md

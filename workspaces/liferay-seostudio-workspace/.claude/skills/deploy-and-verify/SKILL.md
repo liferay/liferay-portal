@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/deploy-and-verify/SKILL.md

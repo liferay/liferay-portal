@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/theme-and-design/SKILL.md

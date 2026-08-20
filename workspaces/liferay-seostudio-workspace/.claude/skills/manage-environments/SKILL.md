@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/manage-environments/SKILL.md

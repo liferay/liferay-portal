@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/manage-pages/SKILL.md

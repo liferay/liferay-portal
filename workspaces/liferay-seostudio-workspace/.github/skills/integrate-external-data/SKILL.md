@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/integrate-external-data/SKILL.md

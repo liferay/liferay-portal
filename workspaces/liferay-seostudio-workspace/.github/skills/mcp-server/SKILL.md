@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/mcp-server/SKILL.md

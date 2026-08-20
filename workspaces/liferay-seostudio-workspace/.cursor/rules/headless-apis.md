@@ -1,0 +1,1 @@
+../../.workspace-rules/rules/headless-apis.md

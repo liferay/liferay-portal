@@ -1,0 +1,1 @@
+../../.workspace-rules/rules/page-types.md
