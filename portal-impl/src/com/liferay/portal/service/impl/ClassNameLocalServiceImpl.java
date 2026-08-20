@@ -54,7 +54,7 @@ public class ClassNameLocalServiceImpl
 			// The pool has no transaction awareness, so a created row must
 			// only publish after its transaction commits. Publishing earlier
 			// leaks the class name ID into the pool even when the insert rolls
-			// back, and the pool then serves an ID that has no backing row
+			// back, and the pool then serves an ID that has no backing row.
 
 			TransactionCallbackUtil.registerCommitCallback(
 				() -> {
@@ -157,7 +157,7 @@ public class ClassNameLocalServiceImpl
 			// won. Ask again in a fresh transaction, whose snapshot holds
 			// every committed row on any isolation level and none of the
 			// current transaction's uncommitted writes, so the retry returns
-			// the winner's committed row or fails for real
+			// the winner's committed row or fails for real.
 
 			return classNameLocalService.addClassName(value);
 		}

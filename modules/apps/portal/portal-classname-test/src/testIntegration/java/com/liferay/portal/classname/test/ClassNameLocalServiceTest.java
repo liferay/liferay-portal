@@ -124,7 +124,7 @@ public class ClassNameLocalServiceTest {
 		// thread only pauses after its insert commits, so the resolution on
 		// the test thread reads the committed row and no unique index
 		// violation occurs. Capture the SQL error logger so a regression that
-		// revives the violation surfaces as an asserted log entry
+		// revives the violation surfaces as an asserted log entry.
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"org.hibernate.engine.jdbc.spi.SqlExceptionHelper",
