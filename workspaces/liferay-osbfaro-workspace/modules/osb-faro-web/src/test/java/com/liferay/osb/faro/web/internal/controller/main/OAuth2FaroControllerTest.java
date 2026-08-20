@@ -56,11 +56,14 @@ public class OAuth2FaroControllerTest {
 			"{\"access_token\": \"abc\"}"
 		);
 
+		OAuth2Authorization oAuth2Authorization = _mockOAuth2Authorization(
+			"abc");
+
 		Mockito.when(
 			_oAuth2AuthorizationLocalService.
 				fetchOAuth2AuthorizationByAccessTokenContent("abc")
 		).thenReturn(
-			_mockOAuth2Authorization("abc")
+			oAuth2Authorization
 		);
 
 		TokenDisplay tokenDisplay = _oAuth2FaroController.newToken(
