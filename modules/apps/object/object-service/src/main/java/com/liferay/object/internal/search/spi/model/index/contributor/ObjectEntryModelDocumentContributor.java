@@ -622,6 +622,10 @@ public class ObjectEntryModelDocumentContributor
 			return;
 		}
 
+		document.addKeyword(
+			Field.TREE_PATH,
+			StringUtil.split(objectEntryFolder.getTreePath(), CharPool.SLASH));
+
 		ObjectEntryFolder rootObjectEntryFolder = _getRootObjectEntryFolder(
 			objectEntryFolder);
 
