@@ -10,6 +10,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {addCMSAdministrator} from '../../../utils/addCMSAdministrator';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitchViaApi} from '../../../utils/performLogin';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
@@ -94,6 +95,33 @@ function formatInTimeZone(date: string) {
 		timeZone: TIME_ZONE,
 		year: 'numeric',
 	});
+}
+
+function getDocumentHTML(externalReferenceCode: string) {
+	return (
+		`<img src="/documents/${getRandomInt()}/0/image.jpg/${getRandomString()}` +
+		'?download=true&amp;objectDefinitionExternalReferenceCode=' +
+		'L_CMS_BASIC_DOCUMENT&amp;objectEntryExternalReferenceCode=' +
+		`${externalReferenceCode}&amp;objectFieldExternalReferenceCode=FILE">`
+	);
+}
+
+async function gotoBrokenLinks(page: Page, spaceName: string, title: string) {
+	await page.goto('/web/cms/dashboard');
+
+	await selectSpace(page, spaceName);
+
+	await page.getByRole('button', {name: /broken links/i}).click();
+
+	await expect(page).toHaveURL(/broken-links\?groupId=/);
+
+	await expect(async () => {
+		await page.reload();
+
+		await expect(page.getByText(title, {exact: true})).toBeVisible({
+			timeout: 5000,
+		});
+	}).toPass();
 }
 
 async function pollDate(
@@ -666,6 +694,121 @@ test.describe('Attention Required section', () => {
 							: null;
 					})
 					.toBe(DATE_DISPLAYED);
+			});
+		}
+	);
+
+	test(
+		'Lists the contents that point at an expired asset of the selected space',
+		{tag: '@LPD-103027'},
+		async ({apiHelpers, page}) => {
+			const firstSpaceName = `space ${getRandomString()}`;
+			const secondSpaceName = `space ${getRandomString()}`;
+			const expiredTitle = `expired ${getRandomString()}`;
+			const referringTitle = `referring ${getRandomString()}`;
+			const secondSpaceReferringTitle = `referring ${getRandomString()}`;
+
+			await test.step('Create a broken link in two spaces', async () => {
+				const postBrokenLink = async (
+					spaceName: string,
+					expiredTitle: string,
+					referringTitle: string
+				) => {
+					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+						name: spaceName,
+						type: 'Space',
+					});
+
+					const expiredContent =
+						await apiHelpers.objectEntry.postObjectEntry(
+							{
+								objectEntryFolderExternalReferenceCode:
+									'L_CONTENTS',
+								title: expiredTitle,
+							},
+							APPLICATION_NAME,
+							spaceName
+						);
+
+					await apiHelpers.objectEntry.expireObjectEntryByExternalReferenceCode(
+						APPLICATION_NAME,
+						spaceName,
+						expiredContent.externalReferenceCode
+					);
+
+					const referringContent =
+						await apiHelpers.objectEntry.postObjectEntry(
+							{
+								content: getDocumentHTML(
+									expiredContent.externalReferenceCode
+								),
+								objectEntryFolderExternalReferenceCode:
+									'L_CONTENTS',
+								title: referringTitle,
+							},
+							APPLICATION_NAME,
+							spaceName
+						);
+
+					for (const objectEntry of [
+						expiredContent,
+						referringContent,
+					]) {
+						apiHelpers.data.push({
+							id: objectEntry.id,
+							type: 'document',
+						});
+
+						expect(objectEntry.id).toBeTruthy();
+					}
+				};
+
+				await postBrokenLink(
+					firstSpaceName,
+					expiredTitle,
+					referringTitle
+				);
+				await postBrokenLink(
+					secondSpaceName,
+					`expired ${getRandomString()}`,
+					secondSpaceReferringTitle
+				);
+			});
+
+			await test.step('Confirm the second space lists its own broken link', async () => {
+				await gotoBrokenLinks(
+					page,
+					secondSpaceName,
+					secondSpaceReferringTitle
+				);
+			});
+
+			await test.step('Open the broken links page of the first space', async () => {
+				await gotoBrokenLinks(page, firstSpaceName, referringTitle);
+			});
+
+			await test.step('Check that only the first space is listed', async () => {
+				await expect(
+					page.getByText(`${expiredTitle} - Expired Asset`, {
+						exact: true,
+					})
+				).toBeVisible();
+
+				await expect(
+					page.getByText(secondSpaceReferringTitle, {exact: true})
+				).toBeHidden();
+			});
+
+			await test.step('Edit the content from the list', async () => {
+				await page
+					.getByRole('button', {name: `${referringTitle} Actions`})
+					.click();
+
+				await page.getByRole('menuitem', {name: 'Edit'}).click();
+
+				await expect(page.getByLabel('Title')).toHaveValue(
+					referringTitle
+				);
 			});
 		}
 	);
