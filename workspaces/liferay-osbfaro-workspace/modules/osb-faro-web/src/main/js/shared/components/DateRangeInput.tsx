@@ -5,7 +5,7 @@ import DatePicker from './date-picker';
 import getCN from 'classnames';
 import Input from './Input';
 import moment from 'moment';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {DatePickerRetentionPeriodHeader} from './DatePickerRetentionPeriodHeader';
 import {DEFAULT_DATE_FORMAT} from 'shared/util/date';
 import {formatDateWithTimezone} from './dropdown-range-key/utils';
@@ -70,6 +70,14 @@ const DateInput: React.FC<IDateInputProps> = ({
 	const {timeZoneId} = useTimeZone(groupId);
 	const retentionPeriod = useRetentionPeriod();
 
+	// Clay closes the picker from its own trigger through a callback it froze on
+	// the first render, so reading the blur handler from that closure would call
+	// a stale one. Route it through a ref instead.
+
+	const onBlurRef = useRef(onBlur);
+
+	onBlurRef.current = onBlur;
+
 	// The emitted range is read back with `format`, so it is written with
 	// `format`; `displayFormat` is locale aware and only ever reaches the text
 	// the trigger shows.
@@ -119,7 +127,7 @@ const DateInput: React.FC<IDateInputProps> = ({
 			onActiveChange={(active) => {
 				setActive(active);
 
-				!active && onBlur();
+				!active && onBlurRef.current();
 			}}
 			trigger={
 				<div>
