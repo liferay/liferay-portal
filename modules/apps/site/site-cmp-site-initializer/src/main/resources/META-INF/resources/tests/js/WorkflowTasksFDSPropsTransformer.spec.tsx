@@ -16,8 +16,14 @@ jest.mock('../../js/utils/openCMPModal', () => ({
 const baseProps = {
 	apiURL: '/o/search/v1.0/search',
 	bulkActions: [
-		{data: {id: 'update-due-date'}, label: 'Update Due Date'},
-		{data: {id: 'assign-to'}, label: 'Assign To'},
+		{
+			data: {id: 'update-due-date', permissionKey: 'updateDueDate'},
+			label: 'Update Due Date',
+		},
+		{
+			data: {id: 'assign-to', permissionKey: 'assignToUser'},
+			label: 'Assign To',
+		},
 	],
 	creationMenu: {
 		primaryItems: [],
@@ -28,6 +34,14 @@ const baseProps = {
 		{default: true, initialPaginationDelta: 20, name: 'table'},
 		{default: false, initialPaginationDelta: 20, name: 'kanban'},
 	],
+};
+
+const getBulkAction = (id: string) => {
+	const result = WorkflowTasksFDSPropsTransformer(baseProps as any);
+
+	return (result.bulkActions as any[]).find(
+		(action) => action.data.id === id
+	);
 };
 
 describe('WorkflowTasksFDSPropsTransformer', () => {
@@ -87,6 +101,18 @@ describe('WorkflowTasksFDSPropsTransformer', () => {
 			(result.views as any[]).every((v: any) => v.name !== 'kanban')
 		).toBe(true);
 		expect((result.views as any[]).length).toBe(1);
+	});
+
+	it('hides a bulk action when a selected workflow task lacks its permission', () => {
+		const selectedItems = [{actions: {get: {}, updateDueDate: {}}}];
+
+		expect(getBulkAction('assign-to').isVisible({selectedItems})).toBe(
+			false
+		);
+
+		expect(
+			getBulkAction('update-due-date').isVisible({selectedItems})
+		).toBe(true);
 	});
 
 	it('marks all views as non-default', () => {
