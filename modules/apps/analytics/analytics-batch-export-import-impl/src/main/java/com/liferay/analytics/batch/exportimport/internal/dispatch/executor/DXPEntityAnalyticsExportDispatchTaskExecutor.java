@@ -92,6 +92,9 @@ public class DXPEntityAnalyticsExportDispatchTaskExecutor
 		if (forceFullExport) {
 			dispatchTaskSettingsUnicodeProperties.remove("forceFullExport");
 
+			dispatchTrigger.setDispatchTaskSettingsUnicodeProperties(
+				dispatchTaskSettingsUnicodeProperties);
+
 			_dispatchTriggerLocalService.updateDispatchTrigger(dispatchTrigger);
 		}
 	}
