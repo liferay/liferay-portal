@@ -7,6 +7,7 @@ package com.liferay.frontend.token.definition.internal;
 
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.constants.FrontendTokenDefinitionConstants;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -306,6 +307,10 @@ public class FrontendTokenDefinitionRegistryImplTest {
 
 		frontendTokenDefinitionRegistryImpl.jsonFactory = new JSONFactoryImpl();
 		frontendTokenDefinitionRegistryImpl.portal = new PortalImpl();
+
+		ReflectionTestUtil.setFieldValue(
+			frontendTokenDefinitionRegistryImpl, "_serviceTrackerMap",
+			Mockito.mock(ServiceTrackerMap.class));
 
 		Bundle bundle = Mockito.mock(Bundle.class);
 
