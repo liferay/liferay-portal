@@ -12,7 +12,7 @@ import React, {useId, useState} from 'react';
 import {patchTaskById} from '../../utils/api';
 import {displayDueDateSuccessToast} from '../../utils/toastUtil';
 import {ITaskObjectEntry} from '../../utils/types';
-import DateField, {dateConfig} from '../DateField';
+import DateField, {dateConfig, getDateError, toServerDate} from '../DateField';
 
 type Props = {
 	closeModal: () => void;
@@ -36,17 +36,24 @@ export default function UpdateDueDateModalContent({
 		: '';
 
 	const [dueDate, setDueDate] = useState<string>(initialValue);
+	const [errorMessage, setErrorMessage] = useState<string>('');
+
+	const dateFieldId = useId();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
+		const dateError = getDateError(dueDate, false);
+
+		if (dateError) {
+			setErrorMessage(dateError);
+
+			return;
+		}
+
 		const {data, error} = await patchTaskById({
 			body: {
-				dueDate: dueDate
-					? moment(dueDate, dateConfig.momentFormat).format(
-							'YYYY-MM-DD'
-						)
-					: '',
+				dueDate: dueDate.trim() ? toServerDate(dueDate) : '',
 			},
 			taskId: cmpTaskObjectEntryId,
 		});
@@ -75,12 +82,14 @@ export default function UpdateDueDateModalContent({
 			</ClayModal.Header>
 
 			<ClayModal.Body>
-				<label>{Liferay.Language.get('due-date')}</label>
-
 				<DateField
-					id={useId()}
+					errorMessage={errorMessage}
+					id={dateFieldId}
 					initialValue={initialValue}
+					label={Liferay.Language.get('due-date')}
 					onChange={async (value: string) => {
+						setErrorMessage('');
+
 						setDueDate(value);
 					}}
 					required={false}

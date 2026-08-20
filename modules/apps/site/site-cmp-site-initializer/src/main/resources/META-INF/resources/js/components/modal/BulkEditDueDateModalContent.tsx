@@ -10,11 +10,10 @@ import {
 	IBulkActionTaskStarterDTO,
 	triggerAssetBulkAction,
 } from '@liferay/site-cms-site-initializer';
-import moment from 'moment';
 import React, {useCallback, useId, useState} from 'react';
 
 import {displayErrorToast} from '../../utils/toastUtil';
-import DateField, {dateConfig} from '../DateField';
+import DateField, {getDateError, toServerDate} from '../DateField';
 
 export default function BulkEditDueDateModalContent({
 	apiURL,
@@ -28,16 +27,21 @@ export default function BulkEditDueDateModalContent({
 	selectedData: IBulkActionFDSData;
 }) {
 	const [dueDate, setDueDate] = useState<string>('');
+	const [errorMessage, setErrorMessage] = useState<string>('');
 	const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
 
+	const dateFieldId = useId();
+
 	const doBulkSubmit = useCallback(async () => {
-		if (!dueDate) {
+		const dateError = getDateError(dueDate, true);
+
+		if (dateError) {
+			setErrorMessage(dateError);
+
 			return;
 		}
 
-		const formattedDate = moment(dueDate, dateConfig.momentFormat).format(
-			'YYYY-MM-DD'
-		);
+		const formattedDate = toServerDate(dueDate);
 
 		setSubmitDisabled(true);
 
@@ -83,11 +87,13 @@ export default function BulkEditDueDateModalContent({
 			</ClayModal.Header>
 
 			<ClayModal.Body>
-				<label>{Liferay.Language.get('new-due-date')}</label>
-
 				<DateField
-					id={useId()}
+					errorMessage={errorMessage}
+					id={dateFieldId}
+					label={Liferay.Language.get('new-due-date')}
 					onChange={async (value: string) => {
+						setErrorMessage('');
+
 						setDueDate(value);
 					}}
 				/>

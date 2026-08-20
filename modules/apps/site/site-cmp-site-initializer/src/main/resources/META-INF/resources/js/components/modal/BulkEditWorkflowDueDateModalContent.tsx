@@ -6,7 +6,6 @@
 import ClayButton from '@clayui/button';
 import ClayModal from '@clayui/modal';
 import {IBulkActionFDSData} from '@liferay/site-cms-site-initializer';
-import moment from 'moment';
 import React, {useId, useState} from 'react';
 
 import {bulkUpdateWorkflowTaskDueDate} from '../../utils/api';
@@ -14,7 +13,7 @@ import {
 	displayBulkDueDateSuccessToast,
 	displayErrorToast,
 } from '../../utils/toastUtil';
-import DateField, {dateConfig} from '../DateField';
+import DateField, {getDateError, toServerDate} from '../DateField';
 
 type FDSItem = {embedded: {id: number}};
 
@@ -28,6 +27,7 @@ export default function BulkEditWorkflowDueDateModalContent({
 	selectedData: IBulkActionFDSData;
 }) {
 	const [dueDate, setDueDate] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
 	const [submitDisabled, setSubmitDisabled] = useState(false);
 
 	const dateFieldId = useId();
@@ -37,7 +37,11 @@ export default function BulkEditWorkflowDueDateModalContent({
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (!dueDate) {
+		const dateError = getDateError(dueDate, true);
+
+		if (dateError) {
+			setErrorMessage(dateError);
+
 			return;
 		}
 
@@ -48,10 +52,7 @@ export default function BulkEditWorkflowDueDateModalContent({
 
 		const {error} = await bulkUpdateWorkflowTaskDueDate(
 			items.map((item) => ({
-				dueDate:
-					moment(dueDate, dateConfig.momentFormat).format(
-						'YYYY-MM-DD'
-					) + 'T00:00:00.000Z',
+				dueDate: toServerDate(dueDate) + 'T00:00:00.000Z',
 				workflowTaskId: item.embedded.id,
 			}))
 		);
@@ -79,13 +80,15 @@ export default function BulkEditWorkflowDueDateModalContent({
 			</ClayModal.Header>
 
 			<ClayModal.Body>
-				<label htmlFor={dateFieldId}>
-					{Liferay.Language.get('new-due-date')}
-				</label>
-
 				<DateField
+					errorMessage={errorMessage}
 					id={dateFieldId}
-					onChange={(value) => setDueDate(value)}
+					label={Liferay.Language.get('new-due-date')}
+					onChange={(value) => {
+						setErrorMessage('');
+
+						setDueDate(value);
+					}}
 				/>
 			</ClayModal.Body>
 
@@ -101,7 +104,7 @@ export default function BulkEditWorkflowDueDateModalContent({
 						</ClayButton>
 
 						<ClayButton
-							disabled={submitDisabled || !dueDate}
+							disabled={submitDisabled}
 							displayType="primary"
 							type="submit"
 						>
