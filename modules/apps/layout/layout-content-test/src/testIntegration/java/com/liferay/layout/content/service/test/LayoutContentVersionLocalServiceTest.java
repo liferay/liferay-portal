@@ -6,6 +6,9 @@
 package com.liferay.layout.content.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.layout.content.exception.LayoutContentVersionExternalReferenceCodeException;
 import com.liferay.layout.content.exception.LayoutContentVersionNameException;
 import com.liferay.layout.content.exception.RequiredLayoutContentVersionException;
@@ -18,14 +21,25 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.servlet.PortletServlet;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -34,16 +48,27 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.segments.model.SegmentsExperience;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
+
+import jakarta.portlet.ActionRequest;
+import jakarta.portlet.ActionResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -52,10 +77,15 @@ import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
 
+import org.springframework.mock.web.MockHttpServletRequest;
+
 /**
  * @author Lourdes Fernández Besada
  */
 @FeatureFlag("LPD-10622")
+@LanguageIds(
+	availableLanguageIds = {"en_US", "es_ES"}, defaultLanguageId = "en_US"
+)
 @RunWith(Arquillian.class)
 public class LayoutContentVersionLocalServiceTest {
 
@@ -73,10 +103,27 @@ public class LayoutContentVersionLocalServiceTest {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		_draftLayout = layout.fetchDraftLayout();
+
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId()));
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	@Test
+	@TestInfo("LPD-103233")
 	public void testAddLayoutContentVersion() throws Exception {
+		_addSegmentsExperiences(2);
+
+		Map<SegmentsExperience, JSONObject> segmentsExperienceJSONObjectsMap =
+			_getRandomSegmentsExperienceLocalizedContentMap();
+
+		_addFragmentEntryLinksToLayout(segmentsExperienceJSONObjectsMap);
+
 		String data = RandomTestUtil.randomString();
 
 		LayoutContentVersion draftLayoutContentVersion =
@@ -92,6 +139,9 @@ public class LayoutContentVersionLocalServiceTest {
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_DRAFT,
 			draftLayoutContentVersion.getStatus());
+
+		_assertLayoutContentVersionPreviews(
+			draftLayoutContentVersion, segmentsExperienceJSONObjectsMap);
 
 		LayoutContentVersion approvedLayoutContentVersion =
 			_layoutContentVersionLocalService.addLayoutContentVersion(
@@ -265,6 +315,40 @@ public class LayoutContentVersionLocalServiceTest {
 				layoutContentVersion.getLayoutContentVersionId(), null));
 	}
 
+	private void _addFragmentEntryLinksToLayout(
+			Map<SegmentsExperience, JSONObject>
+				segmentsExperienceJSONObjectsMap)
+		throws Exception {
+
+		JSONObject defaultValueJSONObject = JSONUtil.put(
+			"defaultValue", "Heading Example");
+
+		FragmentEntry fragmentEntry =
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-heading");
+
+		for (Map.Entry<SegmentsExperience, JSONObject> entry :
+				segmentsExperienceJSONObjectsMap.entrySet()) {
+
+			SegmentsExperience segmentsExperience = entry.getKey();
+
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"element-text",
+						JSONUtil.merge(
+							entry.getValue(), defaultValueJSONObject))
+				).toString(),
+				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
+				fragmentEntry.getExternalReferenceCode(), null,
+				fragmentEntry.getHtml(), fragmentEntry.getJs(), _draftLayout,
+				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
+				null, 0, segmentsExperience.getSegmentsExperienceId());
+		}
+	}
+
 	private LayoutContentVersion _addLayoutContentVersion(int status)
 		throws Exception {
 
@@ -286,6 +370,85 @@ public class LayoutContentVersionLocalServiceTest {
 				RandomTestUtil.randomString());
 	}
 
+	private void _addSegmentsExperiences(int count) throws Exception {
+		Company company = _companyLocalService.getCompany(
+			_group.getCompanyId());
+
+		MVCActionCommand mvcActionCommand =
+			ContentLayoutTestUtil.getMVCActionCommand(
+				"/layout_content_page_editor/add_segments_experience");
+
+		for (int i = 0; i < count; i++) {
+			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+				ContentLayoutTestUtil.getMockLiferayPortletActionRequest(
+					company, _group, _draftLayout);
+
+			mockLiferayPortletActionRequest.setParameter(
+				"groupId", String.valueOf(_draftLayout.getGroupId()));
+			mockLiferayPortletActionRequest.setParameter(
+				"name", RandomTestUtil.randomString());
+			mockLiferayPortletActionRequest.setParameter(
+				"plid", String.valueOf(_draftLayout.getPlid()));
+
+			HttpServletRequest httpServletRequest =
+				new MockHttpServletRequest();
+
+			httpServletRequest.setAttribute(
+				WebKeys.THEME_DISPLAY,
+				mockLiferayPortletActionRequest.getAttribute(
+					WebKeys.THEME_DISPLAY));
+			httpServletRequest.setAttribute(
+				WebKeys.USER_ID, TestPropsValues.getUserId());
+
+			mockLiferayPortletActionRequest.setAttribute(
+				PortletServlet.PORTLET_SERVLET_REQUEST, httpServletRequest);
+
+			ReflectionTestUtil.invoke(
+				mvcActionCommand, "doTransactionalCommand",
+				new Class<?>[] {ActionRequest.class, ActionResponse.class},
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse());
+		}
+	}
+
+	private void _assertLayoutContentVersionPreviews(
+			LayoutContentVersion layoutContentVersion,
+			Map<SegmentsExperience, JSONObject>
+				segmentsExperienceJSONObjectsMap)
+		throws Exception {
+
+		for (Map.Entry<SegmentsExperience, JSONObject> entry :
+				segmentsExperienceJSONObjectsMap.entrySet()) {
+
+			SegmentsExperience segmentsExperience = entry.getKey();
+			JSONObject jsonObject = entry.getValue();
+
+			for (String languageId : jsonObject.keySet()) {
+				LayoutContentVersionPreview layoutContentVersionPreview =
+					_layoutContentVersionPreviewLocalService.
+						fetchLayoutContentVersionPreview(
+							layoutContentVersion.getLayoutContentVersionId(),
+							languageId,
+							segmentsExperience.getExternalReferenceCode());
+
+				String html = layoutContentVersionPreview.getHtml();
+
+				Assert.assertTrue(
+					html, html.contains(jsonObject.getString(languageId)));
+			}
+		}
+
+		List<LayoutContentVersionPreview> layoutContentVersionPreviews =
+			_layoutContentVersionPreviewLocalService.
+				getLayoutContentVersionPreviews(
+					layoutContentVersion.getLayoutContentVersionId());
+
+		Assert.assertEquals(
+			layoutContentVersionPreviews.toString(),
+			segmentsExperienceJSONObjectsMap.size() * 2,
+			layoutContentVersionPreviews.size());
+	}
+
 	private <T extends PortalException> void _assertPortalException(
 		String expectedMessage, Class<T> portalExceptionClass,
 		ThrowingRunnable runnable) {
@@ -294,6 +457,29 @@ public class LayoutContentVersionLocalServiceTest {
 			portalExceptionClass, runnable);
 
 		Assert.assertEquals(expectedMessage, portalException.getMessage());
+	}
+
+	private Map<SegmentsExperience, JSONObject>
+		_getRandomSegmentsExperienceLocalizedContentMap() {
+
+		Map<SegmentsExperience, JSONObject> map = new HashMap<>();
+
+		for (SegmentsExperience segmentsExperience :
+				_segmentsExperienceLocalService.getSegmentsExperiences(
+					_group.getGroupId(), _draftLayout.getPlid())) {
+
+			map.put(
+				segmentsExperience,
+				JSONUtil.put(
+					LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
+					RandomTestUtil.randomString()
+				).put(
+					LocaleUtil.toLanguageId(LocaleUtil.US),
+					RandomTestUtil.randomString()
+				));
+		}
+
+		return map;
 	}
 
 	private void _testAddLayoutContentVersionWithExternalReferenceCodeTooLong() {
@@ -388,7 +574,14 @@ public class LayoutContentVersionLocalServiceTest {
 				WorkflowConstants.STATUS_DRAFT));
 	}
 
+	@Inject
+	private CompanyLocalService _companyLocalService;
+
 	private Layout _draftLayout;
+
+	@Inject
+	private FragmentCollectionContributorRegistry
+		_fragmentCollectionContributorRegistry;
 
 	@DeleteAfterTestRun
 	private Group _group;
@@ -403,5 +596,8 @@ public class LayoutContentVersionLocalServiceTest {
 	@Inject
 	private LayoutUtilityPageEntryLocalService
 		_layoutUtilityPageEntryLocalService;
+
+	@Inject
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 }
