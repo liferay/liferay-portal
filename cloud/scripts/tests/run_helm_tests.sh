@@ -24,6 +24,7 @@ function main {
 		aws-infrastructure
 		aws-infrastructure-provider
 		aws-marketplace
+		azure
 		azure-infrastructure-provider
 		default
 		dxp-operator
