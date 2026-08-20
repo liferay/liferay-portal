@@ -233,6 +233,11 @@ public class WidgetPageWidgetInstanceDTOConverter
 	private WidgetLookAndFeelConfig _getWidgetLookAndFeelConfig(
 		Layout layout, String portletId) {
 
+		WidgetLookAndFeelConfig widgetLookAndFeelConfig =
+			new WidgetLookAndFeelConfig();
+
+		GeneralConfig generalConfig = new GeneralConfig();
+
 		PortletPreferences portletPreferences =
 			_portletPreferencesFactory.getStrictLayoutPortletSetup(
 				layout, portletId);
@@ -244,8 +249,6 @@ public class WidgetPageWidgetInstanceDTOConverter
 		GeneralConfig.ApplicationDecorator applicationDecorator =
 			_toApplicationDecorator(portletSetupPortletDecoratorId);
 
-		GeneralConfig generalConfig = new GeneralConfig();
-
 		generalConfig.setApplicationDecorator(() -> applicationDecorator);
 		generalConfig.setCustomApplicationDecorator(
 			() -> {
@@ -255,6 +258,7 @@ public class WidgetPageWidgetInstanceDTOConverter
 
 				return portletSetupPortletDecoratorId;
 			});
+
 		generalConfig.setCustomTitle_i18n(
 			() -> _getCustomTitleMap(layout.getGroupId(), portletPreferences));
 		generalConfig.setUseCustomTitle(
@@ -268,9 +272,6 @@ public class WidgetPageWidgetInstanceDTOConverter
 
 				return GetterUtil.getBoolean(value);
 			});
-
-		WidgetLookAndFeelConfig widgetLookAndFeelConfig =
-			new WidgetLookAndFeelConfig();
 
 		widgetLookAndFeelConfig.setGeneralConfig(() -> generalConfig);
 
