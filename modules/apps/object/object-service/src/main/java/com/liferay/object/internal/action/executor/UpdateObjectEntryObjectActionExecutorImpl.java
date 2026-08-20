@@ -141,8 +141,8 @@ public class UpdateObjectEntryObjectActionExecutorImpl
 
 			// The status write waits for the surrounding transaction to
 			// commit, so the rethrow below cannot roll it back with the rest
-			// of the transaction's work. Without a surrounding transaction
-			// the callback runs at once.
+			// of the transaction's work. Without a surrounding transaction,
+			// the callback runs immediately.
 
 			TransactionCallbackUtil.registerCommitCallback(
 				() -> _objectActionLocalService.updateStatus(

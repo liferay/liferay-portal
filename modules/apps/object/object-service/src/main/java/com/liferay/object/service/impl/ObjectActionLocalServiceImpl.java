@@ -533,15 +533,15 @@ public class ObjectActionLocalServiceImpl
 	public ObjectAction updateStatus(long objectActionId, int status)
 		throws PortalException {
 
-		// The status is last execution outcome bookkeeping, written by every
-		// execution of the action, and executions legitimately overlap. Call
-		// this outside of any other transaction, for example through a commit
-		// callback: inside one, a version race would surface at that
-		// transaction's own commit, beyond the reach of the retry. Losing the
-		// race only means another execution's write landed first, and the
-		// retry reads the row that write produced. A fresh read that already
-		// carries the wanted status writes nothing, so the retry quenches
-		// itself.
+		// The status records the outcome of the last execution. Every
+		// execution of the action writes it, and executions legitimately
+		// overlap. Call this outside of any other transaction, such as from a
+		// commit callback. Inside a transaction, a version race would surface
+		// at that transaction's own commit, beyond the reach of the retry.
+		// Losing the race only means that another execution's write landed
+		// first, and the retry reads the row that write produced. A fresh read
+		// that already carries the wanted status writes nothing, so the retry
+		// stops on its own.
 
 		ObjectAction objectAction = objectActionPersistence.findByPrimaryKey(
 			objectActionId);

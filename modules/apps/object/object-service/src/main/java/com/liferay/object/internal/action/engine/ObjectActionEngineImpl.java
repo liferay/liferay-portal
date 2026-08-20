@@ -333,9 +333,9 @@ public class ObjectActionEngineImpl implements ObjectActionEngine {
 		}
 
 		// The status write waits for the surrounding transaction to commit,
-		// so it can neither fail that transaction nor record an outcome for
-		// an execution whose effects roll back with it. Without a
-		// surrounding transaction the callback runs at once.
+		// so it can neither fail that transaction nor record an outcome for an
+		// execution whose effects roll back with it. Without a surrounding
+		// transaction, the callback runs immediately.
 
 		TransactionCallbackUtil.registerCommitCallback(
 			() -> _objectActionLocalService.updateStatus(
