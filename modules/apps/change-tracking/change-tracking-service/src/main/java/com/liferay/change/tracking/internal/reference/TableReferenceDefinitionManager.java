@@ -6,6 +6,8 @@
 package com.liferay.change.tracking.internal.reference;
 
 import com.liferay.change.tracking.spi.reference.TableReferenceDefinition;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.Table;
@@ -22,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -30,7 +31,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
@@ -40,10 +40,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public class TableReferenceDefinitionManager {
 
 	public long getClassNameId(String tableName) {
-		_ensureOpened();
-
-		TableReferenceInfo<?> tableReferenceInfo = _tableReferenceInfos.get(
-			tableName);
+		TableReferenceInfo<?> tableReferenceInfo =
+			_serviceTrackerMap.getService(tableName);
 
 		if (tableReferenceInfo == null) {
 			throw new IllegalStateException(
@@ -58,8 +56,6 @@ public class TableReferenceDefinitionManager {
 	}
 
 	public Map<Long, TableReferenceInfo<?>> getCombinedTableReferenceInfos() {
-		_ensureOpened();
-
 		Map<Long, TableReferenceInfo<?>> combinedTableReferenceInfos =
 			_combinedTableReferenceInfos;
 
@@ -70,12 +66,23 @@ public class TableReferenceDefinitionManager {
 		synchronized (this) {
 			combinedTableReferenceInfos = new HashMap<>();
 
+			List<TableReferenceInfo<?>> tableReferenceInfos = new ArrayList<>();
+
 			for (TableReferenceInfo<?> tableReferenceInfo :
-					_tableReferenceInfos.values()) {
+					_serviceTrackerMap.values()) {
+
+				if (tableReferenceInfo != null) {
+					tableReferenceInfos.add(tableReferenceInfo);
+				}
+			}
+
+			for (TableReferenceInfo<?> tableReferenceInfo :
+					tableReferenceInfos) {
 
 				combinedTableReferenceInfos.put(
 					tableReferenceInfo.getClassNameId(),
-					_getCombinedTableReferenceInfo(tableReferenceInfo));
+					_getCombinedTableReferenceInfo(
+						tableReferenceInfo, tableReferenceInfos));
 			}
 
 			combinedTableReferenceInfos = Collections.unmodifiableMap(
@@ -182,17 +189,35 @@ public class TableReferenceDefinitionManager {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_serviceTracker = new ServiceTracker<>(
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext,
 			(Class<TableReferenceDefinition<?>>)
 				(Class<?>)TableReferenceDefinition.class,
+			null,
+			(serviceReference, emitter) -> {
+				TableReferenceDefinition<?> tableReferenceDefinition =
+					bundleContext.getService(serviceReference);
+
+				try {
+					Table<?> table = tableReferenceDefinition.getTable();
+
+					emitter.emit(table.getTableName());
+
+					synchronized (this) {
+						_combinedTableReferenceInfos = null;
+					}
+				}
+				finally {
+					bundleContext.ungetService(serviceReference);
+				}
+			},
 			new TableReferenceDefinitionServiceTrackerCustomizer(
 				bundleContext));
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_serviceTracker.close();
+		_serviceTrackerMap.close();
 	}
 
 	private Map<Table<?>, List<TableJoinHolder>> _copyTableJoinHoldersMap(
@@ -209,25 +234,10 @@ public class TableReferenceDefinitionManager {
 		return copy;
 	}
 
-	private void _ensureOpened() {
-		if (_opened) {
-			return;
-		}
-
-		synchronized (this) {
-			if (_opened) {
-				return;
-			}
-
-			_serviceTracker.open();
-
-			_opened = true;
-		}
-	}
-
 	private <T extends Table<T>> TableReferenceInfo<T>
 		_getCombinedTableReferenceInfo(
-			TableReferenceInfo<T> tableReferenceInfo) {
+			TableReferenceInfo<T> tableReferenceInfo,
+			List<TableReferenceInfo<?>> tableReferenceInfos) {
 
 		Map<Table<?>, List<TableJoinHolder>> combinedParentTableJoinHoldersMap =
 			_copyTableJoinHoldersMap(
@@ -243,7 +253,7 @@ public class TableReferenceDefinitionManager {
 		T table = tableReferenceDefinition.getTable();
 
 		for (TableReferenceInfo<?> currentTableReferenceInfo :
-				_tableReferenceInfos.values()) {
+				tableReferenceInfos) {
 
 			TableReferenceDefinition<?> currentTableReferenceDefinition =
 				currentTableReferenceInfo.getTableReferenceDefinition();
@@ -303,10 +313,7 @@ public class TableReferenceDefinitionManager {
 
 	private volatile Map<Long, TableReferenceInfo<?>>
 		_combinedTableReferenceInfos;
-	private volatile boolean _opened;
-	private ServiceTracker<?, ?> _serviceTracker;
-	private final Map<String, TableReferenceInfo<?>> _tableReferenceInfos =
-		new ConcurrentHashMap<>();
+	private ServiceTrackerMap<String, TableReferenceInfo<?>> _serviceTrackerMap;
 
 	private class TableReferenceDefinitionServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer
@@ -324,6 +331,8 @@ public class TableReferenceDefinitionManager {
 
 			if (tableReferenceInfo == null) {
 				_bundleContext.ungetService(serviceReference);
+
+				return null;
 			}
 
 			return tableReferenceInfo;
@@ -340,14 +349,7 @@ public class TableReferenceDefinitionManager {
 			ServiceReference<TableReferenceDefinition<?>> serviceReference,
 			TableReferenceInfo<?> tableReferenceInfo) {
 
-			TableReferenceDefinition<?> tableReferenceDefinition =
-				tableReferenceInfo.getTableReferenceDefinition();
-
-			Table<?> table = tableReferenceDefinition.getTable();
-
 			synchronized (TableReferenceDefinitionManager.this) {
-				_tableReferenceInfos.remove(table.getTableName());
-
 				_combinedTableReferenceInfos = null;
 			}
 
@@ -378,22 +380,10 @@ public class TableReferenceDefinitionManager {
 			BasePersistence<?> basePersistence =
 				tableReferenceDefinition.getBasePersistence();
 
-			TableReferenceInfo<T> tableReferenceInfo =
-				TableReferenceInfoFactory.create(
-					_classNameLocalService.getClassNameId(
-						basePersistence.getModelClass()),
-					primaryKeyColumn, tableReferenceDefinition);
-
-			Table<?> table = tableReferenceDefinition.getTable();
-
-			synchronized (TableReferenceDefinitionManager.this) {
-				_tableReferenceInfos.put(
-					table.getTableName(), tableReferenceInfo);
-
-				_combinedTableReferenceInfos = null;
-			}
-
-			return tableReferenceInfo;
+			return TableReferenceInfoFactory.create(
+				_classNameLocalService.getClassNameId(
+					basePersistence.getModelClass()),
+				primaryKeyColumn, tableReferenceDefinition);
 		}
 
 		private final BundleContext _bundleContext;
