@@ -153,7 +153,13 @@ public class ClassNameLocalServiceImpl
 				_log.debug(throwable);
 			}
 
-			return ClassNamePool.fetchByValue(value);
+			// The failure usually means a concurrent insert of the same value
+			// won. Ask again in a fresh transaction, whose snapshot holds
+			// every committed row on any isolation level and none of the
+			// current transaction's uncommitted writes, so the retry returns
+			// the winner's committed row or fails for real
+
+			return classNameLocalService.addClassName(value);
 		}
 	}
 
