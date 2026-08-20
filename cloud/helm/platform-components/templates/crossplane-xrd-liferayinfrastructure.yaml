@@ -49,20 +49,25 @@ spec:
                                     type: object
                                 database:
                                     properties:
+                                        authentication:
+                                            default: password
+                                            enum:
+                                                -   password
+                                                -   workloadIdentity
+                                            type: string
                                         highAvailability:
                                             default: false
                                             type: boolean
                                         instanceType:
-                                            type: string
-                                        rootPasswordSecretName:
+                                            minLength: 1
                                             type: string
                                         storageGB:
                                             type: integer
                                         version:
+                                            minLength: 1
                                             type: string
                                     required:
                                         -   instanceType
-                                        -   rootPasswordSecretName
                                         -   storageGB
                                         -   version
                                     type: object

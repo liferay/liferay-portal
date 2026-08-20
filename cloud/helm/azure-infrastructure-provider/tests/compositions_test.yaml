@@ -6,6 +6,38 @@ templates:
     -   templates/compositions.yaml
 tests:
     -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'kind: Job'
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'image: postgres:18-alpine'
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'image: mcr.microsoft.com/azure-cli'
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'postgresql.sql.m.crossplane.io'
+        it: Bootstraps the database through a job rather than the SQL provider
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'CREATE ROLE {{ \$databaseOwnerRole }} NOLOGIN'
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'GRANT CONNECT, TEMPORARY ON DATABASE'
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'SET ROLE {{ \$databaseOwnerRole }}'
+        it: Grants the application a least privileged database role
+    -   asserts:
             -   equal:
                     path: spec.compositeTypeRef.apiVersion
                     value: liferay.com/v1alpha1
@@ -59,45 +91,55 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: DATABASE_ENDPOINT
+                    pattern: 'autoGeneratePassword: true'
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: DATABASE_PORT
+                    pattern: 'name: database-admin-password'
+        it: Lets the provider generate and own the database administrator password
+    -   asserts:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: DATABASE_USERNAME
+                    pattern: 'kind: FlexibleServerActiveDirectoryAdministrator'
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: LIFERAY_DOCLIB_CONTAINER_NAME
+                    pattern: 'principalType: ServicePrincipal'
+        it: Makes the bootstrap identity a Microsoft Entra administrator
+    -   asserts:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: LIFERAY_DOCLIB_STORAGE_ACCOUNT_NAME
+                    pattern: 'kind: ConfigMap'
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: LIFERAY_OVERLAY_CONTAINER_NAME
+                    pattern: 'name: database-server-details'
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: LIFERAY_OVERLAY_STORAGE_ACCOUNT_NAME
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "name: database-connection-details"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "name: document-library-connection-details"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "name: overlay-bucket-details"
+                    pattern: 'DATABASE_ENDPOINT'
             -   documentIndex: 0
                 notMatchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: DATABASE_PASSWORD
-        it: Publishes the connection details contract without copying the database password
+                    pattern: 'DATABASE_PORT'
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'DATABASE_USERNAME'
+        it: Publishes only the database endpoint it discovered from Azure
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'activeDirectoryAuthEnabled: true'
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'resource-type oss-rdbms'
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'PGPASSWORD=\$\(cat /entra/token\)'
+        it: Uses Microsoft Entra for the bootstrap connection rather than a password

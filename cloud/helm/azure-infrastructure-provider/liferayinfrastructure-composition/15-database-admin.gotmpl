@@ -1,0 +1,69 @@
+{{- $bootstrapIdentityName := printf "%s-db-bootstrap" $baseName -}}
+{{- $bootstrapPrincipalId := dig "database-bootstrap-identity" "resource" "status" "atProvider" "principalId" "" $observedResources }}
+
+{{- if $bootstrapPrincipalId }}
+{{- range $dataPlane := $dataPlanes }}
+apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
+kind: FlexibleServerActiveDirectoryAdministrator
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-entra-administrator-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $baseName }}-entra-administrator-{{ $dataPlane }}
+spec:
+    forProvider:
+        objectId: {{ $bootstrapPrincipalId }}
+        principalName: {{ $bootstrapIdentityName }}
+        principalType: ServicePrincipal
+        resourceGroupName: {{ $env.resourceGroupName }}
+        serverNameSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+    managementPolicies: {{ $managementPolicies }}
+---
+{{- end }}
+{{- end }}
+apiVersion: managedidentity.azure.m.upbound.io/v1beta1
+kind: FederatedIdentityCredential
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-identity-federation
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $bootstrapIdentityName }}-federation
+spec:
+    forProvider:
+        audience:
+            -   api://AzureADTokenExchange
+        issuer: {{ $env.oidcIssuerUrl }}
+        parentIdRef:
+            name: {{ $bootstrapIdentityName }}
+        resourceGroupName: {{ $env.resourceGroupName }}
+        subject: system:serviceaccount:{{ $namespace }}:database-bootstrap
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+---
+apiVersion: managedidentity.azure.m.upbound.io/v1beta1
+kind: UserAssignedIdentity
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-identity
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $bootstrapIdentityName }}
+spec:
+    forProvider:
+        location: {{ $region }}
+        name: {{ $bootstrapIdentityName }}
+        resourceGroupName: {{ $env.resourceGroupName }}
+        tags:
+            {{- $tags | toYaml | nindent 12 }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam

@@ -32,7 +32,10 @@ tests:
                     path: rules
                     value:
                         -   apiGroups: [""]
-                            resources: ["secrets", "serviceaccounts"]
+                            resources: ["configmaps", "secrets", "serviceaccounts"]
+                            verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+                        -   apiGroups: ["batch"]
+                            resources: ["jobs"]
                             verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
             -   documentIndex: 1
                 isKind:

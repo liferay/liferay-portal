@@ -23,10 +23,15 @@ metadata:
     name: {{ $databaseServerName }}
 spec:
     forProvider:
-        administratorLogin: {{ $databaseAdminUser }}
+        administratorLogin: liferay_database_admin
         administratorPasswordSecretRef:
             key: password
-            name: {{ $databaseSpec.rootPasswordSecretName }}
+            name: database-admin-password
+        authentication:
+            activeDirectoryAuthEnabled: true
+            passwordAuthEnabled: true
+            tenantId: {{ $env.tenantId }}
+        autoGeneratePassword: true
         autoGrowEnabled: true
         backupRetentionDays: 7
         {{- if $cmkEnabled }}
@@ -49,7 +54,7 @@ spec:
         privateDnsZoneId: {{ $env.databasePrivateDnsZoneId }}
         publicNetworkAccessEnabled: false
         resourceGroupName: {{ $env.resourceGroupName }}
-        skuName: {{ $databaseSpec.instanceType }}
+        skuName: {{ $databaseSpec.instanceType | default "GP_Standard_D2s_v3" }}
         storageMb: {{ mul ($databaseSpec.storageGB | default 32) 1024 }}
         tags:
             {{- $backupTargetTags | toYaml | nindent 12 }}
@@ -61,7 +66,7 @@ apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1
 kind: FlexibleServerDatabase
 metadata:
     annotations:
-        crossplane.io/external-name: lportal
+        crossplane.io/external-name: {{ $databaseName }}
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-{{ $dataPlane }}
     labels:
         {{- $tags | toYaml | nindent 8 }}

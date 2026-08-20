@@ -1,0 +1,241 @@
+{{- $databaseAppRole := "liferay" -}}
+{{- $databaseOwnerRole := "liferay_shared_owner" -}}
+{{- $entraAdministratorReady := false -}}
+
+{{- range $condition := dig (printf "database-entra-administrator-%s" $activeDataPlane) "resource" "status" "conditions" (list) $observedResources -}}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") -}}
+        {{- $entraAdministratorReady = true -}}
+    {{- end -}}
+{{- end }}
+
+{{- if and $activeDatabaseFqdn $entraAdministratorReady }}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-service-account
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-database-bootstrap-service-account
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+                annotations:
+                    azure.workload.identity/client-id: {{ dig "database-bootstrap-identity" "resource" "status" "atProvider" "clientId" "" $observedResources }}
+                labels:
+                    {{- $tags | toYaml | nindent 20 }}
+                name: database-bootstrap
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-bootstrap-job
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-database-bootstrap-job
+spec:
+    forProvider:
+        manifest:
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+                labels:
+                    {{- $tags | toYaml | nindent 20 }}
+                name: {{ $baseName }}-database-bootstrap
+                namespace: {{ $namespace }}
+            spec:
+                template:
+                    metadata:
+                        labels:
+                            azure.workload.identity/use: "true"
+                    spec:
+                        containers:
+                            -   args:
+                                    -   |
+                                            set -o errexit
+                                            set -o nounset
+
+                                            function main {
+                                                PGPASSWORD=$(cat /entra/token)
+
+                                                export PGPASSWORD
+
+                                                until pg_isready --host "${PGHOST}" --port "${PGPORT}" --username "${PGUSER}"
+                                                do
+                                                    sleep 2
+                                                done
+
+                                                psql --dbname postgres --set ON_ERROR_STOP=1 <<EOF
+                                            DO \$\$
+
+                                            BEGIN
+                                                IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{{ $databaseOwnerRole }}')
+                                                THEN
+                                                    CREATE ROLE {{ $databaseOwnerRole }} NOLOGIN;
+                                                END IF;
+                                            END \$\$;
+
+                                            GRANT {{ $databaseOwnerRole }} TO "${PGUSER}";
+
+                                            ALTER DATABASE "{{ $databaseName }}" OWNER TO {{ $databaseOwnerRole }};
+                                            EOF
+
+                                                psql --dbname postgres --set ON_ERROR_STOP=1 <<EOF
+                                            DO \$\$
+
+                                            BEGIN
+                                                IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{{ $databaseAppRole }}')
+                                                THEN
+                                                    CREATE ROLE {{ $databaseAppRole }} LOGIN;
+                                                END IF;
+                                            END \$\$;
+                                            EOF
+
+                                                psql --dbname postgres --set ON_ERROR_STOP=1 --set pw="${LIFERAY_PASSWORD}" \
+                                                    --command "ALTER ROLE {{ $databaseAppRole }} WITH LOGIN PASSWORD :'pw'"
+
+                                                psql --dbname postgres --set ON_ERROR_STOP=1 <<EOF
+                                            GRANT CONNECT, TEMPORARY ON DATABASE "{{ $databaseName }}" TO "{{ $databaseAppRole }}";
+
+                                            GRANT {{ $databaseOwnerRole }} TO "{{ $databaseAppRole }}";
+
+                                            ALTER ROLE "{{ $databaseAppRole }}" SET ROLE {{ $databaseOwnerRole }};
+                                            EOF
+
+                                                _verify_login
+                                            }
+
+                                            function _verify_login {
+                                                local password="${LIFERAY_PASSWORD}"
+                                                local timeout=$(($(date +%s) + 600))
+
+                                                until PGCONNECT_TIMEOUT=10 PGPASSWORD="${password}" psql \
+                                                    --command "SELECT 1" \
+                                                    --dbname "{{ $databaseName }}" \
+                                                    --username "{{ $databaseAppRole }}" >/dev/null 2>&1
+                                                do
+                                                    if [ "$(date +%s)" -ge "${timeout}" ]
+                                                    then
+                                                        echo "{{ $databaseAppRole }} could not be authenticated." >&2
+
+                                                        exit 1
+                                                    fi
+
+                                                    sleep 2
+                                                done
+
+                                                echo "{{ $databaseAppRole }} authenticated successfully."
+                                            }
+
+                                            main
+                                command:
+                                    -   /bin/sh
+                                    -   -c
+                                env:
+                                    -   name: PGHOST
+                                        value: {{ $activeDatabaseFqdn }}
+                                    -   name: PGPORT
+                                        value: "5432"
+                                    -   name: PGSSLMODE
+                                        value: require
+                                    -   name: PGUSER
+                                        value: {{ $bootstrapIdentityName }}
+                                    -   name: LIFERAY_PASSWORD
+                                        valueFrom:
+                                            secretKeyRef:
+                                                key: DATABASE_PASSWORD
+                                                name: database-app-password
+                                image: postgres:18-alpine
+                                name: sql-runner
+                                resources:
+                                    limits:
+                                        cpu: 200m
+                                        memory: 256Mi
+                                    requests:
+                                        cpu: 100m
+                                        memory: 128Mi
+                                securityContext:
+                                    allowPrivilegeEscalation: false
+                                    capabilities:
+                                        drop:
+                                            -   ALL
+                                    readOnlyRootFilesystem: true
+                                    runAsNonRoot: true
+                                    runAsUser: 1000
+                                    seccompProfile:
+                                        type: RuntimeDefault
+                                volumeMounts:
+                                    -   mountPath: /entra
+                                        name: entra-token
+                                        readOnly: true
+                        initContainers:
+                            -   args:
+                                    -   |
+                                            set -o errexit
+                                            set -o nounset
+
+                                            az login \
+                                                --allow-no-subscriptions \
+                                                --federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
+                                                --service-principal \
+                                                --tenant "${AZURE_TENANT_ID}" \
+                                                --username "${AZURE_CLIENT_ID}" >/dev/null
+
+                                            az account get-access-token \
+                                                --output tsv \
+                                                --query accessToken \
+                                                --resource-type oss-rdbms > /entra/token
+                                command:
+                                    -   /bin/sh
+                                    -   -c
+                                env:
+                                    -   name: AZURE_CONFIG_DIR
+                                        value: /tmp/azure
+                                image: mcr.microsoft.com/azure-cli:2.64.0
+                                name: entra-token
+                                resources:
+                                    limits:
+                                        cpu: 500m
+                                        memory: 512Mi
+                                    requests:
+                                        cpu: 100m
+                                        memory: 256Mi
+                                securityContext:
+                                    allowPrivilegeEscalation: false
+                                    capabilities:
+                                        drop:
+                                            -   ALL
+                                    readOnlyRootFilesystem: true
+                                    runAsNonRoot: true
+                                    runAsUser: 1000
+                                    seccompProfile:
+                                        type: RuntimeDefault
+                                volumeMounts:
+                                    -   mountPath: /entra
+                                        name: entra-token
+                                    -   mountPath: /tmp
+                                        name: tmp
+                        restartPolicy: OnFailure
+                        securityContext:
+                            fsGroup: 1000
+                            runAsNonRoot: true
+                            seccompProfile:
+                                type: RuntimeDefault
+                        serviceAccountName: database-bootstrap
+                        volumes:
+                            -   emptyDir:
+                                    medium: Memory
+                                name: entra-token
+                            -   emptyDir: {}
+                                name: tmp
+    managementPolicies: ["Create", "Observe", "Delete"]
+    readiness:
+        celQuery: object.status.succeeded == 1
+        policy: DeriveFromCelQuery
+{{- end }}
