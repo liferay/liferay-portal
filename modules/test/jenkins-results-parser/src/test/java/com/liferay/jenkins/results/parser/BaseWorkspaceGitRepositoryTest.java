@@ -56,6 +56,24 @@ public class BaseWorkspaceGitRepositoryTest
 	}
 
 	@Test
+	public void testGetBranchName() throws Exception {
+		Assert.assertFalse(
+			JenkinsResultsParserUtil.isNullOrEmpty(_getBranchName("", "")));
+
+		String branchName = RandomTestUtil.randomString();
+
+		testEquals(branchName, _getBranchName(branchName, null));
+
+		String startPropertiesBranchName = RandomTestUtil.randomString();
+
+		testEquals(
+			branchName, _getBranchName(branchName, startPropertiesBranchName));
+		testEquals(
+			startPropertiesBranchName,
+			_getBranchName(null, startPropertiesBranchName));
+	}
+
+	@Test
 	public void testGetGitWorkingDirectory() throws Exception {
 		_testGetGitWorkingDirectory(false, false, false, false);
 		_testGetGitWorkingDirectory(false, false, false, true);
@@ -262,6 +280,54 @@ public class BaseWorkspaceGitRepositoryTest
 		_testValidateSHAInRemoteGitRef(false, true, true);
 		_testValidateSHAInRemoteGitRef(true, false, true);
 		_testValidateSHAInRemoteGitRef(true, true, false);
+	}
+
+	private String _getBranchName(
+			String branchName, String startPropertiesBranchName)
+		throws Exception {
+
+		Map<String, String> environmentMap = new HashMap<>();
+
+		if (branchName != null) {
+			environmentMap.put("TOP_LEVEL_BRANCH_NAME", branchName);
+		}
+
+		Environment environment = mockEnvironment(environmentMap);
+
+		BuildDatabase buildDatabase = Mockito.mock(BuildDatabase.class);
+
+		Properties startProperties = new Properties();
+
+		if (startPropertiesBranchName != null) {
+			startProperties.setProperty(
+				"TOP_LEVEL_BRANCH_NAME", startPropertiesBranchName);
+		}
+
+		Mockito.doReturn(
+			startProperties
+		).when(
+			buildDatabase
+		).getProperties(
+			"start.properties"
+		);
+
+		BuildDatabaseUtil.setBuildDatabase(buildDatabase);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository();
+
+		String actualBranchName = defaultWorkspaceGitRepository.getBranchName();
+
+		testEquals(
+			actualBranchName, defaultWorkspaceGitRepository.getBranchName());
+
+		Mockito.verify(
+			environment, Mockito.times(1)
+		).doGet(
+			"TOP_LEVEL_BRANCH_NAME"
+		);
+
+		return actualBranchName;
 	}
 
 	private VerificationMode _getVerificationMode(boolean invoked) {
