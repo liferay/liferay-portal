@@ -15,12 +15,15 @@ import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorCons
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkService;
+import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.layout.taglib.servlet.taglib.RenderFragmentLayoutTag;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.layout.util.structure.StyledLayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -36,6 +39,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
@@ -54,6 +58,8 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hamcrest.CoreMatchers;
 
@@ -106,6 +112,78 @@ public class LayoutAdaptiveMediaProcessorTest {
 		_themeDisplay.setUser(TestPropsValues.getUser());
 
 		_addLayout();
+	}
+
+	@Test
+	@TestInfo("LPD-102769")
+	public void testContentPageAdaptiveMediaBackgroundImage() throws Exception {
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					_group.getGroupId(), _themeDisplay.getPlid());
+
+		LayoutStructure layoutStructure = LayoutStructure.of(
+			layoutPageTemplateStructure.getDefaultSegmentsExperienceData());
+
+		_setBackgroundImage(
+			_containerStyledLayoutStructureItemId, layoutStructure);
+
+		FragmentEntryLink fragmentEntryLink1 = _addFragmentEntryLink(
+			_themeDisplay.getPlid());
+
+		LayoutStructureItem layoutStructureItem1 =
+			layoutStructure.addFragmentStyledLayoutStructureItem(
+				fragmentEntryLink1.getFragmentEntryLinkId(),
+				_containerStyledLayoutStructureItemId, 1);
+
+		_setBackgroundImage(layoutStructureItem1.getItemId(), layoutStructure);
+
+		FragmentEntryLink fragmentEntryLink2 = _addFragmentEntryLink(
+			_themeDisplay.getPlid());
+
+		LayoutStructureItem layoutStructureItem2 =
+			layoutStructure.addFragmentStyledLayoutStructureItem(
+				fragmentEntryLink2.getFragmentEntryLinkId(),
+				_containerStyledLayoutStructureItemId, 2);
+
+		_setBackgroundImage(layoutStructureItem2.getItemId(), layoutStructure);
+
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructureData(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_themeDisplay.getPlid(),
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(_themeDisplay.getPlid()),
+				layoutStructure.toString());
+
+		String content = _render();
+
+		String containerBackgroundImageCSS = _getBackgroundImageCSS(
+			1, _containerStyledLayoutStructureItemId);
+		String fragmentBackgroundImageCSS1 = _getBackgroundImageCSS(
+			1, layoutStructureItem1.getItemId());
+		String fragmentBackgroundImageCSS2 = _getBackgroundImageCSS(
+			1, layoutStructureItem2.getItemId());
+
+		Assert.assertThat(
+			content, CoreMatchers.containsString(containerBackgroundImageCSS));
+		Assert.assertThat(
+			content, CoreMatchers.containsString(fragmentBackgroundImageCSS1));
+		Assert.assertThat(
+			content, CoreMatchers.containsString(fragmentBackgroundImageCSS2));
+
+		Matcher matcher = _randomIdCSSSelectorPattern.matcher(content);
+
+		Assert.assertFalse(content, matcher.find());
+
+		content = _render();
+
+		Assert.assertThat(
+			content, CoreMatchers.containsString(containerBackgroundImageCSS));
+		Assert.assertThat(
+			content, CoreMatchers.containsString(fragmentBackgroundImageCSS1));
+		Assert.assertThat(
+			content, CoreMatchers.containsString(fragmentBackgroundImageCSS2));
 	}
 
 	@Test
@@ -214,23 +292,39 @@ public class LayoutAdaptiveMediaProcessorTest {
 		Assert.assertThat(content, CoreMatchers.containsString(sb.toString()));
 	}
 
-	private void _addLayout() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+	@Test
+	@TestInfo("LPD-102769")
+	public void testProcessAdaptiveMediaContentWithRepeatedItem()
+		throws Exception {
+
+		String style = StringBundler.concat(
+			"--background-image-file-entry-id: ", _fileEntry.getFileEntryId(),
+			";");
+
+		String styledElementHTML = StringBundler.concat(
+			"<div data-layout-structure-item-id=\"", _DIGIT_LEADING_ITEM_ID,
+			"\" style=\"", style, "\"></div>");
+
+		String content =
+			_layoutAdaptiveMediaProcessor.processAdaptiveMediaContent(
+				styledElementHTML + styledElementHTML);
+
+		Assert.assertThat(
+			content,
+			CoreMatchers.containsString(
+				_getBackgroundImageCSS(1, _DIGIT_LEADING_ITEM_ID)));
+		Assert.assertThat(
+			content,
+			CoreMatchers.containsString(
+				_getBackgroundImageCSS(2, _DIGIT_LEADING_ITEM_ID)));
+	}
+
+	private FragmentEntryLink _addFragmentEntryLink(long plid)
+		throws Exception {
 
 		FragmentEntry fragmentEntry =
 			_fragmentCollectionContributorRegistry.getFragmentEntry(
 				"BASIC_COMPONENT-image");
-
-		long defaultSegmentsExperienceId =
-			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				layout.getPlid());
-
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringUtil.randomString(), ContentTypes.IMAGE_JPEG,
-			FileUtil.getBytes(getClass(), "dependencies/image.jpg"), null, null,
-			null, _serviceContext);
 
 		JSONObject editableValuesJSONObject = JSONUtil.put(
 			FragmentEntryProcessorConstants.
@@ -240,19 +334,33 @@ public class LayoutAdaptiveMediaProcessorTest {
 				JSONUtil.put(
 					LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
 					JSONUtil.put(
-						"fileEntryId", fileEntry.getFileEntryId()
+						"fileEntryId", _fileEntry.getFileEntryId()
 					).put(
 						"url", "test"
 					))));
 
-		_fragmentEntryLink = _fragmentEntryLinkService.addFragmentEntryLink(
+		return _fragmentEntryLinkService.addFragmentEntryLink(
 			null, _group.getGroupId(), null,
 			fragmentEntry.getExternalReferenceCode(), null,
-			defaultSegmentsExperienceId, layout.getPlid(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				plid),
+			plid, fragmentEntry.getCss(), fragmentEntry.getHtml(),
 			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
 			editableValuesJSONObject.toString(), StringPool.BLANK, 0, null,
 			fragmentEntry.getType(), _serviceContext);
+	}
+
+	private void _addLayout() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		_fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), ContentTypes.IMAGE_JPEG,
+			FileUtil.getBytes(getClass(), "dependencies/image.jpg"), null, null,
+			null, _serviceContext);
+
+		_fragmentEntryLink = _addFragmentEntryLink(layout.getPlid());
 
 		LayoutStructure layoutStructure = new LayoutStructure();
 
@@ -265,14 +373,19 @@ public class LayoutAdaptiveMediaProcessorTest {
 			layoutStructure.addContainerStyledLayoutStructureItem(
 				rootLayoutStructureItem.getItemId(), 0);
 
+		_containerStyledLayoutStructureItemId =
+			containerStyledLayoutStructureItem.getItemId();
+
 		layoutStructure.addFragmentStyledLayoutStructureItem(
 			_fragmentEntryLink.getFragmentEntryLinkId(),
-			containerStyledLayoutStructureItem.getItemId(), 0);
+			_containerStyledLayoutStructureItemId, 0);
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
 				TestPropsValues.getUserId(), _group.getGroupId(),
-				layout.getPlid(), defaultSegmentsExperienceId,
+				layout.getPlid(),
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(layout.getPlid()),
 				layoutStructure.toString());
 
 		_themeDisplay.setLayout(layout);
@@ -284,14 +397,71 @@ public class LayoutAdaptiveMediaProcessorTest {
 		_themeDisplay.setPlid(layout.getPlid());
 	}
 
+	private String _getBackgroundImageCSS(int count, String itemId) {
+		return StringBundler.concat(
+			_CSS_SELECTOR_PREFIX, itemId, StringPool.DASH, count,
+			"{background-image: url(/o/adaptive-media/image/",
+			_fileEntry.getFileEntryId(), "/");
+	}
+
+	private String _render() throws Exception {
+		RenderFragmentLayoutTag renderFragmentLayoutTag =
+			new RenderFragmentLayoutTag();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.CTX, mockHttpServletRequest.getServletContext());
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
+		mockHttpServletRequest.setMethod(HttpMethods.GET);
+
+		_themeDisplay.setRequest(mockHttpServletRequest);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		renderFragmentLayoutTag.doTag(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		return mockHttpServletResponse.getContentAsString();
+	}
+
+	private void _setBackgroundImage(
+		String itemId, LayoutStructure layoutStructure) {
+
+		StyledLayoutStructureItem styledLayoutStructureItem =
+			(StyledLayoutStructureItem)layoutStructure.getLayoutStructureItem(
+				itemId);
+
+		styledLayoutStructureItem.updateItemConfig(
+			JSONUtil.put(
+				"styles",
+				JSONUtil.put(
+					"backgroundImage",
+					JSONUtil.put("fileEntryId", _fileEntry.getFileEntryId()))));
+	}
+
+	private static final String _CSS_SELECTOR_PREFIX = "#lfr-background-image-";
+
+	private static final String _DIGIT_LEADING_ITEM_ID = "1repeated-item";
+
+	private static final Pattern _randomIdCSSSelectorPattern = Pattern.compile(
+		_CSS_SELECTOR_PREFIX + "[a-z]{4}\\{");
+
 	@Inject
 	private AMImageConfigurationHelper _amImageConfigurationHelper;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
+	private String _containerStyledLayoutStructureItemId;
+
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
+
+	private FileEntry _fileEntry;
 
 	@Inject
 	private FragmentCollectionContributorRegistry
@@ -304,6 +474,9 @@ public class LayoutAdaptiveMediaProcessorTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private LayoutAdaptiveMediaProcessor _layoutAdaptiveMediaProcessor;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
