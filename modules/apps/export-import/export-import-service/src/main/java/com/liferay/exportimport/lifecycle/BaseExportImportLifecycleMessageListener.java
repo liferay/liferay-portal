@@ -8,7 +8,6 @@ package com.liferay.exportimport.lifecycle;
 import com.liferay.exportimport.kernel.lifecycle.EventAwareExportImportLifecycleListener;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleEvent;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleListener;
-import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleListenerFactoryUtil;
 import com.liferay.exportimport.kernel.lifecycle.ProcessAwareExportImportLifecycleListener;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
@@ -85,7 +84,7 @@ public abstract class BaseExportImportLifecycleMessageListener
 					ProcessAwareExportImportLifecycleListener) {
 
 				exportImportLifecycleListener =
-					ExportImportLifecycleListenerFactoryUtil.create(
+					new DefaultProcessAwareExportImportLifecycleListener(
 						(ProcessAwareExportImportLifecycleListener)
 							exportImportLifecycleListener);
 			}
@@ -93,7 +92,7 @@ public abstract class BaseExportImportLifecycleMessageListener
 						EventAwareExportImportLifecycleListener) {
 
 				exportImportLifecycleListener =
-					ExportImportLifecycleListenerFactoryUtil.create(
+					new DefaultEventAwareExportImportLifecycleListener(
 						(EventAwareExportImportLifecycleListener)
 							exportImportLifecycleListener);
 			}
