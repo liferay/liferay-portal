@@ -122,8 +122,11 @@ import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.text.Format;
 
@@ -1491,11 +1494,53 @@ public class EditFileEntryMVCActionCommand extends BaseMVCActionCommand {
 					themeDisplay.getScopeGroupId(), folderId,
 					FileUtil.stripExtension(sourceFileName));
 
-				fileEntry = _dlAppService.addFileEntry(
-					externalReferenceCode, repositoryId, folderId,
-					uniqueFileName, contentType, uniqueFileTitle,
-					StringPool.BLANK, description, changeLog, inputStream, size,
-					displayDate, expirationDate, reviewDate, serviceContext);
+				File file = uploadPortletRequest.getFile("file", true);
+
+				try (FileInputStream fileInputStream = new FileInputStream(
+						file)) {
+
+					fileEntry = _dlAppService.addFileEntry(
+						externalReferenceCode, repositoryId, folderId,
+						uniqueFileName, contentType, uniqueFileTitle,
+						StringPool.BLANK, description, changeLog,
+						fileInputStream, size, displayDate, expirationDate,
+						reviewDate, serviceContext);
+				}
+				catch (DDMFormValuesValidationException.RequiredValue
+							ddmFormValuesValidationException) {
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Adding file entry as a draft because a required " +
+								"field is missing",
+							ddmFormValuesValidationException);
+					}
+
+					Serializable validateDDMFormValues =
+						serviceContext.getAttribute("validateDDMFormValues");
+					int workflowAction = serviceContext.getWorkflowAction();
+
+					serviceContext.setAttribute(
+						"validateDDMFormValues", Boolean.FALSE);
+					serviceContext.setWorkflowAction(
+						WorkflowConstants.ACTION_SAVE_DRAFT);
+
+					try (FileInputStream fileInputStream = new FileInputStream(
+							file)) {
+
+						fileEntry = _dlAppService.addFileEntry(
+							externalReferenceCode, repositoryId, folderId,
+							uniqueFileName, contentType, uniqueFileTitle,
+							StringPool.BLANK, description, changeLog,
+							fileInputStream, size, displayDate, expirationDate,
+							reviewDate, serviceContext);
+					}
+					finally {
+						serviceContext.setAttribute(
+							"validateDDMFormValues", validateDDMFormValues);
+						serviceContext.setWorkflowAction(workflowAction);
+					}
+				}
 
 				JSONObject jsonObject = JSONUtil.put(
 					"fileEntryId", fileEntry.getFileEntryId());
