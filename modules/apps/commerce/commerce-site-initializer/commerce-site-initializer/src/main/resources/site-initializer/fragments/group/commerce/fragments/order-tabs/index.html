@@ -5,22 +5,22 @@
 <div class="component-tabs">
 	[#if themeDisplay.isSignedIn() && (hasShipments || hasReturns || hasAttachments)]
 	<nav class="navbar navbar-collapse-relative navbar-expand-md navbar-underline navigation-bar navigation-bar-light">
-		<button aria-activedescendant aria-controls="navigationBarCollapse-${fragmentEntryLinkNamespace}" aria-expanded="false" aria-haspopup="listbox" aria-label="${languageUtil.format(locale, 'current-x', ['selection'])}:" class="collapsed navbar-toggler navbar-toggler-link" data-toggle="collapse" role="combobox">
+		<button aria-controls="navigationBarCollapse-${fragmentEntryLinkNamespace}" aria-expanded="false" aria-haspopup="listbox" aria-label="${languageUtil.format(locale, 'current-x', ['selection'])}:" class="collapsed navbar-toggler navbar-toggler-link" data-toggle="collapse" role="combobox">
 			<span class="navbar-text-truncate">${languageUtil.get(locale, "Orders")}</span>
 			<span class="icon-caret-bottom"></span>
 		</button>
 
-		<button aria-activedescendant aria-controls="navigationBarCollapse-${fragmentEntryLinkNamespace}" aria-expanded="false" aria-haspopup="listbox" aria-label="${languageUtil.format(locale, 'current-x', ['selection'])}:" class="collapsed navbar-toggler navbar-toggler-link" data-toggle="collapse" role="combobox">
+		<button aria-controls="navigationBarCollapse-${fragmentEntryLinkNamespace}" aria-expanded="false" aria-haspopup="listbox" aria-label="${languageUtil.format(locale, 'current-x', ['selection'])}:" class="collapsed navbar-toggler navbar-toggler-link" data-toggle="collapse" role="combobox">
 			<span class="navbar-text-truncate">${languageUtil.get(locale, "Shipments")}</span>
 			<span class="icon-caret-bottom"></span>
 		</button>
 
-		<button aria-activedescendant aria-controls="navigationBarCollapse-${fragmentEntryLinkNamespace}" aria-expanded="false" aria-haspopup="listbox" aria-label="${languageUtil.format(locale, 'current-x', ['selection'])}:" class="collapsed navbar-toggler navbar-toggler-link" data-toggle="collapse" role="combobox">
+		<button aria-controls="navigationBarCollapse-${fragmentEntryLinkNamespace}" aria-expanded="false" aria-haspopup="listbox" aria-label="${languageUtil.format(locale, 'current-x', ['selection'])}:" class="collapsed navbar-toggler navbar-toggler-link" data-toggle="collapse" role="combobox">
 			<span class="navbar-text-truncate">${languageUtil.get(locale, "Returns")}</span>
 			<span class="icon-caret-bottom"></span>
 		</button>
 
-		<button aria-activedescendant aria-controls="navigationBarCollapse-${fragmentEntryLinkNamespace}" aria-expanded="false" aria-haspopup="listbox" aria-label="${languageUtil.format(locale, 'current-x', ['selection'])}:" class="collapsed navbar-toggler navbar-toggler-link" data-toggle="collapse" role="combobox">
+		<button aria-controls="navigationBarCollapse-${fragmentEntryLinkNamespace}" aria-expanded="false" aria-haspopup="listbox" aria-label="${languageUtil.format(locale, 'current-x', ['selection'])}:" class="collapsed navbar-toggler navbar-toggler-link" data-toggle="collapse" role="combobox">
 			<span class="navbar-text-truncate">${languageUtil.get(locale, "Attachments")}</span>
 			<span class="icon-caret-bottom"></span>
 		</button>
@@ -29,25 +29,25 @@
 			<ul class="navbar-nav" role="tablist">
 				<li class="nav-item" role="presentation">
 					<button aria-controls="tabPanel1-${fragmentEntryLinkNamespace}" aria-selected="true" class="active nav-link" data-fragment-namespace="${fragmentEntryLinkNamespace}" id="tab1-${fragmentEntryLinkNamespace}" role="tab">
-						<span class="navbar-text-truncate" data-lfr-editable-id="title1" data-lfr-editable-type="text" data-lfr-priority="1" tabindex="-1">
+						<span class="navbar-text-truncate" data-lfr-editable-id="title1" data-lfr-editable-type="text" data-lfr-priority="1">
 							${languageUtil.get(locale, "Details")}
 						</span>
 					</button>
 
 					<button aria-controls="tabPanel2-${fragmentEntryLinkNamespace}" aria-selected="false" class="[#if !hasShipments]hide[/#if] nav-link" data-fragment-namespace="${fragmentEntryLinkNamespace}" id="tab2-${fragmentEntryLinkNamespace}" role="tab">
-						<span class="navbar-text-truncate" data-lfr-editable-id="title2" data-lfr-editable-type="text" data-lfr-priority="1" tabindex="-1">
+						<span class="navbar-text-truncate" data-lfr-editable-id="title2" data-lfr-editable-type="text" data-lfr-priority="1">
 							${languageUtil.get(locale, "Shipments")}
 						</span>
 					</button>
 
 					<button aria-controls="tabPanel3-${fragmentEntryLinkNamespace}" aria-selected="false" class="[#if !hasReturns]hide[/#if] nav-link" data-fragment-namespace="${fragmentEntryLinkNamespace}" id="tab3-${fragmentEntryLinkNamespace}" role="tab">
-						<span class="navbar-text-truncate" data-lfr-editable-id="title3" data-lfr-editable-type="text" data-lfr-priority="1" tabindex="-1">
+						<span class="navbar-text-truncate" data-lfr-editable-id="title3" data-lfr-editable-type="text" data-lfr-priority="1">
 							${languageUtil.get(locale, "Returns")}
 						</span>
 					</button>
 
 					<button aria-controls="tabPanel4-${fragmentEntryLinkNamespace}" aria-selected="false" class="[#if !hasAttachments]hide[/#if] nav-link" data-fragment-namespace="${fragmentEntryLinkNamespace}" id="tab4-${fragmentEntryLinkNamespace}" role="tab">
-						<span class="navbar-text-truncate" data-lfr-editable-id="title4" data-lfr-editable-type="text" data-lfr-priority="1" tabindex="-1">
+						<span class="navbar-text-truncate" data-lfr-editable-id="title4" data-lfr-editable-type="text" data-lfr-priority="1">
 							${languageUtil.get(locale, "Attachments")}
 						</span>
 					</button>
