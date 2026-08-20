@@ -258,11 +258,9 @@ export class SpaceSummaryPage {
 	async connectSite(siteName: string) {
 		await this.openConnectSitesDialog();
 
-		await this.page.getByLabel('Sites', {exact: true}).click();
-
-		await this.page
-			.getByRole('option', {exact: true, name: 'Sites'})
-			.click();
+		await expect(this.page.getByLabel('Sites', {exact: true})).toHaveText(
+			'Sites'
+		);
 
 		await this.page
 			.getByPlaceholder('Select a Site', {exact: true})
