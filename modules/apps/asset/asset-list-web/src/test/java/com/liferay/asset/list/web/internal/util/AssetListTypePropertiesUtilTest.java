@@ -159,7 +159,36 @@ public class AssetListTypePropertiesUtilTest {
 	}
 
 	@Test
-	public void testGetTypePropertiesJSONArrayEmitsSortableFlag() {
+	public void testGetTypePropertiesJSONArrayEmitsSortableFlagsForCommonFields() {
+		JSONArray jsonArray =
+			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
+				new long[0], new long[0], _COMPANY_ID, LocaleUtil.US);
+
+		JSONObject groupJSONObject = jsonArray.getJSONObject(0);
+
+		JSONArray itemsJSONArray = groupJSONObject.getJSONArray("items");
+
+		for (int i = 0; i < itemsJSONArray.length(); i++) {
+			JSONObject itemJSONObject = itemsJSONArray.getJSONObject(i);
+
+			String name = itemJSONObject.getString("name");
+
+			boolean expectedSortable = true;
+
+			if (name.equals("externalReferenceCode") ||
+				name.equals(Field.REVIEW_DATE) || name.equals("status")) {
+
+				expectedSortable = false;
+			}
+
+			Assert.assertEquals(
+				itemJSONObject.toString(), expectedSortable,
+				itemJSONObject.getBoolean("sortable"));
+		}
+	}
+
+	@Test
+	public void testGetTypePropertiesJSONArrayEmitsSortableFlagsForObjectFields() {
 		_setUpObjectDefinition(
 			_CLASS_NAME_ID_1, _LABEL_1,
 			Arrays.asList(
