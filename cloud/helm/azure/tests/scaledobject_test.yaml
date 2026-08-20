@@ -1,0 +1,54 @@
+release:
+    name: liferay
+    namespace: liferay-example-dev
+suite: KEDA ScaledObject Azure provider
+templates:
+    -   charts/liferay-default/templates/scaledobject.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits ScaledObject when autoscaling is disabled
+    -   asserts:
+            -   equal:
+                    path: spec.triggers[1].metadata.serverAddress
+                    value: ""
+        it: Leaves the server address empty when the monitor workspace endpoint is unavailable
+        set:
+            liferay-default.autoscaling.enabled: true
+    -   asserts:
+            -   isKind:
+                    of: ScaledObject
+            -   equal:
+                    path: spec.scaleTargetRef.kind
+                    value: StatefulSet
+            -   equal:
+                    path: spec.triggers[0].type
+                    value: cpu
+            -   notExists:
+                    path: spec.triggers[0].metadata.serverAddress
+            -   equal:
+                    path: spec.triggers[1].metadata.serverAddress
+                    value: https://liferay-test-amw-abcd.eastus.prometheus.monitor.azure.com
+            -   equal:
+                    path: spec.triggers[2].metadata.serverAddress
+                    value: https://liferay-test-amw-abcd.eastus.prometheus.monitor.azure.com
+            -   equal:
+                    path: spec.triggers[3].metadata.serverAddress
+                    value: https://liferay-test-amw-abcd.eastus.prometheus.monitor.azure.com
+            -   equal:
+                    path: spec.triggers[1].authenticationRef.name
+                    value: liferay-default
+            -   equal:
+                    path: spec.triggers[2].authenticationRef.name
+                    value: liferay-default
+            -   equal:
+                    path: spec.triggers[3].authenticationRef.name
+                    value: liferay-default
+            -   matchRegex:
+                    path: spec.triggers[1].metadata.query
+                    pattern: namespace="liferay-example-dev"
+        it: Renders ScaledObject with the Azure monitor workspace query endpoint when autoscaling is enabled
+        set:
+            global.azure.prometheusWorkspaceEndpoint: https://liferay-test-amw-abcd.eastus.prometheus.monitor.azure.com
+            liferay-default.autoscaling.enabled: true

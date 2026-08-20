@@ -1,0 +1,28 @@
+suite: KEDA TriggerAuthentication Azure provider
+templates:
+    -   charts/liferay-default/templates/triggerauthentication.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits TriggerAuthentication when autoscaling is disabled
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits TriggerAuthentication when autoscaling falls back to the horizontal pod autoscaler
+        set:
+            liferay-default.autoscaling.enabled: true
+            liferay-default.autoscaling.type: hpa
+    -   asserts:
+            -   isKind:
+                    of: TriggerAuthentication
+            -   equal:
+                    path: spec.podIdentity.provider
+                    value: azure-workload
+            -   notExists:
+                    path: spec.podIdentity.identityId
+            -   notExists:
+                    path: spec.secretTargetRef
+        it: Renders TriggerAuthentication with podIdentity.provider=azure-workload when autoscaling is enabled
+        set:
+            liferay-default.autoscaling.enabled: true
