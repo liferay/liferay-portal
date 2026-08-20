@@ -47,6 +47,11 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 		Assert.assertEquals(
 			"base",
 			_getInvalidElementName(
+				"<link title=\"<script>\"><base " +
+					"href=\"https://liferay.com\">"));
+		Assert.assertEquals(
+			"base",
+			_getInvalidElementName(
 				"<script>x();</script/><base href=\"https://liferay.com\">"));
 		Assert.assertEquals(
 			"base",
@@ -59,6 +64,12 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 		Assert.assertEquals(
 			"img",
 			_getInvalidElementName("<img onerror=\"alert(1)\" src=\"x\">"));
+		Assert.assertEquals(
+			"meta",
+			_getInvalidElementName(
+				"<link as=\"script\" href=\"x\" title=\"<script>\"><meta " +
+					"content=\"0;url=https://liferay.com\" " +
+						"http-equiv=\"refresh\">"));
 		Assert.assertEquals(
 			"meta",
 			_getInvalidElementName(
@@ -85,6 +96,7 @@ public class ConsentManagementPlatformConfigurationModelListenerTest {
 		Assert.assertNull(
 			_getInvalidElementName(
 				"<SCRIPT SRC=\"https://liferay.com/x.js\"></SCRIPT>"));
+		Assert.assertNull(_getInvalidElementName("<link title=\"<b>ok</b>\">"));
 		Assert.assertNull(
 			_getInvalidElementName("<script>if (a<b) { c(); }</script>"));
 		Assert.assertNull(

@@ -46,7 +46,7 @@ public class ConsentManagementPlatformConfigurationModelListener
 		while ((index = html.indexOf(CharPool.LESS_THAN, index)) != -1) {
 			if (html.startsWith("<!--", index)) {
 
-				// "<!-->" and "<!--->" close on the dashes of "<!--"
+				// Both "<!-->" and "<!--->" close on the dashes of "<!--"
 
 				Matcher commentEndMatcher = _commentEndPattern.matcher(html);
 
@@ -76,7 +76,7 @@ public class ConsentManagementPlatformConfigurationModelListener
 				return elementName;
 			}
 
-			index = matcher.end();
+			index = _getStartTagEndIndex(html, matcher.end());
 
 			if (!StringUtil.equalsIgnoreCase(elementName, "script") ||
 				StringUtil.startsWith(matcher.group(), "</")) {
@@ -95,6 +95,32 @@ public class ConsentManagementPlatformConfigurationModelListener
 		}
 
 		return null;
+	}
+
+	private int _getStartTagEndIndex(String html, int index) {
+		while (index < html.length()) {
+			char c = html.charAt(index);
+
+			if (c == CharPool.GREATER_THAN) {
+				return index + 1;
+			}
+
+			if ((c == CharPool.APOSTROPHE) || (c == CharPool.QUOTE)) {
+				int endIndex = html.indexOf(c, index + 1);
+
+				if (endIndex == -1) {
+					return html.length();
+				}
+
+				index = endIndex + 1;
+
+				continue;
+			}
+
+			index++;
+		}
+
+		return html.length();
 	}
 
 	private void _validateElementNames(
