@@ -13,6 +13,11 @@ import {clickAndExpectToBeVisible} from '../../../../../utils/clickAndExpectToBe
 import {waitForFDS} from '../../../../../utils/waitFor';
 import {fdsSamplePageTest} from '../../fixtures/fdsSamplePageTest';
 
+// The Title filter is backed by an API, which the selection filter pages ten
+// items at a time.
+
+const SELECTION_FILTER_PAGE_SIZE = 10;
+
 const test = mergeTests(
 	apiHelpersTest,
 	fdsSamplePageTest,
@@ -701,6 +706,72 @@ test(
 					name: 'Red',
 				})
 			).not.toBeChecked();
+		});
+	}
+);
+
+test(
+	'Selection filter keeps a single scrolling area and a visible action button',
+	{
+		tag: ['@LPD-97504'],
+	},
+	async ({fdsSamplePage, page}) => {
+		const openFilterMenu = page.locator(
+			'.dropdown-menu.show:has(.data-set-filter)'
+		);
+
+		await test.step('Open the Title filter', async () => {
+			await fdsSamplePage.managementToolbar.filterButton.click();
+
+			await fdsSamplePage.filterMenu
+				.getByRole('menuitem', {name: 'Title'})
+				.click();
+
+			await expect(
+				openFilterMenu.getByRole('checkbox', {
+					exact: true,
+					name: 'Sample1',
+				})
+			).toBeVisible();
+		});
+
+		await test.step('Select every item of the first page, which used to overflow the dropdown', async () => {
+			for (let index = 1; index <= SELECTION_FILTER_PAGE_SIZE; index++) {
+				const checkbox = openFilterMenu.getByRole('checkbox', {
+					exact: true,
+					name: `Sample${index}`,
+				});
+
+				await checkbox.scrollIntoViewIfNeeded();
+
+				await checkbox.check();
+			}
+
+			await expect(
+				openFilterMenu.locator('.label-dismissible')
+			).toHaveCount(SELECTION_FILTER_PAGE_SIZE);
+		});
+
+		await test.step('Check the item list is the only scrolling area', async () => {
+			expect(
+				await openFilterMenu.evaluate((menu: HTMLElement) =>
+					[menu, ...menu.querySelectorAll<HTMLElement>('*')]
+						.filter(
+							(element) =>
+								['auto', 'scroll'].includes(
+									getComputedStyle(element).overflowY
+								) &&
+								element.scrollHeight > element.clientHeight + 1
+						)
+						.map((element) => element.className)
+				)
+			).toEqual(['filter-body']);
+		});
+
+		await test.step('Check the Add Filter button is visible', async () => {
+			await expect(
+				openFilterMenu.getByRole('button', {name: 'Add Filter'})
+			).toBeInViewport();
 		});
 	}
 );

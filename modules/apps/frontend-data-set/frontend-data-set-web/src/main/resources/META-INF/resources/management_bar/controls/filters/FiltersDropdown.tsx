@@ -73,6 +73,7 @@ const FiltersDropdown = () => {
 		<ClayDropDown
 			active={active}
 			className="filters-dropdown"
+			menuElementAttrs={{className: 'filter-dropdown-menu'}}
 			onActiveChange={setActive}
 			trigger={
 				<Button

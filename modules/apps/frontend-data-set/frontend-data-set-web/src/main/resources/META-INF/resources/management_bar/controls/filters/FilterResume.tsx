@@ -88,6 +88,7 @@ function FilterResume({
 				<ClayDropDown
 					active={open}
 					className="d-inline-flex"
+					menuElementAttrs={{className: 'filter-dropdown-menu'}}
 					onActiveChange={setOpen}
 					trigger={
 						<ClayButton

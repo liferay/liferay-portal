@@ -1,0 +1,59 @@
+// A filter panel is rendered in a dropdown menu, which Clay renders in a
+// portal, outside of the `.fds` wrapper, so these styles cannot be nested under
+// it.
+
+.filter-dropdown-menu {
+	// A selection filter renders its item list inside `.filter-body`, which is
+	// the only scrolling region of the panel. The panel is laid out as a flex
+	// column so that `.filter-body` absorbs the leftover space instead of
+	// overflowing the menu, which would add a second, nested scrollbar and push
+	// the action button below the fold.
+
+	// `.show` keeps `display` from overriding the closed state of the menu,
+	// which Clay implements with `display: none`.
+
+	&.show:has(.filter-body) {
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+
+		.data-set-filter {
+			display: flex;
+			flex: 1 1 auto;
+			flex-direction: column;
+			min-height: 0;
+		}
+
+		.filter-body {
+			flex: 1 1 auto;
+			min-height: 0;
+			overflow-y: auto;
+		}
+
+		.dropdown-subheader,
+		.filter-footer,
+		.filter-header {
+			flex: 0 0 auto;
+		}
+	}
+
+	.filter-body {
+		.custom-control-label {
+			display: flex;
+
+			&::before {
+				flex-shrink: 0;
+			}
+		}
+
+		.form-control {
+			padding-left: map-get($spacers, 2);
+			padding-right: map-get($spacers, 2);
+		}
+	}
+
+	.filter-items {
+		list-style: none;
+		margin-bottom: 0;
+	}
+}

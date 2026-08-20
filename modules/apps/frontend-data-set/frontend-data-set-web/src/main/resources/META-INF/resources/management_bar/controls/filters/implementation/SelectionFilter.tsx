@@ -406,23 +406,25 @@ function SelectionFilter({
 	return (
 		<>
 			{autocompleteEnabled && (
-				<>
-					<ClayDropDown.Caption className="pb-0">
-						<ClayAutocomplete>
-							<ClayAutocomplete.Input
-								onChange={(
-									event: ChangeEvent<HTMLInputElement>
-								) =>
-									handleAutocompleteQuery(event.target.value)
-								}
-								placeholder={inputPlaceholder}
-							/>
+				<ClayDropDown.Caption className="filter-header">
+					<ClayAutocomplete>
+						<ClayAutocomplete.Input
+							onChange={(event: ChangeEvent<HTMLInputElement>) =>
+								handleAutocompleteQuery(event.target.value)
+							}
+							placeholder={inputPlaceholder}
+						/>
 
-							{loading && <ClayAutocomplete.LoadingIndicator />}
-						</ClayAutocomplete>
+						{loading && <ClayAutocomplete.LoadingIndicator />}
+					</ClayAutocomplete>
+				</ClayDropDown.Caption>
+			)}
 
-						{selectedItems.length ? (
-							<div className="mt-2 selected-elements-wrapper">
+			<div className="filter-body" ref={setScrollingArea}>
+				{autocompleteEnabled && !!selectedItems.length ? (
+					<>
+						<ClayDropDown.Caption className="pt-0">
+							<div className="selected-elements-wrapper">
 								{selectedItems.map((selectedItem) => (
 									<ClayLabel
 										closeButtonProps={{
@@ -441,97 +443,95 @@ function SelectionFilter({
 									</ClayLabel>
 								))}
 							</div>
-						) : null}
-					</ClayDropDown.Caption>
+						</ClayDropDown.Caption>
 
-					<Divider />
-				</>
-			)}
+						<Divider />
+					</>
+				) : null}
 
-			<ClayDropDown.Caption className="pb-0">
-				<div className="row">
-					<div className="col">
-						<label htmlFor={`autocomplete-exclude-${id}`}>
-							{Liferay.Language.get('exclude')}
-						</label>
+				<ClayDropDown.Caption className="pb-0">
+					<div className="row">
+						<div className="col">
+							<label htmlFor={`autocomplete-exclude-${id}`}>
+								{Liferay.Language.get('exclude')}
+							</label>
+						</div>
+
+						<div className="col-auto">
+							<ClayToggle
+								id={`autocomplete-exclude-${id}`}
+								onToggle={() => setExclude(!exclude)}
+								toggled={exclude}
+							/>
+						</div>
 					</div>
+				</ClayDropDown.Caption>
 
-					<div className="col-auto">
-						<ClayToggle
-							id={`autocomplete-exclude-${id}`}
-							onToggle={() => setExclude(!exclude)}
-							toggled={exclude}
-						/>
-					</div>
-				</div>
-			</ClayDropDown.Caption>
+				<Divider />
 
-			<Divider />
+				<div className="pb-1 pl-3 pr-3 pt-1">
+					{items && !!items.length ? (
+						<ul className="filter-items mx-n2 px-2">
+							{items.map(({label, value}, index) => {
+								const newValue = {
+									label,
+									value,
+								};
 
-			<div className="pb-1 pl-3 pr-3 pt-1">
-				{items && !!items.length ? (
-					<ul
-						className="inline-scroller mx-n2 px-2"
-						ref={setScrollingArea}
-					>
-						{items.map(({label, value}, index) => {
-							const newValue = {
-								label,
-								value,
-							};
-
-							return (
-								<Item
-									aria-label={label}
-									checked={Boolean(
-										selectedItems.find(
-											(element) => element.value === value
-										)
-									)}
-									key={`${value}-${index}`}
-									label={label.toString()}
-									multiple={multiple}
-									onChange={() => {
-										setSelectedItems(
+								return (
+									<Item
+										aria-label={label}
+										checked={Boolean(
 											selectedItems.find(
 												(element) =>
 													element.value === value
 											)
-												? selectedItems.filter(
-														(element) =>
-															element.value !==
-															value
-													)
-												: multiple
-													? [
-															...selectedItems,
-															newValue,
-														]
-													: [newValue]
-										);
-									}}
-									value={value}
-								/>
-							);
-						})}
+										)}
+										key={`${value}-${index}`}
+										label={label.toString()}
+										multiple={multiple}
+										onChange={() => {
+											setSelectedItems(
+												selectedItems.find(
+													(element) =>
+														element.value === value
+												)
+													? selectedItems.filter(
+															(element) =>
+																element.value !==
+																value
+														)
+													: multiple
+														? [
+																...selectedItems,
+																newValue,
+															]
+														: [newValue]
+											);
+										}}
+										value={value}
+									/>
+								);
+							})}
 
-						{loaderVisible && (
-							<ClayLoadingIndicator
-								ref={setInfiniteLoader}
-								size="sm"
-							/>
-						)}
-					</ul>
-				) : (
-					<div className="mt-2 p-2 text-muted">
-						{Liferay.Language.get('no-items-were-found')}
-					</div>
-				)}
+							{loaderVisible && (
+								<ClayLoadingIndicator
+									ref={setInfiniteLoader}
+									size="sm"
+								/>
+							)}
+						</ul>
+					) : (
+						<div className="mt-2 p-2 text-muted">
+							{Liferay.Language.get('no-items-were-found')}
+						</div>
+					)}
+				</div>
 			</div>
 
 			<Divider />
 
-			<ClayDropDown.Caption>
+			<ClayDropDown.Caption className="filter-footer">
 				<ClayButton
 					disabled={submitDisabled}
 					onClick={() => {
