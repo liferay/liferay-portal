@@ -21,6 +21,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -41,6 +42,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -74,6 +76,12 @@ public class PerformanceTopAssetResourceImpl
 			DepotEntryUtil.getAdministeredDepotEntries(
 				contextCompany.getCompanyId(), depotEntryIds));
 
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return _getResponse(
+				outputStream -> {
+				});
+		}
+
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_http);
 
@@ -83,14 +91,8 @@ public class PerformanceTopAssetResourceImpl
 			_getFilterString(), Arrays.asList(groupIds), search, null,
 			"/summaries/export", rangeKey, sorts);
 
-		return Response.ok(
-			(StreamingOutput)outputStream -> StreamUtil.transfer(
-				inputStream, outputStream)
-		).header(
-			"Content-Disposition",
-			StringBundler.concat(
-				"attachment; filename=top-assets-", LocalDate.now(), ".csv")
-		).build();
+		return _getResponse(
+			outputStream -> StreamUtil.transfer(inputStream, outputStream));
 	}
 
 	@Override
@@ -104,12 +106,16 @@ public class PerformanceTopAssetResourceImpl
 		AnalyticsSettingsManagerUtil.checkAnalyticsEnabled(
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
-		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
-			_http);
-
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
 			DepotEntryUtil.getAdministeredDepotEntries(
 				contextCompany.getCompanyId(), depotEntryIds));
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return Page.of(Collections.emptyList(), pagination, 0);
+		}
+
+		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
+			_http);
 
 		Page<PerformanceTopAsset> performanceTopAssetPage =
 			analyticsCloudClient.getPerformanceTopAssetPage(
@@ -187,6 +193,16 @@ public class PerformanceTopAssetResourceImpl
 		}
 
 		return null;
+	}
+
+	private Response _getResponse(StreamingOutput streamingOutput) {
+		return Response.ok(
+			streamingOutput
+		).header(
+			"Content-Disposition",
+			StringBundler.concat(
+				"attachment; filename=top-assets-", LocalDate.now(), ".csv")
+		).build();
 	}
 
 	private void _setEmbedded(

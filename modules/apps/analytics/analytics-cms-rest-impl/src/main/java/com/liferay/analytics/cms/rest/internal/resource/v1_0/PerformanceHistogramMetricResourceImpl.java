@@ -5,6 +5,7 @@
 
 package com.liferay.analytics.cms.rest.internal.resource.v1_0;
 
+import com.liferay.analytics.cms.rest.dto.v1_0.Histogram;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceHistogramMetric;
 import com.liferay.analytics.cms.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.analytics.cms.rest.internal.depot.entry.util.DepotEntryUtil;
@@ -12,6 +13,7 @@ import com.liferay.analytics.cms.rest.resource.v1_0.PerformanceHistogramMetricRe
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 
 import java.util.Arrays;
@@ -41,17 +43,26 @@ public class PerformanceHistogramMetricResourceImpl
 		AnalyticsSettingsManagerUtil.checkAnalyticsEnabled(
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
+		Long[] groupIds = DepotEntryUtil.getGroupIds(
+			DepotEntryUtil.getAdministeredDepotEntries(
+				contextCompany.getCompanyId(), depotEntryIds));
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			PerformanceHistogramMetric performanceHistogramMetric =
+				new PerformanceHistogramMetric();
+
+			performanceHistogramMetric.setHistograms(() -> new Histogram[0]);
+
+			return performanceHistogramMetric;
+		}
+
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_http);
 
 		return analyticsCloudClient.getPerformanceHistogramMetric(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			Arrays.asList(
-				DepotEntryUtil.getGroupIds(
-					DepotEntryUtil.getAdministeredDepotEntries(
-						contextCompany.getCompanyId(), depotEntryIds))),
-			rangeKey, selectedMetric);
+			Arrays.asList(groupIds), rangeKey, selectedMetric);
 	}
 
 	@Reference
