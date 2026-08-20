@@ -90,10 +90,8 @@ public class DisplayPageActionDropdownItemsProviderTest {
 	}
 
 	@Test
-	public void testGetActionDropdownItemsExportDisplayPageURL()
+	public void testGetActionDropdownItemsWithExportDisplayPageURL()
 		throws Exception {
-
-		_setUpLayoutPageTemplateEntryPermission(false);
 
 		DisplayPageActionDropdownItemsProvider
 			displayPageActionDropdownItemsProvider =
