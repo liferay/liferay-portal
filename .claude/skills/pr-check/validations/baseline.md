@@ -18,6 +18,8 @@ Do not narrow the run to the branch diff. The comparison target is resolved from
 
 Leave `baseline.all.ant.projects` at its default of `true`. Passing `false` drops the seven top level Ant projects — `portal-kernel`, `portal-impl`, `portal-test`, `util-bridges`, `util-java`, `util-slf4j`, and `util-taglib` — from the run. Pass it only when **Full Portal Build** ran in this same pr-check: `ant all` starts with `clean`, so each of those jars is rebuilt, and the `jar` target baselines it on the way through.
 
+The task repairs what it finds, so once it has run the tree no longer carries the problem and the next run legitimately passes. Restoring the repairs this validation does not commit is what makes a rerun reproduce the first verdict, and it is sufficient on its own — putting the file back is itself what re-triggers the comparison, so no cache flag is needed.
+
 Three prerequisites:
 
 - Each baseline resolves the last released artifact from Nexus, so the run needs network access. Use the local check below when there is none.
@@ -101,5 +103,6 @@ When several appear in one run, fail on the strictest and leave every safe bump 
 ## Time Estimate
 
 ~30 sec for the whole repository on a warm Gradle daemon whose module jars are already built. Around 45 sec when jars must be rebuilt first, and around 80 sec on a cold daemon. Add ~30 sec for the seven Ant project confirmations, plus a few seconds for the static local check.
+
 
 Those figures assume a tree that has been built before, where most of the roughly 590 exporting modules resolve as up to date. A first run in a tree that has never been built pays the jar build for every one of them and takes far longer.
