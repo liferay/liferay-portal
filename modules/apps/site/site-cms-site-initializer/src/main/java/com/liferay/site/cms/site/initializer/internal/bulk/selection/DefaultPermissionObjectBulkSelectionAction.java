@@ -8,10 +8,14 @@ package com.liferay.site.cms.site.initializer.internal.bulk.selection;
 import com.liferay.bulk.selection.BulkSelectionAction;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -40,6 +44,14 @@ public class DefaultPermissionObjectBulkSelectionAction
 		throws PortalException {
 
 		ObjectEntry objectObjectEntry = (ObjectEntry)object;
+
+		ModelResourcePermission<ObjectEntry> modelResourcePermission =
+			_objectEntryService.getModelResourcePermission(
+				objectObjectEntry.getObjectDefinitionId());
+
+		modelResourcePermission.check(
+			PermissionCheckerFactoryUtil.create(user), objectObjectEntry,
+			ActionKeys.UPDATE);
 
 		Map<String, Serializable> objectObjectEntryValues =
 			objectObjectEntry.getValues();
@@ -114,5 +126,8 @@ public class DefaultPermissionObjectBulkSelectionAction
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private ObjectEntryService _objectEntryService;
 
 }
