@@ -6,6 +6,8 @@
 package com.liferay.exportimport.util;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.group.capability.GroupCapabilityUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
@@ -27,12 +29,33 @@ public class ScopeUtil {
 		return _BASE_PATH + endpoint;
 	}
 
+	public static boolean isCommentsAndRatingsEnabled(Group group) {
+		if (!isInstanceScoped(group) ||
+			FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-43996")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	public static boolean isInstanceScoped(Group group) {
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
 		if (group.isControlPanel() ||
 			stagingGroupHelper.isCompanyGroup(group)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public static boolean isLookAndFeelEnabled(Group group) {
+		if (GroupCapabilityUtil.isSupportsPages(group) && !group.isCompany() &&
+			!group.isLayoutPrototype()) {
 
 			return true;
 		}

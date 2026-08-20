@@ -14,6 +14,24 @@
 	cursor: pointer;
 }
 
+.date-part-grid {
+	display: grid;
+	gap: 0.25rem;
+	grid-template-columns: repeat(7, 1fr);
+
+	@include media-breakpoint-down(sm) {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+.month-grid {
+	grid-template-columns: repeat(6, 1fr);
+
+	@include media-breakpoint-down(sm) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
 .option-group {
 	> label + label {
 		margin-top: 1rem;

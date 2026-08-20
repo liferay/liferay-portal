@@ -8,10 +8,8 @@
 <%@ page import="com.liferay.exportimport.web.internal.constants.ExportImportWebKeys" %><%@
 page import="com.liferay.exportimport.web.internal.display.context.ExportImportProcessDisplayContext" %><%@
 page import="com.liferay.exportimport.web.internal.display.context.ExportImportProcessesDisplayContext" %><%@
-page import="com.liferay.portal.kernel.json.JSONArray" %><%@
-page import="com.liferay.portal.kernel.json.JSONFactoryUtil" %><%@
+page import="com.liferay.exportimport.web.internal.display.context.PublishProcessDisplayContext" %><%@
+page import="com.liferay.portal.kernel.util.HttpComponentsUtil" %><%@
 page import="com.liferay.portal.kernel.util.PropsValues" %>
-
-<%@ page import="java.util.Arrays" %>
 
 <%@ include file="/init.jsp" %>

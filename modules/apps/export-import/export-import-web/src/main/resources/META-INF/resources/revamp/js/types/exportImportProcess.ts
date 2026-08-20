@@ -5,7 +5,7 @@
 
 import {RequestPortletDataHandler} from './portletDataHandler';
 
-export type ExportImportProcess = 'export' | 'import';
+export type ExportImportProcess = 'export' | 'import' | 'publish';
 
 export type DateRangeType =
 	| 'ALL'
@@ -74,4 +74,43 @@ export interface ImportProcessRequest {
 	siteTemplateSettings?: boolean;
 	themeSettings?: boolean;
 	userIdStrategy?: UserIdStrategy;
+}
+
+export interface PublishProcess {
+	dateCreated?: string;
+	dateModified?: string;
+	id?: number;
+	name?: string;
+	status?: {code: number; label: string};
+}
+
+export interface PublishProcessRequest {
+	comments?: boolean;
+	cronExpression?: string;
+	dateRangeType?: DateRangeType;
+	deletions?: boolean;
+	endDate?: string;
+	logo?: boolean;
+	name: string;
+	permissions?: boolean;
+	ratings?: boolean;
+	requestPortletDataHandlers?: RequestPortletDataHandler[];
+	scheduleEndDate?: string;
+	scheduleStartDate?: string;
+	sitePagesSettings?: boolean;
+	siteTemplateSettings?: boolean;
+	startDate?: string;
+	themeSettings?: boolean;
+	timeZoneId?: string;
+}
+
+export interface ScheduledPublishProcess {
+	cronExpression?: string;
+	dateCreated?: string;
+	id?: number;
+	name?: string;
+	nextFireDate?: string;
+	publishParameters?: Record<string, string[]>;
+	scheduleEndDate?: string;
+	scheduleStartDate?: string;
 }

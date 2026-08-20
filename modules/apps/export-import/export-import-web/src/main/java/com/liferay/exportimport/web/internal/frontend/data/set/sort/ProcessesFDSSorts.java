@@ -11,6 +11,7 @@ import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
 import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
 import com.liferay.frontend.data.set.sort.FDSSorts;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.staging.constants.StagingProcessesFDSNames;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -26,7 +27,8 @@ import org.osgi.service.component.annotations.Component;
 		"frontend.data.set.name=" + ExportImportFDSNames.COMPANY_EXPORT_PROCESSES,
 		"frontend.data.set.name=" + ExportImportFDSNames.COMPANY_IMPORT_PROCESSES,
 		"frontend.data.set.name=" + ExportImportFDSNames.EXPORT_PROCESSES,
-		"frontend.data.set.name=" + ExportImportFDSNames.IMPORT_PROCESSES
+		"frontend.data.set.name=" + ExportImportFDSNames.IMPORT_PROCESSES,
+		"frontend.data.set.name=" + StagingProcessesFDSNames.PUBLISH_PROCESSES
 	},
 	service = FDSSorts.class
 )

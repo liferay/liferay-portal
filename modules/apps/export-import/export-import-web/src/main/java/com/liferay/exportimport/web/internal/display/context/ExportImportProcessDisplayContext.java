@@ -11,8 +11,6 @@ import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate.Scope;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.group.capability.GroupCapabilityUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -183,20 +181,12 @@ public class ExportImportProcessDisplayContext {
 	}
 
 	public boolean isCommentsAndRatingsEnabled() {
-		if (!ScopeUtil.isInstanceScoped(_group) ||
-			FeatureFlagManagerUtil.isEnabled(
-				_group.getCompanyId(), "LPD-43996")) {
-
-			return true;
-		}
-
-		return false;
+		return ScopeUtil.isCommentsAndRatingsEnabled(_group);
 	}
 
 	public boolean isLookAndFeelEnabled() {
 		if ((getScope() != Scope.PORTLET) &&
-			GroupCapabilityUtil.isSupportsPages(_group) &&
-			!_group.isCompany() && !_group.isLayoutPrototype()) {
+			ScopeUtil.isLookAndFeelEnabled(_group)) {
 
 			return true;
 		}
