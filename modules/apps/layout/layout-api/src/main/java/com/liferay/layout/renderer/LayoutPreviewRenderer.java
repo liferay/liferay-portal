@@ -16,7 +16,7 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface LayoutPreviewRenderer {
 
-	public void render(
+	public String render(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception;

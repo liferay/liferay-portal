@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -169,8 +170,12 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 				_includeInfoItemObjects(className, classPK, httpServletRequest);
 			}
 
-			_layoutPreviewRenderer.render(
+			String html = _layoutPreviewRenderer.render(
 				httpServletRequest, httpServletResponse);
+
+			if (html != null) {
+				ServletResponseUtil.write(httpServletResponse, html);
+			}
 		}
 		finally {
 			httpServletRequest.setAttribute(

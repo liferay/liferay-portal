@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
-import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.theme.ThemeUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -35,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 
 	@Override
-	public void render(
+	public String render(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception {
@@ -74,7 +73,7 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 
 		element.html(sb.toString());
 
-		ServletResponseUtil.write(httpServletResponse, document.html());
+		return document.html();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
