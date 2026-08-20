@@ -628,6 +628,14 @@ function start_client_extension_spring_boot_application {
 			exit 1
 		fi
 
+		# Finish the Gradle bootstrap before the readiness wait below starts
+		# timing the application. A cold wrapper cache downloads a Gradle
+		# distribution and starts a daemon on the first invocation, which the
+		# wait cannot tell apart from a slow application and which alone can
+		# outlast the whole budget.
+
+		$(get_gradlew) classes -Pliferay.workspace.home.dir=${routes_home}
+
 		$(get_gradlew) bootRun -Pliferay.workspace.home.dir=${routes_home} &
 
 		local sleep_duration=60
