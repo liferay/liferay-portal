@@ -714,19 +714,18 @@ public class UpdateLanguageActionTest {
 			Locale sourceLocale)
 		throws Exception {
 
-		String friendlyURLMappingPath =
-			"/tags/" + RandomTestUtil.randomString();
+		String path = "/tags/" + RandomTestUtil.randomString();
 
 		_testGetRedirect(
 			sourceLocale,
 			StringBundler.concat(
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-				_group.getFriendlyURL(), friendlyURLMappingPath),
+				_group.getFriendlyURL(), path),
 			_targetLocale,
 			StringBundler.concat(
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 				_group.getFriendlyURL(), _layout.getFriendlyURL(_targetLocale),
-				friendlyURLMappingPath),
+				path),
 			false);
 	}
 
