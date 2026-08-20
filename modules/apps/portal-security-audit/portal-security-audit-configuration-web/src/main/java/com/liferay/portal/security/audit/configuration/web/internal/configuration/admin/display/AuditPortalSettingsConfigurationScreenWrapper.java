@@ -17,8 +17,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
-import com.liferay.portal.security.audit.configuration.web.internal.display.context.AuditConfigurationDisplayContext;
-import com.liferay.portal.security.audit.configuration.web.internal.display.context.PersistentAuditMessageProcessorConfigurationDisplayContext;
+import com.liferay.portal.security.audit.configuration.web.internal.display.context.AuditPortalSettingsConfigurationDisplayContext;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenFactory;
@@ -116,13 +115,9 @@ public class AuditPortalSettingsConfigurationScreenWrapper
 			HttpServletResponse httpServletResponse) {
 
 			httpServletRequest.setAttribute(
-				AuditConfigurationDisplayContext.class.getName(),
-				new AuditConfigurationDisplayContext(
-					_getConfiguration(AuditConfiguration.class)));
-			httpServletRequest.setAttribute(
-				PersistentAuditMessageProcessorConfigurationDisplayContext.
-					class.getName(),
-				new PersistentAuditMessageProcessorConfigurationDisplayContext(
+				AuditPortalSettingsConfigurationDisplayContext.class.getName(),
+				new AuditPortalSettingsConfigurationDisplayContext(
+					_getConfiguration(AuditConfiguration.class),
 					_getConfiguration(
 						PersistentAuditMessageProcessorConfiguration.class)));
 		}

@@ -11,8 +11,7 @@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
-<%@ page import="com.liferay.portal.security.audit.configuration.web.internal.display.context.AuditConfigurationDisplayContext" %><%@
-page import="com.liferay.portal.security.audit.configuration.web.internal.display.context.PersistentAuditMessageProcessorConfigurationDisplayContext" %>
+<%@ page import="com.liferay.portal.security.audit.configuration.web.internal.display.context.AuditPortalSettingsConfigurationDisplayContext" %>
 
 <liferay-theme:defineObjects />
 

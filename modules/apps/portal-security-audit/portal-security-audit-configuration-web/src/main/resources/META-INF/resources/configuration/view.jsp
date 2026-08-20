@@ -8,16 +8,15 @@
 <%@ include file="/init.jsp" %>
 
 <%
-AuditConfigurationDisplayContext auditConfigurationDisplayContext = (AuditConfigurationDisplayContext)request.getAttribute(AuditConfigurationDisplayContext.class.getName());
-PersistentAuditMessageProcessorConfigurationDisplayContext persistentAuditMessageProcessorConfigurationDisplayContext = (PersistentAuditMessageProcessorConfigurationDisplayContext)request.getAttribute(PersistentAuditMessageProcessorConfigurationDisplayContext.class.getName());
+AuditPortalSettingsConfigurationDisplayContext auditPortalSettingsConfigurationDisplayContext = (AuditPortalSettingsConfigurationDisplayContext)request.getAttribute(AuditPortalSettingsConfigurationDisplayContext.class.getName());
 %>
 
-<aui:input disabled="<%= auditConfigurationDisplayContext.isEnabledOverridden() %>" helpMessage="<%= auditConfigurationDisplayContext.getEnabledHelpMessage() %>" name="enabled" type="checkbox" value="<%= auditConfigurationDisplayContext.isEnabled() %>" />
+<aui:input disabled="<%= auditPortalSettingsConfigurationDisplayContext.isEnabledOverridden() %>" helpMessage="<%= auditPortalSettingsConfigurationDisplayContext.getEnabledHelpMessage() %>" name="enabled" type="checkbox" value="<%= auditPortalSettingsConfigurationDisplayContext.isEnabled() %>" />
 
 <h3 class="sheet-subtitle"><liferay-ui:message key="database-processor" /></h3>
 
-<aui:input disabled="<%= persistentAuditMessageProcessorConfigurationDisplayContext.isEnabledOverridden() %>" helpMessage="<%= persistentAuditMessageProcessorConfigurationDisplayContext.getEnabledHelpMessage() %>" label="enable-database-processor" name="persistentAuditMessageProcessorEnabled" type="checkbox" value="<%= persistentAuditMessageProcessorConfigurationDisplayContext.isEnabled() %>" />
+<aui:input disabled="<%= auditPortalSettingsConfigurationDisplayContext.isPersistentAuditMessageProcessorEnabledOverridden() %>" helpMessage="<%= auditPortalSettingsConfigurationDisplayContext.getPersistentAuditMessageProcessorEnabledHelpMessage() %>" label="enable-database-processor" name="persistentAuditMessageProcessorEnabled" type="checkbox" value="<%= auditPortalSettingsConfigurationDisplayContext.isPersistentAuditMessageProcessorEnabled() %>" />
 
-<aui:input disabled="<%= persistentAuditMessageProcessorConfigurationDisplayContext.isBufferSizeOverridden() %>" helpMessage="<%= persistentAuditMessageProcessorConfigurationDisplayContext.getBufferSizeHelpMessage() %>" label="buffer-size" min="0" name="persistentAuditMessageProcessorBufferSize" type="number" value="<%= persistentAuditMessageProcessorConfigurationDisplayContext.getBufferSize() %>" />
+<aui:input disabled="<%= auditPortalSettingsConfigurationDisplayContext.isPersistentAuditMessageProcessorBufferSizeOverridden() %>" helpMessage="<%= auditPortalSettingsConfigurationDisplayContext.getPersistentAuditMessageProcessorBufferSizeHelpMessage() %>" label="buffer-size" min="0" name="persistentAuditMessageProcessorBufferSize" type="number" value="<%= auditPortalSettingsConfigurationDisplayContext.getPersistentAuditMessageProcessorBufferSize() %>" />
 
-<aui:input disabled="<%= persistentAuditMessageProcessorConfigurationDisplayContext.isFlushIntervalOverridden() %>" helpMessage="<%= persistentAuditMessageProcessorConfigurationDisplayContext.getFlushIntervalHelpMessage() %>" label="flush-interval-in-milliseconds" min="1" name="persistentAuditMessageProcessorFlushInterval" type="number" value="<%= persistentAuditMessageProcessorConfigurationDisplayContext.getFlushInterval() %>" />
+<aui:input disabled="<%= auditPortalSettingsConfigurationDisplayContext.isPersistentAuditMessageProcessorFlushIntervalOverridden() %>" helpMessage="<%= auditPortalSettingsConfigurationDisplayContext.getPersistentAuditMessageProcessorFlushIntervalHelpMessage() %>" label="flush-interval-in-milliseconds" min="1" name="persistentAuditMessageProcessorFlushInterval" type="number" value="<%= auditPortalSettingsConfigurationDisplayContext.getPersistentAuditMessageProcessorFlushInterval() %>" />
