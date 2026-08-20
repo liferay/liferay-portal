@@ -37,7 +37,7 @@ public class MirrorsGetTaskTest extends MirrorsGetTask {
 
 	@Test
 	public void testCreateReadLinkDeletedCacheFile() throws IOException {
-		_writeFile(_cacheFile, "cached");
+		_writeFile("cached", _cacheFile);
 
 		File linkFile = uniqueLinkFile(_cacheFile);
 
@@ -47,8 +47,8 @@ public class MirrorsGetTaskTest extends MirrorsGetTask {
 
 		_cacheFile.delete();
 
-		Assert.assertFalse(_cacheFile.exists());
 		Assert.assertEquals("cached", _readFile(readFile));
+		Assert.assertFalse(_cacheFile.exists());
 	}
 
 	@Test
@@ -73,11 +73,11 @@ public class MirrorsGetTaskTest extends MirrorsGetTask {
 					try {
 						File tempFile = uniqueTempFile(_cacheFile);
 
-						_writeFile(tempFile, content);
+						_writeFile(content, tempFile);
 
 						countDownLatch.await();
 
-						if (publish(tempFile, _cacheFile)) {
+						if (publish(_cacheFile, tempFile)) {
 							publishedCount.incrementAndGet();
 						}
 					}
@@ -110,22 +110,22 @@ public class MirrorsGetTaskTest extends MirrorsGetTask {
 	public void testPublishFreeName() throws IOException {
 		File tempFile = uniqueTempFile(_cacheFile);
 
-		_writeFile(tempFile, "downloaded");
+		_writeFile("downloaded", tempFile);
 
-		Assert.assertTrue(publish(tempFile, _cacheFile));
+		Assert.assertTrue(publish(_cacheFile, tempFile));
 
 		Assert.assertEquals("downloaded", _readFile(_cacheFile));
 	}
 
 	@Test
 	public void testPublishTakenName() throws IOException {
-		_writeFile(_cacheFile, "winner");
+		_writeFile("winner", _cacheFile);
 
 		File tempFile = uniqueTempFile(_cacheFile);
 
-		_writeFile(tempFile, "loser");
+		_writeFile("loser", tempFile);
 
-		Assert.assertFalse(publish(tempFile, _cacheFile));
+		Assert.assertFalse(publish(_cacheFile, tempFile));
 
 		Assert.assertEquals("winner", _readFile(_cacheFile));
 
@@ -146,12 +146,12 @@ public class MirrorsGetTaskTest extends MirrorsGetTask {
 
 	@Test
 	public void testSweepCacheFile() throws IOException {
-		_writeFile(_cacheFile, "cached");
+		_writeFile("cached", _cacheFile);
 
 		File digitFile = new File(
 			temporaryFolder.getRoot(), "1234567890123.zip");
 
-		_writeFile(digitFile, "other");
+		_writeFile("other", digitFile);
 
 		sweep(_cacheFile);
 
@@ -165,7 +165,7 @@ public class MirrorsGetTaskTest extends MirrorsGetTask {
 
 	@Test
 	public void testSweepReadLinkToOldCacheFile() throws IOException {
-		_writeFile(_cacheFile, "cached");
+		_writeFile("cached", _cacheFile);
 
 		Assert.assertTrue(_cacheFile.setLastModified(_oldTime()));
 
@@ -233,11 +233,11 @@ public class MirrorsGetTaskTest extends MirrorsGetTask {
 	private void _testSweep(boolean expected, String fileName)
 		throws IOException {
 
-		_writeFile(_cacheFile, "cached");
+		_writeFile("cached", _cacheFile);
 
 		File file = new File(temporaryFolder.getRoot(), fileName);
 
-		_writeFile(file, "orphan");
+		_writeFile("orphan", file);
 
 		sweep(_cacheFile);
 
@@ -265,7 +265,7 @@ public class MirrorsGetTaskTest extends MirrorsGetTask {
 		return fileNames.size();
 	}
 
-	private void _writeFile(File file, String content) throws IOException {
+	private void _writeFile(String content, File file) throws IOException {
 		Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
 	}
 

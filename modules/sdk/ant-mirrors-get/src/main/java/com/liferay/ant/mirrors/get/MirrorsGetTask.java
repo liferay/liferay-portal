@@ -235,7 +235,7 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	protected boolean publish(File tempFile, File cacheFile)
+	protected boolean publish(File cacheFile, File tempFile)
 		throws IOException {
 
 		try {
@@ -251,7 +251,7 @@ public class MirrorsGetTask extends Task {
 				return false;
 			}
 
-			return _publishByRename(tempFile, cacheFile);
+			return _publishByRename(cacheFile, tempFile);
 		}
 	}
 
@@ -628,7 +628,7 @@ public class MirrorsGetTask extends Task {
 					_deleteFile(mirrorsCacheFile);
 				}
 
-				if (publish(mirrorsCacheTempFile, mirrorsCacheFile)) {
+				if (publish(mirrorsCacheFile, mirrorsCacheTempFile)) {
 					if (mirrorsCacheTempFile.exists()) {
 						readFile = mirrorsCacheTempFile;
 					}
@@ -1369,7 +1369,7 @@ public class MirrorsGetTask extends Task {
 		return urlConnection;
 	}
 
-	private boolean _publishByRename(File tempFile, File cacheFile)
+	private boolean _publishByRename(File cacheFile, File tempFile)
 		throws IOException {
 
 		if (tempFile.renameTo(cacheFile)) {
