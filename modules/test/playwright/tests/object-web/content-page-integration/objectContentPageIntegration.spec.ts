@@ -30,6 +30,7 @@ import getFragmentDefinition from '../../layout-content-page-editor-web/main/uti
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import {templatesPageTest} from '../../template-web/main/fixtures/templatesPageTest';
 import {getPageEditorDateFormat} from '../utils/dateFormat';
+import {generateFormulaObjectFields} from '../utils/generateFormulaObjectFields';
 import {generateObjectEntryValues} from '../utils/generateObjectEntry';
 import {generateObjectFields} from '../utils/generateObjectFields';
 import {postListTypeDefinitionListTypeEntries} from '../utils/postListTypeDefinitionListTypeEntries';
@@ -1635,6 +1636,128 @@ test.describe('Information Template', () => {
 });
 
 test.describe('Object Widget', () => {
+	test(
+		'can add and view auto increment object entries on a widget page',
+		{tag: '@LPD-102828'},
+		async ({
+			apiHelpers,
+			page,
+			site,
+			viewObjectEntriesPage,
+			widgetPagePage,
+		}) => {
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: [
+					'Text',
+					{
+						businessType: 'AutoIncrement',
+						objectFieldSettings: [
+							{name: 'initialValue', value: '24680'},
+							{name: 'prefix', value: 'T-Shirt-'},
+							{name: 'suffix', value: '-Brazil'},
+						],
+					},
+				],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			for (const size of ['Small', 'Large']) {
+				await apiHelpers.objectEntry.postObjectEntry(
+					{[objectFields[0].name as string]: size},
+					'c/' + objectDefinition.name.toLowerCase() + 's'
+				);
+			}
+
+			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: getRandomString(),
+			});
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			await widgetPagePage.addPortlet(
+				objectDefinition.pluralLabel['en_US']
+			);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await page
+				.getByLabel(objectFields[0].label.en_US, {exact: true})
+				.fill('Medium');
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			for (const identification of ['24680', '24681', '24682']) {
+				await expect(
+					page.getByText(`T-Shirt-${identification}-Brazil`)
+				).toBeVisible();
+			}
+		}
+	);
+
+	test(
+		'can map a formula field on a widget page',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, page, site, widgetPagePage}) => {
+			const {firstObjectField, objectFields, secondObjectField} =
+				generateFormulaObjectFields({
+					objectFieldBusinessType: 'Integer',
+					operator: '/',
+					output: 'Integer',
+				});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					[firstObjectField.name as string]: 24680,
+					[secondObjectField.name as string]: 20,
+				},
+				'c/' + objectDefinition.name.toLowerCase() + 's'
+			);
+
+			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: getRandomString(),
+			});
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			await widgetPagePage.addPortlet(
+				objectDefinition.pluralLabel['en_US']
+			);
+
+			await expect(
+				page.getByRole('cell', {exact: true, name: '1234'})
+			).toBeVisible();
+		}
+	);
+
 	test(
 		'can add object portlet as a widget on a page',
 		{tag: '@LPS-143122'},
