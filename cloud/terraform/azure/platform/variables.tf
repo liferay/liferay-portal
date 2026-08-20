@@ -13,6 +13,14 @@ variable "argocd_external_access_config" {
 variable "argocd_helm_chart_version" {
 	type=string
 }
+variable "autoscaling_config" {
+	default={}
+	type=object({
+		enabled=optional(bool, false)
+		namespace=optional(string, "keda-system")
+		service_account_name=optional(string, "keda-operator")
+	})
+}
 variable "cluster_secret_store" {
 	type=object({
 		key_vault=optional(object({
