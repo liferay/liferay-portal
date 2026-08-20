@@ -14,6 +14,7 @@ import com.liferay.dispatch.executor.DispatchTaskExecutorRegistry;
 import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.DispatchLogLocalService;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
+import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -207,9 +208,17 @@ public class AnalyticsDXPEntityBatchExporterImpl
 				null, user.getUserId(), dispatchTaskExecutor,
 				dispatchTriggerName, null, dispatchTriggerName, false);
 
+		DispatchTaskClusterMode dispatchTaskClusterMode =
+			DispatchTaskClusterMode.NOT_APPLICABLE;
+
+		if (ClusterExecutorUtil.isEnabled()) {
+			dispatchTaskClusterMode =
+				DispatchTaskClusterMode.SINGLE_NODE_PERSISTED;
+		}
+
 		return _dispatchTriggerLocalService.updateDispatchTrigger(
 			dispatchTrigger.getDispatchTriggerId(), true, _CRON_EXPRESSION,
-			DispatchTaskClusterMode.NOT_APPLICABLE, 0, 0, 0, 0, 0, true, false,
+			dispatchTaskClusterMode, 0, 0, 0, 0, 0, true, false,
 			localDateTime.getMonthValue() - 1, localDateTime.getDayOfMonth(),
 			localDateTime.getYear(), localDateTime.getHour(),
 			localDateTime.getMinute(), "UTC");
