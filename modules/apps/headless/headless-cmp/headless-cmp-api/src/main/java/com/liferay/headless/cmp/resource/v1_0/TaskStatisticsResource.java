@@ -43,14 +43,10 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface TaskStatisticsResource {
 
-	public TaskStatistics getProjectTaskStatistics(
-			Long projectId,
-			com.liferay.portal.kernel.search.filter.Filter filter)
+	public TaskStatistics getProjectTaskStatistics(Long projectId)
 		throws Exception;
 
-	public TaskStatistics getTaskStatistics(
-			com.liferay.portal.kernel.search.filter.Filter filter)
-		throws Exception;
+	public TaskStatistics getTaskStatistics() throws Exception;
 
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
@@ -140,4 +136,4 @@ public interface TaskStatisticsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-425691618
+// LIFERAY-REST-BUILDER-HASH:-307900502

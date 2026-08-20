@@ -124,39 +124,32 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {projectTaskStatistics(filter: ___, projectId: ___){blockedCount, inProgressCount, overdueCount, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {projectTaskStatistics(projectId: ___){blockedCount, inProgressCount, overdueCount, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public TaskStatistics projectTaskStatistics(
-			@GraphQLName("projectId") Long projectId,
-			@GraphQLName("filter") String filterString)
+			@GraphQLName("projectId") Long projectId)
 		throws Exception {
 
 		return _applyComponentServiceObjects(
 			_taskStatisticsResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			taskStatisticsResource ->
-				taskStatisticsResource.getProjectTaskStatistics(
-					projectId,
-					_filterBiFunction.apply(
-						taskStatisticsResource, filterString)));
+				taskStatisticsResource.getProjectTaskStatistics(projectId));
 	}
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taskStatistics(filter: ___){blockedCount, inProgressCount, overdueCount, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taskStatistics{blockedCount, inProgressCount, overdueCount, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
-	public TaskStatistics taskStatistics(
-			@GraphQLName("filter") String filterString)
-		throws Exception {
-
+	public TaskStatistics taskStatistics() throws Exception {
 		return _applyComponentServiceObjects(
 			_taskStatisticsResourceComponentServiceObjects,
 			this::_populateResourceContext,
-			taskStatisticsResource -> taskStatisticsResource.getTaskStatistics(
-				_filterBiFunction.apply(taskStatisticsResource, filterString)));
+			taskStatisticsResource ->
+				taskStatisticsResource.getTaskStatistics());
 	}
 
 	/**
@@ -507,4 +500,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:339825133
+// LIFERAY-REST-BUILDER-HASH:-1277312026

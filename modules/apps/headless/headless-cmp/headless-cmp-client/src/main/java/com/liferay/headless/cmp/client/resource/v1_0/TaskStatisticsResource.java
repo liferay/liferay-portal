@@ -32,19 +32,16 @@ public interface TaskStatisticsResource {
 		return new Builder();
 	}
 
-	public TaskStatistics getProjectTaskStatistics(
-			Long projectId, String filterString)
+	public TaskStatistics getProjectTaskStatistics(Long projectId)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getProjectTaskStatisticsHttpResponse(
-			Long projectId, String filterString)
+			Long projectId)
 		throws Exception;
 
-	public TaskStatistics getTaskStatistics(String filterString)
-		throws Exception;
+	public TaskStatistics getTaskStatistics() throws Exception;
 
-	public HttpInvoker.HttpResponse getTaskStatisticsHttpResponse(
-			String filterString)
+	public HttpInvoker.HttpResponse getTaskStatisticsHttpResponse()
 		throws Exception;
 
 	public static class Builder {
@@ -156,12 +153,11 @@ public interface TaskStatisticsResource {
 	public static class TaskStatisticsResourceImpl
 		implements TaskStatisticsResource {
 
-		public TaskStatistics getProjectTaskStatistics(
-				Long projectId, String filterString)
+		public TaskStatistics getProjectTaskStatistics(Long projectId)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getProjectTaskStatisticsHttpResponse(projectId, filterString);
+				getProjectTaskStatisticsHttpResponse(projectId);
 
 			String content = httpResponse.getContent();
 
@@ -223,7 +219,7 @@ public interface TaskStatisticsResource {
 		}
 
 		public HttpInvoker.HttpResponse getProjectTaskStatisticsHttpResponse(
-				Long projectId, String filterString)
+				Long projectId)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -247,10 +243,6 @@ public interface TaskStatisticsResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (filterString != null) {
-				httpInvoker.parameter("filter", filterString);
-			}
-
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
@@ -266,11 +258,9 @@ public interface TaskStatisticsResource {
 			return httpInvoker.invoke();
 		}
 
-		public TaskStatistics getTaskStatistics(String filterString)
-			throws Exception {
-
+		public TaskStatistics getTaskStatistics() throws Exception {
 			HttpInvoker.HttpResponse httpResponse =
-				getTaskStatisticsHttpResponse(filterString);
+				getTaskStatisticsHttpResponse();
 
 			String content = httpResponse.getContent();
 
@@ -331,8 +321,7 @@ public interface TaskStatisticsResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse getTaskStatisticsHttpResponse(
-				String filterString)
+		public HttpInvoker.HttpResponse getTaskStatisticsHttpResponse()
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -355,10 +344,6 @@ public interface TaskStatisticsResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			if (filterString != null) {
-				httpInvoker.parameter("filter", filterString);
-			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
@@ -385,4 +370,4 @@ public interface TaskStatisticsResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1531989073
+// LIFERAY-REST-BUILDER-HASH:482047453

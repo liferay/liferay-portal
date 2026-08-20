@@ -15,12 +15,10 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
-import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
@@ -29,7 +27,6 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Collection;
@@ -43,7 +40,7 @@ import java.util.Map;
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
 public abstract class BaseTaskStatisticsResourceImpl
-	implements EntityModelResource, TaskStatisticsResource {
+	implements TaskStatisticsResource {
 
 	/**
 	 * Invoke this method with the command line:
@@ -55,10 +52,6 @@ public abstract class BaseTaskStatisticsResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "projectId"
-			),
-			@io.swagger.v3.oas.annotations.Parameter(
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "filter"
 			)
 		}
 	)
@@ -75,9 +68,7 @@ public abstract class BaseTaskStatisticsResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("projectId")
-			Long projectId,
-			@jakarta.ws.rs.core.Context
-				com.liferay.portal.kernel.search.filter.Filter filter)
+			Long projectId)
 		throws Exception {
 
 		return new TaskStatistics();
@@ -88,14 +79,6 @@ public abstract class BaseTaskStatisticsResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-cmp/v1.0/task-statistics'  -u 'test@liferay.com:test'
 	 */
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
-			@io.swagger.v3.oas.annotations.Parameter(
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "filter"
-			)
-		}
-	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "TaskStatistics")
@@ -105,19 +88,8 @@ public abstract class BaseTaskStatisticsResourceImpl
 	@jakarta.ws.rs.Path("/task-statistics")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public TaskStatistics getTaskStatistics(
-			@jakarta.ws.rs.core.Context
-				com.liferay.portal.kernel.search.filter.Filter filter)
-		throws Exception {
-
+	public TaskStatistics getTaskStatistics() throws Exception {
 		return new TaskStatistics();
-	}
-
-	@Override
-	public EntityModel getEntityModel(MultivaluedMap multivaluedMap)
-		throws Exception {
-
-		return null;
 	}
 
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
@@ -565,4 +537,4 @@ public abstract class BaseTaskStatisticsResourceImpl
 		LogFactoryUtil.getLog(BaseTaskStatisticsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1664671424
+// LIFERAY-REST-BUILDER-HASH:1692280824
