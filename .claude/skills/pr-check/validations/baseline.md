@@ -88,7 +88,7 @@ Collect the paths into a variable first, rather than passing the globs to `git a
 
 **Never commit a repair for a module outside the branch diff.** Report it with both versions, restore the file, and name the path restored. The bump belongs to whoever owns that module, every developer who runs the check would otherwise commit another copy of it, and the task rewrites in place, so anything left behind is swept into the next `git add -A` under the wrong ticket.
 
-**Major, lowered, or removed, in a module the branch changed.** Do not commit. Fail this validation and report each one with its file and both versions. Each is a breaking change that the developer has to decide on:
+**Major, lowered, or removed, in a module the branch changed.** Do not commit. Restore the file, fail this validation, and report each one with its file and both versions. Each is a breaking change that the developer has to decide on:
 
 - **Major**: report it as needing a breaking change section in the commit message.
 - **Lowered**: report it as `EXCESSIVE VERSION INCREASE`.
