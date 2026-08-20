@@ -333,40 +333,38 @@ public class LanguageTagTest {
 	private void _testGetLanguageEntriesWithFriendlyURLMappingPath()
 		throws Exception {
 
+		String path = "/tags/" + RandomTestUtil.randomString();
+
 		ThemeDisplay themeDisplay = _getThemeDisplay(_layout, LocaleUtil.US);
 
 		_assertLocalizedURL(
-			_layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
+			_layout, LocaleUtil.FRANCE, path,
 			_getURL(
 				_getLanguageEntriesForURL(
 					StringBundler.concat(
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-						_group.getFriendlyURL(), _FRIENDLY_URL_MAPPING_PATH),
+						_group.getFriendlyURL(), path),
 					null, themeDisplay),
 				LocaleUtil.FRANCE));
 		_assertLocalizedURL(
-			_layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
+			_layout, LocaleUtil.FRANCE, path,
 			_getURL(
 				_getLanguageEntriesForURL(
 					StringBundler.concat(
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 						_group.getFriendlyURL(),
-						_layout.getFriendlyURL(LocaleUtil.FRANCE),
-						_FRIENDLY_URL_MAPPING_PATH),
+						_layout.getFriendlyURL(LocaleUtil.FRANCE), path),
 					null, themeDisplay),
 				LocaleUtil.FRANCE));
 		_assertLocalizedURL(
-			_layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH,
+			_layout, LocaleUtil.FRANCE, path,
 			_getURL(
-				_getLanguageEntries(
-					_FRIENDLY_URL_MAPPING_PATH, null, themeDisplay),
+				_getLanguageEntries(path, null, themeDisplay),
 				LocaleUtil.FRANCE));
 		_assertLocalizedURL(
-			_layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PATH + "?foo=bar",
+			_layout, LocaleUtil.FRANCE, path + "?foo=bar",
 			_getURL(
-				_getLanguageEntries(
-					_FRIENDLY_URL_MAPPING_PATH + "?foo=bar", null,
-					themeDisplay),
+				_getLanguageEntries(path + "?foo=bar", null, themeDisplay),
 				LocaleUtil.FRANCE));
 		_assertLocalizedURL(
 			_layout, LocaleUtil.FRANCE, "/tags/new%20york",
@@ -548,8 +546,6 @@ public class LanguageTagTest {
 	}
 
 	private static final String _FORM_ACTION = "/custom/view";
-
-	private static final String _FRIENDLY_URL_MAPPING_PATH = "/tags/mytag";
 
 	private static final String _UPDATE_LANGUAGE_PATH =
 		"/c/portal/update_language";
