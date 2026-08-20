@@ -17,10 +17,10 @@
 			<c:when test="<%= Validator.isNotNull(src) %>">
 				<c:choose>
 					<c:when test="<%= Validator.isNotNull(id) %>">
-						<img id="<%= id %>" src="<%= src %>" <%= details %> />
+						<img id="<%= id %>" src="<%= HtmlUtil.escapeAttribute(src) %>" <%= details %> />
 					</c:when>
 					<c:otherwise>
-						<img src="<%= src %>" <%= details %> />
+						<img src="<%= HtmlUtil.escapeAttribute(src) %>" <%= details %> />
 					</c:otherwise>
 				</c:choose>
 			</c:when>
