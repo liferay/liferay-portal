@@ -115,7 +115,8 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 			httpServletRequest.getServerName());
 		auditRequestThreadLocal.setServerPort(
 			httpServletRequest.getServerPort());
-		auditRequestThreadLocal.setSessionID(httpSession.getId());
+		auditRequestThreadLocal.setSessionID(
+			(String)httpSession.getAttribute(WebKeys.AUDIT_SESSION_ID));
 
 		if (!_auditLogContextConfiguration.enabled()) {
 			return null;

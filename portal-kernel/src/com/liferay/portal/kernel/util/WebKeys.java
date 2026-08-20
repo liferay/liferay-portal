@@ -45,6 +45,8 @@ public interface WebKeys {
 
 	public static final String ASSET_VOCABULARY = "ASSET_VOCABULARY";
 
+	public static final String AUDIT_SESSION_ID = "AUDIT_SESSION_ID";
+
 	public static final String AUI_SCRIPT_DATA =
 		"LIFERAY_SHARED_AUI_SCRIPT_DATA";
 

@@ -13,11 +13,14 @@ import com.liferay.portal.kernel.events.LifecycleAction;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -51,6 +54,13 @@ public class LoginPostAction extends Action {
 		throws Exception {
 
 		User user = _portal.getUser(httpServletRequest);
+
+		HttpSession httpSession = httpServletRequest.getSession();
+
+		if (httpSession.getAttribute(WebKeys.AUDIT_SESSION_ID) == null) {
+			httpSession.setAttribute(
+				WebKeys.AUDIT_SESSION_ID, PortalUUIDUtil.generate());
+		}
 
 		InvokerFilterChain invokerFilterChain = new InvokerFilterChain(
 			(servletRequest, servletResponse) -> {
