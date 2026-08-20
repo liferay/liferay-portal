@@ -28,6 +28,11 @@ import org.osgi.service.component.annotations.Reference;
 public abstract class BaseAnalyticsDispatchTaskExecutor
 	extends BaseDispatchTaskExecutor {
 
+	@Override
+	public boolean isClusterModeSingle() {
+		return true;
+	}
+
 	protected UnsafeConsumer<String, Exception> getNotificationUnsafeConsumer(
 		long dispatchTriggerId,
 		DispatchTaskExecutorOutput dispatchTaskExecutorOutput) {
