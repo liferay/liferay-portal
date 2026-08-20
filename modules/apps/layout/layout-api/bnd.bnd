@@ -23,6 +23,7 @@ Export-Package:\
 	com.liferay.layout.portlet.category,\
 	com.liferay.layout.portlet.preferences.updater,\
 	com.liferay.layout.provider,\
+	com.liferay.layout.renderer,\
 	com.liferay.layout.responsive,\
 	com.liferay.layout.security.permission.resource,\
 	com.liferay.layout.service,\
