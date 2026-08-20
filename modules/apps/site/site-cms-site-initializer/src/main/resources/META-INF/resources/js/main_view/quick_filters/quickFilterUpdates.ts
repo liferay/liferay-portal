@@ -15,7 +15,7 @@ import {QUICK_FILTER_TYPES, QuickFilterType} from './constants';
 
 type FilterUpdates = Record<string, IBaseFilterState['selectedData']>;
 
-function getStatusSelectedData(label: string, value: number) {
+export function getStatusSelectedData(label: string, value: number) {
 	return {exclude: false, selectedItems: [{label, value}]};
 }
 

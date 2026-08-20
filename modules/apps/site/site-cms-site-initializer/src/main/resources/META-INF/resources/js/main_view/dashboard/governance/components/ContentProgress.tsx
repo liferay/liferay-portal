@@ -6,10 +6,15 @@
 import {BarChart, BarDatum, ChartState} from '@liferay/frontend-js-charts-web';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 
-import {WORKFLOW_STATUS} from '../../../../common/utils/constants';
+import {
+	FDS_FILTER_ID,
+	WORKFLOW_STATUS,
+} from '../../../../common/utils/constants';
+import {getStatusSelectedData} from '../../../quick_filters/quickFilterUpdates';
 import {BaseCard} from '../../common/BaseCard';
 import {GovernanceContext} from '../GovernanceContext';
 import GovernanceService, {StatusFacetBucket} from '../GovernanceService';
+import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
 import {GovernanceAdditionalProps} from '../types';
 
 const CHART_HEIGHT = 36;
@@ -33,12 +38,16 @@ const CONTENT_STATUS: {label: string; value: number}[] = [
 	},
 ];
 
-function getSegments(buckets: StatusFacetBucket[]): BarDatum[] {
+function getSegments(
+	buckets: StatusFacetBucket[],
+	getStatusHref: (label: string, value: number) => string
+): BarDatum[] {
 	const frequencies = new Map(
 		buckets.map((bucket) => [Number(bucket.term), bucket.frequency])
 	);
 
 	const segments: BarDatum[] = CONTENT_STATUS.map(({label, value}) => ({
+		href: getStatusHref(label, value),
 		label,
 		value: frequencies.get(value) ?? 0,
 	}));
@@ -98,7 +107,21 @@ export function ContentProgress({
 		};
 	}, [additionalProps.contentProgressFilter, space.siteId]);
 
-	const segments = useMemo(() => getSegments(buckets ?? []), [buckets]);
+	const segments = useMemo(() => {
+		const spaceFilters = getSpaceFilters(space);
+
+		return getSegments(buckets ?? [], (label, value) =>
+			getAllSectionHref(additionalProps.allSectionFDSName, {
+				filters: [
+					{
+						id: FDS_FILTER_ID.STATUS,
+						selectedData: getStatusSelectedData(label, value),
+					},
+					...spaceFilters,
+				],
+			})
+		);
+	}, [additionalProps.allSectionFDSName, buckets, space]);
 
 	return (
 		<BaseCard

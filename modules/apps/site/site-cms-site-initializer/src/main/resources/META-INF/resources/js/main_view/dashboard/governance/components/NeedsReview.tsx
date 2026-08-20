@@ -4,10 +4,6 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import {
-	getConfigParamName,
-	serializeFDSConfig,
-} from '@liferay/frontend-data-set-web';
 import React, {useContext, useMemo} from 'react';
 
 import StatusLabel from '../../../../common/components/StatusLabel';
@@ -24,7 +20,7 @@ import {QUICK_FILTER_UPDATES} from '../../../quick_filters/quickFilterUpdates';
 import {SectionHeader} from '../../common/SectionHeader';
 import {GovernanceContext} from '../GovernanceContext';
 import GovernanceService from '../GovernanceService';
-import getCMSSectionURL from '../getCMSSectionURL';
+import getAllSectionHref, {getSpaceFilters} from '../getAllSectionHref';
 import {GovernanceAdditionalProps} from '../types';
 import NeedsReviewCard from './NeedsReviewCard';
 
@@ -86,17 +82,6 @@ function getUpcomingReviewsSelectedData() {
 	};
 }
 
-function getAllSectionHref(
-	fdsName: string,
-	config: {filters?: Array<Object>; sorts?: Array<Object>}
-) {
-	const searchParams = new URLSearchParams({
-		[getConfigParamName(fdsName)]: serializeFDSConfig(config),
-	});
-
-	return `${getCMSSectionURL('all')}?${searchParams}`;
-}
-
 export function NeedsReview({
 	additionalProps,
 }: {
@@ -107,19 +92,7 @@ export function NeedsReview({
 	const groupId = space.siteId;
 
 	const {expiringSoonHref, upcomingReviewsHref} = useMemo(() => {
-		const spaceFilters = groupId
-			? [
-					{
-						id: FDS_FILTER_ID.SCOPE_GROUP_ID,
-						selectedData: {
-							exclude: false,
-							selectedItems: [
-								{label: space.label, value: groupId},
-							],
-						},
-					},
-				]
-			: [];
+		const spaceFilters = getSpaceFilters(space);
 
 		return {
 			expiringSoonHref: getAllSectionHref(
@@ -149,7 +122,7 @@ export function NeedsReview({
 				}
 			),
 		};
-	}, [additionalProps.allSectionFDSName, groupId, space.label]);
+	}, [additionalProps.allSectionFDSName, space]);
 
 	const title = Liferay.Language.get('needs-review');
 
