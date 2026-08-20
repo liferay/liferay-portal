@@ -117,7 +117,12 @@ resource "helm_release" "crossplane" {
 									]
 								},
 							]
-							podSelector={}
+							podSelector={
+								matchLabels={
+									"app"="crossplane"
+									"release"="crossplane"
+								}
+							}
 							policyTypes=["Ingress"]
 						}
 					},

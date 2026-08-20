@@ -69,8 +69,8 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="crossplane-metrics-ingress must scope its allow to the metrics-named port"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.podSelector == {}
-		error_message="crossplane-webhook-ingress must apply to every pod in the namespace — every Crossplane provider registers its own admission webhook on the same port as crossplane core, confirmed live (6 GCP providers plus provider-kubernetes each expose containerPort 9443 named webhook, distinct from crossplane core's own webhooks port), and providers carry no common label to select them more narrowly, so a blanket podSelector is the only durable option as new providers get added"
+		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.podSelector.matchLabels == { app="crossplane", release="crossplane" }
+		error_message="crossplane-webhook-ingress must select only the crossplane core pod — confirmed live that the cluster's single ValidatingWebhookConfiguration (crossplane-no-usages) targets only the crossplane-webhooks Service, whose selector is app=crossplane,release=crossplane; every provider/function pod also listens on 9443 but none of them back an actual webhook registration, so a blanket podSelector would be broader than necessary"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.ingress[0].from[0].ipBlock.cidr == var.master_ipv4_cidr_block
