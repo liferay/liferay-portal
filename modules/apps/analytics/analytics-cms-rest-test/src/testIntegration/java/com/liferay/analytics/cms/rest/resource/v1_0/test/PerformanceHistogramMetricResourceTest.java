@@ -5,30 +5,30 @@
 
 package com.liferay.analytics.cms.rest.resource.v1_0.test;
 
-import com.liferay.analytics.cms.rest.dto.v1_0.Histogram;
-import com.liferay.analytics.cms.rest.dto.v1_0.Metric;
-import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceHistogramMetric;
-import com.liferay.analytics.cms.rest.resource.v1_0.PerformanceHistogramMetricResource;
+import com.liferay.analytics.cms.rest.client.dto.v1_0.Histogram;
+import com.liferay.analytics.cms.rest.client.dto.v1_0.Metric;
+import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceHistogramMetric;
+import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.ws.rs.ForbiddenException;
+import java.net.HttpURLConnection;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,54 +77,52 @@ public class PerformanceHistogramMetricResourceTest
 	}
 
 	private void _testGetPerformanceHistogramMetric() throws Exception {
-		try (AnalyticsCompanyConfigurationTemporarySwapper
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/objectEntry" +
+						"/performance-overview-metric/histogram",
+					() -> JSONUtil.put(
+						"histograms",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"metricName", "downloadsMetric"
+							).put(
+								"metrics",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"previousValue", 2.0
+									).put(
+										"previousValueKey", "2025-07-17T00:00"
+									).put(
+										"value", 1.0
+									).put(
+										"valueKey", "2025-07-24T00:00"
+									),
+									JSONUtil.put(
+										"previousValue", 4.0
+									).put(
+										"previousValueKey", "2025-07-18T00:00"
+									).put(
+										"value", 5.0
+									).put(
+										"valueKey", "2025-07-25T00:00"
+									))
+							).put(
+								"total", 7.0
+							).put(
+								"totalValue", 6.0
+							))
+					).toString());
+
+			AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId())) {
-
-			ReflectionTestUtil.setFieldValue(
-				_performanceHistogramMetricResource, "_http",
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/asset-metric/objectEntry" +
-							"/performance-overview-metric/histogram",
-						() -> JSONUtil.put(
-							"histograms",
-							JSONUtil.putAll(
-								JSONUtil.put(
-									"metricName", "downloadsMetric"
-								).put(
-									"metrics",
-									JSONUtil.putAll(
-										JSONUtil.put(
-											"previousValue", 2.0
-										).put(
-											"previousValueKey",
-											"2025-07-17T00:00"
-										).put(
-											"value", 1.0
-										).put(
-											"valueKey", "2025-07-24T00:00"
-										),
-										JSONUtil.put(
-											"previousValue", 4.0
-										).put(
-											"previousValueKey",
-											"2025-07-18T00:00"
-										).put(
-											"value", 5.0
-										).put(
-											"valueKey", "2025-07-25T00:00"
-										))
-								).put(
-									"total", 7.0
-								).put(
-									"totalValue", 6.0
-								))
-						).toString())));
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
 
 			PerformanceHistogramMetric performanceHistogramMetric =
-				_performanceHistogramMetricResource.
+				performanceHistogramMetricResource.
 					getPerformanceHistogramMetric(
 						new Long[] {_depotEntry.getDepotEntryId()},
 						RandomTestUtil.nextInt(), "downloadsMetric");
@@ -144,20 +142,27 @@ public class PerformanceHistogramMetricResourceTest
 
 			Assert.assertEquals(Arrays.toString(metrics), 2, metrics.length);
 		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_performanceHistogramMetricResource, "_http", _http);
-		}
 	}
 
-	private void _testGetPerformanceHistogramMetricWithAnalyticsCloudNotConnected() {
-		Assert.assertThrows(
-			ForbiddenException.class,
-			() ->
-				_performanceHistogramMetricResource.
-					getPerformanceHistogramMetric(
+	private void _testGetPerformanceHistogramMetricWithAnalyticsCloudNotConnected()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(), StringPool.BLANK);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_FORBIDDEN,
+				performanceHistogramMetricResource.
+					getPerformanceHistogramMetricHttpResponse(
 						new Long[] {_depotEntry.getDepotEntryId()},
 						RandomTestUtil.nextInt(), "downloadsMetric"));
+		}
 	}
 
 	@DeleteAfterTestRun
@@ -165,12 +170,5 @@ public class PerformanceHistogramMetricResourceTest
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Inject
-	private Http _http;
-
-	@Inject
-	private PerformanceHistogramMetricResource
-		_performanceHistogramMetricResource;
 
 }

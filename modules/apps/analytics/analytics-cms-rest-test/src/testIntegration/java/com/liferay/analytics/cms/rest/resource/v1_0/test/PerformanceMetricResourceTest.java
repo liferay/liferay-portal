@@ -5,9 +5,9 @@
 
 package com.liferay.analytics.cms.rest.resource.v1_0.test;
 
-import com.liferay.analytics.cms.rest.dto.v1_0.Metric;
-import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceMetric;
-import com.liferay.analytics.cms.rest.resource.v1_0.PerformanceMetricResource;
+import com.liferay.analytics.cms.rest.client.dto.v1_0.Metric;
+import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceMetric;
+import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
@@ -18,35 +18,34 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.validation.ValidationException;
-
-import jakarta.ws.rs.ForbiddenException;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.StreamingOutput;
-
-import java.io.ByteArrayOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -137,28 +136,69 @@ public class PerformanceMetricResourceTest
 				HttpComponentsUtil.getParameter(url, name, false)));
 	}
 
+	private HttpURLConnection _getExportHttpURLConnection(
+			String groupBy, String metricType, int rangeKey)
+		throws Exception {
+
+		StringBundler sb = new StringBundler();
+
+		sb.append("http://");
+		sb.append(testCompany.getVirtualHostname());
+		sb.append(":");
+		sb.append(PortalUtil.getPortalServerPort(false));
+		sb.append("/o/analytics-cms-rest/v1.0/performance-metric/export?");
+
+		for (DepotEntry depotEntry : _depotEntries) {
+			sb.append("depotEntryIds=");
+			sb.append(depotEntry.getDepotEntryId());
+			sb.append("&");
+		}
+
+		sb.append("groupBy=");
+		sb.append(groupBy);
+		sb.append("&metricType=");
+		sb.append(metricType);
+		sb.append("&rangeKey=");
+		sb.append(rangeKey);
+
+		URL url = new URL(sb.toString());
+
+		HttpURLConnection httpURLConnection =
+			(HttpURLConnection)url.openConnection();
+
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		String encodedUserNameAndPassword = Base64.encode(
+			StringBundler.concat(
+				user.getEmailAddress(), ":", PropsValues.DEFAULT_ADMIN_PASSWORD
+			).getBytes());
+
+		httpURLConnection.setRequestProperty(
+			"Authorization", "Basic " + encodedUserNameAndPassword);
+
+		return httpURLConnection;
+	}
+
 	private PerformanceMetric _getPerformanceMetric(
 			String dataSourceId, String metricsJSON, String metricType,
 			String path, int rangeKey,
 			UnsafeFunction<Long[], PerformanceMetric, Exception> unsafeFunction)
 		throws Exception {
 
-		try (AnalyticsCompanyConfigurationTemporarySwapper
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(path, () -> metricsJSON);
+
+			AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(), dataSourceId)) {
-
-			RecordingMockHttp recordingMockHttp = new RecordingMockHttp(
-				Collections.singletonMap(path, () -> metricsJSON));
-
-			ReflectionTestUtil.setFieldValue(
-				_performanceMetricResource, "_http", recordingMockHttp);
+						testCompany.getCompanyId(), dataSourceId, true,
+						analyticsCloudHttpServer.getURL())) {
 
 			PerformanceMetric performanceMetric = unsafeFunction.apply(
 				TransformUtil.transformToArray(
 					_depotEntries, DepotEntry::getDepotEntryId, Long.class));
 
-			String location = recordingMockHttp.getLocation();
+			String location = analyticsCloudHttpServer.getLocation();
 
 			_assertParameter(metricType, "assetSummaryMetricType", location);
 			_assertParameter(
@@ -172,10 +212,6 @@ public class PerformanceMetricResourceTest
 			_assertParameter(String.valueOf(rangeKey), "rangeKey", location);
 
 			return performanceMetric;
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_performanceMetricResource, "_http", _http);
 		}
 	}
 
@@ -209,7 +245,7 @@ public class PerformanceMetricResourceTest
 					))
 			).toString(),
 			metricType, path, rangeKey,
-			depotEntryIds -> _performanceMetricResource.getPerformanceMetric(
+			depotEntryIds -> performanceMetricResource.getPerformanceMetric(
 				depotEntryIds, groupBy, metricType, rangeKey));
 
 		Assert.assertEquals(metricType, performanceMetric.getMetricType());
@@ -227,46 +263,34 @@ public class PerformanceMetricResourceTest
 		throws Exception {
 
 		String dataSourceId = RandomTestUtil.randomString();
+		String value = RandomTestUtil.randomString();
 
-		try (AnalyticsCompanyConfigurationTemporarySwapper
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(path, () -> value);
+
+			AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(), dataSourceId)) {
-
-			String value = RandomTestUtil.randomString();
-
-			RecordingMockHttp recordingMockHttp = new RecordingMockHttp(
-				Collections.singletonMap(path, () -> value));
-
-			ReflectionTestUtil.setFieldValue(
-				_performanceMetricResource, "_http", recordingMockHttp);
+						testCompany.getCompanyId(), dataSourceId, true,
+						analyticsCloudHttpServer.getURL())) {
 
 			int rangeKey = RandomTestUtil.nextInt();
 
-			Response response =
-				_performanceMetricResource.getPerformanceMetricExport(
-					TransformUtil.transformToArray(
-						_depotEntries, DepotEntry::getDepotEntryId, Long.class),
-					groupBy, metricType, rangeKey);
+			HttpURLConnection httpURLConnection = _getExportHttpURLConnection(
+				groupBy, metricType, rangeKey);
 
+			Assert.assertEquals(
+				HttpURLConnection.HTTP_OK, httpURLConnection.getResponseCode());
 			Assert.assertEquals(
 				StringBundler.concat(
 					"attachment; filename=performance-metric-",
 					StringUtil.toLowerCase(groupBy), "-", LocalDate.now(),
 					".csv"),
-				response.getHeaderString("Content-Disposition"));
+				httpURLConnection.getHeaderField("Content-Disposition"));
+			Assert.assertEquals(
+				value, StringUtil.read(httpURLConnection.getInputStream()));
 
-			StreamingOutput streamingOutput =
-				(StreamingOutput)response.getEntity();
-
-			ByteArrayOutputStream byteArrayOutputStream =
-				new ByteArrayOutputStream();
-
-			streamingOutput.write(byteArrayOutputStream);
-
-			Assert.assertEquals(value, byteArrayOutputStream.toString());
-
-			String location = recordingMockHttp.getLocation();
+			String location = analyticsCloudHttpServer.getLocation();
 
 			_assertParameter(metricType, "assetSummaryMetricType", location);
 			_assertParameter(
@@ -279,48 +303,97 @@ public class PerformanceMetricResourceTest
 				"groupIds", location);
 			_assertParameter(String.valueOf(rangeKey), "rangeKey", location);
 		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_performanceMetricResource, "_http", _http);
+	}
+
+	private void _testGetPerformanceMetricExportWithAnalyticsCloudNotConnected()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(), StringPool.BLANK);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_FORBIDDEN,
+				performanceMetricResource.
+					getPerformanceMetricExportHttpResponse(
+						TransformUtil.transformToArray(
+							_depotEntries, DepotEntry::getDepotEntryId,
+							Long.class),
+						"categories", "viewsMetric", RandomTestUtil.nextInt()));
 		}
 	}
 
-	private void _testGetPerformanceMetricExportWithAnalyticsCloudNotConnected() {
-		Assert.assertThrows(
-			ForbiddenException.class,
-			() -> _performanceMetricResource.getPerformanceMetricExport(
-				TransformUtil.transformToArray(
-					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
-				"categories", "viewsMetric", RandomTestUtil.nextInt()));
+	private void _testGetPerformanceMetricExportWithInvalidMetricType()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId());
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_BAD_REQUEST,
+				performanceMetricResource.
+					getPerformanceMetricExportHttpResponse(
+						TransformUtil.transformToArray(
+							_depotEntries, DepotEntry::getDepotEntryId,
+							Long.class),
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						RandomTestUtil.nextInt()));
+		}
 	}
 
-	private void _testGetPerformanceMetricExportWithInvalidMetricType() {
-		Assert.assertThrows(
-			ValidationException.class,
-			() -> _performanceMetricResource.getPerformanceMetricExport(
-				TransformUtil.transformToArray(
-					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.nextInt()));
+	private void _testGetPerformanceMetricWithAnalyticsCloudNotConnected()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(), StringPool.BLANK);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_FORBIDDEN,
+				performanceMetricResource.getPerformanceMetricHttpResponse(
+					TransformUtil.transformToArray(
+						_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+					"categories", "viewsMetric", RandomTestUtil.nextInt()));
+		}
 	}
 
-	private void _testGetPerformanceMetricWithAnalyticsCloudNotConnected() {
-		Assert.assertThrows(
-			ForbiddenException.class,
-			() -> _performanceMetricResource.getPerformanceMetric(
-				TransformUtil.transformToArray(
-					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
-				"categories", "viewsMetric", RandomTestUtil.nextInt()));
-	}
+	private void _testGetPerformanceMetricWithInvalidMetricType()
+		throws Exception {
 
-	private void _testGetPerformanceMetricWithInvalidMetricType() {
-		Assert.assertThrows(
-			ValidationException.class,
-			() -> _performanceMetricResource.getPerformanceMetric(
-				TransformUtil.transformToArray(
-					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.nextInt()));
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId());
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_BAD_REQUEST,
+				performanceMetricResource.getPerformanceMetricHttpResponse(
+					TransformUtil.transformToArray(
+						_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), RandomTestUtil.nextInt()));
+		}
 	}
 
 	private void _testGetPerformanceMetricWithNoData() throws Exception {
@@ -336,7 +409,7 @@ public class PerformanceMetricResourceTest
 			).toString(),
 			metricType, "/api/1.0/asset-metric/objectEntry/geolocation",
 			rangeKey,
-			depotEntryIds -> _performanceMetricResource.getPerformanceMetric(
+			depotEntryIds -> performanceMetricResource.getPerformanceMetric(
 				depotEntryIds, "location", metricType, rangeKey));
 
 		Assert.assertEquals(metricType, performanceMetric.getMetricType());
@@ -351,11 +424,5 @@ public class PerformanceMetricResourceTest
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Inject
-	private Http _http;
-
-	@Inject
-	private PerformanceMetricResource _performanceMetricResource;
 
 }

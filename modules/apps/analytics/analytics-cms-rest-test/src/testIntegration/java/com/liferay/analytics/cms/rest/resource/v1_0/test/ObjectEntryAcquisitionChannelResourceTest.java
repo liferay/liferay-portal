@@ -5,43 +5,39 @@
 
 package com.liferay.analytics.cms.rest.resource.v1_0.test;
 
-import com.liferay.analytics.cms.rest.dto.v1_0.ObjectEntryAcquisitionChannel;
-import com.liferay.analytics.cms.rest.resource.v1_0.ObjectEntryAcquisitionChannelResource;
+import com.liferay.analytics.cms.rest.client.dto.v1_0.ObjectEntryAcquisitionChannel;
+import com.liferay.analytics.cms.rest.client.pagination.Page;
+import com.liferay.analytics.cms.rest.client.resource.v1_0.ObjectEntryAcquisitionChannelResource;
+import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.vulcan.pagination.Page;
-
-import jakarta.ws.rs.BadRequestException;
 
 import java.io.Serializable;
+
+import java.net.HttpURLConnection;
 
 import java.util.Collections;
 import java.util.List;
@@ -104,54 +100,53 @@ public class ObjectEntryAcquisitionChannelResourceTest
 	}
 
 	private void _testGetObjectEntryAcquisitionChannelsPage() throws Exception {
-		try (AnalyticsCompanyConfigurationTemporarySwapper
+		Double value1 = 1.0;
+		Double value2 = 2.0;
+		Double value3 = 5.0;
+
+		Double totalCount = value1 + value2 + value3;
+
+		Double percentage1 = value1 / totalCount;
+		Double percentage2 = value2 / totalCount;
+		Double percentage3 = value3 / totalCount;
+
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/objectEntry/acquisition-channels",
+					() -> JSONUtil.putAll(
+						JSONUtil.put(
+							"name", "direct"
+						).put(
+							"percentage", percentage1
+						).put(
+							"value", value1
+						),
+						JSONUtil.put(
+							"name", "social"
+						).put(
+							"percentage", percentage2
+						).put(
+							"value", value2
+						),
+						JSONUtil.put(
+							"name", "others"
+						).put(
+							"percentage", percentage3
+						).put(
+							"value", value3
+						)
+					).toString());
+
+			AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId())) {
-
-			Double value1 = 1.0;
-			Double value2 = 2.0;
-			Double value3 = 5.0;
-
-			Double totalCount = value1 + value2 + value3;
-
-			Double percentage1 = value1 / totalCount;
-			Double percentage2 = value2 / totalCount;
-			Double percentage3 = value3 / totalCount;
-
-			ReflectionTestUtil.setFieldValue(
-				_objectEntryAcquisitionChannelResource, "_http",
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/asset-metric/objectEntry" +
-							"/acquisition-channels",
-						() -> JSONUtil.putAll(
-							JSONUtil.put(
-								"name", "direct"
-							).put(
-								"percentage", percentage1
-							).put(
-								"value", value1
-							),
-							JSONUtil.put(
-								"name", "social"
-							).put(
-								"percentage", percentage2
-							).put(
-								"value", value2
-							),
-							JSONUtil.put(
-								"name", "others"
-							).put(
-								"percentage", percentage3
-							).put(
-								"value", value3
-							)
-						).toString())));
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
 
 			Page<ObjectEntryAcquisitionChannel>
 				objectEntryAcquisitionChannelsPage =
-					_objectEntryAcquisitionChannelResource.
+					objectEntryAcquisitionChannelResource.
 						getObjectEntryAcquisitionChannelsPage(
 							null, _objectEntry.getObjectEntryId(),
 							RandomTestUtil.randomInt());
@@ -193,10 +188,6 @@ public class ObjectEntryAcquisitionChannelResourceTest
 			Assert.assertEquals(
 				value3, objectEntryAcquisitionChannel3.getValue());
 		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_objectEntryAcquisitionChannelResource, "_http", _http);
-		}
 	}
 
 	private void _testGetObjectEntryAcquisitionChannelsPageWithInvalidObjectEntryId()
@@ -208,21 +199,17 @@ public class ObjectEntryAcquisitionChannelResourceTest
 						testCompany.getCompanyId(),
 						RandomTestUtil.randomString(), false)) {
 
-			Assert.assertThrows(
-				NoSuchObjectEntryException.class,
-				() ->
-					_objectEntryAcquisitionChannelResource.
-						getObjectEntryAcquisitionChannelsPage(
-							null, RandomTestUtil.nextLong(),
-							RandomTestUtil.randomInt()));
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_NOT_FOUND,
+				objectEntryAcquisitionChannelResource.
+					getObjectEntryAcquisitionChannelsPageHttpResponse(
+						null, RandomTestUtil.nextLong(),
+						RandomTestUtil.randomInt()));
 		}
 	}
 
 	private void _testGetObjectEntryAcquisitionChannelsPageWithoutViewPermission()
 		throws Exception {
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
 
 		try (AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
@@ -230,21 +217,28 @@ public class ObjectEntryAcquisitionChannelResourceTest
 						testCompany.getCompanyId(),
 						RandomTestUtil.randomString(), false)) {
 
-			_user = UserTestUtil.addUser();
+			String password = RandomTestUtil.randomString();
 
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
+			User user = UserTestUtil.addUser(testCompany, password);
 
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() ->
-					_objectEntryAcquisitionChannelResource.
-						getObjectEntryAcquisitionChannelsPage(
-							null, _objectEntry.getObjectEntryId(),
-							RandomTestUtil.randomInt()));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+			ObjectEntryAcquisitionChannelResource
+				objectEntryAcquisitionChannelResource =
+					ObjectEntryAcquisitionChannelResource.builder(
+					).authentication(
+						user.getEmailAddress(), password
+					).endpoint(
+						testCompany.getVirtualHostname(),
+						PortalUtil.getPortalServerPort(false), "http"
+					).locale(
+						LocaleUtil.getDefault()
+					).build();
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_NOT_FOUND,
+				objectEntryAcquisitionChannelResource.
+					getObjectEntryAcquisitionChannelsPageHttpResponse(
+						null, _objectEntry.getObjectEntryId(),
+						RandomTestUtil.randomInt()));
 		}
 	}
 
@@ -255,16 +249,18 @@ public class ObjectEntryAcquisitionChannelResourceTest
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
 						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false)) {
+						RandomTestUtil.randomString(), false);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
 
-			Assert.assertThrows(
-				BadRequestException.class,
-				() ->
-					_objectEntryAcquisitionChannelResource.
-						getObjectEntryAcquisitionChannelsPage(
-							testGroup.getGroupId(),
-							_objectEntry.getObjectEntryId(),
-							RandomTestUtil.randomInt()));
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_BAD_REQUEST,
+				objectEntryAcquisitionChannelResource.
+					getObjectEntryAcquisitionChannelsPageHttpResponse(
+						testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
+						RandomTestUtil.randomInt()));
 		}
 	}
 
@@ -275,19 +271,9 @@ public class ObjectEntryAcquisitionChannelResourceTest
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
-	private Http _http;
-
-	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectEntry _objectEntry;
-
-	@Inject
-	private ObjectEntryAcquisitionChannelResource
-		_objectEntryAcquisitionChannelResource;
-
-	@DeleteAfterTestRun
-	private User _user;
 
 }
