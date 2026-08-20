@@ -1839,6 +1839,10 @@ public class ObjectEntryResourceImpl
 			String scopeKey, ValidationRequest validationRequest)
 		throws Exception {
 
+		if (validationRequest.getValues() == null) {
+			throw new BadRequestException("No values found in body");
+		}
+
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
 				_objectEntryManagerRegistry.getObjectEntryManager(
