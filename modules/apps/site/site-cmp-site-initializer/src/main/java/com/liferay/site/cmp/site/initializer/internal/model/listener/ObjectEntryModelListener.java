@@ -41,7 +41,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
@@ -167,12 +166,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		User user = _userService.getUserById(userId);
 
 		_updateUser(ArrayUtil.remove(user.getGroupIds(), groupId), userId);
-
-		if (_groupLocalService.hasUserGroup(userId, groupId)) {
-			throw new PrincipalException.MustHavePermission(
-				PermissionThreadLocal.getPermissionChecker(),
-				Group.class.getName(), groupId, ActionKeys.ASSIGN_MEMBERS);
-		}
 	}
 
 	private void _deleteObjectEntries(ObjectEntry objectEntry)
