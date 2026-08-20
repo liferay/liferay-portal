@@ -319,7 +319,14 @@ public class TableReferenceDefinitionManager {
 			TableReferenceDefinition<?> tableReferenceDefinition =
 				_bundleContext.getService(serviceReference);
 
-			return _createTableReferenceContext(tableReferenceDefinition);
+			TableReferenceInfo<?> tableReferenceInfo =
+				_createTableReferenceContext(tableReferenceDefinition);
+
+			if (tableReferenceInfo == null) {
+				_bundleContext.ungetService(serviceReference);
+			}
+
+			return tableReferenceInfo;
 		}
 
 		@Override
