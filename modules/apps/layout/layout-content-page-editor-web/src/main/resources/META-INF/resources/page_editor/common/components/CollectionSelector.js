@@ -50,6 +50,7 @@ export default function CollectionSelector({
 					config.selectedMappingTypes?.linkedCollection
 				}
 				selectedItem={collectionItem}
+				showMappedFeedback
 				showMappedItems={
 					!!config.selectedMappingTypes?.linkedCollection
 				}

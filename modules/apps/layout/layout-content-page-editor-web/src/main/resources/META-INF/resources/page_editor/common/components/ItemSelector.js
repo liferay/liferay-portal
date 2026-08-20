@@ -19,6 +19,7 @@ import {getPageContentDropdownItems} from '../../app/utils/getPageContentDropdow
 import {ITEM_SELECTOR_VARIANTS} from '../../app/utils/itemSelectorVariants';
 import usePageContents from '../../app/utils/usePageContents';
 import {openItemSelector} from '../openItemSelector';
+import MappedFieldLabel from './MappedFieldLabel';
 
 const DEFAULT_BEFORE_ITEM_SELECT = () => {};
 
@@ -42,6 +43,7 @@ export default function ItemSelector({
 	quickMappedInfoItems = DEFAULT_QUICK_MAPPED_INFO_ITEMS,
 	selectedItem,
 	showEditControls = true,
+	showMappedFeedback = false,
 	showMappedItems = true,
 	transformValueCallback,
 	variant = ITEM_SELECTOR_VARIANTS.input,
@@ -186,6 +188,8 @@ export default function ItemSelector({
 		return content?.title || selectedItem.title || '';
 	}, [quickMappedInfoItems, pageContents, selectedItem]);
 
+	const isMapped = showMappedFeedback && Boolean(selectedItemTitle);
+
 	const selectContentButtonIcon = selectedItem?.title ? 'change' : 'plus';
 
 	const selectContentButtonLabel = sub(
@@ -204,7 +208,11 @@ export default function ItemSelector({
 	}
 
 	return (
-		<ClayForm.Group className={className}>
+		<ClayForm.Group
+			className={classNames(className, {
+				'page-editor__mapped-field': isMapped,
+			})}
+		>
 			<label htmlFor={itemSelectorInputId}>{label}</label>
 
 			<ClayInput.Group small>
@@ -290,6 +298,8 @@ export default function ItemSelector({
 				)}
 			</ClayInput.Group>
 
+			{isMapped ? <MappedFieldLabel className="mb-0 mt-1" /> : null}
+
 			{helpText ? (
 				<div className="mt-1 text-secondary" id={helpTextId}>
 					{helpText}
@@ -326,6 +336,7 @@ ItemSelector.propTypes = {
 	),
 	selectedItem: PropTypes.shape({title: PropTypes.string}),
 	showEditControls: PropTypes.bool,
+	showMappedFeedback: PropTypes.bool,
 	showMappedItems: PropTypes.bool,
 	transformValueCallback: PropTypes.func.isRequired,
 };
