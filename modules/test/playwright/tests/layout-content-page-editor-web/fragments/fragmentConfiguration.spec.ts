@@ -1204,6 +1204,114 @@ test.describe('General Configuration', () => {
 			await expect(page.getByText('Number: 3')).toBeVisible();
 		}
 	);
+
+	test(
+		'Text configuration allows marking a field as required',
+		{tag: '@LPD-103219'},
+		async ({apiHelpers, page, pageEditorPage, site}) => {
+
+			// Create a fragment with a required text configuration field
+
+			const {fragmentCollectionId} =
+				await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+					{
+						groupId: site.id,
+						name: getRandomString(),
+					}
+				);
+
+			const configuration: FragmentConfiguration = {
+				fieldSets: [
+					{
+						fields: [
+							{
+								dataType: 'string',
+								defaultValue: 'Go Somewhere',
+								label: 'Button Text',
+								name: 'buttonText',
+								type: 'text',
+								typeOptions: {
+									validation: {
+										required: true,
+										type: 'text',
+									},
+								},
+							},
+						],
+					},
+				],
+			};
+
+			const html = `
+			<div class="fragment-configuration">
+				<button type="button" class="btn btn-primary">Text: \${configuration.buttonText}</button>
+			</div>
+		`;
+
+			const fragmentEntryName = getRandomString();
+
+			await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+				configuration,
+				fragmentCollectionId,
+				groupId: site.id,
+				html,
+				name: fragmentEntryName,
+			});
+
+			// Create a layout with the fragment
+
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getFragmentDefinition({
+						id: fragmentEntryName,
+						key: fragmentEntryName,
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			// Check that it shows the default value
+
+			await expect(page.getByText('Text: Go Somewhere')).toBeVisible();
+
+			// Select the fragment and check that the field is marked as mandatory
+
+			await pageEditorPage.selectFragment(fragmentEntryName);
+
+			await pageEditorPage.goToConfigurationTab('General');
+
+			const generalTabPanel = page.getByRole('tabpanel', {
+				name: 'General',
+			});
+
+			await expect(
+				generalTabPanel.getByText('Mandatory', {exact: true})
+			).toBeAttached();
+
+			// Clearing the field shows an error and does not change the value
+
+			const buttonTextInput = generalTabPanel.getByLabel('Button Text');
+
+			await buttonTextInput.fill('');
+
+			await expect(
+				page.getByText('This field is required.')
+			).toBeVisible();
+
+			await buttonTextInput.blur();
+
+			await expect(page.getByText('Text: Go Somewhere')).toBeVisible();
+
+			// A non-empty value is still applied
+
+			await fillAndClickOutside(page, buttonTextInput, 'Go Elsewhere');
+
+			await expect(page.getByText('Text: Go Elsewhere')).toBeVisible();
+		}
+	);
 });
 
 test.describe('Localizable Configuration', () => {

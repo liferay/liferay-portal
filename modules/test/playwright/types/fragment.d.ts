@@ -40,7 +40,10 @@ type FragmentConfigurationField = {
 		}[];
 		validation?: {
 			max?: number;
+			maxLength?: number;
 			min?: number;
+			minLength?: number;
+			required?: boolean;
 			type?: string;
 		};
 	};
