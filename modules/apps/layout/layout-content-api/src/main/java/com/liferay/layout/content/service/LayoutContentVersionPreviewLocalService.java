@@ -67,6 +67,11 @@ public interface LayoutContentVersionPreviewLocalService
 	public LayoutContentVersionPreview addLayoutContentVersionPreview(
 		LayoutContentVersionPreview layoutContentVersionPreview);
 
+	public LayoutContentVersionPreview addLayoutContentVersionPreview(
+			long userId, long layoutContentVersionId,
+			String segmentsExperienceERC, String html, String languageId)
+		throws PortalException;
+
 	/**
 	 * Creates a new layout content version preview with the primary key. Does not add the layout content version preview to the database.
 	 *
@@ -111,6 +116,9 @@ public interface LayoutContentVersionPreviewLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public LayoutContentVersionPreview deleteLayoutContentVersionPreview(
 			long layoutContentVersionPreviewId)
+		throws PortalException;
+
+	public void deleteLayoutContentVersionPreviews(long layoutContentVersionId)
 		throws PortalException;
 
 	/**
@@ -197,6 +205,12 @@ public interface LayoutContentVersionPreviewLocalService
 		long layoutContentVersionPreviewId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public LayoutContentVersionPreview fetchLayoutContentVersionPreview(
+			long layoutContentVersionId, String segmentsExperienceERC,
+			String languageId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -228,6 +242,11 @@ public interface LayoutContentVersionPreviewLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<LayoutContentVersionPreview> getLayoutContentVersionPreviews(
 		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<LayoutContentVersionPreview> getLayoutContentVersionPreviews(
+			long layoutContentVersionId)
+		throws PortalException;
 
 	/**
 	 * Returns the number of layout content version previews.
@@ -267,4 +286,4 @@ public interface LayoutContentVersionPreviewLocalService
 		LayoutContentVersionPreview layoutContentVersionPreview);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1048334110
+// LIFERAY-SERVICE-BUILDER-HASH:25711682

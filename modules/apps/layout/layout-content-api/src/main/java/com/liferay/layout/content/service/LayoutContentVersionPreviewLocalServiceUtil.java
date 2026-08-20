@@ -54,6 +54,16 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 			layoutContentVersionPreview);
 	}
 
+	public static LayoutContentVersionPreview addLayoutContentVersionPreview(
+			long userId, long layoutContentVersionId,
+			String segmentsExperienceERC, String html, String languageId)
+		throws PortalException {
+
+		return getService().addLayoutContentVersionPreview(
+			userId, layoutContentVersionId, segmentsExperienceERC, html,
+			languageId);
+	}
+
 	/**
 	 * Creates a new layout content version preview with the primary key. Does not add the layout content version preview to the database.
 	 *
@@ -111,6 +121,13 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 
 		return getService().deleteLayoutContentVersionPreview(
 			layoutContentVersionPreviewId);
+	}
+
+	public static void deleteLayoutContentVersionPreviews(
+			long layoutContentVersionId)
+		throws PortalException {
+
+		getService().deleteLayoutContentVersionPreviews(layoutContentVersionId);
 	}
 
 	/**
@@ -215,6 +232,15 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 			layoutContentVersionPreviewId);
 	}
 
+	public static LayoutContentVersionPreview fetchLayoutContentVersionPreview(
+			long layoutContentVersionId, String segmentsExperienceERC,
+			String languageId)
+		throws PortalException {
+
+		return getService().fetchLayoutContentVersionPreview(
+			layoutContentVersionId, segmentsExperienceERC, languageId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -258,6 +284,14 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 		getLayoutContentVersionPreviews(int start, int end) {
 
 		return getService().getLayoutContentVersionPreviews(start, end);
+	}
+
+	public static List<LayoutContentVersionPreview>
+			getLayoutContentVersionPreviews(long layoutContentVersionId)
+		throws PortalException {
+
+		return getService().getLayoutContentVersionPreviews(
+			layoutContentVersionId);
 	}
 
 	/**
@@ -314,4 +348,4 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 			LayoutContentVersionPreviewLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1333073319
+// LIFERAY-SERVICE-BUILDER-HASH:1542213919
