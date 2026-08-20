@@ -121,7 +121,8 @@ export function getFileMimeTypeObjectDefinitionStickerValue(
 
 	const objectDefinitionExternalReferenceCode =
 		item.embedded?.systemProperties?.objectDefinitionBrief
-			?.externalReferenceCode;
+			?.externalReferenceCode ??
+		item.objectDefinitionExternalReferenceCode;
 
 	if (objectDefinitionExternalReferenceCode) {
 		const objectDefinitionCssClass =
