@@ -186,6 +186,26 @@ public class JournalContentCompatibilityConverterTest {
 	}
 
 	@Test
+	public void testMultiListFieldCompatibilityLayer() throws Exception {
+		String content = read(
+			"test-journal-content-multi-list-field-compatibility.xml");
+
+		content = _journalContentCompatibilityConverter.convert(content);
+
+		String expectedContent = read(
+			"test-journal-content-multi-list-field-compatibility-expected-" +
+				"results.xml");
+
+		Document expectedDocument = SAXReaderUtil.read(expectedContent);
+
+		Document document = SAXReaderUtil.read(content);
+
+		Assert.assertEquals(
+			_getFormattedString(expectedDocument),
+			_getFormattedString(document));
+	}
+
+	@Test
 	public void testNestedFieldsCompatibilityLayer() throws Exception {
 		String content = read(
 			"test-journal-content-nested-fields-compatibility.xml");

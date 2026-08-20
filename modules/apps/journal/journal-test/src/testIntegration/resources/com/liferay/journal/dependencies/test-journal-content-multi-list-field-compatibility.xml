@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US">
+	<dynamic-element index-type="keyword" instance-id="wnkr" name="MultiSelect" type="multi-list">
+		<dynamic-content language-id="en_US">
+			<option><![CDATA[Value 01]]></option>
+			<option><![CDATA[Value 02]]></option>
+		</dynamic-content>
+	</dynamic-element>
+</root>
