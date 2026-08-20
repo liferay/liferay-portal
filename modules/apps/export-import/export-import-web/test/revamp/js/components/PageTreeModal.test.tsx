@@ -8,11 +8,13 @@ import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
 
-import PageTreeModal from '../../../../../../src/main/resources/META-INF/resources/revamp/js/pages/export/components/PageTreeModal';
-import {mockPageTreeItems} from '../../../mocks/mockPageTreeItems';
+import '@testing-library/jest-dom';
+
+import PageTreeModal from '../../../../src/main/resources/META-INF/resources/revamp/js/components/PageTreeModal';
+import {mockPageTreeItems} from '../mocks/mockPageTreeItems';
 
 jest.mock('staging-taglib', () => ({
-	PagesTree: require('../../../mocks/MockPagesTree').MockPagesTree,
+	PagesTree: require('../mocks/MockPagesTree').MockPagesTree,
 }));
 
 const renderModal = (
@@ -20,8 +22,8 @@ const renderModal = (
 ) =>
 	render(
 		<PageTreeModal
+			groupId={20121}
 			initialSelectedIds={[]}
-			liveGroupId={20121}
 			onClose={jest.fn()}
 			onSubmit={jest.fn()}
 			pageSize={20}
@@ -33,6 +35,22 @@ const renderModal = (
 describe('PageTreeModal', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
+	});
+
+	it('titles the dialog for the export page unless told otherwise', async () => {
+		fetch.mockResponse('[]');
+
+		renderModal({});
+
+		expect(await screen.findByText('pages-to-export')).toBeInTheDocument();
+	});
+
+	it('titles the dialog with the given title', async () => {
+		fetch.mockResponse('[]');
+
+		renderModal({title: 'pages-to-publish'});
+
+		expect(await screen.findByText('pages-to-publish')).toBeInTheDocument();
 	});
 
 	it('emits the selected subset when not every page is checked', async () => {

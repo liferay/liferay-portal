@@ -22,7 +22,7 @@ const renderFormikFieldDateFilter = ({
 	onSubmit = jest.fn(),
 }: {
 	initialValue?: DateFilterValues;
-	onApplyFilter?: (filterValues: DateFilterValues) => void;
+	onApplyFilter?: (dateFilterValues: DateFilterValues) => void;
 	onSubmit?: (values: {dateFilter: DateFilterValues}) => void;
 } = {}) => {
 	const user = userEvent.setup();

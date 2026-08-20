@@ -5,19 +5,19 @@
 
 import fetch from 'jest-fetch-mock';
 
-import {getExportPreview} from '../../../../src/main/resources/META-INF/resources/revamp/js/services/getExportPreview';
+import {getPreview} from '../../../../src/main/resources/META-INF/resources/revamp/js/services/getPreview';
 
 const getRequestedURL = () =>
 	new URL(String(fetch.mock.calls[0][0]), 'http://localhost');
 
-describe('getExportPreview', () => {
+describe('getPreview', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
 		fetch.mockResponse(JSON.stringify({}));
 	});
 
 	it('appends the date filter to a scoped url that already has a query string', async () => {
-		await getExportPreview({
+		await getPreview({
 			query: {
 				endDate: '2026-06-26T12:00:00.000Z',
 				startDate: '2026-06-26T00:00:00.000Z',
@@ -37,7 +37,7 @@ describe('getExportPreview', () => {
 	});
 
 	it('appends the date filter to a url without a query string', async () => {
-		await getExportPreview({
+		await getPreview({
 			query: {endDate: '2026-06-26T12:00:00.000Z'},
 			url: '/o/export-import/v1.0/sites/L_GUEST/export-preview',
 		});
@@ -50,7 +50,7 @@ describe('getExportPreview', () => {
 	});
 
 	it('keeps the url untouched when there is no date filter', async () => {
-		await getExportPreview({
+		await getPreview({
 			query: {endDate: '', startDate: undefined},
 			url: '/o/export-import/v1.0/sites/L_GUEST/export-preview?plid=1',
 		});

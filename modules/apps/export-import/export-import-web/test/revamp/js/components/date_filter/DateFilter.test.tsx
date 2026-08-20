@@ -16,30 +16,49 @@ import {
 } from '../../../../../src/main/resources/META-INF/resources/revamp/js/components/date_filter/types';
 
 function ControlledDateFilter({
+	appliedValue: initialAppliedValue,
+	lastPublishDate,
 	onApplyFilter,
 }: {
-	onApplyFilter: (filterValues: DateFilterValues) => void;
+	appliedValue?: DateFilterValues;
+	lastPublishDate?: string;
+	onApplyFilter: (dateFilterValues: DateFilterValues) => void;
 }) {
-	const [appliedValue, setAppliedValue] = useState<DateFilterValues>({
-		range: Range.All,
-	});
+	const [appliedValue, setAppliedValue] = useState<DateFilterValues>(
+		initialAppliedValue ?? {range: Range.All}
+	);
 
 	return (
 		<DateFilter
 			appliedValue={appliedValue}
-			onApplyFilter={(filterValues) => {
-				setAppliedValue(filterValues);
-				onApplyFilter(filterValues);
+			lastPublishDate={lastPublishDate}
+			onApplyFilter={(dateFilterValues) => {
+				setAppliedValue(dateFilterValues);
+				onApplyFilter(dateFilterValues);
 			}}
 		/>
 	);
 }
 
 describe('DateFilter', () => {
-	const renderDateFilter = (onApplyFilter = jest.fn()) => {
-		const user = userEvent.setup();
+	const renderDateFilter = ({
+		appliedValue,
+		lastPublishDate,
+		onApplyFilter = jest.fn(),
+	}: {
+		appliedValue?: DateFilterValues;
+		lastPublishDate?: string;
+		onApplyFilter?: jest.Mock;
+	} = {}) => {
+		const user = userEvent.setup({delay: null});
 
-		render(<ControlledDateFilter onApplyFilter={onApplyFilter} />);
+		render(
+			<ControlledDateFilter
+				appliedValue={appliedValue}
+				lastPublishDate={lastPublishDate}
+				onApplyFilter={onApplyFilter}
+			/>
+		);
 
 		return {onApplyFilter, user};
 	};
@@ -107,11 +126,12 @@ describe('DateFilter', () => {
 			Range.DateRange
 		);
 
-		await user.type(screen.getByLabelText('from'), '2026-01-01 08:00');
-		await user.type(
-			screen.getByLabelText('to[date-time]'),
-			'2026-01-02 08:00'
-		);
+		await user.click(screen.getByLabelText('from'));
+
+		await user.paste('2026-01-01 08:00');
+		await user.click(screen.getByLabelText('to[date-time]'));
+
+		await user.paste('2026-01-02 08:00');
 
 		await user.click(screen.getByText('show-results'));
 
@@ -160,5 +180,41 @@ describe('DateFilter', () => {
 			Range.All
 		);
 		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+	});
+
+	it('does not offer the from last publish date range without a last publish date', () => {
+		renderDateFilter();
+
+		expect(
+			screen.queryByRole('option', {name: 'from-last-publish-date'})
+		).not.toBeInTheDocument();
+	});
+
+	it('keeps a seeded from last publish date range selectable without a last publish date', () => {
+		renderDateFilter({appliedValue: {range: Range.FromLastPublishDate}});
+
+		expect(screen.getByLabelText('filter-content-by')).toHaveValue(
+			Range.FromLastPublishDate
+		);
+		expect(
+			screen.getByRole('option', {name: 'from-last-publish-date'})
+		).toBeInTheDocument();
+	});
+
+	it('applies the from last publish date range', async () => {
+		const {onApplyFilter, user} = renderDateFilter({
+			lastPublishDate: '2026-07-20T15:30:00Z',
+		});
+
+		await user.selectOptions(
+			screen.getByLabelText('filter-content-by'),
+			Range.FromLastPublishDate
+		);
+
+		await user.click(screen.getByText('show-results'));
+
+		expect(onApplyFilter).toHaveBeenCalledWith({
+			range: Range.FromLastPublishDate,
+		});
 	});
 });

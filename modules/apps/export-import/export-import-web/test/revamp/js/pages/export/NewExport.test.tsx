@@ -5,16 +5,18 @@
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
-import {render, screen, waitFor, within} from '@testing-library/react';
+import {act, render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
 
+import '@testing-library/jest-dom';
+
 import {NewExport} from '../../../../../src/main/resources/META-INF/resources/revamp/js/pages/export/NewExport';
-import {ExportPreview} from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
+import {Preview} from '../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
 import {LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY} from '../../../../../src/main/resources/META-INF/resources/revamp/js/utils/contentSelection';
-import {mockExportPreview} from '../../mocks/mockExportPreview';
 import {mockPageTreeItems} from '../../mocks/mockPageTreeItems';
+import {mockPreview} from '../../mocks/mockPreview';
 
 jest.mock('staging-taglib', () => ({
 	PagesTree: require('../../mocks/MockPagesTree').MockPagesTree,
@@ -42,7 +44,7 @@ const DEFAULT_PROPS = {
 	exportPreviewAPIURL: '/o/export-import/v1.0/export-preview',
 	exportProcessAPIURL: '/o/export-import/v1.0/export-processes',
 	pageTreeModalConfiguration: {
-		liveGroupId: 20121,
+		groupId: 20121,
 		pageSize: 20,
 		privateLayoutsAvailable: false,
 	},
@@ -55,11 +57,15 @@ const renderComponent = (
 describe('NewExport', () => {
 	beforeEach(() => {
 		fetch.resetMocks();
-		fetch.mockResponse(JSON.stringify(mockExportPreview));
+		fetch.mockResponse(JSON.stringify(mockPreview));
+	});
+
+	afterEach(() => {
+		jest.restoreAllMocks();
 	});
 
 	it('preloads the preview without fetching when it is provided', async () => {
-		renderComponent({exportPreview: mockExportPreview});
+		renderComponent({exportPreview: mockPreview});
 
 		await screen.findByText('loaded');
 
@@ -116,7 +122,7 @@ describe('NewExport', () => {
 	it('renders the root model handler tag and description', async () => {
 		renderComponent({
 			exportPreview: {
-				...mockExportPreview,
+				...mockPreview,
 				previewPortletDataHandlerSections: [
 					{
 						label: 'Content & Data',
@@ -239,15 +245,55 @@ describe('NewExport', () => {
 		);
 	});
 
-	it('exports the last range window resolved at apply, not at submit', async () => {
+	it('ignores a stale filtered preview after the filter is cleared', async () => {
+		renderComponent();
+
+		await screen.findByText('loaded');
+
+		let resolveFilteredPreview = () => {};
+
+		fetch.mockResponseOnce(
+			() =>
+				new Promise((resolve) => {
+					resolveFilteredPreview = () =>
+						resolve(
+							JSON.stringify({
+								...mockPreview,
+								previewPortletDataHandlerSections: [],
+							})
+						);
+				})
+		);
+
+		await userEvent.selectOptions(
+			screen.getByRole('combobox', {name: 'filter-content-by'}),
+			'last'
+		);
+		await userEvent.click(
+			screen.getByRole('button', {name: /show-results/i})
+		);
+
+		await userEvent.click(screen.getByText('clear-filters'));
+
+		expect(screen.getByText('loaded')).toBeInTheDocument();
+
+		await act(async () => {
+			resolveFilteredPreview();
+
+			await new Promise((resolve) => setTimeout(resolve, 0));
+		});
+
+		expect(screen.getByRole('checkbox', {name: 'Design'})).toBeChecked();
+		expect(screen.getByText('loaded')).toBeInTheDocument();
+	});
+
+	it('exports the last range start date resolved at apply, not at submit', async () => {
 		const HOUR = 60 * 60 * 1000;
 		const applyTime = Date.UTC(2026, 0, 1, 12, 0, 0);
 
 		let now = applyTime;
 
-		const dateNowSpy = jest
-			.spyOn(Date, 'now')
-			.mockImplementation(() => now);
+		jest.spyOn(Date, 'now').mockImplementation(() => now);
 
 		renderComponent();
 
@@ -278,13 +324,12 @@ describe('NewExport', () => {
 
 			const body = JSON.parse(exportCall![1]!.body as string);
 
+			expect(body.dateRangeType).toBe('LAST');
 			expect(body.startDate).toBe(
 				new Date(applyTime - 12 * HOUR).toISOString()
 			);
-			expect(body.endDate).toBe(new Date(applyTime).toISOString());
+			expect(body.endDate).toBeUndefined();
 		});
-
-		dateNowSpy.mockRestore();
 	});
 
 	it('enables the export button once the name is set since entities are checked by default', async () => {
@@ -311,7 +356,7 @@ describe('NewExport', () => {
 		fetch.resetMocks();
 		fetch.mockResponse(
 			JSON.stringify({
-				...mockExportPreview,
+				...mockPreview,
 				deletionCount: 0,
 			})
 		);
@@ -344,7 +389,7 @@ describe('NewExport', () => {
 	});
 
 	describe('page selection', () => {
-		const previewWithPagePicker: ExportPreview = {
+		const previewWithPagePicker: Preview = {
 			additionCount: 1,
 			deletionCount: 0,
 			previewPortletDataHandlerSections: [

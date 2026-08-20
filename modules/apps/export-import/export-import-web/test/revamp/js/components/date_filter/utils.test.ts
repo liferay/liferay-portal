@@ -7,11 +7,16 @@ import {
 	LastRange,
 	Range,
 } from '../../../../../src/main/resources/META-INF/resources/revamp/js/components/date_filter/types';
-import {normalizeDateFilter} from '../../../../../src/main/resources/META-INF/resources/revamp/js/components/date_filter/utils';
+import {
+	dateFilterToEditingState,
+	normalizeDateFilter,
+} from '../../../../../src/main/resources/META-INF/resources/revamp/js/components/date_filter/utils';
 
 describe('normalizeDateFilter', () => {
-	it('returns no dates for the show all range', () => {
-		expect(normalizeDateFilter({range: Range.All})).toEqual({});
+	it('returns the all type for the show all range', () => {
+		expect(normalizeDateFilter({range: Range.All})).toEqual({
+			dateRangeType: 'ALL',
+		});
 	});
 
 	it('returns the absolute dates for the date range', () => {
@@ -21,6 +26,7 @@ describe('normalizeDateFilter', () => {
 		expect(
 			normalizeDateFilter({endDate, range: Range.DateRange, startDate})
 		).toEqual({
+			dateRangeType: 'DATE_RANGE',
 			endDate: new Date(endDate).toISOString(),
 			startDate: new Date(startDate).toISOString(),
 		});
@@ -36,6 +42,7 @@ describe('normalizeDateFilter', () => {
 				startDate,
 			})
 		).toEqual({
+			dateRangeType: 'DATE_RANGE',
 			startDate: new Date(startDate).toISOString(),
 		});
 	});
@@ -50,11 +57,20 @@ describe('normalizeDateFilter', () => {
 				startDate: '',
 			})
 		).toEqual({
+			dateRangeType: 'DATE_RANGE',
 			endDate: new Date(endDate).toISOString(),
 		});
 	});
 
-	it('resolves the modified last range to absolute dates', () => {
+	it('returns the from last publish date type without dates', () => {
+		expect(normalizeDateFilter({range: Range.FromLastPublishDate})).toEqual(
+			{
+				dateRangeType: 'FROM_LAST_PUBLISH_DATE',
+			}
+		);
+	});
+
+	it('resolves the modified last range to a start date only', () => {
 		const beforeTime = Date.now();
 
 		const normalizedDateFilter = normalizeDateFilter({
@@ -64,11 +80,39 @@ describe('normalizeDateFilter', () => {
 
 		const afterTime = Date.now();
 
-		const startTime = new Date(normalizedDateFilter.startDate!).getTime();
-		const endTime = new Date(normalizedDateFilter.endDate!).getTime();
+		const dayMilliseconds = 24 * 60 * 60 * 1000;
 
-		expect(endTime - startTime).toBe(24 * 60 * 60 * 1000);
-		expect(endTime).toBeGreaterThanOrEqual(beforeTime);
-		expect(endTime).toBeLessThanOrEqual(afterTime);
+		const startTime = new Date(normalizedDateFilter.startDate!).getTime();
+
+		expect(normalizedDateFilter.dateRangeType).toBe('LAST');
+		expect(normalizedDateFilter.endDate).toBeUndefined();
+		expect(startTime).toBeGreaterThanOrEqual(beforeTime - dayMilliseconds);
+		expect(startTime).toBeLessThanOrEqual(afterTime - dayMilliseconds);
+	});
+});
+
+describe('dateFilterToEditingState', () => {
+	it('carries the applied range into the editing fields', () => {
+		expect(
+			dateFilterToEditingState({
+				endDate: '2026-10-20 09:30',
+				range: Range.DateRange,
+				startDate: '2026-08-22 15:05',
+			})
+		).toEqual({
+			endDate: '2026-10-20 09:30',
+			last: LastRange.H12,
+			range: Range.DateRange,
+			startDate: '2026-08-22 15:05',
+		});
+
+		expect(
+			dateFilterToEditingState({last: LastRange.D7, range: Range.Last})
+		).toEqual({
+			endDate: '',
+			last: LastRange.D7,
+			range: Range.Last,
+			startDate: '',
+		});
 	});
 });
