@@ -57,7 +57,7 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 			"https://liferay.com/cookie-policy", "cookiePolicyLink");
 	}
 
-	private String _fetchPolicyLink(
+	private String _getPolicyLink(
 			Class<?> configurationClass, String propertyName)
 		throws Exception {
 
@@ -91,7 +91,7 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 		_saveConfiguration(configurationClass, policyLink, propertyName);
 
 		Assert.assertEquals(
-			policyLink, _fetchPolicyLink(configurationClass, propertyName));
+			policyLink, _getPolicyLink(configurationClass, propertyName));
 		Assert.assertThrows(
 			ConfigurationModelListenerException.class,
 			() -> _saveConfiguration(
@@ -108,7 +108,7 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 				propertyName));
 
 		Assert.assertEquals(
-			policyLink, _fetchPolicyLink(configurationClass, propertyName));
+			policyLink, _getPolicyLink(configurationClass, propertyName));
 	}
 
 	@Inject
