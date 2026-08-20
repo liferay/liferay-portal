@@ -18,12 +18,30 @@ test(
 		await connectorsPage.goto();
 
 		await expect(connectorsPage.emptyStateTitle).toBeVisible();
-
 		await expect(
 			connectorsPage.dataSetFragmentPage.searchInput
 		).toBeHidden();
-
 		await expect(connectorsPage.newConnectorButton).toBeVisible();
+	}
+);
+
+test(
+	'Mark the name and the connector as required fields',
+	{tag: ['@LPD-101792']},
+	async ({connectorsPage, editConnectorPage}) => {
+		await connectorsPage.goto();
+
+		await connectorsPage.newConnectorButton.click();
+
+		await expect(
+			editConnectorPage.referenceMark(editConnectorPage.nameInput)
+		).toBeVisible();
+		await expect(
+			editConnectorPage.referenceMark(editConnectorPage.connectorSelect)
+		).toBeVisible();
+		await expect(
+			editConnectorPage.referenceMark(editConnectorPage.apiSchemaInput)
+		).toBeHidden();
 	}
 );
 

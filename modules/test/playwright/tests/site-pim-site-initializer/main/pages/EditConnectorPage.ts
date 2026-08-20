@@ -8,15 +8,22 @@ import {Locator, Page} from '@playwright/test';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
 export class EditConnectorPage {
+	readonly apiSchemaInput: Locator;
 	readonly connectorSelect: Locator;
 	readonly nameInput: Locator;
 	readonly page: Page;
+	readonly referenceMark: (field: Locator) => Locator;
 	readonly saveButton: Locator;
 
 	constructor(page: Page) {
-		this.connectorSelect = page.getByLabel('Connector', {exact: true});
-		this.nameInput = page.getByLabel('Name', {exact: true});
+		this.apiSchemaInput = page.getByRole('textbox', {name: 'API Schema'});
+		this.connectorSelect = page.getByRole('combobox', {name: 'Connector'});
+		this.nameInput = page.getByRole('textbox', {name: 'Name'});
 		this.page = page;
+		this.referenceMark = (field) =>
+			page
+				.locator('.form-group', {has: field})
+				.locator('.reference-mark');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 	}
 
