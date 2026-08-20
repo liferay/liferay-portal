@@ -149,6 +149,7 @@ export function DuplicationAndSimilarity({
 							xl={3}
 						>
 							<InteractiveCard
+								aria-haspopup="dialog"
 								description={description}
 								loading={loading && Boolean(metric)}
 								onClick={

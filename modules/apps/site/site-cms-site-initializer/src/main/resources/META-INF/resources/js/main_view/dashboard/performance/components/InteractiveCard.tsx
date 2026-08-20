@@ -50,7 +50,7 @@ type Props = {
 		percentage: number;
 	};
 	value?: React.ReactNode;
-};
+} & React.AriaAttributes;
 
 export default function InteractiveCard({
 	active = false,
@@ -62,9 +62,11 @@ export default function InteractiveCard({
 	title,
 	trend,
 	value,
+	...ariaAttributes
 }: Props) {
 	return (
 		<ClayButton
+			{...ariaAttributes}
 			className={classNames(
 				'cms-dashboard__interactive-card h-100 p-3 rounded-lg sheet text-left w-100',
 				{active}
