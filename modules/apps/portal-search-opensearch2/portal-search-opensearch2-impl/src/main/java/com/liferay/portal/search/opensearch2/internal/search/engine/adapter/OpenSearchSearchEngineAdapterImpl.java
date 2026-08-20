@@ -5,8 +5,13 @@
 
 package com.liferay.portal.search.opensearch2.internal.search.engine.adapter;
 
+import com.liferay.petra.concurrent.DefaultNoticeableFuture;
+import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.Query;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchEngineHelperUtil;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.engine.adapter.ccr.CCRRequest;
 import com.liferay.portal.search.engine.adapter.ccr.CCRRequestExecutor;
@@ -14,6 +19,8 @@ import com.liferay.portal.search.engine.adapter.ccr.CCRResponse;
 import com.liferay.portal.search.engine.adapter.cluster.ClusterRequest;
 import com.liferay.portal.search.engine.adapter.cluster.ClusterRequestExecutor;
 import com.liferay.portal.search.engine.adapter.cluster.ClusterResponse;
+import com.liferay.portal.search.engine.adapter.document.BulkDocumentRequest;
+import com.liferay.portal.search.engine.adapter.document.BulkableDocumentRequest;
 import com.liferay.portal.search.engine.adapter.document.DocumentRequest;
 import com.liferay.portal.search.engine.adapter.document.DocumentRequestExecutor;
 import com.liferay.portal.search.engine.adapter.document.DocumentResponse;
@@ -37,7 +44,9 @@ import com.liferay.portal.search.opensearch2.internal.search.engine.adapter.sear
 import com.liferay.portal.search.opensearch2.internal.search.engine.adapter.snapshot.OpenSearchSnapshotRequestExecutor;
 import com.liferay.portal.search.opensearch2.internal.util.JsonpUtil;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.opensearch.client.opensearch._types.OpenSearchException;
 import org.opensearch.client.opensearch._types.query_dsl.QueryVariant;
@@ -82,6 +91,93 @@ public class OpenSearchSearchEngineAdapterImpl implements SearchEngineAdapter {
 	@Override
 	public <S extends DocumentResponse> S execute(
 		DocumentRequest<S> documentRequest) {
+
+		if (SearchContext.isBatchMode() &&
+			(documentRequest instanceof BulkableDocumentRequest ||
+			 documentRequest instanceof BulkDocumentRequest)) {
+
+			BulkDocumentRequest bulkDocumentRequest =
+				_bulkDocumentRequest.get();
+
+			if (bulkDocumentRequest == null) {
+				bulkDocumentRequest = new BulkDocumentRequest();
+
+				_bulkDocumentRequest.set(bulkDocumentRequest);
+
+				BulkDocumentRequest finalBulkDocumentRequest =
+					bulkDocumentRequest;
+
+				SearchContext.registerBatchModeSyncCallable(
+					() -> {
+						List<BulkableDocumentRequest<?>>
+							bulkableDocumentRequests =
+								finalBulkDocumentRequest.
+									getBulkableDocumentRequests();
+
+						if (bulkableDocumentRequests.isEmpty()) {
+							return null;
+						}
+
+						try {
+							_documentRequestExecutor.executeBulkDocumentRequest(
+								finalBulkDocumentRequest);
+						}
+						catch (RuntimeException runtimeException) {
+							throw _getRuntimeException(runtimeException);
+						}
+						finally {
+							_bulkDocumentRequest.remove();
+						}
+
+						return null;
+					});
+			}
+
+			if (documentRequest instanceof BulkDocumentRequest) {
+				BulkDocumentRequest incomingBulkDocumentRequest =
+					(BulkDocumentRequest)documentRequest;
+
+				for (BulkableDocumentRequest<?> bulkableDocumentRequest :
+						incomingBulkDocumentRequest.
+							getBulkableDocumentRequests()) {
+
+					bulkDocumentRequest.addBulkableDocumentRequest(
+						bulkableDocumentRequest);
+				}
+			}
+			else {
+				bulkDocumentRequest.addBulkableDocumentRequest(
+					(BulkableDocumentRequest)documentRequest);
+			}
+
+			List<BulkableDocumentRequest<?>> bulkableDocumentRequests =
+				bulkDocumentRequest.getBulkableDocumentRequests();
+
+			if (bulkableDocumentRequests.size() < Indexer.DEFAULT_INTERVAL) {
+				return null;
+			}
+
+			ExecutorService executorService =
+				SearchEngineHelperUtil.getDocumentsConsumerExecutorService();
+
+			BulkDocumentRequest transferCopyBulkDocumentRequest =
+				bulkDocumentRequest.transferCopy();
+
+			DefaultNoticeableFuture<Void> defaultNoticeableFuture =
+				new DefaultNoticeableFuture<>(
+					() -> {
+						_documentRequestExecutor.executeBulkDocumentRequest(
+							transferCopyBulkDocumentRequest);
+
+						return null;
+					});
+
+			SearchContext.registerBatchModeSyncFuture(defaultNoticeableFuture);
+
+			executorService.execute(defaultNoticeableFuture);
+
+			return null;
+		}
 
 		try {
 			return documentRequest.accept(_documentRequestExecutor);
@@ -198,6 +294,11 @@ public class OpenSearchSearchEngineAdapterImpl implements SearchEngineAdapter {
 
 		return runtimeException1;
 	}
+
+	private static final ThreadLocal<BulkDocumentRequest> _bulkDocumentRequest =
+		new CentralizedThreadLocal<>(
+			OpenSearchSearchEngineAdapterImpl.class.getName() +
+				"._bulkDocumentRequest");
 
 	private CCRRequestExecutor _ccrRequestExecutor;
 	private ClusterRequestExecutor _clusterRequestExecutor;
