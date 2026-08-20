@@ -232,6 +232,18 @@ public class OAuth2FaroControllerTest {
 		);
 
 		Mockito.when(
+			oAuth2Authorization.getAccessTokenExpirationDate()
+		).thenReturn(
+			new Date(_ACCESS_TOKEN_CREATE_TIME)
+		);
+
+		Mockito.when(
+			oAuth2Authorization.getCreateDate()
+		).thenReturn(
+			new Date(_ACCESS_TOKEN_CREATE_TIME)
+		);
+
+		Mockito.when(
 			oAuth2Authorization.getExpandoBridge()
 		).thenReturn(
 			Mockito.mock(ExpandoBridge.class)
