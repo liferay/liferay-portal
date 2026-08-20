@@ -82,18 +82,16 @@ if (!linkCssClass.contains("keep-aria-attributes") && (useDialog || (urlIsNotNul
 	<aui:script type="module">
 		import {registerIcon} from '<%= FrontendESMUtil.buildURL(themeDisplay, "frontend-js-web", "legacy") %>';
 
-		registerIcon(
-			{
-				forcePost: <%= forcePost %>,
-				id: '<portlet:namespace /><%= id %>',
+		registerIcon({
+			forcePost: <%= forcePost %>,
+			id: '<portlet:namespace /><%= id %>',
 
-				<c:if test="<%= Validator.isNotNull(srcHover) %>">
-					src: '<%= src %>',
-					srcHover: '<%= srcHover %>',
-				</c:if>
+			<c:if test="<%= Validator.isNotNull(srcHover) %>">
+				src: '<%= HtmlUtil.escapeJS(src) %>',
+				srcHover: '<%= HtmlUtil.escapeJS(srcHover) %>',
+			</c:if>
 
-				useDialog: <%= useDialog %>
-			}
-		);
+			useDialog: <%= useDialog %>,
+		});
 	</aui:script>
 </c:if>
