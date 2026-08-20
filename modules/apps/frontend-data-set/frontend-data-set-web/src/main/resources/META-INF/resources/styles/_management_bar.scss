@@ -55,48 +55,6 @@
 		}
 	}
 
-	.data-set-filter .simple-toggle-switch {
-		$toggle-height: 24px;
-		$toggle-width: 40px;
-		$toggle-padding: 3px;
-
-		.toggle-switch-bar {
-			height: $toggle-height;
-			line-height: $toggle-height;
-		}
-
-		.toggle-switch-handle {
-			min-width: $toggle-width;
-		}
-
-		.toggle-switch-check {
-			height: $toggle-height;
-			width: $toggle-width;
-
-			&:empty ~ .toggle-switch-bar {
-				&::after {
-					bottom: $toggle-padding;
-					height: $toggle-height - ($toggle-padding * 2);
-					left: $toggle-padding;
-					top: $toggle-padding;
-					width: $toggle-height - ($toggle-padding * 2);
-				}
-
-				&::before {
-					width: $toggle-width;
-				}
-
-				.toggle-switch-handle:after {
-					margin-left: $toggle-width;
-				}
-			}
-
-			&:checked ~ .toggle-switch-bar::after {
-				left: $toggle-height - ($toggle-padding * 2);
-			}
-		}
-	}
-
 	.filter-resume {
 		align-items: center;
 		color: inherit;
