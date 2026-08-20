@@ -568,7 +568,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/mariadb.jar</file-name>
-				<version>3.2.0</version>
+				<version>3.5.10</version>
 				<project-name>MariaDB Connector/J</project-name>
 				<project-url>https://downloads.mariadb.org/connector-java</project-url>
 				<licenses>
