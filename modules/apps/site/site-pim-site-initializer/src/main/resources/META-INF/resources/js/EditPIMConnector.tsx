@@ -55,7 +55,9 @@ export default function EditPIMConnector({
 		}
 	}, [backURL, isNew, pimConnector]);
 
-	const handleSave = async () => {
+	const handleSubmit = async (event: React.FormEvent) => {
+		event.preventDefault();
+
 		try {
 			const response = await fetch(
 				isNew ? apiURL : `${apiURL}/${objectEntryId}`,
@@ -113,16 +115,17 @@ export default function EditPIMConnector({
 						className="inline-item-after"
 						disabled={!name.trim() || !key}
 						displayType="primary"
-						onClick={handleSave}
+						form="pimConnectorForm"
 						size="sm"
+						type="submit"
 					>
 						{Liferay.Language.get('save')}
 					</ClayButton>
 				</Toolbar.Item>
 			</Toolbar>
 
-			<div className="container-fluid container-fluid-max-xl">
-				<ClayForm>
+			<div className="container-fluid container-fluid-max-xl mt-4">
+				<ClayForm id="pimConnectorForm" onSubmit={handleSubmit}>
 					<ClayForm.Group>
 						<label htmlFor="pimConnectorName">
 							{Liferay.Language.get('name')}
