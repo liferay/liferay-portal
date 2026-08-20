@@ -195,6 +195,20 @@ export class ViewObjectEntriesPage {
 		await this.editObjectEntryForm.waitFor({state: 'visible'});
 	}
 
+	async createItemSelectorFolder(objectFolderName: string) {
+		await this.selectFileIframe.getByRole('button', {name: 'New'}).click();
+
+		await this.selectFileIframe
+			.getByRole('menuitem', {name: 'Folder'})
+			.click();
+
+		await this.selectFileIframe
+			.locator('input[name$="_name"]')
+			.fill(objectFolderName);
+
+		await this.selectFileIframe.getByRole('button', {name: 'Save'}).click();
+	}
+
 	async fillObjectEntry({
 		objectFieldBusinessType,
 		objectFieldLabel,

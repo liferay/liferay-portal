@@ -130,6 +130,22 @@ function getObjectFieldSpecificProperties(
 				businessType: 'Encrypted',
 				type: 'Clob',
 			};
+		case 'Formula':
+			return {
+				DBType: 'String',
+				businessType: 'Formula',
+				objectFieldSettings: [
+					{
+						name: 'output',
+						value: 'Decimal',
+					},
+					{
+						name: 'script',
+						value: '0',
+					},
+				],
+				type: 'String',
+			};
 		case 'Integer':
 			return {
 				DBType: 'Integer',

@@ -9,6 +9,19 @@ import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisibl
 import {waitForPageToBeLoaded} from '../../../utils/waitForPageToBeLoaded';
 import {ViewObjectDefinitionsPage} from '../ViewObjectDefinitionsPage';
 
+type TAggregationFilter =
+	| {
+			filterBy: string;
+			filterType: 'Is Equal To' | 'Is Not Equal To';
+			value: string;
+	  }
+	| {
+			endDate: string;
+			filterBy: string;
+			filterType: 'Range';
+			startDate: string;
+	  };
+
 export class ObjectFieldsPage {
 	readonly iframeLocator: FrameLocator;
 	readonly addObjectFieldButton: Locator;
@@ -20,7 +33,16 @@ export class ObjectFieldsPage {
 	readonly editFieldSaveButton: Locator;
 	readonly externalReferenceCodeField: Locator;
 	readonly fieldsTabItem: Locator;
+	readonly filterByDropdown: Locator;
+	readonly filterEndDate: Locator;
+	readonly filterModal: Locator;
+	readonly filterStartDate: Locator;
+	readonly filterTypeDropdown: Locator;
+	readonly filterValue: Locator;
+	readonly limitCharactersToggle: Locator;
 	readonly maximumFileSize: Locator;
+	readonly maximumNumberOfCharacters: Locator;
+	readonly newFilterButton: Locator;
 	readonly objectFieldLabelInput: Locator;
 	readonly objectFieldNameInput: Locator;
 	readonly objectFieldOptionsDropdown: Locator;
@@ -29,6 +51,7 @@ export class ObjectFieldsPage {
 	readonly page: Page;
 	readonly saveButton: Locator;
 	readonly selectOptionButton: Locator;
+	readonly storageFolder: Locator;
 	readonly useDefaultValueToggle: Locator;
 	readonly viewObjectDefinitionsPage: ViewObjectDefinitionsPage;
 
@@ -57,9 +80,33 @@ export class ObjectFieldsPage {
 			.filter({
 				hasText: 'Fields',
 			});
+		this.filterModal = this.iframeLocator.getByRole('dialog', {
+			exact: true,
+			name: 'Filter',
+		});
+		this.filterByDropdown = this.filterModal.getByLabel(
+			'Filter By' + 'Mandatory'
+		);
+		this.filterEndDate = this.filterModal.getByLabel('End' + 'Mandatory');
+		this.filterStartDate = this.filterModal.getByLabel(
+			'Start' + 'Mandatory'
+		);
+		this.filterTypeDropdown = this.filterModal.getByLabel(
+			'Filter Type' + 'Mandatory'
+		);
+		this.filterValue = this.filterModal.getByLabel('Value' + 'Mandatory');
+		this.limitCharactersToggle = this.iframeLocator.getByRole('switch', {
+			name: 'Limit Characters',
+		});
 		this.maximumFileSize = page
 			.frameLocator('iframe')
 			.getByLabel('Maximum File Size' + 'Mandatory');
+		this.maximumNumberOfCharacters = this.iframeLocator.getByLabel(
+			'Maximum Number of Characters' + 'Mandatory'
+		);
+		this.newFilterButton = this.iframeLocator.getByRole('button', {
+			name: 'New Filter',
+		});
 		this.objectFieldLabelInput = page.locator('input[name="label"]');
 		this.objectFieldNameInput = page.locator('input[name="name"]');
 		this.objectFieldOptionsDropdown = page.getByText('Select an Option');
@@ -74,6 +121,9 @@ export class ObjectFieldsPage {
 		});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.selectOptionButton = this.iframeLocator.getByRole('combobox');
+		this.storageFolder = this.iframeLocator.getByLabel(
+			'Storage Folder' + 'Mandatory'
+		);
 		this.useDefaultValueToggle = this.iframeLocator.getByRole('switch', {
 			name: 'Use Default Value',
 		});
@@ -162,6 +212,23 @@ export class ObjectFieldsPage {
 		await navigation;
 	}
 
+	async createAggregationFilter(aggregationFilter: TAggregationFilter) {
+		await this.openAggregationFilterTypeOptions(aggregationFilter.filterBy);
+
+		await this.selectAggregationFilterType(aggregationFilter.filterType);
+
+		if (aggregationFilter.filterType === 'Range') {
+			await this.filterStartDate.fill(aggregationFilter.startDate);
+
+			await this.filterEndDate.fill(aggregationFilter.endDate);
+		}
+		else {
+			await this.filterValue.fill(aggregationFilter.value);
+		}
+
+		await this.saveAggregationFilter();
+	}
+
 	async deleteObjectField(confirmDeletion: boolean, nth: number) {
 		await this.page.locator('.cell-item-actions').nth(nth).waitFor();
 
@@ -212,6 +279,22 @@ export class ObjectFieldsPage {
 		await this.fieldsTabItem.click();
 	}
 
+	async openAggregationFilterTypeOptions(filterBy: string) {
+		await this.newFilterButton.click();
+
+		await this.filterModal.waitFor();
+
+		await this.filterByDropdown.click();
+
+		await this.iframeLocator
+			.getByRole('option', {exact: true, name: filterBy})
+			.click();
+
+		await this.filterTypeDropdown.click();
+
+		return this.iframeLocator.getByRole('option');
+	}
+
 	async openObjectField(fieldLabel: string) {
 		await test.step(`Open object field '${fieldLabel}'`, async () => {
 			await expect(async () => {
@@ -251,6 +334,12 @@ export class ObjectFieldsPage {
 		await cancelButton.waitFor({state: 'hidden'});
 	}
 
+	async saveAggregationFilter() {
+		await this.filterModal.getByRole('button', {name: 'Save'}).click();
+
+		await this.filterModal.waitFor({state: 'hidden'});
+	}
+
 	async saveObjectField() {
 		await this.editFieldSaveButton.click();
 
@@ -268,6 +357,14 @@ export class ObjectFieldsPage {
 		await this.editFieldSaveButton.click();
 
 		return {navigation};
+	}
+
+	async selectAggregationFilterType(
+		filterType: TAggregationFilter['filterType']
+	) {
+		await this.iframeLocator
+			.getByRole('option', {exact: true, name: filterType})
+			.click();
 	}
 
 	async selectDefaultValue(value: string) {

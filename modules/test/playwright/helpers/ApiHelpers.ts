@@ -597,6 +597,9 @@ export class DataApiHelpers extends ApiHelpers {
 					item.id
 				);
 			}
+			else if (item.type === 'documentFolder') {
+				await this.headlessDelivery.deleteDocumentFolder(item.id);
+			}
 			else if (item.type === 'keyword') {
 				await this.headlessAdminTaxonomy.deleteKeyword({
 					id: item.id,

@@ -123,6 +123,12 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
+	async deleteDocumentFolder(documentFolderId: string) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/document-folders/${documentFolderId}`
+		);
+	}
+
 	async deleteMessageBoardSection(messageBoardSectionId: string) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/message-board-sections/${messageBoardSectionId}`
@@ -141,12 +147,31 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
+	async getDocumentFolderDocuments(documentFolderId: string) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/document-folders/${documentFolderId}/documents`
+		);
+	}
+
 	async getMessageBoardThread(
 		messageBoardThreadId: string
 	): Promise<MessageBoardThread> {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/message-board-threads/${messageBoardThreadId}`
 		);
+	}
+
+	async getSiteDocumentFolderByName(
+		siteId: number | string,
+		name: string
+	): Promise<TDocumentFolder | undefined> {
+		const documentFolders = await this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/document-folders?filter=${encodeURIComponent(
+				`name eq '${name}'`
+			)}`
+		);
+
+		return documentFolders.items[0];
 	}
 
 	async getSiteDocumentsPage(siteId: string, sort: string = 'id') {

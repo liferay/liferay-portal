@@ -19,6 +19,7 @@ export class ObjectLayoutsPage {
 	readonly headerDropdown: Locator;
 	readonly iframeLocator: FrameLocator;
 	readonly labelInput: Locator;
+	readonly layoutInfoNameInput: Locator;
 	readonly layoutNameInput: Locator;
 	readonly layoutsTabItem: Locator;
 	readonly layoutTab: Locator;
@@ -58,6 +59,9 @@ export class ObjectLayoutsPage {
 			.getByLabel('More Actions')
 			.nth(0);
 		this.labelInput = this.iframeLocator.getByLabel('Label');
+		this.layoutInfoNameInput = this.iframeLocator.getByLabel(
+			'Name' + 'Mandatory'
+		);
 		this.layoutNameInput = page.getByLabel('Name');
 		this.layoutsTabItem = page.getByRole('link', {name: 'Layouts'});
 		this.layoutTab = this.iframeLocator.getByRole('tab', {name: 'Layout'});
