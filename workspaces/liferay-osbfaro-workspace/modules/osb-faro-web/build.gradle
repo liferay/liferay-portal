@@ -28,11 +28,32 @@ dependencies {
 	compileOnly project(":modules:osb-faro-contacts-api")
 	compileOnly project(":modules:osb-faro-engine-client")
 	compileOnly project(":modules:osb-faro-provisioning-client")
+	testImplementation group: "com.github.albfernandez", name: "juniversalchardet", version: "2.4.0"
+	testImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-2"
+	testImplementation group: "com.liferay", name: "jodd.util", version: "6.0.1.LIFERAY-PATCHED-2"
+	testImplementation group: "com.liferay", name: "org.apache.commons.configuration", version: "1.10.LIFERAY-PATCHED-2"
+	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.9.JAKARTA-LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.9.JAKARTA-LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+
+	testImplementation(group: "easyconf", name: "easyconf", version: "0.9.5") {
+		exclude group: "struts"
+		exclude group: "xdoclet"
+		exclude group: "xpp3"
+	}
+
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation group: "org.apache.logging.log4j", name: "log4j-api", version: "2.20.0"
+	testImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
+	testImplementation group: "org.jabsorb", name: "jabsorb", version: "1.3.1"
+	testImplementation group: "org.jodd", name: "jodd-json", version: "6.0.3"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "5.14.2"
+	testImplementation group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
 	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.5.0"
+	testImplementation group: "org.springframework", name: "spring-core", version: "6.2.19"
+	testImplementation group: "org.springframework", name: "spring-test", version: "6.2.19"
 	testImplementation project(":modules:osb-faro-api")
 	testImplementation project(":modules:osb-faro-contacts-api")
 	testImplementation project(":modules:osb-faro-engine-client")
