@@ -125,7 +125,7 @@ allprojects {
 subprojects {
 	tasks.all {
 		Task task ->
-		if ((task.name == "baseline") || (task.name == "test")) {
+		if (task.name == "baseline") {
 			enabled = false
 		}
 	}
