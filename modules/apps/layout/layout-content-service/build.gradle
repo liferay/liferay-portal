@@ -5,12 +5,15 @@ buildService {
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:layout:layout-content-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:layout:layout-utility-page-api")
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
+	compileOnly project(":apps:segments:segments-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")
