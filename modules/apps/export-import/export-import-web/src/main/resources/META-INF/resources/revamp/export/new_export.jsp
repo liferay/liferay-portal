@@ -48,7 +48,7 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 			).put(
 				"pageTreeModalConfiguration",
 				HashMapBuilder.<String, Object>put(
-					"liveGroupId", liveGroupId
+					"groupId", liveGroupId
 				).put(
 					"pageSize", PropsValues.LAYOUT_MANAGE_PAGES_INITIAL_CHILDREN
 				).put(

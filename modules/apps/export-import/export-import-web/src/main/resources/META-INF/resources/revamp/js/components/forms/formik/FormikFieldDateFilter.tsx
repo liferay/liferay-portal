@@ -10,12 +10,14 @@ import DateFilter, {DateFilterValues, Range} from '../../date_filter';
 
 interface FormikFieldDateFilterProps {
 	itemsCount?: number;
+	lastPublishDate?: string;
 	name: string;
-	onApplyFilter?: (filterValues: DateFilterValues) => void;
+	onApplyFilter?: (dateFilterValues: DateFilterValues) => void;
 }
 
 export function FormikFieldDateFilter({
 	itemsCount,
+	lastPublishDate,
 	name,
 	onApplyFilter,
 }: FormikFieldDateFilterProps) {
@@ -26,10 +28,11 @@ export function FormikFieldDateFilter({
 		<DateFilter
 			appliedValue={field.value ?? {range: Range.All}}
 			itemsCount={itemsCount}
-			onApplyFilter={(filterValues) => {
-				helpers.setValue(filterValues);
+			lastPublishDate={lastPublishDate}
+			onApplyFilter={(dateFilterValues) => {
+				helpers.setValue(dateFilterValues);
 				setFieldTouched(name, true, false);
-				onApplyFilter?.(filterValues);
+				onApplyFilter?.(dateFilterValues);
 			}}
 		/>
 	);

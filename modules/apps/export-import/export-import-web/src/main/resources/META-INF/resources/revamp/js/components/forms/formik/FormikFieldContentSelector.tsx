@@ -6,10 +6,10 @@
 import {useField, useFormikContext} from 'formik';
 import React, {useEffect, useRef} from 'react';
 
-import {PageTreeModalConfiguration} from '../../../pages/export/components/PageTreeModal';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import {PreviewPortletDataHandlerSection} from '../../../types/portletDataHandler';
 import {getFullDataSelection} from '../../../utils/contentSelection';
+import {PageTreeModalConfiguration} from '../../PageTreeModal';
 import ContentSelector, {
 	ContentSelection,
 } from '../content_selector/ContentSelector';

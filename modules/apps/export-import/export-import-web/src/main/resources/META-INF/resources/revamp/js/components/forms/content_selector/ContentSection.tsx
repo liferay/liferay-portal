@@ -10,7 +10,6 @@ import {sub} from 'frontend-js-web';
 import React, {useEffect, useId, useRef, useState} from 'react';
 
 import '../../../../css/utilities.scss';
-import {PageTreeModalConfiguration} from '../../../pages/export/components/PageTreeModal';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import {PreviewPortletDataHandlerSection as PortletDataHandlerSectionType} from '../../../types/portletDataHandler';
 import {
@@ -25,10 +24,20 @@ import {
 	isSelected,
 	updateSelection,
 } from '../../../utils/contentSelection';
+import {PageTreeModalConfiguration} from '../../PageTreeModal';
 import CollapsibleGroup from './CollapsibleGroup';
 import PortletDataControl from './PortletDataControl';
 import SectionFooter from './SectionFooter';
 import SectionTags from './SectionTags';
+
+const COMMENTS_AND_RATINGS_SUBTITLES: Record<ExportImportProcess, string> = {
+	export: Liferay.Language.get(
+		'for-each-of-the-selected-content-types,-export-their'
+	),
+	import: Liferay.Language.get(
+		'for-each-of-the-selected-content-types,-import-their'
+	),
+};
 
 export type SectionSelection = Record<string, PortletDataHandlerSelection>;
 
@@ -116,14 +125,7 @@ export default function ContentSection({
 				{key: 'ratings', label: Liferay.Language.get('ratings')},
 			],
 			name: 'commentsAndRatings',
-			subtitle:
-				process === 'import'
-					? Liferay.Language.get(
-							'for-each-of-the-selected-content-types,-import-their'
-						)
-					: Liferay.Language.get(
-							'for-each-of-the-selected-content-types,-export-their'
-						),
+			subtitle: COMMENTS_AND_RATINGS_SUBTITLES[process],
 			title: Liferay.Language.get('comments-and-ratings'),
 		},
 	].filter(({applies}) => applies);

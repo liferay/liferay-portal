@@ -5,7 +5,7 @@
 
 import {PreviewPortletDataHandlerSection} from './portletDataHandler';
 
-export interface ExportPreview {
+export interface Preview {
 	additionCount: number;
 	deletionCount: number;
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[];

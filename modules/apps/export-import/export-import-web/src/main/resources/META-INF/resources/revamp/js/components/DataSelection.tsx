@@ -7,65 +7,72 @@ import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
 
-import SectionHeader from '../../../components/SectionHeader';
-import {DateFilterValues} from '../../../components/date_filter';
+import {ExportImportProcess} from '../types/exportImportProcess';
+import {PreviewPortletDataHandlerSection} from '../types/portletDataHandler';
+import {PageTreeModalConfiguration} from './PageTreeModal';
+import SectionHeader from './SectionHeader';
+import {DateFilterValues} from './date_filter';
 import {
 	FormikFieldCheckbox,
 	FormikFieldContentSelector,
 	FormikFieldDateFilter,
-} from '../../../components/forms/formik';
-import {PreviewPortletDataHandlerSection} from '../../../types/portletDataHandler';
-import {PageTreeModalConfiguration} from './PageTreeModal';
+} from './forms/formik';
 
 const LABEL_ID = 'dataSelection-label';
 
 export default function DataSelection({
 	commentsAndRatingsEnabled = false,
 	deletionCount = 0,
+	deletionsDescription,
+	deletionsLabel,
 	itemsCount,
+	lastPublishDate,
 	loading = false,
 	lookAndFeelEnabled = false,
 	onApplyFilter,
 	pageTreeModalConfiguration,
+	permissionsDescription,
+	permissionsLabel,
 	previewPortletDataHandlerSections,
+	process = 'export',
+	subtitle,
 }: {
 	commentsAndRatingsEnabled?: boolean;
 	deletionCount?: number;
+	deletionsDescription: string;
+	deletionsLabel: string;
 	itemsCount?: number;
+	lastPublishDate?: string;
 	loading?: boolean;
 	lookAndFeelEnabled?: boolean;
-	onApplyFilter: (filterValues: DateFilterValues) => void;
+	onApplyFilter: (dateFilterValues: DateFilterValues) => void;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
+	permissionsDescription: string;
+	permissionsLabel: string;
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[];
+	process?: ExportImportProcess;
+	subtitle: string;
 }) {
 	return (
 		<>
 			<SectionHeader
 				className="mt-4"
 				id={LABEL_ID}
-				subtitle={Liferay.Language.get(
-					'select-and-filter-the-data-you-want-to-include-in-your-export'
-				)}
+				subtitle={subtitle}
 				title={Liferay.Language.get('data-selection')}
 			/>
 
 			<ClayLayout.Sheet className="option-group">
 				<FormikFieldCheckbox
-					description={Liferay.Language.get(
-						'export-import-permissions-help'
-					)}
-					label={Liferay.Language.get('export-permissions')}
+					description={permissionsDescription}
+					label={permissionsLabel}
 					name="permissions"
 				/>
 
 				{deletionCount > 0 && (
 					<FormikFieldCheckbox
-						description={Liferay.Language.get(
-							'deletions-help-export'
-						)}
-						label={Liferay.Language.get(
-							'export-individual-deletions'
-						)}
+						description={deletionsDescription}
+						label={deletionsLabel}
 						name="deletions"
 					/>
 				)}
@@ -74,6 +81,7 @@ export default function DataSelection({
 			<ClayLayout.Sheet className="mt-4">
 				<FormikFieldDateFilter
 					itemsCount={itemsCount}
+					lastPublishDate={lastPublishDate}
 					name="dateFilter"
 					onApplyFilter={onApplyFilter}
 				/>
@@ -98,7 +106,7 @@ export default function DataSelection({
 						previewPortletDataHandlerSections={
 							previewPortletDataHandlerSections
 						}
-						process="export"
+						process={process}
 					/>
 				)}
 			</div>

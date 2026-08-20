@@ -6,13 +6,13 @@
 import ClayAlert from '@clayui/alert';
 import React from 'react';
 
-import {PageTreeModalConfiguration} from '../../../pages/export/components/PageTreeModal';
 import {ExportImportProcess} from '../../../types/exportImportProcess';
 import {PreviewPortletDataHandlerSection} from '../../../types/portletDataHandler';
 import {
 	getVisibleSections,
 	updateSelection,
 } from '../../../utils/contentSelection';
+import {PageTreeModalConfiguration} from '../../PageTreeModal';
 import ContentSection, {SectionSelection} from './ContentSection';
 
 export type ContentSelection = Record<string, SectionSelection>;

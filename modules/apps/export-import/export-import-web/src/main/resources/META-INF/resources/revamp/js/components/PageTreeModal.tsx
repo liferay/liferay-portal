@@ -11,16 +11,17 @@ import {fetch} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 import {PagesTree} from 'staging-taglib';
 
-const PAGES_TREE_NAMESPACE = '_exportPageTreeModal_';
+const PAGES_TREE_NAMESPACE = '_pageTreeModal_';
 
 const PATH_MAIN = Liferay.ThemeDisplay.getPathMain();
 const GET_LAYOUTS_TREE_URL = `${PATH_MAIN}/portal/get_layouts_tree`;
 const SESSION_TREE_JS_CLICK_URL = `${PATH_MAIN}/portal/session_tree_js_click`;
 
 export interface PageTreeModalConfiguration {
-	liveGroupId: number;
+	groupId: number;
 	pageSize: number;
 	privateLayoutsAvailable: boolean;
+	title?: string;
 }
 
 interface Props
@@ -35,13 +36,14 @@ interface Props
 }
 
 export default function PageTreeModal({
+	groupId,
 	initialAll = false,
 	initialSelectedIds,
-	liveGroupId,
 	onClose,
 	onSubmit,
 	pageSize,
 	privateLayout,
+	title = Liferay.Language.get('pages-to-export'),
 }: Props) {
 	const {observer} = useModal({onClose});
 
@@ -52,7 +54,7 @@ export default function PageTreeModal({
 	const treeRef = useRef<HTMLDivElement>(null);
 	const initialAllRef = useRef(initialAll);
 	const initialSelectedIdsRef = useRef(initialSelectedIds);
-	const treeId = `exportPageTreeModal_${privateLayout ? 'private' : 'public'}`;
+	const treeId = `pageTreeModal_${privateLayout ? 'private' : 'public'}`;
 
 	useEffect(() => {
 		let cancelled = false;
@@ -80,7 +82,7 @@ export default function PageTreeModal({
 					{
 						body: new URLSearchParams({
 							cmd: 'layoutCheck',
-							groupId: String(liveGroupId),
+							groupId: String(groupId),
 							plid: '0',
 							privateLayout: String(privateLayout),
 							recursive: 'true',
@@ -108,7 +110,7 @@ export default function PageTreeModal({
 			const response = await fetch(
 				`${GET_LAYOUTS_TREE_URL}?${new URLSearchParams({
 					end: String(pageSize),
-					groupId: String(liveGroupId),
+					groupId: String(groupId),
 					incomplete: 'true',
 					parentLayoutId: '0',
 					privateLayout: String(privateLayout),
@@ -146,7 +148,7 @@ export default function PageTreeModal({
 		return () => {
 			cancelled = true;
 		};
-	}, [liveGroupId, pageSize, privateLayout, treeId]);
+	}, [groupId, pageSize, privateLayout, treeId]);
 
 	const handleSelect = () => {
 		const input = treeRef.current?.querySelector<HTMLInputElement>(
@@ -178,7 +180,7 @@ export default function PageTreeModal({
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{Liferay.Language.get('pages-to-export')}
+				{title}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
@@ -200,7 +202,7 @@ export default function PageTreeModal({
 								maxPageSize: pageSize,
 								namespace: PAGES_TREE_NAMESPACE,
 							}}
-							groupId={String(liveGroupId)}
+							groupId={String(groupId)}
 							items={items}
 							key={treeId}
 							portletNamespace={PAGES_TREE_NAMESPACE}

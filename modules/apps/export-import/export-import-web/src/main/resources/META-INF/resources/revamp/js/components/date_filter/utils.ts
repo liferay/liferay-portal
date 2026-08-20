@@ -57,21 +57,11 @@ export const LAST_RANGE_OPTIONS = [
 export function normalizeDateFilter(
 	dateFilter: DateFilterValues
 ): NormalizedDateFilter {
-	if (dateFilter.range === Range.Last) {
-		const now = Date.now();
-
-		return {
-			endDate: new Date(now).toISOString(),
-			startDate: new Date(
-				now - MILLISECONDS_BY_LAST_RANGE[dateFilter.last]
-			).toISOString(),
-		};
-	}
-
 	if (dateFilter.range === Range.DateRange) {
 		const {endDate, startDate} = dateFilter;
 
 		return {
+			dateRangeType: 'DATE_RANGE',
 			endDate: endDate ? new Date(endDate).toISOString() : undefined,
 			startDate: startDate
 				? new Date(startDate).toISOString()
@@ -79,14 +69,58 @@ export function normalizeDateFilter(
 		};
 	}
 
-	return {};
+	if (dateFilter.range === Range.FromLastPublishDate) {
+		return {
+			dateRangeType: 'FROM_LAST_PUBLISH_DATE',
+		};
+	}
+
+	if (dateFilter.range === Range.Last) {
+		return {
+			dateRangeType: 'LAST',
+			startDate: new Date(
+				Date.now() - MILLISECONDS_BY_LAST_RANGE[dateFilter.last]
+			).toISOString(),
+		};
+	}
+
+	return {
+		dateRangeType: 'ALL',
+	};
 }
 
-export function editingToDateFilter(editing: EditingState): DateFilterValues {
-	const {endDate, last, range, startDate} = editing;
+export function dateFilterToEditingState(
+	dateFilterValues: DateFilterValues
+): EditingState {
+	const editingState: EditingState = {
+		endDate: '',
+		last: LastRange.H12,
+		range: dateFilterValues.range,
+		startDate: '',
+	};
+
+	if (dateFilterValues.range === Range.DateRange) {
+		editingState.endDate = dateFilterValues.endDate;
+		editingState.startDate = dateFilterValues.startDate;
+	}
+	else if (dateFilterValues.range === Range.Last) {
+		editingState.last = dateFilterValues.last;
+	}
+
+	return editingState;
+}
+
+export function editingToDateFilter(
+	editingState: EditingState
+): DateFilterValues {
+	const {endDate, last, range, startDate} = editingState;
 
 	if (range === Range.DateRange) {
 		return {endDate, range: Range.DateRange, startDate};
+	}
+
+	if (range === Range.FromLastPublishDate) {
+		return {range: Range.FromLastPublishDate};
 	}
 
 	if (range === Range.Last) {
@@ -96,17 +130,11 @@ export function editingToDateFilter(editing: EditingState): DateFilterValues {
 	return {range: Range.All};
 }
 
-export function getAppliedFilterSummary(applied: DateFilterValues): string {
-	if (applied.range === Range.Last) {
-		const option = LAST_RANGE_OPTIONS.find(
-			(opt) => opt.value === applied.last
-		);
-
-		return `${Liferay.Language.get('modified-last')}: ${option?.label ?? ''}`;
-	}
-
-	if (applied.range === Range.DateRange) {
-		const {endDate, startDate} = applied;
+export function getAppliedFilterSummary(
+	dateFilterValues: DateFilterValues
+): string {
+	if (dateFilterValues.range === Range.DateRange) {
+		const {endDate, startDate} = dateFilterValues;
 
 		if (startDate && endDate) {
 			return sub(Liferay.Language.get('date-range-x-to-x'), [
@@ -124,45 +152,62 @@ export function getAppliedFilterSummary(applied: DateFilterValues): string {
 		}
 	}
 
+	if (dateFilterValues.range === Range.Last) {
+		const lastRangeOption = LAST_RANGE_OPTIONS.find(
+			(lastRangeOption) => lastRangeOption.value === dateFilterValues.last
+		);
+
+		return `${Liferay.Language.get('modified-last')}: ${
+			lastRangeOption?.label ?? ''
+		}`;
+	}
+
+	if (dateFilterValues.range === Range.FromLastPublishDate) {
+		return Liferay.Language.get('from-last-publish-date');
+	}
+
 	return '';
 }
 
 export function getIsDirty(
-	editing: EditingState,
-	applied: DateFilterValues
+	editingState: EditingState,
+	dateFilterValues: DateFilterValues
 ): boolean {
-	if (editing.range !== applied.range) {
+	if (editingState.range !== dateFilterValues.range) {
 		return true;
 	}
 
-	if (applied.range === Range.Last && editing.range === Range.Last) {
-		return editing.last !== applied.last;
+	if (
+		dateFilterValues.range === Range.DateRange &&
+		editingState.range === Range.DateRange
+	) {
+		return (
+			editingState.startDate !== dateFilterValues.startDate ||
+			editingState.endDate !== dateFilterValues.endDate
+		);
 	}
 
 	if (
-		applied.range === Range.DateRange &&
-		editing.range === Range.DateRange
+		dateFilterValues.range === Range.Last &&
+		editingState.range === Range.Last
 	) {
-		return (
-			editing.startDate !== applied.startDate ||
-			editing.endDate !== applied.endDate
-		);
+		return editingState.last !== dateFilterValues.last;
 	}
 
 	return false;
 }
 
-export function getValidation(editing: EditingState): {
+export function getValidation(editingState: EditingState): {
 	errors: {endDate?: string; startDate?: string};
 	isValid: boolean;
 } {
 	const errors: {endDate?: string; startDate?: string} = {};
 
-	if (editing.range !== Range.DateRange) {
+	if (editingState.range !== Range.DateRange) {
 		return {errors, isValid: true};
 	}
 
-	const {endDate, startDate} = editing;
+	const {endDate, startDate} = editingState;
 
 	if (!startDate && !endDate) {
 		return {errors, isValid: false};

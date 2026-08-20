@@ -7,6 +7,12 @@ import {RequestPortletDataHandler} from './portletDataHandler';
 
 export type ExportImportProcess = 'export' | 'import';
 
+export type DateRangeType =
+	| 'ALL'
+	| 'DATE_RANGE'
+	| 'FROM_LAST_PUBLISH_DATE'
+	| 'LAST';
+
 export interface ExportProcess {
 	dateCreated?: string;
 	dateModified?: string;
@@ -17,6 +23,7 @@ export interface ExportProcess {
 
 export interface ExportProcessRequest {
 	comments?: boolean;
+	dateRangeType?: DateRangeType;
 	deletions?: boolean;
 	endDate?: string;
 	logo?: boolean;

@@ -6,18 +6,18 @@
 import {addParams} from 'frontend-js-web';
 
 import {NormalizedDateFilter} from '../components/date_filter';
-import {ExportPreview} from '../types/exportImportPreview';
+import {Preview} from '../types/exportImportPreview';
 import ApiHelper, {RequestResult} from './ApiHelper';
 
-export interface ExportPreviewParams {
+export interface PreviewParams {
 	query?: NormalizedDateFilter;
 	url: string;
 }
 
-export function getExportPreview({
+export function getPreview({
 	query = {},
 	url,
-}: ExportPreviewParams): Promise<RequestResult<ExportPreview>> {
+}: PreviewParams): Promise<RequestResult<Preview>> {
 	const params: Record<string, string> = {};
 
 	Object.entries(query).forEach(([key, value]) => {
@@ -26,7 +26,7 @@ export function getExportPreview({
 		}
 	});
 
-	return ApiHelper.get<ExportPreview>(
+	return ApiHelper.get<Preview>(
 		Object.keys(params).length ? addParams(params, url) : url
 	);
 }

@@ -9,14 +9,12 @@ import ClayLayout from '@clayui/layout';
 import {sub} from 'frontend-js-web';
 import React, {useId, useState} from 'react';
 
-import PageTreeModal, {
-	PageTreeModalConfiguration,
-} from '../../../pages/export/components/PageTreeModal';
 import {
 	LayoutSetSelection,
 	PortletDataHandlerSelection,
 	isAllLayoutsSelected,
 } from '../../../utils/contentSelection';
+import PageTreeModal, {PageTreeModalConfiguration} from '../../PageTreeModal';
 import SectionTags from './SectionTags';
 
 interface Props {

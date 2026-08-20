@@ -9,7 +9,6 @@ import classnames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {ReactNode, useId} from 'react';
 
-import {PageTreeModalConfiguration} from '../../../pages/export/components/PageTreeModal';
 import {PreviewPortletDataHandlerControl} from '../../../types/portletDataHandler';
 import {
 	LAYOUT_SET_LAYOUTS_PORTLET_DATA_KEY,
@@ -19,6 +18,7 @@ import {
 	isSelected,
 	updateSelection,
 } from '../../../utils/contentSelection';
+import {PageTreeModalConfiguration} from '../../PageTreeModal';
 import CollapsibleGroup from './CollapsibleGroup';
 import ControlRow from './ControlRow';
 import LayoutSetControl from './LayoutSetControl';
