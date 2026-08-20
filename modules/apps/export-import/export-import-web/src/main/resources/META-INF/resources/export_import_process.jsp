@@ -10,9 +10,9 @@
 <%
 String backURL = ParamUtil.getString(request, "backURL");
 
-ExportImportProcessDisplayContext exportImportProcessDisplayContext = new ExportImportProcessDisplayContext(request);
+ExportImportBackgroundTaskDisplayContext exportImportBackgroundTaskDisplayContext = new ExportImportBackgroundTaskDisplayContext(request);
 
-BackgroundTask backgroundTask = exportImportProcessDisplayContext.getBackgroundTask();
+BackgroundTask backgroundTask = exportImportBackgroundTaskDisplayContext.getBackgroundTask();
 
 if (Validator.isNotNull(backURL)) {
 	portletDisplay.setShowBackIcon(true);
@@ -21,7 +21,7 @@ if (Validator.isNotNull(backURL)) {
 %>
 
 <liferay-ui:search-container
-	searchContainer="<%= exportImportProcessDisplayContext.getSearchContainer() %>"
+	searchContainer="<%= exportImportBackgroundTaskDisplayContext.getSearchContainer() %>"
 >
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.kernel.backgroundtask.BackgroundTask"
