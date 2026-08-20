@@ -1264,6 +1264,45 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 	});
 
 	test(
+		'can set the external reference code field as the title field',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, editObjectDetailsPage, page}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await editObjectDetailsPage.goto(objectDefinition.label['en_US']);
+
+			await editObjectDetailsPage.goToDetailsTab();
+
+			await editObjectDetailsPage.entryTitleField.click();
+
+			await page
+				.getByRole('option', {
+					exact: true,
+					name: 'External Reference Code',
+				})
+				.click();
+
+			await editObjectDetailsPage.saveObjectDefinition();
+
+			await editObjectDetailsPage.goto(objectDefinition.label['en_US']);
+
+			await editObjectDetailsPage.goToDetailsTab();
+
+			await expect(editObjectDetailsPage.entryTitleField).toContainText(
+				'External Reference Code'
+			);
+		}
+	);
+
+	test(
 		'can set Title Field for a system object',
 		{tag: '@LPS-145393'},
 		async ({apiHelpers: _apiHelpers, editObjectDetailsPage, page}) => {
