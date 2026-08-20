@@ -564,8 +564,6 @@ const NameLabel = React.forwardRef(
 					{
 						'page-editor__page-structure__tree-node__name--hidden':
 							hidden,
-						'page-editor__page-structure__tree-node__name--mapped':
-							isMapped,
 						'page-editor__page-structure__tree-node__name--master-item':
 							isMasterItem,
 					}
@@ -574,7 +572,10 @@ const NameLabel = React.forwardRef(
 			>
 				{icon && (
 					<ClayIcon
-						className="flex-shrink-0 mt-0"
+						className={classNames('flex-shrink-0 mt-0', {
+							'page-editor__page-structure__tree-node__icon--mapped':
+								isMapped,
+						})}
 						symbol={icon || ''}
 					/>
 				)}

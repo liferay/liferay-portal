@@ -1,4 +1,13 @@
-$treeNodeNameMappedColor: $cadmin-purple-d1;
+$mappedStickerBackgroundColor: $cadmin-pink-l5;
+$mappedStickerDisabledOpacity: 0.4;
+$mappedStickerIconColor: $cadmin-pink-d1;
+$mappedStickerRadius: 4px;
+$mappedStickerSize: 22px;
+
+$treeNodeIconSize: 16px;
+$treeNodeMinHeight: 24px;
+
+$mappedStickerSpread: ($mappedStickerSize - $treeNodeIconSize) * 0.5;
 
 html#{$cadmin-selector} {
 	.cadmin {
@@ -29,20 +38,6 @@ html#{$cadmin-selector} {
 					background-color: $cadmin-primary-l3;
 					border-radius: 4px;
 				}
-				&--mapped.treeview-link {
-					&.page-editor__page-structure__clay-tree-node--active {
-						background-color: unquote(
-							'hsl(from #{$cadmin-purple} h s l / 0.08)'
-						);
-						box-shadow: inset 0 0 0 1px $cadmin-purple;
-					}
-
-					&.page-editor__page-structure__clay-tree-node--hovered {
-						background-color: unquote(
-							'hsl(from #{$cadmin-purple} h s l / 0.08)'
-						);
-					}
-				}
 
 				&--master-item.treeview-link {
 					background-color: $cadmin-light-l1;
@@ -63,6 +58,7 @@ html#{$cadmin-selector} {
 			align-items: center;
 			display: flex;
 			justify-content: space-between;
+			min-height: $treeNodeMinHeight;
 			position: relative;
 			white-space: nowrap;
 
@@ -110,6 +106,14 @@ html#{$cadmin-selector} {
 				color: $cadmin-secondary-l1;
 			}
 
+			&__icon--mapped {
+				background-color: $mappedStickerBackgroundColor;
+				border-radius: $mappedStickerRadius - $mappedStickerSpread;
+				box-shadow: 0 0 0 $mappedStickerSpread
+					$mappedStickerBackgroundColor;
+				color: $mappedStickerIconColor;
+			}
+
 			&__name {
 				margin-left: 4px;
 
@@ -153,16 +157,10 @@ html#{$cadmin-selector} {
 					color: $cadmin-secondary-l1;
 				}
 
-				&--mapped {
-					color: $treeNodeNameMappedColor;
-
-					&.page-editor__page-structure__tree-node__name {
-						&--hidden,
-						&--master-item {
-							color: unquote(
-								'hsl(from #{$treeNodeNameMappedColor} h s l / 0.4)'
-							);
-						}
+				&--hidden,
+				&--master-item {
+					.page-editor__page-structure__tree-node__icon--mapped {
+						opacity: $mappedStickerDisabledOpacity;
 					}
 				}
 			}

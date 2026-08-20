@@ -323,8 +323,6 @@ export default function StructureTreeContent({expandedKeys, setExpandedKeys}) {
 											item.active && item.activable,
 										'page-editor__page-structure__clay-tree-node--hovered':
 											item.hovered,
-										'page-editor__page-structure__clay-tree-node--mapped':
-											item.mapped,
 										'page-editor__page-structure__clay-tree-node--master-item':
 											item.isMasterItem,
 									}
