@@ -109,16 +109,16 @@ public class OpenSearchSearchEngineAdapterImpl implements SearchEngineAdapter {
 
 				SearchContext.registerBatchModeSyncCallable(
 					() -> {
-						List<BulkableDocumentRequest<?>>
-							bulkableDocumentRequests =
-								finalBulkDocumentRequest.
-									getBulkableDocumentRequests();
-
-						if (bulkableDocumentRequests.isEmpty()) {
-							return null;
-						}
-
 						try {
+							List<BulkableDocumentRequest<?>>
+								bulkableDocumentRequests =
+									finalBulkDocumentRequest.
+										getBulkableDocumentRequests();
+
+							if (bulkableDocumentRequests.isEmpty()) {
+								return null;
+							}
+
 							_documentRequestExecutor.executeBulkDocumentRequest(
 								finalBulkDocumentRequest);
 						}
