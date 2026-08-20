@@ -2,3 +2,5 @@ Name: ${restClient.get("/headless-admin-address/v1.0/countries/by-name/spain").n
 Page Size (default): ${restClient.get("/headless-admin-address/v1.0/countries").pageSize}.
 Page Size (query): ${restClient.get("/headless-admin-address/v1.0/countries?pageSize=1").pageSize}.
 User: ${restClient.get("/headless-admin-user/v1.0/my-user-account").alternateName!"GUEST"}.
+Site Page (1st call): ${restClient.get("/headless-delivery/v1.0/sites/" + themeDisplay.getScopeGroupId() + "/site-pages/portal-vulcan-test").title!""}.
+Site Page (2nd call): ${restClient.get("/headless-delivery/v1.0/sites/" + themeDisplay.getScopeGroupId() + "/site-pages/portal-vulcan-test").title!""}.

@@ -2,6 +2,7 @@
 	"friendlyURL": "/portal-vulcan-test",
 	"hidden": true,
 	"name_i18n": {
+		"de_DE": "Portal Vulcan Test DE",
 		"en_US": "Portal Vulcan Test"
 	},
 	"private": false,
