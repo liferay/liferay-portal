@@ -1,0 +1,39 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Envoy Proxy PodDisruptionBudget
+templates:
+    -   templates/pdb-envoy-proxy.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.maxUnavailable
+                    value: 1
+            -   equal:
+                    path: spec.selector.matchLabels
+                    value:
+                        app.kubernetes.io/component: proxy
+                        app.kubernetes.io/name: envoy
+        it: Keeps one Envoy proxy available during a disruption
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the PodDisruptionBudget when the gateway is disabled
+        set:
+            operatorApplications.envoyGateway.enabled: false
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: envoy-gateway-system
+        it: Places the PodDisruptionBudget in the gateway namespace
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-90"
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: envoy-proxy-pdb
+            -   equal:
+                    path: metadata.labels["liferay.com/project"]
+                    value: liferay-cloud-native
+        it: Syncs the PodDisruptionBudget ahead of the Envoy Gateway application
