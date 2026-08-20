@@ -66,12 +66,12 @@ spec:
 
                                                 export PGPASSWORD
 
-                                                until pg_isready --host "${PGHOST}" --port "${PGPORT}" --username "${PGUSER}"
-                                                do
-                                                    sleep 2
-                                                done
+                                                _wait_for_server
 
-                                                psql --dbname postgres --set ON_ERROR_STOP=1 <<EOF
+                                                psql \
+                                                    --dbname postgres \
+                                                    --set ON_ERROR_STOP=1 \
+                                                    --set pw="${LIFERAY_PASSWORD}" <<EOF
                                             DO \$\$
 
                                             BEGIN
@@ -84,9 +84,7 @@ spec:
                                             GRANT {{ $databaseOwnerRole }} TO "${PGUSER}";
 
                                             ALTER DATABASE "{{ $databaseName }}" OWNER TO {{ $databaseOwnerRole }};
-                                            EOF
 
-                                                psql --dbname postgres --set ON_ERROR_STOP=1 <<EOF
                                             DO \$\$
 
                                             BEGIN
@@ -95,12 +93,9 @@ spec:
                                                     CREATE ROLE {{ $databaseAppRole }} LOGIN;
                                                 END IF;
                                             END \$\$;
-                                            EOF
 
-                                                psql --dbname postgres --set ON_ERROR_STOP=1 --set pw="${LIFERAY_PASSWORD}" \
-                                                    --command "ALTER ROLE {{ $databaseAppRole }} WITH LOGIN PASSWORD :'pw'"
+                                            ALTER ROLE {{ $databaseAppRole }} WITH LOGIN PASSWORD :'pw';
 
-                                                psql --dbname postgres --set ON_ERROR_STOP=1 <<EOF
                                             GRANT CONNECT, TEMPORARY ON DATABASE "{{ $databaseName }}" TO "{{ $databaseAppRole }}";
 
                                             GRANT {{ $databaseOwnerRole }} TO "{{ $databaseAppRole }}";
@@ -120,9 +115,9 @@ spec:
                                                     --dbname "{{ $databaseName }}" \
                                                     --username "{{ $databaseAppRole }}" >/dev/null 2>&1
                                                 do
-                                                    if [ "$(date +%s)" -ge "${timeout}" ]
+                                                    if [ $(date +%s) -ge ${timeout} ]
                                                     then
-                                                        echo "{{ $databaseAppRole }} could not be authenticated." >&2
+                                                        echo "{{ $databaseAppRole }} could not be authenticated" >&2
 
                                                         exit 1
                                                     fi
@@ -130,7 +125,23 @@ spec:
                                                     sleep 2
                                                 done
 
-                                                echo "{{ $databaseAppRole }} authenticated successfully."
+                                                echo "{{ $databaseAppRole }} authenticated successfully"
+                                            }
+
+                                            function _wait_for_server {
+                                                local timeout=$(($(date +%s) + 600))
+
+                                                until pg_isready --host "${PGHOST}" --port "${PGPORT}" --username "${PGUSER}"
+                                                do
+                                                    if [ $(date +%s) -ge ${timeout} ]
+                                                    then
+                                                        echo "${PGHOST} did not become ready" >&2
+
+                                                        exit 1
+                                                    fi
+
+                                                    sleep 2
+                                                done
                                             }
 
                                             main
@@ -138,6 +149,11 @@ spec:
                                     -   /bin/sh
                                     -   -c
                                 env:
+                                    -   name: LIFERAY_PASSWORD
+                                        valueFrom:
+                                            secretKeyRef:
+                                                key: DATABASE_PASSWORD
+                                                name: database-app-password
                                     -   name: PGHOST
                                         value: {{ $activeDatabaseFqdn }}
                                     -   name: PGPORT
@@ -146,11 +162,6 @@ spec:
                                         value: require
                                     -   name: PGUSER
                                         value: {{ $bootstrapIdentityName }}
-                                    -   name: LIFERAY_PASSWORD
-                                        valueFrom:
-                                            secretKeyRef:
-                                                key: DATABASE_PASSWORD
-                                                name: database-app-password
                                 image: postgres:18-alpine
                                 name: sql-runner
                                 resources:
