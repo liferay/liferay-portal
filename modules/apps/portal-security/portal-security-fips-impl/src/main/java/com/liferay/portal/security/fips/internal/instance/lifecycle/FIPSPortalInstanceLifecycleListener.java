@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -38,8 +37,7 @@ public class FIPSPortalInstanceLifecycleListener
 
 		long companyId = company.getCompanyId();
 
-		User user = _userLocalService.fetchUserByScreenName(
-			companyId, UserConstants.SCREEN_NAME_DEFAULT_SERVICE_ACCOUNT);
+		User user = _userLocalService.addDefaultServiceAccountUser(companyId);
 
 		_addCryptoOfficerPasswordPolicy(companyId, user);
 		_addCryptoOfficerRole(companyId, user);
