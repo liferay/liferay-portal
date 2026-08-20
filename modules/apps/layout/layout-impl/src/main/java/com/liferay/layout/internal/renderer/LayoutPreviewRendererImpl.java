@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsWebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Locale;
 
@@ -43,10 +42,11 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 
 	@Override
 	public String render(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse, Layout layout,
-			Locale locale, long segmentsExperienceId)
+			Layout layout, Locale locale, long segmentsExperienceId,
+			ServiceContext serviceContext)
 		throws Exception {
+
+		HttpServletRequest httpServletRequest = serviceContext.getRequest();
 
 		ThemeDisplay originalThemeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -92,9 +92,6 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 
 			layout.setClassNameId(0);
 
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
 			ServiceContext clonedServiceContext =
 				(ServiceContext)serviceContext.clone();
 
@@ -108,12 +105,12 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 				WebKeys.THEME_DISPLAY, themeDisplay);
 
 			layout.includeLayoutContent(
-				httpServletRequest, httpServletResponse);
+				httpServletRequest, themeDisplay.getResponse());
 
 			Document document = Jsoup.parse(
 				ThemeUtil.include(
 					ServletContextPool.get(_portal.getServletContextName()),
-					httpServletRequest, httpServletResponse,
+					httpServletRequest, themeDisplay.getResponse(),
 					"portal_normal.ftl", theme, false));
 
 			Element element = document.getElementById("content");

@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
@@ -105,8 +106,8 @@ public class GetPagePreviewStrutsAction implements StrutsAction {
 				selPlid));
 
 		String html = _layoutPreviewRenderer.render(
-			httpServletRequest, httpServletResponse, layout, locale,
-			segmentsExperienceId);
+			layout, locale, segmentsExperienceId,
+			ServiceContextThreadLocal.getServiceContext());
 
 		if (html != null) {
 			ServletResponseUtil.write(httpServletResponse, html);
