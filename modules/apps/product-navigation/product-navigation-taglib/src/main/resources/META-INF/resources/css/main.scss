@@ -1,0 +1,41 @@
+@import 'cadmin-variables';
+
+#impersonate-user-icon {
+	color: $cadmin-gray-900;
+
+	.lexicon-icon {
+		margin-top: -0.125rem;
+	}
+}
+
+#impersonate-user-sticker {
+	bottom: -0.4rem;
+	color: $cadmin-black;
+	font-size: 0.6rem;
+	height: 1.2rem;
+	right: -0.4rem;
+	width: 1.2rem;
+}
+
+.dropdown-menu-personal-menu {
+	max-height: none;
+	z-index: 1021;
+
+	.dropdown-item-indicator {
+		padding-right: 0.5rem;
+	}
+}
+
+div.personal-menu-dropdown {
+	.btn {
+		border-radius: 5000px;
+
+		> span.sticker-user-icon {
+			pointer-events: none;
+		}
+	}
+
+	.dropdown-item {
+		color: $cadmin-gray-600;
+	}
+}

@@ -7,25 +7,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<aui:style type="text/css">
-	#impersonate-user-icon {
-		color: #272833;
-	}
-
-	#impersonate-user-icon .lexicon-icon {
-		margin-top: -.125rem;
-	}
-
-	#impersonate-user-sticker {
-		bottom: -.4rem;
-		color: #000;
-		font-size: .6rem;
-		height: 1.2rem;
-		right: -0.4rem;
-		width: 1.2rem;
-	}
-</aui:style>
-
 <li class="control-menu-nav-item">
 	<span class="user-avatar-link">
 		<liferay-product-navigation:personal-menu

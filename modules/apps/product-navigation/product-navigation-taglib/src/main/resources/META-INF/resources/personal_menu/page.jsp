@@ -28,28 +28,7 @@ if (size != null) {
 }
 %>
 
-<aui:style type="text/css">
-	.dropdown-menu-personal-menu {
-		max-height: none;
-		z-index: 1021;
-	}
-
-	.dropdown-menu-personal-menu .dropdown-item-indicator {
-		padding-right: 0.5rem;
-	}
-
-	div.personal-menu-dropdown .btn {
-		border-radius: 5000px;
-	}
-
-	div.personal-menu-dropdown .btn > span.sticker-user-icon {
-		pointer-events: none;
-	}
-
-	div.personal-menu-dropdown .dropdown-item {
-		color: #6B6C7E;
-	}
-</aui:style>
+<aui:link hashedFile="<%= true %>" href="product-navigation-taglib/css/main.css" rel="stylesheet" type="text/css" />
 
 <div class="personal-menu-dropdown" id="<%= namespace %>personal_menu_dropdown">
 	<c:choose>
