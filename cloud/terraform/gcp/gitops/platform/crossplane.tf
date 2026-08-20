@@ -14,11 +14,7 @@ resource "helm_release" "crossplane" {
 						apiVersion="networking.k8s.io/v1"
 						kind="NetworkPolicy"
 						metadata={
-							labels=merge(
-								local.common_labels,
-								{
-									"app.kubernetes.io/name"="crossplane-function-grpc-ingress"
-								})
+							labels=local.common_labels
 							name="crossplane-function-grpc-ingress"
 						}
 						spec={
@@ -57,11 +53,7 @@ resource "helm_release" "crossplane" {
 						apiVersion="networking.k8s.io/v1"
 						kind="NetworkPolicy"
 						metadata={
-							labels=merge(
-								local.common_labels,
-								{
-									"app.kubernetes.io/name"="crossplane-metrics-ingress"
-								})
+							labels=local.common_labels
 							name="crossplane-metrics-ingress"
 						}
 						spec={
@@ -92,11 +84,7 @@ resource "helm_release" "crossplane" {
 						apiVersion="networking.k8s.io/v1"
 						kind="NetworkPolicy"
 						metadata={
-							labels=merge(
-								local.common_labels,
-								{
-									"app.kubernetes.io/name"="crossplane-webhook-ingress"
-								})
+							labels=local.common_labels
 							name="crossplane-webhook-ingress"
 						}
 						spec={
@@ -130,11 +118,7 @@ resource "helm_release" "crossplane" {
 						apiVersion="networking.k8s.io/v1"
 						kind="NetworkPolicy"
 						metadata={
-							labels=merge(
-								local.common_labels,
-								{
-									"app.kubernetes.io/name"="default-deny-ingress"
-								})
+							labels=local.common_labels
 							name="default-deny-ingress"
 						}
 						spec={

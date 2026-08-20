@@ -45,6 +45,10 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="Every extraObjects NetworkPolicy must omit metadata.namespace so it inherits the Helm release namespace"
 	}
 	assert {
+		condition=alltrue([for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o.metadata.labels == local.common_labels])
+		error_message="Every extraObjects NetworkPolicy must carry only local.common_labels — app.kubernetes.io/name is irrelevant for this context (same feedback applied to argocd-system's NetworkPolicies)"
+	}
+	assert {
 		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-function-grpc-ingress"][0].spec.podSelector.matchExpressions[0] == { key="pkg.crossplane.io/function", operator="Exists" }
 		error_message="crossplane-function-grpc-ingress must select every pod carrying the pkg.crossplane.io/function label (Exists, not a fixed name list) so future Crossplane functions are covered automatically without a code change"
 	}
