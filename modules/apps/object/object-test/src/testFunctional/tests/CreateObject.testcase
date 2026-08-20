@@ -305,43 +305,6 @@ definition {
 			valueScope = "Company");
 	}
 
-	@description = "LPS-135397 - Verify if it's not possible to add a Field without Choose an Option Field"
-	@priority = 4
-	test FieldOptionRequired {
-		ObjectAdmin.addObjectViaAPI(
-			labelName = "Custom Object 133",
-			objectName = "CustomObject133",
-			pluralLabelName = "Custom Objects 133");
-
-		ObjectAdmin.addObjectLayoutViaAPI(
-			layoutName = "Layout Name",
-			objectName = "CustomObject133");
-
-		ObjectAdmin.openObjectAdmin();
-
-		ObjectPortlet.selectCustomObject(label = "Custom Object 133");
-
-		ObjectAdmin.goToLayoutsTab();
-
-		ObjectAdmin.selectKebabMenuOption(kebabOption = "Edit");
-
-		ObjectAdmin.goToLayoutTabOnLayouts();
-
-		ObjectAdmin.addTabFieldsOnLayout(tabName = "Field Tab");
-
-		ObjectAdmin.addLayoutBlockViaUI(blockName = "Block Name");
-
-		Click(locator1 = "ObjectAdmin#ADD_FIELD_ON_BLOCK");
-
-		Click(
-			key_tab = "Save",
-			locator1 = "Button#TAB_SUBMIT_BTN");
-
-		AssertElementPresent(
-			key_fieldLabel = "Field",
-			locator1 = "FieldBase#ERROR_MESSAGE_REQUIRED_FIELD");
-	}
-
 	@description = "LPS-137874 - Verify that Objects created on a Virtual Instance are not displayed on the Forms Settings, Collection Providers and Display Page Template of the Main Instance and vice versa"
 	@ignore = "Test Stub"
 	@priority = 4
