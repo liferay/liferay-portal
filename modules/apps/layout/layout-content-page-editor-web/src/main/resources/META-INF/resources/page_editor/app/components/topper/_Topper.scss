@@ -233,7 +233,7 @@ html#{$cadmin-selector} {
 
 		&.drag-over-middle.page-editor__collection-item
 			.page-editor__no-fragments-state {
-			box-shadow: inset 0 0 0 $dragOverWidth $purple-l4;
+			box-shadow: inset 0 0 0 $dragOverWidth $pink-l4;
 		}
 
 		&.highlighted:after {
@@ -243,7 +243,7 @@ html#{$cadmin-selector} {
 		&--hovered:after {
 			box-shadow: none;
 			outline: unquote(
-				'#{$borderWidth} dashed hsl(from #{$purple} h s l / 0.5)'
+				'#{$borderWidth} dashed hsl(from #{$pink} h s l / 0.5)'
 			);
 			outline-offset: calc(#{$borderWidth} * -1);
 		}

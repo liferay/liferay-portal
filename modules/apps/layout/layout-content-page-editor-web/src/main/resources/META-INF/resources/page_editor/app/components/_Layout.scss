@@ -25,7 +25,7 @@ html#{$cadmin-selector} {
 		&__collection {
 			&__block {
 				box-shadow: unquote(
-					'inset 0 0 0 1px hsl(from #{$purple} h s l / 0.3)'
+					'inset 0 0 0 1px hsl(from #{$pink} h s l / 0.3)'
 				);
 
 				&.empty {
@@ -51,11 +51,11 @@ html#{$cadmin-selector} {
 			}
 
 			&-item {
-				border: unquote('1px solid hsl(from #{$purple} h s l / 0.1)');
+				border: unquote('1px solid hsl(from #{$pink} h s l / 0.1)');
 				min-height: 80px;
 
 				&__title {
-					color: $purple-d3;
+					color: $pink-d3;
 					font-size: 14px;
 					font-style: italic;
 					font-weight: 500;
@@ -102,8 +102,8 @@ html#{$cadmin-selector} {
 
 		&__collection-item {
 			.page-editor__no-fragments-state {
-				background: unquote('hsl(from #{$purple-l4} h s l / 0.1)');
-				border: $dashedBorderWidth dashed $purple-l4;
+				background: unquote('hsl(from #{$pink-l4} h s l / 0.1)');
+				border: $dashedBorderWidth dashed $pink-l4;
 			}
 		}
 
@@ -196,7 +196,7 @@ html#{$cadmin-selector} {
 
 			&--content-hovered {
 				outline: unquote(
-					'#{$dashedBorderWidth} dashed hsl(from #{$purple} h s l / 0.5)'
+					'#{$dashedBorderWidth} dashed hsl(from #{$pink} h s l / 0.5)'
 				);
 				outline-offset: -$dashedBorderWidth;
 
@@ -207,17 +207,17 @@ html#{$cadmin-selector} {
 
 			&--mapped {
 				box-shadow: unquote(
-					'inset 0 0 0 #{$editablesBorderWidth} hsl(from #{$purple} h s l / 0.3)'
+					'inset 0 0 0 #{$editablesBorderWidth} hsl(from #{$pink} h s l / 0.3)'
 				);
 
 				&.page-editor__editable--hovered {
 					box-shadow: unquote(
-						'inset 0 0 0 #{$editablesBorderWidth} hsl(from #{$purple} h s l / 0.7)'
+						'inset 0 0 0 #{$editablesBorderWidth} hsl(from #{$pink} h s l / 0.7)'
 					);
 				}
 
 				&.page-editor__editable--active {
-					box-shadow: inset 0 0 0 $editablesBorderWidth $purple;
+					box-shadow: inset 0 0 0 $editablesBorderWidth $pink;
 				}
 			}
 
@@ -398,23 +398,23 @@ html#{$cadmin-selector} {
 
 		&--mapped {
 			outline: unquote(
-				'solid #{$editablesBorderWidth} hsl(from #{$purple} h s l / 0.3)'
+				'solid #{$editablesBorderWidth} hsl(from #{$pink} h s l / 0.3)'
 			);
 
 			&.page-editor__editable--hovered {
 				outline: unquote(
-					'solid #{$editablesBorderWidth} hsl(from #{$purple} h s l / 0.7)'
+					'solid #{$editablesBorderWidth} hsl(from #{$pink} h s l / 0.7)'
 				);
 			}
 
 			&.page-editor__editable--active {
-				outline: solid $editablesBorderWidth $purple;
+				outline: solid $editablesBorderWidth $pink;
 			}
 		}
 
 		&--content-hovered {
 			outline: unquote(
-				'#{$dashedBorderWidth} dashed hsl(from #{$purple} h s l / 0.5)'
+				'#{$dashedBorderWidth} dashed hsl(from #{$pink} h s l / 0.5)'
 			);
 			outline-offset: -$dashedBorderWidth;
 		}

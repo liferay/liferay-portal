@@ -20,11 +20,11 @@
 
 	.dpt-mapping-btn:not([disabled]):not(.disabled).active {
 		background-color: map-get($btn-secondary, bg);
-		color: $purple;
+		color: $pink;
 
 		&:focus,
 		&:hover {
-			background-color: unquote('hsl(from #{$purple} h s l / 0.1)');
+			background-color: unquote('hsl(from #{$pink} h s l / 0.1)');
 		}
 	}
 
