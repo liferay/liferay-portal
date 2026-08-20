@@ -364,6 +364,43 @@ describe('MappingSelector', () => {
 				).toHaveTextContent('text');
 			});
 		});
+
+		it('marks the field group as mapped when a field is selected', async () => {
+			getSelectedField.mockImplementation(() => ({
+				key: 'text-field-1',
+				typeLabel: 'text',
+			}));
+
+			renderMappingSelector({});
+
+			await act(async () => {
+				expect(
+					getByLabelText(document.body, 'field').closest(
+						'.form-group'
+					)
+				).toHaveClass('page-editor__mapped-field');
+
+				expect(getByText(document.body, 'mapped')).toBeInTheDocument();
+			});
+		});
+
+		it('does not mark the field group as mapped when no field is selected', async () => {
+			getSelectedField.mockImplementation(() => null);
+
+			renderMappingSelector({});
+
+			await act(async () => {
+				expect(
+					getByLabelText(document.body, 'field').closest(
+						'.form-group'
+					)
+				).not.toHaveClass('page-editor__mapped-field');
+
+				expect(
+					queryByText(document.body, 'mapped')
+				).not.toBeInTheDocument();
+			});
+		});
 	});
 
 	describe('Display Pages', () => {

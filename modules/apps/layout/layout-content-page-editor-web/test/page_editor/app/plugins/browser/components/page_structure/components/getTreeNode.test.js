@@ -131,6 +131,60 @@ describe('getTreeNodes', () => {
 		expect(result.name).toBe('Container');
 	});
 
+	test('should mark a collection item as mapped when it has a collection', () => {
+		const itemId = 'collection-1';
+		const mockItem = {
+			children: [],
+			config: {collection: {classNameId: '1', classPK: '2'}},
+			itemId,
+			parentId: rootId,
+			type: LAYOUT_DATA_ITEM_TYPES.collection,
+		};
+		const mockItems = {
+			[itemId]: mockItem,
+		};
+		const mockOptions = {
+			canUpdateItemConfiguration: true,
+			isMasterPage: false,
+		};
+
+		isItemHidden.mockReturnValue(false);
+		isRemovable.mockReturnValue(true);
+		isHideable.mockReturnValue(true);
+		selectLayoutDataItemLabel.mockReturnValue('Collection Display');
+
+		const result = getTreeNodes(mockItem, mockItems, mockOptions);
+
+		expect(result.mapped).toBe(true);
+	});
+
+	test('should not mark a collection item as mapped when it has no collection', () => {
+		const itemId = 'collection-1';
+		const mockItem = {
+			children: [],
+			config: {},
+			itemId,
+			parentId: rootId,
+			type: LAYOUT_DATA_ITEM_TYPES.collection,
+		};
+		const mockItems = {
+			[itemId]: mockItem,
+		};
+		const mockOptions = {
+			canUpdateItemConfiguration: true,
+			isMasterPage: false,
+		};
+
+		isItemHidden.mockReturnValue(false);
+		isRemovable.mockReturnValue(true);
+		isHideable.mockReturnValue(true);
+		selectLayoutDataItemLabel.mockReturnValue('Collection Display');
+
+		const result = getTreeNodes(mockItem, mockItems, mockOptions);
+
+		expect(result.mapped).toBe(false);
+	});
+
 	test('should correctly handle a fragment with both editables and drop-zones', () => {
 		const childOfDropzone = 'child-of-dropzone';
 		const mockFragmentId = 'fragment-1';
