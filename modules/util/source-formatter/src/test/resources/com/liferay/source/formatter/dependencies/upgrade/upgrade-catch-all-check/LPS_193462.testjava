@@ -18,18 +18,15 @@ public class LPS_193462 {
 		long countryId, long typeId, boolean mailing, boolean primary) {
 
 		AddressLocalServiceUtil.addAddress(
-			userId, className, classPK, street1, street2, street3, city, zip,
+			123, className, classPK, street1, street2, street3, city, zip,
 			regionId, countryId, typeId, mailing, primary);
-		AddressServiceUtil.addAddress(
-			123, "test123", classPK, street1, street2, street3, city, zip,
-			regionId, countryId, typeId, mailing, primary);
-		AddressServiceUtil.addAddress(
+		AddressLocalServiceUtil.addAddress(
 			userId, className, classPK, street1, street2, street3, city, zip,
 			regionId, countryId, typeId, mailing, primary);
 		_addressLocalService.addAddress(
 			userId, className, classPK, street1, street2, street3, city, zip,
 			regionId, countryId, typeId, mailing, primary);
-		_addressService.addAddress(
+		_addressLocalServiceWrapper.addAddress(
 			userId, className, classPK, street1, street2, street3, city, zip,
 			regionId, countryId, typeId, mailing, primary);
 	}
@@ -41,26 +38,46 @@ public class LPS_193462 {
 		ServiceContext serviceContext) {
 
 		AddressLocalServiceUtil.addAddress(
-			userId, className, classPK, street1, street2, street3, city, zip,
+			123, className, classPK, street1, street2, street3, city, zip,
 			regionId, countryId, typeId, mailing, primary, serviceContext);
-		AddressServiceUtil.addAddress(
-			userId, "test123", 123, street1, street2, street3, city, zip,
-			regionId, countryId, typeId, mailing, primary, serviceContext);
-		AddressServiceUtil.addAddress(
+		AddressLocalServiceUtil.addAddress(
 			userId, className, classPK, street1, street2, street3, city, zip,
 			regionId, countryId, typeId, mailing, primary, serviceContext);
 		_addressLocalService.addAddress(
 			userId, className, classPK, street1, street2, street3, city, zip,
 			regionId, countryId, typeId, mailing, primary, serviceContext);
-		_addressService.addAddress(
+		_addressLocalServiceWrapper.addAddress(
 			userId, className, classPK, street1, street2, street3, city, zip,
 			regionId, countryId, typeId, mailing, primary, serviceContext);
+	}
+
+	public void method(
+		String className, long classPK, String street1, String street2,
+		String street3, String city, String zip, long regionId, long countryId,
+		long typeId, boolean mailing, boolean primary) {
+
+		AddressServiceUtil.addAddress(
+			"test123", classPK, street1, street2, street3, city, zip, regionId,
+			countryId, typeId, mailing, primary);
+		AddressServiceUtil.addAddress(
+			className, classPK, street1, street2, street3, city, zip, regionId,
+			countryId, typeId, mailing, primary);
+		_addressService.addAddress(
+			className, classPK, street1, street2, street3, city, zip, regionId,
+			countryId, typeId, mailing, primary);
+		_addressServiceWrapper.addAddress(
+			className, classPK, street1, street2, street3, city, zip, regionId,
+			countryId, typeId, mailing, primary);
 	}
 
 	@Reference
 	private AddressLocalService _addressLocalService;
 
+	private AddressLocalServiceWrapper _addressLocalServiceWrapper;
+
 	@Reference
 	private AddressService _addressService;
+
+	private AddressServiceWrapper _addressServiceWrapper;
 
 }
