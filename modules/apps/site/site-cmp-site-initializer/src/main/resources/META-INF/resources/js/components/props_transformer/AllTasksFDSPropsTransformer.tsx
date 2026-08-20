@@ -27,6 +27,7 @@ import {WORKFLOW_TASK_ACTION_LINK_ID} from '../../utils/constants';
 import getCMPProjectObjectEntryIds from '../../utils/getCMPProjectObjectEntryIds';
 import {getFormattedLabel} from '../../utils/getFormattedText';
 import {openCMPModal} from '../../utils/openCMPModal';
+import {transformFDSBulkActions} from '../../utils/transformFDSBulkActions';
 import {
 	ProjectTaskItemData,
 	TaskAction,
@@ -67,6 +68,11 @@ const WORKFLOW_BULK_ACTION_MODALS: Record<
 	'update-due-date': BulkEditWorkflowDueDateModalContent,
 };
 
+const WORKFLOW_BULK_ACTION_PERMISSION_KEYS: Record<string, string> = {
+	'assign-to': 'assignToUser',
+	'update-due-date': 'updateDueDate',
+};
+
 export default function AllTasksFDSPropsTransformer({
 	additionalProps,
 	bulkActions = [],
@@ -96,7 +102,47 @@ export default function AllTasksFDSPropsTransformer({
 
 	return {
 		...otherProps,
-		bulkActions: styleBulkActions(bulkActions).map((action) => ({
+		bulkActions: transformFDSBulkActions(
+			styleBulkActions(bulkActions).map((action) => ({
+				...action,
+				isVisible: ({
+					allItemsSelectedActive,
+					selectedItems,
+				}: {
+					allItemsSelectedActive: boolean;
+					selectedItems: any[];
+				}) => {
+					if (action?.data?.id !== 'assign-to') {
+						return true;
+					}
+
+					if (allItemsSelectedActive) {
+						return false;
+					}
+
+					if (
+						!selectedItems?.length ||
+						selectedItems.every(isWorkflowTask)
+					) {
+						return true;
+					}
+
+					const cmpProjectObjectEntryIds =
+						getCMPProjectObjectEntryIds(selectedItems);
+
+					return cmpProjectObjectEntryIds.size === 1;
+				},
+			})),
+			(action, item) => {
+				if (isWorkflowTask(item)) {
+					return WORKFLOW_BULK_ACTION_PERMISSION_KEYS[
+						action?.data?.id
+					];
+				}
+
+				return action?.data?.permissionKey;
+			}
+		).map((action) => ({
 			...action,
 			isDisabled: ({
 				allItemsSelectedActive,
@@ -126,33 +172,6 @@ export default function AllTasksFDSPropsTransformer({
 				return selectedItems.some(
 					(item) => item?.entryClassName !== firstType
 				);
-			},
-			isVisible: ({
-				allItemsSelectedActive,
-				selectedItems,
-			}: {
-				allItemsSelectedActive: boolean;
-				selectedItems: any[];
-			}) => {
-				if (action?.data?.id !== 'assign-to') {
-					return true;
-				}
-
-				if (allItemsSelectedActive) {
-					return false;
-				}
-
-				if (
-					!selectedItems?.length ||
-					selectedItems.every(isWorkflowTask)
-				) {
-					return true;
-				}
-
-				const cmpProjectObjectEntryIds =
-					getCMPProjectObjectEntryIds(selectedItems);
-
-				return cmpProjectObjectEntryIds.size === 1;
 			},
 		})),
 		creationMenu: {

@@ -26,6 +26,7 @@ import {
 import getCMPProjectObjectEntryIds from '../../utils/getCMPProjectObjectEntryIds';
 import {getFormattedLabel} from '../../utils/getFormattedText';
 import {openCMPModal} from '../../utils/openCMPModal';
+import {transformFDSBulkActions} from '../../utils/transformFDSBulkActions';
 import {ProjectTaskItemData, TaskAction} from '../../utils/types';
 import StateLabel from '../StateLabel';
 import BulkEditAssigneeModalContent from '../modal/BulkEditAssigneeModalContent';
@@ -123,33 +124,35 @@ export default function ProjectTasksFDSPropsTransformer({
 	return {
 		...otherProps,
 		atom: cmpTasksFDSAtom,
-		bulkActions: styleBulkActions(bulkActions).map((action) => ({
-			...action,
-			isVisible: ({
-				allItemsSelectedActive,
-				selectedItems,
-			}: {
-				allItemsSelectedActive: boolean;
-				selectedItems: any[];
-			}) => {
-				if (action?.data?.id !== 'assign-to') {
-					return true;
-				}
+		bulkActions: transformFDSBulkActions(
+			styleBulkActions(bulkActions).map((action) => ({
+				...action,
+				isVisible: ({
+					allItemsSelectedActive,
+					selectedItems,
+				}: {
+					allItemsSelectedActive: boolean;
+					selectedItems: any[];
+				}) => {
+					if (action?.data?.id !== 'assign-to') {
+						return true;
+					}
 
-				if (allItemsSelectedActive) {
-					return false;
-				}
+					if (allItemsSelectedActive) {
+						return false;
+					}
 
-				if (!selectedItems?.length) {
-					return true;
-				}
+					if (!selectedItems?.length) {
+						return true;
+					}
 
-				const cmpProjectObjectEntryIds =
-					getCMPProjectObjectEntryIds(selectedItems);
+					const cmpProjectObjectEntryIds =
+						getCMPProjectObjectEntryIds(selectedItems);
 
-				return cmpProjectObjectEntryIds.size === 1;
-			},
-		})),
+					return cmpProjectObjectEntryIds.size === 1;
+				},
+			}))
+		),
 		creationMenu: {
 			...creationMenu,
 			primaryItems: addOnClickToCreationMenuItems(
