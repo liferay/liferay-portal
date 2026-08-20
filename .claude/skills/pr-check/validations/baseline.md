@@ -104,7 +104,6 @@ When several appear in one run, fail on the strictest the branch owns and leave 
 
 ## Time Estimate
 
-~30 sec for the whole repository on a warm Gradle daemon whose module jars are already built. Around 45 sec when jars must be rebuilt first, and around 80 sec on a cold daemon. Add ~30 sec for the seven Ant project confirmations, plus a few seconds for the static local check.
-
+~30 sec for the whole repository on a warm Gradle daemon whose module jars are already built. Around 45 sec when jars must be rebuilt first, and around 80 sec on a cold daemon.
 
 Those figures assume a tree that has been built before, where most of the roughly 590 exporting modules resolve as up to date. A first run in a tree that has never been built pays the jar build for every one of them and takes far longer.
