@@ -5,33 +5,28 @@
 
 package com.liferay.analytics.reports.rest.resource.v1_0.test;
 
-import com.liferay.analytics.reports.rest.client.dto.v1_0.Trend.TrendClassification;
-import com.liferay.analytics.reports.rest.dto.v1_0.AssetMetric;
-import com.liferay.analytics.reports.rest.dto.v1_0.Metric;
-import com.liferay.analytics.reports.rest.dto.v1_0.Trend;
-import com.liferay.analytics.reports.rest.resource.v1_0.AssetMetricResource;
+import com.liferay.analytics.reports.rest.client.dto.v1_0.AssetMetric;
+import com.liferay.analytics.reports.rest.client.dto.v1_0.Metric;
+import com.liferay.analytics.reports.rest.client.dto.v1_0.Trend;
+import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.ws.rs.ForbiddenException;
+import java.net.HttpURLConnection;
 
 import java.util.Arrays;
-import java.util.Collections;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -58,29 +53,15 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
-
-		UnicodeProperties unicodeProperties = group.getTypeSettingsProperties();
+		UnicodeProperties unicodeProperties =
+			testGroup.getTypeSettingsProperties();
 
 		unicodeProperties.setProperty(
 			"analyticsChannelId", String.valueOf(RandomTestUtil.randomInt()));
 
-		group.setTypeSettingsProperties(unicodeProperties);
+		testGroup.setTypeSettingsProperties(unicodeProperties);
 
-		_group = _groupLocalService.updateGroup(group);
-	}
-
-	@After
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-
-		UnicodeProperties unicodeProperties =
-			_group.getTypeSettingsProperties();
-
-		unicodeProperties.remove("analyticsChannelId");
-
-		_group = _groupLocalService.updateGroup(_group);
+		testGroup = _groupLocalService.updateGroup(testGroup);
 	}
 
 	@Override
@@ -98,22 +79,32 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 	}
 
 	private void _testGetGroupAssetMetric() throws Exception {
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId())) {
-
-			ReflectionTestUtil.setFieldValue(
-				_assetMetricResource, "_http",
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/asset-metric/blog",
-						() -> JSONUtil.put(
-							"assetId", "1"
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/blog",
+					() -> JSONUtil.put(
+						"assetId", "1"
+					).put(
+						"assetType", "blog"
+					).put(
+						"defaultMetric",
+						JSONUtil.put(
+							"metricType", "VIEWS"
 						).put(
-							"assetType", "blog"
+							"previousValue", 1
 						).put(
-							"defaultMetric",
+							"trend",
+							JSONUtil.put(
+								"percentage", 100
+							).put(
+								"trendClassification", "POSITIVE"
+							)
+						).put(
+							"value", 1
+						)
+					).put(
+						"selectedMetrics",
+						JSONUtil.put(
 							JSONUtil.put(
 								"metricType", "VIEWS"
 							).put(
@@ -127,28 +118,18 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 								)
 							).put(
 								"value", 1
-							)
-						).put(
-							"selectedMetrics",
-							JSONUtil.put(
-								JSONUtil.put(
-									"metricType", "VIEWS"
-								).put(
-									"previousValue", 1
-								).put(
-									"trend",
-									JSONUtil.put(
-										"percentage", 100
-									).put(
-										"trendClassification", "POSITIVE"
-									)
-								).put(
-									"value", 1
-								))
-						).toString())));
+							))
+					).toString());
 
-			AssetMetric assetMetric = _assetMetricResource.getGroupAssetMetric(
-				TestPropsValues.getGroupId(), "blog", "1", "ALL", 30,
+			AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
+
+			AssetMetric assetMetric = assetMetricResource.getGroupAssetMetric(
+				testGroup.getGroupId(), "blog", "1", "ALL", 30,
 				new String[] {"viewsMetric"});
 
 			Assert.assertEquals("1", assetMetric.getAssetId());
@@ -163,7 +144,7 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 
 			Assert.assertEquals(100, trend.getPercentage(), 0);
 			Assert.assertEquals(
-				TrendClassification.POSITIVE.toString(),
+				Trend.TrendClassification.POSITIVE.toString(),
 				String.valueOf(trend.getTrendClassification()));
 
 			Metric[] selectedMetrics = assetMetric.getSelectedMetrics();
@@ -180,32 +161,32 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 
 			Assert.assertEquals(100, trend.getPercentage(), 0);
 			Assert.assertEquals(
-				TrendClassification.POSITIVE.toString(),
+				Trend.TrendClassification.POSITIVE.toString(),
 				String.valueOf(trend.getTrendClassification()));
 		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_assetMetricResource, "_http", _http);
+	}
+
+	private void _testGetGroupAssetMetricWithAnalyticsCloudNotConnected()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(), StringPool.BLANK);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_FORBIDDEN,
+				assetMetricResource.getGroupAssetMetricHttpResponse(
+					testGroup.getGroupId(), "blog", "1", "ALL", 30,
+					new String[] {"viewsMetric"}));
 		}
 	}
-
-	private void _testGetGroupAssetMetricWithAnalyticsCloudNotConnected() {
-		Assert.assertThrows(
-			ForbiddenException.class,
-			() -> _assetMetricResource.getGroupAssetMetric(
-				TestPropsValues.getGroupId(), "blog", "1", "ALL", 30,
-				new String[] {"viewsMetric"}));
-	}
-
-	@Inject
-	private AssetMetricResource _assetMetricResource;
-
-	private Group _group;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private Http _http;
 
 }

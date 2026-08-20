@@ -5,32 +5,28 @@
 
 package com.liferay.analytics.reports.rest.resource.v1_0.test;
 
-import com.liferay.analytics.reports.rest.dto.v1_0.AppearsOnHistogram;
-import com.liferay.analytics.reports.rest.dto.v1_0.AssetAppearsOnHistogram;
-import com.liferay.analytics.reports.rest.dto.v1_0.AssetAppearsOnHistogramMetric;
-import com.liferay.analytics.reports.rest.resource.v1_0.AssetAppearsOnHistogramMetricResource;
+import com.liferay.analytics.reports.rest.client.dto.v1_0.AppearsOnHistogram;
+import com.liferay.analytics.reports.rest.client.dto.v1_0.AssetAppearsOnHistogram;
+import com.liferay.analytics.reports.rest.client.dto.v1_0.AssetAppearsOnHistogramMetric;
+import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.ws.rs.ForbiddenException;
+import java.net.HttpURLConnection;
 
 import java.util.Arrays;
-import java.util.Collections;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -58,29 +54,15 @@ public class AssetAppearsOnHistogramMetricResourceTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
-
-		UnicodeProperties unicodeProperties = group.getTypeSettingsProperties();
+		UnicodeProperties unicodeProperties =
+			testGroup.getTypeSettingsProperties();
 
 		unicodeProperties.setProperty(
 			"analyticsChannelId", String.valueOf(RandomTestUtil.randomInt()));
 
-		group.setTypeSettingsProperties(unicodeProperties);
+		testGroup.setTypeSettingsProperties(unicodeProperties);
 
-		_group = _groupLocalService.updateGroup(group);
-	}
-
-	@After
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-
-		UnicodeProperties unicodeProperties =
-			_group.getTypeSettingsProperties();
-
-		unicodeProperties.remove("analyticsChannelId");
-
-		_group = _groupLocalService.updateGroup(_group);
+		testGroup = _groupLocalService.updateGroup(testGroup);
 	}
 
 	@Override
@@ -104,38 +86,38 @@ public class AssetAppearsOnHistogramMetricResourceTest
 	private void _testGetGroupAssetMetricAssetTypeAppearsOnHistogram()
 		throws Exception {
 
-		try (AnalyticsCompanyConfigurationTemporarySwapper
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/blog/appears-on/histogram",
+					() -> JSONUtil.put(
+						"assetAppearsOnHistograms",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"appearsOnHistograms",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"canonicalUrl", "https://test.com/1"
+									).put(
+										"pageTitle", "Title 1"
+									).put(
+										"totalValue", 3
+									))
+							).put(
+								"metricName", "viewsMetric"
+							))
+					).toString());
+
+			AnalyticsCompanyConfigurationTemporarySwapper
 				analyticsCompanyConfigurationTemporarySwapper =
 					new AnalyticsCompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId())) {
-
-			ReflectionTestUtil.setFieldValue(
-				_assetAppearsOnHistogramMetricResource, "_http",
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/asset-metric/blog/appears-on/histogram",
-						() -> JSONUtil.put(
-							"assetAppearsOnHistograms",
-							JSONUtil.putAll(
-								JSONUtil.put(
-									"appearsOnHistograms",
-									JSONUtil.putAll(
-										JSONUtil.put(
-											"canonicalUrl", "https://test.com/1"
-										).put(
-											"pageTitle", "Title 1"
-										).put(
-											"totalValue", 3
-										))
-								).put(
-									"metricName", "viewsMetric"
-								))
-						).toString())));
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
 
 			AssetAppearsOnHistogramMetric assetAppearsOnHistogramMetric =
-				_assetAppearsOnHistogramMetricResource.
+				assetAppearsOnHistogramMetricResource.
 					getGroupAssetMetricAssetTypeAppearsOnHistogram(
-						TestPropsValues.getGroupId(), "blog", "1", "ALL", 30);
+						testGroup.getGroupId(), "blog", "1", "ALL", 30);
 
 			AssetAppearsOnHistogram[] assetAppearsOnHistograms =
 				assetAppearsOnHistogramMetric.getAssetAppearsOnHistograms();
@@ -164,31 +146,29 @@ public class AssetAppearsOnHistogramMetricResourceTest
 			Assert.assertEquals("Title 1", appearsOnHistogram.getPageTitle());
 			Assert.assertEquals(3, appearsOnHistogram.getTotalValue(), 0);
 		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				_assetAppearsOnHistogramMetricResource, "_http", _http);
+	}
+
+	private void _testGetGroupAssetMetricAssetTypeAppearsOnHistogramWithAnalyticsCloudNotConnected()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(), StringPool.BLANK);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_FORBIDDEN,
+				assetAppearsOnHistogramMetricResource.
+					getGroupAssetMetricAssetTypeAppearsOnHistogramHttpResponse(
+						testGroup.getGroupId(), "blog", "1", "ALL", 30));
 		}
 	}
 
-	private void _testGetGroupAssetMetricAssetTypeAppearsOnHistogramWithAnalyticsCloudNotConnected() {
-		Assert.assertThrows(
-			ForbiddenException.class,
-			() ->
-				_assetAppearsOnHistogramMetricResource.
-					getGroupAssetMetricAssetTypeAppearsOnHistogram(
-						TestPropsValues.getGroupId(), "blog", "1", "ALL", 30));
-	}
-
-	@Inject
-	private AssetAppearsOnHistogramMetricResource
-		_assetAppearsOnHistogramMetricResource;
-
-	private Group _group;
-
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private Http _http;
 
 }
