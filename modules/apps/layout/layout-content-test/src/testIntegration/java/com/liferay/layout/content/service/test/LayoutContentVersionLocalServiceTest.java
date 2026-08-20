@@ -19,6 +19,7 @@ import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
@@ -42,6 +43,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
 
 /**
@@ -167,17 +169,11 @@ public class LayoutContentVersionLocalServiceTest {
 			_layoutContentVersionLocalService.fetchLayoutContentVersion(
 				approvedLayoutContentVersion.getLayoutContentVersionId()));
 
-		try {
-			_layoutContentVersionLocalService.deleteLayoutContentVersion(
-				latestApprovedLayoutContentVersion.getLayoutContentVersionId());
-
-			Assert.fail();
-		}
-		catch (RequiredLayoutContentVersionException
-					requiredLayoutContentVersionException) {
-
-			Assert.assertNotNull(requiredLayoutContentVersionException);
-		}
+		Assert.assertThrows(
+			RequiredLayoutContentVersionException.class,
+			() -> _layoutContentVersionLocalService.deleteLayoutContentVersion(
+				latestApprovedLayoutContentVersion.
+					getLayoutContentVersionId()));
 
 		Assert.assertNotNull(
 			_layoutContentVersionLocalService.fetchLayoutContentVersion(
@@ -215,31 +211,49 @@ public class LayoutContentVersionLocalServiceTest {
 
 	@Test
 	public void testUpdateLayoutContentVersion() throws Exception {
-		_testUpdateLayoutContentVersionWithEmptyNameMap();
-		_testUpdateLayoutContentVersionWithNullNameMap();
-	}
-
-	private void _testAddLayoutContentVersionWithExternalReferenceCodeTooLong()
-		throws Exception {
-
-		int maxLength = ModelHintsUtil.getMaxLength(
-			LayoutContentVersion.class.getName(), "externalReferenceCode");
-
-		try {
+		LayoutContentVersion layoutContentVersion =
 			_layoutContentVersionLocalService.addLayoutContentVersion(
-				RandomTestUtil.randomString(maxLength + 1),
-				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				RandomTestUtil.randomString(),
 				RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
 				WorkflowConstants.STATUS_DRAFT);
 
-			Assert.fail();
-		}
-		catch (LayoutContentVersionExternalReferenceCodeException
-					layoutContentVersionExternalReferenceCodeException) {
+		String expectedMessage = "Name is null";
 
-			Assert.assertNotNull(
-				layoutContentVersionExternalReferenceCodeException);
-		}
+		_assertPortalException(
+			expectedMessage, LayoutContentVersionNameException.class,
+			() -> _layoutContentVersionLocalService.updateLayoutContentVersion(
+				layoutContentVersion.getLayoutContentVersionId(),
+				new HashMap<>()));
+		_assertPortalException(
+			expectedMessage, LayoutContentVersionNameException.class,
+			() -> _layoutContentVersionLocalService.updateLayoutContentVersion(
+				layoutContentVersion.getLayoutContentVersionId(), null));
+	}
+
+	private <T extends PortalException> void _assertPortalException(
+		String expectedMessage, Class<T> portalExceptionClass,
+		ThrowingRunnable runnable) {
+
+		PortalException portalException = Assert.assertThrows(
+			portalExceptionClass, runnable);
+
+		Assert.assertEquals(expectedMessage, portalException.getMessage());
+	}
+
+	private void _testAddLayoutContentVersionWithExternalReferenceCodeTooLong() {
+		int maxLength = ModelHintsUtil.getMaxLength(
+			LayoutContentVersion.class.getName(), "externalReferenceCode");
+
+		_assertPortalException(
+			"External reference code must be less than " + maxLength +
+				" characters",
+			LayoutContentVersionExternalReferenceCodeException.class,
+			() -> _layoutContentVersionLocalService.addLayoutContentVersion(
+				RandomTestUtil.randomString(maxLength + 1),
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
+				WorkflowConstants.STATUS_DRAFT));
 	}
 
 	private void _testAddLayoutContentVersionWithNullExternalReferenceCode()
@@ -309,71 +323,14 @@ public class LayoutContentVersionLocalServiceTest {
 			layoutUtilityPageEntry.getPlid());
 	}
 
-	private void _testAddLayoutContentVersionWithUnsupportedLayout(long plid)
-		throws Exception {
-
-		try {
-			_layoutContentVersionLocalService.addLayoutContentVersion(
+	private void _testAddLayoutContentVersionWithUnsupportedLayout(long plid) {
+		Assert.assertThrows(
+			UnsupportedLayoutLayoutContentVersionException.class,
+			() -> _layoutContentVersionLocalService.addLayoutContentVersion(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				RandomTestUtil.randomString(),
 				RandomTestUtil.randomLocaleStringMap(), plid,
-				WorkflowConstants.STATUS_DRAFT);
-
-			Assert.fail();
-		}
-		catch (UnsupportedLayoutLayoutContentVersionException
-					unsupportedLayoutLayoutContentVersionException) {
-
-			Assert.assertNotNull(
-				unsupportedLayoutLayoutContentVersionException);
-		}
-	}
-
-	private void _testUpdateLayoutContentVersionWithEmptyNameMap()
-		throws Exception {
-
-		LayoutContentVersion layoutContentVersion =
-			_layoutContentVersionLocalService.addLayoutContentVersion(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				RandomTestUtil.randomString(),
-				RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
-				WorkflowConstants.STATUS_DRAFT);
-
-		try {
-			_layoutContentVersionLocalService.updateLayoutContentVersion(
-				layoutContentVersion.getLayoutContentVersionId(),
-				new HashMap<>());
-
-			Assert.fail();
-		}
-		catch (LayoutContentVersionNameException
-					layoutContentVersionNameException) {
-
-			Assert.assertNotNull(layoutContentVersionNameException);
-		}
-	}
-
-	private void _testUpdateLayoutContentVersionWithNullNameMap()
-		throws Exception {
-
-		LayoutContentVersion layoutContentVersion =
-			_layoutContentVersionLocalService.addLayoutContentVersion(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				RandomTestUtil.randomString(),
-				RandomTestUtil.randomLocaleStringMap(), _draftLayout.getPlid(),
-				WorkflowConstants.STATUS_DRAFT);
-
-		try {
-			_layoutContentVersionLocalService.updateLayoutContentVersion(
-				layoutContentVersion.getLayoutContentVersionId(), null);
-
-			Assert.fail();
-		}
-		catch (LayoutContentVersionNameException
-					layoutContentVersionNameException) {
-
-			Assert.assertNotNull(layoutContentVersionNameException);
-		}
+				WorkflowConstants.STATUS_DRAFT));
 	}
 
 	private Layout _draftLayout;
