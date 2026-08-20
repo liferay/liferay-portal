@@ -19,8 +19,18 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
  */
 public class AuditConfigurationUtil {
 
+	public static long getCompanyId(long companyId) {
+		if ((companyId > CompanyConstants.SYSTEM) &&
+			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+
+			return companyId;
+		}
+
+		return CompanyConstants.SYSTEM;
+	}
+
 	public static <T> T getConfiguration(Class<T> clazz, long companyId) {
-		long configurationCompanyId = getConfigurationCompanyId(companyId);
+		long configurationCompanyId = getCompanyId(companyId);
 
 		try {
 			if (configurationCompanyId == CompanyConstants.SYSTEM) {
@@ -42,16 +52,6 @@ public class AuditConfigurationUtil {
 
 		return ConfigurableUtil.createConfigurable(
 			clazz, new HashMapDictionary<>());
-	}
-
-	public static long getConfigurationCompanyId(long companyId) {
-		if ((companyId > CompanyConstants.SYSTEM) &&
-			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
-
-			return companyId;
-		}
-
-		return CompanyConstants.SYSTEM;
 	}
 
 	public static boolean isEnabled(long companyId) {

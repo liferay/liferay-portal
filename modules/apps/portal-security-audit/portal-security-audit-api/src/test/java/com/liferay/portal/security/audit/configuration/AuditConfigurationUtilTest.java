@@ -30,6 +30,14 @@ public class AuditConfigurationUtilTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
+	@FeatureFlag(enable = false, value = "LPD-6417")
+	@Test
+	public void testGetCompanyIdWhenFeatureFlagIsDisabled() {
+		Assert.assertEquals(
+			CompanyConstants.SYSTEM,
+			AuditConfigurationUtil.getCompanyId(RandomTestUtil.randomLong()));
+	}
+
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testGetConfiguration() {
@@ -39,24 +47,12 @@ public class AuditConfigurationUtilTest {
 		_testGetConfiguration(companyId);
 
 		Assert.assertEquals(
-			CompanyConstants.SYSTEM,
-			AuditConfigurationUtil.getConfigurationCompanyId(-1));
+			CompanyConstants.SYSTEM, AuditConfigurationUtil.getCompanyId(-1));
 		Assert.assertEquals(
 			CompanyConstants.SYSTEM,
-			AuditConfigurationUtil.getConfigurationCompanyId(
-				CompanyConstants.SYSTEM));
+			AuditConfigurationUtil.getCompanyId(CompanyConstants.SYSTEM));
 		Assert.assertEquals(
-			companyId,
-			AuditConfigurationUtil.getConfigurationCompanyId(companyId));
-	}
-
-	@FeatureFlag(enable = false, value = "LPD-6417")
-	@Test
-	public void testGetConfigurationCompanyIdWhenFeatureFlagIsDisabled() {
-		Assert.assertEquals(
-			CompanyConstants.SYSTEM,
-			AuditConfigurationUtil.getConfigurationCompanyId(
-				RandomTestUtil.randomLong()));
+			companyId, AuditConfigurationUtil.getCompanyId(companyId));
 	}
 
 	@FeatureFlag("LPD-6417")

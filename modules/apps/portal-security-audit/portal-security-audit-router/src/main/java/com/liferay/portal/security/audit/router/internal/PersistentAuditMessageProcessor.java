@@ -62,56 +62,13 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 
 		_serviceRegistration.unregister();
 
-		for (BatchProcessorHolder batchProcessorHolder :
-				_batchProcessorHolders.values()) {
+		for (BatchProcessorContext batchProcessorContext :
+				_batchProcessorContexts.values()) {
 
-			batchProcessorHolder.close();
+			batchProcessorContext.close();
 		}
 
-		_batchProcessorHolders.clear();
-	}
-
-	private BatchProcessorHolder _getBatchProcessorHolder(
-		long configurationCompanyId,
-		PersistentAuditMessageProcessorConfiguration
-			persistentAuditMessageProcessorConfiguration) {
-
-		BatchProcessorHolder batchProcessorHolder = _batchProcessorHolders.get(
-			configurationCompanyId);
-
-		if ((batchProcessorHolder == null) ||
-			!batchProcessorHolder.isMatchingConfiguration(
-				persistentAuditMessageProcessorConfiguration)) {
-
-			batchProcessorHolder = _batchProcessorHolders.compute(
-				configurationCompanyId,
-				(curConfigurationCompanyId, curBatchProcessorHolder) -> {
-					if (curBatchProcessorHolder == null) {
-						if (_stopped) {
-							return null;
-						}
-
-						return new BatchProcessorHolder(
-							curConfigurationCompanyId,
-							persistentAuditMessageProcessorConfiguration);
-					}
-
-					if (!curBatchProcessorHolder.isMatchingConfiguration(
-							persistentAuditMessageProcessorConfiguration)) {
-
-						curBatchProcessorHolder.reconfigure(
-							persistentAuditMessageProcessorConfiguration);
-					}
-
-					return curBatchProcessorHolder;
-				});
-		}
-
-		if (_stopped) {
-			return null;
-		}
-
-		return batchProcessorHolder;
+		_batchProcessorContexts.clear();
 	}
 
 	private void _process(AuditMessage auditMessage) {
@@ -129,13 +86,31 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 			return;
 		}
 
-		BatchProcessorHolder batchProcessorHolder = _getBatchProcessorHolder(
-			AuditConfigurationUtil.getConfigurationCompanyId(
-				auditMessage.getCompanyId()),
-			persistentAuditMessageProcessorConfiguration);
+		long companyId = AuditConfigurationUtil.getCompanyId(
+			auditMessage.getCompanyId());
 
-		if (batchProcessorHolder != null) {
-			batchProcessorHolder.addAuditMessage(auditMessage);
+		BatchProcessorContext batchProcessorContext =
+			_batchProcessorContexts.compute(
+				companyId,
+				(key, existingBatchProcessorContext) -> {
+					if (existingBatchProcessorContext == null) {
+						if (_stopped) {
+							return null;
+						}
+
+						return new BatchProcessorContext(
+							companyId,
+							persistentAuditMessageProcessorConfiguration);
+					}
+
+					existingBatchProcessorContext.configure(
+						persistentAuditMessageProcessorConfiguration);
+
+					return existingBatchProcessorContext;
+				});
+
+		if (batchProcessorContext != null) {
+			batchProcessorContext.addAuditMessage(auditMessage);
 		}
 	}
 
@@ -145,15 +120,15 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 	@Reference
 	private AuditEventManager _auditEventManager;
 
-	private final Map<Long, BatchProcessorHolder> _batchProcessorHolders =
+	private final Map<Long, BatchProcessorContext> _batchProcessorContexts =
 		new ConcurrentHashMap<>();
 	private ServiceRegistration<?> _serviceRegistration;
 	private volatile boolean _stopped;
 
-	private class BatchProcessorHolder {
+	private class BatchProcessorContext {
 
-		public BatchProcessorHolder(
-			long configurationCompanyId,
+		public BatchProcessorContext(
+			long companyId,
 			PersistentAuditMessageProcessorConfiguration
 				persistentAuditMessageProcessorConfiguration) {
 
@@ -165,7 +140,7 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 			_batchProcessor = new BatchProcessor<>(
 				_flushInterval, _bufferSize, _auditEventManager::addAuditEvents,
 				PersistentAuditMessageProcessor.class.getName() +
-					StringPool.DASH + configurationCompanyId);
+					StringPool.DASH + companyId);
 		}
 
 		public void addAuditMessage(AuditMessage auditMessage) {
@@ -176,7 +151,7 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 			_batchProcessor.close();
 		}
 
-		public boolean isMatchingConfiguration(
+		public void configure(
 			PersistentAuditMessageProcessorConfiguration
 				persistentAuditMessageProcessorConfiguration) {
 
@@ -187,15 +162,8 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 					persistentAuditMessageProcessorConfiguration.
 						flushInterval())) {
 
-				return true;
+				return;
 			}
-
-			return false;
-		}
-
-		public void reconfigure(
-			PersistentAuditMessageProcessorConfiguration
-				persistentAuditMessageProcessorConfiguration) {
 
 			_bufferSize =
 				persistentAuditMessageProcessorConfiguration.bufferSize();
@@ -206,8 +174,8 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 		}
 
 		private final BatchProcessor<AuditMessage> _batchProcessor;
-		private volatile int _bufferSize;
-		private volatile long _flushInterval;
+		private int _bufferSize;
+		private long _flushInterval;
 
 	}
 
@@ -215,11 +183,11 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 
 		@Override
 		public void onBeforeRemove(Company company) {
-			BatchProcessorHolder batchProcessorHolder =
-				_batchProcessorHolders.remove(company.getCompanyId());
+			BatchProcessorContext batchProcessorContext =
+				_batchProcessorContexts.remove(company.getCompanyId());
 
-			if (batchProcessorHolder != null) {
-				batchProcessorHolder.close();
+			if (batchProcessorContext != null) {
+				batchProcessorContext.close();
 			}
 		}
 
