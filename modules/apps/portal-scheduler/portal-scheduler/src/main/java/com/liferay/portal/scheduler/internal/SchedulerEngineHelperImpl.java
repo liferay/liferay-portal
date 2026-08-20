@@ -518,6 +518,8 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 					SchedulerEngine.SCHEDULER_CLUSTER_INVOKING, true);
 			}
 
+			_bundleContext.ungetService(serviceReference);
+
 			return null;
 		}
 
