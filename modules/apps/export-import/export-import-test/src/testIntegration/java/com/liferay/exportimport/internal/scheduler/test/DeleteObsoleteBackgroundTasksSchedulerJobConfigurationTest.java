@@ -119,7 +119,6 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 		Assert.assertNull(
 			_dlFolderLocalService.fetchDLFolder(
 				portletExportAttachmentsFolderId));
-
 	}
 
 	@Test
