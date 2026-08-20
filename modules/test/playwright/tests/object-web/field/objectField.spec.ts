@@ -26,6 +26,7 @@ import {waitForSearchToBeReady} from '../../../utils/waitForSearchToBeReady';
 import {AsyncArray} from '../utils/AsyncArray';
 import {generateObjectFields} from '../utils/generateObjectFields';
 import {getFreshObjectRelationshipName} from '../utils/getFreshObjectRelationshipName';
+import {postAggregationObjectDefinitions} from '../utils/postAggregationObjectDefinitions';
 import {postListTypeDefinitionListTypeEntries} from '../utils/postListTypeDefinitionListTypeEntries';
 
 const test = mergeTests(
@@ -1526,6 +1527,51 @@ test.describe('Manage objectFields through Objects Admin UI', () => {
 		}
 	);
 
+	test(
+		'can edit a conditional read only field when its condition is false',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectFieldName = 'longtext' + getRandomInt();
+
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: [
+					{
+						businessType: 'LongText',
+						name: objectFieldName,
+						readOnly: 'conditional',
+						readOnlyConditionExpression: `${objectFieldName} == 'Test'`,
+					},
+				],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{[objectFields[0].name as string]: 'Entry Test'},
+				'c/' + objectDefinition.name.toLowerCase() + 's'
+			);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await page
+				.getByRole('link', {name: String(objectEntry.id)})
+				.click();
+
+			await expect(
+				page.getByLabel(objectFields[0].label.en_US)
+			).toBeEnabled();
+		}
+	);
+
 	test('can edit an aggregation field', async ({
 		apiHelpers,
 		objectFieldsPage,
@@ -1786,6 +1832,225 @@ test.describe('Manage objectFields through Objects Admin UI', () => {
 		}
 	);
 
+	test(
+		'can filter aggregation field data with the is equal to operator',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectFieldsPage}) => {
+			const {
+				aggregatedObjectField,
+				aggregationObjectDefinition,
+				objectRelationship,
+				relationshipObjectFieldName,
+				sourceObjectDefinition,
+			} = await postAggregationObjectDefinitions({
+				apiHelpers,
+				objectFieldBusinessType: 'Integer',
+			});
+
+			await objectFieldsPage.goto(
+				aggregationObjectDefinition.label['en_US']
+			);
+
+			await objectFieldsPage.addObjectField({
+				aggregationField: aggregatedObjectField.label.en_US,
+				aggregationFieldFunction: 'Max',
+				aggregationFieldRelationship: objectRelationship.name,
+				objectFieldBusinessType: 'Aggregation',
+				objectFieldLabel: 'Custom Aggregation',
+			});
+
+			await objectFieldsPage.openObjectField('Custom Aggregation');
+
+			const filterTypeOptions =
+				await objectFieldsPage.openAggregationFilterTypeOptions(
+					aggregatedObjectField.label.en_US
+				);
+
+			await expect(filterTypeOptions).toHaveText([
+				'Is Equal To',
+				'Is Not Equal To',
+			]);
+
+			await objectFieldsPage.selectAggregationFilterType('Is Equal To');
+
+			await objectFieldsPage.filterValue.fill('7');
+
+			await objectFieldsPage.saveAggregationFilter();
+
+			await expect(
+				objectFieldsPage.iframeLocator
+					.getByRole('listitem')
+					.filter({hasText: aggregatedObjectField.label.en_US})
+			).toBeVisible();
+
+			await objectFieldsPage.saveObjectField();
+
+			const aggregationObjectEntry =
+				await apiHelpers.objectEntry.postObjectEntry(
+					{},
+					'c/' + aggregationObjectDefinition.name.toLowerCase() + 's'
+				);
+
+			for (const aggregatedValue of [5, 7, 9]) {
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						[aggregatedObjectField.name as string]: aggregatedValue,
+						[relationshipObjectFieldName]:
+							aggregationObjectEntry.id,
+					},
+					'c/' + sourceObjectDefinition.name.toLowerCase() + 's'
+				);
+			}
+
+			const aggregatedObjectEntry =
+				await apiHelpers.objectEntry.getObjectEntryById(
+					'c/' + aggregationObjectDefinition.name.toLowerCase() + 's',
+					String(aggregationObjectEntry.id)
+				);
+
+			expect(aggregatedObjectEntry.customAggregation).toBe('7');
+		}
+	);
+
+	test(
+		'can filter aggregation field data with the is not equal to operator',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectFieldsPage}) => {
+			const {
+				aggregatedObjectField,
+				aggregationObjectDefinition,
+				objectRelationship,
+				relationshipObjectFieldName,
+				sourceObjectDefinition,
+			} = await postAggregationObjectDefinitions({
+				apiHelpers,
+				objectFieldBusinessType: 'LongInteger',
+			});
+
+			await objectFieldsPage.goto(
+				aggregationObjectDefinition.label['en_US']
+			);
+
+			await objectFieldsPage.addObjectField({
+				aggregationField: aggregatedObjectField.label.en_US,
+				aggregationFieldFunction: 'Sum',
+				aggregationFieldRelationship: objectRelationship.name,
+				objectFieldBusinessType: 'Aggregation',
+				objectFieldLabel: 'Custom Aggregation',
+			});
+
+			await objectFieldsPage.openObjectField('Custom Aggregation');
+
+			await objectFieldsPage.createAggregationFilter({
+				filterBy: aggregatedObjectField.label.en_US,
+				filterType: 'Is Not Equal To',
+				value: '1000',
+			});
+
+			await objectFieldsPage.saveObjectField();
+
+			const aggregationObjectEntry =
+				await apiHelpers.objectEntry.postObjectEntry(
+					{},
+					'c/' + aggregationObjectDefinition.name.toLowerCase() + 's'
+				);
+
+			for (const aggregatedValue of [300, 400, 1000]) {
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						[aggregatedObjectField.name as string]: aggregatedValue,
+						[relationshipObjectFieldName]:
+							aggregationObjectEntry.id,
+					},
+					'c/' + sourceObjectDefinition.name.toLowerCase() + 's'
+				);
+			}
+
+			const aggregatedObjectEntry =
+				await apiHelpers.objectEntry.getObjectEntryById(
+					'c/' + aggregationObjectDefinition.name.toLowerCase() + 's',
+					String(aggregationObjectEntry.id)
+				);
+
+			expect(aggregatedObjectEntry.customAggregation).toBe('700');
+		}
+	);
+
+	test(
+		'can filter aggregation field data with the range operator',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectFieldsPage}) => {
+			const {
+				aggregatedObjectField,
+				aggregationObjectDefinition,
+				objectRelationship,
+				relationshipObjectFieldName,
+				sourceObjectDefinition,
+			} = await postAggregationObjectDefinitions({
+				apiHelpers,
+				objectFieldBusinessType: 'Date',
+			});
+
+			await objectFieldsPage.goto(
+				aggregationObjectDefinition.label['en_US']
+			);
+
+			await objectFieldsPage.addObjectField({
+				aggregationFieldFunction: 'Count',
+				aggregationFieldRelationship: objectRelationship.name,
+				objectFieldBusinessType: 'Aggregation',
+				objectFieldLabel: 'Custom Aggregation',
+			});
+
+			await objectFieldsPage.openObjectField('Custom Aggregation');
+
+			await expect(
+				await objectFieldsPage.openAggregationFilterTypeOptions(
+					aggregatedObjectField.label.en_US
+				)
+			).toHaveText(['Range']);
+
+			await objectFieldsPage.selectAggregationFilterType('Range');
+
+			await objectFieldsPage.filterStartDate.fill('01/01/2000');
+
+			await objectFieldsPage.filterEndDate.fill('01/01/2001');
+
+			await objectFieldsPage.saveAggregationFilter();
+
+			await objectFieldsPage.saveObjectField();
+
+			const aggregationObjectEntry =
+				await apiHelpers.objectEntry.postObjectEntry(
+					{},
+					'c/' + aggregationObjectDefinition.name.toLowerCase() + 's'
+				);
+
+			for (const aggregatedValue of [
+				'2000-10-01',
+				'2000-10-02',
+				'2002-10-01',
+			]) {
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						[aggregatedObjectField.name as string]: aggregatedValue,
+						[relationshipObjectFieldName]:
+							aggregationObjectEntry.id,
+					},
+					'c/' + sourceObjectDefinition.name.toLowerCase() + 's'
+				);
+			}
+
+			const aggregatedObjectEntry =
+				await apiHelpers.objectEntry.getObjectEntryById(
+					'c/' + aggregationObjectDefinition.name.toLowerCase() + 's',
+					String(aggregationObjectEntry.id)
+				);
+
+			expect(aggregatedObjectEntry.customAggregation).toBe('2');
+		}
+	);
+
 	test('can only edit external reference code of custom fields through the UI', async ({
 		apiHelpers,
 		objectFieldsPage,
@@ -1844,6 +2109,71 @@ test.describe('Manage objectFields through Objects Admin UI', () => {
 			);
 		});
 	});
+
+	test(
+		'can set the maximum number of characters for text and long text fields',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectFieldsPage, page, viewObjectEntriesPage}) => {
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: ['Text', 'LongText'],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await objectFieldsPage.goto(objectDefinition.label['en_US']);
+
+			await objectFieldsPage.openObjectField(objectFields[0].label.en_US);
+
+			await objectFieldsPage.limitCharactersToggle.check();
+
+			await expect(
+				objectFieldsPage.iframeLocator.getByText(
+					'Set the maximum number of characters accepted. This value cannot be less than 1 or greater than 280'
+				)
+			).toBeVisible();
+
+			await expect(
+				objectFieldsPage.maximumNumberOfCharacters
+			).toHaveValue('280');
+
+			await objectFieldsPage.saveObjectField();
+
+			await objectFieldsPage.openObjectField(objectFields[1].label.en_US);
+
+			await objectFieldsPage.limitCharactersToggle.check();
+
+			await expect(
+				objectFieldsPage.iframeLocator.getByText(
+					'Set the maximum number of characters accepted. This value cannot be less than 1 or greater than 65,000'
+				)
+			).toBeVisible();
+
+			await expect(
+				objectFieldsPage.maximumNumberOfCharacters
+			).toHaveValue('65000');
+
+			await objectFieldsPage.saveObjectField();
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			await expect(page.getByText('0/280 Characters')).toBeVisible();
+
+			await expect(page.getByText('0/65000 Characters')).toBeVisible();
+		}
+	);
 
 	test('can update custom object field in a system object', async ({
 		apiHelpers,
@@ -2313,6 +2643,92 @@ test.describe('Manage objectFields through Objects Admin UI', () => {
 		}
 	});
 
+	test(
+		'cannot edit a conditional read only field when its condition is true',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectFieldName = 'longtext' + getRandomInt();
+
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: [
+					{
+						businessType: 'LongText',
+						name: objectFieldName,
+						readOnly: 'conditional',
+						readOnlyConditionExpression: `${objectFieldName} == 'Entry Test'`,
+					},
+				],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{[objectFields[0].name as string]: 'Entry Test'},
+				'c/' + objectDefinition.name.toLowerCase() + 's'
+			);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await page
+				.getByRole('link', {name: String(objectEntry.id)})
+				.click();
+
+			await expect(
+				page.getByLabel(objectFields[0].label.en_US)
+			).toBeDisabled();
+		}
+	);
+
+	test(
+		'cannot edit a read only field',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectFieldsPage, page, viewObjectEntriesPage}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{textField: 'Entry Test'},
+				'c/' + objectDefinition.name.toLowerCase() + 's'
+			);
+
+			await objectFieldsPage.goto(objectDefinition.label['en_US']);
+
+			await objectFieldsPage.openObjectField('textField');
+
+			await objectFieldsPage.advancedTab.click();
+
+			await objectFieldsPage.iframeLocator
+				.getByLabel('True', {exact: true})
+				.check();
+
+			await objectFieldsPage.saveObjectField();
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await page
+				.getByRole('link', {name: String(objectEntry.id)})
+				.click();
+
+			await expect(page.getByLabel('textField')).toBeDisabled();
+		}
+	);
+
 	test('cannot edit external reference code from system fields', async ({
 		apiHelpers,
 		objectFieldsPage,
@@ -2341,6 +2757,64 @@ test.describe('Manage objectFields through Objects Admin UI', () => {
 			})
 		).toBeDisabled();
 	});
+
+	test(
+		'cannot set the maximum number of characters above the long text limit',
+		{tag: '@LPD-102828'},
+		async ({apiHelpers, objectFieldsPage, page, viewObjectEntriesPage}) => {
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: ['LongText'],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await objectFieldsPage.goto(objectDefinition.label['en_US']);
+
+			await objectFieldsPage.openObjectField(objectFields[0].label.en_US);
+
+			await objectFieldsPage.limitCharactersToggle.check();
+
+			await objectFieldsPage.maximumNumberOfCharacters.fill('65001');
+
+			await expect(
+				objectFieldsPage.maximumNumberOfCharacters
+			).toHaveValue('65000');
+
+			await objectFieldsPage.saveObjectField();
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry(
+				objectDefinition.label['en_US']
+			);
+
+			const longText =
+				'We offer a suite of solutions geared toward solving highly complex digital challenges';
+
+			await page.getByLabel(objectFields[0].label.en_US).fill(longText);
+
+			await expect(
+				page.getByText(`${longText.length}/65000 Characters`)
+			).toBeVisible();
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await expect(page.getByText(longText).first()).toBeVisible();
+		}
+	);
 
 	test('navigates to documentation from the "unsupported translations" alert link', async ({
 		apiHelpers,
