@@ -32,11 +32,13 @@ A finding in a module the branch changed fails this validation. A finding in any
 ("${REPO_ROOT}/gradlew" --console=plain --project-dir "${REPO_ROOT}/<project>" baseline --rerun)
 ```
 
-Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a second, which is a cached verdict rather than a comparison — the same silence this section exists to reject. A genuine run prints `1 executed`.
+Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a second, a cached verdict rather than a comparison. A genuine run prints `1 executed`.
 
 ### Interpretation
 
-Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands. Report the number of modules in scope alongside the result, since a pass that compared nothing otherwise looks like a clean one. The modules run is passed `--quiet`, so no task lines print and the list survives only in the command line the run echoes. Count the entries ending in `:baseline` there, which covers the Gradle modules and not the seven Ant projects. The failure block names the failed task again, so do not count it twice, and report what you counted rather than a fixed figure.
+Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands.
+
+Report the number of Gradle modules compared alongside the result, since a pass that compared nothing otherwise looks like a clean one. The run is passed `--quiet`, so it prints no task lines: count the entries ending in `:baseline` in the command line it echoes, and report what you counted rather than a fixed figure.
 
 Baseline has five warnings, and they do not all reach the tree in the same shape:
 
@@ -50,7 +52,11 @@ Baseline has five warnings, and they do not all reach the tree in the same shape
 
 All five concern the version of an exported package, recorded in its `packageinfo`. `Bundle-Version` is not among them, so do not read a passing run as evidence that it is right. An inflated one is caught only by the classification below.
 
-For the paths those warnings named, list each changed file with both of its versions. This decides what to commit or restore, and it is also what catches an inflated `Bundle-Version`, which none of the warnings report. Warning rows name packages, so match a `packageinfo` by its directory. One that no row named is a repair left by an earlier aborted run: restore it and do not count it as a finding. No row ever names a `bnd.bnd`, so judge one by its module instead of restoring it as debris. Take the file list from `git status --porcelain -uall -- '*bnd.bnd' '*packageinfo'`, and for each one read the version in `HEAD` against the version in the tree, from the `Bundle-Version:` or `version` line. Keep `-uall`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`, and read an addition or a removal from the status letter rather than from a missing version line — a bare diff of the version lines drops the filename and cannot tell an addition, a deletion, and a lowering apart.
+For the paths those warnings named, list each changed file with both of its versions. This decides what to commit or restore, and it is also what catches an inflated `Bundle-Version`, which none of the warnings report.
+
+Warning rows name packages, so match a `packageinfo` by its directory. One that no row named is a repair left by an earlier aborted run: restore it and do not count it as a finding. No row ever names a `bnd.bnd`, so judge one by its module instead of restoring it as debris.
+
+Take the file list from `git status --porcelain -uall -- '*bnd.bnd' '*packageinfo'`, and for each one read the version in `HEAD` against the version in the tree, from the `Bundle-Version:` or `version` line. Keep `-uall`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`, and read an addition or a removal from the status letter rather than from a missing version line — a bare diff of the version lines drops the filename and cannot tell an addition, a deletion, and a lowering apart.
 
 Classify each row, comparing segments as numbers so that `9.5.1` to `10.0.0` counts as a rise and `1.9.0` to `1.10.0` does not:
 
@@ -64,7 +70,7 @@ Classify each row, comparing segments as numbers so that `9.5.1` to `10.0.0` cou
 
 ### Local Version Check
 
-This needs no network and **fails** rather than advises. Run it on every pass, not only when the baseline cannot reach Nexus — it is the half that cannot silently compare nothing.
+This needs no network and **fails** rather than advises. Run it on every pass, not only when the baseline cannot reach Nexus — it is the check that cannot silently compare nothing.
 
 Look at each changed `.java` under an `*-api` module's `src/main/java`, `portal-impl/src`, or `portal-kernel/src`. When its diff adds or removes a `public` or `protected` line, the exported API changed, so the version has to be bumped too. The bump shows up in the diff as a changed `packageinfo` in that package's directory, or a changed `bnd.bnd` `Bundle-Version` for an `*-api` module. When neither changed, fail and name the package.
 
@@ -86,7 +92,7 @@ Collect the paths into a variable first, rather than passing the globs to `git a
 
 **Never commit a repair for a module outside the branch diff.** Report it with both versions, restore the file, and name the path restored. The bump belongs to whoever owns that module, every developer who runs the check would otherwise commit another copy of it, and the task rewrites in place, so anything left behind is swept into the next `git add -A` under the wrong ticket.
 
-**Major, lowered, or removed, in a module the branch changed.** Do not commit. Restore the file, fail this validation, and report each one with its file and both versions. Each is a breaking change that the developer has to decide on:
+**Major, lowered, or removed, in a module the branch changed.** Do not commit. Restore each file, fail this validation, and report it with both versions. Each is a breaking change that the developer has to decide on:
 
 - **Major**: report it as needing a breaking change section in the commit message.
 - **Lowered**: report it as `EXCESSIVE VERSION INCREASE`.
