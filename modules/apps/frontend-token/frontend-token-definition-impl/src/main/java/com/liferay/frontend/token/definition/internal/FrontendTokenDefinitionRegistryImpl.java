@@ -203,7 +203,32 @@ public class FrontendTokenDefinitionRegistryImpl
 						return themeCSSCET;
 					}
 
-					_addingService(themeCSSCET);
+					try {
+						_frontendTokenDefinitionJSONValidator.validate(
+							themeCSSCET.getFrontendTokenDefinitionJSON());
+
+						_frontendTokenDefinitionsMap.put(
+							_getKey(
+								themeCSSCET.getCompanyId(),
+								themeCSSCET.getExternalReferenceCode()),
+							new FrontendTokenDefinitionImpl(
+								jsonFactory.createJSONObject(
+									themeCSSCET.
+										getFrontendTokenDefinitionJSON()),
+								jsonFactory,
+								ResourceBundleLoaderUtil.
+									getPortalResourceBundleLoader(),
+								themeCSSCET.getExternalReferenceCode(),
+								themeCSSCET.getName(),
+								FrontendTokenDefinitionConstants.
+									THEME_TYPE_THEME_CSS_CET));
+					}
+					catch (JSONException | JSONValidatorException exception) {
+						_log.error(
+							"Unable to parse theme CSS client extension " +
+								"frontend token definition",
+							exception);
+					}
 
 					return themeCSSCET;
 				}
@@ -221,7 +246,10 @@ public class FrontendTokenDefinitionRegistryImpl
 
 					bundleContext.ungetService(serviceReference);
 
-					_removedService(themeCSSCET);
+					_frontendTokenDefinitionsMap.remove(
+						_getKey(
+							themeCSSCET.getCompanyId(),
+							themeCSSCET.getExternalReferenceCode()));
 				}
 
 			});
@@ -358,32 +386,6 @@ public class FrontendTokenDefinitionRegistryImpl
 	@Reference
 	protected Portal portal;
 
-	private void _addingService(ThemeCSSCET themeCSSCET) {
-		try {
-			_frontendTokenDefinitionJSONValidator.validate(
-				themeCSSCET.getFrontendTokenDefinitionJSON());
-
-			_frontendTokenDefinitionsMap.put(
-				_getKey(
-					themeCSSCET.getCompanyId(),
-					themeCSSCET.getExternalReferenceCode()),
-				new FrontendTokenDefinitionImpl(
-					jsonFactory.createJSONObject(
-						themeCSSCET.getFrontendTokenDefinitionJSON()),
-					jsonFactory,
-					ResourceBundleLoaderUtil.getPortalResourceBundleLoader(),
-					themeCSSCET.getExternalReferenceCode(),
-					themeCSSCET.getName(),
-					FrontendTokenDefinitionConstants.THEME_TYPE_THEME_CSS_CET));
-		}
-		catch (JSONException | JSONValidatorException exception) {
-			_log.error(
-				"Unable to parse theme CSS client extension frontend token " +
-					"definition",
-				exception);
-		}
-	}
-
 	private FrontendTokenDefinition _getBundleFrontendTokenDefinition(
 		String themeId) {
 
@@ -456,13 +458,6 @@ public class FrontendTokenDefinitionRegistryImpl
 
 	private String _getKey(long companyId, String themeId) {
 		return companyId + StringPool.POUND + themeId;
-	}
-
-	private void _removedService(ThemeCSSCET themeCSSCET) {
-		_frontendTokenDefinitionsMap.remove(
-			_getKey(
-				themeCSSCET.getCompanyId(),
-				themeCSSCET.getExternalReferenceCode()));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
