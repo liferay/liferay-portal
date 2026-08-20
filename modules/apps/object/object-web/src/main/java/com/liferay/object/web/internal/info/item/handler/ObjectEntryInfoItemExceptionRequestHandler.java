@@ -360,6 +360,22 @@ public class ObjectEntryInfoItemExceptionRequestHandler {
 				infoFieldUniqueId);
 		}
 
+		if (exception instanceof ObjectEntryValuesException.InvalidValue) {
+			ObjectEntryValuesException.InvalidValue objectEntryValuesException =
+				(ObjectEntryValuesException.InvalidValue)exception;
+
+			String infoFieldUniqueId = _getInfoFieldUniqueId(
+				groupId, infoItemFormProvider, objectDefinition,
+				objectEntryValuesException.getObjectFieldName());
+
+			if (infoFieldUniqueId == null) {
+				throw new InfoFormException();
+			}
+
+			throw new InfoFormValidationException.InvalidInfoFieldValue(
+				infoFieldUniqueId);
+		}
+
 		if (exception instanceof ObjectEntryValuesException.ListTypeEntry) {
 			ObjectEntryValuesException.ListTypeEntry
 				objectEntryValuesException =
