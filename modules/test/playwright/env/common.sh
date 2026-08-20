@@ -588,7 +588,7 @@ function start_app_server {
 
 	local liferay_portal_url=${2}
 
-	while ! curl --output /dev/null --silent --head --fail ${liferay_portal_url}
+	while ! curl --fail --output /dev/null --silent ${liferay_portal_url}
 	do
 		sleep 5
 	done
