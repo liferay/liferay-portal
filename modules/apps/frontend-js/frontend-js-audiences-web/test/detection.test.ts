@@ -7,6 +7,7 @@ import * as audiences from '../src/main/resources/META-INF/resources/main/implem
 
 import type {
 	Attribute,
+	Audience,
 	AudiencesDefinition,
 	Conjunction,
 	Operator,
@@ -16,24 +17,13 @@ import type {
 const URL = 'https://example.com/audiences.json';
 
 function mockAudiencesDefinition(conjunction: Conjunction, rules: Rule[]) {
-	const audiencesDefinition: AudiencesDefinition = {
-		audiences: [
-			{
-				conjunction,
-				id: 'the_audience',
-				rules,
-			},
-		],
-	};
-
-	(global as any).fetch = jest.fn(() =>
-		Promise.resolve({
-			json: () => Promise.resolve(audiencesDefinition),
-			ok: true,
-			status: 200,
-			statusText: 'OK',
-		})
-	);
+	return mockAudiencesDefinitionWithAudiences([
+		{
+			conjunction,
+			id: 'the_audience',
+			rules,
+		},
+	]);
 }
 
 function mockAudiencesDefinitionWithAttribute(
@@ -50,11 +40,26 @@ function mockAudiencesDefinitionWithAttribute(
 	]);
 }
 
+function mockAudiencesDefinitionWithAudiences(audiences: Audience[]) {
+	const audiencesDefinition: AudiencesDefinition = {audiences};
+
+	(global as any).fetch = jest.fn(() =>
+		Promise.resolve({
+			json: () => Promise.resolve(audiencesDefinition),
+			ok: true,
+			status: 200,
+			statusText: 'OK',
+		})
+	);
+}
+
 describe('detection', () => {
 	afterEach(() => {
 		jest.useRealTimers();
 
 		jest.dontMock('https://example.com/custom.js');
+
+		jest.dontMock('https://example.com/custom-error.js');
 
 		jest.restoreAllMocks();
 
@@ -73,6 +78,7 @@ describe('detection', () => {
 		window.history.replaceState({}, '', '/');
 
 		audiences.clear();
+		audiences.setLogEnabled(false);
 	});
 
 	beforeEach(() => {
@@ -84,6 +90,17 @@ describe('detection', () => {
 			() => ({
 				__esModule: true,
 				getCountry: () => 'US',
+			}),
+			{virtual: true}
+		);
+
+		jest.doMock(
+			'https://example.com/custom-error.js',
+			() => ({
+				__esModule: true,
+				getCountry: () => {
+					throw new Error('The custom attribute is broken');
+				},
 			}),
 			{virtual: true}
 		);
@@ -581,5 +598,47 @@ describe('detection', () => {
 		await audiences.runDetection(URL);
 
 		expect(audiences.get()).toEqual(new Set());
+	});
+
+	it('matches the remaining audiences when one audience throws', async () => {
+		audiences.setLogEnabled(true);
+
+		const consoleLog = jest
+			.spyOn(console, 'log')
+			.mockImplementation(() => {});
+
+		mockAudiencesDefinitionWithAudiences([
+			{
+				conjunction: 'AND',
+				id: 'the_broken_audience',
+				rules: [
+					{
+						attribute:
+							'custom:https://example.com/custom-error.js#getCountry',
+						operator: 'eq',
+						value: 'US',
+					},
+				],
+			},
+			{
+				conjunction: 'AND',
+				id: 'the_audience',
+				rules: [
+					{attribute: 'hostname', operator: 'eq', value: 'localhost'},
+				],
+			},
+		]);
+
+		await audiences.runDetection(URL);
+
+		expect(audiences.get()).toEqual(new Set(['the_audience']));
+
+		expect(consoleLog).toHaveBeenCalledWith(
+			expect.anything(),
+			expect.anything(),
+			expect.stringContaining(
+				"Unable to evaluate the rules of audience 'the_broken_audience'"
+			)
+		);
 	});
 });

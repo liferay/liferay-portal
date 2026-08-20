@@ -67,7 +67,19 @@ export class Detection {
 
 			log(`Checking rules for audience '${id}'...`);
 
-			const matched = await this._evaluateGroup(conjunction, rules);
+			let matched;
+
+			try {
+				matched = await this._evaluateGroup(conjunction, rules);
+			}
+			catch (error: any) {
+				log(
+					`Unable to evaluate the rules of audience '${id}', so ` +
+						`the audience is not matched: ${error.message || error}`
+				);
+
+				continue;
+			}
 
 			if (matched) {
 				log(`Matched audience: ${id}`);
