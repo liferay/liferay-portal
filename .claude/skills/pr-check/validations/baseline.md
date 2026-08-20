@@ -28,7 +28,7 @@ Three prerequisites:
 
 Confirm each Ant project actually baselined by running it alone, where the exit status is not swallowed. Fail when one of those seven is missing its jar, exits non-zero, or reports `Could not resolve` — a baseline that did not run is not one that passed. The `modules` run is different: it exits non-zero whenever any finding exists, so its exit status is not the verdict.
 
-A finding in a module the branch changed fails this validation. A finding in any other module is **inherited**: report it with both versions and do not fail the branch, whatever its severity. The severity rules under **Autocommit** decide what to do with a finding, never whose branch it belongs to. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead.
+A finding in a module the branch changed fails this validation. A finding in any other module is **inherited**: report it with both versions and do not fail the branch, whatever its severity. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead.
 
 ```bash
 ("${REPO_ROOT}/gradlew" --console=plain --project-dir "${REPO_ROOT}/<project>" baseline --rerun)
