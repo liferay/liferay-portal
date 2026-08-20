@@ -141,6 +141,174 @@ describe('Analytics', () => {
 		expect(identityCalled).toBe(1);
 	});
 
+	it('sends the given fields to the Identity Service', async () => {
+		Analytics.reset();
+		AnalyticsClient.dispose();
+
+		Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+		let identityBody: {[key: string]: any} = {};
+
+		fetchMock.restore();
+		fetchMock.mock(/identity$/, (_url: string, options: RequestInit) => {
+			identityBody = JSON.parse(options.body as string);
+
+			return 200;
+		});
+		fetchMock.mock(/ac-server/i, () => Promise.resolve(200));
+
+		await Analytics.setIdentity({
+			email: 'john@liferay.com',
+			fields: [
+				{name: 'firstName', value: 'John'},
+				{name: 'lastName', value: 'Doe'},
+			],
+			name: 'John Doe',
+		});
+
+		await wait(FLUSH_INTERVAL);
+
+		expect(identityBody.fields).toEqual([
+			{name: 'firstName', value: 'John'},
+			{name: 'lastName', value: 'Doe'},
+		]);
+	});
+
+	it('does not request the Identity Service when only the field order changed', async () => {
+		fetchMock.mock(/identity$/, () => Promise.resolve(200));
+
+		Analytics.reset();
+		AnalyticsClient.dispose();
+
+		Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+		await Analytics.setIdentity({
+			email: 'john@liferay.com',
+			fields: [
+				{name: 'firstName', value: 'John'},
+				{name: 'lastName', value: 'Doe'},
+			],
+			name: 'John Doe',
+		});
+
+		await wait(FLUSH_INTERVAL);
+
+		let identityCalled = 0;
+
+		fetchMock.restore();
+		fetchMock.mock(/identity$/, () => {
+			identityCalled += 1;
+
+			return '';
+		});
+
+		await Analytics.setIdentity({
+			email: 'john@liferay.com',
+			fields: [
+				{name: 'lastName', value: 'Doe'},
+				{name: 'firstName', value: 'John'},
+			],
+			name: 'John Doe',
+		});
+
+		await wait(FLUSH_INTERVAL);
+
+		expect(identityCalled).toBe(0);
+	});
+
+	it('requests the Identity Service when a field value changed', async () => {
+		fetchMock.mock(/identity$/, () => Promise.resolve(200));
+
+		Analytics.reset();
+		AnalyticsClient.dispose();
+
+		Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+		await Analytics.setIdentity({
+			email: 'john@liferay.com',
+			fields: [
+				{name: 'firstName', value: 'John'},
+				{name: 'lastName', value: ''},
+			],
+			name: 'John Doe',
+		});
+
+		await wait(FLUSH_INTERVAL);
+
+		let identityCalled = 0;
+
+		fetchMock.restore();
+		fetchMock.mock(/identity$/, () => {
+			identityCalled += 1;
+
+			return '';
+		});
+
+		await Analytics.setIdentity({
+			email: 'john@liferay.com',
+			fields: [
+				{name: 'firstName', value: 'John'},
+				{name: 'lastName', value: 'Doe'},
+			],
+			name: 'John Doe',
+		});
+
+		await wait(FLUSH_INTERVAL);
+
+		expect(identityCalled).toBe(1);
+	});
+
+	it('does not add fields to the payload when none are given', async () => {
+		Analytics.reset();
+		AnalyticsClient.dispose();
+
+		Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+		let identityBody: {[key: string]: any} = {};
+
+		fetchMock.restore();
+		fetchMock.mock(/identity$/, (_url: string, options: RequestInit) => {
+			identityBody = JSON.parse(options.body as string);
+
+			return 200;
+		});
+		fetchMock.mock(/ac-server/i, () => Promise.resolve(200));
+
+		await Analytics.setIdentity(ANALYTICS_IDENTITY);
+
+		await wait(FLUSH_INTERVAL);
+
+		expect(identityBody).not.toHaveProperty('fields');
+	});
+
+	it('sends the fields as an anonymous identity when the email is omitted', async () => {
+		Analytics.reset();
+		AnalyticsClient.dispose();
+
+		Analytics = AnalyticsClient.create(INITIAL_CONFIG);
+
+		let identityBody: {[key: string]: any} = {};
+
+		fetchMock.restore();
+		fetchMock.mock(/identity$/, (_url: string, options: RequestInit) => {
+			identityBody = JSON.parse(options.body as string);
+
+			return 200;
+		});
+		fetchMock.mock(/ac-server/i, () => Promise.resolve(200));
+
+		await Analytics.setIdentity({
+			fields: [{name: 'emailAddress', value: 'john@liferay.com'}],
+		});
+
+		await wait(FLUSH_INTERVAL);
+
+		expect(identityBody.emailAddressHashed).toBe('');
+		expect(identityBody.fields).toEqual([
+			{name: 'emailAddress', value: 'john@liferay.com'},
+		]);
+	});
+
 	it("does not request the Identity Service when identity hasn't changed", async () => {
 		fetchMock.mock(/identity$/, () => Promise.resolve(200));
 
@@ -253,6 +421,52 @@ describe('Analytics', () => {
 		const secondUserId = getItem(AnalyticsType.Keys.UserId);
 
 		expect(firstUserId).toEqual(secondUserId);
+	});
+
+	it('does not replace the user id whenever only the fields changed', async () => {
+		fetchMock.mock(/ac-server/i, () => Promise.resolve(200));
+		fetchMock.mock(/identity$/, () => Promise.resolve(200));
+
+		await Analytics.setIdentity({
+			email: 'john@liferay.com',
+			fields: [{name: 'lastName', value: ''}],
+			name: 'John',
+		});
+
+		const firstUserId = getItem(AnalyticsType.Keys.UserId);
+
+		await Analytics.setIdentity({
+			email: 'john@liferay.com',
+			fields: [{name: 'lastName', value: 'Doe'}],
+			name: 'John',
+		});
+
+		const secondUserId = getItem(AnalyticsType.Keys.UserId);
+
+		expect(firstUserId).toEqual(secondUserId);
+	});
+
+	it('replaces the user id whenever the email changed and fields are sent', async () => {
+		fetchMock.mock(/ac-server/i, () => Promise.resolve(200));
+		fetchMock.mock(/identity$/, () => Promise.resolve(200));
+
+		await Analytics.setIdentity({
+			email: 'john@liferay.com',
+			fields: [{name: 'firstName', value: 'John'}],
+			name: 'John',
+		});
+
+		const firstUserId = getItem(AnalyticsType.Keys.UserId);
+
+		await Analytics.setIdentity({
+			email: 'brian@liferay.com',
+			fields: [{name: 'firstName', value: 'Brian'}],
+			name: 'Brian',
+		});
+
+		const secondUserId = getItem(AnalyticsType.Keys.UserId);
+
+		expect(firstUserId).not.toEqual(secondUserId);
 	});
 
 	it('regenerates the user id on logouts or session expirations ', async () => {
