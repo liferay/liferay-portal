@@ -63,6 +63,7 @@ const ATTENTION_CARDS: AttentionCard[] = [
 ];
 
 const SECTION_PATHS: Partial<Record<keyof AssetStatistics, string>> = {
+	brokenLinksCount: 'broken-links',
 	expiredCount: 'expired-assets',
 	pendingCount: 'pending-workflows',
 	reviewDateOverdueCount: 'overdue-reviews',
