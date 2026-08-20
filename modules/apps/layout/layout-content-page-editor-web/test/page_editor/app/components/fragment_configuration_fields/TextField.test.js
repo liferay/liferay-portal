@@ -12,12 +12,16 @@ import {TextField} from '../../../../../src/main/resources/META-INF/resources/pa
 
 const INPUT_NAME = 'test';
 
-const renderTextField = (typeOptions = {}, onValueSelect = () => {}) =>
+const renderTextField = (
+	typeOptions = {},
+	onValueSelect = () => {},
+	value = ''
+) =>
 	render(
 		<TextField
 			field={{label: INPUT_NAME, name: INPUT_NAME, typeOptions}}
 			onValueSelect={onValueSelect}
-			value=""
+			value={value}
 		/>
 	);
 
@@ -181,6 +185,65 @@ describe('TextField', () => {
 		await userEvent.type(input, 'https://giannisantetokounmpo.liferay.com');
 
 		expect(queryByText(errorMessage)).not.toBeInTheDocument();
+	});
+
+	it('renders an input with the required attribute when defined in the validation', () => {
+		const {getByRole} = renderTextField({
+			validation: {required: true, type: 'text'},
+		});
+
+		const input = getByRole('textbox');
+
+		expect(input).toBeInTheDocument();
+		expect(input.required).toBe(true);
+	});
+
+	it('renders an input with the pattern and required attributes when both are defined in the validation', () => {
+		const regexp = '[0-9]*';
+
+		const {getByRole} = renderTextField({
+			validation: {regexp, required: true, type: 'pattern'},
+		});
+
+		const input = getByRole('textbox');
+
+		expect(input.pattern).toBe(regexp);
+		expect(input.required).toBe(true);
+	});
+
+	it('marks the label as mandatory when the field is required', () => {
+		const {getByText} = renderTextField({
+			validation: {required: true, type: 'text'},
+		});
+
+		expect(getByText('mandatory')).toBeInTheDocument();
+	});
+
+	it('does not mark the label as mandatory when the field is not required', () => {
+		const {queryByText} = renderTextField({
+			validation: {type: 'text'},
+		});
+
+		expect(queryByText('mandatory')).not.toBeInTheDocument();
+	});
+
+	it('shows a required error message and does not call the onValueSelect callback when a required field is cleared', async () => {
+		const onValueSelect = jest.fn();
+
+		const {getByRole, getByText} = renderTextField(
+			{validation: {required: true, type: 'text'}},
+			onValueSelect,
+			'something'
+		);
+
+		const input = getByRole('textbox');
+
+		await userEvent.clear(input);
+
+		fireEvent.blur(input);
+
+		expect(getByText('this-field-is-required')).toBeInTheDocument();
+		expect(onValueSelect).not.toBeCalled();
 	});
 
 	it('calls the onValueSelect callback when the input changes', async () => {

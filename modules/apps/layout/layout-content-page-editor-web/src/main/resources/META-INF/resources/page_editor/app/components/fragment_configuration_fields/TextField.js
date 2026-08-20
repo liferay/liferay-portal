@@ -5,7 +5,7 @@
 
 import ClayForm, {ClayInput} from '@clayui/form';
 import {useControlledState} from '@liferay/layout-js-components-web';
-import {useId} from 'frontend-js-components-web';
+import {RequiredMask, useId} from 'frontend-js-components-web';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
@@ -27,7 +27,11 @@ export function TextField({field, onValueSelect, value}) {
 
 	return (
 		<ClayForm.Group className={errorMessage ? 'has-error' : ''}>
-			<label htmlFor={inputId}>{field.label}</label>
+			<label htmlFor={inputId}>
+				{field.label}
+
+				{additionalProps.required ? <RequiredMask /> : null}
+			</label>
 
 			<ClayInput
 				aria-describedby={field.description ? helpTextId : null}
@@ -45,6 +49,11 @@ export function TextField({field, onValueSelect, value}) {
 				onChange={(event) => {
 					if (event.target.validity.valid) {
 						setErrorMessage('');
+					}
+					else if (event.target.validity.valueMissing) {
+						setErrorMessage(
+							Liferay.Language.get('this-field-is-required')
+						);
 					}
 					else {
 						const validationErrorMessage =
@@ -108,6 +117,10 @@ function parseTypeOptions(typeOptions = {}) {
 		type: 'text',
 	};
 
+	if (properties.required) {
+		result.additionalProps.required = true;
+	}
+
 	if (!validationType || validationType === 'text') {
 		result.type = 'text';
 
@@ -121,7 +134,7 @@ function parseTypeOptions(typeOptions = {}) {
 	}
 
 	if (validationType === 'pattern') {
-		result.additionalProps = {pattern: typeOptions.validation.regexp};
+		result.additionalProps.pattern = typeOptions.validation.regexp;
 	}
 
 	if (validationType === 'url' || validationType === 'email') {
