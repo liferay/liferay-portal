@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -47,9 +48,24 @@ public class ClassNameLocalServiceImpl
 			className.setValue(value);
 
 			className = classNamePersistence.update(className);
-		}
 
-		ClassNamePool.add(className);
+			ClassName newClassName = className;
+
+			// The pool has no transaction awareness, so a created row must
+			// only publish after its transaction commits. Publishing earlier
+			// leaks the class name ID into the pool even when the insert rolls
+			// back, and the pool then serves an ID that has no backing row
+
+			TransactionCallbackUtil.registerCommitCallback(
+				() -> {
+					ClassNamePool.add(newClassName);
+
+					return null;
+				});
+		}
+		else {
+			ClassNamePool.add(className);
+		}
 
 		return className;
 	}
