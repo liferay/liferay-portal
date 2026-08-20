@@ -1,0 +1,12 @@
+apiVersion: v2
+appVersion: latest
+dependencies:
+    -   name: liferay-default
+        repository: file://../default
+        version: 1.0.0
+description:
+    Liferay is an all-in-one DXP, LCAP, and Commerce platform. This chart is optimized for Azure.
+icon: https://www-cdn.liferay.com/documents/d/guest/liferay-logo
+name: liferay-azure
+type: application
+version: 0.0.1
