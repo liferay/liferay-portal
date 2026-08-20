@@ -70,7 +70,12 @@ public class CookiesPolicyLinkConfigurationModelListener
 			String propertyName)
 		throws ConfigurationModelListenerException {
 
-		String policyLink = GetterUtil.getString(properties.get(propertyName));
+		// A browser removes every tab, line feed, and carriage return from a
+		// URL before it resolves it
+
+		String policyLink = StringUtil.removeChars(
+			GetterUtil.getString(properties.get(propertyName)),
+			CharPool.NEW_LINE, CharPool.RETURN, CharPool.TAB);
 
 		if (Validator.isNull(policyLink) || _isSiteRelative(policyLink) ||
 			StringUtil.startsWith(policyLink, Http.HTTP_WITH_SLASH) ||

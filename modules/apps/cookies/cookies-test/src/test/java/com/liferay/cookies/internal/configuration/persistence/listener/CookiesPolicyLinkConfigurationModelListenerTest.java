@@ -41,6 +41,9 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 				Mockito.mockStatic(ResourceBundleUtil.class)) {
 
 			_assertInvalidPolicyLink(
+				CookiesBannerConfiguration.class, "/\t/liferay.com",
+				"privacyPolicyLink");
+			_assertInvalidPolicyLink(
 				CookiesBannerConfiguration.class, "//liferay.com",
 				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
@@ -58,6 +61,12 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 				"javascript:alert(document.domain)//cm-xss",
 				"privacyPolicyLink");
 			_assertInvalidPolicyLink(
+				CookiesBannerConfiguration.class, "vbscript:msgbox(1)",
+				"privacyPolicyLink");
+			_assertInvalidPolicyLink(
+				CookiesConsentConfiguration.class, "/\t/liferay.com",
+				"cookiePolicyLink");
+			_assertInvalidPolicyLink(
 				CookiesConsentConfiguration.class, "//liferay.com",
 				"cookiePolicyLink");
 			_assertInvalidPolicyLink(
@@ -65,10 +74,14 @@ public class CookiesPolicyLinkConfigurationModelListenerTest {
 				"cookiePolicyLink");
 			_assertInvalidPolicyLink(
 				CookiesConsentConfiguration.class,
+				"JavaScript:alert(document.domain)", "cookiePolicyLink");
+			_assertInvalidPolicyLink(
+				CookiesConsentConfiguration.class,
 				"data:text/html,<script>alert(1)</script>", "cookiePolicyLink");
 			_assertInvalidPolicyLink(
 				CookiesConsentConfiguration.class,
-				"javascript:alert(1)//cm-xss2", "cookiePolicyLink");
+				"javascript:alert(document.domain)//cm-xss",
+				"cookiePolicyLink");
 			_assertInvalidPolicyLink(
 				CookiesConsentConfiguration.class, "vbscript:msgbox(1)",
 				"cookiePolicyLink");
