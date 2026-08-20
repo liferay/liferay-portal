@@ -183,6 +183,21 @@ class Analytics {
 		}
 	}
 
+	/**
+	 * Sends every queued message now instead of waiting for the next flush
+	 * interval, and returns a Promise that settles once the in-flight requests
+	 * settle. Each request is already bounded by the client adapter's
+	 * REQUEST_TIMEOUT, so a stalled endpoint cannot hold the Promise open
+	 * indefinitely.
+	 */
+	flush() {
+		if (!this._queueFlushService) {
+			return Promise.resolve();
+		}
+
+		return this._queueFlushService.flush();
+	}
+
 	getEvents() {
 		return this[
 			AnalyticsType.Queues.Events

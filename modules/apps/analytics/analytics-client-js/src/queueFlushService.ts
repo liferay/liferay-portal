@@ -39,6 +39,7 @@ class QueueFlushService {
 	}[];
 	flushInterval: number;
 	processInterval: NodeJS.Timeout | null = null;
+	_flushing: Promise<void> | null = null;
 
 	constructor(config: Analytics.Config) {
 		this.attemptNumber = 1;
@@ -118,11 +119,11 @@ class QueueFlushService {
 	 *
 	 */
 	flush() {
-		if (this.processing) {
-			return;
+		if (this.processing && this._flushing) {
+			return this._flushing;
 		}
 
-		this.queues
+		this._flushing = this.queues
 			.reduce((previousPromise, {instance: queue}) => {
 				return previousPromise
 					.then(() => {
@@ -165,6 +166,8 @@ class QueueFlushService {
 					});
 			}, Promise.resolve())
 			.catch(() => {});
+
+		return this._flushing;
 	}
 
 	/**

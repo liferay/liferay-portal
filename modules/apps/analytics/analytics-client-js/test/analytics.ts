@@ -469,6 +469,45 @@ describe('Analytics', () => {
 		expect(firstUserId).not.toEqual(secondUserId);
 	});
 
+	it('sends the queued messages when flush is called', async () => {
+		let identityCalled = 0;
+
+		Analytics.reset();
+		AnalyticsClient.dispose();
+
+		// A long interval keeps the flush loop out of the way, so the send can
+		// only be attributed to the explicit flush() call below.
+
+		Analytics = AnalyticsClient.create({
+			...INITIAL_CONFIG,
+			flushInterval: 60000,
+		});
+
+		// Earlier tests leave items behind in this queue, and the flush below
+		// would send every one of them.
+
+		Analytics[AnalyticsType.Queues.IdentityMessage].reset();
+
+		fetchMock.restore();
+		fetchMock.mock(/identity$/, () => {
+			identityCalled += 1;
+
+			return '';
+		});
+		fetchMock.mock(/ac-server/i, () => Promise.resolve(200));
+
+		await Analytics.setIdentity({
+			email: 'flush@liferay.com',
+			name: 'Flush',
+		});
+
+		expect(identityCalled).toBe(0);
+
+		await Analytics.flush();
+
+		expect(identityCalled).toBe(1);
+	});
+
 	it('regenerates the user id on logouts or session expirations ', async () => {
 		fetchMock.mock(/ac-server/i, () => Promise.resolve(200));
 		fetchMock.mock(/identity$/, () => Promise.resolve(200));
