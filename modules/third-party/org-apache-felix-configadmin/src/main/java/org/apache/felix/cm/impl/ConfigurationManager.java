@@ -472,9 +472,10 @@ public class ConfigurationManager implements BundleListener
             return config;
         }
 
-        if ( this.persistenceManager.exists( pid ) )
+		final Dictionary props = this.persistenceManager.load( pid );
+
+        if ( props != null )
         {
-            final Dictionary props = this.persistenceManager.load( pid );
             config = new ConfigurationImpl( this, this.persistenceManager, props );
             Log.logger.log( LogService.LOG_DEBUG, "Found existing configuration {0} bound to {1}", new Object[]
                     { pid, config.getBundleLocation() } );

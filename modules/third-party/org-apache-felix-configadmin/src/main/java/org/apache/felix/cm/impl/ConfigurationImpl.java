@@ -421,16 +421,18 @@ public class ConfigurationImpl
     public void update() throws IOException
     {
         // read configuration from persistence (again)
-        if ( persistenceManager.exists( getPidString() ) )
-        {
-            @SuppressWarnings("unchecked")
-            Dictionary<String, Object> properties = persistenceManager.load( getPidString() );
+        String pid = getPidString();
 
+        @SuppressWarnings("unchecked")
+        Dictionary<String, Object> properties = persistenceManager.load( pid );
+
+        if (properties != null)
+        {
             // ensure serviceReference pid
             String servicePid = ( String ) properties.get( Constants.SERVICE_PID );
-            if ( servicePid != null && !getPidString().equals( servicePid ) )
+            if ( servicePid != null && !pid.equals( servicePid ) )
             {
-                throw new IOException( "PID of configuration file does match requested PID; expected " + getPidString()
+                throw new IOException( "PID of configuration file does match requested PID; expected " + pid
                     + ", got " + servicePid );
             }
 
