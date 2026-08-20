@@ -15,6 +15,7 @@ import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../app/config/constants/layout
 import {config} from '../../../../../app/config/index';
 import selectLayoutDataItemLabel from '../../../../../app/selectors/selectLayoutDataItemLabel';
 import canActivateEditable from '../../../../../app/utils/canActivateEditable';
+import {collectionIsMapped} from '../../../../../app/utils/collectionIsMapped';
 import isMapped from '../../../../../app/utils/editable_value/isMapped';
 import isMappedToCollection from '../../../../../app/utils/editable_value/isMappedToCollection';
 import findPageContent from '../../../../../app/utils/findPageContent';
@@ -167,7 +168,10 @@ function getNameInfo(item) {
 }
 
 function fragmentIsMapped(item, fragmentEntryLinks) {
-	if (item.type === LAYOUT_DATA_ITEM_TYPES.form) {
+	if (item.type === LAYOUT_DATA_ITEM_TYPES.collection) {
+		return Boolean(collectionIsMapped(item.config));
+	}
+	else if (item.type === LAYOUT_DATA_ITEM_TYPES.form) {
 		return formIsMapped(item);
 	}
 	else if (item.type === LAYOUT_DATA_ITEM_TYPES.fragment) {
