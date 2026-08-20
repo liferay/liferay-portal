@@ -278,6 +278,39 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LPS-135706")
+	public void testExportImportJournalArticleWithDLURLWithoutUUID()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
+
+		JournalArticle article = JournalTestUtil.addArticle(
+			group.getGroupId(), RandomTestUtil.randomString(),
+			StringBundler.concat(
+				"<a href=\"/documents/", group.getGroupId(), "/0/",
+				fileEntry.getTitle(), "\">Link</a>"));
+
+		exportImportPortlet(JournalPortletKeys.JOURNAL);
+
+		JournalArticle importedArticle =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				article.getUuid(), importedGroup.getGroupId());
+
+		String content = importedArticle.getContent();
+
+		Assert.assertTrue(
+			content,
+			content.contains("/documents/" + importedGroup.getGroupId() + "/"));
+		Assert.assertFalse(content, content.contains(fileEntry.getUuid()));
+	}
+
+	@Test
 	@TestInfo("LPS-114230")
 	public void testExportImportJournalArticleWithImageFieldDLReference()
 		throws Exception {
@@ -799,6 +832,41 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			2,
 			JournalArticleLocalServiceUtil.getArticlesCount(
 				importedGroup.getGroupId()));
+	}
+
+	@Test
+	@TestInfo("LPS-135706")
+	public void testExportImportJournalArticleWithDLURLWithoutUUID()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			group.getGroupId(), RandomTestUtil.randomString(),
+			StringBundler.concat(
+				"<a href=\"/documents/", group.getGroupId(), "/0/",
+				fileEntry.getTitle(), "\">Link</a>"));
+
+		exportImportPortlet(JournalPortletKeys.JOURNAL);
+
+		JournalArticle importedJournalArticle =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				journalArticle.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(importedJournalArticle);
+
+		String content = importedJournalArticle.getContent();
+
+		Assert.assertTrue(
+			content,
+			content.contains("/documents/" + importedGroup.getGroupId() + "/"));
+		Assert.assertFalse(content, content.contains(fileEntry.getUuid()));
 	}
 
 	@Test
