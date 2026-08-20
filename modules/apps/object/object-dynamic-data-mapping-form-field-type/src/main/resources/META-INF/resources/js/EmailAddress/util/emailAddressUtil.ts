@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Matches Validator._emailAddressPattern in portal-kernel so that client-side
+// and server-side validation stay aligned.
+
+const EMAIL_REGEX =
+	/^[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[^\W_](?:[0-9A-Za-z-]*[^\W_])?\.)+[^\W_](?:[0-9A-Za-z-]*[^\W_])$/;
 
 export function getDomain(value: string): string | null {
 	const index = value.lastIndexOf('@');
