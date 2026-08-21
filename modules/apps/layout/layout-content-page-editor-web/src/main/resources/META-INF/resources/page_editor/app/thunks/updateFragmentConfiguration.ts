@@ -5,7 +5,10 @@
 
 import {State} from '../../types/State';
 import {updateNetwork} from '../actions';
-import {FragmentEntryLink} from '../actions/addFragmentEntryLinks';
+import {
+	ConfigurationValue,
+	FragmentEntryLink,
+} from '../actions/addFragmentEntryLinks';
 import updateFragmentEntryLinkConfiguration from '../actions/updateFragmentEntryLinkConfiguration';
 import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../config/constants/freemarkerFragmentEntryProcessor';
 import FragmentService from '../services/FragmentService';
@@ -15,7 +18,7 @@ export default function updateFragmentConfiguration({
 	configurationValues,
 	fragmentEntryLink,
 }: {
-	configurationValues: Record<string, number | string | string[]>;
+	configurationValues: Record<string, ConfigurationValue>;
 	fragmentEntryLink: FragmentEntryLink;
 }) {
 	const {editableValues, fragmentEntryLinkId} = fragmentEntryLink;
