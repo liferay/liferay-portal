@@ -120,8 +120,13 @@ public class LayoutContentVersionDisplayContext {
 				return HashMapBuilder.<String, Object>put(
 					"active", active
 				).put(
+					"priority", segmentsExperience.getPriority()
+				).put(
 					"segmentsExperienceERC",
 					segmentsExperience.getExternalReferenceCode()
+				).put(
+					"segmentsExperienceId",
+					String.valueOf(segmentsExperience.getSegmentsExperienceId())
 				).put(
 					"segmentsExperienceName",
 					segmentsExperience.getName(_themeDisplay.getLocale())
