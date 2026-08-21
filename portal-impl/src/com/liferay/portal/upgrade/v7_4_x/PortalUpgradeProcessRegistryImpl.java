@@ -820,19 +820,19 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(38, 7, 7), new DummyUpgradeProcess());
 
 		upgradeVersionTreeMap.put(
-			new Version(38, 7, 8),
+			new Version(38, 8, 0),
 			UpgradeModulesFactory.create(
 				new String[] {"com.liferay.portal.security.audit.router"},
 				null));
 
-		upgradeVersionTreeMap.put(new Version(38, 8, 0), new UpgradeDB2());
+		upgradeVersionTreeMap.put(new Version(38, 9, 0), new UpgradeDB2());
 
 		upgradeVersionTreeMap.put(
-			new Version(38, 8, 1),
+			new Version(38, 9, 1),
 			new LayoutDuplicateExternalReferenceCodeUpgradeProcess());
 
 		upgradeVersionTreeMap.put(
-			new Version(38, 8, 2), new UpgradeCompanyInfo());
+			new Version(38, 9, 2), new UpgradeCompanyInfo());
 	}
 
 }
