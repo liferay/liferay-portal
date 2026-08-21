@@ -18,21 +18,6 @@ import type {
 	FilterPropertyGroup,
 } from './types';
 
-function normalizeDateTime(value: string) {
-	if (!value) {
-		return value;
-	}
-
-	// The picker emits "--:--" when the time portion isn't filled. Default
-	// to midnight so a date-only entry still serializes cleanly.
-
-	const normalized = value.replace('--:--', '00:00');
-
-	const date = new Date(normalized.replace(' ', 'T'));
-
-	return Number.isNaN(date.getTime()) ? '' : normalized;
-}
-
 function createEmptyConditions(): FilterCondition[] {
 	return [{id: uuidv4()}];
 }
@@ -47,6 +32,21 @@ function isTypeSpecificCondition(condition: FilterCondition): boolean {
 		condition.classNameId !== undefined &&
 		condition.classTypeId !== undefined
 	);
+}
+
+function normalizeDateTime(value: string) {
+	if (!value) {
+		return value;
+	}
+
+	// The picker emits "--:--" when the time portion isn't filled. Default
+	// to midnight so a date-only entry still serializes cleanly.
+
+	const normalized = value.replace('--:--', '00:00');
+
+	const date = new Date(normalized.replace(' ', 'T'));
+
+	return Number.isNaN(date.getTime()) ? '' : normalized;
 }
 
 function serializeValue(

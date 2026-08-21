@@ -54,11 +54,11 @@ export default function ({namespace}) {
 			showCollection: updateVisibility(),
 		});
 
-	Liferay.on(namespace + 'sourceChange', onSourceChange);
+	Liferay.on(`${namespace}sourceChange`, onSourceChange);
 
 	return {
 		destroy() {
-			Liferay.detach(namespace + 'sourceChange', onSourceChange);
+			Liferay.detach(`${namespace}sourceChange`, onSourceChange);
 		},
 	};
 }
