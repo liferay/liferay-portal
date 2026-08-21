@@ -1,7 +1,7 @@
 <div class="component-accordion">
 	<div class="mb-0 panel panel-secondary">
 		<button aria-controls="accordion-fragment-${fragmentEntryLinkNamespace}" aria-expanded="true" class="btn btn-unstyled collapse-icon collapse-icon-middle my-2 panel-header pl-3" type="button">
-			<span class="panel-title text-4 text-capitalize" data-lfr-editable-id="accordion-title" data-lfr-editable-type="text" id="accordion-fragment-${fragmentEntryLinkNamespace}">
+			<span class="panel-title text-4 text-capitalize" data-lfr-editable-id="accordion-title" data-lfr-editable-type="text">
 				Section title
 			</span>
 
@@ -9,7 +9,7 @@
 			[@clay["icon"] symbol="angle-down" className="collapse-icon-open"/]
 		</button>
 
-		<div class="overflow-hidden panel-collapse [#if layoutMode == 'edit'] h-auto[/#if]">
+		<div class="overflow-hidden panel-collapse [#if layoutMode == 'edit'] h-auto[/#if]" id="accordion-fragment-${fragmentEntryLinkNamespace}">
 			<div class="pb-3 px-3">
 				<lfr-drop-zone data-lfr-drop-zone-id="1"></lfr-drop-zone>
 			</div>
