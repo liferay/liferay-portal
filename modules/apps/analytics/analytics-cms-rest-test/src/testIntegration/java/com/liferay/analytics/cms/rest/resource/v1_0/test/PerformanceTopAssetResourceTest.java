@@ -7,6 +7,7 @@ package com.liferay.analytics.cms.rest.resource.v1_0.test;
 
 import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceTopAsset;
 import com.liferay.analytics.cms.rest.client.dto.v1_0.Trend;
+import com.liferay.analytics.cms.rest.client.http.HttpInvoker;
 import com.liferay.analytics.cms.rest.client.pagination.Page;
 import com.liferay.analytics.cms.rest.client.pagination.Pagination;
 import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
@@ -15,16 +16,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -32,9 +27,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.net.HttpURLConnection;
-import java.net.URL;
-
-import java.time.LocalDate;
 
 import java.util.List;
 
@@ -113,32 +105,6 @@ public class PerformanceTopAssetResourceTest
 				HttpComponentsUtil.getParameter(url, name, false)));
 	}
 
-	private HttpURLConnection _getExportHttpURLConnection(int rangeKey)
-		throws Exception {
-
-		URL url = new URL(
-			StringBundler.concat(
-				"http://", testCompany.getVirtualHostname(), ":",
-				PortalUtil.getPortalServerPort(false),
-				"/o/analytics-cms-rest/v1.0/performance-top-asset/export",
-				"?rangeKey=", rangeKey));
-
-		HttpURLConnection httpURLConnection =
-			(HttpURLConnection)url.openConnection();
-
-		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
-
-		String encodedUserNameAndPassword = Base64.encode(
-			StringBundler.concat(
-				user.getEmailAddress(), ":", PropsValues.DEFAULT_ADMIN_PASSWORD
-			).getBytes());
-
-		httpURLConnection.setRequestProperty(
-			"Authorization", "Basic " + encodedUserNameAndPassword);
-
-		return httpURLConnection;
-	}
-
 	private void _testGetPerformanceTopAssetExportResponse() throws Exception {
 		String value = RandomTestUtil.randomString();
 
@@ -154,16 +120,15 @@ public class PerformanceTopAssetResourceTest
 						RandomTestUtil.randomString(), true,
 						analyticsCloudHttpServer.getURL())) {
 
-			HttpURLConnection httpURLConnection = _getExportHttpURLConnection(
-				RandomTestUtil.nextInt());
+			HttpInvoker.HttpResponse httpResponse =
+				performanceTopAssetResource.
+					getPerformanceTopAssetExportHttpResponse(
+						null, RandomTestUtil.nextInt(), null, null, null);
 
-			Assert.assertEquals(
-				HttpURLConnection.HTTP_OK, httpURLConnection.getResponseCode());
-			Assert.assertEquals(
-				"attachment; filename=top-assets-" + LocalDate.now() + ".csv",
-				httpURLConnection.getHeaderField("Content-Disposition"));
-			Assert.assertEquals(
-				value, StringUtil.read(httpURLConnection.getInputStream()));
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_OK, httpResponse);
+
+			Assert.assertEquals(value, httpResponse.getContent());
 		}
 	}
 

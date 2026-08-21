@@ -7,6 +7,7 @@ package com.liferay.analytics.cms.rest.resource.v1_0.test;
 
 import com.liferay.analytics.cms.rest.client.dto.v1_0.Metric;
 import com.liferay.analytics.cms.rest.client.dto.v1_0.PerformanceMetric;
+import com.liferay.analytics.cms.rest.client.http.HttpInvoker;
 import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
@@ -15,22 +16,16 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.log.LogCapture;
@@ -40,9 +35,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.net.HttpURLConnection;
-import java.net.URL;
-
-import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -134,49 +126,6 @@ public class PerformanceMetricResourceTest
 			expectedValue,
 			URLCodec.decodeURL(
 				HttpComponentsUtil.getParameter(url, name, false)));
-	}
-
-	private HttpURLConnection _getExportHttpURLConnection(
-			String groupBy, String metricType, int rangeKey)
-		throws Exception {
-
-		StringBundler sb = new StringBundler();
-
-		sb.append("http://");
-		sb.append(testCompany.getVirtualHostname());
-		sb.append(":");
-		sb.append(PortalUtil.getPortalServerPort(false));
-		sb.append("/o/analytics-cms-rest/v1.0/performance-metric/export?");
-
-		for (DepotEntry depotEntry : _depotEntries) {
-			sb.append("depotEntryIds=");
-			sb.append(depotEntry.getDepotEntryId());
-			sb.append("&");
-		}
-
-		sb.append("groupBy=");
-		sb.append(groupBy);
-		sb.append("&metricType=");
-		sb.append(metricType);
-		sb.append("&rangeKey=");
-		sb.append(rangeKey);
-
-		URL url = new URL(sb.toString());
-
-		HttpURLConnection httpURLConnection =
-			(HttpURLConnection)url.openConnection();
-
-		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
-
-		String encodedUserNameAndPassword = Base64.encode(
-			StringBundler.concat(
-				user.getEmailAddress(), ":", PropsValues.DEFAULT_ADMIN_PASSWORD
-			).getBytes());
-
-		httpURLConnection.setRequestProperty(
-			"Authorization", "Basic " + encodedUserNameAndPassword);
-
-		return httpURLConnection;
 	}
 
 	private PerformanceMetric _getPerformanceMetric(
@@ -276,19 +225,18 @@ public class PerformanceMetricResourceTest
 
 			int rangeKey = RandomTestUtil.nextInt();
 
-			HttpURLConnection httpURLConnection = _getExportHttpURLConnection(
-				groupBy, metricType, rangeKey);
+			HttpInvoker.HttpResponse httpResponse =
+				performanceMetricResource.
+					getPerformanceMetricExportHttpResponse(
+						TransformUtil.transformToArray(
+							_depotEntries, DepotEntry::getDepotEntryId,
+							Long.class),
+						groupBy, metricType, rangeKey);
 
-			Assert.assertEquals(
-				HttpURLConnection.HTTP_OK, httpURLConnection.getResponseCode());
-			Assert.assertEquals(
-				StringBundler.concat(
-					"attachment; filename=performance-metric-",
-					StringUtil.toLowerCase(groupBy), "-", LocalDate.now(),
-					".csv"),
-				httpURLConnection.getHeaderField("Content-Disposition"));
-			Assert.assertEquals(
-				value, StringUtil.read(httpURLConnection.getInputStream()));
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_OK, httpResponse);
+
+			Assert.assertEquals(value, httpResponse.getContent());
 
 			String location = analyticsCloudHttpServer.getLocation();
 
