@@ -26,7 +26,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 
 import java.util.Base64;
 import java.util.Enumeration;
@@ -257,23 +256,23 @@ public class MirrorsGetTask extends Task {
 
 		System.out.println(sb.toString());
 
-		File linkFile = _generateTempFile(sourceFile);
+		File readLinkFile = _createReadLinkFile(sourceFile);
 
 		long time = System.currentTimeMillis();
 
 		int size = 0;
 
 		try {
-			File readLinkFile = _createReadLinkFile(sourceFile, linkFile);
+			File readFile = readLinkFile;
 
-			if (readLinkFile == null) {
-				throw new IOException(sourceFile.getPath() + " does not exist");
+			if (readFile == null) {
+				readFile = sourceFile;
 			}
 
-			size = _toFile(readLinkFile.toURI().toURL(), targetFile);
+			size = _toFile(readFile.toURI().toURL(), targetFile);
 		}
 		finally {
-			_deleteFile(linkFile);
+			_deleteFile(readLinkFile);
 		}
 
 		if (_verbose) {
@@ -290,16 +289,16 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private boolean _copyFromCache(File cacheFile) throws IOException {
-		File linkFile = _generateTempFile(cacheFile);
+		File readLinkFile = _createReadLinkFile(cacheFile);
 
 		try {
-			File readLinkFile = _createReadLinkFile(cacheFile, linkFile);
+			File readFile = readLinkFile;
 
-			if (readLinkFile == null) {
-				return false;
-			}
+			if (readFile == null) {
+				if (!cacheFile.exists()) {
+					return false;
+				}
 
-			if (cacheFile.equals(readLinkFile)) {
 				StringBuilder sb = new StringBuilder();
 
 				sb.append("Unable to link ");
@@ -308,20 +307,22 @@ public class MirrorsGetTask extends Task {
 				sb.append("mirrors cache is shared.");
 
 				System.out.println(sb.toString());
+
+				readFile = cacheFile;
 			}
 
-			if (!_isValidFile(readLinkFile)) {
+			if (!_isValidFile(readFile)) {
 				_deleteFile(cacheFile);
 
 				return false;
 			}
 
-			_copyToDest(readLinkFile);
+			_copyToDest(readFile);
 
 			return true;
 		}
 		finally {
-			_deleteFile(linkFile);
+			_deleteFile(readLinkFile);
 		}
 	}
 
@@ -412,20 +413,15 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private File _createReadLinkFile(File cacheFile, File linkFile) {
-		try {
-			Files.createLink(linkFile.toPath(), cacheFile.toPath());
+	private File _createReadLinkFile(File file) {
+		File readLinkFile = _generateTempFile(file);
 
-			return linkFile;
-		}
-		catch (NoSuchFileException noSuchFileException) {
-			return null;
+		try {
+			Files.createLink(readLinkFile.toPath(), file.toPath());
+
+			return readLinkFile;
 		}
 		catch (IOException | UnsupportedOperationException exception) {
-			if (cacheFile.exists()) {
-				return cacheFile;
-			}
-
 			return null;
 		}
 	}
@@ -464,7 +460,7 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private void _deleteFile(File file) {
-		if (!file.exists()) {
+		if ((file == null) || !file.exists()) {
 			return;
 		}
 
