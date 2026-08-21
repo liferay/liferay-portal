@@ -45,9 +45,18 @@ public class ChannelFaroController extends BaseFaroController {
 			faroProjectLocalService.getFaroProjectByWeDeployKey(
 				lcpProjectId + ".lfr.cloud");
 
-		FaroChannel faroChannel = _faroChannelLocalService.addFaroChannel(
-			getUserId(), jsonObject.getString("name"),
-			jsonObject.getString("id"), faroProject.getGroupId());
+		String channelId = jsonObject.getString("id");
+
+		FaroChannel faroChannel = _faroChannelLocalService.fetchFaroChannel(
+			channelId, faroProject.getGroupId());
+
+		if (faroChannel != null) {
+			return new FaroChannelDisplay(faroChannel);
+		}
+
+		faroChannel = _faroChannelLocalService.addFaroChannel(
+			getUserId(), jsonObject.getString("name"), channelId,
+			faroProject.getGroupId());
 
 		return new FaroChannelDisplay(faroChannel);
 	}
