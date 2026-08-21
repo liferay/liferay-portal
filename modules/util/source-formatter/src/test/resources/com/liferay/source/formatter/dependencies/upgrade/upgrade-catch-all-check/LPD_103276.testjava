@@ -1,0 +1,71 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Lucas Ferruccio
+ */
+public class LPD_103276 {
+
+	public void method(
+		String externalReferenceCode, long commerceOrderId,
+		long billingAddressId, long commerceShippingMethodId,
+		long shippingAddressId, String advanceStatus,
+		String commercePaymentMethodKey, String purchaseOrderNumber,
+		BigDecimal shippingAmount, String shippingOptionName,
+		BigDecimal subtotal, BigDecimal total,
+		CommerceContext commerceContext) {
+
+		CommerceOrderLocalServiceUtil.updateCommerceOrder(
+			"test123", commerceOrderId, billingAddressId,
+			commerceShippingMethodId, shippingAddressId, advanceStatus,
+			commercePaymentMethodKey, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, subtotal, total, commerceContext);
+		CommerceOrderLocalServiceUtil.updateCommerceOrder(
+			externalReferenceCode, commerceOrderId, billingAddressId,
+			commerceShippingMethodId, shippingAddressId, advanceStatus,
+			commercePaymentMethodKey, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, subtotal, total, commerceContext);
+		CommerceOrderServiceUtil.updateCommerceOrder(
+			externalReferenceCode, commerceOrderId, billingAddressId,
+			commerceShippingMethodId, shippingAddressId, advanceStatus,
+			commercePaymentMethodKey, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, subtotal, total, commerceContext);
+		_commerceOrderLocalService.updateCommerceOrder(
+			externalReferenceCode, commerceOrderId, billingAddressId,
+			commerceShippingMethodId, shippingAddressId, advanceStatus,
+			commercePaymentMethodKey, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, subtotal, total, commerceContext);
+		_commerceOrderLocalServiceWrapper.updateCommerceOrder(
+			externalReferenceCode, commerceOrderId, billingAddressId,
+			commerceShippingMethodId, shippingAddressId, advanceStatus,
+			commercePaymentMethodKey, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, subtotal, total, commerceContext);
+		_commerceOrderService.updateCommerceOrder(
+			externalReferenceCode, commerceOrderId, billingAddressId,
+			commerceShippingMethodId, shippingAddressId, advanceStatus,
+			commercePaymentMethodKey, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, subtotal, total, commerceContext);
+		_commerceOrderServiceWrapper.updateCommerceOrder(
+			externalReferenceCode, commerceOrderId, billingAddressId,
+			commerceShippingMethodId, shippingAddressId, advanceStatus,
+			commercePaymentMethodKey, purchaseOrderNumber, shippingAmount,
+			shippingOptionName, subtotal, total, commerceContext);
+	}
+
+	@Reference
+	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	private CommerceOrderLocalServiceWrapper _commerceOrderLocalServiceWrapper;
+
+	@Reference
+	private CommerceOrderService _commerceOrderService;
+
+	private CommerceOrderServiceWrapper _commerceOrderServiceWrapper;
+
+}
