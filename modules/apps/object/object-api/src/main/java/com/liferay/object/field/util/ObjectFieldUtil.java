@@ -415,6 +415,7 @@ public class ObjectFieldUtil {
 			ObjectField objectField = objectFieldsMap.get(entry.getKey());
 
 			if ((objectField == null) || objectField.isMetadata() ||
+				!objectField.hasUpdateValues() ||
 				Objects.equals(
 					objectField.getReadOnly(),
 					ObjectFieldConstants.READ_ONLY_FALSE)) {
@@ -457,6 +458,16 @@ public class ObjectFieldUtil {
 		}
 	}
 
+	private static long _getFileEntryId(Object value) {
+		if (value instanceof Map) {
+			Map<?, ?> map = (Map<?, ?>)value;
+
+			return GetterUtil.getLong(map.get("id"));
+		}
+
+		return GetterUtil.getLong(value);
+	}
+
 	private static void _validateNewValue(
 			Object existingValue, ObjectField objectField, Object value)
 		throws PortalException {
@@ -478,16 +489,13 @@ public class ObjectFieldUtil {
 
 			if (Objects.equals(
 					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
-				Objects.equals(
-					JSONFactoryUtil.createJSONObject(
-						JSONFactoryUtil.looseSerialize(value)
-					).get(
-						"id"
-					),
-					existingValue.toString())) {
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
-				return;
+				if (_getFileEntryId(value) ==
+						GetterUtil.getLong(existingValue)) {
+
+					return;
+				}
 			}
 			else if (Objects.equals(
 						objectField.getBusinessType(),
