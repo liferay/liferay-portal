@@ -30,7 +30,25 @@ public class AuditConfigurationUtil {
 	}
 
 	public static <T> T getConfiguration(Class<T> clazz, long companyId) {
-		long configurationCompanyId = getCompanyId(companyId);
+		return _getConfiguration(clazz, companyId, getCompanyId(companyId));
+	}
+
+	public static <T> T getScopedConfiguration(
+		Class<T> clazz, long configurationCompanyId) {
+
+		return _getConfiguration(
+			clazz, configurationCompanyId, configurationCompanyId);
+	}
+
+	public static boolean isEnabled(long companyId) {
+		AuditConfiguration auditConfiguration = getConfiguration(
+			AuditConfiguration.class, companyId);
+
+		return auditConfiguration.enabled();
+	}
+
+	private static <T> T _getConfiguration(
+		Class<T> clazz, long companyId, long configurationCompanyId) {
 
 		try {
 			if (configurationCompanyId == CompanyConstants.SYSTEM) {
@@ -52,13 +70,6 @@ public class AuditConfigurationUtil {
 
 		return ConfigurableUtil.createConfigurable(
 			clazz, new HashMapDictionary<>());
-	}
-
-	public static boolean isEnabled(long companyId) {
-		AuditConfiguration auditConfiguration = getConfiguration(
-			AuditConfiguration.class, companyId);
-
-		return auditConfiguration.enabled();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

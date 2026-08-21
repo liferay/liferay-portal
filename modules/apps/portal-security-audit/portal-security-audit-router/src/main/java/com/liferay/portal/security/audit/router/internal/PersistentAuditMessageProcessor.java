@@ -76,18 +76,18 @@ public class PersistentAuditMessageProcessor implements AuditMessageProcessor {
 			return;
 		}
 
+		long companyId = AuditConfigurationUtil.getCompanyId(
+			auditMessage.getCompanyId());
+
 		PersistentAuditMessageProcessorConfiguration
 			persistentAuditMessageProcessorConfiguration =
-				AuditConfigurationUtil.getConfiguration(
+				AuditConfigurationUtil.getScopedConfiguration(
 					PersistentAuditMessageProcessorConfiguration.class,
-					auditMessage.getCompanyId());
+					companyId);
 
 		if (!persistentAuditMessageProcessorConfiguration.enabled()) {
 			return;
 		}
-
-		long companyId = AuditConfigurationUtil.getCompanyId(
-			auditMessage.getCompanyId());
 
 		BatchProcessorContext batchProcessorContext =
 			_batchProcessorContexts.compute(

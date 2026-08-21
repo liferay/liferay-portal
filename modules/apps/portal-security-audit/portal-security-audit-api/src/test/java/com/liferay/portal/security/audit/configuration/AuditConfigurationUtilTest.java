@@ -55,6 +55,32 @@ public class AuditConfigurationUtilTest {
 			companyId, AuditConfigurationUtil.getCompanyId(companyId));
 	}
 
+	@FeatureFlag(enable = false, value = "LPD-6417")
+	@Test
+	public void testGetScopedConfigurationWhenFeatureFlagIsDisabled() {
+		try (MockedStatic<ConfigurationProviderUtil>
+				configurationProviderUtilMockedStatic = Mockito.mockStatic(
+					ConfigurationProviderUtil.class)) {
+
+			long companyId = RandomTestUtil.randomLong();
+
+			AuditConfiguration auditConfiguration = _createAuditConfiguration(
+				RandomTestUtil.randomBoolean());
+
+			configurationProviderUtilMockedStatic.when(
+				() -> ConfigurationProviderUtil.getCompanyConfiguration(
+					AuditConfiguration.class, companyId)
+			).thenReturn(
+				auditConfiguration
+			);
+
+			Assert.assertSame(
+				auditConfiguration,
+				AuditConfigurationUtil.getScopedConfiguration(
+					AuditConfiguration.class, companyId));
+		}
+	}
+
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testIsEnabled() {
@@ -120,6 +146,10 @@ public class AuditConfigurationUtilTest {
 			Assert.assertSame(
 				auditConfiguration,
 				AuditConfigurationUtil.getConfiguration(
+					AuditConfiguration.class, companyId));
+			Assert.assertSame(
+				auditConfiguration,
+				AuditConfigurationUtil.getScopedConfiguration(
 					AuditConfiguration.class, companyId));
 		}
 	}
