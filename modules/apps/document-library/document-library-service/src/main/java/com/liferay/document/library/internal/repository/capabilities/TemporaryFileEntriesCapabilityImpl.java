@@ -355,6 +355,28 @@ public class TemporaryFileEntriesCapabilityImpl
 			_getFolderPath(temporaryFileEntriesScope));
 	}
 
+	private boolean _hasPublicationFileEntries(long companyId, long folderId)
+		throws PortalException {
+
+		for (CTCollection ctCollection :
+				_getPublicationCTCollections(companyId)) {
+
+			try (SafeCloseable safeCloseable =
+					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+						ctCollection.getCtCollectionId())) {
+
+				int count = _documentRepository.getFileEntriesCount(
+					folderId, WorkflowConstants.STATUS_ANY);
+
+				if (count != 0) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	private boolean _isOwnedByCurrentCTCollection(Object model) {
 		if (!(model instanceof CTModel<?> ctModel) ||
 			(ctModel.getCtCollectionId() ==
@@ -418,6 +440,17 @@ public class TemporaryFileEntriesCapabilityImpl
 					folderId, WorkflowConstants.STATUS_ANY);
 
 				if (count != 0) {
+					break;
+				}
+
+				if (CTCollectionThreadLocal.isProductionMode()) {
+					if (_hasPublicationFileEntries(
+							folder.getCompanyId(), folderId)) {
+
+						break;
+					}
+				}
+				else if (!_isOwnedByCurrentCTCollection(folder.getModel())) {
 					break;
 				}
 
