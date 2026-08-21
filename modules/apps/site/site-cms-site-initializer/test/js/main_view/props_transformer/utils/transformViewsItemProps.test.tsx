@@ -10,7 +10,10 @@ import {
 	OBJECT_ENTRY_FOLDER_CLASS_NAME,
 } from '../../../../../src/main/resources/META-INF/resources/js/common/utils/constants';
 import * as expirationStatus from '../../../../../src/main/resources/META-INF/resources/js/common/utils/expirationStatus';
-import {transformItemCardView} from '../../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/utils/transformViewsItemProps';
+import {
+	getFileMimeTypeObjectDefinitionStickerValue,
+	transformItemCardView,
+} from '../../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/utils/transformViewsItemProps';
 
 const NOW = new Date('2026-04-21T10:00:00Z');
 
@@ -170,5 +173,63 @@ describe('transformItemCardView labels', () => {
 		);
 
 		expect(result.labels).toEqual(labels);
+	});
+});
+
+describe('getFileMimeTypeObjectDefinitionStickerValue', () => {
+	const OBJECT_DEFINITION_VALUES = {
+		L_CMS_BASIC_WEB_CONTENT: 'web-content',
+		L_CMS_STRUCTURED_CONTENT: 'structured-content',
+		default: 'document-default',
+	};
+
+	const callSticker = (item: any) =>
+		getFileMimeTypeObjectDefinitionStickerValue(
+			undefined,
+			OBJECT_DEFINITION_VALUES,
+			item
+		);
+
+	it('reads the object definition from the embedded system properties', () => {
+		expect(
+			callSticker({
+				embedded: {
+					systemProperties: {
+						objectDefinitionBrief: {
+							externalReferenceCode: 'L_CMS_BASIC_WEB_CONTENT',
+						},
+					},
+				},
+			})
+		).toBe('web-content');
+	});
+
+	it('reads the object definition from the item when it is not embedded', () => {
+		expect(
+			callSticker({
+				objectDefinitionExternalReferenceCode:
+					'L_CMS_BASIC_WEB_CONTENT',
+			})
+		).toBe('web-content');
+	});
+
+	it('prefers the embedded object definition over the one on the item', () => {
+		expect(
+			callSticker({
+				embedded: {
+					systemProperties: {
+						objectDefinitionBrief: {
+							externalReferenceCode: 'L_CMS_BASIC_WEB_CONTENT',
+						},
+					},
+				},
+				objectDefinitionExternalReferenceCode:
+					'L_CMS_STRUCTURED_CONTENT',
+			})
+		).toBe('web-content');
+	});
+
+	it('returns an empty sticker when the item carries no object definition', () => {
+		expect(callSticker({})).toBe('');
 	});
 });
