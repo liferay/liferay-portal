@@ -1,0 +1,61 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link href="/vite.svg" rel="icon" type="image/svg+xml" />
+<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<title>Vite + React</title>
+</head>
+
+<body>
+	<script>
+	  // Local dev only: stubs the Liferay runtime + REST endpoint consumed by
+	  // LiferayChart.jsx (window.Liferay.Util.fetch), so the custom element's
+	  // own attribute contract below stays untouched.
+	  const MOCK_ITEMS = [
+		{ status: 'Open' },
+		{ status: 'Open' },
+		{ status: 'Closed' },
+		{ status: 'Open' },
+		{ status: 'Pending' },
+		{ status: 'Closed' },
+		{ status: 'Pending' },
+	  ];
+
+	  window.Liferay = {
+		Util: {
+		  fetch(url) {
+			const { searchParams } = new URL(url, window.location.origin);
+			const page = Number(searchParams.get('page')) || 1;
+			const pageSize = Number(searchParams.get('pageSize')) || MOCK_ITEMS.length;
+			const start = (page - 1) * pageSize;
+
+			return Promise.resolve(
+			  new Response(
+				JSON.stringify({
+				  items: MOCK_ITEMS.slice(start, start + pageSize),
+				  page,
+				  lastPage: Math.ceil(MOCK_ITEMS.length / pageSize),
+				}),
+				{ headers: { 'content-type': 'application/json' } }
+			  )
+			);
+		  },
+		},
+	  };
+	</script>
+
+	<clarity-solution-bar-chart
+		aggregation-field="status"
+		aggregation-type="count"
+		color="black"
+		dataset-label="Count"
+		rest-context-path="/mock/aggregation"
+		title="Sample Chart"
+	/>
+	</clarity-solution-bar-chart>
+	
+	<script src="/src/index.jsx" type="module"></script>
+</body>
+</html>

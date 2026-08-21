@@ -1,0 +1,16 @@
+[#assign color="black" /]
+[#if configuration.chartColor??]
+	[#if configuration.chartColor.rgbValue??]
+		[#assign color=configuration.chartColor.rgbValue /]
+	[#elseif configuration.chartColor.color??]
+		[#assign color=configuration.chartColor.color /]
+	[/#if]
+[/#if]
+<clarity-solution-bar-chart
+	aggregation-field="${configuration.aggregationField}"
+	aggregation-type="count"
+	color="${color}"
+	dataset-label="${configuration.datasetLabel}"
+	rest-context-path="${configuration.restContextPath}"
+	title="${configuration.title}"
+/>
