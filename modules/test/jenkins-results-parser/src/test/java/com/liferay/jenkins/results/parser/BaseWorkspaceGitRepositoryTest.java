@@ -187,6 +187,8 @@ public class BaseWorkspaceGitRepositoryTest
 
 	@Test
 	public void testStoreCommitHistory() throws Exception {
+		List<String> expectedCommitSHAs = new ArrayList<>();
+
 		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
 			GitWorkingDirectory.class);
 
@@ -208,8 +210,6 @@ public class BaseWorkspaceGitRepositoryTest
 		).when(
 			defaultWorkspaceGitRepository
 		).getGitWorkingDirectory();
-
-		List<String> expectedCommitSHAs = new ArrayList<>();
 
 		for (LocalGitCommit localGitCommit : localGitCommits.subList(0, 4)) {
 			expectedCommitSHAs.add(localGitCommit.getSHA());
