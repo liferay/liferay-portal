@@ -88,7 +88,9 @@ public class SecurityTest extends BaseClientTestCase {
 			));
 
 		Assert.assertTrue(
-			bodyString.contains("src=\"" + _THUMBNAIL_URL_ESCAPED + "\""));
+			bodyString.contains(
+				"src=\"http://localhost/documents/1/2/icon.png?version=1.0" +
+					"&amp;t=1&amp;imageThumbnail=1&#39;\""));
 	}
 
 	@Test
@@ -98,7 +100,9 @@ public class SecurityTest extends BaseClientTestCase {
 		String bodyString = _getConnectedApplicationPageBodyString();
 
 		Assert.assertTrue(
-			bodyString.contains("src=\"" + _THUMBNAIL_URL_ESCAPED + "\""));
+			bodyString.contains(
+				"src=\"http://localhost/documents/1/2/icon.png?version=1.0" +
+					"&amp;t=1&amp;imageThumbnail=1&#39;\""));
 	}
 
 	@Test
@@ -109,7 +113,7 @@ public class SecurityTest extends BaseClientTestCase {
 			).queryParam(
 				"response_type", "code"
 			).queryParam(
-				"scope", _SCOPE_ALIAS
+				"scope", "Liferay.Captcha.REST.everything.read"
 			));
 	}
 
@@ -420,20 +424,6 @@ public class SecurityTest extends BaseClientTestCase {
 
 	private static final String _INJECTED_SCRIPT = "<script>alert(1)</script>";
 
-	private static final String _SCOPE_ALIAS =
-		"Liferay.Captcha.REST.everything.read";
-
-	private static final String _SCOPE_APPLICATION_NAME =
-		"Liferay.Captcha.REST";
-
-	private static final String _THUMBNAIL_URL =
-		"http://localhost/documents/1/2/icon.png?version=1.0&t=1&" +
-			"imageThumbnail=1'";
-
-	private static final String _THUMBNAIL_URL_ESCAPED =
-		"http://localhost/documents/1/2/icon.png?version=1.0&amp;t=1&amp;" +
-			"imageThumbnail=1&#39;";
-
 	private long _oAuth2ApplicationId;
 
 	@Inject
@@ -483,18 +473,20 @@ public class SecurityTest extends BaseClientTestCase {
 			OAuth2Application oAuth2Application = createOAuth2Application(
 				companyId, _user, _CLIENT_ID_UNESCAPED_SCOPE,
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
-				Collections.singletonList(_SCOPE_ALIAS));
+				Collections.singletonList(
+					"Liferay.Captcha.REST.everything.read"));
 
 			_oAuth2ScopeGrantLocalService.createOAuth2ScopeGrant(
 				companyId,
 				oAuth2Application.getOAuth2ApplicationScopeAliasesId(),
-				_SCOPE_APPLICATION_NAME, "com.liferay.captcha.rest.impl", "GET",
-				Collections.singletonList(_SCOPE_ALIAS));
+				"Liferay.Captcha.REST", "com.liferay.captcha.rest.impl", "GET",
+				Collections.singletonList(
+					"Liferay.Captcha.REST.everything.read"));
 
 			registerScopeDescriptor(
 				(scope, locale) -> _INJECTED_SCRIPT,
 				HashMapDictionaryBuilder.<String, Object>put(
-					"osgi.jaxrs.name", _SCOPE_APPLICATION_NAME
+					"osgi.jaxrs.name", "Liferay.Captcha.REST"
 				).put(
 					"service.ranking", Integer.MAX_VALUE
 				).build());
@@ -530,7 +522,8 @@ public class SecurityTest extends BaseClientTestCase {
 							FileVersion fileVersion,
 							ThemeDisplay themeDisplay) {
 
-							return _THUMBNAIL_URL;
+							return "http://localhost/documents/1/2/icon.png?" +
+								"version=1.0&t=1&imageThumbnail=1'";
 						}
 
 					},
