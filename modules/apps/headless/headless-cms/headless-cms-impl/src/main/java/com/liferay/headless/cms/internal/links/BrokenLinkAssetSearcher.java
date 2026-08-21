@@ -57,27 +57,27 @@ public class BrokenLinkAssetSearcher {
 		return searchResponse.getCount();
 	}
 
-	public Map<String, Long> getExpiredAssetObjectEntryIds(
+	public Map<String, Long> getExpiredAssetObjectEntryIdsMap(
 		long companyId, Long[] objectDefinitionIds, Long[] spaceGroupIds) {
 
-		Map<String, Long> objectEntryIds = new LinkedHashMap<>();
+		Map<String, Long> objectEntryIdsMap = new LinkedHashMap<>();
 
 		for (Object[] objects :
-				_getExpiredAssetObjects(
+				_getObjectEntryObjectsList(
 					companyId, objectDefinitionIds, spaceGroupIds)) {
 
 			long objectEntryId = GetterUtil.getLong(objects[1]);
 
-			objectEntryIds.put(
+			objectEntryIdsMap.put(
 				CMSOutboundLinksUtil.getObjectEntryExternalReferenceCodeToken(
 					GetterUtil.getString(objects[0])),
 				objectEntryId);
-			objectEntryIds.put(
+			objectEntryIdsMap.put(
 				CMSOutboundLinksUtil.getObjectEntryIdToken(objectEntryId),
 				objectEntryId);
 		}
 
-		return objectEntryIds;
+		return objectEntryIdsMap;
 	}
 
 	public SearchResponse search(
@@ -124,7 +124,7 @@ public class BrokenLinkAssetSearcher {
 		return _searcher.search(searchRequestBuilder.build());
 	}
 
-	private List<Object[]> _getExpiredAssetObjects(
+	private List<Object[]> _getObjectEntryObjectsList(
 		long companyId, Long[] objectDefinitionIds, Long[] spaceGroupIds) {
 
 		return _objectEntryLocalService.dslQuery(

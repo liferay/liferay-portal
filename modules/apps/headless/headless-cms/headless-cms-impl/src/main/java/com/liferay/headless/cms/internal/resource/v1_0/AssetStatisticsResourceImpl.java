@@ -167,18 +167,18 @@ public class AssetStatisticsResourceImpl
 					_objectEntryLocalService, _searcher,
 					_searchRequestBuilderFactory);
 
-			Map<String, Long> expiredAssetObjectEntryIds =
-				brokenLinkAssetSearcher.getExpiredAssetObjectEntryIds(
+			Map<String, Long> expiredAssetObjectEntryIdsMap =
+				brokenLinkAssetSearcher.getExpiredAssetObjectEntryIdsMap(
 					contextCompany.getCompanyId(), objectDefinitionIds,
 					spaceGroupIds);
 
-			if (expiredAssetObjectEntryIds.isEmpty()) {
+			if (expiredAssetObjectEntryIdsMap.isEmpty()) {
 				return 0;
 			}
 
 			return brokenLinkAssetSearcher.getCount(
 				contextCompany.getCompanyId(), selectedSpaceGroupIds,
-				expiredAssetObjectEntryIds.keySet());
+				expiredAssetObjectEntryIdsMap.keySet());
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {

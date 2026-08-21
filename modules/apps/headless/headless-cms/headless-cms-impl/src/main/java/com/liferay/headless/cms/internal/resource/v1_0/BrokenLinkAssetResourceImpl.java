@@ -105,19 +105,19 @@ public class BrokenLinkAssetResourceImpl
 				_objectEntryLocalService, _searcher,
 				_searchRequestBuilderFactory);
 
-		Map<String, Long> expiredAssetObjectEntryIds =
-			brokenLinkAssetSearcher.getExpiredAssetObjectEntryIds(
+		Map<String, Long> expiredAssetObjectEntryIdsMap =
+			brokenLinkAssetSearcher.getExpiredAssetObjectEntryIdsMap(
 				contextCompany.getCompanyId(), objectDefinitionIds,
 				spaceGroupIds);
 
-		if (expiredAssetObjectEntryIds.isEmpty()) {
+		if (expiredAssetObjectEntryIdsMap.isEmpty()) {
 			return Page.of(Collections.emptyList());
 		}
 
 		SearchResponse searchResponse = brokenLinkAssetSearcher.search(
 			contextCompany.getCompanyId(), selectedSpaceGroupIds,
 			contextAcceptLanguage.getPreferredLanguageId(),
-			expiredAssetObjectEntryIds.keySet(), pagination, search, sorts);
+			expiredAssetObjectEntryIdsMap.keySet(), pagination, search, sorts);
 
 		Map<Long, String> externalReferenceCodes = new HashMap<>();
 
@@ -131,7 +131,7 @@ public class BrokenLinkAssetResourceImpl
 			transform(
 				searchResponse.getDocuments(),
 				document -> _toBrokenLinkAsset(
-					document, expiredAssetObjectEntryIds,
+					document, expiredAssetObjectEntryIdsMap,
 					externalReferenceCodes)),
 			pagination, searchResponse.getCount());
 	}
@@ -173,13 +173,13 @@ public class BrokenLinkAssetResourceImpl
 	}
 
 	private BrokenLinkAsset _toBrokenLinkAsset(
-		Document document, Map<String, Long> expiredAssetObjectEntryIds,
+		Document document, Map<String, Long> expiredAssetObjectEntryIdsMap,
 		Map<Long, String> externalReferenceCodes) {
 
 		Set<Long> brokenLinkObjectEntryIds = new LinkedHashSet<>();
 
 		for (String outboundLink : document.getStrings("outboundLinks")) {
-			Long brokenLinkObjectEntryId = expiredAssetObjectEntryIds.get(
+			Long brokenLinkObjectEntryId = expiredAssetObjectEntryIdsMap.get(
 				outboundLink);
 
 			if (brokenLinkObjectEntryId != null) {
