@@ -624,7 +624,7 @@ public class MirrorsGetTask extends Task {
 
 				if (!_addToCache(mirrorsCacheFile, mirrorsCacheTempFile)) {
 					System.out.println(
-						mirrorsCacheFile.getPath() + " was already published.");
+						mirrorsCacheFile.getPath() + " was already cached.");
 				}
 
 				if (mirrorsCacheTempFile.exists()) {
@@ -1357,7 +1357,7 @@ public class MirrorsGetTask extends Task {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Unable to publish ");
+		sb.append("Unable to rename ");
 		sb.append(tempFile.getPath());
 		sb.append(" to ");
 		sb.append(cacheFile.getPath());
