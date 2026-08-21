@@ -89,6 +89,7 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 
 			themeDisplay.setLookAndFeel(theme, layout.getColorScheme());
 
+			themeDisplay.setShowSignInIcon(true);
 			themeDisplay.setSignedIn(false);
 
 			User guestUser = _userLocalService.getGuestUser(
