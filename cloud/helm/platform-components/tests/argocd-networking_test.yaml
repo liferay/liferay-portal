@@ -114,7 +114,18 @@ tests:
                     hostname: argocd.liferay.test
     -   asserts:
             -   failedTemplate:
-                    errorPattern: argocd.gateway.hostname is required
+                    errorPattern: The value "clusterSecretStore.name" is required to identify the cluster secret store
+        it: Rejects TLS without a cluster secret store name
+        set:
+            argocd:
+                gateway:
+                    enabled: true
+                    hostname: argocd.liferay.test
+                    tls:
+                        externalSecretKey: liferay-certificates-argocd
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: The value "argocd.gateway.hostname" is required to route traffic to ArgoCD
         it: Rejects an enabled gateway without a hostname
         set:
             argocd.gateway.enabled: true

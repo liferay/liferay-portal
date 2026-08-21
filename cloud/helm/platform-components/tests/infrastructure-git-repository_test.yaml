@@ -1,6 +1,9 @@
 release:
     name: my-release
     namespace: argocd-system
+set:
+    clusterSecretStore:
+        name: liferay-test-secret-store
 suite: Infrastructure Git Repository
 templates:
     -   templates/application-infrastructure-provider.yaml

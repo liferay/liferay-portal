@@ -1,6 +1,6 @@
 {{- if .Values.argocd.gateway.enabled -}}
 {{- $envoyProxy := .Values.argocd.gateway.envoyProxy }}
-{{- $hostname := required "argocd.gateway.hostname is required" .Values.argocd.gateway.hostname }}
+{{- $hostname := required "The value \"argocd.gateway.hostname\" is required to route traffic to ArgoCD" .Values.argocd.gateway.hostname }}
 {{- $tlsEnabled := ne .Values.argocd.gateway.tls.externalSecretKey "" }}
 {{- if $tlsEnabled }}
 apiVersion: external-secrets.io/v1
@@ -21,7 +21,7 @@ spec:
                 key: {{ .Values.argocd.gateway.tls.externalSecretKey }}
     secretStoreRef:
         kind: ClusterSecretStore
-        name: {{ .Values.clusterSecretStore.name | quote }}
+        name: {{ include "liferay-platform.clusterSecretStoreName" . | quote }}
     target:
         name: argocd-server-tls
         template:

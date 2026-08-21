@@ -19,6 +19,12 @@ readOnlyRootFilesystem: false
 {{- printf "%s-elasticsearch" .Release.Namespace -}}
 {{- end -}}
 
+{{- define "liferay.validateDNS1123Name" -}}
+{{- if not (regexMatch "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$" .) -}}
+{{- fail (printf "Name is not DNS-1123 compliant: %s" .) -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "liferay.validateSecretKey" -}}
 {{- if not (hasPrefix .prefix .key) -}}
 {{- fail (printf "Secret key must start with %s: %s" .prefix .key) -}}

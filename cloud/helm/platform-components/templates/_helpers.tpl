@@ -17,6 +17,10 @@ repoURL: {{ .repoURL }}
 targetRevision: {{ .targetRevision | quote }}
 {{- end -}}
 
+{{- define "liferay-platform.clusterSecretStoreName" -}}
+{{- required "The value \"clusterSecretStore.name\" is required to identify the cluster secret store" .Values.clusterSecretStore.name -}}
+{{- end -}}
+
 {{- define "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" -}}
 instrumentation.opentelemetry.io/inject-dotnet: "false"
 instrumentation.opentelemetry.io/inject-java: "false"
