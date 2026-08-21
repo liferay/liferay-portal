@@ -12,15 +12,15 @@ import {getTranslationInput} from './getTranslationInput';
 
 type Args = {
 	availableLanguageIds?: string[];
-	changeTextDirection: boolean;
-	customLocaleChangeHandler: boolean;
+	changeTextDirection?: boolean;
+	customLocaleChangeHandler?: boolean;
 	defaultLanguageId: Liferay.Language.Locale;
 	hasMultipleValues?: boolean;
 	initialValues?: Record<string, any>;
 	inputElement?: HTMLInputElement;
 	inputName: string;
 	localizationInputsContainer: HTMLElement;
-	localizedTextContainer: HTMLElement;
+	localizedTextContainer?: HTMLElement;
 	namespace: string;
 	onAutoTranslate?: ({
 		languageId,
@@ -420,7 +420,7 @@ export function registerLocalizedInput({
 	Liferay.fire(EVENT_INPUT_REGISTERED);
 
 	return {
-		onBlur: (value = null) => {
+		onBlur: (value: string | null = null) => {
 			if (
 				localizedTextContainer &&
 				currentLanguageId === defaultLanguageId
@@ -444,7 +444,7 @@ export function registerLocalizedInput({
 				);
 			}
 		},
-		onChange: (value = null) => {
+		onChange: (value: string | string[] | null = null) => {
 			if (value !== null) {
 				setTranslationInputsValue(currentLanguageId, value);
 			}
