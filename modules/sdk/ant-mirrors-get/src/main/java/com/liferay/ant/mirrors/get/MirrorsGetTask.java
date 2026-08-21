@@ -454,27 +454,11 @@ public class MirrorsGetTask extends Task {
 				targetFile.getAbsolutePath() + " failed checksum");
 		}
 
-		if (_isTarGzFileName(targetFile.getName()) &&
-			!_isTarGzFile(targetFile)) {
-
+		if (!_isValidFile(targetFile)) {
 			_deleteFile(targetFile);
 
 			throw new IOException(
-				targetFile.getAbsolutePath() + " is an invalid TAR GZ file");
-		}
-
-		if (_isZipFileName(targetFile.getName()) && !_isZipFile(targetFile)) {
-			_deleteFile(targetFile);
-
-			throw new IOException(
-				targetFile.getAbsolutePath() + " is an invalid ZIP file");
-		}
-
-		if (_is7zFileName(targetFile.getName()) && !_is7zFile(targetFile)) {
-			_deleteFile(targetFile);
-
-			throw new IOException(
-				targetFile.getAbsolutePath() + " is an invalid 7z file");
+				targetFile.getAbsolutePath() + " is not a valid file");
 		}
 	}
 
