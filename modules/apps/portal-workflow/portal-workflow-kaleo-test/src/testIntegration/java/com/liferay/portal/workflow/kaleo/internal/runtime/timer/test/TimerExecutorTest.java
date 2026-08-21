@@ -177,7 +177,7 @@ public class TimerExecutorTest {
 	@Test
 	public void testExecuteTimerNotifications() throws Exception {
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_addKaleoTimerInstanceToken("Timer Notification");
+			_addKaleoTimerInstanceToken(_TIMER_NOTIFICATION);
 
 		_executeTimer(kaleoTimerInstanceToken);
 
@@ -194,12 +194,10 @@ public class TimerExecutorTest {
 	@Test
 	public void testExecuteTimerReassignments() throws Exception {
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_addKaleoTimerInstanceToken("Timer Reassignment");
+			_addKaleoTimerInstanceToken(_TIMER_REASSIGNMENT);
 
 		KaleoTaskInstanceToken kaleoTaskInstanceToken =
 			kaleoTimerInstanceToken.getKaleoTaskInstanceToken();
-
-		Assert.assertNotNull(kaleoTaskInstanceToken);
 
 		List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances =
 			_kaleoTaskAssignmentInstanceLocalService.
@@ -239,7 +237,7 @@ public class TimerExecutorTest {
 		throws Exception {
 
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_addKaleoTimerInstanceToken("Timer Notification");
+			_addKaleoTimerInstanceToken(_TIMER_NOTIFICATION);
 
 		Message message = _getMessage(kaleoTimerInstanceToken);
 
@@ -260,7 +258,7 @@ public class TimerExecutorTest {
 		throws Exception {
 
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_addKaleoTimerInstanceToken("Timer Notification");
+			_addKaleoTimerInstanceToken(_TIMER_NOTIFICATION);
 
 		Message message = _getMessage(kaleoTimerInstanceToken);
 
@@ -391,6 +389,10 @@ public class TimerExecutorTest {
 			kaleoTimerInstanceToken.getCompanyId(),
 			kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId());
 	}
+
+	private static final String _TIMER_NOTIFICATION = "Timer Notification";
+
+	private static final String _TIMER_REASSIGNMENT = "Timer Reassignment";
 
 	private static ServiceRegistration<WorkflowHandler<?>>
 		_workflowHandlerServiceRegistration;
