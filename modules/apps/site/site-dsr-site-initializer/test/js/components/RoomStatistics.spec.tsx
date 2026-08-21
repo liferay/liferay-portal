@@ -73,11 +73,11 @@ jest.mock(
 	})
 );
 
-const withTotalSessionDuration = (totalSessionDuration: number) => ({
+const withTotalSessionDurationInMinutes = (minutes: number) => ({
 	...roomStatisticsFixture,
 	siteVisitorBehavior: {
 		...roomStatisticsFixture.siteVisitorBehavior,
-		totalSessionDuration,
+		totalSessionDuration: minutes * 60000,
 	},
 });
 
@@ -157,15 +157,51 @@ describe('RoomStatistics', () => {
 			<RoomStatistics isAnalyticsEnabled={true} />
 		);
 
-		expect(getByText('0 hours 45 minutes')).toBeInTheDocument();
+		expect(getByText('45 minutes')).toBeInTheDocument();
 		expect(getByText('100')).toBeInTheDocument();
 		expect(getByText('20')).toBeInTheDocument();
 		expect(getByText('10')).toBeInTheDocument();
 		expect(getByText('5')).toBeInTheDocument();
 	});
 
+	it('renders 1 minute when totalSessionDuration is 86321 milliseconds', () => {
+		mockAnalyticsResponse = {
+			...roomStatisticsFixture,
+			siteVisitorBehavior: {
+				...roomStatisticsFixture.siteVisitorBehavior,
+				totalSessionDuration: 86321,
+			},
+		};
+
+		const {getByText} = render(
+			<RoomStatistics isAnalyticsEnabled={true} />
+		);
+
+		expect(getByText('1 minute')).toBeInTheDocument();
+	});
+
+	it('renders 2 hours 30 minutes when totalSessionDuration is 2h30', () => {
+		mockAnalyticsResponse = withTotalSessionDurationInMinutes(2 * 60 + 30);
+
+		const {getByText} = render(
+			<RoomStatistics isAnalyticsEnabled={true} />
+		);
+
+		expect(getByText('2 hours 30 minutes')).toBeInTheDocument();
+	});
+
+	it('renders 1 hour when totalSessionDuration is 1h', () => {
+		mockAnalyticsResponse = withTotalSessionDurationInMinutes(60);
+
+		const {getByText} = render(
+			<RoomStatistics isAnalyticsEnabled={true} />
+		);
+
+		expect(getByText('1 hour')).toBeInTheDocument();
+	});
+
 	it('renders 1 day when totalSessionDuration is 24h', () => {
-		mockAnalyticsResponse = withTotalSessionDuration(24 * 60);
+		mockAnalyticsResponse = withTotalSessionDurationInMinutes(24 * 60);
 
 		const {getByText} = render(
 			<RoomStatistics isAnalyticsEnabled={true} />
@@ -175,7 +211,7 @@ describe('RoomStatistics', () => {
 	});
 
 	it('renders 1 day 1 hour when totalSessionDuration is 25h30', () => {
-		mockAnalyticsResponse = withTotalSessionDuration(25 * 60 + 30);
+		mockAnalyticsResponse = withTotalSessionDurationInMinutes(25 * 60 + 30);
 
 		const {getByText} = render(
 			<RoomStatistics isAnalyticsEnabled={true} />
@@ -185,7 +221,7 @@ describe('RoomStatistics', () => {
 	});
 
 	it('renders 2 days when totalSessionDuration is 48h', () => {
-		mockAnalyticsResponse = withTotalSessionDuration(48 * 60);
+		mockAnalyticsResponse = withTotalSessionDurationInMinutes(48 * 60);
 
 		const {getByText} = render(
 			<RoomStatistics isAnalyticsEnabled={true} />
@@ -195,7 +231,7 @@ describe('RoomStatistics', () => {
 	});
 
 	it('renders 2 days 2 hours when totalSessionDuration is 50h15', () => {
-		mockAnalyticsResponse = withTotalSessionDuration(50 * 60 + 15);
+		mockAnalyticsResponse = withTotalSessionDurationInMinutes(50 * 60 + 15);
 
 		const {getByText} = render(
 			<RoomStatistics isAnalyticsEnabled={true} />

@@ -37,7 +37,7 @@ exports[`RoomStatistics matches snapshot 1`] = `
                 <span
                   class="font-weight-semi-bold ml-2 room-statistics-text"
                 >
-                  0 hours 45 minutes
+                  45 minutes
                 </span>
               </div>
             </div>

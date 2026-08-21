@@ -8,7 +8,7 @@ export const roomStatisticsFixture = {
 	identityComment: {count: 5},
 	siteVisitorBehavior: {
 		knownVisitors: 20,
-		totalSessionDuration: 45,
+		totalSessionDuration: 45 * 60000,
 		visitors: 100,
 	},
 };
