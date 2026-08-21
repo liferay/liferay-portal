@@ -18,8 +18,6 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.LinkedHashMap;
-
 /**
  * @author Lianne Louie
  */
@@ -27,8 +25,7 @@ public class SelectOrganizationsDisplayContext {
 
 	public static SearchContainer<Organization> create(
 			LiferayPortletRequest liferayPortletRequest,
-			LiferayPortletResponse liferayPortletResponse,
-			LinkedHashMap<String, Object> params)
+			LiferayPortletResponse liferayPortletResponse)
 		throws PortalException {
 
 		SearchContainer<Organization> searchContainer = new SearchContainer<>(
@@ -49,14 +46,12 @@ public class SelectOrganizationsDisplayContext {
 
 		searchContainer.setOrderByType(orderByType);
 
-		String keywords = ParamUtil.getString(
-			liferayPortletRequest, "keywords");
-
 		searchContainer.setResultsAndTotal(
 			OrganizationLocalServiceUtil.searchOrganizations(
 				CompanyThreadLocal.getCompanyId(),
-				OrganizationConstants.ANY_PARENT_ORGANIZATION_ID, keywords,
-				params, searchContainer.getStart(), searchContainer.getEnd(),
+				OrganizationConstants.ANY_PARENT_ORGANIZATION_ID,
+				ParamUtil.getString(liferayPortletRequest, "keywords"), null,
+				searchContainer.getStart(), searchContainer.getEnd(),
 				SortFactoryUtil.getSort(
 					Organization.class, orderByCol, orderByType)));
 

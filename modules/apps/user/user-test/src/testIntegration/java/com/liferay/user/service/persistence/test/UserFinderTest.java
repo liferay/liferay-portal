@@ -340,7 +340,6 @@ public class UserFinderTest {
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		Assert.assertEquals(users.toString(), 2, users.size());
-
 		Assert.assertTrue(users.toString(), users.contains(_organizationUser1));
 		Assert.assertTrue(users.toString(), users.contains(_organizationUser2));
 

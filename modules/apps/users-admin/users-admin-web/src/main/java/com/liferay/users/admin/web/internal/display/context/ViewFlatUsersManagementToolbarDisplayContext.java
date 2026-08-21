@@ -14,6 +14,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemList;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -42,7 +43,6 @@ import com.liferay.users.admin.web.internal.util.DisplayStyleUtil;
 
 import jakarta.portlet.PortletURL;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -70,7 +70,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 
 		_navigation = ParamUtil.getString(
 			liferayPortletRequest, "navigation", "active");
-		_selectionString = ParamUtil.getString(
+		_selection = ParamUtil.getString(
 			liferayPortletRequest, "selection", "all");
 	}
 
@@ -210,27 +210,25 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	public List<LabelItem> getFilterLabelItems() {
 		return new LabelItemList() {
 			{
-				if (Objects.equals(
-						_selectionString, "selected-account-users")) {
-
+				if (Objects.equals(_selection, "selected-account-users")) {
 					_addSelectedEntityFilterLabelItems(
-						this, "accountEntryIds",
+						"no-accounts-were-found",
 						ParamUtil.getLongValues(
 							httpServletRequest, "accountEntryIds"),
 						AccountEntryLocalServiceUtil::fetchAccountEntry,
-						AccountEntry::getAccountEntryId, AccountEntry::getName,
-						"no-accounts-were-found");
+						AccountEntry::getAccountEntryId, this,
+						AccountEntry::getName, "accountEntryIds");
 				}
 				else if (Objects.equals(
-							_selectionString, "selected-organization-users")) {
+							_selection, "selected-organization-users")) {
 
 					_addSelectedEntityFilterLabelItems(
-						this, "organizationIds",
+						"no-organizations-were-found",
 						ParamUtil.getLongValues(
 							httpServletRequest, "organizationIds"),
 						OrganizationLocalServiceUtil::fetchOrganization,
-						Organization::getOrganizationId, Organization::getName,
-						"no-organizations-were-found");
+						Organization::getOrganizationId, this,
+						Organization::getName, "organizationIds");
 				}
 
 				if (!Objects.equals(_navigation, "active")) {
@@ -243,7 +241,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 								).setNavigation(
 									(String)null
 								).buildString());
-							labelItem.setCloseable(true);
+							labelItem.setDismissible(true);
 							labelItem.setLabel(
 								String.format(
 									"%s: %s",
@@ -328,19 +326,12 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	}
 
 	private <T> void _addSelectedEntityFilterLabelItems(
-		LabelItemList labelItemList, String parameterName, long[] entityIds,
-		LongFunction<T> fetchFunction, ToLongFunction<T> idFunction,
-		Function<T, String> nameFunction, String emptyLabelKey) {
+		String emptyLabelKey, long[] entityIds, LongFunction<T> fetchFunction,
+		ToLongFunction<T> idFunction, LabelItemList labelItemList,
+		Function<T, String> nameFunction, String parameterName) {
 
-		List<T> entities = new ArrayList<>();
-
-		for (long entityId : entityIds) {
-			T entity = fetchFunction.apply(entityId);
-
-			if (entity != null) {
-				entities.add(entity);
-			}
-		}
+		List<T> entities = TransformUtil.transformToList(
+			entityIds, fetchFunction::apply);
 
 		if (entities.isEmpty()) {
 			labelItemList.add(
@@ -363,7 +354,6 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 		}
 
 		long[] resolvedEntityIds = ListUtil.toLongArray(entities, idFunction);
-
 		PortletURL portletURL = getPortletURL();
 
 		for (T entity : entities) {
@@ -393,7 +383,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	private List<DropdownItem> _getFilterNavigationDropdownItems() {
 		return DropdownItemListBuilder.add(
 			dropdownItem -> {
-				dropdownItem.setActive(Objects.equals(_selectionString, "all"));
+				dropdownItem.setActive(Objects.equals(_selection, "all"));
 				dropdownItem.setHref(
 					PortletURLBuilder.create(
 						getPortletURL()
@@ -426,7 +416,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 					LanguageUtil.get(httpServletRequest, "select-accounts"));
 				dropdownItem.putData("redirectURL", currentURLObj.toString());
 				dropdownItem.setActive(
-					Objects.equals(_selectionString, "selected-account-users"));
+					Objects.equals(_selection, "selected-account-users"));
 				dropdownItem.setLabel(
 					LanguageUtil.get(
 						httpServletRequest, "selected-account-users"));
@@ -451,8 +441,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 					).buildString());
 				dropdownItem.putData("redirectURL", currentURLObj.toString());
 				dropdownItem.setActive(
-					Objects.equals(
-						_selectionString, "selected-organization-users"));
+					Objects.equals(_selection, "selected-organization-users"));
 				dropdownItem.setLabel(
 					LanguageUtil.get(
 						httpServletRequest, "selected-organization-users"));
@@ -475,7 +464,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	}
 
 	private final String _navigation;
-	private final String _selectionString;
+	private final String _selection;
 	private final boolean _showDeleteButton;
 	private final boolean _showRestoreButton;
 

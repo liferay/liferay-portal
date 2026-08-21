@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.util.ParamUtil;
 
-import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -26,8 +25,7 @@ public class SelectAccountEntriesDisplayContext {
 
 	public static SearchContainer<AccountEntry> create(
 			LiferayPortletRequest liferayPortletRequest,
-			LiferayPortletResponse liferayPortletResponse,
-			LinkedHashMap<String, Object> params)
+			LiferayPortletResponse liferayPortletResponse)
 		throws PortalException {
 
 		SearchContainer<AccountEntry> searchContainer = new SearchContainer<>(
@@ -48,14 +46,11 @@ public class SelectAccountEntriesDisplayContext {
 
 		searchContainer.setOrderByType(orderByType);
 
-		String keywords = ParamUtil.getString(
-			liferayPortletRequest, "keywords");
-
 		BaseModelSearchResult<AccountEntry> baseModelSearchResult =
 			AccountEntryServiceUtil.searchAccountEntries(
-				keywords, params, searchContainer.getStart(),
-				searchContainer.getDelta(), orderByCol,
-				_isReverseOrder(orderByType));
+				ParamUtil.getString(liferayPortletRequest, "keywords"), null,
+				searchContainer.getStart(), searchContainer.getDelta(),
+				orderByCol, _isReverseOrder(orderByType));
 
 		searchContainer.setResultsAndTotal(
 			baseModelSearchResult::getBaseModels,

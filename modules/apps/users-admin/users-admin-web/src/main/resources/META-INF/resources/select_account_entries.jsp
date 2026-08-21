@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-SearchContainer<AccountEntry> accountEntrySearchContainer = SelectAccountEntriesDisplayContext.create(liferayPortletRequest, liferayPortletResponse, null);
+SearchContainer<AccountEntry> accountEntrySearchContainer = SelectAccountEntriesDisplayContext.create(liferayPortletRequest, liferayPortletResponse);
 %>
 
 <clay:management-toolbar

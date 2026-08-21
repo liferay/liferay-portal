@@ -380,7 +380,7 @@ test(
 			await usersAndOrganizationsPage.goToUsersWithLimitedAccess();
 			await page.waitForLoadState('networkidle');
 
-			await usersAndOrganizationsPage.filterUsers('inactive');
+			await usersAndOrganizationsPage.filterUsers('Inactive');
 
 			await usersAndOrganizationsPage.selectAllUsersCheckBox.check();
 
@@ -407,7 +407,7 @@ test(
 			await usersAndOrganizationsPage.goToUsersWithLimitedAccess();
 			await page.waitForLoadState('networkidle');
 
-			await usersAndOrganizationsPage.filterUsers('inactive');
+			await usersAndOrganizationsPage.filterUsers('Inactive');
 
 			await usersAndOrganizationsPage.selectAllUsersCheckBox.check();
 

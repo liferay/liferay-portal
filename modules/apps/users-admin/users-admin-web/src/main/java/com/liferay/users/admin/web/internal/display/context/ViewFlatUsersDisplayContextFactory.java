@@ -177,10 +177,10 @@ public class ViewFlatUsersDisplayContextFactory {
 			}
 		}
 
-		String selectionString = ParamUtil.getString(
+		String selection = ParamUtil.getString(
 			httpServletRequest, "selection", "all");
 
-		if (Objects.equals(selectionString, "selected-account-users")) {
+		if (Objects.equals(selection, "selected-account-users")) {
 			long[] accountEntryIds = ParamUtil.getLongValues(
 				httpServletRequest, "accountEntryIds");
 
@@ -188,12 +188,10 @@ public class ViewFlatUsersDisplayContextFactory {
 				params.put("accountEntryIds", accountEntryIds);
 			}
 			else {
-				selectionString = "all";
+				selection = "all";
 			}
 		}
-		else if (Objects.equals(
-					selectionString, "selected-organization-users")) {
-
+		else if (Objects.equals(selection, "selected-organization-users")) {
 			Long[] organizationIds = ArrayUtil.toArray(
 				ParamUtil.getLongValues(httpServletRequest, "organizationIds"));
 
@@ -201,11 +199,11 @@ public class ViewFlatUsersDisplayContextFactory {
 				params.put("usersOrgs", organizationIds);
 			}
 			else {
-				selectionString = "all";
+				selection = "all";
 			}
 		}
 
-		portletURL.setParameter("selection", selectionString);
+		portletURL.setParameter("selection", selection);
 
 		userSearch.setResultsAndTotal(
 			() -> UserLocalServiceUtil.search(

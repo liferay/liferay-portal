@@ -175,7 +175,6 @@ export class UsersAndOrganizationsPage {
 	readonly tableOrderMenuItem: (option: string) => Locator;
 	readonly userIdInput: Locator;
 	readonly usersAccountEntryTable: Locator;
-	readonly usersAccountEntryTableAddButton: Locator;
 	readonly usersAccountEntryTableCheckbox: (name: string) => Promise<Locator>;
 	readonly usersAccountEntryTableRow: (
 		colPosition: number,
@@ -185,7 +184,6 @@ export class UsersAndOrganizationsPage {
 	readonly usersCheckbox: (userName: string) => Promise<Locator>;
 	readonly usersDataTable: DataTablePage;
 	readonly usersOrganizationsTable: Locator;
-	readonly usersOrganizationsTableAddButton: Locator;
 	readonly usersOrganizationsTableCheckbox: (
 		name: string
 	) => Promise<Locator>;
@@ -652,6 +650,7 @@ export class UsersAndOrganizationsPage {
 				name: option,
 			});
 		};
+		this.userIdInput = page.getByLabel('User ID');
 		this.usersAccountEntryTable = this.selectorFrame('Accounts').locator(
 			'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_accountEntries'
 		);
@@ -680,7 +679,6 @@ export class UsersAndOrganizationsPage {
 		).locator(
 			'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_organizations'
 		);
-
 		this.usersOrganizationsTableRow = async (
 			colPosition: number,
 			value: string,
@@ -701,7 +699,6 @@ export class UsersAndOrganizationsPage {
 				return usersOrganizationsTableRow.row.getByRole('checkbox');
 			}
 		};
-		this.userIdInput = page.getByLabel('User ID');
 		this.usersTableRowLink = async (screenName: string) => {
 			const usersTableRow = await this.usersTableRow(2, screenName, true);
 
@@ -849,31 +846,21 @@ export class UsersAndOrganizationsPage {
 	}
 
 	async filterUsersBySelection(option: string, selections: string[]) {
+		const tableCheckbox =
+			option === 'Selected Account Users'
+				? this.usersAccountEntryTableCheckbox
+				: this.usersOrganizationsTableCheckbox;
+
 		await this.tableFilterMenu.click();
 		await this.tableFilterMenuItem(option, false).click({force: true});
 
-		if (option === 'Selected Account Users') {
-			for (const entry of selections) {
-				await (
-					await this.usersAccountEntryTableCheckbox(entry)
-				).check();
-			}
-
-			await this.addButton.click();
-
-			await expect(this.page.getByText('Search Results')).toBeVisible();
+		for (const entry of selections) {
+			await (await tableCheckbox(entry)).check();
 		}
-		else if (option === 'Selected Organization Users') {
-			for (const entry of selections) {
-				await (
-					await this.usersOrganizationsTableCheckbox(entry)
-				).check();
-			}
 
-			await this.addButton.click();
+		await this.addButton.click();
 
-			await expect(this.page.getByText('Search Results')).toBeVisible();
-		}
+		await expect(this.page.getByText('Search Results')).toBeVisible();
 	}
 
 	async goto(forceReload?: boolean) {

@@ -5,16 +5,16 @@
 
 package com.liferay.users.admin.web.internal.display.context;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.List;
 
 /**
  * @author Lianne Louie
@@ -26,7 +26,7 @@ public class SelectAccountEntriesManagementToolbarDisplayContext
 		HttpServletRequest httpServletRequest,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
-		SearchContainer<?> searchContainer) {
+		SearchContainer<AccountEntry> searchContainer) {
 
 		super(
 			httpServletRequest, liferayPortletRequest, liferayPortletResponse,
@@ -34,18 +34,18 @@ public class SelectAccountEntriesManagementToolbarDisplayContext
 	}
 
 	@Override
-	public List<DropdownItem> getActionDropdownItems() {
-		return null;
+	public String getClearResultsURL() {
+		return PortletURLBuilder.create(
+			getPortletURL()
+		).setKeywords(
+			StringPool.BLANK
+		).buildString();
 	}
 
 	@Override
-	public String getDefaultEventHandler() {
-		return StringPool.BLANK;
-	}
-
-	@Override
-	public Boolean isShowCreationMenu() {
-		return false;
+	protected String getOrderByCol() {
+		return ParamUtil.getString(
+			liferayPortletRequest, getOrderByColParam(), "name");
 	}
 
 	@Override

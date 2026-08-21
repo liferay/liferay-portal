@@ -1754,13 +1754,13 @@ test(
 );
 
 test.describe('Users & Organizations - Domain Filters', () => {
-	let user;
+	let user1;
 	let user2;
 	let user3;
 	let user4;
 
 	test.beforeEach(async ({apiHelpers}) => {
-		user = await apiHelpers.headlessAdminUser.postUserAccount();
+		user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 		user2 = await apiHelpers.headlessAdminUser.postUserAccount();
 		user3 = await apiHelpers.headlessAdminUser.postUserAccount();
 		user4 = await apiHelpers.headlessAdminUser.postUserAccount();
@@ -1795,9 +1795,8 @@ test.describe('Users & Organizations - Domain Filters', () => {
 			await expect(
 				usersAndOrganizationsPage.tableFilterMenu
 			).toBeVisible();
-
 			await expect(
-				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
 			).toBeVisible();
 
 			await expect(async () => {
@@ -1815,7 +1814,7 @@ test.describe('Users & Organizations - Domain Filters', () => {
 				.click();
 
 			await expect(
-				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
 			).not.toBeVisible();
 			await expect(
 				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
@@ -1839,7 +1838,7 @@ test.describe('Users & Organizations - Domain Filters', () => {
 				usersAndOrganizationsPage.tableFilterMenu
 			).toBeVisible();
 			await expect(
-				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
 			).toBeVisible();
 
 			await usersAndOrganizationsPage.filterUsers(
@@ -1847,7 +1846,7 @@ test.describe('Users & Organizations - Domain Filters', () => {
 			);
 
 			await expect(
-				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
 			).toBeVisible();
 			await expect(
 				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
@@ -1871,7 +1870,7 @@ test.describe('Users & Organizations - Domain Filters', () => {
 				usersAndOrganizationsPage.tableFilterMenu
 			).toBeVisible();
 			await expect(
-				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
 			).toBeVisible();
 
 			await usersAndOrganizationsPage.filterUsers(
@@ -1879,7 +1878,7 @@ test.describe('Users & Organizations - Domain Filters', () => {
 			);
 
 			await expect(
-				usersAndOrganizationsPage.usersTableCell(user.alternateName)
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
 			).toBeVisible();
 			await expect(
 				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
