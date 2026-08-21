@@ -1215,7 +1215,7 @@ test(
 );
 
 test(
-	'Ensure that the "All Tasks" tab disables highlighted bulk actions when project and workflow tasks are selected together',
+	'Ensure that the "All Tasks" tab disables highlighted bulk actions and hides assign-to when project and workflow tasks are selected together',
 	{tag: ['@LPD-88846']},
 	async ({apiHelpers, assignWorkflowToAssetType, page, tasksPage}) => {
 		await assignWorkflowToAssetType('Single Approver', 'Blog');
@@ -1244,7 +1244,7 @@ test(
 		).toBeDisabled();
 		await expect(
 			page.getByRole('button', {name: 'Assign to...'})
-		).toBeDisabled();
+		).toBeHidden();
 		await expect(
 			page.getByRole('button', {name: 'Update State'})
 		).toBeDisabled();
