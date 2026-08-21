@@ -4,7 +4,7 @@ buildService {
 }
 
 dependencies {
-	compileOnly group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.nimbusds", name: "content-type", version: "2.3"
 	compileOnly group: "com.nimbusds", name: "lang-tag", version: "1.7"

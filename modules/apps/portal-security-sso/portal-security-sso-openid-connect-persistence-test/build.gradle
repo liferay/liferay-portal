@@ -1,5 +1,5 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-2"
 	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-api")
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-test-util")
