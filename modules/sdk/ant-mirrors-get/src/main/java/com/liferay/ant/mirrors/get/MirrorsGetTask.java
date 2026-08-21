@@ -288,44 +288,6 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private boolean _copyFromCache(File cacheFile) throws IOException {
-		File readLinkFile = _createReadLinkFile(cacheFile);
-
-		try {
-			File readFile = readLinkFile;
-
-			if (readFile == null) {
-				if (!cacheFile.exists()) {
-					return false;
-				}
-
-				StringBuilder sb = new StringBuilder();
-
-				sb.append("Unable to link ");
-				sb.append(cacheFile.getPath());
-				sb.append(". Reading it directly is not safe when the ");
-				sb.append("mirrors cache is shared.");
-
-				System.out.println(sb.toString());
-
-				readFile = cacheFile;
-			}
-
-			if (!_isValidFile(readFile)) {
-				_deleteFile(cacheFile);
-
-				return false;
-			}
-
-			_copyToDest(readFile);
-
-			return true;
-		}
-		finally {
-			_deleteFile(readLinkFile);
-		}
-	}
-
 	private boolean _copyFromMirrorsMount(File targetFile)
 		throws IOException {
 
@@ -396,7 +358,11 @@ public class MirrorsGetTask extends Task {
 		throw new IOException(sb.toString(), lastIOException);
 	}
 
-	private void _copyToDest(File file) throws IOException {
+	private boolean _copyToDest(File file) throws IOException {
+		if (!_isValidFile(file)) {
+			return false;
+		}
+
 		File destFile = _dest;
 
 		if (_dest.exists() && _dest.isDirectory()) {
@@ -411,6 +377,8 @@ public class MirrorsGetTask extends Task {
 			throw new IOException(
 				destFile.getAbsolutePath() + " is not a valid file");
 		}
+
+		return true;
 	}
 
 	private File _createReadLinkFile(File file) {
@@ -609,7 +577,9 @@ public class MirrorsGetTask extends Task {
 
 	private void _execute() throws IOException {
 		if (_src.startsWith("file:")) {
-			_copyToDest(new File(_src.substring("file:".length())));
+			if (!_copyToDest(new File(_src.substring("file:".length())))) {
+				throw new IOException(_getUnableToCopyMessage());
+			}
 
 			return;
 		}
@@ -630,8 +600,12 @@ public class MirrorsGetTask extends Task {
 
 		_deleteExpiredTempFiles(mirrorsCacheFile);
 
-		if (!_force && _copyFromCache(mirrorsCacheFile)) {
-			return;
+		if (!_force) {
+			if (_copyToDest(mirrorsCacheFile)) {
+				return;
+			}
+
+			_deleteFile(mirrorsCacheFile);
 		}
 
 		File tempFile = _generateTempFile(mirrorsCacheFile);
@@ -643,7 +617,9 @@ public class MirrorsGetTask extends Task {
 				_deleteFile(mirrorsCacheFile);
 			}
 
-			_copyToDest(_addToCache(tempFile, mirrorsCacheFile));
+			if (!_copyToDest(_addToCache(tempFile, mirrorsCacheFile))) {
+				throw new IOException(_getUnableToCopyMessage());
+			}
 		}
 		finally {
 			_deleteFile(tempFile);
@@ -959,6 +935,18 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return processOutput.toString();
+	}
+
+	private String _getUnableToCopyMessage() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Unable to copy ");
+		sb.append(_src);
+		sb.append(" to ");
+		sb.append(_dest.getPath());
+		sb.append(".");
+
+		return sb.toString();
 	}
 
 	private URL _getRemoteURL() {
