@@ -7,23 +7,6 @@
 
 <%@ include file="/layout/history_layout/init.jsp" %>
 
-<c:choose>
-	<c:when test="<%= layout.getMasterLayoutPlid() > 0 %>">
-		<div id="master-layout-wrapper">
-			<liferay-layout:render-fragment-layout
-				showPreview="<%= true %>"
-			/>
-		</div>
-	</c:when>
-	<c:otherwise>
-		<div class="layout-content portlet-layout" id="main-content" role="main">
-			<liferay-layout:render-fragment-layout
-				showPreview="<%= true %>"
-			/>
-		</div>
-	</c:otherwise>
-</c:choose>
-
 <div class="layout-content-version">
 	<liferay-portlet:runtime
 		portletName="<%= LayoutContentVersionPortletKeys.LAYOUT_CONTENT_VERSION %>"
