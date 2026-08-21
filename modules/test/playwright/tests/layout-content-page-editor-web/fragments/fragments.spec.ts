@@ -1255,6 +1255,16 @@ test.describe('Slider Fragment', () => {
 		await expectSlideIsActive('Slide 1');
 		await expectSlideIsNotActive('Slide 2');
 
+		// Check that every ARIA reference resolves
+
+		for (const element of await page
+			.locator('.component-slider [aria-controls]')
+			.all()) {
+			const id = await element.getAttribute('aria-controls');
+
+			await expect(page.locator(`[id="${id}"]`)).toBeAttached();
+		}
+
 		// Check accessibility
 
 		await checkAccessibility({page, selectors: ['.component-slider']});
