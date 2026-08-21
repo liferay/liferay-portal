@@ -50,8 +50,15 @@ describe('[CMS Broken Links] BrokenLinksFDSPropsTransformer', () => {
 		]);
 	});
 
-	it('links the title of a content the caller cannot update', () => {
+	it('renders the title as plain text without the update permission', () => {
 		renderTitle({brokenLinksCount: 1});
+
+		expect(screen.queryByRole('link', {name: TITLE})).toBeNull();
+		expect(screen.getByText(TITLE)).toBeInTheDocument();
+	});
+
+	it('links the title with the update permission', () => {
+		renderTitle({actions: {update: {}}, brokenLinksCount: 1});
 
 		expect(screen.getByRole('link', {name: TITLE})).toBeInTheDocument();
 	});
