@@ -14,11 +14,13 @@ import java.io.IOException;
 
 import java.net.SocketTimeoutException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -26,6 +28,14 @@ import org.junit.Test;
  */
 public class HTTPEndpointMonitorTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		mockEnvironment(Collections.<String, String>emptyMap());
+	}
 
 	@Test
 	public void testExecuteLatencyMaximum() throws Exception {
