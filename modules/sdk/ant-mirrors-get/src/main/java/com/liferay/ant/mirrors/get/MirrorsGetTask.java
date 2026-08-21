@@ -18,7 +18,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -279,7 +278,7 @@ public class MirrorsGetTask extends Task {
 				readFile = sourceFile;
 			}
 
-			size = _toFile(readFile.toURI().toURL(), targetFile);
+			size = _toFile(readFile.toURI().toString(), targetFile);
 		}
 		finally {
 			_deleteFile(readLinkFile);
@@ -473,7 +472,7 @@ public class MirrorsGetTask extends Task {
 		int size = 0;
 
 		try {
-			size = _toFile(new URL(url), targetFile);
+			size = _toFile(url, targetFile);
 		}
 		catch (IOException ioException) {
 			_deleteFile(targetFile);
@@ -497,7 +496,7 @@ public class MirrorsGetTask extends Task {
 			System.out.println(sb.toString());
 		}
 
-		if (!_isValidMD5(targetFile, new URL(url + ".md5"))) {
+		if (!_isValidMD5(targetFile, url + ".md5")) {
 			_deleteFile(targetFile);
 
 			throw new IOException(
@@ -742,7 +741,7 @@ public class MirrorsGetTask extends Task {
 		return "gs://" + gcpBucketName + path + "/" + _fileName;
 	}
 
-	private URL _getLocalURL() {
+	private String _getLocalURL() {
 		StringBuilder sb = new StringBuilder();
 
 		Matcher releaseHostNameMatcher = _releaseHostNamePattern.matcher(
@@ -774,12 +773,7 @@ public class MirrorsGetTask extends Task {
 
 		sb.append(_fileName);
 
-		try {
-			return new URL(sb.toString());
-		}
-		catch (MalformedURLException malformedURLException) {
-			throw new RuntimeException(malformedURLException);
-		}
+		return sb.toString();
 	}
 
 	private File _getMirrorsCacheFile() {
@@ -826,7 +820,7 @@ public class MirrorsGetTask extends Task {
 		return new File(sb.toString(), _fileName);
 	}
 
-	private URL _getMirrorsURL() {
+	private String _getMirrorsURL() {
 		String mirrorsHostname = _getMirrorsHostname();
 
 		if (mirrorsHostname.isEmpty()) {
@@ -850,17 +844,17 @@ public class MirrorsGetTask extends Task {
 
 		sb.append(_fileName);
 
-		try {
-			return new URL(sb.toString());
-		}
-		catch (MalformedURLException malformedURLException) {
-			throw new RuntimeException(malformedURLException);
-		}
+		return sb.toString();
 	}
 
-	private URL _getNexusTomcatURL() {
-		Matcher matcher = _nexusTomcatURLPattern.matcher(
-			String.valueOf(_getRemoteURL()));
+	private String _getNexusTomcatURL() {
+		String remoteURL = _getRemoteURL();
+
+		if (remoteURL == null) {
+			return null;
+		}
+
+		Matcher matcher = _nexusTomcatURLPattern.matcher(remoteURL);
 
 		if (!matcher.find()) {
 			return null;
@@ -875,12 +869,7 @@ public class MirrorsGetTask extends Task {
 		sb.append("/");
 		sb.append(matcher.group("tomcatFileName"));
 
-		try {
-			return new URL(sb.toString());
-		}
-		catch (MalformedURLException malformedURLException) {
-			throw new RuntimeException(malformedURLException);
-		}
+		return sb.toString();
 	}
 
 	private String _getPassword() {
@@ -947,7 +936,7 @@ public class MirrorsGetTask extends Task {
 		return processOutput.toString();
 	}
 
-	private URL _getRemoteURL() {
+	private String _getRemoteURL() {
 		if (_hostName == null) {
 			return null;
 		}
@@ -976,30 +965,24 @@ public class MirrorsGetTask extends Task {
 
 		sb.append(_fileName);
 
-		try {
-			return new URL(sb.toString());
-		}
-		catch (MalformedURLException malformedURLException) {
-			throw new RuntimeException(malformedURLException);
-		}
+		return sb.toString();
 	}
 
 	private String[] _getSrcURLs() {
 		String localNetworkURL = null;
 
 		if (_tryLocalNetwork) {
-			localNetworkURL = _toExternalForm(_getNexusTomcatURL());
+			localNetworkURL = _getNexusTomcatURL();
 
 			if ((localNetworkURL == null) &&
 				!_getMirrorsHostname().isEmpty()) {
 
-				localNetworkURL = _toExternalForm(_getMirrorsURL());
+				localNetworkURL = _getMirrorsURL();
 			}
 		}
 
 		return new String[] {
-			localNetworkURL, _toExternalForm(_getLocalURL()), _getGSURL(),
-			_toExternalForm(_getRemoteURL())
+			localNetworkURL, _getLocalURL(), _getGSURL(), _getRemoteURL()
 		};
 	}
 
@@ -1206,7 +1189,9 @@ public class MirrorsGetTask extends Task {
 		return true;
 	}
 
-	private boolean _isValidMD5(File file, URL url) throws IOException {
+	private boolean _isValidMD5(File file, String url)
+		throws IOException {
+
 		if (_skipChecksum) {
 			return true;
 		}
@@ -1381,15 +1366,7 @@ public class MirrorsGetTask extends Task {
 		throw new IOException(sb.toString());
 	}
 
-	private String _toExternalForm(URL url) {
-		if (url == null) {
-			return null;
-		}
-
-		return url.toExternalForm();
-	}
-
-	private int _toFile(URL url, File file) throws IOException {
+	private int _toFile(String url, File file) throws IOException {
 		if (file.exists()) {
 			_deleteFile(file);
 		}
@@ -1419,10 +1396,10 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private int _toOutputStream(URL url, OutputStream outputStream)
+	private int _toOutputStream(String url, OutputStream outputStream)
 		throws IOException {
 
-		URLConnection urlConnection = _openConnection(url);
+		URLConnection urlConnection = _openConnection(new URL(url));
 
 		InputStream inputStream = urlConnection.getInputStream();
 
@@ -1456,7 +1433,7 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private String _toString(URL url) throws IOException {
+	private String _toString(String url) throws IOException {
 		OutputStream outputStream = new ByteArrayOutputStream();
 
 		try {
