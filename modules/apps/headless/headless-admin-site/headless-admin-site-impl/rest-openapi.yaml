@@ -3054,6 +3054,12 @@ components:
                     $ref: "#/components/schemas/PageSpecification"
                     description:
                         The page specification version's page specification. It is not returned by default. It can be embedded via nestedFields.
+                pageSpecificationVersionPageExperiences:
+                    description:
+                        The page specification version's page experiences.
+                    items:
+                        $ref: "#/components/schemas/PageSpecificationVersionPageExperience"
+                    type: array
                 status:
                     description:
                         The page specification version's status.
