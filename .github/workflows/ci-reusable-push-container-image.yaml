@@ -51,9 +51,9 @@ jobs:
 
                         sanitized_branch=$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')
 
-                        local registry_path="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${sanitized_branch}"
+                        local registry_path="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${sanitized_branch}/${GITHUB_SHA::7}"
 
-                        local image_ref="${registry_path}/${{inputs.image_name}}:${version}-g${GITHUB_SHA::7}"
+                        local image_ref="${registry_path}/${{inputs.image_name}}:${version}"
 
                         docker \
                             build \
