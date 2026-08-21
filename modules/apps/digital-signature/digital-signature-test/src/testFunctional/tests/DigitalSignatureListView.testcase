@@ -133,12 +133,14 @@ definition {
 	@description = "LPS-131206. Verify if the Create Date column shows the date correctly after created one envelope in local Timezone "
 	@priority = 4
 	test CanViewCorrectDate {
+		var envelopeName = "Poshi Test CanViewCorrectDate ${StringUtil.randomString(8)}";
+
 		task ("When a digital envelope is created") {
 			DigitalSignature.createEnvelope(
 				addEmail = "test@liferay.com",
 				addFullName = "Recipient Full Name",
 				addMessage = "Email Message",
-				addName = "Poshi Test CanViewCorrectDate",
+				addName = ${envelopeName},
 				addSubject = "Email Subject",
 				dmDocumentFile = "Alice's Adventures in Wonderland.pdf");
 
@@ -150,9 +152,9 @@ definition {
 		task ("Then the date the digital signature was created is shown") {
 			Refresh();
 
-			DigitalSignature.viewCreateDate();
+			DigitalSignature.viewCreateDate(envelopeName = ${envelopeName});
 
-			DigitalSignature.deleteEnvelope(envelopeName = "Poshi Test CanViewCorrectDate");
+			DigitalSignature.deleteEnvelope(envelopeName = ${envelopeName});
 
 			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 

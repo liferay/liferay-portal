@@ -430,10 +430,23 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewCreateDate() {
-		WaitForElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_RECENT_CREATE_DATE");
+	macro viewCreateDate(envelopeName = null) {
 
-		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_RECENT_CREATE_DATE");
+		// The list is DocuSign's own sent items folder, which does not hold an
+		// envelope the moment the send is acknowledged, so ask for the list
+		// again until the envelope's own row is on it. Each ask waits for the
+		// list to finish fetching, because navigating away from it mid fetch
+		// logs a client abort that fails the whole run.
+
+		while ((IsElementNotPresent(envelopeName = ${envelopeName}, locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_CREATE_DATE")) && (maxIterations = "10")) {
+			Refresh();
+
+			DigitalSignature.waitForListViewLoad();
+		}
+
+		AssertElementPresent(
+			envelopeName = ${envelopeName},
+			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_CREATE_DATE");
 	}
 
 	@summary = "Default summary"

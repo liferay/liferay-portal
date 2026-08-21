@@ -76,8 +76,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>DIGITAL_SIGNATURE_RECENT_CREATE_DATE</td>
-	<td>//td[contains(., 'a few seconds ago')]</td>
+	<td>DIGITAL_SIGNATURE_ENVELOPE_CREATE_DATE</td>
+	<td>//tr[contains(., '${envelopeName}')]//td[contains(., 'ago')]</td>
 	<td></td>
 </tr>
 <tr>
