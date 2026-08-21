@@ -24,6 +24,10 @@ import getPageDefinition from '../../layout-content-page-editor-web/main/utils/g
 import {generateObjectFields} from '../utils/generateObjectFields';
 import {salesforceConfig} from './salesforce.config';
 
+const EXTERNAL_REFERENCE_CODE = 'Playwright_Test__c';
+
+const OBJECT_DEFINITION_NAME = 'PlaywrightTest';
+
 const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
@@ -37,7 +41,7 @@ const test = mergeTests(
 	pageEditorPagesTest
 );
 
-test.beforeEach(async ({instanceSettingsPage, page}) => {
+test.beforeEach(async ({apiHelpers, instanceSettingsPage, page}) => {
 	test.skip(
 		!salesforceConfig.salesforceLoginURL ||
 			!salesforceConfig.salesforceConsumerKey ||
@@ -48,6 +52,21 @@ test.beforeEach(async ({instanceSettingsPage, page}) => {
 	);
 
 	page.setViewportSize({height: 1080, width: 1920});
+
+	// The external reference code names the Salesforce object that holds the
+	// entries, so neither it nor the definition's name can be randomized, and
+	// only one definition at a time can carry them. A run that dies before its
+	// own teardown leaves that definition behind and every later run against the
+	// same database is refused. Take the name back.
+
+	const leftoverObjectDefinition =
+		await apiHelpers.objectAdmin.getObjectDefinitionByName(
+			OBJECT_DEFINITION_NAME
+		);
+
+	if (leftoverObjectDefinition) {
+		await apiHelpers.deleteObjectDefinition(leftoverObjectDefinition.id);
+	}
 
 	await test.step('Setup Salesforce Instance Settings', async () => {
 		await instanceSettingsPage.goToInstanceSetting(
@@ -99,9 +118,9 @@ test('Assert CRUD with created custom object using Salesforce storage type', asy
 	const {body: objectDefinition} =
 		await objectDefinitionAPIClient.postObjectDefinition({
 			active: true,
-			externalReferenceCode: 'Playwright_Test__c',
+			externalReferenceCode: EXTERNAL_REFERENCE_CODE,
 			label: {en_US: 'Playwright Test'},
-			name: 'PlaywrightTest',
+			name: OBJECT_DEFINITION_NAME,
 			objectFields,
 			panelCategoryKey: 'control_panel.object',
 			pluralLabel: {en_US: 'Playwright Tests'},
@@ -227,9 +246,9 @@ test('Assert CRUD with created custom object using Salesforce storage type in fo
 	const {body: objectDefinition} =
 		await objectDefinitionAPIClient.postObjectDefinition({
 			active: true,
-			externalReferenceCode: 'Playwright_Test__c',
+			externalReferenceCode: EXTERNAL_REFERENCE_CODE,
 			label: {en_US: 'Playwright Test'},
-			name: 'PlaywrightTest',
+			name: OBJECT_DEFINITION_NAME,
 			objectFields,
 			panelCategoryKey: 'control_panel.object',
 			pluralLabel: {en_US: 'Playwright Tests'},
