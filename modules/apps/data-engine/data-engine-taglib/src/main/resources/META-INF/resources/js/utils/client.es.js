@@ -98,11 +98,45 @@ export function request(endpoint, method = 'GET') {
 	});
 }
 
-export function getItem(endpoint) {
+export function getItem(endpoint, {signal} = {}) {
 	return fetch(getURL(endpoint), {
 		headers: HEADERS,
 		method: 'GET',
+		signal,
 	}).then((response) => response.json());
+}
+
+export async function getItems(
+	baseURL,
+	keywords = '',
+	{pageSize = 250, signal} = {}
+) {
+
+	// baseURL must not contain a query string
+
+	const encodedKeywords = encodeURIComponent(keywords);
+
+	const {items = [], totalCount = 0} = await getItem(
+		`${baseURL}?page=1&pageSize=${pageSize}&keywords=${encodedKeywords}`,
+		{signal}
+	);
+
+	if (totalCount <= pageSize) {
+		return items;
+	}
+
+	const pages = Math.ceil(totalCount / pageSize);
+
+	const rest = await Promise.all(
+		Array.from({length: pages - 1}, (_, i) =>
+			getItem(
+				`${baseURL}?page=${i + 2}&pageSize=${pageSize}&keywords=${encodedKeywords}`,
+				{signal}
+			)
+		)
+	);
+
+	return [...items, ...rest.flatMap(({items: pageItems = []}) => pageItems)];
 }
 
 export function updateItem(endpoint, item, params) {

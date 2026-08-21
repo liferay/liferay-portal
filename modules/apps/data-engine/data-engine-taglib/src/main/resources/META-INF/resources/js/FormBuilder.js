@@ -67,7 +67,7 @@ export function FormBuilder() {
 			}
 
 			const groupFieldSetsPromise =
-				groupId === themeDisplay.getCompanyGroupId()
+				Number(groupId) === Number(themeDisplay.getCompanyGroupId())
 					? Promise.resolve({})
 					: getItem(
 							`/o/data-engine/v2.0/data-definitions/by-content-type/${contentType}?page=1&pageSize=250`
