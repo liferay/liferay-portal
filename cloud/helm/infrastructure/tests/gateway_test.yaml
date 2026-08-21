@@ -47,15 +47,6 @@ tests:
                             -   liferay-certificates-my-certificate
     -   asserts:
             -   failedTemplate:
-                    errorPattern: The web endpoint uses port 80 without a hostname, which collides with the implicit http listener
-        it: Fails when an endpoint claims port 80 without a hostname
-        set:
-            endpoints:
-                web:
-                    port: 80
-                    protocol: HTTP
-    -   asserts:
-            -   failedTemplate:
                     errorPattern: The mydomain endpoint serves HTTPS and must set tls.externalSecretKeys
         it: Fails when an HTTPS endpoint has no certificate
         set:
@@ -64,6 +55,15 @@ tests:
                     hostname: mydomain.example.com
                     port: 443
                     protocol: HTTPS
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: The web endpoint uses port 80 without a hostname, which collides with the implicit http listener
+        it: Fails when an endpoint claims port 80 without a hostname
+        set:
+            endpoints:
+                web:
+                    port: 80
+                    protocol: HTTP
     -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
@@ -107,9 +107,6 @@ tests:
             -   equal:
                     path: spec.listeners[1].tls.certificateRefs[0].name
                     value: liferay-certificates-my-certificate
-            -   equal:
-                    path: spec.listeners[1].tls.mode
-                    value: Terminate
         it: References the certificate secrets from the endpoint TLS configuration
         set:
             endpoints:

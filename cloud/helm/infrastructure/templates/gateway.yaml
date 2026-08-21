@@ -39,11 +39,6 @@ metadata:
 spec:
     gatewayClassName: {{ $gateway.className | quote }}
     listeners:
-        {{- range $name, $endpoint := .Values.endpoints }}
-        {{- if and (eq (int $endpoint.port) 80) (not $endpoint.hostname) (ne $name "http") }}
-        {{- fail (printf "The %s endpoint uses port 80 without a hostname, which collides with the implicit http listener" $name) }}
-        {{- end }}
-        {{- end }}
         {{- if not (hasKey .Values.endpoints "http") }}
         -   allowedRoutes:
                 namespaces:
@@ -62,6 +57,9 @@ spec:
             name: {{ $name | quote }}
             port: {{ $endpoint.port }}
             protocol: {{ $endpoint.protocol | quote }}
+            {{- if and (eq (int $endpoint.port) 80) (not $endpoint.hostname) (ne $name "http") }}
+            {{- fail (printf "The %s endpoint uses port 80 without a hostname, which collides with the implicit http listener" $name) }}
+            {{- end }}
             {{- $externalSecretKeys := dig "tls" "externalSecretKeys" (list) $endpoint }}
             {{- if and (eq $endpoint.protocol "HTTPS") (not $externalSecretKeys) }}
             {{- fail (printf "The %s endpoint serves HTTPS and must set tls.externalSecretKeys" $name) }}
@@ -76,7 +74,6 @@ spec:
                     -   kind: Secret
                         name: {{ . | quote }}
                     {{- end }}
-                mode: Terminate
             {{- end }}
         {{- end }}
 {{- end -}}

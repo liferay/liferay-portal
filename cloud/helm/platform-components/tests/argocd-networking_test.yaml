@@ -164,10 +164,6 @@ tests:
                 equal:
                     path: spec.listeners[1].tls.certificateRefs[0].name
                     value: argocd-server-tls
-            -   documentIndex: 2
-                equal:
-                    path: spec.listeners[1].tls.mode
-                    value: Terminate
             -   documentIndex: 4
                 equal:
                     path: metadata.name

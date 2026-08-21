@@ -19,12 +19,10 @@ spec:
         -   extract:
                 decodingStrategy: Auto
                 key: {{ .Values.argocd.gateway.tls.externalSecretKey }}
-    refreshInterval: 1h0m0s
     secretStoreRef:
         kind: ClusterSecretStore
         name: {{ .Values.clusterSecretStore.name | quote }}
     target:
-        creationPolicy: Owner
         name: argocd-server-tls
         template:
             metadata:
@@ -93,7 +91,6 @@ spec:
         tls:
             certificateRefs:
                 -   name: argocd-server-tls
-            mode: Terminate
     {{- end }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
