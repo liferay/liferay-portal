@@ -287,6 +287,39 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
+	private void _deleteExpiredTempFiles(File cacheFile) {
+		File parentFile = cacheFile.getParentFile();
+
+		if (parentFile == null) {
+			return;
+		}
+
+		File[] files = parentFile.listFiles();
+
+		if (files == null) {
+			return;
+		}
+
+		Pattern pattern = _getOrphanPattern(cacheFile.getName());
+		long thresholdTime = System.currentTimeMillis() - _MAX_AGE_MILLIS;
+
+		for (File file : files) {
+			Matcher matcher = pattern.matcher(file.getName());
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			long time = Long.parseLong(matcher.group("timestamp"));
+
+			if (time > thresholdTime) {
+				continue;
+			}
+
+			file.delete();
+		}
+	}
+
 	private void _deleteFile(File file) {
 		if (!file.exists()) {
 			return;
@@ -566,7 +599,7 @@ public class MirrorsGetTask extends Task {
 		File mirrorsCacheLinkFile = _uniqueLinkFile(mirrorsCacheFile);
 		File mirrorsCacheTempFile = _uniqueTempFile(mirrorsCacheFile);
 
-		_sweep(mirrorsCacheFile);
+		_deleteExpiredTempFiles(mirrorsCacheFile);
 
 		try {
 			File readFile = null;
@@ -1331,39 +1364,6 @@ public class MirrorsGetTask extends Task {
 		sb.append(".");
 
 		throw new IOException(sb.toString());
-	}
-
-	private void _sweep(File cacheFile) {
-		File parentFile = cacheFile.getParentFile();
-
-		if (parentFile == null) {
-			return;
-		}
-
-		File[] files = parentFile.listFiles();
-
-		if (files == null) {
-			return;
-		}
-
-		Pattern pattern = _getOrphanPattern(cacheFile.getName());
-		long thresholdTime = System.currentTimeMillis() - _MAX_AGE_MILLIS;
-
-		for (File file : files) {
-			Matcher matcher = pattern.matcher(file.getName());
-
-			if (!matcher.matches()) {
-				continue;
-			}
-
-			long time = Long.parseLong(matcher.group("timestamp"));
-
-			if (time > thresholdTime) {
-				continue;
-			}
-
-			file.delete();
-		}
 	}
 
 	private int _toFile(URL url, File file) throws IOException {
