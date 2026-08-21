@@ -11,7 +11,11 @@
 		</label>
 
 		<div class="d-flex">
-			<input aria-describedby="${fragmentElementId}-date-input-help-text" aria-labelledby="${fragmentElementId}-date-input-label [#if input.errorMessage?has_content]${fragmentElementId}-date-input-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentElementId}-date-input" max="9999-12-31" name="${input.name}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="date" [#if input.value??]value="${input.value}"[/#if] />
+			<div class="date-input-picker flex-grow-1" id="${fragmentElementId}-date-input-picker"></div>
+
+			<input id="${fragmentElementId}-date-input-value" name="${input.name}" type="hidden" [#if input.value??]value="${input.value}"[/#if] />
+
+			<span id="${fragmentElementId}-date-input-translations"></span>
 
 			[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
 				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-1 pt-2" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentElementId}-unlocalized-info" tabindex="0">
