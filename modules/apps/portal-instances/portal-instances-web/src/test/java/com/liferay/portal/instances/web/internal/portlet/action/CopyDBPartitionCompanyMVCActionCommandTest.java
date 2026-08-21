@@ -47,7 +47,7 @@ import org.mockito.Mockito;
 /**
  * @author Jorge Avalos
  */
-public class CopyInstanceMVCActionCommandTest {
+public class CopyDBPartitionCompanyMVCActionCommandTest {
 
 	@ClassRule
 	public static LiferayUnitTestRule liferayUnitTestRule =
@@ -113,11 +113,12 @@ public class CopyInstanceMVCActionCommandTest {
 			SessionMessages.class);
 
 		ReflectionTestUtil.setFieldValue(
-			_copyInstanceMVCActionCommand, "_companyService", _companyService);
+			_copyDBPartitionCompanyMVCActionCommand, "_companyService",
+			_companyService);
 		ReflectionTestUtil.setFieldValue(
-			_copyInstanceMVCActionCommand, "_language", _language);
+			_copyDBPartitionCompanyMVCActionCommand, "_language", _language);
 		ReflectionTestUtil.setFieldValue(
-			_copyInstanceMVCActionCommand, "_portal", _portal);
+			_copyDBPartitionCompanyMVCActionCommand, "_portal", _portal);
 	}
 
 	@After
@@ -329,7 +330,7 @@ public class CopyInstanceMVCActionCommandTest {
 
 		Assert.assertThrows(
 			UnsupportedOperationException.class,
-			() -> _copyInstanceMVCActionCommand.doProcessAction(
+			() -> _copyDBPartitionCompanyMVCActionCommand.doProcessAction(
 				_getMockActionRequest(), new MockActionResponse()));
 
 		Mockito.verifyNoInteractions(_companyService);
@@ -347,7 +348,7 @@ public class CopyInstanceMVCActionCommandTest {
 			_company
 		);
 
-		_copyInstanceMVCActionCommand.doProcessAction(
+		_copyDBPartitionCompanyMVCActionCommand.doProcessAction(
 			mockActionRequest, new MockActionResponse());
 
 		Assert.assertEquals(_COMPANY_ID, _jsonObject.getLong("companyId"));
@@ -380,7 +381,7 @@ public class CopyInstanceMVCActionCommandTest {
 
 		_hideDefaultSuccessMessageCount = 0;
 
-		_copyInstanceMVCActionCommand.doProcessAction(
+		_copyDBPartitionCompanyMVCActionCommand.doProcessAction(
 			mockActionRequest, new MockActionResponse());
 
 		Assert.assertEquals(expectedError, _jsonObject.getString("error"));
@@ -450,17 +451,18 @@ public class CopyInstanceMVCActionCommandTest {
 	private final CompanyService _companyService = Mockito.mock(
 		CompanyService.class);
 
-	private final CopyInstanceMVCActionCommand _copyInstanceMVCActionCommand =
-		new CopyInstanceMVCActionCommand() {
+	private final CopyDBPartitionCompanyMVCActionCommand
+		_copyDBPartitionCompanyMVCActionCommand =
+			new CopyDBPartitionCompanyMVCActionCommand() {
 
-			@Override
-			protected void hideDefaultSuccessMessage(
-				PortletRequest portletRequest) {
+				@Override
+				protected void hideDefaultSuccessMessage(
+					PortletRequest portletRequest) {
 
-				_hideDefaultSuccessMessageCount++;
-			}
+					_hideDefaultSuccessMessageCount++;
+				}
 
-		};
+			};
 
 	private MockedStatic<FeatureFlagManagerUtil>
 		_featureFlagManagerUtilMockedStatic;

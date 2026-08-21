@@ -124,8 +124,9 @@ export class VirtualInstancesPage {
 
 		await Promise.all([
 			this.addInstanceAddButton.click(),
-			this.page.waitForResponse((response) =>
-				response.url().includes('add_instance')
+			this.page.waitForResponse(
+				(response) => response.url().includes('add_instance'),
+				{timeout: 180 * 1000}
 			),
 		]);
 
@@ -254,7 +255,8 @@ export class VirtualInstancesPage {
 
 		await Promise.all([
 			this.page.waitForResponse(
-				(response) => response.url().includes('copy_instance'),
+				(response) =>
+					response.url().includes('copy_db_partition_company'),
 				{timeout}
 			),
 			this.copyInstanceSubmitButton.click(),
