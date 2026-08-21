@@ -62,6 +62,12 @@ public class LayoutContentVersionDisplayContext {
 				"defaultUserImageSrc",
 				_themeDisplay.getPathImage() + "/user_portrait?img_id=0"
 			).put(
+				"getPagePreviewURL",
+				_themeDisplay.getPathMain() + "/portal/get_page_preview"
+			).put(
+				"getPageVersionPreviewURL",
+				_themeDisplay.getPathMain() + "/portal/get_page_version_preview"
+			).put(
 				"layout",
 				() -> {
 					Layout layout = _themeDisplay.getLayout();
