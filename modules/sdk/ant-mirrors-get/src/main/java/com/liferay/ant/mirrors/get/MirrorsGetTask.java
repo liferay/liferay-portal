@@ -651,7 +651,11 @@ public class MirrorsGetTask extends Task {
 		sb.append("-");
 		sb.append(fileName);
 
-		return new File(baseFile.getParentFile(), sb.toString());
+		File tempFile = new File(baseFile.getParentFile(), sb.toString());
+
+		tempFile.deleteOnExit();
+
+		return tempFile;
 	}
 
 	private String _getGCPBucketName() {
