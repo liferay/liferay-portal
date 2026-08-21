@@ -53,14 +53,6 @@ public class EditCommerceOrderAttachmentDisplayContext {
 		return _getBaseURL();
 	}
 
-	public long getAttachmentId() {
-		if (_commerceOrderAttachment == null) {
-			return 0;
-		}
-
-		return _commerceOrderAttachment.getCommerceOrderAttachmentId();
-	}
-
 	public List<ListTypeEntry> getAttachmentTypes() {
 		try {
 			ListTypeDefinition listTypeDefinition =
@@ -84,6 +76,14 @@ public class EditCommerceOrderAttachmentDisplayContext {
 
 			return Collections.emptyList();
 		}
+	}
+
+	public long getCommerceOrderAttachmentId() {
+		if (_commerceOrderAttachment == null) {
+			return 0;
+		}
+
+		return _commerceOrderAttachment.getCommerceOrderAttachmentId();
 	}
 
 	public long getCommerceOrderId() {

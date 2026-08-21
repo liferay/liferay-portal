@@ -10,7 +10,7 @@
 <%
 EditCommerceOrderAttachmentDisplayContext editCommerceOrderAttachmentDisplayContext = (EditCommerceOrderAttachmentDisplayContext)request.getAttribute(EditCommerceOrderAttachmentDisplayContext.class.getName());
 
-long attachmentId = editCommerceOrderAttachmentDisplayContext.getAttachmentId();
+long commerceOrderAttachmentId = editCommerceOrderAttachmentDisplayContext.getCommerceOrderAttachmentId();
 long fileEntryId = editCommerceOrderAttachmentDisplayContext.getFileEntryId();
 String mode = editCommerceOrderAttachmentDisplayContext.getMode();
 %>
@@ -19,7 +19,7 @@ String mode = editCommerceOrderAttachmentDisplayContext.getMode();
 	title='<%= LanguageUtil.get(request, Objects.equals(mode, "edit") ? "edit-attachment" : "add-attachment") %>'
 >
 	<aui:form method="post" name="fm" onSubmit='<%= liferayPortletResponse.getNamespace() + "editCommerceOrderAttachment(event, this.form)" %>'>
-		<aui:input name="attachmentId" type="hidden" value="<%= attachmentId %>" />
+		<aui:input name="commerceOrderAttachmentId" type="hidden" value="<%= commerceOrderAttachmentId %>" />
 
 		<commerce-ui:panel>
 			<div class="<%= (fileEntryId > 0) ? StringPool.BLANK : " d-none" %> font-weight-bold mb-3" id="<portlet:namespace />attachmentFileName">
@@ -91,7 +91,7 @@ String mode = editCommerceOrderAttachmentDisplayContext.getMode();
 				HashMapBuilder.<String, Object>put(
 					"addURL", editCommerceOrderAttachmentDisplayContext.getAddURL()
 				).put(
-					"attachmentId", attachmentId
+					"commerceOrderAttachmentId", commerceOrderAttachmentId
 				).put(
 					"commerceOrderId", editCommerceOrderAttachmentDisplayContext.getCommerceOrderId()
 				).put(

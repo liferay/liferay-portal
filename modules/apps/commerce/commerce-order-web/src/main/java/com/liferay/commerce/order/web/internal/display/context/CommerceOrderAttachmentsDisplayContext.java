@@ -124,7 +124,7 @@ public class CommerceOrderAttachmentsDisplayContext {
 		).setMVCRenderCommandName(
 			"/commerce_order/edit_commerce_order_attachment"
 		).setParameter(
-			"attachmentId", "{id}"
+			"commerceOrderAttachmentId", "{id}"
 		).setParameter(
 			"commerceOrderId", _commerceOrderId
 		).setWindowState(

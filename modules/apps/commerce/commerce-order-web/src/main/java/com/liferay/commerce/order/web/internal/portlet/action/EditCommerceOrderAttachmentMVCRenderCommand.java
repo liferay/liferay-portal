@@ -46,13 +46,13 @@ public class EditCommerceOrderAttachmentMVCRenderCommand
 		try {
 			CommerceOrderAttachment commerceOrderAttachment = null;
 
-			long attachmentId = ParamUtil.getLong(
-				renderRequest, "attachmentId");
+			long commerceOrderAttachmentId = ParamUtil.getLong(
+				renderRequest, "commerceOrderAttachmentId");
 
-			if (attachmentId > 0) {
+			if (commerceOrderAttachmentId > 0) {
 				commerceOrderAttachment =
 					_commerceOrderAttachmentService.
-						fetchCommerceOrderAttachment(attachmentId);
+						fetchCommerceOrderAttachment(commerceOrderAttachmentId);
 			}
 
 			long commerceOrderId = ParamUtil.getLong(
