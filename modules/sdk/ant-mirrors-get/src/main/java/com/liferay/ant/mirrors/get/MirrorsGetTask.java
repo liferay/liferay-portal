@@ -1002,7 +1002,6 @@ public class MirrorsGetTask extends Task {
 		sb.append(_src);
 		sb.append(" to ");
 		sb.append(targetFile.getPath());
-		sb.append(".");
 
 		return sb.toString();
 	}
@@ -1300,7 +1299,6 @@ public class MirrorsGetTask extends Task {
 		sb.append(tempFile.getPath());
 		sb.append(" to ");
 		sb.append(cacheFile.getPath());
-		sb.append(".");
 
 		throw new IOException(sb.toString());
 	}
