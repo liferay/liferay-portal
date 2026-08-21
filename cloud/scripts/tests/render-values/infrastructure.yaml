@@ -1,0 +1,24 @@
+clusterSecretStoreName: liferay-example-secret-store
+endpoints:
+    mydomain:
+        hostname: mydomain.example.com
+        port: 443
+        protocol: HTTPS
+        tls:
+            externalSecretKeys:
+                -   liferay-certificates-liferay-tls-certificate
+            mode: Terminate
+environmentId: dev
+gateway:
+    className: liferay-gateway-class
+    clientTrafficPolicySpec:
+        clientIPDetection:
+            xForwardedFor:
+                numTrustedHops: 1
+    name: liferay-example-dev-gateway
+license:
+    externalSecretKey: liferay-licenses-liferay-example
+overlayBucket:
+    enabled: true
+projectId: liferay-example
+region: eastus

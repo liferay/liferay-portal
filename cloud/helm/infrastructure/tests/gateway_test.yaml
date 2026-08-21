@@ -1,0 +1,117 @@
+release:
+    name: my-release
+    namespace: my-namespace
+set:
+    gateway:
+        className: liferay-gateway-class
+        name: my-gateway
+suite: Gateway
+templates:
+    -   templates/gateway.yaml
+tests:
+    -   asserts:
+            -   contains:
+                    content:
+                        allowedRoutes:
+                            namespaces:
+                                from: Same
+                        name: http
+                        port: 80
+                        protocol: HTTP
+                    path: spec.listeners
+        it: Adds an implicit HTTP listener when the endpoints omit one
+    -   asserts:
+            -   documentSelector:
+                    path: kind
+                    value: ClientTrafficPolicy
+                equal:
+                    path: spec.targetRefs[0]
+                    value:
+                        group: gateway.networking.k8s.io
+                        kind: Gateway
+                        name: my-gateway
+        it: Attaches the ClientTrafficPolicy to the Gateway by reference
+        set:
+            gateway.clientTrafficPolicySpec.enableProxyProtocol: true
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: The mydomain endpoint passes TLS through and must not set tls.externalSecretKeys
+        it: Fails when an endpoint passes TLS through with a certificate
+        set:
+            endpoints:
+                mydomain:
+                    hostname: mydomain.example.com
+                    port: 443
+                    protocol: TLS
+                    tls:
+                        externalSecretKeys:
+                            -   liferay-certificates-my-certificate
+                        mode: Passthrough
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: The mydomain endpoint terminates TLS and must set tls.externalSecretKeys
+        it: Fails when an endpoint terminates TLS without a certificate
+        set:
+            endpoints:
+                mydomain:
+                    hostname: mydomain.example.com
+                    port: 443
+                    protocol: HTTPS
+                    tls:
+                        mode: Terminate
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-30"
+            -   equal:
+                    path: metadata.annotations["external-dns.alpha.kubernetes.io/hostname"]
+                    value: mydomain.example.com
+        it: Merges the configured annotations into the Gateway
+        set:
+            gateway.annotations:
+                external-dns.alpha.kubernetes.io/hostname: mydomain.example.com
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: Gateway
+        it: Omits the ClientTrafficPolicy when no policy spec is set
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the Gateway when the class name is missing
+        set:
+            gateway.className: ""
+    -   asserts:
+            -   equal:
+                    path: spec.listeners[0].name
+                    value: http
+            -   equal:
+                    path: spec.listeners[0].port
+                    value: 8080
+            -   lengthEqual:
+                    count: 1
+                    path: spec.listeners
+        it: Omits the implicit HTTP listener when the endpoints define one
+        set:
+            endpoints:
+                http:
+                    port: 8080
+                    protocol: HTTP
+    -   asserts:
+            -   equal:
+                    path: spec.listeners[1].tls.certificateRefs[0].name
+                    value: liferay-certificates-my-certificate
+            -   equal:
+                    path: spec.listeners[1].tls.mode
+                    value: Terminate
+        it: References the certificate secrets from the endpoint TLS configuration
+        set:
+            endpoints:
+                mydomain:
+                    hostname: mydomain.example.com
+                    port: 443
+                    protocol: HTTPS
+                    tls:
+                        externalSecretKeys:
+                            -   liferay-certificates-my-certificate

@@ -1,0 +1,65 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: LiferayInfrastructure
+templates:
+    -   templates/liferayinfrastructure.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: my-release
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace
+            -   hasDocuments:
+                    count: 1
+        it: Names the LiferayInfrastructure after the release
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the LiferayInfrastructure when the chart is disabled
+        set:
+            enabled: false
+    -   asserts:
+            -   notExists:
+                    path: spec.commonTags
+        it: Omits the common tags when none are set
+    -   asserts:
+            -   equal:
+                    path: spec.commonTags.owner
+                    value: platform
+        it: Passes the common tags through to the composite resource
+        set:
+            commonTags:
+                owner: platform
+    -   asserts:
+            -   equal:
+                    path: spec.database.instanceType
+                    value: GP_Standard_B2s
+            -   equal:
+                    path: spec.database.storageGB
+                    value: 64
+            -   equal:
+                    path: spec.database.version
+                    value: "17"
+        it: Passes the database settings through to the composite resource
+        set:
+            database:
+                instanceType: GP_Standard_B2s
+                storageGB: 64
+                version: "17"
+    -   asserts:
+            -   isAPIVersion:
+                    of: liferay.com/v1alpha1
+            -   isKind:
+                    of: LiferayInfrastructure
+        it: Targets the cloud agnostic API group
+    -   asserts:
+            -   notExists:
+                    path: spec.database.rootPasswordSecretName
+            -   notExists:
+                    path: spec.restorePhase
+            -   notExists:
+                    path: spec.targetActiveDataPlane
+        it: Withholds the fields the provider and restore controller own

@@ -1,0 +1,30 @@
+{{- if .Values.enabled -}}
+apiVersion: liferay.com/v1alpha1
+kind: LiferayInfrastructure
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: ServerSideApply=true
+        argocd.argoproj.io/sync-wave: "-20"
+    name: {{ .Release.Name }}
+    namespace: {{ .Release.Namespace }}
+spec:
+    backup:
+        {{- .Values.backup | toYaml | nindent 8 }}
+    cmk:
+        {{- .Values.cmk | toYaml | nindent 8 }}
+    {{- with .Values.commonTags }}
+    commonTags:
+        {{- . | toYaml | nindent 8 }}
+    {{- end }}
+    database:
+        {{- .Values.database | toYaml | nindent 8 }}
+    environmentId: {{ .Values.environmentId | quote }}
+    forceDestroy: {{ .Values.forceDestroy }}
+    orphanOnDelete: {{ .Values.orphanOnDelete }}
+    overlayAccess:
+        {{- .Values.overlayAccess | toYaml | nindent 8 }}
+    projectId: {{ .Values.projectId | quote }}
+    region: {{ .Values.region | quote }}
+    storage:
+        {{- .Values.storage | toYaml | nindent 8 }}
+{{- end -}}

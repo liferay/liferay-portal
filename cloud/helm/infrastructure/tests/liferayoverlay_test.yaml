@@ -1,0 +1,34 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: LiferayOverlay
+templates:
+    -   templates/liferayoverlay.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: my-release
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace
+            -   hasDocuments:
+                    count: 1
+            -   isAPIVersion:
+                    of: liferay.com/v1alpha1
+            -   isKind:
+                    of: LiferayOverlay
+        it: Names the LiferayOverlay after the release
+        set:
+            overlayBucket.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the LiferayOverlay when the overlay bucket is disabled
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+        it: Renders the LiferayOverlay when the rest of the chart is disabled
+        set:
+            enabled: false
+            overlayBucket.enabled: true
