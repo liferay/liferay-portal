@@ -409,7 +409,17 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private void _deleteFile(File file) {
-		if ((file == null) || !file.exists()) {
+		if (file == null) {
+			return;
+		}
+
+		File readLinkFile = _readLinkFiles.remove(file);
+
+		if (readLinkFile != null) {
+			readLinkFile.delete();
+		}
+
+		if (!file.exists()) {
 			return;
 		}
 
@@ -428,7 +438,7 @@ public class MirrorsGetTask extends Task {
 
 	private void _deleteReadLinkFiles() {
 		for (File readLinkFile : _readLinkFiles.values()) {
-			_deleteFile(readLinkFile);
+			readLinkFile.delete();
 		}
 
 		_readLinkFiles.clear();
