@@ -46,6 +46,16 @@ public class BrokenLinkAssetSerDes {
 
 		sb.append("{");
 
+		if (brokenLinkAsset.getActions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"actions\": ");
+
+			sb.append(_toJSON(brokenLinkAsset.getActions()));
+		}
+
 		if (brokenLinkAsset.getBrokenLinkTitle() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -146,6 +156,13 @@ public class BrokenLinkAssetSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (brokenLinkAsset.getActions() == null) {
+			map.put("actions", null);
+		}
+		else {
+			map.put("actions", String.valueOf(brokenLinkAsset.getActions()));
+		}
+
 		if (brokenLinkAsset.getBrokenLinkTitle() == null) {
 			map.put("brokenLinkTitle", null);
 		}
@@ -216,7 +233,10 @@ public class BrokenLinkAssetSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "brokenLinkTitle")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				return true;
+			}
+			else if (Objects.equals(jsonParserFieldName, "brokenLinkTitle")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "brokenLinksCount")) {
@@ -246,7 +266,13 @@ public class BrokenLinkAssetSerDes {
 			BrokenLinkAsset brokenLinkAsset, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "brokenLinkTitle")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				if (jsonParserFieldValue != null) {
+					brokenLinkAsset.setActions(
+						(Map<String, Map<String, String>>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "brokenLinkTitle")) {
 				if (jsonParserFieldValue != null) {
 					brokenLinkAsset.setBrokenLinkTitle(
 						(String)jsonParserFieldValue);
@@ -364,4 +390,4 @@ public class BrokenLinkAssetSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-792535952
+// LIFERAY-REST-BUILDER-HASH:-748453629

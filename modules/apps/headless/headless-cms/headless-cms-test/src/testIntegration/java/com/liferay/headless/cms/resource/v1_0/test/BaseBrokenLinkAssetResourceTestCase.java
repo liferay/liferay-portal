@@ -559,6 +559,14 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (brokenLinkAsset.getActions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("brokenLinkTitle", additionalAssertFieldName)) {
 				if (brokenLinkAsset.getBrokenLinkTitle() == null) {
 					valid = false;
@@ -724,6 +732,17 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)brokenLinkAsset1.getActions(),
+						(Map)brokenLinkAsset2.getActions())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("brokenLinkTitle", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -902,6 +921,11 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("actions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
 
 		if (entityFieldName.equals("brokenLinkTitle")) {
 			Object object = brokenLinkAsset.getBrokenLinkTitle();
@@ -1380,4 +1404,4 @@ public abstract class BaseBrokenLinkAssetResourceTestCase {
 		_brokenLinkAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:735118085
+// LIFERAY-REST-BUILDER-HASH:58783072
