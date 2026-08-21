@@ -231,7 +231,7 @@ public class MirrorsGetTask extends Task {
 
 			return tempFile;
 		}
-		catch (UnsupportedOperationException unsupportedOperationException) {
+		catch (IOException | UnsupportedOperationException exception) {
 			if (cacheFile.exists()) {
 				System.out.println(
 					cacheFile.getPath() + " was already cached.");
@@ -242,15 +242,6 @@ public class MirrorsGetTask extends Task {
 			if (_renameFile(tempFile, cacheFile)) {
 				return cacheFile;
 			}
-
-			return tempFile;
-		}
-		catch (IOException ioException) {
-			if (!cacheFile.exists()) {
-				throw ioException;
-			}
-
-			System.out.println(cacheFile.getPath() + " was already cached.");
 
 			return tempFile;
 		}
