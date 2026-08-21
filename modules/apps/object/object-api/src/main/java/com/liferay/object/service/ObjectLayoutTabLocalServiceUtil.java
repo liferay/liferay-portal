@@ -352,11 +352,11 @@ public class ObjectLayoutTabLocalServiceUtil {
 			objectDefinition, objectLayoutTabs);
 	}
 
-	public static void unregisterObjectLayoutTabScreenNavigationCategory(
-		ObjectLayoutTab objectLayoutTab) {
+	public static void unregisterObjectLayoutTabScreenNavigationCategories(
+		com.liferay.object.model.ObjectDefinition objectDefinition) {
 
-		getService().unregisterObjectLayoutTabScreenNavigationCategory(
-			objectLayoutTab);
+		getService().unregisterObjectLayoutTabScreenNavigationCategories(
+			objectDefinition);
 	}
 
 	/**
@@ -385,4 +385,4 @@ public class ObjectLayoutTabLocalServiceUtil {
 			ObjectLayoutTabLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1280397748
+// LIFERAY-SERVICE-BUILDER-HASH:-1733747140

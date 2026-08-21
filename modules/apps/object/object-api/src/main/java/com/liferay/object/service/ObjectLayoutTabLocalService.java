@@ -300,9 +300,8 @@ public interface ObjectLayoutTabLocalService
 		ObjectDefinition objectDefinition,
 		List<ObjectLayoutTab> objectLayoutTabs);
 
-	@Clusterable
-	public void unregisterObjectLayoutTabScreenNavigationCategory(
-		ObjectLayoutTab objectLayoutTab);
+	public void unregisterObjectLayoutTabScreenNavigationCategories(
+		ObjectDefinition objectDefinition);
 
 	/**
 	 * Updates the object layout tab in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -319,4 +318,4 @@ public interface ObjectLayoutTabLocalService
 		ObjectLayoutTab objectLayoutTab);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-751334398
+// LIFERAY-SERVICE-BUILDER-HASH:-446412893
