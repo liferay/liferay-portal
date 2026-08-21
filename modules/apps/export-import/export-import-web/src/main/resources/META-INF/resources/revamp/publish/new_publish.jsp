@@ -10,23 +10,6 @@
 <liferay-staging:defineObjects />
 
 <%
-if (liveGroup == null) {
-	liveGroup = group;
-}
-
-String backURL = ParamUtil.getString(request, "backURL", themeDisplay.getURLCurrent());
-
-portletDisplay.setShowBackIcon(true);
-portletDisplay.setURLBack(backURL);
-
-PublishProcessDisplayContext publishProcessDisplayContext = new PublishProcessDisplayContext(liveGroup, locale);
-
-long scheduledPublishProcessId = ParamUtil.getLong(request, "scheduledPublishProcessId");
-
-renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishProcessId));
-
-String scheduledBackURL = HttpComponentsUtil.setParameter(backURL, liferayPortletResponse.getNamespace() + "tabs1", "scheduled");
-
 Date lastPublishDate = null;
 
 Group publishSourceGroup = (stagingGroup != null) ? stagingGroup : group;
@@ -36,6 +19,22 @@ LayoutSet layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(publishSourceGrou
 if (layoutSet != null) {
 	lastPublishDate = ExportImportDateUtil.getLastPublishDate(layoutSet);
 }
+
+portletDisplay.setShowBackIcon(true);
+
+String backURL = ParamUtil.getString(request, "backURL", themeDisplay.getURLCurrent());
+
+portletDisplay.setURLBack(backURL);
+
+long scheduledPublishProcessId = ParamUtil.getLong(request, "scheduledPublishProcessId");
+
+if (liveGroup == null) {
+	liveGroup = group;
+}
+
+PublishProcessDisplayContext publishProcessDisplayContext = new PublishProcessDisplayContext(liveGroup, locale);
+
+renderResponse.setTitle(publishProcessDisplayContext.getTitle(scheduledPublishProcessId));
 %>
 
 <clay:container-fluid
@@ -72,7 +71,7 @@ if (layoutSet != null) {
 			).put(
 				"publishProcessAPIURL", publishProcessDisplayContext.getPublishProcessAPIURL()
 			).put(
-				"scheduledBackURL", scheduledBackURL
+				"scheduledBackURL", HttpComponentsUtil.setParameter(backURL, liferayPortletResponse.getNamespace() + "tabs1", "scheduled")
 			).put(
 				"scheduledPublishProcessAPIURL", publishProcessDisplayContext.getScheduledPublishProcessAPIURL()
 			).put(

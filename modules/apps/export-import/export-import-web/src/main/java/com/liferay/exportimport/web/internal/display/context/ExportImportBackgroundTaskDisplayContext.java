@@ -42,10 +42,10 @@ public class ExportImportBackgroundTaskDisplayContext {
 			return _backgroundTask;
 		}
 
+		_backgroundTask = null;
+
 		_backgroundTaskId = ParamUtil.getLong(
 			_httpServletRequest, "backgroundTaskId");
-
-		_backgroundTask = null;
 
 		if (_backgroundTaskId > 0) {
 			_backgroundTask = BackgroundTaskManagerUtil.getBackgroundTask(
