@@ -189,7 +189,7 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "com.liferay.site.cmp.site.initializer.internal.fragment.renderer.DateInputComponentSectionFragmentRenderer"
+												"key": "INPUTS-date-input"
 											},
 											"fragmentConfig": {
 												"inputFieldId": "ObjectField_dueDate",
