@@ -181,7 +181,6 @@ public class BrokenLinkAssetSearcher {
 				Field.STATUS,
 				ArrayUtil.toStringArray(CMSWorkflowConstants.STATUSES)),
 			QueriesUtil.term("rootDescendantNode", false));
-
 		booleanQuery.addMustNotQueryClauses(
 			QueriesUtil.term(Field.STATUS, WorkflowConstants.STATUS_EXPIRED));
 
