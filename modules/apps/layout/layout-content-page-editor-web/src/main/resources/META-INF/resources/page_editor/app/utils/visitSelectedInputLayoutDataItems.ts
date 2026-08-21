@@ -33,18 +33,17 @@ export function visitSelectedInputLayoutDataItems(
 				inputItem
 			);
 
-			if (
-				fragmentEntryType === FRAGMENT_ENTRY_TYPES.input &&
+			const fieldId =
 				editableValues[FREEMARKER_FRAGMENT_ENTRY_PROCESSOR]?.[
 					FIELD_ID_CONFIGURATION_KEY
-				]
+				];
+
+			if (
+				fragmentEntryType === FRAGMENT_ENTRY_TYPES.input &&
+				typeof fieldId === 'string' &&
+				fieldId
 			) {
-				fn(
-					inputItem,
-					editableValues[FREEMARKER_FRAGMENT_ENTRY_PROCESSOR]?.[
-						FIELD_ID_CONFIGURATION_KEY
-					] as string
-				);
+				fn(inputItem, fieldId);
 			}
 		}
 

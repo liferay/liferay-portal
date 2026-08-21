@@ -27,9 +27,9 @@ export default function getTargetCollectionDisplayField(
 		for (const field of fieldSet.fields || []) {
 			if (field.type === 'targetCollectionDisplay') {
 				const configValues =
-					(fragmentEntryLink.editableValues?.[
+					fragmentEntryLink.editableValues?.[
 						FREEMARKER_FRAGMENT_ENTRY_PROCESSOR
-					] as Record<string, unknown>) || {};
+					] || {};
 
 				const targetCollections = configValues[field.name];
 
