@@ -1,10 +1,21 @@
 @import 'atlas-variables';
+
+:root {
+	--kaleo-node-branch-icon: light-dark(#ffb46e, #fdd7b4);
+	--kaleo-node-flow-icon: light-dark(#4b9bff, #9ac6fc);
+	--kaleo-node-highlight-blue-bg: light-dark(#f0f5ff, #2952a3);
+	--kaleo-node-highlight-red-bg: light-dark(#f48989, #a32929);
+	--kaleo-node-join-icon: light-dark(#7785ff, #b4bcfd);
+	--kaleo-node-service-icon: light-dark(#af78ff, #d2b4fd);
+	--kaleo-node-task-icon: light-dark(#50d2a0, #90dec0);
+}
+
 .base-node {
 	position: relative;
 }
 .node {
 	align-items: center;
-	background: #fff;
+	background: $white;
 	border: 1px $light-l1 solid;
 	border-radius: 8px;
 	display: flex;
@@ -20,7 +31,7 @@
 
 	.node-icon {
 		align-items: center;
-		background: #f7f8f9;
+		background: $light-l1;
 		border-radius: 4px;
 		display: flex;
 		height: 32px;
@@ -48,7 +59,7 @@
 	&.llm-node,
 	&.start-node {
 		.node-icon svg {
-			fill: #4b9bff;
+			fill: var(--kaleo-node-flow-icon);
 		}
 	}
 
@@ -56,32 +67,32 @@
 	&.fork-node,
 	&.state-node {
 		.node-icon svg {
-			fill: #ffb46e;
+			fill: var(--kaleo-node-branch-icon);
 		}
 	}
 
 	&.http-request-node {
 		.node-icon svg {
-			fill: #0b5fff;
+			fill: $primary;
 		}
 	}
 
 	&.join-node,
 	&.join-xor-node {
 		.node-icon svg {
-			fill: #7785ff;
+			fill: var(--kaleo-node-join-icon);
 		}
 	}
 
 	&.service-node {
 		.node-icon svg {
-			fill: #af78ff;
+			fill: var(--kaleo-node-service-icon);
 		}
 	}
 
 	&.task-node {
 		.node-icon svg {
-			fill: #50d2a0;
+			fill: var(--kaleo-node-task-icon);
 		}
 	}
 }
@@ -93,13 +104,13 @@
 	width: 290px;
 
 	&.blue {
-		background: #f0f5ff;
-		border: 2px solid #0b5fff;
+		background: var(--kaleo-node-highlight-blue-bg);
+		border: 2px solid $primary;
 	}
 
 	&.red {
-		background: #f48989;
-		border: 2px solid #da1414;
+		background: var(--kaleo-node-highlight-red-bg);
+		border: 2px solid $danger;
 	}
 }
 
@@ -125,5 +136,5 @@
 }
 
 .node.selected {
-	border: 2px solid #80acff;
+	border: 2px solid $primary-l1;
 }
