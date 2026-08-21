@@ -161,9 +161,9 @@ function _uninstall_liferay_platform_chart {
 
 	echo "Uninstalling the Liferay platform root application."
 
-	if ! helm uninstall liferay-platform --namespace argocd-system --timeout 10m0s --wait
+	if ! helm uninstall liferay-platform --namespace argocd-system --timeout 30m0s --wait
 	then
-		echo "The liferay-platform Helm release was not uninstalled after 10 minutes." >&2
+		echo "The liferay-platform Helm release was not uninstalled after 30 minutes." >&2
 
 		exit 1
 	fi
