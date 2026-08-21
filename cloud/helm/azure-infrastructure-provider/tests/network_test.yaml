@@ -13,6 +13,20 @@ tests:
     -   asserts:
             -   documentIndex: 0
                 equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-80"
+            -   documentIndex: 1
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-80"
+            -   documentIndex: 2
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-80"
+        it: Assigns the managed resources a sync wave after the cluster provider configs they use
+    -   asserts:
+            -   documentIndex: 0
+                equal:
                     path: metadata.name
                     value: privatelink.postgres.database.azure.com
             -   documentIndex: 0

@@ -70,7 +70,7 @@ tests:
     -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-                    value: "-60"
+                    value: "-80"
             -   equal:
                     path: spec.credentials.source
                     value: InjectedIdentity

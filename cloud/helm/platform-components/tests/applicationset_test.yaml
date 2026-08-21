@@ -13,6 +13,24 @@ templates:
     -   templates/appproject-operator.yaml
 tests:
     -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-80"
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-60"
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-60"
+                template: templates/applicationset-liferay.yaml
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-60"
+                template: templates/applicationset-resources.yaml
+        it: Assigns the infrastructure provider application an earlier sync wave than the ApplicationSets it feeds
+    -   asserts:
             -   contains:
                     content: oci://us-central1-docker.pkg.dev/external-assets-nonprd/liferay-helm-chart
                     path: spec.sourceRepos

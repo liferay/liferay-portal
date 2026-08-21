@@ -4,7 +4,7 @@ kind: ClusterProviderConfig
 metadata:
     annotations:
         argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-        argocd.argoproj.io/sync-wave: "-60"
+        argocd.argoproj.io/sync-wave: "-80"
     labels:
         {{- include "liferay-platform.labels" . | nindent 8 }}
         app.kubernetes.io/name: kubernetes-provider-config

@@ -4,7 +4,7 @@ kind: PrivateDNSZone
 metadata:
     annotations:
         argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-        argocd.argoproj.io/sync-wave: "-90"
+        argocd.argoproj.io/sync-wave: "-80"
     labels:
         app: liferay
     name: {{ include "network.databasePrivateDnsZoneName" $ }}
@@ -17,7 +17,7 @@ kind: PrivateDNSZoneVirtualNetworkLink
 metadata:
     annotations:
         argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-        argocd.argoproj.io/sync-wave: "-90"
+        argocd.argoproj.io/sync-wave: "-80"
     labels:
         app: liferay
     name: {{ $deploymentContext.deploymentName }}-database-dns-link
@@ -33,7 +33,7 @@ kind: Subnet
 metadata:
     annotations:
         argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-        argocd.argoproj.io/sync-wave: "-90"
+        argocd.argoproj.io/sync-wave: "-80"
     labels:
         app: liferay
     name: {{ include "network.databaseSubnetName" $ }}

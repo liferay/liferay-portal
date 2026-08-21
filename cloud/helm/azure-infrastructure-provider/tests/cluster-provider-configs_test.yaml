@@ -12,6 +12,16 @@ templates:
     -   templates/cluster-provider-configs.yaml
 tests:
     -   asserts:
+            -   documentIndex: 0
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-90"
+            -   documentIndex: 1
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-90"
+        it: Assigns the cluster provider configs a sync wave before the managed resources that use them
+    -   asserts:
             -   hasDocuments:
                     count: 2
             -   documentIndex: 0

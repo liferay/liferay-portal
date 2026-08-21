@@ -4,7 +4,7 @@ kind: Application
 metadata:
     annotations:
         argocd.argoproj.io/compare-options: IgnoreExtraneous
-        argocd.argoproj.io/sync-wave: "-60"
+        argocd.argoproj.io/sync-wave: "-80"
     finalizers:
         -   resources-finalizer.argocd.argoproj.io
     labels:
