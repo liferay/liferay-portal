@@ -11,13 +11,13 @@ function az_login {
 
 	local subscription_id
 
-	subscription_id="$(jq --raw-output '.subscription_id' "${configuration_json_file}")"
+	subscription_id=$(jq --raw-output '.subscription_id' "${configuration_json_file}")
 
 	export ARM_SUBSCRIPTION_ID="${subscription_id}"
 
 	local tenant_id
 
-	tenant_id="$(jq --raw-output '.tenant_id' "${configuration_json_file}")"
+	tenant_id=$(jq --raw-output '.tenant_id' "${configuration_json_file}")
 
 	export ARM_TENANT_ID="${tenant_id}"
 
@@ -48,9 +48,11 @@ function connect_to_cluster {
 	terraform init
 
 	local cluster_name
-	local resource_group_name
 
 	cluster_name=$(terraform output -raw cluster_name)
+
+	local resource_group_name
+
 	resource_group_name=$(terraform output -raw resource_group_name)
 
 	if [[ -z ${cluster_name} ]] || [[ -z ${resource_group_name} ]]

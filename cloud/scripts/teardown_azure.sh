@@ -164,7 +164,9 @@ function _destroy_azure_platform {
 function _uninstall_liferay_platform_chart {
 	echo "Uninstalling the Liferay platform root application."
 
-	if ! helm uninstall liferay-platform \
+	if ! helm \
+		uninstall \
+		liferay-platform \
 		--ignore-not-found \
 		--namespace argocd-system \
 		--timeout 30m0s \

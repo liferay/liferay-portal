@@ -38,7 +38,7 @@ spec:
                     helm:
                         parameters:
                             -   name: clusterSecretStoreName
-                                value: {{ .Values.clusterSecretStore.name | quote }}
+                                value: {{ include "liferay-platform.clusterSecretStoreName" . | quote }}
                             -   name: environmentId
                                 value: {{ $layout.environmentId | quote }}
                             -   name: gateway.className

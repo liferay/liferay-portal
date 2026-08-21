@@ -1,5 +1,8 @@
 {{- if and .Values.enabled .Values.gateway.className .Values.gateway.name }}
 {{- $gateway := .Values.gateway }}
+{{- range $name, $endpoint := .Values.endpoints }}
+{{- include "liferay.validateEndpoint" (dict "endpoint" $endpoint "name" $name) }}
+{{- end }}
 {{- with $gateway.clientTrafficPolicySpec }}
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: ClientTrafficPolicy
@@ -57,17 +60,7 @@ spec:
             name: {{ $name | quote }}
             port: {{ $endpoint.port }}
             protocol: {{ $endpoint.protocol | quote }}
-            {{- if and (eq (int $endpoint.port) 80) (not $endpoint.hostname) (ne $name "http") }}
-            {{- fail (printf "The %s endpoint uses port 80 without a hostname, which collides with the implicit http listener" $name) }}
-            {{- end }}
-            {{- $externalSecretKeys := dig "tls" "externalSecretKeys" (list) $endpoint }}
-            {{- if and (eq $endpoint.protocol "HTTPS") (not $externalSecretKeys) }}
-            {{- fail (printf "The %s endpoint serves HTTPS and must set tls.externalSecretKeys" $name) }}
-            {{- end }}
-            {{- if and (ne $endpoint.protocol "HTTPS") $externalSecretKeys }}
-            {{- fail (printf "The %s endpoint does not serve HTTPS and must not set tls.externalSecretKeys" $name) }}
-            {{- end }}
-            {{- with $externalSecretKeys }}
+            {{- with dig "tls" "externalSecretKeys" (list) $endpoint }}
             tls:
                 certificateRefs:
                     {{- range . }}

@@ -1,4 +1,4 @@
-{{- if .Values.overlayBucket.enabled -}}
+{{- if and .Values.enabled .Values.overlayBucket.enabled -}}
 {{- $overlayBucket := .Values.overlayBucket -}}
 apiVersion: liferay.com/v1alpha1
 kind: LiferayOverlay

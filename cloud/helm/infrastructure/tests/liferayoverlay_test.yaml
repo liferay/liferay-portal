@@ -24,11 +24,11 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 0
-        it: Omits the LiferayOverlay when the overlay bucket is disabled
-    -   asserts:
-            -   hasDocuments:
-                    count: 1
-        it: Renders the LiferayOverlay when the rest of the chart is disabled
+        it: Omits the LiferayOverlay when the chart is disabled
         set:
             enabled: false
             overlayBucket.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the LiferayOverlay when the overlay bucket is disabled
