@@ -300,7 +300,7 @@ public class MirrorsGetTask extends Task {
 			return;
 		}
 
-		Pattern pattern = _getOrphanPattern(cacheFile.getName());
+		Pattern pattern = _getTempFilePattern(cacheFile.getName());
 		long thresholdTime = System.currentTimeMillis() - _MAX_AGE_MILLIS;
 
 		for (File file : files) {
@@ -875,17 +875,6 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private Pattern _getOrphanPattern(String fileName) {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("(?<timestamp>\\d{13,18})(-[0-9a-fA-F-]{36}(-");
-		sb.append(_LINK_MARKER);
-		sb.append(")?-)?");
-		sb.append(Pattern.quote(fileName));
-
-		return Pattern.compile(sb.toString());
-	}
-
 	private String _getPassword() {
 		if (_password != null) {
 			return _password;
@@ -1004,6 +993,17 @@ public class MirrorsGetTask extends Task {
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);
 		}
+	}
+
+	private Pattern _getTempFilePattern(String fileName) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("(?<timestamp>\\d{13,18})(-[0-9a-fA-F-]{36}(-");
+		sb.append(_LINK_MARKER);
+		sb.append(")?-)?");
+		sb.append(Pattern.quote(fileName));
+
+		return Pattern.compile(sb.toString());
 	}
 
 	private String _getURLScheme() {
