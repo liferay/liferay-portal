@@ -6,6 +6,7 @@
 package com.liferay.portal.vulcan.internal.template.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
@@ -13,6 +14,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.ZipFileTestUtil;
@@ -80,7 +82,10 @@ public class RESTClientTemplateContextContributorTest {
 
 			PropsValues.TERMS_OF_USE_REQUIRED = false;
 
-			try {
+			try (SafeCloseable safeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"USERS_REMINDER_QUERIES_ENABLED", false)) {
+
 				HTTPTestUtil.customize(
 				).withoutModulePath(
 				).apply(
