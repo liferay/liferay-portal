@@ -457,15 +457,15 @@ public class JenkinsConfigUtil {
 			catch (IOException ioException) {
 				throw new RuntimeException(
 					JenkinsResultsParserUtil.combine(
-						"Unable to validate API token ", apiToken.getName(),
-						" for ", jenkinsUserName, " against ", nodeNameURL),
+						"Unable to validate API token \"", apiToken.getName(),
+						"\" for ", jenkinsUserName, " against ", nodeNameURL),
 					ioException);
 			}
 
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
-					"Successfully validated API token ", apiToken.getName(),
-					" for ", jenkinsUserName));
+					"Successfully validated API token \"", apiToken.getName(),
+					"\" for ", jenkinsUserName));
 		}
 	}
 

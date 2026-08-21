@@ -73,14 +73,23 @@ public abstract class SecretsUtil {
 		JSONObject jenkinsAPITokenJSONObject =
 			_generateJenkinsAPITokenJSONObject(date);
 
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd_HH:mm:ss.SSS");
 
 		simpleDateFormat.setTimeZone(
 			TimeZone.getTimeZone(_API_TOKEN_TIME_ZONE));
 
+		String jenkinsAPITokenName =
+			"api.token.json." + simpleDateFormat.format(date);
+
 		_createItemField(
-			item, "api.token.json." + simpleDateFormat.format(date),
-			jenkinsAPITokenJSONObject.toString(), vault);
+			item, jenkinsAPITokenName, jenkinsAPITokenJSONObject.toString(),
+			vault);
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Generated API token \"", key, "/", jenkinsAPITokenName,
+				"\"."));
 	}
 
 	public static String getSecret(String key) {
