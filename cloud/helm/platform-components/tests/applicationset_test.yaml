@@ -171,6 +171,34 @@ tests:
                 repoURL: oci://example-registry/liferay-azure-infrastructure-provider
     -   asserts:
             -   contains:
+                    content:
+                        namespace: elastic-system
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+            -   contains:
+                    content:
+                        namespace: monitoring
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+            -   notContains:
+                    content:
+                        namespace: kube-system
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+            -   lengthEqual:
+                    count: 9
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+        it: Permits the extra namespaces declared by an operator application
+        set:
+            operatorApplications.eckOperator.extraNamespaces:
+                -   monitoring
+            operatorApplications.keda.extraNamespaces: null
+    -   asserts:
+            -   contains:
                     content: https://charts.example.com
                     path: spec.sourceRepos
                 template: templates/appproject-operator.yaml
@@ -315,8 +343,14 @@ tests:
                         server: https://kubernetes.default.svc
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
+            -   contains:
+                    content:
+                        namespace: kube-system
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
             -   lengthEqual:
-                    count: 8
+                    count: 9
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
             -   equal:

@@ -22,6 +22,10 @@ spec:
         {{- range $operatorApplication := .Values.operatorApplications }}
         -   namespace: {{ $operatorApplication.namespace }}
             server: https://kubernetes.default.svc
+        {{- range $extraNamespace := $operatorApplication.extraNamespaces }}
+        -   namespace: {{ $extraNamespace }}
+            server: https://kubernetes.default.svc
+        {{- end }}
         {{- end }}
     sourceRepos:
         {{- include "liferay-platform.sourceRepos" $repoURLs | nindent 8 }}
