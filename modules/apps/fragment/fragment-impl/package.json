@@ -2,12 +2,14 @@
 	"dependencies": {
 		"@clayui/button": "^3.166.0",
 		"@clayui/core": "^3.166.0",
+		"@clayui/date-picker": "^3.166.0",
 		"@clayui/drop-down": "^3.166.0",
 		"@clayui/icon": "^3.166.0",
 		"@clayui/label": "^3.166.0",
 		"@clayui/layout": "^3.166.0",
 		"@clayui/loading-indicator": "^3.166.0",
 		"@liferay/frontend-js-item-selector-web": "*",
+		"@liferay/frontend-js-react-web": "*",
 		"@liferay/frontend-js-state-web": "*",
 		"@liferay/layout-js-components-web": "*",
 		"@liferay/object-js-components-web": "*",
@@ -15,6 +17,7 @@
 		"document-library-video": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
+		"moment": "2.29.4",
 		"react": "18.2.0"
 	},
 	"main": "js/index.js",
