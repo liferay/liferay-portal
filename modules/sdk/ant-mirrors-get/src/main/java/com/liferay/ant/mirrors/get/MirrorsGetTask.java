@@ -150,7 +150,7 @@ public class MirrorsGetTask extends Task {
 				_hostName = "storage.googleapis.com";
 			}
 
-			_path = matcher.group("path");
+			_path = _normalizePath(matcher.group("path"));
 
 			return;
 		}
@@ -1460,7 +1460,7 @@ public class MirrorsGetTask extends Task {
 		Pattern.compile(
 			"mirrors.gcp.bucket.hostname\\[(?<bucketName>[^\\]]+)\\]");
 	private static final Pattern _gsURLPattern = Pattern.compile(
-		"gs://(?<bucketName>[^/]+)/(?<path>.+/)(?<fileName>.+)");
+		"gs://(?<bucketName>[^/]+)/(?<path>.+/)?(?<fileName>[^/]+)");
 	private static final Pattern _httpURLPattern = Pattern.compile(
 		"https?://(?<mirrorsHostname>mirrors(\\.[^\\.]+\\.liferay.com)?/)?" +
 			"(?<hostName>[^/]+(/\\d+)?)/(?<path>.+/)(?<fileName>.+)");
@@ -1474,7 +1474,6 @@ public class MirrorsGetTask extends Task {
 		"(release-\\d+|release.liferay.com)/(?<id>\\d+)");
 	private static final Pattern _tempFileNamePattern = Pattern.compile(
 		_TIMESTAMP_REGEX + "-" + _UUID_REGEX + "-(?<fileName>.+)");
-
 	private static final Pattern _testHostNamePattern = Pattern.compile(
 		"test-\\d+-\\d+");
 
