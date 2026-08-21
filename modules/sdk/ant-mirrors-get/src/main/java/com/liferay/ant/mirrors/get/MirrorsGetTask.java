@@ -217,6 +217,26 @@ public class MirrorsGetTask extends Task {
 		_verbose = verbose;
 	}
 
+	private boolean _addToCache(File cacheFile, File tempFile)
+		throws IOException {
+
+		try {
+			Files.createLink(cacheFile.toPath(), tempFile.toPath());
+
+			return true;
+		}
+		catch (FileAlreadyExistsException fileAlreadyExistsException) {
+			return false;
+		}
+		catch (IOException | UnsupportedOperationException exception) {
+			if (cacheFile.exists()) {
+				return false;
+			}
+
+			return _renameFile(cacheFile, tempFile);
+		}
+	}
+
 	private void _copyFile(File sourceFile, File targetFile)
 		throws IOException {
 
@@ -569,7 +589,7 @@ public class MirrorsGetTask extends Task {
 					_deleteFile(mirrorsCacheFile);
 				}
 
-				if (!_publish(mirrorsCacheFile, mirrorsCacheTempFile)) {
+				if (!_addToCache(mirrorsCacheFile, mirrorsCacheTempFile)) {
 					System.out.println(
 						mirrorsCacheFile.getPath() + " was already published.");
 				}
@@ -1291,27 +1311,7 @@ public class MirrorsGetTask extends Task {
 		return urlConnection;
 	}
 
-	private boolean _publish(File cacheFile, File tempFile)
-		throws IOException {
-
-		try {
-			Files.createLink(cacheFile.toPath(), tempFile.toPath());
-
-			return true;
-		}
-		catch (FileAlreadyExistsException fileAlreadyExistsException) {
-			return false;
-		}
-		catch (IOException | UnsupportedOperationException exception) {
-			if (cacheFile.exists()) {
-				return false;
-			}
-
-			return _publishByRename(cacheFile, tempFile);
-		}
-	}
-
-	private boolean _publishByRename(File cacheFile, File tempFile)
+	private boolean _renameFile(File cacheFile, File tempFile)
 		throws IOException {
 
 		if (tempFile.renameTo(cacheFile)) {
