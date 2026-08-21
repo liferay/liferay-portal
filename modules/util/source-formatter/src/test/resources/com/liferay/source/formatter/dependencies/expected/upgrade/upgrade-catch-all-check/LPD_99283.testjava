@@ -1,0 +1,39 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+import com.liferay.petra.string.StringPool;
+
+import org.osgi.service.component.annotations.Reference;
+
+/**
+ * @author Liferay
+ */
+public class LPD_99283 {
+
+	public void method(
+		long cpDefinitionSpecificationOptionValueId, long cpOptionCategoryId,
+		Map<Locale, String> valueMap, double priority,
+		ServiceContext serviceContext) {
+
+		CPDefinitionSpecificationOptionValueLocalServiceUtil.
+			updateCPDefinitionSpecificationOptionValue(
+				123, cpOptionCategoryId, valueMap, priority, serviceContext);
+		CPDefinitionSpecificationOptionValueLocalServiceUtil.updateCPDefinitionSpecificationOptionValue(null, cpDefinitionSpecificationOptionValueId, cpOptionCategoryId, StringPool.BLANK, priority, valueMap, true, serviceContext);
+		CPDefinitionSpecificationOptionValueServiceUtil.updateCPDefinitionSpecificationOptionValue(null, cpDefinitionSpecificationOptionValueId, cpOptionCategoryId, StringPool.BLANK, priority, valueMap, true, serviceContext);
+		_cpDefinitionSpecificationOptionValueLocalService.updateCPDefinitionSpecificationOptionValue(null, cpDefinitionSpecificationOptionValueId, cpOptionCategoryId, StringPool.BLANK, priority, valueMap, true, serviceContext);
+		_cpDefinitionSpecificationOptionValueService.updateCPDefinitionSpecificationOptionValue(null, cpDefinitionSpecificationOptionValueId, cpOptionCategoryId, StringPool.BLANK, priority, valueMap, true, serviceContext);
+	}
+
+	@Reference
+	private CPDefinitionSpecificationOptionValueLocalService
+		_cpDefinitionSpecificationOptionValueLocalService;
+
+	@Reference
+	private CPDefinitionSpecificationOptionValueService
+		_cpDefinitionSpecificationOptionValueService;
+
+}
