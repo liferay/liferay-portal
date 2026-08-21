@@ -44,6 +44,7 @@ import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectEntryTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -608,6 +609,10 @@ public class ObjectEntryDisplayContextTest {
 
 		DDMFormRenderingContext ddmFormRenderingContext = atomicReference.get();
 
+		Assert.assertEquals(
+			_language.getAvailableLocales(_group.getGroupId()),
+			ddmFormRenderingContext.getProperty("availableLocales"));
+
 		DDMFormValues ddmFormValues =
 			ddmFormRenderingContext.getDDMFormValues();
 
@@ -691,6 +696,9 @@ public class ObjectEntryDisplayContextTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private Language _language;
 
 	@Inject
 	private ObjectDefinitionSettingLocalService
