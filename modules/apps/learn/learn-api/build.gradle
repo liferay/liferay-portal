@@ -4,3 +4,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 }
+
+test {
+	systemProperty "learn.resources.data.dir", new File(rootDir.parentFile, "learn-resources/data")
+}
