@@ -23,6 +23,7 @@ import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageRule;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStatus;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
 import com.liferay.osb.faro.engine.client.model.AccountName;
+import com.liferay.osb.faro.engine.client.model.AcquisitionParameter;
 import com.liferay.osb.faro.engine.client.model.Activity;
 import com.liferay.osb.faro.engine.client.model.ActivityAggregation;
 import com.liferay.osb.faro.engine.client.model.ActivityAsset;
@@ -1052,6 +1053,26 @@ public class ContactsEngineClientImpl
 			uriVariables);
 
 		return pagedModel.getResults();
+	}
+
+	@Override
+	public List<AcquisitionParameter> getAcquisitionParameters(
+		FaroProject faroProject, String channelId) {
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject);
+
+		uriVariables.put("channelId", channelId);
+
+		PagedModel<?, AcquisitionParameter> pagedModel = get(
+			faroProject, Rels.SESSION_ACQUISITION_PARAMETERS,
+			new ParameterizedTypeReference
+				<EntityModelPagedModel<AcquisitionParameter>>() {
+			},
+			uriVariables);
+
+		Results<AcquisitionParameter> results = pagedModel.getResults();
+
+		return results.getItems();
 	}
 
 	@Override
