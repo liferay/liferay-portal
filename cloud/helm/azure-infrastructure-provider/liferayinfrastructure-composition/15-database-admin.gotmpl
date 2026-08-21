@@ -22,6 +22,7 @@ spec:
             matchControllerRef: true
             matchLabels:
                 dataPlane: {{ $dataPlane }}
+        tenantId: {{ $env.tenantId }}
     managementPolicies: {{ $managementPolicies }}
 ---
 {{- end }}
