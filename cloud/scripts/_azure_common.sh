@@ -47,12 +47,34 @@ function connect_to_cluster {
 
 	terraform init
 
+	local cluster_name
+	local resource_group_name
+
+	cluster_name=$(terraform output -raw cluster_name)
+	resource_group_name=$(terraform output -raw resource_group_name)
+
+	if [[ -z ${cluster_name} ]] || [[ -z ${resource_group_name} ]]
+	then
+		echo "There is no AKS cluster in the Terraform state." >&2
+
+		pop_directory
+
+		return 1
+	fi
+
 	export KUBE_CONFIG_PATH="${HOME}/.kube/config"
 
-	az aks get-credentials \
-		--name "$(terraform output -raw cluster_name)" \
+	if ! az aks get-credentials \
+		--name "${cluster_name}" \
 		--overwrite-existing \
-		--resource-group "$(terraform output -raw resource_group_name)"
+		--resource-group "${resource_group_name}"
+	then
+		echo "The AKS cluster ${cluster_name} could not be reached." >&2
+
+		pop_directory
+
+		return 1
+	fi
 
 	pop_directory
 }

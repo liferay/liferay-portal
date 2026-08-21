@@ -73,9 +73,12 @@ function main {
 		generate_local_backend_overrides
 	fi
 
-	connect_to_cluster
-
-	_uninstall_liferay_platform_chart
+	if connect_to_cluster
+	then
+		_uninstall_liferay_platform_chart
+	else
+		echo "Skipping the Liferay platform root application uninstall."
+	fi
 
 	_destroy_azure_platform "${terraform_args[@]}"
 
@@ -90,6 +93,13 @@ function main {
 function _delete_tfstate_storage {
 	local resource_group_name="${1}"
 	local storage_account_name="${2}"
+
+	if ! az storage account show --name "${storage_account_name}" --resource-group "${resource_group_name}" &> /dev/null
+	then
+		echo "Storage account ${storage_account_name} does not exist. Skipping the deletion process."
+
+		return
+	fi
 
 	local reply
 
@@ -152,16 +162,13 @@ function _destroy_azure_platform {
 }
 
 function _uninstall_liferay_platform_chart {
-	if ! helm status liferay-platform --namespace argocd-system &> /dev/null
-	then
-		echo "The liferay-platform Helm release is not installed. Skipping the uninstall process."
-
-		return
-	fi
-
 	echo "Uninstalling the Liferay platform root application."
 
-	if ! helm uninstall liferay-platform --namespace argocd-system --timeout 30m0s --wait
+	if ! helm uninstall liferay-platform \
+		--ignore-not-found \
+		--namespace argocd-system \
+		--timeout 30m0s \
+		--wait
 	then
 		echo "The liferay-platform Helm release was not uninstalled after 30 minutes." >&2
 
