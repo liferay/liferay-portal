@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -28,6 +29,7 @@ import java.nio.file.Files;
 
 import java.util.Base64;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -55,6 +57,9 @@ public class MirrorsGetTask extends Task {
 		}
 		catch (IOException ioException) {
 			throw new BuildException(ioException);
+		}
+		finally {
+			_deleteReadLinkFiles();
 		}
 	}
 
@@ -265,24 +270,17 @@ public class MirrorsGetTask extends Task {
 
 		System.out.println(sb.toString());
 
-		File readLinkFile = _createReadLinkFile(sourceFile);
+		File readLinkFile = _getReadLinkFile(sourceFile);
+
+		if (readLinkFile == null) {
+			readLinkFile = sourceFile;
+		}
+
+		URI readLinkFileURI = readLinkFile.toURI();
 
 		long time = System.currentTimeMillis();
 
-		int size = 0;
-
-		try {
-			File readFile = readLinkFile;
-
-			if (readFile == null) {
-				readFile = sourceFile;
-			}
-
-			size = _toFile(readFile.toURI().toString(), targetFile);
-		}
-		finally {
-			_deleteFile(readLinkFile);
-		}
+		int size = _toFile(readLinkFileURI.toString(), targetFile);
 
 		if (_verbose) {
 			sb = new StringBuilder();
@@ -368,7 +366,13 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private boolean _copyToDest(File file) throws IOException {
-		if (!_isValidFile(file)) {
+		File readLinkFile = _getReadLinkFile(file);
+
+		if (readLinkFile == null) {
+			readLinkFile = file;
+		}
+
+		if (!_isValidFile(readLinkFile)) {
 			return false;
 		}
 
@@ -388,19 +392,6 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return true;
-	}
-
-	private File _createReadLinkFile(File file) {
-		File readLinkFile = _generateTempFile(file);
-
-		try {
-			Files.createLink(readLinkFile.toPath(), file.toPath());
-
-			return readLinkFile;
-		}
-		catch (IOException | UnsupportedOperationException exception) {
-			return null;
-		}
 	}
 
 	private void _deleteExpiredTempFiles(File cacheFile) {
@@ -452,6 +443,14 @@ public class MirrorsGetTask extends Task {
 		}
 
 		file.delete();
+	}
+
+	private void _deleteReadLinkFiles() {
+		for (File readLinkFile : _readLinkFiles.values()) {
+			_deleteFile(readLinkFile);
+		}
+
+		_readLinkFiles.clear();
 	}
 
 	private void _downloadFile(String url, File targetFile)
@@ -934,6 +933,27 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return processOutput.toString();
+	}
+
+	private File _getReadLinkFile(File file) {
+		File readLinkFile = _readLinkFiles.get(file);
+
+		if (readLinkFile != null) {
+			return readLinkFile;
+		}
+
+		readLinkFile = _generateTempFile(file);
+
+		try {
+			Files.createLink(readLinkFile.toPath(), file.toPath());
+		}
+		catch (IOException | UnsupportedOperationException exception) {
+			return null;
+		}
+
+		_readLinkFiles.put(file, readLinkFile);
+
+		return readLinkFile;
 	}
 
 	private String _getRemoteURL() {
@@ -1487,6 +1507,7 @@ public class MirrorsGetTask extends Task {
 	private String _mirrorsHostname;
 	private String _password;
 	private String _path;
+	private final Map<File, File> _readLinkFiles = new HashMap<>();
 	private int _retries = 1;
 	private boolean _skipChecksum;
 	private String _src;
