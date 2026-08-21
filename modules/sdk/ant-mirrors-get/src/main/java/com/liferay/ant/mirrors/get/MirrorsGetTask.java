@@ -289,7 +289,7 @@ public class MirrorsGetTask extends Task {
 				return false;
 			}
 
-			_copyFile(readFile, _getDestFile());
+			_copyToDest(readFile);
 
 			return true;
 		}
@@ -366,6 +366,23 @@ public class MirrorsGetTask extends Task {
 		sb.append(".");
 
 		throw new IOException(sb.toString(), lastIOException);
+	}
+
+	private void _copyToDest(File file) throws IOException {
+		File destFile = _dest;
+
+		if (_dest.exists() && _dest.isDirectory()) {
+			destFile = new File(_dest, _fileName);
+		}
+
+		_copyFile(file, destFile);
+
+		if (!_isValidFile(destFile)) {
+			_deleteFile(destFile);
+
+			throw new IOException(
+				destFile.getAbsolutePath() + " is not a valid file");
+		}
 	}
 
 	private boolean _createCacheEntry(File cacheFile, File tempFile)
@@ -589,7 +606,7 @@ public class MirrorsGetTask extends Task {
 
 	private void _execute() throws IOException {
 		if (_src.startsWith("file:")) {
-			_downloadFile(_src, _getDestFile());
+			_copyToDest(new File(_src.substring("file:".length())));
 
 			return;
 		}
@@ -623,7 +640,7 @@ public class MirrorsGetTask extends Task {
 				_deleteFile(mirrorsCacheFile);
 			}
 
-			_copyFile(_addToCache(mirrorsCacheFile, tempFile), _getDestFile());
+			_copyToDest(_addToCache(mirrorsCacheFile, tempFile));
 		}
 		finally {
 			_deleteFile(tempFile);
@@ -640,14 +657,6 @@ public class MirrorsGetTask extends Task {
 		process.waitFor();
 
 		return process;
-	}
-
-	private File _getDestFile() {
-		if (_dest.exists() && _dest.isDirectory()) {
-			return new File(_dest, _fileName);
-		}
-
-		return _dest;
 	}
 
 	private String _getGCPBucketName() {
