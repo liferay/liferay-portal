@@ -1,3 +1,4 @@
+clusterSecretStoreName: ""
 enabled: true
 persistence:
     storageClassName: ""

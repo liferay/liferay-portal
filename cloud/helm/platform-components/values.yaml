@@ -23,6 +23,7 @@ clusterBootstrap:
             memory: 8Mi
 clusterSecretStore:
     enabled: false
+    name: ""
     provider: {}
 deploymentContext:
     deploymentName: ""

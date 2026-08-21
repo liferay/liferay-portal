@@ -224,6 +224,7 @@ function _install_liferay_platform_chart {
 				values: (($configuration[0].platformComponents.values // {}) * {
 					clusterSecretStore: {
 						enabled: true,
+						name: ($platform_module_outputs.deployment_context.value.deploymentName + "-secret-store"),
 						provider: $platform_module_outputs.cluster_secret_store_provider.value
 					},
 					deploymentContext: $platform_module_outputs.deployment_context.value,

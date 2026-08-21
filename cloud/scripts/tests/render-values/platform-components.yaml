@@ -1,3 +1,5 @@
+clusterSecretStore:
+    name: liferay-render-secret-store
 deploymentContext:
     deploymentName: liferay-render
     region: local

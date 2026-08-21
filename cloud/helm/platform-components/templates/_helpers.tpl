@@ -17,10 +17,6 @@ repoURL: {{ .repoURL }}
 targetRevision: {{ .targetRevision | quote }}
 {{- end -}}
 
-{{- define "liferay-platform.clusterSecretStoreName" -}}
-{{- printf "%s-secret-store" .Values.deploymentContext.deploymentName -}}
-{{- end -}}
-
 {{- define "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" -}}
 instrumentation.opentelemetry.io/inject-dotnet: "false"
 instrumentation.opentelemetry.io/inject-java: "false"

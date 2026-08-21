@@ -200,5 +200,7 @@ tests:
                     hostname: argocd.liferay.test
                     tls:
                         externalSecretKey: liferay-certificates-argocd
+            clusterSecretStore:
+                name: liferay-test-secret-store
             deploymentContext:
                 deploymentName: liferay-test

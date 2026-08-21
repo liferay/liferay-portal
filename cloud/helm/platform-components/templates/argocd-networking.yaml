@@ -22,7 +22,7 @@ spec:
     refreshInterval: 1h0m0s
     secretStoreRef:
         kind: ClusterSecretStore
-        name: {{ include "liferay-platform.clusterSecretStoreName" . }}
+        name: {{ .Values.clusterSecretStore.name | quote }}
     target:
         creationPolicy: Owner
         name: argocd-server-tls

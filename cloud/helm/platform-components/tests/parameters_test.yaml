@@ -24,6 +24,8 @@ tests:
                 template: templates/applicationset-liferay.yaml
         it: Appends no extra parameters when none are passed
         set:
+            clusterSecretStore:
+                name: liferay-test-secret-store
             deploymentContext:
                 deploymentName: liferay-test
             infrastructureProvider:
@@ -47,6 +49,8 @@ tests:
                 template: templates/application-infrastructure-provider.yaml
         it: Appends the passed parameters after the deployment context
         set:
+            clusterSecretStore:
+                name: liferay-test-secret-store
             deploymentContext:
                 deploymentName: liferay-test
             infrastructureProvider:
@@ -63,7 +67,7 @@ tests:
                 template: templates/applicationset-infrastructure.yaml
             -   contains:
                     content:
-                        name: secretStoreName
+                        name: clusterSecretStoreName
                         value: liferay-test-secret-store
                     path: spec.template.spec.sources[0].helm.parameters
                 template: templates/applicationset-infrastructure.yaml
@@ -81,6 +85,8 @@ tests:
                 template: templates/applicationset-resources.yaml
         it: Appends the passed parameters to both applications rendering the infrastructure chart
         set:
+            clusterSecretStore:
+                name: liferay-test-secret-store
             deploymentContext:
                 deploymentName: liferay-test
             infrastructure:

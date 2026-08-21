@@ -37,6 +37,8 @@ spec:
                 -   {{- include "liferay-platform.chartSource" .Values.infrastructure | nindent 20 }}
                     helm:
                         parameters:
+                            -   name: clusterSecretStoreName
+                                value: {{ .Values.clusterSecretStore.name | quote }}
                             -   name: environmentId
                                 value: {{ $layout.environmentId | quote }}
                             -   name: gateway.className
@@ -47,8 +49,6 @@ spec:
                                 value: {{ $layout.projectId | quote }}
                             -   name: region
                                 value: {{ .Values.deploymentContext.region | quote }}
-                            -   name: secretStoreName
-                                value: {{ include "liferay-platform.clusterSecretStoreName" . | quote }}
                             {{- with .Values.infrastructure.parameters }}
                             {{- toYaml . | nindent 28 }}
                             {{- end }}
