@@ -278,7 +278,7 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private boolean _copyFromCache(File cacheFile) throws IOException {
-		File linkFile = _uniqueLinkFile(cacheFile);
+		File linkFile = _uniqueTempFile(cacheFile);
 
 		try {
 			File readFile = _createReadLink(cacheFile, linkFile);
@@ -990,14 +990,9 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private Pattern _getTempFilePattern(String fileName) {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("(?<timestamp>\\d{13,18})(-[0-9a-fA-F-]{36}(-");
-		sb.append(_LINK_MARKER);
-		sb.append(")?-)?");
-		sb.append(Pattern.quote(fileName));
-
-		return Pattern.compile(sb.toString());
+		return Pattern.compile(
+			"(?<timestamp>\\d{13,18})(-[0-9a-fA-F-]{36}-)?" +
+				Pattern.quote(fileName));
 	}
 
 	private String _getURLScheme() {
@@ -1450,33 +1445,17 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private File _uniqueFile(File cacheFile, String marker) {
+	private File _uniqueTempFile(File cacheFile) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(System.currentTimeMillis());
 		sb.append("-");
 		sb.append(UUID.randomUUID());
 		sb.append("-");
-
-		if (!marker.isEmpty()) {
-			sb.append(marker);
-			sb.append("-");
-		}
-
 		sb.append(cacheFile.getName());
 
 		return new File(cacheFile.getParentFile(), sb.toString());
 	}
-
-	private File _uniqueLinkFile(File cacheFile) {
-		return _uniqueFile(cacheFile, _LINK_MARKER);
-	}
-
-	private File _uniqueTempFile(File cacheFile) {
-		return _uniqueFile(cacheFile, "");
-	}
-
-	private static final String _LINK_MARKER = "link";
 
 	private static final long _MAX_AGE_MILLIS = 24 * 60 * 60 * 1000;
 
