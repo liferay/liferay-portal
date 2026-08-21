@@ -7,9 +7,10 @@ package com.liferay.portal.vulcan.internal.fields;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -38,19 +39,16 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
@@ -204,12 +202,15 @@ public class NestedFieldsSetterUtil {
 				fieldName, parentClass,
 				nestedFieldsContext.getResourceVersion());
 
-			NestedFieldGetter nestedFieldGetter =
-				_nestedFieldServiceTrackerCustomizer._nestedFieldGetters.get(
+			for (Map<FactoryKey, NestedFieldGetter> nestedFieldGetters :
+					_serviceTrackerList) {
+
+				NestedFieldGetter nestedFieldGetter = nestedFieldGetters.get(
 					factoryKey);
 
-			if (nestedFieldGetter != null) {
-				return nestedFieldGetter;
+				if (nestedFieldGetter != null) {
+					return nestedFieldGetter;
+				}
 			}
 		}
 
@@ -279,10 +280,8 @@ public class NestedFieldsSetterUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		NestedFieldsSetterUtil.class);
 
-	private static final NestedFieldServiceTrackerCustomizer
-		_nestedFieldServiceTrackerCustomizer;
-	private static final ServiceTracker<Object, List<FactoryKey>>
-		_serviceTracker;
+	private static final ServiceTrackerList<Map<FactoryKey, NestedFieldGetter>>
+		_serviceTrackerList;
 
 	private static class FactoryKey {
 
@@ -326,17 +325,19 @@ public class NestedFieldsSetterUtil {
 	}
 
 	private static class NestedFieldServiceTrackerCustomizer
-		implements ServiceTrackerCustomizer<Object, List<FactoryKey>> {
+		implements ServiceTrackerCustomizer
+			<Object, Map<FactoryKey, NestedFieldGetter>> {
 
 		@Override
-		public List<FactoryKey> addingService(
+		public Map<FactoryKey, NestedFieldGetter> addingService(
 			ServiceReference<Object> serviceReference) {
+
+			Map<FactoryKey, NestedFieldGetter> nestedFieldGetters =
+				new HashMap<>();
 
 			Object resource = _bundleContext.getService(serviceReference);
 
 			Class<?> resourceClass = resource.getClass();
-
-			List<FactoryKey> factoryKeys = null;
 
 			for (Method resourceMethod : resourceClass.getDeclaredMethods()) {
 				NestedField nestedField = resourceMethod.getAnnotation(
@@ -355,7 +356,7 @@ public class NestedFieldsSetterUtil {
 				ServiceObjects<Object> serviceObjects =
 					_bundleContext.getServiceObjects(serviceReference);
 
-				_nestedFieldGetters.put(
+				nestedFieldGetters.put(
 					factoryKey,
 					(fieldName, item, nestedFieldsContext,
 					 nestedFieldsSetterCustomizer) -> _getNestedFieldValue(
@@ -364,29 +365,27 @@ public class NestedFieldsSetterUtil {
 						_getResourceMethodArgNameTypeEntries(
 							resourceClass, resourceMethod),
 						serviceObjects));
-
-				if (factoryKeys == null) {
-					factoryKeys = new ArrayList<>();
-				}
-
-				factoryKeys.add(factoryKey);
 			}
 
-			return factoryKeys;
+			if (nestedFieldGetters.isEmpty()) {
+				_bundleContext.ungetService(serviceReference);
+
+				return null;
+			}
+
+			return nestedFieldGetters;
 		}
 
 		@Override
 		public void modifiedService(
 			ServiceReference<Object> serviceReference,
-			List<FactoryKey> factoryKeys) {
+			Map<FactoryKey, NestedFieldGetter> nestedFieldGetters) {
 		}
 
 		@Override
 		public void removedService(
 			ServiceReference<Object> serviceReference,
-			List<FactoryKey> factoryKeys) {
-
-			factoryKeys.forEach(_nestedFieldGetters::remove);
+			Map<FactoryKey, NestedFieldGetter> nestedFieldGetters) {
 
 			_bundleContext.ungetService(serviceReference);
 		}
@@ -632,8 +631,6 @@ public class NestedFieldsSetterUtil {
 		private static final ObjectMapper _objectMapper = new ObjectMapper();
 
 		private final BundleContext _bundleContext;
-		private final Map<FactoryKey, NestedFieldGetter> _nestedFieldGetters =
-			new ConcurrentHashMap<>();
 
 	}
 
@@ -642,22 +639,9 @@ public class NestedFieldsSetterUtil {
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
-		_nestedFieldServiceTrackerCustomizer =
-			new NestedFieldServiceTrackerCustomizer(bundleContext);
-
-		Filter filter = null;
-
-		try {
-			filter = bundleContext.createFilter("(nested.field.support=true)");
-		}
-		catch (InvalidSyntaxException invalidSyntaxException) {
-			ReflectionUtil.throwException(invalidSyntaxException);
-		}
-
-		_serviceTracker = new ServiceTracker<>(
-			bundleContext, filter, _nestedFieldServiceTrackerCustomizer);
-
-		_serviceTracker.open();
+		_serviceTrackerList = ServiceTrackerListFactory.open(
+			bundleContext, null, "(nested.field.support=true)",
+			new NestedFieldServiceTrackerCustomizer(bundleContext));
 	}
 
 	private interface NestedFieldGetter {
