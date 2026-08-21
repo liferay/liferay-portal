@@ -5,7 +5,7 @@
 
 const handleStyle = {
 	background: 'transparent',
-	border: '2px solid #80ACFF',
+	border: '2px solid var(--primary-l1)',
 	borderRadius: '50%',
 	padding: '4px',
 };

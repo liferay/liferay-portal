@@ -36,22 +36,9 @@ const FloatingConnectionLine = ({
 
 	return (
 		<g>
-			<path
-				className="animated"
-				d={d}
-				fill="none"
-				stroke="#222"
-				strokeWidth={1.5}
-			/>
+			<path className="animated" d={d} fill="none" strokeWidth={1.5} />
 
-			<circle
-				cx={targetX}
-				cy={targetY}
-				fill="#fff"
-				r={3}
-				stroke="#222"
-				strokeWidth={1.5}
-			/>
+			<circle cx={targetX} cy={targetY} r={3} strokeWidth={1.5} />
 		</g>
 	);
 };

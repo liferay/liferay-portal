@@ -109,14 +109,10 @@ function Edge(props) {
 				: edgeCenterY - 21;
 	}
 
-	const [strokeColor, labelBg] =
-		selectedItem?.id === id
-			? ['#80ACFF', '#0B5FFF']
-			: ['#A7A9BC', '#6B6C7E'];
+	const selected = selectedItem?.id === id;
 
 	const edgeStyle = {
 		...style,
-		stroke: strokeColor,
 		strokeDasharray: 0,
 		strokeWidth: 2,
 	};
@@ -126,27 +122,30 @@ function Edge(props) {
 	}
 
 	return (
-		<g className="react-flow__connection">
-			<MarkerEndDefinition color={strokeColor} />
+		<g
+			className={
+				selected
+					? 'react-flow__connection selected'
+					: 'react-flow__connection'
+			}
+		>
+			<MarkerEndDefinition edgeId={id} />
 
 			<path
 				className="react-flow__edge-path"
 				d={drawn}
 				id={id}
-				markerEnd={`url(#${markerEndId})`}
+				markerEnd={`url(#${markerEndId}#${id})`}
 				style={edgeStyle}
 			/>
 
 			<EdgeText
-				className="react-flow-__edge-text"
+				className="react-flow__edge-text"
 				label={edgeLabel?.toUpperCase()}
 				labelBgBorderRadius="13px"
 				labelBgPadding={[8, 4]}
-				labelBgStyle={{
-					fill: labelBg,
-				}}
 				labelShowBg={true}
-				labelStyle={{fill: '#FFF', fontWeight: 600}}
+				labelStyle={{fontWeight: 600}}
 				onClick={() => setSelectedItem(props)}
 				x={edgeCenterX}
 				y={edgeCenterY}

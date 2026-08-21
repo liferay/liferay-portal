@@ -1,0 +1,42 @@
+.react-flow__connection {
+	circle {
+		fill: $white;
+		stroke: $dark;
+	}
+
+	marker {
+		fill: $secondary-l1;
+		stroke: $secondary-l1;
+	}
+
+	path.animated {
+		stroke: $dark;
+	}
+
+	.react-flow__edge-path {
+		stroke: $secondary-l1;
+	}
+
+	.react-flow__edge-text {
+		fill: $white;
+	}
+
+	.react-flow__edge-textbg {
+		fill: $secondary;
+	}
+
+	&.selected {
+		marker {
+			fill: $primary-l1;
+			stroke: $primary-l1;
+		}
+
+		.react-flow__edge-path {
+			stroke: $primary-l1;
+		}
+
+		.react-flow__edge-textbg {
+			fill: $primary;
+		}
+	}
+}
