@@ -7,19 +7,19 @@
 
 <%@ include file="/init.jsp" %>
 
-<portlet:actionURL name="/portal_instances/copy_instance" var="copyInstanceURL" />
+<portlet:actionURL name="/portal_instances/copy_db_partition_company" var="copyDBPartitionCompanyURL" />
 
-<div class="copy-instance-alert-container"></div>
+<div class="copy-db-partition-company-alert-container"></div>
 
 <clay:container-fluid>
 	<liferay-frontend:edit-form
-		action="<%= copyInstanceURL %>"
+		action="<%= copyDBPartitionCompanyURL %>"
 		method="post"
 		name="fm"
 		onSubmit="event.preventDefault();"
 		validateOnBlur="<%= false %>"
 	>
-		<div class="copy-instance-content">
+		<div class="copy-db-partition-company-content">
 			<div class="px-4 py-2">
 				<aui:model-context model="<%= Company.class %>" />
 
@@ -35,7 +35,7 @@
 			</div>
 		</div>
 
-		<div class="align-items-center copy-instance-loading d-none flex-column justify-content-center">
+		<div class="align-items-center copy-db-partition-company-loading d-none flex-column justify-content-center">
 			<span aria-hidden="true" class="loading-animation mb-4"></span>
 
 			<p class="text-3 text-center text-secondary"><liferay-ui:message key="the-creation-of-the-instance-may-take-some-time-.closing-the-window-will-not-cancel-the-process" /></p>
@@ -46,5 +46,5 @@
 </clay:container-fluid>
 
 <liferay-frontend:component
-	module="{CopyInstance} from portal-instances-web"
+	module="{CopyDBPartitionCompany} from portal-instances-web"
 />

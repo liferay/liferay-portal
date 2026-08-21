@@ -39,11 +39,12 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + PortalInstancesPortletKeys.PORTAL_INSTANCES,
-		"mvc.command.name=/portal_instances/copy_instance"
+		"mvc.command.name=/portal_instances/copy_db_partition_company"
 	},
 	service = MVCActionCommand.class
 )
-public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
+public class CopyDBPartitionCompanyMVCActionCommand
+	extends BaseMVCActionCommand {
 
 	@Override
 	protected void doProcessAction(
@@ -60,7 +61,7 @@ public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		try {
-			Company company = _copyInstance(actionRequest);
+			Company company = _copyDBPartitionCompany(actionRequest);
 
 			if (SessionMessages.contains(
 					actionRequest,
@@ -101,7 +102,7 @@ public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
-	private Company _copyInstance(ActionRequest actionRequest)
+	private Company _copyDBPartitionCompany(ActionRequest actionRequest)
 		throws Exception {
 
 		String name = ParamUtil.getString(actionRequest, "name");
@@ -203,7 +204,7 @@ public class CopyInstanceMVCActionCommand extends BaseMVCActionCommand {
 		"an-unexpected-error-occurred";
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CopyInstanceMVCActionCommand.class);
+		CopyDBPartitionCompanyMVCActionCommand.class);
 
 	@Reference
 	private CompanyService _companyService;

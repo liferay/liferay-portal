@@ -68,13 +68,14 @@ public class CompanyActionDropdownItems {
 					DropdownItemListBuilder.add(
 						() -> PropsValues.DATABASE_PARTITION_ENABLED,
 						dropdownItem -> {
-							dropdownItem.putData("action", "copyInstance");
+							dropdownItem.putData(
+								"action", "copyDBPartitionCompany");
 							dropdownItem.putData(
 								"copyURL",
 								PortletURLBuilder.createRenderURL(
 									_liferayPortletResponse
 								).setMVCPath(
-									"/copy_instance.jsp"
+									"/copy_db_partition_company.jsp"
 								).setRedirect(
 									PortalUtil.getCurrentURL(
 										_httpServletRequest)

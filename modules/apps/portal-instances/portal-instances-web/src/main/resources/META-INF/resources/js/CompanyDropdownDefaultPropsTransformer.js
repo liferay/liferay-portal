@@ -20,7 +20,7 @@ const showUnexpectedErrorToast = () => {
 };
 
 const ACTIONS = {
-	copyInstance(itemData, portletNamespace) {
+	copyDBPartitionCompany(itemData, portletNamespace) {
 		openCopyCompanyModal({
 			portletNamespace,
 			url: itemData.copyURL,

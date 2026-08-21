@@ -9,8 +9,12 @@ import {fetch, getOpener} from 'frontend-js-web';
 export default function ({namespace}) {
 	const form = document.getElementById(`${namespace}fm`);
 
-	const content = document.querySelector('.copy-instance-content');
-	const loading = document.querySelector('.copy-instance-loading');
+	const content = document.querySelector(
+		'.copy-db-partition-company-content'
+	);
+	const loading = document.querySelector(
+		'.copy-db-partition-company-loading'
+	);
 
 	let isSubmitting = false;
 
@@ -30,7 +34,7 @@ export default function ({namespace}) {
 		loading.classList.add('d-flex');
 
 		const alertContainer = document.querySelector(
-			'.copy-instance-alert-container'
+			'.copy-db-partition-company-alert-container'
 		);
 
 		if (alertContainer.hasChildNodes()) {
