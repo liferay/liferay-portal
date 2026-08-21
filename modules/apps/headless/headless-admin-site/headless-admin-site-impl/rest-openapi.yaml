@@ -3072,6 +3072,32 @@ components:
                     format: int32
                     type: integer
             type: object
+        PageSpecificationVersionPageExperience:
+            description:
+                A page specification version's page experience.
+            properties:
+                availablePreviewLanguageIds:
+                    description:
+                        The page specification version page experience's available preview languages.
+                    items:
+                        type: string
+                    type: array
+                externalReferenceCode:
+                    description:
+                        The page specification version page experience's external reference code.
+                    type: string
+                name_i18n:
+                    additionalProperties:
+                        type: string
+                    description:
+                        The localized page specification version page experience's names.
+                    type: object
+                priority:
+                    description:
+                        The page specification version page experience's priority.
+                    format: int32
+                    type: integer
+            type: object
         PageTemplate:
             discriminator:
                 mapping:
