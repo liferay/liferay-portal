@@ -26,7 +26,10 @@ import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -286,6 +289,10 @@ public class ObjectFieldUtil {
 		return DateUtil.ISO_8601_PATTERN;
 	}
 
+	public static JSONArray getMetadataObjectFieldNamesJSONArray() {
+		return JSONUtil.putAll(_metadataObjectFieldNames.toArray());
+	}
+
 	public static boolean isMetadata(String objectFieldName) {
 		return _metadataObjectFieldNames.contains(objectFieldName);
 	}
@@ -415,6 +422,7 @@ public class ObjectFieldUtil {
 			ObjectField objectField = objectFieldsMap.get(entry.getKey());
 
 			if ((objectField == null) || objectField.isMetadata() ||
+				!objectField.hasUpdateValues() ||
 				Objects.equals(
 					objectField.getReadOnly(),
 					ObjectFieldConstants.READ_ONLY_FALSE)) {
@@ -457,11 +465,37 @@ public class ObjectFieldUtil {
 		}
 	}
 
+	private static long _getFileEntryId(Object value) throws PortalException {
+		if (value instanceof Map) {
+			Map<?, ?> map = (Map<?, ?>)value;
+
+			return GetterUtil.getLong(map.get("id"));
+		}
+
+		if (value instanceof Number || value instanceof String) {
+			return GetterUtil.getLong(value);
+		}
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			JSONFactoryUtil.looseSerialize(value));
+
+		return GetterUtil.getLong(jsonObject.get("id"));
+	}
+
 	private static void _validateNewValue(
 			Object existingValue, ObjectField objectField, Object value)
 		throws PortalException {
 
 		if (Validator.isNull(existingValue) && Validator.isNull(value)) {
+			return;
+		}
+
+		if (Objects.equals(
+				objectField.getBusinessType(),
+				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
+			Objects.equals(
+				_getFileEntryId(value), GetterUtil.getLong(existingValue))) {
+
 			return;
 		}
 
@@ -478,23 +512,10 @@ public class ObjectFieldUtil {
 
 			if (Objects.equals(
 					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP) &&
 				Objects.equals(
-					JSONFactoryUtil.createJSONObject(
-						JSONFactoryUtil.looseSerialize(value)
-					).get(
-						"id"
-					),
-					existingValue.toString())) {
-
-				return;
-			}
-			else if (Objects.equals(
-						objectField.getBusinessType(),
-						ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP) &&
-					 Objects.equals(
-						 objectField.getRelationshipType(),
-						 ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+					objectField.getRelationshipType(),
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
 
 				if (Objects.equals(existingValue, value) ||
 					((existingValue != null) && (value != null) &&

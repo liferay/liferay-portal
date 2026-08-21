@@ -143,6 +143,9 @@ if (ParamUtil.getBoolean(request, "showHeader", true)) {
 			);
 		}
 
+		const metadataObjectFieldNames =
+			<%= ObjectFieldUtil.getMetadataObjectFieldNamesJSONArray() %>;
+
 		const scheduleObjectFieldNames = [
 			'displayDate',
 			'expirationDate',
@@ -172,10 +175,6 @@ if (ParamUtil.getBoolean(request, "showHeader", true)) {
 
 		function <portlet:namespace />getValues(fields) {
 			return fields.reduce((obj, field) => {
-				if (field.readOnly) {
-					return obj;
-				}
-
 				if (scheduleObjectFieldNames.includes(field.fieldName)) {
 					if (field.value) {
 						return Object.assign(obj, {
@@ -183,6 +182,13 @@ if (ParamUtil.getBoolean(request, "showHeader", true)) {
 						});
 					}
 
+					return obj;
+				}
+
+				if (
+					metadataObjectFieldNames.includes(field.fieldName) ||
+					field.type === 'fieldset'
+				) {
 					return obj;
 				}
 
