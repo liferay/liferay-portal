@@ -93,6 +93,8 @@ function combine_properties_files {
 function default_set_up {
 	update_portal_ext_properties
 
+	update_learn_resources_dir
+
 	start_default_app_server
 
 	deploy_parent_project_osgi_modules
@@ -750,6 +752,41 @@ function stop_client_extension_spring_boot_application {
 
 function stop_default_app_server {
 	stop_app_server ${LIFERAY_HOME} ${LIFERAY_PORTAL_URL}
+}
+
+function update_learn_resources_dir {
+
+	# The portal reads its learn resources from this checkout, so a test that
+	# clicks a learn link depends on no server, neither the global one nor a
+	# local one. Where a checkout sits relative to a portal's home is
+	# configured rather than fixed, so only this script can name the path.
+
+	local learn_resources_dir=${_PORTAL_PROJECT_DIR}/learn-resources/data
+
+	if [[ ! -d ${learn_resources_dir} ]]
+	then
+		echo "Unable to find ${learn_resources_dir}."
+
+		exit 1
+	fi
+
+	# A bundle carries one of these files under each application server it
+	# ships with, and a bundle built with every default carries none at all, in
+	# which case the portal still reads the one its home holds.
+
+	local properties_files=$(get_tomcat_portal_ext_properties_file)
+
+	if [[ -z ${properties_files} ]]
+	then
+		properties_files=${LIFERAY_HOME}/portal-ext.properties
+	fi
+
+	local properties_file
+
+	for properties_file in ${properties_files}
+	do
+		echo "learn.resources.dir=${learn_resources_dir}" >> ${properties_file}
+	done
 }
 
 function update_portal_ext_properties {
