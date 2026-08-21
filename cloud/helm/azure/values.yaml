@@ -1,10 +1,6 @@
-global:
-    azure:
-        prometheusWorkspaceEndpoint: ""
 liferay-default:
     autoscaling:
         keda:
-            prometheusServerAddress: "{{ .Values.global.azure.prometheusWorkspaceEndpoint }}"
             triggerAuthentication:
                 spec:
                     podIdentity:

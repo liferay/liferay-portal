@@ -50,5 +50,5 @@ tests:
                     pattern: namespace="liferay-example-dev"
         it: Renders ScaledObject with the Azure monitor workspace query endpoint when autoscaling is enabled
         set:
-            global.azure.prometheusWorkspaceEndpoint: https://liferay-test-amw-abcd.eastus.prometheus.monitor.azure.com
             liferay-default.autoscaling.enabled: true
+            liferay-default.autoscaling.keda.prometheusServerAddress: https://liferay-test-amw-abcd.eastus.prometheus.monitor.azure.com
