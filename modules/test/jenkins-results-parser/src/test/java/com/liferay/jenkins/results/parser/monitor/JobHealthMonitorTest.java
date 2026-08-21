@@ -10,6 +10,7 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.UrlReader;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -30,6 +31,8 @@ public class JobHealthMonitorTest
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+
+		mockEnvironment(Collections.<String, String>emptyMap());
 
 		JenkinsMasterTestUtil.getJenkinsMaster(
 			_MASTER_NAME, "http://" + _MASTER_NAME);
