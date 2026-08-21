@@ -1,6 +1,8 @@
 import ClayButton from '@clayui/button';
-import React, {useState} from 'react';
+import ClayLink from '@clayui/link';
+import React, {useEffect, useState} from 'react';
 import {Pendo, TrackingConsentValues} from 'shared/util/pendo';
+import {Text} from '@clayui/core';
 
 interface ITrackingConsentBannerProps {
 	onDecision: (consent: TrackingConsentValues) => void;
@@ -9,23 +11,37 @@ interface ITrackingConsentBannerProps {
 /**
  * Consent banner shown before any Pendo tracking starts. Mirrors the copy
  * and behavior of the DXP tracking script banner so users get the same
- * consent experience across products. Persists the decision itself and
- * reports it to the parent through `onDecision`.
+ * consent experience across products. Owns the stored decision: it renders
+ * nothing once one exists and reports it to the parent through `onDecision`.
  */
 const TrackingConsentBanner: React.FC<ITrackingConsentBannerProps> = ({
 	onDecision,
 }) => {
 	const [expanded, setExpanded] = useState(false);
 
+	const [consent, setConsent] = useState(() =>
+		new Pendo().getUserConsent()
+	);
+
+	useEffect(() => {
+		if (consent) {
+			onDecision(consent);
+		}
+	}, [consent, onDecision]);
+
 	const handleDecision = (accepted: boolean) => () => {
 		new Pendo().setUserConsent(accepted);
 
-		onDecision(
+		setConsent(
 			accepted
 				? TrackingConsentValues.Accepted
 				: TrackingConsentValues.Declined
 		);
 	};
+
+	if (consent) {
+		return null;
+	}
 
 	return (
 		<div
@@ -34,36 +50,45 @@ const TrackingConsentBanner: React.FC<ITrackingConsentBannerProps> = ({
 			role="dialog"
 		>
 			<div>
-				<div className="font-weight-semi-bold mb-2">
-					{Liferay.Language.get('product-analytics-banner-title')}
+				<div className="mb-2">
+					<Text weight="semi-bold">
+						{Liferay.Language.get('product-analytics-banner-title')}
+					</Text>
 				</div>
 
-				<p className="mb-1 small">
-					{Liferay.Language.get(
-						'product-analytics-banner-description'
-					)}{' '}
-					<a
-						className="text-white"
-						href="https://www.liferay.com/privacy-policy"
-						rel="noopener noreferrer"
-						target="_blank"
-					>
-						<u>
-							{Liferay.Language.get('visit-our-privacy-policy')}
-						</u>
-					</a>
-					{'.'}
-				</p>
+				<div className="mb-1">
+					<Text size={3}>
+						{Liferay.Language.get(
+							'product-analytics-banner-description'
+						)}
+
+						<ClayLink
+							className="ml-1 text-white"
+							href="https://www.liferay.com/privacy-policy"
+							target="_blank"
+						>
+							<u>
+								{Liferay.Language.get(
+									'visit-our-privacy-policy'
+								)}
+							</u>
+						</ClayLink>
+					</Text>
+				</div>
 
 				{expanded && (
 					<>
-						<p className="mb-1 small">
-							{Liferay.Language.get('show-more-accept-all')}
-						</p>
+						<div className="mb-1">
+							<Text size={3}>
+								{Liferay.Language.get('show-more-accept-all')}
+							</Text>
+						</div>
 
-						<p className="mb-1 small">
-							{Liferay.Language.get('show-more-decline-all')}
-						</p>
+						<div className="mb-1">
+							<Text size={3}>
+								{Liferay.Language.get('show-more-decline-all')}
+							</Text>
+						</div>
 					</>
 				)}
 
@@ -86,6 +111,7 @@ const TrackingConsentBanner: React.FC<ITrackingConsentBannerProps> = ({
 					className="mr-2"
 					displayType="secondary"
 					onClick={handleDecision(true)}
+					size="sm"
 				>
 					{Liferay.Language.get('accept-all')}
 				</ClayButton>
@@ -93,6 +119,7 @@ const TrackingConsentBanner: React.FC<ITrackingConsentBannerProps> = ({
 				<ClayButton
 					displayType="secondary"
 					onClick={handleDecision(false)}
+					size="sm"
 				>
 					{Liferay.Language.get('decline-all')}
 				</ClayButton>

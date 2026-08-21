@@ -15,12 +15,12 @@ export class Pendo {
 	 * has not made a decision yet. Uses the same cookie name as the DXP
 	 * tracking script so the consent model stays consistent across products.
 	 */
-	getUserConsent(): string | null {
+	getUserConsent(): TrackingConsentValues | null {
 		return (
-			Liferay.Util.Cookie.get(
+			(Liferay.Util.Cookie.get(
 				TRACKING_CONSENT_COOKIE,
 				Liferay.Util.Cookie.TYPES.NECESSARY
-			) ?? null
+			) as TrackingConsentValues) ?? null
 		);
 	}
 

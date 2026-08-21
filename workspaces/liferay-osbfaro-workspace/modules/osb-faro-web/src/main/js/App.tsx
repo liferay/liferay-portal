@@ -93,9 +93,8 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 
 	const {data: currentUser, loading} = useFetchCurrentUser(groupId);
 
-	const [trackingConsent, setTrackingConsent] = useState(() =>
-		new Pendo().getUserConsent()
-	);
+	const [trackingConsent, setTrackingConsent] =
+		useState<TrackingConsentValues | null>(null);
 
 	useEffect(() => {
 		if (
@@ -121,7 +120,7 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 		<>
 			{children}
 
-			{!!currentUser?.id && trackingConsent === null && (
+			{!!currentUser?.id && (
 				<TrackingConsentBanner onDecision={setTrackingConsent} />
 			)}
 		</>
