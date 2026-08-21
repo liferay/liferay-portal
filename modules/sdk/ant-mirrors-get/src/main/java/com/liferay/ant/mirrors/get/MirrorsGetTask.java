@@ -239,7 +239,7 @@ public class MirrorsGetTask extends Task {
 				return tempFile;
 			}
 
-			if (_renameFile(tempFile, cacheFile)) {
+			if (_moveFile(tempFile, cacheFile)) {
 				return cacheFile;
 			}
 
@@ -1290,6 +1290,28 @@ public class MirrorsGetTask extends Task {
 		return false;
 	}
 
+	private boolean _moveFile(File tempFile, File cacheFile)
+		throws IOException {
+
+		if (tempFile.renameTo(cacheFile)) {
+			return true;
+		}
+
+		if (cacheFile.exists()) {
+			return false;
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Unable to move ");
+		sb.append(tempFile.getPath());
+		sb.append(" to ");
+		sb.append(cacheFile.getPath());
+		sb.append(".");
+
+		throw new IOException(sb.toString());
+	}
+
 	private String _normalizePath(String path) {
 		if (path == null) {
 			return "";
@@ -1350,28 +1372,6 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return urlConnection;
-	}
-
-	private boolean _renameFile(File tempFile, File cacheFile)
-		throws IOException {
-
-		if (tempFile.renameTo(cacheFile)) {
-			return true;
-		}
-
-		if (cacheFile.exists()) {
-			return false;
-		}
-
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("Unable to rename ");
-		sb.append(tempFile.getPath());
-		sb.append(" to ");
-		sb.append(cacheFile.getPath());
-		sb.append(".");
-
-		throw new IOException(sb.toString());
 	}
 
 	private int _toFile(String url, File file) throws IOException {
