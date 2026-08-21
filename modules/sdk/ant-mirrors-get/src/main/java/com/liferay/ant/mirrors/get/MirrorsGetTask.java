@@ -216,18 +216,33 @@ public class MirrorsGetTask extends Task {
 		_verbose = verbose;
 	}
 
-	private File _addToCache(File cacheFile, File tempFile)
+	private File _addToCache(File tempFile, File cacheFile)
 		throws IOException {
 
-		if (!_createCacheEntry(cacheFile, tempFile)) {
-			System.out.println(cacheFile.getPath() + " was already cached.");
-		}
+		try {
+			Files.createLink(cacheFile.toPath(), tempFile.toPath());
 
-		if (tempFile.exists()) {
 			return tempFile;
 		}
+		catch (FileAlreadyExistsException fileAlreadyExistsException) {
+			System.out.println(cacheFile.getPath() + " was already cached.");
 
-		return cacheFile;
+			return tempFile;
+		}
+		catch (IOException | UnsupportedOperationException exception) {
+			if (cacheFile.exists()) {
+				System.out.println(
+					cacheFile.getPath() + " was already cached.");
+
+				return tempFile;
+			}
+
+			if (_renameFile(tempFile, cacheFile)) {
+				return cacheFile;
+			}
+
+			return tempFile;
+		}
 	}
 
 	private void _copyFile(File sourceFile, File targetFile)
@@ -382,26 +397,6 @@ public class MirrorsGetTask extends Task {
 
 			throw new IOException(
 				destFile.getAbsolutePath() + " is not a valid file");
-		}
-	}
-
-	private boolean _createCacheEntry(File cacheFile, File tempFile)
-		throws IOException {
-
-		try {
-			Files.createLink(cacheFile.toPath(), tempFile.toPath());
-
-			return true;
-		}
-		catch (FileAlreadyExistsException fileAlreadyExistsException) {
-			return false;
-		}
-		catch (IOException | UnsupportedOperationException exception) {
-			if (cacheFile.exists()) {
-				return false;
-			}
-
-			return _renameFile(cacheFile, tempFile);
 		}
 	}
 
@@ -640,7 +635,7 @@ public class MirrorsGetTask extends Task {
 				_deleteFile(mirrorsCacheFile);
 			}
 
-			_copyToDest(_addToCache(mirrorsCacheFile, tempFile));
+			_copyToDest(_addToCache(tempFile, mirrorsCacheFile));
 		}
 		finally {
 			_deleteFile(tempFile);
@@ -1343,7 +1338,7 @@ public class MirrorsGetTask extends Task {
 		return urlConnection;
 	}
 
-	private boolean _renameFile(File cacheFile, File tempFile)
+	private boolean _renameFile(File tempFile, File cacheFile)
 		throws IOException {
 
 		if (tempFile.renameTo(cacheFile)) {
