@@ -1117,8 +1117,8 @@ public class ObjectEntryVersionLocalServiceTest {
 				).build(),
 				serviceContext);
 
-			Assert.assertEquals(status, objectEntry.getStatus());
 			Assert.assertEquals(2, objectEntry.getVersion());
+			Assert.assertEquals(status, objectEntry.getStatus());
 
 			_assertEquals(
 				Arrays.asList(
