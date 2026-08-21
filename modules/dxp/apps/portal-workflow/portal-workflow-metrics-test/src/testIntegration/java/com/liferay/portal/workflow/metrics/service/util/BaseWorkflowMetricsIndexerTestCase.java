@@ -476,17 +476,15 @@ public abstract class BaseWorkflowMetricsIndexerTestCase
 	}
 
 	private void _reindexMetricIndexes(long companyId) throws Exception {
-		String indexNamePrefix = _indexNameBuilder.getIndexName(companyId);
+		String indexName = _indexNameBuilder.getIndexName(companyId);
 
 		searchEngineAdapter.execute(
 			new DeleteIndexRequest(
-				indexNamePrefix +
-					WorkflowMetricsIndexNameConstants.SUFFIX_INSTANCE,
-				indexNamePrefix + WorkflowMetricsIndexNameConstants.SUFFIX_NODE,
-				indexNamePrefix +
-					WorkflowMetricsIndexNameConstants.SUFFIX_PROCESS,
-				indexNamePrefix + WorkflowMetricsIndexNameConstants.SUFFIX_TASK,
-				indexNamePrefix +
+				indexName + WorkflowMetricsIndexNameConstants.SUFFIX_INSTANCE,
+				indexName + WorkflowMetricsIndexNameConstants.SUFFIX_NODE,
+				indexName + WorkflowMetricsIndexNameConstants.SUFFIX_PROCESS,
+				indexName + WorkflowMetricsIndexNameConstants.SUFFIX_TASK,
+				indexName +
 					WorkflowMetricsIndexNameConstants.SUFFIX_TRANSITION));
 
 		_reindex(companyId, "instance");
@@ -497,14 +495,14 @@ public abstract class BaseWorkflowMetricsIndexerTestCase
 	}
 
 	private void _reindexSLAIndexes(long companyId) throws Exception {
-		String indexNamePrefix = _indexNameBuilder.getIndexName(companyId);
+		String indexName = _indexNameBuilder.getIndexName(companyId);
 
 		searchEngineAdapter.execute(
 			new DeleteIndexRequest(
-				indexNamePrefix +
+				indexName +
 					WorkflowMetricsIndexNameConstants.
 						SUFFIX_SLA_INSTANCE_RESULT,
-				indexNamePrefix +
+				indexName +
 					WorkflowMetricsIndexNameConstants.SUFFIX_SLA_TASK_RESULT));
 
 		_reindex(companyId, "sla-instance-result");
