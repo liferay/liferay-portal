@@ -1,4 +1,4 @@
-@import 'atlas-variables';
+@import 'atlas-custom-properties/_variables';
 
 .definition-builder-app {
 	height: calc(100vh - 64px - var(--control-menu-container-height));
