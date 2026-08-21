@@ -11,6 +11,8 @@ jobs:
                 uses: helm/kind-action@v1
             -   name: Install Helm
                 uses: azure/setup-helm@v4
+                with:
+                    version: 4.2.4
             -   name: Install CRDs
                 run: kubectl apply --server-side --force-conflicts -f ./cloud/helm/dxp-operator/crds
             -   name: Validate Helm chart
