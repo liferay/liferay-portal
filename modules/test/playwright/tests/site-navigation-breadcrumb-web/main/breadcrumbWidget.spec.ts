@@ -269,3 +269,53 @@ test('Preview pane reloads in Breadcrumb widget configuration', async ({
 		configurationIFrame
 	);
 });
+
+test(
+	'Breadcrumb widget configuration preview renders display templates like the page',
+	{
+		tag: '@LPD-41078',
+	},
+	async ({breadcrumbPage, breadcrumbWidgetPage, site, widgetPagePage}) => {
+		await breadcrumbWidgetPage.addBreadcrumbPortlet(site);
+
+		const displayTemplates = [
+			{
+				expectedStyles: ['40px', '23px'],
+				name: 'Arrows',
+				properties: ['line-height', 'padding-left'],
+				selector: '.breadcrumb-arrows .entry',
+			},
+			{
+				expectedStyles: ['inline-block', 'center'],
+				name: 'Vertical',
+				properties: ['display', 'text-align'],
+				selector: '.breadcrumb-vertical',
+			},
+		];
+
+		for (const {
+			expectedStyles,
+			name,
+			properties,
+			selector,
+		} of displayTemplates) {
+			const configurationIFrame =
+				await breadcrumbPage.selectDisplayTemplate(name);
+
+			await breadcrumbPage.assertBreadcrumbStyles({
+				expectedStyles,
+				parent: configurationIFrame,
+				properties,
+				selector,
+			});
+
+			await widgetPagePage.saveAndClose('Breadcrumb');
+
+			await breadcrumbPage.assertBreadcrumbStyles({
+				expectedStyles,
+				properties,
+				selector,
+			});
+		}
+	}
+);

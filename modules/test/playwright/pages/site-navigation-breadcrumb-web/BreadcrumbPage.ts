@@ -5,6 +5,7 @@
 
 import {FrameLocator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {WidgetPagePage} from '../layout-admin-web/WidgetPagePage';
 
 export class BreadcrumbPage {
@@ -32,6 +33,55 @@ export class BreadcrumbPage {
 		await expect(breadcrumbEntries).toEqual(
 			expect.arrayContaining(expectedValues)
 		);
+	}
+
+	async assertBreadcrumbStyles({
+		expectedStyles,
+		parent = this.page,
+		properties,
+		selector,
+		timeout = 2000,
+	}: {
+		expectedStyles: string[];
+		parent?: Page | FrameLocator;
+		properties: string[];
+		selector: string;
+		timeout?: number;
+	}) {
+		await expect(async () => {
+			const breadcrumbStyles = await parent
+				.locator(selector)
+				.first()
+				.evaluate(
+					(element, properties) =>
+						properties.map((property) =>
+							getComputedStyle(element).getPropertyValue(property)
+						),
+					properties,
+					{timeout}
+				);
+
+			expect(breadcrumbStyles).toEqual(expectedStyles);
+		}).toPass();
+	}
+
+	async selectDisplayTemplate(displayTemplate: string) {
+		await this.widgetPagePage.clickOnAction('Breadcrumb', 'Configuration');
+
+		const configurationIFrame = this.page.frameLocator(
+			'iframe[title*="Breadcrumb"]'
+		);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: configurationIFrame.getByRole('option', {
+				exact: true,
+				name: displayTemplate,
+			}),
+			trigger: configurationIFrame.getByLabel('Display Template'),
+		});
+
+		return configurationIFrame;
 	}
 
 	async toggleBreadcrumbConfiguration(configuration: string) {
