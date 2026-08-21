@@ -326,6 +326,8 @@ public class MirrorsGetTask extends Task {
 
 			try {
 				_downloadFile(url, targetFile, _retries);
+
+				return;
 			}
 			catch (IOException ioException2) {
 				ioException1 = ioException2;
@@ -334,12 +336,6 @@ public class MirrorsGetTask extends Task {
 					System.out.println("Unable to connect to " + url + ".");
 				}
 			}
-
-			if (_isValidFile(targetFile)) {
-				return;
-			}
-
-			_deleteFile(targetFile);
 		}
 
 		throw new IOException(
@@ -347,13 +343,7 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private boolean _copyToDest(File file) throws IOException {
-		File readLinkFile = _getReadLinkFile(file);
-
-		if (readLinkFile == null) {
-			readLinkFile = file;
-		}
-
-		if (!_isValidFile(readLinkFile)) {
+		if (!file.exists()) {
 			return false;
 		}
 
@@ -365,14 +355,24 @@ public class MirrorsGetTask extends Task {
 
 		_copyFile(file, destFile);
 
-		if (!_isValidFile(destFile)) {
-			_deleteFile(destFile);
-
-			throw new IOException(
-				destFile.getAbsolutePath() + " is not a valid file");
+		if (_isValidFile(destFile)) {
+			return true;
 		}
 
-		return true;
+		_deleteFile(destFile);
+
+		File readLinkFile = _getReadLinkFile(file);
+
+		if (readLinkFile == null) {
+			readLinkFile = file;
+		}
+
+		if (!_isValidFile(readLinkFile)) {
+			return false;
+		}
+
+		throw new IOException(
+			destFile.getAbsolutePath() + " is not a valid file");
 	}
 
 	private void _deleteExpiredTempFiles(File cacheFile) {
