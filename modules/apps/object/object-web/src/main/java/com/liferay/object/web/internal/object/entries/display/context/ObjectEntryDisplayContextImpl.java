@@ -866,6 +866,11 @@ public class ObjectEntryDisplayContextImpl
 		DDMFormRenderingContext ddmFormRenderingContext =
 			new DDMFormRenderingContext();
 
+		long groupId = _getGroupId();
+
+		ddmFormRenderingContext.addProperty(
+			"availableLocales", LanguageUtil.getAvailableLocales(groupId));
+
 		ddmFormRenderingContext.setContainerId("editObjectEntry");
 
 		if (objectEntry != null) {
@@ -880,7 +885,7 @@ public class ObjectEntryDisplayContextImpl
 			}
 		}
 
-		ddmFormRenderingContext.setGroupId(_getGroupId());
+		ddmFormRenderingContext.setGroupId(groupId);
 		ddmFormRenderingContext.setHttpServletRequest(
 			_objectRequestHelper.getRequest());
 		ddmFormRenderingContext.setHttpServletResponse(

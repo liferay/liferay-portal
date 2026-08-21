@@ -60,6 +60,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -220,11 +221,19 @@ public class DDMFormTemplateContextFactoryImpl
 			"activePage",
 			ParamUtil.getInteger(
 				ddmFormRenderingContext.getHttpServletRequest(), "activePage"));
+
+		Set<Locale> availableLocales = ddmFormRenderingContext.getProperty(
+			"availableLocales");
+
+		if (availableLocales == null) {
+			availableLocales = LanguageUtil.getAvailableLocales();
+		}
+
 		templateContext.put(
 			"availableLocales",
 			JSONUtil.toJSONArray(
-				LanguageUtil.getAvailableLocales(),
-				locale -> _getLocaleJSONObject(locale), _log));
+				availableLocales, locale -> _getLocaleJSONObject(locale),
+				_log));
 
 		Locale locale = ddmFormRenderingContext.getLocale();
 
