@@ -120,7 +120,9 @@ public class MirrorsGetTask extends Task {
 		_src = project.replaceProperties(src);
 
 		if (_src.startsWith("file:")) {
-			_fileName = new File(_src.substring("file:".length())).getName();
+			File file = new File(_src.substring("file:".length()));
+
+			_fileName = file.getName();
 
 			return;
 		}
@@ -218,9 +220,7 @@ public class MirrorsGetTask extends Task {
 		_verbose = verbose;
 	}
 
-	private File _addToCache(File tempFile, File cacheFile)
-		throws IOException {
-
+	private File _addToCache(File tempFile, File cacheFile) throws IOException {
 		try {
 			Files.createLink(cacheFile.toPath(), tempFile.toPath());
 
@@ -250,8 +250,7 @@ public class MirrorsGetTask extends Task {
 				throw ioException;
 			}
 
-			System.out.println(
-				cacheFile.getPath() + " was already cached.");
+			System.out.println(cacheFile.getPath() + " was already cached.");
 
 			return tempFile;
 		}
@@ -295,9 +294,7 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private boolean _copyFromMirrorsMount(File targetFile)
-		throws IOException {
-
+	private boolean _copyFromMirrorsMount(File targetFile) throws IOException {
 		File mirrorsMountFile = _getMirrorsMountFile();
 
 		if (!mirrorsMountFile.isFile()) {
@@ -329,7 +326,7 @@ public class MirrorsGetTask extends Task {
 			return;
 		}
 
-		IOException lastIOException = null;
+		IOException ioException1 = null;
 
 		for (String url : _getSrcURLs()) {
 			if (url == null) {
@@ -339,8 +336,8 @@ public class MirrorsGetTask extends Task {
 			try {
 				_downloadFile(url, targetFile, _retries);
 			}
-			catch (IOException ioException) {
-				lastIOException = ioException;
+			catch (IOException ioException2) {
+				ioException1 = ioException2;
 
 				if (_verbose) {
 					System.out.println("Unable to connect to " + url + ".");
@@ -362,7 +359,7 @@ public class MirrorsGetTask extends Task {
 		sb.append(targetFile.getPath());
 		sb.append(".");
 
-		throw new IOException(sb.toString(), lastIOException);
+		throw new IOException(sb.toString(), ioException1);
 	}
 
 	private boolean _copyToDest(File file) throws IOException {
@@ -453,9 +450,7 @@ public class MirrorsGetTask extends Task {
 		_readLinkFiles.clear();
 	}
 
-	private void _downloadFile(String url, File targetFile)
-		throws IOException {
-
+	private void _downloadFile(String url, File targetFile) throws IOException {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Downloading ");
@@ -513,7 +508,9 @@ public class MirrorsGetTask extends Task {
 	private void _downloadFile(String url, File targetFile, int retries)
 		throws IOException {
 
-		if (_gsURLPattern.matcher(url).find()) {
+		Matcher matcher = _gsURLPattern.matcher(url);
+
+		if (matcher.find()) {
 			_downloadGCPFile(url, targetFile);
 
 			return;
@@ -994,9 +991,7 @@ public class MirrorsGetTask extends Task {
 		if (_tryLocalNetwork) {
 			localNetworkURL = _getNexusTomcatURL();
 
-			if ((localNetworkURL == null) &&
-				!_getMirrorsHostname().isEmpty()) {
-
+			if ((localNetworkURL == null) && !_getMirrorsHostname().isEmpty()) {
 				localNetworkURL = _getMirrorsURL();
 			}
 		}
@@ -1209,9 +1204,7 @@ public class MirrorsGetTask extends Task {
 		return true;
 	}
 
-	private boolean _isValidMD5(File file, String url)
-		throws IOException {
-
+	private boolean _isValidMD5(File file, String url) throws IOException {
 		if (_skipChecksum) {
 			return true;
 		}
