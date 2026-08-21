@@ -11,7 +11,7 @@ metadata:
         component: gateway
         environmentId: {{ $.Values.environmentId | quote }}
         projectId: {{ $.Values.projectId | quote }}
-    name: {{ $gateway.name }}-attachment
+    name: {{ printf "%s-attachment" $gateway.name | quote }}
     namespace: {{ $.Release.Namespace }}
 spec:
     {{- toYaml . | nindent 4 }}
@@ -39,6 +39,11 @@ metadata:
 spec:
     gatewayClassName: {{ $gateway.className | quote }}
     listeners:
+        {{- range $name, $endpoint := .Values.endpoints }}
+        {{- if and (eq (int $endpoint.port) 80) (not $endpoint.hostname) (ne $name "http") }}
+        {{- fail (printf "The %s endpoint uses port 80 without a hostname, which collides with the implicit http listener" $name) }}
+        {{- end }}
+        {{- end }}
         {{- if not (hasKey .Values.endpoints "http") }}
         -   allowedRoutes:
                 namespaces:
@@ -57,23 +62,21 @@ spec:
             name: {{ $name | quote }}
             port: {{ $endpoint.port }}
             protocol: {{ $endpoint.protocol | quote }}
-            {{- with $endpoint.tls }}
-            {{- $mode := .mode | default "Terminate" }}
-            {{- if and (eq $mode "Terminate") (not .externalSecretKeys) }}
-            {{- fail (printf "The %s endpoint terminates TLS and must set tls.externalSecretKeys" $name) }}
+            {{- $externalSecretKeys := dig "tls" "externalSecretKeys" (list) $endpoint }}
+            {{- if and (eq $endpoint.protocol "HTTPS") (not $externalSecretKeys) }}
+            {{- fail (printf "The %s endpoint serves HTTPS and must set tls.externalSecretKeys" $name) }}
             {{- end }}
-            {{- if and (eq $mode "Passthrough") .externalSecretKeys }}
-            {{- fail (printf "The %s endpoint passes TLS through and must not set tls.externalSecretKeys" $name) }}
+            {{- if and (ne $endpoint.protocol "HTTPS") $externalSecretKeys }}
+            {{- fail (printf "The %s endpoint does not serve HTTPS and must not set tls.externalSecretKeys" $name) }}
             {{- end }}
+            {{- with $externalSecretKeys }}
             tls:
-                {{- with .externalSecretKeys }}
                 certificateRefs:
                     {{- range . }}
                     -   kind: Secret
                         name: {{ . | quote }}
                     {{- end }}
-                {{- end }}
-                mode: {{ $mode }}
+                mode: Terminate
             {{- end }}
         {{- end }}
 {{- end -}}

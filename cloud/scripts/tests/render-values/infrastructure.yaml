@@ -7,7 +7,6 @@ endpoints:
         tls:
             externalSecretKeys:
                 -   liferay-certificates-liferay-tls-certificate
-            mode: Terminate
 environmentId: dev
 gateway:
     className: liferay-gateway-class

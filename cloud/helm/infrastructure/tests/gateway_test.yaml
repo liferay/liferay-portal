@@ -35,30 +35,35 @@ tests:
             gateway.clientTrafficPolicySpec.enableProxyProtocol: true
     -   asserts:
             -   failedTemplate:
-                    errorPattern: The mydomain endpoint passes TLS through and must not set tls.externalSecretKeys
-        it: Fails when an endpoint passes TLS through with a certificate
+                    errorPattern: The mydomain endpoint does not serve HTTPS and must not set tls.externalSecretKeys
+        it: Fails when a plain endpoint sets a certificate
         set:
             endpoints:
                 mydomain:
-                    hostname: mydomain.example.com
-                    port: 443
-                    protocol: TLS
+                    port: 8080
+                    protocol: HTTP
                     tls:
                         externalSecretKeys:
                             -   liferay-certificates-my-certificate
-                        mode: Passthrough
     -   asserts:
             -   failedTemplate:
-                    errorPattern: The mydomain endpoint terminates TLS and must set tls.externalSecretKeys
-        it: Fails when an endpoint terminates TLS without a certificate
+                    errorPattern: The web endpoint uses port 80 without a hostname, which collides with the implicit http listener
+        it: Fails when an endpoint claims port 80 without a hostname
+        set:
+            endpoints:
+                web:
+                    port: 80
+                    protocol: HTTP
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: The mydomain endpoint serves HTTPS and must set tls.externalSecretKeys
+        it: Fails when an HTTPS endpoint has no certificate
         set:
             endpoints:
                 mydomain:
                     hostname: mydomain.example.com
                     port: 443
                     protocol: HTTPS
-                    tls:
-                        mode: Terminate
     -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]

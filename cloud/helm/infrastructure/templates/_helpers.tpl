@@ -1,9 +1,3 @@
-{{- define "database.validateAuthentication" -}}
-{{- if not (has .Values.database.authentication (list "password")) -}}
-{{- fail (printf "Unsupported database authentication: %s" .Values.database.authentication) -}}
-{{- end -}}
-{{- end -}}
-
 {{- define "elasticsearch.containerSecurityContext" -}}
 allowPrivilegeEscalation: false
 capabilities:

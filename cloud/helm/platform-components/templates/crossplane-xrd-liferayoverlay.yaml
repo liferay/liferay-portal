@@ -40,8 +40,10 @@ spec:
                                     default: false
                                     type: boolean
                                 projectId:
+                                    minLength: 1
                                     type: string
                                 region:
+                                    minLength: 1
                                     type: string
                             required:
                                 -   projectId

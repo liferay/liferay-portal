@@ -72,6 +72,7 @@ spec:
                                         -   version
                                     type: object
                                 environmentId:
+                                    minLength: 1
                                     type: string
                                 forceDestroy:
                                     default: false
@@ -86,8 +87,10 @@ spec:
                                             type: boolean
                                     type: object
                                 projectId:
+                                    minLength: 1
                                     type: string
                                 region:
+                                    minLength: 1
                                     type: string
                                 restorePhase:
                                     enum:
