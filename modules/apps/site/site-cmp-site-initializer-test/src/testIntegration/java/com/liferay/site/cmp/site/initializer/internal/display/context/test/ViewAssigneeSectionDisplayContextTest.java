@@ -12,6 +12,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.Assignee;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -100,7 +101,9 @@ public class ViewAssigneeSectionDisplayContextTest
 		Assert.assertEquals("Assignee", properties.get("label"));
 		Assert.assertEquals("ObjectField_assignTo", properties.get("name"));
 		Assert.assertEquals(
-			"/o/headless-cmp/v1.0/task-assignees/",
+			StringBundler.concat(
+				"/o/headless-cmp/v1.0/projects/",
+				cmpProjectObjectEntry.getObjectEntryId(), "/task-assignees/"),
 			properties.get("searchURL"));
 		Assert.assertFalse((Boolean)properties.get("usersOnly"));
 		Assert.assertTrue((Boolean)properties.get("visible"));

@@ -117,6 +117,9 @@ public class ViewTaskInfoSummarySectionDisplayContextTest
 					"type", Assignee.Type.ROLE.toString()
 				)
 			).put(
+				"cmpProjectObjectEntryId",
+				cmpProjectObjectEntry.getObjectEntryId()
+			).put(
 				"cmpTaskObjectEntryId", _cmpTaskObjectEntry.getObjectEntryId()
 			).put(
 				"dueDate", "2026-01-31"
