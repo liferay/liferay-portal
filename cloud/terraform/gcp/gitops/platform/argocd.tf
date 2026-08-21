@@ -97,7 +97,11 @@ resource "helm_release" "argocd" {
 								{
 									from=[
 										{
-											namespaceSelector={}
+											namespaceSelector={
+												matchLabels={
+													"kubernetes.io/metadata.name"=var.observability_config.namespace
+												}
+											}
 										},
 									]
 									ports=[
@@ -190,7 +194,11 @@ resource "helm_release" "argocd" {
 									{
 										from=[
 											{
-												namespaceSelector={}
+												namespaceSelector={
+													matchLabels={
+														"kubernetes.io/metadata.name"=var.observability_config.namespace
+													}
+												}
 											},
 										]
 										ports=[
@@ -295,7 +303,11 @@ resource "helm_release" "argocd" {
 									{
 										from=[
 											{
-												namespaceSelector={}
+												namespaceSelector={
+													matchLabels={
+														"kubernetes.io/metadata.name"=var.observability_config.namespace
+													}
+												}
 											},
 										]
 										ports=[
@@ -372,7 +384,11 @@ resource "helm_release" "argocd" {
 									{
 										from=[
 											{
-												namespaceSelector={}
+												namespaceSelector={
+													matchLabels={
+														"kubernetes.io/metadata.name"=var.observability_config.namespace
+													}
+												}
 											},
 										]
 										ports=[

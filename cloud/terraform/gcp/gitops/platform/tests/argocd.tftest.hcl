@@ -146,8 +146,8 @@ run "should_omit_every_metrics_rule_when_observability_is_disabled" {
 }
 run "should_add_every_metrics_rule_when_observability_is_enabled" {
 	assert {
-		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-application-controller"][0].spec.ingress[0].from[0].namespaceSelector == {}
-		error_message="argocd-application-controller must allow metrics from any namespace when observability_config.enabled is true, matching the chart's own original behavior"
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-application-controller"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_config.namespace
+		error_message="argocd-application-controller must scope its metrics rule to the configured observability namespace specifically, not any namespace"
 	}
 	assert {
 		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-applicationset-controller-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_config.namespace
@@ -162,12 +162,24 @@ run "should_add_every_metrics_rule_when_observability_is_enabled" {
 		error_message="argocd-dex-server must add its metrics rule alongside the argocd-server rule when observability_config.enabled is true"
 	}
 	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-dex-server"][0].spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_config.namespace
+		error_message="argocd-dex-server must scope its metrics rule to the configured observability namespace specifically, not any namespace"
+	}
+	assert {
 		condition=length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-redis"][0].spec.ingress) == 2
 		error_message="argocd-redis must add its metrics rule when observability_config.enabled is true"
 	}
 	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-redis"][0].spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_config.namespace
+		error_message="argocd-redis must scope its metrics rule to the configured observability namespace specifically, not any namespace"
+	}
+	assert {
 		condition=length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-repo-server"][0].spec.ingress) == 2
 		error_message="argocd-repo-server must add its metrics rule when observability_config.enabled is true"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-repo-server"][0].spec.ingress[1].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_config.namespace
+		error_message="argocd-repo-server must scope its metrics rule to the configured observability namespace specifically, not any namespace"
 	}
 	assert {
 		condition=length([for o in yamldecode(helm_release.argocd.values[0]).extraObjects : o if o.metadata.name == "argocd-server-ingress"][0].spec.ingress) == 2
