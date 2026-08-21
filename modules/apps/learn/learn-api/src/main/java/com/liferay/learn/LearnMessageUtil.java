@@ -12,8 +12,10 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webcache.WebCacheItem;
 import com.liferay.portal.kernel.webcache.WebCachePoolUtil;
 
@@ -57,6 +59,9 @@ public class LearnMessageUtil {
 		return jsonObject;
 	}
 
+	private static final String _LEARN_RESOURCES_DIR = PropsUtil.get(
+		"learn.resources.dir");
+
 	private static final boolean _LEARN_RESOURCES_MODE_DEV = Objects.equals(
 		PropsUtil.get("learn.resources.mode"), "dev");
 
@@ -77,6 +82,25 @@ public class LearnMessageUtil {
 			try {
 				if (_LEARN_RESOURCES_MODE_OFF) {
 					return JSONFactoryUtil.createJSONObject();
+				}
+
+				if (_LEARN_RESOURCES_MODE_DEV &&
+					Validator.isNotNull(_LEARN_RESOURCES_DIR)) {
+
+					// The dev server exists only to serve these files over
+					// HTTP, so a caller that can name the directory holding
+					// them does not need it.
+
+					String fileName = StringBundler.concat(
+						_LEARN_RESOURCES_DIR, StringPool.SLASH, _resource,
+						".json");
+
+					if (_log.isDebugEnabled()) {
+						_log.debug("Reading " + fileName);
+					}
+
+					return JSONFactoryUtil.createJSONObject(
+						FileUtil.read(fileName));
 				}
 
 				StringBundler sb = new StringBundler(4);
