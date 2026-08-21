@@ -501,10 +501,12 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 						CPInstanceTable.INSTANCE.status.eq(
 							WorkflowConstants.STATUS_APPROVED)
 					).and(
-						Predicate.or(
-							CPInstanceTable.INSTANCE.expirationDate.isNull(),
-							CPInstanceTable.INSTANCE.expirationDate.gt(
-								new Date()))
+						Predicate.withParentheses(
+							Predicate.or(
+								CPInstanceTable.INSTANCE.expirationDate.
+									isNull(),
+								CPInstanceTable.INSTANCE.expirationDate.gt(
+									new Date())))
 					)
 			).orderBy(
 				CPDefinitionOptionValueRelTable.INSTANCE.priority.ascending(),
