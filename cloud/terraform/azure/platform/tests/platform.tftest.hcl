@@ -88,6 +88,45 @@ run "should_assemble_the_deployment_context" {
 	}
 	command=plan
 }
+run "should_bind_the_keda_identity_to_the_monitor_workspace" {
+	assert {
+		condition=azurerm_user_assigned_identity.keda[0].name == "liferay-test-keda"
+		error_message="The KEDA identity name must be derived from deployment_name"
+	}
+	assert {
+		condition=azurerm_federated_identity_credential.keda[0].name == "keda"
+		error_message="The KEDA federated credential must not include a deployment name prefix"
+	}
+	assert {
+		condition=azurerm_federated_identity_credential.keda[0].subject == "system:serviceaccount:keda-system:keda-operator"
+		error_message="The KEDA federated credential must bind the keda-operator service account in the KEDA namespace"
+	}
+	assert {
+		condition=one(azurerm_federated_identity_credential.keda[0].audience) == "api://AzureADTokenExchange"
+		error_message="The KEDA federated credential must use the Azure AD token exchange audience"
+	}
+	assert {
+		condition=azurerm_role_assignment.keda_monitoring_data_reader[0].role_definition_name == "Monitoring Data Reader"
+		error_message="The KEDA identity must be granted the Monitoring Data Reader role so the Prometheus scaler can query the workspace"
+	}
+	assert {
+		condition=azurerm_role_assignment.keda_monitoring_data_reader[0].scope == azurerm_monitor_workspace.main[0].id
+		error_message="The KEDA Monitoring Data Reader grant must be scoped to the Azure Monitor workspace"
+	}
+	assert {
+		condition=output.keda_service_account_namespace == "keda-system"
+		error_message="The KEDA service account namespace must be published so the bootstrap installs KEDA where the federated credential expects it"
+	}
+	command=plan
+	variables {
+		autoscaling_config={
+			enabled=true
+		}
+		observability_config={
+			enabled=true
+		}
+	}
+}
 run "should_build_the_azure_key_vault_secret_store_provider" {
 	assert {
 		condition=join(",", keys(local.cluster_secret_store_provider)) == "azurekv"
@@ -245,6 +284,27 @@ run "should_grant_monitoring_metrics_publisher_on_the_data_collection_rule" {
 		}
 	}
 }
+run "should_honor_a_custom_keda_service_account" {
+	assert {
+		condition=azurerm_federated_identity_credential.keda[0].subject == "system:serviceaccount:keda:keda-operator-custom"
+		error_message="The KEDA federated credential subject must follow the configured namespace and service account name"
+	}
+	assert {
+		condition=output.keda_service_account_namespace == "keda"
+		error_message="The published KEDA namespace must follow the configured namespace"
+	}
+	command=plan
+	variables {
+		autoscaling_config={
+			enabled=true
+			namespace="keda"
+			service_account_name="keda-operator-custom"
+		}
+		observability_config={
+			enabled=true
+		}
+	}
+}
 run "should_inject_an_external_secret_store_provider" {
 	assert {
 		condition=local.cluster_secret_store_provider.vault.server == "https://vault.example.com:8200"
@@ -326,6 +386,41 @@ run "should_not_create_observability_identity_by_default" {
 		error_message="The observability identity client ID output must be empty when observability is disabled"
 	}
 	command=plan
+}
+run "should_omit_the_keda_identity_by_default" {
+	assert {
+		condition=length(azurerm_user_assigned_identity.keda) == 0
+		error_message="KEDA identity should not be created by default"
+	}
+	assert {
+		condition=length(azurerm_federated_identity_credential.keda) == 0
+		error_message="KEDA federated credential should not be created by default"
+	}
+	assert {
+		condition=length(azurerm_role_assignment.keda_monitoring_data_reader) == 0
+		error_message="Monitoring Data Reader must not be granted by default to KEDA"
+	}
+	assert {
+		condition=output.keda_identity_client_id == "" && output.keda_service_account_namespace == ""
+		error_message="The KEDA outputs must be empty so the bootstrap leaves KEDA unconfigured"
+	}
+	command=plan
+}
+run "should_omit_the_keda_identity_when_observability_is_disabled" {
+	assert {
+		condition=length(azurerm_user_assigned_identity.keda) == 0
+		error_message="Enabling autoscaling without observability must not create the KEDA identity"
+	}
+	assert {
+		condition=length(azurerm_role_assignment.keda_monitoring_data_reader) == 0
+		error_message="Enabling autoscaling without observability must not grant Monitoring Data Reader"
+	}
+	command=plan
+	variables {
+		autoscaling_config={
+			enabled=true
+		}
+	}
 }
 run "should_reject_a_cluster_secret_store_with_both_branches" {
 	command=plan
