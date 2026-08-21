@@ -947,18 +947,6 @@ public class MirrorsGetTask extends Task {
 		return processOutput.toString();
 	}
 
-	private String _getUnableToCopyMessage() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("Unable to copy ");
-		sb.append(_src);
-		sb.append(" to ");
-		sb.append(_dest.getPath());
-		sb.append(".");
-
-		return sb.toString();
-	}
-
 	private URL _getRemoteURL() {
 		if (_hostName == null) {
 			return null;
@@ -1019,6 +1007,18 @@ public class MirrorsGetTask extends Task {
 		return Pattern.compile(
 			"(?<timestamp>" + _TIMESTAMP_REGEX + ")(-" + _UUID_REGEX + "-)?" +
 				Pattern.quote(fileName));
+	}
+
+	private String _getUnableToCopyMessage() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Unable to copy ");
+		sb.append(_src);
+		sb.append(" to ");
+		sb.append(_dest.getPath());
+		sb.append(".");
+
+		return sb.toString();
 	}
 
 	private String _getURLScheme() {
