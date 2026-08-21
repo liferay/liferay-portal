@@ -42,7 +42,6 @@ public class AuditConfigurationUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		_upgradeAuditConfiguration();
-
 		_upgradePersistentAuditMessageProcessorConfiguration();
 	}
 
