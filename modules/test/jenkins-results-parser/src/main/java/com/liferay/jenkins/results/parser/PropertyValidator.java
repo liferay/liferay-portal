@@ -248,11 +248,7 @@ public class PropertyValidator {
 
 		TreeSet<String> definedKeys = new TreeSet<>();
 
-		for (File file :
-				JenkinsResultsParserUtil.findFiles(
-					new File(jenkinsRepositoryDir, "commands"),
-					"build-.+\\.properties")) {
-
+		for (File file : _getPropertiesFiles(jenkinsRepositoryDir)) {
 			Properties properties = new Properties();
 
 			properties.load(
@@ -274,6 +270,15 @@ public class PropertyValidator {
 		}
 
 		return lineNumber;
+	}
+
+	private static List<File> _getPropertiesFiles(File jenkinsRepositoryDir) {
+		return Arrays.asList(
+			new File(jenkinsRepositoryDir, "build.properties"),
+			new File(jenkinsRepositoryDir, "commands/build-aws.properties"),
+			new File(jenkinsRepositoryDir, "commands/build-db.properties"),
+			new File(jenkinsRepositoryDir, "commands/build-local.properties"),
+			new File(jenkinsRepositoryDir, "commands/build-shared.properties"));
 	}
 
 	private static List<String> _getUnconsumedKeys(
@@ -605,9 +610,7 @@ public class PropertyValidator {
 		public List<File> findFiles(
 			File jenkinsRepositoryDir, File jenkinsResultsParserSourceDir) {
 
-			return JenkinsResultsParserUtil.findFiles(
-				new File(jenkinsRepositoryDir, "commands"),
-				"build-.+\\.properties");
+			return _getPropertiesFiles(jenkinsRepositoryDir);
 		}
 
 		@Override
