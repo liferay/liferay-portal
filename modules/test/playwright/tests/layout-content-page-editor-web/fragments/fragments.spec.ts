@@ -1317,6 +1317,12 @@ test.describe('Tabs Fragment', () => {
 		);
 		await expect(dropdownButton).toHaveAttribute('role', 'combobox');
 
+		// Check that the editable titles are not focusable inside the tabs
+
+		await expect(
+			page.locator('.component-tabs [role=tab] [tabindex]')
+		).toHaveCount(0);
+
 		// Open the dropdown and navigate by keyboard to select the Tab 2
 
 		await dropdownButton.press('Enter');
