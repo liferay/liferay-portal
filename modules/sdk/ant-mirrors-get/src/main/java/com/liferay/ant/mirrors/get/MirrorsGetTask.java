@@ -19,7 +19,6 @@ import java.io.UnsupportedEncodingException;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -258,11 +257,24 @@ public class MirrorsGetTask extends Task {
 
 		System.out.println(sb.toString());
 
-		URI sourceFileURI = sourceFile.toURI();
+		File linkFile = _uniqueTempFile(sourceFile);
 
 		long time = System.currentTimeMillis();
 
-		int size = _toFile(sourceFileURI.toURL(), targetFile);
+		int size = 0;
+
+		try {
+			File readFile = _createReadLink(sourceFile, linkFile);
+
+			if (readFile == null) {
+				throw new IOException(sourceFile.getPath() + " does not exist");
+			}
+
+			size = _toFile(readFile.toURI().toURL(), targetFile);
+		}
+		finally {
+			_deleteFile(linkFile);
+		}
 
 		if (_verbose) {
 			sb = new StringBuilder();
@@ -991,7 +1003,7 @@ public class MirrorsGetTask extends Task {
 
 	private Pattern _getTempFilePattern(String fileName) {
 		return Pattern.compile(
-			"(?<timestamp>\\d{13,18})(-[0-9a-fA-F-]{36}-)?" +
+			"(?<timestamp>" + _TIMESTAMP_REGEX + ")(-" + _UUID_REGEX + "-)?" +
 				Pattern.quote(fileName));
 	}
 
@@ -1445,19 +1457,31 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private File _uniqueTempFile(File cacheFile) {
+	private File _uniqueTempFile(File file) {
+		String fileName = file.getName();
+
+		Matcher matcher = _tempFileNamePattern.matcher(fileName);
+
+		if (matcher.matches()) {
+			fileName = matcher.group("fileName");
+		}
+
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(System.currentTimeMillis());
 		sb.append("-");
 		sb.append(UUID.randomUUID());
 		sb.append("-");
-		sb.append(cacheFile.getName());
+		sb.append(fileName);
 
-		return new File(cacheFile.getParentFile(), sb.toString());
+		return new File(file.getParentFile(), sb.toString());
 	}
 
 	private static final long _MAX_AGE_MILLIS = 24 * 60 * 60 * 1000;
+
+	private static final String _TIMESTAMP_REGEX = "\\d{13,18}";
+
+	private static final String _UUID_REGEX = "[0-9a-fA-F-]{36}";
 
 	private static final Pattern _basicAuthenticationURLPattern =
 		Pattern.compile("(https?://)([^:]+):([^@]+)@(.+)");
@@ -1477,6 +1501,9 @@ public class MirrorsGetTask extends Task {
 				"apache-(?<tomcatFileName>.+(\\.tar\\.gz|\\.zip))");
 	private static final Pattern _releaseHostNamePattern = Pattern.compile(
 		"(release-\\d+|release.liferay.com)/(?<id>\\d+)");
+	private static final Pattern _tempFileNamePattern = Pattern.compile(
+		_TIMESTAMP_REGEX + "-" + _UUID_REGEX + "-(?<fileName>.+)");
+
 	private static final Pattern _testHostNamePattern = Pattern.compile(
 		"test-\\d+-\\d+");
 
