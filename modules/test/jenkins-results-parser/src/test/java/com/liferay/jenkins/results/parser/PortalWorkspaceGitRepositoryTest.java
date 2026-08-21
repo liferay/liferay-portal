@@ -18,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import org.mockito.Mockito;
+import org.mockito.verification.VerificationMode;
 
 /**
  * @author Kenji Heigel
@@ -61,6 +62,12 @@ public class PortalWorkspaceGitRepositoryTest
 			"url.env", "version.env", environmentMap, "7.0.x");
 		_testGetPortalTestProperties(
 			"url.env", "version.env", environmentMap, "master");
+	}
+
+	@Test
+	public void testSetUp() throws Exception {
+		_testSetUp(false);
+		_testSetUp(true);
 	}
 
 	@Test
@@ -160,6 +167,76 @@ public class PortalWorkspaceGitRepositoryTest
 			bundleVersion,
 			portalTestProperties.getProperty(
 				"test.released.release.bundle.version"));
+	}
+
+	private void _testSetUp(boolean snapshot) throws Exception {
+		mockEnvironment(
+			Collections.singletonMap("MASTER_NETWORK_NAME", "aws-network"));
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty("binaries.cache.enabled", "true");
+		buildProperties.setProperty("yarn.cache.enabled", "true");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_newPortalWorkspaceGitRepository();
+
+		Mockito.doNothing(
+		).when(
+			portalWorkspaceGitRepository
+		).downloadYarnCache();
+
+		Mockito.doNothing(
+		).when(
+			portalWorkspaceGitRepository
+		).prepareGitWorkingDirectory();
+
+		Mockito.doNothing(
+		).when(
+			portalWorkspaceGitRepository
+		).setUpBinariesCache();
+
+		Mockito.doNothing(
+		).when(
+			portalWorkspaceGitRepository
+		).touchYarnCache();
+
+		Mockito.doNothing(
+		).when(
+			portalWorkspaceGitRepository
+		).uploadGitArchives();
+
+		Mockito.doReturn(
+			true
+		).when(
+			portalWorkspaceGitRepository
+		).isYarnCacheAvailable();
+
+		portalWorkspaceGitRepository.setSnapshot(snapshot);
+
+		portalWorkspaceGitRepository.setUp();
+
+		Assert.assertTrue(portalWorkspaceGitRepository.isSetUp());
+
+		Mockito.verify(
+			portalWorkspaceGitRepository, Mockito.times(1)
+		).downloadYarnCache();
+
+		Mockito.verify(
+			portalWorkspaceGitRepository, Mockito.times(1)
+		).setUpBinariesCache();
+
+		VerificationMode verificationMode = Mockito.times(1);
+
+		if (snapshot) {
+			verificationMode = Mockito.never();
+		}
+
+		Mockito.verify(
+			portalWorkspaceGitRepository, verificationMode
+		).touchYarnCache();
 	}
 
 	private void _testSetUpAdditionalCaches(
