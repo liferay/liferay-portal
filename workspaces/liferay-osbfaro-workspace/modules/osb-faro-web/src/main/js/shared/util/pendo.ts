@@ -68,10 +68,12 @@ export class Pendo {
 	 * Appends the agent loader on demand. On the page load where the user
 	 * accepts tracking, external-scripts.js already skipped the loader (no
 	 * consent existed when the page was rendered), so it must be injected
-	 * here for tracking to start without a reload.
+	 * here for tracking to start without a reload. Outside production
+	 * external-scripts.js always appends the inert stub, so a defined `pendo`
+	 * is also what keeps this method from running there.
 	 */
 	private injectAgent() {
-		if (typeof pendo !== 'undefined' || FARO_ENV !== FaroEnv.Production) {
+		if (typeof pendo !== 'undefined') {
 			return;
 		}
 
