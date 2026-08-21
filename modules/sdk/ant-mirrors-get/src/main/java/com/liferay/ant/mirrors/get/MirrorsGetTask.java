@@ -257,7 +257,7 @@ public class MirrorsGetTask extends Task {
 
 		System.out.println(sb.toString());
 
-		File linkFile = _uniqueTempFile(sourceFile);
+		File linkFile = _generateTempFile(sourceFile);
 
 		long time = System.currentTimeMillis();
 
@@ -290,7 +290,7 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private boolean _copyFromCache(File cacheFile) throws IOException {
-		File linkFile = _uniqueTempFile(cacheFile);
+		File linkFile = _generateTempFile(cacheFile);
 
 		try {
 			File readFile = _createReadLink(cacheFile, linkFile);
@@ -638,7 +638,7 @@ public class MirrorsGetTask extends Task {
 			return;
 		}
 
-		File tempFile = _uniqueTempFile(mirrorsCacheFile);
+		File tempFile = _generateTempFile(mirrorsCacheFile);
 
 		try {
 			_copyFromSrc(tempFile);
@@ -664,6 +664,26 @@ public class MirrorsGetTask extends Task {
 		process.waitFor();
 
 		return process;
+	}
+
+	private File _generateTempFile(File baseFile) {
+		String fileName = baseFile.getName();
+
+		Matcher matcher = _tempFileNamePattern.matcher(fileName);
+
+		if (matcher.matches()) {
+			fileName = matcher.group("fileName");
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(System.currentTimeMillis());
+		sb.append("-");
+		sb.append(UUID.randomUUID());
+		sb.append("-");
+		sb.append(fileName);
+
+		return new File(baseFile.getParentFile(), sb.toString());
 	}
 
 	private String _getGCPBucketName() {
@@ -1455,26 +1475,6 @@ public class MirrorsGetTask extends Task {
 				outputStream.close();
 			}
 		}
-	}
-
-	private File _uniqueTempFile(File file) {
-		String fileName = file.getName();
-
-		Matcher matcher = _tempFileNamePattern.matcher(fileName);
-
-		if (matcher.matches()) {
-			fileName = matcher.group("fileName");
-		}
-
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(System.currentTimeMillis());
-		sb.append("-");
-		sb.append(UUID.randomUUID());
-		sb.append("-");
-		sb.append(fileName);
-
-		return new File(file.getParentFile(), sb.toString());
 	}
 
 	private static final long _MAX_AGE_MILLIS = 24 * 60 * 60 * 1000;
