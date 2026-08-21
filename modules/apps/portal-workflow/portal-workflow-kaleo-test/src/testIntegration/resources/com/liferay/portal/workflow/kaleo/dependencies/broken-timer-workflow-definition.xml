@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<name>Broken Timer</name>
+	<version>1</version>
+	<state>
+		<name>StartNode</name>
+		<initial>true</initial>
+		<transitions>
+			<transition>
+				<name>connector1</name>
+				<target>Fork</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<state>
+		<name>EndNode</name>
+		<actions>
+			<action>
+				<name>Approve</name>
+				<description>Approve</description>
+				<status>0</status>
+				<execution-type>onEntry</execution-type>
+			</action>
+		</actions>
+	</state>
+	<fork>
+		<name>Fork</name>
+		<transitions>
+			<transition>
+				<name>connector2</name>
+				<target>Timer Task</target>
+				<default>true</default>
+			</transition>
+			<transition>
+				<name>connector3</name>
+				<target>Broken Task</target>
+				<default>false</default>
+			</transition>
+		</transitions>
+	</fork>
+	<task>
+		<name>Timer Task</name>
+		<assignments>
+			<roles>
+				<role>
+					<role-type>regular</role-type>
+					<name>Administrator</name>
+					<auto-create>false</auto-create>
+				</role>
+			</roles>
+		</assignments>
+		<task-timers>
+			<task-timer>
+				<name>Timer</name>
+				<delay>
+					<duration>1</duration>
+					<scale>hour</scale>
+				</delay>
+				<blocking>false</blocking>
+				<timer-actions>
+					<timer-action>
+						<name>Timer Action</name>
+						<script>
+							<![CDATA[true;]]>
+						</script>
+						<script-language>groovy</script-language>
+					</timer-action>
+				</timer-actions>
+			</task-timer>
+		</task-timers>
+		<transitions>
+			<transition>
+				<name>connector4</name>
+				<target>JoinXor</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</task>
+	<task>
+		<name>Broken Task</name>
+		<assignments>
+			<scripted-assignment>
+				<script>
+					<![CDATA[def object = null;
+object.toString();]]>
+				</script>
+				<script-language>groovy</script-language>
+			</scripted-assignment>
+		</assignments>
+		<transitions>
+			<transition>
+				<name>connector5</name>
+				<target>JoinXor</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</task>
+	<join-xor>
+		<name>JoinXor</name>
+		<transitions>
+			<transition>
+				<name>connector6</name>
+				<target>EndNode</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</join-xor>
+</workflow-definition>
