@@ -264,13 +264,13 @@ public class MirrorsGetTask extends Task {
 		int size = 0;
 
 		try {
-			File readFile = _createReadLink(sourceFile, linkFile);
+			File readLinkFile = _createReadLinkFile(sourceFile, linkFile);
 
-			if (readFile == null) {
+			if (readLinkFile == null) {
 				throw new IOException(sourceFile.getPath() + " does not exist");
 			}
 
-			size = _toFile(readFile.toURI().toURL(), targetFile);
+			size = _toFile(readLinkFile.toURI().toURL(), targetFile);
 		}
 		finally {
 			_deleteFile(linkFile);
@@ -293,13 +293,13 @@ public class MirrorsGetTask extends Task {
 		File linkFile = _generateTempFile(cacheFile);
 
 		try {
-			File readFile = _createReadLink(cacheFile, linkFile);
+			File readLinkFile = _createReadLinkFile(cacheFile, linkFile);
 
-			if (readFile == null) {
+			if (readLinkFile == null) {
 				return false;
 			}
 
-			if (cacheFile.equals(readFile)) {
+			if (cacheFile.equals(readLinkFile)) {
 				StringBuilder sb = new StringBuilder();
 
 				sb.append("Unable to link ");
@@ -310,13 +310,13 @@ public class MirrorsGetTask extends Task {
 				System.out.println(sb.toString());
 			}
 
-			if (!_isValidFile(readFile)) {
+			if (!_isValidFile(readLinkFile)) {
 				_deleteFile(cacheFile);
 
 				return false;
 			}
 
-			_copyToDest(readFile);
+			_copyToDest(readLinkFile);
 
 			return true;
 		}
@@ -412,7 +412,7 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private File _createReadLink(File cacheFile, File linkFile) {
+	private File _createReadLinkFile(File cacheFile, File linkFile) {
 		try {
 			Files.createLink(linkFile.toPath(), cacheFile.toPath());
 
