@@ -23,6 +23,7 @@ import '../AssigneeTrigger.scss';
 
 interface TaskInfoSummaryProps {
 	assignTo: AssigneeValue;
+	cmpProjectObjectEntryId?: number;
 	cmpTaskObjectEntryId: string;
 	dueDate: string;
 	hasUpdatePermission: boolean;
@@ -34,6 +35,7 @@ interface TaskInfoSummaryProps {
 
 export default function TaskInfoSummary({
 	assignTo,
+	cmpProjectObjectEntryId,
 	cmpTaskObjectEntryId,
 	dueDate,
 	hasUpdatePermission,
@@ -87,6 +89,7 @@ export default function TaskInfoSummary({
 					label: Liferay.Language.get('assignee'),
 					value: (
 						<CustomAssignee
+							cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 							onChange={async (value: AssigneeValue | {}) => {
 								const {error} = await patchTaskById({
 									body: {assignTo: value},

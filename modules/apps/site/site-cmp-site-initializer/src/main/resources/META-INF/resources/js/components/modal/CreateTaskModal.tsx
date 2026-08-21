@@ -192,6 +192,8 @@ export default function CreateTaskModal({
 							Number(key)
 						);
 
+						setFieldValue('assignTo', {});
+
 						const scopeKey = projects.find(
 							(project) => String(project.value) === key
 						)?.scopeKey;
@@ -222,10 +224,15 @@ export default function CreateTaskModal({
 				</FieldWrapper>
 
 				<CustomAssignee
+					cmpProjectObjectEntryId={
+						values.r_cmpProjectToCMPTasks_c_cmpProjectId
+					}
+					key={values.r_cmpProjectToCMPTasks_c_cmpProjectId}
 					name="assignTo"
 					onChange={(assigneeValue: AssigneeValue | {}) => {
 						setFieldValue('assignTo', assigneeValue);
 					}}
+					readOnly={!values.r_cmpProjectToCMPTasks_c_cmpProjectId}
 					triggerClassName="form-control"
 					value={values.assignTo}
 				/>

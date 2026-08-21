@@ -205,6 +205,10 @@ export default function getTaskItemsActions(
 					}) => (
 						<EditAssigneeModalContent
 							closeModal={closeModal}
+							cmpProjectObjectEntryId={
+								task.embedded
+									.r_cmpProjectToCMPTasks_c_cmpProjectId
+							}
 							cmpTaskObjectEntryId={String(task.embedded.id)}
 							cmpTaskObjectEntryTitle={task.embedded.title}
 							loadData={loadData}

@@ -209,6 +209,10 @@ export default function ProjectTasksFDSPropsTransformer({
 					}) => (
 						<EditAssigneeModalContent
 							closeModal={closeModal}
+							cmpProjectObjectEntryId={
+								itemData.embedded
+									.r_cmpProjectToCMPTasks_c_cmpProjectId
+							}
 							cmpTaskObjectEntryId={String(itemData.embedded.id)}
 							cmpTaskObjectEntryTitle={itemData.embedded.title}
 							loadData={loadData}

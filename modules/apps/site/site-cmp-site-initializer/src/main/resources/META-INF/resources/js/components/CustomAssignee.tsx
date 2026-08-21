@@ -14,6 +14,7 @@ import AssigneeTrigger from './AssigneeTrigger';
 import './AssigneeTrigger.scss';
 
 interface ICustomAssignee {
+	cmpProjectObjectEntryId?: number;
 	label?: string;
 	name?: string;
 	onChange?: (value: AssigneeValue | {}) => void;
@@ -26,6 +27,7 @@ interface ICustomAssignee {
 }
 
 export default function CustomAssignee({
+	cmpProjectObjectEntryId,
 	label,
 	name,
 	onChange,
@@ -68,7 +70,9 @@ export default function CustomAssignee({
 				searchURL={
 					searchURL ??
 					Liferay.ThemeDisplay.getPortalURL() +
-						'/o/headless-cmp/v1.0/task-assignees/'
+						(cmpProjectObjectEntryId
+							? `/o/headless-cmp/v1.0/projects/${cmpProjectObjectEntryId}/task-assignees/`
+							: '/o/headless-cmp/v1.0/task-assignees/')
 				}
 				showLabel={showLabel}
 				triggerClassName={triggerClassName}

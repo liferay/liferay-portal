@@ -18,6 +18,7 @@ import './../AssigneeTrigger.scss';
 
 type Props = {
 	closeModal: () => void;
+	cmpProjectObjectEntryId?: number;
 	cmpTaskObjectEntryId: string;
 	cmpTaskObjectEntryTitle: string;
 	loadData: Function;
@@ -27,6 +28,7 @@ type Props = {
 
 export default function EditAssigneeModalContent({
 	closeModal,
+	cmpProjectObjectEntryId,
 	cmpTaskObjectEntryId,
 	cmpTaskObjectEntryTitle,
 	loadData,
@@ -71,6 +73,7 @@ export default function EditAssigneeModalContent({
 
 			<ClayModal.Body>
 				<CustomAssignee
+					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 					onChange={(value: AssigneeValue | {}) => {
 						setValue(value);
 					}}
