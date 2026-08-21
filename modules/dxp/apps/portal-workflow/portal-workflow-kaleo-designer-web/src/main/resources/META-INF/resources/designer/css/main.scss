@@ -1,3 +1,5 @@
+@import 'atlas-custom-properties/_variables';
+
 #wrapper .portlet-layout {
 	margin: 0 !important;
 }
@@ -33,7 +35,7 @@
 }
 
 .basecelleditor {
-	background-color: #fff;
+	background-color: $white;
 	padding: 13px;
 
 	.basecelleditor {
@@ -72,7 +74,7 @@
 }
 
 .celleditor-view + .celleditor-view {
-	border-top: 1px solid #efefef;
+	border-top: 1px solid $light;
 	margin-top: 22px;
 	padding-top: 19px;
 }
@@ -97,7 +99,7 @@
 
 		&.diagram-node-selected {
 			border-width: 0;
-			color: #65b6f0;
+			color: $blue-l2;
 		}
 
 		.diagram-node-content {
@@ -147,7 +149,7 @@
 			}
 
 			.diagram-node-shape-boundary {
-				stroke: #fff;
+				stroke: $white;
 				stroke-width: 5px;
 			}
 
@@ -185,11 +187,11 @@
 		}
 
 		.tabbable-content.main-tab > .nav-tabs {
-			border-bottom: 1px solid #ddd;
+			border-bottom: 1px solid $light-d2;
 		}
 
 		.nav-item.active {
-			border: 1px solid #ddd;
+			border: 1px solid $light-d2;
 			border-bottom: transparent;
 			border-radius: 4px 4px 0 0;
 		}
@@ -206,10 +208,10 @@
 	}
 
 	.property-builder-content-container .btn-toolbar-button {
-		background-color: #869cad;
+		background-color: $secondary-l0;
 		border-radius: 100%;
 		border-width: 0;
-		color: #fff;
+		color: $white;
 		font-size: 10px;
 		line-height: normal;
 		padding: 4px 5px;
@@ -218,7 +220,7 @@
 		top: -10px;
 
 		&:hover {
-			background-color: #65b6f0;
+			background-color: $blue-l2;
 		}
 	}
 
@@ -336,7 +338,7 @@
 .recipients-editor-container .celleditor-assignment-view,
 .delays-editor-container,
 .timer-actions-editor-container {
-	border: 1px solid #efefef;
+	border: 1px solid $light;
 	padding: 8px;
 }
 
@@ -419,7 +421,7 @@
 }
 
 .timer-actions-editor-container .editor-container {
-	border: 1px solid #efefef;
+	border: 1px solid $light;
 	margin-bottom: 8px;
 	padding: 8px;
 }
@@ -441,7 +443,7 @@
 	padding: 10px;
 
 	.workflow-definition-content-source {
-		border: 1px solid #b5b5b5;
+		border: 1px solid $secondary-l1;
 	}
 
 	.workflow-definition-content-source-wrapper {

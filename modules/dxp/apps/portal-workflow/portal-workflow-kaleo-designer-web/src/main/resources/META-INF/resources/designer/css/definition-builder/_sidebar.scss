@@ -1,6 +1,8 @@
+@import 'atlas-variables';
+
 .sidebar {
-	background: #fff;
-	border-left: 1px solid #e7e7ed;
+	background: $white;
+	border-left: 1px solid $gray-300;
 	width: 368px;
 
 	.tab-pane {
@@ -14,8 +16,8 @@
 		width: fit-content;
 
 		&:hover {
-			border: 2px solid #80acff;
-			box-shadow: 0 8px 16px 0 #27283329;
+			border: 2px solid $primary-l1;
+			box-shadow: $box-shadow;
 		}
 
 		> .lexicon-icon {
@@ -59,7 +61,7 @@
 
 		.delete-button {
 			& svg {
-				fill: #6b6c7e;
+				fill: $secondary;
 				height: 16px;
 				width: 16px;
 			}
@@ -95,7 +97,7 @@
 		}
 
 		.current-node-data-area {
-			border: 1px solid #e7e7ed;
+			border: 1px solid $gray-300;
 			border-radius: 4px;
 			padding: 3px 15px 3px 30px;
 
@@ -111,7 +113,7 @@
 
 				.delete-button {
 					& svg {
-						fill: #6b6c7e;
+						fill: $secondary;
 					}
 				}
 			}
@@ -122,11 +124,11 @@
 		}
 
 		span .lexicon-icon-exclamation-full:hover {
-			color: #da1414 !important;
+			color: $danger !important;
 		}
 
 		span svg:hover {
-			color: #6b6c7e !important;
+			color: $secondary !important;
 		}
 
 		#resource-actions {
@@ -134,7 +136,7 @@
 		}
 
 		.help-text {
-			color: #6b6c7e;
+			color: $secondary;
 			word-wrap: break-word;
 		}
 
@@ -163,12 +165,12 @@
 
 	.sidebar-header {
 		align-items: center;
-		border-bottom: 1px solid #e7e7ed;
+		border-bottom: 1px solid $gray-300;
 		display: flex;
 		height: 75px;
 
 		.title {
-			color: #272833;
+			color: $dark;
 			font-size: 20px;
 			font-weight: 700;
 
@@ -207,14 +209,14 @@
 			}
 
 			&:hover {
-				background: #feefef;
+				background: $danger-l2;
 				border-radius: 4px;
 				height: 32px;
 				padding: 8px;
 				width: 32px;
 
 				svg {
-					fill: #da1414;
+					fill: $danger;
 					height: 16px;
 					width: 16px;
 				}

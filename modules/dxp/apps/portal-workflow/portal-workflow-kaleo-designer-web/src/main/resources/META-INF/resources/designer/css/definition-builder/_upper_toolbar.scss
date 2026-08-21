@@ -1,10 +1,12 @@
+@import 'atlas-variables';
+
 .upper-toolbar {
-	background-color: #fff;
+	background-color: $white;
 	height: 4rem;
 	width: 100%;
 
 	.version {
-		background: #f7f8f9;
+		background: $light-l1;
 		border: none;
 		border-radius: 12px;
 		font-size: 12px;
@@ -22,7 +24,7 @@
 		width: 40px;
 
 		.translation-label {
-			color: #6b6c7e;
+			color: $secondary;
 			font-size: 11px;
 			white-space: nowrap;
 		}

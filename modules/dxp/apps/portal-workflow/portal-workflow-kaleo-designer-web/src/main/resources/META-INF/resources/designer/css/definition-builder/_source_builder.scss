@@ -1,3 +1,5 @@
+@import 'atlas-variables';
+
 .cke_contents,
 .CodeMirror {
 	height: calc(
@@ -47,7 +49,7 @@
 	}
 
 	span {
-		color: #272833;
+		color: $dark;
 		font-size: 20px;
 		font-weight: 700;
 	}
