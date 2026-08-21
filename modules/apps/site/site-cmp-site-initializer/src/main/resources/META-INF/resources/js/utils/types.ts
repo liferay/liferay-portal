@@ -143,6 +143,7 @@ export interface ProjectTaskItemData {
 		dueDate: string;
 		externalReferenceCode: string;
 		id: number;
+		r_cmpProjectToCMPTasks_c_cmpProjectId?: number;
 		title: string;
 	};
 	entryClassName: string;

@@ -24,6 +24,7 @@ import {
 	registerTabFDS,
 } from '../../utils/cmpTabPersistence';
 import {WORKFLOW_TASK_ACTION_LINK_ID} from '../../utils/constants';
+import getCMPProjectObjectEntryIds from '../../utils/getCMPProjectObjectEntryIds';
 import {getFormattedLabel} from '../../utils/getFormattedText';
 import {openCMPModal} from '../../utils/openCMPModal';
 import {
@@ -125,6 +126,33 @@ export default function AllTasksFDSPropsTransformer({
 				return selectedItems.some(
 					(item) => item?.entryClassName !== firstType
 				);
+			},
+			isVisible: ({
+				allItemsSelectedActive,
+				selectedItems,
+			}: {
+				allItemsSelectedActive: boolean;
+				selectedItems: any[];
+			}) => {
+				if (action?.data?.id !== 'assign-to') {
+					return true;
+				}
+
+				if (allItemsSelectedActive) {
+					return false;
+				}
+
+				if (
+					!selectedItems?.length ||
+					selectedItems.every(isWorkflowTask)
+				) {
+					return true;
+				}
+
+				const cmpProjectObjectEntryIds =
+					getCMPProjectObjectEntryIds(selectedItems);
+
+				return cmpProjectObjectEntryIds.size === 1;
 			},
 		})),
 		creationMenu: {
@@ -280,6 +308,10 @@ export default function AllTasksFDSPropsTransformer({
 					}) => (
 						<EditAssigneeModalContent
 							closeModal={closeModal}
+							cmpProjectObjectEntryId={
+								itemData.embedded
+									.r_cmpProjectToCMPTasks_c_cmpProjectId
+							}
 							cmpTaskObjectEntryId={String(itemData.embedded.id)}
 							cmpTaskObjectEntryTitle={itemData.embedded.title}
 							loadData={loadData}
@@ -334,6 +366,9 @@ export default function AllTasksFDSPropsTransformer({
 			}
 
 			if (action?.data?.id === 'assign-to') {
+				const [cmpProjectObjectEntryId] =
+					getCMPProjectObjectEntryIds(selectedItems);
+
 				await openCMPModal({
 					center: true,
 					contentComponent: ({
@@ -344,6 +379,7 @@ export default function AllTasksFDSPropsTransformer({
 						<BulkEditAssigneeModalContent
 							apiURL={otherProps.apiURL}
 							closeModal={closeModal}
+							cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 							dataSetId={id}
 							selectedData={selectedData}
 							value={{name: null}}

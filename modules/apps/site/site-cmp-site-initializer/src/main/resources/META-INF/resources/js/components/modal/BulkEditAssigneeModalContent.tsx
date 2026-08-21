@@ -23,6 +23,7 @@ import {openToast} from 'frontend-js-components-web';
 type Props = {
 	apiURL: string;
 	closeModal: () => void;
+	cmpProjectObjectEntryId?: number;
 	dataSetId: string;
 	selectedData: IBulkActionFDSData;
 	value: AssigneeValue | {} | null;
@@ -39,6 +40,7 @@ const displayErrorToast = (errorMessage?: string) => {
 export default function BulkEditAssigneeModalContent({
 	apiURL,
 	closeModal,
+	cmpProjectObjectEntryId,
 	dataSetId,
 	selectedData,
 	value: initialValue,
@@ -86,6 +88,7 @@ export default function BulkEditAssigneeModalContent({
 
 			<ClayModal.Body>
 				<CustomAssignee
+					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 					onChange={(value: AssigneeValue | {}) => {
 						setValue(value);
 					}}

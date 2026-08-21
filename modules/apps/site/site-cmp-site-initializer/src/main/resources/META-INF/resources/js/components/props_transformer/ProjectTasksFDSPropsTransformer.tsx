@@ -23,6 +23,7 @@ import {
 	installCMPTabPersistence,
 	registerTabFDS,
 } from '../../utils/cmpTabPersistence';
+import getCMPProjectObjectEntryIds from '../../utils/getCMPProjectObjectEntryIds';
 import {getFormattedLabel} from '../../utils/getFormattedText';
 import {openCMPModal} from '../../utils/openCMPModal';
 import {ProjectTaskItemData, TaskAction} from '../../utils/types';
@@ -122,7 +123,33 @@ export default function ProjectTasksFDSPropsTransformer({
 	return {
 		...otherProps,
 		atom: cmpTasksFDSAtom,
-		bulkActions: styleBulkActions(bulkActions),
+		bulkActions: styleBulkActions(bulkActions).map((action) => ({
+			...action,
+			isVisible: ({
+				allItemsSelectedActive,
+				selectedItems,
+			}: {
+				allItemsSelectedActive: boolean;
+				selectedItems: any[];
+			}) => {
+				if (action?.data?.id !== 'assign-to') {
+					return true;
+				}
+
+				if (allItemsSelectedActive) {
+					return false;
+				}
+
+				if (!selectedItems?.length) {
+					return true;
+				}
+
+				const cmpProjectObjectEntryIds =
+					getCMPProjectObjectEntryIds(selectedItems);
+
+				return cmpProjectObjectEntryIds.size === 1;
+			},
+		})),
 		creationMenu: {
 			...creationMenu,
 			primaryItems: addOnClickToCreationMenuItems(
@@ -250,6 +277,10 @@ export default function ProjectTasksFDSPropsTransformer({
 			selectedData: any;
 		}) => {
 			if (action?.data?.id === 'assign-to') {
+				const [cmpProjectObjectEntryId] = getCMPProjectObjectEntryIds(
+					selectedData?.items ?? []
+				);
+
 				await openCMPModal({
 					center: true,
 					contentComponent: ({
@@ -260,6 +291,7 @@ export default function ProjectTasksFDSPropsTransformer({
 						<BulkEditAssigneeModalContent
 							apiURL={otherProps.apiURL}
 							closeModal={closeModal}
+							cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 							dataSetId={id}
 							selectedData={selectedData}
 							value={{name: null}}
