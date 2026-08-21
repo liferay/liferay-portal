@@ -572,6 +572,17 @@ html#{$cadmin-selector} {
 			}
 		}
 
+		// Site Navigation Breadcrumb Web
+
+		.breadcrumb.breadcrumb-vertical {
+			display: inline-block;
+			text-align: center;
+
+			li {
+				display: block;
+			}
+		}
+
 		// Asset Categories Selector Web
 
 		.select-category-filter {
