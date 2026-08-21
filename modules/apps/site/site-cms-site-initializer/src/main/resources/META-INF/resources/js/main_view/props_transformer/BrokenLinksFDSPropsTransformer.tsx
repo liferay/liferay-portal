@@ -42,7 +42,6 @@ function renderBrokenLinks(itemData: IBrokenLinkAsset) {
 
 const getAssetListFDSProps = createAssetListFDSPropsBuilder<IBrokenLinkAsset>({
 	renderSubtitle: renderBrokenLinks,
-	requiresUpdatePermission: false,
 	titleRendererName: 'brokenLinkAssetTitle',
 });
 

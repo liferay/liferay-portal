@@ -29,13 +29,11 @@ export interface AssetListFDSProps {
 
 interface AssetListFDSConfig<T> {
 	renderSubtitle: (itemData: T) => React.ReactNode;
-	requiresUpdatePermission?: boolean;
 	titleRendererName: string;
 }
 
 export function createAssetListFDSPropsBuilder<T = ISearchAssetObjectEntry>({
 	renderSubtitle,
-	requiresUpdatePermission = true,
 	titleRendererName,
 }: AssetListFDSConfig<T>) {
 	function TitleRenderer({
@@ -53,7 +51,6 @@ export function createAssetListFDSPropsBuilder<T = ISearchAssetObjectEntry>({
 					actions={actions}
 					itemData={itemData}
 					options={{actionId: 'edit'}}
-					requiresUpdatePermission={requiresUpdatePermission}
 					value={value ?? ''}
 				/>
 
