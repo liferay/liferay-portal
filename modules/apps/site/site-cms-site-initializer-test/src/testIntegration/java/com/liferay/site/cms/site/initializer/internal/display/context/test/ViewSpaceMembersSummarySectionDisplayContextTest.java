@@ -99,7 +99,8 @@ public class ViewSpaceMembersSummarySectionDisplayContextTest
 
 	private Object _getSectionDisplayContext() throws Exception {
 		_fragmentRenderer.render(
-			null, mockHttpServletRequest, new MockHttpServletResponse());
+			fragmentRendererContext, mockHttpServletRequest,
+			new MockHttpServletResponse());
 
 		return mockHttpServletRequest.getAttribute(
 			"com.liferay.site.cms.site.initializer.internal.display.context." +

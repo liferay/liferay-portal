@@ -141,7 +141,8 @@ public class ViewHomeQuickActionsDisplayContextTest
 		mockHttpServletRequest = getMockHttpServletRequest(user);
 
 		_fragmentRenderer.render(
-			null, mockHttpServletRequest, new MockHttpServletResponse());
+			fragmentRendererContext, mockHttpServletRequest,
+			new MockHttpServletResponse());
 
 		Object displayContext = mockHttpServletRequest.getAttribute(
 			"com.liferay.site.cms.site.initializer.internal.display.context." +

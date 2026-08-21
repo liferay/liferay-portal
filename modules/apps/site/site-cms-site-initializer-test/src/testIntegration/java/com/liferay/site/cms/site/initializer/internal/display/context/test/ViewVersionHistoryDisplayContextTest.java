@@ -185,7 +185,8 @@ public class ViewVersionHistoryDisplayContextTest
 		throws Exception {
 
 		_fragmentRenderer.render(
-			null, httpServletRequest, new MockHttpServletResponse());
+			fragmentRendererContext, httpServletRequest,
+			new MockHttpServletResponse());
 
 		Object viewVersionHistoryDisplayContext =
 			httpServletRequest.getAttribute(

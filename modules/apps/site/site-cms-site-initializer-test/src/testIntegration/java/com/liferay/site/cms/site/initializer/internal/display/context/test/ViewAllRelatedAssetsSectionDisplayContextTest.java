@@ -107,7 +107,8 @@ public class ViewAllRelatedAssetsSectionDisplayContextTest
 			"OBJECT_RELATIONSHIP", _objectRelationship);
 
 		_fragmentRenderer.render(
-			null, httpServletRequest, new MockHttpServletResponse());
+			fragmentRendererContext, httpServletRequest,
+			new MockHttpServletResponse());
 
 		return httpServletRequest.getAttribute(
 			"com.liferay.site.cms.site.initializer.internal.display.context." +

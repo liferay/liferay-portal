@@ -5,6 +5,8 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context.test;
 
+import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
+import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -52,6 +54,8 @@ public abstract class BaseDisplayContextTestCase {
 	public void setUp() throws Exception {
 		group = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
+		fragmentRendererContext = new DefaultFragmentRendererContext(null);
 
 		mockHttpServletRequest = getMockHttpServletRequest();
 
@@ -228,6 +232,7 @@ public abstract class BaseDisplayContextTestCase {
 	@Inject
 	protected CompanyLocalService companyLocalService;
 
+	protected FragmentRendererContext fragmentRendererContext;
 	protected Group group;
 
 	@Inject

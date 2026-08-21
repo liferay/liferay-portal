@@ -246,7 +246,8 @@ public class ViewHomeRecentAssetsFilesSectionDisplayContextTest
 		throws Exception {
 
 		_fragmentRenderer.render(
-			null, httpServletRequest, new MockHttpServletResponse());
+			fragmentRendererContext, httpServletRequest,
+			new MockHttpServletResponse());
 
 		Object viewHomeRecentAssetsSectionDisplayContext =
 			httpServletRequest.getAttribute(

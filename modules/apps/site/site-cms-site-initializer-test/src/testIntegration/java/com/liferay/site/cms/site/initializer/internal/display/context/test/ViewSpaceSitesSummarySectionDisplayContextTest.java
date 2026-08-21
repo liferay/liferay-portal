@@ -161,7 +161,8 @@ public class ViewSpaceSitesSummarySectionDisplayContextTest
 		throws Exception {
 
 		_fragmentRenderer.render(
-			null, httpServletRequest, new MockHttpServletResponse());
+			fragmentRendererContext, httpServletRequest,
+			new MockHttpServletResponse());
 
 		Object viewSpaceSitesSummarySectionDisplayContext =
 			httpServletRequest.getAttribute(

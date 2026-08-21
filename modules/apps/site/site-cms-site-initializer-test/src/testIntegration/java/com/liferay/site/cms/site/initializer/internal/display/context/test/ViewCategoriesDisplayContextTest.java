@@ -167,7 +167,8 @@ public class ViewCategoriesDisplayContextTest
 		throws Exception {
 
 		_viewCategoriesFragmentRenderer.render(
-			null, httpServletRequest, new MockHttpServletResponse());
+			fragmentRendererContext, httpServletRequest,
+			new MockHttpServletResponse());
 
 		return httpServletRequest.getAttribute(
 			"com.liferay.site.cms.site.initializer.internal.display.context." +
