@@ -38,9 +38,7 @@ public class KaleoTaskInstanceTokenModelDocumentContributorTest
 	extends BaseKaleoLocalServiceTestCase {
 
 	@Test
-	public void testContributeWhenWorkflowHandlerIsNotRegistered()
-		throws Exception {
-
+	public void testContribute() throws Exception {
 		KaleoDefinition kaleoDefinition = addKaleoDefinition(
 			WorkflowDefinitionConstants.SCOPE_ALL);
 
