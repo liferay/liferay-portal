@@ -7,7 +7,12 @@ import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useContext} from 'react';
 import {ACCOUNTS, Routes, toRoute} from 'shared/util/router';
 import {ChannelContext} from 'shared/context/channel';
-import {Navigate, Route, Routes as RouterRoutes, useParams} from 'react-router-dom';
+import {
+	Navigate,
+	Route,
+	Routes as RouterRoutes,
+	useParams,
+} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const Activities = lazy(
@@ -141,11 +146,14 @@ const AccountProfileRoutes = () => {
 							element={
 								<Navigate
 									replace
-									to={toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, {
-										channelId: channelId!,
-										groupId: groupId!,
-										id: id!,
-									})}
+									to={toRoute(
+										Routes.CONTACTS_ACCOUNT_OVERVIEW,
+										{
+											channelId: channelId!,
+											groupId: groupId!,
+											id: id!,
+										}
+									)}
 								/>
 							}
 							index

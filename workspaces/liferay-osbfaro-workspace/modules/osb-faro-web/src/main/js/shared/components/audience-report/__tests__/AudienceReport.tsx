@@ -79,7 +79,9 @@ const WrappedComponent = ({queryProps}: {queryProps: any}) => (
 								)}
 								filters={{devices: [], location: []}}
 								mapper={(result: any) =>
-									result?.[queryProps.name]?.[queryProps.metricName]
+									result?.[queryProps.name]?.[
+										queryProps.metricName
+									]
 								}
 								name={Name.Page}
 								rangeSelectors={{

@@ -10,8 +10,11 @@ const useWizardPageMock = jest.fn();
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: () => ({push: jest.fn()}),
 	useParams: () => ({groupId: '23'}),
+}));
+
+jest.mock('shared/hooks/useHistoryAdapter', () => ({
+	useHistoryAdapter: () => ({push: jest.fn()}),
 }));
 
 jest.mock('settings/components/base-page/WizardPageContext', () => ({

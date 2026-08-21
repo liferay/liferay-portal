@@ -94,13 +94,13 @@ describe('WorkspaceListItem', () => {
 
 	it('should render the Liferay Data Platform limit message when hasLimitReached and ldpEnabled is true', () => {
 		const {getByText} = render(
-			<StaticRouter>
+			<MemoryRouter>
 				<WorkspaceListItem
 					hasLimitReached
 					ldpEnabled
 					projectState={ProjectStates.Ready}
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		);
 
 		expect(

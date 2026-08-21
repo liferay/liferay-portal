@@ -1,5 +1,5 @@
 import {setUriQueryValues} from 'shared/util/router';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useQueryParams} from 'shared/hooks/useQueryParams';
 
 type Account = {
@@ -21,7 +21,7 @@ interface IAccountFilter {
 
 export const useAccountFilter = (): IAccountFilter => {
 	const {accountId, accountName} = useQueryParams();
-	const history = useHistory();
+	const history = useHistoryAdapter();
 
 	return {
 		accountId,

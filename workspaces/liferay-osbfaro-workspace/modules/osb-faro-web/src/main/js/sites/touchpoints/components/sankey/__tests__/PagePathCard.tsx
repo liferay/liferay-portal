@@ -140,7 +140,9 @@ const WrapperComponent = ({
 						value={{accountId, filters: {}, router: {}, segmentId}}
 					>
 						<MockedProvider
-							cache={new InMemoryCache({freezeResults: false} as any)}
+							cache={
+								new InMemoryCache({freezeResults: false} as any)
+							}
 							mocks={[
 								mockPagePathReq(data, {
 									accountId,

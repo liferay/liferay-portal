@@ -19,7 +19,13 @@ const AccountDropdown: React.FC<IAccountDropdownProps> = ({
 	initialAccountName,
 	onFilterChange,
 }) => {
-	const {assetId, channelId, groupId, title, touchpoint} = useParams<{
+	const {
+		assetId = '',
+		channelId,
+		groupId,
+		title = '',
+		touchpoint = '',
+	} = useParams<{
 		assetId: string;
 		channelId: string;
 		groupId: string;

@@ -71,17 +71,7 @@ describe('SegmentProfileRoutes', () => {
 			)
 		);
 
-		const {container} = render(
-			<Provider store={mockStore()}>
-				<BrowserRouter>
-					<ChannelContext.Provider value={mockChannelContext()}>
-						<DataSourcesProvider groupId='23'>
-							<SegmentProfileRoutes />
-						</DataSourcesProvider>
-					</ChannelContext.Provider>
-				</BrowserRouter>
-			</Provider>
-		);
+		const {container} = renderProfileRoutes();
 
 		await waitForLoadingToBeRemoved(container);
 
@@ -98,17 +88,7 @@ describe('SegmentProfileRoutes', () => {
 			)
 		);
 
-		const {container} = render(
-			<Provider store={mockStore()}>
-				<BrowserRouter>
-					<ChannelContext.Provider value={mockChannelContext()}>
-						<DataSourcesProvider groupId='23'>
-							<SegmentProfileRoutes />
-						</DataSourcesProvider>
-					</ChannelContext.Provider>
-				</BrowserRouter>
-			</Provider>
-		);
+		const {container} = renderProfileRoutes();
 
 		await waitForLoadingToBeRemoved(container);
 

@@ -5,7 +5,7 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import {render, screen} from '@testing-library/react';
 import {Segment} from 'shared/util/records';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -18,7 +18,7 @@ jest.mock('shared/hooks/useTimeZone', () => ({
 const renderOverviewRealTime = () =>
 	render(
 		<Provider store={mockStore()}>
-			<StaticRouter>
+			<MemoryRouter>
 				<OverviewRealTime
 					channelId="123"
 					groupId="23"
@@ -31,7 +31,7 @@ const renderOverviewRealTime = () =>
 						)
 					}
 				/>
-			</StaticRouter>
+			</MemoryRouter>
 		</Provider>
 	);
 

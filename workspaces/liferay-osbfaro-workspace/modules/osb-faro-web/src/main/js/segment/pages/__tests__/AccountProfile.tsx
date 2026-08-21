@@ -9,7 +9,7 @@ import {mockSegment} from 'test/data';
 import {Provider} from 'react-redux';
 import {Segment} from 'shared/util/records';
 import {SegmentCategories, SegmentStates} from 'shared/util/constants';
-import {StaticRouter} from 'react-router';
+import {MemoryRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
@@ -53,7 +53,7 @@ jest.mock('shared/hooks/useTimeZone', () => ({
 const renderAccountProfile = (data = {}) =>
 	render(
 		<Provider store={mockStore()}>
-			<StaticRouter>
+			<MemoryRouter>
 				<ChannelContext.Provider value={mockChannelContext() as any}>
 					<DataSourcesProvider groupId="23">
 						<AccountProfile
@@ -72,7 +72,7 @@ const renderAccountProfile = (data = {}) =>
 						/>
 					</DataSourcesProvider>
 				</ChannelContext.Provider>
-			</StaticRouter>
+			</MemoryRouter>
 		</Provider>
 	);
 

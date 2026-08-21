@@ -7,7 +7,8 @@ import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
 import {Routes, toRoute} from 'shared/util/router';
 import {useDispatch} from 'react-redux';
 import {useEffect, useState} from 'react';
-import {useHistory, useParams} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
+import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
 /**
@@ -22,7 +23,7 @@ export const useLifecycleSettingsForm = (
 ) => {
 	const dispatch = useDispatch();
 
-	const history = useHistory();
+	const history = useHistoryAdapter();
 
 	const {channelId, groupId} = useParams();
 

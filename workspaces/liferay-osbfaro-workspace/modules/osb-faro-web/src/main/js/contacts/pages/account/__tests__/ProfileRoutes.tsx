@@ -195,7 +195,9 @@ describe('AccountProfileRoutes', () => {
 			loading: false,
 		});
 
-		renderProfileRoutes([toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS)]);
+		renderProfileRoutes([
+			toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS),
+		]);
 
 		expect(
 			await screen.findByTestId('account-overview')
@@ -209,7 +211,9 @@ describe('AccountProfileRoutes', () => {
 			loading: false,
 		});
 
-		renderProfileRoutes([toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS)]);
+		renderProfileRoutes([
+			toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS),
+		]);
 
 		expect(await screen.findByTestId('account-overview')).toHaveTextContent(
 			'Acme Corp'
@@ -223,7 +227,9 @@ describe('AccountProfileRoutes', () => {
 			loading: false,
 		});
 
-		renderProfileRoutes([toRoute(Routes.CONTACTS_ACCOUNT_ACTIVITIES, ROUTE_PARAMS)]);
+		renderProfileRoutes([
+			toRoute(Routes.CONTACTS_ACCOUNT_ACTIVITIES, ROUTE_PARAMS),
+		]);
 
 		expect(
 			await screen.findByTestId('account-activities')

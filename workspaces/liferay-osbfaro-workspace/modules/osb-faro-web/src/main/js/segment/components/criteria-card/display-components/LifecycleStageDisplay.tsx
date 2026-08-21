@@ -7,7 +7,7 @@ const LifecycleStageDisplay: React.FC<{label: string; value: string}> = ({
 	label,
 	value,
 }) => {
-	const {groupId} = useParams<{groupId: string}>();
+	const {groupId = ''} = useParams<{groupId: string}>();
 
 	const {loading, options} = useLifecycleStageOptions({groupId});
 
