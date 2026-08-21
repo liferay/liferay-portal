@@ -2012,6 +2012,10 @@ test.describe('Accordion Fragment', () => {
 		await expect(
 			accordionButton.getByText('Heading Example')
 		).not.toBeVisible();
+
+		// Check accessibility
+
+		await checkAccessibility({page, selectors: ['.component-accordion']});
 	});
 });
 
