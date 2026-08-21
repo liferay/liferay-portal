@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.workflow.kaleo.model.KaleoTimerInstanceToken;
+import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.WorkflowEngine;
 import com.liferay.portal.workflow.kaleo.runtime.util.WorkflowContextUtil;
 import com.liferay.portal.workflow.kaleo.service.KaleoTimerInstanceTokenLocalService;
@@ -49,23 +50,13 @@ public class WorkflowEngineConcurrentTest extends BaseWorkflowManagerTestCase {
 	@Test
 	public void testConcurrentExecuteTimerWorkflowInstance() throws Exception {
 		WorkflowDefinition workflowDefinition =
-			_workflowDefinitionManager.deployWorkflowDefinition(
-				FileUtil.getBytes(
-					getResourceInputStream(
-						"multiple-timer-workflow-definition.xml")),
-				TestPropsValues.getCompanyId(), null,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				TestPropsValues.getUserId());
+			_deployMultipleTimerWorkflowDefinition();
 
 		try (AutoCloseable autoCloseable1 = registryWorkflowHandler(
 				workflowDefinition);
 			AutoCloseable autoCloseable2 = _swapSchedulerEngine()) {
 
-			Class<?> clazz = getClass();
-
-			WorkflowHandlerRegistryUtil.startWorkflowInstance(
-				TestPropsValues.getCompanyId(), 0, TestPropsValues.getUserId(),
-				clazz.getName(), 1, null, new ServiceContext());
+			_startWorkflowInstance();
 
 			Assert.assertEquals(
 				_kaleoTimerInstanceTokenIds.toString(), 2,
@@ -93,16 +84,60 @@ public class WorkflowEngineConcurrentTest extends BaseWorkflowManagerTestCase {
 		}
 	}
 
+	@Test
+	public void testExecuteTimerWorkflowInstanceWithCompletedKaleoTimerInstanceToken()
+		throws Exception {
+
+		WorkflowDefinition workflowDefinition =
+			_deployMultipleTimerWorkflowDefinition();
+
+		try (AutoCloseable autoCloseable1 = registryWorkflowHandler(
+				workflowDefinition);
+			AutoCloseable autoCloseable2 = _swapSchedulerEngine()) {
+
+			_startWorkflowInstance();
+
+			Assert.assertEquals(
+				_kaleoTimerInstanceTokenIds.toString(), 2,
+				_kaleoTimerInstanceTokenIds.size());
+
+			long kaleoTimerInstanceTokenId = _kaleoTimerInstanceTokenIds.get(0);
+
+			Map<String, Serializable> workflowContext = _getWorkflowContext(
+				kaleoTimerInstanceTokenId);
+
+			ServiceContext serviceContext = (ServiceContext)workflowContext.get(
+				WorkflowConstants.CONTEXT_SERVICE_CONTEXT);
+
+			_kaleoTimerInstanceTokenLocalService.
+				completeKaleoTimerInstanceToken(
+					kaleoTimerInstanceTokenId, serviceContext);
+
+			ExecutionContext executionContext =
+				_workflowEngine.executeTimerWorkflowInstance(
+					kaleoTimerInstanceTokenId, serviceContext, workflowContext);
+
+			Assert.assertNull(executionContext.getKaleoTaskInstanceToken());
+		}
+	}
+
+	private WorkflowDefinition _deployMultipleTimerWorkflowDefinition()
+		throws Exception {
+
+		return _workflowDefinitionManager.deployWorkflowDefinition(
+			FileUtil.getBytes(
+				getResourceInputStream(
+					"multiple-timer-workflow-definition.xml")),
+			TestPropsValues.getCompanyId(), null, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), TestPropsValues.getUserId());
+	}
+
 	private Callable<?> _getCallable(
 			CountDownLatch countDownLatch, long kaleoTimerInstanceTokenId)
 		throws Exception {
 
-		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_kaleoTimerInstanceTokenLocalService.getKaleoTimerInstanceToken(
-				kaleoTimerInstanceTokenId);
-
-		Map<String, Serializable> workflowContext = WorkflowContextUtil.convert(
-			kaleoTimerInstanceToken.getWorkflowContext());
+		Map<String, Serializable> workflowContext = _getWorkflowContext(
+			kaleoTimerInstanceTokenId);
 
 		ServiceContext serviceContext = (ServiceContext)workflowContext.get(
 			WorkflowConstants.CONTEXT_SERVICE_CONTEXT);
@@ -113,6 +148,27 @@ public class WorkflowEngineConcurrentTest extends BaseWorkflowManagerTestCase {
 			return _workflowEngine.executeTimerWorkflowInstance(
 				kaleoTimerInstanceTokenId, serviceContext, workflowContext);
 		};
+	}
+
+	private Map<String, Serializable> _getWorkflowContext(
+			long kaleoTimerInstanceTokenId)
+		throws Exception {
+
+		KaleoTimerInstanceToken kaleoTimerInstanceToken =
+			_kaleoTimerInstanceTokenLocalService.getKaleoTimerInstanceToken(
+				kaleoTimerInstanceTokenId);
+
+		return WorkflowContextUtil.convert(
+			kaleoTimerInstanceToken.getWorkflowContext());
+	}
+
+	private void _startWorkflowInstance() throws Exception {
+		Class<?> clazz = getClass();
+
+		WorkflowHandlerRegistryUtil.startWorkflowInstance(
+			TestPropsValues.getCompanyId(), 0, TestPropsValues.getUserId(),
+			clazz.getName(), RandomTestUtil.randomLong(), null,
+			new ServiceContext());
 	}
 
 	private AutoCloseable _swapSchedulerEngine() {
