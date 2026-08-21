@@ -201,12 +201,14 @@ definition {
 	@description = "LPS-131206. Verify if is possible view on list when an envelope have more recipients than one"
 	@priority = 4
 	test HaveMoreRecipientsThanOne {
+		var envelopeName = "Poshi Test HaveMoreRecipientsThanOne ${StringUtil.randomString(8)}";
+
 		task ("Given a digital envelope is created") {
 			DigitalSignature.createEnvelope(
 				addEmail = "test@liferay.com",
 				addFullName = "Recipient Full Name",
 				addMessage = "Email Message",
-				addName = "Poshi Test HaveMoreRecipientsThanOne",
+				addName = ${envelopeName},
 				addSubject = "Email Subject",
 				dmDocumentFile = "Alice's Adventures in Wonderland.pdf");
 		}
@@ -224,11 +226,11 @@ definition {
 
 			Refresh();
 
-			DigitalSignature.viewMoreRecipient();
+			DigitalSignature.viewMoreRecipient(envelopeName = ${envelopeName});
 
-			DigitalSignature.deleteEnvelope(envelopeName = "Poshi Test HaveMoreRecipientsThanOne");
+			DigitalSignature.deleteEnvelope(envelopeName = ${envelopeName});
 
-			AssertElementNotPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_RECIPIENTS_BADGE");
+			DigitalSignature.viewEnvelopeIsGone(envelopeName = ${envelopeName});
 
 			DigitalSignature.waitForListViewLoad();
 

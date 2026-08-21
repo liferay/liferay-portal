@@ -16,8 +16,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>DIGITAL_SIGNATURE_RECIPIENTS_BADGE</td>
-	<td>//span[contains(@class, 'badge-item')]</td>
+	<td>DIGITAL_SIGNATURE_ENVELOPE_RECIPIENTS_BADGE</td>
+	<td>//tr[contains(., '${envelopeName}')]//span[contains(@class, 'badge-item')]</td>
 	<td></td>
 </tr>
 <tr>
