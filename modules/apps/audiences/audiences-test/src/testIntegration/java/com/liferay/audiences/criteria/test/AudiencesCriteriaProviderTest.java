@@ -205,7 +205,7 @@ public class AudiencesCriteriaProviderTest {
 			AudiencesCriteria.InputType.SELECT,
 			segmentAudiencesCriteria.getInputType());
 		Assert.assertEquals(
-			AudiencesCriteria.Type.STRING, segmentAudiencesCriteria.getType());
+			AudiencesCriteria.Type.SET, segmentAudiencesCriteria.getType());
 
 		AudiencesCriteria.Option option = _getOption(
 			segmentAudiencesCriteria.getOptions(),

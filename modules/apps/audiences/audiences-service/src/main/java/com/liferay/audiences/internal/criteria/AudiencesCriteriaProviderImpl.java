@@ -394,7 +394,7 @@ public class AudiencesCriteriaProviderImpl
 				).setOptions(
 					segmentsOptions
 				).setType(
-					AudiencesCriteria.Type.STRING
+					AudiencesCriteria.Type.SET
 				).build());
 		}
 
