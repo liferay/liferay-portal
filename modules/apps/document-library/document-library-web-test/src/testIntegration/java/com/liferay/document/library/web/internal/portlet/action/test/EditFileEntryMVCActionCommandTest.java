@@ -400,16 +400,16 @@ public class EditFileEntryMVCActionCommandTest {
 		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
 			_createMockMultipartHttpServletRequest();
 
-		mockMultipartHttpServletRequest.setAttribute(
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest(
+				mockMultipartHttpServletRequest);
+
+		mockLiferayPortletActionRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			PortletConfigFactoryUtil.create(
 				_portletLocalService.getPortletById(
 					DLPortletKeys.DOCUMENT_LIBRARY),
 				null));
-
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest(
-				mockMultipartHttpServletRequest);
 
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY,
