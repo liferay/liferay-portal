@@ -118,6 +118,8 @@ public class MirrorsGetTask extends Task {
 		_src = project.replaceProperties(src);
 
 		if (_src.startsWith("file:")) {
+			_fileName = new File(_src.substring("file:".length())).getName();
+
 			return;
 		}
 
@@ -214,24 +216,18 @@ public class MirrorsGetTask extends Task {
 		_verbose = verbose;
 	}
 
-	private boolean _addToCache(File cacheFile, File tempFile)
+	private File _addToCache(File cacheFile, File tempFile)
 		throws IOException {
 
-		try {
-			Files.createLink(cacheFile.toPath(), tempFile.toPath());
+		if (!_createCacheEntry(cacheFile, tempFile)) {
+			System.out.println(cacheFile.getPath() + " was already cached.");
+		}
 
-			return true;
+		if (tempFile.exists()) {
+			return tempFile;
 		}
-		catch (FileAlreadyExistsException fileAlreadyExistsException) {
-			return false;
-		}
-		catch (IOException | UnsupportedOperationException exception) {
-			if (cacheFile.exists()) {
-				return false;
-			}
 
-			return _renameFile(cacheFile, tempFile);
-		}
+		return cacheFile;
 	}
 
 	private void _copyFile(File sourceFile, File targetFile)
@@ -263,6 +259,42 @@ public class MirrorsGetTask extends Task {
 			sb.append(" milliseconds.");
 
 			System.out.println(sb.toString());
+		}
+	}
+
+	private boolean _copyFromCache(File cacheFile) throws IOException {
+		File linkFile = _uniqueLinkFile(cacheFile);
+
+		try {
+			File readFile = _createReadLink(cacheFile, linkFile);
+
+			if (readFile == null) {
+				return false;
+			}
+
+			if (cacheFile.equals(readFile)) {
+				StringBuilder sb = new StringBuilder();
+
+				sb.append("Unable to link ");
+				sb.append(cacheFile.getPath());
+				sb.append(". Reading it directly is not safe when the ");
+				sb.append("mirrors cache is shared.");
+
+				System.out.println(sb.toString());
+			}
+
+			if (!_isValidFile(readFile)) {
+				_deleteFile(cacheFile);
+
+				return false;
+			}
+
+			_copyFile(readFile, _getDestFile());
+
+			return true;
+		}
+		finally {
+			_deleteFile(linkFile);
 		}
 	}
 
@@ -334,6 +366,26 @@ public class MirrorsGetTask extends Task {
 		sb.append(".");
 
 		throw new IOException(sb.toString(), lastIOException);
+	}
+
+	private boolean _createCacheEntry(File cacheFile, File tempFile)
+		throws IOException {
+
+		try {
+			Files.createLink(cacheFile.toPath(), tempFile.toPath());
+
+			return true;
+		}
+		catch (FileAlreadyExistsException fileAlreadyExistsException) {
+			return false;
+		}
+		catch (IOException | UnsupportedOperationException exception) {
+			if (cacheFile.exists()) {
+				return false;
+			}
+
+			return _renameFile(cacheFile, tempFile);
+		}
 	}
 
 	private File _createReadLink(File cacheFile, File linkFile) {
@@ -537,15 +589,7 @@ public class MirrorsGetTask extends Task {
 
 	private void _execute() throws IOException {
 		if (_src.startsWith("file:")) {
-			File srcFile = new File(_src.substring("file:".length()));
-
-			File targetFile = _dest;
-
-			if (_dest.exists() && _dest.isDirectory()) {
-				targetFile = new File(_dest, srcFile.getName());
-			}
-
-			_copyFile(srcFile, targetFile);
+			_downloadFile(_src, _getDestFile());
 
 			return;
 		}
@@ -564,55 +608,25 @@ public class MirrorsGetTask extends Task {
 
 		File mirrorsCacheFile = _getMirrorsCacheFile();
 
-		File mirrorsCacheLinkFile = _uniqueLinkFile(mirrorsCacheFile);
-		File mirrorsCacheTempFile = _uniqueTempFile(mirrorsCacheFile);
-
 		_deleteExpiredTempFiles(mirrorsCacheFile);
 
+		if (!_force && _copyFromCache(mirrorsCacheFile)) {
+			return;
+		}
+
+		File tempFile = _uniqueTempFile(mirrorsCacheFile);
+
 		try {
-			File readFile = null;
+			_copyFromSrc(tempFile);
 
-			if (!_force) {
-				readFile = _getReadFile(mirrorsCacheFile, mirrorsCacheLinkFile);
-
-				if ((readFile != null) && !_isValidFile(readFile)) {
-					_deleteFile(mirrorsCacheFile);
-					_deleteFile(mirrorsCacheLinkFile);
-
-					readFile = null;
-				}
+			if (_force) {
+				_deleteFile(mirrorsCacheFile);
 			}
 
-			if (readFile == null) {
-				_copyFromSrc(mirrorsCacheTempFile);
-
-				if (_force) {
-					_deleteFile(mirrorsCacheFile);
-				}
-
-				if (!_addToCache(mirrorsCacheFile, mirrorsCacheTempFile)) {
-					System.out.println(
-						mirrorsCacheFile.getPath() + " was already cached.");
-				}
-
-				if (mirrorsCacheTempFile.exists()) {
-					readFile = mirrorsCacheTempFile;
-				}
-				else {
-					readFile = mirrorsCacheFile;
-				}
-			}
-
-			if (_dest.exists() && _dest.isDirectory()) {
-				_copyFile(readFile, new File(_dest, _fileName));
-			}
-			else {
-				_copyFile(readFile, _dest);
-			}
+			_copyFile(_addToCache(mirrorsCacheFile, tempFile), _getDestFile());
 		}
 		finally {
-			_deleteFile(mirrorsCacheLinkFile);
-			_deleteFile(mirrorsCacheTempFile);
+			_deleteFile(tempFile);
 		}
 	}
 
@@ -626,6 +640,14 @@ public class MirrorsGetTask extends Task {
 		process.waitFor();
 
 		return process;
+	}
+
+	private File _getDestFile() {
+		if (_dest.exists() && _dest.isDirectory()) {
+			return new File(_dest, _fileName);
+		}
+
+		return _dest;
 	}
 
 	private String _getGCPBucketName() {
@@ -905,25 +927,6 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return processOutput.toString();
-	}
-
-	private File _getReadFile(
-		File mirrorsCacheFile, File mirrorsCacheLinkFile) {
-
-		File readFile = _createReadLink(mirrorsCacheFile, mirrorsCacheLinkFile);
-
-		if (mirrorsCacheFile.equals(readFile)) {
-			StringBuilder sb = new StringBuilder();
-
-			sb.append("Unable to link ");
-			sb.append(mirrorsCacheFile.getPath());
-			sb.append(". Reading it directly is not safe when the mirrors ");
-			sb.append("cache is shared.");
-
-			System.out.println(sb.toString());
-		}
-
-		return readFile;
 	}
 
 	private URL _getRemoteURL() {
