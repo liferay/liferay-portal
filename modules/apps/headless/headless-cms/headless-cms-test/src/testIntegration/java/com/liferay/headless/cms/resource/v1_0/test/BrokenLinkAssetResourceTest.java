@@ -332,6 +332,23 @@ public class BrokenLinkAssetResourceTest
 				"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId());
 	}
 
+	private BrokenLinkAsset _getSingleBrokenLinkAsset(
+			BrokenLinkAssetResource brokenLinkAssetResource,
+			DepotEntry depotEntry)
+		throws Exception {
+
+		Page<BrokenLinkAsset> brokenLinkAssetsPage =
+			brokenLinkAssetResource.getBrokenLinkAssetsPage(
+				depotEntry.getDepotEntryId(), null, null, null);
+
+		Assert.assertEquals(1, brokenLinkAssetsPage.getTotalCount());
+
+		List<BrokenLinkAsset> brokenLinkAssets =
+			(List<BrokenLinkAsset>)brokenLinkAssetsPage.getItems();
+
+		return brokenLinkAssets.get(0);
+	}
+
 	private BrokenLinkAssetResource _getSpaceMemberBrokenLinkAssetResource(
 			DepotEntry depotEntry)
 		throws Exception {
@@ -386,16 +403,8 @@ public class BrokenLinkAssetResourceTest
 		_addObjectEntry(
 			sb.toString(), depotEntry, objectDefinition, referencingTitle);
 
-		Page<BrokenLinkAsset> brokenLinkAssetsPage =
-			brokenLinkAssetResource.getBrokenLinkAssetsPage(
-				depotEntry.getDepotEntryId(), null, null, null);
-
-		Assert.assertEquals(1, brokenLinkAssetsPage.getTotalCount());
-
-		List<BrokenLinkAsset> brokenLinkAssets =
-			(List<BrokenLinkAsset>)brokenLinkAssetsPage.getItems();
-
-		BrokenLinkAsset brokenLinkAsset = brokenLinkAssets.get(0);
+		BrokenLinkAsset brokenLinkAsset = _getSingleBrokenLinkAsset(
+			brokenLinkAssetResource, depotEntry);
 
 		Assert.assertEquals(
 			targetTitles.length,
@@ -441,16 +450,8 @@ public class BrokenLinkAssetResourceTest
 				expiredObjectEntry.getExternalReferenceCode()),
 			depotEntry, objectDefinition, referencingTitle);
 
-		Page<BrokenLinkAsset> brokenLinkAssetsPage =
-			brokenLinkAssetResource.getBrokenLinkAssetsPage(
-				depotEntry.getDepotEntryId(), null, null, null);
-
-		Assert.assertEquals(1, brokenLinkAssetsPage.getTotalCount());
-
-		List<BrokenLinkAsset> brokenLinkAssets =
-			(List<BrokenLinkAsset>)brokenLinkAssetsPage.getItems();
-
-		BrokenLinkAsset brokenLinkAsset = brokenLinkAssets.get(0);
+		BrokenLinkAsset brokenLinkAsset = _getSingleBrokenLinkAsset(
+			brokenLinkAssetResource, depotEntry);
 
 		Assert.assertEquals(
 			1, GetterUtil.getInteger(brokenLinkAsset.getBrokenLinksCount()));
@@ -485,35 +486,15 @@ public class BrokenLinkAssetResourceTest
 			imageHTML + hiddenImageHTML, depotEntry, objectDefinition,
 			referencingTitle);
 
-		Page<BrokenLinkAsset> brokenLinkAssetsPage =
-			brokenLinkAssetResource.getBrokenLinkAssetsPage(
-				depotEntry.getDepotEntryId(), null, null, null);
-
-		Assert.assertEquals(1, brokenLinkAssetsPage.getTotalCount());
-
-		List<BrokenLinkAsset> brokenLinkAssets =
-			(List<BrokenLinkAsset>)brokenLinkAssetsPage.getItems();
-
-		BrokenLinkAsset brokenLinkAsset = brokenLinkAssets.get(0);
+		BrokenLinkAsset brokenLinkAsset = _getSingleBrokenLinkAsset(
+			brokenLinkAssetResource, depotEntry);
 
 		Assert.assertEquals(
 			2, GetterUtil.getInteger(brokenLinkAsset.getBrokenLinksCount()));
 		Assert.assertEquals(referencingTitle, brokenLinkAsset.getTitle());
 
-		BrokenLinkAssetResource spaceMemberBrokenLinkAssetResource =
-			_getSpaceMemberBrokenLinkAssetResource(depotEntry);
-
-		Page<BrokenLinkAsset> spaceMemberBrokenLinkAssetsPage =
-			spaceMemberBrokenLinkAssetResource.getBrokenLinkAssetsPage(
-				depotEntry.getDepotEntryId(), null, null, null);
-
-		Assert.assertEquals(1, spaceMemberBrokenLinkAssetsPage.getTotalCount());
-
-		List<BrokenLinkAsset> spaceMemberBrokenLinkAssets =
-			(List<BrokenLinkAsset>)spaceMemberBrokenLinkAssetsPage.getItems();
-
-		BrokenLinkAsset spaceMemberBrokenLinkAsset =
-			spaceMemberBrokenLinkAssets.get(0);
+		BrokenLinkAsset spaceMemberBrokenLinkAsset = _getSingleBrokenLinkAsset(
+			_getSpaceMemberBrokenLinkAssetResource(depotEntry), depotEntry);
 
 		Assert.assertEquals(
 			1,
@@ -556,16 +537,8 @@ public class BrokenLinkAssetResourceTest
 				expiredObjectEntry.getObjectEntryId()
 			).build());
 
-		Page<BrokenLinkAsset> brokenLinkAssetsPage =
-			brokenLinkAssetResource.getBrokenLinkAssetsPage(
-				depotEntry.getDepotEntryId(), null, null, null);
-
-		Assert.assertEquals(1, brokenLinkAssetsPage.getTotalCount());
-
-		List<BrokenLinkAsset> brokenLinkAssets =
-			(List<BrokenLinkAsset>)brokenLinkAssetsPage.getItems();
-
-		BrokenLinkAsset brokenLinkAsset = brokenLinkAssets.get(0);
+		BrokenLinkAsset brokenLinkAsset = _getSingleBrokenLinkAsset(
+			brokenLinkAssetResource, depotEntry);
 
 		Assert.assertEquals(
 			1, GetterUtil.getInteger(brokenLinkAsset.getBrokenLinksCount()));
