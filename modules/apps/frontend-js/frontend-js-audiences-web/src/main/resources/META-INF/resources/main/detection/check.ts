@@ -29,7 +29,7 @@ const ATTRIBUTES: Attribute[] = [
 	'pathname',
 	'referrer',
 	'request_parameters',
-	'segment',
+	'segments',
 	'timezone',
 	'url',
 	'user_agent',

@@ -5,19 +5,15 @@
 
 import {checkTypes} from '../util';
 
-export function notEq(
-	value: Set<string> | boolean | number | string,
-	expected: boolean | number | string
+export function notEq<T extends boolean | number | string>(
+	value: T,
+	expected: T
 ): boolean {
 	checkTypes(
 		value,
-		['Set', 'boolean', 'number', 'string'],
+		['boolean', 'number', 'string'],
 		`Operator 'not_eq' value`
 	);
-
-	if (value instanceof Set) {
-		return !value.has(expected as string);
-	}
 
 	return value !== expected;
 }

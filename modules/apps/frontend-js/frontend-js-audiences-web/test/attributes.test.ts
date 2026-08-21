@@ -17,7 +17,7 @@ import {getLocalHour} from '../src/main/resources/META-INF/resources/main/detect
 import {getPathname} from '../src/main/resources/META-INF/resources/main/detection/attributes/pathname';
 import {getReferrer} from '../src/main/resources/META-INF/resources/main/detection/attributes/referrer';
 import {getRequestParameters} from '../src/main/resources/META-INF/resources/main/detection/attributes/request_parameters';
-import {getSegment} from '../src/main/resources/META-INF/resources/main/detection/attributes/segment';
+import {getSegments} from '../src/main/resources/META-INF/resources/main/detection/attributes/segments';
 import {getTimezone} from '../src/main/resources/META-INF/resources/main/detection/attributes/timezone';
 import {getUrl} from '../src/main/resources/META-INF/resources/main/detection/attributes/url';
 import {getUserAgent} from '../src/main/resources/META-INF/resources/main/detection/attributes/user_agent';
@@ -255,7 +255,7 @@ describe('attributes', () => {
 		});
 	});
 
-	describe('attribute segment', () => {
+	describe('attribute segments', () => {
 		it('returns the segments cached for the current user', async () => {
 			sessionStorage.setItem(
 				'liferay.audiences.acSegments',
@@ -265,7 +265,7 @@ describe('attributes', () => {
 				})
 			);
 
-			const value = getSegment();
+			const value = getSegments();
 
 			expect(value).toBeInstanceOf(Set);
 			expect(value).toEqual(

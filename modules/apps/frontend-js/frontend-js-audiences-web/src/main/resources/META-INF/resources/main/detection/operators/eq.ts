@@ -5,19 +5,11 @@
 
 import {checkTypes} from '../util';
 
-export function eq(
-	value: Set<string> | boolean | number | string,
-	expected: boolean | number | string
+export function eq<T extends boolean | number | string>(
+	value: T,
+	expected: T
 ): boolean {
-	checkTypes(
-		value,
-		['Set', 'boolean', 'number', 'string'],
-		`Operator 'eq' value`
-	);
-
-	if (value instanceof Set) {
-		return value.has(expected as string);
-	}
+	checkTypes(value, ['boolean', 'number', 'string'], `Operator 'eq' value`);
 
 	return value === expected;
 }

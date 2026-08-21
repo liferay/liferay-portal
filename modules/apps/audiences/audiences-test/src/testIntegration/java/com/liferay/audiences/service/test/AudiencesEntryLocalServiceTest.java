@@ -66,9 +66,9 @@ public class AudiencesEntryLocalServiceTest {
 						"value", RandomTestUtil.randomString()
 					),
 					JSONUtil.put(
-						"attribute", "segment"
+						"attribute", "segments"
 					).put(
-						"operator", "eq"
+						"operator", "includes"
 					).put(
 						"value", RandomTestUtil.randomString()
 					),

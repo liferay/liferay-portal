@@ -91,7 +91,8 @@
 							"attribute": {
 								"enum": [
 									"cookies",
-									"request_parameters"
+									"request_parameters",
+									"segments"
 								]
 							}
 						},
@@ -117,10 +118,7 @@
 					"if": {
 						"properties": {
 							"attribute": {
-								"enum": [
-									"language",
-									"segment"
-								]
+								"const": "language"
 							}
 						},
 						"required": [
@@ -226,7 +224,7 @@
 								"pathname",
 								"referrer",
 								"request_parameters",
-								"segment",
+								"segments",
 								"timezone",
 								"url",
 								"user_agent"

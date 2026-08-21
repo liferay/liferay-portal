@@ -67,7 +67,8 @@ public class AudiencesCriteriaProviderTest {
 
 		Assert.assertEquals(
 			audiencesCriterias.toString(), 14, audiencesCriterias.size());
-		Assert.assertNull(_getAudiencesCriteria(audiencesCriterias, "segment"));
+		Assert.assertNull(
+			_getAudiencesCriteria(audiencesCriterias, "segments"));
 
 		AudiencesCriteria urlAudiencesCriteria = _getAudiencesCriteria(
 			audiencesCriterias, "url");
@@ -161,7 +162,8 @@ public class AudiencesCriteriaProviderTest {
 
 		Assert.assertEquals(
 			audiencesCriterias.toString(), 2, audiencesCriterias.size());
-		Assert.assertNull(_getAudiencesCriteria(audiencesCriterias, "segment"));
+		Assert.assertNull(
+			_getAudiencesCriteria(audiencesCriterias, "segments"));
 
 		AudiencesCriteria authenticationAudiencesCriteria =
 			_getAudiencesCriteria(
@@ -198,17 +200,17 @@ public class AudiencesCriteriaProviderTest {
 		Assert.assertEquals(
 			audiencesCriterias.toString(), 3, audiencesCriterias.size());
 
-		AudiencesCriteria segmentAudiencesCriteria = _getAudiencesCriteria(
-			audiencesCriterias, "segment");
+		AudiencesCriteria segmentsAudiencesCriteria = _getAudiencesCriteria(
+			audiencesCriterias, "segments");
 
 		Assert.assertEquals(
 			AudiencesCriteria.InputType.SELECT,
-			segmentAudiencesCriteria.getInputType());
+			segmentsAudiencesCriteria.getInputType());
 		Assert.assertEquals(
-			AudiencesCriteria.Type.SET, segmentAudiencesCriteria.getType());
+			AudiencesCriteria.Type.SET, segmentsAudiencesCriteria.getType());
 
 		AudiencesCriteria.Option option = _getOption(
-			segmentAudiencesCriteria.getOptions(),
+			segmentsAudiencesCriteria.getOptions(),
 			segmentsEntry.getExternalReferenceCode());
 
 		Assert.assertEquals(

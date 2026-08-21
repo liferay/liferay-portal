@@ -15,7 +15,7 @@ const ANALYTICS_WAIT_TIMEOUT = 10000;
 
 let acSegmentsRequest: Promise<void> | undefined;
 
-export function getSegment(): Set<string> {
+export function getSegments(): Set<string> {
 	const cachedAcSegments = readAcSegmentsCache();
 
 	if (cachedAcSegments === undefined) {

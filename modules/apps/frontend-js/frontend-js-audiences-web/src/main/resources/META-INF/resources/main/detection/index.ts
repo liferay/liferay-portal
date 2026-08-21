@@ -18,7 +18,7 @@ import {getLocalHour} from './attributes/local_hour';
 import {getPathname} from './attributes/pathname';
 import {getReferrer} from './attributes/referrer';
 import {getRequestParameters} from './attributes/request_parameters';
-import {getSegment} from './attributes/segment';
+import {getSegments} from './attributes/segments';
 import {getTimezone} from './attributes/timezone';
 import {getUrl} from './attributes/url';
 import {getUserAgent} from './attributes/user_agent';
@@ -128,8 +128,8 @@ export class Detection {
 		else if (attr === 'request_parameters') {
 			return getRequestParameters();
 		}
-		else if (attr === 'segment') {
-			return getSegment();
+		else if (attr === 'segments') {
+			return getSegments();
 		}
 		else if (attr === 'timezone') {
 			return getTimezone();
