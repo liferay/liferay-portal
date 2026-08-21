@@ -486,7 +486,7 @@ test.describe('Date Fragment', () => {
 
 			// Edit date
 
-			await page.locator('input[name="ObjectField_date"]').click();
+			await page.locator('.date-input input[type="text"]').click();
 
 			await page.keyboard.type('07/11/2020');
 
@@ -499,7 +499,9 @@ test.describe('Date Fragment', () => {
 			await expect(page.locator('.date-input')).toContainText(
 				'Please enter a valid date.'
 			);
-			await expect(page.locator('.date-input input')).toBeFocused();
+			await expect(
+				page.locator('.date-input input[type="text"]')
+			).toBeFocused();
 
 			// Delete validation
 
@@ -603,19 +605,23 @@ test.describe('Date and Time Fragment', () => {
 
 			// Edit date
 
-			await page.locator('input[name="ObjectField_date"]').click();
+			await page
+				.locator('.date-input')
+				.first()
+				.locator('input[type="text"]')
+				.click();
 
 			await page.keyboard.type('01/07/2023');
 
 			// Edit date and time
 
-			await page.locator('input[name="ObjectField_dateAndTime"]').click();
+			await page
+				.locator('.date-input')
+				.nth(1)
+				.locator('input[type="text"]')
+				.click();
 
-			await page.keyboard.type('10/10/2022');
-			await page.keyboard.press('ArrowRight');
-			await page.keyboard.type('10:10');
-			await page.keyboard.press('ArrowRight');
-			await page.keyboard.type('AM');
+			await page.keyboard.type('10/10/2022 10:10 AM');
 
 			await fillAndClickOutside(
 				page,
@@ -729,13 +735,9 @@ test.describe('Date and Time Fragment', () => {
 
 			// Edit date
 
-			await page.locator('input[name="ObjectField_dateAndTime"]').click();
+			await page.locator('.date-input input[type="text"]').click();
 
-			await page.keyboard.type('10/10/2020');
-			await page.keyboard.press('ArrowRight');
-			await page.keyboard.type('10:10');
-			await page.keyboard.press('ArrowRight');
-			await page.keyboard.type('AM');
+			await page.keyboard.type('10/10/2020 10:10 AM');
 
 			await page.locator('body').click();
 
@@ -746,7 +748,9 @@ test.describe('Date and Time Fragment', () => {
 			await expect(page.locator('.date-input')).toContainText(
 				'Please enter a valid date.'
 			);
-			await expect(page.locator('.date-input input')).toBeFocused();
+			await expect(
+				page.locator('.date-input input[type="text"]')
+			).toBeFocused();
 
 			// Delete validation
 

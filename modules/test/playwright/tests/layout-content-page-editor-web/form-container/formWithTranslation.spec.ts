@@ -1314,9 +1314,9 @@ test(
 			name: 'Date Time',
 		});
 
-		await fillAndClickOutside(page, dateInput, '1970-01-01');
+		await fillAndClickOutside(page, dateInput, '01/01/1970');
 
-		await fillAndClickOutside(page, dateTimeInput, '1971-01-01T00:00');
+		await fillAndClickOutside(page, dateTimeInput, '01/01/1971 12:00 AM');
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -1324,9 +1324,9 @@ test(
 			trigger: page.getByLabel('Select a language, current language:'),
 		});
 
-		await fillAndClickOutside(page, dateInput, '1970-01-02');
+		await fillAndClickOutside(page, dateInput, '01/02/1970');
 
-		await fillAndClickOutside(page, dateTimeInput, '1971-01-02T01:01');
+		await fillAndClickOutside(page, dateTimeInput, '01/02/1971 01:01 AM');
 
 		// Submit the form
 
