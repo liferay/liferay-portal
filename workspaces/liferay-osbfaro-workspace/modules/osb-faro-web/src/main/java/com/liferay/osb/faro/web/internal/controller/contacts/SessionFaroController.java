@@ -5,9 +5,12 @@
 
 package com.liferay.osb.faro.web.internal.controller.contacts;
 
+import com.liferay.osb.faro.engine.client.model.AcquisitionParameter;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.controller.FaroController;
 import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
+import com.liferay.osb.faro.web.internal.model.display.contacts.AcquisitionParameterDisplay;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.RoleConstants;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -19,6 +22,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
+import java.util.List;
+
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -28,6 +33,25 @@ import org.osgi.service.component.annotations.Component;
 @Path("/{groupId}/session")
 @Produces(MediaType.APPLICATION_JSON)
 public class SessionFaroController extends BaseFaroController {
+
+	@GET
+	@Path("/acquisition_parameters")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public FaroResultsDisplay getAcquisitionParametersFaroResultsDisplay(
+			@PathParam("groupId") long groupId,
+			@QueryParam("channelId") String channelId)
+		throws Exception {
+
+		List<AcquisitionParameter> acquisitionParameters =
+			contactsEngineClient.getAcquisitionParameters(
+				faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				channelId);
+
+		return new FaroResultsDisplay(
+			TransformUtil.transform(
+				acquisitionParameters, AcquisitionParameterDisplay::new),
+			acquisitionParameters.size());
+	}
 
 	@GET
 	@Path("/values")
