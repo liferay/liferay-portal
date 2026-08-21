@@ -19,7 +19,7 @@ import {ClayIconSpriteContext} from '@clayui/icon';
 import {ClayLinkContext} from '@clayui/link';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import {close, modalTypes, open} from 'shared/actions/modals';
-import {ENABLE_ADD_TRIAL_WORKSPACE} from 'shared/util/constants';
+import {ENABLE_ADD_TRIAL_WORKSPACE, FaroEnv} from 'shared/util/constants';
 import {
 	Link,
 	matchPath,
@@ -124,7 +124,7 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 		<>
 			{children}
 
-			{!!currentUser?.id && (
+			{!!currentUser?.id && FARO_ENV === FaroEnv.Production && (
 				<TrackingConsentBanner onDecision={setTrackingConsent} />
 			)}
 		</>
