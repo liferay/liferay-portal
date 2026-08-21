@@ -29,11 +29,8 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -269,6 +266,76 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
+	private boolean _copyFromMirrorsMount(File targetFile)
+		throws IOException {
+
+		File mirrorsMountFile = _getMirrorsMountFile();
+
+		if (!mirrorsMountFile.isFile()) {
+			return false;
+		}
+
+		try {
+			_copyFile(mirrorsMountFile, targetFile);
+		}
+		catch (IOException ioException) {
+			if (_verbose) {
+				System.out.println(
+					"Unable to copy from mirrors mount " +
+						mirrorsMountFile.getPath() + ".");
+			}
+		}
+
+		if (_isValidFile(targetFile)) {
+			return true;
+		}
+
+		_deleteFile(targetFile);
+
+		return false;
+	}
+
+	private void _copyFromSrc(File targetFile) throws IOException {
+		if (_tryLocalNetwork && _copyFromMirrorsMount(targetFile)) {
+			return;
+		}
+
+		IOException lastIOException = null;
+
+		for (String url : _getSrcURLs()) {
+			if (url == null) {
+				continue;
+			}
+
+			try {
+				_downloadFile(url, targetFile, _retries);
+			}
+			catch (IOException ioException) {
+				lastIOException = ioException;
+
+				if (_verbose) {
+					System.out.println("Unable to connect to " + url + ".");
+				}
+			}
+
+			if (_isValidFile(targetFile)) {
+				return;
+			}
+
+			_deleteFile(targetFile);
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Unable to copy ");
+		sb.append(_src);
+		sb.append(" to ");
+		sb.append(targetFile.getPath());
+		sb.append(".");
+
+		throw new IOException(sb.toString(), lastIOException);
+	}
+
 	private File _createReadLink(File cacheFile, File linkFile) {
 		try {
 			Files.createLink(linkFile.toPath(), cacheFile.toPath());
@@ -336,6 +403,18 @@ public class MirrorsGetTask extends Task {
 		}
 
 		file.delete();
+	}
+
+	private void _downloadFile(String url, File targetFile, int retries)
+		throws IOException {
+
+		if (_gsURLPattern.matcher(url).find()) {
+			_downloadGCPFile(url, targetFile);
+
+			return;
+		}
+
+		_downloadFile(new URL(url), targetFile, retries);
 	}
 
 	private void _downloadFile(URL sourceURL, File targetFile)
@@ -440,13 +519,7 @@ public class MirrorsGetTask extends Task {
 		_downloadFile(sourceURL, targetFile);
 	}
 
-	private void _downloadGCPFile(File targetFile) {
-		String gsURL = _getGSURL();
-
-		if (gsURL == null) {
-			return;
-		}
-
+	private void _downloadGCPFile(String gsURL, File targetFile) {
 		File gcpCredentialsFile = _getGCPCredentialsFile();
 
 		try {
@@ -483,87 +556,6 @@ public class MirrorsGetTask extends Task {
 
 			System.out.println(
 				"Unable to download file: " + exception.getMessage());
-		}
-	}
-
-	private void _downloadMirrorsCacheTempFile(File mirrorsCacheTempFile)
-		throws IOException {
-
-		if (_tryLocalNetwork) {
-			File mirrorsMountFile = _getMirrorsMountFile();
-
-			if (mirrorsMountFile.isFile()) {
-				try {
-					_copyFile(mirrorsMountFile, mirrorsCacheTempFile);
-				}
-				catch (IOException ioException) {
-					_deleteFile(mirrorsCacheTempFile);
-
-					if (_verbose) {
-						System.out.println(
-							"Unable to copy from mirrors mount " +
-								mirrorsMountFile.getPath() + ".");
-					}
-				}
-			}
-		}
-
-		if (_isValidFile(mirrorsCacheTempFile)) {
-			return;
-		}
-
-		_deleteFile(mirrorsCacheTempFile);
-
-		List<URL> urls = new ArrayList<>();
-
-		if (_tryLocalNetwork) {
-			String mirrorsHostname = _getMirrorsHostname();
-			URL nexusTomcatURL = _getNexusTomcatURL();
-
-			if (nexusTomcatURL != null) {
-				urls.add(nexusTomcatURL);
-			}
-			else if (!mirrorsHostname.isEmpty()) {
-				urls.add(_getMirrorsURL());
-			}
-		}
-
-		urls.add(_getLocalURL());
-
-		urls.removeAll(Collections.singleton(null));
-
-		for (URL url : urls) {
-			try {
-				_downloadFile(url, mirrorsCacheTempFile, _retries);
-			}
-			catch (IOException ioException) {
-				if (_verbose) {
-					System.out.println("Unable to connect to " + url + ".");
-				}
-			}
-
-			if (mirrorsCacheTempFile.exists()) {
-				return;
-			}
-		}
-
-		_downloadGCPFile(mirrorsCacheTempFile);
-
-		if (_isValidFile(mirrorsCacheTempFile)) {
-			return;
-		}
-
-		_deleteFile(mirrorsCacheTempFile);
-
-		URL remoteURL = _getRemoteURL();
-
-		try {
-			_downloadFile(remoteURL, mirrorsCacheTempFile, _retries);
-		}
-		catch (IOException ioException) {
-			_deleteFile(mirrorsCacheTempFile);
-
-			throw ioException;
 		}
 	}
 
@@ -616,7 +608,7 @@ public class MirrorsGetTask extends Task {
 			}
 
 			if (readFile == null) {
-				_downloadMirrorsCacheTempFile(mirrorsCacheTempFile);
+				_copyFromSrc(mirrorsCacheTempFile);
 
 				if (_force) {
 					_deleteFile(mirrorsCacheFile);
@@ -995,6 +987,25 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
+	private String[] _getSrcURLs() {
+		String localNetworkURL = null;
+
+		if (_tryLocalNetwork) {
+			localNetworkURL = _toExternalForm(_getNexusTomcatURL());
+
+			if ((localNetworkURL == null) &&
+				!_getMirrorsHostname().isEmpty()) {
+
+				localNetworkURL = _toExternalForm(_getMirrorsURL());
+			}
+		}
+
+		return new String[] {
+			localNetworkURL, _toExternalForm(_getLocalURL()), _getGSURL(),
+			_toExternalForm(_getRemoteURL())
+		};
+	}
+
 	private Pattern _getTempFilePattern(String fileName) {
 		StringBuilder sb = new StringBuilder();
 
@@ -1364,6 +1375,14 @@ public class MirrorsGetTask extends Task {
 		sb.append(".");
 
 		throw new IOException(sb.toString());
+	}
+
+	private String _toExternalForm(URL url) {
+		if (url == null) {
+			return null;
+		}
+
+		return url.toExternalForm();
 	}
 
 	private int _toFile(URL url, File file) throws IOException {
