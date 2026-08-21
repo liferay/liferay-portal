@@ -119,27 +119,11 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 	@FeatureFlag("LPD-6417")
 	@Test
-	public void testProcessActionWithCompanyScopePreservesPersistentAuditMessageProcessorConfigurationWhenParametersAreAbsent()
+	public void testProcessActionWithCompanyScopeWhenDatabaseProcessorIsOverridden()
 		throws Exception {
 
-		_configurationProvider.saveCompanyConfiguration(
-			PersistentAuditMessageProcessorConfiguration.class,
-			TestPropsValues.getCompanyId(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"bufferSize", _BUFFER_SIZE
-			).put(
-				"enabled", false
-			).put(
-				"flushInterval", _FLUSH_INTERVAL
-			).build());
-
-		_processAction(
-			null, false, ExtendedObjectClassDefinition.Scope.COMPANY);
-
-		_assertPersistentAuditMessageProcessorConfiguration(
-			_configurationProvider.getCompanyConfiguration(
-				PersistentAuditMessageProcessorConfiguration.class,
-				TestPropsValues.getCompanyId()));
+		_testProcessActionWhenDatabaseProcessorIsOverridden(
+			ExtendedObjectClassDefinition.Scope.COMPANY);
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -163,11 +147,27 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 	@FeatureFlag("LPD-6417")
 	@Test
-	public void testProcessActionWithCompanyScopeWhenPersistentAuditMessageProcessorConfigurationIsOverridden()
+	public void testProcessActionWithCompanyScopeWhenParametersAreAbsent()
 		throws Exception {
 
-		_testProcessActionWhenPersistentAuditMessageProcessorConfigurationIsOverridden(
-			ExtendedObjectClassDefinition.Scope.COMPANY);
+		_configurationProvider.saveCompanyConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class,
+			TestPropsValues.getCompanyId(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"bufferSize", _BUFFER_SIZE
+			).put(
+				"enabled", false
+			).put(
+				"flushInterval", _FLUSH_INTERVAL
+			).build());
+
+		_processAction(
+			null, false, ExtendedObjectClassDefinition.Scope.COMPANY);
+
+		_assertPersistentAuditMessageProcessorConfiguration(
+			_configurationProvider.getCompanyConfiguration(
+				PersistentAuditMessageProcessorConfiguration.class,
+				TestPropsValues.getCompanyId()));
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -238,19 +238,19 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 	}
 
 	@Test
+	public void testProcessActionWithSystemScopeWhenDatabaseProcessorIsOverridden()
+		throws Exception {
+
+		_testProcessActionWhenDatabaseProcessorIsOverridden(
+			ExtendedObjectClassDefinition.Scope.SYSTEM);
+	}
+
+	@Test
 	public void testProcessActionWithSystemScopeWhenEnabledIsOverridden()
 		throws Exception {
 
 		_testProcessActionWhenEnabledIsOverridden(
 			false, ExtendedObjectClassDefinition.Scope.SYSTEM);
-	}
-
-	@Test
-	public void testProcessActionWithSystemScopeWhenPersistentAuditMessageProcessorConfigurationIsOverridden()
-		throws Exception {
-
-		_testProcessActionWhenPersistentAuditMessageProcessorConfigurationIsOverridden(
-			ExtendedObjectClassDefinition.Scope.SYSTEM);
 	}
 
 	@Test
@@ -480,27 +480,8 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			properties);
 	}
 
-	private void _testProcessActionWhenEnabledIsOverridden(
-			boolean enabled, ExtendedObjectClassDefinition.Scope scope)
-		throws Exception {
-
-		_saveConfiguration(enabled, scope);
-
-		_processActionWithOverriddenConfiguration(
-			AuditConfiguration.class,
-			HashMapBuilder.<String, Object>put(
-				"enabled", true
-			).build(),
-			scope);
-
-		Dictionary<String, Object> properties = _getProperties(scope);
-
-		Assert.assertEquals(enabled, properties.get("enabled"));
-	}
-
-	private void
-			_testProcessActionWhenPersistentAuditMessageProcessorConfigurationIsOverridden(
-				ExtendedObjectClassDefinition.Scope scope)
+	private void _testProcessActionWhenDatabaseProcessorIsOverridden(
+			ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
 		Dictionary<String, Object> properties =
@@ -540,6 +521,24 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		Assert.assertEquals(Boolean.TRUE, currentProperties.get("enabled"));
 		Assert.assertEquals(
 			_FLUSH_INTERVAL, currentProperties.get("flushInterval"));
+	}
+
+	private void _testProcessActionWhenEnabledIsOverridden(
+			boolean enabled, ExtendedObjectClassDefinition.Scope scope)
+		throws Exception {
+
+		_saveConfiguration(enabled, scope);
+
+		_processActionWithOverriddenConfiguration(
+			AuditConfiguration.class,
+			HashMapBuilder.<String, Object>put(
+				"enabled", true
+			).build(),
+			scope);
+
+		Dictionary<String, Object> properties = _getProperties(scope);
+
+		Assert.assertEquals(enabled, properties.get("enabled"));
 	}
 
 	private static final int _BUFFER_SIZE = 1000;
