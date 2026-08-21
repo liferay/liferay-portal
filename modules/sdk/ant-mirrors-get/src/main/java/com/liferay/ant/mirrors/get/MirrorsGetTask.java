@@ -455,9 +455,11 @@ public class MirrorsGetTask extends Task {
 			}
 		}
 
-		if (_isValidTempFile(mirrorsCacheTempFile)) {
+		if (_isValidFile(mirrorsCacheTempFile)) {
 			return;
 		}
+
+		_deleteFile(mirrorsCacheTempFile);
 
 		List<URL> urls = new ArrayList<>();
 
@@ -494,9 +496,11 @@ public class MirrorsGetTask extends Task {
 
 		_downloadGCPFile(mirrorsCacheTempFile);
 
-		if (_isValidTempFile(mirrorsCacheTempFile)) {
+		if (_isValidFile(mirrorsCacheTempFile)) {
 			return;
 		}
+
+		_deleteFile(mirrorsCacheTempFile);
 
 		URL remoteURL = _getRemoteURL();
 
@@ -1115,6 +1119,10 @@ public class MirrorsGetTask extends Task {
 	}
 
 	private boolean _isValidFile(File file) throws IOException {
+		if (!file.exists()) {
+			return false;
+		}
+
 		if (_is7zFileName(_fileName)) {
 			return _is7zFile(file);
 		}
@@ -1166,20 +1174,6 @@ public class MirrorsGetTask extends Task {
 		String localMD5 = project.getProperty("md5");
 
 		return remoteMD5.contains(localMD5);
-	}
-
-	private boolean _isValidTempFile(File file) throws IOException {
-		if (!file.exists()) {
-			return false;
-		}
-
-		if (_isValidFile(file)) {
-			return true;
-		}
-
-		_deleteFile(file);
-
-		return false;
 	}
 
 	private boolean _isZipFile(File file) throws IOException {
