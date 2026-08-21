@@ -7,8 +7,6 @@ package com.liferay.client.extension.util.spring.boot3;
 
 import com.liferay.client.extension.util.spring.boot3.client.LiferayOAuth2AccessTokenManager;
 import com.liferay.client.extension.util.spring.boot3.client.LiferayOAuth2ClientConfiguration;
-import com.liferay.portal.json.JSONFactoryImpl;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
@@ -61,11 +59,6 @@ public class LiferayOAuth2ClientConfigurationExternalTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		new JSONFactoryUtil(
-		).setJSONFactory(
-			new JSONFactoryImpl()
-		);
-
 		_mockedStatic = Mockito.mockStatic(
 			JWSAlgorithmFamilyJWSKeySelector.class);
 
