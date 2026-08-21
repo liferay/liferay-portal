@@ -339,23 +339,6 @@ public abstract class BaseService {
 			else if (httpStatusCode.is2xxSuccessful()) {
 				return clientResponse.bodyToMono(String.class);
 			}
-			else if (httpStatusCode.is4xxClientError() ||
-					 httpStatusCode.is5xxServerError()) {
-
-				return clientResponse.bodyToMono(
-					String.class
-				).flatMap(
-					body -> Mono.error(
-						new WebClientResponseException(
-							httpStatusCode.value(),
-							HttpStatus.resolve(
-								httpStatusCode.value()
-							).getReasonPhrase(),
-							clientResponse.headers(
-							).asHttpHeaders(),
-							body.getBytes(), null))
-				);
-			}
 
 			Mono<WebClientResponseException> mono =
 				clientResponse.createException();
