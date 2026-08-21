@@ -1,0 +1,8 @@
+assemble:
+    -   from: build/vite
+        into: static
+clarity-solution-bar-chart:
+    bareSpecifier: clarity-solution-bar-chart
+    name: Clarity Solution Bar Chart
+    type: jsImportMapsEntry
+    url: /index.js
