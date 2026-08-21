@@ -6059,6 +6059,15 @@
 		"to": "_sites.updateLayoutSetPrototypesLinks"
 	},
 	{
+		"classNames": [
+			"LayoutPageTemplateEntryLocalService",
+			"LayoutPageTemplateEntryLocalServiceUtil"
+		],
+		"from": "fetchLayoutPageTemplateEntry(long paramName, String paramName, int paramName)",
+		"issueKey": "LPD-99284",
+		"to": "fetchLayoutPageTemplateEntry(param#0#, 0L, param#1#, param#2#)"
+	},
+	{
 		"from": "regex:MultiVMPoolUtil\\s*.\\s*getPortalCache\\(\\s*(?<prefixMethodName>[\\s\\S]*?)\\)",
 		"issueKey": "LPS-153962",
 		"newImports": [
