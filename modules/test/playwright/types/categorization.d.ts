@@ -30,3 +30,14 @@ type AssetType = {
 		| 'Message Boards Message'
 		| 'KnowledgeBaseArticle';
 };
+
+type Keyword = {
+	id: number;
+	name: string;
+	projects?: KeywordProject[];
+};
+
+type KeywordProject = {
+	id: number;
+	name: string;
+};

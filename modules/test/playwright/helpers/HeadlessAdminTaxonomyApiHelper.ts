@@ -360,6 +360,31 @@ export class HeadlessAdminTaxonomyApiHelper {
 	}
 
 	/**
+	 * It allows finding the tags of a site.
+	 *
+	 * @param siteId the id of the site
+	 * @param filter an OData filter, such as name eq 'Tag1'
+	 */
+
+	async getSiteKeywords({
+		filter,
+		siteId,
+	}: {
+		filter?: string;
+		siteId: string;
+	}): Promise<{items: Keyword[]}> {
+		const url = `${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/keywords`;
+
+		if (!filter) {
+			return this.apiHelpers.get(url);
+		}
+
+		return this.apiHelpers.get(
+			`${url}?filter=${encodeURIComponent(filter)}`
+		);
+	}
+
+	/**
 	 * It allows deleting a tag.
 	 *
 	 * @param id the id of the tag

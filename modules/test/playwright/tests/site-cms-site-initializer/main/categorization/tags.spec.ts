@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Dialog, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {applyFDSSelectionFilter} from '../../../../utils/applyFDSSelectionFilter';
 import {checkAccessibility} from '../../../../utils/checkAccessibility';
@@ -13,6 +14,7 @@ import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidd
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
+import {cmpPagesTest} from '../../../content-marketing-platform-web/main/fixtures/cmpPagesTest';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
 const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
@@ -665,5 +667,270 @@ test(
 
 		await expect(tagsPage.getItem(tagName)).toBeVisible();
 		await expect(tagsPage.getItem(anotherTagName)).toBeHidden();
+	}
+);
+
+const cmpProjectScopeTest = mergeTests(
+	cmpPagesTest,
+	cmsPagesTest,
+	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-58677': {enabled: true},
+		'LPD-99403': {enabled: true},
+	}),
+	loginTest()
+);
+
+cmpProjectScopeTest(
+	'Scopes a tag to a project and shows it only in that project',
+	{tag: ['@LPD-101177']},
+	async ({
+		apiHelpers,
+		editProjectPage,
+		page,
+		projectPage,
+		projectsPage,
+		tagsPage,
+	}) => {
+		await page.emulateMedia({reducedMotion: 'reduce'});
+
+		const projectTitle1 = getRandomString();
+		const projectTitle2 = getRandomString();
+		const tagName = `Tag${getRandomInt()}`;
+		const projectTagName = `Tag${getRandomInt()}`;
+
+		const {id: siteId} =
+			await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('cms');
+
+		const getTagByName = async (name: string): Promise<Keyword> => {
+			const {items} =
+				await apiHelpers.headlessAdminTaxonomy.getSiteKeywords({
+					filter: `name eq '${name}'`,
+					siteId,
+				});
+
+			return items[0];
+		};
+
+		const getTagProjectNames = async (name: string): Promise<string[]> => {
+			const tag = await getTagByName(name);
+
+			return (tag?.projects ?? []).map((project) => project.name).sort();
+		};
+
+		await cmpProjectScopeTest.step('Create two projects', async () => {
+			for (const title of [projectTitle1, projectTitle2]) {
+				const projectEntry =
+					await apiHelpers.objectEntry.postObjectEntry(
+						{title},
+						'cmp/projects'
+					);
+
+				apiHelpers.data.push({
+					applicationName: 'cmp/projects',
+					id: projectEntry.id,
+					type: 'objectEntry',
+				});
+			}
+		});
+
+		await cmpProjectScopeTest.step(
+			'Create a tag scoped to one project',
+			async () => {
+				await tagsPage.goto();
+
+				await tagsPage.newTagButton.click();
+
+				await page.getByLabel('NameRequired').fill(tagName);
+
+				await tagsPage.selectProject(projectTitle1);
+
+				await clickAndExpectToBeVisible({
+					target: page.getByText(
+						`Success:${tagName} was created successfully.`
+					),
+					trigger: tagsPage.saveButton,
+				});
+
+				await expect(tagsPage.getItem(tagName)).toBeVisible();
+
+				// The tag is created through the UI, so register it for the
+				// cleanup the fixture runs on every outcome.
+
+				apiHelpers.data.push({
+					id: (await getTagByName(tagName)).id,
+					type: 'keyword',
+				});
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Check the project is displayed in the tag row',
+			async () => {
+				await expect(
+					tagsPage.getItem(tagName).getByText(projectTitle1)
+				).toBeVisible();
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Check the project scope persisted',
+			async () => {
+				await tagsPage.execItemAction({
+					action: 'Edit',
+					filter: tagName,
+				});
+
+				await expect(page.getByText(`Edit "${tagName}"`)).toBeVisible();
+
+				await expect(tagsPage.projectCheckbox).not.toBeChecked();
+
+				await expect(
+					page.locator('.modal-content').getByText(projectTitle1)
+				).toBeVisible();
+
+				await clickAndExpectToBeHidden({
+					target: page.locator('.modal-content'),
+					trigger: page.getByRole('button', {name: 'Cancel'}),
+				});
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Change the project scope of the tag',
+			async () => {
+				await tagsPage.goto();
+
+				await tagsPage.execItemAction({
+					action: 'Edit',
+					filter: tagName,
+				});
+
+				await expect(page.getByText(`Edit "${tagName}"`)).toBeVisible();
+
+				await tagsPage.clearProjects();
+
+				await tagsPage.selectProject(projectTitle2);
+
+				// Accept the scope change confirmation. With
+				// Liferay.CustomDialogs disabled it is a browser confirm()
+				// rather than a modal, so it has no element to click, and
+				// Playwright answers an unhandled confirm() with Cancel, which
+				// skips the save.
+
+				const acceptDialog = async (dialog: Dialog) => {
+					await dialog.accept();
+				};
+
+				page.on('dialog', acceptDialog);
+
+				await clickAndExpectToBeVisible({
+					target: page.getByText(
+						`Success:${tagName} was updated successfully.`
+					),
+					trigger: tagsPage.saveButton,
+				});
+
+				page.off('dialog', acceptDialog);
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Check the project is updated in the table',
+			async () => {
+				await expect(
+					tagsPage.getItem(tagName).getByText(projectTitle2)
+				).toBeVisible();
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Show the tag in the project it is scoped to',
+			async () => {
+				await projectsPage.goto();
+
+				await projectsPage.getProject(projectTitle2).click();
+
+				await projectPage.editProject();
+
+				await editProjectPage.searchTags(tagName);
+
+				await expect(
+					editProjectPage.getTagOption(tagName)
+				).toBeVisible();
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Hide the tag in the other project',
+			async () => {
+				await projectsPage.goto();
+
+				await projectsPage.getProject(projectTitle1).click();
+
+				await projectPage.editProject();
+
+				await editProjectPage.searchTags(tagName);
+
+				await expect(
+					editProjectPage.getCreateTagAction(tagName)
+				).toBeVisible();
+
+				await expect(editProjectPage.getTagOption(tagName)).toHaveCount(
+					0
+				);
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Add a new tag to a project and check it is scoped to that project',
+			async () => {
+				await editProjectPage.searchTags(projectTagName);
+
+				await editProjectPage
+					.getCreateTagAction(projectTagName)
+					.click();
+
+				await expect(
+					editProjectPage.getSelectedTag(projectTagName)
+				).toBeVisible();
+
+				apiHelpers.data.push({
+					id: (await getTagByName(projectTagName)).id,
+					type: 'keyword',
+				});
+
+				expect(await getTagProjectNames(projectTagName)).toEqual([
+					projectTitle1,
+				]);
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Add an existing tag scoped to another project and check it is not duplicated',
+			async () => {
+				await editProjectPage.searchTags(tagName);
+
+				await editProjectPage.getCreateTagAction(tagName).click();
+
+				await expect(
+					editProjectPage.getSelectedTag(tagName)
+				).toBeVisible();
+
+				const {items} =
+					await apiHelpers.headlessAdminTaxonomy.getSiteKeywords({
+						filter: `name eq '${tagName}'`,
+						siteId,
+					});
+
+				expect(items).toHaveLength(1);
+
+				expect(
+					(items[0].projects ?? [])
+						.map((project) => project.name)
+						.sort()
+				).toEqual([projectTitle1, projectTitle2].sort());
+			}
+		);
 	}
 );

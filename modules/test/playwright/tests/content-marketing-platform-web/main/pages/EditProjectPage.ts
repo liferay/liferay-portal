@@ -17,6 +17,7 @@ const PLACEHOLDERS: Record<VocabularyField, string> = {
 export class EditProjectPage {
 	readonly page: Page;
 	readonly saveButton: Locator;
+	readonly tagInput: Locator;
 	readonly titleInput: Locator;
 
 	constructor(page: Page) {
@@ -24,7 +25,22 @@ export class EditProjectPage {
 		this.saveButton = page.getByRole('button', {
 			name: 'Save',
 		});
+		this.tagInput = page.getByPlaceholder('Add Tag');
 		this.titleInput = page.getByPlaceholder('Untitled Project');
+	}
+
+	getCreateTagAction(tagName: string): Locator {
+		return this.page.getByText(`Create New Tag: ${tagName}`);
+	}
+
+	getSelectedTag(tagName: string): Locator {
+		return this.page
+			.locator('.asset-tags')
+			.getByText(tagName, {exact: true});
+	}
+
+	getTagOption(tagName: string): Locator {
+		return this.page.getByRole('option', {exact: true, name: tagName});
 	}
 
 	getCategoryChip(field: VocabularyField, categoryName: string): Locator {
@@ -37,6 +53,11 @@ export class EditProjectPage {
 		return this.page
 			.locator('.lfr-cmp__vocabulary-multi-select')
 			.filter({has: this.page.getByText(field, {exact: true})});
+	}
+
+	async searchTags(query: string) {
+		await this.tagInput.click();
+		await this.tagInput.fill(query);
 	}
 
 	async removeCategory(field: VocabularyField, categoryName: string) {
