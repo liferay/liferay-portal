@@ -25,14 +25,6 @@ readOnlyRootFilesystem: false
 {{- printf "%s-elasticsearch" .Release.Namespace -}}
 {{- end -}}
 
-{{- define "liferay.k8sFriendlyString" -}}
-{{- $sanitized := . | lower | replace "/" "-" | replace "_" "-" | trimPrefix "-" | trunc 63 | trimSuffix "-" -}}
-{{- if or (empty $sanitized) (not (regexMatch "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$" $sanitized)) -}}
-{{- fail (printf "Name is not DNS-1123 compliant: %s" .) -}}
-{{- end -}}
-{{- $sanitized -}}
-{{- end -}}
-
 {{- define "liferay.validateSecretKey" -}}
 {{- if not (hasPrefix .prefix .key) -}}
 {{- fail (printf "Secret key must start with %s: %s" .prefix .key) -}}
