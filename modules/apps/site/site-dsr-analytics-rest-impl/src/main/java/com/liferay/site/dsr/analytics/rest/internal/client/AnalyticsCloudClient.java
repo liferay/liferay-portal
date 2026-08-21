@@ -15,12 +15,20 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.rest.dto.v1_0.Channel;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -398,14 +406,36 @@ public class AnalyticsCloudClient {
 
 	private void _putGroupIds(ObjectNode objectNode, String[] groupIds) {
 		if (ArrayUtil.isEmpty(groupIds)) {
-			objectNode.putNull("groupIds");
-		}
-		else {
-			ArrayNode groupIdsArrayNode = objectNode.putArray("groupIds");
+			ObjectDefinition objectDefinition =
+				ObjectDefinitionLocalServiceUtil.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_DSR_ROOM", _user.getCompanyId());
 
-			for (String groupId : groupIds) {
-				groupIdsArrayNode.add(groupId);
+			if (objectDefinition != null) {
+				groupIds = TransformUtil.transformToArray(
+					GroupLocalServiceUtil.search(
+						_user.getCompanyId(),
+						new long[] {
+							ClassNameLocalServiceUtil.getClassNameId(
+								objectDefinition.getClassName())
+						},
+						null,
+						LinkedHashMapBuilder.<String, Object>put(
+							"actionId", ActionKeys.VIEW
+						).put(
+							"active", Boolean.TRUE
+						).put(
+							"site", Boolean.TRUE
+						).build(),
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+					group -> String.valueOf(group.getGroupId()), String.class);
 			}
+		}
+
+		ArrayNode groupIdsArrayNode = objectNode.putArray("groupIds");
+
+		for (String groupId : groupIds) {
+			groupIdsArrayNode.add(groupId);
 		}
 	}
 

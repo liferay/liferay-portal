@@ -17,6 +17,7 @@ dependencies {
 	compileOnly project(":apps:analytics:analytics-settings-api")
 	compileOnly project(":apps:analytics:analytics-settings-rest-api")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
+	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:site:site-dsr-analytics-rest-api")
