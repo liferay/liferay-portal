@@ -4,6 +4,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
+	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
@@ -18,6 +19,7 @@ dependencies {
 	compileOnly project(":apps:layout:layout-type-controller:layout-type-controller-api")
 	compileOnly project(":apps:layout:layout-utility-page-api")
 	compileOnly project(":apps:product-navigation:product-navigation-control-menu-api")
+	compileOnly project(":apps:product-navigation:product-navigation-taglib")
 	compileOnly project(":apps:segments:segments-api")
 	compileOnly project(":apps:staging:staging-api")
 	compileOnly project(":core:petra:petra-io")
