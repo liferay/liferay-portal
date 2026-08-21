@@ -5,14 +5,11 @@
 
 package com.liferay.exportimport.lifecycle;
 
-import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleEventListenerRegistryUtil;
-import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
-import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 
-import java.util.Set;
-
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -25,12 +22,9 @@ import org.osgi.service.component.annotations.Component;
 public class SyncExportImportLifecycleMessageListener
 	extends BaseExportImportLifecycleMessageListener {
 
-	@Override
-	protected Set<ExportImportLifecycleListener>
-		getExportImportLifecycleListeners(Message message) {
-
-		return ExportImportLifecycleEventListenerRegistryUtil.
-			getSyncExportImportLifecycleListeners();
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		activate(bundleContext, false);
 	}
 
 }
