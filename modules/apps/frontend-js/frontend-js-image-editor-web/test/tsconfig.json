@@ -1,0 +1,43 @@
+{
+	"@generated": "32c08ea716e7a1689e331448af4d7941f5ecd57a",
+	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"checkJs": false,
+		"composite": true,
+		"declarationDir": "../../../../.tsc/types",
+		"emitDeclarationOnly": true,
+		"jsx": "react",
+		"module": "es2022",
+		"moduleResolution": "node",
+		"paths": {
+			"frontend-js-web": [
+				"../../frontend-js-web/src/main/resources/META-INF/resources/main/index.d.ts"
+			],
+			"frontend-js-web/legacy": [
+				"../../frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"
+			]
+		},
+		"rootDir": "../../../..",
+		"skipLibCheck": true,
+		"sourceMap": false,
+		"strict": true,
+		"target": "esnext",
+		"tsBuildInfoFile": "../../../../.tsc/buildinfo/@liferay/frontend-js-image-editor-web-test.tsbuildinfo",
+		"typeRoots": [
+			"../../../../node_modules/@types"
+		]
+	},
+	"include": [
+		"**/*.ts",
+		"**/*.tsx",
+		"../../../../global.d.ts",
+		"../src/**/*.ts",
+		"../src/**/*.tsx"
+	],
+	"references": [
+		{
+			"path": "../../frontend-js-web/src/main/resources/META-INF/resources/tsconfig.json"
+		}
+	]
+}
