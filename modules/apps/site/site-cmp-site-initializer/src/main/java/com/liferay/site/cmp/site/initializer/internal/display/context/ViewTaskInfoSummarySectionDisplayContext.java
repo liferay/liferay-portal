@@ -11,6 +11,7 @@ import com.liferay.object.rest.dto.v1_0.Assignee;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.io.Serializable;
 
@@ -48,6 +49,11 @@ public class ViewTaskInfoSummarySectionDisplayContext
 
 				return JSONFactoryUtil.createJSONObject(assignee.toString());
 			}
+		).put(
+			"cmpProjectObjectEntryId",
+			MapUtil.getLong(
+				objectEntry.getValues(),
+				"r_cmpProjectToCMPTasks_c_cmpProjectId")
 		).put(
 			"cmpTaskObjectEntryId", objectEntry.getObjectEntryId()
 		).putAll(

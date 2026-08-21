@@ -8,11 +8,13 @@ package com.liferay.site.cmp.site.initializer.internal.display.context;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.Assignee;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.io.Serializable;
 
@@ -62,6 +64,16 @@ public class ViewAssigneeSectionDisplayContext
 		}
 
 		return JSONFactoryUtil.createJSONObject(assignee.toString());
+	}
+
+	@Override
+	protected String getSearchURL() {
+		return StringBundler.concat(
+			themeDisplay.getPortalURL(), "/o/headless-cmp/v1.0/projects/",
+			MapUtil.getLong(
+				objectEntry.getValues(),
+				"r_cmpProjectToCMPTasks_c_cmpProjectId"),
+			"/task-assignees");
 	}
 
 	private final ObjectFieldBusinessType _assigneeObjectFieldBusinessType;

@@ -30,8 +30,8 @@ public abstract class BaseAssigneeSectionDisplayContext {
 		_language = language;
 
 		this.objectEntry = objectEntry;
+		this.themeDisplay = themeDisplay;
 
-		_themeDisplay = themeDisplay;
 		_userLocalService = userLocalService;
 	}
 
@@ -41,15 +41,13 @@ public abstract class BaseAssigneeSectionDisplayContext {
 
 	public Map<String, Object> getProperties() throws Exception {
 		return HashMapBuilder.<String, Object>put(
-			"label", _language.get(_themeDisplay.getLocale(), getLabelKey())
+			"label", _language.get(themeDisplay.getLocale(), getLabelKey())
 		).put(
 			"name", getName()
 		).put(
 			"searchURL",
 			() -> {
-				String searchURL =
-					_themeDisplay.getPortalURL() +
-						"/o/headless-cmp/v1.0/task-assignees";
+				String searchURL = getSearchURL();
 
 				if (getUsersOnly()) {
 					return searchURL + "?type=user";
@@ -72,6 +70,11 @@ public abstract class BaseAssigneeSectionDisplayContext {
 
 	public abstract JSONObject getValueJSONObject() throws Exception;
 
+	protected String getSearchURL() {
+		return themeDisplay.getPortalURL() +
+			"/o/headless-cmp/v1.0/task-assignees";
+	}
+
 	protected JSONObject getValueJSONObject(String objectFieldName)
 		throws Exception {
 
@@ -89,16 +92,16 @@ public abstract class BaseAssigneeSectionDisplayContext {
 		).put(
 			"name", user.getFullName()
 		).put(
-			"portrait", user.getPortraitURL(_themeDisplay)
+			"portrait", user.getPortraitURL(themeDisplay)
 		).put(
 			"type", "User"
 		);
 	}
 
 	protected final ObjectEntry objectEntry;
+	protected final ThemeDisplay themeDisplay;
 
 	private final Language _language;
-	private final ThemeDisplay _themeDisplay;
 	private final UserLocalService _userLocalService;
 
 }
