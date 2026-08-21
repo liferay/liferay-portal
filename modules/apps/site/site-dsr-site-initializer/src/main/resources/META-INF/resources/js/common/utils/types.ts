@@ -162,7 +162,7 @@ export interface IRoomShareProps {
 }
 
 export interface IRoomStatistics {
-	timeViewedMinutes?: number;
+	timeViewedMilliseconds?: number;
 	totalActions?: number;
 	totalComments?: number;
 	totalVisits?: number;

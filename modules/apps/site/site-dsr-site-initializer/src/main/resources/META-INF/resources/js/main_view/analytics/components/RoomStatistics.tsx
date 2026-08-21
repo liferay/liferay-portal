@@ -20,12 +20,12 @@ import {
 import AnalyticsFrame from './AnalyticsFrame';
 import Loader from './Loader';
 
-const formatTime = (minutes?: number): string => {
-	if (!minutes) {
+const formatTime = (milliseconds?: number): string => {
+	if (!milliseconds) {
 		return sub(Liferay.Language.get('x-minutes'), 0);
 	}
 
-	const duration = moment.duration(minutes, 'minutes');
+	const duration = moment.duration(milliseconds, 'milliseconds');
 
 	const days = Math.floor(duration.asDays());
 	const hours = duration.hours();
@@ -54,12 +54,20 @@ const formatTime = (minutes?: number): string => {
 		return `${daysLabel} ${hoursLabel}`;
 	}
 
-	return `${hoursLabel} ${minutesLabel}`;
+	if (hours > 0) {
+		if (mins === 0) {
+			return hoursLabel;
+		}
+
+		return `${hoursLabel} ${minutesLabel}`;
+	}
+
+	return minutesLabel;
 };
 
 const toRoomStatistics = (response: any): IRoomStatistics => {
 	return {
-		timeViewedMinutes:
+		timeViewedMilliseconds:
 			response?.siteVisitorBehavior?.totalSessionDuration ?? 0,
 		totalActions: response?.identityActivity?.count ?? 0,
 		totalComments: response?.identityComment?.count ?? 0,
@@ -75,7 +83,7 @@ const formatData = (data: IRoomStatistics): IRoomStatisticsItem[] => {
 			icon: 'time',
 			id: 'time',
 			label: Liferay.Language.get('time-viewed'),
-			value: formatTime(data.timeViewedMinutes),
+			value: formatTime(data.timeViewedMilliseconds),
 		},
 		{
 			className: 'icon-blue-light',
