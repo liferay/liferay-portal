@@ -12,9 +12,9 @@ import com.liferay.portal.security.audit.router.configuration.PersistentAuditMes
 /**
  * @author Christian Moura
  */
-public class AuditPortalSettingsConfigurationDisplayContext {
+public class AuditConfigurationDisplayContext {
 
-	public AuditPortalSettingsConfigurationDisplayContext(
+	public AuditConfigurationDisplayContext(
 		AuditConfiguration auditConfiguration,
 		PersistentAuditMessageProcessorConfiguration
 			persistentAuditMessageProcessorConfiguration) {
