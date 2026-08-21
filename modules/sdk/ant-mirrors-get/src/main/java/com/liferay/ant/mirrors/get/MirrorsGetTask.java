@@ -26,6 +26,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import java.util.Base64;
 import java.util.Enumeration;
@@ -604,7 +605,9 @@ public class MirrorsGetTask extends Task {
 				return;
 			}
 
-			_deleteFile(mirrorsCacheFile);
+			if (_isReadFile(mirrorsCacheFile)) {
+				_deleteFile(mirrorsCacheFile);
+			}
 		}
 
 		File tempFile = _generateTempFile(mirrorsCacheFile);
@@ -659,6 +662,18 @@ public class MirrorsGetTask extends Task {
 		tempFile.deleteOnExit();
 
 		return tempFile;
+	}
+
+	private Object _getFileKey(File file) {
+		try {
+			BasicFileAttributes basicFileAttributes = Files.readAttributes(
+				file.toPath(), BasicFileAttributes.class);
+
+			return basicFileAttributes.fileKey();
+		}
+		catch (IOException ioException) {
+			return null;
+		}
 	}
 
 	private String _getGCPBucketName() {
@@ -1134,6 +1149,22 @@ public class MirrorsGetTask extends Task {
 		String trimmedString = string.trim();
 
 		return trimmedString.isEmpty();
+	}
+
+	private boolean _isReadFile(File file) {
+		File readLinkFile = _readLinkFiles.get(file);
+
+		if (readLinkFile == null) {
+			return true;
+		}
+
+		Object fileKey = _getFileKey(file);
+
+		if (fileKey == null) {
+			return false;
+		}
+
+		return fileKey.equals(_getFileKey(readLinkFile));
 	}
 
 	private boolean _isTarGzFile(File file) throws IOException {
