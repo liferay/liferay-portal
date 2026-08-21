@@ -96,14 +96,18 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 	const [trackingConsent, setTrackingConsent] =
 		useState<TrackingConsentValues | null>(null);
 
+	// The stored cookie decides whether Pendo may start. `trackingConsent` is
+	// not read here: it only re-runs the effect once the banner stores a
+	// decision, so tracking starts without a reload.
+
 	useEffect(() => {
+		const pendo = new Pendo();
+
 		if (
 			currentUser?.id &&
 			project?.corpProjectName &&
-			trackingConsent === TrackingConsentValues.Accepted
+			pendo.getUserConsent() === TrackingConsentValues.Accepted
 		) {
-			const pendo = new Pendo();
-
 			pendo.initialize({currentUser, project});
 		}
 	}, [currentUser?.id, project?.corpProjectName, trackingConsent]);

@@ -11,17 +11,17 @@ interface ITrackingConsentBannerProps {
 /**
  * Consent banner shown before any Pendo tracking starts. Mirrors the copy
  * and behavior of the DXP tracking script banner so users get the same
- * consent experience across products. Owns the stored decision: it renders
- * nothing once one exists and reports it to the parent through `onDecision`.
+ * consent experience across products. The stored cookie is the only source
+ * of truth: the banner reads it on every render, so it shows only while no
+ * decision exists, and reports the decision to the parent through
+ * `onDecision` — which is also what re-renders it once one is stored.
  */
 const TrackingConsentBanner: React.FC<ITrackingConsentBannerProps> = ({
 	onDecision,
 }) => {
 	const [expanded, setExpanded] = useState(false);
 
-	const [consent, setConsent] = useState(() =>
-		new Pendo().getUserConsent()
-	);
+	const consent = new Pendo().getUserConsent();
 
 	useEffect(() => {
 		if (consent) {
@@ -32,7 +32,7 @@ const TrackingConsentBanner: React.FC<ITrackingConsentBannerProps> = ({
 	const handleDecision = (accepted: boolean) => () => {
 		new Pendo().setUserConsent(accepted);
 
-		setConsent(
+		onDecision(
 			accepted
 				? TrackingConsentValues.Accepted
 				: TrackingConsentValues.Declined
