@@ -832,7 +832,7 @@ public class PortalUpgradeProcessRegistryImpl
 			new LayoutDuplicateExternalReferenceCodeUpgradeProcess());
 
 		upgradeVersionTreeMap.put(
-			new Version(38, 9, 2), new UpgradeCompanyInfo());
+			new Version(39, 0, 0), new UpgradeCompanyInfo());
 	}
 
 }
