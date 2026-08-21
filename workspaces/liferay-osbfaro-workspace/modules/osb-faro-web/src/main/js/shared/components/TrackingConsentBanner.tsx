@@ -1,77 +1,99 @@
 import ClayButton from '@clayui/button';
 import React, {useState} from 'react';
+import {Pendo, TrackingConsentValues} from 'shared/util/pendo';
 
 interface ITrackingConsentBannerProps {
-	onAcceptAll: () => void;
-	onDeclineAll: () => void;
+	onDecision: (consent: TrackingConsentValues) => void;
 }
 
 /**
- * Consent banner shown before any Pendo tracking starts. Mirrors the copy and
- * behavior of the DXP tracking script banner so users get the same consent
- * experience across products.
+ * Consent banner shown before any Pendo tracking starts. Mirrors the copy
+ * and behavior of the DXP tracking script banner so users get the same
+ * consent experience across products. Persists the decision itself and
+ * reports it to the parent through `onDecision`.
  */
 const TrackingConsentBanner: React.FC<ITrackingConsentBannerProps> = ({
-	onAcceptAll,
-	onDeclineAll,
+	onDecision,
 }) => {
 	const [expanded, setExpanded] = useState(false);
+
+	const handleDecision = (accepted: boolean) => () => {
+		new Pendo().setUserConsent(accepted);
+
+		onDecision(
+			accepted
+				? TrackingConsentValues.Accepted
+				: TrackingConsentValues.Declined
+		);
+	};
 
 	return (
 		<div
 			aria-label={Liferay.Language.get('product-analytics-banner-title')}
-			className='tracking-consent-banner-root'
-			role='dialog'
+			className="bg-dark d-flex fixed-bottom flex-column flex-md-row justify-content-between p-4 text-white"
+			role="dialog"
 		>
-			<div className='banner-content'>
-				<div className='banner-title'>
+			<div>
+				<div className="font-weight-semi-bold mb-2">
 					{Liferay.Language.get('product-analytics-banner-title')}
 				</div>
 
-				<p className='banner-description'>
-					{Liferay.Language.get('product-analytics-banner-description')}
-
+				<p className="mb-1 small">
+					{Liferay.Language.get(
+						'product-analytics-banner-description'
+					)}{' '}
 					<a
-						href='https://www.liferay.com/privacy-policy'
-						rel='noopener noreferrer'
-						target='_blank'
+						className="text-white"
+						href="https://www.liferay.com/privacy-policy"
+						rel="noopener noreferrer"
+						target="_blank"
 					>
-						{Liferay.Language.get('visit-our-privacy-policy')}
+						<u>
+							{Liferay.Language.get('visit-our-privacy-policy')}
+						</u>
 					</a>
-
 					{'.'}
 				</p>
 
 				{expanded && (
 					<>
-						<p className='banner-description'>
+						<p className="mb-1 small">
 							{Liferay.Language.get('show-more-accept-all')}
 						</p>
 
-						<p className='banner-description'>
+						<p className="mb-1 small">
 							{Liferay.Language.get('show-more-decline-all')}
 						</p>
 					</>
 				)}
 
 				<ClayButton
-					className='banner-show-more'
-					displayType='link'
+					className="border-0 p-0 small text-white"
+					displayType="link"
 					onClick={() => setExpanded(!expanded)}
-					size='sm'
+					size="sm"
 				>
-					{expanded
-						? Liferay.Language.get('show-less')
-						: Liferay.Language.get('show-more')}
+					<u>
+						{expanded
+							? Liferay.Language.get('show-less')
+							: Liferay.Language.get('show-more')}
+					</u>
 				</ClayButton>
 			</div>
 
-			<div className='banner-buttons'>
-				<ClayButton displayType='secondary' onClick={onAcceptAll}>
+			<div className="align-self-end align-self-md-center d-flex flex-shrink-0 ml-md-4 mt-3 mt-md-0">
+				<ClayButton
+					className="mr-2"
+					displayType="secondary"
+					onClick={handleDecision(true)}
+				>
 					{Liferay.Language.get('accept-all')}
 				</ClayButton>
 
-				<ClayButton displayType='secondary' onClick={onDeclineAll}>
+				<ClayButton
+					displayType="secondary"
+					onClick={handleDecision(false)}
+				>
 					{Liferay.Language.get('decline-all')}
 				</ClayButton>
 			</div>

@@ -21,11 +21,6 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {ENABLE_ADD_TRIAL_WORKSPACE} from 'shared/util/constants';
 import {
-	getTrackingConsent,
-	setTrackingConsent,
-	TrackingConsentValues,
-} from 'shared/util/tracking-consent';
-import {
 	Link,
 	matchPath,
 	Route,
@@ -34,7 +29,7 @@ import {
 	useLocation,
 } from 'react-router-dom';
 import {OnboardingContext} from 'shared/context/onboarding';
-import {Pendo} from 'shared/util/pendo';
+import {Pendo, TrackingConsentValues} from 'shared/util/pendo';
 import {Project} from 'shared/util/records';
 import {Provider, useSelector} from 'react-redux';
 import {Routes} from 'shared/util/router';
@@ -98,8 +93,8 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 
 	const {data: currentUser, loading} = useFetchCurrentUser(groupId);
 
-	const [trackingConsent, setTrackingConsentState] = useState(
-		getTrackingConsent()
+	const [trackingConsent, setTrackingConsent] = useState(() =>
+		new Pendo().getUserConsent()
 	);
 
 	useEffect(() => {
@@ -114,12 +109,6 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 		}
 	}, [currentUser?.id, project?.corpProjectName, trackingConsent]);
 
-	const handleTrackingConsent = (accepted: boolean) => () => {
-		setTrackingConsent(accepted);
-
-		setTrackingConsentState(getTrackingConsent());
-	};
-
 	if (loading) {
 		return <Loading />;
 	}
@@ -133,10 +122,7 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 			{children}
 
 			{!!currentUser?.id && trackingConsent === null && (
-				<TrackingConsentBanner
-					onAcceptAll={handleTrackingConsent(true)}
-					onDeclineAll={handleTrackingConsent(false)}
-				/>
+				<TrackingConsentBanner onDecision={setTrackingConsent} />
 			)}
 		</>
 	);

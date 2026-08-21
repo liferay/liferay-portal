@@ -1,8 +1,29 @@
 import {FaroEnv} from './constants';
-import {getTrackingConsent, TrackingConsentValues} from './tracking-consent';
 import {Project, User} from './records';
 
+const TRACKING_CONSENT_COOKIE = 'LIFERAY_PRODUCT_EXPERIENCE_MANAGEMENT';
+
+export enum TrackingConsentValues {
+	Accepted = 'true',
+	Declined = 'false',
+}
+
 export class Pendo {
+
+	/**
+	 * Returns the stored tracking consent decision, or `null` when the user
+	 * has not made a decision yet. Uses the same cookie name as the DXP
+	 * tracking script so the consent model stays consistent across products.
+	 */
+	getUserConsent(): string | null {
+		return (
+			Liferay.Util.Cookie.get(
+				TRACKING_CONSENT_COOKIE,
+				Liferay.Util.Cookie.TYPES.NECESSARY
+			) ?? null
+		);
+	}
+
 	initialize({currentUser, project}: {currentUser: User; project: Project}) {
 		this.injectAgent();
 
@@ -31,6 +52,16 @@ export class Pendo {
 		}
 
 		return pendo.initialize(data);
+	}
+
+	setUserConsent(accepted: boolean) {
+		Liferay.Util.Cookie.set(
+			TRACKING_CONSENT_COOKIE,
+			accepted
+				? TrackingConsentValues.Accepted
+				: TrackingConsentValues.Declined,
+			Liferay.Util.Cookie.TYPES.NECESSARY
+		);
 	}
 
 	/**
@@ -65,7 +96,7 @@ export class Pendo {
 			// anything from pendo.io, not even the agent script: an empty
 			// entry is filtered out by external-scripts.js.
 
-			if (getTrackingConsent() !== TrackingConsentValues.Accepted) {
+			if (this.getUserConsent() !== TrackingConsentValues.Accepted) {
 				return '';
 			}
 
