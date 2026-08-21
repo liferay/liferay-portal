@@ -16,7 +16,7 @@ variable "host_encryption_enabled" {
 	type=bool
 }
 variable "machine_type" {
-	default="Standard_D4ds_v4"
+	default="Standard_D8s_v3"
 	type=string
 }
 variable "pod_cidr" {

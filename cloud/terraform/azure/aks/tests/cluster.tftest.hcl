@@ -43,8 +43,8 @@ run "should_apply_default_node_pool_settings" {
 		error_message="The default node pool must pin the Azure default node soak duration"
 	}
 	assert {
-		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].vm_size == "Standard_D4ds_v4"
-		error_message="The default node pool must default to the Standard_D4ds_v4 VM size"
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].vm_size == "Standard_D8s_v3"
+		error_message="The default node pool must default to the Standard_D8s_v3 VM size"
 	}
 	command=plan
 }
