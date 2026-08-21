@@ -342,15 +342,8 @@ public class MirrorsGetTask extends Task {
 			_deleteFile(targetFile);
 		}
 
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("Unable to copy ");
-		sb.append(_src);
-		sb.append(" to ");
-		sb.append(targetFile.getPath());
-		sb.append(".");
-
-		throw new IOException(sb.toString(), ioException1);
+		throw new IOException(
+			_getUnableToCopyMessage(targetFile), ioException1);
 	}
 
 	private boolean _copyToDest(File file) throws IOException {
@@ -574,7 +567,7 @@ public class MirrorsGetTask extends Task {
 	private void _execute() throws IOException {
 		if (_src.startsWith("file:")) {
 			if (!_copyToDest(new File(_src.substring("file:".length())))) {
-				throw new IOException(_getUnableToCopyMessage());
+				throw new IOException(_getUnableToCopyMessage(_dest));
 			}
 
 			return;
@@ -614,7 +607,7 @@ public class MirrorsGetTask extends Task {
 			}
 
 			if (!_copyToDest(_addToCache(tempFile, mirrorsCacheFile))) {
-				throw new IOException(_getUnableToCopyMessage());
+				throw new IOException(_getUnableToCopyMessage(_dest));
 			}
 		}
 		finally {
@@ -1002,13 +995,13 @@ public class MirrorsGetTask extends Task {
 				Pattern.quote(fileName));
 	}
 
-	private String _getUnableToCopyMessage() {
+	private String _getUnableToCopyMessage(File targetFile) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Unable to copy ");
 		sb.append(_src);
 		sb.append(" to ");
-		sb.append(_dest.getPath());
+		sb.append(targetFile.getPath());
 		sb.append(".");
 
 		return sb.toString();
