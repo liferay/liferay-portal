@@ -53,6 +53,8 @@ public class ViewBrokenLinksSectionFDSItemsActions implements FDSItemsActions {
 				LanguageUtil.get(httpServletRequest, "edit")
 			).setMethod(
 				"get"
+			).setPermissionKey(
+				"update"
 			).build(
 				"edit"
 			));
