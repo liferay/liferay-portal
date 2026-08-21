@@ -405,25 +405,13 @@ public class MirrorsGetTask extends Task {
 		file.delete();
 	}
 
-	private void _downloadFile(String url, File targetFile, int retries)
-		throws IOException {
-
-		if (_gsURLPattern.matcher(url).find()) {
-			_downloadGCPFile(url, targetFile);
-
-			return;
-		}
-
-		_downloadFile(new URL(url), targetFile, retries);
-	}
-
-	private void _downloadFile(URL sourceURL, File targetFile)
+	private void _downloadFile(String url, File targetFile)
 		throws IOException {
 
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Downloading ");
-		sb.append(sourceURL.toExternalForm());
+		sb.append(url);
 		sb.append(" to ");
 		sb.append(targetFile.getPath());
 		sb.append(".");
@@ -435,7 +423,7 @@ public class MirrorsGetTask extends Task {
 		int size = 0;
 
 		try {
-			size = _toFile(sourceURL, targetFile);
+			size = _toFile(new URL(url), targetFile);
 		}
 		catch (IOException ioException) {
 			_deleteFile(targetFile);
@@ -449,7 +437,7 @@ public class MirrorsGetTask extends Task {
 			sb = new StringBuilder();
 
 			sb.append("Downloaded ");
-			sb.append(sourceURL.toExternalForm());
+			sb.append(url);
 			sb.append(". ");
 			sb.append(size);
 			sb.append(" bytes in ");
@@ -459,9 +447,7 @@ public class MirrorsGetTask extends Task {
 			System.out.println(sb.toString());
 		}
 
-		if (!_isValidMD5(
-				targetFile, new URL(sourceURL.toExternalForm() + ".md5"))) {
-
+		if (!_isValidMD5(targetFile, new URL(url + ".md5"))) {
 			_deleteFile(targetFile);
 
 			throw new IOException(
@@ -492,19 +478,25 @@ public class MirrorsGetTask extends Task {
 		}
 	}
 
-	private void _downloadFile(URL sourceURL, File targetFile, int retries)
+	private void _downloadFile(String url, File targetFile, int retries)
 		throws IOException {
+
+		if (_gsURLPattern.matcher(url).find()) {
+			_downloadGCPFile(url, targetFile);
+
+			return;
+		}
 
 		if (retries > 0) {
 			for (int i = 0; i < retries; i++) {
 				try {
-					_downloadFile(sourceURL, targetFile);
+					_downloadFile(url, targetFile);
 
 					return;
 				}
 				catch (IOException ioException) {
 					System.out.println(
-						"Unable to connect to " + sourceURL +
+						"Unable to connect to " + url +
 							", will retry in 10 seconds.");
 
 					try {
@@ -516,7 +508,7 @@ public class MirrorsGetTask extends Task {
 			}
 		}
 
-		_downloadFile(sourceURL, targetFile);
+		_downloadFile(url, targetFile);
 	}
 
 	private void _downloadGCPFile(String gsURL, File targetFile) {
