@@ -10,7 +10,6 @@ import com.liferay.notification.constants.NotificationRecipientConstants;
 import com.liferay.notification.constants.NotificationRecipientSettingConstants;
 import com.liferay.notification.constants.NotificationTemplateConstants;
 import com.liferay.notification.context.NotificationContext;
-import com.liferay.notification.exception.NotificationTemplateAttachmentObjectFieldIdException;
 import com.liferay.notification.exception.NotificationTemplateDescriptionException;
 import com.liferay.notification.exception.NotificationTemplateEditorTypeException;
 import com.liferay.notification.exception.NotificationTemplateExternalReferenceCodeException;
@@ -31,10 +30,7 @@ import com.liferay.notification.service.persistence.NotificationTemplateAttachme
 import com.liferay.notification.type.NotificationType;
 import com.liferay.notification.type.NotificationTypeServiceTracker;
 import com.liferay.notification.util.NotificationRecipientSettingUtil;
-import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
-import com.liferay.object.model.ObjectField;
-import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
@@ -565,24 +561,6 @@ public class NotificationTemplateLocalServiceImpl
 			throw new NotificationTemplateSubjectException("Subject is null");
 		}
 
-		for (long attachmentObjectFieldId :
-				notificationContext.getAttachmentObjectFieldIds()) {
-
-			ObjectField objectField = _objectFieldLocalService.fetchObjectField(
-				attachmentObjectFieldId);
-
-			if ((objectField == null) ||
-				!Objects.equals(
-					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) ||
-				!Objects.equals(
-					objectField.getObjectDefinitionId(),
-					notificationTemplate.getObjectDefinitionId())) {
-
-				throw new NotificationTemplateAttachmentObjectFieldIdException();
-			}
-		}
-
 		NotificationType notificationType =
 			_notificationTypeServiceTracker.getNotificationType(
 				notificationContext.getType());
@@ -620,9 +598,6 @@ public class NotificationTemplateLocalServiceImpl
 
 	@Reference
 	private NotificationTypeServiceTracker _notificationTypeServiceTracker;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private Portal _portal;

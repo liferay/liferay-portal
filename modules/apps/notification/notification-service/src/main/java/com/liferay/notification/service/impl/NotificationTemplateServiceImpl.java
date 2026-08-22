@@ -8,16 +8,22 @@ package com.liferay.notification.service.impl;
 import com.liferay.notification.constants.NotificationActionKeys;
 import com.liferay.notification.constants.NotificationConstants;
 import com.liferay.notification.context.NotificationContext;
+import com.liferay.notification.exception.NotificationTemplateAttachmentObjectFieldIdException;
 import com.liferay.notification.exception.NotificationTemplateObjectDefinitionIdException;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.base.NotificationTemplateServiceBaseImpl;
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,6 +50,8 @@ public class NotificationTemplateServiceImpl
 		_portletResourcePermission.check(
 			getPermissionChecker(), null,
 			NotificationActionKeys.ADD_NOTIFICATION_TEMPLATE);
+
+		_validateAttachmentObjectFields(notificationContext);
 
 		_validateObjectDefinition(notificationContext);
 
@@ -121,10 +129,38 @@ public class NotificationTemplateServiceImpl
 			notificationTemplate.getNotificationTemplateId(),
 			ActionKeys.UPDATE);
 
+		_validateAttachmentObjectFields(notificationContext);
+
 		_validateObjectDefinition(notificationContext);
 
 		return notificationTemplateLocalService.updateNotificationTemplate(
 			notificationContext);
+	}
+
+	private void _validateAttachmentObjectFields(
+			NotificationContext notificationContext)
+		throws PortalException {
+
+		NotificationTemplate notificationTemplate =
+			notificationContext.getNotificationTemplate();
+
+		for (long attachmentObjectFieldId :
+				notificationContext.getAttachmentObjectFieldIds()) {
+
+			ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+				attachmentObjectFieldId);
+
+			if ((objectField == null) ||
+				!Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) ||
+				!Objects.equals(
+					objectField.getObjectDefinitionId(),
+					notificationTemplate.getObjectDefinitionId())) {
+
+				throw new NotificationTemplateAttachmentObjectFieldIdException();
+			}
+		}
 	}
 
 	private void _validateObjectDefinition(
@@ -155,6 +191,9 @@ public class NotificationTemplateServiceImpl
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference(
 		target = "(resource.name=" + NotificationConstants.RESOURCE_NAME_NOTIFICATION_TEMPLATE + ")"
