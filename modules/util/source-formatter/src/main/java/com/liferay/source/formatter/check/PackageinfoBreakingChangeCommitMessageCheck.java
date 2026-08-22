@@ -5,6 +5,9 @@
 
 package com.liferay.source.formatter.check;
 
+import com.liferay.source.formatter.SourceFormatterArgs;
+import com.liferay.source.formatter.processor.SourceProcessor;
+
 import java.util.regex.Pattern;
 
 /**
@@ -19,6 +22,15 @@ public class PackageinfoBreakingChangeCommitMessageCheck
 		throws Exception {
 
 		if (absolutePath.contains("-test/")) {
+			return content;
+		}
+
+		SourceProcessor sourceProcessor = getSourceProcessor();
+
+		SourceFormatterArgs sourceFormatterArgs =
+			sourceProcessor.getSourceFormatterArgs();
+
+		if (!sourceFormatterArgs.isFormatCurrentBranch()) {
 			return content;
 		}
 
