@@ -88,8 +88,6 @@ import com.liferay.portal.kernel.template.TemplateManagerUtil;
 import com.liferay.portal.kernel.template.TemplateResource;
 import com.liferay.portal.kernel.template.URLTemplateResource;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.transaction.TransactionConfig;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.trash.helper.TrashHelper;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -374,14 +372,10 @@ public class WebServerServlet extends HttpServlet {
 				}
 			}
 
-			TransactionConfig.Builder builder = new TransactionConfig.Builder();
+			Callable<Void> fileServingCallable = _createFileServingCallable(
+				httpServletRequest, httpServletResponse, user);
 
-			builder.setRollbackForClasses(Exception.class);
-
-			TransactionInvokerUtil.invoke(
-				builder.build(),
-				_createFileServingCallable(
-					httpServletRequest, httpServletResponse, user));
+			fileServingCallable.call();
 		}
 		catch (FileEntryExpiredException | NoSuchFileEntryException |
 			   NoSuchFolderException exception) {
