@@ -957,10 +957,10 @@ public class FriendlyURLServletTest {
 		}
 
 		Assert.assertEquals(
+			getURL(_layout), mockHttpServletResponse.getForwardedUrl());
+		Assert.assertEquals(
 			HttpServletResponse.SC_NOT_FOUND,
 			mockHttpServletResponse.getStatus());
-		Assert.assertEquals(
-			getURL(_layout), mockHttpServletResponse.getForwardedUrl());
 	}
 
 	@Test
