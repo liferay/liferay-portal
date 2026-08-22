@@ -13,9 +13,16 @@ export class MetricsPage {
 
 	constructor(page: Page) {
 		this.page = page;
+
+		// Three links on the process pages are named Total Pending: this
+		// summary card, the process list's column header and the workload by
+		// step card's column header. Name the card by the class only it
+		// carries, so the locator is strict and the click waits for the card
+		// itself rather than taking whichever of the three has rendered.
+
 		this.totalPendingItems = this.page
 			.getByRole('link', {name: 'Total Pending'})
-			.first();
+			.and(this.page.locator('.process-tabs-summary-card'));
 	}
 
 	async chooseProcess(processName: string) {
