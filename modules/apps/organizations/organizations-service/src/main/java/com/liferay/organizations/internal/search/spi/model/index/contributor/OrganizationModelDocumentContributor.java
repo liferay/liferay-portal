@@ -121,8 +121,9 @@ public class OrganizationModelDocumentContributor
 								DSLQueryFactoryUtil.select(
 									AddressTable.INSTANCE.classPK,
 									AddressTable.INSTANCE.city,
-									CountryTable.INSTANCE.name,
-									RegionTable.INSTANCE.name,
+									CountryTable.INSTANCE.name.as(
+										"countryName"),
+									RegionTable.INSTANCE.name.as("regionName"),
 									AddressTable.INSTANCE.street1,
 									AddressTable.INSTANCE.street2,
 									AddressTable.INSTANCE.street3,
