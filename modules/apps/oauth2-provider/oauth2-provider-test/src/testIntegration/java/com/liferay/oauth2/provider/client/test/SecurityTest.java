@@ -79,30 +79,16 @@ public class SecurityTest extends BaseClientTestCase {
 	}
 
 	@Test
-	public void testEscapeOAuth2ApplicationThumbnailURL() {
-		String bodyString = _getAuthorizationPageBodyString(
-			webTarget -> webTarget.queryParam(
-				"client_id", _CLIENT_ID_THUMBNAIL_URL
-			).queryParam(
-				"response_type", "code"
-			));
+	public void testEscapeOAuth2ApplicationThumbnailURL() throws Exception {
+		_assertThumbnailURLIsEscaped(
+			_getAuthorizationPageBodyString(
+				webTarget -> webTarget.queryParam(
+					"client_id", _CLIENT_ID_THUMBNAIL_URL
+				).queryParam(
+					"response_type", "code"
+				)));
 
-		Assert.assertTrue(
-			bodyString.contains(
-				"src=\"http://localhost/documents/1/2/icon.png?version=1.0" +
-					"&amp;t=1&amp;imageThumbnail=1&#39;\""));
-	}
-
-	@Test
-	public void testEscapeOAuth2ApplicationThumbnailURLInImageTag()
-		throws Exception {
-
-		String bodyString = _getConnectedApplicationPageBodyString();
-
-		Assert.assertTrue(
-			bodyString.contains(
-				"src=\"http://localhost/documents/1/2/icon.png?version=1.0" +
-					"&amp;t=1&amp;imageThumbnail=1&#39;\""));
+		_assertThumbnailURLIsEscaped(_getConnectedApplicationPageBodyString());
 	}
 
 	@Test
@@ -315,6 +301,13 @@ public class SecurityTest extends BaseClientTestCase {
 		Assert.assertFalse(bodyString.contains(_INJECTED_SCRIPT));
 		Assert.assertTrue(
 			bodyString.contains(HtmlUtil.escape(_INJECTED_SCRIPT)));
+	}
+
+	private void _assertThumbnailURLIsEscaped(String bodyString) {
+		Assert.assertTrue(
+			bodyString.contains(
+				"src=\"http://localhost/documents/1/2/icon.png?version=1.0" +
+					"&amp;t=1&amp;imageThumbnail=1&#39;\""));
 	}
 
 	private String _getAuthorizationPageBodyString(
