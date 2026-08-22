@@ -137,7 +137,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * @author Alexander Chow
@@ -372,10 +371,66 @@ public class WebServerServlet extends HttpServlet {
 				}
 			}
 
-			Callable<Void> fileServingCallable = _createFileServingCallable(
-				httpServletRequest, httpServletResponse, user);
+			String path = _getPath(httpServletRequest);
 
-			fileServingCallable.call();
+			String[] pathArray = StringUtil.split(
+				_getPath(httpServletRequest), CharPool.SLASH);
+
+			if (pathArray.length == 0) {
+				sendGroups(
+					httpServletResponse, user,
+					httpServletRequest.getServletPath() + StringPool.SLASH +
+						path);
+			}
+			else {
+				if (Validator.isNumber(pathArray[0])) {
+					sendFile(
+						httpServletRequest, httpServletResponse, user,
+						pathArray);
+				}
+				else if (_PATH_SEPARATOR_FILE_ENTRY.equals(pathArray[0])) {
+					sendFile(
+						httpServletRequest, httpServletResponse, user,
+						pathArray);
+				}
+				else if (PATH_PORTLET_FILE_ENTRY.equals(pathArray[0])) {
+					sendPortletFileEntry(
+						httpServletRequest, httpServletResponse, path,
+						pathArray);
+				}
+				else {
+					if (PropsValues.WEB_SERVER_SERVLET_CHECK_IMAGE_GALLERY &&
+						isLegacyImageGalleryImageId(
+							httpServletRequest, httpServletResponse)) {
+
+						return;
+					}
+
+					Image image = getImage(httpServletRequest, true);
+
+					if (image != null) {
+						if ((image.getCompanyId() != user.getCompanyId()) &&
+							_processCompanyInactiveRequest(
+								httpServletRequest, httpServletResponse,
+								image.getCompanyId())) {
+
+							return;
+						}
+
+						writeImage(
+							image, httpServletRequest, httpServletResponse);
+					}
+					else {
+						sendDocumentLibrary(
+							httpServletRequest, httpServletResponse, user,
+							StringBundler.concat(
+								PortalUtil.getPathContext(),
+								httpServletRequest.getServletPath(),
+								StringPool.SLASH, path),
+							pathArray);
+					}
+				}
+			}
 		}
 		catch (FileEntryExpiredException | NoSuchFileEntryException |
 			   NoSuchFolderException exception) {
@@ -1746,76 +1801,6 @@ public class WebServerServlet extends HttpServlet {
 					ActionKeys.ACCESS_IN_CONTROL_PANEL);
 			}
 		}
-	}
-
-	private Callable<Void> _createFileServingCallable(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse, User user) {
-
-		return () -> {
-			String path = _getPath(httpServletRequest);
-
-			String[] pathArray = StringUtil.split(
-				_getPath(httpServletRequest), CharPool.SLASH);
-
-			if (pathArray.length == 0) {
-				sendGroups(
-					httpServletResponse, user,
-					httpServletRequest.getServletPath() + StringPool.SLASH +
-						path);
-			}
-			else {
-				if (Validator.isNumber(pathArray[0])) {
-					sendFile(
-						httpServletRequest, httpServletResponse, user,
-						pathArray);
-				}
-				else if (_PATH_SEPARATOR_FILE_ENTRY.equals(pathArray[0])) {
-					sendFile(
-						httpServletRequest, httpServletResponse, user,
-						pathArray);
-				}
-				else if (PATH_PORTLET_FILE_ENTRY.equals(pathArray[0])) {
-					sendPortletFileEntry(
-						httpServletRequest, httpServletResponse, path,
-						pathArray);
-				}
-				else {
-					if (PropsValues.WEB_SERVER_SERVLET_CHECK_IMAGE_GALLERY &&
-						isLegacyImageGalleryImageId(
-							httpServletRequest, httpServletResponse)) {
-
-						return null;
-					}
-
-					Image image = getImage(httpServletRequest, true);
-
-					if (image != null) {
-						if ((image.getCompanyId() != user.getCompanyId()) &&
-							_processCompanyInactiveRequest(
-								httpServletRequest, httpServletResponse,
-								image.getCompanyId())) {
-
-							return null;
-						}
-
-						writeImage(
-							image, httpServletRequest, httpServletResponse);
-					}
-					else {
-						sendDocumentLibrary(
-							httpServletRequest, httpServletResponse, user,
-							StringBundler.concat(
-								PortalUtil.getPathContext(),
-								httpServletRequest.getServletPath(),
-								StringPool.SLASH, path),
-							pathArray);
-					}
-				}
-			}
-
-			return null;
-		};
 	}
 
 	private String _getActionId(HttpServletRequest httpServletRequest) {
