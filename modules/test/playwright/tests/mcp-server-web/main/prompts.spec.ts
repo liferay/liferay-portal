@@ -12,7 +12,13 @@ import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {FDSTablePage} from '../../../pages/mcp-server-web/FDSTablePage';
 import getRandomString from '../../../utils/getRandomString';
-import {createFDSTableTests} from './utils/createFDSTableTests';
+import {
+	expectFDSTableColumns,
+	expectFDSTableRowActions,
+	expectFDSTableSearchEmptyResult,
+	expectFDSTableSearchFindsItem,
+	expectFDSTableSortOptions,
+} from './utils/fdsTable';
 
 const baseTest = mergeTests(
 	dataApiHelpersTest,
@@ -72,12 +78,69 @@ const test = baseTest.extend<{
 	},
 });
 
-createFDSTableTests(test, {
-	columns: ['Name', 'Identifier', 'Description', 'Status', 'Last Modified'],
-	name: 'Prompts',
-	rowActions: ['Edit', 'Duplicate', 'Delete'],
-	sortOptions: ['Name', 'Last Modified'],
-	tag: '@LPD-98309',
+test.describe('Prompts - FDS Table', () => {
+	let seededItemName: string;
+
+	test.beforeEach(async ({createFDSItem}) => {
+		seededItemName = await createFDSItem();
+	});
+
+	test(
+		'Shows the table columns',
+		{tag: '@LPD-98309'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableColumns(fdsTablePage, [
+				'Name',
+				'Identifier',
+				'Description',
+				'Status',
+				'Last Modified',
+			]);
+		}
+	);
+
+	test(
+		'Offers the sort options',
+		{tag: '@LPD-98309'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableSortOptions(fdsTablePage, [
+				'Name',
+				'Last Modified',
+			]);
+		}
+	);
+
+	test(
+		'Searches the table by item name',
+		{tag: '@LPD-98309'},
+		async ({createFDSItem, fdsTablePage}) => {
+			await expectFDSTableSearchFindsItem(
+				createFDSItem,
+				fdsTablePage,
+				seededItemName
+			);
+		}
+	);
+
+	test(
+		'Shows an empty result when searching for a missing item',
+		{tag: '@LPD-98309'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableSearchEmptyResult(fdsTablePage);
+		}
+	);
+
+	test(
+		'Offers the row actions',
+		{tag: '@LPD-98309'},
+		async ({fdsTablePage, page}) => {
+			await expectFDSTableRowActions(fdsTablePage, page, seededItemName, [
+				'Edit',
+				'Duplicate',
+				'Delete',
+			]);
+		}
+	);
 });
 
 test.describe('Prompts - List View', () => {

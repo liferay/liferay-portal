@@ -12,7 +12,13 @@ import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {FDSTablePage} from '../../../pages/mcp-server-web/FDSTablePage';
 import getRandomString from '../../../utils/getRandomString';
-import {createFDSTableTests} from './utils/createFDSTableTests';
+import {
+	expectFDSTableColumns,
+	expectFDSTableRowActions,
+	expectFDSTableSearchEmptyResult,
+	expectFDSTableSearchFindsItem,
+	expectFDSTableSortOptions,
+} from './utils/fdsTable';
 
 const baseTest = mergeTests(
 	dataApiHelpersTest,
@@ -102,12 +108,68 @@ const test = baseTest.extend<{
 	},
 });
 
-createFDSTableTests(test, {
-	columns: ['Title', 'Type', 'Description', 'Last Modified'],
-	name: 'Data Masks',
-	rowActions: ['Edit', 'Duplicate', 'Delete'],
-	sortOptions: ['Title', 'Last Modified'],
-	tag: '@LPD-90205',
+test.describe('Data Masks - FDS Table', () => {
+	let seededItemName: string;
+
+	test.beforeEach(async ({createFDSItem}) => {
+		seededItemName = await createFDSItem();
+	});
+
+	test(
+		'Shows the table columns',
+		{tag: '@LPD-90205'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableColumns(fdsTablePage, [
+				'Title',
+				'Type',
+				'Description',
+				'Last Modified',
+			]);
+		}
+	);
+
+	test(
+		'Offers the sort options',
+		{tag: '@LPD-90205'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableSortOptions(fdsTablePage, [
+				'Title',
+				'Last Modified',
+			]);
+		}
+	);
+
+	test(
+		'Searches the table by item name',
+		{tag: '@LPD-90205'},
+		async ({createFDSItem, fdsTablePage}) => {
+			await expectFDSTableSearchFindsItem(
+				createFDSItem,
+				fdsTablePage,
+				seededItemName
+			);
+		}
+	);
+
+	test(
+		'Shows an empty result when searching for a missing item',
+		{tag: '@LPD-90205'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableSearchEmptyResult(fdsTablePage);
+		}
+	);
+
+	test(
+		'Offers the row actions',
+		{tag: '@LPD-90205'},
+		async ({fdsTablePage, page}) => {
+			await expectFDSTableRowActions(fdsTablePage, page, seededItemName, [
+				'Edit',
+				'Duplicate',
+				'Delete',
+			]);
+		}
+	);
 });
 
 test.describe('Data Masks - List View', () => {

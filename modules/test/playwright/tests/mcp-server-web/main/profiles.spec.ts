@@ -12,7 +12,13 @@ import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {FDSTablePage} from '../../../pages/mcp-server-web/FDSTablePage';
 import getRandomString from '../../../utils/getRandomString';
-import {createFDSTableTests} from './utils/createFDSTableTests';
+import {
+	expectFDSTableColumns,
+	expectFDSTableRowActions,
+	expectFDSTableSearchEmptyResult,
+	expectFDSTableSearchFindsItem,
+	expectFDSTableSortOptions,
+} from './utils/fdsTable';
 
 const baseTest = mergeTests(
 	dataApiHelpersTest,
@@ -98,12 +104,67 @@ async function createDataMask(
 	return dataMask;
 }
 
-createFDSTableTests(test, {
-	columns: ['Title', 'Path', 'Description', 'Last Modified'],
-	name: 'Profiles',
-	rowActions: ['Edit', 'Delete'],
-	sortOptions: ['Title', 'Last Modified'],
-	tag: '@LPD-99230',
+test.describe('Profiles - FDS Table', () => {
+	let seededItemName: string;
+
+	test.beforeEach(async ({createFDSItem}) => {
+		seededItemName = await createFDSItem();
+	});
+
+	test(
+		'Shows the table columns',
+		{tag: '@LPD-99230'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableColumns(fdsTablePage, [
+				'Title',
+				'Path',
+				'Description',
+				'Last Modified',
+			]);
+		}
+	);
+
+	test(
+		'Offers the sort options',
+		{tag: '@LPD-99230'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableSortOptions(fdsTablePage, [
+				'Title',
+				'Last Modified',
+			]);
+		}
+	);
+
+	test(
+		'Searches the table by item name',
+		{tag: '@LPD-99230'},
+		async ({createFDSItem, fdsTablePage}) => {
+			await expectFDSTableSearchFindsItem(
+				createFDSItem,
+				fdsTablePage,
+				seededItemName
+			);
+		}
+	);
+
+	test(
+		'Shows an empty result when searching for a missing item',
+		{tag: '@LPD-99230'},
+		async ({fdsTablePage}) => {
+			await expectFDSTableSearchEmptyResult(fdsTablePage);
+		}
+	);
+
+	test(
+		'Offers the row actions',
+		{tag: '@LPD-99230'},
+		async ({fdsTablePage, page}) => {
+			await expectFDSTableRowActions(fdsTablePage, page, seededItemName, [
+				'Edit',
+				'Delete',
+			]);
+		}
+	);
 });
 
 test.describe('Profiles - List View', () => {
