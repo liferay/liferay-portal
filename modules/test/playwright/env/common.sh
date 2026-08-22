@@ -1,9 +1,16 @@
 #!/bin/bash
 
 function cluster_set_up {
+	local jvm_heap_override=${3}
+
+	if [[ -n ${jvm_heap_override} ]]
+	then
+		override_jvm_heap "$(get_app_server_dir ${LIFERAY_HOME})" "${jvm_heap_override}"
+	fi
+
 	default_set_up
 
-	prepare_additional_bundles ${1} ${2}
+	prepare_additional_bundles "${1}" "${2}" "${jvm_heap_override}"
 
 	local slave_home="${LIFERAY_HOME}-${1}"
 
@@ -476,7 +483,19 @@ function reverse {
 	done
 }
 
+function override_jvm_heap {
+	local app_server_dir=${1}
+	local jvm_heap_override=${2}
+
+	if [[ -n ${jvm_heap_override} ]]
+	then
+		sed -i "s/-Xms[0-9]*m -Xmx[0-9]*m/${jvm_heap_override}/" "${app_server_dir}/bin/setenv.sh"
+	fi
+}
+
 function prepare_additional_bundles {
+	local jvm_heap_override=${3}
+
 	for ((i = 0 ; i < ${1} ; i++))
 	do
 		local app_server_bundles_size=$((1 + ${i}))
@@ -495,6 +514,8 @@ function prepare_additional_bundles {
 		local app_server_dir=$(get_app_server_dir ${liferay_home})
 
 		echo ${app_server_dir}
+
+		override_jvm_heap "${app_server_dir}" "${jvm_heap_override}"
 
 		sed -i "s/=\"8\([0-9]\{3\}\)\"/=\"${leading_port_number}\1\"/g" "${app_server_dir}/conf/server.xml"
 
