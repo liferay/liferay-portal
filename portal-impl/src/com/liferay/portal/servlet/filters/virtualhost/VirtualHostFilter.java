@@ -317,9 +317,6 @@ public class VirtualHostFilter extends BasePortalFilter {
 				VirtualHostFilter.class.getName(), httpServletRequest,
 				httpServletResponse, filterChain);
 
-			WebServerServlet.sendMessageObjectEntryAttachmentDownload(
-				httpServletRequest, null);
-
 			return;
 		}
 

@@ -237,8 +237,6 @@ public class WebServerServlet extends HttpServlet {
 					}
 				}
 			}
-
-			sendMessageObjectEntryAttachmentDownload(httpServletRequest, user);
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -253,53 +251,6 @@ public class WebServerServlet extends HttpServlet {
 		}
 
 		return true;
-	}
-
-	/**
-	 * @see com.liferay.portal.servlet.filters.virtualhost.VirtualHostFilter
-	 */
-	public static void sendMessageObjectEntryAttachmentDownload(
-		HttpServletRequest httpServletRequest, User user) {
-
-		String objectDefinitionExternalReferenceCode = ParamUtil.getString(
-			httpServletRequest, "objectDefinitionExternalReferenceCode");
-
-		if (Validator.isNull(objectDefinitionExternalReferenceCode)) {
-			return;
-		}
-
-		try {
-			MessageBus messageBus = _messageBusSnapshot.get();
-
-			Message message = new Message();
-
-			if (user == null) {
-				user = _getUser(httpServletRequest);
-			}
-
-			message.put("companyId", user.getCompanyId());
-
-			message.put(
-				"groupExternalReferenceCode",
-				ParamUtil.getString(
-					httpServletRequest, "groupExternalReferenceCode"));
-			message.put(
-				"objectDefinitionExternalReferenceCode",
-				objectDefinitionExternalReferenceCode);
-			message.put(
-				"objectEntryExternalReferenceCode",
-				ParamUtil.getString(
-					httpServletRequest, "objectEntryExternalReferenceCode"));
-			message.put("userId", user.getUserId());
-
-			messageBus.sendMessage(
-				DestinationNames.OBJECT_ENTRY_ATTACHMENT_DOWNLOAD, message);
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
 	}
 
 	@Override
@@ -1295,6 +1246,12 @@ public class WebServerServlet extends HttpServlet {
 			FileEntryHttpHeaderCustomizerUtil.getHttpHeaderValue(
 				fileEntry, HttpHeaders.CACHE_CONTROL, cacheControlValue));
 
+		// Everything that could refuse this download has already refused it
+		// and only the transfer is left, so the download is granted here
+
+		_sendObjectEntryAttachmentDownloadMessage(
+			fileEntry, httpServletRequest, user);
+
 		if (isSupportsRangeHeader(contentType)) {
 			ServletResponseUtil.sendFileWithRangeHeader(
 				httpServletRequest, httpServletResponse, fileName, inputStream,
@@ -2036,6 +1993,45 @@ public class WebServerServlet extends HttpServlet {
 			"this-site-is-inactive-please-contact-the-administrator");
 
 		return true;
+	}
+
+	private void _sendObjectEntryAttachmentDownloadMessage(
+		FileEntry fileEntry, HttpServletRequest httpServletRequest, User user) {
+
+		if (Validator.isNull(
+				ParamUtil.getString(
+					httpServletRequest,
+					"objectDefinitionExternalReferenceCode"))) {
+
+			return;
+		}
+
+		Message message = new Message();
+
+		message.put("companyId", fileEntry.getCompanyId());
+		message.put("fileEntryId", fileEntry.getFileEntryId());
+		message.put(
+			"groupExternalReferenceCode",
+			ParamUtil.getString(
+				httpServletRequest, "groupExternalReferenceCode"));
+		message.put(
+			"objectDefinitionExternalReferenceCode",
+			ParamUtil.getString(
+				httpServletRequest, "objectDefinitionExternalReferenceCode"));
+		message.put(
+			"objectEntryExternalReferenceCode",
+			ParamUtil.getString(
+				httpServletRequest, "objectEntryExternalReferenceCode"));
+		message.put(
+			"objectFieldExternalReferenceCode",
+			ParamUtil.getString(
+				httpServletRequest, "objectFieldExternalReferenceCode"));
+		message.put("userId", user.getUserId());
+
+		MessageBus messageBus = _messageBusSnapshot.get();
+
+		messageBus.sendMessage(
+			DestinationNames.OBJECT_ENTRY_ATTACHMENT_DOWNLOAD, message);
 	}
 
 	private static final String _PATH_SEPARATOR_FILE_ENTRY =
