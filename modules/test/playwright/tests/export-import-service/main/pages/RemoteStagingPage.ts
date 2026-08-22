@@ -6,6 +6,7 @@
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {PageEditorPage} from '../../../../pages/layout-content-page-editor-web/PageEditorPage';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 
 export class RemoteStagingPage {
 	readonly page: Page;
@@ -44,9 +45,15 @@ export class RemoteStagingPage {
 		siteFriendlyUrl: string;
 	}) {
 		await this.page.goto(`/web${siteFriendlyUrl}${layoutFriendlyURL}`);
-		await this.pageEditorPage.publishToLiveButton.click();
-		await this.page.waitForTimeout(5000);
-		await this.publishToRemoteLiveButton.click();
-		await expect(this.publishSuccessfulLabel).toBeVisible();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.publishToRemoteLiveButton,
+			trigger: this.pageEditorPage.publishToLiveButton,
+		});
+
+		await expect(this.publishSuccessfulLabel).toBeVisible({
+			timeout: 30000,
+		});
 	}
 }
