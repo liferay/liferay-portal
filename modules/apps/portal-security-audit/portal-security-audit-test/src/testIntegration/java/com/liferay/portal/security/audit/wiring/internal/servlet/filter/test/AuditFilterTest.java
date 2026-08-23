@@ -8,21 +8,27 @@ package com.liferay.portal.security.audit.wiring.internal.servlet.filter.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.audit.AuditRequestThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.LiferayFilter;
+import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.servlet.Filter;
+import jakarta.servlet.http.HttpSession;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -36,6 +42,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Christian Moura
+ * @author Álvaro Saugar
  */
 @RunWith(Arquillian.class)
 public class AuditFilterTest {
@@ -53,6 +60,51 @@ public class AuditFilterTest {
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		CompanyLocalServiceUtil.deleteCompany(_company.getCompanyId());
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		AuditRequestThreadLocal.removeAuditThreadLocal();
+	}
+
+	@Test
+	public void testDoFilterTryCapturesAuditSessionIdWhenAuthenticated()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		String auditSessionId = RandomTestUtil.randomString();
+
+		httpSession.setAttribute(WebKeys.AUDIT_SESSION_ID, auditSessionId);
+
+		httpSession.setAttribute(WebKeys.USER_ID, TestPropsValues.getUserId());
+
+		_filterTry(mockHttpServletRequest);
+
+		AuditRequestThreadLocal auditRequestThreadLocal =
+			AuditRequestThreadLocal.getAuditThreadLocal();
+
+		Assert.assertEquals(
+			auditSessionId, auditRequestThreadLocal.getSessionID());
+		Assert.assertNotEquals(
+			httpSession.getId(), auditRequestThreadLocal.getSessionID());
+	}
+
+	@Test
+	public void testDoFilterTryCapturesNoAuditSessionIdBeforeAuthentication()
+		throws Exception {
+
+		_filterTry(new MockHttpServletRequest());
+
+		AuditRequestThreadLocal auditRequestThreadLocal =
+			AuditRequestThreadLocal.getAuditThreadLocal();
+
+		Assert.assertNotNull(auditRequestThreadLocal.getRequestURL());
+
+		Assert.assertNull(auditRequestThreadLocal.getSessionID());
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -109,6 +161,24 @@ public class AuditFilterTest {
 						).build())) {
 
 			Assert.assertTrue(_isFilterEnabled(_company.getCompanyId()));
+		}
+	}
+
+	private void _filterTry(MockHttpServletRequest mockHttpServletRequest)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					TestPropsValues.getCompanyId())) {
+
+			InvokerFilterChain invokerFilterChain = new InvokerFilterChain(
+				(servletRequest, servletResponse) -> {
+				});
+
+			invokerFilterChain.addFilter(_filter);
+
+			invokerFilterChain.doFilter(
+				mockHttpServletRequest, new MockHttpServletResponse());
 		}
 	}
 

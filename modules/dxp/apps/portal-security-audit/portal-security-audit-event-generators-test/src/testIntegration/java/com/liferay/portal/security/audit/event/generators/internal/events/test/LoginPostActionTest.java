@@ -9,8 +9,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRequestThreadLocal;
+import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.LifecycleAction;
-import com.liferay.portal.kernel.events.LifecycleEvent;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
@@ -93,16 +93,16 @@ public class LoginPostActionTest {
 	}
 
 	@Test
-	public void testDoRunGeneratesOpaqueAuditSessionId() throws Exception {
+	public void testRunGeneratesOpaqueAuditSessionId() throws Exception {
 		MockHttpServletRequest mockHttpServletRequest =
 			_createMockHttpServletRequest();
 
-		_runLoginPostAction(mockHttpServletRequest);
+		_run(mockHttpServletRequest);
 
 		MockHttpServletRequest secondMockHttpServletRequest =
 			_createMockHttpServletRequest();
 
-		_runLoginPostAction(secondMockHttpServletRequest);
+		_run(secondMockHttpServletRequest);
 
 		String auditSessionId = _getAuditSessionId(mockHttpServletRequest);
 		String secondAuditSessionId = _getAuditSessionId(
@@ -118,11 +118,11 @@ public class LoginPostActionTest {
 	}
 
 	@Test
-	public void testDoRunKeepsAuditSessionIdAcrossRequests() throws Exception {
+	public void testRunKeepsAuditSessionIdAcrossRequests() throws Exception {
 		MockHttpServletRequest mockHttpServletRequest =
 			_createMockHttpServletRequest();
 
-		_runLoginPostAction(mockHttpServletRequest);
+		_run(mockHttpServletRequest);
 
 		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
 
@@ -136,7 +136,7 @@ public class LoginPostActionTest {
 		secondMockHttpServletRequest.setSession(
 			mockHttpServletRequest.getSession());
 
-		_runAuditFilter(secondMockHttpServletRequest);
+		_filterTry(secondMockHttpServletRequest);
 
 		AuditRequestThreadLocal auditRequestThreadLocal =
 			AuditRequestThreadLocal.getAuditThreadLocal();
@@ -146,13 +146,13 @@ public class LoginPostActionTest {
 	}
 
 	@Test
-	public void testDoRunKeepsAuditSessionIdAcrossSessionRenewal()
+	public void testRunKeepsAuditSessionIdAcrossSessionRenewal()
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			_createMockHttpServletRequest();
 
-		_runLoginPostAction(mockHttpServletRequest);
+		_run(mockHttpServletRequest);
 
 		String auditSessionId = _getAuditSessionId(mockHttpServletRequest);
 
@@ -163,7 +163,7 @@ public class LoginPostActionTest {
 		AuthenticatedSessionManagerUtil.renewSession(
 			mockHttpServletRequest, httpSession);
 
-		_runLoginPostAction(mockHttpServletRequest);
+		_run(mockHttpServletRequest);
 
 		HttpSession renewedHttpSession = mockHttpServletRequest.getSession();
 
@@ -186,7 +186,7 @@ public class LoginPostActionTest {
 			MockHttpServletRequest unprotectedMockHttpServletRequest =
 				_createMockHttpServletRequest();
 
-			_runLoginPostAction(unprotectedMockHttpServletRequest);
+			_run(unprotectedMockHttpServletRequest);
 
 			String unprotectedAuditSessionId = _getAuditSessionId(
 				unprotectedMockHttpServletRequest);
@@ -195,7 +195,7 @@ public class LoginPostActionTest {
 				unprotectedMockHttpServletRequest,
 				unprotectedMockHttpServletRequest.getSession());
 
-			_runLoginPostAction(unprotectedMockHttpServletRequest);
+			_run(unprotectedMockHttpServletRequest);
 
 			Assert.assertNotEquals(
 				unprotectedAuditSessionId,
@@ -234,15 +234,7 @@ public class LoginPostActionTest {
 		return null;
 	}
 
-	private String _getAuditSessionId(
-		MockHttpServletRequest mockHttpServletRequest) {
-
-		HttpSession httpSession = mockHttpServletRequest.getSession();
-
-		return (String)httpSession.getAttribute(WebKeys.AUDIT_SESSION_ID);
-	}
-
-	private void _runAuditFilter(MockHttpServletRequest mockHttpServletRequest)
+	private void _filterTry(MockHttpServletRequest mockHttpServletRequest)
 		throws Exception {
 
 		try (SafeCloseable safeCloseable =
@@ -260,8 +252,15 @@ public class LoginPostActionTest {
 		}
 	}
 
-	private void _runLoginPostAction(
-			MockHttpServletRequest mockHttpServletRequest)
+	private String _getAuditSessionId(
+		MockHttpServletRequest mockHttpServletRequest) {
+
+		HttpSession httpSession = mockHttpServletRequest.getSession();
+
+		return (String)httpSession.getAttribute(WebKeys.AUDIT_SESSION_ID);
+	}
+
+	private void _run(MockHttpServletRequest mockHttpServletRequest)
 		throws Exception {
 
 		_auditMessages.clear();
@@ -270,9 +269,8 @@ public class LoginPostActionTest {
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					TestPropsValues.getCompanyId())) {
 
-			_lifecycleAction.processLifecycleEvent(
-				new LifecycleEvent(
-					mockHttpServletRequest, new MockHttpServletResponse()));
+			_loginPostAction.run(
+				mockHttpServletRequest, new MockHttpServletResponse());
 		}
 	}
 
@@ -284,9 +282,10 @@ public class LoginPostActionTest {
 	private Filter _filter;
 
 	@Inject(
-		filter = "component.name=com.liferay.portal.security.audit.event.generators.internal.events.LoginPostAction"
+		filter = "component.name=com.liferay.portal.security.audit.event.generators.internal.events.LoginPostAction",
+		type = LifecycleAction.class
 	)
-	private LifecycleAction _lifecycleAction;
+	private Action _loginPostAction;
 
 	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
 
