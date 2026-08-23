@@ -178,6 +178,10 @@ definition {
 
 		PortletEntry.publish();
 
+		AssertElementNotPresent(
+			key_text = "Publish",
+			locator1 = "Button#ANY");
+
 		var portalURL = JSONCompany.getPortalURL();
 		var userPassword = PropsUtil.get("default.admin.password");
 
@@ -200,10 +204,6 @@ definition {
 			expected = "approved");
 
 		ObjectAdmin.openObjectAdmin();
-
-		while ((IsElementNotPresent(key_label = "Custom Object 73", locator1 = "ObjectAdmin#OBJECT_STATUS")) && (maxIterations = "10")) {
-			Refresh();
-		}
 
 		AssertTextEquals(
 			key_label = "Custom Object 73",
