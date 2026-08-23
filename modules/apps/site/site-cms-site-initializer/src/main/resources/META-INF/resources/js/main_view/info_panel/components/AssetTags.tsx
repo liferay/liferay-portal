@@ -151,6 +151,7 @@ const AssetTags = ({
 				)) ||
 				(objectEntry as IAssetObjectEntry).contentRawText ||
 				'',
+			currentTagNames: [...(objectEntry?.keywords || [])],
 			scopeId,
 		});
 	}, [cmsGroupId, getContent, objectEntry, scopeId]);
