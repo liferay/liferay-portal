@@ -2830,6 +2830,54 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testDeleteObjectDefinitionWithPreventObjectRelationship()
+		throws Exception {
+
+		ObjectDefinition objectDefinition1 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		ObjectDefinition objectDefinition2 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, objectDefinition1,
+				objectDefinition2,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinition1.getObjectDefinitionId(),
+			Collections.emptyMap());
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinition2.getObjectDefinitionId(),
+			Collections.emptyMap());
+
+		ObjectRelationshipTestUtil.relateObjectEntries(
+			objectEntry1.getObjectEntryId(), objectEntry2.getObjectEntryId(),
+			objectRelationship, TestPropsValues.getUserId());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
+
+		Assert.assertNull(
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				objectDefinition1.getObjectDefinitionId()));
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				objectEntry1.getObjectEntryId()));
+		Assert.assertNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship.getObjectRelationshipId()));
+
+		Assert.assertNotNull(
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				objectDefinition2.getObjectDefinitionId()));
+		Assert.assertNotNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				objectEntry2.getObjectEntryId()));
+	}
+
+	@Test
 	public void testEnableAccountEntryRestrictedForNondefaultStorageType()
 		throws Exception {
 
