@@ -72,6 +72,8 @@ export default function useAssistantCategorization({
 					?.externalReferenceCode
 			);
 
+			const fields = categorizationFieldsRef.current;
+
 			actions.forEach((action) => {
 				const agent =
 					action.agent === 'categorize'
@@ -96,11 +98,15 @@ export default function useAssistantCategorization({
 						data.systemProperties?.objectDefinitionBrief
 							?.classNameId ?? -1;
 					payload.currentCategoryIds = (
-						data.taxonomyCategoryBriefs || []
+						fields?.assetCategoryIds.value ??
+						data.taxonomyCategoryBriefs ??
+						[]
 					).map((brief) => brief.taxonomyCategoryId);
 				}
 				else {
-					payload.currentTagNames = data.keywords || [];
+					payload.currentTagNames = [
+						...(fields?.assetTagNames.value ?? data.keywords ?? []),
+					];
 				}
 
 				Liferay.fire(CATEGORIZE_EVENT, payload);
