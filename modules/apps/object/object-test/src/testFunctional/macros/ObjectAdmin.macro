@@ -1341,8 +1341,6 @@ definition {
 		if (isSet(click)) {
 			if ((${click} == "save") && (${notRefreshAttribute} == "true")) {
 				ObjectAdmin.saveSidePanel();
-
-				WaitForElementNotPresent(locator1 = "ObjectAdmin#SIDE_PANEL");
 			}
 			else if (${click} == "cancel") {
 				Button.clickCancel();
