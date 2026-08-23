@@ -49,7 +49,7 @@ public class ObjectDefinitionDeployerRegistrationTest {
 	}
 
 	@Test
-	public void testDeployAfterDeployInactive() throws Exception {
+	public void testDeployObjectDefinition() throws Exception {
 		_objectDefinitionLocalService.deployInactiveObjectDefinition(
 			_objectDefinition);
 
@@ -66,7 +66,7 @@ public class ObjectDefinitionDeployerRegistrationTest {
 	}
 
 	@Test
-	public void testUndeployAfterDeployInactive() throws Exception {
+	public void testUndeployObjectDefinition() throws Exception {
 		_objectDefinitionLocalService.deployInactiveObjectDefinition(
 			_objectDefinition);
 
