@@ -1873,7 +1873,9 @@ test(
 			objectDefinition.label['en_US']
 		);
 
-		await formSettingsModalPage.clickDoneButton();
+		await formSettingsModalPage.clickDoneButtonAndWaitForObjectFields(
+			objectDefinition.id
+		);
 
 		await formBuilderPage.publishButton.click();
 
