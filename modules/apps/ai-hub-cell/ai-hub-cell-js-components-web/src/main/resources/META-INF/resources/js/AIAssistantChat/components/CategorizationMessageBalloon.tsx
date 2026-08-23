@@ -40,7 +40,7 @@ export default function CategorizationMessageBalloon({
 }: CategorizationMessageBalloonProps) {
 	const balloonId = useId();
 
-	const [committed, setCommitted] = useState(false);
+	const [committedCount, setCommittedCount] = useState(0);
 	const [dismissed, setDismissed] = useState<string[]>([]);
 	const [regenerated, setRegenerated] = useState(false);
 
@@ -90,11 +90,19 @@ export default function CategorizationMessageBalloon({
 				return;
 			}
 
+			const context = {
+				appliedCategoryIds: currentCategoryIds,
+				appliedTags: currentTagNames,
+				content,
+				count,
+				...data,
+			};
+
 			if (targets?.length) {
-				resolveTargets({content, count, ...data}, targets);
+				resolveTargets(context, targets);
 			}
 			else {
-				run({content, count, ...data});
+				run(context);
 			}
 		})();
 
@@ -107,6 +115,8 @@ export default function CategorizationMessageBalloon({
 		cmsGroupId,
 		content,
 		count,
+		currentCategoryIds,
+		currentTagNames,
 		resolveTargets,
 		run,
 		scopeId,
@@ -119,22 +129,7 @@ export default function CategorizationMessageBalloon({
 
 	const isCategories = agent === ECategorizationAgent.AUTO_CATEGORIZE;
 
-	const newCategoryCount = visibleSuggestions.filter(
-		(suggestion) =>
-			typeof suggestion.id === 'number' &&
-			!(currentCategoryIds ?? []).includes(suggestion.id)
-	).length;
-
-	const lowerCaseCurrentTagNames = (currentTagNames ?? []).map((name) =>
-		name.toLowerCase()
-	);
-
-	const newTagCount = visibleSuggestions.filter(
-		(suggestion) =>
-			!lowerCaseCurrentTagNames.includes(suggestion.name.toLowerCase())
-	).length;
-
-	const committedCount = isCategories ? newCategoryCount : newTagCount;
+	const committed = committedCount > 0;
 
 	const confirmationMessage = sub(
 		isCategories
@@ -199,7 +194,7 @@ export default function CategorizationMessageBalloon({
 									suggestions: committedSuggestions,
 								});
 
-								setCommitted(true);
+								setCommittedCount(committedSuggestions.length);
 							}}
 							onDismiss={(suggestion) =>
 								setDismissed((previousDismissed) => [
@@ -208,7 +203,7 @@ export default function CategorizationMessageBalloon({
 								])
 							}
 							onRegenerate={() => {
-								setCommitted(false);
+								setCommittedCount(0);
 								setDismissed([]);
 								setRegenerated(true);
 
@@ -221,7 +216,7 @@ export default function CategorizationMessageBalloon({
 				</div>
 			</div>
 
-			{committed && committedCount > 0 ? (
+			{committed ? (
 				<div className="ai-assistant-chat__ai-assistant-message-balloon d-flex flex-column mb-2 rounded">
 					<div className="d-flex flex-row">
 						<AIAssistantMessageBalloonIcon />

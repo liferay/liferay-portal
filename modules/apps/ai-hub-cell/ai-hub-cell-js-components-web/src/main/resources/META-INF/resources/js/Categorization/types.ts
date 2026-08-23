@@ -25,6 +25,8 @@ export interface CandidateCategory {
 }
 
 export interface CategorizationContext {
+	appliedCategoryIds?: number[];
+	appliedTags?: string[];
 	candidateCategories?: CandidateCategory[];
 	content: string;
 	count?: number;
