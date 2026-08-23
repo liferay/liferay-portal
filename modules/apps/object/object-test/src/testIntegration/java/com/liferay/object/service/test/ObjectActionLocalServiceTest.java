@@ -55,6 +55,7 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.exception.ObjectActionErrorMessageException;
 import com.liferay.object.exception.ObjectActionExecutorKeyException;
 import com.liferay.object.exception.ObjectActionNameException;
@@ -86,6 +87,7 @@ import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -2819,6 +2821,55 @@ public class ObjectActionLocalServiceTest {
 				objectDefinitionAAA.getName()
 			},
 			_objectEntryLocalService, _objectRelationshipLocalService);
+	}
+
+	@Test
+	public void testOnAfterDeleteObjectActionWhileDeletingObjectDefinition()
+		throws Exception {
+
+		_objectDefinition = _publishCustomObjectDefinition();
+
+		_addObjectAction(
+			RandomTestUtil.randomString(),
+			ObjectActionExecutorConstants.KEY_GROOVY,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE,
+			UnicodePropertiesBuilder.put(
+				"script", "println \"Hello World\""
+			).build(),
+			false);
+
+		// Skip the object action while the object definition is being deleted
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			_objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				"firstName", "John"
+			).build());
+
+		try (SafeCloseable safeCloseable =
+				ObjectDefinitionThreadLocal.
+					setDeleteObjectDefinitionIdWithSafeCloseable(
+						_objectDefinition.getObjectDefinitionId())) {
+
+			_objectEntryLocalService.deleteObjectEntry(objectEntry);
+		}
+
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				objectEntry.getObjectEntryId()));
+		Assert.assertEquals(0, _argumentsList.size());
+
+		// Execute the object action when no object definition is being deleted
+
+		objectEntry = _addObjectEntry(
+			_objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				"firstName", "Paul"
+			).build());
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		_assertGroovyObjectActionExecutorArguments("Paul", objectEntry);
 	}
 
 	@Test
