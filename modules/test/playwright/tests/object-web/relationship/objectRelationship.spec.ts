@@ -3552,6 +3552,25 @@ test.describe('Manage object relationship entries', () => {
 					await expect(entryBItem).toBeVisible();
 
 					await entryBItem.click();
+
+					// Selecting relates the entry and closes the picker, and
+					// the relating is still in flight when the click resolves.
+					// The next iteration asks for another address, which tears
+					// down the frame the request belongs to and cancels it, so
+					// the relationship is never made and the row asserted on
+					// below never arrives. Wait for the picker to go and the
+					// relationship to show.
+
+					await expect(
+						page.locator('iframe[title="Select"]')
+					).toBeHidden();
+
+					await expect(
+						page
+							.getByRole('row')
+							.filter({hasText: 'Entry B'})
+							.first()
+					).toBeVisible();
 				}
 			});
 
