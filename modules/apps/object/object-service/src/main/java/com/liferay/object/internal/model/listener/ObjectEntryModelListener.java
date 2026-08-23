@@ -12,6 +12,7 @@ import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.entry.util.ObjectEntryPayloadUtil;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
@@ -124,7 +125,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 			User user = _userLocalService.getUser(userId);
 
-			if (!objectEntry.isInTrash()) {
+			if (!ObjectDefinitionThreadLocal.isDeleteObjectDefinitionId(
+					objectEntry.getObjectDefinitionId()) &&
+				!objectEntry.isInTrash()) {
+
 				_executeObjectActions(
 					ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE,
 					objectEntry, objectEntry, user);
