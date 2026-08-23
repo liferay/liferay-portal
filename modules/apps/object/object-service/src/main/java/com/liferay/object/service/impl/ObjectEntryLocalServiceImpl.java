@@ -3814,7 +3814,13 @@ public class ObjectEntryLocalServiceImpl
 
 				String deletionType = objectRelationship.getDeletionType();
 
-				if (ObjectEntryThreadLocal.isDisassociateRelatedModels()) {
+				if (ObjectEntryThreadLocal.isDisassociateRelatedModels() ||
+					(Objects.equals(
+						deletionType,
+						ObjectRelationshipConstants.DELETION_TYPE_PREVENT) &&
+					 ObjectDefinitionThreadLocal.isDeleteObjectDefinitionId(
+						 objectDefinitionId))) {
+
 					deletionType =
 						ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE;
 				}
