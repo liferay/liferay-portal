@@ -199,7 +199,7 @@ test('assert that the user is able to use the ERC field in Sort, on the Custom V
 		entry2
 	);
 
-	await page.getByTitle('Sortable Column').dblclick();
+	await page.getByTitle('Sortable Column').click();
 
 	await expect(page.locator('.cell-externalReferenceCode').nth(1)).toHaveText(
 		entry2
@@ -2556,7 +2556,7 @@ test(
 		await page
 			.getByRole('columnheader', {name: 'textField'})
 			.getByRole('button')
-			.dblclick();
+			.click();
 
 		const descendingCells = page.getByRole('cell');
 
