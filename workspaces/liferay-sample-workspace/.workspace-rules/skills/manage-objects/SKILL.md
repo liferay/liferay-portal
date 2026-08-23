@@ -91,7 +91,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Set `titleObjectFieldName` here too — it names the field used as the entry's display title in the UI and in relationship pickers. Omitting it leaves entries labelled by ID.
+Set `titleObjectFieldName` here too — it names the field used as the entry's display title in the UI and in relationship pickers. Omitting it leaves entries labeled by ID.
 
 Use the standalone `POST .../object-fields` call below only to add a field to an object that already exists.
 
@@ -175,7 +175,7 @@ Supply both. `defaultValue` is the entry **key** of the starting state; `default
 Two consequences worth planning around:
 
 - **The default actually fires.** A POST that omits the field entirely still succeeds and lands on the default state, despite `"required": true`. This is what you want for a public form — the visitor never submits a status.
-- **Liferay auto-generates a fully connected `stateFlow`.** Every state gets a transition to every other state, returned as a third `stateFlow` setting you did not send. If a state should be terminal (a cancelled registration that cannot go back to pending), you must constrain the flow explicitly — the default permits it.
+- **Liferay auto-generates a fully connected `stateFlow`.** Every state gets a transition to every other state, returned as a third `stateFlow` setting you did not send. If a state should be terminal (a canceled registration that cannot go back to pending), you must constrain the flow explicitly — the default permits it.
 
 A plain (non `state`) Picklist needs none of this.
 
@@ -243,10 +243,10 @@ curl \
 
 `function` accepts `COUNT`, `SUM`, `AVERAGE`, `MIN`, `MAX` (`ObjectFieldSettingConstants`); anything but `COUNT` also needs the child field to aggregate. Liferay adds a third `filters` setting itself.
 
-Three behaviours that decide whether you can use it:
+Three behaviors that decide whether you can use it:
 
 - **It ignores entry level permissions.** A Guest who cannot read a single child row still receives the correct count on the parent — verified with an unauthenticated `GET`. This is what lets a private, write-only submissions object feed a public number, and it is a genuinely better option than the object-action counter that `manage-pages` and `rules/guest-access.md` describe: nothing to maintain, nothing to drift, no scripting to enable.
-- **It serialises as a string.** `"registrationCount": "2"`, not `2`. Parse before arithmetic — `attendeeCapacity - registrationCount` in JavaScript silently concatenates, and in `jq` it throws `number and string cannot be subtracted`.
+- **It serializes as a string.** `"registrationCount": "2"`, not `2`. Parse before arithmetic — `attendeeCapacity - registrationCount` in JavaScript silently concatenates, and in `jq` it throws `number and string cannot be subtracted`.
 - **It is computed, so it is read only.** Do not send it on a POST or PATCH.
 
 Whether an Aggregation field can be *mapped* into a Collection fragment is a separate question — `manage-pages` → "Mapping Limits" says aggregates cannot be mapped, and that was not retested here. Reading it over REST from fragment JavaScript is verified.

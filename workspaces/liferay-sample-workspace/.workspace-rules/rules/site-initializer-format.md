@@ -353,7 +353,7 @@ So a tree may freely reference objects created live over `object-admin` — `res
 - The object must be **published**. The pre-pass filters on `STATUS_APPROVED`, so a draft definition registers no token.
 - The token is keyed on the definition's **short name**, which equals `name` for a custom object.
 
-**Do not generalise this to other entity types.** `[$LIST_TYPE_DEFINITION_ID:<Name>$]` is registered inside the per file loop in `_addOrUpdateListTypeDefinitions`, with no pre-pass, so it resolves only for picklists in this tree. When in doubt, find where the handler calls `stringUtilReplaceValues.put` — inside the loop means tree only, before the loop means company wide.
+**Do not generalize this to other entity types.** `[$LIST_TYPE_DEFINITION_ID:<Name>$]` is registered inside the per file loop in `_addOrUpdateListTypeDefinitions`, with no pre-pass, so it resolves only for picklists in this tree. When in doubt, find where the handler calls `stringUtilReplaceValues.put` — inside the loop means tree only, before the loop means company wide.
 
 The practical upshot is that a **mixed layout is workable**: objects managed live over `object-admin`, their logic and permissions still authored in the tree and version controlled. Object definitions, fields, actions, notification templates, and entries are all company scoped and survive site deletion, so they persist across the reprovisions that page and fragment work require. What is *not* reproducible is the objects themselves — a fresh bundle or a different environment starts without them, so say plainly which half of the data layer the tree actually rebuilds.
 

@@ -164,9 +164,9 @@ Filter that list to what you need (`grep -E '^(primary|btnPrimary|body|font|h[1-
 
 Classic declares 252 tokens. Useful ones: `bodyBgColor`, `bodyColor`, `primaryColor`, `primaryD1Color`, `primaryD2Color`, `primaryL1Color`…`primaryL3Color`, `secondaryColor`, `warningColor`, `warningD1Color`, `fontFamilyBase`, `fontSizeBase`, `fontWeightBold`, `fontWeightBolder`, `h1FontSize`…`h6FontSize`, and the full `btnPrimary*` / `btnSecondary*` sets (`BackgroundColor`, `BorderColor`, `Color`, and their `Hover` variants).
 
-Recolouring buttons takes the whole `btnPrimary*` set, not just the background — leaving `btnPrimaryColor` alone gives white label text on a light accent.
+Recoloring buttons takes the whole `btnPrimary*` set, not just the background — leaving `btnPrimaryColor` alone gives white label text on a light accent.
 
-**Classic has no `headings*` tokens at all** — `headingsColor`, `headingsFontFamily`, and `headingsFontWeight` are all plausible and all ignored. Only the *sizes* are tokenised (`h1FontSize`…`h6FontSize`); heading **family** and **weight** have no token.
+**Classic has no `headings*` tokens at all** — `headingsColor`, `headingsFontFamily`, and `headingsFontWeight` are all plausible and all ignored. Only the *sizes* are tokenized (`h1FontSize`…`h6FontSize`); heading **family** and **weight** have no token.
 
 ##### Site Wide CSS With No Token — Put It in a Master Page Fragment
 
@@ -231,7 +231,7 @@ getComputedStyle(document.querySelector('.my-fragment__title')).fontWeight;
 
 Leave explicit weights on non headings (`<p>` date stamps, buttons, uppercase micro labels) — those are not governed by the rule and often want a different weight on purpose.
 
-**Set family, weight, and tracking here — never `color`.** Headings must inherit colour from their section, or the same rule that styles dark text on the light content areas also paints the hero `h1` and footer `h2` in that colour, on their own dark background. The snippet above omits `color` for this reason; adding it is invisible on a light only site and renders headings unreadable the moment a navy hero or footer exists.
+**Set family, weight, and tracking here — never `color`.** Headings must inherit color from their section, or the same rule that styles dark text on the light content areas also paints the hero `h1` and footer `h2` in that color, on their own dark background. The snippet above omits `color` for this reason; adding it is invisible on a light only site and renders headings unreadable the moment a navy hero or footer exists.
 
 Weigh it against the alternatives before reaching for it:
 

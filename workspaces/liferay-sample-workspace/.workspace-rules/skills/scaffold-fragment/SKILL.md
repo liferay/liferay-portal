@@ -313,7 +313,7 @@ Append `?c` (the computer-readable format, giving `true` / `false`), and keep th
 <div data-upcoming-only="${(configuration.upcomingOnly!true)?c}">
 ```
 
-Parenthesising the default is the form verified here; bind it to the variable rather than to the formatted result. For human-facing output the error message itself suggests `?string('Yes', 'No')` instead of `?c`.
+Parenthesizing the default is the form verified here; bind it to the variable rather than to the formatted result. For human-facing output the error message itself suggests `?string('Yes', 'No')` instead of `?c`.
 
 This is the same rollback trap as an invalid `dataType`: inside a site initializer it aborts the whole site creation, so a fragment that reads a checkbox is worth rendering once before shipping the tree.
 

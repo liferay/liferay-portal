@@ -252,7 +252,7 @@ So the workable shape for a public listing is: grant Guest company scope `VIEW` 
 Two details that bite:
 
 - **Use `Liferay.Util.fetch`, not native `fetch`** (`skills/scaffold-client-extension/SKILL.md`).
-- **`Aggregation` serialises as a string** — an event with two registrations returns `"registrationCount": "2"`. `capacity - count` concatenates in JavaScript. Parse first.
+- **`Aggregation` serializes as a string** — an event with two registrations returns `"registrationCount": "2"`. `capacity - count` concatenates in JavaScript. Parse first.
 
 ##### Read DateTime With the UTC Getters
 
