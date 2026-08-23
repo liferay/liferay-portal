@@ -133,8 +133,10 @@ public class SegmentsServiceUpgradeStepRegistrator
 			new com.liferay.segments.internal.upgrade.v4_0_0.
 				SegmentsExperienceUpgradeProcess());
 
+		registry.register("4.0.0", "4.0.1", new DummyUpgradeStep());
+
 		registry.register(
-			"4.0.0", "4.1.0", SegmentsExperienceAudienceEntryRelTable.create());
+			"4.0.1", "4.1.0", SegmentsExperienceAudienceEntryRelTable.create());
 
 		registry.register(
 			"4.1.0", "4.1.1",
