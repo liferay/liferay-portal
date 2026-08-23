@@ -1586,11 +1586,15 @@ definition {
 
 	@summary = "Default summary"
 	macro saveSidePanel() {
+		ExecuteJavaScript(value1 = "var markerElement = window.top.document.createElement('div'); markerElement.className = 'poshi-outgoing-document-marker'; window.top.document.body.appendChild(markerElement);");
+
 		Click(
 			key_text = "Save",
 			locator1 = "Button#ANY");
 
 		SelectFrame(value1 = "relative=top");
+
+		WaitForElementNotPresent(locator1 = "//div[@class='poshi-outgoing-document-marker']");
 
 		WaitForPageLoad();
 
