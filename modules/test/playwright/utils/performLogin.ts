@@ -73,6 +73,8 @@ async function performLogin(
 
 	await emailAddressInput.fill(`${screenName}${domain}`);
 
+	await expect(emailAddressInput).toHaveValue(`${screenName}${domain}`);
+
 	await page.getByLabel('Password').fill(password);
 	await page.getByLabel('Remember Me').setChecked(rememberMe);
 
