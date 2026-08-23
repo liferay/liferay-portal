@@ -16,7 +16,8 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
-import performLogin, {
+import {
+	performLoginViaApi,
 	performLogout,
 	userData,
 } from '../../../utils/performLogin';
@@ -573,7 +574,7 @@ test.describe('Manage root model elements through View Object Entries', () => {
 			};
 
 			await performLogout(page);
-			await performLogin(page, user1.alternateName);
+			await performLoginViaApi({page, screenName: user1.alternateName});
 
 			await viewObjectEntriesPage.goto(objectDefinition1.className);
 
@@ -597,7 +598,7 @@ test.describe('Manage root model elements through View Object Entries', () => {
 			};
 
 			await performLogout(page);
-			await performLogin(page, user2.alternateName);
+			await performLoginViaApi({page, screenName: user2.alternateName});
 
 			await viewObjectEntriesPage.goto(objectDefinition1.className);
 
@@ -614,7 +615,7 @@ test.describe('Manage root model elements through View Object Entries', () => {
 		}
 		finally {
 			await performLogout(page);
-			await performLogin(page, 'test');
+			await performLoginViaApi({page, screenName: 'test'});
 
 			const objectRelationshipAPIClient =
 				await apiHelpers.buildRestClient(ObjectRelationshipAPI);
