@@ -46,12 +46,11 @@ public class ProjectFaroControllerTest {
 	@Before
 	public void setUp() {
 		ReflectionTestUtils.setField(
-			_projectFaroController, "_provisioningClient",
-			new ProvisioningClientImpl());
-
-		ReflectionTestUtils.setField(
 			_projectFaroController, "_provisionBackoffPortalCache",
 			new TestPortalCache());
+		ReflectionTestUtils.setField(
+			_projectFaroController, "_provisioningClient",
+			new ProvisioningClientImpl());
 	}
 
 	@Test
