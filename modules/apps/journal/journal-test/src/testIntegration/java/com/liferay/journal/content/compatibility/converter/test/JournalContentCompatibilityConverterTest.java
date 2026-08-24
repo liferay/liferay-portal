@@ -192,13 +192,13 @@ public class JournalContentCompatibilityConverterTest {
 
 		content = _journalContentCompatibilityConverter.convert(content);
 
+		Document document = SAXReaderUtil.read(content);
+
 		String expectedContent = read(
 			"test-journal-content-multi-list-field-compatibility-expected-" +
 				"results.xml");
 
 		Document expectedDocument = SAXReaderUtil.read(expectedContent);
-
-		Document document = SAXReaderUtil.read(content);
 
 		Assert.assertEquals(
 			_getFormattedString(expectedDocument),
