@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.theme.ThemeUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsWebKeys;
@@ -75,6 +76,8 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 		long[] originalSegmentsExperienceIds = GetterUtil.getLongValues(
 			httpServletRequest.getAttribute(
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS));
+		Locale originalThemeDisplayLocale =
+			LocaleThreadLocal.getThemeDisplayLocale();
 
 		ServiceContext clonedServiceContext =
 			(ServiceContext)serviceContext.clone();
@@ -85,6 +88,8 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 		ServiceContextThreadLocal.pushServiceContext(clonedServiceContext);
 
 		try {
+			LocaleThreadLocal.setThemeDisplayLocale(locale);
+
 			httpServletRequest.setAttribute(
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
 				new long[] {segmentsExperienceId});
@@ -167,6 +172,8 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 				WebKeys.THEME_DISPLAY, originalThemeDisplay);
 
 			layout.setClassNameId(originalClassNameId);
+
+			LocaleThreadLocal.setThemeDisplayLocale(originalThemeDisplayLocale);
 
 			ServiceContextThreadLocal.popServiceContext();
 		}
