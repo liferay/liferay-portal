@@ -68,7 +68,7 @@ public class AuditFilterTest {
 	}
 
 	@Test
-	public void testDoFilterTryCapturesAuditSessionIdWhenAuthenticated()
+	public void testDoFilterCapturesAuditSessionIdWhenAuthenticated()
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -82,7 +82,7 @@ public class AuditFilterTest {
 
 		httpSession.setAttribute(WebKeys.USER_ID, TestPropsValues.getUserId());
 
-		_filterTry(mockHttpServletRequest);
+		_testDoFilter(mockHttpServletRequest);
 
 		AuditRequestThreadLocal auditRequestThreadLocal =
 			AuditRequestThreadLocal.getAuditThreadLocal();
@@ -94,10 +94,10 @@ public class AuditFilterTest {
 	}
 
 	@Test
-	public void testDoFilterTryCapturesNoAuditSessionIdBeforeAuthentication()
+	public void testDoFilterCapturesNoAuditSessionIdBeforeAuthentication()
 		throws Exception {
 
-		_filterTry(new MockHttpServletRequest());
+		_testDoFilter(new MockHttpServletRequest());
 
 		AuditRequestThreadLocal auditRequestThreadLocal =
 			AuditRequestThreadLocal.getAuditThreadLocal();
@@ -164,7 +164,18 @@ public class AuditFilterTest {
 		}
 	}
 
-	private void _filterTry(MockHttpServletRequest mockHttpServletRequest)
+	private boolean _isFilterEnabled(long companyId) {
+		LiferayFilter liferayFilter = (LiferayFilter)_filter;
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			return liferayFilter.isFilterEnabled(
+				new MockHttpServletRequest(), new MockHttpServletResponse());
+		}
+	}
+
+	private void _testDoFilter(MockHttpServletRequest mockHttpServletRequest)
 		throws Exception {
 
 		try (SafeCloseable safeCloseable =
@@ -179,17 +190,6 @@ public class AuditFilterTest {
 
 			invokerFilterChain.doFilter(
 				mockHttpServletRequest, new MockHttpServletResponse());
-		}
-	}
-
-	private boolean _isFilterEnabled(long companyId) {
-		LiferayFilter liferayFilter = (LiferayFilter)_filter;
-
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
-
-			return liferayFilter.isFilterEnabled(
-				new MockHttpServletRequest(), new MockHttpServletResponse());
 		}
 	}
 

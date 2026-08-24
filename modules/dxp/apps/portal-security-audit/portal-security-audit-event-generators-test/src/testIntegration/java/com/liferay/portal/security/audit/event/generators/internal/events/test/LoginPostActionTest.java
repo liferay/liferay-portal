@@ -136,7 +136,7 @@ public class LoginPostActionTest {
 		secondMockHttpServletRequest.setSession(
 			mockHttpServletRequest.getSession());
 
-		_filterTry(secondMockHttpServletRequest);
+		_testDoFilter(secondMockHttpServletRequest);
 
 		AuditRequestThreadLocal auditRequestThreadLocal =
 			AuditRequestThreadLocal.getAuditThreadLocal();
@@ -234,24 +234,6 @@ public class LoginPostActionTest {
 		return null;
 	}
 
-	private void _filterTry(MockHttpServletRequest mockHttpServletRequest)
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					TestPropsValues.getCompanyId())) {
-
-			InvokerFilterChain invokerFilterChain = new InvokerFilterChain(
-				(servletRequest, servletResponse) -> {
-				});
-
-			invokerFilterChain.addFilter(_filter);
-
-			invokerFilterChain.doFilter(
-				mockHttpServletRequest, new MockHttpServletResponse());
-		}
-	}
-
 	private String _getAuditSessionId(
 		MockHttpServletRequest mockHttpServletRequest) {
 
@@ -270,6 +252,24 @@ public class LoginPostActionTest {
 					TestPropsValues.getCompanyId())) {
 
 			_loginPostAction.run(
+				mockHttpServletRequest, new MockHttpServletResponse());
+		}
+	}
+
+	private void _testDoFilter(MockHttpServletRequest mockHttpServletRequest)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					TestPropsValues.getCompanyId())) {
+
+			InvokerFilterChain invokerFilterChain = new InvokerFilterChain(
+				(servletRequest, servletResponse) -> {
+				});
+
+			invokerFilterChain.addFilter(_filter);
+
+			invokerFilterChain.doFilter(
 				mockHttpServletRequest, new MockHttpServletResponse());
 		}
 	}
