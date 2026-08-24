@@ -8,10 +8,10 @@ package com.liferay.portal.workflow.metrics.internal.search.index;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.document.DocumentBuilder;
@@ -63,9 +63,8 @@ public abstract class BaseWorkflowMetricsIndexer {
 		if (ListUtil.isNotEmpty(
 				bulkDocumentRequest.getBulkableDocumentRequests())) {
 
-			if (PortalRunMode.isTestMode()) {
-				bulkDocumentRequest.setRefresh(true);
-			}
+			bulkDocumentRequest.setRefresh(
+				IndexWriterHelperUtil.isIndexCommitImmediately());
 
 			searchEngineAdapter.execute(bulkDocumentRequest);
 		}
@@ -93,9 +92,8 @@ public abstract class BaseWorkflowMetricsIndexer {
 		IndexDocumentRequest indexDocumentRequest = new IndexDocumentRequest(
 			getIndexName(document.getLong("companyId")), document);
 
-		if (PortalRunMode.isTestMode()) {
-			indexDocumentRequest.setRefresh(true);
-		}
+		indexDocumentRequest.setRefresh(
+			IndexWriterHelperUtil.isIndexCommitImmediately());
 
 		searchEngineAdapter.execute(indexDocumentRequest);
 	}
@@ -190,9 +188,8 @@ public abstract class BaseWorkflowMetricsIndexer {
 		if (ListUtil.isNotEmpty(
 				bulkDocumentRequest.getBulkableDocumentRequests())) {
 
-			if (PortalRunMode.isTestMode()) {
-				bulkDocumentRequest.setRefresh(true);
-			}
+			bulkDocumentRequest.setRefresh(
+				IndexWriterHelperUtil.isIndexCommitImmediately());
 
 			searchEngineAdapter.execute(bulkDocumentRequest);
 		}
@@ -216,9 +213,8 @@ public abstract class BaseWorkflowMetricsIndexer {
 			getIndexName(document.getLong("companyId")),
 			document.getString("uid"), document);
 
-		if (PortalRunMode.isTestMode()) {
-			updateDocumentRequest.setRefresh(true);
-		}
+		updateDocumentRequest.setRefresh(
+			IndexWriterHelperUtil.isIndexCommitImmediately());
 
 		updateDocumentRequest.setUpsert(true);
 
