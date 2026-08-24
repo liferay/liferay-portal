@@ -17,6 +17,7 @@ import co.elastic.clients.elasticsearch.indices.DeleteIndexRequest;
 import co.elastic.clients.elasticsearch.indices.ElasticsearchIndicesClient;
 import co.elastic.clients.json.JsonData;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -26,6 +27,9 @@ import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchEngineHelperUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
@@ -73,6 +77,9 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
 /**
  * @author Dylan Rebelak
  */
@@ -113,6 +120,62 @@ public class ElasticsearchSearchEngineAdapterDocumentRequestTest {
 		_deleteIndex();
 
 		_documentFixture.tearDown();
+	}
+
+	@Test
+	public void testExecuteBatchModeAfterExactMultipleFlush() throws Exception {
+		try (MockedStatic<SearchEngineHelperUtil>
+				searchEngineHelperUtilMockedStatic = Mockito.mockStatic(
+					SearchEngineHelperUtil.class)) {
+
+			ExecutorService executorService = Mockito.mock(
+				ExecutorService.class);
+
+			Mockito.doAnswer(
+				invocation -> {
+					Runnable runnable = invocation.getArgument(0);
+
+					runnable.run();
+
+					return null;
+				}
+			).when(
+				executorService
+			).execute(
+				Mockito.any(Runnable.class)
+			);
+
+			searchEngineHelperUtilMockedStatic.when(
+				SearchEngineHelperUtil::getDocumentsConsumerExecutorService
+			).thenReturn(
+				executorService
+			);
+
+			try (SafeCloseable safeCloseable = SearchContext.openBatchMode(
+					false)) {
+
+				for (int i = 0; i < Indexer.DEFAULT_INTERVAL; i++) {
+					_searchEngineAdapter.execute(
+						_createIndexDocumentRequest(String.valueOf(i)));
+				}
+			}
+
+			GetResponse getResponse1 = _getDocument("0");
+
+			Assert.assertTrue(getResponse1.found());
+
+			String id = "remainder";
+
+			try (SafeCloseable safeCloseable = SearchContext.openBatchMode(
+					false)) {
+
+				_searchEngineAdapter.execute(_createIndexDocumentRequest(id));
+			}
+
+			GetResponse getResponse2 = _getDocument(id);
+
+			Assert.assertTrue(getResponse2.found());
+		}
 	}
 
 	@Test
@@ -729,6 +792,20 @@ public class ElasticsearchSearchEngineAdapterDocumentRequestTest {
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+	}
+
+	private IndexDocumentRequest _createIndexDocumentRequest(String uid) {
+		Document document = new DocumentImpl();
+
+		document.addKeyword(Field.UID, uid);
+
+		IndexDocumentRequest indexDocumentRequest = new IndexDocumentRequest(
+			_INDEX_NAME, document);
+
+		indexDocumentRequest.setType(
+			IndexMappingsConstants.LIFERAY_DOCUMENT_TYPE);
+
+		return indexDocumentRequest;
 	}
 
 	private void _deleteIndex() {
