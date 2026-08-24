@@ -1565,6 +1565,64 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/PublishProcess"
             tags: ["PublishProcess"]
+    "/publish-processes/{publishProcessId}/report-entries":
+        get:
+            description:
+                Retrieves the report entries associated with the specified publish process ID.
+            operationId: getPublishProcessReportEntriesPage
+            parameters:
+                -   in: path
+                    name: publishProcessId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ReportEntry"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ReportEntry"
+                                type: array
+            tags: ["ReportEntry"]
     "/report-entry/{reportEntryId}":
         get:
             description:
