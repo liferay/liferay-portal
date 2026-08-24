@@ -49,7 +49,6 @@ interface OperatorImpl {
 
 export class Detection {
 	private _audiencesDefinition: AudiencesDefinition;
-	private _acSegments: Set<string> | undefined;
 	private _uaParser: UAParser;
 
 	constructor(audiencesDefinition: AudiencesDefinition) {
