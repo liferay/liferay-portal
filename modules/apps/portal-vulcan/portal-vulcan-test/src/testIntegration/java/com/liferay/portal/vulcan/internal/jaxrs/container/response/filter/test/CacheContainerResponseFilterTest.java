@@ -109,11 +109,28 @@ public class CacheContainerResponseFilterTest {
 			"public", _getCacheControl(_openURLConnection("/test")));
 	}
 
+	@Test
+	public void testCacheWithOverlappingCacheableEndpoints() throws Exception {
+		_addCacheableEndpoint(
+			"/test-vulcan-cache/tests/*/nested", "private", 0);
+		_addCacheableEndpoint("/test-vulcan-cache/tests/1/nested", "public", 0);
+
+		Assert.assertEquals(
+			"public", _getCacheControl(_openURLConnection("/tests/1/nested")));
+		Assert.assertEquals(
+			"private", _getCacheControl(_openURLConnection("/tests/2/nested")));
+	}
+
 	public static class TestApplication extends Application {
 
 		@Override
 		public Set<Object> getSingletons() {
 			return Collections.singleton(this);
+		}
+
+		@GET
+		@Path("/tests/{testId}/nested")
+		public void nested() {
 		}
 
 		@GET
