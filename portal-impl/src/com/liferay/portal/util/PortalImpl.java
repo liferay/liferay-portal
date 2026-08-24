@@ -7583,6 +7583,8 @@ public class PortalImpl implements Portal {
 			boolean includeDefaultLocaleI18nPath)
 		throws PortalException {
 
+		Map<Locale, String> changeLanguageURLs = new HashMap<>();
+
 		Layout layout = themeDisplay.getLayout();
 
 		String layoutURL = currentURL;
@@ -7591,8 +7593,8 @@ public class PortalImpl implements Portal {
 		int questionIndex = currentURL.indexOf(StringPool.QUESTION);
 
 		if (questionIndex != -1) {
-			queryString = currentURL.substring(questionIndex);
 			layoutURL = currentURL.substring(0, questionIndex);
+			queryString = currentURL.substring(questionIndex);
 		}
 
 		String friendlyURLSeparator = StringPool.BLANK;
@@ -7625,13 +7627,12 @@ public class PortalImpl implements Portal {
 			layoutURL = layoutURL.substring(0, friendlyURLSeparatorIndex);
 		}
 
-		Locale currentLocale = themeDisplay.getLocale();
-
 		String friendlyURLMappingPath = StringPool.BLANK;
 
-		String currentLayoutFriendlyURL = layout.getFriendlyURL(currentLocale);
+		Locale currentLocale = themeDisplay.getLocale();
 
 		int currentLayoutFriendlyURLIndex = -1;
+		String currentLayoutFriendlyURL = layout.getFriendlyURL(currentLocale);
 
 		if (Validator.isNotNull(currentLayoutFriendlyURL)) {
 			currentLayoutFriendlyURLIndex = layoutURL.indexOf(
@@ -7676,8 +7677,6 @@ public class PortalImpl implements Portal {
 			getCompanyId(httpServletRequest),
 			PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE);
 
-		Map<Locale, String> changeLanguageURLs = new HashMap<>();
-
 		for (Locale locale : locales) {
 			String curFriendlyURLSeparatorPart = friendlyURLSeparatorPart;
 
@@ -7709,7 +7708,7 @@ public class PortalImpl implements Portal {
 				}
 			}
 
-			String changeLanguageURL;
+			String changeLanguageURL = null;
 
 			if (!Validator.isBlank(themeDisplay.getPathMain()) &&
 				layoutURL.startsWith(themeDisplay.getPathMain())) {

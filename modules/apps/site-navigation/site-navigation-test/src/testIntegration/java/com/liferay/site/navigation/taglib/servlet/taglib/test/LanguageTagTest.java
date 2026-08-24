@@ -130,9 +130,9 @@ public class LanguageTagTest {
 	private List<LanguageEntry> _getLanguageEntries(
 		String currentURLSuffix, String formAction, ThemeDisplay themeDisplay) {
 
-		Layout layout = themeDisplay.getLayout();
-
 		String currentURL = null;
+
+		Layout layout = themeDisplay.getLayout();
 
 		if (layout != null) {
 			currentURL = StringBundler.concat(
@@ -158,6 +158,8 @@ public class LanguageTagTest {
 	private List<LanguageEntry> _getLanguageEntriesForURL(
 		String currentURL, String formAction, ThemeDisplay themeDisplay) {
 
+		LanguageTag languageTag = new LanguageTag();
+
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
@@ -173,8 +175,6 @@ public class LanguageTagTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		themeDisplay.setRequest(mockHttpServletRequest);
-
-		LanguageTag languageTag = new LanguageTag();
 
 		languageTag.setPageContext(
 			new MockPageContext(
@@ -216,15 +216,15 @@ public class LanguageTagTest {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		Company company = CompanyLocalServiceUtil.getCompany(
-			_group.getCompanyId());
+		themeDisplay.setCompany(
+			CompanyLocalServiceUtil.getCompany(_group.getCompanyId()));
+		themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
+		themeDisplay.setLayout(layout);
 
 		LayoutSet layoutSet = layout.getLayoutSet();
 
-		themeDisplay.setCompany(company);
-		themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
-		themeDisplay.setLayout(layout);
 		themeDisplay.setLayoutSet(layoutSet);
+
 		themeDisplay.setLayoutTypePortlet(
 			(LayoutTypePortlet)layout.getLayoutType());
 		themeDisplay.setLocale(locale);
@@ -480,69 +480,64 @@ public class LanguageTagTest {
 
 		_assertLocalizedURL(_layout, LocaleUtil.FRANCE, StringPool.BLANK, url);
 
-		try {
-			String defaultVirtualHostname = RandomTestUtil.randomString();
+		String defaultVirtualHostname = RandomTestUtil.randomString();
 
-			layoutSet.setVirtualHostnames(
-				TreeMapBuilder.put(
-					defaultVirtualHostname, StringPool.BLANK
-				).build());
+		layoutSet.setVirtualHostnames(
+			TreeMapBuilder.put(
+				defaultVirtualHostname, StringPool.BLANK
+			).build());
 
-			Assert.assertEquals(
-				url,
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(_layout, LocaleUtil.US)),
-					LocaleUtil.FRANCE));
+		Assert.assertEquals(
+			url,
+			_getURL(
+				_getLanguageEntries(_getThemeDisplay(_layout, LocaleUtil.US)),
+				LocaleUtil.FRANCE));
 
-			String groupVirtualHostnameURL = _getURL(
+		String groupVirtualHostnameURL = _getURL(
+			_getLanguageEntries(
+				_getThemeDisplay(
+					_layout, LocaleUtil.US,
+					"http://" + defaultVirtualHostname)),
+			LocaleUtil.FRANCE);
+
+		Assert.assertEquals(
+			"/fr" + _layout.getFriendlyURL(LocaleUtil.FRANCE),
+			groupVirtualHostnameURL);
+
+		String localizedVirtualHostname = RandomTestUtil.randomString();
+
+		layoutSet.setVirtualHostnames(
+			TreeMapBuilder.put(
+				defaultVirtualHostname, StringPool.BLANK
+			).put(
+				localizedVirtualHostname,
+				LocaleUtil.toLanguageId(LocaleUtil.FRANCE)
+			).build());
+
+		Assert.assertEquals(
+			url,
+			_getURL(
+				_getLanguageEntries(_getThemeDisplay(_layout, LocaleUtil.US)),
+				LocaleUtil.FRANCE));
+
+		Assert.assertEquals(
+			groupVirtualHostnameURL,
+			_getURL(
 				_getLanguageEntries(
 					_getThemeDisplay(
 						_layout, LocaleUtil.US,
 						"http://" + defaultVirtualHostname)),
-				LocaleUtil.FRANCE);
+				LocaleUtil.FRANCE));
+		Assert.assertEquals(
+			groupVirtualHostnameURL,
+			_getURL(
+				_getLanguageEntries(
+					_getThemeDisplay(
+						_layout, LocaleUtil.US,
+						"http://" + localizedVirtualHostname)),
+				LocaleUtil.FRANCE));
 
-			Assert.assertEquals(
-				"/fr" + _layout.getFriendlyURL(LocaleUtil.FRANCE),
-				groupVirtualHostnameURL);
-
-			String localizedVirtualHostname = RandomTestUtil.randomString();
-
-			layoutSet.setVirtualHostnames(
-				TreeMapBuilder.put(
-					defaultVirtualHostname, StringPool.BLANK
-				).put(
-					localizedVirtualHostname,
-					LocaleUtil.toLanguageId(LocaleUtil.FRANCE)
-				).build());
-
-			Assert.assertEquals(
-				url,
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(_layout, LocaleUtil.US)),
-					LocaleUtil.FRANCE));
-
-			Assert.assertEquals(
-				groupVirtualHostnameURL,
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(
-							_layout, LocaleUtil.US,
-							"http://" + defaultVirtualHostname)),
-					LocaleUtil.FRANCE));
-			Assert.assertEquals(
-				groupVirtualHostnameURL,
-				_getURL(
-					_getLanguageEntries(
-						_getThemeDisplay(
-							_layout, LocaleUtil.US,
-							"http://" + localizedVirtualHostname)),
-					LocaleUtil.FRANCE));
-		}
-		finally {
-			layoutSet.setVirtualHostnames(new TreeMap<>());
-		}
+		layoutSet.setVirtualHostnames(new TreeMap<>());
 	}
 
 	private static final String _FORM_ACTION = "/custom/view";
