@@ -5,22 +5,91 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {ApiHelpers} from '../../helpers/ApiHelpers';
 import {clickAndExpectToBeHidden} from '../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
+import getRandomString from '../../utils/getRandomString';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
+import {PageEditorPage} from '../layout-content-page-editor-web/PageEditorPage';
 
 export class DisplayPageTemplatesPage {
 	readonly page: Page;
 
+	readonly apiHelpers: ApiHelpers;
 	readonly newButton: Locator;
 	readonly publishButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 
+		this.apiHelpers = new ApiHelpers(page);
 		this.newButton = page.getByText('New', {exact: true});
 		this.publishButton = page.getByLabel('Publish', {exact: true});
+	}
+
+	/**
+	 * Creates the default display page template of an item type and maps a
+	 * Heading fragment to one of its fields, so an item of that type renders
+	 * its own value at its friendly URL.
+	 *
+	 * The template is created and marked as default through the API. Only the
+	 * fragment mapping goes through the page editor, because no API exposes it.
+	 */
+	async createDefaultTemplate({
+		className,
+		mappedField = 'Title',
+		pageEditorPage,
+		site,
+	}: {
+		className: string;
+		mappedField?: string;
+		pageEditorPage: PageEditorPage;
+		site: Site;
+	}) {
+		const name = `DPT ${getRandomString()}`;
+
+		const {classNameId} =
+			await this.apiHelpers.jsonWebServicesClassName.fetchClassName(
+				className
+			);
+
+		const {layoutPageTemplateEntryId} =
+			await this.apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+				{
+					classNameId,
+					groupId: String(site.id),
+					name,
+				}
+			);
+
+		await this.apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+			{layoutPageTemplateEntryId}
+		);
+
+		await this.goto(site.friendlyUrlPath);
+
+		await this.editTemplate(name);
+
+		await pageEditorPage.addFragment(
+			'Basic Components',
+			'Heading',
+			this.page.getByText('Drag and drop fragments or widgets here')
+		);
+
+		const headingId = await pageEditorPage.getFragmentId('Heading');
+
+		await pageEditorPage.selectEditable(headingId, 'element-text');
+
+		await pageEditorPage.changeConfiguration({
+			fieldLabel: 'Field',
+			tab: 'Mapping',
+			value: mappedField,
+		});
+
+		await pageEditorPage.publishPage();
+
+		return name;
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
