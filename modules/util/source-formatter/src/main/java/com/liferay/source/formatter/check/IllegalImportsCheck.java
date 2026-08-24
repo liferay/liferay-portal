@@ -215,33 +215,6 @@ public class IllegalImportsCheck extends BaseFileCheck {
 					"LPS-55690");
 		}
 
-		if (content.contains(".supportsBatchUpdates()") &&
-			!fileName.endsWith("AutoBatchPreparedStatementUtil.java")) {
-
-			addMessage(
-				fileName,
-				"Use AutoBatchPreparedStatementUtil instead of " +
-					"DatabaseMetaData.supportsBatchUpdates, see LPS-60473");
-		}
-
-		if (content.contains("Configurable.createConfigurable(") &&
-			!fileName.endsWith("ConfigurableUtil.java")) {
-
-			addMessage(
-				fileName,
-				"Use ConfigurableUtil.createConfigurable instead of " +
-					"Configurable.createConfigurable, see LPS-64056");
-		}
-
-		if (content.contains("ServletResponseUtil.sendFile(") &&
-			fileName.endsWith("ResourceCommand.java")) {
-
-			addMessage(
-				fileName,
-				"Use PortletResponseUtil.sendFile instead of " +
-					"ServletResponseUtil.sendFile, see LPS-65229");
-		}
-
 		SourceProcessor sourceProcessor = getSourceProcessor();
 
 		SourceFormatterArgs sourceFormatterArgs =
