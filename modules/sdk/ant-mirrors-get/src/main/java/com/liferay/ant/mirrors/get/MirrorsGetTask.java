@@ -24,7 +24,6 @@ import java.net.URLConnection;
 import java.net.URLDecoder;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 
@@ -224,11 +223,6 @@ public class MirrorsGetTask extends Task {
 	private File _addToCache(File tempFile, File cacheFile) throws IOException {
 		try {
 			Files.createLink(cacheFile.toPath(), tempFile.toPath());
-
-			return tempFile;
-		}
-		catch (FileAlreadyExistsException fileAlreadyExistsException) {
-			System.out.println(cacheFile.getPath() + " was already cached.");
 
 			return tempFile;
 		}
