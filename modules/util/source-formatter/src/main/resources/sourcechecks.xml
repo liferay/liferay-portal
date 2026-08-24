@@ -820,10 +820,6 @@
 			<property name="checkSelfRegistration" value="false" />
 			<property name="checkUsesInternalService" value="false" />
 		</check>
-		<check name="JavaConfigurableCreateConfigurableCheck">
-			<category name="Bug Prevention" />
-			<description name="Checks illegal call to `Configurable.createConfigurable`." />
-		</check>
 		<check name="JavaConnectionTransactionCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that `commit`, `rollback`, and `setAutoCommit` are not called on a `java.sql.Connection`, see LPD-98668." />
@@ -832,10 +828,6 @@
 		<check name="JavaConstantsFileCheck">
 			<category name="Naming Conventions" />
 			<description name="Checks if constants names follow naming conventions." />
-		</check>
-		<check name="JavaDatabaseMetaDataSupportsBatchUpdatesCheck">
-			<category name="Bug Prevention" />
-			<description name="Checks illegal call to `DatabaseMetaData.supportsBatchUpdates`." />
 		</check>
 		<check name="JavaDeprecatedJavadocCheck">
 			<category name="Javadoc" />
@@ -950,10 +942,6 @@
 		<check name="JavaServiceUtilCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that there are no calls to `*ServiceImpl` from a `*ServiceUtil` class." />
-		</check>
-		<check name="JavaServletResponseUtilSendFileCheck">
-			<category name="Bug Prevention" />
-			<description name="Checks illegal call to `ServletResponseUtil.sendFile` in `*ResourceCommand.java`." />
 		</check>
 		<check name="JavaSignatureParametersCheck">
 			<category name="Styling" />

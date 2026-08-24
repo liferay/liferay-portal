@@ -332,6 +332,11 @@
 			<message key="start.character.invalid" value="When concatenating multiple literal strings, only the first literal string can start with &quot;{0}&quot;" />
 			<message key="string.combine" value="Combine the literal string &quot;{0}&quot; with &quot;{1}&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.ConfigurableCreateConfigurableCallCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Checks illegal call to `Configurable.createConfigurable`." />
+			<message key="method.call.avoid" value="Use &quot;ConfigurableUtil.createConfigurable&quot; instead of &quot;Configurable.createConfigurable&quot;, see LPS-64056" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ConstantNameCheck">
 			<property name="camelCaseTypeNames" value="AggregateTestRule,Atomic.*,CodeCoverageAssertor,LiferayIntegrationTestRule,Log,Pattern,TestRule" />
 			<property name="category" value="Naming Conventions" />
@@ -383,6 +388,11 @@
 			<property name="description" value="Checks usages of `java.sql.DatabaseMetaData`." />
 			<property name="enabled" value="false" />
 			<message key="replace.get.index.info" value="Use the method &quot;com.liferay.portal.kernel.dao.db.DB#getIndexResult()&quot; instead of &quot;{0}.getIndexInfo()&quot;" />
+		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.DatabaseMetaDataSupportsBatchUpdatesCallCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Checks illegal call to `DatabaseMetaData.supportsBatchUpdates`." />
+			<message key="method.call.avoid" value="Use &quot;AutoBatchPreparedStatementUtil&quot; instead of &quot;DatabaseMetaData.supportsBatchUpdates&quot;, see LPS-60473" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.DeprecatedAPICheck">
 			<property name="category" value="Bug Prevention" />
@@ -881,6 +891,11 @@
 			<property name="description" value="Checks that there are no stale references in service code from service updates." />
 			<property name="enabled" value="false" />
 			<message key="update.call.reassign" value="Update call should be reassigned to variable &quot;{0}&quot;" />
+		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.ServletResponseUtilSendFileCallCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Checks illegal call to `ServletResponseUtil.sendFile`." />
+			<message key="method.call.avoid" value="Use &quot;PortletResponseUtil.sendFile&quot; instead of &quot;ServletResponseUtil.sendFile&quot;, see LPS-65229" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.SizeIsZeroCheck">
 			<property name="category" value="Styling" />
