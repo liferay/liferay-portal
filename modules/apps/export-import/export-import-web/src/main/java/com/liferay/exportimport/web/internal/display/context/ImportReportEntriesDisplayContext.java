@@ -51,7 +51,7 @@ public class ImportReportEntriesDisplayContext {
 		).setMVCRenderCommandName(
 			"/export_import/view_import_report_entry_detail"
 		).setBackURL(
-			ParamUtil.getString(_httpServletRequest, "redirect")
+			ParamUtil.getString(_httpServletRequest, "backURL")
 		).setParameter(
 			"reportEntryId", "{id}"
 		).buildString();
