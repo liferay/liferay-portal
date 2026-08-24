@@ -36,6 +36,7 @@ public class AWSByteBufferUtilTest {
 		byte[] byteBufferBytes = AWSByteBufferUtil.getBytes(byteBuffer);
 
 		Assert.assertArrayEquals(bytes, byteBufferBytes);
+
 		Assert.assertArrayEquals(new byte[bytes.length], clonedBytes);
 	}
 
@@ -51,6 +52,7 @@ public class AWSByteBufferUtilTest {
 			byteBuffer.asReadOnlyBuffer());
 
 		Assert.assertArrayEquals(bytes, byteBufferBytes);
+
 		Assert.assertArrayEquals(bytes, clonedBytes);
 	}
 
