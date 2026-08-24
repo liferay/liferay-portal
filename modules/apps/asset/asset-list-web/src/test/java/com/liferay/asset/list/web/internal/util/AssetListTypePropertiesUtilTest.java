@@ -373,9 +373,9 @@ public class AssetListTypePropertiesUtilTest {
 
 		String[] expectedNames = {
 			Field.CREATE_DATE, Field.DISPLAY_DATE, Field.EXPIRATION_DATE,
-			"externalReferenceCode", Field.MODIFIED_DATE, Field.PRIORITY,
-			Field.PUBLISH_DATE, Field.REVIEW_DATE, Field.STATUS, Field.TITLE,
-			Field.USER_NAME, "viewCount"
+			Field.MODIFIED_DATE, Field.PRIORITY, Field.PUBLISH_DATE,
+			Field.REVIEW_DATE, Field.STATUS, Field.TITLE, Field.USER_NAME,
+			"externalReferenceCode", "viewCount"
 		};
 
 		for (String expectedName : expectedNames) {
