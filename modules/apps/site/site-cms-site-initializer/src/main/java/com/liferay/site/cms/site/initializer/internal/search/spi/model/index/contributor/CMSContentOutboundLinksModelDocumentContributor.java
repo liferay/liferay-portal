@@ -8,6 +8,8 @@ package com.liferay.site.cms.site.initializer.internal.search.spi.model.index.co
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
@@ -114,7 +116,8 @@ public class CMSContentOutboundLinksModelDocumentContributor
 				}
 				else if (Objects.equals(
 							businessType,
-							ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+							ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
+						 _isReferenceFileSource(objectField)) {
 
 					for (String value :
 							_getValues(indexedValues, objectField)) {
@@ -123,7 +126,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 							_getReferencedObjectEntryId(
 								GetterUtil.getLong(value), objectEntry);
 
-						if (referencedObjectEntryId != 0) {
+						if (referencedObjectEntryId > 0) {
 							outboundLinks.add(
 								CMSOutboundLinksUtil.getObjectEntryIdToken(
 									referencedObjectEntryId));
@@ -150,7 +153,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 	private long _getReferencedObjectEntryId(
 		long fileEntryId, ObjectEntry objectEntry) {
 
-		if (fileEntryId == 0) {
+		if (fileEntryId <= 0) {
 			return 0;
 		}
 
@@ -163,7 +166,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 
 		long classPK = dlFileEntry.getClassPK();
 
-		if ((classPK == 0) || (classPK == objectEntry.getObjectEntryId())) {
+		if ((classPK <= 0) || (classPK == objectEntry.getObjectEntryId())) {
 			return 0;
 		}
 
@@ -207,6 +210,22 @@ public class CMSContentOutboundLinksModelDocumentContributor
 		}
 
 		return Collections.singletonList(String.valueOf(indexedValue));
+	}
+
+	private boolean _isReferenceFileSource(ObjectField objectField) {
+		String fileSource = ObjectFieldSettingUtil.getValue(
+			ObjectFieldSettingConstants.NAME_FILE_SOURCE, objectField);
+
+		if (Objects.equals(
+				fileSource,
+				ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT) ||
+			Objects.equals(
+				fileSource, ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
