@@ -1,0 +1,16 @@
+@import '_atlas-custom-properties-variables';
+
+.cms-compare-versions {
+	&-pane {
+		flex: 1;
+		min-width: 0;
+
+		&-content {
+			min-height: 0;
+		}
+	}
+
+	&-panes {
+		min-height: 0;
+	}
+}

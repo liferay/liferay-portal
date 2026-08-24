@@ -12,6 +12,7 @@ import {navigate, sessionStorage, sub} from 'frontend-js-web';
 
 import StatusLabel from '../../common/components/StatusLabel';
 import {openCMSModal} from '../../common/utils/openCMSModal';
+import CompareVersionsModalContent from '../compare_versions/CompareVersionsModalContent';
 import FilePreviewerModalContent from '../modal/FilePreviewerModalContent';
 import confirmAndDeleteEntryAction from './actions/confirmAndDeleteEntryAction';
 import deleteAssetVersionBulkAction from './actions/deleteAssetVersionBulkAction';
@@ -63,7 +64,15 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 		},
 		hideManagementBarInEmptyState: true,
 		itemsActions: itemsActions.map((action) => {
-			if (action?.data?.id === 'download') {
+			if (action?.data?.id === 'compare') {
+				return {
+					...action,
+					isVisible: (item: any) =>
+						Boolean(!item?.file) &&
+						additionalProps.objectEntryVersionsCount > 1,
+				};
+			}
+			else if (action?.data?.id === 'download') {
 				return {
 					...action,
 					isVisible: (item: any) => Boolean(item?.file?.link?.href),
@@ -118,6 +127,20 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 					classVersion: String(
 						itemData.systemProperties.version.number
 					),
+				});
+			}
+			else if (action?.data?.id === 'compare') {
+				event?.preventDefault();
+
+				openCMSModal({
+					contentComponent: () =>
+						CompareVersionsModalContent({
+							apiURL: otherProps.apiURL as string,
+							initialVersion:
+								itemData.systemProperties.version.number,
+							objectEntryId: additionalProps.classPK,
+						}),
+					size: 'full-screen',
 				});
 			}
 			else if (action.data.id === 'copy') {
