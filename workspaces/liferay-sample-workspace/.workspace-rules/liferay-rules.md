@@ -89,6 +89,7 @@ Every skill lives under `skills/` and owns one workflow. Match the user's intent
 | Create the OAuth application a client extension needs | `setup-oauth` |
 | Back an object with an external REST, database, or SaaS data source | `integrate-external-data` |
 | Build a page fragment or reusable page component | `scaffold-fragment` |
+| Build a form field fragment that binds to an object field | `scaffold-form-fragment` |
 | Create pages, navigation, SEO, or page and display templates | `manage-pages` |
 | Change the theme, colors, fonts, master page, or style book | `theme-and-design` |
 | Build a React based Custom Element widget | `react-custom-elements` |

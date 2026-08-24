@@ -21,7 +21,7 @@ Generate the source files for a Liferay page fragment and deploy it to the runni
 | --- | --- | --- |
 | Component | General purpose UI block | `data-lfr-editable` regions, configuration fields |
 | Section | Full width layout block | Wraps other fragments or sets background |
-| Form | Entry form tied to an object | `data-lfr-form-*` attributes |
+| Form field | One field inside a Form Container, bound to an object field | `"type": "input"` plus `typeOptions.fieldTypes` — load `scaffold-form-fragment` |
 | React / Custom Element | Complex interactive widget | Delivered as a custom element CET alongside the fragment |
 
 For complex interactive widgets, use `scaffold-client-extension` with type `customElement` and reference it from the fragment's HTML with a `<custom-element-name>` tag.
