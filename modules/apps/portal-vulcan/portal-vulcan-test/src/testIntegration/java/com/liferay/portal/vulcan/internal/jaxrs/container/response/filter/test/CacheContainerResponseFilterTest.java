@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.vulcan.internal.test.util.URLConnectionUtil;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -144,6 +145,13 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@Test
+	public void testCacheWithSignedInUser() throws Exception {
+		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+
+		_assertNotCacheable(_openAuthenticatedURLConnection("/test"));
+	}
+
+	@Test
 	public void testCacheWithUnsuccessfulResponse() throws Exception {
 		_addCacheableEndpoint("/test-vulcan-cache/not-found", "public", 3600);
 
@@ -219,6 +227,13 @@ public class CacheContainerResponseFilterTest {
 		return StringBundler.concat(
 			"http://localhost:", PortalUtil.getPortalServerPort(false),
 			"/o/test-vulcan-cache", path);
+	}
+
+	private HttpURLConnection _openAuthenticatedURLConnection(String path)
+		throws Exception {
+
+		return (HttpURLConnection)URLConnectionUtil.createURLConnection(
+			_getURL(path));
 	}
 
 	private HttpURLConnection _openURLConnection(String path) throws Exception {
