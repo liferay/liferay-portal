@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class FIPSAuditUtil {
 
 	public static void write(FIPSAuditEvent fipsAuditEvent) {
-		Provider provider = FIPSModeValidator.getProvider();
+		Provider provider = FIPSModeValidator.fetchProvider();
 
 		String providerName = StringPool.BLANK;
 		String providerVersion = StringPool.BLANK;

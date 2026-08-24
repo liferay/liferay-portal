@@ -42,6 +42,16 @@ import java.util.regex.Pattern;
  */
 public class FIPSModeValidator {
 
+	public static Provider fetchProvider() {
+		Provider[] providers = Security.getProviders();
+
+		if (ArrayUtil.isEmpty(providers)) {
+			return null;
+		}
+
+		return providers[0];
+	}
+
 	public static String[] getAllowedTLSCipherSuites(String[] tlsCipherSuites) {
 		if (!PropsValues.FIPS_ENABLED) {
 			return tlsCipherSuites;
@@ -60,16 +70,6 @@ public class FIPSModeValidator {
 		return ArrayUtil.toStringArray(
 			SetUtil.intersect(
 				_allowedTLSProtocols, SetUtil.fromArray(tlsProtocols)));
-	}
-
-	public static Provider getProvider() {
-		Provider[] providers = Security.getProviders();
-
-		if (ArrayUtil.isEmpty(providers)) {
-			return null;
-		}
-
-		return providers[0];
 	}
 
 	public static boolean isNotAllowedAlgorithm(String algorithm) {
