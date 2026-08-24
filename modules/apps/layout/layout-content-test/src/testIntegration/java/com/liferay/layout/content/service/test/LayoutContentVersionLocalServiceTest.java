@@ -21,13 +21,16 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
+import com.liferay.layout.renderer.LayoutPreviewRenderer;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -48,8 +51,10 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.spring.aop.AopInvocationHandler;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LanguageIds;
@@ -67,6 +72,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -143,19 +149,27 @@ public class LayoutContentVersionLocalServiceTest {
 		_assertLayoutContentVersionPreviews(
 			draftLayoutContentVersion, segmentsExperienceJSONObjectsMap);
 
-		LayoutContentVersion approvedLayoutContentVersion =
-			_layoutContentVersionLocalService.addLayoutContentVersion(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				data, RandomTestUtil.randomLocaleStringMap(),
-				_draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED);
+		try (SafeCloseable safeCloseable =
+				_swapLayoutPreviewRendererWithSafeCloseable()) {
 
-		Assert.assertNotEquals(
-			draftLayoutContentVersion.getLayoutContentVersionId(),
-			approvedLayoutContentVersion.getLayoutContentVersionId());
-		Assert.assertEquals(2, approvedLayoutContentVersion.getVersion());
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED,
-			approvedLayoutContentVersion.getStatus());
+			LayoutContentVersion approvedLayoutContentVersion =
+				_layoutContentVersionLocalService.addLayoutContentVersion(
+					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+					data, RandomTestUtil.randomLocaleStringMap(),
+					_draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED);
+
+			Assert.assertNotEquals(
+				draftLayoutContentVersion.getLayoutContentVersionId(),
+				approvedLayoutContentVersion.getLayoutContentVersionId());
+			Assert.assertEquals(2, approvedLayoutContentVersion.getVersion());
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_APPROVED,
+				approvedLayoutContentVersion.getStatus());
+
+			_assertPreviewErrorLayoutContentVersionPreviews(
+				approvedLayoutContentVersion,
+				segmentsExperienceJSONObjectsMap.keySet());
+		}
 
 		_testAddLayoutContentVersionWithExternalReferenceCodeTooLong();
 		_testAddLayoutContentVersionWithNullExternalReferenceCode();
@@ -459,6 +473,45 @@ public class LayoutContentVersionLocalServiceTest {
 		Assert.assertEquals(expectedMessage, portalException.getMessage());
 	}
 
+	private void _assertPreviewErrorLayoutContentVersionPreviews(
+			LayoutContentVersion layoutContentVersion,
+			Set<SegmentsExperience> segmentsExperiences)
+		throws Exception {
+
+		HashMap<String, String> map = HashMapBuilder.put(
+			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
+			_language.get(LocaleUtil.SPAIN, "unable-to-load-preview")
+		).put(
+			LocaleUtil.toLanguageId(LocaleUtil.US),
+			_language.get(LocaleUtil.US, "unable-to-load-preview")
+		).build();
+
+		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				LayoutContentVersionPreview layoutContentVersionPreview =
+					_layoutContentVersionPreviewLocalService.
+						fetchLayoutContentVersionPreview(
+							layoutContentVersion.getLayoutContentVersionId(),
+							entry.getKey(),
+							segmentsExperience.getExternalReferenceCode());
+
+				String html = layoutContentVersionPreview.getHtml();
+
+				Assert.assertTrue(html, html.contains(entry.getValue()));
+			}
+		}
+
+		List<LayoutContentVersionPreview> layoutContentVersionPreviews =
+			_layoutContentVersionPreviewLocalService.
+				getLayoutContentVersionPreviews(
+					layoutContentVersion.getLayoutContentVersionId());
+
+		Assert.assertEquals(
+			layoutContentVersionPreviews.toString(),
+			segmentsExperiences.size() * 2,
+			layoutContentVersionPreviews.size());
+	}
+
 	private Map<SegmentsExperience, JSONObject>
 		_getRandomSegmentsExperienceLocalizedContentMap() {
 
@@ -480,6 +533,26 @@ public class LayoutContentVersionLocalServiceTest {
 		}
 
 		return map;
+	}
+
+	private SafeCloseable _swapLayoutPreviewRendererWithSafeCloseable() {
+		AopInvocationHandler aopInvocationHandler =
+			(AopInvocationHandler)ProxyUtil.getInvocationHandler(
+				_layoutContentVersionLocalService);
+
+		Object layoutContentVersionLocalServiceImpl =
+			aopInvocationHandler.getTarget();
+
+		LayoutPreviewRenderer originalLayoutPreviewRenderer =
+			ReflectionTestUtil.getAndSetFieldValue(
+				layoutContentVersionLocalServiceImpl, "_layoutPreviewRenderer",
+				(layout, locale, segmentsExperienceId, serviceContext) -> {
+					throw new Exception();
+				});
+
+		return () -> ReflectionTestUtil.setFieldValue(
+			layoutContentVersionLocalServiceImpl, "_layoutPreviewRenderer",
+			originalLayoutPreviewRenderer);
 	}
 
 	private void _testAddLayoutContentVersionWithExternalReferenceCodeTooLong() {
@@ -585,6 +658,9 @@ public class LayoutContentVersionLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private Language _language;
 
 	@Inject
 	private LayoutContentVersionLocalService _layoutContentVersionLocalService;
