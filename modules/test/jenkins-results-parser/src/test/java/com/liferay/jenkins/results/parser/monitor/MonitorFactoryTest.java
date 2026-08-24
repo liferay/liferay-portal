@@ -68,6 +68,29 @@ public class MonitorFactoryTest
 	}
 
 	@Test
+	public void testNewMonitorResourceThreshold() {
+		String masterName = RandomTestUtil.randomString();
+
+		JenkinsMasterTestUtil.getJenkinsMaster(
+			masterName, "http://" + masterName);
+
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[master.name]", masterName);
+		monitorProperties.setProperty("monitor[a].parameter[metric]", "ram");
+		monitorProperties.setProperty("monitor[a].threshold[warn]", "80");
+		monitorProperties.setProperty("monitor[a].type", "resource-threshold");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof ResourceThresholdMonitor);
+	}
+
+	@Test
 	public void testNewMonitorUnknownType() {
 		_testNewMonitorExpectedIllegalArgumentException(
 			new MonitorConfig(
