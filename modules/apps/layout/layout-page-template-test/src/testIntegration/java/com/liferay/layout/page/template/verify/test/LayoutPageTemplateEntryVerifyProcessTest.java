@@ -16,6 +16,8 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -30,6 +32,9 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -59,8 +64,18 @@ public class LayoutPageTemplateEntryVerifyProcessTest
 	}
 
 	@Test
-	@TestInfo("LPD-81587")
+	@TestInfo({"LPD-81587", "LPD-103532"})
 	public void testUpdateClassTypeKey() throws Exception {
+		_testUpdateClassTypeKey(null);
+		_testUpdateClassTypeKey(StringPool.BLANK);
+	}
+
+	@Override
+	protected VerifyProcess getVerifyProcess() {
+		return _verifyProcess;
+	}
+
+	private void _testUpdateClassTypeKey(String classTypeKey) throws Exception {
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 			_group.getGroupId(), JournalArticle.class.getName());
 
@@ -89,6 +104,12 @@ public class LayoutPageTemplateEntryVerifyProcessTest
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId()));
 
+		if (classTypeKey != null) {
+			_updateClassTypeKey(
+				classTypeKey,
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+		}
+
 		Assert.assertTrue(
 			Validator.isNull(layoutPageTemplateEntry.getClassTypeKey()));
 
@@ -106,9 +127,21 @@ public class LayoutPageTemplateEntryVerifyProcessTest
 			layoutPageTemplateEntry.getClassTypeKey());
 	}
 
-	@Override
-	protected VerifyProcess getVerifyProcess() {
-		return _verifyProcess;
+	private void _updateClassTypeKey(
+			String classTypeKey, long layoutPageTemplateEntryId)
+		throws Exception {
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"update LayoutPageTemplateEntry set classTypeKey = ? where " +
+					"layoutPageTemplateEntryId = ?")) {
+
+			preparedStatement.setString(1, classTypeKey);
+			preparedStatement.setLong(2, layoutPageTemplateEntryId);
+
+			preparedStatement.executeUpdate();
+		}
 	}
 
 	@Inject
