@@ -12,25 +12,31 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.RichTextObjectFieldBuilder;
+import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.model.bag.ObjectFieldBag;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -39,9 +45,14 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -51,6 +62,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -126,16 +138,28 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 	@Test
 	public void testContribute() throws Exception {
 		_testContributeWhenObjectDefinitionIsNotCMS();
+		_testContributeWithAttachmentWhenFileEntryIsForeignOwned();
+		_testContributeWithAttachmentWhenFileEntryIsSelfOwned();
+		_testContributeWithAttachmentWhenObjectEntryIsCopied();
+		_testContributeWithAttachmentWhenObjectFieldIsLocalized();
 		_testContributeWithRelationshipReference();
 		_testContributeWithRichTextReferences();
 		_testContributeWithoutReferences();
 	}
 
 	private ObjectDefinition _addCMSObjectDefinition() throws Exception {
+		return _addCMSObjectDefinition(
+			Collections.singletonList(_buildRichTextObjectField()));
+	}
+
+	private ObjectDefinition _addCMSObjectDefinition(
+			List<ObjectField> objectFields)
+		throws Exception {
+
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				false, false, false, ObjectDefinitionTestUtil.getRandomName(),
-				Collections.singletonList(_buildRichTextObjectField()),
+				objectFields,
 				_contentStructuresObjectFolder.getObjectFolderId(),
 				ObjectDefinitionConstants.SCOPE_DEPOT,
 				TestPropsValues.getUserId());
@@ -150,6 +174,18 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 		return objectDefinition;
 	}
 
+	private ObjectEntry _addFileObjectEntry(ObjectDefinition objectDefinition)
+		throws Exception {
+
+		FileEntry fileEntry = _addTempFileEntry(objectDefinition);
+
+		return _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_ATTACHMENT_OBJECT_FIELD_NAME, fileEntry.getFileEntryId()
+			).build());
+	}
+
 	private ObjectEntry _addObjectEntry(
 			ObjectDefinition objectDefinition, Map<String, Serializable> values)
 		throws Exception {
@@ -157,6 +193,65 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 		return ObjectEntryTestUtil.addObjectEntry(
 			_group.getGroupId(), objectDefinition,
 			_objectEntryFolder.getObjectEntryFolderId(), values);
+	}
+
+	private FileEntry _addTempFileEntry(ObjectDefinition objectDefinition)
+		throws Exception {
+
+		return TempFileEntryUtil.addTempFileEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			objectDefinition.getPortletId(),
+			TempFileEntryUtil.getTempFileName(
+				RandomTestUtil.randomString() + ".txt"),
+			FileUtil.createTempFile(
+				RandomTestUtil.randomString(
+				).getBytes()),
+			ContentTypes.TEXT_PLAIN);
+	}
+
+	private ObjectField _buildAttachmentObjectField(String fileSource)
+		throws Exception {
+
+		return new AttachmentObjectFieldBuilder(
+		).indexed(
+			true
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).name(
+			_ATTACHMENT_OBJECT_FIELD_NAME
+		).objectFieldSettings(
+			Arrays.asList(
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_ACCEPTED_FILE_EXTENSIONS
+				).value(
+					"txt"
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_FILE_SOURCE
+				).value(
+					fileSource
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+				).value(
+					"100"
+				).build())
+		).userId(
+			TestPropsValues.getUserId()
+		).build();
+	}
+
+	private ObjectField _buildLocalizedAttachmentObjectField(String fileSource)
+		throws Exception {
+
+		ObjectField objectField = _buildAttachmentObjectField(fileSource);
+
+		objectField.setLocalized(true);
+
+		return objectField;
 	}
 
 	private ObjectField _buildRichTextObjectField() throws Exception {
@@ -180,6 +275,11 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 			objectDefinition.getClassName());
 
 		return indexer.getDocument(objectEntry);
+	}
+
+	private long _getFileEntryId(ObjectEntry objectEntry) {
+		return MapUtil.getLong(
+			objectEntry.getValues(), _ATTACHMENT_OBJECT_FIELD_NAME);
 	}
 
 	private String _getImageHTML(String externalReferenceCode) {
@@ -226,6 +326,136 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 		Document document = _getDocument(objectDefinition, objectEntry);
 
 		Assert.assertNull(document.getField("outboundLinks"));
+	}
+
+	private void _testContributeWithAttachmentWhenFileEntryIsForeignOwned()
+		throws Exception {
+
+		ObjectDefinition fileObjectDefinition = _addCMSObjectDefinition(
+			Collections.singletonList(
+				_buildAttachmentObjectField(
+					ObjectFieldSettingConstants.
+						VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT)));
+
+		ObjectEntry fileObjectEntry = _addFileObjectEntry(fileObjectDefinition);
+
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			Collections.singletonList(
+				_buildAttachmentObjectField(
+					ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT)));
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_ATTACHMENT_OBJECT_FIELD_NAME, _getFileEntryId(fileObjectEntry)
+			).build());
+
+		Document document = _getDocument(objectDefinition, objectEntry);
+
+		Assert.assertArrayEquals(
+			new String[] {
+				"objectEntryId_" + fileObjectEntry.getObjectEntryId()
+			},
+			document.getValues("outboundLinks"));
+	}
+
+	private void _testContributeWithAttachmentWhenFileEntryIsSelfOwned()
+		throws Exception {
+
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			Arrays.asList(
+				_buildAttachmentObjectField(
+					ObjectFieldSettingConstants.
+						VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT),
+				_buildRichTextObjectField()));
+
+		FileEntry fileEntry = _addTempFileEntry(objectDefinition);
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_ATTACHMENT_OBJECT_FIELD_NAME, fileEntry.getFileEntryId()
+			).build());
+
+		Document document = _getDocument(objectDefinition, objectEntry);
+
+		Assert.assertNull(document.getField("outboundLinks"));
+	}
+
+	private void _testContributeWithAttachmentWhenObjectEntryIsCopied()
+		throws Exception {
+
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			Arrays.asList(
+				_buildAttachmentObjectField(
+					ObjectFieldSettingConstants.
+						VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT),
+				_buildRichTextObjectField()));
+
+		FileEntry fileEntry = _addTempFileEntry(objectDefinition);
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_ATTACHMENT_OBJECT_FIELD_NAME, fileEntry.getFileEntryId()
+			).build());
+
+		ObjectEntry copiedObjectEntry =
+			_objectEntryLocalService.copyObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(), objectEntry.getValues(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+		Document document = _getDocument(objectDefinition, copiedObjectEntry);
+
+		Assert.assertNull(document.getField("outboundLinks"));
+	}
+
+	private void _testContributeWithAttachmentWhenObjectFieldIsLocalized()
+		throws Exception {
+
+		ObjectDefinition fileObjectDefinition = _addCMSObjectDefinition(
+			Collections.singletonList(
+				_buildAttachmentObjectField(
+					ObjectFieldSettingConstants.
+						VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT)));
+
+		ObjectEntry fileObjectEntry1 = _addFileObjectEntry(
+			fileObjectDefinition);
+		ObjectEntry fileObjectEntry2 = _addFileObjectEntry(
+			fileObjectDefinition);
+
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			Collections.singletonList(
+				_buildLocalizedAttachmentObjectField(
+					ObjectFieldSettingConstants.VALUE_CMS_BASIC_DOCUMENT)));
+
+		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
+
+		ObjectField objectField = objectFieldBag.getObjectField(
+			_ATTACHMENT_OBJECT_FIELD_NAME);
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				objectField.getI18nObjectFieldName(),
+				(Serializable)HashMapBuilder.<String, Object>put(
+					LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+					_getFileEntryId(fileObjectEntry2)
+				).put(
+					LocaleUtil.toLanguageId(LocaleUtil.US),
+					_getFileEntryId(fileObjectEntry1)
+				).build()
+			).build());
+
+		Document document = _getDocument(objectDefinition, objectEntry);
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				"objectEntryId_" + fileObjectEntry1.getObjectEntryId(),
+				"objectEntryId_" + fileObjectEntry2.getObjectEntryId()),
+			SetUtil.fromArray(document.getValues("outboundLinks")));
 	}
 
 	private void _testContributeWithoutReferences() throws Exception {
@@ -305,6 +535,8 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 			document.getValues("outboundLinks"));
 	}
 
+	private static final String _ATTACHMENT_OBJECT_FIELD_NAME = "upload";
+
 	private static final String _RICH_TEXT_OBJECT_FIELD_NAME = "content";
 
 	private ObjectFolder _contentStructuresObjectFolder;
@@ -328,6 +560,9 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 
 	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
+
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject
 	private ObjectFolderLocalService _objectFolderLocalService;
