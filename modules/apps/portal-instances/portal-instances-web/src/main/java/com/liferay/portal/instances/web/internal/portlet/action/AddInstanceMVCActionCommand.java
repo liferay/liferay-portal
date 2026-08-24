@@ -23,7 +23,9 @@ import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.CompanyService;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.util.PortalInstances;
 
 import jakarta.portlet.ActionRequest;
@@ -53,6 +55,15 @@ public class AddInstanceMVCActionCommand extends BaseMVCActionCommand {
 
 		try {
 			_addInstance(actionRequest);
+
+			if (SessionMessages.contains(
+					actionRequest,
+					_portal.getPortletId(actionRequest) +
+						SessionMessages.
+							KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE)) {
+
+				SessionMessages.clear(actionRequest);
+			}
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -155,5 +166,8 @@ public class AddInstanceMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private Portal _portal;
 
 }

@@ -8,12 +8,14 @@ package com.liferay.portal.instances.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.BaseManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -49,6 +51,26 @@ public class PortalInstancesManagementToolbarDisplayContext
 					).buildString());
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "add"));
+			}
+		).addDropdownItem(
+			() ->
+				PropsValues.DATABASE_PARTITION_ENABLED &&
+				FeatureFlagManagerUtil.isEnabled(
+					PortalUtil.getCompanyId(httpServletRequest), "LPD-11342"),
+			dropdownItem -> {
+				dropdownItem.putData(
+					"importURL",
+					PortletURLBuilder.createRenderURL(
+						liferayPortletResponse
+					).setMVCPath(
+						"/add_db_partition_company.jsp"
+					).setRedirect(
+						PortalUtil.getCurrentURL(httpServletRequest)
+					).setWindowState(
+						LiferayWindowState.POP_UP
+					).buildString());
+				dropdownItem.setLabel(
+					LanguageUtil.get(httpServletRequest, "import"));
 			}
 		).build();
 	}
