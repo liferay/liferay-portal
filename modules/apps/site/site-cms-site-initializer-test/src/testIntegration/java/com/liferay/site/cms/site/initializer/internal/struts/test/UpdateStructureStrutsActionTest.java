@@ -294,7 +294,6 @@ public class UpdateStructureStrutsActionTest {
 					"type", ObjectRelationshipConstants.TYPE_ONE_TO_MANY
 				)
 			).toString());
-
 		mockHttpServletRequest.setParameter(
 			"repeatableGroupObjectDefinitions",
 			JSONUtil.putAll(
