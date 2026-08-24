@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {UAParser} from 'ua-parser-js';
-
 import {log} from '../log';
 import {getBrowserName} from './attributes/browser_name';
 import {getBrowserVersion} from './attributes/browser_version';
@@ -22,6 +20,7 @@ import {getSegments} from './attributes/segments';
 import {getTimezone} from './attributes/timezone';
 import {getUrl} from './attributes/url';
 import {getUserAgent} from './attributes/user_agent';
+import Cache from './cache';
 import {check} from './check';
 import {eq} from './operators/eq';
 import {gt} from './operators/gt';
@@ -48,14 +47,14 @@ interface OperatorImpl {
 }
 
 export class Detection {
-	private _audiencesDefinition: AudiencesDefinition;
-	private _uaParser: UAParser;
+	private readonly _audiencesDefinition: AudiencesDefinition;
+	private readonly _cache: Cache;
 
 	constructor(audiencesDefinition: AudiencesDefinition) {
 		check(audiencesDefinition);
 
 		this._audiencesDefinition = audiencesDefinition;
-		this._uaParser = new UAParser(navigator.userAgent);
+		this._cache = new Cache();
 	}
 
 	async run(): Promise<AudienceId[]> {
@@ -92,10 +91,10 @@ export class Detection {
 
 	private async _getAttribute(attr: Attribute): Promise<AttributeValue> {
 		if (attr === 'browser_name') {
-			return getBrowserName(this._uaParser);
+			return getBrowserName(this._cache);
 		}
 		else if (attr === 'browser_version') {
-			return getBrowserVersion(this._uaParser);
+			return getBrowserVersion(this._cache);
 		}
 		else if (attr === 'cookies') {
 			return getCookies();
@@ -104,7 +103,7 @@ export class Detection {
 			return getCustom(attr.slice(7));
 		}
 		else if (attr === 'device_type') {
-			return getDeviceType(this._uaParser);
+			return getDeviceType(this._cache);
 		}
 		else if (attr === 'hostname') {
 			return getHostname();
@@ -128,7 +127,7 @@ export class Detection {
 			return getRequestParameters();
 		}
 		else if (attr === 'segments') {
-			return getSegments();
+			return getSegments(this._cache);
 		}
 		else if (attr === 'timezone') {
 			return getTimezone();

@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {UAParser} from 'ua-parser-js';
-
 import {getBrowserName} from '../src/main/resources/META-INF/resources/main/detection/attributes/browser_name';
 import {getBrowserVersion} from '../src/main/resources/META-INF/resources/main/detection/attributes/browser_version';
 import {getCookies} from '../src/main/resources/META-INF/resources/main/detection/attributes/cookies';
@@ -21,6 +19,7 @@ import {getSegments} from '../src/main/resources/META-INF/resources/main/detecti
 import {getTimezone} from '../src/main/resources/META-INF/resources/main/detection/attributes/timezone';
 import {getUrl} from '../src/main/resources/META-INF/resources/main/detection/attributes/url';
 import {getUserAgent} from '../src/main/resources/META-INF/resources/main/detection/attributes/user_agent';
+import Cache from '../src/main/resources/META-INF/resources/main/detection/cache';
 
 describe('attributes', () => {
 	afterEach(() => {
@@ -33,9 +32,9 @@ describe('attributes', () => {
 		delete (document as any).cookie;
 		delete (document as any).referrer;
 
-		delete (navigator as any).userAgent;
+		delete (global as any).Analytics;
 
-		sessionStorage.clear();
+		delete (navigator as any).userAgent;
 
 		window.history.replaceState({}, '', '/');
 	});
@@ -68,6 +67,18 @@ describe('attributes', () => {
 			value: 'https://www.wikipedia.org/',
 		});
 
+		Object.defineProperty(global, 'Analytics', {
+			configurable: true,
+			value: {
+				segment: {
+					getBatchSegmentExternalReferenceCodes: () =>
+						Promise.resolve(['SEGMENT_BATCH']),
+					getRealTimeSegmentExternalReferenceCodes: () =>
+						Promise.resolve(['SEGMENT_REAL_TIME']),
+				},
+			},
+		});
+
 		Object.defineProperty(navigator, 'userAgent', {
 			configurable: true,
 			value: 'Mozilla/5.0 (X11; Linux x86_64; rv:151.0) Gecko/20100101 Firefox/151.0',
@@ -82,7 +93,7 @@ describe('attributes', () => {
 
 	describe('attribute browser_name', () => {
 		it('works and returns a string', async () => {
-			const value = getBrowserName(new UAParser(navigator.userAgent));
+			const value = getBrowserName(new Cache());
 
 			expect(typeof value).toBe('string');
 			expect(value).toBe('Firefox');
@@ -91,7 +102,7 @@ describe('attributes', () => {
 
 	describe('attribute browser_version', () => {
 		it('works and returns a string', async () => {
-			const value = getBrowserVersion(new UAParser(navigator.userAgent));
+			const value = getBrowserVersion(new Cache());
 
 			expect(typeof value).toBe('string');
 			expect(value).toBe('151.0');
@@ -171,20 +182,22 @@ describe('attributes', () => {
 
 	describe('attribute device_type', () => {
 		it('works and returns a string', async () => {
-			const value = getDeviceType(
-				new UAParser(
+			Object.defineProperty(navigator, 'userAgent', {
+				configurable: true,
+				value:
 					'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) ' +
-						'AppleWebKit/605.1.15 (KHTML, like Gecko) ' +
-						'Version/17.0 Mobile/15E148 Safari/604.1'
-				)
-			);
+					'AppleWebKit/605.1.15 (KHTML, like Gecko) ' +
+					'Version/17.0 Mobile/15E148 Safari/604.1',
+			});
+
+			const value = getDeviceType(new Cache());
 
 			expect(typeof value).toBe('string');
 			expect(value).toBe('mobile');
 		});
 
 		it('falls back to desktop when the user agent has no device type', async () => {
-			const value = getDeviceType(new UAParser(navigator.userAgent));
+			const value = getDeviceType(new Cache());
 
 			expect(value).toBe('desktop');
 		});
@@ -256,16 +269,8 @@ describe('attributes', () => {
 	});
 
 	describe('attribute segments', () => {
-		it('returns the segments cached for the current user', async () => {
-			sessionStorage.setItem(
-				'liferay.audiences.acSegments',
-				JSON.stringify({
-					segments: ['SEGMENT_BATCH', 'SEGMENT_REAL_TIME'],
-					userId: '20164',
-				})
-			);
-
-			const value = getSegments();
+		it('works and returns a Set<string>', async () => {
+			const value = await getSegments(new Cache());
 
 			expect(value).toBeInstanceOf(Set);
 			expect(value).toEqual(
