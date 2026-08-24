@@ -713,50 +713,56 @@ test(
 			title: folderTitle,
 		});
 
-		const subfolder = await apiHelpers.objectFolder.createObjectEntryFolder(
-			{
-				parentObjectEntryFolderExternalReferenceCode:
-					folder.externalReferenceCode,
-				scopeKey: 'Default',
-				title: getRandomString(),
-			}
-		);
+		try {
+			const subfolder =
+				await apiHelpers.objectFolder.createObjectEntryFolder({
+					parentObjectEntryFolderExternalReferenceCode:
+						folder.externalReferenceCode,
+					scopeKey: 'Default',
+					title: getRandomString(),
+				});
 
-		const subfolderContentTitle = getRandomString();
+			const subfolderContentTitle = getRandomString();
 
-		await apiHelpers.objectEntry.postObjectEntry(
-			{
-				file: {
-					fileBase64:
-						Buffer.from(getRandomString()).toString('base64'),
-					name: `${getRandomString()}.txt`,
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					file: {
+						fileBase64:
+							Buffer.from(getRandomString()).toString('base64'),
+						name: `${getRandomString()}.txt`,
+					},
+					objectEntryFolderExternalReferenceCode:
+						subfolder.externalReferenceCode,
+					title: subfolderContentTitle,
 				},
-				objectEntryFolderExternalReferenceCode:
-					subfolder.externalReferenceCode,
-				title: subfolderContentTitle,
-			},
-			'cms/basic-documents',
-			'Default'
-		);
+				'cms/basic-documents',
+				'Default'
+			);
 
-		await assetsPage.gotoFiles();
+			await assetsPage.gotoFiles();
 
-		await assetsPage.changeVisualizationMode('Table');
+			await assetsPage.changeVisualizationMode('Table');
 
-		await assetsPage.search(folderTitle);
+			await assetsPage.search(folderTitle);
 
-		await expect(assetsPage.getItem(folderTitle)).toBeVisible();
+			await expect(assetsPage.getItem(folderTitle)).toBeVisible();
 
-		await assetsPage.gotoFolder(folder.id, folderTitle);
+			await assetsPage.gotoFolder(folder.id, folderTitle);
 
-		await assetsPage.changeVisualizationMode('Table');
+			await assetsPage.changeVisualizationMode('Table');
 
-		await assetsPage.search(subfolderContentTitle);
+			await assetsPage.search(subfolderContentTitle);
 
-		await expect(assetsPage.getItem(subfolderContentTitle)).toBeVisible();
+			await expect(
+				assetsPage.getItem(subfolderContentTitle)
+			).toBeVisible();
 
-		await assetsPage.search(folderTitle);
+			await assetsPage.search(folderTitle);
 
-		await expect(assetsPage.getItem(folderTitle)).toBeHidden();
+			await expect(assetsPage.getItem(folderTitle)).toBeHidden();
+		}
+		finally {
+			await apiHelpers.objectFolder.deleteObjectEntryFolder(folder.id);
+		}
 	}
 );
