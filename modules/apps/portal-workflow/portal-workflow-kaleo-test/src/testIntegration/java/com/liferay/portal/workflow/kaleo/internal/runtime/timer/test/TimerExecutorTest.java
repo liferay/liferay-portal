@@ -177,7 +177,7 @@ public class TimerExecutorTest {
 	@Test
 	public void testExecuteTimerNotifications() throws Exception {
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_addKaleoTimerInstanceToken(_TIMER_NOTIFICATION);
+			_addKaleoTimerInstanceToken(_KALEO_NODE_NAME_TIMER_NOTIFICATION);
 
 		_executeTimer(kaleoTimerInstanceToken);
 
@@ -194,7 +194,7 @@ public class TimerExecutorTest {
 	@Test
 	public void testExecuteTimerReassignments() throws Exception {
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_addKaleoTimerInstanceToken(_TIMER_REASSIGNMENT);
+			_addKaleoTimerInstanceToken(_KALEO_NODE_NAME_TIMER_REASSIGNMENT);
 
 		KaleoTaskInstanceToken kaleoTaskInstanceToken =
 			kaleoTimerInstanceToken.getKaleoTaskInstanceToken();
@@ -237,7 +237,7 @@ public class TimerExecutorTest {
 		throws Exception {
 
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_addKaleoTimerInstanceToken(_TIMER_NOTIFICATION);
+			_addKaleoTimerInstanceToken(_KALEO_NODE_NAME_TIMER_NOTIFICATION);
 
 		Message message = _getMessage(kaleoTimerInstanceToken);
 
@@ -258,7 +258,7 @@ public class TimerExecutorTest {
 		throws Exception {
 
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
-			_addKaleoTimerInstanceToken(_TIMER_NOTIFICATION);
+			_addKaleoTimerInstanceToken(_KALEO_NODE_NAME_TIMER_NOTIFICATION);
 
 		Message message = _getMessage(kaleoTimerInstanceToken);
 
@@ -300,10 +300,11 @@ public class TimerExecutorTest {
 			Collections.emptyList(), null, _workflowContext, _serviceContext);
 	}
 
-	private KaleoTimerInstanceToken _addKaleoTimerInstanceToken(String taskName)
+	private KaleoTimerInstanceToken _addKaleoTimerInstanceToken(
+			String kaleoNodeName)
 		throws Exception {
 
-		KaleoTask kaleoTask = _getKaleoTask(taskName);
+		KaleoTask kaleoTask = _getKaleoTask(kaleoNodeName);
 
 		KaleoInstanceToken kaleoInstanceToken = _addKaleoInstanceToken(
 			kaleoTask);
@@ -324,12 +325,12 @@ public class TimerExecutorTest {
 		_messageListener.receive(_getMessage(kaleoTimerInstanceToken));
 	}
 
-	private KaleoTask _getKaleoTask(String taskName) {
+	private KaleoTask _getKaleoTask(String kaleoNodeName) {
 		for (KaleoNode kaleoNode :
 				_kaleoNodeLocalService.getKaleoDefinitionVersionKaleoNodes(
 					_kaleoDefinitionVersion.getKaleoDefinitionVersionId())) {
 
-			if (!Objects.equals(taskName, kaleoNode.getName())) {
+			if (!Objects.equals(kaleoNodeName, kaleoNode.getName())) {
 				continue;
 			}
 
@@ -390,9 +391,11 @@ public class TimerExecutorTest {
 			kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId());
 	}
 
-	private static final String _TIMER_NOTIFICATION = "Timer Notification";
+	private static final String _KALEO_NODE_NAME_TIMER_NOTIFICATION =
+		"Timer Notification";
 
-	private static final String _TIMER_REASSIGNMENT = "Timer Reassignment";
+	private static final String _KALEO_NODE_NAME_TIMER_REASSIGNMENT =
+		"Timer Reassignment";
 
 	private static ServiceRegistration<WorkflowHandler<?>>
 		_workflowHandlerServiceRegistration;
