@@ -52,10 +52,9 @@ public abstract class BaseDisplayContextTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		fragmentRendererContext = new DefaultFragmentRendererContext(null);
 		group = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-
-		fragmentRendererContext = new DefaultFragmentRendererContext(null);
 
 		mockHttpServletRequest = getMockHttpServletRequest();
 
