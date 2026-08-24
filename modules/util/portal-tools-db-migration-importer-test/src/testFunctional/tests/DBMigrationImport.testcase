@@ -10,7 +10,7 @@ definition {
 	property test.liferay.virtual.instance = "true";
 	property test.run.environment = "EE";
 	property test.run.type = "single";
-	property testray.main.component.name = "Database Upgrade Framework";
+	property testray.main.component.name = "Database Migration";
 
 	setUp {
 		TestCase.setUpPortalInstance();
