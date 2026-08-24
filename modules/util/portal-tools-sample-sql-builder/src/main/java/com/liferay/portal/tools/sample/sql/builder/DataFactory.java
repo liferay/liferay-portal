@@ -8975,6 +8975,7 @@ public class DataFactory {
 		userModel.setScreenName(screenName);
 		userModel.setEmailAddress(emailAddress);
 		userModel.setLanguageId("en_US");
+		userModel.setTimeZoneId("UTC");
 		userModel.setGreeting("Welcome " + screenName + StringPool.EXCLAMATION);
 		userModel.setFirstName(firstName);
 		userModel.setLastName(lastName);
