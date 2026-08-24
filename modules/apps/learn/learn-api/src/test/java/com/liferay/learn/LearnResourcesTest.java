@@ -72,9 +72,10 @@ public class LearnResourcesTest {
 
 	private String _getFailure(String url, int timeout) {
 		try {
-			HttpURLConnection httpURLConnection = (HttpURLConnection)new URL(
-				url
-			).openConnection();
+			URL urlObject = new URL(urlString);
+
+			HttpURLConnection httpURLConnection =
+				(HttpURLConnection)urlObject.openConnection();
 
 			httpURLConnection.setConnectTimeout(timeout);
 			httpURLConnection.setReadTimeout(timeout);
