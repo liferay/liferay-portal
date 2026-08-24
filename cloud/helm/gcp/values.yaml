@@ -137,7 +137,6 @@ liferay-default:
                 volume: marketplace
         enabled: true
         size: 10Gi
-        storageClassName: filestore-sc
     network:
         enabled: true
         hostnames: []

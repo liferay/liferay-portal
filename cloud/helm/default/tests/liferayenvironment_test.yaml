@@ -1,0 +1,42 @@
+suite: LiferayEnvironment
+templates:
+    -   templates/liferayenvironment.yaml
+tests:
+    -   asserts:
+            -   notExists:
+                    path: spec.offline
+            -   notExists:
+                    path: spec.offlineActivationBundle
+        it: Activates online unless the environment asks for offline
+        set:
+            licensing.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.offline
+                    value: true
+            -   notExists:
+                    path: spec.offlineActivationBundle
+        it: Requests offline activation and waits for a bundle to be named
+        set:
+            licensing.enabled: true
+            licensing.offline: true
+    -   asserts:
+            -   equal:
+                    path: spec.offline
+                    value: true
+            -   equal:
+                    path: spec.offlineActivationBundle
+                    value: activation-bundle.zip
+        it: Names the offline activation bundle the operator reads
+        set:
+            licensing.enabled: true
+            licensing.offline: true
+            licensing.offlineActivationBundle: activation-bundle.zip
+    -   asserts:
+            -   equal:
+                    path: spec.activationCodeSecretRef.name
+                    value: liferay-default-activation
+        it: Keeps the activation code reference the custom resource requires
+        set:
+            licensing.enabled: true
+            licensing.offline: true

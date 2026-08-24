@@ -186,11 +186,11 @@ customInitContainers:
 
                             if [ -d /opt/liferay/deploy ] && [ -z "$(ls --all /temp/liferay/deploy/*license* 2>/dev/null)" ]
                             then
-                                if [ ! -d /temp/liferay/data/license ] || [ -z "$(ls --all /temp/liferay/data/license/*.li)" ]
+                                if [ ! -d /temp/liferay/data/license ] || [ -z "$(ls --all /temp/liferay/data/license/*.li 2>/dev/null)" ]
                                 then
                                     mkdir --parents /temp/liferay/deploy
 
-                                    cp --force --verbose /opt/liferay/deploy/* /temp/liferay/deploy
+                                    cp --force --recursive --verbose /opt/liferay/deploy/. /temp/liferay/deploy
                                 fi
                             fi
                     image: {{ printf "%s:%s" .image.repository (.image.tag | toString) }}
@@ -287,11 +287,6 @@ customServicePorts: {}
 customVolumeClaimTemplates: {}
 customVolumeMounts: {}
 customVolumes:
-    x-license:
-        -   name: liferay-license
-            secret:
-                optional: true
-                secretName: liferay-license
     x-liferay-init-scripts-default:
         -   configMap:
                 defaultMode: 0755
@@ -371,7 +366,12 @@ license:
     activationCodeSecretName: ""
     enabled: false
     initScriptsVolumeName: liferay-init-scripts-default
+    secretName: ""
     syncInterval: 60
+licensing:
+    enabled: false
+    offline: false
+    offlineActivationBundle: ""
 livenessProbe:
     failureThreshold: 3
     httpGet:
@@ -388,7 +388,6 @@ marketplace:
     enabled: false
     initScriptsVolumeName: liferay-init-scripts-default
     size: 10Gi
-    storageClassName: ""
     syncInterval: 600
 nameOverride: ""
 network:

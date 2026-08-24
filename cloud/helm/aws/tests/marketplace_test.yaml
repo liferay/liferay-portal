@@ -1,19 +1,46 @@
 suite: Marketplace Volume
 templates:
     -   charts/liferay-default/templates/liferayenvironment.yaml
+    -   charts/liferay-default/templates/marketplace-pv.yaml
 tests:
     -   asserts:
             -   equal:
-                    path: spec.marketplaceVolume.storageClassName
-                    value: efs-sc
+                    path: spec.csi.driver
+                    value: efs.csi.aws.com
+            -   equal:
+                    path: spec.accessModes
+                    value:
+                        -   ReadWriteMany
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: PersistentVolume
+        it: Backs the marketplace volume with the EFS CSI driver
+        set:
+            liferay-default.licensing.enabled: true
+            liferay-default.marketplace.csi.volumeHandle: fs-0123456789abcdef0
+    -   asserts:
+            -   equal:
+                    path: spec.storageClassName
+                    value: ""
+            -   equal:
+                    path: spec.volumeName
+                    value: NAMESPACE-marketplace
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: PersistentVolumeClaim
+        it: Binds the claim statically to the marketplace volume
+        release:
+            namespace: NAMESPACE
+        set:
+            liferay-default.licensing.enabled: true
+            liferay-default.marketplace.csi.volumeHandle: fs-0123456789abcdef0
+    -   asserts:
             -   equal:
                     path: spec.workloadRef.name
                     value: liferay-default
-        it: Requests an EFS backed ReadWriteMany volume by default
-    -   asserts:
-            -   equal:
-                    path: spec.marketplaceVolume.storageClassName
-                    value: efs-custom-sc
-        it: Overrides storage class
+        it: Names the workload on the LiferayEnvironment
         set:
-            liferay-default.marketplace.storageClassName: efs-custom-sc
+            liferay-default.licensing.enabled: true
+        template: charts/liferay-default/templates/liferayenvironment.yaml

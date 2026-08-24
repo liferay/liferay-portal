@@ -63,16 +63,50 @@ tests:
                     content:
                         name: liferay-license
                         secret:
+                            items:
+                                -   key: license.xml
+                                    path: license.xml
                             optional: true
-                            secretName: liferay-license
+                            secretName: liferay-default-entitlements
                     path: spec.template.spec.volumes
         documentSelector:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Mounts the license secret as an optional whole volume
+        it: Projects the operator entitlements license as an optional volume
         set:
             license.enabled: true
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: liferay-license
+                        secret:
+                            items:
+                                -   key: license.xml
+                                    path: license.xml
+                            optional: true
+                            secretName: custom-entitlements
+                    path: spec.template.spec.volumes
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Honors an overridden license secret name
+        set:
+            license.enabled: true
+            license.secretName: custom-entitlements
+    -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        name: liferay-license
+                    path: spec.template.spec.volumes
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Omits the license volume when the license is disabled
     -   asserts:
             -   contains:
                     any: true

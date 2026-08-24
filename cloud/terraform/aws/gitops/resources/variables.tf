@@ -35,6 +35,21 @@ variable "deployment_name" {
 		error_message="The variable \"deployment_name\" must be 3-24 characters, start with a lowercase letter, and contain only lowercase letters, numbers, and hyphens."
 	}
 }
+variable "dxp_operator_config" {
+	default={}
+	type=object(
+		{
+			heartbeat_interval=optional(string, null)
+			image=optional(
+				object(
+					{
+						repository=optional(string, null)
+						tag=optional(string, null)
+					}), {})
+			provisioning_base_url=optional(string, null)
+			retry_max_delay=optional(string, null)
+		})
+}
 variable "external_secret_store_provider_hcl" {
 	default=null
 	type=any

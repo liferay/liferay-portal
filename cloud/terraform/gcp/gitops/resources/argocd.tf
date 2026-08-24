@@ -224,7 +224,7 @@ resource "kubernetes_manifest" "infrastructure_provider_application" {
 				merge(
 					{
 						helm={
-							parameters=[
+							parameters=concat([
 								{
 									name="crossplaneGsaEmail"
 									value=google_service_account.cloudplatform_gsa.email
@@ -265,7 +265,7 @@ resource "kubernetes_manifest" "infrastructure_provider_application" {
 									name="liferay-dxp-operator.marketplace.csi.volumeHandle"
 									value="modeInstance/${local.filestore_zone}/${var.deployment_name}-marketplace/marketplace"
 								},
-							]
+							], local.dxp_operator_parameters)
 							valueFiles=[
 								"$values/${var.infrastructure_git_repo_config.source_paths.system}/${var.infrastructure_git_repo_config.source_paths.infrastructure_provider_values_filename}",
 							]
@@ -428,6 +428,11 @@ resource "kubernetes_manifest" "liferay_applicationset" {
 							jsonPointers=["/data"]
 							kind="Secret"
 							name="liferay-default"
+						},
+						{
+							group="apps"
+							kind="StatefulSet"
+							managedFieldsManagers=["liferay-dxp-operator"]
 						},
 					]
 					syncPolicy={

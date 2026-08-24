@@ -1,19 +1,49 @@
 suite: Marketplace Volume
 templates:
     -   charts/liferay-default/templates/liferayenvironment.yaml
+    -   charts/liferay-default/templates/marketplace-pv.yaml
 tests:
     -   asserts:
             -   equal:
-                    path: spec.marketplaceVolume.storageClassName
-                    value: filestore-sc
+                    path: spec.csi.driver
+                    value: filestore.csi.storage.gke.io
+            -   equal:
+                    path: spec.csi.volumeAttributes.protocol
+                    value: NFS_V3
+            -   equal:
+                    path: spec.accessModes
+                    value:
+                        -   ReadWriteMany
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: PersistentVolume
+        it: Backs the marketplace volume with the Filestore CSI driver
+        set:
+            liferay-default.licensing.enabled: true
+            liferay-default.marketplace.csi.volumeHandle: modeInstance/us-central1-a/marketplace/marketplace
+    -   asserts:
+            -   equal:
+                    path: spec.storageClassName
+                    value: ""
+            -   equal:
+                    path: spec.volumeName
+                    value: NAMESPACE-marketplace
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: PersistentVolumeClaim
+        it: Binds the claim statically to the marketplace volume
+        release:
+            namespace: NAMESPACE
+        set:
+            liferay-default.licensing.enabled: true
+            liferay-default.marketplace.csi.volumeHandle: modeInstance/us-central1-a/marketplace/marketplace
+    -   asserts:
             -   equal:
                     path: spec.workloadRef.name
                     value: liferay-default
-        it: Requests a Filestore backed ReadWriteMany volume by default
-    -   asserts:
-            -   equal:
-                    path: spec.marketplaceVolume.storageClassName
-                    value: premium-rwx
-        it: Overrides storage class
+        it: Names the workload on the LiferayEnvironment
         set:
-            liferay-default.marketplace.storageClassName: premium-rwx
+            liferay-default.licensing.enabled: true
+        template: charts/liferay-default/templates/liferayenvironment.yaml

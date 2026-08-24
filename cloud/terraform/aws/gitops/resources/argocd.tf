@@ -225,7 +225,7 @@ resource "kubernetes_manifest" "infrastructure_provider_application" {
 				merge(
 					{
 						helm={
-							parameters=[
+							parameters=concat([
 								{
 									name="aws.accountId"
 									value=local.account_id
@@ -278,7 +278,7 @@ resource "kubernetes_manifest" "infrastructure_provider_application" {
 									name="liferayServiceAccountRoleName"
 									value=local.liferay_service_account_role_name
 								},
-							]
+							], local.dxp_operator_parameters)
 							valueFiles=[
 								"$values/${var.infrastructure_git_repo_config.source_paths.system}/${var.infrastructure_git_repo_config.source_paths.infrastructure_provider_values_filename}",
 							]
@@ -449,6 +449,11 @@ resource "kubernetes_manifest" "liferay_applicationset" {
 							jsonPointers=["/data"]
 							kind="Secret"
 							name="liferay-default"
+						},
+						{
+							group="apps"
+							kind="StatefulSet"
+							managedFieldsManagers=["liferay-dxp-operator"]
 						},
 					]
 					syncPolicy={

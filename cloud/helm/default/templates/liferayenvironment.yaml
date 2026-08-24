@@ -1,3 +1,4 @@
+{{- if .Values.licensing.enabled }}
 apiVersion: licensing.liferay.com/v1alpha1
 kind: LiferayEnvironment
 metadata:
@@ -13,9 +14,12 @@ spec:
     {{- if not .Values.autoscaling.enabled }}
     desiredReplicas: {{ .Values.replicaCount }}
     {{- end }}
-    marketplaceVolume:
-        enabled: {{ .Values.marketplace.enabled }}
-        size: {{ .Values.marketplace.size }}
-        storageClassName: {{ .Values.marketplace.storageClassName | quote }}
+    {{- if .Values.licensing.offline }}
+    offline: true
+    {{- end }}
+    {{- with .Values.licensing.offlineActivationBundle }}
+    offlineActivationBundle: {{ . | quote }}
+    {{- end }}
     workloadRef:
         name: {{ include "liferay.name" . }}
+{{- end }}

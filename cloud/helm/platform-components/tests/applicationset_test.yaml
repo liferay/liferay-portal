@@ -201,6 +201,14 @@ tests:
                     path: spec.template.spec.project
                     value: liferay-application
                 template: templates/applicationset-liferay.yaml
+            -   contains:
+                    content:
+                        group: apps
+                        kind: StatefulSet
+                        managedFieldsManagers:
+                            -   liferay-dxp-operator
+                    path: spec.template.spec.ignoreDifferences
+                template: templates/applicationset-liferay.yaml
             -   equal:
                     path: spec.template.spec.sources[1].ref
                     value: values

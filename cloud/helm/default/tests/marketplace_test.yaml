@@ -20,8 +20,8 @@ tests:
             value: StatefulSet
         it: Adds the marketplace volume when marketplace is enabled
         set:
+            licensing.enabled: true
             marketplace.enabled: true
-            marketplace.storageClassName: nfs-sc
     -   asserts:
             -   equal:
                     path: spec
@@ -30,16 +30,12 @@ tests:
                             key: activationCode
                             name: liferay-default-activation
                         desiredReplicas: 1
-                        marketplaceVolume:
-                            enabled: true
-                            size: 10Gi
-                            storageClassName: nfs-sc
                         workloadRef:
                             name: liferay-default
-        it: Requests the configured marketplace volume through the LiferayEnvironment
+        it: Renders no field the LiferayEnvironment does not declare
         set:
+            licensing.enabled: true
             marketplace.enabled: true
-            marketplace.storageClassName: nfs-sc
         template: templates/liferayenvironment.yaml
     -   asserts:
             -   equal:
@@ -47,7 +43,13 @@ tests:
                     value: 3
         it: Sets desiredReplicas from the configured replica count
         set:
+            licensing.enabled: true
             replicaCount: 3
+        template: templates/liferayenvironment.yaml
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Emits no LiferayEnvironment until the licensing integration is enabled
         template: templates/liferayenvironment.yaml
     -   asserts:
             -   notExists:
@@ -70,6 +72,7 @@ tests:
             value: StatefulSet
         it: Links the marketplace volume with the marketplace claim
         set:
+            licensing.enabled: true
             marketplace.enabled: true
     -   asserts:
             -   equal:
@@ -80,8 +83,8 @@ tests:
                     value: liferay-default
         it: Names the LiferayEnvironment after the Liferay stateful set
         set:
+            licensing.enabled: true
             marketplace.enabled: true
-            marketplace.storageClassName: nfs-sc
         template: templates/liferayenvironment.yaml
     -   asserts:
             -   notExists:
@@ -108,5 +111,4 @@ tests:
                                 -   name: http
                                     port: 9200
             marketplace.enabled: true
-            marketplace.storageClassName: nfs-sc
         template: templates/workloads.yaml

@@ -48,7 +48,9 @@ tests:
                         app.kubernetes.io/name: liferay-dxp-operator
                         app.kubernetes.io/version: latest
                         component: liferay-dxp-operator
-                        helm.sh/chart: liferay-dxp-operator-0.0.1
+                        helm.sh/chart: liferay-dxp-operator-1.2.3
+        chart:
+            version: 1.2.3
         documentSelector:
             path: kind
             skipEmptyTemplates: true
@@ -63,7 +65,9 @@ tests:
                         app.kubernetes.io/name: liferay-dxp-operator
                         app.kubernetes.io/version: latest
                         component: liferay-dxp-operator
-                        helm.sh/chart: liferay-dxp-operator-0.0.1
+                        helm.sh/chart: liferay-dxp-operator-1.2.3
+        chart:
+            version: 1.2.3
         documentSelector:
             path: kind
             skipEmptyTemplates: true
@@ -78,7 +82,9 @@ tests:
                         app.kubernetes.io/name: liferay-dxp-operator
                         app.kubernetes.io/version: latest
                         component: liferay-dxp-operator
-                        helm.sh/chart: liferay-dxp-operator-0.0.1
+                        helm.sh/chart: liferay-dxp-operator-1.2.3
+        chart:
+            version: 1.2.3
         documentSelector:
             path: kind
             skipEmptyTemplates: true

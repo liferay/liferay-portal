@@ -39,6 +39,10 @@ spec:
                         -   /data
                     kind: Secret
                     name: liferay-default
+                -   group: apps
+                    kind: StatefulSet
+                    managedFieldsManagers:
+                        -   liferay-dxp-operator
             project: liferay-application
             sources:
                 -   {{- include "liferay-platform.chartSource" .Values.liferay | nindent 20 }}

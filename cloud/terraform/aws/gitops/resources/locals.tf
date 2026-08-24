@@ -45,6 +45,37 @@ locals {
 		"instrumentation.opentelemetry.io/inject-python"="false"
 		"sidecar.opentelemetry.io/inject"="false"
 	}
+	dxp_operator_parameters=concat(
+		var.dxp_operator_config.heartbeat_interval == null ? [] : [
+			{
+				name="liferay-dxp-operator.heartbeatInterval"
+				value=var.dxp_operator_config.heartbeat_interval
+			}
+		],
+		var.dxp_operator_config.image.repository == null ? [] : [
+			{
+				name="liferay-dxp-operator.image.repository"
+				value=var.dxp_operator_config.image.repository
+			}
+		],
+		var.dxp_operator_config.image.tag == null ? [] : [
+			{
+				name="liferay-dxp-operator.image.tag"
+				value=var.dxp_operator_config.image.tag
+			}
+		],
+		var.dxp_operator_config.provisioning_base_url == null ? [] : [
+			{
+				name="liferay-dxp-operator.provisioning.baseURL"
+				value=var.dxp_operator_config.provisioning_base_url
+			}
+		],
+		var.dxp_operator_config.retry_max_delay == null ? [] : [
+			{
+				name="liferay-dxp-operator.retry.maxDelay"
+				value=var.dxp_operator_config.retry_max_delay
+			}
+		])
 	ecr_credentials_sync_image="alpine/k8s:1.29.1"
 	ecr_credentials_sync_schedule="0 */8 * * *"
 	ecr_credentials_sync_script=<<-EOT

@@ -211,7 +211,6 @@ liferay-default:
             driver: efs.csi.aws.com
         enabled: true
         size: 10Gi
-        storageClassName: efs-sc
     network:
         enabled: true
         timeouts:

@@ -94,6 +94,16 @@ run "should_name_the_appprojects" {
 	}
 	command=plan
 }
+run "should_leave_the_replica_count_to_the_operator" {
+	assert {
+		condition=length([
+			for difference in kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.ignoreDifferences : difference
+			if difference.kind == "StatefulSet" && contains(difference.managedFieldsManagers, "liferay-dxp-operator")
+		]) == 1
+		error_message="The Liferay ApplicationSet template must ignore spec.replicas on the workload, since the operator caps it against the licensed ceiling"
+	}
+	command=plan
+}
 run "should_pass_cluster_identity_to_the_provider_application" {
 	assert {
 		condition=length([
@@ -110,6 +120,65 @@ run "should_pass_cluster_identity_to_the_provider_application" {
 		error_message="The infrastructure provider Application must pass the deployment name as a Helm parameter"
 	}
 	command=plan
+}
+run "should_leave_the_operator_settings_to_the_chart_by_default" {
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.infrastructure_provider_application.manifest.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-dxp-operator.heartbeatInterval" || startswith(p.name, "liferay-dxp-operator.image.") || p.name == "liferay-dxp-operator.provisioning.baseURL" || p.name == "liferay-dxp-operator.retry.maxDelay"
+		]) == 0
+		error_message="The infrastructure provider Application must not override operator settings unless they are configured"
+	}
+	command=plan
+}
+run "should_pass_the_configured_operator_settings_to_the_provider_application" {
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.infrastructure_provider_application.manifest.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-dxp-operator.image.repository" && p.value == "registry.example.com/liferay-dxp-operator"
+		]) == 1
+		error_message="The infrastructure provider Application must pass the configured operator image repository as a Helm parameter"
+	}
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.infrastructure_provider_application.manifest.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-dxp-operator.image.tag" && p.value == "1.2.3"
+		]) == 1
+		error_message="The infrastructure provider Application must pass the configured operator image tag as a Helm parameter"
+	}
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.infrastructure_provider_application.manifest.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-dxp-operator.heartbeatInterval" && p.value == "90s"
+		]) == 1
+		error_message="The infrastructure provider Application must pass the configured heartbeat interval as a Helm parameter"
+	}
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.infrastructure_provider_application.manifest.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-dxp-operator.provisioning.baseURL" && p.value == "https://provisioning.example.com"
+		]) == 1
+		error_message="The infrastructure provider Application must pass the configured provisioning base URL as a Helm parameter"
+	}
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.infrastructure_provider_application.manifest.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-dxp-operator.retry.maxDelay" && p.value == "4m"
+		]) == 1
+		error_message="The infrastructure provider Application must pass the configured retry maximum delay as a Helm parameter"
+	}
+	command=plan
+	variables {
+		dxp_operator_config={
+			heartbeat_interval="90s"
+			image={
+				repository="registry.example.com/liferay-dxp-operator"
+				tag="1.2.3"
+			}
+			provisioning_base_url="https://provisioning.example.com"
+			retry_max_delay="4m"
+		}
+	}
 }
 run "should_scope_liferay_applicationset_helm_values_by_prefix" {
 	assert {
