@@ -41,29 +41,29 @@ public class BaseServiceTest {
 
 	@Test
 	public void testDoGet() {
-		_testDoGet(403, null);
+		_testDoGet(null, 403);
 	}
 
 	@Test
 	public void testDoGetWithNonstandardStatusCode() {
-		_testDoGet(499, null);
+		_testDoGet(null, 499);
 	}
 
 	@Test
 	public void testDoGetWithResponseBody() {
-		_testDoGet(400, "{\"message\": \"Order is not found\"}");
+		_testDoGet("{\"message\": \"Order is not found\"}", 400);
 	}
 
 	@Test
 	public void testDoGetWithServerError() {
-		_testDoGet(500, null);
+		_testDoGet(null, 500);
 	}
 
 	@Test
 	public void testDoGetWithSuccessfulStatusCode() {
 		String path = "/" + UUID.randomUUID();
 
-		String uri = _getEndpoint("GET", path, 200, "{\"total\": 1}");
+		String uri = _getEndpoint("GET", path, "{\"total\": 1}", 200);
 
 		TestService testService = new TestService();
 
@@ -75,7 +75,7 @@ public class BaseServiceTest {
 	public void testDoPostWithClientError() {
 		String path = "/" + UUID.randomUUID();
 
-		String uri = _getEndpoint("POST", path, 403, null);
+		String uri = _getEndpoint("POST", path, null, 403);
 
 		try {
 			TestService testService = new TestService();
@@ -93,7 +93,7 @@ public class BaseServiceTest {
 	}
 
 	private String _getEndpoint(
-		String httpMethod, String path, int statusCode, String responseBody) {
+		String httpMethod, String path, String responseBody, int statusCode) {
 
 		HttpResponse httpResponse = HttpResponse.response(
 		).withStatusCode(
@@ -121,10 +121,10 @@ public class BaseServiceTest {
 		return "http://localhost:" + _clientAndServer.getPort() + path;
 	}
 
-	private void _testDoGet(int statusCode, String responseBody) {
+	private void _testDoGet(String responseBody, int statusCode) {
 		String path = "/" + UUID.randomUUID();
 
-		String uri = _getEndpoint("GET", path, statusCode, responseBody);
+		String uri = _getEndpoint("GET", path, responseBody, statusCode);
 
 		try {
 			TestService testService = new TestService();
