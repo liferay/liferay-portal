@@ -3,6 +3,42 @@
 <project basedir="." name="portal-test-openid-connect" xmlns:antelope="antlib:ise.antelope.tasks">
 	<import file="build-test.xml" />
 
+	<target name="deploy-openid-connect-osgi-configuration">
+		<fail message="Please set osgi.config.file.name." unless="osgi.config.file.name" />
+
+		<condition else="" property="discovery.endpoint" value="${discovery.endpoint}">
+			<isset property="discovery.endpoint" />
+		</condition>
+
+		<condition else="" property="open.id.connect.client.id" value="${open.id.connect.client.id}">
+			<isset property="open.id.connect.client.id" />
+		</condition>
+
+		<condition else="" property="open.id.connect.client.secret" value="${open.id.connect.client.secret}">
+			<isset property="open.id.connect.client.secret" />
+		</condition>
+
+		<condition else="" property="provider.name" value="${provider.name}">
+			<isset property="provider.name" />
+		</condition>
+
+		<echo file="${liferay.home}/osgi/configs/${osgi.config.file.name}">authorizationEndpoint=""
+discoveryEndpoint="${discovery.endpoint}"
+discoveryEndpointCacheInMillis=L"360000"
+idTokenSigningAlgValues=["RS256"]
+issuerURL=""
+jwksURI=""
+openIdConnectClientId="${open.id.connect.client.id}"
+openIdConnectClientSecret="${open.id.connect.client.secret}"
+providerName="${provider.name}"
+registeredIdTokenSigningAlg=""
+scopes="openid email profile"
+subjectTypes=[""]
+tokenConnectionTimeout=I"1000"
+tokenEndpoint=""
+userInfoEndpoint=""</echo>
+	</target>
+
 	<target name="prepare-openid-connect-json-configuration">
 		<property name="osgi.dependency.dir" value="${project.dir}/portal-web/test/functional/com/liferay/portalweb/tests/coreinfrastructure/security/openidconnect/dependencies" />
 

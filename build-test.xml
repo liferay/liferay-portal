@@ -5047,6 +5047,15 @@ tell application "Safari" to quit
 			</if>
 
 			<if>
+				<isset property="openid.provider.auth0.discovery.endpoint" />
+				<then>
+					<echo append="true" file="${test.ext.properties.file}">
+						openid.provider.auth0.discovery.endpoint=${openid.provider.auth0.discovery.endpoint}
+					</echo>
+				</then>
+			</if>
+
+			<if>
 				<isset property="openid.provider.azure.client.id" />
 				<then>
 					<echo append="true" file="${test.ext.properties.file}">
