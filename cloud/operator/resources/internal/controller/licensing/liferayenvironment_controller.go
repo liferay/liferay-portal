@@ -461,14 +461,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 		},
 	)
 
-	if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
-		if errors.IsConflict(error) {
-			return controllerruntime.Result{RequeueAfter: time.Second}, nil
-		}
-
-		return controllerruntime.Result{}, error
-	}
-
 	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context, liferayEnvironment, entitlements.MaxClusterNodes,
 	); error != nil {
@@ -527,6 +519,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 
 	if statefulSet.Spec.Replicas == nil || *statefulSet.Spec.Replicas != effectiveReplicas {
 		liveReplicas := statefulSet.Spec.Replicas
+
+		if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
+                return error
+        }
 
 		statefulSet.Spec.Replicas = &effectiveReplicas
 
@@ -700,6 +696,32 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) environmentDir
 	namespace string,
 ) string {
 	return filepath.Join(liferayEnvironmentReconciler.MarketplaceMountPath, namespace)
+}
+
+func extractLiferayImageTag(image string) string {
+	if index := strings.LastIndex(image, "@"); index != -1 {
+		image = image[:index]
+	}
+
+	index := strings.LastIndex(image, ":")
+
+	if index == -1 {
+		return ""
+	}
+
+	repository := image[:index]
+
+	if !strings.HasSuffix(repository, "liferay/dxp") {
+		return ""
+	}
+
+	tag := image[index+1:]
+
+	if strings.Contains(tag, "/") {
+		return ""
+	}
+
+	return tag
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
@@ -897,26 +919,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	return entitlements, controllerruntime.Result{}, nil
 }
 
-func imageTag(image string) string {
-	if index := strings.LastIndex(image, "@"); index != -1 {
-		image = image[:index]
-	}
-
-	index := strings.LastIndex(image, ":")
-
-	if index == -1 {
-		return ""
-	}
-
-	tag := image[index+1:]
-
-	if strings.Contains(tag, "/") {
-		return ""
-	}
-
-	return tag
-}
-
 func licenseChecksum(licenseXML []byte) string {
 	sum := sha256.Sum256(licenseXML)
 
@@ -1100,7 +1102,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveDxpVers
 	}
 
 	for _, container := range statefulSet.Spec.Template.Spec.Containers {
-		dxpVersion := imageTag(container.Image)
+		dxpVersion := extractLiferayImageTag(container.Image)
 
 		if dxpVersion != "" {
 			return dxpVersion

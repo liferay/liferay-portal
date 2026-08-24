@@ -171,7 +171,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 				},
 			}
 
-			objects := []client.Object{}
+			objects := []client.Object{liferayEnvironment}
 
 			if testCase.workloadExists {
 				objects = append(objects, &appsv1.StatefulSet{
@@ -234,6 +234,116 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 				statefulSet.Spec.Replicas, testCase.expectedReplicas,
 				"statefulSet.spec.replicas", t,
 			)
+		})
+	}
+}
+
+func TestEnforceReplicaCeilingPersistsCeilingBeforeWritingWorkload(t *testing.T) {
+	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev",
+			Namespace: "liferay-dev",
+		},
+		Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+			DesiredReplicas: pointerInt32(3),
+			WorkloadRef: licensingv1alpha1.WorkloadRef{
+				Name: "dev-liferay",
+			},
+		},
+	}
+
+	statefulSet := &appsv1.StatefulSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev-liferay",
+			Namespace: "liferay-dev",
+		},
+		Spec: appsv1.StatefulSetSpec{
+			Replicas: pointerInt32(1),
+		},
+	}
+
+	var observedCeiling *int32
+
+	observedWorkloadWrite := false
+
+	fakeClient := fake.NewClientBuilder().WithInterceptorFuncs(
+		interceptor.Funcs{
+			Update: func(
+				context context.Context,
+				writer client.WithWatch,
+				object client.Object,
+				options ...client.UpdateOption,
+			) error {
+				if _, ok := object.(*appsv1.StatefulSet); ok {
+					stored := &licensingv1alpha1.LiferayEnvironment{}
+
+					if error := writer.Get(
+						context, types.NamespacedName{
+							Name:      "dev",
+							Namespace: "liferay-dev",
+						}, stored,
+					); error != nil {
+						return error
+					}
+
+					observedCeiling = stored.Status.License.MaxClusterNodes
+					observedWorkloadWrite = true
+				}
+
+				return writer.Update(context, object, options...)
+			},
+		},
+	).WithObjects(
+		liferayEnvironment, statefulSet,
+	).WithScheme(
+		newScheme(t),
+	).WithStatusSubresource(
+		&licensingv1alpha1.LiferayEnvironment{},
+	).Build()
+
+	liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{Client: fakeClient}
+
+	liferayEnvironment.Status.License.MaxClusterNodes = pointerInt32(3)
+
+	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+		context.Background(), liferayEnvironment, 3,
+	); error != nil {
+		t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
+	}
+
+	if !observedWorkloadWrite {
+		t.Fatal("Expected the workload to be written")
+	}
+
+	if observedCeiling == nil {
+		t.Fatal("Expected the ceiling to be persisted before the workload was written, got nil")
+	}
+
+	if *observedCeiling != 3 {
+		t.Errorf("Persisted ceiling = %d, want 3", *observedCeiling)
+	}
+}
+
+func TestImageTag(t *testing.T) {
+	testCases := map[string]struct {
+		image string
+		want  string
+	}{
+		"a digest":               {image: "liferay/dxp@sha256:abc123", want: ""},
+		"a plain tag":            {image: "liferay/dxp:2026.q3.0", want: "2026.q3.0"},
+		"a plain tag with lts":   {image: "liferay/dxp:2026.q1.11-lts", want: "2026.q1.11-lts"},
+		"a port and no tag":      {image: "registry:5000/liferay/dxp", want: ""},
+		"a registry with a port": {image: "registry:5000/liferay/dxp:2026.q3.0", want: "2026.q3.0"},
+		"a tag and a digest":     {image: "liferay/dxp:2026.q3.0@sha256:abc123", want: "2026.q3.0"},
+		"no tag at all":          {image: "liferay/dxp", want: ""},
+		"wrong image repo":       {image: "liferaycloud/dxp:2026.q3.0", want: ""},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			if got := extractLiferayImageTag(testCase.image); got != testCase.want {
+				t.Errorf("imageTag(%q) = %q, want %q", testCase.image, got, testCase.want)
+			}
 		})
 	}
 }

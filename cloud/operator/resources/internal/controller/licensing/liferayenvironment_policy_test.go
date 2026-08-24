@@ -175,7 +175,7 @@ func TestReconcileWithAdmissionPolicy(t *testing.T) {
 
 			if *maxClusterNodes != 3 {
 				t.Errorf(
-					"License.MaxClusterNodes = %d, want maxClusterNodes 3 ersisted so that the next attempt is admitted",
+					"License.MaxClusterNodes = %d, want maxClusterNodes 3 persisted so that the next attempt is admitted",
 					*maxClusterNodes,
 				)
 			}
