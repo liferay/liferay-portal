@@ -11,7 +11,7 @@ import {DefinitionBuilderContext} from '../../../DefinitionBuilderContext';
 import {defaultLanguageId} from '../../../constants';
 import {DiagramBuilderContext} from '../../DiagramBuilderContext';
 import getBezierEdgeCenter from '../../util/getBezierEdgeCenter';
-import MarkerEndDefinition, {markerEndId} from './MarkerEndDefinition';
+import MarkerEndDefinition, {getMarkerEndId} from './MarkerEndDefinition';
 import {getEdgeParams} from './utils';
 
 function Edge(props) {
@@ -122,20 +122,14 @@ function Edge(props) {
 	}
 
 	return (
-		<g
-			className={
-				selected
-					? 'react-flow__connection selected'
-					: 'react-flow__connection'
-			}
-		>
+		<g className={`react-flow__connection${selected ? ' selected' : ''}`}>
 			<MarkerEndDefinition edgeId={id} />
 
 			<path
 				className="react-flow__edge-path"
 				d={drawn}
 				id={id}
-				markerEnd={`url(#${markerEndId}#${id})`}
+				markerEnd={`url(#${getMarkerEndId(id)})`}
 				style={edgeStyle}
 			/>
 

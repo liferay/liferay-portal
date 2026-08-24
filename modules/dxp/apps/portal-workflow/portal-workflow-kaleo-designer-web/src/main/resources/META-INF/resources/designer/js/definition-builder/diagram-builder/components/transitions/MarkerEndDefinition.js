@@ -7,12 +7,16 @@ import React from 'react';
 
 const markerEndId = 'arrowclosed';
 
+function getMarkerEndId(edgeId) {
+	return `${markerEndId}#${edgeId}`;
+}
+
 export default function MarkerEndDefinition({edgeId}) {
 	return (
 		<defs>
 			<marker
 				className="react-flow__arrowhead"
-				id={`${markerEndId}#${edgeId}`}
+				id={getMarkerEndId(edgeId)}
 				markerHeight="8"
 				markerWidth="20"
 				orient="auto"
@@ -31,4 +35,4 @@ export default function MarkerEndDefinition({edgeId}) {
 	);
 }
 
-export {markerEndId};
+export {getMarkerEndId};
