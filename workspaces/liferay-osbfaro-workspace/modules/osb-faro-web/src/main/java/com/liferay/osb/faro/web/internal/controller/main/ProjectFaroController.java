@@ -1972,7 +1972,7 @@ public class ProjectFaroController extends BaseFaroController {
 	}
 
 	private static final String _PORTAL_CACHE_NAME =
-		ProjectFaroController.class.getName() + "_PROVISION_BACKOFF";
+		ProjectFaroController.class.getName() + ".provisionBackoffPortalCache";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ProjectFaroController.class);

@@ -448,7 +448,7 @@ public class FragmentEntryProcessorRegistryImpl
 
 	private static final String _DOCUMENT_PORTAL_CACHE_NAME =
 		FragmentEntryProcessorRegistryImpl.class.getName() +
-			"#_documentPortalCache";
+			"._documentPortalCache";
 
 	private static final ThreadLocal<Set<String>> _validHTMLs =
 		new CentralizedThreadLocal(
