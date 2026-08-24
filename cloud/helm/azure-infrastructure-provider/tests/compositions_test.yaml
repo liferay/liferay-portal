@@ -151,16 +151,6 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: \{\{- if \$isDoclibReady \}\}
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: '\$isDoclibReady := and \(ne \$doclibConnectionString ""\) \$isDoclibContainerReady'
-        it: Withholds the document library details until the container and its credential exist
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: '\$isDatabaseReady := and \(ne \$activeDatabaseFqdn ""\) \$isDatabaseBootstrapped'
             -   documentIndex: 0
                 matchRegex:
@@ -181,3 +171,13 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: PGPASSWORD=\$\(cat /entra/token\)
         it: Uses Microsoft Entra for the bootstrap connection rather than a password
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \{\{- if \$isDoclibReady \}\}
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: '\$isDoclibReady := and \(ne \$doclibConnectionString ""\) \$isDoclibContainerReady'
+        it: Withholds the document library details until the container and its credential exist
