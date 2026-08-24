@@ -1078,7 +1078,7 @@ public class ProjectFaroController extends BaseFaroController {
 	protected void activate() {
 		_provisionBackoffPortalCache =
 			(PortalCache<String, Long>)_multiVMPool.getPortalCache(
-				_PROVISION_BACKOFF_PORTAL_CACHE_NAME);
+				_PORTAL_CACHE_NAME);
 	}
 
 	protected OSBAccountEntry createOSBAccountEntry(boolean trial) {
@@ -1106,7 +1106,7 @@ public class ProjectFaroController extends BaseFaroController {
 
 	@Deactivate
 	protected void deactivate() {
-		_multiVMPool.removePortalCache(_PROVISION_BACKOFF_PORTAL_CACHE_NAME);
+		_multiVMPool.removePortalCache(_PORTAL_CACHE_NAME);
 	}
 
 	protected OSBAccountEntry getOSBAccountEntry(FaroProject faroProject)
@@ -1971,7 +1971,7 @@ public class ProjectFaroController extends BaseFaroController {
 		}
 	}
 
-	private static final String _PROVISION_BACKOFF_PORTAL_CACHE_NAME =
+	private static final String _PORTAL_CACHE_NAME =
 		ProjectFaroController.class.getName() + "_PROVISION_BACKOFF";
 
 	private static final Log _log = LogFactoryUtil.getLog(
