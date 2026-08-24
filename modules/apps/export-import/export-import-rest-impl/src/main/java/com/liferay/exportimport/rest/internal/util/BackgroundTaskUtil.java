@@ -13,9 +13,11 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
+import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -60,6 +62,18 @@ public class BackgroundTaskUtil {
 			else {
 				dynamicQuery.addOrder(OrderFactoryUtil.asc(fieldName));
 			}
+		}
+	}
+
+	public static void checkTaskExecutorClassName(
+			BackgroundTask backgroundTask, String... taskExecutorClassNames)
+		throws NoSuchBackgroundTaskException {
+
+		if (!ArrayUtil.contains(
+				taskExecutorClassNames,
+				backgroundTask.getTaskExecutorClassName())) {
+
+			throw new NoSuchBackgroundTaskException();
 		}
 	}
 

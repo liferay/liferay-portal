@@ -30,7 +30,6 @@ import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
@@ -80,7 +79,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		PermissionUtil.checkExportPermission(
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
-		_validateExportBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		_backgroundTaskLocalService.deleteBackgroundTask(backgroundTask);
 	}
@@ -110,7 +110,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		PermissionUtil.checkExportPermission(
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
-		_validateExportBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		return _toExportProcess(backgroundTask);
 	}
@@ -125,7 +126,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		PermissionUtil.checkExportPermission(
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
-		_validateExportBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		List<FileEntry> fileEntries =
 			backgroundTask.getAttachmentsFileEntries();
@@ -166,7 +168,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		PermissionUtil.checkExportPermission(
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
-		_validateExportBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		return new ProcessProgress() {
 			{
@@ -226,7 +229,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		PermissionUtil.checkExportPermission(
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
-		_validateExportBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		ExportImportConfiguration exportImportConfiguration =
 			ExportImportConfigurationFactory.cloneExportImportConfiguration(
@@ -534,24 +538,10 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		};
 	}
 
-	private void _validateExportBackgroundTask(BackgroundTask backgroundTask)
-		throws Exception {
-
-		String taskExecutorClassName =
-			backgroundTask.getTaskExecutorClassName();
-
-		if (!StringUtil.equals(
-				taskExecutorClassName,
-				BackgroundTaskExecutorNames.
-					LAYOUT_EXPORT_BACKGROUND_TASK_EXECUTOR) &&
-			!StringUtil.equals(
-				taskExecutorClassName,
-				BackgroundTaskExecutorNames.
-					PORTLET_EXPORT_BACKGROUND_TASK_EXECUTOR)) {
-
-			throw new NoSuchBackgroundTaskException();
-		}
-	}
+	private static final String[] _TASK_EXECUTOR_CLASS_NAMES = {
+		BackgroundTaskExecutorNames.LAYOUT_EXPORT_BACKGROUND_TASK_EXECUTOR,
+		BackgroundTaskExecutorNames.PORTLET_EXPORT_BACKGROUND_TASK_EXECUTOR
+	};
 
 	@Reference
 	private BackgroundTaskLocalService _backgroundTaskLocalService;

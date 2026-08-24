@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstant
 import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplayFactory;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
@@ -84,7 +83,8 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
-		_validatePublishBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		_backgroundTaskLocalService.deleteBackgroundTask(backgroundTask);
 	}
@@ -98,7 +98,8 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
-		_validatePublishBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		return _toPublishProcess(backgroundTask);
 	}
@@ -112,7 +113,8 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
-		_validatePublishBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		return new ProcessProgress() {
 			{
@@ -158,7 +160,8 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
-		_validatePublishBackgroundTask(backgroundTask);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
 
 		ExportImportConfiguration exportImportConfiguration =
 			ExportImportConfigurationFactory.cloneExportImportConfiguration(
@@ -489,17 +492,9 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		}
 	}
 
-	private void _validatePublishBackgroundTask(BackgroundTask backgroundTask)
-		throws Exception {
-
-		if (!StringUtil.equals(
-				backgroundTask.getTaskExecutorClassName(),
-				BackgroundTaskExecutorNames.
-					LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR)) {
-
-			throw new NoSuchBackgroundTaskException();
-		}
-	}
+	private static final String[] _TASK_EXECUTOR_CLASS_NAMES = {
+		BackgroundTaskExecutorNames.LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR
+	};
 
 	@Reference
 	private BackgroundTaskDisplayFactory _backgroundTaskDisplayFactory;

@@ -17,12 +17,12 @@ import com.liferay.exportimport.rest.dto.v1_0.ReportEntry;
 import com.liferay.exportimport.rest.dto.v1_0.Status;
 import com.liferay.exportimport.rest.dto.v1_0.Type;
 import com.liferay.exportimport.rest.internal.odata.entity.v1_0.ReportEntryEntityModel;
+import com.liferay.exportimport.rest.internal.util.BackgroundTaskUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ReportEntryResource;
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
-import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -79,11 +78,8 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		PermissionUtil.checkImportPermission(
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
-		_validateBackgroundTask(
-			backgroundTask,
-			BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR,
-			BackgroundTaskExecutorNames.
-				PORTLET_IMPORT_BACKGROUND_TASK_EXECUTOR);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _IMPORT_TASK_EXECUTOR_CLASS_NAMES);
 
 		return _getReportEntriesPage(
 			backgroundTask, filter, pagination, search, sorts);
@@ -100,10 +96,8 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
-		_validateBackgroundTask(
-			backgroundTask,
-			BackgroundTaskExecutorNames.
-				LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR);
+		BackgroundTaskUtil.checkTaskExecutorClassName(
+			backgroundTask, _PUBLISH_TASK_EXECUTOR_CLASS_NAMES);
 
 		return _getReportEntriesPage(
 			backgroundTask, filter, pagination, search, sorts);
@@ -278,17 +272,14 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		};
 	}
 
-	private void _validateBackgroundTask(
-			BackgroundTask backgroundTask, String... taskExecutorClassNames)
-		throws Exception {
+	private static final String[] _IMPORT_TASK_EXECUTOR_CLASS_NAMES = {
+		BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR,
+		BackgroundTaskExecutorNames.PORTLET_IMPORT_BACKGROUND_TASK_EXECUTOR
+	};
 
-		if (!ArrayUtil.contains(
-				taskExecutorClassNames,
-				backgroundTask.getTaskExecutorClassName())) {
-
-			throw new NoSuchBackgroundTaskException();
-		}
-	}
+	private static final String[] _PUBLISH_TASK_EXECUTOR_CLASS_NAMES = {
+		BackgroundTaskExecutorNames.LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR
+	};
 
 	private static final EntityModel _entityModel =
 		new ReportEntryEntityModel();
