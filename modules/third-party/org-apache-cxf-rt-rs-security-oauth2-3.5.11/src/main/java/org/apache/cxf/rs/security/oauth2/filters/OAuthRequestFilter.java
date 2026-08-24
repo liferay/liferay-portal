@@ -139,7 +139,7 @@ public class OAuthRequestFilter extends AbstractAccessTokenValidator
 
         if (accessTokenV.getClientIpAddress() != null) {
             String remoteAddress = getMessageContext().getHttpServletRequest().getRemoteAddr();
-            if (remoteAddress == null || accessTokenV.getClientIpAddress().equals(remoteAddress)) {
+            if (remoteAddress == null || !accessTokenV.getClientIpAddress().equals(remoteAddress)) {
                 String message = "Client IP Address is invalid";
                 LOG.warning(message);
                 throw ExceptionUtils.toForbiddenException(null, null);
@@ -364,3 +364,4 @@ public class OAuthRequestFilter extends AbstractAccessTokenValidator
         return (TLSSessionInfo)getMessageContext().get(TLSSessionInfo.class.getName());
     }
 }
+/* @generated */

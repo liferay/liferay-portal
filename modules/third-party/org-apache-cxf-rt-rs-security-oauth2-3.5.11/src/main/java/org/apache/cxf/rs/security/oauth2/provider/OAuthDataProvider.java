@@ -114,6 +114,27 @@ public interface OAuthDataProvider {
     void revokeToken(Client client, String tokenId, String tokenTypeHint) throws OAuthServiceException;
 
     /**
+     * Revokes a refresh or access token, verifying that the authenticated resource owner's
+     * identity ({@code callerSubject}) matches the subject bound to the token.
+     * This prevents one user from revoking another user's token when multiple resource
+     * owners share the same OAuth2 client (IDOR guard).
+     * <p>
+     * {@code callerSubject} may be {@code null} for machine-to-machine (client credentials)
+     * flows where no end-user principal is present; in that case only the client-level
+     * check is applied.
+     *
+     * @param client the authenticated client
+     * @param callerSubject the authenticated resource owner, or {@code null} for M2M flows
+     * @param tokenId token identifier
+     * @param tokenTypeHint can be access_token or refresh_token or null
+     * @throws OAuthServiceException
+     */
+    default void revokeToken(Client client, UserSubject callerSubject, String tokenId, String tokenTypeHint)
+        throws OAuthServiceException {
+        revokeToken(client, tokenId, tokenTypeHint);
+    }
+
+    /**
      * Converts the requested scopes to the list of permissions.
      * The scopes are extracted from OAuth2 'scope' property which
      * if set may contain one or more space separated scope values
@@ -124,3 +145,4 @@ public interface OAuthDataProvider {
     List<OAuthPermission> convertScopeToPermissions(Client client,
                                                     List<String> requestedScopes);
 }
+/* @generated */
