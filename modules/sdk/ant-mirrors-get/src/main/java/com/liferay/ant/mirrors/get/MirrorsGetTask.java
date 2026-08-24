@@ -599,7 +599,7 @@ public class MirrorsGetTask extends Task {
 				return;
 			}
 
-			if (_isReadFile(mirrorsCacheFile)) {
+			if (_isReadLinkFile(mirrorsCacheFile)) {
 				_deleteFile(mirrorsCacheFile);
 			}
 		}
@@ -1147,7 +1147,7 @@ public class MirrorsGetTask extends Task {
 		return trimmedString.isEmpty();
 	}
 
-	private boolean _isReadFile(File file) {
+	private boolean _isReadLinkFile(File file) {
 		File readLinkFile = _readLinkFiles.get(file);
 
 		if (readLinkFile == null) {
