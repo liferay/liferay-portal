@@ -5,7 +5,7 @@
 
 package com.liferay.portal.vulcan.internal.jaxrs.container.response.filter;
 
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory;
@@ -13,6 +13,7 @@ import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAP
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.Provider;
@@ -44,21 +45,24 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 		MultivaluedMap<String, Object> headers =
 			containerResponseContext.getHeaders();
 
-		UriInfo uriInfo = containerRequestContext.getUriInfo();
+		String cacheControl = null;
 
-		URI baseURI = uriInfo.getBaseUri();
+		if (_company != null) {
+			UriInfo uriInfo = containerRequestContext.getUriInfo();
 
-		String basePath = StringUtil.removeFirst(
-			baseURI.getPath(), Portal.PATH_MODULE);
+			URI baseURI = uriInfo.getBaseUri();
 
-		if (!basePath.endsWith("/")) {
-			basePath += "/";
+			String basePath = StringUtil.removeFirst(
+				baseURI.getPath(), Portal.PATH_MODULE);
+
+			if (!basePath.endsWith("/")) {
+				basePath += "/";
+			}
+
+			cacheControl =
+				_headlessAPICacheManagedServiceFactory.getCacheControl(
+					_company.getCompanyId(), basePath + uriInfo.getPath());
 		}
-
-		String cacheControl =
-			_headlessAPICacheManagedServiceFactory.getCacheControl(
-				CompanyThreadLocal.getCompanyId(),
-				basePath + uriInfo.getPath());
 
 		if (cacheControl == null) {
 			headers.putSingle("Cache-Control", "no-cache, no-store");
@@ -68,6 +72,9 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 
 		headers.putSingle("Cache-Control", cacheControl);
 	}
+
+	@Context
+	private Company _company;
 
 	private final HeadlessAPICacheManagedServiceFactory
 		_headlessAPICacheManagedServiceFactory;

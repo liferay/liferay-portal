@@ -92,6 +92,15 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@Test
+	public void testCacheWithAnotherCompany() throws Exception {
+		_addCacheableEndpoint(
+			"/test-vulcan-cache/test", "public", 3600,
+			TestPropsValues.getCompanyId() + 1);
+
+		_assertNotCacheable(_openURLConnection("/test"));
+	}
+
+	@Test
 	public void testCacheWithCacheableEndpoint() throws Exception {
 		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
 
