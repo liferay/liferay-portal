@@ -70,6 +70,16 @@ public class ObjectDefinitionModelListener
 			layoutPageTemplateEntry =
 				_layoutPageTemplateEntryLocalService.
 					fetchLayoutPageTemplateEntry(
+						group.getGroupId(), "LFR_CMS_COMPARE_" + classNameId);
+
+			if (layoutPageTemplateEntry != null) {
+				_layoutPageTemplateEntryLocalService.
+					deleteLayoutPageTemplateEntry(layoutPageTemplateEntry);
+			}
+
+			layoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.
+					fetchLayoutPageTemplateEntry(
 						group.getGroupId(),
 						"LFR_CMS_TRANSLATION_" + classNameId);
 

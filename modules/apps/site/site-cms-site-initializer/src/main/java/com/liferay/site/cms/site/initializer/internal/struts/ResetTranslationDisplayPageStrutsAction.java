@@ -74,20 +74,27 @@ public class ResetTranslationDisplayPageStrutsAction implements StrutsAction {
 		long classNameId = _portal.getClassNameId(
 			objectDefinition.getClassName());
 
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
-				group.getGroupId(),
-				_TRANSLATION_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX +
-					classNameId);
-
-		if (layoutPageTemplateEntry == null) {
-			return null;
-		}
-
-		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
-			layoutPageTemplateEntry);
+		_deleteLayoutPageTemplateEntry(
+			group.getGroupId(),
+			_COMPARE_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX + classNameId);
+		_deleteLayoutPageTemplateEntry(
+			group.getGroupId(),
+			_TRANSLATION_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX + classNameId);
 
 		return null;
+	}
+
+	private void _deleteLayoutPageTemplateEntry(long groupId, String key)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				groupId, key);
+
+		if (layoutPageTemplateEntry != null) {
+			_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+				layoutPageTemplateEntry);
+		}
 	}
 
 	private void _write(
@@ -101,6 +108,9 @@ public class ResetTranslationDisplayPageStrutsAction implements StrutsAction {
 		ServletResponseUtil.write(
 			httpServletResponse, JSONUtil.toString(jsonObject));
 	}
+
+	private static final String _COMPARE_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX =
+		"LFR_CMS_COMPARE_";
 
 	private static final String
 		_TRANSLATION_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX =
