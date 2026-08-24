@@ -24,6 +24,7 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
@@ -51,6 +52,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -160,11 +162,10 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		}
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
-		super.testBatchEngineDeleteImportTask();
+		_testBatchEngineDeleteImportTaskByExternalReferenceCode();
 	}
 
 	@Ignore
@@ -353,10 +354,12 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPatchProductWithObjectField();
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testPatchProductByExternalReferenceCode() throws Exception {
+		super.testPatchProductByExternalReferenceCode();
+
+		_testPatchProductByExternalReferenceCodeBatch();
 	}
 
 	@Override
@@ -397,6 +400,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	@Override
 	@Test
 	public void testPutProductByExternalReferenceCode() throws Exception {
+		_testPutProductByExternalReferenceCodeBatch();
 		_testPutProductByExternalReferenceCodeWithFutureDisplayDate();
 	}
 
@@ -471,6 +475,13 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Override
 	protected Product testGraphQLProduct_addProduct() throws Exception {
+		return productResource.postProduct(randomProduct());
+	}
+
+	@Override
+	protected Product testPatchProductByExternalReferenceCode_addProduct()
+		throws Exception {
+
 		return productResource.postProduct(randomProduct());
 	}
 
@@ -691,6 +702,32 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				};
 			}
 		};
+	}
+
+	private void _testBatchEngineDeleteImportTaskByExternalReferenceCode()
+		throws Exception {
+
+		Product product = productResource.postProduct(randomProduct());
+
+		HttpInvoker.HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode",
+						product.getExternalReferenceCode())));
+
+		Assert.assertEquals(200, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+		assertHttpResponseStatusCode(
+			404,
+			productResource.getProductByExternalReferenceCodeHttpResponse(
+				product.getExternalReferenceCode()));
 	}
 
 	private void _testGetProductsPage() throws Exception {
@@ -920,6 +957,85 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	private Product _testPatchProduct_addProduct() throws Exception {
 		return productResource.postProduct(randomProduct());
+	}
+
+	private void _testPatchProductByExternalReferenceCodeBatch()
+		throws Exception {
+
+		Product product = productResource.postProduct(randomProduct());
+
+		String name = RandomTestUtil.randomString();
+
+		HttpInvoker.HttpResponse httpResponse =
+			importTaskResource.putImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
+				null, null, null, null, "PARTIAL_UPDATE",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode",
+						product.getExternalReferenceCode()
+					).put(
+						"name", JSONUtil.put("en_US", name)
+					)));
+
+		Assert.assertEquals(200, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+		Product patchedProduct =
+			productResource.getProductByExternalReferenceCode(
+				product.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			name,
+			patchedProduct.getName(
+			).get(
+				"en_US"
+			));
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+				testCompany.getCompanyId(), CPDefinition.class.getName());
+
+		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"a" + RandomTestUtil.randomString()
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).build());
+
+		String value = RandomTestUtil.randomString();
+
+		httpResponse = importTaskResource.putImportTaskHttpResponse(
+			"com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
+			null, null, null, null, "PARTIAL_UPDATE",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"externalReferenceCode", product.getExternalReferenceCode()
+				).put(
+					objectField.getName(), value
+				)));
+
+		Assert.assertEquals(200, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			"headless-commerce-admin-catalog/v1.0/products/" +
+				product.getProductId(),
+			Http.Method.GET);
+
+		Assert.assertEquals(value, jsonObject.getString(objectField.getName()));
 	}
 
 	private void _testPatchProductWithNegativeValue(String fieldName)
@@ -1247,6 +1363,42 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 		Assert.assertEquals(
 			cpInstance.getStatus(), WorkflowConstants.STATUS_APPROVED);
+	}
+
+	private void _testPutProductByExternalReferenceCodeBatch()
+		throws Exception {
+
+		Product product1 = productResource.postProduct(randomProduct());
+
+		String name = RandomTestUtil.randomString();
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"externalReferenceCode", product1.getExternalReferenceCode()
+				).put(
+					"name", JSONUtil.put("en_US", name)
+				)
+			).toString(),
+			StringBundler.concat(
+				"headless-batch-engine/v1.0/import-task",
+				"/com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
+				"?createStrategy=UPSERT&importStrategy=ON_ERROR_FAIL",
+				"&updateStrategy=PARTIAL_UPDATE"),
+			Http.Method.POST);
+
+		waitForFinish("COMPLETED", jsonObject);
+
+		Product product2 = productResource.getProductByExternalReferenceCode(
+			product1.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			name,
+			product2.getName(
+			).get(
+				"en_US"
+			));
+		Assert.assertEquals(product1.getProductId(), product2.getProductId());
 	}
 
 	private void _testPutProductByExternalReferenceCodeWithFutureDisplayDate()
