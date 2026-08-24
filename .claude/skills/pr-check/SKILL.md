@@ -60,6 +60,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Transaction Usage](validations/transaction-usage.md)
 
+1. [HTML Escaping](validations/html-escaping.md)
+
 1. [Full Portal Build](validations/full-portal-build.md)
 
 1. [Per-Module Compile](validations/per-module-compile.md)
