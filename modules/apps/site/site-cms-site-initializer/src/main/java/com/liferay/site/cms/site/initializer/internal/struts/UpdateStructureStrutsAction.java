@@ -122,14 +122,27 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		return null;
 	}
 
-	private void _deleteRelationships(long objectDefinitionId)
+	private void _deleteObjectRelationships(
+			String externalReferenceCode, long companyId)
 		throws Exception {
+
+		com.liferay.object.model.ObjectDefinition
+			serviceBuilderObjectDefinition =
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						externalReferenceCode, companyId);
+
+		if (serviceBuilderObjectDefinition == null) {
+			return;
+		}
 
 		for (com.liferay.object.model.ObjectRelationship
 				serviceBuilderObjectRelationship :
 					_objectRelationshipLocalService.
 						getObjectRelationshipsByObjectDefinitionId2(
-							objectDefinitionId, false)) {
+							serviceBuilderObjectDefinition.
+								getObjectDefinitionId(),
+							false)) {
 
 			if (serviceBuilderObjectRelationship.isReverse() ||
 				!serviceBuilderObjectRelationship.compareType(
@@ -380,6 +393,10 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 						putObjectDefinitionByExternalReferenceCode(
 							objectDefinition.getExternalReferenceCode(),
 							objectDefinition);
+
+					_deleteObjectRelationships(
+						objectDefinition.getExternalReferenceCode(),
+						_companyId);
 				}
 			}
 
@@ -390,17 +407,8 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			objectDefinitionResource.putObjectDefinition(
 				_objectDefinitionId, _objectDefinition);
 
-			com.liferay.object.model.ObjectDefinition
-				serviceBuilderObjectDefinition =
-					_objectDefinitionLocalService.
-						fetchObjectDefinitionByExternalReferenceCode(
-							_objectDefinition.getExternalReferenceCode(),
-							_companyId);
-
-			if (serviceBuilderObjectDefinition != null) {
-				_deleteRelationships(
-					serviceBuilderObjectDefinition.getObjectDefinitionId());
-			}
+			_deleteObjectRelationships(
+				_objectDefinition.getExternalReferenceCode(), _companyId);
 
 			if (ListUtil.isNotEmpty(_objectRelationships)) {
 				ObjectRelationshipResource objectRelationshipResource =
