@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useContext, useMemo} from 'react';
 import {EdgeText, getBezierPath, useStoreState} from 'react-flow-renderer';
@@ -122,7 +123,7 @@ function Edge(props) {
 	}
 
 	return (
-		<g className={`react-flow__connection${selected ? ' selected' : ''}`}>
+		<g className={classNames('react-flow__connection', {selected})}>
 			<MarkerEndDefinition edgeId={id} />
 
 			<path

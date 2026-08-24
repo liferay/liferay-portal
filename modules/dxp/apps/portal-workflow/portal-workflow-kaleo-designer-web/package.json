@@ -15,6 +15,7 @@
 		"@clayui/toolbar": "^3.166.0",
 		"@liferay/object-js-components-web": "*",
 		"alloy-ui": "3.1.0",
+		"classnames": "2.3.1",
 		"dagre": "0.8.2",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
