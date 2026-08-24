@@ -174,6 +174,36 @@ public class PageSpecificationVersion implements Cloneable, Serializable {
 
 	protected PageSpecification pageSpecification;
 
+	public PageSpecificationVersionPageExperience[]
+		getPageSpecificationVersionPageExperiences() {
+
+		return pageSpecificationVersionPageExperiences;
+	}
+
+	public void setPageSpecificationVersionPageExperiences(
+		PageSpecificationVersionPageExperience[]
+			pageSpecificationVersionPageExperiences) {
+
+		this.pageSpecificationVersionPageExperiences =
+			pageSpecificationVersionPageExperiences;
+	}
+
+	public void setPageSpecificationVersionPageExperiences(
+		UnsafeSupplier<PageSpecificationVersionPageExperience[], Exception>
+			pageSpecificationVersionPageExperiencesUnsafeSupplier) {
+
+		try {
+			pageSpecificationVersionPageExperiences =
+				pageSpecificationVersionPageExperiencesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected PageSpecificationVersionPageExperience[]
+		pageSpecificationVersionPageExperiences;
+
 	public Status getStatus() {
 		return status;
 	}
@@ -311,4 +341,4 @@ public class PageSpecificationVersion implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:284458619
+// LIFERAY-REST-BUILDER-HASH:1545444610

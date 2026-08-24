@@ -380,6 +380,63 @@ public class PageSpecificationVersion implements Serializable {
 	private Supplier<PageSpecification> _pageSpecificationSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The page specification version's page experiences."
+	)
+	@Valid
+	public PageSpecificationVersionPageExperience[]
+		getPageSpecificationVersionPageExperiences() {
+
+		if (_pageSpecificationVersionPageExperiencesSupplier != null) {
+			pageSpecificationVersionPageExperiences =
+				_pageSpecificationVersionPageExperiencesSupplier.get();
+
+			_pageSpecificationVersionPageExperiencesSupplier = null;
+		}
+
+		return pageSpecificationVersionPageExperiences;
+	}
+
+	public void setPageSpecificationVersionPageExperiences(
+		PageSpecificationVersionPageExperience[]
+			pageSpecificationVersionPageExperiences) {
+
+		this.pageSpecificationVersionPageExperiences =
+			pageSpecificationVersionPageExperiences;
+
+		_pageSpecificationVersionPageExperiencesSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPageSpecificationVersionPageExperiences(
+		UnsafeSupplier<PageSpecificationVersionPageExperience[], Exception>
+			pageSpecificationVersionPageExperiencesUnsafeSupplier) {
+
+		_pageSpecificationVersionPageExperiencesSupplier = () -> {
+			try {
+				return pageSpecificationVersionPageExperiencesUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The page specification version's page experiences."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected PageSpecificationVersionPageExperience[]
+		pageSpecificationVersionPageExperiences;
+
+	@JsonIgnore
+	private Supplier<PageSpecificationVersionPageExperience[]>
+		_pageSpecificationVersionPageExperiencesSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The page specification version's status."
 	)
 	@JsonGetter("status")
@@ -652,6 +709,33 @@ public class PageSpecificationVersion implements Serializable {
 			sb.append(String.valueOf(pageSpecification));
 		}
 
+		PageSpecificationVersionPageExperience[]
+			pageSpecificationVersionPageExperiences =
+				getPageSpecificationVersionPageExperiences();
+
+		if (pageSpecificationVersionPageExperiences != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"pageSpecificationVersionPageExperiences\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < pageSpecificationVersionPageExperiences.length;
+				 i++) {
+
+				sb.append(
+					String.valueOf(pageSpecificationVersionPageExperiences[i]));
+
+				if ((i + 1) < pageSpecificationVersionPageExperiences.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		Status status = getStatus();
 
 		if (status != null) {
@@ -833,4 +917,4 @@ public class PageSpecificationVersion implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:947369518
+// LIFERAY-REST-BUILDER-HASH:-1560391035
