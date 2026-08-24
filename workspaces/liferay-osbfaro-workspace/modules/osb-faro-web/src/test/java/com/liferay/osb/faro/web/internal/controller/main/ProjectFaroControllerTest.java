@@ -85,6 +85,7 @@ public class ProjectFaroControllerTest {
 		ReflectionTestUtils.invokeMethod(
 			_projectFaroController, "_putProvisionBackoff", corpProjectUuid,
 			new Exception());
+
 		ReflectionTestUtils.invokeMethod(
 			_projectFaroController, "_clearProvisionBackoff", corpProjectUuid);
 
