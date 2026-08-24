@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {createReadStream} from 'fs';
+
 import {getRandomInt} from '../utils/getRandomInt';
 import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
@@ -656,6 +658,20 @@ export class HeadlessAdminUserApiHelper {
 		}
 
 		return userAccount;
+	}
+
+	async postUserAccountImage(userAccountId: string, filePath: string) {
+
+		// The default headers send a JSON content type, which the multipart
+		// request must not carry, so only the CSRF token is passed through.
+
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/user-accounts/${userAccountId}/image`,
+			{
+				headers: await this.apiHelpers.getCSRFTokenHeader(),
+				multipart: {image: createReadStream(filePath)},
+			}
+		);
 	}
 
 	async postUserGroup(userGroup?: TUserGroup): Promise<TUserGroup> {

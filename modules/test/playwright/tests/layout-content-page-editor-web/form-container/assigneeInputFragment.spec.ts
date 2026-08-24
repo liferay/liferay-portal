@@ -4,6 +4,7 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {displayPageTemplatesPagesTest} from '../../../fixtures/displayPageTemplatesPagesTest';
@@ -34,7 +35,7 @@ const test = mergeTests(
 
 test(
 	'Can search for a user, select it, and submit the form',
-	{tag: '@LPD-102916'},
+	{tag: ['@LPD-102916', '@LPD-103446']},
 	async ({apiHelpers, page, site}) => {
 
 		// Create a user and a role sharing the same search term
@@ -42,16 +43,32 @@ test(
 		const searchTerm = `Assignee${getRandomInt()}`;
 
 		const userAccount = await apiHelpers.headlessAdminUser.postUserAccount({
-			alternateName: searchTerm.toLowerCase(),
-			emailAddress: `${searchTerm.toLowerCase()}@liferay.com`,
-			familyName: 'User',
+			alternateName: `portrait${searchTerm.toLowerCase()}`,
+			emailAddress: `portrait${searchTerm.toLowerCase()}@liferay.com`,
+			familyName: 'Portrait',
 			givenName: searchTerm,
 			password: 'test',
 		});
 
+		const plainUserAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount({
+				alternateName: `plain${searchTerm.toLowerCase()}`,
+				emailAddress: `plain${searchTerm.toLowerCase()}@liferay.com`,
+				familyName: 'Plain',
+				givenName: searchTerm,
+				password: 'test',
+			});
+
 		const role = await apiHelpers.headlessAdminUser.postRole({
 			name: `${searchTerm} Role`,
 		});
+
+		// Give only the first user a profile picture
+
+		await apiHelpers.headlessAdminUser.postUserAccountImage(
+			userAccount.id,
+			path.join(__dirname, '../main/dependencies/file_upload_image_1.jpg')
+		);
 
 		// Create an object with an assignee field
 
@@ -111,11 +128,32 @@ test(
 		await expect(async () => {
 			await assigneeInput.fill(searchTerm, {timeout: 1000});
 
-			await expect(option).toHaveCount(2, {timeout: 5000});
+			await expect(option).toHaveCount(3, {timeout: 5000});
 		}).toPass();
 
 		await expect(option.filter({hasText: userAccount.name})).toBeVisible();
+		await expect(
+			option.filter({hasText: plainUserAccount.name})
+		).toBeVisible();
 		await expect(option.filter({hasText: role.name})).toBeVisible();
+
+		// Check the avatar of each assignee
+
+		await expect(
+			option
+				.filter({hasText: userAccount.name})
+				.locator('img.sticker-img')
+		).toBeVisible();
+
+		await expect(
+			option
+				.filter({hasText: plainUserAccount.name})
+				.locator('svg.lexicon-icon-user')
+		).toBeVisible();
+
+		await expect(
+			option.filter({hasText: role.name}).locator('.sticker')
+		).toHaveText('AR');
 
 		// Select the user and submit the form
 
