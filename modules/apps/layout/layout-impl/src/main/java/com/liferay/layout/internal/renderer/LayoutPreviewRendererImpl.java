@@ -5,7 +5,9 @@
 
 package com.liferay.layout.internal.renderer;
 
+import com.liferay.layout.constants.LayoutWebKeys;
 import com.liferay.layout.renderer.LayoutPreviewRenderer;
+import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -62,13 +64,16 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 		themeDisplay.setScopeGroupId(layout.getGroupId());
 		themeDisplay.setSiteGroupId(layout.getGroupId());
 
+		Layout originalLayout = (Layout)httpServletRequest.getAttribute(
+			WebKeys.LAYOUT);
+		LayoutStructure originalLayoutStructure =
+			(LayoutStructure)httpServletRequest.getAttribute(
+				LayoutWebKeys.LAYOUT_STRUCTURE);
+		boolean originalPortletDecorate = GetterUtil.getBoolean(
+			httpServletRequest.getAttribute(WebKeys.PORTLET_DECORATE));
 		long[] originalSegmentsExperienceIds = GetterUtil.getLongValues(
 			httpServletRequest.getAttribute(
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS));
-		Layout originalLayout = (Layout)httpServletRequest.getAttribute(
-			WebKeys.LAYOUT);
-		boolean originalPortletDecorate = GetterUtil.getBoolean(
-			httpServletRequest.getAttribute(WebKeys.PORTLET_DECORATE));
 
 		try {
 			httpServletRequest.setAttribute(
@@ -148,6 +153,8 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			return document.html();
 		}
 		finally {
+			httpServletRequest.setAttribute(
+				LayoutWebKeys.LAYOUT_STRUCTURE, originalLayoutStructure);
 			httpServletRequest.setAttribute(
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
 				originalSegmentsExperienceIds);
