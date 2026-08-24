@@ -29,7 +29,8 @@ public class BatchTestClassGroupTest
 	public void setUpGitRemotes() throws Exception {
 		setShellCommandOutput(
 			"git remote -v", mockShell(),
-			BatchTestClassGroupTestUtil.getGitRemotesShellCommandOutput());
+			"upstream\tgit@github.com:liferay/liferay-portal.git (fetch)\n" +
+				"upstream\tgit@github.com:liferay/liferay-portal.git (push)\n");
 	}
 
 	@Test

@@ -26,10 +26,6 @@ import org.mockito.Mockito;
  */
 public class BatchTestClassGroupTestUtil {
 
-	public static String getGitRemotesShellCommandOutput() {
-		return _GIT_REMOTES_SHELL_COMMAND_OUTPUT;
-	}
-
 	public static PortalTestClassJob getPortalTestClassJob() {
 		if (_portalTestClassJob != null) {
 			return _portalTestClassJob;
@@ -114,10 +110,6 @@ public class BatchTestClassGroupTestUtil {
 		return new ServiceBuilderModulesBatchTestClassGroup(
 			"service-builder-modules", portalTestClassJob);
 	}
-
-	private static final String _GIT_REMOTES_SHELL_COMMAND_OUTPUT =
-		"upstream\tgit@github.com:liferay/liferay-portal.git (fetch)\n" +
-			"upstream\tgit@github.com:liferay/liferay-portal.git (push)\n";
 
 	private static PortalTestClassJob _portalTestClassJob;
 
