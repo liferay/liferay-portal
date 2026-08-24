@@ -177,6 +177,17 @@ export class ObjectEntryApiHelper {
 		);
 	}
 
+	async postObjectEntryCopy(
+		applicationName: string,
+		objectEntryId: number,
+		objectEntryFolderId: number
+	): Promise<ObjectEntry> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${applicationName}/${objectEntryId}/by-object-entry-folder-id/${objectEntryFolderId}/copy`,
+			{data: {}}
+		);
+	}
+
 	async getObjectEntryCollaboratorsPage(
 		applicationName: string,
 		objectEntryId: number
