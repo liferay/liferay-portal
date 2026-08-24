@@ -5,6 +5,7 @@
 
 package com.liferay.portal.vulcan.internal.jaxrs.container.response.filter;
 
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.Portal;
@@ -58,7 +59,8 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 		if (Objects.equals(
 				containerRequestContext.getMethod(), HttpMethod.GET) &&
 			(statusType.getFamily() == Response.Status.Family.SUCCESSFUL) &&
-			(_company != null) && (_user != null) && _user.isGuestUser()) {
+			(_company != null) && (_user != null) && _user.isGuestUser() &&
+			CTCollectionThreadLocal.isProductionMode()) {
 
 			UriInfo uriInfo = containerRequestContext.getUriInfo();
 
