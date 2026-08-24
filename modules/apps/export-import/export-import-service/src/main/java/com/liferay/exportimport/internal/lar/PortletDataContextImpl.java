@@ -744,6 +744,9 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 		Element groupElement = getExportDataGroupElement(modelClassSimpleName);
 
+		Map<String, Element> exportDataElements = _getExportDataElements(
+			groupElement);
+
 		Element element = null;
 
 		if (classedModel instanceof StagedModel) {
@@ -751,14 +754,15 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 			String path = ExportImportPathUtil.getModelPath(stagedModel);
 
-			element = _getDataElement(groupElement, "path", path);
+			element = exportDataElements.get(
+				_getExportDataElementKey("path", path));
 
 			if (element != null) {
 				return element;
 			}
 
-			element = _getDataElement(
-				groupElement, "uuid", stagedModel.getUuid());
+			element = exportDataElements.get(
+				_getExportDataElementKey("uuid", stagedModel.getUuid()));
 
 			if (element != null) {
 				return element;
@@ -777,6 +781,14 @@ public class PortletDataContextImpl implements PortletDataContext {
 			StagedModel stagedModel = (StagedModel)classedModel;
 
 			element.addAttribute("uuid", stagedModel.getUuid());
+
+			exportDataElements.putIfAbsent(
+				_getExportDataElementKey(
+					"path", ExportImportPathUtil.getModelPath(stagedModel)),
+				element);
+			exportDataElements.putIfAbsent(
+				_getExportDataElementKey("uuid", stagedModel.getUuid()),
+				element);
 		}
 
 		return element;
@@ -1653,6 +1665,8 @@ public class PortletDataContextImpl implements PortletDataContext {
 
 	@Override
 	public void setExportDataRootElement(Element exportDataRootElement) {
+		_exportDataElementsMap.clear();
+
 		_exportDataRootElement = exportDataRootElement;
 	}
 
@@ -2464,6 +2478,36 @@ public class PortletDataContextImpl implements PortletDataContext {
 				childElement.attributeValue(attribute), value));
 	}
 
+	private String _getExportDataElementKey(String attribute, String value) {
+		return StringBundler.concat(attribute, CharPool.POUND, value);
+	}
+
+	private Map<String, Element> _getExportDataElements(Element groupElement) {
+		Map<String, Element> exportDataElements = _exportDataElementsMap.get(
+			groupElement.getName());
+
+		if (exportDataElements != null) {
+			return exportDataElements;
+		}
+
+		exportDataElements = new HashMap<>();
+
+		for (Element element : groupElement.elements("staged-model")) {
+			exportDataElements.putIfAbsent(
+				_getExportDataElementKey(
+					"path", element.attributeValue("path")),
+				element);
+			exportDataElements.putIfAbsent(
+				_getExportDataElementKey(
+					"uuid", element.attributeValue("uuid")),
+				element);
+		}
+
+		_exportDataElementsMap.put(groupElement.getName(), exportDataElements);
+
+		return exportDataElements;
+	}
+
 	private long _getGroupId(ClassedModel classedModel) {
 		if (classedModel instanceof GroupedModel) {
 			GroupedModel groupedModel = (GroupedModel)classedModel;
@@ -2780,6 +2824,8 @@ public class PortletDataContextImpl implements PortletDataContext {
 		new HashSet<>();
 	private Date _endDate;
 	private final Map<String, List<ExpandoColumn>> _expandoColumnsMap =
+		new HashMap<>();
+	private final Map<String, Map<String, Element>> _exportDataElementsMap =
 		new HashMap<>();
 	private transient Element _exportDataRootElement;
 	private String _exportImportProcessId;
