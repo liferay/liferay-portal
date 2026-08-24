@@ -108,6 +108,22 @@ function setSelectedAssignee(assignee) {
 	});
 }
 
+function getInitials(name) {
+	const normalizedName = (name || '').trim();
+
+	if (!normalizedName) {
+		return '';
+	}
+
+	const names = normalizedName.split(/\s+/);
+
+	if (names.length > 1) {
+		return `${names[0].charAt(0)}${names[1].charAt(0)}`.toUpperCase();
+	}
+
+	return normalizedName.substring(0, 2).toUpperCase();
+}
+
 function fetchAssignees(url, query, abortController, type) {
 	const searchURL = new URL(url, window.location.origin);
 
@@ -137,7 +153,9 @@ function fetchAssignees(url, query, abortController, type) {
 				)
 				.map((item) => ({
 					externalReferenceCode: item.externalReferenceCode,
+					id: item.id,
 					name: item.name,
+					portrait: item.image,
 					type,
 				}))
 		)
@@ -151,21 +169,66 @@ function searchAssignees(query, abortController) {
 	]).then(([users, roles]) => [...users, ...roles]);
 }
 
+function cloneTemplate(className) {
+	const templateElement = fragmentElement.querySelector(className);
+
+	const node = templateElement.content.cloneNode(true);
+
+	return node.firstElementChild;
+}
+
+function createAvatarElement(assignee) {
+	const avatarElement = cloneTemplate('.avatar-template');
+
+	if (assignee.portrait) {
+		const portraitElement = cloneTemplate('.portrait-template');
+
+		portraitElement.querySelector('img').src = assignee.portrait;
+
+		avatarElement.appendChild(portraitElement);
+	}
+	else if (assignee.type === 'Role') {
+		avatarElement.classList.add('bg-primary', 'text-white');
+
+		avatarElement.textContent = getInitials(assignee.name);
+	}
+	else {
+		avatarElement.classList.add(
+			`user-icon-color-${Number(assignee.id) % 10}`
+		);
+
+		avatarElement.appendChild(cloneTemplate('.user-icon-template'));
+	}
+
+	return avatarElement;
+}
+
 function createOptionElement(assignee, index) {
 	const optionElement = document.createElement('li');
 
-	optionElement.classList.add('dropdown-item');
+	optionElement.classList.add(
+		'align-items-center',
+		'd-flex',
+		'dropdown-item'
+	);
 	optionElement.dataset.index = `${index}`;
 
 	// eslint-disable-next-line no-undef
 	optionElement.id = `${fragmentElementId}-option-${index}`;
-	optionElement.textContent = assignee.name;
 
 	optionElement.setAttribute('role', 'option');
 
 	if (checkIsSelectedAssignee(assignee)) {
 		optionElement.classList.add('active');
 	}
+
+	optionElement.appendChild(createAvatarElement(assignee));
+
+	const nameElement = document.createElement('span');
+
+	nameElement.textContent = assignee.name;
+
+	optionElement.appendChild(nameElement);
 
 	return optionElement;
 }
