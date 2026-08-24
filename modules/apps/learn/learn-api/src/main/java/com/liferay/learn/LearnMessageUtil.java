@@ -62,9 +62,6 @@ public class LearnMessageUtil {
 	private static final String _LEARN_RESOURCES_DIR = PropsUtil.get(
 		"learn.resources.dir");
 
-	private static final boolean _LEARN_RESOURCES_MODE_DEV = Objects.equals(
-		PropsUtil.get("learn.resources.mode"), "dev");
-
 	private static final boolean _LEARN_RESOURCES_MODE_OFF = Objects.equals(
 		PropsUtil.get("learn.resources.mode"), "off");
 
@@ -84,9 +81,7 @@ public class LearnMessageUtil {
 					return JSONFactoryUtil.createJSONObject();
 				}
 
-				if (_LEARN_RESOURCES_MODE_DEV &&
-					Validator.isNotNull(_LEARN_RESOURCES_DIR)) {
-
+				if (Validator.isNotNull(_LEARN_RESOURCES_DIR)) {
 					String fileName = StringBundler.concat(
 						_LEARN_RESOURCES_DIR, StringPool.SLASH, _resource,
 						".json");
@@ -99,20 +94,9 @@ public class LearnMessageUtil {
 						FileUtil.read(fileName));
 				}
 
-				StringBundler sb = new StringBundler(4);
-
-				if (_LEARN_RESOURCES_MODE_DEV) {
-					sb.append("http://localhost:3062/");
-				}
-				else {
-					sb.append("https://s3.amazonaws.com");
-					sb.append("/learn-resources.liferay.com/");
-				}
-
-				sb.append(_resource);
-				sb.append(".json");
-
-				String url = sb.toString();
+				String url = StringBundler.concat(
+					"https://s3.amazonaws.com/learn-resources.liferay.com/",
+					_resource, ".json");
 
 				if (_log.isDebugEnabled()) {
 					_log.debug("Reading " + url);
@@ -132,7 +116,7 @@ public class LearnMessageUtil {
 
 		@Override
 		public long getRefreshTime() {
-			if (_LEARN_RESOURCES_MODE_DEV) {
+			if (Validator.isNotNull(_LEARN_RESOURCES_DIR)) {
 				return 0;
 			}
 
