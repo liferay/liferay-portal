@@ -86,7 +86,7 @@ Every skill lives under `skills/` and owns one workflow. Match the user's intent
 | Enforce production readiness on code bound for a nonlocal environment | `production-standards` |
 | Create or change an object definition, field, relationship, picklist, or validation | `manage-objects` |
 | Add object business logic — actions, workflows, notifications | `manage-object-logic` |
-| Create the OAuth application a client extension needs | `setup-oauth` |
+| Create the OAuth application a client extension needs, or call a CET from browser code | `setup-oauth` |
 | Back an object with an external REST, database, or SaaS data source | `integrate-external-data` |
 | Build a page fragment or reusable page component | `scaffold-fragment` |
 | Build a form field fragment that binds to an object field | `scaffold-form-fragment` |
