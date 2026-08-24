@@ -68,6 +68,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.liveusers.LiveUsers;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -631,6 +632,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				"Unable to create a digital sales room because the license " +
 					"has expired");
 		}
+
+		if (objectEntry.getExpirationDate() != null) {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	private void _onBeforeUpdate(
@@ -643,6 +648,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
 
 			return;
+		}
+
+		if ((objectEntry.getStatus() == WorkflowConstants.STATUS_EXPIRED) ||
+			(objectEntry.getExpirationDate() != null)) {
+
+			throw new UnsupportedOperationException();
 		}
 
 		Map<String, Serializable> originalValues =
