@@ -260,6 +260,7 @@ operatorApplications:
     eckOperator:
         chart: eck-operator
         enabled: true
+        masterIpv4CidrBlock: 172.16.0.0/28
         name: eck-operator
         namespace: elastic-system
         namespaceLabels:

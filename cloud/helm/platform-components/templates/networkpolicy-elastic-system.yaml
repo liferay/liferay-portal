@@ -1,0 +1,35 @@
+{{- if .Values.operatorApplications.eckOperator.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+    name: elastic-operator-webhook-ingress
+    namespace: elastic-system
+spec:
+    ingress:
+        -   from:
+                -   ipBlock:
+                        cidr: {{ .Values.operatorApplications.eckOperator.masterIpv4CidrBlock }}
+            ports:
+                -   port: https-webhook
+                    protocol: TCP
+    podSelector:
+        matchLabels:
+            app.kubernetes.io/instance: eck-operator
+            app.kubernetes.io/name: elastic-operator
+    policyTypes:
+        -   Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+    name: default-deny-ingress
+    namespace: elastic-system
+spec:
+    podSelector: {}
+    policyTypes:
+        -   Ingress
+{{- end -}}

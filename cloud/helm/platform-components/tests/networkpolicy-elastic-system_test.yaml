@@ -1,0 +1,64 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Elastic System NetworkPolicies
+templates:
+    -   templates/networkpolicy-elastic-system.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+        it: Renders exactly the webhook ingress allow and the namespace-wide default-deny
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits both NetworkPolicies when the ECK operator is disabled
+        set:
+            operatorApplications.eckOperator.enabled: false
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: elastic-system
+            -   equal:
+                    path: metadata.labels["liferay.com/project"]
+                    value: liferay-cloud-native
+            -   equal:
+                    path: spec.podSelector.matchLabels
+                    value:
+                        app.kubernetes.io/instance: eck-operator
+                        app.kubernetes.io/name: elastic-operator
+            -   equal:
+                    path: spec.ingress[0].from[0].ipBlock.cidr
+                    value: 172.16.0.0/28
+            -   equal:
+                    path: spec.ingress[0].ports[0]
+                    value:
+                        port: https-webhook
+                        protocol: TCP
+        documentSelector:
+            path: metadata.name
+            value: elastic-operator-webhook-ingress
+        it: Allows only the GKE control plane to reach the operator's webhook port
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[0].from[0].ipBlock.cidr
+                    value: 10.1.2.0/28
+        documentSelector:
+            path: metadata.name
+            value: elastic-operator-webhook-ingress
+        it: Honors a custom masterIpv4CidrBlock
+        set:
+            operatorApplications.eckOperator.masterIpv4CidrBlock: 10.1.2.0/28
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: elastic-system
+            -   equal:
+                    path: spec.podSelector
+                    value: {}
+            -   notExists:
+                    path: spec.ingress
+        documentSelector:
+            path: metadata.name
+            value: default-deny-ingress
+        it: Denies every other ingress by default, namespace-wide
