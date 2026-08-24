@@ -132,6 +132,12 @@ public class IndexWriterHelperUtil {
 		indexWriterHelper.indexSpellCheckerDictionary(companyId, locale);
 	}
 
+	public static boolean isIndexCommitImmediately() {
+		IndexWriterHelper indexWriterHelper = _getIndexWriterHelper();
+
+		return indexWriterHelper.isIndexCommitImmediately();
+	}
+
 	/**
 	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	 *             com.liferay.portal.search.index.IndexStatusManager#isIndexReadOnly}

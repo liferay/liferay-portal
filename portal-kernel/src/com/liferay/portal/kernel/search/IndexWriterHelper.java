@@ -66,6 +66,8 @@ public interface IndexWriterHelper {
 	public void indexSpellCheckerDictionary(long companyId, Locale locale)
 		throws SearchException;
 
+	public boolean isIndexCommitImmediately();
+
 	/**
 	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	 *             com.liferay.portal.search.index.IndexStatusManager#isIndexReadOnly}

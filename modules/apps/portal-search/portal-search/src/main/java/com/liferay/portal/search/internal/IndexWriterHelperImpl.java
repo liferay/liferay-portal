@@ -319,6 +319,11 @@ public class IndexWriterHelperImpl implements IndexWriterHelper {
 		indexWriter.indexSpellCheckerDictionary(searchContext);
 	}
 
+	@Override
+	public boolean isIndexCommitImmediately() {
+		return _commitImmediately;
+	}
+
 	/**
 	 * @deprecated As of Wilberforce (7.0.x), replaced by {@link
 	 *             IndexStatusManager#isIndexReadWrite()}
