@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.verify.PreupgradeVerifyDatabasePrivileges;
 import com.liferay.portal.verify.VerifyProcess;
@@ -79,6 +81,9 @@ public class PreupgradeVerifyDatabasePrivilegesTest
 			return;
 		}
 
+		_logCapture = LoggerTestUtil.configureLog4JLogger(
+			"org.quartz", LoggerTestUtil.OFF);
+
 		_createTestUser();
 	}
 
@@ -110,6 +115,8 @@ public class PreupgradeVerifyDatabasePrivilegesTest
 		if (_db.getDBType() == DBType.SQLSERVER) {
 			_db.runSQL("drop login test");
 		}
+
+		_logCapture.close();
 	}
 
 	@Test
@@ -371,6 +378,7 @@ public class PreupgradeVerifyDatabasePrivilegesTest
 	private static DB _db;
 	private static SafeCloseable _safeCloseable;
 
+	private LogCapture _logCapture;
 	private DataSource _testUserDataSource;
 
 }
