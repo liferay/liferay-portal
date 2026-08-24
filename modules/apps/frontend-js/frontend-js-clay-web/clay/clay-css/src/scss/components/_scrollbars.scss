@@ -1,0 +1,66 @@
+// Scrollbars are painted only under an explicit dark color scheme; light mode
+// keeps the browser's native scrollbar. Scoped to the attribute the theme
+// writes on <html> rather than a `prefers-color-scheme` media query, so the
+// color scheme toggle is respected.
+//
+// Styling any `::-webkit-scrollbar` pseudo-element opts the element out of the
+// platform scrollbar and onto the browser's own, which is what lets the thumb
+// be inset and rounded. Two things then have to be handled here rather than
+// left to the default: the container paints a light background of its own
+// unless it is given one, and the stepper arrows are drawn unless they are
+// hidden. The scrollbar is then permanently visible and reserves
+// `--scrollbar-size` from the content, which is inherent to painting it.
+//
+// `scrollbar-color` cannot stand in for this. It only recolors the platform
+// scrollbar, so it can neither remove the steppers nor round the thumb. It is
+// the best available fallback where the pseudo-elements do not exist.
+//
+// Guarded on the token being declared. The partial compiles into every Clay
+// tree, but only the custom properties tree emits `--scrollbar-*`. Without the
+// guard the other trees would still match `[data-color-scheme='dark']` and
+// resolve every value to an invalid one.
+
+@if (map-has-key($c-root, --scrollbar-thumb)) {
+	[data-color-scheme='dark'],
+	[data-color-scheme='dark'] *,
+	[data-color-scheme='dark-high-contrast'],
+	[data-color-scheme='dark-high-contrast'] * {
+		&::-webkit-scrollbar {
+			background: var(--scrollbar-track);
+			height: var(--scrollbar-size);
+			width: var(--scrollbar-size);
+		}
+
+		&::-webkit-scrollbar-button {
+			display: none;
+		}
+
+		&::-webkit-scrollbar-corner {
+			background: var(--scrollbar-track);
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: var(--scrollbar-thumb);
+			background-clip: padding-box;
+			border: var(--scrollbar-inset) solid transparent;
+			border-radius: var(--scrollbar-radius);
+
+			&:active {
+				background: var(--scrollbar-thumb-active);
+				background-clip: padding-box;
+			}
+
+			&:hover {
+				background: var(--scrollbar-thumb-hover);
+				background-clip: padding-box;
+			}
+		}
+	}
+
+	@supports not selector(::-webkit-scrollbar) {
+		[data-color-scheme='dark'],
+		[data-color-scheme='dark-high-contrast'] {
+			scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+		}
+	}
+}

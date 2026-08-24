@@ -1,0 +1,55 @@
+// The cadmin mirror of `components/_scrollbars.scss`. Admin surfaces rendered
+// inside a page that is not itself an admin page, such as the page editor
+// sidebars, are scoped to `.cadmin` and take their colors from the cadmin
+// ramp, so they need their own rules and their own tokens. See the base
+// partial for why the pseudo-elements are used and what they cost.
+
+@if (map-has-key($cadmin-c-root, --cadmin-scrollbar-thumb)) {
+	html#{$cadmin-selector} {
+		&[data-color-scheme='dark'] .cadmin,
+		&[data-color-scheme='dark'] .cadmin *,
+		&[data-color-scheme='dark-high-contrast'] .cadmin,
+		&[data-color-scheme='dark-high-contrast'] .cadmin * {
+			&::-webkit-scrollbar {
+				background: var(--cadmin-scrollbar-track);
+				height: var(--cadmin-scrollbar-size);
+				width: var(--cadmin-scrollbar-size);
+			}
+
+			&::-webkit-scrollbar-button {
+				display: none;
+			}
+
+			&::-webkit-scrollbar-corner {
+				background: var(--cadmin-scrollbar-track);
+			}
+
+			&::-webkit-scrollbar-thumb {
+				background: var(--cadmin-scrollbar-thumb);
+				background-clip: padding-box;
+				border: var(--cadmin-scrollbar-inset) solid transparent;
+				border-radius: var(--cadmin-scrollbar-radius);
+
+				&:active {
+					background: var(--cadmin-scrollbar-thumb-active);
+					background-clip: padding-box;
+				}
+
+				&:hover {
+					background: var(--cadmin-scrollbar-thumb-hover);
+					background-clip: padding-box;
+				}
+			}
+		}
+	}
+
+	@supports not selector(::-webkit-scrollbar) {
+		html#{$cadmin-selector} {
+			&[data-color-scheme='dark'] .cadmin,
+			&[data-color-scheme='dark-high-contrast'] .cadmin {
+				scrollbar-color: var(--cadmin-scrollbar-thumb)
+					var(--cadmin-scrollbar-track);
+			}
+		}
+	}
+}
