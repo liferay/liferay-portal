@@ -9,7 +9,6 @@ import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 import com.fasterxml.jackson.jakarta.rs.xml.JacksonXMLProvider;
 
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -164,7 +163,7 @@ public class VulcanFeature implements Feature {
 		featureContext.register(
 			new AggregationContextProvider(_language, _portal));
 		featureContext.register(
-			new CacheContainerResponseFilter(_configurationProvider));
+			new CacheContainerResponseFilter(_configurationAdmin));
 		featureContext.register(new CompanyContextProvider(_portal));
 		featureContext.register(
 			new ContextContainerRequestFilter(
@@ -219,9 +218,6 @@ public class VulcanFeature implements Feature {
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private ContextDataInjectorBuilderFactory

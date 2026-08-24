@@ -6,18 +6,23 @@
 package com.liferay.portal.vulcan.internal.jaxrs.container.response.filter.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.vulcan.internal.test.util.URLConnectionUtil;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Application;
 
 import java.net.HttpURLConnection;
+import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -55,6 +60,10 @@ public class CacheContainerResponseFilterTest {
 			Application.class,
 			new CacheContainerResponseFilterTest.TestApplication(),
 			HashMapDictionaryBuilder.<String, Object>put(
+				"auth.verifier.guest.allowed", true
+			).put(
+				"liferay.access.control.disable", true
+			).put(
 				"liferay.auth.verifier", true
 			).put(
 				"liferay.oauth2", false
@@ -67,20 +76,37 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
+		for (String pid : _pids) {
+			ConfigurationTestUtil.deleteFactoryConfiguration(pid, _FACTORY_PID);
+		}
+
+		_pids.clear();
+
 		_serviceRegistration.unregister();
 	}
 
 	@Test
 	public void testCache() throws Exception {
-		HttpURLConnection httpURLConnection =
-			(HttpURLConnection)URLConnectionUtil.createURLConnection(
-				"http://localhost:" + PortalUtil.getPortalServerPort(false) +
-					"/o/test-vulcan-cache/test");
+		_assertNotCacheable(_openURLConnection("/test"));
+	}
+
+	@Test
+	public void testCacheWithCacheableEndpoint() throws Exception {
+		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+
+		HttpURLConnection httpURLConnection = _openURLConnection("/test");
 
 		Assert.assertEquals(
-			"no-cache, no-store",
-			httpURLConnection.getHeaderField("Cache-Control"));
+			"public, max-age=3600", _getCacheControl(httpURLConnection));
+	}
+
+	@Test
+	public void testCacheWithoutMaxAge() throws Exception {
+		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 0);
+
+		Assert.assertEquals(
+			"public", _getCacheControl(_openURLConnection("/test")));
 	}
 
 	public static class TestApplication extends Application {
@@ -97,6 +123,58 @@ public class CacheContainerResponseFilterTest {
 
 	}
 
+	private void _addCacheableEndpoint(
+			String path, String cacheControl, int maxAge)
+		throws Exception {
+
+		_addCacheableEndpoint(
+			path, cacheControl, maxAge, TestPropsValues.getCompanyId());
+	}
+
+	private void _addCacheableEndpoint(
+			String path, String cacheControl, int maxAge, long companyId)
+		throws Exception {
+
+		_pids.add(
+			ConfigurationTestUtil.createFactoryConfiguration(
+				_FACTORY_PID,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"cacheControl", cacheControl
+				).put(
+					"companyId", companyId
+				).put(
+					"maxAge", maxAge
+				).put(
+					"path", path
+				).build()));
+	}
+
+	private void _assertNotCacheable(HttpURLConnection httpURLConnection) {
+		Assert.assertEquals(
+			"no-cache, no-store", _getCacheControl(httpURLConnection));
+	}
+
+	private String _getCacheControl(HttpURLConnection httpURLConnection) {
+		return httpURLConnection.getHeaderField("Cache-Control");
+	}
+
+	private String _getURL(String path) {
+		return StringBundler.concat(
+			"http://localhost:", PortalUtil.getPortalServerPort(false),
+			"/o/test-vulcan-cache", path);
+	}
+
+	private HttpURLConnection _openURLConnection(String path) throws Exception {
+		URL url = new URL(_getURL(path));
+
+		return (HttpURLConnection)url.openConnection();
+	}
+
+	private static final String _FACTORY_PID =
+		"com.liferay.portal.vulcan.internal.configuration." +
+			"HeadlessAPICacheCompanyConfiguration";
+
+	private final List<String> _pids = new ArrayList<>();
 	private ServiceRegistration<Application> _serviceRegistration;
 
 }
