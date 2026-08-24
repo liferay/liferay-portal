@@ -111,6 +111,10 @@ public class ViewVersionHistoryDisplayContext {
 				_language.get(_httpServletRequest, "view"), null, null, null),
 			_getAddToLaunchFDSActionDropdownItem(),
 			new FDSActionDropdownItem(
+				StringPool.BLANK, null, "compare",
+				_language.get(_httpServletRequest, "compare-to"), null, null,
+				null),
+			new FDSActionDropdownItem(
 				"{actions.restore.href}", "restore", "restore",
 				_language.get(_httpServletRequest, "restore-version"), "put",
 				"restore", null),
