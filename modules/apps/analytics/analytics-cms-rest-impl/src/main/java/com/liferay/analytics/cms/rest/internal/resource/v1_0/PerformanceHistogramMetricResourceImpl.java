@@ -13,6 +13,7 @@ import com.liferay.analytics.cms.rest.resource.v1_0.PerformanceHistogramMetricRe
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 
@@ -44,7 +45,8 @@ public class PerformanceHistogramMetricResourceImpl
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getAdministeredDepotEntries(
+			DepotEntryUtil.getDepotEntries(
+				ActionKeys.VIEW_SITE_ADMINISTRATION,
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		if (ArrayUtil.isEmpty(groupIds)) {

@@ -30,6 +30,7 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -59,8 +60,8 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 		LicenseManagerUtil.checkFreeTier();
 
-		List<DepotEntry> depotEntries = DepotEntryUtil.getViewableDepotEntries(
-			contextCompany.getCompanyId(), depotEntryId);
+		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+			ActionKeys.VIEW, contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {
 			return _toOverview(0, Trend.Classification.NEUTRAL, 0.0, 0, 0, 0);
@@ -85,8 +86,8 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 		LicenseManagerUtil.checkFreeTier();
 
-		List<DepotEntry> depotEntries = DepotEntryUtil.getViewableDepotEntries(
-			contextCompany.getCompanyId(), depotEntryId);
+		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+			ActionKeys.VIEW, contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {
 			return _toOverview(0, Trend.Classification.NEUTRAL, 0.0, 0, 0, 0);

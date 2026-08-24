@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -62,8 +63,8 @@ public class ExpiredAssetResourceImpl extends BaseExpiredAssetResourceImpl {
 
 		LicenseManagerUtil.checkFreeTier();
 
-		List<DepotEntry> depotEntries = DepotEntryUtil.getViewableDepotEntries(
-			contextCompany.getCompanyId(), depotEntryId);
+		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+			ActionKeys.VIEW, contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {
 			return Page.of(Collections.emptyList(), pagination, 0);

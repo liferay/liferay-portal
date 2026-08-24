@@ -34,6 +34,7 @@ import com.liferay.petra.sql.dsl.query.FromStep;
 import com.liferay.petra.sql.dsl.query.GroupByStep;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Localization;
@@ -72,8 +73,8 @@ public class InventoryAnalysisResourceImpl
 
 		LicenseManagerUtil.checkFreeTier();
 
-		List<DepotEntry> depotEntries = DepotEntryUtil.getViewableDepotEntries(
-			contextCompany.getCompanyId(), depotEntryId);
+		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+			ActionKeys.VIEW, contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {
 			inventoryAnalysis.setInventoryAnalysisItems(

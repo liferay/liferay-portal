@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -32,12 +31,34 @@ import java.util.Objects;
  */
 public class DepotEntryUtil {
 
-	public static List<DepotEntry> getAdministeredDepotEntries(
-			long companyId, Long... depotEntryIds)
+	public static List<DepotEntry> getDepotEntries(
+			String actionId, long companyId, Long... depotEntryIds)
 		throws PortalException {
 
-		return _getDepotEntries(
-			ActionKeys.VIEW_SITE_ADMINISTRATION, companyId, depotEntryIds);
+		DepotEntryLocalService depotEntryLocalService =
+			_depotEntryLocalServiceSnapshot.get();
+
+		Predicate predicate = DepotEntryTable.INSTANCE.companyId.eq(companyId);
+
+		Long[] filteredDepotEntryIds = ArrayUtil.filter(
+			depotEntryIds, Objects::nonNull);
+
+		if (ArrayUtil.isNotEmpty(filteredDepotEntryIds)) {
+			predicate = predicate.and(
+				DepotEntryTable.INSTANCE.depotEntryId.in(
+					filteredDepotEntryIds));
+		}
+
+		List<DepotEntry> depotEntries = depotEntryLocalService.dslQuery(
+			DSLQueryFactoryUtil.select(
+				DepotEntryTable.INSTANCE
+			).from(
+				DepotEntryTable.INSTANCE
+			).where(
+				predicate
+			));
+
+		return _filterDepotEntries(actionId, depotEntries);
 	}
 
 	public static Long[] getGroupIds(List<DepotEntry> depotEntries) {
@@ -59,13 +80,6 @@ public class DepotEntryUtil {
 		}
 
 		return groupIds.toArray(new Long[0]);
-	}
-
-	public static List<DepotEntry> getViewableDepotEntries(
-			long companyId, Long... depotEntryIds)
-		throws PortalException {
-
-		return _getDepotEntries(ActionKeys.VIEW, companyId, depotEntryIds);
 	}
 
 	private static List<DepotEntry> _filterDepotEntries(
@@ -95,36 +109,6 @@ public class DepotEntryUtil {
 		}
 
 		return filteredDepotEntries;
-	}
-
-	private static List<DepotEntry> _getDepotEntries(
-			String actionId, long companyId, Long[] depotEntryIds)
-		throws PortalException {
-
-		DepotEntryLocalService depotEntryLocalService =
-			_depotEntryLocalServiceSnapshot.get();
-
-		Predicate predicate = DepotEntryTable.INSTANCE.companyId.eq(companyId);
-
-		Long[] filteredDepotEntryIds = ArrayUtil.filter(
-			depotEntryIds, Objects::nonNull);
-
-		if (ArrayUtil.isNotEmpty(filteredDepotEntryIds)) {
-			predicate = predicate.and(
-				DepotEntryTable.INSTANCE.depotEntryId.in(
-					filteredDepotEntryIds));
-		}
-
-		List<DepotEntry> depotEntries = depotEntryLocalService.dslQuery(
-			DSLQueryFactoryUtil.select(
-				DepotEntryTable.INSTANCE
-			).from(
-				DepotEntryTable.INSTANCE
-			).where(
-				predicate
-			));
-
-		return _filterDepotEntries(actionId, depotEntries);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(DepotEntryUtil.class);

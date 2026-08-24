@@ -15,6 +15,7 @@ import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -58,7 +59,8 @@ public class PerformanceMetricResourceImpl
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getAdministeredDepotEntries(
+			DepotEntryUtil.getDepotEntries(
+				ActionKeys.VIEW_SITE_ADMINISTRATION,
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		if (ArrayUtil.isEmpty(groupIds)) {
@@ -93,7 +95,8 @@ public class PerformanceMetricResourceImpl
 			_analyticsSettingsManager, contextCompany.getCompanyId());
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getAdministeredDepotEntries(
+			DepotEntryUtil.getDepotEntries(
+				ActionKeys.VIEW_SITE_ADMINISTRATION,
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		if (ArrayUtil.isEmpty(groupIds)) {
