@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+    wait-for-elasticsearch.sh: |
+{{ .Files.Get "scripts/wait-for-elasticsearch.sh" | nindent 8 }}
+kind: ConfigMap
+metadata:
+    name: liferay-init-scripts-azure
+    namespace: {{ .Release.Namespace }}
