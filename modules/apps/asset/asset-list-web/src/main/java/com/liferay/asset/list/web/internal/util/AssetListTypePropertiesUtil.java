@@ -9,8 +9,8 @@ import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.bag.ObjectFieldBag;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
-import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -61,13 +61,15 @@ public class AssetListTypePropertiesUtil {
 				continue;
 			}
 
+			ObjectFieldBag objectFieldBag =
+				objectDefinition.getObjectFieldBag();
+
 			jsonArray.put(
 				JSONUtil.put(
 					"items",
 					_getItemsJSONArray(
 						classNameIds[i], classTypeId, locale,
-						ObjectFieldLocalServiceUtil.getObjectFields(
-							objectDefinition.getObjectDefinitionId()))
+						objectFieldBag.getNestedIndexedObjectFields())
 				).put(
 					"label", objectDefinition.getLabel(locale, true)
 				));
@@ -183,10 +185,6 @@ public class AssetListTypePropertiesUtil {
 		return JSONUtil.toJSONArray(
 			objectFields,
 			objectField -> {
-				if (objectField.isMetadata()) {
-					return null;
-				}
-
 				String type = _toType(objectField.getBusinessType());
 
 				if (type == null) {
