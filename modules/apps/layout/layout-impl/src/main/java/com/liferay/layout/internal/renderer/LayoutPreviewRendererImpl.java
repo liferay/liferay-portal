@@ -64,6 +64,7 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 		themeDisplay.setScopeGroupId(layout.getGroupId());
 		themeDisplay.setSiteGroupId(layout.getGroupId());
 
+		long originalClassNameId = layout.getClassNameId();
 		Layout originalLayout = (Layout)httpServletRequest.getAttribute(
 			WebKeys.LAYOUT);
 		LayoutStructure originalLayoutStructure =
@@ -164,6 +165,8 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 				WebKeys.PORTLET_DECORATE, originalPortletDecorate);
 			httpServletRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, originalThemeDisplay);
+
+			layout.setClassNameId(originalClassNameId);
 
 			ServiceContextThreadLocal.popServiceContext();
 		}
