@@ -46,6 +46,57 @@ run "should_honor_a_custom_argo_workflows_namespace" {
 		argo_workflows_namespace="workflows"
 	}
 }
+run "should_scope_the_manual_network_policies_correctly" {
+	assert {
+		condition=length(yamldecode(helm_release.argo_workflows.values[0]).extraObjects) == 2
+		error_message="Two extra manifests are expected: the workflow-controller metrics ingress and the namespace-wide default-deny — the argo-workflows chart has zero native NetworkPolicy support, so everything here has to be written by hand"
+	}
+	assert {
+		condition=alltrue([for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o.kind == "NetworkPolicy"])
+		error_message="Every extraObjects entry must be a NetworkPolicy"
+	}
+	assert {
+		condition=alltrue([for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : !contains(keys(o.metadata), "namespace")])
+		error_message="Every extraObjects NetworkPolicy must omit metadata.namespace so it inherits the Helm release namespace"
+	}
+	assert {
+		condition=alltrue([for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o.metadata.labels == local.common_labels])
+		error_message="Every extraObjects NetworkPolicy must carry only local.common_labels — app.kubernetes.io/name is irrelevant for this context"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.podSelector.matchLabels == { "app.kubernetes.io/instance"="argo-workflows", "app.kubernetes.io/name"="argo-workflows-workflow-controller" }
+		error_message="argo-workflows-metrics-ingress must select only the workflow-controller pod — confirmed live that argo-workflows-server exposes no metrics port at all, only web:2746"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == var.observability_config.namespace
+		error_message="argo-workflows-metrics-ingress must allow only the configured observability namespace"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].ports[0].port == "metrics"
+		error_message="argo-workflows-metrics-ingress must scope its allow to the metrics-named port"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "default-deny-ingress"][0].spec.podSelector == {}
+		error_message="default-deny-ingress must have an empty podSelector (matches every pod in the namespace, including argo-workflows-server, which has no legitimate cross-namespace ingress today — no Gateway or in-cluster consumer wires it up)"
+	}
+	assert {
+		condition=!contains(keys([for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "default-deny-ingress"][0].spec), "ingress")
+		error_message="default-deny-ingress must declare zero ingress rules — any ingress key at all would allow something"
+	}
+	command=plan
+}
+run "should_honor_a_custom_observability_namespace" {
+	assert {
+		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
+		error_message="A custom observability_config.namespace must flow into argo-workflows-metrics-ingress"
+	}
+	command=plan
+	variables {
+		observability_config={
+			namespace="custom-observability"
+		}
+	}
+}
 variables {
 	argo_workflows_helm_chart_version="2.0.3"
 	argocd_helm_chart_version="9.5.16"
