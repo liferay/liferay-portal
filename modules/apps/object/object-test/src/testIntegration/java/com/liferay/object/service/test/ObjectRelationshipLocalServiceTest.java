@@ -819,7 +819,7 @@ public class ObjectRelationshipLocalServiceTest {
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship);
 
-		_assertObjectLayoutTab(0, objectLayoutTabs.get(1));
+		_assertObjectLayoutTab(1, objectLayoutTabs.get(1));
 	}
 
 	@Test
