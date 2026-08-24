@@ -30,12 +30,14 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,6 +65,7 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 	@Test
 	public void testGetLayoutDisplayPageObjectProvider() throws Exception {
 		_testGetLayoutDisplayPageObjectProviderERCInfoItemIdentifier();
+		_testGetLayoutDisplayPageObjectProviderLocalizedAssetCategory();
 		_testGetLayoutDisplayPageObjectProviderNestedAssetCategory();
 	}
 
@@ -159,6 +162,54 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 						assetCategory.getExternalReferenceCode())));
 
 		Assert.assertNull(layoutDisplayPageObjectProvider);
+	}
+
+	private void _testGetLayoutDisplayPageObjectProviderLocalizedAssetCategory()
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = _addAssetVocabulary();
+
+		String spanishURLTitle = StringUtil.toLowerCase(
+			StringUtil.randomString());
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(),
+				StringUtil.toLowerCase(StringUtil.randomString())
+			).put(
+				LocaleUtil.SPAIN, spanishURLTitle
+			).build(),
+			new HashMap<>(), assetVocabulary.getVocabularyId(), false, null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		String friendlyURL = StringBundler.concat(
+			assetVocabulary.getName(), StringPool.SLASH, spanishURLTitle);
+
+		Locale themeDisplayLocale = LocaleThreadLocal.getThemeDisplayLocale();
+
+		try {
+			LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.SPAIN);
+
+			LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+				_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+					_group.getGroupId(), friendlyURL);
+
+			Assert.assertEquals(
+				assetCategory,
+				layoutDisplayPageObjectProvider.getDisplayObject());
+		}
+		finally {
+			LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
+		}
+
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				_group.getGroupId(), friendlyURL);
+
+		Assert.assertEquals(
+			assetCategory, layoutDisplayPageObjectProvider.getDisplayObject());
 	}
 
 	private void _testGetLayoutDisplayPageObjectProviderNestedAssetCategory()
