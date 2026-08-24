@@ -55,7 +55,6 @@ import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
-import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.exception.ObjectActionErrorMessageException;
 import com.liferay.object.exception.ObjectActionExecutorKeyException;
 import com.liferay.object.exception.ObjectActionNameException;
@@ -87,7 +86,6 @@ import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -279,7 +277,10 @@ public class ObjectActionLocalServiceTest {
 				0, ObjectActionExecutorConstants.KEY_GROOVY),
 			"_objectScriptingExecutor", _originalObjectScriptingExecutor);
 
-		_objectDefinitionLocalService.deleteObjectDefinition(_objectDefinition);
+		if (_objectDefinition != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				_objectDefinition);
+		}
 	}
 
 	@Test
@@ -2841,31 +2842,27 @@ public class ObjectActionLocalServiceTest {
 		ObjectEntry objectEntry = _addObjectEntry(
 			_objectDefinition,
 			HashMapBuilder.<String, Serializable>put(
-				"firstName", "John"
-			).build());
-
-		try (SafeCloseable safeCloseable =
-				ObjectDefinitionThreadLocal.
-					setDeleteObjectDefinitionIdWithSafeCloseable(
-						_objectDefinition.getObjectDefinitionId())) {
-
-			_objectEntryLocalService.deleteObjectEntry(objectEntry);
-		}
-
-		Assert.assertNull(
-			_objectEntryLocalService.fetchObjectEntry(
-				objectEntry.getObjectEntryId()));
-		Assert.assertEquals(0, _argumentsList.size());
-
-		objectEntry = _addObjectEntry(
-			_objectDefinition,
-			HashMapBuilder.<String, Serializable>put(
 				"firstName", "Paul"
 			).build());
 
 		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 
 		_assertGroovyObjectActionExecutorArguments("Paul", objectEntry);
+
+		objectEntry = _addObjectEntry(
+			_objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				"firstName", "John"
+			).build());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(_objectDefinition);
+
+		_objectDefinition = null;
+
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				objectEntry.getObjectEntryId()));
+		Assert.assertEquals(0, _argumentsList.size());
 	}
 
 	@Test
