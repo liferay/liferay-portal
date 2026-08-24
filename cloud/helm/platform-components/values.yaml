@@ -335,7 +335,7 @@ operatorApplications:
     keda:
         chart: keda
         enabled: false
-        extraNamespaces:
+        extraDestinationNamespaces:
             -   kube-system
         name: keda
         namespace: keda-system

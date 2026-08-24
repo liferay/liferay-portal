@@ -192,11 +192,11 @@ tests:
                     count: 9
                     path: spec.destinations
                 template: templates/appproject-operator.yaml
-        it: Permits the extra namespaces declared by an operator application
+        it: Permits the extra destination namespaces declared by an operator application
         set:
-            operatorApplications.eckOperator.extraNamespaces:
+            operatorApplications.eckOperator.extraDestinationNamespaces:
                 -   monitoring
-            operatorApplications.keda.extraNamespaces: null
+            operatorApplications.keda.extraDestinationNamespaces: null
     -   asserts:
             -   contains:
                     content: https://charts.example.com

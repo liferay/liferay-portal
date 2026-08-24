@@ -22,8 +22,8 @@ spec:
         {{- range $operatorApplication := .Values.operatorApplications }}
         -   namespace: {{ $operatorApplication.namespace }}
             server: https://kubernetes.default.svc
-        {{- range $extraNamespace := $operatorApplication.extraNamespaces }}
-        -   namespace: {{ $extraNamespace }}
+        {{- range $extraDestinationNamespace := $operatorApplication.extraDestinationNamespaces }}
+        -   namespace: {{ $extraDestinationNamespace }}
             server: https://kubernetes.default.svc
         {{- end }}
         {{- end }}
