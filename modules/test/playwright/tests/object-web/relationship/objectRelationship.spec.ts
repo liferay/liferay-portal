@@ -272,15 +272,6 @@ test.describe('Manage object relationships through Model Builder', () => {
 			type: 'One to Many',
 		});
 
-		// The badge showing the relationship count is rebuilt from a refetch
-		// the second relationship's save schedules, so right after the save the
-		// diagram still shows the single relationship's edge. That edge's label
-		// is random digits, so filtering edges by the text 2 matches it whenever
-		// the label contains a 2, and the click opens the sidebar instead of the
-		// menu, which only a click on the badge itself renders. Match the badge
-		// by its exact text, which the label cannot equal, and wait for it: the
-		// badge appearing is the save's rebuild finishing.
-
 		const manyRelationshipsEdge =
 			modelBuilderDiagramPage.objectRelationshipEdges.filter({
 				has: page.getByText('2', {exact: true}),
@@ -2941,9 +2932,6 @@ test.describe('Manage object relationships with system objects', () => {
 				restPath
 			);
 
-			// The layout save's reload has had the entry seeding to land in;
-			// consume it before the first navigation.
-
 			await reload;
 
 			const relateEntryToBothUsers = async (entryLabel: string) => {
@@ -3269,12 +3257,6 @@ test.describe('Manage object relationships with system objects', () => {
 				await expect(relationshipEntry).toBeVisible();
 				await relationshipEntry.click();
 
-				// Selecting relates the user and closes the picker, and the
-				// relating is still in flight when the click resolves. The next
-				// step opens the tab with a goto, which tears down the frame the
-				// post belongs to and cancels it. Wait for the picker to go and
-				// the row to appear.
-
 				await expect(
 					page.locator('iframe[title="Select"]')
 				).toBeHidden();
@@ -3553,14 +3535,6 @@ test.describe('Manage object relationship entries', () => {
 
 					await entryBItem.click();
 
-					// Selecting relates the entry and closes the picker, and
-					// the relating is still in flight when the click resolves.
-					// The next iteration asks for another address, which tears
-					// down the frame the request belongs to and cancels it, so
-					// the relationship is never made and the row asserted on
-					// below never arrives. Wait for the picker to go and the
-					// relationship to show.
-
 					await expect(
 						page.locator('iframe[title="Select"]')
 					).toBeHidden();
@@ -3710,9 +3684,6 @@ test.describe('Manage object relationship entries', () => {
 					relatedExternalReferenceCode: entryB.externalReferenceCode,
 				}
 			);
-
-			// The layout save's reload has had the entry seeding to land in;
-			// consume it before the first navigation.
 
 			await reload;
 
@@ -3865,9 +3836,6 @@ test.describe('Manage object relationship entries', () => {
 				restPath
 			);
 
-			// The layout save's reload has had the entry seeding to land in;
-			// consume it before the first navigation.
-
 			await reload;
 
 			const openEntryRelationshipTab = async (entryLabel: string) => {
@@ -3908,13 +3876,6 @@ test.describe('Manage object relationship entries', () => {
 
 				await expect(relationshipEntry).toBeVisible();
 				await relationshipEntry.click();
-
-				// Selecting relates the entry and closes the picker, and the
-				// relating is still in flight when the click resolves. The next
-				// step asks for another address, which tears down the frame the
-				// request belongs to and cancels it, so one of the two
-				// relationships is never made. Wait for the picker to go and
-				// the related row to show.
 
 				await expect(
 					page.locator('iframe[title="Select"]')
@@ -4061,9 +4022,6 @@ test.describe('Manage object relationship entries', () => {
 				await relationshipTab.click();
 			};
 
-			// The layout save's reload has had the entry seeding to land in;
-			// consume it before the first navigation.
-
 			await reload;
 
 			await openEntryRelationshipTab('Entry Test A');
@@ -4077,13 +4035,6 @@ test.describe('Manage object relationship entries', () => {
 
 			await expect(relationshipEntry).toBeVisible();
 			await relationshipEntry.click();
-
-			// Selecting relates the entry and closes the picker, and the
-			// relating is still in flight when the click resolves. The next step
-			// asks for another address, which tears down the frame the request
-			// belongs to and cancels it, so the relationship is never made and
-			// the row below never arrives. Wait for the picker to go and the
-			// relationship to show.
 
 			await expect(page.locator('iframe[title="Select"]')).toBeHidden();
 
@@ -4410,9 +4361,6 @@ test.describe('Manage object relationship entries', () => {
 				{[textFieldName]: 'Entry Test'},
 				restPath
 			);
-
-			// The layout save's reload has had the entry seeding to land in;
-			// consume it before the first navigation.
 
 			await reload;
 
@@ -4859,12 +4807,6 @@ test.describe('Manage object relationship entries', () => {
 					await expect(entry).toBeVisible();
 
 					await entry.click();
-
-					// Selecting relates the entry and closes the picker, and the
-					// relating is still in flight when the click resolves. The
-					// next step navigates away, so returning here lets that
-					// navigation race the save and the entry is never related.
-					// Wait for the picker to go and the row to appear.
 
 					await expect(
 						page.locator('iframe[title="Select"]')
@@ -5322,9 +5264,6 @@ test.describe('Manage object relationship entries', () => {
 				{['textField']: 'Entry 1'},
 				applicationName1
 			);
-
-			// The layout save's reload has had the entry seeding to land in;
-			// consume it before the first navigation.
 
 			await reload;
 

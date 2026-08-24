@@ -97,10 +97,6 @@ export function MultipleSelect({
 	useEffect(() => {
 		const multiSelectOptions = [] as LabelValueObject[];
 
-		// The multi select keys each selected label by its value, so a label
-		// carried on its own leaves every key undefined, and React discards and
-		// rebuilds the whole row on each change.
-
 		(options as MultiSelectItem[]).forEach(({children}) => {
 			return children.forEach(({checked, label, value}) => {
 				if (checked) {

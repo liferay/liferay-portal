@@ -4597,9 +4597,6 @@ test.describe('Manage object entries through View Object Entries', () => {
 			applicationName
 		);
 
-		// The save's navigation has had the entry seeding to land in; consume
-		// it before the next address is asked for, or the two collide.
-
 		await navigation;
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
@@ -5304,13 +5301,6 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 			await expect(viewObjectEntriesPage.successMessage).toBeVisible();
 
-			// The save fires its toast before it navigates to the saved entry,
-			// and the remounted relationship field publishes an empty hidden
-			// input until its option fetch resolves, so a read taken here can
-			// see the render before the save or the field before its value.
-			// Land on the saved entry and reload so the read is the persisted
-			// value.
-
 			await page.waitForURL(/externalReferenceCode=/);
 
 			await page.reload();
@@ -5334,13 +5324,6 @@ test.describe('Manage object entries through View Object Entries', () => {
 			await viewObjectEntriesPage.saveObjectEntryButton.click();
 
 			await expect(viewObjectEntriesPage.successMessage).toBeVisible();
-
-			// The save fires its toast before it navigates to the saved entry,
-			// and the remounted relationship field publishes an empty hidden
-			// input until its option fetch resolves, so a read taken here can
-			// see the render before the save or the field before its value.
-			// Land on the saved entry and reload so the read is the persisted
-			// value.
 
 			await page.waitForURL(/externalReferenceCode=/);
 
@@ -6033,12 +6016,6 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		await viewObjectEntriesPage.goto(objectDefinition.className);
 
-		// The form the click opens is what asks for the accounts, so the wait
-		// for that answer is registered before the click. Registered after, it
-		// only ever matches a second ask, and the test asserts there is only
-		// one, so it waited out its whole budget exactly when the answer came
-		// promptly.
-
 		const accountsResponsePromise = page.waitForResponse(
 			(response) =>
 				response
@@ -6141,9 +6118,6 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await page
 			.getByRole('button', {name: 'astronaut.png'})
 			.waitFor({state: 'visible'});
-
-		// The replaced temporary file is deleted asynchronously, so poll
-		// instead of asserting the very first read
 
 		await expect
 			.poll(

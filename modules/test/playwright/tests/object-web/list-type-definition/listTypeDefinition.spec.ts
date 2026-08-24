@@ -92,14 +92,6 @@ async function importPicklistFromFile(
 
 	await expect(page.getByLabel('External Reference Code')).not.toBeEmpty();
 
-	// Clicking Import fires a reference code check and then either imports and
-	// reloads the page, or, when the reference code already exists, asks about
-	// overwriting instead. Returning at the click leaves that chain in flight,
-	// and the caller's next navigation cancels it, so the picklist is silently
-	// never imported. Wait for whichever outcome the click reaches: the reload
-	// only ever happens after the import commits, and the overwrite prompt is
-	// the caller's to answer.
-
 	const importNavigation = page.waitForNavigation({waitUntil: 'load'}).then(
 		() => 'imported',
 		() => null
@@ -1156,13 +1148,6 @@ test.describe('manage picklists inside the picklists portlet', () => {
 			);
 
 		const [responseEntries]: ListTypeEntry[] = response.listTypeEntries;
-
-		// Read the table through assertions rather than a snapshot of its
-		// texts. The rows arrive with the data set's own render, which no load
-		// state marks, so a snapshot taken too early holds an empty list and
-		// the comparison then reports the expected value as undefined. Only the
-		// three leading cells are asserted, since the table also carries an
-		// item actions column that is not part of what this test states.
 
 		const listTypeDefinitionHeaders = [
 			'Name',

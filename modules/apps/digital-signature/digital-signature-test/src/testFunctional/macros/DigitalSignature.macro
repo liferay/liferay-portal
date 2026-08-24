@@ -431,13 +431,6 @@ definition {
 
 	@summary = "Default summary"
 	macro viewCreateDate(envelopeName = null) {
-
-		// The list is DocuSign's own sent items folder, which does not hold an
-		// envelope the moment the send is acknowledged, so ask for the list
-		// again until the envelope's own row is on it. Each ask waits for the
-		// list to finish fetching, because navigating away from it mid fetch
-		// logs a client abort that fails the whole run.
-
 		while ((IsElementNotPresent(envelopeName = ${envelopeName}, locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_CREATE_DATE")) && (maxIterations = "10")) {
 			Refresh();
 
@@ -483,13 +476,6 @@ definition {
 
 	@summary = "Default summary"
 	macro viewEnvelopeIsGone(envelopeName = null) {
-
-		// The delete leaves the list to be fetched again before the row goes,
-		// and the list is only fetched once per render, so ask for it again
-		// until the envelope is off it. Each ask waits for the fetch to finish,
-		// because navigating away mid fetch logs a client abort that fails the
-		// whole run.
-
 		while ((IsElementPresent(envelopeName = ${envelopeName}, locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME")) && (maxIterations = "10")) {
 			Refresh();
 
@@ -503,14 +489,6 @@ definition {
 
 	@summary = "Default summary"
 	macro viewMoreRecipient(envelopeName = null) {
-
-		// The list is DocuSign's own sent items folder and it is fetched once
-		// per render, so the envelope's row is not on it the moment the send is
-		// acknowledged and waiting on a rendered page cannot make it appear.
-		// Ask for the list again, gated on its own fetch finishing, because
-		// navigating away from it mid fetch logs a client abort that fails the
-		// whole run.
-
 		while ((IsElementNotPresent(envelopeName = ${envelopeName}, locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_RECIPIENTS_BADGE")) && (maxIterations = "10")) {
 			Refresh();
 

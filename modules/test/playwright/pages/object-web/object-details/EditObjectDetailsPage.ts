@@ -108,11 +108,6 @@ export class EditObjectDetailsPage {
 	}
 
 	async waitForDetailsFormLoaded() {
-
-		// The form is interactive before its mount fetch lands, and the fetch
-		// merges the persisted definition over anything already typed. The
-		// toolbar buttons unlock only once that fetch is done, so wait there.
-
 		await expect(this.saveButton).toBeEnabled();
 	}
 

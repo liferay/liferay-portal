@@ -98,13 +98,6 @@ export class ViewObjectDefinitionsPage {
 			name: 'Activate Object',
 		});
 
-		// The details form mounts with an enabled Activate Object toggle
-		// before the object definition has been fetched, and the fetch
-		// overwrites whatever the toggle holds by then, so a flip made too
-		// early is silently undone and saved away as a success. Save stays
-		// disabled until the fetch lands, so wait there, then flip the settled
-		// value and check the flip survived.
-
 		await expect(saveButton).toBeEnabled();
 
 		const toggled = await toggle.isChecked();
@@ -112,14 +105,6 @@ export class ViewObjectDefinitionsPage {
 		await toggle.click();
 
 		await expect(toggle).toBeChecked({checked: !toggled});
-
-		// The save answers with its PUT, shows its toast, and only then
-		// schedules a page reload a second later, so neither the click nor
-		// the toast says the work is done. Wait for the save's own answer,
-		// then consume the reload it schedules, so the caller's next
-		// navigation cannot collide with it. Ten seconds is generous headroom
-		// for that timer and fails loud, rather than quietly at the default
-		// half minute.
 
 		const saveResponse = this.page.waitForResponse(
 			(response) =>
@@ -129,12 +114,6 @@ export class ViewObjectDefinitionsPage {
 						'/o/object-admin/v1.0/object-definitions/by-external-reference-code/'
 					) && response.request().method() === 'PUT'
 		);
-
-		// The reload is waited on through the page's load event, which fires
-		// once per real document load: the same-document navigation the
-		// portlet fires around the save does not fire it, and the redirect
-		// the reload answers with first collapses into the one load of the
-		// final address.
 
 		const reload = this.page.waitForEvent('load', {timeout: 10000});
 
@@ -281,11 +260,6 @@ export class ViewObjectDefinitionsPage {
 		await this.page
 			.getByRole('button', {exact: true, name: 'Import'})
 			.click();
-
-		// The import is done when the listing request behind it answers, and a
-		// definition carrying many fields can take longer to import than the
-		// modal is given to disappear below. Wait for that answer first, so the
-		// modal is only timed once the work it is covering has finished.
 
 		const response = await responsePromise;
 

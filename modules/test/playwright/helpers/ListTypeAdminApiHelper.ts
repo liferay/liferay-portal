@@ -33,12 +33,6 @@ export class ListTypeAdminApiHelper {
 	}
 
 	async getListTypeDefinitions(): Promise<ListTypeDefinitions> {
-
-		// Ask for every definition, not the first page of them: a caller
-		// counting what already exists has to see all of it, and the default
-		// page holds twenty while an environment that has been worked in holds
-		// far more.
-
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/list-type-definitions?page=-1`
 		);

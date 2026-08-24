@@ -195,14 +195,6 @@ export class ObjectLayoutsPage {
 		await this.saveTabButton.click();
 	}
 
-	/**
-	 * Adds the relationship tab and returns the reload the layout save
-	 * schedules on the parent window. The caller must await it before its next
-	 * navigation, or the reload lands on whatever runs next and cancels it.
-	 * It is handed back rather than awaited here because the save's success
-	 * alert does not survive the reload, so a caller that reads the alert has
-	 * to read it first.
-	 */
 	async createObjectRelationshipTab(
 		objectLayoutName: string,
 		objectLayoutTabName: string,
@@ -264,16 +256,6 @@ export class ObjectLayoutsPage {
 		await this.layoutsTabItem.click();
 	}
 
-	/**
-	 * Saves the layout and returns the reload the save schedules on the
-	 * parent window, which fires about a third of a second after the save's
-	 * own request answers. The caller must await it before its next
-	 * navigation, or the reload lands on whatever runs next and cancels it.
-	 * Ten seconds is generous headroom for that timer and fails loud, rather
-	 * than quietly at the default half minute. The promise is deliberately
-	 * not swallowed: if the save ever stops reloading, the wait fails and
-	 * says so.
-	 */
 	async saveObjectLayoutReturningReload() {
 		const reload = this.page.waitForNavigation({
 			timeout: 10000,
@@ -287,10 +269,6 @@ export class ObjectLayoutsPage {
 		await expect(saveButton).toBeVisible();
 
 		await saveButton.dispatchEvent('click');
-
-		// Wrapped, because awaiting this method would otherwise flatten the
-		// promise and wait for the reload here, which is what the caller is
-		// being given the chance to avoid.
 
 		return {reload};
 	}

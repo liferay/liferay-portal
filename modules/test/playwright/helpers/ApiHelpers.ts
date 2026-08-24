@@ -113,12 +113,6 @@ export function clearAuthToken(page: Page) {
 }
 
 export async function readAuthToken(page: Page) {
-
-	// Read the token when the caller knows the page is settled, which is right
-	// after signing in, and keep it for the session it belongs to. Reading it
-	// while a request is being built instead is what fails: a navigation racing
-	// the evaluation destroys the execution context and kills it.
-
 	const authToken = await page.evaluate(() => Liferay.authToken);
 
 	authTokens.set(page.context(), authToken);
@@ -387,11 +381,6 @@ export class ApiHelpers {
 		if (headers || response.status() !== 403) {
 			return response;
 		}
-
-		// The token belongs to the session that was live when it was read, so
-		// a test that has signed in again since leaves it stale and the portal
-		// answers Forbidden. Read it again and retry once, rather than failing
-		// the caller with a Forbidden body it cannot interpret.
 
 		clearAuthToken(this.page);
 

@@ -120,12 +120,6 @@ export class ModelBuilderObjectDefinitionNodePage {
 		objectDefinitionName: string,
 		objectDefinitionNodes: Locator
 	) {
-
-		// The diagram floats the sidebars and the minimap over the canvas by
-		// design, so a node can legitimately sit under them and a regular
-		// click never passes the pointer interception check. Dispatch the
-		// click straight to the button instead.
-
 		await objectDefinitionNodes
 			.filter({hasText: objectDefinitionName})
 			.getByRole('button', {name: 'Show All Fields'})

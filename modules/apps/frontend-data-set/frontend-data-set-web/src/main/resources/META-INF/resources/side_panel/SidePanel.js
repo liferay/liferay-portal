@@ -127,14 +127,6 @@ export default class SidePanel extends React.Component {
 	}
 
 	handleKeyupEvent(even) {
-
-		// This handler is bound to the panel iframe's window as well as to the
-		// top one, so an Escape raised inside the panel arrives here. A modal
-		// opened by the panel's own content belongs to the iframe's document,
-		// where the check below against the top document cannot see it, and the
-		// panel would close under a modal the user is still working in, taking
-		// every unsaved edit with it. Ask the document the event came from too.
-
 		const eventDocument = even.view?.document ?? even.target?.ownerDocument;
 
 		if (

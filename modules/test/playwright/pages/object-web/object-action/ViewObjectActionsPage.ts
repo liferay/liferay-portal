@@ -29,11 +29,6 @@ export class ViewObjectActionsPage {
 	}
 
 	async gotoByObjectDefinitionId(objectDefinitionId: number) {
-
-		// The tab is asked for by address, so the page arrives freshly loaded
-		// and unscrolled, with every row below the sticky toolbar band
-		// instead of under it.
-
 		const portletId =
 			'com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet';
 

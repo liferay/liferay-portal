@@ -75,14 +75,6 @@ function generateObjectEntryValue({
 		case 'LongText':
 			return getRandomString();
 		case 'MultiselectPicklist':
-
-			// The two entries were drawn independently, so on a short list they
-			// were often the same one. Selecting one entry twice is not a
-			// multiselect: the second selection lands on an option that is
-			// already selected, which the admin theme renders pointer
-			// transparent, and the click never arrives. Which two entries they
-			// are does not matter, so take the one after the first.
-
 			return [
 				listTypeEntriesName[listTypeEntriesRandomLength1],
 				listTypeEntriesName[

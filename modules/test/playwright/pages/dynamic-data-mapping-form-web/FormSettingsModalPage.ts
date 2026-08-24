@@ -23,12 +23,6 @@ export class FormSettingsModalPage {
 	}
 
 	async clickDoneButtonAndWaitForObjectFields(objectDefinitionId: number) {
-
-		// Closing the settings is what asks for the selected object's fields,
-		// and the publish validation reads the fields this ask populates. A
-		// publish clicked before the answer lands reads no fields and lets an
-		// unmapped form through, so the close waits for the answer it caused.
-
 		const objectFieldsResponsePromise = this.page.waitForResponse(
 			(response) =>
 				response.ok() &&

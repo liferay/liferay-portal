@@ -352,11 +352,6 @@ test('can send notification email via download action', async ({
 		.getByRole('button', {name: 'Search'})
 		.waitFor({state: 'visible'});
 
-	// The queue entry is written inside the download request, before its
-	// first response byte, so a finished download means the entry is there.
-	// A bare click resolves on dispatch with the request still in flight, so
-	// own the download to its end before reading the queue.
-
 	const downloadPromise = page.waitForEvent('download');
 
 	await viewObjectEntriesPage.page.getByText('sampleFile.txt').click();

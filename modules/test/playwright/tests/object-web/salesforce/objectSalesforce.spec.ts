@@ -53,12 +53,6 @@ test.beforeEach(async ({apiHelpers, instanceSettingsPage, page}) => {
 
 	page.setViewportSize({height: 1080, width: 1920});
 
-	// The external reference code names the Salesforce object that holds the
-	// entries, so neither it nor the definition's name can be randomized, and
-	// only one definition at a time can carry them. A run that dies before its
-	// own teardown leaves that definition behind and every later run against the
-	// same database is refused. Take the name back.
-
 	const leftoverObjectDefinition =
 		await apiHelpers.objectAdmin.getObjectDefinitionByName(
 			OBJECT_DEFINITION_NAME

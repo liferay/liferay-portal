@@ -203,11 +203,6 @@ test(
 
 		const label = objectDefinition.label['en_US'];
 
-		// What this test asserts is whether the object is listed, so reach the
-		// filtered Configuration tab by address. Walking the global menu adds
-		// two navigations that are torn down and rebuilt while the object
-		// definition redeploys, and neither of them is under test here.
-
 		await configurationTabPage.searchAssetType(label);
 
 		await expect(page.getByRole('row', {name: label})).toBeVisible();

@@ -1292,10 +1292,6 @@ test.describe('Object Groovy Validation', () => {
 			'Groovy'
 		);
 
-		// Saving the validation leaves a navigation in flight that aborts the
-		// reload, and it lands after the page has otherwise gone quiet, so
-		// waiting for a load state does not avoid it. Retry the reload instead.
-
 		await expect(async () => {
 			await page.reload({timeout: 15000});
 		}).toPass({timeout: 60000});

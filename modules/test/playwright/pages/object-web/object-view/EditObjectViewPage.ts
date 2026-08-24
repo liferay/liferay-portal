@@ -81,15 +81,6 @@ export class EditObjectViewPage {
 		await this.saveFilter.dispatchEvent('click');
 
 		if (filterValues) {
-
-			// Saving the filter rebuilds the side panel, and the rebuild is
-			// still in flight when the dispatch returns. A caller that clicks
-			// the view's own Save next binds a button that is torn out from
-			// under it, and retries against a panel that keeps rebuilding until
-			// the test times out. Wait for the filter form to go, which is what
-			// a saved filter produces. A filter with no value cannot save and
-			// keeps its form open to report that, so leave that case alone.
-
 			await expect(this.sidePanel.getByLabel('New Filter')).toBeHidden();
 		}
 	}
