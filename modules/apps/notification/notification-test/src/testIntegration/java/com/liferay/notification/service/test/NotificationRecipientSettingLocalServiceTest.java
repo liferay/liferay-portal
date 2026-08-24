@@ -91,7 +91,7 @@ public class NotificationRecipientSettingLocalServiceTest {
 	public void testCreateNotificationRecipientSettingsWithSubscribers()
 		throws Exception {
 
-		Assert.assertTrue(
+		List<NotificationRecipientSetting> notificationRecipientSettings =
 			_notificationRecipientSettingLocalService.
 				createNotificationRecipientSettings(
 					0L,
@@ -107,8 +107,21 @@ public class NotificationRecipientSettingLocalServiceTest {
 							NotificationRecipientConstants.TYPE_SUBSCRIBERS
 						).build()
 					},
-					TestPropsValues.getUser()
-				).isEmpty());
+					TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			notificationRecipientSettings.toString(), 1,
+			notificationRecipientSettings.size());
+
+		Map<String, NotificationRecipientSetting>
+			notificationRecipientSettingsByName = _toMap(
+				notificationRecipientSettings);
+
+		Assert.assertEquals(
+			NotificationRecipientConstants.TYPE_SUBSCRIBERS,
+			notificationRecipientSettingsByName.get(
+				NotificationRecipientSettingConstants.NAME_TO_TYPE
+			).getValue());
 	}
 
 	private Map<String, NotificationRecipientSetting> _toMap(
