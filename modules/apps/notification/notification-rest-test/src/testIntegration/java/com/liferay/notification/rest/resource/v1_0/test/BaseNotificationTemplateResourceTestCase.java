@@ -371,12 +371,50 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 			testDeleteNotificationTemplateBatch_addNotificationTemplate();
 
 		testDeleteNotificationTemplateBatch_deleteNotificationTemplate(
+			202, notificationTemplate1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.getNotificationTemplateHttpResponse(
+				notificationTemplate1.getId()));
+
+		notificationTemplate1 =
+			testDeleteNotificationTemplateBatch_addNotificationTemplate();
+
+		testDeleteNotificationTemplateBatch_deleteNotificationTemplate(
 			202, null, notificationTemplate1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			notificationTemplateResource.getNotificationTemplateHttpResponse(
 				notificationTemplate1.getId()));
+
+		notificationTemplate1 =
+			testDeleteNotificationTemplateBatch_addNotificationTemplate();
+		NotificationTemplate notificationTemplate2 =
+			testDeleteNotificationTemplateBatch_addNotificationTemplate();
+
+		testDeleteNotificationTemplateBatch_deleteNotificationTemplate(
+			202, notificationTemplate2.getExternalReferenceCode(),
+			notificationTemplate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.getNotificationTemplateHttpResponse(
+				notificationTemplate1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			notificationTemplateResource.getNotificationTemplateHttpResponse(
+				notificationTemplate2.getId()));
+
+		testDeleteNotificationTemplateBatch_deleteNotificationTemplate(
+			202, notificationTemplate2.getExternalReferenceCode(),
+			notificationTemplate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.getNotificationTemplateHttpResponse(
+				notificationTemplate2.getId()));
 	}
 
 	protected NotificationTemplate
@@ -407,6 +445,139 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 		waitForFinish(
 			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
+	public void testDeleteNotificationTemplateByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		NotificationTemplate notificationTemplate =
+			testDeleteNotificationTemplateByExternalReferenceCode_addNotificationTemplate();
+
+		assertHttpResponseStatusCode(
+			204,
+			notificationTemplateResource.
+				deleteNotificationTemplateByExternalReferenceCodeHttpResponse(
+					notificationTemplate.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.
+				getNotificationTemplateByExternalReferenceCodeHttpResponse(
+					notificationTemplate.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.
+				getNotificationTemplateByExternalReferenceCodeHttpResponse(
+					"-"));
+	}
+
+	protected NotificationTemplate
+			testDeleteNotificationTemplateByExternalReferenceCode_addNotificationTemplate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteNotificationTemplateByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		NotificationTemplate notificationTemplate1 =
+			testGraphQLDeleteNotificationTemplateByExternalReferenceCode_addNotificationTemplate();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteNotificationTemplateByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										notificationTemplate1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteNotificationTemplateByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"notificationTemplateByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" +
+									notificationTemplate1.
+										getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace notification_v1_0
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		NotificationTemplate notificationTemplate2 =
+			testGraphQLDeleteNotificationTemplateByExternalReferenceCode_addNotificationTemplate();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"notification_v1_0",
+						new GraphQLField(
+							"deleteNotificationTemplateByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											notificationTemplate2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/notification_v1_0",
+				"Object/deleteNotificationTemplateByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"notification_v1_0",
+					new GraphQLField(
+						"notificationTemplateByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										notificationTemplate2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected NotificationTemplate
+			testGraphQLDeleteNotificationTemplateByExternalReferenceCode_addNotificationTemplate()
+		throws Exception {
+
+		return testGraphQLNotificationTemplate_addNotificationTemplate();
 	}
 
 	@Test
@@ -1576,12 +1747,50 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 			testBatchEngineDeleteImportTask_addNotificationTemplate();
 
 		testBatchEngineDeleteImportTask_deleteNotificationTemplate(
+			200, notificationTemplate1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.getNotificationTemplateHttpResponse(
+				notificationTemplate1.getId()));
+
+		notificationTemplate1 =
+			testBatchEngineDeleteImportTask_addNotificationTemplate();
+
+		testBatchEngineDeleteImportTask_deleteNotificationTemplate(
 			200, null, notificationTemplate1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			notificationTemplateResource.getNotificationTemplateHttpResponse(
 				notificationTemplate1.getId()));
+
+		notificationTemplate1 =
+			testBatchEngineDeleteImportTask_addNotificationTemplate();
+		NotificationTemplate notificationTemplate2 =
+			testBatchEngineDeleteImportTask_addNotificationTemplate();
+
+		testBatchEngineDeleteImportTask_deleteNotificationTemplate(
+			200, notificationTemplate2.getExternalReferenceCode(),
+			notificationTemplate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.getNotificationTemplateHttpResponse(
+				notificationTemplate1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			notificationTemplateResource.getNotificationTemplateHttpResponse(
+				notificationTemplate2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteNotificationTemplate(
+			200, notificationTemplate2.getExternalReferenceCode(),
+			notificationTemplate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.getNotificationTemplateHttpResponse(
+				notificationTemplate2.getId()));
 	}
 
 	protected NotificationTemplate
@@ -1900,6 +2109,14 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (notificationTemplate.getCreator() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (notificationTemplate.getDescription() == null) {
 					valid = false;
@@ -1959,6 +2176,14 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 					"objectDefinitionId", additionalAssertFieldName)) {
 
 				if (notificationTemplate.getObjectDefinitionId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (notificationTemplate.getPermissions() == null) {
 					valid = false;
 				}
 
@@ -2189,6 +2414,17 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						notificationTemplate1.getCreator(),
+						notificationTemplate2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						notificationTemplate1.getDateCreated(),
@@ -2301,6 +2537,17 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 				if (!Objects.deepEquals(
 						notificationTemplate1.getObjectDefinitionId(),
 						notificationTemplate2.getObjectDefinitionId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						notificationTemplate1.getPermissions(),
+						notificationTemplate2.getPermissions())) {
 
 					return false;
 				}
@@ -2500,6 +2747,11 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 		}
 
 		if (entityFieldName.equals("body")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("creator")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -2765,6 +3017,11 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 		}
 
 		if (entityFieldName.equals("objectDefinitionId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("permissions")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -3263,4 +3520,4 @@ public abstract class BaseNotificationTemplateResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1686967002
+// LIFERAY-REST-BUILDER-HASH:-686810126

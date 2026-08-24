@@ -182,6 +182,22 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean deleteNotificationTemplateByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_notificationTemplateResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			notificationTemplateResource ->
+				notificationTemplateResource.
+					deleteNotificationTemplateByExternalReferenceCode(
+						externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField
 	public NotificationTemplate patchNotificationTemplate(
 			@GraphQLName("notificationTemplateId") Long notificationTemplateId,
 			@GraphQLName("notificationTemplate") NotificationTemplate
@@ -415,4 +431,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:426252268
+// LIFERAY-REST-BUILDER-HASH:-2109700204

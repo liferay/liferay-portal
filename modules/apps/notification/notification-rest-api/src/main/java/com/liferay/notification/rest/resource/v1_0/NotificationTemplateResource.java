@@ -53,6 +53,10 @@ public interface NotificationTemplateResource {
 			String callbackURL, Object object)
 		throws Exception;
 
+	public void deleteNotificationTemplateByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
 	public NotificationTemplate getNotificationTemplate(
 			Long notificationTemplateId)
 		throws Exception;
@@ -203,4 +207,4 @@ public interface NotificationTemplateResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1833354218
+// LIFERAY-REST-BUILDER-HASH:-2129543873

@@ -119,6 +119,27 @@ public class NotificationTemplate implements Cloneable, Serializable {
 
 	protected Map<String, String> body;
 
+	public Creator getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Creator creator) {
+		this.creator = creator;
+	}
+
+	public void setCreator(
+		UnsafeSupplier<Creator, Exception> creatorUnsafeSupplier) {
+
+		try {
+			creator = creatorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Creator creator;
+
 	public Date getDateCreated() {
 		return dateCreated;
 	}
@@ -339,6 +360,35 @@ public class NotificationTemplate implements Cloneable, Serializable {
 
 	protected Long objectDefinitionId;
 
+	public com.liferay.notification.rest.client.permission.Permission[]
+		getPermissions() {
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.notification.rest.client.permission.Permission[]
+			permissions) {
+
+		this.permissions = permissions;
+	}
+
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.notification.rest.client.permission.Permission[],
+			 Exception> permissionsUnsafeSupplier) {
+
+		try {
+			permissions = permissionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected com.liferay.notification.rest.client.permission.Permission[]
+		permissions;
+
 	public String getRecipientType() {
 		return recipientType;
 	}
@@ -529,4 +579,4 @@ public class NotificationTemplate implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1095900192
+// LIFERAY-REST-BUILDER-HASH:-761232059

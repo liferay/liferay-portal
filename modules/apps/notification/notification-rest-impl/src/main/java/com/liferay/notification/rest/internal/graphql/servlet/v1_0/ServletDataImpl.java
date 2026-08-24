@@ -122,6 +122,11 @@ public class ServletDataImpl implements ServletData {
 							NotificationTemplateResourceImpl.class,
 							"deleteNotificationTemplateBatch"));
 					put(
+						"mutation#deleteNotificationTemplateByExternalReferenceCode",
+						new ObjectValuePair<>(
+							NotificationTemplateResourceImpl.class,
+							"deleteNotificationTemplateByExternalReferenceCode"));
+					put(
 						"mutation#patchNotificationTemplate",
 						new ObjectValuePair<>(
 							NotificationTemplateResourceImpl.class,
@@ -199,4 +204,4 @@ public class ServletDataImpl implements ServletData {
 		_notificationTemplateResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-563128846
+// LIFERAY-REST-BUILDER-HASH:775183565
