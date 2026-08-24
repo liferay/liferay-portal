@@ -261,3 +261,7 @@ Call this through `Liferay.Util.fetch` so the CSRF token is attached automatical
 `my-user-account.roleBriefs` is not invalidated immediately after a role is assigned via API — the permission cache may not reflect the new role until the session is refreshed or the cache expires.
 
 Do not gate Custom Element UI on `roleBriefs`. Use a functional data check against your own object model instead — to confirm a user has a role, check whether they have records that prove it (a direct report, an account membership, an assignment). This is authoritative, always current, and degrades gracefully if the data model changes.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. Confirm the deployed CET manifests for its type via `deploy-and-verify`'s Smoke Check on a live bundle.

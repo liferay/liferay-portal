@@ -51,70 +51,73 @@ Use Blade as the primary CLI. Prefer `blade gw <task>` over invoking Gradle dire
 
 ## Preflight Rule for New Code Generation
 
-Before generating a new Fragment, Client Extension, Object definition, or Commerce product/SKU from scratch, **explicitly load the relevant skill from the Skill Index below**, even if no matching files exist yet in the workspace. Glob based autoloading will not fire on an empty workspace; this preflight step ensures the correct patterns and antihallucination guards are applied from the first line of code.
+Before writing the **first line** of any artifact below, load its skill. Always, and before authoring — not after something fails. Glob based autoloading does not fire on an empty workspace, so nothing else will surface these.
+
+| About to author | Load first |
+| --- | --- |
+| Object definition, field, picklist, relationship | `manage-objects` |
+| Object action, notification template, workflow | `manage-object-logic` |
+| Page, `page-definition.json`, navigation menu | `manage-pages` |
+| Fragment (`fragment.json`, `index.html`) | `scaffold-fragment` |
+| Theme, style book, master page | `theme-and-design` |
+| Any `client-extension.yaml` | `scaffold-client-extension` |
+| Role, or any `resource-permissions.json` grant | `manage-roles-permissions` |
+| Commerce product or SKU | `commerce-catalogs` |
+
+Most real tasks match two or more rows — load all of them. Skipping one is not the smaller risk: much of what these skills document are failures that are **silent**, where the build succeeds and the defect only shows later, and the skill is the only place that behavior is written down. Reading portal source instead is not a substitute — the source shows what the code does, not which of its behaviors have already cost someone a day.
+
+If a skill turns out to be wrong or to omit the answer, fix the skill as part of the task rather than working around it locally.
 
 ## MCP Server
 
 Liferay provides an MCP server for AI agent integration, gated by a feature flag and available in specific DXP versions. When present and enabled, prefer MCP over raw `curl` for content, page, and object operations. See `skills/mcp-server/SKILL.md` for setup, transport details, version requirements, and quirks.
 
-## Skill Index
+## Skill Router
 
-Skills live under `skills/` and load on demand. Each addresses one workflow.
+Every skill lives under `skills/` and owns one workflow. Match the user's intent to a skill below and load it on demand — even in an empty workspace (see the Preflight Rule above).
 
-**Foundations**
-- `workspace-init` — bootstrap a workspace and bundle
-- `feature-flags` — audit and enable required flags
-- `deploy-and-verify` — deploy a target and confirm startup
-- `mcp-server` — MCP server setup, workflow, quirks
-- `production-standards` — production readiness guardrails
-
-**Backend (data and logic)**
-- `manage-objects` — object definitions, fields, relationships, picklists, validations
-- `manage-object-logic` — object actions, workflows, notifications
-- `setup-oauth` — companion OAuth applications for client extensions
-- `integrate-external-data` — back objects with external services
-
-**Frontend (look and composition)**
-- `scaffold-fragment` — page fragments with editable regions
-- `manage-pages` — site pages, navigation, SEO, page templates
-- `theme-and-design` — themes, master pages, style books
-- `react-custom-elements` — React based Custom Element CETs
-
-**Cross cutting**
-- `scaffold-client-extension` — any client extension type
-- `guided-client-extension` — beginner walkthrough for a first Client Extension
-- `manage-roles-permissions` — roles, ACL, object and page permissions
-- `manage-environments` — `configs/{env}/`, data migration, siteInitializer capture
-- `commerce-catalogs` — Commerce catalogs, products, SKUs, B2B onboarding
-
-**Cloud**
-- `manage-cloud-project` — deploy and operate Liferay Cloud (LXC) projects via the `lcp` CLI
-
-**Orchestrator**
-- `build-site` — compose objects, pages, fragments, and roles into a complete site experience
+| User Intent | Skill |
+| --- | --- |
+| First time user: a guided first run creating a workspace and starting the server | `initial-setup-guide` |
+| Set up, initialize, or repair a workspace and bundle | `workspace-init` |
+| Check, prompt for, or enable a required feature flag | `feature-flags` |
+| Deploy a target and confirm it started | `deploy-and-verify` |
+| Set up the MCP server or diagnose an MCP call | `mcp-server` |
+| Enforce production readiness on code bound for a nonlocal environment | `production-standards` |
+| Create or change an object definition, field, relationship, picklist, or validation | `manage-objects` |
+| Add object business logic — actions, workflows, notifications | `manage-object-logic` |
+| Create the OAuth application a client extension needs, or call a CET from browser code | `setup-oauth` |
+| Back an object with an external REST, database, or SaaS data source | `integrate-external-data` |
+| Build a page fragment or reusable page component | `scaffold-fragment` |
+| Build a form field fragment that binds to an object field | `scaffold-form-fragment` |
+| Create pages, navigation, SEO, or page and display templates | `manage-pages` |
+| Change the theme, colors, fonts, master page, or style book | `theme-and-design` |
+| Build a React based Custom Element widget | `react-custom-elements` |
+| Scaffold any client extension type | `scaffold-client-extension` |
+| Walk a beginner through a first client extension | `guided-client-extension` |
+| Create roles or grant permissions on objects, pages, or sites | `manage-roles-permissions` |
+| Manage environment configs, promote to UAT, or capture a site initializer | `manage-environments` |
+| Manage Commerce catalogs, products, SKUs, or B2B accounts | `commerce-catalogs` |
+| Deploy and operate a Liferay Cloud (LXC) project via `lcp` | `manage-cloud-project` |
+| Build an entire site experience from one prompt (orchestrator; calls the others) | `build-site` |
 
 Site building is **site initializer first**: the `siteInitializer` CET tree is the single source of truth. Build by triggering the initializer, then iterate by editing the source tree and applying each change live (theme, objects, fragments) or by reprovisioning (pages). See `rules/site-initializer-format.md`.
 
 ## Reference Cards
 
-Reference cards under `rules/` hold the data skills look up. Skills cite the card path explicitly.
+Reference cards under `rules/` hold the data skills look up. Skills cite the card path explicitly. Every card is loaded in every session, so a card states the **fact** and routes to the skill that holds the **procedure** — read the card, then load the skill it names.
 
-- `rules/client-extension-types.md` — client extension types with their yaml and file layout
+- `rules/client-extension-types.md` — client extension types, their yaml, and which types may share a project
+- `rules/guest-access.md` — what an anonymous visitor can and cannot read; read before building anything public
 - `rules/headless-apis.md` — REST modules, base URIs, OAuth scopes
 - `rules/feature-flags-catalog.md` — flag table with defaults and dependencies
-- `rules/site-initializer-format.md` — site initializer directory tree and batch JSON envelope
+- `rules/site-initializer-format.md` — site initializer directory tree and per entity file formats
 - `rules/object-actions-catalog.md` — triggers, conditions, action types
 - `rules/oauth-scopes.md` — `Liferay.*` scope strings for `oAuthApplicationHeadlessServer` blocks in CET scaffolding
 - `rules/page-types.md` — page types and their applicable APIs
 
 ## Information Sources
 
-The authoritative documentation is [learn.liferay.com](https://learn.liferay.com). To find a topic, search `site:learn.liferay.com <topic>` or browse from the area roots:
-
-- Client extensions: `https://learn.liferay.com/w/dxp/development/client-extensions`
-- Objects: `https://learn.liferay.com/w/dxp/low-code/objects`
-- Headless APIs: `https://learn.liferay.com/w/dxp/integration/headless-apis`
-- Site building: `https://learn.liferay.com/w/dxp/sites`
-- Workspace tooling: `https://learn.liferay.com/w/dxp/development/tooling/liferay-workspace`
+The authoritative documentation is [learn.liferay.com](https://learn.liferay.com); search `site:learn.liferay.com <topic>` to find a topic.
 
 The Liferay Portal source code at [github.com/liferay/liferay-portal](https://github.com/liferay/liferay-portal) is canonical for architectural patterns and code samples; working client extension examples live at `workspaces/liferay-sample-workspace/client-extensions/`.

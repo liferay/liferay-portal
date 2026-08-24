@@ -1,5 +1,7 @@
 # Feature Flags Catalog
 
+> **Before authoring:** Load `feature-flags` before enabling anything here — it owns the per environment mechanism and the restart.
+
 Liferay feature flags that gate APIs and behavior the skills depend on. The full registry lives in `portal-impl/src/portal.properties` of the portal source. This file is the working set the skills reach for.
 
 Defaults change between quarterly releases. Reverify against the running portal at Control Panel → Instance Settings → Feature Flags. The `feature-flags` skill is the canonical source of truth at runtime.

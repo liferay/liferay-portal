@@ -102,6 +102,33 @@ Common `actionIds` for object definitions:
 | `VIEW` | View the object in site and admin UI |
 | `PERMISSIONS` | Manage permissions on this object |
 
+### Public Form: Let Guest Create Without Reading
+
+An object registers **two** resource names and the action decides which to grant on — `ADD_OBJECT_ENTRY` is **not** on the `[$OBJECT_DEFINITION_CLASS_NAME:…$]` resource, and granting it there silently does nothing. `rules/guest-access.md` has the table and the `guest-unsupported` set; it is always loaded, so read it there rather than guessing here.
+
+For an anonymous registration, enquiry, or application form, grant creation on the private object and viewing only on the public one. In the initializer tree (`resource-permissions.json`, see `rules/site-initializer-format.md` for the `scope` integers):
+
+```json
+[
+	{
+		"actionIds": ["ADD_OBJECT_ENTRY"],
+		"primKey": "0",
+		"resourceName": "com.liferay.object#[$OBJECT_DEFINITION_ID:<PrivateObject>$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": ["VIEW"],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:<PublicObject>$]",
+		"roleName": "Guest",
+		"scope": "1"
+	}
+]
+```
+
+Do **not** add `VIEW` on the object that receives submissions. Those rows hold whatever the visitor typed — names, emails, addresses — and `VIEW` at company scope publishes all of them to anonymous users. Write only is the correct posture for a public form, and it is why any count or aggregate over that object has to be denormalized onto the public object rather than computed in the browser (see `manage-pages` → "Mapping Limits").
+
 ### Grant Permissions on Object Entries (Requires LPD-17564)
 
 Per entry permissions are managed via the object collaborators API. Ensure `LPD-17564` is enabled before calling.
@@ -198,3 +225,7 @@ When creating user accounts through the Headless Admin User API, explicitly clea
 ```
 
 Include both fields on the create payload where supported. **Caveat:** `agreedToTermsOfUse` and `passwordReset` are not part of the standard headless `UserAccount` DTO on current DXP — verify against the OpenAPI spec (`get-openapi` MCP tool, or `GET /o/headless-admin-user/v1.0/openapi.json`) before relying on them. The reliable way to avoid the first login 403 trap is the preboot bootstrap (`terms.of.use.required=false`, `passwords.default.policy.change.required=false`) covered in `workspace-init`.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The Verify Roles and Permissions step above (role listed; granted `actionIds` present; a user holding only that role is allowed the granted actions and denied the rest) is the observable completion check; confirm on a live bundle.

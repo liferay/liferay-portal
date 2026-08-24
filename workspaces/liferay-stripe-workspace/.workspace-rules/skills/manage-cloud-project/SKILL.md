@@ -37,7 +37,7 @@ Resolve each before proceeding:
 
 For any other operation, discover available commands via `lcp --help`.
 
-## Pitfalls
+## Patterns and Gotchas
 
 - `<project>-<env>` naming overlaps with local `configs/{env}/` directories. Confirm cloud target before assuming.
 - `LCP.json` placement controls deploy scope: at repo root, `lcp deploy` deploys all services; from a service folder, it deploys only that one.

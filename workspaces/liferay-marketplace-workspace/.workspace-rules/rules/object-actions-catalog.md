@@ -1,5 +1,7 @@
 # Object Actions Catalog
 
+> **Before authoring:** Load `manage-object-logic` before authoring an action, notification template, or workflow — this card is the catalog, that skill is the procedure.
+
 Reference for the `manage-object-logic` skill. Covers triggers, conditions, and all action executor types.
 
 ## Triggers
@@ -107,9 +109,18 @@ Required `parameters`:
 }
 ```
 
-**Availability:** self hosted and Liferay PaaS only. Not available on Liferay SaaS. The script runs in a sandbox; network calls and filesystem access are restricted.
+**Availability: self hosted is necessary but not sufficient.** Beyond the SaaS exclusion, creating a `groovy` action is gated at runtime by `ScriptManagementConfiguration.isAllowScriptContentToBeExecutedOrIncluded()`, which is **off by default on current DXP**. With it off the definition is rejected outright:
 
-The entry is available as `objectEntry` in the script binding, and the service locator is available via `PortalUtil`.
+```text
+400 ObjectActionExecutorKeyException
+Groovy script based object actions are not allowed
+```
+
+Verified on a self hosted 2026.Q2 bundle. Treat Groovy as unavailable until proven otherwise: probe by creating a throwaway action before designing a solution around one, because turning the flag on is a portal wide decision to permit arbitrary script execution — surface it to the user rather than enabling it silently. Prefer a scriptless alternative where one exists (an `Aggregation` field replaces a hand maintained counter — see `skills/manage-objects/SKILL.md`). Source: `ObjectActionLocalServiceImpl`.
+
+**Script bindings are the entry's fields as top level variables — there is no `objectEntry` object.** `GroovyObjectActionExecutorImpl` passes `ObjectEntryVariablesUtil.getVariables(...).get("baseModel")` as the binding, which spreads `objectEntry.values` directly. So a `Registration` field is referenced as bare `attendeeName`, and a relationship foreign key as bare `r_eventRegistrations_c_eventId`.
+
+Also bound: `creator`, `currentDate`, `currentUserId`, `currentUserExternalReferenceCode`, `groupId`, `id` (the entry ID), and `entryDTO`. Guard optional fields with `binding.hasVariable("<name>")` — referencing an absent one throws `MissingPropertyException`. Source: `ObjectEntryVariablesUtil`.
 
 ### `objectAction` (Client Extension)
 
@@ -142,3 +153,10 @@ Object action definition body:
 	"parameters": { ... }
 }
 ```
+
+## References
+
+- `skills/manage-object-logic/SKILL.md` — the primary consumer of this card.
+- `rules/client-extension-types.md` — the `objectAction` CET type.
+- `rules/oauth-scopes.md` — scopes for CET backed actions.
+- Objects: `https://learn.liferay.com/w/dxp/low-code/objects`

@@ -1,13 +1,20 @@
 ---
 
-alwaysApply: false
 description: Standards for building and deploying React based Custom Element Client Extensions. Use when the user wants to build a React powered widget, scaffold a React Custom Element CET, debug 404s on built assets, or troubleshoot an OSGi `Configuration deleted` loop. For nonReact Custom Element scaffolding or other CET types, use `scaffold-client-extension`.
-globs: client-extensions/**/*
 name: react-custom-elements
 
 ---
 
-# React Custom Element Engineering Standards
+# React Custom Elements
+
+Standards for building and deploying React based Custom Element Client Extensions.
+
+## When to Invoke
+
+- "Build a React widget", "scaffold a React Custom Element CET"
+- "Debug 404s on built assets"
+- "Troubleshoot an OSGi `Configuration deleted` loop"
+- For nonReact Custom Elements or other CET types, use `scaffold-client-extension`.
 
 ## Project Scaffold
 
@@ -77,8 +84,12 @@ if (!customElements.get(ELEMENT_ID)) {
 }
 ```
 
-## Troubleshooting
+## Patterns and Gotchas
 
 - **404 on assets**: usually a mismatch between the `assemble` block `from` path and the actual build output directory. Verify the path matches your bundler's output location.
 - **Multiple apps**: if deploying multiple React apps, ensure each has a unique `htmlElementName` and `friendlyURLMapping`.
 - **OSGi "deleted" loop**: if deployment logs show a repeating `IllegalStateException: Configuration [id] deleted`, the OSGi registry is stuck on a corrupted previous registration. Fastest fix: rename the extension ID in `client-extension.yaml` and redeploy — this forces a clean registration under a new ID. Deep debugging of OSGi config state is rarely faster.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. After `deploy-and-verify`, confirm the built React widget's assets return HTTP `200 OK` and the custom element renders on a page hosting it.

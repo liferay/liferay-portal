@@ -121,6 +121,10 @@ JAX-RS converts the bare `UnsupportedOperationException()` to a 400 with no usef
 - `skills/workspace-init/SKILL.md` — broader workspace context (Tomcat vs Docker prebuilt vs custom).
 - `skills/deploy-and-verify/SKILL.md` — destructive copy warning for the `portal-ext.properties` sync step.
 
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The `### Verify` step above (reread state; the endpoint that prompted the check no longer returns `404` or `400 UnsupportedOperationException`) is the observable completion check; confirm on a live bundle.
+
 ## References
 
 - Feature Flags admin doc: `https://learn.liferay.com/w/dxp/security-and-administration/administration/configuring-liferay/feature-flags`

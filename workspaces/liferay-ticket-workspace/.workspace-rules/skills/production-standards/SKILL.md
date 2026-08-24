@@ -5,7 +5,7 @@ name: production-standards
 
 ---
 
-# Liferay Production Rules
+# Production Standards
 
 ## Configuration and State Integrity
 

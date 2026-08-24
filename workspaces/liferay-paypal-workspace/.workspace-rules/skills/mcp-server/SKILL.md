@@ -5,11 +5,17 @@ name: mcp-server
 
 ---
 
-# Liferay MCP Server
+# MCP Server
 
 **MCP (Model Context Protocol)** is the AI agent integration standard that lets AI tools call Liferay APIs directly without manual REST auth setup.
 
 > Available on recent DXP quarterly releases (gated by feature flag `LPD-63311`, marked `beta`). Verify against your DXP version before relying on it.
+
+## When to Invoke
+
+- "Enable MCP", "set up the MCP server"
+- An MCP tool call returns errors
+- Before content, page, or object operations where MCP is preferred over raw REST
 
 ## Setup
 
@@ -42,7 +48,7 @@ When MCP is available, always attempt operations via MCP before reaching for hea
 
 **Fallback policy**: only fall back to REST APIs if MCP has been configured correctly and is still returning errors. "Not yet configured" is not a valid fallback condition — configure it first. When falling back, document why before pivoting to REST — this prevents silently sliding into REST auth debugging.
 
-## Quirks and Workarounds
+## Patterns and Gotchas
 
 ### DXP 2026.Q1+: Streamable HTTP Transport Required
 
@@ -76,6 +82,25 @@ The spec has known gaps: several fields required at runtime are marked optional 
 
 **Workaround**: use a targeted `grep` on the saved temp file to extract only the relevant schema sections rather than attempting to read the full output.
 
+### `object-admin` Write Responses Are Unfiltered and Very Large
+
+`call-http-endpoint` returns the response verbatim — there is no `fields` projection and no way to trim it from the call. On `object-admin`, every definition create, update, and **publish** echoes the complete `ObjectDefinition`: all six system fields (`creator`, `createDate`, `externalReferenceCode`, `id`, `modifiedDate`, `status`), every custom field with its full settings, plus `actions`, `objectRelationships`, and the embedded relationship `objectField`. A single publish on a modest object runs several hundred lines, and a build of two related objects can spend more context on echoed responses than on the actual work.
+
+The `fields` query parameter helps on **GET** (`?fields=id,name,status`) but is ignored on POST bodies.
+
+**Prefer MCP for reads and discovery; drop to `curl | jq` for `object-admin` writes**, projecting just the confirmation you need:
+
+```bash
+curl \
+	--request POST \
+	--silent \
+	--url "http://localhost:${PORT}/o/object-admin/v1.0/object-definitions/<id>/publish" \
+	--user "test@liferay.com:test" \
+	| jq '{id, name, active, status: .status.label, restContextPath}'
+```
+
+This is a context budget concern, not a correctness one — the MCP path works. It matters most in long multiobject builds, where the flood arrives early and crowds out later steps.
+
 ### MCP Connection Lifecycle (Server Restart Drops the Connection)
 
 The MCP client connection drops when the Liferay server stops, restarts, or crashes and does NOT autoreconnect. Recovery requires the user to manually trigger reconnect in their agent — the agent cannot trigger reconnection via Bash, MCP, or any other tool. After any Liferay restart cycle completes, prompt the user to reconnect the MCP server in their agent (each agent has its own reconnect command; e.g., a slash command, a UI button, or a settings refresh) and wait for their reply before making MCP tool calls.
@@ -86,4 +111,8 @@ The MCP connection handshake succeeds without `BasicAuthHeaderAuthVerifier` conf
 
 ### First Login 403 Trap (Fresh Liferay Instances)
 
-If MCP connects and tools appear but every `call-http-endpoint` returns 403, the default admin has not completed first login bootstrap. On a fresh instance, `headless-delivery` endpoints return JSON 404 while admin APIs return XML 403 — both are auth failures, not routing or SAP issues. Complete first login bootstrap per `skills/workspace-init/SKILL.md` → "First Login Bootstrap" before retrying.
+If MCP connects and tools appear but every `call-http-endpoint` returns 403, the default admin has not completed first login bootstrap. On a fresh instance, `headless-delivery` endpoints return JSON 404 while admin APIs return XML 403 — both are auth failures, not routing or SAP issues. Complete first login bootstrap per `skills/workspace-init/SKILL.md` → "First Login Bootstrap" before retrying. If the bundle has already booted, syncing `portal-ext.properties` now will not help — the flags are in the database and only the manual login clears them.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The Connection Check above (the MCP server appears in the client's tool list and a `call-http-endpoint` call returns a non-403 response) is the observable completion check; confirm on a live bundle.

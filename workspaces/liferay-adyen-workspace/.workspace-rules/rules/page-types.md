@@ -1,5 +1,7 @@
 # Page Types
 
+> **Before authoring:** Load `manage-pages` before authoring a page, and `scaffold-fragment` before authoring a fragment placed on one.
+
 Reference for the `manage-pages` skill. Covers all page and template types available in Liferay DXP and which APIs handle each.
 
 ## Renderable Page Types
@@ -76,7 +78,7 @@ Only one display page template per `contentType` + `contentSubtype` combination 
 | `LPD-39244` | off | Fragment and page composition REST API |
 | `LPD-74328` | off | Page element / page-specification creation and update |
 
-Enable required flags via `feature-flags` skill before calling the page APIs.
+This table is the page-API subset; `rules/feature-flags-catalog.md` is canonical for each flag's default and status. Enable required flags via `feature-flags` skill before calling the page APIs.
 
 ## Navigation Menu Item Types
 
@@ -86,3 +88,11 @@ Enable required flags via `feature-flags` skill before calling the page APIs.
 | `url` | An arbitrary absolute URL |
 | `node` | A nonclickable label grouping child items |
 | `asset-publisher` | Dynamic list from Asset Publisher portlet |
+
+## References
+
+- `skills/manage-pages/SKILL.md` — the primary consumer of this card.
+- `rules/headless-apis.md` — headless-admin-site paths for these page types.
+- `rules/feature-flags-catalog.md` — defaults for the page-API flags.
+- `rules/site-initializer-format.md` — `page.json` and `page-definition.json` formats.
+- Site building: `https://learn.liferay.com/w/dxp/sites`

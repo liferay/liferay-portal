@@ -1,8 +1,10 @@
 # Headless APIs
 
+> **Before authoring:** Load `mcp-server` first when MCP is available; prefer it over raw curl for content, page, and object work.
+
 Key Liferay REST modules, their base URIs, primary resources, and OAuth scopes. All paths resolve relative to `http://localhost:${PORT}`. Use Basic auth (`test@liferay.com:test`) for the curl examples on this page and in the skills. The OAuth scope strings noted per module are for `oAuthApplicationHeadlessServer` blocks when scaffolding microservice CETs — see `rules/oauth-scopes.md` for the full scaffolding reference.
 
-The tables below list the common endpoints per module — they are not exhaustive. To confirm an exact path or find an endpoint not listed here, use the `get-openapi` MCP tool (see `skills/mcp-server/SKILL.md`), or fetch `GET /o/<module>/v1.0/openapi.json` directly. Base URIs, feature flag gates, and OAuth scopes are *not* discoverable from the specs — rely on this card for those.
+The tables below list the common endpoints per module — they are not exhaustive. To confirm an exact path or find an endpoint not listed here, use the `get-openapi` MCP tool (see `skills/mcp-server/SKILL.md`), or fetch `GET /o/<module>/v1.0/openapi.json` directly. Base URIs, feature flag gates, and OAuth scopes are *not* discoverable from the specs — rely on this card for those. The per module `Required flag` notes below map each module to its gating flag; see `rules/feature-flags-catalog.md` for each flag's default and status.
 
 ## headless-admin-site
 
@@ -71,6 +73,27 @@ Object entries (after publish): `/o/c/<pluralLabel>` — GET, POST, PUT, PATCH, 
 
 **OAuth scope:** `Liferay.Object.Admin.REST.everything` for the admin endpoints above (definitions, fields, etc.). `Liferay.Headless.Object.everything` for the dynamic `/o/c/<plural>` entry endpoints.
 
+## headless-admin-fragment
+
+**Base URI:** `/o/headless-admin-fragment/v1.0`
+
+Its own module — **not** part of `headless-admin-site`, which is why fragment endpoints look absent when you search the page API's spec.
+
+| Resource | Method | Path |
+| --- | --- | --- |
+| List / create fragment sets | GET, POST | `/sites/{siteExternalReferenceCode}/fragment-sets` |
+| Get / update / delete a set | GET, PUT, DELETE | `/sites/{siteExternalReferenceCode}/fragment-sets/{setExternalReferenceCode}` |
+| List / create fragments in a set | GET, POST | `/sites/{siteExternalReferenceCode}/fragment-sets/{setExternalReferenceCode}/fragments` |
+| Get / replace / delete a fragment | GET, PUT, DELETE | `/sites/{siteExternalReferenceCode}/fragments/{fragmentExternalReferenceCode}` |
+
+Fragment code is in `fragmentVersions[]` (`html`, `css`, `js`, `configuration`, `status`). Fragments are keyed by **ERC** — a generated UUID for fragments imported by an initializer, not the fragment key — so list the set to resolve it.
+
+**Required flag:** `LPD-39244`.
+
+**OAuth scope:** `Liferay.Headless.Admin.Fragment.everything` — verify against the running instance before relying on it in a CET.
+
+> **Editing a fragment here does not change any page that already places it** — Liferay copies fragment code into each page's fragment instance. Reprovision to apply fragment changes. See `skills/scaffold-fragment/SKILL.md` → "The Live Fragment API", and note that one fragment declaring `"type": "section"` makes the whole set's listing return `400`.
+
 ## headless-admin-list-type
 
 **Base URI:** `/o/headless-admin-list-type/v1.0`
@@ -133,3 +156,10 @@ Object entries (after publish): `/o/c/<pluralLabel>` — GET, POST, PUT, PATCH, 
 | 404 | Resource not found or feature flag off; check flag state |
 | 409 | Conflict; typically duplicate name or ERC |
 | 500 | Server error; check `bundles/logs/liferay.<date>.log` |
+
+## References
+
+- `rules/oauth-scopes.md` — full scope string reference for these modules.
+- `rules/feature-flags-catalog.md` — defaults for the flags gating these APIs.
+- `skills/mcp-server/SKILL.md` — the `get-openapi` tool for confirming exact paths.
+- Headless APIs: `https://learn.liferay.com/w/dxp/integration/headless-apis`

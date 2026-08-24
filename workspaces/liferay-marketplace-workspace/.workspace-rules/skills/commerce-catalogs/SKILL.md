@@ -1,13 +1,19 @@
 ---
 
-alwaysApply: false
 description: Standards for managing Liferay Commerce catalogs, products, SKUs, and B2B account onboarding via Headless APIs. Use when the user works with commerce products, variants, options, specifications, product images, or B2B accounts and roles.
-globs: {commerce/**/*,**/*commerce*}
 name: commerce-catalogs
 
 ---
 
-# Liferay Commerce Engineering Standards
+# Commerce Catalogs
+
+Standards for managing Liferay Commerce catalogs, products, SKUs, and B2B account onboarding via the Headless APIs.
+
+## When to Invoke
+
+- "Manage commerce products", "add a product variant", "create SKUs"
+- "Set product options, specifications, or images"
+- "Onboard a B2B account", "assign account roles"
 
 ## Product Management via Headless APIs
 
@@ -43,3 +49,7 @@ When onboarding accounts and users via `headless-admin-user` APIs, adhere to the
   - `addressType`: must be lowercase (e.g., "billing", "shipping").
 - **User association**: use the `by-email-address` endpoint to associate an existing user with an account: `POST /accounts/{accountId}/user-accounts/by-email-address/{email}`.
 - **Role assignment**: assign account roles by their ERC: `POST /accounts/{accountId}/account-roles/by-external-reference-code/{ROLE_ERC}/user-accounts/{userId}`.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. Confirm the created catalog, products, and SKUs list via the Commerce headless APIs and appear under Commerce → Catalogs in the Control Panel.

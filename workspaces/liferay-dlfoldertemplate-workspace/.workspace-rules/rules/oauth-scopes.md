@@ -1,5 +1,7 @@
 # OAuth Scopes (CET Scaffolding Reference)
 
+> **Before authoring:** Load `setup-oauth` when a CET needs a companion OAuth entry, or `scaffold-client-extension` when generating the whole project.
+
 This card lists the `Liferay.*` scope strings used in OAuth companion entries in `client-extension.yaml`. Two OAuth CET types carry scopes, and which to use depends on the direction of the call:
 
 - **`oAuthApplicationHeadlessServer`** — used by `siteInitializer` and `batch` CETs, where the CET calls into Liferay's Headless APIs using a service account token.

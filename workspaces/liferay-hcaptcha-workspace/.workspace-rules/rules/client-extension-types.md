@@ -1,8 +1,35 @@
 # Client Extension Types
 
+> **Before authoring:** Load `scaffold-client-extension` before writing any `client-extension.yaml`, and `theme-and-design` for `themeCSS` / `globalCSS`.
+
 Sourced from `modules/sdk/gradle-plugins-workspace/src/main/resources/com/liferay/gradle/plugins/workspace/internal/client/extension/client-extension.properties`.
 
 Each entry in `client-extension.yaml` must have a `type` value matching one of the keys below. Classification groups them by what they extend.
+
+## Which Types May Share a Project
+
+The classifications below are not just documentation — the workspace Gradle plugin enforces them. A project's set of classifications must be a subset of **one** allowed group:
+
+| Allowed grouping | Covers |
+| --- | --- |
+| `configuration` | OAuth apps and `instanceSettings` alone |
+| `configuration` + `batch` | A `batch` or `siteInitializer` CET with its OAuth companion |
+| `configuration` + `frontend` | Theme, CSS, JS, custom elements, with OAuth if needed |
+| `configuration` + `microservice` | Handlers (`objectAction`, `notificationType`, …) with OAuth |
+
+`batch`, `frontend`, and `microservice` can **never** be combined with each other. So a `siteInitializer` may be joined by its `oAuthApplicationHeadlessServer` and nothing else — adding a `themeCSS` or an `objectAction` to that project fails the build:
+
+```text
+The combination of client extensions in [configuration, batch, frontend] cannot be
+grouped in a single project. The following groupings are allowed:
+[batch, configuration][configuration, frontend][configuration, microservice]
+```
+
+**A complete site is therefore several sibling projects, not one.** Expect at least: the initializer plus its OAuth entry, a frontend project for theme and global CSS, and a microservice project per handler group. Never tell a caller that a single project can carry a whole site — it cannot, and the failure appears only at `createClientExtensionConfig`, after the assemble tasks have already reported success.
+
+Two further rules apply to a `batch`/`siteInitializer` project: it must contain **exactly one** `oAuthApplicationHeadlessServer`, and **at most one** `batch` or `siteInitializer` entry.
+
+Source: `CreateClientExtensionConfigTask` in `modules/sdk/gradle-plugins-workspace`.
 
 ## Frontend
 
@@ -125,3 +152,10 @@ These CETs import bulk data or initialize a full site.
         - Liferay.Headless.Admin.User.everything
     type: oAuthApplicationHeadlessServer
 ```
+
+## References
+
+- `skills/scaffold-client-extension/SKILL.md` and `skills/guided-client-extension/SKILL.md` — the primary consumers of this card.
+- `rules/oauth-scopes.md` — scopes required per CET type.
+- `rules/site-initializer-format.md` — the `siteInitializer` CET tree.
+- Client extensions: `https://learn.liferay.com/w/dxp/development/client-extensions`

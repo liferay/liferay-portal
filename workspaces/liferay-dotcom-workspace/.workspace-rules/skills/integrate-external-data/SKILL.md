@@ -1,6 +1,6 @@
 ---
 
-description: Back a Liferay Object with an external data source using the Object Entry Manager CET pattern. Use when the user wants to connect an object to an external REST API, database, or SaaS system rather than storing data in Liferay's own database. Maps to "Integration with External Systems and Data" in "Mastering Data Modeling with Liferay Objects".
+description: Back a Liferay Object with an external data source using the Object Entry Manager CET pattern. Use when the user wants to connect an object to an external REST API, database, or SaaS system rather than storing data in Liferay's own database.
 name: integrate-external-data
 
 ---
@@ -148,3 +148,7 @@ Check the microservice logs to confirm Liferay forwarded the calls. If entries a
 | 401 from microservice | `X-Liferay-Token` validation failing; verify the token algorithm |
 | CET not linked to object | `objectDefinitionRestContextPath` must match exactly; redeploy after fix |
 | Empty list from Liferay | Microservice returns nonenvelope JSON; wrap in the Headless page envelope |
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The `### Verify` step above (POST then GET on `/o/c/<pluralLabel>` return external system records; microservice logs show forwarded CRUD calls) is the observable completion check; confirm on a live bundle.

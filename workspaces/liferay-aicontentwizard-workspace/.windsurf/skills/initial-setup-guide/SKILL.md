@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/initial-setup-guide/SKILL.md

@@ -131,6 +131,10 @@ When deploying multiple client extensions in the same cycle, deploy in this orde
 
 Copying `configs/local/portal-ext.properties` to `bundles/portal-ext.properties` is destructive. If any property exists only in `bundles/portal-ext.properties` (e.g. added via the portal UI or a manual runtime edit), a blind copy silently deletes it. Diff the two files before syncing and migrate any `bundles/`-only properties to `configs/local/` first. Verify the property is honored at runtime after restart — matching file contents is not the same as runtime activation.
 
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The Tail for STARTED and Smoke Check steps above are the observable completion checks; confirm on a live bundle.
+
 ## References
 
 - Blade CLI: `https://learn.liferay.com/w/dxp/development/tooling/blade-cli`

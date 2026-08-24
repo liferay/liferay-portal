@@ -1,0 +1,1 @@
+../../../.workspace-rules/skills/scaffold-form-fragment/SKILL.md
