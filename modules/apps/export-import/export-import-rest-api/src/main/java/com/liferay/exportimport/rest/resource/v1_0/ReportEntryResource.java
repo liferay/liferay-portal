@@ -53,10 +53,24 @@ public interface ReportEntryResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public Page<ReportEntry> getPublishProcessReportEntriesPage(
+			Long publishProcessId, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
 	public ReportEntry getReportEntry(Long reportEntryId) throws Exception;
 
 	public Response postImportProcessReportEntriesPageExportBatch(
 			Long importProcessId, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
+		throws Exception;
+
+	public Response postPublishProcessReportEntriesPageExportBatch(
+			Long publishProcessId, String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
@@ -158,4 +172,4 @@ public interface ReportEntryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2119237320
+// LIFERAY-REST-BUILDER-HASH:2070272453

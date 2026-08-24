@@ -653,6 +653,440 @@ public abstract class BaseReportEntryResourceTestCase {
 	}
 
 	@Test
+	public void testGetPublishProcessReportEntriesPage() throws Exception {
+		Long publishProcessId =
+			testGetPublishProcessReportEntriesPage_getPublishProcessId();
+		Long irrelevantPublishProcessId =
+			testGetPublishProcessReportEntriesPage_getIrrelevantPublishProcessId();
+
+		Page<ReportEntry> page =
+			reportEntryResource.getPublishProcessReportEntriesPage(
+				publishProcessId, null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantPublishProcessId != null) {
+			ReportEntry irrelevantReportEntry =
+				testGetPublishProcessReportEntriesPage_addReportEntry(
+					irrelevantPublishProcessId, randomIrrelevantReportEntry());
+
+			page = reportEntryResource.getPublishProcessReportEntriesPage(
+				irrelevantPublishProcessId, null, null,
+				Pagination.of(1, (int)totalCount + 1), null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantReportEntry, (List<ReportEntry>)page.getItems());
+			assertValid(
+				page,
+				testGetPublishProcessReportEntriesPage_getExpectedActions(
+					irrelevantPublishProcessId));
+		}
+
+		ReportEntry reportEntry1 =
+			testGetPublishProcessReportEntriesPage_addReportEntry(
+				publishProcessId, randomReportEntry());
+
+		ReportEntry reportEntry2 =
+			testGetPublishProcessReportEntriesPage_addReportEntry(
+				publishProcessId, randomReportEntry());
+
+		page = reportEntryResource.getPublishProcessReportEntriesPage(
+			publishProcessId, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(reportEntry1, (List<ReportEntry>)page.getItems());
+		assertContains(reportEntry2, (List<ReportEntry>)page.getItems());
+		assertValid(
+			page,
+			testGetPublishProcessReportEntriesPage_getExpectedActions(
+				publishProcessId));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetPublishProcessReportEntriesPage_getExpectedActions(
+				Long publishProcessId)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		Long publishProcessId =
+			testGetPublishProcessReportEntriesPage_getPublishProcessId();
+
+		ReportEntry reportEntry1 = randomReportEntry();
+
+		reportEntry1 = testGetPublishProcessReportEntriesPage_addReportEntry(
+			publishProcessId, reportEntry1);
+
+		for (EntityField entityField : entityFields) {
+			Page<ReportEntry> page =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null,
+					getFilterString(entityField, "between", reportEntry1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(reportEntry1),
+				(List<ReportEntry>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetPublishProcessReportEntriesPageWithFilter(
+			"eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithFilterStringContains()
+		throws Exception {
+
+		testGetPublishProcessReportEntriesPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetPublishProcessReportEntriesPageWithFilter(
+			"eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetPublishProcessReportEntriesPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetPublishProcessReportEntriesPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		Long publishProcessId =
+			testGetPublishProcessReportEntriesPage_getPublishProcessId();
+
+		ReportEntry reportEntry1 =
+			testGetPublishProcessReportEntriesPage_addReportEntry(
+				publishProcessId, randomReportEntry());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ReportEntry reportEntry2 =
+			testGetPublishProcessReportEntriesPage_addReportEntry(
+				publishProcessId, randomReportEntry());
+
+		for (EntityField entityField : entityFields) {
+			Page<ReportEntry> page =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null,
+					getFilterString(entityField, operator, reportEntry1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(reportEntry1),
+				(List<ReportEntry>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithPagination()
+		throws Exception {
+
+		Long publishProcessId =
+			testGetPublishProcessReportEntriesPage_getPublishProcessId();
+
+		Page<ReportEntry> reportEntriesPage =
+			reportEntryResource.getPublishProcessReportEntriesPage(
+				publishProcessId, null, null, null, null);
+
+		int totalCount = GetterUtil.getInteger(
+			reportEntriesPage.getTotalCount());
+
+		ReportEntry reportEntry1 =
+			testGetPublishProcessReportEntriesPage_addReportEntry(
+				publishProcessId, randomReportEntry());
+
+		ReportEntry reportEntry2 =
+			testGetPublishProcessReportEntriesPage_addReportEntry(
+				publishProcessId, randomReportEntry());
+
+		ReportEntry reportEntry3 =
+			testGetPublishProcessReportEntriesPage_addReportEntry(
+				publishProcessId, randomReportEntry());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<ReportEntry> page1 =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(reportEntry1, (List<ReportEntry>)page1.getItems());
+
+			Page<ReportEntry> page2 =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(reportEntry2, (List<ReportEntry>)page2.getItems());
+
+			Page<ReportEntry> page3 =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(reportEntry3, (List<ReportEntry>)page3.getItems());
+		}
+		else {
+			Page<ReportEntry> page1 =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null, null,
+					Pagination.of(1, totalCount + 2), null);
+
+			List<ReportEntry> reportEntries1 =
+				(List<ReportEntry>)page1.getItems();
+
+			Assert.assertEquals(
+				reportEntries1.toString(), totalCount + 2,
+				reportEntries1.size());
+
+			Page<ReportEntry> page2 =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null, null,
+					Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<ReportEntry> reportEntries2 =
+				(List<ReportEntry>)page2.getItems();
+
+			Assert.assertEquals(
+				reportEntries2.toString(), 1, reportEntries2.size());
+
+			Page<ReportEntry> page3 =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null, null,
+					Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(reportEntry1, (List<ReportEntry>)page3.getItems());
+			assertContains(reportEntry2, (List<ReportEntry>)page3.getItems());
+			assertContains(reportEntry3, (List<ReportEntry>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithSortDateTime()
+		throws Exception {
+
+		testGetPublishProcessReportEntriesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, reportEntry1, reportEntry2) -> {
+				BeanTestUtil.setProperty(
+					reportEntry1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithSortDouble()
+		throws Exception {
+
+		testGetPublishProcessReportEntriesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, reportEntry1, reportEntry2) -> {
+				BeanTestUtil.setProperty(
+					reportEntry1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					reportEntry2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithSortInteger()
+		throws Exception {
+
+		testGetPublishProcessReportEntriesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, reportEntry1, reportEntry2) -> {
+				BeanTestUtil.setProperty(
+					reportEntry1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					reportEntry2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetPublishProcessReportEntriesPageWithSortString()
+		throws Exception {
+
+		testGetPublishProcessReportEntriesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, reportEntry1, reportEntry2) -> {
+				Class<?> clazz = reportEntry1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						reportEntry1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						reportEntry2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						reportEntry1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						reportEntry2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						reportEntry1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						reportEntry2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetPublishProcessReportEntriesPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer<EntityField, ReportEntry, ReportEntry, Exception>
+				unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		Long publishProcessId =
+			testGetPublishProcessReportEntriesPage_getPublishProcessId();
+
+		ReportEntry reportEntry1 = randomReportEntry();
+		ReportEntry reportEntry2 = randomReportEntry();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(entityField, reportEntry1, reportEntry2);
+		}
+
+		reportEntry1 = testGetPublishProcessReportEntriesPage_addReportEntry(
+			publishProcessId, reportEntry1);
+
+		reportEntry2 = testGetPublishProcessReportEntriesPage_addReportEntry(
+			publishProcessId, reportEntry2);
+
+		Page<ReportEntry> page =
+			reportEntryResource.getPublishProcessReportEntriesPage(
+				publishProcessId, null, null, null, null);
+
+		for (EntityField entityField : entityFields) {
+			Page<ReportEntry> ascPage =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(reportEntry1, (List<ReportEntry>)ascPage.getItems());
+			assertContains(reportEntry2, (List<ReportEntry>)ascPage.getItems());
+
+			Page<ReportEntry> descPage =
+				reportEntryResource.getPublishProcessReportEntriesPage(
+					publishProcessId, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(
+				reportEntry2, (List<ReportEntry>)descPage.getItems());
+			assertContains(
+				reportEntry1, (List<ReportEntry>)descPage.getItems());
+		}
+	}
+
+	protected ReportEntry testGetPublishProcessReportEntriesPage_addReportEntry(
+			Long publishProcessId, ReportEntry reportEntry)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetPublishProcessReportEntriesPage_getPublishProcessId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGetPublishProcessReportEntriesPage_getIrrelevantPublishProcessId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Test
 	public void testGetReportEntry() throws Exception {
 		ReportEntry postReportEntry = testGetReportEntry_addReportEntry();
 
@@ -2035,4 +2469,4 @@ public abstract class BaseReportEntryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-128866049
+// LIFERAY-REST-BUILDER-HASH:-2076213109
