@@ -755,12 +755,6 @@ function stop_default_app_server {
 }
 
 function update_learn_resources_dir {
-
-	# The portal reads its learn resources from this checkout, so a test that
-	# clicks a learn link depends on no server, neither the global one nor a
-	# local one. Where a checkout sits relative to a portal's home is
-	# configured rather than fixed, so only this script can name the path.
-
 	local learn_resources_dir=${_PORTAL_PROJECT_DIR}/learn-resources/data
 
 	if [[ ! -d ${learn_resources_dir} ]]
@@ -769,10 +763,6 @@ function update_learn_resources_dir {
 
 		exit 1
 	fi
-
-	# A bundle carries one of these files under each application server it
-	# ships with, and a bundle built with every default carries none at all, in
-	# which case the portal still reads the one its home holds.
 
 	local properties_files=$(get_tomcat_portal_ext_properties_file)
 

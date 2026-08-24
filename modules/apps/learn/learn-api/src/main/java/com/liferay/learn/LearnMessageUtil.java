@@ -87,10 +87,6 @@ public class LearnMessageUtil {
 				if (_LEARN_RESOURCES_MODE_DEV &&
 					Validator.isNotNull(_LEARN_RESOURCES_DIR)) {
 
-					// The dev server exists only to serve these files over
-					// HTTP, so a caller that can name the directory holding
-					// them does not need it.
-
 					String fileName = StringBundler.concat(
 						_LEARN_RESOURCES_DIR, StringPool.SLASH, _resource,
 						".json");

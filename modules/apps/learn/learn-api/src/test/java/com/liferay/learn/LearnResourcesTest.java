@@ -34,14 +34,6 @@ public class LearnResourcesTest {
 
 	@Test
 	public void testGlobalServerServesEveryLearnResource() {
-
-		// Every learn message in the product renders from one of these
-		// resources, and a read that fails is swallowed into an empty object,
-		// so a resource the global server stops serving makes learn links
-		// vanish with nothing in the log. This repository holds a copy of every
-		// resource the product asks for, so the directory names what has to be
-		// served.
-
 		String dirName = System.getProperty("learn.resources.data.dir");
 
 		Assert.assertNotNull(
@@ -70,13 +62,6 @@ public class LearnResourcesTest {
 
 			if (failure != null) {
 				unservedURLs.add(failure);
-
-				// The first failure answers what the remaining reads are
-				// asking: the doubt is no longer about one resource but about
-				// the server or the route to it. So every read before it waits
-				// as long as a slow continuous integration machine can need,
-				// and every read after it waits only long enough to tell a
-				// server that is down from one that is merely slow.
 
 				timeout = _TIMEOUT_AFTER_FAILURE;
 			}
@@ -115,10 +100,6 @@ public class LearnResourcesTest {
 			return null;
 		}
 		catch (IOException ioException) {
-
-			// A read that fails is reported like any other, rather than thrown,
-			// so one unreachable resource does not hide the state of the rest.
-
 			return url + " could not be read: " + ioException;
 		}
 	}
