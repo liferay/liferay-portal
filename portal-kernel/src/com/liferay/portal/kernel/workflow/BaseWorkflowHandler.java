@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -298,7 +299,10 @@ public abstract class BaseWorkflowHandler<T> implements WorkflowHandler<T> {
 
 		WorkflowInstanceLinkLocalServiceUtil.startWorkflowInstance(
 			companyId, groupId, userId, getClassName(), classPK,
-			workflowContext);
+			workflowContext,
+			GetterUtil.getBoolean(
+				workflowContext.get(
+					WorkflowConstants.CONTEXT_WAIT_FOR_COMPLETION)));
 	}
 
 	private String _getBackURL(
