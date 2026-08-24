@@ -48,6 +48,7 @@ const (
 	conditionReplicasCountValid    = "ReplicasCountValid"
 	entitlementsSecretSuffix       = "-entitlements"
 	environmentLabel               = "licensing.liferay.com/environment"
+	fieldOwner                     = "liferay-dxp-operator"
 	gracePeriodReplicaCeiling      = 1
 	identitySecretSuffix           = "-identity"
 )
@@ -460,6 +461,14 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 		},
 	)
 
+	if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
+		if errors.IsConflict(error) {
+			return controllerruntime.Result{RequeueAfter: time.Second}, nil
+		}
+
+		return controllerruntime.Result{}, error
+	}
+
 	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context, liferayEnvironment, entitlements.MaxClusterNodes,
 	); error != nil {
@@ -517,10 +526,35 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 	effectiveReplicas := min(desiredReplicas, maxClusterNodes)
 
 	if statefulSet.Spec.Replicas == nil || *statefulSet.Spec.Replicas != effectiveReplicas {
+		liveReplicas := statefulSet.Spec.Replicas
+
 		statefulSet.Spec.Replicas = &effectiveReplicas
 
-		if error := liferayEnvironmentReconciler.Update(context, statefulSet); error != nil {
-			return error
+		if error := liferayEnvironmentReconciler.Update(
+			context, statefulSet, client.FieldOwner(fieldOwner),
+		); error != nil {
+			logger.Error(
+				error, "Unable to enforce the licensed replica ceiling",
+				"effectiveReplicas", effectiveReplicas,
+				"workload", statefulSet.Name,
+			)
+
+			liferayEnvironment.Status.EffectiveReplicas = liveReplicas
+
+			meta.SetStatusCondition(
+				&liferayEnvironment.Status.Conditions,
+				metav1.Condition{
+					Message: fmt.Sprintf(
+						"Unable to scale StatefulSet %q to %d replicas: %s.",
+						statefulSet.Name, effectiveReplicas, error,
+					),
+					Reason: "WorkloadUpdateRejected",
+					Status: metav1.ConditionFalse,
+					Type:   conditionReplicasCountValid,
+				},
+			)
+
+			return nil
 		}
 
 		logger.Info(
@@ -794,7 +828,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	entitlements, error := liferayEnvironmentReconciler.Provisioning.Manifest(
 		context,
 		provisioning.ManifestRequest{
-			DxpVersion:    liferayEnvironmentReconciler.resolveDxpVersion(liferayEnvironment),
+			DxpVersion:    liferayEnvironmentReconciler.resolveDxpVersion(context, liferayEnvironment),
 			EnvironmentID: environmentID,
 		},
 		privateKey,
@@ -861,6 +895,26 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) handleOnlineAc
 	}
 
 	return entitlements, controllerruntime.Result{}, nil
+}
+
+func imageTag(image string) string {
+	if index := strings.LastIndex(image, "@"); index != -1 {
+		image = image[:index]
+	}
+
+	index := strings.LastIndex(image, ":")
+
+	if index == -1 {
+		return ""
+	}
+
+	tag := image[index+1:]
+
+	if strings.Contains(tag, "/") {
+		return ""
+	}
+
+	return tag
 }
 
 func licenseChecksum(licenseXML []byte) string {
@@ -1020,13 +1074,43 @@ func resolveDesiredReplicas(
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveDxpVersion(
+	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) string {
 	if liferayEnvironment.Spec.DxpVersion != "" {
 		return liferayEnvironment.Spec.DxpVersion
 	}
 
-	// TODO derive from the workload's container image tag
+	logger := logf.FromContext(context)
+
+	statefulSet := &appsv1.StatefulSet{}
+
+	if error := liferayEnvironmentReconciler.Get(
+		context, types.NamespacedName{
+			Name:      liferayEnvironment.Spec.WorkloadRef.Name,
+			Namespace: liferayEnvironment.Namespace,
+		}, statefulSet); error != nil {
+
+		logger.V(1).Info(
+			"Unable to read the workload to determine the DXP version",
+			"workload", liferayEnvironment.Spec.WorkloadRef.Name,
+		)
+
+		return ""
+	}
+
+	for _, container := range statefulSet.Spec.Template.Spec.Containers {
+		dxpVersion := imageTag(container.Image)
+
+		if dxpVersion != "" {
+			return dxpVersion
+		}
+	}
+
+	logger.V(1).Info(
+		"The workload carries no image tag to determine the DXP version from",
+		"workload", liferayEnvironment.Spec.WorkloadRef.Name,
+	)
 
 	return ""
 }

@@ -18,6 +18,13 @@ function main {
 		return
 	fi
 
+	if [[ ${mode} == "test" ]]
+	then
+		_test
+
+		return
+	fi
+
 	if [[ ${mode} == "fast" ]]
 	then
 		_generate
@@ -92,8 +99,22 @@ function _generate {
 
 	_format_generated
 }
+function _test {
+	if [ ! -f api/licensing/v1alpha1/zz_generated.deepcopy.go ]
+	then
+		_generate
+	fi
+
+	go tool setup-envtest use "${_ENVTEST_KUBERNETES_VERSION}" --bin-dir "${_ENVTEST_BIN_DIR}" > /dev/null
+
+	go test ./...
+}
 
 _CRD_FILE="$(cd .. && pwd)/helm/dxp-operator/crds/licensing.liferay.com_liferayenvironments.yaml"
+
+_ENVTEST_BIN_DIR="${HOME}/.local/share/kubebuilder-envtest"
+
+_ENVTEST_KUBERNETES_VERSION="1.32.x"
 
 _SOURCE_FORMATTER_URL="https://repository-cdn.liferay.com/nexus/content/groups/public/com/liferay/com.liferay.source.formatter"
 
