@@ -10,6 +10,9 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.internal.util.DepotRoleNameUtil;
 import com.liferay.depot.internal.util.PermissionUtil;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
@@ -44,6 +47,8 @@ import java.util.Set;
 public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 	public DepotPermissionCheckerWrapper(
+		DepotEntryGroupRelLocalService depotEntryGroupRelLocalService,
+		DepotEntryLocalService depotEntryLocalService,
 		GroupLocalService groupLocalService,
 		ModelResourcePermission<DepotEntry> depotEntryModelResourcePermission,
 		ModelResourcePermission<Role> roleModelResourcePermission,
@@ -52,6 +57,8 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 		super(permissionChecker);
 
+		_depotEntryGroupRelLocalService = depotEntryGroupRelLocalService;
+		_depotEntryLocalService = depotEntryLocalService;
 		_groupLocalService = groupLocalService;
 		_depotEntryModelResourcePermission = depotEntryModelResourcePermission;
 		_roleModelResourcePermission = roleModelResourcePermission;
@@ -293,10 +300,12 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 			}
 			else if (actionId.equals(ActionKeys.VIEW) && group.isSite()) {
 				try {
-					return PermissionUtil.hasCMSAdministratorRole(
-						group.getCompanyId(), getUserId()) ||
-						   PermissionUtil.isDepotGroupAdminOrOwner(
-							   group.getCompanyId(), getUserId());
+					if (PermissionUtil.hasCMSAdministratorRole(
+							group.getCompanyId(), getUserId()) ||
+						_isConnectedDepotGroupAdmin(group.getGroupId())) {
+
+						return true;
+					}
 				}
 				catch (PortalException portalException) {
 					_log.error(portalException);
@@ -395,6 +404,40 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 		return PermissionUtil.hasCMSAdministratorRole(
 			group.getCompanyId(), getUserId());
+	}
+
+	private boolean _isConnectedDepotGroupAdmin(long groupId)
+		throws PortalException {
+
+		for (UserGroupRole userGroupRole :
+				_userGroupRoleLocalService.getUserGroupRoles(getUserId())) {
+
+			Group group = _groupLocalService.fetchGroup(
+				userGroupRole.getGroupId());
+
+			if (!_isDepotGroupAdmin(group)) {
+				continue;
+			}
+
+			DepotEntry depotEntry =
+				_depotEntryLocalService.fetchGroupDepotEntry(
+					group.getGroupId());
+
+			if (depotEntry == null) {
+				continue;
+			}
+
+			DepotEntryGroupRel depotEntryGroupRel =
+				_depotEntryGroupRelLocalService.
+					fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
+						depotEntry.getDepotEntryId(), groupId);
+
+			if (depotEntryGroupRel != null) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private boolean _isContentReviewer(Group group) throws PortalException {
@@ -564,6 +607,9 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 	private static final Set<String> _supportedRoleActionIds = new HashSet<>(
 		Arrays.asList(ActionKeys.ASSIGN_MEMBERS, ActionKeys.VIEW));
 
+	private final DepotEntryGroupRelLocalService
+		_depotEntryGroupRelLocalService;
+	private final DepotEntryLocalService _depotEntryLocalService;
 	private final ModelResourcePermission<DepotEntry>
 		_depotEntryModelResourcePermission;
 	private final GroupLocalService _groupLocalService;
