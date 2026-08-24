@@ -40,14 +40,7 @@ export const TSC_DIR = path.resolve(MODULES_DIR, '.tsc');
 export const TSC_BUILDINFO_DIR = path.resolve(TSC_DIR, 'buildinfo');
 export const TSC_TYPES_DIR = path.resolve(TSC_DIR, 'types');
 
-export const YARN_SCRIPT_DIR = path.resolve(
-	PORTAL_DIR,
-	'build',
-	'node',
-	'lib',
-	'node_modules',
-	'yarn'
-);
+export const YARN_SCRIPT_DIR = resolveYarnScriptDir();
 
 //
 // Files
@@ -120,3 +113,22 @@ export const WORK_IMPORT_PATH = path.join(WORK_PATH, 'import');
 //
 
 export const BUNDLE_REPORTS_PATH = path.join('build', 'bundle-reports');
+
+//
+// Helpers
+//
+
+function resolveYarnScriptDir() {
+	const nodeDir = path.resolve(PORTAL_DIR, 'build', 'node');
+
+	// Node's Windows distribution installs global packages directly inside
+	// `node_modules`, whereas the other distributions use `lib/node_modules`.
+
+	const nodeModulesDir = path.resolve(nodeDir, 'node_modules');
+
+	if (fs.existsSync(nodeModulesDir)) {
+		return path.join(nodeModulesDir, 'yarn');
+	}
+
+	return path.resolve(nodeDir, 'lib', 'node_modules', 'yarn');
+}
