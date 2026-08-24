@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Application;
 
@@ -130,6 +131,17 @@ public class CacheContainerResponseFilterTest {
 			"private", _getCacheControl(_openURLConnection("/tests/2/nested")));
 	}
 
+	@Test
+	public void testCacheWithPostRequest() throws Exception {
+		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 3600);
+
+		HttpURLConnection httpURLConnection = _openURLConnection("/test");
+
+		httpURLConnection.setRequestMethod("POST");
+
+		_assertNotCacheable(httpURLConnection);
+	}
+
 	public static class TestApplication extends Application {
 
 		@Override
@@ -145,6 +157,11 @@ public class CacheContainerResponseFilterTest {
 		@GET
 		@Path("/test")
 		public void test() {
+		}
+
+		@Path("/test")
+		@POST
+		public void testPost() {
 		}
 
 	}

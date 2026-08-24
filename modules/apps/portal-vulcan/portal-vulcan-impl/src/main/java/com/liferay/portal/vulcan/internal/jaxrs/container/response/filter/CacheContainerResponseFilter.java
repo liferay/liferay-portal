@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory;
 
+import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -21,6 +22,8 @@ import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 
 import java.net.URI;
+
+import java.util.Objects;
 
 /**
  * @author Alejandro Tardín
@@ -47,7 +50,10 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 
 		String cacheControl = null;
 
-		if (_company != null) {
+		if (Objects.equals(
+				containerRequestContext.getMethod(), HttpMethod.GET) &&
+			(_company != null)) {
+
 			UriInfo uriInfo = containerRequestContext.getUriInfo();
 
 			URI baseURI = uriInfo.getBaseUri();
