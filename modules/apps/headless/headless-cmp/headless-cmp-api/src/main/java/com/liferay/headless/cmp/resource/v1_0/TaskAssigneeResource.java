@@ -44,6 +44,10 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface TaskAssigneeResource {
 
+	public Page<TaskAssignee> getProjectTaskAssigneesPage(
+			Long projectId, String search, String type)
+		throws Exception;
+
 	public Page<TaskAssignee> getTaskAssigneesPage(String search, String type)
 		throws Exception;
 
@@ -135,4 +139,4 @@ public interface TaskAssigneeResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1370897932
+// LIFERAY-REST-BUILDER-HASH:1996417228

@@ -188,6 +188,86 @@ public abstract class BaseTaskAssigneeResourceTestCase {
 	}
 
 	@Test
+	public void testGetProjectTaskAssigneesPage() throws Exception {
+		Long projectId = testGetProjectTaskAssigneesPage_getProjectId();
+		Long irrelevantProjectId =
+			testGetProjectTaskAssigneesPage_getIrrelevantProjectId();
+
+		Page<TaskAssignee> page =
+			taskAssigneeResource.getProjectTaskAssigneesPage(
+				projectId, null, RandomTestUtil.randomString());
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantProjectId != null) {
+			TaskAssignee irrelevantTaskAssignee =
+				testGetProjectTaskAssigneesPage_addTaskAssignee(
+					irrelevantProjectId, randomIrrelevantTaskAssignee());
+
+			page = taskAssigneeResource.getProjectTaskAssigneesPage(
+				irrelevantProjectId, null, null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantTaskAssignee, (List<TaskAssignee>)page.getItems());
+			assertValid(
+				page,
+				testGetProjectTaskAssigneesPage_getExpectedActions(
+					irrelevantProjectId));
+		}
+
+		TaskAssignee taskAssignee1 =
+			testGetProjectTaskAssigneesPage_addTaskAssignee(
+				projectId, randomTaskAssignee());
+
+		TaskAssignee taskAssignee2 =
+			testGetProjectTaskAssigneesPage_addTaskAssignee(
+				projectId, randomTaskAssignee());
+
+		page = taskAssigneeResource.getProjectTaskAssigneesPage(
+			projectId, null, null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(taskAssignee1, (List<TaskAssignee>)page.getItems());
+		assertContains(taskAssignee2, (List<TaskAssignee>)page.getItems());
+		assertValid(
+			page,
+			testGetProjectTaskAssigneesPage_getExpectedActions(projectId));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetProjectTaskAssigneesPage_getExpectedActions(Long projectId)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	protected TaskAssignee testGetProjectTaskAssigneesPage_addTaskAssignee(
+			Long projectId, TaskAssignee taskAssignee)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetProjectTaskAssigneesPage_getProjectId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetProjectTaskAssigneesPage_getIrrelevantProjectId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Test
 	public void testGetTaskAssigneesPage() throws Exception {
 		Page<TaskAssignee> page = taskAssigneeResource.getTaskAssigneesPage(
 			null, RandomTestUtil.randomString());
@@ -1088,4 +1168,4 @@ public abstract class BaseTaskAssigneeResourceTestCase {
 		_taskAssigneeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:675541071
+// LIFERAY-REST-BUILDER-HASH:1310414202

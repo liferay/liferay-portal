@@ -94,6 +94,11 @@ public class ServletDataImpl implements ServletData {
 							ContentCoverageResourceImpl.class,
 							"getProjectContentCoverage"));
 					put(
+						"query#projectTaskAssignees",
+						new ObjectValuePair<>(
+							TaskAssigneeResourceImpl.class,
+							"getProjectTaskAssigneesPage"));
+					put(
 						"query#taskAssignees",
 						new ObjectValuePair<>(
 							TaskAssigneeResourceImpl.class,
@@ -142,4 +147,4 @@ public class ServletDataImpl implements ServletData {
 		_userGroupResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-672860236
+// LIFERAY-REST-BUILDER-HASH:1003900074

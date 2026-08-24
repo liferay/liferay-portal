@@ -106,6 +106,26 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {projectTaskAssignees(projectId: ___, search: ___, type: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public TaskAssigneePage projectTaskAssignees(
+			@GraphQLName("projectId") Long projectId,
+			@GraphQLName("search") String search,
+			@GraphQLName("type") String type)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taskAssigneeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taskAssigneeResource -> new TaskAssigneePage(
+				taskAssigneeResource.getProjectTaskAssigneesPage(
+					projectId, search, type)));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taskAssignees(search: ___, type: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
@@ -500,4 +520,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1277312026
+// LIFERAY-REST-BUILDER-HASH:1490590637
