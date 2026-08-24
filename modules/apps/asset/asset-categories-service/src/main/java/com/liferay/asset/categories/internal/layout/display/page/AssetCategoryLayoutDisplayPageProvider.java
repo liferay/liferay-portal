@@ -9,7 +9,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
@@ -19,19 +19,14 @@ import com.liferay.layout.display.page.BaseLayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.petra.string.CharPool;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.LocaleThreadLocal;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -163,8 +158,28 @@ public class AssetCategoryLayoutDisplayPageProvider
 			_friendlyURLEntryLocalService, _portal);
 	}
 
-	private AssetCategory _fetchAssetCategory(
-		long groupId, Locale locale, String urlTitle) {
+	private AssetCategory _fetchAssetCategory(long groupId, String urlTitle) {
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		if ((group != null) && !Validator.isNumber(urlTitle)) {
+			return _fetchAssetCategoryByURLTitle(groupId, urlTitle);
+		}
+
+		AssetCategory assetCategory =
+			_assetCategoryLocalService.fetchAssetCategory(
+				GetterUtil.getLong(urlTitle));
+
+		if ((assetCategory == null) ||
+			(assetCategory.getGroupId() != groupId)) {
+
+			return null;
+		}
+
+		return assetCategory;
+	}
+
+	private AssetCategory _fetchAssetCategoryByURLTitle(
+		long groupId, String urlTitle) {
 
 		if (Validator.isNull(urlTitle)) {
 			return null;
@@ -183,48 +198,25 @@ public class AssetCategoryLayoutDisplayPageProvider
 			return null;
 		}
 
-		FriendlyURLEntryLocalization friendlyURLEntryLocalization = null;
-
+		long classPK = 0;
 		long parentClassPK = assetVocabulary.getVocabularyId();
 
 		for (int i = 1; i < parts.length; i++) {
-			friendlyURLEntryLocalization = _fetchFriendlyURLEntryLocalization(
-				groupId, parentClassPK, locale, parts[i]);
+			classPK = _getClassPK(groupId, parentClassPK, parts[i]);
 
-			if (friendlyURLEntryLocalization == null) {
-				break;
+			if (classPK == 0) {
+				return null;
 			}
 
-			parentClassPK = friendlyURLEntryLocalization.getClassPK();
+			parentClassPK = classPK;
 		}
 
-		if (friendlyURLEntryLocalization == null) {
+		if (classPK == 0) {
 			return null;
 		}
 
 		AssetCategory assetCategory =
-			_assetCategoryLocalService.fetchAssetCategory(
-				friendlyURLEntryLocalization.getClassPK());
-
-		if ((assetCategory == null) ||
-			(assetCategory.getGroupId() != groupId)) {
-
-			return null;
-		}
-
-		return assetCategory;
-	}
-
-	private AssetCategory _fetchAssetCategory(long groupId, String urlTitle) {
-		Group group = _groupLocalService.fetchGroup(groupId);
-
-		if ((group != null) && !Validator.isNumber(urlTitle)) {
-			return _fetchAssetCategory(groupId, _getLocale(), urlTitle);
-		}
-
-		AssetCategory assetCategory =
-			_assetCategoryLocalService.fetchAssetCategory(
-				GetterUtil.getLong(urlTitle));
+			_assetCategoryLocalService.fetchAssetCategory(classPK);
 
 		if ((assetCategory == null) ||
 			(assetCategory.getGroupId() != groupId)) {
@@ -253,37 +245,33 @@ public class AssetCategoryLayoutDisplayPageProvider
 			groupId, decodedName);
 	}
 
-	private FriendlyURLEntryLocalization _fetchFriendlyURLEntryLocalization(
-		long groupId, long parentClassPK, Locale locale, String urlTitle) {
+	private long _getClassPK(
+		long groupId, long parentClassPK, String urlTitle) {
 
-		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
-			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-				groupId, _portal.getClassNameId(AssetCategory.class),
-				parentClassPK, _language.getLanguageId(locale), urlTitle);
+		long classNameId = _portal.getClassNameId(AssetCategory.class);
 
-		if (friendlyURLEntryLocalization != null) {
-			return friendlyURLEntryLocalization;
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+				groupId, classNameId, parentClassPK, urlTitle);
+
+		if (friendlyURLEntry != null) {
+			return friendlyURLEntry.getClassPK();
 		}
 
 		String decodedURLTitle = HttpComponentsUtil.decodePath(urlTitle);
 
 		if (urlTitle.equals(decodedURLTitle)) {
-			return null;
+			return 0;
 		}
 
-		return _friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-			groupId, _portal.getClassNameId(AssetCategory.class), parentClassPK,
-			_language.getLanguageId(locale), decodedURLTitle);
-	}
+		friendlyURLEntry = _friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+			groupId, classNameId, parentClassPK, decodedURLTitle);
 
-	private Locale _getLocale() {
-		Locale themeDisplayLocale = LocaleThreadLocal.getThemeDisplayLocale();
-
-		if (themeDisplayLocale != null) {
-			return themeDisplayLocale;
+		if (friendlyURLEntry != null) {
+			return friendlyURLEntry.getClassPK();
 		}
 
-		return LocaleUtil.getSiteDefault();
+		return 0;
 	}
 
 	@Reference
@@ -297,9 +285,6 @@ public class AssetCategoryLayoutDisplayPageProvider
 
 	@Reference
 	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private Language _language;
 
 	@Reference
 	private Portal _portal;
