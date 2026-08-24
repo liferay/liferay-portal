@@ -211,8 +211,8 @@ public class JournalContentExportImportPortletPreferencesProcessor
 		if (Validator.isNull(articleExternalReferenceCode)) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"No article external reference code found in preferences " +
-						"of portlet " + portletId);
+					"No journal article external reference code found in " +
+						"preferences of portlet " + portletId);
 			}
 
 			return;
@@ -232,7 +232,7 @@ public class JournalContentExportImportPortletPreferencesProcessor
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
-					"Web content is not staged in the site " +
+					"Journal article is not staged in the site " +
 						articleGroup.getName());
 			}
 
