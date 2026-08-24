@@ -1,26 +1,25 @@
 <%--
 /**
- * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 --%>
 
-<%@ include file="/import/init.jsp" %>
-
-<liferay-portlet:renderURL var="backURL" />
+<%@ include file="/init.jsp" %>
 
 <%
 portletDisplay.setShowBackIcon(true);
-portletDisplay.setURLBack(backURL);
-portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
+portletDisplay.setURLBack(ParamUtil.getString(request, "backURL", String.valueOf(renderResponse.createRenderURL())));
 
 long backgroundTaskId = GetterUtil.getLong(request.getParameter("backgroundTaskId"));
 
-BackgroundTask backgroundTask = BackgroundTaskManagerUtil.fetchBackgroundTask(backgroundTaskId);
+BackgroundTaskDisplay backgroundTaskDisplay = BackgroundTaskDisplayFactoryUtil.getBackgroundTaskDisplay(backgroundTaskId);
 
-renderResponse.setTitle(backgroundTask.getName());
+if (backgroundTaskDisplay != null) {
+	renderResponse.setTitle(backgroundTaskDisplay.getDisplayName(request));
+}
 
-GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHelper(request);
+ImportReportEntriesDisplayContext importReportEntriesDisplayContext = new ImportReportEntriesDisplayContext(request, renderResponse);
 %>
 
 <clay:navigation-bar
@@ -40,9 +39,9 @@ GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHel
 
 <aui:form method="post" name="fm">
 	<frontend-data-set:headless-display
-		apiURL="<%= importReportEntriesDisplayContext.getImportProcessAPIURL(String.valueOf(backgroundTaskId)) %>"
+		apiURL="<%= importReportEntriesDisplayContext.getPublishProcessAPIURL(String.valueOf(backgroundTaskId)) %>"
 		fdsActionDropdownItems="<%= importReportEntriesDisplayContext.getFDSActionDropdownItems() %>"
-		id="<%= stagingGroupHelper.isCompanyGroup(groupDisplayContextHelper.getGroup()) ? ExportImportFDSNames.COMPANY_IMPORT_REPORT_ENTRIES : ExportImportFDSNames.IMPORT_REPORT_ENTRIES %>"
+		id="<%= ExportImportFDSNames.PUBLISH_REPORT_ENTRIES %>"
 		propsTransformer="{ImportReportFDSPropsTransformer} from exportimport-web"
 		style="fluid"
 	/>

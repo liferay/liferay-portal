@@ -5,6 +5,7 @@
 
 package com.liferay.exportimport.web.internal.display.context;
 
+import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -30,10 +31,10 @@ public class ImportReportEntriesDisplayContext {
 		_renderResponse = renderResponse;
 	}
 
-	public String getAPIURL(String importProcessId) {
-		return StringBundler.concat(
-			"/o/export-import/v1.0/import-processes/", importProcessId,
-			"/report-entries");
+	public String getImportProcessAPIURL(String importProcessId) {
+		return ScopeUtil.getAPIURL(
+			StringBundler.concat(
+				"/import-processes/", importProcessId, "/report-entries"));
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
@@ -56,10 +57,17 @@ public class ImportReportEntriesDisplayContext {
 		).buildString();
 	}
 
+	public String getPublishProcessAPIURL(String publishProcessId) {
+		return ScopeUtil.getAPIURL(
+			StringBundler.concat(
+				"/publish-processes/", publishProcessId, "/report-entries"));
+	}
+
 	public String getReportEntryAPIURL(String reportEntryId) {
-		return StringBundler.concat(
-			"/o/export-import/v1.0/report-entry/", reportEntryId,
-			"?nestedFields=errorStacktrace,scope.label");
+		return ScopeUtil.getAPIURL(
+			StringBundler.concat(
+				"/report-entry/", reportEntryId,
+				"?nestedFields=errorStacktrace,scope.label"));
 	}
 
 	private final HttpServletRequest _httpServletRequest;

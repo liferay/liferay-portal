@@ -5,6 +5,7 @@
 
 package com.liferay.staging.processes.web.internal.display.context;
 
+import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
@@ -15,6 +16,8 @@ import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstant
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -22,6 +25,8 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.staging.constants.StagingProcessesFDSNames;
+
+import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -131,6 +136,32 @@ public class PublishProcessesDisplayContext {
 				"reload", "relaunch",
 				LanguageUtil.get(_httpServletRequest, "relaunch"), "post", null,
 				"async"),
+			new FDSActionDropdownItem(
+				PortletURLBuilder.create(
+					PortletURLFactoryUtil.create(
+						_httpServletRequest,
+						ExportImportPortletKeys.EXPORT_IMPORT,
+						PortletRequest.RENDER_PHASE)
+				).setMVCRenderCommandName(
+					"/export_import/view_publish_report_entries"
+				).setBackURL(
+					_themeDisplay.getURLCurrent()
+				).setParameter(
+					"backgroundTaskId", "{id}"
+				).setParameter(
+					"groupId", _liveGroup.getGroupId()
+				).setWindowState(
+					LiferayWindowState.MAXIMIZED
+				).buildString(),
+				"list-ul", "view-report-entries",
+				LanguageUtil.get(_httpServletRequest, "view-report-entries"),
+				"get", null, "link",
+				HashMapBuilder.<String, Object>put(
+					"status.code",
+					Arrays.asList(
+						BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
+						BackgroundTaskConstants.STATUS_FAILED)
+				).build()),
 			deleteFDSActionDropdownItem, clearFDSActionDropdownItem);
 	}
 

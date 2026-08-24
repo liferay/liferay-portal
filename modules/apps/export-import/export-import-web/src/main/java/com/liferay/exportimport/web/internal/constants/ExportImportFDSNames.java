@@ -31,4 +31,7 @@ public class ExportImportFDSNames {
 	public static final String IMPORT_REPORT_ENTRIES =
 		ExportImportPortletKeys.IMPORT + "-importReportEntries";
 
+	public static final String PUBLISH_REPORT_ENTRIES =
+		ExportImportPortletKeys.EXPORT_IMPORT + "-publishReportEntries";
+
 }
