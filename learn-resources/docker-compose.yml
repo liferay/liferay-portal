@@ -1,8 +1,0 @@
-services:
-    web-server:
-        image: lipanski/docker-static-website:latest
-        ports:
-            -   "3062:3000"
-        volumes:
-            -   ./httpd.conf:/home/static/httpd.conf:ro
-            -   ./data:/home/static

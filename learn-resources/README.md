@@ -72,25 +72,15 @@ That's how you link to Liferay Learn resources!
 
 ## Previewing Liferay Learn Resource Links
 
-If you want to test your link, you don't have to recompile your module. From this folder (`learn-resources`), you can run a quick dev server that's configured with only one portal property/environment variable:
+If you want to test your link, you don't have to recompile your module. Point the `learn.resources.dir` portal property (or the `LIFERAY_LEARN_PERIOD_RESOURCES_PERIOD_DIR` environment variable with Docker) at this folder's `data` directory:
 
 ```properties
-learn.resources.mode=dev|off|on
+learn.resources.dir=/path/to/liferay-portal/learn-resources/data
 ```
 
-or
+Resources are then read from that directory on every request, so your edits show up immediately. Without the property, resources are read from <https://s3.amazonaws.com/learn-resources.liferay.com> with a four hour cache.
 
-```bash
-LIFERAY_LEARN_PERIOD_RESOURCES_PERIOD_MODE=dev|off|on
-```
-
-Use the property with a local bundle and the environment variable with Docker.
-
-`dev`: Set this value and then run `docker compose up` from the `learn-resources` folder to start a small dev server. You can then access <http://localhost:3062/[json file name]> to access your resources. For example, if you're modifying `server-admin-web.json`, access <http://localhost:3062/server-admin-web.json>.
-
-`on`: Set this value to read Learn resources from <https://s3.amazonaws.com/learn-resources.liferay.com>.
-
-`off`: Set this value to disable the Learn tag library.
+Set `learn.resources.mode=off` (or `LIFERAY_LEARN_PERIOD_RESOURCES_PERIOD_MODE=off`) to disable the Learn tag library.
 
 ## Adding a Resource Link to a React Component
 
