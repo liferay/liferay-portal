@@ -189,7 +189,7 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 				Client: newFakeClient(t, objects...),
 			}
 
-			if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+			if _, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 				context.Background(), liferayEnvironment, testCase.maxClusterNodes,
 			); error != nil {
 				t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
@@ -305,7 +305,7 @@ func TestEnforceReplicaCeilingPersistsCeilingBeforeWritingWorkload(t *testing.T)
 
 	liferayEnvironment.Status.License.MaxClusterNodes = pointerInt32(3)
 
-	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+	if _, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context.Background(), liferayEnvironment, 3,
 	); error != nil {
 		t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
@@ -321,6 +321,106 @@ func TestEnforceReplicaCeilingPersistsCeilingBeforeWritingWorkload(t *testing.T)
 
 	if *observedCeiling != 3 {
 		t.Errorf("Persisted ceiling = %d, want 3", *observedCeiling)
+	}
+}
+
+func TestEnforceReplicaCeilingPersistsRefusalWhenWorkloadUpdateRejected(t *testing.T) {
+	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev",
+			Namespace: "liferay-dev",
+		},
+		Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+			DesiredReplicas: pointerInt32(3),
+			WorkloadRef: licensingv1alpha1.WorkloadRef{
+				Name: "dev-liferay",
+			},
+		},
+	}
+
+	statefulSet := &appsv1.StatefulSet{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev-liferay",
+			Namespace: "liferay-dev",
+		},
+		Spec: appsv1.StatefulSetSpec{
+			Replicas: pointerInt32(1),
+		},
+	}
+
+	fakeClient := fake.NewClientBuilder().WithInterceptorFuncs(
+		interceptor.Funcs{
+			Update: func(
+				context context.Context,
+				writer client.WithWatch,
+				object client.Object,
+				options ...client.UpdateOption,
+			) error {
+				if _, ok := object.(*appsv1.StatefulSet); ok {
+					return errors.NewForbidden(
+						schema.GroupResource{Group: "apps", Resource: "statefulsets"},
+						"dev-liferay",
+						fmt.Errorf("denied by the admission policy"),
+					)
+				}
+
+				return writer.Update(context, object, options...)
+			},
+		},
+	).WithObjects(
+		liferayEnvironment, statefulSet,
+	).WithScheme(
+		newScheme(t),
+	).WithStatusSubresource(
+		&licensingv1alpha1.LiferayEnvironment{},
+	).Build()
+
+	liferayEnvironmentReconciler := &LiferayEnvironmentReconciler{
+		Client:            fakeClient,
+		RetryInitialDelay: 30 * time.Second,
+	}
+
+	requeueAfter, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+		context.Background(), liferayEnvironment, 3,
+	)
+
+	if error != nil {
+		t.Fatalf("Unexpected error from enforceReplicaCeiling: %v", error)
+	}
+
+	// A refusal must not leave the workload mis-sized until the next heartbeat.
+
+	if requeueAfter != 30*time.Second {
+		t.Errorf("requeueAfter = %v, want %v", requeueAfter, 30*time.Second)
+	}
+
+	// The refusal has to reach the API, not just the caller's copy, since a
+	// caller may return before it persists anything of its own.
+
+	stored := &licensingv1alpha1.LiferayEnvironment{}
+
+	if error := fakeClient.Get(
+		context.Background(), types.NamespacedName{
+			Name:      "dev",
+			Namespace: "liferay-dev",
+		}, stored,
+	); error != nil {
+		t.Fatalf("Unable to read back the environment: %v", error)
+	}
+
+	condition := meta.FindStatusCondition(
+		stored.Status.Conditions, conditionReplicasCountValid,
+	)
+
+	if condition == nil {
+		t.Fatal("Expected a persisted ReplicasCountValid condition, got none")
+	}
+
+	if condition.Reason != "WorkloadUpdateRejected" {
+		t.Errorf(
+			"Persisted reason = %q, want %q",
+			condition.Reason, "WorkloadUpdateRejected",
+		)
 	}
 }
 

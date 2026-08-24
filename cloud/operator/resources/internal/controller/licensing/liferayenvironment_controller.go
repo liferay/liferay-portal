@@ -278,7 +278,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceGracePe
 		return nil
 	}
 
-	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+	if _, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context, liferayEnvironment, gracePeriodReplicaCeiling,
 	); error != nil {
 		return error
@@ -383,14 +383,20 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 
 		liferayEnvironment.Status.Phase = "Degraded"
 
-		if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+		requeueAfter, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 			context, liferayEnvironment, 0,
-		); error != nil {
+		)
+
+		if error != nil {
 			return controllerruntime.Result{}, error
 		}
 
+		if requeueAfter == 0 {
+			requeueAfter = liferayEnvironmentReconciler.HeartbeatInterval
+		}
+
 		return liferayEnvironmentReconciler.finishAfter(
-			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+			context, liferayEnvironment, requeueAfter,
 		)
 	}
 
@@ -461,20 +467,22 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceLicense
 		},
 	)
 
-	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+	requeueAfter, error := liferayEnvironmentReconciler.enforceReplicaCeiling(
 		context, liferayEnvironment, entitlements.MaxClusterNodes,
-	); error != nil {
+	)
+
+	if error != nil {
 		return controllerruntime.Result{}, error
 	}
 
-	return controllerruntime.Result{}, nil
+	return controllerruntime.Result{RequeueAfter: requeueAfter}, nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplicaCeiling(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	maxClusterNodes int32,
-) error {
+) (time.Duration, error) {
 	logger := logf.FromContext(context)
 
 	statefulSet := &appsv1.StatefulSet{}
@@ -506,11 +514,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 			},
 		)
 
-		return nil
+		return 0, nil
 	}
 
 	if getError != nil {
-		return getError
+		return 0, getError
 	}
 
 	desiredReplicas := resolveDesiredReplicas(liferayEnvironment, statefulSet)
@@ -521,8 +529,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 		liveReplicas := statefulSet.Spec.Replicas
 
 		if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
-                return error
-        }
+			return 0, error
+		}
 
 		statefulSet.Spec.Replicas = &effectiveReplicas
 
@@ -550,7 +558,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 				},
 			)
 
-			return nil
+			if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
+				return 0, error
+			}
+
+			return liferayEnvironmentReconciler.RetryInitialDelay, nil
 		}
 
 		logger.Info(
@@ -578,7 +590,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 			},
 		)
 
-		return nil
+		return 0, nil
 	}
 
 	meta.SetStatusCondition(
@@ -590,7 +602,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 		},
 	)
 
-	return nil
+	return 0, nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity(
