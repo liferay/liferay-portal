@@ -998,7 +998,9 @@ public class MirrorsGetTask extends Task {
 		if (_tryLocalNetwork) {
 			localNetworkURL = _getNexusTomcatURL();
 
-			if ((localNetworkURL == null) && !_getMirrorsHostname().isEmpty()) {
+			String mirrorsHostname = _getMirrorsHostname();
+
+			if ((localNetworkURL == null) && !mirrorsHostname.isEmpty()) {
 				localNetworkURL = _getMirrorsURL();
 			}
 		}
