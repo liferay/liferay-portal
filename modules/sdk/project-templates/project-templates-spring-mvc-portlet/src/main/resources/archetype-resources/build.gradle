@@ -1,6 +1,6 @@
 #if (${jakartaCompatible.equals("true")})
-String springVersion = "6.2.17"
-String springSecurityVersion = "6.5.9"
+String springVersion = "6.2.19"
+String springSecurityVersion = "6.5.11"
 #elseif (${framework.equals("portletmvc4spring")})
 String springVersion = "5.3.27"
 String springSecurityVersion = "5.5.1"
