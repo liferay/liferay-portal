@@ -11,7 +11,7 @@ const labelDisplayStyles = {
 	2: 'danger',
 };
 
-export default function ImportReportStatusRenderer({
+export default function ReportEntryStatusRenderer({
 	value,
 }: {
 	value?: {

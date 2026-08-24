@@ -22,42 +22,32 @@ import java.util.List;
 /**
  * @author Jorge González
  */
-public class ImportReportEntriesDisplayContext {
+public class ReportEntriesDisplayContext {
 
-	public ImportReportEntriesDisplayContext(
+	public ReportEntriesDisplayContext(
 		HttpServletRequest httpServletRequest, RenderResponse renderResponse) {
 
 		_httpServletRequest = httpServletRequest;
 		_renderResponse = renderResponse;
 	}
 
-	public String getImportProcessAPIURL(String importProcessId) {
+	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
+		return ListUtil.fromArray(
+			new FDSActionDropdownItem(
+				_getReportEntryDetailsURL(), "view", "view",
+				LanguageUtil.get(_httpServletRequest, "view"), "get", null,
+				"link"));
+	}
+
+	public String getImportProcessReportEntriesAPIURL(String importProcessId) {
 		return ScopeUtil.getAPIURL(
 			StringBundler.concat(
 				"/import-processes/", importProcessId, "/report-entries"));
 	}
 
-	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
-		return ListUtil.fromArray(
-			new FDSActionDropdownItem(
-				getImportReportEntryDetailsURL(), "view", "view",
-				LanguageUtil.get(_httpServletRequest, "view"), "get", null,
-				"link"));
-	}
+	public String getPublishProcessReportEntriesAPIURL(
+		String publishProcessId) {
 
-	public String getImportReportEntryDetailsURL() {
-		return PortletURLBuilder.createRenderURL(
-			_renderResponse
-		).setMVCRenderCommandName(
-			"/export_import/view_import_report_entry_detail"
-		).setBackURL(
-			ParamUtil.getString(_httpServletRequest, "backURL")
-		).setParameter(
-			"reportEntryId", "{id}"
-		).buildString();
-	}
-
-	public String getPublishProcessAPIURL(String publishProcessId) {
 		return ScopeUtil.getAPIURL(
 			StringBundler.concat(
 				"/publish-processes/", publishProcessId, "/report-entries"));
@@ -68,6 +58,18 @@ public class ImportReportEntriesDisplayContext {
 			StringBundler.concat(
 				"/report-entry/", reportEntryId,
 				"?nestedFields=errorStacktrace,scope.label"));
+	}
+
+	private String _getReportEntryDetailsURL() {
+		return PortletURLBuilder.createRenderURL(
+			_renderResponse
+		).setMVCRenderCommandName(
+			"/export_import/view_import_report_entry_detail"
+		).setBackURL(
+			ParamUtil.getString(_httpServletRequest, "backURL")
+		).setParameter(
+			"reportEntryId", "{id}"
+		).buildString();
 	}
 
 	private final HttpServletRequest _httpServletRequest;

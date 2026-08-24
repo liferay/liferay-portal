@@ -5,8 +5,8 @@
 
 export {default as ExportProcessesFDSPropsTransformer} from '../revamp/js/fds/ExportProcessesFDSPropsTransformer';
 export {default as ImportProcessesFDSPropsTransformer} from '../revamp/js/fds/ImportProcessesFDSPropsTransformer';
-export {default as ImportReportFDSPropsTransformer} from '../revamp/js/fds/ImportReportFDSPropsTransformer';
 export {default as PublishProcessesFDSPropsTransformer} from '../revamp/js/fds/PublishProcessesFDSPropsTransformer';
+export {default as ReportEntriesFDSPropsTransformer} from '../revamp/js/fds/ReportEntriesFDSPropsTransformer';
 export {default as ScheduledPublishProcessesFDSPropsTransformer} from '../revamp/js/fds/ScheduledPublishProcessesFDSPropsTransformer';
 export {NewExport} from '../revamp/js/pages/export/NewExport';
 export {NewImport} from '../revamp/js/pages/import/NewImport';

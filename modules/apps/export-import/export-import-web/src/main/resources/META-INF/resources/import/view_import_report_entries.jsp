@@ -40,10 +40,10 @@ GroupDisplayContextHelper groupDisplayContextHelper = new GroupDisplayContextHel
 
 <aui:form method="post" name="fm">
 	<frontend-data-set:headless-display
-		apiURL="<%= importReportEntriesDisplayContext.getImportProcessAPIURL(String.valueOf(backgroundTaskId)) %>"
-		fdsActionDropdownItems="<%= importReportEntriesDisplayContext.getFDSActionDropdownItems() %>"
+		apiURL="<%= reportEntriesDisplayContext.getImportProcessReportEntriesAPIURL(String.valueOf(backgroundTaskId)) %>"
+		fdsActionDropdownItems="<%= reportEntriesDisplayContext.getFDSActionDropdownItems() %>"
 		id="<%= stagingGroupHelper.isCompanyGroup(groupDisplayContextHelper.getGroup()) ? ExportImportFDSNames.COMPANY_IMPORT_REPORT_ENTRIES : ExportImportFDSNames.IMPORT_REPORT_ENTRIES %>"
-		propsTransformer="{ImportReportFDSPropsTransformer} from exportimport-web"
+		propsTransformer="{ReportEntriesFDSPropsTransformer} from exportimport-web"
 		style="fluid"
 	/>
 </aui:form>

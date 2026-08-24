@@ -19,7 +19,7 @@ if (backgroundTaskDisplay != null) {
 	renderResponse.setTitle(backgroundTaskDisplay.getDisplayName(request));
 }
 
-ImportReportEntriesDisplayContext importReportEntriesDisplayContext = new ImportReportEntriesDisplayContext(request, renderResponse);
+ReportEntriesDisplayContext reportEntriesDisplayContext = new ReportEntriesDisplayContext(request, renderResponse);
 %>
 
 <clay:navigation-bar
@@ -39,10 +39,10 @@ ImportReportEntriesDisplayContext importReportEntriesDisplayContext = new Import
 
 <aui:form method="post" name="fm">
 	<frontend-data-set:headless-display
-		apiURL="<%= importReportEntriesDisplayContext.getPublishProcessAPIURL(String.valueOf(backgroundTaskId)) %>"
-		fdsActionDropdownItems="<%= importReportEntriesDisplayContext.getFDSActionDropdownItems() %>"
+		apiURL="<%= reportEntriesDisplayContext.getPublishProcessReportEntriesAPIURL(String.valueOf(backgroundTaskId)) %>"
+		fdsActionDropdownItems="<%= reportEntriesDisplayContext.getFDSActionDropdownItems() %>"
 		id="<%= ExportImportFDSNames.PUBLISH_REPORT_ENTRIES %>"
-		propsTransformer="{ImportReportFDSPropsTransformer} from exportimport-web"
+		propsTransformer="{ReportEntriesFDSPropsTransformer} from exportimport-web"
 		style="fluid"
 	/>
 </aui:form>

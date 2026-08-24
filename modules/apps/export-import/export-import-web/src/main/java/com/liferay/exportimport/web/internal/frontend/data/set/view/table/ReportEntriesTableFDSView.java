@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = FDSView.class
 )
-public class ImportErrorsTableFDSView extends BaseTableFDSView {
+public class ReportEntriesTableFDSView extends BaseTableFDSView {
 
 	@Override
 	public FDSTableSchema getFDSTableSchema(Locale locale) {
@@ -48,7 +48,7 @@ public class ImportErrorsTableFDSView extends BaseTableFDSView {
 		).add(
 			"status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"importReportStatusRenderer")
+				"reportEntryStatusRenderer")
 		).build();
 	}
 

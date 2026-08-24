@@ -23,7 +23,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "report-entry-details"));
 		module="{ViewImportReportEntryDetail} from exportimport-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"apiURL", importReportEntriesDisplayContext.getReportEntryAPIURL(ParamUtil.getString(request, "reportEntryId"))
+				"apiURL", reportEntriesDisplayContext.getReportEntryAPIURL(ParamUtil.getString(request, "reportEntryId"))
 			).put(
 				"backURL", portletDisplay.getURLBack()
 			).build()

@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
 	},
 	service = GroupedFDSFilters.class
 )
-public class ImportErrorsGroupedFDSFilters implements GroupedFDSFilters {
+public class ReportEntriesGroupedFDSFilters implements GroupedFDSFilters {
 
 	@Override
 	public JSONArray getGroupedFDSFiltersJSONArray(

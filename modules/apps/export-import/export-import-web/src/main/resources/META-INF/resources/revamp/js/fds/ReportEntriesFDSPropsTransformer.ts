@@ -8,17 +8,17 @@ import {
 	IInternalRenderer,
 } from '@liferay/frontend-data-set-web';
 
-import ImportReportStatusRenderer from './cell_renderers/ImportReportStatusRenderer';
+import ReportEntryStatusRenderer from './cell_renderers/ReportEntryStatusRenderer';
 
-export default function ImportReportFDSPropsTransformer({...otherProps}) {
+export default function ReportEntriesFDSPropsTransformer({...otherProps}) {
 	return {
 		...otherProps,
 		configInURLBehavior: EConfigInURLBehavior.OFF,
 		customRenderers: {
 			tableCell: [
 				{
-					component: ImportReportStatusRenderer,
-					name: 'importReportStatusRenderer',
+					component: ReportEntryStatusRenderer,
+					name: 'reportEntryStatusRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
 			],
