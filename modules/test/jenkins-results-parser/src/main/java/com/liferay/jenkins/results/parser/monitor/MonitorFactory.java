@@ -23,6 +23,10 @@ public class MonitorFactory {
 			if (type.equals("job-health")) {
 				return new JobHealthMonitor(monitorConfig);
 			}
+
+			if (type.equals("resource-threshold")) {
+				return new ResourceThresholdMonitor(monitorConfig);
+			}
 		}
 
 		throw new IllegalArgumentException("Unknown monitor type: " + type);
