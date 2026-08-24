@@ -1,3 +1,5 @@
+@import 'atlas-custom-properties/_variables';
+
 .lfr-workflow__version-row {
 	&-container {
 		align-items: center;
@@ -11,25 +13,25 @@
 	}
 
 	&-info-date-user {
-		color: #6b6c7e;
+		color: $secondary;
 		font-size: 13px;
 		line-height: 18px;
 		word-wrap: break-word;
 	}
 
 	&-info-number {
-		color: #272833;
+		color: $dark;
 		font-size: 14px;
 		font-weight: 600;
 		line-height: 21px;
 	}
 
 	&-restore-button {
-		color: #6b6c7e;
+		color: $secondary;
 		transition: 0.3s ease;
 
 		&:hover {
-			color: #272833;
+			color: $dark;
 			transition: 0.3s ease;
 		}
 	}
