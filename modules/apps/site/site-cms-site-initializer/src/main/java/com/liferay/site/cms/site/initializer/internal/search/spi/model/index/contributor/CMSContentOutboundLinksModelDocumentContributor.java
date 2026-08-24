@@ -94,7 +94,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 							ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
 
 					for (String content :
-							_getContents(indexedValues, objectField)) {
+							_getValues(indexedValues, objectField)) {
 
 						for (String externalReferenceCode :
 								OutboundLinksUtil.
@@ -125,7 +125,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 		}
 	}
 
-	private List<String> _getContents(
+	private List<String> _getValues(
 		Map<String, Serializable> indexedValues, ObjectField objectField) {
 
 		if (objectField.isLocalized()) {
@@ -147,13 +147,13 @@ public class CMSContentOutboundLinksModelDocumentContributor
 			}
 		}
 
-		Object content = indexedValues.get(objectField.getName());
+		Object indexedValue = indexedValues.get(objectField.getName());
 
-		if (content == null) {
+		if (indexedValue == null) {
 			return Collections.emptyList();
 		}
 
-		return Collections.singletonList(String.valueOf(content));
+		return Collections.singletonList(String.valueOf(indexedValue));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
