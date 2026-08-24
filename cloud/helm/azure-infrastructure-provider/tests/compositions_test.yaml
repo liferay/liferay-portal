@@ -133,6 +133,44 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "sharedAccessKeyEnabled: true"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'name: liferay-storage-\{\{ \$dataPlane \}\}-credentials'
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: attribute.primary_connection_string
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: LIFERAY_DOCLIB_CONNECTION_STRING
+        it: Publishes the storage account connection string for the document library store
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \{\{- if \$isDoclibReady \}\}
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: '\$isDoclibReady := and \(ne \$doclibConnectionString ""\) \$isDoclibContainerReady'
+        it: Withholds the document library details until the container and its credential exist
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: '\$isDatabaseReady := and \(ne \$activeDatabaseFqdn ""\) \$isDatabaseBootstrapped'
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'managedServiceDetailsReady: \{\{ and \$isDatabaseReady \$isDoclibReady \}\}'
+        it: Reports the managed service details ready only once every service is ready
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "activeDirectoryAuthEnabled: true"
             -   documentIndex: 0
                 matchRegex:

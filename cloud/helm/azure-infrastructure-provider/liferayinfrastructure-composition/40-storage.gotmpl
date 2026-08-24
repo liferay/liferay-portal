@@ -36,10 +36,13 @@ spec:
         {{- end }}
         location: {{ $region }}
         resourceGroupName: {{ $env.resourceGroupName }}
+        sharedAccessKeyEnabled: true
         tags:
             {{- merge (dict) $backupTargetTags ($storage.tags | default dict) | toYaml | nindent 12 }}
             active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
     managementPolicies: {{ $managementPolicies }}
+    writeConnectionSecretToRef:
+        name: liferay-storage-{{ $dataPlane }}-credentials
 ---
 apiVersion: storage.azure.m.upbound.io/v1beta1
 kind: Container
