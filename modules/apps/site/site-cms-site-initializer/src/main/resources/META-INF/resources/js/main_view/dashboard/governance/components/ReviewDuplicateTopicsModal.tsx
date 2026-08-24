@@ -41,14 +41,16 @@ const SORTS: TSort[] = [
 const DUPLICATE_TOPICS_NESTED_FIELDS =
 	'embedded,file.metadata,systemProperties.objectDefinitionBrief';
 
-const DATE_PATTERN = {
-	day: 'numeric',
-	hour: 'numeric',
-	minute: 'numeric',
-	month: 'numeric',
-	timeZone: Liferay.ThemeDisplay.getTimeZone(),
-	year: 'numeric',
-} as const;
+function getDatePattern() {
+	return {
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		month: 'numeric',
+		timeZone: Liferay.ThemeDisplay.getTimeZone(),
+		year: 'numeric',
+	} as const;
+}
 
 function AssetItem({
 	additionalProps,
@@ -84,7 +86,7 @@ function AssetItem({
 
 				<ClayList.ItemText>
 					{`${Liferay.Language.get('last-modified')} ${dateFormat(
-						DATE_PATTERN,
+						getDatePattern(),
 						asset.dateModified
 					)}`}
 				</ClayList.ItemText>
