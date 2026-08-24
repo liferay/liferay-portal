@@ -867,9 +867,9 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public int getStartedBuildsCountAfter(Date date, boolean topLevelBuilds) {
-		if (_buildCountJSONObject == null) {
+		if (_buildsCountJSONObject == null) {
 			try {
-				_buildCountJSONObject = JenkinsResultsParserUtil.toJSONObject(
+				_buildsCountJSONObject = JenkinsResultsParserUtil.toJSONObject(
 					getURL() + "api/json?tree=jobs[name,allBuilds[timestamp]]");
 			}
 			catch (IOException ioException) {
@@ -877,7 +877,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			}
 		}
 
-		JSONArray jobsJSONArray = _buildCountJSONObject.optJSONArray("jobs");
+		JSONArray jobsJSONArray = _buildsCountJSONObject.optJSONArray("jobs");
 
 		if (jobsJSONArray == null) {
 			return 0;
@@ -2066,9 +2066,9 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	private long _awsFleetCloudLastUpdateTimestamp;
 	private List<AWSFleetCloud> _awsFleetClouds;
 	private boolean _blacklisted;
-	private JSONObject _buildCountJSONObject;
 	private final Map<String, List<JSONObject>> _buildJSONObjectsMap =
 		new HashMap<>();
+	private JSONObject _buildsCountJSONObject;
 	private final Map<String, Long> _buildsUpdateTimes = new HashMap<>();
 	private final List<String> _buildURLs = new CopyOnWriteArrayList<>();
 	private int _busyExecutorsCount;
