@@ -270,10 +270,10 @@ public class AssetListAssetEntryProviderImpl
 						"orderByColumn1", "priority"))));
 		assetEntryQuery.setOrderByCol2(
 			_getOrderByColumn(
-				assetListEntry.getCompanyId(), "modifiedDate",
+				assetListEntry.getCompanyId(), Field.MODIFIED_DATE,
 				GetterUtil.getString(
 					unicodeProperties.getProperty(
-						"orderByColumn2", "modifiedDate"))));
+						"orderByColumn2", Field.MODIFIED_DATE))));
 
 		assetEntryQuery.setOrderByType1(
 			GetterUtil.getString(
@@ -980,7 +980,7 @@ public class AssetListAssetEntryProviderImpl
 		long companyId, String defaultOrderByColumn, String orderByColumn) {
 
 		if (!orderByColumn.startsWith(StringPool.OPEN_CURLY_BRACE)) {
-			return orderByColumn;
+			return _toAssetEntryQueryOrderByColumn(orderByColumn);
 		}
 
 		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-74731")) {
@@ -989,7 +989,7 @@ public class AssetListAssetEntryProviderImpl
 		}
 
 		if (orderByColumn.startsWith(StringPool.OPEN_CURLY_BRACE)) {
-			return defaultOrderByColumn;
+			return _toAssetEntryQueryOrderByColumn(defaultOrderByColumn);
 		}
 
 		return orderByColumn;
@@ -1181,6 +1181,14 @@ public class AssetListAssetEntryProviderImpl
 				Comparator.comparing(
 					AssetListEntrySegmentsEntryRel::getPriority)),
 			AssetListEntrySegmentsEntryRel::getSegmentsEntryId);
+	}
+
+	private String _toAssetEntryQueryOrderByColumn(String orderByColumn) {
+		if (orderByColumn.equals(Field.MODIFIED_DATE)) {
+			return "modifiedDate";
+		}
+
+		return orderByColumn;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
