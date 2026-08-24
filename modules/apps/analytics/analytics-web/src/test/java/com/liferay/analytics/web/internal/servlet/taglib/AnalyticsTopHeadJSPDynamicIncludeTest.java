@@ -34,8 +34,6 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 
 	@Before
 	public void setUp() {
-		_analyticsConfiguration = Mockito.mock(AnalyticsConfiguration.class);
-
 		Mockito.when(
 			_analyticsConfiguration.liferayAnalyticsDataSourceId()
 		).thenReturn(
@@ -84,10 +82,10 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 		Map<String, String> analyticsCloudClientConfig =
 			_getAnalyticsCloudClientConfig("");
 
-		Assert.assertEquals(
-			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
 		Assert.assertFalse(
 			analyticsCloudClientConfig.containsKey("cookieDomain"));
+		Assert.assertEquals(
+			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
 	}
 
 	@Test
@@ -104,10 +102,10 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 			_getAnalyticsCloudClientConfig(
 				cookiesManager, _createThemeDisplay());
 
-		Assert.assertEquals(
-			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
 		Assert.assertFalse(
 			analyticsCloudClientConfig.containsKey("cookieDomain"));
+		Assert.assertEquals(
+			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
 	}
 
 	@Test
@@ -115,10 +113,10 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 		Map<String, String> analyticsCloudClientConfig =
 			_getAnalyticsCloudClientConfig("10.0.0.5");
 
-		Assert.assertEquals(
-			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
 		Assert.assertFalse(
 			analyticsCloudClientConfig.containsKey("cookieDomain"));
+		Assert.assertEquals(
+			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
 	}
 
 	@Test
@@ -126,10 +124,10 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 		Map<String, String> analyticsCloudClientConfig =
 			_getAnalyticsCloudClientConfig(null);
 
-		Assert.assertEquals(
-			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
 		Assert.assertFalse(
 			analyticsCloudClientConfig.containsKey("cookieDomain"));
+		Assert.assertEquals(
+			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
 	}
 
 	private ThemeDisplay _createThemeDisplay() {
@@ -188,6 +186,7 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 
 	private static final String _SERVER_NAME = RandomTestUtil.randomString();
 
-	private AnalyticsConfiguration _analyticsConfiguration;
+	private AnalyticsConfiguration _analyticsConfiguration = Mockito.mock(
+		AnalyticsConfiguration.class);
 
 }
