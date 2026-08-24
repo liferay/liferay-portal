@@ -226,20 +226,20 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 		ExpiredAssetResource expiredAssetResource =
 			ReflectionTestUtil.getFieldValue(this, "_expiredAssetResource");
 
-		Long totalCount = expiredAssetResource.getExpiredAssetsPage(
-			_depotEntry.getDepotEntryId(), "en_US",
-			com.liferay.portal.vulcan.pagination.Pagination.of(1, 10)
-		).getTotalCount();
-
-		Assert.assertTrue(totalCount > 0);
 		Assert.assertEquals(
-			totalCount,
-			DepotEntryTestUtil.withDepotEntryMemberUser(
+			2L,
+			(long)DepotEntryTestUtil.withDepotEntryMemberUser(
 				_depotEntry,
-				() -> expiredAssetResource.getExpiredAssetsPage(
-					_depotEntry.getDepotEntryId(), "en_US",
-					com.liferay.portal.vulcan.pagination.Pagination.of(1, 10)
-				).getTotalCount()));
+				() -> {
+					com.liferay.portal.vulcan.pagination.Page
+						<com.liferay.analytics.cms.rest.dto.v1_0.ExpiredAsset>
+							page = expiredAssetResource.getExpiredAssetsPage(
+								_depotEntry.getDepotEntryId(), "en_US",
+								com.liferay.portal.vulcan.pagination.Pagination.
+									of(1, 10));
+
+					return page.getTotalCount();
+				}));
 	}
 
 	private void _testGetExpiredAssetsPageWithDepotEntryNonmemberUser()

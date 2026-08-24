@@ -358,18 +358,17 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 		OverviewResource overviewResource = ReflectionTestUtil.getFieldValue(
 			this, "_overviewResource");
 
-		Long totalCount = overviewResource.getContentOverview(
-			_depotEntry.getDepotEntryId(), null, null, 7, null
-		).getTotalCount();
-
-		Assert.assertTrue(totalCount > 0);
 		Assert.assertEquals(
-			totalCount,
-			DepotEntryTestUtil.withDepotEntryMemberUser(
+			3L,
+			(long)DepotEntryTestUtil.withDepotEntryMemberUser(
 				_depotEntry,
-				() -> overviewResource.getContentOverview(
-					_depotEntry.getDepotEntryId(), null, null, 7, null
-				).getTotalCount()));
+				() -> {
+					com.liferay.analytics.cms.rest.dto.v1_0.Overview overview =
+						overviewResource.getContentOverview(
+							_depotEntry.getDepotEntryId(), null, null, 7, null);
+
+					return overview.getTotalCount();
+				}));
 	}
 
 	private void _testGetFileOverviewWithDepotEntryMemberUser()
@@ -378,23 +377,16 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 		OverviewResource overviewResource = ReflectionTestUtil.getFieldValue(
 			this, "_overviewResource");
 
-		com.liferay.analytics.cms.rest.dto.v1_0.Overview overview1 =
-			overviewResource.getFileOverview(
-				_depotEntry.getDepotEntryId(), null, null, 7, null);
-
-		Long totalCount = overview1.getTotalCount();
-
-		Assert.assertTrue(totalCount > 0);
 		Assert.assertEquals(
-			totalCount,
-			DepotEntryTestUtil.withDepotEntryMemberUser(
+			1L,
+			(long)DepotEntryTestUtil.withDepotEntryMemberUser(
 				_depotEntry,
 				() -> {
-					com.liferay.analytics.cms.rest.dto.v1_0.Overview overview2 =
+					com.liferay.analytics.cms.rest.dto.v1_0.Overview overview =
 						overviewResource.getFileOverview(
 							_depotEntry.getDepotEntryId(), null, null, 7, null);
 
-					return overview2.getTotalCount();
+					return overview.getTotalCount();
 				}));
 	}
 

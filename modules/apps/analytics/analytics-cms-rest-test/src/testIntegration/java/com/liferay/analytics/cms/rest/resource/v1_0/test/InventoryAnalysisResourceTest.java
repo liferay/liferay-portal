@@ -314,27 +314,19 @@ public class InventoryAnalysisResourceTest
 			ReflectionTestUtil.getFieldValue(
 				this, "_inventoryAnalysisResource");
 
-		com.liferay.analytics.cms.rest.dto.v1_0.InventoryAnalysis
-			inventoryAnalysis1 = inventoryAnalysisResource.getInventoryAnalysis(
-				null, _depotEntry.getDepotEntryId(), null, null, null, null,
-				null, null, null, null, Pagination.of(1, 10));
-
-		Long totalCount = inventoryAnalysis1.getTotalCount();
-
-		Assert.assertTrue(totalCount > 0);
 		Assert.assertEquals(
-			totalCount,
-			DepotEntryTestUtil.withDepotEntryMemberUser(
+			5L,
+			(long)DepotEntryTestUtil.withDepotEntryMemberUser(
 				_depotEntry,
 				() -> {
 					com.liferay.analytics.cms.rest.dto.v1_0.InventoryAnalysis
-						inventoryAnalysis2 =
+						inventoryAnalysis =
 							inventoryAnalysisResource.getInventoryAnalysis(
 								null, _depotEntry.getDepotEntryId(), null, null,
 								null, null, null, null, null, null,
 								Pagination.of(1, 10));
 
-					return inventoryAnalysis2.getTotalCount();
+					return inventoryAnalysis.getTotalCount();
 				}));
 	}
 

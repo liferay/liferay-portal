@@ -20,14 +20,12 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -131,27 +129,6 @@ public class PerformanceTopAssetResourceTest
 				HttpComponentsUtil.getParameter(url, name, false)));
 	}
 
-	private PerformanceTopAssetResource _getPerformanceTopAssetResource()
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = DepotEntryTestUtil.addDepotEntryMemberUser(
-			_depotEntries.get(0), password);
-
-		_users.add(user);
-
-		return PerformanceTopAssetResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
-	}
-
 	private void _testGetPerformanceTopAssetExportResponse() throws Exception {
 		String value = RandomTestUtil.randomString();
 
@@ -245,6 +222,10 @@ public class PerformanceTopAssetResourceTest
 	private void _testGetPerformanceTopAssetExportWithDepotEntryMemberUser()
 		throws Exception {
 
+		com.liferay.analytics.cms.rest.resource.v1_0.PerformanceTopAssetResource
+			performanceTopAssetResource = ReflectionTestUtil.getFieldValue(
+				this, "_performanceTopAssetResource");
+
 		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
 				new AnalyticsCloudHttpServer(
 					"/api/1.0/asset-metric/objectEntry/summaries/export",
@@ -257,16 +238,35 @@ public class PerformanceTopAssetResourceTest
 						RandomTestUtil.randomString(), true,
 						analyticsCloudHttpServer.getURL())) {
 
-			PerformanceTopAssetResource performanceTopAssetResource =
-				_getPerformanceTopAssetResource();
+			DepotEntryTestUtil.withDepotEntryMemberUser(
+				_depotEntries.get(0),
+				() -> {
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer, null,
+						depotEntryIds ->
+							performanceTopAssetResource.
+								getPerformanceTopAssetExport(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									null, null, null));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						new DepotEntry[] {_depotEntries.get(0)},
+						depotEntryIds ->
+							performanceTopAssetResource.
+								getPerformanceTopAssetExport(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									null, null, null));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						_depotEntries.toArray(new DepotEntry[0]),
+						depotEntryIds ->
+							performanceTopAssetResource.
+								getPerformanceTopAssetExport(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									null, null, null));
 
-			DepotEntryTestUtil.assertNoRequest(
-				analyticsCloudHttpServer, _depotEntries,
-				depotEntryIds ->
-					performanceTopAssetResource.
-						getPerformanceTopAssetExportHttpResponse(
-							depotEntryIds, RandomTestUtil.nextInt(), null, null,
-							null));
+					return null;
+				});
 		}
 	}
 
@@ -438,6 +438,10 @@ public class PerformanceTopAssetResourceTest
 	private void _testGetPerformanceTopAssetPageWithDepotEntryMemberUser()
 		throws Exception {
 
+		com.liferay.analytics.cms.rest.resource.v1_0.PerformanceTopAssetResource
+			performanceTopAssetResource = ReflectionTestUtil.getFieldValue(
+				this, "_performanceTopAssetResource");
+
 		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
 				new AnalyticsCloudHttpServer(
 					"/api/1.0/asset-metric/objectEntry/summaries", () -> "{}");
@@ -449,22 +453,48 @@ public class PerformanceTopAssetResourceTest
 						RandomTestUtil.randomString(), true,
 						analyticsCloudHttpServer.getURL())) {
 
-			PerformanceTopAssetResource performanceTopAssetResource =
-				_getPerformanceTopAssetResource();
+			DepotEntryTestUtil.withDepotEntryMemberUser(
+				_depotEntries.get(0),
+				() -> {
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer, null,
+						depotEntryIds ->
+							performanceTopAssetResource.
+								getPerformanceTopAssetPage(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									null, null,
+									com.liferay.portal.vulcan.pagination.
+										Pagination.of(1, 10),
+									null));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						new DepotEntry[] {_depotEntries.get(0)},
+						depotEntryIds ->
+							performanceTopAssetResource.
+								getPerformanceTopAssetPage(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									null, null,
+									com.liferay.portal.vulcan.pagination.
+										Pagination.of(1, 10),
+									null));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						_depotEntries.toArray(new DepotEntry[0]),
+						depotEntryIds ->
+							performanceTopAssetResource.
+								getPerformanceTopAssetPage(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									null, null,
+									com.liferay.portal.vulcan.pagination.
+										Pagination.of(1, 10),
+									null));
 
-			DepotEntryTestUtil.assertNoRequest(
-				analyticsCloudHttpServer, _depotEntries,
-				depotEntryIds ->
-					performanceTopAssetResource.getPerformanceTopAssetPage(
-						depotEntryIds, RandomTestUtil.nextInt(), null, null,
-						Pagination.of(1, 10), null));
+					return null;
+				});
 		}
 	}
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
-
-	@DeleteAfterTestRun
-	private final List<User> _users = new ArrayList<>();
 
 }

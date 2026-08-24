@@ -17,12 +17,10 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -75,28 +73,6 @@ public class PerformanceHistogramMetricResourceTest
 	private void _addDepotEntry() throws Exception {
 		_depotEntries.add(
 			DepotEntryTestUtil.addDepotEntry(testGroup.getGroupId()));
-	}
-
-	private PerformanceHistogramMetricResource
-			_getPerformanceHistogramMetricResource()
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = DepotEntryTestUtil.addDepotEntryMemberUser(
-			_depotEntries.get(0), password);
-
-		_users.add(user);
-
-		return PerformanceHistogramMetricResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
 	}
 
 	private void _testGetPerformanceHistogramMetric() throws Exception {
@@ -198,6 +174,12 @@ public class PerformanceHistogramMetricResourceTest
 	private void _testGetPerformanceHistogramMetricWithDepotEntryMemberUser()
 		throws Exception {
 
+		com.liferay.analytics.cms.rest.resource.v1_0.
+			PerformanceHistogramMetricResource
+				performanceHistogramMetricResource =
+					ReflectionTestUtil.getFieldValue(
+						this, "_performanceHistogramMetricResource");
+
 		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
 				new AnalyticsCloudHttpServer(
 					"/api/1.0/asset-metric/objectEntry" +
@@ -211,24 +193,39 @@ public class PerformanceHistogramMetricResourceTest
 						RandomTestUtil.randomString(), true,
 						analyticsCloudHttpServer.getURL())) {
 
-			PerformanceHistogramMetricResource
-				performanceHistogramMetricResource =
-					_getPerformanceHistogramMetricResource();
+			DepotEntryTestUtil.withDepotEntryMemberUser(
+				_depotEntries.get(0),
+				() -> {
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer, null,
+						depotEntryIds ->
+							performanceHistogramMetricResource.
+								getPerformanceHistogramMetric(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									"downloadsMetric"));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						new DepotEntry[] {_depotEntries.get(0)},
+						depotEntryIds ->
+							performanceHistogramMetricResource.
+								getPerformanceHistogramMetric(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									"downloadsMetric"));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						_depotEntries.toArray(new DepotEntry[0]),
+						depotEntryIds ->
+							performanceHistogramMetricResource.
+								getPerformanceHistogramMetric(
+									depotEntryIds, RandomTestUtil.nextInt(),
+									"downloadsMetric"));
 
-			DepotEntryTestUtil.assertNoRequest(
-				analyticsCloudHttpServer, _depotEntries,
-				depotEntryIds ->
-					performanceHistogramMetricResource.
-						getPerformanceHistogramMetric(
-							depotEntryIds, RandomTestUtil.nextInt(),
-							"downloadsMetric"));
+					return null;
+				});
 		}
 	}
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
-
-	@DeleteAfterTestRun
-	private final List<User> _users = new ArrayList<>();
 
 }

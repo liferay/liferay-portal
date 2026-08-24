@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -45,18 +45,6 @@ public class DepotEntryTestUtil {
 				groupId, TestPropsValues.getUserId()));
 	}
 
-	public static User addDepotEntryMemberUser(
-			DepotEntry depotEntry, String password)
-		throws Exception {
-
-		User user = UserTestUtil.addUser(depotEntry.getGroupId());
-
-		UserLocalServiceUtil.updatePassword(
-			user.getUserId(), password, password, false, true);
-
-		return user;
-	}
-
 	public static void assertGroupIds(
 		List<DepotEntry> depotEntries, String url) {
 
@@ -71,23 +59,20 @@ public class DepotEntryTestUtil {
 
 	public static void assertNoRequest(
 			AnalyticsCloudHttpServer analyticsCloudHttpServer,
-			List<DepotEntry> depotEntries,
+			DepotEntry[] depotEntries,
 			UnsafeConsumer<Long[], Exception> unsafeConsumer)
 		throws Exception {
 
-		DepotEntry depotEntry1 = depotEntries.get(0);
-		DepotEntry depotEntry2 = depotEntries.get(1);
+		Long[] depotEntryIds = null;
 
-		Long[][] depotEntryIdsArray = {
-			null, {depotEntry1.getDepotEntryId()},
-			{depotEntry1.getDepotEntryId(), depotEntry2.getDepotEntryId()}
-		};
-
-		for (Long[] depotEntryIds : depotEntryIdsArray) {
-			unsafeConsumer.accept(depotEntryIds);
-
-			Assert.assertNull(analyticsCloudHttpServer.getLocation());
+		if (depotEntries != null) {
+			depotEntryIds = TransformUtil.transform(
+				depotEntries, DepotEntry::getDepotEntryId, Long.class);
 		}
+
+		unsafeConsumer.accept(depotEntryIds);
+
+		Assert.assertNull(analyticsCloudHttpServer.getLocation());
 	}
 
 	public static <T> T withDepotEntryMemberUser(

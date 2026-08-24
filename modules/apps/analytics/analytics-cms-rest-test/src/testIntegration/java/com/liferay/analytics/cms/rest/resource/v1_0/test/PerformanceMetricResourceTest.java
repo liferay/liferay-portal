@@ -18,13 +18,11 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -147,27 +145,6 @@ public class PerformanceMetricResourceTest
 		}
 	}
 
-	private PerformanceMetricResource _getPerformanceMetricResource()
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = DepotEntryTestUtil.addDepotEntryMemberUser(
-			_depotEntries.get(0), password);
-
-		_users.add(user);
-
-		return PerformanceMetricResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
-	}
-
 	private void _testGetPerformanceMetric(
 			String groupBy, String metricType, String path)
 		throws Exception {
@@ -279,6 +256,10 @@ public class PerformanceMetricResourceTest
 	private void _testGetPerformanceMetricExportWithDepotEntryMemberUser()
 		throws Exception {
 
+		com.liferay.analytics.cms.rest.resource.v1_0.PerformanceMetricResource
+			performanceMetricResource = ReflectionTestUtil.getFieldValue(
+				this, "_performanceMetricResource");
+
 		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
 				new AnalyticsCloudHttpServer(
 					"/api/1.0/asset-metric/objectEntry/categories/export",
@@ -291,16 +272,35 @@ public class PerformanceMetricResourceTest
 						RandomTestUtil.randomString(), true,
 						analyticsCloudHttpServer.getURL())) {
 
-			PerformanceMetricResource performanceMetricResource =
-				_getPerformanceMetricResource();
+			DepotEntryTestUtil.withDepotEntryMemberUser(
+				_depotEntries.get(0),
+				() -> {
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer, null,
+						depotEntryIds ->
+							performanceMetricResource.
+								getPerformanceMetricExport(
+									depotEntryIds, "categories", "viewsMetric",
+									RandomTestUtil.nextInt()));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						new DepotEntry[] {_depotEntries.get(0)},
+						depotEntryIds ->
+							performanceMetricResource.
+								getPerformanceMetricExport(
+									depotEntryIds, "categories", "viewsMetric",
+									RandomTestUtil.nextInt()));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						_depotEntries.toArray(new DepotEntry[0]),
+						depotEntryIds ->
+							performanceMetricResource.
+								getPerformanceMetricExport(
+									depotEntryIds, "categories", "viewsMetric",
+									RandomTestUtil.nextInt()));
 
-			DepotEntryTestUtil.assertNoRequest(
-				analyticsCloudHttpServer, _depotEntries,
-				depotEntryIds ->
-					performanceMetricResource.
-						getPerformanceMetricExportHttpResponse(
-							depotEntryIds, "categories", "viewsMetric",
-							RandomTestUtil.nextInt()));
+					return null;
+				});
 		}
 	}
 
@@ -353,6 +353,10 @@ public class PerformanceMetricResourceTest
 	private void _testGetPerformanceMetricWithDepotEntryMemberUser()
 		throws Exception {
 
+		com.liferay.analytics.cms.rest.resource.v1_0.PerformanceMetricResource
+			performanceMetricResource = ReflectionTestUtil.getFieldValue(
+				this, "_performanceMetricResource");
+
 		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
 				new AnalyticsCloudHttpServer(
 					"/api/1.0/asset-metric/objectEntry/categories", () -> "{}");
@@ -364,14 +368,32 @@ public class PerformanceMetricResourceTest
 						RandomTestUtil.randomString(), true,
 						analyticsCloudHttpServer.getURL())) {
 
-			PerformanceMetricResource performanceMetricResource =
-				_getPerformanceMetricResource();
+			DepotEntryTestUtil.withDepotEntryMemberUser(
+				_depotEntries.get(0),
+				() -> {
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer, null,
+						depotEntryIds ->
+							performanceMetricResource.getPerformanceMetric(
+								depotEntryIds, "categories", "viewsMetric",
+								RandomTestUtil.nextInt()));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						new DepotEntry[] {_depotEntries.get(0)},
+						depotEntryIds ->
+							performanceMetricResource.getPerformanceMetric(
+								depotEntryIds, "categories", "viewsMetric",
+								RandomTestUtil.nextInt()));
+					DepotEntryTestUtil.assertNoRequest(
+						analyticsCloudHttpServer,
+						_depotEntries.toArray(new DepotEntry[0]),
+						depotEntryIds ->
+							performanceMetricResource.getPerformanceMetric(
+								depotEntryIds, "categories", "viewsMetric",
+								RandomTestUtil.nextInt()));
 
-			DepotEntryTestUtil.assertNoRequest(
-				analyticsCloudHttpServer, _depotEntries,
-				depotEntryIds -> performanceMetricResource.getPerformanceMetric(
-					depotEntryIds, "categories", "viewsMetric",
-					RandomTestUtil.nextInt()));
+					return null;
+				});
 		}
 	}
 
@@ -422,8 +444,5 @@ public class PerformanceMetricResourceTest
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
-
-	@DeleteAfterTestRun
-	private final List<User> _users = new ArrayList<>();
 
 }
