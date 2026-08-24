@@ -216,7 +216,7 @@ func attemptOverLimitWrite(
 		t.Fatalf("Unable to read the workload: %v", error)
 	}
 
-	return writeOverLimitReplicas(writeClient, &statefulSet, scaleSubresource)
+	return writeOverLimitReplicas(scaleSubresource, &statefulSet, writeClient)
 }
 
 func awaitForbidden(
@@ -701,8 +701,8 @@ func startPolicyEnvironment(t *testing.T) *rest.Config {
 }
 
 func writeOverLimitReplicas(
-	writeClient client.Client, statefulSet *appsv1.StatefulSet,
-	scaleSubresource bool,
+	scaleSubresource bool, statefulSet *appsv1.StatefulSet,
+	writeClient client.Client,
 ) error {
 	if scaleSubresource {
 		return writeClient.SubResource("scale").Update(

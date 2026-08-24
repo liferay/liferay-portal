@@ -505,7 +505,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplica
 			&liferayEnvironment.Status.Conditions,
 			metav1.Condition{
 				Message: fmt.Sprintf(
-					"Workload StatefulSet %q was not found.",
+					"Workload StatefulSet %q does not exist.",
 					liferayEnvironment.Spec.WorkloadRef.Name,
 				),
 				Reason: "WorkloadNotFound",
@@ -1104,7 +1104,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveDxpVers
 			Name:      liferayEnvironment.Spec.WorkloadRef.Name,
 			Namespace: liferayEnvironment.Namespace,
 		}, statefulSet); error != nil {
-
 		logger.V(1).Info(
 			"Unable to read the workload to determine the DXP version",
 			"workload", liferayEnvironment.Spec.WorkloadRef.Name,

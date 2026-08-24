@@ -424,7 +424,7 @@ func TestEnforceReplicaCeilingPersistsRefusalWhenWorkloadUpdateRejected(t *testi
 	}
 }
 
-func TestImageTag(t *testing.T) {
+func TestExtractLiferayImageTag(t *testing.T) {
 	testCases := map[string]struct {
 		image string
 		want  string
@@ -442,7 +442,7 @@ func TestImageTag(t *testing.T) {
 	for name, testCase := range testCases {
 		t.Run(name, func(t *testing.T) {
 			if got := extractLiferayImageTag(testCase.image); got != testCase.want {
-				t.Errorf("imageTag(%q) = %q, want %q", testCase.image, got, testCase.want)
+				t.Errorf("extractLiferayImageTag(%q) = %q, want %q", testCase.image, got, testCase.want)
 			}
 		})
 	}
