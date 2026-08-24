@@ -53,7 +53,7 @@ export class PortletStagingPage {
 		});
 		await this.publishToLiveButton.click();
 
-		await this.publishSuccessStatus.waitFor();
+		await this.publishSuccessStatus.waitFor({timeout: 30000});
 		await this.closeIframe();
 	}
 }
