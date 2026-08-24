@@ -17,15 +17,19 @@ String rememberMe = CookiesManagerUtil.getCookieValue(CookiesConstants.NAME_REME
 			Liferay.Session.destructor();
 		}
 
-		Liferay.Session = new Session(
-			{
-				autoExtend: <%= !themeDisplay.isSignedIn() || SessionTimeoutUtil.isAutoExtend(request) %>,
-				redirectOnExpire: <%= SSOUtil.isSessionRedirectOnExpire(themeDisplay.getCompanyId()) %>,
-				redirectUrl: '<%= HtmlUtil.escapeJS(SSOUtil.getSessionExpirationRedirectURL(themeDisplay.getCompanyId(), themeDisplay.getURLHome())) %>',
-				rememberMe: <%= Validator.isNotNull(rememberMe) %>,
-				sessionLength: <%= PropsValues.SESSION_TIMEOUT * 60 %>,
-				sessionTimeoutOffset: <%= SessionTimeoutUtil.getAutoExtendOffset(request) %>,
-				warningLength: <%= PropsValues.SESSION_TIMEOUT_WARNING * 60 %>
-			})
+		Liferay.Session = new Session({
+			autoExtend:
+				<%= !themeDisplay.isSignedIn() || SessionTimeoutUtil.isAutoExtend(request) %>,
+			redirectOnExpire:
+				<%= SSOUtil.isSessionRedirectOnExpire(themeDisplay.getCompanyId()) %>,
+			redirectUrl:
+				'<%= HtmlUtil.escapeJS(SSOUtil.getSessionExpirationRedirectURL(themeDisplay.getCompanyId(), themeDisplay.getURLHome())) %>',
+			rememberMe: <%= Validator.isNotNull(rememberMe) %>,
+			sessionLength:
+				<%= GetterUtil.getInteger(request.getAttribute(WebKeys.FIPS_SESSION_IDLE_TIMEOUT), PropsValues.SESSION_TIMEOUT * 60) %>,
+			sessionTimeoutOffset:
+				<%= SessionTimeoutUtil.getAutoExtendOffset(request) %>,
+			warningLength: <%= PropsValues.SESSION_TIMEOUT_WARNING * 60 %>,
+		});
 	</aui:script>
 </c:if>

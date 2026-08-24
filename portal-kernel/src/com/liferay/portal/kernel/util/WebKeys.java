@@ -174,6 +174,9 @@ public interface WebKeys {
 	public static final String FACEBOOK_USER_EMAIL_ADDRESS =
 		"FACEBOOK_USER_EMAIL_ADDRESS";
 
+	public static final String FIPS_SESSION_IDLE_TIMEOUT =
+		"FIPS_SESSION_IDLE_TIMEOUT";
+
 	public static final String FORGOT_PASSWORD_REMINDER_ATTEMPTS =
 		"FORGOT_PASSWORD_REMINDER_ATTEMPTS";
 
