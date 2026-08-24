@@ -94,7 +94,7 @@ const MultiSelectStateRefContext = React.createContext<
 >({current: null});
 
 const MultiSelectDispatchContext = React.createContext<
-	React.Dispatch<React.SetStateAction<MultiSelectType | null>>
+	(multiSelect?: MultiSelectType | null) => void
 >(() => {});
 
 /**
@@ -384,8 +384,19 @@ const MultiSelectProvider = ({children}: {children: React.ReactNode}) => {
 		multiSelectionTypeRef.current = multiSelectType;
 	}, [multiSelectType]);
 
+	const activateMultiSelect = useCallback(
+		(multiSelect: MultiSelectType | null = null) => {
+			if (!multiSelect) {
+				multiSelectionTypeRef.current = null;
+			}
+
+			setMultiSelectType(multiSelect);
+		},
+		[]
+	);
+
 	return (
-		<MultiSelectDispatchContext.Provider value={setMultiSelectType}>
+		<MultiSelectDispatchContext.Provider value={activateMultiSelect}>
 			<MultiSelectStateRefContext.Provider value={multiSelectionTypeRef}>
 				<MultiSelectStateContext.Provider value={multiSelectType}>
 					{children}
@@ -546,16 +557,7 @@ const useSelectItem = () => {
 	);
 };
 
-const useActivateMultiSelect = () => {
-	const setMultiSelectType = useContext(MultiSelectDispatchContext);
-
-	return useCallback(
-		(multiSelect: MultiSelectType | null = null) => {
-			setMultiSelectType(multiSelect);
-		},
-		[setMultiSelectType]
-	);
-};
+const useActivateMultiSelect = () => useContext(MultiSelectDispatchContext);
 
 const useSelectMultipleItems = () => {
 	const activeDispatch = useContext(ActiveDispatchContext);
