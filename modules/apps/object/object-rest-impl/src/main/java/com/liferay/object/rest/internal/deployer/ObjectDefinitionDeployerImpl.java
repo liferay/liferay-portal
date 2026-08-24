@@ -33,6 +33,7 @@ import com.liferay.object.rest.internal.jaxrs.exception.mapper.ObjectFieldReadOn
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.ObjectRelationshipDeletionTypeExceptionMapper;
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.RequiredObjectEntryVersionExceptionMapper;
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.RequiredObjectRelationshipExceptionMapper;
+import com.liferay.object.rest.internal.jaxrs.exception.mapper.RestoreEntryExceptionMapper;
 import com.liferay.object.rest.internal.jaxrs.exception.mapper.UnsupportedOperationExceptionMapper;
 import com.liferay.object.rest.internal.manager.v1_0.ObjectEntry1toMObjectRelationshipElementsParserImpl;
 import com.liferay.object.rest.internal.manager.v1_0.ObjectEntryMtoMObjectRelationshipElementsParserImpl;
@@ -955,6 +956,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					_language),
 				() -> new RequiredObjectEntryVersionExceptionMapper(_language),
 				() -> new RequiredObjectRelationshipExceptionMapper(_language),
+				() -> new RestoreEntryExceptionMapper(_language),
 				UnsupportedOperationExceptionMapper::new),
 			exceptionMapperSupplier -> _bundleContext.registerService(
 				(Class<ExceptionMapper<?>>)(Class<?>)ExceptionMapper.class,
