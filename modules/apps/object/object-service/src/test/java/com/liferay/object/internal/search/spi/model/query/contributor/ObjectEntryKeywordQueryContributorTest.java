@@ -74,7 +74,7 @@ public class ObjectEntryKeywordQueryContributorTest {
 
 	@Test
 	public void testContributeWithAssigneeObjectField() throws Exception {
-		ObjectDefinition objectDefinition = _mockObjectDefinition(false);
+		ObjectDefinition objectDefinition = _mockObjectDefinition();
 
 		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
 
@@ -84,7 +84,7 @@ public class ObjectEntryKeywordQueryContributorTest {
 			false);
 
 		Mockito.when(
-			objectFieldBag.getNonsystemIndexedObjectFields()
+			objectFieldBag.getNestedIndexedObjectFields()
 		).thenReturn(
 			Arrays.asList(assigneeObjectField)
 		);
@@ -139,40 +139,10 @@ public class ObjectEntryKeywordQueryContributorTest {
 	}
 
 	@Test
-	public void testContributeWithCustomObjectDefinition() throws Exception {
-		ObjectDefinition objectDefinition = _mockObjectDefinition(false);
+	public void testContributeWithNestedIndexedObjectField() throws Exception {
+		ObjectDefinition objectDefinition = _mockObjectDefinition();
 
-		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
-
-		_mockObjectFields(objectFieldBag);
-
-		BooleanQuery booleanQuery = _mockBooleanQuery(null);
-
-		ObjectEntryKeywordQueryContributor objectEntryKeywordQueryContributor =
-			_createObjectEntryKeywordQueryContributor(objectDefinition);
-
-		objectEntryKeywordQueryContributor.contribute(
-			RandomTestUtil.randomString(), booleanQuery,
-			_mockKeywordQueryContributorHelper());
-
-		Mockito.verify(
-			objectFieldBag, Mockito.never()
-		).getIndexedObjectFields();
-
-		Mockito.verify(
-			objectFieldBag
-		).getNonsystemIndexedObjectFields();
-	}
-
-	@Test
-	public void testContributeWithModifiableSystemObjectDefinition()
-		throws Exception {
-
-		ObjectDefinition objectDefinition = _mockObjectDefinition(true);
-
-		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
-
-		_mockObjectFields(objectFieldBag);
+		_mockObjectFields(objectDefinition.getObjectFieldBag());
 
 		ArgumentCaptor<Query> argumentCaptor = ArgumentCaptor.forClass(
 			Query.class);
@@ -186,14 +156,6 @@ public class ObjectEntryKeywordQueryContributorTest {
 			RandomTestUtil.randomString(), booleanQuery,
 			_mockKeywordQueryContributorHelper());
 
-		Mockito.verify(
-			objectFieldBag
-		).getIndexedObjectFields();
-
-		Mockito.verify(
-			objectFieldBag, Mockito.never()
-		).getNonsystemIndexedObjectFields();
-
 		List<Query> queries = argumentCaptor.getAllValues();
 
 		Assert.assertEquals(1, _countNestedQueries(queries));
@@ -201,7 +163,7 @@ public class ObjectEntryKeywordQueryContributorTest {
 
 	@Test
 	public void testContributeWithNonlocalizedField() throws Exception {
-		ObjectDefinition objectDefinition = _mockObjectDefinition(false);
+		ObjectDefinition objectDefinition = _mockObjectDefinition();
 
 		Mockito.when(
 			objectDefinition.getDefaultLanguageId()
@@ -408,17 +370,9 @@ public class ObjectEntryKeywordQueryContributorTest {
 		return keywordQueryContributorHelper;
 	}
 
-	private ObjectDefinition _mockObjectDefinition(
-		boolean modifiableAndSystem) {
-
+	private ObjectDefinition _mockObjectDefinition() {
 		ObjectDefinition objectDefinition = Mockito.mock(
 			ObjectDefinition.class);
-
-		Mockito.when(
-			objectDefinition.isModifiableAndSystem()
-		).thenReturn(
-			modifiableAndSystem
-		);
 
 		ObjectFieldBag objectFieldBag = Mockito.mock(ObjectFieldBag.class);
 
@@ -488,23 +442,13 @@ public class ObjectEntryKeywordQueryContributorTest {
 	}
 
 	private void _mockObjectFields(ObjectFieldBag objectFieldBag) {
-		ObjectField metadataObjectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString(),
-			true);
 		ObjectField objectField = _mockObjectField(
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString(),
 			false);
 
 		Mockito.when(
-			objectFieldBag.getIndexedObjectFields()
-		).thenReturn(
-			Arrays.asList(metadataObjectField, objectField)
-		);
-
-		Mockito.when(
-			objectFieldBag.getNonsystemIndexedObjectFields()
+			objectFieldBag.getNestedIndexedObjectFields()
 		).thenReturn(
 			Arrays.asList(objectField)
 		);

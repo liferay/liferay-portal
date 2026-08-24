@@ -474,29 +474,22 @@ public class ObjectEntryModelDocumentContributor
 
 		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
 
-		List<ObjectField> objectFields = null;
-
-		if (objectDefinition.isModifiableAndSystem()) {
-			objectFields = ListUtil.filter(
-				objectFieldBag.getIndexedObjectFields(),
-				objectField -> !objectField.isMetadata());
-		}
-		else {
-			objectFields = objectFieldBag.getNonsystemIndexedObjectFields();
-		}
+		List<ObjectField> nestedIndexedObjectFields =
+			objectFieldBag.getNestedIndexedObjectFields();
 
 		TextEmbeddingContentHelper<ObjectEntry> textEmbeddingContentHelper =
 			new TextEmbeddingContentHelper<>(
 				objectEntry.getCompanyId(), objectEntry.getDefaultLanguageId(),
-				StringPool.COMMA_AND_SPACE, objectEntry, objectFields.size(),
+				StringPool.COMMA_AND_SPACE, objectEntry,
+				nestedIndexedObjectFields.size(),
 				_textEmbeddingDocumentContributor);
 
 		Map<String, Serializable> values = null;
 
-		if (!objectFields.isEmpty()) {
+		if (!nestedIndexedObjectFields.isEmpty()) {
 			values = objectEntry.getIndexedValues();
 
-			for (ObjectField objectField : objectFields) {
+			for (ObjectField objectField : nestedIndexedObjectFields) {
 				if (StringUtil.equals(
 						objectField.getBusinessType(),
 						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
