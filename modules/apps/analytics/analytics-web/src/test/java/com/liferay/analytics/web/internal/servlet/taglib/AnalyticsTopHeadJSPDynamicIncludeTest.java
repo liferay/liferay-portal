@@ -186,7 +186,7 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 
 	private static final String _SERVER_NAME = RandomTestUtil.randomString();
 
-	private AnalyticsConfiguration _analyticsConfiguration = Mockito.mock(
+	private final AnalyticsConfiguration _analyticsConfiguration = Mockito.mock(
 		AnalyticsConfiguration.class);
 
 }
