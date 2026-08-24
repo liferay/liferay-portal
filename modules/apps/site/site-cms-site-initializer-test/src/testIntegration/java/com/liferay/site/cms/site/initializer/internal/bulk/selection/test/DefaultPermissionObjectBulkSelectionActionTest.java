@@ -136,7 +136,7 @@ public class DefaultPermissionObjectBulkSelectionActionTest {
 	}
 
 	private static final String _DEFAULT_PERMISSIONS =
-		"{\"UPDATED_BY_THE_BULK_ACTION\":true}";
+		"{\"UPDATED_BY_THE_BULK_ACTION\": true}";
 
 	@Inject(
 		filter = "component.name=com.liferay.site.cms.site.initializer.internal.bulk.selection.DefaultPermissionObjectBulkSelectionAction"
