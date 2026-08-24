@@ -157,17 +157,16 @@ public class WorkflowInstanceManagerImplTest
 			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(), 0,
 			BlogsEntry.class.getName(), 0, 0, null);
 
+		int completedCount = 0;
+		int notCompletedCount = 0;
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
 		List<WorkflowInstance> workflowInstances =
 			workflowInstanceManager.getWorkflowInstances(
 				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 				BlogsEntry.class.getName(), blogsEntry.getEntryId(), true,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		int completedCount = 0;
-		int notCompletedCount = 0;
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext();
 
 		for (WorkflowInstance workflowInstance : workflowInstances) {
 			for (KaleoInstanceToken kaleoInstanceToken :
@@ -192,11 +191,11 @@ public class WorkflowInstanceManagerImplTest
 				workflowInstance.getWorkflowInstanceId());
 		}
 
+		Assert.assertEquals(1, completedCount);
 		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+		Assert.assertEquals(0, notCompletedCount);
 		Assert.assertEquals(
 			workflowInstances.toString(), 1, workflowInstances.size());
-		Assert.assertEquals(1, completedCount);
-		Assert.assertEquals(0, notCompletedCount);
 	}
 
 	@Test
