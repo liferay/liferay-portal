@@ -499,7 +499,7 @@ public class MirrorsGetTask extends Task {
 
 		Matcher matcher = _gsURLPattern.matcher(url);
 
-		if (matcher.find()) {
+		if (matcher.matches()) {
 			_downloadGCPFile(url, targetFile);
 
 			return;
