@@ -73,10 +73,10 @@ public class CTSchedulerTest {
 			ctCollection.getCtCollectionId());
 
 		Assert.assertEquals(
-			WorkflowConstants.STATUS_SCHEDULED, ctCollection.getStatus());
-		Assert.assertEquals(
 			Time.getShortTimestamp(date),
 			Time.getShortTimestamp(ctCollection.getScheduledDate()));
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_SCHEDULED, ctCollection.getStatus());
 
 		_publishScheduler.unschedulePublish(ctCollection.getCtCollectionId());
 
