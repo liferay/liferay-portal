@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
 const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
@@ -159,5 +160,59 @@ test(
 			);
 
 		expect(fetchedAssetLibrary.friendlyURL).toBe(initialFriendlyURL);
+	}
+);
+
+test(
+	'Confirming the save persists a custom Friendly URL entered in Space Settings',
+	{tag: '@LPD-103464'},
+	async ({apiHelpers, page, spaceSummaryPage}) => {
+		const spaceName = `Space ${getRandomString()}`;
+
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				type: 'Space',
+			});
+
+		const friendlyURLPath = `cms-${getRandomString()}`.toLowerCase();
+
+		await spaceSummaryPage.goto(spaceName);
+
+		await page.getByRole('button', {name: 'More Actions'}).click();
+
+		await page.getByRole('menuitem', {name: 'Space Settings'}).click();
+
+		const friendlyURLTextbox = page.getByRole('textbox', {
+			name: 'Friendly URL Required',
+		});
+
+		await expect(friendlyURLTextbox).toHaveValue(
+			`/asset-library-${assetLibrary.id}`
+		);
+
+		await friendlyURLTextbox.fill(friendlyURLPath);
+
+		await page.getByRole('button', {name: 'Save'}).click();
+
+		const dialog = page.getByRole('alertdialog', {
+			name: 'Save Custom Friendly URL',
+		});
+
+		await dialog.waitFor();
+
+		await dialog.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(
+			page,
+			`Success:${spaceName} was saved successfully.`
+		);
+
+		const fetchedAssetLibrary =
+			await apiHelpers.headlessAssetLibrary.getAssetLibrary(
+				assetLibrary.externalReferenceCode
+			);
+
+		expect(fetchedAssetLibrary.friendlyURL).toBe(`/${friendlyURLPath}`);
 	}
 );
