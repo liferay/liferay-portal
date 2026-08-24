@@ -1,4 +1,10 @@
 liferay-default:
+    annotations:
+        instrumentation.opentelemetry.io/inject-dotnet: "false"
+        instrumentation.opentelemetry.io/inject-java: "false"
+        instrumentation.opentelemetry.io/inject-nodejs: "false"
+        instrumentation.opentelemetry.io/inject-python: "false"
+        sidecar.opentelemetry.io/inject: "false"
     autoscaling:
         keda:
             triggerAuthentication:
@@ -6,3 +12,143 @@ liferay-default:
                     podIdentity:
                         provider: azure-workload
         type: keda
+    configmap:
+        data:
+            com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config: |
+                authenticationEnabled=B"true"
+                httpSSLEnabled=B"false"
+                networkHostAddresses=["$[env:SEARCH_URL]"]
+                operationMode="REMOTE"
+                password="$[env:SEARCH_PASSWORD]"
+                productionModeEnabled=B"true"
+                username="$[env:SEARCH_USERNAME]"
+            com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config: |
+                authenticationEnabled=B"true"
+                httpSSLEnabled=B"false"
+                networkHostAddresses=["$[env:SEARCH_URL]"]
+                password="$[env:SEARCH_PASSWORD]"
+                productionModeEnabled=B"true"
+                username="$[env:SEARCH_USERNAME]"
+            com.liferay.portal.store.azure.configuration.AzureStoreConfiguration.config: |
+                connectionString="$[env:LIFERAY_DOCLIB_CONNECTION_STRING]"
+                containerName="$[env:LIFERAY_DOCLIB_CONTAINER_NAME]"
+    customEnv:
+        x-liferay-azure:
+            -   name: LIFERAY_DISABLE_TRIAL_LICENSE
+                value: "true"
+            -   name: LIFERAY_DL_PERIOD_STORE_PERIOD_IMPL
+                value: com.liferay.portal.store.azure.AzureStore
+            -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
+                value: org.postgresql.Driver
+            -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_PASSWORD
+                value: ${env.DATABASE_PASSWORD}
+            -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL
+                value: jdbc:postgresql://${env.DATABASE_ENDPOINT}:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false&sslmode=require
+            -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME
+                value: liferay
+            -   name: LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PORT_PERIOD_ENABLED
+                value: "true"
+            -   name: LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PROTOCOL_PERIOD_ENABLED
+                value: "true"
+    customEnvFrom:
+        x-liferay-azure-database:
+            -   configMapRef:
+                    name: database-server-details
+            -   secretRef:
+                    name: database-app-password
+        x-liferay-azure-doclib:
+            -   secretRef:
+                    name: document-library-connection-details
+        x-liferay-azure-search:
+            -   secretRef:
+                    name: search-connection-details
+    customInitContainers:
+        x-wait-for-elasticsearch:
+            -   command:
+                    -   sh
+                    -   /liferay-init-scripts/wait-for-elasticsearch.sh
+                envFrom:
+                    -   secretRef:
+                            name: search-connection-details
+                image: busybox:1.36
+                name: wait-for-elasticsearch
+                securityContext:
+                    allowPrivilegeEscalation: false
+                    capabilities:
+                        drop:
+                            -   ALL
+                    runAsNonRoot: true
+                    runAsUser: 1000
+                    seccompProfile:
+                        type: RuntimeDefault
+                volumeMounts:
+                    -   mountPath: /liferay-init-scripts/wait-for-elasticsearch.sh
+                        name: liferay-init-scripts-azure
+                        subPath: wait-for-elasticsearch.sh
+    customLabels:
+        origin: liferay-azure
+    customVolumeMounts:
+        x-liferay-azure:
+            -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config
+                name: liferay-configmap
+                subPath: com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config
+            -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config
+                name: liferay-configmap
+                subPath: com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config
+            -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.store.azure.configuration.AzureStoreConfiguration.config
+                name: liferay-configmap
+                subPath: com.liferay.portal.store.azure.configuration.AzureStoreConfiguration.config
+    customVolumes:
+        x-liferay-init-scripts-azure:
+            -   configMap:
+                    defaultMode: 0755
+                    name: liferay-init-scripts-azure
+                name: liferay-init-scripts-azure
+    license:
+        enabled: true
+    marketplace:
+        enabled: true
+        size: 10Gi
+        storageClassName: azurefile-csi
+    network:
+        enabled: true
+        timeouts:
+            backendRequest: 300s
+            request: 300s
+    overlay:
+        type: azureblob
+    persistence:
+        defaultStorageClassName: managed-csi
+    podLabels:
+        azure.workload.identity/use: "true"
+    podSecurityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+            type: RuntimeDefault
+    resources:
+        limits:
+            cpu: 4000m
+            memory: 12Gi
+        requests:
+            cpu: 2000m
+            memory: 4Gi
+    securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+            drop:
+                -   ALL
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+            type: RuntimeDefault
+    volumeClaimTemplates:
+        -   metadata:
+                name: liferay-persistent-volume
+            spec:
+                accessModes:
+                    -   ReadWriteOnce
+                resources:
+                    requests:
+                        storage: 10Gi
