@@ -7,6 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.notifications.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -18,11 +19,14 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.notifications.UserNotificationFeedEntry;
 import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -41,6 +45,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -124,6 +129,61 @@ public class CMSObjectEntryReviewUserNotificationTest {
 			userNotificationFeedEntry.getTitle());
 	}
 
+	@Test
+	public void testReviewDateUserNotificationEventIsSentOnlyOnce()
+		throws Exception {
+
+		ObjectEntry objectEntry = _addCMSObjectEntry(
+			RandomTestUtil.randomString());
+
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+
+		List<UserNotificationEvent> userNotificationEvents =
+			_getReviewUserNotificationEvents(objectEntry, _user);
+
+		Assert.assertEquals(
+			userNotificationEvents.toString(), 1,
+			userNotificationEvents.size());
+	}
+
+	@Test
+	public void testReviewDateUserNotificationEventIsSentOnlyToOwner()
+		throws Exception {
+
+		User contentReviewerUser = UserTestUtil.addUser();
+
+		_userLocalService.addGroupUser(
+			_depotEntry.getGroupId(), contentReviewerUser.getUserId());
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			contentReviewerUser.getUserId(), _depotEntry.getGroupId(),
+			new long[] {role.getRoleId()});
+
+		ObjectEntry objectEntry = _addCMSObjectEntry(
+			RandomTestUtil.randomString());
+
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+
+		List<UserNotificationEvent> ownerUserNotificationEvents =
+			_getReviewUserNotificationEvents(objectEntry, _user);
+
+		Assert.assertEquals(
+			ownerUserNotificationEvents.toString(), 1,
+			ownerUserNotificationEvents.size());
+
+		List<UserNotificationEvent> contentReviewerUserNotificationEvents =
+			_getReviewUserNotificationEvents(objectEntry, contentReviewerUser);
+
+		Assert.assertEquals(
+			contentReviewerUserNotificationEvents.toString(), 0,
+			contentReviewerUserNotificationEvents.size());
+	}
+
 	private ObjectEntry _addCMSObjectEntry(String title) throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
@@ -146,35 +206,43 @@ public class CMSObjectEntryReviewUserNotificationTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private UserNotificationFeedEntry _interpretUserNotificationEvent(
-			ObjectEntry objectEntry, String languageId)
+	private List<UserNotificationEvent> _getReviewUserNotificationEvents(
+			ObjectEntry objectEntry, User user)
 		throws Exception {
+
+		List<UserNotificationEvent> reviewUserNotificationEvents =
+			new ArrayList<>();
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
-		UserNotificationEvent reviewUserNotificationEvent = null;
-
-		List<UserNotificationEvent> userNotificationEvents =
-			_userNotificationEventLocalService.getUserNotificationEvents(
-				_user.getUserId());
-
 		for (UserNotificationEvent userNotificationEvent :
-				userNotificationEvents) {
+				_userNotificationEventLocalService.getUserNotificationEvents(
+					user.getUserId())) {
 
 			if (Objects.equals(
 					objectDefinition.getPortletId(),
 					userNotificationEvent.getType())) {
 
-				Assert.assertNull(
-					userNotificationEvents.toString(),
-					reviewUserNotificationEvent);
-
-				reviewUserNotificationEvent = userNotificationEvent;
+				reviewUserNotificationEvents.add(userNotificationEvent);
 			}
 		}
 
-		Assert.assertNotNull(
-			userNotificationEvents.toString(), reviewUserNotificationEvent);
+		return reviewUserNotificationEvents;
+	}
+
+	private UserNotificationFeedEntry _interpretUserNotificationEvent(
+			ObjectEntry objectEntry, String languageId)
+		throws Exception {
+
+		List<UserNotificationEvent> userNotificationEvents =
+			_getReviewUserNotificationEvents(objectEntry, _user);
+
+		Assert.assertEquals(
+			userNotificationEvents.toString(), 1,
+			userNotificationEvents.size());
+
+		UserNotificationEvent reviewUserNotificationEvent =
+			userNotificationEvents.get(0);
 
 		String payload = reviewUserNotificationEvent.getPayload();
 
@@ -205,7 +273,13 @@ public class CMSObjectEntryReviewUserNotificationTest {
 	@Inject
 	private Portal _portal;
 
+	@Inject
+	private RoleLocalService _roleLocalService;
+
 	private User _user;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
