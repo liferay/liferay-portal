@@ -4,6 +4,32 @@ What an anonymous visitor can and cannot read. Every rule here fails **silently*
 
 Consulted by `manage-pages`, `manage-objects`, and `manage-roles-permissions`; each holds the procedure, this card holds the fact.
 
+## A Service Access Policy Gates Every Headless Call Before Permissions Are Consulted
+
+Permissions are the second gate. The first is the **Service Access Policy** (SAP), and it decides whether the Headless endpoint is reachable at all. Every rule below this section is about what a reachable endpoint returns — none of it applies until a policy admits the call.
+
+So a public fragment fetching web content fails here while every permission looks correctly granted, and the grant you are staring at is not the problem.
+
+A policy is a named set of **allowed service signatures**, each the fully qualified implementation method the request would land on:
+
+```text
+com.liferay.headless.delivery.internal.resource.v1_0.StructuredContentResourceImpl#getStructuredContent
+com.liferay.headless.delivery.internal.resource.v1_0.NavigationMenuResourceImpl#getNavigationMenu
+```
+
+Signatures name the `*ResourceImpl` class and method, not the REST path. Resolve one by finding the resource class behind the endpoint — the `internal.resource.v1_0` package of the module in `rules/headless-apis.md`.
+
+Author it at Control Panel → Security → Service Access Policy, in **Advanced Mode** (the basic form does not expose raw signatures). Two independent booleans have to be right, and the entry silently admits nothing if either is wrong:
+
+| Field | Set It To | Why |
+| --- | --- | --- |
+| Default | checked | A policy applies to unauthenticated requests only when it is marked default. Liferay collects the company's default entries on every request and unions them into the active set; a nondefault policy is only ever active when something names it explicitly. |
+| Enabled | checked | A disabled entry is skipped entirely. |
+
+**A policy is necessary but not sufficient.** It makes the endpoint reachable; the resource still has to be readable. Guest needs the VIEW grant covered in the rest of this card, and for an object that means `resource-permissions.json` at company scope. Both gates, or the visitor gets an empty result that looks like missing data rather than missing access.
+
+Source: `SAPAccessControlPolicy` and `SAPEntryLocalServiceImpl` in `modules/apps/portal-security/portal-security-service-access-policy-service`.
+
 ## Object Entries Are Invisible Until Granted
 
 Publishing an object does not make its entries readable. Page level VIEW does not confer entry level VIEW, and a server side **Collection element does not sidestep this** — it evaluates entry permissions as the visiting user, so an object backed listing renders **empty** for Guest while looking right to you.
