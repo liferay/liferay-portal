@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.plugin.PluginPackage;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
@@ -659,6 +660,8 @@ public class MainServlet extends HttpServlet {
 
 			timeout = GetterUtil.getInteger(sessionTimeout, timeout);
 		}
+
+		FIPSModeValidator.validateSessionTimeout(timeout);
 
 		PropsUtil.set(PropsKeys.SESSION_TIMEOUT, String.valueOf(timeout));
 
