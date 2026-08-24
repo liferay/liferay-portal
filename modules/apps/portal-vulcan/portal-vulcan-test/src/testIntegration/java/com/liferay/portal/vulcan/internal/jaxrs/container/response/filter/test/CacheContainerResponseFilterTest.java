@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Application;
@@ -142,6 +143,13 @@ public class CacheContainerResponseFilterTest {
 		_assertNotCacheable(httpURLConnection);
 	}
 
+	@Test
+	public void testCacheWithUnsuccessfulResponse() throws Exception {
+		_addCacheableEndpoint("/test-vulcan-cache/not-found", "public", 3600);
+
+		_assertNotCacheable(_openURLConnection("/not-found"));
+	}
+
 	public static class TestApplication extends Application {
 
 		@Override
@@ -152,6 +160,12 @@ public class CacheContainerResponseFilterTest {
 		@GET
 		@Path("/tests/{testId}/nested")
 		public void nested() {
+		}
+
+		@GET
+		@Path("/not-found")
+		public void notFound() {
+			throw new NotFoundException();
 		}
 
 		@GET

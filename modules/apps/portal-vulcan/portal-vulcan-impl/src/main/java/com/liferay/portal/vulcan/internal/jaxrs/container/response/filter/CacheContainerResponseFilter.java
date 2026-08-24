@@ -16,6 +16,7 @@ import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.Provider;
 
@@ -48,10 +49,14 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 		MultivaluedMap<String, Object> headers =
 			containerResponseContext.getHeaders();
 
+		Response.StatusType statusType =
+			containerResponseContext.getStatusInfo();
+
 		String cacheControl = null;
 
 		if (Objects.equals(
 				containerRequestContext.getMethod(), HttpMethod.GET) &&
+			(statusType.getFamily() == Response.Status.Family.SUCCESSFUL) &&
 			(_company != null)) {
 
 			UriInfo uriInfo = containerRequestContext.getUriInfo();
