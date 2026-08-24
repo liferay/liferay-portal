@@ -31,7 +31,7 @@ A `themeCSS` CET injects custom CSS that overrides Clay Design System variables.
 >
 > 1. **It cannot be applied from the initializer tree.** Liferay attaches a themeCSS CET via a `ClientExtensionEntryRel` on the layout, master layout, or layout set. `BundleSiteInitializer` has no handler for that relation and `metadata.json` has no key for it, so a deployed CET is available but inert until someone selects it in Site Administration → Design → Theme — and that selection does not survive a reprovision.
 >
-> So decide up front where each part of the look lives. Anything that must survive delete-and-redeploy belongs in the style book, the master page, fragment CSS, or layout set settings. Use the themeCSS CET for Clay level overrides that have no style book token (Classic exposes no `headings*` tokens), and say plainly that it needs the manual selection step.
+> So decide up front where each part of the look lives. Anything that must survive delete and redeploy belongs in the style book, the master page, fragment CSS, or layout set settings. Use the themeCSS CET for Clay level overrides that have no style book token (Classic exposes no `headings*` tokens), and say plainly that it needs the manual selection step.
 
 #### Scaffold
 
@@ -160,7 +160,7 @@ for c in d['frontendTokenCategories']:
 
 This has the added benefit of describing the theme **actually running**, so the list matches the release under test rather than whatever branch is checked out. Verified on a 2026.Q2 bundle: 252 tokens, and no `headings*` among them.
 
-Filter that list to what you need (`grep -E '^(primary|btnPrimary|body|font|h[1-6])'`) rather than reading all 252. For a non Classic theme, substitute its WAR under `bundles/osgi/portal-war/` (or `bundles/osgi/war/` for a deployed custom theme).
+Filter that list to what you need (`grep --extended-regexp '^(primary|btnPrimary|body|font|h[1-6])'`) rather than reading all 252. For a non Classic theme, substitute its WAR under `bundles/osgi/portal-war/` (or `bundles/osgi/war/` for a deployed custom theme).
 
 Classic declares 252 tokens. Useful ones: `bodyBgColor`, `bodyColor`, `primaryColor`, `primaryD1Color`, `primaryD2Color`, `primaryL1Color`…`primaryL3Color`, `secondaryColor`, `warningColor`, `warningD1Color`, `fontFamilyBase`, `fontSizeBase`, `fontWeightBold`, `fontWeightBolder`, `h1FontSize`…`h6FontSize`, and the full `btnPrimary*` / `btnSecondary*` sets (`BackgroundColor`, `BorderColor`, `Color`, and their `Hover` variants).
 
@@ -172,7 +172,7 @@ Recoloring buttons takes the whole `btnPrimary*` set, not just the background �
 
 This is the gap the two constraints at the top of this skill create: the value has no style book token, and a themeCSS CET reverts to unselected on every reprovision. The reproducible answer is the **master page's header fragment**.
 
-A fragment's `index.css` is a stylesheet on the page, so its rules can target anything — they are not confined to the fragment's markup. A fragment placed in the master page loads on **every page using that master**, which makes it the one place site-wide CSS can live and still survive delete-and-redeploy:
+A fragment's `index.css` is a stylesheet on the page, so its rules can target anything — they are not confined to the fragment's markup. A fragment placed in the master page loads on **every page using that master**, which makes it the one place site wide CSS can live and still survive delete and redeploy:
 
 ```css
 /* site-header/index.css — deliberately NOT scoped to the fragment wrapper */
@@ -204,11 +204,11 @@ The rule above therefore matches the fragment's *default* heading and skips ever
 }
 ```
 
-Verified on 2026.Q2: with tags only, `getComputedStyle` on an overridden hero title returned the body font at weight `700`, while the untouched default beside it rendered correctly — so the page looked *mostly* branded and the failure read as a font-loading problem rather than a selector one.
+Verified on 2026.Q2: with tags only, `getComputedStyle` on an overridden hero title returned the body font at weight `700`, while the untouched default beside it rendered correctly — so the page looked *mostly* branded and the failure read as a font loading problem rather than a selector one.
 
 ##### Every Content Fragment Outranks This Rule — Strip Their Heading Weights
 
-The selector above is one id plus a **type**, so any fragment styling its own heading through a class beats it. `scaffold-fragment` requires exactly that form (`#wrapper .<wrapper-class>`), so the collision is the default outcome, not an edge case:
+The selector above is one ID plus a **type**, so any fragment styling its own heading through a class beats it. `scaffold-fragment` requires exactly that form (`#wrapper .<wrapper-class>`), so the collision is the default outcome, not an edge case:
 
 ```css
 #wrapper h1                        /* master rule   — 1 id, 0 classes, 1 type */
@@ -220,7 +220,7 @@ The fragment wins. The failure is quiet because it is partial: family and tracki
 Fix it at the fragments, not by escalating the master selector. **Delete `font-weight` from every heading rule in every content fragment** so the master rule is the single source of truth:
 
 ```bash
-grep -n -B3 'font-weight' */index.css | grep -E '__title|__heading'
+grep --before-context=3 --line-number 'font-weight' */index.css | grep --extended-regexp '__title|__heading'
 ```
 
 Then confirm the computed value in the browser rather than trusting the stylesheet, because the cascade is the whole question:
@@ -247,7 +247,7 @@ A webfont still needs a file served from a CET; a system font stack at weight 80
 
 Verify the book landed by fetching a page and checking the override lands *after* the theme default — two declarations, e.g. `--primary: #0b5fff;` from Classic then `--primary: #14284b;` from the book. One declaration means the tokens were dropped.
 
-> **Verify the StyleBook write shape against the OpenAPI spec** (`get-openapi` MCP tool, or `GET /o/headless-admin-content/v1.0/openapi.json`). On the current API the `StyleBook` DTO exposes only `key`/`name` over `headless-admin-content`; `tokenValues`/`styleBookEntryId` shown below may not be accepted (the book would be created without tokens). If so, author the style book in the site-initializer tree (`style-books/<name>/style-book.json`) or set tokens in Site Administration → Design → Style Book.
+> **Verify the StyleBook write shape against the OpenAPI spec** (`get-openapi` MCP tool, or `GET /o/headless-admin-content/v1.0/openapi.json`). On the current API the `StyleBook` DTO exposes only `key`/`name` over `headless-admin-content`; `tokenValues`/`styleBookEntryId` shown below may not be accepted (the book would be created without tokens). If so, author the style book in the site initializer tree (`style-books/<name>/style-book.json`) or set tokens in Site Administration → Design → Style Book.
 
 ```bash
 curl \

@@ -133,7 +133,7 @@ Copying `configs/local/portal-ext.properties` to `bundles/portal-ext.properties`
 
 ## Success Signal
 
-TODO / inferred — verify against a running bundle. The Tail for STARTED and Smoke Check steps above are the observable done-when; confirm on a live bundle.
+TODO / inferred — verify against a running bundle. The Tail for STARTED and Smoke Check steps above are the observable completion checks; confirm on a live bundle.
 
 ## References
 

@@ -85,7 +85,7 @@ So a public form whose `<select>` is populated by fetching the picklist renders 
 
 Browser calls run as the visitor. A fetch that returns rows for you returns `0` for Guest — the API answers `200` with an empty list rather than failing — so arithmetic over it produces a confident wrong number (a full event rendering as "500 of 500") instead of an error. If a value cannot be derived from data the visitor may read, denormalize it or do not display it.
 
-## Verify As the Visitor
+## Verify as the Visitor
 
 `curl` with no `--user` and no cookie jar **is** a Guest request, and is the only cheap way to see what a visitor sees:
 

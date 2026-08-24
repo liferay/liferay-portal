@@ -1,17 +1,17 @@
 ---
 
-description: Gentle first-run setup walkthrough for a user brand new to a Liferay Workspace. Use when a first-time user needs step-by-step help creating a workspace, initializing the bundle, and starting the server for the first time. For diagnosing or repairing an existing workspace, use workspace-init.
+description: Gentle first run setup walkthrough for a user brand new to a Liferay Workspace. Use when a first time user needs step by step help creating a workspace, initializing the bundle, and starting the server for the first time. For diagnosing or repairing an existing workspace, use workspace-init.
 name: initial-setup-guide
 
 ---
 
 # Initial Setup Guide
 
-A gentle, step-by-step first run for a brand-new Liferay Workspace: verify the workspace, initialize the bundle, and start the server. For diagnosing or repairing an existing workspace, use `workspace-init`.
+A gentle, step by step first run for a brand new Liferay Workspace: verify the workspace, initialize the bundle, and start the server. For diagnosing or repairing an existing workspace, use `workspace-init`.
 
 ## When to Invoke
 
-- A first-time user needs help creating their first workspace and starting the server.
+- A first time user needs help creating their first workspace and starting the server.
 - The friendly entry point before `workspace-init`'s deeper setup and diagnosis.
 
 ## Workflow

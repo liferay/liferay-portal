@@ -148,11 +148,11 @@ Access the value in `index.html` with `[configuration.buttonStyle]` or in `index
 The fragment lives in the `siteInitializer` tree and is created when the site is provisioned. Trigger the initializer (see `build-site` Phase 9 and `rules/site-initializer-format.md`); no separate fragment deploy is needed.
 
 **Iterating on a fragment — reprovision from the tree:**
-Edit the source files in the site-initializer tree and reprovision the site — delete the site, then redeploy the initializer CET so it recreates the site from the current tree. See `rules/site-initializer-format.md` for the reprovision recipe. Object data is company scoped and survives the reprovision.
+Edit the source files in the site initializer tree and reprovision the site — delete the site, then redeploy the initializer CET so it recreates the site from the current tree. See `rules/site-initializer-format.md` for the reprovision recipe. Object data is company scoped and survives the reprovision.
 
 **A live fragment API does exist — it just will not save you the reprovision.** `headless-admin-fragment` is real and fully functional (see "The Live Fragment API" below). The reason you still reprovision is **propagation**, not a missing endpoint: Liferay copies a fragment's HTML, CSS and JS into each page's fragment *instance* when it is placed, so updating the library fragment leaves every page already using it untouched.
 
-Verified on 2026.Q2 — a `PUT` that changed a fragment's CSS read back changed on the fragment entry and produced **zero** difference in the rendered page that placed it. Knowing this is worth a few minutes: the endpoint returns `200`, the read-back confirms the edit, and it is entirely reasonable to conclude the change is live and then spend a while hunting a caching problem that does not exist.
+Verified on 2026.Q2 — a `PUT` that changed a fragment's CSS read back changed on the fragment entry and produced **zero** difference in the rendered page that placed it. Knowing this is worth a few minutes: the endpoint returns `200`, the read back confirms the edit, and it is entirely reasonable to conclude the change is live and then spend a while hunting a caching problem that does not exist.
 
 **Alternative — standalone fragment collection CET:**
 
@@ -307,13 +307,13 @@ was "true,false", which is the legacy deprecated default…
 Failed at: ${configuration.upcomingOnly!true}
 ```
 
-Append `?c` (the computer-readable format, giving `true` / `false`), and keep the default **inside** the parentheses so it is applied before the conversion:
+Append `?c` (the computer readable format, giving `true` / `false`), and keep the default **inside** the parentheses so it is applied before the conversion:
 
 ```html
 <div data-upcoming-only="${(configuration.upcomingOnly!true)?c}">
 ```
 
-Parenthesizing the default is the form verified here; bind it to the variable rather than to the formatted result. For human-facing output the error message itself suggests `?string('Yes', 'No')` instead of `?c`.
+Parenthesizing the default is the form verified here; bind it to the variable rather than to the formatted result. For human facing output the error message itself suggests `?string('Yes', 'No')` instead of `?c`.
 
 This is the same rollback trap as an invalid `dataType`: inside a site initializer it aborts the whole site creation, so a fragment that reads a checkbox is worth rendering once before shipping the tree.
 
@@ -358,7 +358,7 @@ if (root.getAttribute('data-show-company') === 'false') {
 }
 ```
 
-Prefer the data attribute plus CSS form regardless of the directive limitation: it re-evaluates live in the page editor as the author flips the checkbox, whereas server side branching would only apply on re-render.
+Prefer the data attribute plus CSS form regardless of the directive limitation: it reevaluates live in the page editor as the author flips the checkbox, whereas server side branching would only apply when the page is rendered again.
 
 `index.js` is **not** passed through FreeMarker — only `index.html` is. Verified by shipping `/* ${configuration.layout!'grid'} */` in an `index.js` and reading it back from the served page still literal, on a fragment whose `layout` was set to `rows`. So read configuration in JS from the data attributes; a `${...}` written there is inert rather than interpolated (which also means template literals in `index.js` are safe).
 
@@ -409,4 +409,4 @@ For inserting a fragment into a Content Page via the headless API (rather than t
 
 ## Success Signal
 
-TODO / inferred — verify against a running bundle. The `### Verify` step above (fragment appears in the editor's Fragments panel, editable regions highlight, no console or import errors) is the observable done-when; confirm on a live bundle.
+TODO / inferred — verify against a running bundle. The `### Verify` step above (fragment appears in the editor's Fragments panel, editable regions highlight, no console or import errors) is the observable completion check; confirm on a live bundle.

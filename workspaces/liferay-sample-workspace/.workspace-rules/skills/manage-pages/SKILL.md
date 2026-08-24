@@ -208,7 +208,7 @@ Keys are the `name` values from `configuration.json`, and each value must match 
 **This is cheap to verify without a browser.** Have the fragment publish each flag as a data attribute (`scaffold-fragment` requires this anyway, since block directives do not run) and the values land in the server rendered HTML, where `curl` can assert them:
 
 ```bash
-grep -oE '<div[^>]*event-list-wrapper[^>]*' /tmp/page.html | tr ' ' '\n' | grep '^data-'
+grep --extended-regexp --only-matching '<div[^>]*event-list-wrapper[^>]*' /tmp/page.html | tr ' ' '\n' | grep '^data-'
 ```
 
 Match the class **inside** the tag as above rather than anchoring on `class="…"`. A wrapper that also carries style classes (`class="conference-hero-wrapper conference-hero--dark …"`) does not match `class="conference-hero-wrapper"`, and the grep then returns nothing — indistinguishable from a config that never applied.

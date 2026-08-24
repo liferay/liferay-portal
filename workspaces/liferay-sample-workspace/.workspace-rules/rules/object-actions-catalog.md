@@ -120,7 +120,7 @@ Verified on a self hosted 2026.Q2 bundle. Treat Groovy as unavailable until prov
 
 **Script bindings are the entry's fields as top level variables — there is no `objectEntry` object.** `GroovyObjectActionExecutorImpl` passes `ObjectEntryVariablesUtil.getVariables(...).get("baseModel")` as the binding, which spreads `objectEntry.values` directly. So a `Registration` field is referenced as bare `attendeeName`, and a relationship foreign key as bare `r_eventRegistrations_c_eventId`.
 
-Also bound: `creator`, `currentDate`, `currentUserId`, `currentUserExternalReferenceCode`, `groupId`, `id` (the entry id), and `entryDTO`. Guard optional fields with `binding.hasVariable("<name>")` — referencing an absent one throws `MissingPropertyException`. Source: `ObjectEntryVariablesUtil`.
+Also bound: `creator`, `currentDate`, `currentUserId`, `currentUserExternalReferenceCode`, `groupId`, `id` (the entry ID), and `entryDTO`. Guard optional fields with `binding.hasVariable("<name>")` — referencing an absent one throws `MissingPropertyException`. Source: `ObjectEntryVariablesUtil`.
 
 ### `objectAction` (Client Extension)
 
@@ -158,5 +158,5 @@ Object action definition body:
 
 - `skills/manage-object-logic/SKILL.md` — the primary consumer of this card.
 - `rules/client-extension-types.md` — the `objectAction` CET type.
-- `rules/oauth-scopes.md` — scopes for CET-backed actions.
+- `rules/oauth-scopes.md` — scopes for CET backed actions.
 - Objects: `https://learn.liferay.com/w/dxp/low-code/objects`

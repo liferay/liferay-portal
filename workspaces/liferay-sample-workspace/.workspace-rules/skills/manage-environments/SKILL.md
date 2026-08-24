@@ -182,4 +182,4 @@ curl \
 
 ## Success Signal
 
-TODO / inferred — verify against a running bundle. Confirm (per the steps above) that the merged config reaches `bundles/portal-ext.properties`, the batch export task reaches `"executeStatus": "COMPLETED"`, and a re-fetched entry shows the imported fields persisted.
+TODO / inferred — verify against a running bundle. Confirm (per the steps above) that the merged config reaches `bundles/portal-ext.properties`, the batch export task reaches `"executeStatus": "COMPLETED"`, and an entry fetched again shows the imported fields persisted.

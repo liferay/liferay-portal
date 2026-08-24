@@ -151,4 +151,4 @@ Check the microservice logs to confirm Liferay forwarded the calls. If entries a
 
 ## Success Signal
 
-TODO / inferred — verify against a running bundle. The `### Verify` step above (POST then GET on `/o/c/<pluralLabel>` return external-system records; microservice logs show forwarded CRUD calls) is the observable done-when; confirm on a live bundle.
+TODO / inferred — verify against a running bundle. The `### Verify` step above (POST then GET on `/o/c/<pluralLabel>` return external system records; microservice logs show forwarded CRUD calls) is the observable completion check; confirm on a live bundle.

@@ -63,7 +63,7 @@ Save the returned `id` as `<definition-id>`.
 
 #### Prefer Creating Fields Inline
 
-The create call accepts a full `objectFields` array — the same raw DTO shape a site initializer uses. **Prefer this over create-then-add-fields.** One call instead of N+1, the definition never exists in a half built state, and it sidesteps the standalone field call's `required` trap below:
+The create call accepts a full `objectFields` array — the same raw DTO shape a site initializer uses. **Prefer this over creating the definition and then adding fields.** One call instead of N+1, the definition never exists in a half built state, and it sidesteps the standalone field call's `required` trap below:
 
 ```bash
 curl \
@@ -140,7 +140,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Save the returned `id` as `<list-type-id>`. Then add a `Picklist` field referencing `"listTypeDefinitionId": <list-type-id>`. In a site initializer, reference the picklist by ERC instead — `"listTypeDefinitionExternalReferenceCode": "<ERC>"` — so no numeric id is baked into the tree.
+Save the returned `id` as `<list-type-id>`. Then add a `Picklist` field referencing `"listTypeDefinitionId": <list-type-id>`. In a site initializer, reference the picklist by ERC instead — `"listTypeDefinitionExternalReferenceCode": "<ERC>"` — so no numeric ID is baked into the tree.
 
 > **A public form cannot fetch this picklist.** Guest gets 403 from the list type REST endpoint, so a `<select>` populated by fetch renders empty and the entry saves blank looking like success. Ship the options in the fragment markup. See `rules/guest-access.md`.
 
@@ -175,7 +175,7 @@ Supply both. `defaultValue` is the entry **key** of the starting state; `default
 Two consequences worth planning around:
 
 - **The default actually fires.** A POST that omits the field entirely still succeeds and lands on the default state, despite `"required": true`. This is what you want for a public form — the visitor never submits a status.
-- **Liferay auto-generates a fully connected `stateFlow`.** Every state gets a transition to every other state, returned as a third `stateFlow` setting you did not send. If a state should be terminal (a canceled registration that cannot go back to pending), you must constrain the flow explicitly — the default permits it.
+- **Liferay generates a fully connected `stateFlow` automatically.** Every state gets a transition to every other state, returned as a third `stateFlow` setting you did not send. If a state should be terminal (a canceled registration that cannot go back to pending), you must constrain the flow explicitly — the default permits it.
 
 A plain (non `state`) Picklist needs none of this.
 
@@ -224,7 +224,7 @@ The response carries the generated foreign key field — **read it instead of de
 
 ### Aggregation Fields — Publish a Count Without Exposing the Rows
 
-An `Aggregation` field computes a value **over a relationship** and stores it on the parent. It is the no-script answer to "how many children does this record have", and it is what makes a remaining-capacity or item-count figure publishable on a public page.
+An `Aggregation` field computes a value **over a relationship** and stores it on the parent. It answers "how many children does this record have" with no scripting at all, and it is what makes a remaining capacity or item count figure publishable on a public page.
 
 Add it to the parent **after** the relationship exists, naming the relationship it walks:
 
@@ -251,7 +251,7 @@ curl \
 
 Three behaviors that decide whether you can use it:
 
-- **It ignores entry level permissions.** A Guest who cannot read a single child row still receives the correct count on the parent — verified with an unauthenticated `GET`. This is what lets a private, write-only submissions object feed a public number, and it is a genuinely better option than the object-action counter that `manage-pages` and `rules/guest-access.md` describe: nothing to maintain, nothing to drift, no scripting to enable.
+- **It ignores entry level permissions.** A Guest who cannot read a single child row still receives the correct count on the parent — verified with an unauthenticated `GET`. This is what lets a private, write only submissions object feed a public number, and it is a genuinely better option than the object action counter that `manage-pages` and `rules/guest-access.md` describe: nothing to maintain, nothing to drift, no scripting to enable.
 - **It serializes as a string.** `"registrationCount": "2"`, not `2`. Parse before arithmetic — `attendeeCapacity - registrationCount` in JavaScript silently concatenates, and in `jq` it throws `number and string cannot be subtracted`.
 - **It is computed, so it is read only.** Do not send it on a POST or PATCH.
 
@@ -574,7 +574,7 @@ The OpenAPI spec for `object-admin` and the per object `/o/c/<pluralLabel>` endp
 
 - **Namespace safety**: NEVER use `userId` as a custom field name — it is a system column in `ObjectEntryTable` and will collide. Use `liferayUserId` instead.
 - **Type storage**: every `DateTime` or `Date` field MUST have `timeStorage` set in `objectFieldSettings` (e.g., `"convertToUTC"`).
-- **Indexed language**: `indexedLanguageId` is valid only on `String` and `Clob` field types. Never set it on `Date`/`DateTime` or other non-text fields.
+- **Indexed language**: `indexedLanguageId` is valid only on `String` and `Clob` field types. Never set it on `Date`/`DateTime` or other nontext fields.
 
 #### Reserved Field Names
 

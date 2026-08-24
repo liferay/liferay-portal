@@ -47,7 +47,7 @@ Consult `rules/object-actions-catalog.md` for the full catalog. Summary:
 
 ### Object Action — Notification (Site Initializer, Preferred)
 
-When the object lives in a site initializer, author the template **and** its action in the tree so the whole thing survives delete-and-redeploy. The REST recipe further down is for one off changes to a running instance.
+When the object lives in a site initializer, author the template **and** its action in the tree so the whole thing survives delete and redeploy. The REST recipe further down is for one off changes to a running instance.
 
 Three files in one directory, `site-initializer/notification-templates/<name>/`:
 
@@ -86,7 +86,7 @@ notification-templates/
 }
 ```
 
-`notification-template.object-actions.json` — a bare array. **Do not set `notificationTemplateId`**; the handler injects the id of the template it sits beside, which is what makes the pair portable:
+`notification-template.object-actions.json` — a bare array. **Do not set `notificationTemplateId`**; the handler injects the ID of the template it sits beside, which is what makes the pair portable:
 
 ```json
 [
@@ -115,8 +115,10 @@ Only fields **on that object** resolve. A token reaching across a relationship s
 Verify after sending:
 
 ```bash
-curl --silent --user "test@liferay.com:test" \
-	"http://localhost:${PORT}/o/notification/v1.0/notification-queue-entries?pageSize=50" \
+curl \
+	--silent \
+	--url "http://localhost:${PORT}/o/notification/v1.0/notification-queue-entries?pageSize=50" \
+	--user "test@liferay.com:test" \
 	| jq '.items | sort_by(.id) | last
 		| {id, recipientsSummary, status, unresolved: (.body | test("\\[%"))}'
 ```
@@ -125,7 +127,7 @@ curl --silent --user "test@liferay.com:test" \
 
 `unresolved: false` with the right `recipientsSummary` means Liferay **built** a correctly addressed message. That is the part this endpoint can actually tell you.
 
-#### `status: 1` Is `STATUS_SENT` And It Lies
+#### `status: 1` Is `STATUS_SENT` and It Lies
 
 The status codes are not a queue depth. From `NotificationQueueEntryConstants`:
 
@@ -144,12 +146,15 @@ Treat this field as worthless for delivery. `sent: null` alongside `status: 1` i
 When the message builds but nothing arrives, the fault is either the notification framework or the mail transport, and the queue entry cannot distinguish them. **Trigger an unrelated portal email and see whether that arrives**, which needs no admin session:
 
 ```bash
-curl --data-urlencode "emailAddress=test@liferay.com" --data-urlencode "step=2" \
-	--request POST --silent \
+curl \
+	--data-urlencode "emailAddress=test@liferay.com" \
+	--data-urlencode "step=2" \
+	--request POST \
+	--silent \
 	--url "http://localhost:${PORT}/c/portal/forgot_password"
 ```
 
-If the password-reset mail is missing too, the notification wiring is fine and the mail session is the problem — stop debugging object actions. That one call saved a long detour here.
+If the password reset mail is missing too, the notification wiring is fine and the mail session is the problem — stop debugging object actions. That one call saved a long detour here.
 
 Then check **Control Panel → Server Administration → Mail** before trusting `portal-ext.properties`. Adding `mail.session.mail.smtp.*` to that file and restarting was not sufficient on a bundle in this run; the cause was not isolated (that page needs an admin session), so verify the effective host and port there rather than assuming the properties won.
 
@@ -215,7 +220,7 @@ curl \
 
 **`from` persists on the template; it is the queue entry that reports `null`.** Verified on 2026.Q2 — a fresh `GET /notification-templates/<id>` read back `"from": "noreply@devcon.example"` exactly as posted, alongside `fromName`. The `null` turns up one layer down, on the `notification-queue-entries` record, so a check there is what makes `from` look dropped. Set it on the template as documented, and confirm the actual sender on the received message rather than on the queue entry.
 
-The `NotificationTemplate` schema exposes no enums for `type` or `recipientType` and publishes no `Recipient` sub-schema, so the OpenAPI spec will not confirm this shape — it is verified by creating one and reading the queue entry.
+The `NotificationTemplate` schema exposes no enums for `type` or `recipientType` and publishes no nested `Recipient` schema, so the OpenAPI spec will not confirm this shape — it is verified by creating one and reading the queue entry.
 
 Save the returned `id` as `<template-id>`. Then create the action:
 
@@ -360,4 +365,4 @@ Never pass interpolated strings (`"${var}"`) to Liferay Service APIs. Groovy `GS
 
 ## Success Signal
 
-TODO / inferred — verify against a running bundle. The Verify Object Actions and Test the Trigger steps above (each action `"active": true`; a test entry fires the expected side effect) are the observable done-when; confirm on a live bundle.
+TODO / inferred — verify against a running bundle. The Verify Object Actions and Test the Trigger steps above (each action `"active": true`; a test entry fires the expected side effect) are the observable completion checks; confirm on a live bundle.

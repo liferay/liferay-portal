@@ -127,7 +127,7 @@ For an anonymous registration, enquiry, or application form, grant creation on t
 ]
 ```
 
-Do **not** add `VIEW` on the object that receives submissions. Those rows hold whatever the visitor typed — names, emails, addresses — and `VIEW` at company scope publishes all of them to anonymous users. Write-only is the correct posture for a public form, and it is why any count or aggregate over that object has to be denormalized onto the public object rather than computed in the browser (see `manage-pages` → "Mapping Limits").
+Do **not** add `VIEW` on the object that receives submissions. Those rows hold whatever the visitor typed — names, emails, addresses — and `VIEW` at company scope publishes all of them to anonymous users. Write only is the correct posture for a public form, and it is why any count or aggregate over that object has to be denormalized onto the public object rather than computed in the browser (see `manage-pages` → "Mapping Limits").
 
 ### Grant Permissions on Object Entries (Requires LPD-17564)
 
@@ -228,4 +228,4 @@ Include both fields on the create payload where supported. **Caveat:** `agreedTo
 
 ## Success Signal
 
-TODO / inferred — verify against a running bundle. The Verify Roles and Permissions step above (role listed; granted `actionIds` present; a user holding only that role is allowed the granted actions and denied the rest) is the observable done-when; confirm on a live bundle.
+TODO / inferred — verify against a running bundle. The Verify Roles and Permissions step above (role listed; granted `actionIds` present; a user holding only that role is allowed the granted actions and denied the rest) is the observable completion check; confirm on a live bundle.

@@ -123,7 +123,7 @@ JAX-RS converts the bare `UnsupportedOperationException()` to a 400 with no usef
 
 ## Success Signal
 
-TODO / inferred — verify against a running bundle. The `### Verify` step above (re-read state; the endpoint that prompted the check no longer returns `404` or `400 UnsupportedOperationException`) is the observable done-when; confirm on a live bundle.
+TODO / inferred — verify against a running bundle. The `### Verify` step above (reread state; the endpoint that prompted the check no longer returns `404` or `400 UnsupportedOperationException`) is the observable completion check; confirm on a live bundle.
 
 ## References
 

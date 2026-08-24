@@ -4,7 +4,7 @@
 
 Key Liferay REST modules, their base URIs, primary resources, and OAuth scopes. All paths resolve relative to `http://localhost:${PORT}`. Use Basic auth (`test@liferay.com:test`) for the curl examples on this page and in the skills. The OAuth scope strings noted per module are for `oAuthApplicationHeadlessServer` blocks when scaffolding microservice CETs — see `rules/oauth-scopes.md` for the full scaffolding reference.
 
-The tables below list the common endpoints per module — they are not exhaustive. To confirm an exact path or find an endpoint not listed here, use the `get-openapi` MCP tool (see `skills/mcp-server/SKILL.md`), or fetch `GET /o/<module>/v1.0/openapi.json` directly. Base URIs, feature flag gates, and OAuth scopes are *not* discoverable from the specs — rely on this card for those. The per-module `Required flag` notes below map each module to its gating flag; see `rules/feature-flags-catalog.md` for each flag's default and status.
+The tables below list the common endpoints per module — they are not exhaustive. To confirm an exact path or find an endpoint not listed here, use the `get-openapi` MCP tool (see `skills/mcp-server/SKILL.md`), or fetch `GET /o/<module>/v1.0/openapi.json` directly. Base URIs, feature flag gates, and OAuth scopes are *not* discoverable from the specs — rely on this card for those. The per module `Required flag` notes below map each module to its gating flag; see `rules/feature-flags-catalog.md` for each flag's default and status.
 
 ## headless-admin-site
 
@@ -86,7 +86,7 @@ Its own module — **not** part of `headless-admin-site`, which is why fragment 
 | List / create fragments in a set | GET, POST | `/sites/{siteExternalReferenceCode}/fragment-sets/{setExternalReferenceCode}/fragments` |
 | Get / replace / delete a fragment | GET, PUT, DELETE | `/sites/{siteExternalReferenceCode}/fragments/{fragmentExternalReferenceCode}` |
 
-Fragment code is in `fragmentVersions[]` (`html`, `css`, `js`, `configuration`, `status`). Fragments are keyed by **ERC** — a generated UUID for initializer-imported fragments, not the fragment key — so list the set to resolve it.
+Fragment code is in `fragmentVersions[]` (`html`, `css`, `js`, `configuration`, `status`). Fragments are keyed by **ERC** — a generated UUID for fragments imported by an initializer, not the fragment key — so list the set to resolve it.
 
 **Required flag:** `LPD-39244`.
 
@@ -159,7 +159,7 @@ Fragment code is in `fragmentVersions[]` (`html`, `css`, `js`, `configuration`, 
 
 ## References
 
-- `rules/oauth-scopes.md` — full scope-string reference for these modules.
+- `rules/oauth-scopes.md` — full scope string reference for these modules.
 - `rules/feature-flags-catalog.md` — defaults for the flags gating these APIs.
 - `skills/mcp-server/SKILL.md` — the `get-openapi` tool for confirming exact paths.
 - Headless APIs: `https://learn.liferay.com/w/dxp/integration/headless-apis`

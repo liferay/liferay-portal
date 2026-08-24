@@ -88,7 +88,7 @@ The spec has known gaps: several fields required at runtime are marked optional 
 
 The `fields` query parameter helps on **GET** (`?fields=id,name,status`) but is ignored on POST bodies.
 
-**Prefer MCP for reads and discovery; drop to `curl | jq` for object-admin writes**, projecting just the confirmation you need:
+**Prefer MCP for reads and discovery; drop to `curl | jq` for `object-admin` writes**, projecting just the confirmation you need:
 
 ```bash
 curl \
@@ -115,4 +115,4 @@ If MCP connects and tools appear but every `call-http-endpoint` returns 403, the
 
 ## Success Signal
 
-TODO / inferred — verify against a running bundle. The Connection Check above (the MCP server appears in the client's tool list and a `call-http-endpoint` call returns a non-403 response) is the observable done-when; confirm on a live bundle.
+TODO / inferred — verify against a running bundle. The Connection Check above (the MCP server appears in the client's tool list and a `call-http-endpoint` call returns a non-403 response) is the observable completion check; confirm on a live bundle.

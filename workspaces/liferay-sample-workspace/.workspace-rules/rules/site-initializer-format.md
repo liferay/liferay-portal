@@ -48,7 +48,7 @@ cd client-extensions/<name> && blade gw clean deploy
 Confirm the initializer actually ran — the count must increase, and `BUILD SUCCESSFUL` alone does not prove it did:
 
 ```bash
-grep -c "Initializing <Site Name>" bundles/tomcat/logs/catalina.out
+grep --count "Initializing <Site Name>" bundles/tomcat/logs/catalina.out
 ```
 
 ### Do the Whole Cycle in One Command
@@ -57,18 +57,27 @@ Run the steps by hand and you will eventually wait on a counter that already adv
 
 ```bash
 #!/usr/bin/env bash
+
+#
 # reprovision.sh — delete the site, redeploy the initializer, wait, report.
-set -euo pipefail
+#
+
+set -o errexit
+set -o nounset
+set -o pipefail
 
 SITE_ERC="${SITE_ERC:?set SITE_ERC}"
-SITE_NAME="${SITE_NAME:?set SITE_NAME}"     # the "Initializing <SITE_NAME>" log string
-CET="${CET:?set CET}"                       # client-extensions/<CET>
+SITE_NAME="${SITE_NAME:?set SITE_NAME}"     # The "Initializing <SITE_NAME>" log string
+CET="${CET:?set CET}"                       # The client-extensions/<CET> directory
 PORT="${PORT:-8080}"
 LOG=bundles/tomcat/logs/catalina.out
 
-before=$(grep -c "Initializing ${SITE_NAME}" "${LOG}" || echo 0)
+before=$(grep --count "Initializing ${SITE_NAME}" "${LOG}" || echo 0)
 
-curl --request DELETE --silent --output /dev/null \
+curl \
+	--output /dev/null \
+	--request DELETE \
+	--silent \
 	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/${SITE_ERC}" \
 	--user "test@liferay.com:test"
 
@@ -76,14 +85,14 @@ rm -f "bundles/osgi/client-extensions/${CET}.zip"
 (cd "client-extensions/${CET}" && blade gw clean deploy >/dev/null)
 
 for _ in $(seq 1 100); do
-	[ "$(grep -c "Initializing ${SITE_NAME}" "${LOG}" || echo 0)" -gt "${before}" ] && break
+	[[ $(grep --count "Initializing ${SITE_NAME}" "${LOG}" || echo 0) -gt ${before} ]] && break
 	sleep 3
 done
 
-sleep 6   # let the handlers finish after the "Initializing" line appears
+sleep 6   # Let the handlers finish after the "Initializing" line appears
 
 awk -v n=$((before + 1)) '/Initializing '"${SITE_NAME}"'/{c++} c>=n' "${LOG}" \
-	| grep -E 'Invoking|Initialized|InitializationException|MustNotBeReserved'
+	| grep --extended-regexp 'Invoking|Initialized|InitializationException|MustNotBeReserved'
 ```
 
 Two details that are easy to get wrong by hand:
@@ -308,7 +317,7 @@ A flat array of grants, applied by the `addOrUpdateResourcePermissions` handler.
 | `"3"` | `SCOPE_GROUP_TEMPLATE` | Only the **default permissions applied to newly created** entries. Does nothing for entries that already exist. |
 | `"4"` | `SCOPE_INDIVIDUAL` | One specific entry, named by `primKey`. Used by `page.json` permissions. |
 
-Several portal initializers (seo-studio, ai-hub) use `"3"`, so copying from them without checking produces a grant that appears to apply and changes nothing. For scopes `1` and `2` the handler overwrites `primKey` with the company or group id, so `"0"` is a fine placeholder.
+Several portal initializers (seo-studio, ai-hub) use `"3"`, so copying from them without checking produces a grant that appears to apply and changes nothing. For scopes `1` and `2` the handler overwrites `primKey` with the company or group ID, so `"0"` is a fine placeholder.
 
 The handler **warns rather than fails** on a bad `resourceName` or an unknown `roleName` — `No resource action found` / `No role found` in the log. A silent 2 ms run with no warning means the grant was applied as written; if behavior did not change, suspect `scope`.
 
@@ -339,7 +348,7 @@ The authoritative list is `stringUtilReplaceValues` in `BundleSiteInitializer`; 
 
 ### Object Definition Tokens Are the Exception — They See the Whole Company
 
-The "registered by the handler that creates the entity" rule holds for most tokens, but **object definitions are exempt**, and assuming otherwise leads to needlessly abandoning the tree. `_addObjectDefinitions` runs a company wide pre-pass *before* it reads a single file:
+The "registered by the handler that creates the entity" rule holds for most tokens, but **object definitions are exempt**, and assuming otherwise leads to needlessly abandoning the tree. `_addObjectDefinitions` runs a company wide pass *before* it reads a single file:
 
 ```java
 getObjectDefinitions(companyId, true, WorkflowConstants.STATUS_APPROVED)
@@ -350,10 +359,10 @@ That registers `[$OBJECT_DEFINITION_ID:<Name>$]` and `[$OBJECT_DEFINITION_CLASS_
 
 So a tree may freely reference objects created live over `object-admin` — `resource-permissions.json`, `object-actions/`, `notification-templates/*.object-actions.json`, and `object-relationships/` all resolve against them. Two conditions:
 
-- The object must be **published**. The pre-pass filters on `STATUS_APPROVED`, so a draft definition registers no token.
+- The object must be **published**. That pass filters on `STATUS_APPROVED`, so a draft definition registers no token.
 - The token is keyed on the definition's **short name**, which equals `name` for a custom object.
 
-**Do not generalize this to other entity types.** `[$LIST_TYPE_DEFINITION_ID:<Name>$]` is registered inside the per file loop in `_addOrUpdateListTypeDefinitions`, with no pre-pass, so it resolves only for picklists in this tree. When in doubt, find where the handler calls `stringUtilReplaceValues.put` — inside the loop means tree only, before the loop means company wide.
+**Do not generalize this to other entity types.** `[$LIST_TYPE_DEFINITION_ID:<Name>$]` is registered inside the per file loop in `_addOrUpdateListTypeDefinitions`, with no such pass, so it resolves only for picklists in this tree. When in doubt, find where the handler calls `stringUtilReplaceValues.put` — inside the loop means tree only, before the loop means company wide.
 
 The practical upshot is that a **mixed layout is workable**: objects managed live over `object-admin`, their logic and permissions still authored in the tree and version controlled. Object definitions, fields, actions, notification templates, and entries are all company scoped and survive site deletion, so they persist across the reprovisions that page and fragment work require. What is *not* reproducible is the objects themselves — a fresh bundle or a different environment starts without them, so say plainly which half of the data layer the tree actually rebuilds.
 
@@ -362,7 +371,7 @@ The practical upshot is that a **mixed layout is workable**: objects managed liv
 The handler log lines are the fastest diagnosis — a step reporting `took 0 ms` (or `1 ms`) found no files, which is how a wrong directory name presents. Grep the handler for whatever you just added, not only the object ones:
 
 ```bash
-grep -E 'Initializing|Invoking (addOrUpdateListTypeDefinitions|addObjectDefinitions|addOrUpdateObjectRelationships|addOrUpdateLayouts|addOrUpdateLayoutsContent|addLayoutPageTemplates|addStyleBookEntries|addFragmentEntries|addOrUpdateResourcePermissions)' \
+grep --extended-regexp 'Initializing|Invoking (addOrUpdateListTypeDefinitions|addObjectDefinitions|addOrUpdateObjectRelationships|addOrUpdateLayouts|addOrUpdateLayoutsContent|addLayoutPageTemplates|addStyleBookEntries|addFragmentEntries|addOrUpdateResourcePermissions)' \
 	bundles/tomcat/logs/catalina.out | tail -20
 ```
 
@@ -372,7 +381,7 @@ When a handler you expected is simply missing from the output, dump every line f
 
 ```bash
 awk '/Initializing <Site Name>/{n++} n>=1' bundles/tomcat/logs/catalina.out \
-	| grep -E 'Invoking|Initializing'
+	| grep --extended-regexp 'Invoking|Initializing'
 ```
 
 `n>=1` prints from the first run onward, so raise the threshold to skip earlier runs — `n>=2` means "the second run and everything after it", not the second run alone. Set it to the total number of `Initializing` lines to see only the latest.
@@ -390,7 +399,7 @@ So keep the previous run's numbers to compare against. A handler that stays at `
 
 **Treat a flat timing as a prompt to check the effect, not as proof of failure.** The signal scales with how much work the handler does, so a handler reading one small file can apply it correctly and still round to `1 ms`. Verified on 2026.Q2: adding `layout-set/public/metadata.json` left `updateLayoutSets` at `1 ms` across the runs before and after, yet the settings had plainly taken — Classic's header and "Powered by Liferay" footer were both absent from the rendered page. Reading that `1 ms` as "the path is wrong" would have sent you chasing a bug that did not exist.
 
-The timings are a triage tool for the file-heavy handlers (fragments, layouts, objects, style books, page templates), where real work shows up as tens or hundreds of milliseconds. For a single-file handler, assert the outcome instead:
+The timings are a triage tool for the file heavy handlers (fragments, layouts, objects, style books, page templates), where real work shows up as tens or hundreds of milliseconds. For a single file handler, assert the outcome instead:
 
 | Handler | What to assert rather than the timing |
 | --- | --- |
@@ -403,7 +412,7 @@ The timings are a triage tool for the file-heavy handlers (fragments, layouts, o
 A failed initialization rolls the site back, so "the site does not exist" and "the initializer threw" are the same symptom. Search for the cause with:
 
 ```bash
-grep -E 'InitializationException|MustNotBeReserved|Unable to transform' \
+grep --extended-regexp 'InitializationException|MustNotBeReserved|Unable to transform' \
 	bundles/tomcat/logs/catalina.out | head
 ```
 
@@ -585,7 +594,7 @@ Use the `settings` block to switch off the stock theme chrome when a master page
 
 > **A `themeCSS` CET cannot be selected from the initializer tree.** Liferay attaches one through a `ClientExtensionEntryRel` on the layout, the master layout, or the layout set, and `BundleSiteInitializer` has **no handler** that creates that relation — there is no key in `metadata.json` for it either. A deployed themeCSS CET is therefore *available* but not *applied* until someone picks it in Site Administration → Design → Theme, and that selection is lost on every reprovision.
 >
-> Plan accordingly. Appearance that must survive delete-and-redeploy has to come from things the tree can express: a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings. Reach for a themeCSS CET for Clay level overrides that have no token — Classic exposes no `headings*` style book tokens, for instance — and state plainly that applying it needs a manual step.
+> Plan accordingly. Appearance that must survive delete and redeploy has to come from things the tree can express: a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings. Reach for a themeCSS CET for Clay level overrides that have no token — Classic exposes no `headings*` style book tokens, for instance — and state plainly that applying it needs a manual step.
 
 ## `client-extension.yaml` for the Initializer
 

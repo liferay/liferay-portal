@@ -91,7 +91,7 @@ The container injects an `input` object into the template. Read the field's labe
 | `input.showLabel` | boolean | Whether the author chose to show the label |
 | `input.type` | string | The bound field's type |
 | `input.value` | string | Current value, populated when editing an existing entry |
-| `input.valueI18n` | map | Per locale values, keyed by language id |
+| `input.valueI18n` | map | Per locale values, keyed by language ID |
 
 `${input.name}` is the whole binding. The container maps the submitted value to the object field by that name, so a hardcoded or misspelled `name` submits nothing and reports no error.
 
