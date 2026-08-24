@@ -248,6 +248,88 @@ public class UpdateStructureStrutsActionTest {
 	}
 
 	@Test
+	@TestInfo("LPP-65252")
+	public void testExecuteDeletesObjectRelationshipsFromRepeatableObjectDefinitions()
+		throws Exception {
+
+		_serviceBuilderObjectDefinition1 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition2 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+		_serviceBuilderObjectDefinition3 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		String externalReferenceCode = StringUtil.randomId();
+		String name = StringUtil.randomId();
+
+		_objectRelationshipLocalService.addObjectRelationship(
+			externalReferenceCode, TestPropsValues.getUserId(),
+			_serviceBuilderObjectDefinition3.getObjectDefinitionId(),
+			_serviceBuilderObjectDefinition2.getObjectDefinitionId(), 0,
+			ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE, false,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			name, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(
+				_serviceBuilderObjectDefinition1, TestPropsValues.getUser());
+
+		mockHttpServletRequest.setParameter(
+			"objectRelationships",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"deletionType",
+					ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE
+				).put(
+					"externalReferenceCode", externalReferenceCode
+				).put(
+					"name", name
+				).put(
+					"objectDefinitionExternalReferenceCode1",
+					_serviceBuilderObjectDefinition3.getExternalReferenceCode()
+				).put(
+					"objectDefinitionExternalReferenceCode2",
+					_serviceBuilderObjectDefinition2.getExternalReferenceCode()
+				).put(
+					"type", ObjectRelationshipConstants.TYPE_ONE_TO_MANY
+				)
+			).toString());
+
+		mockHttpServletRequest.setParameter(
+			"repeatableGroupObjectDefinitions",
+			JSONUtil.putAll(
+				_jsonFactory.createJSONObject(
+					String.valueOf(
+						_getObjectDefinition(
+							_serviceBuilderObjectDefinition2.
+								getExternalReferenceCode())))
+			).toString());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_updateStructureStrutsAction.execute(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
+
+		com.liferay.object.model.ObjectRelationship
+			serviceBuilderObjectRelationship =
+				_objectRelationshipLocalService.
+					fetchObjectRelationshipByObjectDefinitionId(
+						_serviceBuilderObjectDefinition3.
+							getObjectDefinitionId(),
+						name);
+
+		Assert.assertEquals(
+			_serviceBuilderObjectDefinition2.getObjectDefinitionId(),
+			serviceBuilderObjectRelationship.getObjectDefinitionId2());
+	}
+
+	@Test
 	@TestInfo("LPD-92696")
 	public void testExecuteDoesNotDeleteObjectRelationships() throws Exception {
 		_serviceBuilderObjectDefinition1 =
