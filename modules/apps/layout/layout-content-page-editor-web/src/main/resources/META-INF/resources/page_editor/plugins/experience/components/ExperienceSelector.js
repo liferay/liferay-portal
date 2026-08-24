@@ -15,6 +15,7 @@ import {
 	useEventListener,
 	useIsMounted,
 } from '@liferay/frontend-js-react-web';
+import classNames from 'classnames';
 import {openToast, useId, useSessionState} from 'frontend-js-components-web';
 import {COOKIE_TYPES, navigate} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -446,7 +447,12 @@ const ExperienceSelector = ({experiences, segments, selectedExperience}) => {
 
 	return (
 		<>
-			<ClayButton.Group className="page-editor__experience-selector-group">
+			<ClayButton.Group
+				className={classNames({
+					'page-editor__experience-selector-group':
+						Liferay.FeatureFlags['LPD-85746'],
+				})}
+			>
 				<ClayButton
 					aria-controls={experienceSelectorContentId}
 					aria-expanded={open}
