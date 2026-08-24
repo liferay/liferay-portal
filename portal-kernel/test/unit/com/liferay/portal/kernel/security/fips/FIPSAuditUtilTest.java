@@ -84,26 +84,22 @@ public class FIPSAuditUtilTest {
 	public void testWriteFormatsTimestampInUTC() {
 		TimeZone timeZone = TimeZone.getDefault();
 
-		try {
-			TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"));
+		TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"));
 
-			FIPSAuditUtil.write(
-				new FIPSAuditEvent(
-					RandomTestUtil.randomString(),
-					FIPSAuditEvent.Severity.INFO));
+		FIPSAuditUtil.write(
+			new FIPSAuditEvent(
+				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
 
-			Map<String, Object> fipsAuditLogEntry = _getLastFIPSAuditLogEntry();
+		Map<String, Object> fipsAuditLogEntry = _getLastFIPSAuditLogEntry();
 
-			Instant instant = Instant.parse(
-				String.valueOf(fipsAuditLogEntry.get("timestamp")));
+		Instant instant = Instant.parse(
+			String.valueOf(fipsAuditLogEntry.get("timestamp")));
 
-			Assert.assertTrue(
-				Math.abs(System.currentTimeMillis() - instant.toEpochMilli()) <
-					Time.MINUTE);
-		}
-		finally {
-			TimeZone.setDefault(timeZone);
-		}
+		Assert.assertTrue(
+			Math.abs(System.currentTimeMillis() - instant.toEpochMilli()) <
+				Time.MINUTE);
+
+		TimeZone.setDefault(timeZone);
 	}
 
 	@Test
@@ -220,9 +216,9 @@ public class FIPSAuditUtilTest {
 		}
 	}
 
-	private static Logger _logger = Mockito.mock(Logger.class);
+	private static final Logger _logger = Mockito.mock(Logger.class);
 
-	private static MockedStatic<LogManager> _logManagerMockedStatic =
+	private static final MockedStatic<LogManager> _logManagerMockedStatic =
 		Mockito.mockStatic(LogManager.class, Mockito.CALLS_REAL_METHODS);
 
 	private SafeCloseable _safeCloseable;

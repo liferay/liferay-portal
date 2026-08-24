@@ -53,18 +53,21 @@ public class FIPSAuditEventTest {
 
 	@Test
 	public void testPutRejectsASensitiveSecurityParameter() throws Exception {
-		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-
-		KeyPair keyPair = keyPairGenerator.generateKeyPair();
+		_testPutRejects(RandomTestUtil.randomBytes());
 
 		String randomString = RandomTestUtil.randomString();
 
 		char[] chars = randomString.toCharArray();
 
-		_testPutRejects(RandomTestUtil.randomBytes());
 		_testPutRejects(chars);
+
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+
+		KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
 		_testPutRejects(keyPair.getPrivate());
 		_testPutRejects(keyPair.getPublic());
+
 		_testPutRejects(new PBEKeySpec(chars));
 	}
 
