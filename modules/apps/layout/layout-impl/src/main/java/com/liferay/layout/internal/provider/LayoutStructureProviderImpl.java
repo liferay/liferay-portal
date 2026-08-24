@@ -15,6 +15,7 @@ import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructureRule;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -139,6 +140,12 @@ public class LayoutStructureProviderImpl implements LayoutStructureProvider {
 				layoutStructure.getLayoutStructureItems()) {
 
 			masterLayoutStructure.addLayoutStructureItem(layoutStructureItem);
+		}
+
+		for (LayoutStructureRule layoutStructureRule :
+				layoutStructure.getLayoutStructureRules()) {
+
+			masterLayoutStructure.addLayoutStructureRule(layoutStructureRule);
 		}
 
 		DropZoneLayoutStructureItem dropZoneLayoutStructureItem =

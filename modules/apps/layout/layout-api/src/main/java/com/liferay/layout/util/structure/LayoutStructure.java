@@ -453,22 +453,23 @@ public class LayoutStructure {
 		return layoutStructureItem;
 	}
 
-	public LayoutStructureRule addLayoutStructureRule(String name) {
-		LayoutStructureRule layoutStructureRule = new LayoutStructureRule(
-			PortalUUIDUtil.generate(), name);
+	public LayoutStructureRule addLayoutStructureRule(
+		LayoutStructureRule layoutStructureRule) {
 
 		_layoutStructureRules.add(layoutStructureRule);
+		_layoutStructureRulesMap.put(
+			layoutStructureRule.getId(), layoutStructureRule);
 
 		return layoutStructureRule;
 	}
 
+	public LayoutStructureRule addLayoutStructureRule(String name) {
+		return addLayoutStructureRule(
+			new LayoutStructureRule(PortalUUIDUtil.generate(), name));
+	}
+
 	public LayoutStructureRule addLayoutStructureRule(String id, String name) {
-		LayoutStructureRule layoutStructureRule = new LayoutStructureRule(
-			id, name);
-
-		_layoutStructureRules.add(layoutStructureRule);
-
-		return layoutStructureRule;
+		return addLayoutStructureRule(new LayoutStructureRule(id, name));
 	}
 
 	public LayoutStructureItem addRootLayoutStructureItem() {

@@ -78,6 +78,7 @@ import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.layout.manager.FormManager;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.info.item.capability.DisplayPageInfoItemCapability;
 import com.liferay.layout.page.template.info.item.capability.EditPageInfoItemCapability;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -86,6 +87,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalServiceUtil;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.taglib.servlet.taglib.RenderLayoutStructureTag;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
@@ -875,54 +877,10 @@ public class RenderLayoutStructureTagTest {
 	}
 
 	@Test
+	@TestInfo("LPD-103459")
 	public void testLayoutStructureRules() throws Exception {
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				ListUtil.fromArray(
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-						ObjectFieldConstants.DB_TYPE_STRING,
-						RandomTestUtil.randomString(), "text"),
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
-						ObjectFieldConstants.DB_TYPE_BOOLEAN,
-						RandomTestUtil.randomString(), "boolean")),
-				false);
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		Map<String, String> inputTypesMap = _addFormToLayout(
-			objectDefinition.getClassName(), draftLayout);
-
-		_addLayoutStructureRule(inputTypesMap, draftLayout);
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
-
-		String content = _getRenderLayoutHTML(layout);
-
-		String submitButtonAttributes =
-			"data-lfr-editable-id=\"submit-button-text\" " +
-				"data-lfr-editable-type=\"text\"";
-
-		Assert.assertTrue(
-			content, content.contains(submitButtonAttributes + " disabled"));
-
-		String textInputIdAttribute =
-			"class=\"lfr-layout-structure-item-inputs-text-input";
-
-		Assert.assertFalse(content, content.contains(textInputIdAttribute));
-
-		content = _getRenderLayoutHTML(
-			layout, Collections.emptyMap(),
-			UserTestUtil.addCompanyAdminUser(
-				_companyLocalService.getCompany(_group.getCompanyId())));
-
-		Assert.assertFalse(
-			content, content.contains(submitButtonAttributes + " disabled"));
-		Assert.assertTrue(content, content.contains(submitButtonAttributes));
-		Assert.assertTrue(content, content.contains(textInputIdAttribute));
+		_testLayoutStructureRules(false);
+		_testLayoutStructureRules(true);
 	}
 
 	@Test
@@ -3809,6 +3767,34 @@ public class RenderLayoutStructureTagTest {
 				layoutStructure.toString());
 	}
 
+	private Layout _addMasterLayout(Layout draftLayout) throws Exception {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout masterLayout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Layout draftMasterLayout = masterLayout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addItemToLayout(
+			"{}", LayoutDataItemTypeConstants.TYPE_CONTAINER, draftMasterLayout,
+			_layoutStructureProvider,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftMasterLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftMasterLayout, masterLayout);
+
+		_layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+			draftLayout.getGroupId(), draftLayout.isPrivateLayout(),
+			draftLayout.getLayoutId(),
+			layoutPageTemplateEntry.getExternalReferenceCode());
+
+		return _layoutLocalService.getLayout(draftLayout.getPlid());
+	}
+
 	private SegmentsEntry _addSegmentsEntryByFirstName(String firstName)
 		throws Exception {
 
@@ -4276,6 +4262,64 @@ public class RenderLayoutStructureTagTest {
 			mockHttpServletRequest, mockHttpServletResponse);
 
 		return mockHttpServletResponse;
+	}
+
+	private void _testLayoutStructureRules(boolean masterLayout)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				ListUtil.fromArray(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(), "text"),
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
+						ObjectFieldConstants.DB_TYPE_BOOLEAN,
+						RandomTestUtil.randomString(), "boolean")),
+				false);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Map<String, String> inputTypesMap = _addFormToLayout(
+			objectDefinition.getClassName(), draftLayout);
+
+		_addLayoutStructureRule(inputTypesMap, draftLayout);
+
+		if (masterLayout) {
+			draftLayout = _addMasterLayout(draftLayout);
+		}
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		layout = _layoutLocalService.getLayout(layout.getPlid());
+
+		String content = _getRenderLayoutHTML(layout);
+
+		String submitButtonAttributes =
+			"data-lfr-editable-id=\"submit-button-text\" " +
+				"data-lfr-editable-type=\"text\"";
+
+		Assert.assertTrue(
+			content, content.contains(submitButtonAttributes + " disabled"));
+
+		String textInputIdAttribute =
+			"class=\"lfr-layout-structure-item-inputs-text-input";
+
+		Assert.assertFalse(content, content.contains(textInputIdAttribute));
+
+		content = _getRenderLayoutHTML(
+			layout, Collections.emptyMap(),
+			UserTestUtil.addCompanyAdminUser(
+				_companyLocalService.getCompany(_group.getCompanyId())));
+
+		Assert.assertFalse(
+			content, content.contains(submitButtonAttributes + " disabled"));
+		Assert.assertTrue(content, content.contains(submitButtonAttributes));
+		Assert.assertTrue(content, content.contains(textInputIdAttribute));
 	}
 
 	private void _testPagination(
