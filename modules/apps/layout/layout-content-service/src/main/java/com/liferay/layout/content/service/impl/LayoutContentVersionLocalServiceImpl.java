@@ -19,6 +19,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.renderer.LayoutPreviewRenderer;
 import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -36,10 +37,13 @@ import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+
+import java.io.InputStream;
 
 import java.util.Date;
 import java.util.List;
@@ -272,6 +276,20 @@ public class LayoutContentVersionLocalServiceImpl
 		return layoutContentVersionPersistence.update(layoutContentVersion);
 	}
 
+	private static String _read(String name) {
+		try (InputStream inputStream =
+				LayoutContentVersionLocalServiceImpl.class.getResourceAsStream(
+					"dependencies/" + name)) {
+
+			return StringUtil.read(inputStream);
+		}
+		catch (Exception exception) {
+			_log.error("Unable to read template " + name, exception);
+		}
+
+		return StringPool.BLANK;
+	}
+
 	private void _addLayoutContentVersionPreviews(
 		Layout layout, LayoutContentVersion layoutContentVersion, long userId) {
 
@@ -309,24 +327,43 @@ public class LayoutContentVersionLocalServiceImpl
 		for (Locale locale :
 				_language.getAvailableLocales(layout.getGroupId())) {
 
+			String html = null;
+
+			try {
+				html = _layoutPreviewRenderer.render(
+					layout, locale,
+					segmentsExperience.getSegmentsExperienceId(),
+					serviceContext);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						StringBundler.concat(
+							"Unable to render layout content version preview ",
+							"for language ID ", LocaleUtil.toLanguageId(locale),
+							", PLID ", layout.getPlid(),
+							", and segments experience ",
+							segmentsExperience.getSegmentsExperienceId()),
+						exception);
+				}
+
+				html = _getPreviewErrorHTML(locale);
+			}
+
 			try {
 				_layoutContentVersionPreviewLocalService.
 					addLayoutContentVersionPreview(
 						userId,
-						_layoutPreviewRenderer.render(
-							layout, locale,
-							segmentsExperience.getSegmentsExperienceId(),
-							serviceContext),
+						layoutContentVersion.getLayoutContentVersionId(), html,
 						LocaleUtil.toLanguageId(locale),
-						layoutContentVersion.getLayoutContentVersionId(),
 						segmentsExperience.getExternalReferenceCode());
 			}
 			catch (Exception exception) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						StringBundler.concat(
-							"Unable to add layout content version preview for ",
-							"language ID ", LocaleUtil.toLanguageId(locale),
+							"Unable to persist layout content version preview ",
+							"for language ID ", LocaleUtil.toLanguageId(locale),
 							", PLID ", layout.getPlid(),
 							", and segments experience ",
 							segmentsExperience.getSegmentsExperienceId()),
@@ -346,6 +383,15 @@ public class LayoutContentVersionLocalServiceImpl
 		}
 
 		return layoutContentVersion.getVersion() + 1;
+	}
+
+	private String _getPreviewErrorHTML(Locale locale) {
+		return StringUtil.replace(
+			_PREVIEW_ERROR_HTML, new String[] {"[$MESSAGE$]", "[$TITLE$]"},
+			new String[] {
+				_language.get(locale, "an-error-occurred"),
+				_language.get(locale, "unable-to-load-preview")
+			});
 	}
 
 	private void _validateExternalReferenceCode(
@@ -393,8 +439,14 @@ public class LayoutContentVersionLocalServiceImpl
 		}
 	}
 
+	private static final String _PREVIEW_ERROR_HTML;
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutContentVersionLocalServiceImpl.class);
+
+	static {
+		_PREVIEW_ERROR_HTML = _read("preview_error.html");
+	}
 
 	@Reference
 	private Language _language;
