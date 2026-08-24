@@ -46,6 +46,13 @@ Skip this block if MCP is not supported in your DXP version.
 #### Tomcat
 
 - **Initialize**: run `blade server init` if `bundles/` does not exist.
+
+- **Clear the seeded database (Hypersonic, before the first start)**: a downloaded bundle ships with a pre-seeded Hypersonic database in which `test@liferay.com` already exists with the first-login flags set. Boot it as-is and every `/o/*` call returns 403 no matter what `portal-ext.properties` contains, because those properties are read only when the admin is created.
+
+  Delete `bundles/data` and `bundles/osgi/state`.
+
+  Only for a bundle that has never been started — `bundles/logs` is empty and nothing answers on `http://localhost:${PORT}`. Otherwise skip this and use the manual login in First Login Bootstrap.
+
 - **BasicAuth verifier (dev only — required for headless REST and MCP)**: add to `configs/local/portal-ext.properties` BEFORE first boot:
 
   ```
@@ -56,16 +63,9 @@ Skip this block if MCP is not supported in your DXP version.
 
   **Security note**: this is for local development only. BasicAuth sends credentials in every request. For production, use OAuth2 with `OAuth2HeaderAuthVerifier` instead. Never enable BasicAuth on `/o/*` in production.
 
-- **Configuration sync**: if `bundles/portal-ext.properties` differs from `configs/local/`, copy it: `cp configs/local/portal-ext.properties bundles/portal-ext.properties`. (This copy is destructive — see `skills/deploy-and-verify/SKILL.md` for the diff before sync rule.)
+- **Configuration sync — before the first start**: copy the local config into the bundle: `cp configs/local/portal-ext.properties bundles/portal-ext.properties`. (This copy is destructive — see `skills/deploy-and-verify/SKILL.md` for the diff before sync rule.)
 
-- **Skip first login bootstrap (dev only, optional)**: to avoid the mandatory browser login step on a fresh instance, add to `configs/local/portal-ext.properties` before first boot (it will be synced in the next step):
-
-  ```
-  terms.of.use.required=false
-  passwords.default.policy.change.required=false
-  ```
-
-  Never use in production or staging.
+  `configs/local/portal-ext.properties` already ships the properties that skip the manual first login, but they only take effect if this copy happens before the bundle has ever booted. See First Login Bootstrap below.
 
 - **Free port 8080 first**: every Liferay workspace defaults to 8080, so another workspace left running holds it. Run `ss -ltnp | grep ':8080 '` and **wait for the result before launching** — do not batch the check with the start command. If the port is taken, stop that instance with its own `bundles/tomcat*/bin/shutdown.sh` or move this workspace to another port. A bind conflict is easy to misread: Tomcat still logs `Server startup in [N] milliseconds` even though the connector never came up, so the boot looks fine while every request is served by the *other* instance and its separate database — which surfaces as inexplicable login or data failures. Treat `Address already in use` in `catalina.out` as a failed boot regardless of the startup line, and confirm the listening pid belongs to this bundle.
 
@@ -93,9 +93,11 @@ Skip this block if MCP is not supported in your DXP version.
 
 On a fresh Liferay instance, the default admin `test@liferay.com` is created with `passwordReset=true` and `agreedToTermsOfUse=false` in the database. Until both flags are cleared, every authenticated API call (REST, MCP `call-http-endpoint`) returns 403 — including for the Omni Admin user.
 
-Skip this step if `terms.of.use.required=false` and `passwords.default.policy.change.required=false` were already set in `portal-ext.properties` before first boot — the flags were never set in that case.
+- **Cleared and synced before its first start**: nothing to do. The admin was created with the properties in effect, so the flags were never set.
 
-Otherwise, prompt the user to log into `http://localhost:${PORT}` as `test@liferay.com` / `test`, accept the Terms of Use, and complete the password change (use `test` as the new password so existing credentials stay valid). Wait for their reply before making any API or MCP calls.
+- **Already started**: the manual login is the only way through — syncing the properties now will not clear flags already in the database.
+
+Prompt the user to log into `http://localhost:${PORT}` as `test@liferay.com` / `test`, accept the Terms of Use, and complete the password change (use `test` as the new password so existing credentials stay valid). Wait for their reply before making any API or MCP calls.
 
 Do not automate the browser login flow — Liferay's login form structure varies across versions and automation is brittle.
 

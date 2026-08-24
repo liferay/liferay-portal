@@ -111,7 +111,7 @@ The MCP connection handshake succeeds without `BasicAuthHeaderAuthVerifier` conf
 
 ### First Login 403 Trap (Fresh Liferay Instances)
 
-If MCP connects and tools appear but every `call-http-endpoint` returns 403, the default admin has not completed first login bootstrap. On a fresh instance, `headless-delivery` endpoints return JSON 404 while admin APIs return XML 403 — both are auth failures, not routing or SAP issues. Complete first login bootstrap per `skills/workspace-init/SKILL.md` → "First Login Bootstrap" before retrying.
+If MCP connects and tools appear but every `call-http-endpoint` returns 403, the default admin has not completed first login bootstrap. On a fresh instance, `headless-delivery` endpoints return JSON 404 while admin APIs return XML 403 — both are auth failures, not routing or SAP issues. Complete first login bootstrap per `skills/workspace-init/SKILL.md` → "First Login Bootstrap" before retrying. If the bundle has already booted, syncing `portal-ext.properties` now will not help — the flags are in the database and only the manual login clears them.
 
 ## Success Signal
 
