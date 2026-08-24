@@ -251,13 +251,6 @@ public class ViewObjectEntriesDisplayContext {
 		for (ObjectViewSortColumn objectViewSortColumn :
 				objectViewSortColumns) {
 
-			// A lone sort item is applied to the query whether or not it is
-			// active, but only an active item renders the header's sort
-			// indicator. Activate the lone item so the header shows the order
-			// the rows already follow. Items on a multi-column list stay
-			// inactive: there, only active items are applied, so activating
-			// them would change the query.
-
 			fdsSortItemList.add(
 				FDSSortItemBuilder.setActive(
 					objectViewSortColumns.size() == 1
