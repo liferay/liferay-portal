@@ -17,7 +17,7 @@ import type {
 	FilterPropertyGroup,
 } from '../CollectionFilterBuilder/types';
 
-const DEFAULT_ORDER_BY_COLUMN_1 = 'modifiedDate';
+const DEFAULT_ORDER_BY_COLUMN_1 = 'modified';
 const DEFAULT_ORDER_BY_COLUMN_2 = 'title';
 
 type OrderByType = 'ASC' | 'DESC';

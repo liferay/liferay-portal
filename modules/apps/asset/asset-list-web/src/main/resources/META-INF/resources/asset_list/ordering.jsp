@@ -52,7 +52,7 @@
 
 						<aui:option label="create-date" selected='<%= Objects.equals(orderByColumn1, "createDate") %>' value="createDate" />
 
-						<aui:option label="modified-date" selected='<%= Objects.equals(orderByColumn1, "modifiedDate") %>' value="modifiedDate" />
+						<aui:option label="modified-date" selected='<%= Objects.equals(orderByColumn1, "modified") %>' value="modified" />
 
 						<aui:option label="publish-date" selected='<%= Objects.equals(orderByColumn1, "publishDate") %>' value="publishDate" />
 
@@ -105,7 +105,7 @@
 
 						<aui:option label="create-date" selected='<%= Objects.equals(orderByColumn2, "createDate") %>' value="createDate" />
 
-						<aui:option label="modified-date" selected='<%= Objects.equals(orderByColumn2, "modifiedDate") %>' value="modifiedDate" />
+						<aui:option label="modified-date" selected='<%= Objects.equals(orderByColumn2, "modified") %>' value="modified" />
 
 						<aui:option label="publish-date" selected='<%= Objects.equals(orderByColumn2, "publishDate") %>' value="publishDate" />
 

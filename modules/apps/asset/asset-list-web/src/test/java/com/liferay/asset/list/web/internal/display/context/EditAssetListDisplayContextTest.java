@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -207,6 +208,36 @@ public class EditAssetListDisplayContextTest {
 					RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
 					RandomTestUtil.randomLong()
 				}));
+	}
+
+	@Test
+	public void testGetOrderByColumnsWhenLegacyModifiedDateIsSaved() {
+		EditAssetListDisplayContext editAssetListDisplayContext =
+			_getEditAssetListDisplayContext(
+				UnicodePropertiesBuilder.put(
+					"orderByColumn1", "modifiedDate"
+				).put(
+					"orderByColumn2", "modifiedDate"
+				).build());
+
+		Assert.assertEquals(
+			Field.MODIFIED_DATE,
+			editAssetListDisplayContext.getOrderByColumn1());
+		Assert.assertEquals(
+			Field.MODIFIED_DATE,
+			editAssetListDisplayContext.getOrderByColumn2());
+	}
+
+	@Test
+	public void testGetOrderByColumnsWhenUnset() {
+		EditAssetListDisplayContext editAssetListDisplayContext =
+			_getEditAssetListDisplayContext(new UnicodeProperties());
+
+		Assert.assertEquals(
+			Field.MODIFIED_DATE,
+			editAssetListDisplayContext.getOrderByColumn1());
+		Assert.assertEquals(
+			"title", editAssetListDisplayContext.getOrderByColumn2());
 	}
 
 	@Test
