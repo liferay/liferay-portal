@@ -13,6 +13,7 @@ import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcessRequest;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandler;
+import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerBoolean;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerChoice;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerControl;
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSection;
@@ -155,6 +156,13 @@ public class ExportImportInstancePerformanceTest {
 							_backgroundTaskLocalService.getBackgroundTask(
 								importProcess.getId());
 
+						if (backgroundTask.getStatus() ==
+								BackgroundTaskConstants.STATUS_FAILED) {
+
+							throw new IllegalStateException(
+								backgroundTask.getStatusMessage());
+						}
+
 						Assert.assertEquals(
 							BackgroundTaskConstants.STATUS_SUCCESSFUL,
 							backgroundTask.getStatus());
@@ -180,32 +188,47 @@ public class ExportImportInstancePerformanceTest {
 		ExportProcess exportProcess = _exportProcessResource.postExportProcess(
 			null, null, exportProcessRequest);
 
-		ExportImportTestUtil.retryAssert(
-			1, TimeUnit.SECONDS,
-			GetterUtil.getInteger(_properties.getProperty("export.timeout")),
-			TimeUnit.SECONDS,
-			() -> {
-				BackgroundTask backgroundTask =
-					_backgroundTaskLocalService.getBackgroundTask(
-						exportProcess.getId());
-
-				Assert.assertEquals(
-					BackgroundTaskConstants.STATUS_SUCCESSFUL,
-					backgroundTask.getStatus());
-			});
-
-		HttpInvoker.HttpResponse httpResponse =
-			_exportProcessResource.getExportProcessContentHttpResponse(
-				exportProcess.getId());
-
 		File file = File.createTempFile(
 			"export-import-instance-performance", ".lar");
 
 		file.deleteOnExit();
 
-		Files.write(file.toPath(), httpResponse.getBinaryContent());
+		try {
+			ExportImportTestUtil.retryAssert(
+				1, TimeUnit.SECONDS,
+				GetterUtil.getInteger(
+					_properties.getProperty("export.timeout")),
+				TimeUnit.SECONDS,
+				() -> {
+					BackgroundTask backgroundTask =
+						_backgroundTaskLocalService.getBackgroundTask(
+							exportProcess.getId());
 
-		return file;
+					if (backgroundTask.getStatus() ==
+							BackgroundTaskConstants.STATUS_FAILED) {
+
+						throw new IllegalStateException(
+							backgroundTask.getStatusMessage());
+					}
+
+					Assert.assertEquals(
+						BackgroundTaskConstants.STATUS_SUCCESSFUL,
+						backgroundTask.getStatus());
+				});
+
+			HttpInvoker.HttpResponse httpResponse =
+				_exportProcessResource.getExportProcessContentHttpResponse(
+					exportProcess.getId());
+
+			Files.write(file.toPath(), httpResponse.getBinaryContent());
+
+			return file;
+		}
+		catch (Throwable throwable) {
+			file.delete();
+
+			throw throwable;
+		}
 	}
 
 	private RequestPortletDataHandler _toRequestPortletDataHandler(
@@ -216,11 +239,71 @@ public class ExportImportInstancePerformanceTest {
 
 		requestPortletDataHandler.setName(previewPortletDataHandler.getName());
 
-		PreviewPortletDataHandlerControl[] previewPortletDataHandlerControls =
-			previewPortletDataHandler.getPreviewPortletDataHandlerControls();
+		requestPortletDataHandler.setRequestPortletDataHandlerControls(
+			_toRequestPortletDataHandlerControls(
+				previewPortletDataHandler.
+					getPreviewPortletDataHandlerControls()));
+
+		return requestPortletDataHandler;
+	}
+
+	private RequestPortletDataHandlerControl
+		_toRequestPortletDataHandlerControl(
+			PreviewPortletDataHandlerControl previewPortletDataHandlerControl) {
+
+		RequestPortletDataHandlerControl requestPortletDataHandlerControl =
+			new RequestPortletDataHandlerControl();
+
+		requestPortletDataHandlerControl.setName(
+			previewPortletDataHandlerControl.getName());
+
+		if (previewPortletDataHandlerControl instanceof
+				PreviewPortletDataHandlerBoolean) {
+
+			PreviewPortletDataHandlerBoolean previewPortletDataHandlerBoolean =
+				(PreviewPortletDataHandlerBoolean)
+					previewPortletDataHandlerControl;
+
+			Boolean defaultState =
+				previewPortletDataHandlerBoolean.getDefaultState();
+
+			if (defaultState != null) {
+				requestPortletDataHandlerControl.setValues(
+					new String[] {String.valueOf(defaultState)});
+			}
+
+			requestPortletDataHandlerControl.
+				setRequestPortletDataHandlerControls(
+					_toRequestPortletDataHandlerControls(
+						previewPortletDataHandlerBoolean.
+							getPreviewPortletDataHandlerControls()));
+		}
+		else if (previewPortletDataHandlerControl instanceof
+					PreviewPortletDataHandlerChoice) {
+
+			PreviewPortletDataHandlerChoice previewPortletDataHandlerChoice =
+				(PreviewPortletDataHandlerChoice)
+					previewPortletDataHandlerControl;
+
+			String defaultChoice =
+				previewPortletDataHandlerChoice.getDefaultChoice();
+
+			if (defaultChoice != null) {
+				requestPortletDataHandlerControl.setValues(
+					new String[] {defaultChoice});
+			}
+		}
+
+		return requestPortletDataHandlerControl;
+	}
+
+	private RequestPortletDataHandlerControl[]
+		_toRequestPortletDataHandlerControls(
+			PreviewPortletDataHandlerControl[]
+				previewPortletDataHandlerControls) {
 
 		if (previewPortletDataHandlerControls == null) {
-			return requestPortletDataHandler;
+			return null;
 		}
 
 		List<RequestPortletDataHandlerControl>
@@ -240,42 +323,12 @@ public class ExportImportInstancePerformanceTest {
 					previewPortletDataHandlerControl));
 		}
 
-		if (!requestPortletDataHandlerControls.isEmpty()) {
-			requestPortletDataHandler.setRequestPortletDataHandlerControls(
-				requestPortletDataHandlerControls.toArray(
-					new RequestPortletDataHandlerControl[0]));
+		if (requestPortletDataHandlerControls.isEmpty()) {
+			return null;
 		}
 
-		return requestPortletDataHandler;
-	}
-
-	private RequestPortletDataHandlerControl
-		_toRequestPortletDataHandlerControl(
-			PreviewPortletDataHandlerControl previewPortletDataHandlerControl) {
-
-		RequestPortletDataHandlerControl requestPortletDataHandlerControl =
-			new RequestPortletDataHandlerControl();
-
-		requestPortletDataHandlerControl.setName(
-			previewPortletDataHandlerControl.getName());
-
-		if (previewPortletDataHandlerControl instanceof
-				PreviewPortletDataHandlerChoice) {
-
-			PreviewPortletDataHandlerChoice previewPortletDataHandlerChoice =
-				(PreviewPortletDataHandlerChoice)
-					previewPortletDataHandlerControl;
-
-			String defaultChoice =
-				previewPortletDataHandlerChoice.getDefaultChoice();
-
-			if (defaultChoice != null) {
-				requestPortletDataHandlerControl.setValues(
-					new String[] {defaultChoice});
-			}
-		}
-
-		return requestPortletDataHandlerControl;
+		return requestPortletDataHandlerControls.toArray(
+			new RequestPortletDataHandlerControl[0]);
 	}
 
 	private RequestPortletDataHandler[] _toRequestPortletDataHandlers(
