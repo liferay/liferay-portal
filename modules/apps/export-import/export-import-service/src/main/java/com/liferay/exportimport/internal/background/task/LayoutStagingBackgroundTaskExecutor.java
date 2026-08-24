@@ -199,8 +199,9 @@ public class LayoutStagingBackgroundTaskExecutor
 
 		deleteTempLarOnSuccess(file);
 
-		return processMissingReferences(
-			backgroundTask.getBackgroundTaskId(), missingReferences);
+		return getBackgroundTaskResult(
+			backgroundTask.getBackgroundTaskId(), exportImportConfiguration,
+			missingReferences);
 	}
 
 	@Override

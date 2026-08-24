@@ -7,9 +7,12 @@ package com.liferay.exportimport.internal.background.task;
 
 import com.liferay.changeset.service.ChangesetEntryLocalServiceUtil;
 import com.liferay.changeset.util.ChangesetThreadLocal;
+import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.MissingReference;
 import com.liferay.exportimport.kernel.lar.MissingReferences;
+import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.exportimport.report.service.ExportImportReportEntryLocalServiceUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
@@ -18,6 +21,7 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -95,6 +99,34 @@ public abstract class BaseStagingBackgroundTaskExecutor
 		}
 	}
 
+	protected BackgroundTaskResult getBackgroundTaskResult(
+		long backgroundTaskId,
+		ExportImportConfiguration exportImportConfiguration,
+		MissingReferences missingReferences) {
+
+		BackgroundTaskResult backgroundTaskResult = new BackgroundTaskResult(
+			_getStatus(exportImportConfiguration));
+
+		if (missingReferences == null) {
+			return backgroundTaskResult;
+		}
+
+		Map<String, MissingReference> weakMissingReferences =
+			missingReferences.getWeakMissingReferences();
+
+		if (MapUtil.isNotEmpty(weakMissingReferences)) {
+			JSONArray jsonArray = StagingUtil.getWarningMessagesJSONArray(
+				getLocale(
+					BackgroundTaskManagerUtil.fetchBackgroundTask(
+						backgroundTaskId)),
+				weakMissingReferences);
+
+			backgroundTaskResult.setStatusMessage(jsonArray.toString());
+		}
+
+		return backgroundTaskResult;
+	}
+
 	protected void initThreadLocals(long groupId, boolean privateLayout)
 		throws PortalException {
 
@@ -143,32 +175,6 @@ public abstract class BaseStagingBackgroundTaskExecutor
 			backgroundTask.getStatus(), new ServiceContext());
 	}
 
-	protected BackgroundTaskResult processMissingReferences(
-		long backgroundTaskId, MissingReferences missingReferences) {
-
-		BackgroundTaskResult backgroundTaskResult = new BackgroundTaskResult(
-			BackgroundTaskConstants.STATUS_SUCCESSFUL);
-
-		if (missingReferences == null) {
-			return backgroundTaskResult;
-		}
-
-		Map<String, MissingReference> weakMissingReferences =
-			missingReferences.getWeakMissingReferences();
-
-		if (MapUtil.isNotEmpty(weakMissingReferences)) {
-			JSONArray jsonArray = StagingUtil.getWarningMessagesJSONArray(
-				getLocale(
-					BackgroundTaskManagerUtil.fetchBackgroundTask(
-						backgroundTaskId)),
-				weakMissingReferences);
-
-			backgroundTaskResult.setStatusMessage(jsonArray.toString());
-		}
-
-		return backgroundTaskResult;
-	}
-
 	private StagingConfiguration _getStagingConfiguration() {
 		try {
 			return ConfigurationProviderUtil.getCompanyConfiguration(
@@ -180,6 +186,35 @@ public abstract class BaseStagingBackgroundTaskExecutor
 		}
 
 		return null;
+	}
+
+	private int _getStatus(
+		ExportImportConfiguration exportImportConfiguration) {
+
+		int exportImportConfigurationType = exportImportConfiguration.getType();
+
+		if (((exportImportConfigurationType !=
+				ExportImportConfigurationConstants.TYPE_PUBLISH_LAYOUT_LOCAL) &&
+			 (exportImportConfigurationType !=
+				 ExportImportConfigurationConstants.
+					 TYPE_SCHEDULED_PUBLISH_LAYOUT_LOCAL)) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				exportImportConfiguration.getCompanyId(), "LPD-96689")) {
+
+			return BackgroundTaskConstants.STATUS_SUCCESSFUL;
+		}
+
+		int exportImportReportEntriesCount =
+			ExportImportReportEntryLocalServiceUtil.
+				getExportImportReportEntriesCount(
+					exportImportConfiguration.getCompanyId(),
+					exportImportConfiguration.getExportImportConfigurationId());
+
+		if (exportImportReportEntriesCount > 0) {
+			return BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS;
+		}
+
+		return BackgroundTaskConstants.STATUS_SUCCESSFUL;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
