@@ -17,6 +17,7 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -315,6 +317,68 @@ public class DepotPermissionCheckerWrapperTest {
 					permissionChecker.hasPermission(
 						0, Role.class.getName(), role.getRoleId(),
 						ActionKeys.UPDATE));
+			});
+	}
+
+	@Test
+	public void testHasPermissionWithSiteAndAssetLibraryAdministrator()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUserId());
+
+		_connectedGroup = _addPrivateGroup();
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _connectedGroup.getGroupId());
+
+		_privateGroup = _addPrivateGroup();
+
+		DepotTestUtil.withAssetLibraryAdministrator(
+			depotEntry,
+			user -> {
+				PermissionChecker permissionChecker =
+					_permissionCheckerFactory.create(user);
+
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						_connectedGroup.getGroupId(), Group.class.getName(),
+						_connectedGroup.getGroupId(), ActionKeys.VIEW));
+
+				Assert.assertFalse(
+					permissionChecker.hasPermission(
+						_privateGroup.getGroupId(), Group.class.getName(),
+						_privateGroup.getGroupId(), ActionKeys.VIEW));
+			});
+	}
+
+	@Test
+	public void testHasPermissionWithSiteAndAssetLibraryOwner()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUserId());
+
+		_connectedGroup = _addPrivateGroup();
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _connectedGroup.getGroupId());
+
+		_privateGroup = _addPrivateGroup();
+
+		DepotTestUtil.withAssetLibraryOwner(
+			depotEntry,
+			user -> {
+				PermissionChecker permissionChecker =
+					_permissionCheckerFactory.create(user);
+
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						_connectedGroup.getGroupId(), Group.class.getName(),
+						_connectedGroup.getGroupId(), ActionKeys.VIEW));
+
+				Assert.assertFalse(
+					permissionChecker.hasPermission(
+						_privateGroup.getGroupId(), Group.class.getName(),
+						_privateGroup.getGroupId(), ActionKeys.VIEW));
 			});
 	}
 
@@ -1011,6 +1075,14 @@ public class DepotPermissionCheckerWrapperTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
+	private Group _addPrivateGroup() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		group.setType(GroupConstants.TYPE_SITE_PRIVATE);
+
+		return _groupLocalService.updateGroup(group);
+	}
+
 	private DepotEntry _addProjectDepotEntry(long userId) throws Exception {
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
@@ -1024,6 +1096,9 @@ public class DepotPermissionCheckerWrapperTest {
 
 		return depotEntry;
 	}
+
+	@DeleteAfterTestRun
+	private Group _connectedGroup;
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
@@ -1041,7 +1116,13 @@ public class DepotPermissionCheckerWrapperTest {
 	private Group _group;
 
 	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@Inject
 	private PermissionCheckerFactory _permissionCheckerFactory;
+
+	@DeleteAfterTestRun
+	private Group _privateGroup;
 
 	@Inject
 	private RoleLocalService _roleLocalService;

@@ -60,6 +60,16 @@ public class DepotTestUtil {
 			unsafeConsumer);
 	}
 
+	public static void withAssetLibraryOwner(
+			DepotEntry depotEntry,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		_withGroupUser(
+			depotEntry.getGroupId(), DepotRolesConstants.ASSET_LIBRARY_OWNER,
+			unsafeConsumer);
+	}
+
 	public static void withAssetLibraryPermissions(
 			DepotEntry depotEntry, String roleName, String resourceName,
 			String actionId, UnsafeRunnable<Exception> unsafeRunnable)
