@@ -44,6 +44,9 @@ spec:
             labels:
                 app: {{ include "liferay.name" .root }}{{ $suffix }}
                 {{- include "liferay.labels" .root | nindent 16 }}
+                {{- with .statefulset.podLabels }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
         spec:
             {{- with .statefulset.affinity }}
             affinity:

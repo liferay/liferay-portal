@@ -5,6 +5,20 @@ templates:
     -   templates/workloads.yaml
 tests:
     -   asserts:
+            -   equal:
+                    path: spec.template.metadata.labels["example.com/inject"]
+                    value: "true"
+            -   notExists:
+                    path: metadata.labels["example.com/inject"]
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Adds pod labels onto the pod template only
+        set:
+            podLabels:
+                example.com/inject: "true"
+    -   asserts:
             -   contains:
                     any: true
                     content:
