@@ -157,7 +157,7 @@ The settings "defaultValue, defaultValueType" are required for object field "<fi
 
 Supply both. `defaultValue` is the entry **key** of the starting state; `defaultValueType` is `inputAsValue` for a literal key (verified — an expression variant exists but is not confirmed here):
 
-```json
+```bash
 {
 	"businessType": "Picklist",
 	"label": {"en_US": "Status"},
@@ -209,8 +209,14 @@ The response carries the generated foreign key field — **read it instead of de
 	"objectField": {
 		"name": "r_eventRegistrations_c_eventId",
 		"objectFieldSettings": [
-			{"name": "objectDefinition1ShortName", "value": "Event"},
-			{"name": "objectRelationshipERCObjectFieldName", "value": "r_eventRegistrations_c_eventERC"}
+			{
+				"name": "objectDefinition1ShortName",
+				"value": "Event"
+			},
+			{
+				"name": "objectRelationshipERCObjectFieldName",
+				"value": "r_eventRegistrations_c_eventERC"
+			}
 		]
 	}
 }
@@ -547,7 +553,11 @@ Always destructure before use: `const key = entry.registrationStatus?.key || ''`
 Do **not** reach for `entry.status` here. Every object has a *system* `status` field — the workflow status — and it has a different shape, so `entry.status?.key` is always `undefined`:
 
 ```json
-{"code": 0, "label": "approved", "label_i18n": "Approved"}
+{
+	"code": 0,
+	"label": "approved",
+	"label_i18n": "Approved"
+}
 ```
 
 `status` is also a reserved name, so a custom picklist can never be called `status` (see "Reserved Field Names").

@@ -70,12 +70,18 @@ notification-templates/
 	"recipients": [
 		{
 			"from": "noreply@example.com",
-			"fromName": {"en_US": "<Sender>"},
+			"fromName": {
+				"en_US": "<Sender>"
+			},
 			"singleRecipient": true,
-			"to": {"en_US": "[%<OBJECTNAME>_<FIELDNAME>%]"}
+			"to": {
+				"en_US": "[%<OBJECTNAME>_<FIELDNAME>%]"
+			}
 		}
 	],
-	"subject": {"en_US": "<Subject>"},
+	"subject": {
+		"en_US": "<Subject>"
+	},
 	"type": "email"
 }
 ```
