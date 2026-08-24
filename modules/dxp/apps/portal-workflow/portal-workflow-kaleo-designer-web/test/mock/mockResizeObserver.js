@@ -23,6 +23,7 @@ jest.mock('@ckeditor/ckeditor5-media-embed/dist/index', () => ({}));
 jest.mock('@ckeditor/ckeditor5-mention/dist/index', () => ({}));
 jest.mock('@ckeditor/ckeditor5-minimap/dist/index', () => ({}));
 jest.mock('@ckeditor/ckeditor5-page-break/dist/index', () => ({}));
+jest.mock('@ckeditor/ckeditor5-source-editing-enhanced/dist/index', () => ({}));
 jest.mock('@ckeditor/ckeditor5-special-characters/dist/index', () => ({}));
 jest.mock('@ckeditor/ckeditor5-style/dist/index', () => ({}));
 jest.mock('@ckeditor/ckeditor5-table/dist/index', () => ({}));
