@@ -1,42 +1,50 @@
-.react-flow__connection {
-	circle {
-		fill: $white;
-		stroke: $dark;
-	}
+// react-flow-renderer's bundled theme-default.css ties our specificity on
+// `.react-flow__edge.selected .react-flow__edge-path` (both 0,2,0), and its
+// stylesheet is injected via JS after ours, so it wins that tie and forces
+// the flat gray `#555` instead of our selected color. Nesting under
+// `.definition-builder-app` (same fix as the zoom controls above) raises our
+// specificity above the vendor rule regardless of injection order.
+.definition-builder-app {
+	.react-flow__connection {
+		circle {
+			fill: $white;
+			stroke: $dark;
+		}
 
-	marker {
-		fill: $secondary-l1;
-		stroke: $secondary-l1;
-	}
-
-	path.animated {
-		stroke: $dark;
-	}
-
-	.react-flow__edge-path {
-		stroke: $secondary-l1;
-	}
-
-	.react-flow__edge-text {
-		fill: $white;
-	}
-
-	.react-flow__edge-textbg {
-		fill: $secondary;
-	}
-
-	&.selected {
 		marker {
-			fill: $primary-l1;
-			stroke: $primary-l1;
+			fill: $secondary-l1;
+			stroke: $secondary-l1;
+		}
+
+		path.animated {
+			stroke: $dark;
 		}
 
 		.react-flow__edge-path {
-			stroke: $primary-l1;
+			stroke: $secondary-l1;
+		}
+
+		.react-flow__edge-text {
+			fill: $white;
 		}
 
 		.react-flow__edge-textbg {
-			fill: $primary;
+			fill: $secondary;
+		}
+
+		&.selected {
+			marker {
+				fill: $primary-l1;
+				stroke: $primary-l1;
+			}
+
+			.react-flow__edge-path {
+				stroke: $primary-l1;
+			}
+
+			.react-flow__edge-textbg {
+				fill: $primary;
+			}
 		}
 	}
 }
