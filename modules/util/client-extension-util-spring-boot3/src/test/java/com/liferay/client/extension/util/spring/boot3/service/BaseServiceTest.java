@@ -61,11 +61,11 @@ public class BaseServiceTest {
 
 	@Test
 	public void testDoGetWithSuccessfulStatusCode() {
+		TestService testService = new TestService();
+
 		String path = "/" + UUID.randomUUID();
 
 		String uri = _getEndpoint("GET", path, "{\"total\": 1}", 200);
-
-		TestService testService = new TestService();
 
 		Assert.assertEquals(
 			"{\"total\": 1}", testService.doGet(URI.create(uri)));
@@ -73,12 +73,12 @@ public class BaseServiceTest {
 
 	@Test
 	public void testDoPostWithClientError() {
-		String path = "/" + UUID.randomUUID();
-
-		String uri = _getEndpoint("POST", path, null, 403);
-
 		try {
 			TestService testService = new TestService();
+
+			String path = "/" + UUID.randomUUID();
+
+			String uri = _getEndpoint("POST", path, null, 403);
 
 			testService.doPost("{}", URI.create(uri));
 
@@ -122,12 +122,12 @@ public class BaseServiceTest {
 	}
 
 	private void _testDoGet(String responseBody, int statusCode) {
-		String path = "/" + UUID.randomUUID();
-
-		String uri = _getEndpoint("GET", path, responseBody, statusCode);
-
 		try {
 			TestService testService = new TestService();
+
+			String path = "/" + UUID.randomUUID();
+
+			String uri = _getEndpoint("GET", path, responseBody, statusCode);
 
 			testService.doGet(URI.create(uri));
 
