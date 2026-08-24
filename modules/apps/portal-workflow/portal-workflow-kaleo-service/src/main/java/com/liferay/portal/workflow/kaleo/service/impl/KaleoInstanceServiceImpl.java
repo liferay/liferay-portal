@@ -5,6 +5,7 @@
 
 package com.liferay.portal.workflow.kaleo.service.impl;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -19,6 +20,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
+import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
@@ -130,7 +132,11 @@ public class KaleoInstanceServiceImpl extends KaleoInstanceServiceBaseImpl {
 
 		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
-				try {
+				try (SafeCloseable safeCloseable =
+						WorkflowThreadLocal.
+							setWaitForCompletionWithSafeCloseable(
+								waitForCompletion)) {
+
 					_kaleoSignaler.signalEntry(
 						transitionName, executionContext, waitForCompletion);
 				}

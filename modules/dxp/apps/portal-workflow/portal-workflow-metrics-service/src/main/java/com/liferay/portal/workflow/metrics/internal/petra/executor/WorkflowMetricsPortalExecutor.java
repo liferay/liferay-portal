@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.NamedThreadFactory;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PortalRunMode;
+import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +39,9 @@ public class WorkflowMetricsPortalExecutor {
 	public <T extends Throwable> NoticeableFuture<?> execute(
 		UnsafeRunnable<T> unsafeRunnable) {
 
-		if (PortalRunMode.isTestMode()) {
+		if (PortalRunMode.isTestMode() ||
+			WorkflowThreadLocal.isWaitForCompletion()) {
+
 			try {
 				unsafeRunnable.run();
 			}
