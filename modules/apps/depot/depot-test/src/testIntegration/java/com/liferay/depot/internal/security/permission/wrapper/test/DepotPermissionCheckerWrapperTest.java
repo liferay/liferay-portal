@@ -374,7 +374,6 @@ public class DepotPermissionCheckerWrapperTest {
 					permissionChecker.hasPermission(
 						_connectedGroup.getGroupId(), Group.class.getName(),
 						_connectedGroup.getGroupId(), ActionKeys.VIEW));
-
 				Assert.assertFalse(
 					permissionChecker.hasPermission(
 						_privateGroup.getGroupId(), Group.class.getName(),
