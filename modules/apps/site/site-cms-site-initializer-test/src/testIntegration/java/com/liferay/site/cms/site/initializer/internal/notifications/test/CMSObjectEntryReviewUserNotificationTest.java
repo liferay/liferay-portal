@@ -1,0 +1,217 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.site.cms.site.initializer.internal.notifications.test;
+
+import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserNotificationEvent;
+import com.liferay.portal.kernel.notifications.UserNotificationFeedEntry;
+import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.io.Serializable;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+/**
+ * @author Veronica Gonzalez
+ */
+@DataGuard(scope = DataGuard.Scope.METHOD)
+@RunWith(Arquillian.class)
+public class CMSObjectEntryReviewUserNotificationTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	public void setUp() throws Exception {
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+
+		_user = UserTestUtil.addUser();
+
+		_userLocalService.addGroupUser(
+			_depotEntry.getGroupId(), _user.getUserId());
+	}
+
+	@Test
+	public void testInterpretReviewDateUserNotificationEvent()
+		throws Exception {
+
+		String title = RandomTestUtil.randomString() + "<&>";
+
+		ObjectEntry objectEntry = _addCMSObjectEntry(title);
+
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+
+		UserNotificationFeedEntry userNotificationFeedEntry =
+			_interpretUserNotificationEvent(objectEntry, "en_US");
+
+		Assert.assertEquals(
+			HtmlUtil.escape(
+				LanguageUtil.format(
+					LocaleUtil.US, "x-has-reached-its-review-date", title)),
+			userNotificationFeedEntry.getTitle());
+		Assert.assertEquals(
+			StringBundler.concat(
+				_portal.getPathFriendlyURLPublic(),
+				GroupConstants.CMS_FRIENDLY_URL, "/view-asset?objectEntryId=",
+				objectEntry.getObjectEntryId()),
+			userNotificationFeedEntry.getLink());
+	}
+
+	@Test
+	public void testInterpretReviewDateUserNotificationEventLocalized()
+		throws Exception {
+
+		String title = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = _addCMSObjectEntry(title);
+
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+
+		UserNotificationFeedEntry userNotificationFeedEntry =
+			_interpretUserNotificationEvent(objectEntry, "es_ES");
+
+		Assert.assertEquals(
+			LanguageUtil.format(
+				LocaleUtil.SPAIN, "x-has-reached-its-review-date", title),
+			userNotificationFeedEntry.getTitle());
+	}
+
+	private ObjectEntry _addCMSObjectEntry(String title) throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			_depotEntry.getGroupId(), _user.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			LocaleUtil.toLanguageId(LocaleUtil.US),
+			HashMapBuilder.<String, Serializable>put(
+				"reviewDate", new Date()
+			).put(
+				"title_i18n",
+				HashMapBuilder.<String, Object>put(
+					LocaleUtil.toLanguageId(LocaleUtil.US), title
+				).build()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private UserNotificationFeedEntry _interpretUserNotificationEvent(
+			ObjectEntry objectEntry, String languageId)
+		throws Exception {
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		UserNotificationEvent reviewUserNotificationEvent = null;
+
+		List<UserNotificationEvent> userNotificationEvents =
+			_userNotificationEventLocalService.getUserNotificationEvents(
+				_user.getUserId());
+
+		for (UserNotificationEvent userNotificationEvent :
+				userNotificationEvents) {
+
+			if (Objects.equals(
+					objectDefinition.getPortletId(),
+					userNotificationEvent.getType())) {
+
+				Assert.assertNull(
+					userNotificationEvents.toString(),
+					reviewUserNotificationEvent);
+
+				reviewUserNotificationEvent = userNotificationEvent;
+			}
+		}
+
+		Assert.assertNotNull(
+			userNotificationEvents.toString(), reviewUserNotificationEvent);
+
+		String payload = reviewUserNotificationEvent.getPayload();
+
+		Assert.assertTrue(
+			payload,
+			payload.contains("classPK\":" + objectEntry.getObjectEntryId()));
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setLanguageId(languageId);
+		serviceContext.setUserId(_user.getUserId());
+
+		return UserNotificationManagerUtil.interpret(
+			StringPool.BLANK, reviewUserNotificationEvent, serviceContext);
+	}
+
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private Portal _portal;
+
+	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	@Inject
+	private UserNotificationEventLocalService
+		_userNotificationEventLocalService;
+
+}
