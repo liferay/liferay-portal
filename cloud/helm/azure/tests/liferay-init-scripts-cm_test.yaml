@@ -1,0 +1,14 @@
+suite: liferay-init-scripts-azure ConfigMap
+templates:
+    -   templates/liferay-init-scripts-cm.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: liferay-init-scripts-azure
+            -   isKind:
+                    of: ConfigMap
+            -   matchRegex:
+                    path: data["wait-for-elasticsearch.sh"]
+                    pattern: _cluster/health
+        it: Creates a ConfigMap named liferay-init-scripts-azure

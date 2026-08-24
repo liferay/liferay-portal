@@ -1,0 +1,22 @@
+suite: Marketplace Volume
+templates:
+    -   charts/liferay-default/templates/liferayenvironment.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.marketplaceVolume.enabled
+                    value: true
+            -   equal:
+                    path: spec.marketplaceVolume.storageClassName
+                    value: azurefile-csi
+            -   equal:
+                    path: spec.workloadRef.name
+                    value: liferay-default
+        it: Requests an Azure Files backed ReadWriteMany volume by default
+    -   asserts:
+            -   equal:
+                    path: spec.marketplaceVolume.storageClassName
+                    value: azurefile-csi-premium
+        it: Overrides storage class
+        set:
+            liferay-default.marketplace.storageClassName: azurefile-csi-premium

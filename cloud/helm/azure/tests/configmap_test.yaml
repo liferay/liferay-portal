@@ -1,0 +1,34 @@
+suite: ConfigMap
+templates:
+    -   charts/liferay-default/templates/configmap.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config"]
+                    pattern: operationMode="REMOTE"
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config"]
+                    pattern: networkHostAddresses=\["\$\[env:SEARCH_URL\]"\]
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config"]
+                    pattern: password="\$\[env:SEARCH_PASSWORD\]"
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config"]
+                    pattern: username="\$\[env:SEARCH_USERNAME\]"
+        it: Points both Elasticsearch configurations at the search connection details
+    -   asserts:
+            -   matchRegex:
+                    path: data["com.liferay.portal.store.azure.configuration.AzureStoreConfiguration.config"]
+                    pattern: connectionString="\$\[env:LIFERAY_DOCLIB_CONNECTION_STRING\]"
+            -   matchRegex:
+                    path: data["com.liferay.portal.store.azure.configuration.AzureStoreConfiguration.config"]
+                    pattern: containerName="\$\[env:LIFERAY_DOCLIB_CONTAINER_NAME\]"
+        it: Points the Azure blob store at the document library connection details
+    -   asserts:
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config"]
+                    pattern: httpSSLEnabled=B"false"
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config"]
+                    pattern: httpSSLEnabled=B"false"
+        it: Talks to the in cluster Elasticsearch over plain HTTP

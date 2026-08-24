@@ -1,0 +1,142 @@
+suite: StatefulSet
+templates:
+    -   charts/liferay-default/templates/workloads.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.metadata.labels["azure.workload.identity/use"]
+                    value: "true"
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Labels the pod so the workload identity webhook projects a federated token
+    -   asserts:
+            -   equal:
+                    path: spec.template.metadata.labels.origin
+                    value: liferay-azure
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Marks the pod with the liferay-azure origin
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        configMapRef:
+                            name: database-server-details
+                    path: spec.template.spec.containers[0].envFrom
+            -   contains:
+                    any: true
+                    content:
+                        secretRef:
+                            name: database-app-password
+                    path: spec.template.spec.containers[0].envFrom
+            -   contains:
+                    any: true
+                    content:
+                        secretRef:
+                            name: document-library-connection-details
+                    path: spec.template.spec.containers[0].envFrom
+            -   contains:
+                    any: true
+                    content:
+                        secretRef:
+                            name: search-connection-details
+                    path: spec.template.spec.containers[0].envFrom
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Reads every connection detail the Azure infrastructure publishes
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: LIFERAY_DL_PERIOD_STORE_PERIOD_IMPL
+                        value: com.liferay.portal.store.azure.AzureStore
+                    path: spec.template.spec.containers[0].env
+            -   contains:
+                    any: true
+                    content:
+                        mountPath: /opt/liferay/osgi/configs/com.liferay.portal.store.azure.configuration.AzureStoreConfiguration.config
+                        name: liferay-configmap
+                        subPath: com.liferay.portal.store.azure.configuration.AzureStoreConfiguration.config
+                    path: spec.template.spec.containers[0].volumeMounts
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Keeps the document library in Azure Blob Storage
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
+                        value: org.postgresql.Driver
+                    path: spec.template.spec.containers[0].env
+            -   contains:
+                    any: true
+                    content:
+                        name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME
+                        value: liferay
+                    path: spec.template.spec.containers[0].env
+            -   matchRegex:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    pattern: ^jdbc:postgresql://\$\{env\.DATABASE_ENDPOINT\}:5432/lportal\?
+            -   matchRegex:
+                    path: spec.template.spec.containers[0].env[?(@.name=="LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL")].value
+                    pattern: sslmode=require
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Connects to the Flexible Server over TLS as the application role
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.initContainers[?(@.name=="wait-for-elasticsearch")].image
+                    value: busybox:1.36
+            -   contains:
+                    any: true
+                    content:
+                        configMap:
+                            defaultMode: 0755
+                            name: liferay-init-scripts-azure
+                        name: liferay-init-scripts-azure
+                    path: spec.template.spec.volumes
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Waits for Elasticsearch before starting Liferay
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+                    value: false
+            -   equal:
+                    path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+                    value: true
+            -   equal:
+                    path: spec.template.spec.securityContext.fsGroup
+                    value: 1000
+            -   equal:
+                    path: spec.template.spec.securityContext.seccompProfile.type
+                    value: RuntimeDefault
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Satisfies the restricted pod security standard
+    -   asserts:
+            -   equal:
+                    path: spec.volumeClaimTemplates[0].spec.resources.requests.storage
+                    value: 10Gi
+            -   equal:
+                    path: spec.volumeClaimTemplates[0].spec.storageClassName
+                    value: managed-csi
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Claims a managed disk large enough for the Liferay home
