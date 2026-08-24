@@ -360,4 +360,47 @@ describe('CMS Asset Type Info Panel', () => {
 			within(breadcrumb).getByRole('button', {name: 'content-folder'})
 		).toBeInTheDocument();
 	});
+
+	describe('user time zone', () => {
+		const originalGetTimeZone = global.Liferay.ThemeDisplay.getTimeZone;
+
+		beforeEach(() => {
+			global.Liferay.ThemeDisplay.getTimeZone = jest
+				.fn()
+				.mockReturnValue('America/Los_Angeles');
+		});
+
+		afterEach(() => {
+			global.Liferay.ThemeDisplay.getTimeZone = originalGetTimeZone;
+		});
+
+		it('shows the metadata dates in the user time zone', () => {
+			render(
+				<SidePanel containerRef={{current: null}}>
+					<AssetTypeInfoPanelContent
+						additionalProps={testAdditionalProps}
+						items={
+							[
+								{
+									...CONTENT_OBJECT_ENTRY,
+									embedded: {
+										...CONTENT_OBJECT_ENTRY.embedded,
+										expirationDate: '2026-03-01T02:30:00Z',
+										reviewDate: '2026-03-02T01:15:00Z',
+									},
+								},
+							] as any
+						}
+					/>
+				</SidePanel>
+			);
+
+			expect(
+				screen.getByText('02/28/2026, 06:30 PM')
+			).toBeInTheDocument();
+			expect(
+				screen.getByText('03/01/2026, 05:15 PM')
+			).toBeInTheDocument();
+		});
+	});
 });
