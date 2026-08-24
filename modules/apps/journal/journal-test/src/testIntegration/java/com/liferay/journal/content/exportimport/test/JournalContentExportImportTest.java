@@ -175,7 +175,6 @@ public class JournalContentExportImportTest
 					importedGroup.getGroupId(),
 					article.getExternalReferenceCode());
 
-		Assert.assertNotNull(importedArticle);
 		Assert.assertEquals(
 			article.getTitle(LocaleUtil.getSiteDefault()),
 			importedArticle.getTitle(LocaleUtil.getSiteDefault()));
