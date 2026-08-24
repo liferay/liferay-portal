@@ -35,8 +35,8 @@ public class AWSByteBufferUtilTest {
 
 		byte[] byteBufferBytes = AWSByteBufferUtil.getBytes(byteBuffer);
 
-		Assert.assertArrayEquals(new byte[bytes.length], clonedBytes);
 		Assert.assertArrayEquals(bytes, byteBufferBytes);
+		Assert.assertArrayEquals(new byte[bytes.length], clonedBytes);
 	}
 
 	@Test
@@ -50,8 +50,8 @@ public class AWSByteBufferUtilTest {
 		byte[] byteBufferBytes = AWSByteBufferUtil.getBytes(
 			byteBuffer.asReadOnlyBuffer());
 
-		Assert.assertArrayEquals(bytes, clonedBytes);
 		Assert.assertArrayEquals(bytes, byteBufferBytes);
+		Assert.assertArrayEquals(bytes, clonedBytes);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
