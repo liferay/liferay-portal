@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.fips.constants.FIPSConstants;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Manuele Castro
  */
@@ -46,6 +48,18 @@ public class FIPSUtil {
 					RoleConstants.CRYPTO_OFFICER,
 					"\" at the same time in FIPS mode"));
 		}
+	}
+
+	public static int getMaxTimeout(int maxTimeoutMinutes, String timeUnit) {
+		if (StringUtil.equals(timeUnit, FIPSConstants.TIME_UNIT_DAYS)) {
+			return (int)TimeUnit.MINUTES.toDays(maxTimeoutMinutes);
+		}
+
+		if (StringUtil.equals(timeUnit, FIPSConstants.TIME_UNIT_HOURS)) {
+			return (int)TimeUnit.MINUTES.toHours(maxTimeoutMinutes);
+		}
+
+		return maxTimeoutMinutes;
 	}
 
 	public static boolean hasCryptoOfficerRole(User user) {
@@ -87,6 +101,18 @@ public class FIPSUtil {
 		}
 
 		return false;
+	}
+
+	public static long toMinutes(int timeout, String timeUnit) {
+		if (StringUtil.equals(timeUnit, FIPSConstants.TIME_UNIT_DAYS)) {
+			return TimeUnit.DAYS.toMinutes(timeout);
+		}
+
+		if (StringUtil.equals(timeUnit, FIPSConstants.TIME_UNIT_HOURS)) {
+			return TimeUnit.HOURS.toMinutes(timeout);
+		}
+
+		return timeout;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(FIPSUtil.class);

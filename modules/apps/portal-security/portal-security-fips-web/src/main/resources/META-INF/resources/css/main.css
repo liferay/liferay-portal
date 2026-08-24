@@ -1,0 +1,11 @@
+.form-group-autofit {
+	margin-bottom: 0;
+}
+
+.form-group-autofit .form-group {
+	margin-bottom: 5px;
+}
+
+.form-text {
+	margin-top: 5px;
+}

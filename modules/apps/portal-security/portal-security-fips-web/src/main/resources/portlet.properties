@@ -1,0 +1,1 @@
+include-and-override=portlet-ext.properties
