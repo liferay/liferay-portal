@@ -6,7 +6,6 @@
 package com.liferay.portal.json.web.service.client.internal;
 
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -14,9 +13,6 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 /**
  * @author Caio Farias
@@ -31,15 +27,7 @@ public class X509TrustManagerImplTest {
 	@Test
 	public void testConstructor() {
 		Assert.assertNotNull(new X509TrustManagerImpl());
-
-		try (MockedStatic<FIPSModeValidator> fipsModeValidatorMockedStatic =
-				Mockito.mockStatic(FIPSModeValidator.class)) {
-
-			new X509TrustManagerImpl(null, false);
-
-			fipsModeValidatorMockedStatic.verify(
-				() -> FIPSModeValidator.validateTLSVerification(true));
-		}
+		Assert.assertNotNull(new X509TrustManagerImpl(null, true));
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -59,7 +47,7 @@ public class X509TrustManagerImplTest {
 				() -> new X509TrustManagerImpl(null, true));
 
 			Assert.assertEquals(
-				"TLS verification must be enabled in FIPS mode",
+				"Self signed certificates are not allowed in FIPS mode",
 				securityException2.getMessage());
 		}
 	}

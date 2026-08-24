@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+		<!ELEMENT config ANY >
+<!ENTITY xxe SYSTEM "http://0.0.0.0:0">
+]>
+<config>&xxe;</config>

@@ -1,0 +1,10 @@
+<config>
+	<AUTH auth_class="org.jgroups.auth.X509Token" />
+	<ASYM_ENCRYPT
+		asym_algorithm="RSA/ECB/OAEPWithSHA-256AndMGF1Padding"
+		asym_keylength="2048"
+		sym_algorithm="AES/CBC/PKCS5Padding"
+		sym_iv_length="16"
+		sym_keylength="128"
+	/>
+</config>

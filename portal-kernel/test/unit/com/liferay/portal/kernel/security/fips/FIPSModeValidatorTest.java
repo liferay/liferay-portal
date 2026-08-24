@@ -6,7 +6,6 @@
 package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.internal.security.fips.FIPSModeHelperUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -14,11 +13,6 @@ import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import java.security.Provider;
 import java.security.Security;
@@ -123,7 +117,6 @@ public class FIPSModeValidatorTest {
 			ReflectionTestUtil.invoke(
 				FIPSModeValidator.class, "_isNotAllowedProviderName",
 				new Class<?>[] {String.class}, "BCFIPS"));
-
 		Assert.assertTrue(
 			ReflectionTestUtil.invoke(
 				FIPSModeValidator.class, "_isNotAllowedProviderName",
@@ -149,11 +142,9 @@ public class FIPSModeValidatorTest {
 			FIPSModeTestUtil.assertSecurityException(
 				"is not allowed in FIPS mode",
 				() -> FIPSModeValidator.validateAlgorithm("MD5"));
-
 			FIPSModeTestUtil.assertSecurityException(
 				"is not allowed in FIPS mode",
 				() -> FIPSModeValidator.validateAlgorithm("SHA-2"));
-
 			FIPSModeTestUtil.assertSecurityException(
 				"is not allowed in FIPS mode",
 				() -> FIPSModeValidator.validateAlgorithm(null));
@@ -162,267 +153,188 @@ public class FIPSModeValidatorTest {
 
 	@Test
 	public void testValidateAllowedPropertyValues() {
-		String key = RandomTestUtil.randomString();
-
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1.2",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1.2");
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1.2,",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1.2,");
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1.2,TLSv1.3",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1.2,TLSv1.3");
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1.3",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
+			new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1.3");
 
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> ",TLSv1.2",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> ",TLSv1.2");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "SSLv3,TLSv1.3",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "SSLv3,TLSv1.3");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1.1",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1.1");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1.1,TLSv1.2",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1.1,TLSv1.2");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1.11",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1.11");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "TLSv1.2,SSLv2Hello",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "TLSv1.2,SSLv2Hello");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "tlsv1.2",
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
-
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> "tlsv1.2");
 		_assertSecurityException(
-			"FIPS mode requires the property \"" + key + "\"",
-			"_validateAllowedPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> null,
-			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
+			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
+			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
+			(Function<String, String>)curKey -> null);
 	}
 
 	@Test
-	public void testValidateClusterChannelAuthElement() throws Exception {
+	public void testValidateClusterLinkChannelAuthElement() throws Exception {
 		ReflectionTestUtil.invoke(
-			FIPSModeValidator.class, "_validateClusterChannelAuthElement",
+			FIPSModeValidator.class, "_validateClusterLinkChannelAuthElement",
 			new Class<?>[] {Element.class, String.class},
-			_getElement(FIPSModeTestUtil.XML_AUTH, "AUTH"),
+			_getElement("cluster-link-channel-properties.xml", "AUTH"),
 			RandomTestUtil.randomString());
 
 		_assertSecurityException(
 			"must authenticate cluster members with \"" +
 				FIPSModeTestUtil.AUTH_CLASS_NAME + "\"",
-			"_validateClusterChannelAuthElement",
+			"_validateClusterLinkChannelAuthElement",
 			new Class<?>[] {Element.class, String.class},
-			_getElement("<AUTH />", "AUTH"), RandomTestUtil.randomString());
-
+			_getElement(
+				"cluster-link-channel-properties-auth-class-missing.xml",
+				"AUTH"),
+			RandomTestUtil.randomString());
 		_assertSecurityException(
 			"must authenticate cluster members with \"" +
 				FIPSModeTestUtil.AUTH_CLASS_NAME + "\"",
-			"_validateClusterChannelAuthElement",
+			"_validateClusterLinkChannelAuthElement",
 			new Class<?>[] {Element.class, String.class},
 			_getElement(
-				StringUtil.replace(
-					FIPSModeTestUtil.XML_AUTH, FIPSModeTestUtil.AUTH_CLASS_NAME,
-					RandomTestUtil.randomString()),
+				"cluster-link-channel-properties-auth-class-md5-token.xml",
 				"AUTH"),
 			RandomTestUtil.randomString());
 	}
 
 	@Test
-	public void testValidateClusterChannelConfiguration() throws Exception {
-		Path path = Files.createTempFile(null, ".xml");
+	public void testValidateClusterLinkChannelConfiguration() throws Exception {
+		ReflectionTestUtil.invoke(
+			FIPSModeValidator.class, "_validateClusterLinkChannelConfiguration",
+			new Class<?>[] {String.class},
+			FIPSModeTestUtil.getChannelPropertiesLocation(
+				"cluster-link-channel-properties.xml"));
 
-		try {
-			String channelPropertiesXML1 = StringBundler.concat(
-				"<config>", FIPSModeTestUtil.XML_AUTH,
-				FIPSModeTestUtil.XML_SYM_ENCRYPT, "</config>");
-
-			Files.write(
-				path, channelPropertiesXML1.getBytes(StandardCharsets.UTF_8));
-
-			ReflectionTestUtil.invoke(
-				FIPSModeValidator.class, "_validateClusterChannelConfiguration",
-				new Class<?>[] {String.class}, String.valueOf(path));
-
-			String channelPropertiesXML2 = StringBundler.concat(
-				"<config>", FIPSModeTestUtil.XML_AUTH,
-				FIPSModeTestUtil.XML_ASYM_ENCRYPT, "</config>");
-
-			Files.write(
-				path, channelPropertiesXML2.getBytes(StandardCharsets.UTF_8));
-
-			_assertSecurityException(
-				"must encrypt intracluster traffic with \"SYM_ENCRYPT\" in " +
-					"FIPS mode",
-				"_validateClusterChannelConfiguration",
-				new Class<?>[] {String.class}, String.valueOf(path));
-
-			Files.write(
-				path,
-				"<config><FUTURE_ENCRYPT /></config>".getBytes(
-					StandardCharsets.UTF_8));
-
-			_assertSecurityException(
-				"must encrypt intracluster traffic with \"SYM_ENCRYPT\" in " +
-					"FIPS mode",
-				"_validateClusterChannelConfiguration",
-				new Class<?>[] {String.class}, String.valueOf(path));
-		}
-		finally {
-			Files.delete(path);
-		}
+		_assertSecurityException(
+			"must encrypt intracluster traffic with \"SYM_ENCRYPT\" in FIPS " +
+				"mode",
+			"_validateClusterLinkChannelConfiguration",
+			new Class<?>[] {String.class},
+			FIPSModeTestUtil.getChannelPropertiesLocation(
+				"cluster-link-channel-properties-asym-encrypt.xml"));
+		_assertSecurityException(
+			"must encrypt intracluster traffic with \"SYM_ENCRYPT\" in FIPS " +
+				"mode",
+			"_validateClusterLinkChannelConfiguration",
+			new Class<?>[] {String.class},
+			FIPSModeTestUtil.getChannelPropertiesLocation(
+				"cluster-link-channel-properties-future-encrypt.xml"));
 	}
 
 	@Test
-	public void testValidateClusterChannelSymEncryptElement() throws Exception {
+	public void testValidateClusterLinkChannelSymEncryptElement()
+		throws Exception {
+
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
 
 			ReflectionTestUtil.invoke(
 				FIPSModeValidator.class,
-				"_validateClusterChannelSymEncryptElement",
+				"_validateClusterLinkChannelSymEncryptElement",
 				new Class<?>[] {Element.class},
-				_getElement(FIPSModeTestUtil.XML_SYM_ENCRYPT, "SYM_ENCRYPT"));
+				_getElement(
+					"cluster-link-channel-properties.xml", "SYM_ENCRYPT"));
 
 			_assertSecurityException(
 				"Initialization vector size 0 is not allowed in FIPS mode",
-				"_validateClusterChannelSymEncryptElement",
+				"_validateClusterLinkChannelSymEncryptElement",
 				new Class<?>[] {Element.class},
 				_getElement(
-					StringUtil.removeSubstring(
-						FIPSModeTestUtil.XML_SYM_ENCRYPT,
-						"sym_iv_length=\"16\" "),
+					"cluster-link-channel-properties-sym-iv-length-missing.xml",
 					"SYM_ENCRYPT"));
-
 			_assertSecurityException(
 				"Initialization vector size 12 is not allowed in FIPS mode",
-				"_validateClusterChannelSymEncryptElement",
+				"_validateClusterLinkChannelSymEncryptElement",
 				new Class<?>[] {Element.class},
 				_getElement(
-					StringUtil.replace(
-						FIPSModeTestUtil.XML_SYM_ENCRYPT,
-						"sym_iv_length=\"16\"", "sym_iv_length=\"12\""),
+					"cluster-link-channel-properties-sym-iv-length-12.xml",
 					"SYM_ENCRYPT"));
-
 			_assertSecurityException(
 				"Key size 64 is not allowed in FIPS mode",
-				"_validateClusterChannelSymEncryptElement",
+				"_validateClusterLinkChannelSymEncryptElement",
 				new Class<?>[] {Element.class},
 				_getElement(
-					StringUtil.replace(
-						FIPSModeTestUtil.XML_SYM_ENCRYPT,
-						"sym_keylength=\"128\"", "sym_keylength=\"64\""),
+					"cluster-link-channel-properties-sym-keylength-64.xml",
 					"SYM_ENCRYPT"));
-
-			String providerName = RandomTestUtil.randomString();
-
 			_assertSecurityException(
-				"Security provider \"" + providerName +
-					"\" is not allowed in FIPS mode",
-				"_validateClusterChannelSymEncryptElement",
+				"Security provider \"SunJCE\" is not allowed in FIPS mode",
+				"_validateClusterLinkChannelSymEncryptElement",
 				new Class<?>[] {Element.class},
 				_getElement(
-					StringUtil.replace(
-						FIPSModeTestUtil.XML_SYM_ENCRYPT, "<SYM_ENCRYPT ",
-						"<SYM_ENCRYPT provider=\"" + providerName + "\" "),
+					"cluster-link-channel-properties-provider-sun-jce.xml",
 					"SYM_ENCRYPT"));
-
 			_assertSecurityException(
 				"Transformation \"\" is not allowed",
-				"_validateClusterChannelSymEncryptElement",
+				"_validateClusterLinkChannelSymEncryptElement",
 				new Class<?>[] {Element.class},
 				_getElement(
-					StringUtil.removeSubstring(
-						FIPSModeTestUtil.XML_SYM_ENCRYPT,
-						"sym_algorithm=\"" +
-							FIPSModeTestUtil.TRANSFORMATION_SYM + "\" "),
+					"cluster-link-channel-properties-sym-algorithm-missing.xml",
 					"SYM_ENCRYPT"));
-
 			_assertSecurityException(
 				"Transformation \"AES/ECB/NoPadding\" is not allowed",
-				"_validateClusterChannelSymEncryptElement",
+				"_validateClusterLinkChannelSymEncryptElement",
 				new Class<?>[] {Element.class},
 				_getElement(
-					StringUtil.replace(
-						FIPSModeTestUtil.XML_SYM_ENCRYPT,
-						"sym_algorithm=\"" +
-							FIPSModeTestUtil.TRANSFORMATION_SYM + "\"",
-						"sym_algorithm=\"AES/ECB/NoPadding\""),
+					"cluster-link-channel-properties-sym-algorithm-ecb.xml",
 					"SYM_ENCRYPT"));
 		}
 	}
 
 	@Test
-	public void testValidateClusterProperties() throws Exception {
-		Path controlPath = Files.createTempFile(null, ".xml");
-		Path transportPath = Files.createTempFile(null, ".xml");
-
+	public void testValidateClusterLinkConfiguration() throws Exception {
 		String transportKey =
 			PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_TRANSPORT + ".0";
 
-		String transportValue = PropsUtil.get(transportKey);
+		String originalTransportValue = PropsUtil.get(transportKey);
 
-		PropsUtil.set(transportKey, String.valueOf(transportPath));
+		PropsUtil.set(
+			transportKey,
+			FIPSModeTestUtil.getChannelPropertiesLocation(
+				"cluster-link-channel-properties.xml"));
 
 		try (SafeCloseable safeCloseable1 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -430,7 +342,9 @@ public class FIPSModeValidatorTest {
 			SafeCloseable safeCloseable2 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL",
-					String.valueOf(controlPath), false);
+					FIPSModeTestUtil.getChannelPropertiesLocation(
+						"cluster-link-channel-properties.xml"),
+					false);
 			SafeCloseable safeCloseable3 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"CLUSTER_LINK_ENABLED", true);
@@ -438,44 +352,30 @@ public class FIPSModeValidatorTest {
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
 
-			String channelPropertiesXML = StringBundler.concat(
-				"<config>", FIPSModeTestUtil.XML_AUTH,
-				FIPSModeTestUtil.XML_SYM_ENCRYPT, "</config>");
-
-			Files.write(
-				controlPath,
-				channelPropertiesXML.getBytes(StandardCharsets.UTF_8));
-			Files.write(
-				transportPath,
-				channelPropertiesXML.getBytes(StandardCharsets.UTF_8));
-
 			ReflectionTestUtil.invoke(
-				FIPSModeValidator.class, "_validateClusterProperties",
+				FIPSModeValidator.class, "_validateClusterLinkConfiguration",
 				new Class<?>[0]);
 
-			_assertClusterPropertiesSecurityException(
-				StringUtil.replace(
-					channelPropertiesXML, "sym_keylength=\"128\"",
-					"sym_keylength=\"64\""),
-				"Key size 64 is not allowed in FIPS mode", transportPath);
-
-			_assertClusterPropertiesSecurityException(
-				StringBundler.concat(
-					"<config>", FIPSModeTestUtil.XML_AUTH,
-					FIPSModeTestUtil.XML_ASYM_ENCRYPT, "</config>"),
+			_assertClusterLinkConfigurationSecurityException(
+				"Key size 64 is not allowed in FIPS mode",
+				"cluster-link-channel-properties-sym-keylength-64.xml",
+				transportKey);
+			_assertClusterLinkConfigurationSecurityException(
 				"must encrypt intracluster traffic with \"SYM_ENCRYPT\" in " +
 					"FIPS mode",
-				transportPath);
+				"cluster-link-channel-properties-asym-encrypt.xml",
+				transportKey);
 
-			Files.write(
-				transportPath,
-				channelPropertiesXML.getBytes(StandardCharsets.UTF_8));
+			PropsUtil.set(
+				transportKey,
+				FIPSModeTestUtil.getChannelPropertiesLocation(
+					"cluster-link-channel-properties.xml"));
 
-			_assertClusterPropertiesSecurityException(
-				StringUtil.replace(
-					channelPropertiesXML, FIPSModeTestUtil.AUTH_CLASS_NAME,
-					RandomTestUtil.randomString()),
-				String.valueOf(controlPath), controlPath);
+			_assertClusterLinkConfigurationSecurityException(
+				"must authenticate cluster members with \"" +
+					FIPSModeTestUtil.AUTH_CLASS_NAME + "\"",
+				"cluster-link-channel-properties-auth-class-md5-token.xml",
+				PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL);
 
 			try (SafeCloseable safeCloseable5 =
 					PropsValuesTestUtil.swapWithSafeCloseable(
@@ -485,14 +385,11 @@ public class FIPSModeValidatorTest {
 				_assertSecurityException(
 					"\"" + PropsKeys.CLUSTER_LINK_AUTH_KEYSTORE_TYPE +
 						"\" to be set to only",
-					"_validateClusterProperties", new Class<?>[0]);
+					"_validateClusterLinkConfiguration", new Class<?>[0]);
 			}
 		}
 		finally {
-			Files.delete(controlPath);
-			Files.delete(transportPath);
-
-			PropsUtil.set(transportKey, transportValue);
+			PropsUtil.set(transportKey, originalTransportValue);
 		}
 	}
 
@@ -509,14 +406,12 @@ public class FIPSModeValidatorTest {
 			"FIPS provider integrity failed:", "_validateFIPSProvider",
 			new Class<?>[] {Provider[].class},
 			(Object)new Provider[] {_createProvider("BCFIPS")});
-
 		_assertSecurityException(
 			"The first security provider must be an allowed FIPS provider",
 			"_validateFIPSProvider", new Class<?>[] {Provider[].class},
 			(Object)new Provider[] {
 				_createProvider(RandomTestUtil.randomString())
 			});
-
 		_assertSecurityException(
 			"There are no security providers", "_validateFIPSProvider",
 			new Class<?>[] {Provider[].class}, (Object)new Provider[0]);
@@ -531,7 +426,6 @@ public class FIPSModeValidatorTest {
 		_assertSecurityException(
 			"Initialization vector size 0 is not allowed in FIPS mode",
 			"_validateIVSize", new Class<?>[] {int.class}, 0);
-
 		_assertSecurityException(
 			"Initialization vector size 12 is not allowed in FIPS mode",
 			"_validateIVSize", new Class<?>[] {int.class}, 12);
@@ -553,7 +447,6 @@ public class FIPSModeValidatorTest {
 			FIPSModeTestUtil.assertSecurityException(
 				"Key size 64 is not allowed in FIPS mode",
 				() -> FIPSModeValidator.validateKey("AES", 64));
-
 			FIPSModeTestUtil.assertSecurityException(
 				"is not allowed in FIPS mode",
 				() -> FIPSModeValidator.validateKey("DES", 128));
@@ -570,16 +463,13 @@ public class FIPSModeValidatorTest {
 			"is not allowed in FIPS mode",
 			"_validatePasswordsEncryptionAlgorithm",
 			new Class<?>[] {String.class}, "PBKDF2WithHmacSHA1/160/1300000");
-
 		_assertSecurityException(
 			"is not allowed in FIPS mode",
 			"_validatePasswordsEncryptionAlgorithm",
 			new Class<?>[] {String.class}, "bcrypt/10");
-
 		_assertSecurityException(
 			"iteration count", "_validatePasswordsEncryptionAlgorithm",
 			new Class<?>[] {String.class}, "PBKDF2WithHmacSHA256/256/600000");
-
 		_assertSecurityException(
 			"output length", "_validatePasswordsEncryptionAlgorithm",
 			new Class<?>[] {String.class}, "PBKDF2WithHmacSHA256/64/1300000");
@@ -615,7 +505,8 @@ public class FIPSModeValidatorTest {
 						false)) {
 
 				_assertSecurityException(
-					"TLS verification must be enabled in FIPS mode",
+					"FIPS mode requires the property \"com.liferay.portal." +
+						"kernel.service.http.TunnelUtil.verify.ssl.hostname\"",
 					"_validatePortalProperties", new Class<?>[0]);
 			}
 
@@ -624,7 +515,8 @@ public class FIPSModeValidatorTest {
 						"TUNNEL_UTIL_VERIFY_SSL_HOSTNAME", "false", false)) {
 
 				_assertSecurityException(
-					"TLS verification must be enabled in FIPS mode",
+					"FIPS mode requires the property \"com.liferay.portal." +
+						"kernel.service.http.TunnelUtil.verify.ssl.hostname\"",
 					"_validatePortalProperties", new Class<?>[0]);
 			}
 		}
@@ -656,31 +548,26 @@ public class FIPSModeValidatorTest {
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "PKIX",
 			Map.of(key, new String[] {"PKIX"}));
-
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateRequiredPropertyValues",
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "SSLv3, TLSv1",
 			Map.of(key, new String[] {"TLSv1"}));
-
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateRequiredPropertyValues",
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "TLSv1.2,TLSv1.3",
 			Map.of(key, new String[] {"TLSv1.2"}));
-
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateRequiredPropertyValues",
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "TRUE",
 			Map.of(key, new String[] {"true"}));
-
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateRequiredPropertyValues",
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "pkix",
 			Map.of(key, new String[] {"PKIX"}));
-
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateRequiredPropertyValues",
 			new Class<?>[] {Function.class, Map.class},
@@ -693,21 +580,18 @@ public class FIPSModeValidatorTest {
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "SunPKIXFoo",
 			Map.of(key, new String[] {"PKIX"}));
-
 		_assertSecurityException(
 			"FIPS mode requires the property \"" + key + "\"",
 			"_validateRequiredPropertyValues",
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "TLSv1.1",
 			Map.of(key, new String[] {"TLSv1"}));
-
 		_assertSecurityException(
 			"FIPS mode requires the property \"" + key + "\"",
 			"_validateRequiredPropertyValues",
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "untrue",
 			Map.of(key, new String[] {"true"}));
-
 		_assertSecurityException(
 			"FIPS mode requires the property \"" + key + "\"",
 			"_validateRequiredPropertyValues",
@@ -737,40 +621,21 @@ public class FIPSModeValidatorTest {
 	}
 
 	@Test
-	public void testValidateTLSVerification() {
-		FIPSModeValidator.validateTLSVerification(false);
-
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"FIPS_ENABLED", true)) {
-
-			FIPSModeValidator.validateTLSVerification(true);
-
-			FIPSModeTestUtil.assertSecurityException(
-				"TLS verification must be enabled in FIPS mode",
-				() -> FIPSModeValidator.validateTLSVerification(false));
-		}
-	}
-
-	@Test
 	public void testValidateTransformation() {
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateTransformation",
-			new Class<?>[] {String.class}, FIPSModeTestUtil.TRANSFORMATION_SYM);
+			new Class<?>[] {String.class}, "AES/CBC/PKCS5Padding");
 
 		_assertSecurityException(
 			"is not allowed in FIPS mode", "_validateTransformation",
 			new Class<?>[] {String.class}, "AES");
-
 		_assertSecurityException(
 			"is not allowed in FIPS mode", "_validateTransformation",
 			new Class<?>[] {String.class}, "RSA");
-
 		_assertSecurityException(
 			"is not allowed in FIPS mode", "_validateTransformation",
 			new Class<?>[] {String.class},
 			"RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
-
 		_assertSecurityException(
 			"is not allowed in FIPS mode", "_validateTransformation",
 			new Class<?>[] {String.class}, (Object)null);
@@ -793,26 +658,25 @@ public class FIPSModeValidatorTest {
 
 			FIPSModeTestUtil.assertSecurityException(
 				"protocol scheme", () -> FIPSModeValidator.validateURL(""));
-
 			FIPSModeTestUtil.assertSecurityException(
 				"protocol scheme",
 				() -> FIPSModeValidator.validateURL(
 					"ldap://" + RandomTestUtil.randomString()));
-
 			FIPSModeTestUtil.assertSecurityException(
 				"protocol scheme", () -> FIPSModeValidator.validateURL(null));
 		}
 	}
 
-	private void _assertClusterPropertiesSecurityException(
-			String channelPropertiesXML, String expectedMessage, Path path)
+	private void _assertClusterLinkConfigurationSecurityException(
+			String expectedMessage, String fileName, String key)
 		throws Exception {
 
-		Files.write(
-			path, channelPropertiesXML.getBytes(StandardCharsets.UTF_8));
+		PropsUtil.set(
+			key, FIPSModeTestUtil.getChannelPropertiesLocation(fileName));
 
 		_assertSecurityException(
-			expectedMessage, "_validateClusterProperties", new Class<?>[0]);
+			expectedMessage, "_validateClusterLinkConfiguration",
+			new Class<?>[0]);
 	}
 
 	private void _assertSecurityException(
@@ -833,25 +697,15 @@ public class FIPSModeValidatorTest {
 		};
 	}
 
-	private Element _getElement(String channelPropertiesXML, String tagName)
+	private Element _getElement(String fileName, String tagName)
 		throws Exception {
 
-		Path path = Files.createTempFile(null, ".xml");
+		Document document = FIPSModeHelperUtil.readDocument(
+			FIPSModeTestUtil.getChannelPropertiesLocation(fileName));
 
-		try {
-			Files.write(
-				path, channelPropertiesXML.getBytes(StandardCharsets.UTF_8));
+		NodeList nodeList = document.getElementsByTagName(tagName);
 
-			Document document = FIPSModeHelperUtil.readDocument(
-				String.valueOf(path));
-
-			NodeList nodeList = document.getElementsByTagName(tagName);
-
-			return (Element)nodeList.item(0);
-		}
-		finally {
-			Files.delete(path);
-		}
+		return (Element)nodeList.item(0);
 	}
 
 }

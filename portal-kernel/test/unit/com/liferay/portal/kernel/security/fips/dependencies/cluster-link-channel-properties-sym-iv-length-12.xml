@@ -1,0 +1,8 @@
+<config>
+	<AUTH auth_class="org.jgroups.auth.X509Token" />
+	<SYM_ENCRYPT
+		sym_algorithm="AES/CBC/PKCS5Padding"
+		sym_iv_length="12"
+		sym_keylength="128"
+	/>
+</config>

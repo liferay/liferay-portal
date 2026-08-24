@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.security.fips;
 
-import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.test.util.DependenciesTestUtil;
 
 import org.junit.Assert;
 import org.junit.function.ThrowingRunnable;
@@ -17,21 +17,6 @@ public class FIPSModeTestUtil {
 
 	public static final String AUTH_CLASS_NAME = "org.jgroups.auth.X509Token";
 
-	public static final String TRANSFORMATION_SYM = "AES/CBC/PKCS5Padding";
-
-	public static final String XML_ASYM_ENCRYPT = StringBundler.concat(
-		"<ASYM_ENCRYPT ",
-		"asym_algorithm=\"RSA/ECB/OAEPWithSHA-256AndMGF1Padding\" ",
-		"asym_keylength=\"2048\" sym_algorithm=\"", TRANSFORMATION_SYM,
-		"\" sym_iv_length=\"16\" sym_keylength=\"128\" />");
-
-	public static final String XML_AUTH = StringBundler.concat(
-		"<AUTH auth_class=\"", AUTH_CLASS_NAME, "\" />");
-
-	public static final String XML_SYM_ENCRYPT = StringBundler.concat(
-		"<SYM_ENCRYPT sym_algorithm=\"", TRANSFORMATION_SYM,
-		"\" sym_iv_length=\"16\" sym_keylength=\"128\" />");
-
 	public static void assertSecurityException(
 		String expectedMessage, ThrowingRunnable throwingRunnable) {
 
@@ -41,6 +26,14 @@ public class FIPSModeTestUtil {
 		String message = securityException.getMessage();
 
 		Assert.assertTrue(message, message.contains(expectedMessage));
+	}
+
+	public static String getChannelPropertiesLocation(String fileName)
+		throws Exception {
+
+		return String.valueOf(
+			DependenciesTestUtil.getDependencyAsFile(
+				FIPSModeTestUtil.class, fileName));
 	}
 
 }

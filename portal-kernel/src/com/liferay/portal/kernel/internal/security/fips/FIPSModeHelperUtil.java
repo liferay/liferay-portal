@@ -62,14 +62,14 @@ public class FIPSModeHelperUtil {
 		catch (IOException ioException) {
 			throw new SecurityException(
 				StringBundler.concat(
-					"Unable to read the cluster channel properties \"",
+					"Unable to read the cluster link channel properties \"",
 					channelPropertiesLocation, "\" in FIPS mode"),
 				ioException);
 		}
 		catch (Exception exception) {
 			throw new SecurityException(
 				StringBundler.concat(
-					"Unable to parse the cluster channel properties \"",
+					"Unable to parse the cluster link channel properties \"",
 					channelPropertiesLocation, "\" in FIPS mode"),
 				exception);
 		}

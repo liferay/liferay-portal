@@ -1,0 +1,4 @@
+<config>
+	<AUTH auth_class="org.jgroups.auth.X509Token" />
+	<FUTURE_ENCRYPT />
+</config>

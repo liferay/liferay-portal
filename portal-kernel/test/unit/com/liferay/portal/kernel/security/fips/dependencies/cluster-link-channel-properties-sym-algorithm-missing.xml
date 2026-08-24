@@ -1,0 +1,7 @@
+<config>
+	<AUTH auth_class="org.jgroups.auth.X509Token" />
+	<SYM_ENCRYPT
+		sym_iv_length="16"
+		sym_keylength="128"
+	/>
+</config>

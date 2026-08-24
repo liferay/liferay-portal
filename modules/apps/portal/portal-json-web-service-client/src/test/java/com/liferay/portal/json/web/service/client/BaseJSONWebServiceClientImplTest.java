@@ -7,7 +7,6 @@ package com.liferay.portal.json.web.service.client;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.json.web.service.client.internal.JSONWebServiceClientImpl;
-import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -15,9 +14,6 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 /**
  * @author Caio Farias
@@ -34,14 +30,8 @@ public class BaseJSONWebServiceClientImplTest {
 		JSONWebServiceClientImpl jsonWebServiceClientImpl =
 			new JSONWebServiceClientImpl();
 
-		try (MockedStatic<FIPSModeValidator> fipsModeValidatorMockedStatic =
-				Mockito.mockStatic(FIPSModeValidator.class)) {
-
-			jsonWebServiceClientImpl.getSSLIOSessionStrategy();
-
-			fipsModeValidatorMockedStatic.verify(
-				() -> FIPSModeValidator.validateTLSVerification(false));
-		}
+		Assert.assertNotNull(
+			jsonWebServiceClientImpl.getSSLIOSessionStrategy());
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -52,7 +42,7 @@ public class BaseJSONWebServiceClientImplTest {
 				jsonWebServiceClientImpl::getSSLIOSessionStrategy);
 
 			Assert.assertEquals(
-				"TLS verification must be enabled in FIPS mode",
+				"Self signed certificates are not allowed in FIPS mode",
 				securityException.getMessage());
 
 			jsonWebServiceClientImpl.setTrustSelfSignedCertificates(false);
