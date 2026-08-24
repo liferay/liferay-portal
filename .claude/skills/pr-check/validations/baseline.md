@@ -30,13 +30,13 @@ Confirm each Ant project actually baselined by running it alone, where a failure
 ("${REPO_ROOT}/gradlew" --console=plain --project-dir "${REPO_ROOT}/<project>" baseline --rerun)
 ```
 
-Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a second, a cached verdict rather than a comparison. A genuine run prints `1 executed`. Fail when one of the seven is missing its jar, reports `Could not resolve`, or never prints `1 executed` — a baseline that did not run is not one that passed. A non-zero exit is not itself the verdict, since a project that ran and found something exits non-zero too.
+Keep `--rerun`. Without it the task reports `UP-TO-DATE` and exits 0 in half a second, a cached verdict rather than a comparison. A genuine run prints `1 executed`. Fail when one of the seven is missing its jar, reports `Could not resolve`, or never prints `1 executed` — a baseline that did not run is not one that passed. A nonzero exit is not itself the verdict, since a project that ran and found something exits nonzero too.
 
 A finding in a module the branch changed fails this validation. A finding in any other module is **inherited**: report it with both versions and do not fail the branch, whatever its severity. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead.
 
 ### Interpretation
 
-Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already-repaired one both read as modified, and a restored tree reads clean while the finding stands.
+Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already repaired one both read as modified, and a restored tree reads clean while the finding stands.
 
 Baseline has five warnings, and they do not all reach the tree in the same shape:
 
@@ -54,7 +54,7 @@ For the paths those warnings named, list each changed file with both of its vers
 
 Warning rows name packages, so match a `packageinfo` by its directory. One that no row named is a repair left by an earlier aborted run: restore it and do not count it as a finding. No row ever names a `bnd.bnd`, so judge one by its module instead of restoring it as debris.
 
-Take the file list from `git status --porcelain -uall -- '*bnd.bnd' '*packageinfo'`, and for each one read the version in `HEAD` against the version in the tree, from the `Bundle-Version:` or `version` line. Keep `-uall`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`, and read an addition or a removal from the status letter rather than from a missing version line — a bare diff of the version lines drops the filename and cannot tell an addition, a deletion, and a lowering apart.
+Take the file list from `git status --porcelain --untracked-files=all -- '*bnd.bnd' '*packageinfo'`, and for each one read the version in `HEAD` against the version in the tree, from the `Bundle-Version:` or `version` line. Keep `--untracked-files=all`, or a new packageinfo is invisible under `status.showUntrackedFiles=no`, and read an addition or a removal from the status letter rather than from a missing version line — a bare diff of the version lines drops the filename and cannot tell an addition, a deletion, and a lowering apart.
 
 Classify each row, comparing segments as numbers so that `9.5.1` to `10.0.0` counts as a rise and `1.9.0` to `1.10.0` does not:
 
@@ -88,7 +88,7 @@ git commit --message "${TICKET} Semantic versioning"
 
 Collect the paths into a variable first, rather than passing the globs to `git add`, which fails when one of them matches nothing. Skip the commit when `${paths}` is empty; `git commit` with nothing staged fails, and there is nothing to record.
 
-**Never commit a repair for a module outside the branch diff.** Report it with both versions, restore the file, and name the path restored. The bump belongs to whoever owns that module, every developer who runs the check would otherwise commit another copy of it, and the task rewrites in place, so anything left behind is swept into the next `git add -A` under the wrong ticket.
+**Never commit a repair for a module outside the branch diff.** Report it with both versions, restore the file, and name the path restored. The bump belongs to whoever owns that module, every developer who runs the check would otherwise commit another copy of it, and the task rewrites in place, so anything left behind is swept into the next `git add --all` under the wrong ticket.
 
 **Major, lowered, or removed, in a module the branch changed.** Do not commit. Restore each file, fail this validation, and report it with both versions. Each is a breaking change that the developer has to decide on:
 
