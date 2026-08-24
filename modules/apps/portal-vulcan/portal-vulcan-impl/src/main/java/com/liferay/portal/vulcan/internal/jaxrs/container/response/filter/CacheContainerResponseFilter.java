@@ -85,6 +85,7 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 		}
 
 		headers.putSingle("Cache-Control", cacheControl);
+		headers.putSingle("Vary", "Accept, Accept-Language");
 	}
 
 	@Context

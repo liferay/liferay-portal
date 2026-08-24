@@ -111,6 +111,9 @@ public class CacheContainerResponseFilterTest {
 
 		Assert.assertEquals(
 			"public, max-age=3600", _getCacheControl(httpURLConnection));
+		Assert.assertEquals(
+			"Accept, Accept-Language",
+			httpURLConnection.getHeaderField("Vary"));
 	}
 
 	@Test
@@ -217,6 +220,7 @@ public class CacheContainerResponseFilterTest {
 	private void _assertNotCacheable(HttpURLConnection httpURLConnection) {
 		Assert.assertEquals(
 			"no-cache, no-store", _getCacheControl(httpURLConnection));
+		Assert.assertNull(httpURLConnection.getHeaderField("Vary"));
 	}
 
 	private String _getCacheControl(HttpURLConnection httpURLConnection) {
