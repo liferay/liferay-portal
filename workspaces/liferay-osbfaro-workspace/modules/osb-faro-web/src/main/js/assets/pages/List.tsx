@@ -93,10 +93,10 @@ const getAssetURL = ({
 		groupId,
 		touchpoint: 'Any',
 		...(itemData.assetType && {
-			type: encodeURIComponent(itemData.assetType),
+			type: itemData.assetType,
 		}),
 		...(assetTitle && {
-			title: encodeURIComponent(assetTitle),
+			title: assetTitle,
 		}),
 	})}?${queryParams.toString()}`;
 };

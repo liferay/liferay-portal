@@ -145,14 +145,10 @@ const TopAssetsTabContent: React.FC<ITopAssetsTabContentProps> = ({
 									groupId,
 									touchpoint: 'overview',
 									...(asset.assetType && {
-										type: encodeURIComponent(
-											asset.assetType
-										),
+										type: asset.assetType,
 									}),
 									...(asset.assetTitle && {
-										title: encodeURIComponent(
-											asset.assetTitle
-										),
+										title: asset.assetTitle,
 									}),
 								})
 							);

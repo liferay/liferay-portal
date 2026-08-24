@@ -1003,7 +1003,7 @@ export const metricsListColumns = {
 							groupId,
 							touchpoint: 'Any',
 							...(assetTitle && {
-								title: encodeURIComponent(assetTitle),
+								title: assetTitle,
 							}),
 							...(id && {id}),
 						})
@@ -1193,8 +1193,8 @@ export const pagesListColumns = {
 					channelId,
 					groupId,
 					siteId: dataSourceId,
-					title: encodeURIComponent(title),
-					touchpoint: encodeURIComponent(url),
+					title,
+					touchpoint: url,
 				}),
 		},
 		label: Liferay.Language.get('page-title'),

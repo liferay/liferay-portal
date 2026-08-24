@@ -41,16 +41,14 @@ const getAssetTitleColumn = ({
 			const params = {
 				channelId,
 				groupId,
-				touchpoint: encodeURIComponent(assetId),
+				touchpoint: assetId,
 			};
 
 			return setUriQueryValues(
 				routeQueries,
 				toRoute(
 					Routes.SITES_TOUCHPOINTS_OVERVIEW,
-					assetTitle
-						? {...params, title: encodeURIComponent(assetTitle)}
-						: params
+					assetTitle ? {...params, title: assetTitle} : params
 				)
 			);
 		},

@@ -142,6 +142,7 @@ exports[`TopPagesCard renders 1`] = `
                       >
                         <a
                           class="text-truncate"
+                          data-discover="true"
                           href="/workspace/456/123/sites/pages/overview/123/My%20asset%20A"
                         >
                           My asset A

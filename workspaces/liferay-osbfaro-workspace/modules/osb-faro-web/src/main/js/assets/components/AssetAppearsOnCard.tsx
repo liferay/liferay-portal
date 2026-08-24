@@ -237,7 +237,7 @@ const getTableColumns = ({
 				channelId,
 				groupId,
 				title,
-				touchpoint: encodeURIComponent(touchpoint),
+				touchpoint,
 			},
 			query: {
 				...pickBy(rangeSelectors),
