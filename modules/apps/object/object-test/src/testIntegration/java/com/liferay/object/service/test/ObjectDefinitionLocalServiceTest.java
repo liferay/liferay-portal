@@ -2862,19 +2862,18 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertNull(
 			_objectDefinitionLocalService.fetchObjectDefinition(
 				objectDefinition1.getObjectDefinitionId()));
-		Assert.assertNull(
-			_objectEntryLocalService.fetchObjectEntry(
-				objectEntry1.getObjectEntryId()));
-		Assert.assertNull(
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship.getObjectRelationshipId()));
-
 		Assert.assertNotNull(
 			_objectDefinitionLocalService.fetchObjectDefinition(
 				objectDefinition2.getObjectDefinitionId()));
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				objectEntry1.getObjectEntryId()));
 		Assert.assertNotNull(
 			_objectEntryLocalService.fetchObjectEntry(
 				objectEntry2.getObjectEntryId()));
+		Assert.assertNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship.getObjectRelationshipId()));
 	}
 
 	@Test

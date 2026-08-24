@@ -2838,8 +2838,6 @@ public class ObjectActionLocalServiceTest {
 			).build(),
 			false);
 
-		// Skip the object action while the object definition is being deleted
-
 		ObjectEntry objectEntry = _addObjectEntry(
 			_objectDefinition,
 			HashMapBuilder.<String, Serializable>put(
@@ -2858,8 +2856,6 @@ public class ObjectActionLocalServiceTest {
 			_objectEntryLocalService.fetchObjectEntry(
 				objectEntry.getObjectEntryId()));
 		Assert.assertEquals(0, _argumentsList.size());
-
-		// Execute the object action when no object definition is being deleted
 
 		objectEntry = _addObjectEntry(
 			_objectDefinition,
