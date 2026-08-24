@@ -28,21 +28,28 @@ const renderOverview = () =>
 	render(
 		<ApolloProvider client={client}>
 			<MemoryRouter initialEntries={['/workspace/23/123123/sites']}>
-				<Route path={Routes.SITES}>
-					<ChannelContext.Provider value={mockChannelContext()}>
-						<BasePage.Context.Provider value={MOCK_CONTEXT}>
-							<Overview
-								channelName="Test Channel"
-								router={{
-									params: {
-										channelId: '123123',
-										groupId: '23',
-									},
-								}}
-							/>
-						</BasePage.Context.Provider>
-					</ChannelContext.Provider>
-				</Route>
+				<RouterRoutes>
+					<Route
+						element={
+							<ChannelContext.Provider
+								value={mockChannelContext()}
+							>
+								<BasePage.Context.Provider value={MOCK_CONTEXT}>
+									<Overview
+										channelName="Test Channel"
+										router={{
+											params: {
+												channelId: '123123',
+												groupId: '23',
+											},
+										}}
+									/>
+								</BasePage.Context.Provider>
+							</ChannelContext.Provider>
+						}
+						path={Routes.SITES}
+					/>
+				</RouterRoutes>
 			</MemoryRouter>
 		</ApolloProvider>
 	);

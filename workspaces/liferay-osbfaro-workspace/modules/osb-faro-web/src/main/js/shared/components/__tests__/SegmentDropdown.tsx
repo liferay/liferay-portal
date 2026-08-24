@@ -8,7 +8,7 @@ import {
 	screen,
 	waitFor,
 } from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes} from 'react-router-dom';
 
 jest.unmock('react-dom');
 
@@ -19,7 +19,12 @@ const MOCK_SEGMENT = (id: string, name: string) => ({
 
 const Wrapper = ({children}: {children: React.ReactNode}) => (
 	<MemoryRouter initialEntries={['/workspace/123/456/sites']}>
-		<Route path="/workspace/:groupId/:channelId/sites">{children}</Route>
+		<Routes>
+			<Route
+				element={children}
+				path="/workspace/:groupId/:channelId/sites"
+			/>
+		</Routes>
 	</MemoryRouter>
 );
 

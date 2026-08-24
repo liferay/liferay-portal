@@ -8,7 +8,7 @@ import {
 	screen,
 	waitFor,
 } from '@testing-library/react';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes} from 'react-router-dom';
 
 jest.unmock('react-dom');
 
@@ -23,9 +23,12 @@ const Wrapper = ({children}: {children: React.ReactNode}) => (
 			'/workspace/123/456/sites/touchpoints/http%3A%2F%2Fliferay.com/Liferay%20DXP%20-%20Home',
 		]}
 	>
-		<Route path="/workspace/:groupId/:channelId/sites/touchpoints/:touchpoint/:title">
-			{children}
-		</Route>
+		<Routes>
+			<Route
+				element={children}
+				path="/workspace/:groupId/:channelId/sites/touchpoints/:touchpoint/:title"
+			/>
+		</Routes>
 	</MemoryRouter>
 );
 
@@ -35,15 +38,23 @@ const AssetWrapper = ({children}: {children: React.ReactNode}) => (
 			'/workspace/123/456/assets/blogs/999/page/http%3A%2F%2Fliferay.com/Liferay%20DXP%20-%20Home',
 		]}
 	>
-		<Route path="/workspace/:groupId/:channelId/assets/blogs/:assetId/page/:touchpoint/:title">
-			{children}
-		</Route>
+		<Routes>
+			<Route
+				element={children}
+				path="/workspace/:groupId/:channelId/assets/blogs/:assetId/page/:touchpoint/:title"
+			/>
+		</Routes>
 	</MemoryRouter>
 );
 
 const SiteWrapper = ({children}: {children: React.ReactNode}) => (
 	<MemoryRouter initialEntries={['/workspace/123/456/sites']}>
-		<Route path="/workspace/:groupId/:channelId/sites">{children}</Route>
+		<Routes>
+			<Route
+				element={children}
+				path="/workspace/:groupId/:channelId/sites"
+			/>
+		</Routes>
 	</MemoryRouter>
 );
 

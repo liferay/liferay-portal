@@ -20,6 +20,7 @@ exports[`MarketoCampaignOverview should render an error when the count requests 
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -296,6 +297,7 @@ exports[`MarketoCampaignOverview should render an error when the count requests 
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/data-source"
               >
                 Data Sources
@@ -755,6 +757,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -1031,6 +1034,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/data-source"
               >
                 Data Sources
@@ -1657,6 +1661,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
             <a
               aria-label="Back"
               class="text-secondary"
+              data-discover="true"
               href="/workspace/23"
             >
               <svg
@@ -1933,6 +1938,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
             >
               <a
                 class="breadcrumb-text-truncate breadcrumb-link"
+                data-discover="true"
                 href="/workspace/23/settings/data-source"
               >
                 Data Sources

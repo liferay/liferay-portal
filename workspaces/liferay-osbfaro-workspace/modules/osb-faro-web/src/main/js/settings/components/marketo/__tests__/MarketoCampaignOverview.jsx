@@ -4,7 +4,7 @@ import React from 'react';
 import MarketoCampaignOverview from '../MarketoCampaignOverview';
 import {cleanup, render} from '@testing-library/react';
 import {DataSource} from 'shared/util/records';
-import {MemoryRouter, Route} from 'react-router-dom';
+import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -25,11 +25,16 @@ const WrappedComponent = props => (
 		<MemoryRouter
 			initialEntries={['/workspace/23/settings/data-source/test']}
 		>
-			<Route path='/workspace/:groupId/settings/data-source/:id'>
-				<MockedProvider addTypename={false}>
-					<MarketoCampaignOverview {...props} />
-				</MockedProvider>
-			</Route>
+			<Routes>
+				<Route
+					element={
+						<MockedProvider addTypename={false}>
+							<MarketoCampaignOverview {...props} />
+						</MockedProvider>
+					}
+					path='/workspace/:groupId/settings/data-source/:id'
+				/>
+			</Routes>
 		</MemoryRouter>
 	</Provider>
 );
