@@ -19,6 +19,7 @@ import com.liferay.layout.page.template.internal.upgrade.v3_4_1.FragmentEntryLin
 import com.liferay.layout.page.template.internal.upgrade.v5_3_0.LayoutPageTemplateCollectionUpgradeProcess;
 import com.liferay.layout.page.template.internal.upgrade.v6_1_0.util.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelTable;
 import com.liferay.layout.page.template.internal.upgrade.v6_1_0.util.LayoutPageTemplateStructureRelElementVariationTable;
+import com.liferay.layout.page.template.internal.upgrade.v6_2_1.LayoutPageTemplateEntryClassTypeKeyUpgradeProcess;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
@@ -273,6 +274,10 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 				LayoutPageTemplateStructureRelUpgradeProcess(
 					_layoutLocalService, _segmentsExperienceLocalService,
 					_userLocalService));
+
+		registry.register(
+			"6.2.0", "6.2.1",
+			new LayoutPageTemplateEntryClassTypeKeyUpgradeProcess());
 	}
 
 	@Reference
