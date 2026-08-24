@@ -5,11 +5,14 @@
 
 package com.liferay.site.cms.site.initializer.internal.search.spi.model.index.contributor;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.bag.ObjectFieldBag;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -31,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Jürgen Kappler
@@ -108,6 +112,24 @@ public class CMSContentOutboundLinksModelDocumentContributor
 						}
 					}
 				}
+				else if (Objects.equals(
+							businessType,
+							ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+
+					for (String value :
+							_getValues(indexedValues, objectField)) {
+
+						long referencedObjectEntryId =
+							_getReferencedObjectEntryId(
+								GetterUtil.getLong(value), objectEntry);
+
+						if (referencedObjectEntryId != 0) {
+							outboundLinks.add(
+								CMSOutboundLinksUtil.getObjectEntryIdToken(
+									referencedObjectEntryId));
+						}
+					}
+				}
 			}
 
 			if (!outboundLinks.isEmpty()) {
@@ -123,6 +145,37 @@ public class CMSContentOutboundLinksModelDocumentContributor
 					exception);
 			}
 		}
+	}
+
+	private long _getReferencedObjectEntryId(
+		long fileEntryId, ObjectEntry objectEntry) {
+
+		if (fileEntryId == 0) {
+			return 0;
+		}
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchDLFileEntry(
+			fileEntryId);
+
+		if (dlFileEntry == null) {
+			return 0;
+		}
+
+		long classPK = dlFileEntry.getClassPK();
+
+		if ((classPK == 0) || (classPK == objectEntry.getObjectEntryId())) {
+			return 0;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+				objectEntry.getCompanyId(), dlFileEntry.getClassName());
+
+		if (objectDefinition == null) {
+			return 0;
+		}
+
+		return classPK;
 	}
 
 	private List<String> _getValues(
@@ -158,5 +211,11 @@ public class CMSContentOutboundLinksModelDocumentContributor
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CMSContentOutboundLinksModelDocumentContributor.class);
+
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }
