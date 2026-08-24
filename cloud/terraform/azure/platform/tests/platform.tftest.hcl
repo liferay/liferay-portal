@@ -107,7 +107,7 @@ run "should_bind_the_keda_identity_to_the_monitor_workspace" {
 	}
 	assert {
 		condition=azurerm_role_assignment.keda_monitoring_data_reader[0].role_definition_name == "Monitoring Data Reader"
-		error_message="The KEDA identity must be granted the Monitoring Data Reader role so the Prometheus scaler can query the workspace"
+		error_message="The KEDA identity must be granted the Monitoring Data Reader role"
 	}
 	assert {
 		condition=azurerm_role_assignment.keda_monitoring_data_reader[0].scope == azurerm_monitor_workspace.main[0].id
@@ -115,7 +115,7 @@ run "should_bind_the_keda_identity_to_the_monitor_workspace" {
 	}
 	assert {
 		condition=output.keda_service_account_namespace == "keda-system"
-		error_message="The KEDA service account namespace must be published so the bootstrap installs KEDA where the federated credential expects it"
+		error_message="The KEDA service account namespace must be published"
 	}
 	command=plan
 	variables {
