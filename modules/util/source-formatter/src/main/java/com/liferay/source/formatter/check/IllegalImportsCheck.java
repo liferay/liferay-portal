@@ -56,34 +56,19 @@ public class IllegalImportsCheck extends BaseFileCheck {
 				});
 		}
 
-		if (!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
-			!isExcludedPath(_PROXY_EXCLUDES, absolutePath) &&
-			content.contains("import java.lang.reflect.Proxy;")) {
+		// com.liferay.portal.kernel.util.CookieKeys
 
-			addMessage(
-				fileName, "Use ProxyUtil instead of java.lang.reflect.Proxy");
-		}
-
-		if (content.contains("import edu.emory.mathcs.backport.java")) {
-			addMessage(
-				fileName, "Illegal import: edu.emory.mathcs.backport.java");
-		}
-
-		if (content.contains("import jodd.util.StringPool")) {
-			addMessage(fileName, "Illegal import: jodd.util.StringPool");
-		}
-
-		if (!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
-			!isExcludedPath(_SECURE_RANDOM_EXCLUDES, absolutePath) &&
-			content.contains("java.security.SecureRandom") &&
-			!content.contains("javax.crypto.KeyGenerator")) {
+		if (content.contains("com.liferay.portal.kernel.util.CookieKeys") &&
+			isAttributeValue(_ENFORCE_COOKIES_MANAGER_UTIL_KEY, absolutePath)) {
 
 			addMessage(
 				fileName,
-				"Use SecureRandomUtil or com.liferay.portal.kernel.security." +
-					"SecureRandom instead of java.security.SecureRandom, see " +
-						"LPS-39508");
+				"Use com.liferay.portal.kernel.cookies.CookiesManagerUtil " +
+					"instead of com.liferay.portal.kernel.util.CookieKeys, " +
+						"see LPS-164101");
 		}
+
+		// com.liferay.portal.kernel.util.UnmodifiableList
 
 		if (content.contains(
 				"com.liferay.portal.kernel.util.UnmodifiableList")) {
@@ -95,14 +80,133 @@ public class IllegalImportsCheck extends BaseFileCheck {
 						"LPS-45027");
 		}
 
-		if (isPortalSource() && absolutePath.contains("/portal-kernel/") &&
-			content.contains("import jakarta.servlet.jsp.")) {
+		// edu.emory.mathcs.backport.java
+
+		if (content.contains("edu.emory.mathcs.backport.java")) {
+			addMessage(
+				fileName, "Illegal import: edu.emory.mathcs.backport.java");
+		}
+
+		// jakarta.servlet.jsp.*
+
+		if (content.contains("jakarta.servlet.jsp.") && isPortalSource() &&
+			absolutePath.contains("/portal-kernel/")) {
 
 			addMessage(
 				fileName,
 				"Never import jakarta.servlet.jsp.* from portal-kernel, see " +
 					"LPS-47682");
 		}
+
+		// java.lang.reflect.Proxy
+
+		if (content.contains("java.lang.reflect.Proxy") &&
+			!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
+			!isExcludedPath(_PROXY_EXCLUDES, absolutePath)) {
+
+			addMessage(
+				fileName, "Use ProxyUtil instead of java.lang.reflect.Proxy");
+		}
+
+		// java.security.SecureRandom
+
+		if (content.contains("java.security.SecureRandom") &&
+			!content.contains("javax.crypto.KeyGenerator") &&
+			!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
+			!isExcludedPath(_SECURE_RANDOM_EXCLUDES, absolutePath)) {
+
+			addMessage(
+				fileName,
+				"Use SecureRandomUtil or com.liferay.portal.kernel.security." +
+					"SecureRandom instead of java.security.SecureRandom, see " +
+						"LPS-39508");
+		}
+
+		// java.util.Optional
+
+		if (content.contains("java.util.Optional") &&
+			isAttributeValue(_AVOID_OPTIONAL_KEY, absolutePath) &&
+			!absolutePath.contains("/modules/integrations/") &&
+			!absolutePath.contains("/modules/sdk/") &&
+			!_isAllowedFileName(
+				absolutePath,
+				getAttributeValues(
+					_ALLOWED_OPTIONAL_FILE_NAMES_KEY, absolutePath))) {
+
+			addMessage(
+				fileName, "Do not use java.util.Optional, see LPS-170503");
+		}
+
+		// java.util.WeakHashMap
+
+		if (content.contains("java.util.WeakHashMap")) {
+			addMessage(
+				fileName,
+				"Do not use java.util.WeakHashMap because it is not " +
+					"thread-safe, see LPS-70963");
+		}
+
+		// java.util.concurrent.CompletableFuture
+
+		if (content.contains("java.util.concurrent.CompletableFuture") &&
+			isAttributeValue(_AVOID_COMPLETABLE_FUTURE_KEY, absolutePath) &&
+			!absolutePath.contains("/modules/integrations/") &&
+			!absolutePath.contains("/modules/sdk/") &&
+			!_isAllowedFileName(
+				absolutePath,
+				getAttributeValues(
+					_ALLOWED_COMPLETABLE_FUTURE_FILE_NAMES_KEY,
+					absolutePath))) {
+
+			addMessage(
+				fileName,
+				"Use DefaultNoticeableFuture instead of java.util.concurrent." +
+					"CompletableFuture, see LPD-98379");
+		}
+
+		// java.util.stream.Stream
+
+		if (content.contains("java.util.stream.Stream") &&
+			isAttributeValue(_AVOID_STREAM_KEY, absolutePath) &&
+			!absolutePath.contains("/modules/integrations/") &&
+			!absolutePath.contains("/modules/sdk/") &&
+			!_isAllowedFileName(
+				absolutePath,
+				getAttributeValues(
+					_ALLOWED_STREAM_FILE_NAMES_KEY, absolutePath))) {
+
+			addMessage(fileName, "Do not use java.util.stream, see LPS-170503");
+		}
+
+		// jodd.util.StringPool
+
+		if (content.contains("jodd.util.StringPool")) {
+			addMessage(fileName, "Illegal import: jodd.util.StringPool");
+		}
+
+		// org.apache.commons.beanutils.PropertyUtils
+
+		if (content.contains("org.apache.commons.beanutils.PropertyUtils") &&
+			!fileName.endsWith("TypeConvertorUtil.java")) {
+
+			addMessage(
+				fileName,
+				"Do not use org.apache.commons.beanutils.PropertyUtils, see " +
+					"LPS-62786");
+		}
+
+		// org.slf4j.Logger
+
+		if (content.contains("org.slf4j.Logger") &&
+			!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath)) {
+
+			addMessage(
+				fileName,
+				"Use com.liferay.portal.kernel.log.Log instead of " +
+					"org.slf4j.Logger");
+		}
+
+		// org.testng.Assert
 
 		if (content.contains("org.testng.Assert")) {
 			addMessage(
@@ -120,15 +224,6 @@ public class IllegalImportsCheck extends BaseFileCheck {
 					"DatabaseMetaData.supportsBatchUpdates, see LPS-60473");
 		}
 
-		if (!fileName.endsWith("TypeConvertorUtil.java") &&
-			content.contains("org.apache.commons.beanutils.PropertyUtils")) {
-
-			addMessage(
-				fileName,
-				"Do not use org.apache.commons.beanutils.PropertyUtils, see " +
-					"LPS-62786");
-		}
-
 		if (content.contains("Configurable.createConfigurable(") &&
 			!fileName.endsWith("ConfigurableUtil.java")) {
 
@@ -138,80 +233,13 @@ public class IllegalImportsCheck extends BaseFileCheck {
 					"Configurable.createConfigurable, see LPS-64056");
 		}
 
-		if (fileName.endsWith("ResourceCommand.java") &&
-			content.contains("ServletResponseUtil.sendFile(")) {
+		if (content.contains("ServletResponseUtil.sendFile(") &&
+			fileName.endsWith("ResourceCommand.java")) {
 
 			addMessage(
 				fileName,
 				"Use PortletResponseUtil.sendFile instead of " +
 					"ServletResponseUtil.sendFile, see LPS-65229");
-		}
-
-		if (content.contains("java.util.WeakHashMap")) {
-			addMessage(
-				fileName,
-				"Do not use java.util.WeakHashMap because it is not " +
-					"thread-safe, see LPS-70963");
-		}
-
-		if (isAttributeValue(_ENFORCE_COOKIES_MANAGER_UTIL_KEY, absolutePath) &&
-			content.contains("com.liferay.portal.kernel.util.CookieKeys")) {
-
-			addMessage(
-				fileName,
-				"Use com.liferay.portal.kernel.cookies.CookiesManagerUtil " +
-					"instead of com.liferay.portal.kernel.util.CookieKeys, " +
-						"see LPS-164101");
-		}
-
-		if (!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
-			content.contains("org.slf4j.Logger")) {
-
-			addMessage(
-				fileName,
-				"Use com.liferay.portal.kernel.log.Log instead of " +
-					"org.slf4j.Logger");
-		}
-
-		if (!absolutePath.contains("/modules/integrations/") &&
-			!absolutePath.contains("/modules/sdk/")) {
-
-			if (isAttributeValue(_AVOID_COMPLETABLE_FUTURE_KEY, absolutePath) &&
-				content.contains("java.util.concurrent.CompletableFuture") &&
-				!_isAllowedFileName(
-					absolutePath,
-					getAttributeValues(
-						_ALLOWED_COMPLETABLE_FUTURE_FILE_NAMES_KEY,
-						absolutePath))) {
-
-				addMessage(
-					fileName,
-					"Use DefaultNoticeableFuture instead of java.util." +
-						"concurrent.CompletableFuture, see LPD-98379");
-			}
-
-			if (isAttributeValue(_AVOID_OPTIONAL_KEY, absolutePath) &&
-				content.contains("java.util.Optional") &&
-				!_isAllowedFileName(
-					absolutePath,
-					getAttributeValues(
-						_ALLOWED_OPTIONAL_FILE_NAMES_KEY, absolutePath))) {
-
-				addMessage(
-					fileName, "Do not use java.util.Optional, see LPS-170503");
-			}
-
-			if (isAttributeValue(_AVOID_STREAM_KEY, absolutePath) &&
-				content.contains("java.util.stream") &&
-				!_isAllowedFileName(
-					absolutePath,
-					getAttributeValues(
-						_ALLOWED_STREAM_FILE_NAMES_KEY, absolutePath))) {
-
-				addMessage(
-					fileName,
-					"Do not use java.util.stream.Stream, see LPS-170503");
-			}
 		}
 
 		SourceProcessor sourceProcessor = getSourceProcessor();
