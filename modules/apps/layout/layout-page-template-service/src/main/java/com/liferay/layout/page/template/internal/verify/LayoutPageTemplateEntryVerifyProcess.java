@@ -11,9 +11,13 @@ import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.verify.VerifyProcess;
 
 import org.osgi.service.component.annotations.Component;
@@ -35,17 +39,20 @@ public class LayoutPageTemplateEntryVerifyProcess extends VerifyProcess {
 			_layoutPageTemplateEntryLocalService.getActionableDynamicQuery();
 
 		layoutPageTemplateEntryActionableDynamicQuery.setAddCriteriaMethod(
-			dynamicQuery -> {
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.isNull("classTypeKey"));
-				dynamicQuery.add(
-					RestrictionsFactoryUtil.eq(
-						"type",
-						LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE));
-			});
+			dynamicQuery -> dynamicQuery.add(
+				RestrictionsFactoryUtil.eq(
+					"type",
+					LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE)));
 		layoutPageTemplateEntryActionableDynamicQuery.setPerformActionMethod(
 			(ActionableDynamicQuery.PerformActionMethod
 				<LayoutPageTemplateEntry>)layoutPageTemplateEntry -> {
+					if ((layoutPageTemplateEntry.getClassNameId() == 0) ||
+						Validator.isNotNull(
+							layoutPageTemplateEntry.getClassTypeKey())) {
+
+						return;
+					}
+
 					InfoItemFormVariationsProvider<?>
 						infoItemFormVariationsProvider =
 							_infoItemServiceRegistry.getFirstInfoItemService(
@@ -53,6 +60,20 @@ public class LayoutPageTemplateEntryVerifyProcess extends VerifyProcess {
 								layoutPageTemplateEntry.getClassName());
 
 					if (infoItemFormVariationsProvider == null) {
+						if ((layoutPageTemplateEntry.getClassTypeId() > 0) &&
+							_log.isWarnEnabled()) {
+
+							_log.warn(
+								StringBundler.concat(
+									"Unable to update the class type key for ",
+									"layout page template entry ",
+									layoutPageTemplateEntry.
+										getLayoutPageTemplateEntryId(),
+									" because no info item form variations ",
+									"provider is registered for ",
+									layoutPageTemplateEntry.getClassName()));
+						}
+
 						return;
 					}
 
@@ -76,6 +97,9 @@ public class LayoutPageTemplateEntryVerifyProcess extends VerifyProcess {
 
 		layoutPageTemplateEntryActionableDynamicQuery.performActions();
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutPageTemplateEntryVerifyProcess.class);
 
 	@Reference
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
