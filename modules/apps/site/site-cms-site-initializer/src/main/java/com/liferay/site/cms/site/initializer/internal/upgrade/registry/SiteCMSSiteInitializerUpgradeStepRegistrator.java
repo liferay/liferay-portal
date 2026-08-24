@@ -15,10 +15,14 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0.CMSDefaultPermissionsUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v1_0_0.CMSObjectRelationshipEdgeUpgradeProcess;
 import com.liferay.site.cms.site.initializer.internal.upgrade.v2_0_0.CMSBulkActionTaskTaskResultUpgradeProcess;
+import com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_1.CMSObjectFolderPermissionsUpgradeProcess;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -52,6 +56,13 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 			new CMSBulkActionTaskTaskResultUpgradeProcess(
 				_companyLocalService, _objectDefinitionLocalService,
 				_objectFieldLocalService));
+
+		registry.register(
+			"3.0.0", "3.0.1",
+			new CMSObjectFolderPermissionsUpgradeProcess(
+				_companyLocalService, _objectFolderLocalService,
+				_resourceActionLocalService, _resourcePermissionLocalService,
+				_roleLocalService));
 	}
 
 	@Reference
@@ -79,5 +90,14 @@ public class SiteCMSSiteInitializerUpgradeStepRegistrator
 
 	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }
