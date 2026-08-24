@@ -119,7 +119,7 @@ run "should_bind_the_keda_identity_to_the_monitor_workspace" {
 	}
 	command=plan
 	variables {
-		autoscaling_config={
+		keda_config={
 			enabled=true
 		}
 		observability_config={
@@ -295,7 +295,7 @@ run "should_honor_a_custom_keda_service_account" {
 	}
 	command=plan
 	variables {
-		autoscaling_config={
+		keda_config={
 			enabled=true
 			namespace="keda"
 			service_account_name="keda-operator-custom"
@@ -409,15 +409,15 @@ run "should_omit_the_keda_identity_by_default" {
 run "should_omit_the_keda_identity_when_observability_is_disabled" {
 	assert {
 		condition=length(azurerm_user_assigned_identity.keda) == 0
-		error_message="Enabling autoscaling without observability must not create the KEDA identity"
+		error_message="Enabling KEDA without observability must not create the KEDA identity"
 	}
 	assert {
 		condition=length(azurerm_role_assignment.keda_monitoring_data_reader) == 0
-		error_message="Enabling autoscaling without observability must not grant Monitoring Data Reader"
+		error_message="Enabling KEDA without observability must not grant Monitoring Data Reader"
 	}
 	command=plan
 	variables {
-		autoscaling_config={
+		keda_config={
 			enabled=true
 		}
 	}

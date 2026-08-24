@@ -24,7 +24,7 @@ resource "azurerm_federated_identity_credential" "keda" {
 	count=local.keda_enabled ? 1 : 0
 	issuer=data.azurerm_kubernetes_cluster.aks.oidc_issuer_url
 	name="keda"
-	subject="system:serviceaccount:${var.autoscaling_config.namespace}:${var.autoscaling_config.service_account_name}"
+	subject="system:serviceaccount:${var.keda_config.namespace}:${var.keda_config.service_account_name}"
 	user_assigned_identity_id=azurerm_user_assigned_identity.keda[0].id
 }
 resource "azurerm_federated_identity_credential" "observability" {

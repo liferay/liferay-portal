@@ -11,7 +11,7 @@ output "keda_identity_client_id" {
 	value=try(azurerm_user_assigned_identity.keda[0].client_id, "")
 }
 output "keda_service_account_namespace" {
-	value=local.keda_enabled ? var.autoscaling_config.namespace : ""
+	value=local.keda_enabled ? var.keda_config.namespace : ""
 }
 output "observability_identity_client_id" {
 	value=try(azurerm_user_assigned_identity.observability[0].client_id, "")
