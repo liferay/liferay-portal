@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -288,6 +289,52 @@ public class TaxonomyCategoryResourceTest
 			parentAssetCategory, serviceContext);
 		AssetCategory assetCategory2 = _addAssetCategory(
 			_assetVocabulary, new Date(), parentAssetCategory, serviceContext);
+
+		for (EntityField entityField : entityFields) {
+			_assertTaxonomyCategoriesPageOrder(
+				entityField, assetCategory1, assetCategory2, "asc",
+				parentAssetCategory);
+			_assertTaxonomyCategoriesPageOrder(
+				entityField, assetCategory2, assetCategory1, "desc",
+				parentAssetCategory);
+		}
+	}
+
+	@Override
+	@Test
+	public void testGetTaxonomyCategoryTaxonomyCategoriesPageWithSortInteger()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.INTEGER);
+
+		if (ListUtil.isEmpty(entityFields)) {
+			return;
+		}
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		AssetCategory parentAssetCategory =
+			_assetCategoryLocalService.addCategory(
+				TestPropsValues.getUserId(), testGroup.getGroupId(),
+				RandomTestUtil.randomString(),
+				_assetVocabulary.getVocabularyId(), serviceContext);
+
+		AssetCategory assetCategory1 = _addAssetCategory(
+			_assetVocabulary, new Date(), parentAssetCategory, serviceContext);
+
+		AssetCategory assetCategory2 = _addAssetCategory(
+			_assetVocabulary, new Date(), parentAssetCategory, serviceContext);
+
+		_addAssetCategory(
+			_assetVocabulary, new Date(), assetCategory2, serviceContext);
+
+		IndexerRegistryUtil.getIndexer(
+			AssetCategory.class
+		).reindexCompany(
+			testGroup.getCompanyId()
+		);
 
 		for (EntityField entityField : entityFields) {
 			_assertTaxonomyCategoriesPageOrder(

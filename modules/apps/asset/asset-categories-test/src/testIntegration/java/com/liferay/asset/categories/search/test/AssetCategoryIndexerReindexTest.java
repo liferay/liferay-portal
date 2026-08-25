@@ -19,6 +19,9 @@ import com.liferay.portal.kernel.search.SearchEngineHelper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.search.model.uid.UIDFactory;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
@@ -106,6 +109,36 @@ public class AssetCategoryIndexerReindexTest {
 		reindexAllIndexerModels();
 
 		assertFieldValues(fieldName, map, locale, searchTerm);
+	}
+
+	@Test
+	public void testReindexChildCategoriesCount() throws Exception {
+		AssetCategory parentAssetCategory =
+			_assetCategoryFixture.createAssetCategory();
+
+		assertFieldValues(
+			"childCategoriesCount",
+			Collections.singletonMap("childCategoriesCount", "0"),
+			LocaleUtil.US, parentAssetCategory.getName());
+
+		AssetCategory childAssetCategory = assetCategoryService.addCategory(
+			parentAssetCategory.getGroupId(),
+			parentAssetCategory.getCategoryId(),
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			Collections.emptyMap(), parentAssetCategory.getVocabularyId(),
+			new String[0],
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		_assetCategories.add(childAssetCategory);
+
+		reindexAllIndexerModels();
+
+		assertFieldValues(
+			"childCategoriesCount",
+			Collections.singletonMap("childCategoriesCount", "1"),
+			LocaleUtil.US, parentAssetCategory.getName());
 	}
 
 	@Rule
