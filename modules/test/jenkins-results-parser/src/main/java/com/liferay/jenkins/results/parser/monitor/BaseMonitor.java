@@ -24,6 +24,10 @@ public abstract class BaseMonitor implements Monitor {
 		return _monitorConfig;
 	}
 
+	@Override
+	public void prepareCycle() {
+	}
+
 	protected BaseMonitor(MonitorConfig monitorConfig) {
 		_monitorConfig = monitorConfig;
 	}

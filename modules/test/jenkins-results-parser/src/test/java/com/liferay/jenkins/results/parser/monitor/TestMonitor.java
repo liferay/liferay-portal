@@ -33,6 +33,10 @@ public class TestMonitor implements Monitor {
 		return _monitorConfig;
 	}
 
+	@Override
+	public void prepareCycle() {
+	}
+
 	private final MonitorConfig _monitorConfig;
 
 }

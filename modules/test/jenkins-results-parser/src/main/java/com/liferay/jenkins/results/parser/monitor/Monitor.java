@@ -16,4 +16,6 @@ public interface Monitor {
 
 	public MonitorConfig getMonitorConfig();
 
+	public void prepareCycle();
+
 }
