@@ -149,7 +149,8 @@ function RoomNameStep({
 					</label>
 
 					<div className="mb-1 text-2 text-secondary">
-						https://liferay.com/web
+						{Liferay.ThemeDisplay.getPortalURL() +
+							Liferay.ThemeDisplay.getPathFriendlyURLPublic()}
 					</div>
 
 					<ClayInput

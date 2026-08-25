@@ -50,6 +50,7 @@ configure({
 		getBCP47LanguageId: () => 'en-US',
 		getDefaultLanguageId: () => 'en_US',
 		getLanguageId: () => 'en_US',
+		getPathFriendlyURLPublic: () => '/web',
 		getUserId: () => '1',
 	},
 	Util: {
