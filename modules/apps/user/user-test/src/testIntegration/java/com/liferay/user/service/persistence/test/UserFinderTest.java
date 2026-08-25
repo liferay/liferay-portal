@@ -339,9 +339,9 @@ public class UserFinderTest {
 			).build(),
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
-		Assert.assertEquals(users.toString(), 2, users.size());
 		Assert.assertTrue(users.toString(), users.contains(_organizationUser1));
 		Assert.assertTrue(users.toString(), users.contains(_organizationUser2));
+		Assert.assertEquals(users.toString(), 2, users.size());
 
 		users = _userFinder.findByKeywords(
 			TestPropsValues.getCompanyId(), null,

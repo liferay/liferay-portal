@@ -353,8 +353,8 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 			return;
 		}
 
-		long[] resolvedEntityIds = ListUtil.toLongArray(entities, idFunction);
 		PortletURL portletURL = getPortletURL();
+		long[] resolvedEntityIds = ListUtil.toLongArray(entities, idFunction);
 
 		for (T entity : entities) {
 			if (resolvedEntityIds.length == 1) {
