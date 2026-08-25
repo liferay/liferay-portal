@@ -17,6 +17,7 @@ import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -77,6 +78,12 @@ public class ViewAllSectionDisplayContext extends BaseSectionDisplayContext {
 		}
 
 		return additionalProps;
+	}
+
+	public Map<String, Object> getAllQuickFiltersProps() {
+		return HashMapBuilder.<String, Object>put(
+			"freeTier", LicenseManagerUtil.isFreeTier()
+		).build();
 	}
 
 	@Override

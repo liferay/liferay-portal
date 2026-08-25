@@ -168,7 +168,11 @@ function QuickFilterButton({
 	);
 }
 
-export default function AllQuickFilters() {
+export default function AllQuickFilters({
+	freeTier = false,
+}: {
+	freeTier?: boolean;
+}) {
 	const [allFDSState, setAllFDSState] =
 		useLiferayState<IFDSState>(allFDSAtom);
 
@@ -210,6 +214,10 @@ export default function AllQuickFilters() {
 	}, []);
 
 	useEffect(() => {
+		if (freeTier) {
+			return;
+		}
+
 		fetchCounts();
 
 		const handleDisplayUpdated = (event?: {id?: string}) => {
@@ -223,7 +231,7 @@ export default function AllQuickFilters() {
 		return () => {
 			Liferay.detach(FDS_EVENT_DISPLAY_UPDATED, handleDisplayUpdated);
 		};
-	}, [fetchCounts]);
+	}, [fetchCounts, freeTier]);
 
 	const applyQuickFilter = useCallback(
 		(quickFilterType: QuickFilterType) => {
@@ -249,7 +257,7 @@ export default function AllQuickFilters() {
 		[allFDSState, setAllFDSState]
 	);
 
-	if (counts.total === 0) {
+	if (freeTier || counts.total === 0) {
 		return null;
 	}
 

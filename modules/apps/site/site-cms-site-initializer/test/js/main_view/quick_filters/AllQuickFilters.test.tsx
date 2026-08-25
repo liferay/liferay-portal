@@ -81,6 +81,13 @@ describe('AllQuickFilters', () => {
 		};
 	});
 
+	it('does not fetch the asset statistics and renders nothing on the free tier', () => {
+		const {container} = render(<AllQuickFilters freeTier />);
+
+		expect(mockFetch).not.toHaveBeenCalled();
+		expect(container).toBeEmptyDOMElement();
+	});
+
 	it('renders nothing before the fetch resolves', () => {
 		mockFetch.mockReturnValueOnce(new Promise(() => {}));
 

@@ -22,6 +22,7 @@ ViewAllSectionDisplayContext viewAllSectionDisplayContext = (ViewAllSectionDispl
 	<div>
 		<react:component
 			module="{AllQuickFilters} from site-cms-site-initializer"
+			props="<%= viewAllSectionDisplayContext.getAllQuickFiltersProps() %>"
 		/>
 	</div>
 
