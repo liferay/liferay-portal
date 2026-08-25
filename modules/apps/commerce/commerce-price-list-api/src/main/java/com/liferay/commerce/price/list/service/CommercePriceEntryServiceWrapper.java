@@ -259,11 +259,11 @@ public class CommercePriceEntryServiceWrapper
 
 	@Override
 	public CommercePriceEntry updateExternalReferenceCode(
-			String externalReferenceCode, CommercePriceEntry commercePriceEntry)
+			CommercePriceEntry commercePriceEntry, String externalReferenceCode)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commercePriceEntryService.updateExternalReferenceCode(
-			externalReferenceCode, commercePriceEntry);
+			commercePriceEntry, externalReferenceCode);
 	}
 
 	@Override
@@ -294,4 +294,4 @@ public class CommercePriceEntryServiceWrapper
 	private CommercePriceEntryService _commercePriceEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:478221557
+// LIFERAY-SERVICE-BUILDER-HASH:607813819

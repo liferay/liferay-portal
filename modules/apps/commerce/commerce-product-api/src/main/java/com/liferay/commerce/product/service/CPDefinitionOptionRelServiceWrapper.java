@@ -101,12 +101,34 @@ public class CPDefinitionOptionRelServiceWrapper
 	}
 
 	@Override
+	public CPDefinitionOptionRel
+			fetchCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionRelService.
+			fetchCPDefinitionOptionRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
+	@Override
 	public CPDefinitionOptionRel getCPDefinitionOptionRel(
 			long cpDefinitionOptionRelId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionRelService.getCPDefinitionOptionRel(
 			cpDefinitionOptionRelId);
+	}
+
+	@Override
+	public CPDefinitionOptionRel
+			getCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionRelService.
+			getCPDefinitionOptionRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	@Override
@@ -244,6 +266,15 @@ public class CPDefinitionOptionRelServiceWrapper
 	}
 
 	@Override
+	public CPDefinitionOptionRel updateExternalReferenceCode(
+			long cpDefinitionOptionRelId, String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionRelService.updateExternalReferenceCode(
+			cpDefinitionOptionRelId, externalReferenceCode);
+	}
+
+	@Override
 	public CPDefinitionOptionRelService getWrappedService() {
 		return _cpDefinitionOptionRelService;
 	}
@@ -258,4 +289,4 @@ public class CPDefinitionOptionRelServiceWrapper
 	private CPDefinitionOptionRelService _cpDefinitionOptionRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:862840564
+// LIFERAY-SERVICE-BUILDER-HASH:372059362

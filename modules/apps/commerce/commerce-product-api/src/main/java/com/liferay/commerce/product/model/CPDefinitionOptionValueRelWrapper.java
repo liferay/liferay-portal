@@ -44,6 +44,7 @@ public class CPDefinitionOptionValueRelWrapper
 		attributes.put("mvccVersion", getMvccVersion());
 		attributes.put("ctCollectionId", getCtCollectionId());
 		attributes.put("uuid", getUuid());
+		attributes.put("externalReferenceCode", getExternalReferenceCode());
 		attributes.put(
 			"CPDefinitionOptionValueRelId", getCPDefinitionOptionValueRelId());
 		attributes.put("groupId", getGroupId());
@@ -84,6 +85,13 @@ public class CPDefinitionOptionValueRelWrapper
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		String externalReferenceCode = (String)attributes.get(
+			"externalReferenceCode");
+
+		if (externalReferenceCode != null) {
+			setExternalReferenceCode(externalReferenceCode);
 		}
 
 		Long CPDefinitionOptionValueRelId = (Long)attributes.get(
@@ -286,6 +294,16 @@ public class CPDefinitionOptionValueRelWrapper
 	@Override
 	public String getDefaultLanguageId() {
 		return model.getDefaultLanguageId();
+	}
+
+	/**
+	 * Returns the external reference code of this cp definition option value rel.
+	 *
+	 * @return the external reference code of this cp definition option value rel
+	 */
+	@Override
+	public String getExternalReferenceCode() {
+		return model.getExternalReferenceCode();
 	}
 
 	/**
@@ -607,6 +625,16 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 	/**
+	 * Sets the external reference code of this cp definition option value rel.
+	 *
+	 * @param externalReferenceCode the external reference code of this cp definition option value rel
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		model.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	/**
 	 * Sets the group ID of this cp definition option value rel.
 	 *
 	 * @param groupId the group ID of this cp definition option value rel
@@ -842,4 +870,4 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-234846733
+// LIFERAY-SERVICE-BUILDER-HASH:-1916425059

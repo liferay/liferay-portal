@@ -8,6 +8,7 @@ package com.liferay.commerce.product.model;
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.LocalizedModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -35,8 +36,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CPDefinitionOptionRelModel
 	extends BaseModel<CPDefinitionOptionRel>, CTModel<CPDefinitionOptionRel>,
-			GroupedModel, LocalizedModel, MVCCModel, ShardedModel,
-			StagedAuditedModel {
+			ExternalReferenceCodeModel, GroupedModel, LocalizedModel, MVCCModel,
+			ShardedModel, StagedAuditedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -108,6 +109,23 @@ public interface CPDefinitionOptionRelModel
 	 */
 	@Override
 	public void setUuid(String uuid);
+
+	/**
+	 * Returns the external reference code of this cp definition option rel.
+	 *
+	 * @return the external reference code of this cp definition option rel
+	 */
+	@AutoEscape
+	@Override
+	public String getExternalReferenceCode();
+
+	/**
+	 * Sets the external reference code of this cp definition option rel.
+	 *
+	 * @param externalReferenceCode the external reference code of this cp definition option rel
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the cp definition option rel ID of this cp definition option rel.
@@ -658,4 +676,4 @@ public interface CPDefinitionOptionRelModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-619966520
+// LIFERAY-SERVICE-BUILDER-HASH:-1084972354

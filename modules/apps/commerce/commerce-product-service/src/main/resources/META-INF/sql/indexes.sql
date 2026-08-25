@@ -68,14 +68,14 @@ create unique index IX_A1C589EB on CPDefinitionOptionRel (CPDefinitionId, key_[$
 create index IX_BDB8420C on CPDefinitionOptionRel (CPDefinitionId, required);
 create index IX_749E99EB on CPDefinitionOptionRel (CPDefinitionId, skuContributor);
 create index IX_4E86C11B on CPDefinitionOptionRel (CPOptionId);
-create index IX_449BFCFE on CPDefinitionOptionRel (companyId);
+create unique index IX_7F5C2ADD on CPDefinitionOptionRel (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_A65BAB00 on CPDefinitionOptionRel (groupId);
 create unique index IX_C02328BE on CPDefinitionOptionRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create unique index IX_55A05F1E on CPDefinitionOptionValueRel (CPDefinitionOptionRelId, key_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_4A77D282 on CPDefinitionOptionValueRel (CPDefinitionOptionRelId, preselected);
 create index IX_3EB86274 on CPDefinitionOptionValueRel (CPInstanceUuid[$COLUMN_LENGTH:75$]);
-create index IX_44C2E505 on CPDefinitionOptionValueRel (companyId);
+create unique index IX_C491D8F6 on CPDefinitionOptionValueRel (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_695AE8C7 on CPDefinitionOptionValueRel (groupId);
 create index IX_2434CAD7 on CPDefinitionOptionValueRel (key_[$COLUMN_LENGTH:75$]);
 create unique index IX_52855B17 on CPDefinitionOptionValueRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);

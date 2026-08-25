@@ -95,11 +95,29 @@ public class CPDefinitionOptionRelServiceUtil {
 			cpDefinitionId, cpOptionId);
 	}
 
+	public static CPDefinitionOptionRel
+			fetchCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().fetchCPDefinitionOptionRelByExternalReferenceCode(
+			externalReferenceCode, companyId);
+	}
+
 	public static CPDefinitionOptionRel getCPDefinitionOptionRel(
 			long cpDefinitionOptionRelId)
 		throws PortalException {
 
 		return getService().getCPDefinitionOptionRel(cpDefinitionOptionRelId);
+	}
+
+	public static CPDefinitionOptionRel
+			getCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().getCPDefinitionOptionRelByExternalReferenceCode(
+			externalReferenceCode, companyId);
 	}
 
 	public static Map<Long, List<Long>>
@@ -222,6 +240,14 @@ public class CPDefinitionOptionRelServiceUtil {
 			typeSettings, serviceContext);
 	}
 
+	public static CPDefinitionOptionRel updateExternalReferenceCode(
+			long cpDefinitionOptionRelId, String externalReferenceCode)
+		throws PortalException {
+
+		return getService().updateExternalReferenceCode(
+			cpDefinitionOptionRelId, externalReferenceCode);
+	}
+
 	public static CPDefinitionOptionRelService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -232,4 +258,4 @@ public class CPDefinitionOptionRelServiceUtil {
 			CPDefinitionOptionRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1595031747
+// LIFERAY-SERVICE-BUILDER-HASH:-140585944

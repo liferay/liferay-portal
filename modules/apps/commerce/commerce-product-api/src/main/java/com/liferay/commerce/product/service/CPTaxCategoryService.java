@@ -61,6 +61,11 @@ public interface CPTaxCategoryService extends BaseService {
 	public void deleteCPTaxCategory(long cpTaxCategoryId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPTaxCategory fetchCPTaxCategoryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException;
+
 	public List<CPTaxCategory> findCPTaxCategoriesByCompanyId(
 			long companyId, String keyword, int start, int end)
 		throws PortalException;
@@ -82,6 +87,11 @@ public interface CPTaxCategoryService extends BaseService {
 	public CPTaxCategory getCPTaxCategory(long cpTaxCategoryId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPTaxCategory getCPTaxCategoryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -100,4 +110,4 @@ public interface CPTaxCategoryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1249106627
+// LIFERAY-SERVICE-BUILDER-HASH:116830355

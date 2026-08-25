@@ -461,7 +461,7 @@ public interface CommercePriceEntryLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CommercePriceEntry updateExternalReferenceCode(
-			String externalReferenceCode, CommercePriceEntry commercePriceEntry)
+			CommercePriceEntry commercePriceEntry, String externalReferenceCode)
 		throws PortalException;
 
 	public CommercePriceEntry updatePricingInfo(
@@ -493,4 +493,4 @@ public interface CommercePriceEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1048979015
+// LIFERAY-SERVICE-BUILDER-HASH:1389613577

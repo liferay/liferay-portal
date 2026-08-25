@@ -1304,8 +1304,8 @@ public class CPDefinitionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinition
 			updateExternalReferenceCode(
-				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long cpDefinitionId)
+				HttpPrincipal httpPrincipal, long cpDefinitionId,
+				String externalReferenceCode)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -1314,7 +1314,7 @@ public class CPDefinitionServiceHttp {
 				_updateExternalReferenceCodeParameterTypes27);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, cpDefinitionId);
+				methodKey, cpDefinitionId, externalReferenceCode);
 
 			Object returnObj = null;
 
@@ -1667,7 +1667,7 @@ public class CPDefinitionServiceHttp {
 		};
 	private static final Class<?>[]
 		_updateExternalReferenceCodeParameterTypes27 = new Class[] {
-			String.class, long.class
+			long.class, String.class
 		};
 	private static final Class<?>[] _updateShippingInfoParameterTypes28 =
 		new Class[] {
@@ -1692,4 +1692,4 @@ public class CPDefinitionServiceHttp {
 		new Class[] {long.class, long.class, boolean.class, boolean.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1291762717
+// LIFERAY-SERVICE-BUILDER-HASH:498557813

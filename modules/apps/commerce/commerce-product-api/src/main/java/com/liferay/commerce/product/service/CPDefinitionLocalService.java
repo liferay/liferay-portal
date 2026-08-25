@@ -671,7 +671,7 @@ public interface CPDefinitionLocalService
 		throws PortalException;
 
 	public CPDefinition updateExternalReferenceCode(
-			String externalReferenceCode, long cpDefinitionId)
+			long cpDefinitionId, String externalReferenceCode)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -721,4 +721,4 @@ public interface CPDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1375766560
+// LIFERAY-SERVICE-BUILDER-HASH:-79398288

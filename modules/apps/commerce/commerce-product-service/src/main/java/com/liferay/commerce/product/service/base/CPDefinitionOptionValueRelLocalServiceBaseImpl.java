@@ -279,6 +279,25 @@ public abstract class CPDefinitionOptionValueRelLocalServiceBaseImpl
 			uuid, groupId);
 	}
 
+	@Override
+	public CPDefinitionOptionValueRel
+		fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return cpDefinitionOptionValueRelPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
+	}
+
+	@Override
+	public CPDefinitionOptionValueRel
+			getCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return cpDefinitionOptionValueRelPersistence.findByERC_C(
+			externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the cp definition option value rel with the primary key.
 	 *
@@ -654,4 +673,4 @@ public abstract class CPDefinitionOptionValueRelLocalServiceBaseImpl
 		CPDefinitionOptionValueRelLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1376561461
+// LIFERAY-SERVICE-BUILDER-HASH:-1832419192

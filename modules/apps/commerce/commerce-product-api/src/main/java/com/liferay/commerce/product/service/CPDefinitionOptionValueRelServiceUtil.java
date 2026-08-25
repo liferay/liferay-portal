@@ -79,6 +79,16 @@ public class CPDefinitionOptionValueRelServiceUtil {
 			cpDefinitionOptionRelId, key);
 	}
 
+	public static CPDefinitionOptionValueRel
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
 	public static CPDefinitionOptionValueRel getCPDefinitionOptionValueRel(
 			long cpDefinitionOptionValueRelId)
 		throws PortalException {
@@ -185,6 +195,14 @@ public class CPDefinitionOptionValueRelServiceUtil {
 			cpDefinitionOptionValueRelId, preselected);
 	}
 
+	public static CPDefinitionOptionValueRel updateExternalReferenceCode(
+			long cpDefinitionOptionValueRelId, String externalReferenceCode)
+		throws PortalException {
+
+		return getService().updateExternalReferenceCode(
+			cpDefinitionOptionValueRelId, externalReferenceCode);
+	}
+
 	public static CPDefinitionOptionValueRelService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -195,4 +213,4 @@ public class CPDefinitionOptionValueRelServiceUtil {
 			CPDefinitionOptionValueRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1373674799
+// LIFERAY-SERVICE-BUILDER-HASH:372764533

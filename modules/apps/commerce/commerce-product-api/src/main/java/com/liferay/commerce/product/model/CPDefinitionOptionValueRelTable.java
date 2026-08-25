@@ -35,6 +35,10 @@ public class CPDefinitionOptionValueRelTable
 			"ctCollectionId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
 	public final Column<CPDefinitionOptionValueRelTable, String> uuid =
 		createColumn("uuid_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionValueRelTable, String>
+		externalReferenceCode = createColumn(
+			"externalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionOptionValueRelTable, Long>
 		CPDefinitionOptionValueRelId = createColumn(
 			"CPDefinitionOptionValueRelId", Long.class, Types.BIGINT,
@@ -92,4 +96,4 @@ public class CPDefinitionOptionValueRelTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2106638774
+// LIFERAY-SERVICE-BUILDER-HASH:1740820427

@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.product.service.persistence.impl;
 
+import com.liferay.commerce.product.exception.DuplicateCPDefinitionOptionRelExternalReferenceCodeException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionRelException;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionRelTable;
@@ -20,7 +21,12 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.sanitizer.Sanitizer;
+import com.liferay.portal.kernel.sanitizer.SanitizerException;
+import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
@@ -28,6 +34,8 @@ import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -46,6 +54,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -992,6 +1001,75 @@ public class CPDefinitionOptionRelPersistenceImpl
 			finderCache, new Object[] {CPDefinitionId, key});
 	}
 
+	private UniquePersistenceFinder
+		<CPDefinitionOptionRel, NoSuchCPDefinitionOptionRelException>
+			_uniquePersistenceFinderByERC_C;
+
+	/**
+	 * Returns the cp definition option rel where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchCPDefinitionOptionRelException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching cp definition option rel
+	 * @throws NoSuchCPDefinitionOptionRelException if a matching cp definition option rel could not be found
+	 */
+	@Override
+	public CPDefinitionOptionRel findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchCPDefinitionOptionRelException {
+
+		return _uniquePersistenceFinderByERC_C.find(
+			finderCache, new Object[] {externalReferenceCode, companyId});
+	}
+
+	/**
+	 * Returns the cp definition option rel where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching cp definition option rel, or <code>null</code> if a matching cp definition option rel could not be found
+	 */
+	@Override
+	public CPDefinitionOptionRel fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache) {
+
+		return _uniquePersistenceFinderByERC_C.fetch(
+			finderCache, new Object[] {externalReferenceCode, companyId},
+			useFinderCache);
+	}
+
+	/**
+	 * Removes the cp definition option rel where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the cp definition option rel that was removed
+	 */
+	@Override
+	public CPDefinitionOptionRel removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchCPDefinitionOptionRelException {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel = findByERC_C(
+			externalReferenceCode, companyId);
+
+		return remove(cpDefinitionOptionRel);
+	}
+
+	/**
+	 * Returns the number of cp definition option rels where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching cp definition option rels
+	 */
+	@Override
+	public int countByERC_C(String externalReferenceCode, long companyId) {
+		return _uniquePersistenceFinderByERC_C.count(
+			finderCache, new Object[] {externalReferenceCode, companyId});
+	}
+
 	public CPDefinitionOptionRelPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -1112,6 +1190,76 @@ public class CPDefinitionOptionRelPersistenceImpl
 			String uuid = PortalUUIDUtil.generate();
 
 			cpDefinitionOptionRel.setUuid(uuid);
+		}
+
+		if (Validator.isNull(
+				cpDefinitionOptionRel.getExternalReferenceCode())) {
+
+			cpDefinitionOptionRel.setExternalReferenceCode(
+				cpDefinitionOptionRel.getUuid());
+		}
+		else {
+			if (!Objects.equals(
+					cpDefinitionOptionRelModelImpl.getColumnOriginalValue(
+						"externalReferenceCode"),
+					cpDefinitionOptionRel.getExternalReferenceCode())) {
+
+				long userId = GetterUtil.getLong(
+					PrincipalThreadLocal.getName());
+
+				if (userId > 0) {
+					long companyId = cpDefinitionOptionRel.getCompanyId();
+
+					long groupId = cpDefinitionOptionRel.getGroupId();
+
+					long classPK = 0;
+
+					if (!isNew) {
+						classPK = cpDefinitionOptionRel.getPrimaryKey();
+					}
+
+					try {
+						cpDefinitionOptionRel.setExternalReferenceCode(
+							SanitizerUtil.sanitize(
+								companyId, groupId, userId,
+								CPDefinitionOptionRel.class.getName(), classPK,
+								ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
+								cpDefinitionOptionRel.
+									getExternalReferenceCode(),
+								null));
+					}
+					catch (SanitizerException sanitizerException) {
+						throw new SystemException(sanitizerException);
+					}
+				}
+			}
+
+			CPDefinitionOptionRel ercCPDefinitionOptionRel = fetchByERC_C(
+				cpDefinitionOptionRel.getExternalReferenceCode(),
+				cpDefinitionOptionRel.getCompanyId());
+
+			if (isNew) {
+				if (ercCPDefinitionOptionRel != null) {
+					throw new DuplicateCPDefinitionOptionRelExternalReferenceCodeException(
+						"Duplicate cp definition option rel with external reference code " +
+							cpDefinitionOptionRel.getExternalReferenceCode() +
+								" and company " +
+									cpDefinitionOptionRel.getCompanyId());
+				}
+			}
+			else {
+				if ((ercCPDefinitionOptionRel != null) &&
+					(cpDefinitionOptionRel.getCPDefinitionOptionRelId() !=
+						ercCPDefinitionOptionRel.
+							getCPDefinitionOptionRelId())) {
+
+					throw new DuplicateCPDefinitionOptionRelExternalReferenceCodeException(
+						"Duplicate cp definition option rel with external reference code " +
+							cpDefinitionOptionRel.getExternalReferenceCode() +
+								" and company " +
+									cpDefinitionOptionRel.getCompanyId());
+				}
+			}
 		}
 
 		ServiceContext serviceContext =
@@ -1273,6 +1421,7 @@ public class CPDefinitionOptionRelPersistenceImpl
 		ctControlColumnNames.add("mvccVersion");
 		ctControlColumnNames.add("ctCollectionId");
 		ctStrictColumnNames.add("uuid_");
+		ctStrictColumnNames.add("externalReferenceCode");
 		ctStrictColumnNames.add("groupId");
 		ctStrictColumnNames.add("companyId");
 		ctStrictColumnNames.add("userId");
@@ -1311,6 +1460,9 @@ public class CPDefinitionOptionRelPersistenceImpl
 			new String[] {"CPDefinitionId", "CPOptionId"});
 
 		_uniqueIndexColumnNames.add(new String[] {"CPDefinitionId", "key_"});
+
+		_uniqueIndexColumnNames.add(
+			new String[] {"externalReferenceCode", "companyId"});
 	}
 
 	/**
@@ -1608,6 +1760,25 @@ public class CPDefinitionOptionRelPersistenceImpl
 				FinderColumn.Type.STRING, "=", true, true,
 				CPDefinitionOptionRel::getKey));
 
+		_uniquePersistenceFinderByERC_C = new UniquePersistenceFinder<>(
+			this,
+			createUniqueFinderPath(
+				FINDER_CLASS_NAME_ENTITY, "fetchByERC_C",
+				new String[] {String.class.getName(), Long.class.getName()},
+				new String[] {"externalReferenceCode", "companyId"}, 0, 1,
+				false,
+				convertNullFunction(
+					CPDefinitionOptionRel::getExternalReferenceCode),
+				CPDefinitionOptionRel::getCompanyId),
+			_SQL_SELECT_CPDEFINITIONOPTIONREL_WHERE, "",
+			new FinderColumn<>(
+				"cpDefinitionOptionRel.", "externalReferenceCode",
+				FinderColumn.Type.STRING, "=", true, true,
+				CPDefinitionOptionRel::getExternalReferenceCode),
+			new FinderColumn<>(
+				"cpDefinitionOptionRel.", "companyId", FinderColumn.Type.LONG,
+				"=", true, true, CPDefinitionOptionRel::getCompanyId));
+
 		CPDefinitionOptionRelUtil.setPersistence(this);
 	}
 
@@ -1674,4 +1845,4 @@ public class CPDefinitionOptionRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-527428303
+// LIFERAY-SERVICE-BUILDER-HASH:1701395493

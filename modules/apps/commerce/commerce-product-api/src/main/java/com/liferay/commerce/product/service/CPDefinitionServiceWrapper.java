@@ -407,11 +407,11 @@ public class CPDefinitionServiceWrapper
 
 	@Override
 	public CPDefinition updateExternalReferenceCode(
-			String externalReferenceCode, long cpDefinitionId)
+			long cpDefinitionId, String externalReferenceCode)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionService.updateExternalReferenceCode(
-			externalReferenceCode, cpDefinitionId);
+			cpDefinitionId, externalReferenceCode);
 	}
 
 	@Override
@@ -483,4 +483,4 @@ public class CPDefinitionServiceWrapper
 	private CPDefinitionService _cpDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1427499691
+// LIFERAY-SERVICE-BUILDER-HASH:-1646990015

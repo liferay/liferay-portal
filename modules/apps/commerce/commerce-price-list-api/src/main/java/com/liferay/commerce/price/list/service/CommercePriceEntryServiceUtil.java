@@ -238,11 +238,11 @@ public class CommercePriceEntryServiceUtil {
 	}
 
 	public static CommercePriceEntry updateExternalReferenceCode(
-			String externalReferenceCode, CommercePriceEntry commercePriceEntry)
+			CommercePriceEntry commercePriceEntry, String externalReferenceCode)
 		throws PortalException {
 
 		return getService().updateExternalReferenceCode(
-			externalReferenceCode, commercePriceEntry);
+			commercePriceEntry, externalReferenceCode);
 	}
 
 	public static CommercePriceEntry updatePricingInfo(
@@ -267,4 +267,4 @@ public class CommercePriceEntryServiceUtil {
 			CommercePriceEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:904667307
+// LIFERAY-SERVICE-BUILDER-HASH:1749449969

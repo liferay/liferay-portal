@@ -270,6 +270,50 @@ public class CPDefinitionOptionValueRelServiceHttp {
 	}
 
 	public static com.liferay.commerce.product.model.CPDefinitionOptionValueRel
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPDefinitionOptionValueRelServiceUtil.class,
+				"fetchCPDefinitionOptionValueRelByExternalReferenceCode",
+				_fetchCPDefinitionOptionValueRelByExternalReferenceCodeParameterTypes5);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode, companyId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.product.model.
+				CPDefinitionOptionValueRel)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.commerce.product.model.CPDefinitionOptionValueRel
 			getCPDefinitionOptionValueRel(
 				HttpPrincipal httpPrincipal, long cpDefinitionOptionValueRelId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -278,7 +322,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"getCPDefinitionOptionValueRel",
-				_getCPDefinitionOptionValueRelParameterTypes5);
+				_getCPDefinitionOptionValueRelParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionValueRelId);
@@ -323,7 +367,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"getCPDefinitionOptionValueRels",
-				_getCPDefinitionOptionValueRelsParameterTypes6);
+				_getCPDefinitionOptionValueRelsParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionRelId, start, end);
@@ -372,7 +416,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"getCPDefinitionOptionValueRels",
-				_getCPDefinitionOptionValueRelsParameterTypes7);
+				_getCPDefinitionOptionValueRelsParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionRelId, start, end,
@@ -419,7 +463,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"getCPDefinitionOptionValueRels",
-				_getCPDefinitionOptionValueRelsParameterTypes8);
+				_getCPDefinitionOptionValueRelsParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, key, start, end);
@@ -462,7 +506,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"getCPDefinitionOptionValueRelsCount",
-				_getCPDefinitionOptionValueRelsCountParameterTypes9);
+				_getCPDefinitionOptionValueRelsCountParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionRelId);
@@ -504,7 +548,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"resetCPInstanceCPDefinitionOptionValueRel",
-				_resetCPInstanceCPDefinitionOptionValueRelParameterTypes10);
+				_resetCPInstanceCPDefinitionOptionValueRelParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionValueRelId);
@@ -550,7 +594,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"searchCPDefinitionOptionValueRels",
-				_searchCPDefinitionOptionValueRelsParameterTypes11);
+				_searchCPDefinitionOptionValueRelsParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, groupId, cpDefinitionOptionRelId,
@@ -595,7 +639,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"searchCPDefinitionOptionValueRelsCount",
-				_searchCPDefinitionOptionValueRelsCountParameterTypes12);
+				_searchCPDefinitionOptionValueRelsCountParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, groupId, cpDefinitionOptionRelId,
@@ -644,7 +688,7 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"updateCPDefinitionOptionValueRel",
-				_updateCPDefinitionOptionValueRelParameterTypes13);
+				_updateCPDefinitionOptionValueRelParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionValueRelId, cpInstanceId, key,
@@ -690,10 +734,54 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPDefinitionOptionValueRelServiceUtil.class,
 				"updateCPDefinitionOptionValueRelPreselected",
-				_updateCPDefinitionOptionValueRelPreselectedParameterTypes14);
+				_updateCPDefinitionOptionValueRelPreselectedParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionValueRelId, preselected);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.product.model.
+				CPDefinitionOptionValueRel)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.commerce.product.model.CPDefinitionOptionValueRel
+			updateExternalReferenceCode(
+				HttpPrincipal httpPrincipal, long cpDefinitionOptionValueRelId,
+				String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPDefinitionOptionValueRelServiceUtil.class,
+				"updateExternalReferenceCode",
+				_updateExternalReferenceCodeParameterTypes16);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpDefinitionOptionValueRelId, externalReferenceCode);
 
 			Object returnObj = null;
 
@@ -752,48 +840,55 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			long.class, String.class
 		};
 	private static final Class<?>[]
-		_getCPDefinitionOptionValueRelParameterTypes5 = new Class[] {
+		_fetchCPDefinitionOptionValueRelByExternalReferenceCodeParameterTypes5 =
+			new Class[] {String.class, long.class};
+	private static final Class<?>[]
+		_getCPDefinitionOptionValueRelParameterTypes6 = new Class[] {
 			long.class
 		};
 	private static final Class<?>[]
-		_getCPDefinitionOptionValueRelsParameterTypes6 = new Class[] {
+		_getCPDefinitionOptionValueRelsParameterTypes7 = new Class[] {
 			long.class, int.class, int.class
 		};
 	private static final Class<?>[]
-		_getCPDefinitionOptionValueRelsParameterTypes7 = new Class[] {
+		_getCPDefinitionOptionValueRelsParameterTypes8 = new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getCPDefinitionOptionValueRelsParameterTypes8 = new Class[] {
+		_getCPDefinitionOptionValueRelsParameterTypes9 = new Class[] {
 			long.class, String.class, int.class, int.class
 		};
 	private static final Class<?>[]
-		_getCPDefinitionOptionValueRelsCountParameterTypes9 = new Class[] {
+		_getCPDefinitionOptionValueRelsCountParameterTypes10 = new Class[] {
 			long.class
 		};
 	private static final Class<?>[]
-		_resetCPInstanceCPDefinitionOptionValueRelParameterTypes10 =
+		_resetCPInstanceCPDefinitionOptionValueRelParameterTypes11 =
 			new Class[] {long.class};
 	private static final Class<?>[]
-		_searchCPDefinitionOptionValueRelsParameterTypes11 = new Class[] {
+		_searchCPDefinitionOptionValueRelsParameterTypes12 = new Class[] {
 			long.class, long.class, long.class, String.class, int.class,
 			int.class, com.liferay.portal.kernel.search.Sort[].class
 		};
 	private static final Class<?>[]
-		_searchCPDefinitionOptionValueRelsCountParameterTypes12 = new Class[] {
+		_searchCPDefinitionOptionValueRelsCountParameterTypes13 = new Class[] {
 			long.class, long.class, long.class, String.class
 		};
 	private static final Class<?>[]
-		_updateCPDefinitionOptionValueRelParameterTypes13 = new Class[] {
+		_updateCPDefinitionOptionValueRelParameterTypes14 = new Class[] {
 			long.class, long.class, String.class, java.util.Map.class,
 			boolean.class, java.math.BigDecimal.class, double.class,
 			java.math.BigDecimal.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
-		_updateCPDefinitionOptionValueRelPreselectedParameterTypes14 =
+		_updateCPDefinitionOptionValueRelPreselectedParameterTypes15 =
 			new Class[] {long.class, boolean.class};
+	private static final Class<?>[]
+		_updateExternalReferenceCodeParameterTypes16 = new Class[] {
+			long.class, String.class
+		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:170135678
+// LIFERAY-SERVICE-BUILDER-HASH:1352634262

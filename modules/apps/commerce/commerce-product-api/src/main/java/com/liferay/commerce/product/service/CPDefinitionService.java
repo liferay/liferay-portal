@@ -248,7 +248,7 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 	public CPDefinition updateExternalReferenceCode(
-			String externalReferenceCode, long cpDefinitionId)
+			long cpDefinitionId, String externalReferenceCode)
 		throws PortalException;
 
 	public CPDefinition updateShippingInfo(
@@ -279,4 +279,4 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1215221041
+// LIFERAY-SERVICE-BUILDER-HASH:-1059298753

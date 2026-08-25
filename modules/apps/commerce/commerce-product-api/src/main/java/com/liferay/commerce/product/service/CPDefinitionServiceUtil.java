@@ -378,11 +378,11 @@ public class CPDefinitionServiceUtil {
 	}
 
 	public static CPDefinition updateExternalReferenceCode(
-			String externalReferenceCode, long cpDefinitionId)
+			long cpDefinitionId, String externalReferenceCode)
 		throws PortalException {
 
 		return getService().updateExternalReferenceCode(
-			externalReferenceCode, cpDefinitionId);
+			cpDefinitionId, externalReferenceCode);
 	}
 
 	public static CPDefinition updateShippingInfo(
@@ -446,4 +446,4 @@ public class CPDefinitionServiceUtil {
 			CPDefinitionServiceUtil.class, CPDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1058894596
+// LIFERAY-SERVICE-BUILDER-HASH:-1997285736

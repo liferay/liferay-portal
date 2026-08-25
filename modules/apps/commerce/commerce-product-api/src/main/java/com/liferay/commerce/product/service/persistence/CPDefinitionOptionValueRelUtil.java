@@ -869,6 +869,65 @@ public class CPDefinitionOptionValueRelUtil {
 	}
 
 	/**
+	 * Returns the cp definition option value rel where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchCPDefinitionOptionValueRelException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching cp definition option value rel
+	 * @throws NoSuchCPDefinitionOptionValueRelException if a matching cp definition option value rel could not be found
+	 */
+	public static CPDefinitionOptionValueRel findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws com.liferay.commerce.product.exception.
+			NoSuchCPDefinitionOptionValueRelException {
+
+		return getPersistence().findByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
+	 * Returns the cp definition option value rel where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching cp definition option value rel, or <code>null</code> if a matching cp definition option value rel could not be found
+	 */
+	public static CPDefinitionOptionValueRel fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache) {
+
+		return getPersistence().fetchByERC_C(
+			externalReferenceCode, companyId, useFinderCache);
+	}
+
+	/**
+	 * Removes the cp definition option value rel where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the cp definition option value rel that was removed
+	 */
+	public static CPDefinitionOptionValueRel removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws com.liferay.commerce.product.exception.
+			NoSuchCPDefinitionOptionValueRelException {
+
+		return getPersistence().removeByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
+	 * Returns the number of cp definition option value rels where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching cp definition option value rels
+	 */
+	public static int countByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return getPersistence().countByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
 	 * Creates a new cp definition option value rel with the primary key. Does not add the cp definition option value rel to the database.
 	 *
 	 * @param CPDefinitionOptionValueRelId the primary key for the new cp definition option value rel
@@ -952,6 +1011,19 @@ public class CPDefinitionOptionValueRelUtil {
 		long CPDefinitionOptionRelId, String key) {
 
 		return getPersistence().fetchByC_K(CPDefinitionOptionRelId, key);
+	}
+
+	/**
+	 * Returns the cp definition option value rel where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching cp definition option value rel, or <code>null</code> if a matching cp definition option value rel could not be found
+	 */
+	public static CPDefinitionOptionValueRel fetchByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return getPersistence().fetchByERC_C(externalReferenceCode, companyId);
 	}
 
 	/**
@@ -1381,4 +1453,4 @@ public class CPDefinitionOptionValueRelUtil {
 	private static volatile CPDefinitionOptionValueRelPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:517828133
+// LIFERAY-SERVICE-BUILDER-HASH:-1949180773

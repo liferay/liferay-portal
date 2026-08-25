@@ -74,7 +74,7 @@ public class CPDefinitionOptionValueRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -82,6 +82,8 @@ public class CPDefinitionOptionValueRelCacheModel
 		sb.append(ctCollectionId);
 		sb.append(", uuid=");
 		sb.append(uuid);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", CPDefinitionOptionValueRelId=");
 		sb.append(CPDefinitionOptionValueRelId);
 		sb.append(", groupId=");
@@ -134,6 +136,14 @@ public class CPDefinitionOptionValueRelCacheModel
 		}
 		else {
 			cpDefinitionOptionValueRelImpl.setUuid(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			cpDefinitionOptionValueRelImpl.setExternalReferenceCode("");
+		}
+		else {
+			cpDefinitionOptionValueRelImpl.setExternalReferenceCode(
+				externalReferenceCode);
 		}
 
 		cpDefinitionOptionValueRelImpl.setCPDefinitionOptionValueRelId(
@@ -216,6 +226,7 @@ public class CPDefinitionOptionValueRelCacheModel
 
 		ctCollectionId = objectInput.readLong();
 		uuid = objectInput.readUTF();
+		externalReferenceCode = objectInput.readUTF();
 
 		CPDefinitionOptionValueRelId = objectInput.readLong();
 
@@ -254,6 +265,13 @@ public class CPDefinitionOptionValueRelCacheModel
 		}
 		else {
 			objectOutput.writeUTF(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(CPDefinitionOptionValueRelId);
@@ -316,6 +334,7 @@ public class CPDefinitionOptionValueRelCacheModel
 	public long mvccVersion;
 	public long ctCollectionId;
 	public String uuid;
+	public String externalReferenceCode;
 	public long CPDefinitionOptionValueRelId;
 	public long groupId;
 	public long companyId;
@@ -335,4 +354,4 @@ public class CPDefinitionOptionValueRelCacheModel
 	public String unitOfMeasureKey;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2030565164
+// LIFERAY-SERVICE-BUILDER-HASH:-466523228
