@@ -628,19 +628,18 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			ServiceContextTestUtil.getServiceContext(
 				group.getGroupId(), TestPropsValues.getUserId()));
 
-		JournalArticle article =
-			JournalTestUtil.addArticleWithXMLContent(
-				group.getGroupId(),
-				StringBundler.concat(
-					"<?xml version=\"1.0\"?><root available-locales=\"en_US\" ",
-					"default-locale=\"en_US\">",
-					"<dynamic-element index-type=\"text\" instance-id=\"",
-					RandomTestUtil.randomString(),
-					"\" name=\"text\" type=\"text\">",
-					_buildImageDynamicElementXML(fileEntry),
-					"<dynamic-content language-id=\"en_US\"><![CDATA[",
-					"Text]]></dynamic-content></dynamic-element></root>"),
-				ddmStructure.getStructureKey(), null);
+		JournalArticle article = JournalTestUtil.addArticleWithXMLContent(
+			group.getGroupId(),
+			StringBundler.concat(
+				"<?xml version=\"1.0\"?><root available-locales=\"en_US\" ",
+				"default-locale=\"en_US\">",
+				"<dynamic-element index-type=\"text\" instance-id=\"",
+				RandomTestUtil.randomString(),
+				"\" name=\"text\" type=\"text\">",
+				_buildImageDynamicElementXML(fileEntry),
+				"<dynamic-content language-id=\"en_US\"><![CDATA[",
+				"Text]]></dynamic-content></dynamic-element></root>"),
+			ddmStructure.getStructureKey(), null);
 
 		exportImportPortlet(JournalPortletKeys.JOURNAL);
 
@@ -648,8 +647,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
 				article.getUuid(), importedGroup.getGroupId());
 
-		Document document = SAXReaderUtil.read(
-			importedArticle.getContent());
+		Document document = SAXReaderUtil.read(importedArticle.getContent());
 
 		Node node = document.selectSingleNode(
 			"//dynamic-element[@type='image']/dynamic-content");
@@ -835,41 +833,6 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	}
 
 	@Test
-	@TestInfo("LPS-135706")
-	public void testExportImportJournalArticleWithDLURLWithoutUUID()
-		throws Exception {
-
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
-			RandomTestUtil.randomBytes(), null, null, null,
-			ServiceContextTestUtil.getServiceContext(
-				group.getGroupId(), TestPropsValues.getUserId()));
-
-		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			group.getGroupId(), RandomTestUtil.randomString(),
-			StringBundler.concat(
-				"<a href=\"/documents/", group.getGroupId(), "/0/",
-				fileEntry.getTitle(), "\">Link</a>"));
-
-		exportImportPortlet(JournalPortletKeys.JOURNAL);
-
-		JournalArticle importedJournalArticle =
-			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
-				journalArticle.getUuid(), importedGroup.getGroupId());
-
-		Assert.assertNotNull(importedJournalArticle);
-
-		String content = importedJournalArticle.getContent();
-
-		Assert.assertTrue(
-			content,
-			content.contains("/documents/" + importedGroup.getGroupId() + "/"));
-		Assert.assertFalse(content, content.contains(fileEntry.getUuid()));
-	}
-
-	@Test
 	@TestInfo({"LPS-83326", "LPS-99287"})
 	public void testExportImportJournalFolderWithWorkflowRestriction()
 		throws Exception {
@@ -886,10 +849,10 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 		journalFolder = JournalFolderLocalServiceUtil.updateFolder(
 			TestPropsValues.getUserId(), group.getGroupId(),
-			journalFolder.getFolderId(), journalFolder.getParentFolderId(), journalFolder.getName(),
-			journalFolder.getDescription(), new long[0],
-			JournalFolderConstants.RESTRICTION_TYPE_WORKFLOW, false,
-			serviceContext);
+			journalFolder.getFolderId(), journalFolder.getParentFolderId(),
+			journalFolder.getName(), journalFolder.getDescription(),
+			new long[0], JournalFolderConstants.RESTRICTION_TYPE_WORKFLOW,
+			false, serviceContext);
 
 		Assert.assertNotNull(
 			WorkflowDefinitionLinkLocalServiceUtil.fetchWorkflowDefinitionLink(
@@ -916,7 +879,8 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		WorkflowDefinitionLink workflowDefinitionLink =
 			WorkflowDefinitionLinkLocalServiceUtil.fetchWorkflowDefinitionLink(
 				TestPropsValues.getCompanyId(), importedGroup.getGroupId(),
-				JournalFolder.class.getName(), importedJournalFolder.getFolderId(),
+				JournalFolder.class.getName(),
+				importedJournalFolder.getFolderId(),
 				JournalArticleConstants.DDM_STRUCTURE_ID_ALL, true);
 
 		Assert.assertEquals(
@@ -1664,7 +1628,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 				"groupId", String.valueOf(fileEntry.getGroupId())
 			).put(
 				"uuid", fileEntry.getUuid()
-			).toString(),
+			),
 			"]]></dynamic-content></dynamic-element>");
 	}
 

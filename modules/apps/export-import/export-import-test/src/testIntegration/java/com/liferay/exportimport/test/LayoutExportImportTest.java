@@ -644,12 +644,13 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 						PortletDataHandlerKeys.PORTLET_DATA,
 						new String[] {Boolean.TRUE.toString()}
 					).put(
-						PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE +
-							DLPortletKeys.DOCUMENT_LIBRARY,
+						PortletDataHandlerKeys.PORTLET_DATA +
+							StringPool.UNDERLINE +
+								DLPortletKeys.DOCUMENT_LIBRARY,
 						new String[] {Boolean.FALSE.toString()}
 					).put(
-						PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE +
-							JournalPortletKeys.JOURNAL,
+						PortletDataHandlerKeys.PORTLET_DATA +
+							StringPool.UNDERLINE + JournalPortletKeys.JOURNAL,
 						new String[] {Boolean.TRUE.toString()}
 					).put(
 						PortletDataHandlerKeys.PORTLET_DATA_ALL,
@@ -1733,11 +1734,11 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	@DeleteAfterTestRun
 	private Company _company;
 
-	@DeleteAfterTestRun
-	private DDMStructure _ddmStructure;
-
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@DeleteAfterTestRun
+	private DDMStructure _ddmStructure;
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
