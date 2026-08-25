@@ -9,6 +9,7 @@ import com.liferay.data.cleanup.internal.verify.util.PostUpgradeDataCleanupProce
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -83,7 +84,10 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 		DBInspector dbInspector = new DBInspector(connection);
-		_packageNameBundlesMap = _getPackageNameBundlesMap();
+		Map<String, List<Bundle>> packageNameBundlesMap =
+			_packageNameBundlesMapDCLSingleton.getSingleton(
+				ClassNamePostUpgradeDataCleanupProcess::
+					_createPackageNameBundlesMap);
 
 		StringBundler sb = new StringBundler();
 		List<String> tableNames = new ArrayList<>();
@@ -159,7 +163,7 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 			if (_isClassDefined(
 					bundleContext, definedClasses, models,
-					_packageNameBundlesMap, value)) {
+					packageNameBundlesMap, value)) {
 
 				continue;
 			}
@@ -202,11 +206,7 @@ public class ClassNamePostUpgradeDataCleanupProcess
 		}
 	}
 
-	private Map<String, List<Bundle>> _getPackageNameBundlesMap() {
-		if (!CompanyThreadLocal.isDefaultCompany()) {
-			return _packageNameBundlesMap;
-		}
-
+	private static Map<String, List<Bundle>> _createPackageNameBundlesMap() {
 		Map<String, List<Bundle>> packageNameBundlesMap = new HashMap<>();
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
@@ -287,9 +287,11 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 					break;
 				}
-				catch (ClassNotFoundException classNotFoundException) {
+				catch (ClassNotFoundException | IllegalStateException
+							exception) {
+
 					if (_log.isDebugEnabled()) {
-						_log.debug(classNotFoundException);
+						_log.debug(exception);
 					}
 				}
 				catch (Exception exception) {
@@ -312,7 +314,8 @@ public class ClassNamePostUpgradeDataCleanupProcess
 	private static final Log _log = LogFactoryUtil.getLog(
 		ClassNamePostUpgradeDataCleanupProcess.class);
 
-	private static Map<String, List<Bundle>> _packageNameBundlesMap;
+	private static final DCLSingleton<Map<String, List<Bundle>>>
+		_packageNameBundlesMapDCLSingleton = new DCLSingleton<>();
 
 	private final ClassNameLocalService _classNameLocalService;
 	private final CompanyLocalService _companyLocalService;
