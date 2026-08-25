@@ -115,6 +115,18 @@ public class BatchTestClassGroupTest
 		_testSetAxisTestClassGroups(null, null, Arrays.asList(5, 5, 3), 13);
 	}
 
+	@Test
+	public void testSetAxisTestClassGroupsAxisCountZero() {
+		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
+			"0", null, null, 12);
+
+		batchTestClassGroup.setAxisTestClassGroups();
+
+		testEquals(
+			Collections.emptyList(),
+			batchTestClassGroup.getAxisTestClassGroups());
+	}
+
 	private List<Integer> _getAxisSizes(
 		List<AxisTestClassGroup> axisTestClassGroups) {
 
