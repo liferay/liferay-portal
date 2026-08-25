@@ -20,12 +20,6 @@
 		}
 	}
 
-	.truncate-container {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
 	// react-flow-renderer's bundled theme-default.css hardcodes the zoom
 	// controls' light-mode colors (theme-default.css:124-152); override them
 	// below to stay legible against the dark canvas. The container-level
@@ -44,6 +38,12 @@
 		svg {
 			fill: $secondary;
 		}
+	}
+
+	.truncate-container {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 }
 
