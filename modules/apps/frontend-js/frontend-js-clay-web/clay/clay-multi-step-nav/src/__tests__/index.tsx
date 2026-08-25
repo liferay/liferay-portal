@@ -100,6 +100,21 @@ describe('ClayMultiStepNav', () => {
 
 		expect(container).toMatchSnapshot();
 	});
+
+	it('applies the `className` value to the item', () => {
+		const {getByText} = render(
+			<ClayMultiStepNav>
+				<ClayMultiStepNav.Item className="test">
+					<ClayMultiStepNav.Title>One</ClayMultiStepNav.Title>
+				</ClayMultiStepNav.Item>
+			</ClayMultiStepNav>
+		);
+
+		const item = getByText('One').parentNode!;
+
+		expect(item).toHaveClass('test');
+		expect(item).not.toHaveClass('className');
+	});
 });
 
 describe('ClayMultiStepNavWithBasicItems', () => {

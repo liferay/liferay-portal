@@ -60,9 +60,8 @@ function Item({
 }: IProps) {
 	return (
 		<li
-			className={classNames('multi-step-item', {
+			className={classNames('multi-step-item', className, {
 				active,
-				className,
 				complete: complete ?? state === 'complete',
 				disabled,
 				error: state === 'error',
