@@ -85,54 +85,7 @@ public class CMSObjectEntryReviewUserNotificationTest {
 	}
 
 	@Test
-	public void testInterpretReviewDateUserNotificationEvent()
-		throws Exception {
-
-		String title = RandomTestUtil.randomString() + "<&>";
-
-		ObjectEntry objectEntry = _addCMSObjectEntry(title);
-
-		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
-
-		UserNotificationFeedEntry userNotificationFeedEntry =
-			_interpretUserNotificationEvent(objectEntry, "en_US");
-
-		Assert.assertEquals(
-			HtmlUtil.escape(
-				LanguageUtil.format(
-					LocaleUtil.US, "x-has-reached-its-review-date", title)),
-			userNotificationFeedEntry.getTitle());
-		Assert.assertEquals(
-			StringBundler.concat(
-				_portal.getPathFriendlyURLPublic(),
-				GroupConstants.CMS_FRIENDLY_URL, "/view-asset?objectEntryId=",
-				objectEntry.getObjectEntryId()),
-			userNotificationFeedEntry.getLink());
-	}
-
-	@Test
-	public void testInterpretReviewDateUserNotificationEventLocalized()
-		throws Exception {
-
-		String title = RandomTestUtil.randomString();
-
-		ObjectEntry objectEntry = _addCMSObjectEntry(title);
-
-		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
-
-		UserNotificationFeedEntry userNotificationFeedEntry =
-			_interpretUserNotificationEvent(objectEntry, "es_ES");
-
-		Assert.assertEquals(
-			LanguageUtil.format(
-				LocaleUtil.SPAIN, "x-has-reached-its-review-date", title),
-			userNotificationFeedEntry.getTitle());
-	}
-
-	@Test
-	public void testReviewDateUserNotificationEventIsSentOnlyOnce()
-		throws Exception {
-
+	public void testCheckObjectEntriesTwice() throws Exception {
 		ObjectEntry objectEntry = _addCMSObjectEntry(
 			RandomTestUtil.randomString());
 
@@ -140,7 +93,7 @@ public class CMSObjectEntryReviewUserNotificationTest {
 		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_getReviewUserNotificationEvents(objectEntry, _user);
+			_getUserNotificationEvents(objectEntry, _user);
 
 		Assert.assertEquals(
 			userNotificationEvents.toString(), 1,
@@ -148,9 +101,7 @@ public class CMSObjectEntryReviewUserNotificationTest {
 	}
 
 	@Test
-	public void testReviewDateUserNotificationEventIsSentOnlyToOwner()
-		throws Exception {
-
+	public void testCheckObjectEntriesWithContentReviewer() throws Exception {
 		User contentReviewerUser = UserTestUtil.addUser();
 
 		_userLocalService.addGroupUser(
@@ -170,18 +121,71 @@ public class CMSObjectEntryReviewUserNotificationTest {
 		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
 
 		List<UserNotificationEvent> ownerUserNotificationEvents =
-			_getReviewUserNotificationEvents(objectEntry, _user);
+			_getUserNotificationEvents(objectEntry, _user);
 
 		Assert.assertEquals(
 			ownerUserNotificationEvents.toString(), 1,
 			ownerUserNotificationEvents.size());
 
 		List<UserNotificationEvent> contentReviewerUserNotificationEvents =
-			_getReviewUserNotificationEvents(objectEntry, contentReviewerUser);
+			_getUserNotificationEvents(objectEntry, contentReviewerUser);
 
 		Assert.assertEquals(
 			contentReviewerUserNotificationEvents.toString(), 0,
 			contentReviewerUserNotificationEvents.size());
+	}
+
+	@Test
+	public void testGetLink() throws Exception {
+		ObjectEntry objectEntry = _addCMSObjectEntry(
+			RandomTestUtil.randomString());
+
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+
+		UserNotificationFeedEntry userNotificationFeedEntry =
+			_getUserNotificationFeedEntry(objectEntry, "en_US");
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				_portal.getPathFriendlyURLPublic(),
+				GroupConstants.CMS_FRIENDLY_URL, "/view-asset?objectEntryId=",
+				objectEntry.getObjectEntryId()),
+			userNotificationFeedEntry.getLink());
+	}
+
+	@Test
+	public void testGetTitle() throws Exception {
+		String title = RandomTestUtil.randomString() + "<&>";
+
+		ObjectEntry objectEntry = _addCMSObjectEntry(title);
+
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+
+		UserNotificationFeedEntry userNotificationFeedEntry =
+			_getUserNotificationFeedEntry(objectEntry, "en_US");
+
+		Assert.assertEquals(
+			HtmlUtil.escape(
+				LanguageUtil.format(
+					LocaleUtil.US, "x-has-reached-its-review-date", title)),
+			userNotificationFeedEntry.getTitle());
+	}
+
+	@Test
+	public void testGetTitleWithSpanishLocale() throws Exception {
+		String title = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = _addCMSObjectEntry(title);
+
+		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
+
+		UserNotificationFeedEntry userNotificationFeedEntry =
+			_getUserNotificationFeedEntry(objectEntry, "es_ES");
+
+		Assert.assertEquals(
+			LanguageUtil.format(
+				LocaleUtil.SPAIN, "x-has-reached-its-review-date", title),
+			userNotificationFeedEntry.getTitle());
 	}
 
 	private ObjectEntry _addCMSObjectEntry(String title) throws Exception {
@@ -206,12 +210,11 @@ public class CMSObjectEntryReviewUserNotificationTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private List<UserNotificationEvent> _getReviewUserNotificationEvents(
+	private List<UserNotificationEvent> _getUserNotificationEvents(
 			ObjectEntry objectEntry, User user)
 		throws Exception {
 
-		List<UserNotificationEvent> reviewUserNotificationEvents =
-			new ArrayList<>();
+		List<UserNotificationEvent> userNotificationEvents = new ArrayList<>();
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
@@ -223,28 +226,28 @@ public class CMSObjectEntryReviewUserNotificationTest {
 					objectDefinition.getPortletId(),
 					userNotificationEvent.getType())) {
 
-				reviewUserNotificationEvents.add(userNotificationEvent);
+				userNotificationEvents.add(userNotificationEvent);
 			}
 		}
 
-		return reviewUserNotificationEvents;
+		return userNotificationEvents;
 	}
 
-	private UserNotificationFeedEntry _interpretUserNotificationEvent(
+	private UserNotificationFeedEntry _getUserNotificationFeedEntry(
 			ObjectEntry objectEntry, String languageId)
 		throws Exception {
 
 		List<UserNotificationEvent> userNotificationEvents =
-			_getReviewUserNotificationEvents(objectEntry, _user);
+			_getUserNotificationEvents(objectEntry, _user);
 
 		Assert.assertEquals(
 			userNotificationEvents.toString(), 1,
 			userNotificationEvents.size());
 
-		UserNotificationEvent reviewUserNotificationEvent =
+		UserNotificationEvent userNotificationEvent =
 			userNotificationEvents.get(0);
 
-		String payload = reviewUserNotificationEvent.getPayload();
+		String payload = userNotificationEvent.getPayload();
 
 		Assert.assertTrue(
 			payload,
@@ -256,7 +259,7 @@ public class CMSObjectEntryReviewUserNotificationTest {
 		serviceContext.setUserId(_user.getUserId());
 
 		return UserNotificationManagerUtil.interpret(
-			StringPool.BLANK, reviewUserNotificationEvent, serviceContext);
+			StringPool.BLANK, userNotificationEvent, serviceContext);
 	}
 
 	private DepotEntry _depotEntry;
