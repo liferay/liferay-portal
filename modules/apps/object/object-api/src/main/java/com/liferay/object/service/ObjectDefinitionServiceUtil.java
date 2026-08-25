@@ -63,6 +63,16 @@ public class ObjectDefinitionServiceUtil {
 			serviceContext);
 	}
 
+	public static void addOrUpdateWorkflowDefinitionLinks(
+			long objectDefinitionId,
+			List<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
+				workflowDefinitionLinks)
+		throws PortalException {
+
+		getService().addOrUpdateWorkflowDefinitionLinks(
+			objectDefinitionId, workflowDefinitionLinks);
+	}
+
 	public static ObjectDefinition addSystemObjectDefinition(
 			String externalReferenceCode, long userId, long objectFolderId,
 			String className, boolean enableCategorization,
@@ -254,4 +264,4 @@ public class ObjectDefinitionServiceUtil {
 			ObjectDefinitionServiceUtil.class, ObjectDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:751797765
+// LIFERAY-SERVICE-BUILDER-HASH:614828673

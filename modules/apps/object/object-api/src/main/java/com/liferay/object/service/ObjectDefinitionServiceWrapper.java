@@ -63,6 +63,18 @@ public class ObjectDefinitionServiceWrapper
 	}
 
 	@Override
+	public void addOrUpdateWorkflowDefinitionLinks(
+			long objectDefinitionId,
+			java.util.List
+				<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
+					workflowDefinitionLinks)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectDefinitionService.addOrUpdateWorkflowDefinitionLinks(
+			objectDefinitionId, workflowDefinitionLinks);
+	}
+
+	@Override
 	public com.liferay.object.model.ObjectDefinition addSystemObjectDefinition(
 			String externalReferenceCode, long userId, long objectFolderId,
 			String className, boolean enableCategorization,
@@ -298,4 +310,4 @@ public class ObjectDefinitionServiceWrapper
 	private ObjectDefinitionService _objectDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1614657440
+// LIFERAY-SERVICE-BUILDER-HASH:2077148175

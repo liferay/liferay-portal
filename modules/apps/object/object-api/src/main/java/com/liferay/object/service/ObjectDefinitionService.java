@@ -65,6 +65,11 @@ public interface ObjectDefinitionService extends BaseService {
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public void addOrUpdateWorkflowDefinitionLinks(
+			long objectDefinitionId,
+			List<WorkflowDefinitionLink> workflowDefinitionLinks)
+		throws PortalException;
+
 	public ObjectDefinition addSystemObjectDefinition(
 			String externalReferenceCode, long userId, long objectFolderId,
 			String className, boolean enableCategorization,
@@ -169,4 +174,4 @@ public interface ObjectDefinitionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-135526974
+// LIFERAY-SERVICE-BUILDER-HASH:1246563774
