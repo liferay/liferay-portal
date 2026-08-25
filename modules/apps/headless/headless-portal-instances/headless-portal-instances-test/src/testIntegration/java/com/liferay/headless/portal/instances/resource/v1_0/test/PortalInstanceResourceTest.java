@@ -15,6 +15,7 @@ import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceImpor
 import com.liferay.headless.portal.instances.client.pagination.Page;
 import com.liferay.headless.portal.instances.client.problem.Problem;
 import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceResource;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -408,6 +409,22 @@ public class PortalInstanceResourceTest
 		}
 	}
 
+	private void _assertProblemExceptionProblemStatus(
+			String status, UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(status, problem.getStatus());
+		}
+	}
+
 	private PortalInstance _copyPortalInstance(
 			boolean updateActive, boolean updateCompanyId, boolean updateDomain,
 			boolean updatePortletInstanceId, boolean updateVirtualHost)
@@ -561,17 +578,10 @@ public class PortalInstanceResourceTest
 		PortalInstanceResource userPortalInstanceResource =
 			_createUserPortalInstanceResource();
 
-		try {
-			userPortalInstanceResource.deletePortalInstance(
-				_portalInstance.getPortalInstanceId());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
+			() -> userPortalInstanceResource.deletePortalInstance(
+				_portalInstance.getPortalInstanceId()));
 	}
 
 	private void _testGetPortalInstancesPageWithoutOmniadminPermission()
@@ -580,19 +590,12 @@ public class PortalInstanceResourceTest
 		PortalInstanceResource userPortalInstanceResource =
 			_createUserPortalInstanceResource();
 
-		try {
-			userPortalInstanceResource.getPortalInstancesPage(null);
+		// PrincipalExceptionMapper converts a denied GET request to a
+		// 404 to avoid disclosing the portal instance's existence
 
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			// PrincipalExceptionMapper converts a denied GET request to a
-			// 404 to avoid disclosing the portal instance's existence
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> userPortalInstanceResource.getPortalInstancesPage(null));
 	}
 
 	private void _testGetPortalInstanceWithoutOmniadminPermission()
@@ -601,20 +604,13 @@ public class PortalInstanceResourceTest
 		PortalInstanceResource userPortalInstanceResource =
 			_createUserPortalInstanceResource();
 
-		try {
-			userPortalInstanceResource.getPortalInstance(
-				_portalInstance.getPortalInstanceId());
+		// PrincipalExceptionMapper converts a denied GET request to a
+		// 404 to avoid disclosing the portal instance's existence
 
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			// PrincipalExceptionMapper converts a denied GET request to a
-			// 404 to avoid disclosing the portal instance's existence
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> userPortalInstanceResource.getPortalInstance(
+				_portalInstance.getPortalInstanceId()));
 	}
 
 	private void _testPatchPortalInstace(
@@ -708,17 +704,10 @@ public class PortalInstanceResourceTest
 		PortalInstanceResource userPortalInstanceResource =
 			_createUserPortalInstanceResource();
 
-		try {
-			userPortalInstanceResource.patchPortalInstance(
-				_portalInstance.getPortalInstanceId(), randomPortalInstance());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
+			() -> userPortalInstanceResource.patchPortalInstance(
+				_portalInstance.getPortalInstanceId(), randomPortalInstance()));
 	}
 
 	private void _testPostPortalInstanceCopyDefaultCompany() throws Exception {
@@ -894,17 +883,10 @@ public class PortalInstanceResourceTest
 		portalInstanceCopy.setVirtualHost(RandomTestUtil.randomString());
 		portalInstanceCopy.setWebId(RandomTestUtil.randomString());
 
-		try {
-			userPortalInstanceResource.postPortalInstanceCopy(
-				_portalInstance.getPortalInstanceId(), portalInstanceCopy);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
+			() -> userPortalInstanceResource.postPortalInstanceCopy(
+				_portalInstance.getPortalInstanceId(), portalInstanceCopy));
 	}
 
 	private void _testPostPortalInstanceExport() throws Exception {
@@ -1024,17 +1006,10 @@ public class PortalInstanceResourceTest
 		PortalInstanceResource userPortalInstanceResource =
 			_createUserPortalInstanceResource();
 
-		try {
-			userPortalInstanceResource.postPortalInstanceExport(
-				_portalInstance.getPortalInstanceId());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
+			() -> userPortalInstanceResource.postPortalInstanceExport(
+				_portalInstance.getPortalInstanceId()));
 	}
 
 	private void _testPostPortalInstanceImportExistingDBPartition()
@@ -1220,17 +1195,10 @@ public class PortalInstanceResourceTest
 
 		portalInstanceImport.setSchemaName(RandomTestUtil.randomString());
 
-		try {
-			userPortalInstanceResource.postPortalInstanceImport(
-				portalInstanceImport);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
+			() -> userPortalInstanceResource.postPortalInstanceImport(
+				portalInstanceImport));
 	}
 
 	private void _testPostPortalInstanceWithAdmin() throws Exception {
@@ -1310,17 +1278,10 @@ public class PortalInstanceResourceTest
 		PortalInstanceResource userPortalInstanceResource =
 			_createUserPortalInstanceResource();
 
-		try {
-			userPortalInstanceResource.postPortalInstance(
-				randomPortalInstance());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
+			() -> userPortalInstanceResource.postPortalInstance(
+				randomPortalInstance()));
 	}
 
 	private void _testPutPortalInstanceActivateWithoutOmniadminPermission()
@@ -1329,17 +1290,10 @@ public class PortalInstanceResourceTest
 		PortalInstanceResource userPortalInstanceResource =
 			_createUserPortalInstanceResource();
 
-		try {
-			userPortalInstanceResource.putPortalInstanceActivate(
-				_portalInstance.getPortalInstanceId());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
+			() -> userPortalInstanceResource.putPortalInstanceActivate(
+				_portalInstance.getPortalInstanceId()));
 	}
 
 	private void _testPutPortalInstanceDeactivateWithoutOmniadminPermission()
@@ -1348,17 +1302,10 @@ public class PortalInstanceResourceTest
 		PortalInstanceResource userPortalInstanceResource =
 			_createUserPortalInstanceResource();
 
-		try {
-			userPortalInstanceResource.putPortalInstanceDeactivate(
-				_portalInstance.getPortalInstanceId());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-		}
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
+			() -> userPortalInstanceResource.putPortalInstanceDeactivate(
+				_portalInstance.getPortalInstanceId()));
 	}
 
 	private static final String _CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL =
