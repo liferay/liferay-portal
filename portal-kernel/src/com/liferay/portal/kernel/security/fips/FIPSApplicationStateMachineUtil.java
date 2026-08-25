@@ -61,6 +61,10 @@ public class FIPSApplicationStateMachineUtil {
 	}
 
 	public static void powerOff(String initiatingActor) {
+		if (getFIPSApplicationState() == FIPSApplicationState.POWER_OFF) {
+			return;
+		}
+
 		_transition(
 			FIPSApplicationState.POWER_OFF,
 			fipsAuditEvent -> fipsAuditEvent.put(
@@ -126,12 +130,6 @@ public class FIPSApplicationStateMachineUtil {
 		runtime.addShutdownHook(
 			new Thread(
 				() -> {
-					if (getFIPSApplicationState() ==
-							FIPSApplicationState.POWER_OFF) {
-
-						return;
-					}
-
 					try {
 						powerOff("Operating system");
 					}
