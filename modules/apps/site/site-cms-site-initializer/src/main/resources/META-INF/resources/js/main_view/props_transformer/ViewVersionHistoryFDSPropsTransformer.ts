@@ -133,9 +133,18 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 				event?.preventDefault();
 
 				openCMSModal({
-					contentComponent: () =>
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
 						CompareVersionsModalContent({
 							apiURL: otherProps.apiURL as string,
+							availableLanguageIds:
+								additionalProps.availableLanguageIds,
+							closeModal,
+							defaultLanguageId:
+								additionalProps.defaultLanguageId,
 							initialVersion:
 								itemData.systemProperties.version.number,
 							objectEntryId: additionalProps.classPK,
