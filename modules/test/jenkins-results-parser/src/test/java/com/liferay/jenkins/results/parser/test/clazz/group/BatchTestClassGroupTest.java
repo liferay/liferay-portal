@@ -48,7 +48,7 @@ public class BatchTestClassGroupTest
 	@Test
 	public void testGetAxisCountAxisMaxSizeZero() {
 		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
-			null, "0", null, 12);
+			null, "0", 12);
 
 		try {
 			batchTestClassGroup.getAxisCount();
@@ -118,7 +118,7 @@ public class BatchTestClassGroupTest
 	@Test
 	public void testSetAxisTestClassGroupsAxisCountZero() {
 		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
-			"0", null, null, 12);
+			"0", null, 12);
 
 		batchTestClassGroup.setAxisTestClassGroups();
 
@@ -154,8 +154,7 @@ public class BatchTestClassGroupTest
 	}
 
 	private BatchTestClassGroup _newBatchTestClassGroup(
-		String axisCount, String axisMaxSize, String segmentMaxChildren,
-		int testClassCount) {
+		String axisCount, String axisMaxSize, int testClassCount) {
 
 		BatchTestClassGroupTestUtil.resetCaches();
 
@@ -167,11 +166,6 @@ public class BatchTestClassGroupTest
 
 		if (axisMaxSize != null) {
 			jobProperties.setProperty("test.batch.axis.max.size", axisMaxSize);
-		}
-
-		if (segmentMaxChildren != null) {
-			jobProperties.setProperty(
-				"test.batch.segment.max.children", segmentMaxChildren);
 		}
 
 		BatchTestClassGroup batchTestClassGroup = new BatchTestClassGroup(
@@ -194,7 +188,7 @@ public class BatchTestClassGroupTest
 		int testClassCount) {
 
 		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
-			axisCount, axisMaxSize, null, testClassCount);
+			axisCount, axisMaxSize, testClassCount);
 
 		testEquals(expectedAxisCount, batchTestClassGroup.getAxisCount());
 	}
@@ -203,7 +197,7 @@ public class BatchTestClassGroupTest
 		String axisMaxSize, int expectedAxisMaxSize) {
 
 		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
-			null, axisMaxSize, null, 0);
+			null, axisMaxSize, 0);
 
 		testEquals(expectedAxisMaxSize, batchTestClassGroup.getAxisMaxSize());
 	}
@@ -213,7 +207,7 @@ public class BatchTestClassGroupTest
 		int testClassCount) {
 
 		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
-			axisCount, axisMaxSize, null, testClassCount);
+			axisCount, axisMaxSize, testClassCount);
 
 		batchTestClassGroup.setAxisTestClassGroups();
 
