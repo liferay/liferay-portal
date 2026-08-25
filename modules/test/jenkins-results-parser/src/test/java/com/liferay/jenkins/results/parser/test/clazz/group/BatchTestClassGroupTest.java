@@ -39,7 +39,7 @@ public class BatchTestClassGroupTest
 	public void testGetAxisCount() {
 		_testGetAxisCount("-1", null, 3, 12);
 		_testGetAxisCount("0", null, 0, 12);
-		_testGetAxisCount("7", null, 7, 12);
+		_testGetAxisCount("10", null, 10, 3);
 		_testGetAxisCount("abc", null, 3, 12);
 		_testGetAxisCount(null, null, 0, 0);
 		_testGetAxisCount(null, null, 3, 12);
