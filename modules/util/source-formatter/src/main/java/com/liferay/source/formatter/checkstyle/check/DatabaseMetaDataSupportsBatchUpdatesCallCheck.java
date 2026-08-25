@@ -44,10 +44,10 @@ public class DatabaseMetaDataSupportsBatchUpdatesCallCheck extends BaseCheck {
 			return;
 		}
 
-		String variableTypeName = getVariableTypeName(
-			detailAST, names.get(0), false);
+		if (StringUtil.equals(
+				getVariableTypeName(detailAST, names.get(0), false),
+				"DatabaseMetaData")) {
 
-		if (variableTypeName.equals("DatabaseMetaData")) {
 			log(detailAST, _MSG_AVOID_METHOD_CALL);
 		}
 	}
