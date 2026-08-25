@@ -61,7 +61,7 @@ test(
 		await apiHelpers.headlessDelivery.postAssetLibraryDocument(
 			assetLibrary1.id,
 			createReadStream(
-				path.join(__dirname, '../main/dependencies/Document.jpg')
+				path.join(__dirname, 'dependencies/Document.jpg')
 			)
 		);
 
