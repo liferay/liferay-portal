@@ -588,7 +588,10 @@ public class PortalInstanceResourceTest
 		catch (Problem.ProblemException problemException) {
 			Problem problem = problemException.getProblem();
 
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+			// PrincipalExceptionMapper converts a denied GET request to a
+			// 404 to avoid disclosing the portal instance's existence
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 		}
 	}
 
@@ -607,7 +610,10 @@ public class PortalInstanceResourceTest
 		catch (Problem.ProblemException problemException) {
 			Problem problem = problemException.getProblem();
 
-			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+			// PrincipalExceptionMapper converts a denied GET request to a
+			// 404 to avoid disclosing the portal instance's existence
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 		}
 	}
 
