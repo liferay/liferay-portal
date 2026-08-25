@@ -48,13 +48,19 @@ public class WorkspacesCompileBatchTestClassGroup extends BatchTestClassGroup {
 				"workspaces/" + workspacesName);
 
 			if (!workspaceDir.exists()) {
-				File privatePortalDir = new File(
+				String portalPrivateDirString =
 					JenkinsResultsParserUtil.getProperty(
 						portalGitWorkingDirectory.getTestProperties(),
-						"liferay.portal.private.dir"));
+						"liferay.portal.private.dir");
+
+				if (JenkinsResultsParserUtil.isNullOrEmpty(
+						portalPrivateDirString)) {
+
+					continue;
+				}
 
 				workspaceDir = new File(
-					privatePortalDir, "workspaces/" + workspacesName);
+					portalPrivateDirString, "workspaces/" + workspacesName);
 			}
 
 			if (!workspaceDir.exists()) {
