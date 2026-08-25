@@ -1,0 +1,79 @@
+diff --git a/org/apache/cxf/attachment/AttachmentDeserializer.java b/org/apache/cxf/attachment/AttachmentDeserializer.java
+index c7d3262..154e8cb 100644
+--- a/org/apache/cxf/attachment/AttachmentDeserializer.java
++++ b/org/apache/cxf/attachment/AttachmentDeserializer.java
+@@ -62,11 +62,14 @@ public class AttachmentDeserializer {
+      * The maximum size of the attachment. Allowed value is any of {@link Number} or {@link String}.
+      */
+     public static final String ATTACHMENT_MAX_SIZE = "attachment-max-size";
++    public static final long DEFAULT_ATTACHMENT_MAX_SIZE =
++        SystemPropertyAction.getInteger("org.apache.cxf.attachment-max-size", 50 * 1024 * 1024 /* 50 Mb */);
+ 
+     /**
+      * The maximum number of attachments permitted in a message. The default is 50.
+      */
+     public static final String ATTACHMENT_MAX_COUNT = "attachment-max-count";
++    public static final int DEFAULT_ATTACHMENT_MAX_COUNT = 50;
+ 
+     /**
+      * The maximum number of attachment headers permitted in a message. The default is 500.
+@@ -132,7 +135,7 @@ public class AttachmentDeserializer {
+         initializeRootMessage();
+ 
+         Object maxCountProperty = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_COUNT);
+-        int maxCount = 50;
++        int maxCount = DEFAULT_ATTACHMENT_MAX_COUNT;
+         if (maxCountProperty != null) {
+             if (maxCountProperty instanceof Integer) {
+                 maxCount = (Integer)maxCountProperty;
+diff --git a/org/apache/cxf/attachment/AttachmentUtil.java b/org/apache/cxf/attachment/AttachmentUtil.java
+index e0eaf88..05b8928 100644
+--- a/org/apache/cxf/attachment/AttachmentUtil.java
++++ b/org/apache/cxf/attachment/AttachmentUtil.java
+@@ -215,24 +215,25 @@ public final class AttachmentUtil {
+         }
+ 
+         Object maxSize = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_SIZE);
+-        if (maxSize != null) {
+-            if (maxSize instanceof Number) {
+-                long size = ((Number) maxSize).longValue();
+-                if (size >= 0) {
+-                    bos.setMaxSize(size);
+-                } else {
+-                    LOG.warning("Max size value overflowed long. Do not set max size!");
+-                }
+-            } else if (maxSize instanceof String) {
+-                try {
+-                    bos.setMaxSize(Long.parseLong((String) maxSize));
+-                } catch (NumberFormatException e) {
+-                    throw new IOException("Provided threshold String is not a number", e);
+-                }
++        if (maxSize == null) {
++            maxSize = AttachmentDeserializer.DEFAULT_ATTACHMENT_MAX_SIZE;
++        }
++        if (maxSize instanceof Number) {
++            long size = ((Number) maxSize).longValue();
++            if (size >= 0) {
++                bos.setMaxSize(size);
+             } else {
+-                throw new IOException("The value set as " + AttachmentDeserializer.ATTACHMENT_MAX_SIZE
+-                        + " should be either an instance of Number or String");
++                LOG.warning("The max size value is set to unlimited.");
+             }
++        } else if (maxSize instanceof String) {
++            try {
++                bos.setMaxSize(Long.parseLong((String) maxSize));
++            } catch (NumberFormatException e) {
++                throw new IOException("Provided max size String is not a number", e);
++            }
++        } else {
++            throw new IOException("The value set as " + AttachmentDeserializer.ATTACHMENT_MAX_SIZE
++                    + " should be either an instance of Number or String");
+         }
+     }
+ 
+@@ -614,3 +615,4 @@ public final class AttachmentUtil {
+     }
+ 
+ }
++/* @generated */

@@ -24,6 +24,7 @@ patch {
 	}
 
 	fileNames "org/apache/cxf/attachment/AttachmentDeserializer.java"
+	fileNames "org/apache/cxf/attachment/AttachmentUtil.java"
 	fileNames "org/apache/cxf/staxutils/validation/W3CMultiSchemaFactory.java"
 	fileNames "org/apache/cxf/ws/addressing/EndpointReferenceUtils.java"
 	originalLibModuleName = "cxf-core"
