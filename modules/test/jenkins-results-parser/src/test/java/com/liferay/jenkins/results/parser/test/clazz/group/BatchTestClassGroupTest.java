@@ -110,9 +110,9 @@ public class BatchTestClassGroupTest
 	@Test
 	public void testSetAxisTestClassGroups() {
 		_testSetAxisTestClassGroups("10", null, Arrays.asList(1, 1, 1), 3);
-		_testSetAxisTestClassGroups(null, null, Collections.emptyList(), 0);
 		_testSetAxisTestClassGroups(null, null, Arrays.asList(4, 4, 4), 12);
 		_testSetAxisTestClassGroups(null, null, Arrays.asList(5, 5, 3), 13);
+		_testSetAxisTestClassGroups(null, null, Collections.emptyList(), 0);
 	}
 
 	@Test
