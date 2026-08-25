@@ -60,7 +60,7 @@ public class Attachment implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Base64-encoded payload used only when supplying the file body inline; decoded server-side and stored as a new document-library file entry. Mutually exclusive with `src`; ignored when `src` is supplied. Not populated on read responses.",
+		description = "Base64-encoded payload of the file. On write it supplies the file body inline; it is decoded server-side and stored as a new document-library file entry, is mutually exclusive with `src`, and is ignored when `src` is supplied. On read it is always populated, so an exported payload carries its content instead of a `src` URL pointing back at the source environment.",
 		example = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
 	)
 	public String getAttachment() {
@@ -97,7 +97,7 @@ public class Attachment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Base64-encoded payload used only when supplying the file body inline; decoded server-side and stored as a new document-library file entry. Mutually exclusive with `src`; ignored when `src` is supplied. Not populated on read responses."
+		description = "Base64-encoded payload of the file. On write it supplies the file body inline; it is decoded server-side and stored as a new document-library file entry, is mutually exclusive with `src`, and is ignored when `src` is supplied. On read it is always populated, so an exported payload carries its content instead of a `src` URL pointing back at the source environment."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String attachment;
@@ -1427,4 +1427,4 @@ public class Attachment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1704614327
+// LIFERAY-REST-BUILDER-HASH:666283951

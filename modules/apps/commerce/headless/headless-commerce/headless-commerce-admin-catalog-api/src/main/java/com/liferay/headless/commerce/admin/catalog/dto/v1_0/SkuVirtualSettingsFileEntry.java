@@ -105,7 +105,7 @@ public class SkuVirtualSettingsFileEntry implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Base64-encoded file uploaded as the asset for this entry on create or update; write-only and not returned on read. The resolved download URL is exposed through `src`.",
+		description = "Base64-encoded file uploaded as the asset for this entry on create or update. On read it is always populated, so an exported payload carries its content instead of the `src` download URL pointing back at the source environment.",
 		example = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
 	)
 	public String getAttachment() {
@@ -142,7 +142,7 @@ public class SkuVirtualSettingsFileEntry implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Base64-encoded file uploaded as the asset for this entry on create or update; write-only and not returned on read. The resolved download URL is exposed through `src`."
+		description = "Base64-encoded file uploaded as the asset for this entry on create or update. On read it is always populated, so an exported payload carries its content instead of the `src` download URL pointing back at the source environment."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String attachment;
@@ -547,4 +547,4 @@ public class SkuVirtualSettingsFileEntry implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1279615741
+// LIFERAY-REST-BUILDER-HASH:-2053462383
