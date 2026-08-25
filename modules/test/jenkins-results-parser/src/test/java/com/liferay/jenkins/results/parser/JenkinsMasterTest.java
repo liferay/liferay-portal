@@ -37,8 +37,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		UrlReader urlReader = mockUrlReader();
 
-		_likelyStuckEstimatedDuration = RandomTestUtil.randomLong();
-
 		setUrlReaderOutput(
 			new JSONObject(
 			).put(
@@ -189,7 +187,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertFalse(
 			likelyStuckRunningBuild.isJenkinsSlaveOfflineUnexpectedly());
 		Assert.assertEquals(
-			_likelyStuckEstimatedDuration,
+			_LIKELY_STUCK_ESTIMATED_DURATION,
 			likelyStuckRunningBuild.getEstimatedDuration());
 
 		JenkinsMaster.RunningBuild offlineRunningBuild = _getRunningBuild(
@@ -282,7 +280,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 			JenkinsMasterTestUtil.getComputerJSONObject(
 				"test-9-2-1",
 				JenkinsMasterTestUtil.getExecutorJSONObject(
-					_BUILD_URL_LIKELY_STUCK, _likelyStuckEstimatedDuration,
+					_BUILD_URL_LIKELY_STUCK, _LIKELY_STUCK_ESTIMATED_DURATION,
 					RandomTestUtil.randomString(), true,
 					RandomTestUtil.randomLong())),
 			JenkinsMasterTestUtil.getOfflineComputerJSONObject(
@@ -303,7 +301,9 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 	private static final String _BUILD_URL_OFFLINE_NODE =
 		"http://test-9-2/job/test-portal-release-downstream/22649/";
 
+	private static final long _LIKELY_STUCK_ESTIMATED_DURATION =
+		RandomTestUtil.randomLong();
+
 	private JenkinsMaster _jenkinsMaster;
-	private long _likelyStuckEstimatedDuration;
 
 }
