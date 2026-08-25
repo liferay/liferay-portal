@@ -115,6 +115,11 @@ public class CMSObjectEntryReviewUserNotificationTest {
 			contentReviewerUser.getUserId(), _depotEntry.getGroupId(),
 			new long[] {role.getRoleId()});
 
+		Assert.assertTrue(
+			_userGroupRoleLocalService.hasUserGroupRole(
+				contentReviewerUser.getUserId(), _depotEntry.getGroupId(),
+				role.getRoleId()));
+
 		ObjectEntry objectEntry = _addCMSObjectEntry(
 			RandomTestUtil.randomString());
 
