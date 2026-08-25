@@ -68,7 +68,7 @@ export default function InteractiveCard({
 		<ClayButton
 			{...ariaAttributes}
 			className={classNames(
-				'cms-dashboard__interactive-card h-100 p-3 rounded-lg sheet text-left w-100',
+				'cms-dashboard__interactive-card d-flex flex-column h-100 p-3 rounded-lg sheet text-left w-100',
 				{active}
 			)}
 			displayType="unstyled"
