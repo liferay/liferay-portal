@@ -224,6 +224,19 @@ public class FIPSApplicationStateMachineUtilTest {
 	}
 
 	@Test
+	public void testPowerOffWithPowerOffState() {
+		_setFIPSApplicationState(FIPSApplicationState.POWER_OFF);
+
+		FIPSApplicationStateMachineUtil.powerOff(RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			FIPSApplicationState.POWER_OFF,
+			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
+
+		Assert.assertTrue(_fipsAuditLogEntries.isEmpty());
+	}
+
+	@Test
 	public void testQuiescent() {
 		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
 
@@ -264,21 +277,6 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(fipsAuditLogEntry, "from-state", "OPERATIONAL");
 		_assertField(fipsAuditLogEntry, "initiating-actor", "Operating system");
 		_assertField(fipsAuditLogEntry, "to-state", "POWER_OFF");
-	}
-
-	@Test
-	public void testRegisterShutdownHookWithPowerOffState() {
-		_setFIPSApplicationState(FIPSApplicationState.POWER_OFF);
-
-		Thread thread = _getShutdownHook();
-
-		thread.run();
-
-		Assert.assertEquals(
-			FIPSApplicationState.POWER_OFF,
-			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
-
-		Assert.assertTrue(_fipsAuditLogEntries.isEmpty());
 	}
 
 	@Test
