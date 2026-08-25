@@ -45,8 +45,7 @@ public class LayoutContentVersionPreviewLocalServiceImpl
 		FeatureFlagManagerUtil.checkEnabled(
 			layoutContentVersion.getCompanyId(), "LPD-10622");
 
-		_checkDuplicateLayoutContentVersionPreview(
-			layoutContentVersionId, languageId, segmentsExperienceERC);
+		_validate(layoutContentVersionId, languageId, segmentsExperienceERC);
 
 		LayoutContentVersionPreview layoutContentVersionPreview =
 			layoutContentVersionPreviewPersistence.create(
@@ -122,10 +121,10 @@ public class LayoutContentVersionPreviewLocalServiceImpl
 			findByLayoutContentVersionId(layoutContentVersionId);
 	}
 
-	private void _checkDuplicateLayoutContentVersionPreview(
+	private void _validate(
 			long layoutContentVersionId, String languageId,
 			String segmentsExperienceERC)
-		throws DuplicateLayoutContentVersionPreviewException {
+		throws PortalException {
 
 		LayoutContentVersionPreview layoutContentVersionPreview =
 			layoutContentVersionPreviewPersistence.fetchByLCVI_L_SEERC(
