@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -63,6 +64,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -276,9 +278,14 @@ public class NotificationTemplateResourceImpl
 		notificationTemplate.setCreateDate(date);
 		notificationTemplate.setModifiedDate(date);
 
-		notificationTemplate.setName(
-			StringUtil.appendParentheticalSuffix(
-				notificationTemplate.getName(), "copy"));
+		Map<Locale, String> nameMap = notificationTemplate.getNameMap();
+
+		for (Map.Entry<Locale, String> entry : nameMap.entrySet()) {
+			entry.setValue(
+				StringUtil.appendParentheticalSuffix(entry.getValue(), "copy"));
+		}
+
+		notificationTemplate.setNameMap(nameMap);
 		notificationTemplate.setSystem(false);
 
 		NotificationRecipient notificationRecipient =
@@ -382,6 +389,17 @@ public class NotificationTemplateResourceImpl
 		NotificationTemplate notificationTemplate,
 		NotificationTemplate existingNotificationTemplate) {
 
+		if ((notificationTemplate.getName() != null) &&
+			(notificationTemplate.getName_i18n() == null)) {
+
+			Map<String, String> nameI18nMap = LocalizedMapUtil.mergeI18nMap(
+				new HashMap<>(existingNotificationTemplate.getName_i18n()),
+				LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()),
+				notificationTemplate.getName());
+
+			existingNotificationTemplate.setName_i18n(() -> nameI18nMap);
+		}
+
 		if (notificationTemplate.getRecipients() != null) {
 			existingNotificationTemplate.setRecipients(
 				notificationTemplate::getRecipients);
@@ -421,6 +439,7 @@ public class NotificationTemplateResourceImpl
 			_notificationTypeServiceTracker.getNotificationType(
 				serviceBuilderNotificationTemplate.getType());
 
+		Locale locale = _getLocale();
 		String permissionName =
 			com.liferay.notification.model.NotificationTemplate.class.getName();
 
@@ -519,7 +538,8 @@ public class NotificationTemplateResourceImpl
 				setId(
 					serviceBuilderNotificationTemplate::
 						getNotificationTemplateId);
-				setName(serviceBuilderNotificationTemplate::getName);
+				setName(
+					() -> serviceBuilderNotificationTemplate.getName(locale));
 				setName_i18n(
 					() -> LocalizedMapUtil.getLanguageIdMap(
 						serviceBuilderNotificationTemplate.getNameMap()));
@@ -579,7 +599,7 @@ public class NotificationTemplateResourceImpl
 				setType(serviceBuilderNotificationTemplate::getType);
 				setTypeLabel(
 					() -> _language.get(
-						_getLocale(), notificationType.getTypeLanguageKey()));
+						locale, notificationType.getTypeLanguageKey()));
 			}
 		};
 	}
