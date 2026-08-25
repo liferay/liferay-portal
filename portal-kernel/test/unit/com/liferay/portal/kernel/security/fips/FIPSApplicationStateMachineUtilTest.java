@@ -43,11 +43,6 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@BeforeClass
 	public static void setUpClass() {
-		_logger = Mockito.mock(Logger.class);
-
-		_logManagerMockedStatic = Mockito.mockStatic(
-			LogManager.class, Mockito.CALLS_REAL_METHODS);
-
 		_logManagerMockedStatic.when(
 			() -> LogManager.getLogger(FIPSLog4jUtil.class)
 		).thenReturn(
@@ -96,9 +91,10 @@ public class FIPSApplicationStateMachineUtilTest {
 		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
 
 		String failedStep = RandomTestUtil.randomString();
+		String providerErrorMessage = RandomTestUtil.randomString();
 
 		FIPSApplicationStateMachineUtil.error(
-			failedStep, new SecurityException("The provider is unhappy"));
+			failedStep, new SecurityException(providerErrorMessage));
 
 		Assert.assertEquals(
 			FIPSApplicationState.ERROR,
@@ -112,8 +108,7 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(fipsAuditLogEntry, "failed-step", failedStep);
 		_assertField(fipsAuditLogEntry, "from-state", "OPERATIONAL");
 		_assertField(
-			fipsAuditLogEntry, "provider-error-message",
-			"The provider is unhappy");
+			fipsAuditLogEntry, "provider-error-message", providerErrorMessage);
 		_assertField(fipsAuditLogEntry, "to-state", "ERROR");
 	}
 
@@ -147,7 +142,7 @@ public class FIPSApplicationStateMachineUtilTest {
 			_fipsAuditLogEntries.get(1), "from-state", "KEY_CSP_ENTRY");
 		_assertField(
 			_fipsAuditLogEntries.get(1), "message",
-			"The operation was completed successfully");
+			"The operation completed successfully");
 		_assertField(_fipsAuditLogEntries.get(1), "to-state", "OPERATIONAL");
 	}
 
@@ -155,12 +150,14 @@ public class FIPSApplicationStateMachineUtilTest {
 	public void testKeyCSPEntryWithFailedOperation() {
 		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
 
+		String providerErrorMessage = RandomTestUtil.randomString();
+
 		Assert.assertThrows(
 			SecurityException.class,
 			() -> FIPSApplicationStateMachineUtil.keyCSPEntry(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				() -> {
-					throw new SecurityException("The key is unusable");
+					throw new SecurityException(providerErrorMessage);
 				}));
 
 		Assert.assertEquals(
@@ -175,7 +172,7 @@ public class FIPSApplicationStateMachineUtilTest {
 			_fipsAuditLogEntries.get(1), "failed-step", "Key or CSP entry");
 		_assertField(
 			_fipsAuditLogEntries.get(1), "provider-error-message",
-			"The key is unusable");
+			providerErrorMessage);
 		_assertField(_fipsAuditLogEntries.get(1), "to-state", "ERROR");
 	}
 
@@ -295,7 +292,7 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(_fipsAuditLogEntries.get(0), "from-state", "INITIALIZING");
 		_assertField(
 			_fipsAuditLogEntries.get(0), "message",
-			"The integrity checks were started");
+			"The integrity checks started");
 		_assertField(_fipsAuditLogEntries.get(0), "to-state", "SELF_TEST");
 		_assertField(
 			_fipsAuditLogEntries.get(1), "message",
@@ -630,9 +627,10 @@ public class FIPSApplicationStateMachineUtilTest {
 			});
 	}
 
-	private static Logger _logger;
+	private static final Logger _logger = Mockito.mock(Logger.class);
 
-	private static MockedStatic<LogManager> _logManagerMockedStatic;
+	private static final MockedStatic<LogManager> _logManagerMockedStatic =
+		Mockito.mockStatic(LogManager.class, Mockito.CALLS_REAL_METHODS);
 
 	private final List<Map<String, Object>> _fipsAuditLogEntries =
 		new ArrayList<>();

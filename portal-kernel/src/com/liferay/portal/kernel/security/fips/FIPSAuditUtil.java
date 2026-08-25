@@ -9,7 +9,6 @@ import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.internal.log4j.FIPSLog4jUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
@@ -67,8 +66,7 @@ public class FIPSAuditUtil {
 		FIPSLog4jUtil.write(
 			HashMapBuilder.<String, Object>put(
 				"cmvp-certificate-id",
-				GetterUtil.getString(
-					PropsValues.FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID)
+				PropsValues.FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID
 			).put(
 				"deployment-instance-id", _getDeploymentInstanceId()
 			).put(
@@ -114,19 +112,20 @@ public class FIPSAuditUtil {
 
 		try {
 			if (Files.exists(path)) {
-				String persistedId = new String(
+				String deploymentInstanceId = new String(
 					Files.readAllBytes(path), StandardCharsets.UTF_8);
 
-				return persistedId.trim();
+				return deploymentInstanceId.trim();
 			}
-
-			String generatedId = String.valueOf(UUID.randomUUID());
 
 			Files.createDirectories(path.getParent());
 
-			Files.write(path, generatedId.getBytes(StandardCharsets.UTF_8));
+			String deploymentInstanceId = String.valueOf(UUID.randomUUID());
 
-			return generatedId;
+			Files.write(
+				path, deploymentInstanceId.getBytes(StandardCharsets.UTF_8));
+
+			return deploymentInstanceId;
 		}
 		catch (IOException ioException) {
 			throw new UncheckedIOException(
