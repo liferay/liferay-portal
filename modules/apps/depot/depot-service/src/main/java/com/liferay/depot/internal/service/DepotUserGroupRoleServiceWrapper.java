@@ -5,6 +5,7 @@
 
 package com.liferay.depot.internal.service;
 
+import com.liferay.depot.util.DepotRoleUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.UserGroupRoleServiceWrapper;
@@ -22,7 +23,7 @@ public class DepotUserGroupRoleServiceWrapper
 	public void addUserGroupRoles(long userId, long groupId, long[] roleIds)
 		throws PortalException {
 
-		DepotRoleSubtypeValidator.validate(groupId, roleIds);
+		DepotRoleUtil.validate(groupId, roleIds);
 
 		super.addUserGroupRoles(userId, groupId, roleIds);
 	}
@@ -31,7 +32,7 @@ public class DepotUserGroupRoleServiceWrapper
 	public void addUserGroupRoles(long[] userIds, long groupId, long roleId)
 		throws PortalException {
 
-		DepotRoleSubtypeValidator.validate(groupId, new long[] {roleId});
+		DepotRoleUtil.validate(groupId, new long[] {roleId});
 
 		super.addUserGroupRoles(userIds, groupId, roleId);
 	}
@@ -42,7 +43,7 @@ public class DepotUserGroupRoleServiceWrapper
 			long[] deletedRoleIds)
 		throws PortalException {
 
-		DepotRoleSubtypeValidator.validate(groupId, addedRoleIds);
+		DepotRoleUtil.validate(groupId, addedRoleIds);
 
 		super.updateUserGroupRoles(
 			userId, groupId, addedRoleIds, deletedRoleIds);

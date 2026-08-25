@@ -8,10 +8,16 @@ package com.liferay.depot.util;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.RoleSubtypeException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -111,6 +117,44 @@ public class DepotRoleUtil {
 		}
 
 		return titleMap;
+	}
+
+	public static void validate(long groupId, long[] roleIds)
+		throws PortalException {
+
+		String subtype = getSubtype(groupId);
+
+		if (Validator.isNull(subtype)) {
+			return;
+		}
+
+		List<Role> roles = TransformUtil.unsafeTransformToList(
+			roleIds,
+			roleId -> {
+				Role role = RoleLocalServiceUtil.getRole(roleId);
+
+				if (role.getType() != RoleConstants.TYPE_DEPOT) {
+					return null;
+				}
+
+				return role;
+			});
+
+		if (roles.isEmpty()) {
+			return;
+		}
+
+		List<Role> filteredRoles = filter(roles, subtype);
+
+		for (Role role : roles) {
+			if (!filteredRoles.contains(role)) {
+				throw new RoleSubtypeException(
+					StringBundler.concat(
+						"Unable to assign role ", role.getRoleId(),
+						" with subtype \"", role.getSubtype(), "\" in group ",
+						groupId));
+			}
+		}
 	}
 
 	private static String _getDescription(Locale locale, String name) {
