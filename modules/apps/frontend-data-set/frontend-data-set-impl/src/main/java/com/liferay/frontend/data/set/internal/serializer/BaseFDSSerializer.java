@@ -170,31 +170,30 @@ public abstract class BaseFDSSerializer {
 			return null;
 		}
 
-		com.liferay.object.model.ObjectEntry dataSetStartupSnapshotObjectEntry =
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
 			objectEntryLocalService.fetchObjectEntry(
 				user.getExternalReferenceCode() + StringPool.UNDERLINE +
 					fdsName,
 				0, objectDefinition.getObjectDefinitionId());
 
-		if (dataSetStartupSnapshotObjectEntry == null) {
+		if (serviceBuilderObjectEntry == null) {
 			return null;
 		}
 
-		long dataSetSnapshotObjectEntryId = GetterUtil.getLong(
-			dataSetStartupSnapshotObjectEntry.getValues(
+		long relatedObjectEntryId = GetterUtil.getLong(
+			serviceBuilderObjectEntry.getValues(
 			).get(
 				"r_dataSetSnapshotToStartupSnapshots_l_dataSetSnapshotId"
 			));
 
-		com.liferay.object.model.ObjectEntry dataSetSnapshotObjectEntry =
-			objectEntryLocalService.fetchObjectEntry(
-				dataSetSnapshotObjectEntryId);
+		com.liferay.object.model.ObjectEntry serviceBuilderRelatedObjectEntry =
+			objectEntryLocalService.fetchObjectEntry(relatedObjectEntryId);
 
-		if (dataSetSnapshotObjectEntry == null) {
+		if (serviceBuilderRelatedObjectEntry == null) {
 			return null;
 		}
 
-		return _toJSONObject(dataSetSnapshotObjectEntry);
+		return _toJSONObject(serviceBuilderRelatedObjectEntry);
 	}
 
 	@Reference
