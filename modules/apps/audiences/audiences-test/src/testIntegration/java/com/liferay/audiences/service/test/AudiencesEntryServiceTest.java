@@ -81,13 +81,14 @@ public class AudiencesEntryServiceTest {
 	@TestInfo("LPD-101887")
 	public void testGetAudiencesEntries() throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
-		String name = _audiencesEntry.getName();
 
 		List<AudiencesEntry> audiencesEntries =
 			_audiencesEntryService.getAudiencesEntries(
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		Assert.assertTrue(audiencesEntries.contains(_audiencesEntry));
+
+		String name = _audiencesEntry.getName();
 
 		audiencesEntries = _audiencesEntryService.getAudiencesEntries(
 			companyId, name, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
