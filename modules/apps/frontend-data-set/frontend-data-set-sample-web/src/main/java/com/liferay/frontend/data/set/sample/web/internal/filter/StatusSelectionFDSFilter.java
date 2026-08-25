@@ -22,7 +22,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Javier de Arcos
  */
 @Component(
-	property = "frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
+	property = {
+		"frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
+		"frontend.data.set.name=" + FDSSampleFDSNames.DELEGATED_FILTERS
+	},
 	service = FDSFilter.class
 )
 public class StatusSelectionFDSFilter extends BaseSelectionFDSFilter {
