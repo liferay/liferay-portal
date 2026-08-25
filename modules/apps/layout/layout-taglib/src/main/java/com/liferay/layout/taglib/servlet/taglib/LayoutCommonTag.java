@@ -112,9 +112,9 @@ public class LayoutCommonTag extends IncludeTag {
 		JspWriter jspWriter = pageContext.getOut();
 
 		if (_includeWebServerDisplayNode) {
-			jspWriter.write("<div class=\"alert-container cadmin container\">");
 			jspWriter.write("<div class=\"alert-notifications ");
-			jspWriter.write("alert-notifications-fixed\" ");
+			jspWriter.write("alert-notifications-fixed cadmin ");
+			jspWriter.write("position-fixed\" ");
 			jspWriter.write("id=\"WebServerDisplayNodeContainer\">");
 
 			AlertTag alertTag = new AlertTag();
@@ -134,7 +134,7 @@ public class LayoutCommonTag extends IncludeTag {
 
 			jspWriter.write(alertTag.doTagAsString(pageContext));
 
-			jspWriter.write("</div></div>");
+			jspWriter.write("</div>");
 		}
 
 		String scriptBodyContent = _getSessionMessagesScriptBodyContent();
