@@ -6,6 +6,7 @@
 package com.liferay.notification.rest.internal.odata.entity.v1_0;
 
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.odata.entity.BooleanEntityField;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -21,6 +22,7 @@ public class NotificationTemplateEntityModel implements EntityModel {
 
 	public NotificationTemplateEntityModel() {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
+			new BooleanEntityField("system", locale -> "system"),
 			new DateTimeEntityField(
 				"dateCreated",
 				locale -> Field.getSortableFieldName(Field.CREATE_DATE),
@@ -29,6 +31,8 @@ public class NotificationTemplateEntityModel implements EntityModel {
 				"dateModified",
 				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
 				locale -> Field.MODIFIED_DATE),
+			new IntegerEntityField(
+				"objectDefinitionId", locale -> "objectDefinitionId"),
 			new IntegerEntityField("userId", locale -> Field.USER_ID),
 			new StringEntityField(
 				"name", locale -> Field.getSortableFieldName(Field.NAME)));
