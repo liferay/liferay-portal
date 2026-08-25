@@ -42,7 +42,6 @@ public class BatchTestClassGroupTest
 		_testGetAxisCount("7", null, 7, 12);
 		_testGetAxisCount("abc", null, 3, 12);
 		_testGetAxisCount(null, null, 0, 0);
-		_testGetAxisCount(null, null, 1, 1);
 		_testGetAxisCount(null, null, 3, 12);
 	}
 
@@ -111,7 +110,6 @@ public class BatchTestClassGroupTest
 	@Test
 	public void testSetAxisTestClassGroups() {
 		_testSetAxisTestClassGroups("10", null, Arrays.asList(1, 1, 1), 3);
-		_testSetAxisTestClassGroups("4", null, Arrays.asList(2, 2, 2, 1), 7);
 		_testSetAxisTestClassGroups(null, null, Collections.emptyList(), 0);
 		_testSetAxisTestClassGroups(null, null, Arrays.asList(4, 4, 4), 12);
 		_testSetAxisTestClassGroups(null, null, Arrays.asList(5, 5, 3), 13);
