@@ -131,7 +131,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
 	public String getPortalPrivateRepositoryDirName() {
 		return JenkinsResultsParserUtil.getGitDirectoryName(
-			"liferay-portal-ee", getUpstreamBranchName() + "-private");
+			"liferay-portal-ee", "master-private");
 	}
 
 	public void setUpPortalProfile() {
