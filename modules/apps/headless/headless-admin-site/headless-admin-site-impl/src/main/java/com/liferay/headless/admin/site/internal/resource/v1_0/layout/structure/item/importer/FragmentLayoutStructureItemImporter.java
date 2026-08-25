@@ -432,7 +432,7 @@ public class FragmentLayoutStructureItemImporter
 				getFragmentEntryProcessorRegistry();
 
 		return FragmentEntryLinkLocalServiceUtil.updateFragmentEntryLink(
-			fragmentEntryLink.getUserId(),
+			layoutStructureItemImporterContext.getUserId(),
 			fragmentEntryLink.getFragmentEntryLinkId(),
 			fragmentEntryProcessorRegistry.mergeDefaultEditableValues(
 				fragmentEntryLink.getConfigurationJSONObject(),
