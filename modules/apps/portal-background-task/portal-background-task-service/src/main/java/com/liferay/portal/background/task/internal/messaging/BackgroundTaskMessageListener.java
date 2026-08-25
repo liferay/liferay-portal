@@ -92,6 +92,7 @@ public class BackgroundTaskMessageListener extends BaseMessageListener {
 
 			BackgroundTaskExecutor backgroundTaskExecutor = null;
 
+			String errorStackTrace = null;
 			int status = backgroundTask.getStatus();
 			String statusMessage = null;
 
@@ -149,15 +150,7 @@ public class BackgroundTaskMessageListener extends BaseMessageListener {
 						new BackgroundTaskImpl(backgroundTask), exception);
 				}
 
-				if (_log.isInfoEnabled()) {
-					if (statusMessage != null) {
-						statusMessage = statusMessage.concat(
-							StackTraceUtil.getStackTrace(exception));
-					}
-					else {
-						statusMessage = StackTraceUtil.getStackTrace(exception);
-					}
-				}
+				errorStackTrace = StackTraceUtil.getStackTrace(exception);
 
 				_log.error("Unable to execute background task", exception);
 			}
@@ -171,7 +164,7 @@ public class BackgroundTaskMessageListener extends BaseMessageListener {
 
 				_backgroundTaskLocalService.amendBackgroundTask(
 					backgroundTaskId, null, status, statusMessage,
-					serviceContext);
+					errorStackTrace, serviceContext);
 
 				_backgroundTaskStatusRegistry.unregisterBackgroundTaskStatus(
 					backgroundTaskId);
