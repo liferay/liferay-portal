@@ -616,13 +616,17 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
-		User user = _userService.getUserById(userId);
+		UserPermissionUtil.check(
+			PermissionThreadLocal.getPermissionChecker(), userId,
+			ActionKeys.VIEW);
 
-		user = _updateUser(
-			ArrayUtil.append(user.getGroupIds(), groupId), userId);
+		if (!_groupLocalService.hasUserGroup(userId, groupId)) {
+			_userService.addGroupUsers(
+				groupId, new long[] {userId}, new ServiceContext());
+		}
 
 		_userGroupRoleService.addUserGroupRoles(
-			user.getUserId(), groupId,
+			userId, groupId,
 			TransformUtil.transformToLongArray(
 				roleNames,
 				roleName -> {
