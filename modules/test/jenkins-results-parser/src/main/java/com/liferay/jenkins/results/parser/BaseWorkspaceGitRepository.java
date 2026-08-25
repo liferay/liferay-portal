@@ -39,11 +39,6 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public void fetchGitHubDevBranch() {
-		if (isSnapshot()) {
-			System.out.println(
-				"Using git archive, unable to fetch from GitHub dev");
-		}
-
 		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
 
 		List<GitRemote> gitHubDevGitRemotes =
