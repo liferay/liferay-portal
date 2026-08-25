@@ -60,9 +60,7 @@ test(
 
 		await apiHelpers.headlessDelivery.postAssetLibraryDocument(
 			assetLibrary1.id,
-			createReadStream(
-				path.join(__dirname, 'dependencies/Document.jpg')
-			)
+			createReadStream(path.join(__dirname, 'dependencies/Document.jpg'))
 		);
 
 		await exportImportPage.goToExport(`/asset-library-${assetLibrary1.id}`);

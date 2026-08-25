@@ -34,13 +34,7 @@ export async function assertImportWizardControls({
 
 	await exportImportPage.clickNew();
 
-	await exportImportPage.nameInput.fill(name);
-
-	await exportImportPage.selectFile(folderPath);
-
-	await exportImportPage.completedLabel.waitFor();
-
-	await exportImportPage.continueButton.click();
+	await exportImportPage.goToImportDataSelection({folderPath, name});
 
 	// Data selection step
 
