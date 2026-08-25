@@ -35,15 +35,24 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.PermissionService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
+import com.liferay.portal.vulcan.permission.Permission;
+import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
@@ -52,6 +61,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -224,6 +234,8 @@ public class NotificationTemplateResourceImpl
 				notificationTemplate, _objectFieldLocalService);
 
 		notificationContext.setCompanyId(contextCompany.getCompanyId());
+		notificationContext.setModelPermissions(
+			_toModelPermissions(notificationTemplate, 0L));
 		notificationContext.setNotificationRecipient(
 			NotificationUtil.toNotificationRecipient(contextUser, 0L));
 		notificationContext.setNotificationRecipientSettings(
@@ -317,6 +329,8 @@ public class NotificationTemplateResourceImpl
 				notificationTemplate, _objectFieldLocalService);
 
 		notificationContext.setCompanyId(contextCompany.getCompanyId());
+		notificationContext.setModelPermissions(
+			_toModelPermissions(notificationTemplate, notificationTemplateId));
 
 		NotificationRecipient notificationRecipient =
 			NotificationUtil.toNotificationRecipient(
@@ -382,6 +396,19 @@ public class NotificationTemplateResourceImpl
 		return contextAcceptLanguage.getPreferredLocale();
 	}
 
+	private ModelPermissions _toModelPermissions(
+			NotificationTemplate notificationTemplate,
+			long notificationTemplateId)
+		throws Exception {
+
+		return ModelPermissionsUtil.toModelPermissions(
+			contextCompany.getCompanyId(),
+			notificationTemplate.getPermissions(), notificationTemplateId,
+			com.liferay.notification.model.NotificationTemplate.class.getName(),
+			_resourceActionLocalService, _resourcePermissionLocalService,
+			_roleLocalService);
+	}
+
 	private NotificationTemplate _toNotificationTemplate(
 		com.liferay.notification.model.NotificationTemplate
 			serviceBuilderNotificationTemplate) {
@@ -394,6 +421,9 @@ public class NotificationTemplateResourceImpl
 			_notificationTypeServiceTracker.getNotificationType(
 				serviceBuilderNotificationTemplate.getType());
 
+		String permissionName =
+			com.liferay.notification.model.NotificationTemplate.class.getName();
+
 		return new NotificationTemplate() {
 			{
 				setActions(
@@ -401,8 +431,7 @@ public class NotificationTemplateResourceImpl
 						"copy",
 						addAction(
 							ActionKeys.UPDATE, "postNotificationTemplateCopy",
-							com.liferay.notification.model.NotificationTemplate.
-								class.getName(),
+							permissionName,
 							serviceBuilderNotificationTemplate.
 								getNotificationTemplateId())
 					).put(
@@ -414,8 +443,7 @@ public class NotificationTemplateResourceImpl
 
 							return addAction(
 								ActionKeys.DELETE, "deleteNotificationTemplate",
-								com.liferay.notification.model.
-									NotificationTemplate.class.getName(),
+								permissionName,
 								serviceBuilderNotificationTemplate.
 									getNotificationTemplateId());
 						}
@@ -423,24 +451,21 @@ public class NotificationTemplateResourceImpl
 						"get",
 						addAction(
 							ActionKeys.VIEW, "getNotificationTemplate",
-							com.liferay.notification.model.NotificationTemplate.
-								class.getName(),
+							permissionName,
 							serviceBuilderNotificationTemplate.
 								getNotificationTemplateId())
 					).put(
 						"permissions",
 						addAction(
 							ActionKeys.PERMISSIONS, "patchNotificationTemplate",
-							com.liferay.notification.model.NotificationTemplate.
-								class.getName(),
+							permissionName,
 							serviceBuilderNotificationTemplate.
 								getNotificationTemplateId())
 					).put(
 						"update",
 						addAction(
 							ActionKeys.UPDATE, "putNotificationTemplate",
-							com.liferay.notification.model.NotificationTemplate.
-								class.getName(),
+							permissionName,
 							serviceBuilderNotificationTemplate.
 								getNotificationTemplateId())
 					).build());
@@ -514,6 +539,27 @@ public class NotificationTemplateResourceImpl
 					});
 				setObjectDefinitionId(
 					serviceBuilderNotificationTemplate::getObjectDefinitionId);
+				setPermissions(
+					() -> NestedFieldsSupplier.supply(
+						"permissions",
+						nestedFieldNames -> {
+							_permissionService.checkPermission(
+								contextCompany.getGroupId(), permissionName,
+								serviceBuilderNotificationTemplate.
+									getNotificationTemplateId());
+
+							Collection<Permission> permissions =
+								PermissionUtil.getPermissions(
+									serviceBuilderNotificationTemplate.
+										getCompanyId(),
+									_resourceActionLocalService.
+										getResourceActions(permissionName),
+									serviceBuilderNotificationTemplate.
+										getNotificationTemplateId(),
+									permissionName, null);
+
+							return permissions.toArray(new Permission[0]);
+						}));
 				setRecipients(
 					() -> {
 						NotificationRecipient notificationRecipient =
@@ -565,7 +611,19 @@ public class NotificationTemplateResourceImpl
 	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
+	private PermissionService _permissionService;
+
+	@Reference
 	private Portal _portal;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;

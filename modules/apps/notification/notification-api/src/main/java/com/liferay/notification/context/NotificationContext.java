@@ -9,6 +9,7 @@ import com.liferay.notification.model.NotificationQueueEntry;
 import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.model.NotificationRecipientSetting;
 import com.liferay.notification.model.NotificationTemplate;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +55,10 @@ public class NotificationContext {
 
 	public long getGroupId() {
 		return _groupId;
+	}
+
+	public ModelPermissions getModelPermissions() {
+		return _modelPermissions;
 	}
 
 	public NotificationQueueEntry getNotificationQueueEntry() {
@@ -140,6 +145,10 @@ public class NotificationContext {
 		_groupId = groupId;
 	}
 
+	public void setModelPermissions(ModelPermissions modelPermissions) {
+		_modelPermissions = modelPermissions;
+	}
+
 	public void setNotificationQueueEntry(
 		NotificationQueueEntry notificationQueueEntry) {
 
@@ -209,6 +218,7 @@ public class NotificationContext {
 	private String _externalReferenceCode;
 	private List<Long> _fileEntryIds;
 	private long _groupId;
+	private ModelPermissions _modelPermissions;
 	private NotificationQueueEntry _notificationQueueEntry;
 	private NotificationRecipient _notificationRecipient;
 	private List<NotificationRecipientSetting> _notificationRecipientSettings;
