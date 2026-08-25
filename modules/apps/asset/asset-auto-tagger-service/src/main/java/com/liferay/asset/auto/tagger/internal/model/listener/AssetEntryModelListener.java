@@ -14,6 +14,7 @@ import com.liferay.asset.auto.tagger.service.AssetAutoTaggerEntryLocalService;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.messaging.Destination;
@@ -70,6 +71,12 @@ public class AssetEntryModelListener extends BaseModelListener<AssetEntry> {
 	public void onBeforeUpdate(
 			AssetEntry originalAssetEntry, AssetEntry assetEntry)
 		throws ModelListenerException {
+
+		if (ExportImportThreadLocal.isImportInProcess() ||
+			ExportImportThreadLocal.isStagingInProcess()) {
+
+			return;
+		}
 
 		boolean updateAutoTags = _isUpdateAutoTags();
 
