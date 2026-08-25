@@ -6,7 +6,6 @@
 package com.liferay.layout.content.service.impl;
 
 import com.liferay.layout.content.exception.DuplicateLayoutContentVersionPreviewException;
-import com.liferay.layout.content.exception.NoSuchLayoutContentVersionException;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.model.LayoutContentVersionPreview;
 import com.liferay.layout.content.service.base.LayoutContentVersionPreviewLocalServiceBaseImpl;
@@ -79,7 +78,12 @@ public class LayoutContentVersionPreviewLocalServiceImpl
 	public void deleteLayoutContentVersionPreviews(long layoutContentVersionId)
 		throws PortalException {
 
-		_checkFeatureFlagEnabled(layoutContentVersionId);
+		LayoutContentVersion layoutContentVersion =
+			_layoutContentVersionPersistence.findByPrimaryKey(
+				layoutContentVersionId);
+
+		FeatureFlagManagerUtil.checkEnabled(
+			layoutContentVersion.getCompanyId(), "LPD-10622");
 
 		layoutContentVersionPreviewPersistence.removeByLayoutContentVersionId(
 			layoutContentVersionId);
@@ -91,7 +95,12 @@ public class LayoutContentVersionPreviewLocalServiceImpl
 			String segmentsExperienceERC)
 		throws PortalException {
 
-		_checkFeatureFlagEnabled(layoutContentVersionId);
+		LayoutContentVersion layoutContentVersion =
+			_layoutContentVersionPersistence.findByPrimaryKey(
+				layoutContentVersionId);
+
+		FeatureFlagManagerUtil.checkEnabled(
+			layoutContentVersion.getCompanyId(), "LPD-10622");
 
 		return layoutContentVersionPreviewPersistence.fetchByLCVI_L_SEERC(
 			layoutContentVersionId, languageId, segmentsExperienceERC);
@@ -102,7 +111,12 @@ public class LayoutContentVersionPreviewLocalServiceImpl
 			long layoutContentVersionId)
 		throws PortalException {
 
-		_checkFeatureFlagEnabled(layoutContentVersionId);
+		LayoutContentVersion layoutContentVersion =
+			_layoutContentVersionPersistence.findByPrimaryKey(
+				layoutContentVersionId);
+
+		FeatureFlagManagerUtil.checkEnabled(
+			layoutContentVersion.getCompanyId(), "LPD-10622");
 
 		return layoutContentVersionPreviewPersistence.
 			findByLayoutContentVersionId(layoutContentVersionId);
@@ -128,17 +142,6 @@ public class LayoutContentVersionPreviewLocalServiceImpl
 				languageId,
 				", and segments experience external reference code ",
 				segmentsExperienceERC));
-	}
-
-	private void _checkFeatureFlagEnabled(long layoutContentVersionId)
-		throws NoSuchLayoutContentVersionException {
-
-		LayoutContentVersion layoutContentVersion =
-			_layoutContentVersionPersistence.findByPrimaryKey(
-				layoutContentVersionId);
-
-		FeatureFlagManagerUtil.checkEnabled(
-			layoutContentVersion.getCompanyId(), "LPD-10622");
 	}
 
 	@Reference
