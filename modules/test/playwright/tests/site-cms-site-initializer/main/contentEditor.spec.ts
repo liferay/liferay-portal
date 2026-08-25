@@ -1728,35 +1728,52 @@ test(
 
 		await page.getByPlaceholder(`New ${structureLabel}`).fill(title);
 
-		// Add Repeatable Groups
+		// Add Repeatable Groups, waiting for each new row to render before
+		// clicking again
 
-		await page.getByRole('button', {name: 'Add New'}).first().click();
+		const addNewButtons = page.getByRole('button', {name: 'Add New'});
+		const groupFields = page.getByRole('textbox', {
+			name: /^(Text|Long Text)$/,
+		});
 
-		await page.getByRole('button', {name: 'Add New'}).last().click();
+		await expect(addNewButtons).toHaveCount(2);
+		await expect(groupFields).toHaveCount(2);
+
+		await addNewButtons.first().click();
+
+		await expect(groupFields).toHaveCount(3);
+
+		await addNewButtons.last().click();
+
+		await expect(groupFields).toHaveCount(4);
 
 		// Fill the fields
 
-		const firstText = page
-			.getByRole('textbox', {exact: true, name: 'Text'})
-			.first();
+		const textFields = page.getByRole('textbox', {
+			exact: true,
+			name: 'Text',
+		});
+		const longTextFields = page.getByRole('textbox', {
+			exact: true,
+			name: 'Long Text',
+		});
+
+		await expect(textFields).toHaveCount(2);
+		await expect(longTextFields).toHaveCount(2);
+
+		const firstText = textFields.first();
 
 		await firstText.fill('First Text');
 
-		const secondText = page
-			.getByRole('textbox', {exact: true, name: 'Text'})
-			.last();
+		const secondText = textFields.last();
 
 		await secondText.fill('Second Text');
 
-		const firstLongText = page
-			.getByRole('textbox', {exact: true, name: 'Long Text'})
-			.first();
+		const firstLongText = longTextFields.first();
 
 		await firstLongText.fill('First Long Text');
 
-		const secondLongText = page
-			.getByRole('textbox', {exact: true, name: 'Long Text'})
-			.last();
+		const secondLongText = longTextFields.last();
 
 		await secondLongText.fill('Second Long Text');
 
