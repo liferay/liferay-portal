@@ -5648,7 +5648,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 			addOrUpdateOrganizationsR, _dependsOn(addOrUpdateExpandoColumnsR)
 		).put(
 			addOrUpdateResourcePermissionsR,
-			_dependsOn(addSegmentsExperiencesR, addWorkflowDefinitionsR)
+			_dependsOn(
+				addSegmentsExperiencesR, addWorkflowDefinitionsR,
+				publishObjectDefinitionsR)
 		).put(
 			addOrUpdateRolesR, _dependsOn()
 		).put(

@@ -1,0 +1,154 @@
+[
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:FunctionalCookieEntry$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:FunctionalCookieEntry$]",
+		"roleName": "User",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:NecessaryCookieEntry$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:NecessaryCookieEntry$]",
+		"roleName": "User",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:PerformanceCookieEntry$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:PerformanceCookieEntry$]",
+		"roleName": "User",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:PersonalizationCookieEntry$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:PersonalizationCookieEntry$]",
+		"roleName": "User",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"ADD_TO_PAGE",
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:FunctionalCookieEntry$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"ADD_TO_PAGE",
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:FunctionalCookieEntry$]",
+		"roleName": "User",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"ADD_TO_PAGE",
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:NecessaryCookieEntry$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"ADD_TO_PAGE",
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:NecessaryCookieEntry$]",
+		"roleName": "User",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"ADD_TO_PAGE",
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:PerformanceCookieEntry$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"ADD_TO_PAGE",
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:PerformanceCookieEntry$]",
+		"roleName": "User",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"ADD_TO_PAGE",
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:PersonalizationCookieEntry$]",
+		"roleName": "Guest",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"ADD_TO_PAGE",
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:PersonalizationCookieEntry$]",
+		"roleName": "User",
+		"scope": "1"
+	}
+]
