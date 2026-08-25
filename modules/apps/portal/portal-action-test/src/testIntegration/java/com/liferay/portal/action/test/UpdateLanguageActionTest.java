@@ -694,13 +694,12 @@ public class UpdateLanguageActionTest {
 	private void _testGetRedirectWithLayoutFriendlyURLStartingWithPathMain()
 		throws Exception {
 
-		String redirectParameter =
-			Portal.PATH_MAIN + RandomTestUtil.randomString();
+		String redirect = Portal.PATH_MAIN + RandomTestUtil.randomString();
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		mockHttpServletRequest.setParameter("redirect", redirectParameter);
+		mockHttpServletRequest.setParameter("redirect", redirect);
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -715,8 +714,7 @@ public class UpdateLanguageActionTest {
 
 		Assert.assertNotEquals(
 			StringBundler.concat(
-				StringPool.SLASH, _targetLocale.getLanguage(),
-				redirectParameter),
+				StringPool.SLASH, _targetLocale.getLanguage(), redirect),
 			updateLanguageAction.getRedirect(
 				mockHttpServletRequest, themeDisplay, _targetLocale));
 	}
@@ -780,14 +778,14 @@ public class UpdateLanguageActionTest {
 			Arrays.asList(LocaleUtil.GERMANY, targetLocale, LocaleUtil.FRANCE),
 			LocaleUtil.GERMANY);
 
-		String redirectParameter = StringBundler.concat(
+		String redirect = StringBundler.concat(
 			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 			_group.getFriendlyURL(), _layout.getFriendlyURL(targetLocale));
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		mockHttpServletRequest.setParameter("redirect", redirectParameter);
+		mockHttpServletRequest.setParameter("redirect", redirect);
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -801,8 +799,7 @@ public class UpdateLanguageActionTest {
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				StringPool.SLASH, targetLocale.getLanguage(),
-				redirectParameter),
+				StringPool.SLASH, targetLocale.getLanguage(), redirect),
 			updateLanguageAction.getRedirect(
 				mockHttpServletRequest, themeDisplay, targetLocale));
 	}
