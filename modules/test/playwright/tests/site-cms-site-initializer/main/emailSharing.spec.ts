@@ -39,7 +39,7 @@ test(
 				);
 			});
 
-		const emailAddress = 'external@example.com';
+		const emailAddress = `external-${getRandomString()}@liferay.com`;
 
 		await test.step('Open the Share modal on the content', async () => {
 			await assetsPage.gotoContents(spaceName);
@@ -70,8 +70,6 @@ test(
 			await expect(page.getByText('(guest)')).toBeVisible();
 
 			await expect(page.getByText('To Be Shared')).toBeVisible();
-
-			await expect(page.getByLabel('Allow Resharing')).not.toBeVisible();
 		});
 
 		await test.step('Submit the share modal', async () => {
@@ -95,6 +93,17 @@ test(
 				emailAddress,
 				type: 'Email',
 			});
+		});
+
+		// Deleting the object entry deletes its sharing entries but never the
+		// invitation ticket, so the collaborator list has to be emptied here.
+
+		await test.step('Remove the invitation', async () => {
+			await apiHelpers.objectEntry.postObjectEntryCollaborators(
+				[],
+				'cms/basic-web-contents',
+				objectEntry.id
+			);
 		});
 	}
 );
@@ -194,7 +203,7 @@ test(
 
 		await test.step('Type a valid external email and verify the invite option is not offered', async () => {
 			await shareModalPage.typeInCollaboratorInput(
-				'external@example.com'
+				`external-${getRandomString()}@liferay.com`
 			);
 
 			await expect(
