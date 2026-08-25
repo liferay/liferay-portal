@@ -21,6 +21,14 @@ jest.mock(
 );
 
 jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/common/components/EnterpriseOnlyPlaceholder',
+	() => ({
+		__esModule: true,
+		default: () => 'enterprise-only-placeholder',
+	})
+);
+
+jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceDashboard',
 	() => ({
 		__esModule: true,
@@ -44,7 +52,10 @@ jest.mock(
 	})
 );
 
-function renderDashboards({cmsAdmin = true}: {cmsAdmin?: boolean} = {}) {
+function renderDashboards({
+	cmsAdmin = true,
+	freeTier = false,
+}: {cmsAdmin?: boolean; freeTier?: boolean} = {}) {
 	return render(
 		<Dashboards
 			additionalProps={
@@ -54,7 +65,7 @@ function renderDashboards({cmsAdmin = true}: {cmsAdmin?: boolean} = {}) {
 			analyticsEnabled={true}
 			cmsAdmin={cmsAdmin}
 			constants={{}}
-			freeTier={false}
+			freeTier={freeTier}
 			learnResources={{} as ILearnResourceContext}
 		/>
 	);
@@ -101,6 +112,22 @@ describe('Dashboards', () => {
 		).not.toBeInTheDocument();
 
 		expect(screen.getByText('inventory-dashboard')).toBeInTheDocument();
+	});
+
+	it('shows the enterprise placeholder instead of any dashboard on the free tier', () => {
+		renderDashboards({freeTier: true});
+
+		expect(
+			screen.getByText('enterprise-only-placeholder')
+		).toBeInTheDocument();
+
+		expect(
+			screen.queryByRole('button', {name: 'governance'})
+		).not.toBeInTheDocument();
+
+		expect(
+			screen.queryByText('governance-dashboard')
+		).not.toBeInTheDocument();
 	});
 
 	it('hides the performance tab when its feature flag is disabled', () => {
