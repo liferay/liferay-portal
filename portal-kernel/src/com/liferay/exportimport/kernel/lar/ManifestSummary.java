@@ -121,7 +121,7 @@ public class ManifestSummary implements Serializable {
 		ManifestSummary manifestSummary = new ManifestSummary();
 
 		manifestSummary._configurationPortletOptions = new HashMap<>(
-			manifestSummary._configurationPortletOptions);
+			_configurationPortletOptions);
 		manifestSummary._dataPortlets = new ArrayList<>(_dataPortlets);
 		manifestSummary._layoutPortlets = new ArrayList<>(_layoutPortlets);
 
