@@ -106,10 +106,6 @@ liferay-default:
                 name: liferay-init-scripts-azure
     license:
         enabled: true
-    marketplace:
-        enabled: true
-        size: 10Gi
-        storageClassName: azurefile-csi
     network:
         enabled: true
         timeouts:

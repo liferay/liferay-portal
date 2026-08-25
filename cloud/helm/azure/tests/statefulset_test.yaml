@@ -76,6 +76,18 @@ tests:
             value: StatefulSet
         it: Marks the pod with the liferay-azure origin
     -   asserts:
+            -   notContains:
+                    content:
+                        name: liferay-marketplace
+                        persistentVolumeClaim:
+                            claimName: liferay-default-marketplace
+                    path: spec.template.spec.volumes
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Omits the marketplace volume while no file share backs it
+    -   asserts:
             -   contains:
                     any: true
                     content:
