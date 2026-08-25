@@ -115,6 +115,9 @@ public class ViewHomeRecentAssetsSectionDisplayContext
 				LanguageUtil.get(httpServletRequest, "download"), "get", null,
 				"link"));
 
+		SectionDisplayContextUtil.addScheduleDateFDSActionDropdownItems(
+			fdsActionDropdownItems, httpServletRequest);
+
 		return fdsActionDropdownItems;
 	}
 

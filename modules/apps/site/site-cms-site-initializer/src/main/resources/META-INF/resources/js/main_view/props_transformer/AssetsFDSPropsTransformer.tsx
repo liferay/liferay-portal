@@ -417,14 +417,14 @@ export default function AssetsFDSPropsTransformer({
 						Boolean(item?.embedded?.file?.link?.href),
 				};
 			}
-			else if (action?.data?.id === 'actionLink') {
+			else if (
+				action?.data?.id === 'actionLink' ||
+				isScheduleDateActionId(action?.data?.id)
+			) {
 				return {
 					...action,
 					isVisible: (item: any) =>
-						Boolean(
-							item?.entryClassName !==
-								OBJECT_ENTRY_FOLDER_CLASS_NAME
-						),
+						item?.entryClassName !== OBJECT_ENTRY_FOLDER_CLASS_NAME,
 				};
 			}
 			else if (

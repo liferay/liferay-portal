@@ -5,6 +5,8 @@
 
 import {IBulkActionItem} from '@liferay/frontend-data-set-web';
 
+import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../../common/utils/constants';
+
 const BULK_ACTION_PERMISSION_KEYS: Record<string, string> = {
 	'assign-default-workflow': 'update',
 	'copy-to': 'update',
@@ -22,7 +24,14 @@ const BULK_ACTION_PERMISSION_KEYS: Record<string, string> = {
 	'permissions': 'permissions',
 	'reset-to-default-permissions': 'permissions',
 	'restore': 'restore',
+	'update-expiration-date': 'update',
+	'update-review-date': 'update',
 };
+
+const NON_FOLDER_BULK_ACTION_IDS = new Set([
+	'update-expiration-date',
+	'update-review-date',
+]);
 
 export default function transformFDSBulkActions(
 	bulkActions: Array<IBulkActionItem>
@@ -52,6 +61,17 @@ export default function transformFDSBulkActions(
 					return (
 						selectedItems?.every((item: any) =>
 							Boolean(item?.embedded?.file?.link?.href)
+						) ?? false
+					);
+				}
+
+				if (NON_FOLDER_BULK_ACTION_IDS.has(key)) {
+					return (
+						selectedItems?.every(
+							(item: any) =>
+								item?.actions?.[permissionKey] &&
+								item?.entryClassName !==
+									OBJECT_ENTRY_FOLDER_CLASS_NAME
 						) ?? false
 					);
 				}
