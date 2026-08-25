@@ -295,7 +295,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-56213", "LPD-94135", "LPD-99363"})
+	@TestInfo({"LPD-56213", "LPD-94135", "LPD-99363", "LPD-103697"})
 	public void testGetSiteSitePageRenderedPage() throws Exception {
 		_testGetSiteSitePageRenderedPage();
 		_testGetSiteSitePageRenderedPageInRequestedLocale();
@@ -850,6 +850,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertTrue(pageHTML, pageHTML.contains("<body"));
 		Assert.assertTrue(pageHTML, pageHTML.contains("</body>"));
 		Assert.assertTrue(pageHTML, pageHTML.contains("</html>"));
+		Assert.assertFalse(pageHTML, pageHTML.contains("http://null:0"));
 	}
 
 	private void _testGetSiteSitePageRenderedPageInRequestedLocale()

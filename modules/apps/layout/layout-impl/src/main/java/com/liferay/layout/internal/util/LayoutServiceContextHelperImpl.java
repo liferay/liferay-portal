@@ -374,6 +374,18 @@ public class LayoutServiceContextHelperImpl
 
 			themeDisplay.setCompany(company);
 
+			boolean secure = _isSecure();
+
+			int portalServerPort = _portal.getPortalServerPort(secure);
+
+			themeDisplay.setPortalDomain(company.getVirtualHostname());
+			themeDisplay.setPortalURL(
+				_portal.getPortalURL(
+					company.getVirtualHostname(), portalServerPort, secure));
+			themeDisplay.setSecure(secure);
+			themeDisplay.setServerName(company.getVirtualHostname());
+			themeDisplay.setServerPort(portalServerPort);
+
 			if (_layout != null) {
 				themeDisplay.setLanguageId(_layout.getDefaultLanguageId());
 				themeDisplay.setLayout(_layout);
@@ -425,21 +437,11 @@ public class LayoutServiceContextHelperImpl
 				themeDisplay.setSiteDefaultLocale(locale);
 			}
 
+			themeDisplay.setPathMain(_portal.getPathMain());
 			themeDisplay.setPermissionChecker(permissionChecker);
-			themeDisplay.setPortalDomain(company.getVirtualHostname());
-
-			boolean secure = _isSecure();
-
-			int portalServerPort = _portal.getPortalServerPort(secure);
-
-			themeDisplay.setPortalURL(
-				_portal.getPortalURL(
-					company.getVirtualHostname(), portalServerPort, secure));
-
 			themeDisplay.setRealUser(user);
 			themeDisplay.setScopeGroupId(_group.getGroupId());
-			themeDisplay.setServerName(company.getVirtualHostname());
-			themeDisplay.setServerPort(portalServerPort);
+			themeDisplay.setSignedIn(!user.isGuestUser());
 			themeDisplay.setSiteGroupId(_group.getGroupId());
 			themeDisplay.setTimeZone(user.getTimeZone());
 			themeDisplay.setUser(user);

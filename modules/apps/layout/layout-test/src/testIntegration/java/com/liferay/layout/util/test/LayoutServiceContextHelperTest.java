@@ -11,13 +11,17 @@ import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -132,7 +136,47 @@ public class LayoutServiceContextHelperTest {
 			locale, httpServletRequest.getAttribute(WebKeys.LOCALE));
 	}
 
+	@Test
+	@TestInfo("LPD-103697")
+	public void testGetServiceContextAutoCloseableThemeDisplay()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+
+		User user = TestPropsValues.getUser();
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout, user)) {
+
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+			Assert.assertNotNull(themeDisplay);
+
+			String cdnBaseURL = themeDisplay.getCDNBaseURL();
+
+			Assert.assertFalse(cdnBaseURL, cdnBaseURL.contains("null"));
+
+			String pathThemeImages = themeDisplay.getPathThemeImages();
+
+			Assert.assertFalse(
+				pathThemeImages, pathThemeImages.contains("null"));
+
+			Assert.assertEquals(
+				_portal.getPathMain(), themeDisplay.getPathMain());
+			Assert.assertTrue(themeDisplay.isSignedIn());
+		}
+	}
+
 	@Inject
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
+
+	@Inject
+	private Portal _portal;
 
 }
