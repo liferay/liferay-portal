@@ -201,6 +201,16 @@ public class CommerceCatalogLocalServiceImpl
 
 		commerceCatalogPersistence.remove(commerceCatalog);
 
+		// Commerce product configuration lists
+
+		for (CPConfigurationList cpConfigurationList :
+				_cpConfigurationListLocalService.getCPConfigurationLists(
+					groupId, commerceCatalog.getCompanyId())) {
+
+			_cpConfigurationListLocalService.deleteCPConfigurationList(
+				cpConfigurationList, true);
+		}
+
 		// Group
 
 		_groupLocalService.deleteGroup(groupId);
