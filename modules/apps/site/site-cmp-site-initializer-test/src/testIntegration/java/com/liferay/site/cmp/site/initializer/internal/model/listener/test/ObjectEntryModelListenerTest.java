@@ -322,6 +322,8 @@ public class ObjectEntryModelListenerTest {
 			cmpProjectObjectEntry);
 		_testOnAfterUpdateWhenProjectManagerAndProjectSponsorChange(
 			cmpProjectObjectEntry);
+		_testOnAfterUpdateWhenProjectManagerAssignsUserWithoutMembership(
+			cmpProjectObjectEntry);
 		_testOnAfterUpdateWhenProjectManagerIsClearedWithoutUserUpdatePermission(
 			cmpProjectObjectEntry);
 	}
@@ -642,6 +644,40 @@ public class ObjectEntryModelListenerTest {
 		_assertUserGroupRoles(
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
 			cmpProjectObjectEntry.getGroupId(), projectSponsorUser.getUserId());
+	}
+
+	private void
+			_testOnAfterUpdateWhenProjectManagerAssignsUserWithoutMembership(
+				ObjectEntry cmpProjectObjectEntry)
+		throws Exception {
+
+		User projectManagerUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, projectManagerUser.getUserId(), 0,
+			TestPropsValues.getUserId());
+
+		User user = UserTestUtil.addUser();
+
+		UserTestUtil.setUser(projectManagerUser);
+
+		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, projectManagerUser.getUserId(),
+			user.getUserId(), projectManagerUser.getUserId());
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
+
+		_assertUserGroupRoles(
+			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
+			cmpProjectObjectEntry.getGroupId(), user.getUserId());
+
+		Assert.assertTrue(
+			_groupLocalService.hasUserGroup(
+				user.getUserId(), cmpProjectObjectEntry.getGroupId()));
+
+		_updateProjectManagerProjectSponsor(
+			cmpProjectObjectEntry, 0, 0, TestPropsValues.getUserId());
 	}
 
 	private void
