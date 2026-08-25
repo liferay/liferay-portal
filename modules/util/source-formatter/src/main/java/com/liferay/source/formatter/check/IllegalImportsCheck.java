@@ -58,74 +58,95 @@ public class IllegalImportsCheck extends BaseFileCheck {
 
 		// com.liferay.portal.kernel.util.CookieKeys
 
-		if (content.contains("com.liferay.portal.kernel.util.CookieKeys") &&
-			isAttributeValue(_ENFORCE_COOKIES_MANAGER_UTIL_KEY, absolutePath)) {
+		if (isAttributeValue(_ENFORCE_COOKIES_MANAGER_UTIL_KEY, absolutePath)) {
+			int index = content.indexOf(
+				"com.liferay.portal.kernel.util.CookieKeys");
 
-			addMessage(
-				fileName,
-				"Use com.liferay.portal.kernel.cookies.CookiesManagerUtil " +
-					"instead of com.liferay.portal.kernel.util.CookieKeys, " +
-						"see LPS-164101");
+			if (index != -1) {
+				addMessage(
+					fileName,
+					StringBundler.concat(
+						"Use com.liferay.portal.kernel.cookies.CookiesManager",
+						"Util instead of com.liferay.portal.kernel.util.",
+						"CookieKeys, see LPS-164101"),
+					getLineNumber(content, index));
+			}
 		}
 
 		// com.liferay.portal.kernel.util.UnmodifiableList
 
-		if (content.contains(
-				"com.liferay.portal.kernel.util.UnmodifiableList")) {
+		int index = content.indexOf(
+			"com.liferay.portal.kernel.util.UnmodifiableList");
 
+		if (index != -1) {
 			addMessage(
 				fileName,
-				"Use java.util.Collections.unmodifiableList instead of " +
-					"com.liferay.portal.kernel.util.UnmodifiableList, see " +
-						"LPS-45027");
+				"Use java.util.Collections.unmodifiableList instead of com." +
+					"liferay.portal.kernel.util.UnmodifiableList, see " +
+						"LPS-45027",
+				getLineNumber(content, index));
 		}
 
 		// edu.emory.mathcs.backport.java
 
-		if (content.contains("edu.emory.mathcs.backport.java")) {
+		index = content.indexOf("edu.emory.mathcs.backport.java");
+
+		if (index != -1) {
 			addMessage(
-				fileName, "Illegal import: edu.emory.mathcs.backport.java");
+				fileName, "Illegal import: edu.emory.mathcs.backport.java",
+				getLineNumber(content, index));
 		}
 
 		// jakarta.servlet.jsp.*
 
-		if (content.contains("jakarta.servlet.jsp.") && isPortalSource() &&
-			absolutePath.contains("/portal-kernel/")) {
+		if (absolutePath.contains("/portal-kernel/")) {
+			index = content.indexOf("jakarta.servlet.jsp.");
 
-			addMessage(
-				fileName,
-				"Never import jakarta.servlet.jsp.* from portal-kernel, see " +
-					"LPS-47682");
+			if (index != -1) {
+				addMessage(
+					fileName,
+					"Never import jakarta.servlet.jsp.* from portal-kernel, " +
+						"see LPS-47682",
+					getLineNumber(content, index));
+			}
 		}
 
 		// java.lang.reflect.Proxy
 
-		if (content.contains("java.lang.reflect.Proxy") &&
-			!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
+		if (!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
 			!isExcludedPath(_PROXY_EXCLUDES, absolutePath)) {
 
-			addMessage(
-				fileName, "Use ProxyUtil instead of java.lang.reflect.Proxy");
+			index = content.indexOf("java.lang.reflect.Proxy");
+
+			if (index != -1) {
+				addMessage(
+					fileName,
+					"Use ProxyUtil instead of java.lang.reflect.Proxy",
+					getLineNumber(content, index));
+			}
 		}
 
 		// java.security.SecureRandom
 
-		if (content.contains("java.security.SecureRandom") &&
-			!content.contains("javax.crypto.KeyGenerator") &&
+		if (!content.contains("javax.crypto.KeyGenerator") &&
 			!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
 			!isExcludedPath(_SECURE_RANDOM_EXCLUDES, absolutePath)) {
 
-			addMessage(
-				fileName,
-				"Use SecureRandomUtil or com.liferay.portal.kernel.security." +
-					"SecureRandom instead of java.security.SecureRandom, see " +
-						"LPS-39508");
+			index = content.indexOf("java.security.SecureRandom");
+
+			if (index != -1) {
+				addMessage(
+					fileName,
+					"Use SecureRandomUtil or com.liferay.portal.kernel." +
+						"security.SecureRandom instead of java.security." +
+							"SecureRandom, see LPS-39508",
+					getLineNumber(content, index));
+			}
 		}
 
 		// java.util.Optional
 
-		if (content.contains("java.util.Optional") &&
-			isAttributeValue(_AVOID_OPTIONAL_KEY, absolutePath) &&
+		if (isAttributeValue(_AVOID_OPTIONAL_KEY, absolutePath) &&
 			!absolutePath.contains("/modules/integrations/") &&
 			!absolutePath.contains("/modules/sdk/") &&
 			!_isAllowedFileName(
@@ -133,23 +154,30 @@ public class IllegalImportsCheck extends BaseFileCheck {
 				getAttributeValues(
 					_ALLOWED_OPTIONAL_FILE_NAMES_KEY, absolutePath))) {
 
-			addMessage(
-				fileName, "Do not use java.util.Optional, see LPS-170503");
+			index = content.indexOf("java.util.Optional");
+
+			if (index != -1) {
+				addMessage(
+					fileName, "Do not use java.util.Optional, see LPS-170503",
+					getLineNumber(content, index));
+			}
 		}
 
 		// java.util.WeakHashMap
 
-		if (content.contains("java.util.WeakHashMap")) {
+		index = content.indexOf("java.util.WeakHashMap");
+
+		if (index != -1) {
 			addMessage(
 				fileName,
 				"Do not use java.util.WeakHashMap because it is not " +
-					"thread-safe, see LPS-70963");
+					"thread-safe, see LPS-70963",
+				getLineNumber(content, index));
 		}
 
 		// java.util.concurrent.CompletableFuture
 
-		if (content.contains("java.util.concurrent.CompletableFuture") &&
-			isAttributeValue(_AVOID_COMPLETABLE_FUTURE_KEY, absolutePath) &&
+		if (isAttributeValue(_AVOID_COMPLETABLE_FUTURE_KEY, absolutePath) &&
 			!absolutePath.contains("/modules/integrations/") &&
 			!absolutePath.contains("/modules/sdk/") &&
 			!_isAllowedFileName(
@@ -158,16 +186,20 @@ public class IllegalImportsCheck extends BaseFileCheck {
 					_ALLOWED_COMPLETABLE_FUTURE_FILE_NAMES_KEY,
 					absolutePath))) {
 
-			addMessage(
-				fileName,
-				"Use DefaultNoticeableFuture instead of java.util.concurrent." +
-					"CompletableFuture, see LPD-98379");
+			index = content.indexOf("java.util.concurrent.CompletableFuture");
+
+			if (index != -1) {
+				addMessage(
+					fileName,
+					"Use DefaultNoticeableFuture instead of java.util." +
+						"concurrent.CompletableFuture, see LPD-98379",
+					getLineNumber(content, index));
+			}
 		}
 
 		// java.util.stream.Stream
 
-		if (content.contains("java.util.stream.Stream") &&
-			isAttributeValue(_AVOID_STREAM_KEY, absolutePath) &&
+		if (isAttributeValue(_AVOID_STREAM_KEY, absolutePath) &&
 			!absolutePath.contains("/modules/integrations/") &&
 			!absolutePath.contains("/modules/sdk/") &&
 			!_isAllowedFileName(
@@ -175,44 +207,64 @@ public class IllegalImportsCheck extends BaseFileCheck {
 				getAttributeValues(
 					_ALLOWED_STREAM_FILE_NAMES_KEY, absolutePath))) {
 
-			addMessage(fileName, "Do not use java.util.stream, see LPS-170503");
+			index = content.indexOf("java.util.stream.Stream");
+
+			if (index != -1) {
+				addMessage(
+					fileName, "Do not use java.util.stream, see LPS-170503",
+					getLineNumber(content, index));
+			}
 		}
 
 		// jodd.util.StringPool
 
-		if (content.contains("jodd.util.StringPool")) {
-			addMessage(fileName, "Illegal import: jodd.util.StringPool");
+		index = content.indexOf("jodd.util.StringPool");
+
+		if (index != -1) {
+			addMessage(
+				fileName, "Illegal import: jodd.util.StringPool",
+				getLineNumber(content, index));
 		}
 
 		// org.apache.commons.beanutils.PropertyUtils
 
-		if (content.contains("org.apache.commons.beanutils.PropertyUtils") &&
-			!fileName.endsWith("TypeConvertorUtil.java")) {
+		if (!fileName.endsWith("TypeConvertorUtil.java")) {
+			index = content.indexOf(
+				"org.apache.commons.beanutils.PropertyUtils");
 
-			addMessage(
-				fileName,
-				"Do not use org.apache.commons.beanutils.PropertyUtils, see " +
-					"LPS-62786");
+			if (index != -1) {
+				addMessage(
+					fileName,
+					"Do not use org.apache.commons.beanutils.PropertyUtils, " +
+						"see LPS-62786",
+					getLineNumber(content, index));
+			}
 		}
 
 		// org.slf4j.Logger
 
-		if (content.contains("org.slf4j.Logger") &&
-			!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath)) {
+		if (!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath)) {
+			index = content.indexOf("org.slf4j.Logger");
 
-			addMessage(
-				fileName,
-				"Use com.liferay.portal.kernel.log.Log instead of " +
-					"org.slf4j.Logger");
+			if (index != -1) {
+				addMessage(
+					fileName,
+					"Use com.liferay.portal.kernel.log.Log instead of org." +
+						"slf4j.Logger",
+					getLineNumber(content, index));
+			}
 		}
 
 		// org.testng.Assert
 
-		if (content.contains("org.testng.Assert")) {
+		index = content.indexOf("org.testng.Assert");
+
+		if (index != -1) {
 			addMessage(
 				fileName,
 				"Use org.junit.Assert instead of org.testng.Assert, see " +
-					"LPS-55690");
+					"LPS-55690",
+				getLineNumber(content, index));
 		}
 
 		SourceProcessor sourceProcessor = getSourceProcessor();
