@@ -15,6 +15,7 @@ import com.nimbusds.jose.proc.JWSAlgorithmFamilyJWSKeySelector;
 import java.net.URL;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,15 +34,18 @@ import org.mockserver.model.HttpResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * @author Gregory Amerson
+ * @author Allen Ziegenfus
  */
 @ContextConfiguration(
 	classes = {
@@ -103,6 +107,41 @@ public class LiferayOAuth2ResourceServerEnableWebSecurityTest {
 		_clientAndServer.stop();
 
 		_mockedStatic.close();
+	}
+
+	@Test
+	public void testGetClientIdLogMessage() {
+		LiferayOAuth2ResourceServerEnableWebSecurity
+			liferayOAuth2ResourceServerEnableWebSecurity =
+				new LiferayOAuth2ResourceServerEnableWebSecurity();
+
+		MockEnvironment mockEnvironment = new MockEnvironment();
+
+		mockEnvironment.setProperty(
+			"test-headless-server.oauth2.headless.server.client.id",
+			"headless-server-id");
+
+		ReflectionTestUtils.setField(
+			liferayOAuth2ResourceServerEnableWebSecurity, "_environment",
+			mockEnvironment);
+
+		Assert.assertEquals(
+			"External reference code test-user-agent has user agent client " +
+				"ID user-agent-id",
+			ReflectionTestUtils.invokeMethod(
+				liferayOAuth2ResourceServerEnableWebSecurity,
+				"_getClientIdLogMessage", "user-agent-id", "test-user-agent"));
+
+		Assert.assertEquals(
+			"External reference code test-external has no user agent client ID",
+			ReflectionTestUtils.invokeMethod(
+				liferayOAuth2ResourceServerEnableWebSecurity,
+				"_getClientIdLogMessage", null, "test-external"));
+
+		Assert.assertNull(
+			ReflectionTestUtils.invokeMethod(
+				liferayOAuth2ResourceServerEnableWebSecurity,
+				"_getClientIdLogMessage", null, "test-headless-server"));
 	}
 
 	@Test
