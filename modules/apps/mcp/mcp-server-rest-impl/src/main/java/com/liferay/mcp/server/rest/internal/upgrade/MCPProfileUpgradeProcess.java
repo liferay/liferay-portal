@@ -389,10 +389,9 @@ public class MCPProfileUpgradeProcess extends UpgradeProcess {
 						MCPServerConstants.
 							EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_TOOL,
 						userId, objectFolder.getObjectFolderId(),
-						"com.liferay.object.model.ObjectDefinition" +
-							"#MCPServerProfileTool",
-						null, true, false, true, false, false, false, false,
-						false, false, false, null,
+						"com.liferay.object.model.ObjectDefinition#T4L8", null,
+						true, false, true, false, false, false, false, false,
+						false, false, null,
 						Collections.singletonMap(
 							LocaleUtil.US, "MCP Server Profile Tool"),
 						true, "MCPServerProfileTool", null,

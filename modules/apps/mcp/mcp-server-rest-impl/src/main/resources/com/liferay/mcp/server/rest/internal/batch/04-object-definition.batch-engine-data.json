@@ -14,7 +14,7 @@
 	"items": [
 		{
 			"active": true,
-			"className": "com.liferay.object.model.ObjectDefinition#MCPServerProfileTool",
+			"className": "com.liferay.object.model.ObjectDefinition#T4L8",
 			"externalReferenceCode": "L_MCP_SERVER_PROFILE_TOOL",
 			"label": {
 				"en_US": "MCP Server Profile Tool"
