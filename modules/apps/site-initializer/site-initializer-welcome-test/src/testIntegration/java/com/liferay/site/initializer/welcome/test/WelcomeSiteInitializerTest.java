@@ -24,6 +24,9 @@ import com.liferay.layout.utility.page.kernel.provider.util.LayoutUtilityPageEnt
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
 import com.liferay.login.web.constants.LoginPortletKeys;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -33,10 +36,16 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletPreferences;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -135,6 +144,44 @@ public class WelcomeSiteInitializerTest {
 				layout.getPlid()));
 
 		Assert.assertTrue(html.contains("Enjoy using the best DXP on Earth!"));
+	}
+
+	@Test
+	@TestInfo("LPD-101999")
+	public void testCookiePolicyLayoutUtilityPageEntryWidgetPermissions()
+		throws Exception {
+
+		long companyId = TestPropsValues.getCompanyId();
+
+		for (String externalReferenceCode :
+				new String[] {
+					"L_FUNCTIONAL_COOKIE_ENTRY", "L_NECESSARY_COOKIE_ENTRY",
+					"L_PERFORMANCE_COOKIE_ENTRY",
+					"L_PERSONALIZATION_COOKIE_ENTRY"
+				}) {
+
+			ObjectDefinition objectDefinition =
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						externalReferenceCode, companyId);
+
+			for (String roleName :
+					new String[] {RoleConstants.GUEST, RoleConstants.USER}) {
+
+				Role role = _roleLocalService.getRole(companyId, roleName);
+
+				_assertResourcePermission(
+					ActionKeys.VIEW, companyId, objectDefinition.getClassName(),
+					role);
+
+				_assertResourcePermission(
+					ActionKeys.ADD_TO_PAGE, companyId,
+					objectDefinition.getPortletId(), role);
+				_assertResourcePermission(
+					ActionKeys.VIEW, companyId, objectDefinition.getPortletId(),
+					role);
+			}
+		}
 	}
 
 	@Test
@@ -403,6 +450,19 @@ public class WelcomeSiteInitializerTest {
 			expectedPortletId, portletPreferences.getPortletId());
 	}
 
+	private void _assertResourcePermission(
+			String actionId, long companyId, String name, Role role)
+		throws Exception {
+
+		Assert.assertTrue(
+			StringBundler.concat(
+				name, StringPool.SPACE, role.getName(), StringPool.SPACE,
+				actionId),
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, name, ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(companyId), role.getRoleId(), actionId));
+	}
+
 	private LayoutStructure _getLayoutStructure(Layout layout) {
 		LayoutPageTemplateStructure layoutPageTemplateStructure =
 			_layoutPageTemplateStructureLocalService.
@@ -477,10 +537,19 @@ public class WelcomeSiteInitializerTest {
 		_layoutUtilityPageEntryLocalService;
 
 	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
 	private PortletLocalService _portletLocalService;
 
 	@Inject
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;

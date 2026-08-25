@@ -109,6 +109,57 @@ test('LPD-30561 Cookie Banner Cookie Policy Page', async ({
 });
 
 test(
+	'Cookie Policy Page Is Readable by a Guest',
+	{tag: '@LPD-101999'},
+	async ({browser}) => {
+		const guestContext = await browser.newContext({
+			storageState: {cookies: [], origins: []},
+		});
+
+		const guestPage = await guestContext.newPage();
+
+		try {
+			await guestPage.goto('/cookie-policy');
+
+			await expect(guestPage.getByText('Cookies List')).toBeVisible({
+				timeout: 100 * 1000,
+			});
+
+			await expect(
+				guestPage.getByText(
+					'You do not have the roles required to access this portlet.'
+				)
+			).toHaveCount(0);
+
+			const objectDefinitionPortlets = await guestPage
+				.locator(
+					'[id^="portlet_com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_"]'
+				)
+				.all();
+
+			expect(objectDefinitionPortlets.length).toBe(4);
+
+			for (const objectDefinitionPortlet of objectDefinitionPortlets) {
+				await expect(
+					objectDefinitionPortlet.locator('.fds thead')
+				).toBeVisible({
+					timeout: 100 * 1000,
+				});
+
+				const tableRows = await objectDefinitionPortlet
+					.locator('.fds tbody tr')
+					.all();
+
+				expect(tableRows.length).toBeGreaterThan(0);
+			}
+		}
+		finally {
+			await guestContext.close();
+		}
+	}
+);
+
+test(
 	'Consent Manager Adjustments',
 	{tag: '@LPD-60002'},
 	async ({browser, page, systemSettingsPage}) => {
