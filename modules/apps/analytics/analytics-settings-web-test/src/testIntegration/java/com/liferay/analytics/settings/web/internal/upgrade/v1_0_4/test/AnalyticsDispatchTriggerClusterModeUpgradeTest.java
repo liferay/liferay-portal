@@ -47,18 +47,15 @@ public class AnalyticsDispatchTriggerClusterModeUpgradeTest {
 		DispatchTrigger dispatchTrigger = _addAllNodesDispatchTrigger(
 			"batch-planner");
 
-		try {
-			_runUpgrade();
+		_runUpgrade();
 
-			Assert.assertEquals(
-				DispatchTaskClusterMode.ALL_NODES.getMode(),
-				_getDispatchTaskClusterMode(
-					dispatchTrigger.getDispatchTriggerId()));
-		}
-		finally {
-			_dispatchTriggerLocalService.deleteDispatchTrigger(
-				dispatchTrigger.getDispatchTriggerId());
-		}
+		Assert.assertEquals(
+			DispatchTaskClusterMode.ALL_NODES.getMode(),
+			_getDispatchTaskClusterMode(
+				dispatchTrigger.getDispatchTriggerId()));
+
+		_dispatchTriggerLocalService.deleteDispatchTrigger(
+			dispatchTrigger.getDispatchTriggerId());
 	}
 
 	@Test
@@ -69,18 +66,15 @@ public class AnalyticsDispatchTriggerClusterModeUpgradeTest {
 			DispatchTrigger dispatchTrigger = _addAllNodesDispatchTrigger(
 				dispatchTaskExecutorType);
 
-			try {
-				_runUpgrade();
+			_runUpgrade();
 
-				Assert.assertEquals(
-					DispatchTaskClusterMode.SINGLE_NODE_PERSISTED.getMode(),
-					_getDispatchTaskClusterMode(
-						dispatchTrigger.getDispatchTriggerId()));
-			}
-			finally {
-				_dispatchTriggerLocalService.deleteDispatchTrigger(
-					dispatchTrigger.getDispatchTriggerId());
-			}
+			Assert.assertEquals(
+				DispatchTaskClusterMode.SINGLE_NODE_PERSISTED.getMode(),
+				_getDispatchTaskClusterMode(
+					dispatchTrigger.getDispatchTriggerId()));
+
+			_dispatchTriggerLocalService.deleteDispatchTrigger(
+				dispatchTrigger.getDispatchTriggerId());
 		}
 	}
 

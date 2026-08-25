@@ -80,40 +80,37 @@ public class AnalyticsDXPEntityBatchExporterTest {
 					DISPATCH_TRIGGER_NAME_DXP_ENTITIES
 			});
 
-		try {
-			_analyticsDXPEntityBatchExporter.scheduleExportTriggers(
+		_analyticsDXPEntityBatchExporter.scheduleExportTriggers(
+			companyId,
+			new String[] {
+				AnalyticsDXPEntityBatchExporterConstants.
+					DISPATCH_TRIGGER_NAME_DXP_ENTITIES
+			});
+
+		DispatchTrigger dispatchTrigger =
+			_dispatchTriggerLocalService.fetchDispatchTrigger(
 				companyId,
-				new String[] {
-					AnalyticsDXPEntityBatchExporterConstants.
-						DISPATCH_TRIGGER_NAME_DXP_ENTITIES
-				});
+				AnalyticsDXPEntityBatchExporterConstants.
+					DISPATCH_TRIGGER_NAME_DXP_ENTITIES);
 
-			DispatchTrigger dispatchTrigger =
-				_dispatchTriggerLocalService.fetchDispatchTrigger(
-					companyId,
-					AnalyticsDXPEntityBatchExporterConstants.
-						DISPATCH_TRIGGER_NAME_DXP_ENTITIES);
+		DispatchTaskClusterMode dispatchTaskClusterMode =
+			DispatchTaskClusterMode.NOT_APPLICABLE;
 
-			DispatchTaskClusterMode dispatchTaskClusterMode =
-				DispatchTaskClusterMode.NOT_APPLICABLE;
-
-			if (ClusterExecutorUtil.isEnabled()) {
-				dispatchTaskClusterMode =
-					DispatchTaskClusterMode.SINGLE_NODE_PERSISTED;
-			}
-
-			Assert.assertEquals(
-				dispatchTaskClusterMode.getMode(),
-				dispatchTrigger.getDispatchTaskClusterMode());
+		if (ClusterExecutorUtil.isEnabled()) {
+			dispatchTaskClusterMode =
+				DispatchTaskClusterMode.SINGLE_NODE_PERSISTED;
 		}
-		finally {
-			_analyticsDXPEntityBatchExporter.unscheduleExportTriggers(
-				companyId,
-				new String[] {
-					AnalyticsDXPEntityBatchExporterConstants.
-						DISPATCH_TRIGGER_NAME_DXP_ENTITIES
-				});
-		}
+
+		Assert.assertEquals(
+			dispatchTaskClusterMode.getMode(),
+			dispatchTrigger.getDispatchTaskClusterMode());
+
+		_analyticsDXPEntityBatchExporter.unscheduleExportTriggers(
+			companyId,
+			new String[] {
+				AnalyticsDXPEntityBatchExporterConstants.
+					DISPATCH_TRIGGER_NAME_DXP_ENTITIES
+			});
 	}
 
 	@Inject
