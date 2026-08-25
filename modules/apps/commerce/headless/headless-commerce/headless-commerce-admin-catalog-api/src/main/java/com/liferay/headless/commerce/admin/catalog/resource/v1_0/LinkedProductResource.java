@@ -45,6 +45,11 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface LinkedProductResource {
 
+	public Page<LinkedProduct>
+			getProductByExternalReferenceCodeLinkedProductsPage(
+				String externalReferenceCode, Pagination pagination)
+		throws Exception;
+
 	public Page<LinkedProduct> getProductIdLinkedProductsPage(
 			Long id, Pagination pagination)
 		throws Exception;
@@ -145,4 +150,4 @@ public interface LinkedProductResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2013843379
+// LIFERAY-REST-BUILDER-HASH:-1652134056

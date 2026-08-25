@@ -86,7 +86,7 @@ public abstract class BaseSkuVirtualSettingsResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}/sku-virtual-settings'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the virtual settings of the SKU identified by id. Returns 404 when the SKU id is not found."
+		description = "Returns the virtual settings of the SKU identified by ID. Returns 404 when the SKU ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -561,4 +561,4 @@ public abstract class BaseSkuVirtualSettingsResourceImpl
 		LogFactoryUtil.getLog(BaseSkuVirtualSettingsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1477456035
+// LIFERAY-REST-BUILDER-HASH:-926855331

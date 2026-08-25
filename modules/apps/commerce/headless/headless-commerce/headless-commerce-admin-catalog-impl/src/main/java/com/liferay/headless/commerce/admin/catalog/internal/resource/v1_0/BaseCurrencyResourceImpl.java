@@ -77,7 +77,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the commerce currency identified by id. Returns 404 when the id is not found. Side effects -- Cascades through commerce currency delete listeners."
+		description = "Deletes the commerce currency identified by ID. Returns 404 when the ID is not found. Side effects -- Cascades through commerce currency delete listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -245,7 +245,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the commerce currency identified by id. Returns 404 when the id is not found."
+		description = "Fetches the commerce currency identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -315,7 +315,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/{id}' -d $'{"active": ___, "code": ___, "externalReferenceCode": ___, "formatPattern": ___, "id": ___, "maxFractionDigits": ___, "minFractionDigits": ___, "name": ___, "primary": ___, "priority": ___, "rate": ___, "roundingMode": ___, "symbol": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the commerce currency identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the currency."
+		description = "Partially updates the commerce currency identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the currency."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1285,4 +1285,4 @@ public abstract class BaseCurrencyResourceImpl
 		LogFactoryUtil.getLog(BaseCurrencyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:401155365
+// LIFERAY-REST-BUILDER-HASH:-851532507

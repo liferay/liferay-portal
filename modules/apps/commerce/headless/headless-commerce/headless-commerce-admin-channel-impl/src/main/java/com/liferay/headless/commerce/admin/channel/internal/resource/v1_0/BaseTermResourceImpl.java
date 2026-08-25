@@ -47,7 +47,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/payment-method-group-rel-terms/{paymentMethodGroupRelTermId}/term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the commerce term associated with the parent PaymentMethodGroupRelTerm, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found."
+		description = "Retrieves the commerce term associated with the parent PaymentMethodGroupRelTerm, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -83,7 +83,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/shipping-fixed-option-terms/{shippingFixedOptionTermId}/term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the commerce term associated with the parent ShippingFixedOptionTerm, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found."
+		description = "Retrieves the commerce term associated with the parent ShippingFixedOptionTerm, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -558,4 +558,4 @@ public abstract class BaseTermResourceImpl implements TermResource {
 		LogFactoryUtil.getLog(BaseTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1793005339
+// LIFERAY-REST-BUILDER-HASH:1008148251

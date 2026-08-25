@@ -76,7 +76,7 @@ public abstract class BaseProductConfigurationListChannelResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-list-channels/{productConfigurationListChannelId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Removes the channel binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the channel <-> configuration list association."
+		description = "Removes the channel binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the channel <-> configuration list association."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -163,7 +163,7 @@ public abstract class BaseProductConfigurationListChannelResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configuration-list-channels'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the channel bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+		description = "Lists the channel bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -215,7 +215,7 @@ public abstract class BaseProductConfigurationListChannelResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/{id}/product-configuration-list-channels'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the channel bindings of the product configuration list identified by id. Validation -- None at this layer."
+		description = "Lists the channel bindings of the product configuration list identified by ID. Validation -- None at this layer."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -289,7 +289,7 @@ public abstract class BaseProductConfigurationListChannelResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configuration-list-channels' -d $'{"channelExternalReferenceCode": ___, "channelId": ___, "order": ___, "productConfigurationListExternalReferenceCode": ___, "productConfigurationListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Binds a commerce channel to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list."
+		description = "Binds a commerce channel to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -332,7 +332,7 @@ public abstract class BaseProductConfigurationListChannelResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/{id}/product-configuration-list-channels' -d $'{"channelExternalReferenceCode": ___, "channelId": ___, "order": ___, "productConfigurationListExternalReferenceCode": ___, "productConfigurationListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Binds a commerce channel to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list."
+		description = "Binds a commerce channel to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1162,4 +1162,4 @@ public abstract class BaseProductConfigurationListChannelResourceImpl
 			BaseProductConfigurationListChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1848626448
+// LIFERAY-REST-BUILDER-HASH:1412018928

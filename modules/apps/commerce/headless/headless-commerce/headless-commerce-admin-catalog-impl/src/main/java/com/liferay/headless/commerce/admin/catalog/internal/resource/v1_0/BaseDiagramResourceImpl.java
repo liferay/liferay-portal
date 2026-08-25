@@ -111,7 +111,7 @@ public abstract class BaseDiagramResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/diagrams'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the diagram setting attached to the product identified by product id. Returns 404 when the product id is not found, and 404 when no diagram setting exists."
+		description = "Returns the diagram setting attached to the product identified by product ID. Returns 404 when the product ID is not found, and 404 when no diagram setting exists."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -219,7 +219,7 @@ public abstract class BaseDiagramResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/diagrams' -d $'{"attachmentBase64": ___, "color": ___, "id": ___, "imageId": ___, "radius": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a diagram setting under the product identified by product id. Returns 404 when the product id is not found. Side effects -- Creates the diagram setting and links an attachment as the diagram image."
+		description = "Creates a diagram setting under the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Creates the diagram setting and links an attachment as the diagram image."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1011,4 +1011,4 @@ public abstract class BaseDiagramResourceImpl
 		LogFactoryUtil.getLog(BaseDiagramResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-123062975
+// LIFERAY-REST-BUILDER-HASH:-1838598847

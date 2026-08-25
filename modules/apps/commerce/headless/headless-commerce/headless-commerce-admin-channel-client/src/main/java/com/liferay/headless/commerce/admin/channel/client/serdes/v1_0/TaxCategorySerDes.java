@@ -56,6 +56,20 @@ public class TaxCategorySerDes {
 			sb.append(_toJSON(taxCategory.getDescription()));
 		}
 
+		if (taxCategory.getExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(taxCategory.getExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (taxCategory.getGroupId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -113,6 +127,15 @@ public class TaxCategorySerDes {
 				"description", String.valueOf(taxCategory.getDescription()));
 		}
 
+		if (taxCategory.getExternalReferenceCode() == null) {
+			map.put("externalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"externalReferenceCode",
+				String.valueOf(taxCategory.getExternalReferenceCode()));
+		}
+
 		if (taxCategory.getGroupId() == null) {
 			map.put("groupId", null);
 		}
@@ -155,6 +178,11 @@ public class TaxCategorySerDes {
 			if (Objects.equals(jsonParserFieldName, "description")) {
 				return true;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "groupId")) {
 				return false;
 			}
@@ -177,6 +205,14 @@ public class TaxCategorySerDes {
 				if (jsonParserFieldValue != null) {
 					taxCategory.setDescription(
 						(Map<String, String>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					taxCategory.setExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "groupId")) {
@@ -278,4 +314,4 @@ public class TaxCategorySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1670826247
+// LIFERAY-REST-BUILDER-HASH:1106205494

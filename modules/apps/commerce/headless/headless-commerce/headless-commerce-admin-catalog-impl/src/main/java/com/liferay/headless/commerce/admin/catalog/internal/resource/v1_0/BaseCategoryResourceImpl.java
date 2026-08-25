@@ -120,7 +120,7 @@ public abstract class BaseCategoryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/categories'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists asset categories assigned to the product identified by product id. Returns 404 when the product id is not found."
+		description = "Lists asset categories assigned to the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -165,7 +165,7 @@ public abstract class BaseCategoryResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/categories'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Replaces the asset category assignments of the product identified by external reference code. Returns 404 when the product external reference code is not found, and 404 when any supplied category id is missing. Side effects -- Replaces the product's asset category assignment set (overwrites prior categorization)."
+		description = "Replaces the asset category assignments of the product identified by external reference code. Returns 404 when the product external reference code is not found, and 404 when any supplied category ID is missing. Side effects -- Replaces the product's asset category assignment set (overwrites prior categorization)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -205,7 +205,7 @@ public abstract class BaseCategoryResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/categories'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Replaces the asset category assignments of the product identified by product id. Returns 404 when the product id is not found, and 404 when any supplied category id is missing. Side effects -- Replaces the product's asset category assignment set."
+		description = "Replaces the asset category assignments of the product identified by product ID. Returns 404 when the product ID is not found, and 404 when any supplied category ID is missing. Side effects -- Replaces the product's asset category assignment set."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -895,4 +895,4 @@ public abstract class BaseCategoryResourceImpl
 		LogFactoryUtil.getLog(BaseCategoryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1176357648
+// LIFERAY-REST-BUILDER-HASH:-513000208

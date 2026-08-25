@@ -75,7 +75,7 @@ public abstract class BaseProductGroupProductResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-group-products/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Removes the product binding identified by id from its product group. Returns 404 when the record is not found. Side effects -- Removes the product <-> product group association."
+		description = "Removes the product binding identified by ID from its product group. Returns 404 when the record is not found. Side effects -- Removes the product <-> product group association."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -211,7 +211,7 @@ public abstract class BaseProductGroupProductResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-groups/{id}/product-group-products'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the product bindings of the product group identified by id. Validation -- None at this layer (returns empty page on no match)."
+		description = "Lists the product bindings of the product group identified by ID. Validation -- None at this layer (returns empty page on no match)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -303,7 +303,7 @@ public abstract class BaseProductGroupProductResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-groups/{id}/product-group-products' -d $'{"id": ___, "productExternalReferenceCode": ___, "productGroupExternalReferenceCode": ___, "productGroupId": ___, "productId": ___, "sku": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Binds a product to the product group identified by id. Returns 404 when the product group id is not found, and 404 when the product lookup fails. Side effects -- Creates a product group assignment binding the product to the group."
+		description = "Binds a product to the product group identified by ID. Returns 404 when the product group ID is not found, and 404 when the product lookup fails. Side effects -- Creates a product group assignment binding the product to the group."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1105,4 +1105,4 @@ public abstract class BaseProductGroupProductResourceImpl
 		LogFactoryUtil.getLog(BaseProductGroupProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:106487247
+// LIFERAY-REST-BUILDER-HASH:1407477199

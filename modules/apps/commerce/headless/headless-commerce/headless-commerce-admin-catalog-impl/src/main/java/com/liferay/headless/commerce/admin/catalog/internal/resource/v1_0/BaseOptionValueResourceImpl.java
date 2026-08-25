@@ -77,7 +77,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the option value identified by id. Returns 404 when the record is not found. Side effects -- Cascades through product option value listeners."
+		description = "Deletes the option value identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through product option value listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -257,7 +257,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/{id}/optionValues'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists option values for the option identified by option id. Returns 404 when the parent option id is not found."
+		description = "Lists option values for the option identified by option ID. Returns 404 when the parent option ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -317,7 +317,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the option value identified by id. Returns 404 when the id is not found."
+		description = "Fetches the option value identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -387,7 +387,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/{id}' -d $'{"customFields": ___, "externalReferenceCode": ___, "key": ___, "name": ___, "priority": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the option value identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option value."
+		description = "Partially updates the option value identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the option value."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -503,7 +503,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/{id}/optionValues' -d $'{"customFields": ___, "externalReferenceCode": ___, "key": ___, "name": ___, "priority": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an option value under the parent option identified by option id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option id is not found. Side effects -- Reindexes the option value."
+		description = "Creates or updates an option value under the parent option identified by option ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option ID is not found. Side effects -- Reindexes the option value."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1347,4 +1347,4 @@ public abstract class BaseOptionValueResourceImpl
 		LogFactoryUtil.getLog(BaseOptionValueResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-742595007
+// LIFERAY-REST-BUILDER-HASH:-427529663

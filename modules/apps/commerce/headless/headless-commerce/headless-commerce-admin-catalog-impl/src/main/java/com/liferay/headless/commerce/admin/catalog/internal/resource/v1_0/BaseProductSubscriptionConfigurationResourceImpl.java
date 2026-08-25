@@ -90,7 +90,7 @@ public abstract class BaseProductSubscriptionConfigurationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/subscriptionConfiguration'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the subscription configuration of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the subscription configuration of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -175,7 +175,7 @@ public abstract class BaseProductSubscriptionConfigurationResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/subscriptionConfiguration' -d $'{"deliverySubscriptionEnable": ___, "deliverySubscriptionLength": ___, "deliverySubscriptionNumberOfLength": ___, "deliverySubscriptionType": ___, "deliverySubscriptionTypeSettings": ___, "enable": ___, "length": ___, "numberOfLength": ___, "subscriptionType": ___, "subscriptionTypeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the subscription configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition subscription fields."
+		description = "Partially updates the subscription configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition subscription fields."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -657,4 +657,4 @@ public abstract class BaseProductSubscriptionConfigurationResourceImpl
 			BaseProductSubscriptionConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:800137810
+// LIFERAY-REST-BUILDER-HASH:-196074926

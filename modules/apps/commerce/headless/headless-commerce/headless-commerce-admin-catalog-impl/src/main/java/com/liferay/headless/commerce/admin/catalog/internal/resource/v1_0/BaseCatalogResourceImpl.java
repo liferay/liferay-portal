@@ -78,7 +78,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the commerce catalog identified by id. Returns 404 when the id is missing (service-level). Side effects -- Cascades through catalog delete listeners (group, virtual instance teardown)."
+		description = "Deletes the commerce catalog identified by ID. Returns 404 when the ID is missing (service-level). Side effects -- Cascades through catalog delete listeners (group, virtual instance teardown)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -196,7 +196,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the commerce catalog identified by id. Returns 404 when the id is not found."
+		description = "Fetches the commerce catalog identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -371,7 +371,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/catalog'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the commerce catalog associated with the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the commerce catalog associated with the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -416,7 +416,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/{id}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "accountType": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "defaultLanguageId": ___, "externalReferenceCode": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the commerce catalog identified by id. Returns 404 when the id is not found, and tolerated (debug log). Side effects -- Reindexes the catalog; touches the underlying group."
+		description = "Partially updates the commerce catalog identified by ID. Returns 404 when the ID is not found, and tolerated (debug log). Side effects -- Reindexes the catalog; touches the underlying group."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1471,4 +1471,4 @@ public abstract class BaseCatalogResourceImpl
 		LogFactoryUtil.getLog(BaseCatalogResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1708593591
+// LIFERAY-REST-BUILDER-HASH:-81522249

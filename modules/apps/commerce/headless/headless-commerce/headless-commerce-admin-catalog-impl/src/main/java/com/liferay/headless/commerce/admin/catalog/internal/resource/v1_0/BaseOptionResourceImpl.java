@@ -78,7 +78,7 @@ public abstract class BaseOptionResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the option identified by id. Returns 404 when the id is not found. Side effects -- Cascades through product option listeners; reindexes affected products."
+		description = "Deletes the option identified by ID. Returns 404 when the ID is not found. Side effects -- Cascades through product option listeners; reindexes affected products."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -196,7 +196,7 @@ public abstract class BaseOptionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the option identified by id. Returns 404 when the id is not found."
+		description = "Fetches the option identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -339,7 +339,7 @@ public abstract class BaseOptionResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/{id}' -d $'{"catalogId": ___, "customFields": ___, "description": ___, "externalReferenceCode": ___, "facetable": ___, "fieldType": ___, "key": ___, "name": ___, "optionValues": ___, "priority": ___, "required": ___, "skuContributor": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the option identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option."
+		description = "Partially updates the option identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the option."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1380,4 +1380,4 @@ public abstract class BaseOptionResourceImpl
 		LogFactoryUtil.getLog(BaseOptionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1456017199
+// LIFERAY-REST-BUILDER-HASH:1701023535

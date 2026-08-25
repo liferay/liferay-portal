@@ -209,7 +209,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelAccountAccount(channelAccountId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the account associated with the parent ChannelAccount, addressed by internal ID. Calls CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRel. Validation -- NoSuchChannelAccountEntryRelException -> 404 when channel-account binding id not found."
+		description = "Retrieves the account associated with the parent ChannelAccount, addressed by internal ID. Calls CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRel. Validation -- NoSuchChannelAccountEntryRelException -> 404 when channel-account binding ID not found."
 	)
 	public Account channelAccountAccount(
 			@GraphQLName("channelAccountId") Long channelAccountId)
@@ -228,7 +228,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {accountAddressByExternalReferenceCodeAccountAddressChannels(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- NoSuchAddressException -> 404 when address erc not found. List query support — page and pageSize paginate the related entries."
+		description = "Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- NoSuchAddressException -> 404 when address ERC not found. List query support — page and pageSize paginate the related entries."
 	)
 	public AccountAddressChannelPage
 			accountAddressByExternalReferenceCodeAccountAddressChannels(
@@ -253,7 +253,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {accountAddressIdAccountAddressChannels(addressId: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by internal ID. Calls AddressLocalService.fetchAddress + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- None (returns empty page when address id not found or no matches). List query support — page and pageSize paginate the related entries."
+		description = "Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by internal ID. Calls AddressLocalService.fetchAddress + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- None (returns empty page when address ID not found or no matches). List query support — page and pageSize paginate the related entries."
 	)
 	public AccountAddressChannelPage accountAddressIdAccountAddressChannels(
 			@GraphQLName("addressId") Long addressId,
@@ -284,7 +284,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {categoryDisplayPage(id: ___){actions, categoryExternalReferenceCode, categoryId, groupExternalReferenceCode, id, pageUuid}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the category display page mapping by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found. List query support — page and pageSize paginate the related entries."
+		description = "Retrieves the category display page mapping by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	public CategoryDisplayPage categoryDisplayPage(@GraphQLName("id") Long id)
 		throws Exception {
@@ -302,7 +302,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodeCategoryDisplayPages(externalReferenceCode: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel erc not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
+		description = "Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ERC not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
 	)
 	public CategoryDisplayPagePage
 			channelByExternalReferenceCodeCategoryDisplayPages(
@@ -335,7 +335,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelIdCategoryDisplayPages(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel id not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
+		description = "Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ID not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
 	)
 	public CategoryDisplayPagePage channelIdCategoryDisplayPages(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -365,7 +365,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {accountAddressChannelChannel(accountAddressChannelId: ___){accountExternalReferenceCode, accountId, currencyCode, currencyExternalReferenceCode, currencyId, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the commerce channel associated with the parent AccountAddressChannel, addressed by internal ID. Calls CommerceChannelRelService.getCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel id not found."
+		description = "Retrieves the commerce channel associated with the parent AccountAddressChannel, addressed by internal ID. Calls CommerceChannelRelService.getCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel ID not found."
 	)
 	public Channel accountAddressChannelChannel(
 			@GraphQLName("accountAddressChannelId") Long
@@ -385,7 +385,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channel(channelId: ___){accountExternalReferenceCode, accountId, currencyCode, currencyExternalReferenceCode, currencyId, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the commerce channel by its internal ID. Calls CommerceChannelService.fetchCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found."
+		description = "Retrieves the commerce channel by its internal ID. Calls CommerceChannelService.fetchCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found."
 	)
 	public Channel channel(@GraphQLName("channelId") Long channelId)
 		throws Exception {
@@ -402,7 +402,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCode(externalReferenceCode: ___){accountExternalReferenceCode, accountId, currencyCode, currencyExternalReferenceCode, currencyId, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the commerce channel by its external reference code (ERC). Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found."
+		description = "Retrieves the commerce channel by its external reference code (ERC). Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found."
 	)
 	public Channel channelByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -449,7 +449,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodeChannelAccounts(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the ChannelAccount entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries."
+		description = "Lists the ChannelAccount entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries."
 	)
 	public ChannelAccountPage channelByExternalReferenceCodeChannelAccounts(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -472,7 +472,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelIdChannelAccounts(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the ChannelAccount entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.fetchCommerceChannel + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- None (returns empty page when channel id not found or no matches). Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries."
+		description = "Lists the ChannelAccount entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.fetchCommerceChannel + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- None (returns empty page when channel ID not found or no matches). Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries."
 	)
 	public ChannelAccountPage channelIdChannelAccounts(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -501,7 +501,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodeDefaultCategoryDisplayPage(externalReferenceCode: ___){actions, pageUuid}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the channel-level default category display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries."
+		description = "Retrieves the channel-level default category display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries."
 	)
 	public DefaultCategoryDisplayPage
 			channelByExternalReferenceCodeDefaultCategoryDisplayPage(
@@ -524,7 +524,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelIdDefaultCategoryDisplayPage(id: ___){actions, pageUuid}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the channel-level default category display page associated with the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries."
+		description = "Retrieves the channel-level default category display page associated with the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries."
 	)
 	public DefaultCategoryDisplayPage channelIdDefaultCategoryDisplayPage(
 			@GraphQLName("id") Long id)
@@ -544,7 +544,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodeDefaultProductDisplayPage(externalReferenceCode: ___){actions, pageUuid}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the channel-level default product display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries."
+		description = "Retrieves the channel-level default product display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries."
 	)
 	public DefaultProductDisplayPage
 			channelByExternalReferenceCodeDefaultProductDisplayPage(
@@ -567,7 +567,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelIdDefaultProductDisplayPage(id: ___){actions, pageUuid}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the channel-level default product display page associated with the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries."
+		description = "Retrieves the channel-level default product display page associated with the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries."
 	)
 	public DefaultProductDisplayPage channelIdDefaultProductDisplayPage(
 			@GraphQLName("id") Long id)
@@ -587,7 +587,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {paymentMethodGroupRelOrderTypeOrderType(paymentMethodGroupRelOrderTypeId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the order type associated with the parent PaymentMethodGroupRelOrderType, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found."
+		description = "Retrieves the order type associated with the parent PaymentMethodGroupRelOrderType, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found."
 	)
 	public OrderType paymentMethodGroupRelOrderTypeOrderType(
 			@GraphQLName("paymentMethodGroupRelOrderTypeId") Long
@@ -608,7 +608,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shippingFixedOptionOrderTypeOrderType(shippingFixedOptionOrderTypeId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the order type associated with the parent ShippingFixedOptionOrderType, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found."
+		description = "Retrieves the order type associated with the parent ShippingFixedOptionOrderType, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found."
 	)
 	public OrderType shippingFixedOptionOrderTypeOrderType(
 			@GraphQLName("shippingFixedOptionOrderTypeId") Long
@@ -629,7 +629,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {paymentMethodGroupRelIdPaymentMethodGroupRelOrderTypes(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the PaymentMethodGroupRelOrderType entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel id not found. List query support — page and pageSize paginate the related entries."
+		description = "Lists the PaymentMethodGroupRelOrderType entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	public PaymentMethodGroupRelOrderTypePage
 			paymentMethodGroupRelIdPaymentMethodGroupRelOrderTypes(
@@ -664,7 +664,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {paymentMethodGroupRelIdPaymentMethodGroupRelTerms(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the PaymentMethodGroupRelTerm entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceTermEntryCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceTermEntryCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel id not found. List query support — page and pageSize paginate the related entries."
+		description = "Lists the PaymentMethodGroupRelTerm entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceTermEntryCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceTermEntryCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	public PaymentMethodGroupRelTermPage
 			paymentMethodGroupRelIdPaymentMethodGroupRelTerms(
@@ -699,7 +699,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodeProductDisplayPages(externalReferenceCode: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel erc not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
+		description = "Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ERC not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
 	)
 	public ProductDisplayPagePage
 			channelByExternalReferenceCodeProductDisplayPages(
@@ -732,7 +732,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelIdProductDisplayPages(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel id not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
+		description = "Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ID not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
 	)
 	public ProductDisplayPagePage channelIdProductDisplayPages(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -761,7 +761,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productDisplayPage(id: ___){actions, id, pageTemplateUuid, pageUuid, productExternalReferenceCode, productId}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the product display page mapping by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found. List query support — page and pageSize paginate the related entries."
+		description = "Retrieves the product display page mapping by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	public ProductDisplayPage productDisplayPage(@GraphQLName("id") Long id)
 		throws Exception {
@@ -779,7 +779,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shippingFixedOptionIdShippingFixedOptionOrderTypes(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the ShippingFixedOptionOrderType entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceOrderTypeCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceOrderTypeCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option id not found. List query support — page and pageSize paginate the related entries."
+		description = "Lists the ShippingFixedOptionOrderType entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceOrderTypeCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceOrderTypeCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	public ShippingFixedOptionOrderTypePage
 			shippingFixedOptionIdShippingFixedOptionOrderTypes(
@@ -814,7 +814,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shippingFixedOptionIdShippingFixedOptionTerms(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the ShippingFixedOptionTerm entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option id not found. List query support — page and pageSize paginate the related entries."
+		description = "Lists the ShippingFixedOptionTerm entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	public ShippingFixedOptionTermPage
 			shippingFixedOptionIdShippingFixedOptionTerms(
@@ -846,7 +846,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelShippingMethods(channelId: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the ShippingMethod entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelService.getCommerceChannel + CommerceShippingMethodService.getCommerceShippingMethods + CommerceShippingMethodService.getCommerceShippingMethodsCount. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- falls back to the engine name and description and embeds the channel's shipping options. List query support — page and pageSize paginate the related entries."
+		description = "Lists the ShippingMethod entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelService.getCommerceChannel + CommerceShippingMethodService.getCommerceShippingMethods + CommerceShippingMethodService.getCommerceShippingMethodsCount. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- falls back to the engine name and description and embeds the channel's shipping options. List query support — page and pageSize paginate the related entries."
 	)
 	public ShippingMethodPage channelShippingMethods(
 			@GraphQLName("channelId") Long channelId,
@@ -887,10 +887,10 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategory(id: ___){description, groupId, id, name}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategory(id: ___){description, externalReferenceCode, groupId, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the tax category by its internal ID. Calls CPTaxCategoryService.getCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category id not found."
+		description = "Retrieves the tax category by its internal ID. Calls CPTaxCategoryService.getCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ID not found."
 	)
 	public TaxCategory taxCategory(@GraphQLName("id") Long id)
 		throws Exception {
@@ -904,10 +904,30 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategoryByExternalReferenceCode(externalReferenceCode: ___){description, externalReferenceCode, groupId, id, name}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Retrieves the tax category by its external reference code (ERC). Calls CPTaxCategoryService.getCPTaxCategoryByExternalReferenceCode. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ERC not found."
+	)
+	public TaxCategory taxCategoryByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxCategoryResource ->
+				taxCategoryResource.getTaxCategoryByExternalReferenceCode(
+					externalReferenceCode));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {paymentMethodGroupRelTermTerm(paymentMethodGroupRelTermId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the commerce term associated with the parent PaymentMethodGroupRelTerm, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found."
+		description = "Retrieves the commerce term associated with the parent PaymentMethodGroupRelTerm, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found."
 	)
 	public Term paymentMethodGroupRelTermTerm(
 			@GraphQLName("paymentMethodGroupRelTermId") Long
@@ -927,7 +947,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shippingFixedOptionTermTerm(shippingFixedOptionTermId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves the commerce term associated with the parent ShippingFixedOptionTerm, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found."
+		description = "Retrieves the commerce term associated with the parent ShippingFixedOptionTerm, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found."
 	)
 	public Term shippingFixedOptionTermTerm(
 			@GraphQLName("shippingFixedOptionTermId") Long
@@ -949,7 +969,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieves the commerce channel by its internal ID. Calls CommerceChannelService.fetchCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found."
+			description = "Retrieves the commerce channel by its internal ID. Calls CommerceChannelService.fetchCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found."
 		)
 		public Channel channel() throws Exception {
 			return _applyComponentServiceObjects(
@@ -963,6 +983,31 @@ public class Query {
 
 	}
 
+	@GraphQLTypeExtension(TaxCategory.class)
+	public class GetChannelByExternalReferenceCodeTypeExtension {
+
+		public GetChannelByExternalReferenceCodeTypeExtension(
+			TaxCategory taxCategory) {
+
+			_taxCategory = taxCategory;
+		}
+
+		@GraphQLField(
+			description = "Retrieves the commerce channel by its external reference code (ERC). Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found."
+		)
+		public Channel channelByExternalReferenceCode() throws Exception {
+			return _applyComponentServiceObjects(
+				_channelResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				channelResource ->
+					channelResource.getChannelByExternalReferenceCode(
+						_taxCategory.getExternalReferenceCode()));
+		}
+
+		private TaxCategory _taxCategory;
+
+	}
+
 	@GraphQLTypeExtension(Channel.class)
 	public class GetChannelShippingMethodsPageTypeExtension {
 
@@ -971,7 +1016,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the ShippingMethod entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelService.getCommerceChannel + CommerceShippingMethodService.getCommerceShippingMethods + CommerceShippingMethodService.getCommerceShippingMethodsCount. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- falls back to the engine name and description and embeds the channel's shipping options. List query support — page and pageSize paginate the related entries."
+			description = "Lists the ShippingMethod entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelService.getCommerceChannel + CommerceShippingMethodService.getCommerceShippingMethods + CommerceShippingMethodService.getCommerceShippingMethodsCount. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- falls back to the engine name and description and embeds the channel's shipping options. List query support — page and pageSize paginate the related entries."
 		)
 		public ShippingMethodPage shippingMethods(
 				@GraphQLName("pageSize") int pageSize,
@@ -991,6 +1036,33 @@ public class Query {
 	}
 
 	@GraphQLTypeExtension(Channel.class)
+	public class GetTaxCategoryByExternalReferenceCodeTypeExtension {
+
+		public GetTaxCategoryByExternalReferenceCodeTypeExtension(
+			Channel channel) {
+
+			_channel = channel;
+		}
+
+		@GraphQLField(
+			description = "Retrieves the tax category by its external reference code (ERC). Calls CPTaxCategoryService.getCPTaxCategoryByExternalReferenceCode. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ERC not found."
+		)
+		public TaxCategory taxCategoryByExternalReferenceCode()
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_taxCategoryResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				taxCategoryResource ->
+					taxCategoryResource.getTaxCategoryByExternalReferenceCode(
+						_channel.getExternalReferenceCode()));
+		}
+
+		private Channel _channel;
+
+	}
+
+	@GraphQLTypeExtension(Channel.class)
 	public class
 		GetAccountAddressByExternalReferenceCodeAccountAddressChannelsPageTypeExtension {
 
@@ -1001,7 +1073,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- NoSuchAddressException -> 404 when address erc not found. List query support — page and pageSize paginate the related entries."
+			description = "Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- NoSuchAddressException -> 404 when address ERC not found. List query support — page and pageSize paginate the related entries."
 		)
 		public AccountAddressChannelPage
 				accountAddressByExternalReferenceCodeAccountAddressChannels(
@@ -1034,7 +1106,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel erc not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
+			description = "Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ERC not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
 		)
 		public CategoryDisplayPagePage
 				byExternalReferenceCodeCategoryDisplayPages(
@@ -1074,7 +1146,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the ChannelAccount entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries."
+			description = "Lists the ChannelAccount entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries."
 		)
 		public ChannelAccountPage byExternalReferenceCodeChannelAccounts(
 				@GraphQLName("pageSize") int pageSize,
@@ -1106,7 +1178,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieves the channel-level default category display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries."
+			description = "Retrieves the channel-level default category display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries."
 		)
 		public DefaultCategoryDisplayPage
 				byExternalReferenceCodeDefaultCategoryDisplayPage()
@@ -1136,7 +1208,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieves the channel-level default product display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries."
+			description = "Retrieves the channel-level default product display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries."
 		)
 		public DefaultProductDisplayPage
 				byExternalReferenceCodeDefaultProductDisplayPage()
@@ -1166,7 +1238,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel erc not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
+			description = "Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ERC not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate."
 		)
 		public ProductDisplayPagePage
 				byExternalReferenceCodeProductDisplayPages(
@@ -2128,4 +2200,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-667690431
+// LIFERAY-REST-BUILDER-HASH:-762371169

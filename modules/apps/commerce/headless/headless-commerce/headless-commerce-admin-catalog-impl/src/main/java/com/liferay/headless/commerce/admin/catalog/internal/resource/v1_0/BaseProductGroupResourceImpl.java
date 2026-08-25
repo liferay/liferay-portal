@@ -78,7 +78,7 @@ public abstract class BaseProductGroupResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-groups/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the product group identified by id. Returns 404 when the record is not found. Side effects -- Cascades deletion of product group assignment rows and associated pricing rules."
+		description = "Deletes the product group identified by ID. Returns 404 when the record is not found. Side effects -- Cascades deletion of product group assignment rows and associated pricing rules."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -188,7 +188,7 @@ public abstract class BaseProductGroupResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-groups/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the product group identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product group identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -316,7 +316,7 @@ public abstract class BaseProductGroupResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-groups/{id}' -d $'{"description": ___, "externalReferenceCode": ___, "id": ___, "products": ___, "productsCount": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the product group identified by id, optionally appending new product bindings. Returns 404 when the id is not found, and 404 when nested products fail to resolve. Side effects -- Reindexes; updates custom field storage; appends new product bindings without removing existing ones."
+		description = "Partially updates the product group identified by ID, optionally appending new product bindings. Returns 404 when the ID is not found, and 404 when nested products fail to resolve. Side effects -- Reindexes; updates custom field storage; appends new product bindings without removing existing ones."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1375,4 +1375,4 @@ public abstract class BaseProductGroupResourceImpl
 		LogFactoryUtil.getLog(BaseProductGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1245597212
+// LIFERAY-REST-BUILDER-HASH:542394908

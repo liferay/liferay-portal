@@ -214,6 +214,7 @@ public abstract class BaseProductOptionResourceTestCase {
 
 		ProductOption productOption = randomProductOption();
 
+		productOption.setExternalReferenceCode(regex);
 		productOption.setFieldType(regex);
 		productOption.setInfoItemServiceKey(regex);
 		productOption.setKey(regex);
@@ -227,6 +228,7 @@ public abstract class BaseProductOptionResourceTestCase {
 
 		productOption = ProductOptionSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, productOption.getExternalReferenceCode());
 		Assert.assertEquals(regex, productOption.getFieldType());
 		Assert.assertEquals(regex, productOption.getInfoItemServiceKey());
 		Assert.assertEquals(regex, productOption.getKey());
@@ -1592,6 +1594,16 @@ public abstract class BaseProductOptionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (productOption.getExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("facetable", additionalAssertFieldName)) {
 				if (productOption.getFacetable() == null) {
 					valid = false;
@@ -1760,6 +1772,8 @@ public abstract class BaseProductOptionResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
 		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
@@ -1862,6 +1876,19 @@ public abstract class BaseProductOptionResourceTestCase {
 				if (!equals(
 						(Map)productOption1.getDescription(),
 						(Map)productOption2.getDescription())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productOption1.getExternalReferenceCode(),
+						productOption2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -2152,6 +2179,52 @@ public abstract class BaseProductOptionResourceTestCase {
 		if (entityFieldName.equals("description")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = productOption.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("facetable")) {
@@ -2520,6 +2593,8 @@ public abstract class BaseProductOptionResourceTestCase {
 			{
 				catalogId = RandomTestUtil.randomLong();
 				definedExternally = RandomTestUtil.randomBoolean();
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				facetable = RandomTestUtil.randomBoolean();
 				fieldType = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -2806,4 +2881,4 @@ public abstract class BaseProductOptionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1623159652
+// LIFERAY-REST-BUILDER-HASH:-284060803

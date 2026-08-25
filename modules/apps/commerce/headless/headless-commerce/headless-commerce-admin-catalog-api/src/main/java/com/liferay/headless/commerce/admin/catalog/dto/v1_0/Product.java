@@ -344,7 +344,7 @@ public class Product implements Serializable {
 	private Supplier<Long> _catalogIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Asset-framework categories associated with the product for classification; on write, replaces the existing assignments; each item is resolved by id, or by external reference code within the company scope when id is omitted."
+		description = "Asset-framework categories associated with the product for classification; on write, replaces the existing assignments; each item is resolved by ID, or by external reference code within the company scope when ID is omitted."
 	)
 	@Valid
 	public Category[] getCategories() {
@@ -381,7 +381,7 @@ public class Product implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Asset-framework categories associated with the product for classification; on write, replaces the existing assignments; each item is resolved by id, or by external reference code within the company scope when id is omitted."
+		description = "Asset-framework categories associated with the product for classification; on write, replaces the existing assignments; each item is resolved by ID, or by external reference code within the company scope when ID is omitted."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Category[] categories;
@@ -3368,4 +3368,4 @@ public class Product implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1524699350
+// LIFERAY-REST-BUILDER-HASH:-560066346

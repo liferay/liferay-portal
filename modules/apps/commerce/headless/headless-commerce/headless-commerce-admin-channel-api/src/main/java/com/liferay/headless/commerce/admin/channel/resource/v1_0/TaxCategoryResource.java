@@ -52,9 +52,26 @@ public interface TaxCategoryResource {
 
 	public TaxCategory getTaxCategory(Long id) throws Exception;
 
+	public TaxCategory getTaxCategoryByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
+	public TaxCategory patchTaxCategory(Long id, TaxCategory taxCategory)
+		throws Exception;
+
+	public TaxCategory patchTaxCategoryByExternalReferenceCode(
+			String externalReferenceCode, TaxCategory taxCategory)
+		throws Exception;
+
 	public Response postTaxCategoriesPageExportBatch(
 			String search, String callbackURL, String contentType,
 			String fieldNames)
+		throws Exception;
+
+	public TaxCategory postTaxCategory(TaxCategory taxCategory)
+		throws Exception;
+
+	public Response postTaxCategoryBatch(String callbackURL, Object object)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -153,4 +170,4 @@ public interface TaxCategoryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1399312971
+// LIFERAY-REST-BUILDER-HASH:-1981196146

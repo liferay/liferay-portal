@@ -78,7 +78,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the SKU identified by id. Returns 404 when the record is not found. Side effects -- Cascades through SKU delete listeners (inventory, price entries, units of measure)."
+		description = "Deletes the SKU identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through SKU delete listeners (inventory, price entries, units of measure)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -248,7 +248,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/skus'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the SKUs of the product identified by product id. Calls Internal _getSkusPage (index-backed SKU listing scoped to the product). Validation -- Returns empty page when product id not found."
+		description = "Lists the SKUs of the product identified by product ID. Calls Internal _getSkusPage (index-backed SKU listing scoped to the product). Validation -- Returns empty page when product ID not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -298,7 +298,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the SKU identified by id. Returns 404 when the id is not found."
+		description = "Fetches the SKU identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -504,7 +504,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}' -d $'{"cost": ___, "customFields": ___, "depth": ___, "discontinued": ___, "discontinuedDate": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "gtin": ___, "height": ___, "manufacturerPartNumber": ___, "neverExpire": ___, "price": ___, "promoPrice": ___, "published": ___, "purchasable": ___, "replacementSkuExternalReferenceCode": ___, "replacementSkuId": ___, "sku": ___, "skuOptions": ___, "skuSubscriptionConfiguration": ___, "skuUnitOfMeasures": ___, "skuVirtualSettings": ___, "unspsc": ___, "weight": ___, "width": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the SKU identified by id. Returns 404 when the id is not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement."
+		description = "Partially updates the SKU identified by ID. Returns 404 when the ID is not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -712,7 +712,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/skus' -d $'{"cost": ___, "customFields": ___, "depth": ___, "discontinued": ___, "discontinuedDate": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "gtin": ___, "height": ___, "manufacturerPartNumber": ___, "neverExpire": ___, "price": ___, "promoPrice": ___, "published": ___, "purchasable": ___, "replacementSkuExternalReferenceCode": ___, "replacementSkuId": ___, "sku": ___, "skuOptions": ___, "skuSubscriptionConfiguration": ___, "skuUnitOfMeasures": ___, "skuVirtualSettings": ___, "unspsc": ___, "weight": ___, "width": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates a SKU under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found, and 400 when the product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings."
+		description = "Creates or updates a SKU under the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found, and 400 when the product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1704,4 +1704,4 @@ public abstract class BaseSkuResourceImpl
 		LogFactoryUtil.getLog(BaseSkuResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1744945787
+// LIFERAY-REST-BUILDER-HASH:-60895621

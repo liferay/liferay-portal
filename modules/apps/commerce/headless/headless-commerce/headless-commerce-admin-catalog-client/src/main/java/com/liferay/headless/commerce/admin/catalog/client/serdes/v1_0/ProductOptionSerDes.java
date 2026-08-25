@@ -97,6 +97,20 @@ public class ProductOptionSerDes {
 			sb.append(_toJSON(productOption.getDescription()));
 		}
 
+		if (productOption.getExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(productOption.getExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (productOption.getFacetable() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -326,6 +340,15 @@ public class ProductOptionSerDes {
 				"description", String.valueOf(productOption.getDescription()));
 		}
 
+		if (productOption.getExternalReferenceCode() == null) {
+			map.put("externalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"externalReferenceCode",
+				String.valueOf(productOption.getExternalReferenceCode()));
+		}
+
 		if (productOption.getFacetable() == null) {
 			map.put("facetable", null);
 		}
@@ -464,6 +487,11 @@ public class ProductOptionSerDes {
 			else if (Objects.equals(jsonParserFieldName, "description")) {
 				return true;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "facetable")) {
 				return false;
 			}
@@ -558,6 +586,14 @@ public class ProductOptionSerDes {
 				if (jsonParserFieldValue != null) {
 					productOption.setDescription(
 						(Map<String, String>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					productOption.setExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "facetable")) {
@@ -737,4 +773,4 @@ public class ProductOptionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:659875681
+// LIFERAY-REST-BUILDER-HASH:-1288401073

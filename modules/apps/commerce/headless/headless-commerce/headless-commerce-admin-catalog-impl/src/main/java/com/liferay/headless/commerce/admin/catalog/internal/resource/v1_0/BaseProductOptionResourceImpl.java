@@ -77,7 +77,7 @@ public abstract class BaseProductOptionResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Removes the product option relation identified by id from its product. Returns 404 when the id is not found. Side effects -- Cascades deletion of associated product option value rows."
+		description = "Removes the product option relation identified by ID from its product. Returns 404 when the ID is not found. Side effects -- Cascades deletion of associated product option value rows."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -226,7 +226,7 @@ public abstract class BaseProductOptionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/productOptions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the product option relations of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Lists the product option relations of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -288,7 +288,7 @@ public abstract class BaseProductOptionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the product option relation identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product option relation identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -321,10 +321,10 @@ public abstract class BaseProductOptionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/{id}' -d $'{"catalogId": ___, "customFields": ___, "definedExternally": ___, "description": ___, "facetable": ___, "fieldType": ___, "infoItemServiceKey": ___, "key": ___, "name": ___, "optionExternalReferenceCode": ___, "optionId": ___, "priceType": ___, "priority": ___, "productOptionValues": ___, "required": ___, "skuContributor": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/{id}' -d $'{"catalogId": ___, "customFields": ___, "definedExternally": ___, "description": ___, "externalReferenceCode": ___, "facetable": ___, "fieldType": ___, "infoItemServiceKey": ___, "key": ___, "name": ___, "optionExternalReferenceCode": ___, "optionId": ___, "priceType": ___, "priority": ___, "productOptionValues": ___, "required": ___, "skuContributor": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the product option relation identified by id, including any nested product option values. Returns 404 when the id is not found. Side effects -- Reindexes the parent product; cascades into nested product option values."
+		description = "Partially updates the product option relation identified by ID, including any nested product option values. Returns 404 when the ID is not found. Side effects -- Reindexes the parent product; cascades into nested product option values."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -405,7 +405,7 @@ public abstract class BaseProductOptionResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/productOptions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates a batch of product option relations on the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Adds or updates each product option and cascades into nested product option values."
+		description = "Creates or updates a batch of product option relations on the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Adds or updates each product option and cascades into nested product option values."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1151,4 +1151,4 @@ public abstract class BaseProductOptionResourceImpl
 		LogFactoryUtil.getLog(BaseProductOptionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:665108679
+// LIFERAY-REST-BUILDER-HASH:1254524573

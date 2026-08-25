@@ -89,7 +89,7 @@ public abstract class BaseSkuSubscriptionConfigurationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}/skuSubscriptionConfiguration'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the subscription configuration of the SKU identified by id. Returns 404 when the SKU id is not found."
+		description = "Returns the subscription configuration of the SKU identified by ID. Returns 404 when the SKU ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -567,4 +567,4 @@ public abstract class BaseSkuSubscriptionConfigurationResourceImpl
 			BaseSkuSubscriptionConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2130705340
+// LIFERAY-REST-BUILDER-HASH:-1359905860

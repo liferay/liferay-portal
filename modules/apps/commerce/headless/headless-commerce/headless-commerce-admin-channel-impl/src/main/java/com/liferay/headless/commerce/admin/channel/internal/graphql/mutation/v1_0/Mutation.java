@@ -16,6 +16,7 @@ import com.liferay.headless.commerce.admin.channel.dto.v1_0.PaymentMethodGroupRe
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.ProductDisplayPage;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.ShippingFixedOptionOrderType;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.ShippingFixedOptionTerm;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.TaxCategory;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.AccountAddressChannelResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.CategoryDisplayPageResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.ChannelAccountResource;
@@ -169,7 +170,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the account-address-channel binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelRelService.deleteCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel id not found."
+		description = "Deletes the account-address-channel binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelRelService.deleteCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel ID not found."
 	)
 	public boolean deleteAccountAddressChannel(
 			@GraphQLName("accountAddressChannelId") Long
@@ -201,7 +202,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new account-address-channel binding under the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelRelService.addCommerceChannelRel. Validation -- NoSuchAddressException -> 404 when address erc not found; NoSuchChannelException -> 404 when referenced channel id/erc not found. Side effects -- creates address-to-channel relation binding."
+		description = "Creates a new account-address-channel binding under the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelRelService.addCommerceChannelRel. Validation -- NoSuchAddressException -> 404 when address ERC not found; NoSuchChannelException -> 404 when referenced channel ID/ERC not found. Side effects -- creates address-to-channel relation binding."
 	)
 	public AccountAddressChannel
 			createAccountAddressByExternalReferenceCodeAccountAddressChannel(
@@ -221,7 +222,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new account-address-channel binding under the parent AccountAddress, addressed by internal ID. Calls CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelRelService.addCommerceChannelRel. Validation -- NoSuchChannelException -> 404 when referenced channel id/erc not found. Side effects -- creates address-to-channel relation binding."
+		description = "Creates a new account-address-channel binding under the parent AccountAddress, addressed by internal ID. Calls CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelRelService.addCommerceChannelRel. Validation -- NoSuchChannelException -> 404 when referenced channel ID/ERC not found. Side effects -- creates address-to-channel relation binding."
 	)
 	public AccountAddressChannel createAccountAddressIdAccountAddressChannel(
 			@GraphQLName("addressId") Long addressId,
@@ -239,7 +240,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the category display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CPDisplayLayoutService.deleteCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found. List query support — page and pageSize paginate the related entries."
+		description = "Deletes the category display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CPDisplayLayoutService.deleteCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	public boolean deleteCategoryDisplayPage(@GraphQLName("id") Long id)
 		throws Exception {
@@ -268,7 +269,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the category display page mapping addressed by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout + GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CPDisplayLayoutService.updateCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found; NoSuchGroupException -> 404 when group erc not found when category erc supplied; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- updates category-to-display-page layout mapping. List query support — page and pageSize paginate the related entries."
+		description = "Partially updates the category display page mapping addressed by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout + GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CPDisplayLayoutService.updateCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found; NoSuchGroupException -> 404 when group ERC not found when category ERC supplied; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- updates category-to-display-page layout mapping. List query support — page and pageSize paginate the related entries."
 	)
 	public CategoryDisplayPage patchCategoryDisplayPage(
 			@GraphQLName("id") Long id,
@@ -285,7 +286,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new category display page mapping under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchGroupException -> 404 when group erc not found; NoSuchCategoryException -> 404 when category erc not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates category-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries."
+		description = "Creates a new category display page mapping under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchGroupException -> 404 when group ERC not found; NoSuchCategoryException -> 404 when category ERC not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates category-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries."
 	)
 	public CategoryDisplayPage
 			createChannelByExternalReferenceCodeCategoryDisplayPage(
@@ -305,7 +306,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new category display page mapping under the parent Channel, addressed by internal ID. Calls GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CommerceChannelLocalService.getCommerceChannel + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchGroupException -> 404 when group erc not found when categoryId absent; NoSuchCategoryException -> 404 when category erc not found; NoSuchChannelException -> 404 when channel id not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates category-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries."
+		description = "Creates a new category display page mapping under the parent Channel, addressed by internal ID. Calls GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CommerceChannelLocalService.getCommerceChannel + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchGroupException -> 404 when group ERC not found when categoryId absent; NoSuchCategoryException -> 404 when category ERC not found; NoSuchChannelException -> 404 when channel ID not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates category-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries."
 	)
 	public CategoryDisplayPage createChannelIdCategoryDisplayPage(
 			@GraphQLName("id") Long id,
@@ -322,7 +323,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the commerce channel by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelService.deleteCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- cascade delete of the channel and its dependent commerce data."
+		description = "Deletes the commerce channel by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelService.deleteCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- cascade delete of the channel and its dependent commerce data."
 	)
 	public boolean deleteChannel(@GraphQLName("channelId") Long channelId)
 		throws Exception {
@@ -349,7 +350,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the commerce channel by its external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + deleteCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- cascade delete of the channel and its dependent commerce data."
+		description = "Deletes the commerce channel by its external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + deleteCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- cascade delete of the channel and its dependent commerce data."
 	)
 	public boolean deleteChannelByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -366,7 +367,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.getCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update."
+		description = "Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.getCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update."
 	)
 	public Channel patchChannel(
 			@GraphQLName("channelId") Long channelId,
@@ -381,7 +382,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel erc not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update."
+		description = "Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ERC not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update."
 	)
 	public Channel patchChannelByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -397,7 +398,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; DuplicateCommerceChannelException -> 409 when channel already exists; CommerceChannelNameException -> 400 when invalid name; DuplicateExternalReferenceCodeException -> 400 when duplicate erc. Side effects -- provisions the channel site group and reindexes the channel."
+		description = "Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; DuplicateCommerceChannelException -> 409 when channel already exists; CommerceChannelNameException -> 400 when invalid name; DuplicateExternalReferenceCodeException -> 400 when duplicate ERC. Side effects -- provisions the channel site group and reindexes the channel."
 	)
 	public Channel createChannel(@GraphQLName("channel") Channel channel)
 		throws Exception {
@@ -441,7 +442,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceChannelService.fetchCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel | addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the id is unknown; reindexes on write."
+		description = "Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceChannelService.fetchCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel | addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the ID is unknown; reindexes on write."
 	)
 	public Channel updateChannel(
 			@GraphQLName("channelId") Long channelId,
@@ -468,7 +469,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default. Upserts when the ERC does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addOrUpdateCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the erc is unknown; reindexes on write."
+		description = "Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default. Upserts when the ERC does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addOrUpdateCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the ERC is unknown; reindexes on write."
 	)
 	public Channel updateChannelByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -484,7 +485,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the channel-account binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelAccountEntryRelService.deleteCommerceChannelAccountEntryRel. Validation -- NoSuchChannelAccountEntryRelException -> 404 when channel-account rel id not found."
+		description = "Deletes the channel-account binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelAccountEntryRelService.deleteCommerceChannelAccountEntryRel. Validation -- NoSuchChannelAccountEntryRelException -> 404 when channel-account rel ID not found."
 	)
 	public boolean deleteChannelAccount(
 			@GraphQLName("channelAccountId") Long channelAccountId)
@@ -514,7 +515,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new channel-account binding under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + AccountEntryLocalService.getAccountEntry + CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel. Validation -- NoSuchChannelException -> 404 when channel erc or body channel ref not found; NoSuchAccountEntryException -> 404 when account id not found; AccountEntryTypeException -> 400 when account is a guest account; DuplicateCommerceChannelAccountEntryRelException -> 409 when channel-account rel already exists; DuplicateCommerceChannelAccountEntryIdException -> 409 when duplicate channel-account id. Side effects -- creates an account-to-channel eligibility binding."
+		description = "Creates a new channel-account binding under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + AccountEntryLocalService.getAccountEntry + CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel. Validation -- NoSuchChannelException -> 404 when channel ERC or body channel ref not found; NoSuchAccountEntryException -> 404 when account ID not found; AccountEntryTypeException -> 400 when account is a guest account; DuplicateCommerceChannelAccountEntryRelException -> 409 when channel-account rel already exists; DuplicateCommerceChannelAccountEntryIdException -> 409 when duplicate channel-account ID. Side effects -- creates an account-to-channel eligibility binding."
 	)
 	public ChannelAccount createChannelByExternalReferenceCodeChannelAccount(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -531,7 +532,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new channel-account binding under the parent Channel, addressed by internal ID. Calls AccountEntryLocalService.getAccountEntry + CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel. Validation -- NoSuchAccountEntryException -> 404 when account id not found; AccountEntryTypeException -> 400 when account is a guest account; NoSuchChannelException -> 404 when body channel ref not found; DuplicateCommerceChannelAccountEntryRelException -> 409 when channel-account rel already exists; DuplicateCommerceChannelAccountEntryIdException -> 409 when duplicate channel-account id. Side effects -- creates an account-to-channel eligibility binding."
+		description = "Creates a new channel-account binding under the parent Channel, addressed by internal ID. Calls AccountEntryLocalService.getAccountEntry + CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel. Validation -- NoSuchAccountEntryException -> 404 when account ID not found; AccountEntryTypeException -> 400 when account is a guest account; NoSuchChannelException -> 404 when body channel ref not found; DuplicateCommerceChannelAccountEntryRelException -> 409 when channel-account rel already exists; DuplicateCommerceChannelAccountEntryIdException -> 409 when duplicate channel-account ID. Side effects -- creates an account-to-channel eligibility binding."
 	)
 	public ChannelAccount createChannelIdChannelAccount(
 			@GraphQLName("id") Long id,
@@ -547,7 +548,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the channel-level default category display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- resets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries."
+		description = "Deletes the channel-level default category display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- resets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries."
 	)
 	public boolean
 			deleteChannelByExternalReferenceCodeDefaultCategoryDisplayPage(
@@ -567,7 +568,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the channel-level default category display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- resets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries."
+		description = "Deletes the channel-level default category display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- resets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries."
 	)
 	public boolean deleteChannelIdDefaultCategoryDisplayPage(
 			@GraphQLName("id") Long id)
@@ -584,7 +585,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new channel-level default category display page under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries."
+		description = "Creates a new channel-level default category display page under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries."
 	)
 	public DefaultCategoryDisplayPage
 			createChannelByExternalReferenceCodeDefaultCategoryDisplayPage(
@@ -604,7 +605,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new channel-level default category display page under the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel id not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries."
+		description = "Creates a new channel-level default category display page under the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel ID not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries."
 	)
 	public DefaultCategoryDisplayPage createChannelIdDefaultCategoryDisplayPage(
 			@GraphQLName("id") Long id,
@@ -622,7 +623,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the channel-level default product display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- resets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries."
+		description = "Deletes the channel-level default product display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- resets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries."
 	)
 	public boolean
 			deleteChannelByExternalReferenceCodeDefaultProductDisplayPage(
@@ -642,7 +643,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the channel-level default product display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- resets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries."
+		description = "Deletes the channel-level default product display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- resets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries."
 	)
 	public boolean deleteChannelIdDefaultProductDisplayPage(
 			@GraphQLName("id") Long id)
@@ -659,7 +660,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new channel-level default product display page under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries."
+		description = "Creates a new channel-level default product display page under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries."
 	)
 	public DefaultProductDisplayPage
 			createChannelByExternalReferenceCodeDefaultProductDisplayPage(
@@ -679,7 +680,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new channel-level default product display page under the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel id not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries."
+		description = "Creates a new channel-level default product display page under the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel ID not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries."
 	)
 	public DefaultProductDisplayPage createChannelIdDefaultProductDisplayPage(
 			@GraphQLName("id") Long id,
@@ -697,7 +698,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the payment-method-group-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found."
+		description = "Deletes the payment-method-group-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found."
 	)
 	public boolean deletePaymentMethodGroupRelOrderType(
 			@GraphQLName("paymentMethodGroupRelOrderTypeId") Long
@@ -731,7 +732,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new payment-method-group-to-order-type relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type id/erc not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a payment-method-group-rel qualifier."
+		description = "Creates a new payment-method-group-to-order-type relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type ID/ERC not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a payment-method-group-rel qualifier."
 	)
 	public PaymentMethodGroupRelOrderType
 			createPaymentMethodGroupRelIdPaymentMethodGroupRelOrderType(
@@ -751,7 +752,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the payment-method-group-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found."
+		description = "Deletes the payment-method-group-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found."
 	)
 	public boolean deletePaymentMethodGroupRelTerm(
 			@GraphQLName("paymentMethodGroupRelTermId") Long
@@ -784,7 +785,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new payment-method-group-to-term relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchTermEntryException -> 404 when term id/erc not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a payment-method-group-rel qualifier."
+		description = "Creates a new payment-method-group-to-term relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchTermEntryException -> 404 when term ID/ERC not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a payment-method-group-rel qualifier."
 	)
 	public PaymentMethodGroupRelTerm
 			createPaymentMethodGroupRelIdPaymentMethodGroupRelTerm(
@@ -803,7 +804,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the product display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CPDisplayLayoutService.deleteCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found. List query support — page and pageSize paginate the related entries."
+		description = "Deletes the product display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CPDisplayLayoutService.deleteCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	public boolean deleteProductDisplayPage(@GraphQLName("id") Long id)
 		throws Exception {
@@ -832,7 +833,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product display page mapping addressed by its internal ID. Calls CPDisplayLayoutService.fetchCPDisplayLayout + CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDisplayLayoutService.updateCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- updates the product-to-display-page layout mapping. List query support — page and pageSize paginate the related entries."
+		description = "Partially updates the product display page mapping addressed by its internal ID. Calls CPDisplayLayoutService.fetchCPDisplayLayout + CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDisplayLayoutService.updateCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- updates the product-to-display-page layout mapping. List query support — page and pageSize paginate the related entries."
 	)
 	public ProductDisplayPage patchProductDisplayPage(
 			@GraphQLName("id") Long id,
@@ -849,7 +850,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new product display page mapping under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchCPDefinitionException -> 404 when product erc not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates a product-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries."
+		description = "Creates a new product display page mapping under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchCPDefinitionException -> 404 when product ERC not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates a product-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries."
 	)
 	public ProductDisplayPage
 			createChannelByExternalReferenceCodeProductDisplayPage(
@@ -869,7 +870,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new product display page mapping under the parent Channel, addressed by internal ID. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CommerceChannelLocalService.getCommerceChannel + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchCPDefinitionException -> 404 when product erc not found when productId absent; NoSuchChannelException -> 404 when channel id not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates a product-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries."
+		description = "Creates a new product display page mapping under the parent Channel, addressed by internal ID. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CommerceChannelLocalService.getCommerceChannel + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found when productId absent; NoSuchChannelException -> 404 when channel ID not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates a product-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries."
 	)
 	public ProductDisplayPage createChannelIdProductDisplayPage(
 			@GraphQLName("id") Long id,
@@ -886,7 +887,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the fixed-shipping-option-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found."
+		description = "Deletes the fixed-shipping-option-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found."
 	)
 	public boolean deleteShippingFixedOptionOrderType(
 			@GraphQLName("shippingFixedOptionOrderTypeId") Long
@@ -920,7 +921,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new fixed-shipping-option-to-order-type relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type id/erc not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a shipping-fixed-option qualifier."
+		description = "Creates a new fixed-shipping-option-to-order-type relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type ID/ERC not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a shipping-fixed-option qualifier."
 	)
 	public ShippingFixedOptionOrderType
 			createShippingFixedOptionIdShippingFixedOptionOrderType(
@@ -939,7 +940,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the fixed-shipping-option-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found."
+		description = "Deletes the fixed-shipping-option-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found."
 	)
 	public boolean deleteShippingFixedOptionTerm(
 			@GraphQLName("shippingFixedOptionTermId") Long
@@ -971,7 +972,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new fixed-shipping-option-to-term relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchTermEntryException -> 404 when term id/erc not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a shipping-fixed-option qualifier."
+		description = "Creates a new fixed-shipping-option-to-term relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchTermEntryException -> 404 when term ID/ERC not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a shipping-fixed-option qualifier."
 	)
 	public ShippingFixedOptionTerm
 			createShippingFixedOptionIdShippingFixedOptionTerm(
@@ -1006,6 +1007,37 @@ public class Mutation {
 						channelId, callbackURL, contentType, fieldNames));
 	}
 
+	@GraphQLField(
+		description = "Partially updates the tax category addressed by its internal ID -- only the fields supplied in the body are replaced; omitted fields are left unchanged. Calls CPTaxCategoryService.getCPTaxCategory + CPTaxCategoryService.updateCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ID not found; CPTaxCategoryNameException -> 400 when the name is missing for the default locale."
+	)
+	public TaxCategory patchTaxCategory(
+			@GraphQLName("id") Long id,
+			@GraphQLName("taxCategory") TaxCategory taxCategory)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxCategoryResource -> taxCategoryResource.patchTaxCategory(
+				id, taxCategory));
+	}
+
+	@GraphQLField(
+		description = "Partially updates the tax category addressed by its external reference code (ERC) -- only the fields supplied in the body are replaced; omitted fields are left unchanged. Calls CPTaxCategoryService.getCPTaxCategoryByExternalReferenceCode + CPTaxCategoryService.updateCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ERC not found; CPTaxCategoryNameException -> 400 when the name is missing for the default locale."
+	)
+	public TaxCategory patchTaxCategoryByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("taxCategory") TaxCategory taxCategory)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxCategoryResource ->
+				taxCategoryResource.patchTaxCategoryByExternalReferenceCode(
+					externalReferenceCode, taxCategory));
+	}
+
 	@GraphQLField
 	public Response createTaxCategoriesPageExportBatch(
 			@GraphQLName("search") String search,
@@ -1020,6 +1052,33 @@ public class Mutation {
 			taxCategoryResource ->
 				taxCategoryResource.postTaxCategoriesPageExportBatch(
 					search, callbackURL, contentType, fieldNames));
+	}
+
+	@GraphQLField(
+		description = "Creates or updates a tax category. Calls CPTaxCategoryService.fetchCPTaxCategoryByExternalReferenceCode + CPTaxCategoryService.addCPTaxCategory or CPTaxCategoryService.updateCPTaxCategory. POST is upsert by external reference code -- creates a new entity when the code is unknown, otherwise updates the existing one. Validation -- CPTaxCategoryNameException -> 400 when the name is missing for the default locale."
+	)
+	public TaxCategory createTaxCategory(
+			@GraphQLName("taxCategory") TaxCategory taxCategory)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxCategoryResource -> taxCategoryResource.postTaxCategory(
+				taxCategory));
+	}
+
+	@GraphQLField
+	public Response createTaxCategoryBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_taxCategoryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			taxCategoryResource -> taxCategoryResource.postTaxCategoryBatch(
+				callbackURL, object));
 	}
 
 	private <T, R, E1 extends Throwable, E2 extends Throwable> R
@@ -1402,4 +1461,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1049706586
+// LIFERAY-REST-BUILDER-HASH:-1954632304

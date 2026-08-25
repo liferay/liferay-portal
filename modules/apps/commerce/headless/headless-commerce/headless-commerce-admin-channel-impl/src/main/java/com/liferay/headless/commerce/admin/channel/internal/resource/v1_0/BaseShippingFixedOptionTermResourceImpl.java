@@ -73,7 +73,7 @@ public abstract class BaseShippingFixedOptionTermResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/shipping-fixed-option-terms/{shippingFixedOptionTermId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the fixed-shipping-option-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found."
+		description = "Deletes the fixed-shipping-option-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -159,7 +159,7 @@ public abstract class BaseShippingFixedOptionTermResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/shipping-fixed-options/{id}/shipping-fixed-option-terms'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the ShippingFixedOptionTerm entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option id not found. List query support — page and pageSize paginate the related entries."
+		description = "Lists the ShippingFixedOptionTerm entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -238,7 +238,7 @@ public abstract class BaseShippingFixedOptionTermResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/shipping-fixed-options/{id}/shipping-fixed-option-terms' -d $'{"shippingFixedOptionId": ___, "termExternalReferenceCode": ___, "termId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a new fixed-shipping-option-to-term relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchTermEntryException -> 404 when term id/erc not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a shipping-fixed-option qualifier."
+		description = "Creates a new fixed-shipping-option-to-term relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchTermEntryException -> 404 when term ID/ERC not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a shipping-fixed-option qualifier."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -965,4 +965,4 @@ public abstract class BaseShippingFixedOptionTermResourceImpl
 		LogFactoryUtil.getLog(BaseShippingFixedOptionTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:923084832
+// LIFERAY-REST-BUILDER-HASH:2071425024

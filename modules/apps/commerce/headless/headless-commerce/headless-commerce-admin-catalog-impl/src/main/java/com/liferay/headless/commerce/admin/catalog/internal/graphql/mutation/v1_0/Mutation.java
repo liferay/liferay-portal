@@ -407,7 +407,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the attachment identified by its internal attachment id. Returns 404 when the id is not found. Side effects -- Removes the underlying DL file entry association; cascades through attachment delete listeners."
+		description = "Deletes the attachment identified by its internal attachment ID. Returns 404 when the ID is not found. Side effects -- Removes the underlying DL file entry association; cascades through attachment delete listeners."
 	)
 	public boolean deleteAttachment(@GraphQLName("id") Long id)
 		throws Exception {
@@ -566,7 +566,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Creates or updates a DL file entry under the product group."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Creates or updates a DL file entry under the product group."
 	)
 	public Attachment createProductIdAttachment(
 			@GraphQLName("id") Long id,
@@ -595,7 +595,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product ID, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group."
 	)
 	public Attachment createProductIdAttachmentByBase64(
 			@GraphQLName("id") Long id,
@@ -611,7 +611,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Stores the URL reference."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product ID, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Stores the URL reference."
 	)
 	public Attachment createProductIdAttachmentByUrl(
 			@GraphQLName("id") Long id,
@@ -627,7 +627,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Creates or updates a DL file entry under the product group."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Creates or updates a DL file entry under the product group."
 	)
 	public Attachment createProductIdImage(
 			@GraphQLName("id") Long id,
@@ -642,7 +642,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Decodes the base64 file and creates a DL file entry."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product ID, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Decodes the base64 file and creates a DL file entry."
 	)
 	public Attachment createProductIdImageByBase64(
 			@GraphQLName("id") Long id,
@@ -657,7 +657,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Stores the URL reference."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product ID, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Stores the URL reference."
 	)
 	public Attachment createProductIdImageByUrl(
 			@GraphQLName("id") Long id,
@@ -688,7 +688,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the commerce catalog identified by id. Returns 404 when the id is missing (service-level). Side effects -- Cascades through catalog delete listeners (group, virtual instance teardown)."
+		description = "Deletes the commerce catalog identified by ID. Returns 404 when the ID is missing (service-level). Side effects -- Cascades through catalog delete listeners (group, virtual instance teardown)."
 	)
 	public Response deleteCatalog(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -726,7 +726,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the commerce catalog identified by id. Returns 404 when the id is not found, and tolerated (debug log). Side effects -- Reindexes the catalog; touches the underlying group."
+		description = "Partially updates the commerce catalog identified by ID. Returns 404 when the ID is not found, and tolerated (debug log). Side effects -- Reindexes the catalog; touches the underlying group."
 	)
 	public Response patchCatalog(
 			@GraphQLName("id") Long id, @GraphQLName("catalog") Catalog catalog)
@@ -815,7 +815,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Replaces the asset category assignments of the product identified by external reference code. Returns 404 when the product external reference code is not found, and 404 when any supplied category id is missing. Side effects -- Replaces the product's asset category assignment set (overwrites prior categorization)."
+		description = "Replaces the asset category assignments of the product identified by external reference code. Returns 404 when the product external reference code is not found, and 404 when any supplied category ID is missing. Side effects -- Replaces the product's asset category assignment set (overwrites prior categorization)."
 	)
 	public Response patchProductByExternalReferenceCodeCategory(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -831,7 +831,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Replaces the asset category assignments of the product identified by product id. Returns 404 when the product id is not found, and 404 when any supplied category id is missing. Side effects -- Replaces the product's asset category assignment set."
+		description = "Replaces the asset category assignments of the product identified by product ID. Returns 404 when the product ID is not found, and 404 when any supplied category ID is missing. Side effects -- Replaces the product's asset category assignment set."
 	)
 	public Response patchProductIdCategory(
 			@GraphQLName("id") Long id,
@@ -846,7 +846,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the commerce currency identified by id. Returns 404 when the id is not found. Side effects -- Cascades through commerce currency delete listeners."
+		description = "Deletes the commerce currency identified by ID. Returns 404 when the ID is not found. Side effects -- Cascades through commerce currency delete listeners."
 	)
 	public boolean deleteCurrency(@GraphQLName("id") Long id) throws Exception {
 		_applyVoidComponentServiceObjects(
@@ -888,7 +888,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the commerce currency identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the currency."
+		description = "Partially updates the commerce currency identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the currency."
 	)
 	public Currency patchCurrency(
 			@GraphQLName("id") Long id,
@@ -993,7 +993,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a diagram setting under the product identified by product id. Returns 404 when the product id is not found. Side effects -- Creates the diagram setting and links an attachment as the diagram image."
+		description = "Creates a diagram setting under the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Creates the diagram setting and links an attachment as the diagram image."
 	)
 	public Diagram createProductIdDiagram(
 			@GraphQLName("id") Long id, @GraphQLName("diagram") Diagram diagram)
@@ -1050,7 +1050,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates priority and quantity of the grouped product entry identified by groupedProductId. Returns 404 when the id is not found. Side effects -- None (updates priority and quantity)."
+		description = "Partially updates priority and quantity of the grouped product entry identified by groupedProductId. Returns 404 when the ID is not found. Side effects -- None (updates priority and quantity)."
 	)
 	public GroupedProduct patchGroupedProduct(
 			@GraphQLName("groupedProductId") Long groupedProductId,
@@ -1083,7 +1083,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Adds a grouped product entry to the parent product identified by product id. Returns 404 when the parent product id or entry product is missing. Side effects -- Links the entry product to the parent grouped product."
+		description = "Adds a grouped product entry to the parent product identified by product ID. Returns 404 when the parent product ID or entry product is missing. Side effects -- Links the entry product to the parent grouped product."
 	)
 	public GroupedProduct createProductIdGroupedProduct(
 			@GraphQLName("id") Long id,
@@ -1132,7 +1132,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a list type definition and attaches it to the specification option identified by id. Returns 404 when the specification id is not found. Side effects -- Creates a new list type definition and attaches it to the specification option."
+		description = "Creates a list type definition and attaches it to the specification option identified by ID. Returns 404 when the specification ID is not found. Side effects -- Creates a new list type definition and attaches it to the specification option."
 	)
 	public ListTypeDefinition createSpecificationIdListTypeDefinition(
 			@GraphQLName("id") Long id,
@@ -1198,7 +1198,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the mapped (diagram) product identified by mappedProductId. Returns 404 when the id is not found. Side effects -- Removes the diagram entry; orphaned pins may remain unless cleaned separately."
+		description = "Deletes the mapped (diagram) product identified by mappedProductId. Returns 404 when the ID is not found. Side effects -- Removes the diagram entry; orphaned pins may remain unless cleaned separately."
 	)
 	public boolean deleteMappedProduct(
 			@GraphQLName("mappedProductId") Long mappedProductId)
@@ -1228,7 +1228,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the mapped (diagram) product identified by mappedProductId. Returns 404 when the id is not found. Side effects -- May relink the diagram entry to a different SKU/product."
+		description = "Partially updates the mapped (diagram) product identified by mappedProductId. Returns 404 when the ID is not found. Side effects -- May relink the diagram entry to a different SKU/product."
 	)
 	public MappedProduct patchMappedProduct(
 			@GraphQLName("mappedProductId") Long mappedProductId,
@@ -1260,7 +1260,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a mapped (diagram) product under the parent product identified by product id. Returns 404 when the product id is not found. Side effects -- Creates a diagram entry referencing the supplied SKU/product."
+		description = "Creates a mapped (diagram) product under the parent product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Creates a diagram entry referencing the supplied SKU/product."
 	)
 	public MappedProduct createProductIdMappedProduct(
 			@GraphQLName("id") Long id,
@@ -1290,7 +1290,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the option identified by id. Returns 404 when the id is not found. Side effects -- Cascades through product option listeners; reindexes affected products."
+		description = "Deletes the option identified by ID. Returns 404 when the ID is not found. Side effects -- Cascades through product option listeners; reindexes affected products."
 	)
 	public Response deleteOption(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -1328,7 +1328,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the option identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option."
+		description = "Partially updates the option identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the option."
 	)
 	public Response patchOption(
 			@GraphQLName("id") Long id, @GraphQLName("option") Option option)
@@ -1415,7 +1415,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the option category identified by id. Returns 404 when the record is not found. Side effects -- Cascades through option category delete listeners; reindexes affected specifications."
+		description = "Deletes the option category identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through option category delete listeners; reindexes affected specifications."
 	)
 	public Response deleteOptionCategory(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1460,7 +1460,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the option category identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option category."
+		description = "Partially updates the option category identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the option category."
 	)
 	public Response patchOptionCategory(
 			@GraphQLName("id") Long id,
@@ -1556,7 +1556,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the option value identified by id. Returns 404 when the record is not found. Side effects -- Cascades through product option value listeners."
+		description = "Deletes the option value identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through product option value listeners."
 	)
 	public Response deleteOptionValue(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1596,7 +1596,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the option value identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option value."
+		description = "Partially updates the option value identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the option value."
 	)
 	public Response patchOptionValue(
 			@GraphQLName("id") Long id,
@@ -1644,7 +1644,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates an option value under the parent option identified by option id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option id is not found. Side effects -- Reindexes the option value."
+		description = "Creates or updates an option value under the parent option identified by option ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option ID is not found. Side effects -- Reindexes the option value."
 	)
 	public OptionValue createOptionIdOptionValue(
 			@GraphQLName("id") Long id,
@@ -1673,7 +1673,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the pin identified by pinId and removes its orphan diagram entry when no other pin references it. Returns 404 when the id is not found. Side effects -- Cascades the matching diagram entry delete when no other pin shares the sequence."
+		description = "Deletes the pin identified by pinId and removes its orphan diagram entry when no other pin references it. Returns 404 when the ID is not found. Side effects -- Cascades the matching diagram entry delete when no other pin shares the sequence."
 	)
 	public boolean deletePin(@GraphQLName("pinId") Long pinId)
 		throws Exception {
@@ -1697,7 +1697,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the pin identified by pinId, optionally creating or updating its mapped product. Returns 404 when the id is not found. Side effects -- When mappedProduct is included, may add or update the linked diagram entry (SKU/product mapping)."
+		description = "Partially updates the pin identified by pinId, optionally creating or updating its mapped product. Returns 404 when the ID is not found. Side effects -- When mappedProduct is included, may add or update the linked diagram entry (SKU/product mapping)."
 	)
 	public Pin patchPin(
 			@GraphQLName("pinId") Long pinId, @GraphQLName("pin") Pin pin)
@@ -1723,7 +1723,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a diagram pin on the product identified by product id. Returns 404 when the product id is not found. Side effects -- Creates the pin and optionally creates/updates a mapped diagram entry."
+		description = "Creates a diagram pin on the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Creates the pin and optionally creates/updates a mapped diagram entry."
 	)
 	public Pin createProductIdPin(
 			@GraphQLName("id") Long id, @GraphQLName("pin") Pin pin)
@@ -1747,7 +1747,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the product identified by product id. Returns 404 when the product id is not found. Side effects -- Cascades product definition delete (skus, options, attachments, categorization)."
+		description = "Deletes the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Cascades product definition delete (skus, options, attachments, categorization)."
 	)
 	public boolean deleteProduct(@GraphQLName("id") Long id) throws Exception {
 		_applyVoidComponentServiceObjects(
@@ -1807,7 +1807,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes a specific historical version of the product identified by product id. Returns 404 when the product id or version is not found. Side effects -- Cascades product definition delete for the targeted version only."
+		description = "Deletes a specific historical version of the product identified by product ID. Returns 404 when the product ID or version is not found. Side effects -- Cascades product definition delete for the targeted version only."
 	)
 	public boolean deleteProductByVersion(
 			@GraphQLName("id") Long id, @GraphQLName("version") Integer version)
@@ -1823,7 +1823,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates custom field storage, asset categorization, asset tags, and may trigger workflow draft transition."
+		description = "Partially updates the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates custom field storage, asset categorization, asset tags, and may trigger workflow draft transition."
 	)
 	public Product patchProduct(
 			@GraphQLName("id") Long id, @GraphQLName("product") Product product)
@@ -1894,7 +1894,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Clones the product identified by product id, optionally into a different catalog. Returns 404 when the source product id is not found. Side effects -- Creates a brand new product definition with cloned SKUs, options, attachments, etc.."
+		description = "Clones the product identified by product ID, optionally into a different catalog. Returns 404 when the source product ID is not found. Side effects -- Creates a brand new product definition with cloned SKUs, options, attachments, etc.."
 	)
 	public Product createProductClone(
 			@GraphQLName("id") Long id,
@@ -1943,7 +1943,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the account group assignment identified by id from its product. Returns 404 when the record is not found. Side effects -- Removes the account group <-> product association."
+		description = "Removes the account group assignment identified by ID from its product. Returns 404 when the record is not found. Side effects -- Removes the account group <-> product association."
 	)
 	public boolean deleteProductAccountGroup(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1972,7 +1972,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the channel assignment identified by id from its product. Returns 404 when the record is not found. Side effects -- Removes the channel <-> product association."
+		description = "Removes the channel assignment identified by ID from its product. Returns 404 when the record is not found. Side effects -- Removes the channel <-> product association."
 	)
 	public boolean deleteProductChannel(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2001,7 +2001,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the product configuration entry identified by id. Returns 404 when the record is not found. Side effects -- Removes the configuration override (master entries are protected by model permission check)."
+		description = "Deletes the product configuration entry identified by ID. Returns 404 when the record is not found. Side effects -- Removes the configuration override (master entries are protected by model permission check)."
 	)
 	public boolean deleteProductConfiguration(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2048,7 +2048,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the product external reference code is not found. Side effects -- Updates the master configuration entry plus product inventory configuration and per-product availability estimate."
+		description = "Partially updates the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the product external reference code is not found. Side effects -- Updates the master configuration entry plus product inventory configuration and per-product availability estimate."
 	)
 	public Response patchProductByExternalReferenceCodeConfiguration(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -2066,7 +2066,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product configuration entry identified by id. Returns 404 when the id is not found. Side effects -- Updates inventory, shipping, and tax fields on the entry."
+		description = "Partially updates the product configuration entry identified by ID. Returns 404 when the ID is not found. Side effects -- Updates inventory, shipping, and tax fields on the entry."
 	)
 	public ProductConfiguration patchProductConfiguration(
 			@GraphQLName("id") Long id,
@@ -2103,7 +2103,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the consolidated product configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the master configuration entry plus product inventory configuration and per-product availability estimate."
+		description = "Partially updates the consolidated product configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the master configuration entry plus product inventory configuration and per-product availability estimate."
 	)
 	public Response patchProductIdConfiguration(
 			@GraphQLName("id") Long id,
@@ -2120,7 +2120,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a product configuration entry under the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when entityType=product and the referenced product is missing. Side effects -- Creates a configuration entry under the configuration list, scoped to a product or to the list as a template."
+		description = "Creates a product configuration entry under the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when entityType=product and the referenced product is missing. Side effects -- Creates a configuration entry under the configuration list, scoped to a product or to the list as a template."
 	)
 	public ProductConfiguration
 			createProductConfigurationListByExternalReferenceCodeProductConfiguration(
@@ -2140,7 +2140,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a product configuration entry under the product configuration list identified by id. Returns 404 when the id is not found, and 404 when entityType=product and the referenced product is missing. Side effects -- Creates a configuration entry under the configuration list."
+		description = "Creates a product configuration entry under the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when entityType=product and the referenced product is missing. Side effects -- Creates a configuration entry under the configuration list."
 	)
 	public ProductConfiguration
 			createProductConfigurationListIdProductConfiguration(
@@ -2174,7 +2174,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the product configuration list identified by id. Returns 404 when the id is not found. Side effects -- Cascades deletion of configuration list assignment rows and configuration entry rows attached to the list."
+		description = "Deletes the product configuration list identified by ID. Returns 404 when the ID is not found. Side effects -- Cascades deletion of configuration list assignment rows and configuration entry rows attached to the list."
 	)
 	public boolean deleteProductConfigurationList(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2222,7 +2222,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product configuration list identified by id, applying any nested product configurations. Returns 404 when the id is not found. Side effects -- Reindexes; updates display/expiration date and custom field storage; cascades into nested product configurations."
+		description = "Partially updates the product configuration list identified by ID, applying any nested product configurations. Returns 404 when the ID is not found. Side effects -- Reindexes; updates display/expiration date and custom field storage; cascades into nested product configurations."
 	)
 	public ProductConfigurationList patchProductConfigurationList(
 			@GraphQLName("id") Long id,
@@ -2314,7 +2314,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the account binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account <-> configuration list association."
+		description = "Removes the account binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account <-> configuration list association."
 	)
 	public boolean deleteProductConfigurationListAccount(
 			@GraphQLName("productConfigurationListAccountId") Long
@@ -2348,7 +2348,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds an account to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list."
+		description = "Binds an account to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list."
 	)
 	public ProductConfigurationListAccount
 			createProductConfigurationListByExternalReferenceCodeProductConfigurationListAccount(
@@ -2370,7 +2370,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds an account to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list."
+		description = "Binds an account to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list."
 	)
 	public ProductConfigurationListAccount
 			createProductConfigurationListIdProductConfigurationListAccount(
@@ -2406,7 +2406,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the account group binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account group <-> configuration list association."
+		description = "Removes the account group binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account group <-> configuration list association."
 	)
 	public boolean deleteProductConfigurationListAccountGroup(
 			@GraphQLName("productConfigurationListAccountGroupId") Long
@@ -2440,7 +2440,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds an account group to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the account group lookup fails. Side effects -- Creates a configuration list assignment binding the account group to the configuration list."
+		description = "Binds an account group to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the account group lookup fails. Side effects -- Creates a configuration list assignment binding the account group to the configuration list."
 	)
 	public ProductConfigurationListAccountGroup
 			createProductConfigurationListByExternalReferenceCodeProductConfigurationListAccountGroup(
@@ -2462,7 +2462,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds an account group to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the account group lookup fails. Side effects -- Creates a configuration list assignment binding the account group to the configuration list."
+		description = "Binds an account group to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the account group lookup fails. Side effects -- Creates a configuration list assignment binding the account group to the configuration list."
 	)
 	public ProductConfigurationListAccountGroup
 			createProductConfigurationListIdProductConfigurationListAccountGroup(
@@ -2498,7 +2498,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the channel binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the channel <-> configuration list association."
+		description = "Removes the channel binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the channel <-> configuration list association."
 	)
 	public boolean deleteProductConfigurationListChannel(
 			@GraphQLName("productConfigurationListChannelId") Long
@@ -2532,7 +2532,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds a commerce channel to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list."
+		description = "Binds a commerce channel to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list."
 	)
 	public ProductConfigurationListChannel
 			createProductConfigurationListByExternalReferenceCodeProductConfigurationListChannel(
@@ -2554,7 +2554,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds a commerce channel to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list."
+		description = "Binds a commerce channel to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list."
 	)
 	public ProductConfigurationListChannel
 			createProductConfigurationListIdProductConfigurationListChannel(
@@ -2590,7 +2590,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the order type binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the order type <-> configuration list association."
+		description = "Removes the order type binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the order type <-> configuration list association."
 	)
 	public boolean deleteProductConfigurationListOrderType(
 			@GraphQLName("productConfigurationListOrderTypeId") Long
@@ -2624,7 +2624,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds a commerce order type to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the order type lookup fails. Side effects -- Creates a configuration list assignment binding the order type to the configuration list."
+		description = "Binds a commerce order type to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the order type lookup fails. Side effects -- Creates a configuration list assignment binding the order type to the configuration list."
 	)
 	public ProductConfigurationListOrderType
 			createProductConfigurationListByExternalReferenceCodeProductConfigurationListOrderType(
@@ -2646,7 +2646,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds a commerce order type to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the order type lookup fails. Side effects -- Creates a configuration list assignment binding the order type to the configuration list."
+		description = "Binds a commerce order type to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the order type lookup fails. Side effects -- Creates a configuration list assignment binding the order type to the configuration list."
 	)
 	public ProductConfigurationListOrderType
 			createProductConfigurationListIdProductConfigurationListOrderType(
@@ -2682,7 +2682,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the product group identified by id. Returns 404 when the record is not found. Side effects -- Cascades deletion of product group assignment rows and associated pricing rules."
+		description = "Deletes the product group identified by ID. Returns 404 when the record is not found. Side effects -- Cascades deletion of product group assignment rows and associated pricing rules."
 	)
 	public boolean deleteProductGroup(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2728,7 +2728,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product group identified by id, optionally appending new product bindings. Returns 404 when the id is not found, and 404 when nested products fail to resolve. Side effects -- Reindexes; updates custom field storage; appends new product bindings without removing existing ones."
+		description = "Partially updates the product group identified by ID, optionally appending new product bindings. Returns 404 when the ID is not found, and 404 when nested products fail to resolve. Side effects -- Reindexes; updates custom field storage; appends new product bindings without removing existing ones."
 	)
 	public Response patchProductGroup(
 			@GraphQLName("id") Long id,
@@ -2823,7 +2823,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the product binding identified by id from its product group. Returns 404 when the record is not found. Side effects -- Removes the product <-> product group association."
+		description = "Removes the product binding identified by ID from its product group. Returns 404 when the record is not found. Side effects -- Removes the product <-> product group association."
 	)
 	public boolean deleteProductGroupProduct(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2872,7 +2872,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Binds a product to the product group identified by id. Returns 404 when the product group id is not found, and 404 when the product lookup fails. Side effects -- Creates a product group assignment binding the product to the group."
+		description = "Binds a product to the product group identified by ID. Returns 404 when the product group ID is not found, and 404 when the product lookup fails. Side effects -- Creates a product group assignment binding the product to the group."
 	)
 	public ProductGroupProduct createProductGroupIdProductGroupProduct(
 			@GraphQLName("id") Long id,
@@ -2905,7 +2905,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the product option relation identified by id from its product. Returns 404 when the id is not found. Side effects -- Cascades deletion of associated product option value rows."
+		description = "Removes the product option relation identified by ID from its product. Returns 404 when the ID is not found. Side effects -- Cascades deletion of associated product option value rows."
 	)
 	public Response deleteProductOption(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2932,7 +2932,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product option relation identified by id, including any nested product option values. Returns 404 when the id is not found. Side effects -- Reindexes the parent product; cascades into nested product option values."
+		description = "Partially updates the product option relation identified by ID, including any nested product option values. Returns 404 when the ID is not found. Side effects -- Reindexes the parent product; cascades into nested product option values."
 	)
 	public Response patchProductOption(
 			@GraphQLName("id") Long id,
@@ -2970,7 +2970,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates a batch of product option relations on the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Adds or updates each product option and cascades into nested product option values."
+		description = "Creates or updates a batch of product option relations on the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Adds or updates each product option and cascades into nested product option values."
 	)
 	public java.util.Collection<ProductOption>
 			createProductIdProductOptionsPage(
@@ -2991,7 +2991,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the product option value relation identified by id. Returns 404 when the record is not found. Side effects -- Cascades through SKU option value listeners; reindexes affected SKUs."
+		description = "Removes the product option value relation identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through SKU option value listeners; reindexes affected SKUs."
 	)
 	public boolean deleteProductOptionValue(@GraphQLName("id") Long id)
 		throws Exception {
@@ -3020,7 +3020,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product option value relation identified by id. Returns 404 when the id is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs."
+		description = "Partially updates the product option value relation identified by ID. Returns 404 when the ID is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs."
 	)
 	public ProductOptionValue patchProductOptionValue(
 			@GraphQLName("id") Long id,
@@ -3037,7 +3037,27 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates a product option value relation under the product option identified by id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option relation id is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs."
+		description = "Creates or updates a product option value relation under the product option identified by external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Falls back to the value key within the parent product option when the external reference code is omitted. Returns 404 when the product option external reference code is not found. Side effects -- Links the value to a SKU when one is supplied; reindexes the affected SKUs."
+	)
+	public ProductOptionValue
+			createProductOptionByExternalReferenceCodeProductOptionValue(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("productOptionValue") ProductOptionValue
+					productOptionValue)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionValueResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionValueResource ->
+				productOptionValueResource.
+					postProductOptionByExternalReferenceCodeProductOptionValue(
+						externalReferenceCode, productOptionValue));
+	}
+
+	@GraphQLField(
+		description = "Creates or updates a product option value relation under the product option identified by ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option relation ID is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs."
 	)
 	public ProductOptionValue createProductOptionIdProductOptionValue(
 			@GraphQLName("id") Long id,
@@ -3088,7 +3108,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the shipping configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition shipping fields."
+		description = "Partially updates the shipping configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition shipping fields."
 	)
 	public Response patchProductIdShippingConfiguration(
 			@GraphQLName("id") Long id,
@@ -3106,7 +3126,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the product specification value identified by id from its product. Returns 404 when the id is not found. Side effects -- Reindexes the parent product."
+		description = "Removes the product specification value identified by ID from its product. Returns 404 when the ID is not found. Side effects -- Reindexes the parent product."
 	)
 	public boolean deleteProductSpecification(@GraphQLName("id") Long id)
 		throws Exception {
@@ -3153,7 +3173,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product specification value identified by id. Returns 404 when the id is not found, and 404 when nested specification cannot be resolved. Side effects -- Reindexes the parent product."
+		description = "Partially updates the product specification value identified by ID. Returns 404 when the ID is not found, and 404 when nested specification cannot be resolved. Side effects -- Reindexes the parent product."
 	)
 	public ProductSpecification patchProductSpecification(
 			@GraphQLName("id") Long id,
@@ -3190,7 +3210,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates a specification value on the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found, and 404 when the specification cannot be resolved. Side effects -- Adds or updates the specification value; reindexes the parent product."
+		description = "Creates or updates a specification value on the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found, and 404 when the specification cannot be resolved. Side effects -- Adds or updates the specification value; reindexes the parent product."
 	)
 	public ProductSpecification
 			createProductByExternalReferenceCodeProductSpecification(
@@ -3210,7 +3230,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates a specification value on the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found, and 404 when the specification cannot be resolved. Side effects -- Adds or updates the specification value; reindexes the parent product."
+		description = "Creates or updates a specification value on the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found, and 404 when the specification cannot be resolved. Side effects -- Adds or updates the specification value; reindexes the parent product."
 	)
 	public ProductSpecification createProductIdProductSpecification(
 			@GraphQLName("id") Long id,
@@ -3264,7 +3284,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the subscription configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition subscription fields."
+		description = "Partially updates the subscription configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition subscription fields."
 	)
 	public Response patchProductIdSubscriptionConfiguration(
 			@GraphQLName("id") Long id,
@@ -3301,7 +3321,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the tax configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition tax category and taxExempt flag."
+		description = "Partially updates the tax configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition tax category and taxExempt flag."
 	)
 	public Response patchProductIdTaxConfiguration(
 			@GraphQLName("id") Long id,
@@ -3318,7 +3338,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the product virtual settings file entry identified by id. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted)."
+		description = "Deletes the product virtual settings file entry identified by ID. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted)."
 	)
 	public boolean deleteProductVirtualSettingsFileEntry(
 			@GraphQLName("id") Long id)
@@ -3350,10 +3370,10 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the product virtual settings file entry identified by id, optionally replacing the underlying file. Returns 404 when the id is not found. Side effects -- May create a new DL file entry under the product group when a binary file or attachment is supplied."
+		description = "Partially updates the product virtual settings file entry identified by ID, optionally replacing the underlying file. Returns 404 when the ID is not found. Side effects -- May create a new DL file entry under the product group when a binary file or attachment is supplied."
 	)
 	@GraphQLName(
-		description = "Partially updates the product virtual settings file entry identified by id, optionally replacing the underlying file. Returns 404 when the id is not found. Side effects -- May create a new DL file entry under the product group when a binary file or attachment is supplied.",
+		description = "Partially updates the product virtual settings file entry identified by ID, optionally replacing the underlying file. Returns 404 when the ID is not found. Side effects -- May create a new DL file entry under the product group when a binary file or attachment is supplied.",
 		value = "patchProductVirtualSettingsFileEntryIdMultipartBody"
 	)
 	public ProductVirtualSettingsFileEntry patchProductVirtualSettingsFileEntry(
@@ -3370,10 +3390,10 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Adds a file entry under the product virtual setting identified by id, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent id is not found. Side effects -- Creates a DL file entry under the product group and records a new virtual settings file entry."
+		description = "Adds a file entry under the product virtual setting identified by ID, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent ID is not found. Side effects -- Creates a DL file entry under the product group and records a new virtual settings file entry."
 	)
 	@GraphQLName(
-		description = "Adds a file entry under the product virtual setting identified by id, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent id is not found. Side effects -- Creates a DL file entry under the product group and records a new virtual settings file entry.",
+		description = "Adds a file entry under the product virtual setting identified by ID, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent ID is not found. Side effects -- Creates a DL file entry under the product group and records a new virtual settings file entry.",
 		value = "postProductVirtualSettingIdProductVirtualSettingsFileEntryIdMultipartBody"
 	)
 	public ProductVirtualSettingsFileEntry
@@ -3392,7 +3412,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Removes the related product link identified by id. Returns 404 when the record is not found. Side effects -- Removes the related product link."
+		description = "Removes the related product link identified by ID. Returns 404 when the record is not found. Side effects -- Removes the related product link."
 	)
 	public Response deleteRelatedProduct(@GraphQLName("id") Long id)
 		throws Exception {
@@ -3436,7 +3456,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates a related product link on the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent product id not found or related product cannot be resolved. Side effects -- Creates or updates the related product link."
+		description = "Creates or updates a related product link on the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent product ID not found or related product cannot be resolved. Side effects -- Creates or updates the related product link."
 	)
 	public RelatedProduct createProductIdRelatedProduct(
 			@GraphQLName("id") Long id,
@@ -3466,7 +3486,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the SKU identified by id. Returns 404 when the record is not found. Side effects -- Cascades through SKU delete listeners (inventory, price entries, units of measure)."
+		description = "Deletes the SKU identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through SKU delete listeners (inventory, price entries, units of measure)."
 	)
 	public Response deleteSku(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -3499,7 +3519,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the SKU identified by id. Returns 404 when the id is not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement."
+		description = "Partially updates the SKU identified by ID. Returns 404 when the ID is not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement."
 	)
 	public Sku patchSku(@GraphQLName("id") Long id, @GraphQLName("sku") Sku sku)
 		throws Exception {
@@ -3538,7 +3558,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates a SKU under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found, and 400 when the product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings."
+		description = "Creates or updates a SKU under the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found, and 400 when the product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings."
 	)
 	public Sku createProductIdSku(
 			@GraphQLName("id") Long id, @GraphQLName("sku") Sku sku)
@@ -3594,7 +3614,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the SKU unit of measure identified by id. Returns 404 when the record is not found. Side effects -- Removes the unit of measure and its associated price entries."
+		description = "Deletes the SKU unit of measure identified by ID. Returns 404 when the record is not found. Side effects -- Removes the unit of measure and its associated price entries."
 	)
 	public boolean deleteSkuUnitOfMeasure(@GraphQLName("id") Long id)
 		throws Exception {
@@ -3623,7 +3643,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the SKU unit of measure identified by id, including base and promo prices when supplied. Returns 404 when the id is not found. Side effects -- Updates the unit of measure record and may update base/promo price entries on the parent SKU."
+		description = "Partially updates the SKU unit of measure identified by ID, including base and promo prices when supplied. Returns 404 when the ID is not found. Side effects -- Updates the unit of measure record and may update base/promo price entries on the parent SKU."
 	)
 	public SkuUnitOfMeasure patchSkuUnitOfMeasure(
 			@GraphQLName("id") Long id,
@@ -3656,7 +3676,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates a unit of measure under the SKU identified by id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the SKU id is not found. Side effects -- Creates or updates the unit of measure, plus any supplied price entries."
+		description = "Creates or updates a unit of measure under the SKU identified by ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the SKU ID is not found. Side effects -- Creates or updates the unit of measure, plus any supplied price entries."
 	)
 	public SkuUnitOfMeasure createSkuIdSkuUnitOfMeasure(
 			@GraphQLName("id") Long id,
@@ -3686,7 +3706,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the SKU virtual settings file entry identified by id. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted)."
+		description = "Deletes the SKU virtual settings file entry identified by ID. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted)."
 	)
 	public boolean deleteSkuVirtualSettingsFileEntry(@GraphQLName("id") Long id)
 		throws Exception {
@@ -3717,10 +3737,10 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the SKU virtual settings file entry identified by id, optionally replacing the underlying file. Returns 404 when the id is not found. Side effects -- May create a new DL file entry under the SKU group when a binary file or attachment is supplied."
+		description = "Partially updates the SKU virtual settings file entry identified by ID, optionally replacing the underlying file. Returns 404 when the ID is not found. Side effects -- May create a new DL file entry under the SKU group when a binary file or attachment is supplied."
 	)
 	@GraphQLName(
-		description = "Partially updates the SKU virtual settings file entry identified by id, optionally replacing the underlying file. Returns 404 when the id is not found. Side effects -- May create a new DL file entry under the SKU group when a binary file or attachment is supplied.",
+		description = "Partially updates the SKU virtual settings file entry identified by ID, optionally replacing the underlying file. Returns 404 when the ID is not found. Side effects -- May create a new DL file entry under the SKU group when a binary file or attachment is supplied.",
 		value = "patchSkuVirtualSettingsFileEntryIdMultipartBody"
 	)
 	public SkuVirtualSettingsFileEntry patchSkuVirtualSettingsFileEntry(
@@ -3737,10 +3757,10 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Adds a file entry under the SKU virtual setting identified by id, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent id is not found. Side effects -- Creates a DL file entry under the SKU group and records a new virtual settings file entry."
+		description = "Adds a file entry under the SKU virtual setting identified by ID, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent ID is not found. Side effects -- Creates a DL file entry under the SKU group and records a new virtual settings file entry."
 	)
 	@GraphQLName(
-		description = "Adds a file entry under the SKU virtual setting identified by id, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent id is not found. Side effects -- Creates a DL file entry under the SKU group and records a new virtual settings file entry.",
+		description = "Adds a file entry under the SKU virtual setting identified by ID, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent ID is not found. Side effects -- Creates a DL file entry under the SKU group and records a new virtual settings file entry.",
 		value = "postSkuVirtualSettingIdSkuVirtualSettingsFileEntryIdMultipartBody"
 	)
 	public SkuVirtualSettingsFileEntry
@@ -3759,7 +3779,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the specification identified by id. Returns 404 when the record is not found. Side effects -- Cascades through product specification value listeners; reindexes affected products."
+		description = "Deletes the specification identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through product specification value listeners; reindexes affected products."
 	)
 	public boolean deleteSpecification(@GraphQLName("id") Long id)
 		throws Exception {
@@ -3806,7 +3826,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the specification identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the specification and any products that reference it."
+		description = "Partially updates the specification identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the specification and any products that reference it."
 	)
 	public Specification patchSpecification(
 			@GraphQLName("id") Long id,
@@ -3837,7 +3857,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates or updates a specification by trying id, external reference code, then key for resolution. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 400 when the key is invalid. Side effects -- Reindexes the specification; lookups by id/ERC/key fall through with debug logging."
+		description = "Creates or updates a specification by trying ID, external reference code, then key for resolution. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 400 when the key is invalid. Side effects -- Reindexes the specification; lookups by ID/ERC/key fall through with debug logging."
 	)
 	public Specification createSpecification(
 			@GraphQLName("specification") Specification specification)
@@ -4829,4 +4849,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2062902307
+// LIFERAY-REST-BUILDER-HASH:745278027

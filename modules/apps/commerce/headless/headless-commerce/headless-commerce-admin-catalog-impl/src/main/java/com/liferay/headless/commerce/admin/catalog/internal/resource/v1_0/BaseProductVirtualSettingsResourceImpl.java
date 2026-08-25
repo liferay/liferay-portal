@@ -89,7 +89,7 @@ public abstract class BaseProductVirtualSettingsResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/product-virtual-settings'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the virtual settings of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the virtual settings of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -566,4 +566,4 @@ public abstract class BaseProductVirtualSettingsResourceImpl
 		LogFactoryUtil.getLog(BaseProductVirtualSettingsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1163393170
+// LIFERAY-REST-BUILDER-HASH:924288878

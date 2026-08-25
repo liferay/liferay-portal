@@ -520,7 +520,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdAttachments(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists attachments (TYPE_OTHER) for the product identified by its product id. Returns 404 when the product id is not found."
+		description = "Lists attachments (TYPE_OTHER) for the product identified by its product ID. Returns 404 when the product ID is not found."
 	)
 	public AttachmentPage productIdAttachments(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -541,7 +541,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdImages(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists image attachments (TYPE_IMAGE) for the product identified by its product id. Returns 404 when the product id is not found."
+		description = "Lists image attachments (TYPE_IMAGE) for the product identified by its product ID. Returns 404 when the product ID is not found."
 	)
 	public AttachmentPage productIdImages(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -562,7 +562,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {catalog(id: ___){accountExternalReferenceCode, accountId, accountType, actions, currencyCode, currencyExternalReferenceCode, currencyId, defaultLanguageId, externalReferenceCode, id, name, system}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the commerce catalog identified by id. Returns 404 when the id is not found."
+		description = "Fetches the commerce catalog identified by ID. Returns 404 when the ID is not found."
 	)
 	public Catalog catalog(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -646,7 +646,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdCatalog(id: ___, page: ___, pageSize: ___){accountExternalReferenceCode, accountId, accountType, actions, currencyCode, currencyExternalReferenceCode, currencyId, defaultLanguageId, externalReferenceCode, id, name, system}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the commerce catalog associated with the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the commerce catalog associated with the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public Catalog productIdCatalog(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -689,7 +689,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdCategories(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists asset categories assigned to the product identified by product id. Returns 404 when the product id is not found."
+		description = "Lists asset categories assigned to the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public CategoryPage productIdCategories(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -737,7 +737,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {currency(id: ___){active, code, externalReferenceCode, formatPattern, id, maxFractionDigits, minFractionDigits, name, primary, priority, rate, roundingMode, symbol}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the commerce currency identified by id. Returns 404 when the id is not found."
+		description = "Fetches the commerce currency identified by ID. Returns 404 when the ID is not found."
 	)
 	public Currency currency(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -792,7 +792,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdDiagram(id: ___){attachmentBase64, color, id, imageId, imageURL, productExternalReferenceCode, productId, radius, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the diagram setting attached to the product identified by product id. Returns 404 when the product id is not found, and 404 when no diagram setting exists."
+		description = "Returns the diagram setting attached to the product identified by product ID. Returns 404 when the product ID is not found, and 404 when no diagram setting exists."
 	)
 	public Diagram productIdDiagram(@GraphQLName("id") Long id)
 		throws Exception {
@@ -832,7 +832,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdGroupedProducts(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the grouped product entries of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Lists the grouped product entries of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public GroupedProductPage productIdGroupedProducts(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -850,10 +850,33 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeLinkedProducts(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Lists the diagram and grouped product entries that link other products back to the product identified by external reference code. Returns 404 when the product external reference code is not found."
+	)
+	public LinkedProductPage productByExternalReferenceCodeLinkedProducts(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_linkedProductResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			linkedProductResource -> new LinkedProductPage(
+				linkedProductResource.
+					getProductByExternalReferenceCodeLinkedProductsPage(
+						externalReferenceCode, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdLinkedProducts(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the diagram and grouped product entries that link other products back to the product identified by product id. Validation -- None at this layer (callees may return empty pages)."
+		description = "Lists the diagram and grouped product entries that link other products back to the product identified by product ID. Validation -- None at this layer (callees may return empty pages)."
 	)
 	public LinkedProductPage productIdLinkedProducts(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -874,7 +897,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {specificationIdListTypeDefinitions(id: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the list type definitions associated with the specification option identified by id. Returns 404 when the id is not found."
+		description = "Lists the list type definitions associated with the specification option identified by ID. Returns 404 when the ID is not found."
 	)
 	public ListTypeDefinitionPage specificationIdListTypeDefinitions(
 			@GraphQLName("id") Long id)
@@ -960,7 +983,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdMappedProductBySequence(id: ___, sequence: ___){actions, customFields, id, productExternalReferenceCode, productId, productName, quantity, sequence, sku, skuExternalReferenceCode, skuId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the mapped (diagram) product entry of the product identified by product id at the given sequence. Returns 404 when the product id is not found, and NPE when sequence not found (no explicit handling)."
+		description = "Returns the mapped (diagram) product entry of the product identified by product ID at the given sequence. Returns 404 when the product ID is not found, and NPE when sequence not found (no explicit handling)."
 	)
 	public MappedProduct productIdMappedProductBySequence(
 			@GraphQLName("id") Long id,
@@ -981,7 +1004,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdMappedProducts(id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists mapped (diagram) products of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Lists mapped (diagram) products of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public MappedProductPage productIdMappedProducts(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1006,7 +1029,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {option(id: ___){actions, catalogId, customFields, description, externalReferenceCode, facetable, fieldType, id, key, name, optionValues, priority, required, skuContributor}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the option identified by id. Returns 404 when the id is not found."
+		description = "Fetches the option identified by ID. Returns 404 when the ID is not found."
 	)
 	public Option option(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -1094,7 +1117,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {optionCategory(id: ___){description, externalReferenceCode, id, key, priority, title}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the option category identified by id. Returns 404 when the id is not found."
+		description = "Fetches the option category identified by ID. Returns 404 when the ID is not found."
 	)
 	public OptionCategory optionCategory(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1160,7 +1183,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {optionIdOptionValues(id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists option values for the option identified by option id. Returns 404 when the parent option id is not found."
+		description = "Lists option values for the option identified by option ID. Returns 404 when the parent option ID is not found."
 	)
 	public OptionValuePage optionIdOptionValues(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1184,7 +1207,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {optionValue(id: ___){actions, customFields, externalReferenceCode, id, key, name, priority}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the option value identified by id. Returns 404 when the id is not found."
+		description = "Fetches the option value identified by ID. Returns 404 when the ID is not found."
 	)
 	public OptionValue optionValue(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1246,7 +1269,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdPins(id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the diagram pins of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Lists the diagram pins of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public PinPage productIdPins(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1269,7 +1292,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {product(id: ___){actions, active, attachments, catalog, catalogExternalReferenceCode, catalogId, categories, createDate, customFields, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productChannelFilter, productChannels, productConfiguration, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the latest published version of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Fetches the latest published version of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public Product product(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -1325,7 +1348,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByVersion(id: ___, version: ___){actions, active, attachments, catalog, catalogExternalReferenceCode, catalogId, categories, createDate, customFields, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productChannelFilter, productChannels, productConfiguration, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches a specific historical version of the product identified by product id. Returns 404 when the product id or version is not found."
+		description = "Fetches a specific historical version of the product identified by product ID. Returns 404 when the product ID or version is not found."
 	)
 	public Product productByVersion(
 			@GraphQLName("id") Long id, @GraphQLName("version") Integer version)
@@ -1371,7 +1394,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productAccountGroup(id: ___){accountGroupId, externalReferenceCode, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product/account group association identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product/account group association identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductAccountGroup productAccountGroup(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1414,7 +1437,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdProductAccountGroups(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the account group assignments of the product identified by product id. Validation -- Returns empty page when product id not found (no exception)."
+		description = "Lists the account group assignments of the product identified by product ID. Validation -- Returns empty page when product ID not found (no exception)."
 	)
 	public ProductAccountGroupPage productIdProductAccountGroups(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -1459,7 +1482,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productChannel(id: ___){channelId, currencyCode, externalReferenceCode, id, name, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product/channel association identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product/channel association identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductChannel productChannel(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1477,7 +1500,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdProductChannels(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the channel assignments of the product identified by product id. Validation -- Returns empty page when product id not found (no exception)."
+		description = "Lists the channel assignments of the product identified by product ID. Validation -- Returns empty page when product ID not found (no exception)."
 	)
 	public ProductChannelPage productIdProductChannels(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -1498,7 +1521,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeConfiguration(externalReferenceCode: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateExternalReferenceCode, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the product external reference code is not found."
+		description = "Returns the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the product external reference code is not found."
 	)
 	public ProductConfiguration productByExternalReferenceCodeConfiguration(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -1519,7 +1542,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfiguration(id: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateExternalReferenceCode, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product configuration entry identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product configuration entry identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductConfiguration productConfiguration(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1558,7 +1581,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListByExternalReferenceCodeProductConfigurations(externalReferenceCode: ___, filter: ___, page: ___, pageSize: ___, search: ___, showDifferences: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists product configuration entries attached to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found. List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType."
+		description = "Lists product configuration entries attached to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found. List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType."
 	)
 	public ProductConfigurationPage
 			productConfigurationListByExternalReferenceCodeProductConfigurations(
@@ -1592,7 +1615,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListIdProductConfigurations(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, showDifferences: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists product configuration entries attached to the product configuration list identified by id. Returns 404 when the id is not found. Side effects -- None (showDifferences toggles delta computation against the master entry). List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType."
+		description = "Lists product configuration entries attached to the product configuration list identified by ID. Returns 404 when the ID is not found. Side effects -- None (showDifferences toggles delta computation against the master entry). List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType."
 	)
 	public ProductConfigurationPage
 			productConfigurationListIdProductConfigurations(
@@ -1625,7 +1648,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdConfiguration(id: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateExternalReferenceCode, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the consolidated product configuration of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the consolidated product configuration of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public ProductConfiguration productIdConfiguration(
 			@GraphQLName("id") Long id)
@@ -1644,7 +1667,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationList(id: ___){actions, catalogExternalReferenceCode, catalogId, createDate, customFields, displayDate, expirationDate, externalReferenceCode, id, master, name, neverExpire, parentProductConfigurationListExternalReferenceCode, parentProductConfigurationListId, priority, productConfigurations}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product configuration list identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product configuration list identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductConfigurationList productConfigurationList(
 			@GraphQLName("id") Long id)
@@ -1720,7 +1743,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListByExternalReferenceCodeProductConfigurationListAccounts(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the account bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+		description = "Lists the account bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 	)
 	public ProductConfigurationListAccountPage
 			productConfigurationListByExternalReferenceCodeProductConfigurationListAccounts(
@@ -1747,7 +1770,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListIdProductConfigurationListAccounts(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the account bindings of the product configuration list identified by id. Validation -- None at this layer."
+		description = "Lists the account bindings of the product configuration list identified by ID. Validation -- None at this layer."
 	)
 	public ProductConfigurationListAccountPage
 			productConfigurationListIdProductConfigurationListAccounts(
@@ -1782,7 +1805,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListByExternalReferenceCodeProductConfigurationListAccountGroups(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the account group bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+		description = "Lists the account group bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 	)
 	public ProductConfigurationListAccountGroupPage
 			productConfigurationListByExternalReferenceCodeProductConfigurationListAccountGroups(
@@ -1809,7 +1832,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListIdProductConfigurationListAccountGroups(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the account group bindings of the product configuration list identified by id. Validation -- None at this layer (returns empty page on no match)."
+		description = "Lists the account group bindings of the product configuration list identified by ID. Validation -- None at this layer (returns empty page on no match)."
 	)
 	public ProductConfigurationListAccountGroupPage
 			productConfigurationListIdProductConfigurationListAccountGroups(
@@ -1844,7 +1867,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListByExternalReferenceCodeProductConfigurationListChannels(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the channel bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+		description = "Lists the channel bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 	)
 	public ProductConfigurationListChannelPage
 			productConfigurationListByExternalReferenceCodeProductConfigurationListChannels(
@@ -1871,7 +1894,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListIdProductConfigurationListChannels(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the channel bindings of the product configuration list identified by id. Validation -- None at this layer."
+		description = "Lists the channel bindings of the product configuration list identified by ID. Validation -- None at this layer."
 	)
 	public ProductConfigurationListChannelPage
 			productConfigurationListIdProductConfigurationListChannels(
@@ -1906,7 +1929,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListByExternalReferenceCodeProductConfigurationListOrderTypes(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the order type bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+		description = "Lists the order type bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 	)
 	public ProductConfigurationListOrderTypePage
 			productConfigurationListByExternalReferenceCodeProductConfigurationListOrderTypes(
@@ -1933,7 +1956,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListIdProductConfigurationListOrderTypes(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the order type bindings of the product configuration list identified by id. Validation -- None at this layer."
+		description = "Lists the order type bindings of the product configuration list identified by ID. Validation -- None at this layer."
 	)
 	public ProductConfigurationListOrderTypePage
 			productConfigurationListIdProductConfigurationListOrderTypes(
@@ -1968,7 +1991,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productGroup(id: ___){customFields, description, externalReferenceCode, id, products, productsCount, title}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product group identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product group identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductGroup productGroup(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2058,7 +2081,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productGroupIdProductGroupProducts(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the product bindings of the product group identified by id. Validation -- None at this layer (returns empty page on no match)."
+		description = "Lists the product bindings of the product group identified by ID. Validation -- None at this layer (returns empty page on no match)."
 	)
 	public ProductGroupProductPage productGroupIdProductGroupProducts(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -2108,7 +2131,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdProductOptions(id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the product option relations of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Lists the product option relations of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public ProductOptionPage productIdProductOptions(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -2130,10 +2153,10 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOption(id: ___){catalogId, customFields, definedExternally, description, facetable, fieldType, id, infoItemServiceKey, key, name, optionExternalReferenceCode, optionId, priceType, priority, productOptionValues, required, skuContributor, typeSettings}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOption(id: ___){catalogId, customFields, definedExternally, description, externalReferenceCode, facetable, fieldType, id, infoItemServiceKey, key, name, optionExternalReferenceCode, optionId, priceType, priority, productOptionValues, required, skuContributor, typeSettings}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product option relation identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product option relation identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductOption productOption(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2148,10 +2171,40 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionByExternalReferenceCodeProductOptionValues(externalReferenceCode: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Lists the product option value relations of the product option identified by external reference code. Returns 404 when the product option external reference code is not found."
+	)
+	public ProductOptionValuePage
+			productOptionByExternalReferenceCodeProductOptionValues(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("search") String search,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page,
+				@GraphQLName("sort") String sortsString)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productOptionValueResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productOptionValueResource -> new ProductOptionValuePage(
+				productOptionValueResource.
+					getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+						externalReferenceCode, search,
+						Pagination.of(page, pageSize),
+						_sortsBiFunction.apply(
+							productOptionValueResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionIdProductOptionValues(id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the product option value relations of the product option identified by id. Returns 404 when the parent option relation id is not found."
+		description = "Lists the product option value relations of the product option identified by ID. Returns 404 when the parent option relation ID is not found."
 	)
 	public ProductOptionValuePage productOptionIdProductOptionValues(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -2174,10 +2227,10 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionValue(id: ___){deltaPrice, id, key, name, preselected, priority, quantity, skuExternalReferenceCode, skuId, unitOfMeasureKey}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productOptionValue(id: ___){deltaPrice, externalReferenceCode, id, key, name, preselected, priority, quantity, skuExternalReferenceCode, skuId, unitOfMeasureKey}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product option value relation identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product option value relation identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductOptionValue productOptionValue(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2218,7 +2271,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdShippingConfiguration(id: ___){depth, freeShipping, height, shippable, shippingExtraPrice, shippingSeparately, weight, width}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the shipping configuration of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the shipping configuration of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public ProductShippingConfiguration productIdShippingConfiguration(
 			@GraphQLName("id") Long id)
@@ -2238,7 +2291,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeProductSpecifications(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the specification values of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the product external reference code is not found."
+		description = "Lists the specification values of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the product external reference code is not found."
 	)
 	public ProductSpecificationPage
 			productByExternalReferenceCodeProductSpecifications(
@@ -2263,7 +2316,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdProductSpecifications(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the specification values of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Lists the specification values of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public ProductSpecificationPage productIdProductSpecifications(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -2285,7 +2338,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productSpecification(id: ___){externalReferenceCode, id, key, label, optionCategoryExternalReferenceCode, optionCategoryId, priority, productId, specificationExternalReferenceCode, specificationId, specificationKey, specificationPriority, value, visible}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product specification value identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product specification value identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductSpecification productSpecification(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2347,7 +2400,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdSubscriptionConfiguration(id: ___){deliverySubscriptionEnable, deliverySubscriptionLength, deliverySubscriptionNumberOfLength, deliverySubscriptionType, deliverySubscriptionTypeSettings, enable, length, numberOfLength, subscriptionType, subscriptionTypeSettings}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the subscription configuration of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the subscription configuration of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public ProductSubscriptionConfiguration productIdSubscriptionConfiguration(
 			@GraphQLName("id") Long id)
@@ -2390,7 +2443,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdTaxConfiguration(id: ___){id, taxCategory, taxCategoryExternalReferenceCode, taxable}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the tax configuration of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the tax configuration of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public ProductTaxConfiguration productIdTaxConfiguration(
 			@GraphQLName("id") Long id)
@@ -2433,7 +2486,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdProductVirtualSettings(id: ___){activationStatus, activationStatusInfo, attachment, duration, id, maxUsages, productVirtualSettingsFileEntries, sampleAttachment, sampleSrc, sampleURL, src, termsOfUseContent, termsOfUseJournalArticleExternalReferenceCode, termsOfUseJournalArticleGroupExternalReferenceCode, termsOfUseJournalArticleId, termsOfUseRequired, url, useSample}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the virtual settings of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the virtual settings of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	public ProductVirtualSettings productIdProductVirtualSettings(
 			@GraphQLName("id") Long id)
@@ -2453,7 +2506,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productVirtualSettingIdProductVirtualSettingsFileEntries(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the file entries attached to the product virtual setting identified by id. Returns 404 when the parent id is not found."
+		description = "Lists the file entries attached to the product virtual setting identified by ID. Returns 404 when the parent ID is not found."
 	)
 	public ProductVirtualSettingsFileEntryPage
 			productVirtualSettingIdProductVirtualSettingsFileEntries(
@@ -2478,7 +2531,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productVirtualSettingsFileEntry(id: ___){actions, attachment, id, src, url, version}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the product virtual settings file entry identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product virtual settings file entry identified by ID. Returns 404 when the ID is not found."
 	)
 	public ProductVirtualSettingsFileEntry productVirtualSettingsFileEntry(
 			@GraphQLName("id") Long id)
@@ -2523,7 +2576,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdRelatedProducts(id: ___, page: ___, pageSize: ___, type: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the related product links of the product identified by product id, optionally narrowed by link type. Returns 404 when the product id is not found."
+		description = "Lists the related product links of the product identified by product ID, optionally narrowed by link type. Returns 404 when the product ID is not found."
 	)
 	public RelatedProductPage productIdRelatedProducts(
 			@GraphQLName("id") Long id, @GraphQLName("type") String type,
@@ -2545,7 +2598,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {relatedProduct(id: ___){id, priority, productExternalReferenceCode, productId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the related product link identified by id. Returns 404 when the id is not found."
+		description = "Fetches the related product link identified by ID. Returns 404 when the ID is not found."
 	)
 	public RelatedProduct relatedProduct(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2584,7 +2637,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdSkus(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the SKUs of the product identified by product id. Calls Internal _getSkusPage (index-backed SKU listing scoped to the product). Validation -- Returns empty page when product id not found."
+		description = "Lists the SKUs of the product identified by product ID. Calls Internal _getSkusPage (index-backed SKU listing scoped to the product). Validation -- Returns empty page when product ID not found."
 	)
 	public SkuPage productIdSkus(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -2604,7 +2657,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {sku(id: ___){cost, customFields, depth, discontinued, discontinuedDate, displayDate, expirationDate, externalReferenceCode, gtin, height, id, inventoryLevel, manufacturerPartNumber, neverExpire, price, productId, productName, promoPrice, published, purchasable, replacementSkuExternalReferenceCode, replacementSkuId, sku, skuOptions, skuSubscriptionConfiguration, skuUnitOfMeasures, skuVirtualSettings, unitOfMeasureKey, unitOfMeasureName, unitOfMeasureSkuId, unspsc, weight, width}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the SKU identified by id. Returns 404 when the id is not found."
+		description = "Fetches the SKU identified by ID. Returns 404 when the ID is not found."
 	)
 	public Sku sku(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -2709,7 +2762,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuIdSkuSubscriptionConfiguration(id: ___){deliverySubscriptionEnable, deliverySubscriptionLength, deliverySubscriptionNumberOfLength, deliverySubscriptionType, deliverySubscriptionTypeSettings, enable, length, numberOfLength, overrideSubscriptionInfo, subscriptionType, subscriptionTypeSettings}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the subscription configuration of the SKU identified by id. Returns 404 when the SKU id is not found."
+		description = "Returns the subscription configuration of the SKU identified by ID. Returns 404 when the SKU ID is not found."
 	)
 	public SkuSubscriptionConfiguration skuIdSkuSubscriptionConfiguration(
 			@GraphQLName("id") Long id)
@@ -2752,7 +2805,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuIdSkuUnitOfMeasures(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the unit of measure entries of the SKU identified by id. Validation -- None at this layer (returns empty page when id is absent)."
+		description = "Lists the unit of measure entries of the SKU identified by ID. Validation -- None at this layer (returns empty page when ID is absent)."
 	)
 	public SkuUnitOfMeasurePage skuIdSkuUnitOfMeasures(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -2773,7 +2826,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuUnitOfMeasure(id: ___){actions, active, basePrice, id, incrementalOrderQuantity, key, name, precision, pricingQuantity, primary, priority, promoPrice, rate, sku, skuId}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the SKU unit of measure identified by id. Returns 404 when the id is not found."
+		description = "Fetches the SKU unit of measure identified by ID. Returns 404 when the ID is not found."
 	)
 	public SkuUnitOfMeasure skuUnitOfMeasure(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2812,7 +2865,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuIdSkuVirtualSettings(id: ___){activationStatus, activationStatusInfo, attachment, duration, id, maxUsages, override, sampleAttachment, sampleSrc, sampleURL, skuVirtualSettingsFileEntries, src, termsOfUseContent, termsOfUseJournalArticleExternalReferenceCode, termsOfUseJournalArticleGroupExternalReferenceCode, termsOfUseJournalArticleId, termsOfUseRequired, url, useSample}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the virtual settings of the SKU identified by id. Returns 404 when the SKU id is not found."
+		description = "Returns the virtual settings of the SKU identified by ID. Returns 404 when the SKU ID is not found."
 	)
 	public SkuVirtualSettings skuIdSkuVirtualSettings(
 			@GraphQLName("id") Long id)
@@ -2831,7 +2884,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuVirtualSettingIdSkuVirtualSettingsFileEntries(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the file entries attached to the SKU virtual setting identified by id. Returns 404 when the parent id is not found."
+		description = "Lists the file entries attached to the SKU virtual setting identified by ID. Returns 404 when the parent ID is not found."
 	)
 	public SkuVirtualSettingsFileEntryPage
 			skuVirtualSettingIdSkuVirtualSettingsFileEntries(
@@ -2856,7 +2909,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuVirtualSettingsFileEntry(id: ___){actions, attachment, id, src, url, version}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the SKU virtual settings file entry identified by id. Returns 404 when the id is not found."
+		description = "Fetches the SKU virtual settings file entry identified by ID. Returns 404 when the ID is not found."
 	)
 	public SkuVirtualSettingsFileEntry skuVirtualSettingsFileEntry(
 			@GraphQLName("id") Long id)
@@ -2876,7 +2929,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {specification(id: ___){description, externalReferenceCode, facetable, id, key, listTypeDefinitionExternalReferenceCodes, listTypeDefinitionId, listTypeDefinitionIds, optionCategory, priority, title, visible}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the specification identified by id. Returns 404 when the id is not found."
+		description = "Fetches the specification identified by ID. Returns 404 when the ID is not found."
 	)
 	public Specification specification(@GraphQLName("id") Long id)
 		throws Exception {
@@ -3468,6 +3521,38 @@ public class Query {
 
 	@GraphQLTypeExtension(Attachment.class)
 	public class
+		GetProductByExternalReferenceCodeLinkedProductsPageTypeExtension {
+
+		public GetProductByExternalReferenceCodeLinkedProductsPageTypeExtension(
+			Attachment attachment) {
+
+			_attachment = attachment;
+		}
+
+		@GraphQLField(
+			description = "Lists the diagram and grouped product entries that link other products back to the product identified by external reference code. Returns 404 when the product external reference code is not found."
+		)
+		public LinkedProductPage productByExternalReferenceCodeLinkedProducts(
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_linkedProductResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				linkedProductResource -> new LinkedProductPage(
+					linkedProductResource.
+						getProductByExternalReferenceCodeLinkedProductsPage(
+							_attachment.getExternalReferenceCode(),
+							Pagination.of(page, pageSize))));
+		}
+
+		private Attachment _attachment;
+
+	}
+
+	@GraphQLTypeExtension(Attachment.class)
+	public class
 		GetProductByExternalReferenceCodeMappedProductsPageTypeExtension {
 
 		public GetProductByExternalReferenceCodeMappedProductsPageTypeExtension(
@@ -3645,7 +3730,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Returns the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the product external reference code is not found."
+			description = "Returns the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the product external reference code is not found."
 		)
 		public ProductConfiguration
 				productByExternalReferenceCodeConfiguration()
@@ -3675,7 +3760,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists product configuration entries attached to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found. List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType."
+			description = "Lists product configuration entries attached to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found. List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType."
 		)
 		public ProductConfigurationPage
 				productConfigurationListByExternalReferenceCodeProductConfigurations(
@@ -3717,7 +3802,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the account bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+			description = "Lists the account bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 		)
 		public ProductConfigurationListAccountPage
 				productConfigurationListByExternalReferenceCodeProductConfigurationListAccounts(
@@ -3751,7 +3836,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the account group bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+			description = "Lists the account group bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 		)
 		public ProductConfigurationListAccountGroupPage
 				productConfigurationListByExternalReferenceCodeProductConfigurationListAccountGroups(
@@ -3785,7 +3870,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the channel bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+			description = "Lists the channel bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 		)
 		public ProductConfigurationListChannelPage
 				productConfigurationListByExternalReferenceCodeProductConfigurationListChannels(
@@ -3819,7 +3904,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the order type bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+			description = "Lists the order type bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 		)
 		public ProductConfigurationListOrderTypePage
 				productConfigurationListByExternalReferenceCodeProductConfigurationListOrderTypes(
@@ -3913,6 +3998,43 @@ public class Query {
 
 	@GraphQLTypeExtension(Attachment.class)
 	public class
+		GetProductOptionByExternalReferenceCodeProductOptionValuesPageTypeExtension {
+
+		public GetProductOptionByExternalReferenceCodeProductOptionValuesPageTypeExtension(
+			Attachment attachment) {
+
+			_attachment = attachment;
+		}
+
+		@GraphQLField(
+			description = "Lists the product option value relations of the product option identified by external reference code. Returns 404 when the product option external reference code is not found."
+		)
+		public ProductOptionValuePage
+				productOptionByExternalReferenceCodeProductOptionValues(
+					@GraphQLName("search") String search,
+					@GraphQLName("pageSize") int pageSize,
+					@GraphQLName("page") int page,
+					@GraphQLName("sort") String sortsString)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_productOptionValueResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				productOptionValueResource -> new ProductOptionValuePage(
+					productOptionValueResource.
+						getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+							_attachment.getExternalReferenceCode(), search,
+							Pagination.of(page, pageSize),
+							_sortsBiFunction.apply(
+								productOptionValueResource, sortsString))));
+		}
+
+		private Attachment _attachment;
+
+	}
+
+	@GraphQLTypeExtension(Attachment.class)
+	public class
 		GetProductByExternalReferenceCodeShippingConfigurationTypeExtension {
 
 		public GetProductByExternalReferenceCodeShippingConfigurationTypeExtension(
@@ -3952,7 +4074,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the specification values of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the product external reference code is not found."
+			description = "Lists the specification values of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the product external reference code is not found."
 		)
 		public ProductSpecificationPage
 				productByExternalReferenceCodeProductSpecifications(
@@ -6546,4 +6668,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1599953753
+// LIFERAY-REST-BUILDER-HASH:-370107560

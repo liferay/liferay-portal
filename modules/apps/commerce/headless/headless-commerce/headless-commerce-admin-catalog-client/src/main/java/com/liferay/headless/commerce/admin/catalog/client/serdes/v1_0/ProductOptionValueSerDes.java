@@ -58,6 +58,20 @@ public class ProductOptionValueSerDes {
 			sb.append(productOptionValue.getDeltaPrice());
 		}
 
+		if (productOptionValue.getExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(productOptionValue.getExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (productOptionValue.getId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -191,6 +205,15 @@ public class ProductOptionValueSerDes {
 				String.valueOf(productOptionValue.getDeltaPrice()));
 		}
 
+		if (productOptionValue.getExternalReferenceCode() == null) {
+			map.put("externalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"externalReferenceCode",
+				String.valueOf(productOptionValue.getExternalReferenceCode()));
+		}
+
 		if (productOptionValue.getId() == null) {
 			map.put("id", null);
 		}
@@ -284,6 +307,11 @@ public class ProductOptionValueSerDes {
 			if (Objects.equals(jsonParserFieldName, "deltaPrice")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
@@ -326,6 +354,14 @@ public class ProductOptionValueSerDes {
 				if (jsonParserFieldValue != null) {
 					productOptionValue.setDeltaPrice(
 						new BigDecimal((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					productOptionValue.setExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -464,4 +500,4 @@ public class ProductOptionValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-930662096
+// LIFERAY-REST-BUILDER-HASH:242596639

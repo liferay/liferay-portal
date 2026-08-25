@@ -74,7 +74,7 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/payment-method-group-rel-order-types/{paymentMethodGroupRelOrderTypeId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the payment-method-group-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found."
+		description = "Deletes the payment-method-group-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -161,7 +161,7 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/payment-method-group-rels/{id}/payment-method-group-rel-order-types'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the PaymentMethodGroupRelOrderType entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel id not found. List query support — page and pageSize paginate the related entries."
+		description = "Lists the PaymentMethodGroupRelOrderType entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel ID not found. List query support — page and pageSize paginate the related entries."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -235,7 +235,7 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/payment-method-group-rels/{id}/payment-method-group-rel-order-types' -d $'{"orderTypeExternalReferenceCode": ___, "orderTypeId": ___, "paymentMethodGroupRelId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a new payment-method-group-to-order-type relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type id/erc not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a payment-method-group-rel qualifier."
+		description = "Creates a new payment-method-group-to-order-type relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type ID/ERC not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a payment-method-group-rel qualifier."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -968,4 +968,4 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 			BasePaymentMethodGroupRelOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:275626092
+// LIFERAY-REST-BUILDER-HASH:-1420855220

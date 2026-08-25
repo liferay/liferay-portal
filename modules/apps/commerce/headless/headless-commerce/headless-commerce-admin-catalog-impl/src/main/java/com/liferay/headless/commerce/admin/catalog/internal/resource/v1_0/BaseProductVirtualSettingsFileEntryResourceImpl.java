@@ -79,7 +79,7 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-virtual-settings-file-entries/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the product virtual settings file entry identified by id. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted)."
+		description = "Deletes the product virtual settings file entry identified by ID. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -164,7 +164,7 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-virtual-settings/{id}/product-virtual-settings-file-entries'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the file entries attached to the product virtual setting identified by id. Returns 404 when the parent id is not found."
+		description = "Lists the file entries attached to the product virtual setting identified by ID. Returns 404 when the parent ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -216,7 +216,7 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-virtual-settings-file-entries/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the product virtual settings file entry identified by id. Returns 404 when the id is not found."
+		description = "Fetches the product virtual settings file entry identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -254,7 +254,7 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-virtual-settings-file-entries/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the product virtual settings file entry identified by id, optionally replacing the underlying file. Returns 404 when the id is not found. Side effects -- May create a new DL file entry under the product group when a binary file or attachment is supplied.",
+		description = "Partially updates the product virtual settings file entry identified by ID, optionally replacing the underlying file. Returns 404 when the ID is not found. Side effects -- May create a new DL file entry under the product group when a binary file or attachment is supplied.",
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PatchProductVirtualSettingsFileEntryRequestBody.class)))
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -295,7 +295,7 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-virtual-settings/{id}/product-virtual-settings-file-entries'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Adds a file entry under the product virtual setting identified by id, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent id is not found. Side effects -- Creates a DL file entry under the product group and records a new virtual settings file entry.",
+		description = "Adds a file entry under the product virtual setting identified by ID, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent ID is not found. Side effects -- Creates a DL file entry under the product group and records a new virtual settings file entry.",
 		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostProductVirtualSettingIdProductVirtualSettingsFileEntryRequestBody.class)))
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -1095,4 +1095,4 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1300421454
+// LIFERAY-REST-BUILDER-HASH:1818798258

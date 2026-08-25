@@ -118,7 +118,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/{id}/list-type-definitions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the list type definitions associated with the specification option identified by id. Returns 404 when the id is not found."
+		description = "Lists the list type definitions associated with the specification option identified by ID. Returns 404 when the ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -154,7 +154,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/{id}/list-type-definitions' -d $'{"externalReferenceCode": ___, "name": ___, "name_i18n": ___, "system": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a list type definition and attaches it to the specification option identified by id. Returns 404 when the specification id is not found. Side effects -- Creates a new list type definition and attaches it to the specification option."
+		description = "Creates a list type definition and attaches it to the specification option identified by ID. Returns 404 when the specification ID is not found. Side effects -- Creates a new list type definition and attaches it to the specification option."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -938,4 +938,4 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseListTypeDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1004416264
+// LIFERAY-REST-BUILDER-HASH:1397871352

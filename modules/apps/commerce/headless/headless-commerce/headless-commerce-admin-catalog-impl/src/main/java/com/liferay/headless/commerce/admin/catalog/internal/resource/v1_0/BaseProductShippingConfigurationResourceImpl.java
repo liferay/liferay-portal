@@ -90,7 +90,7 @@ public abstract class BaseProductShippingConfigurationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/shippingConfiguration'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the shipping configuration of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the shipping configuration of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -172,7 +172,7 @@ public abstract class BaseProductShippingConfigurationResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/shippingConfiguration' -d $'{"depth": ___, "freeShipping": ___, "height": ___, "shippable": ___, "shippingExtraPrice": ___, "shippingSeparately": ___, "weight": ___, "width": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the shipping configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition shipping fields."
+		description = "Partially updates the shipping configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition shipping fields."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -654,4 +654,4 @@ public abstract class BaseProductShippingConfigurationResourceImpl
 			BaseProductShippingConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1752628751
+// LIFERAY-REST-BUILDER-HASH:75955727

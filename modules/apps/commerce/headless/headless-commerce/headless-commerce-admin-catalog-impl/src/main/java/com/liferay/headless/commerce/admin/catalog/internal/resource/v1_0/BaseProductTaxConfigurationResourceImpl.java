@@ -90,7 +90,7 @@ public abstract class BaseProductTaxConfigurationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/taxConfiguration'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the tax configuration of the product identified by product id. Returns 404 when the product id is not found."
+		description = "Returns the tax configuration of the product identified by product ID. Returns 404 when the product ID is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -172,7 +172,7 @@ public abstract class BaseProductTaxConfigurationResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/taxConfiguration' -d $'{"id": ___, "taxCategory": ___, "taxCategoryExternalReferenceCode": ___, "taxable": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the tax configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition tax category and taxExempt flag."
+		description = "Partially updates the tax configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition tax category and taxExempt flag."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -653,4 +653,4 @@ public abstract class BaseProductTaxConfigurationResourceImpl
 		LogFactoryUtil.getLog(BaseProductTaxConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1368609255
+// LIFERAY-REST-BUILDER-HASH:-395596263

@@ -404,10 +404,28 @@ public class ServletDataImpl implements ServletData {
 							ShippingMethodResourceImpl.class,
 							"postChannelShippingMethodsPageExportBatch"));
 					put(
+						"mutation#patchTaxCategory",
+						new ObjectValuePair<>(
+							TaxCategoryResourceImpl.class, "patchTaxCategory"));
+					put(
+						"mutation#patchTaxCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxCategoryResourceImpl.class,
+							"patchTaxCategoryByExternalReferenceCode"));
+					put(
 						"mutation#createTaxCategoriesPageExportBatch",
 						new ObjectValuePair<>(
 							TaxCategoryResourceImpl.class,
 							"postTaxCategoriesPageExportBatch"));
+					put(
+						"mutation#createTaxCategory",
+						new ObjectValuePair<>(
+							TaxCategoryResourceImpl.class, "postTaxCategory"));
+					put(
+						"mutation#createTaxCategoryBatch",
+						new ObjectValuePair<>(
+							TaxCategoryResourceImpl.class,
+							"postTaxCategoryBatch"));
 
 					put(
 						"query#channelAccountAccount",
@@ -547,6 +565,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							TaxCategoryResourceImpl.class, "getTaxCategory"));
 					put(
+						"query#taxCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxCategoryResourceImpl.class,
+							"getTaxCategoryByExternalReferenceCode"));
+					put(
 						"query#paymentMethodGroupRelTermTerm",
 						new ObjectValuePair<>(
 							TermResourceImpl.class,
@@ -562,10 +585,20 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ChannelResourceImpl.class, "getChannel"));
 					put(
+						"query#TaxCategory.channelByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ChannelResourceImpl.class,
+							"getChannelByExternalReferenceCode"));
+					put(
 						"query#Channel.shippingMethods",
 						new ObjectValuePair<>(
 							ShippingMethodResourceImpl.class,
 							"getChannelShippingMethodsPage"));
+					put(
+						"query#Channel.taxCategoryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							TaxCategoryResourceImpl.class,
+							"getTaxCategoryByExternalReferenceCode"));
 					put(
 						"query#Channel.accountAddressByExternalReferenceCodeAccountAddressChannels",
 						new ObjectValuePair<>(
@@ -664,4 +697,4 @@ public class ServletDataImpl implements ServletData {
 		_termResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-840238931
+// LIFERAY-REST-BUILDER-HASH:915084321

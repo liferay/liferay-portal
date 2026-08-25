@@ -38,11 +38,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Tax classification assigned to products to drive tax calculation at checkout. Read-only on this projection; full tax-category management lives in the Site Setting admin API.",
+	description = "Tax classification assigned to products to drive tax calculation at checkout. Readable and writable by external reference code so a vocabulary export can be imported into another environment; the Site Setting admin API remains the full featured management surface.",
 	value = "TaxCategory"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Tax classification assigned to products to drive tax calculation at checkout. Read-only on this projection; full tax-category management lives in the Site Setting admin API.",
+	description = "Tax classification assigned to products to drive tax calculation at checkout. Readable and writable by external reference code so a vocabulary export can be imported into another environment; the Site Setting admin API remains the full featured management surface.",
 	requiredProperties = {"name"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -104,6 +104,52 @@ public class TaxCategory implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Map<String, String>> _descriptionSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key for create and update; must be unique per tax category within the company. Used to resolve the upsert target, and assigned from the entity UUID when omitted on create.",
+		example = "AB-34098-789-N"
+	)
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCodeSupplier != null) {
+			externalReferenceCode = _externalReferenceCodeSupplier.get();
+
+			_externalReferenceCodeSupplier = null;
+		}
+
+		return externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
+
+		_externalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
+
+		_externalReferenceCodeSupplier = () -> {
+			try {
+				return externalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Idempotency key for create and update; must be unique per tax category within the company. Used to resolve the upsert target, and assigned from the entity UUID when omitted on create."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String externalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
@@ -284,6 +330,22 @@ public class TaxCategory implements Serializable {
 			sb.append(_toJSON(description));
 		}
 
+		String externalReferenceCode = getExternalReferenceCode();
+
+		if (externalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(externalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		Long groupId = getGroupId();
 
 		if (groupId != null) {
@@ -421,4 +483,4 @@ public class TaxCategory implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1847944341
+// LIFERAY-REST-BUILDER-HASH:-641660757

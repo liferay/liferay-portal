@@ -76,7 +76,7 @@ public abstract class BaseProductConfigurationListAccountResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-list-accounts/{productConfigurationListAccountId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Removes the account binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account <-> configuration list association."
+		description = "Removes the account binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account <-> configuration list association."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -163,7 +163,7 @@ public abstract class BaseProductConfigurationListAccountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configuration-list-accounts'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the account bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found."
+		description = "Lists the account bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -215,7 +215,7 @@ public abstract class BaseProductConfigurationListAccountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/{id}/product-configuration-list-accounts'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the account bindings of the product configuration list identified by id. Validation -- None at this layer."
+		description = "Lists the account bindings of the product configuration list identified by ID. Validation -- None at this layer."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -289,7 +289,7 @@ public abstract class BaseProductConfigurationListAccountResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configuration-list-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "productConfigurationListExternalReferenceCode": ___, "productConfigurationListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Binds an account to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list."
+		description = "Binds an account to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -332,7 +332,7 @@ public abstract class BaseProductConfigurationListAccountResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/{id}/product-configuration-list-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "productConfigurationListExternalReferenceCode": ___, "productConfigurationListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Binds an account to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list."
+		description = "Binds an account to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1162,4 +1162,4 @@ public abstract class BaseProductConfigurationListAccountResourceImpl
 			BaseProductConfigurationListAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:480817742
+// LIFERAY-REST-BUILDER-HASH:-1510360498

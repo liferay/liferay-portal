@@ -1121,6 +1121,11 @@ public class ServletDataImpl implements ServletData {
 							ProductOptionValueResourceImpl.class,
 							"patchProductOptionValue"));
 					put(
+						"mutation#createProductOptionByExternalReferenceCodeProductOptionValue",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"postProductOptionByExternalReferenceCodeProductOptionValue"));
+					put(
 						"mutation#createProductOptionIdProductOptionValue",
 						new ObjectValuePair<>(
 							ProductOptionValueResourceImpl.class,
@@ -1475,6 +1480,11 @@ public class ServletDataImpl implements ServletData {
 							GroupedProductResourceImpl.class,
 							"getProductIdGroupedProductsPage"));
 					put(
+						"query#productByExternalReferenceCodeLinkedProducts",
+						new ObjectValuePair<>(
+							LinkedProductResourceImpl.class,
+							"getProductByExternalReferenceCodeLinkedProductsPage"));
+					put(
 						"query#productIdLinkedProducts",
 						new ObjectValuePair<>(
 							LinkedProductResourceImpl.class,
@@ -1743,6 +1753,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ProductOptionResourceImpl.class,
 							"getProductOption"));
+					put(
+						"query#productOptionByExternalReferenceCodeProductOptionValues",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"getProductOptionByExternalReferenceCodeProductOptionValuesPage"));
 					put(
 						"query#productOptionIdProductOptionValues",
 						new ObjectValuePair<>(
@@ -2020,6 +2035,11 @@ public class ServletDataImpl implements ServletData {
 							GroupedProductResourceImpl.class,
 							"getProductByExternalReferenceCodeGroupedProductsPage"));
 					put(
+						"query#Attachment.productByExternalReferenceCodeLinkedProducts",
+						new ObjectValuePair<>(
+							LinkedProductResourceImpl.class,
+							"getProductByExternalReferenceCodeLinkedProductsPage"));
+					put(
 						"query#Attachment.productByExternalReferenceCodeMappedProducts",
 						new ObjectValuePair<>(
 							MappedProductResourceImpl.class,
@@ -2085,6 +2105,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ProductOptionResourceImpl.class,
 							"getProductByExternalReferenceCodeProductOptionsPage"));
+					put(
+						"query#Attachment.productOptionByExternalReferenceCodeProductOptionValues",
+						new ObjectValuePair<>(
+							ProductOptionValueResourceImpl.class,
+							"getProductOptionByExternalReferenceCodeProductOptionValuesPage"));
 					put(
 						"query#Attachment.productByExternalReferenceCodeShippingConfiguration",
 						new ObjectValuePair<>(
@@ -2310,4 +2335,4 @@ public class ServletDataImpl implements ServletData {
 		_skuVirtualSettingsResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1495354712
+// LIFERAY-REST-BUILDER-HASH:-1349823697

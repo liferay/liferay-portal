@@ -23,6 +23,7 @@ import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -82,6 +84,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -197,11 +200,15 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 		TaxCategory taxCategory = randomTaxCategory();
 
+		taxCategory.setExternalReferenceCode(regex);
+
 		String json = TaxCategorySerDes.toJSON(taxCategory);
 
 		Assert.assertFalse(json.contains(regex));
 
 		taxCategory = TaxCategorySerDes.toDTO(json);
+
+		Assert.assertEquals(regex, taxCategory.getExternalReferenceCode());
 	}
 
 	@Test
@@ -321,6 +328,84 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetTaxCategoriesPage() throws Exception {
+		GraphQLField graphQLField =
+			testGraphQLGetTaxCategoriesPageTaxCategory_getGraphQLField();
+
+		// No namespace
+
+		JSONObject taxCategoriesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/taxCategories");
+
+		long totalCount = taxCategoriesJSONObject.getLong("totalCount");
+
+		TaxCategory taxCategory1 = testGraphQLTaxCategory_addTaxCategory(
+			randomTaxCategory());
+
+		TaxCategory taxCategory2 = testGraphQLTaxCategory_addTaxCategory(
+			randomTaxCategory());
+
+		taxCategoriesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/taxCategories");
+
+		Assert.assertEquals(
+			totalCount + 2, taxCategoriesJSONObject.getLong("totalCount"));
+
+		assertContains(
+			taxCategory1,
+			Arrays.asList(
+				TaxCategorySerDes.toDTOs(
+					taxCategoriesJSONObject.getString("items"))));
+		assertContains(
+			taxCategory2,
+			Arrays.asList(
+				TaxCategorySerDes.toDTOs(
+					taxCategoriesJSONObject.getString("items"))));
+
+		// Using the namespace headlessCommerceAdminChannel_v1_0
+
+		taxCategoriesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessCommerceAdminChannel_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/headlessCommerceAdminChannel_v1_0",
+			"JSONObject/taxCategories");
+
+		Assert.assertEquals(
+			totalCount + 2, taxCategoriesJSONObject.getLong("totalCount"));
+
+		assertContains(
+			taxCategory1,
+			Arrays.asList(
+				TaxCategorySerDes.toDTOs(
+					taxCategoriesJSONObject.getString("items"))));
+		assertContains(
+			taxCategory2,
+			Arrays.asList(
+				TaxCategorySerDes.toDTOs(
+					taxCategoriesJSONObject.getString("items"))));
+	}
+
+	protected GraphQLField
+			testGraphQLGetTaxCategoriesPageTaxCategory_getGraphQLField()
+		throws Exception {
+
+		return new GraphQLField(
+			"taxCategories",
+			new HashMap<String, Object>() {
+				{
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
 	}
 
 	@Test
@@ -627,6 +712,233 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	}
 
 	@Test
+	public void testGetTaxCategoryByExternalReferenceCode() throws Exception {
+		TaxCategory postTaxCategory =
+			testGetTaxCategoryByExternalReferenceCode_addTaxCategory();
+
+		TaxCategory getTaxCategory =
+			taxCategoryResource.getTaxCategoryByExternalReferenceCode(
+				postTaxCategory.getExternalReferenceCode());
+
+		assertEquals(postTaxCategory, getTaxCategory);
+		assertValid(getTaxCategory);
+	}
+
+	protected TaxCategory
+			testGetTaxCategoryByExternalReferenceCode_addTaxCategory()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetTaxCategoryByExternalReferenceCode()
+		throws Exception {
+
+		TaxCategory taxCategory =
+			testGraphQLGetTaxCategoryByExternalReferenceCode_addTaxCategory();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				taxCategory,
+				TaxCategorySerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"taxCategoryByExternalReferenceCode",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"externalReferenceCode",
+											"\"" +
+												taxCategory.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/taxCategoryByExternalReferenceCode"))));
+
+		// Using the namespace headlessCommerceAdminChannel_v1_0
+
+		Assert.assertTrue(
+			equals(
+				taxCategory,
+				TaxCategorySerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"headlessCommerceAdminChannel_v1_0",
+								new GraphQLField(
+									"taxCategoryByExternalReferenceCode",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"externalReferenceCode",
+												"\"" +
+													taxCategory.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data",
+						"JSONObject/headlessCommerceAdminChannel_v1_0",
+						"Object/taxCategoryByExternalReferenceCode"))));
+	}
+
+	@Test
+	public void testGraphQLGetTaxCategoryByExternalReferenceCodeNotFound()
+		throws Exception {
+
+		String irrelevantExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"taxCategoryByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									irrelevantExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace headlessCommerceAdminChannel_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"headlessCommerceAdminChannel_v1_0",
+						new GraphQLField(
+							"taxCategoryByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										irrelevantExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected TaxCategory
+			testGraphQLGetTaxCategoryByExternalReferenceCode_addTaxCategory()
+		throws Exception {
+
+		return testGraphQLTaxCategory_addTaxCategory();
+	}
+
+	@Test
+	public void testPatchTaxCategory() throws Exception {
+		TaxCategory postTaxCategory = testPatchTaxCategory_addTaxCategory();
+
+		TaxCategory randomPatchTaxCategory = randomPatchTaxCategory();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		TaxCategory patchTaxCategory = taxCategoryResource.patchTaxCategory(
+			postTaxCategory.getId(), randomPatchTaxCategory);
+
+		TaxCategory expectedPatchTaxCategory = postTaxCategory.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchTaxCategory, expectedPatchTaxCategory);
+
+		TaxCategory getTaxCategory = taxCategoryResource.getTaxCategory(
+			patchTaxCategory.getId());
+
+		assertEquals(expectedPatchTaxCategory, getTaxCategory);
+		assertValid(getTaxCategory);
+	}
+
+	protected TaxCategory testPatchTaxCategory_addTaxCategory()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPatchTaxCategoryByExternalReferenceCode() throws Exception {
+		TaxCategory postTaxCategory =
+			testPatchTaxCategoryByExternalReferenceCode_addTaxCategory();
+
+		TaxCategory randomPatchTaxCategory = randomPatchTaxCategory();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		TaxCategory patchTaxCategory =
+			taxCategoryResource.patchTaxCategoryByExternalReferenceCode(
+				postTaxCategory.getExternalReferenceCode(),
+				randomPatchTaxCategory);
+
+		TaxCategory expectedPatchTaxCategory = postTaxCategory.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchTaxCategory, expectedPatchTaxCategory);
+
+		TaxCategory getTaxCategory =
+			taxCategoryResource.getTaxCategoryByExternalReferenceCode(
+				patchTaxCategory.getExternalReferenceCode());
+
+		assertEquals(expectedPatchTaxCategory, getTaxCategory);
+		assertValid(getTaxCategory);
+	}
+
+	protected TaxCategory
+			testPatchTaxCategoryByExternalReferenceCode_addTaxCategory()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostTaxCategory() throws Exception {
+		TaxCategory randomTaxCategory = randomTaxCategory();
+
+		TaxCategory postTaxCategory = testPostTaxCategory_addTaxCategory(
+			randomTaxCategory);
+
+		assertEquals(randomTaxCategory, postTaxCategory);
+		assertValid(postTaxCategory);
+	}
+
+	protected TaxCategory testPostTaxCategory_addTaxCategory(
+			TaxCategory taxCategory)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLPostTaxCategory() throws Exception {
+		TaxCategory randomTaxCategory = randomTaxCategory();
+
+		TaxCategory taxCategory = testGraphQLTaxCategory_addTaxCategory(
+			randomTaxCategory);
+
+		Assert.assertTrue(equals(randomTaxCategory, taxCategory));
+	}
+
+	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Assert.assertTrue(true);
 	}
@@ -634,8 +946,124 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	protected TaxCategory testGraphQLTaxCategory_addTaxCategory()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGraphQLTaxCategory_addTaxCategory(randomTaxCategory());
+	}
+
+	protected TaxCategory testGraphQLTaxCategory_addTaxCategory(
+			TaxCategory taxCategory)
+		throws Exception {
+
+		JSONDeserializer<TaxCategory> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(TaxCategory.class)) {
+
+			if (getGraphQLValue(field.get(taxCategory)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(taxCategory)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createTaxCategory",
+						new HashMap<String, Object>() {
+							{
+								put("taxCategory", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createTaxCategory"),
+			TaxCategory.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date) {
+			Date date = (Date)value;
+
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum) {
+			Enum<?> enm = (Enum<?>)value;
+
+			return enm.name();
+		}
+		else if (value instanceof Map) {
+			Map<?, ?> map = (Map<?, ?>)value;
+
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[]) {
+			Object[] array = (Object[])value;
+
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -723,6 +1151,16 @@ public abstract class BaseTaxCategoryResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (taxCategory.getExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("groupId", additionalAssertFieldName)) {
 				if (taxCategory.getGroupId() == null) {
 					valid = false;
@@ -797,6 +1235,8 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
 		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
@@ -864,6 +1304,19 @@ public abstract class BaseTaxCategoryResourceTestCase {
 				if (!equals(
 						(Map)taxCategory1.getDescription(),
 						(Map)taxCategory2.getDescription())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						taxCategory1.getExternalReferenceCode(),
+						taxCategory2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -1014,6 +1467,52 @@ public abstract class BaseTaxCategoryResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = taxCategory.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("groupId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1076,6 +1575,8 @@ public abstract class BaseTaxCategoryResourceTestCase {
 	protected TaxCategory randomTaxCategory() throws Exception {
 		return new TaxCategory() {
 			{
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				groupId = RandomTestUtil.randomLong();
 				id = RandomTestUtil.randomLong();
 			}
@@ -1324,4 +1825,4 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-109005242
+// LIFERAY-REST-BUILDER-HASH:1108093500

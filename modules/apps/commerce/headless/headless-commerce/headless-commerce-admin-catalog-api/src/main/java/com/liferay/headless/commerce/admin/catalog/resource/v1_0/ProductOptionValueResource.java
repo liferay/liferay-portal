@@ -52,6 +52,13 @@ public interface ProductOptionValueResource {
 			String callbackURL, Object object)
 		throws Exception;
 
+	public Page<ProductOptionValue>
+			getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+				String externalReferenceCode, String search,
+				Pagination pagination,
+				com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
 	public Page<ProductOptionValue> getProductOptionIdProductOptionValuesPage(
 			Long id, String search, Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
@@ -61,6 +68,12 @@ public interface ProductOptionValueResource {
 
 	public ProductOptionValue patchProductOptionValue(
 			Long id, ProductOptionValue productOptionValue)
+		throws Exception;
+
+	public ProductOptionValue
+			postProductOptionByExternalReferenceCodeProductOptionValue(
+				String externalReferenceCode,
+				ProductOptionValue productOptionValue)
 		throws Exception;
 
 	public ProductOptionValue postProductOptionIdProductOptionValue(
@@ -167,4 +180,4 @@ public interface ProductOptionValueResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-145588190
+// LIFERAY-REST-BUILDER-HASH:445418911
