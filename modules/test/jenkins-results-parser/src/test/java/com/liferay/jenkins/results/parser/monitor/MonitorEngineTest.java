@@ -195,6 +195,21 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 		testEquals(1, monitorResultsMap.size());
 	}
 
+	@Test
+	public void testRunCyclePreparesMonitors() {
+		TestMonitor testMonitor = Mockito.spy(
+			new TestMonitor(_newMonitorConfig("a")));
+
+		MonitorEngine monitorEngine = new MonitorEngine(
+			new MonitorResultStore(), Arrays.<Monitor>asList(testMonitor));
+
+		monitorEngine.runCycle();
+
+		Mockito.verify(
+			testMonitor
+		).prepareCycle();
+	}
+
 	private MonitorConfig _newMonitorConfig(String id) {
 		return _newMonitorConfig(
 			id, RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
