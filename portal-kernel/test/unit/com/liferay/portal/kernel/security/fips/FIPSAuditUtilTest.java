@@ -9,10 +9,12 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.internal.log4j.FIPSLog4jUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.util.Time;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import java.util.Collections;
 import java.util.Map;
@@ -103,6 +105,31 @@ public class FIPSAuditUtilTest {
 	}
 
 	@Test
+	public void testWriteKeepsTheEventSequenceAfterARejection() {
+		FIPSAuditUtil.write(
+			new FIPSAuditEvent(
+				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
+
+		long eventSequence = _getLastEventSequence();
+
+		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+			RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO);
+
+		fipsAuditEvent.put(
+			"provider-timestamp", LocalDateTime.parse("2026-05-06T14:19:23"));
+
+		Assert.assertThrows(
+			IllegalArgumentException.class,
+			() -> FIPSAuditUtil.write(fipsAuditEvent));
+
+		FIPSAuditUtil.write(
+			new FIPSAuditEvent(
+				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
+
+		Assert.assertEquals(eventSequence + 1, _getLastEventSequence());
+	}
+
+	@Test
 	public void testWriteNormalizesAFieldTimestampInAnArray() {
 		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
 			RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO);
@@ -123,12 +150,14 @@ public class FIPSAuditUtilTest {
 	}
 
 	@Test
-	public void testWriteThrowsWhenAppenderIsMissing() {
-		_testWriteThrows();
-	}
+	public void testWriteThrows() {
 
-	@Test
-	public void testWriteThrowsWhenLayoutIsNotTheNDJSONLayout() {
+		// Appender is missing
+
+		_testWriteThrows("is not configured");
+
+		// Layout is not the NDJSON layout
+
 		RollingFileAppender rollingFileAppender = Mockito.mock(
 			RollingFileAppender.class);
 
@@ -140,18 +169,23 @@ public class FIPSAuditUtilTest {
 
 		_mockLogManager(rollingFileAppender);
 
-		_testWriteThrows();
-	}
+		_testWriteThrows("does not use the layout");
 
-	@Test
-	public void testWriteThrowsWhenLoggerIsDisabled() {
+		// Logger is disabled
+
 		Mockito.when(
 			_logger.isEnabled(Level.INFO)
 		).thenReturn(
 			false
 		);
 
-		_testWriteThrows();
+		_testWriteThrows("is disabled for the level");
+	}
+
+	private long _getLastEventSequence() {
+		Map<String, Object> fipsAuditLogEntry = _getLastFIPSAuditLogEntry();
+
+		return GetterUtil.getLong(fipsAuditLogEntry.get("event-sequence"));
 	}
 
 	private Map<String, Object> _getLastFIPSAuditLogEntry() {
@@ -194,7 +228,13 @@ public class FIPSAuditUtilTest {
 		);
 	}
 
-	private void _testWriteThrows() {
+	private void _testWriteThrows(String message) {
+		FIPSAuditUtil.write(
+			new FIPSAuditEvent(
+				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
+
+		long eventSequence = _getLastEventSequence();
+
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable("FIPS_ENABLED", true);
 			MockedStatic<ServerDetector> serverDetectorMockedStatic =
@@ -207,13 +247,23 @@ public class FIPSAuditUtilTest {
 				RandomTestUtil.randomString()
 			);
 
-			Assert.assertThrows(
+			IllegalStateException illegalStateException = Assert.assertThrows(
 				IllegalStateException.class,
 				() -> FIPSAuditUtil.write(
 					new FIPSAuditEvent(
 						RandomTestUtil.randomString(),
 						FIPSAuditEvent.Severity.INFO)));
+
+			String errorMessage = illegalStateException.getMessage();
+
+			Assert.assertTrue(errorMessage, errorMessage.contains(message));
 		}
+
+		FIPSAuditUtil.write(
+			new FIPSAuditEvent(
+				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
+
+		Assert.assertEquals(eventSequence + 1, _getLastEventSequence());
 	}
 
 	private static final Logger _logger = Mockito.mock(Logger.class);

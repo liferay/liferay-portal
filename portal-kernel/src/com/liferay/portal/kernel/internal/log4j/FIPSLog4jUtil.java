@@ -33,6 +33,10 @@ public class FIPSLog4jUtil {
 		return _marker;
 	}
 
+	public static void validate(FIPSAuditEvent.Severity severity) {
+		_validate(_getLevel(severity));
+	}
+
 	public static void write(
 		Map<String, Object> fipsAuditLogEntry,
 		FIPSAuditEvent.Severity severity) {
