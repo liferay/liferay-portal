@@ -29,8 +29,14 @@ public class MonitorEngine {
 	}
 
 	public Map<Monitor, MonitorResult> runCycle() {
+		List<Monitor> dueMonitors = _monitorScheduler.getDueMonitors(_monitors);
+
+		for (Monitor monitor : dueMonitors) {
+			monitor.prepareCycle();
+		}
+
 		Map<Monitor, MonitorResult> monitorResultsMap = _monitorRunner.run(
-			_monitorScheduler.getDueMonitors(_monitors));
+			dueMonitors);
 
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
