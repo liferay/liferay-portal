@@ -53,15 +53,15 @@ public class LayoutContentVersionPreviewTable
 		layoutContentVersionId = createColumn(
 			"layoutContentVersionId", Long.class, Types.BIGINT,
 			Column.FLAG_DEFAULT);
-	public final Column<LayoutContentVersionPreviewTable, String>
-		segmentsExperienceERC = createColumn(
-			"segmentsExperienceERC", String.class, Types.VARCHAR,
-			Column.FLAG_DEFAULT);
 	public final Column<LayoutContentVersionPreviewTable, Clob> html =
 		createColumn("html", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<LayoutContentVersionPreviewTable, String> languageId =
 		createColumn(
 			"languageId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<LayoutContentVersionPreviewTable, String>
+		segmentsExperienceERC = createColumn(
+			"segmentsExperienceERC", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 
 	private LayoutContentVersionPreviewTable() {
 		super(
@@ -70,4 +70,4 @@ public class LayoutContentVersionPreviewTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2100395315
+// LIFERAY-SERVICE-BUILDER-HASH:584115037

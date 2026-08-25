@@ -68,8 +68,8 @@ public interface LayoutContentVersionPreviewLocalService
 		LayoutContentVersionPreview layoutContentVersionPreview);
 
 	public LayoutContentVersionPreview addLayoutContentVersionPreview(
-			long userId, long layoutContentVersionId,
-			String segmentsExperienceERC, String html, String languageId)
+			long userId, long layoutContentVersionId, String html,
+			String languageId, String segmentsExperienceERC)
 		throws PortalException;
 
 	/**
@@ -206,8 +206,8 @@ public interface LayoutContentVersionPreviewLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public LayoutContentVersionPreview fetchLayoutContentVersionPreview(
-			long layoutContentVersionId, String segmentsExperienceERC,
-			String languageId)
+			long layoutContentVersionId, String languageId,
+			String segmentsExperienceERC)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -286,4 +286,4 @@ public interface LayoutContentVersionPreviewLocalService
 		LayoutContentVersionPreview layoutContentVersionPreview);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:25711682
+// LIFERAY-SERVICE-BUILDER-HASH:216032544

@@ -164,56 +164,56 @@ public interface LayoutContentVersionPreviewPersistence
 		long layoutContentVersionId, String segmentsExperienceERC);
 
 	/**
-	 * Returns the layout content version preview where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63; or throws a <code>NoSuchLayoutContentVersionPreviewException</code> if it could not be found.
+	 * Returns the layout content version preview where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63; or throws a <code>NoSuchLayoutContentVersionPreviewException</code> if it could not be found.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the matching layout content version preview
 	 * @throws NoSuchLayoutContentVersionPreviewException if a matching layout content version preview could not be found
 	 */
-	public LayoutContentVersionPreview findByLCVI_SEERC_L(
-			long layoutContentVersionId, String segmentsExperienceERC,
-			String languageId)
+	public LayoutContentVersionPreview findByLCVI_L_SEERC(
+			long layoutContentVersionId, String languageId,
+			String segmentsExperienceERC)
 		throws NoSuchLayoutContentVersionPreviewException;
 
 	/**
-	 * Returns the layout content version preview where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the layout content version preview where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching layout content version preview, or <code>null</code> if a matching layout content version preview could not be found
 	 */
-	public LayoutContentVersionPreview fetchByLCVI_SEERC_L(
-		long layoutContentVersionId, String segmentsExperienceERC,
-		String languageId, boolean useFinderCache);
+	public LayoutContentVersionPreview fetchByLCVI_L_SEERC(
+		long layoutContentVersionId, String languageId,
+		String segmentsExperienceERC, boolean useFinderCache);
 
 	/**
-	 * Removes the layout content version preview where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63; from the database.
+	 * Removes the layout content version preview where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63; from the database.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the layout content version preview that was removed
 	 */
-	public LayoutContentVersionPreview removeByLCVI_SEERC_L(
-			long layoutContentVersionId, String segmentsExperienceERC,
-			String languageId)
+	public LayoutContentVersionPreview removeByLCVI_L_SEERC(
+			long layoutContentVersionId, String languageId,
+			String segmentsExperienceERC)
 		throws NoSuchLayoutContentVersionPreviewException;
 
 	/**
-	 * Returns the number of layout content version previews where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63;.
+	 * Returns the number of layout content version previews where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63;.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the number of matching layout content version previews
 	 */
-	public int countByLCVI_SEERC_L(
-		long layoutContentVersionId, String segmentsExperienceERC,
-		String languageId);
+	public int countByLCVI_L_SEERC(
+		long layoutContentVersionId, String languageId,
+		String segmentsExperienceERC);
 
 	/**
 	 * Creates a new layout content version preview with the primary key. Does not add the layout content version preview to the database.
@@ -259,19 +259,19 @@ public interface LayoutContentVersionPreviewPersistence
 		long layoutContentVersionPreviewId);
 
 	/**
-	 * Returns the layout content version preview where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns the layout content version preview where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the matching layout content version preview, or <code>null</code> if a matching layout content version preview could not be found
 	 */
-	public default LayoutContentVersionPreview fetchByLCVI_SEERC_L(
-		long layoutContentVersionId, String segmentsExperienceERC,
-		String languageId) {
+	public default LayoutContentVersionPreview fetchByLCVI_L_SEERC(
+		long layoutContentVersionId, String languageId,
+		String segmentsExperienceERC) {
 
-		return fetchByLCVI_SEERC_L(
-			layoutContentVersionId, segmentsExperienceERC, languageId, true);
+		return fetchByLCVI_L_SEERC(
+			layoutContentVersionId, languageId, segmentsExperienceERC, true);
 	}
 
 	/**
@@ -396,4 +396,4 @@ public interface LayoutContentVersionPreviewPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-707841373
+// LIFERAY-SERVICE-BUILDER-HASH:7059803

@@ -67,9 +67,8 @@ public class LayoutContentVersionPreviewModelImpl
 		{"groupId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
-		{"layoutContentVersionId", Types.BIGINT},
-		{"segmentsExperienceERC", Types.VARCHAR}, {"html", Types.CLOB},
-		{"languageId", Types.VARCHAR}
+		{"layoutContentVersionId", Types.BIGINT}, {"html", Types.CLOB},
+		{"languageId", Types.VARCHAR}, {"segmentsExperienceERC", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -85,13 +84,13 @@ public class LayoutContentVersionPreviewModelImpl
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("layoutContentVersionId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("segmentsExperienceERC", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("html", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("languageId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("segmentsExperienceERC", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table LayoutContentVersionPreview (mvccVersion LONG default 0 not null,layoutContentVersionPreviewId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,layoutContentVersionId LONG,segmentsExperienceERC VARCHAR(75) null,html TEXT null,languageId VARCHAR(75) null)";
+		"create table LayoutContentVersionPreview (mvccVersion LONG default 0 not null,layoutContentVersionPreviewId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,layoutContentVersionId LONG,html TEXT null,languageId VARCHAR(75) null,segmentsExperienceERC VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table LayoutContentVersionPreview";
@@ -270,12 +269,12 @@ public class LayoutContentVersionPreviewModelImpl
 				"layoutContentVersionId",
 				LayoutContentVersionPreview::getLayoutContentVersionId);
 			attributeGetterFunctions.put(
-				"segmentsExperienceERC",
-				LayoutContentVersionPreview::getSegmentsExperienceERC);
-			attributeGetterFunctions.put(
 				"html", LayoutContentVersionPreview::getHtml);
 			attributeGetterFunctions.put(
 				"languageId", LayoutContentVersionPreview::getLanguageId);
+			attributeGetterFunctions.put(
+				"segmentsExperienceERC",
+				LayoutContentVersionPreview::getSegmentsExperienceERC);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -333,10 +332,6 @@ public class LayoutContentVersionPreviewModelImpl
 				(BiConsumer<LayoutContentVersionPreview, Long>)
 					LayoutContentVersionPreview::setLayoutContentVersionId);
 			attributeSetterBiConsumers.put(
-				"segmentsExperienceERC",
-				(BiConsumer<LayoutContentVersionPreview, String>)
-					LayoutContentVersionPreview::setSegmentsExperienceERC);
-			attributeSetterBiConsumers.put(
 				"html",
 				(BiConsumer<LayoutContentVersionPreview, String>)
 					LayoutContentVersionPreview::setHtml);
@@ -344,6 +339,10 @@ public class LayoutContentVersionPreviewModelImpl
 				"languageId",
 				(BiConsumer<LayoutContentVersionPreview, String>)
 					LayoutContentVersionPreview::setLanguageId);
+			attributeSetterBiConsumers.put(
+				"segmentsExperienceERC",
+				(BiConsumer<LayoutContentVersionPreview, String>)
+					LayoutContentVersionPreview::setSegmentsExperienceERC);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -517,34 +516,6 @@ public class LayoutContentVersionPreviewModelImpl
 	}
 
 	@Override
-	public String getSegmentsExperienceERC() {
-		if (_segmentsExperienceERC == null) {
-			return "";
-		}
-		else {
-			return _segmentsExperienceERC;
-		}
-	}
-
-	@Override
-	public void setSegmentsExperienceERC(String segmentsExperienceERC) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_segmentsExperienceERC = segmentsExperienceERC;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalSegmentsExperienceERC() {
-		return getColumnOriginalValue("segmentsExperienceERC");
-	}
-
-	@Override
 	public String getHtml() {
 		if (_html == null) {
 			return "";
@@ -589,6 +560,34 @@ public class LayoutContentVersionPreviewModelImpl
 	@Deprecated
 	public String getOriginalLanguageId() {
 		return getColumnOriginalValue("languageId");
+	}
+
+	@Override
+	public String getSegmentsExperienceERC() {
+		if (_segmentsExperienceERC == null) {
+			return "";
+		}
+		else {
+			return _segmentsExperienceERC;
+		}
+	}
+
+	@Override
+	public void setSegmentsExperienceERC(String segmentsExperienceERC) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_segmentsExperienceERC = segmentsExperienceERC;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalSegmentsExperienceERC() {
+		return getColumnOriginalValue("segmentsExperienceERC");
 	}
 
 	public long getColumnBitmask() {
@@ -660,10 +659,10 @@ public class LayoutContentVersionPreviewModelImpl
 		layoutContentVersionPreviewImpl.setModifiedDate(getModifiedDate());
 		layoutContentVersionPreviewImpl.setLayoutContentVersionId(
 			getLayoutContentVersionId());
-		layoutContentVersionPreviewImpl.setSegmentsExperienceERC(
-			getSegmentsExperienceERC());
 		layoutContentVersionPreviewImpl.setHtml(getHtml());
 		layoutContentVersionPreviewImpl.setLanguageId(getLanguageId());
+		layoutContentVersionPreviewImpl.setSegmentsExperienceERC(
+			getSegmentsExperienceERC());
 
 		layoutContentVersionPreviewImpl.resetOriginalValues();
 
@@ -693,12 +692,12 @@ public class LayoutContentVersionPreviewModelImpl
 			this.<Date>getColumnOriginalValue("modifiedDate"));
 		layoutContentVersionPreviewImpl.setLayoutContentVersionId(
 			this.<Long>getColumnOriginalValue("layoutContentVersionId"));
-		layoutContentVersionPreviewImpl.setSegmentsExperienceERC(
-			this.<String>getColumnOriginalValue("segmentsExperienceERC"));
 		layoutContentVersionPreviewImpl.setHtml(
 			this.<String>getColumnOriginalValue("html"));
 		layoutContentVersionPreviewImpl.setLanguageId(
 			this.<String>getColumnOriginalValue("languageId"));
+		layoutContentVersionPreviewImpl.setSegmentsExperienceERC(
+			this.<String>getColumnOriginalValue("segmentsExperienceERC"));
 
 		return layoutContentVersionPreviewImpl;
 	}
@@ -824,18 +823,6 @@ public class LayoutContentVersionPreviewModelImpl
 		layoutContentVersionPreviewCacheModel.layoutContentVersionId =
 			getLayoutContentVersionId();
 
-		layoutContentVersionPreviewCacheModel.segmentsExperienceERC =
-			getSegmentsExperienceERC();
-
-		String segmentsExperienceERC =
-			layoutContentVersionPreviewCacheModel.segmentsExperienceERC;
-
-		if ((segmentsExperienceERC != null) &&
-			(segmentsExperienceERC.length() == 0)) {
-
-			layoutContentVersionPreviewCacheModel.segmentsExperienceERC = null;
-		}
-
 		layoutContentVersionPreviewCacheModel.html = getHtml();
 
 		String html = layoutContentVersionPreviewCacheModel.html;
@@ -850,6 +837,18 @@ public class LayoutContentVersionPreviewModelImpl
 
 		if ((languageId != null) && (languageId.length() == 0)) {
 			layoutContentVersionPreviewCacheModel.languageId = null;
+		}
+
+		layoutContentVersionPreviewCacheModel.segmentsExperienceERC =
+			getSegmentsExperienceERC();
+
+		String segmentsExperienceERC =
+			layoutContentVersionPreviewCacheModel.segmentsExperienceERC;
+
+		if ((segmentsExperienceERC != null) &&
+			(segmentsExperienceERC.length() == 0)) {
+
+			layoutContentVersionPreviewCacheModel.segmentsExperienceERC = null;
 		}
 
 		return layoutContentVersionPreviewCacheModel;
@@ -925,9 +924,9 @@ public class LayoutContentVersionPreviewModelImpl
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _layoutContentVersionId;
-	private String _segmentsExperienceERC;
 	private String _html;
 	private String _languageId;
+	private String _segmentsExperienceERC;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<LayoutContentVersionPreview, Object> function =
@@ -968,10 +967,10 @@ public class LayoutContentVersionPreviewModelImpl
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put(
 			"layoutContentVersionId", _layoutContentVersionId);
-		_columnOriginalValues.put(
-			"segmentsExperienceERC", _segmentsExperienceERC);
 		_columnOriginalValues.put("html", _html);
 		_columnOriginalValues.put("languageId", _languageId);
+		_columnOriginalValues.put(
+			"segmentsExperienceERC", _segmentsExperienceERC);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -1003,11 +1002,11 @@ public class LayoutContentVersionPreviewModelImpl
 
 		columnBitmasks.put("layoutContentVersionId", 256L);
 
-		columnBitmasks.put("segmentsExperienceERC", 512L);
+		columnBitmasks.put("html", 512L);
 
-		columnBitmasks.put("html", 1024L);
+		columnBitmasks.put("languageId", 1024L);
 
-		columnBitmasks.put("languageId", 2048L);
+		columnBitmasks.put("segmentsExperienceERC", 2048L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1016,4 +1015,4 @@ public class LayoutContentVersionPreviewModelImpl
 	private LayoutContentVersionPreview _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2082646516
+// LIFERAY-SERVICE-BUILDER-HASH:-455832470

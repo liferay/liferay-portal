@@ -55,13 +55,13 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 	}
 
 	public static LayoutContentVersionPreview addLayoutContentVersionPreview(
-			long userId, long layoutContentVersionId,
-			String segmentsExperienceERC, String html, String languageId)
+			long userId, long layoutContentVersionId, String html,
+			String languageId, String segmentsExperienceERC)
 		throws PortalException {
 
 		return getService().addLayoutContentVersionPreview(
-			userId, layoutContentVersionId, segmentsExperienceERC, html,
-			languageId);
+			userId, layoutContentVersionId, html, languageId,
+			segmentsExperienceERC);
 	}
 
 	/**
@@ -233,12 +233,12 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 	}
 
 	public static LayoutContentVersionPreview fetchLayoutContentVersionPreview(
-			long layoutContentVersionId, String segmentsExperienceERC,
-			String languageId)
+			long layoutContentVersionId, String languageId,
+			String segmentsExperienceERC)
 		throws PortalException {
 
 		return getService().fetchLayoutContentVersionPreview(
-			layoutContentVersionId, segmentsExperienceERC, languageId);
+			layoutContentVersionId, languageId, segmentsExperienceERC);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
@@ -348,4 +348,4 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 			LayoutContentVersionPreviewLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1542213919
+// LIFERAY-SERVICE-BUILDER-HASH:1982371767

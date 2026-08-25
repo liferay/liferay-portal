@@ -47,9 +47,9 @@ public class LayoutContentVersionPreviewWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("layoutContentVersionId", getLayoutContentVersionId());
-		attributes.put("segmentsExperienceERC", getSegmentsExperienceERC());
 		attributes.put("html", getHtml());
 		attributes.put("languageId", getLanguageId());
+		attributes.put("segmentsExperienceERC", getSegmentsExperienceERC());
 
 		return attributes;
 	}
@@ -112,13 +112,6 @@ public class LayoutContentVersionPreviewWrapper
 			setLayoutContentVersionId(layoutContentVersionId);
 		}
 
-		String segmentsExperienceERC = (String)attributes.get(
-			"segmentsExperienceERC");
-
-		if (segmentsExperienceERC != null) {
-			setSegmentsExperienceERC(segmentsExperienceERC);
-		}
-
 		String html = (String)attributes.get("html");
 
 		if (html != null) {
@@ -129,6 +122,13 @@ public class LayoutContentVersionPreviewWrapper
 
 		if (languageId != null) {
 			setLanguageId(languageId);
+		}
+
+		String segmentsExperienceERC = (String)attributes.get(
+			"segmentsExperienceERC");
+
+		if (segmentsExperienceERC != null) {
+			setSegmentsExperienceERC(segmentsExperienceERC);
 		}
 	}
 
@@ -438,4 +438,4 @@ public class LayoutContentVersionPreviewWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1722252663
+// LIFERAY-SERVICE-BUILDER-HASH:1591225387

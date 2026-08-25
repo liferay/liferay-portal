@@ -93,12 +93,12 @@ public class LayoutContentVersionPreviewCacheModel
 		sb.append(modifiedDate);
 		sb.append(", layoutContentVersionId=");
 		sb.append(layoutContentVersionId);
-		sb.append(", segmentsExperienceERC=");
-		sb.append(segmentsExperienceERC);
 		sb.append(", html=");
 		sb.append(html);
 		sb.append(", languageId=");
 		sb.append(languageId);
+		sb.append(", segmentsExperienceERC=");
+		sb.append(segmentsExperienceERC);
 		sb.append("}");
 
 		return sb.toString();
@@ -141,14 +141,6 @@ public class LayoutContentVersionPreviewCacheModel
 		layoutContentVersionPreviewImpl.setLayoutContentVersionId(
 			layoutContentVersionId);
 
-		if (segmentsExperienceERC == null) {
-			layoutContentVersionPreviewImpl.setSegmentsExperienceERC("");
-		}
-		else {
-			layoutContentVersionPreviewImpl.setSegmentsExperienceERC(
-				segmentsExperienceERC);
-		}
-
 		if (html == null) {
 			layoutContentVersionPreviewImpl.setHtml("");
 		}
@@ -161,6 +153,14 @@ public class LayoutContentVersionPreviewCacheModel
 		}
 		else {
 			layoutContentVersionPreviewImpl.setLanguageId(languageId);
+		}
+
+		if (segmentsExperienceERC == null) {
+			layoutContentVersionPreviewImpl.setSegmentsExperienceERC("");
+		}
+		else {
+			layoutContentVersionPreviewImpl.setSegmentsExperienceERC(
+				segmentsExperienceERC);
 		}
 
 		layoutContentVersionPreviewImpl.resetOriginalValues();
@@ -186,9 +186,9 @@ public class LayoutContentVersionPreviewCacheModel
 		modifiedDate = objectInput.readLong();
 
 		layoutContentVersionId = objectInput.readLong();
-		segmentsExperienceERC = objectInput.readUTF();
 		html = (String)objectInput.readObject();
 		languageId = objectInput.readUTF();
+		segmentsExperienceERC = objectInput.readUTF();
 	}
 
 	@Override
@@ -215,13 +215,6 @@ public class LayoutContentVersionPreviewCacheModel
 
 		objectOutput.writeLong(layoutContentVersionId);
 
-		if (segmentsExperienceERC == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(segmentsExperienceERC);
-		}
-
 		if (html == null) {
 			objectOutput.writeObject("");
 		}
@@ -235,6 +228,13 @@ public class LayoutContentVersionPreviewCacheModel
 		else {
 			objectOutput.writeUTF(languageId);
 		}
+
+		if (segmentsExperienceERC == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(segmentsExperienceERC);
+		}
 	}
 
 	public long mvccVersion;
@@ -246,9 +246,9 @@ public class LayoutContentVersionPreviewCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public long layoutContentVersionId;
-	public String segmentsExperienceERC;
 	public String html;
 	public String languageId;
+	public String segmentsExperienceERC;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-779370664
+// LIFERAY-SERVICE-BUILDER-HASH:1884126044

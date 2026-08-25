@@ -210,21 +210,6 @@ public interface LayoutContentVersionPreviewModel
 	public void setLayoutContentVersionId(long layoutContentVersionId);
 
 	/**
-	 * Returns the segments experience erc of this layout content version preview.
-	 *
-	 * @return the segments experience erc of this layout content version preview
-	 */
-	@AutoEscape
-	public String getSegmentsExperienceERC();
-
-	/**
-	 * Sets the segments experience erc of this layout content version preview.
-	 *
-	 * @param segmentsExperienceERC the segments experience erc of this layout content version preview
-	 */
-	public void setSegmentsExperienceERC(String segmentsExperienceERC);
-
-	/**
 	 * Returns the html of this layout content version preview.
 	 *
 	 * @return the html of this layout content version preview
@@ -254,6 +239,21 @@ public interface LayoutContentVersionPreviewModel
 	 */
 	public void setLanguageId(String languageId);
 
+	/**
+	 * Returns the segments experience erc of this layout content version preview.
+	 *
+	 * @return the segments experience erc of this layout content version preview
+	 */
+	@AutoEscape
+	public String getSegmentsExperienceERC();
+
+	/**
+	 * Sets the segments experience erc of this layout content version preview.
+	 *
+	 * @param segmentsExperienceERC the segments experience erc of this layout content version preview
+	 */
+	public void setSegmentsExperienceERC(String segmentsExperienceERC);
+
 	@Override
 	public LayoutContentVersionPreview cloneWithOriginalValues();
 
@@ -262,4 +262,4 @@ public interface LayoutContentVersionPreviewModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:137794490
+// LIFERAY-SERVICE-BUILDER-HASH:558610618

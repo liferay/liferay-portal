@@ -54,14 +54,14 @@ public class LayoutContentVersionPreviewLocalServiceWrapper
 	@Override
 	public com.liferay.layout.content.model.LayoutContentVersionPreview
 			addLayoutContentVersionPreview(
-				long userId, long layoutContentVersionId,
-				String segmentsExperienceERC, String html, String languageId)
+				long userId, long layoutContentVersionId, String html,
+				String languageId, String segmentsExperienceERC)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _layoutContentVersionPreviewLocalService.
 			addLayoutContentVersionPreview(
-				userId, layoutContentVersionId, segmentsExperienceERC, html,
-				languageId);
+				userId, layoutContentVersionId, html, languageId,
+				segmentsExperienceERC);
 	}
 
 	/**
@@ -267,13 +267,13 @@ public class LayoutContentVersionPreviewLocalServiceWrapper
 	@Override
 	public com.liferay.layout.content.model.LayoutContentVersionPreview
 			fetchLayoutContentVersionPreview(
-				long layoutContentVersionId, String segmentsExperienceERC,
-				String languageId)
+				long layoutContentVersionId, String languageId,
+				String segmentsExperienceERC)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _layoutContentVersionPreviewLocalService.
 			fetchLayoutContentVersionPreview(
-				layoutContentVersionId, segmentsExperienceERC, languageId);
+				layoutContentVersionId, languageId, segmentsExperienceERC);
 	}
 
 	@Override
@@ -415,4 +415,4 @@ public class LayoutContentVersionPreviewLocalServiceWrapper
 		_layoutContentVersionPreviewLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1533491659
+// LIFERAY-SERVICE-BUILDER-HASH:-1645172941

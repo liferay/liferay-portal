@@ -271,90 +271,90 @@ public class LayoutContentVersionPreviewPersistenceImpl
 	private UniquePersistenceFinder
 		<LayoutContentVersionPreview,
 		 NoSuchLayoutContentVersionPreviewException>
-			_uniquePersistenceFinderByLCVI_SEERC_L;
+			_uniquePersistenceFinderByLCVI_L_SEERC;
 
 	/**
-	 * Returns the layout content version preview where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63; or throws a <code>NoSuchLayoutContentVersionPreviewException</code> if it could not be found.
+	 * Returns the layout content version preview where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63; or throws a <code>NoSuchLayoutContentVersionPreviewException</code> if it could not be found.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the matching layout content version preview
 	 * @throws NoSuchLayoutContentVersionPreviewException if a matching layout content version preview could not be found
 	 */
 	@Override
-	public LayoutContentVersionPreview findByLCVI_SEERC_L(
-			long layoutContentVersionId, String segmentsExperienceERC,
-			String languageId)
+	public LayoutContentVersionPreview findByLCVI_L_SEERC(
+			long layoutContentVersionId, String languageId,
+			String segmentsExperienceERC)
 		throws NoSuchLayoutContentVersionPreviewException {
 
-		return _uniquePersistenceFinderByLCVI_SEERC_L.find(
+		return _uniquePersistenceFinderByLCVI_L_SEERC.find(
 			finderCache,
 			new Object[] {
-				layoutContentVersionId, segmentsExperienceERC, languageId
+				layoutContentVersionId, languageId, segmentsExperienceERC
 			});
 	}
 
 	/**
-	 * Returns the layout content version preview where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns the layout content version preview where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching layout content version preview, or <code>null</code> if a matching layout content version preview could not be found
 	 */
 	@Override
-	public LayoutContentVersionPreview fetchByLCVI_SEERC_L(
-		long layoutContentVersionId, String segmentsExperienceERC,
-		String languageId, boolean useFinderCache) {
+	public LayoutContentVersionPreview fetchByLCVI_L_SEERC(
+		long layoutContentVersionId, String languageId,
+		String segmentsExperienceERC, boolean useFinderCache) {
 
-		return _uniquePersistenceFinderByLCVI_SEERC_L.fetch(
+		return _uniquePersistenceFinderByLCVI_L_SEERC.fetch(
 			finderCache,
 			new Object[] {
-				layoutContentVersionId, segmentsExperienceERC, languageId
+				layoutContentVersionId, languageId, segmentsExperienceERC
 			},
 			useFinderCache);
 	}
 
 	/**
-	 * Removes the layout content version preview where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63; from the database.
+	 * Removes the layout content version preview where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63; from the database.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the layout content version preview that was removed
 	 */
 	@Override
-	public LayoutContentVersionPreview removeByLCVI_SEERC_L(
-			long layoutContentVersionId, String segmentsExperienceERC,
-			String languageId)
+	public LayoutContentVersionPreview removeByLCVI_L_SEERC(
+			long layoutContentVersionId, String languageId,
+			String segmentsExperienceERC)
 		throws NoSuchLayoutContentVersionPreviewException {
 
 		LayoutContentVersionPreview layoutContentVersionPreview =
-			findByLCVI_SEERC_L(
-				layoutContentVersionId, segmentsExperienceERC, languageId);
+			findByLCVI_L_SEERC(
+				layoutContentVersionId, languageId, segmentsExperienceERC);
 
 		return remove(layoutContentVersionPreview);
 	}
 
 	/**
-	 * Returns the number of layout content version previews where layoutContentVersionId = &#63; and segmentsExperienceERC = &#63; and languageId = &#63;.
+	 * Returns the number of layout content version previews where layoutContentVersionId = &#63; and languageId = &#63; and segmentsExperienceERC = &#63;.
 	 *
 	 * @param layoutContentVersionId the layout content version ID
-	 * @param segmentsExperienceERC the segments experience erc
 	 * @param languageId the language ID
+	 * @param segmentsExperienceERC the segments experience erc
 	 * @return the number of matching layout content version previews
 	 */
 	@Override
-	public int countByLCVI_SEERC_L(
-		long layoutContentVersionId, String segmentsExperienceERC,
-		String languageId) {
+	public int countByLCVI_L_SEERC(
+		long layoutContentVersionId, String languageId,
+		String segmentsExperienceERC) {
 
-		return _uniquePersistenceFinderByLCVI_SEERC_L.count(
+		return _uniquePersistenceFinderByLCVI_L_SEERC.count(
 			finderCache,
 			new Object[] {
-				layoutContentVersionId, segmentsExperienceERC, languageId
+				layoutContentVersionId, languageId, segmentsExperienceERC
 			});
 	}
 
@@ -655,37 +655,36 @@ public class LayoutContentVersionPreviewPersistenceImpl
 					FinderColumn.Type.STRING, "=", true, true,
 					LayoutContentVersionPreview::getSegmentsExperienceERC));
 
-		_uniquePersistenceFinderByLCVI_SEERC_L = new UniquePersistenceFinder<>(
+		_uniquePersistenceFinderByLCVI_L_SEERC = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
-				FINDER_CLASS_NAME_ENTITY, "fetchByLCVI_SEERC_L",
+				FINDER_CLASS_NAME_ENTITY, "fetchByLCVI_L_SEERC",
 				new String[] {
 					Long.class.getName(), String.class.getName(),
 					String.class.getName()
 				},
 				new String[] {
-					"layoutContentVersionId", "segmentsExperienceERC",
-					"languageId"
+					"layoutContentVersionId", "languageId",
+					"segmentsExperienceERC"
 				},
 				0, 6, false,
 				LayoutContentVersionPreview::getLayoutContentVersionId,
+				convertNullFunction(LayoutContentVersionPreview::getLanguageId),
 				convertNullFunction(
-					LayoutContentVersionPreview::getSegmentsExperienceERC),
-				convertNullFunction(
-					LayoutContentVersionPreview::getLanguageId)),
+					LayoutContentVersionPreview::getSegmentsExperienceERC)),
 			_SQL_SELECT_LAYOUTCONTENTVERSIONPREVIEW_WHERE, "",
 			new FinderColumn<>(
 				"layoutContentVersionPreview.", "layoutContentVersionId",
 				FinderColumn.Type.LONG, "=", true, true,
 				LayoutContentVersionPreview::getLayoutContentVersionId),
 			new FinderColumn<>(
-				"layoutContentVersionPreview.", "segmentsExperienceERC",
-				FinderColumn.Type.STRING, "=", true, true,
-				LayoutContentVersionPreview::getSegmentsExperienceERC),
-			new FinderColumn<>(
 				"layoutContentVersionPreview.", "languageId",
 				FinderColumn.Type.STRING, "=", true, true,
-				LayoutContentVersionPreview::getLanguageId));
+				LayoutContentVersionPreview::getLanguageId),
+			new FinderColumn<>(
+				"layoutContentVersionPreview.", "segmentsExperienceERC",
+				FinderColumn.Type.STRING, "=", true, true,
+				LayoutContentVersionPreview::getSegmentsExperienceERC));
 
 		LayoutContentVersionPreviewUtil.setPersistence(this);
 	}
@@ -748,4 +747,4 @@ public class LayoutContentVersionPreviewPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1699201583
+// LIFERAY-SERVICE-BUILDER-HASH:564391685
