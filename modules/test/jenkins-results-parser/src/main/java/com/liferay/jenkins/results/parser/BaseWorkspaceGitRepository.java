@@ -472,9 +472,15 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public void tearDown() {
-		if (isSnapshot()) {
+		if (_isGitArchiveEnabled() && isSnapshot()) {
 			_deleteGitRepository();
 
+			return;
+		}
+
+		File dotGitFolder = new File(getDirectory(), ".git");
+
+		if (!dotGitFolder.exists()) {
 			return;
 		}
 
