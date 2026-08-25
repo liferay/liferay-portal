@@ -43,11 +43,11 @@ public class ExportImportLifecycleMessageListenerTest {
 		List<ExportImportLifecycleEvent> exportImportLifecycleEvents =
 			_registerExportImportLifecycleListener(true);
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
 		AsyncExportImportLifecycleMessageListener
 			asyncExportImportLifecycleMessageListener =
 				new AsyncExportImportLifecycleMessageListener();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
 		asyncExportImportLifecycleMessageListener.activate(bundleContext);
 
@@ -59,11 +59,11 @@ public class ExportImportLifecycleMessageListenerTest {
 
 		asyncExportImportLifecycleMessageListener.deactivate();
 
+		Assert.assertSame(
+			exportImportLifecycleEvent, exportImportLifecycleEvents.get(0));
 		Assert.assertEquals(
 			exportImportLifecycleEvents.toString(), 1,
 			exportImportLifecycleEvents.size());
-		Assert.assertSame(
-			exportImportLifecycleEvent, exportImportLifecycleEvents.get(0));
 	}
 
 	@Test
@@ -71,11 +71,11 @@ public class ExportImportLifecycleMessageListenerTest {
 		List<ExportImportLifecycleEvent> exportImportLifecycleEvents =
 			_registerExportImportLifecycleListener(false);
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
 		SyncExportImportLifecycleMessageListener
 			syncExportImportLifecycleMessageListener =
 				new SyncExportImportLifecycleMessageListener();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
 		syncExportImportLifecycleMessageListener.activate(bundleContext);
 
@@ -87,11 +87,11 @@ public class ExportImportLifecycleMessageListenerTest {
 
 		syncExportImportLifecycleMessageListener.deactivate();
 
+		Assert.assertSame(
+			exportImportLifecycleEvent, exportImportLifecycleEvents.get(0));
 		Assert.assertEquals(
 			exportImportLifecycleEvents.toString(), 1,
 			exportImportLifecycleEvents.size());
-		Assert.assertSame(
-			exportImportLifecycleEvent, exportImportLifecycleEvents.get(0));
 	}
 
 	private Message _createMessage(

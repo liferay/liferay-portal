@@ -81,19 +81,19 @@ public abstract class BaseExportImportLifecycleMessageListener
 				_bundleContext.getService(serviceReference);
 
 			if (exportImportLifecycleListener instanceof
+					EventAwareExportImportLifecycleListener) {
+
+				exportImportLifecycleListener =
+					new DefaultEventAwareExportImportLifecycleListener(
+						(EventAwareExportImportLifecycleListener)
+							exportImportLifecycleListener);
+			}
+			else if (exportImportLifecycleListener instanceof
 					ProcessAwareExportImportLifecycleListener) {
 
 				exportImportLifecycleListener =
 					new DefaultProcessAwareExportImportLifecycleListener(
 						(ProcessAwareExportImportLifecycleListener)
-							exportImportLifecycleListener);
-			}
-			else if (exportImportLifecycleListener instanceof
-						EventAwareExportImportLifecycleListener) {
-
-				exportImportLifecycleListener =
-					new DefaultEventAwareExportImportLifecycleListener(
-						(EventAwareExportImportLifecycleListener)
 							exportImportLifecycleListener);
 			}
 
