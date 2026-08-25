@@ -33,13 +33,29 @@ import org.mockito.Mockito;
 public class BatchTestClassGroupTestUtil {
 
 	public static PortalTestClassJob getPortalTestClassJob() {
-		return _setJobPropertiesFiles();
+		return getPortalTestClassJob(null);
 	}
 
 	public static PortalTestClassJob getPortalTestClassJob(
 		Properties jobProperties) {
 
-		return _setJobPropertiesFiles(_writeJobPropertiesFile(jobProperties));
+		PortalTestClassJob portalTestClassJob = _getPortalTestClassJob();
+
+		List<File> jobPropertiesFiles =
+			portalTestClassJob.getJobPropertiesFiles();
+
+		jobPropertiesFiles.clear();
+
+		if (jobProperties != null) {
+			jobPropertiesFiles.add(_writeJobPropertiesFile(jobProperties));
+		}
+
+		jobPropertiesFiles.add(
+			new File(
+				"src/test/resources/dependencies/test/clazz/group" +
+					"/BatchTestClassGroupTestUtil/test.properties"));
+
+		return portalTestClassJob;
 	}
 
 	public static ServiceBuilderModulesBatchTestClassGroup
@@ -122,26 +138,6 @@ public class BatchTestClassGroupTestUtil {
 			repositoryName, "relevant", upstreamBranchName);
 
 		return _portalTestClassJob;
-	}
-
-	private static PortalTestClassJob _setJobPropertiesFiles(
-		File... overrideJobPropertiesFiles) {
-
-		PortalTestClassJob portalTestClassJob = _getPortalTestClassJob();
-
-		List<File> jobPropertiesFiles =
-			portalTestClassJob.getJobPropertiesFiles();
-
-		jobPropertiesFiles.clear();
-
-		Collections.addAll(jobPropertiesFiles, overrideJobPropertiesFiles);
-
-		jobPropertiesFiles.add(
-			new File(
-				"src/test/resources/dependencies/test/clazz/group" +
-					"/BatchTestClassGroupTestUtil/test.properties"));
-
-		return portalTestClassJob;
 	}
 
 	private static File _writeJobPropertiesFile(Properties jobProperties) {
