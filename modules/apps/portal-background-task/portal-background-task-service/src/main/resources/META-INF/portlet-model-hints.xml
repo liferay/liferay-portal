@@ -22,6 +22,9 @@
 		<field name="taskContextMap" type="Map" />
 		<field name="completed" type="boolean" />
 		<field name="completionDate" type="Date" />
+		<field name="errorStackTrace" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 		<field name="status" type="int" />
 		<field name="statusMessage" type="String">
 			<hint-collection name="CLOB" />

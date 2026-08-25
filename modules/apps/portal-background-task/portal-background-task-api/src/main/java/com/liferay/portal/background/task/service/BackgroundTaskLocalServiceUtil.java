@@ -125,6 +125,16 @@ public class BackgroundTaskLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static BackgroundTask amendBackgroundTask(
+		long backgroundTaskId, Map<String, Serializable> taskContextMap,
+		int status, String statusMessage, String errorStackTrace,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+
+		return getService().amendBackgroundTask(
+			backgroundTaskId, taskContextMap, status, statusMessage,
+			errorStackTrace, serviceContext);
+	}
+
 	public static void cleanUpBackgroundTask(
 		long backgroundTaskId, int status) {
 
@@ -652,4 +662,4 @@ public class BackgroundTaskLocalServiceUtil {
 			BackgroundTaskLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-867079240
+// LIFERAY-SERVICE-BUILDER-HASH:-241932328

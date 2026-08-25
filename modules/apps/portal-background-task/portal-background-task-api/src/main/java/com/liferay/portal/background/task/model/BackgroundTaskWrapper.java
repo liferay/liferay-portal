@@ -49,6 +49,7 @@ public class BackgroundTaskWrapper
 		attributes.put("taskContextMap", getTaskContextMap());
 		attributes.put("completed", isCompleted());
 		attributes.put("completionDate", getCompletionDate());
+		attributes.put("errorStackTrace", getErrorStackTrace());
 		attributes.put("status", getStatus());
 		attributes.put("statusMessage", getStatusMessage());
 
@@ -142,6 +143,12 @@ public class BackgroundTaskWrapper
 
 		if (completionDate != null) {
 			setCompletionDate(completionDate);
+		}
+
+		String errorStackTrace = (String)attributes.get("errorStackTrace");
+
+		if (errorStackTrace != null) {
+			setErrorStackTrace(errorStackTrace);
 		}
 
 		Integer status = (Integer)attributes.get("status");
@@ -261,6 +268,16 @@ public class BackgroundTaskWrapper
 	@Override
 	public Date getCreateDate() {
 		return model.getCreateDate();
+	}
+
+	/**
+	 * Returns the error stack trace of this background task.
+	 *
+	 * @return the error stack trace of this background task
+	 */
+	@Override
+	public String getErrorStackTrace() {
+		return model.getErrorStackTrace();
 	}
 
 	/**
@@ -469,6 +486,16 @@ public class BackgroundTaskWrapper
 	}
 
 	/**
+	 * Sets the error stack trace of this background task.
+	 *
+	 * @param errorStackTrace the error stack trace of this background task
+	 */
+	@Override
+	public void setErrorStackTrace(String errorStackTrace) {
+		model.setErrorStackTrace(errorStackTrace);
+	}
+
+	/**
 	 * Sets the group ID of this background task.
 	 *
 	 * @param groupId the group ID of this background task
@@ -609,4 +636,4 @@ public class BackgroundTaskWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1524541644
+// LIFERAY-SERVICE-BUILDER-HASH:-1367761340

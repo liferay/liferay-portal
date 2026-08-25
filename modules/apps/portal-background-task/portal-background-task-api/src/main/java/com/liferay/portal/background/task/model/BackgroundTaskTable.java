@@ -60,6 +60,9 @@ public class BackgroundTaskTable extends BaseTable<BackgroundTaskTable> {
 	public final Column<BackgroundTaskTable, Date> completionDate =
 		createColumn(
 			"completionDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<BackgroundTaskTable, Clob> errorStackTrace =
+		createColumn(
+			"errorStackTrace", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<BackgroundTaskTable, Integer> status = createColumn(
 		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<BackgroundTaskTable, Clob> statusMessage = createColumn(
@@ -70,4 +73,4 @@ public class BackgroundTaskTable extends BaseTable<BackgroundTaskTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:971197363
+// LIFERAY-SERVICE-BUILDER-HASH:453417703

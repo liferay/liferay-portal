@@ -70,7 +70,7 @@ public class BackgroundTaskCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -100,6 +100,8 @@ public class BackgroundTaskCacheModel
 		sb.append(completed);
 		sb.append(", completionDate=");
 		sb.append(completionDate);
+		sb.append(", errorStackTrace=");
+		sb.append(errorStackTrace);
 		sb.append(", status=");
 		sb.append(status);
 		sb.append(", statusMessage=");
@@ -171,6 +173,13 @@ public class BackgroundTaskCacheModel
 			backgroundTaskImpl.setCompletionDate(new Date(completionDate));
 		}
 
+		if (errorStackTrace == null) {
+			backgroundTaskImpl.setErrorStackTrace("");
+		}
+		else {
+			backgroundTaskImpl.setErrorStackTrace(errorStackTrace);
+		}
+
 		backgroundTaskImpl.setStatus(status);
 
 		if (statusMessage == null) {
@@ -208,6 +217,7 @@ public class BackgroundTaskCacheModel
 
 		completed = objectInput.readBoolean();
 		completionDate = objectInput.readLong();
+		errorStackTrace = (String)objectInput.readObject();
 
 		status = objectInput.readInt();
 		statusMessage = (String)objectInput.readObject();
@@ -261,6 +271,13 @@ public class BackgroundTaskCacheModel
 		objectOutput.writeBoolean(completed);
 		objectOutput.writeLong(completionDate);
 
+		if (errorStackTrace == null) {
+			objectOutput.writeObject("");
+		}
+		else {
+			objectOutput.writeObject(errorStackTrace);
+		}
+
 		objectOutput.writeInt(status);
 
 		if (statusMessage == null) {
@@ -285,8 +302,9 @@ public class BackgroundTaskCacheModel
 	public Map<String, Serializable> taskContextMap;
 	public boolean completed;
 	public long completionDate;
+	public String errorStackTrace;
 	public int status;
 	public String statusMessage;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-592060345
+// LIFERAY-SERVICE-BUILDER-HASH:-685827715

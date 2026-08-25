@@ -109,6 +109,11 @@ public interface BackgroundTaskLocalService
 		long backgroundTaskId, Map<String, Serializable> taskContextMap,
 		int status, String statusMessage, ServiceContext serviceContext);
 
+	public BackgroundTask amendBackgroundTask(
+		long backgroundTaskId, Map<String, Serializable> taskContextMap,
+		int status, String statusMessage, String errorStackTrace,
+		ServiceContext serviceContext);
+
 	@Clusterable(onMaster = true)
 	public void cleanUpBackgroundTask(long backgroundTaskId, int status);
 
@@ -471,4 +476,4 @@ public interface BackgroundTaskLocalService
 	public BackgroundTask updateBackgroundTask(BackgroundTask backgroundTask);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:259198327
+// LIFERAY-SERVICE-BUILDER-HASH:-1179290050

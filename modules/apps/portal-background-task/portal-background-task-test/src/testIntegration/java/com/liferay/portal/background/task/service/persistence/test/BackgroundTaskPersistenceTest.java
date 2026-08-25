@@ -139,6 +139,8 @@ public class BackgroundTaskPersistenceTest {
 
 		newBackgroundTask.setCompletionDate(RandomTestUtil.nextDate());
 
+		newBackgroundTask.setErrorStackTrace(RandomTestUtil.randomString());
+
 		newBackgroundTask.setStatus(RandomTestUtil.nextInt());
 
 		newBackgroundTask.setStatusMessage(RandomTestUtil.randomString());
@@ -190,6 +192,9 @@ public class BackgroundTaskPersistenceTest {
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingBackgroundTask.getCompletionDate()),
 			Time.getShortTimestamp(newBackgroundTask.getCompletionDate()));
+		Assert.assertEquals(
+			existingBackgroundTask.getErrorStackTrace(),
+			newBackgroundTask.getErrorStackTrace());
 		Assert.assertEquals(
 			existingBackgroundTask.getStatus(), newBackgroundTask.getStatus());
 		Assert.assertEquals(
@@ -624,6 +629,8 @@ public class BackgroundTaskPersistenceTest {
 
 		backgroundTask.setCompletionDate(RandomTestUtil.nextDate());
 
+		backgroundTask.setErrorStackTrace(RandomTestUtil.randomString());
+
 		backgroundTask.setStatus(RandomTestUtil.nextInt());
 
 		backgroundTask.setStatusMessage(RandomTestUtil.randomString());
@@ -639,4 +646,4 @@ public class BackgroundTaskPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-345996177
+// LIFERAY-SERVICE-BUILDER-HASH:-2145964843

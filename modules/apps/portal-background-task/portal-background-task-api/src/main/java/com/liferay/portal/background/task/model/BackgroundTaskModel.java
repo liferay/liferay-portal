@@ -291,6 +291,21 @@ public interface BackgroundTaskModel
 	public void setCompletionDate(Date completionDate);
 
 	/**
+	 * Returns the error stack trace of this background task.
+	 *
+	 * @return the error stack trace of this background task
+	 */
+	@AutoEscape
+	public String getErrorStackTrace();
+
+	/**
+	 * Sets the error stack trace of this background task.
+	 *
+	 * @param errorStackTrace the error stack trace of this background task
+	 */
+	public void setErrorStackTrace(String errorStackTrace);
+
+	/**
 	 * Returns the status of this background task.
 	 *
 	 * @return the status of this background task
@@ -327,4 +342,4 @@ public interface BackgroundTaskModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1271516764
+// LIFERAY-SERVICE-BUILDER-HASH:1149555004

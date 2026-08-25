@@ -132,6 +132,19 @@ public class BackgroundTaskLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.background.task.model.BackgroundTask
+		amendBackgroundTask(
+			long backgroundTaskId,
+			java.util.Map<String, java.io.Serializable> taskContextMap,
+			int status, String statusMessage, String errorStackTrace,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext) {
+
+		return _backgroundTaskLocalService.amendBackgroundTask(
+			backgroundTaskId, taskContextMap, status, statusMessage,
+			errorStackTrace, serviceContext);
+	}
+
+	@Override
 	public void cleanUpBackgroundTask(long backgroundTaskId, int status) {
 		_backgroundTaskLocalService.cleanUpBackgroundTask(
 			backgroundTaskId, status);
@@ -820,4 +833,4 @@ public class BackgroundTaskLocalServiceWrapper
 	private BackgroundTaskLocalService _backgroundTaskLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2064826172
+// LIFERAY-SERVICE-BUILDER-HASH:-2124814629

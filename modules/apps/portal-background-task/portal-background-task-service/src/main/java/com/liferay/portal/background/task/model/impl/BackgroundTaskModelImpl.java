@@ -70,8 +70,8 @@ public class BackgroundTaskModelImpl
 		{"name", Types.VARCHAR}, {"servletContextNames", Types.VARCHAR},
 		{"taskExecutorClassName", Types.VARCHAR},
 		{"taskContextMap", Types.CLOB}, {"completed", Types.BOOLEAN},
-		{"completionDate", Types.TIMESTAMP}, {"status", Types.INTEGER},
-		{"statusMessage", Types.CLOB}
+		{"completionDate", Types.TIMESTAMP}, {"errorStackTrace", Types.CLOB},
+		{"status", Types.INTEGER}, {"statusMessage", Types.CLOB}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -92,12 +92,13 @@ public class BackgroundTaskModelImpl
 		TABLE_COLUMNS_MAP.put("taskContextMap", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("completed", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("completionDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("errorStackTrace", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("statusMessage", Types.CLOB);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table BackgroundTask (mvccVersion LONG default 0 not null,backgroundTaskId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(255) null,servletContextNames VARCHAR(255) null,taskExecutorClassName VARCHAR(200) null,taskContextMap TEXT null,completed BOOLEAN,completionDate DATE null,status INTEGER,statusMessage TEXT null)";
+		"create table BackgroundTask (mvccVersion LONG default 0 not null,backgroundTaskId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(255) null,servletContextNames VARCHAR(255) null,taskExecutorClassName VARCHAR(200) null,taskContextMap TEXT null,completed BOOLEAN,completionDate DATE null,errorStackTrace TEXT null,status INTEGER,statusMessage TEXT null)";
 
 	public static final String TABLE_SQL_DROP = "drop table BackgroundTask";
 
@@ -294,6 +295,8 @@ public class BackgroundTaskModelImpl
 				"completed", BackgroundTask::getCompleted);
 			attributeGetterFunctions.put(
 				"completionDate", BackgroundTask::getCompletionDate);
+			attributeGetterFunctions.put(
+				"errorStackTrace", BackgroundTask::getErrorStackTrace);
 			attributeGetterFunctions.put("status", BackgroundTask::getStatus);
 			attributeGetterFunctions.put(
 				"statusMessage", BackgroundTask::getStatusMessage);
@@ -366,6 +369,10 @@ public class BackgroundTaskModelImpl
 				"completionDate",
 				(BiConsumer<BackgroundTask, Date>)
 					BackgroundTask::setCompletionDate);
+			attributeSetterBiConsumers.put(
+				"errorStackTrace",
+				(BiConsumer<BackgroundTask, String>)
+					BackgroundTask::setErrorStackTrace);
 			attributeSetterBiConsumers.put(
 				"status",
 				(BiConsumer<BackgroundTask, Integer>)BackgroundTask::setStatus);
@@ -687,6 +694,26 @@ public class BackgroundTaskModelImpl
 
 	@JSON
 	@Override
+	public String getErrorStackTrace() {
+		if (_errorStackTrace == null) {
+			return "";
+		}
+		else {
+			return _errorStackTrace;
+		}
+	}
+
+	@Override
+	public void setErrorStackTrace(String errorStackTrace) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_errorStackTrace = errorStackTrace;
+	}
+
+	@JSON
+	@Override
 	public int getStatus() {
 		return _status;
 	}
@@ -800,6 +827,7 @@ public class BackgroundTaskModelImpl
 		backgroundTaskImpl.setTaskContextMap(getTaskContextMap());
 		backgroundTaskImpl.setCompleted(isCompleted());
 		backgroundTaskImpl.setCompletionDate(getCompletionDate());
+		backgroundTaskImpl.setErrorStackTrace(getErrorStackTrace());
 		backgroundTaskImpl.setStatus(getStatus());
 		backgroundTaskImpl.setStatusMessage(getStatusMessage());
 
@@ -839,6 +867,8 @@ public class BackgroundTaskModelImpl
 			this.<Boolean>getColumnOriginalValue("completed"));
 		backgroundTaskImpl.setCompletionDate(
 			this.<Date>getColumnOriginalValue("completionDate"));
+		backgroundTaskImpl.setErrorStackTrace(
+			this.<String>getColumnOriginalValue("errorStackTrace"));
 		backgroundTaskImpl.setStatus(
 			this.<Integer>getColumnOriginalValue("status"));
 		backgroundTaskImpl.setStatusMessage(
@@ -1000,6 +1030,14 @@ public class BackgroundTaskModelImpl
 			backgroundTaskCacheModel.completionDate = Long.MIN_VALUE;
 		}
 
+		backgroundTaskCacheModel.errorStackTrace = getErrorStackTrace();
+
+		String errorStackTrace = backgroundTaskCacheModel.errorStackTrace;
+
+		if ((errorStackTrace != null) && (errorStackTrace.length() == 0)) {
+			backgroundTaskCacheModel.errorStackTrace = null;
+		}
+
 		backgroundTaskCacheModel.status = getStatus();
 
 		backgroundTaskCacheModel.statusMessage = getStatusMessage();
@@ -1086,6 +1124,7 @@ public class BackgroundTaskModelImpl
 	private Map<String, Serializable> _taskContextMap;
 	private boolean _completed;
 	private Date _completionDate;
+	private String _errorStackTrace;
 	private int _status;
 	private String _statusMessage;
 
@@ -1132,6 +1171,7 @@ public class BackgroundTaskModelImpl
 		_columnOriginalValues.put("taskContextMap", _taskContextMap);
 		_columnOriginalValues.put("completed", _completed);
 		_columnOriginalValues.put("completionDate", _completionDate);
+		_columnOriginalValues.put("errorStackTrace", _errorStackTrace);
 		_columnOriginalValues.put("status", _status);
 		_columnOriginalValues.put("statusMessage", _statusMessage);
 	}
@@ -1175,9 +1215,11 @@ public class BackgroundTaskModelImpl
 
 		columnBitmasks.put("completionDate", 8192L);
 
-		columnBitmasks.put("status", 16384L);
+		columnBitmasks.put("errorStackTrace", 16384L);
 
-		columnBitmasks.put("statusMessage", 32768L);
+		columnBitmasks.put("status", 32768L);
+
+		columnBitmasks.put("statusMessage", 65536L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1186,4 +1228,4 @@ public class BackgroundTaskModelImpl
 	private BackgroundTask _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2064778570
+// LIFERAY-SERVICE-BUILDER-HASH:-211463602

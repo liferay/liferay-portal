@@ -13,6 +13,7 @@ create table BackgroundTask (
 	taskContextMap TEXT null,
 	completed BOOLEAN,
 	completionDate DATE null,
+	errorStackTrace TEXT null,
 	status INTEGER,
 	statusMessage TEXT null
 );
