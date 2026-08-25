@@ -74,16 +74,10 @@ public class NotificationTemplateResourceImpl
 			String externalReferenceCode)
 		throws Exception {
 
-		com.liferay.notification.model.NotificationTemplate
-			serviceBuilderNotificationTemplate =
-				_notificationTemplateService.
-					fetchNotificationTemplateByExternalReferenceCode(
-						externalReferenceCode, contextCompany.getCompanyId());
-
-		if (serviceBuilderNotificationTemplate != null) {
-			_notificationTemplateService.deleteNotificationTemplate(
-				serviceBuilderNotificationTemplate);
-		}
+		_notificationTemplateService.deleteNotificationTemplate(
+			_notificationTemplateService.
+				getNotificationTemplateByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId()));
 	}
 
 	@Override
@@ -108,7 +102,7 @@ public class NotificationTemplateResourceImpl
 
 		return _toNotificationTemplate(
 			_notificationTemplateService.
-				fetchNotificationTemplateByExternalReferenceCode(
+				getNotificationTemplateByExternalReferenceCode(
 					externalReferenceCode, contextCompany.getCompanyId()));
 	}
 

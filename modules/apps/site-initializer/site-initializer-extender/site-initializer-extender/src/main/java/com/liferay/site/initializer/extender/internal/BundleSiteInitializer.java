@@ -3314,23 +3314,11 @@ public class BundleSiteInitializer implements SiteInitializer {
 				serviceContext.fetchUser()
 			).build();
 
-		NotificationTemplate existingNotificationTemplate =
+		notificationTemplate =
 			notificationTemplateResource.
-				getNotificationTemplateByExternalReferenceCode(
-					notificationTemplate.getExternalReferenceCode());
-
-		if (existingNotificationTemplate == null) {
-			notificationTemplate =
-				notificationTemplateResource.postNotificationTemplate(
+				putNotificationTemplateByExternalReferenceCode(
+					notificationTemplate.getExternalReferenceCode(),
 					notificationTemplate);
-		}
-		else {
-			notificationTemplate =
-				notificationTemplateResource.
-					putNotificationTemplateByExternalReferenceCode(
-						notificationTemplate.getExternalReferenceCode(),
-						notificationTemplate);
-		}
 
 		json = SiteInitializerUtil.read(
 			resourcePath + "notification-template.object-actions.json",
