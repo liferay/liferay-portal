@@ -16,15 +16,19 @@ import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.log.LogCapture;
@@ -35,9 +39,11 @@ import java.sql.PreparedStatement;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,6 +55,36 @@ import org.osgi.framework.Bundle;
 @RunWith(Arquillian.class)
 public class ClassNamePostUpgradeDataCleanupProcessTest
 	extends BasePostUpgradeDataCleanupProcessTestCase {
+
+	@Test
+	public void testCleanUpBuildsPackageNameBundlesMapForNondefaultCompany()
+		throws Exception {
+
+		Assume.assumeFalse(CompanyThreadLocal.isDefaultCompany());
+
+		Bundle bundle = BundleUtil.getBundle(
+			SystemBundleUtil.getBundleContext(),
+			"com.liferay.data.cleanup.impl");
+
+		DCLSingleton<Map<String, List<Bundle>>> dclSingleton =
+			ReflectionTestUtil.getFieldValue(
+				bundle.loadClass(getPostUpgradeDataCleanupProcessClassName()),
+				"_packageNameBundlesMapDCLSingleton");
+
+		dclSingleton.destroy(null);
+
+		test(
+			null,
+			() -> {
+			},
+			() -> {
+			});
+
+		Map<String, List<Bundle>> packageNameBundlesMap =
+			ReflectionTestUtil.getFieldValue(dclSingleton, "_singleton");
+
+		Assert.assertFalse(packageNameBundlesMap.isEmpty());
+	}
 
 	@Test
 	public void testFoundLayoutClassNameWithDashIsNotDeleted()
