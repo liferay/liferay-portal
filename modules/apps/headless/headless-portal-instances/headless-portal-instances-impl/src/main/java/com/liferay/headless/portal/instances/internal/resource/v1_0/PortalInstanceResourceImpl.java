@@ -59,6 +59,8 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 	public PortalInstance getPortalInstance(String portalInstanceId)
 		throws Exception {
 
+		_checkPermission();
+
 		return _toPortalInstance(
 			_companyService.getCompanyByWebId(portalInstanceId));
 	}
