@@ -546,8 +546,7 @@ public abstract class SecretsUtil {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.SSS z");
 
-		simpleDateFormat.setTimeZone(
-			TimeZone.getTimeZone(_API_TOKEN_TIME_ZONE));
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		String creationDateString = simpleDateFormat.format(date);
 
