@@ -183,8 +183,9 @@ public class CMSObjectEntryReviewUserNotificationTest {
 			_getUserNotificationFeedEntry(objectEntry, "es_ES");
 
 		Assert.assertEquals(
-			LanguageUtil.format(
-				LocaleUtil.SPAIN, "x-has-reached-its-review-date", title),
+			HtmlUtil.escape(
+				LanguageUtil.format(
+					LocaleUtil.SPAIN, "x-has-reached-its-review-date", title)),
 			userNotificationFeedEntry.getTitle());
 	}
 
