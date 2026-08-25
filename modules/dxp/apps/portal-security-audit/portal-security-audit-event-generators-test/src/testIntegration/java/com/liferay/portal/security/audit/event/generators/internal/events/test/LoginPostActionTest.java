@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -174,13 +175,13 @@ public class LoginPostActionTest {
 
 		Assert.assertEquals(auditSessionId, auditMessage.getSessionID());
 
-		String[] sessionPhishingProtectedAttributes =
-			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES;
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"SESSION_PHISHING_PROTECTED_ATTRIBUTES",
+					ArrayUtil.remove(
+						PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES,
+						WebKeys.AUDIT_SESSION_ID))) {
 
-		PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES = ArrayUtil.remove(
-			sessionPhishingProtectedAttributes, WebKeys.AUDIT_SESSION_ID);
-
-		try {
 			MockHttpServletRequest unprotectedMockHttpServletRequest =
 				_createMockHttpServletRequest();
 
@@ -198,10 +199,6 @@ public class LoginPostActionTest {
 			Assert.assertNotEquals(
 				unprotectedAuditSessionId,
 				_getAuditSessionId(unprotectedMockHttpServletRequest));
-		}
-		finally {
-			PropsValues.SESSION_PHISHING_PROTECTED_ATTRIBUTES =
-				sessionPhishingProtectedAttributes;
 		}
 	}
 
