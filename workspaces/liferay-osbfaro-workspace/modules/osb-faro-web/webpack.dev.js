@@ -22,7 +22,7 @@ module.exports = merge(common.config, {
 		proxy: {
 			'**': {
 				changeOrigin: true,
-				onProxyReq: createOnProxyReq(COOKIE),
+				onProxyReq: createOnProxyReq(COOKIE, TARGET),
 				onProxyRes: createOnProxyRes(TARGET),
 				selfHandleResponse: true,
 				target: TARGET,

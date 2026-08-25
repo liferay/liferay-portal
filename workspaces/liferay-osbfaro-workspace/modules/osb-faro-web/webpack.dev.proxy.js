@@ -15,11 +15,36 @@ const inflate = promisify(zlib.inflate);
 // in via Okta against an SSO-protected upstream such as analytics-internal) into
 // every proxied request, so the dev server can reach the upstream without
 // proxying the Okta redirect flow. A falsy cookie leaves the request untouched.
+// Also rewrites Referer and Origin onto the upstream, which endpoints that
+// check the referrer require.
 
-function createOnProxyReq(cookie) {
-	return function onProxyReq(proxyReq) {
+function createOnProxyReq(cookie, target) {
+	return function onProxyReq(proxyReq, req) {
 		if (cookie) {
 			proxyReq.setHeader('cookie', cookie);
+		}
+
+		// Some endpoints reject a request whose Referer is not the upstream
+		// host: `asset-summary` answers 403, so the Top Assets card renders
+		// empty locally while it has data on the deployed environment.
+		// `changeOrigin` only rewrites Host, leaving Referer and Origin
+		// pointing at the dev server, so rewrite them here too.
+
+		const proxyOrigin = req.headers.host && `http://${req.headers.host}`;
+
+		if (!proxyOrigin || !target) {
+			return;
+		}
+
+		for (const name of ['origin', 'referer']) {
+			const value = req.headers[name];
+
+			if (value && value.startsWith(proxyOrigin)) {
+				proxyReq.setHeader(
+					name,
+					target + value.slice(proxyOrigin.length)
+				);
+			}
 		}
 	};
 }
