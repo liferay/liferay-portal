@@ -159,6 +159,10 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "\\| toString \\| b64dec"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: LIFERAY_DOCLIB_CONNECTION_STRING
         it: Publishes the storage account connection string for the document library store
     -   asserts:

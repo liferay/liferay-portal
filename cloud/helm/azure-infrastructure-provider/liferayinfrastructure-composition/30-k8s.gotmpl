@@ -1,4 +1,4 @@
-{{- $doclibConnectionString := dig (printf "liferay-storage-account-%s" $activeDataPlane) "connectionDetails" "attribute.primary_connection_string" "" $observedResources -}}
+{{- $doclibConnectionString := dig (printf "liferay-storage-account-%s" $activeDataPlane) "connectionDetails" "attribute.primary_connection_string" "" $observedResources | toString | b64dec -}}
 {{- $identityClientId := dig "liferay-identity" "resource" "status" "atProvider" "clientId" "" $observedResources -}}
 {{- $isDatabaseBootstrapped := false -}}
 {{- $isDoclibContainerReady := false -}}
