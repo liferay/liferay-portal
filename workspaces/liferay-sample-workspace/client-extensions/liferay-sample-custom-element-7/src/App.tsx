@@ -21,6 +21,17 @@ import {
 } from '@liferay/frontend-data-set-web/api';
 import React, {useEffect, useRef, useState} from 'react';
 
+import AppliedFilters from './AppliedFilters';
+import FilterPanels from './FilterPanels';
+import {
+	FILTERS,
+	FilterDefinition,
+	Selections,
+	getOdataFilterString,
+	getSelectedValues,
+	toggleOption,
+} from './filters';
+
 interface AppProps {
 	fdsName: string;
 }
@@ -35,10 +46,12 @@ const PLACEHOLDERS: Record<FDSConnectionStatus, string> = {
 function App({fdsName}: AppProps) {
 	const [disabled, setDisabled] = useState<boolean>(true);
 	const [expression, setExpression] = useState('');
+	const [manual, setManual] = useState(false);
 	const [placeholder, setPlaceholder] = useState<string>(
 		PLACEHOLDERS.connecting
 	);
 	const [query, setQuery] = useState('');
+	const [selections, setSelections] = useState<Selections>({});
 	const fdsConnectionRef = useRef<FDSConnection | null>(null);
 
 	useEffect(() => {
@@ -64,26 +77,43 @@ function App({fdsName}: AppProps) {
 		};
 	}, [fdsName]);
 
+	const applySelections = (selections: Selections) => {
+		setSelections(selections);
+
+		fdsConnectionRef.current?.setFilters(
+			FILTERS.map((filterDefinition) => ({
+				id: filterDefinition.id,
+				odataFilterString: getOdataFilterString(
+					filterDefinition,
+					getSelectedValues(selections, filterDefinition.id)
+				),
+			}))
+		);
+	};
+
 	const handleSearch = () => {
 		fdsConnectionRef.current?.setSearch(query);
 	};
 
-	const handleApplyFilter = () => {
-		fdsConnectionRef.current?.setFilters([
-			{id: 'custom', odataFilterString: expression.trim()},
-		]);
-	};
+	// Only one of the two ways of filtering is on screen at a time, so
+	// leaving one behind applied would filter the data set by something the
+	// user can no longer see, let alone undo.
 
-	const handleClearFilters = () => {
+	const handleSwapMode = () => {
 		setExpression('');
+		setSelections({});
+		setManual((manual) => !manual);
 
 		fdsConnectionRef.current?.clearFilters();
 	};
 
 	return (
-		<div style={{display: 'grid', gap: '1rem', padding: '1rem'}}>
-			<div style={{display: 'flex', gap: '0.5rem'}}>
+		<div className="p-3">
+			<h4 className="h5">Search</h4>
+
+			<div className="d-flex" style={{gap: '0.5rem'}}>
 				<input
+					aria-label="Search query"
 					className="form-control"
 					disabled={disabled}
 					onChange={(event) => setQuery(event.target.value)}
@@ -93,13 +123,13 @@ function App({fdsName}: AppProps) {
 						}
 					}}
 					placeholder={placeholder}
-					style={{flex: 1}}
+					style={{minWidth: 0}}
 					type="text"
 					value={query}
 				/>
 
 				<button
-					className="btn btn-primary"
+					className="btn btn-primary flex-shrink-0"
 					disabled={disabled}
 					onClick={handleSearch}
 					type="button"
@@ -108,35 +138,78 @@ function App({fdsName}: AppProps) {
 				</button>
 			</div>
 
-			<div style={{display: 'flex', gap: '0.5rem'}}>
-				<input
-					className="form-control"
-					disabled={disabled}
-					onChange={(event) => setExpression(event.target.value)}
-					placeholder="Filter with OData, such as name eq 'Liferay'"
-					style={{flex: 1}}
-					type="text"
-					value={expression}
-				/>
+			<hr className="my-4" />
+
+			<div className="align-items-center d-flex justify-content-between mb-3">
+				<h4 className="h5 mb-0">Filters</h4>
 
 				<button
-					className="btn btn-primary"
-					disabled={disabled || !expression.trim()}
-					onClick={handleApplyFilter}
-					type="button"
-				>
-					Apply filter
-				</button>
-
-				<button
-					className="btn btn-secondary"
+					className="btn btn-unstyled link"
 					disabled={disabled}
-					onClick={handleClearFilters}
+					onClick={handleSwapMode}
 					type="button"
 				>
-					Clear filters
+					{manual ? 'Choose from the options' : 'Filter manually'}
 				</button>
 			</div>
+
+			{manual ? (
+				<div className="d-flex" style={{gap: '0.5rem'}}>
+					<input
+						aria-label="OData filter expression"
+						className="form-control"
+						disabled={disabled}
+						onChange={(event) => setExpression(event.target.value)}
+						placeholder="Filter with OData, such as name eq 'Liferay'"
+						style={{minWidth: 0}}
+						type="text"
+						value={expression}
+					/>
+
+					<button
+						className="btn btn-primary flex-shrink-0"
+						disabled={disabled || !expression.trim()}
+						onClick={() =>
+							fdsConnectionRef.current?.setFilters([
+								{
+									id: 'manual',
+									odataFilterString: expression.trim(),
+								},
+							])
+						}
+						type="button"
+					>
+						Apply
+					</button>
+				</div>
+			) : (
+				<>
+					<AppliedFilters
+						onClearAll={() => applySelections({})}
+						onClearFilter={(filterId: string) =>
+							applySelections({...selections, [filterId]: []})
+						}
+						selections={selections}
+					/>
+
+					<FilterPanels
+						disabled={disabled}
+						onToggleOption={(
+							filterDefinition: FilterDefinition,
+							value: string
+						) =>
+							applySelections(
+								toggleOption(
+									selections,
+									filterDefinition,
+									value
+								)
+							)
+						}
+						selections={selections}
+					/>
+				</>
+			)}
 		</div>
 	);
 }
