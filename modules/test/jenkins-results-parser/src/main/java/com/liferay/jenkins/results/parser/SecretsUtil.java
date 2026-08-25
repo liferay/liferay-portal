@@ -89,7 +89,7 @@ public abstract class SecretsUtil {
 		System.out.println(
 			JenkinsResultsParserUtil.combine(
 				"Generated API token \"", key, "/", jenkinsAPITokenFieldLabel,
-				"\"."));
+				"\""));
 	}
 
 	public static String getSecret(String key) {
