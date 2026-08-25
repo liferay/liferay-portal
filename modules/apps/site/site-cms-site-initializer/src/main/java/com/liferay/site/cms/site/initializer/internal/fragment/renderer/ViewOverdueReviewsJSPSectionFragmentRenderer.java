@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 	service = FragmentRenderer.class
 )
 public class ViewOverdueReviewsJSPSectionFragmentRenderer
-	extends BaseJSPSectionFragmentRenderer
+	extends BaseEnterpriseJSPSectionFragmentRenderer
 		<ViewOverdueReviewsSectionDisplayContext> {
 
 	@Override
