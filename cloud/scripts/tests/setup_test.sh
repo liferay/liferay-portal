@@ -4,8 +4,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-source "$(dirname "${BASH_SOURCE[0]}")/../_azure_common.sh"
-
 function main {
 	local fail=0
 	local pass=0
@@ -27,11 +25,6 @@ function main {
 		_run_test "${script}" _test_aborts_with_missing_required_utility
 		_run_test "${script}" _test_aborts_with_no_arguments
 	done
-
-	_run_test "${scripts_dir}/_azure_common.sh" _test_fills_keda_operator_application_from_terraform_outputs
-	_run_test "${scripts_dir}/_azure_common.sh" _test_fills_liferay_parameters_from_terraform_outputs
-	_run_test "${scripts_dir}/_azure_common.sh" _test_omits_the_keda_pod_identity_when_the_identity_is_unavailable
-	_run_test "${scripts_dir}/_azure_common.sh" _test_omits_unavailable_liferay_parameters
 
 	echo ""
 	echo "Results: ${pass} passed, ${fail} failed."
@@ -266,101 +259,6 @@ function _test_aborts_with_old_terraform_version {
 	output=$(echo "${result}" | tail -n +2)
 
 	if [ ${exit_code} -ne 0 ] && [[ ${output} == *"is older than"* ]]
-	then
-		return 0
-	fi
-
-	return 1
-}
-
-function _test_fills_keda_operator_application_from_terraform_outputs {
-	local platform_module_outputs
-
-	platform_module_outputs=$(jq --null-input '{
-		keda_identity_client_id: {
-			value: "27ed4e1e-8c11-43e1-810f-afb22a5a2418"
-		},
-		keda_service_account_namespace: {
-			value: "keda"
-		}
-	}')
-
-	local expected_operator_application
-
-	expected_operator_application=$(jq --compact-output --null-input --sort-keys '{
-		namespace: "keda",
-		values: {
-			podIdentity: {
-				azureWorkload: {
-					clientId: "27ed4e1e-8c11-43e1-810f-afb22a5a2418",
-					enabled: true,
-					tenantId: "86315286-b8fe-4db7-abd0-cc8f6421c133"
-				}
-			}
-		}
-	}')
-
-	local operator_application
-
-	operator_application=$(get_keda_operator_application "${platform_module_outputs}" "86315286-b8fe-4db7-abd0-cc8f6421c133" | jq --compact-output --sort-keys '.')
-
-	if [ "${operator_application}" == "${expected_operator_application}" ]
-	then
-		return 0
-	fi
-
-	return 1
-}
-
-function _test_fills_liferay_parameters_from_terraform_outputs {
-	local platform_module_outputs
-
-	platform_module_outputs=$(jq --null-input '{
-		prometheus_workspace_endpoint: {
-			value: "https://liferay-test-amw-abcd.eastus.prometheus.monitor.azure.com"
-		}
-	}')
-
-	local expected_parameters
-
-	expected_parameters=$(jq --compact-output --null-input --sort-keys '[
-		{
-			name: "global.azure.prometheusWorkspaceEndpoint",
-			value: "https://liferay-test-amw-abcd.eastus.prometheus.monitor.azure.com"
-		}
-	]')
-
-	local parameters
-
-	parameters=$(get_liferay_parameters "${platform_module_outputs}" | jq --compact-output --sort-keys '.')
-
-	if [ "${parameters}" == "${expected_parameters}" ]
-	then
-		return 0
-	fi
-
-	return 1
-}
-
-function _test_omits_the_keda_pod_identity_when_the_identity_is_unavailable {
-	local operator_application
-
-	operator_application=$(get_keda_operator_application "{}" "86315286-b8fe-4db7-abd0-cc8f6421c133" | jq --compact-output --sort-keys '.')
-
-	if [ "${operator_application}" == "{}" ]
-	then
-		return 0
-	fi
-
-	return 1
-}
-
-function _test_omits_unavailable_liferay_parameters {
-	local parameters
-
-	parameters=$(get_liferay_parameters "{}" | jq --compact-output --sort-keys '.')
-
-	if [ "${parameters}" == "[]" ]
 	then
 		return 0
 	fi

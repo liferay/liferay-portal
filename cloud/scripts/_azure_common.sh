@@ -132,48 +132,6 @@ function generate_tfvars {
 	echo "${tfvars_file} was generated successfully."
 }
 
-function get_keda_operator_application {
-	local platform_module_outputs=${1}
-	local tenant_id=${2}
-
-	jq \
-		--arg tenant_id "${tenant_id}" \
-		--argjson platform_module_outputs "${platform_module_outputs}" \
-		--null-input \
-		'($platform_module_outputs.keda_identity_client_id.value // "") as $client_id
-		| if $client_id == "" then
-			{}
-		else
-			{
-				namespace: ($platform_module_outputs.keda_service_account_namespace.value // "keda-system"),
-				values: {
-					podIdentity: {
-						azureWorkload: {
-							clientId: $client_id,
-							enabled: true,
-							tenantId: $tenant_id
-						}
-					}
-				}
-			}
-		end'
-}
-
-function get_liferay_parameters {
-	local platform_module_outputs=${1}
-
-	jq \
-		--argjson platform_module_outputs "${platform_module_outputs}" \
-		--null-input \
-		'[
-			{
-				name: "global.azure.prometheusWorkspaceEndpoint",
-				value: ($platform_module_outputs.prometheus_workspace_endpoint.value // "")
-			}
-		]
-		| map(select(.value != ""))'
-}
-
 function get_terraform_args {
 	local configuration_json_file="${1}"
 

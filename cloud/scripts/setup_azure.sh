@@ -154,6 +154,48 @@ function _create_tfstate_storage {
 	fi
 }
 
+function _get_keda_operator_application {
+	local platform_module_outputs=${1}
+	local tenant_id=${2}
+
+	jq \
+		--arg tenant_id "${tenant_id}" \
+		--argjson platform_module_outputs "${platform_module_outputs}" \
+		--null-input \
+		'($platform_module_outputs.keda_identity_client_id.value // "") as $client_id
+		| if $client_id == "" then
+			{}
+		else
+			{
+				namespace: ($platform_module_outputs.keda_service_account_namespace.value // "keda-system"),
+				values: {
+					podIdentity: {
+						azureWorkload: {
+							clientId: $client_id,
+							enabled: true,
+							tenantId: $tenant_id
+						}
+					}
+				}
+			}
+		end'
+}
+
+function _get_liferay_parameters {
+	local platform_module_outputs=${1}
+
+	jq \
+		--argjson platform_module_outputs "${platform_module_outputs}" \
+		--null-input \
+		'[
+			{
+				name: "global.azure.prometheusWorkspaceEndpoint",
+				value: ($platform_module_outputs.prometheus_workspace_endpoint.value // "")
+			}
+		]
+		| map(select(.value != ""))'
+}
+
 function _get_observability_parameters {
 	local platform_module_outputs=${1}
 	local tenant_id=${2}
@@ -212,11 +254,11 @@ function _install_liferay_platform_chart {
 
 	local keda_operator_application
 
-	keda_operator_application=$(get_keda_operator_application "${platform_module_outputs}" "${tenant_id}")
+	keda_operator_application=$(_get_keda_operator_application "${platform_module_outputs}" "${tenant_id}")
 
 	local liferay_parameters
 
-	liferay_parameters=$(get_liferay_parameters "${platform_module_outputs}")
+	liferay_parameters=$(_get_liferay_parameters "${platform_module_outputs}")
 
 	local observability_parameters
 
