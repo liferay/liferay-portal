@@ -11,6 +11,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.cms.client.dto.v1_0.AssetStatistics;
 import com.liferay.headless.cms.client.resource.v1_0.AssetStatisticsResource;
+import com.liferay.headless.cms.resource.v1_0.test.util.CMSFreeTierTestUtil;
 import com.liferay.headless.cms.resource.v1_0.test.util.CMSOutboundLinkTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -231,6 +232,15 @@ public class AssetStatisticsResourceTest
 
 		_testGetAssetStatisticsBrokenLinksCount();
 		_testGetAssetStatisticsByAssetLibrary();
+	}
+
+	@Test
+	public void testGetAssetStatisticsWithFreeTier() throws Exception {
+		try (AutoCloseable autoCloseable = CMSFreeTierTestUtil.withFreeTier()) {
+			assertHttpResponseStatusCode(
+				400,
+				assetStatisticsResource.getAssetStatisticsHttpResponse(null));
+		}
 	}
 
 	@Override
