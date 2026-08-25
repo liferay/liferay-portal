@@ -17,6 +17,8 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -222,15 +224,18 @@ public class CMSObjectEntryReviewUserNotificationTest {
 
 		List<UserNotificationEvent> userNotificationEvents = new ArrayList<>();
 
-		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
-
 		for (UserNotificationEvent userNotificationEvent :
 				_userNotificationEventLocalService.getUserNotificationEvents(
 					user.getUserId())) {
 
-			if (Objects.equals(
-					objectDefinition.getPortletId(),
-					userNotificationEvent.getType())) {
+			JSONObject payloadJSONObject = JSONFactoryUtil.createJSONObject(
+				userNotificationEvent.getPayload());
+
+			if ((payloadJSONObject.getLong("classPK") ==
+					objectEntry.getObjectEntryId()) &&
+				Objects.equals(
+					payloadJSONObject.getString("notificationMessageKey"),
+					"x-has-reached-its-review-date")) {
 
 				userNotificationEvents.add(userNotificationEvent);
 			}
@@ -252,12 +257,6 @@ public class CMSObjectEntryReviewUserNotificationTest {
 
 		UserNotificationEvent userNotificationEvent =
 			userNotificationEvents.get(0);
-
-		String payload = userNotificationEvent.getPayload();
-
-		Assert.assertTrue(
-			payload,
-			payload.contains("classPK\":" + objectEntry.getObjectEntryId()));
 
 		ServiceContext serviceContext = new ServiceContext();
 
