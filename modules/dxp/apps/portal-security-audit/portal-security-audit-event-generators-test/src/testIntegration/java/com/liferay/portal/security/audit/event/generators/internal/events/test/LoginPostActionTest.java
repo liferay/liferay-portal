@@ -94,35 +94,33 @@ public class LoginPostActionTest {
 
 	@Test
 	public void testRunGeneratesOpaqueAuditSessionId() throws Exception {
-		MockHttpServletRequest mockHttpServletRequest =
+		MockHttpServletRequest mockHttpServletRequest1 =
 			_createMockHttpServletRequest();
 
-		_run(mockHttpServletRequest);
+		_run(mockHttpServletRequest1);
 
-		MockHttpServletRequest secondMockHttpServletRequest =
+		MockHttpServletRequest mockHttpServletRequest2 =
 			_createMockHttpServletRequest();
 
-		_run(secondMockHttpServletRequest);
+		_run(mockHttpServletRequest2);
 
-		String auditSessionId = _getAuditSessionId(mockHttpServletRequest);
-		String secondAuditSessionId = _getAuditSessionId(
-			secondMockHttpServletRequest);
+		String auditSessionId1 = _getAuditSessionId(mockHttpServletRequest1);
+		String auditSessionId2 = _getAuditSessionId(mockHttpServletRequest2);
 
-		HttpSession httpSession = mockHttpServletRequest.getSession();
-		HttpSession secondHttpSession =
-			secondMockHttpServletRequest.getSession();
+		HttpSession httpSession1 = mockHttpServletRequest1.getSession();
+		HttpSession httpSession2 = mockHttpServletRequest2.getSession();
 
-		Assert.assertNotEquals(httpSession.getId(), auditSessionId);
-		Assert.assertNotEquals(secondHttpSession.getId(), secondAuditSessionId);
-		Assert.assertNotEquals(auditSessionId, secondAuditSessionId);
+		Assert.assertNotEquals(httpSession1.getId(), auditSessionId1);
+		Assert.assertNotEquals(httpSession2.getId(), auditSessionId2);
+		Assert.assertNotEquals(auditSessionId1, auditSessionId2);
 	}
 
 	@Test
 	public void testRunKeepsAuditSessionIdAcrossRequests() throws Exception {
-		MockHttpServletRequest mockHttpServletRequest =
+		MockHttpServletRequest mockHttpServletRequest1 =
 			_createMockHttpServletRequest();
 
-		_run(mockHttpServletRequest);
+		_run(mockHttpServletRequest1);
 
 		AuditMessage auditMessage = _fetchAuditMessage(EventTypes.LOGIN);
 
@@ -130,13 +128,13 @@ public class LoginPostActionTest {
 
 		Assert.assertNotNull(auditSessionId);
 
-		MockHttpServletRequest secondMockHttpServletRequest =
+		MockHttpServletRequest mockHttpServletRequest2 =
 			new MockHttpServletRequest();
 
-		secondMockHttpServletRequest.setSession(
-			mockHttpServletRequest.getSession());
+		mockHttpServletRequest2.setSession(
+			mockHttpServletRequest1.getSession());
 
-		_testDoFilter(secondMockHttpServletRequest);
+		_testDoFilter(mockHttpServletRequest2);
 
 		AuditRequestThreadLocal auditRequestThreadLocal =
 			AuditRequestThreadLocal.getAuditThreadLocal();
