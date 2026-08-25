@@ -457,10 +457,7 @@ public class PortalWorkspace extends BaseWorkspace {
 		String portalUpstreamBranchName =
 			portalWorkspaceGitRepository.getUpstreamBranchName();
 
-		if ((portalUpstreamBranchName == null) ||
-			(!portalUpstreamBranchName.equals("master") &&
-			 !portalUpstreamBranchName.matches("release-\\d{2}-\\d{4}.q\\d"))) {
-
+		if (!portalUpstreamBranchName.equals("master")) {
 			return;
 		}
 
