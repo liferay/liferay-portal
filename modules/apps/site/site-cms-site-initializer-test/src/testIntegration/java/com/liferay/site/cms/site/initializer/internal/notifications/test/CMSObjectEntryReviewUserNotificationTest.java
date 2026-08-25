@@ -94,12 +94,7 @@ public class CMSObjectEntryReviewUserNotificationTest {
 		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
 		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
 
-		List<UserNotificationEvent> userNotificationEvents =
-			_getUserNotificationEvents(objectEntry, _user);
-
-		Assert.assertEquals(
-			userNotificationEvents.toString(), 1,
-			userNotificationEvents.size());
+		_assertUserNotificationEventsCount(1, objectEntry, _user);
 	}
 
 	@Test
@@ -127,19 +122,8 @@ public class CMSObjectEntryReviewUserNotificationTest {
 
 		_objectEntryLocalService.checkObjectEntries(objectEntry.getCompanyId());
 
-		List<UserNotificationEvent> ownerUserNotificationEvents =
-			_getUserNotificationEvents(objectEntry, _user);
-
-		Assert.assertEquals(
-			ownerUserNotificationEvents.toString(), 1,
-			ownerUserNotificationEvents.size());
-
-		List<UserNotificationEvent> contentReviewerUserNotificationEvents =
-			_getUserNotificationEvents(objectEntry, contentReviewerUser);
-
-		Assert.assertEquals(
-			contentReviewerUserNotificationEvents.toString(), 0,
-			contentReviewerUserNotificationEvents.size());
+		_assertUserNotificationEventsCount(1, objectEntry, _user);
+		_assertUserNotificationEventsCount(0, objectEntry, contentReviewerUser);
 	}
 
 	@Test
@@ -216,6 +200,18 @@ public class CMSObjectEntryReviewUserNotificationTest {
 				).build()
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private void _assertUserNotificationEventsCount(
+			int count, ObjectEntry objectEntry, User user)
+		throws Exception {
+
+		List<UserNotificationEvent> userNotificationEvents =
+			_getUserNotificationEvents(objectEntry, user);
+
+		Assert.assertEquals(
+			userNotificationEvents.toString(), count,
+			userNotificationEvents.size());
 	}
 
 	private List<UserNotificationEvent> _getUserNotificationEvents(
