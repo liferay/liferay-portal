@@ -1336,7 +1336,7 @@ test.describe('Workflow and Content Progress section', () => {
 				).toBeVisible();
 
 				await expect(
-					contentProgressCard.getByRole('img', {name: 'Others: 1'})
+					contentProgressCard.getByRole('link', {name: 'Others: 1'})
 				).toBeVisible();
 
 				await expect(

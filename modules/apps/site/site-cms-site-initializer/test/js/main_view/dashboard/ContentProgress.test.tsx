@@ -76,11 +76,13 @@ describe('ContentProgress', () => {
 
 		expect(
 			segments.map((segment) => segment.getAttribute('aria-label'))
-		).toEqual(['draft: 3', 'pending: 2', 'approved: 5', 'scheduled: 4']);
-
-		expect(
-			screen.getByRole('img', {name: 'others: 1'})
-		).toBeInTheDocument();
+		).toEqual([
+			'draft: 3',
+			'pending: 2',
+			'approved: 5',
+			'scheduled: 4',
+			'others: 1',
+		]);
 	});
 
 	it('omits statuses without content', async () => {
@@ -131,6 +133,73 @@ describe('ContentProgress', () => {
 		});
 	});
 
+	it('links the others segment to the statuses it aggregates', async () => {
+		mockContentProgress(BUCKETS);
+
+		renderContentProgress();
+
+		expect(
+			await screen.findByRole('link', {name: 'others: 1'})
+		).toBeInTheDocument();
+
+		const configs = (serializeFDSConfig as jest.Mock).mock.calls.map(
+			([config]) => config
+		);
+
+		expect(configs).toContainEqual({
+			filters: [
+				{
+					id: FDS_FILTER_ID.STATUS,
+					selectedData: {
+						exclude: false,
+						selectedItems: [
+							{label: 'expired', value: WORKFLOW_STATUS.EXPIRED},
+						],
+					},
+				},
+			],
+		});
+	});
+
+	it('ignores the statuses the facet reports with no content', async () => {
+		mockContentProgress([
+			...BUCKETS,
+			{displayName: '8', frequency: 0, term: '8'},
+		]);
+
+		renderContentProgress();
+
+		const segments = await screen.findAllByRole('link');
+
+		expect(
+			segments.map((segment) => segment.getAttribute('aria-label'))
+		).toEqual([
+			'draft: 3',
+			'pending: 2',
+			'approved: 5',
+			'scheduled: 4',
+			'others: 1',
+		]);
+
+		const configs = (serializeFDSConfig as jest.Mock).mock.calls.map(
+			([config]) => config
+		);
+
+		expect(configs).toContainEqual({
+			filters: [
+				{
+					id: FDS_FILTER_ID.STATUS,
+					selectedData: {
+						exclude: false,
+						selectedItems: [
+							{label: 'expired', value: WORKFLOW_STATUS.EXPIRED},
+						],
+					},
+				},
+			],
+		});
+	});
+
 	it('scopes the segment links to the selected space', async () => {
 		mockContentProgress(BUCKETS);
 
@@ -169,7 +238,7 @@ describe('ContentProgress', () => {
 
 		renderContentProgress({siteId: 123, value: '456'});
 
-		await screen.findAllByRole('img');
+		await screen.findAllByRole('link');
 
 		expect(GovernanceService.getContentProgress).toHaveBeenCalledWith(
 			'contentProgressFilter',
