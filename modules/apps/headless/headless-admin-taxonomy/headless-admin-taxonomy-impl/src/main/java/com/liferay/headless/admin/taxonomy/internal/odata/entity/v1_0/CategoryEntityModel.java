@@ -12,6 +12,7 @@ import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.IdEntityField;
+import com.liferay.portal.odata.entity.IntegerEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.Map;
@@ -38,6 +39,9 @@ public class CategoryEntityModel implements EntityModel {
 			new IdEntityField(
 				"projects", locale -> "projectDepotEntryGroupIds",
 				String::valueOf),
+			new IntegerEntityField(
+				"numberOfTaxonomyCategories",
+				locale -> Field.getSortableFieldName("childCategoriesCount")),
 			new StringEntityField(
 				"externalReferenceCode", locale -> "externalReferenceCode"),
 			new StringEntityField(
