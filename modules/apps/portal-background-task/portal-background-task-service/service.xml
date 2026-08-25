@@ -29,6 +29,7 @@
 		<column name="taskContextMap" type="Map" />
 		<column name="completed" type="boolean" />
 		<column name="completionDate" type="Date" />
+		<column name="errorStackTrace" type="String" />
 		<column name="status" type="int" />
 		<column name="statusMessage" type="String" />
 

@@ -46,6 +46,11 @@ public class BackgroundTaskServiceUpgradeStepRegistrator
 			"2.0.0", "2.0.1",
 			new BackgroundTaskCompanyIdUpgradeProcess(
 				_backgroundTaskThreadLocalManager));
+
+		registry.register(
+			"2.0.1", "2.1.0",
+			UpgradeProcessFactory.addColumns(
+				"BackgroundTask", "errorStackTrace TEXT null"));
 	}
 
 	@Reference

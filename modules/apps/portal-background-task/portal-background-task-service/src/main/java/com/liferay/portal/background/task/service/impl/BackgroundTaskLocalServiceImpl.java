@@ -179,6 +179,17 @@ public class BackgroundTaskLocalServiceImpl
 		long backgroundTaskId, Map<String, Serializable> taskContextMap,
 		int status, String statusMessage, ServiceContext serviceContext) {
 
+		return amendBackgroundTask(
+			backgroundTaskId, taskContextMap, status, statusMessage, null,
+			serviceContext);
+	}
+
+	@Override
+	public BackgroundTask amendBackgroundTask(
+		long backgroundTaskId, Map<String, Serializable> taskContextMap,
+		int status, String statusMessage, String errorStackTrace,
+		ServiceContext serviceContext) {
+
 		BackgroundTask backgroundTask =
 			backgroundTaskPersistence.fetchByPrimaryKey(backgroundTaskId);
 
@@ -205,6 +216,10 @@ public class BackgroundTaskLocalServiceImpl
 
 		if (Validator.isNotNull(statusMessage)) {
 			backgroundTask.setStatusMessage(statusMessage);
+		}
+
+		if (Validator.isNotNull(errorStackTrace)) {
+			backgroundTask.setErrorStackTrace(errorStackTrace);
 		}
 
 		return backgroundTaskPersistence.update(backgroundTask);
