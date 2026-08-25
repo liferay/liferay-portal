@@ -9,6 +9,7 @@ import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {
 	FDS_FILTER_ID,
 	WORKFLOW_STATUS,
+	WorkflowStatus,
 } from '../../../../common/utils/constants';
 import {getStatusSelectedData} from '../../../quick_filters/quickFilterUpdates';
 import {BaseCard} from '../../common/BaseCard';
@@ -19,50 +20,50 @@ import {GovernanceAdditionalProps} from '../types';
 
 const CHART_HEIGHT = 36;
 
-const CONTENT_STATUS: {label: string; value: number}[] = [
-	{
-		label: Liferay.Language.get('draft'),
-		value: WORKFLOW_STATUS.DRAFT,
-	},
-	{
-		label: Liferay.Language.get('pending'),
-		value: WORKFLOW_STATUS.PENDING,
-	},
-	{
-		label: Liferay.Language.get('approved'),
-		value: WORKFLOW_STATUS.APPROVED,
-	},
-	{
-		label: Liferay.Language.get('scheduled'),
-		value: WORKFLOW_STATUS.SCHEDULED,
-	},
+const STATUS_LABELS: Record<WorkflowStatus, string> = {
+	[WORKFLOW_STATUS.APPROVED]: Liferay.Language.get('approved'),
+	[WORKFLOW_STATUS.DRAFT]: Liferay.Language.get('draft'),
+	[WORKFLOW_STATUS.EXPIRED]: Liferay.Language.get('expired'),
+	[WORKFLOW_STATUS.PENDING]: Liferay.Language.get('pending'),
+	[WORKFLOW_STATUS.SCHEDULED]: Liferay.Language.get('scheduled'),
+};
+
+const CONTENT_STATUSES: WorkflowStatus[] = [
+	WORKFLOW_STATUS.DRAFT,
+	WORKFLOW_STATUS.PENDING,
+	WORKFLOW_STATUS.APPROVED,
+	WORKFLOW_STATUS.SCHEDULED,
 ];
 
 function getSegments(
 	buckets: StatusFacetBucket[],
-	getStatusHref: (label: string, value: number) => string
+	getStatusHref: (statuses: WorkflowStatus[]) => string
 ): BarDatum[] {
 	const frequencies = new Map(
-		buckets.map((bucket) => [Number(bucket.term), bucket.frequency])
+		buckets
+			.filter(({frequency}) => frequency > 0)
+			.map((bucket) => [
+				Number(bucket.term) as WorkflowStatus,
+				bucket.frequency,
+			])
 	);
 
-	const segments: BarDatum[] = CONTENT_STATUS.map(({label, value}) => ({
-		href: getStatusHref(label, value),
-		label,
-		value: frequencies.get(value) ?? 0,
+	const segments: BarDatum[] = CONTENT_STATUSES.map((status) => ({
+		href: getStatusHref([status]),
+		label: STATUS_LABELS[status],
+		value: frequencies.get(status) ?? 0,
 	}));
 
-	const knownValues = new Set(CONTENT_STATUS.map(({value}) => value));
-
-	const otherBuckets = buckets.filter(
-		(bucket) => !knownValues.has(Number(bucket.term))
+	const otherEntries = [...frequencies].filter(
+		([status]) => !CONTENT_STATUSES.includes(status)
 	);
 
-	if (otherBuckets.length) {
+	if (otherEntries.length) {
 		segments.push({
+			href: getStatusHref(otherEntries.map(([status]) => status)),
 			label: Liferay.Language.get('others'),
-			value: otherBuckets.reduce(
-				(acc, bucket) => acc + bucket.frequency,
+			value: otherEntries.reduce(
+				(total, [, frequency]) => total + frequency,
 				0
 			),
 		});
@@ -110,12 +111,17 @@ export function ContentProgress({
 	const segments = useMemo(() => {
 		const spaceFilters = getSpaceFilters(space);
 
-		return getSegments(buckets ?? [], (label, value) =>
+		return getSegments(buckets ?? [], (statuses) =>
 			getAllSectionHref(additionalProps.allSectionFDSName, {
 				filters: [
 					{
 						id: FDS_FILTER_ID.STATUS,
-						selectedData: getStatusSelectedData(label, value),
+						selectedData: getStatusSelectedData(
+							statuses.map((status) => ({
+								label: STATUS_LABELS[status],
+								value: status,
+							}))
+						),
 					},
 					...spaceFilters,
 				],

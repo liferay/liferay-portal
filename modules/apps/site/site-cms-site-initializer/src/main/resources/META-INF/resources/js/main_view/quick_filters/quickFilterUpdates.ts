@@ -15,8 +15,10 @@ import {QUICK_FILTER_TYPES, QuickFilterType} from './constants';
 
 type FilterUpdates = Record<string, IBaseFilterState['selectedData']>;
 
-export function getStatusSelectedData(label: string, value: number) {
-	return {exclude: false, selectedItems: [{label, value}]};
+export function getStatusSelectedData(
+	selectedItems: {label: string; value: number}[]
+) {
+	return {exclude: false, selectedItems};
 }
 
 export const QUICK_FILTER_UPDATES: Record<
@@ -24,10 +26,12 @@ export const QUICK_FILTER_UPDATES: Record<
 	() => FilterUpdates
 > = {
 	[QUICK_FILTER_TYPES.EXPIRED]: () => ({
-		[FDS_FILTER_ID.STATUS]: getStatusSelectedData(
-			Liferay.Language.get('expired'),
-			WORKFLOW_STATUS.EXPIRED
-		),
+		[FDS_FILTER_ID.STATUS]: getStatusSelectedData([
+			{
+				label: Liferay.Language.get('expired'),
+				value: WORKFLOW_STATUS.EXPIRED,
+			},
+		]),
 	}),
 	[QUICK_FILTER_TYPES.EXPIRING_SOON]: () => {
 		const to = new Date();
@@ -40,17 +44,21 @@ export const QUICK_FILTER_UPDATES: Record<
 				from: toDatePart(new Date()),
 				to: toDatePart(to),
 			},
-			[FDS_FILTER_ID.STATUS]: getStatusSelectedData(
-				Liferay.Language.get('approved'),
-				WORKFLOW_STATUS.APPROVED
-			),
+			[FDS_FILTER_ID.STATUS]: getStatusSelectedData([
+				{
+					label: Liferay.Language.get('approved'),
+					value: WORKFLOW_STATUS.APPROVED,
+				},
+			]),
 		};
 	},
 	[QUICK_FILTER_TYPES.IN_DRAFT]: () => ({
-		[FDS_FILTER_ID.STATUS]: getStatusSelectedData(
-			Liferay.Language.get('draft'),
-			WORKFLOW_STATUS.DRAFT
-		),
+		[FDS_FILTER_ID.STATUS]: getStatusSelectedData([
+			{
+				label: Liferay.Language.get('draft'),
+				value: WORKFLOW_STATUS.DRAFT,
+			},
+		]),
 	}),
 	[QUICK_FILTER_TYPES.REVIEW_DATE_OVERDUE]: () => ({
 		[FDS_FILTER_ID.DATE_REVIEW]: {
