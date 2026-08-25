@@ -272,12 +272,11 @@ public class TimerExecutorTest {
 		Assert.assertEquals(
 			initialInboxSize, MailServiceTestUtil.getInboxSize());
 
-		String schedulerGroupName = _getSchedulerGroupName(
-			kaleoTimerInstanceToken);
+		String groupName = _getSchedulerGroupName(kaleoTimerInstanceToken);
 
 		Assert.assertNull(
 			SchedulerEngineHelperUtil.getScheduledJob(
-				schedulerGroupName, schedulerGroupName, StorageType.PERSISTED));
+				groupName, groupName, StorageType.PERSISTED));
 	}
 
 	private KaleoInstanceToken _addKaleoInstanceToken(KaleoTask kaleoTask)
@@ -334,18 +333,17 @@ public class TimerExecutorTest {
 				continue;
 			}
 
-			KaleoTask kaleoNodeKaleoTask = null;
+			KaleoTask kaleoTask = null;
 
 			try {
-				kaleoNodeKaleoTask =
-					_kaleoTaskLocalService.getKaleoNodeKaleoTask(
-						kaleoNode.getKaleoNodeId());
+				kaleoTask = _kaleoTaskLocalService.getKaleoNodeKaleoTask(
+					kaleoNode.getKaleoNodeId());
 			}
 			catch (PortalException portalException) {
 			}
 
-			if (Objects.nonNull(kaleoNodeKaleoTask)) {
-				return kaleoNodeKaleoTask;
+			if (Objects.nonNull(kaleoTask)) {
+				return kaleoTask;
 			}
 		}
 
@@ -364,20 +362,19 @@ public class TimerExecutorTest {
 	private Message _getMessage(KaleoTimerInstanceToken kaleoTimerInstanceToken)
 		throws Exception {
 
-		String schedulerGroupName = _getSchedulerGroupName(
-			kaleoTimerInstanceToken);
+		String groupName = _getSchedulerGroupName(kaleoTimerInstanceToken);
 
 		SchedulerResponse schedulerResponse =
 			SchedulerEngineHelperUtil.getScheduledJob(
-				schedulerGroupName, schedulerGroupName, StorageType.PERSISTED);
+				groupName, groupName, StorageType.PERSISTED);
 
 		Message message = schedulerResponse.getMessage();
 
 		message.put(
 			SchedulerEngine.DESTINATION_NAME,
 			KaleoRuntimeDestinationNames.WORKFLOW_TIMER);
-		message.put(SchedulerEngine.GROUP_NAME, schedulerGroupName);
-		message.put(SchedulerEngine.JOB_NAME, schedulerGroupName);
+		message.put(SchedulerEngine.GROUP_NAME, groupName);
+		message.put(SchedulerEngine.JOB_NAME, groupName);
 		message.put("companyId", kaleoTimerInstanceToken.getCompanyId());
 
 		return message;
