@@ -53,15 +53,12 @@ public class Test {
 
 		JenkinsResultsParserUtil.setTopLevelJobNames(null);
 
-		Map<String, ?> jobProperties = ReflectionTestUtil.getFieldValue(
-			JobPropertyFactory.class, "_jobProperties");
-
-		jobProperties.clear();
-
 		Map<String, Job> jobs = ReflectionTestUtil.getFieldValue(
 			JobFactory.class, "_jobs");
 
 		jobs.clear();
+
+		JobPropertyFactory.clear();
 
 		Shell.setInstance(new Shell());
 

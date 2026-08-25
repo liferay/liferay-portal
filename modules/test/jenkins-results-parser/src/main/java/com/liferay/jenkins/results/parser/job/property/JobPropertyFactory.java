@@ -20,6 +20,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JobPropertyFactory {
 
+	public static void clear() {
+		_jobProperties.clear();
+	}
+
 	public static JobProperty newJobProperty(String basePropertyName, Job job) {
 		return newJobProperty(
 			basePropertyName, null, null, job, null, null, true);

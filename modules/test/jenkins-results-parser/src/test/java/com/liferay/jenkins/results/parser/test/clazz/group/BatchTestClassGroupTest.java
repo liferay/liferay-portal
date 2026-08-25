@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
 import com.liferay.jenkins.results.parser.RandomTestUtil;
+import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 
@@ -134,7 +135,7 @@ public class BatchTestClassGroupTest
 	private BatchTestClassGroup _newBatchTestClassGroup(
 		String axisCount, String axisMaxSize, int testClassCount) {
 
-		BatchTestClassGroupTestUtil.resetCaches();
+		JobPropertyFactory.clear();
 
 		Properties jobProperties = new Properties();
 

@@ -11,8 +11,6 @@ import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.JobFactory;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
-import com.liferay.jenkins.results.parser.ReflectionTestUtil;
-import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +20,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.mockito.Mockito;
@@ -83,13 +80,6 @@ public class BatchTestClassGroupTestUtil {
 
 		return new ServiceBuilderModulesBatchTestClassGroup(
 			"service-builder-modules", portalTestClassJob);
-	}
-
-	public static void resetCaches() {
-		Map<String, ?> jobProperties = ReflectionTestUtil.getFieldValue(
-			JobPropertyFactory.class, "_jobProperties");
-
-		jobProperties.clear();
 	}
 
 	private static PortalTestClassJob _getPortalTestClassJob() {
