@@ -38,15 +38,14 @@ public class ServletResponseUtilSendFileCallCheck extends BaseCheck {
 
 		List<String> names = getNames(dotDetailAST, false);
 
-		if (names.size() != 2) {
+		if ((names.size() != 2) ||
+			!StringUtil.equals(names.get(0), "ServletResponseUtil") ||
+			!StringUtil.equals(names.get(1), "sendFile")) {
+
 			return;
 		}
 
-		if (StringUtil.equals(names.get(0), "ServletResponseUtil") &&
-			StringUtil.equals(names.get(1), "sendFile")) {
-
-			log(detailAST, _MSG_AVOID_METHOD_CALL);
-		}
+		log(detailAST, _MSG_AVOID_METHOD_CALL);
 	}
 
 	private static final String _MSG_AVOID_METHOD_CALL = "method.call.avoid";

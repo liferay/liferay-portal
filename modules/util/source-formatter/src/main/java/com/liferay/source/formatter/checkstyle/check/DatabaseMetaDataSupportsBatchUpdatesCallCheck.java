@@ -39,17 +39,15 @@ public class DatabaseMetaDataSupportsBatchUpdatesCallCheck extends BaseCheck {
 		List<String> names = getNames(dotDetailAST, false);
 
 		if ((names.size() != 2) ||
-			!StringUtil.equals(names.get(1), "supportsBatchUpdates")) {
+			!StringUtil.equals(names.get(1), "supportsBatchUpdates") ||
+			!StringUtil.equals(
+				getVariableTypeName(detailAST, names.get(0), false),
+				"DatabaseMetaData")) {
 
 			return;
 		}
 
-		if (StringUtil.equals(
-				getVariableTypeName(detailAST, names.get(0), false),
-				"DatabaseMetaData")) {
-
-			log(detailAST, _MSG_AVOID_METHOD_CALL);
-		}
+		log(detailAST, _MSG_AVOID_METHOD_CALL);
 	}
 
 	private static final String _MSG_AVOID_METHOD_CALL = "method.call.avoid";
