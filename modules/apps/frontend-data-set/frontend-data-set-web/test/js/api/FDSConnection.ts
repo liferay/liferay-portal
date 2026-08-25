@@ -13,7 +13,7 @@ import {waitFor} from '@testing-library/react';
 import State from '../../../../../frontend-js/frontend-js-state-web/src/main/resources/META-INF/resources/main/State';
 import {FDSConnection} from '../../../src/main/resources/META-INF/resources/js/api/FDSConnection';
 
-import type {FDSState} from '@liferay/js-api/data-set';
+import type {FDSConnectionOptions, FDSState} from '@liferay/js-api/data-set';
 
 const FDS_NAME = 'testDataSet';
 
@@ -35,8 +35,13 @@ describe('FDSConnection filters', () => {
 
 	const readState = () => State.read(atom as never) as unknown as FDSState;
 
-	const connect = async () => {
-		connection = new FDSConnection(FDS_NAME, {search: onSearch}, onStatus);
+	const connect = async (options: FDSConnectionOptions = {}) => {
+		connection = new FDSConnection(
+			FDS_NAME,
+			{search: onSearch},
+			onStatus,
+			options
+		);
 
 		await waitFor(() =>
 			expect(onStatus).toHaveBeenCalledWith(
@@ -44,6 +49,8 @@ describe('FDSConnection filters', () => {
 			)
 		);
 	};
+
+	const connectOwningFilters = () => connect({owns: ['filters', 'search']});
 
 	beforeEach(() => {
 		State.__internal__.reset();
@@ -57,12 +64,16 @@ describe('FDSConnection filters', () => {
 
 		onSearch = jest.fn();
 		onStatus = jest.fn();
+
+		jest.spyOn(console, 'warn').mockImplementation(() => {});
 	});
 
 	afterEach(() => {
 		connection?.disconnect();
 
 		(Liferay.on as jest.Mock).mockReset();
+
+		jest.restoreAllMocks();
 	});
 
 	it('reports a type error when a connection writes the declared filters', () => {
@@ -77,8 +88,26 @@ describe('FDSConnection filters', () => {
 		expect(fdsState.search.query).toBe('');
 	});
 
-	it('takes the filtering over when the consumer sets its own filters', async () => {
+	it('takes the filtering over as soon as a consumer that owns it connects', async () => {
+		await connectOwningFilters();
+
+		expect(readState().connectionFilters).toEqual([]);
+	});
+
+	it('leaves the filtering to the data set when a consumer only owns the search', async () => {
+		await connect({owns: ['search']});
+
+		expect(readState().connectionFilters).toBeUndefined();
+	});
+
+	it('leaves the filtering to the data set when a consumer declares nothing', async () => {
 		await connect();
+
+		expect(readState().connectionFilters).toBeUndefined();
+	});
+
+	it('applies the filters the consumer sets', async () => {
+		await connectOwningFilters();
 
 		connection.setFilters([
 			{id: 'custom', odataFilterString: "status eq 'draft'"},
@@ -90,7 +119,7 @@ describe('FDSConnection filters', () => {
 	});
 
 	it('replaces the previous set on every call', async () => {
-		await connect();
+		await connectOwningFilters();
 
 		connection.setFilters([
 			{id: 'custom', odataFilterString: "status eq 'draft'"},
@@ -106,7 +135,7 @@ describe('FDSConnection filters', () => {
 	});
 
 	it('filters nothing when the consumer clears its filters', async () => {
-		await connect();
+		await connectOwningFilters();
 
 		connection.setFilters([
 			{id: 'custom', odataFilterString: "status eq 'draft'"},
@@ -117,8 +146,18 @@ describe('FDSConnection filters', () => {
 		expect(readState().connectionFilters).toEqual([]);
 	});
 
-	it('leaves nothing applied when a consumer that filtered disconnects', async () => {
-		await connect();
+	it('ignores a consumer that filters without owning the filtering', async () => {
+		await connect({owns: ['search']});
+
+		connection.setFilters([
+			{id: 'custom', odataFilterString: "status eq 'draft'"},
+		]);
+
+		expect(readState().connectionFilters).toBeUndefined();
+	});
+
+	it('hands the filtering back when a consumer that owned it disconnects', async () => {
+		await connectOwningFilters();
 
 		connection.setFilters([
 			{id: 'custom', odataFilterString: "status eq 'draft'"},
@@ -126,11 +165,11 @@ describe('FDSConnection filters', () => {
 
 		connection.disconnect();
 
-		expect(readState().connectionFilters).toEqual([]);
+		expect(readState().connectionFilters).toBeUndefined();
 	});
 
-	it('keeps the declared filters in play when a consumer that never filtered disconnects', async () => {
-		await connect();
+	it('keeps the declared filters in play when a consumer that never owned the filtering disconnects', async () => {
+		await connect({owns: ['search']});
 
 		connection.disconnect();
 
@@ -138,7 +177,7 @@ describe('FDSConnection filters', () => {
 	});
 
 	it('ignores filter changes once disconnected', async () => {
-		await connect();
+		await connectOwningFilters();
 
 		connection.disconnect();
 

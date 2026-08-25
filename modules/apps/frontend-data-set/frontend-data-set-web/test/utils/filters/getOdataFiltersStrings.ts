@@ -4,10 +4,8 @@
  */
 
 import {EEntityFieldType} from '../../../src/main/resources/META-INF/resources/management_bar/controls/filters/utils/types';
-import {
-	IConnectedFDSState,
-	getOdataFiltersStrings,
-} from '../../../src/main/resources/META-INF/resources/utils/filters/getOdataFiltersStrings';
+import {getOdataFiltersStrings} from '../../../src/main/resources/META-INF/resources/utils/filters/getOdataFiltersStrings';
+import {IConnectedFDSState} from '../../../src/main/resources/META-INF/resources/utils/filters/types';
 import {
 	IBaseFilterState,
 	IFDSState,

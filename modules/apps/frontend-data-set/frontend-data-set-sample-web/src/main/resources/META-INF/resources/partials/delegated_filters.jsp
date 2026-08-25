@@ -12,11 +12,18 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 %>
 
 <p>
-	This data set declares filters but shows no filter UI, because
-	<code>DelegatedFiltersPropsTransformer</code> sets
-	<code>showFilters</code> to <code>false</code>. The filters it declares
-	stay in its state, and filtering is left to whoever drives the data set
-	from outside.
+	This data set declares filters and shows them until a client extension
+	connects to it and declares that it owns the filtering. From that moment
+	the filters dropdown and the filter chips are gone, because the filters
+	this data set declares no longer reach the request: the client extension
+	owns the whole filter expression, and offers its own filter UI. They stay
+	in the state, so the client extension can read them and decide which ones
+	to obey, and they come back when it disconnects.
+</p>
+
+<p>
+	Add the <code>liferay-sample-custom-element-7</code> client extension to
+	this page to see it.
 </p>
 
 <frontend-data-set:headless-display
@@ -24,6 +31,5 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 	emptyState="<%= fdsSampleDisplayContext.getEmptyState() %>"
 	id="<%= FDSSampleFDSNames.DELEGATED_FILTERS %>"
 	itemsPerPage="<%= 10 %>"
-	propsTransformer="{DelegatedFiltersPropsTransformer} from frontend-data-set-sample-web"
 	style="fluid"
 />
