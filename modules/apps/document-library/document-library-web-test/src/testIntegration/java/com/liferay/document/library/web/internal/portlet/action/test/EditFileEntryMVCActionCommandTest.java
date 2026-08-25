@@ -8,11 +8,18 @@ package com.liferay.document.library.web.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.configuration.DLFileEntryMimeTypeConfiguration;
 import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
+import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeService;
 import com.liferay.document.library.test.util.DLAppTestUtil;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -30,6 +37,7 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
@@ -65,6 +73,7 @@ import jakarta.portlet.PortletException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -119,6 +128,36 @@ public class EditFileEntryMVCActionCommandTest {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, fileVersion.getStatus());
+	}
+
+	@Test
+	public void testProcessActionAddDynamicWithRequiredDDMFormField()
+		throws Exception {
+
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+		DLFileEntryType dlFileEntryType = _addFileEntryTypeWithRequiredField();
+
+		_dlAppLocalService.updateFolder(
+			folder.getFolderId(), folder.getParentFolderId(), folder.getName(),
+			folder.getDescription(), _getFolderServiceContext(dlFileEntryType));
+
+		String fileName = RandomTestUtil.randomString() + ".txt";
+
+		_processAction(
+			_getMockLiferayPortletActionRequest(
+				_CONTENT_BYTES, fileName,
+				_getParameters(
+					Constants.ADD_DYNAMIC, folder.getFolderId(),
+					folder.getRepositoryId(), new String[0])),
+			new MockLiferayPortletActionResponse());
+
+		FileEntry actualFileEntry = _dlAppLocalService.getFileEntryByFileName(
+			_group.getGroupId(), folder.getFolderId(), fileName);
+
+		FileVersion fileVersion = actualFileEntry.getFileVersion();
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, fileVersion.getStatus());
 	}
 
 	@Test
@@ -404,6 +443,31 @@ public class EditFileEntryMVCActionCommandTest {
 		Assert.assertTrue(actualFileEntry.isCheckedOut());
 	}
 
+	private DLFileEntryType _addFileEntryTypeWithRequiredField()
+		throws Exception {
+
+		DDMForm ddmForm = DDMFormTestUtil.createDDMForm(
+			DDMFormTestUtil.createAvailableLocales(LocaleUtil.US),
+			LocaleUtil.US);
+
+		DDMFormTestUtil.addDDMFormFields(
+			ddmForm,
+			DDMFormTestUtil.createLocalizedTextDDMFormField(
+				RandomTestUtil.randomString(), false, true, LocaleUtil.US));
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), DLFileEntryMetadata.class.getName(), ddmForm);
+
+		return _dlFileEntryTypeService.addFileEntryType(
+			null, _group.getGroupId(), ddmStructure.getStructureId(), null,
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId()));
+	}
+
 	private MockMultipartHttpServletRequest
 		_createMockMultipartHttpServletRequest() {
 
@@ -449,6 +513,25 @@ public class EditFileEntryMVCActionCommandTest {
 			"\r\n--", boundary, StringPool.DOUBLE_DASH);
 
 		return ArrayUtil.append(start.getBytes(), bytes, end.getBytes());
+	}
+
+	private ServiceContext _getFolderServiceContext(
+			DLFileEntryType dlFileEntryType)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setAttribute(
+			"defaultFileEntryTypeId", dlFileEntryType.getPrimaryKey());
+		serviceContext.setAttribute(
+			"dlFileEntryTypesSearchContainerPrimaryKeys",
+			String.valueOf(dlFileEntryType.getPrimaryKey()));
+		serviceContext.setAttribute(
+			"restrictionType",
+			DLFolderConstants.RESTRICTION_TYPE_FILE_ENTRY_TYPES_AND_WORKFLOW);
+
+		return serviceContext;
 	}
 
 	private InputStream _getInputStream() {
@@ -645,6 +728,9 @@ public class EditFileEntryMVCActionCommandTest {
 
 	@Inject
 	private DLAppService _dlAppService;
+
+	@Inject
+	private DLFileEntryTypeService _dlFileEntryTypeService;
 
 	@Inject(filter = "mvc.command.name=/document_library/edit_file_entry")
 	private MVCActionCommand _editFileEntryMVCActionCommand;
