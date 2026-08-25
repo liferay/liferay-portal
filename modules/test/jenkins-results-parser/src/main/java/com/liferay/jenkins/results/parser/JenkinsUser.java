@@ -35,9 +35,7 @@ public interface JenkinsUser {
 
 		@Override
 		public int compareTo(APIToken apiToken) {
-			Date createDate = apiToken.getCreationDate();
-
-			return createDate.compareTo(_creationDate);
+			return _creationDate.compareTo(apiToken.getCreationDate());
 		}
 
 		public Date getCreationDate() {
