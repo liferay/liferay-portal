@@ -9,6 +9,7 @@ import {AssetsPage} from '../../main/pages/AssetsPage';
 import {ContentsPage} from '../../main/pages/ContentsPage';
 import {FolderPage} from '../../main/pages/FolderPage';
 import {HomePage} from '../../main/pages/HomePage';
+import {ShareModalPage} from '../../main/pages/ShareModalPage';
 import {SpaceSummaryPage} from '../../main/pages/SpaceSummaryPage';
 import {CopyFolderModalPage} from '../pages/CopyFolderModalPage';
 import {DefaultPermissionsPage} from '../pages/DefaultPermissionsPage';
@@ -24,6 +25,7 @@ const cmsPagesTest = test.extend<{
 	folderPage: FolderPage;
 	homePage: HomePage;
 	permissionsPage: PermissionsPage;
+	shareModalPage: ShareModalPage;
 	spaceSummaryPage: SpaceSummaryPage;
 }>({
 	assetsPage: async ({page}, use) => {
@@ -49,6 +51,9 @@ const cmsPagesTest = test.extend<{
 	},
 	permissionsPage: async ({page}, use) => {
 		await use(new PermissionsPage(page));
+	},
+	shareModalPage: async ({page}, use) => {
+		await use(new ShareModalPage(page));
 	},
 	spaceSummaryPage: async ({page}, use) => {
 		await use(new SpaceSummaryPage(page));

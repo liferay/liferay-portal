@@ -5,6 +5,8 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+
 export class ShareModalPage {
 	readonly collaboratorInput: Locator;
 	readonly inviteExternalUserOption: Locator;
@@ -24,8 +26,31 @@ export class ShareModalPage {
 			.getByRole('button', {exact: true, name: 'Share'});
 	}
 
+	collaborator(name: string) {
+		return this.page.getByRole('listitem').filter({hasText: name});
+	}
+
 	getHeader(title: string) {
 		return this.page.getByText(`Share "${title}"`);
+	}
+
+	async removeAccess(name: string) {
+		const collaborator = this.collaborator(name);
+
+		// The dropdown menu renders outside the collaborator list item, so the
+		// menu item is scoped to the page and not to the collaborator.
+
+		const removeAccessItem = this.page.getByRole('menuitem', {
+			exact: true,
+			name: 'Remove Access',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: removeAccessItem,
+			trigger: collaborator.getByLabel('More Options'),
+		});
+
+		await removeAccessItem.click();
 	}
 
 	async submit() {
