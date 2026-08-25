@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
 import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
@@ -102,8 +101,7 @@ public class FIPSAuditUtilTest {
 		Assert.assertTrue(jsonObject.has("timestamp"));
 
 		Assert.assertEquals(
-			GetterUtil.getString(
-				PropsValues.FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID),
+			PropsValues.FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID,
 			jsonObject.getString("cmvp-certificate-id"));
 
 		Assert.assertTrue(
@@ -265,19 +263,20 @@ public class FIPSAuditUtilTest {
 		FIPSAuditUtil.write(
 			new FIPSAuditEvent(eventType, FIPSAuditEvent.Severity.INFO));
 
-		JSONObject jsonObject = _getJSONObject(eventType);
-
 		Path path = Paths.get(
 			PropsValues.LIFERAY_HOME, "data",
 			"fips-audit-deployment-instance-id");
 
 		Assert.assertTrue(Files.exists(path));
 
-		String persistedId = new String(
+		String deploymentInstanceId = new String(
 			Files.readAllBytes(path), StandardCharsets.UTF_8);
 
+		JSONObject jsonObject = _getJSONObject(eventType);
+
 		Assert.assertEquals(
-			persistedId.trim(), jsonObject.getString("deployment-instance-id"));
+			deploymentInstanceId.trim(),
+			jsonObject.getString("deployment-instance-id"));
 	}
 
 	@Test

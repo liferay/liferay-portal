@@ -69,9 +69,9 @@ public class FIPSLog4jUtil {
 					"Unable to write a FIPS audit event because the logger \"",
 					FIPSLog4jUtil.class.getName(),
 					"\" is disabled for the level \"", level,
-					"\". Check that the portal property ",
-					"\"log4j.configure.on.startup\" is enabled and that no ",
-					"configuration lowers the level of that logger"));
+					"\". Check that the system property ",
+					"\"log4j.configure.on.startup\" is set to true and that ",
+					"no configuration raises the level of that logger"));
 		}
 
 		LoggerContext loggerContext = (LoggerContext)LogManager.getContext(
@@ -92,7 +92,7 @@ public class FIPSLog4jUtil {
 			throw new IllegalStateException(
 				StringBundler.concat(
 					"Unable to write a FIPS audit event because the appender ",
-					"\"", _APPENDER_NAME, "\" does not render it with \"",
+					"\"", _APPENDER_NAME, "\" does not use the layout \"",
 					FIPSAuditNDJSONLayout.PLUGIN_NAME, "\""));
 		}
 	}

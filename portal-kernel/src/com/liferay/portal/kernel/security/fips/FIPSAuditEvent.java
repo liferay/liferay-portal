@@ -77,8 +77,7 @@ public class FIPSAuditEvent {
 			throw new IllegalArgumentException(
 				StringBundler.concat(
 					"Unable to write the FIPS audit field \"", key,
-					"\" because a null value is dropped from a FIPS audit ",
-					"event"));
+					"\" because the JSON serializer drops a null value"));
 		}
 
 		if (_isSensitiveSecurityParameter(value)) {
