@@ -233,8 +233,11 @@ public class BaseWorkspaceGitRepositoryTest
 
 	@Test
 	public void testTearDown() throws Exception {
-		_testTearDown(false);
-		_testTearDown(true);
+		_testTearDown(false, false, false);
+		_testTearDown(false, true, true);
+		_testTearDown(true, false, false);
+		_testTearDown(true, false, true);
+		_testTearDown(true, true, true);
 	}
 
 	@Test
@@ -834,8 +837,19 @@ public class BaseWorkspaceGitRepositoryTest
 		_testPrepareGitWorkingDirectory(gitArchiveEnabled, true);
 	}
 
-	private void _testTearDown(boolean snapshot) throws Exception {
+	private void _testTearDown(
+			boolean dotGitFolderExists, boolean gitArchiveEnabled,
+			boolean snapshot)
+		throws Exception {
+
 		_setUpEnvironment(RandomTestUtil.randomString(), null);
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"git.archive.enabled", String.valueOf(gitArchiveEnabled));
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
 		Shell shell = mockShell();
 
@@ -867,6 +881,13 @@ public class BaseWorkspaceGitRepositoryTest
 
 		defaultWorkspaceGitRepository.setSnapshot(snapshot);
 
+		if (dotGitFolderExists) {
+			File dotGitFolder = new File(
+				defaultWorkspaceGitRepository.getDirectory(), ".git");
+
+			dotGitFolder.mkdir();
+		}
+
 		try {
 			defaultWorkspaceGitRepository.setUp();
 
@@ -880,7 +901,7 @@ public class BaseWorkspaceGitRepositoryTest
 
 		defaultWorkspaceGitRepository.tearDown();
 
-		if (snapshot) {
+		if (gitArchiveEnabled && snapshot) {
 			Mockito.verify(
 				shell
 			).doExecute(
@@ -894,16 +915,19 @@ public class BaseWorkspaceGitRepositoryTest
 			return;
 		}
 
+		VerificationMode verificationMode = _getVerificationMode(
+			dotGitFolderExists);
+
 		Mockito.verify(
-			gitWorkingDirectory
+			gitWorkingDirectory, verificationMode
 		).clean();
 
 		Mockito.verify(
-			gitWorkingDirectory
+			gitWorkingDirectory, verificationMode
 		).cleanTempBranches();
 
 		Mockito.verify(
-			gitWorkingDirectory
+			gitWorkingDirectory, verificationMode
 		).deleteLockFiles();
 	}
 
