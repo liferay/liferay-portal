@@ -20,6 +20,7 @@ import com.liferay.layout.page.template.internal.upgrade.v5_3_0.LayoutPageTempla
 import com.liferay.layout.page.template.internal.upgrade.v6_1_0.util.LayoutPageTemplateStructureRelElementVariationAudienceEntryRelTable;
 import com.liferay.layout.page.template.internal.upgrade.v6_1_0.util.LayoutPageTemplateStructureRelElementVariationTable;
 import com.liferay.layout.page.template.internal.upgrade.v6_2_1.LayoutPageTemplateEntryClassTypeKeyUpgradeProcess;
+import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
@@ -300,6 +301,11 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 
 	@Reference
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.dynamic.data.mapping.service)(release.schema.version>=3.3.0))"
+	)
+	private Release _release;
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
