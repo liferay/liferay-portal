@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.base.OpenIdConnectSessionLocalServiceBaseImpl;
@@ -17,6 +18,7 @@ import com.liferay.portal.security.sso.openid.connect.persistence.service.base.O
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -99,11 +101,15 @@ public class OpenIdConnectSessionLocalServiceImpl
 	}
 
 	@Override
-	public OpenIdConnectSession getOpenIdConnectSession(
-			String issuer, String sessionId)
-		throws PortalException {
+	public List<OpenIdConnectSession> getOpenIdConnectSessions(
+		long companyId, String issuer, String sessionId) {
 
-		return openIdConnectSessionPersistence.findByI_S(issuer, sessionId);
+		if (Validator.isNull(sessionId)) {
+			return Collections.emptyList();
+		}
+
+		return openIdConnectSessionPersistence.findByC_I_S(
+			companyId, issuer, sessionId);
 	}
 
 }

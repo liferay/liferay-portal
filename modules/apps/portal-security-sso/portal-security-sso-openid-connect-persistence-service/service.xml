@@ -39,14 +39,15 @@
 			<finder-column name="userId" />
 			<finder-column name="issuer" />
 		</finder>
-		<finder name="I_S" return-type="OpenIdConnectSession" unique="true">
-			<finder-column name="issuer" />
-			<finder-column name="sessionId" />
-		</finder>
 		<finder name="C_A_C" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="authServerWellKnownURI" />
 			<finder-column name="clientId" />
+		</finder>
+		<finder name="C_I_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="issuer" />
+			<finder-column name="sessionId" />
 		</finder>
 		<finder name="U_A_C" return-type="OpenIdConnectSession" unique="true">
 			<finder-column name="userId" />

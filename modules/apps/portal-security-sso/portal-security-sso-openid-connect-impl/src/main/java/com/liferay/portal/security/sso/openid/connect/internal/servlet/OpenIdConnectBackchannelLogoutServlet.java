@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnect;
 import com.liferay.portal.security.sso.openid.connect.internal.AuthorizationServerMetadataResolver;
+import com.liferay.portal.security.sso.openid.connect.persistence.exception.NoSuchSessionException;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectUser;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.OpenIdConnectSessionLocalService;
@@ -36,6 +37,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.net.URI;
 import java.net.URL;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -74,25 +78,47 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 
 			JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
 
-			OpenIdConnectSession openIdConnectSession = null;
+			List<OpenIdConnectSession> openIdConnectSessions = null;
 
-			if (Validator.isNull(jwtClaimsSet.getClaimAsString("sid"))) {
+			String sessionId = jwtClaimsSet.getClaimAsString("sid");
+
+			if (Validator.isNull(sessionId)) {
 				OpenIdConnectUser openIdConnectUser =
 					_openIdConnectUserLocalService.getOpenIdConnectUser(
 						CompanyThreadLocal.getCompanyId(),
 						jwtClaimsSet.getIssuer(),
 						jwtClaimsSet.getClaimAsString("sub"));
 
-				openIdConnectSession =
+				openIdConnectSessions = Collections.singletonList(
 					_openIdConnectSessionLocalService.getOpenIdConnectSession(
 						openIdConnectUser.getUserId(),
-						jwtClaimsSet.getIssuer());
+						jwtClaimsSet.getIssuer()));
 			}
 			else {
-				openIdConnectSession =
-					_openIdConnectSessionLocalService.getOpenIdConnectSession(
-						jwtClaimsSet.getIssuer(),
-						jwtClaimsSet.getClaimAsString("sid"));
+				openIdConnectSessions =
+					_openIdConnectSessionLocalService.getOpenIdConnectSessions(
+						CompanyThreadLocal.getCompanyId(),
+						jwtClaimsSet.getIssuer(), sessionId);
+			}
+
+			OpenIdConnectSession audienceOpenIdConnectSession = null;
+
+			List<String> audiences = jwtClaimsSet.getAudience();
+
+			for (OpenIdConnectSession openIdConnectSession :
+					openIdConnectSessions) {
+
+				if (audiences.contains(openIdConnectSession.getClientId())) {
+					audienceOpenIdConnectSession = openIdConnectSession;
+
+					break;
+				}
+			}
+
+			if (audienceOpenIdConnectSession == null) {
+				throw new NoSuchSessionException(
+					"No OpenId Connect session matches the audience of the " +
+						"logout token");
 			}
 
 			JWSHeader jwsHeader = signedJWT.getHeader();
@@ -100,24 +126,29 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 			LogoutTokenValidator logoutTokenValidator =
 				new LogoutTokenValidator(
 					new Issuer(jwtClaimsSet.getIssuer()),
-					new ClientID(openIdConnectSession.getClientId()),
-					jwsHeader.getAlgorithm(), getJWKSURL(openIdConnectSession));
+					new ClientID(audienceOpenIdConnectSession.getClientId()),
+					jwsHeader.getAlgorithm(),
+					getJWKSURL(audienceOpenIdConnectSession));
 
 			logoutTokenValidator.validate(signedJWT);
 
-			_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
-				openIdConnectSession);
+			for (OpenIdConnectSession openIdConnectSession :
+					openIdConnectSessions) {
+
+				_openIdConnectSessionLocalService.deleteOpenIdConnectSession(
+					openIdConnectSession);
+
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"OpenId Connect session ",
+							openIdConnectSession.getSessionId(),
+							" has been terminated for user ",
+							openIdConnectSession.getUserId()));
+				}
+			}
 
 			httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-
-			if (_log.isInfoEnabled()) {
-				_log.info(
-					StringBundler.concat(
-						"OpenId Connect session ",
-						openIdConnectSession.getSessionId(),
-						" has been terminated for user ",
-						openIdConnectSession.getUserId()));
-			}
 		}
 		catch (Exception exception) {
 			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
