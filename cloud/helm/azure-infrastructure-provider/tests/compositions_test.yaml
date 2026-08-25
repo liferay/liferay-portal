@@ -38,6 +38,20 @@ tests:
                     pattern: SET ROLE {{ \$databaseOwnerRole }}
         it: Grants the application a least privileged database role
     -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "GRANT USAGE, CREATE ON SCHEMA public TO \\{\\{ \\$databaseOwnerRole \\}\\};"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "--dbname \"\\{\\{ \\$databaseName \\}\\}\""
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: --dbname postgres
+        it: Grants the shared owner role create rights on the public schema
+    -   asserts:
             -   equal:
                     path: spec.compositeTypeRef.apiVersion
                     value: liferay.com/v1alpha1

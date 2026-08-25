@@ -69,7 +69,7 @@ spec:
                                                 _wait_for_server
 
                                                 psql \
-                                                    --dbname postgres \
+                                                    --dbname "{{ $databaseName }}" \
                                                     --set ON_ERROR_STOP=1 \
                                                     --set pw="${LIFERAY_PASSWORD}" <<EOF
                                             DO \$\$
@@ -84,6 +84,8 @@ spec:
                                             GRANT {{ $databaseOwnerRole }} TO "${PGUSER}";
 
                                             ALTER DATABASE "{{ $databaseName }}" OWNER TO {{ $databaseOwnerRole }};
+
+                                            GRANT USAGE, CREATE ON SCHEMA public TO {{ $databaseOwnerRole }};
 
                                             DO \$\$
 
