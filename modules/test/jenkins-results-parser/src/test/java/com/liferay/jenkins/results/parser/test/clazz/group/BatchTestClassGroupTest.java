@@ -37,12 +37,12 @@ public class BatchTestClassGroupTest
 
 	@Test
 	public void testGetAxisCount() {
-		_testGetAxisCount("-1", null, 3, 12);
-		_testGetAxisCount("0", null, 0, 12);
-		_testGetAxisCount("10", null, 10, 3);
-		_testGetAxisCount("abc", null, 3, 12);
-		_testGetAxisCount(null, null, 0, 0);
-		_testGetAxisCount(null, null, 3, 12);
+		_testGetAxisCount("-1", 3, 12);
+		_testGetAxisCount("0", 0, 12);
+		_testGetAxisCount("10", 10, 3);
+		_testGetAxisCount("abc", 3, 12);
+		_testGetAxisCount(null, 0, 0);
+		_testGetAxisCount(null, 3, 12);
 	}
 
 	@Test
@@ -107,10 +107,10 @@ public class BatchTestClassGroupTest
 
 	@Test
 	public void testSetAxisTestClassGroups() {
-		_testSetAxisTestClassGroups("10", null, Arrays.asList(1, 1, 1), 3);
-		_testSetAxisTestClassGroups(null, null, Arrays.asList(4, 4, 4), 12);
-		_testSetAxisTestClassGroups(null, null, Arrays.asList(5, 5, 3), 13);
-		_testSetAxisTestClassGroups(null, null, Collections.emptyList(), 0);
+		_testSetAxisTestClassGroups("10", Arrays.asList(1, 1, 1), 3);
+		_testSetAxisTestClassGroups(null, Arrays.asList(4, 4, 4), 12);
+		_testSetAxisTestClassGroups(null, Arrays.asList(5, 5, 3), 13);
+		_testSetAxisTestClassGroups(null, Collections.emptyList(), 0);
 	}
 
 	@Test
@@ -182,11 +182,10 @@ public class BatchTestClassGroupTest
 	}
 
 	private void _testGetAxisCount(
-		String axisCount, String axisMaxSize, int expectedAxisCount,
-		int testClassCount) {
+		String axisCount, int expectedAxisCount, int testClassCount) {
 
 		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
-			axisCount, axisMaxSize, testClassCount);
+			axisCount, null, testClassCount);
 
 		testEquals(expectedAxisCount, batchTestClassGroup.getAxisCount());
 	}
@@ -201,11 +200,10 @@ public class BatchTestClassGroupTest
 	}
 
 	private void _testSetAxisTestClassGroups(
-		String axisCount, String axisMaxSize, List<Integer> expectedAxisSizes,
-		int testClassCount) {
+		String axisCount, List<Integer> expectedAxisSizes, int testClassCount) {
 
 		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
-			axisCount, axisMaxSize, testClassCount);
+			axisCount, null, testClassCount);
 
 		batchTestClassGroup.setAxisTestClassGroups();
 
