@@ -136,7 +136,10 @@ public class BatchTestClassGroupTestUtil {
 
 		Collections.addAll(jobPropertiesFiles, overrideJobPropertiesFiles);
 
-		jobPropertiesFiles.add(new File(_JOB_PROPERTIES_FILE_PATH));
+		jobPropertiesFiles.add(
+			new File(
+				"src/test/resources/dependencies/test/clazz/group" +
+					"/BatchTestClassGroupTestUtil/test.properties"));
 
 		return portalTestClassJob;
 	}
@@ -160,10 +163,6 @@ public class BatchTestClassGroupTestUtil {
 			throw new RuntimeException(ioException);
 		}
 	}
-
-	private static final String _JOB_PROPERTIES_FILE_PATH =
-		"src/test/resources/dependencies/test/clazz/group" +
-			"/BatchTestClassGroupTestUtil/test.properties";
 
 	private static PortalTestClassJob _portalTestClassJob;
 
