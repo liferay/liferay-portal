@@ -85,6 +85,17 @@ describe('RoomNameStep', () => {
 		expect(screen.getByTestId('stepTitle')).toBeInTheDocument();
 	});
 
+	it('hints the friendly URL prefix of the current instance', async () => {
+		renderComponent({
+			numberOfSteps: 1,
+			setHandleStepSubmit: () => {},
+		});
+
+		expect(
+			screen.getByText('http://localhost:8080/web')
+		).toBeInTheDocument();
+	});
+
 	it('hides header based on the parameter', async () => {
 		renderComponent({
 			numberOfSteps: 1,
