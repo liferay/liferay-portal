@@ -68,19 +68,21 @@ That's how you link to Liferay Learn resources!
 > 1. The local server checks the *global* server at <http://s3.amazonaws.com/learn-resources.liferay.com/marketplace-store-web.json> for updates to the resource.
 > 1. If the local resource is valid, it's served immediately. Otherwise, the local server serves the resource after refreshing the local resource cache with the latest update from the global server.
 >
-> Note: The cache refreshes every four hours by default, per the [`learn.resources.refresh.time` portal property](../portal-impl/src/portal.properties).
+> Note: The cache refreshes every four hours.
 
 ## Previewing Liferay Learn Resource Links
 
-If you want to test your link, you don't have to recompile your module. Point the `learn.resources.dir` portal property (or the `LIFERAY_LEARN_PERIOD_RESOURCES_PERIOD_DIR` environment variable with Docker) at this folder's `data` directory:
+If you want to test your link, you don't have to recompile your module. Point the `learn.resources.dir` portal property at this folder's `data` directory:
 
 ```properties
 learn.resources.dir=/path/to/liferay-portal/learn-resources/data
 ```
 
-Resources are then read from that directory on every request, so your edits show up immediately. Without the property, resources are read from <https://s3.amazonaws.com/learn-resources.liferay.com> with a four hour cache.
+Resources are then read from that directory on every request, so your edits show up immediately. Without the property, resources are read from <https://s3.amazonaws.com/learn-resources.liferay.com> and cached for four hours.
 
-Set `learn.resources.mode=off` (or `LIFERAY_LEARN_PERIOD_RESOURCES_PERIOD_MODE=off`) to disable the Learn tag library.
+Set `learn.resources.mode=off` to disable the Learn tag library.
+
+Use these properties with a local bundle. With Docker, use the `LIFERAY_LEARN_PERIOD_RESOURCES_PERIOD_DIR` and `LIFERAY_LEARN_PERIOD_RESOURCES_PERIOD_MODE` environment variables instead.
 
 ## Adding a Resource Link to a React Component
 
