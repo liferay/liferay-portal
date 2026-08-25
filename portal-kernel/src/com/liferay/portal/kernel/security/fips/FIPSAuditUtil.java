@@ -59,6 +59,11 @@ public class FIPSAuditUtil {
 
 		FIPSAuditEvent.Severity severity = fipsAuditEvent.getSeverity();
 
+		FIPSLog4jUtil.validate(severity);
+
+		Map<String, Object> fields = _normalizeTimestamps(
+			fipsAuditEvent.getFields());
+
 		FIPSLog4jUtil.write(
 			HashMapBuilder.<String, Object>put(
 				"cmvp-certificate-id",
@@ -73,7 +78,7 @@ public class FIPSAuditUtil {
 			).put(
 				"event-type", fipsAuditEvent.getEventType()
 			).put(
-				"fields", _normalizeTimestamps(fipsAuditEvent.getFields())
+				"fields", fields
 			).put(
 				"provider-name", providerName
 			).put(
