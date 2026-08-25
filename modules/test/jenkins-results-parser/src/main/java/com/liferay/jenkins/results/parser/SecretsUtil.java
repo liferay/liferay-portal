@@ -79,16 +79,16 @@ public abstract class SecretsUtil {
 		simpleDateFormat.setTimeZone(
 			TimeZone.getTimeZone(_API_TOKEN_TIME_ZONE));
 
-		String jenkinsAPITokenName =
+		String jenkinsAPITokenFieldLabel =
 			"api.token.json." + simpleDateFormat.format(date);
 
 		_createItemField(
-			item, jenkinsAPITokenName, jenkinsAPITokenJSONObject.toString(),
-			vault);
+			item, jenkinsAPITokenFieldLabel,
+			jenkinsAPITokenJSONObject.toString(), vault);
 
 		System.out.println(
 			JenkinsResultsParserUtil.combine(
-				"Generated API token \"", key, "/", jenkinsAPITokenName,
+				"Generated API token \"", key, "/", jenkinsAPITokenFieldLabel,
 				"\"."));
 	}
 
@@ -541,7 +541,7 @@ public abstract class SecretsUtil {
 				"Unable to generate API token hash", noSuchAlgorithmException);
 		}
 
-		String apiToken = _toHexString(randomBytes);
+		String apiTokenValue = _toHexString(randomBytes);
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.SSS z");
@@ -554,14 +554,14 @@ public abstract class SecretsUtil {
 
 		return new JSONObject(
 		).put(
-			"api.token", _API_TOKEN_VERSION + apiToken
+			"api.token", _API_TOKEN_VERSION + apiTokenValue
 		).put(
 			"api.token.creation.date", creationDateString
 		).put(
 			"api.token.hash",
 			_toHexString(
 				messageDigest.digest(
-					apiToken.getBytes(StandardCharsets.US_ASCII)))
+					apiTokenValue.getBytes(StandardCharsets.US_ASCII)))
 		).put(
 			"api.token.name", "API Token - " + creationDateString
 		).put(
