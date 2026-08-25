@@ -4663,6 +4663,66 @@ test.describe('Manage object entries through View Object Entries', () => {
 		await expect(autoIncrementInput).toHaveValue('HAT-1');
 	});
 
+	test(
+		'can verify conditional read only field keeps its value in object entries',
+		{tag: ['@LPD-103669']},
+		async ({apiHelpers, page, viewObjectEntriesPage}) => {
+			const objectFields = generateObjectFields({
+				objectFieldBusinessTypes: [
+					{businessType: 'Integer', name: 'age'},
+					{
+						businessType: 'Text',
+						name: 'employeeName',
+						readOnly: 'conditional',
+						readOnlyConditionExpression: 'age == 20',
+					},
+				],
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFields,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{age: 20, employeeName: 'John'},
+				'c/' + objectDefinition.name.toLowerCase() + 's'
+			);
+
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.frontendDatasetItems.first().click();
+
+			const ageInput = page.getByLabel(objectFields[0].label['en_US']);
+
+			const employeeNameInput = page.getByLabel(
+				objectFields[1].label['en_US']
+			);
+
+			await expect(employeeNameInput).toBeDisabled();
+
+			await expect(employeeNameInput).toHaveValue('John');
+
+			await ageInput.fill('21');
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.backButton.click();
+
+			await viewObjectEntriesPage.frontendDatasetItems.first().click();
+
+			await expect(employeeNameInput).toHaveValue('John');
+		}
+	);
+
 	test('can view all entries related to an object in the relationship field using autocomplete', async ({
 		apiHelpers,
 		page,

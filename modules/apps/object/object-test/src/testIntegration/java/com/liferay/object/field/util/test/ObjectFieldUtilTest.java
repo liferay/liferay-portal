@@ -17,6 +17,7 @@ import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectField;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -50,6 +51,35 @@ public class ObjectFieldUtilTest {
 
 	@Test
 	public void testValidateReadOnlyObjectFields() throws PortalException {
+		long value = RandomTestUtil.randomInt();
+
+		_validateReadOnlyObjectFields(
+			ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION, value, value + 1);
+
+		AssertUtils.assertFailure(
+			ObjectFieldReadOnlyException.class,
+			"Object field objectFieldName is read only",
+			() -> _validateReadOnlyObjectFields(
+				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT, value,
+				value + 1));
+
+		_validateReadOnlyObjectFields(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT, value, value);
+		_validateReadOnlyObjectFields(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT, value,
+			String.valueOf(value));
+		_validateReadOnlyObjectFields(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT, value,
+			Collections.singletonMap("id", value));
+		_validateReadOnlyObjectFields(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT, value,
+			JSONUtil.put("id", String.valueOf(value)));
+
+		_validateReadOnlyObjectFields(
+			ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT, value,
+			value + 1);
+		_validateReadOnlyObjectFields(
+			ObjectFieldConstants.BUSINESS_TYPE_FORMULA, value, value + 1);
 
 		// Conditional read only
 
@@ -201,6 +231,31 @@ public class ObjectFieldUtilTest {
 		).put(
 			objectField.getName(), RandomTestUtil.randomString()
 		).build();
+	}
+
+	private void _validateReadOnlyObjectFields(
+			String businessType, Object existingValue, Object value)
+		throws PortalException {
+
+		ObjectFieldUtil.validateReadOnlyObjectFields(
+			_ddmExpressionFactory,
+			HashMapBuilder.<String, Object>put(
+				"objectFieldName", existingValue
+			).build(),
+			Collections.singletonList(
+				new ObjectFieldBuilder(
+				).businessType(
+					businessType
+				).dbType(
+					ObjectFieldConstants.DB_TYPE_STRING
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					"objectFieldName"
+				).readOnly(
+					ObjectFieldConstants.READ_ONLY_TRUE
+				).build()),
+			Collections.singletonMap("objectFieldName", value));
 	}
 
 	@Inject
