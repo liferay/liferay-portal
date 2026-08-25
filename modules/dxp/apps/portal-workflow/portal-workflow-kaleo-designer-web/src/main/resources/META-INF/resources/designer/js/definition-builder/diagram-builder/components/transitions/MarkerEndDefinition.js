@@ -8,7 +8,7 @@ import React from 'react';
 const markerEndId = 'arrowclosed';
 
 function getMarkerEndId(edgeId) {
-	return `${markerEndId}#${edgeId}`;
+	return `${markerEndId}-${edgeId}`;
 }
 
 export default function MarkerEndDefinition({edgeId}) {
