@@ -2,8 +2,6 @@
 
 You can provide direct links to [Liferay Learn](https://learn.liferay.com) documentation from Liferay's UI with the `liferay-learn:message` tag. For example, the *Click to Chat* app links to the [Chatwoot](https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems/getting-a-chat-provider-account-id/chatwoot) Liferay Learn article.
 
-![The Click to Chat page links to the Chatwoot article.](./images/01.png)
-
 Now users can click your `liferay-learn:message` links to get help!
 
 The links have two parts:
