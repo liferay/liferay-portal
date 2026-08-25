@@ -292,6 +292,12 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			pagination.getEndPosition());
 	}
 
+	private String _getDefaultErrorMessage() {
+		return _language.get(
+			contextAcceptLanguage.getPreferredLocale(),
+			"an-unexpected-error-occurred");
+	}
+
 	private DynamicQuery _getDynamicQuery(
 		Long creatorId, long groupId, String portletId, String search,
 		Integer status) {
@@ -515,11 +521,11 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 								backgroundTask.getStatusMessage(), true);
 
 						if (jsonObject == null) {
-							return backgroundTask.getStatusMessage();
+							return _getDefaultErrorMessage();
 						}
 
 						return jsonObject.getString(
-							"message", backgroundTask.getStatusMessage());
+							"message", _getDefaultErrorMessage());
 					});
 				setId(backgroundTask::getBackgroundTaskId);
 				setName(() -> BackgroundTaskUtil.getName(backgroundTask));
