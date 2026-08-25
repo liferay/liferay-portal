@@ -88,8 +88,8 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 
 		Group liveGroup = _groupLocalService.fetchGroup(liveGroupId);
 
-		if (liveGroup.isCMS() || liveGroup.isLayoutPrototype() ||
-			liveGroup.isLayoutSetPrototype() ||
+		if (liveGroup.isCMS() || liveGroup.isControlPanel() ||
+			liveGroup.isLayoutPrototype() || liveGroup.isLayoutSetPrototype() ||
 			Objects.equals(GroupConstants.DSR, liveGroup.getGroupKey())) {
 
 			return;
@@ -206,6 +206,7 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 			Group group = _groupLocalService.fetchGroup(groupId);
 
 			if ((group == null) || group.isCompany() ||
+				group.isControlPanel() ||
 				!GroupPermissionUtil.contains(
 					permissionChecker, group.getGroupId(), ActionKeys.VIEW) ||
 				!_groupLocalService.isLiveGroupActive(group)) {

@@ -7,6 +7,7 @@ package com.liferay.site.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -21,6 +22,8 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.SessionClicks;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -72,7 +75,38 @@ public class RecentGroupManagerTest {
 			Collections.emptyList(),
 			_recentGroupManager.getRecentGroups(mockHttpServletRequest));
 
+		_recentGroupManager.addRecentGroup(
+			mockHttpServletRequest,
+			_groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CONTROL_PANEL));
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_recentGroupManager.getRecentGroups(mockHttpServletRequest));
+
 		_recentGroupManager.addRecentGroup(mockHttpServletRequest, _group);
+
+		Assert.assertEquals(
+			Collections.singletonList(_group),
+			_recentGroupManager.getRecentGroups(mockHttpServletRequest));
+	}
+
+	@Test
+	public void testGetRecentGroupsWithStoredControlPanelGroup()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest();
+
+		Group controlPanelGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CONTROL_PANEL);
+
+		SessionClicks.put(
+			mockHttpServletRequest.getSession(), _KEY_RECENT_GROUPS,
+			StringUtil.merge(
+				new long[] {
+					controlPanelGroup.getGroupId(), _group.getGroupId()
+				}));
 
 		Assert.assertEquals(
 			Collections.singletonList(_group),
@@ -112,8 +146,15 @@ public class RecentGroupManagerTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.USER, TestPropsValues.getUser());
 
+		SessionClicks.put(
+			mockHttpServletRequest.getSession(), _KEY_RECENT_GROUPS,
+			StringPool.BLANK);
+
 		return mockHttpServletRequest;
 	}
+
+	private static final String _KEY_RECENT_GROUPS =
+		"com.liferay.site.util_recentGroups";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
