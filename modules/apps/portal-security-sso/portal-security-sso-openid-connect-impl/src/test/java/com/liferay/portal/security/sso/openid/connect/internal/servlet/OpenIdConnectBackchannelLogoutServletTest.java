@@ -172,14 +172,14 @@ public class OpenIdConnectBackchannelLogoutServletTest {
 		Mockito.when(
 			openIdConnectSession.getClientId()
 		).thenReturn(
-			RandomTestUtil.randomString()
+			_CLIENT_ID
 		);
 
 		Mockito.when(
-			_openIdConnectSessionLocalService.getOpenIdConnectSession(
-				Mockito.any(), Mockito.eq(_SESSION_ID))
+			_openIdConnectSessionLocalService.getOpenIdConnectSessions(
+				Mockito.anyLong(), Mockito.any(), Mockito.eq(_SESSION_ID))
 		).thenReturn(
-			openIdConnectSession
+			Collections.singletonList(openIdConnectSession)
 		);
 
 		OpenIdConnectUser openIdConnectUser = Mockito.mock(
