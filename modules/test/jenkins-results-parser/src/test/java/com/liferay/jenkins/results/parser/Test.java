@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +52,11 @@ public class Test {
 		JenkinsResultsParserUtil.setBuildProperties(new Properties());
 
 		JenkinsResultsParserUtil.setTopLevelJobNames(null);
+
+		Map<String, ?> jobProperties = ReflectionTestUtil.getFieldValue(
+			JobPropertyFactory.class, "_jobProperties");
+
+		jobProperties.clear();
 
 		Map<String, Job> jobs = ReflectionTestUtil.getFieldValue(
 			JobFactory.class, "_jobs");

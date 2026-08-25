@@ -73,8 +73,6 @@ public class BatchTestClassGroupTest
 
 	@Test
 	public void testGetAxisTestClassGroups() {
-		BatchTestClassGroupTestUtil.resetCaches();
-
 		BatchTestClassGroup batchTestClassGroup = new BatchTestClassGroup(
 			"default", BatchTestClassGroupTestUtil.getPortalTestClassJob()) {
 		};
