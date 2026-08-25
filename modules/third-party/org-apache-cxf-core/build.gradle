@@ -1,5 +1,5 @@
 apply from: "../../build-jakarta-transformer.gradle"
 
 dependencies {
-	compileOnly group: "com.liferay", name: "org.apache.cxf.core", transitive: false, version: "3.6.11.LIFERAY-PATCHED-2"
+	compileOnly group: "org.apache.cxf", name: "cxf-core", transitive: false, version: "3.6.12"
 }

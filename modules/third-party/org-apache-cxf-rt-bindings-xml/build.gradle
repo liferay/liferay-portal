@@ -1,5 +1,5 @@
 apply from: "../../build-jakarta-transformer.gradle"
 
 dependencies {
-	compileOnly group: "org.apache.cxf", name: "cxf-rt-bindings-xml", transitive: false, version: "3.6.11"
+	compileOnly group: "org.apache.cxf", name: "cxf-rt-bindings-xml", transitive: false, version: "3.6.12"
 }
