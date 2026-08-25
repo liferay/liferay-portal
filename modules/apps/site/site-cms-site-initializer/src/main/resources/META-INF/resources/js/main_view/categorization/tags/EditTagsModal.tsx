@@ -23,7 +23,7 @@ import CategorizationSpaces from '../components/CategorizationSpaces';
 const CONFIRMATION_MESSAGES = {
 	BOTH: {
 		message: Liferay.Language.get(
-			'removing-both-will-make-the-tag-unavailable'
+			'removing-the-space-and-the-project-will-make-the-tag-unavailable-in-them'
 		),
 		title: Liferay.Language.get('confirm-changes'),
 	},
