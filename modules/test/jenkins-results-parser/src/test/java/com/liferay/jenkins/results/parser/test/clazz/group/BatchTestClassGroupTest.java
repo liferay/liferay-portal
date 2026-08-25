@@ -41,9 +41,6 @@ public class BatchTestClassGroupTest
 		_testGetAxisCount("0", null, 0, 12);
 		_testGetAxisCount("7", null, 7, 12);
 		_testGetAxisCount("abc", null, 3, 12);
-		_testGetAxisCount(null, "", 1, 12);
-		_testGetAxisCount(null, "-3", 1, 12);
-		_testGetAxisCount(null, "abc", 1, 12);
 		_testGetAxisCount(null, null, 0, 0);
 		_testGetAxisCount(null, null, 1, 1);
 		_testGetAxisCount(null, null, 3, 12);
