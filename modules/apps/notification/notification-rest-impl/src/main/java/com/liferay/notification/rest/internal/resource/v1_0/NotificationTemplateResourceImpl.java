@@ -70,6 +70,23 @@ public class NotificationTemplateResourceImpl
 	}
 
 	@Override
+	public void deleteNotificationTemplateByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		com.liferay.notification.model.NotificationTemplate
+			serviceBuilderNotificationTemplate =
+				_notificationTemplateService.
+					fetchNotificationTemplateByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
+
+		if (serviceBuilderNotificationTemplate != null) {
+			_notificationTemplateService.deleteNotificationTemplate(
+				serviceBuilderNotificationTemplate);
+		}
+	}
+
+	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
 	}
