@@ -34,11 +34,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Checkout step descriptor. The id is the step key (cart, shipping, payment, confirmation); the state is its progress -- pending, active, or completed.",
+	description = "Checkout step descriptor. The ID is the step key (cart, shipping, payment, confirmation); the state is its progress -- pending, active, or completed.",
 	value = "Step"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Checkout step descriptor. The id is the step key (cart, shipping, payment, confirmation); the state is its progress -- pending, active, or completed."
+	description = "Checkout step descriptor. The ID is the step key (cart, shipping, payment, confirmation); the state is its progress -- pending, active, or completed."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Step")
@@ -361,4 +361,4 @@ public class Step implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-443084097
+// LIFERAY-REST-BUILDER-HASH:2096796351

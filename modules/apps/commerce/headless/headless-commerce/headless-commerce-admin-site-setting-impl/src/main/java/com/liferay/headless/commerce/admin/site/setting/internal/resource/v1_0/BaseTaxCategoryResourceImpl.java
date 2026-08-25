@@ -77,7 +77,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/taxCategory/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the tax category identified by id. Returns 404 when no tax category matches the id."
+		description = "Deletes the tax category identified by ID. Returns 404 when no tax category matches the ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -202,7 +202,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/taxCategory/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the tax category identified by id. Returns 404 when no tax category matches the id."
+		description = "Fetches the tax category identified by ID. Returns 404 when no tax category matches the ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -272,7 +272,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/taxCategory/{id}' -d $'{"description": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Unimplemented endpoint for replacing the tax category identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged."
+		description = "Unimplemented endpoint for replacing the tax category identified by ID. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1061,4 +1061,4 @@ public abstract class BaseTaxCategoryResourceImpl
 		LogFactoryUtil.getLog(BaseTaxCategoryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1842843987
+// LIFERAY-REST-BUILDER-HASH:396061357

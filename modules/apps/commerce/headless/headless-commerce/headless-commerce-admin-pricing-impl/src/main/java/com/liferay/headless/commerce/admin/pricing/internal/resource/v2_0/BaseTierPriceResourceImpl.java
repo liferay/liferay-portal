@@ -77,7 +77,7 @@ public abstract class BaseTierPriceResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/tier-prices/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the tier price addressed by internal id."
+		description = "Deletes the tier price addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -234,7 +234,7 @@ public abstract class BaseTierPriceResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-entries/{priceEntryId}/tier-prices'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages TierPrices for a PriceEntry by id."
+		description = "Pages TierPrices for a PriceEntry by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -279,7 +279,7 @@ public abstract class BaseTierPriceResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/tier-prices/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the tier price addressed by internal id."
+		description = "Returns the tier price addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -349,7 +349,7 @@ public abstract class BaseTierPriceResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/tier-prices/{id}' -d $'{"active": ___, "customFields": ___, "discountDiscovery": ___, "discountLevel1": ___, "discountLevel2": ___, "discountLevel3": ___, "discountLevel4": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "minimumQuantity": ___, "neverExpire": ___, "price": ___, "priceEntryExternalReferenceCode": ___, "priceEntryId": ___, "priceFormatted": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Updates tier price by id using JSON Merge Patch semantics."
+		description = "Updates tier price by ID using JSON Merge Patch semantics."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -465,7 +465,7 @@ public abstract class BaseTierPriceResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-entries/{priceEntryId}/tier-prices' -d $'{"active": ___, "customFields": ___, "discountDiscovery": ___, "discountLevel1": ___, "discountLevel2": ___, "discountLevel3": ___, "discountLevel4": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "minimumQuantity": ___, "neverExpire": ___, "price": ___, "priceEntryExternalReferenceCode": ___, "priceEntryId": ___, "priceFormatted": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates tier price for PriceEntry by id."
+		description = "Creates tier price for PriceEntry by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1317,4 +1317,4 @@ public abstract class BaseTierPriceResourceImpl
 		LogFactoryUtil.getLog(BaseTierPriceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1731992813
+// LIFERAY-REST-BUILDER-HASH:1983391981

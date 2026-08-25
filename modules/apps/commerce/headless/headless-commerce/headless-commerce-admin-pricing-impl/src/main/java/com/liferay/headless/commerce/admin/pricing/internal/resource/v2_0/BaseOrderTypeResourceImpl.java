@@ -80,7 +80,7 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-list-order-types/{priceListOrderTypeId}/order-type'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the OrderType nested in a PriceListOrderType (via price list order type link) addressed by internal rel id."
+		description = "Returns the OrderType nested in a PriceListOrderType (via price list order type link) addressed by internal rel ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -555,4 +555,4 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 		LogFactoryUtil.getLog(BaseOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:881435828
+// LIFERAY-REST-BUILDER-HASH:-1599364940

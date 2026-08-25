@@ -419,7 +419,7 @@ components:
                     type: integer
         PlacedOrder:
             description:
-                Buyer-facing projection of a committed (non-open) commerce order. Read via the placed-orders list or by id and ERC; PATCH applies JSON Merge Patch to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber). The open cart counterpart lives in headless-commerce-delivery-cart.
+                Buyer-facing projection of a committed (non-open) commerce order. Read via the placed-orders list or by ID and ERC; PATCH applies JSON Merge Patch to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber). The open cart counterpart lives in headless-commerce-delivery-cart.
             properties:
                 account:
                     description:
@@ -555,7 +555,7 @@ components:
                     type: integer
                 orderUUID:
                     description:
-                        Stable UUID of the order, distinct from id and preserved across data migrations. Use this value when persisting a reference to the order in external systems. Read-only.
+                        Stable UUID of the order, distinct from ID and preserved across data migrations. Use this value when persisting a reference to the order in external systems. Read-only.
                     example: f0b1c2d3-4e5f-6a7b-8c9d-0e1f2a3b4c5d
                     readOnly: true
                     type: string
@@ -2430,7 +2430,7 @@ paths:
     /placed-order-items/{placedOrderItemId}/placed-order-item-shipments:
         get:
             description:
-                Lists the shipments that fulfill the placed-order line item addressed by id. Includes drop-ship supplier shipments when the line was fulfilled through supplier orders. The parent order must not be OPEN.
+                Lists the shipments that fulfill the placed-order line item addressed by ID. Includes drop-ship supplier shipments when the line was fulfilled through supplier orders. The parent order must not be OPEN.
             parameters:
                 -   $ref: "#/components/parameters/placedOrderItemIdPathParam"
             responses:
@@ -3310,7 +3310,7 @@ paths:
     /placed-orders/{placedOrderId}:
         get:
             description:
-                Returns a single placed order addressed by id. The order must not be OPEN; if it is, 404 is returned.
+                Returns a single placed order addressed by ID. The order must not be OPEN; if it is, 404 is returned.
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
                 -   $ref: "#/components/parameters/nestedFieldsQueryParam"
@@ -3371,7 +3371,7 @@ paths:
             tags: ["PlacedOrder"]
         patch:
             description:
-                Partially updates the placed order addressed by id. Applies JSON Merge Patch semantics to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber) plus custom expando attributes; the order must not be OPEN. Returns 422 when the order status forbids the patch.
+                Partially updates the placed order addressed by ID. Applies JSON Merge Patch semantics to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber) plus custom expando attributes; the order must not be OPEN. Returns 422 when the order status forbids the patch.
             operationId: patchPlacedOrder
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
@@ -3453,7 +3453,7 @@ paths:
     /placed-orders/{placedOrderId}/attachments:
         get:
             description:
-                Lists the attachments uploaded against the placed order addressed by id. When the feature flag is enabled the attachments are searched against the commerce order attachment index with search, filter, sort, and pagination; otherwise the underlying document-library file entries are returned.
+                Lists the attachments uploaded against the placed order addressed by ID. When the feature flag is enabled the attachments are searched against the commerce order attachment index with search, filter, sort, and pagination; otherwise the underlying document-library file entries are returned.
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdScopedPathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -3511,7 +3511,7 @@ paths:
     /placed-orders/{placedOrderId}/attachments/by-base64:
         post:
             description:
-                Creates a new attachment on the placed order addressed by id, with the file body supplied inline as Base64. When the feature flag is enabled the attachment is persisted as a commerce order attachment record; otherwise it is stored as a file entry directly on the order.
+                Creates a new attachment on the placed order addressed by ID, with the file body supplied inline as Base64. When the feature flag is enabled the attachment is persisted as a commerce order attachment record; otherwise it is stored as a file entry directly on the order.
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdScopedPathParam"
             requestBody:
@@ -3598,7 +3598,7 @@ paths:
     /placed-orders/{placedOrderId}/attachments/{attachmentId}:
         delete:
             description:
-                Deletes the attachment addressed by id under the placed order addressed by id. When the feature flag is enabled the commerce order attachment record is removed; otherwise the underlying document-library file entry is detached from the order.
+                Deletes the attachment addressed by ID under the placed order addressed by ID. When the feature flag is enabled the commerce order attachment record is removed; otherwise the underlying document-library file entry is detached from the order.
             parameters:
                 -   $ref: "#/components/parameters/attachmentIdPathParam"
                 -   $ref: "#/components/parameters/placedOrderIdScopedPathParam"
@@ -3652,7 +3652,7 @@ paths:
     /placed-orders/{placedOrderId}/delivery-term:
         get:
             description:
-                Returns the delivery term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected.
+                Returns the delivery term assigned to the placed order addressed by ID. The order must not be OPEN; if it is, the request is rejected.
             operationId: getPlacedOrderDeliveryTerm
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
@@ -3714,7 +3714,7 @@ paths:
     /placed-orders/{placedOrderId}/order-transitions:
         get:
             description:
-                Lists the workflow and storefront transitions the authenticated buyer can trigger on the placed order addressed by id. Combines workflow transitions resolved against the buyer's permissions with the platform-defined process-quote and reorder transitions. The order must not be OPEN.
+                Lists the workflow and storefront transitions the authenticated buyer can trigger on the placed order addressed by ID. Combines workflow transitions resolved against the buyer's permissions with the platform-defined process-quote and reorder transitions. The order must not be OPEN.
             operationId: getPlacedOrderOrderTransitionsPage
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
@@ -3776,7 +3776,7 @@ paths:
             tags: ["OrderTransition"]
         post:
             description:
-                Triggers a transition on the placed order addressed by id. When a workflowTaskId is supplied the transition is routed through the workflow engine; otherwise the name selects between the platform-defined process-quote and reorder transitions. The reorder transition creates a new draft order and returns its identifier in the orderId field. The order must not be OPEN.
+                Triggers a transition on the placed order addressed by ID. When a workflowTaskId is supplied the transition is routed through the workflow engine; otherwise the name selects between the platform-defined process-quote and reorder transitions. The reorder transition creates a new draft order and returns its identifier in the orderId field. The order must not be OPEN.
             operationId: postPlacedOrderOrderTransition
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdSimplePathParam"
@@ -3857,7 +3857,7 @@ paths:
     /placed-orders/{placedOrderId}/payment-term:
         get:
             description:
-                Returns the payment term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected.
+                Returns the payment term assigned to the placed order addressed by ID. The order must not be OPEN; if it is, the request is rejected.
             operationId: getPlacedOrderPaymentTerm
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
@@ -3919,7 +3919,7 @@ paths:
     /placed-orders/{placedOrderId}/payment-url:
         get:
             description:
-                Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by id. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN.
+                Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by ID. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN.
             operationId: getPlacedOrderPaymentURL
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdSimplePathParam"
@@ -3979,7 +3979,7 @@ paths:
     /placed-orders/{placedOrderId}/placed-order-billing-address:
         get:
             description:
-                Returns the billing address snapshot for the placed order addressed by id. The order must not be OPEN. When the billing address is unset an empty PlacedOrderAddress is returned.
+                Returns the billing address snapshot for the placed order addressed by ID. The order must not be OPEN. When the billing address is unset an empty PlacedOrderAddress is returned.
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
@@ -4040,7 +4040,7 @@ paths:
     /placed-orders/{placedOrderId}/placed-order-comments:
         get:
             description:
-                Lists the comments (notes) recorded against the placed order addressed by id. The order must not be OPEN. Supports pagination via page and pageSize.
+                Lists the comments (notes) recorded against the placed order addressed by ID. The order must not be OPEN. Supports pagination via page and pageSize.
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
                 -   $ref: "#/components/parameters/pageQueryParam"
@@ -4098,7 +4098,7 @@ paths:
     /placed-orders/{placedOrderId}/placed-order-items:
         get:
             description:
-                Lists the top-level line items of the placed order addressed by id. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant.
+                Lists the top-level line items of the placed order addressed by ID. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant.
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
                 -   $ref: "#/components/parameters/pageQueryParam"
@@ -4155,7 +4155,7 @@ paths:
     /placed-orders/{placedOrderId}/placed-order-shipping-address:
         get:
             description:
-                Returns the shipping address snapshot for the placed order addressed by id. The order must not be OPEN. Returns 404 when the shipping address has been removed.
+                Returns the shipping address snapshot for the placed order addressed by ID. The order must not be OPEN. Returns 404 when the shipping address has been removed.
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
             responses:
@@ -4216,7 +4216,7 @@ paths:
     /placed-orders/{placedOrderId}/shipments:
         get:
             description:
-                Lists the shipments dispatched against the placed order addressed by id. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination.
+                Lists the shipments dispatched against the placed order addressed by ID. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination.
             operationId: getPlacedOrderShipmentsPage
             parameters:
                 -   $ref: "#/components/parameters/placedOrderIdPathParam"
@@ -4273,7 +4273,7 @@ paths:
             tags: ["Shipment"]
 tags:
     -   description:
-            Buyer-visible attachments uploaded against a placed order, such as invoices, delivery notes, or supporting documents. List, create by base64, and delete by id or external reference code.
+            Buyer-visible attachments uploaded against a placed order, such as invoices, delivery notes, or supporting documents. List, create by base64, and delete by ID or external reference code.
         name: Attachment
     -   description:
             Workflow and storefront transitions the buyer can trigger on a placed order (for example, cancel a pending order, process a quote, reorder).

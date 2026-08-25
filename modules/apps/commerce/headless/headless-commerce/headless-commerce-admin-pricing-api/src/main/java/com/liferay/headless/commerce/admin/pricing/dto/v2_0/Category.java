@@ -36,11 +36,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Read-only projection of an AssetCategory referenced by a discount, price-modifier, or product category binding. Carries the category id, name, path, and the vocabulary the category belongs to.",
+	description = "Read-only projection of an AssetCategory referenced by a discount, price-modifier, or product category binding. Carries the category ID, name, path, and the vocabulary the category belongs to.",
 	value = "Category"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Read-only projection of an AssetCategory referenced by a discount, price-modifier, or product category binding. Carries the category id, name, path, and the vocabulary the category belongs to."
+	description = "Read-only projection of an AssetCategory referenced by a discount, price-modifier, or product category binding. Carries the category ID, name, path, and the vocabulary the category belongs to."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Category")
@@ -416,4 +416,4 @@ public class Category implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1094703826
+// LIFERAY-REST-BUILDER-HASH:1284104914

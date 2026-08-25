@@ -37,11 +37,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Read-only projection of a order type referenced by a discount or price-list order-type binding. Carries the order type id, name, and display order.",
+	description = "Read-only projection of a order type referenced by a discount or price-list order-type binding. Carries the order type ID, name, and display order.",
 	value = "OrderType"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Read-only projection of a order type referenced by a discount or price-list order-type binding. Carries the order type id, name, and display order."
+	description = "Read-only projection of a order type referenced by a discount or price-list order-type binding. Carries the order type ID, name, and display order."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "OrderType")
@@ -297,4 +297,4 @@ public class OrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1121912394
+// LIFERAY-REST-BUILDER-HASH:-31198794

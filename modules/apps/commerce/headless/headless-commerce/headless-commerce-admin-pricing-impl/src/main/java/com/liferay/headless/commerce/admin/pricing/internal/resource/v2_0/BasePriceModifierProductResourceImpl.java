@@ -75,7 +75,7 @@ public abstract class BasePriceModifierProductResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifier-products/{priceModifierProductId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the price modifier link (product binding) addressed by internal id."
+		description = "Deletes the price modifier link (product binding) addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -216,7 +216,7 @@ public abstract class BasePriceModifierProductResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}/price-modifier-products'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages PriceModifierProducts for a PriceModifier by id with search and language-id."
+		description = "Pages PriceModifierProducts for a PriceModifier by ID with search and language-id."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -336,7 +336,7 @@ public abstract class BasePriceModifierProductResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}/price-modifier-products' -d $'{"priceModifierExternalReferenceCode": ___, "priceModifierId": ___, "productExternalReferenceCode": ___, "productId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates price modifier link (product binding) for PriceModifier by id."
+		description = "Creates price modifier link (product binding) for PriceModifier by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1141,4 +1141,4 @@ public abstract class BasePriceModifierProductResourceImpl
 		LogFactoryUtil.getLog(BasePriceModifierProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-732803087
+// LIFERAY-REST-BUILDER-HASH:-1832692751

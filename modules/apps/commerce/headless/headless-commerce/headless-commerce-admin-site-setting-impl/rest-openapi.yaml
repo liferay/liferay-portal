@@ -705,7 +705,7 @@ paths:
     /availabilityEstimate/{id}:
         delete:
             description:
-                Deletes the availability estimate identified by id. Returns 404 when no estimate matches the id.
+                Deletes the availability estimate identified by ID. Returns 404 when no estimate matches the ID.
             operationId: deleteAvailabilityEstimate
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -738,7 +738,7 @@ paths:
                 -   AvailabilityEstimate
         get:
             description:
-                Fetches the availability estimate identified by id. Returns 404 when no estimate matches the id.
+                Fetches the availability estimate identified by ID. Returns 404 when no estimate matches the ID.
             operationId: getAvailabilityEstimate
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -801,7 +801,7 @@ paths:
                 -   AvailabilityEstimate
         put:
             description:
-                Replaces the availability estimate identified by id with the request body. Returns 404 when no estimate matches the id, and 400 when the supplied external reference code is already taken by another estimate in the company.
+                Replaces the availability estimate identified by ID with the request body. Returns 404 when no estimate matches the ID, and 400 when the supplied external reference code is already taken by another estimate in the company.
             operationId: putAvailabilityEstimate
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1895,7 +1895,7 @@ paths:
     /measurement-units/{id}:
         delete:
             description:
-                Deletes the measurement unit identified by id. Returns 404 when no unit matches the id.
+                Deletes the measurement unit identified by ID. Returns 404 when no unit matches the ID.
             operationId: deleteMeasurementUnit
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1929,7 +1929,7 @@ paths:
                 -   MeasurementUnit
         get:
             description:
-                Fetches the measurement unit identified by id. Returns 404 when no unit matches the id.
+                Fetches the measurement unit identified by ID. Returns 404 when no unit matches the ID.
             operationId: getMeasurementUnit
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1992,7 +1992,7 @@ paths:
                 -   MeasurementUnit
         patch:
             description:
-                Partially updates the measurement unit identified by id, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types.
+                Partially updates the measurement unit identified by ID, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types.
             operationId: patchMeasurementUnit
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2075,7 +2075,7 @@ paths:
     /taxCategory/{id}:
         delete:
             description:
-                Deletes the tax category identified by id. Returns 404 when no tax category matches the id.
+                Deletes the tax category identified by ID. Returns 404 when no tax category matches the ID.
             operationId: deleteTaxCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2108,7 +2108,7 @@ paths:
                 -   TaxCategory
         get:
             description:
-                Fetches the tax category identified by id. Returns 404 when no tax category matches the id.
+                Fetches the tax category identified by ID. Returns 404 when no tax category matches the ID.
             operationId: getTaxCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2171,7 +2171,7 @@ paths:
                 -   TaxCategory
         put:
             description:
-                Unimplemented endpoint for replacing the tax category identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged.
+                Unimplemented endpoint for replacing the tax category identified by ID. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged.
             operationId: putTaxCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2224,7 +2224,7 @@ paths:
     /warehouse/{id}:
         delete:
             description:
-                Deletes the warehouse definition identified by id. Returns 404 when no warehouse matches the id. Side effects -- stock levels held in the inventory administration API are not removed.
+                Deletes the warehouse definition identified by ID. Returns 404 when no warehouse matches the ID. Side effects -- stock levels held in the inventory administration API are not removed.
             operationId: deleteWarehouse
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2257,7 +2257,7 @@ paths:
                 -   Warehouse
         get:
             description:
-                Fetches the warehouse definition identified by id. Returns 404 when no warehouse matches the id.
+                Fetches the warehouse definition identified by ID. Returns 404 when no warehouse matches the ID.
             operationId: getWarehouse
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2320,7 +2320,7 @@ paths:
                 -   Warehouse
         put:
             description:
-                Unimplemented endpoint for replacing the warehouse definition identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged. For warehouse writes that persist, use the inventory administration API.
+                Unimplemented endpoint for replacing the warehouse definition identified by ID. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged. For warehouse writes that persist, use the inventory administration API.
             operationId: putWarehouse
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"

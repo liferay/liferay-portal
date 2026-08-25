@@ -208,7 +208,7 @@ public abstract class BaseWarehouseAccountGroupResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-account-groups'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the paginated list of warehouse-account-group bindings for the warehouse identified by id. Supports the search query parameter against the bound account-group name. No filter or sort honored by the implementation."
+		description = "Returns the paginated list of warehouse-account-group bindings for the warehouse identified by ID. Supports the search query parameter against the bound account-group name. No filter or sort honored by the implementation."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -315,7 +315,7 @@ public abstract class BaseWarehouseAccountGroupResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-account-groups' -d $'{"accountGroupExternalReferenceCode": ___, "accountGroupId": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a warehouse-account-group binding between the warehouse identified by id and the account group resolved by accountGroupId or accountGroupExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account group cannot be resolved."
+		description = "Creates a warehouse-account-group binding between the warehouse identified by ID and the account group resolved by accountGroupId or accountGroupExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account group cannot be resolved."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1123,4 +1123,4 @@ public abstract class BaseWarehouseAccountGroupResourceImpl
 		LogFactoryUtil.getLog(BaseWarehouseAccountGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1893878815
+// LIFERAY-REST-BUILDER-HASH:1239630879

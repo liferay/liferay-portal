@@ -75,7 +75,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the availability estimate identified by id. Returns 404 when no estimate matches the id."
+		description = "Deletes the availability estimate identified by ID. Returns 404 when no estimate matches the ID."
 	)
 	public Response deleteAvailabilityEstimate(@GraphQLName("id") Long id)
 		throws Exception {
@@ -159,7 +159,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Replaces the availability estimate identified by id with the request body. Returns 404 when no estimate matches the id, and 400 when the supplied external reference code is already taken by another estimate in the company."
+		description = "Replaces the availability estimate identified by ID with the request body. Returns 404 when no estimate matches the ID, and 400 when the supplied external reference code is already taken by another estimate in the company."
 	)
 	public AvailabilityEstimate updateAvailabilityEstimate(
 			@GraphQLName("id") Long id,
@@ -210,7 +210,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the measurement unit identified by id. Returns 404 when no unit matches the id."
+		description = "Deletes the measurement unit identified by ID. Returns 404 when no unit matches the ID."
 	)
 	public boolean deleteMeasurementUnit(@GraphQLName("id") Long id)
 		throws Exception {
@@ -272,7 +272,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the measurement unit identified by id, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types."
+		description = "Partially updates the measurement unit identified by ID, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types."
 	)
 	public Response patchMeasurementUnit(
 			@GraphQLName("id") Long id,
@@ -387,7 +387,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the tax category identified by id. Returns 404 when no tax category matches the id."
+		description = "Deletes the tax category identified by ID. Returns 404 when no tax category matches the ID."
 	)
 	public Response deleteTaxCategory(@GraphQLName("id") Long id)
 		throws Exception {
@@ -429,7 +429,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Unimplemented endpoint for replacing the tax category identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged."
+		description = "Unimplemented endpoint for replacing the tax category identified by ID. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged."
 	)
 	public Response updateTaxCategory(
 			@GraphQLName("id") Long id,
@@ -457,7 +457,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the warehouse definition identified by id. Returns 404 when no warehouse matches the id. Side effects -- stock levels held in the inventory administration API are not removed."
+		description = "Deletes the warehouse definition identified by ID. Returns 404 when no warehouse matches the ID. Side effects -- stock levels held in the inventory administration API are not removed."
 	)
 	public Response deleteWarehouse(@GraphQLName("id") Long id)
 		throws Exception {
@@ -498,7 +498,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Unimplemented endpoint for replacing the warehouse definition identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged. For warehouse writes that persist, use the inventory administration API."
+		description = "Unimplemented endpoint for replacing the warehouse definition identified by ID. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged. For warehouse writes that persist, use the inventory administration API."
 	)
 	public Response updateWarehouse(
 			@GraphQLName("id") Long id,
@@ -673,4 +673,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1913922442
+// LIFERAY-REST-BUILDER-HASH:-228747382

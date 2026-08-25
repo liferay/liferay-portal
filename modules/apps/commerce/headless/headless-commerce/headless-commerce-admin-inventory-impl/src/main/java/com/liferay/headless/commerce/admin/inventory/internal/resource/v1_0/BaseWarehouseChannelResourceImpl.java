@@ -206,7 +206,7 @@ public abstract class BaseWarehouseChannelResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-channels'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the paginated list of warehouse-channel bindings for the warehouse identified by id. Supports the search query parameter against the bound channel name. Returns an empty page when the warehouse does not exist (does not raise)."
+		description = "Returns the paginated list of warehouse-channel bindings for the warehouse identified by ID. Supports the search query parameter against the bound channel name. Returns an empty page when the warehouse does not exist (does not raise)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -313,7 +313,7 @@ public abstract class BaseWarehouseChannelResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-channels' -d $'{"channelExternalReferenceCode": ___, "channelId": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a warehouse-channel binding between the warehouse identified by id and the channel resolved by channelId or channelExternalReferenceCode in the body. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists."
+		description = "Creates a warehouse-channel binding between the warehouse identified by ID and the channel resolved by channelId or channelExternalReferenceCode in the body. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1106,4 +1106,4 @@ public abstract class BaseWarehouseChannelResourceImpl
 		LogFactoryUtil.getLog(BaseWarehouseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1374133638
+// LIFERAY-REST-BUILDER-HASH:-45832826

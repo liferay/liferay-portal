@@ -103,7 +103,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the attachment addressed by id under the placed order addressed by id. When the feature flag is enabled the commerce order attachment record is removed; otherwise the underlying document-library file entry is detached from the order."
+		description = "Deletes the attachment addressed by ID under the placed order addressed by ID. When the feature flag is enabled the commerce order attachment record is removed; otherwise the underlying document-library file entry is detached from the order."
 	)
 	public boolean deletePlacedOrderAttachment(
 			@GraphQLName("attachmentId") Long attachmentId,
@@ -144,7 +144,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a new attachment on the placed order addressed by id, with the file body supplied inline as Base64. When the feature flag is enabled the attachment is persisted as a commerce order attachment record; otherwise it is stored as a file entry directly on the order."
+		description = "Creates a new attachment on the placed order addressed by ID, with the file body supplied inline as Base64. When the feature flag is enabled the attachment is persisted as a commerce order attachment record; otherwise it is stored as a file entry directly on the order."
 	)
 	public Attachment createPlacedOrderAttachmentByBase64(
 			@GraphQLName("placedOrderId") Long placedOrderId,
@@ -202,7 +202,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Triggers a transition on the placed order addressed by id. When a workflowTaskId is supplied the transition is routed through the workflow engine; otherwise the name selects between the platform-defined process-quote and reorder transitions. The reorder transition creates a new draft order and returns its identifier in the orderId field. The order must not be OPEN."
+		description = "Triggers a transition on the placed order addressed by ID. When a workflowTaskId is supplied the transition is routed through the workflow engine; otherwise the name selects between the platform-defined process-quote and reorder transitions. The reorder transition creates a new draft order and returns its identifier in the orderId field. The order must not be OPEN."
 	)
 	public OrderTransition createPlacedOrderOrderTransition(
 			@GraphQLName("placedOrderId") Long placedOrderId,
@@ -250,7 +250,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the placed order addressed by id. Applies JSON Merge Patch semantics to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber) plus custom expando attributes; the order must not be OPEN. Returns 422 when the order status forbids the patch."
+		description = "Partially updates the placed order addressed by ID. Applies JSON Merge Patch semantics to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber) plus custom expando attributes; the order must not be OPEN. Returns 422 when the order status forbids the patch."
 	)
 	public PlacedOrder patchPlacedOrder(
 			@GraphQLName("placedOrderId") Long placedOrderId,
@@ -581,4 +581,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-822764642
+// LIFERAY-REST-BUILDER-HASH:1758046110

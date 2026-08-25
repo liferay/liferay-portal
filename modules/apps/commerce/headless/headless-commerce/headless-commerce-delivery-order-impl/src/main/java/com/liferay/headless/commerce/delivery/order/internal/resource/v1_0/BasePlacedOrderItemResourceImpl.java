@@ -223,7 +223,7 @@ public abstract class BasePlacedOrderItemResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/placed-order-items'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the top-level line items of the placed order addressed by id. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant."
+		description = "Lists the top-level line items of the placed order addressed by ID. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1065,4 +1065,4 @@ public abstract class BasePlacedOrderItemResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderItemResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1530651840
+// LIFERAY-REST-BUILDER-HASH:1607231680

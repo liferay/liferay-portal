@@ -78,7 +78,7 @@ public abstract class BasePriceEntryResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-entries/{priceEntryId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the price entry addressed by internal id."
+		description = "Deletes the price entry addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -188,7 +188,7 @@ public abstract class BasePriceEntryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-entries/{priceEntryId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the price entry addressed by internal id."
+		description = "Returns the price entry addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -342,7 +342,7 @@ public abstract class BasePriceEntryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-entries'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages PriceEntries for a PriceList by id with search and OData filter via SearchUtil."
+		description = "Pages PriceEntries for a PriceList by ID with search and OData filter via SearchUtil."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -414,7 +414,7 @@ public abstract class BasePriceEntryResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-entries/{priceEntryId}' -d $'{"active": ___, "bulkPricing": ___, "customFields": ___, "discountDiscovery": ___, "discountLevel1": ___, "discountLevel2": ___, "discountLevel3": ___, "discountLevel4": ___, "discountLevelsFormatted": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "hasTierPrice": ___, "neverExpire": ___, "price": ___, "priceEntryId": ___, "priceFormatted": ___, "priceListExternalReferenceCode": ___, "priceListId": ___, "priceOnApplication": ___, "quantity": ___, "skuExternalReferenceCode": ___, "skuId": ___, "tierPrices": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Updates price entry by id using JSON Merge Patch semantics. Also updates nested tier prices if supplied."
+		description = "Updates price entry by ID using JSON Merge Patch semantics. Also updates nested tier prices if supplied."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -641,7 +641,7 @@ public abstract class BasePriceEntryResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-entries' -d $'{"active": ___, "bulkPricing": ___, "customFields": ___, "discountDiscovery": ___, "discountLevel1": ___, "discountLevel2": ___, "discountLevel3": ___, "discountLevel4": ___, "discountLevelsFormatted": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "hasTierPrice": ___, "neverExpire": ___, "price": ___, "priceEntryId": ___, "priceFormatted": ___, "priceListExternalReferenceCode": ___, "priceListId": ___, "priceOnApplication": ___, "quantity": ___, "skuExternalReferenceCode": ___, "skuId": ___, "tierPrices": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates price entry for PriceList by id."
+		description = "Creates price entry for PriceList by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1571,4 +1571,4 @@ public abstract class BasePriceEntryResourceImpl
 		LogFactoryUtil.getLog(BasePriceEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:403443542
+// LIFERAY-REST-BUILDER-HASH:-835314858

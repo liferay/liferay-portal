@@ -112,7 +112,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Upsert by external reference code. Delegates to CommercePaymentEntryService. addOrUpdateCommercePaymentEntry, resolving the currency by `currencyCode`, `currencyExternalReferenceCode`, or `currencyId` and the related entity by `relatedItemName` (resolved to a class name id) and `relatedItemId`. Creates a new payment when no record matches the supplied externalReferenceCode within the company; replaces the existing record otherwise. Validates the amount, payment integration type, payment status, and reason key; invalid input raises a CommercePaymentEntry*Exception that maps to 400."
+		description = "Upsert by external reference code. Delegates to CommercePaymentEntryService. addOrUpdateCommercePaymentEntry, resolving the currency by `currencyCode`, `currencyExternalReferenceCode`, or `currencyId` and the related entity by `relatedItemName` (resolved to a class name ID) and `relatedItemId`. Creates a new payment when no record matches the supplied externalReferenceCode within the company; replaces the existing record otherwise. Validates the amount, payment integration type, payment status, and reason key; invalid input raises a CommercePaymentEntry*Exception that maps to 400."
 	)
 	public Payment createPayment(@GraphQLName("payment") Payment payment)
 		throws Exception {
@@ -277,4 +277,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:243518751
+// LIFERAY-REST-BUILDER-HASH:764367135

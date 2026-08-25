@@ -40,11 +40,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Buyer-facing projection of a committed (non-open) commerce order. Read via the placed-orders list or by id and ERC; PATCH applies JSON Merge Patch to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber). The open cart counterpart lives in headless-commerce-delivery-cart.",
+	description = "Buyer-facing projection of a committed (non-open) commerce order. Read via the placed-orders list or by ID and ERC; PATCH applies JSON Merge Patch to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber). The open cart counterpart lives in headless-commerce-delivery-cart.",
 	value = "PlacedOrder"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Buyer-facing projection of a committed (non-open) commerce order. Read via the placed-orders list or by id and ERC; PATCH applies JSON Merge Patch to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber). The open cart counterpart lives in headless-commerce-delivery-cart."
+	description = "Buyer-facing projection of a committed (non-open) commerce order. Read via the placed-orders list or by ID and ERC; PATCH applies JSON Merge Patch to a small set of buyer-editable fields (name, printedNote, purchaseOrderNumber). The open cart counterpart lives in headless-commerce-delivery-cart."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PlacedOrder")
@@ -1019,7 +1019,7 @@ public class PlacedOrder implements Serializable {
 	private Supplier<Long> _orderTypeIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Stable UUID of the order, distinct from id and preserved across data migrations. Use this value when persisting a reference to the order in external systems. Read-only.",
+		description = "Stable UUID of the order, distinct from ID and preserved across data migrations. Use this value when persisting a reference to the order in external systems. Read-only.",
 		example = "f0b1c2d3-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
 	)
 	public String getOrderUUID() {
@@ -1056,7 +1056,7 @@ public class PlacedOrder implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Stable UUID of the order, distinct from id and preserved across data migrations. Use this value when persisting a reference to the order in external systems. Read-only."
+		description = "Stable UUID of the order, distinct from ID and preserved across data migrations. Use this value when persisting a reference to the order in external systems. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String orderUUID;
@@ -2934,4 +2934,4 @@ public class PlacedOrder implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2126157850
+// LIFERAY-REST-BUILDER-HASH:-254599142

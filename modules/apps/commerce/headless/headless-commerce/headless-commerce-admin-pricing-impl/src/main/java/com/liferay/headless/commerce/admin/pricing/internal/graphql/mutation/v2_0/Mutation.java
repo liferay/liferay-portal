@@ -256,7 +256,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the discount addressed by internal id. Cascades deletion of all associated discount rels (account-group, account, category, channel, order-type, product, product-group, sku, rule). Throws NoSuchDiscountException on unknown id."
+		description = "Deletes the discount addressed by internal ID. Cascades deletion of all associated discount rels (account-group, account, category, channel, order-type, product, product-group, sku, rule). Throws NoSuchDiscountException on unknown ID."
 	)
 	public boolean deleteDiscount(@GraphQLName("id") Long id) throws Exception {
 		_applyVoidComponentServiceObjects(
@@ -298,7 +298,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Updates discount by id using JSON Merge Patch semantics (only supplied fields modified). Also updates nested relations if supplied."
+		description = "Updates discount by ID using JSON Merge Patch semantics (only supplied fields modified). Also updates nested relations if supplied."
 	)
 	public Discount patchDiscount(
 			@GraphQLName("id") Long id,
@@ -388,7 +388,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the discount account link addressed by internal id. Throws NoSuchDiscountException when relation id is unknown."
+		description = "Deletes the discount account link addressed by internal ID. Throws NoSuchDiscountException when relation ID is unknown."
 	)
 	public boolean deleteDiscountAccount(
 			@GraphQLName("discountAccountId") Long discountAccountId)
@@ -436,7 +436,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates discount account link for Discount by id."
+		description = "Creates discount account link for Discount by ID."
 	)
 	public DiscountAccount createDiscountIdDiscountAccount(
 			@GraphQLName("id") Long id,
@@ -466,7 +466,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the discount account group link addressed by internal id."
+		description = "Deletes the discount account group link addressed by internal ID."
 	)
 	public boolean deleteDiscountAccountGroup(
 			@GraphQLName("discountAccountGroupId") Long discountAccountGroupId)
@@ -517,7 +517,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates discount account group link for Discount by id."
+		description = "Creates discount account group link for Discount by ID."
 	)
 	public DiscountAccountGroup createDiscountIdDiscountAccountGroup(
 			@GraphQLName("id") Long id,
@@ -549,7 +549,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the discount link (AssetCategory binding) addressed by internal id."
+		description = "Deletes the discount link (AssetCategory binding) addressed by internal ID."
 	)
 	public boolean deleteDiscountCategory(
 			@GraphQLName("discountCategoryId") Long discountCategoryId)
@@ -600,7 +600,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates discount link (AssetCategory binding) for Discount by id."
+		description = "Creates discount link (AssetCategory binding) for Discount by ID."
 	)
 	public DiscountCategory createDiscountIdDiscountCategory(
 			@GraphQLName("id") Long id,
@@ -630,7 +630,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the channel link (discount channel binding) addressed by internal id."
+		description = "Deletes the channel link (discount channel binding) addressed by internal ID."
 	)
 	public boolean deleteDiscountChannel(
 			@GraphQLName("discountChannelId") Long discountChannelId)
@@ -678,7 +678,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates channel link (discount channel binding) for Discount by id."
+		description = "Creates channel link (discount channel binding) for Discount by ID."
 	)
 	public DiscountChannel createDiscountIdDiscountChannel(
 			@GraphQLName("id") Long id,
@@ -784,7 +784,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the discount link (product binding) addressed by internal id."
+		description = "Deletes the discount link (product binding) addressed by internal ID."
 	)
 	public boolean deleteDiscountProduct(
 			@GraphQLName("discountProductId") Long discountProductId)
@@ -832,7 +832,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates discount link (product binding) for Discount by id."
+		description = "Creates discount link (product binding) for Discount by ID."
 	)
 	public DiscountProduct createDiscountIdDiscountProduct(
 			@GraphQLName("id") Long id,
@@ -862,7 +862,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the discount link (pricing class binding) addressed by internal id."
+		description = "Deletes the discount link (pricing class binding) addressed by internal ID."
 	)
 	public boolean deleteDiscountProductGroup(
 			@GraphQLName("discountProductGroupId") Long discountProductGroupId)
@@ -913,7 +913,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates discount link (pricing class binding) for Discount by id."
+		description = "Creates discount link (pricing class binding) for Discount by ID."
 	)
 	public DiscountProductGroup createDiscountIdDiscountProductGroup(
 			@GraphQLName("id") Long id,
@@ -945,7 +945,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the discount rule addressed by internal id."
+		description = "Deletes the discount rule addressed by internal ID."
 	)
 	public boolean deleteDiscountRule(@GraphQLName("id") Long id)
 		throws Exception {
@@ -974,7 +974,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Updates discount rule by id using JSON Merge Patch semantics."
+		description = "Updates discount rule by ID using JSON Merge Patch semantics."
 	)
 	public DiscountRule patchDiscountRule(
 			@GraphQLName("id") Long id,
@@ -1005,7 +1005,7 @@ public class Mutation {
 						externalReferenceCode, discountRule));
 	}
 
-	@GraphQLField(description = "Creates discount rule for Discount by id.")
+	@GraphQLField(description = "Creates discount rule for Discount by ID.")
 	public DiscountRule createDiscountIdDiscountRule(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountRule") DiscountRule discountRule)
@@ -1034,7 +1034,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the discount link (SKU binding) addressed by internal id."
+		description = "Deletes the discount link (SKU binding) addressed by internal ID."
 	)
 	public boolean deleteDiscountSku(
 			@GraphQLName("discountSkuId") Long discountSkuId)
@@ -1080,7 +1080,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates discount link (SKU binding) for Discount by id."
+		description = "Creates discount link (SKU binding) for Discount by ID."
 	)
 	public DiscountSku createDiscountIdDiscountSku(
 			@GraphQLName("id") Long id,
@@ -1109,7 +1109,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price entry addressed by internal id."
+		description = "Deletes the price entry addressed by internal ID."
 	)
 	public boolean deletePriceEntry(
 			@GraphQLName("priceEntryId") Long priceEntryId)
@@ -1155,7 +1155,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Updates price entry by id using JSON Merge Patch semantics. Also updates nested tier prices if supplied."
+		description = "Updates price entry by ID using JSON Merge Patch semantics. Also updates nested tier prices if supplied."
 	)
 	public PriceEntry patchPriceEntry(
 			@GraphQLName("priceEntryId") Long priceEntryId,
@@ -1202,7 +1202,7 @@ public class Mutation {
 						externalReferenceCode, priceEntry));
 	}
 
-	@GraphQLField(description = "Creates price entry for PriceList by id.")
+	@GraphQLField(description = "Creates price entry for PriceList by ID.")
 	public PriceEntry createPriceListIdPriceEntry(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceEntry") PriceEntry priceEntry)
@@ -1246,7 +1246,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price list addressed by internal id."
+		description = "Deletes the price list addressed by internal ID."
 	)
 	public boolean deletePriceList(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1290,7 +1290,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Updates price list by id using JSON Merge Patch semantics. Also updates nested relations if supplied."
+		description = "Updates price list by ID using JSON Merge Patch semantics. Also updates nested relations if supplied."
 	)
 	public PriceList patchPriceList(
 			@GraphQLName("id") Long id,
@@ -1384,7 +1384,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price list account link addressed by internal id."
+		description = "Deletes the price list account link addressed by internal ID."
 	)
 	public boolean deletePriceListAccount(
 			@GraphQLName("priceListAccountId") Long priceListAccountId)
@@ -1435,7 +1435,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates price list account link for PriceList by id."
+		description = "Creates price list account link for PriceList by ID."
 	)
 	public PriceListAccount createPriceListIdPriceListAccount(
 			@GraphQLName("id") Long id,
@@ -1465,7 +1465,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price list account group link addressed by internal id."
+		description = "Deletes the price list account group link addressed by internal ID."
 	)
 	public boolean deletePriceListAccountGroup(
 			@GraphQLName("priceListAccountGroupId") Long
@@ -1517,7 +1517,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates price list account group link for PriceList by id."
+		description = "Creates price list account group link for PriceList by ID."
 	)
 	public PriceListAccountGroup createPriceListIdPriceListAccountGroup(
 			@GraphQLName("id") Long id,
@@ -1550,7 +1550,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price list channel link addressed by internal id."
+		description = "Deletes the price list channel link addressed by internal ID."
 	)
 	public boolean deletePriceListChannel(
 			@GraphQLName("priceListChannelId") Long priceListChannelId)
@@ -1601,7 +1601,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates price list channel link for PriceList by id."
+		description = "Creates price list channel link for PriceList by ID."
 	)
 	public PriceListChannel createPriceListIdPriceListChannel(
 			@GraphQLName("id") Long id,
@@ -1631,7 +1631,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price list discount link addressed by internal id."
+		description = "Deletes the price list discount link addressed by internal ID."
 	)
 	public boolean deletePriceListDiscount(
 			@GraphQLName("priceListDiscountId") Long priceListDiscountId)
@@ -1682,7 +1682,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates price list discount link for PriceList by id."
+		description = "Creates price list discount link for PriceList by ID."
 	)
 	public PriceListDiscount createPriceListIdPriceListDiscount(
 			@GraphQLName("id") Long id,
@@ -1713,7 +1713,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price list order type link addressed by internal id."
+		description = "Deletes the price list order type link addressed by internal ID."
 	)
 	public boolean deletePriceListOrderType(
 			@GraphQLName("priceListOrderTypeId") Long priceListOrderTypeId)
@@ -1764,7 +1764,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates price list order type link for PriceList by id."
+		description = "Creates price list order type link for PriceList by ID."
 	)
 	public PriceListOrderType createPriceListIdPriceListOrderType(
 			@GraphQLName("id") Long id,
@@ -1796,7 +1796,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price modifier addressed by internal id."
+		description = "Deletes the price modifier addressed by internal ID."
 	)
 	public boolean deletePriceModifier(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1843,7 +1843,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Updates price modifier by id using JSON Merge Patch semantics. Also updates nested modifier rels if supplied."
+		description = "Updates price modifier by ID using JSON Merge Patch semantics. Also updates nested modifier rels if supplied."
 	)
 	public Response patchPriceModifier(
 			@GraphQLName("id") Long id,
@@ -1890,7 +1890,7 @@ public class Mutation {
 						externalReferenceCode, priceModifier));
 	}
 
-	@GraphQLField(description = "Creates price modifier for PriceList by id.")
+	@GraphQLField(description = "Creates price modifier for PriceList by ID.")
 	public PriceModifier createPriceListIdPriceModifier(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceModifier") PriceModifier priceModifier)
@@ -1919,7 +1919,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price modifier link (AssetCategory binding) addressed by internal id."
+		description = "Deletes the price modifier link (AssetCategory binding) addressed by internal ID."
 	)
 	public boolean deletePriceModifierCategory(
 			@GraphQLName("priceModifierCategoryId") Long
@@ -1971,7 +1971,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates price modifier link (AssetCategory binding) for PriceModifier by id."
+		description = "Creates price modifier link (AssetCategory binding) for PriceModifier by ID."
 	)
 	public PriceModifierCategory createPriceModifierIdPriceModifierCategory(
 			@GraphQLName("id") Long id,
@@ -2004,7 +2004,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price modifier link (product binding) addressed by internal id."
+		description = "Deletes the price modifier link (product binding) addressed by internal ID."
 	)
 	public boolean deletePriceModifierProduct(
 			@GraphQLName("priceModifierProductId") Long priceModifierProductId)
@@ -2055,7 +2055,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates price modifier link (product binding) for PriceModifier by id."
+		description = "Creates price modifier link (product binding) for PriceModifier by ID."
 	)
 	public PriceModifierProduct createPriceModifierIdPriceModifierProduct(
 			@GraphQLName("id") Long id,
@@ -2088,7 +2088,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the price modifier link (pricing class binding) addressed by internal id."
+		description = "Deletes the price modifier link (pricing class binding) addressed by internal ID."
 	)
 	public boolean deletePriceModifierProductGroup(
 			@GraphQLName("priceModifierProductGroupId") Long
@@ -2141,7 +2141,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates price modifier link (pricing class binding) for PriceModifier by id."
+		description = "Creates price modifier link (pricing class binding) for PriceModifier by ID."
 	)
 	public PriceModifierProductGroup
 			createPriceModifierIdPriceModifierProductGroup(
@@ -2175,7 +2175,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the tier price addressed by internal id."
+		description = "Deletes the tier price addressed by internal ID."
 	)
 	public boolean deleteTierPrice(@GraphQLName("id") Long id)
 		throws Exception {
@@ -2219,7 +2219,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Updates tier price by id using JSON Merge Patch semantics."
+		description = "Updates tier price by ID using JSON Merge Patch semantics."
 	)
 	public Response patchTierPrice(
 			@GraphQLName("id") Long id,
@@ -2266,7 +2266,7 @@ public class Mutation {
 						externalReferenceCode, tierPrice));
 	}
 
-	@GraphQLField(description = "Creates tier price for PriceEntry by id.")
+	@GraphQLField(description = "Creates tier price for PriceEntry by ID.")
 	public TierPrice createPriceEntryIdTierPrice(
 			@GraphQLName("priceEntryId") Long priceEntryId,
 			@GraphQLName("tierPrice") TierPrice tierPrice)
@@ -2869,4 +2869,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:964184010
+// LIFERAY-REST-BUILDER-HASH:1870507978

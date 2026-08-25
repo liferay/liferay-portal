@@ -206,7 +206,7 @@ public abstract class BaseWarehouseOrderTypeResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-order-types'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the paginated list of warehouse-order-type bindings for the warehouse identified by id. Supports the search query parameter against the bound order-type name. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve."
+		description = "Returns the paginated list of warehouse-order-type bindings for the warehouse identified by ID. Supports the search query parameter against the bound order-type name. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -313,7 +313,7 @@ public abstract class BaseWarehouseOrderTypeResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}/warehouse-order-types' -d $'{"orderTypeExternalReferenceCode": ___, "orderTypeId": ___, "priority": ___, "warehouseExternalReferenceCode": ___, "warehouseId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a warehouse-order-type binding between the warehouse identified by id and the order type resolved by orderTypeId or orderTypeExternalReferenceCode in the body. Not an upsert. Validation -- 404 when the order type cannot be resolved."
+		description = "Creates a warehouse-order-type binding between the warehouse identified by ID and the order type resolved by orderTypeId or orderTypeExternalReferenceCode in the body. Not an upsert. Validation -- 404 when the order type cannot be resolved."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1106,4 +1106,4 @@ public abstract class BaseWarehouseOrderTypeResourceImpl
 		LogFactoryUtil.getLog(BaseWarehouseOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1494308542
+// LIFERAY-REST-BUILDER-HASH:918803134

@@ -344,7 +344,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountAccountAccount(discountAccountId: ___){id, logoId, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Account nested in a DiscountAccount (via discount account link) addressed by internal rel id."
+		description = "Returns the Account nested in a DiscountAccount (via discount account link) addressed by internal rel ID."
 	)
 	public Account discountAccountAccount(
 			@GraphQLName("discountAccountId") Long discountAccountId)
@@ -363,7 +363,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListAccountAccount(priceListAccountId: ___){id, logoId, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Account nested in a PriceListAccount (via price list account link) addressed by internal rel id."
+		description = "Returns the Account nested in a PriceListAccount (via price list account link) addressed by internal rel ID."
 	)
 	public Account priceListAccountAccount(
 			@GraphQLName("priceListAccountId") Long priceListAccountId)
@@ -382,7 +382,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountCategoryCategory(discountCategoryId: ___){id, name, path, vocabulary}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Category nested in a DiscountCategory (via discount link) addressed by internal rel id."
+		description = "Returns the Category nested in a DiscountCategory (via discount link) addressed by internal rel ID."
 	)
 	public Category discountCategoryCategory(
 			@GraphQLName("discountCategoryId") Long discountCategoryId)
@@ -401,7 +401,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceModifierCategoryCategory(priceModifierCategoryId: ___){id, name, path, vocabulary}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Category nested in a PriceModifierCategory (via price modifier link) addressed by internal rel id."
+		description = "Returns the Category nested in a PriceModifierCategory (via price modifier link) addressed by internal rel ID."
 	)
 	public Category priceModifierCategoryCategory(
 			@GraphQLName("priceModifierCategoryId") Long
@@ -422,7 +422,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountChannelChannel(discountChannelId: ___){currencyCode, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Channel nested in a DiscountChannel (via channel link) addressed by internal rel id."
+		description = "Returns the Channel nested in a DiscountChannel (via channel link) addressed by internal rel ID."
 	)
 	public Channel discountChannelChannel(
 			@GraphQLName("discountChannelId") Long discountChannelId)
@@ -441,7 +441,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListChannelChannel(priceListChannelId: ___){currencyCode, externalReferenceCode, id, name, siteGroupId, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Channel nested in a PriceListChannel (via price list channel link) addressed by internal rel id."
+		description = "Returns the Channel nested in a PriceListChannel (via price list channel link) addressed by internal rel ID."
 	)
 	public Channel priceListChannelChannel(
 			@GraphQLName("priceListChannelId") Long priceListChannelId)
@@ -460,7 +460,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discount(id: ___){actions, active, amountFormatted, couponCode, customFields, discountAccountGroups, discountAccounts, discountCategories, discountChannels, discountOrderTypes, discountProductGroups, discountProducts, discountRules, displayDate, expirationDate, externalReferenceCode, id, level, limitationTimes, limitationTimesPerAccount, limitationType, maximumDiscountAmount, modifiedDate, neverExpire, numberOfUse, percentageLevel1, percentageLevel2, percentageLevel3, percentageLevel4, rulesConjunction, target, title, useCouponCode, usePercentage}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the discount addressed by internal id. Throws NoSuchDiscountException on unknown id."
+		description = "Returns the discount addressed by internal ID. Throws NoSuchDiscountException on unknown ID."
 	)
 	public Discount discount(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -543,7 +543,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountAccounts(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages DiscountAccounts for a Discount by id with search/filter."
+		description = "Pages DiscountAccounts for a Discount by ID with search/filter."
 	)
 	public DiscountAccountPage discountIdDiscountAccounts(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -597,7 +597,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountAccountGroups(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages DiscountAccountGroups for a Discount by id with search/filter."
+		description = "Pages DiscountAccountGroups for a Discount by ID with search/filter."
 	)
 	public DiscountAccountGroupPage discountIdDiscountAccountGroups(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -652,7 +652,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountCategories(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages DiscountCategories for a Discount by id with search."
+		description = "Pages DiscountCategories for a Discount by ID with search."
 	)
 	public DiscountCategoryPage discountIdDiscountCategories(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -704,7 +704,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountChannels(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages DiscountChannels for a Discount by id with search/filter."
+		description = "Pages DiscountChannels for a Discount by ID with search/filter."
 	)
 	public DiscountChannelPage discountIdDiscountChannels(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -806,7 +806,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountProducts(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages DiscountProducts for a Discount by id with search and language-id localization."
+		description = "Pages DiscountProducts for a Discount by ID with search and language-id localization."
 	)
 	public DiscountProductPage discountIdDiscountProducts(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -860,7 +860,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountProductGroups(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages DiscountProductGroups for a Discount by id with search."
+		description = "Pages DiscountProductGroups for a Discount by ID with search."
 	)
 	public DiscountProductGroupPage discountIdDiscountProductGroups(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -911,7 +911,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountRules(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages DiscountRules for a Discount by id with search/filter."
+		description = "Pages DiscountRules for a Discount by ID with search/filter."
 	)
 	public DiscountRulePage discountIdDiscountRules(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -939,7 +939,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountRule(id: ___){actions, discountId, id, name, type, typeSettings}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the discount rule addressed by internal id."
+		description = "Returns the discount rule addressed by internal ID."
 	)
 	public DiscountRule discountRule(@GraphQLName("id") Long id)
 		throws Exception {
@@ -979,7 +979,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountSkus(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages DiscountSkus for a Discount by id with search."
+		description = "Pages DiscountSkus for a Discount by ID with search."
 	)
 	public DiscountSkuPage discountIdDiscountSkus(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1024,7 +1024,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListOrderTypeOrderType(priceListOrderTypeId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the OrderType nested in a PriceListOrderType (via price list order type link) addressed by internal rel id."
+		description = "Returns the OrderType nested in a PriceListOrderType (via price list order type link) addressed by internal rel ID."
 	)
 	public OrderType priceListOrderTypeOrderType(
 			@GraphQLName("priceListOrderTypeId") Long priceListOrderTypeId)
@@ -1044,7 +1044,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceEntry(priceEntryId: ___){actions, active, bulkPricing, customFields, discountDiscovery, discountLevel1, discountLevel2, discountLevel3, discountLevel4, discountLevelsFormatted, displayDate, expirationDate, externalReferenceCode, hasTierPrice, neverExpire, price, priceEntryId, priceFormatted, priceListExternalReferenceCode, priceListId, priceOnApplication, product, quantity, sku, skuExternalReferenceCode, skuId, tierPrices, unitOfMeasureKey}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the price entry addressed by internal id."
+		description = "Returns the price entry addressed by internal ID."
 	)
 	public PriceEntry priceEntry(@GraphQLName("priceEntryId") Long priceEntryId)
 		throws Exception {
@@ -1113,7 +1113,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListIdPriceEntries(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceEntries for a PriceList by id with search and OData filter via SearchUtil."
+		description = "Pages PriceEntries for a PriceList by ID with search and OData filter via SearchUtil."
 	)
 	public PriceEntryPage priceListIdPriceEntries(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1140,7 +1140,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceList(id: ___){actions, active, author, catalogBasePriceList, catalogExternalReferenceCode, catalogId, catalogName, createDate, currencyCode, currencyExternalReferenceCode, currencyId, customFields, displayDate, expirationDate, externalReferenceCode, id, name, netPrice, neverExpire, parentPriceListId, priceEntries, priceListAccountGroups, priceListAccounts, priceListChannels, priceListDiscounts, priceListOrderTypes, priceModifiers, priority, type, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the price list addressed by internal id."
+		description = "Returns the price list addressed by internal ID."
 	)
 	public PriceList priceList(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -1225,7 +1225,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListIdPriceListAccounts(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceListAccounts for a PriceList by id with search/filter."
+		description = "Pages PriceListAccounts for a PriceList by ID with search/filter."
 	)
 	public PriceListAccountPage priceListIdPriceListAccounts(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1279,7 +1279,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListIdPriceListAccountGroups(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceListAccountGroups for a PriceList by id with search/filter."
+		description = "Pages PriceListAccountGroups for a PriceList by ID with search/filter."
 	)
 	public PriceListAccountGroupPage priceListIdPriceListAccountGroups(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1334,7 +1334,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListIdPriceListChannels(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceListChannels for a PriceList by id with search/filter."
+		description = "Pages PriceListChannels for a PriceList by ID with search/filter."
 	)
 	public PriceListChannelPage priceListIdPriceListChannels(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1388,7 +1388,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListIdPriceListDiscounts(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceListDiscounts for a PriceList by id."
+		description = "Pages PriceListDiscounts for a PriceList by ID."
 	)
 	public PriceListDiscountPage priceListIdPriceListDiscounts(
 			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
@@ -1434,7 +1434,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListIdPriceListOrderTypes(id: ___, page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceListOrderTypes for a PriceList by id with search."
+		description = "Pages PriceListOrderTypes for a PriceList by ID with search."
 	)
 	public PriceListOrderTypePage priceListIdPriceListOrderTypes(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1477,7 +1477,7 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListIdPriceModifiers(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Pages PriceModifiers for a PriceList by id.")
+	@GraphQLField(description = "Pages PriceModifiers for a PriceList by ID.")
 	public PriceModifierPage priceListIdPriceModifiers(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
 			@GraphQLName("filter") String filterString,
@@ -1505,7 +1505,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceModifier(id: ___){actions, active, displayDate, expirationDate, externalReferenceCode, id, modifierAmount, modifierType, neverExpire, priceListExternalReferenceCode, priceListId, priceModifierCategories, priceModifierProductGroups, priceModifierProducts, priority, target, title}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the price modifier addressed by internal id."
+		description = "Returns the price modifier addressed by internal ID."
 	)
 	public PriceModifier priceModifier(@GraphQLName("id") Long id)
 		throws Exception {
@@ -1568,7 +1568,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceModifierIdPriceModifierCategories(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceModifierCategories for a PriceModifier by id with search."
+		description = "Pages PriceModifierCategories for a PriceModifier by ID with search."
 	)
 	public PriceModifierCategoryPage priceModifierIdPriceModifierCategories(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1623,7 +1623,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceModifierIdPriceModifierProducts(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceModifierProducts for a PriceModifier by id with search and language-id."
+		description = "Pages PriceModifierProducts for a PriceModifier by ID with search and language-id."
 	)
 	public PriceModifierProductPage priceModifierIdPriceModifierProducts(
 			@GraphQLName("id") Long id, @GraphQLName("search") String search,
@@ -1680,7 +1680,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceModifierIdPriceModifierProductGroups(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Pages PriceModifierProductGroups for a PriceModifier by id with search."
+		description = "Pages PriceModifierProductGroups for a PriceModifier by ID with search."
 	)
 	public PriceModifierProductGroupPage
 			priceModifierIdPriceModifierProductGroups(
@@ -1715,7 +1715,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountAccountGroupAccountGroup(discountAccountGroupId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the PricingAccountGroup nested in a DiscountAccountGroup (via discount account group link) addressed by internal rel id."
+		description = "Returns the PricingAccountGroup nested in a DiscountAccountGroup (via discount account group link) addressed by internal rel ID."
 	)
 	public PricingAccountGroup discountAccountGroupAccountGroup(
 			@GraphQLName("discountAccountGroupId") Long discountAccountGroupId)
@@ -1735,7 +1735,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListAccountGroupAccountGroup(priceListAccountGroupId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the PricingAccountGroup nested in a PriceListAccountGroup (via price list account group link) addressed by internal rel id."
+		description = "Returns the PricingAccountGroup nested in a PriceListAccountGroup (via price list account group link) addressed by internal rel ID."
 	)
 	public PricingAccountGroup priceListAccountGroupAccountGroup(
 			@GraphQLName("priceListAccountGroupId") Long
@@ -1757,7 +1757,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountProductProduct(discountProductId: ___){id, name, sku, thumbnail}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Product nested in a DiscountProduct (via discount link) addressed by internal rel id."
+		description = "Returns the Product nested in a DiscountProduct (via discount link) addressed by internal rel ID."
 	)
 	public Product discountProductProduct(
 			@GraphQLName("discountProductId") Long discountProductId)
@@ -1776,7 +1776,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceEntryIdProduct(priceEntryId: ___){id, name, sku, thumbnail}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Product nested in a PriceEntry (via SKU from price entry) addressed by internal price entry id."
+		description = "Returns the Product nested in a PriceEntry (via SKU from price entry) addressed by internal price entry ID."
 	)
 	public Product priceEntryIdProduct(
 			@GraphQLName("priceEntryId") Long priceEntryId)
@@ -1795,7 +1795,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceModifierProductProduct(priceModifierProductId: ___){id, name, sku, thumbnail}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Product nested in a PriceModifierProduct (via price modifier link) addressed by internal rel id."
+		description = "Returns the Product nested in a PriceModifierProduct (via price modifier link) addressed by internal rel ID."
 	)
 	public Product priceModifierProductProduct(
 			@GraphQLName("priceModifierProductId") Long priceModifierProductId)
@@ -1814,7 +1814,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountProductGroupProductGroup(discountProductGroupId: ___){id, productsCount, title}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the ProductGroup nested in a DiscountProductGroup (via discount link) addressed by internal rel id."
+		description = "Returns the ProductGroup nested in a DiscountProductGroup (via discount link) addressed by internal rel ID."
 	)
 	public ProductGroup discountProductGroupProductGroup(
 			@GraphQLName("discountProductGroupId") Long discountProductGroupId)
@@ -1834,7 +1834,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceModifierProductGroupProductGroup(priceModifierProductGroupId: ___){id, productsCount, title}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the ProductGroup nested in a PriceModifierProductGroup (via price modifier link) addressed by internal rel id."
+		description = "Returns the ProductGroup nested in a PriceModifierProductGroup (via price modifier link) addressed by internal rel ID."
 	)
 	public ProductGroup priceModifierProductGroupProductGroup(
 			@GraphQLName("priceModifierProductGroupId") Long
@@ -1855,7 +1855,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountSkuSku(discountSkuId: ___){basePrice, basePriceFormatted, basePromoPrice, basePromoPriceFormatted, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Sku nested in a DiscountSku (via discount link) addressed by internal rel id."
+		description = "Returns the Sku nested in a DiscountSku (via discount link) addressed by internal rel ID."
 	)
 	public Sku discountSkuSku(@GraphQLName("discountSkuId") Long discountSkuId)
 		throws Exception {
@@ -1871,7 +1871,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceEntryIdSku(priceEntryId: ___){basePrice, basePriceFormatted, basePromoPrice, basePromoPriceFormatted, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the Sku nested in a PriceEntry (via SKU from price entry) addressed by internal price entry id, with optional unitOfMeasureKey attribute."
+		description = "Returns the Sku nested in a PriceEntry (via SKU from price entry) addressed by internal price entry ID, with optional unitOfMeasureKey attribute."
 	)
 	public Sku priceEntryIdSku(@GraphQLName("priceEntryId") Long priceEntryId)
 		throws Exception {
@@ -1907,7 +1907,7 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceEntryIdTierPrices(page: ___, pageSize: ___, priceEntryId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Pages TierPrices for a PriceEntry by id.")
+	@GraphQLField(description = "Pages TierPrices for a PriceEntry by ID.")
 	public TierPricePage priceEntryIdTierPrices(
 			@GraphQLName("priceEntryId") Long priceEntryId,
 			@GraphQLName("pageSize") int pageSize,
@@ -1928,7 +1928,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {tierPrice(id: ___){actions, active, customFields, discountDiscovery, discountLevel1, discountLevel2, discountLevel3, discountLevel4, displayDate, expirationDate, externalReferenceCode, id, minimumQuantity, neverExpire, price, priceEntryExternalReferenceCode, priceEntryId, priceFormatted, unitOfMeasureKey}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the tier price addressed by internal id."
+		description = "Returns the tier price addressed by internal ID."
 	)
 	public TierPrice tierPrice(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -1965,7 +1965,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Returns the price entry addressed by internal id."
+			description = "Returns the price entry addressed by internal ID."
 		)
 		public PriceEntry priceEntry() throws Exception {
 			return _applyComponentServiceObjects(
@@ -2090,7 +2090,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Returns the Product nested in a PriceEntry (via SKU from price entry) addressed by internal price entry id."
+			description = "Returns the Product nested in a PriceEntry (via SKU from price entry) addressed by internal price entry ID."
 		)
 		public Product idProduct() throws Exception {
 			return _applyComponentServiceObjects(
@@ -2112,7 +2112,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Returns the Sku nested in a PriceEntry (via SKU from price entry) addressed by internal price entry id, with optional unitOfMeasureKey attribute."
+			description = "Returns the Sku nested in a PriceEntry (via SKU from price entry) addressed by internal price entry ID, with optional unitOfMeasureKey attribute."
 		)
 		public Sku idSku() throws Exception {
 			return _applyComponentServiceObjects(
@@ -2135,7 +2135,7 @@ public class Query {
 			_priceEntry = priceEntry;
 		}
 
-		@GraphQLField(description = "Pages TierPrices for a PriceEntry by id.")
+		@GraphQLField(description = "Pages TierPrices for a PriceEntry by ID.")
 		public TierPricePage idTierPrices(
 				@GraphQLName("pageSize") int pageSize,
 				@GraphQLName("page") int page)
@@ -4489,4 +4489,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:633286554
+// LIFERAY-REST-BUILDER-HASH:734314394

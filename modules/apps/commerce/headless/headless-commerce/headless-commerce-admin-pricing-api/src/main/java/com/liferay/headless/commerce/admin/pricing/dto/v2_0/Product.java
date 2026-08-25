@@ -37,11 +37,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Read-only projection of a product (commerce product) referenced by a discount or price-modifier product binding. Carries the product id and localized name.",
+	description = "Read-only projection of a product (commerce product) referenced by a discount or price-modifier product binding. Carries the product ID and localized name.",
 	value = "Product"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Read-only projection of a product (commerce product) referenced by a discount or price-modifier product binding. Carries the product id and localized name."
+	description = "Read-only projection of a product (commerce product) referenced by a discount or price-modifier product binding. Carries the product ID and localized name."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Product")
@@ -419,4 +419,4 @@ public class Product implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1998097191
+// LIFERAY-REST-BUILDER-HASH:-1334672601

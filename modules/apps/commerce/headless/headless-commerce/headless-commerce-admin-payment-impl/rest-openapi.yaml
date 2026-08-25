@@ -394,7 +394,7 @@ paths:
                 -   Payment
         post:
             description:
-                Upsert by external reference code. Delegates to CommercePaymentEntryService. addOrUpdateCommercePaymentEntry, resolving the currency by `currencyCode`, `currencyExternalReferenceCode`, or `currencyId` and the related entity by `relatedItemName` (resolved to a class name id) and `relatedItemId`. Creates a new payment when no record matches the supplied externalReferenceCode within the company; replaces the existing record otherwise. Validates the amount, payment integration type, payment status, and reason key; invalid input raises a CommercePaymentEntry*Exception that maps to 400.
+                Upsert by external reference code. Delegates to CommercePaymentEntryService. addOrUpdateCommercePaymentEntry, resolving the currency by `currencyCode`, `currencyExternalReferenceCode`, or `currencyId` and the related entity by `relatedItemName` (resolved to a class name ID) and `relatedItemId`. Creates a new payment when no record matches the supplied externalReferenceCode within the company; replaces the existing record otherwise. Validates the amount, payment integration type, payment status, and reason key; invalid input raises a CommercePaymentEntry*Exception that maps to 400.
             operationId: postPayment
             requestBody:
                 content:

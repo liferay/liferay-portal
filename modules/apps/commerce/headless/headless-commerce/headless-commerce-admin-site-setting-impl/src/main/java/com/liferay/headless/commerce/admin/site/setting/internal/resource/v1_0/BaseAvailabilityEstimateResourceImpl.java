@@ -77,7 +77,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the availability estimate identified by id. Returns 404 when no estimate matches the id."
+		description = "Deletes the availability estimate identified by ID. Returns 404 when no estimate matches the ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -203,7 +203,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the availability estimate identified by id. Returns 404 when no estimate matches the id."
+		description = "Fetches the availability estimate identified by ID. Returns 404 when no estimate matches the ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -441,7 +441,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Replaces the availability estimate identified by id with the request body. Returns 404 when no estimate matches the id, and 400 when the supplied external reference code is already taken by another estimate in the company."
+		description = "Replaces the availability estimate identified by ID with the request body. Returns 404 when no estimate matches the ID, and 400 when the supplied external reference code is already taken by another estimate in the company."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1361,4 +1361,4 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		LogFactoryUtil.getLog(BaseAvailabilityEstimateResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:618578233
+// LIFERAY-REST-BUILDER-HASH:415252793

@@ -108,7 +108,7 @@ public abstract class BaseWarehouseResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the warehouse identified by id. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve. Side effects -- cascades through all warehouse-item rows, all warehouse-account, warehouse-account-group, and warehouse-order-type bindings, and all warehouse-channel bindings that reference the warehouse."
+		description = "Deletes the warehouse identified by ID. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve. Side effects -- cascades through all warehouse-item rows, all warehouse-account, warehouse-account-group, and warehouse-order-type bindings, and all warehouse-channel bindings that reference the warehouse."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -178,7 +178,7 @@ public abstract class BaseWarehouseResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the warehouse identified by id. Calls CommerceInventoryWarehouseService.getCommerceInventoryWarehouse. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve."
+		description = "Returns the warehouse identified by ID. Calls CommerceInventoryWarehouseService.getCommerceInventoryWarehouse. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -311,7 +311,7 @@ public abstract class BaseWarehouseResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-inventory/v1.0/warehouses/{id}' -d $'{"active": ___, "city": ___, "countryISOCode": ___, "description": ___, "externalReferenceCode": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "type": ___, "warehouseItems": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Applies a JSON Merge Patch to the warehouse identified by id. Each null field in the body falls back to the persisted value. Side effects -- optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Returns 204 No Content on success."
+		description = "Applies a JSON Merge Patch to the warehouse identified by ID. Each null field in the body falls back to the persisted value. Side effects -- optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Returns 204 No Content on success."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1246,4 +1246,4 @@ public abstract class BaseWarehouseResourceImpl
 		LogFactoryUtil.getLog(BaseWarehouseResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1593954000
+// LIFERAY-REST-BUILDER-HASH:1046721840

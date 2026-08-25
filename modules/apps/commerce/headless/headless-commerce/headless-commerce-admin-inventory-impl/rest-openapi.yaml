@@ -165,7 +165,7 @@ components:
     schemas:
         Account:
             description:
-                Read-only projection of the account referenced by a WarehouseAccount binding -- exposes only id, logoId, and name.
+                Read-only projection of the account referenced by a WarehouseAccount binding -- exposes only ID, logoId, and name.
             properties:
                 id:
                     description:
@@ -189,7 +189,7 @@ components:
             type: object
         AccountGroup:
             description:
-                Read-only projection of the AccountGroup referenced by a WarehouseAccountGroup binding -- exposes only id and name.
+                Read-only projection of the AccountGroup referenced by a WarehouseAccountGroup binding -- exposes only ID and name.
             properties:
                 id:
                     description:
@@ -207,7 +207,7 @@ components:
             type: object
         Channel:
             description:
-                Read-only projection of the channel referenced by a WarehouseChannel binding -- exposes only id, externalReferenceCode, name, currencyCode, siteGroupId, and channel type.
+                Read-only projection of the channel referenced by a WarehouseChannel binding -- exposes only ID, externalReferenceCode, name, currencyCode, siteGroupId, and channel type.
             properties:
                 currencyCode:
                     description:
@@ -278,7 +278,7 @@ components:
             type: object
         OrderType:
             description:
-                Read-only projection of the order type referenced by a WarehouseOrderType binding -- exposes only id and the localized name map.
+                Read-only projection of the order type referenced by a WarehouseOrderType binding -- exposes only ID and the localized name map.
             properties:
                 id:
                     description:
@@ -728,7 +728,7 @@ components:
             type: object
 info:
     description:
-        "Liferay Commerce Admin Inventory API exposes the inventory side of the Commerce administration surface -- warehouses, the items they stock, replenishment plans for those items, and the bindings that decide which warehouses can fulfill which accounts, account groups, channels, and order types. Primary entities -- Warehouse models a physical or logical fulfillment location with address, geo-coordinates, and an active flag. WarehouseItem tracks the on-hand and reserved quantity of a SKU at a single warehouse, scaled to a unit-of-measure key. ReplenishmentItem records expected restock quantities with an availability date. WarehouseAccount, WarehouseAccountGroup, WarehouseChannel, and WarehouseOrderType are the four binding entities that connect a warehouse to an AccountEntry, AccountGroup, CommerceChannel, and CommerceOrderType respectively, and decide which warehouse is eligible to source inventory for a given buyer or order type. Audience -- administrators of the Commerce inventory subsystem. The buyer-facing inventory view lives in the commerce-delivery-cart, commerce-delivery-catalog, and commerce-delivery-order modules; this API is the admin counterpart used to provision and maintain stock data. Addressing -- every primary resource is reachable either by the internal numeric id (/warehouses/<id>, /warehouseItems/<id>, /replenishment-items/<replenishmentItemId>) or by externalReferenceCode (/warehouses/by-externalReferenceCode/<externalReferenceCode>, /warehouseItems/by-externalReferenceCode/<externalReferenceCode>, /replenishment-items/by-externalReferenceCode/<externalReferenceCode>). PUT against the externalReferenceCode path is upsert -- the request body either replaces the existing entity or creates a new one carrying that externalReferenceCode. PATCH against either path is JSON Merge Patch -- only the fields supplied in the body are modified, every other field falls back to its persisted value. Binding entities -- WarehouseAccount, WarehouseAccountGroup, WarehouseChannel, and WarehouseOrderType live under both /warehouses/<id>/<rel> and /warehouses/by-externalReferenceCode/<externalReferenceCode>/<rel> for listing and creation, and under their own top-level path (/warehouse-accounts/<warehouseAccountId>, etc.) for deletion and sub-resource lookup. Bindings are not upserts -- creating a duplicate binding returns 409 for warehouse-channel bindings and 400 for the other three. Common workflows: Provision a warehouse -- POST /warehouses with externalReferenceCode, name, address, and geo-coordinates, then POST nested warehouse-channels, warehouse-accounts, warehouse-account-groups, and warehouse-order-types to make the warehouse eligible for that scope. Adjust stock -- PUT /warehouseItems/by-externalReferenceCode/<externalReferenceCode> to upsert the quantity and reservedQuantity of a SKU at a warehouse, or PATCH the same path to change only the quantity. Plan a restock -- PUT /replenishment-items/by-externalReferenceCode/<externalReferenceCode> with sku, warehouseId, quantity, and availabilityDate to record an expected delivery. Audit recent changes -- GET /warehouseItems/updated with start and end query parameters to retrieve every WarehouseItem modified in the requested timespan (defaulting to a 30-day window when only one bound is supplied). A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.admin.inventory.client', and version '4.0.44'."
+        "Liferay Commerce Admin Inventory API exposes the inventory side of the Commerce administration surface -- warehouses, the items they stock, replenishment plans for those items, and the bindings that decide which warehouses can fulfill which accounts, account groups, channels, and order types. Primary entities -- Warehouse models a physical or logical fulfillment location with address, geo-coordinates, and an active flag. WarehouseItem tracks the on-hand and reserved quantity of a SKU at a single warehouse, scaled to a unit-of-measure key. ReplenishmentItem records expected restock quantities with an availability date. WarehouseAccount, WarehouseAccountGroup, WarehouseChannel, and WarehouseOrderType are the four binding entities that connect a warehouse to an AccountEntry, AccountGroup, CommerceChannel, and CommerceOrderType respectively, and decide which warehouse is eligible to source inventory for a given buyer or order type. Audience -- administrators of the Commerce inventory subsystem. The buyer-facing inventory view lives in the commerce-delivery-cart, commerce-delivery-catalog, and commerce-delivery-order modules; this API is the admin counterpart used to provision and maintain stock data. Addressing -- every primary resource is reachable either by the internal numeric ID (/warehouses/<id>, /warehouseItems/<id>, /replenishment-items/<replenishmentItemId>) or by externalReferenceCode (/warehouses/by-externalReferenceCode/<externalReferenceCode>, /warehouseItems/by-externalReferenceCode/<externalReferenceCode>, /replenishment-items/by-externalReferenceCode/<externalReferenceCode>). PUT against the externalReferenceCode path is upsert -- the request body either replaces the existing entity or creates a new one carrying that externalReferenceCode. PATCH against either path is JSON Merge Patch -- only the fields supplied in the body are modified, every other field falls back to its persisted value. Binding entities -- WarehouseAccount, WarehouseAccountGroup, WarehouseChannel, and WarehouseOrderType live under both /warehouses/<id>/<rel> and /warehouses/by-externalReferenceCode/<externalReferenceCode>/<rel> for listing and creation, and under their own top-level path (/warehouse-accounts/<warehouseAccountId>, etc.) for deletion and sub-resource lookup. Bindings are not upserts -- creating a duplicate binding returns 409 for warehouse-channel bindings and 400 for the other three. Common workflows: Provision a warehouse -- POST /warehouses with externalReferenceCode, name, address, and geo-coordinates, then POST nested warehouse-channels, warehouse-accounts, warehouse-account-groups, and warehouse-order-types to make the warehouse eligible for that scope. Adjust stock -- PUT /warehouseItems/by-externalReferenceCode/<externalReferenceCode> to upsert the quantity and reservedQuantity of a SKU at a warehouse, or PATCH the same path to change only the quantity. Plan a restock -- PUT /replenishment-items/by-externalReferenceCode/<externalReferenceCode> with sku, warehouseId, quantity, and availabilityDate to record an expected delivery. Audit recent changes -- GET /warehouseItems/updated with start and end query parameters to retrieve every WarehouseItem modified in the requested timespan (defaulting to a 30-day window when only one bound is supplied). A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.admin.inventory.client', and version '4.0.44'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -1001,7 +1001,7 @@ paths:
     /replenishment-items/{replenishmentItemId}:
         delete:
             description:
-                Deletes the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.deleteCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the id does not resolve.
+                Deletes the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.deleteCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the ID does not resolve.
             operationId: deleteReplenishmentItem
             parameters:
                 -   $ref: "#/components/parameters/replenishmentItemIdPathParam"
@@ -1035,7 +1035,7 @@ paths:
                 -   ReplenishmentItem
         get:
             description:
-                Returns the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.getCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the id does not resolve.
+                Returns the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.getCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the ID does not resolve.
             operationId: getReplenishmentItem
             parameters:
                 -   $ref: "#/components/parameters/replenishmentItemIdPathParam"
@@ -2044,7 +2044,7 @@ paths:
     /warehouseItems/{id}:
         delete:
             description:
-                Deletes the warehouse item identified by id. Calls CommerceInventoryWarehouseItemService.deleteCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the id does not resolve.
+                Deletes the warehouse item identified by ID. Calls CommerceInventoryWarehouseItemService.deleteCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the ID does not resolve.
             operationId: deleteWarehouseItem
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2078,7 +2078,7 @@ paths:
                 -   WarehouseItem
         get:
             description:
-                Returns the warehouse item identified by id. Calls CommerceInventoryWarehouseItemService.getCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the id does not resolve.
+                Returns the warehouse item identified by ID. Calls CommerceInventoryWarehouseItemService.getCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the ID does not resolve.
             operationId: getWarehouseItem
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2141,7 +2141,7 @@ paths:
                 -   WarehouseItem
         patch:
             description:
-                Applies a JSON Merge Patch to the warehouse item identified by id. Only the supplied fields among quantity, reservedQuantity, and unitOfMeasureKey are modified; others fall back to the persisted value. Validation -- CPInstanceUnitOfMeasureKeyException -> 400 when unitOfMeasureKey is rejected. Returns 200 OK with an empty body on success; the 202 response declared by the spec is reserved for future async use.
+                Applies a JSON Merge Patch to the warehouse item identified by ID. Only the supplied fields among quantity, reservedQuantity, and unitOfMeasureKey are modified; others fall back to the persisted value. Validation -- CPInstanceUnitOfMeasureKeyException -> 400 when unitOfMeasureKey is rejected. Returns 200 OK with an empty body on success; the 202 response declared by the spec is reserved for future async use.
             operationId: patchWarehouseItem
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3415,7 +3415,7 @@ paths:
     /warehouses/{id}:
         delete:
             description:
-                Deletes the warehouse identified by id. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve. Side effects -- cascades through all warehouse-item rows, all warehouse-account, warehouse-account-group, and warehouse-order-type bindings, and all warehouse-channel bindings that reference the warehouse.
+                Deletes the warehouse identified by ID. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve. Side effects -- cascades through all warehouse-item rows, all warehouse-account, warehouse-account-group, and warehouse-order-type bindings, and all warehouse-channel bindings that reference the warehouse.
             operationId: deleteWarehouseId
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3449,7 +3449,7 @@ paths:
                 -   Warehouse
         get:
             description:
-                Returns the warehouse identified by id. Calls CommerceInventoryWarehouseService.getCommerceInventoryWarehouse. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve.
+                Returns the warehouse identified by ID. Calls CommerceInventoryWarehouseService.getCommerceInventoryWarehouse. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve.
             operationId: getWarehouseId
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3513,7 +3513,7 @@ paths:
                 -   Warehouse
         patch:
             description:
-                Applies a JSON Merge Patch to the warehouse identified by id. Each null field in the body falls back to the persisted value. Side effects -- optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Returns 204 No Content on success.
+                Applies a JSON Merge Patch to the warehouse identified by ID. Each null field in the body falls back to the persisted value. Side effects -- optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Returns 204 No Content on success.
             operationId: patchWarehouseId
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3592,7 +3592,7 @@ paths:
     /warehouses/{id}/warehouse-account-groups:
         get:
             description:
-                Returns the paginated list of warehouse-account-group bindings for the warehouse identified by id. Supports the search query parameter against the bound account-group name. No filter or sort honored by the implementation.
+                Returns the paginated list of warehouse-account-group bindings for the warehouse identified by ID. Supports the search query parameter against the bound account-group name. No filter or sort honored by the implementation.
             operationId: getWarehouseIdWarehouseAccountGroupsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3661,7 +3661,7 @@ paths:
                 -   WarehouseAccountGroup
         post:
             description:
-                Creates a warehouse-account-group binding between the warehouse identified by id and the account group resolved by accountGroupId or accountGroupExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account group cannot be resolved.
+                Creates a warehouse-account-group binding between the warehouse identified by ID and the account group resolved by accountGroupId or accountGroupExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account group cannot be resolved.
             operationId: postWarehouseIdWarehouseAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3750,7 +3750,7 @@ paths:
     /warehouses/{id}/warehouse-accounts:
         get:
             description:
-                Returns the paginated list of warehouse-account bindings for the warehouse identified by id. Supports the search query parameter against the bound account name. No filter or sort honored by the implementation.
+                Returns the paginated list of warehouse-account bindings for the warehouse identified by ID. Supports the search query parameter against the bound account name. No filter or sort honored by the implementation.
             operationId: getWarehouseIdWarehouseAccountsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3820,7 +3820,7 @@ paths:
                 -   WarehouseAccount
         post:
             description:
-                Creates a warehouse-account binding between the warehouse identified by id and the account resolved by accountId or accountExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse id does not resolve; NoSuchEntryException -> 404 when the account cannot be resolved.
+                Creates a warehouse-account binding between the warehouse identified by ID and the account resolved by accountId or accountExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse ID does not resolve; NoSuchEntryException -> 404 when the account cannot be resolved.
             operationId: postWarehouseIdWarehouseAccount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3909,7 +3909,7 @@ paths:
     /warehouses/{id}/warehouse-channels:
         get:
             description:
-                Returns the paginated list of warehouse-channel bindings for the warehouse identified by id. Supports the search query parameter against the bound channel name. Returns an empty page when the warehouse does not exist (does not raise).
+                Returns the paginated list of warehouse-channel bindings for the warehouse identified by ID. Supports the search query parameter against the bound channel name. Returns an empty page when the warehouse does not exist (does not raise).
             operationId: getWarehouseIdWarehouseChannelsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3979,7 +3979,7 @@ paths:
                 -   WarehouseChannel
         post:
             description:
-                Creates a warehouse-channel binding between the warehouse identified by id and the channel resolved by channelId or channelExternalReferenceCode in the body. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists.
+                Creates a warehouse-channel binding between the warehouse identified by ID and the channel resolved by channelId or channelExternalReferenceCode in the body. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists.
             operationId: postWarehouseIdWarehouseChannel
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -4078,7 +4078,7 @@ paths:
     /warehouses/{id}/warehouse-order-types:
         get:
             description:
-                Returns the paginated list of warehouse-order-type bindings for the warehouse identified by id. Supports the search query parameter against the bound order-type name. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve.
+                Returns the paginated list of warehouse-order-type bindings for the warehouse identified by ID. Supports the search query parameter against the bound order-type name. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve.
             operationId: getWarehouseIdWarehouseOrderTypesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -4148,7 +4148,7 @@ paths:
                 -   WarehouseOrderType
         post:
             description:
-                Creates a warehouse-order-type binding between the warehouse identified by id and the order type resolved by orderTypeId or orderTypeExternalReferenceCode in the body. Not an upsert. Validation -- 404 when the order type cannot be resolved.
+                Creates a warehouse-order-type binding between the warehouse identified by ID and the order type resolved by orderTypeId or orderTypeExternalReferenceCode in the body. Not an upsert. Validation -- 404 when the order type cannot be resolved.
             operationId: postWarehouseIdWarehouseOrderType
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -4237,7 +4237,7 @@ paths:
     /warehouses/{id}/warehouseItems:
         get:
             description:
-                Returns the paginated list of warehouse items for the warehouse identified by id. The list is unfiltered (no filter, search, or sort parameters).
+                Returns the paginated list of warehouse items for the warehouse identified by ID. The list is unfiltered (no filter, search, or sort parameters).
             operationId: getWarehouseIdWarehouseItemsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -4306,7 +4306,7 @@ paths:
                 -   WarehouseItem
         post:
             description:
-                Creates a warehouse item under the warehouse identified by id. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the supplied externalReferenceCode already exists.
+                Creates a warehouse item under the warehouse identified by ID. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the supplied externalReferenceCode already exists.
             operationId: postWarehouseIdWarehouseItem
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -4554,19 +4554,19 @@ paths:
                 -   ReplenishmentItem
 tags:
     -   description:
-            Read-only projection of the account record referenced by a warehouse-account binding. Exposes the id, logo, and display name only; the writable account surface lives in the account admin API.
+            Read-only projection of the account record referenced by a warehouse-account binding. Exposes the ID, logo, and display name only; the writable account surface lives in the account admin API.
         name: Account
     -   description:
-            Read-only projection of the account group referenced by a warehouse-account-group binding. Exposes the id and display name only; the writable account-group surface lives in the account admin API.
+            Read-only projection of the account group referenced by a warehouse-account-group binding. Exposes the ID and display name only; the writable account-group surface lives in the account admin API.
         name: AccountGroup
     -   description:
-            Read-only projection of the channel referenced by a warehouse-channel binding. Exposes the id, externalReferenceCode, name, currency code, site group, and channel type; the writable channel surface lives in the channel admin API.
+            Read-only projection of the channel referenced by a warehouse-channel binding. Exposes the ID, externalReferenceCode, name, currency code, site group, and channel type; the writable channel surface lives in the channel admin API.
         name: Channel
     -   description:
-            Read-only projection of the order type referenced by a warehouse-order-type binding. Exposes the id and localized name only; the writable order-type surface lives in the order admin API.
+            Read-only projection of the order type referenced by a warehouse-order-type binding. Exposes the ID and localized name only; the writable order-type surface lives in the order admin API.
         name: OrderType
     -   description:
-            Planned restock event for a SKU at a warehouse. Records the expected quantity and the availability date so on-hand stock can be reconciled with future arrivals; addressable by id or externalReferenceCode and created either under the SKU or under a specific warehouse.
+            Planned restock event for a SKU at a warehouse. Records the expected quantity and the availability date so on-hand stock can be reconciled with future arrivals; addressable by ID or externalReferenceCode and created either under the SKU or under a specific warehouse.
         name: ReplenishmentItem
     -   description:
             Physical or logical fulfillment location that holds inventory. Carries the address, geo-coordinates, and the active flag that decides eligibility for sourcing stock; the upsert path keys on externalReferenceCode and cascades through every binding when the warehouse is deleted.

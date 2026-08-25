@@ -83,7 +83,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {availabilityEstimate(id: ___){externalReferenceCode, groupId, id, priority, title}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the availability estimate identified by id. Returns 404 when no estimate matches the id."
+		description = "Fetches the availability estimate identified by ID. Returns 404 when no estimate matches the ID."
 	)
 	public AvailabilityEstimate availabilityEstimate(@GraphQLName("id") Long id)
 		throws Exception {
@@ -146,7 +146,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {measurementUnit(id: ___){companyId, externalReferenceCode, id, key, name, primary, priority, rate, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the measurement unit identified by id. Returns 404 when no unit matches the id."
+		description = "Fetches the measurement unit identified by ID. Returns 404 when no unit matches the ID."
 	)
 	public MeasurementUnit measurementUnit(@GraphQLName("id") Long id)
 		throws Exception {
@@ -278,7 +278,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategory(id: ___){description, groupId, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the tax category identified by id. Returns 404 when no tax category matches the id."
+		description = "Fetches the tax category identified by ID. Returns 404 when no tax category matches the ID."
 	)
 	public TaxCategory taxCategory(@GraphQLName("id") Long id)
 		throws Exception {
@@ -318,7 +318,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouse(id: ___){active, city, commerceCountryId, commerceRegionId, description, groupId, id, latitude, longitude, mvccVersion, name, primary, street1, street2, street3, zip}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the warehouse definition identified by id. Returns 404 when no warehouse matches the id."
+		description = "Fetches the warehouse definition identified by ID. Returns 404 when no warehouse matches the ID."
 	)
 	public Warehouse warehouse(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
@@ -636,4 +636,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1259025465
+// LIFERAY-REST-BUILDER-HASH:-2064034873

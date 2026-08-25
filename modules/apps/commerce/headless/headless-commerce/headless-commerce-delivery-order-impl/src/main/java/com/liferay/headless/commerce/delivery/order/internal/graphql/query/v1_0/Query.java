@@ -134,7 +134,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderAttachments(filter: ___, page: ___, pageSize: ___, placedOrderId: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the attachments uploaded against the placed order addressed by id. When the feature flag is enabled the attachments are searched against the commerce order attachment index with search, filter, sort, and pagination; otherwise the underlying document-library file entries are returned."
+		description = "Lists the attachments uploaded against the placed order addressed by ID. When the feature flag is enabled the attachments are searched against the commerce order attachment index with search, filter, sort, and pagination; otherwise the underlying document-library file entries are returned."
 	)
 	public AttachmentPage placedOrderAttachments(
 			@GraphQLName("placedOrderId") Long placedOrderId,
@@ -193,7 +193,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderOrderTransitions(placedOrderId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the workflow and storefront transitions the authenticated buyer can trigger on the placed order addressed by id. Combines workflow transitions resolved against the buyer's permissions with the platform-defined process-quote and reorder transitions. The order must not be OPEN."
+		description = "Lists the workflow and storefront transitions the authenticated buyer can trigger on the placed order addressed by ID. Combines workflow transitions resolved against the buyer's permissions with the platform-defined process-quote and reorder transitions. The order must not be OPEN."
 	)
 	public OrderTransitionPage placedOrderOrderTransitions(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -337,7 +337,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrder(placedOrderId: ___){account, accountId, attachments, author, authorId, channelId, couponCode, createDate, currencyCode, customFields, errorMessages, externalReferenceCode, friendlyURLSeparator, id, lastPriceUpdateDate, modifiedDate, name, orderStatusInfo, orderType, orderTypeExternalReferenceCode, orderTypeId, orderUUID, paymentMethod, paymentMethodLabel, paymentStatus, paymentStatusInfo, paymentStatusLabel, placedOrderBillingAddress, placedOrderBillingAddressId, placedOrderComments, placedOrderItems, placedOrderShippingAddress, placedOrderShippingAddressId, printedNote, purchaseOrderNumber, requestedDeliveryDate, shipments, shippingMethod, shippingOption, status, steps, summary, useAsBilling, valid, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns a single placed order addressed by id. The order must not be OPEN; if it is, 404 is returned."
+		description = "Returns a single placed order addressed by ID. The order must not be OPEN; if it is, 404 is returned."
 	)
 	public PlacedOrder placedOrder(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -398,7 +398,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPaymentURL(callbackURL: ___, placedOrderId: ___){}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by id. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN."
+		description = "Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by ID. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN."
 	)
 	public String placedOrderPaymentURL(
 			@GraphQLName("placedOrderId") Long placedOrderId,
@@ -464,7 +464,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPlacedOrderBillingAddress(placedOrderId: ___){city, country, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, phoneNumber, region, regionISOCode, street1, street2, street3, subtype, type, typeId, vatNumber, zip}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the billing address snapshot for the placed order addressed by id. The order must not be OPEN. When the billing address is unset an empty PlacedOrderAddress is returned."
+		description = "Returns the billing address snapshot for the placed order addressed by ID. The order must not be OPEN. When the billing address is unset an empty PlacedOrderAddress is returned."
 	)
 	public PlacedOrderAddress placedOrderPlacedOrderBillingAddress(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -484,7 +484,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPlacedOrderShippingAddress(placedOrderId: ___){city, country, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, phoneNumber, region, regionISOCode, street1, street2, street3, subtype, type, typeId, vatNumber, zip}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the shipping address snapshot for the placed order addressed by id. The order must not be OPEN. Returns 404 when the shipping address has been removed."
+		description = "Returns the shipping address snapshot for the placed order addressed by ID. The order must not be OPEN. Returns 404 when the shipping address has been removed."
 	)
 	public PlacedOrderAddress placedOrderPlacedOrderShippingAddress(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -570,7 +570,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPlacedOrderComments(page: ___, pageSize: ___, placedOrderId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the comments (notes) recorded against the placed order addressed by id. The order must not be OPEN. Supports pagination via page and pageSize."
+		description = "Lists the comments (notes) recorded against the placed order addressed by ID. The order must not be OPEN. Supports pagination via page and pageSize."
 	)
 	public PlacedOrderCommentPage placedOrderPlacedOrderComments(
 			@GraphQLName("placedOrderId") Long placedOrderId,
@@ -664,7 +664,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPlacedOrderItems(page: ___, pageSize: ___, placedOrderId: ___, search: ___, skuId: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the top-level line items of the placed order addressed by id. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant."
+		description = "Lists the top-level line items of the placed order addressed by ID. Restricts the result to parent items (child items are exposed on the nested placedOrderItems property). Supports search, sort, pagination, and an optional skuId filter to narrow to a single purchasable variant."
 	)
 	public PlacedOrderItemPage placedOrderPlacedOrderItems(
 			@GraphQLName("placedOrderId") Long placedOrderId,
@@ -714,7 +714,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderItemPlacedOrderItemShipments(placedOrderItemId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the shipments that fulfill the placed-order line item addressed by id. Includes drop-ship supplier shipments when the line was fulfilled through supplier orders. The parent order must not be OPEN."
+		description = "Lists the shipments that fulfill the placed-order line item addressed by ID. Includes drop-ship supplier shipments when the line was fulfilled through supplier orders. The parent order must not be OPEN."
 	)
 	public PlacedOrderItemShipmentPage placedOrderItemPlacedOrderItemShipments(
 			@GraphQLName("placedOrderItemId") Long placedOrderItemId)
@@ -765,7 +765,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderShipments(filter: ___, page: ___, pageSize: ___, placedOrderId: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the shipments dispatched against the placed order addressed by id. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination."
+		description = "Lists the shipments dispatched against the placed order addressed by ID. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination."
 	)
 	public ShipmentPage placedOrderShipments(
 			@GraphQLName("placedOrderId") Long placedOrderId,
@@ -833,7 +833,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderDeliveryTerm(placedOrderId: ___){description, externalReferenceCode, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the delivery term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
+		description = "Returns the delivery term assigned to the placed order addressed by ID. The order must not be OPEN; if it is, the request is rejected."
 	)
 	public Term placedOrderDeliveryTerm(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -852,7 +852,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderPaymentTerm(placedOrderId: ___){description, externalReferenceCode, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns the payment term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
+		description = "Returns the payment term assigned to the placed order addressed by ID. The order must not be OPEN; if it is, the request is rejected."
 	)
 	public Term placedOrderPaymentTerm(
 			@GraphQLName("placedOrderId") Long placedOrderId)
@@ -873,7 +873,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Returns a single placed order addressed by id. The order must not be OPEN; if it is, 404 is returned."
+			description = "Returns a single placed order addressed by ID. The order must not be OPEN; if it is, 404 is returned."
 		)
 		public PlacedOrder placedOrder() throws Exception {
 			return _applyComponentServiceObjects(
@@ -897,7 +897,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the workflow and storefront transitions the authenticated buyer can trigger on the placed order addressed by id. Combines workflow transitions resolved against the buyer's permissions with the platform-defined process-quote and reorder transitions. The order must not be OPEN."
+			description = "Lists the workflow and storefront transitions the authenticated buyer can trigger on the placed order addressed by ID. Combines workflow transitions resolved against the buyer's permissions with the platform-defined process-quote and reorder transitions. The order must not be OPEN."
 		)
 		public OrderTransitionPage orderTransitions() throws Exception {
 			return _applyComponentServiceObjects(
@@ -947,7 +947,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by id. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN."
+			description = "Returns a portal URL that routes the buyer through the payment flow for the placed order addressed by ID. The URL embeds a guest token when the order is a guest order, and a nextStep parameter that either follows the supplied callbackURL or returns the buyer to the order-confirmation step of the storefront checkout. The order must not be OPEN."
 		)
 		public String paymentURL(@GraphQLName("callbackURL") String callbackURL)
 			throws Exception {
@@ -1028,7 +1028,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Returns the delivery term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
+			description = "Returns the delivery term assigned to the placed order addressed by ID. The order must not be OPEN; if it is, the request is rejected."
 		)
 		public Term deliveryTerm() throws Exception {
 			return _applyComponentServiceObjects(
@@ -1050,7 +1050,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Returns the payment term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
+			description = "Returns the payment term assigned to the placed order addressed by ID. The order must not be OPEN; if it is, the request is rejected."
 		)
 		public Term paymentTerm() throws Exception {
 			return _applyComponentServiceObjects(
@@ -1947,4 +1947,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1649929066
+// LIFERAY-REST-BUILDER-HASH:-647980906

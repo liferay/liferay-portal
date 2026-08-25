@@ -75,7 +75,7 @@ public abstract class BasePriceListDiscountResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-list-discounts/{priceListDiscountId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the price list discount link addressed by internal id."
+		description = "Deletes the price list discount link addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -205,7 +205,7 @@ public abstract class BasePriceListDiscountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-list-discounts'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages PriceListDiscounts for a PriceList by id."
+		description = "Pages PriceListDiscounts for a PriceList by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -293,7 +293,7 @@ public abstract class BasePriceListDiscountResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-list-discounts' -d $'{"discountExternalReferenceCode": ___, "discountId": ___, "order": ___, "priceListExternalReferenceCode": ___, "priceListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates price list discount link for PriceList by id."
+		description = "Creates price list discount link for PriceList by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1087,4 +1087,4 @@ public abstract class BasePriceListDiscountResourceImpl
 		LogFactoryUtil.getLog(BasePriceListDiscountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:983100612
+// LIFERAY-REST-BUILDER-HASH:1763010756

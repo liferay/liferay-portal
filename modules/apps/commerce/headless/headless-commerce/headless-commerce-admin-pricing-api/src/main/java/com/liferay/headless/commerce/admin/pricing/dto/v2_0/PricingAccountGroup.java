@@ -36,11 +36,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Read-only projection of a account group referenced by a discount or price-list account-group binding. Carries the account-group id and display name.",
+	description = "Read-only projection of a account group referenced by a discount or price-list account-group binding. Carries the account-group ID and display name.",
 	value = "PricingAccountGroup"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Read-only projection of a account group referenced by a discount or price-list account-group binding. Carries the account-group id and display name."
+	description = "Read-only projection of a account group referenced by a discount or price-list account-group binding. Carries the account-group ID and display name."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PricingAccountGroup")
@@ -298,4 +298,4 @@ public class PricingAccountGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2087835235
+// LIFERAY-REST-BUILDER-HASH:-1836296605

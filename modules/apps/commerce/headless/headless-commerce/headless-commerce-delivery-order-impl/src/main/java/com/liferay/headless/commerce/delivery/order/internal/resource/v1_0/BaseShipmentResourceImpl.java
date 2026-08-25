@@ -143,7 +143,7 @@ public abstract class BaseShipmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/shipments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the shipments dispatched against the placed order addressed by id. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination."
+		description = "Lists the shipments dispatched against the placed order addressed by ID. Each row carries the carrier, tracking number, tracking URL, status, and a one-line address summary -- the same data point a buyer uses to follow the carrier redirect. Supports search, filter, sort, and pagination."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -968,4 +968,4 @@ public abstract class BaseShipmentResourceImpl
 		LogFactoryUtil.getLog(BaseShipmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-831038402
+// LIFERAY-REST-BUILDER-HASH:555767870

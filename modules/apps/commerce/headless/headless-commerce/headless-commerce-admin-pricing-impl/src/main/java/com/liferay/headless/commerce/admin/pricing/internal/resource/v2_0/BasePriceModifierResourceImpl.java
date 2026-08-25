@@ -77,7 +77,7 @@ public abstract class BasePriceModifierResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the price modifier addressed by internal id."
+		description = "Deletes the price modifier addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -248,7 +248,7 @@ public abstract class BasePriceModifierResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-modifiers'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages PriceModifiers for a PriceList by id."
+		description = "Pages PriceModifiers for a PriceList by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -322,7 +322,7 @@ public abstract class BasePriceModifierResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the price modifier addressed by internal id."
+		description = "Returns the price modifier addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -406,7 +406,7 @@ public abstract class BasePriceModifierResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}' -d $'{"active": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "modifierAmount": ___, "modifierType": ___, "neverExpire": ___, "priceListExternalReferenceCode": ___, "priceListId": ___, "priceModifierCategories": ___, "priceModifierProductGroups": ___, "priceModifierProducts": ___, "priority": ___, "target": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Updates price modifier by id using JSON Merge Patch semantics. Also updates nested modifier rels if supplied."
+		description = "Updates price modifier by ID using JSON Merge Patch semantics. Also updates nested modifier rels if supplied."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -528,7 +528,7 @@ public abstract class BasePriceModifierResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-modifiers' -d $'{"active": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "modifierAmount": ___, "modifierType": ___, "neverExpire": ___, "priceListExternalReferenceCode": ___, "priceListId": ___, "priceModifierCategories": ___, "priceModifierProductGroups": ___, "priceModifierProducts": ___, "priority": ___, "target": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates price modifier for PriceList by id."
+		description = "Creates price modifier for PriceList by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1377,4 +1377,4 @@ public abstract class BasePriceModifierResourceImpl
 		LogFactoryUtil.getLog(BasePriceModifierResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:357808024
+// LIFERAY-REST-BUILDER-HASH:1226849176

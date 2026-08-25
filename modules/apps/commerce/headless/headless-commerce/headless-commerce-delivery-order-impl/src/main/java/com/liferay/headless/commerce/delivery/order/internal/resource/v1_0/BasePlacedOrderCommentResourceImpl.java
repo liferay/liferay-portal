@@ -200,7 +200,7 @@ public abstract class BasePlacedOrderCommentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/placed-order-comments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the comments (notes) recorded against the placed order addressed by id. The order must not be OPEN. Supports pagination via page and pageSize."
+		description = "Lists the comments (notes) recorded against the placed order addressed by ID. The order must not be OPEN. Supports pagination via page and pageSize."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -996,4 +996,4 @@ public abstract class BasePlacedOrderCommentResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderCommentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1299581204
+// LIFERAY-REST-BUILDER-HASH:1133638380

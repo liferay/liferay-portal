@@ -75,7 +75,7 @@ public abstract class BaseDiscountAccountResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discount-accounts/{discountAccountId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the discount account link addressed by internal id. Throws NoSuchDiscountException when relation id is unknown."
+		description = "Deletes the discount account link addressed by internal ID. Throws NoSuchDiscountException when relation ID is unknown."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -210,7 +210,7 @@ public abstract class BaseDiscountAccountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-accounts'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages DiscountAccounts for a Discount by id with search/filter."
+		description = "Pages DiscountAccounts for a Discount by ID with search/filter."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -324,7 +324,7 @@ public abstract class BaseDiscountAccountResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-accounts' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "discountExternalReferenceCode": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates discount account link for Discount by id."
+		description = "Creates discount account link for Discount by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1117,4 +1117,4 @@ public abstract class BaseDiscountAccountResourceImpl
 		LogFactoryUtil.getLog(BaseDiscountAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-944279431
+// LIFERAY-REST-BUILDER-HASH:987887737

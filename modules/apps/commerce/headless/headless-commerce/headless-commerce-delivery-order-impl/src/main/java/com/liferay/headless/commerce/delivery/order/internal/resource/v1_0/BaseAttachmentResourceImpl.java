@@ -75,7 +75,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/attachments/{attachmentId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the attachment addressed by id under the placed order addressed by id. When the feature flag is enabled the commerce order attachment record is removed; otherwise the underlying document-library file entry is detached from the order."
+		description = "Deletes the attachment addressed by ID under the placed order addressed by ID. When the feature flag is enabled the commerce order attachment record is removed; otherwise the underlying document-library file entry is detached from the order."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -162,7 +162,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/attachments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the attachments uploaded against the placed order addressed by id. When the feature flag is enabled the attachments are searched against the commerce order attachment index with search, filter, sort, and pagination; otherwise the underlying document-library file entries are returned."
+		description = "Lists the attachments uploaded against the placed order addressed by ID. When the feature flag is enabled the attachments are searched against the commerce order attachment index with search, filter, sort, and pagination; otherwise the underlying document-library file entries are returned."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -299,7 +299,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/attachments/by-base64' -d $'{"attachment": ___, "externalReferenceCode": ___, "priority": ___, "restricted": ___, "title": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a new attachment on the placed order addressed by id, with the file body supplied inline as Base64. When the feature flag is enabled the attachment is persisted as a commerce order attachment record; otherwise it is stored as a file entry directly on the order."
+		description = "Creates a new attachment on the placed order addressed by ID, with the file body supplied inline as Base64. When the feature flag is enabled the attachment is persisted as a commerce order attachment record; otherwise it is stored as a file entry directly on the order."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1135,4 +1135,4 @@ public abstract class BaseAttachmentResourceImpl
 		LogFactoryUtil.getLog(BaseAttachmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2030787027
+// LIFERAY-REST-BUILDER-HASH:171253293

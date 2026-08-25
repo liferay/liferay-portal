@@ -48,7 +48,7 @@ public abstract class BasePricingAccountGroupResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discount-account-groups/{discountAccountGroupId}/account-group'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the PricingAccountGroup nested in a DiscountAccountGroup (via discount account group link) addressed by internal rel id."
+		description = "Returns the PricingAccountGroup nested in a DiscountAccountGroup (via discount account group link) addressed by internal rel ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -88,7 +88,7 @@ public abstract class BasePricingAccountGroupResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-list-account-groups/{priceListAccountGroupId}/account-group'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the PricingAccountGroup nested in a PriceListAccountGroup (via price list account group link) addressed by internal rel id."
+		description = "Returns the PricingAccountGroup nested in a PriceListAccountGroup (via price list account group link) addressed by internal rel ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -567,4 +567,4 @@ public abstract class BasePricingAccountGroupResourceImpl
 		LogFactoryUtil.getLog(BasePricingAccountGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-446556660
+// LIFERAY-REST-BUILDER-HASH:1201937932

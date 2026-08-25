@@ -77,7 +77,7 @@ public abstract class BaseDiscountRuleResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discount-rules/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the discount rule addressed by internal id."
+		description = "Deletes the discount rule addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -201,7 +201,7 @@ public abstract class BaseDiscountRuleResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-rules'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages DiscountRules for a Discount by id with search/filter."
+		description = "Pages DiscountRules for a Discount by ID with search/filter."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -268,7 +268,7 @@ public abstract class BaseDiscountRuleResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discount-rules/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the discount rule addressed by internal id."
+		description = "Returns the discount rule addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -302,7 +302,7 @@ public abstract class BaseDiscountRuleResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discount-rules/{id}' -d $'{"name": ___, "type": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Updates discount rule by id using JSON Merge Patch semantics."
+		description = "Updates discount rule by ID using JSON Merge Patch semantics."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -376,7 +376,7 @@ public abstract class BaseDiscountRuleResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-rules' -d $'{"name": ___, "type": ___, "typeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates discount rule for Discount by id."
+		description = "Creates discount rule for Discount by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1197,4 +1197,4 @@ public abstract class BaseDiscountRuleResourceImpl
 		LogFactoryUtil.getLog(BaseDiscountRuleResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-725115393
+// LIFERAY-REST-BUILDER-HASH:-85943809

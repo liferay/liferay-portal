@@ -368,7 +368,7 @@ components:
     schemas:
         Account:
             description:
-                Read-only projection of a account referenced by a discount or price-list account binding. Carries the account id, optional logo id, and display name; the full record lives in headless-commerce-admin-account.
+                Read-only projection of a account referenced by a discount or price-list account binding. Carries the account ID, optional logo ID, and display name; the full record lives in headless-commerce-admin-account.
             properties:
                 id:
                     description:
@@ -392,7 +392,7 @@ components:
             type: object
         Category:
             description:
-                Read-only projection of an AssetCategory referenced by a discount, price-modifier, or product category binding. Carries the category id, name, path, and the vocabulary the category belongs to.
+                Read-only projection of an AssetCategory referenced by a discount, price-modifier, or product category binding. Carries the category ID, name, path, and the vocabulary the category belongs to.
             properties:
                 id:
                     description:
@@ -423,7 +423,7 @@ components:
             type: object
         Channel:
             description:
-                Read-only projection of a channel referenced by a discount or price-list channel binding. Carries the channel id, name, ERC, type, default currencyCode, and the underlying siteGroupId.
+                Read-only projection of a channel referenced by a discount or price-list channel binding. Carries the channel ID, name, ERC, type, default currencyCode, and the underlying siteGroupId.
             properties:
                 currencyCode:
                     description:
@@ -1206,7 +1206,7 @@ components:
             type: object
         OrderType:
             description:
-                Read-only projection of a order type referenced by a discount or price-list order-type binding. Carries the order type id, name, and display order.
+                Read-only projection of a order type referenced by a discount or price-list order-type binding. Carries the order type ID, name, and display order.
             properties:
                 id:
                     description:
@@ -2143,7 +2143,7 @@ components:
             type: object
         PricingAccountGroup:
             description:
-                Read-only projection of a account group referenced by a discount or price-list account-group binding. Carries the account-group id and display name.
+                Read-only projection of a account group referenced by a discount or price-list account-group binding. Carries the account-group ID and display name.
             properties:
                 id:
                     description:
@@ -2161,7 +2161,7 @@ components:
             type: object
         Product:
             description:
-                Read-only projection of a product (commerce product) referenced by a discount or price-modifier product binding. Carries the product id and localized name.
+                Read-only projection of a product (commerce product) referenced by a discount or price-modifier product binding. Carries the product ID and localized name.
             properties:
                 id:
                     description:
@@ -2196,7 +2196,7 @@ components:
             type: object
         ProductGroup:
             description:
-                Read-only projection of a product group referenced by a discount or price-modifier product-group binding. Carries the product-group id and title.
+                Read-only projection of a product group referenced by a discount or price-modifier product-group binding. Carries the product-group ID and title.
             properties:
                 id:
                     description:
@@ -2225,7 +2225,7 @@ components:
             type: object
         Sku:
             description:
-                Read-only projection of a SKU (SKU) referenced by a discount sku binding or a price entry. Carries the SKU id, sku key, optional unit-of-measure key, and price-bearing identifiers.
+                Read-only projection of a SKU (SKU) referenced by a discount sku binding or a price entry. Carries the SKU ID, sku key, optional unit-of-measure key, and price-bearing identifiers.
             properties:
                 basePrice:
                     description:
@@ -2430,7 +2430,7 @@ paths:
     /discount-account-groups/{discountAccountGroupId}:
         delete:
             description:
-                Deletes the discount account group link addressed by internal id.
+                Deletes the discount account group link addressed by internal ID.
             operationId: deleteDiscountAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/discountAccountGroupIdPathParam"
@@ -2464,7 +2464,7 @@ paths:
     /discount-account-groups/{discountAccountGroupId}/account-group:
         get:
             description:
-                Returns the PricingAccountGroup nested in a DiscountAccountGroup (via discount account group link) addressed by internal rel id.
+                Returns the PricingAccountGroup nested in a DiscountAccountGroup (via discount account group link) addressed by internal rel ID.
             operationId: getDiscountAccountGroupAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/discountAccountGroupIdPathParam"
@@ -2527,7 +2527,7 @@ paths:
     /discount-accounts/{discountAccountId}:
         delete:
             description:
-                Deletes the discount account link addressed by internal id. Throws NoSuchDiscountException when relation id is unknown.
+                Deletes the discount account link addressed by internal ID. Throws NoSuchDiscountException when relation ID is unknown.
             operationId: deleteDiscountAccount
             parameters:
                 -   $ref: "#/components/parameters/discountAccountIdPathParam"
@@ -2561,7 +2561,7 @@ paths:
     /discount-accounts/{discountAccountId}/account:
         get:
             description:
-                Returns the Account nested in a DiscountAccount (via discount account link) addressed by internal rel id.
+                Returns the Account nested in a DiscountAccount (via discount account link) addressed by internal rel ID.
             operationId: getDiscountAccountAccount
             parameters:
                 -   $ref: "#/components/parameters/discountAccountIdPathParam"
@@ -2624,7 +2624,7 @@ paths:
     /discount-categories/{discountCategoryId}:
         delete:
             description:
-                Deletes the discount link (AssetCategory binding) addressed by internal id.
+                Deletes the discount link (AssetCategory binding) addressed by internal ID.
             operationId: deleteDiscountCategory
             parameters:
                 -   $ref: "#/components/parameters/discountCategoryIdPathParam"
@@ -2658,7 +2658,7 @@ paths:
     /discount-categories/{discountCategoryId}/category:
         get:
             description:
-                Returns the Category nested in a DiscountCategory (via discount link) addressed by internal rel id.
+                Returns the Category nested in a DiscountCategory (via discount link) addressed by internal rel ID.
             operationId: getDiscountCategoryCategory
             parameters:
                 -   $ref: "#/components/parameters/discountCategoryIdPathParam"
@@ -2721,7 +2721,7 @@ paths:
     /discount-channels/{discountChannelId}:
         delete:
             description:
-                Deletes the channel link (discount channel binding) addressed by internal id.
+                Deletes the channel link (discount channel binding) addressed by internal ID.
             operationId: deleteDiscountChannel
             parameters:
                 -   $ref: "#/components/parameters/discountChannelIdPathParam"
@@ -2755,7 +2755,7 @@ paths:
     /discount-channels/{discountChannelId}/channel:
         get:
             description:
-                Returns the Channel nested in a DiscountChannel (via channel link) addressed by internal rel id.
+                Returns the Channel nested in a DiscountChannel (via channel link) addressed by internal rel ID.
             operationId: getDiscountChannelChannel
             parameters:
                 -   $ref: "#/components/parameters/discountChannelIdPathParam"
@@ -2909,7 +2909,7 @@ paths:
     /discount-product-groups/{discountProductGroupId}:
         delete:
             description:
-                Deletes the discount link (pricing class binding) addressed by internal id.
+                Deletes the discount link (pricing class binding) addressed by internal ID.
             operationId: deleteDiscountProductGroup
             parameters:
                 -   $ref: "#/components/parameters/discountProductGroupIdPathParam"
@@ -2943,7 +2943,7 @@ paths:
     /discount-product-groups/{discountProductGroupId}/product-group:
         get:
             description:
-                Returns the ProductGroup nested in a DiscountProductGroup (via discount link) addressed by internal rel id.
+                Returns the ProductGroup nested in a DiscountProductGroup (via discount link) addressed by internal rel ID.
             operationId: getDiscountProductGroupProductGroup
             parameters:
                 -   $ref: "#/components/parameters/discountProductGroupIdPathParam"
@@ -3006,7 +3006,7 @@ paths:
     /discount-products/{discountProductId}:
         delete:
             description:
-                Deletes the discount link (product binding) addressed by internal id.
+                Deletes the discount link (product binding) addressed by internal ID.
             operationId: deleteDiscountProduct
             parameters:
                 -   $ref: "#/components/parameters/discountProductIdPathParam"
@@ -3040,7 +3040,7 @@ paths:
     /discount-products/{discountProductId}/product:
         get:
             description:
-                Returns the Product nested in a DiscountProduct (via discount link) addressed by internal rel id.
+                Returns the Product nested in a DiscountProduct (via discount link) addressed by internal rel ID.
             operationId: getDiscountProductProduct
             parameters:
                 -   $ref: "#/components/parameters/discountProductIdPathParam"
@@ -3103,7 +3103,7 @@ paths:
     /discount-rules/{id}:
         delete:
             description:
-                Deletes the discount rule addressed by internal id.
+                Deletes the discount rule addressed by internal ID.
             operationId: deleteDiscountRule
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3136,7 +3136,7 @@ paths:
             tags: ["DiscountRule"]
         get:
             description:
-                Returns the discount rule addressed by internal id.
+                Returns the discount rule addressed by internal ID.
             operationId: getDiscountRule
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3198,7 +3198,7 @@ paths:
             tags: ["DiscountRule"]
         patch:
             description:
-                Updates discount rule by id using JSON Merge Patch semantics.
+                Updates discount rule by ID using JSON Merge Patch semantics.
             operationId: patchDiscountRule
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -3280,7 +3280,7 @@ paths:
     /discount-skus/{discountSkuId}:
         delete:
             description:
-                Deletes the discount link (SKU binding) addressed by internal id.
+                Deletes the discount link (SKU binding) addressed by internal ID.
             operationId: deleteDiscountSku
             parameters:
                 -   $ref: "#/components/parameters/discountSkuIdPathParam"
@@ -3314,7 +3314,7 @@ paths:
     /discount-skus/{discountSkuId}/sku:
         get:
             description:
-                Returns the Sku nested in a DiscountSku (via discount link) addressed by internal rel id.
+                Returns the Sku nested in a DiscountSku (via discount link) addressed by internal rel ID.
             operationId: getDiscountSkuSku
             parameters:
                 -   $ref: "#/components/parameters/discountSkuIdPathParam"
@@ -5077,7 +5077,7 @@ paths:
     /discounts/{id}:
         delete:
             description:
-                Deletes the discount addressed by internal id. Cascades deletion of all associated discount rels (account-group, account, category, channel, order-type, product, product-group, sku, rule). Throws NoSuchDiscountException on unknown id.
+                Deletes the discount addressed by internal ID. Cascades deletion of all associated discount rels (account-group, account, category, channel, order-type, product, product-group, sku, rule). Throws NoSuchDiscountException on unknown ID.
             operationId: deleteDiscount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5110,7 +5110,7 @@ paths:
             tags: ["Discount"]
         get:
             description:
-                Returns the discount addressed by internal id. Throws NoSuchDiscountException on unknown id.
+                Returns the discount addressed by internal ID. Throws NoSuchDiscountException on unknown ID.
             operationId: getDiscount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5173,7 +5173,7 @@ paths:
             tags: ["Discount"]
         patch:
             description:
-                Updates discount by id using JSON Merge Patch semantics (only supplied fields modified). Also updates nested relations if supplied.
+                Updates discount by ID using JSON Merge Patch semantics (only supplied fields modified). Also updates nested relations if supplied.
             operationId: patchDiscount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5255,7 +5255,7 @@ paths:
     /discounts/{id}/discount-account-groups:
         get:
             description:
-                Pages DiscountAccountGroups for a Discount by id with search/filter.
+                Pages DiscountAccountGroups for a Discount by ID with search/filter.
             operationId: getDiscountIdDiscountAccountGroupsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5314,7 +5314,7 @@ paths:
             tags: ["DiscountAccountGroup"]
         post:
             description:
-                Creates discount account group link for Discount by id.
+                Creates discount account group link for Discount by ID.
             operationId: postDiscountIdDiscountAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5402,7 +5402,7 @@ paths:
     /discounts/{id}/discount-accounts:
         get:
             description:
-                Pages DiscountAccounts for a Discount by id with search/filter.
+                Pages DiscountAccounts for a Discount by ID with search/filter.
             operationId: getDiscountIdDiscountAccountsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5461,7 +5461,7 @@ paths:
             tags: ["DiscountAccount"]
         post:
             description:
-                Creates discount account link for Discount by id.
+                Creates discount account link for Discount by ID.
             operationId: postDiscountIdDiscountAccount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5549,7 +5549,7 @@ paths:
     /discounts/{id}/discount-categories:
         get:
             description:
-                Pages DiscountCategories for a Discount by id with search.
+                Pages DiscountCategories for a Discount by ID with search.
             operationId: getDiscountIdDiscountCategoriesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5608,7 +5608,7 @@ paths:
             tags: ["DiscountCategory"]
         post:
             description:
-                Creates discount link (AssetCategory binding) for Discount by id.
+                Creates discount link (AssetCategory binding) for Discount by ID.
             operationId: postDiscountIdDiscountCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5696,7 +5696,7 @@ paths:
     /discounts/{id}/discount-channels:
         get:
             description:
-                Pages DiscountChannels for a Discount by id with search/filter.
+                Pages DiscountChannels for a Discount by ID with search/filter.
             operationId: getDiscountIdDiscountChannelsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5755,7 +5755,7 @@ paths:
             tags: ["DiscountChannel"]
         post:
             description:
-                Creates channel link (discount channel binding) for Discount by id.
+                Creates channel link (discount channel binding) for Discount by ID.
             operationId: postDiscountIdDiscountChannel
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5993,7 +5993,7 @@ paths:
     /discounts/{id}/discount-product-groups:
         get:
             description:
-                Pages DiscountProductGroups for a Discount by id with search.
+                Pages DiscountProductGroups for a Discount by ID with search.
             operationId: getDiscountIdDiscountProductGroupsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6052,7 +6052,7 @@ paths:
             tags: ["DiscountProductGroup"]
         post:
             description:
-                Creates discount link (pricing class binding) for Discount by id.
+                Creates discount link (pricing class binding) for Discount by ID.
             operationId: postDiscountIdDiscountProductGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6140,7 +6140,7 @@ paths:
     /discounts/{id}/discount-products:
         get:
             description:
-                Pages DiscountProducts for a Discount by id with search and language-id localization.
+                Pages DiscountProducts for a Discount by ID with search and language-id localization.
             operationId: getDiscountIdDiscountProductsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6199,7 +6199,7 @@ paths:
             tags: ["DiscountProduct"]
         post:
             description:
-                Creates discount link (product binding) for Discount by id.
+                Creates discount link (product binding) for Discount by ID.
             operationId: postDiscountIdDiscountProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6287,7 +6287,7 @@ paths:
     /discounts/{id}/discount-rules:
         get:
             description:
-                Pages DiscountRules for a Discount by id with search/filter.
+                Pages DiscountRules for a Discount by ID with search/filter.
             operationId: getDiscountIdDiscountRulesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6348,7 +6348,7 @@ paths:
             tags: ["DiscountRule"]
         post:
             description:
-                Creates discount rule for Discount by id.
+                Creates discount rule for Discount by ID.
             operationId: postDiscountIdDiscountRule
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6436,7 +6436,7 @@ paths:
     /discounts/{id}/discount-skus:
         get:
             description:
-                Pages DiscountSkus for a Discount by id with search.
+                Pages DiscountSkus for a Discount by ID with search.
             operationId: getDiscountIdDiscountSkusPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6495,7 +6495,7 @@ paths:
             tags: ["DiscountSku"]
         post:
             description:
-                Creates discount link (SKU binding) for Discount by id.
+                Creates discount link (SKU binding) for Discount by ID.
             operationId: postDiscountIdDiscountSku
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6994,7 +6994,7 @@ paths:
     /price-entries/{priceEntryId}:
         delete:
             description:
-                Deletes the price entry addressed by internal id.
+                Deletes the price entry addressed by internal ID.
             operationId: deletePriceEntry
             parameters:
                 -   $ref: "#/components/parameters/priceEntryIdPathParam"
@@ -7027,7 +7027,7 @@ paths:
             tags: ["PriceEntry"]
         get:
             description:
-                Returns the price entry addressed by internal id.
+                Returns the price entry addressed by internal ID.
             operationId: getPriceEntry
             parameters:
                 -   $ref: "#/components/parameters/priceEntryIdPathParam"
@@ -7090,7 +7090,7 @@ paths:
             tags: ["PriceEntry"]
         patch:
             description:
-                Updates price entry by id using JSON Merge Patch semantics. Also updates nested tier prices if supplied.
+                Updates price entry by ID using JSON Merge Patch semantics. Also updates nested tier prices if supplied.
             operationId: patchPriceEntry
             parameters:
                 -   $ref: "#/components/parameters/priceEntryIdPathParam"
@@ -7172,7 +7172,7 @@ paths:
     /price-entries/{priceEntryId}/product:
         get:
             description:
-                Returns the Product nested in a PriceEntry (via SKU from price entry) addressed by internal price entry id.
+                Returns the Product nested in a PriceEntry (via SKU from price entry) addressed by internal price entry ID.
             operationId: getPriceEntryIdProduct
             parameters:
                 -   $ref: "#/components/parameters/priceEntryIdPathParam"
@@ -7235,7 +7235,7 @@ paths:
     /price-entries/{priceEntryId}/sku:
         get:
             description:
-                Returns the Sku nested in a PriceEntry (via SKU from price entry) addressed by internal price entry id, with optional unitOfMeasureKey attribute.
+                Returns the Sku nested in a PriceEntry (via SKU from price entry) addressed by internal price entry ID, with optional unitOfMeasureKey attribute.
             operationId: getPriceEntryIdSku
             parameters:
                 -   $ref: "#/components/parameters/priceEntryIdPathParam"
@@ -7298,7 +7298,7 @@ paths:
     /price-entries/{priceEntryId}/tier-prices:
         get:
             description:
-                Pages TierPrices for a PriceEntry by id.
+                Pages TierPrices for a PriceEntry by ID.
             operationId: getPriceEntryIdTierPricesPage
             parameters:
                 -   $ref: "#/components/parameters/priceEntryIdPathParam"
@@ -7356,7 +7356,7 @@ paths:
             tags: ["TierPrice"]
         post:
             description:
-                Creates tier price for PriceEntry by id.
+                Creates tier price for PriceEntry by ID.
             operationId: postPriceEntryIdTierPrice
             parameters:
                 -   $ref: "#/components/parameters/priceEntryIdPathParam"
@@ -7444,7 +7444,7 @@ paths:
     /price-list-account-groups/{priceListAccountGroupId}:
         delete:
             description:
-                Deletes the price list account group link addressed by internal id.
+                Deletes the price list account group link addressed by internal ID.
             operationId: deletePriceListAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/priceListAccountGroupIdPathParam"
@@ -7478,7 +7478,7 @@ paths:
     /price-list-account-groups/{priceListAccountGroupId}/account-group:
         get:
             description:
-                Returns the PricingAccountGroup nested in a PriceListAccountGroup (via price list account group link) addressed by internal rel id.
+                Returns the PricingAccountGroup nested in a PriceListAccountGroup (via price list account group link) addressed by internal rel ID.
             operationId: getPriceListAccountGroupAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/priceListAccountGroupIdPathParam"
@@ -7541,7 +7541,7 @@ paths:
     /price-list-accounts/{priceListAccountId}:
         delete:
             description:
-                Deletes the price list account link addressed by internal id.
+                Deletes the price list account link addressed by internal ID.
             operationId: deletePriceListAccount
             parameters:
                 -   $ref: "#/components/parameters/priceListAccountIdPathParam"
@@ -7575,7 +7575,7 @@ paths:
     /price-list-accounts/{priceListAccountId}/account:
         get:
             description:
-                Returns the Account nested in a PriceListAccount (via price list account link) addressed by internal rel id.
+                Returns the Account nested in a PriceListAccount (via price list account link) addressed by internal rel ID.
             operationId: getPriceListAccountAccount
             parameters:
                 -   $ref: "#/components/parameters/priceListAccountIdPathParam"
@@ -7638,7 +7638,7 @@ paths:
     /price-list-channels/{priceListChannelId}:
         delete:
             description:
-                Deletes the price list channel link addressed by internal id.
+                Deletes the price list channel link addressed by internal ID.
             operationId: deletePriceListChannel
             parameters:
                 -   $ref: "#/components/parameters/priceListChannelIdPathParam"
@@ -7672,7 +7672,7 @@ paths:
     /price-list-channels/{priceListChannelId}/channel:
         get:
             description:
-                Returns the Channel nested in a PriceListChannel (via price list channel link) addressed by internal rel id.
+                Returns the Channel nested in a PriceListChannel (via price list channel link) addressed by internal rel ID.
             operationId: getPriceListChannelChannel
             parameters:
                 -   $ref: "#/components/parameters/priceListChannelIdPathParam"
@@ -7735,7 +7735,7 @@ paths:
     /price-list-discounts/{priceListDiscountId}:
         delete:
             description:
-                Deletes the price list discount link addressed by internal id.
+                Deletes the price list discount link addressed by internal ID.
             operationId: deletePriceListDiscount
             parameters:
                 -   $ref: "#/components/parameters/priceListDiscountIdPathParam"
@@ -7769,7 +7769,7 @@ paths:
     /price-list-order-types/{priceListOrderTypeId}:
         delete:
             description:
-                Deletes the price list order type link addressed by internal id.
+                Deletes the price list order type link addressed by internal ID.
             operationId: deletePriceListOrderType
             parameters:
                 -   $ref: "#/components/parameters/priceListOrderTypeIdPathParam"
@@ -7803,7 +7803,7 @@ paths:
     /price-list-order-types/{priceListOrderTypeId}/order-type:
         get:
             description:
-                Returns the OrderType nested in a PriceListOrderType (via price list order type link) addressed by internal rel id.
+                Returns the OrderType nested in a PriceListOrderType (via price list order type link) addressed by internal rel ID.
             operationId: getPriceListOrderTypeOrderType
             parameters:
                 -   $ref: "#/components/parameters/priceListOrderTypeIdPathParam"
@@ -9276,7 +9276,7 @@ paths:
     /price-lists/{id}:
         delete:
             description:
-                Deletes the price list addressed by internal id.
+                Deletes the price list addressed by internal ID.
             operationId: deletePriceList
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9309,7 +9309,7 @@ paths:
             tags: ["PriceList"]
         get:
             description:
-                Returns the price list addressed by internal id.
+                Returns the price list addressed by internal ID.
             operationId: getPriceList
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9372,7 +9372,7 @@ paths:
             tags: ["PriceList"]
         patch:
             description:
-                Updates price list by id using JSON Merge Patch semantics. Also updates nested relations if supplied.
+                Updates price list by ID using JSON Merge Patch semantics. Also updates nested relations if supplied.
             operationId: patchPriceList
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9454,7 +9454,7 @@ paths:
     /price-lists/{id}/price-entries:
         get:
             description:
-                Pages PriceEntries for a PriceList by id with search and OData filter via SearchUtil.
+                Pages PriceEntries for a PriceList by ID with search and OData filter via SearchUtil.
             operationId: getPriceListIdPriceEntriesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9513,7 +9513,7 @@ paths:
             tags: ["PriceEntry"]
         post:
             description:
-                Creates price entry for PriceList by id.
+                Creates price entry for PriceList by ID.
             operationId: postPriceListIdPriceEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9601,7 +9601,7 @@ paths:
     /price-lists/{id}/price-list-account-groups:
         get:
             description:
-                Pages PriceListAccountGroups for a PriceList by id with search/filter.
+                Pages PriceListAccountGroups for a PriceList by ID with search/filter.
             operationId: getPriceListIdPriceListAccountGroupsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9660,7 +9660,7 @@ paths:
             tags: ["PriceListAccountGroup"]
         post:
             description:
-                Creates price list account group link for PriceList by id.
+                Creates price list account group link for PriceList by ID.
             operationId: postPriceListIdPriceListAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9747,7 +9747,7 @@ paths:
     /price-lists/{id}/price-list-accounts:
         get:
             description:
-                Pages PriceListAccounts for a PriceList by id with search/filter.
+                Pages PriceListAccounts for a PriceList by ID with search/filter.
             operationId: getPriceListIdPriceListAccountsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9806,7 +9806,7 @@ paths:
             tags: ["PriceListAccount"]
         post:
             description:
-                Creates price list account link for PriceList by id.
+                Creates price list account link for PriceList by ID.
             operationId: postPriceListIdPriceListAccount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9893,7 +9893,7 @@ paths:
     /price-lists/{id}/price-list-channels:
         get:
             description:
-                Pages PriceListChannels for a PriceList by id with search/filter.
+                Pages PriceListChannels for a PriceList by ID with search/filter.
             operationId: getPriceListIdPriceListChannelsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9952,7 +9952,7 @@ paths:
             tags: ["PriceListChannel"]
         post:
             description:
-                Creates price list channel link for PriceList by id.
+                Creates price list channel link for PriceList by ID.
             operationId: postPriceListIdPriceListChannel
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10040,7 +10040,7 @@ paths:
     /price-lists/{id}/price-list-discounts:
         get:
             description:
-                Pages PriceListDiscounts for a PriceList by id.
+                Pages PriceListDiscounts for a PriceList by ID.
             operationId: getPriceListIdPriceListDiscountsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10095,7 +10095,7 @@ paths:
             tags: ["PriceListDiscount"]
         post:
             description:
-                Creates price list discount link for PriceList by id.
+                Creates price list discount link for PriceList by ID.
             operationId: postPriceListIdPriceListDiscount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10183,7 +10183,7 @@ paths:
     /price-lists/{id}/price-list-order-types:
         get:
             description:
-                Pages PriceListOrderTypes for a PriceList by id with search.
+                Pages PriceListOrderTypes for a PriceList by ID with search.
             operationId: getPriceListIdPriceListOrderTypesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10240,7 +10240,7 @@ paths:
             tags: ["PriceListOrderType"]
         post:
             description:
-                Creates price list order type link for PriceList by id.
+                Creates price list order type link for PriceList by ID.
             operationId: postPriceListIdPriceListOrderType
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10327,7 +10327,7 @@ paths:
     /price-lists/{id}/price-modifiers:
         get:
             description:
-                Pages PriceModifiers for a PriceList by id.
+                Pages PriceModifiers for a PriceList by ID.
             operationId: getPriceListIdPriceModifiersPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10386,7 +10386,7 @@ paths:
             tags: ["PriceModifier"]
         post:
             description:
-                Creates price modifier for PriceList by id.
+                Creates price modifier for PriceList by ID.
             operationId: postPriceListIdPriceModifier
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10474,7 +10474,7 @@ paths:
     /price-modifier-categories/{priceModifierCategoryId}:
         delete:
             description:
-                Deletes the price modifier link (AssetCategory binding) addressed by internal id.
+                Deletes the price modifier link (AssetCategory binding) addressed by internal ID.
             operationId: deletePriceModifierCategory
             parameters:
                 -   $ref: "#/components/parameters/priceModifierCategoryIdPathParam"
@@ -10508,7 +10508,7 @@ paths:
     /price-modifier-categories/{priceModifierCategoryId}/category:
         get:
             description:
-                Returns the Category nested in a PriceModifierCategory (via price modifier link) addressed by internal rel id.
+                Returns the Category nested in a PriceModifierCategory (via price modifier link) addressed by internal rel ID.
             operationId: getPriceModifierCategoryCategory
             parameters:
                 -   $ref: "#/components/parameters/priceModifierCategoryIdPathParam"
@@ -10571,7 +10571,7 @@ paths:
     /price-modifier-product-groups/{priceModifierProductGroupId}:
         delete:
             description:
-                Deletes the price modifier link (pricing class binding) addressed by internal id.
+                Deletes the price modifier link (pricing class binding) addressed by internal ID.
             operationId: deletePriceModifierProductGroup
             parameters:
                 -   $ref: "#/components/parameters/priceModifierProductGroupIdPathParam"
@@ -10605,7 +10605,7 @@ paths:
     /price-modifier-product-groups/{priceModifierProductGroupId}/product-group:
         get:
             description:
-                Returns the ProductGroup nested in a PriceModifierProductGroup (via price modifier link) addressed by internal rel id.
+                Returns the ProductGroup nested in a PriceModifierProductGroup (via price modifier link) addressed by internal rel ID.
             operationId: getPriceModifierProductGroupProductGroup
             parameters:
                 -   $ref: "#/components/parameters/priceModifierProductGroupIdPathParam"
@@ -10668,7 +10668,7 @@ paths:
     /price-modifier-products/{priceModifierProductId}:
         delete:
             description:
-                Deletes the price modifier link (product binding) addressed by internal id.
+                Deletes the price modifier link (product binding) addressed by internal ID.
             operationId: deletePriceModifierProduct
             parameters:
                 -   $ref: "#/components/parameters/priceModifierProductIdPathParam"
@@ -10702,7 +10702,7 @@ paths:
     /price-modifier-products/{priceModifierProductId}/product:
         get:
             description:
-                Returns the Product nested in a PriceModifierProduct (via price modifier link) addressed by internal rel id.
+                Returns the Product nested in a PriceModifierProduct (via price modifier link) addressed by internal rel ID.
             operationId: getPriceModifierProductProduct
             parameters:
                 -   $ref: "#/components/parameters/priceModifierProductIdPathParam"
@@ -11380,7 +11380,7 @@ paths:
     /price-modifiers/{id}:
         delete:
             description:
-                Deletes the price modifier addressed by internal id.
+                Deletes the price modifier addressed by internal ID.
             operationId: deletePriceModifier
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11413,7 +11413,7 @@ paths:
             tags: ["PriceModifier"]
         get:
             description:
-                Returns the price modifier addressed by internal id.
+                Returns the price modifier addressed by internal ID.
             operationId: getPriceModifier
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11476,7 +11476,7 @@ paths:
             tags: ["PriceModifier"]
         patch:
             description:
-                Updates price modifier by id using JSON Merge Patch semantics. Also updates nested modifier rels if supplied.
+                Updates price modifier by ID using JSON Merge Patch semantics. Also updates nested modifier rels if supplied.
             operationId: patchPriceModifier
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11554,7 +11554,7 @@ paths:
     /price-modifiers/{id}/price-modifier-categories:
         get:
             description:
-                Pages PriceModifierCategories for a PriceModifier by id with search.
+                Pages PriceModifierCategories for a PriceModifier by ID with search.
             operationId: getPriceModifierIdPriceModifierCategoriesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11613,7 +11613,7 @@ paths:
             tags: ["PriceModifierCategory"]
         post:
             description:
-                Creates price modifier link (AssetCategory binding) for PriceModifier by id.
+                Creates price modifier link (AssetCategory binding) for PriceModifier by ID.
             operationId: postPriceModifierIdPriceModifierCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11701,7 +11701,7 @@ paths:
     /price-modifiers/{id}/price-modifier-product-groups:
         get:
             description:
-                Pages PriceModifierProductGroups for a PriceModifier by id with search.
+                Pages PriceModifierProductGroups for a PriceModifier by ID with search.
             operationId: getPriceModifierIdPriceModifierProductGroupsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11760,7 +11760,7 @@ paths:
             tags: ["PriceModifierProductGroup"]
         post:
             description:
-                Creates price modifier link (pricing class binding) for PriceModifier by id.
+                Creates price modifier link (pricing class binding) for PriceModifier by ID.
             operationId: postPriceModifierIdPriceModifierProductGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11848,7 +11848,7 @@ paths:
     /price-modifiers/{id}/price-modifier-products:
         get:
             description:
-                Pages PriceModifierProducts for a PriceModifier by id with search and language-id.
+                Pages PriceModifierProducts for a PriceModifier by ID with search and language-id.
             operationId: getPriceModifierIdPriceModifierProductsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11907,7 +11907,7 @@ paths:
             tags: ["PriceModifierProduct"]
         post:
             description:
-                Creates price modifier link (product binding) for PriceModifier by id.
+                Creates price modifier link (product binding) for PriceModifier by ID.
             operationId: postPriceModifierIdPriceModifierProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -12168,7 +12168,7 @@ paths:
     /tier-prices/{id}:
         delete:
             description:
-                Deletes the tier price addressed by internal id.
+                Deletes the tier price addressed by internal ID.
             operationId: deleteTierPrice
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -12201,7 +12201,7 @@ paths:
             tags: ["TierPrice"]
         get:
             description:
-                Returns the tier price addressed by internal id.
+                Returns the tier price addressed by internal ID.
             operationId: getTierPrice
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -12263,7 +12263,7 @@ paths:
             tags: ["TierPrice"]
         patch:
             description:
-                Updates tier price by id using JSON Merge Patch semantics.
+                Updates tier price by ID using JSON Merge Patch semantics.
             operationId: patchTierPrice
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"

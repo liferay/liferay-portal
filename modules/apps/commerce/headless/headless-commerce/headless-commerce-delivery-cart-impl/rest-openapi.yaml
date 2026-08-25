@@ -1342,7 +1342,7 @@ components:
             type: object
         Step:
             description:
-                Checkout step descriptor. The id is the step key (cart, shipping, payment, confirmation); the state is its progress -- pending, active, or completed.
+                Checkout step descriptor. The ID is the step key (cart, shipping, payment, confirmation); the state is its progress -- pending, active, or completed.
             properties:
                 id:
                     description:

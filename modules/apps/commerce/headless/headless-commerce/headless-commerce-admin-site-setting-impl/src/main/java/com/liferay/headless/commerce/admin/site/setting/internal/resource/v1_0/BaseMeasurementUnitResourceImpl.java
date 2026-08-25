@@ -78,7 +78,7 @@ public abstract class BaseMeasurementUnitResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/measurement-units/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the measurement unit identified by id. Returns 404 when no unit matches the id."
+		description = "Deletes the measurement unit identified by ID. Returns 404 when no unit matches the ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -228,7 +228,7 @@ public abstract class BaseMeasurementUnitResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/measurement-units/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the measurement unit identified by id. Returns 404 when no unit matches the id."
+		description = "Fetches the measurement unit identified by ID. Returns 404 when no unit matches the ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -444,7 +444,7 @@ public abstract class BaseMeasurementUnitResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/measurement-units/{id}' -d $'{"externalReferenceCode": ___, "key": ___, "name": ___, "primary": ___, "priority": ___, "rate": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the measurement unit identified by id, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types."
+		description = "Partially updates the measurement unit identified by ID, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1552,4 +1552,4 @@ public abstract class BaseMeasurementUnitResourceImpl
 		LogFactoryUtil.getLog(BaseMeasurementUnitResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2021615479
+// LIFERAY-REST-BUILDER-HASH:-985797769

@@ -105,7 +105,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.deleteCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the id does not resolve."
+		description = "Deletes the replenishment item identified by replenishmentItemId. Calls CommerceInventoryReplenishmentItemService.deleteCommerceInventoryReplenishmentItem. Validation -- NoSuchInventoryReplenishmentItemException -> 404 when the ID does not resolve."
 	)
 	public boolean deleteReplenishmentItem(
 			@GraphQLName("replenishmentItemId") Long replenishmentItemId)
@@ -274,7 +274,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the warehouse identified by id. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve. Side effects -- cascades through all warehouse-item rows, all warehouse-account, warehouse-account-group, and warehouse-order-type bindings, and all warehouse-channel bindings that reference the warehouse."
+		description = "Deletes the warehouse identified by ID. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve. Side effects -- cascades through all warehouse-item rows, all warehouse-account, warehouse-account-group, and warehouse-order-type bindings, and all warehouse-channel bindings that reference the warehouse."
 	)
 	public boolean deleteWarehouseId(@GraphQLName("id") Long id)
 		throws Exception {
@@ -304,7 +304,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Applies a JSON Merge Patch to the warehouse identified by id. Each null field in the body falls back to the persisted value. Side effects -- optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Returns 204 No Content on success."
+		description = "Applies a JSON Merge Patch to the warehouse identified by ID. Each null field in the body falls back to the persisted value. Side effects -- optional nested warehouseItems are cascaded through addOrUpdateCommerceInventoryWarehouseItem. Returns 204 No Content on success."
 	)
 	public Response patchWarehouseId(
 			@GraphQLName("id") Long id,
@@ -433,7 +433,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a warehouse-account binding between the warehouse identified by id and the account resolved by accountId or accountExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse id does not resolve; NoSuchEntryException -> 404 when the account cannot be resolved."
+		description = "Creates a warehouse-account binding between the warehouse identified by ID and the account resolved by accountId or accountExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchInventoryWarehouseException -> 404 when the warehouse ID does not resolve; NoSuchEntryException -> 404 when the account cannot be resolved."
 	)
 	public WarehouseAccount createWarehouseIdWarehouseAccount(
 			@GraphQLName("id") Long id,
@@ -515,7 +515,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a warehouse-account-group binding between the warehouse identified by id and the account group resolved by accountGroupId or accountGroupExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account group cannot be resolved."
+		description = "Creates a warehouse-account-group binding between the warehouse identified by ID and the account group resolved by accountGroupId or accountGroupExternalReferenceCode in the body. Not an upsert. Validation -- NoSuchEntryException -> 404 when the account group cannot be resolved."
 	)
 	public WarehouseAccountGroup createWarehouseIdWarehouseAccountGroup(
 			@GraphQLName("id") Long id,
@@ -599,7 +599,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a warehouse-channel binding between the warehouse identified by id and the channel resolved by channelId or channelExternalReferenceCode in the body. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists."
+		description = "Creates a warehouse-channel binding between the warehouse identified by ID and the channel resolved by channelId or channelExternalReferenceCode in the body. Validation -- NoSuchChannelException -> 404 when the channel cannot be resolved; DuplicateCommerceChannelRelException -> 409 when the binding already exists."
 	)
 	public WarehouseChannel createWarehouseIdWarehouseChannel(
 			@GraphQLName("id") Long id,
@@ -629,7 +629,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the warehouse item identified by id. Calls CommerceInventoryWarehouseItemService.deleteCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the id does not resolve."
+		description = "Deletes the warehouse item identified by ID. Calls CommerceInventoryWarehouseItemService.deleteCommerceInventoryWarehouseItem. Validation -- NoSuchInventoryWarehouseItemException -> 404 when the ID does not resolve."
 	)
 	public boolean deleteWarehouseItem(@GraphQLName("id") Long id)
 		throws Exception {
@@ -676,7 +676,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Applies a JSON Merge Patch to the warehouse item identified by id. Only the supplied fields among quantity, reservedQuantity, and unitOfMeasureKey are modified; others fall back to the persisted value. Validation -- CPInstanceUnitOfMeasureKeyException -> 400 when unitOfMeasureKey is rejected. Returns 200 OK with an empty body on success; the 202 response declared by the spec is reserved for future async use."
+		description = "Applies a JSON Merge Patch to the warehouse item identified by ID. Only the supplied fields among quantity, reservedQuantity, and unitOfMeasureKey are modified; others fall back to the persisted value. Validation -- CPInstanceUnitOfMeasureKeyException -> 400 when unitOfMeasureKey is rejected. Returns 200 OK with an empty body on success; the 202 response declared by the spec is reserved for future async use."
 	)
 	public Response patchWarehouseItem(
 			@GraphQLName("id") Long id,
@@ -724,7 +724,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a warehouse item under the warehouse identified by id. Validation -- NoSuchInventoryWarehouseException -> 404 when the id does not resolve; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the supplied externalReferenceCode already exists."
+		description = "Creates a warehouse item under the warehouse identified by ID. Validation -- NoSuchInventoryWarehouseException -> 404 when the ID does not resolve; DuplicateCommerceInventoryWarehouseItemException -> 400 when a warehouse item with the supplied externalReferenceCode already exists."
 	)
 	public WarehouseItem createWarehouseIdWarehouseItem(
 			@GraphQLName("id") Long id,
@@ -837,7 +837,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a warehouse-order-type binding between the warehouse identified by id and the order type resolved by orderTypeId or orderTypeExternalReferenceCode in the body. Not an upsert. Validation -- 404 when the order type cannot be resolved."
+		description = "Creates a warehouse-order-type binding between the warehouse identified by ID and the order type resolved by orderTypeId or orderTypeExternalReferenceCode in the body. Not an upsert. Validation -- 404 when the order type cannot be resolved."
 	)
 	public WarehouseOrderType createWarehouseIdWarehouseOrderType(
 			@GraphQLName("id") Long id,
@@ -1090,4 +1090,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1603336571
+// LIFERAY-REST-BUILDER-HASH:575922555

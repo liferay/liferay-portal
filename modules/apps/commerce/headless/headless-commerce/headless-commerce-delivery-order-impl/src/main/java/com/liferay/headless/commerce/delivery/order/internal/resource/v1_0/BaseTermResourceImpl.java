@@ -119,7 +119,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/delivery-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the delivery term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
+		description = "Returns the delivery term assigned to the placed order addressed by ID. The order must not be OPEN; if it is, the request is rejected."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -153,7 +153,7 @@ public abstract class BaseTermResourceImpl implements TermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/payment-term'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the payment term assigned to the placed order addressed by id. The order must not be OPEN; if it is, the request is rejected."
+		description = "Returns the payment term assigned to the placed order addressed by ID. The order must not be OPEN; if it is, the request is rejected."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -626,4 +626,4 @@ public abstract class BaseTermResourceImpl implements TermResource {
 		LogFactoryUtil.getLog(BaseTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:554400520
+// LIFERAY-REST-BUILDER-HASH:1452997384

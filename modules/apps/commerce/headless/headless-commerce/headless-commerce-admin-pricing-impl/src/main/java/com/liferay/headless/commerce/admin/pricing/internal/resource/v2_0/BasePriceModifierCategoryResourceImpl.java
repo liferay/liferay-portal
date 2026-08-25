@@ -75,7 +75,7 @@ public abstract class BasePriceModifierCategoryResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifier-categories/{priceModifierCategoryId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the price modifier link (AssetCategory binding) addressed by internal id."
+		description = "Deletes the price modifier link (AssetCategory binding) addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -216,7 +216,7 @@ public abstract class BasePriceModifierCategoryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}/price-modifier-categories'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages PriceModifierCategories for a PriceModifier by id with search."
+		description = "Pages PriceModifierCategories for a PriceModifier by ID with search."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -336,7 +336,7 @@ public abstract class BasePriceModifierCategoryResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}/price-modifier-categories' -d $'{"categoryExternalReferenceCode": ___, "categoryId": ___, "priceModifierExternalReferenceCode": ___, "priceModifierId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates price modifier link (AssetCategory binding) for PriceModifier by id."
+		description = "Creates price modifier link (AssetCategory binding) for PriceModifier by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1145,4 +1145,4 @@ public abstract class BasePriceModifierCategoryResourceImpl
 		LogFactoryUtil.getLog(BasePriceModifierCategoryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:586266666
+// LIFERAY-REST-BUILDER-HASH:-1747338198

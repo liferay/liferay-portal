@@ -75,7 +75,7 @@ public abstract class BasePriceListChannelResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-list-channels/{priceListChannelId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the price list channel link addressed by internal id."
+		description = "Deletes the price list channel link addressed by internal ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -210,7 +210,7 @@ public abstract class BasePriceListChannelResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-list-channels'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Pages PriceListChannels for a PriceList by id with search/filter."
+		description = "Pages PriceListChannels for a PriceList by ID with search/filter."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -325,7 +325,7 @@ public abstract class BasePriceListChannelResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}/price-list-channels' -d $'{"channelExternalReferenceCode": ___, "channelId": ___, "order": ___, "priceListExternalReferenceCode": ___, "priceListId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates price list channel link for PriceList by id."
+		description = "Creates price list channel link for PriceList by ID."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1119,4 +1119,4 @@ public abstract class BasePriceListChannelResourceImpl
 		LogFactoryUtil.getLog(BasePriceListChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-529457932
+// LIFERAY-REST-BUILDER-HASH:-372463372
