@@ -1000,7 +1000,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.core.jar</file-name>
-				<version>3.6.11.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Core Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1012,7 +1012,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.bindings.soap.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime SOAP Binding Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1024,7 +1024,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.bindings.xml.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime XML Binding Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1036,7 +1036,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.databinding.jaxb.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime JAXB DataBinding Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1048,7 +1048,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.frontend.jaxws.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime JAX-WS Frontend Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1060,7 +1060,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.frontend.simple.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime Simple Frontend Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1072,7 +1072,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.transports.http.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime HTTP Transport Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1084,7 +1084,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.ws.addr.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime WS Addressing Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1096,7 +1096,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.ws.policy.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime WS Policy Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -1108,7 +1108,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.document.library.repository.cmis.impl.jar!org.apache.cxf.rt.wsdl.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF Runtime Core for WSDL Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -2580,7 +2580,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.remote.rest.extender.jar!org.apache.cxf.rt.rs.extension.providers.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF JAX-RS Extensions: Providers Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
@@ -2592,7 +2592,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.remote.rest.extender.jar!org.apache.cxf.rt.rs.json.basic.jar</file-name>
-				<version>3.6.11.JAKARTA-LIFERAY-PATCHED-1</version>
+				<version>3.6.12.JAKARTA-LIFERAY-PATCHED-1</version>
 				<project-name>Apache CXF JAX-RS Extensions: JSON Basic Jakarta</project-name>
 				<project-url>http://cxf.apache.org</project-url>
 				<licenses>
