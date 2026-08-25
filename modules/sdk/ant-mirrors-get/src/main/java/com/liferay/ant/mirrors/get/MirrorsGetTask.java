@@ -1012,7 +1012,7 @@ public class MirrorsGetTask extends Task {
 
 	private Pattern _getTempFilePattern(String fileName) {
 		return Pattern.compile(
-			"(?<timestamp>" + _TIMESTAMP_REGEX + ")(-" + _UUID_REGEX + "-)?" +
+			"(?<timestamp>" + _REGEX_TIMESTAMP + ")(-" + _REGEX_UUID + "-)?" +
 				Pattern.quote(fileName));
 	}
 
@@ -1486,9 +1486,9 @@ public class MirrorsGetTask extends Task {
 
 	private static final long _MAX_AGE_MILLIS = 24 * 60 * 60 * 1000;
 
-	private static final String _TIMESTAMP_REGEX = "\\d{13,18}";
+	private static final String _REGEX_TIMESTAMP = "\\d{13,18}";
 
-	private static final String _UUID_REGEX = "[0-9a-fA-F-]{36}";
+	private static final String _REGEX_UUID = "[0-9a-fA-F-]{36}";
 
 	private static final Pattern _basicAuthenticationURLPattern =
 		Pattern.compile("(https?://)([^:]+):([^@]+)@(.+)");
@@ -1509,7 +1509,7 @@ public class MirrorsGetTask extends Task {
 	private static final Pattern _releaseHostNamePattern = Pattern.compile(
 		"(release-\\d+|release.liferay.com)/(?<id>\\d+)");
 	private static final Pattern _tempFileNamePattern = Pattern.compile(
-		_TIMESTAMP_REGEX + "-" + _UUID_REGEX + "-(?<fileName>.+)");
+		_REGEX_TIMESTAMP + "-" + _REGEX_UUID + "-(?<fileName>.+)");
 	private static final Pattern _testHostNamePattern = Pattern.compile(
 		"test-\\d+-\\d+");
 
