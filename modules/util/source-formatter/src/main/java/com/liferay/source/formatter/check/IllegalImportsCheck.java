@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.GitUtil;
+import com.liferay.portal.tools.ToolsUtil;
 import com.liferay.source.formatter.SourceFormatterArgs;
 import com.liferay.source.formatter.processor.SourceProcessor;
 
@@ -59,56 +60,34 @@ public class IllegalImportsCheck extends BaseFileCheck {
 		// com.liferay.portal.kernel.util.CookieKeys
 
 		if (isAttributeValue(_ENFORCE_COOKIES_MANAGER_UTIL_KEY, absolutePath)) {
-			int index = content.indexOf(
-				"com.liferay.portal.kernel.util.CookieKeys");
-
-			if (index != -1) {
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						"Use com.liferay.portal.kernel.cookies.CookiesManager",
-						"Util instead of com.liferay.portal.kernel.util.",
-						"CookieKeys, see LPS-164101"),
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "com.liferay.portal.kernel.util.CookieKeys",
+				"Use com.liferay.portal.kernel.cookies.CookiesManagerUtil " +
+					"instead of com.liferay.portal.kernel.util.CookieKeys, " +
+						"see LPS-164101");
 		}
 
 		// com.liferay.portal.kernel.util.UnmodifiableList
 
-		int index = content.indexOf(
-			"com.liferay.portal.kernel.util.UnmodifiableList");
-
-		if (index != -1) {
-			addMessage(
-				fileName,
-				"Use java.util.Collections.unmodifiableList instead of com." +
-					"liferay.portal.kernel.util.UnmodifiableList, see " +
-						"LPS-45027",
-				getLineNumber(content, index));
-		}
+		_checkImport(
+			fileName, content,
+			"com.liferay.portal.kernel.util.UnmodifiableList",
+			"Use java.util.Collections.unmodifiableList instead of com." +
+				"liferay.portal.kernel.util.UnmodifiableList, see LPS-45027");
 
 		// edu.emory.mathcs.backport.java
 
-		index = content.indexOf("edu.emory.mathcs.backport.java");
-
-		if (index != -1) {
-			addMessage(
-				fileName, "Illegal import: edu.emory.mathcs.backport.java",
-				getLineNumber(content, index));
-		}
+		_checkImport(
+			fileName, content, "edu.emory.mathcs.backport.java",
+			"Illegal import: edu.emory.mathcs.backport.java");
 
 		// jakarta.servlet.jsp.*
 
 		if (absolutePath.contains("/portal-kernel/")) {
-			index = content.indexOf("jakarta.servlet.jsp.");
-
-			if (index != -1) {
-				addMessage(
-					fileName,
-					"Never import jakarta.servlet.jsp.* from portal-kernel, " +
-						"see LPS-47682",
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "jakarta.servlet.jsp.",
+				"Never import jakarta.servlet.jsp.* from portal-kernel, see " +
+					"LPS-47682");
 		}
 
 		// java.lang.reflect.Proxy
@@ -116,14 +95,9 @@ public class IllegalImportsCheck extends BaseFileCheck {
 		if (!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
 			!isExcludedPath(_PROXY_EXCLUDES, absolutePath)) {
 
-			index = content.indexOf("java.lang.reflect.Proxy");
-
-			if (index != -1) {
-				addMessage(
-					fileName,
-					"Use ProxyUtil instead of java.lang.reflect.Proxy",
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "java.lang.reflect.Proxy",
+				"Use ProxyUtil instead of java.lang.reflect.Proxy");
 		}
 
 		// java.security.SecureRandom
@@ -132,16 +106,11 @@ public class IllegalImportsCheck extends BaseFileCheck {
 			!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
 			!isExcludedPath(_SECURE_RANDOM_EXCLUDES, absolutePath)) {
 
-			index = content.indexOf("java.security.SecureRandom");
-
-			if (index != -1) {
-				addMessage(
-					fileName,
-					"Use SecureRandomUtil or com.liferay.portal.kernel." +
-						"security.SecureRandom instead of java.security." +
-							"SecureRandom, see LPS-39508",
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "java.security.SecureRandom",
+				"Use SecureRandomUtil or com.liferay.portal.kernel.security." +
+					"SecureRandom instead of java.security.SecureRandom, see " +
+						"LPS-39508");
 		}
 
 		// java.util.Optional
@@ -154,26 +123,17 @@ public class IllegalImportsCheck extends BaseFileCheck {
 				getAttributeValues(
 					_ALLOWED_OPTIONAL_FILE_NAMES_KEY, absolutePath))) {
 
-			index = content.indexOf("java.util.Optional");
-
-			if (index != -1) {
-				addMessage(
-					fileName, "Do not use java.util.Optional, see LPS-170503",
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "java.util.Optional",
+				"Do not use java.util.Optional, see LPS-170503");
 		}
 
 		// java.util.WeakHashMap
 
-		index = content.indexOf("java.util.WeakHashMap");
-
-		if (index != -1) {
-			addMessage(
-				fileName,
-				"Do not use java.util.WeakHashMap because it is not " +
-					"thread-safe, see LPS-70963",
-				getLineNumber(content, index));
-		}
+		_checkImport(
+			fileName, content, "java.util.WeakHashMap",
+			"Do not use java.util.WeakHashMap because it is not thread-safe, " +
+				"see LPS-70963");
 
 		// java.util.concurrent.CompletableFuture
 
@@ -186,15 +146,10 @@ public class IllegalImportsCheck extends BaseFileCheck {
 					_ALLOWED_COMPLETABLE_FUTURE_FILE_NAMES_KEY,
 					absolutePath))) {
 
-			index = content.indexOf("java.util.concurrent.CompletableFuture");
-
-			if (index != -1) {
-				addMessage(
-					fileName,
-					"Use DefaultNoticeableFuture instead of java.util." +
-						"concurrent.CompletableFuture, see LPD-98379",
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "java.util.concurrent.CompletableFuture",
+				"Use DefaultNoticeableFuture instead of java.util.concurrent." +
+					"CompletableFuture, see LPD-98379");
 		}
 
 		// java.util.stream.Stream
@@ -207,65 +162,40 @@ public class IllegalImportsCheck extends BaseFileCheck {
 				getAttributeValues(
 					_ALLOWED_STREAM_FILE_NAMES_KEY, absolutePath))) {
 
-			index = content.indexOf("java.util.stream.Stream");
-
-			if (index != -1) {
-				addMessage(
-					fileName, "Do not use java.util.stream, see LPS-170503",
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "java.util.stream.Stream",
+				"Do not use java.util.stream, see LPS-170503");
 		}
 
 		// jodd.util.StringPool
 
-		index = content.indexOf("jodd.util.StringPool");
-
-		if (index != -1) {
-			addMessage(
-				fileName, "Illegal import: jodd.util.StringPool",
-				getLineNumber(content, index));
-		}
+		_checkImport(
+			fileName, content, "jodd.util.StringPool",
+			"Illegal import: jodd.util.StringPool");
 
 		// org.apache.commons.beanutils.PropertyUtils
 
 		if (!fileName.endsWith("TypeConvertorUtil.java")) {
-			index = content.indexOf(
-				"org.apache.commons.beanutils.PropertyUtils");
-
-			if (index != -1) {
-				addMessage(
-					fileName,
-					"Do not use org.apache.commons.beanutils.PropertyUtils, " +
-						"see LPS-62786",
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "org.apache.commons.beanutils.PropertyUtils",
+				"Do not use org.apache.commons.beanutils.PropertyUtils, see " +
+					"LPS-62786");
 		}
 
 		// org.slf4j.Logger
 
 		if (!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath)) {
-			index = content.indexOf("org.slf4j.Logger");
-
-			if (index != -1) {
-				addMessage(
-					fileName,
-					"Use com.liferay.portal.kernel.log.Log instead of org." +
-						"slf4j.Logger",
-					getLineNumber(content, index));
-			}
+			_checkImport(
+				fileName, content, "org.slf4j.Logger",
+				"Use com.liferay.portal.kernel.log.Log instead of org.slf4j." +
+					"Logger");
 		}
 
 		// org.testng.Assert
 
-		index = content.indexOf("org.testng.Assert");
-
-		if (index != -1) {
-			addMessage(
-				fileName,
-				"Use org.junit.Assert instead of org.testng.Assert, see " +
-					"LPS-55690",
-				getLineNumber(content, index));
-		}
+		_checkImport(
+			fileName, content, "org.testng.Assert",
+			"Use org.junit.Assert instead of org.testng.Assert, see LPS-55690");
 
 		SourceProcessor sourceProcessor = getSourceProcessor();
 
@@ -312,6 +242,18 @@ public class IllegalImportsCheck extends BaseFileCheck {
 		}
 
 		return content;
+	}
+
+	private void _checkImport(
+		String fileName, String content, String s, String message) {
+
+		int index = content.indexOf(s);
+
+		if ((index == -1) || ToolsUtil.isInsideQuotes(content, index)) {
+			return;
+		}
+
+		addMessage(fileName, message, getLineNumber(content, index));
 	}
 
 	private boolean _isAllowedFileName(
