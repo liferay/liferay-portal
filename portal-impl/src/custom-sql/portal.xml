@@ -1266,11 +1266,14 @@
 	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.UserFinder.joinByOrganizationUsers">
 		<![CDATA[
-			LEFT JOIN
-				Users_Orgs Users_Orgs_OrganizationUsers ON
-					User_.userId = Users_Orgs_OrganizationUsers.userId
 			WHERE
-				Users_Orgs_OrganizationUsers.organizationId IS NOT NULL
+				User_.userId IN
+					(
+						SELECT
+							Users_Orgs.userId
+						FROM
+							Users_Orgs
+					)
 		]]>
 	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.UserFinder.joinByUserGroupRole">
