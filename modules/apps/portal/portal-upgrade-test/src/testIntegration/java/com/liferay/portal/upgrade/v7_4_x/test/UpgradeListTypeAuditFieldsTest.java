@@ -6,11 +6,15 @@
 package com.liferay.portal.upgrade.v7_4_x.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.v7_4_x.UpgradeListTypeAuditFields;
@@ -39,9 +43,11 @@ public class UpgradeListTypeAuditFieldsTest {
 			CompanyThreadLocal.getCompanyId(), _LIST_TYPE_NAME,
 			_LIST_TYPE_TYPE);
 
-		listType.setUuid(null);
+		DB db = DBManagerUtil.getDB();
 
-		_listTypeLocalService.updateListType(listType);
+		db.runSQL(
+			"update ListType set uuid_ = null where listTypeId = " +
+				listType.getListTypeId());
 	}
 
 	@Test
@@ -50,11 +56,13 @@ public class UpgradeListTypeAuditFieldsTest {
 
 		upgradeProcess.upgrade();
 
+		FinderCacheUtil.clearCache();
+
 		ListType listType = _listTypeLocalService.getListType(
 			CompanyThreadLocal.getCompanyId(), _LIST_TYPE_NAME,
 			_LIST_TYPE_TYPE);
 
-		Assert.assertNotNull(listType.getUuid());
+		Assert.assertTrue(Validator.isNotNull(listType.getUuid()));
 	}
 
 	private static final String _LIST_TYPE_NAME = "other";
