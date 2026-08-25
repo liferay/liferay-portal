@@ -348,6 +348,8 @@ public class OpenSearchConnection {
 							_proxyConfig.getPort()));
 				}
 
+				httpClientBuilder.disableContentCompression();
+
 				return httpClientBuilder.setConnectionManager(
 					poolingAsyncClientConnectionManagerBuilder.build());
 			}
