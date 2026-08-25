@@ -84,7 +84,7 @@ public class AddDBPartitionCompanyMVCActionCommand
 		catch (Exception exception) {
 			String errorMessage = _getErrorMessage(exception);
 
-			if (errorMessage.equals(_ERROR_UNEXPECTED)) {
+			if (errorMessage.equals("an-unexpected-error-occurred")) {
 				_log.error("Unable to import portal instance", exception);
 			}
 			else if (_log.isDebugEnabled()) {
@@ -134,7 +134,7 @@ public class AddDBPartitionCompanyMVCActionCommand
 				return "please-enter-a-valid-schema-name";
 			}
 
-			return _ERROR_UNEXPECTED;
+			return "an-unexpected-error-occurred";
 		}
 
 		if (exception instanceof UnsupportedOperationException) {
@@ -150,7 +150,7 @@ public class AddDBPartitionCompanyMVCActionCommand
 				return "importing-an-instance-is-already-in-progress";
 			}
 
-			return _ERROR_UNEXPECTED;
+			return "an-unexpected-error-occurred";
 		}
 
 		Throwable throwable = exception.getCause();
@@ -173,11 +173,8 @@ public class AddDBPartitionCompanyMVCActionCommand
 			return "please-enter-a-valid-web-id";
 		}
 
-		return _ERROR_UNEXPECTED;
+		return "an-unexpected-error-occurred";
 	}
-
-	private static final String _ERROR_UNEXPECTED =
-		"an-unexpected-error-occurred";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AddDBPartitionCompanyMVCActionCommand.class);
