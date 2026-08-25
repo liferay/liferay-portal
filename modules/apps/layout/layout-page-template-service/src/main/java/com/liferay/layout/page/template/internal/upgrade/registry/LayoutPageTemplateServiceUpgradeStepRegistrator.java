@@ -270,7 +270,20 @@ public class LayoutPageTemplateServiceUpgradeStepRegistrator
 			LayoutPageTemplateStructureRelElementVariationTable.create());
 
 		registry.register(
+			"6.0.1", "6.1.0",
+			LayoutPageTemplateStructureRelElementVariationAudienceEntryRelTable.
+				create(),
+			LayoutPageTemplateStructureRelElementVariationTable.create());
+
+		registry.register(
 			"6.1.0", "6.2.0",
+			new com.liferay.layout.page.template.internal.upgrade.v6_2_0.
+				LayoutPageTemplateStructureRelUpgradeProcess(
+					_layoutLocalService, _segmentsExperienceLocalService,
+					_userLocalService));
+
+		registry.register(
+			"6.1.1", "6.2.0",
 			new com.liferay.layout.page.template.internal.upgrade.v6_2_0.
 				LayoutPageTemplateStructureRelUpgradeProcess(
 					_layoutLocalService, _segmentsExperienceLocalService,
