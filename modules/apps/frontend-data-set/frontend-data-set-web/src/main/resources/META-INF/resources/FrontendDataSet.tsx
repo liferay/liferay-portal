@@ -60,6 +60,7 @@ import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
 import {getOdataFiltersStrings} from './utils/filters/getOdataFiltersStrings';
+import {IConnectedFDSState} from './utils/filters/types';
 import {getOrCreateFDSAtom} from './utils/getOrCreateFDSAtom';
 import getRandomId from './utils/getRandomId';
 
@@ -148,7 +149,6 @@ const FrontendDataSetContent = ({
 	selectionType,
 	showBulkActionsManagementBar = true,
 	showBulkActionsManagementBarActions = true,
-	showFilters = true,
 	showManagementBar = true,
 	showNavBarWhenSelected = false,
 	showPagination = true,
@@ -382,6 +382,16 @@ const FrontendDataSetContent = ({
 		useState(initialAdditionalAPIURLParameters);
 	const [globalFDSState, setGlobalFDSState] =
 		useLiferayState<IFDSState>(memoizedAtom);
+
+	// A consumer that owns the filtering provides the filter UI itself: a
+	// dropdown and chips for filters that no longer reach the request would
+	// not tell the truth. The filters the data set declares stay in its
+	// state, so the consumer can read them and decide which ones to obey,
+	// and they come back the moment the connection releases the filtering.
+
+	const filteringDelegated = Boolean(
+		(globalFDSState as IConnectedFDSState).connectionFilters
+	);
 
 	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
 		useState(false);
@@ -720,21 +730,21 @@ const FrontendDataSetContent = ({
 	const onClearFilters = useCallback(() => {
 		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-		// Hidden filters must survive a clear: the user cannot see them, so
+		// Delegated filters must survive a clear: the user cannot see them, so
 		// removing them would silently change the results.
 
-		const filters = showFilters
-			? unfrozenGlobalFDSState.filters.map((filter) =>
+		const filters = filteringDelegated
+			? unfrozenGlobalFDSState.filters
+			: unfrozenGlobalFDSState.filters.map((filter) =>
 					deactivateFilter(filter)
-				)
-			: unfrozenGlobalFDSState.filters;
+				);
 
 		setGlobalFDSState({
 			...unfrozenGlobalFDSState,
 			filters,
 			search: {query: ''},
 		});
-	}, [globalFDSState, setGlobalFDSState, showFilters]);
+	}, [filteringDelegated, globalFDSState, setGlobalFDSState]);
 
 	const skipSnapshotsUpdatedChangeRef = useRef(true);
 
@@ -1613,7 +1623,7 @@ const FrontendDataSetContent = ({
 				selectedItemsKey={selectedItemsKey}
 				selectedItemsValue={selectedItemsValue}
 				selectionType={selectionType}
-				showFilters={showFilters}
+				showFilters={!filteringDelegated}
 				showNavBarWhenSelected={showNavBarWhenSelected}
 				showSearch={showSearch}
 				showSelectAll={showSelectAll}
@@ -2113,11 +2123,11 @@ const FrontendDataSetContent = ({
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
 				onClearResultsBar: () => {
-					const filters = showFilters
-						? unfrozenGlobalFDSState.filters.map((filter) =>
+					const filters = filteringDelegated
+						? unfrozenGlobalFDSState.filters
+						: unfrozenGlobalFDSState.filters.map((filter) =>
 								deactivateFilter(filter)
-							)
-						: unfrozenGlobalFDSState.filters;
+							);
 
 					setGlobalFDSState({
 						...unfrozenGlobalFDSState,

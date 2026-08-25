@@ -4,32 +4,8 @@
  */
 
 import {FILTER_IMPLEMENTATIONS} from '../../management_bar/controls/filters/Filter';
-import {IBaseFilterState, IFDSState} from '../types';
-
-import type {FDSConnectionFilter} from '@liferay/js-api/data-set';
-
-/**
- * The data set state as a connection leaves it, which only this module reads.
- *
- * `connectionFilters` stays out of `IFDSState` so that no data set code can
- * write it: keeping it out of the type the data set writes makes any attempt
- * to change it a compile error rather than a convention. Its element type is
- * the published one, so what the data set reads here is exactly what a
- * consumer wrote through the connection.
- *
- * It lives here, rather than next to `IFDSState`, because the modules that
- * consume `@liferay/frontend-data-set-web` types do not depend on
- * `@liferay/js-api`, and this file is internal to the data set.
- */
-export interface IConnectedFDSState extends IFDSState {
-
-	/**
-	 * Absent while no connection drives the filtering, which is the case
-	 * for every data set that has no external consumer. Once present, it
-	 * supersedes `filters` as the only contribution to the request.
-	 */
-	connectionFilters?: ReadonlyArray<FDSConnectionFilter>;
-}
+import {IBaseFilterState} from '../types';
+import {IConnectedFDSState} from './types';
 
 /**
  * The OData expressions the data set sends along with the request, one per

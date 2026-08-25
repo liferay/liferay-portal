@@ -393,7 +393,6 @@ export interface IFrontendDataSetProps {
 	selectionType?: 'single' | 'multiple';
 	showBulkActionsManagementBar?: boolean;
 	showBulkActionsManagementBarActions?: boolean;
-	showFilters?: boolean;
 	showManagementBar?: boolean;
 	showNavBarWhenSelected?: boolean;
 	showPagination?: boolean;
