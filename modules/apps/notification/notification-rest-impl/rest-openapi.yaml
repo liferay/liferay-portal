@@ -66,6 +66,9 @@ components:
                     additionalProperties:
                         type: string
                     type: object
+                creator:
+                    $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    readOnly: true
                 dateCreated:
                     format: date
                     readOnly: true
@@ -96,6 +99,10 @@ components:
                 objectDefinitionId:
                     format: int64
                     type: integer
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 recipientType:
                     type: string
                 recipients:
@@ -305,6 +312,20 @@ paths:
                                 $ref: "#/components/schemas/NotificationTemplate"
             tags: ["NotificationTemplate"]
     "/notification-templates/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteNotificationTemplateByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["NotificationTemplate"]
         get:
             operationId: getNotificationTemplateByExternalReferenceCode
             parameters:
