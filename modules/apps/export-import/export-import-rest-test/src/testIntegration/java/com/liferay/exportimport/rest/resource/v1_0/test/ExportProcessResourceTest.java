@@ -189,6 +189,30 @@ public class ExportProcessResourceTest
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
+	@Test
+	@TestInfo("LPD-102315")
+	public void testGetExportProcessErrorMessageWhenStatusMessageIsNotJSON()
+		throws Exception {
+
+		ExportProcess exportProcess = _addExportProcess(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			BackgroundTaskExecutorNames.LAYOUT_EXPORT_BACKGROUND_TASK_EXECUTOR);
+
+		_backgroundTaskLocalService.amendBackgroundTask(
+			exportProcess.getId(), null, BackgroundTaskConstants.STATUS_FAILED,
+			_STACK_TRACE_STATUS_MESSAGE, null);
+
+		ExportProcess failedExportProcess =
+			exportProcessResource.getExportProcess(exportProcess.getId());
+
+		String errorMessage = failedExportProcess.getErrorMessage();
+
+		Assert.assertNotEquals(_STACK_TRACE_STATUS_MESSAGE, errorMessage);
+		Assert.assertFalse(errorMessage, errorMessage.contains("\tat "));
+		Assert.assertFalse(errorMessage, errorMessage.contains(".java:"));
+		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
+	}
+
 	@Override
 	@Test
 	public void testGetExportProcessesPage() throws Exception {
@@ -1061,6 +1085,11 @@ public class ExportProcessResourceTest
 
 	private static final String _LAYOUT_SET_LAYOUTS =
 		"com_liferay_layout_admin_web_portlet_LayoutSetLayoutsPortlet";
+
+	private static final String _STACK_TRACE_STATUS_MESSAGE =
+		"java.lang.NullPointerException\n\tat com.liferay.exportimport." +
+			"internal.controller.LayoutExportController.doExport(" +
+				"LayoutExportController.java:412)";
 
 	@Inject
 	private BackgroundTaskLocalService _backgroundTaskLocalService;
