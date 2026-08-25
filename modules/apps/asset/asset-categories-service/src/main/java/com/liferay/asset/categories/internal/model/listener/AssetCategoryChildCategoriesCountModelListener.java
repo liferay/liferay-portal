@@ -8,12 +8,12 @@ package com.liferay.asset.categories.internal.model.listener;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
-import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.SearchException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -58,10 +58,8 @@ public class AssetCategoryChildCategoriesCountModelListener
 	private void _reindexParentAssetCategory(long parentCategoryId)
 		throws ModelListenerException {
 
-		if (ExportImportThreadLocal.isImportInProcess() ||
-			ExportImportThreadLocal.isStagingInProcess() ||
-			(parentCategoryId ==
-				AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID)) {
+		if (parentCategoryId ==
+				AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID) {
 
 			return;
 		}
@@ -79,8 +77,8 @@ public class AssetCategoryChildCategoriesCountModelListener
 
 			indexer.reindex(parentAssetCategory);
 		}
-		catch (Exception exception) {
-			throw new ModelListenerException(exception);
+		catch (SearchException searchException) {
+			throw new ModelListenerException(searchException);
 		}
 	}
 
