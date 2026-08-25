@@ -19,8 +19,14 @@
 			long backgroundTaskId = GetterUtil.getLong(renderRequest.getParameter("backgroundTaskId"));
 
 			BackgroundTask backgroundTask = BackgroundTaskLocalServiceUtil.getBackgroundTask(backgroundTaskId);
+
+			String errorStackTrace = backgroundTask.getErrorStackTrace();
+
+			if (Validator.isNull(errorStackTrace)) {
+				errorStackTrace = backgroundTask.getStatusMessage();
+			}
 			%>
 
-			<pre class="bg-light border p-2"><%= backgroundTask.getStatusMessage() %></pre>
+			<pre class="bg-light border p-2"><%= HtmlUtil.escape(GetterUtil.getString(errorStackTrace)) %></pre>
 		</div>
 </div>

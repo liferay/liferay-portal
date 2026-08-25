@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -104,10 +105,13 @@ public class GetPublicationStatusMVCResourceCommand
 			return;
 		}
 
+		String errorStackTrace = GetterUtil.getString(
+			backgroundTask.getErrorStackTrace(),
+			GetterUtil.getString(backgroundTask.getStatusMessage()));
+
 		if ((backgroundTask.getStatus() ==
 				BackgroundTaskConstants.STATUS_FAILED) &&
-			StringUtil.matchesIgnoreCase(
-				backgroundTask.getStatusMessage(), "duplicate entry")) {
+			StringUtil.matchesIgnoreCase(errorStackTrace, "duplicate entry")) {
 
 			Map<String, Serializable> taskContextMap =
 				backgroundTask.getTaskContextMap();
