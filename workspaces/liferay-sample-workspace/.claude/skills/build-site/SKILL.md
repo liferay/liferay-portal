@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/build-site/SKILL.md
+../../../.agents/skills/build-site/SKILL.md
