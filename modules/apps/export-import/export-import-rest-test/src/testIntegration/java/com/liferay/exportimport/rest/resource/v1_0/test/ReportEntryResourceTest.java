@@ -62,14 +62,6 @@ public class ReportEntryResourceTest extends BaseReportEntryResourceTestCase {
 					ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
 					Collections.emptyMap());
 
-		_publishExportImportConfiguration =
-			_exportImportConfigurationLocalService.
-				addDraftExportImportConfiguration(
-					testGroup.getCreatorUserId(), RandomTestUtil.randomString(),
-					ExportImportConfigurationConstants.
-						TYPE_PUBLISH_LAYOUT_LOCAL,
-					Collections.emptyMap());
-
 		_importBackgroundTask = _backgroundTaskLocalService.addBackgroundTask(
 			TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
 			RandomTestUtil.randomString(),
@@ -80,6 +72,14 @@ public class ReportEntryResourceTest extends BaseReportEntryResourceTestCase {
 					getExportImportConfigurationId()
 			).build(),
 			null);
+
+		_publishExportImportConfiguration =
+			_exportImportConfigurationLocalService.
+				addDraftExportImportConfiguration(
+					testGroup.getCreatorUserId(), RandomTestUtil.randomString(),
+					ExportImportConfigurationConstants.
+						TYPE_PUBLISH_LAYOUT_LOCAL,
+					Collections.emptyMap());
 
 		_publishBackgroundTask = _backgroundTaskLocalService.addBackgroundTask(
 			TestPropsValues.getUserId(), TestPropsValues.getGroupId(),

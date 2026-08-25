@@ -18,8 +18,6 @@ BackgroundTaskDisplay backgroundTaskDisplay = BackgroundTaskDisplayFactoryUtil.g
 if (backgroundTaskDisplay != null) {
 	renderResponse.setTitle(backgroundTaskDisplay.getDisplayName(request));
 }
-
-ReportEntriesDisplayContext reportEntriesDisplayContext = new ReportEntriesDisplayContext(request, renderResponse);
 %>
 
 <clay:navigation-bar
@@ -36,6 +34,10 @@ ReportEntriesDisplayContext reportEntriesDisplayContext = new ReportEntriesDispl
 		}
 	%>'
 />
+
+<%
+ReportEntriesDisplayContext reportEntriesDisplayContext = new ReportEntriesDisplayContext(request, renderResponse);
+%>
 
 <aui:form method="post" name="fm">
 	<frontend-data-set:headless-display
