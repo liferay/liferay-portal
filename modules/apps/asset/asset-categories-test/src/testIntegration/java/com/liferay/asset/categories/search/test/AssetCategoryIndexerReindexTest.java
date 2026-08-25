@@ -7,6 +7,7 @@ package com.liferay.asset.categories.search.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchEngineHelper;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
@@ -113,13 +115,14 @@ public class AssetCategoryIndexerReindexTest {
 
 	@Test
 	public void testReindexChildCategoriesCount() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
 		AssetCategory parentAssetCategory =
 			_assetCategoryFixture.createAssetCategory();
 
-		assertFieldValues(
-			"childCategoriesCount",
-			Collections.singletonMap("childCategoriesCount", "0"),
-			LocaleUtil.US, parentAssetCategory.getName());
+		assertChildCategoriesCount(parentAssetCategory, "0");
 
 		AssetCategory childAssetCategory = assetCategoryService.addCategory(
 			parentAssetCategory.getGroupId(),
@@ -127,20 +130,51 @@ public class AssetCategoryIndexerReindexTest {
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),
 			Collections.emptyMap(), parentAssetCategory.getVocabularyId(),
-			new String[0],
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+			new String[0], serviceContext);
 
 		_assetCategories.add(childAssetCategory);
 
-		assertFieldValues(
-			"childCategoriesCount",
-			Collections.singletonMap("childCategoriesCount", "1"),
-			LocaleUtil.US, parentAssetCategory.getName());
+		assertChildCategoriesCount(parentAssetCategory, "1");
+
+		AssetCategory newParentAssetCategory = assetCategoryService.addCategory(
+			parentAssetCategory.getGroupId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			Collections.emptyMap(), parentAssetCategory.getVocabularyId(),
+			new String[0], serviceContext);
+
+		_assetCategories.add(newParentAssetCategory);
+
+		assertChildCategoriesCount(newParentAssetCategory, "0");
+
+		assetCategoryService.moveCategory(
+			childAssetCategory.getCategoryId(),
+			newParentAssetCategory.getCategoryId(),
+			childAssetCategory.getVocabularyId(), serviceContext);
+
+		assertChildCategoriesCount(parentAssetCategory, "0");
+		assertChildCategoriesCount(newParentAssetCategory, "1");
+
+		assetCategoryService.deleteCategory(childAssetCategory.getCategoryId());
+
+		_assetCategories.remove(childAssetCategory);
+
+		assertChildCategoriesCount(newParentAssetCategory, "0");
 	}
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	protected void assertChildCategoriesCount(
+		AssetCategory assetCategory, String childCategoriesCount) {
+
+		assertFieldValues(
+			"childCategoriesCount",
+			Collections.singletonMap(
+				"childCategoriesCount", childCategoriesCount),
+			LocaleUtil.US, assetCategory.getName());
+	}
 
 	protected void assertFieldValues(
 		String fieldName, Map<String, String> map, Locale locale,
