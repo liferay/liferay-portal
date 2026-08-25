@@ -21,9 +21,14 @@ function az_login {
 
 	export ARM_TENANT_ID="${tenant_id}"
 
-	echo "Attempting to login to your Azure account."
+	if az account get-access-token --output none --subscription "${subscription_id}" &> /dev/null
+	then
+		echo "Reusing the active Azure login for the subscription ${subscription_id}."
+	else
+		echo "Attempting to login to your Azure account."
 
-	AZURE_CORE_LOGIN_EXPERIENCE_V2=off az login --output none --tenant "${tenant_id}"
+		AZURE_CORE_LOGIN_EXPERIENCE_V2=off az login --output none --tenant "${tenant_id}"
+	fi
 
 	az account set --subscription "${subscription_id}"
 }
