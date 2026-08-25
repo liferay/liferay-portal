@@ -88,6 +88,7 @@ dependencies {
 	compileInclude group: "software.amazon.awssdk", name: "sdk-core", version: "2.39.6"
 	compileInclude group: "software.amazon.awssdk", name: "sts", version: "2.39.6"
 	compileInclude group: "software.amazon.awssdk", name: "third-party-jackson-core", version: "2.39.6"
+	compileInclude group: "software.amazon.awssdk", name: "url-connection-client", version: "2.39.6"
 	compileInclude group: "software.amazon.awssdk", name: "utils", version: "2.39.6"
 	compileInclude group: "software.amazon.eventstream", name: "eventstream", version: "1.0.1"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
