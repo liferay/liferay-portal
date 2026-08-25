@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -46,9 +45,7 @@ import com.liferay.sharing.service.SharingEntryLocalService;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -94,6 +91,74 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testDeleteDataSetSnapshotCascadesToStartupSnapshot()
+		throws Exception {
+
+		String fdsName = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser();
+
+		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
+			fdsName, user.getUserId());
+
+		JSONObject jsonObject = _serveResource(
+			user, objectEntry.getExternalReferenceCode(), fdsName);
+
+		_assertRelatedStartupSnapshot(user, fdsName, objectEntry, jsonObject);
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				jsonObject.getString("erc"), 0,
+				_dataSetStartupSnapshotObjectDefinition.
+					getObjectDefinitionId()));
+	}
+
+	@Test
+	public void testServeResourceCreatesSnapshotRelationship()
+		throws Exception {
+
+		String fdsName = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser();
+
+		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
+			fdsName, user.getUserId());
+
+		_assertRelatedStartupSnapshot(
+			user, fdsName, objectEntry,
+			_serveResource(
+				user, objectEntry.getExternalReferenceCode(), fdsName));
+	}
+
+	@Test
+	public void testServeResourceReplacesExistingSnapshotRelationship()
+		throws Exception {
+
+		String fdsName = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser();
+
+		ObjectEntry objectEntry1 = _addDataSetSnapshotObjectEntry(
+			fdsName, user.getUserId());
+
+		_assertRelatedStartupSnapshot(
+			user, fdsName, objectEntry1,
+			_serveResource(
+				user, objectEntry1.getExternalReferenceCode(), fdsName));
+
+		ObjectEntry objectEntry2 = _addDataSetSnapshotObjectEntry(
+			fdsName, user.getUserId());
+
+		_assertRelatedStartupSnapshot(
+			user, fdsName, objectEntry2,
+			_serveResource(
+				user, objectEntry2.getExternalReferenceCode(), fdsName));
+	}
+
+	@Test
 	public void testServeResourceSavesStartupSnapshotForOwner()
 		throws Exception {
 
@@ -101,18 +166,13 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 
 		String fdsName = RandomTestUtil.randomString();
 
-		ObjectEntry dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
+		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
 			fdsName, user.getUserId());
 
-		JSONObject jsonObject = _serveResource(
-			user, dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-			fdsName);
-
-		Assert.assertEquals(
-			dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-			jsonObject.getString("erc"));
-
-		_assertStartupSnapshot(user, fdsName, dataSetSnapshotObjectEntry);
+		_assertRelatedStartupSnapshot(
+			user, fdsName, objectEntry,
+			_serveResource(
+				user, objectEntry.getExternalReferenceCode(), fdsName));
 	}
 
 	@Test
@@ -121,24 +181,17 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 
 		User user = UserTestUtil.addUser();
 
-		_users.add(user);
-
 		String fdsName = RandomTestUtil.randomString();
 
-		ObjectEntry dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
+		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
 			fdsName, TestPropsValues.getUserId());
 
-		_shareDataSetSnapshot(dataSetSnapshotObjectEntry, user.getUserId());
+		_shareDataSetSnapshot(objectEntry, user.getUserId());
 
-		JSONObject jsonObject = _serveResource(
-			user, dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-			fdsName);
-
-		Assert.assertEquals(
-			dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-			jsonObject.getString("erc"));
-
-		_assertStartupSnapshot(user, fdsName, dataSetSnapshotObjectEntry);
+		_assertRelatedStartupSnapshot(
+			user, fdsName, objectEntry,
+			_serveResource(
+				user, objectEntry.getExternalReferenceCode(), fdsName));
 	}
 
 	@Test
@@ -147,17 +200,14 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 
 		User user = UserTestUtil.addUser();
 
-		_users.add(user);
-
 		String fdsName = RandomTestUtil.randomString();
 
-		ObjectEntry dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
+		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
 			fdsName, TestPropsValues.getUserId());
 
 		try {
 			_serveResource(
-				user, dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-				fdsName);
+				user, objectEntry.getExternalReferenceCode(), fdsName);
 
 			Assert.fail();
 		}
@@ -167,9 +217,7 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				user.getExternalReferenceCode() + StringPool.UNDERLINE +
-					fdsName,
-				0,
+				_getStartupSnapshotExternalReferenceCode(fdsName, user), 0,
 				_dataSetStartupSnapshotObjectDefinition.
 					getObjectDefinitionId()));
 	}
@@ -190,27 +238,32 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 				TestPropsValues.getGroupId(), userId));
 	}
 
-	private void _assertStartupSnapshot(
-			User user, String fdsName, ObjectEntry dataSetSnapshotObjectEntry)
-		throws Exception {
+	private void _assertRelatedStartupSnapshot(
+		User user, String fdsName, ObjectEntry dataSetSnapshotObjectEntry,
+		JSONObject jsonObject) {
 
-		ObjectEntry dataSetStartupSnapshotObjectEntry =
-			_objectEntryLocalService.fetchObjectEntry(
-				user.getExternalReferenceCode() + StringPool.UNDERLINE +
-					fdsName,
-				0,
-				_dataSetStartupSnapshotObjectDefinition.
-					getObjectDefinitionId());
+		Assert.assertEquals(
+			dataSetSnapshotObjectEntry.getExternalReferenceCode(),
+			jsonObject.getString("erc"));
 
-		Assert.assertNotNull(dataSetStartupSnapshotObjectEntry);
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			_getStartupSnapshotExternalReferenceCode(fdsName, user), 0,
+			_dataSetStartupSnapshotObjectDefinition.getObjectDefinitionId());
 
-		Map<String, Serializable> values =
-			dataSetStartupSnapshotObjectEntry.getValues();
+		Assert.assertNotNull(objectEntry);
+
+		Map<String, Serializable> values = objectEntry.getValues();
 
 		Assert.assertEquals(
 			dataSetSnapshotObjectEntry.getObjectEntryId(),
 			GetterUtil.getLong(
 				values.get(_DATA_SET_SNAPSHOT_ID_OBJECT_FIELD_NAME)));
+	}
+
+	private String _getStartupSnapshotExternalReferenceCode(
+		String fdsName, User user) {
+
+		return user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName;
 	}
 
 	private boolean _hasCause(Throwable throwable, Class<?> clazz) {
@@ -314,8 +367,5 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 
 	@Inject
 	private SharingEntryLocalService _sharingEntryLocalService;
-
-	@DeleteAfterTestRun
-	private final List<User> _users = new ArrayList<>();
 
 }
