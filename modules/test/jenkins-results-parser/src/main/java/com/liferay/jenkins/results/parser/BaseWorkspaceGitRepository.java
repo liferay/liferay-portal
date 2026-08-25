@@ -174,9 +174,7 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public GitWorkingDirectory getGitWorkingDirectory() {
-		if (_isGitArchiveEnabled() && isSnapshot() &&
-			!_isDotGitDirArchiveRequired()) {
-
+		if (_isGitArchiveOnly()) {
 			throw new RuntimeException(
 				"Using Git archive, unable to get Git working directory");
 		}
@@ -462,7 +460,7 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public void synchronizeToGitHubDev() {
-		if (isSnapshot()) {
+		if (_isGitArchiveOnly()) {
 			throw new RuntimeException(
 				"Using Git archive, unable to synchronize to GitHub dev");
 		}
@@ -1438,6 +1436,16 @@ public abstract class BaseWorkspaceGitRepository
 		catch (IOException ioException) {
 			return true;
 		}
+	}
+
+	private boolean _isGitArchiveOnly() {
+		if (_isGitArchiveEnabled() && isSnapshot() &&
+			!_isDotGitDirArchiveRequired()) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isPullRequest() {
