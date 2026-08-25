@@ -45,7 +45,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -234,6 +233,16 @@ public class TaxonomyCategoryResourceTest
 
 	@Override
 	@Test
+	public void testGetAssetLibraryTaxonomyCategoriesPageWithSortInteger()
+		throws Exception {
+
+		_scopeType = Scope.Type.ASSET_LIBRARY;
+
+		super.testGetAssetLibraryTaxonomyCategoriesPageWithSortInteger();
+	}
+
+	@Override
+	@Test
 	public void testGetAssetLibraryTaxonomyCategoriesPageWithSortString()
 		throws Exception {
 
@@ -329,12 +338,6 @@ public class TaxonomyCategoryResourceTest
 
 		_addAssetCategory(
 			_assetVocabulary, new Date(), assetCategory2, serviceContext);
-
-		IndexerRegistryUtil.getIndexer(
-			AssetCategory.class
-		).reindexCompany(
-			testGroup.getCompanyId()
-		);
 
 		for (EntityField entityField : entityFields) {
 			_assertTaxonomyCategoriesPageOrder(

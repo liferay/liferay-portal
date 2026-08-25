@@ -211,6 +211,16 @@ public class AssetCategoryIndexerIndexedFieldsTest {
 			"assetCategoryTitle_ja_JP",
 			StringUtil.lowerCase(assetCategory.getName())
 		).put(
+			"childCategoriesCount",
+			String.valueOf(
+				assetCategoryService.getChildCategoriesCount(
+					assetCategory.getCategoryId()))
+		).put(
+			"childCategoriesCount_sortable",
+			String.valueOf(
+				assetCategoryService.getChildCategoriesCount(
+					assetCategory.getCategoryId()))
+		).put(
 			"classNameIds",
 			StringUtil.merge(_getClassNameIds(assetCategory.getVocabularyId()))
 		).put(

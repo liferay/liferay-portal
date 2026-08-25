@@ -133,8 +133,6 @@ public class AssetCategoryIndexerReindexTest {
 
 		_assetCategories.add(childAssetCategory);
 
-		reindexAllIndexerModels();
-
 		assertFieldValues(
 			"childCategoriesCount",
 			Collections.singletonMap("childCategoriesCount", "1"),
