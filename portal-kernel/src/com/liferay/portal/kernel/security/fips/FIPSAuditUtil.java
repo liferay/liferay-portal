@@ -10,7 +10,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.internal.log4j.FIPSLog4jUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -34,7 +34,7 @@ import java.time.temporal.TemporalAccessor;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -60,7 +60,7 @@ public class FIPSAuditUtil {
 		FIPSAuditEvent.Severity severity = fipsAuditEvent.getSeverity();
 
 		FIPSLog4jUtil.write(
-			LinkedHashMapBuilder.<String, Object>put(
+			HashMapBuilder.<String, Object>put(
 				"cmvp-certificate-id",
 				GetterUtil.getString(
 					PropsValues.FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID)
@@ -182,7 +182,7 @@ public class FIPSAuditUtil {
 	}
 
 	private static Map<String, Object> _normalizeTimestamps(Map<?, ?> map) {
-		Map<String, Object> normalizedMap = new LinkedHashMap<>();
+		Map<String, Object> normalizedMap = new HashMap<>();
 
 		for (Map.Entry<?, ?> entry : map.entrySet()) {
 			normalizedMap.put(

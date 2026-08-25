@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.ByteArrayOutputStream;
@@ -59,7 +59,7 @@ public class FIPSAuditNDJSONLayoutTest {
 	@Test
 	public void testEncode() {
 		Map<String, Object> fipsAuditLogEntry =
-			LinkedHashMapBuilder.<String, Object>put(
+			HashMapBuilder.<String, Object>put(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()
 			).put(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()
@@ -125,7 +125,7 @@ public class FIPSAuditNDJSONLayoutTest {
 	@Test
 	public void testToSerializableWritesEveryEntry() throws Exception {
 		Map<String, Object> fipsAuditLogEntry =
-			LinkedHashMapBuilder.<String, Object>put(
+			HashMapBuilder.<String, Object>put(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()
 			).put(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()
@@ -145,16 +145,6 @@ public class FIPSAuditNDJSONLayoutTest {
 	}
 
 	@Test
-	public void testToSerializableWritesNestedMaps() {
-		Assert.assertEquals(
-			"{\"fields\":{\"from-state\":\"SELF_TEST\"}}\n",
-			_toSerializable(
-				Collections.singletonMap(
-					"fields",
-					Collections.singletonMap("from-state", "SELF_TEST"))));
-	}
-
-	@Test
 	public void testToSerializableWritesValueTypes() {
 		_testToSerializable(
 			"array", new String[] {"first", "second"},
@@ -162,6 +152,9 @@ public class FIPSAuditNDJSONLayoutTest {
 		_testToSerializable("boolean", Boolean.TRUE, "true");
 		_testToSerializable("decimal", 1.5D, "1.5");
 		_testToSerializable("iterable", Arrays.asList("one", 2), "[\"one\",2]");
+		_testToSerializable(
+			"map", Collections.singletonMap("first", "second"),
+			"{\"first\":\"second\"}");
 		_testToSerializable("number", 42, "42");
 		_testToSerializable("string", "text", "\"text\"");
 	}
