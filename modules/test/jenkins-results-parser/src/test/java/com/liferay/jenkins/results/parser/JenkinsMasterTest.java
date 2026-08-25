@@ -37,37 +37,13 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		UrlReader urlReader = mockUrlReader();
 
-		setUrlReaderOutput(
-			new JSONObject(
-			).put(
-				"items", new JSONArray()
-			).toString(),
-			"http://test-9-1/queue/api/json", urlReader);
-		setUrlReaderOutput(
-			new JSONObject(
-			).put(
-				"mode", "NORMAL"
-			).toString(),
-			"http://test-9-1/api/json?tree=mode", urlReader);
-		setUrlReaderOutput(
+		_setUpMaster(
+			"test-9-1",
 			read(new File(dependenciesDirs.get(0), "computer-api.json")),
-			"http://test-9-1/computer/api/json", urlReader);
-
-		setUrlReaderOutput(
-			new JSONObject(
-			).put(
-				"items", new JSONArray()
-			).toString(),
-			"http://test-9-2/queue/api/json", urlReader);
-		setUrlReaderOutput(
-			new JSONObject(
-			).put(
-				"mode", "NORMAL"
-			).toString(),
-			"http://test-9-2/api/json?tree=mode", urlReader);
-		setUrlReaderOutput(
-			_getRunningBuildsComputerAPIJSONObject().toString(),
-			"http://test-9-2/computer/api/json", urlReader);
+			urlReader);
+		_setUpMaster(
+			"test-9-2", _getRunningBuildsComputerAPIJSONObject().toString(),
+			urlReader);
 
 		_jenkinsMaster = JenkinsMasterTestUtil.getJenkinsMaster(
 			"test-9-1", "http://test-9-1");
@@ -290,6 +266,28 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 					_BUILD_URL_OFFLINE_NODE, RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString(), false,
 					RandomTestUtil.randomLong())));
+	}
+
+	private void _setUpMaster(
+			String masterName, String computerAPIJSON, UrlReader urlReader)
+		throws Exception {
+
+		String masterURL = "http://" + masterName;
+
+		setUrlReaderOutput(
+			new JSONObject(
+			).put(
+				"items", new JSONArray()
+			).toString(),
+			masterURL + "/queue/api/json", urlReader);
+		setUrlReaderOutput(
+			new JSONObject(
+			).put(
+				"mode", "NORMAL"
+			).toString(),
+			masterURL + "/api/json?tree=mode", urlReader);
+		setUrlReaderOutput(
+			computerAPIJSON, masterURL + "/computer/api/json", urlReader);
 	}
 
 	private static final String _BUILD_URL_FLYWEIGHT =
