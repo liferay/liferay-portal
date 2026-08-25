@@ -52,10 +52,6 @@ public class AssetCategoryModelDocumentContributor
 	public void contribute(Document document, AssetCategory assetCategory) {
 		document.addKeyword(
 			Field.ASSET_CATEGORY_ID, assetCategory.getCategoryId());
-		document.addNumber(
-			"childCategoriesCount",
-			_assetCategoryLocalService.getChildCategoriesCount(
-				assetCategory.getCategoryId()));
 
 		_addSearchAssetCategoryTitles(
 			document, Field.ASSET_CATEGORY_TITLE,
@@ -91,6 +87,10 @@ public class AssetCategoryModelDocumentContributor
 			document, Field.TITLE, siteDefaultLocale,
 			assetCategory.getTitleMap());
 
+		document.addNumber(
+			"childCategoriesCount",
+			_assetCategoryLocalService.getChildCategoriesCount(
+				assetCategory.getCategoryId()));
 		document.addKeyword(
 			"classNameIds", _getClassNameIds(assetCategory.getVocabularyId()));
 		document.addLocalizedKeyword(
