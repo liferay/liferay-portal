@@ -29,6 +29,12 @@ export class EditProjectPage {
 		this.titleInput = page.getByPlaceholder('Untitled Project');
 	}
 
+	getCategoryChip(field: VocabularyField, categoryName: string): Locator {
+		return this.getVocabularyMultiSelect(field)
+			.locator('.lfr-cmp__vocabulary-multi-select-selected')
+			.getByText(categoryName, {exact: true});
+	}
+
 	getCreateTagAction(tagName: string): Locator {
 		return this.page.getByText(`Create New Tag: ${tagName}`);
 	}
@@ -43,21 +49,10 @@ export class EditProjectPage {
 		return this.page.getByRole('option', {exact: true, name: tagName});
 	}
 
-	getCategoryChip(field: VocabularyField, categoryName: string): Locator {
-		return this.getVocabularyMultiSelect(field)
-			.locator('.lfr-cmp__vocabulary-multi-select-selected')
-			.getByText(categoryName, {exact: true});
-	}
-
 	getVocabularyMultiSelect(field: VocabularyField): Locator {
 		return this.page
 			.locator('.lfr-cmp__vocabulary-multi-select')
 			.filter({has: this.page.getByText(field, {exact: true})});
-	}
-
-	async searchTags(query: string) {
-		await this.tagInput.click();
-		await this.tagInput.fill(query);
 	}
 
 	async removeCategory(field: VocabularyField, categoryName: string) {
@@ -65,6 +60,11 @@ export class EditProjectPage {
 			.locator('.label', {hasText: categoryName})
 			.getByRole('button', {name: 'Remove'})
 			.click();
+	}
+
+	async searchTags(query: string) {
+		await this.tagInput.click();
+		await this.tagInput.fill(query);
 	}
 
 	async selectCategory(field: VocabularyField, categoryName: string) {
