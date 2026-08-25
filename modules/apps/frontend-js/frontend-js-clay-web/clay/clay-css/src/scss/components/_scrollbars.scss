@@ -26,9 +26,9 @@
 	[data-color-scheme='dark-high-contrast'],
 	[data-color-scheme='dark-high-contrast'] * {
 		&::-webkit-scrollbar {
-			background: var(--scrollbar-track);
-			height: var(--scrollbar-size);
-			width: var(--scrollbar-size);
+			background: $scrollbar-track;
+			height: $scrollbar-size;
+			width: $scrollbar-size;
 		}
 
 		&::-webkit-scrollbar-button {
@@ -36,22 +36,22 @@
 		}
 
 		&::-webkit-scrollbar-corner {
-			background: var(--scrollbar-track);
+			background: $scrollbar-track;
 		}
 
 		&::-webkit-scrollbar-thumb {
-			background: var(--scrollbar-thumb);
+			background: $scrollbar-thumb;
 			background-clip: padding-box;
-			border: var(--scrollbar-inset) solid transparent;
-			border-radius: var(--scrollbar-radius);
+			border: $scrollbar-inset solid transparent;
+			border-radius: $scrollbar-radius;
 
 			&:active {
-				background: var(--scrollbar-thumb-active);
+				background: $scrollbar-thumb-active;
 				background-clip: padding-box;
 			}
 
 			&:hover {
-				background: var(--scrollbar-thumb-hover);
+				background: $scrollbar-thumb-hover;
 				background-clip: padding-box;
 			}
 		}
@@ -60,7 +60,7 @@
 	@supports not selector(::-webkit-scrollbar) {
 		[data-color-scheme='dark'],
 		[data-color-scheme='dark-high-contrast'] {
-			scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+			scrollbar-color: $scrollbar-thumb $scrollbar-track;
 		}
 	}
 }

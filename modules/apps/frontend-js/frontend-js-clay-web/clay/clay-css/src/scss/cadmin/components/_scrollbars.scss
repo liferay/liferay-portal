@@ -11,9 +11,9 @@
 		&[data-color-scheme='dark-high-contrast'] .cadmin,
 		&[data-color-scheme='dark-high-contrast'] .cadmin * {
 			&::-webkit-scrollbar {
-				background: var(--cadmin-scrollbar-track);
-				height: var(--cadmin-scrollbar-size);
-				width: var(--cadmin-scrollbar-size);
+				background: $cadmin-scrollbar-track;
+				height: $cadmin-scrollbar-size;
+				width: $cadmin-scrollbar-size;
 			}
 
 			&::-webkit-scrollbar-button {
@@ -21,22 +21,22 @@
 			}
 
 			&::-webkit-scrollbar-corner {
-				background: var(--cadmin-scrollbar-track);
+				background: $cadmin-scrollbar-track;
 			}
 
 			&::-webkit-scrollbar-thumb {
-				background: var(--cadmin-scrollbar-thumb);
+				background: $cadmin-scrollbar-thumb;
 				background-clip: padding-box;
-				border: var(--cadmin-scrollbar-inset) solid transparent;
-				border-radius: var(--cadmin-scrollbar-radius);
+				border: $cadmin-scrollbar-inset solid transparent;
+				border-radius: $cadmin-scrollbar-radius;
 
 				&:active {
-					background: var(--cadmin-scrollbar-thumb-active);
+					background: $cadmin-scrollbar-thumb-active;
 					background-clip: padding-box;
 				}
 
 				&:hover {
-					background: var(--cadmin-scrollbar-thumb-hover);
+					background: $cadmin-scrollbar-thumb-hover;
 					background-clip: padding-box;
 				}
 			}
@@ -47,8 +47,7 @@
 		html#{$cadmin-selector} {
 			&[data-color-scheme='dark'] .cadmin,
 			&[data-color-scheme='dark-high-contrast'] .cadmin {
-				scrollbar-color: var(--cadmin-scrollbar-thumb)
-					var(--cadmin-scrollbar-track);
+				scrollbar-color: $cadmin-scrollbar-thumb $cadmin-scrollbar-track;
 			}
 		}
 	}

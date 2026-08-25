@@ -269,6 +269,14 @@ $chart-trend-negative: var(--chart-trend-negative) !default;
 $chart-trend-neutral: var(--chart-trend-neutral) !default;
 $chart-trend-positive: var(--chart-trend-positive) !default;
 
+$scrollbar-inset: var(--scrollbar-inset) !default;
+$scrollbar-radius: var(--scrollbar-radius) !default;
+$scrollbar-size: var(--scrollbar-size) !default;
+$scrollbar-thumb: var(--scrollbar-thumb) !default;
+$scrollbar-thumb-active: var(--scrollbar-thumb-active) !default;
+$scrollbar-thumb-hover: var(--scrollbar-thumb-hover) !default;
+$scrollbar-track: var(--scrollbar-track) !default;
+
 $theme-colors: () !default;
 $theme-colors: map-merge(
 	(

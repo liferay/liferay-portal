@@ -292,6 +292,14 @@ $cadmin-dark-d2: var(--cadmin-dark-d2) !default;
 $cadmin-dark-l1: var(--cadmin-dark-l1) !default;
 $cadmin-dark-l2: var(--cadmin-dark-l2) !default;
 
+$cadmin-scrollbar-inset: var(--cadmin-scrollbar-inset) !default;
+$cadmin-scrollbar-radius: var(--cadmin-scrollbar-radius) !default;
+$cadmin-scrollbar-size: var(--cadmin-scrollbar-size) !default;
+$cadmin-scrollbar-thumb: var(--cadmin-scrollbar-thumb) !default;
+$cadmin-scrollbar-thumb-active: var(--cadmin-scrollbar-thumb-active) !default;
+$cadmin-scrollbar-thumb-hover: var(--cadmin-scrollbar-thumb-hover) !default;
+$cadmin-scrollbar-track: var(--cadmin-scrollbar-track) !default;
+
 $cadmin-theme-colors: () !default;
 $cadmin-theme-colors: map-merge(
 	(
