@@ -18,6 +18,7 @@ import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -159,6 +160,50 @@ public class AssetAutoTaggerTest extends BaseAssetAutoTaggerTestCase {
 		AssetEntry assetEntry = addFileEntryAssetEntry(serviceContext);
 
 		assertDoesNotContainAssetTagName(assetEntry, ASSET_TAG_NAME_AUTO);
+	}
+
+	@Test
+	public void testDoesNotAutoTagANewAssetWhenImportIsInProcess()
+		throws Exception {
+
+		boolean portletImportInProcess =
+			ExportImportThreadLocal.isPortletImportInProcess();
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			AssetEntry assetEntry = addFileEntryAssetEntry(
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), 0));
+
+			assertDoesNotContainAssetTagName(assetEntry, ASSET_TAG_NAME_AUTO);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(
+				portletImportInProcess);
+		}
+	}
+
+	@Test
+	public void testDoesNotAutoTagANewAssetWhenStagingIsInProcess()
+		throws Exception {
+
+		boolean portletStagingInProcess =
+			ExportImportThreadLocal.isPortletStagingInProcess();
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			AssetEntry assetEntry = addFileEntryAssetEntry(
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), 0));
+
+			assertDoesNotContainAssetTagName(assetEntry, ASSET_TAG_NAME_AUTO);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(
+				portletStagingInProcess);
+		}
 	}
 
 	@Test
