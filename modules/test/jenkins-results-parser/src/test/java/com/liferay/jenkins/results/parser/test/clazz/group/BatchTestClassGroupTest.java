@@ -125,20 +125,6 @@ public class BatchTestClassGroupTest
 			batchTestClassGroup.getAxisTestClassGroups());
 	}
 
-	private List<Integer> _getAxisSizes(
-		List<AxisTestClassGroup> axisTestClassGroups) {
-
-		List<Integer> axisSizes = new ArrayList<>();
-
-		for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
-			List<TestClass> testClasses = axisTestClassGroup.getTestClasses();
-
-			axisSizes.add(testClasses.size());
-		}
-
-		return axisSizes;
-	}
-
 	private List<TestClass> _getTestClasses(
 		List<AxisTestClassGroup> axisTestClassGroups) {
 
@@ -207,10 +193,18 @@ public class BatchTestClassGroupTest
 
 		batchTestClassGroup.setAxisTestClassGroups();
 
+		List<Integer> axisSizes = new ArrayList<>();
+
 		List<AxisTestClassGroup> axisTestClassGroups =
 			batchTestClassGroup.getAxisTestClassGroups();
 
-		testEquals(expectedAxisSizes, _getAxisSizes(axisTestClassGroups));
+		for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
+			List<TestClass> testClasses = axisTestClassGroup.getTestClasses();
+
+			axisSizes.add(testClasses.size());
+		}
+
+		testEquals(expectedAxisSizes, axisSizes);
 
 		List<TestClass> axisTestClasses = _getTestClasses(axisTestClassGroups);
 
