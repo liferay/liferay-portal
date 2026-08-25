@@ -376,72 +376,6 @@ public class OpenIdConnectSessionPersistenceImpl
 			finderCache, new Object[] {userId, issuer});
 	}
 
-	private UniquePersistenceFinder
-		<OpenIdConnectSession, NoSuchSessionException>
-			_uniquePersistenceFinderByI_S;
-
-	/**
-	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @return the matching open ID connect session
-	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
-	 */
-	@Override
-	public OpenIdConnectSession findByI_S(String issuer, String sessionId)
-		throws NoSuchSessionException {
-
-		return _uniquePersistenceFinderByI_S.find(
-			finderCache, new Object[] {issuer, sessionId});
-	}
-
-	/**
-	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
-	 */
-	@Override
-	public OpenIdConnectSession fetchByI_S(
-		String issuer, String sessionId, boolean useFinderCache) {
-
-		return _uniquePersistenceFinderByI_S.fetch(
-			finderCache, new Object[] {issuer, sessionId}, useFinderCache);
-	}
-
-	/**
-	 * Removes the open ID connect session where issuer = &#63; and sessionId = &#63; from the database.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @return the open ID connect session that was removed
-	 */
-	@Override
-	public OpenIdConnectSession removeByI_S(String issuer, String sessionId)
-		throws NoSuchSessionException {
-
-		OpenIdConnectSession openIdConnectSession = findByI_S(
-			issuer, sessionId);
-
-		return remove(openIdConnectSession);
-	}
-
-	/**
-	 * Returns the number of open ID connect sessions where issuer = &#63; and sessionId = &#63;.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @return the number of matching open ID connect sessions
-	 */
-	@Override
-	public int countByI_S(String issuer, String sessionId) {
-		return _uniquePersistenceFinderByI_S.count(
-			finderCache, new Object[] {issuer, sessionId});
-	}
-
 	private CollectionPersistenceFinder
 		<OpenIdConnectSession, NoSuchSessionException>
 			_collectionPersistenceFinderByC_A_C;
@@ -548,6 +482,104 @@ public class OpenIdConnectSessionPersistenceImpl
 		return _collectionPersistenceFinderByC_A_C.count(
 			finderCache,
 			new Object[] {companyId, authServerWellKnownURI, clientId});
+	}
+
+	private CollectionPersistenceFinder
+		<OpenIdConnectSession, NoSuchSessionException>
+			_collectionPersistenceFinderByC_I_S;
+
+	/**
+	 * Returns an ordered range of all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OpenIdConnectSessionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @param start the lower bound of the range of open ID connect sessions
+	 * @param end the upper bound of the range of open ID connect sessions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching open ID connect sessions
+	 */
+	@Override
+	public List<OpenIdConnectSession> findByC_I_S(
+		long companyId, String issuer, String sessionId, int start, int end,
+		OrderByComparator<OpenIdConnectSession> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByC_I_S.find(
+			finderCache, new Object[] {companyId, issuer, sessionId}, start,
+			end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first open ID connect session in the ordered set where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching open ID connect session
+	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
+	 */
+	@Override
+	public OpenIdConnectSession findByC_I_S_First(
+			long companyId, String issuer, String sessionId,
+			OrderByComparator<OpenIdConnectSession> orderByComparator)
+		throws NoSuchSessionException {
+
+		return _collectionPersistenceFinderByC_I_S.findFirst(
+			finderCache, new Object[] {companyId, issuer, sessionId},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first open ID connect session in the ordered set where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	@Override
+	public OpenIdConnectSession fetchByC_I_S_First(
+		long companyId, String issuer, String sessionId,
+		OrderByComparator<OpenIdConnectSession> orderByComparator) {
+
+		return _collectionPersistenceFinderByC_I_S.fetchFirst(
+			finderCache, new Object[] {companyId, issuer, sessionId},
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 */
+	@Override
+	public void removeByC_I_S(long companyId, String issuer, String sessionId) {
+		_collectionPersistenceFinderByC_I_S.remove(
+			finderCache, new Object[] {companyId, issuer, sessionId});
+	}
+
+	/**
+	 * Returns the number of open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @return the number of matching open ID connect sessions
+	 */
+	@Override
+	public int countByC_I_S(long companyId, String issuer, String sessionId) {
+		return _collectionPersistenceFinderByC_I_S.count(
+			finderCache, new Object[] {companyId, issuer, sessionId});
 	}
 
 	private UniquePersistenceFinder
@@ -896,22 +928,6 @@ public class OpenIdConnectSessionPersistenceImpl
 				"openIdConnectSession.", "issuer", FinderColumn.Type.STRING,
 				"=", true, true, OpenIdConnectSession::getIssuer));
 
-		_uniquePersistenceFinderByI_S = new UniquePersistenceFinder<>(
-			this,
-			createUniqueFinderPath(
-				FINDER_CLASS_NAME_ENTITY, "fetchByI_S",
-				new String[] {String.class.getName(), String.class.getName()},
-				new String[] {"issuer", "sessionId"}, 0, 3, false,
-				convertNullFunction(OpenIdConnectSession::getIssuer),
-				convertNullFunction(OpenIdConnectSession::getSessionId)),
-			_SQL_SELECT_OPENIDCONNECTSESSION_WHERE, "",
-			new FinderColumn<>(
-				"openIdConnectSession.", "issuer", FinderColumn.Type.STRING,
-				"=", true, true, OpenIdConnectSession::getIssuer),
-			new FinderColumn<>(
-				"openIdConnectSession.", "sessionId", FinderColumn.Type.STRING,
-				"=", true, true, OpenIdConnectSession::getSessionId));
-
 		_collectionPersistenceFinderByC_A_C = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -959,6 +975,46 @@ public class OpenIdConnectSessionPersistenceImpl
 			new FinderColumn<>(
 				"openIdConnectSession.", "clientId", FinderColumn.Type.STRING,
 				"=", true, true, OpenIdConnectSession::getClientId));
+
+		_collectionPersistenceFinderByC_I_S = new CollectionPersistenceFinder<>(
+			this,
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_I_S",
+				new String[] {
+					Long.class.getName(), String.class.getName(),
+					String.class.getName(), Integer.class.getName(),
+					Integer.class.getName(), OrderByComparator.class.getName()
+				},
+				new String[] {"companyId", "issuer", "sessionId"}, true),
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_I_S",
+				new String[] {
+					Long.class.getName(), String.class.getName(),
+					String.class.getName()
+				},
+				new String[] {"companyId", "issuer", "sessionId"}, 0, 6, true,
+				null),
+			new FinderPath(
+				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_I_S",
+				new String[] {
+					Long.class.getName(), String.class.getName(),
+					String.class.getName()
+				},
+				new String[] {"companyId", "issuer", "sessionId"}, 0, 6, false,
+				null),
+			_SQL_SELECT_OPENIDCONNECTSESSION_WHERE,
+			_SQL_COUNT_OPENIDCONNECTSESSION_WHERE,
+			OpenIdConnectSessionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
+			"", "", null,
+			new FinderColumn<>(
+				"openIdConnectSession.", "companyId", FinderColumn.Type.LONG,
+				"=", true, true, OpenIdConnectSession::getCompanyId),
+			new FinderColumn<>(
+				"openIdConnectSession.", "issuer", FinderColumn.Type.STRING,
+				"=", true, true, OpenIdConnectSession::getIssuer),
+			new FinderColumn<>(
+				"openIdConnectSession.", "sessionId", FinderColumn.Type.STRING,
+				"=", true, true, OpenIdConnectSession::getSessionId));
 
 		_uniquePersistenceFinderByU_A_C = new UniquePersistenceFinder<>(
 			this,
@@ -1045,4 +1101,4 @@ public class OpenIdConnectSessionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2108251659
+// LIFERAY-SERVICE-BUILDER-HASH:-1432312722

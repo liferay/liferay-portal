@@ -237,11 +237,6 @@ public interface OpenIdConnectSessionLocalService
 			long userId, String issuer)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OpenIdConnectSession getOpenIdConnectSession(
-			String issuer, String sessionId)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the open ID connect sessions.
 	 *
@@ -256,6 +251,10 @@ public interface OpenIdConnectSessionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<OpenIdConnectSession> getOpenIdConnectSessions(
 		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<OpenIdConnectSession> getOpenIdConnectSessions(
+		long companyId, String issuer, String sessionId);
 
 	/**
 	 * Returns the number of open ID connect sessions.
@@ -295,4 +294,4 @@ public interface OpenIdConnectSessionLocalService
 		OpenIdConnectSession openIdConnectSession);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1264149512
+// LIFERAY-SERVICE-BUILDER-HASH:2018112190

@@ -326,16 +326,6 @@ public class OpenIdConnectSessionLocalServiceWrapper
 			userId, issuer);
 	}
 
-	@Override
-	public com.liferay.portal.security.sso.openid.connect.persistence.model.
-		OpenIdConnectSession getOpenIdConnectSession(
-				String issuer, String sessionId)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _openIdConnectSessionLocalService.getOpenIdConnectSession(
-			issuer, sessionId);
-	}
-
 	/**
 	 * Returns a range of all the open ID connect sessions.
 	 *
@@ -354,6 +344,16 @@ public class OpenIdConnectSessionLocalServiceWrapper
 
 		return _openIdConnectSessionLocalService.getOpenIdConnectSessions(
 			start, end);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.portal.security.sso.openid.connect.persistence.model.
+			OpenIdConnectSession> getOpenIdConnectSessions(
+				long companyId, String issuer, String sessionId) {
+
+		return _openIdConnectSessionLocalService.getOpenIdConnectSessions(
+			companyId, issuer, sessionId);
 	}
 
 	/**
@@ -429,4 +429,4 @@ public class OpenIdConnectSessionLocalServiceWrapper
 	private OpenIdConnectSessionLocalService _openIdConnectSessionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1596278691
+// LIFERAY-SERVICE-BUILDER-HASH:-149381013

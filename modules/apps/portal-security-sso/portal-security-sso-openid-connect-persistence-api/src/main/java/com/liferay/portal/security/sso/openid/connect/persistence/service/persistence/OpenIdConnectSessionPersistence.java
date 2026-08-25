@@ -245,47 +245,6 @@ public interface OpenIdConnectSessionPersistence
 	public int countByU_I(long userId, String issuer);
 
 	/**
-	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @return the matching open ID connect session
-	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
-	 */
-	public OpenIdConnectSession findByI_S(String issuer, String sessionId)
-		throws NoSuchSessionException;
-
-	/**
-	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
-	 */
-	public OpenIdConnectSession fetchByI_S(
-		String issuer, String sessionId, boolean useFinderCache);
-
-	/**
-	 * Removes the open ID connect session where issuer = &#63; and sessionId = &#63; from the database.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @return the open ID connect session that was removed
-	 */
-	public OpenIdConnectSession removeByI_S(String issuer, String sessionId)
-		throws NoSuchSessionException;
-
-	/**
-	 * Returns the number of open ID connect sessions where issuer = &#63; and sessionId = &#63;.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @return the number of matching open ID connect sessions
-	 */
-	public int countByI_S(String issuer, String sessionId);
-
-	/**
 	 * Returns an ordered range of all the open ID connect sessions where companyId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63;.
 	 *
 	 * <p>
@@ -358,6 +317,77 @@ public interface OpenIdConnectSessionPersistence
 	 */
 	public int countByC_A_C(
 		long companyId, String authServerWellKnownURI, String clientId);
+
+	/**
+	 * Returns an ordered range of all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.security.sso.openid.connect.persistence.model.impl.OpenIdConnectSessionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @param start the lower bound of the range of open ID connect sessions
+	 * @param end the upper bound of the range of open ID connect sessions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching open ID connect sessions
+	 */
+	public java.util.List<OpenIdConnectSession> findByC_I_S(
+		long companyId, String issuer, String sessionId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<OpenIdConnectSession>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first open ID connect session in the ordered set where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching open ID connect session
+	 * @throws NoSuchSessionException if a matching open ID connect session could not be found
+	 */
+	public OpenIdConnectSession findByC_I_S_First(
+			long companyId, String issuer, String sessionId,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<OpenIdConnectSession> orderByComparator)
+		throws NoSuchSessionException;
+
+	/**
+	 * Returns the first open ID connect session in the ordered set where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
+	 */
+	public OpenIdConnectSession fetchByC_I_S_First(
+		long companyId, String issuer, String sessionId,
+		com.liferay.portal.kernel.util.OrderByComparator<OpenIdConnectSession>
+			orderByComparator);
+
+	/**
+	 * Removes all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 */
+	public void removeByC_I_S(long companyId, String issuer, String sessionId);
+
+	/**
+	 * Returns the number of open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @return the number of matching open ID connect sessions
+	 */
+	public int countByC_I_S(long companyId, String issuer, String sessionId);
 
 	/**
 	 * Returns the open ID connect session where userId = &#63; and authServerWellKnownURI = &#63; and clientId = &#63; or throws a <code>NoSuchSessionException</code> if it could not be found.
@@ -456,19 +486,6 @@ public interface OpenIdConnectSessionPersistence
 	 */
 	public default OpenIdConnectSession fetchByU_I(long userId, String issuer) {
 		return fetchByU_I(userId, issuer, true);
-	}
-
-	/**
-	 * Returns the open ID connect session where issuer = &#63; and sessionId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param issuer the issuer
-	 * @param sessionId the session ID
-	 * @return the matching open ID connect session, or <code>null</code> if a matching open ID connect session could not be found
-	 */
-	public default OpenIdConnectSession fetchByI_S(
-		String issuer, String sessionId) {
-
-		return fetchByI_S(issuer, sessionId, true);
 	}
 
 	/**
@@ -604,5 +621,67 @@ public interface OpenIdConnectSessionPersistence
 			orderByComparator, true);
 	}
 
+	/**
+	 * Returns all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @return the matching open ID connect sessions
+	 */
+	public default java.util.List<OpenIdConnectSession> findByC_I_S(
+		long companyId, String issuer, String sessionId) {
+
+		return findByC_I_S(
+			companyId, issuer, sessionId,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.security.sso.openid.connect.persistence.model.impl.OpenIdConnectSessionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @param start the lower bound of the range of open ID connect sessions
+	 * @param end the upper bound of the range of open ID connect sessions (not inclusive)
+	 * @return the range of matching open ID connect sessions
+	 */
+	public default java.util.List<OpenIdConnectSession> findByC_I_S(
+		long companyId, String issuer, String sessionId, int start, int end) {
+
+		return findByC_I_S(
+			companyId, issuer, sessionId, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the open ID connect sessions where companyId = &#63; and issuer = &#63; and sessionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.security.sso.openid.connect.persistence.model.impl.OpenIdConnectSessionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param issuer the issuer
+	 * @param sessionId the session ID
+	 * @param start the lower bound of the range of open ID connect sessions
+	 * @param end the upper bound of the range of open ID connect sessions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching open ID connect sessions
+	 */
+	public default java.util.List<OpenIdConnectSession> findByC_I_S(
+		long companyId, String issuer, String sessionId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<OpenIdConnectSession>
+			orderByComparator) {
+
+		return findByC_I_S(
+			companyId, issuer, sessionId, start, end, orderByComparator, true);
+	}
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-100040497
+// LIFERAY-SERVICE-BUILDER-HASH:44091042

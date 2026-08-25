@@ -274,13 +274,6 @@ public class OpenIdConnectSessionLocalServiceUtil {
 		return getService().getOpenIdConnectSession(userId, issuer);
 	}
 
-	public static OpenIdConnectSession getOpenIdConnectSession(
-			String issuer, String sessionId)
-		throws PortalException {
-
-		return getService().getOpenIdConnectSession(issuer, sessionId);
-	}
-
 	/**
 	 * Returns a range of all the open ID connect sessions.
 	 *
@@ -296,6 +289,13 @@ public class OpenIdConnectSessionLocalServiceUtil {
 		int start, int end) {
 
 		return getService().getOpenIdConnectSessions(start, end);
+	}
+
+	public static List<OpenIdConnectSession> getOpenIdConnectSessions(
+		long companyId, String issuer, String sessionId) {
+
+		return getService().getOpenIdConnectSessions(
+			companyId, issuer, sessionId);
 	}
 
 	/**
@@ -351,4 +351,4 @@ public class OpenIdConnectSessionLocalServiceUtil {
 			OpenIdConnectSessionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1092747922
+// LIFERAY-SERVICE-BUILDER-HASH:1849199070
