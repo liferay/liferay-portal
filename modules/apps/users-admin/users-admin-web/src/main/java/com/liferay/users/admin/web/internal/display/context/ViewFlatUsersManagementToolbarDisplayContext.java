@@ -35,9 +35,11 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.users.admin.management.toolbar.FilterContributor;
 import com.liferay.users.admin.search.UserSearchTerms;
 import com.liferay.users.admin.web.internal.util.DisplayStyleUtil;
 
@@ -56,6 +58,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	extends SearchContainerManagementToolbarDisplayContext {
 
 	public ViewFlatUsersManagementToolbarDisplayContext(
+		FilterContributor[] filterContributors,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
 		SearchContainer<User> searchContainer, boolean showDeleteButton,
@@ -65,13 +68,13 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 			liferayPortletRequest.getHttpServletRequest(),
 			liferayPortletRequest, liferayPortletResponse, searchContainer);
 
+		_filterContributors = filterContributors;
 		_showDeleteButton = showDeleteButton;
 		_showRestoreButton = showRestoreButton;
 
 		_navigation = ParamUtil.getString(
 			liferayPortletRequest, "navigation", "active");
-		_selection = ParamUtil.getString(
-			liferayPortletRequest, "selection", "all");
+		_selection = _getSelection(liferayPortletRequest);
 	}
 
 	@Override
@@ -385,15 +388,16 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 			dropdownItem -> {
 				dropdownItem.setActive(Objects.equals(_selection, "all"));
 				dropdownItem.setHref(
-					PortletURLBuilder.create(
-						getPortletURL()
-					).setParameter(
-						"accountEntryIds", (String)null
-					).setParameter(
-						"organizationIds", (String)null
-					).setParameter(
-						"selection", "all"
-					).buildString());
+					_removeFilterContributorParameters(
+						PortletURLBuilder.create(
+							getPortletURL()
+						).setParameter(
+							"accountEntryIds", (String)null
+						).setParameter(
+							"organizationIds", (String)null
+						).setParameter(
+							"selection", "all"
+						).buildString()));
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "all"));
 			}
@@ -414,7 +418,10 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 				dropdownItem.putData(
 					"dialogTitle",
 					LanguageUtil.get(httpServletRequest, "select-accounts"));
-				dropdownItem.putData("redirectURL", currentURLObj.toString());
+				dropdownItem.putData(
+					"redirectURL",
+					_removeFilterContributorParameters(
+						currentURLObj.toString()));
 				dropdownItem.setActive(
 					Objects.equals(_selection, "selected-account-users"));
 				dropdownItem.setLabel(
@@ -439,7 +446,10 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 					).setWindowState(
 						LiferayWindowState.POP_UP
 					).buildString());
-				dropdownItem.putData("redirectURL", currentURLObj.toString());
+				dropdownItem.putData(
+					"redirectURL",
+					_removeFilterContributorParameters(
+						currentURLObj.toString()));
 				dropdownItem.setActive(
 					Objects.equals(_selection, "selected-organization-users"));
 				dropdownItem.setLabel(
@@ -447,6 +457,27 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 						httpServletRequest, "selected-organization-users"));
 			}
 		).build();
+	}
+
+	private String _getSelection(LiferayPortletRequest liferayPortletRequest) {
+		String selection = ParamUtil.getString(
+			liferayPortletRequest, "selection", "all");
+
+		if (Objects.equals(selection, "selected-account-users") &&
+			(ParamUtil.getLongValues(
+				liferayPortletRequest, "accountEntryIds").length == 0)) {
+
+			return "all";
+		}
+
+		if (Objects.equals(selection, "selected-organization-users") &&
+			(ParamUtil.getLongValues(
+				liferayPortletRequest, "organizationIds").length == 0)) {
+
+			return "all";
+		}
+
+		return selection;
 	}
 
 	private boolean _hasDeletePermission(
@@ -463,6 +494,22 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 			ActionKeys.DELETE);
 	}
 
+	private String _removeFilterContributorParameters(String url) {
+		if (_filterContributors == null) {
+			return url;
+		}
+
+		for (FilterContributor filterContributor : _filterContributors) {
+			url = HttpComponentsUtil.removeParameter(
+				url,
+				liferayPortletResponse.getNamespace() +
+					filterContributor.getParameter());
+		}
+
+		return url;
+	}
+
+	private final FilterContributor[] _filterContributors;
 	private final String _navigation;
 	private final String _selection;
 	private final boolean _showDeleteButton;

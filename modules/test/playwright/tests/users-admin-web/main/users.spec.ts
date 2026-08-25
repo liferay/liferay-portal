@@ -1895,6 +1895,62 @@ test.describe('Users & Organizations - Domain Filters', () => {
 
 test.describe('Users & Organizations - Selection Filters', () => {
 	test(
+		'Selecting organizations clears the domain filter',
+		{tag: ['@LPD-69113']},
+		async ({apiHelpers, usersAndOrganizationsPage}) => {
+			const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
+			const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			const organization =
+				await apiHelpers.headlessAdminUser.postOrganization();
+
+			await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+				organization.id,
+				user2.emailAddress
+			);
+
+			await usersAndOrganizationsPage.goToUsersWithLimitedAccess();
+
+			await expect(
+				usersAndOrganizationsPage.tableFilterMenu
+			).toBeVisible();
+
+			await expect(async () => {
+				await usersAndOrganizationsPage.tableFilterMenu.click();
+
+				await expect(
+					usersAndOrganizationsPage.tableFilterMenuItem(
+						'Users Without an Organization'
+					)
+				).toBeVisible();
+			}).toPass();
+
+			await usersAndOrganizationsPage
+				.tableFilterMenuItem('Users Without an Organization')
+				.click();
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).not.toBeVisible();
+
+			await usersAndOrganizationsPage.filterUsersBySelection(
+				'Selected Organization Users',
+				[organization.name]
+			);
+
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user2.alternateName)
+			).toBeVisible();
+			await expect(
+				usersAndOrganizationsPage.usersTableCell(user1.alternateName)
+			).not.toBeVisible();
+		}
+	);
+
+	test(
 		'Select Organizations filter',
 		{tag: ['@LPD-69113']},
 		async ({apiHelpers, usersAndOrganizationsPage}) => {

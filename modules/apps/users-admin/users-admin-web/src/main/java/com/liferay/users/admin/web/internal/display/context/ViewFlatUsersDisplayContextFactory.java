@@ -64,6 +64,9 @@ public class ViewFlatUsersDisplayContextFactory {
 		UserSearchTerms userSearchTerms =
 			(UserSearchTerms)searchContainer.getSearchTerms();
 
+		FilterContributor[] filterContributors = _getFilterContributors(
+			httpServletRequest);
+
 		ManagementToolbarDisplayContext managementToolbarDisplayContext;
 
 		if (Objects.equals(
@@ -72,20 +75,19 @@ public class ViewFlatUsersDisplayContextFactory {
 
 			managementToolbarDisplayContext =
 				new ViewServiceAccountUsersManagementToolbarDisplayContext(
-					liferayPortletRequest, liferayPortletResponse,
-					searchContainer, _isShowDeleteButton(userSearchTerms),
+					filterContributors, liferayPortletRequest,
+					liferayPortletResponse, searchContainer,
+					_isShowDeleteButton(userSearchTerms),
 					_isShowRestoreButton(userSearchTerms));
 		}
 		else {
 			managementToolbarDisplayContext =
 				new ViewFlatUsersManagementToolbarDisplayContext(
-					liferayPortletRequest, liferayPortletResponse,
-					searchContainer, _isShowDeleteButton(userSearchTerms),
+					filterContributors, liferayPortletRequest,
+					liferayPortletResponse, searchContainer,
+					_isShowDeleteButton(userSearchTerms),
 					_isShowRestoreButton(userSearchTerms));
 		}
-
-		FilterContributor[] filterContributors = _getFilterContributors(
-			httpServletRequest);
 
 		if (filterContributors != null) {
 			managementToolbarDisplayContext =
