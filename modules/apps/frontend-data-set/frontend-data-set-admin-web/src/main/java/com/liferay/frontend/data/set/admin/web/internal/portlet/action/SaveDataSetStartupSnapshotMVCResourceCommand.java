@@ -104,7 +104,7 @@ public class SaveDataSetStartupSnapshotMVCResourceCommand
 					dataSetSnapshotExternalReferenceCode);
 		}
 
-		ObjectDefinition dataSetStartupSnapshotObjectDefinition =
+		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_STARTUP_SNAPSHOT", companyId);
@@ -114,14 +114,12 @@ public class SaveDataSetStartupSnapshotMVCResourceCommand
 		String externalReferenceCode =
 			user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName;
 
-		ObjectEntry dataSetStartupSnapshotObjectEntry =
-			_objectEntryLocalService.fetchObjectEntry(
-				externalReferenceCode, 0,
-				dataSetStartupSnapshotObjectDefinition.getObjectDefinitionId());
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			externalReferenceCode, 0, objectDefinition.getObjectDefinitionId());
 
-		if (dataSetStartupSnapshotObjectEntry != null) {
+		if (objectEntry != null) {
 			_objectEntryLocalService.deleteObjectEntry(
-				dataSetStartupSnapshotObjectEntry.getObjectEntryId());
+				objectEntry.getObjectEntryId());
 		}
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -130,7 +128,7 @@ public class SaveDataSetStartupSnapshotMVCResourceCommand
 
 		_objectEntryLocalService.addOrUpdateObjectEntry(
 			externalReferenceCode, 0, user.getUserId(),
-			dataSetStartupSnapshotObjectDefinition.getObjectDefinitionId(),
+			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			HashMapBuilder.<String, Serializable>put(
 				"r_dataSetSnapshotToStartupSnapshots_l_dataSetSnapshotId",
