@@ -126,6 +126,16 @@ public class RESTClientTemplateContextContributorTest {
 
 			Assert.assertThat(
 				HTTPTestUtil.invokeToString(
+					null, "de/web" + friendlyUrlPath + "/portal-vulcan-test",
+					Http.Method.GET),
+				CoreMatchers.allOf(
+					CoreMatchers.containsString(
+						"Site Page (1st call): Portal Vulcan Test DE."),
+					CoreMatchers.containsString(
+						"Site Page (2nd call): Portal Vulcan Test DE.")));
+
+			Assert.assertThat(
+				HTTPTestUtil.invokeToString(
 					null,
 					"web" + friendlyUrlPath + "/portal-vulcan-test?pageSize=2",
 					Http.Method.GET),
@@ -135,16 +145,6 @@ public class RESTClientTemplateContextContributorTest {
 					CoreMatchers.containsString("Page Size (query): 1."),
 					CoreMatchers.containsString(
 						"User: " + user.getScreenName() + ".")));
-
-			Assert.assertThat(
-				HTTPTestUtil.invokeToString(
-					null, "de/web" + friendlyUrlPath + "/portal-vulcan-test",
-					Http.Method.GET),
-				CoreMatchers.allOf(
-					CoreMatchers.containsString(
-						"Site Page (1st call): Portal Vulcan Test DE."),
-					CoreMatchers.containsString(
-						"Site Page (2nd call): Portal Vulcan Test DE.")));
 		}
 	}
 
