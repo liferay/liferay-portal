@@ -70,12 +70,12 @@ run "should_open_envoy_ingress_ports" {
 		error_message="The Envoy ingress rule must allow traffic"
 	}
 	assert {
-		condition=contains(azurerm_network_security_rule.envoy_ingress_managed.destination_port_ranges, "80")
-		error_message="The Envoy ingress rule must open the HTTP port"
-	}
-	assert {
 		condition=contains(azurerm_network_security_rule.envoy_ingress_managed.destination_port_ranges, "443")
 		error_message="The Envoy ingress rule must open the HTTPS port"
+	}
+	assert {
+		condition=contains(azurerm_network_security_rule.envoy_ingress_managed.destination_port_ranges, "80")
+		error_message="The Envoy ingress rule must open the HTTP port"
 	}
 	assert {
 		condition=azurerm_network_security_rule.envoy_ingress_managed.direction == "Inbound"
