@@ -129,62 +129,7 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 	}
 
 	@Test
-	public void testBlankOptionalFieldsOnSuccess() throws Exception {
-		Mockito.when(
-			_companyService.addDBPartitionCompany(
-				_SCHEMA_NAME, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK)
-		).thenReturn(
-			_company
-		);
-
-		MockActionRequest mockActionRequest = new MockActionRequest();
-
-		mockActionRequest.addParameter("schemaName", _SCHEMA_NAME);
-		mockActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, Mockito.mock(ThemeDisplay.class));
-
-		_addDBPartitionCompanyMVCActionCommand.doProcessAction(
-			mockActionRequest, new MockActionResponse());
-
-		Assert.assertEquals(_COMPANY_ID, _jsonObject.getLong("companyId"));
-
-		Assert.assertFalse(_jsonObject.has("error"));
-
-		Mockito.verify(
-			_companyService
-		).addDBPartitionCompany(
-			_SCHEMA_NAME, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK
-		);
-	}
-
-	@Test
-	public void testClearedHiddenDefaultSuccessMessageOnSuccess()
-		throws Exception {
-
-		Mockito.when(
-			_companyService.addDBPartitionCompany(
-				_SCHEMA_NAME, _NAME, _VIRTUAL_HOSTNAME, _WEB_ID)
-		).thenReturn(
-			_company
-		);
-
-		_sessionMessagesMockedStatic.when(
-			() -> SessionMessages.contains(
-				Mockito.any(PortletRequest.class), Mockito.anyString())
-		).thenReturn(
-			true
-		);
-
-		_addDBPartitionCompanyMVCActionCommand.doProcessAction(
-			_getMockActionRequest(), new MockActionResponse());
-
-		_sessionMessagesMockedStatic.verify(
-			() -> SessionMessages.clear(Mockito.any(PortletRequest.class)));
-	}
-
-	@Test
-	public void testCompanyIdOnSuccess() throws Exception {
+	public void testDoProcessAction() throws Exception {
 		Mockito.when(
 			_companyService.addDBPartitionCompany(
 				_SCHEMA_NAME, _NAME, _VIRTUAL_HOSTNAME, _WEB_ID)
@@ -221,7 +166,62 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 	}
 
 	@Test
-	public void testErrorForCompanyException() throws Exception {
+	public void testDoProcessActionWithBlankOptionalFields() throws Exception {
+		Mockito.when(
+			_companyService.addDBPartitionCompany(
+				_SCHEMA_NAME, StringPool.BLANK, StringPool.BLANK,
+				StringPool.BLANK)
+		).thenReturn(
+			_company
+		);
+
+		MockActionRequest mockActionRequest = new MockActionRequest();
+
+		mockActionRequest.addParameter("schemaName", _SCHEMA_NAME);
+		mockActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, Mockito.mock(ThemeDisplay.class));
+
+		_addDBPartitionCompanyMVCActionCommand.doProcessAction(
+			mockActionRequest, new MockActionResponse());
+
+		Assert.assertEquals(_COMPANY_ID, _jsonObject.getLong("companyId"));
+
+		Assert.assertFalse(_jsonObject.has("error"));
+
+		Mockito.verify(
+			_companyService
+		).addDBPartitionCompany(
+			_SCHEMA_NAME, StringPool.BLANK, StringPool.BLANK, StringPool.BLANK
+		);
+	}
+
+	@Test
+	public void testDoProcessActionWithClearedHiddenDefaultSuccessMessage()
+		throws Exception {
+
+		Mockito.when(
+			_companyService.addDBPartitionCompany(
+				_SCHEMA_NAME, _NAME, _VIRTUAL_HOSTNAME, _WEB_ID)
+		).thenReturn(
+			_company
+		);
+
+		_sessionMessagesMockedStatic.when(
+			() -> SessionMessages.contains(
+				Mockito.any(PortletRequest.class), Mockito.anyString())
+		).thenReturn(
+			true
+		);
+
+		_addDBPartitionCompanyMVCActionCommand.doProcessAction(
+			_getMockActionRequest(), new MockActionResponse());
+
+		_sessionMessagesMockedStatic.verify(
+			() -> SessionMessages.clear(Mockito.any(PortletRequest.class)));
+	}
+
+	@Test
+	public void testDoProcessActionWithCompanyException() throws Exception {
 		_assertError(new CompanyNameException(), "please-enter-a-valid-name");
 		_assertError(
 			new CompanyVirtualHostException(),
@@ -231,73 +231,24 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 	}
 
 	@Test
-	public void testErrorForIllegalArgumentException() throws Exception {
-		_assertError(
-			new IllegalArgumentException(
-				"Invalid schema name \"" + _SCHEMA_NAME + "\""),
-			"please-enter-a-valid-schema-name");
+	public void testDoProcessActionWithDisabledFeatureFlag() {
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-11342"))
+		).thenReturn(
+			false
+		);
 
-		_assertError(
-			new IllegalArgumentException(
-				"Database partition " + _SCHEMA_NAME + " already exists"),
-			"an-instance-for-this-schema-already-exists");
+		Assert.assertThrows(
+			UnsupportedOperationException.class,
+			() -> _addDBPartitionCompanyMVCActionCommand.doProcessAction(
+				_getMockActionRequest(), new MockActionResponse()));
 
-		_assertError(
-			new IllegalArgumentException(
-				"Unable to insert the database partition " + _SCHEMA_NAME +
-					" because it does not exist"),
-			"the-exported-schema-does-not-exist");
-
-		_assertError(
-			new IllegalArgumentException(
-				"Company ID " + _COMPANY_ID + " is the default company ID"),
-			"please-enter-a-valid-schema-name");
-
-		_assertError(
-			new IllegalArgumentException(_SCHEMA_NAME),
-			"an-unexpected-error-occurred");
+		Mockito.verifyNoInteractions(_companyService);
 	}
 
 	@Test
-	public void testErrorForUnmappedException() throws Exception {
-		_assertError(new RuntimeException(), "an-unexpected-error-occurred");
-		_assertError(
-			new PrincipalException.MustBeOmniadmin(_permissionChecker),
-			"an-unexpected-error-occurred");
-	}
-
-	@Test
-	public void testErrorForUnsupportedOperationException() throws Exception {
-		_assertError(
-			new UnsupportedOperationException(
-				"Database partitioning must be enabled"),
-			"database-partitioning-must-be-enabled");
-
-		_assertError(
-			new UnsupportedOperationException(
-				"Company in import process company ID is not null"),
-			"importing-an-instance-is-already-in-progress");
-
-		_assertError(
-			new UnsupportedOperationException("Unsupported SQL: select 1"),
-			"an-unexpected-error-occurred");
-	}
-
-	@Test
-	public void testErrorForWrappedCompanyException() throws Exception {
-		_assertError(
-			new PortalException(new CompanyNameException()),
-			"please-enter-a-valid-name");
-		_assertError(
-			new PortalException(new CompanyVirtualHostException()),
-			"please-enter-a-valid-virtual-host");
-		_assertError(
-			new PortalException(new CompanyWebIdException()),
-			"please-enter-a-valid-web-id");
-	}
-
-	@Test
-	public void testLogLevelOnError() throws Exception {
+	public void testDoProcessActionWithErrorLogLevel() throws Exception {
 		Log log = Mockito.mock(Log.class);
 
 		Mockito.when(
@@ -340,7 +291,37 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 	}
 
 	@Test
-	public void testUnclearedHiddenDefaultSuccessMessageOnSuccess()
+	public void testDoProcessActionWithIllegalArgumentException()
+		throws Exception {
+
+		_assertError(
+			new IllegalArgumentException(
+				"Invalid schema name \"" + _SCHEMA_NAME + "\""),
+			"please-enter-a-valid-schema-name");
+
+		_assertError(
+			new IllegalArgumentException(
+				"Database partition " + _SCHEMA_NAME + " already exists"),
+			"an-instance-for-this-schema-already-exists");
+
+		_assertError(
+			new IllegalArgumentException(
+				"Unable to insert the database partition " + _SCHEMA_NAME +
+					" because it does not exist"),
+			"the-exported-schema-does-not-exist");
+
+		_assertError(
+			new IllegalArgumentException(
+				"Company ID " + _COMPANY_ID + " is the default company ID"),
+			"please-enter-a-valid-schema-name");
+
+		_assertError(
+			new IllegalArgumentException(_SCHEMA_NAME),
+			"an-unexpected-error-occurred");
+	}
+
+	@Test
+	public void testDoProcessActionWithUnclearedHiddenDefaultSuccessMessage()
 		throws Exception {
 
 		Mockito.when(
@@ -366,20 +347,45 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 	}
 
 	@Test
-	public void testUnsupportedOperationExceptionForDisabledFeatureFlag() {
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			false
-		);
+	public void testDoProcessActionWithUnmappedException() throws Exception {
+		_assertError(new RuntimeException(), "an-unexpected-error-occurred");
+		_assertError(
+			new PrincipalException.MustBeOmniadmin(_permissionChecker),
+			"an-unexpected-error-occurred");
+	}
 
-		Assert.assertThrows(
-			UnsupportedOperationException.class,
-			() -> _addDBPartitionCompanyMVCActionCommand.doProcessAction(
-				_getMockActionRequest(), new MockActionResponse()));
+	@Test
+	public void testDoProcessActionWithUnsupportedOperationException()
+		throws Exception {
 
-		Mockito.verifyNoInteractions(_companyService);
+		_assertError(
+			new UnsupportedOperationException(
+				"Database partitioning must be enabled"),
+			"database-partitioning-must-be-enabled");
+
+		_assertError(
+			new UnsupportedOperationException(
+				"Company in import process company ID is not null"),
+			"importing-an-instance-is-already-in-progress");
+
+		_assertError(
+			new UnsupportedOperationException("Unsupported SQL: select 1"),
+			"an-unexpected-error-occurred");
+	}
+
+	@Test
+	public void testDoProcessActionWithWrappedCompanyException()
+		throws Exception {
+
+		_assertError(
+			new PortalException(new CompanyNameException()),
+			"please-enter-a-valid-name");
+		_assertError(
+			new PortalException(new CompanyVirtualHostException()),
+			"please-enter-a-valid-virtual-host");
+		_assertError(
+			new PortalException(new CompanyWebIdException()),
+			"please-enter-a-valid-web-id");
 	}
 
 	private void _assertError(Exception exception, String expectedError)
