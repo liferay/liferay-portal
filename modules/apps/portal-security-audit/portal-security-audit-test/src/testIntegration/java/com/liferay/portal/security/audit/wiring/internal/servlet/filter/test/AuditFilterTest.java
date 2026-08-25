@@ -103,7 +103,6 @@ public class AuditFilterTest {
 			AuditRequestThreadLocal.getAuditThreadLocal();
 
 		Assert.assertNotNull(auditRequestThreadLocal.getRequestURL());
-
 		Assert.assertNull(auditRequestThreadLocal.getSessionID());
 	}
 
