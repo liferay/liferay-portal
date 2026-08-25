@@ -23,6 +23,11 @@ const fileItemWithLink = () => ({
 
 const fileItemWithoutLink = () => ({embedded: {file: {}}});
 
+const folderItemWith = (actions: Record<string, unknown>) => ({
+	actions,
+	entryClassName: 'com.liferay.object.model.ObjectEntryFolder',
+});
+
 describe('transformFDSBulkActions', () => {
 	it('passes through actions whose id is not in the permission map', () => {
 		const unknown = action('unknown-action');
@@ -76,6 +81,36 @@ describe('transformFDSBulkActions', () => {
 				isVisible({selectedItems: [itemWith({['move-to']: {}})]})
 			).toBe(false);
 		});
+
+		it.each(['update-expiration-date', 'update-review-date'])(
+			'hides the %s action when the selection contains a folder',
+			(id) => {
+				const isVisible = isVisibleFor(id);
+
+				expect(
+					isVisible({selectedItems: [itemWith({update: {}})]})
+				).toBe(true);
+				expect(
+					isVisible({
+						selectedItems: [
+							itemWith({update: {}}),
+							folderItemWith({update: {}}),
+						],
+					})
+				).toBe(false);
+			}
+		);
+
+		it.each(['update-expiration-date', 'update-review-date'])(
+			'hides the %s action when any selected item cannot be updated',
+			(id) => {
+				expect(
+					isVisibleFor(id)({
+						selectedItems: [itemWith({update: {}}), itemWith({})],
+					})
+				).toBe(false);
+			}
+		);
 
 		it('checks file link presence for the download action', () => {
 			const isVisible = isVisibleFor('download');

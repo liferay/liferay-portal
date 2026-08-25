@@ -27,11 +27,12 @@ const ITEM = {
 
 const SELECTED_DATA = {items: [ITEM], selectAll: false};
 
-function getTransformerProps() {
+function getTransformerProps(itemsActions: unknown[] = []) {
 	return AssetsFDSPropsTransformer({
 		additionalProps: {},
 		creationMenu: {primaryItems: []},
 		id: 'allSection',
+		itemsActions,
 		views: [],
 	} as any);
 }
@@ -86,4 +87,23 @@ describe('[CMS] AssetsFDSPropsTransformer schedule date actions', () => {
 
 		expect(openScheduleDateModal).not.toHaveBeenCalled();
 	});
+
+	it.each(['update-expiration-date', 'update-review-date'])(
+		'hides the %s action for folders and shows it for assets',
+		(actionId) => {
+			const {itemsActions} = getTransformerProps([
+				{data: {id: actionId}},
+			]);
+
+			const [action] = itemsActions;
+
+			expect(action.isVisible(ITEM)).toBe(true);
+			expect(
+				action.isVisible({
+					entryClassName:
+						'com.liferay.object.model.ObjectEntryFolder',
+				})
+			).toBe(false);
+		}
+	);
 });
