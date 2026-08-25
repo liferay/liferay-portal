@@ -64,6 +64,37 @@ run "should_expose_one_private_subnet" {
 	}
 	command=plan
 }
+run "should_open_envoy_ingress_ports" {
+	assert {
+		condition=azurerm_network_security_rule.envoy_ingress_managed.access == "Allow"
+		error_message="The Envoy ingress rule must allow traffic"
+	}
+	assert {
+		condition=contains(azurerm_network_security_rule.envoy_ingress_managed.destination_port_ranges, "80")
+		error_message="The Envoy ingress rule must open the HTTP port"
+	}
+	assert {
+		condition=contains(azurerm_network_security_rule.envoy_ingress_managed.destination_port_ranges, "443")
+		error_message="The Envoy ingress rule must open the HTTPS port"
+	}
+	assert {
+		condition=azurerm_network_security_rule.envoy_ingress_managed.direction == "Inbound"
+		error_message="The Envoy ingress rule must apply to inbound traffic"
+	}
+	assert {
+		condition=azurerm_network_security_rule.envoy_ingress_managed.name == "liferay-test-envoy-ingress"
+		error_message="The Envoy ingress rule name must be derived from deployment_name"
+	}
+	assert {
+		condition=azurerm_network_security_rule.envoy_ingress_managed.protocol == "Tcp"
+		error_message="The Envoy ingress rule must match TCP traffic"
+	}
+	assert {
+		condition=azurerm_network_security_rule.envoy_ingress_managed.source_address_prefix == "Internet"
+		error_message="The Envoy ingress rule must accept traffic from the internet because the load balancer preserves the client IP"
+	}
+	command=plan
+}
 run "should_override_pod_and_service_cidrs" {
 	assert {
 		condition=azurerm_kubernetes_cluster.main.network_profile[0].pod_cidr == "10.10.0.0/16"

@@ -12,12 +12,6 @@ resource "azurerm_nat_gateway_public_ip_association" "main" {
 	nat_gateway_id=azurerm_nat_gateway.main.id
 	public_ip_address_id=azurerm_public_ip.nat.id
 }
-resource "azurerm_network_security_group" "main" {
-	location=var.region
-	name="${var.deployment_name}-nsg"
-	resource_group_name=local.resource_group_name
-	tags=local.tags
-}
 resource "azurerm_public_ip" "nat" {
 	allocation_method="Static"
 	location=var.region
