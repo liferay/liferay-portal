@@ -19,14 +19,9 @@ public class ObjectActionStatusUtil {
 		ObjectActionLocalService objectActionLocalService, long objectActionId,
 		int status) {
 
-		// The status write waits for the surrounding transaction to commit,
-		// so it can neither fail that transaction nor record an outcome for
-		// an execution whose effects roll back with it. Without a surrounding
-		// transaction, the callback runs immediately, and
-		// TransactionCallbackUtil rethrows what it throws instead of logging
-		// it the way it logs a callback that ran after a commit. The status
-		// is only bookkeeping, so this catch logs a failed write rather than
-		// letting it reach the caller on either path.
+		// The status is only bookkeeping and must never fail the caller. The
+		// callback runs the write after the commit, and the catch handles
+		// the inline call when there is no transaction.
 
 		TransactionCallbackUtil.registerCommitCallback(
 			() -> {

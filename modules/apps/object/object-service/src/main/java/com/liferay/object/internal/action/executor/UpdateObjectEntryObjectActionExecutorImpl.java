@@ -139,8 +139,8 @@ public class UpdateObjectEntryObjectActionExecutorImpl
 		}
 		catch (Exception exception) {
 
-			// The rethrow below cannot roll back the status write, which
-			// waits for the surrounding transaction to commit.
+			// The write happens after the commit, so the rethrow below cannot
+			// undo it
 
 			ObjectActionStatusUtil.updateStatusAfterCommit(
 				_objectActionLocalService, objectActionId,

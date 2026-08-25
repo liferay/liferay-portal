@@ -35,9 +35,8 @@ public class ObjectActionStatusUtilTest {
 	@Test
 	public void testUpdateStatusAfterCommitLogsFailedWrite() throws Exception {
 
-		// Without a surrounding transaction the callback runs immediately, so
-		// a failing status write must end in the log here instead of reaching
-		// the caller
+		// With no transaction, the callback runs inline, so a failed write
+		// must be logged rather than thrown
 
 		long objectActionId = RandomTestUtil.randomLong();
 
