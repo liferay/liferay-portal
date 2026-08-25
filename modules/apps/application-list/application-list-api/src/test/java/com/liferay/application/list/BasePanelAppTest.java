@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortletCategoryKeys;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -52,6 +53,16 @@ public class BasePanelAppTest {
 		_testGetGroupWithNullGroupProvider();
 		_testGetGroupWithNullPortlet();
 		_testGetGroupWithSiteAdministrationPortlet();
+	}
+
+	@Test
+	public void testGetPanelAppNavigationItems() throws Exception {
+		TestPanelApp testPanelApp = new TestPanelApp(
+			Mockito.mock(Portlet.class));
+
+		Assert.assertTrue(
+			ListUtil.isEmpty(
+				testPanelApp.getPanelAppNavigationItems(_httpServletRequest)));
 	}
 
 	private void _testGetGroupWithNonsiteAdministrationPortlet()
