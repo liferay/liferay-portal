@@ -119,9 +119,9 @@ public class PortalWorkspace extends BaseWorkspace {
 		_configureLiferayOSBFaroWorkspaceGitRepository();
 		_configureLiferayReleaseToolWorkspaceGitRepository();
 		_configurePluginsWorkspaceGitRepository();
+		_configurePortalPrivateWorkspaceGitRepository();
 		_configurePortalsPlutoWorkspaceGitRepository();
 		_configurePortletAPIGitRepository();
-		_configurePrivatePortalWorkspaceGitRepository();
 
 		super.setUp();
 
@@ -430,6 +430,22 @@ public class PortalWorkspace extends BaseWorkspace {
 			portalWorkspaceGitRepository.getUpstreamBranchName());
 	}
 
+	private void _configurePortalPrivateWorkspaceGitRepository() {
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			getPortalWorkspaceGitRepository();
+
+		String portalUpstreamBranchName =
+			portalWorkspaceGitRepository.getUpstreamBranchName();
+
+		if (!portalUpstreamBranchName.equals("master")) {
+			return;
+		}
+
+		_updateWorkspaceGitRepository(
+			"git-commit/liferay-portal-master-private",
+			portalWorkspaceGitRepository.getPortalPrivateRepositoryDirName());
+	}
+
 	private void _configurePortalsPlutoWorkspaceGitRepository() {
 		boolean updated = _updateWorkspaceGitRepository(
 			"git-commit/portals-pluto", "portals-pluto");
@@ -448,22 +464,6 @@ public class PortalWorkspace extends BaseWorkspace {
 			_updateWorkspaceGitRepository(
 				"git-commit-portlet-api", "portlet-api");
 		}
-	}
-
-	private void _configurePrivatePortalWorkspaceGitRepository() {
-		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
-			getPortalWorkspaceGitRepository();
-
-		String portalUpstreamBranchName =
-			portalWorkspaceGitRepository.getUpstreamBranchName();
-
-		if (!portalUpstreamBranchName.equals("master")) {
-			return;
-		}
-
-		_updateWorkspaceGitRepository(
-			"git-commit/liferay-portal-master-private",
-			portalWorkspaceGitRepository.getPortalPrivateRepositoryDirName());
 	}
 
 	private LiferayReleaseToolWorkspaceGitRepository
