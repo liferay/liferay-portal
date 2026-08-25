@@ -47,6 +47,20 @@ public class WorkspacesCompileBatchTestClassGroup extends BatchTestClassGroup {
 				portalGitWorkingDirectory.getWorkingDirectory(),
 				"workspaces/" + workspacesName);
 
+			if (!workspaceDir.exists()) {
+				File privatePortalDir = new File(
+					JenkinsResultsParserUtil.getProperty(
+						portalGitWorkingDirectory.getTestProperties(),
+						"liferay.portal.private.dir"));
+
+				workspaceDir = new File(
+					privatePortalDir, "workspaces/" + workspacesName);
+			}
+
+			if (!workspaceDir.exists()) {
+				continue;
+			}
+
 			addTestClass(TestClassFactory.newTestClass(this, workspaceDir));
 		}
 	}
