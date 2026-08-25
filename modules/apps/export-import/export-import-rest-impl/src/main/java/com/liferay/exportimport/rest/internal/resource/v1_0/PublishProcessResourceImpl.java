@@ -84,7 +84,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		_backgroundTaskLocalService.deleteBackgroundTask(backgroundTask);
 	}
@@ -99,7 +99,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		return _toPublishProcess(backgroundTask);
 	}
@@ -114,7 +114,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		return new ProcessProgress() {
 			{
@@ -161,7 +161,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		ExportImportConfiguration exportImportConfiguration =
 			ExportImportConfigurationFactory.cloneExportImportConfiguration(
@@ -492,7 +492,7 @@ public class PublishProcessResourceImpl extends BasePublishProcessResourceImpl {
 		}
 	}
 
-	private static final String[] _TASK_EXECUTOR_CLASS_NAMES = {
+	private static final String[] _CLASS_NAMES_TASK_EXECUTOR = {
 		BackgroundTaskExecutorNames.LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR
 	};
 

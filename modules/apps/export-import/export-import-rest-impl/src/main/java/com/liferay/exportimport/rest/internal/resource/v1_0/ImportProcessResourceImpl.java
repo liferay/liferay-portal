@@ -82,7 +82,7 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		_backgroundTaskLocalService.deleteBackgroundTask(backgroundTask);
 	}
@@ -113,7 +113,7 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		return _toImportProcess(backgroundTask);
 	}
@@ -140,7 +140,7 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		return new ProcessProgress() {
 			{
@@ -475,7 +475,7 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 		};
 	}
 
-	private static final String[] _TASK_EXECUTOR_CLASS_NAMES = {
+	private static final String[] _CLASS_NAMES_TASK_EXECUTOR = {
 		BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR,
 		BackgroundTaskExecutorNames.PORTLET_IMPORT_BACKGROUND_TASK_EXECUTOR
 	};

@@ -79,7 +79,7 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _IMPORT_TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_IMPORT_TASK_EXECUTOR);
 
 		return _getReportEntriesPage(
 			backgroundTask, filter, pagination, search, sorts);
@@ -97,7 +97,7 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		PermissionUtil.checkPublishPermission(backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _PUBLISH_TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_PUBLISH_TASK_EXECUTOR);
 
 		return _getReportEntriesPage(
 			backgroundTask, filter, pagination, search, sorts);
@@ -272,12 +272,12 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 		};
 	}
 
-	private static final String[] _IMPORT_TASK_EXECUTOR_CLASS_NAMES = {
+	private static final String[] _CLASS_NAMES_IMPORT_TASK_EXECUTOR = {
 		BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR,
 		BackgroundTaskExecutorNames.PORTLET_IMPORT_BACKGROUND_TASK_EXECUTOR
 	};
 
-	private static final String[] _PUBLISH_TASK_EXECUTOR_CLASS_NAMES = {
+	private static final String[] _CLASS_NAMES_PUBLISH_TASK_EXECUTOR = {
 		BackgroundTaskExecutorNames.LAYOUT_STAGING_BACKGROUND_TASK_EXECUTOR
 	};
 

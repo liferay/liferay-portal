@@ -80,7 +80,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		_backgroundTaskLocalService.deleteBackgroundTask(backgroundTask);
 	}
@@ -111,7 +111,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		return _toExportProcess(backgroundTask);
 	}
@@ -127,7 +127,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		List<FileEntry> fileEntries =
 			backgroundTask.getAttachmentsFileEntries();
@@ -169,7 +169,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		return new ProcessProgress() {
 			{
@@ -230,7 +230,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			contextCompany.getCompanyId(), backgroundTask.getGroupId());
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
-			backgroundTask, _TASK_EXECUTOR_CLASS_NAMES);
+			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
 
 		ExportImportConfiguration exportImportConfiguration =
 			ExportImportConfigurationFactory.cloneExportImportConfiguration(
@@ -538,7 +538,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		};
 	}
 
-	private static final String[] _TASK_EXECUTOR_CLASS_NAMES = {
+	private static final String[] _CLASS_NAMES_TASK_EXECUTOR = {
 		BackgroundTaskExecutorNames.LAYOUT_EXPORT_BACKGROUND_TASK_EXECUTOR,
 		BackgroundTaskExecutorNames.PORTLET_EXPORT_BACKGROUND_TASK_EXECUTOR
 	};
