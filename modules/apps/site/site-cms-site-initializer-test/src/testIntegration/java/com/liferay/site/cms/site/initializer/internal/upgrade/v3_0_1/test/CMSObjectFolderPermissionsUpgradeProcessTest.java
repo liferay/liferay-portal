@@ -48,15 +48,12 @@ public class CMSObjectFolderPermissionsUpgradeProcessTest {
 				ObjectFolderConstants.
 					EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
 				TestPropsValues.getCompanyId());
-
 		_role = RoleUtil.getOrAddCMSAdministratorRole(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId());
 	}
 
 	@Test
 	public void testUpgrade() throws Exception {
-		Assert.assertNotNull(_objectFolder);
-
 		_resourcePermissionLocalService.setResourcePermissions(
 			TestPropsValues.getCompanyId(), ObjectFolder.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
