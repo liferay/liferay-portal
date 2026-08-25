@@ -124,6 +124,7 @@ public class PortalInstanceResourceTest
 	public void testDeletePortalInstance() throws Exception {
 		_testDeletePortalInstanceExisting();
 		_testDeletePortalInstanceNonexistent();
+		_testDeletePortalInstanceWithoutOmniadminPermission();
 	}
 
 	@Override
@@ -133,6 +134,8 @@ public class PortalInstanceResourceTest
 			portalInstanceResource.getPortalInstance(
 				_portalInstance.getPortalInstanceId()),
 			_portalInstance);
+
+		_testGetPortalInstanceWithoutOmniadminPermission();
 	}
 
 	@Override
@@ -142,6 +145,8 @@ public class PortalInstanceResourceTest
 			portalInstanceResource.getPortalInstancesPage(null);
 
 		assertContains(_portalInstance, (List<PortalInstance>)page.getItems());
+
+		_testGetPortalInstancesPageWithoutOmniadminPermission();
 	}
 
 	@Override
@@ -152,6 +157,7 @@ public class PortalInstanceResourceTest
 		_testPatchPortalInstanceUpdateDomain();
 		_testPatchPortalInstanceUpdatePortletInstanceId();
 		_testPatchPortalInstanceUpdateVirtualHost();
+		_testPatchPortalInstanceWithoutOmniadminPermission();
 	}
 
 	@Override
@@ -160,6 +166,7 @@ public class PortalInstanceResourceTest
 		_testPostPortalInstanceWithoutAdmin();
 		_testPostPortalInstanceWithAdmin();
 		_testPostPortalInstanceWithAdminAndCompanyStrangers();
+		_testPostPortalInstanceWithoutOmniadminPermission();
 	}
 
 	@FeatureFlag("LPD-11342")
@@ -238,6 +245,8 @@ public class PortalInstanceResourceTest
 			_portalInstance.getCompanyId());
 
 		Assert.assertTrue(company.isActive());
+
+		_testPutPortalInstanceActivateWithoutOmniadminPermission();
 	}
 
 	@Override
@@ -259,6 +268,8 @@ public class PortalInstanceResourceTest
 			_portalInstance.getCompanyId());
 
 		Assert.assertFalse(company.isActive());
+
+		_testPutPortalInstanceDeactivateWithoutOmniadminPermission();
 	}
 
 	@Override
@@ -449,6 +460,22 @@ public class PortalInstanceResourceTest
 		return configuration;
 	}
 
+	private PortalInstanceResource _createUserPortalInstanceResource()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(testCompany, "test");
+
+		return PortalInstanceResource.builder(
+		).authentication(
+			user.getEmailAddress(), "test"
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private void _dropExportedSchema(long companyId) throws Exception {
 		DB db = DBManagerUtil.getDB();
 
@@ -525,6 +552,62 @@ public class PortalInstanceResourceTest
 
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 			Assert.assertNull(problem.getTitle());
+		}
+	}
+
+	private void _testDeletePortalInstanceWithoutOmniadminPermission()
+		throws Exception {
+
+		PortalInstanceResource userPortalInstanceResource =
+			_createUserPortalInstanceResource();
+
+		try {
+			userPortalInstanceResource.deletePortalInstance(
+				_portalInstance.getPortalInstanceId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testGetPortalInstancesPageWithoutOmniadminPermission()
+		throws Exception {
+
+		PortalInstanceResource userPortalInstanceResource =
+			_createUserPortalInstanceResource();
+
+		try {
+			userPortalInstanceResource.getPortalInstancesPage(null);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testGetPortalInstanceWithoutOmniadminPermission()
+		throws Exception {
+
+		PortalInstanceResource userPortalInstanceResource =
+			_createUserPortalInstanceResource();
+
+		try {
+			userPortalInstanceResource.getPortalInstance(
+				_portalInstance.getPortalInstanceId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
 	}
 
@@ -611,6 +694,25 @@ public class PortalInstanceResourceTest
 			false, false, false, false, true);
 
 		_testPatchPortalInstace(portalInstance, false, false, false);
+	}
+
+	private void _testPatchPortalInstanceWithoutOmniadminPermission()
+		throws Exception {
+
+		PortalInstanceResource userPortalInstanceResource =
+			_createUserPortalInstanceResource();
+
+		try {
+			userPortalInstanceResource.patchPortalInstance(
+				_portalInstance.getPortalInstanceId(), randomPortalInstance());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
 	}
 
 	private void _testPostPortalInstanceCopyDefaultCompany() throws Exception {
@@ -777,18 +879,8 @@ public class PortalInstanceResourceTest
 	private void _testPostPortalInstanceCopyWithoutOmniadminPermission()
 		throws Exception {
 
-		User user = UserTestUtil.addUser(testCompany, "test");
-
 		PortalInstanceResource userPortalInstanceResource =
-			PortalInstanceResource.builder(
-			).authentication(
-				user.getEmailAddress(), "test"
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
+			_createUserPortalInstanceResource();
 
 		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
 
@@ -923,18 +1015,8 @@ public class PortalInstanceResourceTest
 	private void _testPostPortalInstanceExportWithoutOmniadminPermission()
 		throws Exception {
 
-		User user = UserTestUtil.addUser(testCompany, "test");
-
 		PortalInstanceResource userPortalInstanceResource =
-			PortalInstanceResource.builder(
-			).authentication(
-				user.getEmailAddress(), "test"
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
+			_createUserPortalInstanceResource();
 
 		try {
 			userPortalInstanceResource.postPortalInstanceExport(
@@ -1125,18 +1207,8 @@ public class PortalInstanceResourceTest
 	private void _testPostPortalInstanceImportWithoutOmniadminPermission()
 		throws Exception {
 
-		User user = UserTestUtil.addUser(testCompany, "test");
-
 		PortalInstanceResource userPortalInstanceResource =
-			PortalInstanceResource.builder(
-			).authentication(
-				user.getEmailAddress(), "test"
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
+			_createUserPortalInstanceResource();
 
 		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
 
@@ -1223,6 +1295,63 @@ public class PortalInstanceResourceTest
 			if (postPortalInstance != null) {
 				_deletePortalInstance(postPortalInstance);
 			}
+		}
+	}
+
+	private void _testPostPortalInstanceWithoutOmniadminPermission()
+		throws Exception {
+
+		PortalInstanceResource userPortalInstanceResource =
+			_createUserPortalInstanceResource();
+
+		try {
+			userPortalInstanceResource.postPortalInstance(
+				randomPortalInstance());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPutPortalInstanceActivateWithoutOmniadminPermission()
+		throws Exception {
+
+		PortalInstanceResource userPortalInstanceResource =
+			_createUserPortalInstanceResource();
+
+		try {
+			userPortalInstanceResource.putPortalInstanceActivate(
+				_portalInstance.getPortalInstanceId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private void _testPutPortalInstanceDeactivateWithoutOmniadminPermission()
+		throws Exception {
+
+		PortalInstanceResource userPortalInstanceResource =
+			_createUserPortalInstanceResource();
+
+		try {
+			userPortalInstanceResource.putPortalInstanceDeactivate(
+				_portalInstance.getPortalInstanceId());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
 	}
 
