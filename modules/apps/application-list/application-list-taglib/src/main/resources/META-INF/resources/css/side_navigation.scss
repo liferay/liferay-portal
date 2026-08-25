@@ -1,8 +1,49 @@
 @import 'atlas-custom-properties/_variables';
 @import 'cadmin-variables';
 
+@mixin side-navigation-shimmer {
+	overflow: hidden;
+	position: relative;
+
+	&::after {
+		animation: shimmer 1.6s infinite;
+		background: linear-gradient(
+			90deg,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0) 0%,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0.6) 50%,
+			rgb(from var(--skeleton-shimmer-color) r g b / 0) 100%
+		);
+		content: '';
+		inset: 0;
+		position: absolute;
+		transform: translateX(-100%);
+	}
+}
+
 .side-navigation-container {
 	--skeleton-shimmer-color: var(--light-l1);
+
+	a.nav-link {
+		--menubar-primary-collapse-icon-font-size: 0.875rem;
+		--menubar-primary-collapse-icon-font-weight: 400;
+		--menubar-primary-collapse-icon-text-transform: none;
+
+		.collapse-icon-closed,
+		.collapse-icon-open {
+			display: none;
+		}
+	}
+
+	a.nav-link + .nav .nav-link {
+		padding-left: 2rem;
+	}
+
+	// The panel supplies its own clear button, which works in every browser.
+	// Suppress the native one so Chrome does not show a second times icon.
+
+	input::-webkit-search-cancel-button {
+		display: none;
+	}
 
 	input:not(:focus-within) {
 		background-image: clay-icon(search, #6b6c7e);
@@ -22,8 +63,7 @@
 		box-shadow: none;
 
 		&.skeleton {
-			overflow: hidden;
-			position: relative;
+			@include side-navigation-shimmer;
 
 			.side-navigation-skeleton {
 				aspect-ratio: 320 / 650;
@@ -31,21 +71,34 @@
 				flex-shrink: 0;
 				width: 100%;
 			}
-
-			&::after {
-				animation: shimmer 1.6s infinite;
-				background: linear-gradient(
-					90deg,
-					rgb(from var(--skeleton-shimmer-color) r g b / 0) 0%,
-					rgb(from var(--skeleton-shimmer-color) r g b / 0.6) 50%,
-					rgb(from var(--skeleton-shimmer-color) r g b / 0) 100%
-				);
-				content: '';
-				inset: 0;
-				position: absolute;
-				transform: translateX(-100%);
-			}
 		}
+	}
+
+	.side-navigation-results-skeleton {
+		@include side-navigation-shimmer;
+
+		svg {
+			aspect-ratio: 320 / 530;
+			color: $secondary-l3;
+			flex-shrink: 0;
+			width: 100%;
+		}
+	}
+
+	.side-navigation-section-item > .nav-link {
+		align-items: flex-start;
+		display: flex;
+		flex-direction: column;
+		line-height: 1rem;
+		padding-bottom: 4px;
+		padding-top: 4px;
+	}
+
+	.side-navigation-section-item-context {
+		color: $secondary;
+		font-size: 0.75rem;
+		line-height: 0.75rem;
+		margin-top: 4px;
 	}
 }
 

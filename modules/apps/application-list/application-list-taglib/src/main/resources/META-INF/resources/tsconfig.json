@@ -1,5 +1,5 @@
 {
-	"@generated": "550bff609091ad779fe868e7a198238760728338",
+	"@generated": "b5499965c2e0c48a209d533ae0fc79c1faaedac4",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -16,6 +16,12 @@
 			],
 			"frontend-js-components-web": [
 				"../../../../../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/index.ts"
+			],
+			"frontend-js-web": [
+				"../../../../../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/main/index.d.ts"
+			],
+			"frontend-js-web/legacy": [
+				"../../../../../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"
 			]
 		},
 		"rootDir": "../../../../../../../..",
@@ -39,6 +45,9 @@
 		},
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../../../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/tsconfig.json"
 		}
 	]
 }

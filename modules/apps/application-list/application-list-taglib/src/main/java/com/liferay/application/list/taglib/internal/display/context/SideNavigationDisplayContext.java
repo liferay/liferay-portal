@@ -15,6 +15,7 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -90,6 +91,30 @@ public class SideNavigationDisplayContext {
 			"items", _getPropsItems()
 		).put(
 			"label", _panelCategory.getLabel(_themeDisplay.getLocale())
+		).put(
+			"navigationItemsUrl",
+			() -> {
+				LiferayPortletURL navigationItemsURL =
+					(LiferayPortletURL)
+						RequestBackedPortletURLFactoryUtil.create(
+							_httpServletRequest
+						).createResourceURL(
+							ProductNavigationProductMenuPortletKeys.
+								PRODUCT_NAVIGATION_PRODUCT_MENU
+						);
+
+				navigationItemsURL.setCopyCurrentRenderParameters(false);
+
+				navigationItemsURL.setParameter(
+					"p_v_l_s_g_id",
+					String.valueOf(_themeDisplay.getScopeGroupId()));
+				navigationItemsURL.setParameter(
+					"selectedPortletId", _portletId);
+				navigationItemsURL.setResourceID(
+					"/product_navigation_product_menu/get_navigation_items");
+
+				return navigationItemsURL.toString();
+			}
 		).put(
 			"portletId", StringPool.BLANK
 		).put(

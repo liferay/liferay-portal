@@ -5,9 +5,13 @@
 
 export type SideNavigationItem = {
 	canonicalName?: string;
+	filterOnly?: boolean;
 	href?: string;
 	id: string;
 	items?: Array<SideNavigationItem>;
 	label: string;
 	leadingIcon?: string;
+	parentLabel?: string;
 };
+
+export type SideNavigationItemsMap = Record<string, Array<SideNavigationItem>>;
