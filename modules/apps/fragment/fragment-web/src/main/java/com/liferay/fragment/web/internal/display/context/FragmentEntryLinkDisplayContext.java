@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -455,7 +457,18 @@ public class FragmentEntryLinkDisplayContext {
 	}
 
 	private Layout _fetchLayout(FragmentEntryLink fragmentEntryLink) {
-		return LayoutLocalServiceUtil.fetchLayout(fragmentEntryLink.getPlid());
+		Layout layout = LayoutLocalServiceUtil.fetchLayout(
+			fragmentEntryLink.getPlid());
+
+		if ((layout == null) && _log.isWarnEnabled()) {
+			_log.warn(
+				StringBundler.concat(
+					"Unable to find layout with PLID ",
+					fragmentEntryLink.getPlid(), " for fragment entry link ",
+					fragmentEntryLink.getFragmentEntryLinkId()));
+		}
+
+		return layout;
 	}
 
 	private LayoutPageTemplateEntry _fetchLayoutPageTemplateEntry(
@@ -487,6 +500,9 @@ public class FragmentEntryLinkDisplayContext {
 
 		return _themeDisplay;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		FragmentEntryLinkDisplayContext.class);
 
 	private Long _fragmentCollectionId;
 	private FragmentEntry _fragmentEntry;
