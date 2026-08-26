@@ -58,33 +58,29 @@ export class Detection {
 	}
 
 	async run(): Promise<AudienceId[]> {
-		const matches = [];
+		const matches: AudienceId[] = [];
 
-		for (const audience of this._audiencesDefinition.audiences) {
-			const {conjunction, id, rules} = audience;
+		await Promise.allSettled(
+			this._audiencesDefinition.audiences.map(async (audience) => {
+				const {conjunction, id, rules} = audience;
 
-			log(`Checking rules for audience '${id}'...`);
+				log(`Checking rules for audience '${id}'...`);
 
-			let matched;
+				try {
+					if (await this._evaluateGroup(conjunction, rules)) {
+						log(`Matched audience: ${id}`);
 
-			try {
-				matched = await this._evaluateGroup(conjunction, rules);
-			}
-			catch (error: any) {
-				log(
-					`Unable to evaluate the rules of audience '${id}', so ` +
-						`the audience is not matched: ${error.message || error}`
-				);
-
-				continue;
-			}
-
-			if (matched) {
-				log(`Matched audience: ${id}`);
-
-				matches.push(id);
-			}
-		}
+						matches.push(id);
+					}
+				}
+				catch (error: any) {
+					log(
+						`Unable to evaluate the rules of audience '${id}', so ` +
+							`the audience is not matched: ${error.message || error}`
+					);
+				}
+			})
+		);
 
 		return matches;
 	}
