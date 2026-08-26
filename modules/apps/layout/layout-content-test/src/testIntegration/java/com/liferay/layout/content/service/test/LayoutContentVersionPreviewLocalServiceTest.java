@@ -127,6 +127,11 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 	@Test
 	@TestInfo("LPD-90030")
 	public void testDeleteLayoutContentVersionPreviews() throws Exception {
+		List<LayoutContentVersionPreview> initialLayoutContentVersionPreviews =
+			_layoutContentVersionPreviewLocalService.
+				getLayoutContentVersionPreviews(
+					_layoutContentVersion.getLayoutContentVersionId());
+
 		_addLayoutContentVersionPreviews(2);
 
 		List<LayoutContentVersionPreview> layoutContentVersionPreviews =
@@ -135,7 +140,8 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 					_layoutContentVersion.getLayoutContentVersionId());
 
 		Assert.assertEquals(
-			layoutContentVersionPreviews.toString(), 2,
+			layoutContentVersionPreviews.toString(),
+			initialLayoutContentVersionPreviews.size() + 2,
 			layoutContentVersionPreviews.size());
 
 		_layoutContentVersionPreviewLocalService.
@@ -182,6 +188,11 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 	@Test
 	@TestInfo("LPD-90030")
 	public void testGetLayoutContentVersionPreviews() throws Exception {
+		List<LayoutContentVersionPreview> initialLayoutContentVersionPreviews =
+			_layoutContentVersionPreviewLocalService.
+				getLayoutContentVersionPreviews(
+					_layoutContentVersion.getLayoutContentVersionId());
+
 		_addLayoutContentVersionPreviews(2);
 
 		List<LayoutContentVersionPreview> layoutContentVersionPreviews =
@@ -190,7 +201,8 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 					_layoutContentVersion.getLayoutContentVersionId());
 
 		Assert.assertEquals(
-			layoutContentVersionPreviews.toString(), 2,
+			layoutContentVersionPreviews.toString(),
+			initialLayoutContentVersionPreviews.size() + 2,
 			layoutContentVersionPreviews.size());
 	}
 
