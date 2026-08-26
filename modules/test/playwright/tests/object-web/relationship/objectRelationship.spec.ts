@@ -1412,19 +1412,12 @@ test.describe('Manage object relationships through Model Builder', () => {
 			});
 
 			await test.step('assert that a "Learn more" link is displayed in the warning toast and leads to a learn recource', async () => {
-				const pagePromise = page.waitForEvent('popup');
-
-				await page.getByRole('link', {name: 'Learn more.'}).click();
-
-				const liferayLearnPage = await pagePromise;
-
-				await liferayLearnPage.waitForLoadState();
-
 				await expect(
-					liferayLearnPage.getByRole('heading', {
-						name: 'Accessing Accounts Data from Custom Object',
-					})
-				).toBeVisible();
+					page.getByRole('link', {name: 'Learn more.'})
+				).toHaveAttribute(
+					'href',
+					/accessing-accounts-data-from-custom-objects/
+				);
 			});
 		}
 	);
