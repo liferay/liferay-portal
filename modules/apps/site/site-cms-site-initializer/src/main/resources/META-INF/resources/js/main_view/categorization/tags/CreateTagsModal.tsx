@@ -25,6 +25,7 @@ import {
 } from '../../../common/utils/toastUtil';
 import CategorizationProjects from '../components/CategorizationProjects';
 import CategorizationSpaces from '../components/CategorizationSpaces';
+import {ALL_SCOPES_ID} from '../components/ScopeMultiSelect';
 
 const FDS_EVENT_UPDATE_DISPLAY = 'fds-update-display';
 
@@ -41,6 +42,7 @@ export default function CreateTagsModalContent({
 	dataSetId: string;
 	invalidTagCharacters: string;
 }) {
+	const [allProjectsSelected, setAllProjectsSelected] = useState(false);
 	const [nameInputError, setNameInputError] = useState<string>('');
 	const [projectInputError, setProjectInputError] = useState('');
 	const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
@@ -70,9 +72,9 @@ export default function CreateTagsModalContent({
 					scopeKey,
 				})),
 				name: values.tagName,
-				projects: selectedProjects.map((scopeKey) => ({
-					scopeKey,
-				})),
+				projects: allProjectsSelected
+					? [{id: ALL_SCOPES_ID}]
+					: selectedProjects.map((scopeKey) => ({scopeKey})),
 			};
 
 			return ApiHelper.post(url, body).then(({error, status}) => {
@@ -214,6 +216,7 @@ export default function CreateTagsModalContent({
 							checkboxText="tag"
 							defaultAllScopesChecked={false}
 							required={false}
+							setAllProjectsSelected={setAllProjectsSelected}
 							setProjectInputError={setProjectInputError}
 							setSelectedProjects={setSelectedProjects}
 						/>

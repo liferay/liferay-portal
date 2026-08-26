@@ -14,6 +14,8 @@ import ErrorFeedback from '../../../common/components/forms/ErrorFeedback';
 import RequiredMark from '../../../common/components/forms/RequiredMark';
 import {LogoColor} from '../../../common/types/Space';
 
+export const ALL_SCOPES_ID = -1;
+
 export type ScopeItem = {
 	displayType?: LogoColor;
 	label: string;
@@ -32,6 +34,7 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 	defaultAllScopesChecked = true,
 	disabled = false,
 	labels,
+	onAllScopesChange,
 	onChange,
 	onError,
 	onSelectionChange,
@@ -42,6 +45,7 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 	defaultAllScopesChecked?: boolean;
 	disabled?: boolean;
 	labels: ScopeLabels;
+	onAllScopesChange?: (value: boolean) => void;
 	onChange?: (value: boolean) => void;
 	onError: (value: string) => void;
 	onSelectionChange: (value: any) => void;
@@ -70,6 +74,10 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 		);
 		setSelectedItems(preselectedItems ?? []);
 	}, [defaultAllScopesChecked, preselectedItems]);
+
+	useEffect(() => {
+		onAllScopesChange?.(allScopesChecked);
+	}, [allScopesChecked, onAllScopesChange]);
 
 	useEffect(() => {
 		if (!onChange) {

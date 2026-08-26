@@ -19,6 +19,7 @@ import {
 } from '../../../common/utils/toastUtil';
 import CategorizationProjects from '../components/CategorizationProjects';
 import CategorizationSpaces from '../components/CategorizationSpaces';
+import {ALL_SCOPES_ID} from '../components/ScopeMultiSelect';
 
 const CONFIRMATION_MESSAGES = {
 	BOTH: {
@@ -59,7 +60,7 @@ function getScopeKeys(scopes: AssetLibraryType[] = []): string[] {
  * everywhere comes back as a single entry that has the id -1 and no scope key.
  */
 function isAllScopes(scopes: AssetLibraryType[] = []) {
-	return scopes.some((scope) => scope.id === -1);
+	return scopes.some((scope) => scope.id === ALL_SCOPES_ID);
 }
 
 export default function EditTagsModalContent({
@@ -81,6 +82,7 @@ export default function EditTagsModalContent({
 	tagId: number;
 	tagName: string;
 }) {
+	const [allProjectsSelected, setAllProjectsSelected] = useState(false);
 	const [nameInputError, setNameInputError] = useState<string>('');
 	const [projectChange, setProjectChange] = useState(false);
 	const [projectInputError, setProjectInputError] = useState('');
@@ -99,7 +101,9 @@ export default function EditTagsModalContent({
 			name: values.tagName,
 			...(cmpEnabled &&
 				Liferay.FeatureFlags['LPD-99403'] && {
-					projects: selectedProjects.map((scopeKey) => ({scopeKey})),
+					projects: allProjectsSelected
+						? [{id: ALL_SCOPES_ID}]
+						: selectedProjects.map((scopeKey) => ({scopeKey})),
 				}),
 		};
 
@@ -252,6 +256,7 @@ export default function EditTagsModalContent({
 							defaultAllScopesChecked={isAllScopes(projects)}
 							projects={projects}
 							required={false}
+							setAllProjectsSelected={setAllProjectsSelected}
 							setProjectChange={setProjectChange}
 							setProjectInputError={setProjectInputError}
 							setSelectedProjects={setSelectedProjects}
