@@ -4,12 +4,13 @@
  */
 
 import ClayAlert from '@clayui/alert';
-import ClayButton from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import {LanguagePicker, Option, Picker} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
+import ClayPopover from '@clayui/popover';
 import {dateUtils, sub} from 'frontend-js-web';
 import React, {Key, useEffect, useMemo, useRef, useState} from 'react';
 
@@ -142,6 +143,8 @@ export default function CompareVersionsModalContent({
 					small
 				/>
 
+				<DiffKeyPopover />
+
 				<ClayButton
 					aria-label={Liferay.Language.get('close')}
 					className="close"
@@ -186,6 +189,45 @@ export default function CompareVersionsModalContent({
 				) : null}
 			</ClayModal.Body>
 		</>
+	);
+}
+
+function DiffKeyPopover() {
+	const [show, setShow] = useState(false);
+
+	return (
+		<ClayPopover
+			alignPosition="bottom-right"
+			closeOnClickOutside
+			disableScroll
+			header={Liferay.Language.get('key')}
+			onShowChange={setShow}
+			show={show}
+			trigger={
+				<ClayButtonWithIcon
+					aria-expanded={show}
+					className="mr-3 text-secondary"
+					displayType="unstyled"
+					size="sm"
+					symbol="question-circle-full"
+					title={Liferay.Language.get('compare-versions-key-help')}
+				/>
+			}
+		>
+			<div className="c-gap-2 d-flex flex-wrap">
+				<span className="cms-compare-versions-key-added px-2">
+					{Liferay.Language.get('added')}
+				</span>
+
+				<span className="cms-compare-versions-key-deleted px-2">
+					{Liferay.Language.get('deleted')}
+				</span>
+
+				<span className="cms-compare-versions-key-format-changes px-2">
+					{Liferay.Language.get('format-changes')}
+				</span>
+			</div>
+		</ClayPopover>
 	);
 }
 

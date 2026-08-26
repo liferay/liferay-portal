@@ -1,6 +1,30 @@
 @import '_atlas-custom-properties-variables';
 
+@mixin cms-compare-versions-formatted-mark {
+	border: 1px dotted $primary;
+	text-decoration: underline dotted;
+}
+
+@mixin cms-compare-versions-mark($background-color, $border-color) {
+	background-color: $background-color;
+	border: 1px dotted $border-color;
+}
+
 .cms-compare-versions {
+	&-key-added {
+		@include cms-compare-versions-mark($success-l2, $success);
+	}
+
+	&-key-deleted {
+		@include cms-compare-versions-mark($danger-l2, $danger);
+
+		text-decoration: line-through;
+	}
+
+	&-key-format-changes {
+		@include cms-compare-versions-formatted-mark;
+	}
+
 	&-pane {
 		flex: 1;
 		min-height: 0;
@@ -23,4 +47,5 @@
 	&-panes {
 		min-height: 0;
 	}
+
 }
