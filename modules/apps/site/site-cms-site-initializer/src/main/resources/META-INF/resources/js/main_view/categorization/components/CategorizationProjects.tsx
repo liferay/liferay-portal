@@ -14,6 +14,7 @@ export default function CategorizationProjects({
 	checkboxText,
 	disabled = false,
 	projects,
+	required = true,
 	setProjectChange,
 	setProjectInputError,
 	setSelectedProjects,
@@ -21,6 +22,7 @@ export default function CategorizationProjects({
 	checkboxText: string;
 	disabled?: boolean;
 	projects?: AssetLibraryType[];
+	required?: boolean;
 	setProjectChange?: (value: boolean) => void;
 	setProjectInputError: (value: string) => void;
 	setSelectedProjects: (value: string[]) => void;
@@ -89,6 +91,7 @@ export default function CategorizationProjects({
 			onError={setProjectInputError}
 			onSelectionChange={setSelectedProjects}
 			preselectedItems={preselectedItems}
+			required={required}
 			sourceItems={sourceItems}
 		/>
 	);

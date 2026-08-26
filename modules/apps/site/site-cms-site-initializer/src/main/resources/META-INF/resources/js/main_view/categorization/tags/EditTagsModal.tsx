@@ -174,7 +174,6 @@ export default function EditTagsModalContent({
 				const errors = validate(
 					{
 						assetLibraries: [required],
-						projects: [required],
 						tagName: [required],
 					},
 					values
@@ -244,6 +243,7 @@ export default function EditTagsModalContent({
 						<CategorizationProjects
 							checkboxText="tag"
 							projects={projects}
+							required={false}
 							setProjectChange={setProjectChange}
 							setProjectInputError={setProjectInputError}
 							setSelectedProjects={setSelectedProjects}

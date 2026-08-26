@@ -35,6 +35,7 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 	onError,
 	onSelectionChange,
 	preselectedItems,
+	required = true,
 	sourceItems,
 }: {
 	disabled?: boolean;
@@ -43,6 +44,7 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 	onError: (value: string) => void;
 	onSelectionChange: (value: any) => void;
 	preselectedItems?: T[];
+	required?: boolean;
 	sourceItems: T[];
 }) {
 	const [active, setActive] = useState(false);
@@ -81,7 +83,7 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 	}, [allScopesChecked, onChange, preselectedItems, selectedItems]);
 
 	const errorMessage =
-		allScopesChecked || selectedItems.length
+		!required || allScopesChecked || selectedItems.length
 			? ''
 			: sub(
 					Liferay.Language.get('the-x-field-is-required'),
@@ -104,7 +106,7 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 			<label htmlFor={inputId}>
 				{labels.field}
 
-				<RequiredMark />
+				{required && <RequiredMark />}
 			</label>
 
 			<div className={showError ? 'has-error' : ''}>
