@@ -11,6 +11,8 @@ import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 
 import org.osgi.service.component.annotations.Component;
@@ -27,6 +29,11 @@ public class AccountEntryModelDocumentContributor
 
 	@Override
 	public void contribute(Document document, AccountEntry accountEntry) {
+		document.setSortableTextFields(
+			ArrayUtil.append(
+				PropsUtil.getArray(PropsKeys.INDEX_SORTABLE_TEXT_FIELDS),
+				"externalReferenceCode"));
+
 		AccountGroupAccountEntryDocumentContributorUtil.contribute(
 			document, accountEntry);
 		OrganizationAccountEntryDocumentContributorUtil.contribute(

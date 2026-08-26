@@ -41,8 +41,7 @@ public class AccountEntityModel implements EntityModel {
 				String::valueOf),
 			new StringEntityField(
 				"externalReferenceCode",
-				locale -> Field.getSortableFieldName("externalReferenceCode"),
-				locale -> "externalReferenceCode"),
+				locale -> Field.getSortableFieldName("externalReferenceCode")),
 			new StringEntityField(
 				"name", locale -> Field.getSortableFieldName(Field.NAME)),
 			new StringEntityField("type", locale -> Field.TYPE));
