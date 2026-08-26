@@ -32,7 +32,15 @@ public class MonitorEngine {
 		List<Monitor> dueMonitors = _monitorScheduler.getDueMonitors(_monitors);
 
 		for (Monitor monitor : dueMonitors) {
-			monitor.prepareCycle();
+			try {
+				monitor.prepareCycle();
+			}
+			catch (RuntimeException runtimeException) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"WARNING: Unable to prepare monitor ", monitor.getId(),
+						": ", runtimeException.getMessage()));
+			}
 		}
 
 		Map<Monitor, MonitorResult> monitorResultsMap = _monitorRunner.run(
