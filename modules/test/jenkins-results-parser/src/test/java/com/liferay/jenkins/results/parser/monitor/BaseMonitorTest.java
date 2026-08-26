@@ -22,7 +22,7 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
-	public void testGetAttemptTimeoutMillisClampedTimeout() {
+	public void testGetAttemptTimeoutMillisMaximum() {
 		BaseMonitor baseMonitor = _newBaseMonitor(Long.MAX_VALUE);
 
 		testEquals(715827666, baseMonitor.getAttemptTimeoutMillis());
@@ -43,7 +43,7 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
-	public void testGetSingleAttemptTimeoutMillisClampedTimeout() {
+	public void testGetSingleAttemptTimeoutMillisMaximum() {
 		BaseMonitor baseMonitor = _newBaseMonitor(Long.MAX_VALUE);
 
 		testEquals(966367350, baseMonitor.getSingleAttemptTimeoutMillis());

@@ -212,7 +212,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test(timeout = 5000)
-	public void testRunMonitorConfigTimeoutClamped() {
+	public void testRunMonitorConfigTimeoutMaximum() {
 		MonitorRunner monitorRunner = new MonitorRunner();
 
 		TestMonitor testMonitor = new TestMonitor(
