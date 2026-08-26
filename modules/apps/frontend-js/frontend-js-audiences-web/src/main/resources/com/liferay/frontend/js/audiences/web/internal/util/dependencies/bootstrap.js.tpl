@@ -45,7 +45,9 @@ async function runAudiences() {
 
 	audiences.clear();
 
-	await audiences.runDetection(DEFINITION_URL);
+	await audiences.runDetection(DEFINITION_URL, {
+		timeoutMs: [$DETECTION_TIMEOUT_MS$],
+	});
 
 	if (navigationId !== currentNavigationId) {
 		return;

@@ -24,6 +24,12 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface FrontendJSAudiencesConfiguration {
 
 	@Meta.AD(
+		deflt = "0", description = "detection-timeout-help",
+		name = "detection-timeout", required = false
+	)
+	public int detectionTimeoutMs();
+
+	@Meta.AD(
 		deflt = "false", description = "enable-log-help", name = "enable-log",
 		required = false
 	)

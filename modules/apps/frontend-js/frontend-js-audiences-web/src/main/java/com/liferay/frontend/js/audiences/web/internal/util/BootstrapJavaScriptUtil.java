@@ -20,13 +20,18 @@ import java.io.InputStream;
 public class BootstrapJavaScriptUtil {
 
 	public static String getContent(
-		String audiencesDefinitionHash, boolean enableLog) {
+		String audiencesDefinitionHash, int detectionTimeoutMs,
+		boolean enableLog) {
 
 		return StringUtil.replace(
 			_TPL_BOOTSTRAP_JS,
-			new String[] {"[$AUDIENCES_DEFINITION_HASH$]", "[$ENABLE_LOG$]"},
+			new String[] {
+				"[$AUDIENCES_DEFINITION_HASH$]", "[$DETECTION_TIMEOUT_MS$]",
+				"[$ENABLE_LOG$]"
+			},
 			new Object[] {
-				HtmlUtil.escapeJS(audiencesDefinitionHash), enableLog
+				HtmlUtil.escapeJS(audiencesDefinitionHash), detectionTimeoutMs,
+				enableLog
 			});
 	}
 
