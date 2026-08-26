@@ -13,6 +13,7 @@ import './InputLocalized.scss';
 
 interface InputLocalizedProps {
 	className?: string;
+	component?: 'input' | 'textarea';
 	disabled?: boolean;
 	error?: string;
 	helpMessage?: string;
