@@ -90,6 +90,25 @@ public class IllegalImportsCheck extends BaseFileCheck {
 					"LPS-47682");
 		}
 
+		// java.lang.invoke.MethodHandle
+		// java.lang.invoke.MethodType
+
+		if (!absolutePath.contains("/modules/apps/static") &&
+			!absolutePath.contains("/modules/core/petra") &&
+			!absolutePath.contains("/portal-impl/") &&
+			!absolutePath.contains("/portal-kernel/") &&
+			!absolutePath.contains("/portal-test/")) {
+
+			for (String className :
+					_CORE_REFLECTION_METHOD_HANDLE_CLASS_NAMES) {
+
+				_checkImport(
+					fileName, content, className,
+					"Do not reimplement core reflection with method handles, " +
+						"see LPD-97975");
+			}
+		}
+
 		// java.lang.reflect.Proxy
 
 		if (!isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath) &&
@@ -283,6 +302,10 @@ public class IllegalImportsCheck extends BaseFileCheck {
 	private static final String _AVOID_OPTIONAL_KEY = "avoidOptional";
 
 	private static final String _AVOID_STREAM_KEY = "avoidStream";
+
+	private static final String[] _CORE_REFLECTION_METHOD_HANDLE_CLASS_NAMES = {
+		"java.lang.invoke.MethodHandle", "java.lang.invoke.MethodType"
+	};
 
 	private static final String _ENFORCE_COOKIES_MANAGER_UTIL_KEY =
 		"enforceCookiesManagerUtil";
