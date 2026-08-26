@@ -99,8 +99,6 @@ public abstract class BaseMonitor implements Monitor {
 			timeoutSeconds = MonitorConfig.SECONDS_TIMEOUT_DEFAULT;
 		}
 
-		timeoutSeconds = Math.min(timeoutSeconds, Integer.MAX_VALUE / 1000);
-
 		return timeoutSeconds * 1000;
 	}
 
