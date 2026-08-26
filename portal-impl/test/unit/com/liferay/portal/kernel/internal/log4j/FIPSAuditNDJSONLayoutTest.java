@@ -5,9 +5,11 @@
 
 package com.liferay.portal.kernel.internal.log4j;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -35,6 +37,8 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  * @author Rafael Praxedes
@@ -83,11 +87,15 @@ public class FIPSAuditNDJSONLayoutTest {
 
 	@Test
 	public void testToSerializableEndsWithASingleNewLine() {
-		Assert.assertEquals(
-			"{\"event-type\":\"fips-state-transition\"}\n",
-			_toSerializable(
-				Collections.singletonMap(
-					"event-type", "fips-state-transition")));
+		String json = _toSerializable(
+			Collections.singletonMap("event-type", "fips-state-transition"));
+
+		Assert.assertEquals(json.length() - 1, json.indexOf(CharPool.NEW_LINE));
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"event-type", "fips-state-transition"
+			).toString(),
+			json, true);
 	}
 
 	@Test
