@@ -16,6 +16,7 @@ import React, {useEffect, useState} from 'react';
 import {Config, initializeConfig} from '../config';
 import PageVersionService from '../services/PageVersionService';
 import {PageVersion} from '../types/PageVersion';
+import PagePreview from './PagePreview';
 import ResponsivePanel from './ResponsivePanel';
 import Toolbar from './Toolbar';
 import VersionList from './VersionList';
@@ -156,6 +157,11 @@ export default function VersionHistory({config}: Props) {
 		window.location.reload();
 	};
 
+	const selectedExperience = config.availableSegmentsExperiences.find(
+		({segmentsExperienceERC}) =>
+			segmentsExperienceERC === selectedExperienceERC
+	);
+
 	const keywords = search.trim().toLowerCase();
 
 	const matches = (...names: Array<string | undefined>) =>
@@ -210,6 +216,11 @@ export default function VersionHistory({config}: Props) {
 					/>
 				)}
 			</ResponsivePanel>
+
+			<PagePreview
+				experienceId={selectedExperience?.segmentsExperienceId}
+				languageId={selectedLanguageId}
+			/>
 		</>
 	);
 }
