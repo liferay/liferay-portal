@@ -16,11 +16,14 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
+import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -63,7 +66,7 @@ public class LayoutLocalServiceWrapperTest {
 	}
 
 	@Test
-	@TestInfo("LPD-99344")
+	@TestInfo({"LPD-99344", "LPD-103832"})
 	public void testCopyLayoutContent() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
@@ -113,6 +116,26 @@ public class LayoutLocalServiceWrapperTest {
 
 			_testCopyLayoutContent(0, typeContentLayout);
 		}
+
+		try (SafeCloseable safeCloseable =
+				_swapInitialRequestSyncUtilWithSafeCloseable()) {
+
+			_testCopyLayoutContent(0, typeContentLayout);
+		}
+	}
+
+	private SafeCloseable _swapInitialRequestSyncUtilWithSafeCloseable() {
+		DefaultNoticeableFuture<Void>
+			originalSyncCallableDefaultNoticeableFuture =
+				ReflectionTestUtil.getAndSetFieldValue(
+					InitialRequestSyncUtil.class,
+					"_syncCallableDefaultNoticeableFuture",
+					new DefaultNoticeableFuture<>());
+
+		return () -> ReflectionTestUtil.setFieldValue(
+			InitialRequestSyncUtil.class,
+			"_syncCallableDefaultNoticeableFuture",
+			originalSyncCallableDefaultNoticeableFuture);
 	}
 
 	private List<LayoutContentVersion> _testCopyLayoutContent(
