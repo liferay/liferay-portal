@@ -459,6 +459,17 @@ public class ObjectDefinitionNotificationTermEvaluator
 
 			return null;
 		}
+		else if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED)) {
+
+			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+				GetterUtil.getLong(termValues.get("id")));
+
+			if (objectEntry != null) {
+				return MapUtil.getString(
+					objectEntry.getValues(), objectField.getName());
+			}
+		}
 
 		Object termValue = termValues.get(objectField.getName());
 
