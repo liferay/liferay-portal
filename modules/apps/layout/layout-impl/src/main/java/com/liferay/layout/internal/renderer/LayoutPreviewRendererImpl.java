@@ -76,6 +76,14 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			httpServletRequest.getAttribute(
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS));
 
+		ServiceContext clonedServiceContext =
+			(ServiceContext)serviceContext.clone();
+
+		clonedServiceContext.setPlid(layout.getPlid());
+		clonedServiceContext.setScopeGroupId(layout.getGroupId());
+
+		ServiceContextThreadLocal.pushServiceContext(clonedServiceContext);
+
 		try {
 			httpServletRequest.setAttribute(
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
@@ -99,14 +107,6 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			themeDisplay.setUser(guestUser);
 
 			layout.setClassNameId(0);
-
-			ServiceContext clonedServiceContext =
-				(ServiceContext)serviceContext.clone();
-
-			clonedServiceContext.setPlid(layout.getPlid());
-			clonedServiceContext.setScopeGroupId(layout.getGroupId());
-
-			ServiceContextThreadLocal.pushServiceContext(clonedServiceContext);
 
 			httpServletRequest.setAttribute(WebKeys.LAYOUT, layout);
 			httpServletRequest.setAttribute(
