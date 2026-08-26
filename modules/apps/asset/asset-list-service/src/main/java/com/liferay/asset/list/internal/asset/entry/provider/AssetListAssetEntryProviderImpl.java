@@ -268,7 +268,6 @@ public class AssetListAssetEntryProviderImpl
 				GetterUtil.getString(
 					unicodeProperties.getProperty(
 						"orderByColumn1", "priority"))));
-
 		assetEntryQuery.setOrderByCol2(
 			_getOrderByColumn(
 				assetListEntry.getCompanyId(), "modifiedDate",
