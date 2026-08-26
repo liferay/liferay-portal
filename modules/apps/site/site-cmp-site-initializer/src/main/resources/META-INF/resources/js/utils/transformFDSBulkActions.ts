@@ -31,9 +31,18 @@ export function transformFDSBulkActions(
 ): any[] {
 	return bulkActions.map((action) => ({
 		...action,
-		isVisible: (context: {selectedItems?: any[]} = {}) => {
+		isVisible: (
+			context: {
+				allItemsSelectedActive?: boolean;
+				selectedItems?: any[];
+			} = {}
+		) => {
 			if (action.isVisible && !action.isVisible(context)) {
 				return false;
+			}
+
+			if (context.allItemsSelectedActive) {
+				return true;
 			}
 
 			return (
