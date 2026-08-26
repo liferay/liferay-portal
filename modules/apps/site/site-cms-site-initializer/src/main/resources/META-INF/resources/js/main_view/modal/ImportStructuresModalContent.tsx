@@ -5,6 +5,7 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import {openToast} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
@@ -281,6 +282,15 @@ export default function ImportStructuresModalContent({
 							displayType="primary"
 							onClick={onImportButtonClick}
 						>
+							{loading && (
+								<span className="inline-item inline-item-before">
+									<ClayLoadingIndicator
+										displayType="light"
+										size="sm"
+									/>
+								</span>
+							)}
+
 							{Liferay.Language.get('import')}
 						</ClayButton>
 					</ClayButton.Group>
@@ -355,6 +365,15 @@ function WarningModalContent({
 							displayType="warning"
 							onClick={onImportButtonClick}
 						>
+							{loading && (
+								<span className="inline-item inline-item-before">
+									<ClayLoadingIndicator
+										displayType="light"
+										size="sm"
+									/>
+								</span>
+							)}
+
 							{Liferay.Language.get('import')}
 						</ClayButton>
 					</ClayButton.Group>
