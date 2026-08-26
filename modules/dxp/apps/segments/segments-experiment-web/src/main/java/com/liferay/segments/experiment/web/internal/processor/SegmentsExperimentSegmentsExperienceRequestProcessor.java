@@ -226,6 +226,10 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessor
 			_segmentsExperienceLocalService.fetchSegmentsExperience(
 				segmentsExperienceId);
 
+		if (segmentsExperience == null) {
+			return null;
+		}
+
 		return segmentsExperience.getSegmentsExperienceKey();
 	}
 

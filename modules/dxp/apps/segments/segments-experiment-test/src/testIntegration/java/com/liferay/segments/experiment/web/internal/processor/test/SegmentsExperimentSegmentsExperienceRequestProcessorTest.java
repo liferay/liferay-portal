@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.constants.SegmentsExperimentConstants;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
@@ -350,6 +351,34 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessorTest {
 	}
 
 	@Test
+	public void testGetSegmentsExperienceIdsWithoutSegmentsExperiences()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		Assert.assertEquals(
+			SegmentsExperienceConstants.ID_DEFAULT,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				layout.getPlid()));
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId())) {
+
+			long[] segmentsExperienceIds =
+				_segmentsExperienceRequestProcessor.getSegmentsExperienceIds(
+					_getMockHttpServletRequest(layout),
+					new MockHttpServletResponse(), _group.getGroupId(),
+					layout.getPlid(), new long[0]);
+
+			Assert.assertEquals(
+				Arrays.toString(segmentsExperienceIds), 0,
+				segmentsExperienceIds.length);
+		}
+	}
+
+	@Test
 	public void testGetSegmentsExperienceIdsWithSegmentsEntryIds()
 		throws Exception {
 
@@ -541,21 +570,27 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessorTest {
 	private MockHttpServletRequest _getMockHttpServletRequest()
 		throws Exception {
 
+		return _getMockHttpServletRequest(_layout);
+	}
+
+	private MockHttpServletRequest _getMockHttpServletRequest(Layout layout)
+		throws Exception {
+
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _getThemeDisplay());
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(layout));
 
 		return mockHttpServletRequest;
 	}
 
-	private ThemeDisplay _getThemeDisplay() throws Exception {
+	private ThemeDisplay _getThemeDisplay(Layout layout) throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
 			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
-		themeDisplay.setPlid(_layout.getPlid());
+		themeDisplay.setPlid(layout.getPlid());
 		themeDisplay.setScopeGroupId(_group.getGroupId());
 		themeDisplay.setSignedIn(true);
 		themeDisplay.setUser(TestPropsValues.getUser());
