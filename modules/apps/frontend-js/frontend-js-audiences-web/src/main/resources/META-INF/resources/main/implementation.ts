@@ -7,7 +7,12 @@ import {Detection} from './detection';
 import {log} from './log';
 import {store} from './store';
 
-import type {AudienceId, AudiencesDefinition, Handler} from './index';
+import type {
+	AudienceId,
+	AudiencesDefinition,
+	Handler,
+	RunDetectionOptions,
+} from './index';
 
 interface HandlersMap {
 	[audienceId: AudienceId]: Handler[];
@@ -38,7 +43,8 @@ export function getPriority(audienceId: AudienceId): number {
 }
 
 export async function runDetection(
-	audiencesDefinitionURL: string
+	audiencesDefinitionURL: string,
+	options?: RunDetectionOptions
 ): Promise<void> {
 	let response;
 
@@ -83,7 +89,7 @@ export async function runDetection(
 	let matches;
 
 	try {
-		matches = await detection.run();
+		matches = await detection.run(options?.timeoutMs);
 	}
 	catch (error) {
 		throw new Error(

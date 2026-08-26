@@ -47,42 +47,123 @@ interface OperatorImpl {
 }
 
 export class Detection {
+	private readonly _abortController: AbortController;
 	private readonly _audiencesDefinition: AudiencesDefinition;
 	private readonly _cache: Cache;
+	private _consumed = false;
 
 	constructor(audiencesDefinition: AudiencesDefinition) {
 		check(audiencesDefinition);
 
+		this._abortController = new AbortController();
 		this._audiencesDefinition = audiencesDefinition;
-		this._cache = new Cache();
+		this._cache = new Cache(this._abortController.signal);
 	}
 
-	async run(): Promise<AudienceId[]> {
+	async run(timeoutMs?: number): Promise<AudienceId[]> {
+		if (this._consumed) {
+			throw new Error('Detection objects can only be run once');
+		}
+		else {
+			this._consumed = true;
+		}
+
 		const matches: AudienceId[] = [];
 
-		await Promise.allSettled(
-			this._audiencesDefinition.audiences.map(async (audience) => {
+		const timedOut = await Promise.race([
+			this._waitForTimeout(timeoutMs),
+			this._matchAudiences(matches),
+		]);
+
+		if (timedOut) {
+			this._abortController.abort();
+
+			log('Detection timeout of', timeoutMs, 'milliseconds reached');
+		}
+
+		return matches;
+	}
+
+	private async _matchAudiences(matches: AudienceId[]): Promise<void> {
+		const promises = this._audiencesDefinition.audiences.map(
+			async (audience) => {
 				const {conjunction, id, rules} = audience;
 
 				log(`Checking rules for audience '${id}'...`);
 
 				try {
-					if (await this._evaluateGroup(conjunction, rules)) {
-						log(`Matched audience: ${id}`);
+					const matched = await this._evaluateGroup(
+						conjunction,
+						rules
+					);
+
+					if (this._abortController.signal.aborted) {
+						log(
+							`Audience '${id}' is not matched because its evaluation timed out`
+						);
+
+						return;
+					}
+
+					if (matched) {
+						log(`Audience '${id}' is matched`);
 
 						matches.push(id);
 					}
 				}
 				catch (error: any) {
+					const message = error.message || error.toString();
+
 					log(
-						`Unable to evaluate the rules of audience '${id}', so ` +
-							`the audience is not matched: ${error.message || error}`
+						`Audience '${id}' is not matched because its evaluation failed with error:`,
+						`\n\n${message
+							.split('\n')
+							.map((line: string) => `    ${line}`)
+							.join('\n')}\n\n`
 					);
 				}
-			})
+			}
 		);
 
-		return matches;
+		await Promise.allSettled(promises);
+	}
+
+	private async _evaluateGroup(
+		conjunction: Conjunction,
+		rules: Rule[]
+	): Promise<boolean> {
+		const results = await Promise.all(
+			rules.map((rule) => this._evaluateRule(rule))
+		);
+
+		return conjunction === 'AND'
+			? results.every(Boolean)
+			: results.some(Boolean);
+	}
+
+	private async _evaluateRule(rule: Rule): Promise<boolean> {
+		if ('conjunction' in rule) {
+			return this._evaluateGroup(rule.conjunction, rule.rules);
+		}
+
+		const ruleDescription = `('${rule.attribute}' ${rule.operator} '${rule.value}')`;
+
+		try {
+			const operator = this._getOperator(rule.operator);
+			const attribute = await this._getAttribute(rule.attribute);
+
+			const result = operator(attribute, rule.value);
+
+			log(`Evaluation of rule ${ruleDescription}: ${result}`);
+
+			return result;
+		}
+		catch (error: any) {
+			throw new Error(
+				`An error was thrown when evaluating rule ${ruleDescription}: ` +
+					(error.message || error)
+			);
+		}
 	}
 
 	private async _getAttribute(attr: Attribute): Promise<AttributeValue> {
@@ -139,44 +220,6 @@ export class Detection {
 		}
 	}
 
-	private async _evaluateGroup(
-		conjunction: Conjunction,
-		rules: Rule[]
-	): Promise<boolean> {
-		const results = await Promise.all(
-			rules.map((rule) => this._evaluateRule(rule))
-		);
-
-		return conjunction === 'AND'
-			? results.every(Boolean)
-			: results.some(Boolean);
-	}
-
-	private async _evaluateRule(rule: Rule): Promise<boolean> {
-		if ('conjunction' in rule) {
-			return this._evaluateGroup(rule.conjunction, rule.rules);
-		}
-
-		const ruleDescription = `('${rule.attribute}' ${rule.operator} '${rule.value}')`;
-
-		try {
-			const operator = this._getOperator(rule.operator);
-			const attribute = await this._getAttribute(rule.attribute);
-
-			const result = operator(attribute, rule.value);
-
-			log(`Evaluation of rule ${ruleDescription}: ${result}`);
-
-			return result;
-		}
-		catch (error: any) {
-			throw new Error(
-				`An error was thrown when evaluating rule ${ruleDescription}: ` +
-					(error.message || error)
-			);
-		}
-	}
-
 	private _getOperator(operator: Operator): OperatorImpl {
 		if (operator === 'eq') {
 			return eq;
@@ -205,5 +248,13 @@ export class Detection {
 		else {
 			throw new Error(`Unsupported operator: ${operator}`);
 		}
+	}
+
+	private async _waitForTimeout(timeoutMs?: number): Promise<boolean> {
+		return await new Promise<boolean>((resolve) => {
+			if (timeoutMs) {
+				setTimeout(() => resolve(true), timeoutMs);
+			}
+		});
 	}
 }

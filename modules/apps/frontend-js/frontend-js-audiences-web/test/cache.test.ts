@@ -50,7 +50,9 @@ describe('cache', () => {
 
 	describe('getACSegments', () => {
 		it('returns the batch and the real time segments', async () => {
-			const acSegments = await new Cache().getACSegments();
+			const acSegments = await new Cache(
+				new AbortController().signal
+			).getACSegments();
 
 			expect(acSegments).toEqual(
 				new Set(['SEGMENT_BATCH', 'SEGMENT_REAL_TIME'])
@@ -66,7 +68,9 @@ describe('cache', () => {
 				'SEGMENT_BOTH',
 			]);
 
-			const acSegments = await new Cache().getACSegments();
+			const acSegments = await new Cache(
+				new AbortController().signal
+			).getACSegments();
 
 			expect(acSegments).toEqual(
 				new Set(['SEGMENT_BATCH', 'SEGMENT_BOTH'])
@@ -74,7 +78,7 @@ describe('cache', () => {
 		});
 
 		it('requests the segments as soon as the cache is created', async () => {
-			const cache = new Cache();
+			const cache = new Cache(new AbortController().signal);
 
 			expect(getBatchSegmentExternalReferenceCodes).toHaveBeenCalledTimes(
 				1
@@ -87,7 +91,7 @@ describe('cache', () => {
 		});
 
 		it('returns the same segments to every caller', async () => {
-			const cache = new Cache();
+			const cache = new Cache(new AbortController().signal);
 
 			expect(await cache.getACSegments()).toBe(
 				await cache.getACSegments()
@@ -104,7 +108,7 @@ describe('cache', () => {
 		it('waits for the Analytics global object to show up', async () => {
 			delete (global as any).Analytics;
 
-			const cache = new Cache();
+			const cache = new Cache(new AbortController().signal);
 
 			expect(
 				getBatchSegmentExternalReferenceCodes
@@ -122,15 +126,15 @@ describe('cache', () => {
 				new Error('Analytics Cloud is unreachable')
 			);
 
-			await expect(new Cache().getACSegments()).rejects.toThrow(
-				'Analytics Cloud is unreachable'
-			);
+			await expect(
+				new Cache(new AbortController().signal).getACSegments()
+			).rejects.toThrow('Analytics Cloud is unreachable');
 		});
 	});
 
 	describe('getUAParser', () => {
 		it('parses the current user agent', async () => {
-			const cache = new Cache();
+			const cache = new Cache(new AbortController().signal);
 
 			expect(cache.getUAParser().getBrowser().name).toBe('Firefox');
 
@@ -138,7 +142,7 @@ describe('cache', () => {
 		});
 
 		it('returns the same parser to every caller', async () => {
-			const cache = new Cache();
+			const cache = new Cache(new AbortController().signal);
 
 			expect(cache.getUAParser()).toBe(cache.getUAParser());
 

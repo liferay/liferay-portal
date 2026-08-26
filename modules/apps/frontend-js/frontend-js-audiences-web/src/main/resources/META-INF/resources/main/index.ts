@@ -82,13 +82,20 @@ export interface Handler {
 	(): Promise<void> | void;
 }
 
+export interface RunDetectionOptions {
+	timeoutMs?: number;
+}
+
 export interface AudiencesAPI {
 	clear(): void;
 	clearHandlers(): void;
 	get(): Set<AudienceId>;
 	getPriority(audienceId: AudienceId): number;
 	on(audienceId: AudienceId, handler: Handler): void;
-	runDetection(audiencesDefinitionURL: string): Promise<void>;
+	runDetection(
+		audiencesDefinitionURL: string,
+		options?: RunDetectionOptions
+	): Promise<void>;
 	runHandlers(): Promise<void>;
 	setLogEnabled(enabled: boolean): void;
 }

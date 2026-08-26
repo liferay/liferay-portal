@@ -93,7 +93,9 @@ describe('attributes', () => {
 
 	describe('attribute browser_name', () => {
 		it('works and returns a string', async () => {
-			const value = getBrowserName(new Cache());
+			const value = getBrowserName(
+				new Cache(new AbortController().signal)
+			);
 
 			expect(typeof value).toBe('string');
 			expect(value).toBe('Firefox');
@@ -102,7 +104,9 @@ describe('attributes', () => {
 
 	describe('attribute browser_version', () => {
 		it('works and returns a string', async () => {
-			const value = getBrowserVersion(new Cache());
+			const value = getBrowserVersion(
+				new Cache(new AbortController().signal)
+			);
 
 			expect(typeof value).toBe('string');
 			expect(value).toBe('151.0');
@@ -190,14 +194,18 @@ describe('attributes', () => {
 					'Version/17.0 Mobile/15E148 Safari/604.1',
 			});
 
-			const value = getDeviceType(new Cache());
+			const value = getDeviceType(
+				new Cache(new AbortController().signal)
+			);
 
 			expect(typeof value).toBe('string');
 			expect(value).toBe('mobile');
 		});
 
 		it('falls back to desktop when the user agent has no device type', async () => {
-			const value = getDeviceType(new Cache());
+			const value = getDeviceType(
+				new Cache(new AbortController().signal)
+			);
 
 			expect(value).toBe('desktop');
 		});
@@ -270,7 +278,9 @@ describe('attributes', () => {
 
 	describe('attribute segments', () => {
 		it('works and returns a Set<string>', async () => {
-			const value = await getSegments(new Cache());
+			const value = await getSegments(
+				new Cache(new AbortController().signal)
+			);
 
 			expect(value).toBeInstanceOf(Set);
 			expect(value).toEqual(

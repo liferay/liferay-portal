@@ -5,7 +5,7 @@
 
 const MARKER = '%c@liferay/audiences:';
 
-export function log(...things: string[]): void {
+export function log(...things: any[]): void {
 	if (!log.enabled) {
 		return;
 	}

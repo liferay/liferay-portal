@@ -18,8 +18,8 @@ export default class Cache {
 	private readonly _acSegments: Promise<Set<string>>;
 	private readonly _uaParser: UAParser;
 
-	constructor() {
-		this._acSegments = loadACSegments();
+	constructor(abortSignal: AbortSignal) {
+		this._acSegments = loadACSegments(abortSignal);
 		this._uaParser = new UAParser(navigator.userAgent);
 	}
 
@@ -32,7 +32,7 @@ export default class Cache {
 	}
 }
 
-async function loadACSegments(): Promise<Set<string>> {
+async function loadACSegments(abortSignal: AbortSignal): Promise<Set<string>> {
 	let start;
 
 	// Wait for Analytics global object to be ready
@@ -43,6 +43,10 @@ async function loadACSegments(): Promise<Set<string>> {
 
 	while (typeof Analytics === 'undefined') {
 		await new Promise((resolve) => setTimeout(resolve, 100));
+
+		if (abortSignal.aborted) {
+			throw new Error('Wait for Analytics global object timed out');
+		}
 	}
 
 	log(
@@ -61,6 +65,10 @@ async function loadACSegments(): Promise<Set<string>> {
 		Analytics.segment.getBatchSegmentExternalReferenceCodes(),
 		Analytics.segment.getRealTimeSegmentExternalReferenceCodes(),
 	]);
+
+	if (abortSignal.aborted) {
+		throw new Error('Retrieval of Analytics Cloud segments timed out');
+	}
 
 	for (const answer of answers) {
 		for (const acSegment of answer) {

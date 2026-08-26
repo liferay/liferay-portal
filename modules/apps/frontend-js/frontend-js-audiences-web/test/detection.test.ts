@@ -579,12 +579,12 @@ describe('detection', () => {
 
 		expect(audiences.get()).toEqual(new Set(['the_audience']));
 
-		expect(consoleLog).toHaveBeenCalledWith(
-			expect.anything(),
-			expect.anything(),
-			expect.stringContaining(
-				"Unable to evaluate the rules of audience 'the_broken_audience'"
+		expect(
+			consoleLog.mock.calls.find((call) =>
+				call[2].includes(
+					`Audience 'the_broken_audience' is not matched because its evaluation failed with error`
+				)
 			)
-		);
+		).toBeTruthy();
 	});
 });
