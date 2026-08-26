@@ -29,6 +29,7 @@ type ScopeLabels = {
 };
 
 export default function ScopeMultiSelect<T extends ScopeItem>({
+	defaultAllScopesChecked = true,
 	disabled = false,
 	labels,
 	onChange,
@@ -38,6 +39,7 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 	required = true,
 	sourceItems,
 }: {
+	defaultAllScopesChecked?: boolean;
 	disabled?: boolean;
 	labels: ScopeLabels;
 	onChange?: (value: boolean) => void;
@@ -48,7 +50,9 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 	sourceItems: T[];
 }) {
 	const [active, setActive] = useState(false);
-	const [allScopesChecked, setAllScopesChecked] = useState(true);
+	const [allScopesChecked, setAllScopesChecked] = useState(
+		defaultAllScopesChecked
+	);
 	const [query, setQuery] = useState('');
 	const [touched, setTouched] = useState(false);
 	const [selectedItems, setSelectedItems] = useState<T[]>([]);
@@ -61,9 +65,11 @@ export default function ScopeMultiSelect<T extends ScopeItem>({
 		: undefined;
 
 	useEffect(() => {
-		setAllScopesChecked(!preselectedItems?.length);
+		setAllScopesChecked(
+			defaultAllScopesChecked && !preselectedItems?.length
+		);
 		setSelectedItems(preselectedItems ?? []);
-	}, [preselectedItems]);
+	}, [defaultAllScopesChecked, preselectedItems]);
 
 	useEffect(() => {
 		if (!onChange) {

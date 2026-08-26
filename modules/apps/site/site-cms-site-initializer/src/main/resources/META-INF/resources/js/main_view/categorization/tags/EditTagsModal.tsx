@@ -43,16 +43,23 @@ const CONFIRMATION_MESSAGES = {
 
 /**
  * Returns the scope keys of the given scopes, or an empty array when they
- * stand for every scope. A tag available everywhere comes back as a single
- * entry that has the id -1 and no scope key, which both the selector and the
- * API represent as an empty selection.
+ * stand for every scope, which both the selector and the API represent as an
+ * empty selection.
  */
 function getScopeKeys(scopes: AssetLibraryType[] = []): string[] {
-	if (scopes.some((scope) => scope.id === -1)) {
+	if (isAllScopes(scopes)) {
 		return [];
 	}
 
 	return scopes.map((scope) => scope.scopeKey);
+}
+
+/**
+ * Returns whether the given scopes stand for every scope. A tag available
+ * everywhere comes back as a single entry that has the id -1 and no scope key.
+ */
+function isAllScopes(scopes: AssetLibraryType[] = []) {
+	return scopes.some((scope) => scope.id === -1);
 }
 
 export default function EditTagsModalContent({
@@ -242,6 +249,7 @@ export default function EditTagsModalContent({
 					{cmpEnabled && Liferay.FeatureFlags['LPD-99403'] && (
 						<CategorizationProjects
 							checkboxText="tag"
+							defaultAllScopesChecked={isAllScopes(projects)}
 							projects={projects}
 							required={false}
 							setProjectChange={setProjectChange}

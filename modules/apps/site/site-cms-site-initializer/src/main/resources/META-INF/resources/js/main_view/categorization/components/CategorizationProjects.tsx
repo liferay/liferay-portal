@@ -12,6 +12,7 @@ import ScopeMultiSelect, {ScopeItem as ProjectItem} from './ScopeMultiSelect';
 
 export default function CategorizationProjects({
 	checkboxText,
+	defaultAllScopesChecked = true,
 	disabled = false,
 	projects,
 	required = true,
@@ -20,6 +21,7 @@ export default function CategorizationProjects({
 	setSelectedProjects,
 }: {
 	checkboxText: string;
+	defaultAllScopesChecked?: boolean;
 	disabled?: boolean;
 	projects?: AssetLibraryType[];
 	required?: boolean;
@@ -73,6 +75,7 @@ export default function CategorizationProjects({
 
 	return (
 		<ScopeMultiSelect<ProjectItem>
+			defaultAllScopesChecked={defaultAllScopesChecked}
 			disabled={disabled}
 			labels={{
 				allItemsValue: Liferay.Language.get('all-projects'),

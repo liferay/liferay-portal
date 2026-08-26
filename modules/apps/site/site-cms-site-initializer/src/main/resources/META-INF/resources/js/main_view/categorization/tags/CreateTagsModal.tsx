@@ -212,6 +212,7 @@ export default function CreateTagsModalContent({
 					{cmpEnabled && Liferay.FeatureFlags['LPD-99403'] && (
 						<CategorizationProjects
 							checkboxText="tag"
+							defaultAllScopesChecked={false}
 							required={false}
 							setProjectInputError={setProjectInputError}
 							setSelectedProjects={setSelectedProjects}
