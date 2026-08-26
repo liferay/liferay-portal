@@ -30,6 +30,7 @@ interface ObjectDefinition {
 	dateCreated: string;
 	dateModified: string;
 	defaultLanguageId: string;
+	description?: LocalizedValue<string>;
 	externalReferenceCode: string;
 	id: number;
 	label: LocalizedValue<string>;
@@ -58,6 +59,7 @@ interface ObjectField {
 	DBType: string;
 	businessType: ObjectFieldBusinessType | string;
 	defaultValue?: string;
+	description?: LocalizedValue<string>;
 	externalReferenceCode?: string;
 	id: number;
 	indexed: boolean;

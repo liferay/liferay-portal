@@ -196,6 +196,7 @@ interface ObjectDefinition {
 	dateModified: string;
 	dbTableName?: string;
 	defaultLanguageId: Liferay.Language.Locale;
+	description?: LocalizedValue<string>;
 	enableCategorization: boolean;
 	enableComments: boolean;
 	enableFormContainer: boolean;
@@ -287,6 +288,7 @@ interface ObjectField {
 	DBType: string;
 	businessType: ObjectFieldBusinessTypeName;
 	defaultValue?: string;
+	description?: LocalizedValue<string>;
 	externalReferenceCode: string;
 	id: number;
 	indexed: boolean;
