@@ -91,6 +91,18 @@ describe('transformFDSBulkActions', () => {
 		).toBe(false);
 	});
 
+	it('shows an action when all items are selected', () => {
+		const [action] = transformFDSBulkActions([deleteAction]);
+
+		expect(action.isVisible({allItemsSelectedActive: true})).toBe(true);
+		expect(
+			action.isVisible({
+				allItemsSelectedActive: true,
+				selectedItems: [{actions: {get: {}}}],
+			})
+		).toBe(true);
+	});
+
 	it('shows an action when every selected item has the permission', () => {
 		const [action] = transformFDSBulkActions([deleteAction]);
 
