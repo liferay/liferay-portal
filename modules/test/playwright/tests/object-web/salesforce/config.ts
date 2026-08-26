@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.salesforce',
+	retries: 0,
 	testDir: 'tests/object-web/salesforce',
 	use: {
 		testIdAttribute: 'data-qa-id',

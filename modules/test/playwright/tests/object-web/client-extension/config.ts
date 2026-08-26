@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.client-extension',
+	retries: 0,
 	testDir: 'tests/object-web/client-extension',
 	use: {
 		testIdAttribute: 'data-qa-id',

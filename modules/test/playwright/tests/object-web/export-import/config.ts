@@ -4,6 +4,7 @@
  */
 export const config = {
 	name: 'object-web.export-import',
+	retries: 0,
 	testDir: 'tests/object-web/export-import',
 	use: {
 		testIdAttribute: 'data-qa-id',

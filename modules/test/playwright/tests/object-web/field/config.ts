@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.field',
+	retries: 0,
 	testDir: 'tests/object-web/field',
 	use: {
 		testIdAttribute: 'data-qa-id',

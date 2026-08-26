@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.upgrade',
+	retries: 0,
 	testDir: 'tests/object-web/upgrade',
 	use: {
 		testIdAttribute: 'data-qa-id',

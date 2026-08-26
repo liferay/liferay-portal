@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.list-type-definition',
+	retries: 0,
 	testDir: 'tests/object-web/list-type-definition',
 	use: {
 		testIdAttribute: 'data-qa-id',

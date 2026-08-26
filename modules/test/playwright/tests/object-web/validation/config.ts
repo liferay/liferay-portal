@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.validation',
+	retries: 0,
 	testDir: 'tests/object-web/validation',
 	use: {
 		testIdAttribute: 'data-qa-id',

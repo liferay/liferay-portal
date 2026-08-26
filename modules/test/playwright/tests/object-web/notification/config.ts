@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.notification',
+	retries: 0,
 	testDir: 'tests/object-web/notification',
 	use: {
 		testIdAttribute: 'data-qa-id',

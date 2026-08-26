@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.content-page-integration',
+	retries: 0,
 	testDir: 'tests/object-web/content-page-integration',
 	use: {
 		testIdAttribute: 'data-qa-id',

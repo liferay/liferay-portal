@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.workflow',
+	retries: 0,
 	testDir: 'tests/object-web/workflow',
 	use: {
 		testIdAttribute: 'data-qa-id',

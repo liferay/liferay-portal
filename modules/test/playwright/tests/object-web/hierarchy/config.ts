@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.hierarchy',
+	retries: 0,
 	testDir: 'tests/object-web/hierarchy',
 	use: {
 		testIdAttribute: 'data-qa-id',

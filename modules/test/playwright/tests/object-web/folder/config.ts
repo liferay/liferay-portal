@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.folder',
+	retries: 0,
 	testDir: 'tests/object-web/folder',
 	use: {
 		testIdAttribute: 'data-qa-id',

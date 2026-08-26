@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.forms-integration',
+	retries: 0,
 	testDir: 'tests/object-web/forms-integration',
 	use: {
 		testIdAttribute: 'data-qa-id',

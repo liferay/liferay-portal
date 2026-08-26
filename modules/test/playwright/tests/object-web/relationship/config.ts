@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.relationship',
+	retries: 0,
 	testDir: 'tests/object-web/relationship',
 	use: {
 		testIdAttribute: 'data-qa-id',

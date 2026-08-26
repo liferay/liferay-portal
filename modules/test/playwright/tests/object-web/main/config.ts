@@ -5,6 +5,7 @@
 
 export const config = {
 	name: 'object-web.main',
+	retries: 0,
 	testDir: 'tests/object-web/main',
 	use: {
 		testIdAttribute: 'data-qa-id',
