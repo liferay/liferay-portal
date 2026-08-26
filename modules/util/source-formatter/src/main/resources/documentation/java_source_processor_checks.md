@@ -27,6 +27,7 @@ CompatClassImportsCheck | [Bug Prevention](bug_prevention_checks.md#bug-preventi
 ComponentAnnotationCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on classes with @Component annotation. |
 [ComponentExposureCheck](check/component_exposure_check.md#componentexposurecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Avoid exposing static component. |
 ConcatCheck | [Performance](performance_checks.md#performance-checks) | Checks for correct use of `StringBundler.concat`. |
+ConfigurableCreateConfigurableCallCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks illegal call to `Configurable.createConfigurable`. |
 ConstantNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks that variable names of constants follow correct naming rules. |
 ConstructorGlobalVariableDeclarationCheck | [Performance](performance_checks.md#performance-checks) | Checks that initial values of global variables are not set in the constructor. |
 [ConstructorMissingEmptyLineCheck](check/constructor_missing_empty_line_check.md#constructormissingemptylinecheck) | [Styling](styling_checks.md#styling-checks) | Checks for line breaks when assigning variables in constructor. |
@@ -37,6 +38,7 @@ ContractionsCheck | [Styling](styling_checks.md#styling-checks) | Finds contract
 [CreationMenuBuilderCheck](check/builder_check.md#buildercheck) | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | Checks that `CreationMenuBuilder` is used when possible. |
 DTOEnumCreationCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks the creation of DTO enum. |
 DatabaseMetaDataCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks usages of `java.sql.DatabaseMetaData`. |
+DatabaseMetaDataSupportsBatchUpdatesCallCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks illegal call to `DatabaseMetaData.supportsBatchUpdates`. |
 [DefaultComesLastCheck](https://checkstyle.sourceforge.io/checks/coding/defaultcomeslast.html) | [Styling](styling_checks.md#styling-checks) | Checks that the `default` is after all the cases in a `switch` statement. |
 DeprecatedAPICheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds calls to deprecated classes, constructors, fields or methods. |
 DeprecatedClassesCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Replaces deprecated classes. |
@@ -290,6 +292,7 @@ SemiColonCheck | [Styling](styling_checks.md#styling-checks) | Finds cases of un
 ServiceImplAccessModifierCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks for cases where visibility of methods can be decreased. |
 [ServiceProxyFactoryCheck](check/service_proxy_factory_check.md#serviceproxyfactorycheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds incorrect parameter in method call. |
 ServiceUpdateCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that there are no stale references in service code from service updates. |
+ServletResponseUtilSendFileCallCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks illegal call to `ServletResponseUtil.sendFile`. |
 SessionKeysCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks that messages send to `SessionsErrors` or `SessionMessages` follow naming conventions. |
 SetUtilMethodsCheck | [Performance](performance_checks.md#performance-checks) | Finds cases of inefficient SetUtil operations. |
 SizeIsZeroCheck | [Styling](styling_checks.md#styling-checks) | Finds cases of calls like `list.size() == 0` (use `list.isEmpty()` instead). |
