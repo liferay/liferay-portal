@@ -11,6 +11,6 @@
 	</info>
 
 	<dependencies defaultconf="default">
-		<dependency name="com.liferay.ant.mirrors.get" org="com.liferay" rev="1.2.27" />
+		<dependency name="com.liferay.ant.mirrors.get" org="com.liferay" rev="1.2.28" />
 	</dependencies>
 </ivy-module>

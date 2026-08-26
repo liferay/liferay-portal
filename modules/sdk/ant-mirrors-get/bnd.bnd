@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Ant Mirrors Get
 Bundle-SymbolicName: com.liferay.ant.mirrors.get
-Bundle-Version: 1.2.28
+Bundle-Version: 1.2.29
 Export-Package: com.liferay.ant.mirrors.get
