@@ -6,39 +6,46 @@
 
 	<style>
 		body {
-			align-items: center;
 			background: #fff;
-			color: #6b7280;
-			display: flex;
 			font-family: system-ui, -apple-system, sans-serif;
-			justify-content: center;
 			margin: 0;
-			min-height: 100vh;
-			text-align: center;
+			padding: 24px;
 		}
 
-		.message {
-			padding: 2rem;
+		.alert {
+			align-items: center;
+			background: #feefef;
+			border: 1px solid #f48989;
+			border-radius: 4px;
+			color: #da1414;
+			display: flex;
+			gap: 12px;
+			padding: 1rem;
 		}
 
-		h1 {
-			color: #111827;
-			font-size: 1.25rem;
-			margin: 0 0 .5rem;
+		.alert-icon {
+			flex-shrink: 0;
+			height: 20px;
+			width: 20px;
 		}
 
-		p {
-			font-size: .95rem;
+		.alert-message {
+			font-size: .875rem;
+			line-height: 1.5;
 			margin: 0;
 		}
 	</style>
 </head>
 
 <body>
-	<div class="message">
-		<h1>[$TITLE$]</h1>
+	<div class="alert">
+		<svg class="alert-icon" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+			<circle cx="256" cy="256" fill="#da1414" r="256" />
 
-		<p>[$MESSAGE$]</p>
+			<path d="M301.5,255.5l67.9-67.9c12.5-12.5,12.5-32.8,0-45.3l0,0c-12.5-12.5-32.8-12.5-45.3,0l-67.9,67.9l-67.9-67.9c-12.5-12.5-32.8-12.5-45.3,0l0,0c-12.5,12.5-12.5,32.8,0,45.3l67.9,67.9l-67.9,67.9c-12.5,12.5-12.5,32.8,0,45.3l0,0c12.5,12.5,32.8,12.5,45.3,0l67.9-67.9l68.9,68.9c12.5,12.5,32.8,12.5,45.3,0l0,0c12.5-12.5,12.5-32.8,0-45.3L301.5,255.5L301.5,255.5z" fill="#fff" />
+		</svg>
+
+		<p class="alert-message"><strong>[$TITLE$]:</strong> [$MESSAGE$]</p>
 	</div>
 </body>
 </html>
