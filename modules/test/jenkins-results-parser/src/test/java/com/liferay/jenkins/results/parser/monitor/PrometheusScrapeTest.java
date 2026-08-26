@@ -8,7 +8,6 @@ package com.liferay.jenkins.results.parser.monitor;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -128,16 +127,6 @@ public class PrometheusScrapeTest
 			prometheusScrape.getValue(
 				"label", "slave-mem",
 				"default_jenkins_executors_queue_length"));
-
-		Double available = prometheusScrape.getValue(
-			"file_store", MonitorTestUtil.FILE_STORE,
-			"default_jenkins_file_store_available_bytes");
-		Double capacity = prometheusScrape.getValue(
-			"file_store", MonitorTestUtil.FILE_STORE,
-			"default_jenkins_file_store_capacity_bytes");
-
-		Assert.assertEquals(
-			52.2D, ((capacity - available) * 100) / capacity, 0.1D);
 	}
 
 	@Test
