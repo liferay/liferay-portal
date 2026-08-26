@@ -8,6 +8,7 @@ package com.liferay.data.cleanup.internal.upgrade;
 import com.liferay.data.cleanup.internal.upgrade.util.LayoutTypeSettingsUtil;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
@@ -106,7 +107,13 @@ public abstract class BaseUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _deleteFromClassName(String[] classNames) throws Exception {
+		if (ArrayUtil.isEmpty(classNames)) {
+			return;
+		}
+
 		_deleteFrom("ClassName_", "value", classNames);
+
+		ClassNameLocalServiceUtil.invalidate();
 	}
 
 	private void _deleteFromPortlet(String[] portletIds) throws Exception {
