@@ -32,6 +32,9 @@ import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporaryS
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelper;
+import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -351,6 +354,37 @@ public class BatchEngineImportTaskExecutorTest
 			"XLS", _fieldNamesMappingMap);
 
 		_assertCreatedBlogPostings();
+	}
+
+	@Test
+	public void testCreateBlogPostingsLastSessionRecorderCount()
+		throws Exception {
+
+		CountingLastSessionRecorderHelper countingLastSessionRecorderHelper =
+			new CountingLastSessionRecorderHelper();
+
+		LastSessionRecorderHelper originalLastSessionRecorderHelper =
+			ReflectionTestUtil.getAndSetFieldValue(
+				LastSessionRecorderHelperUtil.class,
+				"_lastSessionRecorderHelper",
+				countingLastSessionRecorderHelper);
+
+		try {
+			_importBlogPostings(
+				BatchEngineTaskOperation.CREATE,
+				_getBlogPostingsCSVCreateContent(
+					TestPropsValues.getGroupId(), FIELD_NAMES),
+				"CSV", null);
+
+			Assert.assertEquals(
+				ROWS_COUNT, countingLastSessionRecorderHelper.getCount());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				LastSessionRecorderHelperUtil.class,
+				"_lastSessionRecorderHelper",
+				originalLastSessionRecorderHelper);
+		}
 	}
 
 	@Test
@@ -1761,5 +1795,26 @@ public class BatchEngineImportTaskExecutorTest
 
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;
+
+	private static class CountingLastSessionRecorderHelper
+		implements LastSessionRecorderHelper {
+
+		public int getCount() {
+			return _count.get();
+		}
+
+		@Override
+		public void syncLastSessionState() {
+			_count.incrementAndGet();
+		}
+
+		@Override
+		public void syncLastSessionState(boolean portalSessionOnly) {
+			_count.incrementAndGet();
+		}
+
+		private final AtomicInteger _count = new AtomicInteger();
+
+	}
 
 }
