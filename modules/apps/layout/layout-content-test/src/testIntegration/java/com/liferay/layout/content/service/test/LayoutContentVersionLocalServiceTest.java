@@ -480,10 +480,10 @@ public class LayoutContentVersionLocalServiceTest {
 
 		HashMap<String, String> map = HashMapBuilder.put(
 			LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
-			_language.get(LocaleUtil.SPAIN, "unable-to-load-preview")
+			_getPreviewErrorMessage(LocaleUtil.SPAIN)
 		).put(
 			LocaleUtil.toLanguageId(LocaleUtil.US),
-			_language.get(LocaleUtil.US, "unable-to-load-preview")
+			_getPreviewErrorMessage(LocaleUtil.US)
 		).build();
 
 		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
@@ -510,6 +510,13 @@ public class LayoutContentVersionLocalServiceTest {
 			layoutContentVersionPreviews.toString(),
 			segmentsExperiences.size() * 2,
 			layoutContentVersionPreviews.size());
+	}
+
+	private String _getPreviewErrorMessage(Locale locale) {
+		return _language.get(
+			locale,
+			"this-preview-is-not-available.-an-error-occurred-while-" +
+				"generating-the-preview-when-this-version-was-created");
 	}
 
 	private Map<SegmentsExperience, JSONObject>
