@@ -76,8 +76,8 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 		catch (Exception exception) {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
-					"Unable to read ", _metric, " for ", _masterName, ": ",
-					exception.getMessage()),
+					"Unable to read the ", _getMetricDescription(), " for ",
+					_masterName, ": ", exception.getMessage()),
 				null, MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
@@ -161,12 +161,13 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 	private String _getIndeterminateMessage() {
 		if (_selector == null) {
 			return JenkinsResultsParserUtil.combine(
-				"Unable to determine the ", _metric, " for ", _masterName);
+				"Unable to determine the ", _getMetricDescription(), " for ",
+				_masterName);
 		}
 
 		return JenkinsResultsParserUtil.combine(
-			"Unable to determine the ", _metric, " for ", _selector, " on ",
-			_masterName);
+			"Unable to determine the ", _getMetricDescription(), " for ",
+			_selector, " on ", _masterName);
 	}
 
 	private Double _getMemoryInfoValue(String memoryInfo, String name) {
@@ -181,6 +182,26 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 		}
 
 		return null;
+	}
+
+	private String _getMetricDescription() {
+		if (_metric.equals("disk")) {
+			return "disk metric";
+		}
+
+		if (_metric.equals("executor.utilization")) {
+			return "executor utilization metric";
+		}
+
+		if (_metric.equals("queue.depth")) {
+			return "queue depth metric";
+		}
+
+		if (_metric.equals("ram")) {
+			return "RAM metric";
+		}
+
+		return _metric + " metric";
 	}
 
 	private PrometheusScrape _getPrometheusScrape() throws IOException {
@@ -222,11 +243,12 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 	private String _getTargetDescription() {
 		if (_selector == null) {
 			return JenkinsResultsParserUtil.combine(
-				"The ", _metric, " on ", _masterName);
+				"The ", _getMetricDescription(), " on ", _masterName);
 		}
 
 		return JenkinsResultsParserUtil.combine(
-			"The ", _metric, " for ", _selector, " on ", _masterName);
+			"The ", _getMetricDescription(), " for ", _selector, " on ",
+			_masterName);
 	}
 
 	private String _getThresholdKey(String name) {
