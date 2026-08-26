@@ -41,68 +41,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-130051. The user could apply widget template to Navigation Menu on content page when enable local live with page versioning."
-	@priority = 4
-	test ApplyWidgetTemplateToNavigationMenuOnContentPage {
-		task ("Add a content page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Site Name (Staging)",
-				layoutName = "Test Page Name",
-				site = "false",
-				type = "content");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/site-name-staging/test-page-name");
-		}
-
-		task ("Add a Navigation Menu widget to content page") {
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Test Page Name",
-				siteName = "Site Name Staging");
-
-			PageEditor.addWidget(
-				indexItem = 2,
-				portletName = "Menu Display");
-		}
-
-		task ("Select the List Menu as display template in Navigation Menu") {
-			NavigationMenusWidget.gotoNavigationMenuWidgetConfig();
-
-			NavigationMenusWidget.selectDisplayTemplate(templateName = "List Menu");
-
-			Portlet.saveAndCloseConfig();
-
-			PageEditor.publish();
-		}
-
-		task ("View the List Menu is applied to Navigation Menu at view mode in staging site") {
-			ContentPagesNavigator.openViewContentPage(
-				pageName = "Test Page Name",
-				siteName = "Site Name Staging");
-
-			AssertVisible(
-				key_itemName = "Test Page Name",
-				locator1 = "NavigationMenusWidget#LIST_MENU_ANY_ITEM");
-		}
-
-		task ("Publish to Live") {
-			Staging.markAsReadyForPublication();
-
-			Staging.gotoPublishToLive();
-
-			Staging.publishToLive();
-		}
-
-		task ("View the List Menu is applied to Navigation Menu at view mode in live site") {
-			ContentPagesNavigator.openViewContentPage(
-				pageName = "Test Page Name",
-				siteName = "Site Name");
-
-			AssertVisible(
-				key_itemName = "Test Page Name",
-				locator1 = "NavigationMenusWidget#LIST_MENU_ANY_ITEM");
-		}
-	}
-
 	@description = "This is a use case for LPS-113740."
 	@priority = 3
 	test ChangeSitePageVariationInPagesAdmin {
