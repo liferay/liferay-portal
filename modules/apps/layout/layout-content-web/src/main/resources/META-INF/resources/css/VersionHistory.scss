@@ -20,6 +20,15 @@ $version-history-side-panel-width: 320px;
 		}
 	}
 
+	&__preview {
+		border: 0;
+		display: block;
+		height: calc(
+			100vh - var(--control-menu-container-height, 0) - #{$version-history-toolbar-height}
+		);
+		width: 100%;
+	}
+
 	&__side-panel {
 		border-right-style: solid;
 		border-right-width: 1px;
