@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -59,6 +60,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Juanjo Fernández
+ * @author Daniel Sanz
  */
 @FeatureFlags(
 	featureFlags = {@FeatureFlag("LPD-34594"), @FeatureFlag("LPS-164563")}
@@ -88,26 +90,27 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_STARTUP_SNAPSHOT",
 					TestPropsValues.getCompanyId());
+
+		_fdsName = RandomTestUtil.randomString();
+
+		_user = UserTestUtil.addUser();
+
+		_objectEntry = _addDataSetSnapshotObjectEntry(
+			_fdsName, _user.getUserId());
 	}
 
 	@Test
 	public void testDeleteDataSetSnapshotCascadesToStartupSnapshot()
 		throws Exception {
 
-		String fdsName = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser();
-
-		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
-			fdsName, user.getUserId());
-
 		JSONObject jsonObject = _serveResource(
-			user, objectEntry.getExternalReferenceCode(), fdsName);
+			_user, _objectEntry.getExternalReferenceCode(), _fdsName);
 
-		_assertRelatedStartupSnapshot(user, fdsName, objectEntry, jsonObject);
+		_assertRelatedStartupSnapshot(
+			_user, _fdsName, _objectEntry, jsonObject);
 
 		_objectEntryLocalService.deleteObjectEntry(
-			objectEntry.getObjectEntryId());
+			_objectEntry.getObjectEntryId());
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
@@ -120,42 +123,31 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 	public void testServeResourceCreatesSnapshotRelationship()
 		throws Exception {
 
-		String fdsName = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser();
-
-		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
-			fdsName, user.getUserId());
-
 		_assertRelatedStartupSnapshot(
-			user, fdsName, objectEntry,
+			_user, _fdsName, _objectEntry,
 			_serveResource(
-				user, objectEntry.getExternalReferenceCode(), fdsName));
+				_user, _objectEntry.getExternalReferenceCode(), _fdsName));
 	}
 
 	@Test
 	public void testServeResourceReplacesExistingSnapshotRelationship()
 		throws Exception {
 
-		String fdsName = RandomTestUtil.randomString();
+		_assertRelatedStartupSnapshot(
+			_user, _fdsName, _objectEntry,
+			_serveResource(
+				_user, _objectEntry.getExternalReferenceCode(), _fdsName));
 
-		User user = UserTestUtil.addUser();
-
-		ObjectEntry objectEntry1 = _addDataSetSnapshotObjectEntry(
-			fdsName, user.getUserId());
+		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
+			_fdsName, _user.getUserId());
 
 		_assertRelatedStartupSnapshot(
-			user, fdsName, objectEntry1,
+			_user, _fdsName, objectEntry,
 			_serveResource(
-				user, objectEntry1.getExternalReferenceCode(), fdsName));
+				_user, objectEntry.getExternalReferenceCode(), _fdsName));
 
-		ObjectEntry objectEntry2 = _addDataSetSnapshotObjectEntry(
-			fdsName, user.getUserId());
-
-		_assertRelatedStartupSnapshot(
-			user, fdsName, objectEntry2,
-			_serveResource(
-				user, objectEntry2.getExternalReferenceCode(), fdsName));
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
 	}
 
 	@Test
@@ -173,41 +165,39 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 			user, fdsName, objectEntry,
 			_serveResource(
 				user, objectEntry.getExternalReferenceCode(), fdsName));
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
 	}
 
 	@Test
 	public void testServeResourceSavesStartupSnapshotForSharedSnapshot()
 		throws Exception {
 
-		User user = UserTestUtil.addUser();
-
-		String fdsName = RandomTestUtil.randomString();
-
 		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
-			fdsName, TestPropsValues.getUserId());
+			_fdsName, TestPropsValues.getUserId());
 
-		_shareDataSetSnapshot(objectEntry, user.getUserId());
+		_shareDataSetSnapshot(objectEntry, _user.getUserId());
 
 		_assertRelatedStartupSnapshot(
-			user, fdsName, objectEntry,
+			_user, _fdsName, objectEntry,
 			_serveResource(
-				user, objectEntry.getExternalReferenceCode(), fdsName));
+				_user, objectEntry.getExternalReferenceCode(), _fdsName));
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
 	}
 
 	@Test
 	public void testServeResourceThrowsPrincipalExceptionWithoutAccess()
 		throws Exception {
 
-		User user = UserTestUtil.addUser();
-
-		String fdsName = RandomTestUtil.randomString();
-
 		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
-			fdsName, TestPropsValues.getUserId());
+			_fdsName, TestPropsValues.getUserId());
 
 		try {
 			_serveResource(
-				user, objectEntry.getExternalReferenceCode(), fdsName);
+				_user, objectEntry.getExternalReferenceCode(), _fdsName);
 
 			Assert.fail();
 		}
@@ -217,9 +207,12 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				_getStartupSnapshotExternalReferenceCode(fdsName, user), 0,
+				_getStartupSnapshotExternalReferenceCode(_fdsName, _user), 0,
 				_dataSetStartupSnapshotObjectDefinition.
 					getObjectDefinitionId()));
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
 	}
 
 	private ObjectEntry _addDataSetSnapshotObjectEntry(
@@ -353,6 +346,7 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 
 	private ObjectDefinition _dataSetSnapshotObjectDefinition;
 	private ObjectDefinition _dataSetStartupSnapshotObjectDefinition;
+	private String _fdsName;
 
 	@Inject(
 		filter = "mvc.command.name=/frontend_data_set_admin/save_data_set_startup_snapshot"
@@ -362,10 +356,16 @@ public class SaveDataSetStartupSnapshotMVCResourceCommandTest {
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
+	@DeleteAfterTestRun
+	private ObjectEntry _objectEntry;
+
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject
 	private SharingEntryLocalService _sharingEntryLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
