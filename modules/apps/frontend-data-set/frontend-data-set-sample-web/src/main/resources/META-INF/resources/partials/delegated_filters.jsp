@@ -22,7 +22,7 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 </p>
 
 <p>
-	Add the <code>liferay-sample-custom-element-7</code> client extension to
+	Add the <code>liferay-sample-custom-element-8</code> client extension to
 	this page to see it.
 </p>
 

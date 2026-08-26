@@ -8,14 +8,14 @@ import {Root, createRoot} from 'react-dom/client';
 
 import App from './App';
 
-// The "Classic" tab of the Frontend Data Set Sample widget, which keeps its
-// own filtering and its own search box, so that the two search boxes can be
-// seen staying in sync.
+// The "Delegated Filters" tab of the Frontend Data Set Sample widget: a data
+// set that declares filters and shows no filter UI, so that this element
+// provides it.
 
 const DEFAULT_FDS_NAME =
-	'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-classic';
+	'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-delegatedFilters';
 
-const ELEMENT_NAME = 'liferay-sample-custom-element-7';
+const ELEMENT_NAME = 'liferay-sample-custom-element-8';
 
 class LiferaySampleCustomElement extends HTMLElement {
 	private _root?: Root;

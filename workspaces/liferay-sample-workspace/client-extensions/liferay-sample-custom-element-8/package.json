@@ -1,0 +1,19 @@
+{
+	"dependencies": {
+		"@liferay/js-api": "^0.7.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
+	"devDependencies": {
+		"@types/react": "^18.2.6",
+		"@types/react-dom": "^18.0.9",
+		"esbuild": "^0.20.2",
+		"typescript": "5.7.2"
+	},
+	"name": "@liferay/liferay-sample-custom-element-8",
+	"private": true,
+	"scripts": {
+		"build": "esbuild src/index.tsx --bundle --entry-names=[name].[hash] --external:@liferay/frontend-data-set-web/api --external:react --external:react-dom --format=esm --outdir=build/static"
+	},
+	"version": "0.0.0"
+}

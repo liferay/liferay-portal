@@ -63,7 +63,7 @@ function FilterPanels({
 
 				return (
 					<div className="panel panel-unstyled" key={id}>
-						<div className="panel-header p-0">
+						<div className="p-0 panel-header">
 							<button
 								aria-controls={`${id}-options`}
 								aria-expanded={expanded}
