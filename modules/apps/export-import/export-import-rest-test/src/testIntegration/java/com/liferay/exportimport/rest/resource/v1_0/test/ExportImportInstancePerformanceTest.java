@@ -32,10 +32,8 @@ import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstant
 import com.liferay.portal.kernel.test.performance.PerformanceTimer;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -47,7 +45,6 @@ import java.nio.file.Files;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -71,13 +68,6 @@ public class ExportImportInstancePerformanceTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		Class<?> clazz = ExportImportInstancePerformanceTest.class;
-
-		_properties = PropertiesUtil.load(
-			clazz.getResourceAsStream(
-				"dependencies/export-import-instance-performance.properties"),
-			"UTF-8");
-
 		_exportPreviewResource = ExportPreviewResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -130,18 +120,14 @@ public class ExportImportInstancePerformanceTest {
 			ImportProcess importProcess;
 
 			try (Closeable closeable = new PerformanceTimer(
-					GetterUtil.getInteger(
-						_properties.getProperty("import.max.time")),
+					_IMPORT_MAX_TIME,
 					"Import a full unscoped instance export")) {
 
 				importProcess = _importProcessResource.postImportProcess(
 					null, null, importProcessRequest);
 
 				ExportImportTestUtil.retryAssert(
-					1, TimeUnit.SECONDS,
-					GetterUtil.getInteger(
-						_properties.getProperty("import.timeout")),
-					TimeUnit.SECONDS,
+					1, TimeUnit.SECONDS, 300, TimeUnit.SECONDS,
 					() -> {
 						BackgroundTask backgroundTask =
 							_backgroundTaskLocalService.getBackgroundTask(
@@ -186,10 +172,7 @@ public class ExportImportInstancePerformanceTest {
 
 		try {
 			ExportImportTestUtil.retryAssert(
-				1, TimeUnit.SECONDS,
-				GetterUtil.getInteger(
-					_properties.getProperty("export.timeout")),
-				TimeUnit.SECONDS,
+				1, TimeUnit.SECONDS, 300, TimeUnit.SECONDS,
 				() -> {
 					BackgroundTask backgroundTask =
 						_backgroundTaskLocalService.getBackgroundTask(
@@ -344,11 +327,12 @@ public class ExportImportInstancePerformanceTest {
 			new RequestPortletDataHandler[0]);
 	}
 
+	private static final long _IMPORT_MAX_TIME = 180000;
+
 	private static ExportPreviewResource _exportPreviewResource;
 	private static ExportProcessResource _exportProcessResource;
 	private static ImportPreviewResource _importPreviewResource;
 	private static ImportProcessResource _importProcessResource;
-	private static Properties _properties;
 
 	@Inject
 	private BackgroundTaskLocalService _backgroundTaskLocalService;
