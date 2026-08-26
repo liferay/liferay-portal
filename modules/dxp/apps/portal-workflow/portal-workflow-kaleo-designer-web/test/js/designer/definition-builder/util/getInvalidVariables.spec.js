@@ -28,7 +28,7 @@ it('Return null when the variables are arrays', () => {
 	expect(getInvalidVariables(elements, 'en_US')).toBeNull();
 });
 
-it('Return the input variables field and the node label', () => {
+it('Return the input variables title and the node label', () => {
 	const elements = [
 		{
 			data: {
@@ -40,12 +40,12 @@ it('Return the input variables field and the node label', () => {
 	];
 
 	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
-		field: 'inputVariables',
+		fieldTitle: 'input-variables',
 		label: 'HTTP Request',
 	});
 });
 
-it('Return the output variables field and the node label', () => {
+it('Return the output variables title and the node label', () => {
 	const elements = [
 		{
 			data: {
@@ -57,7 +57,7 @@ it('Return the output variables field and the node label', () => {
 	];
 
 	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
-		field: 'outputVariables',
+		fieldTitle: 'output-variables',
 		label: 'LLM',
 	});
 });
@@ -68,7 +68,7 @@ it('Return the node id when the node has no label for the language', () => {
 	];
 
 	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
-		field: 'inputVariables',
+		fieldTitle: 'input-variables',
 		label: 'httpNode',
 	});
 });

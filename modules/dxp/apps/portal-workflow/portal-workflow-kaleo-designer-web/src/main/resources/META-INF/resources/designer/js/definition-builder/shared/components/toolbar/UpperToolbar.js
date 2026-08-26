@@ -219,12 +219,7 @@ export default function UpperToolbar({
 					Liferay.Language.get(
 						'x-must-be-a-valid-json-array-in-the-x-node'
 					),
-					[
-						invalidVariables.field === 'inputVariables'
-							? Liferay.Language.get('input-variables')
-							: Liferay.Language.get('output-variables'),
-						invalidVariables.label,
-					]
+					[invalidVariables.fieldTitle, invalidVariables.label]
 				),
 				'danger',
 				true
