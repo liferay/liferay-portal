@@ -189,13 +189,10 @@ public class LayoutContentVersionLocalServiceImpl
 			throw new RequiredLayoutContentVersionException();
 		}
 
-		layoutContentVersion = layoutContentVersionPersistence.remove(
-			layoutContentVersionId);
-
 		_layoutContentVersionPreviewLocalService.
 			deleteLayoutContentVersionPreviews(layoutContentVersionId);
 
-		return layoutContentVersion;
+		return layoutContentVersionPersistence.remove(layoutContentVersionId);
 	}
 
 	@Override
