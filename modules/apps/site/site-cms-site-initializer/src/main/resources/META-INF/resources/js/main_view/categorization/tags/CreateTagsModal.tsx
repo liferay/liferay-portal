@@ -30,11 +30,13 @@ const FDS_EVENT_UPDATE_DISPLAY = 'fds-update-display';
 
 export default function CreateTagsModalContent({
 	closeModal,
+	cmpEnabled,
 	cmsGroupId,
 	dataSetId,
 	invalidTagCharacters,
 }: {
 	closeModal: () => void;
+	cmpEnabled?: boolean;
 	cmsGroupId: number;
 	dataSetId: string;
 	invalidTagCharacters: string;
@@ -208,14 +210,13 @@ export default function CreateTagsModalContent({
 						setSpaceInputError={setSpaceInputError}
 					/>
 
-					{Liferay.FeatureFlags['LPD-58677'] &&
-						Liferay.FeatureFlags['LPD-99403'] && (
-							<CategorizationProjects
-								checkboxText="tag"
-								setProjectInputError={setProjectInputError}
-								setSelectedProjects={setSelectedProjects}
-							/>
-						)}
+					{cmpEnabled && Liferay.FeatureFlags['LPD-99403'] && (
+						<CategorizationProjects
+							checkboxText="tag"
+							setProjectInputError={setProjectInputError}
+							setSelectedProjects={setSelectedProjects}
+						/>
+					)}
 				</div>
 			</ClayModal.Body>
 

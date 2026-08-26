@@ -32,15 +32,11 @@ describe('[CMS Categorization] Components: ViewTags', () => {
 	});
 
 	afterEach(() => {
-		Liferay.FeatureFlags['LPD-58677'] = false;
-
 		jest.clearAllMocks();
 	});
 
-	it('does not pass a Project filter to FrontendDataSet when the CMP feature flag is disabled', () => {
-		Liferay.FeatureFlags['LPD-58677'] = false;
-
-		render(<ViewTags {...defaultProps} />);
+	it('does not pass a Project filter to FrontendDataSet when CMP is disabled', () => {
+		render(<ViewTags {...defaultProps} cmpEnabled={false} />);
 
 		const [{filters}] = mockFrontendDataSet.mock.calls[0] as any;
 
@@ -49,10 +45,8 @@ describe('[CMS Categorization] Components: ViewTags', () => {
 		).toBeUndefined();
 	});
 
-	it('passes a project filter to FrontendDataSet when the CMP feature flag is enabled', () => {
-		Liferay.FeatureFlags['LPD-58677'] = true;
-
-		render(<ViewTags {...defaultProps} />);
+	it('passes a project filter to FrontendDataSet when CMP is enabled', () => {
+		render(<ViewTags {...defaultProps} cmpEnabled />);
 
 		const [{filters}] = mockFrontendDataSet.mock.calls[0] as any;
 

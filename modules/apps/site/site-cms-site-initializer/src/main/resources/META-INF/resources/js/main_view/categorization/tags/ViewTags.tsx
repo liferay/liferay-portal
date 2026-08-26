@@ -54,6 +54,7 @@ export default function ViewTags({
 						}) =>
 							CreateTagsModal({
 								closeModal,
+								cmpEnabled,
 								cmsGroupId,
 								dataSetId,
 								invalidTagCharacters,
@@ -76,8 +77,7 @@ export default function ViewTags({
 			multiple: true,
 			type: 'selection',
 		},
-		...(Liferay.FeatureFlags['LPD-58677'] &&
-		Liferay.FeatureFlags['LPD-99403']
+		...(cmpEnabled && Liferay.FeatureFlags['LPD-99403']
 			? [
 					{
 						apiURL: "/o/search/v1.0/search?emptySearch=true&nestedFields=embedded&filter=objectDefinitionExternalReferenceCode eq 'l_cmp_project' and status in (0, 1)",
@@ -190,6 +190,7 @@ export default function ViewTags({
 				EditTagsModal({
 					assetLibraries: itemData.assetLibraries,
 					closeModal,
+					cmpEnabled,
 					editTagURL: itemData.actions.replace.href,
 					loadData,
 					projects: itemData.projects,

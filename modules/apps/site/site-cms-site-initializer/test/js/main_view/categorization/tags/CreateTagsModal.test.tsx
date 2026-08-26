@@ -48,15 +48,11 @@ describe('CreateTagsModal', () => {
 	});
 
 	afterEach(() => {
-		Liferay.FeatureFlags['LPD-58677'] = false;
-
 		jest.clearAllMocks();
 	});
 
-	it('does not render the project scope selector when the CMP feature flag is disabled', async () => {
-		Liferay.FeatureFlags['LPD-58677'] = false;
-
-		render(<CreateTagsModalContent {...defaultProps} />);
+	it('does not render the project scope selector when CMP is disabled', async () => {
+		render(<CreateTagsModalContent {...defaultProps} cmpEnabled={false} />);
 
 		await waitFor(() => {
 			expect(SpaceService.getSpaces).toHaveBeenCalled();
@@ -71,10 +67,8 @@ describe('CreateTagsModal', () => {
 		expect(ApiHelper.getAll).not.toHaveBeenCalled();
 	});
 
-	it('renders the project scope selector when the CMP feature flag is enabled', async () => {
-		Liferay.FeatureFlags['LPD-58677'] = true;
-
-		render(<CreateTagsModalContent {...defaultProps} />);
+	it('renders the project scope selector when CMP is enabled', async () => {
+		render(<CreateTagsModalContent {...defaultProps} cmpEnabled />);
 
 		await waitFor(() => {
 			expect(ApiHelper.getAll).toHaveBeenCalled();
