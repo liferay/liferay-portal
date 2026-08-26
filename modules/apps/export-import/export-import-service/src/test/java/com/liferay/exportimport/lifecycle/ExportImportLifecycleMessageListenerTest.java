@@ -47,9 +47,8 @@ public class ExportImportLifecycleMessageListenerTest {
 			asyncExportImportLifecycleMessageListener =
 				new AsyncExportImportLifecycleMessageListener();
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		asyncExportImportLifecycleMessageListener.activate(bundleContext);
+		asyncExportImportLifecycleMessageListener.activate(
+			SystemBundleUtil.getBundleContext());
 
 		ExportImportLifecycleEvent exportImportLifecycleEvent =
 			new ExportImportLifecycleEventImpl();
@@ -75,9 +74,8 @@ public class ExportImportLifecycleMessageListenerTest {
 			syncExportImportLifecycleMessageListener =
 				new SyncExportImportLifecycleMessageListener();
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		syncExportImportLifecycleMessageListener.activate(bundleContext);
+		syncExportImportLifecycleMessageListener.activate(
+			SystemBundleUtil.getBundleContext());
 
 		ExportImportLifecycleEvent exportImportLifecycleEvent =
 			new ExportImportLifecycleEventImpl();
