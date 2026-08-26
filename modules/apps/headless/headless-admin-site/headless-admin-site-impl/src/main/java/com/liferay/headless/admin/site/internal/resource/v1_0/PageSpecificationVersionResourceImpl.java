@@ -62,7 +62,7 @@ public class PageSpecificationVersionResourceImpl
 		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = _getLayout(
-			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
+			siteExternalReferenceCode, sitePageExternalReferenceCode);
 
 		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
 			pageSpecificationVersionExternalReferenceCode,
@@ -82,7 +82,7 @@ public class PageSpecificationVersionResourceImpl
 		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = _getLayout(
-			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
+			siteExternalReferenceCode, sitePageExternalReferenceCode);
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
@@ -143,7 +143,7 @@ public class PageSpecificationVersionResourceImpl
 		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = _getLayout(
-			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
+			siteExternalReferenceCode, sitePageExternalReferenceCode);
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
@@ -229,13 +229,13 @@ public class PageSpecificationVersionResourceImpl
 	}
 
 	private Layout _getLayout(
-			boolean allowLiveGroup, String siteExternalReferenceCode,
+			String siteExternalReferenceCode,
 			String sitePageExternalReferenceCode)
 		throws Exception {
 
 		Layout layout = SitePageUtil.getSitePageLayout(
 			GroupUtil.getGroupId(
-				false, allowLiveGroup, contextCompany.getCompanyId(),
+				false, false, contextCompany.getCompanyId(),
 				siteExternalReferenceCode),
 			sitePageExternalReferenceCode);
 
