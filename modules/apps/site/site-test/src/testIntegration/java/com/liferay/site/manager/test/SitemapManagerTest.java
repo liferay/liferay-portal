@@ -545,7 +545,7 @@ public class SitemapManagerTest {
 	}
 
 	@Test
-	public void testSitemapByAssetTypePaginationStoresMultiplePages()
+	public void testSitemapByAssetTypePaginationStoresAndPrunesPages()
 		throws Exception {
 
 		try (CompanyConfigurationTemporarySwapper
@@ -594,6 +594,27 @@ public class SitemapManagerTest {
 					_sitemapStorageHelper.hasSitemapFile(
 						companyId, groupId,
 						SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 4));
+
+				ReflectionTestUtil.setFieldValue(
+					_sitemapManager, "_maximumEntries",
+					SitemapManager.MAXIMUM_ENTRIES);
+
+				_sitemapManager.regenerateSitemap(
+					SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, companyId,
+					groupId);
+
+				Assert.assertTrue(
+					_sitemapStorageHelper.hasSitemapFile(
+						companyId, groupId,
+						SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 1));
+				Assert.assertFalse(
+					_sitemapStorageHelper.hasSitemapFile(
+						companyId, groupId,
+						SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 2));
+				Assert.assertFalse(
+					_sitemapStorageHelper.hasSitemapFile(
+						companyId, groupId,
+						SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, 3));
 			}
 			finally {
 				ReflectionTestUtil.setFieldValue(
