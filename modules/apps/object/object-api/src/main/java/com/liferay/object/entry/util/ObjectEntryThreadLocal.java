@@ -41,6 +41,10 @@ public class ObjectEntryThreadLocal {
 		return _disassociateRelatedModels.get();
 	}
 
+	public static boolean isSkipObjectDefinitionCache() {
+		return _skipObjectDefinitionCache.get();
+	}
+
 	public static boolean isSkipObjectEntryResourcePermission() {
 		return _skipObjectEntryResourcePermission.get();
 	}
@@ -78,6 +82,13 @@ public class ObjectEntryThreadLocal {
 		return _objectEntryFolderId.setWithSafeCloseable(objectEntryFolderId);
 	}
 
+	public static SafeCloseable setSkipObjectDefinitionCacheWithSafeCloseable(
+		boolean skipObjectDefinitionCache) {
+
+		return _skipObjectDefinitionCache.setWithSafeCloseable(
+			skipObjectDefinitionCache);
+	}
+
 	public static void setSkipObjectEntryResourcePermission(
 		boolean skipObjectEntryResourcePermission) {
 
@@ -107,6 +118,10 @@ public class ObjectEntryThreadLocal {
 	private static final CentralizedThreadLocal<Long> _objectEntryFolderId =
 		new CentralizedThreadLocal<>(
 			ObjectEntryThreadLocal.class + "._objectEntryFolderId", () -> null);
+	private static final CentralizedThreadLocal<Boolean>
+		_skipObjectDefinitionCache = new CentralizedThreadLocal<>(
+			ObjectEntryThreadLocal.class + "._skipObjectDefinitionCache",
+			() -> false);
 	private static final ThreadLocal<Boolean>
 		_skipObjectEntryResourcePermission = new CentralizedThreadLocal<>(
 			ObjectEntryThreadLocal.class +

@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.entry.util.ObjectEntryValuesUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -127,6 +128,13 @@ public class ObjectEntryImpl extends ObjectEntryBaseImpl {
 
 	@Override
 	public ObjectDefinition getObjectDefinition() {
+		if (ObjectEntryThreadLocal.isSkipObjectDefinitionCache()) {
+			_objectDefinition = null;
+
+			return ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
+				getObjectDefinitionId());
+		}
+
 		if (_objectDefinition == null) {
 			_objectDefinition =
 				ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(

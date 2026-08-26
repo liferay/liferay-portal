@@ -3790,61 +3790,70 @@ public class ObjectEntryLocalServiceImpl
 			_objectRelationshipPersistence.findByObjectDefinitionId1(
 				objectDefinitionId);
 
-		for (ObjectRelationship objectRelationship : objectRelationships) {
-			ObjectDefinition objectDefinition2 =
-				_objectDefinitionPersistence.findByPrimaryKey(
-					objectRelationship.getObjectDefinitionId2());
+		try (SafeCloseable safeCloseable =
+				ObjectEntryThreadLocal.
+					setSkipObjectDefinitionCacheWithSafeCloseable(
+						ObjectDefinitionThreadLocal.isDeleteObjectDefinitionId(
+							objectDefinitionId))) {
 
-			if (WorkflowConstants.STATUS_DRAFT ==
-					objectDefinition2.getStatus()) {
+			for (ObjectRelationship objectRelationship : objectRelationships) {
+				ObjectDefinition objectDefinition2 =
+					_objectDefinitionPersistence.findByPrimaryKey(
+						objectRelationship.getObjectDefinitionId2());
 
-				continue;
-			}
+				if (WorkflowConstants.STATUS_DRAFT ==
+						objectDefinition2.getStatus()) {
 
-			ObjectRelatedModelsProvider objectRelatedModelsProvider =
-				_objectRelatedModelsProviderRegistry.
-					getObjectRelatedModelsProvider(
-						objectDefinition2.getClassName(),
-						objectDefinition2.getCompanyId(),
-						objectRelationship.getType());
-
-			try {
-				ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(
-					true);
-
-				String deletionType = objectRelationship.getDeletionType();
-
-				if (ObjectEntryThreadLocal.isDisassociateRelatedModels() ||
-					(Objects.equals(
-						deletionType,
-						ObjectRelationshipConstants.DELETION_TYPE_PREVENT) &&
-					 ObjectDefinitionThreadLocal.isDeleteObjectDefinitionId(
-						 objectDefinitionId))) {
-
-					deletionType =
-						ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE;
+					continue;
 				}
 
-				if (moveToTrash) {
-					objectRelatedModelsProvider.moveRelatedModelToTrash(
-						PrincipalThreadLocal.getUserId(), groupId,
-						objectRelationship.getObjectRelationshipId(),
-						primaryKey, deletionType);
+				ObjectRelatedModelsProvider objectRelatedModelsProvider =
+					_objectRelatedModelsProviderRegistry.
+						getObjectRelatedModelsProvider(
+							objectDefinition2.getClassName(),
+							objectDefinition2.getCompanyId(),
+							objectRelationship.getType());
+
+				try {
+					ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(
+						true);
+
+					String deletionType = objectRelationship.getDeletionType();
+
+					if (ObjectEntryThreadLocal.isDisassociateRelatedModels() ||
+						(Objects.equals(
+							deletionType,
+							ObjectRelationshipConstants.
+								DELETION_TYPE_PREVENT) &&
+						 ObjectDefinitionThreadLocal.isDeleteObjectDefinitionId(
+							 objectDefinitionId))) {
+
+						deletionType =
+							ObjectRelationshipConstants.
+								DELETION_TYPE_DISASSOCIATE;
+					}
+
+					if (moveToTrash) {
+						objectRelatedModelsProvider.moveRelatedModelToTrash(
+							PrincipalThreadLocal.getUserId(), groupId,
+							objectRelationship.getObjectRelationshipId(),
+							primaryKey, deletionType);
+					}
+					else {
+						objectRelatedModelsProvider.deleteRelatedModel(
+							PrincipalThreadLocal.getUserId(), groupId,
+							objectRelationship.getObjectRelationshipId(),
+							primaryKey, deletionType);
+					}
 				}
-				else {
-					objectRelatedModelsProvider.deleteRelatedModel(
-						PrincipalThreadLocal.getUserId(), groupId,
-						objectRelationship.getObjectRelationshipId(),
-						primaryKey, deletionType);
+				catch (PrincipalException principalException) {
+					throw new ObjectRelationshipDeletionTypeException(
+						principalException.getMessage());
 				}
-			}
-			catch (PrincipalException principalException) {
-				throw new ObjectRelationshipDeletionTypeException(
-					principalException.getMessage());
-			}
-			finally {
-				ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(
-					false);
+				finally {
+					ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(
+						false);
+				}
 			}
 		}
 	}
