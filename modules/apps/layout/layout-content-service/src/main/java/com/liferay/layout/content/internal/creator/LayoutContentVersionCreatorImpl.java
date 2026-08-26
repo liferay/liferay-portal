@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import org.osgi.service.component.annotations.Component;
@@ -37,7 +38,8 @@ public class LayoutContentVersionCreatorImpl
 			if (!CTCollectionThreadLocal.isProductionMode() ||
 				!FeatureFlagManagerUtil.isEnabled(
 					layout.getCompanyId(), "LPD-10622") ||
-				!layout.isDraftLayout() || !layout.isTypeContent()) {
+				!InitialRequestSyncUtil.isSynced() || !layout.isDraftLayout() ||
+				!layout.isTypeContent()) {
 
 				return;
 			}
