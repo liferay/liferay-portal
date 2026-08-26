@@ -41,10 +41,7 @@ public interface PanelApp extends PanelEntry {
 	public int getNotificationsCount(User user);
 
 	/**
-	 * Returns the application's navigation items, such as the application's tabs
-	 * or screens, based on the servlet request attributes. Applications that
-	 * expose their navigation items make them reachable from the side
-	 * navigation's filter.
+	 * Returns the application's navigation items.
 	 *
 	 * @param  httpServletRequest the servlet request used to create the
 	 *         navigation items' URLs
