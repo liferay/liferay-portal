@@ -26,6 +26,8 @@ import {
 	publishDefinitionRequest,
 	saveDefinitionRequest,
 } from '../../../util/fetchUtil';
+import getInvalidVariables from '../../../util/getInvalidVariables';
+import lang from '../../../util/lang';
 import {isObjectEmpty} from '../../../util/utils';
 import {GroovyScriptWarningModal} from './GroovyScriptWarningModal';
 
@@ -206,6 +208,31 @@ export default function UpperToolbar({
 			return;
 		}
 
+		const invalidVariables = getInvalidVariables(
+			elements,
+			selectedLanguageId ? selectedLanguageId : defaultLanguageId
+		);
+
+		if (invalidVariables) {
+			setAlert(
+				lang.sub(
+					Liferay.Language.get(
+						'x-must-be-a-valid-json-array-in-the-x-node'
+					),
+					[
+						invalidVariables.field === 'inputVariables'
+							? Liferay.Language.get('input-variables')
+							: Liferay.Language.get('output-variables'),
+						invalidVariables.label,
+					]
+				),
+				'danger',
+				true
+			);
+
+			return;
+		}
+
 		const validXMLDefinition = getXMLContent();
 
 		if (!validXMLDefinition) {
@@ -219,26 +246,50 @@ export default function UpperToolbar({
 			xmlDefinition,
 		} = validXMLDefinition;
 
-		const publishedOrSavedDefinitionResponse =
-			await saveOrPublishDefinitionRequest(
-				{
-					active,
-					content: xmlDefinition,
-					name,
-					title: definitionTitle,
-					title_i18n: definitionTitleTranslations,
-					version,
-				},
-				groupExternalReferenceCode ? groupExternalReferenceCode : {},
-				scope ? scope : {}
+		let publishedOrSavedDefinitionResponse = null;
+
+		try {
+			publishedOrSavedDefinitionResponse =
+				await saveOrPublishDefinitionRequest(
+					{
+						active,
+						content: xmlDefinition,
+						name,
+						title: definitionTitle,
+						title_i18n: definitionTitleTranslations,
+						version,
+					},
+					groupExternalReferenceCode
+						? groupExternalReferenceCode
+						: {},
+					scope ? scope : {}
+				);
+		}
+		catch (error) {
+			setAlert(
+				Liferay.Language.get('an-unexpected-error-occurred'),
+				'danger',
+				true
 			);
 
-		const publishedOrSavedDefinitionResponseJSON =
-			await publishedOrSavedDefinitionResponse.json();
+			return;
+		}
+
+		let publishedOrSavedDefinitionResponseJSON = null;
+
+		try {
+			publishedOrSavedDefinitionResponseJSON =
+				await publishedOrSavedDefinitionResponse.json();
+		}
+		catch (error) {
+			publishedOrSavedDefinitionResponseJSON = {};
+		}
 
 		if (!publishedOrSavedDefinitionResponse.ok) {
 			setAlert(
-				publishedOrSavedDefinitionResponseJSON.title,
+				publishedOrSavedDefinitionResponseJSON.title
+					? publishedOrSavedDefinitionResponseJSON.title
+					: Liferay.Language.get('an-unexpected-error-occurred'),
 				'danger',
 				true
 			);

@@ -636,7 +636,7 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 			labelMap.put(
 				LocaleUtil.fromLanguageId(
 					labelElement.attributeValue("language-id")),
-				labelElement.getText());
+				labelElement.getTextTrim());
 		}
 
 		return labelMap;

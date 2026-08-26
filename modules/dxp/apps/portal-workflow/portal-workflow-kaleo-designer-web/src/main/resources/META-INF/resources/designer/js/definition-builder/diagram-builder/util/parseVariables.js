@@ -21,6 +21,10 @@ const formatVariablesForTextarea = (raw) => {
 };
 
 const parseVariablesInput = (text) => {
+	if (!text.trim()) {
+		return undefined;
+	}
+
 	try {
 		return JSON.parse(text);
 	}

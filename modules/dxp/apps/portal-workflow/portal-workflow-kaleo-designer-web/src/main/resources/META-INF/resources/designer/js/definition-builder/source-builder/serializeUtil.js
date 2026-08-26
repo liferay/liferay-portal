@@ -686,21 +686,24 @@ function serializeDefinition(xmlNamespace, metadata, nodes, transitions) {
 			buffer.push(
 				XMLUtil.create(
 					'input-variables',
-					cdata(jsonStringify(item.data.inputVariables))
+					cdata(jsonStringify(item.data.inputVariables || []))
 				)
 			);
 			buffer.push(
 				XMLUtil.create(
 					'output-variables',
-					cdata(jsonStringify(item.data.outputVariables))
+					cdata(jsonStringify(item.data.outputVariables || []))
 				)
 			);
 			buffer.push(XMLUtil.create('prompt', cdata(prompt ? prompt : '')));
 			buffer.push(
-				XMLUtil.create('rag', cdata(jsonStringify(item.data.rag)))
+				XMLUtil.create('rag', cdata(jsonStringify(item.data.rag || [])))
 			);
 			buffer.push(
-				XMLUtil.create('tools', cdata(jsonStringify(item.data.tools)))
+				XMLUtil.create(
+					'tools',
+					cdata(jsonStringify(item.data.tools || []))
+				)
 			);
 		}
 
@@ -738,13 +741,13 @@ function serializeDefinition(xmlNamespace, metadata, nodes, transitions) {
 			buffer.push(
 				XMLUtil.create(
 					'input-variables',
-					cdata(jsonStringify(item.data.inputVariables))
+					cdata(jsonStringify(item.data.inputVariables || []))
 				)
 			);
 			buffer.push(
 				XMLUtil.create(
 					'output-variables',
-					cdata(jsonStringify(item.data.outputVariables))
+					cdata(jsonStringify(item.data.outputVariables || []))
 				)
 			);
 			buffer.push(
