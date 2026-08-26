@@ -88,7 +88,6 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			httpServletRequest.setAttribute(
 				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
 				new long[] {segmentsExperienceId});
-
 			httpServletRequest.setAttribute(
 				WebKeys.PORTLET_DECORATE, Boolean.FALSE);
 
@@ -109,6 +108,7 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			layout.setClassNameId(0);
 
 			httpServletRequest.setAttribute(WebKeys.LAYOUT, layout);
+
 			httpServletRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, themeDisplay);
 
