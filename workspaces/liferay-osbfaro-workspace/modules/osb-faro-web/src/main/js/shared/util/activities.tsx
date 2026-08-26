@@ -6,11 +6,7 @@ import getEventDashboardUrl, {
 } from './getEventDashboardUrl';
 import {getCustomDateFormat} from 'shared/util/date';
 import {getSafeDecodedURIComponent} from './util';
-import {
-	AssetTypes,
-	LIFERAY_DXP_APPLICATION_IDS,
-	TimeIntervals,
-} from 'shared/util/constants';
+import {AssetTypes, TimeIntervals} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
 import {sub} from 'shared/util/lang';
 import {toLocale} from 'shared/util/numbers';
@@ -227,30 +223,26 @@ export const formatEvents = (
 };
 
 /**
- * Only DXP events are page bound — they carry the page they happened on in
- * their canonical URL. Events from an external data source are not, so they get
- * no key and stay out of the grouping.
+ * The key the API grouped the event under, which is also the key it paged the
+ * results on. Deriving it here as well would let the rendered groups and the
+ * page boundaries drift apart, so the backend owns it: it is the page's
+ * canonical URL, and absent for an event that is not page bound.
  */
-const getPageGroupKey = ({
-	applicationId,
-	canonicalUrl,
-	url,
-}: UserSessionEvent): string =>
-	LIFERAY_DXP_APPLICATION_IDS.has(applicationId)
-		? canonicalUrl || url || ''
-		: '';
+const getPageGroupKey = ({pageGroupId}: UserSessionEvent): string =>
+	pageGroupId || '';
 
 /**
  * Groups a session's events by the page they happened on, so the activity
  * stream shows one entry per visited page instead of a raw list of events.
  *
- * Events are keyed by their canonical URL, so a page visited more than once in
- * the same session collapses into a single entry carrying the time range and
- * event count of every event on that page. Events that are not page bound (an
- * external data source, or a DXP event with no URL) stay as direct session
- * items. Groups and those loose events are ordered by their most recent event,
- * newest first, matching how the timeline already orders days and sessions.
- * Within a group the events keep the order they arrive in.
+ * Events are keyed by the page group the API assigned them, so a page visited
+ * more than once in the same session collapses into a single entry carrying the
+ * time range and event count of every event on that page. Events that are not
+ * page bound (an external data source, or a DXP event with no URL) carry no key
+ * and stay as direct session items. Groups and those loose events are ordered by
+ * their most recent event, newest first, matching how the timeline already
+ * orders days and sessions. Within a group the events keep the order they
+ * arrive in.
  */
 export const groupEventsByPage = (
 	events: UserSessionEvent[],

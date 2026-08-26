@@ -201,13 +201,13 @@ const ProfileCard: React.FC<IProfileCardProps> = ({
 
 	const sessionsMappedResults = mapListResultsToProps(
 		sessionsResponse,
-		({eventsByUserSessions: {totalEvents, userSessions}}) => ({
+		({eventsByUserSessions: {totalPageGroupsMetric, userSessions}}) => ({
 			items: formatSessions(userSessions, {
 				channelId,
 				groupId,
 				rangeSelectors,
 			}),
-			total: totalEvents,
+			total: totalPageGroupsMetric?.value ?? 0,
 		})
 	);
 

@@ -147,7 +147,8 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 							rangeSelectors,
 						}
 					),
-					total: eventsByUserSessions?.totalEvents ?? 0,
+					total:
+						eventsByUserSessions?.totalPageGroupsMetric?.value ?? 0,
 				})
 			),
 		[

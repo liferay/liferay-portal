@@ -10,6 +10,7 @@ export interface UserSessionEvent {
 	eventId: string;
 	name: string;
 	pageDescription: string;
+	pageGroupId?: string | null;
 	pageTitle: string;
 	properties: Array<{name: string; value: string}>;
 	referrer: string;
@@ -37,6 +38,7 @@ export interface UserSession {
 export interface UserSessionData {
 	eventsByUserSessions: {
 		totalEvents: number;
+		totalPageGroupsMetric: {value: number} | null;
 		userSessions: UserSession[];
 	};
 }
@@ -95,6 +97,7 @@ export default gql`
 						eventId
 						name
 						pageDescription
+						pageGroupId
 						pageKeywords
 						pageTitle
 						properties {
@@ -112,6 +115,9 @@ export default gql`
 				}
 			}
 			totalEvents
+			totalPageGroupsMetric {
+				value
+			}
 		}
 	}
 `;
