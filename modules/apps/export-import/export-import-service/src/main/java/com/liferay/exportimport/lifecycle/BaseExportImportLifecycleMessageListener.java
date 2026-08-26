@@ -89,7 +89,7 @@ public abstract class BaseExportImportLifecycleMessageListener
 							exportImportLifecycleListener);
 			}
 			else if (exportImportLifecycleListener instanceof
-					ProcessAwareExportImportLifecycleListener) {
+						ProcessAwareExportImportLifecycleListener) {
 
 				exportImportLifecycleListener =
 					new DefaultProcessAwareExportImportLifecycleListener(
