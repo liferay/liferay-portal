@@ -6,6 +6,8 @@
 package com.liferay.mcp.server.rest.internal.upgrade.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.batch.engine.unit.BatchEngineUnit;
+import com.liferay.batch.engine.unit.BatchEngineUnitConfiguration;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.list.type.model.ListTypeDefinition;
@@ -24,12 +26,20 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.zip.ZipWriter;
@@ -39,6 +49,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -51,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -75,20 +87,27 @@ public class MCPPromptUpgradeProcessTest {
 
 	@Before
 	public void setUp() throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_MCP_SERVER_PROMPT", TestPropsValues.getCompanyId());
+		_company = CompanyTestUtil.addCompany();
 
-		if (objectDefinition != null) {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
+		_user = UserTestUtil.getAdminUser(_company.getCompanyId());
+
+		_originalCompanyId = CompanyThreadLocal.getCompanyId();
+		_originalName = PrincipalThreadLocal.getName();
+		_originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		CompanyThreadLocal.setCompanyId(_company.getCompanyId());
+
+		UserTestUtil.setUser(_user);
+
+		_deleteObjectDefinition("L_MCP_SERVER_PROFILE_TOOL");
+		_deleteObjectDefinition("L_MCP_SERVER_PROFILE");
+		_deleteObjectDefinition("L_MCP_SERVER_PROMPT");
 
 		ListTypeDefinition listTypeDefinition =
 			_listTypeDefinitionLocalService.
 				fetchListTypeDefinitionByExternalReferenceCode(
-					"L_MCP_STATUS", TestPropsValues.getCompanyId());
+					"L_MCP_STATUS", _company.getCompanyId());
 
 		if (listTypeDefinition != null) {
 			_listTypeDefinitionLocalService.deleteListTypeDefinition(
@@ -98,12 +117,18 @@ public class MCPPromptUpgradeProcessTest {
 		Bundle bundle = _installBundle();
 
 		try {
-			_batchEngineUnitProcessor.processBatchEngineUnits(
-				_batchEngineUnitReader.getBatchEngineUnits(bundle));
+			_processBatchEngineUnits(bundle);
 		}
 		finally {
 			bundle.uninstall();
 		}
+	}
+
+	@After
+	public void tearDown() {
+		CompanyThreadLocal.setCompanyId(_originalCompanyId);
+		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
+		PrincipalThreadLocal.setName(_originalName);
 	}
 
 	@Test
@@ -111,7 +136,7 @@ public class MCPPromptUpgradeProcessTest {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_MCP_SERVER_PROMPT", TestPropsValues.getCompanyId());
+					"L_MCP_SERVER_PROMPT", _company.getCompanyId());
 
 		_objectEntry1 = _addObjectEntry(objectDefinition, "My Prompt");
 		_objectEntry2 = _addObjectEntry(objectDefinition, "My- Prompt!");
@@ -132,8 +157,7 @@ public class MCPPromptUpgradeProcessTest {
 		throws Exception {
 
 		return _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
+			0, _user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
@@ -143,7 +167,9 @@ public class MCPPromptUpgradeProcessTest {
 			).put(
 				"prompt", RandomTestUtil.randomString()
 			).build(),
-			ServiceContextTestUtil.getServiceContext());
+			ServiceContextTestUtil.getServiceContext(
+				_company.getCompanyId(), _company.getGroupId(),
+				_user.getUserId()));
 	}
 
 	private void _assertUpgrade(ObjectDefinition objectDefinition)
@@ -152,7 +178,7 @@ public class MCPPromptUpgradeProcessTest {
 		ListTypeDefinition listTypeDefinition =
 			_listTypeDefinitionLocalService.
 				getListTypeDefinitionByExternalReferenceCode(
-					"L_MCP_STATUS", TestPropsValues.getCompanyId());
+					"L_MCP_STATUS", _company.getCompanyId());
 
 		Assert.assertTrue(listTypeDefinition.isSystem());
 
@@ -211,6 +237,20 @@ public class MCPPromptUpgradeProcessTest {
 
 		Assert.assertEquals("my-prompt-2", values.get("identifier"));
 		Assert.assertEquals("active", values.get("promptStatus"));
+	}
+
+	private void _deleteObjectDefinition(String externalReferenceCode)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					externalReferenceCode, _company.getCompanyId());
+
+		if (objectDefinition != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
+		}
 	}
 
 	private UpgradeStep _getUpgradeStep() {
@@ -282,11 +322,71 @@ public class MCPPromptUpgradeProcessTest {
 			new FileInputStream(zipWriter.getFile()));
 	}
 
+	private void _processBatchEngineUnits(Bundle bundle) throws Exception {
+		_batchEngineUnitProcessor.processBatchEngineUnits(
+			TransformUtil.transform(
+				_batchEngineUnitReader.getBatchEngineUnits(bundle),
+				batchEngineUnit -> _toCompanyBatchEngineUnit(batchEngineUnit)));
+	}
+
+	private BatchEngineUnit _toCompanyBatchEngineUnit(
+		BatchEngineUnit batchEngineUnit) {
+
+		return new BatchEngineUnit() {
+
+			@Override
+			public BatchEngineUnitConfiguration
+					getBatchEngineUnitConfiguration()
+				throws IOException {
+
+				BatchEngineUnitConfiguration batchEngineUnitConfiguration =
+					batchEngineUnit.getBatchEngineUnitConfiguration();
+
+				batchEngineUnitConfiguration.setCompanyId(
+					_company.getCompanyId());
+				batchEngineUnitConfiguration.setUserId(_user.getUserId());
+
+				return batchEngineUnitConfiguration;
+			}
+
+			@Override
+			public InputStream getConfigurationInputStream()
+				throws IOException {
+
+				return batchEngineUnit.getConfigurationInputStream();
+			}
+
+			@Override
+			public String getDataFileName() {
+				return batchEngineUnit.getDataFileName();
+			}
+
+			@Override
+			public InputStream getDataInputStream() throws IOException {
+				return batchEngineUnit.getDataInputStream();
+			}
+
+			@Override
+			public String getFileName() {
+				return batchEngineUnit.getFileName();
+			}
+
+			@Override
+			public boolean isValid() {
+				return batchEngineUnit.isValid();
+			}
+
+		};
+	}
+
 	@Inject
 	private BatchEngineUnitProcessor _batchEngineUnitProcessor;
 
 	@Inject
 	private BatchEngineUnitReader _batchEngineUnitReader;
+
+	@DeleteAfterTestRun
+	private Company _company;
 
 	@Inject
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
@@ -315,10 +415,16 @@ public class MCPPromptUpgradeProcessTest {
 	@Inject
 	private ObjectValidationRuleLocalService _objectValidationRuleLocalService;
 
+	private long _originalCompanyId;
+	private String _originalName;
+	private PermissionChecker _originalPermissionChecker;
+
 	@Inject(
 		filter = "component.name=com.liferay.mcp.server.rest.internal.upgrade.registry.MCPServerRestUpgradeStepRegistrator"
 	)
 	private UpgradeStepRegistrator _upgradeStepRegistrator;
+
+	private User _user;
 
 	@Inject
 	private ZipWriterFactory _zipWriterFactory;
