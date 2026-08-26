@@ -9,6 +9,7 @@ import ExperienceDropdown from '../components/ExperienceDropdown';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useEffect, useState} from 'react';
+import RouteNotFound from 'shared/components/RouteNotFound';
 import SegmentDropdown from 'shared/components/SegmentDropdown';
 import TextTruncate from 'shared/components/TextTruncate';
 import {CSVType} from 'shared/components/download-report/utils';
@@ -25,6 +26,8 @@ import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
+
+const TOUCHPOINT_TYPES = ['accounts', 'known-individuals', 'overview', 'path'];
 
 const Accounts = lazy(() =>
 	import(/* webpackChunkName: "TouchpointAccountsPage" */ './Accounts')
@@ -110,6 +113,16 @@ function TouchpointRoutes({className, router}) {
 	useEffect(() => {
 		setPathRangeSelectors(rangeSelectors);
 	}, [matchedRoute]);
+
+	// `:touchpointType` is a free parameter, so a value no tab answers to does
+	// reach this component. Under v5 it fell past every `<Switch>` case to
+	// `RouteNotFound`, which had `App` swap the whole page for the 404. The four
+	// checks below have no fallback of their own, so without this the page
+	// renders its header over an empty body -- neither the screen nor an error.
+
+	if (!TOUCHPOINT_TYPES.includes(touchpointType)) {
+		return <RouteNotFound />;
+	}
 
 	return (
 		<BasePage

@@ -32,7 +32,7 @@ jest.mock('shared/components/Loading', () => ({
 
 jest.mock('shared/components/RouteNotFound', () => ({
 	__esModule: true,
-	default: () => null
+	default: () => <div data-testid='route-not-found' />
 }));
 
 jest.mock('route-middleware/BundleRouter', () => ({
@@ -109,7 +109,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/人事発告'
+				touchpoint: 'http://example.com/web/site/人事発告',
+				touchpointType: 'known-individuals'
 			}
 		};
 
@@ -140,7 +141,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			}
 		};
 
@@ -165,7 +167,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			}
 		};
 
@@ -190,7 +193,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			}
 		};
 
@@ -215,7 +219,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			}
 		};
 
@@ -240,7 +245,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			}
 		};
 
@@ -265,7 +271,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			}
 		};
 
@@ -290,7 +297,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -316,7 +324,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -342,7 +351,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'path'
 			},
 			query: {}
 		};
@@ -368,7 +378,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'path'
 			},
 			query: {}
 		};
@@ -394,7 +405,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -429,7 +441,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'path'
 			},
 			query: {}
 		};
@@ -460,7 +473,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -486,7 +500,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -512,7 +527,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'accounts'
 			},
 			query: {}
 		};
@@ -538,7 +554,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'path'
 			},
 			query: {}
 		};
@@ -564,7 +581,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'path'
 			},
 			query: {}
 		};
@@ -590,7 +608,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -625,7 +644,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'path'
 			},
 			query: {}
 		};
@@ -656,7 +676,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -688,7 +709,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -718,7 +740,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -749,7 +772,8 @@ describe('TouchpointRoutes', () => {
 				experienceId: '',
 				groupId: '2',
 				title: 'page',
-				touchpoint: 'http://example.com/web/site/home'
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'overview'
 			},
 			query: {}
 		};
@@ -766,5 +790,68 @@ describe('TouchpointRoutes', () => {
 
 		expect(href).not.toContain('segmentId');
 		expect(href).not.toContain('segmentName');
+	});
+	it('renders the 404 for a tab the page does not answer to', () => {
+
+		// `:touchpointType` is a free parameter, so a value none of the tabs
+		// match does reach the component. Under v5 it fell past every
+		// `<Switch>` case to `RouteNotFound`; without a fallback the page
+		// renders its header over an empty body instead.
+
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home',
+				touchpointType: 'not-a-tab'
+			}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('route-not-found')).toBeTruthy();
+	});
+
+	it('renders the page itself for every tab it does answer to', () => {
+		for (const touchpointType of [
+			'accounts',
+			'known-individuals',
+			'overview',
+			'path'
+		]) {
+			const {unmount} = render(
+				<Provider store={mockStore()}>
+					<MemoryRouter>
+						<TouchpointRoutes
+							router={{
+								params: {
+									channelId: '1',
+									experienceId: '',
+									groupId: '2',
+									title: 'page',
+									touchpoint:
+										'http://example.com/web/site/home',
+									touchpointType
+								}
+							}}
+						/>
+					</MemoryRouter>
+				</Provider>
+			);
+
+			expect(screen.queryByTestId('route-not-found')).toBeNull();
+
+			unmount();
+		}
 	});
 });
