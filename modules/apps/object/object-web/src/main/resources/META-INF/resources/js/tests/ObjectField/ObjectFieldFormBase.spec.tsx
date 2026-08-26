@@ -187,6 +187,21 @@ describe('Object field description', () => {
 		expect(screen.queryByLabelText('description')).not.toBeInTheDocument();
 	});
 
+	it('is disabled for a relationship object field', () => {
+		render(
+			<ObjectFieldFormBase
+				{...descriptionProps}
+				objectField={{
+					businessType: 'Relationship' as ObjectFieldBusinessTypeName,
+					name: 'r_warrantyClaimServiceVisits_c_warrantyClaimId',
+				}}
+				objectRelationshipId={0}
+			/>
+		);
+
+		expect(screen.getByLabelText('description')).toBeDisabled();
+	});
+
 	it('is disabled when the form is read only', () => {
 		render(<ObjectFieldFormBase {...descriptionProps} readOnly />);
 
