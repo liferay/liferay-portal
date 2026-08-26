@@ -167,6 +167,7 @@ export default function CompareVersionsModalContent({
 				{versionsState.status === 'loaded' ? (
 					<div className="cms-compare-versions-panes d-flex flex-grow-1">
 						<CompareVersionPane
+							excludedVersion={targetVersion}
 							languageId={languageId}
 							objectEntryId={objectEntryId}
 							onVersionChange={setSourceVersion}
@@ -176,6 +177,7 @@ export default function CompareVersionsModalContent({
 
 						<CompareVersionPane
 							className="border-left"
+							excludedVersion={sourceVersion}
 							languageId={languageId}
 							objectEntryId={objectEntryId}
 							onVersionChange={setTargetVersion}
@@ -191,6 +193,7 @@ export default function CompareVersionsModalContent({
 
 function CompareVersionPane({
 	className,
+	excludedVersion,
 	languageId,
 	objectEntryId,
 	onVersionChange,
@@ -198,6 +201,7 @@ function CompareVersionPane({
 	versions,
 }: {
 	className?: string;
+	excludedVersion: number | null;
 	languageId: string;
 	objectEntryId: number;
 	onVersionChange: (version: number) => void;
@@ -243,6 +247,7 @@ function CompareVersionPane({
 					)}
 				>
 					<VersionPicker
+						excludedVersion={excludedVersion}
 						onVersionChange={onVersionChange}
 						selectedVersion={selectedVersion}
 						versions={versions}
@@ -263,6 +268,7 @@ function CompareVersionPane({
 		>
 			<div className="align-items-center c-gap-3 d-flex p-3">
 				<VersionPicker
+					excludedVersion={excludedVersion}
 					onVersionChange={(version) => {
 						setIframeStatus('loading');
 						onVersionChange(version);
@@ -320,18 +326,22 @@ const VersionPickerTrigger = React.forwardRef<HTMLButtonElement, any>(
 );
 
 function VersionPicker({
+	excludedVersion,
 	onVersionChange,
 	selectedVersion,
 	versions,
 }: {
+	excludedVersion: number | null;
 	onVersionChange: (version: number) => void;
 	selectedVersion: number | null;
 	versions: VersionItem[];
 }) {
-	const items = versions.map((item) => ({
-		label: getVersionLabel(getVersionNumber(item)),
-		value: String(getVersionNumber(item)),
-	}));
+	const items = versions
+		.filter((item) => getVersionNumber(item) !== excludedVersion)
+		.map((item) => ({
+			label: getVersionLabel(getVersionNumber(item)),
+			value: String(getVersionNumber(item)),
+		}));
 
 	return (
 		<Picker
