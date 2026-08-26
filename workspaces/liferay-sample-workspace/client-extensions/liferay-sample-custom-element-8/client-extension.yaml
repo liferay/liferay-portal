@@ -1,0 +1,13 @@
+assemble:
+    -   from: build/static
+        into: static
+liferay-sample-custom-element-8:
+    friendlyURLMapping: liferay-sample-custom-element-8
+    htmlElementName: liferay-sample-custom-element-8
+    instanceable: true
+    name: Liferay Sample Custom Element 8
+    portletCategoryName: category.client-extensions
+    type: customElement
+    urls:
+        -   index.*.js
+    useESM: true

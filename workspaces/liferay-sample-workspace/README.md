@@ -80,7 +80,11 @@ For `liferay-sample-etc-cron` and `liferay-sample-etc-spring-boot` the third typ
 
 - *liferay-sample-custom-element-7*
 
-	Build a custom element that connects to a given frontend data set.
+	Build a custom element that drives the search of a given frontend data set.
+
+- *liferay-sample-custom-element-8*
+
+	Build a custom element that takes the filtering of a given frontend data set over and offers a filter UI of its own.
 
 - *liferay-sample-editor-config-contributor-1*
 

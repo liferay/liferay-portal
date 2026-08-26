@@ -34,7 +34,8 @@
 			"client-extensions/liferay-sample-theme-css-2",
 			"client-extensions/liferay-sample-theme-css-3",
 			"client-extensions/liferay-sample-theme-spritemap-2",
-			"client-extensions/liferay-sample-editor-config-contributor-6"
+			"client-extensions/liferay-sample-editor-config-contributor-6",
+			"client-extensions/liferay-sample-custom-element-8"
 		]
 	}
 }
