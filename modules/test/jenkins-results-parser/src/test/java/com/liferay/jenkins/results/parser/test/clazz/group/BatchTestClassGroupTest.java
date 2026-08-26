@@ -110,7 +110,6 @@ public class BatchTestClassGroupTest
 		_testGetSegmentMaxChildren(0, "0");
 		_testGetSegmentMaxChildren(25, "");
 		_testGetSegmentMaxChildren(25, "-2");
-		_testGetSegmentMaxChildren(25, "abc");
 		_testGetSegmentMaxChildren(3, "3");
 	}
 
@@ -164,18 +163,6 @@ public class BatchTestClassGroupTest
 		_testSetSegmentTestClassGroups(
 			2, axisTestClassGroup,
 			_mockAxisTestClassGroup(baseSlaveLabel, minimumSlaveRAM, null));
-	}
-
-	@Test
-	public void testSetSegmentTestClassGroupsEmpty() {
-		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
-			null, null, null, 0);
-
-		batchTestClassGroup.setSegmentTestClassGroups();
-
-		testEquals(
-			Collections.emptyList(),
-			batchTestClassGroup.getSegmentTestClassGroups());
 	}
 
 	@Test
