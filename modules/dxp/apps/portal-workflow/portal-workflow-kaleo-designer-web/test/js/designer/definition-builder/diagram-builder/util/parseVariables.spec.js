@@ -10,9 +10,10 @@ import {
 	parseVariablesInput,
 } from '../../../../../../src/main/resources/META-INF/resources/designer/js/definition-builder/diagram-builder/util/parseVariables';
 
-it('Return undefined when the input is blank', () => {
+it('Return undefined when there is no input', () => {
 	expect(parseVariablesInput('')).toBeUndefined();
 	expect(parseVariablesInput(' \n\t')).toBeUndefined();
+	expect(parseVariablesInput(undefined)).toBeUndefined();
 });
 
 it('Parse a JSON array', () => {

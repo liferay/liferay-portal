@@ -21,7 +21,7 @@ const formatVariablesForTextarea = (raw) => {
 };
 
 const parseVariablesInput = (text) => {
-	if (!text.trim()) {
+	if (!text?.trim()) {
 		return undefined;
 	}
 

@@ -301,6 +301,7 @@ export default function UpperToolbar({
 					true,
 					localStorage.TYPES.FUNCTIONAL
 				);
+
 				redirectToSavedDefinition(
 					publishedOrSavedDefinitionResponseJSON.name,
 					publishedOrSavedDefinitionResponseJSON.version
