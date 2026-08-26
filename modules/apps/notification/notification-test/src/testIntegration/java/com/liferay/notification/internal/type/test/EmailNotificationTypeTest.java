@@ -57,6 +57,7 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
+import com.liferay.object.field.builder.EncryptedObjectFieldBuilder;
 import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
@@ -68,6 +69,7 @@ import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.test.util.EncryptedObjectFieldTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectEntryFolderTestUtil;
 import com.liferay.object.util.HttpServletRequestThreadLocal;
@@ -1581,6 +1583,51 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 
 			_userGroupLocalService.deleteUserGroup(userGroup2);
 		}
+	}
+
+	@Test
+	public void testSendNotificationWithEncryptedObjectField()
+		throws Exception {
+
+		EncryptedObjectFieldTestUtil.withEncryptedObjectFieldProperties(
+			"AES", true, EncryptedObjectFieldTestUtil.generateKey("AES"),
+			() -> {
+				String objectFieldName = "a" + RandomTestUtil.randomString();
+
+				ObjectDefinition objectDefinition =
+					ObjectDefinitionTestUtil.publishObjectDefinition(
+						Collections.singletonList(
+							new EncryptedObjectFieldBuilder(
+							).labelMap(
+								RandomTestUtil.randomLocaleStringMap()
+							).name(
+								objectFieldName
+							).build()));
+
+				_addNotificationTemplateObjectAction(
+					_getTermName(objectDefinition, objectFieldName),
+					NotificationTemplateConstants.EDITOR_TYPE_RICH_TEXT,
+					ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
+					objectDefinition);
+
+				String objectFieldValue = RandomTestUtil.randomString();
+
+				_objectEntryLocalService.addObjectEntry(
+					0, TestPropsValues.getUserId(),
+					objectDefinition.getObjectDefinitionId(),
+					ObjectEntryFolderConstants.
+						PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+					null,
+					HashMapBuilder.<String, Serializable>put(
+						objectFieldName, objectFieldValue
+					).build(),
+					ServiceContextTestUtil.getServiceContext());
+
+				_assertNotificationQueueEntryBody(objectFieldValue);
+
+				objectDefinitionLocalService.deleteObjectDefinition(
+					objectDefinition);
+			});
 	}
 
 	@Test
