@@ -13,7 +13,6 @@ import com.liferay.fragment.internal.upgrade.v2_0_0.util.FragmentEntryTable;
 import com.liferay.fragment.internal.upgrade.v2_1_0.SchemaUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v2_4_0.FragmentEntryLinkUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v3_0_1.BrowserSnifferFragmentEntryTemplateUpgradeProcess;
-import com.liferay.fragment.internal.upgrade.v3_0_2.FragmentEntryHTMLUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v4_0_0.FragmentEntryVersionUpgradeProcess;
 import com.liferay.fragment.internal.upgrade.v4_1_0.FragmentEntryLinkConfigurationUpgradeProcess;
 import com.liferay.petra.string.StringBundler;
@@ -278,8 +277,7 @@ public class FragmentServiceUpgradeStepRegistrator
 			"3.0.0", "3.0.1",
 			new BrowserSnifferFragmentEntryTemplateUpgradeProcess());
 
-		registry.register(
-			"3.0.1", "3.0.2", new FragmentEntryHTMLUpgradeProcess());
+		registry.register("3.0.1", "3.0.2", new DummyUpgradeStep());
 
 		registry.register("3.0.2", "3.0.3", new DummyUpgradeStep());
 
