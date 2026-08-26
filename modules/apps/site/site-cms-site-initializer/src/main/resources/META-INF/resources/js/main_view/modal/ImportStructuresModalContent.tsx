@@ -204,6 +204,7 @@ export default function ImportStructuresModalContent({
 			closeModal();
 
 			openCMSModal({
+				center: true,
 				contentComponent: ({closeModal}: {closeModal: () => void}) =>
 					WarningModalContent({
 						closeModal,

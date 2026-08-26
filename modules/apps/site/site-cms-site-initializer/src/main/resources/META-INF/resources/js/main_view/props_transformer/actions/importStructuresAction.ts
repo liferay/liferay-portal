@@ -11,6 +11,7 @@ export default function importStructuresAction(
 	loadData?: () => void
 ) {
 	openCMSModal({
+		center: true,
 		contentComponent: ({closeModal}: {closeModal: () => void}) =>
 			ImportStructuresModalContent({
 				closeModal,
