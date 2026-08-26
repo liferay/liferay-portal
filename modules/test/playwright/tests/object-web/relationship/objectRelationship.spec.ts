@@ -4259,6 +4259,14 @@ test.describe('Manage object relationship entries', () => {
 					.first()
 					.click();
 
+				await expect(
+					page.locator('iframe[title="Select"]')
+				).toBeHidden();
+
+				await expect(
+					page.getByRole('row').filter({hasText: 'Entry B'}).first()
+				).toBeVisible();
+
 				await viewObjectEntriesPage.goto(objectDefinition.className);
 
 				const entryARowRefreshed = page.getByRole('row', {
