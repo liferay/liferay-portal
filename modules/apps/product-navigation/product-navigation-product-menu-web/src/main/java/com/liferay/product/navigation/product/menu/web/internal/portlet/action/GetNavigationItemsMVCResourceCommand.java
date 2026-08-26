@@ -12,10 +12,13 @@ import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -79,19 +82,26 @@ public class GetNavigationItemsMVCResourceCommand
 					panelCategory.getKey(), themeDisplay.getPermissionChecker(),
 					themeDisplay.getScopeGroup())) {
 
-			List<PanelAppNavigationItem> panelAppNavigationItems =
-				panelApp.getPanelAppNavigationItems(httpServletRequest);
+			try {
+				List<PanelAppNavigationItem> panelAppNavigationItems =
+					panelApp.getPanelAppNavigationItems(httpServletRequest);
 
-			if (ListUtil.isEmpty(panelAppNavigationItems)) {
-				continue;
+				if (ListUtil.isEmpty(panelAppNavigationItems)) {
+					continue;
+				}
+
+				String portletId = panelApp.getPortletId();
+
+				navigationItemsJSONObject.put(
+					portletId,
+					_getNavigationItemsJSONArray(
+						panelAppNavigationItems, portletId));
 			}
-
-			String portletId = panelApp.getPortletId();
-
-			navigationItemsJSONObject.put(
-				portletId,
-				_getNavigationItemsJSONArray(
-					panelAppNavigationItems, portletId));
+			catch (PortalException portalException) {
+				_log.error(
+					"Unable to fetch panel app's navigation items",
+					portalException);
+			}
 		}
 	}
 
@@ -166,6 +176,9 @@ public class GetNavigationItemsMVCResourceCommand
 
 		return navigationItemsJSONObject;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		GetNavigationItemsMVCResourceCommand.class);
 
 	@Reference
 	private JSONFactory _jsonFactory;
