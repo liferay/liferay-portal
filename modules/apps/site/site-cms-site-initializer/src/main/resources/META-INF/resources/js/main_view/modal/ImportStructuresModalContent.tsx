@@ -14,13 +14,17 @@ import React, {useRef, useState} from 'react';
 import FieldWrapper from '../../common/components/forms/FieldWrapper';
 import ApiHelper from '../../common/services/ApiHelper';
 import StructureService from '../../common/services/StructureService';
+import {ObjectDefinition} from '../../common/types/ObjectDefinition';
+import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {openCMSModal} from '../../common/utils/openCMSModal';
 
 const JSON_EXTENSION = '.json';
 
 const REPEATABLE_GROUPS_FOLDER = 'L_CMS_STRUCTURE_REPEATABLE_GROUPS';
 
-function readJSONFile(file: File): Promise<any> {
+function readJSONFile(
+	file: File
+): Promise<ObjectDefinition | ObjectDefinition[]> {
 	return new Promise((resolve, reject) => {
 		const fileReader = new FileReader();
 
@@ -62,7 +66,9 @@ function getImportErrorMessage(error: string): string {
 	return error;
 }
 
-function getMainStructures(objectDefinitions: any) {
+function getMainStructures(
+	objectDefinitions: ObjectDefinition | ObjectDefinition[]
+) {
 	const definitions = Array.isArray(objectDefinitions)
 		? objectDefinitions
 		: [objectDefinitions];
@@ -75,7 +81,9 @@ function getMainStructures(objectDefinitions: any) {
 	);
 }
 
-async function getExistingStructureNames(objectDefinitions: any) {
+async function getExistingStructureNames(
+	objectDefinitions: ObjectDefinition | ObjectDefinition[]
+) {
 	const existingStructureNames: string[] = [];
 
 	for (const definition of getMainStructures(objectDefinitions)) {
@@ -84,15 +92,8 @@ async function getExistingStructureNames(objectDefinitions: any) {
 		);
 
 		if (!error && data) {
-			const objectDefinition = data as {
-				label: {[key: string]: string};
-				name: string;
-			};
-
 			existingStructureNames.push(
-				objectDefinition.label?.[
-					Liferay.ThemeDisplay.getLanguageId()
-				] || objectDefinition.name
+				getLocalizedValue(data.label) || data.name || ''
 			);
 		}
 	}
@@ -101,7 +102,7 @@ async function getExistingStructureNames(objectDefinitions: any) {
 }
 
 async function importStructures(
-	objectDefinitions: any,
+	objectDefinitions: ObjectDefinition | ObjectDefinition[],
 	importURL: string,
 	successMessage: string,
 	loadData?: () => void
@@ -152,7 +153,9 @@ export default function ImportStructuresModalContent({
 		string[]
 	>([]);
 	const [loading, setLoading] = useState(false);
-	const [objectDefinitions, setObjectDefinitions] = useState<any>(null);
+	const [objectDefinitions, setObjectDefinitions] = useState<
+		ObjectDefinition | ObjectDefinition[] | null
+	>(null);
 
 	const onFileChange = async (file: File | null) => {
 		setErrorMessage('');
