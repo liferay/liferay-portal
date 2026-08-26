@@ -66,7 +66,7 @@ describe('Serializing a node with untouched variables', () => {
 		);
 
 		expect(xmlDefinition).not.toContain('undefined');
-		expect(xmlDefinition).toContain('<rag>');
-		expect(xmlDefinition).toContain('<tools>');
+		expect(xmlDefinition).toMatch(/<rag>[\s\S]*?\{\}[\s\S]*?<\/rag>/);
+		expect(xmlDefinition).toMatch(/<tools>[\s\S]*?\[\][\s\S]*?<\/tools>/);
 	});
 });
