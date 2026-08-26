@@ -37,7 +37,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -106,8 +105,40 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 		return mockHttpServletResponse;
 	}
 
-	private ObjectEntry _mockObjectEntry(String code) throws Exception {
-		return _mockObjectEntry(code, code);
+	private void _mockGetObjectEntries(
+		long groupId, ObjectDefinition objectDefinition,
+		ObjectEntry... objectEntries) {
+
+		Mockito.when(
+			_objectEntryLocalService.getObjectEntries(
+				groupId, objectDefinition.getObjectDefinitionId(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS)
+		).thenReturn(
+			Arrays.asList(objectEntries)
+		);
+	}
+
+	private ObjectDefinition _mockObjectDefinition() {
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getObjectDefinitionId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+					_COMPANY_ID)
+		).thenReturn(
+			objectDefinition
+		);
+
+		return objectDefinition;
 	}
 
 	private ObjectEntry _mockObjectEntry(
@@ -137,47 +168,7 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 		return objectEntry;
 	}
 
-	private ObjectDefinition _setUpObjectDefinition() {
-		ObjectDefinition objectDefinition = Mockito.mock(
-			ObjectDefinition.class);
-
-		Mockito.when(
-			objectDefinition.getObjectDefinitionId()
-		).thenReturn(
-			RandomTestUtil.randomLong()
-		);
-
-		Mockito.when(
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_BASE_SKU,
-					_COMPANY_ID)
-		).thenReturn(
-			objectDefinition
-		);
-
-		return objectDefinition;
-	}
-
-	private ObjectEntry _setUpObjectEntry(
-			String code, long groupId, ObjectDefinition objectDefinition)
-		throws Exception {
-
-		ObjectEntry objectEntry = _mockObjectEntry(code);
-
-		Mockito.when(
-			_objectEntryLocalService.getObjectEntries(
-				groupId, objectDefinition.getObjectDefinitionId(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS)
-		).thenReturn(
-			Collections.singletonList(objectEntry)
-		);
-
-		return objectEntry;
-	}
-
-	private void _setUpSpaceDepotEntries(long... groupIds) {
+	private void _mockSpaceDepotEntries(long... groupIds) {
 		DepotEntry[] depotEntries = new DepotEntry[groupIds.length];
 
 		for (int i = 0; i < groupIds.length; i++) {
@@ -198,7 +189,7 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 		);
 	}
 
-	private void _setUpVariantPIMLinks(
+	private void _mockVariantPIMLinks(
 			String clusterKey, String... externalReferenceCodes)
 		throws Exception {
 
@@ -248,8 +239,10 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 	}
 
 	private void _testDoGet() throws Exception {
-		_setUpObjectEntry("SKU-1", _GROUP_ID, _setUpObjectDefinition());
-		_setUpSpaceDepotEntries(_GROUP_ID);
+		_mockGetObjectEntries(
+			_GROUP_ID, _mockObjectDefinition(),
+			_mockObjectEntry("SKU-1", "SKU-1"));
+		_mockSpaceDepotEntries(_GROUP_ID);
 
 		MockHttpServletResponse mockHttpServletResponse = _get();
 
@@ -326,12 +319,15 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 	}
 
 	private void _testDoGetWithMultipleDepotEntries() throws Exception {
-		ObjectDefinition objectDefinition = _setUpObjectDefinition();
+		ObjectDefinition objectDefinition = _mockObjectDefinition();
 
-		_setUpObjectEntry("SKU-1", _GROUP_ID, objectDefinition);
-		_setUpObjectEntry("SKU-2", _OTHER_GROUP_ID, objectDefinition);
+		_mockGetObjectEntries(
+			_GROUP_ID, objectDefinition, _mockObjectEntry("SKU-1", "SKU-1"));
+		_mockGetObjectEntries(
+			_OTHER_GROUP_ID, objectDefinition,
+			_mockObjectEntry("SKU-2", "SKU-2"));
 
-		_setUpSpaceDepotEntries(_GROUP_ID, _OTHER_GROUP_ID);
+		_mockSpaceDepotEntries(_GROUP_ID, _OTHER_GROUP_ID);
 
 		MockHttpServletResponse mockHttpServletResponse = _get();
 
@@ -355,10 +351,11 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 	}
 
 	private void _testDoGetWithPortalException() throws Exception {
-		ObjectEntry objectEntry = _setUpObjectEntry(
-			"SKU-1", _GROUP_ID, _setUpObjectDefinition());
+		ObjectEntry objectEntry = _mockObjectEntry("SKU-1", "SKU-1");
 
-		_setUpSpaceDepotEntries(_GROUP_ID);
+		_mockGetObjectEntries(_GROUP_ID, _mockObjectDefinition(), objectEntry);
+
+		_mockSpaceDepotEntries(_GROUP_ID);
 
 		Mockito.when(
 			_objectEntryLocalService.getValues(objectEntry)
@@ -379,23 +376,16 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 	}
 
 	private void _testDoGetWithVariantPIMLink() throws Exception {
-		ObjectDefinition objectDefinition = _setUpObjectDefinition();
+		ObjectDefinition objectDefinition = _mockObjectDefinition();
 
-		ObjectEntry objectEntry1 = _mockObjectEntry("SKU-1", "ERC-1");
-		ObjectEntry objectEntry2 = _mockObjectEntry("SKU-2", "ERC-2");
-		ObjectEntry objectEntry3 = _mockObjectEntry("SKU-3", "ERC-3");
+		_mockGetObjectEntries(
+			_GROUP_ID, objectDefinition, _mockObjectEntry("SKU-1", "ERC-1"),
+			_mockObjectEntry("SKU-2", "ERC-2"),
+			_mockObjectEntry("SKU-3", "ERC-3"));
 
-		Mockito.when(
-			_objectEntryLocalService.getObjectEntries(
-				_GROUP_ID, objectDefinition.getObjectDefinitionId(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS)
-		).thenReturn(
-			Arrays.asList(objectEntry1, objectEntry2, objectEntry3)
-		);
+		_mockSpaceDepotEntries(_GROUP_ID);
 
-		_setUpSpaceDepotEntries(_GROUP_ID);
-
-		_setUpVariantPIMLinks("cluster-1", "ERC-1", "ERC-2");
+		_mockVariantPIMLinks("cluster-1", "ERC-1", "ERC-2");
 
 		MockHttpServletResponse mockHttpServletResponse = _get();
 
