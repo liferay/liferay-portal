@@ -19,13 +19,13 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface SitemapStorageHelper {
 
+	public void deleteSitemap(
+			long companyId, long groupId, String assetTypeKey, int page)
+		throws PortalException;
+
 	public void deleteSitemaps(long companyId) throws PortalException;
 
 	public void deleteSitemaps(long companyId, long groupId)
-		throws PortalException;
-
-	public void deleteSitemaps(
-			long companyId, long groupId, String assetTypeKey)
 		throws PortalException;
 
 	public Date getLastRegenerateSitemapDate(long companyId)

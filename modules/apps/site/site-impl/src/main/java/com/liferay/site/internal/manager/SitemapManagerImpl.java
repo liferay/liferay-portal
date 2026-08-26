@@ -825,6 +825,20 @@ public class SitemapManagerImpl implements SitemapManager {
 		return themeDisplay;
 	}
 
+	private void _deleteAssetTypeSitemapsFromPage(
+			String assetTypeKey, long companyId, long groupId, int page)
+		throws PortalException {
+
+		while (_sitemapStorageHelper.hasSitemapFile(
+					companyId, groupId, assetTypeKey, page)) {
+
+			_sitemapStorageHelper.deleteSitemap(
+				companyId, groupId, assetTypeKey, page);
+
+			page++;
+		}
+	}
+
 	private void _generateAssetTypeSitemap(
 			long assetTypeClassNameId, long groupId, ThemeDisplay themeDisplay,
 			UnsafeBiConsumer<Integer, String, PortalException> unsafeBiConsumer)
@@ -1362,20 +1376,26 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		String assetTypeKey = _assetTypeKeys.get(assetTypeClassNameId);
 
+		int[] pages = {0};
+
+		_generateAssetTypeSitemap(
+			assetTypeClassNameId, groupId, themeDisplay,
+			(page, xml) -> {
+				pages[0] = page;
+
+				_sitemapStorageHelper.storeSitemapFile(
+					companyId, groupId, assetTypeKey, page, xml);
+			});
+
 		try {
-			_sitemapStorageHelper.deleteSitemaps(
-				companyId, groupId, assetTypeKey);
+			_deleteAssetTypeSitemapsFromPage(
+				assetTypeKey, companyId, groupId, pages[0] + 1);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(exception);
 			}
 		}
-
-		_generateAssetTypeSitemap(
-			assetTypeClassNameId, groupId, themeDisplay,
-			(page, xml) -> _sitemapStorageHelper.storeSitemapFile(
-				companyId, groupId, assetTypeKey, page, xml));
 	}
 
 	private void _removeAttribute(Element element, String name) {

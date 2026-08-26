@@ -34,6 +34,16 @@ import org.osgi.service.component.annotations.Reference;
 public class SitemapStorageHelperImpl implements SitemapStorageHelper {
 
 	@Override
+	public void deleteSitemap(
+			long companyId, long groupId, String assetTypeKey, int page)
+		throws PortalException {
+
+		_dlStore.deleteFile(
+			companyId, CompanyConstants.SYSTEM,
+			_getSitemapFileName(groupId, assetTypeKey, page));
+	}
+
+	@Override
 	public void deleteSitemaps(long companyId) throws PortalException {
 		_dlStore.deleteDirectory(
 			companyId, CompanyConstants.SYSTEM, _getDirName());
@@ -57,16 +67,6 @@ public class SitemapStorageHelperImpl implements SitemapStorageHelper {
 
 		_dlStore.deleteDirectory(
 			companyId, CompanyConstants.SYSTEM, _getDirName(groupId));
-	}
-
-	@Override
-	public void deleteSitemaps(
-			long companyId, long groupId, String assetTypeKey)
-		throws PortalException {
-
-		_dlStore.deleteDirectory(
-			companyId, CompanyConstants.SYSTEM,
-			_getDirName(groupId, assetTypeKey));
 	}
 
 	@Override
@@ -185,11 +185,6 @@ public class SitemapStorageHelperImpl implements SitemapStorageHelper {
 
 	private String _getDirName(long groupId) {
 		return "sitemaps/" + groupId;
-	}
-
-	private String _getDirName(long groupId, String assetTypeKey) {
-		return StringBundler.concat(
-			"sitemaps/", groupId, StringPool.SLASH, assetTypeKey);
 	}
 
 	private String _getLastRegenerateSitemapDateFileName() {
