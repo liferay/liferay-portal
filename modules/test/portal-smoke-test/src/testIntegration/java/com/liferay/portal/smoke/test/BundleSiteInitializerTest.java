@@ -3814,6 +3814,19 @@ public class BundleSiteInitializerTest {
 
 		_assertResourceAction(
 			new String[] {"UPDATE", "VIEW"}, resourcePermission);
+
+		role = _roleLocalService.fetchRole(
+			_group.getCompanyId(), "Test Role 3");
+
+		resourcePermission =
+			_resourcePermissionLocalService.fetchResourcePermission(
+				_group.getCompanyId(), "com.liferay.commerce.product",
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(_group.getCompanyId()), role.getRoleId());
+
+		Assert.assertNotNull(resourcePermission);
+
+		_assertResourceAction(new String[] {"VIEW_PRICE"}, resourcePermission);
 	}
 
 	private void _assertResourcePermission2() throws Exception {
@@ -3905,6 +3918,16 @@ public class BundleSiteInitializerTest {
 
 		_assertResourceAction(
 			new String[] {"UPDATE", "VIEW"}, resourcePermission);
+
+		role = _roleLocalService.fetchRole(
+			_group.getCompanyId(), "Test Role 3");
+
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				_group.getCompanyId(), "com.liferay.commerce.product",
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(_group.getCompanyId()), role.getRoleId(),
+				"VIEW_PRICE"));
 	}
 
 	private void _assertRoles() {

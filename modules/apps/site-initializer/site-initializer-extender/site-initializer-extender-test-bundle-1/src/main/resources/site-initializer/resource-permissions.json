@@ -30,6 +30,15 @@
 	},
 	{
 		"actionIds": [
+			"VIEW_PRICE"
+		],
+		"primKey": "0",
+		"resourceName": "com.liferay.commerce.product",
+		"roleName": "Test Role 3",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
 			"UPDATE",
 			"VIEW"
 		],
