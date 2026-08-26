@@ -158,7 +158,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	@Test
 	public void testDeleteOrganizationAccounts() throws Exception {
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		Organization organization = OrganizationTestUtil.addOrganization();
 
@@ -203,7 +205,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		throws Exception {
 
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		Organization organization = OrganizationTestUtil.addOrganization();
 
@@ -248,7 +252,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		throws Exception {
 
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		Organization organization = OrganizationTestUtil.addOrganization();
 
@@ -293,7 +299,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		throws Exception {
 
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		Organization organization = OrganizationTestUtil.addOrganization();
 
@@ -348,11 +356,13 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	public void testGetAccountsPage() throws Exception {
 		super.testGetAccountsPage();
 
-		AccountEntry accountEntry1 = _addAccountEntry();
-		AccountEntry accountEntry2 = _addAccountEntry();
+		AccountEntry accountEntry1 = _addAccountEntry(
+			RandomTestUtil.randomString());
+		AccountEntry accountEntry2 = _addAccountEntry(
+			RandomTestUtil.randomString());
 		Organization organization = OrganizationTestUtil.addOrganization();
 
-		_addAccountEntry();
+		_addAccountEntry(RandomTestUtil.randomString());
 
 		_testGetAccountsPage(Arrays.asList(accountEntry1, accountEntry2), null);
 		_testGetAccountsPage(
@@ -366,6 +376,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			Collections.singletonList(accountEntry1),
 			organization.getOrganizationId());
 		_testGetAccountsPageWithCustomFields();
+		_testGetAccountsPageWithExternalReferenceCodeFilter();
 		_testGetAccountsPageWithNestedFields();
 	}
 
@@ -440,7 +451,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	@Test
 	public void testPatchOrganizationMoveAccounts() throws Exception {
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		Organization organization1 = OrganizationTestUtil.addOrganization();
 
@@ -490,7 +503,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		throws Exception {
 
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		Organization organization1 = OrganizationTestUtil.addOrganization();
 
@@ -561,7 +576,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 					organization.getOrganizationId()));
 
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		Long[] accountEntryIds = ListUtil.toArray(
 			accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
@@ -591,7 +608,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 					organization.getOrganizationId()));
 
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		String[] externalReferenceCodes = TransformUtil.transformToArray(
 			accountEntries, AccountEntryModel::getExternalReferenceCode,
@@ -623,7 +642,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 					organization.getOrganizationId()));
 
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		Long[] accountEntryIds = ListUtil.toArray(
 			accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
@@ -653,7 +674,9 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 					organization.getOrganizationId()));
 
 		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(), _addAccountEntry(), _addAccountEntry());
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
 
 		String[] externalReferenceCodes = TransformUtil.transformToArray(
 			accountEntries, AccountEntryModel::getExternalReferenceCode,
@@ -944,18 +967,16 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			randomAccount());
 	}
 
-	private AccountEntry _addAccountEntry() throws Exception {
-		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
-			StringPool.BLANK, TestPropsValues.getUserId(),
+	private AccountEntry _addAccountEntry(String externalReferenceCode)
+		throws Exception {
+
+		return _accountEntryLocalService.addAccountEntry(
+			externalReferenceCode, TestPropsValues.getUserId(),
 			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			null, null, null, AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
 			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext());
-
-		accountEntry.setExternalReferenceCode(RandomTestUtil.randomString());
-
-		return _accountEntryLocalService.updateAccountEntry(accountEntry);
 	}
 
 	private ExpandoColumn _addExpandoColumn(
@@ -1461,6 +1482,32 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			Arrays.toString(
 				(Object[])_getCustomFieldCustomValueData(
 					actualAccount, stringArrayExpandoColumn2.getName())));
+	}
+
+	private void _testGetAccountsPageWithExternalReferenceCodeFilter()
+		throws Exception {
+
+		String externalReferenceCode = StringUtil.toUpperCase(
+			RandomTestUtil.randomString());
+
+		AccountEntry accountEntry = _addAccountEntry(externalReferenceCode);
+
+		Page<Account> accountsPage = accountResource.getAccountsPage(
+			null,
+			String.format(
+				"externalReferenceCode eq '%s'", externalReferenceCode),
+			null, null);
+
+		Assert.assertEquals(1, accountsPage.getTotalCount());
+
+		List<Account> accounts = (List<Account>)accountsPage.getItems();
+
+		Account account = accounts.get(0);
+
+		Assert.assertEquals(
+			Long.valueOf(accountEntry.getAccountEntryId()), account.getId());
+		Assert.assertEquals(
+			externalReferenceCode, account.getExternalReferenceCode());
 	}
 
 	private void _testGetAccountsPageWithNestedFields() throws Exception {
