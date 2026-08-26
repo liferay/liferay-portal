@@ -386,8 +386,11 @@ public class LayoutContentVersionLocalServiceImpl
 		return StringUtil.replace(
 			_PREVIEW_ERROR_HTML, new String[] {"[$MESSAGE$]", "[$TITLE$]"},
 			new String[] {
-				_language.get(locale, "an-error-occurred"),
-				_language.get(locale, "unable-to-load-preview")
+				_language.get(
+					locale,
+					"this-preview-is-not-available.-an-error-occurred-while-" +
+						"generating-the-preview-when-this-version-was-created"),
+				_language.get(locale, "error")
 			});
 	}
 
