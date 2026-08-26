@@ -1003,10 +1003,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		PageSpecificationsTestUtil.assertPageSpecifications(
 			layout, sitePage.getPageSpecifications());
 
-		if (layout.isTypeContent()) {
-			_assertPageSpecificationVersions(
-				layout, sitePage.getPageSpecificationVersions());
-		}
+		_assertPageSpecificationVersions(
+			layout, sitePage.getPageSpecificationVersions());
 	}
 
 	private void _assertPageElements(
@@ -2357,14 +2355,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
 		throws Exception {
 
-		String nestedFields = "friendlyUrlHistory,pageSpecifications";
-
-		if (Objects.equals(sitePage.getType(), SitePage.Type.CONTENT_PAGE)) {
-			nestedFields =
-				nestedFields + ",pageSpecificationVersions.pageSpecification";
-		}
-
-		SitePageResource sitePageResource = _getSitePageResource(nestedFields);
+		SitePageResource sitePageResource = _getSitePageResource(
+			"friendlyUrlHistory,pageSpecifications," +
+				"pageSpecificationVersions.pageSpecification");
 
 		_assertNestedFields(
 			sitePageResource.getSiteSitePage(
