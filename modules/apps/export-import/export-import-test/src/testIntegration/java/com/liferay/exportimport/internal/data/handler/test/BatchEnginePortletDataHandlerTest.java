@@ -9,6 +9,11 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.categories.admin.web.constants.AssetCategoriesAdminPortletKeys;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.depot.constants.DepotConstants;
@@ -2281,6 +2286,72 @@ public class BatchEnginePortletDataHandlerTest {
 			objectDefinition, sourceGroup);
 	}
 
+	@FeatureFlag("LPD-35443")
+	@Test
+	@TestInfo("LPD-75473")
+	public void testExportImportTaxonomyVocabulariesAndCategories()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			group.getGroupId());
+
+		AssetTestUtil.addCategory(
+			group.getGroupId(), assetVocabulary.getVocabularyId());
+		AssetTestUtil.addCategory(
+			group.getGroupId(), assetVocabulary.getVocabularyId());
+
+		File larFile = new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withIncludeTaxonomies(
+		).executeExport();
+
+		JSONArray taxonomyVocabularyObjectEntriesJSONArray =
+			_getExportedObjectEntriesJSONArray(
+				"com.liferay.headless.admin.taxonomy.internal.resource.v1_0." +
+					"TaxonomyVocabularyResourceImpl",
+				larFile, group.getGroupId());
+
+		Assert.assertEquals(
+			taxonomyVocabularyObjectEntriesJSONArray.toString(), 1,
+			taxonomyVocabularyObjectEntriesJSONArray.length());
+
+		JSONArray taxonomyCategoryObjectEntriesJSONArray =
+			_getExportedObjectEntriesJSONArray(
+				"com.liferay.headless.admin.taxonomy.internal.resource.v1_0." +
+					"TaxonomyCategoryResourceImpl",
+				larFile, group.getGroupId());
+
+		Assert.assertEquals(
+			taxonomyCategoryObjectEntriesJSONArray.toString(), 2,
+			taxonomyCategoryObjectEntriesJSONArray.length());
+
+		_assetVocabularyLocalService.deleteVocabulary(assetVocabulary);
+
+		Assert.assertNull(
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				group.getGroupId(), assetVocabulary.getName()));
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withIncludeTaxonomies(
+		).withLARFile(
+			larFile
+		).executeImport();
+
+		AssetVocabulary importedAssetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(
+				group.getGroupId(), assetVocabulary.getName());
+
+		Assert.assertEquals(
+			2,
+			_assetCategoryLocalService.getVocabularyCategoriesCount(
+				importedAssetVocabulary.getVocabularyId()));
+	}
+
 	@Test
 	@TestInfo("LPD-58645")
 	public void testExportImportWithDifferentScopedObjectEntries()
@@ -4543,6 +4614,12 @@ public class BatchEnginePortletDataHandlerTest {
 	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Inject
 	private BatchEngineImportTaskLocalService
 		_batchEngineImportTaskLocalService;
 
@@ -4975,6 +5052,12 @@ public class BatchEnginePortletDataHandlerTest {
 			return this;
 		}
 
+		public ExportImportExecutor withIncludeTaxonomies() {
+			_includeTaxonomies = true;
+
+			return this;
+		}
+
 		public ExportImportExecutor withLARFile(File larFile) {
 			_larFile = larFile;
 
@@ -5024,6 +5107,13 @@ public class BatchEnginePortletDataHandlerTest {
 				_deletions, _includeDocumentLibrary, _includeLanguageOverrides,
 				_includeLayoutSetLayouts, _includeListTypeDefinitions,
 				_includeObjectDefinitions, _objectDefinitions);
+
+			if (_includeTaxonomies) {
+				parameterMap.put(
+					PortletDataHandlerKeys.PORTLET_DATA + "_" +
+						AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN,
+					new String[] {Boolean.TRUE.toString()});
+			}
 
 			if (_permissions) {
 				parameterMap.put(
@@ -5102,6 +5192,7 @@ public class BatchEnginePortletDataHandlerTest {
 		private boolean _includeLayoutSetLayouts;
 		private boolean _includeListTypeDefinitions;
 		private boolean _includeObjectDefinitions;
+		private boolean _includeTaxonomies;
 		private File _larFile;
 		private int _lastHours;
 		private List<Long> _layoutIds = new ArrayList<>();
