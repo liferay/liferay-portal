@@ -108,8 +108,15 @@ public class PageSpecificationVersionResourceImpl
 
 		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
-		Layout layout = _getLayout(
-			true, siteExternalReferenceCode, sitePageExternalReferenceCode);
+		Layout layout = SitePageUtil.getSitePageLayout(
+			GroupUtil.getGroupId(
+				false, true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode),
+			sitePageExternalReferenceCode);
+
+		if (!layout.isTypeContent()) {
+			return Page.of(Collections.emptyList());
+		}
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
