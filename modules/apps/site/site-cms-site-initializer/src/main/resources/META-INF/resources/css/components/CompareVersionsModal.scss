@@ -3,10 +3,20 @@
 .cms-compare-versions {
 	&-pane {
 		flex: 1;
+		min-height: 0;
 		min-width: 0;
 
 		&-content {
 			min-height: 0;
+		}
+
+		& + & {
+			border-top: 1px solid $gray-300;
+
+			@include media-breakpoint-up(md) {
+				border-left: 1px solid $gray-300;
+				border-top: 0;
+			}
 		}
 	}
 

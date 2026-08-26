@@ -10,7 +10,6 @@ import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
-import classNames from 'classnames';
 import {dateUtils, sub} from 'frontend-js-web';
 import React, {Key, useEffect, useMemo, useRef, useState} from 'react';
 
@@ -165,7 +164,7 @@ export default function CompareVersionsModalContent({
 				) : null}
 
 				{versionsState.status === 'loaded' ? (
-					<div className="cms-compare-versions-panes d-flex flex-grow-1">
+					<div className="cms-compare-versions-panes d-flex flex-column flex-grow-1 flex-md-row">
 						<CompareVersionPane
 							excludedVersion={targetVersion}
 							languageId={languageId}
@@ -176,7 +175,6 @@ export default function CompareVersionsModalContent({
 						/>
 
 						<CompareVersionPane
-							className="border-left"
 							excludedVersion={sourceVersion}
 							languageId={languageId}
 							objectEntryId={objectEntryId}
@@ -192,7 +190,6 @@ export default function CompareVersionsModalContent({
 }
 
 function CompareVersionPane({
-	className,
 	excludedVersion,
 	languageId,
 	objectEntryId,
@@ -200,7 +197,6 @@ function CompareVersionPane({
 	selectedVersion,
 	versions,
 }: {
-	className?: string;
 	excludedVersion: number | null;
 	languageId: string;
 	objectEntryId: number;
@@ -228,12 +224,7 @@ function CompareVersionPane({
 		const emptyStateImage = getImage('compare_versions_empty_state.svg');
 
 		return (
-			<div
-				className={classNames(
-					'cms-compare-versions-pane d-flex flex-column',
-					className
-				)}
-			>
+			<div className="cms-compare-versions-pane d-flex flex-column">
 				<ClayEmptyState
 					className="justify-content-center"
 					description={Liferay.Language.get(
@@ -260,12 +251,7 @@ function CompareVersionPane({
 	const selectedItem = getVersionItem(versions, selectedVersion);
 
 	return (
-		<div
-			className={classNames(
-				'cms-compare-versions-pane d-flex flex-column',
-				className
-			)}
-		>
+		<div className="cms-compare-versions-pane d-flex flex-column">
 			<div className="align-items-center c-gap-3 d-flex p-3">
 				<VersionPicker
 					excludedVersion={excludedVersion}
