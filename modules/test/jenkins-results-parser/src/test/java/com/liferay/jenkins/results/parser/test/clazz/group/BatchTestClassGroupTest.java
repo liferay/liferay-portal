@@ -108,10 +108,10 @@ public class BatchTestClassGroupTest
 	@Test
 	public void testGetSegmentMaxChildren() {
 		_testGetSegmentMaxChildren(0, "0");
-		_testGetSegmentMaxChildren(3, "3");
 		_testGetSegmentMaxChildren(25, "");
 		_testGetSegmentMaxChildren(25, "-2");
 		_testGetSegmentMaxChildren(25, "abc");
+		_testGetSegmentMaxChildren(3, "3");
 	}
 
 	@Test
@@ -133,10 +133,9 @@ public class BatchTestClassGroupTest
 
 	@Test
 	public void testSetSegmentTestClassGroups() {
-		File testBaseDir = new File(RandomTestUtil.randomString());
-
-		Integer minimumSlaveRAM = RandomTestUtil.randomInt();
 		String baseSlaveLabel = RandomTestUtil.randomString();
+		Integer minimumSlaveRAM = RandomTestUtil.randomInt();
+		File testBaseDir = new File(RandomTestUtil.randomString());
 
 		AxisTestClassGroup axisTestClassGroup = _mockAxisTestClassGroup(
 			baseSlaveLabel, minimumSlaveRAM, testBaseDir);
@@ -149,12 +148,12 @@ public class BatchTestClassGroupTest
 		_testSetSegmentTestClassGroups(
 			2, axisTestClassGroup,
 			_mockAxisTestClassGroup(
-				baseSlaveLabel, RandomTestUtil.randomInt(), testBaseDir));
+				RandomTestUtil.randomString(), minimumSlaveRAM, testBaseDir));
 
 		_testSetSegmentTestClassGroups(
 			2, axisTestClassGroup,
 			_mockAxisTestClassGroup(
-				RandomTestUtil.randomString(), minimumSlaveRAM, testBaseDir));
+				baseSlaveLabel, RandomTestUtil.randomInt(), testBaseDir));
 
 		_testSetSegmentTestClassGroups(
 			2, axisTestClassGroup,
@@ -184,8 +183,8 @@ public class BatchTestClassGroupTest
 		BatchTestClassGroup batchTestClassGroup = _newBatchTestClassGroup(
 			null, null, "3", 0);
 
-		Integer minimumSlaveRAM = RandomTestUtil.randomInt();
 		String baseSlaveLabel = RandomTestUtil.randomString();
+		Integer minimumSlaveRAM = RandomTestUtil.randomInt();
 
 		for (int i = 0; i < 7; i++) {
 			batchTestClassGroup.addAxisTestClassGroup(
