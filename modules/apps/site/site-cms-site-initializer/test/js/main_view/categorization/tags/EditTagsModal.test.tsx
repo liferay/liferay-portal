@@ -5,6 +5,7 @@
 
 import '@testing-library/jest-dom';
 import {render, screen, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import ApiHelper from '../../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
@@ -78,5 +79,37 @@ describe('EditTagsModal', () => {
 		});
 
 		expect(screen.getByLabelText('project-selector')).toBeInTheDocument();
+	});
+
+	it('sends an empty project scope when the tag is available in all projects', async () => {
+		jest.spyOn(ApiHelper, 'put').mockResolvedValue({
+			data: {},
+			error: null,
+			status: 'OK',
+		} as any);
+
+		render(
+			<EditTagsModalContent
+				{...defaultProps}
+				assetLibraries={[{id: -1}] as any}
+				cmpEnabled
+				projects={[{id: -1}] as any}
+			/>
+		);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		await waitFor(() => {
+			expect(ApiHelper.put).toHaveBeenCalled();
+		});
+
+		const [, body] = (ApiHelper.put as jest.Mock).mock.calls[0];
+
+		expect(body.assetLibraries).toEqual([]);
+		expect(body.projects).toEqual([]);
 	});
 });
