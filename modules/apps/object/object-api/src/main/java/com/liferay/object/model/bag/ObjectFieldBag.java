@@ -32,10 +32,6 @@ public class ObjectFieldBag {
 
 			_indexedObjectFields.add(objectField);
 
-			if (!objectField.isSystem()) {
-				_nonsystemIndexedObjectFields.add(objectField);
-			}
-
 			if (modifiableAndSystem) {
 				if (!objectField.isMetadata()) {
 					_nestedIndexedObjectFields.add(objectField);
@@ -55,10 +51,6 @@ public class ObjectFieldBag {
 		return _nestedIndexedObjectFields;
 	}
 
-	public List<ObjectField> getNonsystemIndexedObjectFields() {
-		return _nonsystemIndexedObjectFields;
-	}
-
 	public ObjectField getObjectField(long objectFieldId) {
 		return _idObjectFieldsMap.get(objectFieldId);
 	}
@@ -72,8 +64,6 @@ public class ObjectFieldBag {
 	private final Map<String, ObjectField> _nameObjectFieldsMap =
 		new HashMap<>();
 	private final List<ObjectField> _nestedIndexedObjectFields =
-		new ArrayList<>();
-	private final List<ObjectField> _nonsystemIndexedObjectFields =
 		new ArrayList<>();
 	private final List<ObjectField> _objectFields;
 

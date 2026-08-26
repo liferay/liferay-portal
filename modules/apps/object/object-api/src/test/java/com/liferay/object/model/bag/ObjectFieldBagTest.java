@@ -41,7 +41,7 @@ public class ObjectFieldBagTest {
 	}
 
 	@Test
-	public void testGetNestedIndexedObjectFieldsWithModifiableAndSystemObjectDefinition() {
+	public void testGetNestedIndexedObjectFieldsWithModifiableSystemObjectDefinition() {
 		ObjectFieldBag objectFieldBag = new ObjectFieldBag(
 			true,
 			Arrays.asList(
@@ -53,7 +53,7 @@ public class ObjectFieldBagTest {
 			objectFieldBag.getNestedIndexedObjectFields());
 	}
 
-	private static ObjectField _mockObjectField(
+	private ObjectField _mockObjectField(
 		boolean indexed, boolean metadata, boolean system) {
 
 		ObjectField objectField = Mockito.mock(ObjectField.class);
@@ -79,13 +79,13 @@ public class ObjectFieldBagTest {
 		return objectField;
 	}
 
-	private static final ObjectField _metadataObjectField = _mockObjectField(
+	private final ObjectField _metadataObjectField = _mockObjectField(
 		true, true, true);
-	private static final ObjectField _nonindexedObjectField = _mockObjectField(
+	private final ObjectField _nonindexedObjectField = _mockObjectField(
 		false, false, false);
-	private static final ObjectField _nonsystemObjectField = _mockObjectField(
+	private final ObjectField _nonsystemObjectField = _mockObjectField(
 		true, false, false);
-	private static final ObjectField _systemObjectField = _mockObjectField(
+	private final ObjectField _systemObjectField = _mockObjectField(
 		true, false, true);
 
 }
