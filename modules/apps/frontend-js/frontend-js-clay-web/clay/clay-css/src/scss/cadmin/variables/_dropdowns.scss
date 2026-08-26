@@ -78,7 +78,7 @@ $cadmin-dropdown-menu: map-deep-merge(
 // .dropdown-item
 
 $cadmin-dropdown-item-padding-x: 16px !default;
-$cadmin-dropdown-item-padding-y: 8px !default;
+$cadmin-dropdown-item-padding-y: 5.5px !default;
 
 $cadmin-dropdown-item-disabled-cursor: $cadmin-disabled-cursor !default;
 
@@ -93,7 +93,7 @@ $cadmin-dropdown-link-hover-color: $cadmin-gray-900 !default;
 
 $cadmin-dropdown-link-active-bg: $cadmin-dropdown-link-hover-bg !default;
 $cadmin-dropdown-link-active-color: $cadmin-dropdown-link-hover-color !default;
-$cadmin-dropdown-link-active-font-weight: $cadmin-font-weight-semi-bold !default;
+$cadmin-dropdown-link-active-font-weight: null !default;
 
 $cadmin-dropdown-link-disabled-color: $cadmin-gray-500 !default;
 
@@ -239,7 +239,7 @@ $cadmin-dropdown-header-font-size: 14px !default; // 14px
 $cadmin-dropdown-header-margin-bottom: null !default;
 $cadmin-dropdown-header-margin-top: 10px !default; // 10px
 $cadmin-dropdown-header-padding-x: $cadmin-dropdown-item-padding-x !default;
-$cadmin-dropdown-header-padding-y: $cadmin-dropdown-padding-y !default;
+$cadmin-dropdown-header-padding-y: 5.5px !default;
 $cadmin-dropdown-header-text-transform: null !default;
 
 $cadmin-dropdown-header-font-size-mobile: null !default;
@@ -365,7 +365,7 @@ $cadmin-dropdown-section-custom-control-label: map-deep-merge(
 $cadmin-dropdown-section-custom-control-label-text: () !default;
 $cadmin-dropdown-section-custom-control-label-text: map-deep-merge(
 	(
-		padding-left: 16px,
+		padding-left: 12px,
 	),
 	$cadmin-dropdown-section-custom-control-label-text
 );
@@ -381,7 +381,7 @@ $cadmin-dropdown-section-active-custom-control-label: map-deep-merge(
 $cadmin-dropdown-section: () !default;
 $cadmin-dropdown-section: map-deep-merge(
 	(
-		padding: $cadmin-dropdown-item-padding-y $cadmin-dropdown-item-padding-x,
+		padding: 6px $cadmin-dropdown-item-padding-x,
 
 		form-group: (
 			form-group: (

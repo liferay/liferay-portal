@@ -127,7 +127,7 @@ $dropdown-menu: map-deep-merge(
 // .dropdown-item
 
 $dropdown-item-padding-x: var(--dropdown-item-padding-x, 1rem) !default;
-$dropdown-item-padding-y: var(--dropdown-item-padding-y, 0.5rem) !default;
+$dropdown-item-padding-y: var(--dropdown-item-padding-y, 0.34375rem) !default;
 
 // @deprecated as of v3.x use map $dropdown-item instead
 
