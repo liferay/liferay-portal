@@ -111,9 +111,9 @@ public class LoginPostActionTest {
 		HttpSession httpSession1 = mockHttpServletRequest1.getSession();
 		HttpSession httpSession2 = mockHttpServletRequest2.getSession();
 
+		Assert.assertNotEquals(auditSessionId1, auditSessionId2);
 		Assert.assertNotEquals(httpSession1.getId(), auditSessionId1);
 		Assert.assertNotEquals(httpSession2.getId(), auditSessionId2);
-		Assert.assertNotEquals(auditSessionId1, auditSessionId2);
 	}
 
 	@Test
