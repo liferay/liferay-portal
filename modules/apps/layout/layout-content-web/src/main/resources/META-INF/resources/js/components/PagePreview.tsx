@@ -10,6 +10,8 @@ import {config} from '../config';
 
 const BLOCKED_EVENTS = ['auxclick', 'click', 'submit'] as const;
 
+const FORWARDED_EVENTS = ['pointerdown', 'pointerup'] as const;
+
 interface Props {
 	experienceId?: string;
 	languageId: string;
@@ -35,6 +37,10 @@ export default function PagePreview({experienceId, languageId}: Props) {
 		for (const type of BLOCKED_EVENTS) {
 			iframeDocument?.addEventListener(type, blockEvent, true);
 		}
+
+		for (const type of FORWARDED_EVENTS) {
+			iframeDocument?.addEventListener(type, forwardEvent, true);
+		}
 	};
 
 	return (
@@ -50,4 +56,8 @@ export default function PagePreview({experienceId, languageId}: Props) {
 function blockEvent(event: Event) {
 	event.preventDefault();
 	event.stopImmediatePropagation();
+}
+
+function forwardEvent(event: Event) {
+	document.body.dispatchEvent(new PointerEvent(event.type, {bubbles: true}));
 }
