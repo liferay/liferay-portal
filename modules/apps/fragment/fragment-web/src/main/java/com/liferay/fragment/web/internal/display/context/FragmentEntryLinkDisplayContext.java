@@ -102,8 +102,7 @@ public class FragmentEntryLinkDisplayContext {
 	public String getFragmentEntryLinkName(
 		FragmentEntryLink fragmentEntryLink) {
 
-		Layout layout = LayoutLocalServiceUtil.fetchLayout(
-			fragmentEntryLink.getPlid());
+		Layout layout = _fetchLayout(fragmentEntryLink);
 
 		if (layout == null) {
 			return StringPool.BLANK;
@@ -135,8 +134,7 @@ public class FragmentEntryLinkDisplayContext {
 	public String getFragmentEntryLinkTypeLabel(
 		FragmentEntryLink fragmentEntryLink) {
 
-		Layout layout = LayoutLocalServiceUtil.fetchLayout(
-			fragmentEntryLink.getPlid());
+		Layout layout = _fetchLayout(fragmentEntryLink);
 
 		if (layout == null) {
 			return StringPool.BLANK;
@@ -454,6 +452,10 @@ public class FragmentEntryLinkDisplayContext {
 				verticalNavItem.setLabel(name);
 			}
 		).build();
+	}
+
+	private Layout _fetchLayout(FragmentEntryLink fragmentEntryLink) {
+		return LayoutLocalServiceUtil.fetchLayout(fragmentEntryLink.getPlid());
 	}
 
 	private LayoutPageTemplateEntry _fetchLayoutPageTemplateEntry(
