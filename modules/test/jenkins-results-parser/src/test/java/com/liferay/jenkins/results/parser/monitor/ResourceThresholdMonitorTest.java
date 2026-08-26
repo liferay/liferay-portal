@@ -62,9 +62,9 @@ public class ResourceThresholdMonitorTest
 		String message = monitorResult.getMessage();
 
 		Assert.assertTrue(message, message.contains("52.2%"));
-		Assert.assertTrue(message, message.contains("within its thresholds"));
 		Assert.assertTrue(
 			message, message.contains(MonitorTestUtil.FILE_STORE));
+		Assert.assertTrue(message, message.contains("within its thresholds"));
 	}
 
 	@Test
