@@ -342,7 +342,7 @@ public class TimerExecutorTest {
 			catch (PortalException portalException) {
 			}
 
-			if (Objects.nonNull(kaleoTask)) {
+			if (kaleoTask != null) {
 				return kaleoTask;
 			}
 		}
