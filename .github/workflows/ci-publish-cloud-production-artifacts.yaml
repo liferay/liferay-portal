@@ -16,6 +16,7 @@ jobs:
             -   push-rc-azure
             -   push-rc-azure-infrastructure-provider
             -   push-rc-bootstrap-aws
+            -   push-rc-bootstrap-azure
             -   push-rc-bootstrap-gcp
             -   push-rc-default
             -   push-rc-dxp-operator
@@ -86,6 +87,14 @@ jobs:
         uses: ./.github/workflows/ci-reusable-check-bootstrap-version.yaml
         with:
             provider: aws
+    check-bootstrap-azure:
+        needs:
+            -   test-cloud-helm-chart
+            -   test-cloud-helm-chart-smoke
+            -   test-cloud-terraform
+        uses: ./.github/workflows/ci-reusable-check-bootstrap-version.yaml
+        with:
+            provider: azure
     check-bootstrap-gcp:
         needs:
             -   test-cloud-helm-chart
@@ -236,6 +245,15 @@ jobs:
         with:
             provider: aws
             source_object_name: ${{needs.push-rc-bootstrap-aws.outputs.object_name}}
+    promote-rc-bootstrap-azure:
+        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-bootstrap-azure.result == 'success'}}
+        needs:
+            -   approve-release
+            -   push-rc-bootstrap-azure
+        uses: ./.github/workflows/ci-reusable-promote-bootstrap-tarball.yaml
+        with:
+            provider: azure
+            source_object_name: ${{needs.push-rc-bootstrap-azure.outputs.object_name}}
     promote-rc-bootstrap-gcp:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-bootstrap-gcp.result == 'success'}}
         needs:
@@ -461,6 +479,12 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
         with:
             provider: aws
+    push-rc-bootstrap-azure:
+        if: ${{needs.check-bootstrap-azure.outputs.should_release == 'true'}}
+        needs: check-bootstrap-azure
+        uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
+        with:
+            provider: azure
     push-rc-bootstrap-gcp:
         if: ${{needs.check-bootstrap-gcp.outputs.should_release == 'true'}}
         needs: check-bootstrap-gcp
@@ -550,6 +574,7 @@ jobs:
             -   promote-rc-azure
             -   promote-rc-azure-infrastructure-provider
             -   promote-rc-bootstrap-aws
+            -   promote-rc-bootstrap-azure
             -   promote-rc-bootstrap-gcp
             -   promote-rc-default
             -   promote-rc-dxp-operator
@@ -568,6 +593,7 @@ jobs:
             -   push-rc-azure
             -   push-rc-azure-infrastructure-provider
             -   push-rc-bootstrap-aws
+            -   push-rc-bootstrap-azure
             -   push-rc-bootstrap-gcp
             -   push-rc-default
             -   push-rc-dxp-operator
@@ -592,8 +618,10 @@ jobs:
                     sparse-checkout: .github
             -   env:
                     BOOTSTRAP_SHA256_aws: ${{needs.promote-rc-bootstrap-aws.outputs.sha256}}
+                    BOOTSTRAP_SHA256_azure: ${{needs.promote-rc-bootstrap-azure.outputs.sha256}}
                     BOOTSTRAP_SHA256_gcp: ${{needs.promote-rc-bootstrap-gcp.outputs.sha256}}
                     BOOTSTRAP_VERSION_aws: ${{needs.push-rc-bootstrap-aws.outputs.version}}
+                    BOOTSTRAP_VERSION_azure: ${{needs.push-rc-bootstrap-azure.outputs.version}}
                     BOOTSTRAP_VERSION_gcp: ${{needs.push-rc-bootstrap-gcp.outputs.version}}
                     DIGEST_liferay_aws: ${{needs.promote-rc-aws.outputs.image_digest}}
                     DIGEST_liferay_aws_infrastructure: ${{needs.promote-rc-aws-infrastructure.outputs.image_digest}}
@@ -747,7 +775,7 @@ jobs:
                         local bootstraps="{}"
                         local provider
 
-                        for provider in aws gcp
+                        for provider in aws azure gcp
                         do
                             local sha256_key="BOOTSTRAP_SHA256_${provider}"
                             local version_key="BOOTSTRAP_VERSION_${provider}"
