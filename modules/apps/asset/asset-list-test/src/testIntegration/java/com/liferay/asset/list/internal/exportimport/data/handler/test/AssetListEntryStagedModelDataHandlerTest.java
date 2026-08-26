@@ -6,8 +6,10 @@
 package com.liferay.asset.list.internal.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
@@ -19,13 +21,19 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.CriteriaSerializer;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
@@ -56,43 +64,12 @@ public class AssetListEntryStagedModelDataHandlerTest
 		new LiferayIntegrationTestRule();
 
 	@Test
-	@TestInfo({"LPD-86116", "LPD-86506"})
+	@TestInfo({"LPD-86116", "LPD-86506", "LPD-103053"})
 	public void testExportImportAssetListEntry() throws Exception {
-		AssetListEntry assetListEntry = (AssetListEntry)addStagedModel(
-			stagingGroup, Collections.emptyMap());
-
-		User user = TestPropsValues.getUser();
-
-		SegmentsEntry segmentsEntry = _addSegmentsEntryByFirstName(
-			user.getFirstName(), stagingGroup.getGroupId());
-
-		AssetListTestUtil.addAssetListEntrySegmentsEntryRel(
-			stagingGroup.getGroupId(), assetListEntry,
-			segmentsEntry.getSegmentsEntryId());
-
-		exportImportStagedModel(assetListEntry);
-
-		_assertEquals(
-			assetListEntry,
-			(AssetListEntry)getStagedModel(
-				assetListEntry.getUuid(), liveGroup));
-
-		Assert.assertNotNull(
-			_segmentsEntryLocalService.getSegmentsEntryByExternalReferenceCode(
-				segmentsEntry.getExternalReferenceCode(),
-				liveGroup.getGroupId()));
-
-		exportImportStagedModel(assetListEntry);
-
-		_assertEquals(
-			assetListEntry,
-			(AssetListEntry)getStagedModel(
-				assetListEntry.getUuid(), liveGroup));
-
-		Assert.assertNotNull(
-			_segmentsEntryLocalService.getSegmentsEntryByExternalReferenceCode(
-				segmentsEntry.getExternalReferenceCode(),
-				liveGroup.getGroupId()));
+		_testExportImportAssetListEntryWithNonexistentClassName();
+		_testExportImportAssetListEntryWithNonexistentClassNames();
+		_testExportImportAssetListEntryWithSegmentsEntry();
+		_testExportImportAssetListEntryWithStaleAnyAssetTypeClassName();
 	}
 
 	@Override
@@ -195,12 +172,144 @@ public class AssetListEntryStagedModelDataHandlerTest
 			importedAssetListEntry.getAssetEntryType());
 	}
 
+	private UnicodeProperties _exportImportAssetListEntry(String typeSettings)
+		throws Exception {
+
+		AssetListEntry assetListEntry = (AssetListEntry)addStagedModel(
+			stagingGroup, Collections.emptyMap());
+
+		_assetListEntrySegmentsEntryRelLocalService.
+			updateAssetListEntrySegmentsEntryRelTypeSettings(
+				assetListEntry.getAssetListEntryId(),
+				SegmentsEntryConstants.ID_DEFAULT, typeSettings);
+
+		exportImportStagedModel(assetListEntry);
+
+		AssetListEntry importedAssetListEntry = (AssetListEntry)getStagedModel(
+			assetListEntry.getUuid(), liveGroup);
+
+		AssetListEntrySegmentsEntryRel importedAssetListEntrySegmentsEntryRel =
+			_assetListEntrySegmentsEntryRelLocalService.
+				fetchAssetListEntrySegmentsEntryRel(
+					importedAssetListEntry.getAssetListEntryId(),
+					SegmentsEntryConstants.ID_DEFAULT);
+
+		return UnicodePropertiesBuilder.load(
+			importedAssetListEntrySegmentsEntryRel.getTypeSettings()
+		).build();
+	}
+
+	private void _testExportImportAssetListEntryWithNonexistentClassName()
+		throws Exception {
+
+		long assetEntryClassNameId = _classNameLocalService.getClassNameId(
+			AssetEntry.class.getName());
+
+		long nonexistentClassNameId = RandomTestUtil.randomLong();
+
+		UnicodeProperties unicodeProperties = _exportImportAssetListEntry(
+			UnicodePropertiesBuilder.put(
+				"anyAssetType", String.valueOf(nonexistentClassNameId)
+			).put(
+				"classNameIds",
+				StringUtil.merge(
+					new long[] {assetEntryClassNameId, nonexistentClassNameId})
+			).buildString());
+
+		Assert.assertEquals(
+			String.valueOf(assetEntryClassNameId),
+			unicodeProperties.getProperty("classNameIds"));
+		Assert.assertTrue(
+			GetterUtil.getBoolean(
+				unicodeProperties.getProperty("anyAssetType")));
+	}
+
+	private void _testExportImportAssetListEntryWithNonexistentClassNames()
+		throws Exception {
+
+		UnicodeProperties unicodeProperties = _exportImportAssetListEntry(
+			UnicodePropertiesBuilder.put(
+				"anyAssetType", String.valueOf(RandomTestUtil.randomLong())
+			).put(
+				"classNameIds",
+				StringUtil.merge(
+					new long[] {
+						RandomTestUtil.randomLong(), RandomTestUtil.randomLong()
+					})
+			).buildString());
+
+		Assert.assertNull(unicodeProperties.getProperty("classNameIds"));
+		Assert.assertTrue(
+			GetterUtil.getBoolean(
+				unicodeProperties.getProperty("anyAssetType")));
+	}
+
+	private void _testExportImportAssetListEntryWithSegmentsEntry()
+		throws Exception {
+
+		AssetListEntry assetListEntry = (AssetListEntry)addStagedModel(
+			stagingGroup, Collections.emptyMap());
+
+		User user = TestPropsValues.getUser();
+
+		SegmentsEntry segmentsEntry = _addSegmentsEntryByFirstName(
+			user.getFirstName(), stagingGroup.getGroupId());
+
+		AssetListTestUtil.addAssetListEntrySegmentsEntryRel(
+			stagingGroup.getGroupId(), assetListEntry,
+			segmentsEntry.getSegmentsEntryId());
+
+		exportImportStagedModel(assetListEntry);
+
+		_assertEquals(
+			assetListEntry,
+			(AssetListEntry)getStagedModel(
+				assetListEntry.getUuid(), liveGroup));
+
+		Assert.assertNotNull(
+			_segmentsEntryLocalService.getSegmentsEntryByExternalReferenceCode(
+				segmentsEntry.getExternalReferenceCode(),
+				liveGroup.getGroupId()));
+
+		exportImportStagedModel(assetListEntry);
+
+		_assertEquals(
+			assetListEntry,
+			(AssetListEntry)getStagedModel(
+				assetListEntry.getUuid(), liveGroup));
+
+		Assert.assertNotNull(
+			_segmentsEntryLocalService.getSegmentsEntryByExternalReferenceCode(
+				segmentsEntry.getExternalReferenceCode(),
+				liveGroup.getGroupId()));
+	}
+
+	private void _testExportImportAssetListEntryWithStaleAnyAssetTypeClassName()
+		throws Exception {
+
+		UnicodeProperties unicodeProperties = _exportImportAssetListEntry(
+			UnicodePropertiesBuilder.put(
+				"anyAssetType", String.valueOf(RandomTestUtil.randomLong())
+			).put(
+				"anyAssetTypeClassName", AssetEntry.class.getName()
+			).buildString());
+
+		Assert.assertNull(
+			unicodeProperties.getProperty("anyAssetTypeClassName"));
+		Assert.assertTrue(
+			GetterUtil.getBoolean(
+				unicodeProperties.getProperty("anyAssetType")));
+	}
+
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;
 
 	@Inject
 	private AssetListEntrySegmentsEntryRelLocalService
 		_assetListEntrySegmentsEntryRelLocalService;
+
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
 
 	@Inject(
 		filter = "segments.criteria.contributor.key=user",
