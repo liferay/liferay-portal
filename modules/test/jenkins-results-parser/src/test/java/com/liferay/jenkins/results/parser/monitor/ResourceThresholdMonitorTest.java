@@ -207,7 +207,7 @@ public class ResourceThresholdMonitorTest
 		String message = monitorResult.getMessage();
 
 		Assert.assertTrue(
-			message, message.contains("The ram on " + masterName));
+			message, message.contains("The RAM metric on " + masterName));
 		Assert.assertTrue(
 			message, message.contains("exceeding its threshold of 50%"));
 		Assert.assertTrue(message, message.contains("is at 90.0%"));
@@ -273,7 +273,7 @@ public class ResourceThresholdMonitorTest
 
 		String message = monitorResult.getMessage();
 
-		Assert.assertTrue(message, message.contains("queue.depth"));
+		Assert.assertTrue(message, message.contains("queue depth metric"));
 		Assert.assertTrue(message, message.contains(failureMessage));
 		Assert.assertTrue(message, message.contains(masterName));
 	}
@@ -312,7 +312,7 @@ public class ResourceThresholdMonitorTest
 
 		String message = monitorResult.getMessage();
 
-		Assert.assertTrue(message, message.contains("queue.depth"));
+		Assert.assertTrue(message, message.contains("queue depth metric"));
 		Assert.assertTrue(message, message.contains(label));
 	}
 
@@ -510,7 +510,7 @@ public class ResourceThresholdMonitorTest
 		MonitorResult monitorResult = _execute(monitorProperties);
 
 		testEquals(
-			"Unable to determine the ram for " + masterName,
+			"Unable to determine the RAM metric for " + masterName,
 			monitorResult.getMessage());
 	}
 
