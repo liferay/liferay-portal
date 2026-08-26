@@ -452,6 +452,7 @@ interface ObjectFoldersRequestInfo {
 
 interface ObjectRelationship {
 	deletionType: string;
+	description?: LocalizedValue<string>;
 	edge?: boolean;
 	id: number;
 	label: LocalizedValue<string>;

@@ -130,6 +130,7 @@ type ObjectRelationshipType = 'manyToMany' | 'oneToMany' | 'oneToOne';
 
 interface ObjectRelationship {
 	deletionType: string;
+	description?: LocalizedValue<string>;
 	edge: boolean;
 	externalReferenceCode: string;
 	id: number;
