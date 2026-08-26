@@ -29,7 +29,6 @@ public class IndexerRequest {
 
 		_indexer = new NoAutoCommitIndexer<>(indexer);
 
-		_modelClassName = classedModel.getModelClassName();
 		_modelPrimaryKey = (Long)classedModel.getPrimaryKeyObj();
 	}
 
@@ -63,7 +62,8 @@ public class IndexerRequest {
 				 _method.getName(), indexerRequest._method.getName()) &&
 			  Objects.equals(
 				  _modelPrimaryKey, indexerRequest._modelPrimaryKey))) &&
-			Objects.equals(_modelClassName, indexerRequest._modelClassName)) {
+			Objects.equals(
+				_getModelIdentity(), indexerRequest._getModelIdentity())) {
 
 			return true;
 		}
@@ -78,7 +78,7 @@ public class IndexerRequest {
 			_method.invoke(_indexer, _classedModel);
 		}
 		else {
-			_method.invoke(_indexer, _modelClassName, _modelPrimaryKey);
+			_method.invoke(_indexer, _getModelClassName(), _modelPrimaryKey);
 		}
 	}
 
@@ -86,10 +86,9 @@ public class IndexerRequest {
 	public int hashCode() {
 		int hashCode = HashUtil.hash(0, _method.getName());
 
-		hashCode = HashUtil.hash(hashCode, _modelClassName);
-		hashCode = HashUtil.hash(hashCode, _modelPrimaryKey);
+		hashCode = HashUtil.hash(hashCode, _getModelIdentity());
 
-		return hashCode;
+		return HashUtil.hash(hashCode, _modelPrimaryKey);
 	}
 
 	@Override
@@ -97,14 +96,29 @@ public class IndexerRequest {
 		return StringBundler.concat(
 			"{classModel=", _classedModel, ", indexer=",
 			ClassUtil.getClassName(_indexer), ", method=", _method,
-			", modelClassName=", _modelClassName, ", modelPrimaryKey=",
-			_modelPrimaryKey, "}");
+			", modelPrimaryKey=", _modelPrimaryKey, "}");
+	}
+
+	private String _getModelClassName() {
+		if (_modelClassName == null) {
+			_modelClassName = _classedModel.getModelClassName();
+		}
+
+		return _modelClassName;
+	}
+
+	private Object _getModelIdentity() {
+		if (_classedModel == null) {
+			return _modelClassName;
+		}
+
+		return _classedModel.getClass();
 	}
 
 	private final ClassedModel _classedModel;
 	private final Indexer<?> _indexer;
 	private final Method _method;
-	private final String _modelClassName;
+	private String _modelClassName;
 	private final Long _modelPrimaryKey;
 
 }
