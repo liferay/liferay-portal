@@ -72,6 +72,42 @@ public class BaseTopLevelBuildReportTest
 			downstreamBuildReports.contains(downstreamBuildReport));
 	}
 
+	@Test
+	public void testGetDownstreamBuildReport() {
+		String axisName = RandomTestUtil.randomString();
+
+		DownstreamBuildReport cachedDownstreamBuildReport =
+			_newDownstreamBuildReport(axisName, true);
+		DownstreamBuildReport downstreamBuildReport = _newDownstreamBuildReport(
+			axisName, false);
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport();
+
+		baseTopLevelBuildReport.addDownstreamBuildReport(
+			cachedDownstreamBuildReport);
+		baseTopLevelBuildReport.addDownstreamBuildReport(downstreamBuildReport);
+
+		Assert.assertSame(
+			downstreamBuildReport,
+			baseTopLevelBuildReport.getDownstreamBuildReport(axisName));
+
+		Assert.assertNull(
+			baseTopLevelBuildReport.getDownstreamBuildReport(
+				RandomTestUtil.randomString()));
+
+		_assertDownstreamBuildReports(baseTopLevelBuildReport, 2);
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
+
+		baseTopLevelBuildReport.addDownstreamBuildReport(
+			cachedDownstreamBuildReport);
+
+		Assert.assertSame(
+			cachedDownstreamBuildReport,
+			baseTopLevelBuildReport.getDownstreamBuildReport(axisName));
+	}
+
 	private List<DownstreamBuildReport> _assertDownstreamBuildReports(
 		BaseTopLevelBuildReport baseTopLevelBuildReport, int expectedCount) {
 
