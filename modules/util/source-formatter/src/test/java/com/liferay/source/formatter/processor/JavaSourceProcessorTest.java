@@ -353,11 +353,11 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			SourceProcessorTestParameters.create(
 				"IncorrectImports2.testjava"
 			).addExpectedMessage(
-				"Illegal import: edu.emory.mathcs.backport.java"
+				"Illegal import: edu.emory.mathcs.backport.java", 8
 			).addExpectedMessage(
-				"Illegal import: jodd.util.StringPool"
+				"Use ProxyUtil instead of java.lang.reflect.Proxy", 10
 			).addExpectedMessage(
-				"Use ProxyUtil instead of java.lang.reflect.Proxy"
+				"Illegal import: jodd.util.StringPool", 12
 			));
 	}
 
