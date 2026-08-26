@@ -212,14 +212,14 @@ public class BackgroundTaskLocalServiceImpl
 			backgroundTask.setCompletionDate(new Date());
 		}
 
+		if (Validator.isNotNull(errorStackTrace)) {
+			backgroundTask.setErrorStackTrace(errorStackTrace);
+		}
+
 		backgroundTask.setStatus(status);
 
 		if (Validator.isNotNull(statusMessage)) {
 			backgroundTask.setStatusMessage(statusMessage);
-		}
-
-		if (Validator.isNotNull(errorStackTrace)) {
-			backgroundTask.setErrorStackTrace(errorStackTrace);
 		}
 
 		return backgroundTaskPersistence.update(backgroundTask);
