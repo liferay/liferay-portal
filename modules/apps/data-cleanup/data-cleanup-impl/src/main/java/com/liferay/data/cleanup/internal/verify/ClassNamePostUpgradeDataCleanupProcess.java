@@ -88,7 +88,6 @@ public class ClassNamePostUpgradeDataCleanupProcess
 			_packageNameBundlesMapDCLSingleton.getSingleton(
 				ClassNamePostUpgradeDataCleanupProcess::
 					_createPackageNameBundlesMap);
-
 		StringBundler sb = new StringBundler();
 		List<String> tableNames = new ArrayList<>();
 
