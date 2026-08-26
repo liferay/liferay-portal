@@ -10,6 +10,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
+import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -60,13 +61,8 @@ public class FragmentStagingTestUtil {
 			Group stagingGroup, Group liveGroup)
 		throws PortalException {
 
-		Map<String, String[]> parameters =
-			ExportImportConfigurationParameterMapFactoryUtil.
-				buildParameterMap();
-
-		StagingUtil.publishLayouts(
-			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-			liveGroup.getGroupId(), false, parameters);
+		ExportImportTestUtil.publishLayoutsRangeFromLastPublishedDate(
+			stagingGroup, liveGroup);
 	}
 
 	protected static void addStagingAttribute(
