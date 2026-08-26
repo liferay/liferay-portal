@@ -61,6 +61,44 @@ function getImportErrorMessage(error: string): string {
 	return error;
 }
 
+function getMainStructures(objectDefinitions: any) {
+	const definitions = Array.isArray(objectDefinitions)
+		? objectDefinitions
+		: [objectDefinitions];
+
+	return definitions.filter(
+		(definition) =>
+			definition?.externalReferenceCode &&
+			definition.objectFolderExternalReferenceCode !==
+				REPEATABLE_GROUPS_FOLDER
+	);
+}
+
+async function getExistingStructureNames(objectDefinitions: any) {
+	const existingStructureNames: string[] = [];
+
+	for (const definition of getMainStructures(objectDefinitions)) {
+		const {data, error} = await StructureService.getStructure(
+			definition.externalReferenceCode
+		);
+
+		if (!error && data) {
+			const objectDefinition = data as {
+				label: {[key: string]: string};
+				name: string;
+			};
+
+			existingStructureNames.push(
+				objectDefinition.label?.[
+					Liferay.ThemeDisplay.getLanguageId()
+				] || objectDefinition.name
+			);
+		}
+	}
+
+	return existingStructureNames;
+}
+
 async function importStructures(
 	objectDefinitions: any,
 	importURL: string,
@@ -108,99 +146,56 @@ export default function ImportStructuresModalContent({
 	importURL: string;
 	loadData?: () => void;
 }) {
-	const [jsonFile, setJsonFile] = useState<File | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
+	const [existingStructureNames, setExistingStructureNames] = useState<
+		string[]
+	>([]);
 	const [loading, setLoading] = useState(false);
+	const [objectDefinitions, setObjectDefinitions] = useState<any>(null);
 
-	const onFileChange = (file: File | null) => {
+	const onFileChange = async (file: File | null) => {
+		setErrorMessage('');
+		setExistingStructureNames([]);
+		setObjectDefinitions(null);
+
 		if (!file) {
-			setErrorMessage('');
-		}
-
-		setJsonFile(file);
-	};
-
-	const importStructure = async (
-		objectDefinitions: any,
-		successMessage: string
-	) => {
-		setLoading(true);
-
-		await importStructures(
-			objectDefinitions,
-			importURL,
-			successMessage,
-			loadData
-		);
-
-		setLoading(false);
-
-		closeModal();
-	};
-
-	const onImportButtonClick = async () => {
-		if (!jsonFile) {
-			setErrorMessage(
-				sub(
-					Liferay.Language.get('the-x-field-is-required'),
-					Liferay.Language.get('json-file')
-				)
-			);
-
 			return;
 		}
 
 		setLoading(true);
 
-		let parsedFile: any;
-
 		try {
-			parsedFile = await readJSONFile(jsonFile);
+			const parsedFile = await readJSONFile(file);
+
+			setExistingStructureNames(
+				await getExistingStructureNames(parsedFile)
+			);
+			setObjectDefinitions(parsedFile);
 		}
 		catch (error) {
-			setLoading(false);
 			setErrorMessage(
 				Liferay.Language.get('you-have-entered-invalid-json')
 			);
+		}
+
+		setLoading(false);
+	};
+
+	const onImportButtonClick = async () => {
+		if (!objectDefinitions) {
+			if (!errorMessage) {
+				setErrorMessage(
+					sub(
+						Liferay.Language.get('the-x-field-is-required'),
+						Liferay.Language.get('json-file')
+					)
+				);
+			}
 
 			return;
 		}
 
-		const definitions = Array.isArray(parsedFile)
-			? parsedFile
-			: [parsedFile];
-
-		const mainStructures = definitions.filter(
-			(definition) =>
-				definition?.externalReferenceCode &&
-				definition.objectFolderExternalReferenceCode !==
-					REPEATABLE_GROUPS_FOLDER
-		);
-
-		const existingNames: string[] = [];
-
-		for (const definition of mainStructures) {
-			const {data, error} = await StructureService.getStructure(
-				definition.externalReferenceCode
-			);
-
-			if (!error && data) {
-				const objectDefinition = data as {
-					label: {[key: string]: string};
-					name: string;
-				};
-
-				existingNames.push(
-					objectDefinition.label?.[
-						Liferay.ThemeDisplay.getLanguageId()
-					] || objectDefinition.name
-				);
-			}
-		}
-
-		setLoading(false);
-
-		if (existingNames.length) {
+		if (existingStructureNames.length) {
 			closeModal();
 
 			openCMSModal({
@@ -208,10 +203,10 @@ export default function ImportStructuresModalContent({
 				contentComponent: ({closeModal}: {closeModal: () => void}) =>
 					WarningModalContent({
 						closeModal,
-						existingStructureNames: existingNames,
+						existingStructureNames,
 						importStructure: () =>
 							importStructures(
-								parsedFile,
+								objectDefinitions,
 								importURL,
 								Liferay.Language.get(
 									'the-content-structure-was-successfully-imported-and-the-existing-content-structure-was-overwritten'
@@ -227,16 +222,24 @@ export default function ImportStructuresModalContent({
 			return;
 		}
 
-		const successMessage =
-			mainStructures.length > 1
+		setLoading(true);
+
+		await importStructures(
+			objectDefinitions,
+			importURL,
+			getMainStructures(objectDefinitions).length > 1
 				? Liferay.Language.get(
 						'the-content-structures-were-successfully-imported'
 					)
 				: Liferay.Language.get(
 						'the-content-structure-was-successfully-imported'
-					);
+					),
+			loadData
+		);
 
-		await importStructure(parsedFile, successMessage);
+		setLoading(false);
+
+		closeModal();
 	};
 
 	return (

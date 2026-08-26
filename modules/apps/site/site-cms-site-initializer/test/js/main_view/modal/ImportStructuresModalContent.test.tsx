@@ -77,6 +77,8 @@ const selectFile = async (container: HTMLElement, file: File) => {
 	fireEvent.change(input, {target: {files: [file]}});
 
 	await screen.findByText(file.name);
+
+	await waitFor(() => expect(screen.getByText('import')).toBeEnabled());
 };
 
 describe('ImportStructuresModalContent', () => {
@@ -248,5 +250,75 @@ describe('ImportStructuresModalContent', () => {
 		});
 
 		expect(mockCloseModal).toHaveBeenCalled();
+	});
+
+	it('reports invalid JSON as soon as the file is selected', async () => {
+		const {container} = renderComponent();
+
+		await selectFile(container, createJSONFile('not json', 'bad.json'));
+
+		expect(
+			screen.getByText('you-have-entered-invalid-json')
+		).toBeInTheDocument();
+		expect(mockGet).not.toHaveBeenCalled();
+	});
+
+	it('checks the existing structures when the file is selected', async () => {
+		const {container} = renderComponent();
+
+		await selectFile(container, boundObjectDefinitionsFile);
+
+		expect(mockGet).toHaveBeenCalledTimes(1);
+
+		fireEvent.click(screen.getByText('import'));
+
+		await waitFor(() => {
+			expect(mockPostFormData).toHaveBeenCalledTimes(1);
+		});
+
+		expect(mockGet).toHaveBeenCalledTimes(1);
+	});
+
+	it('opens the override warning modal without any further request', async () => {
+		mockGet.mockResolvedValue({
+			data: {name: 'My Existing Structure'} as any,
+			error: null,
+			status: null,
+		});
+
+		const {container} = renderComponent();
+
+		await selectFile(container, boundObjectDefinitionsFile);
+
+		fireEvent.click(screen.getByText('import'));
+
+		expect(mockOpenCMSModal).toHaveBeenCalledTimes(1);
+		expect(mockGet).toHaveBeenCalledTimes(1);
+		expect(mockPostFormData).not.toHaveBeenCalled();
+	});
+
+	it('rechecks the existing structures when another file is selected', async () => {
+		const {container} = renderComponent();
+
+		await selectFile(container, boundObjectDefinitionsFile);
+
+		expect(mockGet).toHaveBeenCalledTimes(1);
+
+		await selectFile(
+			container,
+			createJSONFile(
+				JSON.stringify({
+					externalReferenceCode: 'STRUCTURE2',
+					objectFolderExternalReferenceCode:
+						'L_CMS_CONTENT_STRUCTURES',
+				}),
+				'other.json'
+			)
+		);
+
+		expect(mockGet).toHaveBeenCalledTimes(2);
+		expect(mockGet).toHaveBeenLastCalledWith(
+			`${STRUCTURE_API_URL}STRUCTURE2`
+		);
 	});
 });
