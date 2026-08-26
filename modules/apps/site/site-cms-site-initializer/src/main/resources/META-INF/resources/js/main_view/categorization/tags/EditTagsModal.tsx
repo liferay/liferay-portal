@@ -41,6 +41,20 @@ const CONFIRMATION_MESSAGES = {
 	},
 };
 
+/**
+ * Returns the scope keys of the given scopes, or an empty array when they
+ * stand for every scope. A tag available everywhere comes back as a single
+ * entry that has the id -1 and no scope key, which both the selector and the
+ * API represent as an empty selection.
+ */
+function getScopeKeys(scopes: AssetLibraryType[] = []): string[] {
+	if (scopes.some((scope) => scope.id === -1)) {
+		return [];
+	}
+
+	return scopes.map((scope) => scope.scopeKey);
+}
+
 export default function EditTagsModalContent({
 	assetLibraries,
 	closeModal,
@@ -64,10 +78,10 @@ export default function EditTagsModalContent({
 	const [projectChange, setProjectChange] = useState(false);
 	const [projectInputError, setProjectInputError] = useState('');
 	const [selectedProjects, setSelectedProjects] = useState<string[]>(
-		projects?.map((project) => project.scopeKey) ?? []
+		getScopeKeys(projects)
 	);
 	const [selectedSpaces, setSelectedSpaces] = useState<string[]>(
-		assetLibraries.map((item: {scopeKey: string}) => item.scopeKey)
+		getScopeKeys(assetLibraries)
 	);
 	const [spaceChange, setSpaceChange] = useState(false);
 	const [spaceInputError, setSpaceInputError] = useState('');
