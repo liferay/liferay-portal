@@ -115,29 +115,31 @@ export function on(audienceId: AudienceId, handler: Handler): void {
 export async function runHandlers(): Promise<void> {
 	const audienceIds = get();
 
-	for (const audienceId of audienceIds) {
-		if (!handlers[audienceId]) {
-			continue;
-		}
+	await Promise.allSettled(
+		[...audienceIds]
+			.filter((audienceId) => handlers[audienceId])
+			.map(async (audienceId) => {
+				await Promise.allSettled(
+					handlers[audienceId].map(async (handler) => {
+						const handlerName = handler.name ?? 'anonymous';
 
-		for (const handler of handlers[audienceId]) {
-			const handlerName = handler.name ?? 'anonymous';
+						log(
+							`Running handler '${handlerName}' for audience '${audienceId}'`
+						);
 
-			log(
-				`Running handler '${handlerName}' for audience '${audienceId}'`
-			);
-
-			try {
-				await handler();
-			}
-			catch (error) {
-				log(
-					`Unable to run handler '${handlerName}' of audience ` +
-						`'${audienceId}': ${getErrorMessage(error)}`
+						try {
+							await handler();
+						}
+						catch (error) {
+							log(
+								`Unable to run handler '${handlerName}' of audience ` +
+									`'${audienceId}': ${getErrorMessage(error)}`
+							);
+						}
+					})
 				);
-			}
-		}
-	}
+			})
+	);
 }
 
 export function setLogEnabled(enabled: boolean) {
