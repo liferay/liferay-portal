@@ -179,6 +179,34 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test(timeout = 10000)
+	public void testRunCycleContinuesWhenPrepareCycleFails() {
+		TestMonitor failingTestMonitor = Mockito.spy(
+			new TestMonitor(_newMonitorConfig("a", 0, 0)));
+
+		Mockito.doThrow(
+			new RuntimeException()
+		).when(
+			failingTestMonitor
+		).prepareCycle();
+
+		TestMonitor testMonitor = Mockito.spy(
+			new TestMonitor(_newMonitorConfig("b", 0, 0)));
+
+		MonitorEngine monitorEngine = new MonitorEngine(
+			new MonitorResultStore(),
+			Arrays.<Monitor>asList(failingTestMonitor, testMonitor));
+
+		Map<Monitor, MonitorResult> monitorResultsMap =
+			monitorEngine.runCycle();
+
+		Mockito.verify(
+			testMonitor
+		).prepareCycle();
+
+		testEquals(2, monitorResultsMap.size());
+	}
+
+	@Test(timeout = 10000)
 	public void testRunCycleIgnoresMonitorsAddedAfterConstruction() {
 		List<Monitor> monitors = new ArrayList<>();
 
