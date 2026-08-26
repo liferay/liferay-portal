@@ -104,9 +104,6 @@ const columns = {
 	assetMetricRenderer: ({value}: {value: {value: number}}) => (
 		<span>{toThousands(value.value)}</span>
 	),
-	assetObjectTypeRenderer: ({value}: {value?: AssetObjectTypes}) => (
-		<span>{(value && ASSET_OBJECT_TYPE_LANG_MAP[value]) || ''}</span>
-	),
 	assetTitleRenderer:
 		({
 			accountId,
@@ -193,12 +190,6 @@ const TABLE_FIELDS = [
 	{
 		fieldName: 'assetType',
 		label: Liferay.Language.get('type'),
-		sortable: true,
-	},
-	{
-		contentRenderer: 'assetObjectTypeRenderer',
-		fieldName: 'objectType',
-		label: Liferay.Language.get('object-type'),
 		sortable: true,
 	},
 	{
@@ -481,8 +472,6 @@ const List = () => {
 						apiURL={`/o/faro/contacts/${groupId}/asset-summary?channelId=${channelId}&${rangeSelectorParams}`}
 						customDataRenderers={{
 							assetMetricRenderer: columns.assetMetricRenderer,
-							assetObjectTypeRenderer:
-								columns.assetObjectTypeRenderer,
 							assetTitleRenderer: columns.assetTitleRenderer({
 								accountId,
 								accountName,
