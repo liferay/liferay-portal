@@ -168,6 +168,10 @@
 			<category name="Styling" />
 			<description name="Sorts definition keys in `.config` files." />
 		</check>
+		<check name="ConfigStylingCheck">
+			<category name="Styling" />
+			<description name="Applies rules to enforce consistency in code style." />
+		</check>
 		<check name="ConfigWhitespaceCheck">
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary whitespace." />
