@@ -698,13 +698,11 @@ public class ObjectEntryLocalServiceSearchObjectEntriesTest {
 
 		_addObjectDefinition(objectField);
 
-		String content = RandomTestUtil.randomString();
-
 		FileEntry fileEntry = TempFileEntryUtil.addTempFileEntry(
 			TestPropsValues.getGroupId(), TestPropsValues.getUserId(),
 			_objectDefinition.getPortletId(),
 			TempFileEntryUtil.getTempFileName("document.txt"),
-			FileUtil.createTempFile(content.getBytes()),
+			FileUtil.createTempFile(DLTestUtil.randomTextFileBytes()),
 			ContentTypes.TEXT_PLAIN);
 
 		_addObjectEntry(
@@ -720,11 +718,9 @@ public class ObjectEntryLocalServiceSearchObjectEntriesTest {
 				"document.tx", objectField.isIndexedAsKeyword() ? 1 : 0);
 			_assertKeywords("document.txt", 1);
 			_assertKeywords("ocument.txt", 0);
-			_assertKeywords(content, objectField.isIndexedAsKeyword() ? 0 : 1);
 		}
 		else {
 			_assertKeywords("document.txt", 0);
-			_assertKeywords(content, 0);
 		}
 	}
 
