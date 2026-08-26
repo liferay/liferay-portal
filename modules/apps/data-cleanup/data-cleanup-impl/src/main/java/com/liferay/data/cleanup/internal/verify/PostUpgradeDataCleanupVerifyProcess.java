@@ -78,7 +78,8 @@ public class PostUpgradeDataCleanupVerifyProcess extends VerifyProcess {
 					_classNameLocalService, _companyLocalService, connection,
 					_objectDefinitionLocalService),
 				new ResourceActionPostUpgradeDataCleanupProcess(
-					connection, _resourceActionLocalService),
+					_companyLocalService, connection,
+					_objectDefinitionLocalService, _resourceActionLocalService),
 				new ServiceComponentPostUpgradeDataCleanupProcess(
 					connection, _serviceComponentLocalService),
 				new StorePostUpgradeDataCleanupProcess(_store));

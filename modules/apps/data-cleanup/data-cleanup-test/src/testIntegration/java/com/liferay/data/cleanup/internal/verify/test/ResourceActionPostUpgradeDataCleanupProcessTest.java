@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -308,13 +309,17 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 
 	@Override
 	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
-		return new Object[] {connection, _resourceActionLocalService};
+		return new Object[] {
+			_companyLocalService, connection, _objectDefinitionLocalService,
+			_resourceActionLocalService
+		};
 	}
 
 	@Override
 	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
 		return new Class<?>[] {
-			Connection.class, ResourceActionLocalService.class
+			CompanyLocalService.class, Connection.class,
+			ObjectDefinitionLocalService.class, ResourceActionLocalService.class
 		};
 	}
 
@@ -359,6 +364,9 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 		"com_liferay_data_cleanup_test_ObjectPortlet</portlet-name>",
 		"</portlet-ref><permissions><supports><action-key>VIEW</action-key>",
 		"</supports></permissions></model-resource></resource-action-mapping>");
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

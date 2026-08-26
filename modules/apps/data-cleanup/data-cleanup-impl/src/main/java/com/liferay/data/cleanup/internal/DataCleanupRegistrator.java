@@ -483,7 +483,9 @@ public class DataCleanupRegistrator {
 						PostUpgradeDataCleanupProcess
 							postUpgradeDataCleanupProcess =
 								new ResourceActionPostUpgradeDataCleanupProcess(
-									connection, _resourceActionLocalService);
+									_companyLocalService, connection,
+									_objectDefinitionLocalService,
+									_resourceActionLocalService);
 
 						postUpgradeDataCleanupProcess.cleanUp();
 					}
