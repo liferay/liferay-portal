@@ -195,11 +195,8 @@ public class AssetListTypePropertiesUtilTest {
 				new long[] {_CLASS_NAME_ID_1}, new long[] {_CLASS_TYPE_ID_1},
 				_COMPANY_ID, LocaleUtil.US);
 
-		JSONArray itemsJSONArray = jsonArray.getJSONObject(
-			1
-		).getJSONArray(
-			"items"
-		);
+		JSONArray itemsJSONArray = JSONUtil.getValueAsJSONArray(
+			jsonArray, "JSONObject/1", "JSONArray/items");
 
 		Assert.assertEquals(
 			itemsJSONArray.toString(), 8, itemsJSONArray.length());
@@ -270,11 +267,8 @@ public class AssetListTypePropertiesUtilTest {
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
-		JSONArray itemsJSONArray = jsonArray.getJSONObject(
-			1
-		).getJSONArray(
-			"items"
-		);
+		JSONArray itemsJSONArray = JSONUtil.getValueAsJSONArray(
+			jsonArray, "JSONObject/1", "JSONArray/items");
 
 		Assert.assertEquals(
 			itemsJSONArray.toString(), 1, itemsJSONArray.length());
