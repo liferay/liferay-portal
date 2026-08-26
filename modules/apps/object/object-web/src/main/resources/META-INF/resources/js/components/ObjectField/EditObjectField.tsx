@@ -33,6 +33,7 @@ export interface EditObjectFieldProps {
 	isDefaultStorageType: boolean;
 	isRootDescendantNode: boolean;
 	learnResources: ILearnResourceContext;
+	metadataObjectFieldNames: string[];
 	objectDefinitionExternalReferenceCode: string;
 	objectFieldId: number;
 	readOnly: boolean;
@@ -72,6 +73,7 @@ export default function EditObjectField({
 	isDefaultStorageType,
 	isRootDescendantNode,
 	learnResources,
+	metadataObjectFieldNames,
 	objectDefinitionExternalReferenceCode,
 	objectFieldId,
 	readOnly,
@@ -158,6 +160,7 @@ export default function EditObjectField({
 				isDefaultStorageType={isDefaultStorageType}
 				isRootDescendantNode={isRootDescendantNode}
 				learnResources={learnResources}
+				metadataObjectFieldNames={metadataObjectFieldNames}
 				objectDefinition={objectDefinition}
 				objectFieldId={objectFieldId}
 				readOnly={readOnly}

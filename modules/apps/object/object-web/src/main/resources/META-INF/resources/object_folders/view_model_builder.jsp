@@ -61,6 +61,8 @@ renderResponse.setTitle(LanguageUtil.get(request, "object-model-builder"));
 			).put(
 				"learnResourceContext", LearnMessageUtil.getReactDataJSONObject(new String[] {"frontend-js-components-web", "object-web"})
 			).put(
+				"metadataObjectFieldNames", ObjectFieldUtil.getMetadataObjectFieldNamesJSONArray()
+			).put(
 				"objectDefinitionPermissionsURL", objectDefinitionsDetailsDisplayContext.getPermissionsURL(ObjectDefinition.class.getName())
 			).put(
 				"objectDefinitionsStorageTypes", objectDefinitionsDetailsDisplayContext.getStorageTypesJSONArray()

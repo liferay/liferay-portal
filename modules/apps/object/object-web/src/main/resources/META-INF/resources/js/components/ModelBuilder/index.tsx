@@ -25,6 +25,7 @@ interface CustomObjectFolderWrapperProps {
 	forbiddenNames: string[];
 	hasDepotEntry?: boolean;
 	learnResourceContext: ILearnResourceContext;
+	metadataObjectFieldNames: string[];
 	objectDefinitionPermissionsURL: string;
 	objectDefinitionsStorageTypes: LabelValueObject[];
 	objectRelationshipDeletionTypes: LabelValueObject[];
@@ -50,6 +51,7 @@ export default function CustomObjectFolderWrapper({
 	forbiddenNames,
 	hasDepotEntry,
 	learnResourceContext,
+	metadataObjectFieldNames,
 	objectDefinitionPermissionsURL,
 	objectDefinitionsStorageTypes,
 	objectRelationshipDeletionTypes,
@@ -72,6 +74,7 @@ export default function CustomObjectFolderWrapper({
 					forbiddenNames,
 					hasDepotEntry,
 					learnResourceContext,
+					metadataObjectFieldNames,
 					objectDefinitionPermissionsURL,
 					objectDefinitionsStorageTypes,
 					workflowStatuses,

@@ -31,6 +31,7 @@ interface BasicInfoContainerProps {
 	handleChange: React.ChangeEventHandler<HTMLInputElement>;
 	hasDepotEntry?: boolean;
 	learnResources: ILearnResourceContext;
+	metadataObjectFieldNames?: string[];
 	modelBuilder?: boolean;
 	objectDefinition?: ObjectDefinition | ObjectDefinitionNodeData;
 	objectFieldBusinessTypes: ObjectFieldBusinessType[];
@@ -53,6 +54,7 @@ export function BasicInfoContainer({
 	handleChange,
 	hasDepotEntry,
 	learnResources,
+	metadataObjectFieldNames,
 	modelBuilder = false,
 	objectDefinition,
 	objectFieldBusinessTypes,
@@ -116,6 +118,7 @@ export function BasicInfoContainer({
 				handleChange={handleChange}
 				hasDepotEntry={hasDepotEntry}
 				learnResources={learnResources}
+				metadataObjectFieldNames={metadataObjectFieldNames}
 				modelBuilder={modelBuilder}
 				objectDefinition={objectDefinition}
 				objectField={values}
@@ -126,6 +129,7 @@ export function BasicInfoContainer({
 					setObjectDefinitionExternalReferenceCode2
 				}
 				onSubmit={onSubmit}
+				readOnly={readOnly}
 				setDbObjectFieldRequired={setDbObjectFieldRequired}
 				setValues={setValues}
 			>

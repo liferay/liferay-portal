@@ -45,6 +45,7 @@ export function RightSidebarObjectFieldDetails() {
 			hasDepotEntry,
 			isRootDescendantNode,
 			learnResourceContext,
+			metadataObjectFieldNames,
 			selectedObjectDefinitionNode,
 			selectedObjectField,
 			workflowStatuses,
@@ -220,6 +221,7 @@ export function RightSidebarObjectFieldDetails() {
 							isDefaultStorageType={isDefaultStorageType}
 							isRootDescendantNode={isRootDescendantNode}
 							learnResources={learnResourceContext}
+							metadataObjectFieldNames={metadataObjectFieldNames}
 							modelBuilder
 							objectDefinition={objectDefinitionNodeData}
 							objectFieldId={selectedObjectField.id}

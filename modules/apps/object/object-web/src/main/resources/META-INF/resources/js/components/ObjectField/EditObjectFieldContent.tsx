@@ -56,6 +56,7 @@ export function EditObjectFieldContent({
 	isDefaultStorageType,
 	isRootDescendantNode,
 	learnResources,
+	metadataObjectFieldNames,
 	modelBuilder = false,
 	objectDefinition,
 	objectFieldId,
@@ -184,6 +185,9 @@ export function EditObjectFieldContent({
 								handleChange={handleChange}
 								hasDepotEntry={hasDepotEntry}
 								learnResources={learnResources}
+								metadataObjectFieldNames={
+									metadataObjectFieldNames
+								}
 								modelBuilder={modelBuilder}
 								objectDefinition={objectDefinition}
 								objectFieldBusinessTypes={
@@ -242,6 +246,7 @@ export function EditObjectFieldContent({
 					handleChange={handleChange}
 					hasDepotEntry={hasDepotEntry}
 					learnResources={learnResources}
+					metadataObjectFieldNames={metadataObjectFieldNames}
 					modelBuilder={modelBuilder}
 					objectDefinition={objectDefinition}
 					objectFieldBusinessTypes={objectFieldBusinessTypes}

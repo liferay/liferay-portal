@@ -45,6 +45,7 @@ interface BasicInfoTabProps {
 	handleChange: React.ChangeEventHandler<HTMLInputElement>;
 	hasDepotEntry?: boolean;
 	learnResources: ILearnResourceContext;
+	metadataObjectFieldNames?: string[];
 	modelBuilder?: boolean;
 	objectDefinition?: ObjectDefinition | ObjectDefinitionNodeData;
 	objectFieldBusinessTypes: ObjectFieldBusinessType[];
@@ -68,6 +69,7 @@ export function BasicInfoTab({
 	handleChange,
 	hasDepotEntry,
 	learnResources,
+	metadataObjectFieldNames,
 	modelBuilder = false,
 	objectDefinition,
 	objectFieldBusinessTypes,
@@ -112,6 +114,7 @@ export function BasicInfoTab({
 					handleChange={handleChange}
 					hasDepotEntry={hasDepotEntry}
 					learnResources={learnResources}
+					metadataObjectFieldNames={metadataObjectFieldNames}
 					modelBuilder={modelBuilder}
 					objectDefinition={objectDefinition}
 					objectFieldBusinessTypes={objectFieldBusinessTypes}

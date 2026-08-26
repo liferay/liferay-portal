@@ -49,6 +49,8 @@ ObjectField objectField = (ObjectField)request.getAttribute(ObjectWebKeys.OBJECT
 		).put(
 			"learnResources", LearnMessageUtil.getReactDataJSONObject("object-web")
 		).put(
+			"metadataObjectFieldNames", ObjectFieldUtil.getMetadataObjectFieldNamesJSONArray()
+		).put(
 			"objectDefinitionExternalReferenceCode", objectDefinition.getExternalReferenceCode()
 		).put(
 			"objectFieldId", objectField.getObjectFieldId()

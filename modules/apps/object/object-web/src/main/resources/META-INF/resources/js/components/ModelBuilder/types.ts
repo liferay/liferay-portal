@@ -242,6 +242,7 @@ export type TState = {
 	isRootDescendantNode: boolean;
 	learnResourceContext: ILearnResourceContext;
 	leftSidebarItems: LeftSidebarItem[];
+	metadataObjectFieldNames: string[];
 	modelBuilderModals: ModelBuilderModals;
 	movedObjectDefinitionId?: number;
 	nodeHandleConnectable: boolean;
