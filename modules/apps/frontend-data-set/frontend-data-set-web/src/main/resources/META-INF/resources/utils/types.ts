@@ -573,6 +573,7 @@ interface ISelectionFilterState extends IBaseFilterState {
 		exclude: boolean;
 		selectedItems: Array<ISelectionFilterStateItem>;
 	};
+	showExcludeToggle?: boolean;
 }
 interface IFDSState {
 	filters: Array<IBaseFilterState>;

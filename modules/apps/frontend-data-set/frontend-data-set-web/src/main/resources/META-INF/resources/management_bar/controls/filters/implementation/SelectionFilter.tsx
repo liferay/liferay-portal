@@ -44,6 +44,8 @@ export interface SelectionFilterImplementationArgs
 	items: TItem[];
 	multiple: boolean;
 	onClose?: () => void;
+	preloadedData?: SelectedData;
+	showExcludeToggle?: boolean;
 }
 
 interface SelectedData {
@@ -213,8 +215,10 @@ function SelectionFilter({
 	items: initialItems,
 	multiple,
 	onClose,
+	preloadedData,
 	selectedData,
 	setFilter,
+	showExcludeToggle = true,
 }: SelectionFilterImplementationArgs) {
 	const [searchOptions, setSearchOptions] = useState({
 		currentPage: 1,
@@ -234,14 +238,18 @@ function SelectionFilter({
 	const [scrollingAreaRendered, setScrollingAreaRendered] = useState(false);
 	const infiniteLoaderRef = useRef(null);
 	const [infiniteLoaderRendered, setInfiniteLoaderRendered] = useState(false);
-	const [exclude, setExclude] = useState(!!selectedData?.exclude);
+	const configuredExclude = !!preloadedData?.exclude;
+
+	const [exclude, setExclude] = useState(
+		selectedData ? !!selectedData.exclude : configuredExclude
+	);
 
 	const loaderVisible = !localItems.length && items?.length < total;
 
 	useEffect(() => {
-		setExclude(!!selectedData?.exclude);
+		setExclude(selectedData ? !!selectedData.exclude : configuredExclude);
 		setSelectedItems(selectedData?.selectedItems || []);
-	}, [selectedData]);
+	}, [configuredExclude, selectedData]);
 
 	const handleAutocompleteQuery: (value: string) => void = debounce(
 
@@ -445,27 +453,29 @@ function SelectionFilter({
 							</div>
 						</ClayDropDown.Caption>
 
-						<Divider />
+						{showExcludeToggle && <Divider />}
 					</>
 				) : null}
 
-				<ClayDropDown.Caption className="pb-0">
-					<div className="row">
-						<div className="col">
-							<label htmlFor={`autocomplete-exclude-${id}`}>
-								{Liferay.Language.get('exclude')}
-							</label>
-						</div>
+				{showExcludeToggle && (
+					<ClayDropDown.Caption className="pb-0">
+						<div className="row">
+							<div className="col">
+								<label htmlFor={`autocomplete-exclude-${id}`}>
+									{Liferay.Language.get('exclude')}
+								</label>
+							</div>
 
-						<div className="col-auto">
-							<ClayToggle
-								id={`autocomplete-exclude-${id}`}
-								onToggle={() => setExclude(!exclude)}
-								toggled={exclude}
-							/>
+							<div className="col-auto">
+								<ClayToggle
+									id={`autocomplete-exclude-${id}`}
+									onToggle={() => setExclude(!exclude)}
+									toggled={exclude}
+								/>
+							</div>
 						</div>
-					</div>
-				</ClayDropDown.Caption>
+					</ClayDropDown.Caption>
+				)}
 
 				<Divider />
 
@@ -539,7 +549,7 @@ function SelectionFilter({
 							setFilter({
 								active: false,
 								selectedData: {
-									exclude: false,
+									exclude,
 									selectedItems: [],
 								},
 							});
