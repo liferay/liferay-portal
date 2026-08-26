@@ -219,6 +219,7 @@ export default function ImportStructuresModalContent({
 								loadData
 							),
 					}),
+				disableAutoClose: true,
 				size: 'md',
 				status: 'warning',
 			});

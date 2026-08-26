@@ -18,6 +18,7 @@ export default function importStructuresAction(
 				importURL,
 				loadData,
 			}),
+		disableAutoClose: true,
 		size: 'md',
 	});
 }
