@@ -24,6 +24,7 @@ import {
 	VALIDATION_CONTEXT_VALUE_MAXIMUM_LENGTH,
 } from './utils/constants';
 import {getContexts, setContexts} from './utils/contexts';
+import {getCookie, removeHostOnlyCookie, setCookie} from './utils/cookies';
 import {normalizeEvent} from './utils/events';
 import hash from './utils/hash';
 import {getItem, removeItem, setItem} from './utils/storage';
@@ -33,6 +34,8 @@ import {isValidEvent} from './utils/validators';
 // Constants
 
 export const ENV: any = window || global;
+
+const IP_ADDRESS_REGEX = /^[\d.]+$/;
 
 /**
  * Analytics class that is designed to collect events that are captured
@@ -47,6 +50,7 @@ class Analytics {
 
 	_disposed: boolean = false;
 	_pluginDisposers: any[] = [];
+	_sharedUserIdSynced: boolean = false;
 	_queueFlushService!: QueueFlushService;
 
 	config: AnalyticsType.Config = {
@@ -86,6 +90,7 @@ class Analytics {
 		const faroBackendUrl = (config.faroBackendUrl || '').replace(/\/$/, '');
 
 		this.config = Object.assign(config, {
+			cookieDomain: this._resolveCookieDomain(config.cookieDomain),
 			demandbaseAccountEndpoint: `${endpointUrl}/demandbase-account`,
 			endpointUrl,
 			faroBackendUrl,
@@ -352,6 +357,37 @@ class Analytics {
 	}
 
 	/**
+	 * Takes the user id established in the cookie shared with every sibling
+	 * subdomain, whether or not this host already had one of its own. The
+	 * shared cookie is the single answer to who the visitor is, so a host that
+	 * minted its own id before the cookie existed converges on the shared one
+	 * the next time it is loaded. Returns an empty string when there is nothing
+	 * to take.
+	 */
+	_syncSharedUserId(userId?: string) {
+		if (this._sharedUserIdSynced || !this._getCookieDomain()) {
+			return '';
+		}
+
+		// Converging is a decision for this page load, not for every message
+		// the queues build: leaving it on the read path would pay a cookie read
+		// per message and let the id change under a live page whenever a
+		// sibling subdomain writes the cookie.
+
+		this._sharedUserIdSynced = true;
+
+		const sharedUserId = getCookie(AnalyticsType.Keys.UserId);
+
+		if (!sharedUserId || sharedUserId === userId) {
+			return '';
+		}
+
+		setItem(AnalyticsType.Keys.UserId, sharedUserId);
+
+		return sharedUserId;
+	}
+
+	/**
 	 * Clears interval and calls plugins disposers if available
 	 */
 	_disposeInternal() {
@@ -369,10 +405,21 @@ class Analytics {
 	}
 
 	_ensureIntegrity() {
+		if (this._getCookieDomain()) {
+
+			// Retires the cookie a previous version of the client scoped to
+			// this exact host before anything reads the shared one. A cookie is
+			// identified by its domain as well as its name, so leaving it in
+			// place would let two cookies with the same name coexist and make
+			// every later read, here and on the server, ambiguous.
+
+			removeHostOnlyCookie(AnalyticsType.Keys.UserId);
+		}
+
 		const userId = getItem<string>(AnalyticsType.Keys.UserId);
 
 		if (userId) {
-			this._setCookie(AnalyticsType.Keys.UserId, userId);
+			this._setUserIdCookie(userId);
 		}
 	}
 
@@ -410,6 +457,40 @@ class Analytics {
 		}
 
 		return clonedContext;
+	}
+
+	/**
+	 * Validates the domain the server computed for this request. The browser
+	 * drops a domain it cannot set, so a value this host is not under, an IP
+	 * address, or one without a dot is discarded here rather than producing
+	 * cookies that never land.
+	 * @protected
+	 */
+	_resolveCookieDomain(configuredDomain: string = '') {
+		const cookieDomain = configuredDomain.replace(/^\./, '');
+
+		const {hostname} = window.location;
+
+		if (
+			!cookieDomain.includes('.') ||
+			IP_ADDRESS_REGEX.test(cookieDomain) ||
+			(hostname !== cookieDomain &&
+				!hostname.endsWith(`.${cookieDomain}`))
+		) {
+			return '';
+		}
+
+		return cookieDomain;
+	}
+
+	/**
+	 * The domain the user id cookie is shared at, resolved once when the client
+	 * is created. An empty string means the cookie stays scoped to the exact
+	 * host, as it was before the server started sending a domain.
+	 * @protected
+	 */
+	_getCookieDomain() {
+		return this.config.cookieDomain || '';
 	}
 
 	_getIdentityHash(
@@ -460,8 +541,18 @@ class Analytics {
 			AnalyticsType.Keys.PrevEmailAddressHash
 		);
 
+		// An identified visit is stitched by its email hash downstream, so it
+		// gains nothing from taking the shared anonymous id and could bind that
+		// id to a second person.
+
+		if (!emailAddressHashed) {
+			userId = this._syncSharedUserId(userId as string) || userId;
+		}
+
 		if (!userId) {
 			userId = this._generateUserId();
+
+			this._setUserIdCookie(userId);
 		}
 
 		if (
@@ -469,7 +560,14 @@ class Analytics {
 			emailAddressHashed !== previousEmailAddressHashed
 		) {
 			if (previousEmailAddressHashed) {
+
+				// The visitor is a different person now, so the shared cookie
+				// has to follow rather than pull this host back to the old id
+				// on the next anonymous load.
+
 				userId = this._generateUserId();
+
+				this._replaceUserIdCookie(userId);
 			}
 
 			setItem(
@@ -490,7 +588,6 @@ class Analytics {
 		const userId: string = uuidv4();
 
 		setItem(AnalyticsType.Keys.UserId, userId);
-		this._setCookie(AnalyticsType.Keys.UserId, userId);
 
 		removeItem(AnalyticsType.Keys.Identity);
 
@@ -541,38 +638,35 @@ class Analytics {
 	}
 
 	/**
-	 * Sets a browser cookie
+	 * Seeds the user id cookie, leaving it alone when it already holds another
+	 * id. Refreshing an id this client merely happens to hold must not
+	 * overwrite what a sibling subdomain shared, or the write would race the
+	 * read that is about to take that shared id.
 	 * @protected
 	 */
-	_setCookie(key: string, data: string) {
-		const Liferay = window.Liferay;
-		const expires = new Date();
+	_setUserIdCookie(userId: string) {
+		const cookieDomain = this._getCookieDomain();
 
-		expires.setDate(expires.getDate() + 365);
+		if (cookieDomain) {
+			const sharedUserId = getCookie(AnalyticsType.Keys.UserId);
 
-		// Checks if the client is being loaded with the Liferay global
-		// variable and if there is a Cookie method because the client
-		// is Liferay Portal agnostic and may have versions that do not
-		// yet have the Cookie method.
-
-		if (Liferay?.Util?.Cookie) {
-			Liferay.Util.Cookie.set?.(
-				key,
-				data,
-				Liferay?.Util?.Cookie?.TYPES?.PERSONALIZATION,
-				{
-					expires,
-					secure: true,
-				}
-			);
-		}
-		else {
-			const path = Liferay?.ThemeDisplay?.getPathContext?.() || '/';
-
-			document.cookie = `${key}=${data}; expires=${expires.toUTCString()}; path=${path}; Secure`;
+			if (sharedUserId && sharedUserId !== userId) {
+				return;
+			}
 		}
 
-		return;
+		setCookie(AnalyticsType.Keys.UserId, userId, cookieDomain);
+	}
+
+	/**
+	 * Publishes an id this client has decided on, replacing whatever the shared
+	 * cookie held. Used when an identity change regenerates the id, so the
+	 * change reaches every sibling subdomain instead of stranding them on an id
+	 * nobody uses any more.
+	 * @protected
+	 */
+	_replaceUserIdCookie(userId: string) {
+		setCookie(AnalyticsType.Keys.UserId, userId, this._getCookieDomain());
 	}
 
 	/**

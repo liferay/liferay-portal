@@ -56,6 +56,7 @@ export namespace Analytics {
 
 	export type Config = {
 		channelId: string;
+		cookieDomain?: string;
 		dataSourceId: string;
 		demandbaseAccountEndpoint: string;
 		endpointUrl: string;

@@ -41,7 +41,7 @@ interface Window {
 				TYPES?: {
 					[key: string]: string;
 				};
-				get?: (name: string) => string;
+				get?: (name: string, type?: string) => string;
 				set?: (
 					key: string,
 					data: string,

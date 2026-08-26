@@ -12,6 +12,10 @@ export const ANALYTICS_BATCH_SEGMENT_EXTERNAL_REFERENCE_CODES =
 
 // Default Config
 
+export const COOKIE_EXPIRATION_DAYS = 365;
+
+export const COOKIE_EXPIRED_DATE = 'Thu, 01 Jan 1970 00:00:00 GMT';
+
 export const DEBOUNCE = 1500;
 
 export const FLUSH_INTERVAL = 2000;
