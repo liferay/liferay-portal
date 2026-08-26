@@ -66,4 +66,9 @@ $version-history-side-panel-width: 320px;
 
 #wrapper.c-slideout-container {
 	padding-top: $version-history-toolbar-height;
+
+	&.c-slideout-transition-in,
+	&.c-slideout-transition-out {
+		transition: none;
+	}
 }
