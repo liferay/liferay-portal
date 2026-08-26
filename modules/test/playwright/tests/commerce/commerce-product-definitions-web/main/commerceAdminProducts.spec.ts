@@ -447,3 +447,32 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'Product fields default to the catalog default language',
+	{tag: ['@COMMERCE-9532', '@LPD-103842']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				defaultLanguageId: 'es_ES',
+				name: getRandomString(),
+			});
+
+		const productName = getRandomString();
+
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: productName},
+		});
+
+		await commerceAdminProductPage.gotoProduct(productName);
+
+		await expect(
+			commerceAdminProductDetailsPage.nameInputLocaleSelector
+		).toHaveText('es-ES');
+	}
+);

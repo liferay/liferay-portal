@@ -37,7 +37,7 @@ export const test = mergeTests(
 
 test(
 	'Account Selector in Minium theme working as expected',
-	{tag: ['@COMMERCE-5957', '@COMMERCE-6215', '@LPD-56172', '@LPD-48266']},
+	{tag: ['@COMMERCE-5957', '@COMMERCE-6215', '@LPD-48266', '@LPD-56172']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,
@@ -271,7 +271,7 @@ test(
 
 test(
 	'Correct current order is fetched when creating an order with an impersonated user and then impersonating a second user',
-	{tag: ['@LPP-59365', '@LPD-59082']},
+	{tag: ['@LPD-59082', '@LPP-59365']},
 	async ({apiHelpers, commerceThemeMiniumCatalogPage, page}) => {
 		const {site} = await miniumSetUp(apiHelpers);
 

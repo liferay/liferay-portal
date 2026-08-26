@@ -399,7 +399,7 @@ test(
 
 test(
 	'Certain special characters are double escaped in Commerce Channel shipping option descriptions',
-	{tag: ['@LPP-62173', '@LPD-74663']},
+	{tag: ['@LPD-74663', '@LPP-62173']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,

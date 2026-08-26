@@ -174,7 +174,7 @@ test(
 
 test(
 	'Admin can view UOM information for a SKU from the Price Lists, Promotions and SKU Price tab admin panels',
-	{tag: ['@LPD-87067', '@COMMERCE-12470', '@COMMERCE-12471']},
+	{tag: ['@COMMERCE-12470', '@COMMERCE-12471', '@LPD-87067']},
 	async ({
 		apiHelpers,
 		commerceAdminPriceListDetailsPage,
@@ -287,7 +287,7 @@ test(
 
 test(
 	'Buyer sees Price on Application label and Request A Quote button when switching to a UOM with PoA enabled',
-	{tag: ['@LPD-87067', '@COMMERCE-12479']},
+	{tag: ['@COMMERCE-12479', '@LPD-87067']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,

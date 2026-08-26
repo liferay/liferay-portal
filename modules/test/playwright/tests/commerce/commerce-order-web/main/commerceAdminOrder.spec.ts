@@ -1012,7 +1012,7 @@ test(
 
 test(
 	'Verify the order type management when creating a new order via add to cart',
-	{tag: ['@LPD-56416', '@COMMERCE-11565']},
+	{tag: ['@COMMERCE-11565', '@LPD-56416']},
 	async ({
 		apiHelpers,
 		commerceAdminOrderTypesPage,

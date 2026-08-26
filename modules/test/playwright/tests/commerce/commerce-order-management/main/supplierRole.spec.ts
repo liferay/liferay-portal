@@ -749,7 +749,7 @@ test(
 
 test(
 	'Supplier user sees only the promotion entries belonging to a linked catalog',
-	{tag: ['@COMMERCE-11843', '@COMMERCE-11757', '@LPD-88485', '@LPD-89343']},
+	{tag: ['@COMMERCE-11757', '@COMMERCE-11843', '@LPD-88485', '@LPD-89343']},
 	async ({apiHelpers, commerceAdminPromotionsPage, page}) => {
 		const randomSuffix = getRandomString().slice(0, 8);
 

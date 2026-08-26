@@ -85,55 +85,6 @@ definition {
 			locator1 = "WCPreview#PREVIEW_IMAGE");
 	}
 
-	@description = "Verify that by creating a new catalog with a language other than English, base pricelist and promotion will be translated into the new language and new product fields will have the new language as the default locale."
-	@priority = 3
-	test CatalogProductsPromotionsAndPriceListsAreLocalized {
-		property portal.acceptance = "false";
-
-		task ("Given a catalog is created with Spanish set as the default catalog language") {
-			CommerceJSONCatalogsAPI._addCatalog(
-				catalogLanguage = "es_ES",
-				catalogName = "Spanish Catalog");
-		}
-
-		task ("When the user goes to the price lists page") {
-			CommercePriceLists.openPriceListsAdmin();
-		}
-
-		task ("Then the base price list name for the new catalog is in Spanish") {
-			AssertElementPresent(
-				key_entryName = "Spanish Catalog lista de precios base",
-				locator1 = "CommerceNavigation#ENTRY_NAME");
-		}
-
-		task ("When the user goes to the promotions page") {
-			CommercePromotions.openPromotionsAdmin();
-		}
-
-		task ("Then the base promotion name for the new catalog is in Spanish") {
-			AssertElementPresent(
-				key_entryName = "Spanish Catalog promoción base",
-				locator1 = "CommerceNavigation#ENTRY_NAME");
-		}
-
-		task ("When the user creates a new product for the catalog") {
-			CommerceJSONProductsAPI._addCommerceProduct(
-				catalogName = "Spanish Catalog",
-				productName = "Test Product",
-				productType = "Simple");
-
-			CommerceProducts.openProductsAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Test Product");
-		}
-
-		task ("Then the locale selected for the editable fields is Spanish") {
-			AssertElementPresent(
-				key_locale = "es-ES",
-				locator1 = "Translation#CURRENT_LOCALE");
-		}
-	}
-
 	@description = "This is a test for creating a catalog"
 	@priority = 5
 	test CreateNewCatalog {

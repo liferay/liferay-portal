@@ -314,7 +314,7 @@ test('LPD-26244 Split order items are shown on admin order details page when sho
 
 test(
 	'Split order items are shown on admin shipment details page when show separate order items toggle is enabled',
-	{tag: ['@LPD-39379', '@COMMERCE-12599']},
+	{tag: ['@COMMERCE-12599', '@LPD-39379']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,
