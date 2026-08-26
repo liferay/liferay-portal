@@ -212,3 +212,96 @@ test(
 		});
 	}
 );
+
+test(
+	'An invited external collaborator can be removed from the Share modal',
+	{tag: '@LPD-103688'},
+	async ({apiHelpers, assetsPage, page, shareModalPage}) => {
+		const spaceName = `Space ${getRandomString()}`;
+
+		await test.step('Create a new space', async () => {
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				type: 'Space',
+			});
+		});
+
+		const objectEntryTitle = `Content ${getRandomString()}`;
+
+		const objectEntry =
+			await test.step('Create a content in the space', async () => {
+				return await apiHelpers.objectEntry.postObjectEntry(
+					{
+						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+						title: objectEntryTitle,
+					},
+					'cms/basic-web-contents',
+					spaceName
+				);
+			});
+
+		const emailAddress = `external-${getRandomString()}@liferay.com`;
+
+		await test.step('Invite the external user', async () => {
+			await apiHelpers.objectEntry.postObjectEntryCollaborators(
+				[
+					{
+						actionIds: ['VIEW'],
+						emailAddress,
+						share: false,
+						type: 'Email',
+					},
+				],
+				'cms/basic-web-contents',
+				objectEntry.id
+			);
+		});
+
+		await test.step('Open the Share modal on the content', async () => {
+			await assetsPage.gotoContents(spaceName);
+
+			await assetsPage.execItemAction({
+				action: 'Share',
+				filter: objectEntryTitle,
+			});
+
+			await expect(
+				shareModalPage.getHeader(objectEntryTitle)
+			).toBeVisible();
+		});
+
+		await test.step('Verify the invited guest is listed', async () => {
+			await expect(
+				shareModalPage.collaborator(emailAddress)
+			).toBeVisible();
+
+			await expect(
+				page.getByText('Invited', {exact: true})
+			).toBeVisible();
+		});
+
+		await test.step('Remove the access and submit', async () => {
+			await shareModalPage.removeAccess(emailAddress);
+
+			await expect(
+				shareModalPage.collaborator(emailAddress)
+			).not.toBeVisible();
+
+			await shareModalPage.submit();
+
+			await expect(
+				shareModalPage.getHeader(objectEntryTitle)
+			).not.toBeVisible();
+		});
+
+		await test.step('Verify the invitation is gone from the server', async () => {
+			const collaborators =
+				await apiHelpers.objectEntry.getObjectEntryCollaboratorsPage(
+					'cms/basic-web-contents',
+					objectEntry.id
+				);
+
+			expect(collaborators).toHaveLength(0);
+		});
+	}
+);
