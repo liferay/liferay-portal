@@ -80,8 +80,7 @@ public class ObjectEntryKeywordQueryContributorTest {
 
 		ObjectField assigneeObjectField = _mockObjectField(
 			ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE,
-			ObjectFieldConstants.DB_TYPE_LONG, RandomTestUtil.randomString(),
-			false);
+			ObjectFieldConstants.DB_TYPE_LONG, RandomTestUtil.randomString());
 
 		Mockito.when(
 			objectFieldBag.getNestedIndexedObjectFields()
@@ -329,24 +328,12 @@ public class ObjectEntryKeywordQueryContributorTest {
 
 		BooleanQuery booleanQuery = Mockito.mock(BooleanQuery.class);
 
-		if (argumentCaptor != null) {
-			Mockito.when(
-				booleanQuery.add(
-					argumentCaptor.capture(),
-					Mockito.any(BooleanClauseOccur.class))
-			).thenReturn(
-				null
-			);
-		}
-		else {
-			Mockito.when(
-				booleanQuery.add(
-					Mockito.any(Query.class),
-					Mockito.any(BooleanClauseOccur.class))
-			).thenReturn(
-				null
-			);
-		}
+		Mockito.when(
+			booleanQuery.add(
+				argumentCaptor.capture(), Mockito.any(BooleanClauseOccur.class))
+		).thenReturn(
+			null
+		);
 
 		return booleanQuery;
 	}
@@ -386,7 +373,7 @@ public class ObjectEntryKeywordQueryContributorTest {
 	}
 
 	private ObjectField _mockObjectField(
-		String businessType, String dbType, String name, boolean metadata) {
+		String businessType, String dbType, String name) {
 
 		ObjectField objectField = Mockito.mock(ObjectField.class);
 
@@ -432,20 +419,13 @@ public class ObjectEntryKeywordQueryContributorTest {
 			false
 		);
 
-		Mockito.when(
-			objectField.isMetadata()
-		).thenReturn(
-			metadata
-		);
-
 		return objectField;
 	}
 
 	private void _mockObjectFields(ObjectFieldBag objectFieldBag) {
 		ObjectField objectField = _mockObjectField(
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString(),
-			false);
+			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString());
 
 		Mockito.when(
 			objectFieldBag.getNestedIndexedObjectFields()
