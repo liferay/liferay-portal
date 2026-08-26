@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.RegionService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
-import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -440,8 +439,6 @@ public class CountryResourceImpl
 		for (Region region : country.getRegions()) {
 			_addOrUpdateRegion(serviceBuilderCountry, region);
 		}
-
-		LastSessionRecorderHelperUtil.syncLastSessionState();
 
 		return serviceBuilderCountry;
 	}

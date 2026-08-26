@@ -55,6 +55,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
@@ -567,6 +568,8 @@ public class BatchEngineImportTaskExecutorImpl
 
 			TransactionInvokerUtil.invoke(
 				_nestedTransactionConfig, importItemCallable);
+
+			LastSessionRecorderHelperUtil.syncLastSessionState();
 		}
 		catch (Throwable throwable) {
 			Exception exception =
