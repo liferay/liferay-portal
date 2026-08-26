@@ -21,13 +21,13 @@ Newly created PRs do not need this skill: the `pr` skill writes the same Results
 
 ### Results Summary
 
-Use the **Results Summary** block emitted by the `pr-check` run in the current session — the overall state line, the tested SHA, the per-validation table, and, when a validation failed and returned a failure note, that note appended below the table. When no Results Summary is available (pr-check has not run this session), abort and ask the user to run `pr-check` first; this skill records a run, it does not perform one.
+Use the **Results Summary** block emitted by the `pr-check` run in the current session — the overall state line, the tested SHA, the table of validations, and every note appended below it. Any row can carry a note, a `PASS` included, so carry them all verbatim. When no Results Summary is available (pr-check has not run this session), abort and ask the user to run `pr-check` first; this skill records a run, it does not perform one.
 
 ## Expected Output
 
 ### Posted Comment
 
-Post a fresh comment on each run rather than editing a prior one, so the PR keeps a chronological record. The comment body is the Results Summary verbatim, a blank line, then the marker — an HTML comment, invisible in rendered Markdown, whose payload is a JSON object of the form `<!-- pr-check {"result": "<state>", "sha": "<tested-SHA>"} -->`, where `<state>` is `success` when the overall state is `PASS` and `failure` when it is `FAIL`, and `<tested-SHA>` is the full 40-character SHA from the Results Summary:
+Post a fresh comment on each run rather than editing a prior one, so the PR keeps a chronological record. The comment body is the Results Summary verbatim, a blank line, then the marker — an HTML comment, invisible in rendered Markdown, whose payload is a JSON object of the form `<!-- pr-check {"result": "<state>", "sha": "<tested-SHA>"} -->`, where `<state>` is `success` when the overall state is `PASS` and `failure` when it is `FAIL`, so a run carrying `NOT VERIFIED` rows records `success`, and `<tested-SHA>` is the full 40-character SHA from the Results Summary:
 
 ```markdown
 **pr-check: PASS** — tested on `<tested-SHA>`

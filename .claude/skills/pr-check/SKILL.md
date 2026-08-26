@@ -94,7 +94,7 @@ Read every validation file under `.claude/skills/pr-check/validations` in a sing
 
 In your next turn, compose a single bash script that:
 
-- computes the diff: `git diff --name-only "$(git merge-base HEAD master)...HEAD"`
+- computes the diff: `git diff --name-only --no-renames "$(git merge-base HEAD master)...HEAD"`, since a detected rename collapses to its new path alone and hides the old one from every regex
 - for each validation, tests its regex against the diff and prints the validation name when it fires (a leading `!` in the regex inverts: fire when any diff path does *not* match the rest)
 - ` &! ` in the regex splits it into an include side and an exclude side. The validation fires when a diff path matches the include side but not the exclude side.
 - runs as a single Bash tool invocation
@@ -105,17 +105,57 @@ When the total exceeds 20 minutes, surface the breakdown and ask the developer w
 
 ### Pass 2: Execute
 
-For each matched validation, spawn one subagent. **Pass it only the `## Command` and `## Autocommit` sections of the validation file, not the full file.** Record PASS or FAIL. Do not halt on FAIL — continue so the developer sees the full picture. When a command directs the subagent to return a failure note on FAIL, capture that note alongside the FAIL result.
+The rules below divide in two. Dispatch, ordering, the shared setup, handoffs, the ledger, and the overall state belong to this runner. Reading a log, judging a result, and reporting a note belong to the subagent, which never sees this document and is told only what it needs.
 
-When the validation's **Command** is a build (gradle, ant, npm, jest), bound the output:
+For each matched validation, spawn one subagent. **Pass it only the `## Command` and `## Autocommit` sections of the validation file, not the full file.** A validation with no `## Autocommit` section makes no commit, so say so rather than leaving the subagent to infer it from an absence. That says nothing about the working tree, since a validation without one can still build and leave output behind. Record `PASS`, `FAIL`, or `NOT VERIFIED`, and capture any note the command directs it to return. Do not halt on a failure, so the developer sees the full picture.
+
+A validation reports **`NOT VERIFIED`** when it ran and established nothing about the branch, such as an empty work set, a compile with no source, or a change with no counterpart to exercise. It does not block, and it carries a reason naming what went unexamined, one line in the table with whatever detail the validation asks for beneath it. Reserve `FAIL` for a validation that found a real defect.
+
+A `NOT VERIFIED` run does not autocommit, since a run that established nothing has produced nothing worth recording and the tree it would stage may hold a half finished setup. A `FAIL` run still autocommits where its **Autocommit** section says to, because a formatter's repairs are worth keeping even when an unfixable violation blocks the branch, and so does a `PASS` run. Tell the subagent this when you dispatch it, since its **Autocommit** section reads as unconditional on its own.
+
+Run a validation that autocommits with **nothing else that writes to the working tree** in flight, since `git add --all` cannot tell its own repair from one another validation made seconds earlier and commits the wrong work under its title. A validation that only reads is safe alongside anything, provided it reads a commit it pinned at the start rather than the working tree or the index. A concurrent validation moves the tree when it writes and the index when it stages, so only a pinned commit holds still for the whole run. Whether a validation reads or writes can depend on the diff, since **Module Registration** only reports when its markers are all removals and builds when one is added, so treat it as a writer unless its own text rules the writing branch out for the diff at hand. Keep tree writers off each other too, since several share build output such as `modules/build/node`.
+
+Run `ant compile install-portal-snapshots` once before the first validation that declares it, rather than letting each launch the same build into the same `${REPO_ROOT}/.m2`. Tell every later subagent that it is satisfied, since a subagent sees only its own **Command** and would otherwise run it again.
+
+A validation may hand off to another, as **Per-Module Compile** does when its deploy set grows past the point where one full build is cheaper. Run the validation it names, give the table that validation's row and result, and mark the one that handed off `NOT VERIFIED`. Pass 1 selects on regexes alone and cannot see a set Pass 2 derives, so a handoff is the only way those branches run.
+
+An autocommit can change the diff, so recompute the ledger after a validation whose commit may add a path Pass 1 never saw, as Baseline's `packageinfo` and `bnd.bnd` repairs do, and dispatch whatever newly fires. Skip it after a validation that can only touch paths the branch already changed, such as a formatter running in current branch mode, since its commit cannot widen the diff.
+
+Give the subagent everything the validations use and none of them define. That is `${REPO_ROOT}`, the ticket their **Autocommit** sections write into a commit title as `<TICKET>`, and the result its own verdict implies for committing, since the rule above lives here and the subagent never reads this document:
 
 ```bash
-<command> 2>&1 | tail --lines=100
+REPO_ROOT=$(git rev-parse --show-toplevel)
 ```
 
-Decide PASS/FAIL from the build tool's success markers in the captured output (`BUILD SUCCESSFUL` / `BUILD FAILED`, `Tests: N passed, M failed`, etc.). Apply only to build commands. Leave inert commands like `git status --porcelain` and `git diff --quiet` untouched.
+Resolve `<TICKET>` from the branch name the way [commit.md](../../rules/commit.md) does, which is the ticket pattern of uppercase letters, hyphen, and digits rather than the whole branch name, so `LRCI-8065-rules` and `LRCI-8065-fixture-pr1f` both give `LRCI-8065`. A subagent that is not given it commits under the literal string.
 
-When all validations pass, report `PASS`. When any fail, report `FAIL` and surface the failed validations.
+Tell it how to commit as well, since no validation says. The title is the whole message, with no body and no attribution footer of any kind, which is the repository's convention for a generated commit.
+
+When the validation's **Command** is a build (gradle, ant, npm, jest), keep the whole log and bound only what is displayed:
+
+```bash
+LOG_CHECK=$(mktemp)
+LOG_SETUP=$(mktemp)
+
+<setup command> > "${LOG_SETUP}" 2>&1
+<check command> > "${LOG_CHECK}" 2>&1
+
+tail --lines=100 "${LOG_CHECK}"
+```
+
+Give each build its own log. A single binding reused across two builds means the second overwrites the first, and the evidence that setup succeeded is gone by the time you need it. A **Command** with one build needs only one.
+
+Judge from each full log rather than from the tail. A source formatter prints its violations in the middle of a run and its stack trace at the end, so the last hundred lines carry the failure and not the reason for it. Search every log the run produced for the build tool's markers (`BUILD SUCCESSFUL`, `BUILD FAILED`, `Tests:`, `Test Suites:`) and for whatever the validation says its finding looks like. Apply this to build commands only, and leave inert commands like `git status --porcelain` untouched.
+
+When a **Command** runs more than one build, keep a log per build and judge each on its own, since a setup step and the check it precedes fail for different reasons. The setup is the earlier build the later one depends on, and a validation that runs two checks rather than a setup and a check should say so.
+
+A failing setup is positive evidence the run could not proceed, so report `NOT VERIFIED` naming it rather than a verdict on a check that never ran, and judge the check itself only once its setup succeeded. That is the case the rule below is about, even though its examples are all external.
+
+A log can be far larger than you can read. Search it for the markers above rather than reading it through, and quote the lines you found. The displayed tail is for the developer, never the basis of a verdict.
+
+When a command ran and exited nonzero, that status alone does not separate a validation that found something from one that could not run. Report `NOT VERIFIED` there only on positive evidence that the run could not proceed, such as a failed download, a registry timeout, or a process killed for memory. Without that evidence report `FAIL`, since a subagent is given the Command and Autocommit sections alone and often cannot tell a finding from an infrastructure error by its wording, and defaulting to `FAIL` leaves a real defect blocking rather than passing it through as unverified.
+
+That governs a nonzero exit and nothing else. A validation that names its own `NOT VERIFIED` case reports it whatever any command exited.
 
 ## Results Summary
 
@@ -131,10 +171,12 @@ The block is the overall state and tested SHA, followed by a table with one row 
 | Validation | Result |
 | --- | --- |
 | Source Format | PASS |
-| Full Portal Build | PASS |
+| Module Registration | NOT VERIFIED |
 | Java Unit Tests | PASS |
+
+Module Registration verified nothing. The diff removes `.lfrbuild-ci` from `apps:blogs:blogs-api`, which drops the module from CI's deploy pass and breaks no build, so whether CI still needs it is the developer's judgement.
 ```
 
-The overall state is `PASS` only when every row is `PASS`; any `FAIL` row makes it `FAIL`.
+The overall state is `FAIL` when any row is `FAIL`, and `PASS` otherwise. A `NOT VERIFIED` row leaves the overall state alone, and the marker the `pr-check-publish` skill writes still records `success`, since the webhook accepts only `failure`, `skipped`, and `success` and silently discards anything else.
 
-When a failed validation returned a failure note, append it below the table, separated by a blank line. The note is part of the Results Summary, so it travels verbatim into the PR description through the `pr` skill and into any comment the `pr-check-publish` skill posts.
+Every row whose validation returned a note appends it below the table, separated by a blank line. A `FAIL` and a `NOT VERIFIED` always carry one, and a `PASS` can too, as **Module Registration** does when a diff pairs an addition it verified with a removal it can only report. The notes travel verbatim into the PR description through the `pr` skill and into any comment the `pr-check-publish` skill posts.
