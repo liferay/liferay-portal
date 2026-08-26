@@ -30,6 +30,7 @@ jest.mock('@liferay/layout-js-components-web', () => {
 			}),
 		hideProductMenuIfPresent: jest.fn(),
 		openConfirmModal: jest.fn(),
+		preventIframeNavigation: jest.fn(),
 		useMediaQuery: jest.fn(),
 	};
 });
@@ -142,6 +143,7 @@ function renderComponent({hasDraft = false} = {}) {
 				availableSegmentsExperiences: [],
 				defaultLanguageId: 'en_US',
 				defaultUserImageSrc: '/image/user_portrait?img_id=0',
+				getPagePreviewURL: '/c/portal/get_page_preview',
 				layout: {
 					name: 'Home',
 					status: hasDraft ? 'draft' : 'approved',
