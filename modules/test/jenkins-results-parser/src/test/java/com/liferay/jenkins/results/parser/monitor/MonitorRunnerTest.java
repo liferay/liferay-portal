@@ -212,6 +212,35 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test(timeout = 5000)
+	public void testRunMonitorConfigTimeoutClamped() {
+		MonitorRunner monitorRunner = new MonitorRunner();
+
+		TestMonitor testMonitor = new TestMonitor(
+			_newMonitorConfig("a", Long.MAX_VALUE)) {
+
+			@Override
+			public MonitorResult execute() {
+				try {
+					Thread.sleep(100);
+				}
+				catch (InterruptedException interruptedException) {
+					throw new RuntimeException(interruptedException);
+				}
+
+				return super.execute();
+			}
+
+		};
+
+		Map<Monitor, MonitorResult> monitorResultsMap = monitorRunner.run(
+			Collections.<Monitor>singletonList(testMonitor));
+
+		MonitorResult monitorResult = monitorResultsMap.get(testMonitor);
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+	}
+
+	@Test(timeout = 5000)
 	public void testRunMultipleHangingMonitors() {
 		MonitorRunner monitorRunner = new MonitorRunner(200);
 
