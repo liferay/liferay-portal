@@ -39,6 +39,13 @@ export default function VersionHistory({config}: Props) {
 
 	const [versions, setVersions] = useState<PageVersion[] | null>(null);
 
+	const [selectedExperienceERC, setSelectedExperienceERC] = useState(
+		config.availableSegmentsExperiences[0]?.segmentsExperienceERC
+	);
+	const [selectedLanguageId, setSelectedLanguageId] = useState(
+		config.defaultLanguageId
+	);
+
 	const isScreenLarge = useMediaQuery(LARGE_MEDIA_QUERY);
 
 	useEffect(() => {
@@ -174,7 +181,11 @@ export default function VersionHistory({config}: Props) {
 		<>
 			<Toolbar
 				isSidePanelOpen={isPanelOpen || isScreenLarge}
+				onChangeExperience={setSelectedExperienceERC}
+				onChangeLanguage={setSelectedLanguageId}
 				openSidePanel={() => setIsPanelOpen(true)}
+				selectedExperienceERC={selectedExperienceERC}
+				selectedLanguageId={selectedLanguageId}
 			/>
 
 			<ResponsivePanel

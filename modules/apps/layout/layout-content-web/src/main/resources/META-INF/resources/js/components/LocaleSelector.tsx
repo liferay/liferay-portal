@@ -4,15 +4,17 @@
  */
 
 import {LanguagePicker, Provider} from '@clayui/core';
-import React, {useState} from 'react';
+import React from 'react';
 
 import {config} from '../config';
 
-export default function LocaleSelector() {
-	const {availableLanguages, defaultLanguageId} = config;
+interface Props {
+	onChange: (languageId: Liferay.Language.Locale) => void;
+	selectedLanguageId: Liferay.Language.Locale;
+}
 
-	const [selectedLocaleId, setSelectedLocaleId] =
-		useState<React.Key>(defaultLanguageId);
+export default function LocaleSelector({onChange, selectedLanguageId}: Props) {
+	const {availableLanguages, defaultLanguageId} = config;
 
 	const locales = Object.entries(availableLanguages).map(
 		([id, language]) => ({
@@ -34,8 +36,10 @@ export default function LocaleSelector() {
 				defaultLocaleId={defaultLanguageId}
 				hideTriggerText
 				locales={locales}
-				onSelectedLocaleChange={(key) => setSelectedLocaleId(key)}
-				selectedLocaleId={selectedLocaleId}
+				onSelectedLocaleChange={(key) =>
+					onChange(key as Liferay.Language.Locale)
+				}
+				selectedLocaleId={selectedLanguageId}
 				small
 				spritemap={spritemap}
 			/>
