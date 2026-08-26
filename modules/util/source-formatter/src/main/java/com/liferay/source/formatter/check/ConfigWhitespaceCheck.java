@@ -28,10 +28,6 @@ public class ConfigWhitespaceCheck extends WhitespaceCheck {
 			String fileName, String absolutePath, String content)
 		throws IOException {
 
-		if (!absolutePath.contains("/portal-web/test/")) {
-			return content;
-		}
-
 		Matcher matcher = _incorrectWhitesapcePattern.matcher(content);
 
 		if (matcher.find()) {
