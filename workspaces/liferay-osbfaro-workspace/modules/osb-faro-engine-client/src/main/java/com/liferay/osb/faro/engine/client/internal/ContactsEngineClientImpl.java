@@ -693,7 +693,8 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<Individual> getAccountIndividuals(
 		FaroProject faroProject, String accountId, String channelId,
-		String query, int cur, int delta, String sortString) {
+		String query, String rangeEnd, Integer rangeKey, String rangeStart,
+		int cur, int delta, String sortString) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
@@ -706,6 +707,18 @@ public class ContactsEngineClientImpl
 
 		if (Validator.isNotNull(query)) {
 			uriVariables.put("query", query);
+		}
+
+		if (Validator.isNotNull(rangeEnd)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+		}
+
+		if (rangeKey != null) {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(rangeStart)) {
+			uriVariables.put("rangeStart", rangeStart);
 		}
 
 		if (Validator.isNotNull(sortString)) {

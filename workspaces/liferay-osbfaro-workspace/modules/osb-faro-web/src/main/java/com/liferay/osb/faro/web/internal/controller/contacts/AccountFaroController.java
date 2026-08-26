@@ -200,6 +200,9 @@ public class AccountFaroController extends BaseFaroController {
 			getIndividualsFaroFDSResultsDisplay(
 				@PathParam("groupId") long groupId, @PathParam("id") String id,
 				@QueryParam("channelId") String channelId,
+				@QueryParam("rangeEnd") String rangeEnd,
+				@QueryParam("rangeKey") Integer rangeKey,
+				@QueryParam("rangeStart") String rangeStart,
 				@QueryParam("search") String search,
 				@QueryParam("page") int page,
 				@QueryParam("pageSize") int pageSize,
@@ -210,7 +213,8 @@ public class AccountFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getAccountIndividuals(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
-				channelId, search, page, pageSize, sortString),
+				channelId, search, rangeEnd, rangeKey, rangeStart, page,
+				pageSize, sortString),
 			IndividualDisplay::new, page, pageSize);
 	}
 

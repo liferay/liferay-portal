@@ -40,10 +40,12 @@ public class MockContactsEngineClientImpl
 	@Override
 	public Results<Individual> getAccountIndividuals(
 		FaroProject faroProject, String accountId, String channelId,
-		String query, int cur, int delta, String sortString) {
+		String query, String rangeEnd, Integer rangeKey, String rangeStart,
+		int cur, int delta, String sortString) {
 
 		return contactsEngineClient.getAccountIndividuals(
-			faroProject, accountId, channelId, query, cur, delta, sortString);
+			faroProject, accountId, channelId, query, rangeEnd, rangeKey,
+			rangeStart, cur, delta, sortString);
 	}
 
 	@Override
