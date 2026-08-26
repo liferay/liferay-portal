@@ -132,7 +132,7 @@ function generate_tfvars {
 
 	echo "Generating ${tfvars_file} from ${configuration_json_file}."
 
-	jq --arg module "${module}" '(.terraform.common // {}) * (.terraform[$module] // {})' "${configuration_json_file}" > "${tfvars_file}"
+	jq --arg module "${module}" '(.terraform.common // {}) * (.terraform[$module] // {}) * {deployment_name, region}' "${configuration_json_file}" > "${tfvars_file}"
 
 	echo "${tfvars_file} was generated successfully."
 }
@@ -192,6 +192,8 @@ function validate_config_json {
 	fi
 
 	local required_keys=(
+		".deployment_name"
+		".region"
 		".subscription_id"
 		".tenant_id"
 	)
@@ -199,8 +201,6 @@ function validate_config_json {
 	if jq --exit-status '.tfstate | objects' "${configuration_json_file}" &> /dev/null
 	then
 		required_keys+=(
-			".terraform.common.deployment_name"
-			".terraform.common.region"
 			".tfstate.container_name"
 			".tfstate.resource_group_name"
 			".tfstate.storage_account_name"

@@ -42,8 +42,8 @@ function main {
 		local storage_account_name
 
 		container_name="$(jq --raw-output '.tfstate.container_name' "${1}")"
-		deployment_name="$(jq --raw-output '.terraform.common.deployment_name' "${1}")"
-		region="$(jq --raw-output '.terraform.common.region' "${1}")"
+		deployment_name="$(jq --raw-output '.deployment_name' "${1}")"
+		region="$(jq --raw-output '.region' "${1}")"
 		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${1}")"
 		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${1}")"
 

@@ -1,4 +1,5 @@
 {
+	"deployment_name": "liferay-azure-test",
 	"options": {
 		"auto_approve": false,
 		"parallelism": 10,
@@ -19,13 +20,10 @@
 			}
 		}
 	},
+	"region": "eastus2",
 	"subscription_id": "your-azure-subscription-id",
 	"tenant_id": "your-azure-tenant-id",
 	"terraform": {
-		"common": {
-			"deployment_name": "liferay-azure-test",
-			"region": "eastus"
-		},
 		"platform": {
 			"cluster_secret_store": {
 				"key_vault": {
