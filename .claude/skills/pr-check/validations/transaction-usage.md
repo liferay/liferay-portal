@@ -14,30 +14,51 @@ This check is static and needs no build. It walks each changed Java file, skips 
 
 A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce (for example every `*LocalService` interface). The scan matches it case-insensitively, so the `@Generated` annotation on REST Builder output is covered too. That annotation is machine-written boilerplate, not hand-written transaction code, so any file carrying it is excluded before the transaction scan.
 
+Anchor that match to a Javadoc tag or an annotation rather than searching the whole file for the bare word, or a class that only mentions `@generated` in prose drops out of the scan entirely.
+
 ```bash
 MERGE_BASE=$(git merge-base HEAD master)
 
-for FILE in $(git diff --name-only "${MERGE_BASE}...HEAD" -- '*.java'); do
-	if [[ ! -f ${FILE} ]] || command grep --fixed-strings --ignore-case --quiet --regexp='@generated' "${FILE}"
-	then
-		continue
-	fi
+FINDINGS=$(
+	git diff --name-only "${MERGE_BASE}...HEAD" -- ':/*.java' \
+		| while IFS= read -r FILE
+	do
+		[ -f "${FILE}" ] || continue
 
-	git diff "${MERGE_BASE}...HEAD" -- "${FILE}" \
-		| command grep --extended-regexp '^\+' \
-		| command grep --extended-regexp --invert-match '^\+\+\+' \
-		| command grep \
-			--fixed-strings \
-			--regexp='@Transactional' \
-			--regexp='Propagation.REQUIRES_NEW' \
-			--regexp='REQUIRES_NEW_TRANSACTION' \
-			--regexp='TransactionCallbackUtil' \
-			--regexp='TransactionCommitCallbackUtil' \
-			--regexp='TransactionInvokerUtil'
-done
+		if command grep \
+			--extended-regexp \
+			--ignore-case \
+			--quiet \
+			--regexp='^[[:space:]]*(\*[[:space:]]*@generated|@generated\()' \
+			"${FILE}"
+		then
+			continue
+		fi
+
+		git diff "${MERGE_BASE}...HEAD" -- "${FILE}" \
+			| command grep --extended-regexp '^\+' \
+			| command grep --extended-regexp --invert-match '^\+\+\+' \
+			| command grep \
+				--fixed-strings \
+				--regexp='@Transactional' \
+				--regexp='Propagation.REQUIRES_NEW' \
+				--regexp='REQUIRES_NEW_TRANSACTION' \
+				--regexp='TransactionCallbackUtil' \
+				--regexp='TransactionCommitCallbackUtil' \
+				--regexp='TransactionInvokerUtil'
+	done
+)
+
+printf '%s' "${FINDINGS}"
 ```
 
-When the command prints nothing, the branch adds no new transaction usage, so the validation passes.
+**Judge this from `${FINDINGS}` and never from the exit status**, which carries no verdict in either direction. The loop's status is whatever its last iteration happened to leave behind, so it reports on the diff's last Java file rather than on the diff. A clean branch ends on a `command grep` that matched nothing and exits 1. A branch that adds transaction usage in an early file and ends on a clean one also exits 1. `continue` returns 0, so a diff whose last Java file is generated exits 0 whatever preceded it. Both statuses occur on both verdicts.
+
+The `':/*.java'` pathspec is anchored to the repository root on purpose. Git resolves a bare `'*.java'` against the current directory, so running this from anywhere below the root selects no files at all and the check passes having scanned nothing.
+
+Use `[ ]` rather than `[[ ]]` and `while read` rather than a `for` over an unquoted substitution. `[[ ]]` is not POSIX and fails with `[[: not found` under dash, which is `/bin/sh` on many Linux hosts, and the team runs both macOS and Linux.
+
+When `${FINDINGS}` is empty, the branch adds no new transaction usage, so the validation passes.
 
 Otherwise, resolve the GitHub login of the person running pr-check with `gh api user --jq '.login'` and check it against the whitelist below. The validation passes only when that login is on the whitelist, and fails for everyone else. It also fails when the login cannot be resolved, for example when `gh` is not authenticated, so an unknown initiator never passes. Add one login per line as the roster changes.
 
