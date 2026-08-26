@@ -39,6 +39,7 @@ const buildSession = (
 				canonicalUrl: 'https://liferay.com/home',
 				createDate: '2026-07-16T10:00:00.000Z',
 				name: 'pageViewed',
+				pageGroupId: 'https://liferay.com/home',
 				properties: [],
 			},
 		],
@@ -276,6 +277,7 @@ describe('formatAccountSessions', () => {
 						canonicalUrl: 'https://liferay.com/home',
 						createDate: '2026-07-16T10:00:00.000Z',
 						name: 'pageViewed',
+						pageGroupId: 'https://liferay.com/home',
 						pageTitle: 'Home',
 					},
 					{
@@ -283,6 +285,7 @@ describe('formatAccountSessions', () => {
 						canonicalUrl: 'https://liferay.com/home',
 						createDate: '2026-07-16T10:01:00.000Z',
 						name: 'formSubmitted',
+						pageGroupId: 'https://liferay.com/home',
 					},
 				],
 			}),

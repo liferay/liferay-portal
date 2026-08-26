@@ -158,20 +158,22 @@ describe('activities', () => {
 	});
 
 	describe('groupEventsByPage', () => {
-		it('groups DXP events that share a canonical URL into a single page entry', () => {
+		it('groups events that share a page group key into a single page entry', () => {
 			const result = groupEventsByPage([
 				{
 					applicationId: 'Page',
 					canonicalUrl: 'https://liferay.com/home',
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home',
 					pageTitle: 'Home'
 				},
 				{
 					applicationId: 'Form',
 					canonicalUrl: 'https://liferay.com/home',
 					createDate: '2026-07-16T10:01:00.000Z',
-					name: 'formSubmitted'
+					name: 'formSubmitted',
+					pageGroupId: 'https://liferay.com/home'
 				}
 			]);
 
@@ -191,14 +193,15 @@ describe('activities', () => {
 					applicationId: 'Page',
 					canonicalUrl: 'https://liferay.com/home',
 					createDate: '2026-07-16T10:00:00.000Z',
-					name: 'pageViewed'
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
 				}
 			]);
 
 			expect(result[0].nestedItems[0].subtitle).toBeUndefined();
 		});
 
-		it('leaves an event from an external data source ungrouped', () => {
+		it('leaves an event the API gave no page group key ungrouped', () => {
 			const result = groupEventsByPage(
 				[
 					{
@@ -216,13 +219,14 @@ describe('activities', () => {
 			expect(result[0].title).toBe('emailViewed');
 		});
 
-		it('leaves a DXP event with no URL ungrouped', () => {
+		it('leaves a DXP event with no page group key ungrouped', () => {
 			const result = groupEventsByPage([
 				{
 					applicationId: 'Page',
 					canonicalUrl: null,
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'somethingHappened',
+					pageGroupId: null,
 					url: null
 				}
 			]);
@@ -238,6 +242,7 @@ describe('activities', () => {
 					canonicalUrl: 'https://liferay.com/older-page',
 					createDate: '2026-07-16T09:00:00.000Z',
 					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/older-page',
 					pageTitle: 'Older Page'
 				},
 				{
@@ -251,6 +256,7 @@ describe('activities', () => {
 					canonicalUrl: 'https://liferay.com/newer-page',
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/newer-page',
 					pageTitle: 'Newer Page'
 				}
 			]);

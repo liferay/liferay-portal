@@ -95,6 +95,10 @@ describe('IndividualProfileCard', () => {
 				eventsByUserSessions: {
 					__typename: 'EventsByUserSession',
 					totalEvents: 0,
+					totalPageGroupsMetric: {
+						__typename: 'Metric',
+						value: 0,
+					},
 					userSessions: [],
 				},
 			},

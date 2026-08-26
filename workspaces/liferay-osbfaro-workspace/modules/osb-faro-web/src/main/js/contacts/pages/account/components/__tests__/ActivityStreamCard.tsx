@@ -108,13 +108,13 @@ describe('ActivityStreamCard', () => {
 		expect(link.getAttribute('href')).toContain('accountName=Acme');
 	});
 
-	it('drives pagination from the activity stream session total, not the event count', async () => {
+	it('drives pagination from the activity stream page group total, not the event count', async () => {
 		const {container} = render(
 			<Wrapper
 				mocks={[
 					mockAccountEventMetricsReq(),
 					mockAccountEventsTrendReq(),
-					mockAccountUserSessionsReq({totalSessions: 186}),
+					mockAccountUserSessionsReq({totalPageGroups: 186}),
 				]}
 			/>
 		);
@@ -138,7 +138,7 @@ describe('ActivityStreamCard', () => {
 					}),
 					mockAccountUserSessionsReq({
 						sessions: [],
-						totalSessions: 0,
+						totalPageGroups: 0,
 					}),
 				]}
 			/>
@@ -167,7 +167,7 @@ describe('ActivityStreamCard', () => {
 					mockAccountUserSessionsReq({
 						keywords: SEARCH_KEYWORDS,
 						sessions: [],
-						totalSessions: 0,
+						totalPageGroups: 0,
 					}),
 					mockAccountEventMetricsReq(),
 					mockAccountEventsTrendReq(),
