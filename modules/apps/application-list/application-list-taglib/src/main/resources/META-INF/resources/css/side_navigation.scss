@@ -38,9 +38,6 @@
 		padding-left: 2rem;
 	}
 
-	// The panel supplies its own clear button, which works in every browser.
-	// Suppress the native one so Chrome does not show a second times icon.
-
 	input::-webkit-search-cancel-button {
 		display: none;
 	}

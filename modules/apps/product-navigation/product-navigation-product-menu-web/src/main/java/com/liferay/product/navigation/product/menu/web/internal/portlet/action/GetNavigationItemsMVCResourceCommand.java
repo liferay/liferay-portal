@@ -68,6 +68,67 @@ public class GetNavigationItemsMVCResourceCommand
 				_getNavigationItemsJSONObject(resourceRequest)));
 	}
 
+	private void _addNavigationItems(
+			HttpServletRequest httpServletRequest,
+			JSONObject navigationItemsJSONObject, PanelCategory panelCategory,
+			ThemeDisplay themeDisplay)
+		throws Exception {
+
+		for (PanelApp panelApp :
+				_panelAppRegistry.getPanelApps(
+					panelCategory.getKey(), themeDisplay.getPermissionChecker(),
+					themeDisplay.getScopeGroup())) {
+
+			List<PanelAppNavigationItem> panelAppNavigationItems =
+				panelApp.getPanelAppNavigationItems(httpServletRequest);
+
+			if (ListUtil.isEmpty(panelAppNavigationItems)) {
+				continue;
+			}
+
+			String portletId = panelApp.getPortletId();
+
+			navigationItemsJSONObject.put(
+				portletId,
+				_getNavigationItemsJSONArray(
+					panelAppNavigationItems, portletId));
+		}
+	}
+
+	private JSONArray _getNavigationItemsJSONArray(
+		List<PanelAppNavigationItem> panelAppNavigationItems,
+		String portletId) {
+
+		JSONArray navigationItemsJSONArray = _jsonFactory.createJSONArray();
+
+		for (int i = 0; i < panelAppNavigationItems.size(); i++) {
+			PanelAppNavigationItem panelAppNavigationItem =
+				panelAppNavigationItems.get(i);
+
+			// A null label is dropped by JSONObject, so the client would
+			// receive an item it cannot render or match.
+
+			if (Validator.isNull(panelAppNavigationItem.getLabel())) {
+				continue;
+			}
+
+			navigationItemsJSONArray.put(
+				JSONUtil.put(
+					"canonicalName", panelAppNavigationItem.getCanonicalName()
+				).put(
+					"href", panelAppNavigationItem.getHref()
+				).put(
+					"id", portletId + StringPool.UNDERLINE + i
+				).put(
+					"label", panelAppNavigationItem.getLabel()
+				).put(
+					"parentLabel", panelAppNavigationItem.getParentLabel()
+				));
+		}
+
+		return navigationItemsJSONArray;
+	}
+
 	private JSONObject _getNavigationItemsJSONObject(
 			ResourceRequest resourceRequest)
 		throws Exception {
@@ -76,10 +137,6 @@ public class GetNavigationItemsMVCResourceCommand
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
-
-		// Read the selected application from the request. In the resource phase
-		// the theme display reports the product menu instead, since that is the
-		// portlet serving this request.
 
 		PanelCategory panelCategory =
 			_panelCategoryHelper.getActivePanelCategory(
@@ -94,7 +151,7 @@ public class GetNavigationItemsMVCResourceCommand
 		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
 			resourceRequest);
 
-		_putNavigationItems(
+		_addNavigationItems(
 			httpServletRequest, navigationItemsJSONObject, panelCategory,
 			themeDisplay);
 
@@ -102,68 +159,12 @@ public class GetNavigationItemsMVCResourceCommand
 				_panelCategoryHelper.getChildPanelCategories(
 					panelCategory.getKey(), themeDisplay)) {
 
-			_putNavigationItems(
+			_addNavigationItems(
 				httpServletRequest, navigationItemsJSONObject,
 				childPanelCategory, themeDisplay);
 		}
 
 		return navigationItemsJSONObject;
-	}
-
-	private void _putNavigationItems(
-			HttpServletRequest httpServletRequest,
-			JSONObject navigationItemsJSONObject, PanelCategory panelCategory,
-			ThemeDisplay themeDisplay)
-		throws Exception {
-
-		// Filter the applications with the three argument overload. The single
-		// argument one applies neither PanelAppShowFilter nor PanelApp#isShow,
-		// so it would serve the screens of applications the user cannot open.
-
-		for (PanelApp panelApp :
-				_panelAppRegistry.getPanelApps(
-					panelCategory.getKey(), themeDisplay.getPermissionChecker(),
-					themeDisplay.getScopeGroup())) {
-
-			List<PanelAppNavigationItem> panelAppNavigationItems =
-				panelApp.getPanelAppNavigationItems(httpServletRequest);
-
-			if (ListUtil.isEmpty(panelAppNavigationItems)) {
-				continue;
-			}
-
-			JSONArray navigationItemsJSONArray = _jsonFactory.createJSONArray();
-
-			String portletId = panelApp.getPortletId();
-
-			for (int i = 0; i < panelAppNavigationItems.size(); i++) {
-				PanelAppNavigationItem panelAppNavigationItem =
-					panelAppNavigationItems.get(i);
-
-				// A null label is dropped by JSONObject, so the client would
-				// receive an item it cannot render or match.
-
-				if (Validator.isNull(panelAppNavigationItem.getLabel())) {
-					continue;
-				}
-
-				navigationItemsJSONArray.put(
-					JSONUtil.put(
-						"canonicalName",
-						panelAppNavigationItem.getCanonicalName()
-					).put(
-						"href", panelAppNavigationItem.getHref()
-					).put(
-						"id", portletId + StringPool.UNDERLINE + i
-					).put(
-						"label", panelAppNavigationItem.getLabel()
-					).put(
-						"parentLabel", panelAppNavigationItem.getParentLabel()
-					));
-			}
-
-			navigationItemsJSONObject.put(portletId, navigationItemsJSONArray);
-		}
 	}
 
 	@Reference
