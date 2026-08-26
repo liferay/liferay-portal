@@ -1,0 +1,223 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta content="IE=edge" http-equiv="X-UA-Compatible" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+		<title>Cookie Domain</title>
+
+		<link href="style.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div class="header">
+			<h1 class="title">
+				Anonymous user id shared across subdomains
+			</h1>
+
+			<div>
+				Reach this page through two hostnames that share one parent domain,
+				so the browser can be seen sharing the
+				<code>ac_client_user_id</code> cookie between them.
+
+				<p>
+					Two servers are needed. <code>yarn start</code> serves the
+					bundle alone on port 8081, so this page needs a static
+					server of its own, from the module root:
+				</p>
+				<pre>yarn start                      # bundle at localhost:8081
+python3 -m http.server 8000     # this page, from the module root</pre>
+
+				<p>
+					Then open the page through two names under
+					<code>test.localhost</code>:
+				</p>
+				<pre>http://a.test.localhost:8000/test/manual/cookie-domain.html
+http://b.test.localhost:8000/test/manual/cookie-domain.html</pre>
+
+				<p>
+					Nothing else is needed. The browser resolves every
+					<code>*.localhost</code> name to the loopback address itself,
+					so there is no <code>/etc/hosts</code> entry to add and no
+					domain owned by anyone else to depend on. It also treats those
+					names as a secure context, which matters because the client
+					marks the cookie <code>Secure</code> and a browser stores such
+					a cookie only from an origin it trusts — over plain HTTP any
+					other hostname would need
+					<code>--unsafely-treat-insecure-origin-as-secure</code> for
+					the cookie to land at all.
+				</p>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="box">
+				<h2 class="box__title">State</h2>
+
+				<pre id="state"></pre>
+
+				<div class="btns-header">
+					<button class="btn" data-action="reload">reload</button>
+					<button class="btn" data-action="clearAll">
+						clear everything
+					</button>
+
+					<button class="btn" data-action="clearStorage">
+						clear localStorage only
+					</button>
+
+					<button class="btn" data-action="seedShared">
+						seed shared cookie
+					</button>
+
+					<button class="btn" data-action="seedHostOnly">
+						seed legacy host only cookie
+					</button>
+				</div>
+			</div>
+
+			<div class="box">
+				<h2 class="box__title">What to expect</h2>
+
+				<ol>
+					<li>
+						Clear everything here, then reload: this host mints an id
+						and the cookie carries
+						<code>Domain=.test.localhost</code> (check DevTools ▸
+						Application ▸ Cookies). No second cookie of the same
+						name exists.
+					</li>
+					<li>
+						Open the other host and clear its localStorage only: it
+						adopts the same id instead of minting a second one.
+					</li>
+					<li>
+						Give the other host its own id first (clear everything
+						there, reload), then come back and reload here: the host
+						holding an id the shared cookie disagrees with gives way
+						to it, so both ends settle on one id.
+					</li>
+					<li>
+						Seed the legacy host only cookie and reload: it is
+						expired, leaving exactly one cookie of that name. Run
+						this on the parent host too, at
+						<code>http://test.localhost:8000</code>, where the shared
+						domain equals the host itself. A browser really does keep
+						the two cookies apart there, so it is the case the
+						automated tests cannot reach: jsdom keys a cookie by its
+						domain and path alone and merges them into one.
+					</li>
+				</ol>
+			</div>
+		</div>
+
+		<!-- AC Script -->
+
+		<script>
+			const COOKIE_NAME = 'ac_client_user_id';
+
+			// The parent domain the hostnames above share. The server normally
+			// computes this per request with CookiesManager.getDomain() and
+			// injects it into the client config.
+
+			const COOKIE_DOMAIN = 'test.localhost';
+
+			function getCookies() {
+				return document.cookie
+					.split('; ')
+					.filter((cookie) => cookie.startsWith(COOKIE_NAME + '='))
+					.map((cookie) => cookie.slice(COOKIE_NAME.length + 1));
+			}
+
+			function render() {
+				const cookies = getCookies();
+
+				document.getElementById('state').textContent = [
+					'host                ' + window.location.hostname,
+					'cookieDomain        ' + COOKIE_DOMAIN,
+					'cookies (' + cookies.length + ')         ' +
+						(cookies.join(', ') || '(none)'),
+					'localStorage        ' +
+						(localStorage.getItem(COOKIE_NAME) || '(none)'),
+					'id used by the SDK  ' +
+						(window.Analytics && window.Analytics._getUserId
+							? window.Analytics._getUserId()
+							: '(SDK not loaded)'),
+				].join('\n');
+			}
+
+			function expireCookie(domain) {
+				const attributes = [COOKIE_NAME + '='];
+
+				if (domain) {
+					attributes.push('domain=' + domain);
+				}
+
+				attributes.push(
+					'expires=Thu, 01 Jan 1970 00:00:00 GMT',
+					'path=/'
+				);
+
+				document.cookie = attributes.join('; ');
+			}
+
+			const ACTIONS = {
+				clearAll() {
+					localStorage.clear();
+					expireCookie();
+					expireCookie(COOKIE_DOMAIN);
+				},
+				clearStorage() {
+					localStorage.clear();
+				},
+				reload() {},
+				seedHostOnly() {
+					document.cookie =
+						COOKIE_NAME + '=seeded-legacy-id; path=/; Secure';
+				},
+				seedShared() {
+					document.cookie =
+						COOKIE_NAME +
+						'=seeded-shared-id; domain=' +
+						COOKIE_DOMAIN +
+						'; path=/; Secure';
+				},
+			};
+
+			document.querySelector('body').addEventListener('click', (event) => {
+				const action = ACTIONS[event.target.dataset.action];
+
+				if (action) {
+					action();
+
+					window.location.reload();
+				}
+			});
+
+			(function (u, c, a, m, o, l) {
+				(o = 'script'),
+					(l = document),
+					(a = l.createElement(o)),
+					(m = l.getElementsByTagName(o)[0]),
+					(a.async = 1),
+					(a.src = u),
+					(a.onload = c),
+					m.parentNode.insertBefore(a, m);
+			})('http://localhost:8081/analytics-all-min.js', function () {
+				Analytics.create({
+					channelId: '[CHANNEL_ID]',
+					cookieDomain: COOKIE_DOMAIN,
+					dataSourceId: '[DATA_SOURCE_ID]',
+					endpointUrl: '[ENDPOINT_URL]',
+					projectId: '[PROJECT_ID]',
+				});
+
+				render();
+			});
+
+			render();
+		</script>
+	</body>
+</html>

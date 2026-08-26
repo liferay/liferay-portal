@@ -25,7 +25,8 @@
 		"testPathIgnorePatterns": [
 			"<rootDir>/test/.eslintrc.js",
 			"<rootDir>/test/setup.ts",
-			"<rootDir>/test/helpers.ts"
+			"<rootDir>/test/helpers.ts",
+			"<rootDir>/test/subdomainEnvironment.js"
 		]
 	},
 	"keywords": [
