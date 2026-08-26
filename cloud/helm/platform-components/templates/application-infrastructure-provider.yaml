@@ -29,9 +29,6 @@ spec:
                     {{- end }}
                     -   name: deploymentName
                         value: {{ .Values.deploymentContext.deploymentName | quote }}
-                    {{- with .Values.infrastructureProvider.parameters }}
-                    {{- toYaml . | nindent 20 }}
-                    {{- end }}
                 valueFiles:
                     -   $values/{{ .Values.gitops.layout.system }}/{{ .Values.gitops.layout.infrastructureProviderValuesFilename }}
         -   ref: values

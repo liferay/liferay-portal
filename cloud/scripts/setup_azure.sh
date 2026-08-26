@@ -281,10 +281,10 @@ function _install_liferay_platform_chart {
 					},
 					deploymentContext: $platform_module_outputs.deployment_context.value,
 					liferay: {
-						parameters: ($liferay_parameters + ($configuration[0].platformComponents.values.liferay.parameters // []))
+						parameters: $liferay_parameters
 					},
 					observability: {
-						parameters: ($observability_parameters + ($configuration[0].platformComponents.values.observability.parameters // []))
+						parameters: $observability_parameters
 					},
 					operatorApplications: {
 						externalSecrets: {

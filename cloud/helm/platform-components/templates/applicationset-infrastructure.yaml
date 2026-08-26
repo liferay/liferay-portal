@@ -49,9 +49,6 @@ spec:
                                 value: {{ $layout.projectId | quote }}
                             -   name: region
                                 value: {{ .Values.deploymentContext.region | quote }}
-                            {{- with .Values.infrastructure.parameters }}
-                            {{- toYaml . | nindent 28 }}
-                            {{- end }}
                         valueFiles:
                             -   $values/{{ $layout.base }}/{{ $layout.infrastructureValuesFilename }}
                             -   $values/{{ `{{path}}` }}/{{ $layout.infrastructureValuesFilename }}

@@ -4,7 +4,7 @@ release:
 set:
     clusterSecretStore:
         name: liferay-test-secret-store
-suite: Passed Parameters
+suite: Helm Parameters
 templates:
     -   templates/application-infrastructure-provider.yaml
     -   templates/application-observability.yaml
@@ -15,104 +15,19 @@ tests:
     -   asserts:
             -   contains:
                     content:
-                        name: deploymentName
-                        value: liferay-test
-                    path: spec.sources[0].helm.parameters
-                template: templates/application-infrastructure-provider.yaml
-            -   contains:
-                    content:
-                        name: global.projectId
-                        value: "{{path[2]}}"
+                        name: global.azure.prometheusWorkspaceEndpoint
+                        value: https://prometheus.example.test
                     path: spec.template.spec.sources[0].helm.parameters
                 template: templates/applicationset-liferay.yaml
-        it: Appends no extra parameters when none are passed
-        set:
-            deploymentContext:
-                deploymentName: liferay-test
-            infrastructureProvider:
-                parameters: null
-                repoURL: oci://example-registry/liferay-aws-infrastructure-provider
-            liferay:
-                parameters: null
-                repoURL: oci://example-registry/liferay-aws
-    -   asserts:
-            -   contains:
-                    content:
-                        name: deploymentContext.deploymentName
-                        value: liferay-test
-                    path: spec.sources[0].helm.parameters
-                template: templates/application-infrastructure-provider.yaml
-            -   contains:
-                    content:
-                        name: aws.vpcId
-                        value: vpc-0123456789
-                    path: spec.sources[0].helm.parameters
-                template: templates/application-infrastructure-provider.yaml
-        it: Appends the passed parameters after the deployment context
-        set:
-            deploymentContext:
-                deploymentName: liferay-test
-            infrastructureProvider:
-                parameters:
-                    -   name: aws.vpcId
-                        value: vpc-0123456789
-                repoURL: oci://example-registry/liferay-aws-infrastructure-provider
-    -   asserts:
-            -   contains:
-                    content:
-                        name: azure.subnetId
-                        value: /subscriptions/x
-                    path: spec.template.spec.sources[0].helm.parameters
-                template: templates/applicationset-infrastructure.yaml
-            -   contains:
-                    content:
-                        name: clusterSecretStoreName
-                        value: liferay-test-secret-store
-                    path: spec.template.spec.sources[0].helm.parameters
-                template: templates/applicationset-infrastructure.yaml
-            -   contains:
-                    content:
-                        name: azure.subnetId
-                        value: /subscriptions/x
-                    path: spec.template.spec.sources[0].helm.parameters
-                template: templates/applicationset-resources.yaml
-            -   contains:
-                    content:
-                        name: projectId
-                        value: "{{path[2]}}"
-                    path: spec.template.spec.sources[0].helm.parameters
-                template: templates/applicationset-resources.yaml
-        it: Appends the passed parameters to both applications rendering the infrastructure chart
-        set:
-            deploymentContext:
-                deploymentName: liferay-test
-            infrastructure:
-                parameters:
-                    -   name: azure.subnetId
-                        value: /subscriptions/x
-                repoURL: oci://example-registry/liferay-azure-infrastructure
-    -   asserts:
-            -   contains:
-                    content:
-                        name: global.aws.accountId
-                        value: "123456789012"
-                    path: spec.template.spec.sources[0].helm.parameters
-                template: templates/applicationset-liferay.yaml
-            -   contains:
-                    content:
-                        name: liferay-default.environmentId
-                        value: "{{path[4]}}"
-                    path: spec.template.spec.sources[0].helm.parameters
-                template: templates/applicationset-liferay.yaml
-        it: Appends the passed parameters to the Liferay applications
+        it: Appends the injected parameters to the Liferay applications
         set:
             gitops:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             liferay:
                 parameters:
-                    -   name: global.aws.accountId
-                        value: "123456789012"
+                    -   name: global.azure.prometheusWorkspaceEndpoint
+                        value: https://prometheus.example.test
                 repoURL: oci://example-registry/liferay-aws
     -   asserts:
             -   contains:
@@ -127,13 +42,71 @@ tests:
                         value: observability
                     path: spec.sources[0].helm.parameters
                 template: templates/application-observability.yaml
-        it: Appends the passed parameters to the observability application
+        it: Appends the injected parameters to the observability application
         set:
             observability:
                 enabled: true
                 parameters:
                     -   name: cloudProvider
                         value: aws
+    -   asserts:
+            -   contains:
+                    content:
+                        name: global.projectId
+                        value: "{{path[2]}}"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+            -   contains:
+                    content:
+                        name: liferay-default.environmentId
+                        value: "{{path[4]}}"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+        it: Computes parameters for the Liferay applications
+        set:
+            gitops:
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            liferay:
+                repoURL: oci://example-registry/liferay-aws
+    -   asserts:
+            -   contains:
+                    content:
+                        name: clusterSecretStoreName
+                        value: liferay-test-secret-store
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-infrastructure.yaml
+            -   contains:
+                    content:
+                        name: projectId
+                        value: "{{path[2]}}"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-resources.yaml
+        it: Computes parameters for the infrastructure applications
+        set:
+            deploymentContext:
+                deploymentName: liferay-test
+            infrastructure:
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+    -   asserts:
+            -   contains:
+                    content:
+                        name: deploymentContext.deploymentName
+                        value: liferay-test
+                    path: spec.sources[0].helm.parameters
+                template: templates/application-infrastructure-provider.yaml
+            -   contains:
+                    content:
+                        name: deploymentName
+                        value: liferay-test
+                    path: spec.sources[0].helm.parameters
+                template: templates/application-infrastructure-provider.yaml
+        it: Computes parameters for the infrastructure provider application
+        set:
+            deploymentContext:
+                deploymentName: liferay-test
+            infrastructureProvider:
+                repoURL: oci://example-registry/liferay-aws-infrastructure-provider
     -   asserts:
             -   contains:
                     content:
