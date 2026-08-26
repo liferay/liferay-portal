@@ -133,6 +133,7 @@ import com.liferay.object.service.ObjectStateLocalService;
 import com.liferay.object.service.ObjectStateTransitionLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.object.service.test.util.ObjectFieldTestUtil;
+import com.liferay.object.test.util.EncryptedObjectFieldTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectEntryFolderTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
@@ -2147,9 +2148,9 @@ public class ObjectEntryLocalServiceTest {
 
 	@Test
 	public void testAddObjectEntryWithEncryptedObjectField() throws Exception {
-		String key = ObjectFieldTestUtil.generateKey("AES");
+		String key = EncryptedObjectFieldTestUtil.generateKey("AES");
 
-		ObjectFieldTestUtil.withEncryptedObjectFieldProperties(
+		EncryptedObjectFieldTestUtil.withEncryptedObjectFieldProperties(
 			"AES", true, key,
 			() -> {
 				_addCustomObjectField(
@@ -2192,7 +2193,7 @@ public class ObjectEntryLocalServiceTest {
 			"objectEntryERC", ObjectDefinitionConstants.GROUP_ID_DEFAULT,
 			_objectDefinition.getObjectDefinitionId());
 
-		ObjectFieldTestUtil.withEncryptedObjectFieldProperties(
+		EncryptedObjectFieldTestUtil.withEncryptedObjectFieldProperties(
 			"", true, "",
 			() -> {
 				AssertUtils.assertFailure(
@@ -2218,7 +2219,7 @@ public class ObjectEntryLocalServiceTest {
 
 				_assertCount(1);
 			});
-		ObjectFieldTestUtil.withEncryptedObjectFieldProperties(
+		EncryptedObjectFieldTestUtil.withEncryptedObjectFieldProperties(
 			"", true, key,
 			() -> {
 				AssertUtils.assertFailure(
@@ -2251,7 +2252,7 @@ public class ObjectEntryLocalServiceTest {
 
 				_assertCount(1);
 			});
-		ObjectFieldTestUtil.withEncryptedObjectFieldProperties(
+		EncryptedObjectFieldTestUtil.withEncryptedObjectFieldProperties(
 			"AES", true, "",
 			() -> {
 				AssertUtils.assertFailure(
