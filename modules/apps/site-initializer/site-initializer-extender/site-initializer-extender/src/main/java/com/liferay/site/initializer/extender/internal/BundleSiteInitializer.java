@@ -3795,7 +3795,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 					jsonObject.getString("resourceName")),
 				ResourceAction -> ResourceAction.getActionId(), String.class);
 
-			if (!ArrayUtil.containsAll(resourceActionIds, actionIds)) {
+			if (ArrayUtil.isNotEmpty(actionIds) &&
+				!ArrayUtil.containsAll(resourceActionIds, actionIds)) {
+
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						StringBundler.concat(
