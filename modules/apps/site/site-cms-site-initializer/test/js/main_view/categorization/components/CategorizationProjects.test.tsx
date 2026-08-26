@@ -85,6 +85,41 @@ describe('CategorizationProjects', () => {
 		}));
 	});
 
+	it('checks the all-projects checkbox by default', async () => {
+		render(<CategorizationProjects {...defaultProps} />);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		expect(screen.getByRole('checkbox')).toBeChecked();
+	});
+
+	it('does not check the all-projects checkbox when the default is off', async () => {
+		render(
+			<CategorizationProjects
+				{...defaultProps}
+				defaultAllScopesChecked={false}
+			/>
+		);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		expect(screen.getByRole('checkbox')).not.toBeChecked();
+	});
+
+	it('does not mark the field as required when required is false', async () => {
+		render(<CategorizationProjects {...defaultProps} required={false} />);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		expect(screen.queryByText('required')).not.toBeInTheDocument();
+	});
+
 	it('lists every project when the scope lookup fails', async () => {
 		(
 			ProjectLinkService.getNonDraftProjectScopeIds as jest.Mock
@@ -97,6 +132,16 @@ describe('CategorizationProjects', () => {
 		});
 
 		expect(screen.getByText('aB3xZq9GhostName')).toBeInTheDocument();
+	});
+
+	it('marks the field as required by default', async () => {
+		render(<CategorizationProjects {...defaultProps} />);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		expect(screen.getByText('required')).toBeInTheDocument();
 	});
 
 	it('only lists projects backed by an approved project', async () => {

@@ -5,6 +5,7 @@
 
 import '@testing-library/jest-dom';
 import {render, screen, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import ApiHelper from '../../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
@@ -67,6 +68,18 @@ describe('CreateTagsModal', () => {
 		expect(ApiHelper.getAll).not.toHaveBeenCalled();
 	});
 
+	it('leaves the all-projects checkbox unchecked', async () => {
+		render(<CreateTagsModalContent {...defaultProps} cmpEnabled />);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		expect(
+			screen.getByLabelText('make-this-tag-available-in-all-projects')
+		).not.toBeChecked();
+	});
+
 	it('renders the project scope selector when CMP is enabled', async () => {
 		render(<CreateTagsModalContent {...defaultProps} cmpEnabled />);
 
@@ -75,5 +88,61 @@ describe('CreateTagsModal', () => {
 		});
 
 		expect(screen.getByLabelText('project-selector')).toBeInTheDocument();
+	});
+
+	it('saves a tag without a project scope', async () => {
+		jest.spyOn(ApiHelper, 'post').mockResolvedValue({
+			data: {},
+			error: null,
+			status: 'OK',
+		} as any);
+
+		render(<CreateTagsModalContent {...defaultProps} cmpEnabled />);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		await userEvent.type(screen.getByRole('textbox'), 'tag');
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		await waitFor(() => {
+			expect(ApiHelper.post).toHaveBeenCalled();
+		});
+
+		const [, body] = (ApiHelper.post as jest.Mock).mock.calls[0];
+
+		expect(body.projects).toEqual([]);
+	});
+
+	it('sends the all-projects marker when the checkbox is checked', async () => {
+		jest.spyOn(ApiHelper, 'post').mockResolvedValue({
+			data: {},
+			error: null,
+			status: 'OK',
+		} as any);
+
+		render(<CreateTagsModalContent {...defaultProps} cmpEnabled />);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		await userEvent.type(screen.getByRole('textbox'), 'tag');
+
+		await userEvent.click(
+			screen.getByLabelText('make-this-tag-available-in-all-projects')
+		);
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		await waitFor(() => {
+			expect(ApiHelper.post).toHaveBeenCalled();
+		});
+
+		const [, body] = (ApiHelper.post as jest.Mock).mock.calls[0];
+
+		expect(body.projects).toEqual([{id: -1}]);
 	});
 });

@@ -55,6 +55,24 @@ describe('EditTagsModal', () => {
 		jest.clearAllMocks();
 	});
 
+	it('checks the all-projects checkbox when the tag is available in all projects', async () => {
+		render(
+			<EditTagsModalContent
+				{...defaultProps}
+				cmpEnabled
+				projects={[{id: -1}] as any}
+			/>
+		);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		expect(
+			screen.getByLabelText('make-this-tag-available-in-all-projects')
+		).toBeChecked();
+	});
+
 	it('does not render the project scope selector when CMP is disabled', async () => {
 		render(<EditTagsModalContent {...defaultProps} cmpEnabled={false} />);
 
@@ -71,6 +89,18 @@ describe('EditTagsModal', () => {
 		expect(ApiHelper.getAll).not.toHaveBeenCalled();
 	});
 
+	it('leaves the all-projects checkbox unchecked', async () => {
+		render(<EditTagsModalContent {...defaultProps} cmpEnabled />);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		expect(
+			screen.getByLabelText('make-this-tag-available-in-all-projects')
+		).not.toBeChecked();
+	});
+
 	it('renders the project scope selector when CMP is enabled', async () => {
 		render(<EditTagsModalContent {...defaultProps} cmpEnabled />);
 
@@ -81,7 +111,31 @@ describe('EditTagsModal', () => {
 		expect(screen.getByLabelText('project-selector')).toBeInTheDocument();
 	});
 
-	it('sends an empty project scope when the tag is available in all projects', async () => {
+	it('saves a tag without a project scope', async () => {
+		jest.spyOn(ApiHelper, 'put').mockResolvedValue({
+			data: {},
+			error: null,
+			status: 'OK',
+		} as any);
+
+		render(<EditTagsModalContent {...defaultProps} cmpEnabled />);
+
+		await waitFor(() => {
+			expect(ApiHelper.getAll).toHaveBeenCalled();
+		});
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		await waitFor(() => {
+			expect(ApiHelper.put).toHaveBeenCalled();
+		});
+
+		const [, body] = (ApiHelper.put as jest.Mock).mock.calls[0];
+
+		expect(body.projects).toEqual([]);
+	});
+
+	it('sends the all-projects marker when the tag is available in all projects', async () => {
 		jest.spyOn(ApiHelper, 'put').mockResolvedValue({
 			data: {},
 			error: null,
@@ -110,6 +164,6 @@ describe('EditTagsModal', () => {
 		const [, body] = (ApiHelper.put as jest.Mock).mock.calls[0];
 
 		expect(body.assetLibraries).toEqual([]);
-		expect(body.projects).toEqual([]);
+		expect(body.projects).toEqual([{id: -1}]);
 	});
 });
