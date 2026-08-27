@@ -11,8 +11,8 @@
 
 <tbody>
 <tr>
-	<td>DIGITAL_SIGNATURE_STATUS</td>
-	<td>//span[contains(@class,'label-item') and contains(.,'${dsStatus}')]</td>
+	<td>DIGITAL_SIGNATURE_ENVELOPE_STATUS</td>
+	<td>//tr[.//a[normalize-space(.) = '${envelopeName}']]//span[contains(@class, 'label-item') and contains(., '${dsStatus}')]</td>
 	<td></td>
 </tr>
 <tr>

@@ -446,20 +446,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewDigitalSignatureEnabled(dsStatus = null) {
-		AssertElementPresent(
-			dsStatus = ${dsStatus},
-			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_STATUS");
-	}
-
-	@summary = "Default summary"
-	macro viewDigitalSignaturestatus(viewStatus = null) {
-		AssertElementPresent(
-			dsStatus = ${viewStatus},
-			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_STATUS");
-	}
-
-	@summary = "Default summary"
 	macro viewEnabledDownload(envelopeName = null) {
 		DigitalSignature.waitForEnvelope(envelopeName = ${envelopeName});
 
@@ -492,6 +478,16 @@ definition {
 		AssertElementNotPresent(
 			envelopeName = ${envelopeName},
 			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME");
+	}
+
+	@summary = "Default summary"
+	macro viewEnvelopeStatus(dsStatus = null, envelopeName = null) {
+		DigitalSignature.waitForEnvelope(envelopeName = ${envelopeName});
+
+		AssertElementPresent(
+			dsStatus = ${dsStatus},
+			envelopeName = ${envelopeName},
+			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_STATUS");
 	}
 
 	@summary = "Default summary"

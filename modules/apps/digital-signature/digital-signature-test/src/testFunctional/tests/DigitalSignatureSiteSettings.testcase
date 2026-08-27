@@ -38,6 +38,10 @@ definition {
 	test CanEnableDigitalSignatureBySiteSettings {
 		property portal.release = "quarantine";
 
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeName = "Poshi Test CanEnableDigitalSignatureBySiteSettings ${randomString}";
+
 		task ("Given that the digital signature site strategy is set as 'Always Override'") {
 			DigitalSignature.selectSiteStrategy(siteStrategy = "Always Override");
 
@@ -57,15 +61,19 @@ definition {
 				addEmail = "test@liferay.com",
 				addFullName = "Recipient Full Name",
 				addMessage = "Email Message",
-				addName = "Poshi Test CannotCreateEnvelopeWithUnsupportedFiles",
+				addName = ${envelopeName},
 				addSubject = "Email Subject",
 				dmDocumentFile = "Document_2.docx");
 
 			Button.click(button = "Send");
+
+			Alert.viewSuccessMessageText(successMessage = "Your envelope was created successfully.");
 		}
 
 		task ("Then the user can see that digital signature can be enabled using the Always Override strategy") {
-			DigitalSignature.viewDigitalSignatureEnabled(dsStatus = "Sent");
+			DigitalSignature.viewEnvelopeStatus(
+				dsStatus = "Sent",
+				envelopeName = ${envelopeName});
 		}
 	}
 
