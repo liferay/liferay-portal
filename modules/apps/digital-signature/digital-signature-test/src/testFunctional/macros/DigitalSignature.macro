@@ -302,9 +302,11 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro enabledDigitalSignatureDownload(documentName = null) {
+	macro enabledDigitalSignatureDownload(envelopeName = null) {
+		DigitalSignature.waitForEnvelope(envelopeName = ${envelopeName});
+
 		Click(
-			envelopeName = ${documentName},
+			envelopeName = ${envelopeName},
 			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME");
 
 		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_DOWNLOAD_BUTTON");
@@ -458,18 +460,22 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewEnabledDownload(documentName = null) {
+	macro viewEnabledDownload(envelopeName = null) {
+		DigitalSignature.waitForEnvelope(envelopeName = ${envelopeName});
+
 		Click(
-			envelopeName = ${documentName},
+			envelopeName = ${envelopeName},
 			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ELLIPSIS_BUTTON");
 
 		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_DOWNLOAD_BY_LIST");
 	}
 
 	@summary = "Default summary"
-	macro viewEnvelopeDetails(documentName = null) {
+	macro viewEnvelopeDetails(envelopeName = null) {
+		DigitalSignature.waitForEnvelope(envelopeName = ${envelopeName});
+
 		Click(
-			envelopeName = ${documentName},
+			envelopeName = ${envelopeName},
 			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME");
 
 		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_ID");

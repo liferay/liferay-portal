@@ -40,12 +40,16 @@ definition {
 	@description = "LPS-131206. Verify if its possible download envelopes by Envelope Description "
 	@priority = 3
 	test CanDownloadEnvelopeByEnvelopeDescription {
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeName = "Poshi Test CanDownloadEnvelopeByEnvelopeDescription ${randomString}";
+
 		task ("Given a digital signature envelope is created") {
 			DigitalSignature.createEnvelope(
 				addEmail = "test@liferay.com",
 				addFullName = "Recipient Full Name",
 				addMessage = "Email Message",
-				addName = "Test",
+				addName = ${envelopeName},
 				addSubject = "Email Subject",
 				dmDocumentFile = "Alice's Adventures in Wonderland.pdf");
 
@@ -63,13 +67,43 @@ definition {
 		}
 
 		task ("Then the digital signature's envelope can be downloaded") {
-			DigitalSignature.enabledDigitalSignatureDownload(documentName = "Test");
+			DigitalSignature.enabledDigitalSignatureDownload(envelopeName = ${envelopeName});
+		}
+
+		task ("Clean up the envelope and the document") {
+			DigitalSignature.deleteEnvelopeFromView();
+
+			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+			DMDocument.deleteCP(dmDocumentTitle = "DM Document Title");
+
+			RecycleBin.openRecycleBinAdmin(siteURLKey = "guest");
+
+			RecycleBin.emptyCP();
 		}
 	}
 
 	@description = "LPS-131206. Verify if its possible download envelopes by Envelope List"
 	@priority = 3
 	test CanDownloadEnvelopeByEnvelopeList {
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeName = "Poshi Test CanDownloadEnvelopeByEnvelopeList ${randomString}";
+
+		task ("Given a digital signature envelope is created") {
+			DigitalSignature.createEnvelope(
+				addEmail = "test@liferay.com",
+				addFullName = "Recipient Full Name",
+				addMessage = "Email Message",
+				addName = ${envelopeName},
+				addSubject = "Email Subject",
+				dmDocumentFile = "Alice's Adventures in Wonderland.pdf");
+
+			Button.click(button = "Send");
+
+			Alert.viewSuccessMessageText(successMessage = "Your envelope was created successfully.");
+		}
+
 		task ("When a User Test Goes to Envelope List") {
 			Navigator.openURL();
 
@@ -79,13 +113,29 @@ definition {
 		}
 
 		task ("Then the digital signature can be downloaded") {
-			DigitalSignature.viewEnabledDownload(documentName = "Test");
+			DigitalSignature.viewEnabledDownload(envelopeName = ${envelopeName});
+		}
+
+		task ("Clean up the envelope and the document") {
+			DigitalSignature.deleteEnvelope(envelopeName = ${envelopeName});
+
+			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+			DMDocument.deleteCP(dmDocumentTitle = "DM Document Title");
+
+			RecycleBin.openRecycleBinAdmin(siteURLKey = "guest");
+
+			RecycleBin.emptyCP();
 		}
 	}
 
 	@description = "LPS-131206. Verify if is possible navigate between pages"
 	@priority = 3
 	test CanNavigateBetweenPages {
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeNamePrefix = "Poshi Test CanNavigateBetweenPages ${randomString}";
+
 		task ("Given more envelopes exist than one page holds") {
 			DigitalSignature.addDMDocument(dmDocumentFile = "Alice's Adventures in Wonderland.pdf");
 
@@ -94,7 +144,7 @@ definition {
 					addEmail = "test@liferay.com",
 					addFullName = "Recipient Full Name",
 					addMessage = "Email Message",
-					addName = "Poshi Test CanNavigateBetweenPages ${envelopeNumber}",
+					addName = "${envelopeNamePrefix} ${envelopeNumber}",
 					addSubject = "Email Subject");
 
 				Button.click(button = "Send");
@@ -120,10 +170,10 @@ definition {
 		}
 
 		task ("Clean up the envelopes and the document") {
-			DigitalSignature.selectItemsPerPage(itemsPerPage = 20);
+			DigitalSignature.selectItemsPerPage(itemsPerPage = 60);
 
 			for (var envelopeNumber : list "1,2,3,4,5") {
-				DigitalSignature.deleteEnvelope(envelopeName = "Poshi Test CanNavigateBetweenPages ${envelopeNumber}");
+				DigitalSignature.deleteEnvelope(envelopeName = "${envelopeNamePrefix} ${envelopeNumber}");
 			}
 
 			DigitalSignature.deleteCreatedDM();
@@ -150,8 +200,6 @@ definition {
 		}
 
 		task ("Then the date the digital signature was created is shown") {
-			Refresh();
-
 			DigitalSignature.viewCreateDate(envelopeName = ${envelopeName});
 
 			DigitalSignature.deleteEnvelope(envelopeName = ${envelopeName});
@@ -169,6 +217,24 @@ definition {
 	@description = "LPS-131206. Verify if its possible view envelope details"
 	@priority = 4
 	test CanViewEnvelopeDetails {
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeName = "Poshi Test CanViewEnvelopeDetails ${randomString}";
+
+		task ("Given a digital signature envelope is created") {
+			DigitalSignature.createEnvelope(
+				addEmail = "test@liferay.com",
+				addFullName = "Recipient Full Name",
+				addMessage = "Email Message",
+				addName = ${envelopeName},
+				addSubject = "Email Subject",
+				dmDocumentFile = "Alice's Adventures in Wonderland.pdf");
+
+			Button.click(button = "Send");
+
+			Alert.viewSuccessMessageText(successMessage = "Your envelope was created successfully.");
+		}
+
 		task ("When a User Test Goes to Digital Signature") {
 			Navigator.openURL();
 
@@ -178,7 +244,19 @@ definition {
 		}
 
 		task ("Then you can see details of the envelope") {
-			DigitalSignature.viewEnvelopeDetails(documentName = "Test");
+			DigitalSignature.viewEnvelopeDetails(envelopeName = ${envelopeName});
+		}
+
+		task ("Clean up the envelope and the document") {
+			DigitalSignature.deleteEnvelopeFromView();
+
+			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+			DMDocument.deleteCP(dmDocumentTitle = "DM Document Title");
+
+			RecycleBin.openRecycleBinAdmin(siteURLKey = "guest");
+
+			RecycleBin.emptyCP();
 		}
 	}
 
@@ -222,10 +300,6 @@ definition {
 		}
 
 		task ("Then the user can see that an envelope have more than one recipient on list") {
-			DigitalSignature.waitForListViewLoad();
-
-			Refresh();
-
 			DigitalSignature.viewMoreRecipient(envelopeName = ${envelopeName});
 
 			DigitalSignature.deleteEnvelope(envelopeName = ${envelopeName});
