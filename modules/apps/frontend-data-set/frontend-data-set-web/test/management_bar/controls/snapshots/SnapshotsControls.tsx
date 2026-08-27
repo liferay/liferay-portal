@@ -32,7 +32,7 @@ const mockFDSContext = {
 	namespace: 'testNamespace_',
 	onSnapshotChange: jest.fn(),
 	portletId: 'testPortlet',
-	saveStartupSnapshotURL: '/set-startup-snapshot-url',
+	saveUserPreferencesURL: '/save-user-preferences-url',
 };
 
 const ownedSnapshot = {erc: 'owned-erc', id: 1, label: 'Owned View'};
@@ -76,7 +76,7 @@ describe('SnapshotsControls action gating', () => {
 				snapshotUpdated: false,
 				snapshots: [{headerVisible: false, items: [ownedSnapshot]}],
 				sorts: [],
-				startupSnapshot: null,
+				userPreferences: null,
 				visibleFieldNames: {},
 			});
 		});
@@ -109,7 +109,7 @@ describe('SnapshotsControls action gating', () => {
 					},
 				],
 				sorts: [],
-				startupSnapshot: null,
+				userPreferences: null,
 				visibleFieldNames: {},
 			});
 		});

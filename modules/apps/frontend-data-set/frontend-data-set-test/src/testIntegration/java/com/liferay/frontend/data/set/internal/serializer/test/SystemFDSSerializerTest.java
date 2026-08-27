@@ -8,10 +8,12 @@ package com.liferay.frontend.data.set.internal.serializer.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.frontend.data.set.serializer.FDSSerializer;
 import com.liferay.frontend.data.set.test.util.FrontendDataSetTestUtil;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
@@ -111,6 +113,40 @@ public class SystemFDSSerializerTest {
 			_getItemJSONObject(jsonArray, _objectEntry.getObjectEntryId()));
 	}
 
+	@Test
+	public void testSerializeUserPreferences() throws Exception {
+		HttpServletRequest httpServletRequest = _getHttpServletRequest(
+			_memberUser.getUserId());
+
+		Assert.assertNull(
+			_fdsSerializer.serializeUserPreferences(
+				_FDS_NAME, httpServletRequest));
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_DATA_SET_USER_PREFERENCES",
+					TestPropsValues.getCompanyId());
+
+		_userPreferencesObjectEntry =
+			_objectEntryLocalService.addOrUpdateObjectEntry(
+				_memberUser.getExternalReferenceCode() + StringPool.UNDERLINE +
+					_FDS_NAME,
+				0, _memberUser.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"preferences", "{\"startupSnapshotERC\": "
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _memberUser.getUserId()));
+
+		Assert.assertNull(
+			_fdsSerializer.serializeUserPreferences(
+				_FDS_NAME, httpServletRequest));
+	}
+
 	private ObjectEntry _addObjectEntry(
 			String fdsName, String label, ObjectDefinition objectDefinition)
 		throws Exception {
@@ -203,5 +239,8 @@ public class SystemFDSSerializerTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@DeleteAfterTestRun
+	private ObjectEntry _userPreferencesObjectEntry;
 
 }

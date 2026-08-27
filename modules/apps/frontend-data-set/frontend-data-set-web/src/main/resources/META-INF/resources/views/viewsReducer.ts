@@ -6,7 +6,7 @@
 import {deepClone} from 'frontend-js-web';
 
 import {IView} from '../utils/types';
-import {ISnapshot, ISnapshots, IStartupSnapshot} from './ViewsContext';
+import {ISnapshot, ISnapshots, IUserPreferences} from './ViewsContext';
 import getViewComponent from './getViewComponent';
 
 const mapSnapshots = (
@@ -23,7 +23,6 @@ const mapSnapshots = (
 
 export enum EViewsActionTypes {
 	ADD_OR_UPDATE_SNAPSHOT = 'ADD_OR_UPDATE_SNAPSHOT',
-	ADD_OR_UPDATE_STARTUP_SNAPSHOT = 'ADD_OR_UPDATE_STARTUP_SNAPSHOT',
 	BATCH_UPDATE = 'BATCH_UPDATE',
 	DELETE_SNAPSHOT = 'DELETE_SNAPSHOT',
 	NOOP = 'NOOP',
@@ -37,6 +36,7 @@ export enum EViewsActionTypes {
 	UPDATE_SEARCH_PARAM = 'UPDATE_SEARCH_PARAM',
 	UPDATE_SNAPSHOT_UPDATED = 'UPDATE_SNAPSHOT_UPDATED',
 	UPDATE_SORTING = 'UPDATE_SORTING',
+	UPDATE_USER_PREFERENCES = 'UPDATE_USER_PREFERENCES',
 	UPDATE_VIEW_COMPONENT = 'UPDATE_VIEW_COMPONENT',
 	UPDATE_VISIBLE_FIELD_NAMES = 'UPDATE_VISIBLE_FIELD_NAMES',
 }
@@ -90,10 +90,6 @@ const viewsActions: TViewsActions = {
 			snapshots: updatedSnapshots,
 		};
 	},
-	[EViewsActionTypes.ADD_OR_UPDATE_STARTUP_SNAPSHOT]: (state, value) => ({
-		...state,
-		startupSnapshot: value.startupSnapshot,
-	}),
 	[EViewsActionTypes.BATCH_UPDATE]: (state, stateUpdates) => {
 		if (!Array.isArray(stateUpdates) || !stateUpdates.length) {
 			return state;
@@ -113,11 +109,11 @@ const viewsActions: TViewsActions = {
 		const {
 			defaultSnapshot,
 			snapshots,
-			startupSnapshot,
+			userPreferences,
 		}: {
 			defaultSnapshot: any;
 			snapshots: Array<ISnapshots>;
-			startupSnapshot: IStartupSnapshot | null;
+			userPreferences: IUserPreferences | null;
 		} = state;
 
 		const updatedSnapshots = snapshots.map((group) => ({
@@ -133,10 +129,10 @@ const viewsActions: TViewsActions = {
 			activeSnapshotERC: null,
 			snapshotUpdated: false,
 			snapshots: updatedSnapshots,
-			startupSnapshot:
-				startupSnapshot?.erc === value.snapshotERC
-					? null
-					: startupSnapshot,
+			userPreferences:
+				userPreferences?.startupSnapshotERC === value.snapshotERC
+					? {...userPreferences, startupSnapshotERC: null}
+					: userPreferences,
 		};
 	},
 	[EViewsActionTypes.NOOP]: (state) => state,
@@ -259,6 +255,10 @@ const viewsActions: TViewsActions = {
 			sorts: value,
 		};
 	},
+	[EViewsActionTypes.UPDATE_USER_PREFERENCES]: (state, value) => ({
+		...state,
+		userPreferences: value.userPreferences,
+	}),
 	[EViewsActionTypes.UPDATE_VIEW_COMPONENT]: (state, value) => {
 		const {activeView, views} = state;
 

@@ -249,9 +249,9 @@ public class ObjectDefinitionUtil {
 		).put(
 			"DataSetSort", "/data-set-admin/sorts"
 		).put(
-			"DataSetStartupSnapshot", "/data-set-admin/startup-snapshots"
-		).put(
 			"DataSetTableSection", "/data-set-admin/table-sections"
+		).put(
+			"DataSetUserPreferences", "/data-set-admin/user-preferences"
 		).put(
 			"DSRRoom", "/digital-sales-room/rooms"
 		).put(

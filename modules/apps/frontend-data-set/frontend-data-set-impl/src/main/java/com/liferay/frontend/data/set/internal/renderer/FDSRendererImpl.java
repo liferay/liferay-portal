@@ -249,12 +249,8 @@ public class FDSRendererImpl implements FDSRenderer {
 						return paginationJSONObject;
 					}
 				).put(
-					"saveStartupSnapshotURL",
+					"saveUserPreferencesURL",
 					() -> {
-						if (!snapshotsEnabled) {
-							return null;
-						}
-
 						ResourceURL resourceURL =
 							(ResourceURL)_portal.getControlPanelPortletURL(
 								httpServletRequest,
@@ -263,7 +259,7 @@ public class FDSRendererImpl implements FDSRenderer {
 
 						resourceURL.setResourceID(
 							"/frontend_data_set_admin" +
-								"/save_data_set_startup_snapshot");
+								"/save_data_set_user_preferences");
 
 						return resourceURL.toString();
 					}
@@ -324,15 +320,9 @@ public class FDSRendererImpl implements FDSRenderer {
 						return fdsSortItems;
 					}
 				).put(
-					"startupSnapshot",
-					() -> {
-						if (!snapshotsEnabled) {
-							return null;
-						}
-
-						return fdsSerializer.serializeStartupSnapshot(
-							fdsName, httpServletRequest);
-					}
+					"userPreferences",
+					() -> fdsSerializer.serializeUserPreferences(
+						fdsName, httpServletRequest)
 				).put(
 					"views",
 					() -> {

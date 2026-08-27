@@ -1781,32 +1781,11 @@
 					"type": "Clob"
 				}
 			],
-			"objectRelationships": [
-				{
-					"deletionType": "cascade",
-					"edge": true,
-					"externalReferenceCode": "L_DATA_SET_SNAPSHOT_TO_STARTUP_SNAPSHOTS",
-					"label": {
-						"en_US": "Data Set Snapshot to Startup Snapshots"
-					},
-					"name": "dataSetSnapshotToStartupSnapshots",
-					"objectDefinitionExternalReferenceCode1": "L_DATA_SET_SNAPSHOT",
-					"objectDefinitionExternalReferenceCode2": "L_DATA_SET_STARTUP_SNAPSHOT",
-					"objectDefinitionName2": "DataSetStartupSnapshot",
-					"objectDefinitionSystem2": true,
-					"parameterObjectFieldId": 0,
-					"parameterObjectFieldName": "",
-					"reverse": false,
-					"system": true,
-					"type": "oneToMany"
-				}
-			],
 			"panelCategoryKey": "",
 			"pluralLabel": {
 				"en_US": "Data Set Snapshots"
 			},
 			"portlet": false,
-			"rootObjectDefinitionExternalReferenceCode": "L_DATA_SET_SNAPSHOT",
 			"scope": "company",
 			"status": {
 				"code": 0
@@ -1816,26 +1795,35 @@
 		},
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#U1P7",
-			"externalReferenceCode": "L_DATA_SET_STARTUP_SNAPSHOT",
+			"externalReferenceCode": "L_DATA_SET_USER_PREFERENCES",
 			"label": {
-				"en_US": "Data Set Startup Snapshot"
+				"en_US": "Data Set User Preferences"
 			},
 			"modifiable": true,
-			"name": "DataSetStartupSnapshot",
-			"objectDefinitionSettings": [
-				{
-					"name": "allowStandaloneObjectEntry",
-					"value": "false"
-				}
-			],
+			"name": "DataSetUserPreferences",
 			"objectFields": [
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "PREFERENCES",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Preferences"
+					},
+					"localized": false,
+					"name": "preferences",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Clob"
+				}
 			],
 			"panelCategoryKey": "",
 			"pluralLabel": {
-				"en_US": "Data Set Startup Snapshots"
+				"en_US": "Data Set User Preferences"
 			},
 			"portlet": false,
-			"rootObjectDefinitionExternalReferenceCode": "L_DATA_SET_SNAPSHOT",
 			"scope": "company",
 			"status": {
 				"code": 0

@@ -19,6 +19,8 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -149,7 +151,7 @@ public abstract class BaseFDSSerializer {
 		}
 	}
 
-	protected JSONObject serializeStartupSnapshot(
+	protected JSONObject serializeUserPreferences(
 			String fdsName, HttpServletRequest httpServletRequest,
 			ObjectDefinitionLocalService objectDefinitionLocalService)
 		throws Exception {
@@ -157,7 +159,7 @@ public abstract class BaseFDSSerializer {
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_STARTUP_SNAPSHOT",
+					"L_DATA_SET_USER_PREFERENCES",
 					portal.getCompanyId(httpServletRequest));
 
 		if (objectDefinition == null) {
@@ -180,20 +182,30 @@ public abstract class BaseFDSSerializer {
 			return null;
 		}
 
-		long relatedObjectEntryId = GetterUtil.getLong(
+		String preferences = GetterUtil.getString(
 			serviceBuilderObjectEntry.getValues(
 			).get(
-				"r_dataSetSnapshotToStartupSnapshots_l_dataSetSnapshotId"
+				"preferences"
 			));
 
-		com.liferay.object.model.ObjectEntry serviceBuilderRelatedObjectEntry =
-			objectEntryLocalService.fetchObjectEntry(relatedObjectEntryId);
-
-		if (serviceBuilderRelatedObjectEntry == null) {
+		if (Validator.isNull(preferences)) {
 			return null;
 		}
 
-		return _toJSONObject(serviceBuilderRelatedObjectEntry);
+		try {
+			return jsonFactory.createJSONObject(preferences);
+		}
+		catch (JSONException jsonException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Unable to parse the preferences of user ",
+						user.getUserId(), " for data set ", fdsName),
+					jsonException);
+			}
+
+			return null;
+		}
 	}
 
 	@Reference
@@ -201,6 +213,9 @@ public abstract class BaseFDSSerializer {
 
 	@Reference
 	protected FDSAPIURLResolverRegistry fdsAPIURLResolverRegistry;
+
+	@Reference
+	protected JSONFactory jsonFactory;
 
 	@Reference
 	protected Language language;
@@ -290,12 +305,6 @@ public abstract class BaseFDSSerializer {
 					"label", String.valueOf(properties.get("label"))
 				);
 			});
-	}
-
-	private JSONObject _toJSONObject(
-		com.liferay.object.model.ObjectEntry objectEntry) {
-
-		return JSONUtil.put("erc", objectEntry.getExternalReferenceCode());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

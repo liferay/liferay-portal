@@ -13,7 +13,8 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCResourceCommand;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
@@ -45,11 +47,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + FDSAdminPortletKeys.FDS_ADMIN,
-		"mvc.command.name=/frontend_data_set_admin/save_data_set_startup_snapshot"
+		"mvc.command.name=/frontend_data_set_admin/save_data_set_user_preferences"
 	},
 	service = MVCResourceCommand.class
 )
-public class SaveDataSetStartupSnapshotMVCResourceCommand
+public class SaveDataSetUserPreferencesMVCResourceCommand
 	extends BaseTransactionalMVCResourceCommand {
 
 	@Override
@@ -70,79 +72,82 @@ public class SaveDataSetStartupSnapshotMVCResourceCommand
 			_portal.getOriginalServletRequest(
 				_portal.getHttpServletRequest(resourceRequest));
 
-		String dataSetSnapshotExternalReferenceCode = ParamUtil.getString(
-			httpServletRequest, "dataSetSnapshotExternalReferenceCode");
+		JSONObject preferencesJSONObject = _jsonFactory.createJSONObject();
 
 		long companyId = themeDisplay.getCompanyId();
 
-		ObjectDefinition dataSetSnapshotObjectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_SNAPSHOT", companyId);
+		String startupSnapshotERC = _jsonFactory.createJSONObject(
+			ParamUtil.getString(httpServletRequest, "preferences")
+		).getString(
+			"startupSnapshotERC"
+		);
 
-		ObjectEntry dataSetSnapshotObjectEntry =
-			_objectEntryLocalService.fetchObjectEntry(
-				dataSetSnapshotExternalReferenceCode, 0,
-				dataSetSnapshotObjectDefinition.getObjectDefinitionId());
+		if (Validator.isNotNull(startupSnapshotERC)) {
+			_checkDataSetSnapshot(companyId, startupSnapshotERC, user);
 
-		if (dataSetSnapshotObjectEntry == null) {
-			throw new PortalException(
-				"Unable to find data set snapshot with external reference " +
-					"code " + dataSetSnapshotExternalReferenceCode);
-		}
-
-		if ((dataSetSnapshotObjectEntry.getUserId() != user.getUserId()) &&
-			!_sharingEntryLocalService.hasSharingPermission(
-				user.getUserId(),
-				_classNameLocalService.getClassNameId(
-					dataSetSnapshotObjectDefinition.getClassName()),
-				dataSetSnapshotObjectEntry.getObjectEntryId(),
-				SharingEntryAction.VIEW)) {
-
-			throw new PrincipalException(
-				"User cannot access data set snapshot " +
-					dataSetSnapshotExternalReferenceCode);
+			preferencesJSONObject.put("startupSnapshotERC", startupSnapshotERC);
 		}
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_STARTUP_SNAPSHOT", companyId);
+					"L_DATA_SET_USER_PREFERENCES", companyId);
 
 		String fdsName = ParamUtil.getString(httpServletRequest, "fdsName");
-
-		String externalReferenceCode =
-			user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName;
-
-		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
-			externalReferenceCode, 0, objectDefinition.getObjectDefinitionId());
-
-		if (objectEntry != null) {
-			_objectEntryLocalService.deleteObjectEntry(
-				objectEntry.getObjectEntryId());
-		}
 
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setCompanyId(companyId);
 
 		_objectEntryLocalService.addOrUpdateObjectEntry(
-			externalReferenceCode, 0, user.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
+			user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName, 0,
+			user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			HashMapBuilder.<String, Serializable>put(
-				"r_dataSetSnapshotToStartupSnapshots_l_dataSetSnapshotId",
-				dataSetSnapshotObjectEntry.getObjectEntryId()
+				"preferences", preferencesJSONObject.toString()
 			).build(),
 			serviceContext);
 
 		JSONPortletResponseUtil.writeJSON(
-			resourceRequest, resourceResponse,
-			JSONUtil.put("erc", dataSetSnapshotExternalReferenceCode));
+			resourceRequest, resourceResponse, preferencesJSONObject);
+	}
+
+	private void _checkDataSetSnapshot(
+			long companyId, String externalReferenceCode, User user)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_SET_SNAPSHOT", companyId);
+
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			externalReferenceCode, 0, objectDefinition.getObjectDefinitionId());
+
+		if (objectEntry == null) {
+			throw new PortalException(
+				"Unable to find data set snapshot with external reference " +
+					"code " + externalReferenceCode);
+		}
+
+		if ((objectEntry.getUserId() != user.getUserId()) &&
+			!_sharingEntryLocalService.hasSharingPermission(
+				user.getUserId(),
+				_classNameLocalService.getClassNameId(
+					objectDefinition.getClassName()),
+				objectEntry.getObjectEntryId(), SharingEntryAction.VIEW)) {
+
+			throw new PrincipalException(
+				"User cannot access data set snapshot " +
+					externalReferenceCode);
+		}
 	}
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

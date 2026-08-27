@@ -79,7 +79,7 @@ export interface IFrontendDataSetContext {
 	openModal: Function;
 	openSidePanel: Function;
 	portletId?: string;
-	saveStartupSnapshotURL?: string;
+	saveUserPreferencesURL?: string;
 	searchAsYouType: boolean;
 	searchParam?: string;
 	searchSuggestionsEnabled: boolean;

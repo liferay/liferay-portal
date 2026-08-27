@@ -613,15 +613,15 @@ public class CustomFDSSerializer
 	}
 
 	@Override
-	public JSONObject serializeStartupSnapshot(
+	public JSONObject serializeUserPreferences(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
 		try {
-			return serializeStartupSnapshot(
+			return serializeUserPreferences(
 				fdsName, httpServletRequest, _objectDefinitionLocalService);
 		}
 		catch (Exception exception) {
-			_log.error("Unable to serialize the startup snapshot", exception);
+			_log.error("Unable to serialize user preferences", exception);
 
 			return null;
 		}
