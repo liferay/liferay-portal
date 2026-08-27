@@ -6,7 +6,6 @@
 package com.liferay.jenkins.results.parser.test.clazz;
 
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
-import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroupTestUtil;
 import com.liferay.jenkins.results.parser.test.clazz.group.JUnitBatchTestClassGroup;
@@ -68,15 +67,12 @@ public class TestClassFactoryTest
 	}
 
 	private File _newTestClassFile() throws Exception {
-		String randomString = RandomTestUtil.randomString();
+		File packageDir = new File(temporaryFolder.newFolder(), "com/liferay");
 
-		String classNameSuffix = randomString.replaceAll("-", "");
-
-		File packageDir = temporaryFolder.newFolder(
-			"com", "liferay", randomString.substring(0, 8));
+		packageDir.mkdirs();
 
 		return BatchTestClassGroupTestUtil.newTestClassFile(
-			"Sample" + classNameSuffix, packageDir);
+			"SampleTest", packageDir);
 	}
 
 	private void _testNewTestClass(boolean modulesFirst) throws Exception {
