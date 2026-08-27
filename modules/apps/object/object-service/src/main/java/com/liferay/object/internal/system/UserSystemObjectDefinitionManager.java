@@ -182,6 +182,14 @@ public class UserSystemObjectDefinitionManager
 				true
 			).build(),
 			new TextObjectFieldBuilder(
+			).labelMap(
+				createLabelMap("full-name")
+			).name(
+				"name"
+			).system(
+				true
+			).build(),
+			new TextObjectFieldBuilder(
 			).dbColumnName(
 				"uuid_"
 			).labelMap(
@@ -263,7 +271,7 @@ public class UserSystemObjectDefinitionManager
 
 	@Override
 	public int getVersion() {
-		return 4;
+		return 5;
 	}
 
 	@Override

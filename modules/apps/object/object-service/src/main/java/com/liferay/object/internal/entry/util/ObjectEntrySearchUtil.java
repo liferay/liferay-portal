@@ -311,6 +311,27 @@ public class ObjectEntrySearchUtil {
 				titleObjectField.getName()),
 			titleObjectField.getDBType(), search);
 
+		if ((objectFieldPredicate == null) &&
+			Objects.equals(
+				objectDefinition.getClassName(), User.class.getName()) &&
+			Objects.equals(titleObjectField.getName(), "name")) {
+
+			Predicate familyNamePredicate = getObjectFieldPredicate(
+				titleObjectField.getBusinessType(),
+				objectFieldLocalService.getColumn(
+					objectDefinition.getObjectDefinitionId(), "familyName"),
+				titleObjectField.getDBType(), search);
+			Predicate givenNamePredicate = getObjectFieldPredicate(
+				titleObjectField.getBusinessType(),
+				objectFieldLocalService.getColumn(
+					objectDefinition.getObjectDefinitionId(), "givenName"),
+				titleObjectField.getDBType(), search);
+
+			objectFieldPredicate = familyNamePredicate.or(
+				givenNamePredicate
+			).withParentheses();
+		}
+
 		long searchLong = GetterUtil.getLong(search);
 
 		if (searchLong == 0) {
