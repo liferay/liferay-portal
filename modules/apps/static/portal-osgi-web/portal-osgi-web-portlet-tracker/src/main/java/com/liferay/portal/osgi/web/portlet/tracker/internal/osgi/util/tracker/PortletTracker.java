@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletInstanceFactory;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
@@ -187,7 +188,7 @@ public class PortletTracker
 						return addedPortletModel;
 					}));
 
-		if (_parallel &&
+		if (_parallel && Validator.isNull(PrincipalThreadLocal.getName()) &&
 			GetterUtil.getBoolean(
 				serviceReference.getProperty(
 					"com.liferay.portlet.deploy.parallel"),
