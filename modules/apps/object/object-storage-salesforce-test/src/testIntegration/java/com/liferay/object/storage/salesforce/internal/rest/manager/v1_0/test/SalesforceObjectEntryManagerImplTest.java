@@ -536,14 +536,14 @@ public class SalesforceObjectEntryManagerImplTest
 
 	@Test
 	public void testGetObjectEntry() throws Exception {
+		String description = "<p>" + RandomTestUtil.randomString() + "</p>";
 		String title = RandomTestUtil.randomString();
 
 		ObjectEntry objectEntry = _addObjectEntry(
-			null, "<p>Description</p>", null, false, null, title);
+			null, description, null, false, null, title);
 
 		_assertObjectEntry(
-			"<p>Description</p>", objectEntry.getExternalReferenceCode(),
-			title);
+			description, objectEntry.getExternalReferenceCode(), title);
 	}
 
 	@Test
@@ -552,23 +552,25 @@ public class SalesforceObjectEntryManagerImplTest
 			null, RandomTestUtil.randomString(), null, false, null,
 			RandomTestUtil.randomString());
 
+		String description = "<p>" + RandomTestUtil.randomString() + "</p>";
+		String title = RandomTestUtil.randomString();
+
 		_objectEntryManager.partialUpdateObjectEntry(
 			TestPropsValues.getCompanyId(), dtoConverterContext,
 			objectEntry.getExternalReferenceCode(), _objectDefinition,
 			new ObjectEntry() {
 				{
 					properties = HashMapBuilder.<String, Object>put(
-						"description", "<p>Description</p>"
+						"description", description
 					).put(
-						"title", "Able"
+						"title", title
 					).build();
 				}
 			},
 			null);
 
 		_assertObjectEntry(
-			"<p>Description</p>", objectEntry.getExternalReferenceCode(),
-			"Able");
+			description, objectEntry.getExternalReferenceCode(), title);
 	}
 
 	@Override
