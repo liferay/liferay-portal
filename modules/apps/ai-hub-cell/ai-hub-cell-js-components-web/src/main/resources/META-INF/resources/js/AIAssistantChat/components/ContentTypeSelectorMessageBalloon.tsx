@@ -22,7 +22,7 @@ interface ContentTypeSelectorMessageBalloonProps {
 	contentTypes: ContentType[];
 	contextRef: React.MutableRefObject<ChatContext>;
 	message: string;
-	sendMessage: (text: string) => boolean;
+	sendMessage: (text: string) => Promise<boolean>;
 	setIsGenerating: (isGenerating: boolean) => void;
 }
 
@@ -34,10 +34,15 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 
 	const selectId = useId();
 
-	function reportFailure() {
+	function resetSelection() {
 		setExternalReferenceCode('');
+		setSubmitted(false);
 
 		setIsGenerating(false);
+	}
+
+	function reportFailure() {
+		resetSelection();
 
 		Liferay.Util.openToast({
 			message: Liferay.Language.get('an-unexpected-error-occurred'),
@@ -59,6 +64,7 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 		}
 
 		setIsGenerating(true);
+		setSubmitted(true);
 
 		try {
 			const objectFields = await getObjectFields(
@@ -72,15 +78,12 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 				objectFields: JSON.stringify(objectFields),
 			};
 
-			const sent = sendMessage(
+			const sent = await sendMessage(
 				`${Liferay.Language.get('generate')} ${contentType.label}`
 			);
 
-			if (sent) {
-				setSubmitted(true);
-			}
-			else {
-				reportFailure();
+			if (!sent) {
+				resetSelection();
 			}
 		}
 		catch {

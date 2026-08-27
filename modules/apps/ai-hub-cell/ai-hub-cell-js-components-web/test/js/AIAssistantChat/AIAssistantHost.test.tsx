@@ -204,7 +204,7 @@ describe('AIAssistantHost', () => {
 		mockGetSpaces.mockReset();
 		mockGetSpaces.mockResolvedValue([]);
 		mockPostChat.mockReset();
-		mockPostChat.mockResolvedValue(undefined);
+		mockPostChat.mockResolvedValue(undefined as never);
 		mockPostAIIssueReport.mockReset();
 		mockPostAIIssueReport.mockResolvedValue({id: 'report-1'});
 

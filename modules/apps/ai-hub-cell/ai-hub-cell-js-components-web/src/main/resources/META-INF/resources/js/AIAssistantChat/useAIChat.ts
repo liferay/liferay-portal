@@ -45,7 +45,7 @@ export interface AIChat {
 	reportContext: AIChatReportContext | null;
 	runtimeContextRef: React.MutableRefObject<ChatContext>;
 	scrollToBottom: () => void;
-	sendMessage: (text: string) => boolean;
+	sendMessage: (text: string) => Promise<boolean>;
 	setBalloonGenerating: (key: string, generating: boolean) => void;
 	setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
 	setMessage: (message: string) => void;
@@ -177,64 +177,87 @@ export default function useAIChat({
 		};
 	}, []);
 
-	const sendMessage = useCallback((text: string) => {
-		if (!text.trim()) {
-			return false;
-		}
+	const reportSendFailure = useCallback(() => {
+		setIsGenerating(false);
 
 		setMessages((previousMessages) => [
 			...previousMessages,
-			{sender: 'user', text},
+			{
+				error: true,
+				sender: 'assistant',
+				text: Liferay.Language.get('an-unexpected-error-occurred'),
+			},
 		]);
 
-		setMessage('');
-
-		if (!eventSourceReference.current) {
-			setIsGenerating(false);
-
-			return false;
-		}
-
-		setIsGenerating(true);
-
-		const postToChat = () => {
-			postChatByExternalReferenceCodeMessage({
-				chatContext: {
-					...contextRef.current,
-					...getContextRef.current?.(),
-					...runtimeContextRef.current,
-				},
-				eventSourceReference: eventSourceReference.current as string,
-				instructionDefinitionScope:
-					instructionDefinitionScopeRef.current,
-				message: text,
-			}).catch(() => setIsGenerating(false));
-		};
-
-		if (!enableFreeFormCategorizationRef.current) {
-			postToChat();
-
-			return true;
-		}
-
-		classifyCategorizationIntent(text)
-			.then((verdict) => {
-				if (verdict.passthrough || !verdict.actions.length) {
-					postToChat();
-
-					return;
-				}
-
-				setIsGenerating(false);
-
-				Liferay.fire(REQUEST_CATEGORIZE_EVENT, {
-					actions: verdict.actions,
-				});
-			})
-			.catch(() => postToChat());
-
-		return true;
+		Liferay.Util.openToast({
+			message: Liferay.Language.get('an-unexpected-error-occurred'),
+			type: 'danger',
+		});
 	}, []);
+
+	const sendMessage = useCallback(
+		async (text: string) => {
+			if (!text.trim()) {
+				return false;
+			}
+
+			setMessages((previousMessages) => [
+				...previousMessages,
+				{sender: 'user', text},
+			]);
+
+			setMessage('');
+
+			if (!eventSourceReference.current) {
+				reportSendFailure();
+
+				return false;
+			}
+
+			setIsGenerating(true);
+
+			const postToChat = () =>
+				postChatByExternalReferenceCodeMessage({
+					chatContext: {
+						...contextRef.current,
+						...getContextRef.current?.(),
+						...runtimeContextRef.current,
+					},
+					eventSourceReference:
+						eventSourceReference.current as string,
+					instructionDefinitionScope:
+						instructionDefinitionScopeRef.current,
+					message: text,
+				})
+					.then(() => true)
+					.catch(() => {
+						reportSendFailure();
+
+						return false;
+					});
+
+			if (!enableFreeFormCategorizationRef.current) {
+				return postToChat();
+			}
+
+			return classifyCategorizationIntent(text)
+				.then((verdict) => {
+					if (verdict.passthrough || !verdict.actions.length) {
+						return postToChat();
+					}
+
+					setIsGenerating(false);
+
+					Liferay.fire(REQUEST_CATEGORIZE_EVENT, {
+						actions: verdict.actions,
+					});
+
+					return true;
+				})
+				.catch(() => postToChat());
+		},
+		[reportSendFailure]
+	);
 
 	useEffect(() => {
 		initialMessageRef.current = initialMessage;

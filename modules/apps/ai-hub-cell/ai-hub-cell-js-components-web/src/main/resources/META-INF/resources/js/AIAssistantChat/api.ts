@@ -84,10 +84,10 @@ export async function postChatByExternalReferenceCodeMessage({
 	const authorizationToken = await postAuthorizationToken();
 
 	if (!authorizationToken) {
-		return;
+		throw new Error('Unable to authorize the chat message request');
 	}
 
-	return await fetch(
+	const response = await fetch(
 		`${authorizationToken.serviceURL}${AI_HUB_ENDPOINT}/chats/by-external-reference-code/${eventSourceReference}/messages`,
 		{
 			body: JSON.stringify({
@@ -105,4 +105,10 @@ export async function postChatByExternalReferenceCodeMessage({
 			method: 'POST',
 		}
 	);
+
+	if (!response.ok) {
+		throw new Error(`Unable to send the chat message: ${response.status}`);
+	}
+
+	return response;
 }

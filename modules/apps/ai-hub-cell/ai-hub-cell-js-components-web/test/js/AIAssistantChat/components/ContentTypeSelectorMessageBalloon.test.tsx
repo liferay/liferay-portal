@@ -43,7 +43,7 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 		} as never);
 
 		const contextRef = {current: {}};
-		const sendMessage = jest.fn(() => true);
+		const sendMessage = jest.fn(() => Promise.resolve(true));
 		const setIsGenerating = jest.fn();
 
 		render(
@@ -85,7 +85,7 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 	it('stops generating and reports the failure when the object fields cannot be fetched', async () => {
 		mockFetch.mockResolvedValue({ok: false} as never);
 
-		const sendMessage = jest.fn(() => true);
+		const sendMessage = jest.fn(() => Promise.resolve(true));
 		const setIsGenerating = jest.fn();
 
 		render(
@@ -118,13 +118,13 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 		expect(select).toHaveValue('');
 	});
 
-	it('stops generating and reports the failure when the message is not sent', async () => {
+	it('unlocks the selector when the message is not sent', async () => {
 		mockFetch.mockResolvedValue({
 			json: () => Promise.resolve({items: []}),
 			ok: true,
 		} as never);
 
-		const sendMessage = jest.fn(() => false);
+		const sendMessage = jest.fn(() => Promise.resolve(false));
 		const setIsGenerating = jest.fn();
 
 		render(
@@ -143,12 +143,8 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 		);
 
 		await waitFor(() =>
-			expect(Liferay.Util.openToast).toHaveBeenCalledWith(
-				expect.objectContaining({type: 'danger'})
-			)
+			expect(setIsGenerating).toHaveBeenLastCalledWith(false)
 		);
-
-		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
 
 		const select = screen.getByLabelText('content-type');
 
