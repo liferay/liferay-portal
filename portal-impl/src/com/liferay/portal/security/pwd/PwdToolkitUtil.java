@@ -11,6 +11,10 @@ import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.pwd.Toolkit;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 /**
  * @author Brian Wing Shun Chan
  */
@@ -27,7 +31,10 @@ public class PwdToolkitUtil {
 			PasswordPolicy passwordPolicy)
 		throws PortalException {
 
-		if (!password1.equals(password2)) {
+		if (!MessageDigest.isEqual(
+				password1.getBytes(StandardCharsets.UTF_8),
+				password2.getBytes(StandardCharsets.UTF_8))) {
+
 			throw new UserPasswordException.MustMatch(userId);
 		}
 

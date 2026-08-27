@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.UnsupportedEncodingException;
 
+import java.nio.charset.StandardCharsets;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -58,7 +60,10 @@ public class PwdAuthenticator {
 			return false;
 		}
 
-		if (currentEncryptedPassword.equals(encryptedPassword)) {
+		if (MessageDigest.isEqual(
+				encryptedPassword.getBytes(StandardCharsets.UTF_8),
+				currentEncryptedPassword.getBytes(StandardCharsets.UTF_8))) {
+
 			return true;
 		}
 		else if (GetterUtil.getBoolean(
@@ -85,7 +90,9 @@ public class PwdAuthenticator {
 				encryptedPassword = Base64.encode(
 					digester.digest(shardKey.getBytes(StringPool.UTF8)));
 
-				return clearTextPassword.equals(encryptedPassword);
+				return MessageDigest.isEqual(
+					clearTextPassword.getBytes(StandardCharsets.UTF_8),
+					encryptedPassword.getBytes(StandardCharsets.UTF_8));
 			}
 			catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 				throw new SystemException(noSuchAlgorithmException);

@@ -32,6 +32,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpSession;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 /**
  * @author Amos Fong
  */
@@ -170,7 +174,10 @@ public class SessionAuthToken implements AuthToken {
 				httpServletRequest.getHeader("X-CSRF-Token"));
 		}
 
-		if (!csrfToken.equals(sessionToken)) {
+		if (!MessageDigest.isEqual(
+				csrfToken.getBytes(StandardCharsets.UTF_8),
+				sessionToken.getBytes(StandardCharsets.UTF_8))) {
+
 			throw new PrincipalException.MustHaveValidCSRFToken(
 				PortalUtil.getUserId(httpServletRequest), origin);
 		}
@@ -219,7 +226,9 @@ public class SessionAuthToken implements AuthToken {
 				httpServletRequest, key, false);
 
 			if (Validator.isNotNull(sessionToken) &&
-				sessionToken.equals(portletToken)) {
+				MessageDigest.isEqual(
+					portletToken.getBytes(StandardCharsets.UTF_8),
+					sessionToken.getBytes(StandardCharsets.UTF_8))) {
 
 				return true;
 			}

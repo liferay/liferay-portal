@@ -131,6 +131,10 @@ import java.io.InputStream;
 
 import java.net.URL;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -695,10 +699,15 @@ public class WebServerServlet extends HttpServlet {
 				user = UserLocalServiceUtil.fetchUserByPortraitId(imageId);
 			}
 
-			if ((user != null) &&
-				!imageIdToken.equals(DigesterUtil.digest(user.getUserUuid()))) {
+			if (user != null) {
+				String userUuidDigest = DigesterUtil.digest(user.getUserUuid());
 
-				return 0;
+				if (!MessageDigest.isEqual(
+						imageIdToken.getBytes(StandardCharsets.UTF_8),
+						userUuidDigest.getBytes(StandardCharsets.UTF_8))) {
+
+					return 0;
+				}
 			}
 
 			Organization organization = null;
@@ -710,11 +719,17 @@ public class WebServerServlet extends HttpServlet {
 				organization = organizations.get(0);
 			}
 
-			if ((organization != null) &&
-				!imageIdToken.equals(
-					DigesterUtil.digest(organization.getUuid()))) {
+			if (organization != null) {
+				String organizationUuidDigest = DigesterUtil.digest(
+					organization.getUuid());
 
-				return 0;
+				if (!MessageDigest.isEqual(
+						imageIdToken.getBytes(StandardCharsets.UTF_8),
+						organizationUuidDigest.getBytes(
+							StandardCharsets.UTF_8))) {
+
+					return 0;
+				}
 			}
 		}
 

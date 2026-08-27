@@ -7,6 +7,10 @@ package com.liferay.portal.security.auth;
 
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -31,9 +35,12 @@ public class TransientTokenUtil {
 		while (iterator.hasNext()) {
 			Map.Entry<Long, String> entry = iterator.next();
 
-			String curToken = entry.getValue();
+			String currentToken = entry.getValue();
 
-			if (token.equals(curToken)) {
+			if (MessageDigest.isEqual(
+					token.getBytes(StandardCharsets.UTF_8),
+					currentToken.getBytes(StandardCharsets.UTF_8))) {
+
 				iterator.remove();
 
 				return true;

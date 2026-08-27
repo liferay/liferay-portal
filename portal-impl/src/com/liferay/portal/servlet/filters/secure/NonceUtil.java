@@ -22,6 +22,10 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
@@ -171,7 +175,9 @@ public class NonceUtil {
 		public boolean equals(Object object) {
 			NonceDelayed nonceDelayed = (NonceDelayed)object;
 
-			return _nonce.equals(nonceDelayed._nonce);
+			return MessageDigest.isEqual(
+				_nonce.getBytes(StandardCharsets.UTF_8),
+				nonceDelayed._nonce.getBytes(StandardCharsets.UTF_8));
 		}
 
 		@Override

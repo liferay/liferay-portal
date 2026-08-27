@@ -28,9 +28,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.HttpURLConnection;
 
-import java.security.Key;
+import java.nio.charset.StandardCharsets;
 
-import java.util.Objects;
+import java.security.Key;
+import java.security.MessageDigest;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -93,7 +94,11 @@ public class TunnelAuthenticationManagerImpl
 		String password = httpAuthorizationHeader.getAuthParameter(
 			HttpAuthorizationHeader.AUTH_PARAMETER_NAME_PASSWORD);
 
-		if (!Objects.equals(expectedPassword, password)) {
+		if ((password == null) ||
+			!MessageDigest.isEqual(
+				password.getBytes(StandardCharsets.UTF_8),
+				expectedPassword.getBytes(StandardCharsets.UTF_8))) {
+
 			AuthException authException = new RemoteAuthException();
 
 			authException.setType(RemoteAuthException.WRONG_SHARED_SECRET);

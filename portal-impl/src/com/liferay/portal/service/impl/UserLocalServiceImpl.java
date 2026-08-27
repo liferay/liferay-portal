@@ -213,6 +213,10 @@ import jakarta.portlet.PortletPreferences;
 import java.io.IOException;
 import java.io.Serializable;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -1707,7 +1711,15 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		String encPassword = PasswordEncryptorUtil.encrypt(
 			password, userPassword);
 
-		if (userPassword.equals(password) || userPassword.equals(encPassword)) {
+		boolean encPasswordMatches = MessageDigest.isEqual(
+			encPassword.getBytes(StandardCharsets.UTF_8),
+			userPassword.getBytes(StandardCharsets.UTF_8));
+
+		boolean passwordMatches = MessageDigest.isEqual(
+			password.getBytes(StandardCharsets.UTF_8),
+			userPassword.getBytes(StandardCharsets.UTF_8));
+
+		if (encPasswordMatches || passwordMatches) {
 			resetFailedLoginAttempts(user);
 
 			return user.getUserId();
@@ -7232,7 +7244,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			throw new UserPasswordException.MustNotBeNull(userId);
 		}
 
-		if (!password1.equals(password2)) {
+		if (!MessageDigest.isEqual(
+				password1.getBytes(StandardCharsets.UTF_8),
+				password2.getBytes(StandardCharsets.UTF_8))) {
+
 			throw new UserPasswordException.MustMatch(userId);
 		}
 

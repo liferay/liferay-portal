@@ -37,6 +37,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -93,11 +97,15 @@ public class UpdatePasswordActionUtil {
 				return null;
 			}
 
+			String currentTicketKey = ticket.getKey();
+
 			String encryptedTicketKey = PasswordEncryptorUtil.encrypt(
-				ticketKey, ticket.getKey());
+				ticketKey, currentTicketKey);
 
 			if (!ticket.isExpired() &&
-				encryptedTicketKey.equals(ticket.getKey())) {
+				MessageDigest.isEqual(
+					encryptedTicketKey.getBytes(StandardCharsets.UTF_8),
+					currentTicketKey.getBytes(StandardCharsets.UTF_8))) {
 
 				return ticket;
 			}

@@ -17,6 +17,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,8 +99,12 @@ public class AuthTokenWhitelistImpl extends BaseAuthTokenWhitelist {
 			return false;
 		}
 
-		return sharedSecret.equals(
-			DigesterUtil.digest(PropsValues.AUTH_TOKEN_SHARED_SECRET));
+		String expectedSharedSecret = DigesterUtil.digest(
+			PropsValues.AUTH_TOKEN_SHARED_SECRET);
+
+		return MessageDigest.isEqual(
+			sharedSecret.getBytes(StandardCharsets.UTF_8),
+			expectedSharedSecret.getBytes(StandardCharsets.UTF_8));
 	}
 
 	private Set<String> _createOriginCSRFWhitelist() {
