@@ -265,7 +265,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		_assertFileSystemAuditMessageProcessorConfiguration(
 			_configurationProvider.getSystemConfiguration(
 				FileSystemAuditMessageProcessorConfiguration.class));
-
 		_assertPersistentAuditMessageProcessorConfiguration(
 			_configurationProvider.getSystemConfiguration(
 				PersistentAuditMessageProcessorConfiguration.class));
