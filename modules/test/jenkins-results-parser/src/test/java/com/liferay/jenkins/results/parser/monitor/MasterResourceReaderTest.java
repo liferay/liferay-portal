@@ -138,10 +138,9 @@ public class MasterResourceReaderTest
 	public void testGetPrometheusScrapeWithoutMemoryInfo() throws Exception {
 		mockShell();
 
-		UrlReader urlReader = mockUrlReader();
-
 		String labelValue = RandomTestUtil.randomString();
 		String name = MonitorTestUtil.newMetricName();
+		UrlReader urlReader = mockUrlReader();
 
 		setUrlReaderOutput(
 			MonitorTestUtil.newSample("label", labelValue, name, "1.0"),
