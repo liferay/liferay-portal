@@ -14,6 +14,7 @@ import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.model.adapter.StagedExpandoColumn;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
+import com.liferay.expando.test.util.ExpandoTestUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
@@ -80,25 +81,28 @@ public class ExpandoExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@After
-	public void tearDownExpandoColumn() throws Exception {
+	@Override
+	public void tearDown() throws Exception {
 		for (File larFile : _larFiles) {
 			FileUtil.delete(larFile);
 		}
 
-		if (_expandoTable == null) {
-			return;
+		if (_expandoTable != null) {
+			ExpandoColumn expandoColumn =
+				ExpandoColumnLocalServiceUtil.fetchColumn(
+					_expandoTable.getTableId(), _expandoColumnName);
+
+			if (expandoColumn != null) {
+				ExpandoColumnLocalServiceUtil.deleteColumn(expandoColumn);
+			}
+
+			if (_addedExpandoTable != null) {
+				ExpandoTableLocalServiceUtil.deleteExpandoTable(
+					_addedExpandoTable);
+			}
 		}
 
-		ExpandoColumn expandoColumn = ExpandoColumnLocalServiceUtil.fetchColumn(
-			_expandoTable.getTableId(), _expandoColumnName);
-
-		if (expandoColumn != null) {
-			ExpandoColumnLocalServiceUtil.deleteColumn(expandoColumn);
-		}
-
-		if (_addedExpandoTable != null) {
-			ExpandoTableLocalServiceUtil.deleteExpandoTable(_addedExpandoTable);
-		}
+		super.tearDown();
 	}
 
 	@Test
@@ -108,9 +112,8 @@ public class ExpandoExportImportTest extends BaseExportImportTestCase {
 
 		_expandoColumnName = RandomTestUtil.randomString();
 
-		ExpandoColumn expandoColumn = ExpandoColumnLocalServiceUtil.addColumn(
-			_expandoTable.getTableId(), _expandoColumnName,
-			ExpandoColumnConstants.STRING);
+		ExpandoColumn expandoColumn = ExpandoTestUtil.addColumn(
+			_expandoTable, _expandoColumnName, ExpandoColumnConstants.STRING);
 
 		StagedExpandoColumn stagedExpandoColumn = ModelAdapterUtil.adapt(
 			expandoColumn, ExpandoColumn.class, StagedExpandoColumn.class);
