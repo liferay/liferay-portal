@@ -14,6 +14,8 @@ import com.nimbusds.jose.proc.JWSAlgorithmFamilyJWSKeySelector;
 
 import java.net.URL;
 
+import java.util.UUID;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -119,7 +121,7 @@ public class LiferayOAuth2ResourceServerEnableWebSecurityTest {
 
 		mockEnvironment.setProperty(
 			"test-headless-server.oauth2.headless.server.client.id",
-			"headless-server-id");
+			String.valueOf(UUID.randomUUID()));
 
 		ReflectionTestUtils.setField(
 			liferayOAuth2ResourceServerEnableWebSecurity, "_environment",
