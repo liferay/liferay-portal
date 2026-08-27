@@ -7,6 +7,7 @@ import ClayLink from '@clayui/link';
 import {ClayButtonWithIcon} from '@clayui/button';
 import FilterPicker from '../components/FilterPicker';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
+import LifecycleDateRangeIndicator from '../components/LifecycleDateRangeIndicator';
 import Loading from 'shared/components/Loading';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import OverviewSection from '../components/OverviewSection';
@@ -405,6 +406,8 @@ const BaseLifecycle = () => {
 									onFilterChange={setSegment}
 								/>
 							</div>
+
+							<LifecycleDateRangeIndicator />
 						</div>
 					</BasePage.SubHeader>
 				)}
