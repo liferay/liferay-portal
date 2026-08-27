@@ -180,7 +180,7 @@ tests:
                     value: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
             -   equal:
                     path: spec.source.targetRevision
-                    value: 0.1.0
+                    value: 9.9.9
             -   equal:
                     path: spec.syncPolicy.managedNamespaceMetadata.labels["pod-security.kubernetes.io/enforce"]
                     value: restricted
@@ -188,6 +188,8 @@ tests:
             path: metadata.name
             value: dxp-operator
         it: Renders the DXP operator by default
+        set:
+            operatorApplications.dxpOperator.targetRevision: 9.9.9
     -   asserts:
             -   equal:
                     path: spec.destination.namespace
