@@ -7,8 +7,10 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.MostActiveVisitors;
+import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.MostActiveVisitorsResource;
 
@@ -32,13 +34,20 @@ public class MostActiveVisitorsResourceImpl
 			String rangeStart, Integer size, Integer start)
 		throws Exception {
 
+		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
+			groupIds);
+
+		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+			return new MostActiveVisitors();
+		}
+
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_channelResourceFactory, _http, contextUser);
 
 		return analyticsCloudClient.getMostActiveVisitors(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			groupIds, rangeEnd, rangeKey, rangeStart, size, start);
+			visibleGroupIds, rangeEnd, rangeKey, rangeStart, size, start);
 	}
 
 	@Reference
@@ -46,6 +55,9 @@ public class MostActiveVisitorsResourceImpl
 
 	@Reference
 	private volatile ChannelResource.Factory _channelResourceFactory;
+
+	@Reference
+	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private Http _http;

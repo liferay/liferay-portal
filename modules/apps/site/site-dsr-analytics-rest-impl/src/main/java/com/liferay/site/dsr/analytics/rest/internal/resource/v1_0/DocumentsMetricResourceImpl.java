@@ -7,8 +7,10 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.DocumentsMetric;
+import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.DocumentsMetricResource;
 
@@ -33,13 +35,20 @@ public class DocumentsMetricResourceImpl
 			String sortColumn, String sortType, Integer start)
 		throws Exception {
 
+		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
+			groupIds);
+
+		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+			return new DocumentsMetric();
+		}
+
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_channelResourceFactory, _http, contextUser);
 
 		return analyticsCloudClient.getDocumentsMetric(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			groupIds, keywords, rangeEnd, rangeKey, rangeStart, size,
+			visibleGroupIds, keywords, rangeEnd, rangeKey, rangeStart, size,
 			sortColumn, sortType, start);
 	}
 
@@ -48,6 +57,9 @@ public class DocumentsMetricResourceImpl
 
 	@Reference
 	private volatile ChannelResource.Factory _channelResourceFactory;
+
+	@Reference
+	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private Http _http;

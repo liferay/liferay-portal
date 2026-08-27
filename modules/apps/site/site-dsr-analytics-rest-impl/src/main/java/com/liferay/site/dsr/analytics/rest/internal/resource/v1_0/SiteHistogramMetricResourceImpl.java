@@ -7,8 +7,10 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.SiteHistogramMetric;
+import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.SiteHistogramMetricResource;
 
@@ -32,13 +34,21 @@ public class SiteHistogramMetricResourceImpl
 			String rangeEnd, Integer rangeKey, String rangeStart)
 		throws Exception {
 
+		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
+			groupIds);
+
+		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+			return new SiteHistogramMetric();
+		}
+
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_channelResourceFactory, _http, contextUser);
 
 		return analyticsCloudClient.getSessionsSiteHistogramMetric(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			emailAddresses, groupIds, interval, rangeEnd, rangeKey, rangeStart);
+			emailAddresses, visibleGroupIds, interval, rangeEnd, rangeKey,
+			rangeStart);
 	}
 
 	@Override
@@ -47,13 +57,20 @@ public class SiteHistogramMetricResourceImpl
 			Integer rangeKey, String rangeStart)
 		throws Exception {
 
+		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
+			groupIds);
+
+		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+			return new SiteHistogramMetric();
+		}
+
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_channelResourceFactory, _http, contextUser);
 
 		return analyticsCloudClient.getVisitorsSiteHistogramMetric(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			groupIds, interval, rangeEnd, rangeKey, rangeStart);
+			visibleGroupIds, interval, rangeEnd, rangeKey, rangeStart);
 	}
 
 	@Reference
@@ -61,6 +78,9 @@ public class SiteHistogramMetricResourceImpl
 
 	@Reference
 	private volatile ChannelResource.Factory _channelResourceFactory;
+
+	@Reference
+	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private Http _http;

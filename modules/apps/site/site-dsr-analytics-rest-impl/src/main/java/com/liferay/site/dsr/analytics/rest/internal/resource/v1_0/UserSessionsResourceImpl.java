@@ -7,8 +7,10 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.UserSessions;
+import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.UserSessionsResource;
 
@@ -32,14 +34,21 @@ public class UserSessionsResourceImpl extends BaseUserSessionsResourceImpl {
 			String rangeStart, Integer size)
 		throws Exception {
 
+		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
+			groupIds);
+
+		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+			return new UserSessions();
+		}
+
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_channelResourceFactory, _http, contextUser);
 
 		return analyticsCloudClient.getUserSessions(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			entityId, entityType, groupIds, keywords, page, rangeEnd, rangeKey,
-			rangeStart, size);
+			entityId, entityType, visibleGroupIds, keywords, page, rangeEnd,
+			rangeKey, rangeStart, size);
 	}
 
 	@Reference
@@ -47,6 +56,9 @@ public class UserSessionsResourceImpl extends BaseUserSessionsResourceImpl {
 
 	@Reference
 	private volatile ChannelResource.Factory _channelResourceFactory;
+
+	@Reference
+	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private Http _http;
