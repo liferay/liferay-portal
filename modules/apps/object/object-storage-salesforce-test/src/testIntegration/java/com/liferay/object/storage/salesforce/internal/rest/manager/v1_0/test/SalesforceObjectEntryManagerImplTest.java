@@ -57,11 +57,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -277,6 +275,8 @@ public class SalesforceObjectEntryManagerImplTest
 		catch (ObjectEntryManagerHttpException
 					objectEntryManagerHttpException) {
 
+			_assumeSkipped = true;
+
 			Assume.assumeNoException(
 				"Unable to authenticate with Salesforce",
 				objectEntryManagerHttpException);
@@ -285,21 +285,19 @@ public class SalesforceObjectEntryManagerImplTest
 
 	@After
 	public void tearDown() throws Exception {
-		for (ObjectEntry objectEntry : _objectEntries) {
-			_objectEntryManager.deleteObjectEntry(
-				companyId, dtoConverterContext,
-				objectEntry.getExternalReferenceCode(), _objectDefinition,
-				ObjectDefinitionConstants.SCOPE_COMPANY);
+		try {
+			_deleteObjectEntries();
 		}
+		finally {
+			if (_objectDefinition != null) {
+				objectDefinitionLocalService.deleteObjectDefinition(
+					_objectDefinition.getObjectDefinitionId());
+			}
 
-		if (_objectDefinition != null) {
-			objectDefinitionLocalService.deleteObjectDefinition(
-				_objectDefinition.getObjectDefinitionId());
-		}
-
-		if (listTypeDefinition != null) {
-			listTypeDefinitionLocalService.deleteListTypeDefinition(
-				listTypeDefinition.getListTypeDefinitionId());
+			if (listTypeDefinition != null) {
+				listTypeDefinitionLocalService.deleteListTypeDefinition(
+					listTypeDefinition.getListTypeDefinitionId());
+			}
 		}
 	}
 
@@ -603,7 +601,7 @@ public class SalesforceObjectEntryManagerImplTest
 			boolean flagged, LocalDateTime startDate, String title)
 		throws Exception {
 
-		ObjectEntry objectEntry = _objectEntryManager.addObjectEntry(
+		return _objectEntryManager.addObjectEntry(
 			dtoConverterContext, _objectDefinition,
 			new ObjectEntry() {
 				{
@@ -627,10 +625,6 @@ public class SalesforceObjectEntryManagerImplTest
 				}
 			},
 			ObjectDefinitionConstants.SCOPE_COMPANY);
-
-		_objectEntries.add(objectEntry);
-
-		return objectEntry;
 	}
 
 	private void _assertObjectEntry(
@@ -679,13 +673,30 @@ public class SalesforceObjectEntryManagerImplTest
 		return objectFieldSetting;
 	}
 
+	private void _deleteObjectEntries() throws Exception {
+		if (_assumeSkipped) {
+			return;
+		}
+
+		Page<ObjectEntry> page = _objectEntryManager.getObjectEntries(
+			companyId, _objectDefinition, null, null, dtoConverterContext,
+			_buildRunFilterString(null), Pagination.of(1, 200), null, null);
+
+		for (ObjectEntry objectEntry : page.getItems()) {
+			_objectEntryManager.deleteObjectEntry(
+				companyId, dtoConverterContext,
+				objectEntry.getExternalReferenceCode(), _objectDefinition,
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+		}
+	}
+
 	@Inject
 	private static ConfigurationProvider _configurationProvider;
 
 	private static DateFormat _simpleDateFormat;
 
+	private boolean _assumeSkipped;
 	private ObjectDefinition _objectDefinition;
-	private final List<ObjectEntry> _objectEntries = new ArrayList<>();
 
 	@Inject(
 		filter = "object.entry.manager.storage.type=" + ObjectDefinitionConstants.STORAGE_TYPE_SALESFORCE
