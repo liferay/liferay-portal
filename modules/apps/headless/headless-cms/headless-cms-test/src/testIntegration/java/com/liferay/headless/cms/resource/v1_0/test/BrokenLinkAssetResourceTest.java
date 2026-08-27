@@ -519,6 +519,11 @@ public class BrokenLinkAssetResourceTest
 				brokenLinkAssetResource.getBrokenLinkAssetsPageHttpResponse(
 					null, null, Pagination.of(1, 20), null));
 		}
+
+		assertHttpResponseStatusCode(
+			200,
+			brokenLinkAssetResource.getBrokenLinkAssetsPageHttpResponse(
+				null, null, Pagination.of(1, 20), null));
 	}
 
 	private void _testGetBrokenLinkAssetsPageWithoutUpdatePermission()
