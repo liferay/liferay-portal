@@ -28,6 +28,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:headless:headless-commerce-core-api")
 	testIntegrationImplementation project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
 	testIntegrationImplementation project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-client")
+	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
