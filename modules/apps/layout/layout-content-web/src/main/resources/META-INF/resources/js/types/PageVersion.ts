@@ -10,6 +10,13 @@ type Action = {
 	method: string;
 };
 
+export type PageVersionExperience = {
+	availablePreviewLanguageIds: Liferay.Language.Locale[];
+	externalReferenceCode: string;
+	name_i18n: Record<string, string>;
+	priority: number;
+};
+
 export type PageVersion = {
 	actions?: Partial<Record<'delete' | 'restore', Action>>;
 	creator?: {
@@ -21,6 +28,7 @@ export type PageVersion = {
 	dateModified: string;
 	externalReferenceCode: string;
 	name: string;
+	pageSpecificationVersionPageExperiences?: PageVersionExperience[];
 	status: Status;
 	statusDate: string;
 	version: number;
