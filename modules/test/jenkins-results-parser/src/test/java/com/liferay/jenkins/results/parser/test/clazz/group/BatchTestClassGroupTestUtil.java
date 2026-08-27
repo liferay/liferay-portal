@@ -17,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.nio.file.Files;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,6 +84,19 @@ public class BatchTestClassGroupTestUtil {
 			"service-builder-modules", portalTestClassJob);
 	}
 
+	public static File newTestClassFile(String className, File parentDir)
+		throws IOException {
+
+		File testClassFile = new File(parentDir, className + ".java");
+
+		String testClassFileContent = _getTestClassFileContent(className);
+
+		Files.write(
+			testClassFile.toPath(), testClassFileContent.getBytes("UTF-8"));
+
+		return testClassFile;
+	}
+
 	private static PortalTestClassJob _getPortalTestClassJob() {
 		if (_portalTestClassJob != null) {
 			return _portalTestClassJob;
@@ -128,6 +143,12 @@ public class BatchTestClassGroupTestUtil {
 			repositoryName, "relevant", upstreamBranchName);
 
 		return _portalTestClassJob;
+	}
+
+	private static String _getTestClassFileContent(String className) {
+		return JenkinsResultsParserUtil.combine(
+			"public class ", className, " {\n\n\t@Test\n\tpublic void ",
+			"testSample() {\n\t}\n\n}");
 	}
 
 	private static File _writeJobPropertiesFile(Properties jobProperties) {
