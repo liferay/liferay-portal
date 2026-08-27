@@ -17,9 +17,12 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -31,12 +34,15 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import jakarta.portlet.PortletException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -81,20 +87,7 @@ public class UpdatePermissionsMVCActionCommandTest {
 					_ctCollection.getCtCollectionId())) {
 
 			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-				new MockLiferayPortletActionRequest();
-
-			mockLiferayPortletActionRequest.setAttribute(
-				JavaConstants.JAKARTA_PORTLET_RESPONSE,
-				new MockLiferayPortletActionResponse());
-			mockLiferayPortletActionRequest.setAttribute(
-				WebKeys.PORTLET_ID, CTPortletKeys.PUBLICATIONS);
-
-			ThemeDisplay themeDisplay = new ThemeDisplay();
-
-			themeDisplay.setCompany(_company);
-
-			mockLiferayPortletActionRequest.setAttribute(
-				WebKeys.THEME_DISPLAY, themeDisplay);
+				_getMockLiferayPortletActionRequest(TestPropsValues.getUser());
 
 			String[] ownerRoleActionIds = {
 				ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
@@ -150,20 +143,7 @@ public class UpdatePermissionsMVCActionCommandTest {
 				ActionKeys.VIEW));
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
-
-		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_RESPONSE,
-			new MockLiferayPortletActionResponse());
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.PORTLET_ID, CTPortletKeys.PUBLICATIONS);
-
-		ThemeDisplay themeDisplay = new ThemeDisplay();
-
-		themeDisplay.setCompany(_company);
-
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, themeDisplay);
+			_getMockLiferayPortletActionRequest(TestPropsValues.getUser());
 
 		String[] ownerRoleActionIds = {
 			ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
@@ -218,6 +198,97 @@ public class UpdatePermissionsMVCActionCommandTest {
 		}
 	}
 
+	@Test
+	public void testProcessAction3() throws Exception {
+		User user = UserTestUtil.addUser(_company);
+
+		Role viewerRole = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.PUBLICATIONS_VIEWER);
+
+		_roleLocalService.addUserRole(
+			user.getUserId(), viewerRole.getRoleId());
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(user);
+
+		mockLiferayPortletActionRequest.setParameter(
+			"permissions",
+			JSONUtil.put(
+				String.valueOf(_ownerRole.getRoleId()),
+				new String[] {ActionKeys.VIEW}
+			).put(
+				String.valueOf(viewerRole.getRoleId()),
+				new String[] {ActionKeys.UPDATE}
+			).toString());
+
+		try {
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse());
+
+			Assert.fail();
+		}
+		catch (PortletException portletException) {
+			Throwable throwable = portletException.getCause();
+
+			Assert.assertTrue(
+				throwable instanceof PrincipalException.MustHavePermission);
+		}
+
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				_company.getCompanyId(), CTCollection.class.getName(),
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(_company.getCompanyId()), viewerRole.getRoleId(),
+				ActionKeys.UPDATE));
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				_company.getCompanyId(), CTCollection.class.getName(),
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(_company.getCompanyId()), viewerRole.getRoleId(),
+				ActionKeys.VIEW));
+
+		for (String modelResourceOwnerDefaultAction :
+				ResourceActionsUtil.getModelResourceOwnerDefaultActions(
+					CTCollection.class.getName())) {
+
+			Assert.assertTrue(
+				_resourcePermissionLocalService.hasResourcePermission(
+					_company.getCompanyId(), CTCollection.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(_ctCollection.getCtCollectionId()),
+					_ownerRole.getRoleId(), modelResourceOwnerDefaultAction));
+		}
+	}
+
+	private MockLiferayPortletActionRequest
+			_getMockLiferayPortletActionRequest(User user)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
+			new MockLiferayPortletActionResponse());
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.PORTLET_ID, CTPortletKeys.PUBLICATIONS);
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(user));
+
+		return mockLiferayPortletActionRequest;
+	}
+
+	private ThemeDisplay _getThemeDisplay(User user) throws Exception {
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(_company);
+		themeDisplay.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		return themeDisplay;
+	}
+
 	@DeleteAfterTestRun
 	private Company _company;
 
@@ -242,5 +313,6 @@ public class UpdatePermissionsMVCActionCommandTest {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
 
 }
