@@ -272,19 +272,20 @@ definition {
 
 	@summary = "Default summary"
 	macro deleteEnvelope(envelopeName = null) {
-		DigitalSignature.waitForListViewLoad();
-
-		Refresh();
+		DigitalSignature.waitForEnvelope(envelopeName = ${envelopeName});
 
 		Click(
-			key_text = ${envelopeName},
-			locator1 = "Link#ANY");
+			envelopeName = ${envelopeName},
+			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME");
 
-		AssertElementPresent(locator1 = "TextInput#HIDDEN");
+		DigitalSignature.deleteEnvelopeFromView();
+	}
 
-		DigitalSignature.waitForListViewLoad();
+	@summary = "Default summary"
+	macro deleteEnvelopeFromView() {
+		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_DELETE_URL");
 
-		var value = selenium.getElementValue("TextInput#HIDDEN");
+		var value = selenium.getElementValue("DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_DELETE_URL");
 
 		Navigator.openSpecificURL(url = ${value});
 	}
@@ -511,6 +512,21 @@ definition {
 		AssertElementPresent(
 			fileTitle = ${documentTitle},
 			locator1 = "DigitalSignatureEnvelopeSettings#DIGITAL_SIGNATURE_MODAL_UNSUPPORTED_FILE");
+	}
+
+	@summary = "Default summary"
+	macro waitForEnvelope(envelopeName = null) {
+		DigitalSignature.waitForListViewLoad();
+
+		while ((IsElementNotPresent(envelopeName = ${envelopeName}, locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME")) && (maxIterations = "10")) {
+			Refresh();
+
+			DigitalSignature.waitForListViewLoad();
+		}
+
+		AssertElementPresent(
+			envelopeName = ${envelopeName},
+			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME");
 	}
 
 	@summary = "Default summary"

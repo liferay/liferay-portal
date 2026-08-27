@@ -41,6 +41,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DIGITAL_SIGNATURE_ENVELOPE_DELETE_URL</td>
+	<td>//div[contains(@class, 'envelope-view')]//input[@type = 'hidden']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DIGITAL_SIGNATURE_ADD_RECIPIENT</td>
 	<td>//button[contains(@class, 'mb-4 btn btn-unstyled')]</td>
 	<td></td>
@@ -57,7 +62,7 @@
 </tr>
 <tr>
 	<td>DIGITAL_SIGNATURE_ENVELOPE_NAME</td>
-	<td>//a[contains(., '${envelopeName}')]</td>
+	<td>//a[normalize-space(.) = '${envelopeName}']</td>
 	<td></td>
 </tr>
 <tr>
@@ -67,12 +72,12 @@
 </tr>
 <tr>
 	<td>DIGITAL_SIGNATURE_ELLIPSIS_BUTTON</td>
-	<td>//tr[contains(@class, '') and contains(., '${envelopeName}')]//button[contains(@class, 'dropdown')]</td>
+	<td>//tr[.//a[normalize-space(.) = '${envelopeName}']]//button[contains(@class, 'dropdown')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>DIGITAL_SIGNATURE_DOWNLOAD_BY_LIST</td>
-	<td>//button[contains(., 'Download')]</td>
+	<td>//div[contains(@class, 'dropdown-menu')]//button[contains(., 'Download')]</td>
 	<td></td>
 </tr>
 <tr>
