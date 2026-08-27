@@ -18,6 +18,7 @@ import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {normalizeRestPath} from '../../../utils/normalizeRestPath';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import getFormContainerDefinition from '../../layout-content-page-editor-web/main/utils/getFormContainerDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
@@ -40,6 +41,46 @@ const test = mergeTests(
 	objectPagesTest,
 	pageEditorPagesTest
 );
+
+const createdSalesforceObjectEntries = [] as {
+	applicationName: string;
+	objectFieldValues: string[];
+}[];
+
+test.afterEach(async ({apiHelpers}) => {
+	for (const {
+		applicationName,
+		objectFieldValues,
+	} of createdSalesforceObjectEntries) {
+		try {
+			const {items} =
+				await apiHelpers.objectEntry.getObjectDefinitionObjectEntries(
+					applicationName,
+					new URLSearchParams({
+						filter: objectFieldValues
+							.map(
+								(objectFieldValue) =>
+									`title eq '${objectFieldValue}'`
+							)
+							.join(' or '),
+					})
+				);
+
+			for (const {externalReferenceCode} of items ?? []) {
+				await apiHelpers.delete(
+					`${apiHelpers.baseUrl}${applicationName}/by-external-reference-code/${externalReferenceCode}`
+				);
+			}
+		}
+		catch (error) {
+			console.error(
+				`Unable to delete the Salesforce object entries: ${error}`
+			);
+		}
+	}
+
+	createdSalesforceObjectEntries.length = 0;
+});
 
 test.beforeEach(async ({apiHelpers, instanceSettingsPage, page}) => {
 	test.skip(
@@ -148,6 +189,11 @@ test('Assert CRUD with created custom object using Salesforce storage type', asy
 
 	const objectFieldValue = getRandomString();
 	const objectFieldUpdatedValue = getRandomString();
+
+	createdSalesforceObjectEntries.push({
+		applicationName: normalizeRestPath(objectDefinition.restContextPath!),
+		objectFieldValues: [objectFieldValue, objectFieldUpdatedValue],
+	});
 
 	await test.step('Create Object Entry', async () => {
 		await viewObjectEntriesPage.goto(objectDefinition.className);
@@ -297,6 +343,11 @@ test('Assert CRUD with created custom object using Salesforce storage type in fo
 	});
 
 	const entryValue = getRandomString();
+
+	createdSalesforceObjectEntries.push({
+		applicationName: normalizeRestPath(objectDefinition.restContextPath!),
+		objectFieldValues: [entryValue],
+	});
 
 	await test.step('Submit an entry via the published form', async () => {
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
