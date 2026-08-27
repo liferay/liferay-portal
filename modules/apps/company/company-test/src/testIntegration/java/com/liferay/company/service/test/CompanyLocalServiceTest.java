@@ -927,6 +927,46 @@ public class CompanyLocalServiceTest {
 
 	@FeatureFlag("LPD-11342")
 	@Test
+	public void testExportCompanyExistingExportedPartition() throws Exception {
+		Assume.assumeTrue(_db.isSupportsDBPartition());
+
+		String exportedPartitionName =
+			CompanyLocalServiceTestUtil.getExportedPartitionName(
+				_company.getCompanyId());
+
+		try {
+			_companyLocalService.exportCompany(_company.getCompanyId());
+
+			Assert.assertTrue(
+				_dbPartitionDB.existsPartition(
+					_connection, exportedPartitionName));
+
+			IllegalArgumentException illegalArgumentException =
+				Assert.assertThrows(
+					IllegalArgumentException.class,
+					() -> _companyLocalService.exportCompany(
+						_company.getCompanyId()));
+
+			String message = illegalArgumentException.getMessage();
+
+			Assert.assertTrue(message, message.contains(exportedPartitionName));
+
+			Assert.assertTrue(
+				_dbPartitionDB.existsPartition(
+					_connection, exportedPartitionName));
+
+			CompanyLocalServiceTestUtil.checkStandaloneDBPartitionTables(
+				_connection, _dbPartitionDB, exportedPartitionName, "Company",
+				"VirtualHost");
+		}
+		finally {
+			_db.runSQL(
+				_dbPartitionDB.getDropPartitionSQL(exportedPartitionName));
+		}
+	}
+
+	@FeatureFlag("LPD-11342")
+	@Test
 	public void testExportCompanyWhenDBPartitionUtilFails() throws Exception {
 		Assume.assumeTrue(_db.isSupportsDBPartition());
 

@@ -110,9 +110,7 @@ public class CompanyLocalServiceTestUtil {
 	}
 
 	public static String getExportedPartitionName(long companyId) {
-		return ReflectionTestUtil.invoke(
-			DBPartitionUtil.class, "_getExportedPartitionName",
-			new Class<?>[] {long.class}, companyId);
+		return DBPartitionUtil.getExportedPartitionName(companyId);
 	}
 
 	public static String getPartitionName(long companyId) {

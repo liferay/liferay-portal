@@ -205,9 +205,7 @@ public abstract class BaseDBPartitionTestCase {
 	}
 
 	protected static String getExportedPartitionName(long companyId) {
-		return ReflectionTestUtil.invoke(
-			DBPartitionUtil.class, "_getExportedPartitionName",
-			new Class<?>[] {long.class}, companyId);
+		return DBPartitionUtil.getExportedPartitionName(companyId);
 	}
 
 	protected static String getPartitionName(long companyId) {
