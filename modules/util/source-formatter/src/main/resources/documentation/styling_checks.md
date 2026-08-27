@@ -21,6 +21,7 @@ ChainingCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that meth
 CodeownersOrderCheck | CODEOWNERS | Sorts code owners in `CODEOWNERS` files. |
 CodeownersWhitespaceCheck | CODEOWNERS | Finds missing and unnecessary whitespace in `CODEOWNERS` files. |
 ConfigDefinitionKeysCheck | .cfg or .config | Sorts definition keys in `.config` files. |
+ConfigStylingCheck | .cfg or .config | Applies rules to enforce consistency in code style. |
 ConfigWhitespaceCheck | .cfg or .config | Finds missing and unnecessary whitespace. |
 [ConstructorMissingEmptyLineCheck](check/constructor_missing_empty_line_check.md#constructormissingemptylinecheck) | .java | Checks for line breaks when assigning variables in constructor. |
 ContractionsCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds contractions in Strings (such as `can't` or `you're`). |
