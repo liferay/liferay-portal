@@ -58,7 +58,7 @@ public class GetDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 			WebKeys.THEME_DISPLAY);
 
 		DSEnvelope dsEnvelope = _dsEnvelopeManager.getDSEnvelope(
-			themeDisplay.getCompanyId(), themeDisplay.getCompanyGroupId(),
+			themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId(),
 			ParamUtil.getString(resourceRequest, "dsEnvelopeId"));
 
 		JSONPortletResponseUtil.writeJSON(
