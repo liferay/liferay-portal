@@ -63,7 +63,7 @@ public class IndexerRequest {
 			  Objects.equals(
 				  _modelPrimaryKey, indexerRequest._modelPrimaryKey))) &&
 			Objects.equals(
-				_getModelIdentity(), indexerRequest._getModelIdentity())) {
+				_getModelTypeKey(), indexerRequest._getModelTypeKey())) {
 
 			return true;
 		}
@@ -86,7 +86,7 @@ public class IndexerRequest {
 	public int hashCode() {
 		int hashCode = HashUtil.hash(0, _method.getName());
 
-		hashCode = HashUtil.hash(hashCode, _getModelIdentity());
+		hashCode = HashUtil.hash(hashCode, _getModelTypeKey());
 
 		return HashUtil.hash(hashCode, _modelPrimaryKey);
 	}
@@ -107,7 +107,7 @@ public class IndexerRequest {
 		return _modelClassName;
 	}
 
-	private Object _getModelIdentity() {
+	private Object _getModelTypeKey() {
 		if (_classedModel == null) {
 			return _modelClassName;
 		}
