@@ -6,17 +6,13 @@
 package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRendererContext;
-import com.liferay.frontend.taglib.react.servlet.taglib.ComponentTag;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.taglib.servlet.PageContextFactoryUtil;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import java.util.Locale;
 import java.util.Map;
@@ -42,28 +38,11 @@ public abstract class BaseComponentSectionFragmentRenderer
 		throws IOException {
 
 		try {
-			PrintWriter printWriter = httpServletResponse.getWriter();
-
-			printWriter.write("<div><span aria-hidden=\"true\" class=\"");
-			printWriter.write("loading-animation\"></span>");
-
-			ComponentTag componentTag = new ComponentTag();
-
-			componentTag.setModule(
-				StringBundler.concat(
-					"{", getComponentName(), "} from ", getModuleName()));
-			componentTag.setPageContext(
-				PageContextFactoryUtil.create(
-					httpServletRequest, httpServletResponse));
-			componentTag.setProps(
-				getProps(fragmentRendererContext, httpServletRequest));
-			componentTag.setServletContext(servletContext);
-
-			componentTag.doStartTag();
-
-			componentTag.doEndTag();
-
-			printWriter.write("</div>");
+			ComponentTagUtil.renderComponent(
+				getComponentName(), httpServletRequest, httpServletResponse,
+				getModuleName(),
+				getProps(fragmentRendererContext, httpServletRequest),
+				servletContext);
 		}
 		catch (IOException | RuntimeException exception) {
 			throw exception;

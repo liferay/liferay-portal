@@ -5,6 +5,7 @@
 
 export {default as AddMembersInput} from './common/components/AddMembersInput';
 export {default as Breadcrumb} from './common/components/Breadcrumb';
+export {default as EnterpriseOnlyPlaceholder} from './common/components/EnterpriseOnlyPlaceholder';
 export {default as EnterpriseProductMenuBanner} from './common/components/EnterpriseProductMenuBanner';
 export {default as SpaceSelector} from './common/components/SpaceSelector';
 export {default as SpaceSticker} from './common/components/SpaceSticker';

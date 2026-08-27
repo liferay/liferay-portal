@@ -6,7 +6,9 @@
 package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.learn.LearnMessageUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +29,16 @@ public abstract class BaseEnterpriseJSPSectionFragmentRenderer<T>
 		throws IOException {
 
 		if (LicenseManagerUtil.isFreeTier()) {
+			ComponentTagUtil.renderComponent(
+				"EnterpriseOnlyPlaceholder", httpServletRequest,
+				httpServletResponse, "site-cms-site-initializer",
+				HashMapBuilder.<String, Object>put(
+					"learnResources",
+					LearnMessageUtil.getReactDataJSONObject(
+						"site-cms-site-initializer")
+				).build(),
+				servletContext);
+
 			return;
 		}
 
