@@ -415,7 +415,9 @@ definition {
 		}
 
 		task ("Export www.able.com partition and shutdown the server") {
-			DBPartition.exportDBPartition(partitionCompanyId = ${partitionCompanyId});
+			DBPartition.exportDBPartition(
+				expectedCompanyId = ${partitionCompanyId},
+				portalInstanceId = "www.able.com");
 
 			Clustering.shutdownSpecificServer(nodePort = 8080);
 
@@ -527,7 +529,9 @@ definition {
 		}
 
 		task ("Export www.able.com instance, delete instance and shutdown the servers") {
-			DBPartition.exportDBPartition(partitionCompanyId = ${partitionCompanyId});
+			DBPartition.exportDBPartition(
+				expectedCompanyId = ${partitionCompanyId},
+				portalInstanceId = "www.able.com");
 
 			User.firstLoginPG();
 

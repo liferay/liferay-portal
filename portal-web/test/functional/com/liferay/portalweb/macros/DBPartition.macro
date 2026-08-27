@@ -1,21 +1,23 @@
 definition {
 
 	@summary = "Exports an integrated DB Partition into a standalone partition"
-	macro exportDBPartition(partitionCompanyId = null) {
-		OSGiConfig.deployOSGiConfigFile(
-			osgiConfigFileName = "com.liferay.portal.instances.internal.configuration.ExportPortalInstanceConfiguration.config",
-			osgiConfigs = "exportCompanyId=L\"${partitionCompanyId}\"");
+	macro exportDBPartition(expectedCompanyId = null, portalInstanceId = null) {
+		var sourceCompanyId = HeadlessPortalInstanceAPI.exportPortalInstance(portalInstanceId = ${portalInstanceId});
 
-		OSGiConfig.waitForOSGiConfigDeleted(osgiConfigFileName = "com.liferay.portal.instances.internal.configuration.ExportPortalInstanceConfiguration.config");
+		if (isSet(expectedCompanyId)) {
+			TestUtils.assertEquals(
+				actual = ${sourceCompanyId},
+				expected = ${expectedCompanyId});
+		}
+
+		return ${sourceCompanyId};
 	}
 
 	@summary = "Imports a standalone DB Partition as a new company"
 	macro importDBPartition(partitionCompanyId = null) {
-		OSGiConfig.deployOSGiConfigFile(
-			osgiConfigFileName = "com.liferay.portal.instances.internal.configuration.ImportPortalInstanceConfiguration.config",
-			osgiConfigs = "importCompanyId=L\"${partitionCompanyId}\"");
+		Variables.assertDefined(parameterList = ${partitionCompanyId});
 
-		OSGiConfig.waitForOSGiConfigDeleted(osgiConfigFileName = "com.liferay.portal.instances.internal.configuration.ImportPortalInstanceConfiguration.config");
+		HeadlessPortalInstanceAPI.importPortalInstance(schemaName = "lexported_${partitionCompanyId}");
 	}
 
 	@summary = "Validates that the records are correctly tied to their partitions using the portal-tools-db-partition-schema-validator tool"

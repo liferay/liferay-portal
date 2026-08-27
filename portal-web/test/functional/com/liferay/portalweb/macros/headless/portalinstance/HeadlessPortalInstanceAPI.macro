@@ -170,4 +170,79 @@ definition {
 		JSONCurlUtil.delete(${curl});
 	}
 
+	@summary = "Export the ${portalInstanceId} portal instance into a standalone partition"
+	macro exportPortalInstance(authenticationMethod = null, portalInstanceId = null) {
+		Variables.assertDefined(parameterList = ${portalInstanceId});
+
+		var portalURL = JSONCompany.getDefaultPortalURL();
+		var portalInstanceId = StringUtil.replace(${portalInstanceId}, " ", "%20");
+
+		if (${authenticationMethod} == "By Screen Name") {
+			var userLoginInfo = "test:${PropsUtil.get(\"default.admin.password\")}";
+		}
+		else {
+			var userLoginInfo = JSONUtil2.formatJSONSuperAdminUser();
+		}
+
+		var curl = '''
+			${portalURL}/o/headless-portal-instances/v1.0/portal-instances/${portalInstanceId}/export \
+				-u ${userLoginInfo} \
+				-H Content-Type: application/json
+		''';
+
+		var sourceCompanyId = JSONCurlUtil.post(${curl}, "$.sourceCompanyId");
+
+		return ${sourceCompanyId};
+	}
+
+	@summary = "Import the ${schemaName} standalone partition as a portal instance"
+	macro importPortalInstance(authenticationMethod = null, name = null, schemaName = null, virtualHost = null, webId = null) {
+		Variables.assertDefined(parameterList = ${schemaName});
+
+		var portalURL = JSONCompany.getDefaultPortalURL();
+		var parameters = JSONUtil2._addJSONObject(
+			json = "{}",
+			key = "schemaName",
+			value = "\"${schemaName}\"");
+
+		if (isSet(name)) {
+			var parameters = JSONUtil2._addJSONObject(
+				json = ${parameters},
+				key = "name",
+				value = "\"${name}\"");
+		}
+
+		if (isSet(virtualHost)) {
+			var parameters = JSONUtil2._addJSONObject(
+				json = ${parameters},
+				key = "virtualHost",
+				value = "\"${virtualHost}\"");
+		}
+
+		if (isSet(webId)) {
+			var parameters = JSONUtil2._addJSONObject(
+				json = ${parameters},
+				key = "webId",
+				value = "\"${webId}\"");
+		}
+
+		if (${authenticationMethod} == "By Screen Name") {
+			var userLoginInfo = "test:${PropsUtil.get(\"default.admin.password\")}";
+		}
+		else {
+			var userLoginInfo = JSONUtil2.formatJSONSuperAdminUser();
+		}
+
+		var curl = '''
+			${portalURL}/o/headless-portal-instances/v1.0/portal-instances/import \
+				-u ${userLoginInfo} \
+				-d ${parameters} \
+				-H Content-Type: application/json
+		''';
+
+		var portalInstanceId = JSONCurlUtil.post(${curl}, "$.portalInstanceId");
+
+		return ${portalInstanceId};
+	}
+
 }

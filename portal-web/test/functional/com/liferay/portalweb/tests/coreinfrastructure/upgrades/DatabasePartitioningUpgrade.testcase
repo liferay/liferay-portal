@@ -159,9 +159,8 @@ definition {
 		}
 
 		task ("Export www.able.com and www.baker.com partitions and shutdown the server") {
-			DBPartition.exportDBPartition(partitionCompanyId = 42638);
-
-			DBPartition.exportDBPartition(partitionCompanyId = 44913);
+			var ableCompanyId = DBPartition.exportDBPartition(portalInstanceId = "www.able.com");
+			var bakerCompanyId = DBPartition.exportDBPartition(portalInstanceId = "www.baker.com");
 
 			Clustering.shutdownSpecificServer(nodePort = 8080);
 
@@ -184,21 +183,21 @@ definition {
 			var databaseType = PropsUtil.get("database.type");
 
 			if (${databaseType} == "mysql") {
-				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_42638;");
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_${ableCompanyId};");
 
-				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_44913;");
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_${bakerCompanyId};");
 			}
 			else if (${databaseType} == "postgresql") {
-				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_42638 cascade;");
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_${ableCompanyId} cascade;");
 
-				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_44913 cascade;");
+				SQL.executeSQLStatement(sqlStatement = "drop schema if exists lpartition_${bakerCompanyId} cascade;");
 			}
 		}
 
 		task ("Add previously exported partitions into new database") {
-			DBPartition.importDBPartition(partitionCompanyId = 42638);
+			DBPartition.importDBPartition(partitionCompanyId = ${ableCompanyId});
 
-			DBPartition.importDBPartition(partitionCompanyId = 44913);
+			DBPartition.importDBPartition(partitionCompanyId = ${bakerCompanyId});
 		}
 
 		task ("Ensure that portal main functionalities work correctly") {

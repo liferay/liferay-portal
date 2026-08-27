@@ -95,19 +95,4 @@ ${configList}''';
 		Pause(value1 = 8000);
 	}
 
-	@summary = "Wait for ${osgiConfigFileName} processed and deleted from the config directory"
-	macro waitForOSGiConfigDeleted(osgiConfigFileName = null) {
-		var liferayHome = PropsUtil.get("liferay.home.dir.name");
-
-		var osgiConfigExists = FileUtil.exists("${liferayHome}/osgi/configs/${osgiConfigFileName}");
-
-		while ((${osgiConfigExists} == "true")) {
-			var osgiConfigExists = FileUtil.exists("${liferayHome}/osgi/configs/${osgiConfigFileName}");
-
-			// We need to pause until the file gets deleted, meaning that it has been processed. See LPD-21245
-
-			Pause(value1 = 8000);
-		}
-	}
-
 }
