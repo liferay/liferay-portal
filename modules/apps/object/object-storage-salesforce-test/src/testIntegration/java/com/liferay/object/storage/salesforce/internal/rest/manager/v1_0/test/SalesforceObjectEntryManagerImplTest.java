@@ -141,6 +141,8 @@ public class SalesforceObjectEntryManagerImplTest
 	public void setUp() throws Exception {
 		super.setUp();
 
+		_runId = RandomTestUtil.randomInt();
+
 		listTypeDefinition =
 			listTypeDefinitionLocalService.addListTypeDefinition(
 				"Status", TestPropsValues.getUserId(),
@@ -209,9 +211,9 @@ public class SalesforceObjectEntryManagerImplTest
 					).userId(
 						adminUser.getUserId()
 					).labelMap(
-						LocalizedMapUtil.getLocalizedMap("Object Definition ID")
+						LocalizedMapUtil.getLocalizedMap("Run ID")
 					).name(
-						"objectDefinitionId"
+						"runId"
 					).build(),
 					new DateTimeObjectFieldBuilder(
 					).externalReferenceCode(
@@ -373,8 +375,7 @@ public class SalesforceObjectEntryManagerImplTest
 			objectEntry1);
 
 		String filterString = StringBundler.concat(
-			"(objectDefinitionId eq ",
-			_objectDefinition.getObjectDefinitionId(), ") and ");
+			"(runId eq ", _runId, ") and ");
 
 		testGetObjectEntries(
 			HashMapBuilder.put(
@@ -641,8 +642,7 @@ public class SalesforceObjectEntryManagerImplTest
 					).put(
 						"flagged", flagged
 					).put(
-						"objectDefinitionId",
-						_objectDefinition.getObjectDefinitionId()
+						"runId", _runId
 					).put(
 						"startDate", startDate
 					).put(
@@ -709,5 +709,7 @@ public class SalesforceObjectEntryManagerImplTest
 
 	@Inject
 	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
+
+	private long _runId;
 
 }
