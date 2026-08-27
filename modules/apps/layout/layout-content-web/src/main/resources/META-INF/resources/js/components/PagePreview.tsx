@@ -13,18 +13,38 @@ const BLOCKED_EVENTS = ['auxclick', 'click', 'submit'] as const;
 const FORWARDED_EVENTS = ['pointerdown', 'pointerup'] as const;
 
 interface Props {
+	experienceERC?: string;
 	experienceId?: string;
 	languageId: string;
+	versionERC?: string;
 }
 
-export default function PagePreview({experienceId, languageId}: Props) {
-	const params = new URLSearchParams({
-		languageId,
-		selPlid: String(Liferay.ThemeDisplay.getPlid()),
-	});
+export default function PagePreview({
+	experienceERC,
+	experienceId,
+	languageId,
+	versionERC,
+}: Props) {
+	const params = new URLSearchParams({languageId});
 
-	if (experienceId) {
-		params.set('segmentsExperienceId', experienceId);
+	let url = config.getPagePreviewURL;
+
+	if (versionERC) {
+		url = config.getPageVersionPreviewURL;
+
+		params.set('externalReferenceCode', versionERC);
+		params.set('groupId', String(Liferay.ThemeDisplay.getScopeGroupId()));
+
+		if (experienceERC) {
+			params.set('segmentsExperienceERC', experienceERC);
+		}
+	}
+	else {
+		params.set('selPlid', String(Liferay.ThemeDisplay.getPlid()));
+
+		if (experienceId) {
+			params.set('segmentsExperienceId', experienceId);
+		}
 	}
 
 	const handleLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
@@ -47,7 +67,7 @@ export default function PagePreview({experienceId, languageId}: Props) {
 		<iframe
 			className="version-history__preview"
 			onLoad={handleLoad}
-			src={`${config.getPagePreviewURL}?${params}`}
+			src={`${url}?${params}`}
 			title={Liferay.Language.get('preview')}
 		/>
 	);

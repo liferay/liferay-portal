@@ -16,6 +16,7 @@ import React, {useEffect, useState} from 'react';
 import {Config, initializeConfig} from '../config';
 import PageVersionService from '../services/PageVersionService';
 import {PageVersion} from '../types/PageVersion';
+import {getVersionData} from '../utils/getVersionData';
 import PagePreview from './PagePreview';
 import ResponsivePanel from './ResponsivePanel';
 import Toolbar from './Toolbar';
@@ -40,10 +41,10 @@ export default function VersionHistory({config}: Props) {
 
 	const [versions, setVersions] = useState<PageVersion[] | null>(null);
 
-	const [selectedExperienceERC, setSelectedExperienceERC] = useState(
+	const [currentExperienceERC, setCurrentExperienceERC] = useState(
 		config.availableSegmentsExperiences[0]?.segmentsExperienceERC
 	);
-	const [selectedLanguageId, setSelectedLanguageId] = useState(
+	const [currentLanguageId, setCurrentLanguageId] = useState(
 		config.defaultLanguageId
 	);
 
@@ -157,10 +158,16 @@ export default function VersionHistory({config}: Props) {
 		window.location.reload();
 	};
 
-	const selectedExperience = config.availableSegmentsExperiences.find(
-		({segmentsExperienceERC}) =>
-			segmentsExperienceERC === selectedExperienceERC
+	const selectedVersion = versions?.find(
+		({externalReferenceCode}) => externalReferenceCode === selectedKey
 	);
+
+	const {experiences, languages, selectedExperience, selectedLanguageId} =
+		getVersionData({
+			currentExperienceERC,
+			currentLanguageId,
+			version: selectedVersion,
+		});
 
 	const keywords = search.trim().toLowerCase();
 
@@ -186,11 +193,13 @@ export default function VersionHistory({config}: Props) {
 	return (
 		<>
 			<Toolbar
+				availableLanguages={languages}
+				experiences={experiences}
 				isSidePanelOpen={isPanelOpen || isScreenLarge}
-				onChangeExperience={setSelectedExperienceERC}
-				onChangeLanguage={setSelectedLanguageId}
+				onChangeExperience={setCurrentExperienceERC}
+				onChangeLanguage={setCurrentLanguageId}
 				openSidePanel={() => setIsPanelOpen(true)}
-				selectedExperienceERC={selectedExperienceERC}
+				selectedExperience={selectedExperience}
 				selectedLanguageId={selectedLanguageId}
 			/>
 
@@ -218,8 +227,10 @@ export default function VersionHistory({config}: Props) {
 			</ResponsivePanel>
 
 			<PagePreview
+				experienceERC={selectedExperience?.segmentsExperienceERC}
 				experienceId={selectedExperience?.segmentsExperienceId}
 				languageId={selectedLanguageId}
+				versionERC={selectedVersion?.externalReferenceCode}
 			/>
 		</>
 	);

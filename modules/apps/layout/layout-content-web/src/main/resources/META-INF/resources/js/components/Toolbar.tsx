@@ -5,36 +5,36 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayToolbar from '@clayui/toolbar';
-import {ExperienceSelector} from '@liferay/layout-js-components-web';
+import {
+	ExperienceSelector,
+	SegmentExperience,
+} from '@liferay/layout-js-components-web';
 import React from 'react';
 
-import {config} from '../config';
+import {AvailableLanguages} from '../config';
 import LocaleSelector from './LocaleSelector';
 
 interface Props {
+	availableLanguages: AvailableLanguages;
+	experiences: SegmentExperience[];
 	isSidePanelOpen: boolean;
 	onChangeExperience: (experienceERC: string) => void;
 	onChangeLanguage: (languageId: Liferay.Language.Locale) => void;
 	openSidePanel: () => void;
-	selectedExperienceERC?: string;
+	selectedExperience?: SegmentExperience;
 	selectedLanguageId: Liferay.Language.Locale;
 }
 
 export default function Toolbar({
+	availableLanguages,
+	experiences,
 	isSidePanelOpen,
 	onChangeExperience,
 	onChangeLanguage,
 	openSidePanel,
-	selectedExperienceERC,
+	selectedExperience,
 	selectedLanguageId,
 }: Props) {
-	const {availableSegmentsExperiences} = config;
-
-	const selectedExperience = availableSegmentsExperiences.find(
-		({segmentsExperienceERC}) =>
-			segmentsExperienceERC === selectedExperienceERC
-	);
-
 	return (
 		<ClayToolbar className="bg-white px-3 version-history__toolbar">
 			<ClayToolbar.Nav>
@@ -63,7 +63,7 @@ export default function Toolbar({
 							onChangeExperience={(key) =>
 								onChangeExperience(String(key))
 							}
-							segmentsExperiences={availableSegmentsExperiences}
+							segmentsExperiences={experiences}
 							selectedSegmentsExperience={selectedExperience}
 						/>
 					</ClayToolbar.Item>
@@ -71,6 +71,7 @@ export default function Toolbar({
 
 				<ClayToolbar.Item className="align-items-center d-flex">
 					<LocaleSelector
+						availableLanguages={availableLanguages}
 						onChange={onChangeLanguage}
 						selectedLanguageId={selectedLanguageId}
 					/>

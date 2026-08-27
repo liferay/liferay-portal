@@ -27,6 +27,7 @@ export type Config = {
 	defaultLanguageId: Liferay.Language.Locale;
 	defaultUserImageSrc: string;
 	getPagePreviewURL: string;
+	getPageVersionPreviewURL: string;
 	layout: Layout;
 	pageSpecificationVersionsURL: string;
 };
