@@ -253,7 +253,7 @@ operatorApplications:
         namespaceLabels:
             pod-security.kubernetes.io/enforce: restricted
         repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
-        targetRevision: 0.0.1
+        targetRevision: 0.1.0
         values:
             fullnameOverride: dxp-operator
     eckOperator:

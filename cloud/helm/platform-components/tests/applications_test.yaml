@@ -180,7 +180,7 @@ tests:
                     value: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-dxp-operator
             -   equal:
                     path: spec.source.targetRevision
-                    value: 0.0.1
+                    value: 0.1.0
             -   equal:
                     path: spec.syncPolicy.managedNamespaceMetadata.labels["pod-security.kubernetes.io/enforce"]
                     value: restricted
