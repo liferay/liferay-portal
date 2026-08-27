@@ -17,9 +17,14 @@ import {AnalyticsFilters, IAnalyticsRoomFilter} from '../../types';
 interface IProps {
 	filter: IAnalyticsRoomFilter;
 	setValue: any;
+	visibleGroupIds: string[];
 }
 
-export default function RoomAnalyticsFilter({filter, setValue}: IProps) {
+export default function RoomAnalyticsFilter({
+	filter,
+	setValue,
+	visibleGroupIds,
+}: IProps) {
 	const [room, setRoom] = useState<IRoomObjectEntry | null>(null);
 	const [rooms, setRooms] = useState<IRoomObjectEntry[]>([]);
 
@@ -27,7 +32,11 @@ export default function RoomAnalyticsFilter({filter, setValue}: IProps) {
 		try {
 			const {items: rooms} = await RoomService.getRooms();
 
-			setRooms(rooms);
+			setRooms(
+				rooms.filter((room) =>
+					visibleGroupIds.includes(String(room.siteId))
+				)
+			);
 		}
 		catch (error: any) {
 			openToast({
@@ -36,7 +45,7 @@ export default function RoomAnalyticsFilter({filter, setValue}: IProps) {
 				type: 'danger',
 			});
 		}
-	}, [setRooms]);
+	}, [setRooms, visibleGroupIds]);
 
 	useEffect(() => {
 		if (room) {

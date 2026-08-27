@@ -27,6 +27,7 @@ interface IProps {
 	};
 	filtersJSONString: string;
 	isAnalyticsEnabled: boolean;
+	visibleGroupIds: string[];
 }
 
 export default function Navigation({
@@ -34,6 +35,7 @@ export default function Navigation({
 	filterSettings,
 	filtersJSONString,
 	isAnalyticsEnabled,
+	visibleGroupIds,
 }: IProps) {
 	const [filters, setFilter] = useAnalyticsFilters(
 		filtersJSONString,
@@ -58,6 +60,7 @@ export default function Navigation({
 								] as IAnalyticsRoomFilter
 							}
 							setValue={setFilter}
+							visibleGroupIds={visibleGroupIds}
 						/>
 					)}
 				</div>

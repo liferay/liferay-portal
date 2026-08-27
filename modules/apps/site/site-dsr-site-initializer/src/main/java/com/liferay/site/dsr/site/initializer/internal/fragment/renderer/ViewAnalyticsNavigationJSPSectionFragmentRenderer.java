@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.site.initializer.internal.display.context.ViewAnalyticsNavigationAnalyticsSectionDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,7 +86,7 @@ public class ViewAnalyticsNavigationJSPSectionFragmentRenderer
 		return new ViewAnalyticsNavigationAnalyticsSectionDisplayContext(
 			analyticsSettingsManager,
 			getConfigurationJSONObject(fragmentRendererContext),
-			_fragmentEntryConfigurationParser,
+			_dsrRoomGroupIdsHelper, _fragmentEntryConfigurationParser,
 			fragmentRendererContext.getFragmentEntryLink(), httpServletRequest,
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
@@ -99,6 +100,9 @@ public class ViewAnalyticsNavigationJSPSectionFragmentRenderer
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewAnalyticsNavigationJSPSectionFragmentRenderer.class);
+
+	@Reference
+	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
