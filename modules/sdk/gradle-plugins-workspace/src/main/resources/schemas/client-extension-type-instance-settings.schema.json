@@ -3678,8 +3678,8 @@
 				"outputFormat": {
 					"default": "NDJSON",
 					"enum": [
-						"NDJSON",
-						"CSV"
+						"CSV",
+						"NDJSON"
 					],
 					"title": "Output Format",
 					"type": "string"
