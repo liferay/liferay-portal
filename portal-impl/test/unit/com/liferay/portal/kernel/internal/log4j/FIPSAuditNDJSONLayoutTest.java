@@ -6,7 +6,6 @@
 package com.liferay.portal.kernel.internal.log4j;
 
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -146,16 +145,19 @@ public class FIPSAuditNDJSONLayoutTest {
 	@Test
 	public void testToSerializableWritesValueTypes() {
 		_testToSerializable(
-			"array", new String[] {"first", "second"},
-			"[\"first\",\"second\"]");
-		_testToSerializable("boolean", Boolean.TRUE, "true");
-		_testToSerializable("decimal", 1.5D, "1.5");
-		_testToSerializable("iterable", Arrays.asList("one", 2), "[\"one\",2]");
+			JSONUtil.put("array", JSONUtil.putAll("first", "second")), "array",
+			new String[] {"first", "second"});
 		_testToSerializable(
-			"map", Collections.singletonMap("first", "second"),
-			"{\"first\":\"second\"}");
-		_testToSerializable("number", 42, "42");
-		_testToSerializable("string", "text", "\"text\"");
+			JSONUtil.put("boolean", Boolean.TRUE), "boolean", Boolean.TRUE);
+		_testToSerializable(JSONUtil.put("decimal", 1.5D), "decimal", 1.5D);
+		_testToSerializable(
+			JSONUtil.put("iterable", JSONUtil.putAll("one", 2)), "iterable",
+			Arrays.asList("one", 2));
+		_testToSerializable(
+			JSONUtil.put("map", JSONUtil.put("first", "second")), "map",
+			Collections.singletonMap("first", "second"));
+		_testToSerializable(JSONUtil.put("number", 42), "number", 42);
+		_testToSerializable(JSONUtil.put("string", "text"), "string", "text");
 	}
 
 	private FIPSAuditNDJSONLayout _createFIPSAuditNDJSONLayout() {
@@ -176,11 +178,11 @@ public class FIPSAuditNDJSONLayoutTest {
 	}
 
 	private void _testToSerializable(
-		String key, Object value, String valueJSON) {
+		JSONObject expectedJSONObject, String key, Object value) {
 
-		Assert.assertEquals(
-			StringBundler.concat("{\"", key, "\":", valueJSON, "}\n"),
-			_toSerializable(Collections.singletonMap(key, value)));
+		JSONAssert.assertEquals(
+			expectedJSONObject.toString(),
+			_toSerializable(Collections.singletonMap(key, value)), true);
 	}
 
 	private void _testToSerializableThrows(Message message) {
