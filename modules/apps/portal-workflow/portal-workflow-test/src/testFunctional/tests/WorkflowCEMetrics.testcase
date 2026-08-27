@@ -31,7 +31,7 @@ definition {
 
 		AssertElementNotPresent(
 			key_category = "Workflow",
-			key_portlet = "Metrics",
+			key_portlet = "Workflow Metrics",
 			locator1 = "ApplicationsMenu#PORTLET");
 	}
 

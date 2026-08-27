@@ -148,7 +148,10 @@ test(
 	async ({globalMenuPage, page}) => {
 		await globalMenuPage.goToApplications();
 
-		const workflowItem = page.getByRole('menuitem', {name: 'Workflow'});
+		const workflowItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Workflow',
+		});
 
 		try {
 			const categories = page.locator('button.collapse-icon');

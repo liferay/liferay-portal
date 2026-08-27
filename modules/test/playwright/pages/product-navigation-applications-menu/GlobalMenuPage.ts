@@ -21,12 +21,12 @@ type ApplicationsMenuItem =
 	| 'Data Migration Center'
 	| 'Export'
 	| 'Import'
-	| 'Metrics'
 	| 'Process Builder'
 	| 'Publications'
 	| 'Result Rankings'
 	| 'Submissions'
-	| 'Synonyms';
+	| 'Synonyms'
+	| 'Workflow Metrics';
 
 type ControlPanelMenuItem =
 	| 'App Manager'

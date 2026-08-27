@@ -120,7 +120,7 @@ test('view workload distribution for all assignees', async ({
 		);
 	}
 
-	await globalMenuPage.goToApplications('Metrics');
+	await globalMenuPage.goToApplications('Workflow Metrics');
 
 	await metricsPage.chooseProcess(WORKFLOW_DEFINITION_NAME);
 
