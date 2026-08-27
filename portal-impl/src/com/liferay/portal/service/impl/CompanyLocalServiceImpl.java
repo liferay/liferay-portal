@@ -450,10 +450,15 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 				return _registerDBPartitionCompany(dbPartitionCompany);
 			}
-			catch (Throwable throwable) {
-				_removeDBPartition(companyId, true);
+			catch (Throwable throwable1) {
+				try {
+					_removeDBPartition(companyId, true);
+				}
+				catch (Throwable throwable2) {
+					throwable1.addSuppressed(throwable2);
+				}
 
-				throw new PortalException(throwable);
+				throw new PortalException(throwable1);
 			}
 		}
 	}
@@ -760,6 +765,9 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			}
 
 			DBPartitionUtil.exportDBPartition(companyId);
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			throw illegalArgumentException;
 		}
 		catch (Throwable throwable) {
 			throw new PortalException(throwable);

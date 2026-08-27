@@ -8,6 +8,7 @@ package com.liferay.portal.service.impl;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
+import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouterUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -246,17 +247,30 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 		if (AuditRouterUtil.isDeployed()) {
 			long userId = getUserId();
 
-			AuditRouterUtil.route(
-				new AuditMessage(
-					0, company.getCompanyId(), userId,
-					PortalUtil.getUserName(userId, StringPool.BLANK), null,
-					JSONUtil.put(
-						"virtualHostname", company.getVirtualHostname()
-					).put(
-						"webId", company.getWebId()
-					),
-					Company.class.getName(),
-					String.valueOf(company.getCompanyId()), "EXPORT", null));
+			try {
+				AuditRouterUtil.route(
+					new AuditMessage(
+						0, company.getCompanyId(), userId,
+						PortalUtil.getUserName(userId, StringPool.BLANK), null,
+						JSONUtil.put(
+							"virtualHostname", company.getVirtualHostname()
+						).put(
+							"webId", company.getWebId()
+						),
+						Company.class.getName(),
+						String.valueOf(company.getCompanyId()), "EXPORT",
+						null));
+			}
+			catch (AuditException auditException) {
+				try {
+					DBPartitionUtil.removeExportedPartition(companyId);
+				}
+				catch (Exception exception) {
+					auditException.addSuppressed(exception);
+				}
+
+				throw auditException;
+			}
 		}
 
 		return company;

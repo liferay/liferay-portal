@@ -40,22 +40,28 @@ public class PortalInstanceExporterImpl implements PortalInstanceExporter {
 
 	@Override
 	public String exportPortalInstance(long companyId) throws Exception {
-		_companyService.exportCompany(companyId);
+		String exportedPartitionName = DBPartitionUtil.getExportedPartitionName(
+			companyId);
 
-		String exportedPartitionName =
-			DBPartitionUtil.DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX +
-				companyId;
+		_companyService.exportCompany(companyId);
 
 		try {
 			_exportConfigurations(companyId);
 		}
-		catch (Exception exception) {
+		catch (Exception exception1) {
+			try {
+				DBPartitionUtil.removeExportedPartition(companyId);
+			}
+			catch (Exception exception2) {
+				exception1.addSuppressed(exception2);
+			}
+
 			_log.error(
 				"Unable to export configurations to schema " +
 					exportedPartitionName,
-				exception);
+				exception1);
 
-			throw exception;
+			throw exception1;
 		}
 
 		return exportedPartitionName;
