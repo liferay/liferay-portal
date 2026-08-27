@@ -19,9 +19,9 @@ public class ConfigStylingCheck extends BaseFileCheck {
 	protected String doProcess(
 		String fileName, String absolutePath, String content) {
 
-		int pos = fileName.lastIndexOf(StringPool.SLASH);
+		int index = fileName.lastIndexOf(StringPool.SLASH);
 
-		String shortFileName = fileName.substring(pos + 1);
+		String shortFileName = fileName.substring(index + 1);
 
 		if (!shortFileName.endsWith(".config") ||
 			!shortFileName.startsWith("com.liferay.")) {
