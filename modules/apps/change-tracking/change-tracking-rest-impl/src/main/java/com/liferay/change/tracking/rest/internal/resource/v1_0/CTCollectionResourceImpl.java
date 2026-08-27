@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -399,6 +400,10 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 	}
 
 	private String _getShareLink(long ctCollectionId) throws Exception {
+		_ctCollectionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), ctCollectionId,
+			CTActionKeys.INVITE_USERS);
+
 		Ticket ticket = _ctOnDemandUserTicketGenerator.generate(ctCollectionId);
 
 		if (ticket == null) {
@@ -477,31 +482,26 @@ public class CTCollectionResourceImpl extends BaseCTCollectionResourceImpl {
 			return null;
 		}
 
-		return _toCTCollection(serviceBuilderCTCollection.getCtCollectionId());
-	}
-
-	private CTCollection _toCTCollection(Long ctCollectionId) throws Exception {
-		com.liferay.change.tracking.model.CTCollection
-			serviceBuilderCTCollection =
-				_ctCollectionLocalService.getCTCollection(ctCollectionId);
+		_ctCollectionModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			serviceBuilderCTCollection, ActionKeys.VIEW);
 
 		return _ctCollectionDTOConverter.toDTO(
 			_getDTOConverterContext(serviceBuilderCTCollection),
 			serviceBuilderCTCollection);
+	}
+
+	private CTCollection _toCTCollection(Long ctCollectionId) throws Exception {
+		return _toCTCollection(
+			_ctCollectionLocalService.getCTCollection(ctCollectionId));
 	}
 
 	private CTCollection _toCTCollection(String externalReferenceCode)
 		throws Exception {
 
-		com.liferay.change.tracking.model.CTCollection
-			serviceBuilderCTCollection =
-				_ctCollectionLocalService.
-					getCTCollectionByExternalReferenceCode(
-						externalReferenceCode, contextCompany.getCompanyId());
-
-		return _ctCollectionDTOConverter.toDTO(
-			_getDTOConverterContext(serviceBuilderCTCollection),
-			serviceBuilderCTCollection);
+		return _toCTCollection(
+			_ctCollectionLocalService.getCTCollectionByExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId()));
 	}
 
 	private static final EntityModel _entityModel =
