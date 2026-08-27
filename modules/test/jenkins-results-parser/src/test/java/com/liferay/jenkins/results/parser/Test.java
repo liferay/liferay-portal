@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
+import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -61,6 +62,8 @@ public class Test {
 		JobPropertyFactory.clear();
 
 		Shell.setInstance(new Shell());
+
+		TestClassFactory.clear();
 
 		UrlReader.setInstance(new UrlReader());
 	}

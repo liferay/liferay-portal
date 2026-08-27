@@ -39,6 +39,13 @@ import org.json.JSONObject;
  */
 public class TestClassFactory {
 
+	public static void clear() {
+		_jUnitTestClasses.clear();
+		_modulesJUnitTestClasses.clear();
+		_npmTestClasses.clear();
+		_playwrightJUnitTestClasses.clear();
+	}
+
 	public static List<JUnitTestClass> getJUnitTestClasses() {
 		List<JUnitTestClass> jUnitTestClasses = new ArrayList<>(
 			_jUnitTestClasses.values());

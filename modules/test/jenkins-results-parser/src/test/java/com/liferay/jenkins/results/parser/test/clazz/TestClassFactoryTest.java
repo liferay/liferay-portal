@@ -7,15 +7,12 @@ package com.liferay.jenkins.results.parser.test.clazz;
 
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
-import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroupTestUtil;
 import com.liferay.jenkins.results.parser.test.clazz.group.JUnitBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.ModulesJUnitBatchTestClassGroup;
 
 import java.io.File;
-
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -82,20 +79,8 @@ public class TestClassFactoryTest
 			"Sample" + classNameSuffix, packageDir);
 	}
 
-	private void _resetCaches() {
-		Map<File, ?> jUnitTestClasses = ReflectionTestUtil.getFieldValue(
-			TestClassFactory.class, "_jUnitTestClasses");
-
-		jUnitTestClasses.clear();
-
-		Map<File, ?> modulesJUnitTestClasses = ReflectionTestUtil.getFieldValue(
-			TestClassFactory.class, "_modulesJUnitTestClasses");
-
-		modulesJUnitTestClasses.clear();
-	}
-
 	private void _testNewTestClass(boolean modulesFirst) throws Exception {
-		_resetCaches();
+		TestClassFactory.clear();
 
 		BatchTestClassGroup jUnitBatchTestClassGroup = _mockBatchTestClassGroup(
 			"integration-license", JUnitBatchTestClassGroup.class);
