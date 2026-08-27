@@ -14,7 +14,10 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.math.BigInteger;
 
+import java.nio.charset.StandardCharsets;
+
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import java.util.Arrays;
@@ -61,9 +64,12 @@ public class MFATimeBasedOTPUtil {
 				MFA_TIMEBASED_OTP_COUNTER;
 
 		for (long i = initialTime; i <= finalTime; i++) {
-			if (value.equals(
-					_generateTimeBasedOTP(
-						Base32.decode(sharedSecret), _getTimeCountHex(i)))) {
+			String timeBasedOTP = _generateTimeBasedOTP(
+				Base32.decode(sharedSecret), _getTimeCountHex(i));
+
+			if (MessageDigest.isEqual(
+					value.getBytes(StandardCharsets.UTF_8),
+					timeBasedOTP.getBytes(StandardCharsets.UTF_8))) {
 
 				return true;
 			}

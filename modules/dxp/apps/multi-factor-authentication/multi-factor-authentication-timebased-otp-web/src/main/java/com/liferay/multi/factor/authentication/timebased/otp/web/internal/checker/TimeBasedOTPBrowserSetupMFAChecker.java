@@ -53,6 +53,10 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -502,8 +506,11 @@ public class TimeBasedOTPBrowserSetupMFAChecker
 			return false;
 		}
 
-		if (!Objects.equals(
-				mfaTimeBasedOTP, mfaTimeBasedOTPEntry.getLastValidTOTP())) {
+		String lastValidTOTP = mfaTimeBasedOTPEntry.getLastValidTOTP();
+
+		if (!MessageDigest.isEqual(
+				mfaTimeBasedOTP.getBytes(StandardCharsets.UTF_8),
+				lastValidTOTP.getBytes(StandardCharsets.UTF_8))) {
 
 			return MFATimeBasedOTPUtil.verifyTimeBasedOTP(
 				_mfaTimeBasedOTPConfiguration.clockSkew(),

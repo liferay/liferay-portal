@@ -18,6 +18,10 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -160,7 +164,10 @@ public class PunchOutAccessTokenProviderImpl
 				String tokenString = Base64.encodeToURL(
 					punchOutAccessToken.getToken());
 
-				if (token.equals(tokenString)) {
+				if (MessageDigest.isEqual(
+						token.getBytes(StandardCharsets.UTF_8),
+						tokenString.getBytes(StandardCharsets.UTF_8))) {
+
 					punchOutAccessTokenAtomicReference.compareAndSet(
 						null, punchOutAccessToken);
 
@@ -227,7 +234,10 @@ public class PunchOutAccessTokenProviderImpl
 			String tokenString = Base64.encodeToURL(
 				punchOutAccessToken.getToken());
 
-			if (token.equals(tokenString)) {
+			if (MessageDigest.isEqual(
+					token.getBytes(StandardCharsets.UTF_8),
+					tokenString.getBytes(StandardCharsets.UTF_8))) {
+
 				return punchOutAccessToken;
 			}
 		}

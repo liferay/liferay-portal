@@ -37,6 +37,10 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -364,7 +368,11 @@ public class EmailOTPBrowserMFAChecker implements BrowserMFAChecker {
 		String expectedMFAEmailOTP = (String)httpSession.getAttribute(
 			MFAEmailOTPWebKeys.MFA_EMAIL_OTP);
 
-		if ((expectedMFAEmailOTP == null) || !expectedMFAEmailOTP.equals(otp)) {
+		if ((expectedMFAEmailOTP == null) || (otp == null) ||
+			!MessageDigest.isEqual(
+				otp.getBytes(StandardCharsets.UTF_8),
+				expectedMFAEmailOTP.getBytes(StandardCharsets.UTF_8))) {
+
 			return false;
 		}
 
