@@ -166,6 +166,57 @@ describe('useCategorizationAgent', () => {
 		);
 	});
 
+	it('stays stopped when the request fails after it was stopped', async () => {
+		mockPostAgentInstance.mockRejectedValue(new Error('Request failed'));
+
+		const {fakeEventSource, result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Japan article',
+			});
+		});
+
+		act(() => {
+			fakeEventSource.emit('Subscribe', 'sink-1');
+
+			(result as {current: {stop: Function}}).current.stop();
+		});
+
+		await act(async () => {});
+
+		expect((result as {current: {status: string}}).current).toMatchObject({
+			status: 'stopped',
+		});
+	});
+
+	it('surfaces an error when the stream fails', async () => {
+		const {fakeEventSource, result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Japan article',
+			});
+		});
+
+		act(() => fakeEventSource.emit('Subscribe', 'sink-1'));
+
+		await act(async () => {
+			fakeEventSource.emit('error', '');
+		});
+
+		expect((result as {current: {status: string}}).current).toMatchObject({
+			status: 'error',
+		});
+		expect(fakeEventSource.close).toHaveBeenCalled();
+	});
+
 	it('surfaces the error text on agent invocation failure', async () => {
 		const {fakeEventSource, result} = await renderAgent(
 			ECategorizationAgent.AUTO_CATEGORIZE

@@ -87,6 +87,16 @@ export default function CategorizationSuggestions({
 		);
 	}
 
+	if (status === 'stopped') {
+		return (
+			<span className="categorization-suggestions">
+				{Liferay.Language.get(
+					'this-request-was-replaced-by-a-newer-one'
+				)}
+			</span>
+		);
+	}
+
 	if (status === 'empty' || !suggestions.length) {
 		return (
 			<span className="categorization-suggestions">

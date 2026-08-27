@@ -60,7 +60,7 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 	'categorization': ({chat}, {categorization}) => (
 		<CategorizationMessageBalloon
 			{...categorization}
-			setIsGenerating={chat.setIsGenerating}
+			setBalloonGenerating={chat.setBalloonGenerating}
 		/>
 	),
 	'content-drafts': ({item}) => (

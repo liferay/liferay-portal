@@ -4,10 +4,11 @@
  */
 
 import {sub} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useId, useState} from 'react';
 
 import CategorizationSuggestions from '../../Categorization/components/CategorizationSuggestions';
 import {
+	CATEGORIZE_EVENT,
 	COMMIT_EVENT,
 	CategorizeEventPayload,
 } from '../../Categorization/events';
@@ -18,7 +19,7 @@ import useCategorizationAgent from '../../Categorization/useCategorizationAgent'
 import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 
 interface CategorizationMessageBalloonProps extends CategorizeEventPayload {
-	setIsGenerating: (isGenerating: boolean) => void;
+	setBalloonGenerating: (key: string, generating: boolean) => void;
 }
 
 function getKey(suggestion: Suggestion): string {
@@ -34,14 +35,16 @@ export default function CategorizationMessageBalloon({
 	currentCategoryIds,
 	currentTagNames,
 	scopeId,
-	setIsGenerating,
+	setBalloonGenerating,
 	targets,
 }: CategorizationMessageBalloonProps) {
+	const balloonId = useId();
+
 	const [committed, setCommitted] = useState(false);
 	const [dismissed, setDismissed] = useState<string[]>([]);
 	const [regenerated, setRegenerated] = useState(false);
 
-	const {regenerate, resolveTargets, run, status, suggestions} =
+	const {regenerate, resolveTargets, run, status, stop, suggestions} =
 		useCategorizationAgent(agent);
 
 	useEffect(() => {
@@ -142,18 +145,37 @@ export default function CategorizationMessageBalloon({
 		`${committedCount}`
 	);
 
-	const isInitialLoading =
-		!regenerated && (status === 'idle' || status === 'loading');
+	const isLoading = status === 'idle' || status === 'loading';
+
+	const isInitialLoading = !regenerated && isLoading;
 
 	useEffect(() => {
 		if (!isInitialLoading) {
 			return;
 		}
 
-		setIsGenerating(true);
+		setBalloonGenerating(balloonId, true);
 
-		return () => setIsGenerating(false);
-	}, [isInitialLoading, setIsGenerating]);
+		return () => setBalloonGenerating(balloonId, false);
+	}, [balloonId, isInitialLoading, setBalloonGenerating]);
+
+	useEffect(() => {
+		if (!isLoading) {
+			return;
+		}
+
+		const onCategorize = (payload: CategorizeEventPayload) => {
+			if (payload.agent === agent) {
+				stop();
+			}
+		};
+
+		Liferay.on(CATEGORIZE_EVENT, onCategorize);
+
+		return () => {
+			Liferay.detach(CATEGORIZE_EVENT, onCategorize);
+		};
+	}, [agent, isLoading, stop]);
 
 	if (isInitialLoading) {
 		return null;

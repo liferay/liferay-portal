@@ -15,7 +15,8 @@ export type CategorizationStatus =
 	| 'error'
 	| 'idle'
 	| 'loading'
-	| 'ready';
+	| 'ready'
+	| 'stopped';
 
 export interface CandidateCategory {
 	id: number;

@@ -46,6 +46,7 @@ export interface AIChat {
 	runtimeContextRef: React.MutableRefObject<ChatContext>;
 	scrollToBottom: () => void;
 	sendMessage: (text: string) => boolean;
+	setBalloonGenerating: (key: string, generating: boolean) => void;
 	setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
 	setMessage: (message: string) => void;
 	setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
@@ -77,9 +78,10 @@ export default function useAIChat({
 	const [feedbackGiven, setFeedbackGiven] = useState<Record<number, boolean>>(
 		{}
 	);
+	const [generatingBalloons, setGeneratingBalloons] = useState<string[]>([]);
 	const [isGenerating, setIsGenerating] = useState<boolean>(false);
-	const [messages, setMessages] = useState<Message[]>([]);
 	const [message, setMessage] = useState<string>('');
+	const [messages, setMessages] = useState<Message[]>([]);
 	const [reportContext, setReportContext] =
 		useState<AIChatReportContext | null>(null);
 
@@ -137,6 +139,19 @@ export default function useAIChat({
 			: '[data-ai-assistant-field-id]';
 	}, [triggerRef]);
 
+	const setBalloonGenerating = useCallback(
+		(key: string, generating: boolean) => {
+			setGeneratingBalloons((previousGeneratingBalloons) =>
+				generating
+					? [...previousGeneratingBalloons, key]
+					: previousGeneratingBalloons.filter(
+							(generatingKey) => generatingKey !== key
+						)
+			);
+		},
+		[]
+	);
+
 	const scrollToBottom = useCallback(() => {
 		const container = messagesContainerRef.current;
 
@@ -148,7 +163,7 @@ export default function useAIChat({
 
 	useEffect(() => {
 		scrollToBottom();
-	}, [isGenerating, messages, scrollToBottom]);
+	}, [generatingBalloons, isGenerating, messages, scrollToBottom]);
 
 	useEffect(() => {
 		const onLocaleChanged = ({languageId}: {languageId: string}) => {
@@ -506,7 +521,7 @@ export default function useAIChat({
 		fileUploadSelectorRef,
 		getContextRef,
 		giveThumbsUp,
-		isGenerating,
+		isGenerating: isGenerating || !!generatingBalloons.length,
 		markFeedbackGiven,
 		message,
 		messages,
@@ -515,6 +530,7 @@ export default function useAIChat({
 		runtimeContextRef,
 		scrollToBottom,
 		sendMessage,
+		setBalloonGenerating,
 		setIsGenerating,
 		setMessage,
 		setMessages,
