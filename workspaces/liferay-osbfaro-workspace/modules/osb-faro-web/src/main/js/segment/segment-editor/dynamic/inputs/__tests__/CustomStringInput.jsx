@@ -6,6 +6,7 @@ import {
 	setPropertyValue
 } from '../../utils/custom-inputs';
 import {Property} from 'shared/util/records';
+import {PropertyTypes} from '../../utils/constants';
 
 jest.unmock('react-dom');
 
@@ -81,5 +82,45 @@ describe('CustomStringInput', () => {
 		const {container} = render(<DefaultComponent autocomplete={false} />);
 
 		expect(container.querySelector('.base-select-input-root')).toBeNull();
+	});
+
+	describe('when the property is a Channel (fixed options, is/is not only)', () => {
+		const channelProperty = new Property({
+			options: [
+				{label: 'Direct', value: 'Direct'},
+				{label: 'Organic', value: 'Organic'}
+			],
+			type: PropertyTypes.SessionChannel
+		});
+
+		it('should only offer is/is not operators', () => {
+			const {getByText, queryByText} = render(
+				<DefaultComponent property={channelProperty} />
+			);
+			fireEvent.click(getByText('is'));
+
+			expect(getByText('is not')).toBeTruthy();
+			expect(queryByText('contains')).toBeNull();
+			expect(queryByText('does not contain')).toBeNull();
+			expect(queryByText('is known')).toBeNull();
+			expect(queryByText('is unknown')).toBeNull();
+		});
+
+		it('should render a fixed options Picker instead of a free text input', () => {
+			const {getByText, queryByTestId} = render(
+				<DefaultComponent
+					property={channelProperty}
+					value={setPropertyValue(mockValue, 'value', 0, 'Direct')}
+				/>
+			);
+
+			expect(
+				queryByTestId('attribute-value-string-input')
+			).toBeNull();
+
+			fireEvent.click(getByText('Direct'));
+
+			expect(getByText('Organic')).toBeTruthy();
+		});
 	});
 });

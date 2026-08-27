@@ -443,6 +443,91 @@ describe('utils', () => {
 			expect(property.type).toBe('session-text');
 		});
 
+		it('should return the Channel Property when provided with a Channel Criterion', () => {
+			const criterion = data.generateCriterion({
+				operatorName: SessionsFilter,
+				propertyName: 'context/channel',
+				value: fromJS({
+					criterionGroup: {
+						conjunctionName: And,
+						criteriaGroupId: 'group_0',
+						items: [
+							{
+								operatorName: EQ,
+								propertyName: 'context/channel',
+								value: 'direct',
+							},
+						],
+					},
+				}),
+			});
+
+			const property = utils.findPropertyByCriterion(criterion);
+
+			expect(property).toBeInstanceOf(Property);
+			expect(property.name).toBe('context/channel');
+			expect(property.propertyKey).toBe('session');
+			expect(property.type).toBe('session-channel');
+		});
+
+		it.each([
+			['context/acquisitionSource', 'a default UTM parameter'],
+			['context/utm_cid', 'a custom UTM parameter'],
+		])(
+			'should return the UTM Parameter Property when provided with %s (%s) Criterion',
+			(propertyName) => {
+				const criterion = data.generateCriterion({
+					operatorName: SessionsFilter,
+					propertyName,
+					value: fromJS({
+						criterionGroup: {
+							conjunctionName: And,
+							criteriaGroupId: 'group_0',
+							items: [
+								{
+									operatorName: EQ,
+									propertyName,
+									value: 'google',
+								},
+							],
+						},
+					}),
+				});
+
+				const property = utils.findPropertyByCriterion(criterion);
+
+				expect(property).toBeInstanceOf(Property);
+				expect(property.name).toBe('attribute/utmParameter');
+				expect(property.propertyKey).toBe('session');
+				expect(property.type).toBe('session-utm-parameter');
+			}
+		);
+
+		it('should return the session url Property, not the UTM Parameter Property, for a non-UTM session attribute', () => {
+			const criterion = data.generateCriterion({
+				operatorName: SessionsFilter,
+				propertyName: 'context/referrer',
+				value: fromJS({
+					criterionGroup: {
+						conjunctionName: And,
+						criteriaGroupId: 'group_0',
+						items: [
+							{
+								operatorName: EQ,
+								propertyName: 'context/referrer',
+								value: 'https://www.google.com',
+							},
+						],
+					},
+				}),
+			});
+
+			const property = utils.findPropertyByCriterion(criterion);
+
+			expect(property.type).toBe('session-text');
+			expect(property.type).not.toBe('session-utm-parameter');
+		});
+
 		it('should return the interest Property when provided with an interest Criterion', () => {
 			const criterion = data.generateCriterion({
 				operatorName: InterestsFilter,

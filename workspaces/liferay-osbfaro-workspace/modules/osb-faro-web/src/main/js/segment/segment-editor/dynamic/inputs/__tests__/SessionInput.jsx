@@ -116,4 +116,39 @@ describe('SessionInput', () => {
 
 		expect(getByTestId('number-input')).toBeTruthy();
 	});
+
+	it('should render without the date filter conjunction for PropertyTypes.SessionChannel', () => {
+		const {getByText, queryByText} = render(
+			<WrapperComponent>
+				<SessionInput
+					operatorRenderer={() => <div>{'operator'}</div>}
+					property={
+						new Property({
+							options: [
+								{label: 'Direct', value: 'Direct'},
+								{label: 'Organic', value: 'Organic'}
+							],
+							type: PropertyTypes.SessionChannel
+						})
+					}
+					touched={{customInput: true}}
+					valid={{customInput: true}}
+					value={fromJS({
+						criterionGroup: {
+							items: [{operatorName: EQ, value: 'Direct'}]
+						}
+					})}
+				/>
+			</WrapperComponent>
+		);
+		fireEvent.click(getByText('is'));
+
+		expect(getByText('is not')).toBeInTheDocument();
+
+		expect(queryByText('since')).toBeNull();
+		expect(queryByText('after')).toBeNull();
+		expect(queryByText('before')).toBeNull();
+		expect(queryByText('between')).toBeNull();
+		expect(queryByText('ever')).toBeNull();
+	});
 });

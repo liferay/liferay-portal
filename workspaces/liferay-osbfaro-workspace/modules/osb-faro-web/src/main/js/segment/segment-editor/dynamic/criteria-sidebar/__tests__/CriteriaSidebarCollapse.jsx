@@ -378,6 +378,40 @@ describe('getDefaultValue', () => {
 		);
 	});
 
+	it('should return CustomValueMap seeded with the first option and no date filter for PropertyTypes.SessionChannel', () => {
+		const result = getDefaultValue(
+			new Property({
+				name: 'context/channel',
+				options: [
+					{label: 'Direct', value: 'direct'},
+					{label: 'Organic', value: 'organic'}
+				],
+				type: PropertyTypes.SessionChannel
+			})
+		);
+		const items = result.getIn(['criterionGroup', 'items']);
+
+		expect(items.size).toBe(1);
+		expect(items.getIn([0, 'propertyName'])).toBe('context/channel');
+		expect(items.getIn([0, 'value'])).toBe('direct');
+	});
+
+	it('should return CustomValueMap seeded with the first UTM parameter and no date filter for PropertyTypes.SessionUtmParameter', () => {
+		const result = getDefaultValue(
+			new Property({
+				name: 'attribute/utmParameter',
+				type: PropertyTypes.SessionUtmParameter
+			})
+		);
+		const items = result.getIn(['criterionGroup', 'items']);
+
+		expect(items.size).toBe(1);
+		expect(items.getIn([0, 'propertyName'])).toBe(
+			'context/acquisitionSource'
+		);
+		expect(items.getIn([0, 'value'])).toBe('');
+	});
+
 	it('should return empty string for an unrecognized property type', () => {
 		const result = getDefaultValue(
 			new Property({name: 'myProp', type: 'unknown-type'})

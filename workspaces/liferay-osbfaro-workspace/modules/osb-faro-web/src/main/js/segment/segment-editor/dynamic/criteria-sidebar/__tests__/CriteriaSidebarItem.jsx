@@ -54,5 +54,34 @@ describe('CriteriaSidebarItem', () => {
 
 			expect(validateSegmentInputs(criterion)).toBe(false);
 		});
+
+		it('should seed a Channel criterion valid, with only a customInput flag and no dateFilter flag', () => {
+			const {criterion} = beginDrag({
+				defaultValue: {},
+				name: 'context/channel',
+				property: {},
+				type: PropertyTypes.SessionChannel
+			});
+
+			// Channel's default value is already a concrete option, so the
+			// criterion starts valid and does not block Save.
+
+			expect(criterion.touched).toEqual({customInput: false});
+			expect(criterion.valid).toEqual({customInput: true});
+			expect(validateSegmentInputs(criterion)).toBe(true);
+		});
+
+		it('should seed a UTM Parameter criterion with only a customInput flag and no dateFilter flag', () => {
+			const {criterion} = beginDrag({
+				defaultValue: {},
+				name: 'attribute/utmParameter',
+				property: {},
+				type: PropertyTypes.SessionUtmParameter
+			});
+
+			expect(criterion.touched).toEqual({customInput: false});
+			expect(criterion.valid).toEqual({customInput: false});
+			expect(validateSegmentInputs(criterion)).toBe(false);
+		});
 	});
 });
