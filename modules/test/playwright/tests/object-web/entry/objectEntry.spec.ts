@@ -1583,7 +1583,7 @@ test.describe('Manage object entries through Friendly URL', () => {
 
 			await editObjectDetailsPage.saveObjectDefinition();
 
-			await page.waitForLoadState('networkidle');
+			await waitForAlert(page, 'The object was saved successfully');
 
 			await page.goto(
 				`/web${site.friendlyUrlPath}/${newObjectFriendlyURLSeparator}/` +
