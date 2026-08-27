@@ -4,6 +4,7 @@
  */
 
 import ClayDropDown from '@clayui/drop-down';
+import {useModal} from '@clayui/modal';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
@@ -18,6 +19,7 @@ import {showErrorNotification} from '../../utilities/notifications';
 import Trigger from './Trigger';
 import {ACCOUNT_ENTRY_ID_DEFAULT, VIEWS} from './util/constants';
 import {selectAccount, shouldSelectAccount} from './util/index';
+import AccountCreationModal from './views/AccountCreationModal';
 import AccountSelectionModal from './views/AccountSelectionModal';
 import AccountsListView from './views/AccountsListView';
 import OrdersListView from './views/OrdersListView';
@@ -46,6 +48,8 @@ function AccountSelector({
 		[]
 	);
 
+	const [accountCreationModalVisible, setAccountCreationModalVisible] =
+		useState(false);
 	const [active, setActive] = useState(false);
 	const [availableAccounts, setAvailableAccounts] = useState([]);
 	const [currentAccount, setCurrentAccount] = useState({
@@ -62,6 +66,10 @@ function AccountSelector({
 			: VIEWS.ACCOUNTS_LIST
 	);
 	const [currentUser, setCurrentUser] = useState({});
+
+	const {observer, onClose} = useModal({
+		onClose: () => setAccountCreationModalVisible(false),
+	});
 
 	useEffect(() => {
 		DeliveryCatalogResource.getAccountsByChannelId(commerceChannelId)
@@ -138,6 +146,9 @@ function AccountSelector({
 						currentAccount={currentAccount}
 						currentUser={currentUser}
 						disabled={!active}
+						openAccountCreationModal={() =>
+							setAccountCreationModalVisible(true)
+						}
 						orderSelectionDisabled={orderSelectionDisabled}
 						setCurrentView={setCurrentView}
 					/>
@@ -159,6 +170,16 @@ function AccountSelector({
 						/>
 					)}
 			</ClayDropDown>
+
+			{accountCreationModalVisible && (
+				<AccountCreationModal
+					accountEntryAllowedTypes={accountEntryAllowedTypes}
+					closeModal={onClose}
+					commerceChannelId={commerceChannelId}
+					handleAccountChange={changeAccount}
+					observer={observer}
+				/>
+			)}
 
 			{!!availableAccounts.length &&
 			shouldSelectAccount(currentAccount.id, currentOrder.id) ? (
