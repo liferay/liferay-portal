@@ -84,8 +84,7 @@ public class ValidatorUtil {
 				StringBundler.concat(
 					"Company name ", sourceCompany.getCompanyName(),
 					" already exists in the target database. You must set a ",
-					"different value in ",
-					"ImportPortalInstanceConfiguration.config."));
+					"different value in the portal instance import request."));
 		}
 
 		if (Objects.equals(
@@ -96,8 +95,7 @@ public class ValidatorUtil {
 				StringBundler.concat(
 					"Virtual host ", sourceCompany.getVirtualHostname(),
 					" already exists in the target database. You must set a ",
-					"different value in ",
-					"ImportPortalInstanceConfiguration.config."));
+					"different value in the portal instance import request."));
 		}
 
 		if (Objects.equals(company.getWebId(), sourceCompany.getWebId())) {
@@ -105,8 +103,7 @@ public class ValidatorUtil {
 				StringBundler.concat(
 					"Web ID ", sourceCompany.getWebId(),
 					" already exists in the target database. You must set a ",
-					"different value in ",
-					"ImportPortalInstanceConfiguration.config."));
+					"different value in the portal instance import request."));
 		}
 	}
 
