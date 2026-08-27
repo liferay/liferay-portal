@@ -47,6 +47,10 @@ import com.liferay.portal.security.ldap.util.LDAPUtil;
 import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
 import com.liferay.portlet.admin.util.OmniadminUtil;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -277,7 +281,10 @@ public class LDAPAuth implements Authenticator {
 						algorithm, password, ldapPassword);
 				}
 
-				if (ldapPassword.equals(encryptedPassword)) {
+				if (MessageDigest.isEqual(
+						encryptedPassword.getBytes(StandardCharsets.UTF_8),
+						ldapPassword.getBytes(StandardCharsets.UTF_8))) {
+
 					ldapAuthResult.setAuthenticated(true);
 				}
 				else {

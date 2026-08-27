@@ -19,6 +19,10 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Time;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -126,8 +130,13 @@ public class OAuth2AuthorizationLocalServiceImpl
 				accessTokenContent.hashCode());
 
 		for (OAuth2Authorization oAuth2Authorization : oAuth2Authorizations) {
-			if (accessTokenContent.equals(
-					oAuth2Authorization.getAccessTokenContent())) {
+			String currentAccessTokenContent =
+				oAuth2Authorization.getAccessTokenContent();
+
+			if (MessageDigest.isEqual(
+					accessTokenContent.getBytes(StandardCharsets.UTF_8),
+					currentAccessTokenContent.getBytes(
+						StandardCharsets.UTF_8))) {
 
 				return oAuth2Authorization;
 			}
@@ -146,8 +155,13 @@ public class OAuth2AuthorizationLocalServiceImpl
 				refreshTokenContent.hashCode());
 
 		for (OAuth2Authorization oAuth2Authorization : oAuth2Authorizations) {
-			if (refreshTokenContent.equals(
-					oAuth2Authorization.getRefreshTokenContent())) {
+			String currentRefreshTokenContent =
+				oAuth2Authorization.getRefreshTokenContent();
+
+			if (MessageDigest.isEqual(
+					refreshTokenContent.getBytes(StandardCharsets.UTF_8),
+					currentRefreshTokenContent.getBytes(
+						StandardCharsets.UTF_8))) {
 
 				return oAuth2Authorization;
 			}

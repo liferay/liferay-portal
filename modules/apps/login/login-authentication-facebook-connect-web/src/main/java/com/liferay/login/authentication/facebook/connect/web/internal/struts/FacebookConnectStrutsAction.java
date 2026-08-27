@@ -50,6 +50,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -132,7 +136,11 @@ public class FacebookConnectStrutsAction implements StrutsAction {
 
 		String stateNonce = stateJSONObject.getString("stateNonce");
 
-		if (!stateNonce.equals(nonce)) {
+		if ((nonce == null) ||
+			!MessageDigest.isEqual(
+				stateNonce.getBytes(StandardCharsets.UTF_8),
+				nonce.getBytes(StandardCharsets.UTF_8))) {
+
 			throw new PrincipalException.MustHaveValidCSRFToken(
 				_portal.getUserId(httpServletRequest),
 				FacebookConnectStrutsAction.class.getName());

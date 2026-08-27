@@ -20,6 +20,10 @@ import com.liferay.portal.kernel.util.Validator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -84,9 +88,15 @@ public class RequestParameterAutoLoginSupport extends BaseAutoLogin {
 			String encPassword = PasswordEncryptorUtil.encrypt(
 				password, userPassword);
 
-			if (!userPassword.equals(password) &&
-				!userPassword.equals(encPassword)) {
+			boolean encPasswordMatches = MessageDigest.isEqual(
+				encPassword.getBytes(StandardCharsets.UTF_8),
+				userPassword.getBytes(StandardCharsets.UTF_8));
 
+			boolean passwordMatches = MessageDigest.isEqual(
+				password.getBytes(StandardCharsets.UTF_8),
+				userPassword.getBytes(StandardCharsets.UTF_8));
+
+			if (!encPasswordMatches && !passwordMatches) {
 				return null;
 			}
 		}

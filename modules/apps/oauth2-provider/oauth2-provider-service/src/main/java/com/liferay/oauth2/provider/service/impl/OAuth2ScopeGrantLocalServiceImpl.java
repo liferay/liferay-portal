@@ -14,6 +14,10 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -122,9 +126,13 @@ public class OAuth2ScopeGrantLocalServiceImpl
 				oAuth2AuthorizationPersistence.findByC_ATCH(
 					companyId, accessTokenContent.hashCode())) {
 
-			if (!Objects.equals(
-					accessTokenContent,
-					oAuth2Authorization.getAccessTokenContent())) {
+			String currentAccessTokenContent =
+				oAuth2Authorization.getAccessTokenContent();
+
+			if (!MessageDigest.isEqual(
+					accessTokenContent.getBytes(StandardCharsets.UTF_8),
+					currentAccessTokenContent.getBytes(
+						StandardCharsets.UTF_8))) {
 
 				continue;
 			}

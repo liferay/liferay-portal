@@ -23,7 +23,10 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.nio.charset.StandardCharsets;
+
 import java.security.Key;
+import java.security.MessageDigest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -62,7 +65,10 @@ public class CommercePaymentHttpHelperImpl
 			String orderGuestToken = _getGuestToken(
 				company, commerceOrder.getCommerceOrderId());
 
-			if (!guestToken.equals(orderGuestToken)) {
+			if (!MessageDigest.isEqual(
+					guestToken.getBytes(StandardCharsets.UTF_8),
+					orderGuestToken.getBytes(StandardCharsets.UTF_8))) {
+
 				throw new PrincipalException.MustHavePermission(
 					guestUser.getUserId(), CommerceOrder.class.getName(),
 					commerceOrder.getCommerceOrderId(), ActionKeys.VIEW);
