@@ -389,6 +389,11 @@ public class KeywordResourceImpl
 			_assetTagLocalService.fetchAssetTagByExternalReferenceCode(
 				externalReferenceCode, siteId);
 
+		if (assetTag == null) {
+			assetTag = _assetTagLocalService.fetchTag(
+				siteId, keyword.getName());
+		}
+
 		if (assetTag != null) {
 			return _toKeyword(
 				_assetTagService.updateTag(
