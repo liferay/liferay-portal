@@ -77,43 +77,7 @@ public class UpdatePermissionsMVCActionCommandTest {
 	}
 
 	@Test
-	public void testProcessAction1() throws Exception {
-		int initialCTEntriesCount =
-			_ctEntryLocalService.getCTCollectionCTEntriesCount(
-				_ctCollection.getCtCollectionId());
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					_ctCollection.getCtCollectionId())) {
-
-			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-				_getMockLiferayPortletActionRequest(TestPropsValues.getUser());
-
-			String[] ownerRoleActionIds = {
-				ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
-				ActionKeys.VIEW
-			};
-
-			mockLiferayPortletActionRequest.setParameter(
-				"permissions",
-				JSONUtil.put(
-					String.valueOf(_ownerRole.getRoleId()), ownerRoleActionIds
-				).toString());
-
-			_mvcActionCommand.processAction(
-				mockLiferayPortletActionRequest,
-				new MockLiferayPortletActionResponse());
-		}
-
-		int finalCTEntriesCount =
-			_ctEntryLocalService.getCTCollectionCTEntriesCount(
-				_ctCollection.getCtCollectionId());
-
-		Assert.assertEquals(0, finalCTEntriesCount - initialCTEntriesCount);
-	}
-
-	@Test
-	public void testProcessAction2() throws Exception {
+	public void testProcessAction() throws Exception {
 		for (String modelResourceOwnerDefaultAction :
 				ResourceActionsUtil.getModelResourceOwnerDefaultActions(
 					CTCollection.class.getName())) {
@@ -199,14 +163,51 @@ public class UpdatePermissionsMVCActionCommandTest {
 	}
 
 	@Test
-	public void testProcessAction3() throws Exception {
+	public void testProcessActionWithCTCollection() throws Exception {
+		int initialCTEntriesCount =
+			_ctEntryLocalService.getCTCollectionCTEntriesCount(
+				_ctCollection.getCtCollectionId());
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+				_getMockLiferayPortletActionRequest(TestPropsValues.getUser());
+
+			String[] ownerRoleActionIds = {
+				ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
+				ActionKeys.VIEW
+			};
+
+			mockLiferayPortletActionRequest.setParameter(
+				"permissions",
+				JSONUtil.put(
+					String.valueOf(_ownerRole.getRoleId()), ownerRoleActionIds
+				).toString());
+
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse());
+		}
+
+		int finalCTEntriesCount =
+			_ctEntryLocalService.getCTCollectionCTEntriesCount(
+				_ctCollection.getCtCollectionId());
+
+		Assert.assertEquals(0, finalCTEntriesCount - initialCTEntriesCount);
+	}
+
+	@Test
+	public void testProcessActionWithoutConfigurationPermission()
+		throws Exception {
+
 		User user = UserTestUtil.addUser(_company);
 
 		Role viewerRole = _roleLocalService.getRole(
 			_company.getCompanyId(), RoleConstants.PUBLICATIONS_VIEWER);
 
-		_roleLocalService.addUserRole(
-			user.getUserId(), viewerRole.getRoleId());
+		_roleLocalService.addUserRole(user.getUserId(), viewerRole.getRoleId());
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			_getMockLiferayPortletActionRequest(user);
@@ -261,8 +262,8 @@ public class UpdatePermissionsMVCActionCommandTest {
 		}
 	}
 
-	private MockLiferayPortletActionRequest
-			_getMockLiferayPortletActionRequest(User user)
+	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
+			User user)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -313,6 +314,5 @@ public class UpdatePermissionsMVCActionCommandTest {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
-
 
 }
