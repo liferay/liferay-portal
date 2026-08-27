@@ -674,10 +674,7 @@ const cmpProjectScopeTest = mergeTests(
 	cmpPagesTest,
 	cmsPagesTest,
 	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-58677': {enabled: true},
-		'LPD-99403': {enabled: true},
-	}),
+	featureFlagsTest({'LPD-99403': {enabled: true}}),
 	loginTest()
 );
 
