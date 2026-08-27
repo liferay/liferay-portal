@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -254,13 +255,15 @@ public class CommerceCurrencyLocalServiceImpl
 
 	@Override
 	public CommerceCurrency getOrAddEmptyCommerceCurrency(
-			String externalReferenceCode, long companyId, long userId)
+			String externalReferenceCode, long companyId, long userId,
+			String code)
 		throws PortalException {
 
 		return _emptyModelManager.getOrAddEmptyModel(
 			CommerceCurrency.class, companyId,
 			() -> commerceCurrencyLocalService.addCommerceCurrency(
-				externalReferenceCode, userId, externalReferenceCode,
+				externalReferenceCode, userId,
+				GetterUtil.getString(code, externalReferenceCode),
 				Collections.singletonMap(
 					LocaleUtil.getSiteDefault(), externalReferenceCode),
 				externalReferenceCode, BigDecimal.ONE, new HashMap<>(), 0, 0,
