@@ -257,7 +257,7 @@ export default function AllQuickFilters({
 		[allFDSState, setAllFDSState]
 	);
 
-	if (freeTier || counts.total === 0) {
+	if (counts.total === 0) {
 		return null;
 	}
 
