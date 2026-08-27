@@ -32,7 +32,7 @@ jest.mock(
 	})
 );
 
-const mockRoom = {id: 54321, name: 'Acme Room'} as any;
+const mockRoom = {id: 54321, name: 'Acme Room', siteId: 11111} as any;
 
 const filter: IAnalyticsRoomFilter = {
 	active: true,
@@ -68,13 +68,25 @@ describe('RoomAnalyticsFilter', () => {
 	});
 
 	it('defaults the trigger to All Rooms', () => {
-		render(<RoomAnalyticsFilter filter={filter} setValue={jest.fn()} />);
+		render(
+			<RoomAnalyticsFilter
+				filter={filter}
+				setValue={jest.fn()}
+				visibleGroupIds={['11111']}
+			/>
+		);
 
 		expect(screen.getByRole('button')).toHaveTextContent('all-rooms');
 	});
 
 	it('lists All Rooms plus existing rooms in the dropdown', async () => {
-		render(<RoomAnalyticsFilter filter={filter} setValue={jest.fn()} />);
+		render(
+			<RoomAnalyticsFilter
+				filter={filter}
+				setValue={jest.fn()}
+				visibleGroupIds={['11111']}
+			/>
+		);
 
 		fireEvent.click(screen.getByRole('button'));
 
@@ -87,10 +99,40 @@ describe('RoomAnalyticsFilter', () => {
 		).toBeInTheDocument();
 	});
 
+	it('omits rooms whose site is not visible', async () => {
+		(RoomService.getRooms as jest.Mock).mockResolvedValue({
+			items: [mockRoom, {id: 98765, name: 'Hidden Room', siteId: 22222}],
+		});
+
+		render(
+			<RoomAnalyticsFilter
+				filter={filter}
+				setValue={jest.fn()}
+				visibleGroupIds={['11111']}
+			/>
+		);
+
+		fireEvent.click(screen.getByRole('button'));
+
+		expect(
+			await screen.findByRole('menuitem', {name: /Acme Room/})
+		).toBeInTheDocument();
+
+		expect(
+			screen.queryByRole('menuitem', {name: /Hidden Room/})
+		).not.toBeInTheDocument();
+	});
+
 	it('reflects the selection in the trigger and notifies the parent', async () => {
 		const setValue = jest.fn();
 
-		render(<RoomAnalyticsFilter filter={filter} setValue={setValue} />);
+		render(
+			<RoomAnalyticsFilter
+				filter={filter}
+				setValue={setValue}
+				visibleGroupIds={['11111']}
+			/>
+		);
 
 		fireEvent.click(screen.getByRole('button'));
 
