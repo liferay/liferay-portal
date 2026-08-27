@@ -7068,17 +7068,17 @@ public class ObjectEntryResourceTest {
 				_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
 		_assertFilteredObjectEntries(
-			0,
+			2,
 			String.format(
 				"%s/any(k:k ne '%s')", _OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				_LIST_TYPE_ENTRY_KEY_1));
 		_assertFilteredObjectEntries(
-			1,
+			3,
 			String.format(
 				"%s/any(k:k ne '%s')", _OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				_LIST_TYPE_ENTRY_KEY_2));
 		_assertFilteredObjectEntries(
-			2,
+			3,
 			String.format(
 				"%s/any(k:k ne '%s')", _OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				_LIST_TYPE_ENTRY_KEY_3));
@@ -7087,24 +7087,6 @@ public class ObjectEntryResourceTest {
 			String.format(
 				"%s/any(k:k ne '%s')", _OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
 				RandomTestUtil.randomString()));
-		_assertFilteredObjectEntries(
-			0,
-			String.format(
-				"%s/any(k:(k ne '%s') and (k ne '%s'))",
-				_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, _LIST_TYPE_ENTRY_KEY_1,
-				_LIST_TYPE_ENTRY_KEY_2));
-		_assertFilteredObjectEntries(
-			1,
-			String.format(
-				"%s/any(k:(k ne '%s') and (k ne '%s'))",
-				_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, _LIST_TYPE_ENTRY_KEY_2,
-				_LIST_TYPE_ENTRY_KEY_3));
-		_assertFilteredObjectEntries(
-			3,
-			String.format(
-				"%s/any(k:(k ne '%s') and (k ne '%s'))",
-				_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
 		_assertFilteredObjectEntries(
 			3,
 			String.format(

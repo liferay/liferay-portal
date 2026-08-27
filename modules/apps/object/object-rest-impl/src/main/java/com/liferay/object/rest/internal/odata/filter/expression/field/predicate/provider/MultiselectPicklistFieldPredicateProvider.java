@@ -40,19 +40,20 @@ public class MultiselectPicklistFieldPredicateProvider
 		Object left, long objectDefinitionId,
 		BinaryExpression.Operation operation, Object right) {
 
-		Expression<String> expression = DSLFunctionFactoryUtil.concat(
-			new Scalar<>(_SCALAR_EXPRESSION),
+		Expression<String> expression =
 			(Expression<String>)objectDefinitionColumnSupplier.apply(
-				String.valueOf(left)),
-			new Scalar<>(_SCALAR_EXPRESSION));
+				String.valueOf(left));
 
 		if (Objects.equals(operation, BinaryExpression.Operation.EQ)) {
+			expression = DSLFunctionFactoryUtil.concat(
+				new Scalar<>(_SCALAR_EXPRESSION), expression,
+				new Scalar<>(_SCALAR_EXPRESSION));
+
 			return expression.like(
 				_getFieldValueExpression(String.valueOf(right), null));
 		}
 		else if (Objects.equals(operation, BinaryExpression.Operation.NE)) {
-			return expression.notLike(
-				_getFieldValueExpression(String.valueOf(right), null));
+			return expression.neq(String.valueOf(right));
 		}
 
 		throw new UnsupportedOperationException(
