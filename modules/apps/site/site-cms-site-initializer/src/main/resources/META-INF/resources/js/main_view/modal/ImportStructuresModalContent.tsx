@@ -255,7 +255,7 @@ export default function ImportStructuresModalContent({
 			</ClayModal.Header>
 
 			<ClayModal.Body>
-				<p className="text-secondary">
+				<p className="text-4 text-dark">
 					{Liferay.Language.get(
 						'select-a-json-file-to-import-the-content-structures'
 					)}
@@ -331,7 +331,7 @@ function WarningModalContent({
 			</ClayModal.Header>
 
 			<ClayModal.Body>
-				<p>
+				<p className="text-4 text-dark">
 					{Liferay.Language.get(
 						'import-and-override-content-structure-warning-message'
 					)}
@@ -345,7 +345,7 @@ function WarningModalContent({
 					))}
 				</ul>
 
-				<p>
+				<p className="text-4 text-dark">
 					{Liferay.Language.get(
 						'do-you-want-to-proceed-with-the-import-process'
 					)}
