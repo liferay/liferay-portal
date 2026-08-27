@@ -6,17 +6,14 @@ import React from 'react';
 import {getPropertyValue} from '../utils/custom-inputs';
 import {ISegmentEditorCustomInputBase} from '../utils/types';
 import {
+	getCustomInputOperators,
 	isKnown,
 	isUnknown,
-	PropertyTypes,
 	RelationalOperators,
-	SUPPORTED_OPERATORS_MAP,
 } from '../utils/constants';
 import {isOfKnownType, isValid} from '../utils/utils';
 import {Map} from 'immutable';
 import {Option, Picker} from '@clayui/core';
-
-const TEXT_OPERATORS = SUPPORTED_OPERATORS_MAP[PropertyTypes.Text];
 
 export interface ICustomStringInputProps extends ISegmentEditorCustomInputBase {
 	autocomplete?: boolean;
@@ -35,6 +32,10 @@ export default class CustomStringInput extends React.Component<ICustomStringInpu
 		this.handleBlur = this.handleBlur.bind(this);
 		this.handleOperatorChange = this.handleOperatorChange.bind(this);
 		this.handleValueChange = this.handleValueChange.bind(this);
+	}
+
+	getOperators() {
+		return getCustomInputOperators(this.props.property.type);
 	}
 
 	getSelectedOperatorKey() {
@@ -57,7 +58,7 @@ export default class CustomStringInput extends React.Component<ICustomStringInpu
 			operatorKey = isKnown;
 		}
 
-		return TEXT_OPERATORS.find(({key}) => key === operatorKey)?.key;
+		return this.getOperators().find(({key}) => key === operatorKey)?.key;
 	}
 
 	handleBlur() {
@@ -77,7 +78,7 @@ export default class CustomStringInput extends React.Component<ICustomStringInpu
 
 		newVal = valueIMap.setIn(
 			['criterionGroup', 'items', 0, 'operatorName'],
-			TEXT_OPERATORS.find(({key}) => key === operator)?.name
+			this.getOperators().find(({key}) => key === operator)?.name
 		);
 
 		if (isOfKnownType(String(operator))) {
@@ -124,6 +125,7 @@ export default class CustomStringInput extends React.Component<ICustomStringInpu
 
 		const value = getPropertyValue(valueIMap, 'value', 0);
 
+		const operators = this.getOperators();
 		const selectedOperatorKey = this.getSelectedOperatorKey();
 		const knownType = isOfKnownType(selectedOperatorKey ?? '');
 
@@ -151,7 +153,7 @@ export default class CustomStringInput extends React.Component<ICustomStringInpu
 					<Form.GroupItem shrink>
 						<Picker
 							items={
-								TEXT_OPERATORS.map(({key, label}) => ({
+								operators.map(({key, label}) => ({
 									key,
 									label,
 								})) as {label: string; key: string}[]
@@ -165,45 +167,48 @@ export default class CustomStringInput extends React.Component<ICustomStringInpu
 						</Picker>
 					</Form.GroupItem>
 
-					{!knownType && (
+					{!knownType && options.length === 0 && (
 						<Form.GroupItem>
-							{options.length === 0 ? (
-								autocomplete ? (
-									<AutocompleteInput
-										{...sharedInputProps}
-										dataSourceFn={fieldValuesDataSourceFn}
-										onChange={this.handleValueChange}
-									/>
-								) : (
-									<Input
-										{...sharedInputProps}
-										autoComplete="nope"
-										onChange={(
-											event: React.ChangeEvent<HTMLInputElement>
-										) => {
-											this.handleValueChange(
-												event.target.value
-											);
-										}}
-									/>
-								)
+							{autocomplete ? (
+								<AutocompleteInput
+									{...sharedInputProps}
+									dataSourceFn={fieldValuesDataSourceFn}
+									onChange={this.handleValueChange}
+								/>
 							) : (
-								<Picker
-									items={
-										options.map(({label, value}) => ({
-											label,
-											value,
-										})) as {label: string; value: string}[]
-									}
-									onBlur={this.handleBlur}
-									onSelectionChange={this.handleValueChange}
-									selectedKey={value}
-								>
-									{({label, value}) => (
-										<Option key={value}>{label}</Option>
-									)}
-								</Picker>
+								<Input
+									{...sharedInputProps}
+									autoComplete="nope"
+									onChange={(
+										event: React.ChangeEvent<HTMLInputElement>
+									) => {
+										this.handleValueChange(
+											event.target.value
+										);
+									}}
+								/>
 							)}
+						</Form.GroupItem>
+					)}
+
+					{!knownType && options.length > 0 && (
+						<Form.GroupItem shrink>
+							<Picker
+								className="criterion-input"
+								items={
+									options.map(({label, value}) => ({
+										label,
+										value,
+									})) as {label: string; value: string}[]
+								}
+								onBlur={this.handleBlur}
+								onSelectionChange={this.handleValueChange}
+								selectedKey={value}
+							>
+								{({label, value}) => (
+									<Option key={value}>{label}</Option>
+								)}
+							</Picker>
 						</Form.GroupItem>
 					)}
 				</Form.Group>

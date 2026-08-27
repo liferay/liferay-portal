@@ -26,9 +26,11 @@ const TYPE_ICON_MAP = {
 	[PropertyTypes.OrganizationNumber]: 'integer',
 	[PropertyTypes.OrganizationSelectText]: 'text',
 	[PropertyTypes.OrganizationText]: 'text',
+	[PropertyTypes.SessionChannel]: 'check',
 	[PropertyTypes.SessionDateTime]: 'date',
 	[PropertyTypes.SessionNumber]: 'integer',
 	[PropertyTypes.SessionText]: 'text',
+	[PropertyTypes.SessionUtmParameter]: 'text',
 	[PropertyTypes.Vocabulary]: 'text',
 	[PropertyTypes.Interest]: 'check',
 	[PropertyTypes.Tag]: 'text',
@@ -73,6 +75,19 @@ export const beginDrag = ({
 	else if (type === PropertyTypes.SessionGeolocation) {
 		touched = {country: false, dateFilter: false};
 		valid = {country: false, dateFilter: true};
+	}
+	else if (type === PropertyTypes.SessionChannel) {
+
+		// Unlike UTM Parameter, Channel's default value is already a
+		// concrete option (the first CHANNEL_OPTIONS entry), so it starts
+		// valid without requiring the user to touch the picker first.
+
+		touched = {customInput: false};
+		valid = {customInput: true};
+	}
+	else if (type === PropertyTypes.SessionUtmParameter) {
+		touched = {customInput: false};
+		valid = {customInput: false};
 	}
 	else if (
 		[PropertyTypes.SessionNumber, PropertyTypes.SessionText].includes(type)

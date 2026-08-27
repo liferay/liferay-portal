@@ -5,6 +5,10 @@ import DateFilterConjunctionInput from './components/DateFilterConjunctionInput'
 import Form from 'shared/components/form';
 import React from 'react';
 import {Criterion, ISegmentEditorCustomInputBase} from '../utils/types';
+import {
+	DATELESS_SESSION_PROPERTY_TYPES,
+	PropertyTypes,
+} from '../utils/constants';
 import {fromJS} from 'immutable';
 import {
 	getFilterCriterionIMap,
@@ -12,7 +16,6 @@ import {
 	getPropertyValue,
 } from '../utils/custom-inputs';
 import {isNull} from 'lodash';
-import {PropertyTypes} from '../utils/constants';
 
 interface ISessionInputProps extends ISegmentEditorCustomInputBase {
 	touched: {
@@ -124,6 +127,16 @@ export default class SessionInput extends React.Component<ISessionInputProps> {
 	}
 
 	render() {
+		const {property} = this.props;
+
+		if (DATELESS_SESSION_PROPERTY_TYPES.includes(property.type)) {
+			return (
+				<div className="criteria-statement">
+					<Form.Group autoFit>{this.renderCustomInput()}</Form.Group>
+				</div>
+			);
+		}
+
 		const conjunctionCriterion = this.getConjunctionDateFilterIMap();
 
 		return (

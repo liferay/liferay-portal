@@ -146,10 +146,12 @@ export enum PropertyTypes {
 	OrganizationSelectText = 'organization-select-text',
 	OrganizationText = 'organization-text',
 	SelectText = 'select-text',
+	SessionChannel = 'session-channel',
 	SessionDateTime = 'session-date-time',
 	SessionGeolocation = 'session-geolocation',
 	SessionNumber = 'session-number',
 	SessionText = 'session-text',
+	SessionUtmParameter = 'session-utm-parameter',
 	Tag = 'tag',
 	Text = 'text',
 	Vocabulary = 'vocabulary',
@@ -419,6 +421,13 @@ export const SUPPORTED_OPERATORS_MAP = {
 			name: RelationalOperators.NE,
 		},
 	],
+	[PropertyTypes.SessionChannel]: [
+		{
+			key: CustomFunctionOperators.SessionsFilter,
+			label: Liferay.Language.get('is').toLowerCase(),
+			name: CustomFunctionOperators.SessionsFilter,
+		},
+	],
 	[PropertyTypes.SessionDateTime]: [
 		{
 			key: CustomFunctionOperators.SessionsFilter,
@@ -441,6 +450,13 @@ export const SUPPORTED_OPERATORS_MAP = {
 		},
 	],
 	[PropertyTypes.SessionText]: [
+		{
+			key: CustomFunctionOperators.SessionsFilter,
+			label: Liferay.Language.get('is').toLowerCase(),
+			name: CustomFunctionOperators.SessionsFilter,
+		},
+	],
+	[PropertyTypes.SessionUtmParameter]: [
 		{
 			key: CustomFunctionOperators.SessionsFilter,
 			label: Liferay.Language.get('is').toLowerCase(),
@@ -480,6 +496,30 @@ export const SUPPORTED_OPERATORS_MAP = {
 		},
 	],
 };
+
+/**
+ * The operators a criterion offers for the value comparison itself, which
+ * are not the ones its property type maps to in SUPPORTED_OPERATORS_MAP:
+ * that entry describes the outer call wrapping the criterion (e.g.
+ * "sessions.filter"), while the comparison inside it reuses the plain text
+ * operators, or the closed "is"/"is not" pair when the value can only ever
+ * be one of a fixed list of options (e.g. Channel).
+ */
+export const getCustomInputOperators = (type: PropertyTypes) =>
+	type === PropertyTypes.SessionChannel
+		? SUPPORTED_OPERATORS_MAP[PropertyTypes.SelectText]
+		: SUPPORTED_OPERATORS_MAP[PropertyTypes.Text];
+
+/**
+ * Session property types whose input carries no date filter conjunction, so
+ * their criterion holds a single item and neither the editor nor the
+ * criteria card has a time period to show for them.
+ */
+export const DATELESS_SESSION_PROPERTY_TYPES = [
+	PropertyTypes.SessionChannel,
+	PropertyTypes.SessionDateTime,
+	PropertyTypes.SessionUtmParameter,
+];
 
 export const SUPPORTED_PROPERTY_TYPES_MAP = {
 	[PropertyTypes.AccountDate]: [CustomFunctionOperators.AccountsFilter],
@@ -646,6 +686,7 @@ export const TIME_CONJUNCTION_OPTIONS = [
 	},
 ];
 
+export const ACQUISITION_PARAMETER_PROPERTY_PREFIX = 'context/';
 export const ACTIVITY_KEY = 'activityKey';
 export const ATTRIBUTE_PROPERTY_PREFIX = 'attribute/';
 export const EVENT_KEY = 'eventId';

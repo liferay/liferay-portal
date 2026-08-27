@@ -22,6 +22,14 @@ type GraphqlQuery = {
 interface IAutocompleteProps {
 	className?: string;
 	dataSourceFn?: (query?: string) => Promise<string[]>;
+
+	/**
+	 * Extra request identity for `dataSourceFn`, for a caller whose data
+	 * source depends on something other than the typed query (e.g. which
+	 * field the values are read from). The suggestions are refetched
+	 * whenever it changes; without it, only the query invalidates them.
+	 */
+	dataSourceKey?: string;
 	disabled?: boolean;
 	graphqlQuery?: GraphqlQuery;
 	placeholder?: string;
@@ -36,6 +44,7 @@ const DEBOUNCE_DELAY = 250;
 const AutocompleteInput: React.FC<IAutocompleteProps> = ({
 	className,
 	dataSourceFn,
+	dataSourceKey,
 	disabled = false,
 	graphqlQuery,
 	onBlur,
@@ -77,7 +86,7 @@ const AutocompleteInput: React.FC<IAutocompleteProps> = ({
 				error: false,
 				loading: false,
 			},
-			variables: {value},
+			variables: {dataSourceKey, value},
 		});
 	}
 

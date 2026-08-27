@@ -7,6 +7,7 @@ import {
 	WEB_BEHAVIORS,
 } from '../utils/properties';
 import {
+	ACQUISITION_PARAMETER_PROPERTY_PREFIX,
 	Conjunctions,
 	CustomFunctionOperators,
 	isKnown,
@@ -20,6 +21,7 @@ import {
 	SUPPORTED_OPERATORS_MAP,
 } from './constants';
 import {Criteria, Criterion, CriterionGroup, Operator} from './types';
+import {DEFAULT_UTM_PARAMETER_OPTIONS} from './properties/session-properties';
 import {EntityType, ReferencedEntities} from '../context/referencedObjects';
 import {getActionFromEventId} from './activity-keys';
 import {Event} from 'event-analysis/utils/types';
@@ -393,6 +395,33 @@ export const findPropertyByCriterion = (
 		) ||
 		type === PropertyTypes.SessionDateTime
 	) {
+
+		// A UTM Parameter criterion's inner field name varies with whichever
+		// parameter the user picked — one of the backend's mapped standard
+		// field names (e.g. "context/acquisitionSource") or, for a custom
+		// one, "context/<name>" where name starts with "utm" — so it's
+		// matched back to the single "UTM Parameter" sidebar entry instead
+		// of by an exact property name. See AcquisitionParameterUtil in
+		// osb-asah-common.
+
+		const acquisitionParameterName = propertyName?.startsWith(
+			ACQUISITION_PARAMETER_PROPERTY_PREFIX
+		)
+			? propertyName.slice(ACQUISITION_PARAMETER_PROPERTY_PREFIX.length)
+			: '';
+
+		const isUtmParameter =
+			DEFAULT_UTM_PARAMETER_OPTIONS.some(
+				(option) => option.fieldName === propertyName
+			) || acquisitionParameterName.toLowerCase().startsWith('utm');
+
+		if (isUtmParameter) {
+			return SESSION_PROPERTIES.find(
+				(property: Property | undefined) =>
+					property?.type === PropertyTypes.SessionUtmParameter
+			);
+		}
+
 		return SESSION_PROPERTIES.find(
 			(property: Property | undefined) => property?.name === propertyName
 		);

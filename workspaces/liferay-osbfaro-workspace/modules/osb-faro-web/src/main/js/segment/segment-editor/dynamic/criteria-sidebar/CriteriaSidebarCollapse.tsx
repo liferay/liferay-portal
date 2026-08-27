@@ -16,6 +16,7 @@ import {FieldOwnerTypes} from 'shared/util/constants';
 import {jsDatetoYYYYMMDD} from '../utils/utils';
 import {List} from 'immutable';
 import {Property, PropertyGroup, PropertySubgroup} from 'shared/util/records';
+import {DEFAULT_UTM_PARAMETER_OPTIONS} from '../utils/properties/session-properties';
 import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useParams} from 'react-router-dom';
@@ -180,6 +181,19 @@ export const getDefaultValue = (property: Property): any => {
 					],
 				},
 			]);
+		case PropertyTypes.SessionChannel:
+			return createCustomValueMap([
+				{
+					key: 'criterionGroup',
+					value: [
+						{
+							operatorName: RelationalOperators.EQ,
+							propertyName: name,
+							value: options?.length ? options[0].value : '',
+						},
+					],
+				},
+			]);
 		case PropertyTypes.SessionGeolocation:
 		case PropertyTypes.SessionNumber:
 		case PropertyTypes.SessionText:
@@ -196,6 +210,20 @@ export const getDefaultValue = (property: Property): any => {
 							operatorName: RelationalOperators.GT,
 							propertyName: 'completeDate',
 							value: TimeSpans.Last24Hours,
+						},
+					],
+				},
+			]);
+		case PropertyTypes.SessionUtmParameter:
+			return createCustomValueMap([
+				{
+					key: 'criterionGroup',
+					value: [
+						{
+							operatorName: RelationalOperators.EQ,
+							propertyName:
+								DEFAULT_UTM_PARAMETER_OPTIONS[0].fieldName,
+							value: '',
 						},
 					],
 				},
