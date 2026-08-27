@@ -405,6 +405,9 @@ describe('BaseLifecycle', () => {
 			'Countries'
 		);
 		expect(screen.getByTestId('segment-dropdown')).toBeInTheDocument();
+		expect(
+			screen.getByText(/^\S+ \d+, \d{4} – \S+ \d+, \d{4}$/)
+		).toBeInTheDocument();
 		expect(screen.queryByText('No Account Data Available')).toBeNull();
 	});
 });
