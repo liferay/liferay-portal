@@ -84,7 +84,6 @@ public class FragmentEntryLinkDisplayContextTest {
 	@TestInfo("LPD-99652")
 	public void testGetFragmentEntryLinkName() throws Exception {
 		FragmentEntry fragmentEntry = _addFragmentEntry();
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		Object fragmentEntryLinkDisplayContext =
 			_getFragmentEntryLinkDisplayContext(
@@ -92,19 +91,21 @@ public class FragmentEntryLinkDisplayContextTest {
 
 		_testGetFragmentEntryLinkName(
 			FragmentTestUtil.addFragmentEntryLink(
-				fragmentEntry, layout.getPlid()),
-			fragmentEntryLinkDisplayContext, layout);
-		_testGetFragmentEntryLinkName(
-			FragmentTestUtil.addFragmentEntryLink(
 				fragmentEntry, RandomTestUtil.randomLong()),
 			fragmentEntryLinkDisplayContext, null);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		_testGetFragmentEntryLinkName(
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, layout.getPlid()),
+			fragmentEntryLinkDisplayContext, layout);
 	}
 
 	@Test
 	@TestInfo("LPD-99652")
 	public void testGetFragmentEntryLinkTypeLabel() throws Exception {
 		FragmentEntry fragmentEntry = _addFragmentEntry();
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		Object fragmentEntryLinkDisplayContext =
 			_getFragmentEntryLinkDisplayContext(
@@ -112,12 +113,15 @@ public class FragmentEntryLinkDisplayContextTest {
 
 		_testGetFragmentEntryLinkTypeLabel(
 			FragmentTestUtil.addFragmentEntryLink(
-				fragmentEntry, layout.getPlid()),
-			fragmentEntryLinkDisplayContext, layout);
-		_testGetFragmentEntryLinkTypeLabel(
-			FragmentTestUtil.addFragmentEntryLink(
 				fragmentEntry, RandomTestUtil.randomLong()),
 			fragmentEntryLinkDisplayContext, null);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		_testGetFragmentEntryLinkTypeLabel(
+			FragmentTestUtil.addFragmentEntryLink(
+				fragmentEntry, layout.getPlid()),
+			fragmentEntryLinkDisplayContext, layout);
 	}
 
 	private FragmentEntry _addFragmentEntry() throws Exception {
