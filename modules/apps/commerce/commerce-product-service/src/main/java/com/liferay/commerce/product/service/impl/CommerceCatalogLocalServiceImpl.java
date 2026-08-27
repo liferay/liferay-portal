@@ -561,6 +561,10 @@ public class CommerceCatalogLocalServiceImpl
 						AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER);
 		}
 
+		if (accountEntry.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			return;
+		}
+
 		if (accountEntry.getStatus() != WorkflowConstants.STATUS_APPROVED) {
 			throw new AccountEntryStatusException(
 				"Commerce catalogs can only be assigned with an approved " +
