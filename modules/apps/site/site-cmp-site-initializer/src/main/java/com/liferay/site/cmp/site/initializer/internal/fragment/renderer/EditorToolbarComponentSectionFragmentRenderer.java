@@ -85,22 +85,24 @@ public class EditorToolbarComponentSectionFragmentRenderer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		String externalReferenceCode =
+			objectDefinition.getExternalReferenceCode();
+
 		return HashMapBuilder.<String, Object>put(
 			"backURL", ParamUtil.getString(httpServletRequest, "redirect")
 		).put(
 			"discardURL",
 			() -> {
-				if (!objectEntry.isDraft() ||
-					!Objects.equals(
-						objectDefinition.getExternalReferenceCode(),
-						"L_CMP_PROJECT")) {
+				if (objectEntry.isDraft() &&
+					(Objects.equals(externalReferenceCode, "L_CMP_PROJECT") ||
+					 Objects.equals(externalReferenceCode, "L_CMP_TASK"))) {
 
-					return null;
+					return StringBundler.concat(
+						"/o", objectDefinition.getRESTContextPath(),
+						StringPool.SLASH, objectEntry.getObjectEntryId());
 				}
 
-				return StringBundler.concat(
-					"/o", objectDefinition.getRESTContextPath(),
-					StringPool.SLASH, objectEntry.getObjectEntryId());
+				return null;
 			}
 		).put(
 			"formSubmitURL",
@@ -134,10 +136,7 @@ public class EditorToolbarComponentSectionFragmentRenderer
 						"&action=", CMPActionConstants.CREATE_GLOBAL_TASK);
 				}
 
-				if (Objects.equals(
-						objectDefinition.getExternalReferenceCode(),
-						"L_CMP_PROJECT")) {
-
+				if (Objects.equals(externalReferenceCode, "L_CMP_PROJECT")) {
 					String baseViewProjectURL =
 						ActionUtil.getBaseViewProjectURL(
 							objectDefinition, themeDisplay);
@@ -166,10 +165,7 @@ public class EditorToolbarComponentSectionFragmentRenderer
 		).put(
 			"title",
 			() -> {
-				if (Objects.equals(
-						objectDefinition.getExternalReferenceCode(),
-						"L_CMP_PROJECT")) {
-
+				if (Objects.equals(externalReferenceCode, "L_CMP_PROJECT")) {
 					return LanguageUtil.get(
 						themeDisplay.getLocale(),
 						objectEntry.isDraft() ? "new-project" : "edit-project");
