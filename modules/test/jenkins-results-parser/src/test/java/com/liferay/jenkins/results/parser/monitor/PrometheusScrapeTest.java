@@ -23,8 +23,23 @@ public class PrometheusScrapeTest
 
 		_testGetValue(
 			MonitorTestUtil.newScrape(
+				MonitorTestUtil.newSample(
+					"file_store", MonitorTestUtil.FILE_STORE, name, "3.0")),
+			3.0D, "file_store", MonitorTestUtil.FILE_STORE, name);
+		_testGetValue(
+			MonitorTestUtil.newScrape(
 				MonitorTestUtil.newSample("label", label, name, "0.0")),
 			0.0D, "label", label, name);
+		_testGetValue(
+			MonitorTestUtil.newScrape(
+				MonitorTestUtil.newSample("label", label, name, "1.0"),
+				MonitorTestUtil.newSample("label", label + "x", name, "2.0")),
+			2.0D, "label", label + "x", name);
+		_testGetValue(
+			MonitorTestUtil.newScrape(
+				MonitorTestUtil.newSample(
+					"label", label, name, "5.0 1699999999000")),
+			5.0D, "label", label, name);
 		_testGetValue(
 			MonitorTestUtil.newScrape(
 				MonitorTestUtil.newSample(
@@ -35,22 +50,6 @@ public class PrometheusScrapeTest
 				MonitorTestUtil.newSample(
 					"label", label, name, "9.223372036853727E18")),
 			9.223372036853727E18, "label", label, name);
-		_testGetValue(
-			MonitorTestUtil.newScrape(
-				MonitorTestUtil.newSample(
-					"label", label, name, "5.0 1699999999000")),
-			5.0D, "label", label, name);
-		_testGetValue(
-			MonitorTestUtil.newScrape(
-				MonitorTestUtil.newSample("label", label, name, "1.0"),
-				MonitorTestUtil.newSample("label", label + "x", name, "2.0")),
-			2.0D, "label", label + "x", name);
-
-		_testGetValue(
-			MonitorTestUtil.newScrape(
-				MonitorTestUtil.newSample(
-					"file_store", MonitorTestUtil.FILE_STORE, name, "3.0")),
-			3.0D, "file_store", MonitorTestUtil.FILE_STORE, name);
 		_testGetValue(
 			MonitorTestUtil.newScrape(name + "{path=\"a\\\"b\",} 7.0"), 7.0D,
 			"path", "a\"b", name);
