@@ -32,7 +32,9 @@ public class FragmentEntryLinkModelListener
 		FragmentEntryLink originalFragmentEntryLink,
 		FragmentEntryLink fragmentEntryLink) {
 
-		if (!fragmentEntryLink.isDeleted()) {
+		if (originalFragmentEntryLink.isDeleted() ||
+			!fragmentEntryLink.isDeleted()) {
+
 			return;
 		}
 
