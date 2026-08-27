@@ -5,7 +5,10 @@
 
 package com.liferay.source.formatter.check;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.tools.ToolsUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,20 +39,37 @@ public class ConfigStylingCheck extends BaseFileCheck {
 		while (matcher.find()) {
 			String s = matcher.group(2);
 
-			if (!s.contains(StringPool.NEW_LINE)) {
-				continue;
-			}
-
 			s = s.replaceAll("\\s+\\\\\\s+", StringPool.BLANK);
 
 			if (s.endsWith(StringPool.COMMA)) {
 				s = s.substring(0, s.length() - 1);
 			}
 
-			String replacement = matcher.group(1) + s + matcher.group(3);
+			s = matcher.group(1) + s + matcher.group(3);
 
-			matcher.appendReplacement(
-				sb, Matcher.quoteReplacement(replacement));
+			int x = -1;
+
+			while (x < (s.length() - 1)) {
+				x = s.indexOf(StringPool.COMMA, x + 1);
+
+				if (x == -1) {
+					break;
+				}
+
+				if (ToolsUtil.isInsideQuotes(s, x)) {
+					continue;
+				}
+
+				char c = s.charAt(x + 1);
+
+				if (c == CharPool.SPACE) {
+					continue;
+				}
+
+				s = StringUtil.insert(s, StringPool.SPACE, x + 1);
+			}
+
+			matcher.appendReplacement(sb, Matcher.quoteReplacement(s));
 		}
 
 		matcher.appendTail(sb);
