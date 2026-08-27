@@ -679,6 +679,89 @@ const cmpProjectScopeTest = mergeTests(
 );
 
 cmpProjectScopeTest(
+	'Scopes a tag to no project and hides it from every project',
+	{tag: ['@LPD-101177']},
+	async ({
+		apiHelpers,
+		editProjectPage,
+		page,
+		projectPage,
+		projectsPage,
+		tagsPage,
+	}) => {
+		await page.emulateMedia({reducedMotion: 'reduce'});
+
+		const projectTitle = getRandomString();
+		const tagName = `Tag${getRandomInt()}`;
+
+		const {id: siteId} =
+			await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('cms');
+
+		await cmpProjectScopeTest.step('Create a project', async () => {
+			const projectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{title: projectTitle},
+				'cmp/projects'
+			);
+
+			apiHelpers.data.push({
+				applicationName: 'cmp/projects',
+				id: projectEntry.id,
+				type: 'objectEntry',
+			});
+		});
+
+		await cmpProjectScopeTest.step(
+			'Create a tag with no project selected',
+			async () => {
+				await tagsPage.goto();
+
+				await tagsPage.newTagButton.click();
+
+				await page.getByLabel('NameRequired').fill(tagName);
+
+				await clickAndExpectToBeVisible({
+					target: page.getByText(
+						`Success:${tagName} was created successfully.`
+					),
+					trigger: tagsPage.saveButton,
+				});
+
+				await expect(tagsPage.getItem(tagName)).toBeVisible();
+
+				const {items} =
+					await apiHelpers.headlessAdminTaxonomy.getSiteKeywords({
+						filter: `name eq '${tagName}'`,
+						siteId,
+					});
+
+				apiHelpers.data.push({id: items[0].id, type: 'keyword'});
+			}
+		);
+
+		await cmpProjectScopeTest.step(
+			'Check the tag is not listed in the project tag autocomplete',
+			async () => {
+				await projectsPage.goto();
+
+				await projectsPage.getProject(projectTitle).click();
+
+				await projectPage.editProject();
+
+				await editProjectPage.searchTags(tagName);
+
+				await expect(
+					editProjectPage.getCreateTagAction(tagName)
+				).toBeVisible();
+
+				await expect(editProjectPage.getTagOption(tagName)).toHaveCount(
+					0
+				);
+			}
+		);
+	}
+);
+
+cmpProjectScopeTest(
 	'Scopes a tag to a project and shows it only in that project',
 	{tag: ['@LPD-101177']},
 	async ({
@@ -750,9 +833,6 @@ cmpProjectScopeTest(
 				});
 
 				await expect(tagsPage.getItem(tagName)).toBeVisible();
-
-				// The tag is created through the UI, so register it for the
-				// cleanup the fixture runs on every outcome.
 
 				apiHelpers.data.push({
 					id: (await getTagByName(tagName)).id,
