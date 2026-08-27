@@ -13,6 +13,7 @@ import com.liferay.jenkins.results.parser.test.clazz.group.ModulesJUnitBatchTest
 
 import java.io.File;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,8 +37,17 @@ public class TestClassFactoryTest
 
 	@Test
 	public void testNewTestClass() throws Exception {
-		_testNewTestClass(false);
-		_testNewTestClass(true);
+		BatchTestClassGroup jUnitBatchTestClassGroup = _mockBatchTestClassGroup(
+			"integration-license", JUnitBatchTestClassGroup.class);
+
+		BatchTestClassGroup modulesJUnitBatchTestClassGroup =
+			_mockBatchTestClassGroup(
+				"modules-integration", ModulesJUnitBatchTestClassGroup.class);
+
+		_testNewTestClass(
+			jUnitBatchTestClassGroup, modulesJUnitBatchTestClassGroup);
+		_testNewTestClass(
+			modulesJUnitBatchTestClassGroup, jUnitBatchTestClassGroup);
 	}
 
 	@Rule
@@ -48,14 +58,14 @@ public class TestClassFactoryTest
 
 		BatchTestClassGroup batchTestClassGroup = Mockito.mock(clazz);
 
-		PortalTestClassJob portalTestClassJob =
-			BatchTestClassGroupTestUtil.getPortalTestClassJob();
-
 		Mockito.doReturn(
 			batchName
 		).when(
 			batchTestClassGroup
 		).getBatchName();
+
+		PortalTestClassJob portalTestClassJob =
+			BatchTestClassGroupTestUtil.getPortalTestClassJob();
 
 		Mockito.doReturn(
 			portalTestClassJob.getPortalGitWorkingDirectory()
@@ -75,37 +85,22 @@ public class TestClassFactoryTest
 			"SampleTest", packageDir);
 	}
 
-	private void _testNewTestClass(boolean modulesFirst) throws Exception {
+	private void _testNewTestClass(
+			BatchTestClassGroup batchTestClassGroup1,
+			BatchTestClassGroup batchTestClassGroup2)
+		throws Exception {
+
 		TestClassFactory.clear();
-
-		BatchTestClassGroup jUnitBatchTestClassGroup = _mockBatchTestClassGroup(
-			"integration-license", JUnitBatchTestClassGroup.class);
-
-		BatchTestClassGroup modulesJUnitBatchTestClassGroup =
-			_mockBatchTestClassGroup(
-				"modules-integration", ModulesJUnitBatchTestClassGroup.class);
 
 		File testClassFile = _newTestClassFile();
 
-		TestClass jUnitTestClass = null;
-		TestClass modulesJUnitTestClass = null;
+		TestClass testClass1 = TestClassFactory.newTestClass(
+			batchTestClassGroup1, testClassFile);
 
-		if (modulesFirst) {
-			modulesJUnitTestClass = TestClassFactory.newTestClass(
-				modulesJUnitBatchTestClassGroup, testClassFile);
-			jUnitTestClass = TestClassFactory.newTestClass(
-				jUnitBatchTestClassGroup, testClassFile);
-		}
-		else {
-			jUnitTestClass = TestClassFactory.newTestClass(
-				jUnitBatchTestClassGroup, testClassFile);
-			modulesJUnitTestClass = TestClassFactory.newTestClass(
-				modulesJUnitBatchTestClassGroup, testClassFile);
-		}
+		TestClass testClass2 = TestClassFactory.newTestClass(
+			batchTestClassGroup2, testClassFile);
 
-		testEquals(JUnitTestClass.class, jUnitTestClass.getClass());
-		testEquals(
-			ModulesJUnitTestClass.class, modulesJUnitTestClass.getClass());
+		Assert.assertNotEquals(testClass1.getClass(), testClass2.getClass());
 	}
 
 }
