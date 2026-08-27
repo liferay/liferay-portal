@@ -27,13 +27,15 @@
 					bundle alone on port 8081, so this page needs a static
 					server of its own, from the module root:
 				</p>
-				<pre>yarn start                      # bundle at localhost:8081
-python3 -m http.server 8000     # this page, from the module root</pre>
+
+				<pre>yarn start # bundle at localhost:8081
+python3 -m http.server 8000 # this page, from the module root</pre>
 
 				<p>
 					Then open the page through two names under
 					<code>test.localhost</code>:
 				</p>
+
 				<pre>http://a.test.localhost:8000/test/manual/cookie-domain.html
 http://b.test.localhost:8000/test/manual/cookie-domain.html</pre>
 
