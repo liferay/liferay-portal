@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
-import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ModelListener;
@@ -41,7 +40,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -51,9 +52,10 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleService;
 import com.liferay.portal.kernel.service.UserService;
-import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -69,11 +71,11 @@ import com.liferay.site.cmp.site.initializer.internal.util.CMPProjectObjectEntry
 import com.liferay.site.cmp.site.initializer.internal.util.RoleUtil;
 import com.liferay.site.cmp.site.initializer.internal.util.SiteInitializerUtil;
 import com.liferay.site.cms.site.initializer.util.CMSObjectEntryUtil;
+import com.liferay.site.cms.site.initializer.util.CMSUserUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
 import java.io.Serializable;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -153,19 +155,47 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
-	private void _deleteGroupMembershipWithoutUserGroupRoles(
-			long groupId, long userId)
+	private void _addUserGroupRoles(
+			long companyId, long groupId, long originalUserId,
+			List<String> roleNames, long userId)
 		throws Exception {
 
-		if (ListUtil.isNotEmpty(
-				_roleLocalService.getUserGroupRoles(userId, groupId))) {
-
+		if ((userId == 0) || (originalUserId == userId)) {
 			return;
 		}
 
-		User user = _userService.getUserById(userId);
+		if (!_groupLocalService.hasUserGroup(userId, groupId)) {
+			_userService.addGroupUsers(
+				groupId, new long[] {userId}, new ServiceContext());
+		}
 
-		_updateUser(ArrayUtil.remove(user.getGroupIds(), groupId), userId);
+		_userGroupRoleService.addUserGroupRoles(
+			userId, groupId,
+			TransformUtil.transformToLongArray(
+				roleNames,
+				roleName -> {
+					Role role = RoleUtil.getOrAddProjectRole(
+						companyId, roleName, userId);
+
+					return role.getRoleId();
+				}));
+	}
+
+	private void _checkAssignableUser(
+			PermissionChecker permissionChecker, long userId)
+		throws Exception {
+
+		if (userId == 0) {
+			return;
+		}
+
+		if (!CMSUserUtil.isAssignableUser(
+				permissionChecker, _userService.getUserById(userId))) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, User.class.getName(), userId,
+				ActionKeys.UPDATE);
+		}
 	}
 
 	private void _deleteObjectEntries(ObjectEntry objectEntry)
@@ -215,12 +245,13 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	}
 
 	private void _deleteUserGroupRoles(
-			long companyId, long groupId, List<String> roleNames, long userId)
+			long companyId, long groupId, long originalUserId,
+			List<String> roleNames, long userId)
 		throws Exception {
 
-		UserPermissionUtil.check(
-			PermissionThreadLocal.getPermissionChecker(), userId,
-			ActionKeys.UPDATE);
+		if ((originalUserId == 0) || (originalUserId == userId)) {
+			return;
+		}
 
 		long[] roleIds = TransformUtil.transformToLongArray(
 			roleNames,
@@ -238,9 +269,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
-		_userGroupRoleService.deleteUserGroupRoles(userId, groupId, roleIds);
-
-		_deleteGroupMembershipWithoutUserGroupRoles(groupId, userId);
+		_userGroupRoleService.deleteUserGroupRoles(
+			originalUserId, groupId, roleIds);
 	}
 
 	private ObjectEntry _fetchLinkedObjectEntry(
@@ -560,81 +590,61 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
-		_updateUserGroupRoles(
-			objectEntry.getCompanyId(), objectEntry.getGroupId(),
-			_getRelatedUserId(
-				originalObjectEntry, "r_userToCMPProjectManager_userId"),
-			Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
-			_getRelatedUserId(objectEntry, "r_userToCMPProjectManager_userId"));
-		_updateUserGroupRoles(
-			objectEntry.getCompanyId(), objectEntry.getGroupId(),
-			_getRelatedUserId(
-				originalObjectEntry, "r_userToCMPProjectSponsor_userId"),
-			Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
-			_getRelatedUserId(objectEntry, "r_userToCMPProjectSponsor_userId"));
-	}
+		long originalProjectManagerUserId = _getRelatedUserId(
+			originalObjectEntry, "r_userToCMPProjectManager_userId");
+		long originalProjectSponsorUserId = _getRelatedUserId(
+			originalObjectEntry, "r_userToCMPProjectSponsor_userId");
+		long projectManagerUserId = _getRelatedUserId(
+			objectEntry, "r_userToCMPProjectManager_userId");
+		long projectSponsorUserId = _getRelatedUserId(
+			objectEntry, "r_userToCMPProjectSponsor_userId");
 
-	private User _updateUser(long[] groupIds, Long userId) throws Exception {
-		User user = _userService.getUserById(userId);
+		if ((originalProjectManagerUserId == projectManagerUserId) &&
+			(originalProjectSponsorUserId == projectSponsorUserId)) {
 
-		Contact contact = user.getContact();
-
-		Calendar calendar = CalendarFactoryUtil.getCalendar();
-
-		calendar.setTime(user.getBirthday());
-
-		return _userService.updateUser(
-			user.getUserId(), user.getPassword(), null, null,
-			user.isPasswordReset(), null, null, user.getScreenName(),
-			user.getEmailAddress(), user.getLanguageId(), user.getTimeZoneId(),
-			user.getGreeting(), user.getComments(), user.getFirstName(),
-			user.getMiddleName(), user.getLastName(),
-			contact.getPrefixListTypeId(), contact.getSuffixListTypeId(),
-			user.isMale(), calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
-			contact.getSmsSn(), contact.getFacebookSn(), contact.getJabberSn(),
-			contact.getSkypeSn(), contact.getTwitterSn(), user.getJobTitle(),
-			groupIds, user.getOrganizationIds(), null, null,
-			user.getUserGroupIds(), new ServiceContext());
-	}
-
-	private void _updateUserGroupRoles(
-			long companyId, long groupId, long originalUserId,
-			List<String> roleNames, long userId)
-		throws Exception {
-
-		if (originalUserId == userId) {
 			return;
 		}
 
-		if (originalUserId != 0) {
-			_deleteUserGroupRoles(
-				companyId, groupId, roleNames, originalUserId);
+		long groupId = objectEntry.getGroupId();
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		GroupPermissionUtil.check(
+			permissionChecker, groupId, ActionKeys.ASSIGN_MEMBERS);
+
+		if (originalProjectManagerUserId != projectManagerUserId) {
+			_checkAssignableUser(
+				permissionChecker, originalProjectManagerUserId);
+			_checkAssignableUser(permissionChecker, projectManagerUserId);
 		}
 
-		if (userId == 0) {
-			return;
+		if (originalProjectSponsorUserId != projectSponsorUserId) {
+			_checkAssignableUser(
+				permissionChecker, originalProjectSponsorUserId);
+			_checkAssignableUser(permissionChecker, projectSponsorUserId);
 		}
 
-		UserPermissionUtil.check(
-			PermissionThreadLocal.getPermissionChecker(), userId,
-			ActionKeys.VIEW);
+		long companyId = objectEntry.getCompanyId();
 
-		if (!_groupLocalService.hasUserGroup(userId, groupId)) {
-			_userService.addGroupUsers(
-				groupId, new long[] {userId}, new ServiceContext());
-		}
+		List<String> projectManagerRoleNames = Collections.singletonList(
+			DepotRolesConstants.PROJECT_MANAGER);
+		List<String> projectSponsorRoleNames = Collections.singletonList(
+			DepotRolesConstants.PROJECT_MEMBER);
 
-		_userGroupRoleService.addUserGroupRoles(
-			userId, groupId,
-			TransformUtil.transformToLongArray(
-				roleNames,
-				roleName -> {
-					Role role = RoleUtil.getOrAddProjectRole(
-						companyId, roleName, userId);
+		_addUserGroupRoles(
+			companyId, groupId, originalProjectManagerUserId,
+			projectManagerRoleNames, projectManagerUserId);
+		_addUserGroupRoles(
+			companyId, groupId, originalProjectSponsorUserId,
+			projectSponsorRoleNames, projectSponsorUserId);
 
-					return role.getRoleId();
-				}));
+		_deleteUserGroupRoles(
+			companyId, groupId, originalProjectSponsorUserId,
+			projectSponsorRoleNames, projectSponsorUserId);
+		_deleteUserGroupRoles(
+			companyId, groupId, originalProjectManagerUserId,
+			projectManagerRoleNames, projectManagerUserId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

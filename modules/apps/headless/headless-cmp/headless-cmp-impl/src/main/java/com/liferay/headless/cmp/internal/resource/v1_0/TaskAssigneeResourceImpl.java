@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
@@ -27,6 +26,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 import com.liferay.site.cms.site.initializer.util.CMPLicenseUtil;
+import com.liferay.site.cms.site.initializer.util.CMSUserUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +62,23 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 		CMPLicenseUtil.checkAppEnabled();
 
 		return _getTaskAssigneesPage(null, search, type);
+	}
+
+	private List<User> _filterAssignableUsers(List<User> users)
+		throws Exception {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		List<User> assignableUsers = new ArrayList<>(users.size());
+
+		for (User user : users) {
+			if (CMSUserUtil.isAssignableUser(permissionChecker, user)) {
+				assignableUsers.add(user);
+			}
+		}
+
+		return assignableUsers;
 	}
 
 	private Page<TaskAssignee> _getTaskAssigneesPage(
@@ -152,32 +169,6 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 		}
 
 		return Page.of(taskAssignees);
-	}
-
-	private List<User> _filterAssignableUsers(List<User> users)
-		throws Exception {
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		if (permissionChecker.isOmniadmin()) {
-			return users;
-		}
-
-		List<User> assignableUsers = new ArrayList<>(users.size());
-
-		for (User user : users) {
-			if (_portal.isOmniadmin(user) ||
-				(!permissionChecker.isCompanyAdmin() &&
-				 _portal.isCompanyAdmin(user))) {
-
-				continue;
-			}
-
-			assignableUsers.add(user);
-		}
-
-		return assignableUsers;
 	}
 
 	@Reference

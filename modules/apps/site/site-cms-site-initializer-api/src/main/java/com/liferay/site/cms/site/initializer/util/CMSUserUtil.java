@@ -8,6 +8,8 @@ package com.liferay.site.cms.site.initializer.util;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 
 import java.util.LinkedHashSet;
@@ -29,6 +31,24 @@ public class CMSUserUtil {
 
 		return new LinkedHashSet<>(
 			cmsUsersProvider.getUsers(keywords, start, end));
+	}
+
+	public static boolean isAssignableUser(
+			PermissionChecker permissionChecker, User user)
+		throws Exception {
+
+		if (permissionChecker.isOmniadmin()) {
+			return true;
+		}
+
+		if (PortalUtil.isOmniadmin(user) ||
+			(!permissionChecker.isCompanyAdmin() &&
+			 PortalUtil.isCompanyAdmin(user))) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private static final ServiceTracker<CMSUsersProvider, CMSUsersProvider>
