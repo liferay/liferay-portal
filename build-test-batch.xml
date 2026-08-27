@@ -9492,6 +9492,14 @@ ${output.content}</echo>
 		</run-batch-test>
 	</target>
 
+	<target name="playwright-js-db-partition-tomcat101-mysql84">
+		<run-playwright-js-test database.type="mysql" />
+	</target>
+
+	<target name="playwright-js-db-partition-tomcat101-postgresql163">
+		<run-playwright-js-test database.type="postgresql" />
+	</target>
+
 	<target name="playwright-js-smoke-jboss80-postgresql155">
 		<run-playwright-js-test app.server.type="jboss" database.type="postgresql" />
 	</target>
