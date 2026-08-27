@@ -59,7 +59,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 @Sync
-public class ExpandoPortletDataHandlerTest extends BaseExportImportTestCase {
+public class ExpandoExportImportTest extends BaseExportImportTestCase {
 
 	@ClassRule
 	@Rule
