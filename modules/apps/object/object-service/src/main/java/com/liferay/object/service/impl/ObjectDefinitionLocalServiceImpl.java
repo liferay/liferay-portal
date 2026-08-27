@@ -26,6 +26,7 @@ import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.constants.ObjectValidationRuleSettingConstants;
 import com.liferay.object.definition.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
 import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
 import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
@@ -86,6 +87,7 @@ import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.model.ObjectValidationRuleSetting;
 import com.liferay.object.model.impl.ObjectDefinitionImpl;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTable;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTableFactory;
@@ -115,6 +117,7 @@ import com.liferay.object.service.persistence.ObjectEntryPersistence;
 import com.liferay.object.service.persistence.ObjectFieldPersistence;
 import com.liferay.object.service.persistence.ObjectFolderPersistence;
 import com.liferay.object.service.persistence.ObjectRelationshipPersistence;
+import com.liferay.object.service.persistence.ObjectValidationRuleSettingPersistence;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
@@ -664,9 +667,15 @@ public class ObjectDefinitionLocalServiceImpl
 			_objectLayoutLocalService.deleteObjectLayouts(
 				objectDefinition.getObjectDefinitionId());
 
+			_objectValidationRuleLocalService.deleteObjectValidationRules(
+				objectDefinition.getObjectDefinitionId());
+
 			for (ObjectRelationship objectRelationship :
 					_objectRelationshipPersistence.findByODI1_R(
 						objectDefinition.getObjectDefinitionId(), false)) {
+
+				_deleteCompositeKeyObjectValidationRule(
+					objectRelationship.getObjectFieldId2());
 
 				_objectRelationshipLocalService.deleteObjectRelationship(
 					objectRelationship);
@@ -679,9 +688,6 @@ public class ObjectDefinitionLocalServiceImpl
 				_objectRelationshipLocalService.deleteObjectRelationship(
 					objectRelationship);
 			}
-
-			_objectValidationRuleLocalService.deleteObjectValidationRules(
-				objectDefinition.getObjectDefinitionId());
 
 			_objectViewLocalService.deleteObjectViews(
 				objectDefinition.getObjectDefinitionId());
@@ -2220,6 +2226,21 @@ public class ObjectDefinitionLocalServiceImpl
 					objectDefinitionPersistence.getDataSource()),
 				dynamicObjectDefinitionTable.getTableName(), false,
 				objectField.getDBColumnName());
+		}
+	}
+
+	private void _deleteCompositeKeyObjectValidationRule(long objectFieldId)
+		throws PortalException {
+
+		ObjectValidationRuleSetting objectValidationRuleSetting =
+			_objectValidationRuleSettingPersistence.fetchByN_V(
+				ObjectValidationRuleSettingConstants.
+					NAME_COMPOSITE_KEY_OBJECT_FIELD_ID,
+				String.valueOf(objectFieldId));
+
+		if (objectValidationRuleSetting != null) {
+			_objectValidationRuleLocalService.deleteObjectValidationRule(
+				objectValidationRuleSetting.getObjectValidationRuleId());
 		}
 	}
 
@@ -4181,6 +4202,10 @@ public class ObjectDefinitionLocalServiceImpl
 
 	@Reference
 	private ObjectValidationRuleLocalService _objectValidationRuleLocalService;
+
+	@Reference
+	private ObjectValidationRuleSettingPersistence
+		_objectValidationRuleSettingPersistence;
 
 	@Reference
 	private ObjectViewLocalService _objectViewLocalService;
