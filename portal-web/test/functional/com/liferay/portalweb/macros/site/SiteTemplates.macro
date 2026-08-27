@@ -566,15 +566,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewNoInfoMessage() {
-		AssertElementNotPresent(locator1 = "ControlMenu#INFO");
-
-		AssertTextNotPresent(
-			locator1 = "Message#CUSTOMIZED_PAGE_INFO",
-			value1 = "This page has been changed since the last update from the site template.");
-	}
-
-	@summary = "Default summary"
 	macro viewNoTemplatesDisplay(siteTemplateName = null) {
 		LexiconEntry.gotoAdd();
 
