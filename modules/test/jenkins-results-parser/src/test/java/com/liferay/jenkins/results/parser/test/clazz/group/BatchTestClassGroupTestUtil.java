@@ -55,6 +55,8 @@ public class BatchTestClassGroupTestUtil {
 				"src/test/resources/dependencies/test/clazz/group" +
 					"/BatchTestClassGroupTestUtil/test.properties"));
 
+		_setDefaults(portalTestClassJob.getPortalGitWorkingDirectory());
+
 		return portalTestClassJob;
 	}
 
@@ -140,7 +142,30 @@ public class BatchTestClassGroupTestUtil {
 					JenkinsResultsParserUtil.getGitWorkingDir(new File(".")),
 					repositoryName));
 
+		_portalTestClassJob = (PortalTestClassJob)JobFactory.newJob(
+			Job.BuildProfile.DXP, "test-portal-acceptance-pullrequest(master)",
+			null, portalGitWorkingDirectory, upstreamBranchName, null,
+			repositoryName, "relevant", upstreamBranchName);
+
+		return _portalTestClassJob;
+	}
+
+	private static String _getTestClassFileContent(String className) {
+		return JenkinsResultsParserUtil.combine(
+			"public class ", className, " {\n\n\t@Test\n\tpublic void ",
+			"testSample() {\n\t}\n\n}");
+	}
+
+	private static void _setDefaults(
+		PortalGitWorkingDirectory portalGitWorkingDirectory) {
+
 		try {
+			Mockito.doReturn(
+				Collections.emptyList()
+			).when(
+				portalGitWorkingDirectory
+			).getModifiedFilesList();
+
 			Mockito.doReturn(
 				Collections.emptyList()
 			).when(
@@ -164,19 +189,6 @@ public class BatchTestClassGroupTestUtil {
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
-
-		_portalTestClassJob = (PortalTestClassJob)JobFactory.newJob(
-			Job.BuildProfile.DXP, "test-portal-acceptance-pullrequest(master)",
-			null, portalGitWorkingDirectory, upstreamBranchName, null,
-			repositoryName, "relevant", upstreamBranchName);
-
-		return _portalTestClassJob;
-	}
-
-	private static String _getTestClassFileContent(String className) {
-		return JenkinsResultsParserUtil.combine(
-			"public class ", className, " {\n\n\t@Test\n\tpublic void ",
-			"testSample() {\n\t}\n\n}");
 	}
 
 	private static File _writeJobPropertiesFile(Properties jobProperties) {
