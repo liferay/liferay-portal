@@ -6,7 +6,14 @@
 import '../../tests_utilities/polyfills';
 
 import '@testing-library/jest-dom';
-import {act, cleanup, fireEvent, render, waitFor} from '@testing-library/react';
+import {
+	act,
+	cleanup,
+	createEvent,
+	fireEvent,
+	render,
+	waitFor,
+} from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -23,6 +30,9 @@ const ACCOUNTS_HEADLESS_API_ENDPOINT =
 
 const COMMERCE_DELIVERY_CATALOG_HEADLESS_API_ENDPOINT =
 	'/headless-commerce-delivery-catalog/v1.0/channels/24324/accounts';
+
+const ORGANIZATIONS_HEADLESS_API_ENDPOINT =
+	'/o/headless-admin-user/v1.0/organizations';
 
 describe('AccountSelector', () => {
 	const {Liferay: originalLiferayObject} = global.window;
@@ -162,6 +172,89 @@ describe('AccountSelector', () => {
 			await act(async () => {
 				fireEvent.click(accountsListItem.querySelector('button'));
 			});
+		});
+	});
+
+	describe('When the user is allowed to create an account', () => {
+		let renderedComponent;
+
+		beforeEach(async () => {
+			fetchMock.restore();
+
+			fetchMock.mock(
+				new RegExp(ORGANIZATIONS_HEADLESS_API_ENDPOINT),
+				() => ({items: []})
+			);
+
+			fetchMock.mock(
+				new RegExp(
+					`${ServiceProvider.DeliveryCartAPI(
+						'v1'
+					).cartsByAccountIdAndChannelIdURL(42332, 24324)}`
+				),
+				(url) => getOrders(url)
+			);
+
+			fetchMock.mock(
+				new RegExp(ACCOUNTS_HEADLESS_API_ENDPOINT),
+				(url) => ({
+					...getAccounts(url),
+					actions: {create: {method: 'POST'}},
+				})
+			);
+
+			renderedComponent = render(
+				<AccountSelector
+					createNewOrderURL="/order-link"
+					selectOrderURL="/test-url/{id}"
+					setCurrentAccountURL="/account-selector/setCurrentAccounts"
+				/>
+			);
+
+			await act(async () => {
+				fireEvent.click(
+					renderedComponent.baseElement.querySelector(
+						'.btn-account-selector'
+					)
+				);
+			});
+
+			const createAccountButton =
+				await renderedComponent.findByText('create-new-account');
+
+			await act(async () => {
+				fireEvent.click(createAccountButton);
+			});
+
+			await waitFor(() =>
+				expect(
+					renderedComponent.baseElement.querySelector(
+						'.commerce-modal input[name="accountName"]'
+					)
+				).toBeInTheDocument()
+			);
+		});
+
+		it('lets the browser move the focus between the new account form fields when tab is pressed', async () => {
+			const accountNameInput =
+				renderedComponent.baseElement.querySelector(
+					'.commerce-modal input[name="accountName"]'
+				);
+
+			await act(async () => {
+				accountNameInput.focus();
+			});
+
+			const tabEvent = createEvent.keyDown(accountNameInput, {
+				key: 'Tab',
+			});
+
+			await act(async () => {
+				fireEvent(accountNameInput, tabEvent);
+			});
+
+			expect(tabEvent.defaultPrevented).toBe(false);
+			expect(accountNameInput).toHaveFocus();
 		});
 	});
 
