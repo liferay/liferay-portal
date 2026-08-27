@@ -16,23 +16,23 @@ import com.liferay.portal.security.key.provider.aws.internal.util.AWSClientManag
 public class AWSKMSCryptoProviderContext {
 
 	public AWSKMSCryptoProviderContext(
-		String accountId, AWSClientManager<AWSKMS> awsClientManager,
-		AWSKMSFIPSValidator awsKMSFIPSValidator, boolean enabled,
-		String keyARNTemplate, int pendingWindowInDays, String region,
+		String awsAccountId, AWSClientManager<AWSKMS> awsClientManager,
+		AWSKMSFIPSValidator awsKMSFIPSValidator, String awsRegion,
+		boolean enabled, String keyARNTemplate, int pendingWindowInDays,
 		boolean useFIPSEndpoint) {
 
-		_accountId = accountId;
+		_awsAccountId = awsAccountId;
 		_awsClientManager = awsClientManager;
 		_awsKMSFIPSValidator = awsKMSFIPSValidator;
+		_awsRegion = awsRegion;
 		_enabled = enabled;
 		_keyARNTemplate = keyARNTemplate;
 		_pendingWindowInDays = pendingWindowInDays;
-		_region = region;
 		_useFIPSEndpoint = useFIPSEndpoint;
 	}
 
-	public String getAccountId() {
-		return _accountId;
+	public String getAWSAccountId() {
+		return _awsAccountId;
 	}
 
 	public AWSClientManager<AWSKMS> getAWSClientManager() {
@@ -43,16 +43,16 @@ public class AWSKMSCryptoProviderContext {
 		return _awsKMSFIPSValidator;
 	}
 
+	public String getAWSRegion() {
+		return _awsRegion;
+	}
+
 	public String getKeyARNTemplate() {
 		return _keyARNTemplate;
 	}
 
 	public int getPendingWindowInDays() {
 		return _pendingWindowInDays;
-	}
-
-	public String getRegion() {
-		return _region;
 	}
 
 	public boolean isEnabled() {
@@ -63,13 +63,13 @@ public class AWSKMSCryptoProviderContext {
 		return _useFIPSEndpoint;
 	}
 
-	private final String _accountId;
+	private final String _awsAccountId;
 	private final AWSClientManager<AWSKMS> _awsClientManager;
 	private final AWSKMSFIPSValidator _awsKMSFIPSValidator;
+	private final String _awsRegion;
 	private final boolean _enabled;
 	private final String _keyARNTemplate;
 	private final int _pendingWindowInDays;
-	private final String _region;
 	private final boolean _useFIPSEndpoint;
 
 }

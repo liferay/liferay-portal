@@ -401,9 +401,9 @@ public class AWSKMSSystemCryptoProviderTest {
 			_awsKMSSystemCryptoProvider, "_awsKMSCryptoProviderContext",
 			new AWSKMSCryptoProviderContext(
 				null, _awsClientManager,
-				new AWSKMSFIPSValidator("AES_256_GCM", fipsEnforced), enabled,
-				keyARNTemplate, RandomTestUtil.randomInt(),
-				RandomTestUtil.randomString(), false));
+				new AWSKMSFIPSValidator("AES_256_GCM", fipsEnforced),
+				RandomTestUtil.randomString(), enabled, keyARNTemplate,
+				RandomTestUtil.randomInt(), false));
 	}
 
 	private final AWSClientManager<AWSKMS> _awsClientManager = Mockito.mock(
