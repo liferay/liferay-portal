@@ -92,7 +92,7 @@ observability:
     namespace: observability
     parameters: []
     repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability
-    targetRevision: 1.0.0
+    targetRevision: 1.1.0
 operatorApplications:
     ackPrometheusService:
         enabled: false
