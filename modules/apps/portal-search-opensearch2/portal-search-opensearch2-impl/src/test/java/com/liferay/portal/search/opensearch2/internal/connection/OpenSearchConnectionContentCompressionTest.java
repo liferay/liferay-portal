@@ -71,7 +71,7 @@ public class OpenSearchConnectionContentCompressionTest {
 
 	@Test
 	public void testConnectWithCompressionEnabled() throws Exception {
-		_testConnect(true, _GZIP);
+		_testConnect(true, _ENCODING_GZIP);
 	}
 
 	private String _getCountJSON() {
