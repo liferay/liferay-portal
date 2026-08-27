@@ -82,16 +82,24 @@ const HomePageLayout = ({
 				})}
 			>
 				{items.map((group) => {
+					if (!isHorizontal) {
+						return group.items.map((item) => (
+							<ClayLayout.Col key={item.id} lg={3} md={4} sm={6}>
+								<CategoryCard item={item} />
+							</ClayLayout.Col>
+						));
+					}
+
 					const hasLabel = Boolean(group.label);
 
-					return isHorizontal ? (
+					return (
 						<ClayLayout.ContainerFluid
 							aria-label={hasLabel ? group.label : undefined}
 							className="c-mb-3 c-mb-lg-4"
 							key={group.id}
 							role={hasLabel ? 'group' : undefined}
 						>
-							{hasLabel ? (
+							{hasLabel && (
 								<ClayLayout.ContentRow className="c-mb-1 c-mb-lg-2 c-pb-2">
 									<ClayLayout.ContentCol expand>
 										<p className="font-weight-semi-bold home-subtitle mb-0 text-2 text-secondary text-uppercase">
@@ -99,7 +107,7 @@ const HomePageLayout = ({
 										</p>
 									</ClayLayout.ContentCol>
 								</ClayLayout.ContentRow>
-							) : null}
+							)}
 
 							<ClayLayout.Row>
 								{group.items.map((app) => (
@@ -109,12 +117,6 @@ const HomePageLayout = ({
 								))}
 							</ClayLayout.Row>
 						</ClayLayout.ContainerFluid>
-					) : (
-						group.items.map((item) => (
-							<ClayLayout.Col key={item.id} lg={3} md={4} sm={6}>
-								<CategoryCard item={item} />
-							</ClayLayout.Col>
-						))
 					);
 				})}
 			</ClayLayout.Row>
