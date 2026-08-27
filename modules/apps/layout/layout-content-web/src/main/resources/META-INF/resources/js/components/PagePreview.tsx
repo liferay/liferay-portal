@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {preventIframeNavigation} from '@liferay/layout-js-components-web';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {config} from '../config';
 
@@ -25,6 +26,8 @@ export default function PagePreview({
 	languageId,
 	versionERC,
 }: Props) {
+	const [loadedSrc, setLoadedSrc] = useState<string>();
+
 	const params = new URLSearchParams({languageId});
 
 	let url = config.getPagePreviewURL;
@@ -47,6 +50,10 @@ export default function PagePreview({
 		}
 	}
 
+	const src = `${url}?${params}`;
+
+	const loading = loadedSrc !== src;
+
 	const handleLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
 		preventIframeNavigation(event);
 
@@ -61,15 +68,31 @@ export default function PagePreview({
 		for (const type of FORWARDED_EVENTS) {
 			iframeDocument?.addEventListener(type, forwardEvent, true);
 		}
+
+		setLoadedSrc(src);
 	};
 
 	return (
-		<iframe
-			className="version-history__preview"
-			onLoad={handleLoad}
-			src={`${url}?${params}`}
-			title={Liferay.Language.get('preview')}
-		/>
+		<div className="position-relative">
+			{loading ? (
+				<div className="align-items-center d-flex h-100 justify-content-center position-absolute w-100">
+					<ClayLoadingIndicator
+						displayType="primary"
+						shape="squares"
+						size="lg"
+						title={Liferay.Language.get('loading')}
+					/>
+				</div>
+			) : null}
+
+			<iframe
+				className="version-history__preview"
+				onLoad={handleLoad}
+				src={src}
+				style={{visibility: loading ? 'hidden' : 'visible'}}
+				title={Liferay.Language.get('preview')}
+			/>
+		</div>
 	);
 }
 
