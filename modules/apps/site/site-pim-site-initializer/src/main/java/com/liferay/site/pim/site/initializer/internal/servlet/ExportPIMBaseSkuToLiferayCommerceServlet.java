@@ -96,7 +96,6 @@ public class ExportPIMBaseSkuToLiferayCommerceServlet extends HttpServlet {
 
 				Map<String, String> clusterKeys = _getVariantPIMLinkClusterKeys(
 					companyId, depotEntry.getGroupId());
-
 				Map<String, List<ObjectEntry>> objectEntriesMap =
 					new LinkedHashMap<>();
 
@@ -133,8 +132,8 @@ public class ExportPIMBaseSkuToLiferayCommerceServlet extends HttpServlet {
 				json.getBytes(StringPool.UTF8), ContentTypes.APPLICATION_JSON,
 				HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT);
 		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
+		catch (Exception exception) {
+			_log.error(exception);
 
 			_sendError(httpServletResponse);
 		}
@@ -195,22 +194,7 @@ public class ExportPIMBaseSkuToLiferayCommerceServlet extends HttpServlet {
 	}
 
 	private JSONObject _toJSONObject(List<ObjectEntry> objectEntries)
-		throws PortalException {
-
-		JSONArray skusJSONArray = _jsonFactory.createJSONArray();
-
-		for (ObjectEntry objectEntry : objectEntries) {
-			skusJSONArray.put(
-				JSONUtil.put(
-					"published", true
-				).put(
-					"purchasable", true
-				).put(
-					"sku",
-					MapUtil.getString(
-						_objectEntryLocalService.getValues(objectEntry), "code")
-				));
-		}
+		throws Exception {
 
 		ObjectEntry objectEntry = objectEntries.get(0);
 
@@ -229,7 +213,19 @@ public class ExportPIMBaseSkuToLiferayCommerceServlet extends HttpServlet {
 		).put(
 			"productType", "simple"
 		).put(
-			"skus", skusJSONArray
+			"skus",
+			JSONUtil.toJSONArray(
+				objectEntries,
+				curObjectEntry -> JSONUtil.put(
+					"published", true
+				).put(
+					"purchasable", true
+				).put(
+					"sku",
+					MapUtil.getString(
+						_objectEntryLocalService.getValues(curObjectEntry),
+						"code")
+				))
 		);
 	}
 
