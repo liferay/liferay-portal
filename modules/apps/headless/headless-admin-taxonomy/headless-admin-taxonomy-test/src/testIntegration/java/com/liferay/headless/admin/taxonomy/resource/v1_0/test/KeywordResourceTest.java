@@ -683,19 +683,8 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 	public void testPutSiteKeywordByExternalReferenceCode() throws Exception {
 		super.testPutSiteKeywordByExternalReferenceCode();
 
-		String externalReferenceCode = StringUtil.toLowerCase(
-			RandomTestUtil.randomString());
-
-		Keyword keyword =
-			testPutSiteKeywordByExternalReferenceCode_createKeyword();
-
-		Keyword putKeyword =
-			keywordResource.putSiteKeywordByExternalReferenceCode(
-				keyword.getSiteId(), externalReferenceCode, keyword);
-
-		Assert.assertEquals(
-			externalReferenceCode, putKeyword.getExternalReferenceCode());
-		assertValid(putKeyword);
+		_testPutSiteKeywordByExternalReferenceCodeDuplicateName();
+		_testPutSiteKeywordByExternalReferenceCodeValidKeyword();
 	}
 
 	@Override
@@ -880,6 +869,42 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			null);
 
 		Assert.assertEquals(originalTotalCount + 1, page.getTotalCount());
+	}
+
+	private void _testPutSiteKeywordByExternalReferenceCodeDuplicateName()
+		throws Exception {
+
+		Keyword keyword =
+			testPutSiteKeywordByExternalReferenceCode_createKeyword();
+
+		keywordResource.putSiteKeywordByExternalReferenceCode(
+			testGroup.getGroupId(),
+			StringUtil.toLowerCase(RandomTestUtil.randomString()), keyword);
+
+		Keyword duplicateNameKeyword =
+			keywordResource.putSiteKeywordByExternalReferenceCode(
+				testGroup.getGroupId(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()), keyword);
+
+		Assert.assertEquals(keyword.getName(), duplicateNameKeyword.getName());
+	}
+
+	private void _testPutSiteKeywordByExternalReferenceCodeValidKeyword()
+		throws Exception {
+
+		String externalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		Keyword keyword =
+			testPutSiteKeywordByExternalReferenceCode_createKeyword();
+
+		Keyword putKeyword =
+			keywordResource.putSiteKeywordByExternalReferenceCode(
+				keyword.getSiteId(), externalReferenceCode, keyword);
+
+		Assert.assertEquals(
+			externalReferenceCode, putKeyword.getExternalReferenceCode());
+		assertValid(putKeyword);
 	}
 
 	@Inject
