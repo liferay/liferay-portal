@@ -387,11 +387,12 @@ public class CommerceCurrencyLocalServiceUtil {
 	}
 
 	public static CommerceCurrency getOrAddEmptyCommerceCurrency(
-			String externalReferenceCode, long companyId, long userId)
+			String externalReferenceCode, long companyId, long userId,
+			String code)
 		throws PortalException {
 
 		return getService().getOrAddEmptyCommerceCurrency(
-			externalReferenceCode, companyId, userId);
+			externalReferenceCode, companyId, userId, code);
 	}
 
 	/**
@@ -507,4 +508,4 @@ public class CommerceCurrencyLocalServiceUtil {
 			CommerceCurrencyLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-82956521
+// LIFERAY-SERVICE-BUILDER-HASH:1009874738

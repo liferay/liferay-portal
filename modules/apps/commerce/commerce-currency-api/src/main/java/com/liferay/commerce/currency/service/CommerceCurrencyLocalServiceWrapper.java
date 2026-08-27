@@ -455,11 +455,12 @@ public class CommerceCurrencyLocalServiceWrapper
 	@Override
 	public com.liferay.commerce.currency.model.CommerceCurrency
 			getOrAddEmptyCommerceCurrency(
-				String externalReferenceCode, long companyId, long userId)
+				String externalReferenceCode, long companyId, long userId,
+				String code)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceCurrencyLocalService.getOrAddEmptyCommerceCurrency(
-			externalReferenceCode, companyId, userId);
+			externalReferenceCode, companyId, userId, code);
 	}
 
 	/**
@@ -609,4 +610,4 @@ public class CommerceCurrencyLocalServiceWrapper
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:665901735
+// LIFERAY-SERVICE-BUILDER-HASH:1418828198

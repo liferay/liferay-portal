@@ -326,7 +326,8 @@ public interface CommerceCurrencyLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceCurrency getOrAddEmptyCommerceCurrency(
-			String externalReferenceCode, long companyId, long userId)
+			String externalReferenceCode, long companyId, long userId,
+			String code)
 		throws PortalException;
 
 	/**
@@ -395,4 +396,4 @@ public interface CommerceCurrencyLocalService
 	public void updateExchangeRates() throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:105499712
+// LIFERAY-SERVICE-BUILDER-HASH:1967471519

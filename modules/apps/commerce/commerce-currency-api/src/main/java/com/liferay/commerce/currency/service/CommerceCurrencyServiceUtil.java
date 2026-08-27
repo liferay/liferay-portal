@@ -110,6 +110,14 @@ public class CommerceCurrencyServiceUtil {
 		return getService().getCommerceCurrency(companyId, code);
 	}
 
+	public static CommerceCurrency getOrAddEmptyCommerceCurrency(
+			String externalReferenceCode, String code)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCommerceCurrency(
+			externalReferenceCode, code);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -181,4 +189,4 @@ public class CommerceCurrencyServiceUtil {
 			CommerceCurrencyServiceUtil.class, CommerceCurrencyService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-876575814
+// LIFERAY-SERVICE-BUILDER-HASH:-259728914

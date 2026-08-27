@@ -99,6 +99,11 @@ public interface CommerceCurrencyService extends BaseService {
 	public CommerceCurrency getCommerceCurrency(long companyId, String code)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceCurrency getOrAddEmptyCommerceCurrency(
+			String externalReferenceCode, String code)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -133,4 +138,4 @@ public interface CommerceCurrencyService extends BaseService {
 	public void updateExchangeRates() throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1004931751
+// LIFERAY-SERVICE-BUILDER-HASH:-267213737

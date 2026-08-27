@@ -136,6 +136,15 @@ public class CPConfigurationListServiceWrapper
 			groupId);
 	}
 
+	@Override
+	public CPConfigurationList getOrAddEmptyCPConfigurationList(
+			String externalReferenceCode, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpConfigurationListService.getOrAddEmptyCPConfigurationList(
+			externalReferenceCode, groupId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -192,4 +201,4 @@ public class CPConfigurationListServiceWrapper
 	private CPConfigurationListService _cpConfigurationListService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:797441294
+// LIFERAY-SERVICE-BUILDER-HASH:-248522156

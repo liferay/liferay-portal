@@ -92,6 +92,14 @@ public class ListTypeDefinitionServiceUtil {
 		return getService().getListTypeDefinitionsCount();
 	}
 
+	public static ListTypeDefinition getOrAddEmptyListTypeDefinition(
+			String externalReferenceCode, boolean system)
+		throws PortalException {
+
+		return getService().getOrAddEmptyListTypeDefinition(
+			externalReferenceCode, system);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -123,4 +131,4 @@ public class ListTypeDefinitionServiceUtil {
 			ListTypeDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1756263622
+// LIFERAY-SERVICE-BUILDER-HASH:1641408366

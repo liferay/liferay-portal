@@ -129,6 +129,16 @@ public class CommerceCurrencyServiceWrapper
 		return _commerceCurrencyService.getCommerceCurrency(companyId, code);
 	}
 
+	@Override
+	public com.liferay.commerce.currency.model.CommerceCurrency
+			getOrAddEmptyCommerceCurrency(
+				String externalReferenceCode, String code)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceCurrencyService.getOrAddEmptyCommerceCurrency(
+			externalReferenceCode, code);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -218,4 +228,4 @@ public class CommerceCurrencyServiceWrapper
 	private CommerceCurrencyService _commerceCurrencyService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1523792763
+// LIFERAY-SERVICE-BUILDER-HASH:647393766

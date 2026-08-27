@@ -80,6 +80,11 @@ public interface ListTypeDefinitionService extends BaseService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getListTypeDefinitionsCount();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ListTypeDefinition getOrAddEmptyListTypeDefinition(
+			String externalReferenceCode, boolean system)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -94,4 +99,4 @@ public interface ListTypeDefinitionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-461373700
+// LIFERAY-SERVICE-BUILDER-HASH:-1153335295

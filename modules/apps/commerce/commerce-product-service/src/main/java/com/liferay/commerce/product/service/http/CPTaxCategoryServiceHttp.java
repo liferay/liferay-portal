@@ -461,6 +461,47 @@ public class CPTaxCategoryServiceHttp {
 		}
 	}
 
+	public static com.liferay.commerce.product.model.CPTaxCategory
+			getOrAddEmptyCPTaxCategory(
+				HttpPrincipal httpPrincipal, String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPTaxCategoryServiceUtil.class, "getOrAddEmptyCPTaxCategory",
+				_getOrAddEmptyCPTaxCategoryParameterTypes10);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.product.model.CPTaxCategory)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
 		<com.liferay.commerce.product.model.CPTaxCategory>
 				searchCPTaxCategories(
@@ -472,7 +513,7 @@ public class CPTaxCategoryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPTaxCategoryServiceUtil.class, "searchCPTaxCategories",
-				_searchCPTaxCategoriesParameterTypes10);
+				_searchCPTaxCategoriesParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, keywords, start, end, sort);
@@ -517,7 +558,7 @@ public class CPTaxCategoryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPTaxCategoryServiceUtil.class, "updateCPTaxCategory",
-				_updateCPTaxCategoryParameterTypes11);
+				_updateCPTaxCategoryParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, cpTaxCategoryId, nameMap,
@@ -587,15 +628,19 @@ public class CPTaxCategoryServiceHttp {
 		_getCPTaxCategoryByExternalReferenceCodeParameterTypes9 = new Class[] {
 			String.class, long.class
 		};
-	private static final Class<?>[] _searchCPTaxCategoriesParameterTypes10 =
+	private static final Class<?>[]
+		_getOrAddEmptyCPTaxCategoryParameterTypes10 = new Class[] {
+			String.class
+		};
+	private static final Class<?>[] _searchCPTaxCategoriesParameterTypes11 =
 		new Class[] {
 			long.class, String.class, int.class, int.class,
 			com.liferay.portal.kernel.search.Sort.class
 		};
-	private static final Class<?>[] _updateCPTaxCategoryParameterTypes11 =
+	private static final Class<?>[] _updateCPTaxCategoryParameterTypes12 =
 		new Class[] {
 			String.class, long.class, java.util.Map.class, java.util.Map.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-455503824
+// LIFERAY-SERVICE-BUILDER-HASH:-655224719

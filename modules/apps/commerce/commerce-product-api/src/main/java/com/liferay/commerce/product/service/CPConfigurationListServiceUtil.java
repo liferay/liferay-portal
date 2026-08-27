@@ -124,6 +124,14 @@ public class CPConfigurationListServiceUtil {
 		return getService().getMasterCPConfigurationList(groupId);
 	}
 
+	public static CPConfigurationList getOrAddEmptyCPConfigurationList(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPConfigurationList(
+			externalReferenceCode, groupId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -172,4 +180,4 @@ public class CPConfigurationListServiceUtil {
 			CPConfigurationListService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1796147394
+// LIFERAY-SERVICE-BUILDER-HASH:716397640

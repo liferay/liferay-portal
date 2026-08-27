@@ -104,6 +104,11 @@ public interface CPConfigurationListService extends BaseService {
 	public CPConfigurationList getMasterCPConfigurationList(long groupId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPConfigurationList getOrAddEmptyCPConfigurationList(
+			String externalReferenceCode, long groupId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -129,4 +134,4 @@ public interface CPConfigurationListService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:27311045
+// LIFERAY-SERVICE-BUILDER-HASH:-1224691095

@@ -92,6 +92,11 @@ public interface CPTaxCategoryService extends BaseService {
 			String externalReferenceCode, long companyId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPTaxCategory getOrAddEmptyCPTaxCategory(
+			String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -110,4 +115,4 @@ public interface CPTaxCategoryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:116830355
+// LIFERAY-SERVICE-BUILDER-HASH:-1284878944

@@ -106,6 +106,13 @@ public class CPTaxCategoryServiceUtil {
 			externalReferenceCode, companyId);
 	}
 
+	public static CPTaxCategory getOrAddEmptyCPTaxCategory(
+			String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPTaxCategory(externalReferenceCode);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -144,4 +151,4 @@ public class CPTaxCategoryServiceUtil {
 			CPTaxCategoryServiceUtil.class, CPTaxCategoryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-420488718
+// LIFERAY-SERVICE-BUILDER-HASH:1303738131

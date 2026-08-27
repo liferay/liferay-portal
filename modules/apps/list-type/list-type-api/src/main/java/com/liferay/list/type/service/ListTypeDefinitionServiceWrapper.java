@@ -105,6 +105,16 @@ public class ListTypeDefinitionServiceWrapper
 		return _listTypeDefinitionService.getListTypeDefinitionsCount();
 	}
 
+	@Override
+	public com.liferay.list.type.model.ListTypeDefinition
+			getOrAddEmptyListTypeDefinition(
+				String externalReferenceCode, boolean system)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _listTypeDefinitionService.getOrAddEmptyListTypeDefinition(
+			externalReferenceCode, system);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -145,4 +155,4 @@ public class ListTypeDefinitionServiceWrapper
 	private ListTypeDefinitionService _listTypeDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1705919129
+// LIFERAY-SERVICE-BUILDER-HASH:1396014755
