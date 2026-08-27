@@ -123,6 +123,7 @@ public class AssetCategoriesSelectorTagTest {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setLocale(LocaleUtil.getDefault());
+		themeDisplay.setScopeGroupId(_group.getGroupId());
 
 		ReflectionTestUtil.setFieldValue(
 			assetCategoriesSelectorTag, "_httpServletRequest",
@@ -139,11 +140,6 @@ public class AssetCategoriesSelectorTagTest {
 
 		String[] categoryIdsTitle = categoryIdsTitles.get(0);
 
-		Assert.assertEquals(StringPool.BLANK, categoryIdsTitle[0]);
-		Assert.assertEquals(StringPool.BLANK, categoryIdsTitle[1]);
-
-		categoryIdsTitle = categoryIdsTitles.get(1);
-
 		Assert.assertEquals(
 			StringBundler.concat(
 				assetCategory1.getCategoryId(), StringPool.COMMA,
@@ -156,6 +152,11 @@ public class AssetCategoriesSelectorTagTest {
 				assetCategory2.getName(), AssetCategoryUtil.CATEGORY_SEPARATOR,
 				assetCategory3.getName()),
 			categoryIdsTitle[1]);
+
+		categoryIdsTitle = categoryIdsTitles.get(1);
+
+		Assert.assertEquals(StringPool.BLANK, categoryIdsTitle[0]);
+		Assert.assertEquals(StringPool.BLANK, categoryIdsTitle[1]);
 	}
 
 	@Test
