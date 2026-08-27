@@ -7,7 +7,7 @@ import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
 import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {Text} from '@clayui/core';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
 interface IAccountIndividualsProps {
@@ -17,7 +17,7 @@ interface IAccountIndividualsProps {
 const AccountIndividuals: React.FC<IAccountIndividualsProps> = ({
 	className,
 }) => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 
 	const rangeSelectors = useQueryRangeSelectors();
 

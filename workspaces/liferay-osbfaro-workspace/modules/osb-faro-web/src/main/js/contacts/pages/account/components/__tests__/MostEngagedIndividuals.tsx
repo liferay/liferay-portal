@@ -29,9 +29,12 @@ jest.mock('shared/components/dropdown-range-key/DropdownRangeKey', () => ({
 	},
 }));
 
+jest.mock('shared/hooks/useHistoryAdapter', () => ({
+	useHistoryAdapter: () => ({push: mockPush}),
+}));
+
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useHistory: () => ({push: mockPush}),
 	useLocation: () => ({search: mockSearch}),
 	useParams: jest.fn(),
 }));

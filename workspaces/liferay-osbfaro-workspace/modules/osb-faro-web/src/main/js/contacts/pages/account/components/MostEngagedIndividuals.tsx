@@ -12,11 +12,12 @@ import {
 	toRoute,
 } from 'shared/util/router';
 import {Text} from '@clayui/core';
-import {useHistory, useParams} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
+import {useParams} from 'react-router-dom';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
 const MostEngagedIndividuals: React.FC = () => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 
 	const {channelId, groupId, id} = useParams<{
 		channelId: string;
