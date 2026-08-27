@@ -507,7 +507,9 @@ public class TimeBasedOTPBrowserSetupMFAChecker
 
 			return MFATimeBasedOTPUtil.verifyTimeBasedOTP(
 				_mfaTimeBasedOTPConfiguration.clockSkew(),
-				mfaTimeBasedOTPEntry.getSharedSecret(), mfaTimeBasedOTP);
+				_mfaTimeBasedOTPEntryLocalService.getPlaintextSharedSecret(
+					mfaTimeBasedOTPEntry),
+				mfaTimeBasedOTP);
 		}
 
 		_sendEmail(user, user.getEmailAddress(), httpServletRequest);

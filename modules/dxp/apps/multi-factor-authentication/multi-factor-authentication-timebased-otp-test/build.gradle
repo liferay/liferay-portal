@@ -1,0 +1,7 @@
+dependencies {
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":apps:portal-security:portal-security-key-api")
+	testIntegrationImplementation project(":apps:portal-security:portal-security-key-spi")
+	testIntegrationImplementation project(":dxp:apps:multi-factor-authentication:multi-factor-authentication-timebased-otp-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
