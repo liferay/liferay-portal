@@ -10,6 +10,7 @@ import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -222,6 +223,58 @@ test('LPD-65173 Assert that the Share Link tab is hidden for Publication Templat
 
 	await expect(page.getByRole('button', {name: 'Share Link'})).toBeHidden();
 });
+
+test(
+	'LPD-103662 Hide the share link tab and button from a viewer',
+	{tag: '@LPD-103662'},
+	async ({apiHelpers, changeTrackingPage, ctCollection, page}) => {
+		const user = await changeTrackingPage.addUserWithPublicationsUserRole();
+
+		try {
+			await changeTrackingPage.addUserToPublication(
+				ctCollection.body.name,
+				'Viewer',
+				user
+			);
+
+			await performLogout(page);
+
+			await performLoginViaApi({page, screenName: user.alternateName});
+
+			await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+
+			const collaboratorsButton = page.getByLabel('View Collaborators');
+			const modal = page.locator('.publications-invite-users-modal');
+			const modalTitle = modal.locator('.modal-title').first();
+
+			await expect(collaboratorsButton).toBeVisible();
+
+			await expect(
+				page.getByRole('button', {name: /Publication Sharing/})
+			).toBeHidden();
+
+			await clickAndExpectToBeVisible({
+				target: modalTitle,
+				trigger: collaboratorsButton,
+			});
+
+			await expect(
+				modal.getByRole('tab', {name: 'Share Link'})
+			).toBeHidden();
+
+			await expect(modalTitle).toHaveText('View Collaborators');
+		}
+		finally {
+			await performLogout(page);
+
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await apiHelpers.headlessAdminUser.deleteUserAccount(
+				Number(user.id)
+			);
+		}
+	}
+);
 
 test(
 	'LPD-60917 Cancel closes the collaborators modal without a discard prompt when nothing changed',
