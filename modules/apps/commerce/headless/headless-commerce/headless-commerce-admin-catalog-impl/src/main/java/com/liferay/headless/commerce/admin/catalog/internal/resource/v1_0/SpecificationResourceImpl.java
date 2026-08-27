@@ -17,7 +17,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.SpecificationRe
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.list.type.model.ListTypeDefinition;
-import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.list.type.service.ListTypeDefinitionService;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -386,11 +386,8 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 			externalReferenceCodes,
 			externalReferenceCode -> {
 				ListTypeDefinition listTypeDefinition =
-					_listTypeDefinitionLocalService.
-						getOrAddEmptyListTypeDefinition(
-							externalReferenceCode,
-							contextCompany.getCompanyId(),
-							contextUser.getUserId(), false);
+					_listTypeDefinitionService.getOrAddEmptyListTypeDefinition(
+						externalReferenceCode, false);
 
 				return listTypeDefinition.getListTypeDefinitionId();
 			});
@@ -489,7 +486,7 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 	private CPSpecificationOptionService _cpSpecificationOptionService;
 
 	@Reference
-	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+	private ListTypeDefinitionService _listTypeDefinitionService;
 
 	@Reference
 	private ServiceContextHelper _serviceContextHelper;

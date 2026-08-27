@@ -13,6 +13,7 @@ import com.liferay.list.type.service.base.ListTypeDefinitionServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -133,6 +134,31 @@ public class ListTypeDefinitionServiceImpl
 	@Override
 	public int getListTypeDefinitionsCount() {
 		return listTypeDefinitionPersistence.countAll();
+	}
+
+	@Override
+	public ListTypeDefinition getOrAddEmptyListTypeDefinition(
+			String externalReferenceCode, boolean system)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		ListTypeDefinition listTypeDefinition =
+			listTypeDefinitionService.
+				fetchListTypeDefinitionByExternalReferenceCode(
+					externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (listTypeDefinition != null) {
+			return listTypeDefinition;
+		}
+
+		_portletResourcePermission.check(
+			permissionChecker, null,
+			ListTypeActionKeys.ADD_LIST_TYPE_DEFINITION);
+
+		return listTypeDefinitionLocalService.getOrAddEmptyListTypeDefinition(
+			externalReferenceCode, permissionChecker.getCompanyId(),
+			permissionChecker.getUserId(), system);
 	}
 
 	@Override
