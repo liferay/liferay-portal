@@ -143,22 +143,18 @@ public class BatchTestClassGroupTest
 			Arrays.asList(1, 1), axisTestClassGroup,
 			_mockAxisTestClassGroup(
 				RandomTestUtil.randomString(), minimumSlaveRAM, testBaseDir));
-
 		_testSetSegmentTestClassGroups(
 			Arrays.asList(1, 1), axisTestClassGroup,
 			_mockAxisTestClassGroup(
 				baseSlaveLabel, RandomTestUtil.randomInt(), testBaseDir));
-
 		_testSetSegmentTestClassGroups(
 			Arrays.asList(1, 1), axisTestClassGroup,
 			_mockAxisTestClassGroup(
 				baseSlaveLabel, minimumSlaveRAM,
 				new File(RandomTestUtil.randomString())));
-
 		_testSetSegmentTestClassGroups(
 			Arrays.asList(1, 1), axisTestClassGroup,
 			_mockAxisTestClassGroup(baseSlaveLabel, minimumSlaveRAM, null));
-
 		_testSetSegmentTestClassGroups(
 			Arrays.asList(2), axisTestClassGroup,
 			_mockAxisTestClassGroup(
@@ -176,7 +172,6 @@ public class BatchTestClassGroupTest
 			_mockAxisTestClassGroup(baseSlaveLabel, minimumSlaveRAM + 1, null),
 			_mockAxisTestClassGroup(baseSlaveLabel, minimumSlaveRAM, null),
 			_mockAxisTestClassGroup(baseSlaveLabel, minimumSlaveRAM + 1, null));
-
 		_testSetSegmentTestClassGroups(
 			Arrays.asList(3, 3, 1), "3",
 			_mockAxisTestClassGroups(baseSlaveLabel, 7, minimumSlaveRAM, null));
