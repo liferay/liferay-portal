@@ -96,17 +96,14 @@ public class DBPartitionMigrationValidatorTest extends BaseDBPartitionTestCase {
 			"[WARN] Company name ",
 			_company.getName() +
 				" already exists in the target database. You must set a " +
-					"different value in " +
-						"ImportPortalInstanceConfiguration.config.",
+					"different value in the portal instance import request.",
 			"[WARN] Virtual host " + _company.getVirtualHostname() +
 				" already exists in the target database. You must set a " +
-					"different value in " +
-						"ImportPortalInstanceConfiguration.config.",
+					"different value in the portal instance import request.",
 			"[WARN] Web ID ",
 			_company.getWebId() +
 				" already exists in the target database. You must set a " +
-					"different value in " +
-						"ImportPortalInstanceConfiguration.config."
+					"different value in the portal instance import request."
 		};
 
 		_testValidate(
