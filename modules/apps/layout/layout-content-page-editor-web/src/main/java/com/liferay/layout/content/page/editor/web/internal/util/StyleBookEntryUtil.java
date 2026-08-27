@@ -133,7 +133,7 @@ public class StyleBookEntryUtil {
 		}
 
 		return FrontendTokenDefinitionUtil.
-			getMergedFrontendTokenDefinitionJSONObject(
+			mergeFrontendTokenDefinitionJSONObject(
 				frontendTokenDefinitionJSONObject,
 				overrideFrontendTokenDefinitionJSONObject);
 	}

@@ -60,13 +60,13 @@ public class FrontendTokenDefinitionUtil {
 		return frontendTokenNames;
 	}
 
-	public static JSONObject getMergedFrontendTokenDefinitionJSONObject(
+	public static JSONObject mergeFrontendTokenDefinitionJSONObject(
 		JSONObject frontendTokenDefinitionJSONObject,
 		JSONObject overrideFrontendTokenDefinitionJSONObject) {
 
 		JSONArray overrideFrontendTokenCategoriesJSONArray =
 			_getFrontendTokenCategoriesJSONArray(
-				_clone(overrideFrontendTokenDefinitionJSONObject));
+				overrideFrontendTokenDefinitionJSONObject);
 
 		if (JSONUtil.isEmpty(overrideFrontendTokenCategoriesJSONArray)) {
 			return frontendTokenDefinitionJSONObject;
@@ -82,14 +82,15 @@ public class FrontendTokenDefinitionUtil {
 		if (frontendTokenCategoriesJSONArray == null) {
 			frontendTokenCategoriesJSONArray =
 				JSONFactoryUtil.createJSONArray();
-
-			mergedFrontendTokenDefinitionJSONObject.put(
-				"frontendTokenCategories", frontendTokenCategoriesJSONArray);
 		}
 
-		_mergeNamedJSONObjects(
-			frontendTokenCategoriesJSONArray,
-			overrideFrontendTokenCategoriesJSONArray, 0);
+		JSONArray mergedFrontendTokenCategoriesJSONArray =
+			_mergeJSONArraysByName(
+				0, frontendTokenCategoriesJSONArray,
+				overrideFrontendTokenCategoriesJSONArray);
+
+		mergedFrontendTokenDefinitionJSONObject.put(
+			"frontendTokenCategories", mergedFrontendTokenCategoriesJSONArray);
 
 		return mergedFrontendTokenDefinitionJSONObject;
 	}
@@ -173,13 +174,8 @@ public class FrontendTokenDefinitionUtil {
 			"frontendTokenCategories");
 	}
 
-	private static JSONArray _mergeNamedJSONObject(
-		JSONArray jsonArray, JSONObject overrideJSONObject,
-		JSONObject jsonObject, int depth) {
-
-		if (depth == _CHILD_ARRAY_KEYS.length) {
-			return JSONUtil.replace(jsonArray, "name", overrideJSONObject);
-		}
+	private static void _mergeChildJSONArraysByName(
+		int depth, JSONObject jsonObject, JSONObject overrideJSONObject) {
 
 		String childArrayKey = _CHILD_ARRAY_KEYS[depth];
 
@@ -187,27 +183,23 @@ public class FrontendTokenDefinitionUtil {
 			childArrayKey);
 
 		if (overrideChildJSONArray == null) {
-			return jsonArray;
+			return;
 		}
 
 		JSONArray childJSONArray = jsonObject.getJSONArray(childArrayKey);
 
 		if (childJSONArray == null) {
 			childJSONArray = JSONFactoryUtil.createJSONArray();
-
-			jsonObject.put(childArrayKey, childJSONArray);
 		}
 
 		jsonObject.put(
 			childArrayKey,
-			_mergeNamedJSONObjects(
-				childJSONArray, overrideChildJSONArray, depth + 1));
-
-		return jsonArray;
+			_mergeJSONArraysByName(
+				depth + 1, childJSONArray, overrideChildJSONArray));
 	}
 
-	private static JSONArray _mergeNamedJSONObjects(
-		JSONArray jsonArray, JSONArray overrideJSONArray, int depth) {
+	private static JSONArray _mergeJSONArraysByName(
+		int depth, JSONArray jsonArray, JSONArray overrideJSONArray) {
 
 		Map<String, JSONObject> jsonObjectsByName = new HashMap<>();
 
@@ -230,13 +222,16 @@ public class FrontendTokenDefinitionUtil {
 				overrideJSONObject.getString("name"));
 
 			if (jsonObject == null) {
-				jsonArray.put(overrideJSONObject);
-
-				continue;
+				jsonArray.put(_clone(overrideJSONObject));
 			}
-
-			jsonArray = _mergeNamedJSONObject(
-				jsonArray, overrideJSONObject, jsonObject, depth);
+			else if (depth == _CHILD_ARRAY_KEYS.length) {
+				jsonArray = JSONUtil.replace(
+					jsonArray, "name", _clone(overrideJSONObject));
+			}
+			else {
+				_mergeChildJSONArraysByName(
+					depth, jsonObject, overrideJSONObject);
+			}
 		}
 
 		return jsonArray;

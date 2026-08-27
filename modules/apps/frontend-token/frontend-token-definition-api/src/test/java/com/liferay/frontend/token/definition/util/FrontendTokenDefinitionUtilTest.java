@@ -43,14 +43,14 @@ public class FrontendTokenDefinitionUtilTest {
 	}
 
 	@Test
-	public void testGetMergedFrontendTokenDefinitionJSONObject() {
-		_testGetMergedFrontendTokenDefinitionJSONObjectWithInvalidBaseCategory();
-		_testGetMergedFrontendTokenDefinitionJSONObjectWithInvalidOverrideToken();
-		_testGetMergedFrontendTokenDefinitionJSONObjectWithNewToken();
-		_testGetMergedFrontendTokenDefinitionJSONObjectWithNullOverrideDefinition();
-		_testGetMergedFrontendTokenDefinitionJSONObjectWithReplacedToken();
-		_testGetMergedFrontendTokenDefinitionJSONObjectWithUnknownCategoryName();
-		_testGetMergedFrontendTokenDefinitionJSONObjectWithUnknownSetName();
+	public void testMergeFrontendTokenDefinitionJSONObject() {
+		_testMergeFrontendTokenDefinitionJSONObjectWithInvalidBaseCategory();
+		_testMergeFrontendTokenDefinitionJSONObjectWithInvalidOverrideToken();
+		_testMergeFrontendTokenDefinitionJSONObjectWithNewToken();
+		_testMergeFrontendTokenDefinitionJSONObjectWithNullOverrideDefinition();
+		_testMergeFrontendTokenDefinitionJSONObjectWithReplacedToken();
+		_testMergeFrontendTokenDefinitionJSONObjectWithUnknownCategoryName();
+		_testMergeFrontendTokenDefinitionJSONObjectWithUnknownSetName();
 	}
 
 	private void _assertName(String name, JSONArray jsonArray, int index) {
@@ -292,7 +292,7 @@ public class FrontendTokenDefinitionUtilTest {
 			frontendTokenNames.toString(), 3, frontendTokenNames.size());
 	}
 
-	private void _testGetMergedFrontendTokenDefinitionJSONObjectWithInvalidBaseCategory() {
+	private void _testMergeFrontendTokenDefinitionJSONObjectWithInvalidBaseCategory() {
 		String baseTokenName = RandomTestUtil.randomString();
 		String categoryName = RandomTestUtil.randomString();
 		String overrideTokenName = RandomTestUtil.randomString();
@@ -312,10 +312,9 @@ public class FrontendTokenDefinitionUtilTest {
 				_createFrontendTokenJSONObject(overrideTokenName));
 
 		JSONArray frontendTokensJSONArray = _getFrontendTokensJSONArray(
-			FrontendTokenDefinitionUtil.
-				getMergedFrontendTokenDefinitionJSONObject(
-					frontendTokenDefinitionJSONObject,
-					overrideFrontendTokenDefinitionJSONObject),
+			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinitionJSONObject,
+				overrideFrontendTokenDefinitionJSONObject),
 			1, 0);
 
 		Assert.assertEquals(
@@ -325,7 +324,7 @@ public class FrontendTokenDefinitionUtilTest {
 		_assertName(overrideTokenName, frontendTokensJSONArray, 1);
 	}
 
-	private void _testGetMergedFrontendTokenDefinitionJSONObjectWithInvalidOverrideToken() {
+	private void _testMergeFrontendTokenDefinitionJSONObjectWithInvalidOverrideToken() {
 		String baseTokenName = RandomTestUtil.randomString();
 		String categoryName = RandomTestUtil.randomString();
 		String overrideTokenName = RandomTestUtil.randomString();
@@ -350,10 +349,9 @@ public class FrontendTokenDefinitionUtilTest {
 										overrideTokenName)))))));
 
 		JSONArray frontendTokensJSONArray = _getFrontendTokensJSONArray(
-			FrontendTokenDefinitionUtil.
-				getMergedFrontendTokenDefinitionJSONObject(
-					frontendTokenDefinitionJSONObject,
-					overrideFrontendTokenDefinitionJSONObject),
+			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinitionJSONObject,
+				overrideFrontendTokenDefinitionJSONObject),
 			0, 0);
 
 		Assert.assertEquals(
@@ -365,7 +363,7 @@ public class FrontendTokenDefinitionUtilTest {
 		_assertName(overrideTokenName, frontendTokensJSONArray, 1);
 	}
 
-	private void _testGetMergedFrontendTokenDefinitionJSONObjectWithNewToken() {
+	private void _testMergeFrontendTokenDefinitionJSONObjectWithNewToken() {
 		String baseTokenName = RandomTestUtil.randomString();
 		String categoryName = RandomTestUtil.randomString();
 		String overrideTokenName = RandomTestUtil.randomString();
@@ -382,10 +380,9 @@ public class FrontendTokenDefinitionUtilTest {
 				_createFrontendTokenJSONObject(overrideTokenName));
 
 		JSONArray frontendTokensJSONArray = _getFrontendTokensJSONArray(
-			FrontendTokenDefinitionUtil.
-				getMergedFrontendTokenDefinitionJSONObject(
-					frontendTokenDefinitionJSONObject,
-					overrideFrontendTokenDefinitionJSONObject),
+			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinitionJSONObject,
+				overrideFrontendTokenDefinitionJSONObject),
 			0, 0);
 
 		Assert.assertEquals(
@@ -404,7 +401,7 @@ public class FrontendTokenDefinitionUtilTest {
 			originalFrontendTokensJSONArray.length());
 	}
 
-	private void _testGetMergedFrontendTokenDefinitionJSONObjectWithNullOverrideDefinition() {
+	private void _testMergeFrontendTokenDefinitionJSONObjectWithNullOverrideDefinition() {
 		JSONObject frontendTokenDefinitionJSONObject =
 			_createFrontendTokenDefinitionJSONObject(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -419,13 +416,13 @@ public class FrontendTokenDefinitionUtilTest {
 			Assert.assertSame(
 				frontendTokenDefinitionJSONObject,
 				FrontendTokenDefinitionUtil.
-					getMergedFrontendTokenDefinitionJSONObject(
+					mergeFrontendTokenDefinitionJSONObject(
 						frontendTokenDefinitionJSONObject,
 						overrideFrontendTokenDefinitionJSONObject));
 		}
 	}
 
-	private void _testGetMergedFrontendTokenDefinitionJSONObjectWithReplacedToken() {
+	private void _testMergeFrontendTokenDefinitionJSONObjectWithReplacedToken() {
 		String baseType = RandomTestUtil.randomString();
 		String categoryName = RandomTestUtil.randomString();
 		String overrideType = RandomTestUtil.randomString();
@@ -453,10 +450,9 @@ public class FrontendTokenDefinitionUtilTest {
 				_createFrontendTokenJSONObject(targetTokenName, overrideType));
 
 		JSONArray frontendTokensJSONArray = _getFrontendTokensJSONArray(
-			FrontendTokenDefinitionUtil.
-				getMergedFrontendTokenDefinitionJSONObject(
-					frontendTokenDefinitionJSONObject,
-					overrideFrontendTokenDefinitionJSONObject),
+			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinitionJSONObject,
+				overrideFrontendTokenDefinitionJSONObject),
 			0, 0);
 
 		Assert.assertEquals(
@@ -487,7 +483,7 @@ public class FrontendTokenDefinitionUtilTest {
 			baseType, originalTargetFrontendTokenJSONObject.getString("type"));
 	}
 
-	private void _testGetMergedFrontendTokenDefinitionJSONObjectWithUnknownCategoryName() {
+	private void _testMergeFrontendTokenDefinitionJSONObjectWithUnknownCategoryName() {
 		String baseCategoryName = RandomTestUtil.randomString();
 		String baseTokenName = RandomTestUtil.randomString();
 		String overrideCategoryName = RandomTestUtil.randomString();
@@ -504,10 +500,9 @@ public class FrontendTokenDefinitionUtilTest {
 				_createFrontendTokenJSONObject(overrideTokenName));
 
 		JSONObject mergedFrontendTokenDefinitionJSONObject =
-			FrontendTokenDefinitionUtil.
-				getMergedFrontendTokenDefinitionJSONObject(
-					frontendTokenDefinitionJSONObject,
-					overrideFrontendTokenDefinitionJSONObject);
+			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinitionJSONObject,
+				overrideFrontendTokenDefinitionJSONObject);
 
 		JSONArray frontendTokenCategoriesJSONArray =
 			mergedFrontendTokenDefinitionJSONObject.getJSONArray(
@@ -528,7 +523,7 @@ public class FrontendTokenDefinitionUtilTest {
 			0);
 	}
 
-	private void _testGetMergedFrontendTokenDefinitionJSONObjectWithUnknownSetName() {
+	private void _testMergeFrontendTokenDefinitionJSONObjectWithUnknownSetName() {
 		String baseSetName = RandomTestUtil.randomString();
 		String baseTokenName = RandomTestUtil.randomString();
 		String categoryName = RandomTestUtil.randomString();
@@ -546,10 +541,9 @@ public class FrontendTokenDefinitionUtilTest {
 				_createFrontendTokenJSONObject(overrideTokenName));
 
 		JSONArray frontendTokenSetsJSONArray = _getFrontendTokenSetsJSONArray(
-			FrontendTokenDefinitionUtil.
-				getMergedFrontendTokenDefinitionJSONObject(
-					frontendTokenDefinitionJSONObject,
-					overrideFrontendTokenDefinitionJSONObject),
+			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinitionJSONObject,
+				overrideFrontendTokenDefinitionJSONObject),
 			0);
 
 		Assert.assertEquals(
