@@ -60,6 +60,39 @@ public class BatchTestClassGroupTestUtil {
 		return portalTestClassJob;
 	}
 
+	public static PortalTestClassJob getPortalTestClassJob(
+		Properties jobProperties, List<File> modifiedFiles,
+		File workingDirectory) {
+
+		PortalTestClassJob portalTestClassJob = getPortalTestClassJob(
+			jobProperties);
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory =
+			portalTestClassJob.getPortalGitWorkingDirectory();
+
+		Mockito.doReturn(
+			modifiedFiles
+		).when(
+			portalGitWorkingDirectory
+		).getModifiedFilesList();
+
+		Mockito.doReturn(
+			modifiedFiles
+		).when(
+			portalGitWorkingDirectory
+		).getModifiedFilesList(
+			Mockito.anyBoolean(), Mockito.any(), Mockito.anyList()
+		);
+
+		Mockito.doReturn(
+			workingDirectory
+		).when(
+			portalGitWorkingDirectory
+		).getWorkingDirectory();
+
+		return portalTestClassJob;
+	}
+
 	public static CompileModulesBatchTestClassGroup
 		newCompileModulesBatchTestClassGroup(
 			Properties jobProperties, File... modifiedModuleDirs) {
@@ -142,6 +175,8 @@ public class BatchTestClassGroupTestUtil {
 					JenkinsResultsParserUtil.getGitWorkingDir(new File(".")),
 					repositoryName));
 
+		_workingDirectory = portalGitWorkingDirectory.getWorkingDirectory();
+
 		_portalTestClassJob = (PortalTestClassJob)JobFactory.newJob(
 			Job.BuildProfile.DXP, "test-portal-acceptance-pullrequest(master)",
 			null, portalGitWorkingDirectory, upstreamBranchName, null,
@@ -170,6 +205,14 @@ public class BatchTestClassGroupTestUtil {
 				Collections.emptyList()
 			).when(
 				portalGitWorkingDirectory
+			).getModifiedFilesList(
+				Mockito.anyBoolean(), Mockito.any(), Mockito.anyList()
+			);
+
+			Mockito.doReturn(
+				Collections.emptyList()
+			).when(
+				portalGitWorkingDirectory
 			).getModifiedModuleDirsList(
 				Mockito.anyList(), Mockito.anyList()
 			);
@@ -185,6 +228,12 @@ public class BatchTestClassGroupTestUtil {
 			).when(
 				portalGitWorkingDirectory
 			).getModifiedPoshiModules();
+
+			Mockito.doReturn(
+				_workingDirectory
+			).when(
+				portalGitWorkingDirectory
+			).getWorkingDirectory();
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -212,5 +261,6 @@ public class BatchTestClassGroupTestUtil {
 	}
 
 	private static PortalTestClassJob _portalTestClassJob;
+	private static File _workingDirectory;
 
 }
