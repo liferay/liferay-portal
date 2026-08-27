@@ -31,15 +31,33 @@ public class ConfigStylingCheck extends BaseFileCheck {
 
 		Matcher matcher = _arrayPattern.matcher(content);
 
+		StringBuffer sb = new StringBuffer();
+
 		while (matcher.find()) {
-			String s = matcher.group();
-			int a = 0;
+			String s = matcher.group(2);
+
+			if (!s.contains(StringPool.NEW_LINE)) {
+				continue;
+			}
+
+			s = s.replaceAll("\\s+\\\\\\s+", StringPool.BLANK);
+
+			if (s.endsWith(StringPool.COMMA)) {
+				s = s.substring(0, s.length() - 1);
+			}
+
+			String replacement = matcher.group(1) + s + matcher.group(3);
+
+			matcher.appendReplacement(
+				sb, Matcher.quoteReplacement(replacement));
 		}
 
-		return content;
+		matcher.appendTail(sb);
+
+		return sb.toString();
 	}
 
 	private static final Pattern _arrayPattern = Pattern.compile(
-		"^[\\w.-]+=\\[.+\\]$", Pattern.DOTALL | Pattern.MULTILINE);
+		"^([\\w.-]+=\\[)(.+?)(\\])$", Pattern.DOTALL | Pattern.MULTILINE);
 
 }
