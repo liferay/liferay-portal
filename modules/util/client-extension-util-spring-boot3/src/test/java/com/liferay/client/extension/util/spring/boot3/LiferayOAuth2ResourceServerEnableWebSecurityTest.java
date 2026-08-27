@@ -126,13 +126,14 @@ public class LiferayOAuth2ResourceServerEnableWebSecurityTest {
 			mockEnvironment);
 
 		Assert.assertEquals(
-			"External reference code test-user-agent has user agent client " +
-				"ID user-agent-id",
+			"Using user agent client ID user-agent-id for external reference " +
+				"code test-user-agent",
 			liferayOAuth2ResourceServerEnableWebSecurity.getClientIdLogMessage(
 				"user-agent-id", "test-user-agent"));
 
 		Assert.assertEquals(
-			"External reference code test-external has no user agent client ID",
+			"Unable to get user agent client ID for external reference code " +
+				"test-external",
 			liferayOAuth2ResourceServerEnableWebSecurity.getClientIdLogMessage(
 				null, "test-external"));
 

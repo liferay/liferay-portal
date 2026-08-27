@@ -146,13 +146,13 @@ public class LiferayOAuth2ResourceServerEnableWebSecurity {
 		if (clientId != null) {
 			return new StringBuilder(
 			).append(
-				"External reference code "
-			).append(
-				externalReferenceCode
-			).append(
-				" has user agent client ID "
+				"Using user agent client ID "
 			).append(
 				clientId
+			).append(
+				" for external reference code "
+			).append(
+				externalReferenceCode
 			).toString();
 		}
 
@@ -163,8 +163,8 @@ public class LiferayOAuth2ResourceServerEnableWebSecurity {
 			return null;
 		}
 
-		return "External reference code " + externalReferenceCode +
-			" has no user agent client ID";
+		return "Unable to get user agent client ID for external reference " +
+			"code " + externalReferenceCode;
 	}
 
 	private static final Log _log = LogFactory.getLog(
