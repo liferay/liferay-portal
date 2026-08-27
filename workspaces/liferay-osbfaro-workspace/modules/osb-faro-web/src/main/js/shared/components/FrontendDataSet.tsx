@@ -10,7 +10,7 @@ import {
 } from '@liferay/frontend-data-set-web';
 import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {Text} from '@clayui/core';
-import {toRoute} from 'shared/util/router';
+import {setUriQueryValues, toRoute} from 'shared/util/router';
 
 export * from '@liferay/frontend-data-set-web';
 
@@ -98,25 +98,29 @@ export const columns = {
 		channelId,
 		groupId,
 		itemData,
+		queryValues,
 		route,
 		value,
 	}: {
 		channelId: string;
 		groupId: string;
 		itemData: {id: string | number};
+		queryValues?: {[key: string]: any};
 		route: string;
 		value: string;
 	}) => {
 		const itemTitle = value || itemData.id;
 
+		const href = toRoute(route, {
+			channelId,
+			groupId,
+			id: itemData.id,
+		});
+
 		return (
 			<ClayLink
 				className="font-weight-semi-bold text-dark"
-				href={toRoute(route, {
-					channelId,
-					groupId,
-					id: itemData.id,
-				})}
+				href={queryValues ? setUriQueryValues(queryValues, href) : href}
 			>
 				{itemTitle}
 			</ClayLink>
