@@ -8,7 +8,7 @@ package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
-import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
+import com.liferay.commerce.product.service.CPTaxCategoryService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductTaxConfigurationUtil;
@@ -136,9 +136,8 @@ public class ProductTaxConfigurationResourceImpl
 
 		cpDefinition =
 			ProductTaxConfigurationUtil.updateCPDefinitionTaxCategoryInfo(
-				contextCompany.getCompanyId(), cpDefinition,
-				_cpDefinitionService, _cpTaxCategoryLocalService,
-				productTaxConfiguration, contextUser.getUserId());
+				cpDefinition, _cpDefinitionService, _cpTaxCategoryService,
+				productTaxConfiguration);
 
 		return _toProductTaxConfiguration(cpDefinition.getCPDefinitionId());
 	}
@@ -147,7 +146,7 @@ public class ProductTaxConfigurationResourceImpl
 	private CPDefinitionService _cpDefinitionService;
 
 	@Reference
-	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
+	private CPTaxCategoryService _cpTaxCategoryService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.ProductTaxConfigurationDTOConverter)"

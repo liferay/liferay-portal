@@ -41,7 +41,7 @@ import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureService;
 import com.liferay.commerce.product.service.CPOptionCategoryService;
 import com.liferay.commerce.product.service.CPOptionService;
 import com.liferay.commerce.product.service.CPSpecificationOptionService;
-import com.liferay.commerce.product.service.CPTaxCategoryLocalService;
+import com.liferay.commerce.product.service.CPTaxCategoryService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
@@ -1307,9 +1307,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		if (productTaxConfiguration != null) {
 			cpDefinition =
 				ProductTaxConfigurationUtil.updateCPDefinitionTaxCategoryInfo(
-					contextCompany.getCompanyId(), cpDefinition,
-					_cpDefinitionService, _cpTaxCategoryLocalService,
-					productTaxConfiguration, contextUser.getUserId());
+					cpDefinition, _cpDefinitionService, _cpTaxCategoryService,
+					productTaxConfiguration);
 		}
 
 		// Product specifications
@@ -1954,7 +1953,7 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	private CPSpecificationOptionService _cpSpecificationOptionService;
 
 	@Reference
-	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
+	private CPTaxCategoryService _cpTaxCategoryService;
 
 	@Reference
 	private CPTypeRegistry _cpTypeRegistry;

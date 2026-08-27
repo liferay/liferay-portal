@@ -7,7 +7,6 @@ package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CommerceCatalog;
-import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
@@ -375,9 +374,8 @@ public class ProductConfigurationListResourceImpl
 		}
 
 		CPConfigurationList cpConfigurationList =
-			_cpConfigurationListLocalService.getOrAddEmptyCPConfigurationList(
-				externalReferenceCode, contextCompany.getCompanyId(),
-				contextUser.getUserId(), groupId);
+			_cpConfigurationListService.getOrAddEmptyCPConfigurationList(
+				externalReferenceCode, groupId);
 
 		return cpConfigurationList.getCPConfigurationListId();
 	}
@@ -410,9 +408,6 @@ public class ProductConfigurationListResourceImpl
 
 	@Reference
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
-
-	@Reference
-	private CPConfigurationListLocalService _cpConfigurationListLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.product.model.CPConfigurationList)"
