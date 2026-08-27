@@ -199,5 +199,6 @@
 /util-taglib/util-taglib*.jar
 /working.dir.properties
 /workspaces/node_modules
+/workspaces/node_modules_cache
 _sass_cache_*.css
 poshi-warnings.xml

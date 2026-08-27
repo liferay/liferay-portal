@@ -10657,9 +10657,11 @@ junit.jvm.override.version=21</echo>
 
 								<execute-gradle-task gradle.task.module.dir="${workspace.dir}" gradle.task.name="build">
 									<action>
-										<execute dir="${workspace.dir}">
-											./gradlew build
-										</execute>
+										<exec dir="${workspace.dir}" executable="${project.dir}/${workspace.dir}/gradlew" failonerror="true">
+											<arg value="build" />
+											<env key="GRADLE_USER_HOME" value="${project.dir}/workspaces/.gradle" />
+											<env key="YARN_YARN_OFFLINE_MIRROR_PRUNING" value="false" />
+										</exec>
 									</action>
 								</execute-gradle-task>
 							</then>
