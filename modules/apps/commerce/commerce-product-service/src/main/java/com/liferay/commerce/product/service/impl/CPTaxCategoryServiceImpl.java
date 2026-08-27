@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -163,6 +164,30 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 			getPermissionChecker(), cpTaxCategory, ActionKeys.VIEW);
 
 		return cpTaxCategory;
+	}
+
+	@Override
+	public CPTaxCategory getOrAddEmptyCPTaxCategory(
+			String externalReferenceCode)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CPTaxCategory cpTaxCategory =
+			cpTaxCategoryService.fetchCPTaxCategoryByExternalReferenceCode(
+				externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (cpTaxCategory != null) {
+			return cpTaxCategory;
+		}
+
+		_portletResourcePermission.check(
+			permissionChecker, null,
+			CPActionKeys.ADD_COMMERCE_PRODUCT_TAX_CATEGORY);
+
+		return cpTaxCategoryLocalService.getOrAddEmptyCPTaxCategory(
+			externalReferenceCode, permissionChecker.getCompanyId(),
+			permissionChecker.getUserId());
 	}
 
 	@Override

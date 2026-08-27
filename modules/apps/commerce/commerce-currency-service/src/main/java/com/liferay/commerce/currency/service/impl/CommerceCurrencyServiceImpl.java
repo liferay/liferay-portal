@@ -14,6 +14,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -169,6 +170,31 @@ public class CommerceCurrencyServiceImpl
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyPersistence.findByC_C(companyId, code);
+	}
+
+	@Override
+	public CommerceCurrency getOrAddEmptyCommerceCurrency(
+			String externalReferenceCode, String code)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CommerceCurrency commerceCurrency =
+			commerceCurrencyService.
+				fetchCommerceCurrencyByExternalReferenceCode(
+					externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (commerceCurrency != null) {
+			return commerceCurrency;
+		}
+
+		_portletResourcePermission.check(
+			permissionChecker, null,
+			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
+
+		return commerceCurrencyLocalService.getOrAddEmptyCommerceCurrency(
+			externalReferenceCode, permissionChecker.getCompanyId(),
+			permissionChecker.getUserId(), code);
 	}
 
 	@Override

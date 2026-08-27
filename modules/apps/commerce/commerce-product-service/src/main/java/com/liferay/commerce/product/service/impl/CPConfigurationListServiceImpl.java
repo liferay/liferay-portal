@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -196,6 +197,29 @@ public class CPConfigurationListServiceImpl
 
 		return cpConfigurationListPersistence.findByG_M_First(
 			groupId, true, null);
+	}
+
+	@Override
+	public CPConfigurationList getOrAddEmptyCPConfigurationList(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CPConfigurationList cpConfigurationList =
+			cpConfigurationListService.
+				fetchCPConfigurationListByExternalReferenceCode(
+					externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (cpConfigurationList != null) {
+			return cpConfigurationList;
+		}
+
+		_checkCommerceCatalog(groupId, ActionKeys.UPDATE);
+
+		return cpConfigurationListLocalService.getOrAddEmptyCPConfigurationList(
+			externalReferenceCode, permissionChecker.getCompanyId(),
+			permissionChecker.getUserId(), groupId);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
