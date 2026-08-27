@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -55,6 +56,33 @@ public class BatchTestClassGroupTestUtil {
 					"/BatchTestClassGroupTestUtil/test.properties"));
 
 		return portalTestClassJob;
+	}
+
+	public static CompileModulesBatchTestClassGroup
+		newCompileModulesBatchTestClassGroup(
+			Properties jobProperties, File... modifiedModuleDirs) {
+
+		PortalTestClassJob portalTestClassJob = getPortalTestClassJob(
+			jobProperties);
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory =
+			portalTestClassJob.getPortalGitWorkingDirectory();
+
+		try {
+			Mockito.doReturn(
+				Arrays.asList(modifiedModuleDirs)
+			).when(
+				portalGitWorkingDirectory
+			).getModifiedModuleDirsList(
+				Mockito.anyList(), Mockito.anyList()
+			);
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+
+		return new CompileModulesBatchTestClassGroup(
+			"modules-compile", portalTestClassJob);
 	}
 
 	public static ServiceBuilderModulesBatchTestClassGroup
