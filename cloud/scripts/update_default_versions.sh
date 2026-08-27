@@ -224,6 +224,15 @@ function _update_default_chart_version {
 		"aws-infrastructure-provider" | "gcp-infrastructure-provider")
 			_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_provider_helm_chart_version" "${new_version}"
 			;;
+		"dxp-operator")
+			_update_platform_components_target_revision "liferay-dxp-operator" "${new_version}"
+			;;
+		"observability")
+			_update_platform_components_target_revision "observability" "${new_version}"
+
+			_update_resources_tfvars "aws" "observability_helm_chart_version" "${new_version}"
+			_update_resources_tfvars "gcp" "observability_helm_chart_version" "${new_version}"
+			;;
 		"platform")
 			_update_chart_versions_json "${helm_chart_name}" "${new_version}"
 			;;
@@ -231,6 +240,16 @@ function _update_default_chart_version {
 			sed --in-place "s/^\(    targetRevision: \).*/\1${new_version}/" "${_ROOT_CLOUD_DIR}/helm/platform/values.yaml"
 			;;
 	esac
+}
+
+function _update_platform_components_target_revision {
+	local chart_repository_name="${1}"
+	local new_version="${2}"
+
+	sed \
+		--in-place \
+		"\|repoURL: .*/${chart_repository_name}\$|,/targetRevision: / s/\(targetRevision: \).*/\1${new_version}/" \
+		"${_ROOT_CLOUD_DIR}/helm/platform-components/values.yaml"
 }
 
 function _update_resources_tfvars {
