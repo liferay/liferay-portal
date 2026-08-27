@@ -111,10 +111,12 @@ public class OpenSearchConnectionContentCompressionTest {
 
 		byte[] bytes = _getCountJSON().getBytes(StandardCharsets.UTF_8);
 
-		if ((_acceptEncoding != null) && _acceptEncoding.contains(_GZIP)) {
+		if ((_acceptEncoding != null) &&
+			_acceptEncoding.contains(_ENCODING_GZIP)) {
+
 			bytes = _gzip(bytes);
 
-			responseHeaders.set(HttpHeaders.CONTENT_ENCODING, _GZIP);
+			responseHeaders.set(HttpHeaders.CONTENT_ENCODING, _ENCODING_GZIP);
 		}
 
 		responseHeaders.set(HttpHeaders.CONTENT_TYPE, "application/json");
@@ -130,17 +132,15 @@ public class OpenSearchConnectionContentCompressionTest {
 			boolean compressionEnabled, String expectedAcceptEncoding)
 		throws Exception {
 
-		InetSocketAddress inetSocketAddress = _httpServer.getAddress();
-
-		String networkHostAddress =
-			"http://localhost:" + inetSocketAddress.getPort();
-
 		OpenSearchConnection.Builder openSearchConnectionBuilder =
 			new OpenSearchConnection.Builder();
 
 		openSearchConnectionBuilder.compressionEnabled(compressionEnabled);
+
+		InetSocketAddress inetSocketAddress = _httpServer.getAddress();
+
 		openSearchConnectionBuilder.networkHostAddresses(
-			new String[] {networkHostAddress});
+			new String[] {"http://localhost:" + inetSocketAddress.getPort()});
 
 		_openSearchConnection = openSearchConnectionBuilder.build();
 
@@ -157,7 +157,7 @@ public class OpenSearchConnectionContentCompressionTest {
 
 	private static final long _COUNT = 7;
 
-	private static final String _GZIP = "gzip";
+	private static final String _ENCODING_GZIP = "gzip";
 
 	private String _acceptEncoding;
 	private HttpServer _httpServer;
