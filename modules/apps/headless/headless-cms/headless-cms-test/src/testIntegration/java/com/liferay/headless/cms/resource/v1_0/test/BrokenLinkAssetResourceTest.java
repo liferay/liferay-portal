@@ -101,18 +101,9 @@ public class BrokenLinkAssetResourceTest
 		_testGetBrokenLinkAssetsPageWithDuplicateTitles();
 		_testGetBrokenLinkAssetsPageWithExpiredAssetInAnotherSpace();
 		_testGetBrokenLinkAssetsPageWithExpiredAssetInHiddenSpace();
+		_testGetBrokenLinkAssetsPageWithFreeTier();
 		_testGetBrokenLinkAssetsPageWithoutUpdatePermission();
 		_testGetBrokenLinkAssetsPageWithRelationshipReference();
-	}
-
-	@Test
-	public void testGetBrokenLinkAssetsPageWithFreeTier() throws Exception {
-		try (AutoCloseable autoCloseable = CMSFreeTierTestUtil.withFreeTier()) {
-			assertHttpResponseStatusCode(
-				400,
-				brokenLinkAssetResource.getBrokenLinkAssetsPageHttpResponse(
-					null, null, Pagination.of(1, 20), null));
-		}
 	}
 
 	@Override
@@ -519,6 +510,15 @@ public class BrokenLinkAssetResourceTest
 			spaceMemberBrokenLinkAsset.getBrokenLinkTitle());
 		Assert.assertEquals(
 			referencingTitle, spaceMemberBrokenLinkAsset.getTitle());
+	}
+
+	private void _testGetBrokenLinkAssetsPageWithFreeTier() throws Exception {
+		try (AutoCloseable autoCloseable = CMSFreeTierTestUtil.withFreeTier()) {
+			assertHttpResponseStatusCode(
+				400,
+				brokenLinkAssetResource.getBrokenLinkAssetsPageHttpResponse(
+					null, null, Pagination.of(1, 20), null));
+		}
 	}
 
 	private void _testGetBrokenLinkAssetsPageWithoutUpdatePermission()

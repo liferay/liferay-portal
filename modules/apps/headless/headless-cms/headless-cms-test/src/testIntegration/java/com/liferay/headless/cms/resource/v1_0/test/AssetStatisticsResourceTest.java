@@ -232,15 +232,7 @@ public class AssetStatisticsResourceTest
 
 		_testGetAssetStatisticsBrokenLinksCount();
 		_testGetAssetStatisticsByAssetLibrary();
-	}
-
-	@Test
-	public void testGetAssetStatisticsWithFreeTier() throws Exception {
-		try (AutoCloseable autoCloseable = CMSFreeTierTestUtil.withFreeTier()) {
-			assertHttpResponseStatusCode(
-				400,
-				assetStatisticsResource.getAssetStatisticsHttpResponse(null));
-		}
+		_testGetAssetStatisticsWithFreeTier();
 	}
 
 	@Override
@@ -498,6 +490,14 @@ public class AssetStatisticsResourceTest
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry1.getDepotEntryId());
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
+	}
+
+	private void _testGetAssetStatisticsWithFreeTier() throws Exception {
+		try (AutoCloseable autoCloseable = CMSFreeTierTestUtil.withFreeTier()) {
+			assertHttpResponseStatusCode(
+				400,
+				assetStatisticsResource.getAssetStatisticsHttpResponse(null));
+		}
 	}
 
 	private AssetStatisticsResource[] _assetStatisticsResources;
