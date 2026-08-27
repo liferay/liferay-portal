@@ -16,8 +16,10 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -51,6 +53,13 @@ public class UpdatePermissionsMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		PortletPermissionUtil.check(
+			themeDisplay.getPermissionChecker(), CTPortletKeys.PUBLICATIONS,
+			ActionKeys.CONFIGURATION);
+
 		Map<String, List<String>> permissions =
 			(Map<String, List<String>>)_jsonFactory.looseDeserialize(
 				ParamUtil.getString(actionRequest, "permissions"));
@@ -58,9 +67,6 @@ public class UpdatePermissionsMVCActionCommand extends BaseMVCActionCommand {
 		if (permissions.isEmpty()) {
 			return;
 		}
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
