@@ -183,7 +183,9 @@ definition {
 	@description = "LPS-131206. Verify if the Create Date column shows the date correctly after created one envelope in local Timezone "
 	@priority = 4
 	test CanViewCorrectDate {
-		var envelopeName = "Poshi Test CanViewCorrectDate ${StringUtil.randomString(8)}";
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeName = "Poshi Test CanViewCorrectDate ${randomString}";
 
 		task ("When a digital envelope is created") {
 			DigitalSignature.createEnvelope(
@@ -311,7 +313,9 @@ definition {
 	@description = "LPS-131206. Verify if is possible view on list when an envelope have more recipients than one"
 	@priority = 4
 	test HaveMoreRecipientsThanOne {
-		var envelopeName = "Poshi Test HaveMoreRecipientsThanOne ${StringUtil.randomString(8)}";
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeName = "Poshi Test HaveMoreRecipientsThanOne ${randomString}";
 
 		task ("Given a digital envelope is created") {
 			DigitalSignature.createEnvelope(
