@@ -46,6 +46,12 @@ public class ExportImportReportServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.alterColumnName(
 				"ExportImportReportEntry", "modelName",
 				"modelNameLanguageKey VARCHAR(255) null"));
+
+		registry.register(
+			"3.1.0", "3.2.0",
+			UpgradeProcessFactory.alterColumnType(
+				"ExportImportReportEntry", "classExternalReferenceCode",
+				"VARCHAR(500) null"));
 	}
 
 }
