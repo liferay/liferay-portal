@@ -281,8 +281,10 @@ public class FragmentServiceUpgradeStepRegistrator
 		registry.register(
 			"3.0.1", "3.0.2", new FragmentEntryHTMLUpgradeProcess());
 
+		registry.register("3.0.2", "3.0.3", new DummyUpgradeStep());
+
 		registry.register(
-			"3.0.2", "4.0.0",
+			"3.0.3", "4.0.0",
 			new FragmentEntryVersionUpgradeProcess(
 				_companyLocalService, _configurationProvider));
 
