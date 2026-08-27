@@ -11,6 +11,7 @@
 		"@clayui/sticker": "^3.166.0",
 		"@clayui/tabs": "^3.166.0",
 		"@liferay/frontend-js-react-web": "*",
+		"@liferay/layout-js-components-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
