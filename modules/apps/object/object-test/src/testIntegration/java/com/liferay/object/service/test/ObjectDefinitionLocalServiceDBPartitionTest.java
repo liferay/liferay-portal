@@ -34,6 +34,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.portlet.Portlet;
+
+import java.util.Collection;
 import java.util.Collections;
 
 import org.junit.Assert;
@@ -42,6 +45,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Carolina Barbosa
@@ -67,24 +75,7 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 	public void testDeleteCompanyRemovesResourceActions() throws Exception {
 		Company company = CompanyTestUtil.addCompany();
 
-		ObjectDefinition objectDefinition = null;
-
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					company.getCompanyId())) {
-
-			User user = UserTestUtil.getAdminUser(company.getCompanyId());
-
-			objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(
-					new TextObjectFieldBuilder(
-					).labelMap(
-						RandomTestUtil.randomLocaleStringMap()
-					).name(
-						"a" + RandomTestUtil.randomString()
-					).build()),
-				ObjectDefinitionConstants.SCOPE_COMPANY, user.getUserId());
-		}
+		ObjectDefinition objectDefinition = _publishObjectDefinition(company);
 
 		String portletId = objectDefinition.getPortletId();
 
@@ -181,6 +172,31 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 	}
 
 	@Test
+	public void testUndeployObjectDefinition() throws Exception {
+		Company company = CompanyTestUtil.addCompany();
+
+		try {
+			ObjectDefinition objectDefinition = _publishObjectDefinition(
+				company);
+
+			_assertServiceReferencesCount(1, objectDefinition);
+
+			try (SafeCloseable safeCloseable =
+					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+						PortalInstancePool.getDefaultCompanyId())) {
+
+				_objectDefinitionLocalService.undeployObjectDefinition(
+					objectDefinition);
+			}
+
+			_assertServiceReferencesCount(0, objectDefinition);
+		}
+		finally {
+			_companyLocalService.deleteCompany(company);
+		}
+	}
+
+	@Test
 	public void testUpdateClassNameWhenCompanyIsNotInPortalInstancePool()
 		throws Exception {
 
@@ -239,6 +255,47 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 				resourceActionsCount,
 				_resourceActionLocalService.getResourceActionsCount(
 					objectDefinition.getClassName()));
+		}
+	}
+
+	private void _assertServiceReferencesCount(
+			int expectedCount, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			ObjectDefinitionLocalServiceDBPartitionTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		Collection<ServiceReference<Portlet>> serviceReferences =
+			bundleContext.getServiceReferences(
+				Portlet.class,
+				"(jakarta.portlet.name=" + objectDefinition.getPortletId() +
+					")");
+
+		Assert.assertEquals(
+			serviceReferences.toString(), expectedCount,
+			serviceReferences.size());
+	}
+
+	private ObjectDefinition _publishObjectDefinition(Company company)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
+
+			User user = UserTestUtil.getAdminUser(company.getCompanyId());
+
+			return ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"a" + RandomTestUtil.randomString()
+					).build()),
+				ObjectDefinitionConstants.SCOPE_COMPANY, user.getUserId());
 		}
 	}
 
