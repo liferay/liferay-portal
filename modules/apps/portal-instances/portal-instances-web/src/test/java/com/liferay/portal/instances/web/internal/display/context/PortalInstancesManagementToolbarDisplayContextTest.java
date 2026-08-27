@@ -45,12 +45,6 @@ public class PortalInstancesManagementToolbarDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-			FeatureFlagManagerUtil.class);
-		_languageUtilMockedStatic = Mockito.mockStatic(LanguageUtil.class);
-		_portalUtilMockedStatic = Mockito.mockStatic(PortalUtil.class);
-		_portletURLUtilMockedStatic = Mockito.mockStatic(PortletURLUtil.class);
-
 		_featureFlagManagerUtilMockedStatic.when(
 			() -> FeatureFlagManagerUtil.isEnabled(
 				Mockito.anyLong(), Mockito.eq("LPD-11342"))
@@ -158,17 +152,21 @@ public class PortalInstancesManagementToolbarDisplayContextTest {
 		return (List<DropdownItem>)creationMenu.get("primaryItems");
 	}
 
-	private MockedStatic<FeatureFlagManagerUtil>
-		_featureFlagManagerUtilMockedStatic;
+	private final MockedStatic<FeatureFlagManagerUtil>
+		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+			FeatureFlagManagerUtil.class);
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
-	private MockedStatic<LanguageUtil> _languageUtilMockedStatic;
+	private final MockedStatic<LanguageUtil> _languageUtilMockedStatic =
+		Mockito.mockStatic(LanguageUtil.class);
 	private final LiferayPortletRequest _liferayPortletRequest = Mockito.mock(
 		LiferayPortletRequest.class);
 	private final LiferayPortletResponse _liferayPortletResponse = Mockito.mock(
 		LiferayPortletResponse.class);
-	private MockedStatic<PortalUtil> _portalUtilMockedStatic;
+	private final MockedStatic<PortalUtil> _portalUtilMockedStatic =
+		Mockito.mockStatic(PortalUtil.class);
 	private final PortletURL _portletURL = Mockito.mock(PortletURL.class);
-	private MockedStatic<PortletURLUtil> _portletURLUtilMockedStatic;
+	private final MockedStatic<PortletURLUtil> _portletURLUtilMockedStatic =
+		Mockito.mockStatic(PortletURLUtil.class);
 
 }

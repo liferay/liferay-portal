@@ -83,18 +83,12 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 			invocationOnMock -> invocationOnMock.getArgument(1)
 		);
 
-		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-			FeatureFlagManagerUtil.class);
-
 		_featureFlagManagerUtilMockedStatic.when(
 			() -> FeatureFlagManagerUtil.isEnabled(
 				Mockito.anyLong(), Mockito.eq("LPD-11342"))
 		).thenReturn(
 			true
 		);
-
-		_jsonPortletResponseUtilMockedStatic = Mockito.mockStatic(
-			JSONPortletResponseUtil.class);
 
 		_jsonPortletResponseUtilMockedStatic.when(
 			() -> JSONPortletResponseUtil.writeJSON(
@@ -108,9 +102,6 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 				return null;
 			}
 		);
-
-		_sessionMessagesMockedStatic = Mockito.mockStatic(
-			SessionMessages.class);
 
 		ReflectionTestUtil.setFieldValue(
 			_addDBPartitionCompanyMVCActionCommand, "_companyService",
@@ -456,16 +447,19 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 	private final Company _company = Mockito.mock(Company.class);
 	private final CompanyService _companyService = Mockito.mock(
 		CompanyService.class);
-	private MockedStatic<FeatureFlagManagerUtil>
-		_featureFlagManagerUtilMockedStatic;
+	private final MockedStatic<FeatureFlagManagerUtil>
+		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+			FeatureFlagManagerUtil.class);
 	private int _hideDefaultSuccessMessageCount;
 	private JSONObject _jsonObject;
-	private MockedStatic<JSONPortletResponseUtil>
-		_jsonPortletResponseUtilMockedStatic;
+	private final MockedStatic<JSONPortletResponseUtil>
+		_jsonPortletResponseUtilMockedStatic = Mockito.mockStatic(
+			JSONPortletResponseUtil.class);
 	private final Language _language = Mockito.mock(Language.class);
 	private final PermissionChecker _permissionChecker = Mockito.mock(
 		PermissionChecker.class);
 	private final Portal _portal = Mockito.mock(Portal.class);
-	private MockedStatic<SessionMessages> _sessionMessagesMockedStatic;
+	private final MockedStatic<SessionMessages> _sessionMessagesMockedStatic =
+		Mockito.mockStatic(SessionMessages.class);
 
 }
