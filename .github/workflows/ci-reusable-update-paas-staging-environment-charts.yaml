@@ -49,7 +49,8 @@ jobs:
                         yq \
                             --exit-status \
                             '.argocdApps.applicationsets["liferay-applicationset"].template.spec.sources[0].repoURL' \
-                            "${PAAS_STAGING_APPLICATIONS_FILE}" > /dev/null
+                            "${PAAS_STAGING_APPLICATIONS_FILE}" \
+                            > /dev/null
 
                         REPO_URL="oci://${LIFERAY_GCP_IMAGE_REF%:*}" \
                         TARGET_REVISION="${LIFERAY_GCP_IMAGE_REF##*:}" \
@@ -77,12 +78,14 @@ jobs:
                         yq \
                             --exit-status \
                             '.argocdApps.applicationsets["liferay-infrastructure-applicationset"].template.spec.sources[0].repoURL' \
-                            "${PAAS_STAGING_APPLICATIONS_FILE}" > /dev/null
+                            "${PAAS_STAGING_APPLICATIONS_FILE}" \
+                            > /dev/null
 
                         yq \
                             --exit-status \
                             '.argocdApps.applicationsets["liferay-overlay-applicationset"].template.spec.source.repoURL' \
-                            "${PAAS_STAGING_APPLICATIONS_FILE}" > /dev/null
+                            "${PAAS_STAGING_APPLICATIONS_FILE}" \
+                            > /dev/null
 
                         REPO_URL="oci://${LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF%:*}" \
                         TARGET_REVISION="${LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF##*:}" \
@@ -112,7 +115,8 @@ jobs:
                         yq \
                             --exit-status \
                             '.argocdApps.applicationsets["liferay-provider-applicationset"].template.spec.source.repoURL' \
-                            "${PAAS_STAGING_APPLICATIONS_FILE}" > /dev/null
+                            "${PAAS_STAGING_APPLICATIONS_FILE}" \
+                            > /dev/null
 
                         REPO_URL="oci://${LIFERAY_GCP_INFRASTRUCTURE_PROVIDER_IMAGE_REF%:*}" \
                         TARGET_REVISION="${LIFERAY_GCP_INFRASTRUCTURE_PROVIDER_IMAGE_REF##*:}" \
