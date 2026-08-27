@@ -2168,6 +2168,51 @@ public class JournalArticleLocalServiceTest {
 	}
 
 	@Test
+	public void testMoveArticleToTrashWithCachedVersionArticles()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		journalArticle = JournalTestUtil.updateArticle(
+			journalArticle, RandomTestUtil.randomString());
+
+		JournalArticle latestJournalArticle = JournalTestUtil.updateArticle(
+			journalArticle, RandomTestUtil.randomString());
+
+		_journalArticleLocalService.deleteArticle(latestJournalArticle);
+
+		List<JournalArticle> journalArticles =
+			_journalArticleLocalService.getArticles(
+				journalArticle.getGroupId(), journalArticle.getArticleId());
+
+		Assert.assertEquals(
+			journalArticles.toString(), 2, journalArticles.size());
+
+		journalArticle = _journalArticleLocalService.moveArticleToTrash(
+			TestPropsValues.getUserId(), journalArticle.getGroupId(),
+			journalArticle.getArticleId());
+
+		Assert.assertTrue(journalArticle.isInTrash());
+
+		journalArticles = _journalArticleLocalService.getArticles(
+			journalArticle.getGroupId(), journalArticle.getArticleId(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			ArticleVersionComparator.getInstance(false));
+
+		Assert.assertEquals(
+			journalArticles.toString(), 2, journalArticles.size());
+
+		for (JournalArticle curJournalArticle : journalArticles) {
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_IN_TRASH,
+				curJournalArticle.getStatus());
+		}
+	}
+
+	@Test
 	public void testRemoveArticleLocale() throws Exception {
 		DataDefinition dataDefinition =
 			DataDefinitionTestUtil.addDataDefinition(
