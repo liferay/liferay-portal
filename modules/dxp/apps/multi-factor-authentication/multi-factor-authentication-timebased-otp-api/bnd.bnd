@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Multi-Factor Authentication Time-based OTP API
 Bundle-SymbolicName: com.liferay.multi.factor.authentication.timebased.otp.api
-Bundle-Version: 5.0.2
+Bundle-Version: 5.1.0
 Export-Package:\
 	com.liferay.multi.factor.authentication.timebased.otp.exception,\
 	com.liferay.multi.factor.authentication.timebased.otp.model,\
