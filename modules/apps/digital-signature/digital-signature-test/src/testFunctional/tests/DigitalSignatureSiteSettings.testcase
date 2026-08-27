@@ -75,6 +75,18 @@ definition {
 				dsStatus = "Sent",
 				envelopeName = ${envelopeName});
 		}
+
+		task ("Clean up the envelope and the document") {
+			DigitalSignature.deleteEnvelope(envelopeName = ${envelopeName});
+
+			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+			DMDocument.deleteCP(dmDocumentTitle = "DM Document Title");
+
+			RecycleBin.openRecycleBinAdmin(siteURLKey = "guest");
+
+			RecycleBin.emptyCP();
+		}
 	}
 
 	@description = "This is a test for LPS-131427. Verify if Digital Signature data persists in site settings after enabled with Always Inherit strategy"
