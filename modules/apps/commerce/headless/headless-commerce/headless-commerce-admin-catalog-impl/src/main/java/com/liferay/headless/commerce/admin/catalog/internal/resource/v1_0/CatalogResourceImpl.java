@@ -11,6 +11,7 @@ import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -221,11 +222,7 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 				contextCompany.getCompanyId());
 
 		if (commerceCatalog == null) {
-			CommerceCurrency commerceCurrency =
-				CommerceCurrencyUtil.getCommerceCurrency(
-					contextCompany.getCompanyId(), catalog.getCurrencyCode(),
-					catalog.getCurrencyExternalReferenceCode(),
-					GetterUtil.getLong(catalog.getCurrencyId()));
+			CommerceCurrency commerceCurrency = _getCommerceCurrency(catalog);
 
 			commerceCatalog = _commerceCatalogService.addCommerceCatalog(
 				catalog.getExternalReferenceCode(),
@@ -242,10 +239,7 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 					commerceCatalog.getCommerceCurrencyCode());
 
 			try {
-				commerceCurrency = CommerceCurrencyUtil.getCommerceCurrency(
-					contextCompany.getCompanyId(), catalog.getCurrencyCode(),
-					catalog.getCurrencyExternalReferenceCode(),
-					GetterUtil.getLong(catalog.getCurrencyId()));
+				commerceCurrency = _getCommerceCurrency(catalog);
 			}
 			catch (NoSuchCurrencyException noSuchCurrencyException) {
 				if (_log.isDebugEnabled()) {
@@ -276,11 +270,7 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 			_commerceCatalogService.fetchCommerceCatalogByExternalReferenceCode(
 				externalReferenceCode, contextCompany.getCompanyId());
 
-		CommerceCurrency commerceCurrency =
-			CommerceCurrencyUtil.getCommerceCurrency(
-				contextCompany.getCompanyId(), catalog.getCurrencyCode(),
-				catalog.getCurrencyExternalReferenceCode(),
-				GetterUtil.getLong(catalog.getCurrencyId()));
+		CommerceCurrency commerceCurrency = _getCommerceCurrency(catalog);
 
 		if (commerceCatalog == null) {
 			commerceCatalog = _commerceCatalogService.addCommerceCatalog(
@@ -357,6 +347,32 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 		).build();
 	}
 
+	private CommerceCurrency _getCommerceCurrency(Catalog catalog)
+		throws Exception {
+
+		String currencyExternalReferenceCode =
+			catalog.getCurrencyExternalReferenceCode();
+
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyUtil.fetchCommerceCurrency(
+				contextCompany.getCompanyId(), catalog.getCurrencyCode(),
+				currencyExternalReferenceCode,
+				GetterUtil.getLong(catalog.getCurrencyId()));
+
+		if (commerceCurrency != null) {
+			return commerceCurrency;
+		}
+
+		if (Validator.isNull(currencyExternalReferenceCode)) {
+			throw new NoSuchCurrencyException(
+				"Unable to find currency with external reference code " +
+					currencyExternalReferenceCode);
+		}
+
+		return _commerceCurrencyService.getOrAddEmptyCommerceCurrency(
+			currencyExternalReferenceCode, catalog.getCurrencyCode());
+	}
+
 	private Catalog _toCatalog(CommerceCatalog commerceCatalog)
 		throws Exception {
 
@@ -379,10 +395,7 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 				commerceCatalog.getCommerceCurrencyCode());
 
 		try {
-			commerceCurrency = CommerceCurrencyUtil.getCommerceCurrency(
-				contextCompany.getCompanyId(), catalog.getCurrencyCode(),
-				catalog.getCurrencyExternalReferenceCode(),
-				GetterUtil.getLong(catalog.getCurrencyId()));
+			commerceCurrency = _getCommerceCurrency(catalog);
 		}
 		catch (NoSuchCurrencyException noSuchCurrencyException) {
 			if (_log.isDebugEnabled()) {
@@ -418,6 +431,9 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 
 	@Reference
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;
