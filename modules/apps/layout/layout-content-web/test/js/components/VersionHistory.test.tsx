@@ -144,6 +144,7 @@ function renderComponent({hasDraft = false} = {}) {
 				defaultLanguageId: 'en_US',
 				defaultUserImageSrc: '/image/user_portrait?img_id=0',
 				getPagePreviewURL: '/c/portal/get_page_preview',
+				getPageVersionPreviewURL: '/c/portal/get_page_version_preview',
 				layout: {
 					name: 'Home',
 					status: hasDraft ? 'draft' : 'approved',
