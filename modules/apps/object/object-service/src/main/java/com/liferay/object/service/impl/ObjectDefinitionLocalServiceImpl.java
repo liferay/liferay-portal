@@ -1189,21 +1189,26 @@ public class ObjectDefinitionLocalServiceImpl
 			return;
 		}
 
-		_undeploy(
-			_objectDefinitionDeployer,
-			_objectDefinitionDeployerServiceRegistrationsMap, objectDefinition);
+		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
+				objectDefinition.getCompanyId())) {
 
-		for (Map.Entry
-				<ObjectDefinitionDeployer,
-				 Map<String, List<ServiceRegistration<?>>>> entry :
-					_activeServiceRegistrationsMaps.entrySet()) {
+			_undeploy(
+				_objectDefinitionDeployer,
+				_objectDefinitionDeployerServiceRegistrationsMap,
+				objectDefinition);
 
-			_undeploy(entry.getKey(), entry.getValue(), objectDefinition);
+			for (Map.Entry
+					<ObjectDefinitionDeployer,
+					 Map<String, List<ServiceRegistration<?>>>> entry :
+						_activeServiceRegistrationsMaps.entrySet()) {
+
+				_undeploy(entry.getKey(), entry.getValue(), objectDefinition);
+			}
+
+			_unregister(objectDefinition, _inactiveServiceRegistrationsMap);
+
+			_invalidatePortalCache(objectDefinition);
 		}
-
-		_unregister(objectDefinition, _inactiveServiceRegistrationsMap);
-
-		_invalidatePortalCache(objectDefinition);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
