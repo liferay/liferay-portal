@@ -40,12 +40,16 @@ definition {
 	@description = "LPS-133105. Verify if its possible add more than 1 valid documents in a new Envelope"
 	@priority = 5
 	test CanAddMoreThan1Document {
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeName = "Poshi Test CanAddMoreThan1Document ${randomString}";
+
 		task ("When a digital envelope is created with more than 1 valid document") {
 			DigitalSignature.createEnvelopeWithTwoDocuments(
 				addEmail = "test@liferay.com",
 				addFullName = "Recipient Full Name",
 				addMessage = "Email Message",
-				addName = "Poshi Test CanAddMoreThan1Document",
+				addName = ${envelopeName},
 				addSubject = "Email Subject");
 
 			Button.click(button = "Send");
@@ -54,7 +58,7 @@ definition {
 		task ("Then a message appears that the envelope was successfully created") {
 			Alert.viewSuccessMessageText(successMessage = "Your envelope was created successfully.");
 
-			DigitalSignature.deleteEnvelope(envelopeName = "Poshi Test CanAddMoreThan1Document");
+			DigitalSignature.deleteEnvelope(envelopeName = ${envelopeName});
 
 			DigitalSignature.deleteCreatedDM();
 
@@ -139,6 +143,8 @@ definition {
 	test CannotCreateEnvelopeWithUnsupportedFiles {
 		property solutions.acceptance = "true";
 
+		var randomString = StringUtil.randomString(8);
+
 		task ("When a Digital Envelope is created with an unsupported file type attached") {
 			Navigator.openURL();
 
@@ -146,7 +152,7 @@ definition {
 				addEmail = "test@liferay.com",
 				addFullName = "Recipient Full Name",
 				addMessage = "Email Message",
-				addName = "Poshi Test CannotCreateEnvelopeWithUnsupportedFiles",
+				addName = "Poshi Test CannotCreateEnvelopeWithUnsupportedFiles ${randomString}",
 				addSubject = "Email Subject",
 				dmDocumentFile = "Document_2.mp4");
 		}
@@ -185,12 +191,16 @@ definition {
 	test CanViewSuccessMessage {
 		property solutions.acceptance = "true";
 
+		var randomString = StringUtil.randomString(8);
+
+		var envelopeName = "Poshi Test CanViewSuccessMessage ${randomString}";
+
 		task ("When a digital envelope is created") {
 			DigitalSignature.createEnvelope(
 				addEmail = "test@liferay.com",
 				addFullName = "Recipient Full Name",
 				addMessage = "Email Message",
-				addName = "Poshi Test CanViewSuccessMessage",
+				addName = ${envelopeName},
 				addSubject = "Email Subject",
 				dmDocumentFile = "Alice's Adventures in Wonderland.pdf");
 
@@ -200,9 +210,7 @@ definition {
 		task ("Then a message appears that the envelope was successfully created") {
 			Alert.viewSuccessMessageText(successMessage = "Your envelope was created successfully.");
 
-			Refresh();
-
-			DigitalSignature.deleteEnvelope(envelopeName = "Poshi Test CanViewSuccessMessage");
+			DigitalSignature.deleteEnvelope(envelopeName = ${envelopeName});
 
 			DigitalSignature.deleteCreatedDM();
 
