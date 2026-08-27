@@ -41,7 +41,8 @@ public class CategoryEntityModel implements EntityModel {
 				String::valueOf),
 			new IntegerEntityField(
 				"numberOfTaxonomyCategories",
-				locale -> Field.getSortableFieldName("childCategoriesCount")),
+				locale -> Field.getSortableFieldName(
+					"assetChildCategoriesCount")),
 			new StringEntityField(
 				"externalReferenceCode", locale -> "externalReferenceCode"),
 			new StringEntityField(

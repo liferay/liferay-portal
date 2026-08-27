@@ -170,9 +170,9 @@ public class AssetCategoryIndexerReindexTest {
 		AssetCategory assetCategory, String childCategoriesCount) {
 
 		assertFieldValues(
-			"childCategoriesCount",
+			"assetChildCategoriesCount",
 			Collections.singletonMap(
-				"childCategoriesCount", childCategoriesCount),
+				"assetChildCategoriesCount", childCategoriesCount),
 			LocaleUtil.US, assetCategory.getName());
 	}
 
