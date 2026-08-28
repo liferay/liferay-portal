@@ -5,7 +5,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#0b5fff",
+							"defaultValue": "var(--primary)",
 							"editorType": "ColorPicker",
 							"label": "brand-color-1",
 							"mappings": [
@@ -18,7 +18,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#6b6c7e",
+							"defaultValue": "var(--gray-600)",
 							"editorType": "ColorPicker",
 							"label": "brand-color-2",
 							"mappings": [
@@ -31,7 +31,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#2e5aac",
+							"defaultValue": "var(--info)",
 							"editorType": "ColorPicker",
 							"label": "brand-color-3",
 							"mappings": [
@@ -44,7 +44,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#30313f",
+							"defaultValue": "var(--secondary-d2)",
 							"editorType": "ColorPicker",
 							"label": "brand-color-4",
 							"mappings": [
@@ -63,7 +63,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#fff",
+							"defaultValue": "light-dark(#fff, #1b1b23)",
 							"editorType": "ColorPicker",
 							"label": "white",
 							"mappings": [
@@ -76,7 +76,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#f7f8f9",
+							"defaultValue": "light-dark(#f7f8f9, #272833)",
 							"editorType": "ColorPicker",
 							"label": "gray-100",
 							"mappings": [
@@ -89,7 +89,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#f1f2f5",
+							"defaultValue": "light-dark(#f1f2f5, #393a4a)",
 							"editorType": "ColorPicker",
 							"label": "gray-200",
 							"mappings": [
@@ -102,7 +102,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#e7e7ed",
+							"defaultValue": "light-dark(#e7e7ed, #495057)",
 							"editorType": "ColorPicker",
 							"label": "gray-300",
 							"mappings": [
@@ -115,7 +115,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#cdced9",
+							"defaultValue": "light-dark(#cdced9, #6b6c7e)",
 							"editorType": "ColorPicker",
 							"label": "gray-400",
 							"mappings": [
@@ -128,7 +128,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#a7a9bc",
+							"defaultValue": "light-dark(#a7a9bc, #a7a9bc)",
 							"editorType": "ColorPicker",
 							"label": "gray-500",
 							"mappings": [
@@ -141,7 +141,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#6b6c7e",
+							"defaultValue": "light-dark(#6b6c7e, #cdced9)",
 							"editorType": "ColorPicker",
 							"label": "gray-600",
 							"mappings": [
@@ -154,7 +154,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#495057",
+							"defaultValue": "light-dark(#495057, #e7e7ed)",
 							"editorType": "ColorPicker",
 							"label": "gray-700",
 							"mappings": [
@@ -167,7 +167,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#393a4a",
+							"defaultValue": "light-dark(#393a4a, #f1f2f5)",
 							"editorType": "ColorPicker",
 							"label": "gray-800",
 							"mappings": [
@@ -180,7 +180,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#272833",
+							"defaultValue": "light-dark(#272833, #f7f8f9)",
 							"editorType": "ColorPicker",
 							"label": "gray-900",
 							"mappings": [
@@ -193,7 +193,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#000",
+							"defaultValue": "light-dark(#000, #fff)",
 							"editorType": "ColorPicker",
 							"label": "black",
 							"mappings": [
@@ -212,7 +212,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#0b5fff",
+							"defaultValue": "light-dark(#0b5fff, #6198ff)",
 							"editorType": "ColorPicker",
 							"label": "primary",
 							"mappings": [
@@ -225,7 +225,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#6b6c7e",
+							"defaultValue": "light-dark(#6b6c7e, #b3b3c6)",
 							"editorType": "ColorPicker",
 							"label": "secondary",
 							"mappings": [
@@ -238,7 +238,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#287d3c",
+							"defaultValue": "light-dark(#287d3c, #3bb959)",
 							"editorType": "ColorPicker",
 							"label": "success",
 							"mappings": [
@@ -251,7 +251,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#2e5aac",
+							"defaultValue": "light-dark(#2e5aac, #7e9fdd)",
 							"editorType": "ColorPicker",
 							"label": "info",
 							"mappings": [
@@ -264,7 +264,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#b95000",
+							"defaultValue": "light-dark(#b95000, #ff7a14)",
 							"editorType": "ColorPicker",
 							"label": "warning",
 							"mappings": [
@@ -277,7 +277,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#da1414",
+							"defaultValue": "light-dark(#da1414, #f67474)",
 							"editorType": "ColorPicker",
 							"label": "danger",
 							"mappings": [
@@ -290,7 +290,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#393a4a",
+							"defaultValue": "light-dark(#393a4a, #f1f2f5)",
 							"editorType": "ColorPicker",
 							"label": "gray-dark",
 							"mappings": [
@@ -303,7 +303,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#272833",
+							"defaultValue": "light-dark(#272833, #f1f2f5)",
 							"editorType": "ColorPicker",
 							"label": "dark",
 							"mappings": [
@@ -316,7 +316,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#f1f2f5",
+							"defaultValue": "light-dark(#f1f2f5, #313240)",
 							"editorType": "ColorPicker",
 							"label": "light",
 							"mappings": [
@@ -329,7 +329,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#f7f8f9",
+							"defaultValue": "light-dark(#f7f8f9, #272833)",
 							"editorType": "ColorPicker",
 							"label": "lighter",
 							"mappings": [
@@ -509,7 +509,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#fff",
+							"defaultValue": "var(--body-background-color)",
 							"editorType": "ColorPicker",
 							"label": "body-bg",
 							"mappings": [
@@ -522,7 +522,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#1c1c24",
+							"defaultValue": "var(--dark-d1)",
 							"editorType": "ColorPicker",
 							"label": "body-color",
 							"mappings": [
@@ -1204,7 +1204,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#a7a9bc",
+							"defaultValue": "var(--gray-500)",
 							"editorType": "ColorPicker",
 							"label": "text-muted",
 							"mappings": [
@@ -1230,7 +1230,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#6b6c7e",
+							"defaultValue": "var(--gray-600)",
 							"editorType": "ColorPicker",
 							"label": "blockquote-small-color",
 							"mappings": [
@@ -1306,7 +1306,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#0b5fff",
+							"defaultValue": "var(--primary)",
 							"editorType": "ColorPicker",
 							"label": "background-color",
 							"mappings": [
@@ -1319,7 +1319,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#0b5fff",
+							"defaultValue": "var(--primary)",
 							"editorType": "ColorPicker",
 							"label": "border-color",
 							"mappings": [
@@ -1332,7 +1332,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#fff",
+							"defaultValue": "var(--white)",
 							"editorType": "ColorPicker",
 							"label": "color",
 							"mappings": [
@@ -1345,7 +1345,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#0053f0",
+							"defaultValue": "var(--primary-d1)",
 							"editorType": "ColorPicker",
 							"label": "hover-background-color",
 							"mappings": [
@@ -1371,7 +1371,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#fff",
+							"defaultValue": "var(--white)",
 							"editorType": "ColorPicker",
 							"label": "hover-color",
 							"mappings": [
@@ -1390,7 +1390,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#0b5fff",
+							"defaultValue": "var(--primary)",
 							"editorType": "ColorPicker",
 							"label": "border-color",
 							"mappings": [
@@ -1403,7 +1403,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#0b5fff",
+							"defaultValue": "var(--primary)",
 							"editorType": "ColorPicker",
 							"label": "color",
 							"mappings": [
@@ -1416,7 +1416,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#0b5fff0f",
+							"defaultValue": "hsl(from var(--primary) h s l / 0.06)",
 							"editorType": "ColorPicker",
 							"label": "hover-background-color",
 							"mappings": [
@@ -1429,7 +1429,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#0b5fff",
+							"defaultValue": "var(--primary)",
 							"editorType": "ColorPicker",
 							"label": "hover-border-color",
 							"mappings": [
@@ -1442,7 +1442,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#0053f0",
+							"defaultValue": "var(--primary-d1)",
 							"editorType": "ColorPicker",
 							"label": "hover-color",
 							"mappings": [
@@ -1461,7 +1461,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#fff",
+							"defaultValue": "var(--white)",
 							"editorType": "ColorPicker",
 							"label": "background-color",
 							"mappings": [
@@ -1474,7 +1474,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#cdced9",
+							"defaultValue": "var(--secondary-l2)",
 							"editorType": "ColorPicker",
 							"label": "border-color",
 							"mappings": [
@@ -1487,7 +1487,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#6b6c7e",
+							"defaultValue": "var(--secondary)",
 							"editorType": "ColorPicker",
 							"label": "color",
 							"mappings": [
@@ -1500,7 +1500,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#f7f8f9",
+							"defaultValue": "var(--gray-100)",
 							"editorType": "ColorPicker",
 							"label": "hover-background-color",
 							"mappings": [
@@ -1513,7 +1513,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#cdced9",
+							"defaultValue": "var(--secondary-l2)",
 							"editorType": "ColorPicker",
 							"label": "hover-border-color",
 							"mappings": [
@@ -1526,7 +1526,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#272833",
+							"defaultValue": "var(--gray-900)",
 							"editorType": "ColorPicker",
 							"label": "hover-color",
 							"mappings": [
@@ -1545,7 +1545,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#cdced9",
+							"defaultValue": "var(--secondary-l2)",
 							"editorType": "ColorPicker",
 							"label": "border-color",
 							"mappings": [
@@ -1558,7 +1558,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#6b6c7e",
+							"defaultValue": "var(--secondary)",
 							"editorType": "ColorPicker",
 							"label": "color",
 							"mappings": [
@@ -1571,7 +1571,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#2728330f",
+							"defaultValue": "hsl(from var(--gray-900) h s l / 0.06)",
 							"editorType": "ColorPicker",
 							"label": "hover-background-color",
 							"mappings": [
@@ -1597,7 +1597,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#272833",
+							"defaultValue": "var(--gray-900)",
 							"editorType": "ColorPicker",
 							"label": "hover-color",
 							"mappings": [
@@ -1616,7 +1616,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "#0b5fff",
+							"defaultValue": "var(--primary)",
 							"editorType": "ColorPicker",
 							"label": "color",
 							"mappings": [
@@ -1629,7 +1629,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "#004ad7",
+							"defaultValue": "var(--primary-d2)",
 							"editorType": "ColorPicker",
 							"label": "hover-color",
 							"mappings": [
