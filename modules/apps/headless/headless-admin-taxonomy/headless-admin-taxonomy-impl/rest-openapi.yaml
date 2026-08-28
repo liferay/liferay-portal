@@ -160,6 +160,12 @@ components:
                     description:
                         The keyword's name.
                     type: string
+                projects:
+                    description:
+                        A list of projects that are associated with this keyword.
+                    items:
+                        $ref: "#/components/schemas/Project"
+                    type: array
                 siteExternalReferenceCode:
                     description:
                         The external reference code of the site to which this keyword is scoped.
