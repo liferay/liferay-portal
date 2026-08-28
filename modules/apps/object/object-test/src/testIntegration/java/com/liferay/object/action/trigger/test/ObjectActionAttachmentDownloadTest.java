@@ -167,12 +167,10 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 
 		Assert.assertEquals(1, _executionCount.get());
 
-		// The engine runs an action once per set of object entry IDs, recorded
-		// under the action's ID in a thread local, and a request filter clears
-		// those records between requests. This harness calls the servlet
-		// directly on one thread, so forget this action's record here to make
-		// the second download a second request rather than a repeat of the
-		// first.
+		// The action runs only once per set of object entry IDs, which a thread
+		// local tracks by action ID. A request filter clears these records
+		// between requests, but this test calls the servlet directly, so
+		// remove the record here to make the second download a new request.
 
 		Map<Long, Set<Long>> objectEntryIdsMap =
 			ObjectActionThreadLocal.getObjectEntryIdsMap();
