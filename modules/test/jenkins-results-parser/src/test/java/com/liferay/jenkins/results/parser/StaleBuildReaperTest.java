@@ -34,9 +34,9 @@ public class StaleBuildReaperTest
 
 		Environment.setInstance(Mockito.mock(Environment.class));
 
-		_urlReader = mockUrlReader();
-
 		JenkinsMasterTestUtil.getJenkinsCohortProperties("test-9", 2);
+
+		_urlReader = mockUrlReader();
 
 		_setUpJenkinsMasterUrlReaderOutputs(
 			_getStaleBuildsComputerAPIJSONObject(), "test-9-1");
