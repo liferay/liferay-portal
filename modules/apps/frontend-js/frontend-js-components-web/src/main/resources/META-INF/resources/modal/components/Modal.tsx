@@ -82,6 +82,54 @@ export interface ModalProps {
 	zIndex?: number;
 }
 
+function Body({
+	component: BodyComponent,
+	html,
+	onOpen,
+	processClose,
+}: {
+	component?: typeof React.Component;
+	html?: string;
+	onOpen?: IframeOnOpen;
+	processClose: () => void;
+}) {
+	const bodyRef = useRef<HTMLDivElement>(null);
+	const onOpenRef = useRef(onOpen);
+	const processCloseRef = useRef(processClose);
+
+	useEffect(() => {
+		onOpenRef.current = onOpen;
+		processCloseRef.current = processClose;
+	}, [onOpen, processClose]);
+
+	useEffect(() => {
+		if (html) {
+			const fragment = document
+				.createRange()
+				.createContextualFragment(setCSPNonce(html));
+
+			if (bodyRef.current) {
+				bodyRef.current.innerHTML = '';
+
+				bodyRef.current.appendChild(fragment);
+			}
+		}
+
+		if (onOpenRef.current) {
+			onOpenRef.current({
+				container: bodyRef.current ?? undefined,
+				processClose: processCloseRef.current,
+			});
+		}
+	}, [html]);
+
+	return (
+		<div className="liferay-modal-body" ref={bodyRef}>
+			{BodyComponent && <BodyComponent closeModal={processClose} />}
+		</div>
+	);
+}
+
 export default function Modal({
 	bodyComponent,
 	bodyHTML,
@@ -210,43 +258,6 @@ export default function Modal({
 		if (onClick) {
 			onClick({processClose});
 		}
-	};
-
-	const Body = ({
-		component: BodyComponent,
-		html,
-	}: {
-		component?: typeof React.Component;
-		html?: string;
-	}) => {
-
-		/* eslint-disable-next-line react-compiler/react-compiler */
-		const bodyRef = useRef<HTMLDivElement>(null);
-
-		/* eslint-disable-next-line react-compiler/react-compiler */
-		useEffect(() => {
-			if (html) {
-				const fragment = document
-					.createRange()
-					.createContextualFragment(setCSPNonce(html));
-
-				if (bodyRef.current) {
-					bodyRef.current.innerHTML = '';
-
-					bodyRef.current.appendChild(fragment);
-				}
-			}
-
-			if (onOpen) {
-				onOpen({container: bodyRef.current ?? undefined, processClose});
-			}
-		}, [html]);
-
-		return (
-			<div className="liferay-modal-body" ref={bodyRef}>
-				{BodyComponent && <BodyComponent closeModal={processClose} />}
-			</div>
-		);
 	};
 
 	useEffect(() => {
@@ -380,10 +391,20 @@ export default function Modal({
 									</>
 								)}
 
-								{bodyHTML && <Body html={bodyHTML} />}
+								{bodyHTML && (
+									<Body
+										html={bodyHTML}
+										onOpen={onOpen}
+										processClose={processClose}
+									/>
+								)}
 
 								{bodyComponent && (
-									<Body component={bodyComponent} />
+									<Body
+										component={bodyComponent}
+										onOpen={onOpen}
+										processClose={processClose}
+									/>
 								)}
 							</div>
 
