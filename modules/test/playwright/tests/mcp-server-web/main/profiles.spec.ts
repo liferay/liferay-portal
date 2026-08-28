@@ -340,7 +340,7 @@ test.describe('Profiles - List View', () => {
 });
 
 test.describe('Profiles - Detail (Create / Edit)', () => {
-	test.skip(
+	test(
 		'Creates a profile from the New Profile button',
 		{tag: '@LPD-99230'},
 		async ({apiHelpers, page, profilesPage}) => {
@@ -411,7 +411,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 		}
 	);
 
-	test.skip(
+	test(
 		'Edits a profile and persists the change',
 		{tag: '@LPD-99230'},
 		async ({apiHelpers, profilesPage}) => {
