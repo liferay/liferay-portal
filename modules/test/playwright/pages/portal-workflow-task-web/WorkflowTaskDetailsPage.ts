@@ -93,9 +93,10 @@ export class WorkflowTaskDetailsPage {
 		await this.selectAsset(assetTitle);
 	}
 
-	async selectAsset(assetTitle: string) {
-		const assetLink = this.page.getByRole('link', {name: assetTitle});
-		await assetLink.click();
+	async selectAsset(assetText: string) {
+		const row = this.page.getByRole('row').filter({hasText: assetText});
+
+		await row.locator('.lfr-asset-title-column').getByRole('link').click();
 	}
 
 	async selectAssignee(assignee: string) {
