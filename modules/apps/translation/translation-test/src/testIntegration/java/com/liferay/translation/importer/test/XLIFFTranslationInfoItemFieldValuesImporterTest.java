@@ -10,16 +10,21 @@ import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.translation.exception.XLIFFFileException;
 import com.liferay.translation.importer.TranslationInfoItemFieldValuesImporter;
 import com.liferay.translation.test.util.TranslationTestUtil;
+
+import java.io.ByteArrayInputStream;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -105,6 +110,24 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 	}
 
 	@Test
+	public void testImportXLIFF12PreservesInlineCodes() throws Exception {
+		InfoItemFieldValues infoItemFieldValues =
+			_xliffTranslationInfoItemFieldValuesImporter.
+				importInfoItemFieldValues(
+					_group.getGroupId(),
+					new InfoItemReference(JournalArticle.class.getName(), 122),
+					new ByteArrayInputStream(
+						_INLINE_CODES_V12_XLIFF.getBytes()));
+
+		InfoFieldValue<Object> infoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("content");
+
+		Assert.assertEquals(
+			"<p>Hola <b>mundo</b> &amp; mas</p>",
+			infoFieldValue.getValue(LocaleUtil.SPAIN));
+	}
+
+	@Test
 	public void testImportXLIFF12VersionDocument() throws Exception {
 		InfoItemFieldValues infoItemFieldValues =
 			_xliffTranslationInfoItemFieldValuesImporter.
@@ -140,6 +163,17 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 			infoItemFieldValues.getInfoFieldValues();
 
 		Assert.assertFalse(infoFieldValues.isEmpty());
+	}
+
+	@Test(expected = XLIFFFileException.MustBeValid.class)
+	public void testImportXLIFF20FailsFileInlineCodeWithoutOriginalData()
+		throws Exception {
+
+		_xliffTranslationInfoItemFieldValuesImporter.importInfoItemFieldValues(
+			_group.getGroupId(),
+			new InfoItemReference(JournalArticle.class.getName(), 122),
+			new ByteArrayInputStream(
+				_INLINE_CODES_NO_ORIGINAL_DATA_XLIFF.getBytes()));
 	}
 
 	@Test(expected = XLIFFFileException.MustBeSupportedLanguage.class)
@@ -201,6 +235,72 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 			infoFieldValues.toString(), 1, infoFieldValues.size());
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
+	@Test
+	public void testImportXLIFF20PreservesInlineCodes() throws Exception {
+		InfoItemFieldValues infoItemFieldValues =
+			_xliffTranslationInfoItemFieldValuesImporter.
+				importInfoItemFieldValues(
+					_group.getGroupId(),
+					new InfoItemReference(JournalArticle.class.getName(), 122),
+					new ByteArrayInputStream(_INLINE_CODES_XLIFF.getBytes()));
+
+		Collection<InfoFieldValue<Object>> infoFieldValues =
+			infoItemFieldValues.getInfoFieldValues();
+
+		Assert.assertEquals(
+			infoFieldValues.toString(), 2, infoFieldValues.size());
+
+		InfoFieldValue<Object> contentInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("content");
+
+		Assert.assertEquals(
+			"<p>Hola <b>mundo</b> &amp; mas</p>",
+			contentInfoFieldValue.getValue(LocaleUtil.SPAIN));
+
+		InfoFieldValue<Object> imageInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("image");
+
+		Assert.assertEquals(
+			"<img src=\"/images/logo.png\"/>",
+			imageInfoFieldValue.getValue(LocaleUtil.SPAIN));
+	}
+
+	@FeatureFlags(
+		featureFlags = @FeatureFlag(enable = false, value = "LPD-102730")
+	)
+	@Test
+	public void testImportXLIFF20PreservesInlineCodesWithoutFeatureFlag()
+		throws Exception {
+
+		InfoItemFieldValues infoItemFieldValues =
+			_xliffTranslationInfoItemFieldValuesImporter.
+				importInfoItemFieldValues(
+					_group.getGroupId(),
+					new InfoItemReference(JournalArticle.class.getName(), 122),
+					new ByteArrayInputStream(_INLINE_CODES_XLIFF.getBytes()));
+
+		Collection<InfoFieldValue<Object>> infoFieldValues =
+			infoItemFieldValues.getInfoFieldValues();
+
+		Assert.assertEquals(
+			infoFieldValues.toString(), 2, infoFieldValues.size());
+
+		InfoFieldValue<Object> contentInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("content");
+
+		Assert.assertEquals(
+			"<p>Hola <b>mundo</b> &amp; mas</p>",
+			contentInfoFieldValue.getValue(LocaleUtil.SPAIN));
+
+		InfoFieldValue<Object> imageInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("image");
+
+		Assert.assertEquals(
+			"<img src=\"/images/logo.png\"/>",
+			imageInfoFieldValue.getValue(LocaleUtil.SPAIN));
+	}
+
 	@Test
 	public void testImportXLIFF20VersionDocument() throws Exception {
 		InfoItemFieldValues infoItemFieldValues =
@@ -219,6 +319,56 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 
 		Assert.assertFalse(infoFieldValues.isEmpty());
 	}
+
+	private static final String _INLINE_CODES_NO_ORIGINAL_DATA_XLIFF =
+		StringBundler.concat(
+			"<?xml version=\"1.0\"?>\n\n<xliff srcLang=\"en-US\" trgLang=",
+			"\"es-ES\" version=\"2.0\" xmlns=",
+			"\"urn:oasis:names:tc:xliff:document:2.0\">\n\t<file id=",
+			"\"com.liferay.journal.model.JournalArticle:122\">\n\t\t<unit id=",
+			"\"JournalArticle_content\">\n\t\t\t<segment>\n\t\t\t\t<source>\n",
+			"\t\t\t\t\t<pc id=\"1\">Hello <pc id=\"2\">world</pc>\n\t\t\t\t\t",
+			"</pc>\n\t\t\t\t</source>\n\t\t\t\t<target>\n\t\t\t\t\t<pc id=\"1",
+			"\">Hola <pc id=\"2\">mundo</pc>\n\t\t\t\t\t</pc>\n\t\t\t\t",
+			"</target>\n\t\t\t</segment>\n\t\t</unit>\n\t</file>\n</xliff>");
+
+	private static final String _INLINE_CODES_V12_XLIFF = StringBundler.concat(
+		"<?xml version=\"1.0\"?>\n\n<xliff version=\"1.2\" xmlns=",
+		"\"urn:oasis:names:tc:xliff:document:1.2\">\n\t<file datatype=\"html",
+		"\" original=\"com.liferay.journal.model.JournalArticle:122",
+		"\" source-language=\"en-US\" target-language=\"es-ES\" tool=",
+		"\"Liferay\">\n\t\t<body>\n\t\t\t<trans-unit id=",
+		"\"JournalArticle_content\">\n\t\t\t\t<source xml:lang=\"en-US\">",
+		"<bpt id=\"1\" rid=\"1\">&lt;p&gt;</bpt>Hello <bpt id=\"2\" rid=\"2\"",
+		">&lt;b&gt;</bpt>world<ept id=\"3\" rid=\"2\">&lt;/b&gt;</ept",
+		"> <ph id=\"4\">&amp;amp;</ph> more<ept id=\"5\" rid=\"1\">&lt;/p&gt;",
+		"</ept></source>\n\t\t\t\t<target xml:lang=\"es-ES\"><bpt id=\"1",
+		"\" rid=\"1\">&lt;p&gt;</bpt>Hola <bpt id=\"2\" rid=\"2\">&lt;b&gt;",
+		"</bpt>mundo<ept id=\"3\" rid=\"2\">&lt;/b&gt;</ept> <ph id=\"4\">",
+		"&amp;amp;</ph> mas<ept id=\"5\" rid=\"1\">&lt;/p&gt;</ept></target>",
+		"\n\t\t\t</trans-unit>\n\t\t</body>\n\t</file>\n</xliff>");
+
+	private static final String _INLINE_CODES_XLIFF = StringBundler.concat(
+		"<?xml version=\"1.0\"?>\n\n<xliff srcLang=\"en-US\" trgLang=\"es-ES",
+		"\" version=\"2.0\" xmlns=\"urn:oasis:names:tc:xliff:document:2.0\">",
+		"\n\t<file id=\"com.liferay.journal.model.JournalArticle:122\">\n\t\t",
+		"<unit id=\"JournalArticle_content\">\n\t\t\t<originalData>\n\t\t\t\t",
+		"<data id=\"d1\">&lt;p&gt;</data>\n\t\t\t\t<data id=\"d2\">&lt;/p&gt;",
+		"</data>\n\t\t\t\t<data id=\"d3\">&lt;b&gt;</data>\n\t\t\t\t<data id=",
+		"\"d4\">&lt;/b&gt;</data>\n\t\t\t\t<data id=\"d5\">&amp;amp;</data>\n",
+		"\t\t\t</originalData>\n\t\t\t<segment>\n\t\t\t\t<source>",
+		"<pc dataRefEnd=\"d2\" dataRefStart=\"d1\" id=\"1\"",
+		">Hello <pc dataRefEnd=\"d4\" dataRefStart=\"d3\" id=\"2\">world</pc",
+		"> <ph dataRef=\"d5\" id=\"3\"/> more</pc></source>\n\t\t\t\t<target>",
+		"<pc dataRefEnd=\"d2\" dataRefStart=\"d1\" id=\"1\"",
+		">Hola <pc dataRefEnd=\"d4\" dataRefStart=\"d3\" id=\"2\">mundo</pc",
+		"> <ph dataRef=\"d5\" id=\"3\"/> mas</pc></target>\n\t\t\t</segment>",
+		"\n\t\t</unit>\n\t\t<unit id=\"JournalArticle_image\">\n\t\t\t",
+		"<originalData>\n\t\t\t\t<data id=\"d1\">&lt;img src=",
+		"\"/images/logo.png\"/&gt;</data>\n\t\t\t</originalData>\n\t\t\t",
+		"<segment>\n\t\t\t\t<source><ph dataRef=\"d1\" id=\"1\"/></source>\n",
+		"\t\t\t\t<target><ph dataRef=\"d1\" id=\"1\"/></target>\n\t\t\t",
+		"</segment>\n\t\t</unit>\n\t</file>\n</xliff>");
 
 	private static final Set<Locale> _locales = new HashSet<>(
 		Arrays.asList(
