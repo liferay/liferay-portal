@@ -50,7 +50,6 @@ public class FragmentEntryLinkModelListener
 
 		long modelClassNameId = _classNameLocalService.getClassNameId(
 			fragmentEntryLink.getModelClass());
-
 		long fragmentEntryLinkId = fragmentEntryLink.getFragmentEntryLinkId();
 
 		if (_ctEntryLocalService.hasUnpublishedCTEntries(

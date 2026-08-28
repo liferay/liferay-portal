@@ -66,7 +66,6 @@ public class FragmentEntryLinkCTTest {
 		_ctCollection = _ctCollectionLocalService.addCTCollection(
 			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 			0, FragmentEntryLinkCTTest.class.getName(), null);
-
 		_group = GroupTestUtil.addGroup();
 	}
 
