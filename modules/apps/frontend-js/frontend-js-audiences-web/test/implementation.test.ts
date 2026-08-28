@@ -4,7 +4,6 @@
  */
 
 import * as audiences from '../src/main/resources/META-INF/resources/main/implementation';
-import {store} from '../src/main/resources/META-INF/resources/main/store';
 
 import type {AudiencesDefinition} from '../src/main/resources/META-INF/resources/main/index';
 
@@ -15,7 +14,9 @@ function mockAudiencesDefinition(audienceIds: string[]) {
 		audiences: audienceIds.map((audienceId) => ({
 			conjunction: 'AND',
 			id: audienceId,
-			rules: [],
+			rules: [
+				{attribute: 'hostname', operator: 'eq', value: 'localhost'},
+			],
 		})),
 	};
 
@@ -34,107 +35,104 @@ describe('implementation', () => {
 		jest.restoreAllMocks();
 
 		audiences.setLogEnabled(false);
-		store.clear();
+		audiences.clear();
 	});
 
 	describe('runHandlers', () => {
-		it('runs the handlers in the order they were registered and only once', async () => {
-			const executionOrder: string[] = [];
+		it('runs every registered handler exactly once', async () => {
+			mockAudiencesDefinition(['a', 'b', 'c']);
 
-			const audienceIds = ['a', 'b', 'c', 'd', 'e'];
+			await audiences.runDetection(DEFINITION_URL);
 
-			// Store audiences in reverse order so that we really test the registration is honored
+			const first = jest.fn();
+			const second = jest.fn();
+			const third = jest.fn();
 
-			store.setAudienceIds(new Set(audienceIds.reverse()));
-
-			for (const audienceId of audienceIds) {
-				audiences.on(audienceId, () => {
-					executionOrder.push(audienceId);
-				});
-			}
+			audiences.on('a', first);
+			audiences.on('a', second);
+			audiences.on('b', third);
 
 			await audiences.runHandlers();
 
-			expect(executionOrder).toEqual(audienceIds);
-			expect(executionOrder).toHaveLength(audienceIds.length);
+			// The handlers are run in parallel and no order is guaranteed, so
+			// the only thing to check is that each one ran, and ran once
+
+			expect(first).toHaveBeenCalledTimes(1);
+			expect(second).toHaveBeenCalledTimes(1);
+			expect(third).toHaveBeenCalledTimes(1);
 		});
 
-		it('keeps the registered handlers so they run again on the next navigation', async () => {
-			let runCount = 0;
+		it('does not run the handlers again because a run consumes them', async () => {
+			mockAudiencesDefinition(['persistent']);
 
-			store.setAudienceIds(new Set(['persistent']));
+			await audiences.runDetection(DEFINITION_URL);
 
-			audiences.on('persistent', () => {
-				runCount += 1;
-			});
+			const handler = jest.fn();
 
-			await audiences.runHandlers();
-
-			expect(runCount).toBe(1);
-
-			// The handler stays registered so a later navigation runs it again
+			audiences.on('persistent', handler);
 
 			await audiences.runHandlers();
 
-			expect(runCount).toBe(2);
+			expect(handler).toHaveBeenCalledTimes(1);
+
+			// Running the handlers clears them, so the next navigation has to
+			// register them again
+
+			await audiences.runHandlers();
+
+			expect(handler).toHaveBeenCalledTimes(1);
 		});
 
-		it('does not run handlers after they are cleared', async () => {
-			let runCount = 0;
+		it('does not run the handlers cleared before the run', async () => {
+			mockAudiencesDefinition(['cleared']);
 
-			store.setAudienceIds(new Set(['cleared']));
+			await audiences.runDetection(DEFINITION_URL);
 
-			audiences.on('cleared', () => {
-				runCount += 1;
-			});
+			const handler = jest.fn();
 
-			await audiences.runHandlers();
-
-			expect(runCount).toBe(1);
-
-			// Navigating to another page clears the previous page's handlers
+			audiences.on('cleared', handler);
 
 			audiences.clearHandlers();
 
 			await audiences.runHandlers();
 
-			expect(runCount).toBe(1);
+			expect(handler).not.toHaveBeenCalled();
 		});
 
 		it('runs the remaining handlers when one handler throws', async () => {
+			mockAudiencesDefinition(['first', 'broken', 'last']);
+
+			await audiences.runDetection(DEFINITION_URL);
+
 			audiences.setLogEnabled(true);
 
 			const consoleLog = jest
 				.spyOn(console, 'log')
 				.mockImplementation(() => {});
 
-			const executionOrder: string[] = [];
+			const firstHandler = jest.fn();
+			const lastHandler = jest.fn();
 
 			const brokenHandler = () => {
 				throw new Error('The handler is broken');
 			};
 
-			store.setAudienceIds(new Set(['first', 'broken', 'last']));
-
-			audiences.on('first', () => {
-				executionOrder.push('first');
-			});
+			audiences.on('first', firstHandler);
 
 			audiences.on('broken', brokenHandler);
 
-			audiences.on('last', () => {
-				executionOrder.push('last');
-			});
+			audiences.on('last', lastHandler);
 
 			await audiences.runHandlers();
 
-			expect(executionOrder).toEqual(['first', 'last']);
+			expect(firstHandler).toHaveBeenCalledTimes(1);
+			expect(lastHandler).toHaveBeenCalledTimes(1);
 
 			expect(consoleLog).toHaveBeenCalledWith(
 				expect.anything(),
 				expect.anything(),
 				expect.stringContaining(
-					"Unable to run handler 'brokenHandler' of audience 'broken'"
+					"Handler 'brokenHandler' of audience 'broken' failed with error"
 				)
 			);
 		});

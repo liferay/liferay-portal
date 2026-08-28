@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Cache} from '../src/main/resources/META-INF/resources/main/cache';
 import {getBrowserName} from '../src/main/resources/META-INF/resources/main/detection/attributes/browser_name';
 import {getBrowserVersion} from '../src/main/resources/META-INF/resources/main/detection/attributes/browser_version';
 import {getCookies} from '../src/main/resources/META-INF/resources/main/detection/attributes/cookies';
@@ -19,7 +20,6 @@ import {getSegments} from '../src/main/resources/META-INF/resources/main/detecti
 import {getTimezone} from '../src/main/resources/META-INF/resources/main/detection/attributes/timezone';
 import {getUrl} from '../src/main/resources/META-INF/resources/main/detection/attributes/url';
 import {getUserAgent} from '../src/main/resources/META-INF/resources/main/detection/attributes/user_agent';
-import Cache from '../src/main/resources/META-INF/resources/main/detection/cache';
 
 describe('attributes', () => {
 	afterEach(() => {

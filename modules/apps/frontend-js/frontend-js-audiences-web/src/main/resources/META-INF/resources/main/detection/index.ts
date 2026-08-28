@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Cache} from '../cache';
 import {log} from '../log';
+import {TimeoutError} from '../timeout_error';
+import {formatError, indent, waitForAbort} from '../util';
 import {getBrowserName} from './attributes/browser_name';
 import {getBrowserVersion} from './attributes/browser_version';
 import {getCookies} from './attributes/cookies';
@@ -20,7 +23,6 @@ import {getSegments} from './attributes/segments';
 import {getTimezone} from './attributes/timezone';
 import {getUrl} from './attributes/url';
 import {getUserAgent} from './attributes/user_agent';
-import Cache from './cache';
 import {check} from './check';
 import {eq} from './operators/eq';
 import {gt} from './operators/gt';
@@ -47,44 +49,57 @@ interface OperatorImpl {
 }
 
 export class Detection {
-	private readonly _abortController: AbortController;
 	private readonly _audiencesDefinition: AudiencesDefinition;
-	private readonly _cache: Cache;
-	private _consumed = false;
 
 	constructor(audiencesDefinition: AudiencesDefinition) {
 		check(audiencesDefinition);
 
-		this._abortController = new AbortController();
 		this._audiencesDefinition = audiencesDefinition;
-		this._cache = new Cache(this._abortController.signal);
 	}
 
-	async run(timeoutMs?: number): Promise<AudienceId[]> {
-		if (this._consumed) {
-			throw new Error('Detection objects can only be run once');
-		}
-		else {
-			this._consumed = true;
-		}
-
-		const matches: AudienceId[] = [];
-
-		const timedOut = await Promise.race([
-			this._waitForTimeout(timeoutMs),
-			this._matchAudiences(matches),
+	/**
+	 * Run a detection over the definitions given in the constructor.
+	 *
+	 * Note that if timeout occurs, the `matches` parameter will contain only
+	 * the audiences that were detected before the timeout.
+	 *
+	 * @param cache
+	 * @param signal
+	 * @param matches output parameter to hold detected audiences
+	 * @throws TimeoutError on timeout
+	 * @throws Error if anything fails
+	 */
+	async run(
+		cache: Cache,
+		signal: AbortSignal,
+		matches: AudienceId[]
+	): Promise<void> {
+		await Promise.race([
+			waitForAbort(signal),
+			this._matchAudiences(cache, signal, matches),
 		]);
 
-		if (timedOut) {
-			this._abortController.abort();
-
-			log('Detection timeout of', timeoutMs, 'milliseconds reached');
+		if (signal.aborted) {
+			throw new TimeoutError('Detection of audiences');
 		}
-
-		return matches;
 	}
 
-	private async _matchAudiences(matches: AudienceId[]): Promise<void> {
+	/**
+	 * Match audiences in parallel.
+	 *
+	 * Note that if timeout occurs, the `matches` parameter will contain only
+	 * the audiences that were detected before the timeout.
+	 *
+	 * Never rejects, just logs errors.
+	 *
+	 * @param matches output parameter to hold detected audiences
+	 * @private
+	 */
+	private async _matchAudiences(
+		cache: Cache,
+		signal: AbortSignal,
+		matches: AudienceId[]
+	): Promise<void> {
 		const promises = this._audiencesDefinition.audiences.map(
 			async (audience) => {
 				const {conjunction, id, rules} = audience;
@@ -93,17 +108,11 @@ export class Detection {
 
 				try {
 					const matched = await this._evaluateGroup(
+						cache,
+						signal,
 						conjunction,
 						rules
 					);
-
-					if (this._abortController.signal.aborted) {
-						log(
-							`Audience '${id}' is not matched because its evaluation timed out`
-						);
-
-						return;
-					}
 
 					if (matched) {
 						log(`Audience '${id}' is matched`);
@@ -112,14 +121,8 @@ export class Detection {
 					}
 				}
 				catch (error: any) {
-					const message = error.message || error.toString();
-
 					log(
-						`Audience '${id}' is not matched because its evaluation failed with error:`,
-						`\n\n${message
-							.split('\n')
-							.map((line: string) => `    ${line}`)
-							.join('\n')}\n\n`
+						`Audience '${id}' is not matched because its evaluation failed with error:\n${indent(2, true, formatError(error))}`
 					);
 				}
 			}
@@ -129,11 +132,13 @@ export class Detection {
 	}
 
 	private async _evaluateGroup(
+		cache: Cache,
+		signal: AbortSignal,
 		conjunction: Conjunction,
 		rules: Rule[]
 	): Promise<boolean> {
 		const results = await Promise.all(
-			rules.map((rule) => this._evaluateRule(rule))
+			rules.map((rule) => this._evaluateRule(cache, signal, rule))
 		);
 
 		return conjunction === 'AND'
@@ -141,37 +146,54 @@ export class Detection {
 			: results.some(Boolean);
 	}
 
-	private async _evaluateRule(rule: Rule): Promise<boolean> {
+	private async _evaluateRule(
+		cache: Cache,
+		signal: AbortSignal,
+		rule: Rule
+	): Promise<boolean> {
 		if ('conjunction' in rule) {
-			return this._evaluateGroup(rule.conjunction, rule.rules);
+			return this._evaluateGroup(
+				cache,
+				signal,
+				rule.conjunction,
+				rule.rules
+			);
 		}
 
 		const ruleDescription = `('${rule.attribute}' ${rule.operator} '${rule.value}')`;
 
 		try {
 			const operator = this._getOperator(rule.operator);
-			const attribute = await this._getAttribute(rule.attribute);
+
+			const attribute = await this._getAttribute(rule.attribute, cache);
+
+			if (signal.aborted) {
+				throw new TimeoutError('Rule evaluation');
+			}
 
 			const result = operator(attribute, rule.value);
 
-			log(`Evaluation of rule ${ruleDescription}: ${result}`);
+			log(`Rule ${ruleDescription} evaluates to ${result}`);
 
 			return result;
 		}
 		catch (error: any) {
 			throw new Error(
-				`An error was thrown when evaluating rule ${ruleDescription}: ` +
-					(error.message || error)
+				`An error was thrown when evaluating rule ${ruleDescription}`,
+				{cause: error}
 			);
 		}
 	}
 
-	private async _getAttribute(attr: Attribute): Promise<AttributeValue> {
+	private async _getAttribute(
+		attr: Attribute,
+		cache: Cache
+	): Promise<AttributeValue> {
 		if (attr === 'browser_name') {
-			return getBrowserName(this._cache);
+			return getBrowserName(cache);
 		}
 		else if (attr === 'browser_version') {
-			return getBrowserVersion(this._cache);
+			return getBrowserVersion(cache);
 		}
 		else if (attr === 'cookies') {
 			return getCookies();
@@ -180,7 +202,7 @@ export class Detection {
 			return getCustom(attr.slice(7));
 		}
 		else if (attr === 'device_type') {
-			return getDeviceType(this._cache);
+			return getDeviceType(cache);
 		}
 		else if (attr === 'hostname') {
 			return getHostname();
@@ -204,7 +226,7 @@ export class Detection {
 			return getRequestParameters();
 		}
 		else if (attr === 'segments') {
-			return getSegments(this._cache);
+			return getSegments(cache);
 		}
 		else if (attr === 'timezone') {
 			return getTimezone();
@@ -248,13 +270,5 @@ export class Detection {
 		else {
 			throw new Error(`Unsupported operator: ${operator}`);
 		}
-	}
-
-	private async _waitForTimeout(timeoutMs?: number): Promise<boolean> {
-		return await new Promise<boolean>((resolve) => {
-			if (timeoutMs) {
-				setTimeout(() => resolve(true), timeoutMs);
-			}
-		});
 	}
 }

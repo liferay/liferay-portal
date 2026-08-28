@@ -17,11 +17,6 @@ async function runAudiences() {
 
 	const navigationId = ++currentNavigationId;
 
-	// Always start the navigation from a clean handler set, even when the page
-	// has no variations, so a previous page's handlers never linger.
-
-	audiences.clearHandlers();
-
 	const meta = document.head.querySelector(
 		'meta[name="audiences-variations"]'
 	);
@@ -42,8 +37,6 @@ async function runAudiences() {
 	}
 
 	variations.register();
-
-	audiences.clear();
 
 	await audiences.runDetection(DEFINITION_URL, {
 		timeoutMs: [$DETECTION_TIMEOUT_MS$],
