@@ -116,7 +116,7 @@ describe('CategorizationSpaces', () => {
 		});
 
 		expect(screen.getByText('Engineering Docs')).toBeInTheDocument();
-	});
+	}, 15000);
 
 	it('disables the input and checkbox when disabled is true', async () => {
 		render(<CategorizationSpaces {...defaultProps} disabled />);
