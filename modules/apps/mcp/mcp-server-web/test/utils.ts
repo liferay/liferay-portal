@@ -5,17 +5,24 @@
 
 import {
 	buildDataMaskTree,
+	buildToolChildren,
+	buildToolWaves,
 	filterDataMaskTree,
+	getAssignedToolIds,
+	getEligibleToolIds,
 	getSelectedDataMaskExternalReferenceCodes,
+	getSelectedTools,
 	isSystemMask,
 	required,
 	toIdentifier,
 	toODataStringLiteral,
+	toToolId,
 } from '../src/main/resources/META-INF/resources/js/utils';
 
 import type {
 	DataMask,
 	DataMaskTypeKey,
+	ProfileTool,
 } from '../src/main/resources/META-INF/resources/js/types';
 
 function createDataMask(
@@ -30,6 +37,14 @@ function createDataMask(
 		name,
 		replacementValue: '[X]',
 	};
+}
+
+function createProfileTool(toolSetName: string, toolName: string): ProfileTool {
+	return {toolName, toolSetName};
+}
+
+function createTools(toolNames: string[]) {
+	return toolNames.map((toolName) => ({name: toolName}));
 }
 
 describe('buildDataMaskTree', () => {
@@ -217,5 +232,156 @@ describe('isSystemMask', () => {
 
 	it('returns false when there is no mask', () => {
 		expect(isSystemMask(null)).toBe(false);
+	});
+});
+
+describe('buildToolChildren', () => {
+	it('flags the tools the profile already carries as assigned', () => {
+		expect(
+			buildToolChildren(
+				'user-management',
+				createTools(['getUserAccount', 'createUserAccount']),
+				[createProfileTool('user-management', 'getUserAccount')]
+			)
+		).toEqual([
+			{
+				assigned: true,
+				id: 'user-management/getUserAccount',
+				name: 'getUserAccount',
+			},
+			{
+				assigned: false,
+				id: 'user-management/createUserAccount',
+				name: 'createUserAccount',
+			},
+		]);
+	});
+});
+
+describe('buildToolWaves', () => {
+	it('returns a single wave when every tool name is unique', () => {
+		expect(
+			buildToolWaves([
+				{toolName: 'getOpenAPI', toolSetName: 'audit-v1.0'},
+				{toolName: 'getSitesPage', toolSetName: 'headless-admin-v1.0'},
+			])
+		).toEqual([
+			[
+				{toolName: 'getOpenAPI', toolSetName: 'audit-v1.0'},
+				{toolName: 'getSitesPage', toolSetName: 'headless-admin-v1.0'},
+			],
+		]);
+	});
+
+	it('spreads same-named tools across waves keeping one per wave', () => {
+		expect(
+			buildToolWaves([
+				{toolName: 'getOpenAPI', toolSetName: 'audit-v1.0'},
+				{toolName: 'getSitesPage', toolSetName: 'headless-admin-v1.0'},
+				{toolName: 'getOpenAPI', toolSetName: 'admin-server-v1.0'},
+				{toolName: 'getOpenAPI', toolSetName: 'openapi'},
+			])
+		).toEqual([
+			[
+				{toolName: 'getOpenAPI', toolSetName: 'audit-v1.0'},
+				{toolName: 'getSitesPage', toolSetName: 'headless-admin-v1.0'},
+			],
+			[{toolName: 'getOpenAPI', toolSetName: 'admin-server-v1.0'}],
+			[{toolName: 'getOpenAPI', toolSetName: 'openapi'}],
+		]);
+	});
+
+	it('returns no waves for an empty selection', () => {
+		expect(buildToolWaves([])).toEqual([]);
+	});
+});
+
+describe('getAssignedToolIds', () => {
+	it('collects the ids of the tools the profile carries', () => {
+		expect(
+			getAssignedToolIds([
+				createProfileTool('user-management', 'getUserAccount'),
+				createProfileTool('organizations', 'getOrganization'),
+			])
+		).toEqual(
+			new Set([
+				'user-management/getUserAccount',
+				'organizations/getOrganization',
+			])
+		);
+	});
+});
+
+describe('getEligibleToolIds', () => {
+	it('keeps only the ids of the tools the profile does not carry yet', () => {
+		expect(
+			getEligibleToolIds(
+				buildToolChildren(
+					'user-management',
+					createTools(['getUserAccount', 'createUserAccount']),
+					[createProfileTool('user-management', 'getUserAccount')]
+				)
+			)
+		).toEqual(['user-management/createUserAccount']);
+	});
+
+	it('returns nothing when every tool is already assigned', () => {
+		expect(
+			getEligibleToolIds(
+				buildToolChildren(
+					'user-management',
+					createTools(['getUserAccount']),
+					[createProfileTool('user-management', 'getUserAccount')]
+				)
+			)
+		).toEqual([]);
+	});
+});
+
+describe('getSelectedTools', () => {
+	it('resolves the checked leaves back into tool set and tool names', () => {
+		expect(
+			getSelectedTools(
+				new Set([
+					'user-management/createUserAccount',
+					'organizations/getOrganization',
+				])
+			)
+		).toEqual([
+			{toolName: 'createUserAccount', toolSetName: 'user-management'},
+			{toolName: 'getOrganization', toolSetName: 'organizations'},
+		]);
+	});
+
+	it('ignores the tool set keys the tree view also reports as selected', () => {
+		expect(
+			getSelectedTools(
+				new Set(['organizations', 'organizations/getOrganization'])
+			)
+		).toEqual([
+			{toolName: 'getOrganization', toolSetName: 'organizations'},
+		]);
+	});
+
+	it('returns nothing when nothing is checked', () => {
+		expect(getSelectedTools(new Set())).toEqual([]);
+	});
+
+	it('keeps a tool name containing the separator addressable', () => {
+		expect(
+			getSelectedTools(
+				new Set([toToolId('mcp-server-v1.0', 'tool/with/slashes')])
+			)
+		).toEqual([
+			{toolName: 'tool/with/slashes', toolSetName: 'mcp-server-v1.0'},
+		]);
+	});
+});
+
+describe('toToolId', () => {
+	it('joins the tool set and the tool name', () => {
+		expect(toToolId('user-management', 'getUserAccount')).toBe(
+			'user-management/getUserAccount'
+		);
 	});
 });
