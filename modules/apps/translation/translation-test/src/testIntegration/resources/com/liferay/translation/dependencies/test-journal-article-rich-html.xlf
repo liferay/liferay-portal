@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<xliff srcLang="en-US" trgLang="es-ES" version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+	<file id="com.liferay.journal.model.JournalArticle:[$JOURNAL_ARTICLE_ID$]">
+		<unit id="JournalArticle_title">
+			<segment>
+				<source>Test Article</source>
+				<target></target>
+			</segment>
+		</unit>
+		<unit id="JournalArticle_description">
+			<segment>
+				<source></source>
+				<target></target>
+			</segment>
+		</unit>
+		<unit id="DDMStructure_HTML4acl">
+			<originalData>
+				<data id="d1">&lt;p class="intro"></data>
+				<data id="d2">&lt;b></data>
+				<data id="d3">&lt;/b></data>
+				<data id="d4">&amp;amp;</data>
+				<data id="d5">&lt;/p></data>
+				<data id="d6">&lt;br/>
+				</data>
+				<data id="d7">&lt;img src="/images/logo.png"></data>
+				<data id="d8">&lt;script>console.log("protect");&lt;/script></data>
+				<data id="d9">&lt;em></data>
+			</originalData>
+			<segment>
+				<source>
+					<pc id="1" dataRefEnd="d5" dataRefStart="d1">Hello <pc id="2" dataRefEnd="d3" dataRefStart="d2">world</pc>
+						<ph id="3" dataRef="d4"/> more</pc>
+					<ph dataRef="d6" id="4" />
+					<ph dataRef="d7" id="5" />
+					<ph dataRef="d8" id="6" />
+					<sc id="7" isolated="yes" dataRef="d9"/>unclosed</source>
+				<target>
+					<pc id="1" dataRefEnd="d5" dataRefStart="d1">Hola <pc id="2" dataRefEnd="d3" dataRefStart="d2">mundo</pc>
+						<ph id="3" dataRef="d4"/> mas</pc>
+					<ph dataRef="d6" id="4" />
+					<ph dataRef="d7" id="5" />
+					<ph dataRef="d8" id="6" />
+					<sc id="7" isolated="yes" dataRef="d9"/>sin cerrar</target>
+			</segment>
+		</unit>
+		<unit id="DDMStructure_Text1gf6">
+			<segment>
+				<source>Some Text</source>
+				<target>Un poco de texto</target>
+			</segment>
+		</unit>
+		<unit id="DDMStructure_Double89452576">
+			<segment>
+				<source></source>
+				<target></target>
+			</segment>
+		</unit>
+		<unit id="DDMStructure_Integer2cc6">
+			<segment>
+				<source></source>
+				<target></target>
+			</segment>
+		</unit>
+	</file>
+</xliff>
