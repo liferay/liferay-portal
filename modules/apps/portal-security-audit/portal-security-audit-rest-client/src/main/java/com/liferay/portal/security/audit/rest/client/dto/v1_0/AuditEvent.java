@@ -133,6 +133,27 @@ public class AuditEvent implements Cloneable, Serializable {
 
 	protected String contextName;
 
+	public String getCorrelationId() {
+		return correlationId;
+	}
+
+	public void setCorrelationId(String correlationId) {
+		this.correlationId = correlationId;
+	}
+
+	public void setCorrelationId(
+		UnsafeSupplier<String, Exception> correlationIdUnsafeSupplier) {
+
+		try {
+			correlationId = correlationIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String correlationId;
+
 	public Creator getCreator() {
 		return creator;
 	}
@@ -259,6 +280,27 @@ public class AuditEvent implements Cloneable, Serializable {
 
 	protected Long groupId;
 
+	public String getHttpMethod() {
+		return httpMethod;
+	}
+
+	public void setHttpMethod(String httpMethod) {
+		this.httpMethod = httpMethod;
+	}
+
+	public void setHttpMethod(
+		UnsafeSupplier<String, Exception> httpMethodUnsafeSupplier) {
+
+		try {
+			httpMethod = httpMethodUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String httpMethod;
+
 	public Long getId() {
 		return id;
 	}
@@ -277,6 +319,132 @@ public class AuditEvent implements Cloneable, Serializable {
 	}
 
 	protected Long id;
+
+	public String getObjectName() {
+		return objectName;
+	}
+
+	public void setObjectName(String objectName) {
+		this.objectName = objectName;
+	}
+
+	public void setObjectName(
+		UnsafeSupplier<String, Exception> objectNameUnsafeSupplier) {
+
+		try {
+			objectName = objectNameUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String objectName;
+
+	public String getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
+	}
+
+	public void setRequestId(
+		UnsafeSupplier<String, Exception> requestIdUnsafeSupplier) {
+
+		try {
+			requestId = requestIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String requestId;
+
+	public Boolean getRequestIdGenerated() {
+		return requestIdGenerated;
+	}
+
+	public void setRequestIdGenerated(Boolean requestIdGenerated) {
+		this.requestIdGenerated = requestIdGenerated;
+	}
+
+	public void setRequestIdGenerated(
+		UnsafeSupplier<Boolean, Exception> requestIdGeneratedUnsafeSupplier) {
+
+		try {
+			requestIdGenerated = requestIdGeneratedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean requestIdGenerated;
+
+	public String getResourceAction() {
+		return resourceAction;
+	}
+
+	public void setResourceAction(String resourceAction) {
+		this.resourceAction = resourceAction;
+	}
+
+	public void setResourceAction(
+		UnsafeSupplier<String, Exception> resourceActionUnsafeSupplier) {
+
+		try {
+			resourceAction = resourceActionUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String resourceAction;
+
+	public String getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	public void setResourceType(
+		UnsafeSupplier<String, Exception> resourceTypeUnsafeSupplier) {
+
+		try {
+			resourceType = resourceTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String resourceType;
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+
+	public void setRoles(
+		UnsafeSupplier<String, Exception> rolesUnsafeSupplier) {
+
+		try {
+			roles = rolesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String roles;
 
 	public String getServerName() {
 		return serverName;
@@ -298,6 +466,27 @@ public class AuditEvent implements Cloneable, Serializable {
 	}
 
 	protected String serverName;
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+	}
+
+	public void setUserAgent(
+		UnsafeSupplier<String, Exception> userAgentUnsafeSupplier) {
+
+		try {
+			userAgent = userAgentUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String userAgent;
 
 	@Override
 	public AuditEvent clone() throws CloneNotSupportedException {
@@ -331,4 +520,4 @@ public class AuditEvent implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-198372379
+// LIFERAY-REST-BUILDER-HASH:-477295016

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Audit REST API
 Bundle-SymbolicName: com.liferay.portal.security.audit.rest.api
-Bundle-Version: 1.0.3
+Bundle-Version: 1.1.0
 Export-Package:\
 	com.liferay.portal.security.audit.rest.dto.v1_0,\
 	com.liferay.portal.security.audit.rest.resource.v1_0

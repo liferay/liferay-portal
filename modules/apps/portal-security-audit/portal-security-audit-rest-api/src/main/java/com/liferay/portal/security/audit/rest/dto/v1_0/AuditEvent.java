@@ -261,6 +261,47 @@ public class AuditEvent implements Serializable {
 	private Supplier<String> _contextNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public String getCorrelationId() {
+		if (_correlationIdSupplier != null) {
+			correlationId = _correlationIdSupplier.get();
+
+			_correlationIdSupplier = null;
+		}
+
+		return correlationId;
+	}
+
+	public void setCorrelationId(String correlationId) {
+		this.correlationId = correlationId;
+
+		_correlationIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCorrelationId(
+		UnsafeSupplier<String, Exception> correlationIdUnsafeSupplier) {
+
+		_correlationIdSupplier = () -> {
+			try {
+				return correlationIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String correlationId;
+
+	@JsonIgnore
+	private Supplier<String> _correlationIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
 	public Creator getCreator() {
 		if (_creatorSupplier != null) {
@@ -508,6 +549,47 @@ public class AuditEvent implements Serializable {
 	private Supplier<Long> _groupIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public String getHttpMethod() {
+		if (_httpMethodSupplier != null) {
+			httpMethod = _httpMethodSupplier.get();
+
+			_httpMethodSupplier = null;
+		}
+
+		return httpMethod;
+	}
+
+	public void setHttpMethod(String httpMethod) {
+		this.httpMethod = httpMethod;
+
+		_httpMethodSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setHttpMethod(
+		UnsafeSupplier<String, Exception> httpMethodUnsafeSupplier) {
+
+		_httpMethodSupplier = () -> {
+			try {
+				return httpMethodUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String httpMethod;
+
+	@JsonIgnore
+	private Supplier<String> _httpMethodSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -545,6 +627,252 @@ public class AuditEvent implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getObjectName() {
+		if (_objectNameSupplier != null) {
+			objectName = _objectNameSupplier.get();
+
+			_objectNameSupplier = null;
+		}
+
+		return objectName;
+	}
+
+	public void setObjectName(String objectName) {
+		this.objectName = objectName;
+
+		_objectNameSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setObjectName(
+		UnsafeSupplier<String, Exception> objectNameUnsafeSupplier) {
+
+		_objectNameSupplier = () -> {
+			try {
+				return objectNameUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String objectName;
+
+	@JsonIgnore
+	private Supplier<String> _objectNameSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getRequestId() {
+		if (_requestIdSupplier != null) {
+			requestId = _requestIdSupplier.get();
+
+			_requestIdSupplier = null;
+		}
+
+		return requestId;
+	}
+
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
+
+		_requestIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setRequestId(
+		UnsafeSupplier<String, Exception> requestIdUnsafeSupplier) {
+
+		_requestIdSupplier = () -> {
+			try {
+				return requestIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String requestId;
+
+	@JsonIgnore
+	private Supplier<String> _requestIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Boolean getRequestIdGenerated() {
+		if (_requestIdGeneratedSupplier != null) {
+			requestIdGenerated = _requestIdGeneratedSupplier.get();
+
+			_requestIdGeneratedSupplier = null;
+		}
+
+		return requestIdGenerated;
+	}
+
+	public void setRequestIdGenerated(Boolean requestIdGenerated) {
+		this.requestIdGenerated = requestIdGenerated;
+
+		_requestIdGeneratedSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setRequestIdGenerated(
+		UnsafeSupplier<Boolean, Exception> requestIdGeneratedUnsafeSupplier) {
+
+		_requestIdGeneratedSupplier = () -> {
+			try {
+				return requestIdGeneratedUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Boolean requestIdGenerated;
+
+	@JsonIgnore
+	private Supplier<Boolean> _requestIdGeneratedSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getResourceAction() {
+		if (_resourceActionSupplier != null) {
+			resourceAction = _resourceActionSupplier.get();
+
+			_resourceActionSupplier = null;
+		}
+
+		return resourceAction;
+	}
+
+	public void setResourceAction(String resourceAction) {
+		this.resourceAction = resourceAction;
+
+		_resourceActionSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setResourceAction(
+		UnsafeSupplier<String, Exception> resourceActionUnsafeSupplier) {
+
+		_resourceActionSupplier = () -> {
+			try {
+				return resourceActionUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String resourceAction;
+
+	@JsonIgnore
+	private Supplier<String> _resourceActionSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getResourceType() {
+		if (_resourceTypeSupplier != null) {
+			resourceType = _resourceTypeSupplier.get();
+
+			_resourceTypeSupplier = null;
+		}
+
+		return resourceType;
+	}
+
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
+
+		_resourceTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setResourceType(
+		UnsafeSupplier<String, Exception> resourceTypeUnsafeSupplier) {
+
+		_resourceTypeSupplier = () -> {
+			try {
+				return resourceTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String resourceType;
+
+	@JsonIgnore
+	private Supplier<String> _resourceTypeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getRoles() {
+		if (_rolesSupplier != null) {
+			roles = _rolesSupplier.get();
+
+			_rolesSupplier = null;
+		}
+
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+
+		_rolesSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setRoles(
+		UnsafeSupplier<String, Exception> rolesUnsafeSupplier) {
+
+		_rolesSupplier = () -> {
+			try {
+				return rolesUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String roles;
+
+	@JsonIgnore
+	private Supplier<String> _rolesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getServerName() {
@@ -586,6 +914,47 @@ public class AuditEvent implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _serverNameSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getUserAgent() {
+		if (_userAgentSupplier != null) {
+			userAgent = _userAgentSupplier.get();
+
+			_userAgentSupplier = null;
+		}
+
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+
+		_userAgentSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setUserAgent(
+		UnsafeSupplier<String, Exception> userAgentUnsafeSupplier) {
+
+		_userAgentSupplier = () -> {
+			try {
+				return userAgentUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String userAgent;
+
+	@JsonIgnore
+	private Supplier<String> _userAgentSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -689,6 +1058,22 @@ public class AuditEvent implements Serializable {
 			sb.append("\"");
 		}
 
+		String correlationId = getCorrelationId();
+
+		if (correlationId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"correlationId\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(correlationId));
+
+			sb.append("\"");
+		}
+
 		Creator creator = getCreator();
 
 		if (creator != null) {
@@ -773,6 +1158,22 @@ public class AuditEvent implements Serializable {
 			sb.append(groupId);
 		}
 
+		String httpMethod = getHttpMethod();
+
+		if (httpMethod != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"httpMethod\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(httpMethod));
+
+			sb.append("\"");
+		}
+
 		Long id = getId();
 
 		if (id != null) {
@@ -783,6 +1184,98 @@ public class AuditEvent implements Serializable {
 			sb.append("\"id\": ");
 
 			sb.append(id);
+		}
+
+		String objectName = getObjectName();
+
+		if (objectName != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"objectName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(objectName));
+
+			sb.append("\"");
+		}
+
+		String requestId = getRequestId();
+
+		if (requestId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"requestId\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(requestId));
+
+			sb.append("\"");
+		}
+
+		Boolean requestIdGenerated = getRequestIdGenerated();
+
+		if (requestIdGenerated != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"requestIdGenerated\": ");
+
+			sb.append(requestIdGenerated);
+		}
+
+		String resourceAction = getResourceAction();
+
+		if (resourceAction != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"resourceAction\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(resourceAction));
+
+			sb.append("\"");
+		}
+
+		String resourceType = getResourceType();
+
+		if (resourceType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"resourceType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(resourceType));
+
+			sb.append("\"");
+		}
+
+		String roles = getRoles();
+
+		if (roles != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"roles\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(roles));
+
+			sb.append("\"");
 		}
 
 		String serverName = getServerName();
@@ -797,6 +1290,22 @@ public class AuditEvent implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(serverName));
+
+			sb.append("\"");
+		}
+
+		String userAgent = getUserAgent();
+
+		if (userAgent != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userAgent\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(userAgent));
 
 			sb.append("\"");
 		}
@@ -902,4 +1411,4 @@ public class AuditEvent implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-547273746
+// LIFERAY-REST-BUILDER-HASH:227205051

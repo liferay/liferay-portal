@@ -177,9 +177,17 @@ public abstract class BaseAuditEventResourceTestCase {
 		auditEvent.setClientHost(regex);
 		auditEvent.setClientIP(regex);
 		auditEvent.setContextName(regex);
+		auditEvent.setCorrelationId(regex);
 		auditEvent.setEntityType(regex);
 		auditEvent.setEventType(regex);
+		auditEvent.setHttpMethod(regex);
+		auditEvent.setObjectName(regex);
+		auditEvent.setRequestId(regex);
+		auditEvent.setResourceAction(regex);
+		auditEvent.setResourceType(regex);
+		auditEvent.setRoles(regex);
 		auditEvent.setServerName(regex);
+		auditEvent.setUserAgent(regex);
 
 		String json = AuditEventSerDes.toJSON(auditEvent);
 
@@ -190,9 +198,17 @@ public abstract class BaseAuditEventResourceTestCase {
 		Assert.assertEquals(regex, auditEvent.getClientHost());
 		Assert.assertEquals(regex, auditEvent.getClientIP());
 		Assert.assertEquals(regex, auditEvent.getContextName());
+		Assert.assertEquals(regex, auditEvent.getCorrelationId());
 		Assert.assertEquals(regex, auditEvent.getEntityType());
 		Assert.assertEquals(regex, auditEvent.getEventType());
+		Assert.assertEquals(regex, auditEvent.getHttpMethod());
+		Assert.assertEquals(regex, auditEvent.getObjectName());
+		Assert.assertEquals(regex, auditEvent.getRequestId());
+		Assert.assertEquals(regex, auditEvent.getResourceAction());
+		Assert.assertEquals(regex, auditEvent.getResourceType());
+		Assert.assertEquals(regex, auditEvent.getRoles());
 		Assert.assertEquals(regex, auditEvent.getServerName());
+		Assert.assertEquals(regex, auditEvent.getUserAgent());
 	}
 
 	@Test
@@ -570,6 +586,14 @@ public abstract class BaseAuditEventResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("correlationId", additionalAssertFieldName)) {
+				if (auditEvent.getCorrelationId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (auditEvent.getCreator() == null) {
 					valid = false;
@@ -610,8 +634,74 @@ public abstract class BaseAuditEventResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("httpMethod", additionalAssertFieldName)) {
+				if (auditEvent.getHttpMethod() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("objectName", additionalAssertFieldName)) {
+				if (auditEvent.getObjectName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("requestId", additionalAssertFieldName)) {
+				if (auditEvent.getRequestId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"requestIdGenerated", additionalAssertFieldName)) {
+
+				if (auditEvent.getRequestIdGenerated() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("resourceAction", additionalAssertFieldName)) {
+				if (auditEvent.getResourceAction() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("resourceType", additionalAssertFieldName)) {
+				if (auditEvent.getResourceType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("roles", additionalAssertFieldName)) {
+				if (auditEvent.getRoles() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("serverName", additionalAssertFieldName)) {
 				if (auditEvent.getServerName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("userAgent", additionalAssertFieldName)) {
+				if (auditEvent.getUserAgent() == null) {
 					valid = false;
 				}
 
@@ -791,6 +881,17 @@ public abstract class BaseAuditEventResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("correlationId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getCorrelationId(),
+						auditEvent2.getCorrelationId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						auditEvent1.getCreator(), auditEvent2.getCreator())) {
@@ -854,9 +955,87 @@ public abstract class BaseAuditEventResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("httpMethod", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getHttpMethod(),
+						auditEvent2.getHttpMethod())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("id", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						auditEvent1.getId(), auditEvent2.getId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("objectName", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getObjectName(),
+						auditEvent2.getObjectName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("requestId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getRequestId(),
+						auditEvent2.getRequestId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"requestIdGenerated", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						auditEvent1.getRequestIdGenerated(),
+						auditEvent2.getRequestIdGenerated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("resourceAction", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getResourceAction(),
+						auditEvent2.getResourceAction())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("resourceType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getResourceType(),
+						auditEvent2.getResourceType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("roles", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getRoles(), auditEvent2.getRoles())) {
 
 					return false;
 				}
@@ -868,6 +1047,17 @@ public abstract class BaseAuditEventResourceTestCase {
 				if (!Objects.deepEquals(
 						auditEvent1.getServerName(),
 						auditEvent2.getServerName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("userAgent", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getUserAgent(),
+						auditEvent2.getUserAgent())) {
 
 					return false;
 				}
@@ -1130,6 +1320,52 @@ public abstract class BaseAuditEventResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("correlationId")) {
+			Object object = auditEvent.getCorrelationId();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("creator")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1266,13 +1502,340 @@ public abstract class BaseAuditEventResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("httpMethod")) {
+			Object object = auditEvent.getHttpMethod();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("id")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("objectName")) {
+			Object object = auditEvent.getObjectName();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("requestId")) {
+			Object object = auditEvent.getRequestId();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("requestIdGenerated")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("resourceAction")) {
+			Object object = auditEvent.getResourceAction();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("resourceType")) {
+			Object object = auditEvent.getResourceType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("roles")) {
+			Object object = auditEvent.getRoles();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("serverName")) {
 			Object object = auditEvent.getServerName();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("userAgent")) {
+			Object object = auditEvent.getUserAgent();
 
 			String value = String.valueOf(object);
 
@@ -1371,6 +1934,8 @@ public abstract class BaseAuditEventResourceTestCase {
 					RandomTestUtil.randomString());
 				contextName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				correlationId = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				dateCreated = RandomTestUtil.nextDate();
 				entityId = RandomTestUtil.randomLong();
 				entityType = StringUtil.toLowerCase(
@@ -1378,8 +1943,22 @@ public abstract class BaseAuditEventResourceTestCase {
 				eventType = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				groupId = RandomTestUtil.randomLong();
+				httpMethod = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
+				objectName = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				requestId = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				requestIdGenerated = RandomTestUtil.randomBoolean();
+				resourceAction = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				resourceType = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				roles = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				serverName = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				userAgent = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 			}
 		};
@@ -1606,4 +2185,4 @@ public abstract class BaseAuditEventResourceTestCase {
 			_auditEventResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1291666865
+// LIFERAY-REST-BUILDER-HASH:-1955357174
