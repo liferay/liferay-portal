@@ -88,7 +88,7 @@ public class AssetCategoryModelDocumentContributor
 			assetCategory.getTitleMap());
 
 		document.addNumber(
-			"assetChildCategoriesCount",
+			"childAssetCategoriesCount",
 			_assetCategoryLocalService.getChildCategoriesCount(
 				assetCategory.getCategoryId()));
 		document.addKeyword(

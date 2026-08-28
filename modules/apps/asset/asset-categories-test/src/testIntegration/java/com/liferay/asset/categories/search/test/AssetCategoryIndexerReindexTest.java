@@ -122,7 +122,7 @@ public class AssetCategoryIndexerReindexTest {
 		AssetCategory parentAssetCategory =
 			_assetCategoryFixture.createAssetCategory();
 
-		assertChildCategoriesCount(parentAssetCategory, "0");
+		_assertChildAssetCategoriesCount(parentAssetCategory, "0");
 
 		AssetCategory childAssetCategory = assetCategoryService.addCategory(
 			parentAssetCategory.getGroupId(),
@@ -134,7 +134,7 @@ public class AssetCategoryIndexerReindexTest {
 
 		_assetCategories.add(childAssetCategory);
 
-		assertChildCategoriesCount(parentAssetCategory, "1");
+		_assertChildAssetCategoriesCount(parentAssetCategory, "1");
 
 		AssetCategory newParentAssetCategory = assetCategoryService.addCategory(
 			parentAssetCategory.getGroupId(),
@@ -146,33 +146,33 @@ public class AssetCategoryIndexerReindexTest {
 
 		_assetCategories.add(newParentAssetCategory);
 
-		assertChildCategoriesCount(newParentAssetCategory, "0");
+		_assertChildAssetCategoriesCount(newParentAssetCategory, "0");
 
 		assetCategoryService.moveCategory(
 			childAssetCategory.getCategoryId(),
 			newParentAssetCategory.getCategoryId(),
 			childAssetCategory.getVocabularyId(), serviceContext);
 
-		assertChildCategoriesCount(parentAssetCategory, "0");
-		assertChildCategoriesCount(newParentAssetCategory, "1");
+		_assertChildAssetCategoriesCount(parentAssetCategory, "0");
+		_assertChildAssetCategoriesCount(newParentAssetCategory, "1");
 
 		assetCategoryService.deleteCategory(childAssetCategory.getCategoryId());
 
 		_assetCategories.remove(childAssetCategory);
 
-		assertChildCategoriesCount(newParentAssetCategory, "0");
+		_assertChildAssetCategoriesCount(newParentAssetCategory, "0");
 	}
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
-	protected void assertChildCategoriesCount(
-		AssetCategory assetCategory, String childCategoriesCount) {
+	private void _assertChildAssetCategoriesCount(
+		AssetCategory assetCategory, String childAssetCategoriesCount) {
 
 		assertFieldValues(
-			"assetChildCategoriesCount",
+			"childAssetCategoriesCount",
 			Collections.singletonMap(
-				"assetChildCategoriesCount", childCategoriesCount),
+				"childAssetCategoriesCount", childAssetCategoriesCount),
 			LocaleUtil.US, assetCategory.getName());
 	}
 

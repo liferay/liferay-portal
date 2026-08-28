@@ -42,7 +42,7 @@ public class CategoryEntityModel implements EntityModel {
 			new IntegerEntityField(
 				"numberOfTaxonomyCategories",
 				locale -> Field.getSortableFieldName(
-					"assetChildCategoriesCount")),
+					"childAssetCategoriesCount")),
 			new StringEntityField(
 				"externalReferenceCode", locale -> "externalReferenceCode"),
 			new StringEntityField(
