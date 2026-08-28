@@ -122,6 +122,58 @@ public class ElasticsearchIndexSearcherTest {
 			searchContext, Mockito.mock(Query.class));
 	}
 
+	@Test
+	public void testTrackTotalHitsLimit() {
+		_assertTrackTotalHitsLimit(null, 11000);
+	}
+
+	@Test
+	public void testTrackTotalHitsLimitAboveConnectorLimit() {
+		_assertTrackTotalHitsLimit(50000, 11000);
+	}
+
+	@Test
+	public void testTrackTotalHitsLimitBelowConnectorLimit() {
+		_assertTrackTotalHitsLimit(1000, 1000);
+	}
+
+	@Test
+	public void testTrackTotalHitsLimitZero() {
+		_assertTrackTotalHitsLimit(0, 0);
+	}
+
+	private void _assertTrackTotalHitsLimit(
+		Integer trackTotalHitsLimit, int expectedTrackTotalHitsLimit) {
+
+		Mockito.when(
+			_elasticsearchConfigurationWrapper.indexMaxResultWindow()
+		).thenReturn(
+			10000
+		);
+
+		Mockito.when(
+			_elasticsearchConfigurationWrapper.trackTotalHitsLimit()
+		).thenReturn(
+			11000
+		);
+
+		SearchContext searchContext = new SearchContext();
+
+		SearchRequest searchRequest = _searchRequestBuilderFactory.builder(
+			searchContext
+		).trackTotalHitsLimit(
+			trackTotalHitsLimit
+		).build();
+
+		SearchSearchRequest searchSearchRequest =
+			_elasticsearchIndexSearcher.createSearchSearchRequest(
+				searchRequest, searchContext, Mockito.mock(Query.class));
+
+		Assert.assertEquals(
+			Integer.valueOf(expectedTrackTotalHitsLimit),
+			searchSearchRequest.getTrackTotalHitsLimit());
+	}
+
 	private ElasticsearchIndexSearcher _createElasticsearchIndexSearcher(
 		IndexNameBuilder indexNameBuilder,
 		SearchRequestBuilderFactory searchRequestBuilderFactory) {

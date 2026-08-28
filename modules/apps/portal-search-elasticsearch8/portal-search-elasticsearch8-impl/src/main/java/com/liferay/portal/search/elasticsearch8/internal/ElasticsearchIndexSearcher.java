@@ -490,6 +490,17 @@ public class ElasticsearchIndexSearcher extends BaseIndexSearcher {
 		return _searchResponseBuilderFactory.builder(searchContext);
 	}
 
+	private Integer _getTrackTotalHitsLimit(Integer trackTotalHitsLimit) {
+		int connectorTrackTotalHitsLimit =
+			_elasticsearchConfigurationWrapper.trackTotalHitsLimit();
+
+		if (trackTotalHitsLimit == null) {
+			return connectorTrackTotalHitsLimit;
+		}
+
+		return Math.min(trackTotalHitsLimit, connectorTrackTotalHitsLimit);
+	}
+
 	private boolean _isEnableDeepPagination(long companyId) {
 		DeepPaginationConfiguration deepPaginationConfiguration =
 			_getDeepPaginationConfiguration(companyId);
@@ -544,7 +555,7 @@ public class ElasticsearchIndexSearcher extends BaseIndexSearcher {
 		baseSearchRequest.setRescores(searchRequest.getRescores());
 		baseSearchRequest.setStatsRequests(searchRequest.getStatsRequests());
 		baseSearchRequest.setTrackTotalHitsLimit(
-			_elasticsearchConfigurationWrapper.trackTotalHitsLimit());
+			_getTrackTotalHitsLimit(searchRequest.getTrackTotalHitsLimit()));
 
 		_setAggregations(baseSearchRequest, searchRequest);
 		_setConnectionId(baseSearchRequest, searchRequest);
