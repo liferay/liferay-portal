@@ -87,7 +87,6 @@ public class SecurityTest extends BaseClientTestCase {
 				).queryParam(
 					"response_type", "code"
 				)));
-
 		_assertThumbnailURLIsEscaped(_getConnectedApplicationPageBodyString());
 	}
 
