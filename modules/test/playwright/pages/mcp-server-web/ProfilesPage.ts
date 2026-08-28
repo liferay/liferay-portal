@@ -5,6 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {FDSTablePage} from './FDSTablePage';
 
 const MCP_SERVER_PORTLET_ID =
@@ -31,11 +32,39 @@ export class ProfilesPage extends FDSTablePage {
 		await this.waitForTable();
 	}
 
+	async gotoToolsTab(profileName: string) {
+		await this.goto();
+		await this.search(profileName);
+		await this.clickAction(profileName, 'Edit');
+		await this.toolsTabLink.click();
+
+		await this.addToolsButton.waitFor();
+	}
+
+	async openAddToolsModal() {
+		await clickAndExpectToBeVisible({
+			target: this.dialog,
+			trigger: this.addToolsButton,
+		});
+	}
+
 	get addMasksButton(): Locator {
-		return this.page.getByRole('button', {name: 'Add Masks'}).first();
+		return this.page
+			.locator('.management-bar')
+			.getByRole('button', {name: 'Add Masks'});
 	}
 
 	get addMasksSubmitButton(): Locator {
+		return this.dialog.getByRole('button', {exact: true, name: 'Add'});
+	}
+
+	get addToolsButton(): Locator {
+		return this.page
+			.locator('.management-bar')
+			.getByRole('button', {name: 'Add Tools'});
+	}
+
+	get addToolsSubmitButton(): Locator {
 		return this.dialog.getByRole('button', {exact: true, name: 'Add'});
 	}
 
@@ -48,7 +77,7 @@ export class ProfilesPage extends FDSTablePage {
 	}
 
 	maskTreeItem(name: string): Locator {
-		return this.dialog.getByRole('treeitem', {exact: true, name});
+		return this.treeItem(name);
 	}
 
 	get dataMasksTab(): Locator {
@@ -75,6 +104,44 @@ export class ProfilesPage extends FDSTablePage {
 
 	maskRow(name: string): Locator {
 		return this.masksRows.filter({hasText: name});
+	}
+
+	removeToolButton(name: string): Locator {
+		return this.rows
+			.filter({has: this.page.getByRole('cell', {exact: true, name})})
+			.getByLabel('Remove');
+	}
+
+	toolCheckbox(name: string): Locator {
+		return this.toolTreeItem(name).getByRole('checkbox');
+	}
+
+	toolSetCheckbox(name: string): Locator {
+		return this.toolSetTreeItem(name).getByRole('checkbox').first();
+	}
+
+	toolSetExpander(name: string): Locator {
+		return this.toolSetTreeItem(name).getByRole('button').first();
+	}
+
+	toolSetTreeItem(name: string): Locator {
+		return this.treeItem(name);
+	}
+
+	toolTreeItem(name: string): Locator {
+		return this.treeItem(name);
+	}
+
+	private treeItem(name: string): Locator {
+		return this.dialog.getByRole('treeitem', {exact: true, name});
+	}
+
+	get toolsTabButton(): Locator {
+		return this.page.getByRole('button', {exact: true, name: 'Tools'});
+	}
+
+	get toolsTabLink(): Locator {
+		return this.page.getByRole('link', {exact: true, name: 'Tools'});
 	}
 
 	get profileInfoTab(): Locator {
