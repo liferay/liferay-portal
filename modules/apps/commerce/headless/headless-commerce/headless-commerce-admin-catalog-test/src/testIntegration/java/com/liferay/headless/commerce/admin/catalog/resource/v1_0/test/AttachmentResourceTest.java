@@ -457,16 +457,13 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	private void _testGetProductByExternalReferenceCodeAttachmentsPageWithBinaries()
 		throws Exception {
 
-		String productExternalReferenceCode =
-			_cProduct.getExternalReferenceCode();
-
 		String base64EncodedContent = Base64.encode(
 			RandomTestUtil.randomBytes());
 
 		Attachment postAttachment =
 			attachmentResource.
 				postProductByExternalReferenceCodeAttachmentByBase64(
-					productExternalReferenceCode,
+					_cProduct.getExternalReferenceCode(),
 					new AttachmentBase64() {
 						{
 							attachment = base64EncodedContent;
@@ -491,7 +488,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 		Page<Attachment> attachmentsPage =
 			attachmentResource.getProductByExternalReferenceCodeAttachmentsPage(
-				productExternalReferenceCode, Pagination.of(1, 10));
+				_cProduct.getExternalReferenceCode(), Pagination.of(1, 10));
 
 		String getBase64EncodedContent = null;
 
