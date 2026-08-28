@@ -76,9 +76,6 @@ public class ExportPortalInstanceOperation extends BasePortalInstanceOperation {
 					return null;
 				}
 
-				String exportedPartitionName =
-					DBPartitionUtil.getExportedPartitionName(companyId);
-
 				Company company = _companyLocalService.exportCompany(companyId);
 
 				try {
@@ -93,6 +90,9 @@ public class ExportPortalInstanceOperation extends BasePortalInstanceOperation {
 					catch (Exception exception2) {
 						exception1.addSuppressed(exception2);
 					}
+
+					String exportedPartitionName =
+						DBPartitionUtil.getExportedPartitionName(companyId);
 
 					_log.error(
 						"Unable to export configurations to schema " +
