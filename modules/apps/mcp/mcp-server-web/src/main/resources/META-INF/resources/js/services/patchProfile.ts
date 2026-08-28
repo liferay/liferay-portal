@@ -8,8 +8,11 @@ import ApiHelper, {RequestResult} from './ApiHelper';
 import {PROFILES_URL} from './constants';
 
 export function patchProfile(
-	id: number,
+	externalReferenceCode: string,
 	payload: ProfilePayload
 ): Promise<RequestResult<Profile>> {
-	return ApiHelper.patch<Profile>(`${PROFILES_URL}/${id}`, payload);
+	return ApiHelper.patch<Profile>(
+		`${PROFILES_URL}/by-external-reference-code/${externalReferenceCode}`,
+		payload
+	);
 }

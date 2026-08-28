@@ -6,6 +6,10 @@
 import ApiHelper, {RequestResult} from './ApiHelper';
 import {PROFILES_URL} from './constants';
 
-export function deleteProfile(id: number): Promise<RequestResult<void>> {
-	return ApiHelper.del<void>(`${PROFILES_URL}/${id}`);
+export function deleteProfile(
+	externalReferenceCode: string
+): Promise<RequestResult<void>> {
+	return ApiHelper.del<void>(
+		`${PROFILES_URL}/by-external-reference-code/${externalReferenceCode}`
+	);
 }

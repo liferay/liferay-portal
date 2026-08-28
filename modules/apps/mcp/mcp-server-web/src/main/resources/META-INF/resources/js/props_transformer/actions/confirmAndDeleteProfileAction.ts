@@ -13,9 +13,9 @@ export default function confirmAndDeleteProfileAction({
 	itemData,
 	loadData,
 }: ProfileActionContext) {
-	const {id, name} = itemData;
+	const {externalReferenceCode, name} = itemData;
 
-	if (id === undefined) {
+	if (!externalReferenceCode) {
 		return;
 	}
 
@@ -45,7 +45,7 @@ export default function confirmAndDeleteProfileAction({
 				onClick: async ({processClose}: {processClose: () => void}) => {
 					processClose();
 
-					const {error} = await deleteProfile(id);
+					const {error} = await deleteProfile(externalReferenceCode);
 
 					if (error) {
 						openErrorToast(error);

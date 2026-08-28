@@ -7,6 +7,10 @@ import {Profile} from '../types';
 import ApiHelper, {RequestResult} from './ApiHelper';
 import {PROFILES_URL} from './constants';
 
-export function getProfile(id: number): Promise<RequestResult<Profile>> {
-	return ApiHelper.get<Profile>(`${PROFILES_URL}/${id}`);
+export function getProfile(
+	externalReferenceCode: string
+): Promise<RequestResult<Profile>> {
+	return ApiHelper.get<Profile>(
+		`${PROFILES_URL}/by-external-reference-code/${externalReferenceCode}`
+	);
 }

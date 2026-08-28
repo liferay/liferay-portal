@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.RenderRequest;
 
@@ -57,7 +58,7 @@ public class EditProfileDisplayContext {
 		).put(
 			"portletNamespace", _liferayPortletResponse.getNamespace()
 		).put(
-			"profileId", _getProfileId()
+			"profileERC", _getProfileERC()
 		).put(
 			"tab", getTab()
 		).build();
@@ -76,7 +77,7 @@ public class EditProfileDisplayContext {
 		).add(
 			navigationItem -> {
 				navigationItem.setActive(Objects.equals(tab, "data-masks"));
-				navigationItem.setDisabled(_getProfileId() == 0);
+				navigationItem.setDisabled(Validator.isNull(_getProfileERC()));
 				navigationItem.setHref(_getTabURL("data-masks"));
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "data-masks"));
@@ -85,23 +86,29 @@ public class EditProfileDisplayContext {
 	}
 
 	public String getTab() {
-		if (_getProfileId() == 0) {
+		if (Validator.isNull(_getProfileERC())) {
 			return "profile-info";
 		}
 
-		return ParamUtil.getString(_renderRequest, "tab", "profile-info");
+		String tab = ParamUtil.getString(_renderRequest, "tab");
+
+		if (Objects.equals(tab, "data-masks")) {
+			return tab;
+		}
+
+		return "profile-info";
 	}
 
 	public String getTitle() {
-		if (_getProfileId() > 0) {
+		if (Validator.isNotNull(_getProfileERC())) {
 			return LanguageUtil.get(_httpServletRequest, "edit-profile");
 		}
 
 		return LanguageUtil.get(_httpServletRequest, "new-profile");
 	}
 
-	private long _getProfileId() {
-		return ParamUtil.getLong(_renderRequest, "profileId");
+	private String _getProfileERC() {
+		return ParamUtil.getString(_renderRequest, "profileERC");
 	}
 
 	private String _getTabURL(String tab) {
@@ -110,7 +117,7 @@ public class EditProfileDisplayContext {
 		).setMVCRenderCommandName(
 			"/mcp_server/edit_profile"
 		).setParameter(
-			"profileId", _getProfileId()
+			"profileERC", _getProfileERC()
 		).setParameter(
 			"tab", tab
 		).buildString();

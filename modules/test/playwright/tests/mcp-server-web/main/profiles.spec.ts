@@ -308,7 +308,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 
 			// The form stays in place after the first save
 
-			await expect(profilesPage.page).toHaveURL(/profileId=/);
+			await expect(profilesPage.page).toHaveURL(/profileERC=/);
 			await expect(profilesPage.formHeading).toHaveText('Edit Profile');
 			await expect(profilesPage.dataMasksTabLink).toBeVisible();
 

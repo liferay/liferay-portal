@@ -60,7 +60,7 @@ public class ViewProfilesDisplayContext {
 				).setMVCRenderCommandName(
 					"/mcp_server/edit_profile"
 				).setParameter(
-					"profileId", "{id}"
+					"profileERC", "{externalReferenceCode}"
 				).buildString(),
 				"pencil", "edit", LanguageUtil.get(_httpServletRequest, "edit"),
 				"get", null, null),

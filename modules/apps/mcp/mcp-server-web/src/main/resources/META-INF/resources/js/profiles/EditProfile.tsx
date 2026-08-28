@@ -23,7 +23,7 @@ interface EditProfileProps {
 	backURL: string;
 	editProfileURL: string;
 	portletNamespace: string;
-	profileId: number;
+	profileERC: string;
 	tab: string;
 }
 
@@ -31,20 +31,20 @@ export default function EditProfile({
 	backURL,
 	editProfileURL,
 	portletNamespace,
-	profileId,
+	profileERC,
 	tab,
 }: EditProfileProps) {
-	const [loading, setLoading] = useState(profileId > 0);
+	const [loading, setLoading] = useState(Boolean(profileERC));
 	const [profile, setProfile] = useState<Profile | null>(null);
 
 	useEffect(() => {
-		if (!profileId || Number(profileId) <= 0) {
+		if (!profileERC) {
 			return;
 		}
 
 		let isMounted = true;
 
-		getProfile(profileId).then(({data, error}) => {
+		getProfile(profileERC).then(({data, error}) => {
 			if (!isMounted) {
 				return;
 			}
@@ -67,7 +67,7 @@ export default function EditProfile({
 		return () => {
 			isMounted = false;
 		};
-	}, [backURL, profileId]);
+	}, [backURL, profileERC]);
 
 	if (loading) {
 		return (
@@ -117,8 +117,8 @@ function EditProfileView({
 				tools: values.tools,
 			};
 
-			const {data: saved, error} = profile?.id
-				? await patchProfile(profile.id, payload)
+			const {data: saved, error} = profile?.externalReferenceCode
+				? await patchProfile(profile.externalReferenceCode, payload)
 				: await postProfile(payload);
 
 			if (error) {
@@ -135,15 +135,15 @@ function EditProfileView({
 					)
 				);
 
-				if (profile?.id) {
+				if (profile?.externalReferenceCode) {
 					navigate(backURL);
 				}
 				else {
 					const url = new URL(editProfileURL, window.location.origin);
 
 					url.searchParams.set(
-						`${portletNamespace}profileId`,
-						String(saved.id)
+						`${portletNamespace}profileERC`,
+						saved.externalReferenceCode ?? ''
 					);
 
 					navigate(url.toString());
