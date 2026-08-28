@@ -141,7 +141,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.mass.delete.MassDeleteCacheThreadLocal;
-import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -727,14 +726,6 @@ public class ObjectDefinitionLocalServiceImpl
 			_dropTable(objectDefinition.getLocalizationDBTableName());
 
 			undeployObjectDefinition(objectDefinition);
-
-			// undeployObjectDefinition calls _invalidatePortalCache which calls
-			// _classNameLocalService#getClassNameId
-
-			ClassName className = _classNameLocalService.getClassName(
-				objectDefinition.getClassName());
-
-			_classNameLocalService.deleteClassName(className);
 
 			_registerTransactionCallbackForCluster(
 				_undeployObjectDefinitionMethodKey, objectDefinition);

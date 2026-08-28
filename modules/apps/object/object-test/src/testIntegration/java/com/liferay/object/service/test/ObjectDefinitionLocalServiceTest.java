@@ -2659,7 +2659,7 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			objectDefinition.getObjectDefinitionId());
 
-		Assert.assertNull(
+		Assert.assertNotNull(
 			_classNameLocalService.fetchByClassNameId(
 				className.getClassNameId()));
 
