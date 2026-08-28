@@ -58,6 +58,10 @@ public class PortalInstanceExporterImplTest {
 			Collections.emptyMap()
 		);
 
+		_dbPartitionUtilMockedStatic.when(
+			() -> DBPartitionUtil.getExportedPartitionName(_COMPANY_ID_1)
+		).thenCallRealMethod();
+
 		ReflectionTestUtil.setFieldValue(
 			_portalInstanceExporterImpl, "_companyService", _companyService);
 		ReflectionTestUtil.setFieldValue(
