@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
+import com.liferay.headless.admin.site.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersionPageExperience;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
@@ -17,10 +18,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -65,7 +62,7 @@ public class PageSpecificationVersionDTOConverter
 						LocaleUtil.getSiteDefault()));
 				setPageSpecificationVersionPageExperiences(
 					() -> _toPageSpecificationVersionPageExperiences(
-						layoutContentVersion));
+						dtoConverterContext, layoutContentVersion));
 				setStatus(
 					() -> {
 						if (layoutContentVersion.getStatus() ==
@@ -84,6 +81,7 @@ public class PageSpecificationVersionDTOConverter
 
 	private PageSpecificationVersionPageExperience[]
 			_toPageSpecificationVersionPageExperiences(
+				DTOConverterContext dtoConverterContext,
 				LayoutContentVersion layoutContentVersion)
 		throws PortalException {
 
@@ -96,42 +94,28 @@ public class PageSpecificationVersionDTOConverter
 			return new PageSpecificationVersionPageExperience[0];
 		}
 
-		Map<String, List<String>> segmentsExperienceERCsLanguageIds =
+		dtoConverterContext.setAttribute(
+			"segmentsExperienceERCsLanguageIds",
 			_layoutContentVersionPreviewLocalService.
 				getSegmentsExperienceERCsLanguageIds(
-					layoutContentVersion.getLayoutContentVersionId());
+					layoutContentVersion.getLayoutContentVersionId()));
 
 		return TransformUtil.transform(
 			contentPageSpecification.getPageExperiences(),
-			pageExperience -> {
-				PageSpecificationVersionPageExperience
-					pageSpecificationVersionPageExperience =
-						new PageSpecificationVersionPageExperience();
-
-				pageSpecificationVersionPageExperience.
-					setAvailablePreviewLanguageIds(
-						() -> {
-							List<String> languageIds =
-								segmentsExperienceERCsLanguageIds.getOrDefault(
-									pageExperience.getExternalReferenceCode(),
-									Collections.emptyList());
-
-							return languageIds.toArray(new String[0]);
-						});
-				pageSpecificationVersionPageExperience.setExternalReferenceCode(
-					pageExperience::getExternalReferenceCode);
-				pageSpecificationVersionPageExperience.setName_i18n(
-					pageExperience::getName_i18n);
-				pageSpecificationVersionPageExperience.setPriority(
-					pageExperience::getPriority);
-
-				return pageSpecificationVersionPageExperience;
-			},
+			pageExperience ->
+				_pageSpecificationVersionPageExperienceDTOConverter.toDTO(
+					dtoConverterContext, pageExperience),
 			PageSpecificationVersionPageExperience.class);
 	}
 
 	@Reference
 	private LayoutContentVersionPreviewLocalService
 		_layoutContentVersionPreviewLocalService;
+
+	@Reference(
+		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.PageSpecificationVersionPageExperienceDTOConverter)"
+	)
+	private DTOConverter<PageExperience, PageSpecificationVersionPageExperience>
+		_pageSpecificationVersionPageExperienceDTOConverter;
 
 }
