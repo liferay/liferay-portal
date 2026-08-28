@@ -316,7 +316,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 			null);
 	}
 
-	private static final String _KEY = "test-attachment-download";
+	private static final String _KEY = RandomTestUtil.randomString();
 
 	private AtomicInteger _executionCount;
 	private ObjectAction _objectAction;
