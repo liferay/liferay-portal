@@ -2006,6 +2006,8 @@ public class WebServerServlet extends HttpServlet {
 			return;
 		}
 
+		MessageBus messageBus = _messageBusSnapshot.get();
+
 		Message message = new Message();
 
 		message.put("companyId", fileEntry.getCompanyId());
@@ -2027,8 +2029,6 @@ public class WebServerServlet extends HttpServlet {
 			ParamUtil.getString(
 				httpServletRequest, "objectFieldExternalReferenceCode"));
 		message.put("userId", user.getUserId());
-
-		MessageBus messageBus = _messageBusSnapshot.get();
 
 		messageBus.sendMessage(
 			DestinationNames.OBJECT_ENTRY_ATTACHMENT_DOWNLOAD, message);
