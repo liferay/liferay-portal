@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US,es_ES" default-locale="en_US">
+	<dynamic-element index-type="text" instance-id="gxjr" name="HTML4acl" type="text_area">
+		<dynamic-content language-id="en_US"><![CDATA[<p class="intro">Hello <b>world</b> &amp; more</p><br/><img src="/images/logo.png"><script>console.log("protect");</script><em>unclosed]]></dynamic-content>
+		<dynamic-content language-id="es_ES"><![CDATA[<p class="intro">Hola <b>mundo</b> &amp; mas</p><br/><img src="/images/logo.png"><script>console.log("protect");</script><em>sin cerrar]]></dynamic-content>
+	</dynamic-element>
+	<dynamic-element index-type="keyword" instance-id="kfce" name="Text1gf6" type="text">
+		<dynamic-content language-id="en_US"><![CDATA[Some Text]]></dynamic-content>
+		<dynamic-content language-id="es_ES"><![CDATA[Un poco de texto]]></dynamic-content>
+	</dynamic-element>
+</root>
