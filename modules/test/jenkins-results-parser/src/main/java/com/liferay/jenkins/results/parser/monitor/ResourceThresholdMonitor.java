@@ -65,10 +65,10 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 
 	@Override
 	public MonitorResult execute() {
+		Double value = null;
+
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
-
-		Double value = null;
 
 		try {
 			value = _getValue();

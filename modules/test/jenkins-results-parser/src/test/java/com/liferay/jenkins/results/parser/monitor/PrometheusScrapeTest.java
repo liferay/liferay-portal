@@ -69,10 +69,10 @@ public class PrometheusScrapeTest
 			garbageName + " line that is not a sample @@@@");
 
 		_testGetValue(scrape, null, "label", label + "x", name);
-		_testGetValue(scrape, null, "label", label, commentedName);
-		_testGetValue(scrape, null, "label", label, garbageName);
 		_testGetValue(
 			scrape, null, "label", label, MonitorTestUtil.newMetricName());
+		_testGetValue(scrape, null, "label", label, commentedName);
+		_testGetValue(scrape, null, "label", label, garbageName);
 	}
 
 	@Test

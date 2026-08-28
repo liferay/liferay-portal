@@ -36,9 +36,9 @@ public class ResourceThresholdMonitorTest
 	@Test
 	public void testExecuteCapacityBound() throws Exception {
 		_testExecuteCapacityBound(
-			"1.125899906842624E15", MonitorResult.Status.UNKNOWN);
-		_testExecuteCapacityBound(
 			"1.125899906842623E15", MonitorResult.Status.OK);
+		_testExecuteCapacityBound(
+			"1.125899906842624E15", MonitorResult.Status.UNKNOWN);
 	}
 
 	@Test
@@ -62,9 +62,9 @@ public class ResourceThresholdMonitorTest
 		String message = monitorResult.getMessage();
 
 		Assert.assertTrue(message, message.contains("52.2%"));
+		Assert.assertTrue(message, message.contains("within its thresholds"));
 		Assert.assertTrue(
 			message, message.contains(MonitorTestUtil.FILE_STORE));
-		Assert.assertTrue(message, message.contains("within its thresholds"));
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class ResourceThresholdMonitorTest
 
 		monitorProperties.setProperty("monitor[a].threshold[warn]", "1");
 
-		_testUnknown(monitorProperties);
+		_assertUnknown(monitorProperties);
 	}
 
 	@Test
@@ -106,15 +106,6 @@ public class ResourceThresholdMonitorTest
 	}
 
 	@Test
-	public void testExecuteInvertedThresholds() throws Exception {
-		_testExecuteThresholds("50", MonitorResult.Status.OK, "40.0", "80");
-		_testExecuteThresholds(
-			"50", MonitorResult.Status.CRITICAL, "60.0", "80");
-		_testExecuteThresholds(
-			"50", MonitorResult.Status.CRITICAL, "90.0", "80");
-	}
-
-	@Test
 	public void testExecuteMetricAbsent() throws Exception {
 		Properties monitorProperties = _newScrapeProperties(
 			"queue.depth",
@@ -126,14 +117,14 @@ public class ResourceThresholdMonitorTest
 
 		monitorProperties.setProperty("monitor[a].threshold[warn]", "25");
 
-		_testUnknown(monitorProperties);
+		_assertUnknown(monitorProperties);
 	}
 
 	@Test
 	public void testExecuteMetricAbsentPartial() throws Exception {
 		String label = RandomTestUtil.randomString();
 
-		_testUnknownWithThreshold(
+		_assertUnknownWithThreshold(
 			_newScrapeProperties(
 				"disk",
 				MonitorTestUtil.newScrape(
@@ -142,7 +133,7 @@ public class ResourceThresholdMonitorTest
 						"default_jenkins_file_store_capacity_bytes",
 						"7.7849452544E10")),
 				"file.store", MonitorTestUtil.FILE_STORE));
-		_testUnknownWithThreshold(
+		_assertUnknownWithThreshold(
 			_newScrapeProperties(
 				"executor.utilization",
 				MonitorTestUtil.newScrape(
@@ -238,11 +229,10 @@ public class ResourceThresholdMonitorTest
 
 	@Test
 	public void testExecuteRAMUnavailable() throws Exception {
-		_testExecuteRAMUnavailable("");
-		_testExecuteRAMUnavailable(MonitorTestUtil.newScrape("MemTotal: 8 kB"));
-		_testExecuteRAMUnavailable(
-			MonitorTestUtil.newScrape("MemAvailable: 8 kB"));
-		_testExecuteRAMUnavailable(RandomTestUtil.randomString());
+		_assertRAMUnavailable("");
+		_assertRAMUnavailable(MonitorTestUtil.newScrape("MemAvailable: 8 kB"));
+		_assertRAMUnavailable(MonitorTestUtil.newScrape("MemTotal: 8 kB"));
+		_assertRAMUnavailable(RandomTestUtil.randomString());
 	}
 
 	@Test
@@ -280,19 +270,27 @@ public class ResourceThresholdMonitorTest
 
 	@Test
 	public void testExecuteThresholds() throws Exception {
-		_testExecuteThresholds("90", MonitorResult.Status.OK, "20.0", "80");
-		_testExecuteThresholds("90", MonitorResult.Status.OK, "79.0", "80");
-		_testExecuteThresholds("90", MonitorResult.Status.WARN, "80.0", "80");
-		_testExecuteThresholds("90", MonitorResult.Status.WARN, "89.0", "80");
 		_testExecuteThresholds(
 			"90", MonitorResult.Status.CRITICAL, "90.0", "80");
 		_testExecuteThresholds(
-			"90", MonitorResult.Status.CRITICAL, "99.0", "80");
-
-		_testExecuteThresholds("90", MonitorResult.Status.OK, "85.0", null);
-		_testExecuteThresholds(
 			"90", MonitorResult.Status.CRITICAL, "95.0", null);
+		_testExecuteThresholds(
+			"90", MonitorResult.Status.CRITICAL, "99.0", "80");
+		_testExecuteThresholds("90", MonitorResult.Status.OK, "20.0", "80");
+		_testExecuteThresholds("90", MonitorResult.Status.OK, "79.0", "80");
+		_testExecuteThresholds("90", MonitorResult.Status.OK, "85.0", null);
+		_testExecuteThresholds("90", MonitorResult.Status.WARN, "80.0", "80");
+		_testExecuteThresholds("90", MonitorResult.Status.WARN, "89.0", "80");
 		_testExecuteThresholds(null, MonitorResult.Status.WARN, "95.0", "80");
+	}
+
+	@Test
+	public void testExecuteThresholdsInverted() throws Exception {
+		_testExecuteThresholds(
+			"50", MonitorResult.Status.CRITICAL, "60.0", "80");
+		_testExecuteThresholds(
+			"50", MonitorResult.Status.CRITICAL, "90.0", "80");
+		_testExecuteThresholds("50", MonitorResult.Status.OK, "40.0", "80");
 	}
 
 	@Test
@@ -318,9 +316,14 @@ public class ResourceThresholdMonitorTest
 
 	@Test
 	public void testExecuteZeroDenominator() throws Exception {
+		_assertUnknownWithThreshold(
+			_newScrapeProperties(
+				"disk", _newFileStoreScrape("0.0", "0.0"), "file.store",
+				MonitorTestUtil.FILE_STORE));
+
 		String label = RandomTestUtil.randomString();
 
-		_testUnknownWithThreshold(
+		_assertUnknownWithThreshold(
 			_newScrapeProperties(
 				"executor.utilization",
 				MonitorTestUtil.newScrape(
@@ -332,51 +335,42 @@ public class ResourceThresholdMonitorTest
 						"0.0")),
 				"label", label));
 
-		_testUnknownWithThreshold(
-			_newScrapeProperties(
-				"disk", _newFileStoreScrape("0.0", "0.0"), "file.store",
-				MonitorTestUtil.FILE_STORE));
-
-		_testExecuteRAMUnavailable(MonitorTestUtil.newMemoryInfo(0L, 0L));
+		_assertRAMUnavailable(MonitorTestUtil.newMemoryInfo(0L, 0L));
 	}
 
 	@Test
-	public void testResourceThresholdMonitorInvalidMetric() {
-		_testResourceThresholdMonitorInvalidProperty(
-			"metric", RandomTestUtil.randomString());
-		_testResourceThresholdMonitorInvalidProperty("metric", "");
+	public void testNewMonitorInvalidMetric() {
+		_testNewMonitorInvalidMetric("");
+		_testNewMonitorInvalidMetric(RandomTestUtil.randomString());
 	}
 
 	@Test
-	public void testResourceThresholdMonitorInvalidThreshold() {
-		_testResourceThresholdMonitorInvalidThreshold("critical", "-1");
-		_testResourceThresholdMonitorInvalidThreshold(
+	public void testNewMonitorInvalidThreshold() {
+		_testNewMonitorInvalidThreshold("critical", "-1");
+		_testNewMonitorInvalidThreshold(
 			"critical", RandomTestUtil.randomString());
-		_testResourceThresholdMonitorInvalidThreshold("warn", "-1");
-		_testResourceThresholdMonitorInvalidThreshold(
-			"warn", RandomTestUtil.randomString());
+		_testNewMonitorInvalidThreshold("warn", "-1");
+		_testNewMonitorInvalidThreshold("warn", RandomTestUtil.randomString());
 	}
 
 	@Test
-	public void testResourceThresholdMonitorMissingProperty() {
-		_testResourceThresholdMonitorMissingProperty("disk", "file.store");
-		_testResourceThresholdMonitorMissingProperty(
-			"executor.utilization", "label");
-		_testResourceThresholdMonitorMissingProperty("queue.depth", "label");
-		_testResourceThresholdMonitorMissingProperty("ram", "master.name");
+	public void testNewMonitorMissingProperty() {
+		_testNewMonitorMissingProperty("disk", "file.store");
+		_testNewMonitorMissingProperty("executor.utilization", "label");
+		_testNewMonitorMissingProperty("queue.depth", "label");
+		_testNewMonitorMissingProperty("ram", "master.name");
 	}
 
 	@Test
-	public void testResourceThresholdMonitorMissingThresholds() {
+	public void testNewMonitorMissingThresholds() {
 		Properties monitorProperties = _newMonitorProperties(
 			MonitorTestUtil.newJenkinsMasterName(), "ram");
 
-		_testResourceThresholdMonitorExpectedIllegalArgumentException(
-			monitorProperties);
+		_testNewMonitorExpectedIllegalArgumentException(monitorProperties);
 	}
 
 	@Test
-	public void testResourceThresholdMonitorMissingThresholdsMessage() {
+	public void testNewMonitorMissingThresholdsMessage() {
 		Properties monitorProperties = _newMonitorProperties(
 			MonitorTestUtil.newJenkinsMasterName(), "ram");
 
@@ -393,6 +387,40 @@ public class ResourceThresholdMonitorTest
 			Assert.assertTrue(
 				message, message.contains("monitor[a].threshold[warn]"));
 		}
+	}
+
+	private void _assertRAMUnavailable(String memoryInfo) throws Exception {
+		_mockMemoryInfo(memoryInfo);
+
+		String masterName = MonitorTestUtil.newJenkinsMasterName();
+
+		Properties monitorProperties = _newMonitorProperties(masterName, "ram");
+
+		monitorProperties.setProperty("monitor[a].threshold[warn]", "50");
+
+		_assertUnknown(monitorProperties);
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(
+			"Unable to determine the RAM metric for " + masterName,
+			monitorResult.getMessage());
+	}
+
+	private void _assertUnknown(Properties monitorProperties) {
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		Assert.assertTrue(metrics.isEmpty());
+	}
+
+	private void _assertUnknownWithThreshold(Properties monitorProperties) {
+		monitorProperties.setProperty("monitor[a].threshold[warn]", "50");
+
+		_assertUnknown(monitorProperties);
 	}
 
 	private MonitorResult _execute(Properties monitorProperties) {
@@ -494,26 +522,6 @@ public class ResourceThresholdMonitorTest
 		Assert.assertTrue(ram, ram.startsWith(expectedValue));
 	}
 
-	private void _testExecuteRAMUnavailable(String memoryInfo)
-		throws Exception {
-
-		_mockMemoryInfo(memoryInfo);
-
-		String masterName = MonitorTestUtil.newJenkinsMasterName();
-
-		Properties monitorProperties = _newMonitorProperties(masterName, "ram");
-
-		monitorProperties.setProperty("monitor[a].threshold[warn]", "50");
-
-		_testUnknown(monitorProperties);
-
-		MonitorResult monitorResult = _execute(monitorProperties);
-
-		testEquals(
-			"Unable to determine the RAM metric for " + masterName,
-			monitorResult.getMessage());
-	}
-
 	private void _testExecuteThresholds(
 			String criticalThreshold, MonitorResult.Status expectedStatus,
 			String value, String warnThreshold)
@@ -544,7 +552,7 @@ public class ResourceThresholdMonitorTest
 		testEquals(expectedStatus, monitorResult.getStatus());
 	}
 
-	private void _testResourceThresholdMonitorExpectedIllegalArgumentException(
+	private void _testNewMonitorExpectedIllegalArgumentException(
 		Properties monitorProperties) {
 
 		try {
@@ -556,60 +564,34 @@ public class ResourceThresholdMonitorTest
 		}
 	}
 
-	private void _testResourceThresholdMonitorInvalidProperty(
-		String name, String value) {
-
+	private void _testNewMonitorInvalidMetric(String value) {
 		Properties monitorProperties = _newMonitorProperties(
 			MonitorTestUtil.newJenkinsMasterName(), "ram");
 
-		monitorProperties.setProperty(
-			"monitor[a].parameter[" + name + "]", value);
+		monitorProperties.setProperty("monitor[a].parameter[metric]", value);
 		monitorProperties.setProperty("monitor[a].threshold[warn]", "80");
 
-		_testResourceThresholdMonitorExpectedIllegalArgumentException(
-			monitorProperties);
+		_testNewMonitorExpectedIllegalArgumentException(monitorProperties);
 	}
 
-	private void _testResourceThresholdMonitorInvalidThreshold(
-		String name, String value) {
-
+	private void _testNewMonitorInvalidThreshold(String name, String value) {
 		Properties monitorProperties = _newMonitorProperties(
 			MonitorTestUtil.newJenkinsMasterName(), "ram");
 
 		monitorProperties.setProperty(
 			"monitor[a].threshold[" + name + "]", value);
 
-		_testResourceThresholdMonitorExpectedIllegalArgumentException(
-			monitorProperties);
+		_testNewMonitorExpectedIllegalArgumentException(monitorProperties);
 	}
 
-	private void _testResourceThresholdMonitorMissingProperty(
-		String metric, String name) {
-
+	private void _testNewMonitorMissingProperty(String metric, String name) {
 		Properties monitorProperties = _newMonitorProperties(
 			MonitorTestUtil.newJenkinsMasterName(), metric);
 
 		monitorProperties.remove("monitor[a].parameter[" + name + "]");
 		monitorProperties.setProperty("monitor[a].threshold[warn]", "80");
 
-		_testResourceThresholdMonitorExpectedIllegalArgumentException(
-			monitorProperties);
-	}
-
-	private void _testUnknown(Properties monitorProperties) {
-		MonitorResult monitorResult = _execute(monitorProperties);
-
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
-
-		Map<String, String> metrics = monitorResult.getMetrics();
-
-		Assert.assertTrue(metrics.isEmpty());
-	}
-
-	private void _testUnknownWithThreshold(Properties monitorProperties) {
-		monitorProperties.setProperty("monitor[a].threshold[warn]", "50");
-
-		_testUnknown(monitorProperties);
+		_testNewMonitorExpectedIllegalArgumentException(monitorProperties);
 	}
 
 }
