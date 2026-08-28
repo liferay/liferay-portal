@@ -45,6 +45,13 @@ public class ToolSetResourceTest extends BaseToolSetResourceTestCase {
 		_assertToolSet(
 			toolSet -> Objects.equals(
 				"c-" + restContextPath.substring(3), toolSet.getName()));
+
+		_assertToolSet(
+			toolSet -> Objects.equals(
+				toolSet.getName(), "headless-commerce-admin-pricing-v1.0"));
+		_assertToolSet(
+			toolSet -> Objects.equals(
+				toolSet.getName(), "headless-commerce-admin-pricing-v2.0"));
 	}
 
 	private void _assertToolSet(Predicate<ToolSet> predicate) throws Exception {
