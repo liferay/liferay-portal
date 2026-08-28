@@ -26,7 +26,7 @@ tests:
                     value: 8737
             -   equal:
                     path: spec.source.helm.valuesObject.executor.image.tag
-                    value: v4.0.4-nonroot
+                    value: v4.1.2-nonroot
         documentSelector:
             path: metadata.name
             value: argo-workflows

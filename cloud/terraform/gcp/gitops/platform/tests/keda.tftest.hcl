@@ -39,7 +39,7 @@ run "should_install_keda_when_enabled" {
 	}
 }
 variables {
-	argo_workflows_helm_chart_version="1.0.10"
+	argo_workflows_helm_chart_version="2.0.3"
 	argocd_helm_chart_version="9.5.16"
 	crossplane_helm_chart_version="2.1.3"
 	deployment_name="liferay-test"

@@ -108,7 +108,7 @@ operatorApplications:
         name: argo-workflows
         namespace: argo-workflows-system
         repoURL: https://argoproj.github.io/argo-helm
-        targetRevision: 1.0.10
+        targetRevision: 2.0.3
         values:
             controller:
                 resources:
@@ -126,7 +126,7 @@ operatorApplications:
                                 type: RuntimeDefault
             executor:
                 image:
-                    tag: v4.0.4-nonroot
+                    tag: v4.1.2-nonroot
                 securityContext:
                     allowPrivilegeEscalation: false
                     capabilities:
