@@ -124,25 +124,20 @@ export default function ({
 			setBannerVisibility(cookieBanner, modifiedDate);
 		}
 
-		const cookiePreferences = {};
+		// Reading a consent cookie writes back the preference the user stored
+		// in a previous session when it is missing from the browser
 
 		optionalConsentCookieTypeNames.forEach(
 			(optionalConsentCookieTypeName) => {
-				cookiePreferences[optionalConsentCookieTypeName] =
-					getCookie(optionalConsentCookieTypeName) || 'false';
+				getCookie(optionalConsentCookieTypeName);
 			}
 		);
 
 		requiredConsentCookieTypeNames.forEach(
 			(requiredConsentCookieTypeName) => {
-				cookiePreferences[requiredConsentCookieTypeName] =
-					getCookie(requiredConsentCookieTypeName) || 'true';
+				getCookie(requiredConsentCookieTypeName);
 			}
 		);
-
-		Liferay.on('cookiePreferenceUpdate', (event) => {
-			cookiePreferences[event.key] = event.value;
-		});
 
 		Liferay.on('storeCookiesConsentPreferenceUpdate', (event) => {
 			storeConsentCheckbox.checked = event.value;
@@ -183,6 +178,22 @@ export default function ({
 			dissentRenewalPeriodTimeUnit = consentRenewalPeriodTimeUnit;
 		}
 
+		let configurationIframeWindow;
+
+		const configurationNamespacePrefix = `_${configurationNamespace}_`;
+
+		const getConfigurationToggleSwitches = () =>
+			Array.from(
+				configurationIframeWindow?.document.querySelectorAll(
+					`#${configurationNamespacePrefix}cookiesBannerConfigurationForm [data-cookie-key]`
+				) || []
+			);
+
+		const isConfigurationStoreConsentChecked = () =>
+			configurationIframeWindow?.document.getElementById(
+				`${configurationNamespacePrefix}storeConsent`
+			)?.checked;
+
 		openCookieConsentModal = ({
 			alertDisplayType,
 			alertMessage,
@@ -192,11 +203,11 @@ export default function ({
 			let url = configurationURL;
 
 			if (alertDisplayType) {
-				url = `${url}&_${configurationNamespace}_alertDisplayType=${alertDisplayType}`;
+				url = `${url}&${configurationNamespacePrefix}alertDisplayType=${alertDisplayType}`;
 			}
 
 			if (alertMessage) {
-				url = `${url}&_${configurationNamespace}_alertMessage=${alertMessage}`;
+				url = `${url}&${configurationNamespacePrefix}alertMessage=${alertMessage}`;
 			}
 
 			openModal({
@@ -212,6 +223,9 @@ export default function ({
 								return;
 							}
 
+							const storeConsent =
+								isConfigurationStoreConsentChecked();
+
 							declineAllCookies(
 								consentRenewalPeriod,
 								consentRenewalPeriodTimeUnit,
@@ -219,12 +233,12 @@ export default function ({
 								dissentRenewalPeriodTimeUnit,
 								optionalConsentCookieTypeNames,
 								requiredConsentCookieTypeNames,
-								storeConsentCheckbox?.checked
+								storeConsent
 							);
 
 							setUserConfigCookie(
 								consentRenewalPeriod,
-								storeConsentCheckbox?.checked,
+								storeConsent,
 								consentRenewalPeriodTimeUnit
 							);
 
@@ -237,26 +251,33 @@ export default function ({
 						displayType: 'secondary',
 						label: Liferay.Language.get('accept-selected'),
 						onClick() {
-							if (previewMode) {
+
+							// Wait for the consent panel to render, otherwise
+							// there is no selection to save
+
+							if (previewMode || !configurationIframeWindow) {
 								return;
 							}
 
-							Object.entries(cookiePreferences).forEach(
-								([key, value]) => {
+							const storeConsent =
+								isConfigurationStoreConsentChecked();
+
+							getConfigurationToggleSwitches().forEach(
+								(toggleSwitch) => {
 									let renewalPeriod = consentRenewalPeriod;
 									let timeUnit = consentRenewalPeriodTimeUnit;
 
-									if (value !== 'true') {
+									if (!toggleSwitch.checked) {
 										renewalPeriod = dissentRenewalPeriod;
 										timeUnit = dissentRenewalPeriodTimeUnit;
 									}
 
 									setCookie(
 										renewalPeriod,
-										key,
-										storeConsentCheckbox?.checked,
+										toggleSwitch.dataset.cookieKey,
+										storeConsent,
 										timeUnit,
-										value
+										toggleSwitch.checked ? 'true' : 'false'
 									);
 								}
 							);
@@ -266,7 +287,7 @@ export default function ({
 									setCookie(
 										consentRenewalPeriod,
 										requiredConsentCookieTypeName,
-										storeConsentCheckbox?.checked,
+										storeConsent,
 										consentRenewalPeriodTimeUnit,
 										'true'
 									);
@@ -275,7 +296,7 @@ export default function ({
 
 							setUserConfigCookie(
 								consentRenewalPeriod,
-								storeConsentCheckbox?.checked,
+								storeConsent,
 								consentRenewalPeriodTimeUnit
 							);
 
@@ -292,17 +313,20 @@ export default function ({
 								return;
 							}
 
+							const storeConsent =
+								isConfigurationStoreConsentChecked();
+
 							acceptAllCookies(
 								consentRenewalPeriod,
 								optionalConsentCookieTypeNames,
 								requiredConsentCookieTypeNames,
-								storeConsentCheckbox?.checked,
+								storeConsent,
 								consentRenewalPeriodTimeUnit
 							);
 
 							setUserConfigCookie(
 								consentRenewalPeriod,
-								storeConsentCheckbox?.checked,
+								storeConsent,
 								consentRenewalPeriodTimeUnit
 							);
 
@@ -317,6 +341,9 @@ export default function ({
 				id: 'cookiesBannerConfiguration',
 				iframeBodyCssClass: '',
 				onClose: onCloseFunction || undefined,
+				onOpen: ({iframeWindow}) => {
+					configurationIframeWindow = iframeWindow;
+				},
 				size: 'lg',
 				title: customTitle || title,
 				url,
