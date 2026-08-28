@@ -39,16 +39,16 @@ public class CTEntryDTOConverterTest {
 
 	@Before
 	public void setUp() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			_ctEntryDTOConverter, "_indexerRegistry", _indexerRegistry);
+		ReflectionTestUtil.setFieldValue(
+			_ctEntryDTOConverter, "_language", Mockito.mock(Language.class));
+
 		Mockito.when(
 			_serviceBuilderCTEntry.getCtEntryId()
 		).thenReturn(
 			RandomTestUtil.randomLong()
 		);
-
-		ReflectionTestUtil.setFieldValue(
-			_ctEntryDTOConverter, "_indexerRegistry", _indexerRegistry);
-		ReflectionTestUtil.setFieldValue(
-			_ctEntryDTOConverter, "_language", Mockito.mock(Language.class));
 	}
 
 	@Test
