@@ -101,13 +101,11 @@ function ProfileForm({
 		initialValues: {
 			description: profile?.description ?? '',
 			name: profile?.name ?? '',
-			tools: profile?.tools ?? '',
 		},
 		onSubmit: async (values) => {
 			const payload: ProfilePayload = {
 				description: values.description,
 				name: values.name,
-				tools: values.tools,
 			};
 
 			const {data: saved, error} = profile?.externalReferenceCode
@@ -175,14 +173,6 @@ function ProfileForm({
 						id="profileDescription"
 						label={Liferay.Language.get('description')}
 						name="description"
-						required
-					/>
-
-					<FormField
-						component="textarea"
-						id="profileTools"
-						label={Liferay.Language.get('tools')}
-						name="tools"
 						required
 					/>
 				</FormSection>

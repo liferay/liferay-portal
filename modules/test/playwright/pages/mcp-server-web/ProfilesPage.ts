@@ -95,10 +95,6 @@ export class ProfilesPage extends FDSTablePage {
 		return this.page.locator('#profileDescription');
 	}
 
-	get toolsInput(): Locator {
-		return this.page.locator('#profileTools');
-	}
-
 	get saveButton(): Locator {
 		return this.page.getByRole('button', {name: 'Save'});
 	}

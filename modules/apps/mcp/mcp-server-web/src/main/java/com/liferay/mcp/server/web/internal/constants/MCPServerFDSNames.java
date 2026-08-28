@@ -13,6 +13,9 @@ public class MCPServerFDSNames {
 	public static final String DATA_MASKS =
 		MCPServerPortletKeys.MCP_SERVER + "-dataMasks";
 
+	public static final String PROFILE_TOOLS =
+		MCPServerPortletKeys.MCP_SERVER + "-profileTools";
+
 	public static final String PROFILES =
 		MCPServerPortletKeys.MCP_SERVER + "-profiles";
 

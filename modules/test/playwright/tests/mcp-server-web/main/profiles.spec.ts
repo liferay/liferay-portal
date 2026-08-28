@@ -48,7 +48,6 @@ async function createProfile(
 		{
 			description: `Created by Playwright ${name}`,
 			name,
-			tools: 'mcp-server-v1.0 getToolSetsPage',
 		},
 		PROFILES_API
 	);
@@ -301,9 +300,6 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 
 			await profilesPage.nameInput.fill(name);
 			await profilesPage.descriptionInput.fill('Created from the UI');
-			await profilesPage.toolsInput.fill(
-				'mcp-server-v1.0 getToolSetsPage'
-			);
 			await profilesPage.saveButton.click();
 
 			// The form stays in place after the first save
@@ -315,9 +311,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 			const response = await apiHelpers.get(
 				`${apiHelpers.baseUrl}${PROFILES_API}?search=${name}&pageSize=5`
 			);
-			expect(response.items[0]?.tools).toBe(
-				'mcp-server-v1.0 getToolSetsPage'
-			);
+			expect(response.items[0]?.name).toBe(name);
 
 			await profilesPage.goto();
 			await profilesPage.search(name);
@@ -327,7 +321,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 	);
 
 	test(
-		'Shows a required-field error on Title, Description, and Tools',
+		'Shows a required-field error on Title and Description',
 		{tag: '@LPD-99230'},
 		async ({profilesPage}) => {
 			await profilesPage.goto();
@@ -341,9 +335,6 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 			await expect(
 				profilesPage.descriptionInput
 			).toHaveAccessibleDescription(/This field is required\./);
-			await expect(profilesPage.toolsInput).toHaveAccessibleDescription(
-				/This field is required\./
-			);
 		}
 	);
 
@@ -379,7 +370,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 			await profilesPage.search(name);
 			await profilesPage.clickAction(name, 'Edit');
 
-			await profilesPage.toolsInput.fill('mcp-server-v1.0 editedTool');
+			await profilesPage.descriptionInput.fill('Edited by Playwright');
 			await profilesPage.saveButton.click();
 
 			await expect(profilesPage.row(name)).toBeVisible();
@@ -387,7 +378,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 			const response = await apiHelpers.get(
 				`${apiHelpers.baseUrl}${PROFILES_API}?search=${name}&pageSize=5`
 			);
-			expect(response.items[0]?.tools).toBe('mcp-server-v1.0 editedTool');
+			expect(response.items[0]?.description).toBe('Edited by Playwright');
 		}
 	);
 
@@ -422,9 +413,6 @@ test.describe('Profiles - Data Masks tab', () => {
 
 			await profilesPage.nameInput.fill(profileName());
 			await profilesPage.descriptionInput.fill('Created from the UI');
-			await profilesPage.toolsInput.fill(
-				'mcp-server-v1.0 getToolSetsPage'
-			);
 			await profilesPage.saveButton.click();
 
 			await expect(profilesPage.dataMasksTabLink).toBeVisible();

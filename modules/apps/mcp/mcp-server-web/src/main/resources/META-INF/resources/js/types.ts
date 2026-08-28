@@ -64,7 +64,6 @@ export type Profile = {
 	friendlyUrlPath?: string;
 	id?: number;
 	name: string;
-	tools: string;
 };
 
 export type ProfileActionContext = {
@@ -94,13 +93,11 @@ export type ProfileDataMaskRow = {
 export type ProfileFormValues = {
 	description: string;
 	name: string;
-	tools: string;
 };
 
 export type ProfilePayload = {
 	description: string;
 	name: string;
-	tools: string;
 };
 
 export type Prompt = {

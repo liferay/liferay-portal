@@ -5,13 +5,22 @@
 
 package com.liferay.mcp.server.web.internal.display.context;
 
+import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
+import com.liferay.frontend.data.set.model.FDSSortItemList;
+import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
+import com.liferay.mcp.server.web.internal.constants.MCPServerFDSNames;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.RenderRequest;
@@ -37,12 +46,40 @@ public class EditProfileDisplayContext {
 		_renderRequest = renderRequest;
 	}
 
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"profileERC", _getProfileERC()
+		).build();
+	}
+
+	public String getAPIURL() {
+		String apiURL = HttpComponentsUtil.addParameter(
+			"/o/mcp/server-profile-tools", "fields",
+			"externalReferenceCode,toolName,toolSetName");
+
+		return HttpComponentsUtil.addParameter(
+			apiURL, "filter",
+			StringBundler.concat(
+				"r_mcpServerProfileToTools_l_mcpServerProfileERC eq '",
+				StringUtil.replace(_getProfileERC(), '\'', "''"), "'"));
+	}
+
 	public String getBackURL() {
 		return PortletURLBuilder.createRenderURL(
 			_liferayPortletResponse
 		).setMVCRenderCommandName(
 			"/mcp_server/view_profiles"
 		).buildString();
+	}
+
+	public CreationMenu getCreationMenu() {
+		return CreationMenuBuilder.addPrimaryDropdownItem(
+			dropdownItem -> {
+				dropdownItem.setHref("#");
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "add-tools"));
+			}
+		).build();
 	}
 
 	public Map<String, Object> getEditProfileProps() {
@@ -62,6 +99,30 @@ public class EditProfileDisplayContext {
 		).build();
 	}
 
+	public String getFDSName() {
+		return MCPServerFDSNames.PROFILE_TOOLS;
+	}
+
+	public FDSSortItemList getFDSSortItemList() {
+		return FDSSortItemListBuilder.add(
+			FDSSortItemBuilder.setDirection(
+				"asc"
+			).setKey(
+				"toolName"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "title")
+			).build()
+		).add(
+			FDSSortItemBuilder.setDirection(
+				"asc"
+			).setKey(
+				"toolSetName"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "tool-set")
+			).build()
+		).build();
+	}
+
 	public List<NavigationItem> getNavigationItems() {
 		String tab = getTab();
 
@@ -71,6 +132,14 @@ public class EditProfileDisplayContext {
 				navigationItem.setHref(_getTabURL("profile-info"));
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "profile-info"));
+			}
+		).add(
+			navigationItem -> {
+				navigationItem.setActive(Objects.equals(tab, "tools"));
+				navigationItem.setDisabled(Validator.isNull(_getProfileERC()));
+				navigationItem.setHref(_getTabURL("tools"));
+				navigationItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "tools"));
 			}
 		).add(
 			navigationItem -> {
@@ -96,7 +165,7 @@ public class EditProfileDisplayContext {
 
 		String tab = ParamUtil.getString(_renderRequest, "tab");
 
-		if (Objects.equals(tab, "data-masks")) {
+		if (Objects.equals(tab, "data-masks") || Objects.equals(tab, "tools")) {
 			return tab;
 		}
 
