@@ -117,7 +117,7 @@ public class BackgroundTaskManagerImpl implements BackgroundTaskManager {
 
 		com.liferay.portal.background.task.model.BackgroundTask backgroundTask =
 			_backgroundTaskLocalService.amendBackgroundTask(
-				backgroundTaskId, taskContextMap, status, statusMessage,
+				backgroundTaskId, taskContextMap, null, status, statusMessage,
 				serviceContext);
 
 		if (backgroundTask == null) {

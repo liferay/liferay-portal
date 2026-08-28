@@ -163,8 +163,8 @@ public class BackgroundTaskMessageListener extends BaseMessageListener {
 				}
 
 				_backgroundTaskLocalService.amendBackgroundTask(
-					backgroundTaskId, null, status, statusMessage,
-					errorStackTrace, serviceContext);
+					backgroundTaskId, null, errorStackTrace, status,
+					statusMessage, serviceContext);
 
 				_backgroundTaskStatusRegistry.unregisterBackgroundTaskStatus(
 					backgroundTaskId);

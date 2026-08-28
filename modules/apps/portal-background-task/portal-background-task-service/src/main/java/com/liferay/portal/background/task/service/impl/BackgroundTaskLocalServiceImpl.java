@@ -171,23 +171,14 @@ public class BackgroundTaskLocalServiceImpl
 		int status, ServiceContext serviceContext) {
 
 		return amendBackgroundTask(
-			backgroundTaskId, taskContextMap, status, null, serviceContext);
-	}
-
-	@Override
-	public BackgroundTask amendBackgroundTask(
-		long backgroundTaskId, Map<String, Serializable> taskContextMap,
-		int status, String statusMessage, ServiceContext serviceContext) {
-
-		return amendBackgroundTask(
-			backgroundTaskId, taskContextMap, status, statusMessage, null,
+			backgroundTaskId, taskContextMap, null, status, null,
 			serviceContext);
 	}
 
 	@Override
 	public BackgroundTask amendBackgroundTask(
 		long backgroundTaskId, Map<String, Serializable> taskContextMap,
-		int status, String statusMessage, String errorStackTrace,
+		String errorStackTrace, int status, String statusMessage,
 		ServiceContext serviceContext) {
 
 		BackgroundTask backgroundTask =

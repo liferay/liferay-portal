@@ -849,8 +849,9 @@ public class ExportProcessResourceTest
 			BackgroundTaskExecutorNames.LAYOUT_EXPORT_BACKGROUND_TASK_EXECUTOR);
 
 		_backgroundTaskLocalService.amendBackgroundTask(
-			exportProcess.getId(), null, BackgroundTaskConstants.STATUS_FAILED,
-			_STACK_TRACE_STATUS_MESSAGE, null);
+			exportProcess.getId(), null, null,
+			BackgroundTaskConstants.STATUS_FAILED, _STACK_TRACE_STATUS_MESSAGE,
+			null);
 
 		ExportProcess failedExportProcess =
 			exportProcessResource.getExportProcess(exportProcess.getId());
