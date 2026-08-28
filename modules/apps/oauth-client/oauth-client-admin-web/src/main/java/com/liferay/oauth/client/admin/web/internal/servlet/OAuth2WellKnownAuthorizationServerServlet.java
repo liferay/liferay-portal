@@ -54,15 +54,15 @@ public class OAuth2WellKnownAuthorizationServerServlet extends HttpServlet {
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
+		httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		httpServletResponse.setContentType(ContentTypes.APPLICATION_JSON);
+		httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
 		long companyId = CompanyThreadLocal.getCompanyId();
 
 		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-63415")) {
 			return;
 		}
-
-		httpServletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
-		httpServletResponse.setContentType(ContentTypes.APPLICATION_JSON);
-		httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
 		String issuer = _getIssuer(httpServletRequest);
 
