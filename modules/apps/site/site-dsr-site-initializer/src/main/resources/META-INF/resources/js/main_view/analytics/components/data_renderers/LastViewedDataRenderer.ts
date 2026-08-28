@@ -12,7 +12,13 @@ export function LastViewedDataRenderer({
 }) {
 	const {lastViewed = ''} = itemData;
 
+	const lastViewedDate = new Date(lastViewed);
+
+	if (Number.isNaN(lastViewedDate.getTime())) {
+		return '-';
+	}
+
 	return new Intl.DateTimeFormat(Liferay.ThemeDisplay.getBCP47LanguageId(), {
 		dateStyle: 'medium',
-	}).format(new Date(lastViewed));
+	}).format(lastViewedDate);
 }
