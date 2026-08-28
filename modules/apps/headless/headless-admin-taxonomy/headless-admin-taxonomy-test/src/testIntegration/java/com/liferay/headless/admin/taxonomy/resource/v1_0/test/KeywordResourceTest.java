@@ -7,6 +7,7 @@ package com.liferay.headless.admin.taxonomy.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetTagGroupRel;
 import com.liferay.asset.kernel.service.AssetTagGroupRelLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
@@ -17,17 +18,21 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.AssetLibrary;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.Keyword;
+import com.liferay.headless.admin.taxonomy.client.dto.v1_0.Project;
 import com.liferay.headless.admin.taxonomy.client.http.HttpInvoker;
 import com.liferay.headless.admin.taxonomy.client.pagination.Page;
 import com.liferay.headless.admin.taxonomy.client.pagination.Pagination;
 import com.liferay.headless.admin.taxonomy.client.problem.Problem;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.KeywordResource;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
@@ -36,14 +41,18 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
@@ -385,6 +394,7 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		}
 	}
 
+	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	@TestInfo("LPD-90751")
@@ -405,7 +415,9 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		irrelevantGroup = originalIrrelevantGroup;
 		testGroup = originalTestGroup;
 
+		_testGetSiteKeywordsPageWithProjectDepotEntry();
 		_testGetSiteKeywordsPageWithSpaceDepotEntry();
+		_testGetSiteKeywordsPageWithoutAssetTagGroupRels();
 
 		_cmsAdministratorUser = UserTestUtil.addCompanyUser(
 			testCompany, RoleConstants.CMS_ADMINISTRATOR);
@@ -429,6 +441,7 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		super.testGraphQLGetKeywordsRankedPage();
 	}
 
+	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPatchSiteKeyword() throws Exception {
@@ -437,31 +450,32 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		testGroup = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
-		Keyword keyword = _postKeywordWithAssetLibraries(
-			_randomSpaceAssetLibrary());
+		AssetLibrary assetLibrary1 = _randomSpaceAssetLibrary();
 
-		List<AssetTagGroupRel> assetTagGroupRels =
-			_assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(
-				keyword.getId());
+		Keyword keyword = _postKeywordWithAssetLibraries(assetLibrary1);
 
-		Assert.assertEquals(
-			assetTagGroupRels.toString(), 1, assetTagGroupRels.size());
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, keyword, assetLibrary1.getId());
+
+		AssetLibrary assetLibrary2 = _randomSpaceAssetLibrary();
+		AssetLibrary assetLibrary3 = _randomSpaceAssetLibrary();
 
 		Keyword patchKeyword = _patchKeywordWithAssetLibraries(
-			keyword, _randomSpaceAssetLibrary(), _randomSpaceAssetLibrary());
+			keyword, assetLibrary2, assetLibrary3);
 
 		assertEquals(keyword, patchKeyword);
 
-		assetTagGroupRels =
-			_assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(
-				keyword.getId());
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, patchKeyword, assetLibrary1.getId(),
+			assetLibrary2.getId(), assetLibrary3.getId());
 
-		Assert.assertEquals(
-			assetTagGroupRels.toString(), 3, assetTagGroupRels.size());
+		_testPatchSiteKeywordAppendsProjects();
+		_testPatchSiteKeywordWithNullAssetLibraries();
 
 		testGroup = originalTestGroup;
 	}
 
+	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPostSiteKeyword() throws Exception {
@@ -496,18 +510,20 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		assertEquals(randomKeyword, postKeyword);
 		assertValid(postKeyword);
 
-		List<AssetTagGroupRel> assetTagGroupRels =
-			_assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(
-				postKeyword.getId());
+		_assertAssetTagGroupRels(DepotConstants.TYPE_PROJECT, postKeyword);
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, postKeyword,
+			GroupConstants.ANY_PARENT_GROUP_ID);
 
-		Assert.assertEquals(
-			assetTagGroupRels.toString(), 1, assetTagGroupRels.size());
+		assertHttpResponseStatusCode(
+			409,
+			cmsAdminKeywordResource.postSiteKeywordHttpResponse(
+				testGroup.getGroupId(), randomKeyword));
 
-		AssetTagGroupRel assetTagGroupRel = assetTagGroupRels.get(0);
-
-		Assert.assertEquals(
-			assetTagGroupRels.toString(), GroupConstants.ANY_PARENT_GROUP_ID,
-			assetTagGroupRel.getGroupId());
+		_testPostSiteKeywordWithAnyParentGroupIdProject();
+		_testPostSiteKeywordWithFeatureFlagDisabled();
+		_testPostSiteKeywordWithUnknownProjects();
+		_testPostSiteKeywordWithoutProjectManageTagPermission();
 
 		testGroup = originalTestGroup;
 	}
@@ -526,32 +542,10 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 
 		Group spaceGroup = space.getGroup();
 
-		_spaceContentReviewerUser = UserTestUtil.addUser();
-
-		_userLocalService.updatePassword(
-			_spaceContentReviewerUser.getUserId(), "test", "test", false, true);
-
-		_groupLocalService.addUserGroup(
-			_spaceContentReviewerUser.getUserId(), spaceGroup);
-
-		Role contentReviewerRole = _roleLocalService.getRole(
-			testCompany.getCompanyId(),
-			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
-
-		_userGroupRoleLocalService.addUserGroupRoles(
-			_spaceContentReviewerUser.getUserId(), spaceGroup.getGroupId(),
-			new long[] {contentReviewerRole.getRoleId()});
+		_spaceContentReviewerUser = _addSpaceContentReviewerUser(spaceGroup);
 
 		KeywordResource spaceContentReviewerKeywordResource =
-			KeywordResource.builder(
-			).authentication(
-				_spaceContentReviewerUser.getEmailAddress(), "test"
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
+			_getKeywordResource(_spaceContentReviewerUser);
 
 		Keyword randomKeyword = randomKeyword();
 
@@ -596,8 +590,22 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		Assert.assertEquals(
 			externalReferenceCode, putKeyword.getExternalReferenceCode());
 		assertValid(putKeyword);
+
+		String duplicateNameExternalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		Keyword duplicateNameKeyword =
+			keywordResource.putAssetLibraryKeywordByExternalReferenceCode(
+				testPutAssetLibraryKeywordByExternalReferenceCode_getAssetLibraryId(),
+				duplicateNameExternalReferenceCode, keyword);
+
+		Assert.assertEquals(putKeyword.getId(), duplicateNameKeyword.getId());
+		Assert.assertEquals(
+			duplicateNameExternalReferenceCode,
+			duplicateNameKeyword.getExternalReferenceCode());
 	}
 
+	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPutKeyword() throws Exception {
@@ -610,11 +618,18 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 
 		_testPutKeywordWithAssetLibraries();
 
+		_testPutKeywordWithEmptyProjects();
+		_testPutKeywordWithNullAssetLibraries();
+		_testPutKeywordWithNullProjects();
+		_testPutKeywordWithUnknownProjects();
+		_testPutKeywordWithoutProjectManageTagPermission();
+
 		testGroup = originalTestGroup;
 
 		_testPutKeywordWithoutAssetLibraryManageTagPermission();
 	}
 
+	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPutKeywordMerge() throws Exception {
@@ -632,6 +647,10 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 
 		keywordResource.putKeywordMerge(
 			keyword1.getId(), new Long[] {keyword2.getId(), keyword3.getId()});
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, keyword1,
+			GroupConstants.ANY_PARENT_GROUP_ID);
 
 		Keyword keyword4 = _postKeywordWithAssetLibraries(
 			_randomSpaceAssetLibrary());
@@ -654,27 +673,20 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 
 		Assert.assertEquals(204, httpResponse.getStatusCode());
 
-		List<AssetTagGroupRel> assetTagGroupRels =
-			_assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(
-				keyword1.getId());
-
-		Assert.assertEquals(
-			assetTagGroupRels.toString(), 1, assetTagGroupRels.size());
-
-		AssetTagGroupRel assetTagGroupRel = assetTagGroupRels.get(0);
-
-		Assert.assertEquals(
-			assetTagGroupRels.toString(), -1, assetTagGroupRel.getGroupId());
+		_testPutKeywordMergeAppendsProjects();
+		_testPutKeywordMergeWithAnyParentGroupIdProject();
 
 		testGroup = originalTestGroup;
 	}
 
+	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPutSiteKeywordByExternalReferenceCode() throws Exception {
 		super.testPutSiteKeywordByExternalReferenceCode();
 
 		_testPutSiteKeywordByExternalReferenceCodeDuplicateName();
+		_testPutSiteKeywordByExternalReferenceCodeUpdatesAssetLibrariesAndProjects();
 		_testPutSiteKeywordByExternalReferenceCodeValidKeyword();
 	}
 
@@ -756,11 +768,88 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		return testDepotEntry.getDepotEntryId();
 	}
 
+	private Group _addDepotEntryGroup(int depotEntryType) throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(), null, depotEntryType,
+			ServiceContextTestUtil.getServiceContext());
+
+		return depotEntry.getGroup();
+	}
+
+	private User _addSpaceContentReviewerUser(Group spaceGroup)
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), "test", "test", false, true);
+
+		_groupLocalService.addUserGroup(user.getUserId(), spaceGroup);
+
+		Role contentReviewerRole = _roleLocalService.getRole(
+			testCompany.getCompanyId(),
+			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			user.getUserId(), spaceGroup.getGroupId(),
+			new long[] {contentReviewerRole.getRoleId()});
+
+		return user;
+	}
+
+	private void _assertAssetTagGroupRels(
+		int depotEntryType, Keyword keyword, long... expectedGroupIds) {
+
+		long[] groupIds = ListUtil.toLongArray(
+			_assetTagGroupRelLocalService.
+				getAssetTagGroupRelsByTagIdAndDepotEntryType(
+					keyword.getId(), depotEntryType),
+			AssetTagGroupRel::getGroupId);
+
+		Arrays.sort(expectedGroupIds);
+		Arrays.sort(groupIds);
+
+		Assert.assertEquals(
+			Arrays.toString(expectedGroupIds), Arrays.toString(groupIds));
+	}
+
+	private Set<String> _getKeywordNames(Page<Keyword> page) {
+		Set<String> keywordNames = new HashSet<>();
+
+		for (Keyword keyword : page.getItems()) {
+			keywordNames.add(keyword.getName());
+		}
+
+		return keywordNames;
+	}
+
+	private KeywordResource _getKeywordResource(User user) {
+		return KeywordResource.builder(
+		).authentication(
+			user.getEmailAddress(), "test"
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private Keyword _patchKeywordWithAssetLibraries(
 			Keyword keyword, AssetLibrary... assetLibraries)
 		throws Exception {
 
 		keyword.setAssetLibraries(assetLibraries);
+
+		return keywordResource.patchSiteKeyword(
+			testGroup.getGroupId(), keyword);
+	}
+
+	private Keyword _patchKeywordWithProjects(
+			Keyword keyword, Project... projects)
+		throws Exception {
+
+		keyword.setProjects(projects);
 
 		return keywordResource.patchSiteKeyword(
 			testGroup.getGroupId(), keyword);
@@ -777,20 +866,52 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		return keywordResource.postSiteKeyword(testGroup.getGroupId(), keyword);
 	}
 
+	private Keyword _postKeywordWithProjects(Project... projects)
+		throws Exception {
+
+		Keyword keyword = randomKeyword();
+
+		keyword.setProjects(projects);
+
+		return keywordResource.postSiteKeyword(testGroup.getGroupId(), keyword);
+	}
+
+	private Project _randomProject() throws Exception {
+		return _toProject(_addDepotEntryGroup(DepotConstants.TYPE_PROJECT));
+	}
+
 	private AssetLibrary _randomSpaceAssetLibrary() throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			RandomTestUtil.randomLocaleStringMap(), null,
-			DepotConstants.TYPE_SPACE,
-			ServiceContextTestUtil.getServiceContext());
+		return _toAssetLibrary(_addDepotEntryGroup(DepotConstants.TYPE_SPACE));
+	}
 
-		Group depotEntryGroup = depotEntry.getGroup();
+	private void _testGetSiteKeywordsPageWithProjectDepotEntry()
+		throws Exception {
 
-		return new AssetLibrary() {
-			{
-				id = depotEntryGroup.getGroupId();
-				scopeKey = depotEntryGroup.getGroupKey();
-			}
-		};
+		Group originalTestGroup = testGroup;
+
+		testGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
+		Project project = _randomProject();
+
+		Keyword keyword1 = _postKeywordWithProjects(
+			_toProject(GroupConstants.ANY_PARENT_GROUP_ID));
+		Keyword keyword2 = _postKeywordWithProjects(project);
+		Keyword keyword3 = _postKeywordWithProjects(_randomProject());
+
+		Page<Keyword> page = keywordResource.getSiteKeywordsPage(
+			project.getId(), null, null, null, Pagination.of(1, 100), null);
+
+		Set<String> keywordNames = _getKeywordNames(page);
+
+		Assert.assertTrue(
+			keywordNames.toString(), keywordNames.contains(keyword1.getName()));
+		Assert.assertTrue(
+			keywordNames.toString(), keywordNames.contains(keyword2.getName()));
+		Assert.assertFalse(
+			keywordNames.toString(), keywordNames.contains(keyword3.getName()));
+
+		testGroup = originalTestGroup;
 	}
 
 	private void _testGetSiteKeywordsPageWithSpaceDepotEntry()
@@ -821,11 +942,7 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			depotEntryGroup.getGroupId(), null, null, null,
 			Pagination.of(1, 100), null);
 
-		Set<String> keywordNames = new HashSet<>();
-
-		for (Keyword keyword : page.getItems()) {
-			keywordNames.add(keyword.getName());
-		}
+		Set<String> keywordNames = _getKeywordNames(page);
 
 		Assert.assertTrue(
 			keywordNames.toString(), keywordNames.contains(keyword1.getName()));
@@ -862,6 +979,230 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		Assert.assertEquals(originalTotalCount + 1, page.getTotalCount());
 	}
 
+	private void _testGetSiteKeywordsPageWithoutAssetTagGroupRels()
+		throws Exception {
+
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
+		_assetTag = AssetTestUtil.addTag(
+			cmsGroup.getGroupId(),
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+
+		Project project = _randomProject();
+
+		Keyword randomKeyword = randomKeyword();
+
+		randomKeyword.setProjects(new Project[] {project});
+
+		Keyword keyword = keywordResource.postSiteKeyword(
+			cmsGroup.getGroupId(), randomKeyword);
+
+		Page<Keyword> page = keywordResource.getSiteKeywordsPage(
+			project.getId(), null, null, null, Pagination.of(1, 100), null);
+
+		Set<String> keywordNames = _getKeywordNames(page);
+
+		Assert.assertTrue(
+			keywordNames.toString(), keywordNames.contains(keyword.getName()));
+		Assert.assertFalse(
+			keywordNames.toString(),
+			keywordNames.contains(_assetTag.getName()));
+
+		AssetLibrary assetLibrary = _randomSpaceAssetLibrary();
+
+		page = keywordResource.getSiteKeywordsPage(
+			assetLibrary.getId(), null, null, null, Pagination.of(1, 100),
+			null);
+
+		keywordNames = _getKeywordNames(page);
+
+		Assert.assertTrue(
+			keywordNames.toString(),
+			keywordNames.contains(_assetTag.getName()));
+	}
+
+	private void _testPatchSiteKeywordAppendsProjects() throws Exception {
+		Project project1 = _randomProject();
+
+		Keyword keyword = _postKeywordWithProjects(project1);
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, keyword, project1.getId());
+
+		Project project2 = _randomProject();
+
+		Keyword patchKeyword = _patchKeywordWithProjects(keyword, project2);
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, patchKeyword, project1.getId(),
+			project2.getId());
+	}
+
+	private void _testPatchSiteKeywordWithNullAssetLibraries()
+		throws Exception {
+
+		AssetLibrary assetLibrary = _randomSpaceAssetLibrary();
+
+		Keyword keyword = _postKeywordWithAssetLibraries(assetLibrary);
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, keyword, assetLibrary.getId());
+
+		Keyword patchKeyword = _patchKeywordWithAssetLibraries(
+			keyword, (AssetLibrary[])null);
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, patchKeyword,
+			GroupConstants.ANY_PARENT_GROUP_ID);
+	}
+
+	private void _testPostSiteKeywordWithAnyParentGroupIdProject()
+		throws Exception {
+
+		Keyword keyword = _postKeywordWithProjects(
+			_toProject(GroupConstants.ANY_PARENT_GROUP_ID));
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, keyword,
+			GroupConstants.ANY_PARENT_GROUP_ID);
+	}
+
+	private void _testPostSiteKeywordWithFeatureFlagDisabled()
+		throws Exception {
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-99403"),
+					Boolean.FALSE.toString())) {
+
+			Keyword keyword = _postKeywordWithProjects(_randomProject());
+
+			Assert.assertNull(keyword.getProjects());
+
+			_assertAssetTagGroupRels(
+				DepotConstants.TYPE_PROJECT, keyword,
+				GroupConstants.ANY_PARENT_GROUP_ID);
+		}
+	}
+
+	private void _testPostSiteKeywordWithUnknownProjects() throws Exception {
+		AssetLibrary assetLibrary = _randomSpaceAssetLibrary();
+
+		Keyword keyword1 = _postKeywordWithProjects(
+			new Project() {
+				{
+					id = assetLibrary.getId();
+					scopeKey = assetLibrary.getScopeKey();
+				}
+			});
+
+		_assertAssetTagGroupRels(DepotConstants.TYPE_PROJECT, keyword1);
+
+		Keyword keyword2 = _postKeywordWithProjects(
+			_toProject(RandomTestUtil.randomLong()));
+
+		_assertAssetTagGroupRels(DepotConstants.TYPE_PROJECT, keyword2);
+
+		Keyword keyword3 = _postKeywordWithProjects(new Project());
+
+		_assertAssetTagGroupRels(DepotConstants.TYPE_PROJECT, keyword3);
+
+		Project project = _randomProject();
+
+		Keyword keyword4 = _postKeywordWithProjects(
+			project, _toProject(RandomTestUtil.randomLong()));
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, keyword4, project.getId());
+
+		Project[] projects = keyword4.getProjects();
+
+		Assert.assertEquals(Arrays.toString(projects), 1, projects.length);
+		Assert.assertEquals(project.getId(), projects[0].getId());
+	}
+
+	private void _testPostSiteKeywordWithoutProjectManageTagPermission()
+		throws Exception {
+
+		Group originalTestGroup = testGroup;
+
+		testGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
+		DepotEntry space = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(), null,
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		Group spaceGroup = space.getGroup();
+
+		_spaceContentReviewerUser = _addSpaceContentReviewerUser(spaceGroup);
+
+		KeywordResource spaceContentReviewerKeywordResource =
+			_getKeywordResource(_spaceContentReviewerUser);
+
+		Keyword randomKeyword = randomKeyword();
+
+		randomKeyword.setAssetLibraries(
+			new AssetLibrary[] {_toAssetLibrary(spaceGroup)});
+
+		Keyword keyword = spaceContentReviewerKeywordResource.postSiteKeyword(
+			testGroup.getGroupId(), randomKeyword);
+
+		assertEquals(randomKeyword, keyword);
+
+		randomKeyword.setProjects(new Project[] {_randomProject()});
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> spaceContentReviewerKeywordResource.postSiteKeyword(
+				testGroup.getGroupId(), randomKeyword));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("FORBIDDEN", problem.getStatus());
+
+		_assertAssetTagGroupRels(DepotConstants.TYPE_PROJECT, keyword);
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, keyword, spaceGroup.getGroupId());
+
+		testGroup = originalTestGroup;
+	}
+
+	private void _testPutKeywordMergeAppendsProjects() throws Exception {
+		Project project1 = _randomProject();
+
+		Keyword toKeyword = _postKeywordWithProjects(project1);
+
+		Project project2 = _randomProject();
+
+		Keyword fromKeyword = _postKeywordWithProjects(project2);
+
+		keywordResource.putKeywordMerge(
+			toKeyword.getId(), new Long[] {fromKeyword.getId()});
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, toKeyword, project1.getId(),
+			project2.getId());
+	}
+
+	private void _testPutKeywordMergeWithAnyParentGroupIdProject()
+		throws Exception {
+
+		Keyword toKeyword = _postKeywordWithProjects(_randomProject());
+
+		Keyword fromKeyword = _postKeywordWithProjects(
+			_toProject(GroupConstants.ANY_PARENT_GROUP_ID));
+
+		keywordResource.putKeywordMerge(
+			toKeyword.getId(), new Long[] {fromKeyword.getId()});
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, toKeyword,
+			GroupConstants.ANY_PARENT_GROUP_ID);
+	}
+
 	private void _testPutKeywordWithAssetLibraries() throws Exception {
 		Keyword keyword = _postKeywordWithAssetLibraries(
 			_randomSpaceAssetLibrary());
@@ -875,6 +1216,64 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			keyword.getId(), randomKeyword);
 
 		assertEquals(randomKeyword, putKeyword);
+	}
+
+	private void _testPutKeywordWithEmptyProjects() throws Exception {
+		Project project = _randomProject();
+
+		Keyword keyword = _postKeywordWithProjects(project);
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, keyword, project.getId());
+
+		keyword.setProjects(new Project[0]);
+
+		keywordResource.putKeyword(keyword.getId(), keyword);
+
+		_assertAssetTagGroupRels(DepotConstants.TYPE_PROJECT, keyword);
+	}
+
+	private void _testPutKeywordWithNullAssetLibraries() throws Exception {
+		AssetLibrary assetLibrary = _randomSpaceAssetLibrary();
+
+		Keyword keyword = _postKeywordWithAssetLibraries(assetLibrary);
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, keyword, assetLibrary.getId());
+
+		keyword.setAssetLibraries((AssetLibrary[])null);
+
+		keywordResource.putKeyword(keyword.getId(), keyword);
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, keyword,
+			GroupConstants.ANY_PARENT_GROUP_ID);
+	}
+
+	private void _testPutKeywordWithNullProjects() throws Exception {
+		Project project = _randomProject();
+
+		Keyword keyword = _postKeywordWithProjects(project);
+
+		keyword.setProjects((Project[])null);
+
+		keywordResource.putKeyword(keyword.getId(), keyword);
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, keyword, project.getId());
+	}
+
+	private void _testPutKeywordWithUnknownProjects() throws Exception {
+		Project project = _randomProject();
+
+		Keyword keyword = _postKeywordWithProjects(project);
+
+		keyword.setProjects(
+			new Project[] {_toProject(RandomTestUtil.randomLong())});
+
+		keywordResource.putKeyword(keyword.getId(), keyword);
+
+		_assertAssetTagGroupRels(DepotConstants.TYPE_PROJECT, keyword);
 	}
 
 	private void _testPutKeywordWithoutAssetLibraryManageTagPermission()
@@ -892,32 +1291,10 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
-		_spaceContentReviewerUser = UserTestUtil.addUser();
-
-		_userLocalService.updatePassword(
-			_spaceContentReviewerUser.getUserId(), "test", "test", false, true);
-
-		_groupLocalService.addUserGroup(
-			_spaceContentReviewerUser.getUserId(), spaceGroup);
-
-		Role contentReviewerRole = _roleLocalService.getRole(
-			testCompany.getCompanyId(),
-			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
-
-		_userGroupRoleLocalService.addUserGroupRoles(
-			_spaceContentReviewerUser.getUserId(), spaceGroup.getGroupId(),
-			new long[] {contentReviewerRole.getRoleId()});
+		_spaceContentReviewerUser = _addSpaceContentReviewerUser(spaceGroup);
 
 		KeywordResource spaceContentReviewerKeywordResource =
-			KeywordResource.builder(
-			).authentication(
-				_spaceContentReviewerUser.getEmailAddress(), "test"
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
+			_getKeywordResource(_spaceContentReviewerUser);
 
 		Keyword keyword =
 			spaceContentReviewerKeywordResource.postAssetLibraryKeyword(
@@ -948,6 +1325,47 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			assetTagGroupRels.toString(), assetTagGroupRels.isEmpty());
 	}
 
+	private void _testPutKeywordWithoutProjectManageTagPermission()
+		throws Exception {
+
+		AssetLibrary assetLibrary = _randomSpaceAssetLibrary();
+
+		Keyword keyword = _postKeywordWithAssetLibraries(assetLibrary);
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			"com.liferay.asset.tags", ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()), ActionKeys.MANAGE_TAG);
+
+		_cmsTagManagerUser = UserTestUtil.addCompanyUser(
+			testCompany, role.getName());
+
+		_userLocalService.updatePassword(
+			_cmsTagManagerUser.getUserId(), "test", "test", false, true);
+
+		KeywordResource cmsTagManagerKeywordResource = _getKeywordResource(
+			_cmsTagManagerUser);
+
+		Keyword randomKeyword = randomKeyword();
+
+		randomKeyword.setProjects(new Project[] {_randomProject()});
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> cmsTagManagerKeywordResource.putKeyword(
+				keyword.getId(), randomKeyword));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("FORBIDDEN", problem.getStatus());
+
+		assertEquals(keyword, keywordResource.getKeyword(keyword.getId()));
+
+		_assertAssetTagGroupRels(DepotConstants.TYPE_PROJECT, keyword);
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, keyword, assetLibrary.getId());
+	}
+
 	private void _testPutSiteKeywordByExternalReferenceCodeDuplicateName()
 		throws Exception {
 
@@ -964,6 +1382,39 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 				StringUtil.toLowerCase(RandomTestUtil.randomString()), keyword);
 
 		Assert.assertEquals(keyword.getName(), duplicateNameKeyword.getName());
+	}
+
+	private void _testPutSiteKeywordByExternalReferenceCodeUpdatesAssetLibrariesAndProjects()
+		throws Exception {
+
+		Group originalTestGroup = testGroup;
+
+		testGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
+		Keyword postKeyword = keywordResource.postSiteKeyword(
+			testGroup.getGroupId(), randomKeyword());
+
+		Keyword randomKeyword = randomKeyword();
+
+		Project project = _randomProject();
+
+		randomKeyword.setProjects(new Project[] {project});
+
+		Keyword putKeyword =
+			keywordResource.putSiteKeywordByExternalReferenceCode(
+				testGroup.getGroupId(), postKeyword.getExternalReferenceCode(),
+				randomKeyword);
+
+		Assert.assertEquals(postKeyword.getId(), putKeyword.getId());
+
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_PROJECT, putKeyword, project.getId());
+		_assertAssetTagGroupRels(
+			DepotConstants.TYPE_SPACE, putKeyword,
+			GroupConstants.ANY_PARENT_GROUP_ID);
+
+		testGroup = originalTestGroup;
 	}
 
 	private void _testPutSiteKeywordByExternalReferenceCodeValidKeyword()
@@ -993,11 +1444,34 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		};
 	}
 
+	private Project _toProject(Group group) {
+		return new Project() {
+			{
+				id = group.getGroupId();
+				scopeKey = group.getGroupKey();
+			}
+		};
+	}
+
+	private Project _toProject(long groupId) {
+		return new Project() {
+			{
+				id = groupId;
+			}
+		};
+	}
+
+	@DeleteAfterTestRun
+	private AssetTag _assetTag;
+
 	@Inject
 	private AssetTagGroupRelLocalService _assetTagGroupRelLocalService;
 
 	@DeleteAfterTestRun
 	private User _cmsAdministratorUser;
+
+	@DeleteAfterTestRun
+	private User _cmsTagManagerUser;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;

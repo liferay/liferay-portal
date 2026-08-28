@@ -50,6 +50,42 @@ public class AssetTagGroupRelLocalServiceTest {
 	}
 
 	@Test
+	public void testDeleteAssetTagGroupRelsByTagIdAndDepotEntryType()
+		throws Exception {
+
+		Group projectGroup = GroupTestUtil.addGroup();
+
+		_assetTagGroupRelLocalService.setAssetTagGroupRels(
+			_assetTag.getTagId(), new long[] {projectGroup.getGroupId()},
+			DepotConstants.TYPE_PROJECT);
+
+		Group spaceGroup = GroupTestUtil.addGroup();
+
+		_assetTagGroupRelLocalService.setAssetTagGroupRels(
+			_assetTag.getTagId(), new long[] {spaceGroup.getGroupId()},
+			DepotConstants.TYPE_SPACE);
+
+		_assertAssetTagGroupRelByTagId(
+			_assetTag, DepotConstants.TYPE_PROJECT, projectGroup);
+
+		_assetTagGroupRelLocalService.
+			deleteAssetTagGroupRelsByTagIdAndDepotEntryType(
+				_assetTag.getTagId(), DepotConstants.TYPE_PROJECT);
+
+		List<AssetTagGroupRel> projectAssetTagGroupRels =
+			_assetTagGroupRelLocalService.
+				getAssetTagGroupRelsByTagIdAndDepotEntryType(
+					_assetTag.getTagId(), DepotConstants.TYPE_PROJECT);
+
+		Assert.assertTrue(
+			projectAssetTagGroupRels.toString(),
+			projectAssetTagGroupRels.isEmpty());
+
+		_assertAssetTagGroupRelByTagId(
+			_assetTag, DepotConstants.TYPE_SPACE, spaceGroup);
+	}
+
+	@Test
 	public void testGetAssetTagGroupRelsByAssetTagId() throws Exception {
 		Group group1 = GroupTestUtil.addGroup();
 		Group group2 = GroupTestUtil.addGroup();
