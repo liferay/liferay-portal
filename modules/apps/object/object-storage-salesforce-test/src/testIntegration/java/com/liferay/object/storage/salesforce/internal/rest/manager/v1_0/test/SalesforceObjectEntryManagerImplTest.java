@@ -273,7 +273,7 @@ public class SalesforceObjectEntryManagerImplTest
 		catch (ObjectEntryManagerHttpException
 					objectEntryManagerHttpException) {
 
-			_assumeSkipped = true;
+			_uanbleToAuthenticateWithSalesforce = true;
 
 			Assume.assumeNoException(
 				"Unable to authenticate with Salesforce",
@@ -674,7 +674,7 @@ public class SalesforceObjectEntryManagerImplTest
 	}
 
 	private void _deleteObjectEntries() throws Exception {
-		if (_assumeSkipped) {
+		if (_uanbleToAuthenticateWithSalesforce) {
 			return;
 		}
 
@@ -697,7 +697,7 @@ public class SalesforceObjectEntryManagerImplTest
 
 	private static DateFormat _simpleDateFormat;
 
-	private boolean _assumeSkipped;
+	private boolean _uanbleToAuthenticateWithSalesforce;
 	private ObjectDefinition _objectDefinition;
 
 	@Inject(
