@@ -4,6 +4,14 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+if ((BASH_VERSINFO[0] < 4)) || ((BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] < 4))
+then
+	echo "This workspace's scripts require bash 4.4 or newer (found ${BASH_VERSION})." >&2
+	echo "On macOS: brew install bash, then make sure Homebrew's bin directory precedes /bin in PATH." >&2
+
+	exit 1
+fi
+
 function docker_compose {
 	local compose_files
 
