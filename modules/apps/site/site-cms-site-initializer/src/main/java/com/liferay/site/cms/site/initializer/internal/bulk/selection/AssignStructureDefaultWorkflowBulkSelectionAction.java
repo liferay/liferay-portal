@@ -7,7 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.bulk.selection;
 
 import com.liferay.bulk.selection.BulkSelectionAction;
 import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
@@ -58,20 +58,25 @@ public class AssignStructureDefaultWorkflowBulkSelectionAction
 
 			if (!workflow.equals(StringPool.BLANK)) {
 				WorkflowDefinition workflowDefinition =
-					_workflowDefinitionManager.getLatestWorkflowDefinition(
-						objectDefinition.getCompanyId(), workflow);
+					_workflowDefinitionManager.
+						liberalGetLatestWorkflowDefinition(
+							objectDefinition.getCompanyId(), workflow);
 
-				workflowDefinitionLinks.add(
+				WorkflowDefinitionLink workflowDefinitionLink =
 					_workflowDefinitionLinkLocalService.
-						updateWorkflowDefinitionLink(
-							user.getUserId(), objectDefinition.getCompanyId(),
-							0, objectDefinition.getClassName(), 0, 0,
-							workflowDefinition.getName(),
-							workflowDefinition.getVersion()));
+						createWorkflowDefinitionLink(0);
+
+				workflowDefinitionLink.setGroupId(0);
+				workflowDefinitionLink.setUserId(user.getUserId());
+				workflowDefinitionLink.setWorkflowDefinitionName(
+					workflowDefinition.getName());
+
+				workflowDefinitionLinks.add(workflowDefinitionLink);
 			}
 
-			_objectDefinitionLocalService.addOrUpdateWorkflowDefinitionLinks(
-				objectDefinition, workflowDefinitionLinks);
+			_objectDefinitionService.addOrUpdateWorkflowDefinitionLinks(
+				objectDefinition.getObjectDefinitionId(),
+				workflowDefinitionLinks);
 		}
 		else {
 			throw new IllegalArgumentException("Unsupported object " + object);
@@ -79,7 +84,7 @@ public class AssignStructureDefaultWorkflowBulkSelectionAction
 	}
 
 	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private ObjectDefinitionService _objectDefinitionService;
 
 	@Reference
 	private WorkflowDefinitionLinkLocalService
