@@ -34,7 +34,7 @@ describe('Navigation items merging', () => {
 
 	function renderNavigationItems() {
 		return renderHook(() =>
-			useSideNavigationItems(categoryItems, 'navigationItemsUrl')
+			useSideNavigationItems(categoryItems, 'navigationItemsURL')
 		);
 	}
 

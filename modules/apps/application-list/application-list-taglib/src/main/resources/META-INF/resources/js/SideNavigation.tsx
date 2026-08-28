@@ -29,7 +29,7 @@ interface Props {
 	expandedKeysSessionKey: string;
 	items: Array<SideNavigationItem>;
 	label: string;
-	navigationItemsUrl: string;
+	navigationItemsURL: string;
 	selectedPortletId: string;
 	siteAdministrationItemSelectedEventName: string;
 	siteAdministrationItemSelectorUrl: string;
@@ -60,7 +60,7 @@ function SideNavigation({
 	expandedKeysSessionKey,
 	items: externalItems,
 	label,
-	navigationItemsUrl,
+	navigationItemsURL,
 	selectedPortletId,
 	siteAdministrationItemSelectedEventName,
 	siteAdministrationItemSelectorUrl,
@@ -86,7 +86,7 @@ function SideNavigation({
 		items: navigationItems,
 		loading,
 		prefetchFilterOnlyItems,
-	} = useSideNavigationItems(externalItems, navigationItemsUrl);
+	} = useSideNavigationItems(externalItems, navigationItemsURL);
 
 	const {expandedKeys, isFilterActive, items, numberOfMatches, setQuery} =
 		useSideNavigationFilter(navigationItems);

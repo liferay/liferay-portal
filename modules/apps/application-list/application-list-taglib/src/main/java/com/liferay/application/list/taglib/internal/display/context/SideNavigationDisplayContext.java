@@ -92,7 +92,7 @@ public class SideNavigationDisplayContext {
 		).put(
 			"label", _panelCategory.getLabel(_themeDisplay.getLocale())
 		).put(
-			"navigationItemsUrl",
+			"navigationItemsURL",
 			() -> {
 				LiferayPortletURL navigationItemsURL =
 					(LiferayPortletURL)

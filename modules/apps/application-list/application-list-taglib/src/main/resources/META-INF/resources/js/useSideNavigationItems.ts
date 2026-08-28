@@ -51,7 +51,7 @@ function mergeNavigationItems(
 
 export function useSideNavigationItems(
 	items: Array<SideNavigationItem>,
-	navigationItemsUrl: string
+	navigationItemsURL: string
 ) {
 	const [loading, setLoading] = useState(false);
 	const [sideNavigationItemsMap, setSideNavigationItemsMap] =
@@ -66,7 +66,7 @@ export function useSideNavigationItems(
 
 		setLoading(true);
 
-		promiseRef.current = fetch(navigationItemsUrl)
+		promiseRef.current = fetch(navigationItemsURL)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(
@@ -86,7 +86,7 @@ export function useSideNavigationItems(
 				console.error(error);
 			})
 			.finally(() => setLoading(false));
-	}, [navigationItemsUrl]);
+	}, [navigationItemsURL]);
 
 	const mergedItems = useMemo(
 		() =>

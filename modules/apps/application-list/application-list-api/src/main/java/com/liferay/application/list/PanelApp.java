@@ -40,14 +40,6 @@ public interface PanelApp extends PanelEntry {
 	 */
 	public int getNotificationsCount(User user);
 
-	/**
-	 * Returns the application's navigation items.
-	 *
-	 * @param  httpServletRequest the servlet request used to create the
-	 *         navigation items' URLs
-	 * @return the application's navigation items
-	 * @throws PortalException if a portal exception occurred
-	 */
 	public default List<PanelAppNavigationItem> getPanelAppNavigationItems(
 			HttpServletRequest httpServletRequest)
 		throws PortalException {

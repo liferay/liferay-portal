@@ -86,7 +86,7 @@ const renderComponent = ({expandedKeys = ['content', 'workflow']} = {}) =>
 			expandedKeysSessionKey="expandedKeysSessionKey"
 			items={ITEMS}
 			label="Applications"
-			navigationItemsUrl="navigationItemsUrl"
+			navigationItemsURL="navigationItemsURL"
 			selectedPortletId="assets"
 			siteAdministrationItemSelectedEventName="siteAdministrationItemSelectedEventName"
 			siteAdministrationItemSelectorUrl="siteAdministrationItemSelectorUrl"
@@ -383,7 +383,7 @@ describe('SideNavigation', () => {
 
 		await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
 
-		expect(fetch).toHaveBeenCalledWith('navigationItemsUrl');
+		expect(fetch).toHaveBeenCalledWith('navigationItemsURL');
 	});
 
 	it('leaves the visible navigation unchanged when the screens arrive', async () => {

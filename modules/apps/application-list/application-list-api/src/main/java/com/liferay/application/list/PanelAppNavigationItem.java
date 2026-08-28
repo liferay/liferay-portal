@@ -6,9 +6,6 @@
 package com.liferay.application.list;
 
 /**
- * Represents a navigation item inside an application defined by a {@link
- * PanelApp}.
- *
  * @author Mario Leandro
  */
 public class PanelAppNavigationItem {
