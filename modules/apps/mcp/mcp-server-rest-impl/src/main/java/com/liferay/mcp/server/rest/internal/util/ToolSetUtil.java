@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.Bundle;
@@ -275,19 +276,15 @@ public class ToolSetUtil {
 				base = StringPool.SLASH + base;
 			}
 
-			String openAPIPath = _getOpenAPIPath(applicationDTO);
+			for (String openAPIPath : _getOpenAPIPaths(applicationDTO)) {
+				String basePath = base + _getVersionPath(openAPIPath);
 
-			if (openAPIPath == null) {
-				continue;
+				openAPIBriefs.put(
+					StringUtil.replace(
+						basePath.substring(1), CharPool.SLASH, CharPool.DASH),
+					new OpenAPIBrief(
+						base, toolSetDescriptions.get(basePath), openAPIPath));
 			}
-
-			String basePath = base + _getVersionPath(openAPIPath);
-
-			openAPIBriefs.put(
-				StringUtil.replace(
-					basePath.substring(1), CharPool.SLASH, CharPool.DASH),
-				new OpenAPIBrief(
-					base, toolSetDescriptions.get(basePath), openAPIPath));
 		}
 
 		return openAPIBriefs;
@@ -346,23 +343,28 @@ public class ToolSetUtil {
 			});
 	}
 
-	private static String _getOpenAPIPath(ApplicationDTO applicationDTO) {
-		for (ResourceDTO resourceDTO : applicationDTO.resourceDTOs) {
-			String openAPIPath = _getOpenAPIPath(resourceDTO.resourceMethods);
+	private static Set<String> _getOpenAPIPaths(ApplicationDTO applicationDTO) {
+		Set<String> openAPIPaths = new TreeSet<>();
 
-			if (openAPIPath != null) {
-				return openAPIPath;
-			}
+		for (ResourceDTO resourceDTO : applicationDTO.resourceDTOs) {
+			openAPIPaths.addAll(_getOpenAPIPaths(resourceDTO.resourceMethods));
 		}
 
-		return _getOpenAPIPath(applicationDTO.resourceMethods);
+		if (openAPIPaths.isEmpty()) {
+			openAPIPaths.addAll(
+				_getOpenAPIPaths(applicationDTO.resourceMethods));
+		}
+
+		return openAPIPaths;
 	}
 
-	private static String _getOpenAPIPath(
+	private static Set<String> _getOpenAPIPaths(
 		ResourceMethodInfoDTO[] resourceMethodInfoDTOs) {
 
+		Set<String> openAPIPaths = new TreeSet<>();
+
 		if (resourceMethodInfoDTOs == null) {
-			return null;
+			return openAPIPaths;
 		}
 
 		for (ResourceMethodInfoDTO resourceMethodInfoDTO :
@@ -371,11 +373,12 @@ public class ToolSetUtil {
 			String path = resourceMethodInfoDTO.path;
 
 			if ((path != null) && path.contains("/openapi")) {
-				return StringUtil.replace(path, "{type:json|yaml}", "json");
+				openAPIPaths.add(
+					StringUtil.replace(path, "{type:json|yaml}", "json"));
 			}
 		}
 
-		return null;
+		return openAPIPaths;
 	}
 
 	private static Response _getResponse(Object value) throws Exception {
