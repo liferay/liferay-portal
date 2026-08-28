@@ -5,12 +5,17 @@
 
 package com.liferay.translation.internal.util;
 
+import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
+import com.liferay.info.field.type.HTMLInfoFieldType;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.xml.Element;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -22,7 +27,7 @@ public class XLIFFExporterUtil {
 		Element element, InfoFieldValue<Object> infoFieldValue,
 		Locale targetLocale) {
 
-		String targetStringValue = _getTargetStringValue(
+		String targetStringValue = getTargetStringValue(
 			infoFieldValue, targetLocale);
 
 		if (targetStringValue == null) {
@@ -33,7 +38,7 @@ public class XLIFFExporterUtil {
 		}
 	}
 
-	private static String _getTargetStringValue(
+	public static String getTargetStringValue(
 		InfoFieldValue<Object> infoFieldValue, Locale targetLocale) {
 
 		Object value = infoFieldValue.getValue();
@@ -57,6 +62,18 @@ public class XLIFFExporterUtil {
 		}
 
 		return targetValue.toString();
+	}
+
+	public static boolean isProtectedHTMLInfoField(InfoField<?> infoField) {
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-102730") &&
+			Objects.equals(
+				infoField.getInfoFieldType(), HTMLInfoFieldType.INSTANCE)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 }
