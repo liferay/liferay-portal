@@ -428,6 +428,7 @@ public class ObjectDefinitionResourceTest
 	public void testPatchObjectDefinition() throws Exception {
 		super.testPatchObjectDefinition();
 
+		_testPatchObjectDefinitionWithObjectFields();
 		_testPatchObjectDefinitionWithPermissions();
 	}
 
@@ -3079,6 +3080,72 @@ public class ObjectDefinitionResourceTest
 					workflowDefinitionLink1, workflowDefinitionLink2)),
 			new HashSet<>(
 				Arrays.asList(objectDefinition.getWorkflowDefinitionLinks())));
+	}
+
+	private void _testPatchObjectDefinitionWithObjectFields() throws Exception {
+		ObjectDefinition objectDefinition = _addObjectDefinition(
+			randomObjectDefinition());
+
+		String objectFieldExternalReferenceCode = RandomTestUtil.randomString();
+
+		objectDefinitionResource.patchObjectDefinition(
+			objectDefinition.getId(),
+			new ObjectDefinition() {
+				{
+					objectFields = ArrayUtil.append(
+						objectDefinition.getObjectFields(),
+						new ObjectField() {
+							{
+								businessType = BusinessType.TEXT;
+								DBType = ObjectField.DBType.create("String");
+								externalReferenceCode =
+									objectFieldExternalReferenceCode;
+								label =
+									RandomTestUtil.randomLanguageIdStringMap();
+								name = StringUtil.randomId();
+							}
+						});
+				}
+			});
+
+		ObjectDefinition getObjectDefinition =
+			objectDefinitionResource.getObjectDefinition(
+				objectDefinition.getId());
+
+		ObjectField[] objectFields = ArrayUtil.filter(
+			getObjectDefinition.getObjectFields(),
+			objectField -> !objectField.getSystem());
+
+		Assert.assertEquals(
+			Arrays.toString(objectFields), 2, objectFields.length);
+		Assert.assertFalse(objectFields[1].getRequired());
+
+		objectDefinitionResource.patchObjectDefinition(
+			objectDefinition.getId(),
+			new ObjectDefinition() {
+				{
+					objectFields = new ObjectField[] {
+						new ObjectField() {
+							{
+								externalReferenceCode =
+									objectFieldExternalReferenceCode;
+								required = true;
+							}
+						}
+					};
+				}
+			});
+
+		getObjectDefinition = objectDefinitionResource.getObjectDefinition(
+			objectDefinition.getId());
+
+		objectFields = ArrayUtil.filter(
+			getObjectDefinition.getObjectFields(),
+			objectField -> !objectField.getSystem());
+
+		Assert.assertEquals(
+			Arrays.toString(objectFields), 1, objectFields.length);
+		Assert.assertTrue(objectFields[0].getRequired());
 	}
 
 	private void _testPatchObjectDefinitionWithPermissions() throws Exception {
