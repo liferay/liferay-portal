@@ -10,7 +10,6 @@ import com.liferay.headless.cmp.dto.v1_0.TaskAssignee;
 import com.liferay.headless.cmp.resource.v1_0.TaskAssigneeResource;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.RoleService;
@@ -45,12 +44,6 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 	public Page<TaskAssignee> getProjectTaskAssigneesPage(
 			Long projectId, String search, String type)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-58677")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		return _getTaskAssigneesPage(
 			_objectEntryService.getObjectEntry(projectId), search, type);
