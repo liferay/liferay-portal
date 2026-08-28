@@ -13,26 +13,37 @@ import com.liferay.headless.admin.site.client.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecificationVersion;
+import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecificationVersionPageExperience;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.provider.LayoutContentVersionDataProvider;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeBiConsumer;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -43,8 +54,12 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+import com.liferay.segments.test.util.SegmentsTestUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -109,6 +124,7 @@ public class PageSpecificationVersionResourceTest
 		_testGetSiteSitePagePageSpecificationVersionActions();
 		_testGetSiteSitePagePageSpecificationVersionMismatchedSitePage();
 		_testGetSiteSitePagePageSpecificationVersionPageSpecificationNestedField();
+		_testGetSiteSitePagePageSpecificationVersionWithPageSpecificationVersionPageExperiences();
 	}
 
 	@Override
@@ -270,6 +286,50 @@ public class PageSpecificationVersionResourceTest
 			pageSpecificationVersion);
 	}
 
+	private List<SegmentsExperience> _addSegmentsExperiences(
+			int count, Layout layout)
+		throws Exception {
+
+		List<SegmentsExperience> segmentsExperiences = new ArrayList<>();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(layout.getGroupId());
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					layout.getGroupId(), layout.getPlid());
+
+		for (int i = 0; i < count; i++) {
+			SegmentsExperience segmentsExperience =
+				SegmentsTestUtil.addSegmentsExperience(
+					layout.getGroupId(), layout.getPlid());
+
+			LayoutPageTemplateStructureRel layoutPageTemplateStructureRel =
+				_layoutPageTemplateStructureRelLocalService.
+					fetchLayoutPageTemplateStructureRel(
+						layoutPageTemplateStructure.
+							getLayoutPageTemplateStructureId(),
+						segmentsExperience.getSegmentsExperienceId());
+
+			if (layoutPageTemplateStructureRel == null) {
+				_layoutPageTemplateStructureRelLocalService.
+					addLayoutPageTemplateStructureRel(
+						PrincipalThreadLocal.getUserId(), layout.getGroupId(),
+						layoutPageTemplateStructure.
+							getLayoutPageTemplateStructureId(),
+						segmentsExperience.getSegmentsExperienceId(),
+						layoutPageTemplateStructure.
+							getDefaultSegmentsExperienceData(),
+						serviceContext);
+			}
+
+			segmentsExperiences.add(segmentsExperience);
+		}
+
+		return segmentsExperiences;
+	}
+
 	private void _assertActionHref(
 		PageSpecificationVersion pageSpecificationVersion, String... keys) {
 
@@ -368,8 +428,34 @@ public class PageSpecificationVersionResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
-			"nestedFields", "pageSpecification"
+			"nestedFields",
+			"pageSpecification,pageSpecificationVersionPageExperiences"
 		).build();
+	}
+
+	private Map<String, SegmentsExperience> _getSegmentsExperiencesMap(
+			int count, Layout layout)
+		throws Exception {
+
+		Map<String, SegmentsExperience> segmentsExperiencesMap =
+			new HashMap<>();
+
+		for (SegmentsExperience segmentsExperience :
+				_addSegmentsExperiences(count, layout)) {
+
+			segmentsExperiencesMap.put(
+				segmentsExperience.getExternalReferenceCode(),
+				segmentsExperience);
+		}
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperience(
+				layout.getPlid());
+
+		segmentsExperiencesMap.put(
+			segmentsExperience.getExternalReferenceCode(), segmentsExperience);
+
+		return segmentsExperiencesMap;
 	}
 
 	private void _testDeleteSiteSitePagePageSpecificationVersionLatestApproved()
@@ -493,6 +579,77 @@ public class PageSpecificationVersionResourceTest
 			getPageSpecificationVersion.getPageSpecification());
 	}
 
+	private void _testGetSiteSitePagePageSpecificationVersionWithPageSpecificationVersionPageExperiences()
+		throws Exception {
+
+		Map<String, SegmentsExperience> segmentsExperiencesMap =
+			_getSegmentsExperiencesMap(3, _testGroupLayout.fetchDraftLayout());
+
+		PageSpecificationVersion pageSpecificationVersion =
+			testGetSiteSitePagePageSpecificationVersion_addPageSpecificationVersion();
+
+		PageSpecificationVersionResource pageSpecificationVersionResource =
+			_getPageSpecificationVersionResource();
+
+		PageSpecificationVersion getPageSpecificationVersion =
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersion(
+					testGroup.getExternalReferenceCode(),
+					_testGroupLayout.getExternalReferenceCode(),
+					pageSpecificationVersion.getExternalReferenceCode());
+
+		PageSpecificationVersionPageExperience[]
+			pageSpecificationVersionPageExperiences =
+				getPageSpecificationVersion.
+					getPageSpecificationVersionPageExperiences();
+
+		String[] expectedAvailablePreviewLanguageIds =
+			TransformUtil.transformToArray(
+				LanguageUtil.getAvailableLocales(testGroup.getGroupId()),
+				locale -> LocaleUtil.toLanguageId(locale), String.class);
+
+		for (PageSpecificationVersionPageExperience
+				pageSpecificationVersionPageExperience :
+					pageSpecificationVersionPageExperiences) {
+
+			SegmentsExperience segmentsExperience = segmentsExperiencesMap.get(
+				pageSpecificationVersionPageExperience.
+					getExternalReferenceCode());
+
+			Assert.assertEquals(
+				segmentsExperience.getExternalReferenceCode(),
+				pageSpecificationVersionPageExperience.
+					getExternalReferenceCode());
+			Assert.assertEquals(
+				LocalizedMapUtil.getI18nMap(
+					true, segmentsExperience.getNameMap()),
+				pageSpecificationVersionPageExperience.getName_i18n());
+			Assert.assertEquals(
+				segmentsExperience.getPriority(),
+				GetterUtil.getInteger(
+					pageSpecificationVersionPageExperience.getPriority()));
+
+			String[] availablePreviewLanguageIds =
+				pageSpecificationVersionPageExperience.
+					getAvailablePreviewLanguageIds();
+
+			Assert.assertTrue(
+				Arrays.toString(availablePreviewLanguageIds),
+				ArrayUtil.containsAll(
+					availablePreviewLanguageIds,
+					expectedAvailablePreviewLanguageIds));
+			Assert.assertEquals(
+				Arrays.toString(availablePreviewLanguageIds),
+				expectedAvailablePreviewLanguageIds.length,
+				availablePreviewLanguageIds.length);
+		}
+
+		Assert.assertEquals(
+			Arrays.toString(pageSpecificationVersionPageExperiences),
+			segmentsExperiencesMap.size(),
+			pageSpecificationVersionPageExperiences.length);
+	}
+
 	private void _testPostSiteSitePagePageSpecificationVersionRestore()
 		throws Exception {
 
@@ -611,6 +768,14 @@ public class PageSpecificationVersionResourceTest
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+	@Inject
+	private LayoutPageTemplateStructureRelLocalService
+		_layoutPageTemplateStructureRelLocalService;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
