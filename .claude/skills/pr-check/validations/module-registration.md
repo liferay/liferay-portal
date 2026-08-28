@@ -59,7 +59,7 @@ Deploy a `.lfrbuild-ci` addition without the profile, which is how the pass that
 A removal is judged by what still references the module. Start with its remaining markers, which decide whether it left the profile set at all. A module that still carries another portal family marker is still in the set, so report the removal and move on to the next marker. Name what remains, or say that nothing does:
 
 ```bash
-git ls-tree -r --name-only "${HEAD_SHA}" -- '<module directory>/' \
+git ls-tree -r --name-only "${HEAD_SHA}" -- '<module directory>' \
 	| command grep '/\.lfrbuild'
 ```
 
@@ -92,7 +92,7 @@ These are compile time consumers, which is the easier half of the question. A mo
 
 FAIL when a run reports `BUILD FAILED`, and report the module and the error. A failure of the form `project '<name>' not found in project ':...'` names the module itself and means the marker sits in a directory the build has no project for, so nothing registered. `Project with path ':...' could not be found` names a reference instead. In a profile run it means the referenced module is outside the profile set, which is the removal defect above when it names the removed module, and in a plain run it means the referenced directory does not exist, so the module's own `build.gradle` is broken. A diff containing no `.lfrbuild-*` marker at all should not have fired this validation, so that is a broken selection rather than a pass; report it as a FAIL too. PASS when every added marker reports `BUILD SUCCESSFUL` and no removal left a dangling reference.
 
-A diff carrying no addition and no removal with a marked consumer runs nothing, so it has no run to pass. Report **NOT VERIFIED** and give the consumer report as the reason, since reading it as a PASS makes the empty set vacuously true and turns the one case needing a developer's judgement into the one result that stops anyone looking. When a diff carries several markers, judge each on its own branch, FAIL when any fails, and carry every report alongside whatever the verdict.
+A diff carrying no addition and no removal with a marked consumer runs nothing, so it has no run to pass. Report **NOT VERIFIED** and give the consumer report as the reason, since reading it as a PASS makes the empty set vacuously true and turns the one case needing a developer's judgment into the one result that stops anyone looking. When a diff carries several markers, judge each on its own branch, FAIL when any fails, and carry every report alongside whatever the verdict.
 
 ## Checklist
 

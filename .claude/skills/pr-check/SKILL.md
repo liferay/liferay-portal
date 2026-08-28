@@ -174,7 +174,7 @@ The block is the overall state and tested SHA, followed by a table with one row 
 | Module Registration | NOT VERIFIED |
 | Java Unit Tests | PASS |
 
-Module Registration verified nothing. The diff removes `.lfrbuild-ci` from `apps:blogs:blogs-api`, which drops the module from CI's deploy pass and breaks no build, so whether CI still needs it is the developer's judgement.
+Module Registration verified nothing. The diff removes `.lfrbuild-ci` from `apps:blogs:blogs-api`, which drops the module from CI's deploy pass and breaks no build, so whether CI still needs it is the developer's judgment.
 ```
 
 The overall state is `FAIL` when any row is `FAIL`, and `PASS` otherwise. A `NOT VERIFIED` row leaves the overall state alone, and the marker the `pr-check-publish` skill writes still records `success`, since the webhook accepts only `failure`, `skipped`, and `success` and silently discards anything else.
