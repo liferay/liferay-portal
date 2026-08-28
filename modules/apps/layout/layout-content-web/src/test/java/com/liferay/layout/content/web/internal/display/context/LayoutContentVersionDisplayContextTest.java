@@ -138,7 +138,8 @@ public class LayoutContentVersionDisplayContextTest {
 				"/o/headless-admin-site/v1.0/sites/",
 				_group.getExternalReferenceCode(), "/site-pages/",
 				_publishedLayout.getExternalReferenceCode(),
-				"/page-specification-versions"),
+				"/page-specification-versions",
+				"?nestedFields=pageSpecificationVersionPageExperiences"),
 			config.get("pageSpecificationVersionsURL"));
 	}
 
