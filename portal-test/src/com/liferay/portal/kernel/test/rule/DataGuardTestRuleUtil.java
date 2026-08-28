@@ -668,6 +668,7 @@ public class DataGuardTestRuleUtil {
 
 	private static final Set<String> _blacklistedModelClassNames =
 		SetUtil.fromArray(
+			"com.liferay.portal.kernel.model.ClassName",
 			"com.liferay.portal.security.audit.storage.model.AuditEvent");
 	private static final ThreadLocal<Map<String, Map<Serializable, String>>>
 		_records = new ThreadLocal<>();
