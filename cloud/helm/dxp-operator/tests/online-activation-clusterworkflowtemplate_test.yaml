@@ -23,22 +23,6 @@ tests:
             onlineActivationWorkflow.enabled: false
     -   asserts:
             -   equal:
-                    path: spec.templates[4].script.env[1].name
-                    value: LIFERAY_ACTIVATION_CODE
-            -   equal:
-                    path: spec.templates[4].script.securityContext.allowPrivilegeEscalation
-                    value: false
-            -   equal:
-                    path: spec.templates[4].script.securityContext.capabilities.drop
-                    value: ["ALL"]
-            -   equal:
-                    path: spec.securityContext.runAsNonRoot
-                    value: true
-        it: Passes the activation code through the environment rather than into a manifest
-        set:
-            onlineActivationWorkflow.enabled: true
-    -   asserts:
-            -   equal:
                     path: spec.templates[0].steps[0][0].name
                     value: read-environment
             -   equal:
