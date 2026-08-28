@@ -30,4 +30,12 @@ export interface IConnectedFDSState extends IFDSState {
 	 * data set stops showing a filter UI.
 	 */
 	connectionFilters?: ReadonlyArray<FDSConnectionFilter>;
+
+	/**
+	 * Whatever the consumer asked to have remembered, which the data set
+	 * keeps in the URL and never reads. One value for the whole connection,
+	 * so that what comes back on the next visit is what was given rather
+	 * than a set of parts to reassemble.
+	 */
+	connectionState?: unknown;
 }

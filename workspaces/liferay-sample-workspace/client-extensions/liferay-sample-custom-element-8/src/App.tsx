@@ -14,6 +14,13 @@
 // Driving the search of a data set is what
 // "liferay-sample-custom-element-7" shows.
 
+// The whole filter UI is one value, and the data set remembers it: it is
+// passed along with the expressions it produced, kept in the page URL, and
+// handed back on the next visit, so that a filtered data set can be shared
+// as a link and survives a reload or the back button. Restoring is therefore
+// the same operation as filtering, which is why there is one function below
+// that applies a filter state and nothing that applies one a second way.
+
 import {
 	FDSConnection,
 	FDSConnectionInfo,
@@ -23,11 +30,13 @@ import React, {useEffect, useRef, useState} from 'react';
 import AppliedFilters from './AppliedFilters';
 import FilterPanels from './FilterPanels';
 import {
-	FILTERS,
+	EMPTY_FILTER_STATE,
 	FilterDefinition,
+	FilterState,
 	Selections,
-	getOdataFilterString,
-	getSelectedValues,
+	getConnectionState,
+	getFilters,
+	getValidFilterState,
 	toggleOption,
 } from './filters';
 
@@ -36,24 +45,31 @@ interface AppProps {
 }
 
 function App({fdsName}: AppProps) {
-	const [disabled, setDisabled] = useState<boolean>(true);
-	const [expression, setExpression] = useState('');
-	const [manual, setManual] = useState(false);
-	const [selections, setSelections] = useState<Selections>({});
+	const [filterState, setFilterState] =
+		useState<FilterState>(EMPTY_FILTER_STATE);
+	const [ready, setReady] = useState(false);
+	const [typedExpression, setTypedExpression] = useState('');
 	const fdsConnectionRef = useRef<FDSConnection | null>(null);
 
+	const applyFilterState = (filterState: FilterState) => {
+		setFilterState(filterState);
+
+		fdsConnectionRef.current?.setFilters(
+			getFilters(filterState),
+			getConnectionState(filterState)
+		);
+	};
+
 	useEffect(() => {
-
-		// The connection reports the search query to every consumer, whether
-		// it drives the search or not. This one only filters, so it ignores it.
-
 		fdsConnectionRef.current = new FDSConnection(
 			fdsName,
 			{
+				restore: (connectionState: unknown) =>
+					applyFilterState(getValidFilterState(connectionState)),
 				search: () => {},
 			},
 			(fdsConnectionInfo: FDSConnectionInfo) => {
-				setDisabled(fdsConnectionInfo.status !== 'ready');
+				setReady(fdsConnectionInfo.status === 'ready');
 			},
 			{owns: ['filters']}
 		);
@@ -66,31 +82,21 @@ function App({fdsName}: AppProps) {
 		};
 	}, [fdsName]);
 
-	const applySelections = (selections: Selections) => {
-		setSelections(selections);
+	// The applied expression is what a link carries; the input is where the
+	// next one is typed. The two part company while the user types and meet
+	// again whenever an expression is applied or restored.
 
-		fdsConnectionRef.current?.setFilters(
-			FILTERS.map((filterDefinition) => ({
-				id: filterDefinition.id,
-				odataFilterString: getOdataFilterString(
-					filterDefinition,
-					getSelectedValues(selections, filterDefinition.id)
-				),
-			}))
-		);
-	};
+	useEffect(() => {
+		setTypedExpression(filterState.expression);
+	}, [filterState.expression]);
 
-	// Only one of the two ways of filtering is on screen at a time, so
-	// leaving one behind applied would filter the data set by something the
-	// user can no longer see, let alone undo.
+	const {manual, selections} = filterState;
 
-	const handleSwapMode = () => {
-		setExpression('');
-		setSelections({});
-		setManual((manual) => !manual);
+	const setSelections = (selections: Selections) =>
+		applyFilterState({...filterState, selections});
 
-		fdsConnectionRef.current?.clearFilters();
-	};
+	const handleSwapMode = () =>
+		applyFilterState({...EMPTY_FILTER_STATE, manual: !manual});
 
 	return (
 		<div className="p-3">
@@ -99,7 +105,7 @@ function App({fdsName}: AppProps) {
 
 				<button
 					className="btn btn-unstyled link"
-					disabled={disabled}
+					disabled={!ready}
 					onClick={handleSwapMode}
 					type="button"
 				>
@@ -112,24 +118,24 @@ function App({fdsName}: AppProps) {
 					<input
 						aria-label="OData filter expression"
 						className="form-control"
-						disabled={disabled}
-						onChange={(event) => setExpression(event.target.value)}
+						disabled={!ready}
+						onChange={(event) =>
+							setTypedExpression(event.target.value)
+						}
 						placeholder="Filter with OData, such as name eq 'Liferay'"
 						style={{minWidth: 0}}
 						type="text"
-						value={expression}
+						value={typedExpression}
 					/>
 
 					<button
 						className="btn btn-primary flex-shrink-0"
-						disabled={disabled || !expression.trim()}
+						disabled={!ready || !typedExpression.trim()}
 						onClick={() =>
-							fdsConnectionRef.current?.setFilters([
-								{
-									id: 'manual',
-									odataFilterString: expression.trim(),
-								},
-							])
+							applyFilterState({
+								...filterState,
+								expression: typedExpression.trim(),
+							})
 						}
 						type="button"
 					>
@@ -139,20 +145,20 @@ function App({fdsName}: AppProps) {
 			) : (
 				<>
 					<AppliedFilters
-						onClearAll={() => applySelections({})}
+						onClearAll={() => setSelections({})}
 						onClearFilter={(filterId: string) =>
-							applySelections({...selections, [filterId]: []})
+							setSelections({...selections, [filterId]: []})
 						}
 						selections={selections}
 					/>
 
 					<FilterPanels
-						disabled={disabled}
+						disabled={!ready}
 						onToggleOption={(
 							filterDefinition: FilterDefinition,
 							value: string
 						) =>
-							applySelections(
+							setSelections(
 								toggleOption(
 									selections,
 									filterDefinition,

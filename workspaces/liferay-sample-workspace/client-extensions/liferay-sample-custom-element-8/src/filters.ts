@@ -4,11 +4,7 @@
  */
 
 // The filters the "Delegated Filters" data set declares, repeated here by
-// hand. A connection cannot read them yet, so an element that renders its own
-// filter UI has to know what the data set offers, and the two drift apart the
-// moment one of them changes. Only filters with a fixed set of options are
-// listed: the ones that fetch their values as the user types have nothing to
-// draw until the connection can hand them over.
+// hand.
 
 export interface FilterOption {
 	label: string;
@@ -29,6 +25,20 @@ export interface FilterDefinition {
 }
 
 export type Selections = Readonly<Record<string, ReadonlyArray<string>>>;
+
+export const MANUAL_FILTER_ID = 'manual';
+
+export interface FilterState {
+	expression: string;
+	manual: boolean;
+	selections: Selections;
+}
+
+export const EMPTY_FILTER_STATE: FilterState = {
+	expression: '',
+	manual: false,
+	selections: {},
+};
 
 export const FILTERS: Array<FilterDefinition> = [
 	{
@@ -124,6 +134,88 @@ export function toggleOption(
 	}
 
 	return {...selections, [id]: multiple ? [...values, value] : [value]};
+}
+
+/**
+ * The filter state the data set restored, less anything this element cannot
+ * draw.
+ */
+export function getValidFilterState(connectionState: unknown): FilterState {
+	if (!connectionState || typeof connectionState !== 'object') {
+		return EMPTY_FILTER_STATE;
+	}
+
+	const {expression, selections} = connectionState as Record<string, unknown>;
+
+	if (typeof expression === 'string') {
+		return {expression, manual: true, selections: {}};
+	}
+
+	if (!selections || typeof selections !== 'object') {
+		return EMPTY_FILTER_STATE;
+	}
+
+	const validSelections: Record<string, ReadonlyArray<string>> = {};
+
+	Object.entries(selections as Record<string, unknown>).forEach(
+		([filterId, values]) => {
+			const filterDefinition = FILTERS.find(
+				(filterDefinition) => filterDefinition.id === filterId
+			);
+
+			if (!filterDefinition || !Array.isArray(values)) {
+				return;
+			}
+
+			const validValues = values.filter((value): value is string =>
+				filterDefinition.options.some(
+					(option) => option.value === value
+				)
+			);
+
+			if (validValues.length) {
+				validSelections[filterId] = filterDefinition.multiple
+					? validValues
+					: validValues.slice(0, 1);
+			}
+		}
+	);
+
+	return {expression: '', manual: false, selections: validSelections};
+}
+
+export function getConnectionState(filterState: FilterState): unknown {
+	return filterState.manual
+		? {expression: filterState.expression}
+		: {selections: filterState.selections};
+}
+
+/**
+ * The expressions the given filter state sends to the data set, one per
+ * filter in play. A manually typed expression is the whole filter, so it
+ * travels alone.
+ */
+export function getFilters(
+	filterState: FilterState
+): Array<{id: string; odataFilterString: string}> {
+	if (filterState.manual) {
+		return filterState.expression
+			? [
+					{
+						id: MANUAL_FILTER_ID,
+						odataFilterString: filterState.expression,
+					},
+				]
+			: [];
+	}
+
+	return FILTERS.map((filterDefinition) => ({
+		id: filterDefinition.id,
+		odataFilterString: getOdataFilterString(
+			filterDefinition,
+			getSelectedValues(filterState.selections, filterDefinition.id)
+		),
+	}));
 }
 
 export function getOptionLabels(

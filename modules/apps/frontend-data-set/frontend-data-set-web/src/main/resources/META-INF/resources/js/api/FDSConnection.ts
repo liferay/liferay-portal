@@ -24,10 +24,12 @@ const DEFAULT_TIMEOUT = 10000;
 const DEFAULT_OWNERSHIP: ReadonlyArray<FDSConnectionOwnership> = ['search'];
 
 interface Subscriptions {
+	restoredConnectionState?: {dispose: () => void};
 	search: {dispose: () => void};
 }
 
 interface Selectors {
+	restoredConnectionState: Liferay.State.Selector<unknown>;
 	search: Liferay.State.Selector<string>;
 }
 
@@ -37,6 +39,7 @@ export class FDSConnection {
 	private atom!: Atom<FDSState>;
 	private disconnected = false;
 	private fdsName: string;
+	private filteringTakenOver = false;
 	private instanceId: number = ++FDSConnection.instanceCount;
 	private isReady = false;
 	private navigationHandle: {detach: () => void};
@@ -44,6 +47,7 @@ export class FDSConnection {
 		fdsConnectionInfo: FDSConnectionInfo
 	) => void;
 	private ownsFiltering: boolean;
+	private restore?: (connectionState: unknown) => void;
 	private selectors!: Selectors;
 	private subscriptions!: Subscriptions;
 
@@ -60,6 +64,7 @@ export class FDSConnection {
 		this.ownsFiltering = (options.owns ?? DEFAULT_OWNERSHIP).includes(
 			'filters'
 		);
+		this.restore = fdsStateChangeCallback.restore;
 		this.notifyStatus('connecting');
 
 		getFDSAtom(fdsName, {timeout: options.timeout ?? DEFAULT_TIMEOUT})
@@ -71,6 +76,10 @@ export class FDSConnection {
 				this.atom = atom;
 
 				this.selectors = {
+					restoredConnectionState: getOrCreateSelector(
+						`${atom.key}_restoredConnectionState`,
+						(get) => get(atom).restoredConnectionState
+					),
 					search: getOrCreateSelector(
 						`${atom.key}_searchQuery`,
 						(get) => get(atom).search.query
@@ -81,13 +90,18 @@ export class FDSConnection {
 
 				this.isReady = true;
 
-				// Take the filtering over before the consumer hears the
-				// connection is ready, so that the data set drops its filter
-				// UI as part of connecting rather than at the first
-				// setFilters() call, which would make the dropdown flash.
-
 				if (this.ownsFiltering) {
-					this.writeConnectionFilters([]);
+					const restoredConnectionState = Liferay.State.read(
+						this.selectors.restoredConnectionState
+					);
+
+					if (restoredConnectionState !== undefined) {
+						this.restoreConnectionState(restoredConnectionState);
+					}
+
+					if (!this.filteringTakenOver) {
+						this.writeConnectionFilters([]);
+					}
 				}
 
 				this.subscriptions = {
@@ -96,6 +110,18 @@ export class FDSConnection {
 						fdsStateChangeCallback.search
 					),
 				};
+
+				// The browser's back and forward buttons move a data set
+				// between filters the same way they move it between searches,
+				// and the data set offers each one it lands on here.
+
+				if (this.ownsFiltering) {
+					this.subscriptions.restoredConnectionState =
+						Liferay.State.subscribe(
+							this.selectors.restoredConnectionState,
+							this.handleRestoredConnectionState
+						);
+				}
 
 				// initialize consumer's state
 
@@ -154,8 +180,15 @@ export class FDSConnection {
 	 * Only a connection that declared `owns: ['filters']` may filter, so that
 	 * a data set has one filtering owner and shows a filter UI only when that
 	 * owner is itself.
+	 *
+	 * Whatever the consumer passes as `connectionState` is kept in the page
+	 * URL for as long as these filters reach the request, and comes back
+	 * through the `restore` state change callback on the next visit.
 	 */
-	setFilters = (filters: Array<FDSConnectionFilter>): void => {
+	setFilters = (
+		filters: Array<FDSConnectionFilter>,
+		connectionState?: unknown
+	): void => {
 		if (!this.isReady) {
 			return;
 		}
@@ -171,7 +204,8 @@ export class FDSConnection {
 		}
 
 		this.writeConnectionFilters(
-			filters.map(({id, odataFilterString}) => ({id, odataFilterString}))
+			filters.map(({id, odataFilterString}) => ({id, odataFilterString})),
+			connectionState
 		);
 	};
 
@@ -199,6 +233,7 @@ export class FDSConnection {
 			this.releaseFiltering();
 		}
 
+		this.subscriptions?.restoredConnectionState?.dispose();
 		this.subscriptions?.search?.dispose();
 		this.disconnected = true;
 		this.isReady = false;
@@ -206,10 +241,47 @@ export class FDSConnection {
 		this.notifyStatus('disconnected');
 	};
 
+	private restoreConnectionState(connectionState: unknown): void {
+		if (this.restore) {
+			this.restore(connectionState);
+		}
+		else if (connectionState !== null) {
+			this.warn(
+				'Dropped the filters restored for ' +
+					this.fdsName +
+					': connect with a restore state change callback to put' +
+					' them back'
+			);
+		}
+
+		const fdsState = {...Liferay.State.read(this.atom)};
+
+		delete fdsState.restoredConnectionState;
+
+		Liferay.State.write(this.atom, fdsState);
+	}
+
+	private handleRestoredConnectionState = (
+		connectionState: unknown
+	): void => {
+
+		// Dropping it above sets this to nothing, which comes back here:
+		// there is no consumer left to tell.
+
+		if (connectionState === undefined) {
+			return;
+		}
+
+		this.restoreConnectionState(connectionState);
+	};
+
 	private releaseFiltering(): void {
+		this.filteringTakenOver = false;
+
 		const fdsState = {...Liferay.State.read(this.atom)};
 
 		delete fdsState.connectionFilters;
+		delete fdsState.connectionState;
 
 		Liferay.State.write(this.atom, fdsState);
 	}
@@ -219,11 +291,15 @@ export class FDSConnection {
 	}
 
 	private writeConnectionFilters(
-		connectionFilters: Array<FDSConnectionFilter>
+		connectionFilters: Array<FDSConnectionFilter>,
+		connectionState?: unknown
 	): void {
+		this.filteringTakenOver = true;
+
 		Liferay.State.write(this.atom, {
 			...Liferay.State.read(this.atom),
 			connectionFilters,
+			connectionState,
 		});
 	}
 
