@@ -281,7 +281,7 @@ public class UpdateOAuthClientASLocalMetadataMVCActionCommandTest {
 		Assert.assertEquals(url, oidcProviderMetadata.getUserInfoEndpointURI());
 
 		Assert.assertEquals(
-			urlString + "/o/.well-known/oauth-authorization-server",
+			urlString + "/.well-known/oauth-authorization-server",
 			oAuthClientASLocalMetadata.getOAuthASLocalWellKnownURI());
 
 		AuthorizationServerMetadata authorizationServerMetadata =
@@ -318,7 +318,12 @@ public class UpdateOAuthClientASLocalMetadataMVCActionCommandTest {
 		Assert.assertTrue(
 			SessionErrors.contains(
 				mockLiferayPortletActionRequest,
-				OAuthClientASLocalMetadataLocalWellKnownURIException.class));
+				new Class<?>[] {
+					OAuthClientASLocalMetadataLocalWellKnownURIException.
+						MustBeValidHTTPSURL.class,
+					OAuthClientASLocalMetadataLocalWellKnownURIException.
+						MustProduceValidURI.class
+				}));
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(

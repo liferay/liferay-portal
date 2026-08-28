@@ -33,8 +33,9 @@ renderResponse.setTitle((oAuthClientASLocalMetadata == null) ? LanguageUtil.get(
 		<div class="sheet">
 			<aui:fieldset>
 				<liferay-ui:error exception="<%= DuplicateOAuthClientASLocalMetadataException.class %>" message="oauth-client-as-local-metadata-duplicate-authorization-server-local-metadata" />
-
-				<liferay-ui:error exception="<%= OAuthClientASLocalMetadataLocalWellKnownURIException.class %>" message="oauth-client-as-local-metadata-invalid-local-well-known-uri" />
+				<liferay-ui:error exception="<%= OAuthClientASLocalMetadataLocalWellKnownURIException.MustBeValidHTTPSURL.class %>" message="oauth-client-as-local-metadata-invalid-local-well-known-uri" />
+				<liferay-ui:error exception="<%= OAuthClientASLocalMetadataLocalWellKnownURIException.MustNotExceedMaximumLength.class %>" message="oauth-client-as-local-metadata-issuer-is-too-long" />
+				<liferay-ui:error exception="<%= OAuthClientASLocalMetadataLocalWellKnownURIException.MustProduceValidURI.class %>" message="oauth-client-as-local-metadata-invalid-local-well-known-uri" />
 
 				<liferay-ui:error exception="<%= OAuthClientASLocalMetadataMetadataJSONException.class %>">
 					<liferay-ui:message arguments="<%= HtmlUtil.escape(((OAuthClientASLocalMetadataMetadataJSONException)errorException).getMessage()) %>" key="oauth-client-as-local-metadata-invalid-metadata-json-x" />

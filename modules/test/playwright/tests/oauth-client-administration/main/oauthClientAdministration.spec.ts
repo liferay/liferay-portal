@@ -71,7 +71,7 @@ test.describe('Enable Configuration of oauth-authorization-server Well-Known URI
 		async ({authServerLocalMetadatasPage}) => {
 			const issuer = 'https://localhost.com';
 			const supportedScopes = `${getRandomString()},${getRandomString()}`;
-			const wellKnownURI = `${issuer}/o/.well-known/oauth-authorization-server`;
+			const wellKnownURI = `${issuer}/.well-known/oauth-authorization-server`;
 
 			await authServerLocalMetadatasPage.goTo();
 
