@@ -45,8 +45,6 @@ public class ConfigStylingCheck extends BaseFileCheck {
 				s = s.substring(0, s.length() - 1);
 			}
 
-			s = matcher.group(1) + s + matcher.group(3);
-
 			int x = -1;
 
 			while (x < (s.length() - 1)) {
@@ -69,7 +67,10 @@ public class ConfigStylingCheck extends BaseFileCheck {
 				s = StringUtil.insert(s, StringPool.SPACE, x + 1);
 			}
 
-			matcher.appendReplacement(sb, Matcher.quoteReplacement(s));
+			matcher.appendReplacement(
+				sb,
+				matcher.group(1) + Matcher.quoteReplacement(s) +
+					matcher.group(3));
 		}
 
 		matcher.appendTail(sb);
