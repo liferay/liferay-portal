@@ -1096,7 +1096,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			if (availableLocales.contains(locale)) {
 				inputLabel = labelInfoLocalizedValue.getValue(locale);
 			}
-			else {
+			else if (inputLabelJSONObject != null) {
 				inputLabel = inputLabelJSONObject.getString(
 					_language.getLanguageId(LocaleUtil.getSiteDefault()));
 			}
