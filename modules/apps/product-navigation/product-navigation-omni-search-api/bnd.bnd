@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Product Navigation Omni Search API
+Bundle-SymbolicName: com.liferay.product.navigation.omni.search.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.product.navigation.omni.search,\
+	com.liferay.product.navigation.omni.search.constants
