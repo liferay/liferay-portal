@@ -32,9 +32,9 @@ public class ConfigStylingCheck extends BaseFileCheck {
 			return content;
 		}
 
-		Matcher matcher = _arrayPattern.matcher(content);
-
 		StringBuffer sb = new StringBuffer();
+
+		Matcher matcher = _arrayPattern.matcher(content);
 
 		while (matcher.find()) {
 			String s = matcher.group(2);
