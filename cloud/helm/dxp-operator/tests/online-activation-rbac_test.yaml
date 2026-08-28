@@ -1,0 +1,54 @@
+suite: Online Activation ClusterRole
+templates:
+    -   templates/online-activation-rbac.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: online-activation-cluster-role
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: ClusterRole
+            -   notExists:
+                    path: metadata.namespace
+        it: Defines the rules once for every environment in the cluster
+        set:
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the cluster role unless the online activation workflow is enabled
+        set:
+            onlineActivationWorkflow.enabled: false
+    -   asserts:
+            -   equal:
+                    path: rules[1].resources
+                    value: ["workflowtaskresults"]
+            -   equal:
+                    path: rules[1].verbs
+                    value: ["create", "patch"]
+            -   equal:
+                    path: rules[2].resources
+                    value: ["liferayenvironments"]
+            -   equal:
+                    path: rules[2].verbs
+                    value: ["get", "patch"]
+            -   lengthEqual:
+                    count: 3
+                    path: rules
+        it: Reports workflow task results and reads only the named environment
+        set:
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: rules[0].resources
+                    value: ["secrets"]
+            -   equal:
+                    path: rules[0].verbs
+                    value: ["create", "get", "patch", "update"]
+            -   notExists:
+                    path: rules[0].resourceNames
+        it: Writes secrets only inside the namespace its binding confines it to
+        set:
+            onlineActivationWorkflow.enabled: true

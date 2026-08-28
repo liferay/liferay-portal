@@ -1,0 +1,95 @@
+{{- if .Values.onlineActivationWorkflow.enabled -}}
+{{- $onlineActivationWorkflow := .Values.onlineActivationWorkflow -}}
+{{- $image := printf "%s:%s" $onlineActivationWorkflow.image.repository (toString $onlineActivationWorkflow.image.tag) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: online-activation-cluster-workflow-template
+spec:
+    archiveLogs: false
+    arguments:
+        parameters:
+            -   description:
+                    The activation code issued for this environment.
+                name: activation-code
+            -   description:
+                    The LiferayEnvironment to activate in this namespace.
+                name: liferay-environment-name
+                value: {{ $onlineActivationWorkflow.defaultEnvironmentName }}
+    entrypoint: main
+    podGC:
+        strategy: OnWorkflowSuccess
+    serviceAccountName: {{ $onlineActivationWorkflow.serviceAccountName }}
+    templates:
+        -   name: main
+            steps:
+                -   -   name: read-environment
+                        template: read-environment
+                -   -   arguments:
+                            parameters:
+                                -   name: secret-key
+                                    value: "{{ "{{" }}steps.read-environment.outputs.parameters.secret-key}}"
+                                -   name: secret-name
+                                    value: "{{ "{{" }}steps.read-environment.outputs.parameters.secret-name}}"
+                        name: write-secret
+                        template: write-secret
+                -   -   name: request-reconcile
+                        template: request-reconcile
+                -   -   name: wait
+                        template: wait
+        -   name: read-environment
+            outputs:
+                parameters:
+                    -   name: secret-key
+                        valueFrom:
+                            jsonPath: "{.spec.activationCodeSecretRef.key}"
+                    -   name: secret-name
+                        valueFrom:
+                            jsonPath: "{.spec.activationCodeSecretRef.name}"
+            resource:
+                action: get
+                failureCondition: status.activatedAt
+                manifest: |
+                    apiVersion: licensing.liferay.com/v1alpha1
+                    kind: LiferayEnvironment
+                    metadata:
+                        name: "{{ "{{" }}workflow.parameters.liferay-environment-name}}"
+        -   name: request-reconcile
+            resource:
+                action: patch
+                manifest: |
+                    apiVersion: licensing.liferay.com/v1alpha1
+                    kind: LiferayEnvironment
+                    metadata:
+                        annotations:
+                            licensing.liferay.com/activation-requested-at: "{{ "{{" }}workflow.creationTimestamp.RFC3339}}"
+                            licensing.liferay.com/activation-requested-by: "{{ "{{" }}workflow.name}}"
+                        name: "{{ "{{" }}workflow.parameters.liferay-environment-name}}"
+                mergeStrategy: merge
+        -   activeDeadlineSeconds: {{ $onlineActivationWorkflow.waitTimeoutSeconds }}
+            name: wait
+            resource:
+                action: get
+                manifest: |
+                    apiVersion: licensing.liferay.com/v1alpha1
+                    kind: LiferayEnvironment
+                    metadata:
+                        name: "{{ "{{" }}workflow.parameters.liferay-environment-name}}"
+                successCondition: status.activatedAt
+        -   inputs:
+                parameters:
+                    -   name: secret-key
+                    -   name: secret-name
+            name: write-secret
+            script:
+                command: [sh]
+                image: {{ $image | quote }}
+                resources:
+                    {{- $onlineActivationWorkflow.resources | toYaml | nindent 20 }}
+                source: |-
+                    {{- tpl (.Files.Get "scripts/online-activation-write-secret.sh") . | nindent 20 }}
+    ttlStrategy:
+        secondsAfterCompletion: {{ $onlineActivationWorkflow.ttlSecondsAfterCompletion }}
+{{- end -}}

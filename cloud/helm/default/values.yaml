@@ -362,16 +362,20 @@ image:
     tag: 2026.q1.8-lts
 initContainers: []
 license:
-    activationCodeSecretKey: activationCode
-    activationCodeSecretName: ""
     enabled: false
     initScriptsVolumeName: liferay-init-scripts-default
     secretName: ""
     syncInterval: 60
 licensing:
+    activationCodeSecretKey: activationCode
+    activationCodeSecretName: ""
     enabled: false
     offline: false
     offlineActivationBundle: ""
+    onlineActivationWorkflow:
+        clusterRoleName: online-activation-cluster-role
+        enabled: true
+        serviceAccountName: online-activation-service-account
 livenessProbe:
     failureThreshold: 3
     httpGet:

@@ -1,0 +1,26 @@
+{{- if and .Values.licensing.enabled .Values.licensing.onlineActivationWorkflow.enabled -}}
+{{- $onlineActivationWorkflow := .Values.licensing.onlineActivationWorkflow -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: online-activation-role-binding
+    namespace: {{ include "liferay.namespace" . }}
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: {{ $onlineActivationWorkflow.clusterRoleName }}
+subjects:
+    -   kind: ServiceAccount
+        name: {{ $onlineActivationWorkflow.serviceAccountName }}
+        namespace: {{ include "liferay.namespace" . }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: {{ $onlineActivationWorkflow.serviceAccountName }}
+    namespace: {{ include "liferay.namespace" . }}
+{{- end -}}

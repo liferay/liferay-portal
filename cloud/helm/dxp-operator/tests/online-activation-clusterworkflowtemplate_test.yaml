@@ -1,0 +1,124 @@
+suite: Online Activation ClusterWorkflowTemplate
+templates:
+    -   templates/online-activation-clusterworkflowtemplate.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.archiveLogs
+                    value: false
+            -   equal:
+                    path: spec.podGC.strategy
+                    value: OnWorkflowSuccess
+            -   equal:
+                    path: spec.ttlStrategy.secondsAfterCompletion
+                    value: 3600
+        it: Discards the workflow that holds the activation code but keeps a failed run readable
+        set:
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the cluster workflow template unless the online activation workflow is enabled
+        set:
+            onlineActivationWorkflow.enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.templates[4].script.env[1].name
+                    value: LIFERAY_ACTIVATION_CODE
+            -   equal:
+                    path: spec.templates[4].script.securityContext.allowPrivilegeEscalation
+                    value: false
+            -   equal:
+                    path: spec.templates[4].script.securityContext.capabilities.drop
+                    value: ["ALL"]
+            -   equal:
+                    path: spec.securityContext.runAsNonRoot
+                    value: true
+        it: Passes the activation code through the environment rather than into a manifest
+        set:
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.templates[0].steps[0][0].name
+                    value: read-environment
+            -   equal:
+                    path: spec.templates[0].steps[1][0].name
+                    value: write-secret
+            -   equal:
+                    path: spec.templates[0].steps[2][0].name
+                    value: request-reconcile
+            -   equal:
+                    path: spec.templates[0].steps[3][0].name
+                    value: wait
+        it: Reads the environment before writing the activation code and waiting on the outcome
+        set:
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: online-activation-cluster-workflow-template
+            -   equal:
+                    path: spec.serviceAccountName
+                    value: online-activation-service-account
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: ClusterWorkflowTemplate
+        it: Renders one cluster scoped template the whole cluster shares
+        set:
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.templates[1].resource.action
+                    value: get
+            -   equal:
+                    path: spec.templates[1].resource.failureCondition
+                    value: status.activatedAt
+            -   equal:
+                    path: spec.templates[1].outputs.parameters[0].valueFrom.jsonPath
+                    value: "{.spec.activationCodeSecretRef.key}"
+            -   equal:
+                    path: spec.templates[1].outputs.parameters[1].valueFrom.jsonPath
+                    value: "{.spec.activationCodeSecretRef.name}"
+        it: Refuses an activated environment and takes the secret reference from its spec
+        set:
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.arguments.parameters[0].name
+                    value: activation-code
+            -   equal:
+                    path: spec.arguments.parameters[1].name
+                    value: liferay-environment-name
+            -   lengthEqual:
+                    count: 2
+                    path: spec.arguments.parameters
+            -   equal:
+                    path: spec.arguments.parameters[1].value
+                    value: liferay-default
+            -   notExists:
+                    path: spec.arguments.parameters[0].value
+        it: Requires the activation code and prefills the environment the chart conventionally names
+        set:
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.arguments.parameters[1].value
+                    value: some-other-environment
+        it: Tracks a different conventional environment name
+        set:
+            onlineActivationWorkflow.defaultEnvironmentName: some-other-environment
+            onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.templates[3].activeDeadlineSeconds
+                    value: 45
+            -   equal:
+                    path: spec.templates[3].resource.successCondition
+                    value: status.activatedAt
+            -   notExists:
+                    path: spec.templates[3].resource.failureCondition
+        it: Waits on the activation timestamp so a rejected code can still be corrected
+        set:
+            onlineActivationWorkflow.enabled: true
+            onlineActivationWorkflow.waitTimeoutSeconds: 45

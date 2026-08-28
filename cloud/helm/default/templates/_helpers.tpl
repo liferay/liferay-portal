@@ -1,3 +1,7 @@
+{{- define "liferay.activationCodeSecretName" -}}
+{{- .Values.licensing.activationCodeSecretName | default (printf "%s-activation" (include "liferay.name" .)) }}
+{{- end }}
+
 {{- define "liferay.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
