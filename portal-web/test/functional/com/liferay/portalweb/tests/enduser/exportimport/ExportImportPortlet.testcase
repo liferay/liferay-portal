@@ -12,8 +12,6 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
-
-		Staging.enableDeleteApplicationDataBeforeImport();
 	}
 
 	tearDown {
@@ -392,94 +390,6 @@ definition {
 
 		task ("Then: The export of the WC with deleted reference is successful without error on the console") {
 			AssertConsoleTextNotPresent(value1 = "com.liferay.exportimport.kernel.lar.PortletDataException");
-		}
-	}
-
-	@description = "This is a use case for LPS-182704. TC-1 and TC-3: Verify that a confirmation pop-up should show up when Delete Application Data Before Importing checkbox is checked during portlet import process."
-	@priority = 3
-	test ViewDeleteApplicationDataPopUpInPortletImportProgress {
-		task ("Export blank web content and add a new web content entry") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-			LAR.exportPortlet(larFileName = "WebContent_blank_portlet.lar");
-
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content",
-				groupName = "Guest",
-				title = "Web Content Title");
-		}
-
-		task ("Click Cancel in the confirmation dialog will return to the import tab") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-			LAR.importPortletWithDeleteApplicationData(
-				cancelImport = "true",
-				larFileName = "WebContent_blank_portlet.lar");
-		}
-
-		task ("Click OK will import successfully") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-			LAR.importPortletWithDeleteApplicationData(larFileName = "WebContent_blank_portlet.lar");
-
-			WebContent.viewDefaultCP(webContentTitle = "Web Content Title");
-		}
-	}
-
-	@description = "This is a use case for LPS-182704. TC-14 and TC-15: Verify that a confirmation pop-up should show up when Delete Application Data Before Importing checkbox is checked during portlet import process on virtual instance."
-	@priority = 3
-	test ViewDeleteApplicationDataPopUpInPortletImportProgressInVirtualInstance {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Export blank web content") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-			LAR.exportPortlet(larFileName = "WebContent_blank_portlet.lar");
-		}
-
-		task ("Add a virtual Instance able.com") {
-			HeadlessPortalInstanceAPI.addPortalInstance(
-				domain = "www.able.com",
-				portalInstanceId = "www.able.com",
-				virtualHost = "www.able.com");
-		}
-
-		task ("Login at able.com and add a new web content entry") {
-			User.firstLoginUI(
-				password = PropsUtil.get("default.admin.password"),
-				specificURL = "http://www.able.com:8080",
-				userEmailAddress = "test@www.able.com");
-
-			Staging.enableDeleteApplicationDataBeforeImport(navigate = "false");
-
-			WebContentNavigator.openWebContentAdmin(
-				baseURL = "http://www.able.com:8080",
-				siteURLKey = "guest");
-
-			WebContent.addArticleCP(
-				webContentContent = "Web Content Content",
-				webContentTitle = "Web Content Title");
-		}
-
-		task ("Click Cancel in the confirmation dialog will return to the import tab") {
-			WebContentNavigator.openWebContentAdmin(
-				baseURL = "http://www.able.com:8080",
-				siteURLKey = "guest");
-
-			LAR.importPortletWithDeleteApplicationData(
-				cancelImport = "true",
-				larFileName = "WebContent_blank_portlet.lar");
-		}
-
-		task ("Click OK will import successfully") {
-			WebContentNavigator.openWebContentAdmin(
-				baseURL = "http://www.able.com:8080",
-				siteURLKey = "guest");
-
-			LAR.importPortletWithDeleteApplicationData(larFileName = "WebContent_blank_portlet.lar");
-
-			WebContent.viewDefaultCP(webContentTitle = "Web Content Title");
 		}
 	}
 
