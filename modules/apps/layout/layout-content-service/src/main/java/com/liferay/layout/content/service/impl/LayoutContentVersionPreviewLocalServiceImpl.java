@@ -8,8 +8,10 @@ package com.liferay.layout.content.service.impl;
 import com.liferay.layout.content.exception.DuplicateLayoutContentVersionPreviewException;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.model.LayoutContentVersionPreview;
+import com.liferay.layout.content.model.LayoutContentVersionPreviewTable;
 import com.liferay.layout.content.service.base.LayoutContentVersionPreviewLocalServiceBaseImpl;
 import com.liferay.layout.content.service.persistence.LayoutContentVersionPersistence;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -17,7 +19,10 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -119,6 +124,47 @@ public class LayoutContentVersionPreviewLocalServiceImpl
 
 		return layoutContentVersionPreviewPersistence.
 			findByLayoutContentVersionId(layoutContentVersionId);
+	}
+
+	@Override
+	public Map<String, List<String>> getSegmentsExperienceERCsLanguageIds(
+			long layoutContentVersionId)
+		throws PortalException {
+
+		Map<String, List<String>> segmentsExperienceERCsLanguageIds =
+			new HashMap<>();
+
+		LayoutContentVersion layoutContentVersion =
+			_layoutContentVersionPersistence.findByPrimaryKey(
+				layoutContentVersionId);
+
+		FeatureFlagManagerUtil.checkEnabled(
+			layoutContentVersion.getCompanyId(), "LPD-10622");
+
+		List<Object[]> rows = dslQuery(
+			DSLQueryFactoryUtil.select(
+				LayoutContentVersionPreviewTable.INSTANCE.segmentsExperienceERC,
+				LayoutContentVersionPreviewTable.INSTANCE.languageId
+			).from(
+				LayoutContentVersionPreviewTable.INSTANCE
+			).where(
+				LayoutContentVersionPreviewTable.INSTANCE.
+					layoutContentVersionId.eq(layoutContentVersionId)
+			).orderBy(
+				LayoutContentVersionPreviewTable.INSTANCE.segmentsExperienceERC.
+					ascending(),
+				LayoutContentVersionPreviewTable.INSTANCE.languageId.ascending()
+			));
+
+		for (Object[] row : rows) {
+			List<String> languageIds =
+				segmentsExperienceERCsLanguageIds.computeIfAbsent(
+					(String)row[0], segmentsExperienceERC -> new ArrayList<>());
+
+			languageIds.add((String)row[1]);
+		}
+
+		return segmentsExperienceERCsLanguageIds;
 	}
 
 	private void _validate(
