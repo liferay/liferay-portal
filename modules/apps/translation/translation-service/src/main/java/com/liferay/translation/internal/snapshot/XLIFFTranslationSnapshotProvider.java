@@ -17,6 +17,7 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -64,6 +65,7 @@ import net.sf.okapi.common.resource.TextPart;
 import net.sf.okapi.filters.autoxliff.AutoXLIFFFilter;
 import net.sf.okapi.lib.xliff2.InvalidParameterException;
 import net.sf.okapi.lib.xliff2.XLIFFException;
+import net.sf.okapi.lib.xliff2.core.CTag;
 import net.sf.okapi.lib.xliff2.core.Fragment;
 import net.sf.okapi.lib.xliff2.core.Part;
 import net.sf.okapi.lib.xliff2.core.StartXliffData;
@@ -200,6 +202,7 @@ public class XLIFFTranslationSnapshotProvider
 		xliffDocument.load(tempFile);
 
 		_validateXLIFFFile(groupId, infoItemReference, xliffDocument);
+		_validateInlineCodes(xliffDocument);
 
 		StartXliffData startXliffData = xliffDocument.getStartXliffData();
 
@@ -351,7 +354,7 @@ public class XLIFFTranslationSnapshotProvider
 			Fragment targetFragment = part.getTarget();
 
 			if ((targetFragment == null) ||
-				!Validator.isBlank(targetFragment.getPlainText())) {
+				!Validator.isBlank(_toText(targetFragment))) {
 
 				return false;
 			}
@@ -465,27 +468,43 @@ public class XLIFFTranslationSnapshotProvider
 						"There is no translation target");
 				}
 
-				String targetPlaintext = targetFragment.getPlainText();
+				String targetText = _toText(targetFragment);
 
 				unsafeConsumer.accept(
 					new InfoFieldValue<>(
 						_createInfoField(targetLocale, unit.getId()),
 						InfoLocalizedValue.builder(
 						).value(
-							targetLocale, targetPlaintext
+							targetLocale, targetText
 						).value(
 							biConsumer -> {
 								if (includeSource) {
 									Fragment sourceFragment = part.getSource();
 
 									biConsumer.accept(
-										sourceLocale,
-										sourceFragment.getPlainText());
+										sourceLocale, _toText(sourceFragment));
 								}
 							}
 						).build()));
 			}
 		}
+	}
+
+	private String _toText(Fragment fragment) {
+		StringBundler sb = new StringBundler();
+
+		for (Object object : fragment) {
+			if (object instanceof CTag) {
+				CTag cTag = (CTag)object;
+
+				sb.append(cTag.getData());
+			}
+			else if (object instanceof String) {
+				sb.append((String)object);
+			}
+		}
+
+		return sb.toString();
 	}
 
 	private void _validateDocumentPartVersion(List<Event> events)
@@ -503,6 +522,40 @@ public class XLIFFTranslationSnapshotProvider
 					throw new XLIFFFileException.MustBeValid(
 						"version must be 1.2");
 				}
+			}
+		}
+	}
+
+	private void _validateInlineCodes(Fragment fragment)
+		throws XLIFFFileException.MustBeValid {
+
+		if (fragment == null) {
+			return;
+		}
+
+		for (Object object : fragment) {
+			if (object instanceof CTag) {
+				CTag cTag = (CTag)object;
+
+				if (!cTag.hasData()) {
+					throw new XLIFFFileException.MustBeValid(
+						StringBundler.concat(
+							"Inline code \"", cTag.getId(),
+							"\" has no original data"));
+				}
+			}
+		}
+	}
+
+	private void _validateInlineCodes(XLIFFDocument xliffDocument)
+		throws XLIFFFileException.MustBeValid {
+
+		for (Unit unit : xliffDocument.getUnits()) {
+			for (int i = 0; i < unit.getPartCount(); i++) {
+				Part part = unit.getPart(i);
+
+				_validateInlineCodes(part.getSource());
+				_validateInlineCodes(part.getTarget());
 			}
 		}
 	}
