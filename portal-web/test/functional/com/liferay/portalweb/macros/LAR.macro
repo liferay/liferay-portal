@@ -780,22 +780,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro isExistedFolder() {
-		var tempDir = PropsUtil.get("output.dir.name");
-		var folderName = ${folderName};
-		var companyId = JSONCompany.getCompanyId();
-
-		var folderExists = FileUtil.exists("${tempDir}/company/${companyId}/${folderName}");
-
-		if (${folderExists} == "true") {
-			return "true";
-		}
-		else {
-			return "false";
-		}
-	}
-
-	@summary = "Default summary"
 	macro moveToTheRecycleBinExportTemplate() {
 		LexiconEntry.gotoEllipsisMenuItem(menuItem = "Delete");
 
