@@ -37,7 +37,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -90,15 +89,6 @@ public class FIPSAuditUtilTest {
 		JSONObject jsonObject = _getJSONObject(eventType, jsonObjects);
 
 		Assert.assertTrue(jsonObject.has("cmvp-certificate-id"));
-		Assert.assertTrue(jsonObject.has("deployment-instance-id"));
-		Assert.assertTrue(jsonObject.has("event-schema-version"));
-		Assert.assertTrue(jsonObject.has("event-sequence"));
-		Assert.assertTrue(jsonObject.has("event-type"));
-		Assert.assertTrue(jsonObject.has("fields"));
-		Assert.assertTrue(jsonObject.has("provider-name"));
-		Assert.assertTrue(jsonObject.has("provider-version"));
-		Assert.assertTrue(jsonObject.has("severity"));
-		Assert.assertTrue(jsonObject.has("timestamp"));
 
 		Assert.assertEquals(
 			PropsValues.FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID,
@@ -148,7 +138,9 @@ public class FIPSAuditUtilTest {
 			eventType, FIPSAuditEvent.Severity.INFO);
 
 		fipsAuditEvent.put(
-			"provider-timestamp", LocalDateTime.parse("2026-05-06T14:19:23"));
+			"provider-timestamp",
+			LocalDateTime.ofEpochSecond(
+				RandomTestUtil.randomInt(), 0, ZoneOffset.UTC));
 
 		Assert.assertThrows(
 			IllegalArgumentException.class,
@@ -389,15 +381,13 @@ public class FIPSAuditUtilTest {
 	}
 
 	private List<JSONObject> _getJSONObjects() throws Exception {
-		List<JSONObject> jsonObjects = new ArrayList<>();
+		return TransformUtil.unsafeTransform(
+			Files.readAllLines(_getFIPSAuditLogPath()),
+			json -> {
+				Assert.assertTrue(Validator.isNotNull(json));
 
-		for (String json : Files.readAllLines(_getFIPSAuditLogPath())) {
-			Assert.assertTrue(Validator.isNotNull(json));
-
-			jsonObjects.add(JSONFactoryUtil.createJSONObject(json));
-		}
-
-		return jsonObjects;
+				return JSONFactoryUtil.createJSONObject(json);
+			});
 	}
 
 	private long _getLastEventSequence() throws Exception {

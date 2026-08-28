@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.util.Time;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import java.util.Collections;
 import java.util.Map;
@@ -116,7 +117,9 @@ public class FIPSAuditUtilTest {
 			RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO);
 
 		fipsAuditEvent.put(
-			"provider-timestamp", LocalDateTime.parse("2026-05-06T14:19:23"));
+			"provider-timestamp",
+			LocalDateTime.ofEpochSecond(
+				RandomTestUtil.randomInt(), 0, ZoneOffset.UTC));
 
 		Assert.assertThrows(
 			IllegalArgumentException.class,
