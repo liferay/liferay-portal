@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceMode;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.EmailAddress;
@@ -262,14 +264,9 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 						null));
 			}
 			catch (AuditException auditException) {
-				try {
-					DBPartitionUtil.removeExportedPartition(companyId);
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to route audit message", auditException);
 				}
-				catch (Exception exception) {
-					auditException.addSuppressed(exception);
-				}
-
-				throw auditException;
 			}
 		}
 
@@ -630,6 +627,9 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 			companyId, authType, autoLogin, sendPassword, strangers,
 			strangersWithMx, strangersVerify, siteLogo);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CompanyServiceImpl.class);
 
 	@BeanReference(type = RoleLocalService.class)
 	private RoleLocalService _roleLocalService;
