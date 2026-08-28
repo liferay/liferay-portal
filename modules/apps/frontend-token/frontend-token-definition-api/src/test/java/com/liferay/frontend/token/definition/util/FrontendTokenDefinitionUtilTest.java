@@ -44,10 +44,10 @@ public class FrontendTokenDefinitionUtilTest {
 
 	@Test
 	public void testMergeFrontendTokenDefinitionJSONObject() {
+		_testMergeFrontendTokenDefinitionJSONObjectWithBlankOverrideCategories();
 		_testMergeFrontendTokenDefinitionJSONObjectWithInvalidBaseCategory();
 		_testMergeFrontendTokenDefinitionJSONObjectWithInvalidOverrideToken();
 		_testMergeFrontendTokenDefinitionJSONObjectWithNewToken();
-		_testMergeFrontendTokenDefinitionJSONObjectWithBlankOverrideCategories();
 		_testMergeFrontendTokenDefinitionJSONObjectWithReplacedToken();
 		_testMergeFrontendTokenDefinitionJSONObjectWithUnknownCategoryName();
 		_testMergeFrontendTokenDefinitionJSONObjectWithUnknownSetName();
