@@ -14,6 +14,8 @@ import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
@@ -21,10 +23,12 @@ import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
 import com.liferay.translation.info.field.TranslationInfoFieldChecker;
 import com.liferay.translation.internal.util.XLIFFExporterUtil;
+import com.liferay.translation.internal.util.XLIFFInlineCodeUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 
 import java.nio.charset.StandardCharsets;
 
@@ -33,6 +37,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import net.sf.okapi.common.resource.TextFragment;
+import net.sf.okapi.lib.xliff2.core.Fragment;
+import net.sf.okapi.lib.xliff2.core.Part;
+import net.sf.okapi.lib.xliff2.core.Segment;
+import net.sf.okapi.lib.xliff2.core.StartFileData;
+import net.sf.okapi.lib.xliff2.core.Unit;
+import net.sf.okapi.lib.xliff2.writer.XLIFFWriter;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -74,9 +86,16 @@ public class XLIFF20InfoFormTranslationExporter
 			className + StringPool.COLON +
 				classPKInfoItemIdentifier.getClassPK();
 
+		Map<String, List<InfoFieldValue<Object>>> infoFieldValuesMap =
+			_getInfoFieldValuesMap(infoItemFieldValues);
+
+		if (_hasProtectedHTMLInfoField(infoFieldValuesMap)) {
+			return _exportInlineCodes(
+				fileId, infoFieldValuesMap, sourceLocale, targetLocale);
+		}
+
 		return _exportCDATA(
-			fileId, _getInfoFieldValuesMap(infoItemFieldValues), sourceLocale,
-			targetLocale);
+			fileId, infoFieldValuesMap, sourceLocale, targetLocale);
 	}
 
 	@Override
@@ -141,6 +160,45 @@ public class XLIFF20InfoFormTranslationExporter
 			formattedString.getBytes(StandardCharsets.UTF_8));
 	}
 
+	private InputStream _exportInlineCodes(
+			String fileId,
+			Map<String, List<InfoFieldValue<Object>>> infoFieldValuesMap,
+			Locale sourceLocale, Locale targetLocale)
+		throws IOException {
+
+		StringWriter stringWriter = new StringWriter();
+
+		XLIFFWriter xliffWriter = new XLIFFWriter();
+
+		xliffWriter.setLineBreak(StringPool.NEW_LINE);
+		xliffWriter.setUseIndentation(true);
+		xliffWriter.setUseInsignificantParts(false);
+		xliffWriter.setWithOriginalData(true);
+
+		xliffWriter.create(
+			stringWriter, LocaleUtil.toBCP47LanguageId(sourceLocale),
+			LocaleUtil.toBCP47LanguageId(targetLocale));
+
+		xliffWriter.writeStartFile(new StartFileData(fileId));
+
+		for (Map.Entry<String, List<InfoFieldValue<Object>>> entry :
+				infoFieldValuesMap.entrySet()) {
+
+			xliffWriter.writeUnit(
+				_getUnit(
+					entry.getKey(), entry.getValue(), sourceLocale,
+					targetLocale));
+		}
+
+		xliffWriter.writeEndFile();
+		xliffWriter.writeEndDocument();
+		xliffWriter.close();
+
+		String xliff = stringWriter.toString();
+
+		return new ByteArrayInputStream(xliff.getBytes(StandardCharsets.UTF_8));
+	}
+
 	private Map<String, List<InfoFieldValue<Object>>> _getInfoFieldValuesMap(
 		InfoItemFieldValues infoItemFieldValues) {
 
@@ -166,10 +224,85 @@ public class XLIFF20InfoFormTranslationExporter
 
 	private String _getStringValue(Object value) {
 		if (value == null) {
-			return null;
+			return StringPool.BLANK;
 		}
 
 		return value.toString();
+	}
+
+	private Unit _getUnit(
+		String id, List<InfoFieldValue<Object>> infoFieldValues,
+		Locale sourceLocale, Locale targetLocale) {
+
+		Unit unit = new Unit(id);
+
+		InfoFieldValue<Object> firstInfoFieldValue = infoFieldValues.get(0);
+
+		boolean protectedHTMLInfoField =
+			XLIFFExporterUtil.isProtectedHTMLInfoField(
+				firstInfoFieldValue.getInfoField());
+
+		int startId = 1;
+
+		for (InfoFieldValue<Object> infoFieldValue : infoFieldValues) {
+			Segment segment = unit.appendSegment();
+
+			Fragment sourceFragment = segment.getSource();
+			Fragment targetFragment = segment.getTarget(
+				Part.GetTarget.CREATE_EMPTY);
+
+			String sourceStringValue = _getStringValue(
+				infoFieldValue.getValue(sourceLocale));
+			String targetStringValue = _getStringValue(
+				XLIFFExporterUtil.getTargetStringValue(
+					infoFieldValue, targetLocale));
+
+			if (!protectedHTMLInfoField) {
+				sourceFragment.append(sourceStringValue);
+				targetFragment.append(targetStringValue);
+
+				continue;
+			}
+
+			TextFragment sourceTextFragment =
+				XLIFFInlineCodeUtil.toTextFragment(sourceStringValue);
+			TextFragment targetTextFragment =
+				XLIFFInlineCodeUtil.toTextFragment(targetStringValue);
+
+			startId = XLIFFInlineCodeUtil.renumberCodes(
+				startId, sourceTextFragment, targetTextFragment);
+
+			XLIFFInlineCodeUtil.appendXLIFF20InlineCodes(
+				sourceFragment, sourceTextFragment);
+			XLIFFInlineCodeUtil.appendXLIFF20InlineCodes(
+				targetFragment, targetTextFragment);
+		}
+
+		return unit;
+	}
+
+	private boolean _hasProtectedHTMLInfoField(
+		Map<String, List<InfoFieldValue<Object>>> infoFieldValuesMap) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-102730")) {
+
+			return false;
+		}
+
+		for (List<InfoFieldValue<Object>> infoFieldValues :
+				infoFieldValuesMap.values()) {
+
+			InfoFieldValue<Object> firstInfoFieldValue = infoFieldValues.get(0);
+
+			if (XLIFFExporterUtil.isProtectedHTMLInfoField(
+					firstInfoFieldValue.getInfoField())) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Reference
