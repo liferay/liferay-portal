@@ -687,7 +687,7 @@ $btn-link: () !default;
 $btn-link: map-deep-merge(
 	(
 		active: (
-			box-shadow: clay-enable-shadows([none]),
+			box-shadow: clay-enable-shadows(none),
 		),
 
 		border-radius: 1px,
