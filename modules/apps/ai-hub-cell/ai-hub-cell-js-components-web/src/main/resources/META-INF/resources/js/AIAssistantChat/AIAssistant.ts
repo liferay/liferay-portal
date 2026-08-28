@@ -12,6 +12,7 @@ export type AIAssistantPresentation = 'dropdown' | 'sidebar';
 
 export interface AIAssistantOpenCommand {
 	anchorId?: string;
+	chatbotExternalReferenceCode?: string;
 	context?: ChatContext;
 	enableFreeFormCategorization?: boolean;
 	getContext?: () => ChatContext;

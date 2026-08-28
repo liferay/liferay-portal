@@ -55,6 +55,7 @@ export interface AIChat {
 }
 
 interface UseAIChatProps {
+	chatbotExternalReferenceCode?: string;
 	context?: ChatContext;
 	enableFreeFormCategorization?: boolean;
 	getContext?: () => ChatContext;
@@ -66,6 +67,7 @@ interface UseAIChatProps {
 }
 
 export default function useAIChat({
+	chatbotExternalReferenceCode,
 	context,
 	enableFreeFormCategorization = false,
 	getContext,
@@ -98,6 +100,9 @@ export default function useAIChat({
 	const instructionDefinitionScopeRef = useRef<string>(
 		instructionDefinitionScope
 	);
+	const chatbotExternalReferenceCodeRef = useRef<string | undefined>(
+		chatbotExternalReferenceCode
+	);
 	const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 	const sourceLanguageIdRef = useRef<string>(
 		Liferay.ThemeDisplay.getLanguageId()
@@ -111,6 +116,8 @@ export default function useAIChat({
 	>(onOpenRequested);
 
 	useEffect(() => {
+		chatbotExternalReferenceCodeRef.current = chatbotExternalReferenceCode;
+
 		if (context !== undefined) {
 			contextRef.current = context;
 		}
@@ -121,6 +128,7 @@ export default function useAIChat({
 		onCloseRequestedRef.current = onCloseRequested;
 		onOpenRequestedRef.current = onOpenRequested;
 	}, [
+		chatbotExternalReferenceCode,
 		context,
 		enableFreeFormCategorization,
 		getContext,
@@ -223,6 +231,8 @@ export default function useAIChat({
 						...getContextRef.current?.(),
 						...runtimeContextRef.current,
 					},
+					chatbotExternalReferenceCode:
+						chatbotExternalReferenceCodeRef.current,
 					eventSourceReference:
 						eventSourceReference.current as string,
 					instructionDefinitionScope:

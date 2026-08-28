@@ -72,11 +72,13 @@ export async function executeHttpRequestAction({
 
 export async function postChatByExternalReferenceCodeMessage({
 	chatContext,
+	chatbotExternalReferenceCode,
 	eventSourceReference,
 	instructionDefinitionScope,
 	message,
 }: {
 	chatContext: ChatContext;
+	chatbotExternalReferenceCode?: string;
 	eventSourceReference: string;
 	instructionDefinitionScope: string;
 	message: string;
@@ -91,6 +93,7 @@ export async function postChatByExternalReferenceCodeMessage({
 		`${authorizationToken.serviceURL}${AI_HUB_ENDPOINT}/chats/by-external-reference-code/${eventSourceReference}/messages`,
 		{
 			body: JSON.stringify({
+				chatbotExternalReferenceCode,
 				context: chatContext,
 				instructionDefinitionScope,
 				text: message,
