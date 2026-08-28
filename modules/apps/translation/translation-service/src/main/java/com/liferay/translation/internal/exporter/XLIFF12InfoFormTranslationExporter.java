@@ -120,68 +120,9 @@ public class XLIFF12InfoFormTranslationExporter
 
 			transUnitElement.addAttribute("id", entry.getKey());
 
-			Element sourceElement = transUnitElement.addElement("source");
-
-			sourceElement.addAttribute(
-				"xml:lang", fileElement.attributeValue("source-language"));
-
-			List<InfoFieldValue<Object>> infoFieldValues = entry.getValue();
-
-			StringBundler sb = new StringBundler(infoFieldValues.size());
-
-			for (InfoFieldValue<Object> infoFieldValue : infoFieldValues) {
-				Object value = infoFieldValue.getValue(sourceLocale);
-
-				sb.append(
-					(value != null) ? value.toString() : StringPool.BLANK);
-			}
-
-			sourceElement.addCDATA(_getStringValue(sb));
-
-			if (infoFieldValues.size() > 1) {
-				Element segSourceElement = transUnitElement.addElement(
-					"seg-source");
-
-				int mid = 0;
-
-				for (InfoFieldValue<Object> infoFieldValue : infoFieldValues) {
-					Element mrkElement = segSourceElement.addElement("mrk");
-
-					mrkElement.addAttribute("mid", String.valueOf(mid));
-					mrkElement.addAttribute("mtype", "seg");
-					mrkElement.addCDATA(
-						(String)infoFieldValue.getValue(sourceLocale));
-
-					mid++;
-				}
-			}
-
-			Element targetElement = transUnitElement.addElement("target");
-
-			targetElement.addAttribute(
-				"xml:lang", fileElement.attributeValue("target-language"));
-
-			if (infoFieldValues.size() > 1) {
-				int mid = 0;
-
-				for (InfoFieldValue<Object> infoFieldValue : infoFieldValues) {
-					Element mrkElement = targetElement.addElement("mrk");
-
-					mrkElement.addAttribute("mid", String.valueOf(mid));
-					mrkElement.addAttribute("mtype", "seg");
-
-					XLIFFExporterUtil.addTargetValue(
-						mrkElement, infoFieldValue, targetLocale);
-
-					mid++;
-				}
-			}
-			else {
-				InfoFieldValue<Object> infoFieldValue = infoFieldValues.get(0);
-
-				XLIFFExporterUtil.addTargetValue(
-					targetElement, infoFieldValue, targetLocale);
-			}
+			_addCDATATransUnitContent(
+				fileElement, entry.getValue(), sourceLocale, targetLocale,
+				transUnitElement);
 		}
 
 		String xml = document.asXML();
@@ -192,6 +133,86 @@ public class XLIFF12InfoFormTranslationExporter
 	@Override
 	public String getMimeType() {
 		return "application/x-xliff+xml";
+	}
+
+	private void _addCDATATransUnitContent(
+		Element fileElement, List<InfoFieldValue<Object>> infoFieldValues,
+		Locale sourceLocale, Locale targetLocale, Element transUnitElement) {
+
+		Element sourceElement = _addSourceElement(
+			fileElement, transUnitElement);
+
+		StringBundler sb = new StringBundler(infoFieldValues.size());
+
+		for (InfoFieldValue<Object> infoFieldValue : infoFieldValues) {
+			Object value = infoFieldValue.getValue(sourceLocale);
+
+			sb.append((value != null) ? value.toString() : StringPool.BLANK);
+		}
+
+		sourceElement.addCDATA(_getStringValue(sb));
+
+		if (infoFieldValues.size() > 1) {
+			Element segSourceElement = transUnitElement.addElement(
+				"seg-source");
+
+			int mid = 0;
+
+			for (InfoFieldValue<Object> infoFieldValue : infoFieldValues) {
+				Element mrkElement = _addMrkElement(segSourceElement, mid++);
+
+				mrkElement.addCDATA(
+					(String)infoFieldValue.getValue(sourceLocale));
+			}
+		}
+
+		Element targetElement = _addTargetElement(
+			fileElement, transUnitElement);
+
+		if (infoFieldValues.size() > 1) {
+			int mid = 0;
+
+			for (InfoFieldValue<Object> infoFieldValue : infoFieldValues) {
+				XLIFFExporterUtil.addTargetValue(
+					_addMrkElement(targetElement, mid++), infoFieldValue,
+					targetLocale);
+			}
+		}
+		else {
+			XLIFFExporterUtil.addTargetValue(
+				targetElement, infoFieldValues.get(0), targetLocale);
+		}
+	}
+
+	private Element _addMrkElement(Element element, int mid) {
+		Element mrkElement = element.addElement("mrk");
+
+		mrkElement.addAttribute("mid", String.valueOf(mid));
+		mrkElement.addAttribute("mtype", "seg");
+
+		return mrkElement;
+	}
+
+	private Element _addSourceElement(
+		Element fileElement, Element transUnitElement) {
+
+		Element sourceElement = transUnitElement.addElement("source");
+
+		sourceElement.addAttribute(
+			"xml:lang", fileElement.attributeValue("source-language"));
+
+		return sourceElement;
+	}
+
+	private Element _addTargetElement(
+		Element fileElement, Element transUnitElement) {
+
+		Element targetElement = transUnitElement.addElement("target");
+
+		targetElement.addAttribute(
+			"xml:lang", fileElement.attributeValue("target-language"));
+
+		return targetElement;
 	}
 
 	private String _getStringValue(Object value) {
