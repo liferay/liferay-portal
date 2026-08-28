@@ -135,25 +135,25 @@ public class ObjectDefinitionsDetailsDisplayContextTest {
 		Assert.assertEquals(
 			_getLabel(_ROOT_PANEL_CATEGORY_KEY), jsonObject.getString("label"));
 
-		Map<String, String> panelCategories = new HashMap<>();
+		Map<String, String> panelCategoryLabels = new HashMap<>();
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
 		for (int i = 0; i < itemsJSONArray.length(); i++) {
 			JSONObject itemJSONObject = itemsJSONArray.getJSONObject(i);
 
-			panelCategories.put(
+			panelCategoryLabels.put(
 				itemJSONObject.getString("value"),
 				itemJSONObject.getString("label"));
 		}
 
 		Assert.assertEquals(
-			panelCategories.toString(), 2, panelCategories.size());
+			panelCategoryLabels.toString(), 2, panelCategoryLabels.size());
 		Assert.assertEquals(
 			_getLabel(_OTHER_PANEL_CATEGORY_KEY),
-			panelCategories.get(_OTHER_PANEL_CATEGORY_KEY));
+			panelCategoryLabels.get(_OTHER_PANEL_CATEGORY_KEY));
 		Assert.assertEquals(
 			_getLabel(_PANEL_CATEGORY_KEY),
-			panelCategories.get(_PANEL_CATEGORY_KEY));
+			panelCategoryLabels.get(_PANEL_CATEGORY_KEY));
 	}
 
 	private static String _getLabel(String panelCategoryKey) {
