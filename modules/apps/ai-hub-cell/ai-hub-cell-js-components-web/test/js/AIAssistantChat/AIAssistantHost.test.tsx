@@ -651,6 +651,96 @@ describe('AIAssistantHost', () => {
 		);
 	});
 
+	it('omits the chatbot targeting code when the trigger does not set one', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen({presentation: 'dropdown'});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'ref-code');
+		});
+
+		const textArea = screen.getByPlaceholderText('ask-me-anything');
+
+		await act(async () => {
+			fireEvent.change(textArea, {target: {value: 'Hello'}});
+		});
+
+		await act(async () => {
+			fireEvent.submit(textArea.closest('form') as HTMLFormElement);
+		});
+
+		expect(mockPostChat).toHaveBeenCalledWith(
+			expect.objectContaining({chatbotExternalReferenceCode: undefined})
+		);
+	});
+
+	it('sends the chatbot targeting code when the trigger sets one', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen({
+			chatbotExternalReferenceCode: 'L_SEO_STUDIO_TITLE_GENERATOR',
+			presentation: 'dropdown',
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'ref-code');
+		});
+
+		const textArea = screen.getByPlaceholderText('ask-me-anything');
+
+		await act(async () => {
+			fireEvent.change(textArea, {target: {value: 'Hello'}});
+		});
+
+		await act(async () => {
+			fireEvent.submit(textArea.closest('form') as HTMLFormElement);
+		});
+
+		expect(mockPostChat).toHaveBeenCalledWith(
+			expect.objectContaining({
+				chatbotExternalReferenceCode: 'L_SEO_STUDIO_TITLE_GENERATOR',
+			})
+		);
+	});
+
+	it('does not carry the chatbot targeting code into a chat reopened by the event', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen({
+			chatbotExternalReferenceCode: 'L_SEO_STUDIO_TITLE_GENERATOR',
+			presentation: 'sidebar',
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'ref-code');
+		});
+
+		const sidebar = await waitForSidebarOpen();
+
+		await act(async () => {
+			fireEvent.keyDown(document, {key: 'Escape'});
+		});
+
+		await waitFor(() => expect(sidebar).toHaveAttribute('inert'));
+
+		await act(async () => {
+			getLiferayHandler('openAIAssistantChat')?.({
+				message: 'Hello again',
+			});
+		});
+
+		expect(mockPostChat).toHaveBeenCalledWith(
+			expect.objectContaining({chatbotExternalReferenceCode: undefined})
+		);
+	});
+
 	it('moves the conversation into the sidebar when maximized', async () => {
 		const fakeEventSource = createFakeEventSource();
 
