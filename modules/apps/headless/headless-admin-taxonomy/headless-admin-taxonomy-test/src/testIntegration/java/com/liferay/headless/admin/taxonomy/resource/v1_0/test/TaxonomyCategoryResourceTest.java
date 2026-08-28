@@ -332,7 +332,6 @@ public class TaxonomyCategoryResourceTest
 
 		AssetCategory assetCategory1 = _addAssetCategory(
 			_assetVocabulary, new Date(), parentAssetCategory, serviceContext);
-
 		AssetCategory assetCategory2 = _addAssetCategory(
 			_assetVocabulary, new Date(), parentAssetCategory, serviceContext);
 
