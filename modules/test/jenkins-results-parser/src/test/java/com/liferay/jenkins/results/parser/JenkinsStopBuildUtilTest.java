@@ -100,7 +100,7 @@ public class JenkinsStopBuildUtilTest
 		try {
 			_abortBuild();
 
-			Assert.fail("Expected a RuntimeException");
+			Assert.fail();
 		}
 		catch (RuntimeException runtimeException) {
 			String message = runtimeException.getMessage();
@@ -136,7 +136,7 @@ public class JenkinsStopBuildUtilTest
 		try {
 			_abortBuild();
 
-			Assert.fail("Expected a RuntimeException");
+			Assert.fail();
 		}
 		catch (RuntimeException runtimeException) {
 			String message = runtimeException.getMessage();
@@ -221,7 +221,7 @@ public class JenkinsStopBuildUtilTest
 		try {
 			_abortBuild();
 
-			Assert.fail("Expected a RuntimeException");
+			Assert.fail();
 		}
 		catch (RuntimeException runtimeException) {
 			String message = runtimeException.getMessage();
@@ -241,7 +241,7 @@ public class JenkinsStopBuildUtilTest
 		try {
 			_abortBuild();
 
-			Assert.fail("Expected a RuntimeException");
+			Assert.fail();
 		}
 		catch (RuntimeException runtimeException) {
 			String message = runtimeException.getMessage();
