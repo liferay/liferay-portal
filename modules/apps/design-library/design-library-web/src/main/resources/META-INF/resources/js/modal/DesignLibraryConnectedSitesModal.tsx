@@ -74,11 +74,9 @@ export default function DesignLibraryConnectedSitesModal({
 	};
 
 	const connectSite = async ({
-		setDisableConnectButton,
 		setSite,
 		site,
 	}: {
-		setDisableConnectButton: React.Dispatch<React.SetStateAction<boolean>>;
 		setSite: React.Dispatch<React.SetStateAction<Site | undefined>>;
 		site?: Site;
 	}) => {
@@ -110,7 +108,6 @@ export default function DesignLibraryConnectedSitesModal({
 				);
 			}
 
-			setDisableConnectButton(true);
 			setSite(undefined);
 		}
 	};
