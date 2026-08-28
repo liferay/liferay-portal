@@ -77,6 +77,7 @@ import java.math.BigDecimal;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -151,13 +152,7 @@ public class ObjectFieldInfoFieldConverter {
 			).editable(
 				editable
 			).labelInfoLocalizedValue(
-				InfoLocalizedValue.<String>builder(
-				).defaultLocale(
-					LocaleUtil.fromLanguageId(
-						objectField.getDefaultLanguageId())
-				).values(
-					objectField.getLabelMap()
-				).build()
+				_getLabelInfoLocalizedValue(objectField)
 			).localizable(
 				objectField.isLocalized()
 			).readOnly(
@@ -403,6 +398,23 @@ public class ObjectFieldInfoFieldConverter {
 
 			return 0L;
 		}
+	}
+
+	private InfoLocalizedValue<String> _getLabelInfoLocalizedValue(
+		ObjectField objectField) {
+
+		Locale defaultLocale = LocaleUtil.fromLanguageId(
+			objectField.getDefaultLanguageId());
+
+		return InfoLocalizedValue.<String>builder(
+		).defaultLocale(
+			defaultLocale
+		).values(
+			objectField.getLabelMap()
+		).value(
+			defaultLocale,
+			objectField.getLabel(objectField.getDefaultLanguageId())
+		).build();
 	}
 
 	private long _getMaximumFileSize(ObjectField objectField) {

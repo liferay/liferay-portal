@@ -40,6 +40,7 @@ import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -47,11 +48,13 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -61,6 +64,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -282,6 +287,39 @@ public class ObjectFieldInfoFieldConverterTest {
 	}
 
 	@Test
+	public void testGetInfoFieldWithUnavailableDefaultLocale()
+		throws Exception {
+
+		Locale originalLocale = LocaleUtil.getDefault();
+		Set<Locale> originalLocales = _language.getAvailableLocales();
+
+		try {
+			CompanyTestUtil.resetCompanyLocales(
+				TestPropsValues.getCompanyId(),
+				Collections.singletonList(LocaleUtil.GERMANY),
+				LocaleUtil.GERMANY);
+
+			ObjectFieldInfoFieldConverter objectFieldInfoFieldConverter =
+				new ObjectFieldInfoFieldConverter(
+					_ddmExpressionFactory, null, null, null, null,
+					_objectFieldSettingLocalService, null, null, null, null,
+					null, null, null, null);
+
+			InfoField<?> infoField = objectFieldInfoFieldConverter.getInfoField(
+				true, ObjectField.class.getSimpleName(), _objectField);
+
+			Assert.assertEquals(
+				_objectField.getLabel(originalLocale),
+				infoField.getLabel(LocaleUtil.GERMANY));
+		}
+		finally {
+			CompanyTestUtil.resetCompanyLocales(
+				TestPropsValues.getCompanyId(), originalLocales,
+				originalLocale);
+		}
+	}
+
+	@Test
 	public void testGetPhoneNumberInfoField() throws Exception {
 		ObjectField objectField = ObjectFieldUtil.addCustomObjectField(
 			new PhoneNumberObjectFieldBuilder(
@@ -409,6 +447,9 @@ public class ObjectFieldInfoFieldConverterTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private Language _language;
 
 	@Inject
 	private LayoutDisplayPageProviderRegistry
