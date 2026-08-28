@@ -16,11 +16,11 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.security.auth.AuthTokenUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.vulcan.application.HeadlessApplicationProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -55,11 +55,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime;
-import org.osgi.service.jaxrs.runtime.dto.ApplicationDTO;
-import org.osgi.service.jaxrs.runtime.dto.ResourceDTO;
-import org.osgi.service.jaxrs.runtime.dto.ResourceMethodInfoDTO;
-import org.osgi.service.jaxrs.runtime.dto.RuntimeDTO;
 import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
 
 /**
@@ -137,13 +132,13 @@ public class HeadlessDiscoveryAPIApplication extends Application {
 			}
 		}
 
-		Map<String, List<ResourceMethodInfoDTO>> resourceMethodInfoDTOsMap =
-			_getResourceMethodInfoDTOsMap();
+		Map<String, List<HeadlessApplicationProvider.ResourceMethod>>
+			resourceMethodsMap = _getResourceMethodsMap();
 
 		Map<String, Resource> resourcesMap = new TreeMap<>();
 
-		for (Map.Entry<String, List<ResourceMethodInfoDTO>> entry :
-				resourceMethodInfoDTOsMap.entrySet()) {
+		for (Map.Entry<String, List<HeadlessApplicationProvider.ResourceMethod>>
+				entry : resourceMethodsMap.entrySet()) {
 
 			resourcesMap.put(entry.getKey(), _getResource(entry.getValue()));
 		}
@@ -224,20 +219,22 @@ public class HeadlessDiscoveryAPIApplication extends Application {
 	}
 
 	private Resource _getResource(
-		List<ResourceMethodInfoDTO> resourceMethodInfoDTOS) {
+		List<HeadlessApplicationProvider.ResourceMethod> resourceMethods) {
 
 		Resource resource = new Resource();
 
-		ResourceMethodInfoDTO resourceMethodInfoDTO =
-			resourceMethodInfoDTOS.get(0);
+		HeadlessApplicationProvider.ResourceMethod resourceMethod =
+			resourceMethods.get(0);
 
 		resource.setHint(
 			new Hint(
 				TransformUtil.transformToArray(
-					resourceMethodInfoDTOS, dto -> dto.method, String.class),
-				resourceMethodInfoDTO.producingMimeType));
+					resourceMethods,
+					HeadlessApplicationProvider.ResourceMethod::getMethod,
+					String.class),
+				resourceMethod.getProducingMimeTypes()));
 
-		String resourcePath = resourceMethodInfoDTO.path;
+		String resourcePath = resourceMethod.getPath();
 
 		if (resourcePath.contains("{")) {
 			resource.setHrefTemplate(resourcePath);
@@ -249,45 +246,38 @@ public class HeadlessDiscoveryAPIApplication extends Application {
 		return resource;
 	}
 
-	private Map<String, List<ResourceMethodInfoDTO>>
-		_getResourceMethodInfoDTOsMap() {
+	private Map<String, List<HeadlessApplicationProvider.ResourceMethod>>
+		_getResourceMethodsMap() {
 
-		Map<String, List<ResourceMethodInfoDTO>> resourcesMap = new TreeMap<>();
+		Map<String, List<HeadlessApplicationProvider.ResourceMethod>>
+			resourceMethodsMap = new TreeMap<>();
 
 		String absolutePath = String.valueOf(_uriInfo.getAbsolutePath());
 
 		String serverURL = StringUtil.removeSubstring(absolutePath, "/api/");
 
-		JaxrsServiceRuntime jaxrsServiceRuntime =
-			_jaxrsServiceRuntimeSnapshot.get();
+		for (HeadlessApplicationProvider.Application application :
+				_headlessApplicationProvider.getApplications()) {
 
-		RuntimeDTO runtimeDTO = jaxrsServiceRuntime.getRuntimeDTO();
+			for (HeadlessApplicationProvider.ResourceMethod resourceMethod :
+					application.getResourceMethods()) {
 
-		for (ApplicationDTO applicationDTO : runtimeDTO.applicationDTOs) {
-			for (ResourceDTO resourceDTO : applicationDTO.resourceDTOs) {
-				for (ResourceMethodInfoDTO resourceMethodInfoDTO :
-						resourceDTO.resourceMethods) {
+				String path = serverURL + resourceMethod.getPath();
 
-					resourceMethodInfoDTO.path =
-						applicationDTO.base + resourceMethodInfoDTO.path;
+				List<HeadlessApplicationProvider.ResourceMethod>
+					resourceMethods = resourceMethodsMap.get(path);
 
-					String path = serverURL + resourceMethodInfoDTO.path;
-
-					List<ResourceMethodInfoDTO> resourceMethodInfoDTOS =
-						resourcesMap.get(path);
-
-					if (resourceMethodInfoDTOS == null) {
-						resourceMethodInfoDTOS = new ArrayList<>();
-					}
-
-					resourceMethodInfoDTOS.add(resourceMethodInfoDTO);
-
-					resourcesMap.put(path, resourceMethodInfoDTOS);
+				if (resourceMethods == null) {
+					resourceMethods = new ArrayList<>();
 				}
+
+				resourceMethods.add(resourceMethod);
+
+				resourceMethodsMap.put(path, resourceMethods);
 			}
 		}
 
-		return resourcesMap;
+		return resourceMethodsMap;
 	}
 
 	private URL _getURL(String parameter) {
@@ -301,11 +291,11 @@ public class HeadlessDiscoveryAPIApplication extends Application {
 		return bundle.getEntry("META-INF/resources/" + parameter);
 	}
 
-	private static final Snapshot<JaxrsServiceRuntime>
-		_jaxrsServiceRuntimeSnapshot = new Snapshot<>(
-			HeadlessDiscoveryAPIApplication.class, JaxrsServiceRuntime.class);
-
 	private volatile BundleContext _bundleContext;
+
+	@Reference
+	private HeadlessApplicationProvider _headlessApplicationProvider;
+
 	private volatile HeadlessDiscoveryConfiguration
 		_headlessDiscoveryConfiguration;
 

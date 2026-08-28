@@ -18,46 +18,31 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.vulcan.application.HeadlessApplicationProvider;
 import com.liferay.portal.vulcan.http.VulcanRequestForwarder;
 import com.liferay.portal.vulcan.jackson.databind.ObjectMapperProviderUtil;
 import com.liferay.portal.vulcan.pagination.Page;
-
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.ws.rs.core.Response;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime;
-import org.osgi.service.jaxrs.runtime.dto.ApplicationDTO;
-import org.osgi.service.jaxrs.runtime.dto.ResourceDTO;
-import org.osgi.service.jaxrs.runtime.dto.ResourceMethodInfoDTO;
-import org.osgi.service.jaxrs.runtime.dto.RuntimeDTO;
 
 /**
  * @author Alejandro Tardín
@@ -77,7 +62,8 @@ public class ToolSetUtil {
 		return OpenAPIUtil.getTool(
 			!Objects.equals(toolSetName, _TOOL_SET_NAME),
 			_getOpenAPIJSONObject(
-				httpServletRequest, _getOpenAPIBrief(toolSetName)),
+				httpServletRequest, _getOpenAPIDocument(toolSetName),
+				toolSetName),
 			toolName);
 	}
 
@@ -92,18 +78,20 @@ public class ToolSetUtil {
 	}
 
 	public static Page<ToolSet> getToolSetsPage() {
-		Map<String, OpenAPIBrief> openAPIBriefs = _getOpenAPIBriefs();
+		Map<String, HeadlessApplicationProvider.OpenAPIDocument>
+			openAPIDocuments = _getOpenAPIDocuments();
 
 		return Page.of(
 			TransformUtil.transform(
-				openAPIBriefs.entrySet(),
+				openAPIDocuments.entrySet(),
 				entry -> new ToolSet() {
 					{
 						setDescription(
 							() -> {
-								OpenAPIBrief openAPIBrief = entry.getValue();
+								HeadlessApplicationProvider.OpenAPIDocument
+									openAPIDocument = entry.getValue();
 
-								return openAPIBrief._description;
+								return openAPIDocument.getDescription();
 							});
 
 						setName(entry::getKey);
@@ -117,7 +105,8 @@ public class ToolSetUtil {
 		return Page.of(
 			OpenAPIUtil.getToolSummaries(
 				_getOpenAPIJSONObject(
-					httpServletRequest, _getOpenAPIBrief(toolSetName))));
+					httpServletRequest, _getOpenAPIDocument(toolSetName),
+					toolSetName)));
 	}
 
 	public static Response invokeTool(
@@ -173,21 +162,30 @@ public class ToolSetUtil {
 		VulcanRequestForwarder vulcanRequestForwarder =
 			_vulcanRequestForwarderSnapshot.get();
 
-		OpenAPIBrief openAPIBrief = _getOpenAPIBrief(toolSetName);
+		HeadlessApplicationProvider.OpenAPIDocument openAPIDocument =
+			_getOpenAPIDocument(toolSetName);
+
+		HeadlessApplicationProvider.Application application =
+			openAPIDocument.getApplication();
 
 		VulcanRequestForwarder.Response response =
 			vulcanRequestForwarder.forward(
 				httpServletRequest,
 				OpenAPIUtil.getRequest(
-					openAPIBrief._basePath,
+					application.getBasePath(),
 					HashMapBuilder.put(
 						"X-Liferay-Data-Masks",
 						() -> StringUtil.merge(
 							dataMaskExternalReferenceCodes, StringPool.COMMA)
 					).build(),
 					inputJSONObject,
-					_getOpenAPIJSONObject(httpServletRequest, openAPIBrief),
-					toolName, _getUser(httpServletRequest)));
+					_getOpenAPIJSONObject(
+						httpServletRequest, openAPIDocument, toolSetName),
+					toolName,
+					UserLocalServiceUtil.fetchUser(
+						GetterUtil.getLong(
+							httpServletRequest.getAttribute(
+								WebKeys.USER_ID)))));
 
 		String content = response.getContent();
 
@@ -227,168 +225,89 @@ public class ToolSetUtil {
 		}
 	}
 
-	private static String _getDescription(Object service) {
-		if (service == null) {
-			return null;
-		}
+	private static HeadlessApplicationProvider.OpenAPIDocument
+		_getOpenAPIDocument(String toolSetName) {
 
-		Class<?> serviceClass = service.getClass();
+		Map<String, HeadlessApplicationProvider.OpenAPIDocument>
+			openAPIDocuments = _getOpenAPIDocuments();
 
-		OpenAPIDefinition openAPIDefinition = serviceClass.getAnnotation(
-			OpenAPIDefinition.class);
+		HeadlessApplicationProvider.OpenAPIDocument openAPIDocument =
+			openAPIDocuments.get(toolSetName);
 
-		if (openAPIDefinition == null) {
-			return null;
-		}
-
-		Info info = openAPIDefinition.info();
-
-		String description = info.description();
-
-		if (description == null) {
-			return null;
-		}
-
-		return description;
-	}
-
-	private static OpenAPIBrief _getOpenAPIBrief(String toolSetName) {
-		Map<String, OpenAPIBrief> openAPIBriefs = _getOpenAPIBriefs();
-
-		OpenAPIBrief openAPIBrief = openAPIBriefs.get(toolSetName);
-
-		if (openAPIBrief == null) {
+		if (openAPIDocument == null) {
 			throw new IllegalArgumentException(
 				"No tool-set was found with name \"" + toolSetName + "\"");
 		}
 
-		return openAPIBrief;
+		return openAPIDocument;
 	}
 
-	private static Map<String, OpenAPIBrief> _getOpenAPIBriefs() {
-		Map<String, OpenAPIBrief> openAPIBriefs = new TreeMap<>();
+	private static Map<String, HeadlessApplicationProvider.OpenAPIDocument>
+		_getOpenAPIDocuments() {
 
-		JaxrsServiceRuntime jaxrsServiceRuntime =
-			_jaxrsServiceRuntimeSnapshot.get();
+		Map<String, HeadlessApplicationProvider.OpenAPIDocument>
+			openAPIDocuments = new TreeMap<>();
 
-		RuntimeDTO runtimeDTO = jaxrsServiceRuntime.getRuntimeDTO();
+		HeadlessApplicationProvider headlessApplicationProvider =
+			_headlessApplicationProviderSnapshot.get();
 
-		Map<String, String> toolSetDescriptions = _getToolSetDescriptions();
+		for (HeadlessApplicationProvider.Application application :
+				headlessApplicationProvider.getApplications()) {
 
-		for (ApplicationDTO applicationDTO : runtimeDTO.applicationDTOs) {
-			String base = applicationDTO.base;
-
-			if (Validator.isNull(base)) {
+			if (Validator.isNull(application.getBasePath())) {
 				continue;
 			}
 
-			if (!base.startsWith(StringPool.SLASH)) {
-				base = StringPool.SLASH + base;
-			}
+			for (HeadlessApplicationProvider.OpenAPIDocument openAPIDocument :
+					application.getOpenAPIDocuments()) {
 
-			for (String openAPIPath : _getOpenAPIPaths(applicationDTO)) {
-				String basePath = base + _getVersionPath(openAPIPath);
+				String apiPath = application.getBasePath();
 
-				openAPIBriefs.put(
+				String version = openAPIDocument.getVersion();
+
+				if (version != null) {
+					apiPath += StringPool.SLASH + version;
+				}
+
+				openAPIDocuments.putIfAbsent(
 					StringUtil.replace(
-						basePath.substring(1), CharPool.SLASH, CharPool.DASH),
-					new OpenAPIBrief(
-						base, toolSetDescriptions.get(basePath), openAPIPath));
+						apiPath.substring(1), CharPool.SLASH, CharPool.DASH),
+					openAPIDocument);
 			}
 		}
 
-		return openAPIBriefs;
+		return openAPIDocuments;
 	}
 
 	private static JSONObject _getOpenAPIJSONObject(
-		HttpServletRequest httpServletRequest, OpenAPIBrief openAPIBrief) {
+		HttpServletRequest httpServletRequest,
+		HeadlessApplicationProvider.OpenAPIDocument openAPIDocument,
+		String toolSetName) {
 
 		return _openAPIJSONObjects.computeIfAbsent(
 			StringBundler.concat(
 				PortalUtil.getCompanyId(httpServletRequest), StringPool.POUND,
-				openAPIBrief._basePath, openAPIBrief._openAPIPath),
+				openAPIDocument.getPath(
+					HeadlessApplicationProvider.OpenAPIDocument.Type.JSON)),
 			key -> {
-				String path =
-					openAPIBrief._basePath + openAPIBrief._openAPIPath;
+				String content = openAPIDocument.getContentString(
+					PortalUtil.getPortalURL(httpServletRequest) +
+						PortalUtil.getPathContext() + Portal.PATH_MODULE,
+					HeadlessApplicationProvider.OpenAPIDocument.Type.JSON);
+
+				if (Validator.isNull(content)) {
+					throw new IllegalStateException(
+						"Unable to read the OpenAPI document of the \"" +
+							toolSetName + "\" tool-set");
+				}
 
 				try {
-					VulcanRequestForwarder vulcanRequestForwarder =
-						_vulcanRequestForwarderSnapshot.get();
-
-					VulcanRequestForwarder.Response response =
-						vulcanRequestForwarder.forward(
-							httpServletRequest,
-							new VulcanRequestForwarder.Request() {
-
-								@Override
-								public String getMethod() {
-									return "GET";
-								}
-
-								@Override
-								public String getPath() {
-									return path;
-								}
-
-								@Override
-								public User getUser() {
-									return _getUser(httpServletRequest);
-								}
-
-							});
-
-					if (response.getStatusCode() >= 300) {
-						throw new RuntimeException(
-							StringBundler.concat(
-								"HTTP ", response.getStatusCode(), " for ",
-								path, ": ", response.getContent()));
-					}
-
-					return JSONFactoryUtil.createJSONObject(
-						response.getContent());
+					return JSONFactoryUtil.createJSONObject(content);
 				}
 				catch (Exception exception) {
 					throw new RuntimeException(exception);
 				}
 			});
-	}
-
-	private static Set<String> _getOpenAPIPaths(ApplicationDTO applicationDTO) {
-		Set<String> openAPIPaths = new TreeSet<>();
-
-		for (ResourceDTO resourceDTO : applicationDTO.resourceDTOs) {
-			openAPIPaths.addAll(_getOpenAPIPaths(resourceDTO.resourceMethods));
-		}
-
-		if (openAPIPaths.isEmpty()) {
-			openAPIPaths.addAll(
-				_getOpenAPIPaths(applicationDTO.resourceMethods));
-		}
-
-		return openAPIPaths;
-	}
-
-	private static Set<String> _getOpenAPIPaths(
-		ResourceMethodInfoDTO[] resourceMethodInfoDTOs) {
-
-		Set<String> openAPIPaths = new TreeSet<>();
-
-		if (resourceMethodInfoDTOs == null) {
-			return openAPIPaths;
-		}
-
-		for (ResourceMethodInfoDTO resourceMethodInfoDTO :
-				resourceMethodInfoDTOs) {
-
-			String path = resourceMethodInfoDTO.path;
-
-			if ((path != null) && path.contains("/openapi")) {
-				openAPIPaths.add(
-					StringUtil.replace(path, "{type:json|yaml}", "json"));
-			}
-		}
-
-		return openAPIPaths;
 	}
 
 	private static Response _getResponse(Object value) throws Exception {
@@ -399,102 +318,17 @@ public class ToolSetUtil {
 		).build();
 	}
 
-	private static Map<String, String> _getToolSetDescriptions() {
-		Map<String, String> toolSetDescriptions = new HashMap<>();
-
-		Bundle bundle = FrameworkUtil.getBundle(ToolSetUtil.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		ServiceReference<?>[] serviceReferences;
-
-		try {
-			serviceReferences = bundleContext.getAllServiceReferences(
-				null, "(openapi.resource=true)");
-		}
-		catch (InvalidSyntaxException invalidSyntaxException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(invalidSyntaxException);
-			}
-
-			return toolSetDescriptions;
-		}
-
-		if (serviceReferences == null) {
-			return toolSetDescriptions;
-		}
-
-		for (ServiceReference<?> serviceReference : serviceReferences) {
-			String path = GetterUtil.getString(
-				serviceReference.getProperty("openapi.resource.path"));
-
-			if (Validator.isNull(path)) {
-				continue;
-			}
-
-			String version = GetterUtil.getString(
-				serviceReference.getProperty("api.version"));
-
-			if (Validator.isNotNull(version)) {
-				path = path + StringPool.SLASH + version;
-			}
-
-			Object service = bundleContext.getService(serviceReference);
-
-			try {
-				toolSetDescriptions.putIfAbsent(path, _getDescription(service));
-			}
-			finally {
-				bundleContext.ungetService(serviceReference);
-			}
-		}
-
-		return toolSetDescriptions;
-	}
-
-	private static User _getUser(HttpServletRequest httpServletRequest) {
-		return UserLocalServiceUtil.fetchUser(
-			GetterUtil.getLong(
-				httpServletRequest.getAttribute(WebKeys.USER_ID)));
-	}
-
-	private static String _getVersionPath(String openAPIPath) {
-		int index = openAPIPath.lastIndexOf("/openapi");
-
-		if (index <= 0) {
-			return StringPool.BLANK;
-		}
-
-		return openAPIPath.substring(0, index);
-	}
-
 	private static final String _TOOL_SET_NAME = "mcp-server-v1.0";
 
 	private static final Log _log = LogFactoryUtil.getLog(ToolSetUtil.class);
 
-	private static final Snapshot<JaxrsServiceRuntime>
-		_jaxrsServiceRuntimeSnapshot = new Snapshot<>(
-			ToolSetUtil.class, JaxrsServiceRuntime.class);
+	private static final Snapshot<HeadlessApplicationProvider>
+		_headlessApplicationProviderSnapshot = new Snapshot<>(
+			ToolSetUtil.class, HeadlessApplicationProvider.class);
 	private static final Map<String, JSONObject> _openAPIJSONObjects =
 		new ConcurrentHashMap<>();
 	private static final Snapshot<VulcanRequestForwarder>
 		_vulcanRequestForwarderSnapshot = new Snapshot<>(
 			ToolSetUtil.class, VulcanRequestForwarder.class);
-
-	private static class OpenAPIBrief {
-
-		private OpenAPIBrief(
-			String basePath, String description, String openAPIPath) {
-
-			_basePath = basePath;
-			_description = description;
-			_openAPIPath = openAPIPath;
-		}
-
-		private final String _basePath;
-		private final String _description;
-		private final String _openAPIPath;
-
-	}
 
 }
