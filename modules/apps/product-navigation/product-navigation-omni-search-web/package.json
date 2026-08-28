@@ -1,0 +1,25 @@
+{
+	"dependencies": {
+		"@clayui/button": "^3.166.0",
+		"@clayui/form": "^3.166.0",
+		"@clayui/icon": "^3.166.0",
+		"@clayui/loading-indicator": "^3.166.0",
+		"@clayui/modal": "^3.166.0",
+		"@clayui/sticker": "^3.166.0",
+		"@liferay/frontend-js-react-web": "*",
+		"@liferay/layout-js-components-web": "*",
+		"classnames": "2.3.1",
+		"frontend-js-web": "*",
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
+	},
+	"main": "js/index.ts",
+	"name": "@liferay/product-navigation-omni-search-web",
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format",
+		"test": "node-scripts test"
+	},
+	"version": "1.0.0"
+}

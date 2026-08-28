@@ -206,6 +206,7 @@ export default [
 	'@liferay/prettier-plugin',
 	'@liferay/product-analytics-web',
 	'@liferay/product-navigation-control-menu-theme-contributor',
+	'@liferay/product-navigation-omni-search-web',
 	'@liferay/product-navigation-product-menu-theme-contributor',
 	'@liferay/product-navigation-site-administration',
 	'@liferay/product-navigation-user-personal-bar-web',

@@ -1,0 +1,163 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+@import 'cadmin-variables';
+
+html#{$cadmin-selector} .modal-backdrop:has(+ .cadmin.omni-search-modal) {
+	opacity: 0;
+}
+
+html#{$cadmin-selector} .cadmin.omni-search-modal {
+	&.fade {
+		transition: opacity 100ms linear;
+
+		.modal-dialog {
+			transform: scale(0.97);
+			transition: transform 100ms ease-out;
+		}
+	}
+
+	&.show .modal-dialog {
+		transform: scale(1);
+	}
+
+	.modal-dialog {
+		margin-top: 4rem;
+	}
+
+	.modal-content {
+		background-color: transparent;
+		border: 0;
+		box-shadow: none;
+		max-height: calc(100vh - 3.75rem);
+		overflow: visible;
+	}
+
+	.modal-header {
+		align-items: center;
+		background: var(--cadmin-white);
+		border-radius: $cadmin-border-radius-xl;
+		border-width: 0;
+		box-shadow: $cadmin-box-shadow-lg;
+		height: auto;
+		margin-bottom: $cadmin-spacer;
+		padding: $cadmin-spacer 20px $cadmin-spacer $cadmin-spacer;
+	}
+
+	.modal-body {
+		background-color: var(--cadmin-white);
+		border-radius: $cadmin-border-radius-xl;
+		border-width: 0;
+		box-shadow: $cadmin-box-shadow-lg;
+		max-height: calc(100vh - 16rem);
+		overflow-y: auto;
+		padding: $cadmin-spacer;
+	}
+
+	.modal-header .input-group {
+		flex-grow: 1;
+	}
+
+	.form-control.omni-search-input {
+		font-size: 20px;
+		height: 48px;
+	}
+
+	.input-group-item-focusable {
+		border-radius: $cadmin-border-radius;
+	}
+
+	.input-group-inset-item-before {
+		border-bottom-left-radius: $cadmin-border-radius;
+		border-top-left-radius: $cadmin-border-radius;
+		padding-left: $cadmin-spacer;
+		padding-right: calc(#{$cadmin-spacer} * 0.5);
+	}
+
+	.input-group-inset-item-after {
+		border-bottom-right-radius: $cadmin-border-radius;
+		border-top-right-radius: $cadmin-border-radius;
+		min-width: 40px;
+	}
+
+	.omni-search-section-header {
+		align-items: center;
+		display: flex;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		margin: 1rem 0 0.5rem;
+
+		&:first-child {
+			margin-top: 0;
+		}
+	}
+
+	.omni-search-list {
+		margin-bottom: 0;
+	}
+
+	.omni-search-result-item {
+		position: relative;
+
+		.omni-search-result-delete {
+			opacity: 0;
+			position: absolute;
+			right: calc(#{$cadmin-spacer} * 0.5);
+			top: 50%;
+			transform: translateY(-50%);
+		}
+
+		&:focus-within .omni-search-result-delete,
+		&:has(.omni-search-result.active) .omni-search-result-delete,
+		&:hover .omni-search-result-delete,
+		.omni-search-result-delete:focus {
+			opacity: 1;
+		}
+
+		&:has(.omni-search-result-delete) .omni-search-result {
+			padding-right: 48px;
+		}
+	}
+
+	.btn.omni-search-result {
+		align-items: center;
+		border-radius: $cadmin-border-radius;
+		display: flex;
+		gap: 0.75rem;
+		padding: 0.5rem;
+		text-align: left;
+		width: 100%;
+
+		&:hover,
+		&:focus,
+		&.active {
+			background-color: var(--cadmin-gray-100);
+		}
+
+		.omni-search-result-sticker {
+			border-radius: $cadmin-border-radius;
+			flex-shrink: 0;
+		}
+
+		.omni-search-result-text {
+			display: flex;
+			flex-direction: column;
+			line-height: 1.4;
+			min-width: 0;
+		}
+
+		.omni-search-result-title {
+			font-weight: 600;
+		}
+
+		.omni-search-result-source {
+			font-size: 0.8125rem;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+}

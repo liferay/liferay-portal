@@ -9,6 +9,8 @@
 
 <%
 String omniSearchLabel = LanguageUtil.get(request, "omni-search") + " (Ctrl+K)";
+
+OmniSearchDisplayContext omniSearchDisplayContext = new OmniSearchDisplayContext(request);
 %>
 
 <li class="control-menu-nav-item control-menu-nav-item-separator omni-search-control-menu-nav-item">
@@ -21,5 +23,14 @@ String omniSearchLabel = LanguageUtil.get(request, "omni-search") + " (Ctrl+K)";
 		icon="search"
 		small="<%= true %>"
 		title="<%= omniSearchLabel %>"
+	/>
+
+	<react:component
+		module="{OmniSearch} from product-navigation-omni-search-web"
+		props='<%=
+			com.liferay.portal.kernel.util.HashMapBuilder.<String, Object>put(
+				"resultsURL", omniSearchDisplayContext.getResultsURL()
+			).build()
+		%>'
 	/>
 </li>
