@@ -881,12 +881,12 @@ public class CompanyLocalServiceTest {
 			Assert.assertTrue(
 				_dbPartitionDB.existsPartition(
 					_connection,
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						_company.getCompanyId())));
 
 			CompanyLocalServiceTestUtil.checkStandaloneDBPartitionTables(
 				_connection, _dbPartitionDB,
-				CompanyLocalServiceTestUtil.getExportedPartitionName(
+				DBPartitionUtil.getExportedPartitionName(
 					_company.getCompanyId()),
 				"Company", "VirtualHost");
 
@@ -904,7 +904,7 @@ public class CompanyLocalServiceTest {
 		finally {
 			_db.runSQL(
 				_dbPartitionDB.getDropPartitionSQL(
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						_company.getCompanyId())));
 		}
 	}
@@ -930,9 +930,8 @@ public class CompanyLocalServiceTest {
 	public void testExportCompanyExistingExportedPartition() throws Exception {
 		Assume.assumeTrue(_db.isSupportsDBPartition());
 
-		String exportedPartitionName =
-			CompanyLocalServiceTestUtil.getExportedPartitionName(
-				_company.getCompanyId());
+		String exportedPartitionName = DBPartitionUtil.getExportedPartitionName(
+			_company.getCompanyId());
 
 		try {
 			_companyLocalService.exportCompany(_company.getCompanyId());
@@ -1007,13 +1006,13 @@ public class CompanyLocalServiceTest {
 			Assert.assertFalse(
 				_dbPartitionDB.existsPartition(
 					_connection,
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						_company.getCompanyId())));
 		}
 		finally {
 			_db.runSQL(
 				_dbPartitionDB.getDropPartitionSQL(
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						_company.getCompanyId())));
 		}
 	}

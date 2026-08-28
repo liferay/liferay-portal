@@ -384,7 +384,7 @@ public class CompanyLocalServiceDBPartitionTest
 				Assert.assertTrue(
 					dbPartitionDB.existsPartition(
 						connection,
-						CompanyLocalServiceTestUtil.getExportedPartitionName(
+						DBPartitionUtil.getExportedPartitionName(
 							company.getCompanyId())));
 			}
 
@@ -413,7 +413,7 @@ public class CompanyLocalServiceDBPartitionTest
 		finally {
 			db.runSQL(
 				dbPartitionDB.getDropPartitionSQL(
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						company.getCompanyId())));
 
 			if (ArrayUtil.contains(
@@ -458,7 +458,7 @@ public class CompanyLocalServiceDBPartitionTest
 
 				CompanyLocalServiceTestUtil.checkStandaloneDBPartitionTables(
 					connection, dbPartitionDB,
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						company.getCompanyId()),
 					"Company", "VirtualHost");
 			}
@@ -466,7 +466,7 @@ public class CompanyLocalServiceDBPartitionTest
 		finally {
 			db.runSQL(
 				dbPartitionDB.getDropPartitionSQL(
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						company.getCompanyId())));
 
 			if (ArrayUtil.contains(
@@ -524,7 +524,7 @@ public class CompanyLocalServiceDBPartitionTest
 
 				CompanyLocalServiceTestUtil.checkStandaloneDBPartitionTables(
 					connection, dbPartitionDB,
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						company.getCompanyId()),
 					"Company", "VirtualHost");
 			}
@@ -532,7 +532,7 @@ public class CompanyLocalServiceDBPartitionTest
 		finally {
 			db.runSQL(
 				dbPartitionDB.getDropPartitionSQL(
-					CompanyLocalServiceTestUtil.getExportedPartitionName(
+					DBPartitionUtil.getExportedPartitionName(
 						company.getCompanyId())));
 
 			if (ArrayUtil.contains(

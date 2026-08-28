@@ -109,10 +109,6 @@ public class CompanyLocalServiceTestUtil {
 			PortalInstancePool.class, "_getCompanyIdsBySQL", null, null);
 	}
 
-	public static String getExportedPartitionName(long companyId) {
-		return DBPartitionUtil.getExportedPartitionName(companyId);
-	}
-
 	public static String getPartitionName(long companyId) {
 		if (companyId == PortalInstancePool.getDefaultCompanyId()) {
 			return ReflectionTestUtil.getFieldValue(
