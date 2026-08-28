@@ -82,6 +82,7 @@ public class AuditEventResourceImpl extends BaseAuditEventResourceImpl {
 				setClientHost(serviceBuilderAuditEvent::getClientHost);
 				setClientIP(serviceBuilderAuditEvent::getClientIP);
 				setContextName(serviceBuilderAuditEvent::getContextName);
+				setCorrelationId(serviceBuilderAuditEvent::getCorrelationId);
 				setCreator(
 					() -> CreatorUtil.toCreator(
 						null, _portal,
@@ -94,8 +95,17 @@ public class AuditEventResourceImpl extends BaseAuditEventResourceImpl {
 				setEntityType(serviceBuilderAuditEvent::getClassName);
 				setEventType(serviceBuilderAuditEvent::getEventType);
 				setGroupId(serviceBuilderAuditEvent::getGroupId);
+				setHttpMethod(serviceBuilderAuditEvent::getHttpMethod);
 				setId(serviceBuilderAuditEvent::getAuditEventId);
+				setObjectName(serviceBuilderAuditEvent::getObjectName);
+				setRequestId(serviceBuilderAuditEvent::getRequestId);
+				setRequestIdGenerated(
+					serviceBuilderAuditEvent::isRequestIdGenerated);
+				setResourceAction(serviceBuilderAuditEvent::getResourceAction);
+				setResourceType(serviceBuilderAuditEvent::getResourceType);
+				setRoles(serviceBuilderAuditEvent::getRoles);
 				setServerName(serviceBuilderAuditEvent::getServerName);
+				setUserAgent(serviceBuilderAuditEvent::getUserAgent);
 			}
 		};
 	}
