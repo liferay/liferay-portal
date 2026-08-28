@@ -6,10 +6,14 @@
 package com.liferay.oauth.client.persistence.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientASLocalMetadataException;
+import com.liferay.oauth.client.persistence.exception.OAuthClientASLocalMetadataLocalWellKnownURIException;
 import com.liferay.oauth.client.persistence.model.OAuthClientASLocalMetadata;
 import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalService;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -55,12 +59,62 @@ public class OAuthClientASLocalMetadataLocalServiceTest {
 	}
 
 	@Test
+	public void testAddOAuthClientASLocalMetadataDuplicateOAuthASLocalWellKnownURI()
+		throws Exception {
+
+		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
+			_oAuthClientASLocalMetadataLocalService.
+				createOAuthClientASLocalMetadata(
+					_counterLocalService.increment());
+
+		oAuthClientASLocalMetadata.setCompanyId(TestPropsValues.getCompanyId());
+		oAuthClientASLocalMetadata.setIssuer(
+			_ISSUER + "/" + RandomTestUtil.randomString());
+		oAuthClientASLocalMetadata.setLocalWellKnownURI(
+			RandomTestUtil.randomString());
+		oAuthClientASLocalMetadata.setOAuthASLocalWellKnownURI(
+			_ISSUER + "/.well-known/oauth-authorization-server");
+
+		_oAuthClientASLocalMetadata =
+			_oAuthClientASLocalMetadataLocalService.
+				updateOAuthClientASLocalMetadata(oAuthClientASLocalMetadata);
+
+		JSONObject metadataJSONObject = _createMetadataJSONObject(_ISSUER);
+
+		AssertUtils.assertFailure(
+			DuplicateOAuthClientASLocalMetadataException.class, null,
+			() ->
+				_oAuthClientASLocalMetadataLocalService.
+					addOAuthClientASLocalMetadata(
+						TestPropsValues.getUserId(),
+						metadataJSONObject.toString(), "openid-configuration"));
+	}
+
+	@Test
+	public void testAddOAuthClientASLocalMetadataLongIssuer() throws Exception {
+		JSONObject metadataJSONObject = _createMetadataJSONObject(
+			"https://" + RandomTestUtil.randomString(240) + ".com");
+
+		AssertUtils.assertFailure(
+			OAuthClientASLocalMetadataLocalWellKnownURIException.
+				MustNotExceedMaximumLength.class,
+			"Issuer is too long to generate a local well known URI which is " +
+				"limited to 256 characters",
+			() ->
+				_oAuthClientASLocalMetadataLocalService.
+					addOAuthClientASLocalMetadata(
+						TestPropsValues.getUserId(),
+						metadataJSONObject.toString(), "openid-configuration"));
+	}
+
+	@Test
 	public void testUpdateOAuthClientASLocalMetadata() throws Exception {
+		JSONObject metadataJSONObject = _createMetadataJSONObject(_ISSUER);
+
 		_oAuthClientASLocalMetadata =
 			_oAuthClientASLocalMetadataLocalService.
 				addOAuthClientASLocalMetadata(
-					TestPropsValues.getUserId(),
-					_createMetadataJSONObject().toString(),
+					TestPropsValues.getUserId(), metadataJSONObject.toString(),
 					"openid-configuration");
 
 		String updatedIssuer = _ISSUER + "/updated";
@@ -97,29 +151,29 @@ public class OAuthClientASLocalMetadataLocalServiceTest {
 		Assert.assertNull(oidcProviderMetadata.getUserInfoEndpointURI());
 	}
 
-	private JSONObject _createMetadataJSONObject() {
+	private JSONObject _createMetadataJSONObject(String issuer) {
 		return JSONUtil.put(
-			"authorization_endpoint", _ISSUER + "/protocol/openid-connect/auth"
+			"authorization_endpoint", issuer + "/protocol/openid-connect/auth"
 		).put(
-			"issuer", _ISSUER
+			"issuer", issuer
 		).put(
-			"jwks_uri", _ISSUER + "/protocol/openid-connect/certs"
+			"jwks_uri", issuer + "/protocol/openid-connect/certs"
 		).put(
 			"registration_endpoint",
-			_ISSUER + "/clients-registrations/openid-connect"
+			issuer + "/clients-registrations/openid-connect"
 		).put(
 			"subject_types_supported", JSONUtil.putAll("public")
 		).put(
-			"token_endpoint", _ISSUER + "/protocol/openid-connect/token"
+			"token_endpoint", issuer + "/protocol/openid-connect/token"
 		).put(
-			"userinfo_endpoint", _ISSUER + "/protocol/openid-connect/userinfo"
+			"userinfo_endpoint", issuer + "/protocol/openid-connect/userinfo"
 		);
 	}
 
 	private void _testAddOAuthClientASLocalMetadata(String missingKey)
 		throws Exception {
 
-		JSONObject metadataJSONObject = _createMetadataJSONObject();
+		JSONObject metadataJSONObject = _createMetadataJSONObject(_ISSUER);
 
 		if (missingKey != null) {
 			metadataJSONObject.remove(missingKey);
@@ -161,6 +215,9 @@ public class OAuthClientASLocalMetadataLocalServiceTest {
 
 	private static final String _ISSUER =
 		"https://" + RandomTestUtil.randomString() + ".com";
+
+	@Inject
+	private CounterLocalService _counterLocalService;
 
 	private OAuthClientASLocalMetadata _oAuthClientASLocalMetadata;
 
