@@ -439,6 +439,10 @@ test.describe('manage object definitions through view object definitions', () =>
 				await page
 					.getByRole('menuitem', {name: 'Move to Current Folder'})
 					.click();
+
+				await expect(
+					page.locator('#ToastAlertContainer .alert-success')
+				).toBeVisible();
 			});
 
 			await test.step('Check that the object definition is visible in Folder B sidebar', async () => {
