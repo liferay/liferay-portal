@@ -1,8 +1,8 @@
 $btn-border-radius: $border-radius !default;
 $btn-border-width: $input-btn-border-width !default;
 $btn-box-shadow:
-	#{inset 0 1px 0 rgba($white, 0.15),
-	0 1px 1px rgba($black, 0.075)} !default;
+	inset 0 1px 0 rgba($white, 0.15),
+	0 1px 1px rgba($black, 0.075) !default;
 $btn-cursor: $link-cursor !default;
 $btn-font-family: $input-btn-font-family !default;
 $btn-font-size: $input-btn-font-size !default;
@@ -497,11 +497,14 @@ $btn-primary: map-deep-merge(
 			border-color: clay-darken($primary, 10%),
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($primary), $primary, 15%), 0.5)},
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($primary), $primary, 15%), 0.5)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width
+							rgba(
+								clay-mix(color-yiq($primary), $primary, 15%),
+								0.5
+							)
+					)
 				),
 			color: color-yiq(clay-darken($primary, 7.5%)),
 		),
@@ -514,17 +517,18 @@ $btn-primary: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(color-yiq($primary), $primary, 15%),
-								0.5
-							)},
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(color-yiq($primary), $primary, 15%),
-								0.5
-							)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width
+								rgba(
+									clay-mix(
+										color-yiq($primary),
+										$primary,
+										15%
+									),
+									0.5
+								)
+						)
 					),
 			),
 		),
@@ -562,17 +566,18 @@ $btn-secondary: map-deep-merge(
 			border-color: clay-darken($secondary, 10%),
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width
-						rgba(
-							clay-mix(color-yiq($secondary), $secondary, 15%),
-							0.5
-						)},
-					0 0 0 $btn-focus-width
-						rgba(
-							clay-mix(color-yiq($secondary), $secondary, 15%),
-							0.5
-						)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width
+							rgba(
+								clay-mix(
+									color-yiq($secondary),
+									$secondary,
+									15%
+								),
+								0.5
+							)
+					)
 				),
 			color: color-yiq(clay-darken($secondary, 7.5%)),
 		),
@@ -585,25 +590,18 @@ $btn-secondary: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(
-									color-yiq($secondary),
-									$secondary,
-									15%
-								),
-								0.5
-							)},
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(
-									color-yiq($secondary),
-									$secondary,
-									15%
-								),
-								0.5
-							)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width
+								rgba(
+									clay-mix(
+										color-yiq($secondary),
+										$secondary,
+										15%
+									),
+									0.5
+								)
+						)
 					),
 			),
 		),
@@ -639,11 +637,14 @@ $btn-success: map-deep-merge(
 			border-color: clay-darken($success, 10%),
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($success), $success, 15%), 0.5)},
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($success), $success, 15%), 0.5)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width
+							rgba(
+								clay-mix(color-yiq($success), $success, 15%),
+								0.5
+							)
+					)
 				),
 			color: color-yiq(clay-darken($success, 7.5%)),
 		),
@@ -656,17 +657,18 @@ $btn-success: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(color-yiq($success), $success, 15%),
-								0.5
-							)},
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(color-yiq($success), $success, 15%),
-								0.5
-							)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width
+								rgba(
+									clay-mix(
+										color-yiq($success),
+										$success,
+										15%
+									),
+									0.5
+								)
+						)
 					),
 			),
 		),
@@ -702,11 +704,11 @@ $btn-info: map-deep-merge(
 			border-color: clay-darken($info, 10%),
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($info), $info, 15%), 0.5)},
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($info), $info, 15%), 0.5)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width
+							rgba(clay-mix(color-yiq($info), $info, 15%), 0.5)
+					)
 				),
 			color: color-yiq(clay-darken($info, 7.5%)),
 		),
@@ -719,11 +721,14 @@ $btn-info: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width
-							rgba(clay-mix(color-yiq($info), $info, 15%), 0.5)},
-						0 0 0 $btn-focus-width
-							rgba(clay-mix(color-yiq($info), $info, 15%), 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width
+								rgba(
+									clay-mix(color-yiq($info), $info, 15%),
+									0.5
+								)
+						)
 					),
 			),
 		),
@@ -759,11 +764,14 @@ $btn-warning: map-deep-merge(
 			border-color: clay-darken($warning, 10%),
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($warning), $warning, 15%), 0.5)},
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($warning), $warning, 15%), 0.5)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width
+							rgba(
+								clay-mix(color-yiq($warning), $warning, 15%),
+								0.5
+							)
+					)
 				),
 			color: color-yiq(clay-darken($warning, 7.5%)),
 		),
@@ -776,17 +784,18 @@ $btn-warning: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(color-yiq($warning), $warning, 15%),
-								0.5
-							)},
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(color-yiq($warning), $warning, 15%),
-								0.5
-							)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width
+								rgba(
+									clay-mix(
+										color-yiq($warning),
+										$warning,
+										15%
+									),
+									0.5
+								)
+						)
 					),
 			),
 		),
@@ -822,11 +831,14 @@ $btn-danger: map-deep-merge(
 			border-color: clay-darken($danger, 10%),
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($danger), $danger, 15%), 0.5)},
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($danger), $danger, 15%), 0.5)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width
+							rgba(
+								clay-mix(color-yiq($danger), $danger, 15%),
+								0.5
+							)
+					)
 				),
 			color: color-yiq(clay-darken($danger, 7.5%)),
 		),
@@ -839,17 +851,14 @@ $btn-danger: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(color-yiq($danger), $danger, 15%),
-								0.5
-							)},
-						0 0 0 $btn-focus-width
-							rgba(
-								clay-mix(color-yiq($danger), $danger, 15%),
-								0.5
-							)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width
+								rgba(
+									clay-mix(color-yiq($danger), $danger, 15%),
+									0.5
+								)
+						)
 					),
 			),
 		),
@@ -885,11 +894,11 @@ $btn-light: map-deep-merge(
 			border-color: clay-darken($light, 10%),
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($light), $light, 15%), 0.5)},
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($light), $light, 15%), 0.5)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width
+							rgba(clay-mix(color-yiq($light), $light, 15%), 0.5)
+					)
 				),
 			color: color-yiq(clay-darken($light, 7.5%)),
 		),
@@ -902,11 +911,14 @@ $btn-light: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width
-							rgba(clay-mix(color-yiq($light), $light, 15%), 0.5)},
-						0 0 0 $btn-focus-width
-							rgba(clay-mix(color-yiq($light), $light, 15%), 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width
+								rgba(
+									clay-mix(color-yiq($light), $light, 15%),
+									0.5
+								)
+						)
 					),
 			),
 		),
@@ -942,11 +954,11 @@ $btn-dark: map-deep-merge(
 			border-color: clay-darken($dark, 10%),
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($dark), $dark, 15%), 0.5)},
-					0 0 0 $btn-focus-width
-						rgba(clay-mix(color-yiq($dark), $dark, 15%), 0.5)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width
+							rgba(clay-mix(color-yiq($dark), $dark, 15%), 0.5)
+					)
 				),
 			color: color-yiq(clay-darken($dark, 7.5%)),
 		),
@@ -959,11 +971,14 @@ $btn-dark: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width
-							rgba(clay-mix(color-yiq($dark), $dark, 15%), 0.5)},
-						0 0 0 $btn-focus-width
-							rgba(clay-mix(color-yiq($dark), $dark, 15%), 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width
+								rgba(
+									clay-mix(color-yiq($dark), $dark, 15%),
+									0.5
+								)
+						)
 					),
 			),
 		),
@@ -1024,9 +1039,10 @@ $btn-ai: map-deep-merge(
 		focus: (
 			box-shadow:
 				clay-enable-shadows(
-					#{$btn-box-shadow,
-					0 0 0 $btn-focus-width rgba($primary-l0, 0.5)},
-					0 0 0 $btn-focus-width rgba($primary-l0, 0.5)
+					(
+						$btn-box-shadow,
+						0 0 0 $btn-focus-width rgba($primary-l0, 0.5)
+					)
 				),
 		),
 
@@ -1037,9 +1053,10 @@ $btn-ai: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($primary-l0, 0.5)},
-						0 0 0 $btn-focus-width rgba($primary-l0, 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($primary-l0, 0.5)
+						)
 					),
 			),
 		),
@@ -1456,9 +1473,10 @@ $btn-outline-primary: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($primary, 0.5)},
-						$c-unset
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($primary, 0.5)
+						)
 					),
 			),
 		),
@@ -1494,9 +1512,10 @@ $btn-outline-secondary: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($secondary, 0.5)},
-						0 0 0 $btn-focus-width rgba($secondary, 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($secondary, 0.5)
+						)
 					),
 			),
 		),
@@ -1532,9 +1551,10 @@ $btn-outline-success: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($success, 0.5)},
-						0 0 0 $btn-focus-width rgba($success, 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($success, 0.5)
+						)
 					),
 			),
 		),
@@ -1570,9 +1590,10 @@ $btn-outline-info: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($info, 0.5)},
-						0 0 0 $btn-focus-width rgba($info, 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($info, 0.5)
+						)
 					),
 			),
 		),
@@ -1608,9 +1629,10 @@ $btn-outline-warning: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($warning, 0.5)},
-						0 0 0 $btn-focus-width rgba($warning, 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($warning, 0.5)
+						)
 					),
 			),
 		),
@@ -1646,9 +1668,10 @@ $btn-outline-danger: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($danger, 0.5)},
-						0 0 0 $btn-focus-width rgba($danger, 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($danger, 0.5)
+						)
 					),
 			),
 		),
@@ -1684,9 +1707,10 @@ $btn-outline-light: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($light, 0.5)},
-						0 0 0 $btn-focus-width rgba($light, 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($light, 0.5)
+						)
 					),
 			),
 		),
@@ -1722,9 +1746,10 @@ $btn-outline-dark: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($dark, 0.5)},
-						0 0 0 $btn-focus-width rgba($dark, 0.5)
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($dark, 0.5)
+						)
 					),
 			),
 		),
@@ -1784,9 +1809,10 @@ $btn-outline-ai: map-deep-merge(
 			focus: (
 				box-shadow:
 					clay-enable-shadows(
-						#{$btn-active-box-shadow,
-						0 0 0 $btn-focus-width rgba($primary, 0.5)},
-						$c-unset
+						(
+							$btn-active-box-shadow,
+							0 0 0 $btn-focus-width rgba($primary, 0.5)
+						)
 					),
 			),
 		),

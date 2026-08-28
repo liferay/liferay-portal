@@ -303,13 +303,10 @@
 }
 
 /// A function that returns a shadow for use with the `box-shadow` property. This function returns `null` if `$enable-shadows` is set to `false`. This is a workaround for complying with Bootstrap's `$enable-shadows` setting.
-/// @param {List} $shadows - The box shadow. Pass in a single shadow or two shadows using `[$shadow1, $shadow2]` if you need a default shadow even if `$enable-shadows` is `false`. A focus shadow for example.
+/// @param {List} $shadows - The box shadow. Pass a single shadow, or a comma separated list of shadows. Shadows set to `c-unset`, `clay-unset`, `null`, or an empty list are dropped. Wrap the value in brackets, `[$shadow]`, to force it to be treated as a single shadow.
 
 @function clay-enable-shadows($shadows, $enable: null) {
 	$ret-val: null;
-
-	$length: length($shadows);
-	$separator: list-separator($shadows);
 
 	$enable: if(
 		variable-exists(enable-shadows),
@@ -317,15 +314,38 @@
 		if(variable-exists(cadmin-enable-shadows), $cadmin-enable-shadows, true)
 	);
 
-	@if ($length == 2 and $separator == 'comma') {
-		@if ($enable) {
-			$ret-val: nth($shadows, 1);
-		} @else {
-			$ret-val: nth($shadows, 2);
+	@if ($enable) {
+		// Unwrap `[$shadow]` so the brackets don't reach the generated CSS
+
+		@if (type-of($shadows) == 'list') and is-bracketed($shadows) {
+			$shadows: join((), $shadows, list-separator($shadows), false);
 		}
-	} @else if ($separator == 'space') {
-		@if ($enable) {
-			$ret-val: $shadows;
+
+		// A space separated list is a single shadow, not a list of shadows.
+		// Only a comma separated list may be iterated, otherwise the parts of
+		// the shadow get rejoined with commas.
+
+		$list: if(
+			(type-of($shadows) == 'list') and
+				(list-separator($shadows) == 'comma'),
+			$shadows,
+			append((), $shadows, comma)
+		);
+
+		$s: ();
+
+		@each $value in $list {
+			@if (
+				(not clay-is-map-unset($value)) and
+					($value != null) and
+					($value != ())
+			) {
+				$s: append($s, $value, comma);
+			}
+		}
+
+		@if (length($s) > 0) {
+			$ret-val: $s;
 		}
 	}
 

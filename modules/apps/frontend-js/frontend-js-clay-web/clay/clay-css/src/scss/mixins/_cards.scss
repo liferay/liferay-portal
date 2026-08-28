@@ -960,6 +960,11 @@
 			$_aspect-ratio: map-get($map, aspect-ratio);
 
 			@if ($_aspect-ratio) {
+				$_aspect-ratio: map-remove(
+					$_aspect-ratio,
+					'checkered-foreground-color'
+				);
+
 				.aspect-ratio {
 					@include clay-aspect-ratio-variant($_aspect-ratio);
 
@@ -1662,6 +1667,8 @@
 		checkered-foreground-color
 	);
 
+	$aspect-ratio: map-remove($aspect-ratio, 'checkered-foreground-color');
+
 	$asset-icon: setter(map-get($map, asset-icon), ());
 	$asset-icon: map-merge(
 		$asset-icon,
@@ -1710,6 +1717,7 @@
 		$map,
 		'aspect-ratio-bg',
 		'aspect-ratio-checkered-bg',
+		'aspect-ratio-checkered-fg',
 		'asset-icon-color',
 		'asset-icon-lexicon-icon-height',
 		'asset-icon-lexicon-icon-width',

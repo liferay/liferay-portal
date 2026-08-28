@@ -191,7 +191,9 @@
 				&.focus,
 				#{$focus-visible-selector},
 				.c-prefers-focus &:focus {
-					box-shadow: $multi-step-icon-disabled-focus-box-shadow;
+					@include box-shadow(
+						$multi-step-icon-disabled-focus-box-shadow
+					);
 				}
 			}
 		}

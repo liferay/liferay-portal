@@ -335,10 +335,10 @@ textarea.form-control-plaintext,
 	padding: 0;
 
 	&:focus {
-		box-shadow: none;
+		@include box-shadow(none);
 
 		&::-webkit-slider-thumb {
-			box-shadow: $input-focus-box-shadow;
+			@include box-shadow($input-focus-box-shadow);
 		}
 	}
 

@@ -415,6 +415,10 @@ $btn-ai: () !default;
 $btn-ai: map-deep-merge(
 	(
 		box-shadow: c-unset,
+
+		focus: (
+			box-shadow: c-unset,
+		),
 	),
 	$btn-ai
 );
@@ -465,12 +469,17 @@ $btn-outline-ai: map-deep-merge(
 
 		focus: (
 			background-color: rgba($purple, 0.06),
+			box-shadow: c-unset,
 			color: $purple-d1,
 		),
 
 		active: (
 			background-color: rgba($purple, 0.12),
 			color: $purple-d1,
+
+			focus: (
+				box-shadow: c-unset,
+			),
 		),
 
 		disabled: (

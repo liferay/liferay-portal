@@ -2,7 +2,9 @@
 /// @group utilities
 ////
 
-/// A mixin that overwrites Bootstrap 4's `box-shadow` mixin.
+/// A mixin that overwrites Bootstrap 4's `box-shadow` mixin. Shadows set to
+/// `c-unset`, `clay-unset`, `null`, or an empty list are dropped from the
+/// arglist. The remaining shadows are joined into a comma separated list.
 /// @param {Arglist} $shadow
 
 @mixin box-shadow($shadow...) {
@@ -13,15 +15,20 @@
 	);
 
 	@if ($enable) {
-		@if (
-			nth($shadow, 1) !=
-				null and
-				nth($shadow, 1) !=
-				() and
-				length($shadow) <=
-				1
-		) {
-			box-shadow: $shadow;
+		$shadows: ();
+
+		@each $value in $shadow {
+			@if (
+				(not clay-is-map-unset($value)) and
+					($value != null) and
+					($value != ())
+			) {
+				$shadows: append($shadows, $value, comma);
+			}
+		}
+
+		@if (length($shadows) > 0) {
+			box-shadow: $shadows;
 		}
 	}
 }

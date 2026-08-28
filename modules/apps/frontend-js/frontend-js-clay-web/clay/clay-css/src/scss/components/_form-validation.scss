@@ -69,13 +69,17 @@
 	.was-validated .form-control.is-valid {
 		background-color: $input-success-bg;
 		border-color: $input-success-border-color;
-		box-shadow: $input-success-box-shadow;
+
+		@include box-shadow($input-success-box-shadow);
+
 		color: $input-success-color;
 
 		&:focus {
 			background-color: $input-success-focus-bg;
 			border-color: $input-success-focus-border-color;
-			box-shadow: $input-success-focus-box-shadow;
+
+			@include box-shadow($input-success-focus-box-shadow);
+
 			color: $input-success-focus-color;
 		}
 	}
@@ -84,13 +88,17 @@
 	.was-validated .form-control.is-invalid {
 		background-color: $input-danger-bg;
 		border-color: $input-danger-border-color;
-		box-shadow: $input-danger-box-shadow;
+
+		@include box-shadow($input-danger-box-shadow);
+
 		color: $input-danger-color;
 
 		&:focus {
 			background-color: $input-danger-focus-bg;
 			border-color: $input-danger-focus-border-color;
-			box-shadow: $input-danger-focus-box-shadow;
+
+			@include box-shadow($input-danger-focus-box-shadow);
+
 			color: $input-danger-focus-color;
 		}
 	}
