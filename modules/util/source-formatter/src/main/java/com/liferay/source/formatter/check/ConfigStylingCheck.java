@@ -69,7 +69,7 @@ public class ConfigStylingCheck extends BaseFileCheck {
 
 			matcher.appendReplacement(
 				sb,
-				matcher.group(1) + Matcher.quoteReplacement(s) +
+				matcher.group(1) + Matcher.quoteReplacement(s.trim()) +
 					matcher.group(3));
 		}
 
