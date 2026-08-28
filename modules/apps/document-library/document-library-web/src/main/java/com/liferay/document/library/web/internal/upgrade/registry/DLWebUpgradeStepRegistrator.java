@@ -10,6 +10,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.web.internal.upgrade.v1_0_0.UpgradeAdminPortlets;
 import com.liferay.document.library.web.internal.upgrade.v1_0_0.UpgradePortletPreferences;
 import com.liferay.document.library.web.internal.upgrade.v1_0_0.UpgradePortletSettings;
+import com.liferay.portal.kernel.repository.RepositoryFactory;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
@@ -73,6 +74,11 @@ public class DLWebUpgradeStepRegistrator implements UpgradeStepRegistrator {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference(
+		target = "(class.name=com.liferay.portal.repository.liferayrepository.LiferayRepository)"
+	)
+	private RepositoryFactory _liferayRepositoryFactory;
 
 	@Reference
 	private RepositoryLocalService _repositoryLocalService;
