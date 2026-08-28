@@ -30,6 +30,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -206,6 +207,41 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 			layoutContentVersionPreviews.size());
 	}
 
+	@Test
+	@TestInfo("LPD-103339")
+	public void testGetSegmentsExperienceERCsLanguageIds() throws Exception {
+		String languageId1 = RandomTestUtil.randomString();
+		String languageId2 = RandomTestUtil.randomString();
+		String segmentsExperienceERC1 = RandomTestUtil.randomString();
+		String segmentsExperienceERC2 = RandomTestUtil.randomString();
+
+		_addLayoutContentVersionPreviews(
+			languageId1, segmentsExperienceERC1, segmentsExperienceERC2);
+
+		_addLayoutContentVersionPreviews(languageId2, segmentsExperienceERC1);
+
+		Map<String, List<String>> segmentsExperienceERCsLanguageIds =
+			_layoutContentVersionPreviewLocalService.
+				getSegmentsExperienceERCsLanguageIds(
+					_layoutContentVersion.getLayoutContentVersionId());
+
+		List<String> languageIds = segmentsExperienceERCsLanguageIds.get(
+			segmentsExperienceERC1);
+
+		Assert.assertTrue(
+			languageIds.toString(), languageIds.contains(languageId1));
+		Assert.assertTrue(
+			languageIds.toString(), languageIds.contains(languageId2));
+		Assert.assertEquals(languageIds.toString(), 2, languageIds.size());
+
+		languageIds = segmentsExperienceERCsLanguageIds.get(
+			segmentsExperienceERC2);
+
+		Assert.assertTrue(
+			languageIds.toString(), languageIds.contains(languageId1));
+		Assert.assertEquals(languageIds.toString(), 1, languageIds.size());
+	}
+
 	private void _addLayoutContentVersionPreviews(int count) throws Exception {
 		String segmentsExperienceERC = RandomTestUtil.randomString();
 
@@ -216,6 +252,20 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 					_layoutContentVersion.getLayoutContentVersionId(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(), segmentsExperienceERC);
+		}
+	}
+
+	private void _addLayoutContentVersionPreviews(
+			String languageId, String... segmentsExperienceERCs)
+		throws Exception {
+
+		for (String segmentsExperienceERC : segmentsExperienceERCs) {
+			_layoutContentVersionPreviewLocalService.
+				addLayoutContentVersionPreview(
+					TestPropsValues.getUserId(),
+					_layoutContentVersion.getLayoutContentVersionId(),
+					RandomTestUtil.randomString(), languageId,
+					segmentsExperienceERC);
 		}
 	}
 
