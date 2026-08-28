@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {localStorage} from 'frontend-js-web';
+import {checkConsent, localStorage} from 'frontend-js-web';
 
 const DEFAULT_MAX_ENTRIES = 20;
 
@@ -63,7 +63,14 @@ function add(
  * @param fdsName Name of the Data Set
  */
 function clear(fdsName: string): void {
-	localStorage.removeItem(_getStorageKey(fdsName));
+	try {
+		_checkConsentFunctionalCookies();
+
+		localStorage.removeItem(_getStorageKey(fdsName));
+	}
+	catch (error) {
+		_logStorageWarning(error);
+	}
 }
 
 /**
@@ -76,6 +83,8 @@ function get(fdsName: string): string[] {
 	let recentSearches;
 
 	try {
+		_checkConsentFunctionalCookies();
+
 		recentSearches = JSON.parse(
 			localStorage.getItem(
 				_getStorageKey(fdsName),
@@ -84,6 +93,8 @@ function get(fdsName: string): string[] {
 		);
 	}
 	catch (error) {
+		_logStorageWarning(error);
+
 		return [];
 	}
 
@@ -91,6 +102,8 @@ function get(fdsName: string): string[] {
 		!Array.isArray(recentSearches) ||
 		recentSearches.some((recentSearch) => typeof recentSearch !== 'string')
 	) {
+		_logStorageWarning('malformed data');
+
 		return [];
 	}
 
@@ -110,6 +123,12 @@ function remove(fdsName: string, query: string): void {
 			(recentSearch) => !_isSameSearch(recentSearch, query)
 		)
 	);
+}
+
+function _checkConsentFunctionalCookies() {
+	if (!checkConsent(localStorage.TYPES.FUNCTIONAL)) {
+		throw new Error('There is no consent for functional cookies');
+	}
 }
 
 function _continuesWord(prefix: string, search: string): boolean {
@@ -135,8 +154,19 @@ function _normalize(search: string): string {
 	return search.trim().toLowerCase();
 }
 
+function _logStorageWarning(error: unknown) {
+	if (process.env.NODE_ENV === 'development') {
+		console.warn(
+			'Recent searches could not be accessed in browser storage',
+			error
+		);
+	}
+}
+
 function _setRecentSearches(fdsName: string, recentSearches: string[]): void {
 	try {
+		_checkConsentFunctionalCookies();
+
 		localStorage.setItem(
 			_getStorageKey(fdsName),
 			JSON.stringify(recentSearches),
@@ -144,9 +174,7 @@ function _setRecentSearches(fdsName: string, recentSearches: string[]): void {
 		);
 	}
 	catch (error) {
-
-		// Local storage may be unavailable or out of quota
-
+		_logStorageWarning(error);
 	}
 }
 
