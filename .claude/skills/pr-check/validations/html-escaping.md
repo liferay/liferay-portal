@@ -2,7 +2,7 @@
 
 ## Trigger
 
-The diff adds a line that renders a value as HTML in a hand written `.js`, `.jsx`, `.ts` or `.tsx` file. When nothing escapes that value first, the result is a cross site scripting defect.
+The diff adds a line that renders a value as HTML in a hand written `.js`, `.jsx`, `.ts`, or `.tsx` file. When nothing escapes that value first, the result is a cross site scripting defect.
 
 ## Match
 
@@ -36,15 +36,15 @@ git diff "$(git merge-base HEAD master)...HEAD" -- <file> \
 		--regexp='srcdoc'
 ```
 
-When no file produces output, the validation passes.
+When no file remains to scan, because the Match fired on a path this diff only deletes or on a generated file, nothing was examined. Report **NOT VERIFIED** naming what was left out, since a pass over an empty set reads as a branch that was checked. When files remain and none produces output, the validation passes.
 
 Otherwise, each printed line is a candidate, not a finding. Read the file to classify it and find the line number.
 
 A candidate is not a finding when:
 
 - A `// XSS:` waiver comment appears above the line.
-- The call is `openToast` or `openModal` and passes no `bodyHTML`, `headerHTML`, `message` or `title` argument.
-- The line only renames, reformats or moves existing code.
+- The call is `openToast` or `openModal` and passes no `bodyHTML`, `headerHTML`, `message`, or `title` argument.
+- The line only renames, reformats, or moves existing code.
 - The value comes from `Liferay.Language.get` or `sub` on a literal key.
 - The value is a static literal, including a template literal whose every interpolation is a literal.
 - The value is already escaped by `escapeHTML` from `frontend-js-web` or by `Liferay.Util.escapeHTML`.
