@@ -60,6 +60,12 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced");
 						});
 					add(
 						navigationItem -> {
+							navigationItem.setActive(navigation.equals("hidden-exclude-toggle"));
+							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "hidden-exclude-toggle");
+							navigationItem.setLabel("Hidden Exclude Toggle");
+						});
+					add(
+						navigationItem -> {
 							navigationItem.setActive(navigation.equals("minimum"));
 							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "minimum");
 							navigationItem.setLabel("Minimum");
@@ -99,6 +105,9 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced");
 		</c:when>
 		<c:when test='<%= navigation.equals("empty") %>'>
 			<liferay-util:include page="/partials/empty.jsp" servletContext="<%= application %>" />
+		</c:when>
+		<c:when test='<%= navigation.equals("hidden-exclude-toggle") %>'>
+			<liferay-util:include page="/partials/hidden_exclude_toggle.jsp" servletContext="<%= application %>" />
 		</c:when>
 		<c:when test='<%= navigation.equals("minimum") %>'>
 			<liferay-util:include page="/partials/minimum.jsp" servletContext="<%= application %>" />

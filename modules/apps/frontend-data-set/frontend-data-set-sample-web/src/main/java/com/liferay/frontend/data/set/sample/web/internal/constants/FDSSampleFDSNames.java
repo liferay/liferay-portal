@@ -28,6 +28,9 @@ public class FDSSampleFDSNames {
 	public static final String EMPTY =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-empty";
 
+	public static final String HIDDEN_EXCLUDE_TOGGLE =
+		FDSSamplePortletKeys.FDS_SAMPLE + "-hiddenExcludeToggle";
+
 	public static final String MINIMUM =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-minimum";
 
