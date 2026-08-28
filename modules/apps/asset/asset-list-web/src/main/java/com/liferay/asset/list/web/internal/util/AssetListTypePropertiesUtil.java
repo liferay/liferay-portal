@@ -159,7 +159,8 @@ public class AssetListTypePropertiesUtil {
 			"name", name
 		).put(
 			"sortable",
-			ArrayUtil.contains(AssetEntryQuery.ORDER_BY_COLUMNS, name)
+			ArrayUtil.contains(AssetEntryQuery.ORDER_BY_COLUMNS, name) ||
+			name.equals(Field.MODIFIED_DATE)
 		).put(
 			"type", type
 		);
