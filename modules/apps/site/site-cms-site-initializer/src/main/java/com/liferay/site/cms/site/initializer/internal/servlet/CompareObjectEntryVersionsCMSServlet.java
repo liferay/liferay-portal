@@ -29,8 +29,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.TimeZoneUtil;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +42,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringReader;
 
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -126,6 +137,15 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 					continue;
 				}
 
+				if (_isAtomicBusinessType(objectField)) {
+					sourceDiffsJSONObject.put(
+						fieldName, _toAtomicDiffHtml(target, source));
+					targetDiffsJSONObject.put(
+						fieldName, _toAtomicDiffHtml(source, target));
+
+					continue;
+				}
+
 				sourceDiffsJSONObject.put(
 					fieldName,
 					_diffHtml.diff(
@@ -158,6 +178,32 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 			}
 		}
 	}
+
+	private Format _getDateFormat(String languageId) {
+		Locale locale = LocaleUtil.fromLanguageId(languageId);
+
+		return FastDateFormatFactoryUtil.getSimpleDateFormat(
+			_getShortDatePattern(locale), locale,
+			TimeZoneUtil.getTimeZone(StringPool.UTC));
+	}
+
+	private Format _getDateTimeFormat(String languageId) {
+		Locale locale = LocaleUtil.fromLanguageId(languageId);
+
+		SimpleDateFormat simpleDateFormat =
+			(SimpleDateFormat)DateFormat.getTimeInstance(
+				DateFormat.SHORT, locale);
+
+		String timePattern = simpleDateFormat.toPattern();
+
+		timePattern = timePattern.replaceAll("h+", "hh");
+		timePattern = timePattern.replaceAll("H+", "HH");
+
+		return FastDateFormatFactoryUtil.getSimpleDateFormat(
+			_getShortDatePattern(locale) + ", " + timePattern, locale,
+			TimeZoneUtil.getTimeZone(StringPool.UTC));
+	}
+
 
 	private Map<String, Object> _getFieldValues(
 			String languageId, long objectEntryId, int version)
@@ -218,6 +264,51 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		return fieldValues;
 	}
 
+	private String _getShortDatePattern(Locale locale) {
+		SimpleDateFormat simpleDateFormat =
+			(SimpleDateFormat)DateFormat.getDateInstance(
+				DateFormat.SHORT, locale);
+
+		String pattern = simpleDateFormat.toPattern();
+
+		pattern = pattern.replaceAll("M+", "MM");
+		pattern = pattern.replaceAll("d+", "dd");
+		pattern = pattern.replaceAll("y+", "yyyy");
+
+		return pattern;
+	}
+
+	private boolean _isAtomicBusinessType(ObjectField objectField) {
+		String businessType =
+			(objectField == null) ? null : objectField.getBusinessType();
+
+		if (ObjectFieldConstants.BUSINESS_TYPE_DATE.equals(businessType) ||
+			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME.equals(businessType)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private String _toAtomicDiffHtml(String removed, String added) {
+		StringBundler sb = new StringBundler(6);
+
+		if (!removed.isEmpty()) {
+			sb.append("<span class=\"diff-html-removed\">");
+			sb.append(HtmlUtil.escape(removed));
+			sb.append("</span>");
+		}
+
+		if (!added.isEmpty()) {
+			sb.append("<span class=\"diff-html-added\">");
+			sb.append(HtmlUtil.escape(added));
+			sb.append("</span>");
+		}
+
+		return sb.toString();
+	}
+
 	private String _toAttachmentFileName(Object value) {
 		Object idObject = value;
 
@@ -243,6 +334,21 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		return dlFileEntry.getFileName();
 	}
 
+	private String _toDateDisplayValue(Format format, Object value) {
+		String valueString = String.valueOf(value);
+
+		try {
+			return format.format(Date.from(Instant.parse(valueString)));
+		}
+		catch (DateTimeParseException dateTimeParseException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(dateTimeParseException);
+			}
+
+			return valueString;
+		}
+	}
+
 	private String _toDisplayValue(
 		Object value, ObjectField objectField, String languageId) {
 
@@ -261,6 +367,14 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 
 		if (value == null) {
 			return StringPool.BLANK;
+		}
+
+		if (ObjectFieldConstants.BUSINESS_TYPE_DATE.equals(businessType)) {
+			return _toDateDisplayValue(_getDateFormat(languageId), value);
+		}
+
+		if (ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME.equals(businessType)) {
+			return _toDateDisplayValue(_getDateTimeFormat(languageId), value);
 		}
 
 		if (ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST.equals(
