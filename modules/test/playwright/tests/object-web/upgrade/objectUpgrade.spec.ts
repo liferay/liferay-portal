@@ -549,12 +549,14 @@ test.describe.serial('View Picklist after upgrade', () => {
 				);
 
 				await listTypeDefinitionPage.modalSaveButton.click();
-			}
 
-			for (const itemNumber of ['1', '2', '3']) {
+				await listTypeDefinitionPage.modalNameInput.waitFor({
+					state: 'hidden',
+				});
+
 				await expect(
 					listTypeDefinitionPage.frameLocator.getByRole('link', {
-						name: `Picklist Item ${itemNumber} Updated`,
+						name: `${itemName} Updated`,
 					})
 				).toBeVisible();
 			}
