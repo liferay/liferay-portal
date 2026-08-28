@@ -79,6 +79,7 @@ public class SearchRequestImpl implements SearchRequest, Serializable {
 		_size = searchRequestImpl._size;
 		_sorts.addAll(searchRequestImpl._sorts);
 		_statsRequests.addAll(searchRequestImpl._statsRequests);
+		_trackTotalHitsLimit = searchRequestImpl._trackTotalHitsLimit;
 	}
 
 	public void addAggregation(Aggregation aggregation) {
@@ -306,6 +307,11 @@ public class SearchRequestImpl implements SearchRequest, Serializable {
 	}
 
 	@Override
+	public Integer getTrackTotalHitsLimit() {
+		return _trackTotalHitsLimit;
+	}
+
+	@Override
 	public boolean isBasicFacetSelection() {
 		return _basicFacetSelection;
 	}
@@ -488,6 +494,10 @@ public class SearchRequestImpl implements SearchRequest, Serializable {
 		_storedFields = storedFields;
 	}
 
+	public void setTrackTotalHitsLimit(Integer trackTotalHitsLimit) {
+		_trackTotalHitsLimit = trackTotalHitsLimit;
+	}
+
 	private final Map<String, Aggregation> _aggregationsMap =
 		new LinkedHashMap<>();
 	private boolean _basicFacetSelection;
@@ -524,5 +534,6 @@ public class SearchRequestImpl implements SearchRequest, Serializable {
 	private final List<Sort> _sorts = new ArrayList<>();
 	private final List<StatsRequest> _statsRequests = new ArrayList<>();
 	private String[] _storedFields;
+	private Integer _trackTotalHitsLimit;
 
 }

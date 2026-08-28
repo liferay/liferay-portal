@@ -509,6 +509,17 @@ public class SearchRequestBuilderImpl implements SearchRequestBuilder {
 	}
 
 	@Override
+	public SearchRequestBuilder trackTotalHitsLimit(
+		Integer trackTotalHitsLimit) {
+
+		_withSearchRequestImpl(
+			searchRequestImpl -> searchRequestImpl.setTrackTotalHitsLimit(
+				trackTotalHitsLimit));
+
+		return this;
+	}
+
+	@Override
 	public SearchRequestBuilder withFacetContext(
 		Consumer<FacetContext> facetContextConsumer) {
 
