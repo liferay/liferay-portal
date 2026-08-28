@@ -12,9 +12,7 @@ import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -67,8 +65,6 @@ public class ObjectDefinitionsDetailsDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_setUpJSONFactoryUtil();
-
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
 		_frameworkUtilMockedStatic.when(
@@ -137,10 +133,9 @@ public class ObjectDefinitionsDetailsDisplayContextTest {
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			_ROOT_PANEL_CATEGORY_KEY, jsonObject.getString("label"));
+			_getLabel(_ROOT_PANEL_CATEGORY_KEY), jsonObject.getString("label"));
 
 		Map<String, String> panelCategories = new HashMap<>();
-
 		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
 
 		for (int i = 0; i < itemsJSONArray.length(); i++) {
@@ -154,10 +149,15 @@ public class ObjectDefinitionsDetailsDisplayContextTest {
 		Assert.assertEquals(
 			panelCategories.toString(), 2, panelCategories.size());
 		Assert.assertEquals(
-			_OTHER_PANEL_CATEGORY_KEY,
+			_getLabel(_OTHER_PANEL_CATEGORY_KEY),
 			panelCategories.get(_OTHER_PANEL_CATEGORY_KEY));
 		Assert.assertEquals(
-			_PANEL_CATEGORY_KEY, panelCategories.get(_PANEL_CATEGORY_KEY));
+			_getLabel(_PANEL_CATEGORY_KEY),
+			panelCategories.get(_PANEL_CATEGORY_KEY));
+	}
+
+	private static String _getLabel(String panelCategoryKey) {
+		return panelCategoryKey + "_label";
 	}
 
 	private HttpServletRequest _getHttpServletRequest() {
@@ -190,12 +190,6 @@ public class ObjectDefinitionsDetailsDisplayContextTest {
 			bundleContext.registerService(
 				PanelCategory.class, new TestPanelCategory(panelCategoryKey),
 				properties));
-	}
-
-	private void _setUpJSONFactoryUtil() {
-		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
-
-		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
 	}
 
 	private static final String _EMPTY_ROOT_PANEL_CATEGORY_KEY =
@@ -233,7 +227,7 @@ public class ObjectDefinitionsDetailsDisplayContextTest {
 
 		@Override
 		public String getLabel(Locale locale) {
-			return _key;
+			return _getLabel(_key);
 		}
 
 		private final String _key;
