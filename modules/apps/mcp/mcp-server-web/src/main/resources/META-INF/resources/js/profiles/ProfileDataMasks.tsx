@@ -10,16 +10,16 @@ import OrderableTable from '../components/OrderableTable';
 import {getDataMasks} from '../services/getDataMasks';
 import {getProfileDataMasks} from '../services/getProfileDataMasks';
 import {patchProfileDataMask} from '../services/patchProfileDataMask';
-import {DataMask, Profile, ProfileDataMaskRow} from '../types';
+import {DataMask, ProfileDataMaskRow} from '../types';
 import {openErrorToast} from '../utils';
 import AddDataMasksModal from './AddDataMasksModal';
 import RemoveDataMaskModal from './RemoveDataMaskModal';
 
 interface ProfileDataMasksProps {
-	profile: Profile;
+	profileERC: string;
 }
 
-export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
+export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 	const [dataMasks, setDataMasks] = useState<DataMask[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [rows, setRows] = useState<ProfileDataMaskRow[]>([]);
@@ -28,13 +28,10 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 	);
 	const [showAddModal, setShowAddModal] = useState(false);
 
-	const profileExternalReferenceCode = profile.externalReferenceCode ?? '';
-
 	const loadRows = useCallback(async () => {
 		const [associationsResult, dataMasksResult] = await Promise.all([
 			getProfileDataMasks({
-				mcpServerProfileExternalReferenceCode:
-					profileExternalReferenceCode,
+				mcpServerProfileExternalReferenceCode: profileERC,
 			}),
 			getDataMasks(),
 		]);
@@ -88,7 +85,7 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 			)
 		);
 		setLoading(false);
-	}, [profileExternalReferenceCode]);
+	}, [profileERC]);
 
 	useEffect(() => {
 		loadRows();
@@ -208,7 +205,7 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 					}
 					onAdded={loadRows}
 					onClose={() => setShowAddModal(false)}
-					profileExternalReferenceCode={profileExternalReferenceCode}
+					profileExternalReferenceCode={profileERC}
 				/>
 			)}
 		</div>

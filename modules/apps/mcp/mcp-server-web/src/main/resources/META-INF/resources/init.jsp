@@ -19,7 +19,9 @@ page import="com.liferay.mcp.server.web.internal.display.context.EditPromptDispl
 page import="com.liferay.mcp.server.web.internal.display.context.MCPServerNavigationDisplayContext" %><%@
 page import="com.liferay.mcp.server.web.internal.display.context.ViewDataMasksDisplayContext" %><%@
 page import="com.liferay.mcp.server.web.internal.display.context.ViewProfilesDisplayContext" %><%@
-page import="com.liferay.mcp.server.web.internal.display.context.ViewPromptsDisplayContext" %>
+page import="com.liferay.mcp.server.web.internal.display.context.ViewPromptsDisplayContext" %><%@
+page import="com.liferay.petra.string.CharPool" %><%@
+page import="com.liferay.portal.kernel.util.StringUtil" %>
 
 <liferay-theme:defineObjects />
 

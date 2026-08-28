@@ -21,11 +21,4 @@ renderResponse.setTitle(editProfileDisplayContext.getTitle());
 	navigationItems="<%= editProfileDisplayContext.getNavigationItems() %>"
 />
 
-<clay:container-fluid
-	cssClass="container-fluid-max-xl container-view"
->
-	<react:component
-		module="{EditProfile} from mcp-server-web"
-		props="<%= editProfileDisplayContext.getEditProfileProps() %>"
-	/>
-</clay:container-fluid>
+<liferay-util:include page='<%= "/edit_profile_" + StringUtil.replace(editProfileDisplayContext.getTab(), CharPool.DASH, CharPool.UNDERLINE) + ".jsp" %>' servletContext="<%= application %>" />

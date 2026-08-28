@@ -17,23 +17,20 @@ import {patchProfile} from '../services/patchProfile';
 import {postProfile} from '../services/postProfile';
 import {Profile, ProfileFormValues, ProfilePayload} from '../types';
 import {openErrorToast, openSuccessToast} from '../utils';
-import ProfileDataMasks from './ProfileDataMasks';
 
-interface EditProfileProps {
+interface EditProfileViewProps {
 	backURL: string;
 	editProfileURL: string;
 	portletNamespace: string;
 	profileERC: string;
-	tab: string;
 }
 
-export default function EditProfile({
+export default function EditProfileView({
 	backURL,
 	editProfileURL,
 	portletNamespace,
 	profileERC,
-	tab,
-}: EditProfileProps) {
+}: EditProfileViewProps) {
 	const [loading, setLoading] = useState(Boolean(profileERC));
 	const [profile, setProfile] = useState<Profile | null>(null);
 
@@ -77,12 +74,8 @@ export default function EditProfile({
 		);
 	}
 
-	if (tab === 'data-masks' && profile) {
-		return <ProfileDataMasks profile={profile} />;
-	}
-
 	return (
-		<EditProfileView
+		<ProfileForm
 			backURL={backURL}
 			editProfileURL={editProfileURL}
 			portletNamespace={portletNamespace}
@@ -91,19 +84,19 @@ export default function EditProfile({
 	);
 }
 
-interface EditProfileViewProps {
+interface ProfileFormProps {
 	backURL: string;
 	editProfileURL: string;
 	portletNamespace: string;
 	profile: Profile | null;
 }
 
-function EditProfileView({
+function ProfileForm({
 	backURL,
 	editProfileURL,
 	portletNamespace,
 	profile,
-}: EditProfileViewProps) {
+}: ProfileFormProps) {
 	const formik = useFormik<ProfileFormValues>({
 		initialValues: {
 			description: profile?.description ?? '',

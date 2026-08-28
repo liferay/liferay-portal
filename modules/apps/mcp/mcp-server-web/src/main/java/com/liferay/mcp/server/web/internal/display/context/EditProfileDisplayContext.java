@@ -59,8 +59,6 @@ public class EditProfileDisplayContext {
 			"portletNamespace", _liferayPortletResponse.getNamespace()
 		).put(
 			"profileERC", _getProfileERC()
-		).put(
-			"tab", getTab()
 		).build();
 	}
 
@@ -82,6 +80,12 @@ public class EditProfileDisplayContext {
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "data-masks"));
 			}
+		).build();
+	}
+
+	public Map<String, Object> getProfileDataMasksProps() {
+		return HashMapBuilder.<String, Object>put(
+			"profileERC", _getProfileERC()
 		).build();
 	}
 
