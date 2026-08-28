@@ -36,7 +36,9 @@ export class FDSSamplePage {
 	readonly emptyStateContainer: Locator;
 	readonly fdsWrapper: Locator;
 	readonly fileDropModal: Locator;
+	readonly filterDeleteButton: Locator;
 	readonly filterDropdownMenu: Locator;
+	readonly filterExcludeToggle: Locator;
 	readonly filterMenu: Locator;
 	readonly filterMenuSearchInput: Locator;
 	readonly filterShowResultsOrAddButton: Locator;
@@ -128,7 +130,12 @@ export class FDSSamplePage {
 			name: 'Custom dummy file uploader',
 		});
 		this.filterDropdownMenu = page.locator('.data-set-filter');
+		this.filterExcludeToggle =
+			this.filterDropdownMenu.getByLabel('Exclude');
 		this.filterMenu = page.locator('.dropdown-menu');
+		this.filterDeleteButton = this.filterMenu.getByRole('button', {
+			name: 'Delete Filter',
+		});
 		this.filterMenuSearchInput = this.filterMenu
 			.getByLabel('Search')
 			.first();
@@ -325,6 +332,23 @@ export class FDSSamplePage {
 		await workflowModal.getByRole('button', {name: 'Save'}).click();
 
 		await workflowModal.waitFor({state: 'hidden'});
+	}
+
+	getFilterItemCheckbox(label: string) {
+		return this.filterDropdownMenu.getByRole('checkbox', {name: label});
+	}
+
+	getFilterRemoveButton(label: string) {
+		return this.activeFiltersToolbar.container
+			.getByRole('group')
+			.filter({hasText: `${label}:`})
+			.getByRole('button', {name: 'Remove Filter'});
+	}
+
+	getFilterSummaryButton(label: string) {
+		return this.activeFiltersToolbar.container
+			.getByRole('button')
+			.filter({hasText: new RegExp(`^${label}:`)});
 	}
 
 	async search(value: string) {
