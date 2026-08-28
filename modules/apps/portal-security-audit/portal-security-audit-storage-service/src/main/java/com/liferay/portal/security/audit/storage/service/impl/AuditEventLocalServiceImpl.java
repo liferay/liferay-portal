@@ -289,11 +289,27 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 		auditEvent.setClientHost(auditMessage.getClientHost());
 		auditEvent.setClientIP(auditMessage.getClientIP());
 		auditEvent.setContextName(auditMessage.getContextName());
+		auditEvent.setCorrelationId(auditMessage.getCorrelationId());
 		auditEvent.setEventType(auditMessage.getEventType());
+		auditEvent.setHttpMethod(auditMessage.getHttpMethod());
+		auditEvent.setImpersonated(auditMessage.isImpersonated());
+		auditEvent.setImpersonatedUserEmailAddress(
+			auditMessage.getImpersonatedUserEmailAddress());
+		auditEvent.setImpersonatedUserId(auditMessage.getImpersonatedUserId());
+		auditEvent.setImpersonatedUserName(
+			auditMessage.getImpersonatedUserName());
 		auditEvent.setMessage(auditMessage.getMessage());
+		auditEvent.setObjectName(auditMessage.getObjectName());
+		auditEvent.setRequestId(auditMessage.getRequestId());
+		auditEvent.setRequestIdGenerated(auditMessage.isRequestIdGenerated());
+		auditEvent.setResourceAction(auditMessage.getResourceAction());
+		auditEvent.setResourceType(auditMessage.getResourceType());
+		auditEvent.setRoles(auditMessage.getRoles());
 		auditEvent.setServerName(auditMessage.getServerName());
 		auditEvent.setServerPort(auditMessage.getServerPort());
 		auditEvent.setSessionID(auditMessage.getSessionID());
+		auditEvent.setUserAgent(auditMessage.getUserAgent());
+		auditEvent.setUserEmailAddress(auditMessage.getUserEmailAddress());
 
 		return auditEvent;
 	}
