@@ -95,7 +95,7 @@ export class WorkflowTaskDetailsPage {
 
 	async selectAsset(assetTitle: string) {
 		const assetLink = this.page.getByRole('link', {name: assetTitle});
-		await assetLink.click({force: true});
+		await assetLink.click();
 	}
 
 	async selectAssignee(assignee: string) {

@@ -27,8 +27,7 @@ export class ConfigurationTabPage {
 
 	async goTo() {
 		await this.processBuilderPage.goto();
-		await this.configurationTabLink.waitFor({state: 'visible'});
-		await this.configurationTabLink.click({force: true});
+		await this.configurationTabLink.click();
 		await this.page.waitForURL((url) =>
 			url.href.includes('=configuration')
 		);
