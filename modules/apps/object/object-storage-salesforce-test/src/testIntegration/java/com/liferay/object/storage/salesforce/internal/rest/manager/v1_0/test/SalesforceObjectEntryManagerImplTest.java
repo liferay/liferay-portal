@@ -139,8 +139,6 @@ public class SalesforceObjectEntryManagerImplTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_runId = RandomTestUtil.randomInt();
-
 		listTypeDefinition =
 			listTypeDefinitionLocalService.addListTypeDefinition(
 				"Status", TestPropsValues.getUserId(),
@@ -618,7 +616,7 @@ public class SalesforceObjectEntryManagerImplTest
 					).put(
 						"flagged", flagged
 					).put(
-						"runId", _runId
+						"runId", _RUN_ID
 					).put(
 						"startDate", startDate
 					).put(
@@ -656,11 +654,11 @@ public class SalesforceObjectEntryManagerImplTest
 
 	private String _buildRunFilterString(String filterString) {
 		if (filterString == null) {
-			return "runId eq " + _runId;
+			return "runId eq " + _RUN_ID;
 		}
 
 		return StringBundler.concat(
-			"(runId eq ", _runId, ") and (", filterString, ")");
+			"(runId eq ", _RUN_ID, ") and (", filterString, ")");
 	}
 
 	private ObjectFieldSetting _createObjectFieldSetting(
@@ -692,6 +690,8 @@ public class SalesforceObjectEntryManagerImplTest
 		}
 	}
 
+	private static final long _RUN_ID = RandomTestUtil.randomInt();
+
 	@Inject
 	private static ConfigurationProvider _configurationProvider;
 
@@ -707,7 +707,5 @@ public class SalesforceObjectEntryManagerImplTest
 
 	@Inject
 	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
-
-	private long _runId;
 
 }
