@@ -94,6 +94,11 @@ public class OAuthClientPersistenceServiceUpgradeStepRegistrator
 			"1.6.0", "1.6.1",
 			new OAuthClientEntryTokenConnectionTimeoutUpgradeProcess(
 				_configurationAdmin));
+
+		registry.register(
+			"1.6.1", "1.6.2",
+			new com.liferay.oauth.client.persistence.internal.upgrade.v1_6_2.
+				OAuthClientASLocalMetadataUpgradeProcess());
 	}
 
 	@Reference
