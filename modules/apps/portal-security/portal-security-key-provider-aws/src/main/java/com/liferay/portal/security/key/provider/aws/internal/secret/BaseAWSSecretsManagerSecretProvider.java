@@ -304,15 +304,15 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 
 		if (awsClientManager == null) {
 			awsClientManager = new AWSClientManager<>(
+				awsRegion,
 				BaseAWSSecretsManagerSecretProvider::_buildAWSSecretsManager,
-				"secretsmanager-fips.{region}.amazonaws.com", awsRegion,
-				useFIPSEndpoint);
+				"secretsmanager-fips.{region}.amazonaws.com", useFIPSEndpoint);
 		}
 		else {
 			awsClientManager.updateConfiguration(awsRegion, useFIPSEndpoint);
 		}
 
-		awsRegion = awsClientManager.getRegion();
+		awsRegion = awsClientManager.getAWSRegion();
 
 		_awsSecretsManagerSecretProviderContext =
 			new AWSSecretsManagerSecretProviderContext(
@@ -348,9 +348,8 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 	protected abstract String getProviderId();
 
 	private static AWSSecretsManager _buildAWSSecretsManager(
-		AWSCredentialsProvider awsCredentialsProvider,
-		AwsClientBuilder.EndpointConfiguration endpointConfiguration,
-		String awsRegion) {
+		AWSCredentialsProvider awsCredentialsProvider, String awsRegion,
+		AwsClientBuilder.EndpointConfiguration endpointConfiguration) {
 
 		AWSSecretsManagerClientBuilder awsSecretsManagerClientBuilder =
 			AWSSecretsManagerClientBuilder.standard(
@@ -436,10 +435,10 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 		long companyId, String identifier) {
 
 		return AWSARNUtil.resolve(
-			awsSecretsManagerSecretProviderContext.getAWSAccountId(),
 			awsSecretsManagerSecretProviderContext.getSecretARNTemplate(),
-			companyId, identifier,
-			awsSecretsManagerSecretProviderContext.getAWSRegion());
+			awsSecretsManagerSecretProviderContext.getAWSAccountId(),
+			awsSecretsManagerSecretProviderContext.getAWSRegion(), companyId,
+			identifier);
 	}
 
 	private String _resolveSecretNamePrefix(
@@ -455,10 +454,10 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 		}
 
 		String arn = AWSARNUtil.resolve(
-			awsSecretsManagerSecretProviderContext.getAWSAccountId(),
 			awsSecretsManagerSecretProviderContext.getSecretARNTemplate(),
-			companyId, StringPool.BLANK,
-			awsSecretsManagerSecretProviderContext.getAWSRegion());
+			awsSecretsManagerSecretProviderContext.getAWSAccountId(),
+			awsSecretsManagerSecretProviderContext.getAWSRegion(), companyId,
+			StringPool.BLANK);
 
 		return _getSecretName(arn);
 	}

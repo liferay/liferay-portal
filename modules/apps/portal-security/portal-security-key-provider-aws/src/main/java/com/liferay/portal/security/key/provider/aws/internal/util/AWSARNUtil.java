@@ -14,8 +14,8 @@ import com.liferay.portal.kernel.util.Validator;
 public class AWSARNUtil {
 
 	public static String resolve(
-		String accountId, String arnTemplate, long companyId, String identifier,
-		String region) {
+		String arnTemplate, String awsAccountId, String awsRegion,
+		long companyId, String identifier) {
 
 		if (Validator.isNull(arnTemplate) || (identifier == null) ||
 			identifier.startsWith("alias/") || identifier.startsWith("arn:")) {
@@ -23,7 +23,7 @@ public class AWSARNUtil {
 			return identifier;
 		}
 
-		if (Validator.isNull(accountId)) {
+		if (Validator.isNull(awsAccountId)) {
 			if (arnTemplate.contains("{accountId}")) {
 				throw new IllegalArgumentException(
 					"Unable to resolve AWS account ID for ARN template \"" +
@@ -32,7 +32,7 @@ public class AWSARNUtil {
 		}
 		else {
 			arnTemplate = StringUtil.replace(
-				arnTemplate, "{accountId}", accountId);
+				arnTemplate, "{accountId}", awsAccountId);
 		}
 
 		arnTemplate = StringUtil.replace(
@@ -40,7 +40,7 @@ public class AWSARNUtil {
 		arnTemplate = StringUtil.replace(
 			arnTemplate, "{identifier}", identifier);
 
-		if (Validator.isNull(region)) {
+		if (Validator.isNull(awsRegion)) {
 			if (arnTemplate.contains("{region}")) {
 				throw new IllegalArgumentException(
 					"Unable to resolve AWS region for ARN template \"" +
@@ -48,7 +48,8 @@ public class AWSARNUtil {
 			}
 		}
 		else {
-			arnTemplate = StringUtil.replace(arnTemplate, "{region}", region);
+			arnTemplate = StringUtil.replace(
+				arnTemplate, "{region}", awsRegion);
 		}
 
 		return arnTemplate;

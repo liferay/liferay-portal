@@ -36,9 +36,10 @@ public class AWSClientManagerTest {
 
 		AWSClientManager<AmazonWebServiceClient> awsClientManager =
 			new AWSClientManager<>(
-				(awsCredentialsProvider, endpointConfiguration, region) ->
+				RandomTestUtil.randomString(),
+				(awsCredentialsProvider, awsRegion, endpointConfiguration) ->
 					amazonWebServiceClient,
-				RandomTestUtil.randomString(), "us-east-1", false);
+				RandomTestUtil.randomString(), false);
 
 		awsClientManager.execute(client -> client);
 
@@ -51,20 +52,24 @@ public class AWSClientManagerTest {
 
 	@Test
 	public void testConstructorResolvesRegionFromSupplier() throws Exception {
-		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
-			(awsCredentialsProvider, endpointConfiguration, region) ->
-				new Object(),
-			RandomTestUtil.randomString(), null, () -> "us-west-2", false);
+		String expectedAWSRegion = RandomTestUtil.randomString();
 
-		Assert.assertEquals("us-west-2", awsClientManager.getRegion());
+		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
+			null, () -> expectedAWSRegion,
+			(awsCredentialsProvider, awsRegion, endpointConfiguration) ->
+				new Object(),
+			RandomTestUtil.randomString(), false);
+
+		Assert.assertEquals(expectedAWSRegion, awsClientManager.getAWSRegion());
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testExecuteAfterCloseThrows() throws Exception {
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
-			(awsCredentialsProvider, endpointConfiguration, region) ->
+			RandomTestUtil.randomString(),
+			(awsCredentialsProvider, awsRegion, endpointConfiguration) ->
 				new Object(),
-			RandomTestUtil.randomString(), "us-east-1", false);
+			RandomTestUtil.randomString(), false);
 
 		awsClientManager.close();
 
@@ -76,12 +81,13 @@ public class AWSClientManagerTest {
 		AtomicInteger builds = new AtomicInteger();
 
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
-			(awsCredentialsProvider, endpointConfiguration, region) -> {
+			RandomTestUtil.randomString(),
+			(awsCredentialsProvider, awsRegion, endpointConfiguration) -> {
 				builds.incrementAndGet();
 
 				return new Object();
 			},
-			RandomTestUtil.randomString(), "us-east-1", false);
+			RandomTestUtil.randomString(), false);
 
 		awsClientManager.execute(client -> client);
 		awsClientManager.execute(client -> client);
@@ -96,21 +102,24 @@ public class AWSClientManagerTest {
 		AtomicInteger builds = new AtomicInteger();
 
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
-			(awsCredentialsProvider, endpointConfiguration, region) -> {
+			RandomTestUtil.randomString(),
+			(awsCredentialsProvider, awsRegion, endpointConfiguration) -> {
 				builds.incrementAndGet();
 
 				return new Object();
 			},
-			RandomTestUtil.randomString(), "us-east-1", false);
+			RandomTestUtil.randomString(), false);
 
 		awsClientManager.execute(client -> client);
 
-		awsClientManager.updateConfiguration("us-west-2", false);
+		String updatedAWSRegion = RandomTestUtil.randomString();
+
+		awsClientManager.updateConfiguration(updatedAWSRegion, false);
 
 		awsClientManager.execute(client -> client);
 
 		Assert.assertEquals(2, builds.get());
-		Assert.assertEquals("us-west-2", awsClientManager.getRegion());
+		Assert.assertEquals(updatedAWSRegion, awsClientManager.getAWSRegion());
 	}
 
 	@Test
@@ -119,17 +128,20 @@ public class AWSClientManagerTest {
 
 		AtomicInteger builds = new AtomicInteger();
 
+		String unchangedAWSRegion = RandomTestUtil.randomString();
+
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
-			(awsCredentialsProvider, endpointConfiguration, region) -> {
+			unchangedAWSRegion,
+			(awsCredentialsProvider, awsRegion, endpointConfiguration) -> {
 				builds.incrementAndGet();
 
 				return new Object();
 			},
-			RandomTestUtil.randomString(), "us-east-1", false);
+			RandomTestUtil.randomString(), false);
 
 		awsClientManager.execute(client -> client);
 
-		awsClientManager.updateConfiguration("us-east-1", false);
+		awsClientManager.updateConfiguration(unchangedAWSRegion, false);
 
 		awsClientManager.execute(client -> client);
 
@@ -141,13 +153,14 @@ public class AWSClientManagerTest {
 		throws Exception {
 
 		AWSClientManager<Object> awsClientManager = new AWSClientManager<>(
-			(awsCredentialsProvider, endpointConfiguration, region) ->
+			RandomTestUtil.randomString(), () -> null,
+			(awsCredentialsProvider, awsRegion, endpointConfiguration) ->
 				new Object(),
-			RandomTestUtil.randomString(), "us-east-1", () -> null, false);
+			RandomTestUtil.randomString(), false);
 
 		awsClientManager.updateConfiguration(null, false);
 
-		Assert.assertNull(awsClientManager.getRegion());
+		Assert.assertNull(awsClientManager.getAWSRegion());
 	}
 
 }

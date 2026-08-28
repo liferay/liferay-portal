@@ -35,9 +35,9 @@ public class AWSARNUtilTest {
 			StringBundler.concat(
 				prefix, companyId, StringPool.SLASH, identifier),
 			AWSARNUtil.resolve(
-				RandomTestUtil.randomString(),
-				prefix + "{companyId}/{identifier}", companyId, identifier,
-				RandomTestUtil.randomString()));
+				prefix + "{companyId}/{identifier}",
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				companyId, identifier));
 	}
 
 	@Test
@@ -48,8 +48,8 @@ public class AWSARNUtilTest {
 		Assert.assertEquals(
 			prefix + identifier,
 			AWSARNUtil.resolve(
-				null, prefix + "{identifier}", RandomTestUtil.randomLong(),
-				identifier, RandomTestUtil.randomString()));
+				prefix + "{identifier}", null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomLong(), identifier));
 	}
 
 	@Test
@@ -59,9 +59,9 @@ public class AWSARNUtilTest {
 		Assert.assertEquals(
 			identifier,
 			AWSARNUtil.resolve(
-				RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomLong(), identifier,
-				RandomTestUtil.randomString()));
+				null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
+				identifier));
 	}
 
 	@Test
@@ -72,8 +72,8 @@ public class AWSARNUtilTest {
 			identifier,
 			AWSARNUtil.resolve(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomLong(), identifier,
-				RandomTestUtil.randomString()));
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
+				identifier));
 	}
 
 	@Test
@@ -84,40 +84,39 @@ public class AWSARNUtilTest {
 			identifier,
 			AWSARNUtil.resolve(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomLong(), identifier,
-				RandomTestUtil.randomString()));
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
+				identifier));
 	}
 
 	@Test
 	public void testResolveSystemTemplate() {
-		String accountId = RandomTestUtil.randomString();
+		String awsAccountId = RandomTestUtil.randomString();
+		String awsRegion = RandomTestUtil.randomString();
 		String identifier = RandomTestUtil.randomString();
 		String prefix = RandomTestUtil.randomString() + StringPool.SLASH;
-		String region = RandomTestUtil.randomString();
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				prefix, region, StringPool.SLASH, accountId, StringPool.SLASH,
-				identifier),
+				prefix, awsRegion, StringPool.SLASH, awsAccountId,
+				StringPool.SLASH, identifier),
 			AWSARNUtil.resolve(
-				accountId, prefix + "{region}/{accountId}/{identifier}",
-				RandomTestUtil.randomLong(), identifier, region));
+				prefix + "{region}/{accountId}/{identifier}", awsAccountId,
+				awsRegion, RandomTestUtil.randomLong(), identifier));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testResolveThrowsForBlankAccountIdWithPlaceholder() {
 		AWSARNUtil.resolve(
-			StringPool.BLANK,
 			RandomTestUtil.randomString() + "/{accountId}/{identifier}",
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString());
+			StringPool.BLANK, RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testResolveThrowsForNullAccountIdWithPlaceholder() {
 		AWSARNUtil.resolve(
-			null, RandomTestUtil.randomString() + "/{accountId}/{identifier}",
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "/{accountId}/{identifier}", null,
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
 			RandomTestUtil.randomString());
 	}
 

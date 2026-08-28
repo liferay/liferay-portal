@@ -435,14 +435,14 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 		if (awsClientManager == null) {
 			awsClientManager = new AWSClientManager<>(
-				BaseAWSKMSCryptoProvider::_buildAWSKMS,
-				"kms-fips.{region}.amazonaws.com", awsRegion, useFIPSEndpoint);
+				awsRegion, BaseAWSKMSCryptoProvider::_buildAWSKMS,
+				"kms-fips.{region}.amazonaws.com", useFIPSEndpoint);
 		}
 		else {
 			awsClientManager.updateConfiguration(awsRegion, useFIPSEndpoint);
 		}
 
-		awsRegion = awsClientManager.getRegion();
+		awsRegion = awsClientManager.getAWSRegion();
 
 		_awsKMSCryptoProviderContext = new AWSKMSCryptoProviderContext(
 			awsAccountId, awsClientManager,
@@ -475,9 +475,8 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 	protected abstract String getProviderId();
 
 	private static AWSKMS _buildAWSKMS(
-		AWSCredentialsProvider awsCredentialsProvider,
-		AwsClientBuilder.EndpointConfiguration endpointConfiguration,
-		String awsRegion) {
+		AWSCredentialsProvider awsCredentialsProvider, String awsRegion,
+		AwsClientBuilder.EndpointConfiguration endpointConfiguration) {
 
 		AWSKMSClientBuilder awsKMSClientBuilder = AWSKMSClientBuilder.standard(
 		).withCredentials(
@@ -591,9 +590,10 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 		try {
 			return AWSARNUtil.resolve(
+				awsKMSCryptoProviderContext.getKeyARNTemplate(),
 				awsKMSCryptoProviderContext.getAWSAccountId(),
-				awsKMSCryptoProviderContext.getKeyARNTemplate(), companyId,
-				keyIdentifier, awsKMSCryptoProviderContext.getAWSRegion());
+				awsKMSCryptoProviderContext.getAWSRegion(), companyId,
+				keyIdentifier);
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 			throw new CryptoException(
@@ -710,9 +710,10 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 
 		return _getAliasName(
 			AWSARNUtil.resolve(
+				awsKMSCryptoProviderContext.getKeyARNTemplate(),
 				awsKMSCryptoProviderContext.getAWSAccountId(),
-				awsKMSCryptoProviderContext.getKeyARNTemplate(), companyId,
-				StringPool.BLANK, awsKMSCryptoProviderContext.getAWSRegion()));
+				awsKMSCryptoProviderContext.getAWSRegion(), companyId,
+				StringPool.BLANK));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

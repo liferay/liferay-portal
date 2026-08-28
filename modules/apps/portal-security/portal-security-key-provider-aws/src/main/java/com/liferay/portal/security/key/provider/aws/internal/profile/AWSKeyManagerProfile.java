@@ -177,8 +177,8 @@ public class AWSKeyManagerProfile implements KeyManagerProfile {
 		throws Exception {
 
 		AWSClientManager<AWSKMS> awsClientManager = new AWSClientManager<>(
-			AWSKeyManagerProfile::_buildAWSKMS,
-			"kms-fips.{region}.amazonaws.com", awsRegion, useFIPSEndpoint);
+			awsRegion, AWSKeyManagerProfile::_buildAWSKMS,
+			"kms-fips.{region}.amazonaws.com", useFIPSEndpoint);
 
 		try {
 			return awsClientManager.execute(
@@ -217,9 +217,8 @@ public class AWSKeyManagerProfile implements KeyManagerProfile {
 	}
 
 	private static AWSKMS _buildAWSKMS(
-		AWSCredentialsProvider awsCredentialsProvider,
-		AwsClientBuilder.EndpointConfiguration endpointConfiguration,
-		String awsRegion) {
+		AWSCredentialsProvider awsCredentialsProvider, String awsRegion,
+		AwsClientBuilder.EndpointConfiguration endpointConfiguration) {
 
 		AWSKMSClientBuilder awsKMSClientBuilder = AWSKMSClientBuilder.standard(
 		).withCredentials(
@@ -286,8 +285,8 @@ public class AWSKeyManagerProfile implements KeyManagerProfile {
 		}
 
 		String keyARN = AWSARNUtil.resolve(
-			awsAccountId, keyARNTemplate, CompanyConstants.SYSTEM,
-			StringPool.BLANK, awsRegion);
+			keyARNTemplate, awsAccountId, awsRegion, CompanyConstants.SYSTEM,
+			StringPool.BLANK);
 		String keyOrigin = null;
 
 		try {

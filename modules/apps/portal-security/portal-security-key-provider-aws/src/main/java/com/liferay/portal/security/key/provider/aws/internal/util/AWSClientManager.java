@@ -26,12 +26,12 @@ import java.util.function.Supplier;
 public class AWSClientManager<T> {
 
 	public AWSClientManager(
-		ClientFactory<T> clientFactory, String fipsEndpointTemplate,
-		String region, boolean useFIPSEndpoint) {
+		String awsRegion, ClientFactory<T> clientFactory,
+		String fipsEndpointTemplate, boolean useFIPSEndpoint) {
 
 		this(
-			clientFactory, fipsEndpointTemplate, region,
-			AWSRegionUtil::getRegion, useFIPSEndpoint);
+			awsRegion, AWSRegionUtil::getRegion, clientFactory,
+			fipsEndpointTemplate, useFIPSEndpoint);
 	}
 
 	public void close() {
@@ -75,8 +75,8 @@ public class AWSClientManager<T> {
 
 				if (_client == null) {
 					_client = _clientFactory.build(
-						_awsCredentialsProvider, _getEndpointConfiguration(),
-						_region);
+						_awsCredentialsProvider, _awsRegion,
+						_getEndpointConfiguration());
 				}
 			}
 			finally {
@@ -85,20 +85,20 @@ public class AWSClientManager<T> {
 		}
 	}
 
-	public String getRegion() {
-		return _region;
+	public String getAWSRegion() {
+		return _awsRegion;
 	}
 
-	public void updateConfiguration(String region, boolean useFIPSEndpoint) {
-		region = _resolveRegion(region, _regionSupplier);
+	public void updateConfiguration(String awsRegion, boolean useFIPSEndpoint) {
+		awsRegion = _resolveAWSRegion(awsRegion, _awsRegionSupplier);
 
 		_writeLock.lock();
 
 		try {
-			if (!Objects.equals(region, _region) ||
+			if (!Objects.equals(awsRegion, _awsRegion) ||
 				(useFIPSEndpoint != _useFIPSEndpoint)) {
 
-				_region = region;
+				_awsRegion = awsRegion;
 				_useFIPSEndpoint = useFIPSEndpoint;
 
 				_closeClient();
@@ -120,22 +120,21 @@ public class AWSClientManager<T> {
 	public interface ClientFactory<T> {
 
 		public T build(
-				AWSCredentialsProvider awsCredentialsProvider,
-				AwsClientBuilder.EndpointConfiguration endpointConfiguration,
-				String region)
+				AWSCredentialsProvider awsCredentialsProvider, String awsRegion,
+				AwsClientBuilder.EndpointConfiguration endpointConfiguration)
 			throws Exception;
 
 	}
 
 	protected AWSClientManager(
+		String awsRegion, Supplier<String> awsRegionSupplier,
 		ClientFactory<T> clientFactory, String fipsEndpointTemplate,
-		String region, Supplier<String> regionSupplier,
 		boolean useFIPSEndpoint) {
 
+		_awsRegion = _resolveAWSRegion(awsRegion, awsRegionSupplier);
+		_awsRegionSupplier = awsRegionSupplier;
 		_clientFactory = clientFactory;
 		_fipsEndpointTemplate = fipsEndpointTemplate;
-		_region = _resolveRegion(region, regionSupplier);
-		_regionSupplier = regionSupplier;
 		_useFIPSEndpoint = useFIPSEndpoint;
 
 		_awsCredentialsProvider =
@@ -172,38 +171,38 @@ public class AWSClientManager<T> {
 
 	private AwsClientBuilder.EndpointConfiguration _getEndpointConfiguration() {
 		if (!_useFIPSEndpoint || Validator.isNull(_fipsEndpointTemplate) ||
-			Validator.isNull(_region)) {
+			Validator.isNull(_awsRegion)) {
 
 			return null;
 		}
 
 		String endpoint = StringUtil.replace(
-			_fipsEndpointTemplate, "{region}", _region);
+			_fipsEndpointTemplate, "{region}", _awsRegion);
 
-		return new AwsClientBuilder.EndpointConfiguration(endpoint, _region);
+		return new AwsClientBuilder.EndpointConfiguration(endpoint, _awsRegion);
 	}
 
-	private String _resolveRegion(
-		String region, Supplier<String> regionSupplier) {
+	private String _resolveAWSRegion(
+		String awsRegion, Supplier<String> awsRegionSupplier) {
 
-		if (Validator.isNull(region)) {
-			return regionSupplier.get();
+		if (Validator.isNull(awsRegion)) {
+			return awsRegionSupplier.get();
 		}
 
-		return region;
+		return awsRegion;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AWSClientManager.class);
 
 	private final AWSCredentialsProvider _awsCredentialsProvider;
+	private volatile String _awsRegion;
+	private final Supplier<String> _awsRegionSupplier;
 	private volatile T _client;
 	private final ClientFactory<T> _clientFactory;
 	private volatile boolean _closed;
 	private final String _fipsEndpointTemplate;
 	private final Lock _readLock;
-	private volatile String _region;
-	private final Supplier<String> _regionSupplier;
 	private volatile boolean _useFIPSEndpoint;
 	private final Lock _writeLock;
 
