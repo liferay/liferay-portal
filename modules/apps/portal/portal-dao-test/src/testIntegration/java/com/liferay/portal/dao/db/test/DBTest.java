@@ -38,8 +38,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -726,14 +728,7 @@ public class DBTest {
 			}
 		}
 		finally {
-			if (futureTask != null) {
-				try {
-					futureTask.get(30, TimeUnit.SECONDS);
-				}
-				catch (Exception exception) {
-					_log.error(exception);
-				}
-			}
+			_waitForWorker(futureTask, "Unable to run locked query");
 		}
 	}
 
@@ -758,6 +753,8 @@ public class DBTest {
 						Statement statement =
 							backgroundConnection.createStatement()) {
 
+						statement.setQueryTimeout(20);
+
 						statement.execute(slowQuery);
 					}
 
@@ -775,6 +772,12 @@ public class DBTest {
 			boolean foundLongRunningQuery = false;
 
 			while (System.currentTimeMillis() < endTime) {
+				if (futureTask.isDone()) {
+					futureTask.get();
+
+					break;
+				}
+
 				for (DB.QueryInfo queryInfo :
 						db.getLongRunningQueryInfos(pollingConnection)) {
 
@@ -813,14 +816,7 @@ public class DBTest {
 			Assert.assertTrue(foundLongRunningQuery);
 		}
 		finally {
-			if (futureTask != null) {
-				try {
-					futureTask.get(30, TimeUnit.SECONDS);
-				}
-				catch (Exception exception) {
-					_log.error(exception);
-				}
-			}
+			_waitForWorker(futureTask, "Unable to run slow query");
 		}
 	}
 
@@ -918,14 +914,7 @@ public class DBTest {
 			}
 		}
 		finally {
-			if (futureTask != null) {
-				try {
-					futureTask.get(30, TimeUnit.SECONDS);
-				}
-				catch (Exception exception) {
-					_log.error(exception);
-				}
-			}
+			_waitForWorker(futureTask, "Unable to run locked query");
 		}
 	}
 
@@ -1301,7 +1290,7 @@ public class DBTest {
 
 		if (dbType == DBType.DB2) {
 			return "with t(n) as (values 1 union all select n+1 from t where " +
-				"n < 50000000) select max(n) from t";
+				"n < 5000000) select max(n) from t";
 		}
 		else if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
 			return "select sleep(2)";
@@ -1336,6 +1325,28 @@ public class DBTest {
 		Assert.assertArrayEquals(
 			ArrayUtil.sortedUnique(columnNames),
 			ArrayUtil.sortedUnique(indexMetadata.getColumnNames()));
+	}
+
+	private void _waitForWorker(FutureTask<Void> futureTask, String message)
+		throws InterruptedException, TimeoutException {
+
+		if (futureTask == null) {
+			return;
+		}
+
+		try {
+			futureTask.get(30, TimeUnit.SECONDS);
+		}
+		catch (ExecutionException executionException) {
+			if (_log.isInfoEnabled()) {
+				_log.info(message, executionException.getCause());
+			}
+		}
+		catch (TimeoutException timeoutException) {
+			futureTask.cancel(true);
+
+			throw timeoutException;
+		}
 	}
 
 	private static final String _SQL_CREATE_TABLE_2 =
