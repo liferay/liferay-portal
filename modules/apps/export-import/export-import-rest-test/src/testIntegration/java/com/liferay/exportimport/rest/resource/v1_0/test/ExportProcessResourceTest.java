@@ -117,6 +117,7 @@ public class ExportProcessResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPS-88498")
 	public void testGetExportProcessContent() throws Exception {
 		ObjectDefinition objectDefinition = _publishObjectDefinition(
 			ObjectDefinitionConstants.SCOPE_SITE);
@@ -167,6 +168,11 @@ public class ExportProcessResourceTest
 		assertHttpResponseStatusCode(200, httpResponse);
 
 		Assert.assertNotNull(httpResponse.getContent());
+
+		assertHttpResponseStatusCode(
+			404,
+			_exportProcessResource.getExportProcessContentHttpResponse(
+				exportProcess.getId()));
 
 		BackgroundTask backgroundTask =
 			_backgroundTaskLocalService.getBackgroundTask(
