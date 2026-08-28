@@ -11,6 +11,50 @@
 }
 
 .cms-compare-versions {
+	&-additions,
+	&-removals {
+		.cms-compare-versions-diff {
+			height: auto;
+
+			.diff-html-added,
+			.diff-html-changed {
+				-webkit-box-decoration-break: clone;
+				box-decoration-break: clone;
+				padding: 1px 2px;
+			}
+
+			.diff-html-changed {
+				@include cms-compare-versions-formatted-mark;
+			}
+
+			.diff-html-removed {
+				display: none;
+			}
+		}
+
+		[data-field-name]:has(.cms-compare-versions-diff) .ck-editor,
+		[data-field-name]:has(.cms-compare-versions-diff)
+			.form-control:not(.cms-compare-versions-diff) {
+			display: none;
+		}
+
+		[data-field-name]:has(.cms-compare-versions-diff) .custom-control {
+			padding-left: 0;
+
+			.custom-control-input,
+			.custom-control-label::after,
+			.custom-control-label::before {
+				display: none;
+			}
+		}
+	}
+
+	&-additions {
+		.cms-compare-versions-diff .diff-html-added {
+			@include cms-compare-versions-mark($success-l2, $success);
+		}
+	}
+
 	&-key-added {
 		@include cms-compare-versions-mark($success-l2, $success);
 	}
@@ -48,4 +92,11 @@
 		min-height: 0;
 	}
 
+	&-removals {
+		.cms-compare-versions-diff .diff-html-added {
+			@include cms-compare-versions-mark($danger-l2, $danger);
+
+			text-decoration: line-through;
+		}
+	}
 }
