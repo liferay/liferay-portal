@@ -235,6 +235,27 @@ public class Keyword implements Cloneable, Serializable {
 
 	protected String name;
 
+	public Project[] getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Project[] projects) {
+		this.projects = projects;
+	}
+
+	public void setProjects(
+		UnsafeSupplier<Project[], Exception> projectsUnsafeSupplier) {
+
+		try {
+			projects = projectsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Project[] projects;
+
 	public String getSiteExternalReferenceCode() {
 		return siteExternalReferenceCode;
 	}
@@ -332,4 +353,4 @@ public class Keyword implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:193441813
+// LIFERAY-REST-BUILDER-HASH:530311646

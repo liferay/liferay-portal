@@ -496,6 +496,52 @@ public class Keyword implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "A list of projects that are associated with this keyword."
+	)
+	@Valid
+	public Project[] getProjects() {
+		if (_projectsSupplier != null) {
+			projects = _projectsSupplier.get();
+
+			_projectsSupplier = null;
+		}
+
+		return projects;
+	}
+
+	public void setProjects(Project[] projects) {
+		this.projects = projects;
+
+		_projectsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setProjects(
+		UnsafeSupplier<Project[], Exception> projectsUnsafeSupplier) {
+
+		_projectsSupplier = () -> {
+			try {
+				return projectsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "A list of projects that are associated with this keyword."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Project[] projects;
+
+	@JsonIgnore
+	private Supplier<Project[]> _projectsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The external reference code of the site to which this keyword is scoped."
 	)
 	public String getSiteExternalReferenceCode() {
@@ -812,6 +858,28 @@ public class Keyword implements Serializable {
 			sb.append("\"");
 		}
 
+		Project[] projects = getProjects();
+
+		if (projects != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"projects\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < projects.length; i++) {
+				sb.append(String.valueOf(projects[i]));
+
+				if ((i + 1) < projects.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		String siteExternalReferenceCode = getSiteExternalReferenceCode();
 
 		if (siteExternalReferenceCode != null) {
@@ -974,4 +1042,4 @@ public class Keyword implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1739091299
+// LIFERAY-REST-BUILDER-HASH:-419805022

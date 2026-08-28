@@ -5,6 +5,7 @@
 
 			import {AssetLibrary} from './AssetLibrary';
 			import {Creator} from './Creator';
+			import {Project} from './Project';
 
 /**
  * @author Javier Gamarra
@@ -25,6 +26,7 @@
 			"id"?: number;
 			"keywordUsageCount"?: number;
 			"name"?: string;
+			"projects"?: Array<Project>;
 			"siteExternalReferenceCode"?: string;
 			"siteId"?: number;
 			"subscribed"?: boolean;
@@ -85,6 +87,11 @@
 			baseName: "name",
 			name: "name",
 			type: "string",
+		},
+		{
+			baseName: "projects",
+			name: "projects",
+			type: "Array<Project>",
 		},
 		{
 			baseName: "siteExternalReferenceCode",
