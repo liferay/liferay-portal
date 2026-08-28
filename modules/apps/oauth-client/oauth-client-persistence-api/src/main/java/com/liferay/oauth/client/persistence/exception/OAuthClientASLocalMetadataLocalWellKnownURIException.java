@@ -13,20 +13,48 @@ import com.liferay.portal.kernel.exception.PortalException;
 public class OAuthClientASLocalMetadataLocalWellKnownURIException
 	extends PortalException {
 
-	public OAuthClientASLocalMetadataLocalWellKnownURIException() {
+	public static class MustBeValidHTTPSURL
+		extends OAuthClientASLocalMetadataLocalWellKnownURIException {
+
+		public MustBeValidHTTPSURL(String msg) {
+			super(msg);
+		}
+
+		public MustBeValidHTTPSURL(String msg, Throwable throwable) {
+			super(msg, throwable);
+		}
+
 	}
 
-	public OAuthClientASLocalMetadataLocalWellKnownURIException(String msg) {
+	public static class MustNotExceedMaximumLength
+		extends OAuthClientASLocalMetadataLocalWellKnownURIException {
+
+		public MustNotExceedMaximumLength(String msg) {
+			super(msg);
+		}
+
+	}
+
+	public static class MustProduceValidURI
+		extends OAuthClientASLocalMetadataLocalWellKnownURIException {
+
+		public MustProduceValidURI(Throwable throwable) {
+			super(throwable);
+		}
+
+	}
+
+	private OAuthClientASLocalMetadataLocalWellKnownURIException(String msg) {
 		super(msg);
 	}
 
-	public OAuthClientASLocalMetadataLocalWellKnownURIException(
+	private OAuthClientASLocalMetadataLocalWellKnownURIException(
 		String msg, Throwable throwable) {
 
 		super(msg, throwable);
 	}
 
-	public OAuthClientASLocalMetadataLocalWellKnownURIException(
+	private OAuthClientASLocalMetadataLocalWellKnownURIException(
 		Throwable throwable) {
 
 		super(throwable);
