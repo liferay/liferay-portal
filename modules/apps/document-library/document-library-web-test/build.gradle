@@ -2,6 +2,8 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
+	testIntegrationImplementation group: "org.osgi", name: "org.osgi.dto", version: "1.1.0"
+	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
