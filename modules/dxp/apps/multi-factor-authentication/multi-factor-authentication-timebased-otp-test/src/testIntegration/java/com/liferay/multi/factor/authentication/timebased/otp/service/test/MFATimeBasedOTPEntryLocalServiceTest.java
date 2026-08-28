@@ -58,8 +58,6 @@ public class MFATimeBasedOTPEntryLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_testSecretProvider = new TestSecretProvider();
-
 		_serviceRegistration = _bundleContext.registerService(
 			SecretProvider.class, _testSecretProvider,
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -286,7 +284,7 @@ public class MFATimeBasedOTPEntryLocalServiceTest {
 	private MFATimeBasedOTPEntryLocalService _mfaTimeBasedOTPEntryLocalService;
 
 	private ServiceRegistration<SecretProvider> _serviceRegistration;
-	private TestSecretProvider _testSecretProvider;
+	private TestSecretProvider _testSecretProvider = new TestSecretProvider();
 
 	@DeleteAfterTestRun
 	private User _user;
