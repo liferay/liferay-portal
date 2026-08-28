@@ -423,11 +423,7 @@ public class DBPartitionUtil {
 	public static void removeExportedPartition(long companyId)
 		throws PortalException {
 
-		if (companyId == _defaultCompanyId) {
-			return;
-		}
-
-		if (_dbPartitionDB == null) {
+		if ((companyId == _defaultCompanyId) || (_dbPartitionDB == null)) {
 			return;
 		}
 
