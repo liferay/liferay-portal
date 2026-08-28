@@ -81,7 +81,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_executionCount = new AtomicInteger();
+		_atomicInteger = new AtomicInteger();
 
 		_objectField = ObjectFieldUtil.createObjectField(
 			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
@@ -152,7 +152,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 
 		Assert.assertEquals(200, mockHttpServletResponse.getStatus());
 
-		Assert.assertEquals(1, _executionCount.get());
+		Assert.assertEquals(1, _atomicInteger.get());
 	}
 
 	@Test
@@ -165,7 +165,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 			fileEntry, _objectDefinition.getExternalReferenceCode(),
 			objectEntry.getExternalReferenceCode());
 
-		Assert.assertEquals(1, _executionCount.get());
+		Assert.assertEquals(1, _atomicInteger.get());
 
 		// The action runs only once per set of object entry IDs, which a thread
 		// local tracks by action ID. A request filter clears these records
@@ -181,7 +181,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 			fileEntry, _objectDefinition.getExternalReferenceCode(),
 			objectEntry.getExternalReferenceCode());
 
-		Assert.assertEquals(2, _executionCount.get());
+		Assert.assertEquals(2, _atomicInteger.get());
 	}
 
 	@Test
@@ -196,7 +196,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 
 		Assert.assertEquals(200, mockHttpServletResponse.getStatus());
 
-		Assert.assertEquals(0, _executionCount.get());
+		Assert.assertEquals(0, _atomicInteger.get());
 	}
 
 	@Test
@@ -213,7 +213,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 
 		Assert.assertEquals(404, mockHttpServletResponse.getStatus());
 
-		Assert.assertEquals(0, _executionCount.get());
+		Assert.assertEquals(0, _atomicInteger.get());
 	}
 
 	@Test
@@ -228,7 +228,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 
 		Assert.assertEquals(200, mockHttpServletResponse.getStatus());
 
-		Assert.assertEquals(0, _executionCount.get());
+		Assert.assertEquals(0, _atomicInteger.get());
 	}
 
 	private ObjectEntry _addObjectEntry() throws Exception {
@@ -304,7 +304,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 					UnicodeProperties parametersUnicodeProperties,
 					JSONObject payloadJSONObject, long userId) {
 
-					_executionCount.incrementAndGet();
+					_atomicInteger.incrementAndGet();
 				}
 
 				@Override
@@ -318,7 +318,7 @@ public class ObjectActionAttachmentDownloadTest extends BaseWebServerTestCase {
 
 	private static final String _KEY = RandomTestUtil.randomString();
 
-	private AtomicInteger _executionCount;
+	private AtomicInteger _atomicInteger;
 	private ObjectAction _objectAction;
 
 	@Inject
