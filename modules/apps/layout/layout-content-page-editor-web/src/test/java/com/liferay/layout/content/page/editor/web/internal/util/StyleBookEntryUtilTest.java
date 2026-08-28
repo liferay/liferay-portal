@@ -266,7 +266,8 @@ public class StyleBookEntryUtilTest {
 			_createFrontendTokenDefinitionJSONObject(
 				JSONUtil.putAll(
 					_createFrontendTokenJSONObject(
-						_SUCCESS_COLOR_DEFAULT_VALUE, "success",
+						_SUCCESS_COLOR_DEFAULT_VALUE,
+						RandomTestUtil.randomString(),
 						_SUCCESS_COLOR_TOKEN_NAME)))
 		);
 
@@ -415,9 +416,11 @@ public class StyleBookEntryUtilTest {
 			_createFrontendTokenDefinitionJSONObject(
 				JSONUtil.putAll(
 					_createFrontendTokenJSONObject(
-						"#CUSTOM1", "success", _SUCCESS_COLOR_TOKEN_NAME),
+						"#CUSTOM1", RandomTestUtil.randomString(),
+						_SUCCESS_COLOR_TOKEN_NAME),
 					_createFrontendTokenJSONObject(
-						"#CUSTOM2", "warning", _WARNING_COLOR_TOKEN_NAME)));
+						"#CUSTOM2", RandomTestUtil.randomString(),
+						_WARNING_COLOR_TOKEN_NAME)));
 
 		Map<String, Object> frontendTokensValues =
 			StyleBookEntryUtil.getFrontendTokensValues(
@@ -447,7 +450,7 @@ public class StyleBookEntryUtilTest {
 						_mockStyleBookEntry(
 							JSONFactoryUtil.createJSONObject(),
 							customFrontendTokenDefinitionJSONObject.toString(),
-							"other_WAR_othertheme"),
+							RandomTestUtil.randomString()),
 						_mockStyleBookEntry(
 							JSONFactoryUtil.createJSONObject(), null,
 							_THEME_ID),
