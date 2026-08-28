@@ -99,17 +99,15 @@ public class FIPSAuditNDJSONLayoutTest {
 
 	@Test
 	public void testToSerializableEscapesReservedCharacters() {
-		Assert.assertEquals(
-			"{\"provider-error-message\":\"a\\\\b\\\"c\\nd\\re\\tf\\u0001g" +
-				"\\u2028h\\u2029i\"}\n",
-			_toSerializable(
-				Collections.singletonMap(
-					"provider-error-message",
-					new String(
-						new char[] {
-							'a', '\\', 'b', '"', 'c', '\n', 'd', '\r', 'e',
-							'\t', 'f', 0x01, 'g', 0x2028, 'h', 0x2029, 'i'
-						}))));
+		String providerErrorMessage = new String(
+			new char[] {
+				'a', '\\', 'b', '"', 'c', '\n', 'd', '\r', 'e', '\t', 'f', 0x01,
+				'g', 0x2028, 'h', 0x2029, 'i'
+			});
+
+		_testToSerializable(
+			JSONUtil.put("provider-error-message", providerErrorMessage),
+			"provider-error-message", providerErrorMessage);
 	}
 
 	@Test
