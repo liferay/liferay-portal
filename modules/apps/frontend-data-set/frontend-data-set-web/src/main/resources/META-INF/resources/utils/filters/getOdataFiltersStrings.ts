@@ -4,8 +4,8 @@
  */
 
 import {FILTER_IMPLEMENTATIONS} from '../../management_bar/controls/filters/Filter';
+import {IConnectedFDSState} from '../connection/types';
 import {IBaseFilterState} from '../types';
-import {IConnectedFDSState} from './types';
 
 /**
  * The OData expressions the data set sends along with the request, one per

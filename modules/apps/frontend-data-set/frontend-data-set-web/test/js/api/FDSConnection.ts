@@ -13,7 +13,11 @@ import {waitFor} from '@testing-library/react';
 import State from '../../../../../frontend-js/frontend-js-state-web/src/main/resources/META-INF/resources/main/State';
 import {FDSConnection} from '../../../src/main/resources/META-INF/resources/js/api/FDSConnection';
 
-import type {FDSConnectionOptions, FDSState} from '@liferay/js-api/data-set';
+import type {
+	FDSConnectionOptions,
+	FDSState,
+	FDSStateChangeCallback,
+} from '@liferay/js-api/data-set';
 
 const FDS_NAME = 'testDataSet';
 
@@ -27,18 +31,36 @@ const DECLARED_FILTERS = [
 	},
 ];
 
+const RESTORED_STATE = {selections: {color: ['Blue', 'Green']}};
+
 describe('FDSConnection filters', () => {
 	let atom: Liferay.State.Atom<FDSState>;
 	let connection: FDSConnection;
+	let onRestore: jest.Mock;
 	let onSearch: jest.Mock;
 	let onStatus: jest.Mock;
 
 	const readState = () => State.read(atom as never) as unknown as FDSState;
 
-	const connect = async (options: FDSConnectionOptions = {}) => {
+	const offerRestoredConnectionState = (restoredConnectionState: unknown) =>
+		State.write(
+			atom as never,
+			{
+				...readState(),
+				restoredConnectionState,
+			} as never
+		);
+
+	const connect = async (
+		options: FDSConnectionOptions = {},
+		fdsStateChangeCallback: FDSStateChangeCallback = {
+			restore: onRestore,
+			search: onSearch,
+		}
+	) => {
 		connection = new FDSConnection(
 			FDS_NAME,
-			{search: onSearch},
+			fdsStateChangeCallback,
 			onStatus,
 			options
 		);
@@ -62,6 +84,7 @@ describe('FDSConnection filters', () => {
 			search: {query: ''},
 		}) as never;
 
+		onRestore = jest.fn();
 		onSearch = jest.fn();
 		onStatus = jest.fn();
 
@@ -186,5 +209,118 @@ describe('FDSConnection filters', () => {
 		]);
 
 		expect(readState().connectionFilters).toBeUndefined();
+	});
+
+	it('keeps the state a consumer asks it to remember, so the data set can put it in the URL', async () => {
+		await connectOwningFilters();
+
+		connection.setFilters(
+			[{id: 'color', odataFilterString: "color in ('Blue')"}],
+			{selections: {color: ['Blue']}}
+		);
+
+		expect(readState().connectionState).toEqual({
+			selections: {color: ['Blue']},
+		});
+	});
+
+	it('filters without remembering anything when the consumer passes no state', async () => {
+		await connectOwningFilters();
+
+		connection.setFilters([
+			{id: 'color', odataFilterString: "color in ('Blue')"},
+		]);
+
+		expect(readState().connectionFilters).toEqual([
+			{id: 'color', odataFilterString: "color in ('Blue')"},
+		]);
+
+		expect(readState().connectionState).toBeUndefined();
+	});
+
+	it('hands the state the data set restored to the consumer', async () => {
+		offerRestoredConnectionState(RESTORED_STATE);
+
+		await connectOwningFilters();
+
+		expect(onRestore).toHaveBeenCalledWith(RESTORED_STATE);
+	});
+
+	it('stops offering the restored state once the consumer has it', async () => {
+		offerRestoredConnectionState(RESTORED_STATE);
+
+		await connectOwningFilters();
+
+		expect(readState().restoredConnectionState).toBeUndefined();
+	});
+
+	it('takes the filtering over with what the consumer restores, not with nothing', async () => {
+		offerRestoredConnectionState(RESTORED_STATE);
+
+		onRestore = jest.fn(() =>
+			connection.setFilters(
+				[
+					{
+						id: 'color',
+						odataFilterString: "color in ('Blue', 'Green')",
+					},
+				],
+				RESTORED_STATE
+			)
+		);
+
+		await connectOwningFilters();
+
+		expect(readState().connectionFilters).toEqual([
+			{id: 'color', odataFilterString: "color in ('Blue', 'Green')"},
+		]);
+	});
+
+	it('hands over state the data set restores after the connection is ready', async () => {
+		await connectOwningFilters();
+
+		onRestore.mockClear();
+
+		offerRestoredConnectionState(RESTORED_STATE);
+
+		await waitFor(() =>
+			expect(onRestore).toHaveBeenCalledWith(RESTORED_STATE)
+		);
+
+		expect(readState().restoredConnectionState).toBeUndefined();
+	});
+
+	it('hands over an empty restore, so that going back to an unfiltered address clears the filter UI', async () => {
+		await connectOwningFilters();
+
+		onRestore.mockClear();
+
+		offerRestoredConnectionState(null);
+
+		await waitFor(() => expect(onRestore).toHaveBeenCalledWith(null));
+	});
+
+	it('leaves the restored state alone for a consumer that only owns the search', async () => {
+		offerRestoredConnectionState(RESTORED_STATE);
+
+		await connect({owns: ['search']});
+
+		expect(onRestore).not.toHaveBeenCalled();
+		expect(readState().restoredConnectionState).toEqual(RESTORED_STATE);
+	});
+
+	it('warns and drops the restored state when the consumer cannot take it', async () => {
+		offerRestoredConnectionState(RESTORED_STATE);
+
+		await connect({owns: ['filters']}, {search: onSearch});
+
+		expect(console.warn).toHaveBeenCalledWith(
+			expect.anything(),
+			expect.anything(),
+			expect.anything(),
+			expect.stringContaining('Dropped the filters restored for')
+		);
+
+		expect(readState().restoredConnectionState).toBeUndefined();
 	});
 });

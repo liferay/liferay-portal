@@ -56,11 +56,12 @@ import Modal from './modal/Modal';
 import SidePanel from './side_panel/SidePanel';
 import filterCreationActions from './utils/actionItems/filterCreationActions';
 import {readConfigFromURL} from './utils/configInURL';
+import {IConnectedFDSState} from './utils/connection/types';
+import {useRestoredConnectionState} from './utils/connection/useRestoredConnectionState';
 import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
 import {getOdataFiltersStrings} from './utils/filters/getOdataFiltersStrings';
-import {IConnectedFDSState} from './utils/filters/types';
 import {getOrCreateFDSAtom} from './utils/getOrCreateFDSAtom';
 import getRandomId from './utils/getRandomId';
 
@@ -387,8 +388,27 @@ const FrontendDataSetContent = ({
 	// and they come back the moment the connection releases the filtering.
 
 	const filteringDelegated = Boolean(
-		(globalFDSState as IConnectedFDSState).connectionFilters
+		(globalFDSState as IConnectedFDSState).connectionFilters ||
+			globalFDSState.restoredConnectionState !== undefined
 	);
+
+	const {connectionFilters, connectionState} =
+		globalFDSState as IConnectedFDSState;
+
+	const {getConnectionState, restored: connectionStateRestored} =
+		useRestoredConnectionState({
+			configInURLBehavior,
+			id,
+			onGiveUp: () => {
+				const unfrozenGlobalFDSState: IFDSState =
+					deepClone(globalFDSState);
+
+				delete unfrozenGlobalFDSState.restoredConnectionState;
+
+				setGlobalFDSState(unfrozenGlobalFDSState);
+			},
+			restoredConnectionState: globalFDSState.restoredConnectionState,
+		});
 
 	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
 		useState(false);
@@ -737,6 +757,7 @@ const FrontendDataSetContent = ({
 	useEffect(() => {
 		if (
 			globalFDSStateInitialized ||
+			!connectionStateRestored ||
 			!filterClientExtensionsLoaded ||
 			!cellClientExtensionsLoaded
 		) {
@@ -746,6 +767,7 @@ const FrontendDataSetContent = ({
 		setGlobalFDSStateInitialized(true);
 	}, [
 		cellClientExtensionsLoaded,
+		connectionStateRestored,
 		filterClientExtensionsLoaded,
 		globalFDSStateInitialized,
 	]);
@@ -791,6 +813,20 @@ const FrontendDataSetContent = ({
 				globalFDSState.filters as Array<any>;
 		}
 
+		const filteredByConnection = Boolean(
+			connectionFilters?.some(({odataFilterString}) => odataFilterString)
+		);
+
+		const shouldUpdateConnectionState =
+			connectionFilters &&
+			(filteredByConnection ||
+				configInURL?.[EConfigInURLKeys.CONNECTION_STATE] !== undefined);
+
+		if (shouldUpdateConnectionState) {
+			updateConfig[EConfigInURLKeys.CONNECTION_STATE] =
+				filteredByConnection ? connectionState : undefined;
+		}
+
 		if (shouldUpdateSearch) {
 			updateConfig[EConfigInURLKeys.SEARCH_PARAM] =
 				globalFDSState.search.query;
@@ -810,6 +846,8 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
+		connectionFilters,
+		connectionState,
 		globalFDSState,
 		globalFDSStateInitialized,
 		id,
@@ -845,6 +883,8 @@ const FrontendDataSetContent = ({
 		}
 
 		const searchParam = getSearchParam();
+
+		const restoredConnectionState = getConnectionState();
 
 		const preloadFilters = (
 			filters: Array<IBaseFilterState> | undefined
@@ -899,6 +939,7 @@ const FrontendDataSetContent = ({
 			setGlobalFDSState({
 				...globalFDSState,
 				filters: preloadFilters(initialFilters),
+				restoredConnectionState,
 				search: {query: searchParam ?? ''},
 			});
 		}
@@ -987,6 +1028,7 @@ const FrontendDataSetContent = ({
 					setGlobalFDSState({
 						...globalFDSState,
 						filters: preloadFilters(newFilters),
+						restoredConnectionState,
 						search: {query: searchParam ?? ''},
 					});
 
@@ -1033,6 +1075,7 @@ const FrontendDataSetContent = ({
 		cellClientExtensionsLoading,
 		filterClientExtensionsLoaded,
 		filterClientExtensionsLoading,
+		getConnectionState,
 		getSearchParam,
 		globalFDSState,
 		globalFDSStateInitialized,
@@ -1211,6 +1254,17 @@ const FrontendDataSetContent = ({
 			});
 		}
 
+		// What the popped URL says a previous visit left, offered to the
+		// connection that owns the filtering the same way a fresh visit
+		// offers it.
+
+		const urlConnectionState = getConnectionState();
+
+		const restoredConnectionState =
+			connectionFilters || urlConnectionState !== undefined
+				? urlConnectionState ?? null
+				: undefined;
+
 		if (activeFilters || searchParam) {
 			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
@@ -1220,6 +1274,7 @@ const FrontendDataSetContent = ({
 					newFilters: activeFilters,
 					oldFilters: unfrozenGlobalFDSState.filters,
 				}),
+				restoredConnectionState,
 				search: {
 					query: searchParam ?? '',
 				},
@@ -1277,7 +1332,9 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
+		connectionFilters,
 		getActiveSorts,
+		getConnectionState,
 		getDelta,
 		getFilters,
 		getPageNumber,
