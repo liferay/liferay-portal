@@ -136,15 +136,44 @@ public class AuditEventPersistenceTest {
 
 		newAuditEvent.setContextName(RandomTestUtil.randomString());
 
+		newAuditEvent.setCorrelationId(RandomTestUtil.randomString());
+
 		newAuditEvent.setEventType(RandomTestUtil.randomString());
 
+		newAuditEvent.setHttpMethod(RandomTestUtil.randomString());
+
+		newAuditEvent.setImpersonated(RandomTestUtil.randomBoolean());
+
+		newAuditEvent.setImpersonatedUserEmailAddress(
+			RandomTestUtil.randomString());
+
+		newAuditEvent.setImpersonatedUserId(RandomTestUtil.nextLong());
+
+		newAuditEvent.setImpersonatedUserName(RandomTestUtil.randomString());
+
 		newAuditEvent.setMessage(RandomTestUtil.randomString());
+
+		newAuditEvent.setObjectName(RandomTestUtil.randomString());
+
+		newAuditEvent.setRequestId(RandomTestUtil.randomString());
+
+		newAuditEvent.setRequestIdGenerated(RandomTestUtil.randomBoolean());
+
+		newAuditEvent.setResourceAction(RandomTestUtil.randomString());
+
+		newAuditEvent.setResourceType(RandomTestUtil.randomString());
+
+		newAuditEvent.setRoles(RandomTestUtil.randomString());
 
 		newAuditEvent.setServerName(RandomTestUtil.randomString());
 
 		newAuditEvent.setServerPort(RandomTestUtil.nextInt());
 
 		newAuditEvent.setSessionID(RandomTestUtil.randomString());
+
+		newAuditEvent.setUserAgent(RandomTestUtil.randomString());
+
+		newAuditEvent.setUserEmailAddress(RandomTestUtil.randomString());
 
 		newAuditEvent = _persistence.update(newAuditEvent);
 
@@ -185,15 +214,52 @@ public class AuditEventPersistenceTest {
 			existingAuditEvent.getContextName(),
 			newAuditEvent.getContextName());
 		Assert.assertEquals(
+			existingAuditEvent.getCorrelationId(),
+			newAuditEvent.getCorrelationId());
+		Assert.assertEquals(
 			existingAuditEvent.getEventType(), newAuditEvent.getEventType());
 		Assert.assertEquals(
+			existingAuditEvent.getHttpMethod(), newAuditEvent.getHttpMethod());
+		Assert.assertEquals(
+			existingAuditEvent.isImpersonated(),
+			newAuditEvent.isImpersonated());
+		Assert.assertEquals(
+			existingAuditEvent.getImpersonatedUserEmailAddress(),
+			newAuditEvent.getImpersonatedUserEmailAddress());
+		Assert.assertEquals(
+			existingAuditEvent.getImpersonatedUserId(),
+			newAuditEvent.getImpersonatedUserId());
+		Assert.assertEquals(
+			existingAuditEvent.getImpersonatedUserName(),
+			newAuditEvent.getImpersonatedUserName());
+		Assert.assertEquals(
 			existingAuditEvent.getMessage(), newAuditEvent.getMessage());
+		Assert.assertEquals(
+			existingAuditEvent.getObjectName(), newAuditEvent.getObjectName());
+		Assert.assertEquals(
+			existingAuditEvent.getRequestId(), newAuditEvent.getRequestId());
+		Assert.assertEquals(
+			existingAuditEvent.isRequestIdGenerated(),
+			newAuditEvent.isRequestIdGenerated());
+		Assert.assertEquals(
+			existingAuditEvent.getResourceAction(),
+			newAuditEvent.getResourceAction());
+		Assert.assertEquals(
+			existingAuditEvent.getResourceType(),
+			newAuditEvent.getResourceType());
+		Assert.assertEquals(
+			existingAuditEvent.getRoles(), newAuditEvent.getRoles());
 		Assert.assertEquals(
 			existingAuditEvent.getServerName(), newAuditEvent.getServerName());
 		Assert.assertEquals(
 			existingAuditEvent.getServerPort(), newAuditEvent.getServerPort());
 		Assert.assertEquals(
 			existingAuditEvent.getSessionID(), newAuditEvent.getSessionID());
+		Assert.assertEquals(
+			existingAuditEvent.getUserAgent(), newAuditEvent.getUserAgent());
+		Assert.assertEquals(
+			existingAuditEvent.getUserEmailAddress(),
+			newAuditEvent.getUserEmailAddress());
 	}
 
 	@Test
@@ -232,8 +298,13 @@ public class AuditEventPersistenceTest {
 			"companyId", true, "userId", true, "userName", true, "createDate",
 			true, "accountEntryId", true, "className", true, "classPK", true,
 			"clientHost", true, "clientIP", true, "contextName", true,
-			"eventType", true, "message", true, "serverName", true,
-			"serverPort", true, "sessionID", true);
+			"correlationId", true, "eventType", true, "httpMethod", true,
+			"impersonated", true, "impersonatedUserEmailAddress", true,
+			"impersonatedUserId", true, "impersonatedUserName", true, "message",
+			true, "objectName", true, "requestId", true, "requestIdGenerated",
+			true, "resourceAction", true, "resourceType", true, "serverName",
+			true, "serverPort", true, "sessionID", true, "userAgent", true,
+			"userEmailAddress", true);
 	}
 
 	@Test
@@ -474,15 +545,44 @@ public class AuditEventPersistenceTest {
 
 		auditEvent.setContextName(RandomTestUtil.randomString());
 
+		auditEvent.setCorrelationId(RandomTestUtil.randomString());
+
 		auditEvent.setEventType(RandomTestUtil.randomString());
 
+		auditEvent.setHttpMethod(RandomTestUtil.randomString());
+
+		auditEvent.setImpersonated(RandomTestUtil.randomBoolean());
+
+		auditEvent.setImpersonatedUserEmailAddress(
+			RandomTestUtil.randomString());
+
+		auditEvent.setImpersonatedUserId(RandomTestUtil.nextLong());
+
+		auditEvent.setImpersonatedUserName(RandomTestUtil.randomString());
+
 		auditEvent.setMessage(RandomTestUtil.randomString());
+
+		auditEvent.setObjectName(RandomTestUtil.randomString());
+
+		auditEvent.setRequestId(RandomTestUtil.randomString());
+
+		auditEvent.setRequestIdGenerated(RandomTestUtil.randomBoolean());
+
+		auditEvent.setResourceAction(RandomTestUtil.randomString());
+
+		auditEvent.setResourceType(RandomTestUtil.randomString());
+
+		auditEvent.setRoles(RandomTestUtil.randomString());
 
 		auditEvent.setServerName(RandomTestUtil.randomString());
 
 		auditEvent.setServerPort(RandomTestUtil.nextInt());
 
 		auditEvent.setSessionID(RandomTestUtil.randomString());
+
+		auditEvent.setUserAgent(RandomTestUtil.randomString());
+
+		auditEvent.setUserEmailAddress(RandomTestUtil.randomString());
 
 		_auditEvents.add(_persistence.update(auditEvent));
 
@@ -494,4 +594,4 @@ public class AuditEventPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:938574770
+// LIFERAY-SERVICE-BUILDER-HASH:1262735458

@@ -69,9 +69,18 @@ public class AuditEventModelImpl
 		{"accountEntryId", Types.BIGINT}, {"additionalInfo", Types.CLOB},
 		{"className", Types.VARCHAR}, {"classPK", Types.VARCHAR},
 		{"clientHost", Types.VARCHAR}, {"clientIP", Types.VARCHAR},
-		{"contextName", Types.VARCHAR}, {"eventType", Types.VARCHAR},
-		{"message", Types.VARCHAR}, {"serverName", Types.VARCHAR},
-		{"serverPort", Types.INTEGER}, {"sessionID", Types.VARCHAR}
+		{"contextName", Types.VARCHAR}, {"correlationId", Types.VARCHAR},
+		{"eventType", Types.VARCHAR}, {"httpMethod", Types.VARCHAR},
+		{"impersonated", Types.BOOLEAN},
+		{"impersonatedUserEmailAddress", Types.VARCHAR},
+		{"impersonatedUserId", Types.BIGINT},
+		{"impersonatedUserName", Types.VARCHAR}, {"message", Types.VARCHAR},
+		{"objectName", Types.VARCHAR}, {"requestId", Types.VARCHAR},
+		{"requestIdGenerated", Types.BOOLEAN},
+		{"resourceAction", Types.VARCHAR}, {"resourceType", Types.VARCHAR},
+		{"roles", Types.CLOB}, {"serverName", Types.VARCHAR},
+		{"serverPort", Types.INTEGER}, {"sessionID", Types.VARCHAR},
+		{"userAgent", Types.VARCHAR}, {"userEmailAddress", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -91,15 +100,29 @@ public class AuditEventModelImpl
 		TABLE_COLUMNS_MAP.put("clientHost", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("clientIP", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("contextName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("correlationId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("eventType", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("httpMethod", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("impersonated", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("impersonatedUserEmailAddress", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("impersonatedUserId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("impersonatedUserName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("message", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("objectName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("requestId", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("requestIdGenerated", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("resourceAction", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("resourceType", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("roles", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("serverName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("serverPort", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("sessionID", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("userAgent", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("userEmailAddress", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table Audit_AuditEvent (auditEventId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,accountEntryId LONG,additionalInfo TEXT null,className VARCHAR(200) null,classPK VARCHAR(75) null,clientHost VARCHAR(255) null,clientIP VARCHAR(255) null,contextName VARCHAR(75) null,eventType VARCHAR(75) null,message STRING null,serverName VARCHAR(255) null,serverPort INTEGER,sessionID VARCHAR(255) null)";
+		"create table Audit_AuditEvent (auditEventId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,accountEntryId LONG,additionalInfo TEXT null,className VARCHAR(200) null,classPK VARCHAR(75) null,clientHost VARCHAR(255) null,clientIP VARCHAR(255) null,contextName VARCHAR(75) null,correlationId VARCHAR(75) null,eventType VARCHAR(75) null,httpMethod VARCHAR(75) null,impersonated BOOLEAN,impersonatedUserEmailAddress VARCHAR(75) null,impersonatedUserId LONG,impersonatedUserName VARCHAR(75) null,message STRING null,objectName VARCHAR(75) null,requestId VARCHAR(75) null,requestIdGenerated BOOLEAN,resourceAction VARCHAR(75) null,resourceType VARCHAR(75) null,roles TEXT null,serverName VARCHAR(255) null,serverPort INTEGER,sessionID VARCHAR(255) null,userAgent VARCHAR(255) null,userEmailAddress VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table Audit_AuditEvent";
 
@@ -256,13 +279,39 @@ public class AuditEventModelImpl
 			attributeGetterFunctions.put("clientIP", AuditEvent::getClientIP);
 			attributeGetterFunctions.put(
 				"contextName", AuditEvent::getContextName);
+			attributeGetterFunctions.put(
+				"correlationId", AuditEvent::getCorrelationId);
 			attributeGetterFunctions.put("eventType", AuditEvent::getEventType);
+			attributeGetterFunctions.put(
+				"httpMethod", AuditEvent::getHttpMethod);
+			attributeGetterFunctions.put(
+				"impersonated", AuditEvent::getImpersonated);
+			attributeGetterFunctions.put(
+				"impersonatedUserEmailAddress",
+				AuditEvent::getImpersonatedUserEmailAddress);
+			attributeGetterFunctions.put(
+				"impersonatedUserId", AuditEvent::getImpersonatedUserId);
+			attributeGetterFunctions.put(
+				"impersonatedUserName", AuditEvent::getImpersonatedUserName);
 			attributeGetterFunctions.put("message", AuditEvent::getMessage);
+			attributeGetterFunctions.put(
+				"objectName", AuditEvent::getObjectName);
+			attributeGetterFunctions.put("requestId", AuditEvent::getRequestId);
+			attributeGetterFunctions.put(
+				"requestIdGenerated", AuditEvent::getRequestIdGenerated);
+			attributeGetterFunctions.put(
+				"resourceAction", AuditEvent::getResourceAction);
+			attributeGetterFunctions.put(
+				"resourceType", AuditEvent::getResourceType);
+			attributeGetterFunctions.put("roles", AuditEvent::getRoles);
 			attributeGetterFunctions.put(
 				"serverName", AuditEvent::getServerName);
 			attributeGetterFunctions.put(
 				"serverPort", AuditEvent::getServerPort);
 			attributeGetterFunctions.put("sessionID", AuditEvent::getSessionID);
+			attributeGetterFunctions.put("userAgent", AuditEvent::getUserAgent);
+			attributeGetterFunctions.put(
+				"userEmailAddress", AuditEvent::getUserEmailAddress);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -318,11 +367,50 @@ public class AuditEventModelImpl
 				"contextName",
 				(BiConsumer<AuditEvent, String>)AuditEvent::setContextName);
 			attributeSetterBiConsumers.put(
+				"correlationId",
+				(BiConsumer<AuditEvent, String>)AuditEvent::setCorrelationId);
+			attributeSetterBiConsumers.put(
 				"eventType",
 				(BiConsumer<AuditEvent, String>)AuditEvent::setEventType);
 			attributeSetterBiConsumers.put(
+				"httpMethod",
+				(BiConsumer<AuditEvent, String>)AuditEvent::setHttpMethod);
+			attributeSetterBiConsumers.put(
+				"impersonated",
+				(BiConsumer<AuditEvent, Boolean>)AuditEvent::setImpersonated);
+			attributeSetterBiConsumers.put(
+				"impersonatedUserEmailAddress",
+				(BiConsumer<AuditEvent, String>)
+					AuditEvent::setImpersonatedUserEmailAddress);
+			attributeSetterBiConsumers.put(
+				"impersonatedUserId",
+				(BiConsumer<AuditEvent, Long>)
+					AuditEvent::setImpersonatedUserId);
+			attributeSetterBiConsumers.put(
+				"impersonatedUserName",
+				(BiConsumer<AuditEvent, String>)
+					AuditEvent::setImpersonatedUserName);
+			attributeSetterBiConsumers.put(
 				"message",
 				(BiConsumer<AuditEvent, String>)AuditEvent::setMessage);
+			attributeSetterBiConsumers.put(
+				"objectName",
+				(BiConsumer<AuditEvent, String>)AuditEvent::setObjectName);
+			attributeSetterBiConsumers.put(
+				"requestId",
+				(BiConsumer<AuditEvent, String>)AuditEvent::setRequestId);
+			attributeSetterBiConsumers.put(
+				"requestIdGenerated",
+				(BiConsumer<AuditEvent, Boolean>)
+					AuditEvent::setRequestIdGenerated);
+			attributeSetterBiConsumers.put(
+				"resourceAction",
+				(BiConsumer<AuditEvent, String>)AuditEvent::setResourceAction);
+			attributeSetterBiConsumers.put(
+				"resourceType",
+				(BiConsumer<AuditEvent, String>)AuditEvent::setResourceType);
+			attributeSetterBiConsumers.put(
+				"roles", (BiConsumer<AuditEvent, String>)AuditEvent::setRoles);
 			attributeSetterBiConsumers.put(
 				"serverName",
 				(BiConsumer<AuditEvent, String>)AuditEvent::setServerName);
@@ -332,6 +420,13 @@ public class AuditEventModelImpl
 			attributeSetterBiConsumers.put(
 				"sessionID",
 				(BiConsumer<AuditEvent, String>)AuditEvent::setSessionID);
+			attributeSetterBiConsumers.put(
+				"userAgent",
+				(BiConsumer<AuditEvent, String>)AuditEvent::setUserAgent);
+			attributeSetterBiConsumers.put(
+				"userEmailAddress",
+				(BiConsumer<AuditEvent, String>)
+					AuditEvent::setUserEmailAddress);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -597,6 +692,26 @@ public class AuditEventModelImpl
 
 	@JSON
 	@Override
+	public String getCorrelationId() {
+		if (_correlationId == null) {
+			return "";
+		}
+		else {
+			return _correlationId;
+		}
+	}
+
+	@Override
+	public void setCorrelationId(String correlationId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_correlationId = correlationId;
+	}
+
+	@JSON
+	@Override
 	public String getEventType() {
 		if (_eventType == null) {
 			return "";
@@ -617,6 +732,121 @@ public class AuditEventModelImpl
 
 	@JSON
 	@Override
+	public String getHttpMethod() {
+		if (_httpMethod == null) {
+			return "";
+		}
+		else {
+			return _httpMethod;
+		}
+	}
+
+	@Override
+	public void setHttpMethod(String httpMethod) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_httpMethod = httpMethod;
+	}
+
+	@JSON
+	@Override
+	public boolean getImpersonated() {
+		return _impersonated;
+	}
+
+	@JSON
+	@Override
+	public boolean isImpersonated() {
+		return _impersonated;
+	}
+
+	@Override
+	public void setImpersonated(boolean impersonated) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_impersonated = impersonated;
+	}
+
+	@JSON
+	@Override
+	public String getImpersonatedUserEmailAddress() {
+		if (_impersonatedUserEmailAddress == null) {
+			return "";
+		}
+		else {
+			return _impersonatedUserEmailAddress;
+		}
+	}
+
+	@Override
+	public void setImpersonatedUserEmailAddress(
+		String impersonatedUserEmailAddress) {
+
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_impersonatedUserEmailAddress = impersonatedUserEmailAddress;
+	}
+
+	@JSON
+	@Override
+	public long getImpersonatedUserId() {
+		return _impersonatedUserId;
+	}
+
+	@Override
+	public void setImpersonatedUserId(long impersonatedUserId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_impersonatedUserId = impersonatedUserId;
+	}
+
+	@Override
+	public String getImpersonatedUserUuid() {
+		try {
+			User user = UserLocalServiceUtil.getUserById(
+				getImpersonatedUserId());
+
+			return user.getUuid();
+		}
+		catch (PortalException portalException) {
+			return "";
+		}
+	}
+
+	@Override
+	public void setImpersonatedUserUuid(String impersonatedUserUuid) {
+	}
+
+	@JSON
+	@Override
+	public String getImpersonatedUserName() {
+		if (_impersonatedUserName == null) {
+			return "";
+		}
+		else {
+			return _impersonatedUserName;
+		}
+	}
+
+	@Override
+	public void setImpersonatedUserName(String impersonatedUserName) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_impersonatedUserName = impersonatedUserName;
+	}
+
+	@JSON
+	@Override
 	public String getMessage() {
 		if (_message == null) {
 			return "";
@@ -633,6 +863,127 @@ public class AuditEventModelImpl
 		}
 
 		_message = message;
+	}
+
+	@JSON
+	@Override
+	public String getObjectName() {
+		if (_objectName == null) {
+			return "";
+		}
+		else {
+			return _objectName;
+		}
+	}
+
+	@Override
+	public void setObjectName(String objectName) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_objectName = objectName;
+	}
+
+	@JSON
+	@Override
+	public String getRequestId() {
+		if (_requestId == null) {
+			return "";
+		}
+		else {
+			return _requestId;
+		}
+	}
+
+	@Override
+	public void setRequestId(String requestId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_requestId = requestId;
+	}
+
+	@JSON
+	@Override
+	public boolean getRequestIdGenerated() {
+		return _requestIdGenerated;
+	}
+
+	@JSON
+	@Override
+	public boolean isRequestIdGenerated() {
+		return _requestIdGenerated;
+	}
+
+	@Override
+	public void setRequestIdGenerated(boolean requestIdGenerated) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_requestIdGenerated = requestIdGenerated;
+	}
+
+	@JSON
+	@Override
+	public String getResourceAction() {
+		if (_resourceAction == null) {
+			return "";
+		}
+		else {
+			return _resourceAction;
+		}
+	}
+
+	@Override
+	public void setResourceAction(String resourceAction) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_resourceAction = resourceAction;
+	}
+
+	@JSON
+	@Override
+	public String getResourceType() {
+		if (_resourceType == null) {
+			return "";
+		}
+		else {
+			return _resourceType;
+		}
+	}
+
+	@Override
+	public void setResourceType(String resourceType) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_resourceType = resourceType;
+	}
+
+	@JSON
+	@Override
+	public String getRoles() {
+		if (_roles == null) {
+			return "";
+		}
+		else {
+			return _roles;
+		}
+	}
+
+	@Override
+	public void setRoles(String roles) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_roles = roles;
 	}
 
 	@JSON
@@ -688,6 +1039,46 @@ public class AuditEventModelImpl
 		}
 
 		_sessionID = sessionID;
+	}
+
+	@JSON
+	@Override
+	public String getUserAgent() {
+		if (_userAgent == null) {
+			return "";
+		}
+		else {
+			return _userAgent;
+		}
+	}
+
+	@Override
+	public void setUserAgent(String userAgent) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_userAgent = userAgent;
+	}
+
+	@JSON
+	@Override
+	public String getUserEmailAddress() {
+		if (_userEmailAddress == null) {
+			return "";
+		}
+		else {
+			return _userEmailAddress;
+		}
+	}
+
+	@Override
+	public void setUserEmailAddress(String userEmailAddress) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_userEmailAddress = userEmailAddress;
 	}
 
 	public long getColumnBitmask() {
@@ -759,11 +1150,26 @@ public class AuditEventModelImpl
 		auditEventImpl.setClientHost(getClientHost());
 		auditEventImpl.setClientIP(getClientIP());
 		auditEventImpl.setContextName(getContextName());
+		auditEventImpl.setCorrelationId(getCorrelationId());
 		auditEventImpl.setEventType(getEventType());
+		auditEventImpl.setHttpMethod(getHttpMethod());
+		auditEventImpl.setImpersonated(isImpersonated());
+		auditEventImpl.setImpersonatedUserEmailAddress(
+			getImpersonatedUserEmailAddress());
+		auditEventImpl.setImpersonatedUserId(getImpersonatedUserId());
+		auditEventImpl.setImpersonatedUserName(getImpersonatedUserName());
 		auditEventImpl.setMessage(getMessage());
+		auditEventImpl.setObjectName(getObjectName());
+		auditEventImpl.setRequestId(getRequestId());
+		auditEventImpl.setRequestIdGenerated(isRequestIdGenerated());
+		auditEventImpl.setResourceAction(getResourceAction());
+		auditEventImpl.setResourceType(getResourceType());
+		auditEventImpl.setRoles(getRoles());
 		auditEventImpl.setServerName(getServerName());
 		auditEventImpl.setServerPort(getServerPort());
 		auditEventImpl.setSessionID(getSessionID());
+		auditEventImpl.setUserAgent(getUserAgent());
+		auditEventImpl.setUserEmailAddress(getUserEmailAddress());
 
 		auditEventImpl.resetOriginalValues();
 
@@ -798,16 +1204,44 @@ public class AuditEventModelImpl
 			this.<String>getColumnOriginalValue("clientIP"));
 		auditEventImpl.setContextName(
 			this.<String>getColumnOriginalValue("contextName"));
+		auditEventImpl.setCorrelationId(
+			this.<String>getColumnOriginalValue("correlationId"));
 		auditEventImpl.setEventType(
 			this.<String>getColumnOriginalValue("eventType"));
+		auditEventImpl.setHttpMethod(
+			this.<String>getColumnOriginalValue("httpMethod"));
+		auditEventImpl.setImpersonated(
+			this.<Boolean>getColumnOriginalValue("impersonated"));
+		auditEventImpl.setImpersonatedUserEmailAddress(
+			this.<String>getColumnOriginalValue(
+				"impersonatedUserEmailAddress"));
+		auditEventImpl.setImpersonatedUserId(
+			this.<Long>getColumnOriginalValue("impersonatedUserId"));
+		auditEventImpl.setImpersonatedUserName(
+			this.<String>getColumnOriginalValue("impersonatedUserName"));
 		auditEventImpl.setMessage(
 			this.<String>getColumnOriginalValue("message"));
+		auditEventImpl.setObjectName(
+			this.<String>getColumnOriginalValue("objectName"));
+		auditEventImpl.setRequestId(
+			this.<String>getColumnOriginalValue("requestId"));
+		auditEventImpl.setRequestIdGenerated(
+			this.<Boolean>getColumnOriginalValue("requestIdGenerated"));
+		auditEventImpl.setResourceAction(
+			this.<String>getColumnOriginalValue("resourceAction"));
+		auditEventImpl.setResourceType(
+			this.<String>getColumnOriginalValue("resourceType"));
+		auditEventImpl.setRoles(this.<String>getColumnOriginalValue("roles"));
 		auditEventImpl.setServerName(
 			this.<String>getColumnOriginalValue("serverName"));
 		auditEventImpl.setServerPort(
 			this.<Integer>getColumnOriginalValue("serverPort"));
 		auditEventImpl.setSessionID(
 			this.<String>getColumnOriginalValue("sessionID"));
+		auditEventImpl.setUserAgent(
+			this.<String>getColumnOriginalValue("userAgent"));
+		auditEventImpl.setUserEmailAddress(
+			this.<String>getColumnOriginalValue("userEmailAddress"));
 
 		return auditEventImpl;
 	}
@@ -958,6 +1392,14 @@ public class AuditEventModelImpl
 			auditEventCacheModel.contextName = null;
 		}
 
+		auditEventCacheModel.correlationId = getCorrelationId();
+
+		String correlationId = auditEventCacheModel.correlationId;
+
+		if ((correlationId != null) && (correlationId.length() == 0)) {
+			auditEventCacheModel.correlationId = null;
+		}
+
 		auditEventCacheModel.eventType = getEventType();
 
 		String eventType = auditEventCacheModel.eventType;
@@ -966,12 +1408,88 @@ public class AuditEventModelImpl
 			auditEventCacheModel.eventType = null;
 		}
 
+		auditEventCacheModel.httpMethod = getHttpMethod();
+
+		String httpMethod = auditEventCacheModel.httpMethod;
+
+		if ((httpMethod != null) && (httpMethod.length() == 0)) {
+			auditEventCacheModel.httpMethod = null;
+		}
+
+		auditEventCacheModel.impersonated = isImpersonated();
+
+		auditEventCacheModel.impersonatedUserEmailAddress =
+			getImpersonatedUserEmailAddress();
+
+		String impersonatedUserEmailAddress =
+			auditEventCacheModel.impersonatedUserEmailAddress;
+
+		if ((impersonatedUserEmailAddress != null) &&
+			(impersonatedUserEmailAddress.length() == 0)) {
+
+			auditEventCacheModel.impersonatedUserEmailAddress = null;
+		}
+
+		auditEventCacheModel.impersonatedUserId = getImpersonatedUserId();
+
+		auditEventCacheModel.impersonatedUserName = getImpersonatedUserName();
+
+		String impersonatedUserName = auditEventCacheModel.impersonatedUserName;
+
+		if ((impersonatedUserName != null) &&
+			(impersonatedUserName.length() == 0)) {
+
+			auditEventCacheModel.impersonatedUserName = null;
+		}
+
 		auditEventCacheModel.message = getMessage();
 
 		String message = auditEventCacheModel.message;
 
 		if ((message != null) && (message.length() == 0)) {
 			auditEventCacheModel.message = null;
+		}
+
+		auditEventCacheModel.objectName = getObjectName();
+
+		String objectName = auditEventCacheModel.objectName;
+
+		if ((objectName != null) && (objectName.length() == 0)) {
+			auditEventCacheModel.objectName = null;
+		}
+
+		auditEventCacheModel.requestId = getRequestId();
+
+		String requestId = auditEventCacheModel.requestId;
+
+		if ((requestId != null) && (requestId.length() == 0)) {
+			auditEventCacheModel.requestId = null;
+		}
+
+		auditEventCacheModel.requestIdGenerated = isRequestIdGenerated();
+
+		auditEventCacheModel.resourceAction = getResourceAction();
+
+		String resourceAction = auditEventCacheModel.resourceAction;
+
+		if ((resourceAction != null) && (resourceAction.length() == 0)) {
+			auditEventCacheModel.resourceAction = null;
+		}
+
+		auditEventCacheModel.resourceType = getResourceType();
+
+		String resourceType = auditEventCacheModel.resourceType;
+
+		if ((resourceType != null) && (resourceType.length() == 0)) {
+			auditEventCacheModel.resourceType = null;
+		}
+
+		auditEventCacheModel.roles = getRoles();
+
+		String roles = auditEventCacheModel.roles;
+
+		if ((roles != null) && (roles.length() == 0)) {
+			auditEventCacheModel.roles = null;
 		}
 
 		auditEventCacheModel.serverName = getServerName();
@@ -990,6 +1508,22 @@ public class AuditEventModelImpl
 
 		if ((sessionID != null) && (sessionID.length() == 0)) {
 			auditEventCacheModel.sessionID = null;
+		}
+
+		auditEventCacheModel.userAgent = getUserAgent();
+
+		String userAgent = auditEventCacheModel.userAgent;
+
+		if ((userAgent != null) && (userAgent.length() == 0)) {
+			auditEventCacheModel.userAgent = null;
+		}
+
+		auditEventCacheModel.userEmailAddress = getUserEmailAddress();
+
+		String userEmailAddress = auditEventCacheModel.userEmailAddress;
+
+		if ((userEmailAddress != null) && (userEmailAddress.length() == 0)) {
+			auditEventCacheModel.userEmailAddress = null;
 		}
 
 		return auditEventCacheModel;
@@ -1066,11 +1600,25 @@ public class AuditEventModelImpl
 	private String _clientHost;
 	private String _clientIP;
 	private String _contextName;
+	private String _correlationId;
 	private String _eventType;
+	private String _httpMethod;
+	private boolean _impersonated;
+	private String _impersonatedUserEmailAddress;
+	private long _impersonatedUserId;
+	private String _impersonatedUserName;
 	private String _message;
+	private String _objectName;
+	private String _requestId;
+	private boolean _requestIdGenerated;
+	private String _resourceAction;
+	private String _resourceType;
+	private String _roles;
 	private String _serverName;
 	private int _serverPort;
 	private String _sessionID;
+	private String _userAgent;
+	private String _userEmailAddress;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<AuditEvent, Object> function =
@@ -1113,11 +1661,27 @@ public class AuditEventModelImpl
 		_columnOriginalValues.put("clientHost", _clientHost);
 		_columnOriginalValues.put("clientIP", _clientIP);
 		_columnOriginalValues.put("contextName", _contextName);
+		_columnOriginalValues.put("correlationId", _correlationId);
 		_columnOriginalValues.put("eventType", _eventType);
+		_columnOriginalValues.put("httpMethod", _httpMethod);
+		_columnOriginalValues.put("impersonated", _impersonated);
+		_columnOriginalValues.put(
+			"impersonatedUserEmailAddress", _impersonatedUserEmailAddress);
+		_columnOriginalValues.put("impersonatedUserId", _impersonatedUserId);
+		_columnOriginalValues.put(
+			"impersonatedUserName", _impersonatedUserName);
 		_columnOriginalValues.put("message", _message);
+		_columnOriginalValues.put("objectName", _objectName);
+		_columnOriginalValues.put("requestId", _requestId);
+		_columnOriginalValues.put("requestIdGenerated", _requestIdGenerated);
+		_columnOriginalValues.put("resourceAction", _resourceAction);
+		_columnOriginalValues.put("resourceType", _resourceType);
+		_columnOriginalValues.put("roles", _roles);
 		_columnOriginalValues.put("serverName", _serverName);
 		_columnOriginalValues.put("serverPort", _serverPort);
 		_columnOriginalValues.put("sessionID", _sessionID);
+		_columnOriginalValues.put("userAgent", _userAgent);
+		_columnOriginalValues.put("userEmailAddress", _userEmailAddress);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -1157,15 +1721,43 @@ public class AuditEventModelImpl
 
 		columnBitmasks.put("contextName", 4096L);
 
-		columnBitmasks.put("eventType", 8192L);
+		columnBitmasks.put("correlationId", 8192L);
 
-		columnBitmasks.put("message", 16384L);
+		columnBitmasks.put("eventType", 16384L);
 
-		columnBitmasks.put("serverName", 32768L);
+		columnBitmasks.put("httpMethod", 32768L);
 
-		columnBitmasks.put("serverPort", 65536L);
+		columnBitmasks.put("impersonated", 65536L);
 
-		columnBitmasks.put("sessionID", 131072L);
+		columnBitmasks.put("impersonatedUserEmailAddress", 131072L);
+
+		columnBitmasks.put("impersonatedUserId", 262144L);
+
+		columnBitmasks.put("impersonatedUserName", 524288L);
+
+		columnBitmasks.put("message", 1048576L);
+
+		columnBitmasks.put("objectName", 2097152L);
+
+		columnBitmasks.put("requestId", 4194304L);
+
+		columnBitmasks.put("requestIdGenerated", 8388608L);
+
+		columnBitmasks.put("resourceAction", 16777216L);
+
+		columnBitmasks.put("resourceType", 33554432L);
+
+		columnBitmasks.put("roles", 67108864L);
+
+		columnBitmasks.put("serverName", 134217728L);
+
+		columnBitmasks.put("serverPort", 268435456L);
+
+		columnBitmasks.put("sessionID", 536870912L);
+
+		columnBitmasks.put("userAgent", 1073741824L);
+
+		columnBitmasks.put("userEmailAddress", 2147483648L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1174,4 +1766,4 @@ public class AuditEventModelImpl
 	private AuditEvent _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:555769878
+// LIFERAY-SERVICE-BUILDER-HASH:-515671522
