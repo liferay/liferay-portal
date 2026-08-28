@@ -13,6 +13,7 @@ import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.PageSpecificationVersionUtil;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.SitePageUtil;
@@ -61,12 +62,16 @@ public class PageSpecificationVersionResourceImpl
 
 		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
-		Layout layout = _getLayout(
-			siteExternalReferenceCode, sitePageExternalReferenceCode);
+		Layout layout = PageSpecificationVersionUtil.getLayout(
+			contextCompany.getCompanyId(), siteExternalReferenceCode,
+			sitePageExternalReferenceCode);
 
-		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
-			pageSpecificationVersionExternalReferenceCode,
-			layout.fetchDraftLayout(), siteExternalReferenceCode);
+		LayoutContentVersion layoutContentVersion =
+			PageSpecificationVersionUtil.getLayoutContentVersion(
+				contextCompany.getCompanyId(),
+				pageSpecificationVersionExternalReferenceCode,
+				layout.fetchDraftLayout(), _layoutContentVersionService,
+				siteExternalReferenceCode);
 
 		_layoutContentVersionService.deleteLayoutContentVersion(
 			layoutContentVersion.getLayoutContentVersionId());
@@ -81,17 +86,19 @@ public class PageSpecificationVersionResourceImpl
 
 		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
-		Layout layout = _getLayout(
-			siteExternalReferenceCode, sitePageExternalReferenceCode);
+		Layout layout = PageSpecificationVersionUtil.getLayout(
+			contextCompany.getCompanyId(), siteExternalReferenceCode,
+			sitePageExternalReferenceCode);
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
 		return _toPageSpecificationVersion(
 			_layoutContentVersionLocalService.
 				getLatestApprovedLayoutContentVersionId(draftLayout.getPlid()),
-			_getLayoutContentVersion(
+			PageSpecificationVersionUtil.getLayoutContentVersion(
+				contextCompany.getCompanyId(),
 				pageSpecificationVersionExternalReferenceCode, draftLayout,
-				siteExternalReferenceCode),
+				_layoutContentVersionService, siteExternalReferenceCode),
 			siteExternalReferenceCode, sitePageExternalReferenceCode);
 	}
 
@@ -142,14 +149,17 @@ public class PageSpecificationVersionResourceImpl
 
 		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
-		Layout layout = _getLayout(
-			siteExternalReferenceCode, sitePageExternalReferenceCode);
+		Layout layout = PageSpecificationVersionUtil.getLayout(
+			contextCompany.getCompanyId(), siteExternalReferenceCode,
+			sitePageExternalReferenceCode);
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
-			pageSpecificationVersionExternalReferenceCode, draftLayout,
-			siteExternalReferenceCode);
+		LayoutContentVersion layoutContentVersion =
+			PageSpecificationVersionUtil.getLayoutContentVersion(
+				contextCompany.getCompanyId(),
+				pageSpecificationVersionExternalReferenceCode, draftLayout,
+				_layoutContentVersionService, siteExternalReferenceCode);
 
 		draftLayout = LayoutUtil.updateLayout(
 			_cetManager, _fragmentEntryProcessorRegistry,
@@ -226,46 +236,6 @@ public class PageSpecificationVersionResourceImpl
 				"postSiteSitePagePageSpecificationVersionRestore",
 				templateParameterMap)
 		).build();
-	}
-
-	private Layout _getLayout(
-			String siteExternalReferenceCode,
-			String sitePageExternalReferenceCode)
-		throws Exception {
-
-		Layout layout = SitePageUtil.getSitePageLayout(
-			GroupUtil.getGroupId(
-				false, false, contextCompany.getCompanyId(),
-				siteExternalReferenceCode),
-			sitePageExternalReferenceCode);
-
-		if (!layout.isTypeContent()) {
-			throw new IllegalArgumentException(
-				"The page must be a content page");
-		}
-
-		return layout;
-	}
-
-	private LayoutContentVersion _getLayoutContentVersion(
-			String externalReferenceCode, Layout layout,
-			String siteExternalReferenceCode)
-		throws Exception {
-
-		LayoutContentVersion layoutContentVersion =
-			_layoutContentVersionService.
-				getLayoutContentVersionByExternalReferenceCode(
-					externalReferenceCode,
-					GroupUtil.getStagingAwareGroupId(
-						contextCompany.getCompanyId(),
-						siteExternalReferenceCode));
-
-		if (layoutContentVersion.getPlid() != layout.getPlid()) {
-			throw new IllegalArgumentException(
-				"The page specification version must belong to the site page");
-		}
-
-		return layoutContentVersion;
 	}
 
 	private PageSpecificationVersion _toPageSpecificationVersion(
