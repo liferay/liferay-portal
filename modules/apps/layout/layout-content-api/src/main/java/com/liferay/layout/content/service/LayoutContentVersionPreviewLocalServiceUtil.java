@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service utility for LayoutContentVersionPreview. This utility wraps
@@ -321,6 +322,14 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static Map<String, List<String>>
+			getSegmentsExperienceERCsLanguageIds(long layoutContentVersionId)
+		throws PortalException {
+
+		return getService().getSegmentsExperienceERCsLanguageIds(
+			layoutContentVersionId);
+	}
+
 	/**
 	 * Updates the layout content version preview in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -348,4 +357,4 @@ public class LayoutContentVersionPreviewLocalServiceUtil {
 			LayoutContentVersionPreviewLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1982371767
+// LIFERAY-SERVICE-BUILDER-HASH:26252163

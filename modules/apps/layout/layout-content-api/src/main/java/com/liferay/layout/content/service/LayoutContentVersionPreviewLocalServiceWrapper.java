@@ -372,6 +372,15 @@ public class LayoutContentVersionPreviewLocalServiceWrapper
 			primaryKeyObj);
 	}
 
+	@Override
+	public java.util.Map<String, java.util.List<String>>
+			getSegmentsExperienceERCsLanguageIds(long layoutContentVersionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _layoutContentVersionPreviewLocalService.
+			getSegmentsExperienceERCsLanguageIds(layoutContentVersionId);
+	}
+
 	/**
 	 * Updates the layout content version preview in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -415,4 +424,4 @@ public class LayoutContentVersionPreviewLocalServiceWrapper
 		_layoutContentVersionPreviewLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1645172941
+// LIFERAY-SERVICE-BUILDER-HASH:1528943148

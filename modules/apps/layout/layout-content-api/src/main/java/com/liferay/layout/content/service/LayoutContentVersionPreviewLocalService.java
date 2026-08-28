@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -271,6 +272,11 @@ public interface LayoutContentVersionPreviewLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<String, List<String>> getSegmentsExperienceERCsLanguageIds(
+			long layoutContentVersionId)
+		throws PortalException;
+
 	/**
 	 * Updates the layout content version preview in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -286,4 +292,4 @@ public interface LayoutContentVersionPreviewLocalService
 		LayoutContentVersionPreview layoutContentVersionPreview);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:216032544
+// LIFERAY-SERVICE-BUILDER-HASH:1016787761
