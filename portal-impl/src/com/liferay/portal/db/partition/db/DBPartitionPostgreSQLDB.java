@@ -47,8 +47,7 @@ public class DBPartitionPostgreSQLDB implements DBPartitionDB {
 	}
 
 	@Override
-	public boolean existsPartition(
-			Connection connection, String partitionName)
+	public boolean existsPartition(Connection connection, String partitionName)
 		throws SQLException {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
