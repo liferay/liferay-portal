@@ -6,6 +6,9 @@
 package com.liferay.content.marketing.platform.web.internal.fragment.renderer.test;
 
 import com.liferay.content.marketing.platform.test.util.CMPTestUtil;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.info.constants.InfoDisplayWebKeys;
@@ -16,9 +19,13 @@ import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -30,6 +37,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -123,6 +131,36 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 			null, mockHttpServletRequest);
 	}
 
+	protected void testGetPropsWithCMSObjectEntry() throws Exception {
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+
+		mockHttpServletRequest = getMockHttpServletRequest(
+			objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId()),
+			CMPTestUtil.addCMSBasicWebContentObjectEntry(
+				_depotEntry, RandomTestUtil.randomString()));
+
+		Map<String, Object> props = getProps();
+
+		Assert.assertEquals(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			props.get("projectGroupId"));
+	}
+
+	protected void testGetPropsWithTaskObjectEntry() throws Exception {
+		mockHttpServletRequest = getMockHttpServletRequest(
+			cmpTaskObjectDefinition, cmpTaskObjectEntry);
+
+		Map<String, Object> props = getProps();
+
+		Assert.assertEquals(
+			cmpProjectObjectEntry.getGroupId(), props.get("projectGroupId"));
+	}
+
 	protected ObjectDefinition cmpProjectObjectDefinition;
 	protected ObjectEntry cmpProjectObjectEntry;
 	protected String cmpProjectObjectEntryTitle;
@@ -137,6 +175,12 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private LayoutDisplayPageProviderRegistry

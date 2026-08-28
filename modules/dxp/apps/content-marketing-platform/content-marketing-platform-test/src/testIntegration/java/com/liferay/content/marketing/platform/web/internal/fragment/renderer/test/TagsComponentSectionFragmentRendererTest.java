@@ -8,6 +8,7 @@ package com.liferay.content.marketing.platform.web.internal.fragment.renderer.te
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
@@ -22,7 +23,9 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.Collections;
+import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,7 +34,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Carolina Barbosa
  */
-@FeatureFlag("LPD-99403")
 @RunWith(Arquillian.class)
 public class TagsComponentSectionFragmentRendererTest
 	extends BaseComponentSectionFragmentRendererTestCase {
@@ -71,7 +73,7 @@ public class TagsComponentSectionFragmentRendererTest
 			).put(
 				"objectEntryKeywords", new String[] {keyword1, keyword2}
 			).put(
-				"projectGroupId", cmpProjectObjectEntry.getGroupId()
+				"projectGroupId", GroupConstants.DEFAULT_PARENT_GROUP_ID
 			).build(),
 			getProps());
 
@@ -87,9 +89,21 @@ public class TagsComponentSectionFragmentRendererTest
 			).put(
 				"objectEntryKeywords", new String[] {keyword1, keyword2}
 			).put(
-				"projectGroupId", cmpProjectObjectEntry.getGroupId()
+				"projectGroupId", GroupConstants.DEFAULT_PARENT_GROUP_ID
 			).build(),
 			getProps());
+	}
+
+	@FeatureFlag("LPD-99403")
+	@Test
+	public void testGetPropsWithProjectObjectEntry() throws Exception {
+		Map<String, Object> props = getProps();
+
+		Assert.assertEquals(
+			cmpProjectObjectEntry.getGroupId(), props.get("projectGroupId"));
+
+		testGetPropsWithCMSObjectEntry();
+		testGetPropsWithTaskObjectEntry();
 	}
 
 	@Override
