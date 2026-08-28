@@ -100,6 +100,27 @@ public class OpenSearchIndexSearcherTest {
 
 	@Test
 	public void testTrackTotalHitsLimit() {
+		_assertTrackTotalHitsLimit(null, 11000);
+	}
+
+	@Test
+	public void testTrackTotalHitsLimitAboveConnectorLimit() {
+		_assertTrackTotalHitsLimit(50000, 11000);
+	}
+
+	@Test
+	public void testTrackTotalHitsLimitBelowConnectorLimit() {
+		_assertTrackTotalHitsLimit(1000, 1000);
+	}
+
+	@Test
+	public void testTrackTotalHitsLimitZero() {
+		_assertTrackTotalHitsLimit(0, 0);
+	}
+
+	private void _assertTrackTotalHitsLimit(
+		Integer trackTotalHitsLimit, int expectedTrackTotalHitsLimit) {
+
 		Mockito.when(
 			_openSearchConfigurationWrapper.indexMaxResultWindow()
 		).thenReturn(
@@ -122,6 +143,8 @@ public class OpenSearchIndexSearcherTest {
 
 		SearchRequest searchRequest = _searchRequestBuilderFactory.builder(
 			searchContext
+		).trackTotalHitsLimit(
+			trackTotalHitsLimit
 		).build();
 
 		SearchSearchRequest searchSearchRequest =
@@ -129,7 +152,7 @@ public class OpenSearchIndexSearcherTest {
 				Mockito.mock(Query.class), searchContext, searchRequest);
 
 		Assert.assertEquals(
-			Integer.valueOf(11000),
+			Integer.valueOf(expectedTrackTotalHitsLimit),
 			searchSearchRequest.getTrackTotalHitsLimit());
 	}
 
