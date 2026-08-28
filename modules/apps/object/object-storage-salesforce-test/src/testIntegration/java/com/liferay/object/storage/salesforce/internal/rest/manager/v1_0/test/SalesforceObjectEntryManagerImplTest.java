@@ -697,7 +697,6 @@ public class SalesforceObjectEntryManagerImplTest
 
 	private static DateFormat _simpleDateFormat;
 
-	private boolean _uanbleToAuthenticateWithSalesforce;
 	private ObjectDefinition _objectDefinition;
 
 	@Inject(
@@ -707,5 +706,7 @@ public class SalesforceObjectEntryManagerImplTest
 
 	@Inject
 	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
+
+	private boolean _uanbleToAuthenticateWithSalesforce;
 
 }
