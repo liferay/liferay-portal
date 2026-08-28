@@ -380,7 +380,7 @@ public class PageSpecificationVersion implements Serializable {
 	private Supplier<PageSpecification> _pageSpecificationSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The page specification version's page experiences."
+		description = "The page specification version's page experiences. It is not returned by default. It can be embedded via nestedFields."
 	)
 	@Valid
 	public PageSpecificationVersionPageExperience[]
@@ -426,7 +426,7 @@ public class PageSpecificationVersion implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The page specification version's page experiences."
+		description = "The page specification version's page experiences. It is not returned by default. It can be embedded via nestedFields."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected PageSpecificationVersionPageExperience[]
@@ -917,4 +917,4 @@ public class PageSpecificationVersion implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1560391035
+// LIFERAY-REST-BUILDER-HASH:-674890779

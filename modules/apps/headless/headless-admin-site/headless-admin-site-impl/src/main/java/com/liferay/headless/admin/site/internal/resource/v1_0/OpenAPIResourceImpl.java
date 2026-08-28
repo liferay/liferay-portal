@@ -103,6 +103,8 @@ public class OpenAPIResourceImpl {
 
 			add(PageSpecificationVersionResourceImpl.class);
 
+			add(PageSpecificationVersionPageExperienceResourceImpl.class);
+
 			add(PageTemplateResourceImpl.class);
 
 			add(PageTemplateSetResourceImpl.class);
@@ -124,4 +126,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1221513407
+// LIFERAY-REST-BUILDER-HASH:648052718
