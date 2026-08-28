@@ -9,6 +9,7 @@ import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.internal.log4j.FIPSLog4jUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
@@ -190,7 +191,7 @@ public class FIPSAuditUtil {
 
 		for (Map.Entry<?, ?> entry : map.entrySet()) {
 			normalizedMap.put(
-				String.valueOf(entry.getKey()),
+				GetterUtil.getString(entry.getKey()),
 				_normalizeTimestamp(entry.getValue()));
 		}
 

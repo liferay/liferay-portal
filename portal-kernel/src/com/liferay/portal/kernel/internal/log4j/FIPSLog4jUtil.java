@@ -71,7 +71,7 @@ public class FIPSLog4jUtil {
 					"\" is disabled for the level \"", level,
 					"\". Check that the system property ",
 					"\"log4j.configure.on.startup\" is set to true and that ",
-					"no configuration raises the level of that logger"));
+					"no configuration raises the level of that logger."));
 		}
 
 		LoggerContext loggerContext = (LoggerContext)LogManager.getContext(
