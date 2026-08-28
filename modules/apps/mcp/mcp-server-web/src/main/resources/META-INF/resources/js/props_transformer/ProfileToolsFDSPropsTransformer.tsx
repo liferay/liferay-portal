@@ -3,12 +3,18 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ProfileTool} from '../types';
+import confirmAndRemoveProfileToolAction from './actions/confirmAndRemoveProfileToolAction';
 import openAddToolsModal from './actions/openAddToolsModal';
 
 interface CreationActionItem {
 	href?: string;
 	label: string;
 	onClick?: (context: {loadData: () => void}) => void;
+}
+
+interface ItemsAction {
+	data?: {id?: string};
 }
 
 interface ProfileToolsFDSPropsTransformerProps {
@@ -32,6 +38,19 @@ export default function ProfileToolsFDSPropsTransformer({
 				onClick: ({loadData}: {loadData: () => void}) =>
 					openAddToolsModal({loadData, profileERC}),
 			})),
+		},
+		onActionDropdownItemClick({
+			action,
+			itemData,
+			loadData,
+		}: {
+			action: ItemsAction;
+			itemData: ProfileTool;
+			loadData: () => void;
+		}) {
+			if (action?.data?.id === 'remove') {
+				confirmAndRemoveProfileToolAction({itemData, loadData});
+			}
 		},
 	};
 }

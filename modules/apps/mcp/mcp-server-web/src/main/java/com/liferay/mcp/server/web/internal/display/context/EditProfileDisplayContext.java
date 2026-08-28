@@ -5,6 +5,7 @@
 
 package com.liferay.mcp.server.web.internal.display.context;
 
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
 import com.liferay.frontend.data.set.model.FDSSortItemList;
 import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
@@ -97,6 +98,14 @@ public class EditProfileDisplayContext {
 		).put(
 			"profileERC", _getProfileERC()
 		).build();
+	}
+
+	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
+		return List.of(
+			new FDSActionDropdownItem(
+				"#", "times-circle", "remove",
+				LanguageUtil.get(_httpServletRequest, "remove"), "get", null,
+				null));
 	}
 
 	public String getFDSName() {

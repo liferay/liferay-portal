@@ -15,6 +15,7 @@ EditProfileDisplayContext editProfileDisplayContext = new EditProfileDisplayCont
 	additionalProps="<%= editProfileDisplayContext.getAdditionalProps() %>"
 	apiURL="<%= editProfileDisplayContext.getAPIURL() %>"
 	creationMenu="<%= editProfileDisplayContext.getCreationMenu() %>"
+	fdsActionDropdownItems="<%= editProfileDisplayContext.getFDSActionDropdownItems() %>"
 	fdsSortItemList="<%= editProfileDisplayContext.getFDSSortItemList() %>"
 	id="<%= editProfileDisplayContext.getFDSName() %>"
 	propsTransformer="{ProfileToolsFDSPropsTransformer} from mcp-server-web"
