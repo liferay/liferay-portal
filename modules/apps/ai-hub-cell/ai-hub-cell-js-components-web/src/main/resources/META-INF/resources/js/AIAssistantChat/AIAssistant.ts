@@ -6,7 +6,7 @@
 import {render} from '@liferay/frontend-js-react-web';
 
 import AIAssistantHost from './AIAssistantHost';
-import {ChatContext} from './api';
+import {AIAssistantActionOutcome, ChatContext} from './api';
 
 export type AIAssistantPresentation = 'dropdown' | 'sidebar';
 
@@ -18,6 +18,7 @@ export interface AIAssistantOpenCommand {
 	getContext?: () => ChatContext;
 	initialMessage?: string;
 	instructionDefinitionScope: string;
+	onAction?: (outcome: AIAssistantActionOutcome) => void;
 	presentation?: AIAssistantPresentation;
 	pushContainer?: string;
 	quickActions?: string[];

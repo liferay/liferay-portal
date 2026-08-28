@@ -6,7 +6,7 @@
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
 import React, {useId, useState} from 'react';
 
-import {executeHttpRequestAction} from '../api';
+import {AIAssistantActionOutcome, requestActionOutcome} from '../api';
 import {AgentComponent} from '../types';
 import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 
@@ -14,12 +14,13 @@ import '../chat.scss';
 
 export interface SelectComponentMessageBalloonProps {
 	component: AgentComponent;
+	onAction?: (outcome: AIAssistantActionOutcome) => void;
 	setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SelectComponentMessageBalloon: React.FC<
 	SelectComponentMessageBalloonProps
-> = ({component, setIsGenerating}) => {
+> = ({component, onAction, setIsGenerating}) => {
 	const [selectedIndex, setSelectedIndex] = useState('');
 	const [submitted, setSubmitted] = useState(false);
 
@@ -40,12 +41,19 @@ const SelectComponentMessageBalloon: React.FC<
 
 		setIsGenerating(true);
 
-		try {
-			await executeHttpRequestAction(option.action['http-request']);
-		}
-		catch {
+		const outcome = await requestActionOutcome(
+			option.action['http-request']
+		);
+
+		if (!outcome.success) {
 			setIsGenerating(false);
+
+			setSubmitted(false);
+
+			setSelectedIndex('');
 		}
+
+		onAction?.(outcome);
 	}
 
 	return (

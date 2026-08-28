@@ -15,6 +15,7 @@ import {classifyCategorizationIntent} from '../Categorization/services/classifyC
 import {ECategorizationAgent} from '../Categorization/types';
 import submitPositiveReportFeedback from '../ReportFeedback/submitPositiveReportFeedback';
 import {
+	AIAssistantActionOutcome,
 	ChatContext,
 	createEventSource,
 	postChatByExternalReferenceCodeMessage,
@@ -42,6 +43,7 @@ export interface AIChat {
 	message: string;
 	messages: Message[];
 	messagesContainerRef: React.RefObject<HTMLDivElement>;
+	onAction: (outcome: AIAssistantActionOutcome) => void;
 	reportContext: AIChatReportContext | null;
 	runtimeContextRef: React.MutableRefObject<ChatContext>;
 	scrollToBottom: () => void;
@@ -61,6 +63,7 @@ interface UseAIChatProps {
 	getContext?: () => ChatContext;
 	initialMessage?: string;
 	instructionDefinitionScope: string;
+	onAction?: (outcome: AIAssistantActionOutcome) => void;
 	onCloseRequested?: () => void;
 	onOpenRequested?: (options?: {expanded?: boolean}) => void;
 	triggerRef?: React.RefObject<HTMLButtonElement | null>;
@@ -73,6 +76,7 @@ export default function useAIChat({
 	getContext,
 	initialMessage,
 	instructionDefinitionScope,
+	onAction: onActionProp,
 	onCloseRequested,
 	onOpenRequested,
 	triggerRef,
@@ -108,6 +112,9 @@ export default function useAIChat({
 		Liferay.ThemeDisplay.getLanguageId()
 	);
 	const fileUploadSelectorRef = useRef<string | undefined>(undefined);
+	const onActionRef = useRef<
+		((outcome: AIAssistantActionOutcome) => void) | undefined
+	>(onActionProp);
 	const onCloseRequestedRef = useRef<(() => void) | undefined>(
 		onCloseRequested
 	);
@@ -125,6 +132,7 @@ export default function useAIChat({
 		enableFreeFormCategorizationRef.current = enableFreeFormCategorization;
 		getContextRef.current = getContext;
 		instructionDefinitionScopeRef.current = instructionDefinitionScope;
+		onActionRef.current = onActionProp;
 		onCloseRequestedRef.current = onCloseRequested;
 		onOpenRequestedRef.current = onOpenRequested;
 	}, [
@@ -133,9 +141,14 @@ export default function useAIChat({
 		enableFreeFormCategorization,
 		getContext,
 		instructionDefinitionScope,
+		onActionProp,
 		onCloseRequested,
 		onOpenRequested,
 	]);
+
+	const onAction = useCallback((outcome: AIAssistantActionOutcome) => {
+		onActionRef.current?.(outcome);
+	}, []);
 
 	useEffect(() => {
 		const fieldId = triggerRef?.current
@@ -559,6 +572,7 @@ export default function useAIChat({
 		message,
 		messages,
 		messagesContainerRef,
+		onAction,
 		reportContext,
 		runtimeContextRef,
 		scrollToBottom,

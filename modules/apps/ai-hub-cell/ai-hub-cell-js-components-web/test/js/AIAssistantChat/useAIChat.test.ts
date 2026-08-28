@@ -15,7 +15,6 @@ jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/AIAssistantChat/api',
 	() => ({
 		createEventSource: jest.fn(() => Promise.resolve(null)),
-		executeHttpRequestAction: jest.fn(() => Promise.resolve()),
 		postChatByExternalReferenceCodeMessage: jest.fn(() =>
 			Promise.resolve()
 		),

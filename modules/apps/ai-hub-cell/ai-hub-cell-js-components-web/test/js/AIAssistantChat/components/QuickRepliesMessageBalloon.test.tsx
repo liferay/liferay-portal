@@ -160,4 +160,157 @@ describe('QuickRepliesMessageBalloon', () => {
 			)
 		);
 	});
+
+	it('calls onAction with the successful outcome and leaves generating state alone', async () => {
+		const onAction = jest.fn();
+		const setIsGenerating = jest.fn();
+
+		render(
+			<QuickRepliesMessageBalloon
+				component={COMPONENT}
+				onAction={onAction}
+				setIsGenerating={setIsGenerating}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		);
+
+		await waitFor(() =>
+			expect(onAction).toHaveBeenCalledWith({
+				response: expect.objectContaining({ok: true}),
+				success: true,
+			})
+		);
+
+		expect(setIsGenerating).not.toHaveBeenCalledWith(false);
+	});
+
+	it('calls onAction with a failure outcome and re-enables the buttons on a non-ok response', async () => {
+		mockFetch.mockImplementation((resource) => {
+			if (String(resource).includes('authorization-tokens')) {
+				return Promise.resolve({
+					json: () =>
+						Promise.resolve({
+							accessToken: 'access-token',
+							serviceURL: 'http://ai-hub',
+							userToken: 'user-token',
+						}),
+					ok: true,
+				} as never);
+			}
+
+			return Promise.resolve({ok: false} as never);
+		});
+
+		const onAction = jest.fn();
+		const setIsGenerating = jest.fn();
+
+		render(
+			<QuickRepliesMessageBalloon
+				component={COMPONENT}
+				onAction={onAction}
+				setIsGenerating={setIsGenerating}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		);
+
+		await waitFor(() =>
+			expect(onAction).toHaveBeenCalledWith({
+				response: expect.objectContaining({ok: false}),
+				success: false,
+			})
+		);
+
+		expect(setIsGenerating).toHaveBeenCalledWith(false);
+
+		expect(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		).not.toBeDisabled();
+	});
+
+	it('calls onAction with a failure outcome and re-enables the buttons when no authorization token is available', async () => {
+		mockFetch.mockImplementation((resource) => {
+			if (String(resource).includes('authorization-tokens')) {
+				return Promise.resolve({
+					json: () => Promise.resolve({}),
+					ok: true,
+				} as never);
+			}
+
+			return Promise.resolve({ok: true} as never);
+		});
+
+		const onAction = jest.fn();
+		const setIsGenerating = jest.fn();
+
+		render(
+			<QuickRepliesMessageBalloon
+				component={COMPONENT}
+				onAction={onAction}
+				setIsGenerating={setIsGenerating}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		);
+
+		await waitFor(() =>
+			expect(onAction).toHaveBeenCalledWith({success: false})
+		);
+
+		expect(setIsGenerating).toHaveBeenCalledWith(false);
+
+		expect(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		).not.toBeDisabled();
+	});
+
+	it('calls onAction with a failure outcome and re-enables the buttons when the request throws', async () => {
+		mockFetch.mockImplementation((resource) => {
+			if (String(resource).includes('authorization-tokens')) {
+				return Promise.resolve({
+					json: () =>
+						Promise.resolve({
+							accessToken: 'access-token',
+							serviceURL: 'http://ai-hub',
+							userToken: 'user-token',
+						}),
+					ok: true,
+				} as never);
+			}
+
+			return Promise.reject(new Error('network error'));
+		});
+
+		const onAction = jest.fn();
+		const setIsGenerating = jest.fn();
+
+		render(
+			<QuickRepliesMessageBalloon
+				component={COMPONENT}
+				onAction={onAction}
+				setIsGenerating={setIsGenerating}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		);
+
+		await waitFor(() =>
+			expect(onAction).toHaveBeenCalledWith({success: false})
+		);
+
+		expect(setIsGenerating).toHaveBeenCalledWith(false);
+
+		expect(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		).not.toBeDisabled();
+	});
 });

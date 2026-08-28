@@ -9,7 +9,10 @@ export type {
 	AIAssistantPresentation,
 } from './AIAssistantChat/AIAssistant';
 export {default as AIAssistantTriggerButton} from './AIAssistantChat/AIAssistantTriggerButton';
-export type {ChatContext} from './AIAssistantChat/api';
+export type {
+	AIAssistantActionOutcome,
+	ChatContext,
+} from './AIAssistantChat/api';
 export {CONTENT_CHANGED_EVENT} from './AIAssistantChat/serverEvents';
 export {getObjectFields} from './AIAssistantChat/services/getObjectFields';
 export type {ObjectField} from './AIAssistantChat/services/getObjectFields';

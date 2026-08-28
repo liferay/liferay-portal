@@ -118,12 +118,14 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 	'quick-replies': ({chat}, {component}) => (
 		<QuickRepliesMessageBalloon
 			component={component}
+			onAction={chat.onAction}
 			setIsGenerating={chat.setIsGenerating}
 		/>
 	),
 	'select-component': ({chat}, {component}) => (
 		<SelectComponentMessageBalloon
 			component={component}
+			onAction={chat.onAction}
 			setIsGenerating={chat.setIsGenerating}
 		/>
 	),
