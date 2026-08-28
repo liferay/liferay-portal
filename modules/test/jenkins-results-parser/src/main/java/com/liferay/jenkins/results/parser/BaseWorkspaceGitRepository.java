@@ -1222,7 +1222,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		try {
 			Process process = JenkinsResultsParserUtil.executeBashCommands(
-				"rm -rf " + getDirectory());
+				"rm -fr " + getDirectory());
 
 			JenkinsResultsParserUtil.readInputStream(process.getInputStream());
 
