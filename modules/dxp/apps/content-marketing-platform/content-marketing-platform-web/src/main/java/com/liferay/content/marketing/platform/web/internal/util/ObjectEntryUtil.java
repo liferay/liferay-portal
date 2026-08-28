@@ -5,8 +5,13 @@
 
 package com.liferay.content.marketing.platform.web.internal.util;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -26,6 +31,25 @@ public class ObjectEntryUtil {
 		}
 
 		return (ObjectEntry)object;
+	}
+
+	public static long getProjectGroupId(ObjectEntry objectEntry) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-99403")) {
+
+			return GroupConstants.DEFAULT_PARENT_GROUP_ID;
+		}
+
+		DepotEntry depotEntry = DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
+			objectEntry.getGroupId());
+
+		if ((depotEntry == null) ||
+			(depotEntry.getType() != DepotConstants.TYPE_PROJECT)) {
+
+			return GroupConstants.DEFAULT_PARENT_GROUP_ID;
+		}
+
+		return objectEntry.getGroupId();
 	}
 
 }

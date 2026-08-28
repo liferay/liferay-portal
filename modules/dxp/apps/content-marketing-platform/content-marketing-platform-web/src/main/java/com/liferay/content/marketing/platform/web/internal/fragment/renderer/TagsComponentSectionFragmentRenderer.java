@@ -89,6 +89,8 @@ public class TagsComponentSectionFragmentRenderer
 					objectEntry.getModelClassName(),
 					objectEntry.getObjectEntryId()),
 				AssetTag.NAME_ACCESSOR)
+		).put(
+			"projectGroupId", ObjectEntryUtil.getProjectGroupId(objectEntry)
 		).build();
 	}
 
