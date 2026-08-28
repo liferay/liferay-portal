@@ -148,7 +148,8 @@ public class LayoutContentVersionDisplayContext {
 		return StringBundler.concat(
 			"/o/headless-admin-site/v1.0/sites/",
 			group.getExternalReferenceCode(), "/site-pages/",
-			layout.getExternalReferenceCode(), "/page-specification-versions");
+			layout.getExternalReferenceCode(), "/page-specification-versions",
+			"?nestedFields=pageSpecificationVersionPageExperiences");
 	}
 
 	private final HttpServletRequest _httpServletRequest;
