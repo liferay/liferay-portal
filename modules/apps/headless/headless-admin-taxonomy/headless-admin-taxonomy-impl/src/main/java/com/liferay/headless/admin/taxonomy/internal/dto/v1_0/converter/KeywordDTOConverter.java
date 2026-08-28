@@ -11,6 +11,7 @@ import com.liferay.asset.kernel.service.AssetTagGroupRelLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.AssetLibrary;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.Keyword;
+import com.liferay.headless.admin.taxonomy.dto.v1_0.Project;
 import com.liferay.headless.admin.taxonomy.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -59,57 +60,8 @@ public class KeywordDTOConverter implements DTOConverter<AssetTag, Keyword> {
 						_assetTagGroupRelLocalService.
 							getAssetTagGroupRelsByTagIdAndDepotEntryType(
 								assetTag.getTagId(), DepotConstants.TYPE_SPACE),
-						assetTagGroupRel -> {
-							Group depotEntryGroup =
-								_groupLocalService.fetchGroup(
-									assetTagGroupRel.getGroupId());
-
-							return new AssetLibrary() {
-								{
-									setExternalReferenceCode(
-										() -> {
-											if (depotEntryGroup == null) {
-												return null;
-											}
-
-											return depotEntryGroup.
-												getExternalReferenceCode();
-										});
-									setId(assetTagGroupRel::getGroupId);
-									setName(
-										() -> {
-											if (depotEntryGroup == null) {
-												return null;
-											}
-
-											return depotEntryGroup.
-												getDescriptiveName(
-													dtoConverterContext.
-														getLocale());
-										});
-									setName_i18n(
-										() -> {
-											if (depotEntryGroup == null) {
-												return null;
-											}
-
-											return LocalizedMapUtil.getI18nMap(
-												dtoConverterContext.
-													isAcceptAllLanguages(),
-												depotEntryGroup.getNameMap());
-										});
-									setScopeKey(
-										() -> {
-											if (depotEntryGroup == null) {
-												return null;
-											}
-
-											return depotEntryGroup.
-												getGroupKey();
-										});
-								}
-							};
-						},
+						assetTagGroupRel -> _toAssetLibrary(
+							dtoConverterContext, assetTagGroupRel.getGroupId()),
 						AssetLibrary.class));
 				setAssetLibraryKey(
 					() -> {
@@ -150,6 +102,16 @@ public class KeywordDTOConverter implements DTOConverter<AssetTag, Keyword> {
 						return hits.getLength();
 					});
 				setName(assetTag::getName);
+				setProjects(
+					() -> TransformUtil.transformToArray(
+						_assetTagGroupRelLocalService.
+							getAssetTagGroupRelsByTagIdAndDepotEntryType(
+								assetTag.getTagId(),
+								DepotConstants.TYPE_PROJECT),
+						assetTagGroupRel -> _toProject(
+							dtoConverterContext,
+							assetTagGroupRel.getGroupId()),
+						Project.class));
 				setSiteExternalReferenceCode(
 					() -> {
 						if (group == null) {
@@ -171,6 +133,64 @@ public class KeywordDTOConverter implements DTOConverter<AssetTag, Keyword> {
 						assetTag.getCompanyId(),
 						dtoConverterContext.getUserId(),
 						AssetTag.class.getName(), assetTag.getTagId()));
+			}
+		};
+	}
+
+	private AssetLibrary _toAssetLibrary(
+		DTOConverterContext dtoConverterContext, long groupId) {
+
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		if (group == null) {
+			return new AssetLibrary() {
+				{
+					setId(() -> groupId);
+				}
+			};
+		}
+
+		return new AssetLibrary() {
+			{
+				setExternalReferenceCode(group::getExternalReferenceCode);
+				setId(() -> groupId);
+				setName(
+					() -> group.getDescriptiveName(
+						dtoConverterContext.getLocale()));
+				setName_i18n(
+					() -> LocalizedMapUtil.getI18nMap(
+						dtoConverterContext.isAcceptAllLanguages(),
+						group.getNameMap()));
+				setScopeKey(group::getGroupKey);
+			}
+		};
+	}
+
+	private Project _toProject(
+		DTOConverterContext dtoConverterContext, long groupId) {
+
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		if (group == null) {
+			return new Project() {
+				{
+					setId(() -> groupId);
+				}
+			};
+		}
+
+		return new Project() {
+			{
+				setExternalReferenceCode(group::getExternalReferenceCode);
+				setId(() -> groupId);
+				setName(
+					() -> group.getDescriptiveName(
+						dtoConverterContext.getLocale()));
+				setName_i18n(
+					() -> LocalizedMapUtil.getI18nMap(
+						dtoConverterContext.isAcceptAllLanguages(),
+						group.getNameMap()));
+				setScopeKey(group::getGroupKey);
 			}
 		};
 	}

@@ -34,6 +34,9 @@ public class KeywordEntityModel implements EntityModel {
 				locale -> Field.MODIFIED_DATE),
 			new IdEntityField(
 				"groupIds", locale -> "groupIds", String::valueOf),
+			new IdEntityField(
+				"projects", locale -> "projectDepotEntryGroupIds",
+				String::valueOf),
 			new StringEntityField(
 				Field.NAME,
 				locale -> Field.getSortableFieldName(Field.NAME + "_String")),

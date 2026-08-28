@@ -68,11 +68,11 @@ public class TaxonomyGroupUtil {
 		return group.getGroupId();
 	}
 
-	public static long[] getProjectGroupIds(Project[] projects, long companyId)
+	public static long[] getProjectGroupIds(long companyId, Project[] projects)
 		throws PortalException {
 
 		if (ArrayUtil.isEmpty(projects)) {
-			return _GROUP_IDS_ALL;
+			return new long[0];
 		}
 
 		List<Long> groupIds = new ArrayList<>();
@@ -82,9 +82,16 @@ public class TaxonomyGroupUtil {
 				continue;
 			}
 
+			String externalReferenceCode = project.getExternalReferenceCode();
+			Long id = project.getId();
+			String scopeKey = project.getScopeKey();
+
+			if (_isAnyParentGroupId(externalReferenceCode, id, scopeKey)) {
+				return _GROUP_IDS_ALL;
+			}
+
 			Group group = _fetchGroup(
-				companyId, project.getExternalReferenceCode(), project.getId(),
-				project.getScopeKey());
+				companyId, externalReferenceCode, id, scopeKey);
 
 			if ((group == null) ||
 				!_isGroupDepotEntryType(group, DepotConstants.TYPE_PROJECT)) {
@@ -93,10 +100,6 @@ public class TaxonomyGroupUtil {
 			}
 
 			groupIds.add(group.getGroupId());
-		}
-
-		if (groupIds.isEmpty()) {
-			return _GROUP_IDS_ALL;
 		}
 
 		return ArrayUtil.toLongArray(groupIds);
@@ -142,6 +145,22 @@ public class TaxonomyGroupUtil {
 		}
 
 		return null;
+	}
+
+	private static boolean _isAnyParentGroupId(
+		String externalReferenceCode, Long id, String scopeKey) {
+
+		if (Validator.isNotNull(externalReferenceCode) ||
+			Validator.isNotNull(scopeKey)) {
+
+			return false;
+		}
+
+		if ((id != null) && (id == GroupConstants.ANY_PARENT_GROUP_ID)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static boolean _isGroupDepotEntryType(
