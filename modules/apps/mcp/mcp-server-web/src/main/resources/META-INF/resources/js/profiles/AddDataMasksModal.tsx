@@ -108,7 +108,7 @@ export default function AddDataMasksModal({
 			return;
 		}
 
-		openSuccessToast(Liferay.Language.get('masks-were-added-successfully'));
+		openSuccessToast(Liferay.Language.get('masks-were-successfully-added'));
 
 		onAdded();
 		onClose();
