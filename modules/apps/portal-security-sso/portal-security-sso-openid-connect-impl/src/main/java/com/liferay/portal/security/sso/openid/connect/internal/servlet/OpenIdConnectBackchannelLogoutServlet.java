@@ -74,11 +74,11 @@ public class OpenIdConnectBackchannelLogoutServlet extends HttpServlet {
 		}
 
 		try {
+			List<OpenIdConnectSession> openIdConnectSessions = null;
+
 			SignedJWT signedJWT = SignedJWT.parse(logoutToken);
 
 			JWTClaimsSet jwtClaimsSet = signedJWT.getJWTClaimsSet();
-
-			List<OpenIdConnectSession> openIdConnectSessions = null;
 
 			String sessionId = jwtClaimsSet.getClaimAsString("sid");
 
