@@ -14,6 +14,7 @@ import com.liferay.headless.admin.taxonomy.dto.v1_0.Keyword;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.Project;
 import com.liferay.headless.admin.taxonomy.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -103,15 +104,23 @@ public class KeywordDTOConverter implements DTOConverter<AssetTag, Keyword> {
 					});
 				setName(assetTag::getName);
 				setProjects(
-					() -> TransformUtil.transformToArray(
-						_assetTagGroupRelLocalService.
-							getAssetTagGroupRelsByTagIdAndDepotEntryType(
-								assetTag.getTagId(),
-								DepotConstants.TYPE_PROJECT),
-						assetTagGroupRel -> _toProject(
-							dtoConverterContext,
-							assetTagGroupRel.getGroupId()),
-						Project.class));
+					() -> {
+						if (!FeatureFlagManagerUtil.isEnabled(
+								assetTag.getCompanyId(), "LPD-99403")) {
+
+							return null;
+						}
+
+						return TransformUtil.transformToArray(
+							_assetTagGroupRelLocalService.
+								getAssetTagGroupRelsByTagIdAndDepotEntryType(
+									assetTag.getTagId(),
+									DepotConstants.TYPE_PROJECT),
+							assetTagGroupRel -> _toProject(
+								dtoConverterContext,
+								assetTagGroupRel.getGroupId()),
+							Project.class);
+					});
 				setSiteExternalReferenceCode(
 					() -> {
 						if (group == null) {
