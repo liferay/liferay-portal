@@ -26,6 +26,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.nio.charset.StandardCharsets;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,19 +53,6 @@ public class XLIFF20InfoFormTranslationExporter
 			Locale targetLocale)
 		throws IOException {
 
-		Document document = SAXReaderUtil.createDocument();
-
-		Element xliffElement = document.addElement(
-			"xliff", "urn:oasis:names:tc:xliff:document:2.0");
-
-		xliffElement.addAttribute(
-			"srcLang", LocaleUtil.toBCP47LanguageId(sourceLocale));
-		xliffElement.addAttribute(
-			"trgLang", LocaleUtil.toBCP47LanguageId(targetLocale));
-		xliffElement.addAttribute("version", "2.0");
-
-		Element fileElement = xliffElement.addElement("file");
-
 		InfoItemReference infoItemReference =
 			infoItemFieldValues.getInfoItemReference();
 
@@ -75,51 +64,19 @@ public class XLIFF20InfoFormTranslationExporter
 		}
 
 		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			(ClassPKInfoItemIdentifier)
-				infoItemReference.getInfoItemIdentifier();
+			(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
 		String className = StringUtil.replace(
 			infoItemReference.getClassName(), CharPool.POUND,
 			CharPool.UNDERLINE);
 
-		fileElement.addAttribute(
-			"id",
+		String fileId =
 			className + StringPool.COLON +
-				classPKInfoItemIdentifier.getClassPK());
+				classPKInfoItemIdentifier.getClassPK();
 
-		Map<String, List<InfoFieldValue<Object>>> infoFieldValuesMap =
-			new LinkedHashMap<>();
-
-		for (InfoFieldValue<Object> infoFieldValue :
-				infoItemFieldValues.getInfoFieldValues()) {
-
-			InfoField infoField = infoFieldValue.getInfoField();
-
-			if (_translationInfoFieldChecker.isTranslatable(infoField)) {
-				List<InfoFieldValue<Object>> infoFieldValuesList =
-					infoFieldValuesMap.computeIfAbsent(
-						infoField.getUniqueId(), uniqueId -> new ArrayList<>());
-
-				infoFieldValuesList.add(infoFieldValue);
-			}
-		}
-
-		for (Map.Entry<String, List<InfoFieldValue<Object>>> entry :
-				infoFieldValuesMap.entrySet()) {
-
-			Element unitElement = fileElement.addElement("unit");
-
-			unitElement.addAttribute("id", entry.getKey());
-
-			for (InfoFieldValue<Object> infoFieldValue : entry.getValue()) {
-				_addInfoFieldValue(
-					infoFieldValue, unitElement, sourceLocale, targetLocale);
-			}
-		}
-
-		String formattedString = document.formattedString();
-
-		return new ByteArrayInputStream(formattedString.getBytes());
+		return _exportCDATA(
+			fileId, _getInfoFieldValuesMap(infoItemFieldValues), sourceLocale,
+			targetLocale);
 	}
 
 	@Override
@@ -142,6 +99,69 @@ public class XLIFF20InfoFormTranslationExporter
 
 		XLIFFExporterUtil.addTargetValue(
 			targetElement, infoFieldValue, targetLocale);
+	}
+
+	private InputStream _exportCDATA(
+			String fileId,
+			Map<String, List<InfoFieldValue<Object>>> infoFieldValuesMap,
+			Locale sourceLocale, Locale targetLocale)
+		throws IOException {
+
+		Document document = SAXReaderUtil.createDocument();
+
+		Element xliffElement = document.addElement(
+			"xliff", "urn:oasis:names:tc:xliff:document:2.0");
+
+		xliffElement.addAttribute(
+			"srcLang", LocaleUtil.toBCP47LanguageId(sourceLocale));
+		xliffElement.addAttribute(
+			"trgLang", LocaleUtil.toBCP47LanguageId(targetLocale));
+		xliffElement.addAttribute("version", "2.0");
+
+		Element fileElement = xliffElement.addElement("file");
+
+		fileElement.addAttribute("id", fileId);
+
+		for (Map.Entry<String, List<InfoFieldValue<Object>>> entry :
+				infoFieldValuesMap.entrySet()) {
+
+			Element unitElement = fileElement.addElement("unit");
+
+			unitElement.addAttribute("id", entry.getKey());
+
+			for (InfoFieldValue<Object> infoFieldValue : entry.getValue()) {
+				_addInfoFieldValue(
+					infoFieldValue, unitElement, sourceLocale, targetLocale);
+			}
+		}
+
+		String formattedString = document.formattedString();
+
+		return new ByteArrayInputStream(
+			formattedString.getBytes(StandardCharsets.UTF_8));
+	}
+
+	private Map<String, List<InfoFieldValue<Object>>> _getInfoFieldValuesMap(
+		InfoItemFieldValues infoItemFieldValues) {
+
+		Map<String, List<InfoFieldValue<Object>>> infoFieldValuesMap =
+			new LinkedHashMap<>();
+
+		for (InfoFieldValue<Object> infoFieldValue :
+				infoItemFieldValues.getInfoFieldValues()) {
+
+			InfoField infoField = infoFieldValue.getInfoField();
+
+			if (_translationInfoFieldChecker.isTranslatable(infoField)) {
+				List<InfoFieldValue<Object>> infoFieldValues =
+					infoFieldValuesMap.computeIfAbsent(
+						infoField.getUniqueId(), uniqueId -> new ArrayList<>());
+
+				infoFieldValues.add(infoFieldValue);
+			}
+		}
+
+		return infoFieldValuesMap;
 	}
 
 	private String _getStringValue(Object value) {
