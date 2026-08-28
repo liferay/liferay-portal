@@ -21,6 +21,9 @@ import com.liferay.asset.kernel.service.AssetTagGroupRelLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyGroupRelLocalService;
 import com.liferay.asset.link.constants.AssetLinkConstants;
 import com.liferay.asset.link.service.AssetLinkLocalService;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.util.DepotRoleUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
@@ -188,6 +191,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -4614,6 +4618,18 @@ public class ObjectEntryLocalServiceImpl
 		return joinStep.where(predicate);
 	}
 
+	private long[] _getAssetTagIds(int depotEntryType, long groupId) {
+		if (depotEntryType == DepotConstants.TYPE_ANY) {
+			depotEntryType = DepotConstants.TYPE_SPACE;
+		}
+
+		return TransformUtil.transformToLongArray(
+			_assetTagGroupRelLocalService.
+				getAssetTagGroupRelsByGroupIdAndDepotEntryType(
+					groupId, depotEntryType),
+			AssetTagGroupRel::getTagId);
+	}
+
 	private String _getAutoIncrementSortableValue(
 		String prefix, String suffix, String value) {
 
@@ -4724,6 +4740,29 @@ public class ObjectEntryLocalServiceImpl
 
 		throw new ObjectEntryDefaultLanguageIdException(
 			"Language ID " + defaultLanguageId + " is not available");
+	}
+
+	private int _getDepotEntryType(long companyId, long groupId) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-99403")) {
+			return DepotConstants.TYPE_ANY;
+		}
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			groupId);
+
+		if (depotEntry == null) {
+			return DepotConstants.TYPE_ANY;
+		}
+
+		int depotEntryType = depotEntry.getType();
+
+		if ((depotEntryType != DepotConstants.TYPE_PROJECT) &&
+			(depotEntryType != DepotConstants.TYPE_SPACE)) {
+
+			return DepotConstants.TYPE_ANY;
+		}
+
+		return depotEntryType;
 	}
 
 	private Map<String, Object> _getDynamicObjectDefinitionTableValues(
@@ -6184,6 +6223,15 @@ public class ObjectEntryLocalServiceImpl
 			new ValidationError(objectEntryValuesException.getMessage()));
 	}
 
+	private boolean _hasAssetTagGroupRels(int depotEntryType, long tagId) {
+		List<AssetTagGroupRel> assetTagGroupRels =
+			_assetTagGroupRelLocalService.
+				getAssetTagGroupRelsByTagIdAndDepotEntryType(
+					tagId, depotEntryType);
+
+		return ListUtil.isNotEmpty(assetTagGroupRels);
+	}
+
 	private boolean _hasFormulaObjectField(List<ObjectField> objectFields) {
 		for (ObjectField objectField : objectFields) {
 			if (objectField.compareBusinessType(
@@ -7111,21 +7159,22 @@ public class ObjectEntryLocalServiceImpl
 			return;
 		}
 
+		int depotEntryType = _getDepotEntryType(
+			assetEntry.getCompanyId(), groupId);
+
+		long[] assetTagIds = ArrayUtil.unique(
+			ArrayUtil.append(
+				_getAssetTagIds(depotEntryType, groupId),
+				_getAssetTagIds(
+					depotEntryType, GroupConstants.ANY_PARENT_GROUP_ID)));
+
 		String[] assetTagNames = assetEntry.getTagNames();
 
-		long[] tagIds = ArrayUtil.unique(
-			ArrayUtil.append(
-				TransformUtil.transformToLongArray(
-					_assetTagGroupRelLocalService.getAssetTagGroupRelsByGroupId(
-						groupId),
-					AssetTagGroupRel::getTagId),
-				TransformUtil.transformToLongArray(
-					_assetTagGroupRelLocalService.getAssetTagGroupRelsByGroupId(
-						-1),
-					AssetTagGroupRel::getTagId)));
-
 		for (AssetTag assetTag : assetEntry.getTags()) {
-			if (ArrayUtil.contains(tagIds, assetTag.getTagId())) {
+			if (ArrayUtil.contains(assetTagIds, assetTag.getTagId()) ||
+				((depotEntryType == DepotConstants.TYPE_SPACE) &&
+				 !_hasAssetTagGroupRels(depotEntryType, assetTag.getTagId()))) {
+
 				continue;
 			}
 
@@ -9497,6 +9546,9 @@ public class ObjectEntryLocalServiceImpl
 
 	@Reference
 	private DDMExpressionFactory _ddmExpressionFactory;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private DiscussionPermission _discussionPermission;
