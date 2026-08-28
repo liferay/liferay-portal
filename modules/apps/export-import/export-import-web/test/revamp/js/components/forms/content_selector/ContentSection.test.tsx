@@ -175,4 +175,19 @@ describe('ContentSection', () => {
 
 		expect(queryByText('comments-and-ratings')).not.toBeNull();
 	});
+
+	it('hides the comments and ratings footer when comments and ratings are disabled', () => {
+		const {queryByText} = render(
+			<ContentSection
+				commentsAndRatingsEnabled={false}
+				onChange={jest.fn()}
+				previewPortletDataHandlerSection={
+					previewPortletDataHandlerSection
+				}
+				sectionSelection={{handler: {child1: true, child2: true}}}
+			/>
+		);
+
+		expect(queryByText('comments-and-ratings')).toBeNull();
+	});
 });
