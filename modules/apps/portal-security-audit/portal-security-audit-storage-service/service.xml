@@ -29,11 +29,25 @@
 		<column name="clientHost" type="String" />
 		<column name="clientIP" type="String" />
 		<column name="contextName" type="String" />
+		<column name="correlationId" type="String" />
 		<column name="eventType" type="String" />
+		<column name="httpMethod" type="String" />
+		<column name="impersonated" type="boolean" />
+		<column name="impersonatedUserEmailAddress" type="String" />
+		<column name="impersonatedUserId" type="long" />
+		<column name="impersonatedUserName" type="String" />
 		<column name="message" type="String" />
+		<column name="objectName" type="String" />
+		<column name="requestId" type="String" />
+		<column name="requestIdGenerated" type="boolean" />
+		<column name="resourceAction" type="String" />
+		<column name="resourceType" type="String" />
+		<column name="roles" type="String" />
 		<column name="serverName" type="String" />
 		<column name="serverPort" type="int" />
 		<column name="sessionID" type="String" />
+		<column name="userAgent" type="String" />
+		<column name="userEmailAddress" type="String" />
 
 		<!-- Order -->
 

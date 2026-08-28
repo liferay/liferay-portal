@@ -54,6 +54,20 @@ public class AuditStorageServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.addColumns(
 				"Audit_AuditEvent", "accountEntryId LONG",
 				"contextName VARCHAR(75) null"));
+
+		registry.register(
+			"2.2.0", "2.3.0",
+			UpgradeProcessFactory.addColumns(
+				"Audit_AuditEvent", "correlationId VARCHAR(75) null",
+				"httpMethod VARCHAR(75) null", "impersonated BOOLEAN",
+				"impersonatedUserEmailAddress VARCHAR(75) null",
+				"impersonatedUserId LONG",
+				"impersonatedUserName VARCHAR(75) null",
+				"objectName VARCHAR(75) null", "requestId VARCHAR(75) null",
+				"requestIdGenerated BOOLEAN", "resourceAction VARCHAR(75) null",
+				"resourceType VARCHAR(75) null", "roles TEXT null",
+				"userAgent VARCHAR(255) null",
+				"userEmailAddress VARCHAR(75) null"));
 	}
 
 	@Reference

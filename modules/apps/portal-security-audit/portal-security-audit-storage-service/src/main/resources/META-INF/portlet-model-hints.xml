@@ -25,9 +25,23 @@
 			<hint name="max-length">255</hint>
 		</field>
 		<field name="contextName" type="String" />
+		<field name="correlationId" type="String" />
 		<field name="eventType" type="String" />
+		<field name="httpMethod" type="String" />
+		<field name="impersonated" type="boolean" />
+		<field name="impersonatedUserEmailAddress" type="String" />
+		<field name="impersonatedUserId" type="long" />
+		<field name="impersonatedUserName" type="String" />
 		<field name="message" type="String">
 			<hint-collection name="TEXTAREA" />
+		</field>
+		<field name="objectName" type="String" />
+		<field name="requestId" type="String" />
+		<field name="requestIdGenerated" type="boolean" />
+		<field name="resourceAction" type="String" />
+		<field name="resourceType" type="String" />
+		<field name="roles" type="String">
+			<hint-collection name="CLOB" />
 		</field>
 		<field name="serverName" type="String">
 			<hint name="max-length">255</hint>
@@ -36,5 +50,9 @@
 		<field name="sessionID" type="String">
 			<hint name="max-length">255</hint>
 		</field>
+		<field name="userAgent" type="String">
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="userEmailAddress" type="String" />
 	</model>
 </model-hints>

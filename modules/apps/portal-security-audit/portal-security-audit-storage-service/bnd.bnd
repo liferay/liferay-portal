@@ -5,6 +5,6 @@ Import-Package:\
 	com.liferay.portal.security.audit.storage.comparator,\
 	\
 	*
-Liferay-Require-SchemaVersion: 2.2.0
+Liferay-Require-SchemaVersion: 2.3.0
 Liferay-Service: true
 -dsannotations-options: inherit
