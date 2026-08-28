@@ -3146,6 +3146,7 @@ public class ObjectDefinitionResourceTest
 
 		Assert.assertEquals(
 			Arrays.toString(objectFields), 1, objectFields.length);
+
 		Assert.assertTrue(objectFields[0].getRequired());
 	}
 
