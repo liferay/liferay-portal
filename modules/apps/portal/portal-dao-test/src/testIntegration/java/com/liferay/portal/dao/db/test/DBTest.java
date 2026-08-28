@@ -728,7 +728,7 @@ public class DBTest {
 			}
 		}
 		finally {
-			_waitForWorker(futureTask, "Unable to run locked query");
+			_wait(futureTask, "Unable to run locked query");
 		}
 	}
 
@@ -816,7 +816,7 @@ public class DBTest {
 			Assert.assertTrue(foundLongRunningQuery);
 		}
 		finally {
-			_waitForWorker(futureTask, "Unable to run slow query");
+			_wait(futureTask, "Unable to run slow query");
 		}
 	}
 
@@ -914,7 +914,7 @@ public class DBTest {
 			}
 		}
 		finally {
-			_waitForWorker(futureTask, "Unable to run locked query");
+			_wait(futureTask, "Unable to run locked query");
 		}
 	}
 
@@ -1327,7 +1327,7 @@ public class DBTest {
 			ArrayUtil.sortedUnique(indexMetadata.getColumnNames()));
 	}
 
-	private void _waitForWorker(FutureTask<Void> futureTask, String message)
+	private void _wait(FutureTask<Void> futureTask, String message)
 		throws InterruptedException, TimeoutException {
 
 		if (futureTask == null) {
