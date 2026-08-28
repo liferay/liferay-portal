@@ -60,16 +60,16 @@ public class CTEntryDTOConverterTest {
 		document.addKeyword(_CT_COLLECTION_NAME, ctCollectionName);
 
 		Mockito.when(
+			_indexer.getDocument(_serviceBuilderCTEntry)
+		).thenReturn(
+			document
+		);
+
+		Mockito.when(
 			_indexerRegistry.getIndexer(
 				com.liferay.change.tracking.model.CTEntry.class)
 		).thenReturn(
 			_indexer
-		);
-
-		Mockito.when(
-			_indexer.getDocument(_serviceBuilderCTEntry)
-		).thenReturn(
-			document
 		);
 
 		CTEntry ctEntry = _ctEntryDTOConverter.toDTO(
