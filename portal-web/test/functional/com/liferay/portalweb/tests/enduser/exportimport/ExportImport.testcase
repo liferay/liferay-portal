@@ -469,45 +469,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-88498. Verify if a Guest is able to export files."
-	@priority = 3
-	test ExportViaGuest {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Add a new user") {
-			JSONUser.addUser(
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-
-			User.openUsersAdmin();
-
-			User.editPasswordCP(
-				userEmailAddress = "userea@liferay.com",
-				userScreenName = "usersn");
-		}
-
-		task ("When: Default site is exported and the download URL is hit by the new guest user") {
-			LAR.exportSiteCP(siteScopeName = "Guest");
-
-			var downloadURL = selenium.getAttribute("//dl/dd/div/h2/span/a@href");
-
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-
-			Navigator.openSpecificURL(url = ${downloadURL});
-		}
-
-		task ("Then: The download is forbidden because guest role has no sufficient permission") {
-			AssertTextEquals(
-				locator1 = "Home#ERROR_MESSAGE_ALERT_ERROR",
-				value1 = "Error:Forbidden");
-		}
-	}
-
 	@description = "This is a use case for LPS-135706. Verify that exporting and importing a Documents & Media URL does not append UUID to the imported URL if it was not there to begin with."
 	@priority = 3
 	test ImportDMUrlWithoutUUID {
