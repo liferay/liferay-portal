@@ -376,4 +376,128 @@ test.describe('with a client extension that owns the filtering', () => {
 			});
 		}
 	);
+
+	test(
+		'The filters of the client extension are part of the address of the data set',
+		{
+			tag: ['@LPD-96001'],
+		},
+		async ({fdsSamplePage, page}) => {
+			await goToDelegatedFiltersTab({fdsSamplePage, page});
+
+			await expect(
+				customElement.getByRole('button', {name: 'Color'})
+			).toBeEnabled();
+
+			await test.step('Filter by a color and a size', async () => {
+				await getFilterOptionCheckbox({name: 'Blue'}).check();
+
+				await expandFilterPanel({name: 'Size'});
+
+				await getFilterOptionCheckbox({name: 'Medium'}).check();
+
+				await expectTotalEntries({page, total: 8});
+			});
+
+			const filteredURL = page.url();
+
+			await test.step('The filters reach the address', async () => {
+				expect(filteredURL).toContain('Blue');
+				expect(filteredURL).toContain('Medium');
+			});
+
+			await test.step('Reloading brings the filters, the results, and the filter UI back', async () => {
+				await page.reload();
+
+				await waitForFDS({page});
+
+				await expectTotalEntries({page, total: 8});
+
+				await expect(
+					getFilterOptionCheckbox({name: 'Blue'})
+				).toBeChecked();
+
+				await expect(
+					customElement.getByText('Color: Blue')
+				).toBeVisible();
+
+				await expect(
+					customElement.getByText('Size: Medium')
+				).toBeVisible();
+
+				await expect(
+					fdsSamplePage.managementToolbar.filterButton
+				).toBeHidden();
+			});
+
+			await test.step('Going back returns to the filters of the previous entry', async () => {
+				await page.goBack();
+
+				await waitForFDS({page});
+
+				// The color alone was applied first, which is a quarter of the
+				// entries rather than the eight that are also Medium.
+
+				await expectTotalEntries({page, total: 25});
+
+				await expect(
+					customElement.getByText('Color: Blue')
+				).toBeVisible();
+
+				await expect(
+					customElement.getByText('Size: Medium')
+				).toBeHidden();
+			});
+
+			await test.step('Opening the address afresh filters the data set the same way', async () => {
+				await page.goto(filteredURL);
+
+				await waitForFDS({page});
+
+				await expectTotalEntries({page, total: 8});
+
+				await expect(
+					customElement.getByText('Color: Blue')
+				).toBeVisible();
+
+				await expect(
+					customElement.getByText('Size: Medium')
+				).toBeVisible();
+			});
+
+			await test.step('A manually typed expression is part of the address too', async () => {
+				await customElement
+					.getByRole('button', {name: 'Filter manually'})
+					.click();
+
+				await customElement
+					.getByLabel('OData filter expression')
+					.fill("title eq 'Sample5'");
+
+				await customElement
+					.getByRole('button', {name: 'Apply'})
+					.click();
+
+				await expectTotalEntries({page, total: 1});
+
+				await page.reload();
+
+				await waitForFDS({page});
+
+				await expectTotalEntries({page, total: 1});
+
+				await expect(
+					getEntry({fdsSamplePage, position: 5})
+				).toBeVisible();
+
+				// Which of the two ways of filtering was in use is restored
+				// along with the filter, since the expression can only be seen
+				// or undone in the one that produced it.
+
+				await expect(
+					customElement.getByLabel('OData filter expression')
+				).toHaveValue("title eq 'Sample5'");
+			});
+		}
+	);
 });
