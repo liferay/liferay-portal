@@ -166,16 +166,6 @@ public class AssetCategoryIndexerReindexTest {
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
-	private void _assertChildAssetCategoriesCount(
-		AssetCategory assetCategory, String childAssetCategoriesCount) {
-
-		assertFieldValues(
-			"childAssetCategoriesCount",
-			Collections.singletonMap(
-				"childAssetCategoriesCount", childAssetCategoriesCount),
-			LocaleUtil.US, assetCategory.getName());
-	}
-
 	protected void assertFieldValues(
 		String fieldName, Map<String, String> map, Locale locale,
 		String searchTerm) {
@@ -232,6 +222,16 @@ public class AssetCategoryIndexerReindexTest {
 
 	@Inject
 	protected UIDFactory uidFactory;
+
+	private void _assertChildAssetCategoriesCount(
+		AssetCategory assetCategory, String childAssetCategoriesCount) {
+
+		assertFieldValues(
+			"childAssetCategoriesCount",
+			Collections.singletonMap(
+				"childAssetCategoriesCount", childAssetCategoriesCount),
+			LocaleUtil.US, assetCategory.getName());
+	}
 
 	@DeleteAfterTestRun
 	private List<AssetCategory> _assetCategories;
