@@ -17,11 +17,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.xml.Document;
+import com.liferay.portal.kernel.xml.DocumentException;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
 import com.liferay.translation.info.field.TranslationInfoFieldChecker;
 import com.liferay.translation.internal.util.XLIFFExporterUtil;
+import com.liferay.translation.internal.util.XLIFFInlineCodeUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,6 +36,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import net.sf.okapi.common.resource.TextFragment;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -56,8 +60,7 @@ public class XLIFF12InfoFormTranslationExporter
 
 		Document document = SAXReaderUtil.createDocument();
 
-		Element xliffElement = document.addElement(
-			"xliff", "urn:oasis:names:tc:xliff:document:1.2");
+		Element xliffElement = document.addElement("xliff", _NAMESPACE_URI);
 
 		xliffElement.addAttribute("version", "1.2");
 
@@ -118,11 +121,35 @@ public class XLIFF12InfoFormTranslationExporter
 
 			Element transUnitElement = bodyElement.addElement("trans-unit");
 
+			List<InfoFieldValue<Object>> infoFieldValues = entry.getValue();
+
+			InfoFieldValue<Object> firstInfoFieldValue = infoFieldValues.get(0);
+
+			boolean protectedHTMLInfoField =
+				XLIFFExporterUtil.isProtectedHTMLInfoField(
+					firstInfoFieldValue.getInfoField());
+
+			if (protectedHTMLInfoField) {
+				transUnitElement.addAttribute("datatype", "html");
+			}
+
 			transUnitElement.addAttribute("id", entry.getKey());
 
-			_addCDATATransUnitContent(
-				fileElement, entry.getValue(), sourceLocale, targetLocale,
-				transUnitElement);
+			if (protectedHTMLInfoField) {
+				try {
+					_addInlineCodeTransUnitContent(
+						fileElement, infoFieldValues, sourceLocale,
+						targetLocale, transUnitElement);
+				}
+				catch (DocumentException documentException) {
+					throw new IOException(documentException);
+				}
+			}
+			else {
+				_addCDATATransUnitContent(
+					fileElement, infoFieldValues, sourceLocale, targetLocale,
+					transUnitElement);
+			}
 		}
 
 		String xml = document.asXML();
@@ -184,6 +211,62 @@ public class XLIFF12InfoFormTranslationExporter
 		}
 	}
 
+	private void _addInlineCodeTransUnitContent(
+			Element fileElement, List<InfoFieldValue<Object>> infoFieldValues,
+			Locale sourceLocale, Locale targetLocale, Element transUnitElement)
+		throws DocumentException {
+
+		int size = infoFieldValues.size();
+
+		TextFragment[] sourceTextFragments = new TextFragment[size];
+		TextFragment[] targetTextFragments = new TextFragment[size];
+
+		int startId = 1;
+
+		for (int i = 0; i < size; i++) {
+			InfoFieldValue<Object> infoFieldValue = infoFieldValues.get(i);
+
+			sourceTextFragments[i] = XLIFFInlineCodeUtil.toTextFragment(
+				_getStringValue(infoFieldValue.getValue(sourceLocale)));
+			targetTextFragments[i] = XLIFFInlineCodeUtil.toTextFragment(
+				XLIFFExporterUtil.getTargetStringValue(
+					infoFieldValue, targetLocale));
+
+			startId = XLIFFInlineCodeUtil.renumberCodes(
+				startId, sourceTextFragments[i], targetTextFragments[i]);
+		}
+
+		XLIFFInlineCodeUtil.addXLIFF12InlineCodes(
+			_addSourceElement(fileElement, transUnitElement), _NAMESPACE_URI,
+			sourceTextFragments);
+
+		if (size > 1) {
+			Element segSourceElement = transUnitElement.addElement(
+				"seg-source");
+
+			for (int i = 0; i < size; i++) {
+				XLIFFInlineCodeUtil.addXLIFF12InlineCodes(
+					_addMrkElement(segSourceElement, i), _NAMESPACE_URI,
+					sourceTextFragments[i]);
+			}
+		}
+
+		Element targetElement = _addTargetElement(
+			fileElement, transUnitElement);
+
+		if (size > 1) {
+			for (int i = 0; i < size; i++) {
+				XLIFFInlineCodeUtil.addXLIFF12InlineCodes(
+					_addMrkElement(targetElement, i), _NAMESPACE_URI,
+					targetTextFragments[i]);
+			}
+		}
+		else {
+			XLIFFInlineCodeUtil.addXLIFF12InlineCodes(
+				targetElement, _NAMESPACE_URI, targetTextFragments[0]);
+		}
+	}
+
 	private Element _addMrkElement(Element element, int mid) {
 		Element mrkElement = element.addElement("mrk");
 
@@ -222,6 +305,9 @@ public class XLIFF12InfoFormTranslationExporter
 
 		return value.toString();
 	}
+
+	private static final String _NAMESPACE_URI =
+		"urn:oasis:names:tc:xliff:document:1.2";
 
 	@Reference
 	private TranslationInfoFieldChecker _translationInfoFieldChecker;
