@@ -116,6 +116,15 @@ public interface SearchRequest {
 
 	public String[] getStoredFields();
 
+	/**
+	 * Provides the upper limit for counting the total number of hits. Above
+	 * this limit the total is a lower bound rather than an exact count.
+	 *
+	 * @return the limit, or <code>null</code> to use the search engine
+	 *         connector's limit
+	 */
+	public Integer getTrackTotalHitsLimit();
+
 	public boolean isBasicFacetSelection();
 
 	public boolean isEmptySearchEnabled();

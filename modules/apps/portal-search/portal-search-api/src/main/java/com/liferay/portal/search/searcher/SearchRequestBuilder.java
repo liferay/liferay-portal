@@ -188,6 +188,19 @@ public interface SearchRequestBuilder {
 
 	public SearchRequestBuilder storedFields(String... storedFields);
 
+	/**
+	 * Sets the upper limit for counting the total number of hits. Above this
+	 * limit the total is a lower bound rather than an exact count. The search
+	 * engine connector's limit is used when this is <code>null</code>, and
+	 * caps this value when it is lower.
+	 *
+	 * @param  trackTotalHitsLimit the limit, or <code>null</code> to use the
+	 *         search engine connector's limit
+	 * @return the search request builder
+	 */
+	public SearchRequestBuilder trackTotalHitsLimit(
+		Integer trackTotalHitsLimit);
+
 	public SearchRequestBuilder withFacetContext(
 		Consumer<FacetContext> facetContextConsumer);
 
