@@ -8,11 +8,8 @@ package com.liferay.notification.service.impl;
 import com.liferay.notification.constants.NotificationActionKeys;
 import com.liferay.notification.constants.NotificationConstants;
 import com.liferay.notification.context.NotificationContext;
-import com.liferay.notification.exception.NotificationTemplateObjectDefinitionIdException;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.base.NotificationTemplateServiceBaseImpl;
-import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -44,8 +41,6 @@ public class NotificationTemplateServiceImpl
 		_portletResourcePermission.check(
 			getPermissionChecker(), null,
 			NotificationActionKeys.ADD_NOTIFICATION_TEMPLATE);
-
-		_validateObjectDefinition(notificationContext);
 
 		return notificationTemplateLocalService.addNotificationTemplate(
 			notificationContext);
@@ -121,30 +116,8 @@ public class NotificationTemplateServiceImpl
 			notificationTemplate.getNotificationTemplateId(),
 			ActionKeys.UPDATE);
 
-		_validateObjectDefinition(notificationContext);
-
 		return notificationTemplateLocalService.updateNotificationTemplate(
 			notificationContext);
-	}
-
-	private void _validateObjectDefinition(
-			NotificationContext notificationContext)
-		throws PortalException {
-
-		NotificationTemplate notificationTemplate =
-			notificationContext.getNotificationTemplate();
-
-		if (notificationTemplate.getObjectDefinitionId() <= 0) {
-			return;
-		}
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				notificationTemplate.getObjectDefinitionId());
-
-		if (objectDefinition == null) {
-			throw new NotificationTemplateObjectDefinitionIdException();
-		}
 	}
 
 	@Reference(
@@ -152,9 +125,6 @@ public class NotificationTemplateServiceImpl
 	)
 	private ModelResourcePermission<NotificationTemplate>
 		_notificationTemplateModelResourcePermission;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference(
 		target = "(resource.name=" + NotificationConstants.RESOURCE_NAME_NOTIFICATION_TEMPLATE + ")"
