@@ -32,7 +32,7 @@ const mockFDSContext = {
 	namespace: 'testNamespace_',
 	onSnapshotChange: jest.fn(),
 	portletId: 'testPortlet',
-	saveUserPreferencesURL: '/save-user-preferences-url',
+	updateUserPreferences: jest.fn(() => Promise.resolve()),
 };
 
 const ownedSnapshot = {erc: 'owned-erc', id: 1, label: 'Owned View'};

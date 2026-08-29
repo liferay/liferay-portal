@@ -16,6 +16,7 @@ import {
 	TRenderer,
 	TSort,
 } from './utils/types';
+import {IUserPreferences} from './views/ViewsContext';
 
 export interface IFrontendDataSetContext {
 	actionParameterName?: string | null;
@@ -108,6 +109,7 @@ export interface IFrontendDataSetContext {
 	}: IDataSetData) => void;
 	updateFilters: IConfigInURLUpdaterThunk<EConfigInURLKeys.ACTIVE_FILTERS>;
 	updateItem: Function;
+	updateUserPreferences: (preferences: IUserPreferences) => Promise<void>;
 	updateView: IConfigInURLUpdaterThunk<EConfigInURLKeys.VIEW_NAME>;
 	updateVisibleFields: IConfigInURLUpdaterThunk<EConfigInURLKeys.VISIBLE_FIELDS>;
 }

@@ -98,7 +98,11 @@ import {
 	VisibleFieldNames,
 } from './utils/types';
 import useConfigInURL, {useUpdateConfig} from './utils/useConfigInURL';
-import ViewsContext, {ISnapshot, ISnapshots} from './views/ViewsContext';
+import ViewsContext, {
+	ISnapshot,
+	ISnapshots,
+	IUserPreferences,
+} from './views/ViewsContext';
 import getViewComponent from './views/getViewComponent';
 import viewsReducer, {EViewsActionTypes} from './views/viewsReducer';
 
@@ -2070,6 +2074,37 @@ const FrontendDataSetContent = ({
 		}
 	};
 
+	const updateUserPreferences = (preferences: IUserPreferences) => {
+		if (!saveUserPreferencesURL) {
+			return Promise.reject(new Error());
+		}
+
+		return fetch(saveUserPreferencesURL, {
+			body: new URLSearchParams({
+				fdsName: id,
+				preferences: JSON.stringify(preferences),
+			}),
+			method: 'POST',
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response
+						.json()
+						.then((jsonResponse) =>
+							Promise.reject(new Error(jsonResponse.title))
+						);
+				}
+
+				return response.json();
+			})
+			.then((nextUserPreferences) => {
+				viewsDispatch({
+					type: EViewsActionTypes.UPDATE_USER_PREFERENCES,
+					value: {userPreferences: nextUserPreferences},
+				});
+			});
+	};
+
 	const handleSnapshotChangeRef = useRef(handleSnapshotChange);
 	const hasURLStateRef = useRef(hasURLState);
 	const startupSnapshotERCAppliedRef = useRef(false);
@@ -2373,7 +2408,7 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
-				saveUserPreferencesURL
+				saveUserPreferencesURL,
 				searchAsYouType,
 				searchParam: unfrozenGlobalFDSState.search.query,
 				searchSuggestionsEnabled,
@@ -2396,6 +2431,7 @@ const FrontendDataSetContent = ({
 				updateDataSetItems,
 				updateFilters,
 				updateItem,
+				updateUserPreferences,
 				updateView,
 				updateVisibleFields,
 			}}

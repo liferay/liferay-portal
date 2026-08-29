@@ -196,7 +196,7 @@ const SnapshotsControls = () => {
 		namespace,
 		onSnapshotChange,
 		portletId,
-		saveUserPreferencesURL,
+		updateUserPreferences,
 	} = useContext(FrontendDataSetContext);
 
 	const {appliedCustomConfigs} = globalFDSState as IConnectedFDSState;
@@ -516,38 +516,20 @@ const SnapshotsControls = () => {
 	};
 
 	const setStartupSnapshotERC = () => {
-		if (!activeSnapshot || !saveUserPreferencesURL) {
+		if (!activeSnapshot) {
 			return;
 		}
 
-		fetch(saveUserPreferencesURL, {
-			body: new URLSearchParams({
-				fdsName,
-				preferences: JSON.stringify({
-					...userPreferences,
-					startupSnapshotERC: activeSnapshot.erc,
-				}),
-			}),
-			method: 'POST',
+		updateUserPreferences({
+			...userPreferences,
+			startupSnapshotERC: activeSnapshot.erc,
 		})
-			.then((response) => {
-				if (!response.ok) {
-					return Promise.reject(new Error());
-				}
-
-				return response.json();
-			})
-			.then((nextUserPreferences) => {
+			.then(() => {
 				openToast({
 					message: Liferay.Language.get(
 						'the-user-view-was-set-as-startup'
 					),
 					type: 'success',
-				});
-
-				viewsDispatch({
-					type: EViewsActionTypes.UPDATE_USER_PREFERENCES,
-					value: {userPreferences: nextUserPreferences},
 				});
 			})
 			.catch(() => {
