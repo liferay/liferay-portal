@@ -16,8 +16,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.license.util.App;
-import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -73,7 +72,9 @@ public class CMPObjectEntryModelDocumentContributor
 	private void _contribute(Document document, ObjectEntry objectEntry)
 		throws PortalException {
 
-		if (!LicenseManagerUtil.isAppEnabled(App.CMP)) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-58677")) {
+
 			return;
 		}
 
