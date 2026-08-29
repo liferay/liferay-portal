@@ -68,7 +68,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
  * @author Balázs Sáfrány-Kovalik
  */
 @DataGuard(scope = DataGuard.Scope.METHOD)
-@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-57283"), @FeatureFlag("LPD-58677")}
+)
 @RunWith(Arquillian.class)
 public class DepotEntryUserNotificationTest {
 

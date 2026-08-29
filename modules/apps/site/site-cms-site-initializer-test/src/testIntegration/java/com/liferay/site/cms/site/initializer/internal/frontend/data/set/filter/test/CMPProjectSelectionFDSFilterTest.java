@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilterRegistry;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
@@ -24,6 +25,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Mario Gomes
  */
+@FeatureFlag("LPD-58677")
 @RunWith(Arquillian.class)
 public class CMPProjectSelectionFDSFilterTest {
 
