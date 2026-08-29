@@ -177,6 +177,13 @@ public class ClassNamePostUpgradeDataCleanupProcessTest
 				if (objectDefinition != null) {
 					_objectDefinitionLocalService.deleteObjectDefinition(
 						objectDefinition);
+
+					ClassName className = _classNameLocalService.fetchClassName(
+						objectDefinition.getClassName());
+
+					if (className != null) {
+						_classNameLocalService.deleteClassName(className);
+					}
 				}
 			},
 			() -> {
