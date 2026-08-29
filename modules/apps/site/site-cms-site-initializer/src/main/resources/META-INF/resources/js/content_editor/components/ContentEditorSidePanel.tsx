@@ -331,7 +331,13 @@ function SidePanel(props: SidePanelProps) {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [panel, setPanel] = useState<React.Key | null>(null);
 
-	const items = useMemo(() => [...DEFAULT_ITEMS, PROJECTS_ITEM], []);
+	const items = useMemo(
+		() =>
+			Liferay.FeatureFlags['LPD-58677']
+				? [...DEFAULT_ITEMS, PROJECTS_ITEM]
+				: DEFAULT_ITEMS,
+		[]
+	);
 
 	const showErrorInPanel = useCallback((panelId: React.Key) => {
 		setPanel(panelId);

@@ -56,7 +56,8 @@ export default function MultipleScopesRenderer({
 }: MultipleScopesRendererProps) {
 	const {assetLibraries, projects} = itemData;
 
-	const renderProjects = Array.isArray(projects);
+	const renderProjects =
+		Array.isArray(projects) && !!Liferay.FeatureFlags['LPD-58677'];
 
 	const [projectScopes, setProjectScopes] = useState<Scope[]>([]);
 	const [spaceScopes, setSpaceScopes] = useState<Scope[]>([]);
