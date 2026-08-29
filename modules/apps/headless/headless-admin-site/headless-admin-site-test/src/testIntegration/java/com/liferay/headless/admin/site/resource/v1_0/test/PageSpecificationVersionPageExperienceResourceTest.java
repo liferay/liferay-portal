@@ -138,11 +138,12 @@ public class PageSpecificationVersionPageExperienceResourceTest
 					pageSpecificationVersionExternalReferenceCode,
 					testGroup.getGroupId());
 
-		String segmentsExperienceERC = RandomTestUtil.randomString();
-
 		PageExperience pageExperience = new PageExperience();
 
+		String segmentsExperienceERC = RandomTestUtil.randomString();
+
 		pageExperience.setExternalReferenceCode(segmentsExperienceERC);
+
 		pageExperience.setName_i18n(RandomTestUtil.randomLanguageIdStringMap());
 		pageExperience.setPriority(RandomTestUtil.randomInt());
 

@@ -53,9 +53,6 @@ public class GetPageVersionPreviewStrutsActionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_getPageVersionPreviewStrutsAction =
-			new GetPageVersionPreviewStrutsAction();
-
 		ReflectionTestUtil.setFieldValue(
 			_getPageVersionPreviewStrutsAction,
 			"_layoutContentVersionLocalService",
@@ -293,7 +290,8 @@ public class GetPageVersionPreviewStrutsActionTest {
 		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
 			FeatureFlagManagerUtil.class);
 	private GetPageVersionPreviewStrutsAction
-		_getPageVersionPreviewStrutsAction;
+		_getPageVersionPreviewStrutsAction =
+			new GetPageVersionPreviewStrutsAction();
 	private final Layout _layout = Mockito.mock(Layout.class);
 	private final LayoutContentVersion _layoutContentVersion = Mockito.mock(
 		LayoutContentVersion.class);

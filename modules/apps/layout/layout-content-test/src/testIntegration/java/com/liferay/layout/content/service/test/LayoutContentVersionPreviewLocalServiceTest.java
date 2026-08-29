@@ -211,12 +211,13 @@ public class LayoutContentVersionPreviewLocalServiceTest {
 	@TestInfo("LPD-103339")
 	public void testGetSegmentsExperienceERCsLanguageIds() throws Exception {
 		String languageId1 = RandomTestUtil.randomString();
-		String languageId2 = RandomTestUtil.randomString();
 		String segmentsExperienceERC1 = RandomTestUtil.randomString();
 		String segmentsExperienceERC2 = RandomTestUtil.randomString();
 
 		_addLayoutContentVersionPreviews(
 			languageId1, segmentsExperienceERC1, segmentsExperienceERC2);
+
+		String languageId2 = RandomTestUtil.randomString();
 
 		_addLayoutContentVersionPreviews(languageId2, segmentsExperienceERC1);
 
