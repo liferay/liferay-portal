@@ -77,7 +77,7 @@ public abstract class SecretsUtil {
 			"yyyy-MM-dd_HH:mm:ss.SSS");
 
 		simpleDateFormat.setTimeZone(
-			TimeZone.getTimeZone(_API_TOKEN_TIME_ZONE));
+			TimeZone.getTimeZone("America/Los_Angeles"));
 
 		String jenkinsAPITokenFieldLabel =
 			"api.token.json." + simpleDateFormat.format(date);
@@ -889,8 +889,6 @@ public abstract class SecretsUtil {
 	}
 
 	private static final String _API_TOKEN_ALGORITHM = "SHA-256";
-
-	private static final String _API_TOKEN_TIME_ZONE = "America/Los_Angeles";
 
 	private static final String _API_TOKEN_VERSION = "11";
 
