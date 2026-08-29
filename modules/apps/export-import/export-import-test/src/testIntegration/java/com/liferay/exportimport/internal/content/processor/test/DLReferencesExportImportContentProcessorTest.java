@@ -10,16 +10,20 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppHelperLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.exportimport.configuration.ExportImportServiceConfiguration;
 import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.internal.content.processor.test.util.ExportImportContentProcessorTestUtil;
+import com.liferay.exportimport.kernel.exception.ExportImportContentValidationException;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
 import com.liferay.exportimport.test.util.TestReaderWriter;
 import com.liferay.exportimport.test.util.TestUserIdStrategy;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.capabilities.ThumbnailCapability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -28,6 +32,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
@@ -266,6 +271,36 @@ public class DLReferencesExportImportContentProcessorTest {
 		throws Exception {
 
 		_testImportDLReferencesFriendlyURL(false);
+	}
+
+	@Test
+	@TestInfo("LPS-91233")
+	public void testValidateContentReferencesInvalidReferenceValidationDisabled()
+		throws Exception {
+
+		String content = ExportImportContentProcessorTestUtil.replaceParameters(
+			_externalGroup, null, _fileEntry, "invalid_dl_references.txt",
+			_sourceGroup, null, _targetGroup, null);
+
+		Assert.assertThrows(
+			ExportImportContentValidationException.class,
+			() ->
+				_dlReferencesExportImportContentProcessor.
+					validateContentReferences(
+						_sourceGroup.getGroupId(), content));
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						ExportImportServiceConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"validateFileEntryReferences", false
+						).build())) {
+
+			_dlReferencesExportImportContentProcessor.validateContentReferences(
+				_sourceGroup.getGroupId(), content);
+		}
 	}
 
 	private void _assertEmpty(List<String> list) {
