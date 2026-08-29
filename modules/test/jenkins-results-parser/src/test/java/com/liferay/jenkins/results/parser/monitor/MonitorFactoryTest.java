@@ -68,6 +68,26 @@ public class MonitorFactoryTest
 	}
 
 	@Test
+	public void testNewMonitorReportFreshness() {
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty("monitor[a].parameter[cadence]", "3600");
+		monitorProperties.setProperty(
+			"monitor[a].parameter[report.name]", RandomTestUtil.randomString());
+		monitorProperties.setProperty(
+			"monitor[a].parameter[url]",
+			"file:///" + RandomTestUtil.randomString());
+		monitorProperties.setProperty("monitor[a].type", "report-freshness");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof ReportFreshnessMonitor);
+	}
+
+	@Test
 	public void testNewMonitorResourceThreshold() {
 		String masterName = RandomTestUtil.randomString();
 
