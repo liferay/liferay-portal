@@ -52,6 +52,7 @@ public class NotificationTemplateServiceImpl
 			NotificationActionKeys.ADD_NOTIFICATION_TEMPLATE);
 
 		_validateAttachmentObjectFields(notificationContext);
+
 		_validateObjectDefinition(notificationContext);
 
 		return notificationTemplateLocalService.addNotificationTemplate(
@@ -129,6 +130,7 @@ public class NotificationTemplateServiceImpl
 			ActionKeys.UPDATE);
 
 		_validateAttachmentObjectFields(notificationContext);
+
 		_validateObjectDefinition(notificationContext);
 
 		return notificationTemplateLocalService.updateNotificationTemplate(
