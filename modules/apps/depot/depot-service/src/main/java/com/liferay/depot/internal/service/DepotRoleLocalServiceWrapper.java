@@ -75,7 +75,9 @@ public class DepotRoleLocalServiceWrapper extends RoleLocalServiceWrapper {
 			return;
 		}
 
-		if (Objects.equals(DepotRolesConstants.SUBTYPE_PROJECT, subtype) ||
+		if ((Objects.equals(DepotRolesConstants.SUBTYPE_PROJECT, subtype) &&
+			 FeatureFlagManagerUtil.isEnabled(
+				 CompanyThreadLocal.getCompanyId(), "LPD-58677")) ||
 			Objects.equals(DepotRolesConstants.SUBTYPE_SPACE, subtype)) {
 
 			return;

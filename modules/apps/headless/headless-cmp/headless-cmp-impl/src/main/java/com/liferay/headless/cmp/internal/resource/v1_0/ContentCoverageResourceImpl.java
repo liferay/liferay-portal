@@ -23,6 +23,7 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -59,6 +60,12 @@ public class ContentCoverageResourceImpl
 	@Override
 	public ContentCoverage getProjectContentCoverage(Long projectId)
 		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-58677")) {
+
+			throw new UnsupportedOperationException();
+		}
 
 		ObjectEntry objectEntry = _objectEntryService.getObjectEntry(projectId);
 
