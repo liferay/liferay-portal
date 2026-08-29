@@ -68,86 +68,76 @@ public class CMPObjectEntryModelDocumentContributorTest {
 
 	@Test
 	public void testContributeWithObjectEntryFolder() {
-		try (MockedStatic<LicenseManagerUtil> licenseManagerUtilMockedStatic =
-				Mockito.mockStatic(LicenseManagerUtil.class)) {
+		ObjectEntryFolder objectEntryFolder = Mockito.mock(
+			ObjectEntryFolder.class);
 
-			licenseManagerUtilMockedStatic.when(
-				() -> LicenseManagerUtil.isAppEnabled(App.CMP)
-			).thenReturn(
-				true
-			);
+		long childObjectEntryFolderId = RandomTestUtil.randomLong();
+		long parentObjectEntryFolderId = RandomTestUtil.randomLong();
+		long rootObjectEntryFolderId = RandomTestUtil.randomLong();
 
-			ObjectEntryFolder objectEntryFolder = Mockito.mock(
-				ObjectEntryFolder.class);
+		Mockito.when(
+			objectEntryFolder.getTreePath()
+		).thenReturn(
+			StringBundler.concat(
+				StringPool.SLASH, rootObjectEntryFolderId, StringPool.SLASH,
+				parentObjectEntryFolderId, StringPool.SLASH,
+				childObjectEntryFolderId, StringPool.SLASH)
+		);
 
-			long childObjectEntryFolderId = RandomTestUtil.randomLong();
-			long parentObjectEntryFolderId = RandomTestUtil.randomLong();
-			long rootObjectEntryFolderId = RandomTestUtil.randomLong();
+		Mockito.when(
+			_objectEntryFolderLocalService.fetchObjectEntryFolder(
+				childObjectEntryFolderId)
+		).thenReturn(
+			objectEntryFolder
+		);
 
-			Mockito.when(
-				objectEntryFolder.getTreePath()
-			).thenReturn(
-				StringBundler.concat(
-					StringPool.SLASH, rootObjectEntryFolderId, StringPool.SLASH,
-					parentObjectEntryFolderId, StringPool.SLASH,
-					childObjectEntryFolderId, StringPool.SLASH)
-			);
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
 
-			Mockito.when(
-				_objectEntryFolderLocalService.fetchObjectEntryFolder(
-					childObjectEntryFolderId)
-			).thenReturn(
-				objectEntryFolder
-			);
+		Mockito.when(
+			objectEntry.getObjectEntryFolderId()
+		).thenReturn(
+			childObjectEntryFolderId
+		);
 
-			ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+		_cmpObjectEntryModelDocumentContributor.contribute(
+			Mockito.mock(Document.class), objectEntry);
 
-			Mockito.when(
-				objectEntry.getObjectEntryFolderId()
-			).thenReturn(
-				childObjectEntryFolderId
-			);
+		Mockito.verify(
+			_objectEntryFolderLocalService
+		).fetchObjectEntryFolder(
+			rootObjectEntryFolderId
+		);
 
-			_cmpObjectEntryModelDocumentContributor.contribute(
-				Mockito.mock(Document.class), objectEntry);
+		Mockito.reset(_objectEntryFolderLocalService);
 
-			Mockito.verify(
-				_objectEntryFolderLocalService
-			).fetchObjectEntryFolder(
-				rootObjectEntryFolderId
-			);
+		Mockito.when(
+			objectEntryFolder.getTreePath()
+		).thenReturn(
+			StringBundler.concat(
+				StringPool.SLASH, rootObjectEntryFolderId, StringPool.SLASH)
+		);
 
-			Mockito.reset(_objectEntryFolderLocalService);
+		Mockito.when(
+			_objectEntryFolderLocalService.fetchObjectEntryFolder(
+				rootObjectEntryFolderId)
+		).thenReturn(
+			objectEntryFolder
+		);
 
-			Mockito.when(
-				objectEntryFolder.getTreePath()
-			).thenReturn(
-				StringBundler.concat(
-					StringPool.SLASH, rootObjectEntryFolderId, StringPool.SLASH)
-			);
+		Mockito.when(
+			objectEntry.getObjectEntryFolderId()
+		).thenReturn(
+			rootObjectEntryFolderId
+		);
 
-			Mockito.when(
-				_objectEntryFolderLocalService.fetchObjectEntryFolder(
-					rootObjectEntryFolderId)
-			).thenReturn(
-				objectEntryFolder
-			);
+		_cmpObjectEntryModelDocumentContributor.contribute(
+			Mockito.mock(Document.class), objectEntry);
 
-			Mockito.when(
-				objectEntry.getObjectEntryFolderId()
-			).thenReturn(
-				rootObjectEntryFolderId
-			);
-
-			_cmpObjectEntryModelDocumentContributor.contribute(
-				Mockito.mock(Document.class), objectEntry);
-
-			Mockito.verify(
-				_objectEntryFolderLocalService
-			).fetchObjectEntryFolder(
-				rootObjectEntryFolderId
-			);
-		}
+		Mockito.verify(
+			_objectEntryFolderLocalService
+		).fetchObjectEntryFolder(
+			rootObjectEntryFolderId
+		);
 	}
 
 	private CMPObjectEntryModelDocumentContributor
