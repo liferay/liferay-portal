@@ -144,6 +144,10 @@ public class ObjectRelationshipExtensionProviderTest {
 			_extensionProvider.getExtendedPropertyDefinitions(
 				TestPropsValues.getCompanyId(), UserAccount.class.getName());
 
+		Assert.assertEquals(
+			extendedPropertyDefinitions.toString(), 1,
+			extendedPropertyDefinitions.size());
+
 		PropertyDefinition propertyDefinition = extendedPropertyDefinitions.get(
 			_objectRelationship.getName());
 
