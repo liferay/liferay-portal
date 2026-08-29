@@ -20,7 +20,6 @@ import MergeTagsModal from './MergeTagsModal';
 
 export default function ViewTags({
 	actionItems,
-	cmpEnabled,
 	cmsGroupId,
 	dataSetId,
 	invalidTagCharacters,
@@ -30,7 +29,6 @@ export default function ViewTags({
 }: {
 	actionItems: ComponentProps<typeof ClayDropDownWithItems>['items'] &
 		ActionDropdownItemProps;
-	cmpEnabled?: boolean;
 	cmsGroupId: number;
 	dataSetId: string;
 	invalidTagCharacters: string;
@@ -271,8 +269,7 @@ export default function ViewTags({
 							type: 'internal',
 						},
 						{
-							component: (props: any) =>
-								MultipleScopesRenderer({...props, cmpEnabled}),
+							component: MultipleScopesRenderer,
 							name: VIEWS_SPACE_TABLE_CELL_RENDERER_NAME,
 							type: 'internal',
 						},

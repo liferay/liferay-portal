@@ -24,8 +24,6 @@ import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactory
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.license.util.App;
-import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -158,8 +156,6 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 			"assetLibraryId", objectEntry.getGroupId()
 		).put(
 			"assetType", classNameId
-		).put(
-			"cmpEnabled", LicenseManagerUtil.isAppEnabled(App.CMP)
 		).put(
 			"cmpProjectLinkObjectDefinitionId",
 			() -> {

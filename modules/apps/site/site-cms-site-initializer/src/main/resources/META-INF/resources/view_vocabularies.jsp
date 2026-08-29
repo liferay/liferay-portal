@@ -20,7 +20,6 @@ ViewVocabulariesDisplayContext viewVocabulariesDisplayContext = (ViewVocabularie
 	</div>
 
 	<frontend-data-set:headless-display
-		additionalProps="<%= viewVocabulariesDisplayContext.getAdditionalProps() %>"
 		apiURL="<%= viewVocabulariesDisplayContext.getAPIURL() %>"
 		creationMenu="<%= viewVocabulariesDisplayContext.getCreationMenu() %>"
 		emptyState="<%= viewVocabulariesDisplayContext.getEmptyState() %>"

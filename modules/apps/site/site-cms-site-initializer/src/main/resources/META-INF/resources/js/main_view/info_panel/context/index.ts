@@ -20,7 +20,6 @@ export interface IAssetTypeInfoPanelContext {
 		name: string;
 	};
 	breadcrumbProps: IBreadcrumbProps;
-	cmpEnabled?: boolean;
 	cmpProjectLinkObjectDefinitionId?: number | null;
 	cmpProjectObjectDefinitionId?: number | null;
 	cmpProjectViewURL?: string;
