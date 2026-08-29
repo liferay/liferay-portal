@@ -11,6 +11,8 @@ import com.liferay.frontend.data.set.view.FDSViewRegistry;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -25,6 +27,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Carolina Barbosa
  */
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-58677"))
 @RunWith(Arquillian.class)
 public class TaskSectionTableFDSViewTest
 	extends BaseSectionTableFDSViewTestCase {

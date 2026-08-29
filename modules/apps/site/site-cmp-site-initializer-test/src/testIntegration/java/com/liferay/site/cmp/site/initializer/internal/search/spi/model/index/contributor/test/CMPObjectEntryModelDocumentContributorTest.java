@@ -25,6 +25,7 @@ import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
@@ -36,6 +37,8 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -54,6 +57,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Pedro Leite
  */
+@FeatureFlag("LPD-58677")
 @RunWith(Arquillian.class)
 public class CMPObjectEntryModelDocumentContributorTest {
 
@@ -80,6 +84,18 @@ public class CMPObjectEntryModelDocumentContributorTest {
 	@Test
 	public void testContribute() throws Exception {
 		_testContribute(_objectDefinition1);
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-58677"),
+					Boolean.FALSE.toString())) {
+
+			_objectDefinition2 = _publishObjectDefinition();
+		}
+
+		_testContribute(_objectDefinition2);
+
+		_testContributeWithFeatureFlagDisabled();
 	}
 
 	private ObjectEntry _addLinkedObjectEntry(ObjectDefinition objectDefinition)
@@ -246,6 +262,29 @@ public class CMPObjectEntryModelDocumentContributorTest {
 		_assertFieldValues("cmpTaskObjectEntryIds", linkedObjectEntry);
 	}
 
+	private void _testContributeWithFeatureFlagDisabled() throws Exception {
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
+
+		ObjectEntry linkedObjectEntry = _addLinkedObjectEntry(
+			_objectDefinition1);
+
+		CMPTestUtil.addCMPProjectLinkObjectEntry(
+			cmpProjectObjectEntry, linkedObjectEntry);
+
+		_assertFieldValues(
+			"cmpProjectObjectEntryIds", linkedObjectEntry,
+			cmpProjectObjectEntry);
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-58677"),
+					Boolean.FALSE.toString())) {
+
+			_assertFieldValues("cmpProjectObjectEntryIds", linkedObjectEntry);
+		}
+	}
+
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;
 
@@ -254,6 +293,9 @@ public class CMPObjectEntryModelDocumentContributorTest {
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition1;
+
+	@DeleteAfterTestRun
+	private ObjectDefinition _objectDefinition2;
 
 	@Inject
 	private ObjectDefinitionSettingLocalService

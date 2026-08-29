@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -16,6 +17,9 @@ const test = mergeTests(
 	cmpPagesTest,
 	cmsPagesTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-58677': {enabled: true},
+	}),
 	loginTest()
 );
 

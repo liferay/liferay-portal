@@ -34,6 +34,7 @@ const mockLiferayLanguageGet = jest.fn((key: string) => {
 });
 
 (global as any).Liferay = {
+	FeatureFlags: {},
 	Language: {
 		get: mockLiferayLanguageGet,
 	},
@@ -166,6 +167,10 @@ describe('MultipleScopesRenderer', () => {
 	});
 
 	it('does not render projects when itemData has no projects', () => {
+		(global as any).Liferay.FeatureFlags = {
+			'LPD-58677': true,
+		};
+
 		const itemData = {
 			assetLibraries: [{id: -1, name: ''}],
 		} as MultipleScopesRendererProps['itemData'];
@@ -174,11 +179,33 @@ describe('MultipleScopesRenderer', () => {
 
 		expect(screen.getByText('all-spaces')).toBeInTheDocument();
 		expect(screen.queryByText('all-projects')).not.toBeInTheDocument();
+
+		(global as any).Liferay.FeatureFlags = {};
 	});
 
-	describe('When itemData has projects', () => {
+	it('does not render projects when the feature flag is disabled', () => {
+		const itemData = {
+			assetLibraries: [{id: -1, name: ''}],
+			projects: [{id: -1, name: ''}],
+		} as MultipleScopesRendererProps['itemData'];
+
+		render(<MultipleScopesRenderer itemData={itemData} />);
+
+		expect(screen.getByText('all-spaces')).toBeInTheDocument();
+		expect(screen.queryByText('all-projects')).not.toBeInTheDocument();
+	});
+
+	describe('When itemData has projects and the feature flag is enabled', () => {
 		beforeEach(() => {
+			(global as any).Liferay.FeatureFlags = {
+				'LPD-58677': true,
+			};
+
 			mockGetSpaceWithCache();
+		});
+
+		afterEach(() => {
+			(global as any).Liferay.FeatureFlags = {};
 		});
 
 		it('renders both "All Spaces" and "All Projects" badges', async () => {

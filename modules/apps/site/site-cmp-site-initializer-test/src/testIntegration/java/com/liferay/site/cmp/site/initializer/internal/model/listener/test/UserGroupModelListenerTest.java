@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 
 import org.junit.Before;
@@ -19,6 +21,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Carolina Barbosa
  */
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-58677"))
 @RunWith(Arquillian.class)
 public class UserGroupModelListenerTest extends BaseModelListenerTestCase {
 

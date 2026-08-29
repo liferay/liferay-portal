@@ -255,6 +255,7 @@ public class DepotPermissionCheckerWrapperTest {
 			});
 	}
 
+	@FeatureFlag("LPD-58677")
 	@Test
 	public void testHasPermissionsWithDepotGroupAndProjectManager()
 		throws Exception {
@@ -564,6 +565,7 @@ public class DepotPermissionCheckerWrapperTest {
 			});
 	}
 
+	@FeatureFlag("LPD-58677")
 	@Test
 	public void testIsGroupAdminWithDepotGroupAndProjectManager()
 		throws Exception {
@@ -711,6 +713,7 @@ public class DepotPermissionCheckerWrapperTest {
 			});
 	}
 
+	@FeatureFlag("LPD-58677")
 	@Test
 	public void testIsGroupMemberWithDepotGroupAndProjectMember()
 		throws Exception {
@@ -943,6 +946,7 @@ public class DepotPermissionCheckerWrapperTest {
 					})));
 	}
 
+	@FeatureFlag("LPD-58677")
 	@Test
 	public void testProjectManagerHasAssignMembersPermissionOnProjectManagerRole()
 		throws Exception {
