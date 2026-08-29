@@ -17866,6 +17866,74 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.managemen
 				</if>
 			</finally>
 		</trycatch>
+
+		<beanshell>
+			<![CDATA[
+				import java.io.BufferedReader;
+				import java.io.InputStreamReader;
+
+				public boolean hasLeftoverSidecarProcess() {
+					ProcessBuilder processBuilder = new ProcessBuilder(new String[] {"jps", "-v"});
+
+					processBuilder.redirectErrorStream(true);
+
+					Process process = processBuilder.start();
+
+					BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+					String liferayHome = project.getProperty("liferay.home");
+
+					boolean leftover = false;
+
+					String line = null;
+
+					while ((line = bufferedReader.readLine()) != null) {
+						if (line.contains("LocalProcessLauncher") && line.contains(liferayHome)) {
+							leftover = true;
+						}
+					}
+
+					bufferedReader.close();
+
+					process.waitFor();
+
+					return leftover;
+				}
+
+				if (hasLeftoverSidecarProcess()) {
+					System.out.println("Waiting for the Elasticsearch sidecar left behind by the upgrade JVM to exit");
+
+					long startTime = System.currentTimeMillis();
+
+					long timeoutTime = startTime + 60000;
+
+					while (hasLeftoverSidecarProcess()) {
+						if (System.currentTimeMillis() > timeoutTime) {
+							project.setProperty("leftover.sidecar.message", "The Elasticsearch sidecar started by the upgrade JVM is still running after 60 seconds. It holds the node lock the next portal needs.");
+
+							break;
+						}
+
+						Thread.sleep(5000);
+					}
+
+					if (project.getProperty("leftover.sidecar.message") == null) {
+						System.out.println("The Elasticsearch sidecar left behind by the upgrade JVM exited after " + ((System.currentTimeMillis() - startTime) / 1000) + " seconds");
+					}
+				}
+			]]>
+		</beanshell>
+
+		<if>
+			<isset property="leftover.sidecar.message" />
+			<then>
+				<antcall target="print-jstack-logs">
+					<param name="process.name" value="LocalProcessLauncher" />
+				</antcall>
+
+				<fail message="${leftover.sidecar.message}" />
+			</then>
+		</if>
 	</target>
 
 	<target name="validate-db-partition-schemas">
