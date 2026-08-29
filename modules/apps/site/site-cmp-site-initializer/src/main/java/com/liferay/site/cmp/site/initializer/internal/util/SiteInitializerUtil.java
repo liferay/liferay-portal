@@ -43,10 +43,6 @@ public class SiteInitializerUtil {
 			long companyId, SiteInitializer siteInitializer)
 		throws PortalException {
 
-		if (!LicenseManagerUtil.isAppEnabled(App.CMP)) {
-			return;
-		}
-
 		Group group = GroupLocalServiceUtil.getGroup(
 			companyId, GroupConstants.CMS);
 
