@@ -76,17 +76,11 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 
 		long companyId = themeDisplay.getCompanyId();
 
-		String startupSnapshotERC = _jsonFactory.createJSONObject(
-			ParamUtil.getString(httpServletRequest, "preferences")
-		).getString(
-			"startupSnapshotERC"
-		);
+		JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
+			ParamUtil.getString(httpServletRequest, "preferences"));
 
-		if (Validator.isNotNull(startupSnapshotERC)) {
-			_checkDataSetSnapshot(companyId, startupSnapshotERC, user);
-
-			preferencesJSONObject.put("startupSnapshotERC", startupSnapshotERC);
-		}
+		_checkStartupSnapshotERCUserPreference(
+			companyId, payloadJSONObject, preferencesJSONObject, user);
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
@@ -112,9 +106,17 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 			resourceRequest, resourceResponse, preferencesJSONObject);
 	}
 
-	private void _checkDataSetSnapshot(
-			long companyId, String externalReferenceCode, User user)
+	private void _checkStartupSnapshotERCUserPreference(
+			long companyId, JSONObject payloadJSONObject,
+			JSONObject preferencesJSONObject, User user)
 		throws Exception {
+
+		String startupSnapshotERC = payloadJSONObject.getString(
+			"startupSnapshotERC");
+
+		if (Validator.isNull(startupSnapshotERC)) {
+			return;
+		}
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
@@ -122,12 +124,12 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 					"L_DATA_SET_SNAPSHOT", companyId);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
-			externalReferenceCode, 0, objectDefinition.getObjectDefinitionId());
+			startupSnapshotERC, 0, objectDefinition.getObjectDefinitionId());
 
 		if (objectEntry == null) {
 			throw new PortalException(
 				"Unable to find data set snapshot with external reference " +
-					"code " + externalReferenceCode);
+					"code " + startupSnapshotERC);
 		}
 
 		if ((objectEntry.getUserId() != user.getUserId()) &&
@@ -138,9 +140,11 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 				objectEntry.getObjectEntryId(), SharingEntryAction.VIEW)) {
 
 			throw new PrincipalException(
-				"User cannot access data set snapshot " +
-					externalReferenceCode);
+				"User does not have permission to access data set snapshot " +
+					"with external reference code " + startupSnapshotERC);
 		}
+
+		preferencesJSONObject.put("startupSnapshotERC", startupSnapshotERC);
 	}
 
 	@Reference
