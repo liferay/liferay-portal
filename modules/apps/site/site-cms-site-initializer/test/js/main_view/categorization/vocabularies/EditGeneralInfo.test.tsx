@@ -79,11 +79,13 @@ describe('EditGeneralInfo', () => {
 	});
 
 	afterEach(() => {
+		Liferay.FeatureFlags['LPD-58677'] = false;
+
 		jest.clearAllMocks();
 	});
 
-	it('does not render the project scope selector without the CMP license', async () => {
-		render(<EditGeneralInfo {...defaultProps} cmpEnabled={false} />);
+	it('does not render the project scope selector when the CMP feature flag is disabled', async () => {
+		render(<EditGeneralInfo {...defaultProps} />);
 
 		await waitFor(() => {
 			expect(SpaceService.getSpaces).toHaveBeenCalled();
@@ -98,15 +100,15 @@ describe('EditGeneralInfo', () => {
 		expect(ApiHelper.getAll).not.toHaveBeenCalled();
 	});
 
-	it('renders the space and project scope selectors with the CMP license', async () => {
-		render(<EditGeneralInfo {...defaultProps} cmpEnabled />);
+	it('renders the project scope selector when the CMP feature flag is enabled', async () => {
+		Liferay.FeatureFlags['LPD-58677'] = true;
+
+		render(<EditGeneralInfo {...defaultProps} />);
 
 		await waitFor(() => {
-			expect(SpaceService.getSpaces).toHaveBeenCalled();
 			expect(ApiHelper.getAll).toHaveBeenCalled();
 		});
 
-		expect(screen.getByLabelText('space-selector')).toBeInTheDocument();
 		expect(screen.getByLabelText('project-selector')).toBeInTheDocument();
 	});
 });
