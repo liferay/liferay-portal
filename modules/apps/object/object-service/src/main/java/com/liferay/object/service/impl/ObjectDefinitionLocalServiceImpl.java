@@ -674,11 +674,11 @@ public class ObjectDefinitionLocalServiceImpl
 					_objectRelationshipPersistence.findByODI1_R(
 						objectDefinition.getObjectDefinitionId(), false)) {
 
-				_deleteCompositeKeyObjectValidationRule(
-					objectRelationship.getObjectFieldId2());
-
 				_objectRelationshipLocalService.deleteObjectRelationship(
 					objectRelationship);
+
+				_deleteCompositeKeyObjectValidationRule(
+					objectRelationship.getObjectFieldId2());
 			}
 
 			for (ObjectRelationship objectRelationship :
