@@ -899,19 +899,20 @@ cmsTest.describe('Manage object entries schedule properties', () => {
 
 			await page.keyboard.press('Escape');
 
+			const today =
+				await viewObjectEntriesPage.publishDateInput.inputValue();
+
 			await viewObjectEntriesPage.schedulePublicationButton.click();
 
 			await waitForAlert(page);
-
-			const date = new Date();
-
-			const today = getObjectEntryUIDateTimeFormat(date);
 
 			await viewObjectEntriesPage.choosePublicationOption('schedule');
 
 			await expect(viewObjectEntriesPage.publishDateInput).toHaveValue(
 				today
 			);
+
+			const date = new Date(today);
 
 			date.setDate(date.getDate() + 1);
 
@@ -1017,17 +1018,18 @@ cmsTest.describe('Manage object entries schedule properties', () => {
 
 			await page.keyboard.press('Escape');
 
+			const today =
+				await viewObjectEntriesPage.reviewDateInput.inputValue();
+
 			await viewObjectEntriesPage.choosePublicationOption('publish');
 
 			await waitForAlert(page);
 
-			const date = new Date();
-
-			const today = getObjectEntryUIDateTimeFormat(date);
-
 			await expect(viewObjectEntriesPage.reviewDateInput).toHaveValue(
 				today
 			);
+
+			const date = new Date(today);
 
 			date.setDate(date.getDate() + 1);
 
