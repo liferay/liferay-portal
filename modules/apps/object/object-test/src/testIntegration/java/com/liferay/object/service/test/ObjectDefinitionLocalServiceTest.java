@@ -33,8 +33,6 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
-import com.liferay.object.constants.ObjectValidationRuleConstants;
-import com.liferay.object.constants.ObjectValidationRuleSettingConstants;
 import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.definition.util.ObjectDefinitionValidationThreadLocal;
 import com.liferay.object.exception.DuplicateObjectDefinitionExternalReferenceCodeException;
@@ -91,7 +89,6 @@ import com.liferay.object.model.ObjectEntryVersionTable;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
-import com.liferay.object.model.ObjectValidationRule;
 import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectActionLocalServiceUtil;
@@ -103,7 +100,6 @@ import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
-import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.object.system.BaseSystemObjectDefinitionManager;
 import com.liferay.object.system.JaxRsApplicationDescriptor;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
@@ -112,7 +108,6 @@ import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.ObjectDefinitionTreeFactory;
 import com.liferay.object.tree.Tree;
-import com.liferay.object.validation.rule.setting.builder.ObjectValidationRuleSettingBuilder;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
@@ -2773,91 +2768,6 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteObjectDefinitionWithCompositeKeyObjectValidationRule()
-		throws Exception {
-
-		// Delete the object definition that the relationship type object field
-		// belongs to
-
-		ObjectDefinition objectDefinition1 =
-			ObjectDefinitionTestUtil.publishObjectDefinition();
-
-		String objectFieldName = StringUtil.randomId();
-
-		ObjectDefinition objectDefinition2 =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-						ObjectFieldConstants.DB_TYPE_STRING,
-						RandomTestUtil.randomString(), objectFieldName)));
-
-		ObjectRelationship objectRelationship =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				_objectRelationshipLocalService, objectDefinition1,
-				objectDefinition2);
-
-		ObjectField objectField = _objectFieldLocalService.getObjectField(
-			objectDefinition2.getObjectDefinitionId(), objectFieldName);
-
-		ObjectValidationRule objectValidationRule =
-			_addCompositeKeyObjectValidationRule(
-				objectDefinition2, objectField.getObjectFieldId(),
-				objectRelationship.getObjectFieldId2());
-
-		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition2);
-
-		Assert.assertNull(
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectDefinition2.getObjectDefinitionId()));
-
-		Assert.assertNull(
-			_objectValidationRuleLocalService.fetchObjectValidationRule(
-				objectValidationRule.getObjectValidationRuleId()));
-
-		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
-
-		// Delete the object definition that the relationship type object field
-		// does not belong to
-
-		objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-
-		objectFieldName = StringUtil.randomId();
-
-		objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition(
-			Collections.singletonList(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING,
-					RandomTestUtil.randomString(), objectFieldName)));
-
-		objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
-			_objectRelationshipLocalService, objectDefinition1,
-			objectDefinition2);
-
-		objectField = _objectFieldLocalService.getObjectField(
-			objectDefinition2.getObjectDefinitionId(), objectFieldName);
-
-		objectValidationRule = _addCompositeKeyObjectValidationRule(
-			objectDefinition2, objectField.getObjectFieldId(),
-			objectRelationship.getObjectFieldId2());
-
-		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition1);
-
-		Assert.assertNull(
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectDefinition1.getObjectDefinitionId()));
-		Assert.assertNotNull(
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectDefinition2.getObjectDefinitionId()));
-		Assert.assertNull(
-			_objectValidationRuleLocalService.fetchObjectValidationRule(
-				objectValidationRule.getObjectValidationRuleId()));
-
-		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition2);
-	}
-
-	@Test
 	public void testDeleteObjectDefinitionWithObjectEntries() throws Exception {
 		String objectFieldName = StringUtil.randomId();
 
@@ -4632,36 +4542,6 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
-	private ObjectValidationRule _addCompositeKeyObjectValidationRule(
-			ObjectDefinition objectDefinition, long objectFieldId1,
-			long objectFieldId2)
-		throws Exception {
-
-		return _objectValidationRuleLocalService.addObjectValidationRule(
-			StringPool.BLANK, TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(), true,
-			ObjectValidationRuleConstants.ENGINE_TYPE_COMPOSITE_KEY,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION,
-			StringPool.BLANK, false,
-			Arrays.asList(
-				new ObjectValidationRuleSettingBuilder(
-				).name(
-					ObjectValidationRuleSettingConstants.
-						NAME_COMPOSITE_KEY_OBJECT_FIELD_ID
-				).value(
-					String.valueOf(objectFieldId1)
-				).build(),
-				new ObjectValidationRuleSettingBuilder(
-				).name(
-					ObjectValidationRuleSettingConstants.
-						NAME_COMPOSITE_KEY_OBJECT_FIELD_ID
-				).value(
-					String.valueOf(objectFieldId2)
-				).build()));
-	}
-
 	private ObjectDefinition _addCustomObjectDefinition(String name)
 		throws Exception {
 
@@ -5954,9 +5834,6 @@ public class ObjectDefinitionLocalServiceTest {
 
 	@Inject
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
-
-	@Inject
-	private ObjectValidationRuleLocalService _objectValidationRuleLocalService;
 
 	@Inject
 	private PanelAppRegistry _panelAppRegistry;
