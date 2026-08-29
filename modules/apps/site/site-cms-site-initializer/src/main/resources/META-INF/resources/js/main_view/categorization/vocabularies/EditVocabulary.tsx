@@ -33,7 +33,6 @@ const NAVIGATION_TABS = {
 export default function EditVocabulary({
 	availableAssetTypes,
 	backURL,
-	cmpEnabled,
 	cmsGroupId,
 	defaultLanguageId,
 	externalReferenceCodeMaxLength,
@@ -44,7 +43,6 @@ export default function EditVocabulary({
 }: {
 	availableAssetTypes: AssetType[];
 	backURL: string;
-	cmpEnabled?: boolean;
 	cmsGroupId: number;
 	defaultLanguageId: string;
 	externalReferenceCodeMaxLength: number;
@@ -360,7 +358,6 @@ export default function EditVocabulary({
 						{activeVerticalNavKey === 'general' && (
 							<EditGeneralInfo
 								assetLibraries={assetLibraries}
-								cmpEnabled={cmpEnabled}
 								defaultLanguageId={defaultLanguageId}
 								externalReferenceCodeInputError={
 									externalReferenceCodeInputError
