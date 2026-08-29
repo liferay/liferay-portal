@@ -1184,12 +1184,15 @@ test.describe('Manage root models elements through Objects Admin', () => {
 
 				await objectLayoutsPage.setObjectLayoutAsDefault();
 
-				await objectLayoutsPage.saveUpdateLayoutButton.click();
+				const {reload} =
+					await objectLayoutsPage.saveObjectLayoutReturningReload();
 
 				await waitForAlert(
 					page,
 					'Success:The object layout was updated successfully'
 				);
+
+				await reload;
 			});
 
 			await test.step('inheritance relationship field is omitted in object view', async () => {
