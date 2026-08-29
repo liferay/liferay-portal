@@ -48,19 +48,6 @@ export const test = mergeTests(
 	uiElementsPageTest
 );
 
-const testWithDeprecationFFDisabled = mergeTests(
-	exportImportPagesTest,
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-35443': {enabled: false},
-		'LPD-44307': {enabled: false},
-		'LPD-44771': {enabled: false},
-		'LPD-57655': {enabled: false},
-	}),
-	loginTest(),
-	uiElementsPageTest
-);
-
 test(
 	'Can XSS with `searchContainerId` in Asset Libraries import',
 	{tag: '@LPS-195766'},
@@ -101,35 +88,5 @@ test(
 		await page.goto(newUrl);
 
 		expect(alertTriggered).toBe(false);
-	}
-);
-
-testWithDeprecationFFDisabled(
-	"Hide 'Delete Application Data' checkbox and 'Copy as New' radio button when deprecation FF is false",
-	{tag: ['@LPD-44771', '@LPD-44307']},
-	async ({apiHelpers, exportImportPage}) => {
-		const objectDefinition =
-			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				status: {code: 0},
-			});
-
-		apiHelpers.data.push({
-			id: objectDefinition.id,
-			type: 'objectDefinition',
-		});
-
-		await exportImportPage.goToExport();
-
-		const exportFilePath = await exportImportPage.export();
-
-		await exportImportPage.goToImportOptions(exportFilePath);
-
-		await expect(
-			exportImportPage.page.getByText('Copy as New:')
-		).not.toBeVisible();
-
-		await expect(
-			exportImportPage.page.getByLabel('Delete Application Data')
-		).not.toBeVisible();
 	}
 );

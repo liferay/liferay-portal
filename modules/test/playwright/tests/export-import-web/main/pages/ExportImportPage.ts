@@ -7,7 +7,6 @@ import {Locator, Page, expect} from '@playwright/test';
 import path from 'path';
 
 import {ProductMenuPage} from '../../../../pages/product-navigation-control-menu-web/ProductMenuPage';
-import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
@@ -630,35 +629,6 @@ export class ExportImportPage {
 
 	async goToImportDetails(exportName: string) {
 		await this.clickTaskAction(exportName, 'View Report Entries');
-	}
-
-	async goToImportOptions(
-		folderPath: string,
-		siteUrl?: Site['friendlyUrlPath']
-	) {
-		await this.goToImport(siteUrl);
-		await this.newImportButton.click();
-		await this.page.getByRole('button', {name: 'Select File'}).waitFor();
-
-		const previousFileAlert = this.page.getByText(
-			'Warning:This file was previously uploaded'
-		);
-		if (await previousFileAlert.isVisible()) {
-			await clickAndExpectToBeHidden({
-				target: previousFileAlert,
-				trigger: this.page.getByRole('link', {
-					name: 'Delete File',
-				}),
-			});
-		}
-
-		const fileChooserPromise = this.page.waitForEvent('filechooser');
-		await this.fileSelector.click();
-		const fileChooser = await fileChooserPromise;
-		await fileChooser.setFiles(folderPath);
-
-		await this.continueButton.click();
-		this.page.getByText('File Summary');
 	}
 
 	async goToImportReportEntryDetails(externalReferenceCode: string) {
