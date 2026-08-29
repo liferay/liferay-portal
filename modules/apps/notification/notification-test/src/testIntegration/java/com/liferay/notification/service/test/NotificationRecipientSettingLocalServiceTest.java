@@ -70,20 +70,21 @@ public class NotificationRecipientSettingLocalServiceTest {
 			notificationRecipientSettings.size());
 
 		Map<String, NotificationRecipientSetting>
-			notificationRecipientSettingsMap = _toMap(
+			notificationRecipientSettingsByName = _toMap(
 				notificationRecipientSettings);
 
-		NotificationRecipientSetting notificationRecipientSetting =
-			notificationRecipientSettingsMap.get(
-				NotificationRecipientSettingConstants.NAME_FROM);
-
-		Assert.assertEquals(from, notificationRecipientSetting.getValue());
-
-		notificationRecipientSetting = notificationRecipientSettingsMap.get(
-			NotificationRecipientSettingConstants.NAME_FROM_NAME);
-
 		Assert.assertEquals(
-			fromName, notificationRecipientSetting.getValue(LocaleUtil.US));
+			from,
+			notificationRecipientSettingsByName.get(
+				NotificationRecipientSettingConstants.NAME_FROM
+			).getValue());
+		Assert.assertEquals(
+			fromName,
+			notificationRecipientSettingsByName.get(
+				NotificationRecipientSettingConstants.NAME_FROM_NAME
+			).getValue(
+				LocaleUtil.US
+			));
 	}
 
 	@Test
@@ -113,33 +114,31 @@ public class NotificationRecipientSettingLocalServiceTest {
 			notificationRecipientSettings.size());
 
 		Map<String, NotificationRecipientSetting>
-			notificationRecipientSettingsMap = _toMap(
+			notificationRecipientSettingsByName = _toMap(
 				notificationRecipientSettings);
-
-		NotificationRecipientSetting notificationRecipientSetting =
-			notificationRecipientSettingsMap.get(
-				NotificationRecipientSettingConstants.NAME_TO_TYPE);
 
 		Assert.assertEquals(
 			NotificationRecipientConstants.TYPE_SUBSCRIBERS,
-			notificationRecipientSetting.getValue());
+			notificationRecipientSettingsByName.get(
+				NotificationRecipientSettingConstants.NAME_TO_TYPE
+			).getValue());
 	}
 
 	private Map<String, NotificationRecipientSetting> _toMap(
 		List<NotificationRecipientSetting> notificationRecipientSettings) {
 
 		Map<String, NotificationRecipientSetting>
-			notificationRecipientSettingsMap = new HashMap<>();
+			notificationRecipientSettingsByName = new HashMap<>();
 
 		for (NotificationRecipientSetting notificationRecipientSetting :
 				notificationRecipientSettings) {
 
-			notificationRecipientSettingsMap.put(
+			notificationRecipientSettingsByName.put(
 				notificationRecipientSetting.getName(),
 				notificationRecipientSetting);
 		}
 
-		return notificationRecipientSettingsMap;
+		return notificationRecipientSettingsByName;
 	}
 
 	@Inject
