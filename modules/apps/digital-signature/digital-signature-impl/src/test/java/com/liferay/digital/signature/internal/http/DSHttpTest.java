@@ -58,12 +58,12 @@ public class DSHttpTest {
 		Assert.assertFalse(
 			"A null throwable is not a socket timeout", _isSocketTimeout(null));
 		Assert.assertFalse(
-			"An unrelated failure is not a socket timeout",
-			_isSocketTimeout(new IOException("Host name may not be null")));
-		Assert.assertFalse(
 			"An unrelated cause chain is not a socket timeout",
 			_isSocketTimeout(
 				new IOException("Wrapper", new IllegalStateException())));
+		Assert.assertFalse(
+			"An unrelated failure is not a socket timeout",
+			_isSocketTimeout(new IOException("Host name may not be null")));
 	}
 
 	private int _getMaxRetries(int httpTimeout) {
