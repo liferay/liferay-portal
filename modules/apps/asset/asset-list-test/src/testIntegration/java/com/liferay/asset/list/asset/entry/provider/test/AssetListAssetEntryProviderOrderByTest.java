@@ -125,10 +125,10 @@ public class AssetListAssetEntryProviderOrderByTest {
 			).build());
 
 		_assertOrderedObjectEntries(
-			_buildOrderByColumn("dueDate"), "ASC", objectEntry2, objectEntry3,
+			_getOrderByColumn("dueDate"), "ASC", objectEntry2, objectEntry3,
 			objectEntry1);
 		_assertOrderedObjectEntries(
-			_buildOrderByColumn("dueDate"), "DESC", objectEntry1, objectEntry3,
+			_getOrderByColumn("dueDate"), "DESC", objectEntry1, objectEntry3,
 			objectEntry2);
 	}
 
@@ -151,10 +151,10 @@ public class AssetListAssetEntryProviderOrderByTest {
 			).build());
 
 		_assertOrderedObjectEntries(
-			_buildOrderByColumn("priority"), "ASC", objectEntry2, objectEntry3,
+			_getOrderByColumn("priority"), "ASC", objectEntry2, objectEntry3,
 			objectEntry1);
 		_assertOrderedObjectEntries(
-			_buildOrderByColumn("priority"), "DESC", objectEntry1, objectEntry3,
+			_getOrderByColumn("priority"), "DESC", objectEntry1, objectEntry3,
 			objectEntry2);
 	}
 
@@ -177,10 +177,10 @@ public class AssetListAssetEntryProviderOrderByTest {
 			).build());
 
 		_assertOrderedObjectEntries(
-			_buildOrderByColumn("learnDocumentation"), "ASC", objectEntry2,
+			_getOrderByColumn("learnDocumentation"), "ASC", objectEntry2,
 			objectEntry3, objectEntry1);
 		_assertOrderedObjectEntries(
-			_buildOrderByColumn("learnDocumentation"), "DESC", objectEntry1,
+			_getOrderByColumn("learnDocumentation"), "DESC", objectEntry1,
 			objectEntry3, objectEntry2);
 	}
 
@@ -247,7 +247,7 @@ public class AssetListAssetEntryProviderOrderByTest {
 			actualClassPKs.toString(), expectedClassPKs, actualClassPKs);
 	}
 
-	private String _buildOrderByColumn(String propertyName) {
+	private String _getOrderByColumn(String propertyName) {
 		return JSONUtil.put(
 			"classNameId",
 			_portal.getClassNameId(_objectDefinition.getClassName())
