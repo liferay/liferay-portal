@@ -8,9 +8,9 @@ package com.liferay.commerce.notification.internal.instance.lifecycle;
 import com.liferay.notification.context.NotificationContext;
 import com.liferay.notification.rest.dto.v1_0.NotificationTemplate;
 import com.liferay.notification.rest.dto.v1_0.util.NotificationUtil;
-import com.liferay.notification.service.NotificationRecipientSettingLocalService;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.type.NotificationType;
+import com.liferay.notification.type.NotificationTypeServiceTracker;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectActionLocalService;
@@ -119,9 +119,11 @@ public class AddCommerceOrderNotificationPortalInstanceLifecycleListener
 		notificationContext.setNotificationRecipient(
 			NotificationUtil.toNotificationRecipient(user, 0L));
 		notificationContext.setNotificationRecipientSettings(
-			_notificationRecipientSettingLocalService.
-				createNotificationRecipientSettings(
-					0L, notificationTemplate.getRecipients(), user));
+			NotificationUtil.toNotificationRecipientSetting(
+				0L,
+				_notificationTypeServiceTracker.getNotificationType(
+					notificationTemplate.getType()),
+				notificationTemplate.getRecipients(), user));
 		notificationContext.setNotificationTemplate(
 			NotificationUtil.toNotificationTemplate(
 				0L, notificationTemplate, _objectDefinitionLocalService, user));
@@ -175,16 +177,15 @@ public class AddCommerceOrderNotificationPortalInstanceLifecycleListener
 		AddCommerceOrderNotificationPortalInstanceLifecycleListener.class);
 
 	@Reference
-	private NotificationRecipientSettingLocalService
-		_notificationRecipientSettingLocalService;
-
-	@Reference
 	private NotificationTemplateLocalService _notificationTemplateLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.notification.internal.type.EmailNotificationType)"
 	)
 	private NotificationType _notificationType;
+
+	@Reference
+	private NotificationTypeServiceTracker _notificationTypeServiceTracker;
 
 	@Reference
 	private ObjectActionLocalService _objectActionLocalService;

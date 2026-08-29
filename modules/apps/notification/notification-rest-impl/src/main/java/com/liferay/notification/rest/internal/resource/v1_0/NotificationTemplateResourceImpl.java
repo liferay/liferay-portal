@@ -15,7 +15,6 @@ import com.liferay.notification.rest.dto.v1_0.NotificationTemplate;
 import com.liferay.notification.rest.dto.v1_0.util.NotificationUtil;
 import com.liferay.notification.rest.internal.odata.entity.v1_0.NotificationTemplateEntityModel;
 import com.liferay.notification.rest.resource.v1_0.NotificationTemplateResource;
-import com.liferay.notification.service.NotificationRecipientSettingLocalService;
 import com.liferay.notification.service.NotificationTemplateAttachmentLocalService;
 import com.liferay.notification.service.NotificationTemplateService;
 import com.liferay.notification.type.NotificationType;
@@ -146,9 +145,11 @@ public class NotificationTemplateResourceImpl
 		notificationContext.setNotificationRecipient(
 			NotificationUtil.toNotificationRecipient(contextUser, 0L));
 		notificationContext.setNotificationRecipientSettings(
-			_notificationRecipientSettingLocalService.
-				createNotificationRecipientSettings(
-					0L, notificationTemplate.getRecipients(), contextUser));
+			NotificationUtil.toNotificationRecipientSetting(
+				0L,
+				_notificationTypeServiceTracker.getNotificationType(
+					notificationTemplate.getType()),
+				notificationTemplate.getRecipients(), contextUser));
 		notificationContext.setNotificationTemplate(
 			NotificationUtil.toNotificationTemplate(
 				0L, notificationTemplate, _objectDefinitionLocalService,
@@ -243,10 +244,11 @@ public class NotificationTemplateResourceImpl
 
 		notificationContext.setNotificationRecipient(notificationRecipient);
 		notificationContext.setNotificationRecipientSettings(
-			_notificationRecipientSettingLocalService.
-				createNotificationRecipientSettings(
-					notificationRecipient.getNotificationRecipientId(),
-					notificationTemplate.getRecipients(), contextUser));
+			NotificationUtil.toNotificationRecipientSetting(
+				notificationRecipient.getNotificationRecipientId(),
+				_notificationTypeServiceTracker.getNotificationType(
+					notificationTemplate.getType()),
+				notificationTemplate.getRecipients(), contextUser));
 
 		notificationContext.setNotificationTemplate(
 			NotificationUtil.toNotificationTemplate(
@@ -457,10 +459,6 @@ public class NotificationTemplateResourceImpl
 
 	@Reference
 	private Language _language;
-
-	@Reference
-	private NotificationRecipientSettingLocalService
-		_notificationRecipientSettingLocalService;
 
 	@Reference
 	private NotificationTemplateAttachmentLocalService
