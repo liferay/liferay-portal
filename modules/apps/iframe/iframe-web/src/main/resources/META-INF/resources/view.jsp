@@ -143,23 +143,45 @@
 			);
 		}
 
+		let autosizeApplied = false;
+
 		if (<%= iFramePortletInstanceConfiguration.resizeAutomatically() %>) {
-			iframe.height = document.body.scrollHeight;
+			const portalURL = '<%= HtmlUtil.escapeJS(themeDisplay.getPortalURL()) %>';
+			const iframeSrc = '<%= HtmlUtil.escapeJS(iFrameDisplayContext.getIframeSrc()) %>';
+
+			try {
+				const iframeURL = new URL(iframeSrc, portalURL);
+
+				if (iframeURL.origin === portalURL) {
+					const iframeNode = A.one('#<portlet:namespace />iframe');
+
+					if (iframeNode) {
+						iframeNode.plug(A.Plugin.AutosizeIframe);
+
+						autosizeApplied = true;
+					}
+				}
+			}
+			catch (e) {
+				console.error('Error parsing iframe URL for autosizing:', e);
+			}
 		}
 
 		iframe.addEventListener('load', () => {
-			let height = iframe.getAttribute('height');
+			if (!autosizeApplied) {
+				let height = iframe.getAttribute('height');
 
-			if (height == null) {
-				height =
-					'<%= HtmlUtil.escapeJS(iFramePortletInstanceConfiguration.heightNormal()) %>';
-
-				if (themeDisplay.isStateMaximized()) {
+				if (height == null) {
 					height =
-						'<%= HtmlUtil.escapeJS(iFramePortletInstanceConfiguration.heightMaximized()) %>';
-				}
+						'<%= HtmlUtil.escapeJS(iFramePortletInstanceConfiguration.heightNormal()) %>';
 
-				iframe.height = height;
+					if (themeDisplay.isStateMaximized()) {
+						height =
+							'<%= HtmlUtil.escapeJS(iFramePortletInstanceConfiguration.heightMaximized()) %>';
+					}
+
+					iframe.height = height;
+				}
 			}
 		});
 	}
