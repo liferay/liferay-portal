@@ -11,6 +11,7 @@ dependencies {
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	testImplementation project(":apps:static:portal:portal-upgrade-api")
 	testImplementation project(":core:petra:petra-string")
+	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:consent-management-platform:consent-management-platform-integration-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
