@@ -20,7 +20,7 @@
 		"socket.io-client": "^4.6.1",
 		"uuid": "^9.0.0",
 		"winston": "3.8.2",
-		"ws": "^8.13.0"
+		"ws": "^8.20.1"
 	},
 	"license": "LGPL",
 	"main": "app.js",
