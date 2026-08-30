@@ -109,6 +109,62 @@ describe('Modal', () => {
 		expect(document.getElementById(sampleId)).toBeTruthy();
 	});
 
+	it('calls onOpen once, even when the modal rerenders', () => {
+		const onOpen = jest.fn();
+
+		const SampleBodyComponent = () => {
+			return <div />;
+		};
+
+		const {rerender} = render(
+			<Modal bodyComponent={SampleBodyComponent} onOpen={onOpen} />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		rerender(<Modal bodyComponent={SampleBodyComponent} onOpen={onOpen} />);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(onOpen).toHaveBeenCalledTimes(1);
+	});
+
+	it('keeps the body state when the modal rerenders', () => {
+		const sampleId = 'sampleId';
+
+		const SampleBodyComponent = () => {
+			return <input id={sampleId} />;
+		};
+
+		const {baseElement, rerender} = render(
+			<Modal bodyComponent={SampleBodyComponent} />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		fireEvent.change(
+			baseElement.querySelector(`#${sampleId}`) as HTMLInputElement,
+			{target: {value: 'typed'}}
+		);
+
+		rerender(<Modal bodyComponent={SampleBodyComponent} />);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(
+			(baseElement.querySelector(`#${sampleId}`) as HTMLInputElement)
+				.value
+		).toBe('typed');
+	});
+
 	it('renders given header HTML', () => {
 		const sampleId = 'sampleId';
 
