@@ -25,7 +25,7 @@ public class OrderByComparatorFactoryUtil {
 
 		if ((columns.length == 0) || ((columns.length % 2) != 0)) {
 			throw new IllegalArgumentException(
-				"Columns length is not an even number");
+				"Columns length is zero or not an even number");
 		}
 
 		return new DefaultOrderByComparator<>(tableName, columns);
