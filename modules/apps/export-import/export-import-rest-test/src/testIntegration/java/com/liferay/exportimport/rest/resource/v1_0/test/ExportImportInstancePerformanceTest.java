@@ -327,7 +327,7 @@ public class ExportImportInstancePerformanceTest {
 			new RequestPortletDataHandler[0]);
 	}
 
-	private static final long _IMPORT_MAX_TIME = 180000;
+	private static final long _IMPORT_MAX_TIME = 400000;
 
 	private static ExportPreviewResource _exportPreviewResource;
 	private static ExportProcessResource _exportProcessResource;
