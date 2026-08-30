@@ -1,0 +1,7 @@
+assemble:
+    -   from: build/static
+        into: static
+learn-fds-filter-by-name:
+    name: Learn FDS Filter By Name
+    type: fdsFilter
+    url: index.*.js
