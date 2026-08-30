@@ -12,7 +12,7 @@
 <tbody>
 <tr>
 	<td>DIGITAL_SIGNATURE_ENVELOPE_STATUS</td>
-	<td>//tr[.//a[normalize-space(.) = '${envelopeName}']]//span[contains(@class, 'label-item') and (contains(., '${dsStatus}') or contains(., 'correct'))]</td>
+	<td>//tr[.//a[normalize-space(.) = '${envelopeName}']]//span[contains(@class, 'label-item') and contains(., '${dsStatus}')]</td>
 	<td></td>
 </tr>
 <tr>

@@ -484,6 +484,12 @@ definition {
 	macro viewEnvelopeStatus(dsStatus = null, envelopeName = null) {
 		DigitalSignature.waitForEnvelope(envelopeName = ${envelopeName});
 
+		while ((IsElementNotPresent(dsStatus = ${dsStatus}, envelopeName = ${envelopeName}, locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_STATUS")) && (maxIterations = "10")) {
+			Refresh();
+
+			DigitalSignature.waitForListViewLoad();
+		}
+
 		AssertElementPresent(
 			dsStatus = ${dsStatus},
 			envelopeName = ${envelopeName},
