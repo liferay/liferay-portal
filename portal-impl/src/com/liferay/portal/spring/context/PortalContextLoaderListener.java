@@ -62,26 +62,20 @@ import jakarta.servlet.ServletContextEvent;
 
 import java.beans.PropertyDescriptor;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
 
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -97,7 +91,6 @@ import org.springframework.beans.CachedIntrospectionResults;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jdbc.datasource.DelegatingDataSource;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
@@ -166,9 +159,7 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 
 		sessionFactory.close();
 
-		closeDataSource(dataSource);
-
-		_cleanUpJDBCDrivers();
+		InitUtil.cleanUpJDBC(dataSource);
 
 		try {
 			ModuleFrameworkUtil.stopFramework(
@@ -236,26 +227,6 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 		}
 	}
 
-	protected void closeDataSource(DataSource dataSource) {
-		if (dataSource instanceof DelegatingDataSource) {
-			DelegatingDataSource delegatingDataSource =
-				(DelegatingDataSource)dataSource;
-
-			dataSource = delegatingDataSource.getTargetDataSource();
-		}
-
-		if (dataSource instanceof Closeable) {
-			try {
-				Closeable closeable = (Closeable)dataSource;
-
-				closeable.close();
-			}
-			catch (IOException ioException) {
-				_log.error(ioException);
-			}
-		}
-	}
-
 	@Override
 	protected void customizeContext(
 		ServletContext servletContext,
@@ -273,49 +244,6 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 		if (!properties.isEmpty()) {
 			configurableWebApplicationContext.addBeanFactoryPostProcessor(
 				new OverrideBeanDefinitionRegistryPostProcessor(properties));
-		}
-	}
-
-	private void _cleanUpJDBCDrivers() {
-		Enumeration<Driver> enumeration = DriverManager.getDrivers();
-
-		while (enumeration.hasMoreElements()) {
-			Driver driver = enumeration.nextElement();
-
-			Class<?> driverClass = driver.getClass();
-
-			if (PortalClassLoaderUtil.isPortalClassLoader(
-					driverClass.getClassLoader())) {
-
-				try {
-					DriverManager.deregisterDriver(driver);
-				}
-				catch (SQLException sqlException) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							"Unable to deregister driver " + driver,
-							sqlException);
-					}
-				}
-			}
-		}
-
-		DBType dbType = DBManagerUtil.getDBType();
-
-		if (dbType == DBType.MYSQL) {
-			try {
-				Class<?> clazz = Class.forName(
-					"com.mysql.cj.jdbc.AbandonedConnectionCleanupThread");
-
-				Method method = clazz.getMethod("checkedShutdown");
-
-				method.invoke(null);
-			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn("Unable to cleanly shut down MySQL", exception);
-				}
-			}
 		}
 	}
 

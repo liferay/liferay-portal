@@ -173,6 +173,26 @@ public class DBUpgrader {
 
 		UpgradeProcessUtil.setUpgradeClient(true);
 
+		Runtime runtime = Runtime.getRuntime();
+
+		runtime.addShutdownHook(
+			new Thread(
+				() -> {
+					try {
+						InitUtil.shutdown();
+					}
+					catch (Exception exception) {
+						System.out.println("Unable to shut down: " + exception);
+
+						for (StackTraceElement stackTraceElement :
+								exception.getStackTrace()) {
+
+							System.out.println("\t" + stackTraceElement);
+						}
+					}
+				},
+				"DBUpgrader Shutdown"));
+
 		try {
 			PortalClassPathUtil.initializeClassPaths(null);
 

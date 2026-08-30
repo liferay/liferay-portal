@@ -41,11 +41,17 @@ import com.liferay.portal.spring.hibernate.PortalHibernateConfiguration;
 import com.liferay.portal.spring.transaction.TransactionManagerFactory;
 import com.liferay.portal.xml.SAXReaderImpl;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.lang.reflect.Field;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.LogManager;
 import java.util.zip.ZipFile;
@@ -60,11 +66,55 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.datasource.DelegatingDataSource;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class InitUtil {
+
+	public static void cleanUpJDBC(DataSource dataSource) {
+		if (dataSource instanceof DelegatingDataSource) {
+			DelegatingDataSource delegatingDataSource =
+				(DelegatingDataSource)dataSource;
+
+			dataSource = delegatingDataSource.getTargetDataSource();
+		}
+
+		if (dataSource instanceof Closeable) {
+			try {
+				Closeable closeable = (Closeable)dataSource;
+
+				closeable.close();
+			}
+			catch (IOException ioException) {
+				_log.error(ioException);
+			}
+		}
+
+		Enumeration<Driver> enumeration = DriverManager.getDrivers();
+
+		while (enumeration.hasMoreElements()) {
+			Driver driver = enumeration.nextElement();
+
+			Class<?> driverClass = driver.getClass();
+
+			if (PortalClassLoaderUtil.isPortalClassLoader(
+					driverClass.getClassLoader())) {
+
+				try {
+					DriverManager.deregisterDriver(driver);
+				}
+				catch (SQLException sqlException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to deregister driver " + driver,
+							sqlException);
+					}
+				}
+			}
+		}
+	}
 
 	public static synchronized void init() {
 		if (_initialized) {
@@ -291,6 +341,46 @@ public class InitUtil {
 		if (_appApplicationContext != null) {
 			ModuleFrameworkUtil.registerContext(_appApplicationContext);
 		}
+	}
+
+	public static synchronized void shutdown() {
+		if (!_initialized) {
+			return;
+		}
+
+		if (_appApplicationContext != null) {
+			ModuleFrameworkUtil.unregisterContext(_appApplicationContext);
+		}
+
+		DataSource dataSource = InfrastructureUtil.getDataSource();
+
+		if (_appApplicationContext instanceof ConfigurableApplicationContext) {
+			ConfigurableApplicationContext configurableApplicationContext =
+				(ConfigurableApplicationContext)_appApplicationContext;
+
+			configurableApplicationContext.close();
+		}
+
+		SessionFactory sessionFactory =
+			(SessionFactory)InfrastructureUtil.getSessionFactory();
+
+		if (sessionFactory != null) {
+			sessionFactory.close();
+		}
+
+		cleanUpJDBC(dataSource);
+
+		try {
+			ModuleFrameworkUtil.stopFramework(
+				PropsValues.MODULE_FRAMEWORK_STOP_WAIT_TIMEOUT);
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		_appApplicationContext = null;
+
+		_initialized = false;
 	}
 
 	private static final boolean _PRINT_TIME = false;
