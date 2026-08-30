@@ -30,7 +30,7 @@
 		"graphql": "^16.5.0",
 		"graphql-anywhere": "^4.2.7",
 		"md5": "^2.3.0",
-		"qs": "^6.10.3",
+		"qs": "^6.15.2",
 		"react": "^18.2.0",
 		"react-apollo-network-status": "^5.1.0",
 		"react-circular-progressbar": "^2.1.0",
