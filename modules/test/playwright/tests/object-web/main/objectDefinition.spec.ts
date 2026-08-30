@@ -133,7 +133,16 @@ test.describe('Manage object definitions through Model Builder', () => {
 			const objectDefinitionLabel =
 				'ObjectDefinitionLabel' + getRandomInt();
 
-			modelBuilderLeftSidebarPage.createNewObjectDefinitionButton.click();
+			await modelBuilderLeftSidebarPage.createNewObjectDefinitionButton.click();
+
+			const objectDefinitionResponsePromise =
+				modelBuilderDiagramPage.page.waitForResponse((response) =>
+					response
+						.url()
+						.includes(
+							'/object-definitions/by-external-reference-code/'
+						)
+				);
 
 			const objectDefinition =
 				await modalAddObjectDefinitionPage.createObjectDefinition(
@@ -144,6 +153,8 @@ test.describe('Manage object definitions through Model Builder', () => {
 				id: objectDefinition.id,
 				type: 'objectDefinition',
 			});
+
+			await objectDefinitionResponsePromise;
 
 			const rightSidebar =
 				modelBuilderRightSidebarPage.getRightSidebarLocator(
