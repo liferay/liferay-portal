@@ -94,7 +94,7 @@
 	},
 	"dependencies": {
 		"@vscode/ripgrep": "^1.14.2",
-		"lodash": "^4.17.21"
+		"lodash": "^4.18.1"
 	},
 	"description": "Language Features for Liferay's Poshi Language",
 	"devDependencies": {
