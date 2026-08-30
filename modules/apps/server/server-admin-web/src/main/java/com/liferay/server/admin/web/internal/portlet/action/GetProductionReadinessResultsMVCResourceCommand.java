@@ -44,6 +44,11 @@ public class GetProductionReadinessResultsMVCResourceCommand
 	extends BaseProductionReadinessMVCResourceCommand {
 
 	@Override
+	protected boolean isCSRFProtected() {
+		return false;
+	}
+
+	@Override
 	protected void serveProductionReadinessResource(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
