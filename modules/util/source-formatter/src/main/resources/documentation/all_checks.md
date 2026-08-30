@@ -232,6 +232,8 @@ JavaAnnotationDefaultAttributeCheck | [Styling](styling_checks.md#styling-checks
 JavaAnnotationsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Performs several checks on annotations. |
 [JavaAnonymousInnerClassCheck](check/java_anonymous_inner_class_check.md#javaanonymousinnerclasscheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Performs several checks on anonymous classes. |
 JavaAssertEqualsCheck | [Styling](styling_checks.md#styling-checks) | .java | Validates `Assert.assertEquals` calls. |
+[JavaBasePortalFilterIsFilterEnabledCheck](check/java_base_portal_filter_is_filter_enabled_check.md#javabaseportalfilterisfilterenabledcheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds classes extending BasePortalFilter that override isFilterEnabled(). |
+[JavaBasePortalFilterPortalPropertiesCheck](check/java_base_portal_filter_portal_properties_check.md#javabaseportalfilterportalpropertiescheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Ensures consistency between filter inheritance and portal.properties configuration. |
 JavaBooleanStatementCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Performs several checks on variable declaration of type `Boolean`. |
 JavaBooleanUsageCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds incorrect use of passing boolean values in `setAttribute` calls. |
 JavaClassNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java | Checks if class names follow naming conventions. |

@@ -523,6 +523,14 @@
 			<category name="Styling" />
 			<description name="Validates `Assert.assertEquals` calls." />
 		</check>
+		<check name="JavaBasePortalFilterIsFilterEnabledCheck">
+			<category name="Bug Prevention" />
+			<description name="Finds classes extending BasePortalFilter that override isFilterEnabled()." />
+		</check>
+		<check name="JavaBasePortalFilterPortalPropertiesCheck">
+			<category name="Bug Prevention" />
+			<description name="Ensures consistency between filter inheritance and portal.properties configuration." />
+		</check>
 		<check name="JavaBooleanStatementCheck">
 			<category name="Bug Prevention" />
 			<description name="Performs several checks on variable declaration of type `Boolean`." />
