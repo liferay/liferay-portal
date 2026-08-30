@@ -8,6 +8,10 @@ export const DOCUSIGN_STATUS = {
 		color: 'success',
 		label: Liferay.Language.get('completed'),
 	},
+	correct: {
+		color: 'info',
+		label: Liferay.Language.get('correcting'),
+	},
 	declined: {
 		color: 'danger',
 		label: Liferay.Language.get('declined'),
