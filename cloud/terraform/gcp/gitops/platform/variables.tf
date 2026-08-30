@@ -40,6 +40,14 @@ variable "keda_namespace" {
 	default="keda-system"
 	type=string
 }
+variable "master_ipv4_cidr_block" {
+	default="172.16.0.0/28"
+	type=string
+}
+variable "observability_namespace" {
+	default="observability"
+	type=string
+}
 variable "project_id" {
 	type=string
 }
