@@ -71,4 +71,13 @@ describe('runOptimisticMutation', () => {
 		expect(container.querySelector('img')).toBeNull();
 		expect(container.textContent).toContain(XSS_NAME);
 	});
+
+	it('displays no success toast when there is no success message', async () => {
+		await runOptimisticMutation(jest.fn(), {
+			...buildMutation(null),
+			successMessage: undefined,
+		});
+
+		expect(openToast).not.toHaveBeenCalled();
+	});
 });

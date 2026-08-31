@@ -262,7 +262,8 @@ export function useMembers(
 		async (
 			itemToUpdate: UserAccount | UserGroup,
 			newRoles: string[],
-			type: MemberType
+			type: MemberType,
+			showSuccessToast = true
 		) => {
 			const isUser = type === MemberType.USERS;
 			const originalRoles = itemToUpdate.roles;
@@ -309,7 +310,9 @@ export function useMembers(
 					},
 					type: ActionTypes.UpdateRolesFailure,
 				},
-				successMessage: config.messages.updateSuccess,
+				successMessage: showSuccessToast
+					? config.messages.updateSuccess
+					: undefined,
 			});
 		},
 		[config.messages, externalReferenceCode, onChange, state.roles]

@@ -133,7 +133,8 @@ export function ManageMembersList({
 							await updateMemberRoles(
 								item,
 								[defaultRole.name],
-								selectedOption
+								selectedOption,
+								false
 							);
 						}
 					},

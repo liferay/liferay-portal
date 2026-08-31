@@ -19,6 +19,7 @@ import {
 	UserAccount,
 	UserGroup,
 } from '../../src/main/resources/META-INF/resources/manage_members_modal/types';
+import openToast from '../../src/main/resources/META-INF/resources/toast/openToast';
 
 jest.mock(
 	'../../src/main/resources/META-INF/resources/toast/openToast',
@@ -318,6 +319,33 @@ describe('ManageMembersModal', () => {
 		).toBeInTheDocument();
 	});
 
+	it('shows a single toast when a member is added', async () => {
+		renderModal();
+
+		await waitFor(() =>
+			expect(screen.getByText('Alice Adams')).toBeInTheDocument()
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'add-candidate'})
+		);
+
+		await waitFor(() =>
+			expect(
+				findFetchCall(
+					'PUT',
+					'/asset-libraries/lib-erc/user-accounts/c-user/roles'
+				)
+			).toBeTruthy()
+		);
+
+		expect(openToast).toHaveBeenCalledTimes(1);
+		expect(openToast).toHaveBeenCalledWith({
+			message: expect.stringContaining('add-user-success'),
+			type: 'success',
+		});
+	});
+
 	it('shows the default role for a member with no assigned roles', async () => {
 		renderModal();
 
@@ -352,6 +380,11 @@ describe('ManageMembersModal', () => {
 				{name: 'Member'},
 				{name: 'Editor'},
 			]);
+		});
+
+		expect(openToast).toHaveBeenCalledWith({
+			message: expect.stringContaining('update-success'),
+			type: 'success',
 		});
 	});
 

@@ -17,7 +17,7 @@ export interface OptimisticMutation {
 	optimisticAction: Action;
 	performMutation: () => Promise<ServiceResult>;
 	rollbackAction: Action;
-	successMessage: string;
+	successMessage?: string;
 }
 
 function showMemberToast(
@@ -55,6 +55,8 @@ export async function runOptimisticMutation(
 	else {
 		onSuccess?.();
 
-		showMemberToast(successMessage, name, 'success');
+		if (successMessage) {
+			showMemberToast(successMessage, name, 'success');
+		}
 	}
 }
