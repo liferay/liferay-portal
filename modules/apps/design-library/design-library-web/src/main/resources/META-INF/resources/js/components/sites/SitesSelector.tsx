@@ -13,13 +13,7 @@ export default function SitesSelector({
 	connectSite,
 	connectedSites,
 }: {
-	connectSite: ({
-		setSite,
-		site,
-	}: {
-		setSite: React.Dispatch<React.SetStateAction<Site | undefined>>;
-		site?: Site;
-	}) => Promise<void>;
+	connectSite: ({site}: {site?: Site}) => Promise<void>;
 	connectedSites: Site[];
 }) {
 	const [site, setSite] = useState<Site>();
@@ -74,7 +68,11 @@ export default function SitesSelector({
 				<div className="autofit-col">
 					<ClayButton
 						disabled={!site}
-						onClick={() => connectSite({setSite, site})}
+						onClick={async () => {
+							await connectSite({site});
+
+							setSite(undefined);
+						}}
 					>
 						{Liferay.Language.get('connect')}
 					</ClayButton>

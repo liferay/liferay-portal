@@ -73,13 +73,7 @@ export default function DesignLibraryConnectedSitesModal({
 		);
 	};
 
-	const connectSite = async ({
-		setSite,
-		site,
-	}: {
-		setSite: React.Dispatch<React.SetStateAction<Site | undefined>>;
-		site?: Site;
-	}) => {
+	const connectSite = async ({site}: {site?: Site}) => {
 		if (site) {
 			try {
 				const data =
@@ -107,8 +101,6 @@ export default function DesignLibraryConnectedSitesModal({
 						)
 				);
 			}
-
-			setSite(undefined);
 		}
 	};
 
