@@ -265,6 +265,12 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "backupRetentionDays: \\{\\{ max 7 \\(min 35 \\(int \\(\\$backup.retentionDays \\| default 30\\)\\)\\) \\}\\}"
+        it: Matches the database point in time window to the document library retention
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "kind: ConfigMap"
             -   documentIndex: 0
                 matchRegex:
