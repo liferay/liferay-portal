@@ -423,10 +423,6 @@ public class DBPartitionUtil {
 	public static void removeExportedPartition(long companyId)
 		throws PortalException {
 
-		if ((companyId == _defaultCompanyId) || (_dbPartitionDB == null)) {
-			return;
-		}
-
 		DataSource dataSource = InfrastructureUtil.getDataSource();
 
 		try (SafeCloseable safeCloseable =
