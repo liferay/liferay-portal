@@ -365,6 +365,12 @@ public class CounterDataCleanupPreupgradeProcess
 				", '^[0-9]{1,18}$') then ", columnName, " end as bigint)) as ",
 				columnName, " from ", tableName);
 		}
+		else if (dbType == DBType.HYPERSONIC) {
+			return StringBundler.concat(
+				"select max(cast(", columnName, " as bigint)) as ", columnName,
+				" from ", tableName, " where regexp_matches(", columnName,
+				", '^[0-9]{1,18}$')");
+		}
 		else if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
 			return StringBundler.concat(
 				"select max(cast(", columnName, " as unsigned)) as ",

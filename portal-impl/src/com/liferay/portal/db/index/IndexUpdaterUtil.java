@@ -11,6 +11,7 @@ import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.db.DuplicateUniqueFinderRowsCleaner;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.db.DBResourceUtil;
@@ -186,11 +187,26 @@ public class IndexUpdaterUtil {
 			return;
 		}
 
-		ExecutorService executorService =
-			UpgradeExecutorServiceUtil.getSchemaExecutorService();
-
 		Map<String, String> tableIndexesSQLMap = _getTableIndexesSQLMap(
 			tablesSQL, indexesSQL);
+
+		if (DBManagerUtil.getDBType() == DBType.HYPERSONIC) {
+			for (Map.Entry<String, String> entry :
+					tableIndexesSQLMap.entrySet()) {
+
+				try {
+					_updateIndexes(entry.getKey(), entry.getValue());
+				}
+				catch (Exception exception) {
+					_log.error(exception);
+				}
+			}
+
+			return;
+		}
+
+		ExecutorService executorService =
+			UpgradeExecutorServiceUtil.getSchemaExecutorService();
 
 		for (Map.Entry<String, String> entry : tableIndexesSQLMap.entrySet()) {
 			_futures.add(
