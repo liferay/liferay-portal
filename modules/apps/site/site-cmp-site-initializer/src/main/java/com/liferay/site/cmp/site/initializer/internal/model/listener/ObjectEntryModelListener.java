@@ -15,12 +15,14 @@ import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -59,6 +61,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.audit.event.generators.util.Attribute;
 import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuilder;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
@@ -249,7 +252,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		return _objectEntryLocalService.getValuesListCount(
 			new Long[] {objectEntry.getGroupId()}, 0, 0,
 			objectEntry.getObjectDefinitionId(),
-			_filterFactory.create(filterString, objectDefinition), false, null);
+			ObjectEntryTable.INSTANCE.status.neq(
+				WorkflowConstants.STATUS_DRAFT
+			).and(
+				_filterFactory.create(filterString, objectDefinition)
+			),
+			false, null);
 	}
 
 	private String _getLinkedObjectEntryTitle(
@@ -521,7 +529,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
-		int totalCount = _getCount(null, objectDefinition, objectEntry);
+		int totalCount = _getCount(
+			StringPool.BLANK, objectDefinition, objectEntry);
 
 		int completionRate = 0;
 
