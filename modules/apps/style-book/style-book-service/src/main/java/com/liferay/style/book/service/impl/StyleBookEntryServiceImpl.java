@@ -329,7 +329,7 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 
 	@Override
 	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, boolean defaultStylebookEntry,
+			long styleBookEntryId, boolean defaultStyleBookEntry,
 			String frontendTokenDefinition, String frontendTokensValues,
 			String name, String styleBookEntryKey, long previewFileEntryId,
 			ServiceContext serviceContext)
@@ -343,7 +343,7 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
 
 		return styleBookEntryLocalService.updateStyleBookEntry(
-			getUserId(), styleBookEntryId, defaultStylebookEntry,
+			getUserId(), styleBookEntryId, defaultStyleBookEntry,
 			frontendTokenDefinition, frontendTokensValues, name,
 			styleBookEntryKey, previewFileEntryId, serviceContext);
 	}
