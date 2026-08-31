@@ -55,14 +55,14 @@ public class ResourceActionPostUpgradeDataCleanupProcess
 
 	@Override
 	public void cleanUp() throws Exception {
-		if (!PostUpgradeDataCleanupProcessUtil.isEveryLiferayBundleResolved()) {
+		if (!PostUpgradeDataCleanupProcessUtil.isEveryLiferayBundleActive()) {
 			if (_log.isWarnEnabled() && CompanyThreadLocal.isDefaultCompany()) {
 				_log.warn(
 					StringBundler.concat(
 						ResourceActionPostUpgradeDataCleanupProcess.class.
 							getSimpleName(),
-						" cannot be executed because there are modules with ",
-						"unsatisfied references"));
+						" cannot be executed because there are modules that ",
+						"are not active"));
 			}
 
 			return;

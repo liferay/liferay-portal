@@ -291,8 +291,8 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 					messages.toString(),
 					messages.contains(
 						"ResourceActionPostUpgradeDataCleanupProcess cannot " +
-							"be executed because there are modules with " +
-								"unsatisfied references"));
+							"be executed because there are modules that are " +
+								"not active"));
 			},
 			() -> {
 				Bundle bundle = bundleAtomicReference.get();
