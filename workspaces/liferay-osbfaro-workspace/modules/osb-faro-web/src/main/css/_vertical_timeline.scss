@@ -34,8 +34,20 @@
 			cursor: pointer;
 			padding: $baseline * 2;
 
+			.angle-icon {
+				opacity: 0;
+				transition: opacity 0.1s ease-in-out;
+			}
+
 			&:hover {
 				background-color: $primaryLighten45;
+			}
+
+			&:focus,
+			&:hover {
+				.angle-icon {
+					opacity: 1;
+				}
 			}
 		}
 
