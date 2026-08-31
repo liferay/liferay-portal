@@ -13,6 +13,7 @@ import path from 'node:path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {editObjectDefinitionPagesTest} from '../../../fixtures/editObjectDefinitionPagesTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
@@ -40,6 +41,13 @@ export const test = mergeTests(
 	objectPagesTest,
 	rolesPagesTest,
 	scriptManagementPagesTest
+);
+
+const descriptionTest = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-80279': {enabled: true},
+	})
 );
 
 let createdObjectDefinition: ObjectDefinition;
@@ -3970,6 +3978,138 @@ test.describe('Object Action with oldValue Function', () => {
 			);
 
 			expect(addedEntry).toBeTruthy();
+		}
+	);
+});
+
+descriptionTest.describe('Manage object action descriptions', () => {
+	descriptionTest(
+		'can manage description through Objects Admin',
+		{tag: '@LPD-103749'},
+		async ({apiHelpers, editObjectActionPage, viewObjectActionsPage}) => {
+			const objectActionLabel = 'Action Label';
+
+			const objectAction = await apiHelpers.objectAction.postRandomAction(
+				createdObjectDefinition.externalReferenceCode!,
+				{
+					label: {en_US: objectActionLabel},
+					objectActionExecutorKey: 'add-object-entry',
+					objectActionTriggerKey: 'onAfterAdd',
+					parameters: {
+						objectDefinitionExternalReferenceCode:
+							createdObjectDefinition.externalReferenceCode,
+					},
+				}
+			);
+
+			apiHelpers.data.push({id: objectAction.id, type: 'objectAction'});
+
+			const description = 'Mirrors every new claim into the archive.';
+			const updatedDescription =
+				'Mirrors every new claim into the audit log.';
+
+			const openObjectAction = async () => {
+				await viewObjectActionsPage.goto(
+					createdObjectDefinition.label['en_US']
+				);
+
+				await viewObjectActionsPage.frontendDataSetItems
+					.filter({hasText: objectActionLabel})
+					.click();
+			};
+
+			await openObjectAction();
+
+			await editObjectActionPage.descriptionInput.fill(description);
+
+			await editObjectActionPage.saveButton.click();
+
+			await openObjectAction();
+
+			await expect(editObjectActionPage.descriptionInput).toHaveValue(
+				description
+			);
+
+			await editObjectActionPage.descriptionInput.fill(
+				updatedDescription
+			);
+
+			await editObjectActionPage.saveButton.click();
+
+			await openObjectAction();
+
+			await expect(editObjectActionPage.descriptionInput).toHaveValue(
+				updatedDescription
+			);
+
+			await editObjectActionPage.descriptionInput.clear();
+
+			await editObjectActionPage.saveButton.click();
+
+			await openObjectAction();
+
+			await expect(editObjectActionPage.descriptionInput).toBeEmpty();
+		}
+	);
+
+	descriptionTest(
+		'keeps the description of each language',
+		{tag: '@LPD-103749'},
+		async ({apiHelpers, editObjectActionPage, viewObjectActionsPage}) => {
+			const objectActionLabel = 'Action Label';
+
+			const objectAction = await apiHelpers.objectAction.postRandomAction(
+				createdObjectDefinition.externalReferenceCode!,
+				{
+					label: {en_US: objectActionLabel},
+					objectActionExecutorKey: 'add-object-entry',
+					objectActionTriggerKey: 'onAfterAdd',
+					parameters: {
+						objectDefinitionExternalReferenceCode:
+							createdObjectDefinition.externalReferenceCode,
+					},
+				}
+			);
+
+			apiHelpers.data.push({id: objectAction.id, type: 'objectAction'});
+
+			const description = 'Mirrors every new claim into the archive.';
+			const translatedDescription =
+				'Espelha cada nova reivindicação no arquivo.';
+
+			const openObjectAction = async () => {
+				await viewObjectActionsPage.goto(
+					createdObjectDefinition.label['en_US']
+				);
+
+				await viewObjectActionsPage.frontendDataSetItems
+					.filter({hasText: objectActionLabel})
+					.click();
+			};
+
+			await openObjectAction();
+
+			await editObjectActionPage.descriptionInput.fill(description);
+
+			await editObjectActionPage.selectDescriptionLanguage('pt_BR');
+
+			await editObjectActionPage.descriptionInput.fill(
+				translatedDescription
+			);
+
+			await editObjectActionPage.saveButton.click();
+
+			await openObjectAction();
+
+			await expect(editObjectActionPage.descriptionInput).toHaveValue(
+				description
+			);
+
+			await editObjectActionPage.selectDescriptionLanguage('pt_BR');
+
+			await expect(editObjectActionPage.descriptionInput).toHaveValue(
+				translatedDescription
+			);
 		}
 	);
 });

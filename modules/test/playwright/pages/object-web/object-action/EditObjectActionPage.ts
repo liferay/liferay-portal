@@ -12,6 +12,8 @@ export class EditObjectActionPage {
 	readonly actionLabelInput: Locator;
 	readonly basicInfoTab: Locator;
 	readonly checkbox: Locator;
+	readonly descriptionInput: Locator;
+	readonly descriptionLocalizationButton: Locator;
 	readonly enableConditionToggle: Locator;
 	readonly expressionInput: Locator;
 	readonly iframeLocator: FrameLocator;
@@ -35,6 +37,17 @@ export class EditObjectActionPage {
 			.frameLocator('iframe')
 			.getByRole('tab', {name: 'Basic Info'});
 		this.checkbox = page.frameLocator('iframe').getByRole('checkbox');
+		this.descriptionInput = page
+			.frameLocator('iframe')
+			.getByRole('textbox', {exact: true, name: 'Description'});
+		this.descriptionLocalizationButton = page
+			.frameLocator('iframe')
+			.locator('.input-localized', {
+				has: page
+					.frameLocator('iframe')
+					.locator('#actionDescriptionInput'),
+			})
+			.getByLabel('Open Localizations');
 		this.enableConditionToggle = page
 			.frameLocator('iframe')
 			.getByLabel('Enable Condition');
@@ -131,5 +144,17 @@ export class EditObjectActionPage {
 
 	async openActionBuilderTab() {
 		await this.actionBuilderTab.click();
+	}
+
+	async selectDescriptionLanguage(language: string) {
+		await this.descriptionLocalizationButton.click();
+
+		await this.page
+			.frameLocator('iframe')
+			.getByRole('option', {
+				exact: false,
+				name: `${language} language:`,
+			})
+			.click();
 	}
 }
