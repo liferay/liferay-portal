@@ -3749,6 +3749,36 @@
 		},
 		{
 			"properties": {
+				"idleTimeout": {
+					"default": 15,
+					"title": "Session Idle Timeout",
+					"type": "number"
+				},
+				"idleTimeoutTimeUnit": {
+					"title": "Time Unit",
+					"type": "string"
+				},
+				"maximumAge": {
+					"default": 30,
+					"title": "Session Maximum Age",
+					"type": "number"
+				},
+				"maximumAgeTimeUnit": {
+					"title": "Time Unit",
+					"type": "string"
+				},
+				"pid": {
+					"const": "com.liferay.portal.security.fips.configuration.FIPSSessionConfiguration",
+					"title": "FIPS Session Configuration"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "FIPS Session Configuration"
+		},
+		{
+			"properties": {
 				"blacklist": {
 					"items": {
 						"type": "string"
@@ -5287,6 +5317,7 @@
 				"com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration",
 				"com.liferay.portal.security.auto.login.internal.basic.auth.header.configuration.BasicAuthHeaderAutoLoginConfiguration",
 				"com.liferay.portal.security.configuration.BasicAuthHeaderSupportConfiguration",
+				"com.liferay.portal.security.fips.configuration.FIPSSessionConfiguration",
 				"com.liferay.portal.security.iframe.sanitizer.configuration.IFrameConfiguration",
 				"com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration",
 				"com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration",
