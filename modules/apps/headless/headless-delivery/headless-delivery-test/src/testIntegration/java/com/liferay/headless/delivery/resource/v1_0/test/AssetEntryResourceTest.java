@@ -147,14 +147,10 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 	}
 
 	private void _testGetAssetEntriesPagePermissions() throws Exception {
-		BlogsEntry guestViewableBlogsEntry = _addBlogsEntry(
-			testGroup.getGroupId());
-
-		BlogsEntry notGuestViewableBlogsEntry = _addBlogsEntry(
-			testGroup.getGroupId());
-
 		Role guestRole = _roleLocalService.getRole(
 			testCompany.getCompanyId(), RoleConstants.GUEST);
+		BlogsEntry notGuestViewableBlogsEntry = _addBlogsEntry(
+			testGroup.getGroupId());
 
 		_resourcePermissionLocalService.removeResourcePermission(
 			testCompany.getCompanyId(), BlogsEntry.class.getName(),
@@ -178,6 +174,9 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 				Pagination.of(1, 50), null);
 
 		List<AssetEntry> assetEntries = (List<AssetEntry>)page.getItems();
+
+		BlogsEntry guestViewableBlogsEntry = _addBlogsEntry(
+			testGroup.getGroupId());
 
 		AssetEntry guestViewableAssetEntry = _getAssetEntry(
 			assetEntries, guestViewableBlogsEntry.getEntryId());
