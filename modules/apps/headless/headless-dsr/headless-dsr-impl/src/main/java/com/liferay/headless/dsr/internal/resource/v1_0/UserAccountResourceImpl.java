@@ -8,7 +8,6 @@ package com.liferay.headless.dsr.internal.resource.v1_0;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.headless.dsr.dto.v1_0.UserAccount;
 import com.liferay.headless.dsr.internal.dto.v1_0.converter.UserAccountDTOConverterContext;
-import com.liferay.headless.dsr.internal.util.DSRRoleUtil;
 import com.liferay.headless.dsr.internal.util.TicketUtil;
 import com.liferay.headless.dsr.resource.v1_0.UserAccountResource;
 import com.liferay.login.web.constants.LoginPortletKeys;
@@ -31,6 +30,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -99,6 +99,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		Group group = _getGroup(roomId);
 
+		_checkAssignMembersPermission(group, userAccountId);
+
 		LiveUsers.leaveGroup(
 			contextCompany.getCompanyId(), group.getGroupId(), userAccountId);
 
@@ -144,7 +146,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		User user = _userLocalService.getUser(userAccountId);
 
-		_checkManageMemberPermission(group, user.getUserId());
+		_checkAssignMembersPermission(group, user.getUserId());
 
 		if (Validator.isNotNull(userAccount.getRoleKey())) {
 			Role role = _roleLocalService.getRole(
@@ -374,7 +376,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			membershipExpirationDate, new ServiceContext());
 	}
 
-	private void _checkManageMemberPermission(Group group, long userId)
+	private void _checkAssignMembersPermission(Group group, long userId)
 		throws Exception {
 
 		PermissionChecker permissionChecker =
@@ -386,22 +388,13 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			return;
 		}
 
-		String contextUserRoleName = DSRRoleUtil.getHighestRoleName(
-			group.getGroupId(), _userGroupRoleLocalService,
-			contextUser.getUserId());
-		String userRoleName = DSRRoleUtil.getHighestRoleName(
-			group.getGroupId(), _userGroupRoleLocalService, userId);
+		if (_getRolePriority(group.getGroupId(), contextUser.getUserId()) <=
+				_getRolePriority(group.getGroupId(), userId)) {
 
-		if ((userId != contextUser.getUserId()) &&
-			DSRRoleUtil.isManageableRoleName(
-				contextUserRoleName, userRoleName)) {
-
-			return;
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, Group.class.getName(), group.getGroupId(),
+				ActionKeys.ASSIGN_MEMBERS);
 		}
-
-		throw new PrincipalException.MustHavePermission(
-			permissionChecker, Group.class.getName(), group.getGroupId(),
-			ActionKeys.ASSIGN_MEMBERS);
 	}
 
 	private void _checkPermission(Group group, String roleKey)
@@ -467,6 +460,22 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		return objectEntry;
 	}
 
+	private int _getRolePriority(long groupId, long userId) throws Exception {
+		int rolePriority = 0;
+
+		for (UserGroupRole userGroupRole :
+				_userGroupRoleLocalService.getUserGroupRoles(userId, groupId)) {
+
+			Role role = userGroupRole.getRole();
+
+			rolePriority = Math.max(
+				rolePriority,
+				_rolePrioritiesMap.getOrDefault(role.getName(), 0));
+		}
+
+		return rolePriority;
+	}
+
 	private void _initThemeDisplay(long groupId) throws Exception {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)contextHttpServletRequest.getAttribute(
@@ -514,6 +523,17 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				"expiration-date-must-be-a-future-date");
 		}
 	}
+
+	private static final Map<String, Integer> _rolePrioritiesMap =
+		HashMapBuilder.put(
+			DSRRoleConstants.NAME_DSR_CONTENT_CONTRIBUTOR, 1
+		).put(
+			DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR, 2
+		).put(
+			RoleConstants.SITE_ADMINISTRATOR, 3
+		).put(
+			RoleConstants.SITE_OWNER, 4
+		).build();
 
 	@Reference
 	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
