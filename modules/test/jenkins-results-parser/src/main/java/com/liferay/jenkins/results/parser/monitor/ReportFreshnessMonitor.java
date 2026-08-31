@@ -32,12 +32,7 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 					"parameter", "cadence", parameters.get("cadence")));
 		}
 
-		_reportDataURL = getRequiredParameter("url", parameters);
-
-		if (!_reportDataURL.startsWith("file:///")) {
-			throw new IllegalArgumentException(
-				getInvalidValueMessage("parameter", "url", _reportDataURL));
-		}
+		_reportDataURL = getRequiredURLParameter("url", parameters, "file:///");
 
 		_reportName = getRequiredParameter("report.name", parameters);
 
