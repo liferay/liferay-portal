@@ -157,6 +157,48 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: R/%sT%s:00\+00:00/%s
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\"Monday\" \"2024-01-01\""
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \$isWeekly \| ternary "P1W" "P1D"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "schedule: cron"
+        it: Renders the schedule as an ISO 8601 repeating interval rather than a cron expression
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: BackupPolicyBlobStorage"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: BackupInstanceBlobStorage"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "vaultDefaultRetentionDuration:"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: operationalDefaultRetentionDuration
+        it: Protects the document library with a vaulted policy so restore can cross accounts
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "storageAccountContainerNames:\\s+-\\s+document-library"
+        it: Scopes the document library protection to its own container
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "softDelete: \\{\\{ \\$forceDestroy \\| ternary \"Off\" \"On\" \\| quote \\}\\}"
             -   documentIndex: 0
                 notMatchRegex:
@@ -167,12 +209,58 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: \$backupScheduleHash := printf "%s\|%s\|%s" \$backupRepeatingTimeInterval
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: sha256sum \| trunc 6
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: liferay-backup-policy-storage-\\{\\{ \\$backupScheduleHash \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: printf "%s-storage-policy-%s" \$backupVaultName \$backupScheduleHash
+        it: Names each policy after its schedule so a schedule change rolls the policy
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: \$backupVaultIdentity.principalId
             -   documentIndex: 0
                 notMatchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: index \$backupVaultIdentity
         it: Reads the vault principal from the identity object rather than indexing it
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \{\{- if \$areBackupRolesAssigned \}\}
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \$areBackupRolesAssigned = and \$areBackupRolesAssigned \$isBackupRoleAssigned
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "resolve: Always"
+        it: Holds the backup instances back until every vault role assignment is ready
+    -   asserts:
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: BackupPolicyPostgreSQLFlexibleServer"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: BackupInstancePostgreSQLFlexibleServer"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: Long Term Retention Backup Role
+        it: Leaves the database to its own automatic backups rather than the vault
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
