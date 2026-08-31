@@ -11,6 +11,7 @@ function main {
 		exit 1
 	fi
 
+	local backend_options="${LIFERAY_OVERLAY_BACKEND_OPTIONS:-}"
 	local bucket_name="${LIFERAY_OVERLAY_BUCKET_NAME:-}"
 	local from_path="${2}"
 	local into_path="${3}"
@@ -32,7 +33,7 @@ function main {
 		from_path="${from_path%/*}"
 	fi
 
-	local source_uri=":${provider_type},env_auth=true:${bucket_name}/${from_path}"
+	local source_uri=":${provider_type},env_auth=true${backend_options:+,${backend_options}}:${bucket_name}/${from_path}"
 	local target_path="/temp/${into_path}"
 
 	_log_json "Copying from \"${source_uri}\" to \"${target_path}\"."

@@ -147,6 +147,24 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: LIFERAY_OVERLAY_BACKEND_OPTIONS.*account=
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: LIFERAY_OVERLAY_BUCKET_NAME
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: LIFERAY_OVERLAY_CONTAINER_NAME
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: RCLONE_AZUREBLOB_ACCOUNT
+        it: Publishes the overlay bucket and its backend options
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "sharedAccessKeyEnabled: true"
             -   documentIndex: 0
                 matchRegex:
