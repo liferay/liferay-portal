@@ -109,9 +109,13 @@ function applyFieldDiffs(
 			return;
 		}
 
+		const control = field.querySelector('.form-control');
+
 		const container = iframeDocument.createElement('div');
 
-		container.className = 'form-control cms-compare-versions-diff';
+		container.className = `${
+			control?.className ?? 'form-control'
+		} cms-compare-versions-diff`;
 
 		// XSS: diffHTML is escaped by
 		// ObjectEntryVersionFieldValueResolver.toDisplayValue, except rich
