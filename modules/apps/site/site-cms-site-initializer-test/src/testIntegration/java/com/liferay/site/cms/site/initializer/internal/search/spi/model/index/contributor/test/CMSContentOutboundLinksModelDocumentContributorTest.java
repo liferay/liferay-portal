@@ -147,6 +147,19 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 		_testContributeWithoutReferences();
 	}
 
+	private ObjectEntry _addAttachmentObjectEntry(
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		FileEntry fileEntry = _addTempFileEntry(objectDefinition);
+
+		return _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_ATTACHMENT_OBJECT_FIELD_NAME, fileEntry.getFileEntryId()
+			).build());
+	}
+
 	private ObjectDefinition _addCMSObjectDefinition() throws Exception {
 		return _addCMSObjectDefinition(
 			Collections.singletonList(_buildRichTextObjectField()));
@@ -172,18 +185,6 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 		_objectDefinitions.add(objectDefinition);
 
 		return objectDefinition;
-	}
-
-	private ObjectEntry _addFileObjectEntry(ObjectDefinition objectDefinition)
-		throws Exception {
-
-		FileEntry fileEntry = _addTempFileEntry(objectDefinition);
-
-		return _addObjectEntry(
-			objectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				_ATTACHMENT_OBJECT_FIELD_NAME, fileEntry.getFileEntryId()
-			).build());
 	}
 
 	private ObjectEntry _addObjectEntry(
@@ -331,13 +332,14 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 	private void _testContributeWithAttachmentWhenFileEntryIsForeignOwned()
 		throws Exception {
 
-		ObjectDefinition fileObjectDefinition = _addCMSObjectDefinition(
+		ObjectDefinition attachmentObjectDefinition = _addCMSObjectDefinition(
 			Collections.singletonList(
 				_buildAttachmentObjectField(
 					ObjectFieldSettingConstants.
 						VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT)));
 
-		ObjectEntry fileObjectEntry = _addFileObjectEntry(fileObjectDefinition);
+		ObjectEntry attachmentObjectEntry = _addAttachmentObjectEntry(
+			attachmentObjectDefinition);
 
 		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
 			Collections.singletonList(
@@ -347,14 +349,15 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 		ObjectEntry objectEntry = _addObjectEntry(
 			objectDefinition,
 			HashMapBuilder.<String, Serializable>put(
-				_ATTACHMENT_OBJECT_FIELD_NAME, _getFileEntryId(fileObjectEntry)
+				_ATTACHMENT_OBJECT_FIELD_NAME,
+				_getFileEntryId(attachmentObjectEntry)
 			).build());
 
 		Document document = _getDocument(objectDefinition, objectEntry);
 
 		Assert.assertArrayEquals(
 			new String[] {
-				"objectEntryId_" + fileObjectEntry.getObjectEntryId()
+				"objectEntryId_" + attachmentObjectEntry.getObjectEntryId()
 			},
 			document.getValues("outboundLinks"));
 	}
@@ -415,16 +418,16 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 	private void _testContributeWithAttachmentWhenObjectFieldIsLocalized()
 		throws Exception {
 
-		ObjectDefinition fileObjectDefinition = _addCMSObjectDefinition(
+		ObjectDefinition attachmentObjectDefinition = _addCMSObjectDefinition(
 			Collections.singletonList(
 				_buildAttachmentObjectField(
 					ObjectFieldSettingConstants.
 						VALUE_USER_COMPUTER_TO_CMS_BASIC_DOCUMENT)));
 
-		ObjectEntry fileObjectEntry1 = _addFileObjectEntry(
-			fileObjectDefinition);
-		ObjectEntry fileObjectEntry2 = _addFileObjectEntry(
-			fileObjectDefinition);
+		ObjectEntry attachmentObjectEntry1 = _addAttachmentObjectEntry(
+			attachmentObjectDefinition);
+		ObjectEntry attachmentObjectEntry2 = _addAttachmentObjectEntry(
+			attachmentObjectDefinition);
 
 		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
 			Collections.singletonList(
@@ -442,10 +445,10 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 				objectField.getI18nObjectFieldName(),
 				(Serializable)HashMapBuilder.<String, Object>put(
 					LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
-					_getFileEntryId(fileObjectEntry2)
+					_getFileEntryId(attachmentObjectEntry2)
 				).put(
 					LocaleUtil.toLanguageId(LocaleUtil.US),
-					_getFileEntryId(fileObjectEntry1)
+					_getFileEntryId(attachmentObjectEntry1)
 				).build()
 			).build());
 
@@ -453,8 +456,8 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 
 		Assert.assertEquals(
 			SetUtil.fromArray(
-				"objectEntryId_" + fileObjectEntry1.getObjectEntryId(),
-				"objectEntryId_" + fileObjectEntry2.getObjectEntryId()),
+				"objectEntryId_" + attachmentObjectEntry1.getObjectEntryId(),
+				"objectEntryId_" + attachmentObjectEntry2.getObjectEntryId()),
 			SetUtil.fromArray(document.getValues("outboundLinks")));
 	}
 

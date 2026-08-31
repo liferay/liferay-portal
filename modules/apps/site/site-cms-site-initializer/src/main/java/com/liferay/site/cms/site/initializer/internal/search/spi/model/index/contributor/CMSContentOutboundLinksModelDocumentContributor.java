@@ -90,14 +90,13 @@ public class CMSContentOutboundLinksModelDocumentContributor
 					for (String value :
 							_getValues(indexedValues, objectField)) {
 
-						long referencedObjectEntryId =
-							_getReferencedObjectEntryId(
-								GetterUtil.getLong(value), objectEntry);
+						long classPK = _getClassPK(
+							GetterUtil.getLong(value), objectEntry);
 
-						if (referencedObjectEntryId > 0) {
+						if (classPK > 0) {
 							outboundLinks.add(
 								CMSOutboundLinksUtil.getObjectEntryIdToken(
-									referencedObjectEntryId));
+									classPK));
 						}
 					}
 				}
@@ -150,9 +149,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 		}
 	}
 
-	private long _getReferencedObjectEntryId(
-		long fileEntryId, ObjectEntry objectEntry) {
-
+	private long _getClassPK(long fileEntryId, ObjectEntry objectEntry) {
 		if (fileEntryId <= 0) {
 			return 0;
 		}
