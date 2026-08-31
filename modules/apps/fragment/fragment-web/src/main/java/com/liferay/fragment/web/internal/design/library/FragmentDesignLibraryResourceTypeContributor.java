@@ -17,9 +17,10 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -201,23 +202,16 @@ public class FragmentDesignLibraryResourceTypeContributor
 	}
 
 	private JSONArray _getFragmentCollectionsJSONArray(Group depotGroup) {
-		JSONArray jsonArray = _jsonFactory.createJSONArray();
-
-		for (FragmentCollection fragmentCollection :
-				_fragmentCollectionLocalService.getFragmentCollections(
-					depotGroup.getGroupId(), QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS)) {
-
-			jsonArray.put(
-				JSONUtil.put(
-					"fragmentCollectionId",
-					fragmentCollection.getFragmentCollectionId()
-				).put(
-					"name", fragmentCollection.getName()
-				));
-		}
-
-		return jsonArray;
+		return JSONUtil.toJSONArray(
+			_fragmentCollectionLocalService.getFragmentCollections(
+				depotGroup.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+			fragmentCollection -> JSONUtil.put(
+				"fragmentCollectionId",
+				fragmentCollection.getFragmentCollectionId()
+			).put(
+				"name", fragmentCollection.getName()
+			),
+			_log);
 	}
 
 	private DesignLibraryResourceCreationItem _newCreationItem(
@@ -236,11 +230,11 @@ public class FragmentDesignLibraryResourceTypeContributor
 			).build());
 	}
 
-	@Reference
-	private FragmentCollectionLocalService _fragmentCollectionLocalService;
+	private static final Log _log = LogFactoryUtil.getLog(
+		FragmentDesignLibraryResourceTypeContributor.class);
 
 	@Reference
-	private JSONFactory _jsonFactory;
+	private FragmentCollectionLocalService _fragmentCollectionLocalService;
 
 	@Reference(
 		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
