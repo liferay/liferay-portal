@@ -622,7 +622,7 @@ public class DBPartitionUtil {
 	}
 
 	private static void _checkExportedPartition(
-			Connection connection, String exportedPartitionName)
+			long companyId, Connection connection, String exportedPartitionName)
 		throws PortalException {
 
 		try {
@@ -632,7 +632,8 @@ public class DBPartitionUtil {
 				throw new IllegalArgumentException(
 					StringBundler.concat(
 						"Database partition ", exportedPartitionName,
-						" already exists"));
+						" already exists. Drop it before exporting company ",
+						companyId, " again"));
 			}
 		}
 		catch (SQLException sqlException) {
@@ -1003,7 +1004,7 @@ public class DBPartitionUtil {
 
 		String exportedPartitionName = getExportedPartitionName(companyId);
 
-		_checkExportedPartition(connection, exportedPartitionName);
+		_checkExportedPartition(companyId, connection, exportedPartitionName);
 
 		try {
 			try (PreparedStatement preparedStatement =
@@ -1086,7 +1087,7 @@ public class DBPartitionUtil {
 
 		String exportedPartitionName = getExportedPartitionName(companyId);
 
-		_checkExportedPartition(connection, exportedPartitionName);
+		_checkExportedPartition(companyId, connection, exportedPartitionName);
 
 		DBInspector dbInspector = new DBInspector(connection);
 
