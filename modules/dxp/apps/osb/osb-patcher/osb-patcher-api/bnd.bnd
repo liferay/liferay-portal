@@ -11,15 +11,3 @@ Export-Package:\
 	com.liferay.osb.patcher.service.persistence,\
 	com.liferay.osb.patcher.util,\
 	com.liferay.osb.patcher.util.comparator
-Import-Package:\
-	!com.google.cloud.monitoring.*,\
-	!com.google.cloud.opentelemetry.*,\
-	!com.google.monitoring.*,\
-	\
-	!io.opentelemetry.sdk.*,\
-	\
-	!javax.annotation,\
-	\
-	!org.checkerframework.checker.*,\
-	\
-	*
