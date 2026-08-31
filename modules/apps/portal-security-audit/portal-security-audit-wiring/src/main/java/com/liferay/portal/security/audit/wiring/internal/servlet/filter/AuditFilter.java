@@ -9,6 +9,7 @@ import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.audit.AuditRequestThreadLocal;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogContext;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -118,26 +119,37 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 		auditRequestThreadLocal.setSessionID(
 			(String)httpSession.getAttribute(WebKeys.AUDIT_SESSION_ID));
 
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		String xRequestId = httpServletRequest.getHeader(
+			HttpHeaders.X_REQUEST_ID);
+
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+			if (!_isValidXRequestId(xRequestId)) {
+				xRequestId = PortalUUIDUtil.generate();
+
+				auditRequestThreadLocal.setRequestIdGenerated(true);
+			}
+
+			auditRequestThreadLocal.setRequestId(xRequestId);
+		}
+
 		if (!_auditLogContextConfiguration.enabled()) {
 			return null;
 		}
 
-		String xRequestId = null;
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417") &&
+			(!_auditLogContextConfiguration.useIncomingXRequestId() ||
+			 !_isValidXRequestId(xRequestId))) {
 
-		if (_auditLogContextConfiguration.useIncomingXRequestId()) {
-			xRequestId = httpServletRequest.getHeader(HttpHeaders.X_REQUEST_ID);
-		}
-
-		if (!_isValidXRequestId(xRequestId)) {
 			xRequestId = PortalUUIDUtil.generate();
 		}
 
 		httpServletResponse.setHeader(HttpHeaders.X_REQUEST_ID, xRequestId);
 
 		_auditLogContext.setContext(
-			remoteAddr, CompanyThreadLocal.getCompanyId(),
-			httpServletRequest.getServerName(), userEmailAddress, userId,
-			userLogin, xRequestId);
+			remoteAddr, companyId, httpServletRequest.getServerName(),
+			userEmailAddress, userId, userLogin, xRequestId);
 
 		return null;
 	}
