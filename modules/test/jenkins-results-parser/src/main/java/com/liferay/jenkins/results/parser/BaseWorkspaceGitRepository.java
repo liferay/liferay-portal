@@ -915,7 +915,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		sb.setLength(0);
 
-		sb.append("rm -rf ");
+		sb.append("rm -fr ");
 
 		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
 
@@ -1061,7 +1061,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		sb.setLength(0);
 
-		sb.append("rm -rf ");
+		sb.append("rm -fr ");
 		sb.append(clonedWorkingDirectory);
 
 		commands.add(sb.toString());
@@ -1258,7 +1258,7 @@ public abstract class BaseWorkspaceGitRepository
 				JenkinsResultsParserUtil.combine(
 					"tar -xzf ", archiveFile.getCanonicalPath(), " -C ",
 					baseGitRepositoryDir.getCanonicalPath()),
-				"rm -rf " + archiveFile.getCanonicalPath());
+				"rm -fr " + archiveFile.getCanonicalPath());
 
 			if (process.exitValue() != 0) {
 				String errorText = JenkinsResultsParserUtil.readInputStream(
