@@ -56,8 +56,15 @@ public class ExportImportTestUtil {
 	public static void assertBackgroundTaskSuccessful(long backgroundTaskId)
 		throws Exception {
 
+		assertBackgroundTaskSuccessful(backgroundTaskId, 30, TimeUnit.SECONDS);
+	}
+
+	public static void assertBackgroundTaskSuccessful(
+			long backgroundTaskId, long timeout, TimeUnit timeoutTimeUnit)
+		throws Exception {
+
 		retryAssert(
-			1, TimeUnit.SECONDS, 30, TimeUnit.SECONDS,
+			1, TimeUnit.SECONDS, timeout, timeoutTimeUnit,
 			() -> {
 				BackgroundTask backgroundTask =
 					BackgroundTaskLocalServiceUtil.getBackgroundTask(

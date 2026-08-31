@@ -20,22 +20,18 @@ import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSe
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSetting;
 import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandlerControl;
-import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportPreviewResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportProcessResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportProcessResource;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
-import com.liferay.portal.background.task.model.BackgroundTask;
-import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
-import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.test.performance.PerformanceTimer;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.Closeable;
@@ -47,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -98,130 +93,57 @@ public class ExportImportInstancePerformanceTest {
 	}
 
 	@Test
-	public void testImportFullUnscopedInstanceExport() throws Exception {
-		File file = _exportInstanceAsFile();
+	public void testPostExportProcess() throws Exception {
+		try (Closeable closeable = new PerformanceTimer(
+				_EXPORT_MAX_TIME, "Export a full unscoped instance")) {
 
-		try {
-			ImportPreview importPreview =
-				_importPreviewResource.postImportPreview(
-					null, null, null,
-					HashMapBuilder.put(
-						"file", file
-					).build());
-
-			ImportProcessRequest importProcessRequest =
-				new ImportProcessRequest();
-
-			importProcessRequest.setName(RandomTestUtil.randomString());
-			importProcessRequest.setRequestPortletDataHandlers(
-				_toRequestPortletDataHandlers(
-					importPreview.getPreviewPortletDataHandlerSections()));
-
-			ImportProcess importProcess;
-
-			try (Closeable closeable = new PerformanceTimer(
-					_IMPORT_MAX_TIME,
-					"Import a full unscoped instance export")) {
-
-				importProcess = _importProcessResource.postImportProcess(
-					null, null, importProcessRequest);
-
-				ExportImportTestUtil.retryAssert(
-					1, TimeUnit.SECONDS, 300, TimeUnit.SECONDS,
-					() -> {
-						BackgroundTask backgroundTask =
-							_backgroundTaskLocalService.getBackgroundTask(
-								importProcess.getId());
-
-						if (backgroundTask.getStatus() ==
-								BackgroundTaskConstants.STATUS_FAILED) {
-
-							throw new IllegalStateException(
-								backgroundTask.getStatusMessage());
-						}
-
-						Assert.assertEquals(
-							BackgroundTaskConstants.STATUS_SUCCESSFUL,
-							backgroundTask.getStatus());
-					});
-			}
-		}
-		finally {
-			file.delete();
+			_postExportProcess(_EXPORT_BACKGROUND_TASK_MAX_WAIT_TIME);
 		}
 	}
 
-	private File _exportInstanceAsFile() throws Exception {
-		ExportPreview exportPreview = _exportPreviewResource.getExportPreview(
-			null, null, null, null, null);
+	@Test
+	public void testPostImportProcess() throws Exception {
+		ExportProcess exportProcess = _postExportProcess(
+			_EXPORT_BACKGROUND_TASK_MAX_WAIT_TIME);
 
-		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
-
-		exportProcessRequest.setName(RandomTestUtil.randomString());
-		exportProcessRequest.setRequestPortletDataHandlers(
-			_toRequestPortletDataHandlers(
-				exportPreview.getPreviewPortletDataHandlerSections()));
-
-		ExportProcess exportProcess = _exportProcessResource.postExportProcess(
-			null, null, exportProcessRequest);
-
-		File file = File.createTempFile(
-			"export-import-instance-performance", ".lar");
+		File file = FileUtil.createTempFile(
+			RandomTestUtil.randomString(), "lar");
 
 		file.deleteOnExit();
 
-		try {
-			ExportImportTestUtil.retryAssert(
-				1, TimeUnit.SECONDS, 300, TimeUnit.SECONDS,
-				() -> {
-					BackgroundTask backgroundTask =
-						_backgroundTaskLocalService.getBackgroundTask(
-							exportProcess.getId());
+		Files.write(
+			file.toPath(),
+			_exportProcessResource.getExportProcessContentHttpResponse(
+				exportProcess.getId()
+			).getBinaryContent());
 
-					if (backgroundTask.getStatus() ==
-							BackgroundTaskConstants.STATUS_FAILED) {
+		ImportPreview importPreview = _importPreviewResource.postImportPreview(
+			null, null, null,
+			HashMapBuilder.put(
+				"file", file
+			).build());
 
-						throw new IllegalStateException(
-							backgroundTask.getStatusMessage());
-					}
+		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
 
-					Assert.assertEquals(
-						BackgroundTaskConstants.STATUS_SUCCESSFUL,
-						backgroundTask.getStatus());
-				});
+		importProcessRequest.setName(RandomTestUtil.randomString());
+		importProcessRequest.setRequestPortletDataHandlers(
+			_toRequestPortletDataHandlers(
+				importPreview.getPreviewPortletDataHandlerSections()));
 
-			HttpInvoker.HttpResponse httpResponse =
-				_exportProcessResource.getExportProcessContentHttpResponse(
-					exportProcess.getId());
+		try (Closeable closeable = new PerformanceTimer(
+				_IMPORT_MAX_TIME, "Import a full unscoped instance export")) {
 
-			Files.write(file.toPath(), httpResponse.getBinaryContent());
+			ImportProcess importProcess =
+				_importProcessResource.postImportProcess(
+					null, null, importProcessRequest);
 
-			return file;
-		}
-		catch (Throwable throwable) {
-			file.delete();
-
-			throw throwable;
+			ExportImportTestUtil.assertBackgroundTaskSuccessful(
+				importProcess.getId(), _IMPORT_BACKGROUND_TASK_MAX_WAIT_TIME,
+				TimeUnit.MILLISECONDS);
 		}
 	}
 
-	private RequestPortletDataHandler _toRequestPortletDataHandler(
-		PreviewPortletDataHandler previewPortletDataHandler) {
-
-		RequestPortletDataHandler requestPortletDataHandler =
-			new RequestPortletDataHandler();
-
-		requestPortletDataHandler.setName(previewPortletDataHandler.getName());
-
-		requestPortletDataHandler.setRequestPortletDataHandlerControls(
-			_toRequestPortletDataHandlerControls(
-				previewPortletDataHandler.
-					getPreviewPortletDataHandlerControls()));
-
-		return requestPortletDataHandler;
-	}
-
-	private RequestPortletDataHandlerControl
+	private static RequestPortletDataHandlerControl
 		_toRequestPortletDataHandlerControl(
 			PreviewPortletDataHandlerControl previewPortletDataHandlerControl) {
 
@@ -271,7 +193,7 @@ public class ExportImportInstancePerformanceTest {
 		return requestPortletDataHandlerControl;
 	}
 
-	private RequestPortletDataHandlerControl[]
+	private static RequestPortletDataHandlerControl[]
 		_toRequestPortletDataHandlerControls(
 			PreviewPortletDataHandlerControl[]
 				previewPortletDataHandlerControls) {
@@ -305,6 +227,45 @@ public class ExportImportInstancePerformanceTest {
 			new RequestPortletDataHandlerControl[0]);
 	}
 
+	private ExportProcess _postExportProcess(long backgroundTaskMaxWaitTime)
+		throws Exception {
+
+		ExportPreview exportPreview = _exportPreviewResource.getExportPreview(
+			null, null, null, null, null);
+
+		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
+
+		exportProcessRequest.setName(RandomTestUtil.randomString());
+		exportProcessRequest.setRequestPortletDataHandlers(
+			_toRequestPortletDataHandlers(
+				exportPreview.getPreviewPortletDataHandlerSections()));
+
+		ExportProcess exportProcess = _exportProcessResource.postExportProcess(
+			null, null, exportProcessRequest);
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(
+			exportProcess.getId(), backgroundTaskMaxWaitTime,
+			TimeUnit.MILLISECONDS);
+
+		return exportProcess;
+	}
+
+	private RequestPortletDataHandler _toRequestPortletDataHandler(
+		PreviewPortletDataHandler previewPortletDataHandler) {
+
+		RequestPortletDataHandler requestPortletDataHandler =
+			new RequestPortletDataHandler();
+
+		requestPortletDataHandler.setName(previewPortletDataHandler.getName());
+
+		requestPortletDataHandler.setRequestPortletDataHandlerControls(
+			_toRequestPortletDataHandlerControls(
+				previewPortletDataHandler.
+					getPreviewPortletDataHandlerControls()));
+
+		return requestPortletDataHandler;
+	}
+
 	private RequestPortletDataHandler[] _toRequestPortletDataHandlers(
 		PreviewPortletDataHandlerSection[] previewPortletDataHandlerSections) {
 
@@ -327,14 +288,17 @@ public class ExportImportInstancePerformanceTest {
 			new RequestPortletDataHandler[0]);
 	}
 
+	private static final long _EXPORT_BACKGROUND_TASK_MAX_WAIT_TIME = 150000;
+
+	private static final long _EXPORT_MAX_TIME = 60000;
+
+	private static final long _IMPORT_BACKGROUND_TASK_MAX_WAIT_TIME = 600000;
+
 	private static final long _IMPORT_MAX_TIME = 400000;
 
 	private static ExportPreviewResource _exportPreviewResource;
 	private static ExportProcessResource _exportProcessResource;
 	private static ImportPreviewResource _importPreviewResource;
 	private static ImportProcessResource _importProcessResource;
-
-	@Inject
-	private BackgroundTaskLocalService _backgroundTaskLocalService;
 
 }
