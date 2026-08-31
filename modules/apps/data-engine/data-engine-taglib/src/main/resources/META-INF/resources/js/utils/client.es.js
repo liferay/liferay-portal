@@ -105,6 +105,14 @@ export function getItem(endpoint) {
 	}).then((response) => response.json());
 }
 
+export function getItems(baseURL, keywords = '', {signal} = {}) {
+	return fetchItem(getURL(baseURL, {keywords, page: 1, pageSize: 250}), {
+		headers: HEADERS,
+		method: 'GET',
+		signal,
+	}).then(({items = []}) => items);
+}
+
 export function updateItem(endpoint, item, params) {
 	return fetchItem(getURL(endpoint, params), {
 		body: JSON.stringify(item),
