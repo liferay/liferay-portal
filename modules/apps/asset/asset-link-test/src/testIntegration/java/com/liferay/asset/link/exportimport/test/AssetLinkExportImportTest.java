@@ -32,6 +32,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -110,6 +111,49 @@ public class AssetLinkExportImportTest extends BaseExportImportTestCase {
 
 		Assert.assertNotNull(assetLinks);
 		Assert.assertTrue(!assetLinks.isEmpty());
+	}
+
+	@Test
+	@TestInfo("LPS-83011")
+	public void testNoAssetLinkExported() throws Exception {
+		_configurationProvider.saveCompanyConfiguration(
+			ExportImportServiceConfiguration.class, group.getCompanyId(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"includeAllAssetLinks", false
+			).build());
+
+		Map<String, String[]> exportParameterMap = getExportParameterMap();
+
+		exportParameterMap.put(
+			PortletDataHandlerKeys.PORTLET_DATA,
+			new String[] {Boolean.FALSE.toString()});
+		exportParameterMap.put(
+			PortletDataHandlerKeys.PORTLET_DATA_ALL,
+			new String[] {Boolean.FALSE.toString()});
+
+		exportLayouts(new long[] {layout.getLayoutId()}, exportParameterMap);
+
+		AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
+			group.getGroupId(), _journalArticle.getArticleResourceUuid());
+
+		List<AssetLink> assetLinks = AssetLinkLocalServiceUtil.getLinks(
+			assetEntry.getEntryId());
+
+		Assert.assertFalse(assetLinks.toString(), assetLinks.isEmpty());
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(larFile)) {
+			PortletDataContext portletDataContext = getPortletDataContext(
+				zipReader);
+
+			for (AssetLink assetLink : assetLinks) {
+				StagedAssetLink stagedAssetLink = ModelAdapterUtil.adapt(
+					assetLink, AssetLink.class, StagedAssetLink.class);
+
+				Assert.assertNull(
+					portletDataContext.getZipEntryAsObject(
+						ExportImportPathUtil.getModelPath(stagedAssetLink)));
+			}
+		}
 	}
 
 	@Test
