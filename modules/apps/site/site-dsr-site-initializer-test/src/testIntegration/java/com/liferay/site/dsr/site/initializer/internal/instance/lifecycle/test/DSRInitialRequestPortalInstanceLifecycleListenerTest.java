@@ -172,7 +172,7 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 	}
 
 	private List<String> _getEditableFragmentEntryValues(
-		String id, Layout layout, Locale locale) {
+		String key, Layout layout, Locale locale) {
 
 		return TransformUtil.transform(
 			FragmentEntryLinkLocalServiceUtil.getFragmentEntryLinksByPlid(
@@ -183,7 +183,7 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 					"JSONObject/" +
 						FragmentEntryProcessorConstants.
 							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-					"JSONObject/" + id);
+					"JSONObject/" + key);
 
 				if (jsonObject == null) {
 					return null;
