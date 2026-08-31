@@ -175,25 +175,21 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 	public void testUndeployObjectDefinition() throws Exception {
 		Company company = CompanyTestUtil.addCompany();
 
-		try {
-			ObjectDefinition objectDefinition = _publishObjectDefinition(
-				company);
+		ObjectDefinition objectDefinition = _publishObjectDefinition(company);
 
-			_assertServiceReferencesCount(1, objectDefinition);
+		_assertServiceReferencesCount(1, objectDefinition);
 
-			try (SafeCloseable safeCloseable =
-					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-						PortalInstancePool.getDefaultCompanyId())) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId())) {
 
-				_objectDefinitionLocalService.undeployObjectDefinition(
-					objectDefinition);
-			}
-
-			_assertServiceReferencesCount(0, objectDefinition);
+			_objectDefinitionLocalService.undeployObjectDefinition(
+				objectDefinition);
 		}
-		finally {
-			_companyLocalService.deleteCompany(company);
-		}
+
+		_assertServiceReferencesCount(0, objectDefinition);
+
+		_companyLocalService.deleteCompany(company);
 	}
 
 	@Test
