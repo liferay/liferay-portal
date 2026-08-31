@@ -3,22 +3,48 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-const VARIABLES_FIELD_TITLES = {
-	inputVariables: Liferay.Language.get('input-variables'),
-	outputVariables: Liferay.Language.get('output-variables'),
-};
+import {isObject} from './utils';
+
+const VARIABLES_FIELDS = [
+	{
+		field: 'inputVariables',
+		isValid: Array.isArray,
+		message: Liferay.Language.get(
+			'input-variables-must-be-a-valid-json-array-in-the-x-node'
+		),
+	},
+	{
+		field: 'outputVariables',
+		isValid: Array.isArray,
+		message: Liferay.Language.get(
+			'output-variables-must-be-a-valid-json-array-in-the-x-node'
+		),
+	},
+	{
+		field: 'rag',
+		isValid: isObject,
+		message: Liferay.Language.get(
+			'retrieval-augmented-generation-must-be-a-valid-json-object-in-the-x-node'
+		),
+	},
+	{
+		field: 'tools',
+		isValid: Array.isArray,
+		message: Liferay.Language.get(
+			'tools-must-be-a-valid-json-array-in-the-x-node'
+		),
+	},
+];
 
 export default function getInvalidVariables(elements, languageId) {
 	for (const element of elements) {
-		for (const [field, fieldTitle] of Object.entries(
-			VARIABLES_FIELD_TITLES
-		)) {
+		for (const {field, isValid, message} of VARIABLES_FIELDS) {
 			const value = element.data?.[field];
 
-			if (value !== undefined && !Array.isArray(value)) {
+			if (value !== undefined && !isValid(value)) {
 				return {
-					fieldTitle,
 					label: element.data?.label?.[languageId] || element.id,
+					message,
 				};
 			}
 		}

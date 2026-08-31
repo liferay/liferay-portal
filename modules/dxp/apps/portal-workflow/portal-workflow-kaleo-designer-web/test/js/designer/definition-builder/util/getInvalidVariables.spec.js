@@ -13,22 +13,24 @@ it('Return null when a node has no variables', () => {
 	expect(getInvalidVariables(elements, 'en_US')).toBeNull();
 });
 
-it('Return null when the variables are arrays', () => {
+it('Return null when the variables have the expected shape', () => {
 	const elements = [
 		{
 			data: {
 				inputVariables: [{name: 'request', type: 'string'}],
-				label: {en_US: 'HTTP Request'},
+				label: {en_US: 'LLM'},
 				outputVariables: [],
+				rag: {},
+				tools: [],
 			},
-			id: 'httpNode',
+			id: 'llmNode',
 		},
 	];
 
 	expect(getInvalidVariables(elements, 'en_US')).toBeNull();
 });
 
-it('Return the input variables title and the node label', () => {
+it('Return the input variables message and the node label', () => {
 	const elements = [
 		{
 			data: {
@@ -40,12 +42,12 @@ it('Return the input variables title and the node label', () => {
 	];
 
 	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
-		fieldTitle: 'input-variables',
 		label: 'HTTP Request',
+		message: 'input-variables-must-be-a-valid-json-array-in-the-x-node',
 	});
 });
 
-it('Return the output variables title and the node label', () => {
+it('Return the output variables message and the node label', () => {
 	const elements = [
 		{
 			data: {
@@ -57,8 +59,29 @@ it('Return the output variables title and the node label', () => {
 	];
 
 	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
-		fieldTitle: 'output-variables',
 		label: 'LLM',
+		message: 'output-variables-must-be-a-valid-json-array-in-the-x-node',
+	});
+});
+
+it('Return the tools message when the tools are not an array', () => {
+	const elements = [
+		{data: {label: {en_US: 'LLM'}, tools: 'not json'}, id: 'llmNode'},
+	];
+
+	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
+		label: 'LLM',
+		message: 'tools-must-be-a-valid-json-array-in-the-x-node',
+	});
+});
+
+it('Return the RAG message when the RAG configuration is not an object', () => {
+	const elements = [{data: {label: {en_US: 'LLM'}, rag: []}, id: 'llmNode'}];
+
+	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
+		label: 'LLM',
+		message:
+			'retrieval-augmented-generation-must-be-a-valid-json-object-in-the-x-node',
 	});
 });
 
@@ -68,8 +91,8 @@ it('Return the node id when the node has no label for the language', () => {
 	];
 
 	expect(getInvalidVariables(elements, 'en_US')).toStrictEqual({
-		fieldTitle: 'input-variables',
 		label: 'httpNode',
+		message: 'input-variables-must-be-a-valid-json-array-in-the-x-node',
 	});
 });
 

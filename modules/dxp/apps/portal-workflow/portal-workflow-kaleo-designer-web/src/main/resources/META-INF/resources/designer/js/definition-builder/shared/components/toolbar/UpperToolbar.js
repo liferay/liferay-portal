@@ -215,12 +215,7 @@ export default function UpperToolbar({
 
 		if (invalidVariables) {
 			setAlert(
-				lang.sub(
-					Liferay.Language.get(
-						'x-must-be-a-valid-json-array-in-the-x-node'
-					),
-					[invalidVariables.fieldTitle, invalidVariables.label]
-				),
+				lang.sub(invalidVariables.message, [invalidVariables.label]),
 				'danger',
 				true
 			);
