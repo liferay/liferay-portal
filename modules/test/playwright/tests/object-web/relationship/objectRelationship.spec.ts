@@ -14,6 +14,7 @@ import {
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {ObjectRelationshipFormPage} from '../../../pages/object-web/object-relationship/ObjectRelationshipFormPage';
@@ -28,6 +29,13 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	loginTest(),
 	objectPagesTest
+);
+
+const descriptionTest = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-80279': {enabled: true},
+	})
 );
 
 test.beforeEach(({page}) => {
@@ -5490,6 +5498,283 @@ test.describe('View relationship hierarchy labels', () => {
 				.click();
 
 			await expect(iframe.getByText('Child')).toBeVisible();
+		}
+	);
+});
+
+descriptionTest.describe('Manage object relationship descriptions', () => {
+	descriptionTest(
+		'can add description through Model Builder',
+		{tag: '@LPD-103748'},
+		async ({
+			apiHelpers,
+			modelBuilderDiagramPage,
+			modelBuilderLeftSidebarPage,
+			modelBuilderRightSidebarPage,
+			viewObjectDefinitionsPage,
+		}) => {
+			const objectFolder =
+				await apiHelpers.objectAdmin.postRandomObjectFolder();
+
+			apiHelpers.data.push({id: objectFolder.id, type: 'objectFolder'});
+
+			const objectDefinition1 =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFolderExternalReferenceCode:
+						objectFolder.externalReferenceCode,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition1.id,
+				type: 'objectDefinition',
+			});
+
+			const objectDefinition2 =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFolderExternalReferenceCode:
+						objectFolder.externalReferenceCode,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition2.id,
+				type: 'objectDefinition',
+			});
+
+			const objectRelationshipLabel =
+				'objectRelationshipLabel' + getRandomInt();
+
+			const objectRelationshipAPIClient =
+				await apiHelpers.buildRestClient(ObjectRelationshipAPI);
+
+			const {body: objectRelationship} =
+				await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+					objectDefinition1.externalReferenceCode,
+					{
+						label: {en_US: objectRelationshipLabel},
+						name: await getFreshObjectRelationshipName(apiHelpers, [
+							objectDefinition1.externalReferenceCode!,
+							objectDefinition2.externalReferenceCode!,
+						]),
+						objectDefinitionExternalReferenceCode1:
+							objectDefinition1.externalReferenceCode,
+						objectDefinitionExternalReferenceCode2:
+							objectDefinition2.externalReferenceCode,
+						objectDefinitionId1: objectDefinition1.id,
+						objectDefinitionId2: objectDefinition2.id,
+						objectDefinitionName2: objectDefinition2.name,
+						type: 'oneToMany',
+					}
+				);
+
+			apiHelpers.data.push({
+				id: objectRelationship.id,
+				type: 'objectRelationship',
+			});
+
+			const description = 'Each claim has many service visits.';
+
+			await viewObjectDefinitionsPage.goto();
+
+			await viewObjectDefinitionsPage.openObjectFolder(
+				objectFolder.label['en_US']
+			);
+
+			await viewObjectDefinitionsPage.viewInModelBuilderButton.click();
+
+			await modelBuilderDiagramPage.clickObjectRelationshipEdge(
+				objectRelationshipLabel
+			);
+
+			await modelBuilderRightSidebarPage.sidebarDescriptionInput.fill(
+				description
+			);
+
+			await modelBuilderRightSidebarPage.sidebarDescriptionInput.blur();
+
+			await modelBuilderLeftSidebarPage.sidebarItems
+				.filter({hasText: objectDefinition1.label['en_US']})
+				.click();
+
+			await modelBuilderDiagramPage.clickObjectRelationshipEdge(
+				objectRelationshipLabel
+			);
+
+			await expect(
+				modelBuilderRightSidebarPage.sidebarDescriptionInput
+			).toHaveValue(description);
+		}
+	);
+
+	descriptionTest(
+		'can manage description through Objects Admin',
+		{tag: '@LPD-103748'},
+		async ({apiHelpers, objectRelationshipsPage, page}) => {
+			const objectDefinition1 =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition1.id,
+				type: 'objectDefinition',
+			});
+
+			const objectDefinition2 =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition2.id,
+				type: 'objectDefinition',
+			});
+
+			const objectRelationshipLabel =
+				'objectRelationshipLabel' + getRandomInt();
+
+			const objectRelationshipAPIClient =
+				await apiHelpers.buildRestClient(ObjectRelationshipAPI);
+
+			const {body: objectRelationship} =
+				await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+					objectDefinition1.externalReferenceCode,
+					{
+						label: {en_US: objectRelationshipLabel},
+						name: 'rel' + getRandomInt(),
+						objectDefinitionExternalReferenceCode2:
+							objectDefinition2.externalReferenceCode,
+						type: 'oneToMany',
+					}
+				);
+
+			apiHelpers.data.push({
+				id: objectRelationship.id,
+				type: 'objectRelationship',
+			});
+
+			const description = 'Each claim has many service visits.';
+			const updatedDescription = 'Each claim has many repair visits.';
+
+			const saveAndReopen = async () => {
+				await objectRelationshipsPage.saveObjectRelationship();
+
+				await objectRelationshipsPage.goto(
+					objectDefinition1.label['en_US']
+				);
+
+				await page
+					.getByRole('link', {name: objectRelationshipLabel})
+					.click();
+			};
+
+			await objectRelationshipsPage.goto(
+				objectDefinition1.label['en_US']
+			);
+
+			await page
+				.getByRole('link', {name: objectRelationshipLabel})
+				.click();
+
+			await objectRelationshipsPage.descriptionInput.fill(description);
+
+			await saveAndReopen();
+
+			await expect(objectRelationshipsPage.descriptionInput).toHaveValue(
+				description
+			);
+
+			await objectRelationshipsPage.descriptionInput.fill(
+				updatedDescription
+			);
+
+			await saveAndReopen();
+
+			await expect(objectRelationshipsPage.descriptionInput).toHaveValue(
+				updatedDescription
+			);
+
+			await objectRelationshipsPage.descriptionInput.clear();
+
+			await saveAndReopen();
+
+			await expect(objectRelationshipsPage.descriptionInput).toBeEmpty();
+		}
+	);
+
+	descriptionTest(
+		'mirrors the description to the reverse self relationship',
+		{tag: '@LPD-103748'},
+		async ({apiHelpers, objectRelationshipsPage, page}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const objectRelationshipLabel =
+				'objectRelationshipLabel' + getRandomInt();
+
+			const objectRelationshipAPIClient =
+				await apiHelpers.buildRestClient(ObjectRelationshipAPI);
+
+			const {body: objectRelationship} =
+				await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+					objectDefinition.externalReferenceCode,
+					{
+						label: {en_US: objectRelationshipLabel},
+						name: 'rel' + getRandomInt(),
+						objectDefinitionExternalReferenceCode2:
+							objectDefinition.externalReferenceCode,
+						type: 'manyToMany',
+					}
+				);
+
+			apiHelpers.data.push({
+				id: objectRelationship.id,
+				type: 'objectRelationship',
+			});
+
+			const description = 'Each claim relates to other claims.';
+
+			await objectRelationshipsPage.goto(objectDefinition.label['en_US']);
+
+			const objectRelationshipLinks = page.getByRole('link', {
+				name: objectRelationshipLabel,
+			});
+
+			await expect(objectRelationshipLinks).toHaveCount(2);
+
+			await objectRelationshipLinks.first().click();
+
+			await objectRelationshipsPage.descriptionInput.fill(description);
+
+			await objectRelationshipsPage.saveObjectRelationship();
+
+			await objectRelationshipsPage.goto(objectDefinition.label['en_US']);
+
+			await objectRelationshipLinks.first().click();
+
+			await expect(objectRelationshipsPage.descriptionInput).toHaveValue(
+				description
+			);
+
+			await objectRelationshipsPage.cancelButton.click();
+
+			await objectRelationshipLinks.nth(1).click();
+
+			await expect(
+				objectRelationshipsPage.descriptionInput
+			).toBeDisabled();
+
+			await expect(objectRelationshipsPage.descriptionInput).toHaveValue(
+				description
+			);
 		}
 	);
 });

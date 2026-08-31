@@ -13,6 +13,7 @@ export class ObjectRelationshipsPage {
 	readonly addObjectRelationshipButton: Locator;
 	readonly cancelButton: Locator;
 	readonly deleteObjectRelationshipOption: Locator;
+	readonly descriptionInput: Locator;
 	readonly disableInheritanceNotAllowedModalBody: Locator;
 	readonly disableInheritanceNotAllowedModalDoneButton: Locator;
 	readonly disableInheritanceNotAllowedModalHeader: Locator;
@@ -38,6 +39,9 @@ export class ObjectRelationshipsPage {
 		this.deleteObjectRelationshipOption = page.getByRole('menuitem', {
 			name: 'Delete',
 		});
+		this.descriptionInput = page
+			.frameLocator('iframe')
+			.getByRole('textbox', {exact: true, name: 'Description'});
 		this.disableInheritanceNotAllowedModalBody = page.getByText(
 			'This object requires all entries to have a parent. To disable inheritance, you must first delete linked entries or enable standalone entries for this object.'
 		);
