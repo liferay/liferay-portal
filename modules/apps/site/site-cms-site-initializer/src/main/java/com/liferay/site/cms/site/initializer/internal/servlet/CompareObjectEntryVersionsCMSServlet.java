@@ -7,7 +7,9 @@ package com.liferay.site.cms.site.initializer.internal.servlet;
 
 import com.liferay.diff.DiffHtml;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -20,6 +22,7 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -204,7 +208,6 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 			TimeZoneUtil.getTimeZone(StringPool.UTC));
 	}
 
-
 	private Map<String, Object> _getFieldValues(
 			String languageId, long objectEntryId, int version)
 		throws Exception {
@@ -309,7 +312,7 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		return sb.toString();
 	}
 
-	private String _toAttachmentFileName(Object value) {
+	private String _toAttachmentDisplayValue(Object value) {
 		Object idObject = value;
 
 		if (value instanceof Map) {
@@ -331,7 +334,27 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 			return String.valueOf(value);
 		}
 
-		return dlFileEntry.getFileName();
+		String fileName = HtmlUtil.escape(dlFileEntry.getFileName());
+
+		try {
+			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+
+			return StringBundler.concat(
+				"<img alt=\"", fileName,
+				"\" class=\"border cms-compare-versions-attachment d-block ",
+				"mb-2 mw-100 rounded\" src=\"",
+				_dlURLHelper.getPreviewURL(
+					fileEntry, fileEntry.getFileVersion(), null,
+					StringPool.BLANK),
+				"\" /> ", fileName);
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+
+			return fileName;
+		}
 	}
 
 	private String _toDateDisplayValue(Format format, Object value) {
@@ -390,7 +413,7 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		if (ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT.equals(
 				businessType)) {
 
-			return _toAttachmentFileName(value);
+			return _toAttachmentDisplayValue(value);
 		}
 
 		return String.valueOf(value);
@@ -465,7 +488,13 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 	private DiffHtml _diffHtml;
 
 	@Reference
+	private DLAppLocalService _dlAppLocalService;
+
+	@Reference
 	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private DLURLHelper _dlURLHelper;
 
 	@Reference
 	private JSONFactory _jsonFactory;
