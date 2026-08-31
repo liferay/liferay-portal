@@ -71,10 +71,6 @@ public class CompileModulesBatchTestClassGroupTest
 
 		File moduleDir = temporaryFolder.newFolder(moduleDirName);
 
-		File lfrBuildPortalFile = new File(moduleDir, ".lfrbuild-portal");
-
-		lfrBuildPortalFile.createNewFile();
-
 		for (int i = 0; i < modulesProjectDirCount; i++) {
 			File modulesProjectDir = new File(moduleDir, "project-" + i);
 
