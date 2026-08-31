@@ -1,0 +1,55 @@
+{{- $forceDestroy := $xr.spec.forceDestroy | default false -}}
+
+{{- if $backup.enabled }}
+{{- $backupVaultName := printf "%s-vault" $baseName -}}
+
+{{- $backupVaultIdentity := dig "liferay-backup-vault" "resource" "status" "atProvider" "identity" dict $observedResources -}}
+
+{{- $backupVaultPrincipalId := $backupVaultIdentity.principalId | default "" }}
+
+apiVersion: dataprotection.azure.m.upbound.io/v1beta1
+kind: BackupVault
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-vault
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $backupVaultName }}
+spec:
+    forProvider:
+        datastoreType: VaultStore
+        identity:
+            type: SystemAssigned
+        location: {{ $region }}
+        redundancy: LocallyRedundant
+        resourceGroupName: {{ $env.resourceGroupName }}
+        retentionDurationInDays: 14
+        softDelete: {{ $forceDestroy | ternary "Off" "On" | quote }}
+        tags:
+            {{- merge (dict) $tags ($backup.vaultTags | default dict) | toYaml | nindent 12 }}
+    managementPolicies: {{ $managementPolicies }}
+{{- if $backupVaultPrincipalId }}
+{{- range $dataPlane := $dataPlanes }}
+---
+apiVersion: authorization.azure.m.upbound.io/v1beta1
+kind: RoleAssignment
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-vault-storage-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $backupVaultName }}-storage-{{ $dataPlane }}
+spec:
+    forProvider:
+        principalId: {{ $backupVaultPrincipalId }}
+        principalType: ServicePrincipal
+        roleDefinitionName: Storage Account Backup Contributor
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.Storage/storageAccounts/{{ $storageAccountBase }}{{ trunc 1 $dataPlane }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+{{- end }}
+{{- end }}
+{{- end }}

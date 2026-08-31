@@ -28,6 +28,7 @@
 {{- end }}
 
 {{- $activeDatabaseFqdn := dig (printf "database-primary-%s" $activeDataPlane) "resource" "status" "atProvider" "fqdn" "" $observedResources -}}
+{{- $backup := $xr.spec.backup | default dict -}}
 {{- $backupTargetTags := merge (dict) $tags (dict "should-back-up" "true") -}}
 {{- $uidHash := printf "%s-%s-%s" $env.subscriptionId $env.deploymentName $projectIdFull | sha256sum | trunc 6 -}}
 

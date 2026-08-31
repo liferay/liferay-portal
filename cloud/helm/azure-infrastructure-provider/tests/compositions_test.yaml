@@ -125,6 +125,58 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: \{\{- if \$backup.enabled \}\}
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: BackupVault"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "datastoreType: VaultStore"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "type: SystemAssigned"
+        it: Provisions the backup vault only once backups are enabled
+    -   asserts:
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "roleDefinitionName: Reader"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "roleDefinitionName: Storage Account Backup Contributor"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \{\{- if \$backupVaultPrincipalId \}\}
+        it: Grants the vault identity only the role the document library demands
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "softDelete: \\{\\{ \\$forceDestroy \\| ternary \"Off\" \"On\" \\| quote \\}\\}"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "softDelete: \"On\""
+        it: Lets forceDestroy disable vault soft delete so the vault can be destroyed
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \$backupVaultIdentity.principalId
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: index \$backupVaultIdentity
+        it: Reads the vault principal from the identity object rather than indexing it
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "kind: ConfigMap"
             -   documentIndex: 0
                 matchRegex:
