@@ -16,6 +16,10 @@
 		.cms-compare-versions-diff {
 			height: auto;
 
+			img {
+				max-width: 100%;
+			}
+
 			.diff-html-added,
 			.diff-html-changed {
 				-webkit-box-decoration-break: clone;
@@ -26,10 +30,10 @@
 			.diff-html-changed {
 				@include cms-compare-versions-formatted-mark;
 			}
+		}
 
-			.diff-html-removed {
-				display: none;
-			}
+		.diff-html-removed {
+			display: none;
 		}
 
 		[data-field-name]:has(.cms-compare-versions-diff) .ck-editor,

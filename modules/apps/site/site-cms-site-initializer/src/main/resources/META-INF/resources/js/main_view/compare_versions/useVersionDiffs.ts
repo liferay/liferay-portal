@@ -83,12 +83,19 @@ export function injectContentDiffs(
 
 	iframeDocument.body.classList.add(`cms-compare-versions-${diffType}`);
 
-	applyFieldDiffs(diffs, iframeDocument);
+	applyFieldDiffs(diffs, diffType, iframeDocument);
 
 	hideEmptyElements(iframeDocument);
 }
 
-function applyFieldDiffs(diffs: Diffs, iframeDocument: Document) {
+function applyFieldDiffs(
+	diffs: Diffs,
+	diffType: DiffType,
+	iframeDocument: Document
+) {
+	const borderColorCssClass =
+		diffType === 'additions' ? 'border-success' : 'border-danger';
+
 	Object.entries(diffs).forEach(([fieldName, diffHTML]) => {
 		const field =
 			iframeDocument.querySelector(
@@ -115,6 +122,17 @@ function applyFieldDiffs(diffs: Diffs, iframeDocument: Document) {
 		const formGroup = field.querySelector('.form-group') ?? field;
 
 		formGroup.appendChild(container);
+
+		container
+			.querySelectorAll('.cms-compare-versions-attachment')
+			.forEach((image) => {
+				image.classList.add(borderColorCssClass);
+
+				formGroup.insertBefore(
+					image.closest('[class*="diff-html"]') ?? image,
+					container
+				);
+			});
 	});
 }
 
@@ -139,6 +157,11 @@ function removePreviousContentDiffs(iframeDocument: Document) {
 	iframeDocument
 		.querySelectorAll('.cms-compare-versions-diff')
 		.forEach((element) => element.remove());
+	iframeDocument
+		.querySelectorAll('.cms-compare-versions-attachment')
+		.forEach((element) =>
+			(element.closest('[class*="diff-html"]') ?? element).remove()
+		);
 
 	iframeDocument.body.classList.remove(
 		'cms-compare-versions-additions',
