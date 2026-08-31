@@ -1,5 +1,6 @@
 {{- $runtimeConfigs := list
     (dict "clientIdKey" "crossplaneIamClientId" "name" "azure-authorization-config" "provider" "provider-azure-authorization" "serviceAccountName" "crossplane-iam")
+    (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-dataprotection-config" "provider" "provider-azure-dataprotection" "serviceAccountName" "crossplane-data")
     (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-dbforpostgresql-config" "provider" "provider-azure-dbforpostgresql" "serviceAccountName" "crossplane-data")
     (dict "clientIdKey" "crossplaneDataClientId" "cpuRequest" "500m" "memoryLimit" "1Gi" "name" "azure-family-config" "provider" "provider-family-azure" "serviceAccountName" "crossplane-data")
     (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-keyvault-config" "provider" "provider-azure-keyvault" "serviceAccountName" "crossplane-data")

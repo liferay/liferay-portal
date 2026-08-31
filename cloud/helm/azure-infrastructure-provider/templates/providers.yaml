@@ -1,6 +1,7 @@
 {{- if .Values.providers.enabled -}}
 {{- $providers := list
     (dict "name" "provider-azure-authorization" "runtimeConfigName" "azure-authorization-config")
+    (dict "name" "provider-azure-dataprotection" "runtimeConfigName" "azure-dataprotection-config")
     (dict "name" "provider-azure-dbforpostgresql" "runtimeConfigName" "azure-dbforpostgresql-config")
     (dict "name" "provider-azure-keyvault" "runtimeConfigName" "azure-keyvault-config")
     (dict "name" "provider-azure-managedidentity" "runtimeConfigName" "azure-managedidentity-config")

@@ -14,7 +14,7 @@ tests:
                 enabled: false
     -   asserts:
             -   hasDocuments:
-                    count: 7
+                    count: 8
             -   documentIndex: 0
                 equal:
                     path: spec.package
@@ -23,7 +23,15 @@ tests:
                 equal:
                     path: spec.runtimeConfigRef.name
                     value: azure-authorization-config
-            -   documentIndex: 6
+            -   documentIndex: 1
+                equal:
+                    path: spec.package
+                    value: xpkg.upbound.io/upbound/provider-azure-dataprotection:v2.7.0
+            -   documentIndex: 1
+                equal:
+                    path: spec.runtimeConfigRef.name
+                    value: azure-dataprotection-config
+            -   documentIndex: 7
                 equal:
                     path: metadata.name
                     value: provider-family-azure
