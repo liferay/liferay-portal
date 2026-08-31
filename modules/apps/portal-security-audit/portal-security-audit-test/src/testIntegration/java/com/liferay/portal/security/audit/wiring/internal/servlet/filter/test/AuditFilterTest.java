@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.audit.AuditRequestThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.LiferayFilter;
 import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -82,10 +84,8 @@ public class AuditFilterTest {
 
 		httpSession.setAttribute(WebKeys.USER_ID, TestPropsValues.getUserId());
 
-		_testDoFilter(mockHttpServletRequest);
-
-		AuditRequestThreadLocal auditRequestThreadLocal =
-			AuditRequestThreadLocal.getAuditThreadLocal();
+		AuditRequestThreadLocal auditRequestThreadLocal = _testDoFilter(
+			mockHttpServletRequest);
 
 		Assert.assertEquals(
 			auditSessionId, auditRequestThreadLocal.getSessionID());
@@ -97,13 +97,47 @@ public class AuditFilterTest {
 	public void testDoFilterCapturesNoAuditSessionIdBeforeAuthentication()
 		throws Exception {
 
-		_testDoFilter(new MockHttpServletRequest());
-
-		AuditRequestThreadLocal auditRequestThreadLocal =
-			AuditRequestThreadLocal.getAuditThreadLocal();
+		AuditRequestThreadLocal auditRequestThreadLocal = _testDoFilter(
+			new MockHttpServletRequest());
 
 		Assert.assertNotNull(auditRequestThreadLocal.getRequestURL());
 		Assert.assertNull(auditRequestThreadLocal.getSessionID());
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-6417")
+	@Test
+	public void testDoFilterDoesNotResolveRequestIdWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		AuditRequestThreadLocal auditRequestThreadLocal = _testDoFilter(
+			PortalUUIDUtil.generate());
+
+		Assert.assertNull(auditRequestThreadLocal.getRequestId());
+		Assert.assertFalse(auditRequestThreadLocal.isRequestIdGenerated());
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testDoFilterResolvesRequestId() throws Exception {
+		AuditRequestThreadLocal auditRequestThreadLocal = _testDoFilter(
+			new MockHttpServletRequest());
+
+		Assert.assertNotNull(auditRequestThreadLocal.getRequestId());
+		Assert.assertTrue(auditRequestThreadLocal.isRequestIdGenerated());
+
+		auditRequestThreadLocal = _testDoFilter("invalid");
+
+		Assert.assertNotEquals(
+			"invalid", auditRequestThreadLocal.getRequestId());
+		Assert.assertNotNull(auditRequestThreadLocal.getRequestId());
+		Assert.assertTrue(auditRequestThreadLocal.isRequestIdGenerated());
+
+		String xRequestId = PortalUUIDUtil.generate();
+
+		auditRequestThreadLocal = _testDoFilter(xRequestId);
+
+		Assert.assertEquals(xRequestId, auditRequestThreadLocal.getRequestId());
+		Assert.assertFalse(auditRequestThreadLocal.isRequestIdGenerated());
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -174,7 +208,8 @@ public class AuditFilterTest {
 		}
 	}
 
-	private void _testDoFilter(MockHttpServletRequest mockHttpServletRequest)
+	private AuditRequestThreadLocal _testDoFilter(
+			MockHttpServletRequest mockHttpServletRequest)
 		throws Exception {
 
 		try (SafeCloseable safeCloseable =
@@ -190,6 +225,24 @@ public class AuditFilterTest {
 			invokerFilterChain.doFilter(
 				mockHttpServletRequest, new MockHttpServletResponse());
 		}
+
+		AuditRequestThreadLocal auditRequestThreadLocal =
+			AuditRequestThreadLocal.getAuditThreadLocal();
+
+		AuditRequestThreadLocal.removeAuditThreadLocal();
+
+		return auditRequestThreadLocal;
+	}
+
+	private AuditRequestThreadLocal _testDoFilter(String xRequestId)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.addHeader(HttpHeaders.X_REQUEST_ID, xRequestId);
+
+		return _testDoFilter(mockHttpServletRequest);
 	}
 
 	private static Company _company;
