@@ -36,10 +36,8 @@ public class JobHealthMonitor extends BaseMonitor {
 
 		_buildDurationMaximumSeconds = getLongValue(
 			"threshold", 0, "build.duration.maximum", thresholds);
-		_overdueGraceSeconds = getLongValue(
-			"threshold",
-			Math.max(_SECONDS_OVERDUE_GRACE_MINIMUM, _cadenceSeconds / 4),
-			"overdue.grace", thresholds);
+		_overdueGraceSeconds = getOverdueGraceSeconds(
+			_cadenceSeconds, thresholds);
 	}
 
 	@Override
@@ -262,8 +260,6 @@ public class JobHealthMonitor extends BaseMonitor {
 			JenkinsResultsParserUtil.join(". ", messages), metrics,
 			MonitorResult.Status.getMostSevere(statuses), currentTimeMillis);
 	}
-
-	private static final long _SECONDS_OVERDUE_GRACE_MINIMUM = 30 * 60;
 
 	private static final int _SECONDS_RETRY_PERIOD = 1;
 

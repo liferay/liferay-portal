@@ -74,6 +74,15 @@ public abstract class BaseMonitor implements Monitor {
 		return longValue;
 	}
 
+	protected long getOverdueGraceSeconds(
+		long cadenceSeconds, Map<String, String> thresholds) {
+
+		return getLongValue(
+			"threshold",
+			Math.max(_SECONDS_OVERDUE_GRACE_MINIMUM, cadenceSeconds / 4),
+			"overdue.grace", thresholds);
+	}
+
 	protected String getRequiredParameter(
 		String name, Map<String, String> parameters) {
 
@@ -138,6 +147,8 @@ public abstract class BaseMonitor implements Monitor {
 
 		return timeoutSeconds * 1000;
 	}
+
+	private static final long _SECONDS_OVERDUE_GRACE_MINIMUM = 30 * 60;
 
 	private static final Pattern _userInfoPattern = Pattern.compile(
 		"(//|[^/?#]*://)?[^/?#]*@.*");

@@ -36,10 +36,8 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 
 		_reportName = getRequiredParameter("report.name", parameters);
 
-		_overdueGraceSeconds = getLongValue(
-			"threshold",
-			Math.max(_SECONDS_OVERDUE_GRACE_MINIMUM, _cadenceSeconds / 4),
-			"overdue.grace", monitorConfig.getThresholds());
+		_overdueGraceSeconds = getOverdueGraceSeconds(
+			_cadenceSeconds, monitorConfig.getThresholds());
 	}
 
 	@Override
@@ -139,8 +137,6 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 			JenkinsResultsParserUtil.toDurationString(
 				_overdueGraceSeconds * 1000));
 	}
-
-	private static final long _SECONDS_OVERDUE_GRACE_MINIMUM = 30 * 60;
 
 	private static final List<Pattern> _generatedTimestampPatterns =
 		Arrays.asList(
