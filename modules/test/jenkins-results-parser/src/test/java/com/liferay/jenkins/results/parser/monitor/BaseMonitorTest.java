@@ -40,6 +40,24 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testGetOverdueGraceSeconds() {
+		BaseMonitor baseMonitor = _newBaseMonitor(60);
+
+		testEquals(
+			1800L,
+			baseMonitor.getOverdueGraceSeconds(
+				600, Collections.<String, String>emptyMap()));
+		testEquals(
+			3600L,
+			baseMonitor.getOverdueGraceSeconds(
+				14400, Collections.<String, String>emptyMap()));
+		testEquals(
+			60L,
+			baseMonitor.getOverdueGraceSeconds(
+				600, Collections.singletonMap("overdue.grace", "60")));
+	}
+
+	@Test
 	public void testGetRequiredURLParameter() {
 		String fileURL = "file:///" + RandomTestUtil.randomString();
 
