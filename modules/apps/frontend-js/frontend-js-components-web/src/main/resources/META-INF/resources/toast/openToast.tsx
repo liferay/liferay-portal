@@ -82,6 +82,7 @@ const rootsMap = new Map();
 
 export interface OpenToastProps {
 	autoClose?: number | boolean;
+	autoFocus?: boolean;
 	container?: HTMLElement;
 	containerId?: string;
 	message?: string;
@@ -123,6 +124,7 @@ export interface OpenToastProps {
 
 function openToast({
 	autoClose = TOAST_AUTO_CLOSE_INTERVAL,
+	autoFocus = false,
 	container,
 	containerId,
 	message = '',
@@ -191,14 +193,14 @@ function openToast({
 				}}
 			/>
 		</ClayAlert>,
-		renderData,
+		{...renderData, __reactDOMFlushSync: true},
 		rootElement
 	);
 
 	const alertElement =
 		rootElement.querySelector<HTMLElement>('[role="alert"]');
 
-	if (alertElement) {
+	if (autoFocus && alertElement) {
 		alertElement.setAttribute('tabindex', '-1');
 		alertElement.focus();
 	}

@@ -193,6 +193,7 @@ export class Session {
 			const openToast = this.openToast;
 
 			const toastDefaultConfig = {
+				autoFocus: true,
 				onClick: ({event}: any) => {
 					if (event.target.classList.contains('alert-link')) {
 						this.extend();
