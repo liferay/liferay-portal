@@ -540,14 +540,19 @@ public class DropZoneFragmentEntryLinkListener
 			HttpServletResponse httpServletResponse, Locale locale)
 		throws PortalException {
 
-		Document document = _getDocument(
-			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
-				fragmentEntryLink,
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
 				new DefaultFragmentEntryProcessorContext(
 					fragmentEntryLink.getCompanyId(), httpServletRequest,
 					httpServletResponse, locale,
 					FragmentEntryLinkConstants.EDIT,
-					fragmentEntryLink.getGroupId())));
+					fragmentEntryLink.getGroupId());
+
+		defaultFragmentEntryProcessorContext.setDisablePortletRender(true);
+
+		Document document = _getDocument(
+			_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+				fragmentEntryLink, defaultFragmentEntryProcessorContext));
 
 		return document.getElementsByTag("lfr-drop-zone");
 	}
