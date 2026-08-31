@@ -905,7 +905,7 @@ public class CPDefinitionLocalServiceTest {
 		long cpDefinitionId = cpDefinition.getCPDefinitionId();
 
 		_cpDefinitionLocalService.updateExternalReferenceCode(
-			"ERC", cpDefinitionId);
+			cpDefinitionId, "ERC");
 
 		cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);

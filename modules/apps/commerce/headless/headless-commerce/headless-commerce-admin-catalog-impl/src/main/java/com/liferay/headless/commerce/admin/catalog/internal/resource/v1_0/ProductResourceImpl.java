@@ -1674,8 +1674,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 		if (!Validator.isBlank(product.getExternalReferenceCode())) {
 			_cpDefinitionService.updateExternalReferenceCode(
-				product.getExternalReferenceCode(),
-				cpDefinition.getCPDefinitionId());
+				cpDefinition.getCPDefinitionId(),
+				product.getExternalReferenceCode());
 		}
 
 		Map<String, ?> expando = product.getExpando();
