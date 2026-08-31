@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.Validator;
 import java.net.URI;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -157,32 +156,17 @@ public class LayoutAdaptiveMediaProcessorImpl
 		parentElement.prependChild(sourceElement);
 	}
 
-	private String _getCSSSelector(
-		Map<String, Integer> layoutStructureItemIdCounts,
-		Element styledElement) {
-
-		String elementId = styledElement.attr("id");
-
-		if (Validator.isNotNull(elementId)) {
-			return StringPool.POUND + elementId;
-		}
-
+	private String _getCSSClass(long fileEntryId, Element styledElement) {
 		String layoutStructureItemId = styledElement.attr(
 			"data-layout-structure-item-id");
 
 		if (Validator.isNull(layoutStructureItemId)) {
-			elementId = _ELEMENT_ID_PREFIX + StringUtil.randomId();
-		}
-		else {
-			elementId = StringBundler.concat(
-				_ELEMENT_ID_PREFIX, layoutStructureItemId, StringPool.DASH,
-				layoutStructureItemIdCounts.merge(
-					layoutStructureItemId, 1, Integer::sum));
+			return _CSS_CLASS_PREFIX + fileEntryId;
 		}
 
-		styledElement.attr("id", elementId);
-
-		return StringPool.POUND + elementId;
+		return StringBundler.concat(
+			_CSS_CLASS_PREFIX, layoutStructureItemId, StringPool.DASH,
+			fileEntryId);
 	}
 
 	private String _getMediaQuery(String cssSelector, long fileEntryId)
@@ -233,8 +217,6 @@ public class LayoutAdaptiveMediaProcessorImpl
 	private void _replaceCSSProperties(Document document)
 		throws PortalException {
 
-		Map<String, Integer> layoutStructureItemIdCounts = new HashMap<>();
-
 		Elements styledElements = document.select("*[style]");
 
 		for (Element styledElement : styledElements) {
@@ -246,15 +228,17 @@ public class LayoutAdaptiveMediaProcessorImpl
 
 			StringBundler sb = new StringBundler();
 
-			String cssSelector = _getCSSSelector(
-				layoutStructureItemIdCounts, styledElement);
-
 			Matcher matcher = _cssPropertyPattern.matcher(styleText);
 
 			while (matcher.find()) {
+				long fileEntryId = GetterUtil.getLong(matcher.group(1));
+
+				String cssClass = _getCSSClass(fileEntryId, styledElement);
+
+				styledElement.addClass(cssClass);
+
 				sb.append(
-					_getMediaQuery(
-						cssSelector, GetterUtil.getLong(matcher.group(1))));
+					_getMediaQuery(StringPool.PERIOD + cssClass, fileEntryId));
 			}
 
 			if (sb.length() > 0) {
@@ -265,7 +249,7 @@ public class LayoutAdaptiveMediaProcessorImpl
 		}
 	}
 
-	private static final String _ELEMENT_ID_PREFIX = "lfr-background-image-";
+	private static final String _CSS_CLASS_PREFIX = "lfr-background-image-";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutAdaptiveMediaProcessorImpl.class);
