@@ -123,7 +123,8 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	private BaseTopLevelBuildReport _newBaseTopLevelBuildReport() {
-		return new BaseTopLevelBuildReport(_BUILD_URL_STRING) {
+		return new BaseTopLevelBuildReport(
+			"https://test-1-1/job/test-job/123") {
 
 			@Override
 			public JSONObject getBuildReportJSONObject() {
@@ -153,8 +154,5 @@ public class BaseTopLevelBuildReportTest
 
 		return downstreamBuildReport;
 	}
-
-	private static final String _BUILD_URL_STRING =
-		"https://test-1-1/job/test-job/123";
 
 }
