@@ -84,7 +84,26 @@ public class CMSContentOutboundLinksModelDocumentContributor
 
 				if (Objects.equals(
 						businessType,
-						ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
+						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
+					_isReferenceFileSource(objectField)) {
+
+					for (String value :
+							_getValues(indexedValues, objectField)) {
+
+						long referencedObjectEntryId =
+							_getReferencedObjectEntryId(
+								GetterUtil.getLong(value), objectEntry);
+
+						if (referencedObjectEntryId > 0) {
+							outboundLinks.add(
+								CMSOutboundLinksUtil.getObjectEntryIdToken(
+									referencedObjectEntryId));
+						}
+					}
+				}
+				else if (Objects.equals(
+							businessType,
+							ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 					long objectEntryId = GetterUtil.getLong(
 						indexedValues.get(objectField.getName()));
@@ -111,25 +130,6 @@ public class CMSContentOutboundLinksModelDocumentContributor
 								CMSOutboundLinksUtil.
 									getObjectEntryExternalReferenceCodeToken(
 										externalReferenceCode));
-						}
-					}
-				}
-				else if (Objects.equals(
-							businessType,
-							ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
-						 _isReferenceFileSource(objectField)) {
-
-					for (String value :
-							_getValues(indexedValues, objectField)) {
-
-						long referencedObjectEntryId =
-							_getReferencedObjectEntryId(
-								GetterUtil.getLong(value), objectEntry);
-
-						if (referencedObjectEntryId > 0) {
-							outboundLinks.add(
-								CMSOutboundLinksUtil.getObjectEntryIdToken(
-									referencedObjectEntryId));
 						}
 					}
 				}
