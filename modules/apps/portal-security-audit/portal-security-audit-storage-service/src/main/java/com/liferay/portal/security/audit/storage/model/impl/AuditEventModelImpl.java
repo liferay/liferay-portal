@@ -122,7 +122,7 @@ public class AuditEventModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table Audit_AuditEvent (auditEventId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,accountEntryId LONG,additionalInfo TEXT null,className VARCHAR(200) null,classPK VARCHAR(75) null,clientHost VARCHAR(255) null,clientIP VARCHAR(255) null,contextName VARCHAR(75) null,correlationId VARCHAR(75) null,eventType VARCHAR(75) null,httpMethod VARCHAR(75) null,impersonated BOOLEAN,impersonatedUserEmailAddress VARCHAR(75) null,impersonatedUserId LONG,impersonatedUserName VARCHAR(75) null,message STRING null,objectName VARCHAR(75) null,requestId VARCHAR(75) null,requestIdGenerated BOOLEAN,resourceAction VARCHAR(75) null,resourceType VARCHAR(75) null,roles TEXT null,serverName VARCHAR(255) null,serverPort INTEGER,sessionID VARCHAR(255) null,userAgent VARCHAR(255) null,userEmailAddress VARCHAR(75) null)";
+		"create table Audit_AuditEvent (auditEventId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,accountEntryId LONG,additionalInfo TEXT null,className VARCHAR(200) null,classPK VARCHAR(75) null,clientHost VARCHAR(255) null,clientIP VARCHAR(255) null,contextName VARCHAR(75) null,correlationId VARCHAR(75) null,eventType VARCHAR(75) null,httpMethod VARCHAR(75) null,impersonated BOOLEAN,impersonatedUserEmailAddress VARCHAR(75) null,impersonatedUserId LONG,impersonatedUserName VARCHAR(75) null,message STRING null,objectName VARCHAR(75) null,requestId VARCHAR(200) null,requestIdGenerated BOOLEAN,resourceAction VARCHAR(75) null,resourceType VARCHAR(75) null,roles TEXT null,serverName VARCHAR(255) null,serverPort INTEGER,sessionID VARCHAR(255) null,userAgent VARCHAR(255) null,userEmailAddress VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table Audit_AuditEvent";
 
@@ -1766,4 +1766,4 @@ public class AuditEventModelImpl
 	private AuditEvent _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-515671522
+// LIFERAY-SERVICE-BUILDER-HASH:-1490691344
