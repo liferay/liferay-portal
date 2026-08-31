@@ -387,7 +387,7 @@ public class CommercePriceEntryServiceImpl
 
 	@Override
 	public CommercePriceEntry updateExternalReferenceCode(
-			String externalReferenceCode, CommercePriceEntry commercePriceEntry)
+			CommercePriceEntry commercePriceEntry, String externalReferenceCode)
 		throws PortalException {
 
 		_commercePriceListModelResourcePermission.check(
@@ -395,7 +395,7 @@ public class CommercePriceEntryServiceImpl
 			ActionKeys.UPDATE);
 
 		return commercePriceEntryLocalService.updateExternalReferenceCode(
-			externalReferenceCode, commercePriceEntry);
+			commercePriceEntry, externalReferenceCode);
 	}
 
 	@Override

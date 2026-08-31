@@ -779,7 +779,7 @@ public class CommercePriceEntryLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommercePriceEntry updateExternalReferenceCode(
-			String externalReferenceCode, CommercePriceEntry commercePriceEntry)
+			CommercePriceEntry commercePriceEntry, String externalReferenceCode)
 		throws PortalException {
 
 		commercePriceEntry.setExternalReferenceCode(externalReferenceCode);
