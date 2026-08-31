@@ -383,6 +383,11 @@
 			<message key="builder.use" value="Use &quot;{0}&quot; ({1}, {2})" />
 			<message key="builder.use.instead" value="Use &quot;{0}&quot; instead of new instance of &quot;{1}&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.CredentialBufferCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Finds buffers that are derived from a `String` and passed straight into a credential API, leaving no reference to clear." />
+			<message key="variable.assign.required" value="Assign &quot;{0}&quot; to a local variable so that it can be cleared after use, see LPD-93280" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.DatabaseMetaDataCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Checks usages of `java.sql.DatabaseMetaData`." />

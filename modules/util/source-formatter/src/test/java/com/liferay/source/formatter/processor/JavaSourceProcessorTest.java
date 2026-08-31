@@ -142,29 +142,17 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			SourceProcessorTestParameters.create(
 				"CredentialBuffer.testjava"
 			).addExpectedMessage(
-				"Assign the buffer to a local variable so that it can be " +
-					"cleared after use, see LPD-93280",
-				34
+				"Assign \"credential.toCharArray()\" to a local variable so " +
+					"that it can be cleared after use, see LPD-93280",
+				22
 			).addExpectedMessage(
-				"Assign the buffer to a local variable so that it can be " +
-					"cleared after use, see LPD-93280",
-				38
+				"Assign \"credential.getBytes()\" to a local variable so " +
+					"that it can be cleared after use, see LPD-93280",
+				26
 			).addExpectedMessage(
-				"Assign the buffer to a local variable so that it can be " +
-					"cleared after use, see LPD-93280",
-				42
-			).addExpectedMessage(
-				"Assign the buffer to a local variable so that it can be " +
-					"cleared after use, see LPD-93280",
-				46
-			).addExpectedMessage(
-				"Assign the buffer to a local variable so that it can be " +
-					"cleared after use, see LPD-93280",
-				61
-			).addExpectedMessage(
-				"Assign the buffer to a local variable so that it can be " +
-					"cleared after use, see LPD-93280",
-				65
+				"Assign \"credential.toCharArray()\" to a local variable so " +
+					"that it can be cleared after use, see LPD-93280",
+				33
 			));
 	}
 
