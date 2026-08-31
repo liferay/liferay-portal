@@ -379,7 +379,6 @@ public class InitUtil {
 		}
 
 		_appApplicationContext = null;
-
 		_initialized = false;
 	}
 
