@@ -491,14 +491,14 @@ public class ElasticsearchIndexSearcher extends BaseIndexSearcher {
 	}
 
 	private Integer _getTrackTotalHitsLimit(Integer trackTotalHitsLimit) {
-		int connectorTrackTotalHitsLimit =
+		int elasticsearchTrackTotalHitsLimit =
 			_elasticsearchConfigurationWrapper.trackTotalHitsLimit();
 
 		if (trackTotalHitsLimit == null) {
-			return connectorTrackTotalHitsLimit;
+			return elasticsearchTrackTotalHitsLimit;
 		}
 
-		return Math.min(trackTotalHitsLimit, connectorTrackTotalHitsLimit);
+		return Math.min(trackTotalHitsLimit, elasticsearchTrackTotalHitsLimit);
 	}
 
 	private boolean _isEnableDeepPagination(long companyId) {

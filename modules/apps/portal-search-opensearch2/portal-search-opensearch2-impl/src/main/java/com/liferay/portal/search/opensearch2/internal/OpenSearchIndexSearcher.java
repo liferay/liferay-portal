@@ -508,14 +508,14 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 	}
 
 	private Integer _getTrackTotalHitsLimit(Integer trackTotalHitsLimit) {
-		int connectorTrackTotalHitsLimit =
+		int openSearchTrackTotalHitsLimit =
 			_openSearchConfigurationWrapper.trackTotalHitsLimit();
 
 		if (trackTotalHitsLimit == null) {
-			return connectorTrackTotalHitsLimit;
+			return openSearchTrackTotalHitsLimit;
 		}
 
-		return Math.min(trackTotalHitsLimit, connectorTrackTotalHitsLimit);
+		return Math.min(trackTotalHitsLimit, openSearchTrackTotalHitsLimit);
 	}
 
 	private void _populateResponse(
