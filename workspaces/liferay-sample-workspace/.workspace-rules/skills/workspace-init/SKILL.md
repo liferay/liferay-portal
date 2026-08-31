@@ -90,6 +90,20 @@ Skip this block if MCP is not supported in your DXP version.
   echo "liferay.home=$(cd bundles && pwd)" >> configs/local/portal-ext.properties
   ```
 
+- **Developer mode (dev only)**: `portal-developer.properties` ships inside `portal-impl.jar` and switches off the caching and minification that make source changes invisible until a restart — `theme.css.fast.load=false`, `minifier.enabled=false`, `layout.template.cache.enabled=false`, `template.engine.cache.enabled=false`, and `direct.servlet.context.reload=true`. Pull it in from `configs/local/portal-ext.properties`:
+
+  ```
+  include-and-override=portal-developer.properties
+  ```
+
+  This is an additional line, not a replacement — a workspace typically already has `include-and-override=portal-env.properties`, and repeated `include-and-override` keys are each processed rather than the last one winning (`portal-impl/src/portal.properties` declares eight of them). Keep the include lines together at the top of the file.
+
+  Two consequences worth knowing before adding it:
+
+  - **An included file overrides the file that includes it.** So anything `portal-developer.properties` sets wins over the same key in your `portal-ext.properties`. None of the properties above collide with it today, but a later addition can, and the losing line looks correct in the file while having no effect.
+
+  - **It opens the OSGi console on `localhost:11311`** (`module.framework.properties.osgi.console`). That is a second port that two workspaces cannot share — the same class of conflict as 8080 described below, so check it alongside the port check if a second workspace is in play. Never enable developer mode outside local development; it disables the ETag and header filters and turns off CAPTCHA enforcement.
+
 - **Configuration sync — before the first start**: copy the local config into the bundle: `cp configs/local/portal-ext.properties bundles/portal-ext.properties`. (This copy is destructive — see `skills/deploy-and-verify/SKILL.md` for the diff before sync rule.)
 
   The properties above only take effect if this copy happens before the bundle has ever booted. See First Login Bootstrap below.
