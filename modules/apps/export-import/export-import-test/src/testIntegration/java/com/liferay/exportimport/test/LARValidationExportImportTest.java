@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.exportimport.controller.test;
+package com.liferay.exportimport.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.bookmarks.constants.BookmarksPortletKeys;
@@ -46,7 +46,7 @@ import org.junit.runner.RunWith;
  * @author Jaime León
  */
 @RunWith(Arquillian.class)
-public class ImportControllerTest extends BaseExportImportTestCase {
+public class LARValidationExportImportTest extends BaseExportImportTestCase {
 
 	@ClassRule
 	@Rule
