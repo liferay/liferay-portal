@@ -18,11 +18,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
+import com.liferay.portal.kernel.test.randomizerbumpers.TikaSafeRandomizerBumper;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import java.awt.image.BufferedImage;
 
@@ -120,7 +120,8 @@ public class DLTestUtil {
 	}
 
 	public static byte[] randomTextFileBytes(int length) {
-		String string = StringUtil.randomId(length);
+		String string = RandomTestUtil.randomString(
+			length, TikaSafeRandomizerBumper.INSTANCE);
 
 		return string.getBytes();
 	}
