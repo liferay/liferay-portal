@@ -71,7 +71,7 @@ public class FIPSAuditNDJSONLayoutTest {
 
 		Assert.assertEquals(
 			_toSerializable(fipsAuditLogEntry),
-			testByteBufferDestination.getString());
+			testByteBufferDestination._getString());
 	}
 
 	@Test
@@ -224,14 +224,6 @@ public class FIPSAuditNDJSONLayoutTest {
 			return _byteBuffer;
 		}
 
-		public String getString() {
-			drain(_byteBuffer);
-
-			byte[] bytes = _byteArrayOutputStream.toByteArray();
-
-			return new String(bytes, StandardCharsets.UTF_8);
-		}
-
 		@Override
 		public void writeBytes(byte[] bytes, int offset, int length) {
 			_byteArrayOutputStream.write(bytes, offset, length);
@@ -244,6 +236,14 @@ public class FIPSAuditNDJSONLayoutTest {
 			byteBuffer.get(bytes);
 
 			writeBytes(bytes, 0, bytes.length);
+		}
+
+		private String _getString() {
+			drain(_byteBuffer);
+
+			byte[] bytes = _byteArrayOutputStream.toByteArray();
+
+			return new String(bytes, StandardCharsets.UTF_8);
 		}
 
 		private final ByteArrayOutputStream _byteArrayOutputStream =
