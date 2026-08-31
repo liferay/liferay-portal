@@ -108,7 +108,7 @@ public class DropZoneFragmentEntryLinkListenerTest {
 			3, _getFragmentDropZoneItemsCount(fragmentEntryLink));
 		Assert.assertTrue(
 			_hasDropZoneChildLayoutStructureItem(
-				fragmentEntryLink, childItemId));
+				childItemId, fragmentEntryLink));
 
 		_updateConfigurationValues(
 			draftLayout, fragmentEntryLink, group,
@@ -122,7 +122,7 @@ public class DropZoneFragmentEntryLinkListenerTest {
 			3, _getFragmentDropZoneItemsCount(fragmentEntryLink));
 		Assert.assertTrue(
 			_hasDropZoneChildLayoutStructureItem(
-				fragmentEntryLink, childItemId));
+				childItemId, fragmentEntryLink));
 	}
 
 	private String _addDropZoneChildLayoutStructureItem(
@@ -253,7 +253,7 @@ public class DropZoneFragmentEntryLinkListenerTest {
 	}
 
 	private boolean _hasDropZoneChildLayoutStructureItem(
-		FragmentEntryLink fragmentEntryLink, String childItemId) {
+		String childItemId, FragmentEntryLink fragmentEntryLink) {
 
 		LayoutStructure layoutStructure = _getLayoutStructure(
 			fragmentEntryLink);
@@ -315,13 +315,10 @@ public class DropZoneFragmentEntryLinkListenerTest {
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-		try {
-			_fragmentEntryLinkListener.
-				onUpdateFragmentEntryLinkConfigurationValues(fragmentEntryLink);
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
+		_fragmentEntryLinkListener.
+			onUpdateFragmentEntryLinkConfigurationValues(fragmentEntryLink);
+
+		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	private static final String _FIELD_NAME = "numberOfPanels";
