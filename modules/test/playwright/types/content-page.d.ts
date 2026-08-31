@@ -95,6 +95,18 @@ type PageDefinition = {
 
 type PageElement = {
 	definition?: {
+		backgroundImage?: {
+			title?: {value: string};
+			url?: {
+				mapping?: {
+					itemReference?: {
+						className: string;
+						classPK: string;
+					};
+				};
+				value?: string;
+			};
+		};
 		collectionConfig?: CollectionConfig;
 		collectionViewports?: Array<CollectionViewport>;
 		cssClasses?: string[];

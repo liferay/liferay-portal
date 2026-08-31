@@ -6,18 +6,21 @@
 import getRandomString from '../../../../utils/getRandomString';
 
 type Props = {
+	backgroundImage?: NonNullable<PageElement['definition']>['backgroundImage'];
 	fragmentStyle?: Record<string, string>;
 	id?: string;
 	pageElements?: PageElement[];
 };
 
 export default function getContainerDefinition({
+	backgroundImage,
 	id = getRandomString(),
 	pageElements = [],
 	fragmentStyle,
 }: Props): PageElement {
 	return {
 		definition: {
+			backgroundImage,
 			fragmentStyle,
 			layout: {},
 		},
