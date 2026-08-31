@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -184,6 +185,13 @@ public class InfoBoxFragmentRendererTest {
 				role.getRoleId(),
 				new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
 
+			_resourcePermissionLocalService.setResourcePermissions(
+				_commerceOrder.getCompanyId(),
+				CommerceOrderAttachment.class.getName(),
+				ResourceConstants.SCOPE_GROUP,
+				String.valueOf(_commerceOrder.getGroupId()), role.getRoleId(),
+				new String[] {ActionKeys.VIEW});
+
 			User user = UserTestUtil.addUser();
 
 			_roleLocalService.addUserRole(user.getUserId(), role);
@@ -283,6 +291,13 @@ public class InfoBoxFragmentRendererTest {
 				String.valueOf(_accountEntry.getAccountEntryGroupId()),
 				role.getRoleId(),
 				new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				_commerceOrder.getCompanyId(),
+				CommerceOrderAttachment.class.getName(),
+				ResourceConstants.SCOPE_GROUP,
+				String.valueOf(_commerceOrder.getGroupId()), role.getRoleId(),
+				new String[] {ActionKeys.VIEW});
 
 			User user = UserTestUtil.addUser();
 
