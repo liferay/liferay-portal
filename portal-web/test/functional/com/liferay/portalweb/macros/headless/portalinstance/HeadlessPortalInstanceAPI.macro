@@ -174,8 +174,8 @@ definition {
 	macro exportPortalInstance(authenticationMethod = null, portalInstanceId = null) {
 		Variables.assertDefined(parameterList = ${portalInstanceId});
 
-		var portalURL = JSONCompany.getDefaultPortalURL();
 		var portalInstanceId = StringUtil.replace(${portalInstanceId}, " ", "%20");
+		var portalURL = JSONCompany.getDefaultPortalURL();
 
 		if (${authenticationMethod} == "By Screen Name") {
 			var userLoginInfo = "test:${PropsUtil.get(\"default.admin.password\")}";
@@ -199,11 +199,11 @@ definition {
 	macro importPortalInstance(authenticationMethod = null, name = null, schemaName = null, virtualHost = null, webId = null) {
 		Variables.assertDefined(parameterList = ${schemaName});
 
-		var portalURL = JSONCompany.getDefaultPortalURL();
 		var parameters = JSONUtil2._addJSONObject(
 			json = "{}",
 			key = "schemaName",
 			value = "\"${schemaName}\"");
+		var portalURL = JSONCompany.getDefaultPortalURL();
 
 		if (isSet(name)) {
 			var parameters = JSONUtil2._addJSONObject(
