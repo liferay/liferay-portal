@@ -1444,8 +1444,8 @@ public class DBPartitionUtil {
 			Connection connection, long companyId)
 		throws PortalException {
 
-		String targetPartitionName = getPartitionName(companyId);
 		String sourcePartitionName = getExportedPartitionName(companyId);
+		String targetPartitionName = getPartitionName(companyId);
 
 		try {
 			if (_dbPartitionDB.existsPartition(
