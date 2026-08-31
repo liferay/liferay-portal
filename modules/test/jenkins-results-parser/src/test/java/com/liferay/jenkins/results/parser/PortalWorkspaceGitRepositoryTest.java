@@ -188,6 +188,12 @@ public class PortalWorkspaceGitRepositoryTest
 			portalWorkspaceGitRepository
 		).downloadYarnCache();
 
+		Mockito.doReturn(
+			true
+		).when(
+			portalWorkspaceGitRepository
+		).isYarnCacheAvailable();
+
 		Mockito.doNothing(
 		).when(
 			portalWorkspaceGitRepository
@@ -207,12 +213,6 @@ public class PortalWorkspaceGitRepositoryTest
 		).when(
 			portalWorkspaceGitRepository
 		).uploadGitArchives();
-
-		Mockito.doReturn(
-			true
-		).when(
-			portalWorkspaceGitRepository
-		).isYarnCacheAvailable();
 
 		portalWorkspaceGitRepository.setSnapshot(snapshot);
 
