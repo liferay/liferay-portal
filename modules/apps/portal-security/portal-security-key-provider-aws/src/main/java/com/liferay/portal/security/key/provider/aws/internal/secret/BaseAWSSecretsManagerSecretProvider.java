@@ -61,14 +61,13 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 			awsSecretsManagerSecretProviderContext =
 				_getAWSSecretsManagerSecretProviderContext(companyId);
 
-		String secretARN = _resolveSecretARN(
-			awsSecretsManagerSecretProviderContext, companyId,
-			secretIdentifier);
-
 		AWSClientManager<AWSSecretsManager> awsClientManager =
 			awsSecretsManagerSecretProviderContext.getAWSClientManager();
 		long recoveryWindowInDays =
 			awsSecretsManagerSecretProviderContext.getRecoveryWindowInDays();
+		String secretARN = _resolveSecretARN(
+			awsSecretsManagerSecretProviderContext, companyId,
+			secretIdentifier);
 
 		try {
 			awsClientManager.execute(
@@ -111,14 +110,14 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 			awsSecretsManagerSecretProviderContext =
 				_getAWSSecretsManagerSecretProviderContext(companyId);
 
+		AWSClientManager<AWSSecretsManager> awsClientManager =
+			awsSecretsManagerSecretProviderContext.getAWSClientManager();
+
 		byte[] bytes = null;
 
 		String secretARN = _resolveSecretARN(
 			awsSecretsManagerSecretProviderContext, companyId,
 			secretIdentifier);
-
-		AWSClientManager<AWSSecretsManager> awsClientManager =
-			awsSecretsManagerSecretProviderContext.getAWSClientManager();
 
 		try {
 			GetSecretValueResult getSecretValueResult =
@@ -234,8 +233,6 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 		AWSClientManager<AWSSecretsManager> awsClientManager =
 			awsSecretsManagerSecretProviderContext.getAWSClientManager();
 
-		byte[] bytes = secret.getBytes();
-
 		try {
 			awsClientManager.execute(
 				awsSecretsManager -> {
@@ -243,7 +240,7 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 						awsSecretsManager.putSecretValue(
 							new PutSecretValueRequest(
 							).withSecretBinary(
-								ByteBuffer.wrap(bytes)
+								ByteBuffer.wrap(secret.getBytes())
 							).withSecretId(
 								secretARN
 							));
@@ -262,7 +259,7 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 							).withName(
 								secretName
 							).withSecretBinary(
-								ByteBuffer.wrap(bytes)
+								ByteBuffer.wrap(secret.getBytes())
 							));
 					}
 

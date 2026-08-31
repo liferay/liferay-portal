@@ -170,8 +170,8 @@ public class AWSClientManager<T> {
 	}
 
 	private AwsClientBuilder.EndpointConfiguration _getEndpointConfiguration() {
-		if (!_useFIPSEndpoint || Validator.isNull(_fipsEndpointTemplate) ||
-			Validator.isNull(_awsRegion)) {
+		if (!_useFIPSEndpoint || Validator.isNull(_awsRegion) ||
+			Validator.isNull(_fipsEndpointTemplate)) {
 
 			return null;
 		}
