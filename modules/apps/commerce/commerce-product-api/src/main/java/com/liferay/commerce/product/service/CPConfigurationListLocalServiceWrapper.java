@@ -567,6 +567,15 @@ public class CPConfigurationListLocalServiceWrapper
 	}
 
 	@Override
+	public CPConfigurationList updateExternalReferenceCode(
+			long cpConfigurationListId, String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpConfigurationListLocalService.updateExternalReferenceCode(
+			cpConfigurationListId, externalReferenceCode);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _cpConfigurationListLocalService.getBasePersistence();
 	}
@@ -606,4 +615,4 @@ public class CPConfigurationListLocalServiceWrapper
 	private CPConfigurationListLocalService _cpConfigurationListLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1241619831
+// LIFERAY-SERVICE-BUILDER-HASH:-1441783210

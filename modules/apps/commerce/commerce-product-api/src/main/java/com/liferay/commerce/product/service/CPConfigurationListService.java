@@ -123,5 +123,10 @@ public interface CPConfigurationListService extends BaseService {
 			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public CPConfigurationList updateExternalReferenceCode(
+			long cpConfigurationListId, String externalReferenceCode)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-856845501
+// LIFERAY-SERVICE-BUILDER-HASH:27311045

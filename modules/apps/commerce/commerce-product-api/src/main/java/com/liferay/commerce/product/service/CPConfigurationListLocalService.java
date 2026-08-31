@@ -411,6 +411,11 @@ public interface CPConfigurationListLocalService
 			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public CPConfigurationList updateExternalReferenceCode(
+			long cpConfigurationListId, String externalReferenceCode)
+		throws PortalException;
+
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<CPConfigurationList> getCTPersistence();
@@ -427,4 +432,4 @@ public interface CPConfigurationListLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-385849409
+// LIFERAY-SERVICE-BUILDER-HASH:-532709251
