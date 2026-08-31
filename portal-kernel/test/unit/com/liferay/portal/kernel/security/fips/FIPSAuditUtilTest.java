@@ -111,7 +111,7 @@ public class FIPSAuditUtilTest {
 			new FIPSAuditEvent(
 				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
 
-		long eventSequence = _getLastEventSequence();
+		long lastEventSequence = _getLastEventSequence();
 
 		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
 			RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO);
@@ -129,7 +129,7 @@ public class FIPSAuditUtilTest {
 			new FIPSAuditEvent(
 				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
 
-		Assert.assertEquals(eventSequence + 1, _getLastEventSequence());
+		Assert.assertEquals(lastEventSequence + 1, _getLastEventSequence());
 	}
 
 	@Test
@@ -236,7 +236,7 @@ public class FIPSAuditUtilTest {
 			new FIPSAuditEvent(
 				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
 
-		long eventSequence = _getLastEventSequence();
+		long lastEventSequence = _getLastEventSequence();
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable("FIPS_ENABLED", true);
@@ -266,7 +266,7 @@ public class FIPSAuditUtilTest {
 			new FIPSAuditEvent(
 				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
 
-		Assert.assertEquals(eventSequence + 1, _getLastEventSequence());
+		Assert.assertEquals(lastEventSequence + 1, _getLastEventSequence());
 	}
 
 	private static final Logger _logger = Mockito.mock(Logger.class);
