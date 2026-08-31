@@ -4,6 +4,10 @@ definition {
 	macro addCP(maxUserNumber = null, instanceAdminLastName = null, maxUsers = null, portalInstanceActive = null, instanceAdminFirstName = null, webId = null, mailDomain = null, instanceScreenName = null, instancePassword = null, virtualHost = null, instanceAdminEmail = null) {
 		LexiconEntry.gotoAdd();
 
+		if (IsElementPresent(key_menuItem = "Add", locator1 = "MenuItem#ANY_MENU_ITEM")) {
+			MenuItem.click(menuItem = "Add");
+		}
+
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		Type(
