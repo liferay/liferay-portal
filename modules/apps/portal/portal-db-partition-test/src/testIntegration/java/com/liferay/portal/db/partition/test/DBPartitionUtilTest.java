@@ -330,7 +330,8 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 				for (long companyId : COMPANY_IDS) {
 					db.runSQL(
 						dbPartitionDB.getDropPartitionSQL(
-							DBPartitionUtil.getExportedPartitionName(companyId)));
+							DBPartitionUtil.getExportedPartitionName(
+								companyId)));
 				}
 			}
 
@@ -502,7 +503,8 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 				for (long companyId : COMPANY_IDS) {
 					db.runSQL(
 						dbPartitionDB.getDropPartitionSQL(
-							DBPartitionUtil.getExportedPartitionName(companyId)));
+							DBPartitionUtil.getExportedPartitionName(
+								companyId)));
 				}
 			}
 
