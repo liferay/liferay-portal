@@ -1,4 +1,4 @@
-@import 'atlas-variables';
+@import 'atlas-custom-properties/_variables';
 
 .site-navigation__drag-preview {
 	&__mask {
@@ -30,7 +30,7 @@
 	&__label {
 		background-color: $white;
 		border-radius: 4px;
-		box-shadow: 0 8px 16px rgba(39, 40, 51, 0.16);
+		box-shadow: unquote('0 8px 16px hsl(from #{$gray-900} h s l / 0.16)');
 		color: $secondary-d2;
 		font-size: 12px;
 		font-weight: 600;
