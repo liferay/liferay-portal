@@ -156,17 +156,24 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 		if (AuditRouterUtil.isDeployed()) {
 			long userId = getUserId();
 
-			AuditRouterUtil.route(
-				new AuditMessage(
-					0, company.getCompanyId(), userId,
-					PortalUtil.getUserName(userId, StringPool.BLANK), null,
-					JSONUtil.put(
-						"virtualHostname", company.getVirtualHostname()
-					).put(
-						"webId", company.getWebId()
-					),
-					Company.class.getName(),
-					String.valueOf(company.getCompanyId()), "ADD", null));
+			try {
+				AuditRouterUtil.route(
+					new AuditMessage(
+						0, company.getCompanyId(), userId,
+						PortalUtil.getUserName(userId, StringPool.BLANK), null,
+						JSONUtil.put(
+							"virtualHostname", company.getVirtualHostname()
+						).put(
+							"webId", company.getWebId()
+						),
+						Company.class.getName(),
+						String.valueOf(company.getCompanyId()), "ADD", null));
+			}
+			catch (AuditException auditException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to route audit message", auditException);
+				}
+			}
 		}
 
 		return company;
@@ -191,17 +198,24 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 		if (AuditRouterUtil.isDeployed()) {
 			long userId = getUserId();
 
-			AuditRouterUtil.route(
-				new AuditMessage(
-					0, company.getCompanyId(), userId,
-					PortalUtil.getUserName(userId, StringPool.BLANK), null,
-					JSONUtil.put(
-						"virtualHostname", company.getVirtualHostname()
-					).put(
-						"webId", company.getWebId()
-					),
-					Company.class.getName(),
-					String.valueOf(company.getCompanyId()), "COPY", null));
+			try {
+				AuditRouterUtil.route(
+					new AuditMessage(
+						0, company.getCompanyId(), userId,
+						PortalUtil.getUserName(userId, StringPool.BLANK), null,
+						JSONUtil.put(
+							"virtualHostname", company.getVirtualHostname()
+						).put(
+							"webId", company.getWebId()
+						),
+						Company.class.getName(),
+						String.valueOf(company.getCompanyId()), "COPY", null));
+			}
+			catch (AuditException auditException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to route audit message", auditException);
+				}
+			}
 		}
 
 		return company;
