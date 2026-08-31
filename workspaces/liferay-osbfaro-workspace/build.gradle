@@ -14,6 +14,16 @@ subprojects {
 	}
 }
 
+configurations {
+	faroLoggingDependencies
+}
+
+dependencies {
+	faroLoggingDependencies(group: "org.apache.logging.log4j", name: "log4j-layout-template-json", version: "2.17.1") {
+		transitive = false
+	}
+}
+
 buildDockerImage {
 	def tag = faroEnvironmentName == "prd" ? "prd-" + new Date().format("yyyyMMdd") : faroImageTag
 
@@ -69,6 +79,14 @@ dockerDeploy {
 			copy {
 				from "modules/osb-faro-docker/cloud"
 				into "${buildDir}/docker/docker"
+			}
+
+			copy {
+				from configurations.faroLoggingDependencies
+				into "${buildDir}/docker/docker/resources"
+				rename {
+					"log4j-layout-template-json.jar"
+				}
 			}
 		}
 

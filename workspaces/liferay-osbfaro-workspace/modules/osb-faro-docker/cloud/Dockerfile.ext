@@ -15,6 +15,7 @@ COPY --chown=liferay:liferay docker/resources/context.xml $LIFERAY_HOME/tomcat/c
 COPY --chown=liferay:liferay docker/resources/log4j $LIFERAY_HOME/osgi/log4j/
 COPY --chown=liferay:liferay docker/resources/log_layout.json $LIFERAY_HOME/tomcat/webapps/ROOT/WEB-INF/classes/META-INF/
 COPY --chown=liferay:liferay docker/resources/portal-log4j-ext.xml $LIFERAY_HOME/tomcat/webapps/ROOT/WEB-INF/classes/META-INF/
+COPY --chown=liferay:liferay docker/resources/log4j-layout-template-json.jar $LIFERAY_HOME/tomcat/webapps/ROOT/WEB-INF/shielded-container-lib/
 COPY --chown=liferay:liferay docker/resources/rewrite.config $LIFERAY_HOME/tomcat/webapps/ROOT/WEB-INF/
 COPY --chown=liferay:liferay docker/resources/system-ext.properties $LIFERAY_HOME/tomcat/webapps/ROOT/WEB-INF/classes/
 COPY --chown=liferay:liferay docker/configs/osgi/configs $LIFERAY_HOME/osgi/configs/
