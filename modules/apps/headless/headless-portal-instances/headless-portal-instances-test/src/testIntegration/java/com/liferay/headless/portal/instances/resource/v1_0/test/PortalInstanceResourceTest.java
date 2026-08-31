@@ -997,11 +997,11 @@ public class PortalInstanceResourceTest
 					nonexistentGroupConfiguration.getPid()));
 		}
 		finally {
+			_dropExportedSchema(companyId);
+
 			for (Configuration configuration : configurations) {
 				configuration.delete();
 			}
-
-			_dropExportedSchema(companyId);
 		}
 	}
 
