@@ -16,6 +16,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -50,6 +51,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -128,6 +132,8 @@ public class SystemFDSSerializerTest {
 					"L_DATA_SET_USER_PREFERENCES",
 					TestPropsValues.getCompanyId());
 
+		// malformed user preferences
+
 		_userPreferencesObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
 				_memberUser.getExternalReferenceCode() + StringPool.UNDERLINE +
@@ -145,6 +151,33 @@ public class SystemFDSSerializerTest {
 		Assert.assertNull(
 			_fdsSerializer.serializeUserPreferences(
 				_FDS_NAME, httpServletRequest));
+
+		// valid user preferences
+
+		_userPreferencesObjectEntry =
+			_objectEntryLocalService.updateObjectEntry(
+				_memberUser.getUserId(),
+				_userPreferencesObjectEntry.getObjectEntryId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"preferences",
+					JSONUtil.put(
+						"startupSnapshotERC",
+						_objectEntry.getExternalReferenceCode()
+					).toString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId(), _memberUser.getUserId()));
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"startupSnapshotERC", _objectEntry.getExternalReferenceCode()
+			).toString(),
+			_fdsSerializer.serializeUserPreferences(
+				_FDS_NAME, httpServletRequest
+			).toString(),
+			JSONCompareMode.STRICT);
 	}
 
 	private ObjectEntry _addObjectEntry(
