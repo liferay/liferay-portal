@@ -14,6 +14,7 @@ import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -139,7 +140,6 @@ public class GetNavigationItemsMVCResourceCommandTest {
 
 		PanelApp emptyPanelApp = _createPanelApp(
 			Collections.emptyList(), "emptyPortletId");
-
 		PanelApp panelApp = _createPanelApp(
 			List.of(
 				new PanelAppNavigationItem(
@@ -194,18 +194,12 @@ public class GetNavigationItemsMVCResourceCommandTest {
 
 		Assert.assertEquals(
 			"portletId_0",
-			navigationItemsJSONArray.getJSONObject(
-				0
-			).getString(
-				"id"
-			));
+			JSONUtil.getValue(
+				navigationItemsJSONArray, "JSONObject/0", "Object/id"));
 		Assert.assertEquals(
 			"portletId_1",
-			navigationItemsJSONArray.getJSONObject(
-				1
-			).getString(
-				"id"
-			));
+			JSONUtil.getValue(
+				navigationItemsJSONArray, "JSONObject/1", "Object/id"));
 	}
 
 	private PanelApp _createPanelApp(

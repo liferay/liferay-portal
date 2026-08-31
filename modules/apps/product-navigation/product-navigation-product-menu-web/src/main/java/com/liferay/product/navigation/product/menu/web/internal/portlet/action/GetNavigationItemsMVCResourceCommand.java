@@ -71,7 +71,7 @@ public class GetNavigationItemsMVCResourceCommand
 				_getNavigationItemsJSONObject(resourceRequest)));
 	}
 
-	private void _addNavigationItems(
+	private void _addNavigationItemsJSONArrays(
 			HttpServletRequest httpServletRequest,
 			JSONObject navigationItemsJSONObject, PanelCategory panelCategory,
 			ThemeDisplay themeDisplay)
@@ -114,9 +114,6 @@ public class GetNavigationItemsMVCResourceCommand
 		for (int i = 0; i < panelAppNavigationItems.size(); i++) {
 			PanelAppNavigationItem panelAppNavigationItem =
 				panelAppNavigationItems.get(i);
-
-			// A null label is dropped by JSONObject, so the client would
-			// receive an item it cannot render or match.
 
 			if (Validator.isNull(panelAppNavigationItem.getLabel())) {
 				continue;
@@ -161,7 +158,7 @@ public class GetNavigationItemsMVCResourceCommand
 		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
 			resourceRequest);
 
-		_addNavigationItems(
+		_addNavigationItemsJSONArrays(
 			httpServletRequest, navigationItemsJSONObject, panelCategory,
 			themeDisplay);
 
@@ -169,7 +166,7 @@ public class GetNavigationItemsMVCResourceCommand
 				_panelCategoryHelper.getChildPanelCategories(
 					panelCategory.getKey(), themeDisplay)) {
 
-			_addNavigationItems(
+			_addNavigationItemsJSONArrays(
 				httpServletRequest, navigationItemsJSONObject,
 				childPanelCategory, themeDisplay);
 		}
