@@ -152,7 +152,14 @@ export class ObjectFieldsPage {
 				.click();
 		}
 
+		const navigation = this.page.waitForNavigation({
+			timeout: 10000,
+			waitUntil: 'load',
+		});
+
 		await this.saveButton.click();
+
+		await navigation;
 	}
 
 	async deleteObjectField(confirmDeletion: boolean, nth: number) {
