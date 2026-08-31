@@ -336,7 +336,7 @@ public class AssetAnalyticsAttributesProviderTest {
 	private final MockedConstruction<Snapshot> _snapshotMockedConstruction =
 		Mockito.mockConstruction(
 			Snapshot.class,
-			(mock, context) -> {
+			(snapshot, context) -> {
 				AnalyticsSettingsManager analyticsSettingsManager =
 					Mockito.mock(AnalyticsSettingsManager.class);
 
@@ -348,7 +348,7 @@ public class AssetAnalyticsAttributesProviderTest {
 				);
 
 				Mockito.when(
-					mock.get()
+					snapshot.get()
 				).thenReturn(
 					analyticsSettingsManager
 				);

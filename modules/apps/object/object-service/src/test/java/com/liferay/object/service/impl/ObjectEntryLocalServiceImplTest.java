@@ -61,8 +61,8 @@ public class ObjectEntryLocalServiceImplTest {
 		try (MockedConstruction<SortDSLQueryVisitor> mockedConstruction =
 				Mockito.mockConstruction(
 					SortDSLQueryVisitor.class,
-					(mock, context) -> Mockito.when(
-						mock.visit(Mockito.any(), Mockito.any())
+					(sortDSLQueryVisitor, context) -> Mockito.when(
+						sortDSLQueryVisitor.visit(Mockito.any(), Mockito.any())
 					).thenReturn(
 						Mockito.mock(DSLQuery.class)
 					))) {

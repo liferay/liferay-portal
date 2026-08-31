@@ -79,10 +79,10 @@ public class PreupgradeVerifyProcessSuiteTest {
 
 		return Mockito.mockConstruction(
 			clazz,
-			(mock, context) -> Mockito.doThrow(
+			(t, context) -> Mockito.doThrow(
 				new VerifyException("Exception in " + clazz.getSimpleName())
 			).when(
-				mock
+				t
 			).verify());
 	}
 
