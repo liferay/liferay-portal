@@ -5,17 +5,11 @@
 
 package com.liferay.site.internal.model.listener;
 
-import com.liferay.petra.lang.CentralizedThreadLocal;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.site.manager.SitemapManager;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -55,29 +49,13 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 	protected SitemapManager sitemapManager;
 
 	private void _scheduleRegenerateSitemap(long companyId, long groupId) {
-		String regenerateSitemapKey = StringBundler.concat(
-			getAssetTypeKey(), StringPool.POUND, companyId, StringPool.POUND,
-			groupId);
+		TransactionCallbackUtil.registerCommitCallback(
+			() -> {
+				sitemapManager.scheduleRegenerateSitemap(
+					getAssetTypeKey(), companyId, groupId, null);
 
-		Set<String> regenerateSitemapKeys = _regenerateSitemapKeys.get();
-
-		if (regenerateSitemapKeys.add(regenerateSitemapKey)) {
-			TransactionCallbackUtil.registerCompletionCallback(
-				() -> regenerateSitemapKeys.remove(regenerateSitemapKey));
-
-			TransactionCallbackUtil.registerCommitCallback(
-				() -> {
-					sitemapManager.scheduleRegenerateSitemap(
-						getAssetTypeKey(), companyId, groupId, null);
-
-					return null;
-				});
-		}
+				return null;
+			});
 	}
-
-	private static final ThreadLocal<Set<String>> _regenerateSitemapKeys =
-		new CentralizedThreadLocal<>(
-			BaseSitemapModelListener.class + "._regenerateSitemapKeys",
-			HashSet::new);
 
 }
