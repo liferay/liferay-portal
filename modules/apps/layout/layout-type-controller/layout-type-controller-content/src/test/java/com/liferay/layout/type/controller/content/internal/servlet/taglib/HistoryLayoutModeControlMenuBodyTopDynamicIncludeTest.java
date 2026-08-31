@@ -226,8 +226,8 @@ public class HistoryLayoutModeControlMenuBodyTopDynamicIncludeTest {
 
 		return Mockito.mockConstruction(
 			ProductNavigationControlMenuTag.class,
-			(mock, context) -> Mockito.when(
-				mock.doStartTag()
+			(productNavigationControlMenuTag, context) -> Mockito.when(
+				productNavigationControlMenuTag.doStartTag()
 			).thenReturn(
 				TagSupport.EVAL_BODY_INCLUDE
 			));
