@@ -242,12 +242,12 @@
 </tr>
 <tr>
 	<td>FRIENDLY_URL_HISTORY</td>
-	<td>//button[contains(@class,'history')][*[name()='svg'][contains(@class,'lexicon-icon-restore')]]</td>
+	<td>//button[contains(@class,'history')][*[name()='svg'][contains(@class,'lexicon-icon-time')]]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>FRIENDLY_URL_HISTORY_DISABLED</td>
-	<td>//button[contains(@class,'history') and @disabled][*[name()='svg'][contains(@class,'lexicon-icon-restore')]]</td>
+	<td>//button[contains(@class,'history') and @disabled][*[name()='svg'][contains(@class,'lexicon-icon-time')]]</td>
 	<td></td>
 </tr>
 <tr>
