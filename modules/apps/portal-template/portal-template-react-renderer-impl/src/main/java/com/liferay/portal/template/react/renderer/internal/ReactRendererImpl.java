@@ -10,7 +10,6 @@ import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolvedPackageNam
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
 import com.liferay.portal.template.react.renderer.ReactRenderer;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
@@ -23,6 +22,7 @@ import java.io.Writer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -39,7 +39,7 @@ public class ReactRendererImpl implements ReactRenderer {
 			HttpServletRequest httpServletRequest, Writer writer)
 		throws IOException {
 
-		String placeholderId = StringUtil.randomId();
+		String placeholderId = "reactComponent" + _counter.incrementAndGet();
 
 		_renderPlaceholder(writer, placeholderId);
 
@@ -122,6 +122,8 @@ public class ReactRendererImpl implements ReactRenderer {
 		writer.append(placeholderId);
 		writer.append("\"></div>");
 	}
+
+	private static final AtomicLong _counter = new AtomicLong();
 
 	@Reference
 	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
