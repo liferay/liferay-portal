@@ -33,8 +33,6 @@ public class PatcherBuildSchedulerJobConfiguration
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
 		return () -> _companyLocalService.forEachCompanyId(
 			companyId -> {
-				PatcherUtil.processOSBPatcherMessageQueue(companyId);
-
 				PatcherUtil.processOSBPatcherStatusFiles(
 					companyId,
 					_patcherConfiguration.patcherStatusBuildJenkinsPath());

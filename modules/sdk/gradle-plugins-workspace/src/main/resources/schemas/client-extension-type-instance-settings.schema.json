@@ -3161,14 +3161,6 @@
 					"default": "",
 					"type": "string"
 				},
-				"patcherPubsubProjectId": {
-					"default": "",
-					"type": "string"
-				},
-				"patcherPubsubSubscriptionId": {
-					"default": "",
-					"type": "string"
-				},
 				"patcherScanningEnabled": {
 					"default": false,
 					"type": "boolean"

@@ -5,21 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.api.gax.rpc.UnaryCallable;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
-import com.google.cloud.pubsub.v1.stub.SubscriberStub;
-import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Empty;
-import com.google.pubsub.v1.AcknowledgeRequest;
-import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.PubsubMessage;
-import com.google.pubsub.v1.PullRequest;
-import com.google.pubsub.v1.PullResponse;
-import com.google.pubsub.v1.ReceivedMessage;
-
 import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
@@ -130,83 +115,6 @@ public class PatcherUtil {
 		newTickets.removeAll(getOldTickets(patcherFixPack));
 
 		return sortTokens(newTickets);
-	}
-
-	public static String getNextPatcherBuilderStatusMsg(long companyId)
-		throws Exception {
-
-		PatcherConfiguration patcherConfiguration =
-			ConfigurationProviderUtil.getCompanyConfiguration(
-				PatcherConfiguration.class, companyId);
-
-		GoogleCredentials googleCredentials =
-			GoogleCredentials.getApplicationDefault();
-
-		SubscriberStubSettings subscriberStubSettings =
-			SubscriberStubSettings.newBuilder(
-			).setCredentialsProvider(
-				FixedCredentialsProvider.create(googleCredentials)
-			).setTransportChannelProvider(
-				SubscriberStubSettings.defaultGrpcTransportProviderBuilder(
-				).setMaxInboundMessageSize(
-					20 * 1024 * 1024
-				).build()
-			).build();
-
-		try (SubscriberStub subscriber = GrpcSubscriberStub.create(
-				subscriberStubSettings)) {
-
-			String subscriptionName = ProjectSubscriptionName.format(
-				patcherConfiguration.patcherPubsubProjectId(),
-				patcherConfiguration.patcherPubsubSubscriptionId());
-
-			PullRequest pullRequest = PullRequest.newBuilder(
-			).setMaxMessages(
-				1
-			).setSubscription(
-				subscriptionName
-			).build();
-
-			UnaryCallable<PullRequest, PullResponse> pullUnaryCallable =
-				subscriber.pullCallable();
-
-			PullResponse pullResponse = pullUnaryCallable.call(pullRequest);
-
-			List<ReceivedMessage> receivedMessageList =
-				pullResponse.getReceivedMessagesList();
-
-			if (receivedMessageList.isEmpty()) {
-				return null;
-			}
-
-			ReceivedMessage receivedMessage = receivedMessageList.get(0);
-
-			AcknowledgeRequest acknowledgeRequest =
-				AcknowledgeRequest.newBuilder(
-				).setSubscription(
-					subscriptionName
-				).addAllAckIds(
-					Collections.singleton(receivedMessage.getAckId())
-				).build();
-
-			UnaryCallable<AcknowledgeRequest, Empty> acknowledgeUnaryCallable =
-				subscriber.acknowledgeCallable();
-
-			acknowledgeUnaryCallable.call(acknowledgeRequest);
-
-			PubsubMessage pubsubMessage = receivedMessage.getMessage();
-
-			ByteString pubsubMessageData = pubsubMessage.getData();
-
-			return pubsubMessageData.toStringUtf8();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		return null;
 	}
 
 	public static List<String> getOldTickets(PatcherFixPack patcherFixPack) {
@@ -330,69 +238,6 @@ public class PatcherUtil {
 		return StringUtil.replace(
 			name, new String[] {StringPool.NEW_LINE, StringPool.SPACE},
 			new String[] {StringPool.BLANK, StringPool.BLANK});
-	}
-
-	public static void processOSBPatcherMessageQueue(long companyId)
-		throws Exception {
-
-		long defaultUserId = UserLocalServiceUtil.getDefaultUserId(companyId);
-
-		String lockClassName = PatcherBuild.class.getName() + "_Jenkins";
-
-		if (LockLocalServiceUtil.hasLock(
-				defaultUserId, lockClassName, companyId)) {
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					StringBundler.concat(
-						"Skipping ", lockClassName,
-						" file processing for company ", companyId,
-						"because it is currently running"));
-			}
-
-			return;
-		}
-
-		try {
-			LockLocalServiceUtil.lock(
-				defaultUserId, lockClassName, companyId, lockClassName, false,
-				Time.HOUR);
-
-			String jenkinsStatusJSON = getNextPatcherBuilderStatusMsg(
-				companyId);
-
-			if (Validator.isNotNull(jenkinsStatusJSON) &&
-				_log.isInfoEnabled()) {
-
-				_log.info("Received PubSub message: " + jenkinsStatusJSON);
-			}
-			else {
-				return;
-			}
-
-			JSONObject jenkinsStatusJSONObject =
-				JSONFactoryUtil.createJSONObject(jenkinsStatusJSON);
-
-			String patcherId = jenkinsStatusJSONObject.getString(
-				"patcherBuildId");
-
-			if (!Validator.isNumber(patcherId)) {
-				_log.error("Patcher ID is not a number: " + patcherId);
-
-				return;
-			}
-
-			PatcherBuildUtil.processOSBPatcherBuildCompileJenkinsStatus(
-				UserLocalServiceUtil.fetchUser(
-					jenkinsStatusJSONObject.getLong("patcherUserId")),
-				GetterUtil.getLong(patcherId), jenkinsStatusJSON);
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-		finally {
-			LockLocalServiceUtil.unlock(lockClassName, companyId);
-		}
 	}
 
 	public static void processOSBPatcherStatusFiles(long companyId, String path)

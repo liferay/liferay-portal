@@ -94,12 +94,6 @@ public interface PatcherConfiguration {
 	public String patcherLiferayPortalRepository();
 
 	@Meta.AD(deflt = "", required = false)
-	public String patcherPubsubProjectId();
-
-	@Meta.AD(deflt = "", required = false)
-	public String patcherPubsubSubscriptionId();
-
-	@Meta.AD(deflt = "", required = false)
 	public boolean patcherScanningEnabled();
 
 	@Meta.AD(deflt = "", required = false)
