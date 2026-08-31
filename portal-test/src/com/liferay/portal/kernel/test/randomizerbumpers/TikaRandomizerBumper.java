@@ -14,12 +14,12 @@ import java.util.Objects;
 /**
  * @author Shuyang Zhou
  */
-public class TikaSafeRandomizerBumper implements RandomizerBumper<String> {
+public class TikaRandomizerBumper implements RandomizerBumper<String> {
 
-	public static final TikaSafeRandomizerBumper INSTANCE =
-		new TikaSafeRandomizerBumper(ContentTypes.TEXT_PLAIN);
+	public static final TikaRandomizerBumper INSTANCE =
+		new TikaRandomizerBumper(ContentTypes.TEXT_PLAIN);
 
-	public TikaSafeRandomizerBumper(String contentType) {
+	public TikaRandomizerBumper(String contentType) {
 		_contentType = contentType;
 	}
 
