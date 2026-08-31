@@ -168,15 +168,15 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 				"nestedFields", "permissions"
 			).build();
 
+		BlogsEntry guestViewableBlogsEntry = _addBlogsEntry(
+			testGroup.getGroupId());
+
 		Page<AssetEntry> page =
 			nestedFieldsAssetEntryResource.getAssetEntriesPage(
 				new Long[] {testGroup.getGroupId()}, null, null, null,
 				Pagination.of(1, 50), null);
 
 		List<AssetEntry> assetEntries = (List<AssetEntry>)page.getItems();
-
-		BlogsEntry guestViewableBlogsEntry = _addBlogsEntry(
-			testGroup.getGroupId());
 
 		AssetEntry guestViewableAssetEntry = _getAssetEntry(
 			assetEntries, guestViewableBlogsEntry.getEntryId());
