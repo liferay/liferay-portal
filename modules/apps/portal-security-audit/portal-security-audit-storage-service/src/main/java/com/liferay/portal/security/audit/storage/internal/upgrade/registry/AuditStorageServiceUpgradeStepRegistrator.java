@@ -63,7 +63,7 @@ public class AuditStorageServiceUpgradeStepRegistrator
 				"impersonatedUserEmailAddress VARCHAR(75) null",
 				"impersonatedUserId LONG",
 				"impersonatedUserName VARCHAR(75) null",
-				"objectName VARCHAR(75) null", "requestId VARCHAR(75) null",
+				"objectName VARCHAR(75) null", "requestId VARCHAR(200) null",
 				"requestIdGenerated BOOLEAN", "resourceAction VARCHAR(75) null",
 				"resourceType VARCHAR(75) null", "roles TEXT null",
 				"userAgent VARCHAR(255) null",

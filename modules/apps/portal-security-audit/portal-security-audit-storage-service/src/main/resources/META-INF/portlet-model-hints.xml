@@ -36,7 +36,9 @@
 			<hint-collection name="TEXTAREA" />
 		</field>
 		<field name="objectName" type="String" />
-		<field name="requestId" type="String" />
+		<field name="requestId" type="String">
+			<hint name="max-length">200</hint>
+		</field>
 		<field name="requestIdGenerated" type="boolean" />
 		<field name="resourceAction" type="String" />
 		<field name="resourceType" type="String" />
