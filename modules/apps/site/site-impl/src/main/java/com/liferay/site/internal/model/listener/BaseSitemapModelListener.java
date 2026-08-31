@@ -21,26 +21,17 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 
 	@Override
 	public void onAfterCreate(T model) {
-		GroupedModel groupedModel = (GroupedModel)model;
-
-		_scheduleRegenerateSitemap(
-			groupedModel.getCompanyId(), groupedModel.getGroupId());
+		_scheduleRegenerateSitemap(model);
 	}
 
 	@Override
 	public void onAfterRemove(T model) {
-		GroupedModel groupedModel = (GroupedModel)model;
-
-		_scheduleRegenerateSitemap(
-			groupedModel.getCompanyId(), groupedModel.getGroupId());
+		_scheduleRegenerateSitemap(model);
 	}
 
 	@Override
 	public void onAfterUpdate(T originalModel, T model) {
-		GroupedModel groupedModel = (GroupedModel)model;
-
-		_scheduleRegenerateSitemap(
-			groupedModel.getCompanyId(), groupedModel.getGroupId());
+		_scheduleRegenerateSitemap(model);
 	}
 
 	protected abstract String getAssetTypeKey();
@@ -48,11 +39,14 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 	@Reference
 	protected SitemapManager sitemapManager;
 
-	private void _scheduleRegenerateSitemap(long companyId, long groupId) {
+	private void _scheduleRegenerateSitemap(T model) {
+		GroupedModel groupedModel = (GroupedModel)model;
+
 		TransactionCallbackUtil.registerCommitCallback(
 			() -> {
 				sitemapManager.scheduleRegenerateSitemap(
-					getAssetTypeKey(), companyId, groupId, null);
+					getAssetTypeKey(), groupedModel.getCompanyId(),
+					groupedModel.getGroupId(), null);
 
 				return null;
 			});
