@@ -47,11 +47,17 @@ Skip this block if MCP is not supported in your DXP version.
 
 - **Initialize**: run `blade server init` if `bundles/` does not exist.
 
-- **Clear the seeded database (Hypersonic, before the first start)**: a downloaded bundle ships with a seeded Hypersonic database in which `test@liferay.com` already exists with the first login flags set. Boot it as is and every `/o/*` call returns 403 no matter what `portal-ext.properties` contains, because those properties are read only when the admin is created.
+- **Clear the seeded database (mandatory on the first start)**: `blade server init` unpacks a bundle that already carries a seeded Hypersonic database, and in it `test@liferay.com` exists with `passwordReset=true` and `agreedToTermsOfUse=false` already written to the row. Boot that database as is and every `/o/*` call returns 403 regardless of what `portal-ext.properties` contains, because the properties in the two bullets below are read only at the moment the admin is created — which, for the shipped database, already happened. Removing `bundles/data` is what makes the first start recreate the default company and the `test@liferay.com` admin from scratch, this time with those properties in effect. That recreation is the whole point of the first start — there is no separate step that creates the user, and no property that retrofits one that already exists.
 
-  Delete `bundles/data` and `bundles/osgi/state`.
+  So immediately after `blade server init`, and before the first `blade server run` or `blade server start`:
 
-  Only for a bundle that has never been started — `bundles/logs` is empty and nothing answers on `http://localhost:${PORT}`. Otherwise skip this and use the manual login in First Login Bootstrap.
+  ```bash
+  rm -rf bundles/data bundles/osgi/state
+  ```
+
+  `bundles/osgi/state` goes with it: the OSGi bundle cache holds resolved state keyed to the old database, and leaving it behind produces bundles wired to rows that no longer exist.
+
+  **Only for a bundle that has never been started.** Confirm both before running the command — `bundles/logs` is empty (or absent) and nothing answers on `http://localhost:${PORT}`. On a bundle that has booted, `bundles/data` is real portal data and, for DXP, holds the registered license key; deleting it discards both. There is no property that undoes an already created admin, so an instance that is past its first boot goes through the manual login in First Login Bootstrap instead.
 
 - **BasicAuth verifier (dev only — required for headless REST and MCP)**: add to `configs/local/portal-ext.properties` BEFORE first boot:
 
@@ -63,13 +69,34 @@ Skip this block if MCP is not supported in your DXP version.
 
   **Security note**: this is for local development only. BasicAuth sends credentials in every request. For production, use OAuth2 with `OAuth2HeaderAuthVerifier` instead. Never enable BasicAuth on `/o/*` in production.
 
+- **Instance and admin properties (dev only — before first boot)**: Liferay reads these only while creating the default company and its admin user, so they must be in `configs/local/portal-ext.properties` before the bundle has ever booted:
+
+  ```
+  admin.email.from.address=test@liferay.com
+  admin.email.from.name=Test Test
+  company.default.time.zone=UTC
+  company.default.web.id=liferay.com
+  default.admin.email.address.prefix=test
+  passwords.default.policy.change.required=false
+  setup.wizard.enabled=false
+  terms.of.use.required=false
+  ```
+
+  `default.admin.email.address.prefix` and `company.default.web.id` combine into the admin login — `test` plus `liferay.com` is what makes the documented `test@liferay.com` / `test` credentials work. `setup.wizard.enabled=false`, `terms.of.use.required=false`, and `passwords.default.policy.change.required=false` remove the setup wizard, the Terms of Use screen, and the forced password change — the three blockers standing between a fresh instance and a usable admin session. `company.default.time.zone=UTC` keeps portal timestamps aligned with the UTC timestamps in `catalina.out`, which otherwise disagree with the local shell and make log correlation misleading.
+
+  `liferay.home` belongs in the same file, and its value is the absolute path of the `bundles` directory that `blade server init` created. Resolve it rather than hardcoding it, so the file stays correct when the workspace is cloned elsewhere:
+
+  ```bash
+  echo "liferay.home=$(cd bundles && pwd)" >> configs/local/portal-ext.properties
+  ```
+
 - **Configuration sync — before the first start**: copy the local config into the bundle: `cp configs/local/portal-ext.properties bundles/portal-ext.properties`. (This copy is destructive — see `skills/deploy-and-verify/SKILL.md` for the diff before sync rule.)
 
-  `configs/local/portal-ext.properties` already ships the properties that skip the manual first login, but they only take effect if this copy happens before the bundle has ever booted. See First Login Bootstrap below.
+  The properties above only take effect if this copy happens before the bundle has ever booted. See First Login Bootstrap below.
 
 - **Free port 8080 first**: every Liferay workspace defaults to 8080, so another workspace left running holds it. Run `ss -ltnp | grep ':8080 '` and **wait for the result before launching** — do not batch the check with the start command. If the port is taken, stop that instance with its own `bundles/tomcat*/bin/shutdown.sh` or move this workspace to another port. A bind conflict is easy to misread: Tomcat still logs `Server startup in [N] milliseconds` even though the connector never came up, so the boot looks fine while every request is served by the *other* instance and its separate database — which surfaces as inexplicable login or data failures. Treat `Address already in use` in `catalina.out` as a failed boot regardless of the startup line, and confirm the listening pid belongs to this bundle.
 
-- **Start server**: `blade server run` (foreground, recommended for debugging) or `blade server start` (background). These commands are Tomcat only — do not use them for Docker.
+- **Start server**: `blade server run` (foreground, recommended for debugging) or `blade server start` (background). These commands are Tomcat only — do not use them for Docker. On the first start after `bundles/data` was cleared, this boot is what recreates `test@liferay.com`; expect it to take longer than a subsequent start, since Liferay is building the schema and seeding the instance.
 
 - **Login**: use `test@liferay.com` / `test` (or credentials found in `portal-ext.properties`).
 
