@@ -130,6 +130,14 @@ public class CMPTestUtil {
 			ObjectEntry cmpProjectObjectEntry)
 		throws PortalException {
 
+		return addCMPTaskObjectEntry(
+			cmpProjectObjectEntry, WorkflowConstants.ACTION_SAVE_DRAFT);
+	}
+
+	public static ObjectEntry addCMPTaskObjectEntry(
+			ObjectEntry cmpProjectObjectEntry, int workflowAction)
+		throws PortalException {
+
 		ObjectDefinition cmpTaskObjectDefinition =
 			ObjectDefinitionLocalServiceUtil.
 				getObjectDefinitionByExternalReferenceCode(
@@ -138,7 +146,7 @@ public class CMPTestUtil {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext();
 
-		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+		serviceContext.setWorkflowAction(workflowAction);
 
 		return ObjectEntryLocalServiceUtil.addObjectEntry(
 			cmpProjectObjectEntry.getGroupId(),

@@ -44,6 +44,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.cmp.site.initializer.test.util.CMPTestUtil;
+import com.liferay.site.cmp.site.initializer.test.util.ObjectEntryTestUtil;
 import com.liferay.site.cms.site.initializer.util.RoleUtil;
 
 import java.io.Serializable;
@@ -143,6 +144,25 @@ public class ObjectEntryModelListenerTest {
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
 			cmpProjectObjectEntry);
+
+		_assertCompletionRate(cmpProjectObjectEntry, 0);
+
+		ObjectEntryTestUtil.partialUpdateObjectEntry(
+			cmpTaskObjectEntry,
+			HashMapBuilder.<String, Serializable>put(
+				"state", "inProgress"
+			).build());
+		ObjectEntryTestUtil.partialUpdateObjectEntry(
+			cmpTaskObjectEntry,
+			HashMapBuilder.<String, Serializable>put(
+				"state", "done"
+			).build());
+
+		_assertCompletionRate(cmpProjectObjectEntry, 100);
+
+		CMPTestUtil.addCMPTaskObjectEntry(cmpProjectObjectEntry);
+
+		_assertCompletionRate(cmpProjectObjectEntry, 100);
 
 		_assertResourceActions(
 			cmpTaskObjectEntry, role.getName(), ActionKeys.ADD_DISCUSSION,
@@ -284,12 +304,8 @@ public class ObjectEntryModelListenerTest {
 
 		cmpProjectObjectEntry.setValues(values);
 
-		cmpProjectObjectEntry =
-			_objectEntryLocalService.partialUpdateObjectEntry(
-				TestPropsValues.getUserId(),
-				cmpProjectObjectEntry.getObjectEntryId(),
-				cmpProjectObjectEntry.getObjectEntryFolderId(), values,
-				ServiceContextTestUtil.getServiceContext());
+		cmpProjectObjectEntry = ObjectEntryTestUtil.partialUpdateObjectEntry(
+			cmpProjectObjectEntry, values);
 
 		_assertUserGroupRoles(
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
@@ -354,6 +370,18 @@ public class ObjectEntryModelListenerTest {
 		Assert.assertNotNull(
 			_objectEntryLocalService.fetchObjectEntry(
 				cmpTaskLinkObjectEntry.getObjectEntryId()));
+	}
+
+	private void _assertCompletionRate(
+			ObjectEntry cmpProjectObjectEntry, int expectedCompletionRate)
+		throws Exception {
+
+		Assert.assertEquals(
+			expectedCompletionRate,
+			MapUtil.getInteger(
+				_objectEntryLocalService.getValues(
+					cmpProjectObjectEntry.getObjectEntryId()),
+				"completionRate"));
 	}
 
 	private void _assertResourceActions(
