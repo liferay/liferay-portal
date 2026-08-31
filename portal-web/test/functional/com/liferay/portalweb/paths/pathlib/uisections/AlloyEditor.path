@@ -98,7 +98,7 @@
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK</td>
-	<td>//button[contains(@class,'ck-button') and contains(@data-cke-tooltip-text,'Link')]</td>
+	<td>//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Link']]</td>
 	<td></td>
 </tr>
 <tr>
