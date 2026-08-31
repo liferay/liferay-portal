@@ -106,8 +106,9 @@ public class StyleBookEntryZipProcessorImpl
 	}
 
 	private StyleBookEntry _addStyleBookEntry(
-			long groupId, String frontendTokensValues, String name,
-			boolean overwrite, String styleBookEntryKey, String themeId)
+			long groupId, String frontendTokenDefinition,
+			String frontendTokensValues, String name, boolean overwrite,
+			String styleBookEntryKey, String themeId)
 		throws Exception {
 
 		if (Validator.isBlank(themeId)) {
@@ -125,16 +126,16 @@ public class StyleBookEntryZipProcessorImpl
 		try {
 			if (styleBookEntry == null) {
 				styleBookEntry = _styleBookEntryEntryService.addStyleBookEntry(
-					null, groupId, frontendTokensValues, name,
-					styleBookEntryKey, themeId,
+					null, groupId, false, frontendTokenDefinition,
+					frontendTokensValues, name, styleBookEntryKey, themeId,
 					ServiceContextThreadLocal.getServiceContext());
 			}
 			else {
 				styleBookEntry =
 					_styleBookEntryEntryService.updateStyleBookEntry(
 						styleBookEntry.getStyleBookEntryId(),
-						styleBookEntry.getFrontendTokenDefinition(),
-						frontendTokensValues, name, new ServiceContext());
+						frontendTokenDefinition, frontendTokensValues, name,
+						new ServiceContext());
 			}
 
 			_importResultEntries.add(
@@ -306,6 +307,7 @@ public class StyleBookEntryZipProcessorImpl
 
 		String name = styleBookEntryKey;
 
+		String frontendTokenDefinition = StringPool.BLANK;
 		String frontendTokensValues = StringPool.BLANK;
 
 		String styleBookEntryContent = _getContent(zipFile, fileName);
@@ -318,6 +320,10 @@ public class StyleBookEntryZipProcessorImpl
 
 			defaultStyleBookEntry = styleBookEntryJSONObject.getBoolean(
 				"defaultStyleBookEntry");
+			frontendTokenDefinition = _getStyleBookEntryContent(
+				zipFile, fileName,
+				styleBookEntryJSONObject.getString(
+					"frontendTokenDefinitionPath"));
 			frontendTokensValues = _getStyleBookEntryContent(
 				zipFile, fileName,
 				styleBookEntryJSONObject.getString("frontendTokensValuesPath"));
@@ -326,8 +332,8 @@ public class StyleBookEntryZipProcessorImpl
 		}
 
 		StyleBookEntry styleBookEntry = _addStyleBookEntry(
-			groupId, frontendTokensValues, name, overwrite, styleBookEntryKey,
-			themeId);
+			groupId, frontendTokenDefinition, frontendTokensValues, name,
+			overwrite, styleBookEntryKey, themeId);
 
 		if (styleBookEntry == null) {
 			return;
