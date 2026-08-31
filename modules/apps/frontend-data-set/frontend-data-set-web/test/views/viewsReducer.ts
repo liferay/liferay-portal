@@ -9,7 +9,7 @@ import viewsReducer, {
 
 describe('viewsReducer user preferences', () => {
 	describe('UPDATE_USER_PREFERENCES', () => {
-		it('sets the startup view', () => {
+		it('sets the startup snapshot ERC user preference', () => {
 			const state = {userPreferences: null};
 
 			const nextState = viewsReducer(state, {
@@ -22,7 +22,7 @@ describe('viewsReducer user preferences', () => {
 			});
 		});
 
-		it('replaces a previously set startup view', () => {
+		it('replaces a previously set startup snapshot ERC user preference', () => {
 			const state = {userPreferences: {startupSnapshotERC: 'erc-1'}};
 
 			const nextState = viewsReducer(state, {
@@ -48,7 +48,7 @@ describe('viewsReducer user preferences', () => {
 			userPreferences: {startupSnapshotERC: 'erc-1'},
 		};
 
-		it('clears the startup view when it is deleted', () => {
+		it('clears the startup snapshot ERC user preference when snapshot is deleted', () => {
 			const nextState = viewsReducer(baseState, {
 				type: EViewsActionTypes.DELETE_SNAPSHOT,
 				value: {snapshotERC: 'erc-1'},
@@ -59,7 +59,7 @@ describe('viewsReducer user preferences', () => {
 			});
 		});
 
-		it('keeps the startup view when a different view is deleted', () => {
+		it('keeps the startup snapshot ERC user preference when a different snapshot is deleted', () => {
 			const nextState = viewsReducer(baseState, {
 				type: EViewsActionTypes.DELETE_SNAPSHOT,
 				value: {snapshotERC: 'erc-2'},
