@@ -752,6 +752,11 @@ public class ObjectServiceUpgradeStepRegistrator
 				}
 
 			});
+
+		registry.register(
+			"13.4.0", "13.5.0",
+			UpgradeProcessFactory.runSQL(
+				"delete from PLOEntry where key_ = 'model.resource.'"));
 	}
 
 	@Reference
