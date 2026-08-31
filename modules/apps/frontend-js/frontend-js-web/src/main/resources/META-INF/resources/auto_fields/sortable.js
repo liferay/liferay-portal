@@ -8,6 +8,15 @@ import {all, isVisible} from './dom';
 const CSS_DRAGGING = 'lfr-form-row-dragging';
 
 /**
+ * Elements that keep their own behavior instead of starting a drag. Dragging
+ * begins on pointer down and suppresses the default action, so without this a
+ * row whose handle covers the whole row would swallow the click that focuses a
+ * field. A.Sortable excluded the same set through the "invalid" attribute of
+ * A.DD.Drag.
+ */
+const SELECTOR_INVALID_HANDLES = 'a, button, input, select, textarea';
+
+/**
  * Vertical drag and drop reordering for the rows of a single container,
  * replacing <code>A.Sortable</code>.
  *
@@ -25,6 +34,7 @@ export default class Sortable {
 		this._handle = handle;
 		this._nodes = nodes;
 
+		this._offsetY = 0;
 		this._row = null;
 
 		this._onPointerDown = (event) => this._handlePointerDown(event);
@@ -47,7 +57,10 @@ export default class Sortable {
 
 		const target = event.target;
 
-		if (target.closest('.lfr-autorow-controls')) {
+		if (
+			target.closest(SELECTOR_INVALID_HANDLES) ||
+			target.closest('.lfr-autorow-controls')
+		) {
 			return;
 		}
 
@@ -63,6 +76,7 @@ export default class Sortable {
 
 		event.preventDefault();
 
+		this._offsetY = event.clientY - row.getBoundingClientRect().top;
 		this._row = row;
 
 		row.classList.add(CSS_DRAGGING);
@@ -83,10 +97,20 @@ export default class Sortable {
 
 		const rows = this._rows().filter((item) => item !== row);
 
+		// Compare where the row would sit if it followed the pointer, not
+		// where the pointer is. Using the pointer makes the distance needed to
+		// move a row depend on where it was grabbed, so dragging downwards has
+		// to cross a whole extra row before anything happens.
+
+		const midpoint =
+			event.clientY -
+			this._offsetY +
+			row.getBoundingClientRect().height / 2;
+
 		for (const item of rows) {
 			const rect = item.getBoundingClientRect();
 
-			if (event.clientY < rect.top + rect.height / 2) {
+			if (midpoint < rect.top + rect.height / 2) {
 				if (item.previousElementSibling !== row) {
 					this._container.insertBefore(row, item);
 				}
