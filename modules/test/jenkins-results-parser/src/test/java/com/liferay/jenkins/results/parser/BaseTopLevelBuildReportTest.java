@@ -32,15 +32,16 @@ public class BaseTopLevelBuildReportTest
 
 		DownstreamBuildReport cachedDownstreamBuildReport =
 			_newDownstreamBuildReport(RandomTestUtil.randomString(), true);
+
+		baseTopLevelBuildReport.addDownstreamBuildReport(
+			cachedDownstreamBuildReport);
+		baseTopLevelBuildReport.addDownstreamBuildReport(
+			cachedDownstreamBuildReport);
+
 		DownstreamBuildReport downstreamBuildReport = _newDownstreamBuildReport(
 			RandomTestUtil.randomString(), false);
 
-		baseTopLevelBuildReport.addDownstreamBuildReport(
-			cachedDownstreamBuildReport);
 		baseTopLevelBuildReport.addDownstreamBuildReport(downstreamBuildReport);
-
-		baseTopLevelBuildReport.addDownstreamBuildReport(
-			cachedDownstreamBuildReport);
 		baseTopLevelBuildReport.addDownstreamBuildReport(downstreamBuildReport);
 
 		_assertDownstreamBuildReports(baseTopLevelBuildReport, 2);
