@@ -454,32 +454,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addEntryWithLink(entryExternalURL = null, fragmentName = null, id = null, contributed = null) {
-		PageEditor.gotoEditableFieldEdit(
-			contributed = ${contributed},
-			fragmentName = ${fragmentName},
-			id = ${id});
-
-		SelectFieldText(
-			key_editor = "content",
-			locator1 = "AlloyEditor#EDITOR");
-
-		Click(locator1 = "AlloyEditor#TEXT_FORMATTING_LINK");
-
-		Type(
-			locator1 = "AlloyEditor#TEXT_FORMATTING_LINK_INPUT",
-			value1 = ${entryExternalURL});
-
-		Click(locator1 = "AlloyEditor#TEXT_FORMATTING_LINK_INPUT_CONFIRM");
-
-		WaitForElementNotPresent(locator1 = "AlloyEditor#TEXT_FORMATTING_LINK_FORM");
-
-		Click(locator1 = "PageEditor#CONTENT_PAGE_DISABLED_HEADER");
-
-		PageEditor.waitForAutoSave();
-	}
-
-	@summary = "Default summary"
 	macro addExperience(experienceName = null, failureText = null, segmentName = null) {
 		var key_experienceName = ${experienceName};
 		var key_segmentName = ${segmentName};
