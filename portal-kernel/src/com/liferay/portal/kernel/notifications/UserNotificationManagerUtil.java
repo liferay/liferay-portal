@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.notifications;
 
+import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringPool;
@@ -25,9 +26,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Jonathan Lee
@@ -76,7 +74,7 @@ public class UserNotificationManagerUtil {
 		throws PortalException {
 
 		UserNotificationHandler userNotificationHandler =
-			_userNotificationHandlers.get(_getKey(selector, portletId));
+			_userNotificationHandlers.getService(_getKey(selector, portletId));
 
 		if (userNotificationHandler == null) {
 			return false;
@@ -98,7 +96,7 @@ public class UserNotificationManagerUtil {
 		throws PortalException {
 
 		UserNotificationHandler userNotificationHandler =
-			_userNotificationHandlers.get(
+			_userNotificationHandlers.getService(
 				_getKey(selector, userNotificationEvent.getType()));
 
 		if (userNotificationHandler == null) {
@@ -168,7 +166,7 @@ public class UserNotificationManagerUtil {
 		throws PortalException {
 
 		UserNotificationHandler userNotificationHandler =
-			_userNotificationHandlers.get(_getKey(selector, portletId));
+			_userNotificationHandlers.getService(_getKey(selector, portletId));
 
 		if (userNotificationHandler == null) {
 			if (deliveryType == UserNotificationDeliveryConstants.TYPE_EMAIL) {
@@ -194,59 +192,13 @@ public class UserNotificationManagerUtil {
 				ServiceTrackerMapFactory.openMultiValueMap(
 					_bundleContext, UserNotificationDefinition.class,
 					"jakarta.portlet.name");
-	private static final Map<String, UserNotificationHandler>
-		_userNotificationHandlers = new ConcurrentHashMap<>();
-	private static final ServiceTracker
-		<UserNotificationHandler, UserNotificationHandler>
-			_userNotificationHandlerServiceTracker;
-
-	private static class UserNotificationHandlerServiceTrackerCustomizer
-		implements ServiceTrackerCustomizer
-			<UserNotificationHandler, UserNotificationHandler> {
-
-		@Override
-		public UserNotificationHandler addingService(
-			ServiceReference<UserNotificationHandler> serviceReference) {
-
-			UserNotificationHandler userNotificationHandler =
-				_bundleContext.getService(serviceReference);
-
-			_userNotificationHandlers.put(
-				_getKey(
+	private static final ServiceTrackerMap<String, UserNotificationHandler>
+		_userNotificationHandlers = ServiceTrackerMapFactory.openSingleValueMap(
+			_bundleContext, UserNotificationHandler.class, null,
+			ServiceReferenceMapperFactory.createFromFunction(
+				_bundleContext,
+				userNotificationHandler -> _getKey(
 					userNotificationHandler.getSelector(),
-					userNotificationHandler.getPortletId()),
-				userNotificationHandler);
-
-			return userNotificationHandler;
-		}
-
-		@Override
-		public void modifiedService(
-			ServiceReference<UserNotificationHandler> serviceReference,
-			UserNotificationHandler userNotificationHandler) {
-		}
-
-		@Override
-		public void removedService(
-			ServiceReference<UserNotificationHandler> serviceReference,
-			UserNotificationHandler userNotificationHandler) {
-
-			_bundleContext.ungetService(serviceReference);
-
-			_userNotificationHandlers.remove(
-				_getKey(
-					userNotificationHandler.getSelector(),
-					userNotificationHandler.getPortletId()));
-		}
-
-	}
-
-	static {
-		_userNotificationHandlerServiceTracker = new ServiceTracker<>(
-			_bundleContext, UserNotificationHandler.class,
-			new UserNotificationHandlerServiceTrackerCustomizer());
-
-		_userNotificationHandlerServiceTracker.open();
-	}
+					userNotificationHandler.getPortletId())));
 
 }
