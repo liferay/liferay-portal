@@ -12,6 +12,7 @@
 		"@clayui/loading-indicator": "^3.166.0",
 		"@clayui/modal": "^3.166.0",
 		"@clayui/panel": "^3.166.0",
+		"@clayui/shared": "^3.166.0",
 		"@clayui/sticker": "^3.166.0",
 		"@clayui/tooltip": "^3.166.0",
 		"@liferay/frontend-js-react-web": "*",
