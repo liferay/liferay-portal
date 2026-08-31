@@ -12,29 +12,45 @@ export async function fetchFieldSets({
 	keywords,
 	signal,
 }) {
-	const siteFieldSetsPromise = groupId
-		? getItems(
+	const requests = [];
+
+	if (groupId) {
+		requests.push(
+			getItems(
 				`/o/data-engine/v2.0/sites/${groupId}/data-definitions/by-content-type/${contentType}`,
 				keywords,
 				{signal}
 			)
-		: Promise.resolve([]);
+		);
+	}
 
-	const companyFieldSetsPromise =
-		groupId === themeDisplay.getCompanyGroupId()
-			? Promise.resolve([])
-			: getItems(
-					`/o/data-engine/v2.0/data-definitions/by-content-type/${contentType}`,
-					keywords,
-					{signal}
-				);
+	if (groupId !== themeDisplay.getCompanyGroupId()) {
+		requests.push(
+			getItems(
+				`/o/data-engine/v2.0/data-definitions/by-content-type/${contentType}`,
+				keywords,
+				{signal}
+			)
+		);
+	}
 
-	const [siteFieldSets, companyFieldSets] = await Promise.all([
-		siteFieldSetsPromise,
-		companyFieldSetsPromise,
-	]);
+	const results = await Promise.allSettled(requests);
 
-	return [...siteFieldSets, ...companyFieldSets].filter(
-		({id}) => id !== parseInt(dataDefinitionId, 10)
+	const rejectedResults = results.filter(
+		({status}) => status === 'rejected'
 	);
+
+	if (rejectedResults.length === results.length) {
+		throw rejectedResults[0].reason;
+	}
+
+	const items = [];
+
+	results.forEach((result) => {
+		if (result.status === 'fulfilled') {
+			items.push(...result.value);
+		}
+	});
+
+	return items.filter(({id}) => id !== parseInt(dataDefinitionId, 10));
 }
