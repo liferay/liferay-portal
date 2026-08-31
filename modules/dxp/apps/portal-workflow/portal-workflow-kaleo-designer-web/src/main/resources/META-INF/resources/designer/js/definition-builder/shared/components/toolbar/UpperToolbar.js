@@ -122,6 +122,8 @@ export default function UpperToolbar({
 
 	const getXMLContent = () => {
 		if (!sourceView) {
+			const nodes = elements.filter(isNode);
+
 			const xmlDefinition = serializeDefinition(
 				xmlNamespace,
 				{
@@ -129,12 +131,13 @@ export default function UpperToolbar({
 					name: definitionName,
 					version: workflowDefinitionVersions.length,
 				},
-				elements.filter(isNode),
+				nodes,
 				elements.filter(isEdge)
 			);
 
 			return (
 				XMLUtil.validateDefinition(xmlDefinition) && {
+					elements: nodes,
 					metadata: {
 						description: definitionDescription,
 						name: definitionName,
@@ -154,13 +157,19 @@ export default function UpperToolbar({
 					encodeURIComponent(xmlDefinition)
 				);
 
+				const deserializedElements = deserializeUtil.getElements();
+
 				const metadata = deserializeUtil.getMetadata();
 
 				setDefinitionName(metadata.name);
 				setDefinitionDescription(metadata.description);
-				setElements(deserializeUtil.getElements());
+				setElements(deserializedElements);
 
-				return {metadata, xmlDefinition};
+				return {
+					elements: deserializedElements,
+					metadata,
+					xmlDefinition,
+				};
 			}
 		}
 
@@ -208,8 +217,16 @@ export default function UpperToolbar({
 			return;
 		}
 
+		const validXMLDefinition = getXMLContent();
+
+		if (!validXMLDefinition) {
+			handleInvalidXMLBlockingError();
+
+			return;
+		}
+
 		const invalidVariables = getInvalidVariables(
-			elements,
+			validXMLDefinition.elements,
 			selectedLanguageId ? selectedLanguageId : defaultLanguageId
 		);
 
@@ -219,14 +236,6 @@ export default function UpperToolbar({
 				'danger',
 				true
 			);
-
-			return;
-		}
-
-		const validXMLDefinition = getXMLContent();
-
-		if (!validXMLDefinition) {
-			handleInvalidXMLBlockingError();
 
 			return;
 		}
