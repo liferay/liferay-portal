@@ -289,7 +289,7 @@ public class GetPageVersionPreviewStrutsActionTest {
 	private final MockedStatic<FeatureFlagManagerUtil>
 		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
 			FeatureFlagManagerUtil.class);
-	private GetPageVersionPreviewStrutsAction
+	private final GetPageVersionPreviewStrutsAction
 		_getPageVersionPreviewStrutsAction =
 			new GetPageVersionPreviewStrutsAction();
 	private final Layout _layout = Mockito.mock(Layout.class);
