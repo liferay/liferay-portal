@@ -1,15 +1,17 @@
+@import 'atlas-custom-properties/_variables';
+
 .dnd-tr {
 	width: auto !important;
 }
 
 .publications-conflicts-container {
 	button.panel-header {
-		border-bottom-color: #a7a9bc;
+		border-bottom-color: $gray-500;
 		border-bottom-left-radius: 1px;
 		border-bottom-right-radius: 1px;
 		border-bottom-style: solid;
 		border-bottom-width: 1px;
-		color: #272833;
+		color: $gray-900;
 		font-size: 0.875rem;
 		font-weight: 600;
 		line-height: 1.2;
@@ -25,11 +27,11 @@
 	}
 
 	.conflicts-success-text {
-		color: #287d3d;
+		color: $success;
 	}
 
 	.conflicts-warning-text {
-		color: #b95000;
+		color: $warning;
 	}
 
 	.entry-title {
@@ -158,7 +160,7 @@
 		padding-left: 8px;
 
 		.publications-radio-help {
-			color: #6b6c7e;
+			color: $gray-600;
 		}
 
 		.publications-radio-label {
@@ -203,7 +205,7 @@
 		margin-bottom: 0;
 
 		.role-read-only {
-			color: #6b6c7e;
+			color: $gray-600;
 			font-weight: 600;
 			margin-right: 3px;
 			text-align: right;
@@ -217,12 +219,12 @@
 
 		.table-add,
 		.table-list .table-add td {
-			background-color: #edf9f0;
+			background-color: $success-l2;
 		}
 
 		.table-delete,
 		.table-list .table-delete td {
-			background-color: #feefef;
+			background-color: $danger-l2;
 		}
 	}
 }
@@ -237,7 +239,7 @@
 
 .publications-modal {
 	.modal-description {
-		color: #6b6c7e;
+		color: $gray-600;
 		font-size: 14px;
 		font-weight: normal;
 	}
@@ -282,11 +284,10 @@
 	}
 
 	.publications-section-header {
-		background: var(--Color-Light-light-l1, #f7f8f9);
-		border-bottom: 0.0695rem solid
-			var(--Color-Secondary-secondary-l2, #cdced9);
-		border-top: 0.0695rem solid var(--Color-Secondary-secondary-l2, #cdced9);
-		color: #6b6c7e;
+		background: $gray-100;
+		border-bottom: 0.0695rem solid $gray-400;
+		border-top: 0.0695rem solid $gray-400;
+		color: $gray-600;
 		font-weight: var(--font-weight-semi-bold, 600);
 		height: 34px;
 		line-height: 150%;
@@ -295,7 +296,7 @@
 }
 
 table.publications-render-view {
-	border: 1px solid #e7e7ed;
+	border: 1px solid $gray-300;
 	border-collapse: collapse;
 	table-layout: fixed;
 	width: 100%;
@@ -315,7 +316,7 @@ table.publications-render-view {
 		}
 
 		td.publications-render-view-divider {
-			border: 1px solid #e7e7ed;
+			border: 1px solid $gray-300;
 		}
 
 		td.publications-render-view-divider:first-child {
@@ -328,7 +329,7 @@ table.publications-render-view {
 	}
 
 	.publications-render-view-toolbar {
-		border: 1px solid #e7e7ed;
+		border: 1px solid $gray-300;
 		padding: 0;
 
 		.autofit-row {
@@ -340,7 +341,7 @@ table.publications-render-view {
 				padding: 0;
 
 				div {
-					background-color: #6b6c7e;
+					background-color: $gray-600;
 					height: 16px;
 					padding: 0;
 					width: 1px;
@@ -353,8 +354,8 @@ table.publications-render-view {
 		}
 
 		button.active {
-			background-color: #f2f2f3;
-			color: #272833;
+			background-color: $gray-200;
+			color: $gray-900;
 		}
 
 		.dropdown button {
@@ -368,7 +369,7 @@ table.publications-render-view {
 	}
 
 	td.publications-render-view-content {
-		border: 1px solid #e7e7ed;
+		border: 1px solid $gray-300;
 		vertical-align: top;
 	}
 
@@ -425,11 +426,11 @@ table.publications-render-view {
 	}
 
 	.publication-description {
-		color: #6b6c7e;
+		color: $gray-600;
 	}
 
 	.publication-name {
-		color: #272833;
+		color: $gray-900;
 		font-weight: 600;
 	}
 }
@@ -448,12 +449,12 @@ table.publications-render-view {
 	}
 
 	.btn.active {
-		background-color: rgba(39, 40, 51, 0.06);
-		color: #272833;
+		background-color: unquote('hsl(from #{$gray-900} h s l / 0.06)');
+		color: $gray-900;
 	}
 
 	.publication-name {
-		color: #272833;
+		color: $gray-900;
 		font-size: 18px;
 		font-weight: 600;
 
@@ -522,7 +523,7 @@ table.publications-render-view {
 			}
 
 			.c-slideout {
-				border-color: #e7e7ed;
+				border-color: $gray-300;
 				border-radius: 0.25rem;
 				border-style: solid;
 				border-width: 0.0625rem;
@@ -530,7 +531,7 @@ table.publications-render-view {
 			}
 
 			.panel {
-				border-color: #e7e7ed;
+				border-color: $gray-300;
 				border-radius: 0.25rem;
 				border-style: solid;
 				border-width: 0.0625rem;
@@ -548,7 +549,7 @@ table.publications-render-view {
 
 			.sheet-title {
 				.entry-description {
-					color: #6b6c7e;
+					color: $gray-600;
 					font-size: 14px;
 					font-weight: normal;
 				}
@@ -572,7 +573,7 @@ table.publications-render-view {
 		height: 100%;
 
 		.sidebar-body {
-			border-color: #e7e7ed;
+			border-color: $gray-300;
 			border-style: solid;
 			border-width: 0 0 0.0625rem;
 			flex-grow: 1;
@@ -620,7 +621,7 @@ table.publications-render-view {
 		}
 
 		.tbar-nav .tbar-item:first-child {
-			color: #272833;
+			color: $gray-900;
 			font-size: 16px;
 			font-weight: 600;
 		}

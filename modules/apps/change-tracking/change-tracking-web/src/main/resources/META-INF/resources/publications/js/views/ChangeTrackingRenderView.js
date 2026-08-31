@@ -36,7 +36,7 @@ const PREVIEW_PANEL_PADDING = 48;
 
 const DIFF_HTML_STYLES = `
 .taglib-diff-html div.diff-removed-image {
-	background: #fdc6c6;
+	background: light-dark(#fdc6c6, #470606);
 	height: 300px;
 	margin: 2px;
 	opacity: 0.55;
@@ -45,7 +45,7 @@ const DIFF_HTML_STYLES = `
 }
 
 .taglib-diff-html div.diff-added-image {
-	background: #cfc;
+	background: light-dark(#cfc, #13391b);
 	height: 300px;
 	margin: 2px;
 	opacity: 0.55;
@@ -54,30 +54,30 @@ const DIFF_HTML_STYLES = `
 }
 
 .taglib-diff-html span.diff-html-added {
-	background-color: #cfc;
+	background-color: light-dark(#cfc, #13391b);
 	font-size: 1em;
 }
 
 .taglib-diff-html span.diff-html-added img {
-	border: 2px solid #cfc;
+	border: 2px solid light-dark(#cfc, #13391b);
 }
 
 .taglib-diff-html span.diff-html-changed {
-	border-bottom: 1px dotted #009;
+	border-bottom: 1px dotted light-dark(#009, #b8d8ff);
 }
 
 .taglib-diff-html span.diff-html-changed img {
-	border: 2px dotted #009;
+	border: 2px dotted light-dark(#009, #b8d8ff);
 }
 
 .taglib-diff-html span.diff-html-removed {
-	background-color: #fdc6c6;
+	background-color: light-dark(#fdc6c6, #470606);
 	font-size: 1em;
 	text-decoration: line-through;
 }
 
 .taglib-diff-html span.diff-html-removed img {
-	border: 2px solid #fdc6c6;
+	border: 2px solid light-dark(#fdc6c6, #470606);
 }
 `;
 
