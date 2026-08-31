@@ -61,11 +61,55 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_captureOAuthASColumns();
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select oAuthClientASLocalMetadataId, " +
+					"oAuthASLocalWellKnownURI, oAuthASMetadataJSON from " +
+						"OAuthClientASLocalMetadata");
+
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			while (resultSet.next()) {
+				_oAuthClientASLocalMetadataColumnValues.put(
+					resultSet.getLong("oAuthClientASLocalMetadataId"),
+					new ObjectValuePair<>(
+						resultSet.getString("oAuthASLocalWellKnownURI"),
+						resultSet.getString("oAuthASMetadataJSON")));
+			}
+		}
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					"update OAuthClientASLocalMetadata set " +
+						"oAuthASLocalWellKnownURI = ?, oAuthASMetadataJSON = " +
+							"? where oAuthClientASLocalMetadataId = ?")) {
+
+			for (Map.Entry<Long, ObjectValuePair<String, String>> entry :
+					_oAuthClientASLocalMetadataColumnValues.entrySet()) {
+
+				ObjectValuePair<String, String> objectValuePair =
+					entry.getValue();
+
+				preparedStatement.setString(1, objectValuePair.getKey());
+				preparedStatement.setString(2, objectValuePair.getValue());
+
+				preparedStatement.setLong(3, entry.getKey());
+
+				preparedStatement.addBatch();
+			}
+
+			preparedStatement.executeBatch();
+		}
+
+		_oAuthClientASLocalMetadataColumnValues.clear();
+
 		for (OAuthClientASLocalMetadata oAuthClientASLocalMetadata :
 				_oAuthClientASLocalMetadatas) {
 
@@ -74,13 +118,11 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 		}
 
 		_oAuthClientASLocalMetadatas.clear();
-
-		_restoreOAuthASColumns();
 	}
 
 	@Test
 	public void testUpgrade() throws Exception {
-		String path = _randomPath();
+		String path = _createPath();
 
 		String issuer = _ISSUER + path;
 
@@ -101,18 +143,19 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 				oAuthClientASLocalMetadata.getOAuthASMetadataJSON());
 
 		Assert.assertEquals(
+			issuer, String.valueOf(authorizationServerMetadata.getIssuer()));
+
+		Assert.assertEquals(
 			issuer + "/protocol/openid-connect/auth",
 			String.valueOf(
 				authorizationServerMetadata.getAuthorizationEndpointURI()));
 		Assert.assertEquals(
+			issuer + "/protocol/openid-connect/certs",
+			String.valueOf(authorizationServerMetadata.getJWKSetURI()));
+		Assert.assertEquals(
 			issuer + "/protocol/openid-connect/introspect",
 			String.valueOf(
 				authorizationServerMetadata.getIntrospectionEndpointURI()));
-		Assert.assertEquals(
-			issuer, String.valueOf(authorizationServerMetadata.getIssuer()));
-		Assert.assertEquals(
-			issuer + "/protocol/openid-connect/certs",
-			String.valueOf(authorizationServerMetadata.getJWKSetURI()));
 		Assert.assertEquals(
 			issuer + "/protocol/openid-connect/token",
 			String.valueOf(authorizationServerMetadata.getTokenEndpointURI()));
@@ -127,7 +170,7 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 	@Test
 	public void testUpgradeOAuthASLocalWellKnownURI() throws Exception {
 		_testUpgradeOAuthASLocalWellKnownURI(
-			RandomTestUtil.randomString(), _randomPath());
+			RandomTestUtil.randomString(), _createPath());
 		_testUpgradeOAuthASLocalWellKnownURI(
 			null,
 			StringBundler.concat(
@@ -137,17 +180,18 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 
 	@Test
 	public void testUpgradeSameAuthorityIssuers() throws Exception {
-		String path1 = _randomPath();
+		String path1 = _createPath();
 
 		String issuer1 = _ISSUER + path1;
-
-		String path2 = _randomPath();
-
-		String issuer2 = _ISSUER + path2;
 
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata1 =
 			_addOAuthClientASLocalMetadata(
 				issuer1, _createMetadataJSON(issuer1));
+
+		String path2 = _createPath();
+
+		String issuer2 = _ISSUER + path2;
+
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata2 =
 			_addOAuthClientASLocalMetadata(
 				issuer2, _createMetadataJSON(issuer2));
@@ -156,12 +200,14 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 
 		oAuthClientASLocalMetadata1 = _getOAuthClientASLocalMetadata(
 			oAuthClientASLocalMetadata1);
-		oAuthClientASLocalMetadata2 = _getOAuthClientASLocalMetadata(
-			oAuthClientASLocalMetadata2);
 
 		Assert.assertEquals(
 			_ISSUER + _OAUTH_AS_LOCAL_WELL_KNOWN_PATH + path1,
 			oAuthClientASLocalMetadata1.getOAuthASLocalWellKnownURI());
+
+		oAuthClientASLocalMetadata2 = _getOAuthClientASLocalMetadata(
+			oAuthClientASLocalMetadata2);
+
 		Assert.assertEquals(
 			_ISSUER + _OAUTH_AS_LOCAL_WELL_KNOWN_PATH + path2,
 			oAuthClientASLocalMetadata2.getOAuthASLocalWellKnownURI());
@@ -211,26 +257,6 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 		return oAuthClientASLocalMetadata;
 	}
 
-	private void _captureOAuthASColumns() throws Exception {
-		try (Connection connection = DataAccess.getConnection();
-
-			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select oAuthClientASLocalMetadataId, " +
-					"oAuthASLocalWellKnownURI, oAuthASMetadataJSON from " +
-						"OAuthClientASLocalMetadata");
-
-			ResultSet resultSet = preparedStatement.executeQuery()) {
-
-			while (resultSet.next()) {
-				_oAuthASColumns.put(
-					resultSet.getLong("oAuthClientASLocalMetadataId"),
-					new ObjectValuePair<>(
-						resultSet.getString("oAuthASLocalWellKnownURI"),
-						resultSet.getString("oAuthASMetadataJSON")));
-			}
-		}
-	}
-
 	private String _createMetadataJSON(String issuer) {
 		return JSONUtil.put(
 			"authorization_endpoint", issuer + "/protocol/openid-connect/auth"
@@ -243,6 +269,12 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 		).put(
 			"token_endpoint", issuer + "/protocol/openid-connect/token"
 		).toString();
+	}
+
+	private String _createPath() {
+		return StringBundler.concat(
+			StringPool.SLASH, RandomTestUtil.randomString(), StringPool.SLASH,
+			RandomTestUtil.randomString());
 	}
 
 	private String _getOAuthASMetadataJSON(long oAuthClientASLocalMetadataId)
@@ -273,46 +305,6 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 				oAuthClientASLocalMetadata.getOAuthClientASLocalMetadataId());
 	}
 
-	private String _randomPath() {
-		return StringBundler.concat(
-			StringPool.SLASH, RandomTestUtil.randomString(), StringPool.SLASH,
-			RandomTestUtil.randomString());
-	}
-
-	private void _restoreOAuthASColumns() throws Exception {
-		if (_oAuthASColumns.isEmpty()) {
-			return;
-		}
-
-		try (Connection connection = DataAccess.getConnection();
-
-			PreparedStatement preparedStatement =
-				AutoBatchPreparedStatementUtil.autoBatch(
-					connection,
-					"update OAuthClientASLocalMetadata set " +
-						"oAuthASLocalWellKnownURI = ?, oAuthASMetadataJSON = " +
-							"? where oAuthClientASLocalMetadataId = ?")) {
-
-			for (Map.Entry<Long, ObjectValuePair<String, String>> entry :
-					_oAuthASColumns.entrySet()) {
-
-				ObjectValuePair<String, String> objectValuePair =
-					entry.getValue();
-
-				preparedStatement.setString(1, objectValuePair.getKey());
-				preparedStatement.setString(2, objectValuePair.getValue());
-
-				preparedStatement.setLong(3, entry.getKey());
-
-				preparedStatement.addBatch();
-			}
-
-			preparedStatement.executeBatch();
-		}
-
-		_oAuthASColumns.clear();
-	}
-
 	private List<String> _runUpgrade() throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME, LoggerTestUtil.WARN)) {
@@ -331,7 +323,7 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 	private void _testUpgradeInvalidMetadataJSON(String oAuthASMetadataJSON)
 		throws Exception {
 
-		String path = _randomPath();
+		String path = _createPath();
 
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
 			_addOAuthClientASLocalMetadata(
@@ -446,8 +438,8 @@ public class OAuthClientASLocalMetadataUpgradeProcessTest {
 	@Inject
 	private MultiVMPool _multiVMPool;
 
-	private final Map<Long, ObjectValuePair<String, String>> _oAuthASColumns =
-		new HashMap<>();
+	private final Map<Long, ObjectValuePair<String, String>>
+		_oAuthClientASLocalMetadataColumnValues = new HashMap<>();
 
 	@Inject
 	private OAuthClientASLocalMetadataLocalService
