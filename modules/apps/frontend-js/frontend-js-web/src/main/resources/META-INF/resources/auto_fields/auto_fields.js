@@ -10,7 +10,8 @@ import {
 	objectToFormData,
 	runScriptsInElement,
 	toggleDisabled,
-} from '../main/index';
+} from 'frontend-js-web';
+
 import {
 	all,
 	create,
