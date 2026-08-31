@@ -667,6 +667,7 @@ public class CPDefinitionLocalServiceImpl
 				(CPDefinitionOptionRel)cpDefinitionOptionRel.clone();
 
 			newCPDefinitionOptionRel.setUuid(PortalUUIDUtil.generate());
+			newCPDefinitionOptionRel.setExternalReferenceCode(null);
 
 			long newCPDefinitionOptionRelId = counterLocalService.increment();
 
@@ -694,6 +695,7 @@ public class CPDefinitionLocalServiceImpl
 
 				newCPDefinitionOptionValueRel.setUuid(
 					PortalUUIDUtil.generate());
+				newCPDefinitionOptionValueRel.setExternalReferenceCode(null);
 				newCPDefinitionOptionValueRel.setCPDefinitionOptionValueRelId(
 					counterLocalService.increment());
 				newCPDefinitionOptionValueRel.setCPDefinitionOptionRelId(
@@ -1082,6 +1084,7 @@ public class CPDefinitionLocalServiceImpl
 				(CPDefinitionOptionRel)cpDefinitionOptionRel.clone();
 
 			newCPDefinitionOptionRel.setUuid(PortalUUIDUtil.generate());
+			newCPDefinitionOptionRel.setExternalReferenceCode(null);
 
 			long newCPDefinitionOptionRelId = counterLocalService.increment();
 
@@ -1109,6 +1112,7 @@ public class CPDefinitionLocalServiceImpl
 
 				newCPDefinitionOptionValueRel.setUuid(
 					PortalUUIDUtil.generate());
+				newCPDefinitionOptionValueRel.setExternalReferenceCode(null);
 				newCPDefinitionOptionValueRel.setCPDefinitionOptionValueRelId(
 					counterLocalService.increment());
 				newCPDefinitionOptionValueRel.setCPDefinitionOptionRelId(
