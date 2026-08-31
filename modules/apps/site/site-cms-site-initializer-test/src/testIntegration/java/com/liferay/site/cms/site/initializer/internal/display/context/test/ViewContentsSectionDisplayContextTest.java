@@ -82,7 +82,7 @@ public class ViewContentsSectionDisplayContextTest
 			getBulkActionDropdownItems();
 
 		Assert.assertEquals(
-			bulkActionDropdownItems.toString(), 13,
+			bulkActionDropdownItems.toString(), 15,
 			bulkActionDropdownItems.size());
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
@@ -107,22 +107,28 @@ public class ViewContentsSectionDisplayContextTest
 			"pencil", "edit-tags", "Edit Tags", "post",
 			bulkActionDropdownItems.get(7));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"date-time", "update-expiration-date", "Update Expiration Date",
+			null, bulkActionDropdownItems.get(8));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"date-time", "update-review-date", "Update Review Date", null,
+			bulkActionDropdownItems.get(9));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"password-policies", "permissions", "Permissions", null,
-			bulkActionDropdownItems.get(8));
+			bulkActionDropdownItems.get(10));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"password-policies", "default-permissions", "Default Permissions",
-			null, bulkActionDropdownItems.get(9));
+			null, bulkActionDropdownItems.get(11));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"password-policies", "edit-default-permissions-by-role",
 			"Edit Default Permissions by Role", null,
-			bulkActionDropdownItems.get(10));
+			bulkActionDropdownItems.get(12));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"password-policies", "edit-permissions-by-role",
-			"Edit Permissions by Role", null, bulkActionDropdownItems.get(11));
+			"Edit Permissions by Role", null, bulkActionDropdownItems.get(13));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"password-policies", "reset-to-default-permissions",
 			"Reset to Default Permissions", null,
-			bulkActionDropdownItems.get(12));
+			bulkActionDropdownItems.get(14));
 	}
 
 	@Test
@@ -131,7 +137,7 @@ public class ViewContentsSectionDisplayContextTest
 			getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 16,
+			fdsActionDropdownItems.toString(), 18,
 			fdsActionDropdownItems.size());
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
@@ -237,6 +243,12 @@ public class ViewContentsSectionDisplayContextTest
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"trash", "delete", "Delete", null, fdsActionDropdownItems.get(15));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"date-time", "update-expiration-date", "Update Expiration Date",
+			null, fdsActionDropdownItems.get(16));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"date-time", "update-review-date", "Update Review Date", null,
+			fdsActionDropdownItems.get(17));
 	}
 
 	@FeatureFlag("LPD-72278")
@@ -249,7 +261,7 @@ public class ViewContentsSectionDisplayContextTest
 			getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 17,
+			fdsActionDropdownItems.toString(), 19,
 			fdsActionDropdownItems.size());
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(

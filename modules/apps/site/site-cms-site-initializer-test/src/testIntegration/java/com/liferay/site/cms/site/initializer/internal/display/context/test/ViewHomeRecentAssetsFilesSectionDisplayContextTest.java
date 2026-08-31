@@ -87,7 +87,7 @@ public class ViewHomeRecentAssetsFilesSectionDisplayContextTest
 			getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 17,
+			fdsActionDropdownItems.toString(), 19,
 			fdsActionDropdownItems.size());
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
@@ -196,6 +196,12 @@ public class ViewHomeRecentAssetsFilesSectionDisplayContextTest
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"trash", "delete", "Delete", null, fdsActionDropdownItems.get(16));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"date-time", "update-expiration-date", "Update Expiration Date",
+			null, fdsActionDropdownItems.get(17));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"date-time", "update-review-date", "Update Review Date", null,
+			fdsActionDropdownItems.get(18));
 	}
 
 	@Override
