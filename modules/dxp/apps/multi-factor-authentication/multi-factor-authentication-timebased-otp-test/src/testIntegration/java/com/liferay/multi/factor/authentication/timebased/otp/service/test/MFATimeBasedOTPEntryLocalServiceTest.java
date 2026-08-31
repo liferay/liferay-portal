@@ -284,7 +284,8 @@ public class MFATimeBasedOTPEntryLocalServiceTest {
 	private MFATimeBasedOTPEntryLocalService _mfaTimeBasedOTPEntryLocalService;
 
 	private ServiceRegistration<SecretProvider> _serviceRegistration;
-	private TestSecretProvider _testSecretProvider = new TestSecretProvider();
+	private final TestSecretProvider _testSecretProvider =
+		new TestSecretProvider();
 
 	@DeleteAfterTestRun
 	private User _user;
