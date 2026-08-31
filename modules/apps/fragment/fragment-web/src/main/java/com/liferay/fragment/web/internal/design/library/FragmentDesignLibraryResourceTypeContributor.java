@@ -16,7 +16,6 @@ import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -194,24 +193,22 @@ public class FragmentDesignLibraryResourceTypeContributor
 				backURL
 			).buildString()
 		).put(
-			"fragmentCollections", _getFragmentCollectionsJSONArray(depotGroup)
+			"fragmentCollections",
+			JSONUtil.toJSONArray(
+				_fragmentCollectionLocalService.getFragmentCollections(
+					depotGroup.getGroupId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS),
+				fragmentCollection -> JSONUtil.put(
+					"fragmentCollectionId",
+					fragmentCollection.getFragmentCollectionId()
+				).put(
+					"name", fragmentCollection.getName()
+				),
+				_log)
 		).put(
 			"namespace",
 			PortalUtil.getPortletNamespace(FragmentPortletKeys.FRAGMENT)
 		).build();
-	}
-
-	private JSONArray _getFragmentCollectionsJSONArray(Group depotGroup) {
-		return JSONUtil.toJSONArray(
-			_fragmentCollectionLocalService.getFragmentCollections(
-				depotGroup.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			fragmentCollection -> JSONUtil.put(
-				"fragmentCollectionId",
-				fragmentCollection.getFragmentCollectionId()
-			).put(
-				"name", fragmentCollection.getName()
-			),
-			_log);
 	}
 
 	private DesignLibraryResourceCreationItem _newCreationItem(
