@@ -16,13 +16,23 @@ import {
 } from './utils';
 import XMLDefinition from './xmlDefinition';
 
-function parseJSONArray(value) {
+function parseJSON(value, defaultValue) {
 	try {
 		return JSON.parse(value);
 	}
 	catch (error) {
-		return [];
+		return defaultValue;
 	}
+}
+
+function parseRAG(value) {
+	const rag = parseJSON(value, {});
+
+	if (Array.isArray(rag) && !rag.length) {
+		return {};
+	}
+
+	return rag;
 }
 
 export default function DeserializeUtil(content) {
@@ -107,19 +117,21 @@ DeserializeUtil.prototype = {
 				};
 
 				if (type === 'ai-decision' || type === 'llm') {
-					data.inputVariables = parseJSONArray(
-						node['input-variables']
+					data.inputVariables = parseJSON(
+						node['input-variables'],
+						[]
 					);
 
-					data.outputVariables = parseJSONArray(
-						node['output-variables']
+					data.outputVariables = parseJSON(
+						node['output-variables'],
+						[]
 					);
 
 					data.prompt = node.prompt || '';
 
-					data.rag = parseJSONArray(node.rag);
+					data.rag = parseRAG(node.rag);
 
-					data.tools = parseJSONArray(node.tools);
+					data.tools = parseJSON(node.tools, []);
 
 					data.userMessage = node['user-message'] || '';
 				}
@@ -139,12 +151,14 @@ DeserializeUtil.prototype = {
 				if (type === 'http-request') {
 					data.httpMethod = node['http-method'] || 'GET';
 
-					data.inputVariables = parseJSONArray(
-						node['input-variables']
+					data.inputVariables = parseJSON(
+						node['input-variables'],
+						[]
 					);
 
-					data.outputVariables = parseJSONArray(
-						node['output-variables']
+					data.outputVariables = parseJSON(
+						node['output-variables'],
+						[]
 					);
 
 					data.requestBody = node['request-body'] || '';
