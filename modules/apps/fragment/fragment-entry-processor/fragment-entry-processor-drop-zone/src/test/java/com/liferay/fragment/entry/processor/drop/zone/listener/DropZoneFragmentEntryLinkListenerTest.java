@@ -9,6 +9,7 @@ import com.liferay.fragment.entry.processor.drop.zone.FragmentEntryProcessorDrop
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
+import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.structure.FragmentDropZoneLayoutStructureItem;
@@ -17,6 +18,7 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -522,6 +525,21 @@ public class DropZoneFragmentEntryLinkListenerTest {
 		ReflectionTestUtil.setFieldValue(
 			_dropZoneFragmentEntryLinkListener,
 			"_fragmentEntryProcessorRegistry", _fragmentEntryProcessorRegistry);
+
+		FragmentEntryConfigurationParser fragmentEntryConfigurationParser =
+			Mockito.mock(FragmentEntryConfigurationParser.class);
+
+		Mockito.when(
+			fragmentEntryConfigurationParser.getFragmentConfigurationFields(
+				Mockito.nullable(JSONObject.class))
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_dropZoneFragmentEntryLinkListener,
+			"_fragmentEntryConfigurationParser",
+			fragmentEntryConfigurationParser);
 	}
 
 	private void _setUpFragmentEntryProcessorRegistry(
