@@ -21,8 +21,21 @@ export const INTERVAL_MAP = {
 	W: TimeIntervals.Week,
 };
 
+/**
+ * The Salesforce Campaign a touch carried. `campaignId` is the raw value the
+ * tenant's configured campaign-identity query param held, and is always
+ * present. `campaignName` is the campaign that id resolved to, and is null when
+ * it matched none — an unresolved touch the timeline still has to show, rather
+ * than one that carried no campaign at all (which produces no campaign here).
+ */
+export type TimelineCampaign = {
+	campaignId: string;
+	campaignName: string | null;
+};
+
 export type SessionEvent = {
 	attributes: Record<string, unknown>;
+	campaign?: TimelineCampaign;
 	description: string;
 	descriptionUrl?: string;
 	subtitle: string | undefined;
@@ -50,6 +63,7 @@ export type VerticalTimelineHeader = {
 };
 
 export type VerticalTimelinePageGroup = {
+	campaign?: TimelineCampaign;
 	descriptionUrl?: string;
 	nestedItems: SessionEvent[];
 	pageGroup: true;
@@ -170,6 +184,20 @@ export const isWebhookUserAgent = (userAgent?: string): boolean =>
 	!!userAgent?.toLowerCase().includes('webhook');
 
 /**
+ * The campaign a single event's touch carried, or undefined when it carried
+ * none. A resolved and an unresolved touch are both campaigns — only a touch
+ * with no campaign identity at all produces nothing, so the timeline can tell
+ * "this campaign did not resolve" apart from "there was no campaign here".
+ */
+export const getEventCampaign = ({
+	utmCampaignId,
+	utmCampaignName,
+}: UserSessionEvent): TimelineCampaign | undefined =>
+	utmCampaignId
+		? {campaignId: utmCampaignId, campaignName: utmCampaignName ?? null}
+		: undefined;
+
+/**
  * Formats UserSessions events and maps its attributes to the required to be used in VerticalTimeline component.
  * @param {Array} events Array of UserSessions events.
  * @returns {Array.<Object>} Array of objects for a vertical timeline.
@@ -194,6 +222,8 @@ export const formatEvents = (
 			properties,
 		} = event;
 
+		const campaign = getEventCampaign(event);
+
 		return {
 			attributes: {
 				applicationId,
@@ -208,6 +238,7 @@ export const formatEvents = (
 					),
 				}),
 			},
+			...(campaign && {campaign}),
 			description: assetTitle || pageTitle,
 			descriptionUrl: getEventDashboardUrl(event, {
 				...context,
@@ -308,17 +339,28 @@ export const groupEventsByPage = (
 			context
 		);
 
+		// Every event on the page carries the campaign of the touch that
+		// brought the visitor to it, so the group takes the first one it
+		// finds — preferring the page-view event, the touch itself.
+
+		const groupCampaign = [pageEvent, ...pageEvents].reduce<
+			TimelineCampaign | undefined
+		>((campaign, event) => campaign ?? getEventCampaign(event), undefined);
+
 		sortableItems.push({
 			item: {
+				...(groupCampaign && {campaign: groupCampaign}),
 				descriptionUrl:
 					formattedPageEvents[Math.max(pageEventIndex, 0)]
 						.descriptionUrl,
 
-				// The page group's own subtitle already shows the page URL, so
-				// its nested events don't repeat it.
+				// The page group's own subtitle and campaign label already show
+				// the page URL and the touch it came from, so its nested
+				// events don't repeat either.
 
 				nestedItems: formattedPageEvents.map((event) => ({
 					...event,
+					campaign: undefined,
 					subtitle: undefined,
 				})),
 				pageGroup: true,

@@ -96,6 +96,7 @@
 	}
 
 	.became-known-label,
+	.campaign-label,
 	.data-source-label {
 		font-size: $fontSizeSmall;
 	}
@@ -168,6 +169,17 @@
 
 		.event-count-pill {
 			align-self: flex-start;
+		}
+
+		.row-metrics {
+			align-self: flex-start;
+			column-gap: 12px;
+			max-width: 100%;
+
+			> .campaign-label-root:not(:first-child) {
+				border-left: 1px solid $mainLighten74;
+				padding-left: 12px;
+			}
 		}
 	}
 

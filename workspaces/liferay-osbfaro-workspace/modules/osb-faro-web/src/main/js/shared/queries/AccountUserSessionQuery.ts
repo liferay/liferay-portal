@@ -16,6 +16,8 @@ export interface AccountUserSessionEvent {
 	properties: Array<{name: string; value: string}>;
 	referrer: string;
 	url: string;
+	utmCampaignId?: string | null;
+	utmCampaignName?: string | null;
 }
 
 export interface AccountUserSession {

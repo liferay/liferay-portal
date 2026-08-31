@@ -5,6 +5,7 @@ import {
 	formatGroupingTime,
 	formatSessions,
 	getActivityLabel,
+	getEventCampaign,
 	getSafeRangeKey,
 	groupEventsByPage,
 	groupSessionsByDay,
@@ -52,6 +53,29 @@ describe('activities', () => {
 	});
 
 	describe('formatEvents', () => {
+		it('carries a campaign onto an event that is not page bound', () => {
+			const [withCampaign, withoutCampaign] = formatEvents([
+				{
+					applicationId: 'CustomEvent',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'eventName',
+					utmCampaignId: '7013a000002QwErtAAG',
+					utmCampaignName: 'Spring Compactor Promo 2026'
+				},
+				{
+					applicationId: 'CustomEvent',
+					createDate: '2026-07-16T10:01:00.000Z',
+					name: 'eventName'
+				}
+			]);
+
+			expect(withCampaign.campaign).toEqual({
+				campaignId: '7013a000002QwErtAAG',
+				campaignName: 'Spring Compactor Promo 2026'
+			});
+			expect(withoutCampaign.campaign).toBeUndefined();
+		});
+
 		it('should decode canonicalUrl into subtitle for DXP events', () => {
 			const result = formatEvents([
 				{
@@ -157,6 +181,43 @@ describe('activities', () => {
 		});
 	});
 
+	describe('getEventCampaign', () => {
+		it('reads a resolved touch as its campaign id and name', () => {
+			expect(
+				getEventCampaign({
+					utmCampaignId: '7013a000002QwErtAAG',
+					utmCampaignName: 'Spring Compactor Promo 2026'
+				})
+			).toEqual({
+				campaignId: '7013a000002QwErtAAG',
+				campaignName: 'Spring Compactor Promo 2026'
+			});
+		});
+
+		it('keeps the raw id of a touch that resolved to no campaign', () => {
+			expect(
+				getEventCampaign({
+					utmCampaignId: '7013a000002XyZbAAK',
+					utmCampaignName: null
+				})
+			).toEqual({
+				campaignId: '7013a000002XyZbAAK',
+				campaignName: null
+			});
+		});
+
+		it('reads an event that carried no campaign identity as no campaign', () => {
+			expect(
+				getEventCampaign({
+					utmCampaignId: null,
+					utmCampaignName: null
+				})
+			).toBeUndefined();
+
+			expect(getEventCampaign({})).toBeUndefined();
+		});
+	});
+
 	describe('groupEventsByPage', () => {
 		it('groups events that share a page group key into a single page entry', () => {
 			const result = groupEventsByPage([
@@ -185,6 +246,74 @@ describe('activities', () => {
 				totalEvents: 2
 			});
 			expect(result[0].nestedItems).toHaveLength(2);
+		});
+
+		it('carries the campaign of the touch that led to the page onto the group', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home',
+					utmCampaignId: '7013a000002QwErtAAG',
+					utmCampaignName: 'Spring Compactor Promo 2026'
+				}
+			]);
+
+			expect(result[0].campaign).toEqual({
+				campaignId: '7013a000002QwErtAAG',
+				campaignName: 'Spring Compactor Promo 2026'
+			});
+		});
+
+		it('keeps an unresolved campaign on the group rather than dropping it', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home',
+					utmCampaignId: '7013a000002XyZbAAK',
+					utmCampaignName: null
+				}
+			]);
+
+			expect(result[0].campaign).toEqual({
+				campaignId: '7013a000002XyZbAAK',
+				campaignName: null
+			});
+		});
+
+		it('leaves a page nobody reached through a campaign without one', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				}
+			]);
+
+			expect(result[0].campaign).toBeUndefined();
+		});
+
+		it('does not repeat the group\'s campaign on its own nested events', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home',
+					utmCampaignId: '7013a000002QwErtAAG',
+					utmCampaignName: 'Spring Compactor Promo 2026'
+				}
+			]);
+
+			expect(result[0].nestedItems[0].campaign).toBeUndefined();
 		});
 
 		it('does not repeat the page subtitle on the group\'s own nested events', () => {
