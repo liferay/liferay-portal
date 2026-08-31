@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,15 +75,8 @@ public class UserNotificationManagerUtil {
 			long classPK, String portletId, String selector, User user)
 		throws PortalException {
 
-		Map<String, UserNotificationHandler> userNotificationHandlers =
-			_userNotificationHandlers.get(selector);
-
-		if (userNotificationHandlers == null) {
-			return false;
-		}
-
 		UserNotificationHandler userNotificationHandler =
-			userNotificationHandlers.get(portletId);
+			_userNotificationHandlers.get(_getKey(selector, portletId));
 
 		if (userNotificationHandler == null) {
 			return false;
@@ -96,14 +88,8 @@ public class UserNotificationManagerUtil {
 	public static boolean hasUserNotificationHandler(
 		String portletId, String selector) {
 
-		Map<String, UserNotificationHandler> userNotificationHandlers =
-			_userNotificationHandlers.get(selector);
-
-		if (userNotificationHandlers == null) {
-			return false;
-		}
-
-		return userNotificationHandlers.containsKey(portletId);
+		return _userNotificationHandlers.containsKey(
+			_getKey(selector, portletId));
 	}
 
 	public static UserNotificationFeedEntry interpret(
@@ -111,15 +97,9 @@ public class UserNotificationManagerUtil {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		Map<String, UserNotificationHandler> userNotificationHandlers =
-			_userNotificationHandlers.get(selector);
-
-		if (userNotificationHandlers == null) {
-			return null;
-		}
-
 		UserNotificationHandler userNotificationHandler =
-			userNotificationHandlers.get(userNotificationEvent.getType());
+			_userNotificationHandlers.get(
+				_getKey(selector, userNotificationEvent.getType()));
 
 		if (userNotificationHandler == null) {
 			if (_log.isWarnEnabled()) {
@@ -154,6 +134,10 @@ public class UserNotificationManagerUtil {
 			deliveryType, serviceContext);
 	}
 
+	private static String _getKey(String selector, String portletId) {
+		return selector + StringPool.POUND + portletId;
+	}
+
 	private static Map<String, List<UserNotificationDefinition>>
 		_getUserNotificationDefinitions(boolean active) {
 
@@ -183,15 +167,8 @@ public class UserNotificationManagerUtil {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		Map<String, UserNotificationHandler> userNotificationHandlers =
-			_userNotificationHandlers.get(selector);
-
-		if (userNotificationHandlers == null) {
-			return false;
-		}
-
 		UserNotificationHandler userNotificationHandler =
-			userNotificationHandlers.get(portletId);
+			_userNotificationHandlers.get(_getKey(selector, portletId));
 
 		if (userNotificationHandler == null) {
 			if (deliveryType == UserNotificationDeliveryConstants.TYPE_EMAIL) {
@@ -217,7 +194,7 @@ public class UserNotificationManagerUtil {
 				ServiceTrackerMapFactory.openMultiValueMap(
 					_bundleContext, UserNotificationDefinition.class,
 					"jakarta.portlet.name");
-	private static final Map<String, Map<String, UserNotificationHandler>>
+	private static final Map<String, UserNotificationHandler>
 		_userNotificationHandlers = new ConcurrentHashMap<>();
 	private static final ServiceTracker
 		<UserNotificationHandler, UserNotificationHandler>
@@ -234,20 +211,10 @@ public class UserNotificationManagerUtil {
 			UserNotificationHandler userNotificationHandler =
 				_bundleContext.getService(serviceReference);
 
-			String selector = userNotificationHandler.getSelector();
-
-			Map<String, UserNotificationHandler> userNotificationHandlers =
-				_userNotificationHandlers.get(selector);
-
-			if (userNotificationHandlers == null) {
-				userNotificationHandlers = new HashMap<>();
-
-				_userNotificationHandlers.put(
-					selector, userNotificationHandlers);
-			}
-
-			userNotificationHandlers.put(
-				userNotificationHandler.getPortletId(),
+			_userNotificationHandlers.put(
+				_getKey(
+					userNotificationHandler.getSelector(),
+					userNotificationHandler.getPortletId()),
 				userNotificationHandler);
 
 			return userNotificationHandler;
@@ -266,16 +233,10 @@ public class UserNotificationManagerUtil {
 
 			_bundleContext.ungetService(serviceReference);
 
-			Map<String, UserNotificationHandler> userNotificationHandlers =
-				_userNotificationHandlers.get(
-					userNotificationHandler.getSelector());
-
-			if (userNotificationHandlers == null) {
-				return;
-			}
-
-			userNotificationHandlers.remove(
-				userNotificationHandler.getPortletId());
+			_userNotificationHandlers.remove(
+				_getKey(
+					userNotificationHandler.getSelector(),
+					userNotificationHandler.getPortletId()));
 		}
 
 	}
