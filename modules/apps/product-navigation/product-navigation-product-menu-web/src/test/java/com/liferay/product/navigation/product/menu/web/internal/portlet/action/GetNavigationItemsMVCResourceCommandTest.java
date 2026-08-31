@@ -157,9 +157,9 @@ public class GetNavigationItemsMVCResourceCommandTest {
 
 		JSONObject navigationItemsJSONObject = _getNavigationItemsJSONObject();
 
-		Assert.assertEquals(1, navigationItemsJSONObject.length());
 		Assert.assertFalse(navigationItemsJSONObject.has("emptyPortletId"));
 		Assert.assertNotNull(navigationItemsJSONObject.get("portletId"));
+		Assert.assertEquals(1, navigationItemsJSONObject.length());
 	}
 
 	@Test

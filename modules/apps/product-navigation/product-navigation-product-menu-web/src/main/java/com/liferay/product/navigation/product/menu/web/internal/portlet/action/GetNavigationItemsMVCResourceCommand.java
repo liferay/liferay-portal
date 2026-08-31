@@ -99,7 +99,7 @@ public class GetNavigationItemsMVCResourceCommand
 			}
 			catch (PortalException portalException) {
 				_log.error(
-					"Unable to fetch panel app's navigation items",
+					"Unable to add navigation items JSON array",
 					portalException);
 			}
 		}

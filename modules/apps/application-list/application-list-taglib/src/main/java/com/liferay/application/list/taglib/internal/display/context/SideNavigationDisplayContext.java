@@ -104,7 +104,6 @@ public class SideNavigationDisplayContext {
 						);
 
 				navigationItemsURL.setCopyCurrentRenderParameters(false);
-
 				navigationItemsURL.setParameter(
 					"p_v_l_s_g_id",
 					String.valueOf(_themeDisplay.getScopeGroupId()));
