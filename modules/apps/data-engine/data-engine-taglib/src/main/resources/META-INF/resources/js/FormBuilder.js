@@ -20,7 +20,7 @@ import MultiPanelSidebar from './components/sidebar/MultiPanelSidebar.es';
 import initializeSidebarConfig from './components/sidebar/initializeSidebarConfig.es';
 import DragLayer from './drag-and-drop/DragLayer.es';
 import {EVENT_TYPES} from './eventTypes';
-import {getItem} from './utils/client.es';
+import {fetchFieldSets} from './hooks/useSearchFieldSets.es';
 
 export function FormBuilder() {
 	const dispatch = useForm();
@@ -58,50 +58,20 @@ export function FormBuilder() {
 	 */
 	useEffect(() => {
 		if (allowFieldSets && contentType) {
-			let globalFieldSetsPromise = [];
-
-			if (groupId) {
-				globalFieldSetsPromise = getItem(
-					`/o/data-engine/v2.0/sites/${groupId}/data-definitions/by-content-type/${contentType}?page=1&pageSize=250`
-				);
-			}
-
-			const groupFieldSetsPromise =
-				groupId === themeDisplay.getCompanyGroupId()
-					? Promise.resolve({})
-					: getItem(
-							`/o/data-engine/v2.0/data-definitions/by-content-type/${contentType}?page=1&pageSize=250`
-						);
-
-			const fetchFieldSets = async () => {
-				try {
-					const [
-						{items: globalFieldSets = []},
-						{items: groupFieldSets = []},
-					] = await Promise.all([
-						globalFieldSetsPromise,
-						groupFieldSetsPromise,
-					]);
-					const fieldSets = [
-						...globalFieldSets,
-						...groupFieldSets,
-					].filter(({id}) => id !== parseInt(dataDefinitionId, 10));
-
+			fetchFieldSets({contentType, dataDefinitionId, groupId})
+				.then((fieldSets) => {
 					dispatch({
 						payload: {fieldSets},
 						type: EVENT_TYPES.FIELD_SET.UPDATE_LIST,
 					});
-				}
-				catch (error) {
+				})
+				.catch((error) => {
 					if (process.env.NODE_ENV === 'development') {
 						console.warn(
 							`[DataEngineFormBuilder] fetchFieldSets promise rejected: ${error}`
 						);
 					}
-				}
-			};
-
-			fetchFieldSets();
+				});
 		}
 	}, [allowFieldSets, contentType, dataDefinitionId, dispatch, groupId]);
 
