@@ -5,11 +5,18 @@
 
 import {ClayModalProvider} from '@clayui/modal';
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
+import {
+	ConfigProvider,
+	FormProvider,
+	KeyboardDNDContextProvider,
+} from 'data-engine-js-components-web';
+import {openToast} from 'frontend-js-components-web';
 import React from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import FieldSetList from '../../../../../src/main/resources/META-INF/resources/js/components/field-sets/FieldSetList';
+import fieldSetReducer from '../../../../../src/main/resources/META-INF/resources/js/reducers/fieldSetReducer';
 import * as DataConverter from '../../../../../src/main/resources/META-INF/resources/js/utils/dataConverter.es';
 import * as toast from '../../../../../src/main/resources/META-INF/resources/js/utils/toast.es';
 import {
@@ -18,6 +25,11 @@ import {
 	ENTRY,
 	FORM_VIEW,
 } from '../../../../utils/constants.es';
+
+jest.mock('frontend-js-components-web', () => ({
+	...jest.requireActual('frontend-js-components-web'),
+	openToast: jest.fn(),
+}));
 
 const {getDataLayoutBuilderProps} = FORM_VIEW;
 
@@ -546,5 +558,507 @@ describe('FieldSets', () => {
 			document.querySelector('.localizable-item-default .autofit-section')
 				.textContent
 		).toBe('pt-BR');
+	});
+});
+
+const COMPANY_GROUP_ID = '99';
+
+const CONFIG = {
+	contentType: 'journal',
+	dataDefinitionId: '1',
+	groupId: '20',
+};
+
+const createFieldSet = (id, name) => ({
+	dataDefinitionFields: [{name: `Text${id}`}],
+	dataDefinitionKey: String(id),
+	defaultLanguageId: 'en_US',
+	id,
+	name: {en_US: name},
+});
+
+const createSettingsField = (fieldName, value) => ({fieldName, value});
+
+const createPageWithFieldSet = (ddmStructureId) => ({
+	rows: [
+		{
+			columns: [
+				{
+					fields: [
+						{
+							nestedFields: [],
+							settingsContext: {
+								pages: [
+									{
+										rows: [
+											{
+												columns: [
+													{
+														fields: [
+															createSettingsField(
+																'type',
+																'fieldset'
+															),
+															createSettingsField(
+																'ddmStructureId',
+																ddmStructureId
+															),
+														],
+													},
+												],
+											},
+										],
+									},
+								],
+							},
+						},
+					],
+				},
+			],
+		},
+	],
+});
+
+const createState = (fieldSets, pages) => ({
+	availableLanguageIds: ['en_US'],
+	dataDefinition: {},
+	defaultLanguageId: 'en_US',
+	fieldSets,
+	pages,
+});
+
+const FieldSetListWrapper = ({
+	config = CONFIG,
+	fieldSets = [],
+	pages = [],
+	searchTerm = '',
+}) => (
+	<DndProvider backend={HTML5Backend}>
+		<ClayModalProvider>
+			<ConfigProvider config={config} initialConfig={{}}>
+				<FormProvider
+					reducers={[fieldSetReducer]}
+					value={createState(fieldSets, pages)}
+				>
+					<KeyboardDNDContextProvider>
+						<FieldSetList searchTerm={searchTerm} />
+					</KeyboardDNDContextProvider>
+				</FormProvider>
+			</ConfigProvider>
+		</ClayModalProvider>
+	</DndProvider>
+);
+
+const getFetchedURLs = () =>
+	fetch.mock.calls.map(([resource]) =>
+		typeof resource === 'string' ? resource : resource.url
+	);
+
+describe('FieldSetList server-side search', () => {
+	let originalGetCompanyGroupId;
+
+	beforeEach(() => {
+		jest.useFakeTimers();
+
+		openToast.mockClear();
+
+		originalGetCompanyGroupId = themeDisplay.getCompanyGroupId;
+
+		themeDisplay.getCompanyGroupId = () => COMPANY_GROUP_ID;
+	});
+
+	afterEach(() => {
+		themeDisplay.getCompanyGroupId = originalGetCompanyGroupId;
+
+		jest.clearAllTimers();
+		jest.useRealTimers();
+	});
+
+	it('renders the field sets from the store without fetching when the search is empty', () => {
+		const {queryByText} = render(
+			<FieldSetListWrapper
+				fieldSets={[
+					createFieldSet(2, 'Banana'),
+					createFieldSet(3, 'Apple'),
+				]}
+			/>
+		);
+
+		expect(queryByText('Apple')).toBeTruthy();
+		expect(queryByText('Banana')).toBeTruthy();
+
+		expect(fetch).not.toHaveBeenCalled();
+	});
+
+	it('searches on the server with the keywords parameter in both scopes', async () => {
+		fetch.mockResponse(async (request) => {
+			if (request.url.includes('/sites/')) {
+				return JSON.stringify({
+					items: [
+						createFieldSet(1, 'Current Definition'),
+						createFieldSet(300, 'Zebra Site'),
+					],
+					lastPage: 1,
+				});
+			}
+
+			return JSON.stringify({
+				items: [createFieldSet(400, 'Zebra Company')],
+				lastPage: 1,
+			});
+		});
+
+		const {queryByText} = render(
+			<FieldSetListWrapper
+				fieldSets={[createFieldSet(2, 'Banana')]}
+				searchTerm="zebra"
+			/>
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		const urls = getFetchedURLs();
+
+		expect(urls.length).toBe(2);
+
+		expect(urls[0]).toContain(
+			'/o/data-engine/v2.0/sites/20/data-definitions/by-content-type/journal'
+		);
+		expect(urls[1]).toContain(
+			'/o/data-engine/v2.0/data-definitions/by-content-type/journal'
+		);
+
+		urls.forEach((url) => {
+			expect(url).toContain('keywords=zebra');
+			expect(url).toContain('page=1');
+			expect(url).toContain('pageSize=250');
+		});
+
+		expect(queryByText('Banana')).toBeFalsy();
+		expect(queryByText('Current Definition')).toBeFalsy();
+		expect(queryByText('Zebra Company')).toBeTruthy();
+		expect(queryByText('Zebra Site')).toBeTruthy();
+	});
+
+	it('encodes the search term in the keywords parameter', async () => {
+		fetch.mockResponse(async () =>
+			JSON.stringify({items: [], lastPage: 1})
+		);
+
+		render(<FieldSetListWrapper searchTerm="a b&c" />);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		getFetchedURLs().forEach((url) => {
+			expect(new URL(url).searchParams.get('keywords')).toBe('a b&c');
+		});
+	});
+
+	it('replaces an edited field set with its store version in the results', async () => {
+		fetch.mockResponse(async (request) => {
+			if (request.url.includes('/sites/')) {
+				return JSON.stringify({
+					items: [
+						createFieldSet(5, 'Zebra'),
+						createFieldSet(6, 'Zebra Kept'),
+					],
+					lastPage: 1,
+				});
+			}
+
+			return JSON.stringify({items: [], lastPage: 1});
+		});
+
+		const {queryByText} = render(
+			<FieldSetListWrapper
+				fieldSets={[createFieldSet(5, 'Lion')]}
+				searchTerm="zebra"
+			/>
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		expect(queryByText('Zebra')).toBeFalsy();
+		expect(queryByText('Lion')).toBeFalsy();
+		expect(queryByText('Zebra Kept')).toBeTruthy();
+	});
+
+	it('debounces the search until the user stops typing', async () => {
+		fetch.mockResponse(async () =>
+			JSON.stringify({items: [], lastPage: 1})
+		);
+
+		const {rerender} = render(<FieldSetListWrapper />);
+
+		rerender(<FieldSetListWrapper searchTerm="z" />);
+
+		await act(async () => {
+			jest.advanceTimersByTime(200);
+		});
+
+		rerender(<FieldSetListWrapper searchTerm="ze" />);
+
+		await act(async () => {
+			jest.advanceTimersByTime(200);
+		});
+
+		rerender(<FieldSetListWrapper searchTerm="zebra" />);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		const urls = getFetchedURLs();
+
+		expect(urls.length).toBe(2);
+
+		urls.forEach((url) => {
+			expect(url).toContain('keywords=zebra');
+		});
+	});
+
+	it('hides settled results as soon as the search term changes', async () => {
+		const resolvers = {first: [], second: []};
+
+		fetch.mockResponse(
+			(request) =>
+				new Promise((resolve) => {
+					const keywords = new URL(request.url).searchParams.get(
+						'keywords'
+					);
+
+					const items = request.url.includes('/sites/')
+						? [createFieldSet(500, `Result ${keywords}`)]
+						: [];
+
+					resolvers[keywords].push(() =>
+						resolve(JSON.stringify({items, lastPage: 1}))
+					);
+				})
+		);
+
+		const {queryByText, rerender} = render(
+			<FieldSetListWrapper searchTerm="first" />
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		await act(async () => {
+			resolvers.first.forEach((resolver) => resolver());
+		});
+
+		expect(queryByText('Result first')).toBeTruthy();
+
+		rerender(<FieldSetListWrapper searchTerm="second" />);
+
+		expect(queryByText('Result first')).toBeFalsy();
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		await act(async () => {
+			resolvers.second.forEach((resolver) => resolver());
+		});
+
+		expect(queryByText('Result first')).toBeFalsy();
+		expect(queryByText('Result second')).toBeTruthy();
+	});
+
+	it('keeps matching store field sets visible next to the loading indicator', () => {
+		fetch.mockResponse(async () =>
+			JSON.stringify({items: [], lastPage: 1})
+		);
+
+		const {container, queryByText} = render(
+			<FieldSetListWrapper
+				fieldSets={[
+					createFieldSet(2, 'Banana'),
+					createFieldSet(3, 'Zebra Local'),
+				]}
+				searchTerm="zebra"
+			/>
+		);
+
+		expect(container.querySelector('.loading-animation')).toBeTruthy();
+		expect(queryByText('create-new-fieldset')).toBeTruthy();
+		expect(queryByText('Zebra Local')).toBeTruthy();
+		expect(queryByText('Banana')).toBeFalsy();
+	});
+
+	it('merges store field sets the search index does not return', async () => {
+		fetch.mockResponse(async () =>
+			JSON.stringify({items: [], lastPage: 1})
+		);
+
+		const {queryByText} = render(
+			<FieldSetListWrapper
+				fieldSets={[
+					createFieldSet(2, 'Banana'),
+					createFieldSet(3, 'Zebra Local'),
+				]}
+				searchTerm="ebr"
+			/>
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		expect(queryByText('Zebra Local')).toBeTruthy();
+		expect(queryByText('Banana')).toBeFalsy();
+		expect(queryByText('no-results-found')).toBeFalsy();
+	});
+
+	it('renders the surviving scope when only one scope request fails', async () => {
+		fetch.mockResponse(async (request) => {
+			if (request.url.includes('/sites/')) {
+				throw new Error('boom');
+			}
+
+			return JSON.stringify({
+				items: [createFieldSet(400, 'Zebra Company')],
+				lastPage: 1,
+			});
+		});
+
+		const {queryByText} = render(
+			<FieldSetListWrapper searchTerm="zebra" />
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		expect(queryByText('Zebra Company')).toBeTruthy();
+		expect(queryByText('unable-to-load-content')).toBeFalsy();
+
+		expect(openToast).not.toHaveBeenCalled();
+	});
+
+	it('falls back to filtering the store when contentType is missing', () => {
+		const {container, queryByText} = render(
+			<FieldSetListWrapper
+				config={{
+					dataDefinitionId: CONFIG.dataDefinitionId,
+					groupId: CONFIG.groupId,
+				}}
+				fieldSets={[
+					createFieldSet(2, 'Banana'),
+					createFieldSet(3, 'Zebra Local'),
+				]}
+				searchTerm="zebra"
+			/>
+		);
+
+		expect(container.querySelector('.loading-animation')).toBeFalsy();
+		expect(queryByText('Zebra Local')).toBeTruthy();
+		expect(queryByText('Banana')).toBeFalsy();
+
+		expect(fetch).not.toHaveBeenCalled();
+	});
+
+	it('disables search results that are already in use', async () => {
+		fetch.mockResponse(async (request) => {
+			if (request.url.includes('/sites/')) {
+				return JSON.stringify({
+					items: [
+						createFieldSet(42, 'Zebra in Use'),
+						createFieldSet(300, 'Zebra Unused'),
+					],
+					lastPage: 1,
+				});
+			}
+
+			return JSON.stringify({items: [], lastPage: 1});
+		});
+
+		const {container} = render(
+			<FieldSetListWrapper
+				pages={[createPageWithFieldSet('42')]}
+				searchTerm="zebra"
+			/>
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		const fields = container.querySelectorAll('.field-type');
+
+		expect(fields.length).toBe(2);
+
+		expect(fields[0].classList.contains('disabled')).toBe(true);
+		expect(fields[1].classList.contains('disabled')).toBe(false);
+	});
+
+	it('shows the empty search state when the server returns no results', async () => {
+		fetch.mockResponse(async () =>
+			JSON.stringify({items: [], lastPage: 1})
+		);
+
+		const {queryByText} = render(
+			<FieldSetListWrapper
+				fieldSets={[createFieldSet(2, 'Banana')]}
+				searchTerm="  zebra  "
+			/>
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		expect(queryByText('no-results-found')).toBeTruthy();
+
+		getFetchedURLs().forEach((url) => {
+			expect(new URL(url).searchParams.get('keywords')).toBe('zebra');
+		});
+	});
+
+	it('shows an error state instead of an empty search when every scope fails', async () => {
+		fetch.mockReject(new Error('network error'));
+
+		const {queryByText} = render(
+			<FieldSetListWrapper searchTerm="zebra" />
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		expect(queryByText('unable-to-load-content')).toBeTruthy();
+		expect(queryByText('no-results-found')).toBeFalsy();
+
+		expect(openToast).toHaveBeenCalledWith(
+			expect.objectContaining({type: 'danger'})
+		);
+	});
+
+	it('restores the empty state instead of the error state when a failed search is cleared', async () => {
+		fetch.mockReject(new Error('network error'));
+
+		const {queryByText, rerender} = render(
+			<FieldSetListWrapper searchTerm="zebra" />
+		);
+
+		await act(async () => {
+			jest.advanceTimersByTime(500);
+		});
+
+		expect(queryByText('unable-to-load-content')).toBeTruthy();
+
+		rerender(<FieldSetListWrapper searchTerm="" />);
+
+		expect(queryByText('unable-to-load-content')).toBeFalsy();
+		expect(queryByText('there-are-no-fieldsets')).toBeTruthy();
+		expect(queryByText('create-new-fieldset')).toBeTruthy();
 	});
 });
