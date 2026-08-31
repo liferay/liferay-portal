@@ -317,6 +317,8 @@ export default function UpperToolbar({
 			setAlert(successAlertMessage, 'success', true);
 		}
 		catch (error) {
+			console.error(error);
+
 			setAlert(
 				Liferay.Language.get('an-unexpected-error-occurred'),
 				'danger',
