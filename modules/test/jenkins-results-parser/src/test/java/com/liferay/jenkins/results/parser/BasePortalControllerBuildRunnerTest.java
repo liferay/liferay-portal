@@ -131,16 +131,16 @@ public class BasePortalControllerBuildRunnerTest
 			basePortalControllerBuildRunner
 		).allowConcurrentBuildsUniqueSHA();
 
-		Mockito.doCallRealMethod(
-		).when(
-			basePortalControllerBuildRunner
-		).run();
-
 		Mockito.doReturn(
 			false
 		).when(
 			basePortalControllerBuildRunner
 		).previousBuildHasCurrentSHA();
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePortalControllerBuildRunner
+		).run();
 
 		basePortalControllerBuildRunner.run();
 

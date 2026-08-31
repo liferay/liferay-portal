@@ -42,18 +42,18 @@ public class CompileModulesRelevantRuleTest {
 		modifiedModuleProjectDirsList.add(new File("modules/apps/test-app"));
 
 		Mockito.doReturn(
-			modifiedModuleProjectDirsList
-		).when(
-			compileModulesRelevantRule
-		).getModifiedModuleProjectDirsList();
-
-		Mockito.doReturn(
 			"modules/apps/test-app"
 		).when(
 			compileModulesRelevantRule
 		).getGradlePackageName(
 			Mockito.any(File.class)
 		);
+
+		Mockito.doReturn(
+			modifiedModuleProjectDirsList
+		).when(
+			compileModulesRelevantRule
+		).getModifiedModuleProjectDirsList();
 
 		Mockito.doReturn(
 			"compileIntegrationTest"

@@ -42,18 +42,18 @@ public class ModulesRelevantRuleTest {
 		modifiedModuleProjectDirsList.add(new File("modules/apps/test-app"));
 
 		Mockito.doReturn(
-			modifiedModuleProjectDirsList
-		).when(
-			modulesRelevantRule
-		).getModifiedModuleProjectDirsList();
-
-		Mockito.doReturn(
 			"modules/apps/test-app"
 		).when(
 			modulesRelevantRule
 		).getGradlePackageName(
 			Mockito.any(File.class)
 		);
+
+		Mockito.doReturn(
+			modifiedModuleProjectDirsList
+		).when(
+			modulesRelevantRule
+		).getModifiedModuleProjectDirsList();
 
 		Mockito.doReturn(
 			"integrationTest"
@@ -94,18 +94,18 @@ public class ModulesRelevantRuleTest {
 		modifiedModuleProjectDirsList.add(new File("modules/apps/test-app"));
 
 		Mockito.doReturn(
-			modifiedModuleProjectDirsList
-		).when(
-			modulesRelevantRule
-		).getModifiedModuleProjectDirsList();
-
-		Mockito.doReturn(
 			"modules/apps/test-app"
 		).when(
 			modulesRelevantRule
 		).getGradlePackageName(
 			Mockito.any(File.class)
 		);
+
+		Mockito.doReturn(
+			modifiedModuleProjectDirsList
+		).when(
+			modulesRelevantRule
+		).getModifiedModuleProjectDirsList();
 
 		Mockito.doReturn(
 			"test"

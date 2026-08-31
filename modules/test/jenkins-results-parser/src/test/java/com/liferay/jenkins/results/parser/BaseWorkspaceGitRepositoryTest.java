@@ -378,6 +378,12 @@ public class BaseWorkspaceGitRepositoryTest
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
 			_newDefaultWorkspaceGitRepository();
 
+		Mockito.doReturn(
+			gitArchiveAvailable
+		).when(
+			defaultWorkspaceGitRepository
+		).isGitArchivesAvailable();
+
 		Mockito.doNothing(
 		).when(
 			defaultWorkspaceGitRepository
@@ -387,12 +393,6 @@ public class BaseWorkspaceGitRepositoryTest
 		).when(
 			defaultWorkspaceGitRepository
 		).updateBuildDatabase();
-
-		Mockito.doReturn(
-			gitArchiveAvailable
-		).when(
-			defaultWorkspaceGitRepository
-		).isGitArchivesAvailable();
 
 		defaultWorkspaceGitRepository.setSnapshot(snapshot);
 
@@ -766,16 +766,16 @@ public class BaseWorkspaceGitRepositoryTest
 			defaultWorkspaceGitRepository
 		).initializeGitWorkingDirectory();
 
-		Mockito.doNothing(
-		).when(
-			defaultWorkspaceGitRepository
-		).promoteGitArchive();
-
 		Mockito.doReturn(
 			snapshot
 		).when(
 			defaultWorkspaceGitRepository
 		).isSnapshot();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).promoteGitArchive();
 
 		defaultWorkspaceGitRepository.prepareGitWorkingDirectory();
 
