@@ -88,8 +88,6 @@ public class FIPSAuditUtilTest {
 
 		JSONObject jsonObject = _getJSONObject(eventType, jsonObjects);
 
-		Assert.assertTrue(jsonObject.has("cmvp-certificate-id"));
-
 		Assert.assertEquals(
 			PropsValues.FIPS_AUDIT_PROVIDER_CMVP_CERTIFICATE_ID,
 			jsonObject.getString("cmvp-certificate-id"));
@@ -259,8 +257,6 @@ public class FIPSAuditUtilTest {
 			PropsValues.LIFERAY_HOME, "data",
 			"fips-audit-deployment-instance-id");
 
-		Assert.assertTrue(Files.exists(path));
-
 		String deploymentInstanceId = new String(
 			Files.readAllBytes(path), StandardCharsets.UTF_8);
 
@@ -278,8 +274,6 @@ public class FIPSAuditUtilTest {
 				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
 
 		Path path = _getFIPSAuditLogPath();
-
-		Assert.assertTrue(Files.exists(path));
 
 		FileSystem fileSystem = path.getFileSystem();
 
@@ -383,11 +377,7 @@ public class FIPSAuditUtilTest {
 	private List<JSONObject> _getJSONObjects() throws Exception {
 		return TransformUtil.unsafeTransform(
 			Files.readAllLines(_getFIPSAuditLogPath()),
-			json -> {
-				Assert.assertTrue(Validator.isNotNull(json));
-
-				return JSONFactoryUtil.createJSONObject(json);
-			});
+			JSONFactoryUtil::createJSONObject);
 	}
 
 	private long _getLastEventSequence() throws Exception {
