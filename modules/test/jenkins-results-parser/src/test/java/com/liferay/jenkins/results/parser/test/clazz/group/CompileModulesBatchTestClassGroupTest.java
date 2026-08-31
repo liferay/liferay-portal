@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
+import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 
 import java.io.File;
@@ -72,7 +73,8 @@ public class CompileModulesBatchTestClassGroupTest
 		File moduleDir = temporaryFolder.newFolder(moduleDirName);
 
 		for (int i = 0; i < modulesProjectDirCount; i++) {
-			File modulesProjectDir = new File(moduleDir, "project-" + i);
+			File modulesProjectDir = new File(
+				moduleDir, RandomTestUtil.randomString());
 
 			modulesProjectDir.mkdirs();
 
