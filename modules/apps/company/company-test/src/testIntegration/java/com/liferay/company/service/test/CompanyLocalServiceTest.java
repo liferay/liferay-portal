@@ -946,9 +946,12 @@ public class CompanyLocalServiceTest {
 					() -> _companyLocalService.exportCompany(
 						_company.getCompanyId()));
 
-			String message = illegalArgumentException.getMessage();
-
-			Assert.assertTrue(message, message.contains(exportedPartitionName));
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Database partition ", exportedPartitionName,
+					" already exists. Drop it before exporting company ",
+					_company.getCompanyId(), " again"),
+				illegalArgumentException.getMessage());
 
 			Assert.assertTrue(
 				_dbPartitionDB.existsPartition(
