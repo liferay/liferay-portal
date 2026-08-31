@@ -90,6 +90,30 @@ public abstract class BasePostUpgradeDataCleanupProcessTestCase {
 		_waitForRegistries();
 	}
 
+	protected void startBundle(Bundle bundle) throws Exception {
+		bundle.start();
+
+		_waitForRegistries();
+	}
+
+	protected Bundle stopBundle(BundleContext bundleContext, String bundleName)
+		throws Exception {
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			if (Objects.equals(bundle.getSymbolicName(), bundleName) &&
+				(bundle.getState() == Bundle.ACTIVE)) {
+
+				_snapshotRegistries();
+
+				bundle.stop();
+
+				return bundle;
+			}
+		}
+
+		return null;
+	}
+
 	protected void test(
 			UnsafeConsumer<LogCapture, Exception> assertUnsafeConsumer,
 			UnsafeRunnable<Exception> cleanUpDataUnsafeRunnable,
