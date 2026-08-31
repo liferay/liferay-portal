@@ -292,19 +292,10 @@ describe('TopAssets', () => {
 	});
 
 	describe('view all', () => {
-		it('should navigate to the individual filtered asset list', () => {
+		it('should not render the View All button when assets are returned', () => {
 			renderTopAssets();
 
-			fireEvent.click(screen.getByRole('button', {name: 'View All'}));
-
-			expect(mockPush).toHaveBeenCalledTimes(1);
-
-			const pushedURL = mockPush.mock.calls[0][0];
-
-			expect(pushedURL).toContain('/assets');
-			expect(pushedURL).toContain('individualId=ind-1');
-			expect(pushedURL).toContain('individualName=Jane+Doe');
-			expect(pushedURL).toContain('orderBy=impressionsMetric');
+			expect(screen.queryByRole('button', {name: 'View All'})).toBeNull();
 		});
 
 		it('should not render the View All button when there are no assets', () => {

@@ -13,7 +13,6 @@ import {getSafeRangeSelectors} from 'shared/util/util';
 import {OrderByDirections} from 'shared/util/constants';
 import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
-import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {useQuery} from '@apollo/client';
 
 const TopPagesCard: React.FC<React.HTMLAttributes<HTMLElement>> = ({
@@ -43,7 +42,7 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 		individualId,
 		individualName,
 		router: {
-			params: {channelId, groupId},
+			params: {channelId},
 		},
 	} = useContext(BasePage.Context);
 
@@ -83,13 +82,6 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 			empty={!data?.pages.total}
 			emptyState={<TopPagesEmptyState />}
 			error={error}
-			footer={{
-				href: setUriQueryValues(
-					routeQueries,
-					toRoute(Routes.SITES_TOUCHPOINTS, {channelId, groupId})
-				),
-				label: Liferay.Language.get('view-all'),
-			}}
 			items={data?.pages.assetMetrics ?? []}
 			loading={loading}
 			onActiveTabIdChange={setActiveTabId}

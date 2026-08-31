@@ -25,6 +25,7 @@ const TopAssets: React.FC<ITopAssetsProps> = ({
 		dataSourceFn={API.assets.fetchIndividualTopAssets}
 		dataSourceParams={{individualId: individualId!}}
 		routeQueries={pickBy({individualId, individualName})}
+		showViewAll={false}
 		skipRequest={!individualId}
 	/>
 );

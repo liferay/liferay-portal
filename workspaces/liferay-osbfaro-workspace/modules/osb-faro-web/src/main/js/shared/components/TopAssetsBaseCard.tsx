@@ -197,6 +197,7 @@ interface ITopAssetsBaseCardProps {
 	dataSourceFn: (variables: any) => Promise<{items: ITopAsset[]}> | undefined;
 	dataSourceParams: object;
 	routeQueries: {[key: string]: any};
+	showViewAll?: boolean;
 	skipRequest?: boolean;
 }
 
@@ -205,6 +206,7 @@ const TopAssetsBaseCard: React.FC<ITopAssetsBaseCardProps> = ({
 	dataSourceFn,
 	dataSourceParams,
 	routeQueries,
+	showViewAll = true,
 	skipRequest,
 }) => (
 	<BaseCard
@@ -219,6 +221,7 @@ const TopAssetsBaseCard: React.FC<ITopAssetsBaseCardProps> = ({
 				dataSourceParams={dataSourceParams}
 				rangeSelectors={rangeSelectors}
 				routeQueries={routeQueries}
+				showViewAll={showViewAll}
 				skipRequest={skipRequest}
 			/>
 		)}
@@ -235,6 +238,7 @@ const TopAssetsWithData: React.FC<ITopAssetsWithDataProps> = ({
 	dataSourceParams,
 	rangeSelectors,
 	routeQueries,
+	showViewAll,
 	skipRequest,
 }) => {
 	const history = useHistoryAdapter();
@@ -316,7 +320,7 @@ const TopAssetsWithData: React.FC<ITopAssetsWithDataProps> = ({
 				</ClayTabs.TabPane>
 			</ClayTabs.Content>
 
-			{assets.length > 0 && (
+			{showViewAll && assets.length > 0 && (
 				<div className="d-flex p-3">
 					<ClayButton
 						borderless

@@ -174,19 +174,12 @@ describe('TopPagesCard', () => {
 		expect(screen.getByText('10')).toBeInTheDocument();
 	});
 
-	it('should point the footer action to the individual filtered pages list', async () => {
+	it('should not render the footer action', async () => {
 		const {container} = renderTopPagesCard();
 
 		await waitForLoadingToBeRemoved(container);
 
-		const href = screen
-			.getByText('View All')
-			.closest('a')
-			?.getAttribute('href');
-
-		expect(href).toContain('/workspace/456/123/sites/pages');
-		expect(href).toContain('individualId=ind-1');
-		expect(href).toContain('individualName=Jane+Doe');
+		expect(screen.queryByText('View All')).toBeNull();
 	});
 
 	it('should request nothing while the individual is unknown', async () => {
