@@ -103,10 +103,10 @@ public class FIPSAuditUtil {
 		}
 
 		return _deploymentInstanceIdDCLSingleton.getSingleton(
-			FIPSAuditUtil::_getPersistedDeploymentInstanceId);
+			FIPSAuditUtil::_getOrCreatePersistedDeploymentInstanceId);
 	}
 
-	private static String _getPersistedDeploymentInstanceId() {
+	private static String _getOrCreatePersistedDeploymentInstanceId() {
 		Path path = Paths.get(
 			PropsValues.LIFERAY_HOME, "data",
 			"fips-audit-deployment-instance-id");

@@ -96,7 +96,7 @@ public class FIPSAuditUtilTest {
 		Map<String, Object> fipsAuditLogEntry = _getLastFIPSAuditLogEntry();
 
 		Instant instant = Instant.parse(
-			String.valueOf(fipsAuditLogEntry.get("timestamp")));
+			GetterUtil.getString(fipsAuditLogEntry.get("timestamp")));
 
 		Assert.assertTrue(
 			Math.abs(System.currentTimeMillis() - instant.toEpochMilli()) <
