@@ -12,6 +12,7 @@
 		"@clayui/management-toolbar": "^3.166.0",
 		"@clayui/modal": "^3.166.0",
 		"@clayui/table": "^3.166.0",
+		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
 		"formik": "2.1.4",
 		"frontend-js-components-web": "*",

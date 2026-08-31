@@ -5,7 +5,14 @@
 
 import {openToast} from 'frontend-js-components-web';
 
-import {DataMask, DataMaskTreeItem, DataMaskTypeKey} from './types';
+import {
+	DataMask,
+	DataMaskTreeItem,
+	DataMaskTypeKey,
+	ProfileTool,
+	ToolSummary,
+	ToolTreeItem,
+} from './types';
 
 type ToastMessageOptions = {
 	dangerouslySetMessageHTML?: boolean;
@@ -14,6 +21,8 @@ type ToastMessageOptions = {
 const DATA_MASK_GROUP_ID_PREFIX = 'maskType:';
 
 const DATA_MASK_GROUP_KEYS: DataMaskTypeKey[] = ['system', 'custom'];
+
+const TOOL_ID_SEPARATOR = '/';
 
 export function buildDataMaskTree(dataMasks: DataMask[]): DataMaskTreeItem[] {
 	return DATA_MASK_GROUP_KEYS.flatMap((groupKey) => {
@@ -38,6 +47,54 @@ export function buildDataMaskTree(dataMasks: DataMask[]): DataMaskTreeItem[] {
 			},
 		];
 	});
+}
+
+export function buildToolChildren(
+	toolSetName: string,
+	tools: ToolSummary[],
+	profileTools: ProfileTool[]
+): ToolTreeItem[] {
+	const assignedToolIds = getAssignedToolIds(profileTools);
+
+	return tools.map((tool) => {
+		const id = toToolId(toolSetName, tool.name);
+
+		return {
+			assigned: assignedToolIds.has(id),
+			id,
+			name: tool.name,
+		};
+	});
+}
+
+export function buildToolWaves<T extends {toolName: string}>(
+	tools: T[]
+): T[][] {
+	const waves: T[][] = [];
+
+	let remaining = tools;
+
+	while (remaining.length) {
+		const namesInWave = new Set<string>();
+		const skipped: T[] = [];
+		const wave: T[] = [];
+
+		remaining.forEach((tool) => {
+			if (namesInWave.has(tool.toolName)) {
+				skipped.push(tool);
+			}
+			else {
+				namesInWave.add(tool.toolName);
+				wave.push(tool);
+			}
+		});
+
+		waves.push(wave);
+
+		remaining = skipped;
+	}
+
+	return waves;
 }
 
 export function filterDataMaskTree(
@@ -67,6 +124,18 @@ export function filterDataMaskTree(
 	};
 }
 
+export function getAssignedToolIds(profileTools: ProfileTool[]): Set<string> {
+	return new Set(
+		profileTools.map((profileTool) =>
+			toToolId(profileTool.toolSetName, profileTool.toolName)
+		)
+	);
+}
+
+export function getEligibleToolIds(children: ToolTreeItem[]): string[] {
+	return children.filter((child) => !child.assigned).map((child) => child.id);
+}
+
 export function getSelectedDataMaskExternalReferenceCodes(
 	tree: DataMaskTreeItem[],
 	selectedKeys: Set<string | number>
@@ -76,6 +145,17 @@ export function getSelectedDataMaskExternalReferenceCodes(
 			.filter((child) => selectedKeys.has(child.id))
 			.map((child) => child.id)
 	);
+}
+
+export function getSelectedTools(
+	selectedKeys: Set<string | number>
+): Array<{toolName: string; toolSetName: string}> {
+	return [...selectedKeys]
+		.filter(
+			(key): key is string =>
+				typeof key === 'string' && key.includes(TOOL_ID_SEPARATOR)
+		)
+		.map(fromToolId);
 }
 
 export function isSystemMask(dataMask: DataMask | null): boolean {
@@ -117,6 +197,19 @@ export function toIdentifier(name: string): string {
 
 export function toODataStringLiteral(value: string): string {
 	return `'${value.replace(/'/g, "''")}'`;
+}
+
+export function toToolId(toolSetName: string, toolName: string): string {
+	return `${toolSetName}${TOOL_ID_SEPARATOR}${toolName}`;
+}
+
+function fromToolId(id: string): {toolName: string; toolSetName: string} {
+	const separatorIndex = id.indexOf(TOOL_ID_SEPARATOR);
+
+	return {
+		toolName: id.slice(separatorIndex + 1),
+		toolSetName: id.slice(0, separatorIndex),
+	};
 }
 
 function toToastMessage(

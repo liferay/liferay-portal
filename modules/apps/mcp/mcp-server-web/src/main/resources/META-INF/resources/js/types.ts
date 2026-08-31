@@ -100,6 +100,42 @@ export type ProfilePayload = {
 	name: string;
 };
 
+export type ProfileTool = {
+	externalReferenceCode?: string;
+	id?: number;
+	r_mcpServerProfileToTools_l_mcpServerProfileId?: number;
+	toolName: string;
+	toolSetName: string;
+};
+
+export type ProfileToolActionContext = {
+	itemData: ProfileTool;
+	loadData: () => void;
+};
+
+export type ProfileToolPayload = {
+	r_mcpServerProfileToTools_l_mcpServerProfileERC: string;
+	toolName: string;
+	toolSetName: string;
+};
+
+export type ToolSet = {
+	description?: string;
+	name: string;
+};
+
+export type ToolSummary = {
+	description?: string;
+	name: string;
+};
+
+export type ToolTreeItem = {
+	assigned?: boolean;
+	children?: ToolTreeItem[];
+	id: string;
+	name: string;
+};
+
 export type Prompt = {
 	dateModified?: string;
 	description: string;
