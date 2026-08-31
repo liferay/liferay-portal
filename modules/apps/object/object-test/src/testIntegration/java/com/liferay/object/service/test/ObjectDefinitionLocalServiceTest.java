@@ -3255,6 +3255,11 @@ public class ObjectDefinitionLocalServiceTest {
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_EMPTY, objectDefinition.getStatus());
 
+			Assert.assertNull(
+				_ploEntryLocalService.fetchPLOEntry(
+					companyId, "model.resource.",
+					objectDefinition.getDefaultLanguageId()));
+
 			List<ExportImportReportEntry> exportImportReportEntries =
 				_exportImportReportEntryLocalService.
 					getExportImportReportEntries(
@@ -3321,6 +3326,12 @@ public class ObjectDefinitionLocalServiceTest {
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_APPROVED,
 				objectDefinition.getStatus());
+
+			Assert.assertNotNull(
+				_ploEntryLocalService.fetchPLOEntry(
+					companyId,
+					"model.resource." + objectDefinition.getClassName(),
+					objectDefinition.getDefaultLanguageId()));
 		}
 		finally {
 			if (objectDefinition != null) {
@@ -5064,8 +5075,12 @@ public class ObjectDefinitionLocalServiceTest {
 					modifiable, ObjectDefinitionConstants.SCOPE_COMPANY,
 					system);
 
-			_assertLabelAndPluralLabel(
-				objectDefinition, externalReferenceCode, externalReferenceCode);
+			Assert.assertEquals(
+				LocalizedMapUtil.getLocalizedMap(externalReferenceCode),
+				objectDefinition.getLabelMap());
+			Assert.assertEquals(
+				LocalizedMapUtil.getLocalizedMap(externalReferenceCode),
+				objectDefinition.getPluralLabelMap());
 
 			Assert.assertEquals(
 				externalReferenceCode,
