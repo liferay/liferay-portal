@@ -33,9 +33,13 @@ const useDeleteFieldSet = () => {
 			successToast(
 				Liferay.Language.get('the-item-was-deleted-successfully')
 			);
+
+			return true;
 		}
 		catch (error) {
 			errorToast(Liferay.Language.get('the-item-could-not-be-deleted'));
+
+			return false;
 		}
 	};
 };
