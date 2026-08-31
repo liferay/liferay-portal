@@ -337,6 +337,31 @@ public class ReportFreshnessMonitorTest
 		_testReportFreshnessMonitorMissingProperty("monitor[a].parameter[url]");
 	}
 
+	@Test
+	public void testReportFreshnessMonitorUserInfo() {
+		Properties monitorProperties = _newMonitorProperties();
+
+		String password = RandomTestUtil.randomString();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[url]",
+			JenkinsResultsParserUtil.combine(
+				"file://", RandomTestUtil.randomString(), ":", password, "@",
+				RandomTestUtil.randomString()));
+
+		try {
+			_newReportFreshnessMonitor(monitorProperties);
+
+			Assert.fail("Expected IllegalArgumentException");
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			String message = illegalArgumentException.getMessage();
+
+			Assert.assertFalse(message.contains(password));
+			Assert.assertTrue(message.contains("[REDACTED]"));
+		}
+	}
+
 	private MonitorResult _execute(Properties monitorProperties) {
 		ReportFreshnessMonitor reportFreshnessMonitor =
 			_newReportFreshnessMonitor(monitorProperties);
