@@ -12,6 +12,8 @@ export class EditObjectDetailsPage {
 	readonly accountRestrictionToggle: Locator;
 	readonly allowDraftToggle: Locator;
 	readonly allowStandaloneEntriesToggle: Locator;
+	readonly descriptionInput: Locator;
+	readonly descriptionLocalizationButton: Locator;
 	readonly detailsTabItem: Locator;
 	readonly entryTitleField: Locator;
 	readonly entryTitleFieldCombobox: Locator;
@@ -43,6 +45,17 @@ export class EditObjectDetailsPage {
 		this.allowStandaloneEntriesToggle = page.getByRole('switch', {
 			name: 'Allow Standalone Entries',
 		});
+		this.descriptionInput = page.getByRole('textbox', {
+			exact: true,
+			name: 'Description',
+		});
+		this.descriptionLocalizationButton = page
+			.locator('.input-localized', {
+				has: page.locator(
+					'#lfr-objects__object-data-container-description'
+				),
+			})
+			.getByLabel('Open Localizations');
 		this.detailsTabItem = page.getByRole('link', {name: 'Details'});
 		this.entryTitleField = page.getByLabel('Entry Title Field', {
 			exact: true,
@@ -139,6 +152,17 @@ export class EditObjectDetailsPage {
 		await this.saveButton.click();
 
 		return {reload};
+	}
+
+	async selectDescriptionLanguage(language: string) {
+		await this.descriptionLocalizationButton.click();
+
+		await this.page
+			.getByRole('option', {
+				exact: false,
+				name: `${language} language:`,
+			})
+			.click();
 	}
 
 	async selectEntryTitleField(fieldName: string) {

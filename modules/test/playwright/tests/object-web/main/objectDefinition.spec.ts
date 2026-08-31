@@ -62,6 +62,13 @@ const cmsTest = mergeTests(
 	})
 );
 
+const descriptionTest = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-80279': {enabled: true},
+	})
+);
+
 test.describe('Manage object definitions through Model Builder', () => {
 	test.beforeEach(({page}) => {
 		page.setViewportSize({height: 1080, width: 1920});
@@ -3207,6 +3214,177 @@ cmsTest.describe('Manage enableFormContainer configuration', () => {
 					name: objectDefinition.name,
 				})
 			).not.toBeAttached();
+		}
+	);
+});
+
+descriptionTest.describe('Manage object definition descriptions', () => {
+	descriptionTest(
+		'can add description through Model Builder',
+		{tag: '@LPD-103747'},
+		async ({
+			apiHelpers,
+			modelBuilderLeftSidebarPage,
+			modelBuilderRightSidebarPage,
+			page,
+			viewObjectDefinitionsPage,
+		}) => {
+			const objectFolder =
+				await apiHelpers.objectAdmin.postRandomObjectFolder();
+
+			apiHelpers.data.push({
+				id: objectFolder.id,
+				type: 'objectFolder',
+			});
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					objectFolderExternalReferenceCode:
+						objectFolder.externalReferenceCode,
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const description = 'Authored from the Model Builder.';
+
+			await viewObjectDefinitionsPage.goto();
+
+			await viewObjectDefinitionsPage.openObjectFolder(
+				objectFolder.label['en_US']
+			);
+
+			await viewObjectDefinitionsPage.viewInModelBuilderButton.click();
+
+			await modelBuilderLeftSidebarPage.sidebarItems
+				.filter({hasText: objectDefinition.label['en_US']})
+				.click();
+
+			await modelBuilderRightSidebarPage.sidebarDescriptionInput.fill(
+				description
+			);
+
+			await modelBuilderRightSidebarPage.sidebarDescriptionInput.blur();
+
+			await waitForAlert(page, 'The object was saved successfully');
+
+			await expect(
+				modelBuilderRightSidebarPage.sidebarDescriptionInput
+			).toHaveValue(description);
+		}
+	);
+
+	descriptionTest(
+		'can manage description through Objects Admin',
+		{tag: '@LPD-103747'},
+		async ({apiHelpers, editObjectDetailsPage, page}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const description = 'Claims raised against a warranty.';
+			const updatedDescription = 'Claims raised against a service plan.';
+
+			const saveAndReopen = async () => {
+				await editObjectDetailsPage.saveObjectDefinition();
+
+				await waitForAlert(page, 'The object was saved successfully');
+
+				await page.reload();
+
+				await editObjectDetailsPage.goToDetailsTab();
+			};
+
+			await editObjectDetailsPage.goto(objectDefinition.label['en_US']);
+
+			await editObjectDetailsPage.goToDetailsTab();
+
+			await editObjectDetailsPage.waitForDetailsFormLoaded();
+
+			await editObjectDetailsPage.descriptionInput.fill(description);
+
+			await saveAndReopen();
+
+			await expect(editObjectDetailsPage.descriptionInput).toHaveValue(
+				description
+			);
+
+			await editObjectDetailsPage.descriptionInput.fill(
+				updatedDescription
+			);
+
+			await saveAndReopen();
+
+			await expect(editObjectDetailsPage.descriptionInput).toHaveValue(
+				updatedDescription
+			);
+
+			await editObjectDetailsPage.descriptionInput.clear();
+
+			await saveAndReopen();
+
+			await expect(editObjectDetailsPage.descriptionInput).toBeEmpty();
+		}
+	);
+
+	descriptionTest(
+		'keeps the description of each language',
+		{tag: '@LPD-103747'},
+		async ({apiHelpers, editObjectDetailsPage, page}) => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const description = 'Claims raised against a warranty.';
+			const translatedDescription =
+				'Reivindicações feitas contra uma garantia.';
+
+			await editObjectDetailsPage.goto(objectDefinition.label['en_US']);
+
+			await editObjectDetailsPage.goToDetailsTab();
+
+			await editObjectDetailsPage.waitForDetailsFormLoaded();
+
+			await editObjectDetailsPage.descriptionInput.fill(description);
+
+			await editObjectDetailsPage.selectDescriptionLanguage('pt_BR');
+
+			await editObjectDetailsPage.descriptionInput.fill(
+				translatedDescription
+			);
+
+			await editObjectDetailsPage.saveObjectDefinition();
+
+			await waitForAlert(page, 'The object was saved successfully');
+
+			await page.reload();
+
+			await editObjectDetailsPage.goToDetailsTab();
+
+			await expect(editObjectDetailsPage.descriptionInput).toHaveValue(
+				description
+			);
+
+			await editObjectDetailsPage.selectDescriptionLanguage('pt_BR');
+
+			await expect(editObjectDetailsPage.descriptionInput).toHaveValue(
+				translatedDescription
+			);
 		}
 	);
 });

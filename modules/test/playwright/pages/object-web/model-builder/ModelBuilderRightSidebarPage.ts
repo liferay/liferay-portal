@@ -28,6 +28,7 @@ export class ModelBuilderRightSidebarPage {
 	readonly objectRelationshipType: Locator;
 	readonly page: Page;
 	readonly selectOptionButton: Locator;
+	readonly sidebarDescriptionInput: Locator;
 	readonly sidebarLabelInput: Locator;
 	readonly sidebarName: Locator;
 	readonly useDefaultValueToggle: Locator;
@@ -60,6 +61,10 @@ export class ModelBuilderRightSidebarPage {
 			page.getByLabel('Activate Object');
 		this.objectDefinitionEntryTitleField =
 			page.getByLabel('Entry Title Field');
+		this.sidebarDescriptionInput = page.getByRole('textbox', {
+			exact: true,
+			name: 'Description',
+		});
 		this.sidebarLabelInput = page.getByLabel('Label' + 'Mandatory', {
 			exact: true,
 		});

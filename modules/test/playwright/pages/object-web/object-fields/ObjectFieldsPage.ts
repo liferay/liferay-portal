@@ -30,6 +30,7 @@ export class ObjectFieldsPage {
 	readonly aggregationFunctionDropdown: Locator;
 	readonly agreggationRelationshipDropdown: Locator;
 	readonly deleteObjectFieldOption: Locator;
+	readonly descriptionInput: Locator;
 	readonly editFieldSaveButton: Locator;
 	readonly externalReferenceCodeField: Locator;
 	readonly fieldsTabItem: Locator;
@@ -68,6 +69,10 @@ export class ObjectFieldsPage {
 		);
 		this.deleteObjectFieldOption = page.getByRole('menuitem', {
 			name: 'Delete',
+		});
+		this.descriptionInput = this.iframeLocator.getByRole('textbox', {
+			exact: true,
+			name: 'Description',
 		});
 		this.editFieldSaveButton = page
 			.frameLocator('iframe')
