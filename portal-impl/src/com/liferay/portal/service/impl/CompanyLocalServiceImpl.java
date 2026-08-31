@@ -673,10 +673,15 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 				return _registerDBPartitionCompany(dbPartitionCompany);
 			}
-			catch (Throwable throwable) {
-				_removeDBPartition(companyId, false);
+			catch (Throwable throwable1) {
+				try {
+					_removeDBPartition(companyId, false);
+				}
+				catch (Throwable throwable2) {
+					throwable1.addSuppressed(throwable2);
+				}
 
-				throw new PortalException(throwable);
+				throw new PortalException(throwable1);
 			}
 		}
 	}
