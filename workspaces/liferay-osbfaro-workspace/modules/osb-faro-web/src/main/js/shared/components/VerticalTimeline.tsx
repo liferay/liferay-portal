@@ -246,7 +246,7 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 	item: {individualId, individualName, individualUrl, isAnonymous},
 }) => (
 	<li className="timeline-row individual-row bg-white w-100">
-		<div className="row-content flex-fill d-flex align-items-start">
+		<div className="row-content flex-fill d-flex align-items-center">
 			<ClaySticker className="individual-sticker" shape="user-icon">
 				<ClayIcon
 					color="gray"
