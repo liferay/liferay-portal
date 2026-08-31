@@ -221,6 +221,23 @@ public class CPConfigurationListServiceImpl
 			expirationDateMinute, neverExpire, serviceContext);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CPConfigurationList updateExternalReferenceCode(
+			long cpConfigurationListId, String externalReferenceCode)
+		throws PortalException {
+
+		CPConfigurationList cpConfigurationList =
+			cpConfigurationListPersistence.findByPrimaryKey(
+				cpConfigurationListId);
+
+		_checkCommerceCatalog(
+			cpConfigurationList.getGroupId(), ActionKeys.UPDATE);
+
+		return cpConfigurationListLocalService.updateExternalReferenceCode(
+			cpConfigurationListId, externalReferenceCode);
+	}
+
 	private void _checkCommerceCatalog(long groupId, String actionId)
 		throws PortalException {
 
