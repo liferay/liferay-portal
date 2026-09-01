@@ -1,5 +1,5 @@
 Bundle-Name: Liferay AI Hub Cell JS Components Web
 Bundle-SymbolicName: com.liferay.ai.hub.cell.js.components.web
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Web-ContextPath: /ai-hub-cell-js-components-web
 -dsannotations-options: inherit
