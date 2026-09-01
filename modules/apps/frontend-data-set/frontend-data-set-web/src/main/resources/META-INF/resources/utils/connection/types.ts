@@ -33,9 +33,14 @@ export interface IConnectedFDSState extends IFDSState {
 
 	/**
 	 * Whatever the consumer asked to have remembered, which the data set
-	 * keeps in the URL and never reads. One value for the whole connection,
-	 * so that what comes back on the next visit is what was given rather
-	 * than a set of parts to reassemble.
+	 * keeps in the URL and never reads, filed by the connection under its own
+	 * app id. One value per connection, so that what comes back on the next
+	 * visit is what was given rather than a set of parts to reassemble.
+	 *
+	 * The data set stores and hands back the whole map without looking in it,
+	 * which is why the keying is the connection's business alone: today one
+	 * consumer owns the filtering and one key is in play, and a URL written
+	 * now still says what it says once several consumers can share it.
 	 */
-	connectionState?: unknown;
+	connectionState?: Readonly<Record<string, unknown>>;
 }
