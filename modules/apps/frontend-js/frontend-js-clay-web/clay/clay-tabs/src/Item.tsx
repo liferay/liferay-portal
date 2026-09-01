@@ -64,10 +64,14 @@ const Item = React.forwardRef<any, IProps>(
 				aria-selected={active}
 				buttonDisplayType="unstyled"
 				buttonType="button"
-				className={classNames('nav-link', {
-					active,
-					disabled,
-				})}
+				className={classNames(
+					'nav-link',
+					{
+						active,
+						disabled,
+					},
+					innerProps.className
+				)}
 				data-testid="tabItem"
 				disabled={disabled}
 				href={href}
