@@ -24,7 +24,6 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 
 		_endpointURL = getRequiredURLParameter(
 			"url", monitorConfig.getParameters(), "http://", "https://");
-
 		_latencyMaximumMillis = getLongValue(
 			"threshold", 0, "latency.maximum.millis",
 			monitorConfig.getThresholds());

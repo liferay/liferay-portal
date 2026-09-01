@@ -33,9 +33,7 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 		}
 
 		_reportDataURL = getRequiredURLParameter("url", parameters, "file:///");
-
 		_reportName = getRequiredParameter("report.name", parameters);
-
 		_overdueGraceSeconds = getOverdueGraceSeconds(
 			_cadenceSeconds, monitorConfig.getThresholds());
 	}
