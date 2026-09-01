@@ -6,7 +6,6 @@
 import '@testing-library/jest-dom';
 import {SidePanel} from '@clayui/core';
 import {cleanup, render, screen, within} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import SpaceService from '../../../../src/main/resources/META-INF/resources/js/common/services/SpaceService';
@@ -83,7 +82,7 @@ describe('CMS Asset Type Info Panel', () => {
 		(global as any).Liferay.FeatureFlags = {};
 	});
 
-	it('does not render the Projects tab when the CMP feature flag is disabled', async () => {
+	it('does not render the Projects tab when the CMP feature flag is disabled', () => {
 		(global as any).Liferay.FeatureFlags = {};
 
 		render(
@@ -95,14 +94,14 @@ describe('CMS Asset Type Info Panel', () => {
 			</SidePanel>
 		);
 
-		await userEvent.click(screen.getByRole('tab', {name: 'more'}));
+		expect(screen.getByRole('tab', {name: 'versions'})).toBeInTheDocument();
 
-		expect(screen.getByText('versions')).toBeInTheDocument();
-
-		expect(screen.queryByText('projects')).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('tab', {name: 'projects'})
+		).not.toBeInTheDocument();
 	});
 
-	it('renders the Projects tab when the CMP feature flag is enabled', async () => {
+	it('renders the Projects tab when the CMP feature flag is enabled', () => {
 		(global as any).Liferay.FeatureFlags = {'LPD-58677': true};
 
 		render(
@@ -114,9 +113,26 @@ describe('CMS Asset Type Info Panel', () => {
 			</SidePanel>
 		);
 
-		await userEvent.click(screen.getByRole('tab', {name: 'more'}));
+		expect(screen.getByRole('tab', {name: 'projects'})).toBeInTheDocument();
+	});
 
-		expect(screen.getByText('projects')).toBeInTheDocument();
+	it('renders the tabs with the icon only and the label on hover', () => {
+		render(
+			<SidePanel containerRef={{current: null}}>
+				<AssetTypeInfoPanelContent
+					additionalProps={testAdditionalProps}
+					items={[CONTENT_OBJECT_ENTRY] as any}
+				/>
+			</SidePanel>
+		);
+
+		const tab = screen.getByRole('tab', {name: 'comments'});
+
+		expect(tab).toHaveAttribute('title', 'comments');
+
+		expect(tab.querySelector('.lexicon-icon-comments')).toBeInTheDocument();
+
+		expect(tab.querySelector('.sr-only')).toHaveTextContent('comments');
 	});
 
 	it('renders the component for a Web Content asset type', async () => {
@@ -143,7 +159,7 @@ describe('CMS Asset Type Info Panel', () => {
 
 		expect(screen.queryByRole('img')).not.toBeInTheDocument();
 
-		expect(screen.getAllByRole('tab')).toHaveLength(4);
+		expect(screen.getAllByRole('tab')).toHaveLength(5);
 
 		expect(screen.getByRole('tab', {name: 'details'})).toBeInTheDocument();
 		expect(
@@ -152,7 +168,8 @@ describe('CMS Asset Type Info Panel', () => {
 		expect(
 			screen.getByRole('tab', {name: 'performance'})
 		).toBeInTheDocument();
-		expect(screen.getByRole('tab', {name: 'more'})).toBeInTheDocument();
+		expect(screen.getByRole('tab', {name: 'versions'})).toBeInTheDocument();
+		expect(screen.getByRole('tab', {name: 'comments'})).toBeInTheDocument();
 
 		expect(screen.getByText('metadata')).toBeInTheDocument();
 
@@ -232,7 +249,7 @@ describe('CMS Asset Type Info Panel', () => {
 			DOCUMENT_OBJECT_ENTRY.embedded.file.thumbnailURL
 		);
 
-		expect(screen.getAllByRole('tab')).toHaveLength(4);
+		expect(screen.getAllByRole('tab')).toHaveLength(5);
 
 		expect(screen.getByRole('tab', {name: 'details'})).toBeInTheDocument();
 		expect(
@@ -241,7 +258,8 @@ describe('CMS Asset Type Info Panel', () => {
 		expect(
 			screen.getByRole('tab', {name: 'performance'})
 		).toBeInTheDocument();
-		expect(screen.getByRole('tab', {name: 'more'})).toBeInTheDocument();
+		expect(screen.getByRole('tab', {name: 'versions'})).toBeInTheDocument();
+		expect(screen.getByRole('tab', {name: 'comments'})).toBeInTheDocument();
 
 		expect(screen.getByText('metadata')).toBeInTheDocument();
 
