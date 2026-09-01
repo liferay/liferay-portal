@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site CMP Site Initializer Test Utilities
 Bundle-SymbolicName: com.liferay.site.cmp.site.initializer.test.util
-Bundle-Version: 2.1.0
+Bundle-Version: 2.1.1
 Export-Package: com.liferay.site.cmp.site.initializer.test.util
