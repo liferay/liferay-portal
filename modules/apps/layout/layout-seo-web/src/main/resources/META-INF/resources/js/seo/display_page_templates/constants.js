@@ -6,10 +6,15 @@
 export const FIELD_TYPES = {
 	HTML: 'html',
 	IMAGE: 'image',
+	LONG_TEXT: 'long-text',
 	TEXT: 'text',
 };
 
-export const TEXT_FIELD_TYPES = [FIELD_TYPES.HTML, FIELD_TYPES.TEXT];
+export const TEXT_FIELD_TYPES = [
+	FIELD_TYPES.HTML,
+	FIELD_TYPES.LONG_TEXT,
+	FIELD_TYPES.TEXT,
+];
 
 export const UNMAPPED_OPTION = {
 	key: 'unmapped',
