@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Utility Page Status
 Bundle-SymbolicName: com.liferay.layout.utility.page.status
-Bundle-Version: 1.0.34
+Bundle-Version: 1.0.35
 Web-ContextPath: /layout-utility-page-status
