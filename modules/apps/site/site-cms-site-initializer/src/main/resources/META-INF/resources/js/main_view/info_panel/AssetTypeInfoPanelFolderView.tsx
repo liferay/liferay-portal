@@ -13,22 +13,21 @@ const AssetTypeInfoPanelFolderView = () => {
 	const [active, setActive] = useState(0);
 
 	return (
-		<>
-			<Tabs active={active} onActiveChange={setActive}>
-				<Tabs.Item
-					innerProps={{
-						'aria-controls': `tabpanel-${TABS.DETAILS.id}`,
-					}}
-				>
-					{TABS.DETAILS.name}
-				</Tabs.Item>
-			</Tabs>
-			<Tabs.Content active={active} fade>
-				<Tabs.TabPane className="p-4" key={TABS.DETAILS.id}>
+		<Tabs active={active} fade onActiveChange={setActive}>
+			<Tabs.List className="c-gap-1">
+				<Tabs.ItemWithIcon
+					innerProps={{className: 'lfr-portal-tooltip'}}
+					label={TABS.DETAILS.name}
+					symbol={TABS.DETAILS.icon}
+				/>
+			</Tabs.List>
+
+			<Tabs.Panels>
+				<Tabs.TabPanel className="p-4">
 					<DetailsTabContent />
-				</Tabs.TabPane>
-			</Tabs.Content>
-		</>
+				</Tabs.TabPanel>
+			</Tabs.Panels>
+		</Tabs>
 	);
 };
 
