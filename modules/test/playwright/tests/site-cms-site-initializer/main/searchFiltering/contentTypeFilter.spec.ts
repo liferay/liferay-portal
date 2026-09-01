@@ -162,8 +162,6 @@ test(
 		await test.step('Both the folder and the content are visible before filtering', async () => {
 			await assetsPage.gotoContents();
 
-			await assetsPage.changeVisualizationMode('Table');
-
 			await expect(assetsPage.getItem(folderTitle)).toBeVisible();
 			await expect(assetsPage.getItem(contentTitle)).toBeVisible();
 		});
