@@ -30,7 +30,8 @@ public class ObjectExceptionMapperUtil {
 		}
 
 		return language.format(
-			acceptLanguage.getPreferredLocale(), messageKey, arguments);
+			acceptLanguage.getPreferredLocale(), messageKey,
+			arguments.toArray(), false);
 	}
 
 }
