@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS codemirror Web
 Bundle-SymbolicName: com.liferay.frontend.js.codemirror.web
-Bundle-Version: 1.0.14
+Bundle-Version: 1.0.15
 Web-ContextPath: /frontend-js-codemirror-web
