@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless DSR Client
 Bundle-SymbolicName: com.liferay.headless.dsr.client
-Bundle-Version: 1.2.1
+Bundle-Version: 1.2.2
 Export-Package:\
 	com.liferay.headless.dsr.client.dto.v1_0,\
 	com.liferay.headless.dsr.client.http,\
