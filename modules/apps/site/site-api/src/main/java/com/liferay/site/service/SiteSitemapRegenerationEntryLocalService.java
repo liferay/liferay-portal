@@ -67,6 +67,9 @@ public interface SiteSitemapRegenerationEntryLocalService
 	public SiteSitemapRegenerationEntry addSiteSitemapRegenerationEntry(
 		SiteSitemapRegenerationEntry siteSitemapRegenerationEntry);
 
+	public SiteSitemapRegenerationEntry addSiteSitemapRegenerationEntry(
+		String assetTypeKey, long companyId, long groupId);
+
 	/**
 	 * @throws PortalException
 	 */
@@ -89,6 +92,8 @@ public interface SiteSitemapRegenerationEntryLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	public void deleteSiteSitemapRegenerationEntries(long companyId);
 
 	/**
 	 * Deletes the site sitemap regeneration entry with the primary key from the database. Also notifies the appropriate model listeners.
@@ -232,6 +237,10 @@ public interface SiteSitemapRegenerationEntryLocalService
 	public List<SiteSitemapRegenerationEntry> getSiteSitemapRegenerationEntries(
 		int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SiteSitemapRegenerationEntry> getSiteSitemapRegenerationEntries(
+		long companyId);
+
 	/**
 	 * Returns the number of site sitemap regeneration entries.
 	 *
@@ -267,4 +276,4 @@ public interface SiteSitemapRegenerationEntryLocalService
 		SiteSitemapRegenerationEntry siteSitemapRegenerationEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1054235202
+// LIFERAY-SERVICE-BUILDER-HASH:-550102041

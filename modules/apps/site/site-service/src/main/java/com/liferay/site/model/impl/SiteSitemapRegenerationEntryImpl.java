@@ -6,7 +6,7 @@
 package com.liferay.site.model.impl;
 
 /**
- * @author Brian Wing Shun Chan
+ * @author Shuyang Zhou
  */
 public class SiteSitemapRegenerationEntryImpl
 	extends SiteSitemapRegenerationEntryBaseImpl {

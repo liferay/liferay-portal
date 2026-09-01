@@ -54,6 +54,13 @@ public class SiteSitemapRegenerationEntryLocalServiceUtil {
 			siteSitemapRegenerationEntry);
 	}
 
+	public static SiteSitemapRegenerationEntry addSiteSitemapRegenerationEntry(
+		String assetTypeKey, long companyId, long groupId) {
+
+		return getService().addSiteSitemapRegenerationEntry(
+			assetTypeKey, companyId, groupId);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -86,6 +93,10 @@ public class SiteSitemapRegenerationEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deletePersistedModel(persistedModel);
+	}
+
+	public static void deleteSiteSitemapRegenerationEntries(long companyId) {
+		getService().deleteSiteSitemapRegenerationEntries(companyId);
 	}
 
 	/**
@@ -266,6 +277,12 @@ public class SiteSitemapRegenerationEntryLocalServiceUtil {
 		return getService().getSiteSitemapRegenerationEntries(start, end);
 	}
 
+	public static List<SiteSitemapRegenerationEntry>
+		getSiteSitemapRegenerationEntries(long companyId) {
+
+		return getService().getSiteSitemapRegenerationEntries(companyId);
+	}
+
 	/**
 	 * Returns the number of site sitemap regeneration entries.
 	 *
@@ -318,4 +335,4 @@ public class SiteSitemapRegenerationEntryLocalServiceUtil {
 			SiteSitemapRegenerationEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:277486911
+// LIFERAY-SERVICE-BUILDER-HASH:-1255002355
