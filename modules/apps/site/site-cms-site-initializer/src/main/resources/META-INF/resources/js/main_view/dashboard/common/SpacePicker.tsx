@@ -4,7 +4,7 @@
  */
 
 import {Option, Picker} from '@clayui/core';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 import SpaceService from '../../../common/services/SpaceService';
 import PickerTrigger from './PickerTrigger';
@@ -25,12 +25,14 @@ interface ISpacePicker extends React.HTMLAttributes<HTMLElement> {
 	className?: string;
 	onSelectSpace: (space: SpaceOption) => void;
 	selectedSpace: SpaceOption;
+	spaceIds?: string[];
 }
 
 const SpacePicker: React.FC<ISpacePicker> = ({
 	className,
 	onSelectSpace,
 	selectedSpace,
+	spaceIds,
 }) => {
 	const [spaces, setSpaces] = useState<SpaceOption[]>([initialSpace]);
 
@@ -52,18 +54,30 @@ const SpacePicker: React.FC<ISpacePicker> = ({
 		fetchSpaces();
 	}, []);
 
+	const options = useMemo(
+		() =>
+			spaceIds
+				? spaces.filter(
+						({value}) =>
+							value === initialSpace.value ||
+							spaceIds.includes(value)
+					)
+				: spaces,
+		[spaceIds, spaces]
+	);
+
 	return (
 		<Picker
 			aria-label={Liferay.Language.get('filter-by-spaces')}
 			as={PickerTrigger}
 			filterKey="label"
-			items={spaces}
+			items={options}
 			messages={{
 				noResultsFound: Liferay.Language.get('no-results-were-found'),
 				searchPlaceholder: Liferay.Language.get('search'),
 			}}
 			onSelectionChange={(key) => {
-				const space = spaces.find(({value}) => value === String(key));
+				const space = options.find(({value}) => value === String(key));
 
 				if (space) {
 					onSelectSpace(space);
