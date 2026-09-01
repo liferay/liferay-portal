@@ -37,7 +37,7 @@ public class ObjectRelationshipTestUtil {
 
 		return addObjectRelationship(
 			deletionType, objectDefinition, relatedObjectDefinition, userId,
-			type, StringUtil.randomId());
+			StringUtil.randomId(), type);
 	}
 
 	public static ObjectRelationship addObjectRelationship(
