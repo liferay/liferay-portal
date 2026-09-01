@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Collection Filter Date
 Bundle-SymbolicName: com.liferay.fragment.collection.filter.date
-Bundle-Version: 1.0.69
+Bundle-Version: 1.0.70
 Web-ContextPath: /fragment-collection-filter-date
