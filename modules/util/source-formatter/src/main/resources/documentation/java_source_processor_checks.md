@@ -288,6 +288,7 @@ ResourceTestInjectionCheck | [Bug Prevention](bug_prevention_checks.md#bug-preve
 ReturnVariableDeclarationAsUsedCheck | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | Finds cases where a variable declaration should be moved. |
 SafeCloseableMissingCloseCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds missing `close()` calls for `SafeCloseable` instances. |
 SealedAndNonsealedModifierCheck | [Performance](performance_checks.md#performance-checks) | Finds usage of `sealed` and `non-sealed`. |
+SecretComparisonCheck | [Security](security_checks.md#security-checks) | Finds secrets compared with a method that returns at the first differing byte. |
 SelfReferenceCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases of unnecessary reference to its own class. |
 SemiColonCheck | [Styling](styling_checks.md#styling-checks) | Finds cases of unnecessary semicolon. |
 [ServiceComponentRuntimeCheck](check/service_component_runtime_check.md#servicecomponentruntimecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks `ServiceComponentRuntime` usage in test classes. |

@@ -871,6 +871,11 @@
 			<property name="description" value="Finds usage of `sealed` and `non-sealed`." />
 			<message key="modifier.avoid" value="Do not use modifier &quot;sealed&quot; and &quot;non-sealed&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.SecretComparisonCheck">
+			<property name="category" value="Security" />
+			<property name="description" value="Finds secrets compared with a method that returns at the first differing byte." />
+			<message key="message.digest.is.equal.use" value="Use &quot;MessageDigest.isEqual&quot; to compare secrets, see LPD-93281" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.SelfReferenceCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Finds cases of unnecessary reference to its own class." />
