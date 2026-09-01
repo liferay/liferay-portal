@@ -232,6 +232,24 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testGetNextRegenerateSitemapDateWithPendingEntries()
+		throws Exception {
+
+		Assert.assertNull(
+			_sitemapManager.getNextRegenerateSitemapDate(
+				TestPropsValues.getCompanyId()));
+
+		_siteSitemapRegenerationEntryLocalService.
+			addSiteSitemapRegenerationEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
+				RandomTestUtil.randomLong());
+
+		Assert.assertNotNull(
+			_sitemapManager.getNextRegenerateSitemapDate(
+				TestPropsValues.getCompanyId()));
+	}
+
+	@Test
 	public void testIsRegenerateSitemapInProgress() throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
 
