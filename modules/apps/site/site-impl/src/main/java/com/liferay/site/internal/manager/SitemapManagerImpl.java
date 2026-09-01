@@ -473,35 +473,33 @@ public class SitemapManagerImpl implements SitemapManager {
 		SitemapURLProvider sitemapURLProvider = _serviceTrackerMap.getService(
 			assetTypeClassNameId);
 
-		if ((sitemapURLProvider == null) ||
-			!sitemapURLProvider.isInclude(companyId, groupId)) {
-
+		if (sitemapURLProvider == null) {
 			return;
 		}
 
-		Lock lock = _lockRegenerateSitemap(assetTypeKey, companyId, groupId);
+		if (groupId != 0) {
+			Group group = _groupLocalService.fetchGroup(groupId);
 
-		if ((lock == null) || !lock.isNew()) {
-			return;
-		}
+			if (group == null) {
+				return;
+			}
 
-		try {
-			ThemeDisplay themeDisplay = _createThemeDisplay(companyId, groupId);
+			if (!group.isCompany()) {
+				_regenerateGroupSitemap(
+					assetTypeClassNameId, assetTypeKey, companyId, groupId,
+					sitemapURLProvider);
 
-			_regenerateAssetTypeSitemap(
-				assetTypeClassNameId, groupId, themeDisplay);
-
-			_getIndexSitemap(groupId, false, themeDisplay);
-
-			if (_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
-					companyId)) {
-
-				_sitemapStorageHelper.storeLastRegenerateSitemapDateFile(
-					companyId);
+				return;
 			}
 		}
-		finally {
-			_unlockRegenerateSitemap(assetTypeKey, companyId, groupId);
+
+		for (Group group :
+				_groupLocalService.getGroups(
+					companyId, GroupConstants.ANY_PARENT_GROUP_ID, true)) {
+
+			_regenerateGroupSitemap(
+				assetTypeClassNameId, assetTypeKey, companyId,
+				group.getGroupId(), sitemapURLProvider);
 		}
 	}
 
@@ -1395,6 +1393,41 @@ public class SitemapManagerImpl implements SitemapManager {
 			if (_log.isWarnEnabled()) {
 				_log.warn(exception);
 			}
+		}
+	}
+
+	private void _regenerateGroupSitemap(
+			long assetTypeClassNameId, String assetTypeKey, long companyId,
+			long groupId, SitemapURLProvider sitemapURLProvider)
+		throws PortalException {
+
+		if (!sitemapURLProvider.isInclude(companyId, groupId)) {
+			return;
+		}
+
+		Lock lock = _lockRegenerateSitemap(assetTypeKey, companyId, groupId);
+
+		if ((lock == null) || !lock.isNew()) {
+			return;
+		}
+
+		try {
+			ThemeDisplay themeDisplay = _createThemeDisplay(companyId, groupId);
+
+			_regenerateAssetTypeSitemap(
+				assetTypeClassNameId, groupId, themeDisplay);
+
+			_getIndexSitemap(groupId, false, themeDisplay);
+
+			if (_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
+					companyId)) {
+
+				_sitemapStorageHelper.storeLastRegenerateSitemapDateFile(
+					companyId);
+			}
+		}
+		finally {
+			_unlockRegenerateSitemap(assetTypeKey, companyId, groupId);
 		}
 	}
 
