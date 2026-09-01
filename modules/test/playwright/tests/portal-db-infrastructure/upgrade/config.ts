@@ -6,7 +6,7 @@
 export const config = {
 	name: 'portal-db-infrastructure.upgrade',
 	testDir: 'tests/portal-db-infrastructure/upgrade',
-	timeout: 900 * 1000,
+	timeout: 480 * 1000,
 	use: {
 		testIdAttribute: 'data-qa-id',
 	},

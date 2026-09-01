@@ -137,7 +137,7 @@ test.describe.serial('View portal smoke upgrade', () => {
 
 				await expect(
 					reindexAllSearchIndexes.locator('.progress')
-				).toBeHidden({timeout: 600 * 1000});
+				).toBeHidden({timeout: 120 * 1000});
 			});
 
 			await viewUpgradedPortalContent(page);
