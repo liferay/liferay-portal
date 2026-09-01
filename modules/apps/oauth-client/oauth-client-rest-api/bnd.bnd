@@ -1,6 +1,6 @@
 Bundle-Name: Liferay OAuth Client REST API
 Bundle-SymbolicName: com.liferay.oauth.client.rest.api
-Bundle-Version: 1.2.1
+Bundle-Version: 1.2.2
 Export-Package:\
 	com.liferay.oauth.client.rest.dto.v1_0,\
 	com.liferay.oauth.client.rest.resource.v1_0
