@@ -152,6 +152,16 @@ test.describe.serial('View portal smoke upgrade', () => {
 
 			await performLoginViaApi({page, screenName: 'user'});
 
+			const response = await page.request.get(
+				'/o/headless-admin-user/v1.0/my-user-account'
+			);
+
+			expect(response.status()).toBe(200);
+
+			const {alternateName} = await response.json();
+
+			expect(alternateName).toBe('usersn');
+
 			await viewUpgradedPortalContent(page);
 		}
 	);
