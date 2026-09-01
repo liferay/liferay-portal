@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Workflow Kaleo API
 Bundle-SymbolicName: com.liferay.portal.workflow.kaleo.api
-Bundle-Version: 22.0.0
+Bundle-Version: 22.0.1
 Export-Package:\
 	com.liferay.portal.workflow.kaleo,\
 	com.liferay.portal.workflow.kaleo.constants,\
