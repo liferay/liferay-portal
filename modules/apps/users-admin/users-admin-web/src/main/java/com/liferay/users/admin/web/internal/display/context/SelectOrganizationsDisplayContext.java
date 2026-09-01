@@ -14,9 +14,9 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 /**
  * @author Lianne Louie
@@ -48,7 +48,7 @@ public class SelectOrganizationsDisplayContext {
 
 		searchContainer.setResultsAndTotal(
 			OrganizationLocalServiceUtil.searchOrganizations(
-				CompanyThreadLocal.getCompanyId(),
+				PortalUtil.getCompanyId(liferayPortletRequest),
 				OrganizationConstants.ANY_PARENT_ORGANIZATION_ID,
 				ParamUtil.getString(liferayPortletRequest, "keywords"), null,
 				searchContainer.getStart(), searchContainer.getEnd(),
