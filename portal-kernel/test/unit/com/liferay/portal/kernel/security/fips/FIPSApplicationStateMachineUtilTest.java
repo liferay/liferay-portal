@@ -96,12 +96,8 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@Test
 	public void testErrorWithIllegalState() {
-		Runnable runnable = () -> FIPSApplicationStateMachineUtil.error(
-			RandomTestUtil.randomString(),
-			new SecurityException(RandomTestUtil.randomString()));
-
-		_testWithIllegalState(FIPSApplicationState.ERROR, runnable);
-		_testWithIllegalState(FIPSApplicationState.POWER_OFF, runnable);
+		_testErrorWithIllegalState(FIPSApplicationState.ERROR);
+		_testErrorWithIllegalState(FIPSApplicationState.POWER_OFF);
 	}
 
 	@Test
@@ -142,16 +138,11 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@Test
 	public void testKeyCSPEntryWithIllegalState() {
-		Runnable runnable = () -> FIPSApplicationStateMachineUtil.keyCSPEntry(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			() -> {
-			});
-
-		_testWithIllegalState(FIPSApplicationState.ERROR, runnable);
-		_testWithIllegalState(FIPSApplicationState.INITIALIZING, runnable);
-		_testWithIllegalState(FIPSApplicationState.KEY_CSP_ENTRY, runnable);
-		_testWithIllegalState(FIPSApplicationState.POWER_OFF, runnable);
-		_testWithIllegalState(FIPSApplicationState.SELF_TEST, runnable);
+		_testKeyCSPEntryWithIllegalState(FIPSApplicationState.ERROR);
+		_testKeyCSPEntryWithIllegalState(FIPSApplicationState.INITIALIZING);
+		_testKeyCSPEntryWithIllegalState(FIPSApplicationState.KEY_CSP_ENTRY);
+		_testKeyCSPEntryWithIllegalState(FIPSApplicationState.POWER_OFF);
+		_testKeyCSPEntryWithIllegalState(FIPSApplicationState.SELF_TEST);
 	}
 
 	@Test
@@ -163,13 +154,10 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@Test
 	public void testOperationalWithIllegalState() {
-		Runnable runnable = () -> FIPSApplicationStateMachineUtil.operational(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		_testWithIllegalState(FIPSApplicationState.ERROR, runnable);
-		_testWithIllegalState(FIPSApplicationState.INITIALIZING, runnable);
-		_testWithIllegalState(FIPSApplicationState.OPERATIONAL, runnable);
-		_testWithIllegalState(FIPSApplicationState.POWER_OFF, runnable);
+		_testOperationalWithIllegalState(FIPSApplicationState.ERROR);
+		_testOperationalWithIllegalState(FIPSApplicationState.INITIALIZING);
+		_testOperationalWithIllegalState(FIPSApplicationState.OPERATIONAL);
+		_testOperationalWithIllegalState(FIPSApplicationState.POWER_OFF);
 	}
 
 	@Test
@@ -245,15 +233,12 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@Test
 	public void testQuiescentWithIllegalState() {
-		Runnable runnable = () -> FIPSApplicationStateMachineUtil.quiescent(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		_testWithIllegalState(FIPSApplicationState.ERROR, runnable);
-		_testWithIllegalState(FIPSApplicationState.INITIALIZING, runnable);
-		_testWithIllegalState(FIPSApplicationState.KEY_CSP_ENTRY, runnable);
-		_testWithIllegalState(FIPSApplicationState.POWER_OFF, runnable);
-		_testWithIllegalState(FIPSApplicationState.QUIESCENT, runnable);
-		_testWithIllegalState(FIPSApplicationState.SELF_TEST, runnable);
+		_testQuiescentWithIllegalState(FIPSApplicationState.ERROR);
+		_testQuiescentWithIllegalState(FIPSApplicationState.INITIALIZING);
+		_testQuiescentWithIllegalState(FIPSApplicationState.KEY_CSP_ENTRY);
+		_testQuiescentWithIllegalState(FIPSApplicationState.POWER_OFF);
+		_testQuiescentWithIllegalState(FIPSApplicationState.QUIESCENT);
+		_testQuiescentWithIllegalState(FIPSApplicationState.SELF_TEST);
 	}
 
 	@Test
@@ -271,14 +256,10 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@Test
 	public void testSelfTestWithIllegalState() {
-		Runnable runnable = () -> FIPSApplicationStateMachineUtil.selfTest(
-			() -> {
-			});
-
-		_testWithIllegalState(FIPSApplicationState.KEY_CSP_ENTRY, runnable);
-		_testWithIllegalState(FIPSApplicationState.POWER_OFF, runnable);
-		_testWithIllegalState(FIPSApplicationState.QUIESCENT, runnable);
-		_testWithIllegalState(FIPSApplicationState.SELF_TEST, runnable);
+		_testSelfTestWithIllegalState(FIPSApplicationState.KEY_CSP_ENTRY);
+		_testSelfTestWithIllegalState(FIPSApplicationState.POWER_OFF);
+		_testSelfTestWithIllegalState(FIPSApplicationState.QUIESCENT);
+		_testSelfTestWithIllegalState(FIPSApplicationState.SELF_TEST);
 	}
 
 	@Test
@@ -322,6 +303,22 @@ public class FIPSApplicationStateMachineUtilTest {
 		Map<?, ?> fields = (Map<?, ?>)fipsAuditLogEntry.get("fields");
 
 		Assert.assertEquals(value, fields.get(key));
+	}
+
+	private void _assertIllegalStateException(
+		FIPSApplicationState fipsApplicationState, Runnable runnable) {
+
+		_fipsAuditLogEntries.clear();
+
+		_setFIPSApplicationState(fipsApplicationState);
+
+		Assert.assertThrows(IllegalStateException.class, runnable::run);
+
+		Assert.assertEquals(
+			fipsApplicationState,
+			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
+
+		Assert.assertTrue(_fipsAuditLogEntries.isEmpty());
 	}
 
 	private Thread _getShutdownHook() {
@@ -396,6 +393,16 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(_fipsAuditLogEntries.get(0), "to-state", "ERROR");
 	}
 
+	private void _testErrorWithIllegalState(
+		FIPSApplicationState fipsApplicationState) {
+
+		_assertIllegalStateException(
+			fipsApplicationState,
+			() -> FIPSApplicationStateMachineUtil.error(
+				RandomTestUtil.randomString(),
+				new SecurityException(RandomTestUtil.randomString())));
+	}
+
 	private void _testKeyCSPEntry(FIPSApplicationState fipsApplicationState) {
 		_fipsAuditLogEntries.clear();
 
@@ -434,6 +441,17 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(_fipsAuditLogEntries.get(1), "to-state", "OPERATIONAL");
 	}
 
+	private void _testKeyCSPEntryWithIllegalState(
+		FIPSApplicationState fipsApplicationState) {
+
+		_assertIllegalStateException(
+			fipsApplicationState,
+			() -> FIPSApplicationStateMachineUtil.keyCSPEntry(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				() -> {
+				}));
+	}
+
 	private void _testOperational(FIPSApplicationState fipsApplicationState) {
 		_fipsAuditLogEntries.clear();
 
@@ -463,6 +481,15 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(_fipsAuditLogEntries.get(0), "to-state", "OPERATIONAL");
 	}
 
+	private void _testOperationalWithIllegalState(
+		FIPSApplicationState fipsApplicationState) {
+
+		_assertIllegalStateException(
+			fipsApplicationState,
+			() -> FIPSApplicationStateMachineUtil.operational(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
+	}
+
 	private void _testPowerOff(FIPSApplicationState fipsApplicationState) {
 		_fipsAuditLogEntries.clear();
 
@@ -486,6 +513,15 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(
 			_fipsAuditLogEntries.get(0), "initiating-actor", initiatingActor);
 		_assertField(_fipsAuditLogEntries.get(0), "to-state", "POWER_OFF");
+	}
+
+	private void _testQuiescentWithIllegalState(
+		FIPSApplicationState fipsApplicationState) {
+
+		_assertIllegalStateException(
+			fipsApplicationState,
+			() -> FIPSApplicationStateMachineUtil.quiescent(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
 	}
 
 	private void _testSelfTest(FIPSApplicationState fipsApplicationState) {
@@ -542,20 +578,14 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(_fipsAuditLogEntries.get(1), "to-state", "ERROR");
 	}
 
-	private void _testWithIllegalState(
-		FIPSApplicationState fipsApplicationState, Runnable runnable) {
+	private void _testSelfTestWithIllegalState(
+		FIPSApplicationState fipsApplicationState) {
 
-		_fipsAuditLogEntries.clear();
-
-		_setFIPSApplicationState(fipsApplicationState);
-
-		Assert.assertThrows(IllegalStateException.class, runnable::run);
-
-		Assert.assertEquals(
+		_assertIllegalStateException(
 			fipsApplicationState,
-			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
-
-		Assert.assertTrue(_fipsAuditLogEntries.isEmpty());
+			() -> FIPSApplicationStateMachineUtil.selfTest(
+				() -> {
+				}));
 	}
 
 	private static final Logger _logger = Mockito.mock(Logger.class);
