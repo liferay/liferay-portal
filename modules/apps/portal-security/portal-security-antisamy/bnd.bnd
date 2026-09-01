@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security AntiSamy
 Bundle-SymbolicName: com.liferay.portal.security.antisamy
-Bundle-Version: 6.0.51
+Bundle-Version: 6.0.52
 Import-Package:\
 	!com.aayushatharva.brotli4j.*,\
 	\
