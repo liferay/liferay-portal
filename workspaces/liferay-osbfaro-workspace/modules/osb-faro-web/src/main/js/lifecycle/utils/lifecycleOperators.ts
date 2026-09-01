@@ -1,4 +1,8 @@
-import {IEntityOption, IStageConfig} from 'lifecycle/utils/stageConfiguration';
+import {
+	IEntityOption,
+	IStageCondition,
+	IStageConfig,
+} from 'lifecycle/utils/stageConfiguration';
 
 export enum Operator {
 	After = 'after',
@@ -64,10 +68,21 @@ export const VALUELESS_OPERATORS = new Set<string>([
 	Operator.True,
 ]);
 
+export const isConditionComplete = (condition: IStageCondition): boolean => {
+	if (!condition.field || !condition.operator) {
+		return false;
+	}
+
+	return (
+		VALUELESS_OPERATORS.has(condition.operator) ||
+		!!condition.conditionValue
+	);
+};
+
 export const isStageConfigured = (stage: IStageConfig): boolean =>
 	!!stage.description.trim() &&
-	((!!stage.operator && VALUELESS_OPERATORS.has(stage.operator)) ||
-		!!stage.conditionValue);
+	!!stage.conditions.length &&
+	stage.conditions.every(isConditionComplete);
 
 export const resolveOperatorType = (
 	dataCategory: string | null,

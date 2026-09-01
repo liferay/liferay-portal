@@ -3,10 +3,12 @@ import CreateLifecycle from '../CreateLifecycle';
 import React from 'react';
 import {Alert} from 'shared/types';
 import {
+	createDefaultStageConfigs,
+	createStageCondition,
 	DEFAULT_MAX_DAYS,
 	IStageConfig,
 	LIFECYCLE_STAGE_ORDER,
-	createDefaultStageConfigs,
+	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
@@ -37,15 +39,21 @@ jest.mock('lifecycle/utils/stageConfiguration', () => ({
 
 const buildStages = (configured: boolean): IStageConfig[] =>
 	LIFECYCLE_STAGE_ORDER.map(() => ({
-		conditionValue: configured ? '1000' : null,
+		conditions: [
+			{
+				...createStageCondition(),
+				conditionValue: configured ? '1000' : null,
+				field: configured ? 'account.annualRevenue' : null,
+				fieldDataCategory: configured ? 'Number' : null,
+				fieldDataType: configured ? 'NUMERIC' : null,
+				operator: configured ? 'gt' : null,
+			},
+		],
 		description: configured ? 'A configured stage' : '',
-		field: configured ? 'account.annualRevenue' : null,
-		fieldDataCategory: configured ? 'Number' : null,
-		fieldDataType: configured ? 'NUMERIC' : null,
 		id: null,
+		matchLogic: MatchLogic.All,
 		maxTimeDays: DEFAULT_MAX_DAYS,
 		maxTimeEnabled: true,
-		operator: configured ? 'gt' : null,
 	}));
 
 const mockedCreateDefaultStageConfigs = createDefaultStageConfigs as jest.Mock;

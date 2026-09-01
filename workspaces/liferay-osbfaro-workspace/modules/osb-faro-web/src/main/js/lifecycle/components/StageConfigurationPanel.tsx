@@ -10,7 +10,10 @@ import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
 import {DEFAULT_DATE_FORMAT, getDateNow} from 'shared/util/date';
 import {getCatalogFieldLabel, ICatalogField} from 'shared/api/catalog';
 import {Icon, Option, Picker, Text} from '@clayui/core';
-import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
+import {
+	IStageCondition,
+	IStageConfig,
+} from 'lifecycle/utils/stageConfiguration';
 import {
 	LifecycleStages,
 	lifecycleStagesLabelMap,
@@ -69,13 +72,23 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 }) => {
 	const [dateExpanded, setDateExpanded] = useState(false);
 
+	const [condition] = value.conditions;
+
+	const updateCondition = (patch: Partial<IStageCondition>) =>
+		onChange({
+			...value,
+			conditions: value.conditions.map((current, index) =>
+				index === 0 ? {...current, ...patch} : current
+			),
+		});
+
 	const resolvedType = resolveOperatorType(
-		value.fieldDataCategory,
-		value.fieldDataType
+		condition.fieldDataCategory,
+		condition.fieldDataType
 	);
 
 	const isValuelessOperator =
-		!!value.operator && VALUELESS_OPERATORS.has(value.operator);
+		!!condition.operator && VALUELESS_OPERATORS.has(condition.operator);
 
 	const configured = isStageConfigured(value);
 
@@ -83,7 +96,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 
 	const renderFieldPicker = () => {
 		const selectedField = fields.find(
-			(field) => field.name === value.field
+			(field) => field.name === condition.field
 		);
 
 		const selectableFields = fields.filter((field) =>
@@ -111,8 +124,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 						(catalogField) => catalogField.name === String(key)
 					);
 
-					onChange({
-						...value,
+					updateCondition({
 						conditionValue: null,
 						field: String(key),
 						fieldDataCategory: field?.dataCategory ?? null,
@@ -121,7 +133,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 					});
 				}}
 				searchable
-				selectedKey={value.field ?? undefined}
+				selectedKey={condition.field ?? undefined}
 			>
 				{(item) => (
 					<Option key={item.value} textValue={item.label}>
@@ -148,7 +160,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 
 	const renderOperatorPicker = () => {
 		const selectedOperator = operatorOptions.find(
-			(option) => option.value === value.operator
+			(option) => option.value === condition.operator
 		);
 
 		return (
@@ -162,14 +174,13 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 						: selectPlaceholder(Liferay.Language.get('operator'))
 				}
 				onSelectionChange={(key) =>
-					onChange({
-						...value,
+					updateCondition({
 						conditionValue: null,
 						operator: String(key),
 					})
 				}
 				searchable
-				selectedKey={value.operator ?? undefined}
+				selectedKey={condition.operator ?? undefined}
 			>
 				{(item) => <Option key={item.value}>{item.label}</Option>}
 			</Picker>
@@ -192,11 +203,11 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 					min={minDate.format(DEFAULT_DATE_FORMAT)}
 					months={moment.months()}
 					onChange={(conditionValue) =>
-						onChange({...value, conditionValue})
+						updateCondition({conditionValue})
 					}
 					onExpandedChange={setDateExpanded}
 					placeholder={Liferay.Language.get('yyyy-mm-dd')}
-					value={value.conditionValue ?? ''}
+					value={condition.conditionValue ?? ''}
 					weekdaysShort={moment.weekdaysShort()}
 					years={{
 						end: maxDate.year(),
@@ -217,14 +228,11 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				aria-label={Liferay.Language.get('value')}
 				className="w-auto"
 				onChange={(event) =>
-					onChange({
-						...value,
-						conditionValue: event.target.value,
-					})
+					updateCondition({conditionValue: event.target.value})
 				}
 				sizing="sm"
 				type={type}
-				value={value.conditionValue ?? ''}
+				value={condition.conditionValue ?? ''}
 			/>
 		);
 	};
@@ -295,9 +303,9 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 
 					{renderFieldPicker()}
 
-					{value.field && renderOperatorPicker()}
+					{condition.field && renderOperatorPicker()}
 
-					{value.operator &&
+					{condition.operator &&
 						!isValuelessOperator &&
 						renderValueInput()}
 				</div>

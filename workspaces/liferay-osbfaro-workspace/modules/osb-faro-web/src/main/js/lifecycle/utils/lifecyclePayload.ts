@@ -1,8 +1,11 @@
 import {
 	createDefaultStageConfigs,
+	createStageCondition,
 	DEFAULT_MAX_DAYS,
+	IStageCondition,
 	IStageConfig,
 	LIFECYCLE_STAGE_ORDER,
+	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
 import {ILifecycleStage} from 'shared/api/lifecycle';
 import {
@@ -61,8 +64,8 @@ const VALUE_EXPRESSION_BY_OPERATOR: Partial<
 	[Operator.On]: (field, literal) => `${field} eq ${literal}`,
 };
 
-const buildExpression = (stage: IStageConfig): string => {
-	const {conditionValue, field, operator} = stage;
+const buildExpression = (condition: IStageCondition): string => {
+	const {conditionValue, field, operator} = condition;
 
 	if (operator === Operator.IsKnown) {
 		return `${field} ne null`;
@@ -84,8 +87,8 @@ const buildExpression = (stage: IStageConfig): string => {
 	}
 
 	const type = resolveOperatorType(
-		stage.fieldDataCategory,
-		stage.fieldDataType
+		condition.fieldDataCategory,
+		condition.fieldDataType
 	);
 
 	const raw = conditionValue ?? '';
@@ -100,23 +103,42 @@ const buildExpression = (stage: IStageConfig): string => {
 	return buildValueExpression(field!, isNumeric ? raw.trim() : quote(raw));
 };
 
-export const buildStageFilter = (stage: IStageConfig): string => {
-	if (!stage.field || !stage.operator) {
+const buildConditionFilter = (condition: IStageCondition): string => {
+	if (!condition.field || !condition.operator) {
 		return '';
 	}
 
-	const expression = buildExpression(stage);
+	const expression = buildExpression(condition);
 
 	return expression ? `(${expression})` : '';
 };
 
+/**
+ * Each condition is parenthesized on its own, so joining them with `or` stays
+ * correct against the engine grammar, where `or` binds looser than `and`. A
+ * lone condition serializes exactly as it did before multiple conditions were
+ * supported, which keeps resaved lifecycles free of noise.
+ */
+export const buildStageFilter = (stage: IStageConfig): string => {
+	const expressions = stage.conditions
+		.map(buildConditionFilter)
+		.filter(Boolean);
+
+	const separator = stage.matchLogic === MatchLogic.Any ? ' or ' : ' and ';
+
+	return expressions.join(separator);
+};
+
 export const buildStageFilterMetadata = (stage: IStageConfig): string =>
 	JSON.stringify({
-		conditionValue: stage.conditionValue,
-		field: stage.field,
-		fieldDataCategory: stage.fieldDataCategory,
-		fieldDataType: stage.fieldDataType,
-		operator: stage.operator,
+		conditions: stage.conditions.map((condition) => ({
+			conditionValue: condition.conditionValue,
+			field: condition.field,
+			fieldDataCategory: condition.fieldDataCategory,
+			fieldDataType: condition.fieldDataType,
+			operator: condition.operator,
+		})),
+		matchLogic: stage.matchLogic,
 	});
 
 export const buildStageRuleName = (lifecycleName: string, stageType: string) =>
@@ -177,12 +199,22 @@ export const buildUpdateLifecyclePayload = ({
 	})),
 });
 
-interface IStageFilterMetadata {
+interface IStageConditionMetadata {
 	conditionValue?: string | null;
 	field?: string | null;
 	fieldDataCategory?: string | null;
 	fieldDataType?: string | null;
 	operator?: string | null;
+}
+
+/**
+ * Triggers saved before a stage could hold several conditions stored the one
+ * condition's keys at the top level. Both shapes have to keep loading, so the
+ * legacy one is read as a single condition matching on ALL.
+ */
+interface IStageFilterMetadata extends IStageConditionMetadata {
+	conditions?: IStageConditionMetadata[];
+	matchLogic?: string | null;
 }
 
 const parseFilterMetadata = (
@@ -199,6 +231,30 @@ const parseFilterMetadata = (
 		return {};
 	}
 };
+
+const toStageCondition = (
+	metadata: IStageConditionMetadata
+): IStageCondition => ({
+	...createStageCondition(),
+	conditionValue: metadata.conditionValue ?? null,
+	field: metadata.field ?? null,
+	fieldDataCategory: metadata.fieldDataCategory ?? null,
+	fieldDataType: metadata.fieldDataType ?? null,
+	operator: metadata.operator ?? null,
+});
+
+const conditionsFromMetadata = (
+	metadata: IStageFilterMetadata
+): IStageCondition[] => {
+	if (metadata.conditions?.length) {
+		return metadata.conditions.map(toStageCondition);
+	}
+
+	return [toStageCondition(metadata)];
+};
+
+const matchLogicFromMetadata = (metadata: IStageFilterMetadata): MatchLogic =>
+	metadata.matchLogic === MatchLogic.Any ? MatchLogic.Any : MatchLogic.All;
 
 export const stageConfigsFromLifecycle = (
 	stages: ILifecycleStage[] = []
@@ -217,15 +273,12 @@ export const stageConfigsFromLifecycle = (
 		);
 
 		return {
-			conditionValue: metadata.conditionValue ?? null,
+			conditions: conditionsFromMetadata(metadata),
 			description: stage.description || defaults[index].description,
-			field: metadata.field ?? null,
-			fieldDataCategory: metadata.fieldDataCategory ?? null,
-			fieldDataType: metadata.fieldDataType ?? null,
 			id: stage.id,
+			matchLogic: matchLogicFromMetadata(metadata),
 			maxTimeDays: stage.maxDuration ?? DEFAULT_MAX_DAYS,
 			maxTimeEnabled: stage.maxDuration != null,
-			operator: metadata.operator ?? null,
 		};
 	});
 };

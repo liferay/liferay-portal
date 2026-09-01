@@ -1,8 +1,11 @@
 import React from 'react';
 import StageConfigurationPanel from '../StageConfigurationPanel';
 import {
+	createStageCondition,
 	DEFAULT_MAX_DAYS,
+	IStageCondition,
 	IStageConfig,
+	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
 import {ICatalogField} from 'shared/api/catalog';
 import {fireEvent, render, screen} from '@testing-library/react';
@@ -16,16 +19,22 @@ jest.mock('shared/util/date', () => ({
 jest.unmock('react-dom');
 
 const baseValue: IStageConfig = {
-	conditionValue: null,
+	conditions: [createStageCondition()],
 	description: '',
-	field: null,
-	fieldDataCategory: null,
-	fieldDataType: null,
 	id: null,
+	matchLogic: MatchLogic.All,
 	maxTimeDays: DEFAULT_MAX_DAYS,
 	maxTimeEnabled: true,
-	operator: null,
 };
+
+const withCondition = (
+	condition: Partial<IStageCondition>,
+	stage: Partial<IStageConfig> = {}
+): IStageConfig => ({
+	...baseValue,
+	conditions: [{...createStageCondition(), ...condition}],
+	...stage,
+});
 
 const mockFields: ICatalogField[] = [
 	{
@@ -85,13 +94,14 @@ describe('StageConfigurationPanel', () => {
 
 	it('shows "Configured" once the condition value is selected', () => {
 		renderPanel({
-			value: {
-				...baseValue,
-				conditionValue: 'true',
-				description: 'Cold accounts',
-				field: 'HasActivePipeline',
-				operator: 'is',
-			},
+			value: withCondition(
+				{
+					conditionValue: 'true',
+					field: 'HasActivePipeline',
+					operator: 'is',
+				},
+				{description: 'Cold accounts'}
+			),
 		});
 
 		expect(screen.getByText('Configured')).toBeInTheDocument();
@@ -153,13 +163,13 @@ describe('StageConfigurationPanel', () => {
 	});
 
 	it('renders the selected catalog field display name', () => {
-		renderPanel({value: {...baseValue, field: 'account.annualRevenue'}});
+		renderPanel({value: withCondition({field: 'account.annualRevenue'})});
 
 		expect(screen.getByText('Annual Revenue')).toBeInTheDocument();
 	});
 
 	it('reveals the next condition picker once the previous is filled', () => {
-		renderPanel({value: {...baseValue, field: 'account.industry'}});
+		renderPanel({value: withCondition({field: 'account.industry'})});
 
 		expect(screen.getByText('Select Operator')).toBeInTheDocument();
 		expect(screen.queryByLabelText('Value')).toBeNull();
@@ -167,13 +177,12 @@ describe('StageConfigurationPanel', () => {
 
 	it('shows a numeric value input for a number field operator', () => {
 		renderPanel({
-			value: {
-				...baseValue,
+			value: withCondition({
 				field: 'account.annualRevenue',
 				fieldDataCategory: 'Number',
 				fieldDataType: 'NUMERIC',
 				operator: 'gt',
-			},
+			}),
 		});
 
 		expect(screen.getByText('greater than')).toBeInTheDocument();
@@ -185,13 +194,12 @@ describe('StageConfigurationPanel', () => {
 
 	it('shows a date picker for a date field operator', () => {
 		renderPanel({
-			value: {
-				...baseValue,
+			value: withCondition({
 				field: 'account.createdDate',
 				fieldDataCategory: 'Date',
 				fieldDataType: 'DATE',
 				operator: 'before',
-			},
+			}),
 		});
 
 		expect(screen.getByText('is before')).toBeInTheDocument();
@@ -199,13 +207,12 @@ describe('StageConfigurationPanel', () => {
 		expect(screen.queryByLabelText('Value')).toBeNull();
 	});
 
-	const dateFieldValue = {
-		...baseValue,
+	const dateFieldValue = withCondition({
 		field: 'account.createdDate',
-		fieldDataCategory: 'Date' as const,
+		fieldDataCategory: 'Date',
 		fieldDataType: 'DATE',
 		operator: 'before',
-	};
+	});
 
 	it('persists a typed date as the condition value', () => {
 		const onChange = jest.fn();
@@ -217,7 +224,11 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		expect(onChange).toHaveBeenCalledWith(
-			expect.objectContaining({conditionValue: '2026-03-15'})
+			expect.objectContaining({
+				conditions: [
+					expect.objectContaining({conditionValue: '2026-03-15'}),
+				],
+			})
 		);
 	});
 
@@ -234,20 +245,24 @@ describe('StageConfigurationPanel', () => {
 
 		expect(onChange).toHaveBeenCalledWith(
 			expect.objectContaining({
-				conditionValue: expect.stringMatching(/^\d{4}-\d{2}-15$/),
+				conditions: [
+					expect.objectContaining({
+						conditionValue:
+							expect.stringMatching(/^\d{4}-\d{2}-15$/),
+					}),
+				],
 			})
 		);
 	});
 
 	it('shows a text value input for a text field operator', () => {
 		renderPanel({
-			value: {
-				...baseValue,
+			value: withCondition({
 				field: 'account.industry',
 				fieldDataCategory: 'Text',
 				fieldDataType: 'STRING',
 				operator: 'contains',
-			},
+			}),
 		});
 
 		expect(screen.getByText('contains')).toBeInTheDocument();
@@ -259,13 +274,12 @@ describe('StageConfigurationPanel', () => {
 
 		renderPanel({
 			onChange,
-			value: {
-				...baseValue,
+			value: withCondition({
 				field: 'account.annualRevenue',
 				fieldDataCategory: 'Number',
 				fieldDataType: 'NUMERIC',
 				operator: 'gt',
-			},
+			}),
 		});
 
 		fireEvent.change(screen.getByLabelText('Value'), {
@@ -273,20 +287,23 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		expect(onChange).toHaveBeenCalledWith(
-			expect.objectContaining({conditionValue: '100'})
+			expect.objectContaining({
+				conditions: [expect.objectContaining({conditionValue: '100'})],
+			})
 		);
 	});
 
 	it('suppresses the value input for a boolean field', () => {
 		renderPanel({
-			value: {
-				...baseValue,
-				description: 'Cold accounts',
-				field: 'account.hasActivePipeline',
-				fieldDataCategory: 'Boolean',
-				fieldDataType: 'BOOLEAN',
-				operator: 'true',
-			},
+			value: withCondition(
+				{
+					field: 'account.hasActivePipeline',
+					fieldDataCategory: 'Boolean',
+					fieldDataType: 'BOOLEAN',
+					operator: 'true',
+				},
+				{description: 'Cold accounts'}
+			),
 		});
 
 		expect(screen.queryByLabelText('Value')).toBeNull();
@@ -295,14 +312,15 @@ describe('StageConfigurationPanel', () => {
 
 	it('hides the value input and marks configured for a value-less operator', () => {
 		renderPanel({
-			value: {
-				...baseValue,
-				description: 'Cold accounts',
-				field: 'account.annualRevenue',
-				fieldDataCategory: 'Number',
-				fieldDataType: 'NUMERIC',
-				operator: 'is-unknown',
-			},
+			value: withCondition(
+				{
+					field: 'account.annualRevenue',
+					fieldDataCategory: 'Number',
+					fieldDataType: 'NUMERIC',
+					operator: 'is-unknown',
+				},
+				{description: 'Cold accounts'}
+			),
 		});
 
 		expect(screen.queryByLabelText('Value')).toBeNull();
@@ -314,27 +332,31 @@ describe('StageConfigurationPanel', () => {
 
 		renderPanel({
 			onChange,
-			value: {
-				...baseValue,
+			value: withCondition({
 				conditionValue: 'true',
 				field: 'account.industry',
 				fieldDataCategory: 'Text',
 				fieldDataType: 'STRING',
 				operator: 'is',
-			},
+			}),
 		});
 
 		fireEvent.click(screen.getByText('Industry'));
 		fireEvent.click(screen.getByText('Annual Revenue'));
 
-		expect(onChange).toHaveBeenCalledWith({
-			...baseValue,
-			conditionValue: null,
-			field: 'account.annualRevenue',
-			fieldDataCategory: 'Number',
-			fieldDataType: 'NUMERIC',
-			operator: null,
-		});
+		expect(onChange).toHaveBeenCalledWith(
+			expect.objectContaining({
+				conditions: [
+					expect.objectContaining({
+						conditionValue: null,
+						field: 'account.annualRevenue',
+						fieldDataCategory: 'Number',
+						fieldDataType: 'NUMERIC',
+						operator: null,
+					}),
+				],
+			})
+		);
 	});
 
 	it('calls onChange when the max-time toggle is switched off', () => {
@@ -407,7 +429,7 @@ describe('StageConfigurationPanel', () => {
 	it('names a selected field that has no label', () => {
 		renderPanel({
 			fields: [...mockFields, unlabeledField],
-			value: {...baseValue, field: 'accountName'},
+			value: withCondition({field: 'accountName'}),
 		});
 
 		expect(screen.getByText('accountName')).toBeInTheDocument();
@@ -430,7 +452,7 @@ describe('StageConfigurationPanel', () => {
 	it('still names a selected field that is no longer offered', () => {
 		renderPanel({
 			fields: [...mockFields, unresolvableField],
-			value: {...baseValue, field: 'account.uncategorized'},
+			value: withCondition({field: 'account.uncategorized'}),
 		});
 
 		expect(screen.getByText('Uncategorized Field')).toBeInTheDocument();
