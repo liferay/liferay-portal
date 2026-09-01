@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.bookmarks.constants.BookmarksPortletKeys;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
+import com.liferay.exportimport.kernel.exception.LARFileException;
 import com.liferay.exportimport.kernel.exception.LayoutImportException;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
@@ -18,6 +19,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -62,6 +64,23 @@ public class LARValidationExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
+	@TestInfo("LRQA-71361")
+	public void testValidateImportLayoutsFileWithEmptyFile() throws Exception {
+		larFile = FileUtil.createTempFile("lar");
+
+		try {
+			_validateImportLayoutsFile();
+
+			Assert.fail();
+		}
+		catch (LARFileException larFileException) {
+			Assert.assertEquals(
+				LARFileException.TYPE_MISSING_MANIFEST,
+				larFileException.getType());
+		}
+	}
+
+	@Test
 	public void testValidateImportLayoutsFileWithWrongBuildNumber()
 		throws Exception {
 
@@ -100,6 +119,23 @@ public class LARValidationExportImportTest extends BaseExportImportTestCase {
 			Assert.assertEquals(
 				LayoutImportException.TYPE_WRONG_LAR_SCHEMA_VERSION,
 				layoutImportException.getType());
+		}
+	}
+
+	@Test
+	@TestInfo("LRQA-71361")
+	public void testValidateImportPortletInfoWithEmptyFile() throws Exception {
+		larFile = FileUtil.createTempFile("lar");
+
+		try {
+			_validateImportPortletInfo();
+
+			Assert.fail();
+		}
+		catch (LARFileException larFileException) {
+			Assert.assertEquals(
+				LARFileException.TYPE_MISSING_MANIFEST,
+				larFileException.getType());
 		}
 	}
 
