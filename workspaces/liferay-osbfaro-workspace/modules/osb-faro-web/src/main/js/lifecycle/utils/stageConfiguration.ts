@@ -62,11 +62,6 @@ export interface IStageConfig {
 
 let conditionCount = 0;
 
-/**
- * Conditions are reordered as rows are removed, so they carry an identity of
- * their own rather than leaning on the array index. A counter keeps it stable
- * for tests, which a random or time based key would not.
- */
 export const createStageCondition = (): IStageCondition => ({
 	conditionValue: null,
 	field: null,

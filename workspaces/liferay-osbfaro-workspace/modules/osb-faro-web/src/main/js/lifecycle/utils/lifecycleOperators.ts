@@ -2,6 +2,7 @@ import {
 	IEntityOption,
 	IStageCondition,
 	IStageConfig,
+	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
 
 export enum Operator {
@@ -29,6 +30,16 @@ export enum OperatorType {
 	Number = 'Number',
 	Text = 'Text',
 }
+
+export const CONNECTOR_LABEL_BY_MATCH_LOGIC: Record<MatchLogic, string> = {
+	[MatchLogic.All]: Liferay.Language.get('and'),
+	[MatchLogic.Any]: Liferay.Language.get('or'),
+};
+
+export const MATCH_LOGIC_OPTIONS: IEntityOption[] = [
+	{label: Liferay.Language.get('all'), value: MatchLogic.All},
+	{label: Liferay.Language.get('any'), value: MatchLogic.Any},
+];
 
 const NUMBER_OPERATORS: IEntityOption[] = [
 	{label: 'is equal to', value: Operator.Equals},

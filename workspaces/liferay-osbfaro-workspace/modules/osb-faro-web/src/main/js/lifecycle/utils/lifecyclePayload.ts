@@ -65,7 +65,8 @@ const VALUE_EXPRESSION_BY_OPERATOR: Partial<
 };
 
 const buildExpression = (condition: IStageCondition): string => {
-	const {conditionValue, field, operator} = condition;
+	const {conditionValue, field, fieldDataCategory, fieldDataType, operator} =
+		condition;
 
 	if (operator === Operator.IsKnown) {
 		return `${field} ne null`;
@@ -86,10 +87,7 @@ const buildExpression = (condition: IStageCondition): string => {
 		return '';
 	}
 
-	const type = resolveOperatorType(
-		condition.fieldDataCategory,
-		condition.fieldDataType
-	);
+	const type = resolveOperatorType(fieldDataCategory, fieldDataType);
 
 	const raw = conditionValue ?? '';
 
@@ -113,12 +111,6 @@ const buildConditionFilter = (condition: IStageCondition): string => {
 	return expression ? `(${expression})` : '';
 };
 
-/**
- * Each condition is parenthesized on its own, so joining them with `or` stays
- * correct against the engine grammar, where `or` binds looser than `and`. A
- * lone condition serializes exactly as it did before multiple conditions were
- * supported, which keeps resaved lifecycles free of noise.
- */
 export const buildStageFilter = (stage: IStageConfig): string => {
 	const expressions = stage.conditions
 		.map(buildConditionFilter)
@@ -207,11 +199,6 @@ interface IStageConditionMetadata {
 	operator?: string | null;
 }
 
-/**
- * Triggers saved before a stage could hold several conditions stored the one
- * condition's keys at the top level. Both shapes have to keep loading, so the
- * legacy one is read as a single condition matching on ALL.
- */
 interface IStageFilterMetadata extends IStageConditionMetadata {
 	conditions?: IStageConditionMetadata[];
 	matchLogic?: string | null;
