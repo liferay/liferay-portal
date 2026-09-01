@@ -18,10 +18,10 @@
 	}
 
 	.lfr-input-localized .lfr-input-localized-state {
-		background-color: #ddd;
+		background-color: $gray-300;
 
 		&.lfr-input-localized-state-error {
-			background-color: #ff0047;
+			background-color: $red-l1;
 		}
 	}
 
@@ -47,14 +47,14 @@
 	}
 
 	.palette-item-inner {
-		border-color: #666;
+		border-color: $gray-600;
 		display: block;
 		height: 16px;
 		width: 16px;
 	}
 
 	.palette-item-selected .lfr-input-localized-state {
-		background: #27c1f2;
+		background: $cyan-l3;
 	}
 }
 

@@ -1,7 +1,7 @@
 .lfr-panel {
 	&.lfr-extended {
 		border: 1px solid transparent;
-		border-color: #dedede #bfbfbf #bfbfbf #dedede;
+		border-color: $gray-300 $gray-400 $gray-400 $gray-300;
 
 		&.lfr-collapsible .lfr-panel-button {
 			display: block;

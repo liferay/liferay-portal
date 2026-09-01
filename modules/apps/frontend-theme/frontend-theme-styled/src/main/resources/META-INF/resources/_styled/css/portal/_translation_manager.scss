@@ -53,13 +53,13 @@
 		}
 
 		&:hover {
-			background-color: #d1e5ef;
+			background-color: $blue-l5;
 		}
 
 		&.lfr-translation-manager-translation-editing {
-			background-color: #598bec;
-			border-color: #224fa8;
-			color: #fff;
+			background-color: $blue-l1;
+			border-color: $blue-d3;
+			color: $white;
 		}
 	}
 

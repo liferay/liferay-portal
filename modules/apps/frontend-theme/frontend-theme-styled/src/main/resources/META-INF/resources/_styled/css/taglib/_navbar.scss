@@ -10,7 +10,7 @@
 
 	.navbar-search {
 		@include media-breakpoint-down(sm) {
-			background-color: #f3f3f3;
+			background-color: $gray-200;
 			border-top-width: 0;
 			width: 100%;
 		}

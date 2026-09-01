@@ -27,7 +27,7 @@
 	}
 
 	.progress-container {
-		background-color: #fff;
+		background-color: $white;
 		left: 0;
 		margin: 0 auto;
 		padding: 20px 30px;
@@ -51,7 +51,7 @@
 	}
 
 	.search-info {
-		background-color: #d3e8f1;
+		background-color: $cyan-l5;
 
 		.keywords {
 			font-size: 1.4em;

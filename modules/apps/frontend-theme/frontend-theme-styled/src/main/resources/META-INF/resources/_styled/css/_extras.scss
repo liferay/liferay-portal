@@ -11,24 +11,24 @@
 
 @keyframes lfr-drop-active {
 	0% {
-		background-color: #ebebeb;
-		border-color: #ddd;
+		background-color: $gray-200;
+		border-color: $gray-300;
 	}
 
 	50% {
-		background-color: #ddedde;
-		border-color: #7d7;
+		background-color: $green-l5;
+		border-color: $green-l4;
 		transform: scale(1.1);
 	}
 
 	75% {
-		background-color: #ddedde;
-		border-color: #7d7;
+		background-color: $green-l5;
+		border-color: $green-l4;
 	}
 
 	100% {
-		background-color: #ebebeb;
-		border-color: #ddd;
+		background-color: $gray-200;
+		border-color: $gray-300;
 	}
 }
 
@@ -65,7 +65,7 @@
 		&:hover,
 		&:focus {
 			.number {
-				box-shadow: 0 0 5px 0 #333;
+				box-shadow: 0 0 5px 0 $gray-900;
 				transition-duration: 0.25s;
 				transition-property: box-shadow;
 				transition-timing-function: ease-out;
@@ -90,16 +90,16 @@
 
 .lfr-progress-active .progress-bar-status,
 .lfr-upload-container .file-uploading .progress-bar .progress {
-	$transparent: rgba(255, 255, 255, 0);
+	$transparent: unquote('rgb(from #{$white} r g b / 0)');
 
 	animation: progress-bar-stripes 0.5s linear infinite;
 	background-image: linear-gradient(
 		-45deg,
-		rgba(255, 255, 255, 0.3) 25%,
+		unquote('rgb(from #{$white} r g b / 0.3)') 25%,
 		$transparent 25%,
 		$transparent 50%,
-		rgba(255, 255, 255, 0.3) 50%,
-		rgba(255, 255, 255, 0.3) 75%,
+		unquote('rgb(from #{$white} r g b / 0.3)') 50%,
+		unquote('rgb(from #{$white} r g b / 0.3)') 75%,
 		$transparent 75%,
 		$transparent
 	);
@@ -117,7 +117,7 @@
 
 @keyframes highlight-animation {
 	from {
-		background-color: #ffc;
+		background-color: $yellow-l4;
 	}
 
 	to {

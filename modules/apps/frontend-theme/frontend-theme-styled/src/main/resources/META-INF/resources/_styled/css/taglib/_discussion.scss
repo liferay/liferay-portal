@@ -1,5 +1,5 @@
-$dark-color: #272833;
-$light-color: #e7e7ed;
+$dark-color: $gray-900;
+$light-color: $gray-300;
 
 .taglib-discussion {
 	$discussion-indent: 1rem;
@@ -23,7 +23,7 @@ $light-color: #e7e7ed;
 
 	.lfr-discussion {
 		.lfr-discussion-form-edit .alloy-editor-placeholder {
-			border-left-color: #dbdde1;
+			border-left-color: $gray-300;
 		}
 	}
 
@@ -85,7 +85,7 @@ $light-color: #e7e7ed;
 	}
 
 	.lfr-discussion-parent-link {
-		color: #67678c;
+		color: $gray-600;
 		font-weight: 600;
 		margin-left: 1em;
 

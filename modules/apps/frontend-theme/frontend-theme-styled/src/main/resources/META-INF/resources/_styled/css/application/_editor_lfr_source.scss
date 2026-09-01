@@ -1,5 +1,5 @@
 .lfr-source-editor {
-	border: solid 0 #ccc;
+	border: solid 0 $gray-400;
 	border-bottom-width: 2px;
 	position: relative;
 
@@ -10,21 +10,21 @@
 	.lfr-source-editor-toolbar {
 		li {
 			> .btn {
-				background-color: #fff;
+				background-color: $white;
 				border: transparent;
-				color: #717383;
+				color: $gray-600;
 				outline: 0;
 			}
 		}
 	}
 
 	.lfr-source-editor-code {
-		background-color: #fff;
-		color: #2b4259;
+		background-color: $white;
+		color: $gray-800;
 
 		.ace_gutter {
-			background-color: #ededef;
-			color: #868896;
+			background-color: $gray-200;
+			color: $gray-600;
 			overflow: hidden;
 
 			.ace_fold-widget {
@@ -47,15 +47,15 @@
 			}
 
 			.ace_gutter-active-cell {
-				color: #fff;
+				color: $white;
 			}
 
 			.ace_gutter-active-line {
-				background-color: #717383;
+				background-color: $gray-600;
 			}
 
 			.ace_gutter-layer {
-				border-right: solid 1px #ccc;
+				border-right: solid 1px $gray-400;
 			}
 
 			.ace_info {
@@ -65,22 +65,22 @@
 
 		.ace_content {
 			.ace_active-line {
-				background-color: #ededef;
+				background-color: $gray-200;
 			}
 
 			.ace_constant {
-				color: #34adab;
+				color: $teal-l1;
 			}
 
 			.ace_tag {
-				color: #1d5ec7;
+				color: $blue-d2;
 			}
 
 			.ace_string {
-				color: #ff6c58;
+				color: $red-l2;
 
 				&.ace_regex {
-					color: #f00;
+					color: $red;
 				}
 			}
 		}
@@ -88,29 +88,29 @@
 
 	&.ace_dark {
 		.lfr-source-editor-code {
-			background-color: #47474f;
-			color: #fff;
+			background-color: $gray-800;
+			color: $white;
 
 			.ace_gutter {
-				background: #54555e;
-				color: #fff;
+				background: $gray-700;
+				color: $white;
 
 				.ace_gutter-active-line {
-					background-color: #009aed;
+					background-color: $cyan-l1;
 				}
 			}
 
 			.ace_content {
 				.ace_active-line {
-					background-color: #11394e;
+					background-color: $cyan-d4;
 				}
 
 				.ace_cursor {
-					color: #fff;
+					color: $white;
 				}
 
 				.ace_tag {
-					color: #4d91ff;
+					color: $blue-l1;
 				}
 			}
 		}
@@ -133,7 +133,7 @@
 		position: relative;
 
 		.panel-splitter {
-			border: 1px solid #ccc;
+			border: 1px solid $gray-400;
 			position: absolute;
 		}
 

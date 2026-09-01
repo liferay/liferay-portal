@@ -1,11 +1,11 @@
 .taglib-portlet-preview {
 	&.show-borders {
-		border: 1px solid #828f95;
+		border: 1px solid $gray-500;
 		margin-bottom: 1em;
 		padding: 3px 3px 1em;
 
 		.title {
-			background-color: #d3dadd;
+			background-color: $gray-300;
 			font-size: 1.4em;
 			font-weight: bold;
 			padding: 0.5em;

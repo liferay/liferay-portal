@@ -4,18 +4,18 @@ html#{$cadmin-selector} {
 	}
 
 	.drop-area {
-		background-color: #d3dadd;
+		background-color: $gray-300;
 	}
 
 	.active-area {
-		background: #ffc;
+		background: $yellow-l4;
 	}
 
 	.portlet-boundary.yui3-dd-dragging {
 		opacity: 0.6;
 
 		.portlet {
-			border: 2px dashed #ccc;
+			border: 2px dashed $gray-400;
 		}
 	}
 
@@ -56,13 +56,13 @@ html#{$cadmin-selector} {
 	}
 
 	.resizable-proxy {
-		border: 1px dashed #828f95;
+		border: 1px dashed $gray-500;
 		position: absolute;
 		visibility: hidden;
 	}
 
 	.sortable-proxy {
-		background: #727c81;
+		background: $gray-600;
 		margin-top: 1px;
 	}
 
@@ -80,11 +80,11 @@ html#{$cadmin-selector} {
 }
 
 .drop-area {
-	background-color: #d3dadd;
+	background-color: $gray-300;
 }
 
 .active-area {
-	background: #ffc;
+	background: $yellow-l4;
 }
 
 .portlet-boundary.yui3-dd-dragging {
@@ -101,7 +101,7 @@ html#{$cadmin-selector} {
 	}
 
 	.portlet {
-		border: 2px dashed #ccc;
+		border: 2px dashed $gray-400;
 	}
 }
 
@@ -141,13 +141,13 @@ html#{$cadmin-selector} {
 }
 
 .resizable-proxy {
-	border: 1px dashed #828f95;
+	border: 1px dashed $gray-500;
 	position: absolute;
 	visibility: hidden;
 }
 
 .sortable-proxy {
-	background: #727c81;
+	background: $gray-600;
 	margin-top: 1px;
 }
 

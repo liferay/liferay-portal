@@ -22,8 +22,8 @@
 		width: 100%;
 
 		label {
-			background: #ebf1f9;
-			border-bottom-color: #8db2f3;
+			background: $blue-l5;
+			border-bottom-color: $blue-l3;
 		}
 	}
 
@@ -48,7 +48,7 @@
 
 		.move-option {
 			background-color: transparent;
-			border-top: 1px solid #ddd;
+			border-top: 1px solid $gray-300;
 			display: none;
 			margin: 2px 0;
 			padding: 2px;
@@ -59,7 +59,7 @@
 			}
 
 			&.move-option-dragging {
-				background-color: #fafafa;
+				background-color: $gray-100;
 			}
 
 			.checkbox,
@@ -73,7 +73,7 @@
 			}
 
 			.handle {
-				color: #999;
+				color: $gray-500;
 				cursor: pointer;
 				font-size: 1.5em;
 				padding: 6px;

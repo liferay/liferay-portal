@@ -1,6 +1,6 @@
 // ---------- Cards horizontal ----------
 
-$card-horizontal-on-border: #65b6f0 !default;
+$card-horizontal-on-border: $cyan-l2 !default;
 $card-horizontal-on-border-width: 2px !default;
 
 // Liferay Page Layouts Card
@@ -106,22 +106,22 @@ $dialog-iframe-padding: 0 !default;
 
 $toggle-card-border-radius: 2px !default;
 
-$toggle-card-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15) !default;
+$toggle-card-box-shadow: 0 2px 4px 0 unquote('rgb(from #{$black} r g b / 0.15)') !default;
 
 $toggle-card-icon-border-radius: 30px !default;
 $toggle-card-icon-height: 32px !default;
 $toggle-card-icon-width: 32px !default;
 
-$toggle-card-border: #dce0e3 !default;
+$toggle-card-border: $gray-300 !default;
 $toggle-card-border-width: 1px !default;
 $toggle-card-icon-bg: $white !default;
-$toggle-card-icon-border: #869cad !default;
+$toggle-card-icon-border: $gray-500 !default;
 $toggle-card-icon-border-width: 0 !default;
 
-$toggle-card-on-border: #65b6f0 !default;
+$toggle-card-on-border: $cyan-l2 !default;
 $toggle-card-on-border-width: 2px !default;
 $toggle-card-on-icon-bg: $white !default;
-$toggle-card-on-icon-border: #65b6f0 !default;
+$toggle-card-on-icon-border: $cyan-l2 !default;
 $toggle-card-on-icon-border-width: 0 !default;
 
 // ---------- File icons colors ----------

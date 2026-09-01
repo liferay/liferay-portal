@@ -27,8 +27,8 @@
 
 .taglib-search-toggle-advanced-wrapper {
 	.taglib-search-toggle-advanced {
-		background-color: #fcfcfc;
-		border: solid #ddd;
+		background-color: $white;
+		border: solid $gray-300;
 		border-width: 0 1px 1px;
 		margin-top: 0;
 		padding: 15px 15px 0;
@@ -45,7 +45,7 @@
 			}
 
 			.match-fields-legend {
-				color: #999;
+				color: $gray-500;
 				font-size: 13px;
 			}
 		}

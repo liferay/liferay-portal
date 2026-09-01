@@ -10,7 +10,7 @@
 		width: 60px;
 
 		&.author:after {
-			background: transparentize(#32a8e6, 0.5);
+			background: unquote('rgb(from #{$cyan-l2} r g b / 0.5)');
 			border-radius: 50%;
 			content: '';
 			display: block;

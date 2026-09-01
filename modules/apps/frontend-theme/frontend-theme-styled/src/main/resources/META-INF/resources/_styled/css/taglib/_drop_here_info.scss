@@ -7,7 +7,7 @@
 		outline: 2px dashed transparent;
 
 		&:not(.no-border) {
-			outline-color: transparentize(#b0b4bb, 0.5);
+			outline-color: unquote('rgb(from #{$gray-500} r g b / 0.5)');
 		}
 	}
 
@@ -56,7 +56,8 @@
 			@include transition(all 0.3s ease-in-out);
 
 			&:nth-of-type(1) {
-				box-shadow: 5px 4px 0 0 rgba(0, 0, 0, 0.08);
+				box-shadow: 5px 4px 0 0
+					unquote('rgb(from #{$black} r g b / 0.08)');
 				height: 60px;
 				left: 0;
 				line-height: 60px;
@@ -67,8 +68,8 @@
 			}
 
 			&:nth-of-type(2) {
-				background: #00c2ff;
-				color: #fff;
+				background: $cyan-l2;
+				color: $white;
 				height: 80px;
 				left: 40px;
 				line-height: 80px;
@@ -77,7 +78,8 @@
 			}
 
 			&:nth-of-type(3) {
-				box-shadow: -5px 4px 0 0 rgba(0, 0, 0, 0.08);
+				box-shadow: -5px 4px 0 0
+					unquote('rgb(from #{$black} r g b / 0.08)');
 				display: block;
 				font-size: 45px;
 				height: 70px;
@@ -93,14 +95,14 @@
 
 			&:nth-of-type(1),
 			&:nth-of-type(3) {
-				background: #e8e6e8;
-				color: #a5a6ac;
+				background: $gray-300;
+				color: $gray-500;
 			}
 		}
 	}
 
 	.drop-text {
-		color: #fff;
+		color: $white;
 		display: block;
 		font-size: 20px;
 		margin-left: 0;
@@ -108,7 +110,7 @@
 	}
 
 	.drop-active & {
-		background-color: transparentize(#000, 0.4);
+		background-color: unquote('rgb(from #{$black} r g b / 0.6)');
 		opacity: 1;
 		visibility: visible;
 		z-index: 100;

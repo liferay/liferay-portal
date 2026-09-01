@@ -1,5 +1,5 @@
 .lfr-form-row {
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid $gray-400;
 	margin-bottom: 10px;
 	margin-top: 10px;
 	padding: 1px 5px 25px;
@@ -13,7 +13,8 @@
 	}
 
 	&:hover {
-		border: solid#ccc;
+		border-color: $gray-400;
+		border-style: solid;
 		border-width: 1px 0;
 		padding-top: 0;
 	}

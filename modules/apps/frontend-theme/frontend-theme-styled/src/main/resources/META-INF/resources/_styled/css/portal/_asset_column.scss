@@ -1,14 +1,14 @@
 .lfr-asset-column-details {
 	.lfr-asset-categories {
-		color: #7d7d7d;
+		color: $gray-600;
 
 		.lfr-asset-category {
-			color: #555;
+			color: $gray-700;
 		}
 	}
 
 	.lfr-asset-description {
-		color: #444;
+		color: $gray-700;
 		font-style: italic;
 		margin: 0.5em auto 2em;
 
@@ -17,7 +17,7 @@
 
 	.lfr-asset-icon {
 		border-right: 1px solid transparent;
-		color: #999;
+		color: $gray-500;
 		float: left;
 		line-height: 1em;
 		margin-right: 10px;
@@ -29,10 +29,10 @@
 	}
 
 	.lfr-asset-tags {
-		color: #7d7d7d;
+		color: $gray-600;
 
 		.tag {
-			color: #555;
+			color: $gray-700;
 		}
 	}
 
@@ -47,7 +47,7 @@
 		margin-bottom: 0.2em;
 
 		&.lfr-extended {
-			border: 1px solid #ccc;
+			border: 1px solid $gray-400;
 			margin-bottom: 0;
 		}
 	}
