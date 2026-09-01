@@ -18,7 +18,6 @@ import com.liferay.portal.search.query.function.score.ScoreFunctionTranslator;
 import com.liferay.portal.search.query.function.score.ScriptScoreFunction;
 import com.liferay.portal.search.query.function.score.WeightScoreFunction;
 
-import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.query_dsl.DecayFunction;
 import org.opensearch.client.opensearch._types.query_dsl.DecayPlacement;
 import org.opensearch.client.opensearch._types.query_dsl.FieldValueFactorModifier;
@@ -56,12 +55,15 @@ public class OpenSearchScoreFunctionTranslator
 			decayPlacementBuilder::decay,
 			exponentialDecayScoreFunction.getDecay());
 
-		decayPlacementBuilder.offset(
-			JsonData.of(exponentialDecayScoreFunction.getOffset()));
-		decayPlacementBuilder.origin(
-			JsonData.of(exponentialDecayScoreFunction.getOrigin()));
-		decayPlacementBuilder.scale(
-			JsonData.of(exponentialDecayScoreFunction.getScale()));
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::offset,
+			exponentialDecayScoreFunction.getOffset());
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::origin,
+			exponentialDecayScoreFunction.getOrigin());
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::scale,
+			exponentialDecayScoreFunction.getScale());
 
 		decayFunctionBuilder.placement(decayPlacementBuilder.build());
 
@@ -132,12 +134,15 @@ public class OpenSearchScoreFunctionTranslator
 			decayPlacementBuilder::decay,
 			gaussianDecayScoreFunction.getDecay());
 
-		decayPlacementBuilder.offset(
-			JsonData.of(gaussianDecayScoreFunction.getOffset()));
-		decayPlacementBuilder.origin(
-			JsonData.of(gaussianDecayScoreFunction.getOrigin()));
-		decayPlacementBuilder.scale(
-			JsonData.of(gaussianDecayScoreFunction.getScale()));
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::offset,
+			gaussianDecayScoreFunction.getOffset());
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::origin,
+			gaussianDecayScoreFunction.getOrigin());
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::scale,
+			gaussianDecayScoreFunction.getScale());
 
 		decayFunctionBuilder.placement(decayPlacementBuilder.build());
 
@@ -170,12 +175,14 @@ public class OpenSearchScoreFunctionTranslator
 		SetterUtil.setNotNullDouble(
 			decayPlacementBuilder::decay, linearDecayScoreFunction.getDecay());
 
-		decayPlacementBuilder.offset(
-			JsonData.of(linearDecayScoreFunction.getOffset()));
-		decayPlacementBuilder.origin(
-			JsonData.of(linearDecayScoreFunction.getOrigin()));
-		decayPlacementBuilder.scale(
-			JsonData.of(linearDecayScoreFunction.getScale()));
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::offset,
+			linearDecayScoreFunction.getOffset());
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::origin,
+			linearDecayScoreFunction.getOrigin());
+		SetterUtil.setNotNullJsonData(
+			decayPlacementBuilder::scale, linearDecayScoreFunction.getScale());
 
 		decayFunctionBuilder.placement(decayPlacementBuilder.build());
 

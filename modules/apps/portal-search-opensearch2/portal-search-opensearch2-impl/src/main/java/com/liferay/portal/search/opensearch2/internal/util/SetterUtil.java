@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.opensearch.client.json.JsonData;
 import org.opensearch.client.opensearch._types.FieldValue;
 
 /**
@@ -129,6 +130,14 @@ public class SetterUtil {
 
 		if (value != null) {
 			consumer.accept(value.floatValue());
+		}
+	}
+
+	public static void setNotNullJsonData(
+		Consumer<JsonData> consumer, Object value) {
+
+		if (value != null) {
+			consumer.accept(JsonData.of(value));
 		}
 	}
 
