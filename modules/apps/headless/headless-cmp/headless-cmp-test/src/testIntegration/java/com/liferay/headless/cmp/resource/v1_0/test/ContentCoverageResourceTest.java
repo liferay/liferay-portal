@@ -17,6 +17,7 @@ import com.liferay.headless.cmp.client.dto.v1_0.ContentCoverage;
 import com.liferay.headless.cmp.client.dto.v1_0.ContentCoverageEntry;
 import com.liferay.headless.cmp.client.dto.v1_0.FunnelStage;
 import com.liferay.headless.cmp.client.dto.v1_0.Persona;
+import com.liferay.headless.cmp.resource.v1_0.test.util.CMPLicenseTestUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -93,6 +94,7 @@ public class ContentCoverageResourceTest
 	@Override
 	@Test
 	public void testGetProjectContentCoverage() throws Exception {
+		_testGetProjectContentCoverageWithAppDisabled();
 		_testGetProjectContentCoverageWithFunnelStages();
 		_testGetProjectContentCoverageWithFunnelStagesAndPersonas();
 		_testGetProjectContentCoverageWithInvalidProjectId();
@@ -191,6 +193,27 @@ public class ContentCoverageResourceTest
 			objectEntry.getUserId(), objectEntry.getObjectEntryId(),
 			objectEntry.getObjectEntryFolderId(), new HashMap<>(),
 			serviceContext);
+	}
+
+	private void _testGetProjectContentCoverageWithAppDisabled()
+		throws Exception {
+
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
+
+		try (AutoCloseable autoCloseable =
+				CMPLicenseTestUtil.withAppDisabled()) {
+
+			assertHttpResponseStatusCode(
+				400,
+				contentCoverageResource.getProjectContentCoverageHttpResponse(
+					cmpProjectObjectEntry.getObjectEntryId()));
+		}
+
+		assertHttpResponseStatusCode(
+			200,
+			contentCoverageResource.getProjectContentCoverageHttpResponse(
+				cmpProjectObjectEntry.getObjectEntryId()));
 	}
 
 	private void _testGetProjectContentCoverageWithFunnelStages()

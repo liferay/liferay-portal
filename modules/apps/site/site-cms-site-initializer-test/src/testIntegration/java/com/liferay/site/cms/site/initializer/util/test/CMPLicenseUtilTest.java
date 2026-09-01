@@ -21,12 +21,14 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.cmp.site.initializer.test.util.CMPTestUtil;
 import com.liferay.site.cms.site.initializer.util.CMPLicenseUtil;
 
+import java.util.Date;
 import java.util.Objects;
 
 import org.junit.After;
@@ -62,8 +64,10 @@ public class CMPLicenseUtilTest {
 
 	@Test
 	public void testCheckResources() throws Exception {
-		_testCheckResources(false);
-		_testCheckResources(true);
+		_testCheckResourcesWhenAppIsDisabled();
+		_testCheckResourcesWhenExpired();
+		_testCheckResourcesWhenLicenseIsUnlimited();
+		_testCheckResourcesWhenNotExpired();
 	}
 
 	private void _assertLayout(boolean appEnabled, String friendlyURL)
@@ -104,7 +108,9 @@ public class CMPLicenseUtilTest {
 			_objectDefinitionLocalService);
 	}
 
-	private void _testCheckResources(boolean appEnabled) throws Exception {
+	private void _testCheckResources(
+			boolean appEnabled, boolean expectedAppEnabled, Date expirationDate)
+		throws Exception {
 
 		// Read before the stub replaces it
 
@@ -117,8 +123,16 @@ public class CMPLicenseUtilTest {
 						LicenseManager.class.getClassLoader(),
 						new Class<?>[] {LicenseManager.class},
 						(proxy, method, arguments) -> {
+							String methodName = method.getName();
+
 							if (Objects.equals(
-									method.getName(), "isAppEnabled") &&
+									methodName, "getAppExpirationDate") &&
+								Objects.equals(arguments[0], App.CMP)) {
+
+								return expirationDate;
+							}
+
+							if (Objects.equals(methodName, "isAppEnabled") &&
 								Objects.equals(arguments[0], App.CMP)) {
 
 								return appEnabled;
@@ -129,14 +143,32 @@ public class CMPLicenseUtilTest {
 
 			_checkResources();
 
-			_assertLayout(appEnabled, "/planning");
-			_assertLayout(appEnabled, "/projects");
-			_assertLayout(appEnabled, "/tasks");
-			_assertObjectDefinition(appEnabled, "L_CMP_PROJECT");
-			_assertObjectDefinition(appEnabled, "L_CMP_PROJECT_LINK");
-			_assertObjectDefinition(appEnabled, "L_CMP_TASK");
-			_assertObjectDefinition(appEnabled, "L_CMP_TASK_LINK");
+			_assertLayout(expectedAppEnabled, "/planning");
+			_assertLayout(expectedAppEnabled, "/projects");
+			_assertLayout(expectedAppEnabled, "/tasks");
+			_assertObjectDefinition(expectedAppEnabled, "L_CMP_PROJECT");
+			_assertObjectDefinition(expectedAppEnabled, "L_CMP_PROJECT_LINK");
+			_assertObjectDefinition(expectedAppEnabled, "L_CMP_TASK");
+			_assertObjectDefinition(expectedAppEnabled, "L_CMP_TASK_LINK");
 		}
+	}
+
+	private void _testCheckResourcesWhenAppIsDisabled() throws Exception {
+		_testCheckResources(false, false, null);
+	}
+
+	private void _testCheckResourcesWhenExpired() throws Exception {
+		_testCheckResources(
+			true, false, new Date(System.currentTimeMillis() - Time.DAY));
+	}
+
+	private void _testCheckResourcesWhenLicenseIsUnlimited() throws Exception {
+		_testCheckResources(true, true, null);
+	}
+
+	private void _testCheckResourcesWhenNotExpired() throws Exception {
+		_testCheckResources(
+			true, true, new Date(System.currentTimeMillis() + Time.DAY));
 	}
 
 	private Group _group;

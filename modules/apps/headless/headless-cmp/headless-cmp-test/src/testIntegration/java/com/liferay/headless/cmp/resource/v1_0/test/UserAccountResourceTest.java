@@ -15,6 +15,7 @@ import com.liferay.headless.cmp.client.pagination.Page;
 import com.liferay.headless.cmp.client.pagination.Pagination;
 import com.liferay.headless.cmp.client.problem.Problem;
 import com.liferay.headless.cmp.client.resource.v1_0.UserAccountResource;
+import com.liferay.headless.cmp.resource.v1_0.test.util.CMPLicenseTestUtil;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -83,6 +84,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void testGetProjectUserAccountsPage() throws Exception {
 		super.testGetProjectUserAccountsPage();
 
+		_testGetProjectUserAccountsPageWithAppDisabled();
 		_testGetProjectUserAccountsPageWithProjectManager();
 		_testGetProjectUserAccountsPageWithProjectMember();
 	}
@@ -148,6 +150,27 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	private void _testGetProjectUserAccountsPageWithAppDisabled()
+		throws Exception {
+
+		ObjectEntry objectEntry = CMPTestUtil.addCMPProjectObjectEntry();
+
+		try (AutoCloseable autoCloseable =
+				CMPLicenseTestUtil.withAppDisabled()) {
+
+			assertHttpResponseStatusCode(
+				400,
+				userAccountResource.getProjectUserAccountsPageHttpResponse(
+					objectEntry.getObjectEntryId(), null,
+					Pagination.of(1, 20)));
+		}
+
+		assertHttpResponseStatusCode(
+			200,
+			userAccountResource.getProjectUserAccountsPageHttpResponse(
+				objectEntry.getObjectEntryId(), null, Pagination.of(1, 20)));
 	}
 
 	private void _testGetProjectUserAccountsPageWithProjectManager()
