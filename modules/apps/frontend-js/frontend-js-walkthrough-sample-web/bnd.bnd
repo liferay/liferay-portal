@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Walkthrough Sample Web
 Bundle-SymbolicName: com.liferay.frontend.js.walkthrough.sample.web
-Bundle-Version: 1.0.50
+Bundle-Version: 1.0.51
 Web-ContextPath: /frontend-js-walkthrough-sample-web
