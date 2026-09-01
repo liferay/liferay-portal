@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -20,6 +21,9 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.translation.translator.TranslatorPacket;
 import com.liferay.translation.translator.deepl.internal.configuration.DeepLTranslatorConfiguration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -42,7 +46,7 @@ public class DeepLTranslatorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_setUpDeepLTranslator();
+		_setUpDeepLTranslator(null);
 		_setUpPortalUtil();
 	}
 
@@ -82,6 +86,30 @@ public class DeepLTranslatorTest {
 		Assert.assertEquals(
 			Map.of("infoField--JournalArticle_title--0", "哈囉，世界！"),
 			translatorPacket.getFieldsMap());
+	}
+
+	@Test
+	public void testTranslationWhenUserAgentIsConfigured() throws Exception {
+		String userAgent = RandomTestUtil.randomString();
+
+		_setUpDeepLTranslator(userAgent);
+
+		_deepLTranslator.translate(
+			_getTranslatorPocket(
+				Map.of("infoField--JournalArticle_title--0", false), "en_US",
+				"ca_ES"));
+
+		Assert.assertEquals(Arrays.asList(userAgent, userAgent), _userAgents);
+	}
+
+	@Test
+	public void testTranslationWhenUserAgentIsNotConfigured() throws Exception {
+		_deepLTranslator.translate(
+			_getTranslatorPocket(
+				Map.of("infoField--JournalArticle_title--0", false), "en_US",
+				"ca_ES"));
+
+		Assert.assertEquals(Arrays.asList("Liferay", "Liferay"), _userAgents);
 	}
 
 	private String _getTranslationsJSON(String text) {
@@ -131,7 +159,8 @@ public class DeepLTranslatorTest {
 		};
 	}
 
-	private ConfigurationProvider _setUpConfigurationProvider(long companyId)
+	private ConfigurationProvider _setUpConfigurationProvider(
+			long companyId, String userAgent)
 		throws Exception {
 
 		ConfigurationProvider configurationProvider = Mockito.mock(
@@ -159,6 +188,12 @@ public class DeepLTranslatorTest {
 		);
 
 		Mockito.when(
+			deepLTranslatorConfiguration.userAgent()
+		).thenReturn(
+			userAgent
+		);
+
+		Mockito.when(
 			deepLTranslatorConfiguration.validateLanguageURL()
 		).thenReturn(
 			"https://api-free.deepl.com/v2/languages"
@@ -174,10 +209,10 @@ public class DeepLTranslatorTest {
 		return configurationProvider;
 	}
 
-	private void _setUpDeepLTranslator() throws Exception {
+	private void _setUpDeepLTranslator(String userAgent) throws Exception {
 		ReflectionTestUtil.setFieldValue(
 			_deepLTranslator, "_configurationProvider",
-			_setUpConfigurationProvider(_COMPANY_ID));
+			_setUpConfigurationProvider(_COMPANY_ID, userAgent));
 		ReflectionTestUtil.setFieldValue(
 			_deepLTranslator, "_http", _setUpHttp());
 		ReflectionTestUtil.setFieldValue(
@@ -192,6 +227,8 @@ public class DeepLTranslatorTest {
 		).thenAnswer(
 			invocation -> {
 				Http.Options options = invocation.getArgument(0);
+
+				_userAgents.add(options.getHeader(HttpHeaders.USER_AGENT));
 
 				Http.Response httpResponse = new Http.Response();
 
@@ -246,5 +283,6 @@ public class DeepLTranslatorTest {
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private final DeepLTranslator _deepLTranslator = new DeepLTranslator();
+	private final List<String> _userAgents = new ArrayList<>();
 
 }
