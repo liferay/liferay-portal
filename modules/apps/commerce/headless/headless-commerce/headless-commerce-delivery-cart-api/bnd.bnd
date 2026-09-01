@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Delivery Cart API
 Bundle-SymbolicName: com.liferay.headless.commerce.delivery.cart.api
-Bundle-Version: 27.1.1
+Bundle-Version: 27.1.2
 Export-Package:\
 	com.liferay.headless.commerce.delivery.cart.dto.v1_0,\
 	com.liferay.headless.commerce.delivery.cart.resource.v1_0
