@@ -285,7 +285,7 @@ public class SearchResult implements Serializable {
 	private Supplier<String> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Asset-specific nested data. The shape depends on entryClassName - blog entries include authorName and assetTagNames, documents include extension and size, custom Objects include their declared fields, and so on. The embedded field is populated only when nestedFields=embedded is requested."
+		description = "Asset-specific nested data. The shape depends on entryClassName - blog entries include authorName and assetTagNames, documents include extension and size, custom Objects include their declared fields, and so on. The embedded field is populated only when nestedFields=embedded is requested. Nested fields of the embedded entity are resolved only for entries requested with the 'embedded.' prefix together with nestedFieldsDepth=2."
 	)
 	@Valid
 	public Object getEmbedded() {
@@ -322,7 +322,7 @@ public class SearchResult implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Asset-specific nested data. The shape depends on entryClassName - blog entries include authorName and assetTagNames, documents include extension and size, custom Objects include their declared fields, and so on. The embedded field is populated only when nestedFields=embedded is requested."
+		description = "Asset-specific nested data. The shape depends on entryClassName - blog entries include authorName and assetTagNames, documents include extension and size, custom Objects include their declared fields, and so on. The embedded field is populated only when nestedFields=embedded is requested. Nested fields of the embedded entity are resolved only for entries requested with the 'embedded.' prefix together with nestedFieldsDepth=2."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Object embedded;
@@ -808,4 +808,4 @@ public class SearchResult implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1707493621
+// LIFERAY-REST-BUILDER-HASH:1133214251

@@ -82,9 +82,11 @@ export class BatchTestEntityAPI {
 
 		/**
 		 * 
+				 * @param nestedFieldsDepth
 		 * @param headers Optional custom request headers
 		 */
 		public async getBatchTestEntitiesPage(
+						nestedFieldsDepth?: number,
 			headers?: {[name: string]: string},
 		): Promise<{
 				body: PageBatchTestEntity;
@@ -92,9 +94,13 @@ export class BatchTestEntityAPI {
 		}> {
 
 			const path = this._basePath + "/portal-tools-rest-builder-test/v1.0/batch-test-entities"
-;
+				;
 
 			const queryParameters: any = {};
+
+						if (nestedFieldsDepth !== undefined) {
+							queryParameters["nestedFieldsDepth"] = ObjectSerializer.serialize(nestedFieldsDepth, "number");
+						}
 
 			const queryString = Object.keys(queryParameters).length ?
 				"?" + new URLSearchParams(queryParameters).toString() :

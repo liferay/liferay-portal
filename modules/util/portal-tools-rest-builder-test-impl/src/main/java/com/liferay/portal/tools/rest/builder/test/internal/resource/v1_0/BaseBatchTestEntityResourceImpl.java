@@ -111,6 +111,14 @@ public abstract class BaseBatchTestEntityResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/batch-test-entities'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "nestedFieldsDepth"
+			)
+		}
+	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(name = "BatchTestEntity")
@@ -1095,4 +1103,4 @@ public abstract class BaseBatchTestEntityResourceImpl
 		LogFactoryUtil.getLog(BaseBatchTestEntityResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1964683350
+// LIFERAY-REST-BUILDER-HASH:1840153010

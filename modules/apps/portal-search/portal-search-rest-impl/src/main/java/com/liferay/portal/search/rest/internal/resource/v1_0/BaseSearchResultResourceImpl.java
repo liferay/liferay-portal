@@ -108,10 +108,16 @@ public abstract class BaseSearchResultResourceImpl
 				name = "filter"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value.",
+				description = "Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value. Entries prefixed with 'embedded.' resolve the named nested field on the embedded entity (for example, nestedFields=embedded,embedded.taxonomyCategoryBriefs). Resolving them requires nestedFieldsDepth=2, because 'embedded' itself consumes the default depth of 1 - a prefixed entry is silently ignored at the default depth.",
 				example = "embedded",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "nestedFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify the depth of nested field resolution. Defaults to 1. The embedded entity consumes one level, so resolving 'embedded.' prefixed entries of nestedFields requires 2. Values are capped by the portal property 'object.nested.fields.max.query.depth' (5 by default).",
+				example = "2",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "nestedFieldsDepth"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Specify which page to return out of all the pages available. Defaults to 1. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information.",
@@ -212,10 +218,16 @@ public abstract class BaseSearchResultResourceImpl
 				name = "filter"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value.",
+				description = "Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value. Entries prefixed with 'embedded.' resolve the named nested field on the embedded entity (for example, nestedFields=embedded,embedded.taxonomyCategoryBriefs). Resolving them requires nestedFieldsDepth=2, because 'embedded' itself consumes the default depth of 1 - a prefixed entry is silently ignored at the default depth.",
 				example = "embedded",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "nestedFields"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Specify the depth of nested field resolution. Defaults to 1. The embedded entity consumes one level, so resolving 'embedded.' prefixed entries of nestedFields requires 2. Values are capped by the portal property 'object.nested.fields.max.query.depth' (5 by default).",
+				example = "2",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "nestedFieldsDepth"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Specify which page to return out of all the pages available. Defaults to 1. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information.",
@@ -942,4 +954,4 @@ public abstract class BaseSearchResultResourceImpl
 		LogFactoryUtil.getLog(BaseSearchResultResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-490176950
+// LIFERAY-REST-BUILDER-HASH:-648456532
