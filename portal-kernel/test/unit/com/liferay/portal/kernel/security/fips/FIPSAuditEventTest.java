@@ -39,21 +39,13 @@ public class FIPSAuditEventTest {
 	}
 
 	@Test
-	public void testPutRejectsANonfiniteNumber() {
+	public void testPutRejects() throws Exception {
 		_testPutRejects(Double.NaN);
 		_testPutRejects(Double.POSITIVE_INFINITY);
 		_testPutRejects(Float.NEGATIVE_INFINITY);
 		_testPutRejects(Float.NaN);
-	}
-
-	@Test
-	public void testPutRejectsANullValue() {
-		_testPutRejects(null);
-	}
-
-	@Test
-	public void testPutRejectsASensitiveSecurityParameter() throws Exception {
 		_testPutRejects(RandomTestUtil.randomBytes());
+		_testPutRejects(null);
 
 		String randomString = RandomTestUtil.randomString();
 

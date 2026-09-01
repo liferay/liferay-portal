@@ -52,17 +52,13 @@ public class FIPSAuditFilterTest {
 	}
 
 	@Test
-	public void testFilterDeniesAnEventWithoutAFIPSAuditLogEntry() {
+	public void testFilterDenies() {
 		_testFilterDenies(
 			FIPSLog4jUtil.getMarker(),
 			new ObjectMessage(RandomTestUtil.randomString()));
 		_testFilterDenies(
 			FIPSLog4jUtil.getMarker(),
 			new SimpleMessage(RandomTestUtil.randomString()));
-	}
-
-	@Test
-	public void testFilterDeniesAnEventWithoutTheMarker() {
 		_testFilterDenies(
 			MarkerManager.getMarker(RandomTestUtil.randomString()),
 			new ObjectMessage(_fipsAuditLogEntry));
