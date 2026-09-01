@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Audiences API
 Bundle-SymbolicName: com.liferay.audiences.api
-Bundle-Version: 2.1.0
+Bundle-Version: 2.1.1
 Export-Package:\
 	com.liferay.audiences.constants,\
 	com.liferay.audiences.criteria,\
