@@ -12,10 +12,20 @@ import React from 'react';
 
 import MappingFields from '../../../../src/main/resources/META-INF/resources/js/seo/display_page_templates/components/MappingFields';
 
+// @ts-ignore
+
+import {TEXT_FIELD_TYPES} from '../../../../src/main/resources/META-INF/resources/js/seo/display_page_templates/constants';
+
 const baseProps = {
 	fields: [
 		{key: 'field-text-1', label: 'Field Text 1', type: 'text'},
 		{key: 'field-text-2', label: 'Field Text 2', type: 'text'},
+		{key: 'field-html-1', label: 'Field HTML 1', type: 'html'},
+		{
+			key: 'field-long-text-1',
+			label: 'Field Long Text 1',
+			type: 'long-text',
+		},
 		{key: 'field-image-1', label: 'Field Image 1', type: 'image'},
 		{key: 'field-image-2', label: 'Field Image 2', type: 'image'},
 	],
@@ -31,6 +41,11 @@ const baseProps = {
 			label: 'Image for sharing',
 			name: 'inputImage',
 			selectedFieldKey: 'field-image-1',
+		},
+		{
+			fieldTypes: TEXT_FIELD_TYPES,
+			label: 'SEO description',
+			name: 'inputDescription',
 		},
 	],
 	selectedSource: {
@@ -70,6 +85,20 @@ describe('MappingFields', () => {
 		await userEvent.click(within(inputField!).getByTitle('map'));
 
 		expect(screen.getAllByRole('option')).toHaveLength(2);
+	});
+
+	it('renders text, long text, and HTML fields when the input accepts text field types', async () => {
+		renderComponent();
+
+		const inputField: HTMLElement | null =
+			screen.getByText('SEO description').parentElement;
+
+		await userEvent.click(within(inputField!).getByTitle('map'));
+
+		expect(screen.getAllByRole('option')).toHaveLength(4);
+		expect(
+			screen.getByRole('option', {name: 'Field Long Text 1'})
+		).toBeInTheDocument();
 	});
 
 	it('renders only fields with type "image" when the input fieldType is "image"', async () => {
