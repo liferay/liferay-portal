@@ -35,6 +35,10 @@ public interface PanelCategoryKeys {
 	public static final String APPLICATIONS_MENU_APPLICATIONS_DESIGN =
 		"applications_menu.applications.design";
 
+	public static final String
+		APPLICATIONS_MENU_APPLICATIONS_DEVELOPER_INTEGRATION =
+			"applications_menu.applications.developer-integration";
+
 	public static final String APPLICATIONS_MENU_APPLICATIONS_PERSONALIZATION =
 		"applications_menu.applications.personalization";
 
