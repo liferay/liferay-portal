@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon;
@@ -18,14 +19,11 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
-
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -36,20 +34,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = PortletConfigurationIcon.class)
 public class ExportPortletConfigurationIcon
 	extends BaseExportImportPortletConfigurationIcon {
-
-	@Override
-	public Map<String, Object> getContext(PortletRequest portletRequest) {
-		return HashMapBuilder.<String, Object>put(
-			"action", getNamespace(portletRequest) + "export"
-		).put(
-			"globalAction", true
-		).build();
-	}
-
-	@Override
-	public String getCssClass() {
-		return "portlet-export-import portlet-export-import-icon";
-	}
 
 	@Override
 	public String getIconCssClass() {
@@ -102,6 +86,8 @@ public class ExportPortletConfigurationIcon
 					return ParamUtil.get(
 						portletRequest, "settingsScope", settingsScope);
 				}
+			).setWindowState(
+				LiferayWindowState.MAXIMIZED
 			).buildString();
 		}
 		catch (PortalException portalException) {

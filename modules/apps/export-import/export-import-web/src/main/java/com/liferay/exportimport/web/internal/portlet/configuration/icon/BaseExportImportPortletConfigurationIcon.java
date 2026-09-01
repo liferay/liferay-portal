@@ -15,27 +15,15 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletRequest;
-
-import java.util.Map;
 
 /**
  * @author Jaime León Rosado
  */
 public class BaseExportImportPortletConfigurationIcon
 	extends BasePortletConfigurationIcon {
-
-	@Override
-	public Map<String, Object> getContext(PortletRequest portletRequest) {
-		return HashMapBuilder.<String, Object>put(
-			"action", getNamespace(portletRequest) + "export"
-		).put(
-			"globalAction", true
-		).build();
-	}
 
 	@Override
 	public String getCssClass() {
