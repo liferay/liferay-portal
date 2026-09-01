@@ -121,7 +121,7 @@ tests:
         it: Passes the configured sync interval to the sidecar
         set:
             license.enabled: true
-            license.syncInterval: 120
+            licensing.syncInterval: 120
     -   asserts:
             -   notContains:
                     any: true
