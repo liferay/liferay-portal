@@ -5,11 +5,13 @@
 
 package com.liferay.site.internal.model.listener;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.GroupedModel;
-import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
-import com.liferay.site.manager.SitemapManager;
+import com.liferay.site.configuration.manager.SitemapConfigurationManager;
+import com.liferay.site.service.SiteSitemapRegenerationEntryLocalService;
 
 import org.osgi.service.component.annotations.Reference;
 
@@ -21,35 +23,53 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 
 	@Override
 	public void onAfterCreate(T model) {
-		_scheduleRegenerateSitemap(model);
+		_addSiteSitemapRegenerationEntry(model);
 	}
 
 	@Override
 	public void onAfterRemove(T model) {
-		_scheduleRegenerateSitemap(model);
+		_addSiteSitemapRegenerationEntry(model);
 	}
 
 	@Override
 	public void onAfterUpdate(T originalModel, T model) {
-		_scheduleRegenerateSitemap(model);
+		_addSiteSitemapRegenerationEntry(model);
 	}
 
 	protected abstract String getAssetTypeKey();
 
 	@Reference
-	protected SitemapManager sitemapManager;
+	protected SitemapConfigurationManager sitemapConfigurationManager;
 
-	private void _scheduleRegenerateSitemap(T model) {
+	@Reference
+	protected SiteSitemapRegenerationEntryLocalService
+		siteSitemapRegenerationEntryLocalService;
+
+	private void _addSiteSitemapRegenerationEntry(T model) {
 		GroupedModel groupedModel = (GroupedModel)model;
 
-		TransactionCallbackUtil.registerCommitCallback(
-			() -> {
-				sitemapManager.scheduleRegenerateSitemap(
-					getAssetTypeKey(), groupedModel.getCompanyId(),
-					groupedModel.getGroupId(), null);
+		try {
+			long companyId = groupedModel.getCompanyId();
 
-				return null;
-			});
+			if (!sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
+					companyId) ||
+				!sitemapConfigurationManager.isIndexModeAssetTypeCompanyEnabled(
+					companyId)) {
+
+				return;
+			}
+
+			siteSitemapRegenerationEntryLocalService.
+				addSiteSitemapRegenerationEntry(
+					getAssetTypeKey(), companyId, groupedModel.getGroupId());
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to add XML sitemap regeneration entry", exception);
+		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		BaseSitemapModelListener.class);
 
 }
