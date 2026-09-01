@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend Taglib Clay Sample Web
 Bundle-SymbolicName: com.liferay.frontend.taglib.clay.sample.web
-Bundle-Version: 1.0.9
+Bundle-Version: 1.0.10
 Export-Package: com.liferay.frontend.taglib.clay.sample.web.constants
 Web-ContextPath: /frontend-taglib-clay-sample-web
