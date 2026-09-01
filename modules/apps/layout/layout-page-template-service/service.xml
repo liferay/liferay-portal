@@ -193,7 +193,7 @@
 			<finder-column name="status" />
 		</finder>
 		<finder name="G_C_C_T" return-type="Collection">
-			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="classNameId" />
 			<finder-column name="classTypeKey" />
 			<finder-column name="type" />
@@ -223,14 +223,14 @@
 			<finder-column name="status" />
 		</finder>
 		<finder name="G_C_C_LikeN_T" return-type="Collection">
-			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="classNameId" />
 			<finder-column name="classTypeKey" />
 			<finder-column comparator="LIKE" name="name" />
 			<finder-column name="type" />
 		</finder>
 		<finder name="G_C_C_T_S" return-type="Collection">
-			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="classNameId" />
 			<finder-column name="classTypeKey" />
 			<finder-column name="type" />
@@ -244,7 +244,7 @@
 			<finder-column name="status" />
 		</finder>
 		<finder name="G_C_C_LikeN_T_S" return-type="Collection">
-			<finder-column name="groupId" />
+			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="classNameId" />
 			<finder-column name="classTypeKey" />
 			<finder-column comparator="LIKE" name="name" />
