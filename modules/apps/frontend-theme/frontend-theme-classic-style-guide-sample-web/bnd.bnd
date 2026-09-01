@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend Theme Classic Style Guide Sample Web
 Bundle-SymbolicName: com.liferay.frontend.theme.classic.style.guide.sample.web
-Bundle-Version: 2.0.101
+Bundle-Version: 2.0.102
 Web-ContextPath: /frontend-theme-classic-style-guide-sample-web
