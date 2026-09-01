@@ -170,8 +170,8 @@ public class JobHealthMonitor extends BaseMonitor {
 				_jobURL, "/api/json?tree=",
 				"lastBuild[building,number,timestamp],",
 				"lastCompletedBuild[number,result,timestamp]"),
-			false, _MAX_RETRIES, null, null, _SECONDS_RETRY_PERIOD,
-			getAttemptTimeoutMillis(_MAX_RETRIES), null);
+			false, _RETRIES_SIZE_MAX, null, null, _SECONDS_RETRY_PERIOD,
+			getAttemptTimeoutMillis(_RETRIES_SIZE_MAX), null);
 	}
 
 	private String _getJobURL(String masterName) {
@@ -261,7 +261,7 @@ public class JobHealthMonitor extends BaseMonitor {
 			MonitorResult.Status.getMostSevere(statuses), currentTimeMillis);
 	}
 
-	private static final int _MAX_RETRIES = 1;
+	private static final int _RETRIES_SIZE_MAX = 1;
 
 	private static final int _SECONDS_RETRY_PERIOD = 1;
 
