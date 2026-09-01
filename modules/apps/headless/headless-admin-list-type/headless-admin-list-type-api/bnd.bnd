@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Admin List Type API
 Bundle-SymbolicName: com.liferay.headless.admin.list.type.api
-Bundle-Version: 6.1.5
+Bundle-Version: 6.1.6
 Export-Package:\
 	com.liferay.headless.admin.list.type.dto.v1_0,\
 	com.liferay.headless.admin.list.type.resource.v1_0
