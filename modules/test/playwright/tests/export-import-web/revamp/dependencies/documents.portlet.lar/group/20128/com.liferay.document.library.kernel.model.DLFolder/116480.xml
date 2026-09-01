@@ -1,0 +1,33 @@
+<com.liferay.portal.repository.liferayrepository.model.LiferayFolder>
+  <__dlFolder class="DLFolder">
+    <__cachedModel>true</__cachedModel>
+    <__new>false</__new>
+    <__mvccVersion>0</__mvccVersion>
+    <__ctCollectionId>0</__ctCollectionId>
+    <__uuid>def66ec9-d406-d125-f05a-5192e1db7901</__uuid>
+    <__externalReferenceCode>def66ec9-d406-d125-f05a-5192e1db7901</__externalReferenceCode>
+    <__folderId>116480</__folderId>
+    <__groupId>20128</__groupId>
+    <__companyId>62442181013832</__companyId>
+    <__userId>20133</__userId>
+    <__userName>Test Test</__userName>
+    <__createDate>2026-09-09 11:23:03.89 UTC</__createDate>
+    <__modifiedDate>2026-09-09 11:23:03.89 UTC</__modifiedDate>
+    <__setModifiedDate>false</__setModifiedDate>
+    <__repositoryId>20128</__repositoryId>
+    <__mountPoint>false</__mountPoint>
+    <__parentFolderId>0</__parentFolderId>
+    <__treePath>/116480/</__treePath>
+    <__name>LPD-104237</__name>
+    <__description>Fixture folder for the widget topper import test</__description>
+    <__lastPostDate>2026-09-09 11:23:03.88 UTC</__lastPostDate>
+    <__defaultFileEntryTypeId>0</__defaultFileEntryTypeId>
+    <__hidden>false</__hidden>
+    <__restrictionType>0</__restrictionType>
+    <__status>0</__status>
+    <__statusByUserId>0</__statusByUserId>
+    <__statusByUserName></__statusByUserName>
+    <__columnBitmask>0</__columnBitmask>
+  </__dlFolder>
+  <__escapedModel>false</__escapedModel>
+</com.liferay.portal.repository.liferayrepository.model.LiferayFolder>

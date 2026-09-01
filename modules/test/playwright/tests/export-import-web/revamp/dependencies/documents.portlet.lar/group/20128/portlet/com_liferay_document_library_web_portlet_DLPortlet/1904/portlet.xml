@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<portlet portlet-id="com_liferay_document_library_web_portlet_DLPortlet" root-portlet-id="com_liferay_document_library_web_portlet_DLPortlet" scope-group-id="20128" scope-layout-type="" scope-layout-uuid="" private-layout="false" self-path="/group/20128/portlet/com_liferay_document_library_web_portlet_DLPortlet/1904/portlet.xml">
+	<portlet-preferences path="/group/20128/portlet/com_liferay_document_library_web_portlet_DLPortlet/preferences/layout/0/1904/portlet-preferences.xml">
+		<preference-data>
+			<DLFolder>
+				<staged-model group-id="20128" uuid="def66ec9-d406-d125-f05a-5192e1db7901" defaultFileEntryTypeUuid="" path="/group/20128/com.liferay.document.library.kernel.model.DLFolder/116480.xml" user-uuid="c52202a9-5b8c-2bd1-f683-2baeed4eb04a" asset-entry-priority="0.0"/>
+			</DLFolder>
+			<references>
+				<reference class-name="com.liferay.document.library.kernel.model.DLFolder" class-pk="116480" external-reference-code="def66ec9-d406-d125-f05a-5192e1db7901" group-id="20128" group-key="Topper Fixture" live-group-id="20128" type="dependency" uuid="def66ec9-d406-d125-f05a-5192e1db7901" company-id="62442181013832" missing="false"/>
+			</references>
+		</preference-data>
+	</portlet-preferences>
+</portlet>

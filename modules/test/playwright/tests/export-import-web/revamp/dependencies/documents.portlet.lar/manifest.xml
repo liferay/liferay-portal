@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<root>
+	<header available-locales="en_US,ar_SA,ca_ES,zh_CN,nl_NL,fi_FI,fr_FR,de_DE,hu_HU,ja_JP,pt_BR,es_ES,sv_SE" build-number="7413" export-date="Wed, 09 Sep 2026 11:29:41 +0000" type="portlet" company-id="62442181013832" company-group-id="20130" group-id="20128" user-personal-site-group-id="20129" private-layout="false" root-portlet-id="com_liferay_document_library_web_portlet_DLPortlet" schema-version="4.0.0"/>
+	<missing-references/>
+	<portlet portlet-configuration="setup" display-name="Documents and Media" layout-id="5" path="/group/20128/portlet/com_liferay_document_library_web_portlet_DLPortlet/1904/portlet.xml" portlet-data="true" schema-version="4.0.0" portlet-id="com_liferay_document_library_web_portlet_DLPortlet"/>
+	<manifest-summary>
+		<staged-model manifest-summary-key="com.liferay.document.library.kernel.model.DLFolder" addition-count="1"/>
+	</manifest-summary>
+</root>
