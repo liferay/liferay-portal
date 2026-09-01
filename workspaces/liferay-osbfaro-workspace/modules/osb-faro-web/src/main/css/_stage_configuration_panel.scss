@@ -1,0 +1,15 @@
+.stage-configuration-panel {
+	&__condition {
+		background-color: $cadmin-white;
+		border: 1px solid $cadmin-secondary-l2;
+		border-left: 0.25rem solid $cadmin-primary;
+	}
+
+	&__connector {
+		color: $cadmin-secondary;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+}

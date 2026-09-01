@@ -11,8 +11,10 @@ import {DEFAULT_DATE_FORMAT, getDateNow} from 'shared/util/date';
 import {getCatalogFieldLabel, ICatalogField} from 'shared/api/catalog';
 import {Icon, Option, Picker, Text} from '@clayui/core';
 import {
+	createStageCondition,
 	IStageCondition,
 	IStageConfig,
+	MatchLogic,
 } from 'lifecycle/utils/stageConfiguration';
 import {
 	LifecycleStages,
@@ -22,6 +24,7 @@ import {
 	OPERATORS_BY_TYPE,
 	OperatorType,
 	VALUELESS_OPERATORS,
+	isConditionComplete,
 	isStageConfigured,
 	resolveOperatorType,
 } from 'lifecycle/utils/lifecycleOperators';
@@ -53,6 +56,15 @@ const PickerTriggerButton = React.forwardRef<
 const selectPlaceholder = (label: string) =>
 	sub(Liferay.Language.get('select-x'), [label]) as string;
 
+const conditionOperatorType = (condition: IStageCondition) =>
+	resolveOperatorType(condition.fieldDataCategory, condition.fieldDataType);
+
+const conditionOperatorOptions = (condition: IStageCondition) => {
+	const operatorType = conditionOperatorType(condition);
+
+	return operatorType ? OPERATORS_BY_TYPE[operatorType] : [];
+};
+
 interface IStageConfigurationPanelProps {
 	defaultExpanded?: boolean;
 	fields?: ICatalogField[];
@@ -70,31 +82,40 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 	stageType,
 	value,
 }) => {
-	const [dateExpanded, setDateExpanded] = useState(false);
+	const [expandedDateKey, setExpandedDateKey] = useState<string | null>(null);
 
-	const [condition] = value.conditions;
+	const {conditions, matchLogic} = value;
 
-	const updateCondition = (patch: Partial<IStageCondition>) =>
+	const updateCondition = (
+		conditionIndex: number,
+		patch: Partial<IStageCondition>
+	) =>
 		onChange({
 			...value,
-			conditions: value.conditions.map((current, index) =>
-				index === 0 ? {...current, ...patch} : current
+			conditions: conditions.map((current, currentIndex) =>
+				currentIndex === conditionIndex
+					? {...current, ...patch}
+					: current
 			),
 		});
 
-	const resolvedType = resolveOperatorType(
-		condition.fieldDataCategory,
-		condition.fieldDataType
-	);
-
-	const isValuelessOperator =
-		!!condition.operator && VALUELESS_OPERATORS.has(condition.operator);
+	const addCondition = () =>
+		onChange({
+			...value,
+			conditions: [...conditions, createStageCondition()],
+		});
 
 	const configured = isStageConfigured(value);
 
-	const operatorOptions = resolvedType ? OPERATORS_BY_TYPE[resolvedType] : [];
+	const connectorLabel =
+		matchLogic === MatchLogic.Any
+			? Liferay.Language.get('or')
+			: Liferay.Language.get('and');
 
-	const renderFieldPicker = () => {
+	const renderFieldPicker = (
+		condition: IStageCondition,
+		conditionIndex: number
+	) => {
 		const selectedField = fields.find(
 			(field) => field.name === condition.field
 		);
@@ -105,7 +126,9 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 
 		return (
 			<Picker
-				aria-label={selectPlaceholder(Liferay.Language.get('field'))}
+				aria-label={selectPlaceholder(
+					Liferay.Language.get('attribute')
+				)}
 				as={PickerTriggerButton}
 				items={selectableFields
 					.map((field) => ({
@@ -117,14 +140,14 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				label={
 					selectedField
 						? getCatalogFieldLabel(selectedField)
-						: selectPlaceholder(Liferay.Language.get('field'))
+						: selectPlaceholder(Liferay.Language.get('attribute'))
 				}
 				onSelectionChange={(key) => {
 					const field = fields.find(
 						(catalogField) => catalogField.name === String(key)
 					);
 
-					updateCondition({
+					updateCondition(conditionIndex, {
 						conditionValue: null,
 						field: String(key),
 						fieldDataCategory: field?.dataCategory ?? null,
@@ -158,7 +181,12 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 		);
 	};
 
-	const renderOperatorPicker = () => {
+	const renderOperatorPicker = (
+		condition: IStageCondition,
+		conditionIndex: number
+	) => {
+		const operatorOptions = conditionOperatorOptions(condition);
+
 		const selectedOperator = operatorOptions.find(
 			(option) => option.value === condition.operator
 		);
@@ -174,7 +202,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 						: selectPlaceholder(Liferay.Language.get('operator'))
 				}
 				onSelectionChange={(key) =>
-					updateCondition({
+					updateCondition(conditionIndex, {
 						conditionValue: null,
 						operator: String(key),
 					})
@@ -187,7 +215,12 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 		);
 	};
 
-	const renderValueInput = () => {
+	const renderValueInput = (
+		condition: IStageCondition,
+		conditionIndex: number
+	) => {
+		const resolvedType = conditionOperatorType(condition);
+
 		if (resolvedType === OperatorType.Date) {
 			const today = getDateNow();
 
@@ -198,14 +231,16 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				<ClayDatePicker
 					className="form-control-sm"
 					dateFormat="yyyy-MM-dd"
-					expanded={dateExpanded}
+					expanded={expandedDateKey === condition.key}
 					max={maxDate.format(DEFAULT_DATE_FORMAT)}
 					min={minDate.format(DEFAULT_DATE_FORMAT)}
 					months={moment.months()}
 					onChange={(conditionValue) =>
-						updateCondition({conditionValue})
+						updateCondition(conditionIndex, {conditionValue})
 					}
-					onExpandedChange={setDateExpanded}
+					onExpandedChange={(expanded) =>
+						setExpandedDateKey(expanded ? condition.key : null)
+					}
 					placeholder={Liferay.Language.get('yyyy-mm-dd')}
 					value={condition.conditionValue ?? ''}
 					weekdaysShort={moment.weekdaysShort()}
@@ -228,12 +263,67 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				aria-label={Liferay.Language.get('value')}
 				className="w-auto"
 				onChange={(event) =>
-					updateCondition({conditionValue: event.target.value})
+					updateCondition(conditionIndex, {
+						conditionValue: event.target.value,
+					})
 				}
 				sizing="sm"
 				type={type}
 				value={condition.conditionValue ?? ''}
 			/>
+		);
+	};
+
+	const renderCondition = (
+		condition: IStageCondition,
+		conditionIndex: number
+	) => {
+		const isValuelessOperator =
+			!!condition.operator && VALUELESS_OPERATORS.has(condition.operator);
+
+		/**
+		 * A row the operator has not started yet is left alone, so a new
+		 * lifecycle does not open with an error against every stage. Once an
+		 * attribute is picked the row has to be finished to be saved.
+		 */
+		const incomplete = !!condition.field && !isConditionComplete(condition);
+
+		return (
+			<>
+				<div
+					className={getCN(
+						'align-items-center c-gap-2 d-flex p-3 rounded stage-configuration-panel__condition',
+						{'has-error': incomplete}
+					)}
+				>
+					<Text size={3} weight="semi-bold">
+						{Liferay.Language.get('account')}
+					</Text>
+
+					{renderFieldPicker(condition, conditionIndex)}
+
+					{condition.field &&
+						renderOperatorPicker(condition, conditionIndex)}
+
+					{condition.operator &&
+						!isValuelessOperator &&
+						renderValueInput(condition, conditionIndex)}
+				</div>
+
+				{incomplete && (
+					<div className="form-feedback-group">
+						<div className="form-feedback-item">
+							<span className="form-feedback-indicator">
+								<Icon symbol="exclamation-full" />
+							</span>
+
+							{Liferay.Language.get(
+								'finish-this-condition-by-choosing-an-operator-and-a-value'
+							)}
+						</div>
+					</div>
+				)}
+			</>
 		);
 	};
 
@@ -296,18 +386,34 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 					{Liferay.Language.get('trigger')}
 				</div>
 
-				<div className="align-items-center c-gap-2 d-flex mb-4">
-					<Text size={3} weight="semi-bold">
-						{Liferay.Language.get('account')}
-					</Text>
+				<div className="border mb-4 rounded stage-configuration-panel__trigger">
+					<div className="p-3">
+						{conditions.map((condition, conditionIndex) => (
+							<React.Fragment key={condition.key}>
+								{conditionIndex > 0 && (
+									<div className="my-2 stage-configuration-panel__connector">
+										{connectorLabel}
+									</div>
+								)}
 
-					{renderFieldPicker()}
+								{renderCondition(condition, conditionIndex)}
+							</React.Fragment>
+						))}
 
-					{condition.field && renderOperatorPicker()}
+						<ClayButton
+							className="mt-3"
+							displayType="secondary"
+							onClick={addCondition}
+							size="sm"
+						>
+							<Icon
+								className="inline-item inline-item-before"
+								symbol="plus"
+							/>
 
-					{condition.operator &&
-						!isValuelessOperator &&
-						renderValueInput()}
+							{Liferay.Language.get('add-trigger')}
+						</ClayButton>
+					</div>
 				</div>
 
 				<div className="align-items-center d-flex font-weight-semi-bold mb-2">

@@ -36,6 +36,26 @@ const withCondition = (
 	...stage,
 });
 
+const withConditions = (
+	conditions: Partial<IStageCondition>[],
+	stage: Partial<IStageConfig> = {}
+): IStageConfig => ({
+	...baseValue,
+	conditions: conditions.map((condition) => ({
+		...createStageCondition(),
+		...condition,
+	})),
+	...stage,
+});
+
+const textCondition = {
+	conditionValue: 'Retail',
+	field: 'account.industry',
+	fieldDataCategory: 'Text',
+	fieldDataType: 'STRING',
+	operator: 'is',
+};
+
 const mockFields: ICatalogField[] = [
 	{
 		dataCategory: 'Text',
@@ -137,7 +157,7 @@ describe('StageConfigurationPanel', () => {
 
 		expect(screen.getByText('Account')).toBeInTheDocument();
 		expect(screen.queryByText('Select Entity')).toBeNull();
-		expect(screen.getByText('Select Field')).toBeInTheDocument();
+		expect(screen.getByText('Select Attribute')).toBeInTheDocument();
 		expect(screen.getByRole('spinbutton')).toHaveValue(DEFAULT_MAX_DAYS);
 	});
 
@@ -393,7 +413,7 @@ describe('StageConfigurationPanel', () => {
 			],
 		});
 
-		fireEvent.click(screen.getByText('Select Field'));
+		fireEvent.click(screen.getByText('Select Attribute'));
 
 		expect(screen.getByText('Industry')).toBeInTheDocument();
 	});
@@ -401,7 +421,7 @@ describe('StageConfigurationPanel', () => {
 	it('leaves out a field no condition can be built from', () => {
 		renderPanel({fields: [...mockFields, unresolvableField]});
 
-		fireEvent.click(screen.getByText('Select Field'));
+		fireEvent.click(screen.getByText('Select Attribute'));
 
 		expect(screen.getByText('Industry')).toBeInTheDocument();
 		expect(screen.queryByText('Uncategorized Field')).toBeNull();
@@ -421,7 +441,7 @@ describe('StageConfigurationPanel', () => {
 	it('falls back to the field name when the catalog omits a label', () => {
 		renderPanel({fields: [...mockFields, unlabeledField]});
 
-		fireEvent.click(screen.getByText('Select Field'));
+		fireEvent.click(screen.getByText('Select Attribute'));
 
 		expect(screen.getByText('accountName')).toBeInTheDocument();
 	});
@@ -438,7 +458,7 @@ describe('StageConfigurationPanel', () => {
 	it('orders the offered fields by their visible label', () => {
 		renderPanel({fields: [...mockFields, unlabeledField]});
 
-		fireEvent.click(screen.getByText('Select Field'));
+		fireEvent.click(screen.getByText('Select Attribute'));
 
 		const labels = screen
 			.getAllByRole('option')
@@ -456,5 +476,89 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		expect(screen.getByText('Uncategorized Field')).toBeInTheDocument();
+	});
+	it('adds a condition row when Add Trigger is clicked', () => {
+		const onChange = jest.fn();
+
+		renderPanel({onChange});
+
+		fireEvent.click(screen.getByText(/add.trigger/i));
+
+		expect(onChange).toHaveBeenCalledWith(
+			expect.objectContaining({
+				conditions: [
+					expect.objectContaining({field: null}),
+					expect.objectContaining({field: null}),
+				],
+			})
+		);
+	});
+
+	it('joins the conditions with AND while matching on all', () => {
+		renderPanel({value: withConditions([textCondition, textCondition])});
+
+		expect(screen.getByText('And')).toBeInTheDocument();
+		expect(screen.queryByText('Or')).toBeNull();
+	});
+
+	it('joins the conditions with OR while matching on any', () => {
+		renderPanel({
+			value: withConditions([textCondition, textCondition], {
+				matchLogic: MatchLogic.Any,
+			}),
+		});
+
+		expect(screen.getByText('Or')).toBeInTheDocument();
+		expect(screen.queryByText('And')).toBeNull();
+	});
+
+	it('shows no connector while the stage holds a single condition', () => {
+		renderPanel({value: withCondition(textCondition)});
+
+		expect(screen.queryByText('And')).toBeNull();
+		expect(screen.queryByText('Or')).toBeNull();
+	});
+
+	it('edits the condition the changed row belongs to', () => {
+		const onChange = jest.fn();
+
+		renderPanel({
+			onChange,
+			value: withConditions([
+				textCondition,
+				{...textCondition, conditionValue: 'Finance'},
+			]),
+		});
+
+		fireEvent.change(screen.getAllByLabelText('Value')[1], {
+			target: {value: 'Energy'},
+		});
+
+		expect(onChange).toHaveBeenCalledWith(
+			expect.objectContaining({
+				conditions: [
+					expect.objectContaining({conditionValue: 'Retail'}),
+					expect.objectContaining({conditionValue: 'Energy'}),
+				],
+			})
+		);
+	});
+
+	it('flags a condition left unfinished once an attribute is chosen', () => {
+		renderPanel({value: withCondition({field: 'account.industry'})});
+
+		expect(screen.getByText(/finish this condition/i)).toBeInTheDocument();
+	});
+
+	it('leaves a condition not yet started unflagged', () => {
+		renderPanel();
+
+		expect(screen.queryByText(/finish this condition/i)).toBeNull();
+	});
+
+	it('leaves a finished condition unflagged', () => {
+		renderPanel({value: withCondition(textCondition)});
+
+		expect(screen.queryByText(/finish this condition/i)).toBeNull();
 	});
 });
