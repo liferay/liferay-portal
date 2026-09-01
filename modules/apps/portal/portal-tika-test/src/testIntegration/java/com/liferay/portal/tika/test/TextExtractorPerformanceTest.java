@@ -78,13 +78,13 @@ public class TextExtractorPerformanceTest {
 
 		_executorService = Executors.newFixedThreadPool(
 			GetterUtil.getInteger(
-				properties.getProperty("text.extractor.thread.count")));
+				properties.getProperty("text.extractor.threads.count")));
 		_filesCount = GetterUtil.getInteger(
 			properties.getProperty("text.extractor.files.count"));
 		_iterations = GetterUtil.getInteger(
 			properties.getProperty("text.extractor.iterations"));
-		_fileSize = GetterUtil.getInteger(
-			properties.getProperty("text.extractor.file.size"));
+		_filesSize = GetterUtil.getInteger(
+			properties.getProperty("text.extractor.files.size"));
 
 		String logFile = properties.getProperty("text.extractor.log.file");
 
@@ -106,7 +106,7 @@ public class TextExtractorPerformanceTest {
 				int size = _writeStrings(
 					outputStream, "id,name,value,description\n");
 
-				while (size < _fileSize) {
+				while (size < _filesSize) {
 					size += _writeStrings(
 						outputStream, _generateRandomString(), StringPool.COMMA,
 						_generateRandomString(), StringPool.COMMA,
@@ -124,7 +124,7 @@ public class TextExtractorPerformanceTest {
 				try (XWPFDocument xwpfDocument = new XWPFDocument()) {
 					int size = 0;
 
-					while (size < _fileSize) {
+					while (size < _filesSize) {
 						XWPFParagraph xwpfParagraph =
 							xwpfDocument.createParagraph();
 
@@ -157,7 +157,7 @@ public class TextExtractorPerformanceTest {
 					"<!DOCTYPE html>\n<html><head><title>Test</title>",
 					"</head>\n<body>\n");
 
-				while (size < _fileSize) {
+				while (size < _filesSize) {
 					String tag = tags[_random.nextInt(tags.length)];
 
 					size += _writeStrings(
@@ -176,7 +176,7 @@ public class TextExtractorPerformanceTest {
 			outputStream -> {
 				int size = _writeStrings(outputStream, "{\n");
 
-				for (int i = 0; size < _fileSize; i++) {
+				for (int i = 0; size < _filesSize; i++) {
 					if (i > 0) {
 						size += _writeStrings(outputStream, ",\n");
 					}
@@ -203,7 +203,7 @@ public class TextExtractorPerformanceTest {
 
 					int size = 0;
 
-					while (size < _fileSize) {
+					while (size < _filesSize) {
 						PDPage pdPage = new PDPage();
 
 						pdDocument.addPage(pdPage);
@@ -218,7 +218,7 @@ public class TextExtractorPerformanceTest {
 
 							pdPageContentStream.newLineAtOffset(50, 760);
 
-							for (int i = 0; (i < 60) && (size < _fileSize);
+							for (int i = 0; (i < 60) && (size < _filesSize);
 								 i++) {
 
 								String text = _generateRandomString();
@@ -248,7 +248,7 @@ public class TextExtractorPerformanceTest {
 					outputStream,
 					"{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Arial;}}\n");
 
-				while (size < _fileSize) {
+				while (size < _filesSize) {
 					size += _writeStrings(
 						outputStream, _generateRandomString(), "\\par\n");
 				}
@@ -264,7 +264,7 @@ public class TextExtractorPerformanceTest {
 			outputStream -> {
 				int size = 0;
 
-				while (size < _fileSize) {
+				while (size < _filesSize) {
 					size += _writeStrings(
 						outputStream, _generateRandomString(),
 						StringPool.NEW_LINE);
@@ -283,13 +283,13 @@ public class TextExtractorPerformanceTest {
 					Sheet sheet = sxssfWorkbook.createSheet("test");
 
 					for (int i = 0;
-						 (size < _fileSize) &&
+						 (size < _filesSize) &&
 						 (i < SpreadsheetVersion.EXCEL2007.getMaxRows()); i++) {
 
 						Row row = sheet.createRow(i);
 
 						for (int j = 0;
-							 (size < _fileSize) &&
+							 (size < _filesSize) &&
 							 (j < SpreadsheetVersion.EXCEL2007.getMaxColumns());
 							 j++) {
 
@@ -317,7 +317,7 @@ public class TextExtractorPerformanceTest {
 					outputStream,
 					"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<docs>\n");
 
-				while (size < _fileSize) {
+				while (size < _filesSize) {
 					size += _writeStrings(
 						outputStream, "<doc id=\"", _generateRandomString(),
 						"\">", _generateRandomString(), "</doc>\n");
@@ -365,7 +365,7 @@ public class TextExtractorPerformanceTest {
 						_logFilePath, Long.MAX_VALUE,
 						StringBundler.concat(
 							format, " (Iteration ", i, ", ", _filesCount,
-							" files x ", _fileSize, " bytes)"))) {
+							" files x ", _filesSize, " bytes)"))) {
 
 					List<Future<Void>> futures = new ArrayList<>(
 						filePaths.size());
@@ -426,7 +426,7 @@ public class TextExtractorPerformanceTest {
 
 	private static ExecutorService _executorService;
 	private static int _filesCount;
-	private static int _fileSize;
+	private static int _filesSize;
 	private static int _iterations;
 	private static Path _logFilePath;
 	private static final Random _random = new Random(42L);
