@@ -17,5 +17,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "3.0.56"
+	"version": "3.0.57"
 }
