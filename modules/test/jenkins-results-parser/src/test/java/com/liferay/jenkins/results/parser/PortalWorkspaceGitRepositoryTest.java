@@ -7,6 +7,10 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.File;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,6 +99,59 @@ public class PortalWorkspaceGitRepositoryTest
 		_testSetUpAdditionalCaches(true, "suite-0", null);
 		_testSetUpAdditionalCaches(true, null, "job");
 		_testSetUpAdditionalCaches(true, null, "job-0");
+	}
+
+	@Test
+	public void testSetUpWorkspaceYarnMirrors() throws Exception {
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_newPortalWorkspaceGitRepository();
+
+		portalWorkspaceGitRepository.setUpWorkspaceYarnMirrors();
+
+		File workspacesDirectory = new File(
+			portalWorkspaceGitRepository.getDirectory(), "workspaces");
+
+		Assert.assertFalse(workspacesDirectory.exists());
+
+		File gradleDirectory = new File(workspacesDirectory, ".gradle");
+
+		gradleDirectory.mkdirs();
+
+		File workspaceDirectory1 = _createWorkspace(workspacesDirectory);
+		File workspaceDirectory2 = _createWorkspace(workspacesDirectory);
+
+		portalWorkspaceGitRepository.setUpWorkspaceYarnMirrors();
+
+		Assert.assertEquals(
+			Paths.get("..", "node_modules_cache"),
+			Files.readSymbolicLink(
+				_getNodeModulesCachePath(workspaceDirectory1)));
+		Assert.assertEquals(
+			Paths.get("..", "node_modules_cache"),
+			Files.readSymbolicLink(
+				_getNodeModulesCachePath(workspaceDirectory2)));
+
+		Assert.assertFalse(
+			Files.exists(_getNodeModulesCachePath(gradleDirectory)));
+		Assert.assertTrue(
+			Files.isDirectory(_getNodeModulesCachePath(workspacesDirectory)));
+	}
+
+	private File _createWorkspace(File workspacesDirectory) throws Exception {
+		File workspaceDirectory = new File(
+			workspacesDirectory, RandomTestUtil.randomString());
+
+		workspaceDirectory.mkdirs();
+
+		File yarnRCFile = new File(workspaceDirectory, ".yarnrc");
+
+		yarnRCFile.createNewFile();
+
+		return workspaceDirectory;
+	}
+
+	private Path _getNodeModulesCachePath(File directory) {
+		return Paths.get(directory.getPath(), "node_modules_cache");
 	}
 
 	private PortalWorkspaceGitRepository _newPortalWorkspaceGitRepository()
@@ -265,6 +322,11 @@ public class PortalWorkspaceGitRepositoryTest
 			portalWorkspaceGitRepository
 		).setUpBinariesCache();
 
+		Mockito.doNothing(
+		).when(
+			portalWorkspaceGitRepository
+		).setUpWorkspaceYarnMirrors();
+
 		portalWorkspaceGitRepository.setUpAdditionalCaches();
 
 		if (binariesCacheEnabled) {
@@ -272,12 +334,20 @@ public class PortalWorkspaceGitRepositoryTest
 				portalWorkspaceGitRepository, Mockito.times(1)
 			).setUpBinariesCache();
 
+			Mockito.verify(
+				portalWorkspaceGitRepository, Mockito.times(1)
+			).setUpWorkspaceYarnMirrors();
+
 			return;
 		}
 
 		Mockito.verify(
 			portalWorkspaceGitRepository, Mockito.never()
 		).setUpBinariesCache();
+
+		Mockito.verify(
+			portalWorkspaceGitRepository, Mockito.never()
+		).setUpWorkspaceYarnMirrors();
 	}
 
 }

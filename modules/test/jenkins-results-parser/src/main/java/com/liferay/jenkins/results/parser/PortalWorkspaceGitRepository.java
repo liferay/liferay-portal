@@ -11,6 +11,10 @@ import com.liferay.jenkins.results.parser.test.suite.RelevantTestSuite;
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -365,6 +369,8 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	protected void setUpAdditionalCaches() throws IOException {
 		if (isBinariesCacheEnabled()) {
 			setUpBinariesCache();
+
+			setUpWorkspaceYarnMirrors();
 		}
 
 		if (isYarnCacheEnabled()) {
@@ -427,6 +433,47 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			JenkinsResultsParserUtil.delete(binariesCacheTarGzipFile);
 
 			_setUpBinariesCache = true;
+		}
+	}
+
+	protected void setUpWorkspaceYarnMirrors() {
+		File workspacesDirectory = new File(getDirectory(), "workspaces");
+
+		File[] files = workspacesDirectory.listFiles();
+
+		if (files == null) {
+			return;
+		}
+
+		File nodeModulesCacheDirectory = new File(
+			workspacesDirectory, "node_modules_cache");
+
+		nodeModulesCacheDirectory.mkdirs();
+
+		for (File file : files) {
+			File yarnRCFile = new File(file, ".yarnrc");
+
+			if (!yarnRCFile.exists()) {
+				continue;
+			}
+
+			Path path = Paths.get(
+				file.getPath(), nodeModulesCacheDirectory.getName());
+
+			if (Files.exists(path) || Files.isSymbolicLink(path)) {
+				continue;
+			}
+
+			try {
+				Files.createSymbolicLink(
+					path, Paths.get("..", nodeModulesCacheDirectory.getName()));
+
+				System.out.println(
+					"Created Yarn mirror symbolic link at " + path);
+			}
+			catch (IOException ioException) {
+				System.out.println("WARNING: Unable to create " + path);
+			}
 		}
 	}
 
