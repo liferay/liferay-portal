@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Display Page Service
 Bundle-SymbolicName: com.liferay.asset.display.page.service
-Bundle-Version: 4.0.83
+Bundle-Version: 4.0.84
 Liferay-Require-SchemaVersion: 3.1.0
 Liferay-Service: true
 -dsannotations-options: inherit
