@@ -73,6 +73,7 @@ import com.liferay.portal.kernel.model.GroupModel;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.PortalPreferences;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -6443,9 +6444,18 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					return true;
 				}
 			}
-			else if (Objects.equals(key, "organizationUsers")) {
-				if (!Boolean.TRUE.equals(entry.getValue())) {
-					return true;
+			else if (Objects.equals(key, "usersOrgs")) {
+				Object value = entry.getValue();
+
+				if (value instanceof Long[]) {
+					Long[] organizationIds = (Long[])value;
+
+					if ((organizationIds.length == 1) &&
+						(organizationIds[0] ==
+							OrganizationConstants.ANY_ORGANIZATION_ID)) {
+
+						return true;
+					}
 				}
 			}
 			else if (!Objects.equals(key, Field.GROUP_ID) &&
@@ -6454,7 +6464,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					 !Objects.equals(key, "inheritUsersGroups") &&
 					 !Objects.equals(key, "types") &&
 					 !Objects.equals(key, "usersGroups") &&
-					 !Objects.equals(key, "usersOrgs") &&
 					 !Objects.equals(key, "usersOrgsCount") &&
 					 !Objects.equals(key, "usersRoles") &&
 					 !Objects.equals(key, "usersTeams") &&

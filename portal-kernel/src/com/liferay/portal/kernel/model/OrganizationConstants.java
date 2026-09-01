@@ -12,6 +12,8 @@ import com.liferay.petra.string.StringPool;
  */
 public class OrganizationConstants {
 
+	public static final long ANY_ORGANIZATION_ID = -1;
+
 	public static final int ANY_PARENT_ORGANIZATION_ID = -1;
 
 	public static final int DEFAULT_PARENT_ORGANIZATION_ID = 0;

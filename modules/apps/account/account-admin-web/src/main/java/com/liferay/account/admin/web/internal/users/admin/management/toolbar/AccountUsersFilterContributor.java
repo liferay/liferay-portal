@@ -7,6 +7,7 @@ package com.liferay.account.admin.web.internal.users.admin.management.toolbar;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.users.admin.constants.UsersAdminManagementToolbarKeys;
 import com.liferay.users.admin.management.toolbar.FilterContributor;
 
@@ -57,7 +58,9 @@ public class AccountUsersFilterContributor implements FilterContributor {
 			params.put("accountEntryIds", new long[0]);
 		}
 		else if (Objects.equals(currentValue, "organization-users")) {
-			params.put("organizationUsers", new long[0]);
+			params.put(
+				"usersOrgs",
+				new Long[] {OrganizationConstants.ANY_ORGANIZATION_ID});
 		}
 		else if (Objects.equals(currentValue, "unassociated-users")) {
 			params.put("noAccountEntriesAndNoOrganizations", new long[0]);
