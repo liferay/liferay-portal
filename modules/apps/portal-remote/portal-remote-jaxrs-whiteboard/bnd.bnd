@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Remote JAXRS Whiteboard
 Bundle-SymbolicName: com.liferay.portal.remote.jaxrs.whiteboard
-Bundle-Version: 12.0.18
+Bundle-Version: 12.0.19
 Export-Package:\
 	com.liferay.portal.remote.jaxrs.whiteboard.lifecycle,\
 	\
