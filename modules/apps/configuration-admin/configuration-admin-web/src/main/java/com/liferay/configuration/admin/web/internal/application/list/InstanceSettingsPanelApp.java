@@ -5,7 +5,6 @@
 
 package com.liferay.configuration.admin.web.internal.application.list;
 
-import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
@@ -24,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = PanelApp.class
 )
-public class InstanceSettingsPanelApp extends BasePanelApp {
+public class InstanceSettingsPanelApp extends BaseSettingsPanelApp {
 
 	@Override
 	public String getIcon() {

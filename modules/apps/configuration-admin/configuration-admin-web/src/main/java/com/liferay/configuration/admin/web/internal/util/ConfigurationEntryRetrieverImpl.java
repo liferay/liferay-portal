@@ -23,7 +23,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
 
 import java.io.Serializable;
@@ -33,6 +32,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -85,53 +85,60 @@ public class ConfigurationEntryRetrieverImpl
 	}
 
 	@Override
+	public Map<String, ConfigurationCategoryMenuDisplay>
+		getConfigurationCategoryMenuDisplays(
+			String languageId, ExtendedObjectClassDefinition.Scope scope,
+			Serializable scopePK) {
+
+		Map<String, ConfigurationCategoryMenuDisplay>
+			configurationCategoryMenuDisplays = new LinkedHashMap<>();
+
+		Map<String, Set<ConfigurationModel>> categorizedConfigurationModels =
+			_configurationModelRetriever.categorizeConfigurationModels(
+				_configurationModelRetriever.getConfigurationModels(
+					languageId, scope, scopePK));
+
+		for (ConfigurationCategorySectionDisplay
+				configurationCategorySectionDisplay :
+					_getConfigurationCategorySectionDisplays(
+						categorizedConfigurationModels.keySet(), scope)) {
+
+			for (ConfigurationCategoryDisplay configurationCategoryDisplay :
+					configurationCategorySectionDisplay.
+						getConfigurationCategoryDisplays()) {
+
+				String categoryKey =
+					configurationCategoryDisplay.getCategoryKey();
+
+				configurationCategoryMenuDisplays.put(
+					categoryKey,
+					new ConfigurationCategoryMenuDisplay(
+						configurationCategoryDisplay,
+						_getConfigurationEntries(
+							categoryKey,
+							categorizedConfigurationModels.get(categoryKey),
+							scope),
+						scope));
+			}
+		}
+
+		return configurationCategoryMenuDisplays;
+	}
+
+	@Override
 	public List<ConfigurationCategorySectionDisplay>
 		getConfigurationCategorySectionDisplays(
 			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK) {
 
 		Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
 
-		Map<String, ConfigurationModel> configurationModelsMap =
-			_configurationModelRetriever.getConfigurationModels(
-				locale.getLanguage(), scope, scopePK);
-
 		Map<String, Set<ConfigurationModel>> categorizedConfigurationModels =
 			_configurationModelRetriever.categorizeConfigurationModels(
-				configurationModelsMap);
+				_configurationModelRetriever.getConfigurationModels(
+					locale.getLanguage(), scope, scopePK));
 
-		Map<String, ConfigurationCategorySectionDisplay>
-			configurationCategorySectionDisplaysMap = new HashMap<>();
-
-		for (String curConfigurationCategoryKey :
-				categorizedConfigurationModels.keySet()) {
-
-			_populateConfigurationCategorySectionDisplay(
-				configurationCategorySectionDisplaysMap,
-				curConfigurationCategoryKey);
-		}
-
-		for (ConfigurationScreen configurationScreen :
-				_configurationScreenServiceTrackerMap.values()) {
-
-			if (!scope.equals(configurationScreen.getScope()) ||
-				!configurationScreen.isVisible()) {
-
-				continue;
-			}
-
-			_populateConfigurationCategorySectionDisplay(
-				configurationCategorySectionDisplaysMap,
-				configurationScreen.getCategoryKey());
-		}
-
-		Set<ConfigurationCategorySectionDisplay>
-			configurationCategorySectionDisplays = new TreeSet<>(
-				new ConfigurationCategorySectionDisplayComparator());
-
-		configurationCategorySectionDisplays.addAll(
-			configurationCategorySectionDisplaysMap.values());
-
-		return new ArrayList<>(configurationCategorySectionDisplays);
+		return _getConfigurationCategorySectionDisplays(
+			categorizedConfigurationModels.keySet(), scope);
 	}
 
 	@Override
@@ -139,48 +146,11 @@ public class ConfigurationEntryRetrieverImpl
 		String configurationCategory, String languageId,
 		ExtendedObjectClassDefinition.Scope scope, Serializable scopePK) {
 
-		Set<ConfigurationEntry> configurationEntries = new TreeSet<>(
-			_getConfigurationEntryComparator());
-
-		Locale locale = LocaleUtil.fromLanguageId(languageId);
-
-		List<ConfigurationScreen> configurationScreens =
-			_configurationScreensServiceTrackerMap.getService(
-				configurationCategory);
-
-		if (configurationScreens != null) {
-			for (ConfigurationScreen configurationScreen :
-					configurationScreens) {
-
-				if (!scope.equals(configurationScreen.getScope()) ||
-					!configurationScreen.isVisible()) {
-
-					continue;
-				}
-
-				ConfigurationEntry configurationEntry =
-					new ConfigurationScreenConfigurationEntry(
-						configurationScreen, locale);
-
-				configurationEntries.add(configurationEntry);
-			}
-		}
-
-		Set<ConfigurationModel> configurationModels =
+		return _getConfigurationEntries(
+			configurationCategory,
 			_configurationModelRetriever.getConfigurationModels(
-				configurationCategory, languageId, scope, scopePK);
-
-		for (ConfigurationModel configurationModel : configurationModels) {
-			if (configurationModel.isGenerateUI()) {
-				ConfigurationEntry configurationEntry =
-					new ConfigurationModelConfigurationEntry(
-						configurationModel, locale);
-
-				configurationEntries.add(configurationEntry);
-			}
-		}
-
-		return configurationEntries;
+				configurationCategory, languageId, scope, scopePK),
+			scope);
 	}
 
 	@Override
@@ -239,6 +209,85 @@ public class ConfigurationEntryRetrieverImpl
 		_configurationCategoryServiceRegistrations.forEach(
 			configurationCategoryServiceRegistration ->
 				configurationCategoryServiceRegistration.unregister());
+	}
+
+	private List<ConfigurationCategorySectionDisplay>
+		_getConfigurationCategorySectionDisplays(
+			Set<String> configurationCategoryKeys,
+			ExtendedObjectClassDefinition.Scope scope) {
+
+		Map<String, ConfigurationCategorySectionDisplay>
+			configurationCategorySectionDisplaysMap = new HashMap<>();
+
+		for (String configurationCategoryKey : configurationCategoryKeys) {
+			_populateConfigurationCategorySectionDisplay(
+				configurationCategorySectionDisplaysMap,
+				configurationCategoryKey);
+		}
+
+		for (ConfigurationScreen configurationScreen :
+				_configurationScreenServiceTrackerMap.values()) {
+
+			if (!scope.equals(configurationScreen.getScope()) ||
+				!configurationScreen.isVisible()) {
+
+				continue;
+			}
+
+			_populateConfigurationCategorySectionDisplay(
+				configurationCategorySectionDisplaysMap,
+				configurationScreen.getCategoryKey());
+		}
+
+		Set<ConfigurationCategorySectionDisplay>
+			configurationCategorySectionDisplays = new TreeSet<>(
+				new ConfigurationCategorySectionDisplayComparator());
+
+		configurationCategorySectionDisplays.addAll(
+			configurationCategorySectionDisplaysMap.values());
+
+		return new ArrayList<>(configurationCategorySectionDisplays);
+	}
+
+	private Set<ConfigurationEntry> _getConfigurationEntries(
+		String configurationCategory,
+		Set<ConfigurationModel> configurationModels,
+		ExtendedObjectClassDefinition.Scope scope) {
+
+		Set<ConfigurationEntry> configurationEntries = new TreeSet<>(
+			_getConfigurationEntryComparator());
+
+		if (configurationModels != null) {
+			for (ConfigurationModel configurationModel : configurationModels) {
+				if (configurationModel.isGenerateUI()) {
+					configurationEntries.add(
+						new ConfigurationModelConfigurationEntry(
+							configurationModel));
+				}
+			}
+		}
+
+		List<ConfigurationScreen> configurationScreens =
+			_configurationScreensServiceTrackerMap.getService(
+				configurationCategory);
+
+		if (configurationScreens != null) {
+			for (ConfigurationScreen configurationScreen :
+					configurationScreens) {
+
+				if (!scope.equals(configurationScreen.getScope()) ||
+					!configurationScreen.isVisible()) {
+
+					continue;
+				}
+
+				configurationEntries.add(
+					new ConfigurationScreenConfigurationEntry(
+						configurationScreen));
+			}
+		}
+
+		return configurationEntries;
 	}
 
 	private Comparator<ConfigurationEntry> _getConfigurationEntryComparator() {

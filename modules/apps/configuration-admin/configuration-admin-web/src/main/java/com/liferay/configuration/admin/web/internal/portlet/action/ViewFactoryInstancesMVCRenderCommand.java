@@ -21,7 +21,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletException;
@@ -101,8 +100,7 @@ public class ViewFactoryInstancesMVCRenderCommand implements MVCRenderCommand {
 
 			ConfigurationEntry configurationEntry =
 				new ConfigurationModelConfigurationEntry(
-					factoryConfigurationModel,
-					_portal.getLocale(renderRequest));
+					factoryConfigurationModel);
 
 			renderRequest.setAttribute(
 				ConfigurationAdminWebKeys.CONFIGURATION_ENTRY,
@@ -146,9 +144,6 @@ public class ViewFactoryInstancesMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference(target = "(filter.visibility=*)")
 	private ConfigurationModelRetriever _configurationModelRetriever;
-
-	@Reference
-	private Portal _portal;
 
 	private ServiceTrackerMap<String, MVCRenderCommand> _serviceTrackerMap;
 

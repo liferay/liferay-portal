@@ -17,7 +17,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletException;
@@ -82,8 +81,7 @@ public class ViewConfigurationScreenMVCRenderCommand
 			configurationScreen);
 
 		ConfigurationEntry configurationEntry =
-			new ConfigurationScreenConfigurationEntry(
-				configurationScreen, _portal.getLocale(renderRequest));
+			new ConfigurationScreenConfigurationEntry(configurationScreen);
 
 		renderRequest.setAttribute(
 			ConfigurationAdminWebKeys.CONFIGURATION_ENTRY, configurationEntry);
@@ -93,8 +91,5 @@ public class ViewConfigurationScreenMVCRenderCommand
 
 	@Reference
 	private ConfigurationEntryRetriever _configurationEntryRetriever;
-
-	@Reference
-	private Portal _portal;
 
 }

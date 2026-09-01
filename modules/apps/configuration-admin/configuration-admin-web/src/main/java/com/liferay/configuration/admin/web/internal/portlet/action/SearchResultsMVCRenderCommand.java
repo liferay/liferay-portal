@@ -114,7 +114,7 @@ public class SearchResultsMVCRenderCommand implements MVCRenderCommand {
 					}
 
 					return new ConfigurationModelConfigurationEntry(
-						configurationModel, locale);
+						configurationModel);
 				});
 
 		configurationEntries.addAll(
@@ -150,7 +150,7 @@ public class SearchResultsMVCRenderCommand implements MVCRenderCommand {
 						configurationScreenName.contains(keywords)) {
 
 						return new ConfigurationScreenConfigurationEntry(
-							configurationScreen, locale);
+							configurationScreen);
 					}
 
 					return null;

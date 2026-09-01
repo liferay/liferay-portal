@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.settings.LocationVariableResolver;
 import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -110,8 +109,7 @@ public class EditConfigurationMVCRenderCommand implements MVCRenderCommand {
 						configurationScopeDisplayContext.getScopePK()));
 
 			ConfigurationEntry configurationEntry =
-				new ConfigurationModelConfigurationEntry(
-					configurationModel, _portal.getLocale(renderRequest));
+				new ConfigurationModelConfigurationEntry(configurationModel);
 
 			renderRequest.setAttribute(
 				ConfigurationAdminWebKeys.CONFIGURATION_ENTRY,
@@ -182,9 +180,6 @@ public class EditConfigurationMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private DDMFormRenderer _ddmFormRenderer;
-
-	@Reference
-	private Portal _portal;
 
 	private ServiceTrackerMap<String, List<ConfigurationMenuItem>>
 		_serviceTrackerMap;

@@ -70,7 +70,8 @@ public class ConfigurationCategoryMenuDisplay {
 
 			verticalNavItemList.add(
 				verticalNavItem -> {
-					String name = curConfigurationEntry.getName();
+					String name = curConfigurationEntry.getName(
+						renderRequest.getLocale());
 
 					verticalNavItem.put(
 						"deprecated", curConfigurationEntry.isDeprecated());

@@ -10,12 +10,14 @@ import com.liferay.configuration.admin.web.internal.util.ResourceBundleLoaderPro
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -26,10 +28,9 @@ public class ConfigurationModelConfigurationEntry
 	implements ConfigurationEntry {
 
 	public ConfigurationModelConfigurationEntry(
-		ConfigurationModel configurationModel, Locale locale) {
+		ConfigurationModel configurationModel) {
 
 		_configurationModel = configurationModel;
-		_locale = locale;
 	}
 
 	@Override
@@ -52,25 +53,37 @@ public class ConfigurationModelConfigurationEntry
 	public String getEditURL(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
+		Map<String, String> editURLParameters = getEditURLParameters();
+
 		PortletURL portletURL = PortletURLBuilder.createRenderURL(
 			renderResponse
-		).setParameter(
-			"factoryPid", _configurationModel.getFactoryPid()
 		).buildPortletURL();
 
-		if (_configurationModel.isFactory()) {
-			portletURL.setParameter(
-				"mvcRenderCommandName",
-				"/configuration_admin/view_factory_instances");
-		}
-		else {
-			portletURL.setParameter(
-				"mvcRenderCommandName",
-				"/configuration_admin/edit_configuration");
-			portletURL.setParameter("pid", _configurationModel.getID());
+		for (Map.Entry<String, String> entry : editURLParameters.entrySet()) {
+			portletURL.setParameter(entry.getKey(), entry.getValue());
 		}
 
 		return portletURL.toString();
+	}
+
+	@Override
+	public Map<String, String> getEditURLParameters() {
+		if (_configurationModel.isFactory()) {
+			return LinkedHashMapBuilder.put(
+				"factoryPid", _configurationModel.getFactoryPid()
+			).put(
+				"mvcRenderCommandName",
+				"/configuration_admin/view_factory_instances"
+			).build();
+		}
+
+		return LinkedHashMapBuilder.put(
+			"factoryPid", _configurationModel.getFactoryPid()
+		).put(
+			"mvcRenderCommandName", "/configuration_admin/edit_configuration"
+		).put(
+			"pid", _configurationModel.getID()
+		).build();
 	}
 
 	@Override
@@ -79,13 +92,13 @@ public class ConfigurationModelConfigurationEntry
 	}
 
 	@Override
-	public String getName() {
+	public String getName(Locale locale) {
 		ResourceBundleLoader curResourceBundleLoader =
 			ResourceBundleLoaderProviderUtil.getResourceBundleLoader(
 				_configurationModel.getBundleSymbolicName());
 
 		ResourceBundle curComponentResourceBundle =
-			curResourceBundleLoader.loadResourceBundle(_locale);
+			curResourceBundleLoader.loadResourceBundle(locale);
 
 		String curConfigurationModelName;
 
@@ -116,6 +129,5 @@ public class ConfigurationModelConfigurationEntry
 	}
 
 	private final ConfigurationModel _configurationModel;
-	private final Locale _locale;
 
 }

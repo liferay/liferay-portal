@@ -8,11 +8,14 @@ package com.liferay.configuration.admin.web.internal.display;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 
+import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -22,10 +25,9 @@ public class ConfigurationScreenConfigurationEntry
 	implements ConfigurationEntry {
 
 	public ConfigurationScreenConfigurationEntry(
-		ConfigurationScreen configurationScreen, Locale locale) {
+		ConfigurationScreen configurationScreen) {
 
 		_configurationScreen = configurationScreen;
-		_locale = locale;
 	}
 
 	@Override
@@ -59,13 +61,27 @@ public class ConfigurationScreenConfigurationEntry
 	public String getEditURL(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
-		return PortletURLBuilder.createRenderURL(
+		Map<String, String> editURLParameters = getEditURLParameters();
+
+		PortletURL portletURL = PortletURLBuilder.createRenderURL(
 			renderResponse
-		).setMVCRenderCommandName(
-			"/configuration_admin/view_configuration_screen"
-		).setParameter(
+		).buildPortletURL();
+
+		for (Map.Entry<String, String> entry : editURLParameters.entrySet()) {
+			portletURL.setParameter(entry.getKey(), entry.getValue());
+		}
+
+		return portletURL.toString();
+	}
+
+	@Override
+	public Map<String, String> getEditURLParameters() {
+		return LinkedHashMapBuilder.put(
 			"configurationScreenKey", _configurationScreen.getKey()
-		).buildString();
+		).put(
+			"mvcRenderCommandName",
+			"/configuration_admin/view_configuration_screen"
+		).build();
 	}
 
 	@Override
@@ -74,8 +90,8 @@ public class ConfigurationScreenConfigurationEntry
 	}
 
 	@Override
-	public String getName() {
-		return _configurationScreen.getName(_locale);
+	public String getName(Locale locale) {
+		return _configurationScreen.getName(locale);
 	}
 
 	@Override
@@ -99,6 +115,5 @@ public class ConfigurationScreenConfigurationEntry
 	}
 
 	private final ConfigurationScreen _configurationScreen;
-	private final Locale _locale;
 
 }

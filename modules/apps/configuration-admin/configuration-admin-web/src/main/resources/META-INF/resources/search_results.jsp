@@ -66,7 +66,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "search-results"));
 				cssClass="table-cell-expand"
 				name="name"
 			>
-				<aui:a href="<%= configurationEntry.getEditURL(renderRequest, renderResponse) %>"><strong><%= configurationEntry.getName() %></strong></aui:a>
+				<a href="<%= configurationEntry.getEditURL(renderRequest, renderResponse) %>"><strong><%= configurationEntry.getName(locale) %></strong></a>
 			</liferay-ui:search-container-column-text>
 
 			<liferay-ui:search-container-column-text

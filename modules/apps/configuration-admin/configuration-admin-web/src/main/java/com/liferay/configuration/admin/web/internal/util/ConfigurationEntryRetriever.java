@@ -16,6 +16,7 @@ import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,6 +32,11 @@ public interface ConfigurationEntryRetriever {
 	public ConfigurationCategoryMenuDisplay getConfigurationCategoryMenuDisplay(
 		String configurationCategory, String languageId,
 		ExtendedObjectClassDefinition.Scope scope, Serializable scopePK);
+
+	public Map<String, ConfigurationCategoryMenuDisplay>
+		getConfigurationCategoryMenuDisplays(
+			String languageId, ExtendedObjectClassDefinition.Scope scope,
+			Serializable scopePK);
 
 	public List<ConfigurationCategorySectionDisplay>
 		getConfigurationCategorySectionDisplays(
