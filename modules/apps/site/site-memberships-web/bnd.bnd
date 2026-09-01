@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Memberships Web
 Bundle-SymbolicName: com.liferay.site.memberships.web
-Bundle-Version: 5.0.89
+Bundle-Version: 5.0.90
 Web-ContextPath: /site-memberships-web
