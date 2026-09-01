@@ -1,6 +1,6 @@
 Bundle-Name: Liferay AI Hub Cell REST API
 Bundle-SymbolicName: com.liferay.ai.hub.cell.rest.api
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Export-Package:\
 	com.liferay.ai.hub.cell.rest.dto.v1_0,\
 	com.liferay.ai.hub.cell.rest.resource.v1_0
