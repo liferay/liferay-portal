@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Utility Page Service
 Bundle-SymbolicName: com.liferay.layout.utility.page.service
-Bundle-Version: 1.0.62
+Bundle-Version: 1.0.63
 Liferay-Require-SchemaVersion: 1.4.2
 Liferay-Service: true
 -dsannotations-options: inherit
