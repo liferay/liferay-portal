@@ -2,11 +2,13 @@
 
 ## Trigger
 
-A shared CSS input that themes consume changed: `frontend-css-common`, `frontend-js-clay-web/clay/clay-css`, or the `frontend-theme-styled` or `frontend-theme-unstyled` parent themes. A theme's own `packageRunBuild` already runs when the theme is deployed (Per-Module Compile covers that), but a change to a shared input recompiles no theme on its own.
+A shared CSS input that themes consume changed: `frontend-js-clay-web/clay/clay-css`, or the `frontend-theme-styled` or `frontend-theme-unstyled` parent themes. A theme's own `packageRunBuild` already runs when the theme is deployed (Per-Module Compile covers that), but a change to a shared input recompiles no theme on its own.
+
+`frontend-css-common` is deliberately not in that list. A theme receives it through `expandFrontendCSSCommon`, a copy task fed by a configuration that resolves the published `com.liferay.frontend.css.common` artifact rather than the branch tree, so a theme build cannot observe a source change to it and would report a pass having compiled nothing. The module itself still builds, since Per-Module Compile selects its stylesheets as it does any other module's.
 
 ## Match
 
-`^modules/apps/frontend-css/frontend-css-common/|^modules/apps/frontend-js/frontend-js-clay-web/clay/clay-css/|^modules/apps/frontend-theme/frontend-theme-(styled|unstyled)/`
+`^modules/apps/frontend-js/frontend-js-clay-web/clay/clay-css/|^modules/apps/frontend-theme/frontend-theme-(styled|unstyled)/`
 
 ## Command
 

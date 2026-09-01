@@ -28,6 +28,8 @@ command grep --fixed-strings 'ERROR: Dependency' "${LOG}"
 
 Neither pattern is anchored, because Ant prefixes the yarn output with `[exec]` and indents it, so a search for `^ERROR:` matches nothing at all. The Java violations arrive in the first dozen lines, the yarn ones about three fifths of the way down, and the terminal Gradle error on the last line or two, so a tail of any reasonable size shows the failure while hiding what caused it.
 
+The yarn side does not always run. `portal-impl/build.xml` sets `skip.node.task` when no changed file matches the frontend regex in `build.properties`, which covers `js`, `json`, `jsp`, `jspf`, `scss`, `ts` and `tsx`, so a diff of none of those skips `downloadNode`, `yarnInstall` and the yarn formatter entirely. An empty yarn search on such a diff means the formatter never ran rather than that it ran clean, and neither is a failure. Say which of the two happened.
+
 `-Dvalidate.commit.messages=true` is passed explicitly because `format-source-current-branch` never sets it and only the `format-source` target does, so the commit message rules CI enforces go unchecked without it. The flag produces no output of its own, and a clean check and a check that never ran print alike, so there is nothing in a normal run to confirm from. When it matters, rerun under `ant -v`, which echoes the `SourceFormatter` argv and shows `validate.commit.messages=true` among it.
 
 ## Autocommit
