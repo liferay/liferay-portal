@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Audit Storage API
 Bundle-SymbolicName: com.liferay.portal.security.audit.storage.api
-Bundle-Version: 11.1.0
+Bundle-Version: 11.1.1
 Export-Package:\
 	com.liferay.portal.security.audit.storage.comparator,\
 	com.liferay.portal.security.audit.storage.exception,\
