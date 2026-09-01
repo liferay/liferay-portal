@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend CSS Cadmin Web
 Bundle-SymbolicName: com.liferay.frontend.css.cadmin.web
-Bundle-Version: 1.0.50
+Bundle-Version: 1.0.51
 Web-ContextPath: /frontend-css-cadmin-web
