@@ -56,6 +56,8 @@ git diff --name-only "${MERGE_BASE}...HEAD"
 
 A finding in a module the branch changed is the branch's to resolve, and **Autocommit** below decides which kind is repaired and passes and which fails. A finding in any other module is **inherited**: report it with both versions and do not fail the branch, whatever its severity. Identify the finding's module from the failed task's Gradle path, since module depth varies and deriving module directories from the diff lands on the app group instead.
 
+Report the row with its comparison universe named — `PASS (baseline-all + 7 Ant projects + N changed exporting modules)` — so a run that compared less than the whole says so in the cell that gates and reviewers read, not in a note beneath it. A row whose universe does not include `baseline-all` reports NOT VERIFIED.
+
 ### Interpretation
 
 Take the findings from the run's own output, the warning rows and the failed `:baseline` tasks, not from the tree. The task **repairs what it finds**, so afterwards a live finding and an already repaired one both read as modified, and a restored tree reads clean while the finding stands.
