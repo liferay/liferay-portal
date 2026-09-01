@@ -130,18 +130,21 @@ public class LiferayOAuth2ResourceServerEnableWebSecurityTest {
 		Assert.assertEquals(
 			"Using user agent client ID user-agent-id for external reference " +
 				"code test-user-agent",
-			liferayOAuth2ResourceServerEnableWebSecurity.getClientIdLogMessage(
-				"user-agent-id", "test-user-agent"));
+			ReflectionTestUtils.invokeMethod(
+				liferayOAuth2ResourceServerEnableWebSecurity,
+				"_getClientIdLogMessage", "user-agent-id", "test-user-agent"));
 
 		Assert.assertEquals(
 			"Unable to get user agent client ID for external reference code " +
 				"test-external",
-			liferayOAuth2ResourceServerEnableWebSecurity.getClientIdLogMessage(
-				null, "test-external"));
+			ReflectionTestUtils.invokeMethod(
+				liferayOAuth2ResourceServerEnableWebSecurity,
+				"_getClientIdLogMessage", null, "test-external"));
 
 		Assert.assertNull(
-			liferayOAuth2ResourceServerEnableWebSecurity.getClientIdLogMessage(
-				null, "test-headless-server"));
+			ReflectionTestUtils.invokeMethod(
+				liferayOAuth2ResourceServerEnableWebSecurity,
+				"_getClientIdLogMessage", null, "test-headless-server"));
 	}
 
 	@Test

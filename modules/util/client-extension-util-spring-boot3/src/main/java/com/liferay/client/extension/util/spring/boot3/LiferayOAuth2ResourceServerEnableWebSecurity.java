@@ -99,7 +99,7 @@ public class LiferayOAuth2ResourceServerEnableWebSecurity {
 				externalReferenceCode + ".oauth2.user.agent.client.id");
 
 			if (_log.isInfoEnabled()) {
-				String clientIdLogMessage = getClientIdLogMessage(
+				String clientIdLogMessage = _getClientIdLogMessage(
 					clientId, externalReferenceCode);
 
 				if (clientIdLogMessage != null) {
@@ -140,7 +140,7 @@ public class LiferayOAuth2ResourceServerEnableWebSecurity {
 		).build();
 	}
 
-	protected String getClientIdLogMessage(
+	private String _getClientIdLogMessage(
 		String clientId, String externalReferenceCode) {
 
 		if (clientId != null) {
