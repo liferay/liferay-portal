@@ -143,7 +143,7 @@ function applyFieldDiffs(
 function hideEmptyElements(iframeDocument: Document) {
 	iframeDocument
 		.querySelectorAll<HTMLElement>(
-			'.cms-compare-versions-diff :is(blockquote, figure, li, ol, table, ul)'
+			'.cms-compare-versions-diff blockquote, .cms-compare-versions-diff figure, .cms-compare-versions-diff li, .cms-compare-versions-diff ol, .cms-compare-versions-diff table, .cms-compare-versions-diff ul'
 		)
 		.forEach((element) => {
 			if (
