@@ -58,9 +58,9 @@ Decide PASS or FAIL from Jest's **`Test Suites:`** line, not from the exit statu
 
 A module with no `test` script has no suite to judge and does not fail this validation.
 
-When a suite fails to load, separate the two causes before charging it to the branch. Read the **frame that throws**, not every frame in the trace: an import of the added dependency can appear in the stack while the error is raised somewhere else entirely, in a file the diff never touched and reached through a module it never changed.
+When a suite fails, separate the two causes before charging it to the branch. Read the **frame that fails**, not every frame in the trace: an import of the added dependency can appear in the stack while the error is raised somewhere else entirely, in a file the diff never touched and reached through a module it never changed.
 
-FAIL when the throwing frame is in something the diff changed. When it is not, the module is already broken, so report **NOT VERIFIED** for it and name the error. Confirm it either way by resolving the import as the failing module would (`require.resolve` with that module's directory as `paths`), which shows whether the added dependency is even on the path that broke. `modules` is a yarn workspace, so a module with no local `node_modules` resolves from the workspace root and runs normally, and a genuine setup failure is a whole repository condition rather than a per module one.
+FAIL when the failing frame is in something the diff changed. When it is not, the module is already broken, so report **NOT VERIFIED** for it and name the error. This covers an assertion that fails as much as a suite that never loads, and the sweeps above are what make the distinction matter, since they deliberately run modules the diff never touched and a red test already sitting in one of them is not this branch's to answer for. Confirm it either way by resolving the import as the failing module would (`require.resolve` with that module's directory as `paths`), which shows whether the added dependency is even on the path that broke. `modules` is a yarn workspace, so a module with no local `node_modules` resolves from the workspace root and runs normally, and a genuine setup failure is a whole repository condition rather than a per module one.
 
 ## Checklist
 
