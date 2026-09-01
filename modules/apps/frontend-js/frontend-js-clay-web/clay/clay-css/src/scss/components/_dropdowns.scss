@@ -265,6 +265,21 @@
 	}
 }
 
+// Dropdown Menu Has Caption
+
+.dropdown-menu-has-caption {
+	padding-bottom: 0;
+
+	.dropdown-caption {
+		background-color: inherit;
+		border-top: 1px solid $dropdown-divider-bg;
+		bottom: 0;
+		padding: $dropdown-padding-y $dropdown-item-padding-x;
+		position: sticky;
+		z-index: 1;
+	}
+}
+
 // Dropdown Menu Indicator Start
 
 .dropdown-menu-indicator-start {

@@ -98,6 +98,12 @@ export interface IProps<T>
 		| ((props: React.ComponentProps<typeof Input>) => JSX.Element);
 
 	/**
+	 * Content rendered in a caption pinned to the bottom of the menu, after
+	 * the list of items and the infinite scroll feedback.
+	 */
+	caption?: React.ReactNode;
+
+	/**
 	 * The initial value of the active state (uncontrolled).
 	 */
 	defaultActive?: boolean;
@@ -255,6 +261,7 @@ function AutocompleteInner<T extends Item>(
 		defaultItems,
 		defaultValue,
 		direction = 'bottom',
+		caption,
 		displayKeyboardArrowsIndicator = false,
 		estimateSize,
 		filterKey,
@@ -788,6 +795,7 @@ function AutocompleteInner<T extends Item>(
 						className={classNames(
 							'dropdown-menu dropdown-menu-select show',
 							{
+								'dropdown-menu-has-caption': !!caption,
 								'dropdown-menu-indicator-start': !!selectedKeys,
 							}
 						)}
@@ -831,6 +839,10 @@ function AutocompleteInner<T extends Item>(
 						</AutocompleteContext.Provider>
 
 						<InfiniteScrollFeedback />
+
+						{caption && (
+							<DropDown.Caption>{caption}</DropDown.Caption>
+						)}
 					</div>
 				</Overlay>
 			)}
