@@ -220,14 +220,16 @@ describe('AssetNavigationModalContent', () => {
 		expect(screen.getByText('Test Test')).toBeInTheDocument();
 	});
 
-	it('can see comments panel', () => {
-		addParams.mockReturnValue('/my-random-add-url?someParams');
+	it('does not render a standalone comments button when the info panel is shown', () => {
+		renderComponent();
 
-		const {getByLabelText} = renderComponent();
+		expect(
+			screen.queryByRole('button', {name: 'show-comments'})
+		).not.toBeInTheDocument();
 
-		fireEvent.click(getByLabelText('show-comments'));
-
-		expect(screen.getByText('add-comment')).toBeInTheDocument();
+		expect(
+			screen.getByRole('button', {name: 'show-details'})
+		).toBeInTheDocument();
 	});
 
 	describe('Sharing items', () => {
@@ -236,6 +238,16 @@ describe('AssetNavigationModalContent', () => {
 
 			expect(queryByText('show-details')).not.toBeInTheDocument();
 			expect(getByLabelText('show-comments')).toBeInTheDocument();
+		});
+
+		it('can see comments panel', () => {
+			addParams.mockReturnValue('/my-random-add-url?someParams');
+
+			const {getByLabelText} = renderComponentInSharing();
+
+			fireEvent.click(getByLabelText('show-comments'));
+
+			expect(screen.getByText('add-comment')).toBeInTheDocument();
 		});
 
 		it('comment panel is hidden if sharing item has no permission', () => {
