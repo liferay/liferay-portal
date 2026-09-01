@@ -213,4 +213,62 @@ describe('ClayTabs', () => {
 
 		expect(activeTab.innerHTML).toBe('Tab 2');
 	});
+
+	it('renders the className passed through innerProps', () => {
+		const {getByRole} = render(
+			<ClayTabs>
+				<ClayTabs.Item innerProps={{className: 'my-class'}}>
+					Tab 1
+				</ClayTabs.Item>
+			</ClayTabs>
+		);
+
+		const tabItem = getByRole('tab');
+
+		expect(tabItem.classList).toContain('nav-link');
+		expect(tabItem.classList).toContain('my-class');
+	});
+
+	it('renders an item with an icon and its label out of sight', () => {
+		const {getByRole} = render(
+			<ClayTabs>
+				<ClayTabs.ItemWithIcon label="Details" symbol="info-circle" />
+			</ClayTabs>
+		);
+
+		const tabItem = getByRole('tab', {name: 'Details'});
+
+		expect(tabItem).toHaveAttribute('title', 'Details');
+
+		expect(tabItem.querySelector('.lexicon-icon-info-circle')).toBeTruthy();
+
+		expect(tabItem.querySelector('.sr-only')!.innerHTML).toBe('Details');
+	});
+
+	it('renders items with an icon in the new composition', () => {
+		const {getByRole} = render(
+			<ClayTabs>
+				<ClayTabs.List>
+					<ClayTabs.ItemWithIcon
+						label="Details"
+						symbol="info-circle"
+					/>
+
+					<ClayTabs.ItemWithIcon label="Comments" symbol="comments" />
+				</ClayTabs.List>
+
+				<ClayTabs.Panels>
+					<ClayTabs.TabPanel>Details Content</ClayTabs.TabPanel>
+
+					<ClayTabs.TabPanel>Comments Content</ClayTabs.TabPanel>
+				</ClayTabs.Panels>
+			</ClayTabs>
+		);
+
+		expect(
+			getByRole('tab', {name: 'Comments'}).querySelector(
+				'.lexicon-icon-comments'
+			)
+		).toBeTruthy();
+	});
 });
