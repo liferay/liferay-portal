@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Product Type Virtual Order Service
 Bundle-SymbolicName: com.liferay.commerce.product.type.virtual.order.service
-Bundle-Version: 4.0.68
+Bundle-Version: 4.0.69
 Liferay-Require-SchemaVersion: 2.0.1
 Liferay-Service: true
 -dsannotations-options: inherit
