@@ -15,4 +15,11 @@
 		<field name="languageId" type="String" />
 		<field name="lastPublishDate" type="Date" />
 	</model>
+	<model name="com.liferay.site.model.SiteSitemapRegenerationEntry">
+		<field name="mvccVersion" type="long" />
+		<field name="siteSitemapRegenerationEntryId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="assetTypeKey" type="String" />
+	</model>
 </model-hints>

@@ -3,6 +3,7 @@
 
 <hibernate-mapping auto-import="false" default-lazy="false">
 	<import class="com.liferay.site.model.SiteFriendlyURL" />
+	<import class="com.liferay.site.model.SiteSitemapRegenerationEntry" />
 	<class dynamic-update="true" name="com.liferay.site.model.impl.SiteFriendlyURLImpl" table="SiteFriendlyURL">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="siteFriendlyURLId" type="long">
 			<generator class="assigned" />
@@ -18,5 +19,14 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="friendlyURL" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="languageId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="lastPublishDate" type="timestamp" />
+	</class>
+	<class dynamic-update="true" name="com.liferay.site.model.impl.SiteSitemapRegenerationEntryImpl" table="SiteSitemapRegenerationEntry">
+		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="siteSitemapRegenerationEntryId" type="long">
+			<generator class="assigned" />
+		</id>
+		<version access="com.liferay.portal.dao.orm.hibernate.PrivateFieldPropertyAccessor" name="mvccVersion" type="long" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="assetTypeKey" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 	</class>
 </hibernate-mapping>
