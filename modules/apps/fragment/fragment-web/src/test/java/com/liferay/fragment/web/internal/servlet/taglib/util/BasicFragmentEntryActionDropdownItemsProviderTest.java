@@ -5,8 +5,8 @@
 
 package com.liferay.fragment.web.internal.servlet.taglib.util;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.fragment.model.FragmentEntry;
-import com.liferay.fragment.web.internal.util.DesignLibraryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.TestInfo;

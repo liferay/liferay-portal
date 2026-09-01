@@ -5,12 +5,12 @@
 
 package com.liferay.fragment.web.internal.servlet.taglib;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
-import com.liferay.fragment.web.internal.util.DesignLibraryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;

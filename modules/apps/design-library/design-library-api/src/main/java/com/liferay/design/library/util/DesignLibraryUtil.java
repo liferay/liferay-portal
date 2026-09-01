@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.fragment.web.internal.util;
+package com.liferay.design.library.util;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
@@ -49,8 +49,12 @@ public class DesignLibraryUtil {
 			return false;
 		}
 
+		return isDesignLibraryScope(group.getGroupId());
+	}
+
+	public static boolean isDesignLibraryScope(long groupId) {
 		DepotEntry depotEntry = DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
-			group.getGroupId());
+			groupId);
 
 		if ((depotEntry == null) ||
 			(depotEntry.getType() != DepotConstants.TYPE_DESIGN_LIBRARY)) {

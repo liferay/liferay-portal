@@ -5,8 +5,8 @@
 
 package com.liferay.fragment.web.internal.product.navigation.control.menu;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.fragment.constants.FragmentPortletKeys;
-import com.liferay.fragment.web.internal.util.DesignLibraryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
