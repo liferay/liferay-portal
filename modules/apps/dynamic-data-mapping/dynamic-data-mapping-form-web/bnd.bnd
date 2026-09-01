@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Dynamic Data Mapping Form Web
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.form.web
-Bundle-Version: 4.0.206
+Bundle-Version: 4.0.207
 Web-ContextPath: /dynamic-data-mapping-form-web
 -dsannotations-options: inherit
