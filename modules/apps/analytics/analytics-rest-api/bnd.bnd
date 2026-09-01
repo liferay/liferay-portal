@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Analytics REST API
 Bundle-SymbolicName: com.liferay.analytics.rest.api
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.4
 Export-Package: com.liferay.analytics.rest.resource.v1_0
