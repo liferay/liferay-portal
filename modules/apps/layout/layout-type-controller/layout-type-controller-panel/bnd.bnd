@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Type Controller Panel
 Bundle-SymbolicName: com.liferay.layout.type.controller.panel
-Bundle-Version: 2.0.70
+Bundle-Version: 2.0.71
 Web-ContextPath: /layout-type-controller-panel
