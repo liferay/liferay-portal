@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Analytics Settings REST API
 Bundle-SymbolicName: com.liferay.analytics.settings.rest.api
-Bundle-Version: 9.0.0
+Bundle-Version: 9.0.1
 Export-Package:\
 	com.liferay.analytics.settings.rest.constants,\
 	com.liferay.analytics.settings.rest.dto.v1_0,\
