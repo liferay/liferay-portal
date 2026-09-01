@@ -31,17 +31,9 @@ export default function ({
 	selectGroupEventName,
 	selectObjectDefinitionEventName,
 }: Props) {
-	const dayField = document.getElementById(
-		`${namespace}xmlSitemapRegenerationDayField`
-	);
-
 	const form = document.getElementById(
 		`${namespace}fm`
 	) as HTMLFormElement | null;
-
-	const frequencySelect = document.getElementById(
-		`${namespace}xmlSitemapRegenerationFrequency`
-	) as HTMLSelectElement | null;
 
 	const groupIdsInput = document.getElementById(
 		`${namespace}groupsSearchContainerPrimaryKeys`
@@ -63,10 +55,6 @@ export default function ({
 			)
 			?.querySelector<HTMLInputElement>('input') ?? null;
 
-	const scheduleOptions = document.getElementById(
-		`${namespace}sitemapRegenerationScheduleOptions`
-	);
-
 	const selectObjectDefinitionButton = document.getElementById(
 		`${namespace}selectObjectDefinitionLink`
 	) as HTMLButtonElement;
@@ -74,14 +62,6 @@ export default function ({
 	const selectSiteButton = document.getElementById(
 		`${namespace}selectSiteLink`
 	) as HTMLButtonElement;
-
-	const timeField = document.getElementById(
-		`${namespace}xmlSitemapRegenerationTimeField`
-	);
-
-	const timeZoneField = document.getElementById(
-		`${namespace}xmlSitemapRegenerationTimeZoneField`
-	);
 
 	const xmlSitemapIndexEnabledCheckbox = document.getElementById(
 		`${namespace}xmlSitemapIndexEnabled`
@@ -328,18 +308,9 @@ export default function ({
 	let saveAndGenerateButton: HTMLButtonElement | null = null;
 	let saveAndGenerateItem: HTMLDivElement | null = null;
 
-	const onFrequencyChange = () => {
-		const frequency = frequencySelect?.value;
-
-		dayField?.classList.toggle('hide', frequency !== 'weekly');
-		timeField?.classList.toggle('hide', frequency === 'hourly');
-		timeZoneField?.classList.toggle('hide', frequency === 'hourly');
-	};
-
 	const onGenerationModeChange = () => {
 		const scheduledCached = Boolean(scheduledCachedRadio?.checked);
 
-		scheduleOptions?.classList.toggle('hide', !scheduledCached);
 		saveAndGenerateItem?.classList.toggle('hide', !scheduledCached);
 	};
 
@@ -384,12 +355,6 @@ export default function ({
 		scheduledCachedRadio.addEventListener('change', onGenerationModeChange);
 
 		onGenerationModeChange();
-
-		if (frequencySelect) {
-			frequencySelect.addEventListener('change', onFrequencyChange);
-
-			onFrequencyChange();
-		}
 	}
 
 	if (isRegenerateSitemapInProgress && form) {
@@ -437,7 +402,6 @@ export default function ({
 
 	return {
 		dispose() {
-			frequencySelect?.removeEventListener('change', onFrequencyChange);
 			onDemandRadio?.removeEventListener(
 				'change',
 				onGenerationModeChange

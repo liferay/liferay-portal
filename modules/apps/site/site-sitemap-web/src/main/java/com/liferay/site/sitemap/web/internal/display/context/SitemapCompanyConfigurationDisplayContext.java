@@ -13,7 +13,6 @@ import com.liferay.object.item.selector.ObjectDefinitionItemSelectorCriterion;
 import com.liferay.object.item.selector.ObjectDefinitionItemSelectorReturnType;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -28,14 +27,10 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.CalendarFactoryUtil;
-import com.liferay.portal.kernel.util.CalendarUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 import com.liferay.site.constants.SitemapConstants;
@@ -46,7 +41,6 @@ import com.liferay.site.storage.helper.SitemapStorageHelper;
 import java.text.Format;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -265,93 +259,6 @@ public class SitemapCompanyConfigurationDisplayContext {
 			_themeDisplay.getCompanyId());
 	}
 
-	public int getXMLSitemapRegenerationDateAmPm()
-		throws ConfigurationException {
-
-		Calendar calendar = _getXMLSitemapRegenerationDateCalendar();
-
-		return calendar.get(Calendar.AM_PM);
-	}
-
-	public int getXMLSitemapRegenerationDateHour()
-		throws ConfigurationException {
-
-		Calendar calendar = _getXMLSitemapRegenerationDateCalendar();
-
-		return calendar.get(Calendar.HOUR);
-	}
-
-	public int getXMLSitemapRegenerationDateMinute()
-		throws ConfigurationException {
-
-		Calendar calendar = _getXMLSitemapRegenerationDateCalendar();
-
-		return calendar.get(Calendar.MINUTE);
-	}
-
-	public List<SelectOption> getXMLSitemapRegenerationDayOfWeekSelectOptions()
-		throws ConfigurationException {
-
-		List<SelectOption> selectOptions = new ArrayList<>();
-
-		String xmlSitemapRegenerationDayOfWeek =
-			_getXMLSitemapRegenerationDayOfWeek();
-
-		String[] days = CalendarUtil.getDays(_themeDisplay.getLocale());
-
-		for (int i = 0; i < days.length; i++) {
-			String dayOfWeek = String.valueOf(i + 1);
-
-			selectOptions.add(
-				new SelectOption(
-					days[i], dayOfWeek,
-					StringUtil.equals(
-						dayOfWeek, xmlSitemapRegenerationDayOfWeek)));
-		}
-
-		return selectOptions;
-	}
-
-	public String getXMLSitemapRegenerationFrequency()
-		throws ConfigurationException {
-
-		return _sitemapConfigurationManager.getXMLSitemapRegenerationFrequency(
-			_themeDisplay.getCompanyId());
-	}
-
-	public List<SelectOption> getXMLSitemapRegenerationFrequencySelectOptions()
-		throws ConfigurationException {
-
-		List<SelectOption> selectOptions = new ArrayList<>();
-
-		String xmlSitemapRegenerationFrequency =
-			getXMLSitemapRegenerationFrequency();
-
-		String[] regenerationFrequencies = {
-			SitemapConstants.REGENERATION_FREQUENCY_HOURLY,
-			SitemapConstants.REGENERATION_FREQUENCY_DAILY,
-			SitemapConstants.REGENERATION_FREQUENCY_WEEKLY
-		};
-
-		for (String frequency : regenerationFrequencies) {
-			selectOptions.add(
-				new SelectOption(
-					LanguageUtil.get(_themeDisplay.getLocale(), frequency),
-					frequency,
-					StringUtil.equals(
-						frequency, xmlSitemapRegenerationFrequency)));
-		}
-
-		return selectOptions;
-	}
-
-	public String getXMLSitemapRegenerationTimeZoneId()
-		throws ConfigurationException {
-
-		return _sitemapConfigurationManager.getXMLSitemapRegenerationTimeZoneId(
-			_themeDisplay.getCompanyId());
-	}
-
 	public boolean hasVirtualHost(Group group) {
 		LayoutSet layoutSet = group.getPublicLayoutSet();
 
@@ -399,20 +306,6 @@ public class SitemapCompanyConfigurationDisplayContext {
 			_themeDisplay.getCompanyId());
 	}
 
-	public boolean isXMLSitemapRegenerationFrequencyHourly()
-		throws ConfigurationException {
-
-		return SitemapConstants.REGENERATION_FREQUENCY_HOURLY.equals(
-			getXMLSitemapRegenerationFrequency());
-	}
-
-	public boolean isXMLSitemapRegenerationFrequencyWeekly()
-		throws ConfigurationException {
-
-		return SitemapConstants.REGENERATION_FREQUENCY_WEEKLY.equals(
-			getXMLSitemapRegenerationFrequency());
-	}
-
 	private String _getDateString(Date date) {
 		Format format = FastDateFormatFactoryUtil.getSimpleDateFormat(
 			"MMM d, yyyy HH:mm:ss", _themeDisplay.getLocale(),
@@ -432,54 +325,6 @@ public class SitemapCompanyConfigurationDisplayContext {
 		return _guestGroup;
 	}
 
-	private Calendar _getXMLSitemapRegenerationDateCalendar()
-		throws ConfigurationException {
-
-		if (_xmlSitemapRegenerationDateCalendar != null) {
-			return _xmlSitemapRegenerationDateCalendar;
-		}
-
-		_xmlSitemapRegenerationDateCalendar = CalendarFactoryUtil.getCalendar();
-
-		int hourOfDay = 0;
-		int minute = 0;
-
-		String xmlSitemapRegenerationTime = _getXMLSitemapRegenerationTime();
-
-		if (Validator.isNotNull(xmlSitemapRegenerationTime) &&
-			(xmlSitemapRegenerationTime.indexOf(CharPool.COLON) != -1)) {
-
-			String[] parts = StringUtil.split(
-				xmlSitemapRegenerationTime, CharPool.COLON);
-
-			hourOfDay = GetterUtil.getInteger(parts[0]);
-
-			if (parts.length > 1) {
-				minute = GetterUtil.getInteger(parts[1]);
-			}
-		}
-
-		_xmlSitemapRegenerationDateCalendar.set(
-			Calendar.HOUR_OF_DAY, hourOfDay);
-		_xmlSitemapRegenerationDateCalendar.set(Calendar.MINUTE, minute);
-
-		return _xmlSitemapRegenerationDateCalendar;
-	}
-
-	private String _getXMLSitemapRegenerationDayOfWeek()
-		throws ConfigurationException {
-
-		return _sitemapConfigurationManager.getXMLSitemapRegenerationDayOfWeek(
-			_themeDisplay.getCompanyId());
-	}
-
-	private String _getXMLSitemapRegenerationTime()
-		throws ConfigurationException {
-
-		return _sitemapConfigurationManager.getXMLSitemapRegenerationTime(
-			_themeDisplay.getCompanyId());
-	}
-
 	private final GroupLocalService _groupLocalService;
 	private SearchContainer<Group> _groupSearchContainer;
 	private String _groupSelectorURL;
@@ -495,6 +340,5 @@ public class SitemapCompanyConfigurationDisplayContext {
 	private final SitemapManager _sitemapManager;
 	private final SitemapStorageHelper _sitemapStorageHelper;
 	private final ThemeDisplay _themeDisplay;
-	private Calendar _xmlSitemapRegenerationDateCalendar;
 
 }

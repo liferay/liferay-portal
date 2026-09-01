@@ -84,8 +84,8 @@ import com.liferay.site.internal.constants.SitemapDestinationNames;
 import com.liferay.site.internal.scheduler.XMLSitemapRegenerationSchedulerJobConfiguration;
 import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.provider.SitemapURLProvider;
-import com.liferay.site.storage.helper.SitemapStorageHelper;
 import com.liferay.site.service.SiteSitemapRegenerationEntryLocalService;
+import com.liferay.site.storage.helper.SitemapStorageHelper;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -317,7 +317,6 @@ public class SitemapManagerImpl implements SitemapManager {
 				getSiteSitemapRegenerationEntriesCount(companyId);
 
 		if (siteSitemapRegenerationEntriesCount > 0) {
-
 			Class<?> clazz =
 				XMLSitemapRegenerationSchedulerJobConfiguration.class;
 
@@ -538,20 +537,12 @@ public class SitemapManagerImpl implements SitemapManager {
 				return;
 			}
 
-			boolean force = false;
-
-			if (startDate != null) {
-				force = true;
-			}
+			boolean force = true;
 
 			if (startDate == null) {
-				long xmlSitemapRegenerationDelay =
-					_sitemapConfigurationManager.getXMLSitemapRegenerationDelay(
-						companyId);
+				force = false;
 
-				startDate = new Date(
-					System.currentTimeMillis() +
-						(xmlSitemapRegenerationDelay * Time.SECOND));
+				startDate = new Date();
 			}
 
 			Group group = _groupLocalService.fetchGroup(groupId);

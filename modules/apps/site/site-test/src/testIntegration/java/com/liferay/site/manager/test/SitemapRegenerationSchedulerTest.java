@@ -24,8 +24,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.lock.LockManager;
 import com.liferay.portal.kernel.messaging.Message;
@@ -43,13 +41,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
-import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -62,7 +58,6 @@ import com.liferay.site.storage.helper.SitemapStorageHelper;
 
 import java.io.Serializable;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -291,81 +286,6 @@ public class SitemapRegenerationSchedulerTest {
 		Assert.assertEquals(
 			pagesSitemapLocCount + 2,
 			_getPagesSitemapLocCount(companyId, groupId));
-	}
-
-	@Test
-	public void testScheduleRegenerateSitemapDebouncesDuplicateRequests()
-		throws Exception {
-
-		_sitemapManager.scheduleRegenerateSitemap(
-			SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT,
-			TestPropsValues.getCompanyId(), _group.getGroupId(), null);
-		_sitemapManager.scheduleRegenerateSitemap(
-			SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT,
-			TestPropsValues.getCompanyId(), _group.getGroupId(), null);
-
-		List<SchedulerResponse> schedulerResponses =
-			_getRegenerateSitemapSchedulerResponses(
-				SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT);
-
-		Assert.assertEquals(
-			schedulerResponses.toString(), 1, schedulerResponses.size());
-	}
-
-	@Test
-	public void testScheduleRegenerateSitemapDelayHourly() throws Exception {
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getRegenerationCompanyConfigurationTemporarySwapper(
-						RandomTestUtil.randomInt(0, 23),
-						RandomTestUtil.randomInt(0, 59), StringPool.BLANK,
-						SitemapConstants.REGENERATION_FREQUENCY_HOURLY)) {
-
-			Date startDate = _scheduleRegenerateSitemapAndGetStartDate();
-
-			Calendar calendar = _getRoundedUTCCalendar(startDate);
-
-			Assert.assertEquals(0, calendar.get(Calendar.MINUTE));
-
-			long currentTime = System.currentTimeMillis();
-
-			Assert.assertTrue(
-				startDate.toString(), startDate.getTime() > currentTime);
-			Assert.assertTrue(
-				startDate.toString(),
-				startDate.getTime() <= (currentTime + Time.HOUR));
-		}
-	}
-
-	@Test
-	public void testScheduleRegenerateSitemapDelayWeekly() throws Exception {
-		int dayOfWeek = RandomTestUtil.randomInt(
-			Calendar.SUNDAY, Calendar.SATURDAY);
-		int hour = RandomTestUtil.randomInt(0, 23);
-		int minute = RandomTestUtil.randomInt(0, 59);
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getRegenerationCompanyConfigurationTemporarySwapper(
-						hour, minute, String.valueOf(dayOfWeek),
-						SitemapConstants.REGENERATION_FREQUENCY_WEEKLY)) {
-
-			Date startDate = _scheduleRegenerateSitemapAndGetStartDate();
-
-			Calendar calendar = _getRoundedUTCCalendar(startDate);
-
-			Assert.assertEquals(dayOfWeek, calendar.get(Calendar.DAY_OF_WEEK));
-			Assert.assertEquals(hour, calendar.get(Calendar.HOUR_OF_DAY));
-			Assert.assertEquals(minute, calendar.get(Calendar.MINUTE));
-
-			long currentTime = System.currentTimeMillis();
-
-			Assert.assertTrue(
-				startDate.toString(), startDate.getTime() > currentTime);
-			Assert.assertTrue(
-				startDate.toString(),
-				startDate.getTime() <= (currentTime + (7 * Time.DAY)));
-		}
 	}
 
 	@Test
@@ -762,45 +682,6 @@ public class SitemapRegenerationSchedulerTest {
 			});
 	}
 
-	private CompanyConfigurationTemporarySwapper
-			_getRegenerationCompanyConfigurationTemporarySwapper(
-				int hour, int minute, String xmlSitemapRegenerationDayOfWeek,
-				String xmlSitemapRegenerationFrequency)
-		throws Exception {
-
-		return new CompanyConfigurationTemporarySwapper(
-			TestPropsValues.getCompanyId(), _PID_SITEMAP_COMPANY_CONFIGURATION,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"cachedGenerationEnabled", true
-			).put(
-				"xmlSitemapIndexEnabled", true
-			).put(
-				"xmlSitemapIndexMode", SitemapConstants.INDEX_MODE_ASSET_TYPE
-			).put(
-				"xmlSitemapRegenerationDayOfWeek",
-				xmlSitemapRegenerationDayOfWeek
-			).put(
-				"xmlSitemapRegenerationFrequency",
-				xmlSitemapRegenerationFrequency
-			).put(
-				"xmlSitemapRegenerationTime",
-				StringBundler.concat(hour, StringPool.COLON, minute)
-			).put(
-				"xmlSitemapRegenerationTimeZoneId", StringPool.UTC
-			).build());
-	}
-
-	private Calendar _getRoundedUTCCalendar(Date date) {
-		Calendar calendar = CalendarFactoryUtil.getCalendar(
-			TimeZoneUtil.getTimeZone(StringPool.UTC));
-
-		long roundedTime = Math.round((double)date.getTime() / Time.MINUTE);
-
-		calendar.setTimeInMillis(roundedTime * Time.MINUTE);
-
-		return calendar;
-	}
-
 	private List<SiteSitemapRegenerationEntry>
 			_getSiteSitemapRegenerationEntries(
 				String assetTypeKey, long groupId)
@@ -860,21 +741,6 @@ public class SitemapRegenerationSchedulerTest {
 		}
 
 		return objectDefinition;
-	}
-
-	private Date _scheduleRegenerateSitemapAndGetStartDate() throws Exception {
-		_sitemapManager.scheduleRegenerateSitemap(
-			SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT,
-			TestPropsValues.getCompanyId(), _group.getGroupId(), null);
-
-		List<SchedulerResponse> schedulerResponses =
-			_getRegenerateSitemapSchedulerResponses(
-				SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT);
-
-		Assert.assertEquals(
-			schedulerResponses.toString(), 1, schedulerResponses.size());
-
-		return _schedulerEngineHelper.getStartDate(schedulerResponses.get(0));
 	}
 
 	private static final String _CLASS_NAME_SITEMAP_MANAGER_IMPL =

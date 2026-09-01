@@ -30,21 +30,6 @@ public interface SitemapConfigurationManager {
 	public String getXMLSitemapIndexMode(long companyId)
 		throws ConfigurationException;
 
-	public String getXMLSitemapRegenerationDayOfWeek(long companyId)
-		throws ConfigurationException;
-
-	public long getXMLSitemapRegenerationDelay(long companyId)
-		throws ConfigurationException;
-
-	public String getXMLSitemapRegenerationFrequency(long companyId)
-		throws ConfigurationException;
-
-	public String getXMLSitemapRegenerationTime(long companyId)
-		throws ConfigurationException;
-
-	public String getXMLSitemapRegenerationTimeZoneId(long companyId)
-		throws ConfigurationException;
-
 	public boolean includeCategoriesCompanyEnabled(long companyId)
 		throws ConfigurationException;
 
@@ -81,11 +66,7 @@ public interface SitemapConfigurationManager {
 			long[] companySitemapGroupIds,
 			long[] companySitemapObjectDefinitionIds, boolean includeCategories,
 			boolean includePages, boolean includeWebContent,
-			boolean xmlSitemapIndexEnabled, String xmlSitemapIndexMode,
-			String xmlSitemapRegenerationDayOfWeek,
-			String xmlSitemapRegenerationFrequency,
-			String xmlSitemapRegenerationTime,
-			String xmlSitemapRegenerationTimeZoneId)
+			boolean xmlSitemapIndexEnabled, String xmlSitemapIndexMode)
 		throws ConfigurationException;
 
 	public void saveSitemapGroupConfiguration(

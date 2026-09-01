@@ -12,8 +12,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -36,7 +34,6 @@ import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletException;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -87,30 +84,6 @@ public class SaveCompanyConfigurationMVCActionCommand
 			actionRequest, "xmlSitemapIndexMode",
 			_sitemapConfigurationManager.getXMLSitemapIndexMode(companyId));
 
-		String xmlSitemapRegenerationTime =
-			_sitemapConfigurationManager.getXMLSitemapRegenerationTime(
-				companyId);
-
-		int xmlSitemapRegenerationDateHour = ParamUtil.getInteger(
-			actionRequest, "xmlSitemapRegenerationDateHour", -1);
-
-		if (xmlSitemapRegenerationDateHour >= 0) {
-			int hour = xmlSitemapRegenerationDateHour;
-
-			int xmlSitemapRegenerationDateAmPm = ParamUtil.getInteger(
-				actionRequest, "xmlSitemapRegenerationDateAmPm");
-
-			if (xmlSitemapRegenerationDateAmPm == Calendar.PM) {
-				hour += 12;
-			}
-
-			int xmlSitemapRegenerationDateMinute = ParamUtil.getInteger(
-				actionRequest, "xmlSitemapRegenerationDateMinute");
-
-			xmlSitemapRegenerationTime = StringBundler.concat(
-				hour, StringPool.COLON, xmlSitemapRegenerationDateMinute);
-		}
-
 		_sitemapConfigurationManager.saveSitemapCompanyConfiguration(
 			cachedGenerationEnabled, companyId,
 			_getCompanySitemapGroupIds(actionRequest),
@@ -118,20 +91,7 @@ public class SaveCompanyConfigurationMVCActionCommand
 			ParamUtil.getBoolean(actionRequest, "includeCategories"),
 			ParamUtil.getBoolean(actionRequest, "includePages"),
 			ParamUtil.getBoolean(actionRequest, "includeWebContent"),
-			xmlSitemapIndexEnabled, xmlSitemapIndexMode,
-			ParamUtil.getString(
-				actionRequest, "xmlSitemapRegenerationDayOfWeek",
-				_sitemapConfigurationManager.getXMLSitemapRegenerationDayOfWeek(
-					companyId)),
-			ParamUtil.getString(
-				actionRequest, "xmlSitemapRegenerationFrequency",
-				_sitemapConfigurationManager.getXMLSitemapRegenerationFrequency(
-					companyId)),
-			xmlSitemapRegenerationTime,
-			ParamUtil.getString(
-				actionRequest, "xmlSitemapRegenerationTimeZoneId",
-				_sitemapConfigurationManager.
-					getXMLSitemapRegenerationTimeZoneId(companyId)));
+			xmlSitemapIndexEnabled, xmlSitemapIndexMode);
 
 		String successMessageKey = "xml-sitemap-settings-have-been-saved";
 
