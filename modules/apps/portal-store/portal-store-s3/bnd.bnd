@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Store S3
 Bundle-SymbolicName: com.liferay.portal.store.s3
-Bundle-Version: 6.0.56
+Bundle-Version: 6.0.57
 Import-Package:\
 	!com.amazon.ion.*,\
 	\
