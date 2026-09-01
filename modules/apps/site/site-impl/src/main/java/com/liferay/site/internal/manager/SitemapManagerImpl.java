@@ -81,9 +81,11 @@ import com.liferay.redirect.provider.RedirectProvider;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 import com.liferay.site.constants.SitemapConstants;
 import com.liferay.site.internal.constants.SitemapDestinationNames;
+import com.liferay.site.internal.scheduler.XMLSitemapRegenerationSchedulerJobConfiguration;
 import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.provider.SitemapURLProvider;
 import com.liferay.site.storage.helper.SitemapStorageHelper;
+import com.liferay.site.service.SiteSitemapRegenerationEntryLocalService;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -309,6 +311,26 @@ public class SitemapManagerImpl implements SitemapManager {
 		throws PortalException {
 
 		Date nextRegenerateSitemapDate = null;
+
+		int siteSitemapRegenerationEntriesCount =
+			_siteSitemapRegenerationEntryLocalService.
+				getSiteSitemapRegenerationEntriesCount(companyId);
+
+		if (siteSitemapRegenerationEntriesCount > 0) {
+
+			Class<?> clazz =
+				XMLSitemapRegenerationSchedulerJobConfiguration.class;
+
+			SchedulerResponse schedulerResponse =
+				_schedulerEngineHelper.getScheduledJob(
+					clazz.getName(), clazz.getName(),
+					StorageType.MEMORY_CLUSTERED);
+
+			if (schedulerResponse != null) {
+				nextRegenerateSitemapDate =
+					_schedulerEngineHelper.getNextFireDate(schedulerResponse);
+			}
+		}
 
 		for (SchedulerResponse schedulerResponse :
 				_getRegenerateSitemapSchedulerResponses(companyId)) {
@@ -1755,6 +1777,10 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	@Reference
 	private SitemapStorageHelper _sitemapStorageHelper;
+
+	@Reference
+	private SiteSitemapRegenerationEntryLocalService
+		_siteSitemapRegenerationEntryLocalService;
 
 	@Reference
 	private TriggerFactory _triggerFactory;
