@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Site PIM Site Initializer
 Bundle-SymbolicName: com.liferay.site.pim.site.initializer
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Web-ContextPath: /site-pim-site-initializer
 -dsannotations-options: inherit
