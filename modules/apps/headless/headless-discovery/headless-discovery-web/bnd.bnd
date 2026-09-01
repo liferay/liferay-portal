@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Headless Discovery Web
 Bundle-SymbolicName: com.liferay.headless.discovery.web
-Bundle-Version: 4.0.78
+Bundle-Version: 4.0.79
 Web-ContextPath: /headless-discovery-web
