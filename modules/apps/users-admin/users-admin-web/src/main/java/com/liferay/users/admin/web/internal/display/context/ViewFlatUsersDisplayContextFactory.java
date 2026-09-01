@@ -69,7 +69,7 @@ public class ViewFlatUsersDisplayContextFactory {
 		FilterContributor[] filterContributors = _getFilterContributors(
 			httpServletRequest);
 
-		ManagementToolbarDisplayContext managementToolbarDisplayContext;
+		ManagementToolbarDisplayContext managementToolbarDisplayContext = null;
 
 		if (Objects.equals(
 				UsersAdminPortletKeys.SERVICE_ACCOUNTS,
