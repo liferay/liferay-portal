@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Pricing API
 Bundle-SymbolicName: com.liferay.commerce.pricing.api
-Bundle-Version: 19.2.0
+Bundle-Version: 19.2.1
 Export-Package:\
 	com.liferay.commerce.pricing.configuration,\
 	com.liferay.commerce.pricing.constants,\
