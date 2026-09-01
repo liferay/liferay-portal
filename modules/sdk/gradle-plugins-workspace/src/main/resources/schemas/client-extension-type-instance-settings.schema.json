@@ -4957,26 +4957,6 @@
 					"default": "page-layout",
 					"title": "XML Sitemap Index Mode",
 					"type": "string"
-				},
-				"xmlSitemapRegenerationDayOfWeek": {
-					"default": "1",
-					"title": "XML Sitemap Regeneration Day of Week",
-					"type": "string"
-				},
-				"xmlSitemapRegenerationFrequency": {
-					"default": "daily",
-					"title": "XML Sitemap Regeneration Frequency",
-					"type": "string"
-				},
-				"xmlSitemapRegenerationTime": {
-					"default": "00:00",
-					"title": "XML Sitemap Regeneration Time",
-					"type": "string"
-				},
-				"xmlSitemapRegenerationTimeZoneId": {
-					"default": "",
-					"title": "XML Sitemap Regeneration Time Zone ID",
-					"type": "string"
 				}
 			},
 			"required": [
