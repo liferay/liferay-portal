@@ -1,6 +1,6 @@
 Bundle-Name: Liferay OAuth Client Persistence Service
 Bundle-SymbolicName: com.liferay.oauth.client.persistence.service
-Bundle-Version: 1.0.40
+Bundle-Version: 1.0.41
 Import-Package:\
 	!net.shibboleth.utilities.*,\
 	\
