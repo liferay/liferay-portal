@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Admin Inventory API
 Bundle-SymbolicName: com.liferay.headless.commerce.admin.inventory.api
-Bundle-Version: 21.0.5
+Bundle-Version: 21.0.6
 Export-Package:\
 	com.liferay.headless.commerce.admin.inventory.dto.v1_0,\
 	com.liferay.headless.commerce.admin.inventory.resource.v1_0
