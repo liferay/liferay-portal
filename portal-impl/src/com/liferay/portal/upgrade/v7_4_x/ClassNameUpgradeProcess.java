@@ -117,6 +117,17 @@ public class ClassNameUpgradeProcess extends UpgradeProcess {
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"delete from DDMStructureLayout where structureVersionId ",
+					"in (select structureVersionId from DDMStructureVersion ",
+					"where structureId = ?)"))) {
+
+			preparedStatement.setLong(1, structureId);
+
+			preparedStatement.execute();
+		}
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"delete from DDMStructureVersion where structureId = ?")) {
 
 			preparedStatement.setLong(1, structureId);
