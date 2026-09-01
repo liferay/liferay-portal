@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Key API
 Bundle-SymbolicName: com.liferay.portal.security.key.api
-Bundle-Version: 1.2.0
+Bundle-Version: 1.2.1
 Export-Package:\
 	com.liferay.portal.security.key,\
 	com.liferay.portal.security.key.crypto,\
