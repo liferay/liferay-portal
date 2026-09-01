@@ -148,10 +148,10 @@ public class AWSSecretsManagerSystemSecretProviderTest {
 			_awsSecretsManagerSystemSecretProvider.getSecretIdentifiers(
 				CompanyConstants.SYSTEM);
 
-		Assert.assertEquals(
-			secretIdentifiers.toString(), 2, secretIdentifiers.size());
 		Assert.assertTrue(secretIdentifiers.contains(secretIdentifier1));
 		Assert.assertTrue(secretIdentifiers.contains(secretIdentifier2));
+		Assert.assertEquals(
+			secretIdentifiers.toString(), 2, secretIdentifiers.size());
 	}
 
 	@Test(expected = SecretException.class)

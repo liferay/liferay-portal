@@ -288,11 +288,11 @@ public abstract class BaseAWSSecretsManagerSecretProvider
 		boolean useFIPSEndpoint = GetterUtil.getBoolean(
 			properties.get("useFIPSEndpoint"));
 
+		AWSClientManager<AWSSecretsManager> awsClientManager = null;
+
 		AWSSecretsManagerSecretProviderContext
 			awsSecretsManagerSecretProviderContext =
 				_awsSecretsManagerSecretProviderContext;
-
-		AWSClientManager<AWSSecretsManager> awsClientManager = null;
 
 		if (awsSecretsManagerSecretProviderContext != null) {
 			awsClientManager =
