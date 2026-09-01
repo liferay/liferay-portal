@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Adaptive Media Upload
 Bundle-SymbolicName: com.liferay.adaptive.media.upload
-Bundle-Version: 4.0.15
+Bundle-Version: 4.0.16
 -dsannotations-options: inherit
