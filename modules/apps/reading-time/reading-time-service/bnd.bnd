@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Reading Time Service
 Bundle-SymbolicName: com.liferay.reading.time.service
-Bundle-Version: 4.0.50
+Bundle-Version: 4.0.51
 Liferay-Require-SchemaVersion: 2.2.0
 Liferay-Service: true
 -dsannotations-options: inherit
