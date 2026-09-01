@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Batch Engine API
 Bundle-SymbolicName: com.liferay.headless.batch.engine.api
-Bundle-Version: 25.0.6
+Bundle-Version: 25.0.7
 Export-Package:\
 	com.liferay.headless.batch.engine.dto.v1_0,\
 	com.liferay.headless.batch.engine.resource.v1_0
