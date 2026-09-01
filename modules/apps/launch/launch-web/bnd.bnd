@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Launch Web
 Bundle-SymbolicName: com.liferay.launch.web
-Bundle-Version: 1.0.5
+Bundle-Version: 1.0.6
 Web-ContextPath: /launch-web
 -dsannotations-options: inherit
