@@ -46,7 +46,7 @@ public class BackgroundTaskErrorStackTraceTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testErrorStackTraceIsStackTrace() throws Exception {
+	public void testGetErrorStackTrace() throws Exception {
 		BackgroundTask backgroundTask = _addFailedBackgroundTask();
 
 		String errorStackTrace = backgroundTask.getErrorStackTrace();
@@ -58,7 +58,7 @@ public class BackgroundTaskErrorStackTraceTest {
 	}
 
 	@Test
-	public void testStatusMessageIsFreeOfStackTrace() throws Exception {
+	public void testGetStatusMessage() throws Exception {
 		BackgroundTask backgroundTask = _addFailedBackgroundTask();
 
 		Assert.assertEquals(_STATUS_MESSAGE, backgroundTask.getStatusMessage());
