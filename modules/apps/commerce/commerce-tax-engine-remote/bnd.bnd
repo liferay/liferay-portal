@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Tax Engine Remote
 Bundle-SymbolicName: com.liferay.commerce.tax.engine.remote
-Bundle-Version: 1.0.38
+Bundle-Version: 1.0.39
 Web-ContextPath: /commerce-tax-engine-remote
 -dsannotations-options: inherit
