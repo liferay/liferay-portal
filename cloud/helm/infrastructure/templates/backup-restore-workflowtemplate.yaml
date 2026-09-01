@@ -1,0 +1,27 @@
+{{- if .Values.backup.enabled -}}
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+    labels:
+        component: backup-restore-platform
+    name: backup-restore-workflow-template
+    namespace: {{ .Release.Namespace }}
+spec:
+    arguments:
+        parameters:
+            -   name: recovery-point-id
+    entrypoint: main
+    podGC:
+        strategy: OnWorkflowSuccess
+    serviceAccountName: backup-restore-service-account
+    templates:
+        -   name: main
+            steps:
+                -   -   name: restore-backup
+                        templateRef:
+                            clusterScope: true
+                            name: backup-restore-cluster-workflow-template
+                            template: main
+    ttlStrategy:
+        secondsAfterCompletion: 86400
+{{- end -}}

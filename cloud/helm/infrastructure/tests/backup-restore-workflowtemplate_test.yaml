@@ -1,0 +1,73 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Backup Restore WorkflowTemplate
+templates:
+    -   templates/backup-restore-workflowtemplate.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.podGC.strategy
+                    value: OnWorkflowSuccess
+            -   equal:
+                    path: spec.ttlStrategy.secondsAfterCompletion
+                    value: 86400
+        it: Cleans up its pods and expires the workflow
+        set:
+            backup.enabled: true
+    -   asserts:
+            -   equal:
+                    path: metadata.labels.component
+                    value: backup-restore-platform
+            -   equal:
+                    path: metadata.name
+                    value: backup-restore-workflow-template
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: WorkflowTemplate
+        it: Names the workflow template and its namespace after the release
+        set:
+            backup.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the workflow template when backups are disabled
+        set:
+            backup.enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.entrypoint
+                    value: main
+            -   equal:
+                    path: spec.templates[0].steps[0][0].templateRef.clusterScope
+                    value: true
+            -   equal:
+                    path: spec.templates[0].steps[0][0].templateRef.name
+                    value: backup-restore-cluster-workflow-template
+            -   equal:
+                    path: spec.templates[0].steps[0][0].templateRef.template
+                    value: main
+        it: References the backup restore cluster workflow template
+        set:
+            backup.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.serviceAccountName
+                    value: backup-restore-service-account
+        it: Runs as the backup restore service account
+        set:
+            backup.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.arguments.parameters[0].name
+                    value: recovery-point-id
+            -   lengthEqual:
+                    count: 1
+                    path: spec.arguments.parameters
+        it: Takes the document library recovery point as its only parameter
+        set:
+            backup.enabled: true
