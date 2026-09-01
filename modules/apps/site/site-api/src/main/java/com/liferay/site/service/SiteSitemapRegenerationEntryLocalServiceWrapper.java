@@ -337,6 +337,12 @@ public class SiteSitemapRegenerationEntryLocalServiceWrapper
 			getSiteSitemapRegenerationEntriesCount();
 	}
 
+	@Override
+	public int getSiteSitemapRegenerationEntriesCount(long companyId) {
+		return _siteSitemapRegenerationEntryLocalService.
+			getSiteSitemapRegenerationEntriesCount(companyId);
+	}
+
 	/**
 	 * Returns the site sitemap regeneration entry with the primary key.
 	 *
@@ -396,4 +402,4 @@ public class SiteSitemapRegenerationEntryLocalServiceWrapper
 		_siteSitemapRegenerationEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:881010188
+// LIFERAY-SERVICE-BUILDER-HASH:-1841631120

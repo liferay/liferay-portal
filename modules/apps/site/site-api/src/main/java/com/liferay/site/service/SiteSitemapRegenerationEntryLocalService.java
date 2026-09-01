@@ -249,6 +249,9 @@ public interface SiteSitemapRegenerationEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSiteSitemapRegenerationEntriesCount();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getSiteSitemapRegenerationEntriesCount(long companyId);
+
 	/**
 	 * Returns the site sitemap regeneration entry with the primary key.
 	 *
@@ -276,4 +279,4 @@ public interface SiteSitemapRegenerationEntryLocalService
 		SiteSitemapRegenerationEntry siteSitemapRegenerationEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-550102041
+// LIFERAY-SERVICE-BUILDER-HASH:-893913704

@@ -60,4 +60,10 @@ public class SiteSitemapRegenerationEntryLocalServiceImpl
 			companyId);
 	}
 
+	@Override
+	public int getSiteSitemapRegenerationEntriesCount(long companyId) {
+		return siteSitemapRegenerationEntryPersistence.countByCompanyId(
+			companyId);
+	}
+
 }
