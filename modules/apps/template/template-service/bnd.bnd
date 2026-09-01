@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Template Service
 Bundle-SymbolicName: com.liferay.template.service
-Bundle-Version: 1.0.68
+Bundle-Version: 1.0.69
 Liferay-Require-SchemaVersion: 1.2.0
 Liferay-Service: true
 -dsannotations-options: inherit
