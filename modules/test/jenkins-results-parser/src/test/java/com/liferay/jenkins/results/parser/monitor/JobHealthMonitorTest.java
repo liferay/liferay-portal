@@ -10,16 +10,21 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.UrlReader;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Brittney Nguyen
@@ -33,6 +38,8 @@ public class JobHealthMonitorTest
 		super.setUp();
 
 		mockEnvironment(Collections.<String, String>emptyMap());
+
+		MasterResourceReader.clearInstances();
 
 		JenkinsMasterTestUtil.getJenkinsMaster(
 			_MASTER_NAME, "http://" + _MASTER_NAME);
@@ -133,6 +140,181 @@ public class JobHealthMonitorTest
 	}
 
 	@Test
+	public void testExecuteCadenceOverridesCron() throws Exception {
+		_setJobJSONObject(
+			_newConfigXML("0 6 * * 1-5"),
+			_newJobJSONObject(
+				42, "SUCCESS",
+				JenkinsResultsParserUtil.getCurrentTimeMillis() -
+					(3600 * 1000)));
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty("monitor[a].parameter[cadence]", "900");
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
+		testEquals(
+			"Job generate-reports-controller last ran 1 hour ago, exceeding " +
+				"its cadence of 15 minutes plus a grace period of 30 minutes",
+			monitorResult.getMessage());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		Assert.assertNotNull(metrics.get("required.fire.timestamp"));
+	}
+
+	@Test
+	public void testExecuteCronHashedWithinSpan() throws Exception {
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(Calendar.HOUR_OF_DAY, 3);
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.set(Calendar.MINUTE, 40);
+		calendar.set(Calendar.SECOND, 0);
+
+		long virtualCurrentTime = calendar.getTimeInMillis();
+
+		_setJobJSONObject(
+			_newConfigXML("H 3 * * *"),
+			_newJobJSONObject(
+				42, "SUCCESS",
+				virtualCurrentTime - (((23 * 60) + 53) * 60 * 1000)));
+
+		try (MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
+					JenkinsResultsParserUtil.class,
+					Mockito.CALLS_REAL_METHODS)) {
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				JenkinsResultsParserUtil::getCurrentTimeMillis
+			).thenReturn(
+				virtualCurrentTime
+			);
+
+			MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+			testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+		}
+	}
+
+	@Test
+	public void testExecuteCronInvalidSpec() throws Exception {
+		_setJobJSONObject(
+			_newConfigXML("@daily"),
+			_newJobJSONObject(
+				42, "SUCCESS",
+				JenkinsResultsParserUtil.getCurrentTimeMillis()));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(
+			"Unable to read the schedule for job " +
+				"generate-reports-controller: Invalid cron spec: @daily",
+			monitorResult.getMessage());
+	}
+
+	@Test
+	public void testExecuteCronOverdue() throws Exception {
+		_setJobJSONObject(
+			_newConfigXML("*/15 * * * *"),
+			_newJobJSONObject(
+				42, "SUCCESS",
+				JenkinsResultsParserUtil.getCurrentTimeMillis() -
+					(4 * 3600 * 1000)));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
+		testEquals(
+			"Job generate-reports-controller last ran 4 hours ago, exceeding " +
+				"its schedule of */15 * * * * plus a grace period of 30 " +
+					"minutes",
+			monitorResult.getMessage());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		Assert.assertNotNull(metrics.get("required.fire.timestamp"));
+	}
+
+	@Test
+	public void testExecuteCronWithinGracePeriod() throws Exception {
+		_setJobJSONObject(
+			_newConfigXML("*/15 * * * *"),
+			_newJobJSONObject(
+				42, "SUCCESS",
+				JenkinsResultsParserUtil.getCurrentTimeMillis() -
+					(1200 * 1000)));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+	}
+
+	@Test
+	public void testExecuteCronWithoutTrigger() throws Exception {
+		_setJobJSONObject(
+			_newJobJSONObject(
+				42, "SUCCESS",
+				JenkinsResultsParserUtil.getCurrentTimeMillis() -
+					(30L * 24 * 3600 * 1000)));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+	}
+
+	@Test
+	public void testExecuteDisabled() throws Exception {
+		JSONObject jobJSONObject = _newJobJSONObject(
+			42, "SUCCESS", JenkinsResultsParserUtil.getCurrentTimeMillis());
+
+		jobJSONObject.put("disabled", true);
+
+		_setJobJSONObject(jobJSONObject);
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+		testEquals(
+			"Job generate-reports-controller is disabled",
+			monitorResult.getMessage());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		testEquals("true", metrics.get("job.disabled"));
+	}
+
+	@Test
+	public void testExecuteJobMissingFromMaster() throws Exception {
+		UrlReader urlReader = mockUrlReader();
+
+		JSONObject jobsJSONObject = new JSONObject(
+		).put(
+			"jobs",
+			new JSONArray(
+			).put(
+				new JSONObject(
+				).put(
+					"name", "some-other-job"
+				)
+			)
+		);
+
+		setUrlReaderOutput(
+			jobsJSONObject.toString(), _MASTER_API_URL, urlReader);
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+		testEquals(
+			"Job generate-reports-controller was not found on http://test-9-1",
+			monitorResult.getMessage());
+	}
+
+	@Test
 	public void testExecuteMissingLastBuildTimestamp() throws Exception {
 		_setJobJSONObject(
 			new JSONObject(
@@ -157,6 +339,49 @@ public class JobHealthMonitorTest
 			"Unable to determine the last build timestamp for job " +
 				"generate-reports-controller",
 			monitorResult.getMessage());
+	}
+
+	@Test
+	public void testExecuteNeverRun() throws Exception {
+		_setJobJSONObject(
+			new JSONObject(
+			).put(
+				"lastBuild", JSONObject.NULL
+			).put(
+				"lastCompletedBuild", JSONObject.NULL
+			));
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty("monitor[a].parameter[cadence]", "900");
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+		testEquals(
+			"Job generate-reports-controller has never run",
+			monitorResult.getMessage());
+	}
+
+	@Test
+	public void testExecuteNotBuildable() throws Exception {
+		JSONObject jobJSONObject = _newJobJSONObject(
+			42, "SUCCESS", JenkinsResultsParserUtil.getCurrentTimeMillis());
+
+		jobJSONObject.put("buildable", false);
+
+		_setJobJSONObject(jobJSONObject);
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+		testEquals(
+			"Job generate-reports-controller is not buildable",
+			monitorResult.getMessage());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		testEquals("false", metrics.get("job.buildable"));
 	}
 
 	@Test
@@ -251,28 +476,6 @@ public class JobHealthMonitorTest
 		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
 		testEquals(
 			"Job generate-reports-controller is OK",
-			monitorResult.getMessage());
-	}
-
-	@Test
-	public void testExecuteNotTriggered() throws Exception {
-		_setJobJSONObject(
-			new JSONObject(
-			).put(
-				"lastBuild", JSONObject.NULL
-			).put(
-				"lastCompletedBuild", JSONObject.NULL
-			));
-
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.setProperty("monitor[a].parameter[cadence]", "900");
-
-		MonitorResult monitorResult = _execute(monitorProperties);
-
-		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
-		testEquals(
-			"Job generate-reports-controller has never run",
 			monitorResult.getMessage());
 	}
 
@@ -431,14 +634,13 @@ public class JobHealthMonitorTest
 		UrlReader urlReader = mockUrlReader();
 
 		setUrlReaderOutput(
-			RandomTestUtil.randomString(), _JOB_API_URL, urlReader);
+			RandomTestUtil.randomString(), _MASTER_API_URL, urlReader);
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
-			"Unable to read http://test-9-1/job/generate-reports-controller: " +
-				"Unable to create JSON object",
+			"Unable to read http://test-9-1: Unable to create JSON object",
 			monitorResult.getMessage());
 	}
 
@@ -456,11 +658,32 @@ public class JobHealthMonitorTest
 			"monitor[a].parameter[master.name]");
 	}
 
+	@Test
+	public void testPrepareCycle() throws Exception {
+		MasterResourceReader masterResourceReader =
+			MasterResourceReader.getInstance(_MASTER_NAME);
+
+		JobHealthMonitor jobHealthMonitor = _newJobHealthMonitor(
+			_newMonitorProperties());
+
+		jobHealthMonitor.prepareCycle();
+
+		Assert.assertNotSame(
+			masterResourceReader,
+			MasterResourceReader.getInstance(_MASTER_NAME));
+	}
+
 	private MonitorResult _execute(Properties monitorProperties) {
 		JobHealthMonitor jobHealthMonitor = _newJobHealthMonitor(
 			monitorProperties);
 
 		return jobHealthMonitor.execute();
+	}
+
+	private String _newConfigXML(String spec) {
+		return JenkinsResultsParserUtil.combine(
+			"<project><triggers><hudson.triggers.TimerTrigger><spec>", spec,
+			"</spec></hudson.triggers.TimerTrigger></triggers></project>");
 	}
 
 	private JobHealthMonitor _newJobHealthMonitor(
@@ -539,9 +762,27 @@ public class JobHealthMonitorTest
 	}
 
 	private void _setJobJSONObject(JSONObject jobJSONObject) throws Exception {
+		_setJobJSONObject(_CONFIG_XML_WITHOUT_TRIGGER, jobJSONObject);
+	}
+
+	private void _setJobJSONObject(String configXML, JSONObject jobJSONObject)
+		throws Exception {
+
 		UrlReader urlReader = mockUrlReader();
 
-		setUrlReaderOutput(jobJSONObject.toString(), _JOB_API_URL, urlReader);
+		JSONObject jobsJSONObject = new JSONObject(
+		).put(
+			"jobs",
+			new JSONArray(
+			).put(
+				jobJSONObject.put("name", _JOB_NAME)
+			)
+		);
+
+		setUrlReaderOutput(
+			jobsJSONObject.toString(), _MASTER_API_URL, urlReader);
+
+		setUrlReaderOutput(configXML, _JOB_CONFIG_URL, urlReader);
 	}
 
 	private void _testJobHealthMonitorExpectedIllegalArgumentException(
@@ -576,10 +817,16 @@ public class JobHealthMonitorTest
 			monitorProperties);
 	}
 
-	private static final String _JOB_API_URL =
-		"http://test-9-1/job/generate-reports-controller/api/json";
+	private static final String _CONFIG_XML_WITHOUT_TRIGGER =
+		"<project><triggers/></project>";
+
+	private static final String _JOB_CONFIG_URL =
+		"http://test-9-1/job/generate-reports-controller/config.xml";
 
 	private static final String _JOB_NAME = "generate-reports-controller";
+
+	private static final String _MASTER_API_URL =
+		"http://test-9-1/api/json?tree=jobs";
 
 	private static final String _MASTER_NAME = "test-9-1";
 
