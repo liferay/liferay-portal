@@ -169,7 +169,7 @@ public class SiteInitializerUtil {
 	}
 
 	private static final String[] _PORTAL_PROPERTIES_KEYS_WHITELIST = {
-		"default.guest.public.layout.friendly.url",
+		"admin.email.from.address", "default.guest.public.layout.friendly.url",
 		"default.guest.public.layout.name",
 		"default.guest.public.layout.regular.color.scheme.id",
 		"default.guest.public.layout.regular.theme.id",
