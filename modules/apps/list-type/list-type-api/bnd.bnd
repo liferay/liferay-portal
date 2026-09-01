@@ -1,6 +1,6 @@
 Bundle-Name: Liferay List Type API
 Bundle-SymbolicName: com.liferay.list.type.api
-Bundle-Version: 18.1.0
+Bundle-Version: 18.1.1
 Export-Package:\
 	com.liferay.list.type.constants,\
 	com.liferay.list.type.entry.util,\
