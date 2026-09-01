@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Availability Estimate Web
 Bundle-SymbolicName: com.liferay.commerce.availability.estimate.web
-Bundle-Version: 4.0.49
+Bundle-Version: 4.0.50
 Web-ContextPath: /commerce-availability-estimate-web
