@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Page Template Service
 Bundle-SymbolicName: com.liferay.layout.page.template.service
-Bundle-Version: 4.0.144
+Bundle-Version: 4.0.145
 Import-Package:\
 	com.liferay.layout.page.template.util.comparator,\
 	\
