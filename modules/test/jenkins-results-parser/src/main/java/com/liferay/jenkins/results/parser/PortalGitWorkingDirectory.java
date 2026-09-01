@@ -663,7 +663,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	}
 
 	private static final String[] _BINARIES_CACHE_EXCLUDE_REGEXES = {
-		"\\.gradle/", "\\.yarn/", "modules/\\.tsc/", "node_modules_cache/"
+		"\\.gradle/", "\\.yarn/", "modules/\\.tsc/", "node_modules_cache"
 	};
 
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(
