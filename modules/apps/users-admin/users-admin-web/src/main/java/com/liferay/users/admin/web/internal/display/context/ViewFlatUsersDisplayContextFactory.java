@@ -6,6 +6,7 @@
 package com.liferay.users.admin.web.internal.display.context;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.ManagementToolbarDisplayContext;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -199,17 +201,25 @@ public class ViewFlatUsersDisplayContextFactory {
 
 			if (accountEntryIds.length > 0) {
 				params.put("accountEntryIds", accountEntryIds);
+
+				portletURL.setParameter(
+					"accountEntryIds",
+					StringUtil.merge(accountEntryIds, StringPool.COMMA));
 			}
 			else {
 				selection = "all";
 			}
 		}
 		else if (Objects.equals(selection, "selected-organization-users")) {
-			Long[] organizationIds = ArrayUtil.toArray(
-				ParamUtil.getLongValues(httpServletRequest, "organizationIds"));
+			long[] organizationIds = ParamUtil.getLongValues(
+				httpServletRequest, "organizationIds");
 
 			if (organizationIds.length > 0) {
-				params.put("usersOrgs", organizationIds);
+				params.put("usersOrgs", ArrayUtil.toArray(organizationIds));
+
+				portletURL.setParameter(
+					"organizationIds",
+					StringUtil.merge(organizationIds, StringPool.COMMA));
 			}
 			else {
 				selection = "all";
