@@ -60,11 +60,8 @@ public class CommercePaymentMethodFDSDataProviderTest {
 	public void setUp() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
-		CommerceCurrency commerceCurrency =
-			CommerceCurrencyTestUtil.addCommerceCurrency(group.getCompanyId());
-
-		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
-			group.getGroupId(), commerceCurrency.getCode());
+		_fdsDataProvider = _fdsDataProviderRegistry.getFDSDataProvider(
+			_FDS_NAME);
 
 		_mockHttpServletRequest = new MockHttpServletRequest();
 
@@ -77,12 +74,15 @@ public class CommercePaymentMethodFDSDataProviderTest {
 		_mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyTestUtil.addCommerceCurrency(group.getCompanyId());
+
+		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
+			group.getGroupId(), commerceCurrency.getCode());
+
 		_mockHttpServletRequest.setParameter(
 			"commerceChannelId",
 			String.valueOf(commerceChannel.getCommerceChannelId()));
-
-		_fdsDataProvider = _fdsDataProviderRegistry.getFDSDataProvider(
-			_FDS_NAME);
 
 		FDSKeywordsFactory fdsKeywordsFactory =
 			_fdsKeywordsFactoryRegistry.getFDSKeywordsFactory(_FDS_NAME);
@@ -98,15 +98,15 @@ public class CommercePaymentMethodFDSDataProviderTest {
 		Map<String, CommercePaymentMethod> commercePaymentMethods =
 			_commercePaymentMethodRegistry.getCommercePaymentMethods();
 
-		int itemsCount =
+		int size =
 			commercePaymentIntegrations.size() + commercePaymentMethods.size();
 
 		List<?> paymentMethods = _fdsDataProvider.getItems(
-			_fdsKeywords, _createFDSPagination(0, itemsCount),
+			_fdsKeywords, _createFDSPagination(0, size),
 			_mockHttpServletRequest, null);
 
 		Assert.assertEquals(
-			paymentMethods.toString(), itemsCount, paymentMethods.size());
+			paymentMethods.toString(), size, paymentMethods.size());
 
 		paymentMethods = _fdsDataProvider.getItems(
 			_fdsKeywords, _createFDSPagination(0, 1), _mockHttpServletRequest,
