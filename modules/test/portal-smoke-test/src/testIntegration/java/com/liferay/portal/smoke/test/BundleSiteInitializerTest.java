@@ -2518,6 +2518,13 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			"Test Notification Template 1", notificationTemplate.getName());
 
+		Object[] recipients = notificationTemplate.getRecipients();
+
+		Map<?, ?> recipient = (Map<?, ?>)recipients[0];
+
+		Assert.assertEquals(
+			PropsUtil.get("admin.email.from.address"), recipient.get("from"));
+
 		Map<String, String> subjectMap = notificationTemplate.getSubject();
 
 		Assert.assertTrue(

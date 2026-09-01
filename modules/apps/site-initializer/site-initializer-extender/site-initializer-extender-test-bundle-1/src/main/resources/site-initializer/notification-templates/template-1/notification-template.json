@@ -6,7 +6,7 @@
 	"recipientType": "email",
 	"recipients": [
 		{
-			"from": "test-integration@liferay.com",
+			"from": "[$PORTAL_PROPERTY:admin.email.from.address$]",
 			"fromName": {
 				"en-US": "Test Integration"
 			},
