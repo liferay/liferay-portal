@@ -11,13 +11,13 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
 import com.liferay.portal.workflow.constants.WorkflowWebKeys;
+import com.liferay.portal.workflow.web.internal.constants.WorkflowNavigationConstants;
 import com.liferay.portal.workflow.web.internal.display.context.WorkflowNavigationDisplayContext;
 
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.RenderRequest;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -53,9 +53,7 @@ public class ControlPanelWorkflowPortlet extends BaseWorkflowPortlet {
 
 	@Override
 	public List<String> getWorkflowPortletTabNames() {
-		return Arrays.asList(
-			WorkflowWebKeys.WORKFLOW_TAB_DEFINITION,
-			WorkflowWebKeys.WORKFLOW_TAB_DEFINITION_LINK);
+		return WorkflowNavigationConstants.controlPanelWorkflowPortletTabNames;
 	}
 
 	@Override

@@ -7,18 +7,27 @@ package com.liferay.portal.workflow.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
+import com.liferay.portal.workflow.web.internal.constants.WorkflowNavigationConstants;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,6 +47,27 @@ public class ControlPanelWorkflowPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "process-builder";
+	}
+
+	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransform(
+			WorkflowNavigationConstants.controlPanelWorkflowPortletTabNames,
+			tabName -> new PanelAppNavigationItem(
+				_language.get(LocaleUtil.ENGLISH, tabName),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setParameter(
+					"tab", tabName
+				).buildString(),
+				_language.get(themeDisplay.getLocale(), tabName)));
 	}
 
 	@Override
@@ -65,6 +95,9 @@ public class ControlPanelWorkflowPanelApp extends BasePanelApp {
 
 		return themeDisplay.getControlPanelGroup();
 	}
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private Portal _portal;
