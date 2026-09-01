@@ -18,9 +18,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.kernel.dao.db.DB;
-import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.db.DBResourceUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
@@ -112,7 +110,7 @@ public class PreupgradeVerifyDatabaseStateTest
 			_serviceComponentLocalService.createServiceComponent(
 				RandomTestUtil.nextLong());
 
-		String tableName = _getNormalizedName("Account_");
+		String tableName = getNormalizedName("Account_");
 
 		serviceComponent.setMvccVersion(0);
 		serviceComponent.setBuildNamespace("com.liferay.test.service.impl");
@@ -183,8 +181,8 @@ public class PreupgradeVerifyDatabaseStateTest
 		catch (Exception exception) {
 			Assert.assertEquals(
 				StringBundler.concat(
-					"Column ", _getNormalizedName("companyId"),
-					" is missing for ", _getNormalizedName("UserTracker"),
+					"Column ", getNormalizedName("companyId"),
+					" is missing for ", getNormalizedName("UserTracker"),
 					_getPartitionSuffix(), StringPool.NEW_LINE),
 				exception.getMessage());
 		}
@@ -250,7 +248,7 @@ public class PreupgradeVerifyDatabaseStateTest
 					StringBundler.concat(
 						prefix, StringPool.COLON, StringPool.SPACE,
 						StringPool.OPEN_BRACKET,
-						_getNormalizedName(objectDefinition.getDBTableName()),
+						getNormalizedName(objectDefinition.getDBTableName()),
 						StringPool.CLOSE_BRACKET),
 					logEntry.getMessage());
 			}
@@ -266,7 +264,7 @@ public class PreupgradeVerifyDatabaseStateTest
 		throws Exception {
 
 		DB db = DBManagerUtil.getDB();
-		String tableName = _getNormalizedName("TestTable");
+		String tableName = getNormalizedName("TestTable");
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			db.runSQL("create table " + tableName + "(id LONG)");
@@ -331,7 +329,7 @@ public class PreupgradeVerifyDatabaseStateTest
 		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
 
 		DB db = DBManagerUtil.getDB();
-		String tableName = _getNormalizedName("TestTable");
+		String tableName = getNormalizedName("TestTable");
 
 		db.runSQL("create table " + tableName + "(id LONG)");
 
@@ -346,7 +344,7 @@ public class PreupgradeVerifyDatabaseStateTest
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
 
-		_renameView("Release_", "Release_backup");
+		renameView("Release_", "Release_backup");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				PreupgradeVerifyDatabaseState.class.getName(),
@@ -358,7 +356,7 @@ public class PreupgradeVerifyDatabaseStateTest
 				Assert.fail();
 			}
 			catch (Exception exception) {
-				String viewName = _getNormalizedName("Release_");
+				String viewName = getNormalizedName("Release_");
 
 				Set<String> expectedMessages = Set.of(
 					StringBundler.concat(
@@ -391,7 +389,7 @@ public class PreupgradeVerifyDatabaseStateTest
 			finally {
 				db.runSQL("DROP_TABLE_IF_EXISTS(" + tableName + ")");
 
-				_renameView("Release_backup", "Release_");
+				renameView("Release_backup", "Release_");
 
 				_serviceComponentLocalService.deleteServiceComponent(
 					serviceComponent);
@@ -403,7 +401,7 @@ public class PreupgradeVerifyDatabaseStateTest
 	public void testVerifyPreupgradeMissingView() throws Exception {
 		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
 
-		_renameView("Release_", "Release_backup");
+		renameView("Release_", "Release_backup");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				PreupgradeVerifyDatabaseState.class.getName(),
@@ -414,7 +412,7 @@ public class PreupgradeVerifyDatabaseStateTest
 			Assert.fail();
 		}
 		catch (Exception exception) {
-			String viewName = _getNormalizedName("Release_");
+			String viewName = getNormalizedName("Release_");
 
 			Assert.assertEquals(
 				StringBundler.concat(
@@ -425,7 +423,7 @@ public class PreupgradeVerifyDatabaseStateTest
 				exception.getMessage());
 		}
 		finally {
-			_renameView("Release_backup", "Release_");
+			renameView("Release_backup", "Release_");
 		}
 	}
 
@@ -456,7 +454,7 @@ public class PreupgradeVerifyDatabaseStateTest
 
 				Set<String> normalizedTableNames = new TreeSet<>(
 					TransformUtil.transform(
-						tableNames, this::_getNormalizedName));
+						tableNames, this::getNormalizedName));
 
 				String prefix = "Stale tables were detected";
 
@@ -524,9 +522,9 @@ public class PreupgradeVerifyDatabaseStateTest
 			Assert.assertEquals(
 				logEntry.getMessage(),
 				StringBundler.concat(
-					"Column ", _getNormalizedName("city"),
+					"Column ", getNormalizedName("city"),
 					" is not defined as VARCHAR(75) null for ",
-					_getNormalizedName("Address"), _getPartitionSuffix()));
+					getNormalizedName("Address"), _getPartitionSuffix()));
 		}
 		finally {
 			_alterColumnType("Address", "city", "VARCHAR(75)");
@@ -561,14 +559,6 @@ public class PreupgradeVerifyDatabaseStateTest
 		}
 	}
 
-	private String _getNormalizedName(String tableName) throws Exception {
-		try (Connection connection = DataAccess.getConnection()) {
-			DBInspector dbInspector = new DBInspector(connection);
-
-			return dbInspector.normalizeName(tableName);
-		}
-	}
-
 	private String _getPartitionSuffix() {
 		String partitionSuffix = StringPool.BLANK;
 
@@ -594,29 +584,6 @@ public class PreupgradeVerifyDatabaseStateTest
 		}
 
 		return null;
-	}
-
-	private void _renameView(String fromViewName, String toViewName)
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					TestPropsValues.getCompanyId())) {
-
-			DB db = DBManagerUtil.getDB();
-
-			if (db.getDBType() == DBType.MYSQL) {
-				db.runSQL(
-					StringBundler.concat(
-						"rename table ", fromViewName, " to ", toViewName));
-			}
-			else {
-				db.runSQL(
-					StringBundler.concat(
-						"alter view ", fromViewName, " rename to ",
-						toViewName));
-			}
-		}
 	}
 
 	private static final Version _TEST_SCHEMA_VERSION = new Version(0, 0, 0);
