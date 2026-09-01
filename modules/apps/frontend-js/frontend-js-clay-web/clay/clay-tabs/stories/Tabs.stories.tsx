@@ -208,3 +208,35 @@ export function WithState() {
 		</div>
 	);
 }
+
+export function ItemsWithIcon() {
+	const ITEMS = [
+		{label: 'Details', symbol: 'info-circle'},
+		{label: 'Categorization', symbol: 'categories'},
+		{label: 'Performance', symbol: 'analytics'},
+		{label: 'Versions', symbol: 'time'},
+		{label: 'Comments', symbol: 'comments'},
+	];
+
+	return (
+		<ClayTabs>
+			<ClayTabs.List className="c-gap-1">
+				{ITEMS.map(({label, symbol}) => (
+					<ClayTabs.ItemWithIcon
+						key={label}
+						label={label}
+						symbol={symbol}
+					/>
+				))}
+			</ClayTabs.List>
+
+			<ClayTabs.Panels>
+				{ITEMS.map(({label}) => (
+					<ClayTabs.TabPanel key={label}>
+						{label} Content
+					</ClayTabs.TabPanel>
+				))}
+			</ClayTabs.Panels>
+		</ClayTabs>
+	);
+}

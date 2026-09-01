@@ -9,6 +9,7 @@ packageTypes:
         'clay-tabs/src/index.tsx',
         'clay-tabs/src/Content.tsx',
         'clay-tabs/src/Item.tsx',
+        'clay-tabs/src/ItemWithIcon.tsx',
         'clay-tabs/src/List.tsx',
         'clay-tabs/src/TabPane.tsx',
     ]
@@ -147,6 +148,55 @@ export default function App() {
 						</Tabs.Panels>
 					</Tabs>
 				</>
+			</div>
+		</Provider>
+	);
+}
+```
+
+## Tabs With Icons
+
+Use `Tabs.ItemWithIcon` for a tab that is an icon rather than a word, which keeps the navigation compact when there is a long list of tabs. Its `label` is not painted beside the icon: it names the item for assistive technologies and is shown on hover.
+
+```jsx preview
+import {Provider} from '@clayui/core';
+import Tabs from '@clayui/tabs';
+import React, {useState} from 'react';
+
+import '@clayui/css/lib/css/atlas.css';
+
+const ITEMS = [
+	{label: 'Details', symbol: 'info-circle'},
+	{label: 'Categorization', symbol: 'categories'},
+	{label: 'Performance', symbol: 'analytics'},
+	{label: 'Versions', symbol: 'time'},
+	{label: 'Comments', symbol: 'comments'},
+];
+
+export default function App() {
+	const [active, setActive] = useState(0);
+
+	return (
+		<Provider spritemap="/public/icons.svg">
+			<div className="p-4">
+				<Tabs active={active} onActiveChange={setActive}>
+					<Tabs.List className="c-gap-1">
+						{ITEMS.map(({label, symbol}) => (
+							<Tabs.ItemWithIcon
+								key={label}
+								label={label}
+								symbol={symbol}
+							/>
+						))}
+					</Tabs.List>
+					<Tabs.Panels>
+						{ITEMS.map(({label}) => (
+							<Tabs.TabPanel key={label}>
+								{label} Content
+							</Tabs.TabPanel>
+						))}
+					</Tabs.Panels>
+				</Tabs>
 			</div>
 		</Provider>
 	);
