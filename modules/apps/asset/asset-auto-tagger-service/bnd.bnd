@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Auto Tagger Service
 Bundle-SymbolicName: com.liferay.asset.auto.tagger.service
-Bundle-Version: 3.0.79
+Bundle-Version: 3.0.80
 Liferay-Require-SchemaVersion: 1.2.0
 Liferay-Service: true
 -dsannotations-options: inherit
