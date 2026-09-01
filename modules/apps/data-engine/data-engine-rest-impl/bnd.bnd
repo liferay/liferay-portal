@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Data Engine REST Implementation
 Bundle-SymbolicName: com.liferay.data.engine.rest.impl
-Bundle-Version: 3.0.143
+Bundle-Version: 3.0.144
 Import-Package:\
 	!com.fasterxml.jackson.*,\
 	\
