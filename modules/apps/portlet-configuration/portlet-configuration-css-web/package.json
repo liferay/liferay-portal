@@ -10,5 +10,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "USE_REACT_16=true node-scripts format"
 	},
-	"version": "6.0.94"
+	"version": "6.0.95"
 }
