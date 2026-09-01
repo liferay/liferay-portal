@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Analytics DXP Entity REST API
 Bundle-SymbolicName: com.liferay.analytics.dxp.entity.rest.api
-Bundle-Version: 5.0.10
+Bundle-Version: 5.0.11
 Export-Package:\
 	com.liferay.analytics.dxp.entity.rest.dto.v1_0,\
 	com.liferay.analytics.dxp.entity.rest.dto.v1_0.converter
