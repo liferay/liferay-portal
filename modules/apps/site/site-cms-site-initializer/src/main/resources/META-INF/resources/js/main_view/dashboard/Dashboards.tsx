@@ -32,13 +32,16 @@ type TabId = keyof typeof TABS;
 
 const ORDERED_TAB_IDS: TabId[] = ['governance', 'inventory', 'performance'];
 
-function isTabEnabled(tabId: TabId, cmsAdmin: boolean) {
+function isTabEnabled(tabId: TabId, administeredSpaceIds: string[]) {
 	if (tabId === 'governance') {
 		return Boolean(Liferay.FeatureFlags['LPD-82226']);
 	}
 
 	if (tabId === 'performance') {
-		return Boolean(Liferay.FeatureFlags['LPD-58315']) && cmsAdmin;
+		return (
+			Boolean(Liferay.FeatureFlags['LPD-58315']) &&
+			Boolean(administeredSpaceIds.length)
+		);
 	}
 
 	return true;
@@ -47,16 +50,16 @@ function isTabEnabled(tabId: TabId, cmsAdmin: boolean) {
 function Wrapper({
 	additionalProps,
 	admin,
+	administeredSpaceIds,
 	analyticsEnabled,
-	cmsAdmin,
 	constants,
 	freeTier,
 	learnResources,
 }: {
 	additionalProps: DashboardAdditionalProps & GovernanceAdditionalProps;
 	admin: boolean;
+	administeredSpaceIds: string[];
 	analyticsEnabled: boolean;
-	cmsAdmin: boolean;
 	constants: {[key: string]: string};
 	freeTier: boolean;
 	learnResources: ILearnResourceContext;
@@ -73,8 +76,8 @@ function Wrapper({
 				<Dashboards
 					additionalProps={additionalProps}
 					admin={admin}
+					administeredSpaceIds={administeredSpaceIds}
 					analyticsEnabled={analyticsEnabled}
-					cmsAdmin={cmsAdmin}
 					constants={constants}
 					freeTier={freeTier}
 					learnResources={learnResources}
@@ -87,22 +90,22 @@ function Wrapper({
 function Dashboards({
 	additionalProps,
 	admin,
+	administeredSpaceIds,
 	analyticsEnabled,
-	cmsAdmin,
 	constants,
 	freeTier,
 	learnResources,
 }: {
 	additionalProps: DashboardAdditionalProps & GovernanceAdditionalProps;
 	admin: boolean;
+	administeredSpaceIds: string[];
 	analyticsEnabled: boolean;
-	cmsAdmin: boolean;
 	constants: {[key: string]: string};
 	freeTier: boolean;
 	learnResources: ILearnResourceContext;
 }) {
 	const enabledTabIds = ORDERED_TAB_IDS.filter((id) =>
-		isTabEnabled(id, cmsAdmin)
+		isTabEnabled(id, administeredSpaceIds)
 	);
 
 	const [tabId, setTabId] = useState<TabId>(enabledTabIds[0] ?? 'inventory');
@@ -149,6 +152,7 @@ function Dashboards({
 						admin={admin}
 						analyticsEnabled={analyticsEnabled}
 						constants={constants}
+						spaceIds={administeredSpaceIds}
 					/>
 				) : null}
 			</ClayLayout.Container>

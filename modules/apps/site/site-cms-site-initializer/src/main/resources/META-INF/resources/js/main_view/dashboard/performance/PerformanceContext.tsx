@@ -25,6 +25,7 @@ type State = {
 	setRange: (range: RangeSelector) => void;
 	setSpace: (space: SpaceOption) => void;
 	space: SpaceOption;
+	spaceIds: string[];
 };
 
 const PerformanceContext = createContext<State>({
@@ -34,6 +35,7 @@ const PerformanceContext = createContext<State>({
 	setRange: () => {},
 	setSpace: () => {},
 	space: initialSpace,
+	spaceIds: [],
 });
 
 PerformanceContext.displayName = 'PerformanceContext';
@@ -42,17 +44,27 @@ function PerformanceContextProvider({
 	additionalProps,
 	children,
 	constants = {},
+	spaceIds = [],
 }: {
 	additionalProps?: DashboardAdditionalProps;
 	children: React.ReactNode;
 	constants?: {[key: string]: string};
+	spaceIds?: string[];
 }) {
 	const [range, setRange] = useState<RangeSelector>(initialRange);
 	const [space, setSpace] = useState<SpaceOption>(initialSpace);
 
 	const value = useMemo(
-		() => ({additionalProps, constants, range, setRange, setSpace, space}),
-		[additionalProps, constants, range, space]
+		() => ({
+			additionalProps,
+			constants,
+			range,
+			setRange,
+			setSpace,
+			space,
+			spaceIds,
+		}),
+		[additionalProps, constants, range, space, spaceIds]
 	);
 
 	return (

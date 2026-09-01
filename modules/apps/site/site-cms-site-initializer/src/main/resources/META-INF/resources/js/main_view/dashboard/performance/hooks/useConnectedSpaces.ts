@@ -10,7 +10,7 @@ import {PerformanceContext} from '../PerformanceContext';
 import PerformanceService from '../PerformanceService';
 
 export default function useConnectedSpaces() {
-	const {space} = useContext(PerformanceContext);
+	const {space, spaceIds} = useContext(PerformanceContext);
 
 	const [loading, setLoading] = useState(true);
 	const [connectedSpaces, setConnectedSpaces] = useState<
@@ -19,7 +19,9 @@ export default function useConnectedSpaces() {
 
 	useEffect(() => {
 		async function checkSpaces() {
-			const spaces = await SpaceService.getSpaces();
+			const spaces = (await SpaceService.getSpaces()).filter(({id}) =>
+				spaceIds.includes(String(id))
+			);
 
 			const infos = await Promise.all(
 				spaces.map(({siteId}) =>
@@ -41,13 +43,14 @@ export default function useConnectedSpaces() {
 		}
 
 		checkSpaces();
-	}, []);
+	}, [spaceIds]);
 
-	const spaceIds = Object.keys(connectedSpaces);
+	const connectedSpaceIds = Object.keys(connectedSpaces);
 
 	const connected =
 		space.value === 'all'
-			? !spaceIds.length || spaceIds.some((id) => connectedSpaces[id])
+			? !connectedSpaceIds.length ||
+				connectedSpaceIds.some((id) => connectedSpaces[id])
 			: connectedSpaces[space.value] ?? true;
 
 	return {connected, loading};

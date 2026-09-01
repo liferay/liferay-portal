@@ -23,11 +23,13 @@ export default function PerformanceDashboard({
 	admin,
 	analyticsEnabled,
 	constants,
+	spaceIds,
 }: {
 	additionalProps?: DashboardAdditionalProps;
 	admin: boolean;
 	analyticsEnabled: boolean;
 	constants: {[key: string]: string};
+	spaceIds: string[];
 }) {
 	if (!analyticsEnabled) {
 		return (
@@ -44,6 +46,7 @@ export default function PerformanceDashboard({
 		<PerformanceContextProvider
 			additionalProps={additionalProps}
 			constants={constants}
+			spaceIds={spaceIds}
 		>
 			<Sections />
 		</PerformanceContextProvider>

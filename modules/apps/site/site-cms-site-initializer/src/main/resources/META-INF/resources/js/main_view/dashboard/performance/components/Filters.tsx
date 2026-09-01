@@ -14,7 +14,8 @@ import {SpacePicker} from '../../common/SpacePicker';
 import {PerformanceContext} from '../PerformanceContext';
 
 export function Filters() {
-	const {range, setRange, setSpace, space} = useContext(PerformanceContext);
+	const {range, setRange, setSpace, space, spaceIds} =
+		useContext(PerformanceContext);
 
 	return (
 		<ClayLayout.Row className="mb-4">
@@ -24,6 +25,7 @@ export function Filters() {
 						className="mr-3"
 						onSelectSpace={setSpace}
 						selectedSpace={space}
+						spaceIds={spaceIds}
 					/>
 
 					<RangeSelectorsDropdown
