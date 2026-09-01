@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Portal Workflow Web
 Bundle-SymbolicName: com.liferay.portal.workflow.web
-Bundle-Version: 4.0.100
+Bundle-Version: 4.0.101
 Web-ContextPath: /portal-workflow-web
 -dsannotations-options: inherit
