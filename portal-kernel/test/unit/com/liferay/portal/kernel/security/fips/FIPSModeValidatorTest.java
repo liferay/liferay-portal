@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.security.SecureRandomUtil;
 import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProvider;
 import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -23,6 +24,7 @@ import java.security.Security;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.function.Function;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -692,6 +694,40 @@ public class FIPSModeValidatorTest {
 	}
 
 	@Test
+	public void testValidateSecureRandomProvider() {
+		Object originalSecureRandom = ReflectionTestUtil.getFieldValue(
+			SecureRandomUtil.class, "_random");
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			ReflectionTestUtil.setFieldValue(
+				SecureRandomUtil.class, "_random",
+				_createSecureRandom("BCFIPS"));
+
+			ReflectionTestUtil.invoke(
+				FIPSModeValidator.class, "_validateSecureRandomProvider",
+				new Class<?>[0]);
+
+			String providerName = RandomTestUtil.randomString();
+
+			ReflectionTestUtil.setFieldValue(
+				SecureRandomUtil.class, "_random",
+				_createSecureRandom(providerName));
+
+			_assertSecurityException(
+				"The secure random provider \"" + providerName +
+					"\" is not allowed in FIPS mode",
+				"_validateSecureRandomProvider", new Class<?>[0]);
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				SecureRandomUtil.class, "_random", originalSecureRandom);
+		}
+	}
+
+	@Test
 	public void testValidateURL() {
 		FIPSModeValidator.validateURL(
 			"ldap://" + RandomTestUtil.randomString());
@@ -753,6 +789,18 @@ public class FIPSModeValidatorTest {
 		return new Provider(
 			name, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString()) {
+		};
+	}
+
+	private Random _createSecureRandom(String providerName) {
+		Provider provider = _createProvider(providerName);
+
+		return new Random() {
+
+			public Provider getProvider() {
+				return provider;
+			}
+
 		};
 	}
 
