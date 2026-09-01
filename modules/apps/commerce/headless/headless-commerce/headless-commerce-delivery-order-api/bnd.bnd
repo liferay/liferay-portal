@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Delivery Order API
 Bundle-SymbolicName: com.liferay.headless.commerce.delivery.order.api
-Bundle-Version: 8.0.3
+Bundle-Version: 8.0.4
 Export-Package:\
 	com.liferay.headless.commerce.delivery.order.dto.v1_0,\
 	com.liferay.headless.commerce.delivery.order.resource.v1_0
