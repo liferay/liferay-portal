@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Saved Content Taglib
 Bundle-SymbolicName: com.liferay.saved.content.taglib
-Bundle-Version: 2.0.11
+Bundle-Version: 2.0.12
 Export-Package: com.liferay.saved.content.taglib.servlet.taglib
 Provide-Capability:\
 	osgi.extender;\
