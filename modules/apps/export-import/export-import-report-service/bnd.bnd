@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Export Import Report Service
 Bundle-SymbolicName: com.liferay.exportimport.report.service
-Bundle-Version: 1.0.19
+Bundle-Version: 1.0.20
 Liferay-Require-SchemaVersion: 3.2.0
 Liferay-Service: true
 -dsannotations-options: inherit
