@@ -7,6 +7,28 @@ templates:
 tests:
     -   asserts:
             -   equal:
+                    path: spec.backup.dayOfWeek
+                    value: Sunday
+            -   equal:
+                    path: spec.backup.enabled
+                    value: false
+            -   equal:
+                    path: spec.backup.frequency
+                    value: Daily
+            -   equal:
+                    path: spec.backup.retentionDays
+                    value: 30
+            -   equal:
+                    path: spec.backup.timeOfDay
+                    value: 05:00
+            -   equal:
+                    path: spec.backup.timeZone
+                    value: UTC
+            -   isEmpty:
+                    path: spec.backup.vaultTags
+        it: Defaults the backup schedule and retention
+    -   asserts:
+            -   equal:
                     path: metadata.name
                     value: my-release
             -   equal:
@@ -25,6 +47,39 @@ tests:
             -   notExists:
                     path: spec.commonTags
         it: Omits the common tags when none are set
+    -   asserts:
+            -   equal:
+                    path: spec.backup.dayOfWeek
+                    value: Saturday
+            -   equal:
+                    path: spec.backup.enabled
+                    value: true
+            -   equal:
+                    path: spec.backup.frequency
+                    value: Weekly
+            -   equal:
+                    path: spec.backup.retentionDays
+                    value: 7
+            -   equal:
+                    path: spec.backup.timeOfDay
+                    value: 23:30
+            -   equal:
+                    path: spec.backup.timeZone
+                    value: America/New_York
+            -   equal:
+                    path: spec.backup.vaultTags.spend_area
+                    value: storage
+        it: Passes the backup settings through to the composite resource
+        set:
+            backup:
+                dayOfWeek: Saturday
+                enabled: true
+                frequency: Weekly
+                retentionDays: 7
+                timeOfDay: 23:30
+                timeZone: America/New_York
+                vaultTags:
+                    spend_area: storage
     -   asserts:
             -   equal:
                     path: spec.commonTags.owner
@@ -56,6 +111,8 @@ tests:
                     of: LiferayInfrastructure
         it: Targets the cloud agnostic API group
     -   asserts:
+            -   notExists:
+                    path: spec.database.restorePointInTime
             -   notExists:
                     path: spec.database.rootPasswordSecretName
             -   notExists:

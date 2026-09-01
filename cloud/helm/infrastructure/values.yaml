@@ -1,5 +1,11 @@
 backup:
+    dayOfWeek: Sunday
     enabled: false
+    frequency: Daily
+    retentionDays: 30
+    timeOfDay: 05:00
+    timeZone: UTC
+    vaultTags: {}
 clusterSecretStoreName: ""
 cmk:
     enabled: false
