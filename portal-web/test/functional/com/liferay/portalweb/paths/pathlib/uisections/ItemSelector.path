@@ -36,6 +36,39 @@
 	<td></td>
 </tr>
 
+<!--INLINE_MODAL-->
+
+<tr>
+	<td>INLINE_MODAL</td>
+	<td>//div[contains(@class,'modal-content')][.//button[contains(@class,'selector-button')]]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INLINE_MODAL_CANCEL_BUTTON</td>
+	<td>//div[contains(@class,'modal-footer')]//button[contains(@class,'btn-cancel')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INLINE_MODAL_SELECT_ALL_CHECKBOX</td>
+	<td>//div[contains(@class,'modal-content')]//div[contains(@class,'management-bar')]//div[contains(@class,'custom-checkbox')]/label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INLINE_MODAL_ROW_CHECKBOX</td>
+	<td>//div[contains(@class,'modal-content')]//tr[.//td[contains(normalize-space(),'${key_itemTitle}')]]//td[contains(@class,'cell-select-item')]//label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INLINE_MODAL_SELECT_BUTTON</td>
+	<td>//div[contains(@class,'modal-footer')]//button[contains(@class,'selector-button')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td></td>
+	<td></td>
+	<td></td>
+</tr>
+
 <!--LOCATION_INFO-->
 
 <tr>

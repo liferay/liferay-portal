@@ -1,21 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro _selectAssetType(assetType = null) {
-		var key_assetType = ${assetType};
-
-		AssertClick(
-			locator1 = "AssetRelatedAssets#RELATED_ASSETS_SELECT",
-			value1 = "Select");
-
-		var assetTypeLocator = StringUtil.replace(${assetType}, " ", "_");
-
-		var assetTypeLocator = StringUtil.upperCase(${assetTypeLocator});
-
-		MenuItem.click(menuItem = ${assetType});
-	}
-
-	@summary = "Default summary"
 	macro gotoBookmarksSelectionPG(assetType = null) {
 		Portlet.clickPortletPlusIconPG(portletName = "Bookmarks");
 
@@ -54,53 +39,24 @@ definition {
 			Panel.expandPanel(panel = "Related Assets");
 		}
 
-		RelatedAssets._selectAssetType(assetType = ${assetType});
+		AssertClick(
+			locator1 = "AssetRelatedAssets#RELATED_ASSETS_SELECT",
+			value1 = "Select");
 
-		SelectFrame(value1 = "relative=top");
-
-		SelectFrame(
-			key_title = "Select ${assetType}",
-			locator1 = "IFrame#MODAL_ANY");
-
-		if (isSet(scopeSite)) {
-			ManagementBar.setFilterAndOrder(filterBy = ${scopeSite});
-		}
+		WaitForVisible(locator1 = "ItemSelector#INLINE_MODAL");
 
 		if (isSet(assetAll)) {
-			PortletEntry.selectAll();
+			Click(locator1 = "ItemSelector#INLINE_MODAL_SELECT_ALL_CHECKBOX");
 		}
 		else {
-			if (isSet(depotName)) {
-				AssertClick(
-					key_breadcrumbName = "Sites and Libraries",
-					locator1 = "Breadcrumb#BREADCRUMB_ENTRY",
-					value1 = "Sites and Libraries");
+			var key_itemTitle = ${assetTitle};
 
-				AssertClick(
-					key_groupTab = "Asset Library",
-					locator1 = "ItemSelector#NAVIGATION_GROUP_TAB",
-					value1 = "Asset Library");
-
-				LexiconCard.clickCard(card = ${depotName});
-			}
-			else if (isSet(otherSite)) {
-				Click(
-					key_breadcrumbName = "Sites and Libraries",
-					locator1 = "Breadcrumb#BREADCRUMB_ENTRY");
-
-				LexiconCard.clickCard(card = ${otherSite});
-			}
-
-			LexiconEntry.changeDisplayStyle(displayStyle = "table");
-
-			Click(
-				key_assetTitle = ${assetTitle},
-				locator1 = "AssetRelatedAssets#ASSET_TABLE_CHECKBOX");
+			Click(locator1 = "ItemSelector#INLINE_MODAL_ROW_CHECKBOX");
 		}
 
-		SelectFrame(value1 = "relative=top");
+		Click(locator1 = "ItemSelector#INLINE_MODAL_SELECT_BUTTON");
 
-		Button.clickDone();
+		WaitForElementNotPresent(locator1 = "ItemSelector#INLINE_MODAL");
 	}
 
 	@summary = "Default summary"
