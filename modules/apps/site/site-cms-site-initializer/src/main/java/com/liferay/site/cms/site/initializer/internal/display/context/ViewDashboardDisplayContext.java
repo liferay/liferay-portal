@@ -6,6 +6,10 @@
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.depot.service.DepotEntryService;
 import com.liferay.document.library.configuration.DLConfiguration;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -22,6 +26,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -38,6 +44,8 @@ import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRe
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,7 +55,10 @@ public class ViewDashboardDisplayContext {
 
 	public ViewDashboardDisplayContext(
 		AnalyticsSettingsManager analyticsSettingsManager,
-		DLConfiguration dlConfiguration, GroupLocalService groupLocalService,
+		DepotEntryLocalService depotEntryLocalService,
+		ModelResourcePermission<DepotEntry> depotEntryModelResourcePermission,
+		DepotEntryService depotEntryService, DLConfiguration dlConfiguration,
+		GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest,
 		ObjectDefinitionService objectDefinitionService,
 		RoleLocalService roleLocalService, ThemeDisplay themeDisplay,
@@ -55,6 +66,9 @@ public class ViewDashboardDisplayContext {
 			translationInfoItemFieldValuesExporterRegistry) {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
+		_depotEntryLocalService = depotEntryLocalService;
+		_depotEntryModelResourcePermission = depotEntryModelResourcePermission;
+		_depotEntryService = depotEntryService;
 		_dlConfiguration = dlConfiguration;
 		_groupLocalService = groupLocalService;
 		_httpServletRequest = httpServletRequest;
@@ -83,6 +97,8 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"admin", () -> _hasUserRole(RoleConstants.ADMINISTRATOR)
 		).put(
+			"administeredSpaceIds", () -> _getAdministeredDepotEntryIds()
+		).put(
 			"analyticsEnabled",
 			() -> {
 				try {
@@ -95,8 +111,6 @@ public class ViewDashboardDisplayContext {
 					return false;
 				}
 			}
-		).put(
-			"cmsAdmin", () -> _isCMSAdmin()
 		).put(
 			"constants", getConstants()
 		).put(
@@ -237,6 +251,35 @@ public class ViewDashboardDisplayContext {
 		).build();
 	}
 
+	private List<String> _getAdministeredDepotEntryIds()
+		throws PortalException {
+
+		List<String> administeredDepotEntryIds = new ArrayList<>();
+
+		for (long groupId :
+				_depotEntryService.getDepotEntryGroupIds(
+					_themeDisplay.getCompanyId(), _themeDisplay.getUserId(),
+					DepotConstants.TYPE_SPACE)) {
+
+			DepotEntry depotEntry =
+				_depotEntryLocalService.fetchGroupDepotEntry(groupId);
+
+			if (depotEntry == null) {
+				continue;
+			}
+
+			if (_depotEntryModelResourcePermission.contains(
+					_themeDisplay.getPermissionChecker(), depotEntry,
+					ActionKeys.VIEW_SITE_ADMINISTRATION)) {
+
+				administeredDepotEntryIds.add(
+					String.valueOf(depotEntry.getDepotEntryId()));
+			}
+		}
+
+		return administeredDepotEntryIds;
+	}
+
 	private Long _getCMSGroupId() {
 		try {
 			Group group = _groupLocalService.getGroup(
@@ -257,20 +300,14 @@ public class ViewDashboardDisplayContext {
 			true);
 	}
 
-	private boolean _isCMSAdmin() throws PortalException {
-		if (_hasUserRole(RoleConstants.ADMINISTRATOR) ||
-			_hasUserRole(RoleConstants.CMS_ADMINISTRATOR)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewDashboardDisplayContext.class);
 
 	private final AnalyticsSettingsManager _analyticsSettingsManager;
+	private final DepotEntryLocalService _depotEntryLocalService;
+	private final ModelResourcePermission<DepotEntry>
+		_depotEntryModelResourcePermission;
+	private final DepotEntryService _depotEntryService;
 	private final DLConfiguration _dlConfiguration;
 	private final GroupLocalService _groupLocalService;
 	private final HttpServletRequest _httpServletRequest;
