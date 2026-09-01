@@ -13,6 +13,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -41,6 +43,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -75,6 +78,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
  * @author Lourdes Fernández Besada
  */
 @RunWith(Arquillian.class)
+@Sync
 public class SaveCompanyConfigurationMVCActionCommandTest {
 
 	@ClassRule
@@ -171,14 +175,27 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		Assert.assertFalse(
 			_sitemapStorageHelper.hasSitemapFiles(_company.getCompanyId()));
 
-		_processSaveCompanyConfiguration(true, false);
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						_company.getCompanyId(),
+						_PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", true
+						).put(
+							"xmlSitemapIndexEnabled", true
+						).put(
+							"xmlSitemapIndexMode",
+							SitemapConstants.INDEX_MODE_ASSET_TYPE
+						).build())) {
 
-		try {
-			Assert.assertTrue(_getRegenerateSitemapScheduledJobsCount() > 0);
-		}
-		catch (AssertionError assertionError) {
-			Assert.assertTrue(
-				_sitemapStorageHelper.hasSitemapFiles(_company.getCompanyId()));
+			_processSaveCompanyConfiguration(true, false);
+
+			if (_getRegenerateSitemapScheduledJobsCount() <= 0) {
+				Assert.assertTrue(
+					_sitemapStorageHelper.hasSitemapFiles(
+						_company.getCompanyId()));
+			}
 		}
 	}
 
@@ -439,13 +456,29 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 		_deleteRegenerateSitemapScheduledJobs();
 
-		_processSaveCompanyConfiguration(true, saveAndGenerate);
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						companyId, _PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", true
+						).put(
+							"xmlSitemapIndexEnabled", true
+						).put(
+							"xmlSitemapIndexMode",
+							SitemapConstants.INDEX_MODE_ASSET_TYPE
+						).build())) {
 
-		if (expectRegeneration) {
-			Assert.assertTrue(_getRegenerateSitemapScheduledJobsCount() > 0);
-		}
-		else {
-			Assert.assertEquals(0, _getRegenerateSitemapScheduledJobsCount());
+			_processSaveCompanyConfiguration(true, saveAndGenerate);
+
+			if (expectRegeneration) {
+				Assert.assertTrue(
+					_getRegenerateSitemapScheduledJobsCount() > 0);
+			}
+			else {
+				Assert.assertEquals(
+					0, _getRegenerateSitemapScheduledJobsCount());
+			}
 		}
 	}
 
