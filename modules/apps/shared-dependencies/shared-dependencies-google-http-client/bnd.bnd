@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Shared Dependencies Google HTTP Client
 Bundle-SymbolicName: com.liferay.shared.dependencies.google.http.client
-Bundle-Version: 1.0.5
+Bundle-Version: 1.0.6
 Import-Package:\
 	!com.google.appengine.api.datastore,\
 	!com.google.appengine.api.memcache,\
