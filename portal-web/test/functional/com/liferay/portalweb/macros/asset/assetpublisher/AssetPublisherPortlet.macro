@@ -446,30 +446,26 @@ definition {
 				Click(locator1 = "APConfiguration#ASSET_SELECTION_MANUAL_ASSET_ENTRIES_SELECT_BUTTON");
 			}
 
-			var key_assetType = ${assetType};
-
-			MenuItem.click(menuItem = ${assetType});
-
-			WaitForElementPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_SELECT_ASSET_ENTRIES_DIALOG");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+			WaitForElementPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_MODAL");
 
 			if (isSet(assetTitle)) {
 				var key_assetTitle = ${assetTitle};
 
 				if (isSet(viewNoRelatedAsset)) {
-					AssertElementNotPresent(
-						key_rowEntry = ${assetTitle},
-						locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_CHECKBOX");
+					AssertElementNotPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ROW_CHECKBOX");
+
+					Click(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_CANCEL_BUTTON");
+
+					WaitForElementNotPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_MODAL");
 				}
 				else {
-					WaitForElementPresent(
-						key_rowEntry = ${assetTitle},
-						locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_CHECKBOX");
+					WaitForElementPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ROW_CHECKBOX");
 
-					Click(
-						key_rowEntry = ${assetTitle},
-						locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_CHECKBOX");
+					Click(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ROW_CHECKBOX");
+
+					Click(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ADD_BUTTON");
+
+					WaitForElementNotPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_MODAL");
 				}
 			}
 
@@ -484,13 +480,11 @@ definition {
 					value1 = ${searchInfo});
 
 				PortletEntry.selectAll();
+
+				Click(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ADD_BUTTON");
+
+				WaitForElementNotPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_MODAL");
 			}
-
-			SelectFrameParent();
-
-			Button.click(button = "Add");
-
-			Alert.viewSuccessMessage();
 		}
 
 		SelectFrameTop();

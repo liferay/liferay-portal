@@ -20,6 +20,26 @@
 	<td>//*[contains(@id,'selectAsset')]//*[contains(@class,'modal-dialog')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>ASSET_SELECTION_MANUAL_ITEM_SELECTOR_MODAL</td>
+	<td>//div[contains(@class,'modal-content')][.//button[contains(@class,'selector-button')]]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ROW_CHECKBOX</td>
+	<td>//div[contains(@class,'modal-content')]//tr[.//td[contains(normalize-space(),'${key_assetTitle}')]]//td[contains(@class,'cell-select-item')]//label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ADD_BUTTON</td>
+	<td>//div[contains(@class,'modal-footer')]//button[contains(@class,'selector-button')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_SELECTION_MANUAL_ITEM_SELECTOR_CANCEL_BUTTON</td>
+	<td>//div[contains(@class,'modal-footer')]//button[contains(@class,'btn-cancel')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
