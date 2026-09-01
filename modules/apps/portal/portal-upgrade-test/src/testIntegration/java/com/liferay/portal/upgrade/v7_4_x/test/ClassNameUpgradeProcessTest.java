@@ -78,6 +78,9 @@ public class ClassNameUpgradeProcessTest {
 
 		long newStructureId = _addDDMStructure(newClassNameId);
 
+		long newStructureVersionId = _addDDMStructureRelatedTables(
+			newStructureId);
+
 		long oldClassNameId = _addClassName(_OLD_CLASS_NAME);
 
 		long oldStructureId = _addDDMStructure(oldClassNameId);
@@ -89,6 +92,11 @@ public class ClassNameUpgradeProcessTest {
 		Assert.assertEquals(0, _getDDMStructureClassNameId(newStructureId));
 		Assert.assertEquals(
 			newClassNameId, _getDDMStructureClassNameId(oldStructureId));
+		Assert.assertEquals(
+			0,
+			_count(
+				"DDMStructureLayout", "structureVersionId",
+				newStructureVersionId));
 	}
 
 	@Test
@@ -110,11 +118,19 @@ public class ClassNameUpgradeProcessTest {
 
 		long oldStructureId = _addDDMStructure(oldClassNameId);
 
+		long oldStructureVersionId = _addDDMStructureRelatedTables(
+			oldStructureId);
+
 		runUpgrade();
 
 		Assert.assertEquals(
 			newClassNameId, _getDDMStructureClassNameId(newStructureId));
 		Assert.assertEquals(0, _getDDMStructureClassNameId(oldStructureId));
+		Assert.assertEquals(
+			0,
+			_count(
+				"DDMStructureLayout", "structureVersionId",
+				oldStructureVersionId));
 	}
 
 	@Test
