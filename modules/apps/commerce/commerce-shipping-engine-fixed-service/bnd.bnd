@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Shipping Engine Fixed Service
 Bundle-SymbolicName: com.liferay.commerce.shipping.engine.fixed.service
-Bundle-Version: 4.0.67
+Bundle-Version: 4.0.68
 Liferay-Require-SchemaVersion: 2.4.0
 Liferay-Service: true
 -dsannotations-options: inherit
