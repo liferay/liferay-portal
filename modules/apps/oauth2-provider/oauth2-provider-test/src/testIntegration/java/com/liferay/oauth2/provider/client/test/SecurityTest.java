@@ -392,11 +392,10 @@ public class SecurityTest extends BaseClientTestCase {
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
 				null);
 
-		Response response = getCodeFunction(
-			authorizeRequestFunction, true
-		).apply(
-			invocationBuilderFunction
-		);
+		Function<Function<WebTarget, Invocation.Builder>, Response>
+			codeFunction = getCodeFunction(authorizeRequestFunction, true);
+
+		Response response = codeFunction.apply(invocationBuilderFunction);
 
 		URI uri = response.getLocation();
 
