@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Tax Engine Fixed Service
 Bundle-SymbolicName: com.liferay.commerce.tax.engine.fixed.service
-Bundle-Version: 4.0.56
+Bundle-Version: 4.0.57
 Liferay-Require-SchemaVersion: 2.1.0
 Liferay-Service: true
 -dsannotations-options: inherit
