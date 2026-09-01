@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Admin Address API
 Bundle-SymbolicName: com.liferay.headless.admin.address.api
-Bundle-Version: 5.0.3
+Bundle-Version: 5.0.4
 Export-Package:\
 	com.liferay.headless.admin.address.dto.v1_0,\
 	com.liferay.headless.admin.address.resource.v1_0
