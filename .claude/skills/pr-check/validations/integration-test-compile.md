@@ -37,8 +37,10 @@ Convert each module directory to a Gradle project path by stripping `modules/` a
 ("${REPO_ROOT}/gradlew" \
 	--parallel \
 	--project-dir "${REPO_ROOT}/modules" \
-	:<path>:compileTestIntegrationJava)
+	:<path>:compileTestIntegrationJava --rerun)
 ```
+
+Keep `--rerun`, which is an option on the compile task and so follows the task path. Without it this validation reports a green log for a branch it never compiled. A warm tree prints `compileTestIntegrationJava UP-TO-DATE` against outputs older than the branch sources, and clearing the output directory alone only downgrades that to `FROM-CACHE`. Read the task line before the build result, and treat a `BUILD SUCCESSFUL` whose compile task did not execute as no evidence at all.
 
 FAIL when a compile reports `BUILD FAILED` on an error naming something the diff changed, and report the module and the error.
 
