@@ -307,21 +307,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro openDepotExportImportAdmin(depotName = null) {
-		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
-
-		if (isSet(exportAdmin)) {
-			var portletName = "ExportPortlet";
-		}
-
-		if (isSet(importAdmin)) {
-			var portletName = "ImportPortlet";
-		}
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/asset-library-${depotId}/~/control_panel/manage?p_p_id=com_liferay_exportimport_web_portlet_${portletName}");
-	}
-
-	@summary = "Default summary"
 	macro openDepotLanguages(defaultLocale = null, depotName = null) {
 		var depotId = JSONGroupAPI._getDepotIdByName(
 			defaultLocale = ${defaultLocale},
