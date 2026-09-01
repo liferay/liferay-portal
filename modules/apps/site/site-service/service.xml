@@ -48,4 +48,33 @@
 			<finder-column name="languageId" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="SiteSitemapRegenerationEntry" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="siteSitemapRegenerationEntryId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="assetTypeKey" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="G_C_A" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="companyId" />
+			<finder-column name="assetTypeKey" />
+		</finder>
+	</entity>
 </service-builder>
