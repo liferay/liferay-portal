@@ -892,12 +892,12 @@ gradle.beforeProject {
 
 				dependencies {
 					compileJspClasspath files(Project.class.classLoader.getURLs())
-					compileJspClasspath group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.57"
+					compileJspClasspath group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.59"
 					compileJspClasspathTransform group: "com.liferay", name: "com.liferay.gradle.plugins.jasper.jspc", transitive: false, version: "2.0.20"
 					jspCClasspath files(tasks.named(sourceSets.main.compileJavaTaskName))
 					jspCClasspath files(tasks.named(sourceSets.main.processResourcesTaskName))
 					jspCClasspath group: "jakarta.servlet.jsp.jstl", name: "jakarta.servlet.jsp.jstl-api", version: "3.0.2"
-					jspCClasspath group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.57"
+					jspCClasspath group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.59"
 					jspCClasspath group: "org.glassfish.web", name: "jakarta.servlet.jsp.jstl", version: "3.0.1"
 				}
 

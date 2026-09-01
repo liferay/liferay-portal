@@ -17,7 +17,7 @@ dependencies {
 	compileOnly fileTree(builtBy: [rootProject.tasks.getByName("extractGradleApi" + gradleVersion.replace(".", ""))], dir: new File(rootProject.buildDir, "gradle-${gradleVersion}"))
 	implementation group: "com.liferay", name: "com.liferay.gradle.util", version: "1.0.53"
 	implementation group: "jakarta.servlet.jsp.jstl", name: "jakarta.servlet.jsp.jstl-api", version: "3.0.2"
-	implementation group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.57"
+	implementation group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.59"
 	implementation group: "org.glassfish.web", name: "jakarta.servlet.jsp.jstl", version: "3.0.1"
 }
 
