@@ -391,68 +391,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _selectImportFileWithDeleteApplicationData(uploadFrom = null, importDeletions = null, importPermissions = null, larFileName = null, copyAsNew = null) {
-		SelectFrame(locator1 = "IFrame#CONFIGURATION");
-
-		NavItem.click(navItem = "Import");
-
-		AssertElementPresent(locator1 = "Button#SELECT_FILE");
-
-		if (${uploadFrom} == "dependencies") {
-			UploadDependencyFile.uploadArchiveFile(fileName = ${larFileName});
-		}
-		else {
-			LAR._prepareImportFile(larFileName = ${larFileName});
-
-			UploadTempFile.uploadTempFileHiddenNoMouseOver(
-				locator1 = "TextInput#FILE",
-				value1 = ${larFileName});
-		}
-
-		AssertClickNoError(
-			locator1 = "Button#CONTINUE",
-			value1 = "Continue");
-
-		WaitForElementPresent(locator1 = "Button#BACK");
-
-		if (${copyAsNew} == "true") {
-			LAR._copyAsNew();
-		}
-
-		Check.checkNotVisible(
-			checkboxName = "Delete Application Data Before Importing",
-			locator1 = "Checkbox#ANY_CHECKBOX");
-
-		if (${importDeletions} == "true") {
-			Check.checkNotVisibleNoErrors(locator1 = "Checkbox#DELETIONS");
-		}
-
-		if (isSet(portletName)) {
-			if (IsNotChecked(locator1 = "ExportImport#CONTENT")) {
-				Check(locator1 = "ExportImport#CONTENT");
-			}
-		}
-
-		if (${importPermissions} == "true") {
-			Check.checkToggleSwitch(locator1 = "Checkbox#PERMISSIONS");
-		}
-
-		AssertVisible(locator1 = "Link#BACK");
-
-		AssertClickNoError(
-			key_text = "Import",
-			locator1 = "Button#ANY",
-			value1 = "Import");
-
-		if (isSet(cancelImport)) {
-			Confirm.dismissAlert();
-		}
-		else {
-			AssertConfirm(value1 = "Deleting application data before importing cannot be undone. Some applications in other pages might be referencing this data. Are you sure you want to continue deleting application data?");
-		}
-	}
-
-	@summary = "Default summary"
 	macro addExportTemplateCP(exportTemplateName = null, exportTemplateDescription = null) {
 		LexiconEntry.gotoHeaderMenuItem(menuItem = "Export Templates");
 
@@ -714,32 +652,6 @@ definition {
 		else {
 			IFrame.closeFrame();
 		}
-	}
-
-	@summary = "Default summary"
-	macro importPortletWithDeleteApplicationData(cancelImport = null, uploadFrom = null, initializeLiferayEvent = null, importDeletions = null, importPermissions = null, larFileName = null, copyAsNew = null, portletName = null) {
-		if (${copyAsNew} == "true") {
-			Staging.enableCopyAsNewImport();
-		}
-
-		LAR._gotoExportImport(initializeLiferayEvent = ${initializeLiferayEvent});
-
-		LAR._selectImportFileWithDeleteApplicationData(
-			cancelImport = ${cancelImport},
-			copyAsNew = ${copyAsNew},
-			importDeletions = ${importDeletions},
-			importPermissions = ${importPermissions},
-			larFileName = ${larFileName},
-			portletName = ${portletName},
-			uploadFrom = ${uploadFrom});
-
-		if (isSet(cancelImport)) {
-			WaitForElementPresent(
-				checkboxName = "Delete Application Data Before Importing",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-
-		IFrame.closeFrame();
 	}
 
 	@summary = "Default summary"
