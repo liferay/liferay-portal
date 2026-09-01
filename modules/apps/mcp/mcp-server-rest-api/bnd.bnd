@@ -1,6 +1,6 @@
 Bundle-Name: Liferay MCP Server REST API
 Bundle-SymbolicName: com.liferay.mcp.server.rest.api
-Bundle-Version: 2.0.1
+Bundle-Version: 2.0.2
 Export-Package:\
 	com.liferay.mcp.server.rest.dto.v1_0,\
 	com.liferay.mcp.server.rest.resource.v1_0
