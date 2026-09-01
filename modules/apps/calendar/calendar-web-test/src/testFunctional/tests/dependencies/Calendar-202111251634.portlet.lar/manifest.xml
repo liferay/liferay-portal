@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<root>
-	<header available-locales="en_US,ar_SA,ca_ES,zh_CN,nl_NL,fi_FI,fr_FR,de_DE,hu_HU,ja_JP,pt_BR,es_ES,sv_SE" build-number="7412" company-group-id="20125" company-id="20099" export-date="Thu, 25 Nov 2021 16:34:32 +0000" group-id="20123" private-layout="false" root-portlet-id="com_liferay_calendar_web_portlet_CalendarPortlet" schema-version="4.0.0" type="portlet" user-personal-site-group-id="20124" />
-	<missing-references/>
-	<portlet layout-id="4" path="/group/20123/portlet/com_liferay_calendar_web_portlet_CalendarPortlet_INSTANCE_fk3O6Z6LTz81/12/portlet.xml" portlet-configuration="setup" portlet-data="false" portlet-id="com_liferay_calendar_web_portlet_CalendarPortlet_INSTANCE_fk3O6Z6LTz81" schema-version="4.0.0" />
-	<manifest-summary/>
-</root>

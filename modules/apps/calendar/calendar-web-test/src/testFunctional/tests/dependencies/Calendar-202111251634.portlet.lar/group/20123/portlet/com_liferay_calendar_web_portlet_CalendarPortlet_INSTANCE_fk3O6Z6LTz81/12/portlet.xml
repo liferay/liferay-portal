@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-
-<portlet portlet-id="com_liferay_calendar_web_portlet_CalendarPortlet_INSTANCE_fk3O6Z6LTz81" private-layout="false" root-portlet-id="com_liferay_calendar_web_portlet_CalendarPortlet" scope-group-id="20123" scope-layout-type="" scope-layout-uuid="" self-path="/group/20123/portlet/com_liferay_calendar_web_portlet_CalendarPortlet_INSTANCE_fk3O6Z6LTz81/12/portlet.xml">
-	<portlet-preferences path="/group/20123/portlet/com_liferay_calendar_web_portlet_CalendarPortlet_INSTANCE_fk3O6Z6LTz81/preferences/layout/0/12/portlet-preferences.xml">
-		<preference-data/>
-	</portlet-preferences>
-</portlet>
