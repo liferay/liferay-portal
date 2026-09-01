@@ -32,31 +32,37 @@ import VersionsTabContent from './VersionsTabContent';
 export const TABS = {
 	CATEGORIZATION: {
 		component: CategorizationTabContent,
+		icon: 'categories',
 		id: 'categorization',
 		name: Liferay.Language.get('categorization'),
 	},
 	COMMENTS: {
 		component: CommentsTabContent,
+		icon: 'comments',
 		id: 'comments',
 		name: Liferay.Language.get('comments'),
 	},
 	DETAILS: {
 		component: DetailsTabContent,
+		icon: 'info-circle',
 		id: 'details',
 		name: Liferay.Language.get('details'),
 	},
 	PERFORMANCE: {
 		component: PerformanceTabContent,
+		icon: 'analytics',
 		id: 'performance',
 		name: Liferay.Language.get('performance'),
 	},
 	PROJECTS: {
 		component: ProjectsTabContent,
+		icon: 'archive',
 		id: 'projects',
 		name: Liferay.Language.get('projects'),
 	},
 	VERSIONS: {
 		component: VersionsTabContent,
+		icon: 'time',
 		id: 'versions',
 		name: Liferay.Language.get('versions'),
 	},
