@@ -2412,7 +2412,7 @@ test.describe('Manage object relationships through Objects Admin UI', () => {
 		}
 	);
 
-	test('object relationship autocomplete field filters object definition by label', async ({
+	test('object relationship autocomplete field loads more object definitions on scroll', async ({
 		apiHelpers,
 		objectRelationshipsPage,
 		page,
@@ -2454,22 +2454,26 @@ test.describe('Manage object relationships through Objects Admin UI', () => {
 
 		await manyRecordsInput.fill(objectDefinitionERCPrefix);
 
-		const options = page.getByRole('option');
+		const lastObjectDefinitionOption = page.getByRole('option', {
+			name: objectDefinitionERCPrefix + '9',
+		});
 
-		await expect(options).toHaveCount(20);
+		await expect(async () => {
+			await page.getByRole('listbox').evaluate((listbox) => {
+				const menu = listbox.parentElement as HTMLElement;
 
-		await expect(
-			page.getByRole('option', {name: objectDefinitionERCPrefix + '21'})
-		).toHaveCount(0);
+				menu.scrollTo(0, menu.scrollHeight);
+			});
 
-		await manyRecordsInput.fill(objectDefinitionERCPrefix + '21');
+			await expect(lastObjectDefinitionOption).toBeVisible({
+				timeout: 2000,
+			});
+		}).toPass();
 
-		await page
-			.getByRole('option', {name: objectDefinitionERCPrefix + '21'})
-			.click();
+		await lastObjectDefinitionOption.click();
 
 		await expect(manyRecordsInput).toHaveValue(
-			objectDefinitionERCPrefix + '21'
+			objectDefinitionERCPrefix + '9'
 		);
 
 		await objectRelationshipFormPage.reverseOrderButton.click();
