@@ -907,4 +907,55 @@ describe('Autocomplete incremental interactions', () => {
 			);
 		});
 	});
+
+	it('renders the caption pinned at the bottom of the menu', () => {
+		const {getByRole, getByText} = render(
+			<ClayAutocomplete
+				caption={<span aria-hidden="true">Showing 3 of 30 Items</span>}
+				messages={messages}
+				placeholder="Enter a number from One to Five"
+			>
+				{['one', 'two', 'three'].map((item) => (
+					<ClayAutocomplete.Item key={item}>
+						{item}
+					</ClayAutocomplete.Item>
+				))}
+			</ClayAutocomplete>
+		);
+
+		userEvent.type(getByRole('combobox'), 't');
+
+		const caption = getByText('Showing 3 of 30 Items');
+
+		expect(caption).toHaveAttribute('aria-hidden', 'true');
+
+		expect(caption.parentElement!.classList).toContain('dropdown-caption');
+
+		expect(getByRole('listbox').parentElement!.classList).toContain(
+			'dropdown-menu-has-caption'
+		);
+	});
+
+	it('does not render a caption or its menu class when the prop is omitted', () => {
+		const {getByRole, queryByText} = render(
+			<ClayAutocomplete
+				messages={messages}
+				placeholder="Enter a number from One to Five"
+			>
+				{['one', 'two', 'three'].map((item) => (
+					<ClayAutocomplete.Item key={item}>
+						{item}
+					</ClayAutocomplete.Item>
+				))}
+			</ClayAutocomplete>
+		);
+
+		userEvent.type(getByRole('combobox'), 't');
+
+		expect(queryByText(/Showing/)).toBeNull();
+
+		expect(getByRole('listbox').parentElement!.classList).not.toContain(
+			'dropdown-menu-has-caption'
+		);
+	});
 });
