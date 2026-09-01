@@ -248,6 +248,34 @@ public class CPConfigurationListLocalServiceTest {
 			WorkflowConstants.STATUS_APPROVED, cpConfigurationList.getStatus());
 	}
 
+	@Test
+	public void testUpdateExternalReferenceCode() throws Exception {
+		frutillaRule.scenario(
+			"Update the external reference code of a Product Configuration List"
+		).given(
+			"A Product Configuration List"
+		).when(
+			"Its external reference code is updated"
+		).then(
+			"The external reference code is changed"
+		);
+
+		CPConfigurationList cpConfigurationList = _addCPConfigurationList(
+			RandomTestUtil.randomString(), _commerceCatalog.getGroupId(), 0,
+			false, RandomTestUtil.randomString());
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		cpConfigurationList =
+			_cpConfigurationListLocalService.updateExternalReferenceCode(
+				cpConfigurationList.getCPConfigurationListId(),
+				externalReferenceCode);
+
+		Assert.assertEquals(
+			externalReferenceCode,
+			cpConfigurationList.getExternalReferenceCode());
+	}
+
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
 
