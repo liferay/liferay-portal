@@ -28,6 +28,7 @@ import {
 	isStageConfigured,
 	resolveOperatorType,
 } from 'lifecycle/utils/lifecycleOperators';
+import {removeAtIndex} from 'shared/util/array';
 import {sub} from 'shared/util/lang';
 
 interface IPickerTriggerButtonProps
@@ -103,6 +104,12 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 		onChange({
 			...value,
 			conditions: [...conditions, createStageCondition()],
+		});
+
+	const removeCondition = (conditionIndex: number) =>
+		onChange({
+			...value,
+			conditions: removeAtIndex(conditions, conditionIndex),
 		});
 
 	const configured = isStageConfigured(value);
@@ -308,6 +315,19 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 					{condition.operator &&
 						!isValuelessOperator &&
 						renderValueInput(condition, conditionIndex)}
+
+					{conditionIndex > 0 && (
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get('remove')}
+							className="ml-auto text-secondary"
+							data-tooltip-align="top"
+							displayType="unstyled"
+							onClick={() => removeCondition(conditionIndex)}
+							size="xs"
+							symbol="times-circle"
+							title={Liferay.Language.get('remove')}
+						/>
+					)}
 				</div>
 
 				{incomplete && (

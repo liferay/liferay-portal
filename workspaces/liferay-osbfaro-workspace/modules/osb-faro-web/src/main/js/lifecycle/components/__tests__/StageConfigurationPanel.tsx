@@ -519,6 +519,40 @@ describe('StageConfigurationPanel', () => {
 		expect(screen.queryByText('Or')).toBeNull();
 	});
 
+	it('offers no remove control while a stage holds one condition', () => {
+		renderPanel({value: withCondition(textCondition)});
+
+		expect(screen.queryByLabelText(/remove/i)).toBeNull();
+	});
+
+	it('offers a remove control on every condition but the first', () => {
+		renderPanel({value: withConditions([textCondition, textCondition])});
+
+		expect(screen.getAllByLabelText(/remove/i)).toHaveLength(1);
+	});
+
+	it('removes the condition its remove control belongs to', () => {
+		const onChange = jest.fn();
+
+		renderPanel({
+			onChange,
+			value: withConditions([
+				textCondition,
+				{...textCondition, conditionValue: 'Finance'},
+			]),
+		});
+
+		fireEvent.click(screen.getByLabelText(/remove/i));
+
+		expect(onChange).toHaveBeenCalledWith(
+			expect.objectContaining({
+				conditions: [
+					expect.objectContaining({conditionValue: 'Retail'}),
+				],
+			})
+		);
+	});
+
 	it('edits the condition the changed row belongs to', () => {
 		const onChange = jest.fn();
 
