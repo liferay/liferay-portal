@@ -4,8 +4,11 @@
  */
 
 export const FIELD_TYPES = {
+	HTML: 'html',
 	TEXT: 'text',
 };
+
+export const TEXT_FIELD_TYPES = [FIELD_TYPES.HTML, FIELD_TYPES.TEXT];
 
 export const UNMAPPED_OPTION = {
 	key: 'unmapped',

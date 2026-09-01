@@ -8,6 +8,7 @@ import {PropTypes} from 'prop-types';
 import React from 'react';
 
 import MappingFields from './components/MappingFields';
+import {TEXT_FIELD_TYPES} from './constants';
 
 export default function OpenGraphMapping({
 	fields,
@@ -23,7 +24,7 @@ export default function OpenGraphMapping({
 			fields={fields}
 			inputs={[
 				{
-					fieldTypes: ['html', 'text'],
+					fieldTypes: TEXT_FIELD_TYPES,
 					helpMessage: sub(
 						Liferay.Language.get(
 							'map-a-x-field-it-will-be-used-as-x'
@@ -37,7 +38,7 @@ export default function OpenGraphMapping({
 				},
 				{
 					component: 'textarea',
-					fieldTypes: ['html', 'text'],
+					fieldTypes: TEXT_FIELD_TYPES,
 					helpMessage: sub(
 						Liferay.Language.get(
 							'map-a-x-field-it-will-be-used-as-x'
@@ -64,7 +65,7 @@ export default function OpenGraphMapping({
 				},
 				{
 					component: 'textarea',
-					fieldTypes: ['html', 'text'],
+					fieldTypes: TEXT_FIELD_TYPES,
 					helpMessage: sub(
 						Liferay.Language.get(
 							'map-a-x-field-it-will-be-used-as-x'
