@@ -508,6 +508,14 @@ public class LayoutPageTemplateEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_C_C_TArrayable() throws Exception {
+		_persistence.countByG_C_C_T(
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.nextInt());
+	}
+
+	@Test
 	public void testCountByG_C_C_D() throws Exception {
 		_persistence.countByG_C_C_D(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "",
@@ -569,6 +577,14 @@ public class LayoutPageTemplateEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_C_C_LikeN_TArrayable() throws Exception {
+		_persistence.countByG_C_C_LikeN_T(
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.nextInt());
+	}
+
+	@Test
 	public void testCountByG_C_C_T_S() throws Exception {
 		_persistence.countByG_C_C_T_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "",
@@ -577,6 +593,14 @@ public class LayoutPageTemplateEntryPersistenceTest {
 		_persistence.countByG_C_C_T_S(0L, 0L, "null", 0, 0);
 
 		_persistence.countByG_C_C_T_S(0L, 0L, (String)null, 0, 0);
+	}
+
+	@Test
+	public void testCountByG_C_C_T_SArrayable() throws Exception {
+		_persistence.countByG_C_C_T_S(
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt());
 	}
 
 	@Test
@@ -602,6 +626,15 @@ public class LayoutPageTemplateEntryPersistenceTest {
 
 		_persistence.countByG_C_C_LikeN_T_S(
 			0L, 0L, (String)null, (String)null, 0, 0);
+	}
+
+	@Test
+	public void testCountByG_C_C_LikeN_T_SArrayable() throws Exception {
+		_persistence.countByG_C_C_LikeN_T_S(
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.nextInt(),
+			RandomTestUtil.nextInt());
 	}
 
 	@Test
@@ -1112,4 +1145,4 @@ public class LayoutPageTemplateEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1732224641
+// LIFERAY-SERVICE-BUILDER-HASH:1613404101

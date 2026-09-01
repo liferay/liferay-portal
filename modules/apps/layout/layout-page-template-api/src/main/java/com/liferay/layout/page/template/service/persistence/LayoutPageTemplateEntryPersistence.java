@@ -2185,6 +2185,52 @@ public interface LayoutPageTemplateEntryPersistence
 			<LayoutPageTemplateEntry> orderByComparator);
 
 	/**
+	 * Returns an ordered range of all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template entries that the user has permission to view
+	 */
+	public java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator,
+		boolean useFinderCache);
+
+	/**
 	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; from the database.
 	 *
 	 * @param groupId the group ID
@@ -2208,6 +2254,18 @@ public interface LayoutPageTemplateEntryPersistence
 		long groupId, long classNameId, String classTypeKey, int type);
 
 	/**
+	 * Returns the number of layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @return the number of matching layout page template entries
+	 */
+	public int countByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type);
+
+	/**
 	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -2218,6 +2276,18 @@ public interface LayoutPageTemplateEntryPersistence
 	 */
 	public int filterCountByG_C_C_T(
 		long groupId, long classNameId, String classTypeKey, int type);
+
+	/**
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @return the number of matching layout page template entries that the user has permission to view
+	 */
+	public int filterCountByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type);
 
 	/**
 	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and defaultTemplate = &#63;.
@@ -3084,6 +3154,149 @@ public interface LayoutPageTemplateEntryPersistence
 			<LayoutPageTemplateEntry> orderByComparator);
 
 	/**
+	 * Returns all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @return the matching layout page template entries that the user has permission to view
+	 */
+	public java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type);
+
+	/**
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @return the range of matching layout page template entries that the user has permission to view
+	 */
+	public java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template entries that the user has permission to view
+	 */
+	public java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator);
+
+	/**
+	 * Returns all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @return the matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type);
+
+	/**
+	 * Returns a range of all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @return the range of matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator,
+		boolean useFinderCache);
+
+	/**
 	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; from the database.
 	 *
 	 * @param groupId the group ID
@@ -3111,6 +3324,20 @@ public interface LayoutPageTemplateEntryPersistence
 		int type);
 
 	/**
+	 * Returns the number of layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @return the number of matching layout page template entries
+	 */
+	public int countByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type);
+
+	/**
 	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -3122,6 +3349,20 @@ public interface LayoutPageTemplateEntryPersistence
 	 */
 	public int filterCountByG_C_C_LikeN_T(
 		long groupId, long classNameId, String classTypeKey, String name,
+		int type);
+
+	/**
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @return the number of matching layout page template entries that the user has permission to view
+	 */
+	public int filterCountByG_C_C_LikeN_T(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
 		int type);
 
 	/**
@@ -3209,6 +3450,54 @@ public interface LayoutPageTemplateEntryPersistence
 			<LayoutPageTemplateEntry> orderByComparator);
 
 	/**
+	 * Returns an ordered range of all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template entries that the user has permission to view
+	 */
+	public java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator,
+		boolean useFinderCache);
+
+	/**
 	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63; from the database.
 	 *
 	 * @param groupId the group ID
@@ -3236,6 +3525,20 @@ public interface LayoutPageTemplateEntryPersistence
 		int status);
 
 	/**
+	 * Returns the number of layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @return the number of matching layout page template entries
+	 */
+	public int countByG_C_C_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status);
+
+	/**
 	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -3247,6 +3550,20 @@ public interface LayoutPageTemplateEntryPersistence
 	 */
 	public int filterCountByG_C_C_T_S(
 		long groupId, long classNameId, String classTypeKey, int type,
+		int status);
+
+	/**
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @return the number of matching layout page template entries that the user has permission to view
+	 */
+	public int filterCountByG_C_C_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
 		int status);
 
 	/**
@@ -3559,6 +3876,156 @@ public interface LayoutPageTemplateEntryPersistence
 			<LayoutPageTemplateEntry> orderByComparator);
 
 	/**
+	 * Returns all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @return the matching layout page template entries that the user has permission to view
+	 */
+	public java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status);
+
+	/**
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @return the range of matching layout page template entries that the user has permission to view
+	 */
+	public java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template entries that the user has permission to view
+	 */
+	public java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator);
+
+	/**
+	 * Returns all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @return the matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status);
+
+	/**
+	 * Returns a range of all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @return the range of matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layout page template entries
+	 */
+	public java.util.List<LayoutPageTemplateEntry> findByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator,
+		boolean useFinderCache);
+
+	/**
 	 * Removes all the layout page template entries where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63; from the database.
 	 *
 	 * @param groupId the group ID
@@ -3588,6 +4055,21 @@ public interface LayoutPageTemplateEntryPersistence
 		int type, int status);
 
 	/**
+	 * Returns the number of layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @return the number of matching layout page template entries
+	 */
+	public int countByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status);
+
+	/**
 	 * Returns the number of layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -3600,6 +4082,21 @@ public interface LayoutPageTemplateEntryPersistence
 	 */
 	public int filterCountByG_C_C_LikeN_T_S(
 		long groupId, long classNameId, String classTypeKey, String name,
+		int type, int status);
+
+	/**
+	 * Returns the number of layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and name LIKE &#63; and type = &#63; and status = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param name the name
+	 * @param type the type
+	 * @param status the status
+	 * @return the number of matching layout page template entries that the user has permission to view
+	 */
+	public int filterCountByG_C_C_LikeN_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
 		int type, int status);
 
 	/**
@@ -5036,6 +5533,74 @@ public interface LayoutPageTemplateEntryPersistence
 	}
 
 	/**
+	 * Returns all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @return the matching layout page template entries
+	 */
+	public default java.util.List<LayoutPageTemplateEntry> findByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type) {
+
+		return findByG_C_C_T(
+			groupIds, classNameId, classTypeKey, type,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @return the range of matching layout page template entries
+	 */
+	public default java.util.List<LayoutPageTemplateEntry> findByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int start, int end) {
+
+		return findByG_C_C_T(
+			groupIds, classNameId, classTypeKey, type, start, end, null, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template entries
+	 */
+	public default java.util.List<LayoutPageTemplateEntry> findByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator) {
+
+		return findByG_C_C_T(
+			groupIds, classNameId, classTypeKey, type, start, end,
+			orderByComparator, true);
+	}
+
+	/**
 	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -5074,6 +5639,47 @@ public interface LayoutPageTemplateEntryPersistence
 
 		return filterFindByG_C_C_T(
 			groupId, classNameId, classTypeKey, type, start, end, null);
+	}
+
+	/**
+	 * Returns all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @return the matching layout page template entries that the user has permission to view
+	 */
+	public default java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type) {
+
+		return filterFindByG_C_C_T(
+			groupIds, classNameId, classTypeKey, type,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @return the range of matching layout page template entries that the user has permission to view
+	 */
+	public default java.util.List<LayoutPageTemplateEntry> filterFindByG_C_C_T(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int start, int end) {
+
+		return filterFindByG_C_C_T(
+			groupIds, classNameId, classTypeKey, type, start, end, null);
 	}
 
 	/**
@@ -5482,6 +6088,79 @@ public interface LayoutPageTemplateEntryPersistence
 	}
 
 	/**
+	 * Returns all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @return the matching layout page template entries
+	 */
+	public default java.util.List<LayoutPageTemplateEntry> findByG_C_C_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status) {
+
+		return findByG_C_C_T_S(
+			groupIds, classNameId, classTypeKey, type, status,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
+	}
+
+	/**
+	 * Returns a range of all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @return the range of matching layout page template entries
+	 */
+	public default java.util.List<LayoutPageTemplateEntry> findByG_C_C_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status, int start, int end) {
+
+		return findByG_C_C_T_S(
+			groupIds, classNameId, classTypeKey, type, status, start, end, null,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the layout page template entries where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layout page template entries
+	 */
+	public default java.util.List<LayoutPageTemplateEntry> findByG_C_C_T_S(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator) {
+
+		return findByG_C_C_T_S(
+			groupIds, classNameId, classTypeKey, type, status, start, end,
+			orderByComparator, true);
+	}
+
+	/**
 	 * Returns all the layout page template entries that the user has permission to view where groupId = &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -5525,6 +6204,53 @@ public interface LayoutPageTemplateEntryPersistence
 
 		return filterFindByG_C_C_T_S(
 			groupId, classNameId, classTypeKey, type, status, start, end, null);
+	}
+
+	/**
+	 * Returns all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @return the matching layout page template entries that the user has permission to view
+	 */
+	public default java.util.List<LayoutPageTemplateEntry>
+		filterFindByG_C_C_T_S(
+			long[] groupIds, long classNameId, String classTypeKey, int type,
+			int status) {
+
+		return filterFindByG_C_C_T_S(
+			groupIds, classNameId, classTypeKey, type, status,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
+			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the layout page template entries that the user has permission to view where groupId = any &#63; and classNameId = &#63; and classTypeKey = &#63; and type = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.page.template.model.impl.LayoutPageTemplateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupIds the group IDs
+	 * @param classNameId the class name ID
+	 * @param classTypeKey the class type key
+	 * @param type the type
+	 * @param status the status
+	 * @param start the lower bound of the range of layout page template entries
+	 * @param end the upper bound of the range of layout page template entries (not inclusive)
+	 * @return the range of matching layout page template entries that the user has permission to view
+	 */
+	public default java.util.List<LayoutPageTemplateEntry>
+		filterFindByG_C_C_T_S(
+			long[] groupIds, long classNameId, String classTypeKey, int type,
+			int status, int start, int end) {
+
+		return filterFindByG_C_C_T_S(
+			groupIds, classNameId, classTypeKey, type, status, start, end,
+			null);
 	}
 
 	/**
@@ -5648,4 +6374,4 @@ public interface LayoutPageTemplateEntryPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-709730791
+// LIFERAY-SERVICE-BUILDER-HASH:1553252830
