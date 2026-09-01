@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Site API
 Bundle-SymbolicName: com.liferay.headless.site.api
-Bundle-Version: 5.1.6
+Bundle-Version: 5.1.7
 Export-Package:\
 	com.liferay.headless.site.dto.v1_0,\
 	com.liferay.headless.site.resource.v1_0
