@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Language Override Web
 Bundle-SymbolicName: com.liferay.portal.language.override.web
-Bundle-Version: 1.0.55
+Bundle-Version: 1.0.56
 Web-ContextPath: /portal-language-override-web
