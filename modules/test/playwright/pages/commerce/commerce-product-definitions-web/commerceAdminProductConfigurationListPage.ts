@@ -25,6 +25,9 @@ export class CommerceAdminProductConfigurationListPage {
 	readonly displayStockQuantityInput: Locator;
 	readonly eligibilitiesTab: Locator;
 	readonly entriesMenuItem: Locator;
+	readonly ercInput: Locator;
+	readonly ercModalOpenerButton: Locator;
+	readonly ercSubmitButton: Locator;
 	readonly expirationDateInput: Locator;
 	readonly freeShippingInput: Locator;
 	readonly heightInput: Locator;
@@ -83,6 +86,13 @@ export class CommerceAdminProductConfigurationListPage {
 			name: 'Eligibility',
 		});
 		this.entriesMenuItem = page.getByRole('link', {name: 'Entries'});
+		this.ercInput = page
+			.frameLocator('iframe[title="Edit External Reference Code"]')
+			.getByLabel('External Reference Code');
+		this.ercModalOpenerButton = page.locator('#erc-edit-modal-opener');
+		this.ercSubmitButton = page
+			.locator('.modal-footer')
+			.getByRole('button', {exact: true, name: 'Submit'});
 		this.expirationDateInput = page
 			.getByTestId('expirationDate')
 			.getByLabel('Expiration Date');

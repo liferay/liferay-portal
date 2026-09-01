@@ -12,6 +12,7 @@ import {globalMenuPagesTest} from '../../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {createCategories} from '../../../../helpers/CreateCategories';
 import {TCustomField} from '../../../../helpers/CustomFieldTypesHelper';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getGlobalSiteId from '../../../../utils/getGlobalSiteId';
 import getRandomString from '../../../../utils/getRandomString';
 import {waitForAlert} from '../../../../utils/waitForAlert';
@@ -270,6 +271,56 @@ test('LPD-41420 Verify configuration list eligibility management save button cle
 		)
 	).toBeHidden();
 });
+
+test(
+	'Update the external reference code from the product configuration list header',
+	{tag: '@LPD-104150'},
+	async ({
+		apiHelpers,
+		commerceAdminProductConfigurationListPage,
+		commerceAdminProductConfigurationListsPage,
+		globalMenuPage,
+		page,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const productConfigurationList =
+			await apiHelpers.headlessCommerceAdminCatalog.postProductConfigurationList(
+				{
+					catalogId: catalog.id,
+					name: getRandomString(),
+				}
+			);
+
+		const externalReferenceCode = getRandomString();
+
+		await globalMenuPage.goToCommerce('Product Configurations');
+
+		await (
+			await commerceAdminProductConfigurationListsPage.tableRowLink({
+				colIndex: 1,
+				rowValue: productConfigurationList.name,
+			})
+		).click();
+
+		await clickAndExpectToBeVisible({
+			target: commerceAdminProductConfigurationListPage.ercInput,
+			timeout: 5000,
+			trigger:
+				commerceAdminProductConfigurationListPage.ercModalOpenerButton,
+		});
+
+		await commerceAdminProductConfigurationListPage.ercInput.fill(
+			externalReferenceCode
+		);
+		await commerceAdminProductConfigurationListPage.ercSubmitButton.click();
+
+		await expect(
+			page.getByText(externalReferenceCode, {exact: true})
+		).toBeVisible();
+	}
+);
 
 test('LPD-42555 Verify configuration list table appears', async ({
 	commerceAdminProductConfigurationListsPage,
