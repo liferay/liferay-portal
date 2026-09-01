@@ -1,13 +1,13 @@
 #!/bin/bash
 
-CURRENT_DIR_NAME=$(dirname ${BASH_SOURCE[0]})
+CURRENT_DIR_NAME=$(dirname "${BASH_SOURCE[0]}")
 
-echo CURRENT_DIR_NAME=${CURRENT_DIR_NAME}
+echo "CURRENT_DIR_NAME=${CURRENT_DIR_NAME}"
 
-source ${CURRENT_DIR_NAME}/../../../../env/common.sh
+source "${CURRENT_DIR_NAME}/../../../../env/common.sh"
 
-DATA_ARCHIVE_TYPE="data-archive-object"
-PORTAL_VERSION="7.4.13.u33"
+DATA_ARCHIVE_TYPE="data-archive-portal"
+PORTAL_VERSION="6.2.5"
 
 function main {
 	set -ex
@@ -15,9 +15,9 @@ function main {
 	cd "${_PORTAL_PROJECT_DIR}"
 
 	ant -f build-test.xml \
-		-Ddata.archive.type=${DATA_ARCHIVE_TYPE} \
+		-Ddata.archive.type="${DATA_ARCHIVE_TYPE}" \
 		-Dkeep.cached.app.server.data=true \
-		-Dportal.version=${PORTAL_VERSION} \
+		-Dportal.version="${PORTAL_VERSION}" \
 		-Dskip.get.testcase.database.properties=true \
 		rebuild-legacy-database
 

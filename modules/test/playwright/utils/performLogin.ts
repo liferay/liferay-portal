@@ -13,7 +13,8 @@ export type LoginScreenName =
 	| 'demo.company.admin'
 	| 'demo.organization.owner'
 	| 'demo.unprivileged'
-	| 'test';
+	| 'test'
+	| 'user';
 
 export const userData = {
 	'demo.company.admin': {
@@ -35,6 +36,9 @@ export const userData = {
 		name: 'Test',
 		password: liferayConfig.environment.password,
 		surname: 'Test',
+	},
+	'user': {
+		password: liferayConfig.environment.password,
 	},
 };
 
