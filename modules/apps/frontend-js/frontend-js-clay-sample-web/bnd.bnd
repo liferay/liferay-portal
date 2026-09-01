@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Clay Sample Web
 Bundle-SymbolicName: com.liferay.frontend.js.clay.sample.web
-Bundle-Version: 2.0.51
+Bundle-Version: 2.0.52
 Web-ContextPath: /frontend-js-clay-sample-web
