@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Audit REST Client
 Bundle-SymbolicName: com.liferay.portal.security.audit.rest.client
-Bundle-Version: 1.1.0
+Bundle-Version: 1.1.1
 Export-Package:\
 	com.liferay.portal.security.audit.rest.client.dto.v1_0,\
 	com.liferay.portal.security.audit.rest.client.function
