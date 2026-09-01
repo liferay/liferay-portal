@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend Data Set Implementation
 Bundle-SymbolicName: com.liferay.frontend.data.set.impl
-Bundle-Version: 1.0.54
+Bundle-Version: 1.0.55
 Liferay-Client-Extension-Batch: com/liferay/frontend/data/set/internal/batch
 -dsannotations-options: inherit
