@@ -3,5 +3,5 @@
 		"@liferay/amd-loader": "5.4.2"
 	},
 	"name": "frontend-js-loader-modules-extender",
-	"version": "6.0.67"
+	"version": "6.0.68"
 }
