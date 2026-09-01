@@ -44,7 +44,7 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 				}
 			%>
 
-				<aui:option data-cms="<%= _isCMS(className, company) %>" label="<%= label %>" selected="<%= (classNameIds.length == 1) && (classNameId == classNameIds[0]) %>" value="<%= classNameId %>" />
+				<aui:option data-object="<%= _isObject(className, company) %>" label="<%= label %>" selected="<%= (classNameIds.length == 1) && (classNameId == classNameIds[0]) %>" value="<%= classNameId %>" />
 
 			<%
 			}
@@ -361,5 +361,11 @@ private boolean _isCMS(ClassName className, Company company) {
 	ObjectDefinition objectDefinition = ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(company.getCompanyId(), className.getValue());
 
 	return (objectDefinition != null) && objectDefinition.isCMS();
+}
+
+private boolean _isObject(ClassName className, Company company) {
+	ObjectDefinition objectDefinition = ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(company.getCompanyId(), className.getValue());
+
+	return objectDefinition != null;
 }
 %>
