@@ -298,6 +298,10 @@ public class ElasticsearchScoreFunctionTranslator
 	private co.elastic.clients.elasticsearch._types.query_dsl.MultiValueMode
 		_translateMultiValueMode(MultiValueMode multiValueMode) {
 
+		if (multiValueMode == null) {
+			return null;
+		}
+
 		if (multiValueMode == MultiValueMode.AVG) {
 			return co.elastic.clients.elasticsearch._types.query_dsl.
 				MultiValueMode.Avg;
