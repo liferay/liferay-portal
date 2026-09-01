@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Message Boards Web
 Bundle-SymbolicName: com.liferay.message.boards.web
-Bundle-Version: 5.0.136
+Bundle-Version: 5.0.137
 Import-Package:\
 	com.liferay.message.boards.util,\
 	\
