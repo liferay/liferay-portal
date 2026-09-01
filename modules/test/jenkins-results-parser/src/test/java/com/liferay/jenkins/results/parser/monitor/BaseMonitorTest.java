@@ -20,37 +20,30 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testGetAttemptTimeoutMillis() {
-		BaseMonitor baseMonitor = _newBaseMonitor(60);
-
-		testEquals(13500, baseMonitor.getAttemptTimeoutMillis(1));
+		_testGetAttemptTimeoutMillis(13500, 1, 60);
+		_testGetAttemptTimeoutMillis(2250, 1, 10);
+		_testGetAttemptTimeoutMillis(27000, 0, 60);
+		_testGetAttemptTimeoutMillis(4500, 0, 10);
 	}
 
 	@Test
 	public void testGetAttemptTimeoutMillisMaximum() {
-		BaseMonitor baseMonitor = _newBaseMonitor(Long.MAX_VALUE);
-
-		testEquals(483183675, baseMonitor.getAttemptTimeoutMillis(1));
+		_testGetAttemptTimeoutMillis(483183675, 1, Long.MAX_VALUE);
+		_testGetAttemptTimeoutMillis(966367350, 0, Long.MAX_VALUE);
 	}
 
 	@Test
 	public void testGetAttemptTimeoutMillisNonPositiveTimeout() {
-		BaseMonitor baseMonitor = _newBaseMonitor(0);
-
-		testEquals(13500, baseMonitor.getAttemptTimeoutMillis(1));
+		_testGetAttemptTimeoutMillis(13500, 1, 0);
+		_testGetAttemptTimeoutMillis(27000, 0, 0);
 	}
 
 	@Test
-	public void testGetAttemptTimeoutMillisSingleAttempt() {
-		BaseMonitor baseMonitor = _newBaseMonitor(10);
-
-		testEquals(4500, baseMonitor.getAttemptTimeoutMillis(0));
-	}
-
-	@Test
-	public void testGetAttemptTimeoutMillisSingleAttemptMaximum() {
-		BaseMonitor baseMonitor = _newBaseMonitor(Long.MAX_VALUE);
-
-		testEquals(966367350, baseMonitor.getAttemptTimeoutMillis(0));
+	public void testGetAttemptTimeoutMillisWithinBudget() {
+		_testGetAttemptTimeoutMillisWithinBudget(0, 10);
+		_testGetAttemptTimeoutMillisWithinBudget(0, 60);
+		_testGetAttemptTimeoutMillisWithinBudget(1, 10);
+		_testGetAttemptTimeoutMillisWithinBudget(1, 60);
 	}
 
 	@Test
@@ -154,6 +147,26 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 			}
 
 		};
+	}
+
+	private void _testGetAttemptTimeoutMillis(
+		int expected, int maxRetries, long timeoutSeconds) {
+
+		BaseMonitor baseMonitor = _newBaseMonitor(timeoutSeconds);
+
+		testEquals(expected, baseMonitor.getAttemptTimeoutMillis(maxRetries));
+	}
+
+	private void _testGetAttemptTimeoutMillisWithinBudget(
+		int maxRetries, long timeoutSeconds) {
+
+		BaseMonitor baseMonitor = _newBaseMonitor(timeoutSeconds);
+
+		long worstCaseMillis =
+			(long)baseMonitor.getAttemptTimeoutMillis(maxRetries) * 2 *
+				(maxRetries + 1);
+
+		Assert.assertTrue(worstCaseMillis < (timeoutSeconds * 1000));
 	}
 
 	private void _testGetRequiredURLParameterUserInfo(String urlPrefix) {
