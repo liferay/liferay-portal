@@ -25,5 +25,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "12.0.20"
+	"version": "12.0.21"
 }
