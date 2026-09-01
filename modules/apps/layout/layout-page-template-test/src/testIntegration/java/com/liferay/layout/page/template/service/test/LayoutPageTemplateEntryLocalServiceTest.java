@@ -38,6 +38,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.DuplicateExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -51,6 +52,7 @@ import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -60,6 +62,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -68,6 +72,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +111,7 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 	}
 
 	@Test
-	@TestInfo("LPD-74327")
+	@TestInfo({"LPD-74327", "LPD-104240"})
 	public void testAddLayoutPageTemplateEntry() throws Exception {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
@@ -272,30 +277,10 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 			companyGroup.getGroupId(), RandomTestUtil.randomLong(),
 			LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE);
 
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(),
-			DepotConstants.TYPE_ASSET_LIBRARY, _serviceContext);
-
-		Group depotGroup = depotEntry.getGroup();
-
-		try {
-			_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
-				depotGroup.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.BASIC);
-			_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
-				depotGroup.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
-			_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
-				depotGroup.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
-			_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
-				depotGroup.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE);
-		}
-		finally {
-			_depotEntryLocalService.deleteDepotEntry(depotEntry);
-		}
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			DepotConstants.TYPE_SPACE);
 
 		_testAddLayoutPageTemplateEntryWithExternalReferenceCode();
 
@@ -346,6 +331,70 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 			StringBundler.concat(
 				"Layout page template entry key ", layoutPageTemplateEntryKey,
 				" must have fewer than 75 characters"));
+	}
+
+	@FeatureFlag("LPD-57283")
+	@Test
+	@TestInfo("LPD-104240")
+	public void testAddLayoutPageTemplateEntryInDesignLibrary()
+		throws Exception {
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
+		Group depotGroup = _addDepotGroup(DepotConstants.TYPE_DESIGN_LIBRARY);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+				null, TestPropsValues.getUserId(), depotGroup.getGroupId(),
+				LayoutPageTemplateConstants.
+					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+				null, 0, null, RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, false, 0,
+				0, 0, WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(
+					depotGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		Assert.assertEquals(
+			depotGroup.getGroupId(), layoutPageTemplateEntry.getGroupId());
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Assert.assertEquals(depotGroup.getGroupId(), layout.getGroupId());
+
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			depotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.BASIC);
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			depotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			depotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE);
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-57283"),
+					Boolean.FALSE.toString())) {
+
+			_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+				depotGroup.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+		}
+
+		Group assetLibraryDepotGroup = _addDepotGroup(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			assetLibraryDepotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+
+		Group spaceDepotGroup = _addDepotGroup(DepotConstants.TYPE_SPACE);
+
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			spaceDepotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
 	}
 
 	@Test
@@ -665,6 +714,16 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 		_testUpdateLayoutPageTemplateEntryClassNameId();
 	}
 
+	private Group _addDepotGroup(int depotType) throws PortalException {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), depotType, _serviceContext);
+
+		_depotEntries.add(depotEntry);
+
+		return depotEntry.getGroup();
+	}
+
 	private LayoutPageTemplateEntry _addLayoutPageTemplateEntry(
 			long classNameId, String classTypeKey)
 		throws Exception {
@@ -752,6 +811,27 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 		Assert.assertTrue(
 			Validator.isNotNull(
 				layoutPageTemplateEntry.getExternalReferenceCode()));
+	}
+
+	private void
+			_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+				int depotType)
+		throws PortalException {
+
+		Group depotGroup = _addDepotGroup(depotType);
+
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			depotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.BASIC);
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			depotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			depotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
+		_testAddLayoutPageTemplateEntryLayoutPageTemplateEntryGroupIdException(
+			depotGroup.getGroupId(),
+			LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE);
 	}
 
 	private void
@@ -1142,6 +1222,9 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 
 	@Inject
 	private DDMStructureLinkLocalService _ddmStructureLinkLocalService;
+
+	@DeleteAfterTestRun
+	private final List<DepotEntry> _depotEntries = new ArrayList<>();
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
