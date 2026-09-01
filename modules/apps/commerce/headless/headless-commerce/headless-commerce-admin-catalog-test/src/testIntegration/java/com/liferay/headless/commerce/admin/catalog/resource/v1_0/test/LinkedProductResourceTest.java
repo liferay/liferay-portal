@@ -51,7 +51,6 @@ public class LinkedProductResourceTest
 
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			testCompany.getCompanyId());
-
 		_user = UserTestUtil.addUser(testCompany);
 
 		_commerceCatalog = CommerceTestUtil.addCommerceCatalog(
