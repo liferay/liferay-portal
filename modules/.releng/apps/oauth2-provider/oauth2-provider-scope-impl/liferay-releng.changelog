@@ -282,3 +282,8 @@ a4803b7529ab7c3d5663722faeb9b89c7b9c2b2a^..dcce6aef55ce46c6ba6d84735c4cdb75059a8
 # Bundle Version 4.0.47
 #
 dcce6aef55ce46c6ba6d84735c4cdb75059a8f7f^..0dfa14b5c7eed022f7b5f617b75c1df4dafefbd0=LPD-95976
+
+#
+# Bundle Version 4.0.48
+#
+0dfa14b5c7eed022f7b5f617b75c1df4dafefbd0^..a926a625a01f1dc6b52a71c169a5a08e7e3a374f=LPD-95976 LPD-100935 LPD-103659
