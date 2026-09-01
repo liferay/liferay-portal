@@ -343,7 +343,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 	test.skip(
 		'Creates a profile from the New Profile button',
 		{tag: '@LPD-99230'},
-		async ({apiHelpers, profilesPage}) => {
+		async ({apiHelpers, page, profilesPage}) => {
 			const name = profileName();
 
 			await profilesPage.goto();
@@ -355,16 +355,15 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 			await profilesPage.descriptionInput.fill('Created from the UI');
 			await profilesPage.saveButton.click();
 
+			const profile = await trackUIProfileForCleanup(apiHelpers, page);
+
 			// The form stays in place after the first save
 
-			await expect(profilesPage.page).toHaveURL(/profileERC=/);
+			await expect(page).toHaveURL(/profileERC=/);
 			await expect(profilesPage.formHeading).toHaveText('Edit Profile');
 			await expect(profilesPage.dataMasksTabLink).toBeVisible();
 
-			const response = await apiHelpers.get(
-				`${apiHelpers.baseUrl}${PROFILES_API}?search=${name}&pageSize=5`
-			);
-			expect(response.items[0]?.name).toBe(name);
+			expect(profile.name).toBe(name);
 
 			await profilesPage.goto();
 			await profilesPage.search(name);
@@ -446,7 +445,7 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 
 			await profilesPage.cancelButton.click();
 
-			await profilesPage.table.waitFor({state: 'visible'});
+			await profilesPage.table.waitFor();
 			await expect(profilesPage.newProfileButton).toBeVisible();
 		}
 	);
@@ -456,7 +455,7 @@ test.describe('Profiles - Data Masks tab', () => {
 	test(
 		'Disables the Data Masks tab until the profile is saved',
 		{tag: '@LPD-99230'},
-		async ({profilesPage}) => {
+		async ({apiHelpers, page, profilesPage}) => {
 			await profilesPage.goto();
 			await profilesPage.newProfileButton.click();
 
@@ -467,6 +466,8 @@ test.describe('Profiles - Data Masks tab', () => {
 			await profilesPage.nameInput.fill(profileName());
 			await profilesPage.descriptionInput.fill('Created from the UI');
 			await profilesPage.saveButton.click();
+
+			await trackUIProfileForCleanup(apiHelpers, page);
 
 			await expect(profilesPage.dataMasksTabLink).toBeVisible();
 		}
@@ -506,7 +507,7 @@ test.describe('Profiles - Data Masks tab', () => {
 			await profilesPage.search(name);
 			await profilesPage.clickAction(name, 'Edit');
 			await profilesPage.dataMasksTabLink.click();
-			await profilesPage.masksRows.first().waitFor({state: 'visible'});
+			await profilesPage.masksRows.first().waitFor();
 
 			await profilesPage.addMasksButton.click();
 
@@ -533,7 +534,7 @@ test.describe('Profiles - Data Masks tab', () => {
 			await profilesPage.search(name);
 			await profilesPage.clickAction(name, 'Edit');
 			await profilesPage.dataMasksTabLink.click();
-			await profilesPage.masksRows.first().waitFor({state: 'visible'});
+			await profilesPage.masksRows.first().waitFor();
 
 			const rowsBefore = await profilesPage.masksRows.count();
 
@@ -565,11 +566,9 @@ test.describe('Profiles - Data Masks tab', () => {
 			await profilesPage.search(name);
 			await profilesPage.clickAction(name, 'Edit');
 			await profilesPage.dataMasksTabLink.click();
-			await profilesPage.masksRows.first().waitFor({state: 'visible'});
+			await profilesPage.masksRows.first().waitFor();
 
 			await profilesPage.addMasksButton.click();
-
-			// Checking the Custom group cascades to every custom mask
 
 			await profilesPage.maskCheckbox('Custom').check();
 
@@ -606,7 +605,7 @@ test.describe('Profiles - Data Masks tab', () => {
 			await profilesPage.search(name);
 			await profilesPage.clickAction(name, 'Edit');
 			await profilesPage.dataMasksTabLink.click();
-			await profilesPage.masksRows.first().waitFor({state: 'visible'});
+			await profilesPage.masksRows.first().waitFor();
 
 			const rowsBefore = await profilesPage.masksRows.count();
 			const firstRowName = await profilesPage.masksRows
@@ -653,7 +652,7 @@ test.describe('Profiles - Data Masks tab', () => {
 			await profilesPage.search(name);
 			await profilesPage.clickAction(name, 'Edit');
 			await profilesPage.dataMasksTabLink.click();
-			await profilesPage.masksRows.first().waitFor({state: 'visible'});
+			await profilesPage.masksRows.first().waitFor();
 
 			const rowsBefore = await profilesPage.masksRows.count();
 
@@ -703,7 +702,7 @@ test.describe('Profiles - Data Masks tab', () => {
 			await profilesPage.search(name);
 			await profilesPage.clickAction(name, 'Edit');
 			await profilesPage.dataMasksTabLink.click();
-			await profilesPage.masksRows.first().waitFor({state: 'visible'});
+			await profilesPage.masksRows.first().waitFor();
 
 			// Pick up the first row with the keyboard handle and move it down
 
