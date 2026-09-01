@@ -53,7 +53,7 @@ public class DisplayPageTemplateServiceTest {
 	public void testAddDisplayPageTemplate() throws PortalException {
 		String name = RandomTestUtil.randomString();
 
-		LayoutPageTemplateEntry displayPageTemplate =
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
 				null, _group.getGroupId(), 0, null, name,
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
@@ -61,11 +61,11 @@ public class DisplayPageTemplateServiceTest {
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), TestPropsValues.getUserId()));
 
-		LayoutPageTemplateEntry persistedDisplayPageTemplate =
+		LayoutPageTemplateEntry persistedLayoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.fetchLayoutPageTemplateEntry(
-				displayPageTemplate.getLayoutPageTemplateEntryId());
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
 
-		Assert.assertEquals(name, persistedDisplayPageTemplate.getName());
+		Assert.assertEquals(name, persistedLayoutPageTemplateEntry.getName());
 	}
 
 	@Test(expected = NoSuchClassNameException.class)
@@ -77,16 +77,16 @@ public class DisplayPageTemplateServiceTest {
 
 	@Test
 	public void testDeleteDisplayPageTemplate() throws PortalException {
-		LayoutPageTemplateEntry displayPageTemplate =
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId());
 
 		_layoutPageTemplateEntryService.deleteLayoutPageTemplateEntry(
-			displayPageTemplate.getLayoutPageTemplateEntryId());
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
 
 		Assert.assertNull(
 			_layoutPageTemplateEntryService.fetchLayoutPageTemplateEntry(
-				displayPageTemplate.getLayoutPageTemplateEntryId()));
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()));
 	}
 
 	private LayoutPageTemplateEntry _createDisplayPageEntry(
