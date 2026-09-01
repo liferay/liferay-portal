@@ -5,13 +5,16 @@
 
 package com.liferay.data.cleanup.internal.verify;
 
+import com.liferay.data.cleanup.internal.verify.util.PostUpgradeDataCleanupProcessUtil;
 import com.liferay.document.library.kernel.store.Store;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.search.index.IndexInformation;
 import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.tools.DBUpgrader;
+import com.liferay.portal.verify.PostupgradeVerifyDatabaseState;
 import com.liferay.portal.verify.VerifyException;
 import com.liferay.portal.verify.VerifyProcess;
 
@@ -55,6 +59,8 @@ public class PostUpgradeDataCleanupVerifyProcess extends VerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
+		_verifyDatabaseState();
+
 		for (PostUpgradeDataCleanupProcess postUpgradeDataCleanupProcess :
 				_getPostUpgradeDataCleanupProcesses()) {
 
@@ -101,6 +107,25 @@ public class PostUpgradeDataCleanupVerifyProcess extends VerifyProcess {
 				indexInformation, indexNameBuilder));
 
 		return postUpgradeDataCleanupProcesses;
+	}
+
+	private void _verifyDatabaseState() throws Exception {
+		if (!PostUpgradeDataCleanupProcessUtil.isEveryLiferayBundleResolved()) {
+			if (_log.isWarnEnabled() && CompanyThreadLocal.isDefaultCompany()) {
+				_log.warn(
+					StringBundler.concat(
+						PostupgradeVerifyDatabaseState.class.getSimpleName(),
+						" cannot be executed because there are modules with ",
+						"unsatisfied references"));
+			}
+
+			return;
+		}
+
+		PostupgradeVerifyDatabaseState postupgradeVerifyDatabaseState =
+			new PostupgradeVerifyDatabaseState();
+
+		postupgradeVerifyDatabaseState.verify();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

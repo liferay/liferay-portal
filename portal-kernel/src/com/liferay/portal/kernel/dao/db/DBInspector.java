@@ -23,6 +23,7 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,20 @@ public class DBInspector {
 
 	public ResultSet getColumnsResultSet(String tableName) throws SQLException {
 		return _getColumnsResultSet(tableName, null);
+	}
+
+	public List<String> getControlTableNames(Collection<String> tableNames)
+		throws SQLException {
+
+		List<String> controlTableNames = new ArrayList<>();
+
+		for (String tableName : tableNames) {
+			if (isControlTable(tableName)) {
+				controlTableNames.add(normalizeName(tableName));
+			}
+		}
+
+		return controlTableNames;
 	}
 
 	public String getSchema() {
