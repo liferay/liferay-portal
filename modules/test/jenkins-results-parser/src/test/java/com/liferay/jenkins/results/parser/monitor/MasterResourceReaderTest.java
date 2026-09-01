@@ -10,6 +10,11 @@ import com.liferay.jenkins.results.parser.UrlReader;
 
 import java.io.IOException;
 
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,6 +49,88 @@ public class MasterResourceReaderTest
 			MasterResourceReader.getInstance(masterName),
 			MasterResourceReader.getInstance(
 				MonitorTestUtil.newJenkinsMasterName()));
+	}
+
+	@Test
+	public void testGetJobJSONObjects() throws Exception {
+		String jobName = RandomTestUtil.randomString();
+
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderOutput(
+			_newJobsContent(jobName), "/api/json?tree=jobs", urlReader);
+
+		MasterResourceReader masterResourceReader =
+			MasterResourceReader.getInstance(
+				MonitorTestUtil.newJenkinsMasterName());
+
+		Map<String, JSONObject> jobJSONObjects =
+			masterResourceReader.getJobJSONObjects(_MILLIS_TIMEOUT);
+
+		JSONObject jobJSONObject = jobJSONObjects.get(jobName);
+
+		testEquals(jobName, jobJSONObject.optString("name"));
+
+		testEquals(null, jobJSONObjects.get(RandomTestUtil.randomString()));
+
+		testSame(
+			jobJSONObjects,
+			masterResourceReader.getJobJSONObjects(_MILLIS_TIMEOUT));
+	}
+
+	@Test
+	public void testGetJobJSONObjectsIsUnmodifiable() throws Exception {
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderOutput(
+			_newJobsContent(RandomTestUtil.randomString()),
+			"/api/json?tree=jobs", urlReader);
+
+		MasterResourceReader masterResourceReader =
+			MasterResourceReader.getInstance(
+				MonitorTestUtil.newJenkinsMasterName());
+
+		Map<String, JSONObject> jobJSONObjects =
+			masterResourceReader.getJobJSONObjects(_MILLIS_TIMEOUT);
+
+		try {
+			jobJSONObjects.put(RandomTestUtil.randomString(), new JSONObject());
+
+			Assert.fail("Expected UnsupportedOperationException");
+		}
+		catch (UnsupportedOperationException unsupportedOperationException) {
+		}
+	}
+
+	@Test
+	public void testGetJobJSONObjectsWithReadFailure() throws Exception {
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderException(
+			new IOException(RandomTestUtil.randomString()),
+			"/api/json?tree=jobs", urlReader);
+
+		MasterResourceReader masterResourceReader =
+			MasterResourceReader.getInstance(
+				MonitorTestUtil.newJenkinsMasterName());
+
+		try {
+			masterResourceReader.getJobJSONObjects(_MILLIS_TIMEOUT);
+
+			Assert.fail("Expected the read to fail");
+		}
+		catch (Exception exception) {
+		}
+
+		String jobName = RandomTestUtil.randomString();
+
+		setUrlReaderOutput(
+			_newJobsContent(jobName), "/api/json?tree=jobs", urlReader);
+
+		Map<String, JSONObject> jobJSONObjects =
+			masterResourceReader.getJobJSONObjects(_MILLIS_TIMEOUT);
+
+		Assert.assertNotNull(jobJSONObjects.get(jobName));
 	}
 
 	@Test
@@ -189,6 +276,26 @@ public class MasterResourceReaderTest
 			masterResourceReader.getPrometheusScrape(_MILLIS_TIMEOUT);
 
 		testEquals(1.0D, prometheusScrape.getValue("label", labelValue, name));
+	}
+
+	private String _newJobsContent(String jobName) {
+		JSONObject jobsJSONObject = new JSONObject(
+		).put(
+			"jobs",
+			new JSONArray(
+			).put(
+				new JSONObject(
+				).put(
+					"buildable", true
+				).put(
+					"disabled", false
+				).put(
+					"name", jobName
+				)
+			)
+		);
+
+		return jobsJSONObject.toString();
 	}
 
 	private static final int _MILLIS_TIMEOUT = 1000;
