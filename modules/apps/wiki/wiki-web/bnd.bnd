@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Wiki Web
 Bundle-SymbolicName: com.liferay.wiki.web
-Bundle-Version: 7.0.139
+Bundle-Version: 7.0.140
 Web-ContextPath: /wiki-web
 -dsannotations-options: inherit
