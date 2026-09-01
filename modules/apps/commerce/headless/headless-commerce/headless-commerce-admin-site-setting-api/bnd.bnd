@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Admin Site Setting API
 Bundle-SymbolicName: com.liferay.headless.commerce.admin.site.setting.api
-Bundle-Version: 20.0.0
+Bundle-Version: 20.0.1
 Export-Package:\
 	com.liferay.headless.commerce.admin.site.setting.dto.v1_0,\
 	com.liferay.headless.commerce.admin.site.setting.resource.v1_0
