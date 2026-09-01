@@ -302,3 +302,40 @@ test(
 		});
 	}
 );
+
+test(
+	'The filter finds a screen inside an application',
+	{tag: '@LPD-103691'},
+	async ({globalMenuPage, page}) => {
+		const sideNavigation = page.getByLabel('Applications Menu', {
+			exact: true,
+		});
+
+		const fileStorageItem = page.getByRole('menuitem', {
+			name: 'File Storage',
+		});
+
+		await test.step('Go to the Control Panel', async () => {
+			await globalMenuPage.goToControlPanel();
+
+			await expect(sideNavigation).toBeVisible();
+			await expect(fileStorageItem).toBeHidden();
+		});
+
+		await test.step('Filter for a screen inside an application', async () => {
+			await sideNavigation.getByRole('searchbox').fill('File Storage');
+
+			await expect(fileStorageItem).toBeVisible();
+		});
+
+		await test.step('Follow the screen', async () => {
+			await fileStorageItem.click();
+
+			await waitForPageToBeLoaded(page);
+
+			await expect(
+				page.getByRole('heading', {name: 'System Settings'})
+			).toBeAttached();
+		});
+	}
+);

@@ -11,32 +11,42 @@ import {
 	SideNavigationItemsMap,
 } from './types/SideNavigation';
 
+const REQUEST_TIMEOUT = 10000;
+
 function mergeNavigationItems(
 	items: Array<SideNavigationItem>,
 	sideNavigationItemsMap: SideNavigationItemsMap
 ): Array<SideNavigationItem> {
 	const mergedItems = items.map((item) => {
-		const sideNavigationItems = sideNavigationItemsMap[item.id];
+		const sideNavigationItems = Object.hasOwn(
+			sideNavigationItemsMap,
+			item.id
+		)
+			? sideNavigationItemsMap[item.id]
+			: undefined;
+
+		const mergedChildItems = item.items
+			? mergeNavigationItems(item.items, sideNavigationItemsMap)
+			: undefined;
 
 		if (sideNavigationItems?.length) {
-			return {
-				...item,
-				items: sideNavigationItems.map((sideNavigationItem) => ({
+			const filterOnlyItems = sideNavigationItems.map(
+				(sideNavigationItem) => ({
 					...sideNavigationItem,
 					filterOnly: true,
-				})),
+				})
+			);
+
+			return {
+				...item,
+				items: mergedChildItems
+					? mergedChildItems.concat(filterOnlyItems)
+					: filterOnlyItems,
 			};
 		}
 
-		if (item.items) {
-			const mergedChildItems = mergeNavigationItems(
-				item.items,
-				sideNavigationItemsMap
-			);
-
-			if (mergedChildItems !== item.items) {
-				return {...item, items: mergedChildItems};
-			}
+		if (mergedChildItems && mergedChildItems !== item.items) {
+			return {...item, items: mergedChildItems};
 		}
 
 		return item;
@@ -66,7 +76,16 @@ export function useSideNavigationItems(
 
 		setLoading(true);
 
-		promiseRef.current = fetch(navigationItemsURL)
+		const abortController = new AbortController();
+
+		const timeoutId = setTimeout(
+			() => abortController.abort(),
+			REQUEST_TIMEOUT
+		);
+
+		promiseRef.current = fetch(navigationItemsURL, {
+			signal: abortController.signal,
+		})
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(
@@ -85,7 +104,11 @@ export function useSideNavigationItems(
 				// eslint-disable-next-line no-console
 				console.error(error);
 			})
-			.finally(() => setLoading(false));
+			.finally(() => {
+				clearTimeout(timeoutId);
+
+				setLoading(false);
+			});
 	}, [navigationItemsURL]);
 
 	const mergedItems = useMemo(

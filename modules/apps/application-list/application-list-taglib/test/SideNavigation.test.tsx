@@ -383,7 +383,9 @@ describe('SideNavigation', () => {
 
 		await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
 
-		expect(fetch).toHaveBeenCalledWith('navigationItemsURL');
+		expect(fetch).toHaveBeenCalledWith('navigationItemsURL', {
+			signal: expect.any(AbortSignal),
+		});
 	});
 
 	it('leaves the visible navigation unchanged when the screens arrive', async () => {

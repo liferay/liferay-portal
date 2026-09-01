@@ -99,6 +99,28 @@ describe('Navigation items merging', () => {
 		expect(applicationItems[0].items![0].label).toBe('Categories');
 	});
 
+	it('merges the nested applications when the category also has screens', async () => {
+		const mergedItems = await mergeNavigationItems({
+			assets: [
+				{href: 'categoriesHref', id: 'assets_0', label: 'Categories'},
+			],
+			content: [
+				{
+					href: 'contentScreenHref',
+					id: 'content_0',
+					label: 'Content Screen',
+				},
+			],
+		});
+
+		const categoryChildItems = mergedItems[0].items!;
+
+		expect(categoryChildItems).toHaveLength(3);
+		expect(categoryChildItems[0].items).toHaveLength(1);
+		expect(categoryChildItems[0].items![0].label).toBe('Categories');
+		expect(categoryChildItems[2].label).toBe('Content Screen');
+	});
+
 	it('leaves the applications without screens untouched', async () => {
 		const mergedItems = await mergeNavigationItems({
 			assets: [
