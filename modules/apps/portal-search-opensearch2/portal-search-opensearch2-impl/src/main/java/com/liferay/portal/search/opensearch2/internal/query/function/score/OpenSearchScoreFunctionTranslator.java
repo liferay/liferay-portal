@@ -282,6 +282,10 @@ public class OpenSearchScoreFunctionTranslator
 	private org.opensearch.client.opensearch._types.query_dsl.MultiValueMode
 		_translateMultiValueMode(MultiValueMode multiValueMode) {
 
+		if (multiValueMode == null) {
+			return null;
+		}
+
 		if (multiValueMode == MultiValueMode.AVG) {
 			return org.opensearch.client.opensearch._types.query_dsl.
 				MultiValueMode.Avg;
