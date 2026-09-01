@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Recharts
 Bundle-SymbolicName: com.liferay.frontend.js.recharts
-Bundle-Version: 2.0.24
+Bundle-Version: 2.0.25
 Web-ContextPath: /frontend-js-recharts
