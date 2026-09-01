@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Charts Sample Web
 Bundle-SymbolicName: com.liferay.frontend.js.charts.sample.web
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Web-ContextPath: /frontend-js-charts-sample-web
