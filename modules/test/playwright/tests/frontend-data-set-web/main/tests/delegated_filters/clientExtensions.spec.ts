@@ -44,6 +44,7 @@ const test = mergeTests(
 );
 
 let customElement: Locator;
+let customElements: Locator;
 let fdsPageUrl: string;
 
 test.beforeEach(async ({fdsSamplePage, page, site}) => {
@@ -51,7 +52,9 @@ test.beforeEach(async ({fdsSamplePage, page, site}) => {
 
 	fdsPageUrl = url;
 
-	customElement = page.locator('liferay-sample-custom-element-8');
+	customElements = page.locator('liferay-sample-custom-element-8');
+
+	customElement = customElements.first();
 });
 
 // The data set sorts by title, which is a string, so the entry a filter
@@ -497,6 +500,152 @@ test.describe('with a client extension that owns the filtering', () => {
 				await expect(
 					customElement.getByLabel('OData filter expression')
 				).toHaveValue("title eq 'Sample5'");
+			});
+		}
+	);
+});
+
+// A data set has one filtering owner, and two instances of the same client
+// extension on a page are the plainest way to ask it for two. The element is
+// instanceable, so this needs no second client extension: the widget goes on
+// the page twice, and only the instance that connects first is granted the
+// filtering.
+//
+// Which instance that is follows the order the page mounts them in, and the
+// contract says not to rely on it, so nothing below names an instance by
+// position. The refused one is told through a status that is not "ready", and
+// the element enables its controls only once ready, so the two are told apart
+// by which one has controls that work.
+
+const BLUE_ENTRIES = 25;
+
+test.describe('with two client extensions that both ask for the filtering', () => {
+	test.beforeEach(async ({page, pageEditorPage}) => {
+		await test.step('Add the Custom Element 8 widget to the page twice', async () => {
+			await page.goto(`${fdsPageUrl}?p_l_mode=edit`);
+
+			for (let i = 0; i < 2; i++) {
+				await pageEditorPage.addWidget(
+					'Client Extensions',
+					'Liferay Sample Custom Element 8'
+				);
+			}
+
+			await pageEditorPage.publishPage();
+		});
+	});
+
+	test(
+		'The data set warns on the page when a second client extension asks for the filtering it already gave away',
+		{
+			tag: ['@LPD-96001'],
+		},
+		async ({fdsSamplePage, page}) => {
+			await goToDelegatedFiltersTab({fdsSamplePage, page});
+
+			await test.step('Both instances are on the page', async () => {
+				await expect(customElements).toHaveCount(2);
+			});
+
+			await test.step('The refusal is reported by the data set, where the person looking at the page will see it', async () => {
+				await expect(
+					page
+						.locator('.alert-container')
+						.getByText(
+							'Another widget is already filtering this data set'
+						)
+				).toBeVisible();
+			});
+
+			await test.step('The data set still keeps its own filter UI out of the way, and nothing is filtered yet', async () => {
+				await expect(
+					fdsSamplePage.managementToolbar.filterButton
+				).toBeHidden();
+
+				await expectTotalEntries({page, total: TOTAL_ENTRIES});
+			});
+		}
+	);
+
+	test(
+		'Only the client extension that was granted the filtering offers controls that work',
+		{
+			tag: ['@LPD-96001'],
+		},
+		async ({fdsSamplePage, page}) => {
+			await goToDelegatedFiltersTab({fdsSamplePage, page});
+
+			const colorOption = page.getByRole('checkbox', {name: 'Blue'});
+
+			await test.step('Both instances draw the filter, and exactly one of them can be used', async () => {
+				await expect(colorOption).toHaveCount(2);
+
+				await expect(
+					page.getByRole('checkbox', {disabled: false, name: 'Blue'})
+				).toHaveCount(1);
+
+				await expect(
+					page.getByRole('checkbox', {disabled: true, name: 'Blue'})
+				).toHaveCount(1);
+			});
+
+			await test.step('The filters of the instance that can be used reach the data set', async () => {
+				await page
+					.getByRole('checkbox', {disabled: false, name: 'Blue'})
+					.check();
+
+				await expectTotalEntries({page, total: BLUE_ENTRIES});
+			});
+
+			await test.step('The refused instance is left as it was, since nothing it offers reaches the data set', async () => {
+				await expect(
+					page.getByRole('checkbox', {disabled: true, name: 'Blue'})
+				).not.toBeChecked();
+			});
+		}
+	);
+
+	test(
+		'The client extension that owns the filtering is the one named in the address',
+		{
+			tag: ['@LPD-96001'],
+		},
+		async ({fdsSamplePage, page}) => {
+			await goToDelegatedFiltersTab({fdsSamplePage, page});
+
+			await page
+				.getByRole('checkbox', {disabled: false, name: 'Blue'})
+				.check();
+
+			await expectTotalEntries({page, total: BLUE_ENTRIES});
+
+			await test.step('What the owner filters by is filed in the address under its name, once', async () => {
+
+				// Naming the connection in the URL even while one owner writes
+				// is what lets a link saved today keep its meaning once the
+				// filtering can be split between several client extensions.
+
+				const url = page.url();
+
+				expect(url).toContain('sampleCustomElement8');
+
+				expect(url.match(/sampleCustomElement8/g)).toHaveLength(1);
+			});
+
+			await test.step('Reloading filters the data set the same way, and still grants only one instance the filtering', async () => {
+				await page.reload();
+
+				await waitForFDS({page});
+
+				await expectTotalEntries({page, total: BLUE_ENTRIES});
+
+				await expect(
+					page.getByRole('checkbox', {disabled: false, name: 'Blue'})
+				).toBeChecked();
+
+				await expect(
+					page.getByRole('checkbox', {disabled: true, name: 'Blue'})
+				).toHaveCount(1);
 			});
 		}
 	);
