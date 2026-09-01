@@ -147,8 +147,14 @@ public class UpstreamFailureUtil {
 			return getUpstreamTopLevelBuildReport(topLevelBuild);
 		}
 
-		JobReport jobReport = JobReport.getInstance(
-			topLevelBuild.getAcceptanceUpstreamJobURL());
+		String acceptanceUpstreamJobURL =
+			topLevelBuild.getAcceptanceUpstreamJobURL();
+
+		if (acceptanceUpstreamJobURL == null) {
+			return getUpstreamTopLevelBuildReport(topLevelBuild);
+		}
+
+		JobReport jobReport = JobReport.getInstance(acceptanceUpstreamJobURL);
 
 		for (TopLevelBuildReport topLevelBuildReport :
 				jobReport.getTopLevelBuildReports(25)) {
