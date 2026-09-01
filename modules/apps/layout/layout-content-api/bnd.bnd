@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Content API
 Bundle-SymbolicName: com.liferay.layout.content.api
-Bundle-Version: 1.2.0
+Bundle-Version: 1.2.1
 Export-Package:\
 	com.liferay.layout.content.constants,\
 	com.liferay.layout.content.creator,\
