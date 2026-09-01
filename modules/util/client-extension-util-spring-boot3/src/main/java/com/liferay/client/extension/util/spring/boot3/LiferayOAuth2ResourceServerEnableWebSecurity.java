@@ -156,10 +156,9 @@ public class LiferayOAuth2ResourceServerEnableWebSecurity {
 			).toString();
 		}
 
-		String headlessServerClientId = _environment.getProperty(
-			externalReferenceCode + ".oauth2.headless.server.client.id");
+		if (clientId != _environment.getProperty(
+				externalReferenceCode + ".oauth2.headless.server.client.id")) {
 
-		if (headlessServerClientId != null) {
 			return null;
 		}
 
