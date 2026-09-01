@@ -71,7 +71,7 @@ function App({fdsName}: AppProps) {
 			(fdsConnectionInfo: FDSConnectionInfo) => {
 				setReady(fdsConnectionInfo.status === 'ready');
 			},
-			{owns: ['filters']}
+			{appId: 'sampleCustomElement8', owns: ['filters']}
 		);
 
 		return () => {
