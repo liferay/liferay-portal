@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Document Library Item Selector Web
 Bundle-SymbolicName: com.liferay.document.library.item.selector.web
-Bundle-Version: 5.0.77
+Bundle-Version: 5.0.78
 Web-ContextPath: /document-library-item-selector-web
 -dsannotations-options: inherit
