@@ -10,22 +10,30 @@ import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.exportimport.test.util.lar.BasePortletExportImportTestCase;
+import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -55,6 +63,33 @@ public class BlogsExportImportTest extends BasePortletExportImportTestCase {
 		super.setUp();
 
 		UserTestUtil.setUser(TestPropsValues.getUser());
+	}
+
+	@Test
+	@TestInfo({"LPS-127212", "LPS-128781"})
+	public void testExportImportBlogsEntryWithExistingTitle() throws Exception {
+		String title = RandomTestUtil.randomString();
+
+		BlogsEntryLocalServiceUtil.addEntry(
+			TestPropsValues.getUserId(), title, RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), TestPropsValues.getUserId()));
+
+		BlogsEntryLocalServiceUtil.addEntry(
+			TestPropsValues.getUserId(), title, RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				importedGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		exportImportPortlet(BlogsPortletKeys.BLOGS_ADMIN);
+
+		List<BlogsEntry> importedBlogsEntries = ListUtil.filter(
+			BlogsEntryLocalServiceUtil.getGroupEntries(
+				importedGroup.getGroupId(),
+				new QueryDefinition<>(WorkflowConstants.STATUS_ANY)),
+			blogsEntry -> Objects.equals(title, blogsEntry.getTitle()));
+
+		Assert.assertEquals(
+			importedBlogsEntries.toString(), 2, importedBlogsEntries.size());
 	}
 
 	@Override
