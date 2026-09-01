@@ -867,6 +867,7 @@ public class ResourceOpenAPIParser {
 				StringUtil.equals(parameterName, "fields") ||
 				StringUtil.equals(parameterName, "filter") ||
 				StringUtil.equals(parameterName, "nestedFields") ||
+				StringUtil.equals(parameterName, "nestedFieldsDepth") ||
 				StringUtil.equals(parameterName, "restrictFields") ||
 				StringUtil.equals(parameterName, "sort")) {
 
@@ -1745,6 +1746,7 @@ public class ResourceOpenAPIParser {
 			StringUtil.equals(name, "flatten") ||
 			StringUtil.equals(name, "id") ||
 			StringUtil.equals(name, "nestedFields") ||
+			StringUtil.equals(name, "nestedFieldsDepth") ||
 			StringUtil.equals(name, "page") ||
 			StringUtil.equals(name, "pageSize") ||
 			StringUtil.equals(name, "pagination") ||
