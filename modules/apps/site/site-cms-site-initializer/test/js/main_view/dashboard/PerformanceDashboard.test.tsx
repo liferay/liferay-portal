@@ -28,14 +28,17 @@ const constants = {
 
 function renderPerformanceDashboard({
 	analyticsCloudEnabled = true,
+	spaceIds = ['1', '2'],
 }: {
 	analyticsCloudEnabled?: boolean;
+	spaceIds?: string[];
 } = {}) {
 	return render(
 		<PerformanceDashboard
 			admin={false}
 			analyticsEnabled={analyticsCloudEnabled}
 			constants={constants}
+			spaceIds={spaceIds}
 		/>
 	);
 }
@@ -151,5 +154,34 @@ describe('PerformanceDashboard', () => {
 		expect(
 			await screen.findByText('performance-overview')
 		).toBeInTheDocument();
+	});
+
+	it('ignores the connection info of the spaces the user does not administer', async () => {
+		mockedSpaceService.getSpaces.mockResolvedValue([
+			{id: 1, name: 'Marketing', siteId: 11},
+			{id: 2, name: 'HR', siteId: 22},
+		] as Space[]);
+
+		const getConnectionInfo = jest
+			.spyOn(PerformanceService, 'getConnectionInfo')
+			.mockResolvedValue({
+				data: {
+					admin: true,
+					connectedToAnalyticsCloud: true,
+					connectedToSpace: true,
+					siteSyncedToAnalyticsCloud: true,
+				},
+				error: null,
+			});
+
+		renderPerformanceDashboard({spaceIds: ['2']});
+
+		await screen.findByText('performance-overview');
+
+		expect(getConnectionInfo).toHaveBeenCalledTimes(1);
+
+		expect(getConnectionInfo).toHaveBeenCalledWith({
+			depotEntryGroupId: 22,
+		});
 	});
 });

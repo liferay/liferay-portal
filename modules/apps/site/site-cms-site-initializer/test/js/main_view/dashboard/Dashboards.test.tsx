@@ -53,17 +53,17 @@ jest.mock(
 );
 
 function renderDashboards({
-	cmsAdmin = true,
+	administeredSpaceIds = ['1'],
 	freeTier = false,
-}: {cmsAdmin?: boolean; freeTier?: boolean} = {}) {
+}: {administeredSpaceIds?: string[]; freeTier?: boolean} = {}) {
 	return render(
 		<Dashboards
 			additionalProps={
 				{} as DashboardAdditionalProps & GovernanceAdditionalProps
 			}
 			admin={false}
+			administeredSpaceIds={administeredSpaceIds}
 			analyticsEnabled={true}
-			cmsAdmin={cmsAdmin}
 			constants={{}}
 			freeTier={freeTier}
 			learnResources={{} as ILearnResourceContext}
@@ -79,7 +79,7 @@ describe('Dashboards', () => {
 		};
 	});
 
-	it('shows the performance tab to CMS admins', () => {
+	it('shows the performance tab to space administrators', () => {
 		renderDashboards();
 
 		expect(
@@ -87,8 +87,8 @@ describe('Dashboards', () => {
 		).toBeInTheDocument();
 	});
 
-	it('hides the performance tab from non admins', () => {
-		renderDashboards({cmsAdmin: false});
+	it('hides the performance tab when no space is administered', () => {
+		renderDashboards({administeredSpaceIds: []});
 
 		expect(
 			screen.queryByRole('button', {name: 'performance'})
@@ -105,7 +105,7 @@ describe('Dashboards', () => {
 			'LPD-82226': false,
 		};
 
-		renderDashboards({cmsAdmin: false});
+		renderDashboards({administeredSpaceIds: []});
 
 		expect(
 			screen.queryByRole('button', {name: 'inventory'})

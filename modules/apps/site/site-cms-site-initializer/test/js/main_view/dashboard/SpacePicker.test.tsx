@@ -26,10 +26,16 @@ jest.mock(
 
 const mockedSpaceService = SpaceService as jest.Mocked<typeof SpaceService>;
 
-const WrappedComponent = () => {
+const WrappedComponent = ({spaceIds}: {spaceIds?: string[]}) => {
 	const [space, setSpace] = useState<SpaceOption>(initialSpace);
 
-	return <SpacePicker onSelectSpace={setSpace} selectedSpace={space} />;
+	return (
+		<SpacePicker
+			onSelectSpace={setSpace}
+			selectedSpace={space}
+			spaceIds={spaceIds}
+		/>
+	);
 };
 
 describe('[CMS Dashboard] Components: SpacePicker', () => {
@@ -140,6 +146,28 @@ describe('[CMS Dashboard] Components: SpacePicker', () => {
 		expect(
 			within(listbox).getByText('no-results-were-found')
 		).toBeInTheDocument();
+	});
+
+	it('renders only the given spaces', async () => {
+		render(<WrappedComponent spaceIds={['02']} />);
+
+		fireEvent.click(
+			screen.getByRole('combobox', {name: 'filter-by-spaces'})
+		);
+
+		const listbox = await screen.findByRole('listbox');
+
+		expect(
+			await within(listbox).findByRole('option', {name: 'space 02'})
+		).toBeInTheDocument();
+
+		expect(
+			within(listbox).getByRole('option', {name: 'all-spaces'})
+		).toBeInTheDocument();
+
+		expect(
+			within(listbox).queryByRole('option', {name: 'space 01'})
+		).not.toBeInTheDocument();
 	});
 
 	it('selects a new space', async () => {
