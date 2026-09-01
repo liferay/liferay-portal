@@ -8,6 +8,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:adaptive-media:adaptive-media-image-api")
 	testIntegrationImplementation project(":apps:asset:asset-auto-tagger-api")
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
+	testIntegrationImplementation project(":apps:asset:asset-link-api")
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
