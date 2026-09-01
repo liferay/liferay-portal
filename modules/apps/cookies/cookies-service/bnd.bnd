@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Cookies Service
 Bundle-SymbolicName: com.liferay.cookies.service
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.9
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 -dsannotations-options: inherit
