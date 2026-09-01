@@ -1229,7 +1229,7 @@ test(
 
 		await apiHelpers.headlessCommerceAdminCatalog.patchProductTaxConfiguration(
 			uJointProductId,
-			{taxCategory: taxCategory.name.en_US}
+			{id: taxCategory.id, taxable: true}
 		);
 
 		const {account, buyerUser} = await createAccountWithBuyerUser(
