@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Asset Categories Item Selector Web
 Bundle-SymbolicName: com.liferay.asset.categories.item.selector.web
-Bundle-Version: 1.0.99
+Bundle-Version: 1.0.100
 Web-ContextPath: /asset-categories-item-selector-web
