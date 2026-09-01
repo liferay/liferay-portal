@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Admin configuration API
 Bundle-SymbolicName: com.liferay.headless.admin.configuration.api
-Bundle-Version: 2.0.3
+Bundle-Version: 2.0.4
 Export-Package:\
 	com.liferay.headless.admin.configuration.dto.v1_0,\
 	com.liferay.headless.admin.configuration.resource.v1_0
