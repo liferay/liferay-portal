@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -46,6 +47,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import java.sql.Types;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -724,6 +726,68 @@ public class LayoutPageTemplateEntryServiceImpl
 	}
 
 	@Override
+	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return Collections.emptyList();
+		}
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return layoutPageTemplateEntryPersistence.filterFindByG_C_C_T(
+				groupIds, classNameId, classTypeKey, type);
+		}
+
+		return layoutPageTemplateEntryPersistence.filterFindByG_C_C_T_S(
+			groupIds, classNameId, classTypeKey, type, status);
+	}
+
+	@Override
+	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return Collections.emptyList();
+		}
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return layoutPageTemplateEntryPersistence.filterFindByG_C_C_T(
+				groupIds, classNameId, classTypeKey, type, start, end,
+				orderByComparator);
+		}
+
+		return layoutPageTemplateEntryPersistence.filterFindByG_C_C_T_S(
+			groupIds, classNameId, classTypeKey, type, status, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return Collections.emptyList();
+		}
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return layoutPageTemplateEntryPersistence.filterFindByG_C_C_LikeN_T(
+				groupIds, classNameId, classTypeKey,
+				_customSQL.keywords(name, false, WildcardMode.SURROUND)[0],
+				type, start, end, orderByComparator);
+		}
+
+		return layoutPageTemplateEntryPersistence.filterFindByG_C_C_LikeN_T_S(
+			groupIds, classNameId, classTypeKey,
+			_customSQL.keywords(name, false, WildcardMode.SURROUND)[0], type,
+			status, start, end, orderByComparator);
+	}
+
+	@Override
 	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntriesByType(
 		long groupId, long layoutPageTemplateCollectionId, int type, int start,
 		int end, OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
@@ -913,6 +977,47 @@ public class LayoutPageTemplateEntryServiceImpl
 		return layoutPageTemplateEntryPersistence.filterCountByG_T_LikeN_S(
 			groupId, _customSQL.keywords(name, false, WildcardMode.SURROUND)[0],
 			types, status);
+	}
+
+	@Override
+	public int getLayoutPageTemplateEntriesCount(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return 0;
+		}
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return layoutPageTemplateEntryPersistence.filterCountByG_C_C_T(
+				groupIds, classNameId, classTypeKey, type);
+		}
+
+		return layoutPageTemplateEntryPersistence.filterCountByG_C_C_T_S(
+			groupIds, classNameId, classTypeKey, type, status);
+	}
+
+	@Override
+	public int getLayoutPageTemplateEntriesCount(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return 0;
+		}
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return layoutPageTemplateEntryPersistence.
+				filterCountByG_C_C_LikeN_T(
+					groupIds, classNameId, classTypeKey,
+					_customSQL.keywords(name, false, WildcardMode.SURROUND)[0],
+					type);
+		}
+
+		return layoutPageTemplateEntryPersistence.filterCountByG_C_C_LikeN_T_S(
+			groupIds, classNameId, classTypeKey,
+			_customSQL.keywords(name, false, WildcardMode.SURROUND)[0], type,
+			status);
 	}
 
 	@Override
