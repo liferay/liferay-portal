@@ -8,13 +8,21 @@ import {createReadStream} from 'fs';
 import path from 'node:path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
 import getContainerDefinition from './utils/getContainerDefinition';
 import getPageDefinition from './utils/getPageDefinition';
 
-const test = mergeTests(apiHelpersTest, isolatedSiteTest, loginTest());
+const test = mergeTests(
+	apiHelpersTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
+	isolatedSiteTest,
+	loginTest()
+);
 
 test(
 	'Applies the adaptive media background image only within its media query',
