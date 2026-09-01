@@ -14,6 +14,8 @@ import com.liferay.client.extension.util.spring.boot3.client.LiferayOAuth2Access
 
 import java.nio.charset.StandardCharsets;
 
+import java.security.MessageDigest;
+
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -233,8 +235,12 @@ public class NotificationsRestController extends BaseRestController {
 		String webhookPassword = authorizationParts[1];
 		String webhookUserName = authorizationParts[0];
 
-		if (webhookPassword.equals(
-				n1a0AdyenWebhookJSONObject.getString("webhookPassword")) &&
+		String n1a0AdyenWebhookPassword = n1a0AdyenWebhookJSONObject.getString(
+			"webhookPassword");
+
+		if (MessageDigest.isEqual(
+				webhookPassword.getBytes(StandardCharsets.UTF_8),
+				n1a0AdyenWebhookPassword.getBytes(StandardCharsets.UTF_8)) &&
 			webhookUserName.equals(
 				n1a0AdyenWebhookJSONObject.getString("webhookUsername"))) {
 
