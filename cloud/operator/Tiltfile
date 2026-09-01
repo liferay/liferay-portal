@@ -27,39 +27,6 @@ docker_build_with_restart(
     target="dev",
 )
 
-local_resource(
-    "argo-workflows-token",
-    cmd=" ".join(
-        [
-            "until kubectl get secret argo-workflows-ui.service-account-token",
-            "--namespace argo-workflows-system",
-            "--output jsonpath=\"{.data.token}\" 2> /dev/null | grep --quiet .;",
-            "do sleep 1; done;",
-            "printf \"\\nPaste this into the Argo UI login:\\n\\nBearer %s\\n\\n\"",
-            "\"$(kubectl get secret argo-workflows-ui.service-account-token",
-            "--namespace argo-workflows-system",
-            "--output jsonpath=\"{.data.token}\" | base64 --decode)\"",
-        ]
-    ),
-    labels=["activation"],
-    resource_deps=["argo-workflows-login"],
-)
-
-local_resource(
-    "argo-workflows-ui",
-    labels=["activation"],
-    links=[link("http://localhost:2746", "Argo Workflows UI")],
-    resource_deps=["argo-workflows"],
-    serve_cmd=" ".join(
-        [
-            "kubectl port-forward",
-            "--namespace argo-workflows-system",
-            "service/argo-workflows-server",
-            "2746:2746",
-        ]
-    ),
-)
-
 environments = {
     "non-production": {"desired_replicas": 1},
     "production": {"desired_replicas": 3},
@@ -202,6 +169,18 @@ k8s_resource(
 )
 
 k8s_resource(
+    labels=["activation"],
+    new_name="argo-workflows-login",
+    objects=[
+        "argo-workflows-ui:clusterrole",
+        "argo-workflows-ui:clusterrolebinding",
+        "argo-workflows-ui:serviceaccount:argo-workflows-system",
+        "argo-workflows-ui.service-account-token:secret:argo-workflows-system",
+    ],
+    resource_deps=["argo-workflows"],
+)
+
+k8s_resource(
     labels=["operator"],
     port_forwards=["8080:8080", "8081:8081"],
     resource_deps=["operator-build"],
@@ -286,47 +265,6 @@ k8s_yaml(
     )
 )
 
-local_resource(
-    "operator-build",
-    cmd="./go_build.sh fast",
-    deps=["resources"],
-    ignore=[
-        "resources/api/licensing/v1alpha1/zz_generated.deepcopy.go",
-        "resources/build",
-    ],
-    labels=["operator"],
-)
-
-local_resource(
-    "argo-workflows",
-    cmd=" ".join(
-        [
-            "helm upgrade argo-workflows argo-workflows",
-            "--create-namespace",
-            "--install",
-            "--namespace argo-workflows-system",
-            "--repo https://argoproj.github.io/argo-helm",
-            "--set executor.image.tag=v4.1.2-nonroot",
-            "--version " + ARGO_WORKFLOWS_CHART_VERSION,
-            "--wait",
-        ]
-    ),
-    deps=["argo-workflows-values.yaml"],
-    labels=["activation"],
-)
-
-k8s_resource(
-    labels=["activation"],
-    new_name="argo-workflows-login",
-    objects=[
-        "argo-workflows-ui:clusterrole",
-        "argo-workflows-ui:clusterrolebinding",
-        "argo-workflows-ui:serviceaccount:argo-workflows-system",
-        "argo-workflows-ui.service-account-token:secret:argo-workflows-system",
-    ],
-    resource_deps=["argo-workflows"],
-)
-
 k8s_yaml(
     blob(
         "\n".join(
@@ -379,4 +317,66 @@ k8s_yaml(
             ]
         )
     )
+)
+
+local_resource(
+    "argo-workflows",
+    cmd=" ".join(
+        [
+            "helm upgrade argo-workflows argo-workflows",
+            "--create-namespace",
+            "--install",
+            "--namespace argo-workflows-system",
+            "--repo https://argoproj.github.io/argo-helm",
+            "--set executor.image.tag=v4.1.2-nonroot",
+            "--version " + ARGO_WORKFLOWS_CHART_VERSION,
+            "--wait",
+        ]
+    ),
+    deps=["argo-workflows-values.yaml"],
+    labels=["activation"],
+)
+
+local_resource(
+    "argo-workflows-token",
+    cmd=" ".join(
+        [
+            "until kubectl get secret argo-workflows-ui.service-account-token",
+            "--namespace argo-workflows-system",
+            "--output jsonpath=\"{.data.token}\" 2> /dev/null | grep --quiet .;",
+            "do sleep 1; done;",
+            "printf \"\\nPaste this into the Argo UI login:\\n\\nBearer %s\\n\\n\"",
+            "\"$(kubectl get secret argo-workflows-ui.service-account-token",
+            "--namespace argo-workflows-system",
+            "--output jsonpath=\"{.data.token}\" | base64 --decode)\"",
+        ]
+    ),
+    labels=["activation"],
+    resource_deps=["argo-workflows-login"],
+)
+
+local_resource(
+    "argo-workflows-ui",
+    labels=["activation"],
+    links=[link("http://localhost:2746", "Argo Workflows UI")],
+    resource_deps=["argo-workflows"],
+    serve_cmd=" ".join(
+        [
+            "kubectl port-forward",
+            "--namespace argo-workflows-system",
+            "service/argo-workflows-server",
+            "2746:2746",
+        ]
+    ),
+)
+
+local_resource(
+    "operator-build",
+    cmd="./go_build.sh fast",
+    deps=["resources"],
+    ignore=[
+        "resources/api/licensing/v1alpha1/zz_generated.deepcopy.go",
+        "resources/build",
+    ],
+    labels=["operator"],
 )
