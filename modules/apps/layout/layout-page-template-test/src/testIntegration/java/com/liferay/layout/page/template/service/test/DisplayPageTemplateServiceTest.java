@@ -6,10 +6,14 @@
 package com.liferay.layout.page.template.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
+import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchClassNameException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -19,10 +23,13 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +53,7 @@ public class DisplayPageTemplateServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = GroupTestUtil.addGroup();
+		_group1 = GroupTestUtil.addGroup();
 	}
 
 	@Test
@@ -55,11 +62,11 @@ public class DisplayPageTemplateServiceTest {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
-				null, _group.getGroupId(), 0, null, name,
+				null, _group1.getGroupId(), 0, null, name,
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
 				WorkflowConstants.STATUS_DRAFT,
 				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
+					_group1.getGroupId(), TestPropsValues.getUserId()));
 
 		LayoutPageTemplateEntry persistedLayoutPageTemplateEntry =
 			_layoutPageTemplateEntryService.fetchLayoutPageTemplateEntry(
@@ -79,7 +86,7 @@ public class DisplayPageTemplateServiceTest {
 	public void testDeleteDisplayPageTemplate() throws PortalException {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_group.getGroupId());
+				_group1.getGroupId());
 
 		_layoutPageTemplateEntryService.deleteLayoutPageTemplateEntry(
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
@@ -89,21 +96,432 @@ public class DisplayPageTemplateServiceTest {
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()));
 	}
 
+	@Test
+	public void testGetLayoutPageTemplateEntriesAcrossGroups()
+		throws Exception {
+
+		_group2 = GroupTestUtil.addGroup();
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group1.getGroupId(), JournalArticle.class.getName());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry1 =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group1.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group2.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry3 =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group2.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), false,
+				WorkflowConstants.STATUS_DRAFT);
+
+		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 2,
+			layoutPageTemplateEntries.size());
+		Assert.assertTrue(
+			layoutPageTemplateEntries.contains(layoutPageTemplateEntry1));
+		Assert.assertTrue(
+			layoutPageTemplateEntries.contains(layoutPageTemplateEntry2));
+
+		layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_ANY);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 3,
+			layoutPageTemplateEntries.size());
+		Assert.assertTrue(
+			layoutPageTemplateEntries.contains(layoutPageTemplateEntry3));
+
+		layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 1,
+			layoutPageTemplateEntries.size());
+		Assert.assertEquals(
+			layoutPageTemplateEntry1, layoutPageTemplateEntries.get(0));
+	}
+
+	@Test
+	public void testGetLayoutPageTemplateEntriesAcrossGroupsWithName()
+		throws Exception {
+
+		_group2 = GroupTestUtil.addGroup();
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group1.getGroupId(), JournalArticle.class.getName());
+
+		String name = RandomTestUtil.randomString();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry1 =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group1.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), false, null, name,
+				WorkflowConstants.STATUS_APPROVED);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group2.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), false, null, name,
+				WorkflowConstants.STATUS_APPROVED);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry3 =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group1.getGroupId(),
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), false, null,
+				name + RandomTestUtil.randomString(),
+				WorkflowConstants.STATUS_DRAFT);
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group2.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey(), false, null,
+			RandomTestUtil.randomString(), WorkflowConstants.STATUS_APPROVED);
+
+		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), name,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 2,
+			layoutPageTemplateEntries.size());
+		Assert.assertTrue(
+			layoutPageTemplateEntries.contains(layoutPageTemplateEntry1));
+		Assert.assertTrue(
+			layoutPageTemplateEntries.contains(layoutPageTemplateEntry2));
+
+		layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), name,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 3,
+			layoutPageTemplateEntries.size());
+		Assert.assertTrue(
+			layoutPageTemplateEntries.contains(layoutPageTemplateEntry3));
+
+		layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), name,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 1,
+			layoutPageTemplateEntries.size());
+		Assert.assertEquals(
+			layoutPageTemplateEntry1, layoutPageTemplateEntries.get(0));
+	}
+
+	@Test
+	public void testGetLayoutPageTemplateEntriesAcrossGroupsWithPagination()
+		throws Exception {
+
+		_group2 = GroupTestUtil.addGroup();
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group1.getGroupId(), JournalArticle.class.getName());
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group1.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey());
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group2.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey());
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group2.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey(), false,
+			WorkflowConstants.STATUS_DRAFT);
+
+		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 2,
+			layoutPageTemplateEntries.size());
+
+		layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 3,
+			layoutPageTemplateEntries.size());
+
+		layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED, 0, 1, null);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 1,
+			layoutPageTemplateEntries.size());
+	}
+
+	@Test
+	public void testGetLayoutPageTemplateEntriesCountAcrossGroups()
+		throws Exception {
+
+		_group2 = GroupTestUtil.addGroup();
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group1.getGroupId(), JournalArticle.class.getName());
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group1.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey());
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group2.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey());
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group2.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey(), false,
+			WorkflowConstants.STATUS_DRAFT);
+
+		Assert.assertEquals(
+			2,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED));
+		Assert.assertEquals(
+			3,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_ANY));
+		Assert.assertEquals(
+			1,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				new long[] {_group1.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED));
+	}
+
+	@Test
+	public void testGetLayoutPageTemplateEntriesCountAcrossGroupsWithName()
+		throws Exception {
+
+		_group2 = GroupTestUtil.addGroup();
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group1.getGroupId(), JournalArticle.class.getName());
+
+		String name = RandomTestUtil.randomString();
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group1.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey(), false, null, name,
+			WorkflowConstants.STATUS_APPROVED);
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group2.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey(), false, null, name,
+			WorkflowConstants.STATUS_APPROVED);
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group1.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey(), false, null,
+			name + RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_DRAFT);
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group2.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey(), false, null,
+			RandomTestUtil.randomString(), WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertEquals(
+			2,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), name,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED));
+		Assert.assertEquals(
+			3,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				new long[] {_group1.getGroupId(), _group2.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), name,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_ANY));
+		Assert.assertEquals(
+			1,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				new long[] {_group1.getGroupId()},
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), name,
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED));
+	}
+
+	@Test
+	public void testGetLayoutPageTemplateEntriesWithoutGroups()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group1.getGroupId(), JournalArticle.class.getName());
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group1.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			ddmStructure.getStructureKey());
+
+		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[0],
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 0,
+			layoutPageTemplateEntries.size());
+
+		layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[0],
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 0,
+			layoutPageTemplateEntries.size());
+
+		layoutPageTemplateEntries =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+				new long[0],
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			layoutPageTemplateEntries.toString(), 0,
+			layoutPageTemplateEntries.size());
+
+		Assert.assertEquals(
+			0,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				new long[0],
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED));
+		Assert.assertEquals(
+			0,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				new long[0],
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey(), RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				WorkflowConstants.STATUS_APPROVED));
+	}
+
 	private LayoutPageTemplateEntry _createDisplayPageEntry(
 			long classNameId, String classTypeKey)
 		throws PortalException {
 
 		return _layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
-			null, _group.getGroupId(), 0, null, classNameId, classTypeKey,
+			null, _group1.getGroupId(), 0, null, classNameId, classTypeKey,
 			RandomTestUtil.randomString(), 0, WorkflowConstants.STATUS_DRAFT,
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+				_group1.getGroupId(), TestPropsValues.getUserId()));
 	}
 
 	@DeleteAfterTestRun
-	private Group _group;
+	private Group _group1;
+
+	@DeleteAfterTestRun
+	private Group _group2;
 
 	@Inject
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
+
+	@Inject
+	private Portal _portal;
 
 }
