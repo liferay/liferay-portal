@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site PIM Site Initializer Test Utilities
 Bundle-SymbolicName: com.liferay.site.pim.site.initializer.test.util
-Bundle-Version: 1.1.1
+Bundle-Version: 1.1.2
 Export-Package:\
 	com.liferay.site.pim.site.initializer.test.util,\
 	com.liferay.site.pim.site.initializer.test.util.link
