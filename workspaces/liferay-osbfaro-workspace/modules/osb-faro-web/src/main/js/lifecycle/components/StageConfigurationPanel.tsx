@@ -35,18 +35,21 @@ interface IPickerTriggerButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	buttonClassName?: string;
 	label: string;
+	size?: 'sm' | 'xs';
 }
 
 const PickerTriggerButton = React.forwardRef<
 	HTMLButtonElement,
 	IPickerTriggerButtonProps
->(({buttonClassName, label, ...rest}, ref) => (
+>(({buttonClassName, className, label, size = 'sm', ...rest}, ref) => (
 	<ClayButton
 		{...rest}
-		className={getCN('rounded-lg', buttonClassName)}
+		className={getCN('rounded-lg', buttonClassName, {
+			show: className?.split(' ').includes('show'),
+		})}
 		displayType="secondary"
 		ref={ref}
-		size="sm"
+		size={size}
 	>
 		{label}
 
@@ -293,18 +296,13 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 		const isValuelessOperator =
 			!!condition.operator && VALUELESS_OPERATORS.has(condition.operator);
 
-		/**
-		 * A row the operator has not started yet is left alone, so a new
-		 * lifecycle does not open with an error against every stage. Once an
-		 * attribute is picked the row has to be finished to be saved.
-		 */
 		const incomplete = !!condition.field && !isConditionComplete(condition);
 
 		return (
 			<>
 				<div
 					className={getCN(
-						'align-items-center c-gap-2 d-flex p-3 rounded stage-configuration-panel__condition',
+						'align-items-center bg-white c-gap-2 d-flex p-3 rounded stage-configuration-panel__condition',
 						{'has-error': incomplete}
 					)}
 				>
@@ -324,9 +322,10 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 					{conditionIndex > 0 && (
 						<ClayButtonWithIcon
 							aria-label={Liferay.Language.get('remove')}
-							className="ml-auto text-secondary"
+							borderless
+							className="ml-auto"
 							data-tooltip-align="top"
-							displayType="unstyled"
+							displayType="secondary"
 							onClick={() => removeCondition(conditionIndex)}
 							size="xs"
 							symbol="times-circle"
@@ -334,20 +333,6 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 						/>
 					)}
 				</div>
-
-				{incomplete && (
-					<div className="form-feedback-group">
-						<div className="form-feedback-item">
-							<span className="form-feedback-indicator">
-								<Icon symbol="exclamation-full" />
-							</span>
-
-							{Liferay.Language.get(
-								'finish-this-condition-by-choosing-an-operator-and-a-value'
-							)}
-						</div>
-					</div>
-				)}
 			</>
 		);
 	};
@@ -411,41 +396,49 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 					{Liferay.Language.get('trigger')}
 				</div>
 
-				<div className="border mb-4 rounded stage-configuration-panel__trigger">
-					<div className="align-items-center border-bottom c-gap-2 d-flex p-3 stage-configuration-panel__match">
-						<Picker
-							aria-label={Liferay.Language.get('match-logic')}
-							as={PickerTriggerButton}
-							disabled={conditions.length < 2}
-							items={MATCH_LOGIC_OPTIONS}
-							label={
-								matchLogic === MatchLogic.Any
-									? Liferay.Language.get('any')
-									: Liferay.Language.get('all')
-							}
-							onSelectionChange={(key) =>
-								onChange({
-									...value,
-									matchLogic: key as MatchLogic,
-								})
-							}
-							selectedKey={matchLogic}
-						>
-							{(item) => (
-								<Option key={item.value}>{item.label}</Option>
-							)}
-						</Picker>
-
-						<Text size={3}>
-							{Liferay.Language.get('of-these-criteria-are-met')}
-						</Text>
+				<div className="border mb-4 rounded">
+					<div className="align-items-center border-bottom c-gap-2 d-flex p-3 stage-configuration-panel__match text-secondary">
+						{sub(
+							Liferay.Language.get('x-of-these-criteria-are-met'),
+							[
+								<Picker
+									aria-label={Liferay.Language.get(
+										'match-logic'
+									)}
+									as={PickerTriggerButton}
+									disabled={conditions.length < 2}
+									items={MATCH_LOGIC_OPTIONS}
+									key="matchLogic"
+									label={
+										matchLogic === MatchLogic.Any
+											? Liferay.Language.get('any')
+											: Liferay.Language.get('all')
+									}
+									onSelectionChange={(key) =>
+										onChange({
+											...value,
+											matchLogic: key as MatchLogic,
+										})
+									}
+									selectedKey={matchLogic}
+									size="xs"
+								>
+									{(item) => (
+										<Option key={item.value}>
+											{item.label}
+										</Option>
+									)}
+								</Picker>,
+							],
+							false
+						)}
 					</div>
 
 					<div className="p-3">
 						{conditions.map((condition, conditionIndex) => (
 							<React.Fragment key={condition.key}>
 								{conditionIndex > 0 && (
-									<div className="my-2 stage-configuration-panel__connector">
+									<div className="font-weight-semi-bold my-2 small text-secondary text-uppercase">
 										{connectorLabel}
 									</div>
 								)}
@@ -455,10 +448,10 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 						))}
 
 						<ClayButton
-							className="mt-3"
+							className="mt-3 text-dark"
 							displayType="secondary"
 							onClick={addCondition}
-							size="sm"
+							size="xs"
 						>
 							<Icon
 								className="inline-item inline-item-before"

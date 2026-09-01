@@ -605,22 +605,4 @@ describe('StageConfigurationPanel', () => {
 			})
 		);
 	});
-
-	it('flags a condition left unfinished once an attribute is chosen', () => {
-		renderPanel({value: withCondition({field: 'account.industry'})});
-
-		expect(screen.getByText(/finish this condition/i)).toBeInTheDocument();
-	});
-
-	it('leaves a condition not yet started unflagged', () => {
-		renderPanel();
-
-		expect(screen.queryByText(/finish this condition/i)).toBeNull();
-	});
-
-	it('leaves a finished condition unflagged', () => {
-		renderPanel({value: withCondition(textCondition)});
-
-		expect(screen.queryByText(/finish this condition/i)).toBeNull();
-	});
 });
