@@ -5,6 +5,7 @@
 
 import {DataApiHelpers} from '../helpers/ApiHelpers';
 import {liferayConfig} from '../liferay.config';
+import {trackPendingApiRequests} from '../utils/trackPendingApiRequests';
 
 import type {Page, TestType} from '@playwright/test';
 
@@ -24,10 +25,14 @@ function dataRemoteApiHelpersTest(
 
 			const dataApiHelpers = new DataApiHelpers(remotePage, remoteUrl);
 
+			const waitForPendingApiRequests =
+				trackPendingApiRequests(remotePage);
+
 			try {
 				await use(dataApiHelpers);
 			}
 			finally {
+				await waitForPendingApiRequests();
 
 				// @ts-ignore
 

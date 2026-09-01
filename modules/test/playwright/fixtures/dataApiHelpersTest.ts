@@ -6,6 +6,7 @@
 import {mergeTests} from '@playwright/test';
 
 import {DataApiHelpers} from '../helpers/ApiHelpers';
+import {trackPendingApiRequests} from '../utils/trackPendingApiRequests';
 import {BackendPage, backendPageTest} from './backendPageTest';
 
 const test = mergeTests(backendPageTest);
@@ -17,10 +18,13 @@ const dataApiHelpersTest = test.extend<{
 	apiHelpers: async ({backendPage, page}, use) => {
 		const dataApiHelpers = new DataApiHelpers(page);
 
+		const waitForPendingApiRequests = trackPendingApiRequests(page);
+
 		try {
 			await use(dataApiHelpers);
 		}
 		finally {
+			await waitForPendingApiRequests();
 
 			// @ts-ignore
 
