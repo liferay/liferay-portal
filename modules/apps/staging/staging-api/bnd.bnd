@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Staging API
 Bundle-SymbolicName: com.liferay.staging.api
-Bundle-Version: 9.1.0
+Bundle-Version: 9.1.1
 Export-Package:\
 	com.liferay.staging,\
 	com.liferay.staging.configuration,\
