@@ -6,6 +6,7 @@
 package com.liferay.portal.search.elasticsearch8.internal.util;
 
 import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.json.JsonData;
 
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -129,6 +130,14 @@ public class SetterUtil {
 
 		if (value != null) {
 			consumer.accept(value.floatValue());
+		}
+	}
+
+	public static void setNotNullJsonData(
+		Consumer<JsonData> consumer, Object value) {
+
+		if (value != null) {
+			consumer.accept(JsonData.of(value));
 		}
 	}
 
