@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.users.admin.management.toolbar.FilterContributor;
+import com.liferay.users.admin.web.internal.util.UsersAdminPortletURLUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -79,7 +80,9 @@ public class FiltersManagementToolbarDisplayContextWrapper
 
 					dropdownGroupItem.setDropdownItems(
 						getDropdownItems(
-							entriesMap, getPortletURL(),
+							entriesMap,
+							UsersAdminPortletURLUtil.removeSelectionParameters(
+								getPortletURL()),
 							filterContributor.getParameter(),
 							_getCurrentValue(
 								httpServletRequest, filterContributor)));

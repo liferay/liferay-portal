@@ -163,11 +163,19 @@ public class ViewFlatUsersDisplayContextFactory {
 		FilterContributor[] filterContributors = _getFilterContributors(
 			httpServletRequest);
 
+		boolean hasActiveFilter = false;
+
 		if (filterContributors != null) {
 			for (FilterContributor filterContributor : filterContributors) {
 				String parameterValue = ParamUtil.getString(
 					httpServletRequest, filterContributor.getParameter(),
 					filterContributor.getDefaultValue());
+
+				if (!Objects.equals(
+						parameterValue, filterContributor.getDefaultValue())) {
+
+					hasActiveFilter = true;
+				}
 
 				params.putAll(
 					filterContributor.getSearchParameters(parameterValue));
@@ -182,7 +190,10 @@ public class ViewFlatUsersDisplayContextFactory {
 		String selection = ParamUtil.getString(
 			httpServletRequest, "selection", "all");
 
-		if (Objects.equals(selection, "selected-account-users")) {
+		if (hasActiveFilter) {
+			selection = "all";
+		}
+		else if (Objects.equals(selection, "selected-account-users")) {
 			long[] accountEntryIds = ParamUtil.getLongValues(
 				httpServletRequest, "accountEntryIds");
 

@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.users.admin.management.toolbar.FilterContributor;
 import com.liferay.users.admin.search.UserSearchTerms;
 import com.liferay.users.admin.web.internal.util.DisplayStyleUtil;
+import com.liferay.users.admin.web.internal.util.UsersAdminPortletURLUtil;
 
 import jakarta.portlet.PortletURL;
 
@@ -163,17 +164,11 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	@Override
 	public String getClearResultsURL() {
 		return PortletURLBuilder.create(
-			getPortletURL()
+			UsersAdminPortletURLUtil.removeSelectionParameters(getPortletURL())
 		).setKeywords(
 			StringPool.BLANK
 		).setNavigation(
 			(String)null
-		).setParameter(
-			"accountEntryIds", (String)null
-		).setParameter(
-			"organizationIds", (String)null
-		).setParameter(
-			"selection", "all"
 		).buildString();
 	}
 
@@ -389,15 +384,9 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 				dropdownItem.setActive(Objects.equals(_selection, "all"));
 				dropdownItem.setHref(
 					_removeFilterContributorParameters(
-						PortletURLBuilder.create(
+						UsersAdminPortletURLUtil.removeSelectionParameters(
 							getPortletURL()
-						).setParameter(
-							"accountEntryIds", (String)null
-						).setParameter(
-							"organizationIds", (String)null
-						).setParameter(
-							"selection", "all"
-						).buildString()));
+						).toString()));
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "all"));
 			}
