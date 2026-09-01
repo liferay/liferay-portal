@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Message Boards Service
 Bundle-SymbolicName: com.liferay.message.boards.service
-Bundle-Version: 5.0.132
+Bundle-Version: 5.0.133
 Liferay-Require-SchemaVersion: 6.6.0
 Liferay-Service: true
 -dsannotations-options: inherit
