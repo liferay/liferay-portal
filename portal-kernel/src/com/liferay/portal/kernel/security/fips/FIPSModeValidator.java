@@ -9,6 +9,7 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.security.SecureRandomUtil;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import java.net.URL;
@@ -120,6 +122,7 @@ public class FIPSModeValidator {
 			Security::getProperty, _requiredSecurityProperties);
 		_validateRequiredPropertyValues(
 			System::getProperty, _requiredSystemProperties);
+		_validateSecureRandomProvider();
 	}
 
 	public static void validateAlgorithm(String algorithm) {
@@ -606,6 +609,39 @@ public class FIPSModeValidator {
 						"FIPS mode requires the property \"", entry.getKey(),
 						"\" to include \"", requiredValue, "\""));
 			}
+		}
+	}
+
+	private static void _validateSecureRandomProvider() {
+		try {
+			Field field = ReflectionUtil.getDeclaredField(
+				SecureRandomUtil.class, "_random");
+
+			Object secureRandom = field.get(null);
+
+			Method getProviderMethod = ReflectionUtil.getDeclaredMethod(
+				secureRandom.getClass(), "getProvider");
+
+			Provider provider = (Provider)getProviderMethod.invoke(
+				secureRandom);
+
+			String providerName = provider.getName();
+
+			if (Validator.isNull(providerName) ||
+				!_allowedProviderNames.containsKey(providerName)) {
+
+				throw new SecurityException(
+					"The secure random provider \"" + providerName +
+						"\" is not allowed in FIPS mode");
+			}
+		}
+		catch (SecurityException securityException) {
+			throw securityException;
+		}
+		catch (Throwable throwable) {
+			throw new SecurityException(
+				"Unable to determine the default SecureRandom provider",
+				throwable);
 		}
 	}
 
