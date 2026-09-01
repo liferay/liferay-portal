@@ -34,8 +34,11 @@ public abstract class BaseMonitor implements Monitor {
 		_monitorConfig = monitorConfig;
 	}
 
-	protected int getAttemptTimeoutMillis() {
-		return (int)(_getTimeoutMillis() / 3);
+	protected int getAttemptTimeoutMillis(int maxRetries) {
+		long timeoutMillis = _getTimeoutMillis();
+
+		return (int)
+			((timeoutMillis - (timeoutMillis / 10)) / (2 * (maxRetries + 1)));
 	}
 
 	protected String getInvalidValueMessage(
@@ -125,12 +128,6 @@ public abstract class BaseMonitor implements Monitor {
 
 		throw new IllegalArgumentException(
 			getInvalidValueMessage("parameter", name, url));
-	}
-
-	protected int getSingleAttemptTimeoutMillis() {
-		long timeoutMillis = _getTimeoutMillis();
-
-		return (int)((timeoutMillis - (timeoutMillis / 10)) / 2);
 	}
 
 	private String _getKey(String category, String name) {

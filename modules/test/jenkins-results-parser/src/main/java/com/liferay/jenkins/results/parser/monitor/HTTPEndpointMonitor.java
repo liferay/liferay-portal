@@ -38,7 +38,7 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 
 		try {
 			JenkinsResultsParserUtil.toString(
-				_endpointURL, false, 0, 0, getSingleAttemptTimeoutMillis());
+				_endpointURL, false, 0, 0, getAttemptTimeoutMillis(0));
 		}
 		catch (Exception exception) {
 			return new MonitorResult(

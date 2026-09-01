@@ -209,7 +209,7 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 			MasterResourceReader.getInstance(_masterName);
 
 		return masterResourceReader.getPrometheusScrape(
-			getAttemptTimeoutMillis());
+			getAttemptTimeoutMillis(MasterResourceReader.MAX_RETRIES));
 	}
 
 	private Double _getQueueDepth() throws IOException {

@@ -47,7 +47,7 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 
 		try {
 			reportData = JenkinsResultsParserUtil.toString(
-				_reportDataURL, false, 0, 0, getSingleAttemptTimeoutMillis());
+				_reportDataURL, false, 0, 0, getAttemptTimeoutMillis(0));
 		}
 		catch (Exception exception) {
 			return new MonitorResult(

@@ -22,21 +22,35 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	public void testGetAttemptTimeoutMillis() {
 		BaseMonitor baseMonitor = _newBaseMonitor(60);
 
-		testEquals(20000, baseMonitor.getAttemptTimeoutMillis());
+		testEquals(13500, baseMonitor.getAttemptTimeoutMillis(1));
 	}
 
 	@Test
 	public void testGetAttemptTimeoutMillisMaximum() {
 		BaseMonitor baseMonitor = _newBaseMonitor(Long.MAX_VALUE);
 
-		testEquals(715827666, baseMonitor.getAttemptTimeoutMillis());
+		testEquals(483183675, baseMonitor.getAttemptTimeoutMillis(1));
 	}
 
 	@Test
 	public void testGetAttemptTimeoutMillisNonPositiveTimeout() {
 		BaseMonitor baseMonitor = _newBaseMonitor(0);
 
-		testEquals(20000, baseMonitor.getAttemptTimeoutMillis());
+		testEquals(13500, baseMonitor.getAttemptTimeoutMillis(1));
+	}
+
+	@Test
+	public void testGetAttemptTimeoutMillisSingleAttempt() {
+		BaseMonitor baseMonitor = _newBaseMonitor(10);
+
+		testEquals(4500, baseMonitor.getAttemptTimeoutMillis(0));
+	}
+
+	@Test
+	public void testGetAttemptTimeoutMillisSingleAttemptMaximum() {
+		BaseMonitor baseMonitor = _newBaseMonitor(Long.MAX_VALUE);
+
+		testEquals(966367350, baseMonitor.getAttemptTimeoutMillis(0));
 	}
 
 	@Test
@@ -103,20 +117,6 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	public void testGetRequiredURLParameterUserInfo() {
 		_testGetRequiredURLParameterUserInfo("file://");
 		_testGetRequiredURLParameterUserInfo("https://");
-	}
-
-	@Test
-	public void testGetSingleAttemptTimeoutMillis() {
-		BaseMonitor baseMonitor = _newBaseMonitor(10);
-
-		testEquals(4500, baseMonitor.getSingleAttemptTimeoutMillis());
-	}
-
-	@Test
-	public void testGetSingleAttemptTimeoutMillisMaximum() {
-		BaseMonitor baseMonitor = _newBaseMonitor(Long.MAX_VALUE);
-
-		testEquals(966367350, baseMonitor.getSingleAttemptTimeoutMillis());
 	}
 
 	private String _getRequiredURLParameter(String url, String... urlPrefixes) {

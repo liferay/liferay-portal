@@ -170,8 +170,8 @@ public class JobHealthMonitor extends BaseMonitor {
 				_jobURL, "/api/json?tree=",
 				"lastBuild[building,number,timestamp],",
 				"lastCompletedBuild[number,result,timestamp]"),
-			false, 1, null, null, _SECONDS_RETRY_PERIOD,
-			getAttemptTimeoutMillis(), null);
+			false, _MAX_RETRIES, null, null, _SECONDS_RETRY_PERIOD,
+			getAttemptTimeoutMillis(_MAX_RETRIES), null);
 	}
 
 	private String _getJobURL(String masterName) {
@@ -260,6 +260,8 @@ public class JobHealthMonitor extends BaseMonitor {
 			JenkinsResultsParserUtil.join(". ", messages), metrics,
 			MonitorResult.Status.getMostSevere(statuses), currentTimeMillis);
 	}
+
+	private static final int _MAX_RETRIES = 1;
 
 	private static final int _SECONDS_RETRY_PERIOD = 1;
 
