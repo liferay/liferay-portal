@@ -4,6 +4,8 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import fs from 'fs';
+import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {calendarPagesTest} from '../../../fixtures/calendarPagesTest';
@@ -11,6 +13,7 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -56,6 +59,104 @@ test.beforeEach(
 		await pageEditorPage.publishPage();
 
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+	}
+);
+
+test(
+	'can export a calendar to an ICS file',
+	{tag: '@LPD-104213'},
+	async ({calendarWidgetPage, page}) => {
+		const eventTitle = getRandomString();
+
+		await test.step('Add an event so the exported file has content', async () => {
+			await calendarWidgetPage.addEvent({
+				allDay: false,
+				publishEvent: true,
+				throughCalendarActionMenu: {calendarName: 'Test Test'},
+				title: eventTitle,
+			});
+
+			await calendarWidgetPage.page.keyboard.press('Escape');
+		});
+
+		const download =
+			await test.step('Export the calendar from Manage Calendars', async () => {
+				await calendarWidgetPage.unhideSidebar();
+
+				await calendarWidgetPage.openCalendarGroupActionsDropdownMenu(
+					'My Calendars'
+				);
+
+				await calendarWidgetPage.manageCalendarsMenuItem.click();
+
+				const exportMenuItem = page.getByRole('link', {
+					exact: true,
+					name: 'Export',
+				});
+
+				await clickAndExpectToBeVisible({
+					target: exportMenuItem,
+					trigger: page
+						.getByRole('row', {name: 'Test Test'})
+						.getByRole('button'),
+				});
+
+				const downloadPromise = page.waitForEvent('download');
+
+				await exportMenuItem.click();
+
+				return downloadPromise;
+			});
+
+		await test.step('Check the downloaded ICS file carries the event', async () => {
+			expect(download.suggestedFilename()).toContain('.ics');
+
+			expect(fs.readFileSync(await download.path(), 'utf8')).toContain(
+				eventTitle
+			);
+		});
+	}
+);
+
+test(
+	'can import an ICS file into a calendar',
+	{tag: '@LPD-104213'},
+	async ({calendarWidgetPage, page}) => {
+		await calendarWidgetPage.unhideSidebar();
+
+		await calendarWidgetPage.openCalendarGroupActionsDropdownMenu(siteName);
+
+		await calendarWidgetPage.manageCalendarsMenuItem.click();
+
+		const importMenuItem = page.getByRole('link', {
+			exact: true,
+			name: 'Import',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: importMenuItem,
+			trigger: page
+				.getByRole('row', {name: siteName})
+				.getByRole('button'),
+		});
+
+		await importMenuItem.click();
+
+		await page
+			.locator('input[type="file"]')
+			.setInputFiles(
+				path.join(
+					__dirname,
+					'dependencies',
+					'calendar_microsoft_outlook_calendar.ics'
+				)
+			);
+
+		await page.getByRole('button', {name: 'Import'}).click();
+
+		await expect(
+			page.locator('.portlet-msg-success:not(.hide)')
+		).toBeVisible();
 	}
 );
 
