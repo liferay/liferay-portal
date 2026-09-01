@@ -519,6 +519,34 @@ describe('StageConfigurationPanel', () => {
 		expect(screen.queryByText('Or')).toBeNull();
 	});
 
+	it('disables the match logic picker while a stage holds one condition', () => {
+		renderPanel({value: withCondition(textCondition)});
+
+		expect(screen.getByLabelText(/match.logic/i)).toBeDisabled();
+	});
+
+	it('enables the match logic picker once a stage holds two conditions', () => {
+		renderPanel({value: withConditions([textCondition, textCondition])});
+
+		expect(screen.getByLabelText(/match.logic/i)).toBeEnabled();
+	});
+
+	it('persists the chosen match logic', () => {
+		const onChange = jest.fn();
+
+		renderPanel({
+			onChange,
+			value: withConditions([textCondition, textCondition]),
+		});
+
+		fireEvent.click(screen.getByLabelText(/match.logic/i));
+		fireEvent.click(screen.getByText('Any'));
+
+		expect(onChange).toHaveBeenCalledWith(
+			expect.objectContaining({matchLogic: MatchLogic.Any})
+		);
+	});
+
 	it('offers no remove control while a stage holds one condition', () => {
 		renderPanel({value: withCondition(textCondition)});
 

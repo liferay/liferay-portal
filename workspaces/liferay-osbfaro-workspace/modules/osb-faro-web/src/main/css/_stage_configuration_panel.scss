@@ -1,4 +1,8 @@
 .stage-configuration-panel {
+	&__match {
+		background-color: $cadmin-light-d1;
+	}
+
 	&__condition {
 		background-color: $cadmin-white;
 		border: 1px solid $cadmin-secondary-l2;

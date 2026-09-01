@@ -57,6 +57,11 @@ const PickerTriggerButton = React.forwardRef<
 const selectPlaceholder = (label: string) =>
 	sub(Liferay.Language.get('select-x'), [label]) as string;
 
+const MATCH_LOGIC_OPTIONS = [
+	{label: Liferay.Language.get('all'), value: MatchLogic.All},
+	{label: Liferay.Language.get('any'), value: MatchLogic.Any},
+];
+
 const conditionOperatorType = (condition: IStageCondition) =>
 	resolveOperatorType(condition.fieldDataCategory, condition.fieldDataType);
 
@@ -407,6 +412,35 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				</div>
 
 				<div className="border mb-4 rounded stage-configuration-panel__trigger">
+					<div className="align-items-center border-bottom c-gap-2 d-flex p-3 stage-configuration-panel__match">
+						<Picker
+							aria-label={Liferay.Language.get('match-logic')}
+							as={PickerTriggerButton}
+							disabled={conditions.length < 2}
+							items={MATCH_LOGIC_OPTIONS}
+							label={
+								matchLogic === MatchLogic.Any
+									? Liferay.Language.get('any')
+									: Liferay.Language.get('all')
+							}
+							onSelectionChange={(key) =>
+								onChange({
+									...value,
+									matchLogic: key as MatchLogic,
+								})
+							}
+							selectedKey={matchLogic}
+						>
+							{(item) => (
+								<Option key={item.value}>{item.label}</Option>
+							)}
+						</Picker>
+
+						<Text size={3}>
+							{Liferay.Language.get('of-these-criteria-are-met')}
+						</Text>
+					</div>
+
 					<div className="p-3">
 						{conditions.map((condition, conditionIndex) => (
 							<React.Fragment key={condition.key}>
