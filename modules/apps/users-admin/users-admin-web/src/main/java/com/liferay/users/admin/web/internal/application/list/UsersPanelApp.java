@@ -7,9 +7,22 @@ package com.liferay.users.admin.web.internal.application.list;
 
 import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
+import com.liferay.application.list.PanelAppNavigationItem;
 import com.liferay.application.list.constants.PanelCategoryKeys;
+import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationRegistryUtil;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.users.admin.constants.UserScreenNavigationEntryConstants;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -29,6 +42,31 @@ public class UsersPanelApp extends BasePanelApp {
 	@Override
 	public String getIcon() {
 		return "users";
+	}
+
+	@Override
+	public List<PanelAppNavigationItem> getPanelAppNavigationItems(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return TransformUtil.unsafeTransform(
+			ScreenNavigationRegistryUtil.getScreenNavigationCategories(
+				UserScreenNavigationEntryConstants.
+					SCREEN_NAVIGATION_KEY_USERS_AND_ORGANIZATIONS,
+				themeDisplay.getUser(), null),
+			screenNavigationCategory -> new PanelAppNavigationItem(
+				screenNavigationCategory.getLabel(LocaleUtil.ENGLISH),
+				PortletURLBuilder.create(
+					getPortletURL(httpServletRequest)
+				).setParameter(
+					"screenNavigationCategoryKey",
+					screenNavigationCategory.getCategoryKey()
+				).buildString(),
+				screenNavigationCategory.getLabel(themeDisplay.getLocale())));
 	}
 
 	@Override

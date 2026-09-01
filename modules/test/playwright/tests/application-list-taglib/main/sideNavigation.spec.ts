@@ -339,3 +339,40 @@ test(
 		});
 	}
 );
+
+test(
+	'The filter finds a screen inside a permission filtered application',
+	{tag: '@LPD-103691'},
+	async ({globalMenuPage, page}) => {
+		const sideNavigation = page.getByLabel('Applications Menu', {
+			exact: true,
+		});
+
+		const regularRolesItem = page.getByRole('menuitem', {
+			name: 'Regular Roles',
+		});
+
+		await test.step('Go to the Control Panel', async () => {
+			await globalMenuPage.goToControlPanel();
+
+			await expect(sideNavigation).toBeVisible();
+			await expect(regularRolesItem).toBeHidden();
+		});
+
+		await test.step('Filter for a screen inside an application', async () => {
+			await sideNavigation.getByRole('searchbox').fill('Regular Roles');
+
+			await expect(regularRolesItem).toBeVisible();
+		});
+
+		await test.step('Follow the screen', async () => {
+			await regularRolesItem.click();
+
+			await waitForPageToBeLoaded(page);
+
+			await expect(
+				page.getByRole('heading', {name: 'Roles'})
+			).toBeAttached();
+		});
+	}
+);
