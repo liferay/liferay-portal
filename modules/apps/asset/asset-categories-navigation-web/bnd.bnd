@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Asset Categories Navigation Web
 Bundle-SymbolicName: com.liferay.asset.categories.navigation.web
-Bundle-Version: 6.0.52
+Bundle-Version: 6.0.53
 Web-ContextPath: /asset-categories-navigation-web
