@@ -759,8 +759,10 @@ public class CommerceServiceUpgradeStepRegistrator
 					_companyLocalService, _resourcePermissionLocalService,
 					_roleLocalService));
 
+		registry.register("11.4.2", "11.4.3", new DummyUpgradeProcess());
+
 		registry.register(
-			"11.4.2", "11.5.0",
+			"11.4.3", "11.5.0",
 			UpgradeProcessFactory.addColumns(
 				CommerceOrderModelImpl.TABLE_NAME, "name VARCHAR(75) null"));
 
