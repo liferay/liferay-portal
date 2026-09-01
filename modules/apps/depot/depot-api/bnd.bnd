@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Depot API
 Bundle-SymbolicName: com.liferay.depot.api
-Bundle-Version: 13.0.0
+Bundle-Version: 13.0.1
 Export-Package:\
 	com.liferay.depot.application,\
 	com.liferay.depot.configuration,\
