@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Site CMS Site Initializer
 Bundle-SymbolicName: com.liferay.site.cms.site.initializer
-Bundle-Version: 1.0.37
+Bundle-Version: 1.0.38
 Web-ContextPath: /site-cms-site-initializer
 -dsannotations-options: inherit
