@@ -1260,7 +1260,11 @@ test(
 		await rolePage.definePermissionsLink.click();
 
 		const menuItems = {
-			'Applications Menu': ['Communication', 'Content', 'Workflow'],
+			'Applications Menu': [
+				'Content',
+				'Developer & Integration',
+				'Workflow',
+			],
 			'Control Panel': [
 				'Accounts',
 				'Configuration',

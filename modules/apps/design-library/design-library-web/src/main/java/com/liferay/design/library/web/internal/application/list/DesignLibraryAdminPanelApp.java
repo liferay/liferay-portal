@@ -9,7 +9,11 @@ import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -19,8 +23,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"panel.app.order:Integer=50",
-		"panel.category.key=" + PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_DESIGN
+		"panel.app.order:Integer=1200",
+		"panel.category.key=" + PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS
 	},
 	service = PanelApp.class
 )
@@ -39,6 +43,19 @@ public class DesignLibraryAdminPanelApp extends BasePanelApp {
 	@Override
 	public String getPortletId() {
 		return DesignLibraryAdminPortletKeys.DESIGN_LIBRARY_ADMIN;
+	}
+
+	@Override
+	public boolean isShow(PermissionChecker permissionChecker, Group group)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-57283")) {
+
+			return false;
+		}
+
+		return super.isShow(permissionChecker, group);
 	}
 
 	@Reference(
