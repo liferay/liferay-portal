@@ -38,4 +38,10 @@ public interface AzureTranslatorConfiguration {
 	)
 	public String subscriptionKey();
 
+	@Meta.AD(
+		deflt = "", description = "user-agent-header-help",
+		name = "user-agent-header", required = false
+	)
+	public String userAgent();
+
 }

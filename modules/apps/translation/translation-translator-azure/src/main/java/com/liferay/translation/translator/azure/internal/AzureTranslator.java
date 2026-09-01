@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.url.URLBuilder;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.translation.translator.BaseTranslator;
 import com.liferay.translation.translator.Translator;
 import com.liferay.translation.translator.TranslatorPacket;
@@ -73,6 +74,9 @@ public class AzureTranslator extends BaseTranslator {
 				azureTranslatorConfiguration.resourceLocation());
 			options.addHeader(
 				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
+			options.addHeader(
+				HttpHeaders.USER_AGENT,
+				_getUserAgent(azureTranslatorConfiguration.userAgent()));
 			options.setBody(
 				_getTranslatorPacketPayload(translatorPacket),
 				ContentTypes.APPLICATION_JSON, StringPool.UTF8);
@@ -173,6 +177,14 @@ public class AzureTranslator extends BaseTranslator {
 			(key, value) -> jsonArray.put(JSONUtil.put("Text", value)));
 
 		return jsonArray.toString();
+	}
+
+	private String _getUserAgent(String userAgent) {
+		if (Validator.isNull(userAgent)) {
+			return "Liferay";
+		}
+
+		return userAgent;
 	}
 
 	@Reference

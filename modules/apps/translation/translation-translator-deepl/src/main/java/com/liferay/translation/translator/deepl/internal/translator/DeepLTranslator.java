@@ -144,7 +144,7 @@ public class DeepLTranslator extends BaseTranslator {
 		return JSONUtil.toList(
 			_jsonFactory.createJSONArray(
 				_invoke(
-					deepLTranslatorConfiguration.authKey(), options,
+					deepLTranslatorConfiguration, options,
 					URLBuilder.create(
 						deepLTranslatorConfiguration.validateLanguageURL()
 					).addParameter(
@@ -172,13 +172,27 @@ public class DeepLTranslator extends BaseTranslator {
 		return getLanguageCode(languageId);
 	}
 
-	private String _invoke(String authKey, Http.Options options, String url)
+	private String _getUserAgent(String userAgent) {
+		if (Validator.isNull(userAgent)) {
+			return "Liferay";
+		}
+
+		return userAgent;
+	}
+
+	private String _invoke(
+			DeepLTranslatorConfiguration deepLTranslatorConfiguration,
+			Http.Options options, String url)
 		throws PortalException {
 
 		String json = null;
 
 		options.addHeader(
-			HttpHeaders.AUTHORIZATION, "DeepL-Auth-Key " + authKey);
+			HttpHeaders.AUTHORIZATION,
+			"DeepL-Auth-Key " + deepLTranslatorConfiguration.authKey());
+		options.addHeader(
+			HttpHeaders.USER_AGENT,
+			_getUserAgent(deepLTranslatorConfiguration.userAgent()));
 		options.setLocation(url);
 
 		try {
@@ -259,7 +273,7 @@ public class DeepLTranslator extends BaseTranslator {
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			_invoke(
-				deepLTranslatorConfiguration.authKey(), options,
+				deepLTranslatorConfiguration, options,
 				deepLTranslatorConfiguration.url()));
 
 		JSONArray jsonArray = jsonObject.getJSONArray("translations");
