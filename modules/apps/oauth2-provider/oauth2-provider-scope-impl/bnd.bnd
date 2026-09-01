@@ -1,6 +1,6 @@
 Bundle-Name: Liferay OAuth2 Provider Scope Implementation
 Bundle-SymbolicName: com.liferay.oauth2.provider.scope.impl
-Bundle-Version: 4.0.48
+Bundle-Version: 4.0.49
 Require-Capability:\
 	osgi.extender;\
 		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"
