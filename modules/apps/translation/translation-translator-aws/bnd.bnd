@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Translation Translator AWS
 Bundle-SymbolicName: com.liferay.translation.translator.aws
-Bundle-Version: 1.0.26
+Bundle-Version: 1.0.27
 Import-Package:\
 	!com.aayushatharva.*,\
 	\
