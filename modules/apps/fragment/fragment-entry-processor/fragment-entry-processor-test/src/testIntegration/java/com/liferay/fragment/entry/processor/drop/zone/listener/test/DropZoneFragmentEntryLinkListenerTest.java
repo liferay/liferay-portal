@@ -315,8 +315,8 @@ public class DropZoneFragmentEntryLinkListenerTest {
 
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-		_fragmentEntryLinkListener.
-			onUpdateFragmentEntryLinkConfigurationValues(fragmentEntryLink);
+		_fragmentEntryLinkListener.onUpdateFragmentEntryLinkConfigurationValues(
+			fragmentEntryLink);
 
 		ServiceContextThreadLocal.popServiceContext();
 	}
