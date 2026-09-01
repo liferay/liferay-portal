@@ -557,6 +557,27 @@ public class FileEntryContentDashboardItemTest {
 	}
 
 	@Test
+	public void testGetUserIdWithNewApprovedVersionByDifferentUser()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(
+			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
+
+		FileEntry fileEntry =
+			_getFileEntryWithNewApprovedVersionByDifferentUser(
+				user.getUserId());
+
+		VersionableContentDashboardItem<FileEntry>
+			versionableContentDashboardItem =
+				(VersionableContentDashboardItem<FileEntry>)
+					_contentDashboardItemFactory.create(
+						fileEntry.getFileEntryId());
+
+		Assert.assertEquals(
+			user.getUserId(), versionableContentDashboardItem.getUserId());
+	}
+
+	@Test
 	public void testGetUserName() throws Exception {
 		VersionableContentDashboardItem<FileEntry>
 			versionableContentDashboardItem =
@@ -564,6 +585,27 @@ public class FileEntryContentDashboardItemTest {
 
 		Assert.assertEquals(
 			"Test Test", versionableContentDashboardItem.getUserName());
+	}
+
+	@Test
+	public void testGetUserNameWithNewApprovedVersionByDifferentUser()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(
+			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
+
+		FileEntry fileEntry =
+			_getFileEntryWithNewApprovedVersionByDifferentUser(
+				user.getUserId());
+
+		VersionableContentDashboardItem<FileEntry>
+			versionableContentDashboardItem =
+				(VersionableContentDashboardItem<FileEntry>)
+					_contentDashboardItemFactory.create(
+						fileEntry.getFileEntryId());
+
+		Assert.assertEquals(
+			user.getFullName(), versionableContentDashboardItem.getUserName());
 	}
 
 	@Test
@@ -744,6 +786,27 @@ public class FileEntryContentDashboardItemTest {
 
 		return _getFileEntry(
 			FileUtil.getBytes(getClass(), fileName), fileName, numVersions);
+	}
+
+	private FileEntry _getFileEntryWithNewApprovedVersionByDifferentUser(
+			long userId)
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".jpg",
+			MimeTypesUtil.getExtensionContentType("image/jpg"), new byte[0],
+			null, null, null, _serviceContext);
+
+		return _dlAppLocalService.updateFileEntry(
+			userId, fileEntry.getFileEntryId(), fileEntry.getFileName(),
+			fileEntry.getMimeType(), fileEntry.getTitle(),
+			StringUtil.randomString(), fileEntry.getDescription(),
+			RandomTestUtil.randomString(), DLVersionNumberIncrease.MINOR,
+			fileEntry.getContentStream(), fileEntry.getSize(),
+			fileEntry.getDisplayDate(), fileEntry.getExpirationDate(),
+			fileEntry.getReviewDate(), _serviceContext);
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest()

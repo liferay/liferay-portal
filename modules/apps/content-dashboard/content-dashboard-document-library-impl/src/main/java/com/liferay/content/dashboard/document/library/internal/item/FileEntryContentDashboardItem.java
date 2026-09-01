@@ -91,7 +91,8 @@ public class FileEntryContentDashboardItem
 		DLDisplayContextProvider dlDisplayContextProvider,
 		DLFileEntryMetadataLocalService dlFileEntryMetadataLocalService,
 		DLURLHelper dlURLHelper, FileEntry fileEntry, Group group,
-		Language language, Portal portal) {
+		Language language, FileVersion latestApprovedFileVersion,
+		Portal portal) {
 
 		if (ListUtil.isEmpty(assetCategories)) {
 			_assetCategories = Collections.emptyList();
@@ -119,6 +120,7 @@ public class FileEntryContentDashboardItem
 		_fileEntry = fileEntry;
 		_group = group;
 		_language = language;
+		_latestApprovedFileVersion = latestApprovedFileVersion;
 		_portal = portal;
 	}
 
@@ -315,14 +317,12 @@ public class FileEntryContentDashboardItem
 
 		try {
 			FileVersion latestFileVersion = _fileEntry.getLatestFileVersion();
-			FileVersion latestTrustedFileVersion =
-				_getLatestApprovedFileVersion(_fileEntry);
 
 			List<FileVersion> fileVersions = new ArrayList<>();
 
-			fileVersions.add(latestTrustedFileVersion);
+			fileVersions.add(_latestApprovedFileVersion);
 
-			if (!latestFileVersion.equals(latestTrustedFileVersion)) {
+			if (!latestFileVersion.equals(_latestApprovedFileVersion)) {
 				fileVersions.add(latestFileVersion);
 			}
 
@@ -425,11 +425,19 @@ public class FileEntryContentDashboardItem
 
 	@Override
 	public long getUserId() {
+		if (_latestApprovedFileVersion != null) {
+			return _latestApprovedFileVersion.getUserId();
+		}
+
 		return _fileEntry.getUserId();
 	}
 
 	@Override
 	public String getUserName() {
+		if (_latestApprovedFileVersion != null) {
+			return _latestApprovedFileVersion.getUserName();
+		}
+
 		return _fileEntry.getUserName();
 	}
 
@@ -667,17 +675,6 @@ public class FileEntryContentDashboardItem
 			contentDashboardItemVersions.size() - 1);
 	}
 
-	private FileVersion _getLatestApprovedFileVersion(FileEntry fileEntry) {
-		List<FileVersion> approvedFileVersions = fileEntry.getFileVersions(
-			WorkflowConstants.STATUS_APPROVED, 0, 1);
-
-		if (ListUtil.isEmpty(approvedFileVersions)) {
-			return null;
-		}
-
-		return approvedFileVersions.get(0);
-	}
-
 	private URL _getLatestVersionURL() {
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -813,6 +810,7 @@ public class FileEntryContentDashboardItem
 	private final FileEntry _fileEntry;
 	private final Group _group;
 	private final Language _language;
+	private final FileVersion _latestApprovedFileVersion;
 	private final Portal _portal;
 
 }
