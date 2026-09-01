@@ -41,20 +41,17 @@ public class AuditMessageTest {
 
 		auditRequestThreadLocal.setRequestIdGenerated(true);
 
-		try {
-			AuditMessage auditMessage = new AuditMessage(
-				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
-				RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
-				RandomTestUtil.nextDate(), JSONFactoryUtil.createJSONObject(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+		AuditMessage auditMessage = new AuditMessage(
+			RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.nextDate(), JSONFactoryUtil.createJSONObject(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
-			Assert.assertEquals(requestId, auditMessage.getRequestId());
-			Assert.assertTrue(auditMessage.isRequestIdGenerated());
-		}
-		finally {
-			AuditRequestThreadLocal.removeAuditThreadLocal();
-		}
+		Assert.assertEquals(requestId, auditMessage.getRequestId());
+		Assert.assertTrue(auditMessage.isRequestIdGenerated());
+
+		AuditRequestThreadLocal.removeAuditThreadLocal();
 	}
 
 	@Test
