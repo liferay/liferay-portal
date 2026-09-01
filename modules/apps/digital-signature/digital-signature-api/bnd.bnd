@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Digital Signature API
 Bundle-SymbolicName: com.liferay.digital.signature.api
-Bundle-Version: 5.0.0
+Bundle-Version: 5.0.1
 Export-Package:\
 	com.liferay.digital.signature.configuration,\
 	com.liferay.digital.signature.constants,\
