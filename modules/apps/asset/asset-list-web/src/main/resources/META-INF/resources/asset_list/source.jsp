@@ -37,14 +37,16 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 			for (long classNameId : editAssetListDisplayContext.getAvailableClassNameIds()) {
 				ClassName className = ClassNameLocalServiceUtil.getClassName(classNameId);
 
-				String label = _getLabel(className, locale, company);
+				ObjectDefinition objectDefinition = _fetchObjectDefinition(className, company);
+
+				String label = _getLabel(className, locale, objectDefinition);
 
 				if (Arrays.binarySearch(classNameIds, classNameId) < 0) {
 					typesLeftList.add(new KeyValuePair(String.valueOf(classNameId), label));
 				}
 			%>
 
-				<aui:option data-object="<%= _isObject(className, company) %>" label="<%= label %>" selected="<%= (classNameIds.length == 1) && (classNameId == classNameIds[0]) %>" value="<%= classNameId %>" />
+				<aui:option data-object="<%= objectDefinition != null %>" label="<%= label %>" selected="<%= (classNameIds.length == 1) && (classNameId == classNameIds[0]) %>" value="<%= classNameId %>" />
 
 			<%
 			}
@@ -68,7 +70,9 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 	List<KeyValuePair> typesRightList = new ArrayList<KeyValuePair>();
 
 	for (long classNameId : editAssetListDisplayContext.getClassNameIds()) {
-		typesRightList.add(new KeyValuePair(String.valueOf(classNameId), _getLabel(ClassNameLocalServiceUtil.getClassName(classNameId), locale, company)));
+		ClassName className = ClassNameLocalServiceUtil.getClassName(classNameId);
+
+		typesRightList.add(new KeyValuePair(String.valueOf(classNameId), _getLabel(className, locale, _fetchObjectDefinition(className, company))));
 	}
 	%>
 
@@ -347,25 +351,17 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 />
 
 <%!
-private String _getLabel(ClassName className, Locale locale, Company company) {
+private ObjectDefinition _fetchObjectDefinition(ClassName className, Company company) {
+	return ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(company.getCompanyId(), className.getValue());
+}
+
+private String _getLabel(ClassName className, Locale locale, ObjectDefinition objectDefinition) {
 	String label = ResourceActionsUtil.getModelResource(locale, className.getValue());
 
-	if (_isCMS(className, company)) {
+	if ((objectDefinition != null) && objectDefinition.isCMS()) {
 		label = StringUtil.appendParentheticalSuffix(label, "CMS");
 	}
 
 	return label;
-}
-
-private boolean _isCMS(ClassName className, Company company) {
-	ObjectDefinition objectDefinition = ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(company.getCompanyId(), className.getValue());
-
-	return (objectDefinition != null) && objectDefinition.isCMS();
-}
-
-private boolean _isObject(ClassName className, Company company) {
-	ObjectDefinition objectDefinition = ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(company.getCompanyId(), className.getValue());
-
-	return objectDefinition != null;
 }
 %>
