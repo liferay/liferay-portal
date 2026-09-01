@@ -15,6 +15,10 @@ import java.util.Map;
  */
 public interface FilterContributor {
 
+	public default String getCurrentValue(String currentValue) {
+		return currentValue;
+	}
+
 	public String getDefaultValue();
 
 	public default String[] getFilterLabelValues() {

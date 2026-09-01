@@ -25,7 +25,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Drew Brokke
@@ -137,17 +136,10 @@ public class FiltersManagementToolbarDisplayContextWrapper
 		HttpServletRequest httpServletRequest,
 		FilterContributor filterContributor) {
 
-		String currentValue = ParamUtil.getString(
-			httpServletRequest, filterContributor.getParameter(),
-			filterContributor.getDefaultValue());
-
-		if (Objects.equals(filterContributor.getParameter(), "domain") &&
-			Objects.equals(currentValue, "company-users")) {
-
-			currentValue = "users-without-an-account";
-		}
-
-		return currentValue;
+		return filterContributor.getCurrentValue(
+			ParamUtil.getString(
+				httpServletRequest, filterContributor.getParameter(),
+				filterContributor.getDefaultValue()));
 	}
 
 	private final FilterContributor[] _filterContributors;

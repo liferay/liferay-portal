@@ -29,6 +29,15 @@ import org.osgi.service.component.annotations.Reference;
 public class AccountUsersFilterContributor implements FilterContributor {
 
 	@Override
+	public String getCurrentValue(String currentValue) {
+		if (Objects.equals(currentValue, "company-users")) {
+			return "users-without-an-account";
+		}
+
+		return currentValue;
+	}
+
+	@Override
 	public String getDefaultValue() {
 		return "all";
 	}
@@ -52,9 +61,7 @@ public class AccountUsersFilterContributor implements FilterContributor {
 				"accountEntryIds",
 				new long[] {AccountConstants.ACCOUNT_ENTRY_ID_ANY});
 		}
-		else if (Objects.equals(currentValue, "company-users") ||
-				 Objects.equals(currentValue, "users-without-an-account")) {
-
+		else if (Objects.equals(currentValue, "users-without-an-account")) {
 			params.put("accountEntryIds", new long[0]);
 		}
 		else if (Objects.equals(currentValue, "organization-users")) {

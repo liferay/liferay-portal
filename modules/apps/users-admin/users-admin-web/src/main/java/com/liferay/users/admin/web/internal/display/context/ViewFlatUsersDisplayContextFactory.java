@@ -169,9 +169,10 @@ public class ViewFlatUsersDisplayContextFactory {
 
 		if (filterContributors != null) {
 			for (FilterContributor filterContributor : filterContributors) {
-				String parameterValue = ParamUtil.getString(
-					httpServletRequest, filterContributor.getParameter(),
-					filterContributor.getDefaultValue());
+				String parameterValue = filterContributor.getCurrentValue(
+					ParamUtil.getString(
+						httpServletRequest, filterContributor.getParameter(),
+						filterContributor.getDefaultValue()));
 
 				if (!Objects.equals(
 						parameterValue, filterContributor.getDefaultValue())) {
