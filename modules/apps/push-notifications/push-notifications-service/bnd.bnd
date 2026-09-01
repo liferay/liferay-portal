@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Push Notifications Service
 Bundle-SymbolicName: com.liferay.push.notifications.service
-Bundle-Version: 5.0.47
+Bundle-Version: 5.0.48
 Import-Package:\
 	com.liferay.push.notifications.util.comparator,\
 	\
