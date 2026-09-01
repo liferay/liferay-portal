@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Cookies REST API
 Bundle-SymbolicName: com.liferay.cookies.rest.api
-Bundle-Version: 2.0.1
+Bundle-Version: 2.0.2
 Export-Package:\
 	com.liferay.cookies.rest.dto.v1_0,\
 	com.liferay.cookies.rest.resource.v1_0
