@@ -9,7 +9,15 @@
 			/>
 
 			<#if searchEntryTitle?has_content>
-				<a class="d-block search-results-entry text-decoration-none text-body" href="${searchEntry.getViewURL()}&highlight=${htmlUtil.escape(searchResultsPortletDisplayContext.getKeywords()?url('ISO-8859-1'))}">
+				<#assign viewURL = searchEntry.getViewURL()!"" />
+
+				<#if viewURL?contains("?")>
+					<#assign queryStringSeparator = "&" />
+				<#else>
+					<#assign queryStringSeparator = "?" />
+				</#if>
+
+				<a class="d-block search-results-entry text-decoration-none text-body" href="${viewURL}${queryStringSeparator}highlight=${htmlUtil.escape(searchResultsPortletDisplayContext.getKeywords()?url('ISO-8859-1'))}">
 					<div class="card card-flat card-transparent mb-3 ml-1 mr-1 mt-1 pb-3 pl-3 pr-3 pt-3">
 						<h5 class="search-results-entry-title text-primary">
 							${searchEntryTitle}
