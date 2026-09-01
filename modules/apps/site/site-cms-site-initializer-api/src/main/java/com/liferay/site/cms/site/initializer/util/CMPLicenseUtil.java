@@ -14,8 +14,11 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,12 +26,18 @@ import java.util.List;
  */
 public class CMPLicenseUtil {
 
+	public static void checkAppEnabled() {
+		if (!_isAppEnabled()) {
+			throw new UnsupportedOperationException();
+		}
+	}
+
 	public static void checkResources(
 		long companyId, GroupLocalService groupLocalService,
 		LayoutLocalService layoutLocalService,
 		ObjectDefinitionLocalService objectDefinitionLocalService) {
 
-		boolean appEnabled = LicenseManagerUtil.isAppEnabled(App.CMP);
+		boolean appEnabled = _isAppEnabled();
 
 		_checkLayouts(
 			appEnabled, companyId, groupLocalService, layoutLocalService);
@@ -91,6 +100,22 @@ public class CMPLicenseUtil {
 					objectDefinition);
 			}
 		}
+	}
+
+	private static boolean _isAppEnabled() {
+		if (!LicenseManagerUtil.isAppEnabled(App.CMP)) {
+			return false;
+		}
+
+		Date expirationDate = LicenseManagerUtil.getAppExpirationDate(App.CMP);
+
+		if (expirationDate == null) {
+			return true;
+		}
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		return expirationDate.after(calendar.getTime());
 	}
 
 	private static final String[] _CMP_LAYOUT_FRIENDLY_URLS = {

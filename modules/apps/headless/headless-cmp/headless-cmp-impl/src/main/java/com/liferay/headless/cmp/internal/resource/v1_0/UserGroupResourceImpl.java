@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.user.groups.provider.CMSUserGroupsProvider;
+import com.liferay.site.cms.site.initializer.util.CMPLicenseUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,6 +36,8 @@ public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 	public Page<UserGroup> getProjectUserGroupsPage(
 			Long projectId, String search, Pagination pagination)
 		throws Exception {
+
+		CMPLicenseUtil.checkAppEnabled();
 
 		ObjectEntry objectEntry = _objectEntryService.getObjectEntry(projectId);
 

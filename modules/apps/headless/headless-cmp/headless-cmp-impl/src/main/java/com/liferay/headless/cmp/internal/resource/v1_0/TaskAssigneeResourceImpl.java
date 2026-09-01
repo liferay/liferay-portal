@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.comparator.UserFirstNameComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
+import com.liferay.site.cms.site.initializer.util.CMPLicenseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +46,16 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 			Long projectId, String search, String type)
 		throws Exception {
 
+		CMPLicenseUtil.checkAppEnabled();
+
 		return _getTaskAssigneesPage(
 			_objectEntryService.getObjectEntry(projectId), search, type);
 	}
 
 	@Override
 	public Page<TaskAssignee> getTaskAssigneesPage(String search, String type) {
+		CMPLicenseUtil.checkAppEnabled();
+
 		return _getTaskAssigneesPage(null, search, type);
 	}
 
