@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.site.internal.upgrade.v2_0_0.util.SiteFriendlyURLTable;
 import com.liferay.site.internal.upgrade.v2_1_2.XMLSitemapIndexEnabledConfigurationUpgradeProcess;
+import com.liferay.site.internal.upgrade.v2_2_0.util.SiteSitemapRegenerationEntryTable;
 
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
@@ -48,6 +49,9 @@ public class SiteServiceUpgradeStepRegistrator
 			"2.1.1", "2.1.2",
 			new XMLSitemapIndexEnabledConfigurationUpgradeProcess(
 				_companyLocalService, _configurationAdmin));
+
+		registry.register(
+			"2.1.2", "2.2.0", SiteSitemapRegenerationEntryTable.create());
 	}
 
 	@Reference
