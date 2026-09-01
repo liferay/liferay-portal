@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Analytics Settings Implementation
 Bundle-SymbolicName: com.liferay.analytics.settings.impl
-Bundle-Version: 9.0.24
+Bundle-Version: 9.0.25
 -dsannotations-options: inherit
