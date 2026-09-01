@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Microblogs Web
 Bundle-SymbolicName: com.liferay.microblogs.web
-Bundle-Version: 6.0.45
+Bundle-Version: 6.0.46
 Web-ContextPath: /microblogs-web
 -dsannotations-options: inherit
