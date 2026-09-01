@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Audiences Web
 Bundle-SymbolicName: com.liferay.frontend.js.audiences.web
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Web-ContextPath: /frontend-js-audiences-web
