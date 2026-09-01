@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Discount Service
 Bundle-SymbolicName: com.liferay.commerce.discount.service
-Bundle-Version: 4.0.103
+Bundle-Version: 4.0.104
 Liferay-Require-SchemaVersion: 2.9.0
 Liferay-Service: true
 -dsannotations-options: inherit
