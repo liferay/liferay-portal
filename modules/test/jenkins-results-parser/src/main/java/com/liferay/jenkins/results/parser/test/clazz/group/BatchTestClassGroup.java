@@ -920,7 +920,8 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 			if (relevantTestBatchName.startsWith("integration-") ||
 				relevantTestBatchName.startsWith("modules-integration") ||
 				relevantTestBatchName.startsWith("modules-unit") ||
-				relevantTestBatchName.startsWith("unit-")) {
+				relevantTestBatchName.startsWith("unit-") ||
+				relevantTestBatchName.startsWith("workspaces-unit")) {
 
 				relevantIntegrationUnitBatchNames.add(relevantTestBatchName);
 			}

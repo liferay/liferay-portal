@@ -606,7 +606,8 @@ public class BuildHistoryProcessor {
 				}
 
 				if ((jobVariant.startsWith("modules-unit") ||
-					 jobVariant.startsWith("unit")) &&
+					 jobVariant.startsWith("unit") ||
+					 jobVariant.startsWith("workspaces-unit")) &&
 					!jobVariant.contains("project-templates")) {
 
 					return TestBatchType.UNIT.toString();

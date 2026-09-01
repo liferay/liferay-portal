@@ -460,7 +460,9 @@ public class JUnitTestClass extends BaseTestClass {
 		if (batchName.startsWith("modules-integration")) {
 			return "testIntegration";
 		}
-		else if (batchName.startsWith("modules-unit")) {
+		else if (batchName.startsWith("modules-unit") ||
+				 batchName.startsWith("workspaces-unit")) {
+
 			return "test";
 		}
 

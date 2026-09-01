@@ -814,7 +814,8 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			batchName.startsWith("integration") ||
 			batchName.startsWith("modules-integration") ||
 			batchName.startsWith("modules-unit") ||
-			batchName.startsWith("unit")) {
+			batchName.startsWith("unit") ||
+			batchName.startsWith("workspaces-unit")) {
 
 			overheadIncluded = true;
 		}
@@ -934,7 +935,8 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			!batchName.startsWith("integration") &&
 			!batchName.startsWith("modules-integration") &&
 			!batchName.startsWith("modules-unit") &&
-			!batchName.startsWith("unit")) {
+			!batchName.startsWith("unit") &&
+			!batchName.startsWith("workspaces-unit")) {
 
 			return Collections.emptyList();
 		}

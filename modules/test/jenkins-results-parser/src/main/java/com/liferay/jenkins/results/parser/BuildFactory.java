@@ -103,7 +103,8 @@ public class BuildFactory {
 						(TopLevelBuild)parentBuild);
 				}
 				else if (jobVariant.startsWith("modules-integration") ||
-						 jobVariant.startsWith("modules-unit")) {
+						 jobVariant.startsWith("modules-unit") ||
+						 jobVariant.startsWith("workspaces-unit")) {
 
 					return new ModulesJUnitDownstreamBuild(
 						buildURL, cachedDownstreamBuildReport,
