@@ -204,13 +204,11 @@ definition {
 
 		MenuItem.click(menuItem = "Delete");
 
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+		WaitForVisible(locator1 = "ItemSelector#INLINE_MODAL");
 
-		Check(
-			key_vocabularyName = ${vocabularyName},
-			locator1 = "Categories#VOCABULARY_ENTRY_CHECKBOX");
+		var key_itemTitle = ${vocabularyName};
 
-		SelectFrame(value1 = "relative=top");
+		Click(locator1 = "ItemSelector#INLINE_MODAL_ROW_CHECKBOX");
 
 		Click(
 			key_text = "Delete",
