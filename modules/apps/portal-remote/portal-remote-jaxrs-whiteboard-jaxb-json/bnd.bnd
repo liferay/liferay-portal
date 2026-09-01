@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Remote JAXRS Whiteboard JAXB JSON
 Bundle-SymbolicName: com.liferay.portal.remote.jaxrs.whiteboard.jaxb.json
-Bundle-Version: 4.0.21
+Bundle-Version: 4.0.22
 Require-Capability:\
 	osgi.extender;\
 		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"
