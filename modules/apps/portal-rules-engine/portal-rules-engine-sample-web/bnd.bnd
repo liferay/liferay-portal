@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Rules Engine Sample Web
 Bundle-SymbolicName: com.liferay.portal.rules.engine.sample.web
-Bundle-Version: 6.0.28
+Bundle-Version: 6.0.29
 Web-ContextPath: /portal-rules-engine-sample-web
