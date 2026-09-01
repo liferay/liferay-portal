@@ -217,9 +217,7 @@ test(
 
 				await contentsPage.viewShowDetails(contentTitle);
 
-				await page.getByRole('tab', {name: 'More'}).click();
-
-				await infoPanelPage.dropdownTab('Projects').click();
+				await infoPanelPage.selectTab('Projects').click();
 			});
 
 			await test.step('Link the project and assert the card', async () => {
@@ -360,9 +358,7 @@ test(
 
 			await contentsPage.viewShowDetails(contentTitles[0]);
 
-			await page.getByRole('tab', {name: 'More'}).click();
-
-			await infoPanelPage.dropdownTab('Projects').click();
+			await infoPanelPage.selectTab('Projects').click();
 
 			await expect(
 				page.getByRole('link', {name: projectTitles[0]})

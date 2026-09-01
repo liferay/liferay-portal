@@ -90,8 +90,7 @@ test(
 					page.getByRole('heading', {name: content1})
 				).toBeVisible();
 
-				await infoPanelPage.selectTab('More').click();
-				await infoPanelPage.dropdownTab('Versions').click();
+				await infoPanelPage.selectTab('Versions').click();
 
 				await expect(page.getByRole('tabpanel')).toContainText(
 					'Version 1'
@@ -177,8 +176,7 @@ test(
 					filter: `${content1}`,
 				});
 
-				await infoPanelPage.selectTab('More').click();
-				await infoPanelPage.dropdownTab('Versions').click();
+				await infoPanelPage.selectTab('Versions').click();
 				await infoPanelPage.dropdownVersionAction('Version 1').click();
 				await infoPanelPage
 					.dropdownVersionActionMenuItem('Restore Version')
@@ -189,7 +187,7 @@ test(
 					'Version 1 of the content has been successfully restored.'
 				);
 
-				await expect(infoPanelPage.selectTab('More')).toBeVisible();
+				await expect(infoPanelPage.selectTab('Versions')).toBeVisible();
 				await expect(page.getByRole('tabpanel')).toContainText(
 					'Version 3'
 				);
@@ -248,8 +246,7 @@ test(
 					page.getByRole('heading', {name: image1})
 				).toBeVisible();
 
-				await infoPanelPage.selectTab('More').click();
-				await infoPanelPage.dropdownTab('Versions').click();
+				await infoPanelPage.selectTab('Versions').click();
 
 				await expect(page.getByRole('tabpanel')).toContainText(
 					'Version 1'
@@ -355,8 +352,7 @@ test(
 					filter: `${image1}`,
 				});
 
-				await infoPanelPage.selectTab('More').click();
-				await infoPanelPage.dropdownTab('Versions').click();
+				await infoPanelPage.selectTab('Versions').click();
 				await infoPanelPage.dropdownVersionAction('Version 1').click();
 				await infoPanelPage
 					.dropdownVersionActionMenuItem('Restore Version')
@@ -367,7 +363,7 @@ test(
 					'Version 1 of the content has been successfully restored.'
 				);
 
-				await expect(infoPanelPage.selectTab('More')).toBeVisible();
+				await expect(infoPanelPage.selectTab('Versions')).toBeVisible();
 				await expect(page.getByRole('tabpanel')).toContainText(
 					'Version 3'
 				);
@@ -480,9 +476,6 @@ test(
 			});
 
 			await test.step('Check versions tab is not visible', async () => {
-				await expect(
-					infoPanelPage.dropdownTab('Versions')
-				).not.toBeVisible();
 				await expect(
 					infoPanelPage.selectTab('Versions')
 				).not.toBeVisible();

@@ -596,7 +596,7 @@ test(
 			await test.step('Can open the info panel', async () => {
 				await page.getByLabel('Show Details').click();
 				await expect(
-					page.getByRole('tab', {name: 'More'})
+					page.getByRole('tab', {name: 'Comments'})
 				).toBeInViewport();
 				await expect(page.getByText('Metadata')).toBeVisible();
 				await expect(page.getByLabel('Show Details')).toHaveClass(
@@ -604,20 +604,14 @@ test(
 				);
 			});
 
-			await test.step('Can add a comment', async () => {
-				await page.getByLabel('Show Comments').click();
+			await test.step('Can add a comment from the comments tab', async () => {
+				await expect(page.getByLabel('Show Comments')).toHaveCount(0);
+
+				await page.getByRole('tab', {name: 'Comments'}).click();
 
 				await expect(
 					page.getByRole('tab', {name: 'Details'})
-				).not.toBeVisible();
-
-				await expect(page.getByLabel('Show Details')).not.toHaveClass(
-					/active/
-				);
-
-				await expect(page.getByLabel('Show Comments')).toHaveClass(
-					/active/
-				);
+				).toBeVisible();
 
 				const commentText = getRandomString();
 				await assetsPage.modal.body

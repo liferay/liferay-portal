@@ -7,7 +7,6 @@ import {Locator, Page, expect} from '@playwright/test';
 
 export class InfoPanelPage {
 	readonly page: Page;
-	readonly dropdownTab: (tabName: string) => Locator;
 	readonly dropdownVersionAction: (versionName: string) => Locator;
 	readonly dropdownVersionActionMenuItem: (action: string) => Locator;
 	readonly metadataRow: (label: string | RegExp) => Locator;
@@ -17,12 +16,6 @@ export class InfoPanelPage {
 	constructor(page: Page) {
 		this.page = page;
 
-		this.dropdownTab = (tabName) => {
-			return this.page.getByRole('menuitem', {
-				exact: true,
-				name: tabName,
-			});
-		};
 		this.dropdownVersionAction = (versionName) => {
 			return this.page
 				.locator('li')
