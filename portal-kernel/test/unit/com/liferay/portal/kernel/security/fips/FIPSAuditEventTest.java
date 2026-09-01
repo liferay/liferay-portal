@@ -39,48 +39,50 @@ public class FIPSAuditEventTest {
 	}
 
 	@Test
-	public void testPutRejects() throws Exception {
-		_testPutRejects(Double.NaN);
-		_testPutRejects(Double.POSITIVE_INFINITY);
-		_testPutRejects(Float.NEGATIVE_INFINITY);
-		_testPutRejects(Float.NaN);
-		_testPutRejects(RandomTestUtil.randomBytes());
-		_testPutRejects(null);
+	public void testPutThrows() throws Exception {
+		_testPutThrows(Double.NaN);
+		_testPutThrows(Double.POSITIVE_INFINITY);
+		_testPutThrows(Float.NEGATIVE_INFINITY);
+		_testPutThrows(Float.NaN);
+		_testPutThrows(RandomTestUtil.randomBytes());
+		_testPutThrows(null);
 
 		String randomString = RandomTestUtil.randomString();
 
 		char[] chars = randomString.toCharArray();
 
-		_testPutRejects(chars);
+		_testPutThrows(chars);
 
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
 
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-		_testPutRejects(keyPair.getPrivate());
-		_testPutRejects(keyPair.getPublic());
+		_testPutThrows(keyPair.getPrivate());
+		_testPutThrows(keyPair.getPublic());
 
-		_testPutRejects(new PBEKeySpec(chars));
+		_testPutThrows(new PBEKeySpec(chars));
 	}
 
-	private void _assertPutThrows(Object value) {
+	private void _testPutThrows(Object value) {
+		String key = RandomTestUtil.randomString();
+
+		_testPutThrows(key, Arrays.asList(value));
+		_testPutThrows(key, Collections.singletonMap("nested", value));
+		_testPutThrows(key, new Object[] {value});
+		_testPutThrows(key, value);
+	}
+
+	private void _testPutThrows(String key, Object value) {
 		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
 			RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO);
 
 		Assert.assertThrows(
 			IllegalArgumentException.class,
-			() -> fipsAuditEvent.put(RandomTestUtil.randomString(), value));
+			() -> fipsAuditEvent.put(key, value));
 
 		Map<String, Object> fields = fipsAuditEvent.getFields();
 
 		Assert.assertTrue(fields.isEmpty());
-	}
-
-	private void _testPutRejects(Object value) {
-		_assertPutThrows(Arrays.asList(value));
-		_assertPutThrows(Collections.singletonMap("nested", value));
-		_assertPutThrows(new Object[] {value});
-		_assertPutThrows(value);
 	}
 
 }
