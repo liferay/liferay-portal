@@ -8,6 +8,7 @@ import React from 'react';
 
 import Content from './Content';
 import Item from './Item';
+import ItemWithIcon from './ItemWithIcon';
 import {List} from './List';
 import TabPane from './TabPane';
 
@@ -138,6 +139,7 @@ Tabs.Content = Content;
 
 Tabs.Panels = Content;
 Tabs.Item = Item;
+Tabs.ItemWithIcon = ItemWithIcon;
 Tabs.List = List;
 Tabs.TabPane = TabPane;
 Tabs.TabPanel = TabPane;
