@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout SEO Service
 Bundle-SymbolicName: com.liferay.layout.seo.service
-Bundle-Version: 3.0.84
+Bundle-Version: 3.0.85
 Liferay-Require-SchemaVersion: 4.0.0
 Liferay-Service: true
 -dsannotations-options: inherit
