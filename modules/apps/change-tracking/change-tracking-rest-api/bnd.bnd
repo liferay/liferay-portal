@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Change Tracking REST API
 Bundle-SymbolicName: com.liferay.change.tracking.rest.api
-Bundle-Version: 8.1.1
+Bundle-Version: 8.1.2
 Export-Package:\
 	com.liferay.change.tracking.rest.dto.v1_0,\
 	com.liferay.change.tracking.rest.resource.v1_0
