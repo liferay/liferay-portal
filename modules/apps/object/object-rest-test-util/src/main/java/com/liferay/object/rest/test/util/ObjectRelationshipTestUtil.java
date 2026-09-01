@@ -42,8 +42,8 @@ public class ObjectRelationshipTestUtil {
 
 	public static ObjectRelationship addObjectRelationship(
 			String deletionType, ObjectDefinition objectDefinition,
-			ObjectDefinition relatedObjectDefinition, long userId, String type,
-			String name)
+			ObjectDefinition relatedObjectDefinition, long userId, String name,
+			String type)
 		throws Exception {
 
 		return ObjectRelationshipLocalServiceUtil.addObjectRelationship(

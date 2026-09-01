@@ -672,7 +672,7 @@ public class ObjectEntryRelatedObjectsResourceTest {
 		_objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
 			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
 			_objectDefinition1, _objectDefinition2, TestPropsValues.getUserId(),
-			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, "data");
+			"data", ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
 
 		_objectRelationships.add(_objectRelationship);
 
