@@ -666,6 +666,43 @@ public class ObjectEntryRelatedObjectsResourceTest {
 	}
 
 	@Test
+	public void testDeleteCustomObjectEntryWithObjectRelationshipNamedAsLanguageKey()
+		throws Exception {
+
+		_objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+			_objectDefinition1, _objectDefinition2, TestPropsValues.getUserId(),
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, "data");
+
+		_objectRelationships.add(_objectRelationship);
+
+		ObjectRelationshipTestUtil.relateObjectEntries(
+			_objectEntry1.getPrimaryKey(), _objectEntry2.getPrimaryKey(),
+			_objectRelationship, TestPropsValues.getUserId());
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"status", "BAD_REQUEST"
+			).put(
+				"title",
+				StringBundler.concat(
+					"The prevent deletion type in the object relationship ",
+					"data with object definition ",
+					_objectDefinition2.getShortName(),
+					" is preventing this object entry from being deleted.")
+			).toString(),
+			HTTPTestUtil.invokeToJSONObject(
+				null,
+				StringBundler.concat(
+					_objectDefinition1.getRESTContextPath(),
+					"/by-external-reference-code/",
+					_objectEntry1.getExternalReferenceCode()),
+				Http.Method.DELETE
+			).toString(),
+			JSONCompareMode.LENIENT);
+	}
+
+	@Test
 	public void testDeleteObjectEntryWithHierarchy() throws Exception {
 
 		// Modifiable system as child
