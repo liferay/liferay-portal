@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security SSO OpenID Connect Persistence Service
 Bundle-SymbolicName: com.liferay.portal.security.sso.openid.connect.persistence.service
-Bundle-Version: 6.0.50
+Bundle-Version: 6.0.51
 Import-Package:\
 	!net.shibboleth.utilities.*,\
 	\
