@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Adaptive Media Test Utilities
 Bundle-SymbolicName: com.liferay.adaptive.media.test.util
-Bundle-Version: 4.0.9
+Bundle-Version: 4.0.10
 Export-Package: com.liferay.adaptive.media.test.util.html
