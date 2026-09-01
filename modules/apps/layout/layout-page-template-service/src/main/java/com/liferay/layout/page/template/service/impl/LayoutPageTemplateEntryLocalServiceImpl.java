@@ -6,6 +6,7 @@
 package com.liferay.layout.page.template.service.impl;
 
 import com.liferay.asset.kernel.NoSuchClassTypeException;
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.dynamic.data.mapping.info.item.provider.DDMStructureInfoItemFormVariationsProvider;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.info.item.InfoItemFormVariation;
@@ -35,6 +36,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchClassNameException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -1226,7 +1228,13 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 
 		Group group = _groupLocalService.getGroup(groupId);
 
-		if (group.isDepot()) {
+		if (group.isDepot() &&
+			(!Objects.equals(
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, type) ||
+			 !FeatureFlagManagerUtil.isEnabled(
+				 group.getCompanyId(), "LPD-57283") ||
+			 !DesignLibraryUtil.isDesignLibraryScope(group))) {
+
 			throw new LayoutPageTemplateEntryGroupIdException();
 		}
 
