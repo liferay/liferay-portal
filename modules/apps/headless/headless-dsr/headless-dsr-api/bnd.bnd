@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless DSR API
 Bundle-SymbolicName: com.liferay.headless.dsr.api
-Bundle-Version: 1.2.1
+Bundle-Version: 1.2.2
 Export-Package:\
 	com.liferay.headless.dsr.dto.v1_0,\
 	com.liferay.headless.dsr.resource.v1_0
