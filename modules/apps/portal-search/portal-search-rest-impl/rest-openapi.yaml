@@ -153,7 +153,7 @@ components:
                     type: string
                 embedded:
                     description:
-                        Asset-specific nested data. The shape depends on entryClassName - blog entries include authorName and assetTagNames, documents include extension and size, custom Objects include their declared fields, and so on. The embedded field is populated only when nestedFields=embedded is requested.
+                        Asset-specific nested data. The shape depends on entryClassName - blog entries include authorName and assetTagNames, documents include extension and size, custom Objects include their declared fields, and so on. The embedded field is populated only when nestedFields=embedded is requested. Nested fields of the embedded entity are resolved only for entries requested with the 'embedded.' prefix together with nestedFieldsDepth=2.
                     type: object
                 entryClassName:
                     description:
@@ -263,12 +263,20 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value.
+                        Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value. Entries prefixed with 'embedded.' resolve the named nested field on the embedded entity (for example, nestedFields=embedded,embedded.taxonomyCategoryBriefs). Resolving them requires nestedFieldsDepth=2, because 'embedded' itself consumes the default depth of 1 - a prefixed entry is silently ignored at the default depth.
                     example: embedded
                     name: nestedFields
                     required: false
                     schema:
                         type: string
+                -   in: query
+                    description:
+                        Specify the depth of nested field resolution. Defaults to 1. The embedded entity consumes one level, so resolving 'embedded.' prefixed entries of nestedFields requires 2. Values are capped by the portal property 'object.nested.fields.max.query.depth' (5 by default).
+                    example: 2
+                    name: nestedFieldsDepth
+                    required: false
+                    schema:
+                        type: integer
                 -   in: query
                     description:
                         Specify which page to return out of all the pages available. Defaults to 1. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information.
@@ -362,12 +370,20 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value.
+                        Supports 'embedded' to return the full entity payload for each result, following the entity's own headless API schema. The MCP Server may default to this value. Entries prefixed with 'embedded.' resolve the named nested field on the embedded entity (for example, nestedFields=embedded,embedded.taxonomyCategoryBriefs). Resolving them requires nestedFieldsDepth=2, because 'embedded' itself consumes the default depth of 1 - a prefixed entry is silently ignored at the default depth.
                     example: embedded
                     name: nestedFields
                     required: false
                     schema:
                         type: string
+                -   in: query
+                    description:
+                        Specify the depth of nested field resolution. Defaults to 1. The embedded entity consumes one level, so resolving 'embedded.' prefixed entries of nestedFields requires 2. Values are capped by the portal property 'object.nested.fields.max.query.depth' (5 by default).
+                    example: 2
+                    name: nestedFieldsDepth
+                    required: false
+                    schema:
+                        type: integer
                 -   in: query
                     description:
                         Specify which page to return out of all the pages available. Defaults to 1. See https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters for more information.

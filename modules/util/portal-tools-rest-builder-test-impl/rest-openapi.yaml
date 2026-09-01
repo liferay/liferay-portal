@@ -996,6 +996,11 @@ paths:
     "/batch-test-entities":
         get:
             operationId: getBatchTestEntitiesPage
+            parameters:
+                -   in: query
+                    name: nestedFieldsDepth
+                    schema:
+                        type: integer
             responses:
                 200:
                     content:
