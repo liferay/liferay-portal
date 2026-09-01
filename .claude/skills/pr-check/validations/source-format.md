@@ -26,7 +26,7 @@ command grep --fixed-strings 'SourceCheck:' "${LOG}"
 command grep --fixed-strings 'ERROR: Dependency' "${LOG}"
 ```
 
-Neither pattern is anchored, because Ant prefixes the yarn output with `[exec]` and indents it, so a search for `^ERROR:` matches nothing at all. In a 553 line run the Java violations sat at lines 10 and 12, the yarn ones at 327 and 333, and the terminal Gradle error at 551.
+Neither pattern is anchored, because Ant prefixes the yarn output with `[exec]` and indents it, so a search for `^ERROR:` matches nothing at all. The Java violations arrive in the first dozen lines, the yarn ones about three fifths of the way down, and the terminal Gradle error on the last line or two, so a tail of any reasonable size shows the failure while hiding what caused it.
 
 `-Dvalidate.commit.messages=true` is passed explicitly because `format-source-current-branch` never sets it and only the `format-source` target does, so the commit message rules CI enforces go unchecked without it. The flag produces no output of its own, and a clean check and a check that never ran print alike, so there is nothing in a normal run to confirm from. When it matters, rerun under `ant -v`, which echoes the `SourceFormatter` argv and shows `validate.commit.messages=true` among it.
 

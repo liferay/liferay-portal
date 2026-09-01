@@ -26,7 +26,7 @@ Do not select `Log4jConfigUtilTest` or `SampleSQLBuilderTest`, even when their c
 
 Verify each counterpart file exists before scheduling it.
 
-When no counterpart exists, nothing here can exercise the change, whatever the module costs to build. Report **NOT VERIFIED** and name the changed class as uncovered. Running a suite that never touches the changed class establishes no more than declining to run it, so module size must not decide the verdict.
+When no counterpart exists, nothing here can exercise the change, whatever the module costs to build. Report **NOT VERIFIED** and name the changed class as having no unit test, rather than as uncovered. The same name often exists as an integration test in the sibling `-test` module, which this validation does not run but which does cover the class, so name that file when it exists or the report sends a developer to write a test that is already there. Running a suite that never touches the changed class establishes no more than declining to run it, so module size must not decide the verdict.
 
 Running the suite anyway is worth doing when it is cheap, since it can catch an unrelated break. It cannot change the verdict either way, because a green suite that never loaded the changed class does not make it a `PASS` and a red one does not make it a `FAIL`. Report what the suite did alongside the `NOT VERIFIED`.
 
