@@ -5,6 +5,7 @@
 
 export const FIELD_TYPES = {
 	HTML: 'html',
+	IMAGE: 'image',
 	TEXT: 'text',
 };
 

@@ -8,7 +8,7 @@ import {PropTypes} from 'prop-types';
 import React from 'react';
 
 import MappingFields from './components/MappingFields';
-import {TEXT_FIELD_TYPES} from './constants';
+import {FIELD_TYPES, TEXT_FIELD_TYPES} from './constants';
 
 export default function OpenGraphMapping({
 	fields,
@@ -51,7 +51,7 @@ export default function OpenGraphMapping({
 					value: openGraphDescription,
 				},
 				{
-					fieldTypes: ['image'],
+					fieldTypes: [FIELD_TYPES.IMAGE],
 					helpMessage: sub(
 						Liferay.Language.get(
 							'map-a-x-field-it-will-be-used-as-x'
