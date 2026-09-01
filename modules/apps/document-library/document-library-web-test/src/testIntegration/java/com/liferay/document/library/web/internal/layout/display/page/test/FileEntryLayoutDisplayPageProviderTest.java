@@ -165,26 +165,23 @@ public class FileEntryLayoutDisplayPageProviderTest {
 			_friendlyURLSeparatorConfigurationManager.
 				getFriendlyURLSeparatorsJSONObject(companyId));
 
-		try {
-			String fileEntryFriendlyURLSeparator = "/file-test1/";
+		String fileEntryFriendlyURLSeparator = "/file-test1/";
 
-			_friendlyURLSeparatorConfigurationManager.
-				updateFriendlyURLSeparatorCompanyConfiguration(
-					companyId,
-					String.valueOf(
-						JSONUtil.put(
-							DLFileEntry.class.getName(),
-							fileEntryFriendlyURLSeparator)));
+		_friendlyURLSeparatorConfigurationManager.
+			updateFriendlyURLSeparatorCompanyConfiguration(
+				companyId,
+				String.valueOf(
+					JSONUtil.put(
+						DLFileEntry.class.getName(),
+						fileEntryFriendlyURLSeparator)));
 
-			Assert.assertEquals(
-				fileEntryFriendlyURLSeparator,
-				_layoutDisplayPageProvider.getURLSeparator());
-		}
-		finally {
-			_friendlyURLSeparatorConfigurationManager.
-				updateFriendlyURLSeparatorCompanyConfiguration(
-					companyId, friendlyURLSeparatorsJSON);
-		}
+		Assert.assertEquals(
+			fileEntryFriendlyURLSeparator,
+			_layoutDisplayPageProvider.getURLSeparator());
+
+		_friendlyURLSeparatorConfigurationManager.
+			updateFriendlyURLSeparatorCompanyConfiguration(
+				companyId, friendlyURLSeparatorsJSON);
 	}
 
 	@Inject
