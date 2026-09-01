@@ -187,7 +187,7 @@ public class FIPSApplicationStateMachineUtilTest {
 	public void testPowerOffWithShutdownHook() {
 		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
 
-		Thread thread = _getShutdownHook();
+		Thread thread = _getShutdownHookThread();
 
 		thread.run();
 
@@ -321,7 +321,7 @@ public class FIPSApplicationStateMachineUtilTest {
 		Assert.assertTrue(_fipsAuditLogEntries.isEmpty());
 	}
 
-	private Thread _getShutdownHook() {
+	private Thread _getShutdownHookThread() {
 		try (MockedStatic<Runtime> runtimeMockedStatic = Mockito.mockStatic(
 				Runtime.class)) {
 
