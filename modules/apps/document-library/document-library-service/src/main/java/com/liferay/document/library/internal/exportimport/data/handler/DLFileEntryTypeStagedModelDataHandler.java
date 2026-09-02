@@ -22,10 +22,8 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelModifiedDateComparator;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.UserConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -102,32 +100,7 @@ public class DLFileEntryTypeStagedModelDataHandler
 		return HashMapBuilder.put(
 			"file-entry-type-key", fileEntryType.getFileEntryTypeKey()
 		).put(
-			"preloaded",
-			() -> {
-				long guestUserId = UserConstants.USER_ID_DEFAULT;
-
-				try {
-					guestUserId = _userLocalService.getGuestUserId(
-						fileEntryType.getCompanyId());
-				}
-				catch (Exception exception) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(exception);
-					}
-				}
-
-				boolean preloaded = false;
-
-				if ((fileEntryType.getFileEntryTypeId() ==
-						DLFileEntryTypeConstants.
-							FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT) ||
-					(guestUserId == fileEntryType.getUserId())) {
-
-					preloaded = true;
-				}
-
-				return String.valueOf(preloaded);
-			}
+			"preloaded", () -> String.valueOf(_isPreloaded(fileEntryType))
 		).build();
 	}
 
@@ -193,10 +166,7 @@ public class DLFileEntryTypeStagedModelDataHandler
 				"structure-id", String.valueOf(ddmStructure.getStructureId()));
 		}
 
-		long guestUserId = _userLocalService.getGuestUserId(
-			fileEntryType.getCompanyId());
-
-		if (guestUserId == fileEntryType.getUserId()) {
+		if (_isPreloaded(fileEntryType)) {
 			fileEntryTypeElement.addAttribute("preloaded", "true");
 		}
 
@@ -442,6 +412,29 @@ public class DLFileEntryTypeStagedModelDataHandler
 			uuid, companyGroup.getGroupId(), fileEntryTypeKey, preloaded);
 	}
 
+	private boolean _isPreloaded(DLFileEntryType fileEntryType) {
+		if ((fileEntryType.getFileEntryTypeId() ==
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT) ||
+			(fileEntryType.getScope() ==
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_SYSTEM)) {
+
+			return true;
+		}
+
+		User guestUser = _userLocalService.fetchGuestUser(
+			fileEntryType.getCompanyId());
+
+		if (guestUser == null) {
+			return false;
+		}
+
+		if (guestUser.getUserId() == fileEntryType.getUserId()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _validateDDMStructures(
 			String fileEntryTypeKey, long[] ddmStructureIds)
 		throws Exception {
@@ -462,9 +455,6 @@ public class DLFileEntryTypeStagedModelDataHandler
 			}
 		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DLFileEntryTypeStagedModelDataHandler.class);
 
 	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
