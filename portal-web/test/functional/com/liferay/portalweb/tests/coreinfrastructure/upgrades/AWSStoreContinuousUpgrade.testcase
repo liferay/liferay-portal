@@ -1,4 +1,4 @@
-@component-name = "portal-db-infrastructure"
+@component-name = "portal-core-infra"
 definition {
 
 	property app.server.types = "tomcat";
@@ -14,7 +14,7 @@ definition {
 	property test.assert.warning.exceptions = "true";
 	property test.liferay.virtual.instance = "false";
 	property test.run.type = "single";
-	property testray.main.component.name = "Database Upgrade Framework";
+	property testray.main.component.name = "Document Library Stores";
 
 	setUp {
 		Upgrade.startReleasedBundle();
