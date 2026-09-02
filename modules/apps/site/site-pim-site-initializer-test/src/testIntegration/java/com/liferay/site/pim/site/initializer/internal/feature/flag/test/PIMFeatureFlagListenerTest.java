@@ -6,12 +6,17 @@
 package com.liferay.site.pim.site.initializer.internal.feature.flag.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.model.DepotEntry;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.entry.folder.util.ObjectEntryFolderThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
+import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -20,6 +25,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
@@ -90,6 +96,43 @@ public class PIMFeatureFlagListenerTest {
 			"domain", pimLinkObjectDefinition, "space");
 	}
 
+	@Test
+	public void testOnValueAddsMissingProductsObjectEntryFolder()
+		throws Exception {
+
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
+
+		long companyId = TestPropsValues.getCompanyId();
+
+		try (SafeCloseable safeCloseable =
+				ObjectEntryFolderThreadLocal.
+					setForceDeleteSystemObjectEntryFolderWithSafeCloseable(
+						true)) {
+
+			_objectEntryFolderLocalService.
+				deleteObjectEntryFolderByExternalReferenceCode(
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					depotEntry.getGroupId(), companyId);
+		}
+
+		Assert.assertNull(
+			_objectEntryFolderLocalService.
+				fetchObjectEntryFolderByExternalReferenceCode(
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					depotEntry.getGroupId(), companyId));
+
+		_featureFlagListener.onValue(companyId, "LPD-96666", true);
+
+		Assert.assertNotNull(
+			_objectEntryFolderLocalService.
+				fetchObjectEntryFolderByExternalReferenceCode(
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					depotEntry.getGroupId(), companyId));
+	}
+
 	private void _assertObjectDefinitionSetting(
 		String name, ObjectDefinition objectDefinition, String value) {
 
@@ -100,12 +143,18 @@ public class PIMFeatureFlagListenerTest {
 		Assert.assertEquals(value, objectDefinitionSetting.getValue());
 	}
 
+	@Inject(filter = "feature.flag.key=LPD-96666")
+	private FeatureFlagListener _featureFlagListener;
+
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
+
+	@Inject
+	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Inject
 	private ObjectFolderLocalService _objectFolderLocalService;
