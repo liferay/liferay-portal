@@ -58,16 +58,15 @@ public class CommercePaymentMethodFDSDataProviderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
 		_fdsDataProvider = _fdsDataProviderRegistry.getFDSDataProvider(
 			_FDS_NAME);
-
-		_mockHttpServletRequest = new MockHttpServletRequest();
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setLocale(LocaleUtil.US);
+
+		Group group = GroupTestUtil.addGroup();
+
 		themeDisplay.setScopeGroupId(group.getGroupId());
 		themeDisplay.setSiteGroupId(group.getGroupId());
 
@@ -101,19 +100,17 @@ public class CommercePaymentMethodFDSDataProviderTest {
 		int size =
 			commercePaymentIntegrations.size() + commercePaymentMethods.size();
 
-		List<?> paymentMethods = _fdsDataProvider.getItems(
+		List<?> items = _fdsDataProvider.getItems(
 			_fdsKeywords, _createFDSPagination(0, size),
 			_mockHttpServletRequest, null);
 
-		Assert.assertEquals(
-			paymentMethods.toString(), size, paymentMethods.size());
+		Assert.assertEquals(items.toString(), size, items.size());
 
-		paymentMethods = _fdsDataProvider.getItems(
+		items = _fdsDataProvider.getItems(
 			_fdsKeywords, _createFDSPagination(0, 1), _mockHttpServletRequest,
 			null);
 
-		Assert.assertEquals(
-			paymentMethods.toString(), 1, paymentMethods.size());
+		Assert.assertEquals(items.toString(), 1, items.size());
 	}
 
 	@Test
@@ -181,6 +178,7 @@ public class CommercePaymentMethodFDSDataProviderTest {
 	@Inject
 	private FDSKeywordsFactoryRegistry _fdsKeywordsFactoryRegistry;
 
-	private MockHttpServletRequest _mockHttpServletRequest;
+	private final MockHttpServletRequest _mockHttpServletRequest =
+		new MockHttpServletRequest();
 
 }
