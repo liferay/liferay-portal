@@ -28,7 +28,6 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.single-page-application=false",
-		"com.liferay.portlet.struts-path=plugins_admin",
 		"com.liferay.portlet.use-default-template=true",
 		"jakarta.portlet.display-name=Fast Sign In",
 		"jakarta.portlet.expiration-cache=0",
