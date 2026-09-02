@@ -11,6 +11,7 @@ function assert_clean_upgrade_log {
 	fi
 
 	local unclean_log_entries
+
 	unclean_log_entries=$(grep -E "^[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]+[0-9]{2}:[0-9]{2}:[0-9]{2}([.,][0-9]{3})?[[:space:]]+(ERROR|FATAL|WARN)" "${upgrade_log}" | grep -v "Do NOT use sidecar in production" || true)
 
 	if [ -n "${unclean_log_entries}" ]
