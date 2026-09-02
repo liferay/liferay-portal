@@ -29,7 +29,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -138,23 +137,19 @@ public class XmlRpcServlet extends HttpServlet {
 		return method.execute(companyId);
 	}
 
+	private static String _getRegistryKey(String token, String methodName) {
+		return token + StringPool.POUND + methodName;
+	}
+
 	private Method _getMethod(String token, String methodName) {
-		Method method = null;
-
-		Map<String, Method> methods = _methodRegistry.get(token);
-
-		if (methods != null) {
-			method = methods.get(methodName);
-		}
-
-		return method;
+		return _methodRegistry.get(_getRegistryKey(token, methodName));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(XmlRpcServlet.class);
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
-	private static final Map<String, Map<String, Method>> _methodRegistry =
+	private static final Map<String, Method> _methodRegistry =
 		new ConcurrentHashMap<>();
 	private static final ServiceTracker<Method, Method> _serviceTracker;
 
@@ -166,29 +161,16 @@ public class XmlRpcServlet extends HttpServlet {
 			Method method = _bundleContext.getService(serviceReference);
 
 			String token = method.getToken();
-
-			Map<String, Method> methods = _methodRegistry.get(token);
-
-			if (methods == null) {
-				methods = new HashMap<>();
-
-				_methodRegistry.put(token, methods);
-			}
-
 			String methodName = method.getMethodName();
 
-			Method registeredMethod = methods.get(methodName);
+			Method registeredMethod = _methodRegistry.putIfAbsent(
+				_getRegistryKey(token, methodName), method);
 
-			if (registeredMethod != null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						StringBundler.concat(
-							"There is already an XML-RPC method registered ",
-							"with name ", methodName, " at ", token));
-				}
-			}
-			else {
-				methods.put(methodName, method);
+			if ((registeredMethod != null) && _log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"There is already an XML-RPC method registered with ",
+						"name ", methodName, " at ", token));
 			}
 
 			return method;
@@ -205,19 +187,9 @@ public class XmlRpcServlet extends HttpServlet {
 
 			_bundleContext.ungetService(serviceReference);
 
-			String token = method.getToken();
-
-			Map<String, Method> methods = _methodRegistry.get(token);
-
-			if (methods == null) {
-				return;
-			}
-
-			methods.remove(method.getMethodName());
-
-			if (methods.isEmpty()) {
-				_methodRegistry.remove(token);
-			}
+			_methodRegistry.remove(
+				_getRegistryKey(method.getToken(), method.getMethodName()),
+				method);
 		}
 
 	}
