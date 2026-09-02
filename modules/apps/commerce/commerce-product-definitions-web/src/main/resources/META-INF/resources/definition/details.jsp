@@ -65,7 +65,7 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 							for (CommerceCatalog curCommerceCatalog : commerceCatalogs) {
 							%>
 
-								<aui:option data-languageId="<%= curCommerceCatalog.getCatalogDefaultLanguageId() %>" label="<%= HtmlUtil.escape(curCommerceCatalog.getName()) %>" selected="<%= (cpDefinition == null) ? (commerceCatalogs.size() == 1) : cpDefinitionsDisplayContext.isSelectedCatalog(curCommerceCatalog) %>" value="<%= curCommerceCatalog.getGroupId() %>" />
+								<aui:option data-languageId="<%= HtmlUtil.escapeAttribute(curCommerceCatalog.getCatalogDefaultLanguageId()) %>" label="<%= HtmlUtil.escape(curCommerceCatalog.getName()) %>" selected="<%= (cpDefinition == null) ? (commerceCatalogs.size() == 1) : cpDefinitionsDisplayContext.isSelectedCatalog(curCommerceCatalog) %>" value="<%= curCommerceCatalog.getGroupId() %>" />
 
 							<%
 							}
