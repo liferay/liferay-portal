@@ -229,12 +229,15 @@ test(
 
 			await editObjectDetailsPage.goto(parentObjectDefinition.name);
 
-			await editObjectDetailsPage.saveButton.click();
+			const {reload: detailsReload} =
+				await editObjectDetailsPage.saveObjectDefinitionReturningReload();
 
 			await waitForAlert(
 				page,
 				'Success:The object was saved successfully.'
 			);
+
+			await detailsReload;
 		});
 
 		const gotoRelationshipTab = async () => {
