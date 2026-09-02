@@ -44,8 +44,45 @@ public class CronSchedule {
 		}
 	}
 
+	/**
+	 * Returns the number of seconds spanned by the hash fields in this
+	 * schedule. Jenkins fires an <code>H</code> field at an arbitrary point in
+	 * its range, so a caller comparing a build against a deadline derived from
+	 * this schedule adds this span to its tolerance.
+	 *
+	 * @return the hash span in seconds, or <code>0</code> when the schedule
+	 *         names no hash field
+	 */
 	public long getHashSpanSeconds() {
 		return _hashSpanSeconds;
+	}
+
+	/**
+	 * Returns the number of seconds between the two most recent fires at or
+	 * before the given time. A caller scales its tolerance to this, so that a
+	 * job keeps the same allowance whether its schedule is expressed as a
+	 * cadence or as a cron spec.
+	 *
+	 * @param  currentTimeMillis the time to measure back from
+	 * @return the period in seconds, or <code>-1</code> when the schedule does
+	 *         not come round twice within the search window
+	 */
+	public long getPeriodSeconds(long currentTimeMillis) {
+		long previousFireTimestamp = getPreviousFireTimestamp(
+			currentTimeMillis);
+
+		if (previousFireTimestamp <= 0) {
+			return -1;
+		}
+
+		long earlierFireTimestamp = getPreviousFireTimestamp(
+			previousFireTimestamp - _MILLIS_MINUTE);
+
+		if (earlierFireTimestamp <= 0) {
+			return -1;
+		}
+
+		return (previousFireTimestamp - earlierFireTimestamp) / 1000;
 	}
 
 	public long getPreviousFireTimestamp(long currentTimeMillis) {
@@ -57,7 +94,7 @@ public class CronSchedule {
 		calendar.set(Calendar.SECOND, 0);
 
 		for (int i = 0; i < _MINUTES_SEARCH_MAXIMUM; i++) {
-			if (_matches(calendar)) {
+			if (_isFireTime(calendar)) {
 				return calendar.getTimeInMillis();
 			}
 
@@ -76,7 +113,7 @@ public class CronSchedule {
 			"Invalid ", name, " in cron spec: ", value);
 	}
 
-	private boolean _matches(Calendar calendar) {
+	private boolean _isFireTime(Calendar calendar) {
 		if (!_minutes.contains(calendar.get(Calendar.MINUTE)) ||
 			!_hours.contains(calendar.get(Calendar.HOUR_OF_DAY)) ||
 			!_months.contains(calendar.get(Calendar.MONTH) + 1) ||
@@ -118,13 +155,6 @@ public class CronSchedule {
 	private Set<Integer> _parseItem(
 		boolean hashAllowed, String item, int maximum, int minimum, String name,
 		int unitSeconds) {
-
-		// H fires at an arbitrary point in its range, so it is modelled as the
-		// range minimum plus the span it covers, which a caller comparing
-		// against a deadline adds to its tolerance. That only holds where the
-		// span converts to seconds, so a day or month field, where H would
-		// move the fire to a different day than Jenkins hashed it to, is
-		// refused rather than approximated.
 
 		if (!hashAllowed && item.contains("H")) {
 			throw new IllegalArgumentException(_getInvalidMessage(name, item));
@@ -201,6 +231,8 @@ public class CronSchedule {
 	}
 
 	private static final int _FIELD_COUNT = 5;
+
+	private static final long _MILLIS_MINUTE = 60 * 1000;
 
 	private static final int _MINUTES_SEARCH_MAXIMUM = 366 * 24 * 60;
 

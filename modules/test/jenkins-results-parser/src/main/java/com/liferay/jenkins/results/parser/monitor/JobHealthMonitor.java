@@ -38,12 +38,12 @@ public class JobHealthMonitor extends BaseMonitor {
 		_jenkinsMaster = JenkinsMaster.getInstance(
 			getRequiredParameter("master.name", parameters));
 
-		Map<String, String> thresholds = monitorConfig.getThresholds();
+		_thresholds = monitorConfig.getThresholds();
 
 		_buildDurationMaximumSeconds = getLongValue(
-			"threshold", 0, "build.duration.maximum", thresholds);
+			"threshold", 0, "build.duration.maximum", _thresholds);
 		_overdueGraceSeconds = getOverdueGraceSeconds(
-			_cadenceSeconds, thresholds);
+			_cadenceSeconds, _thresholds);
 	}
 
 	@Override
@@ -155,20 +155,31 @@ public class JobHealthMonitor extends BaseMonitor {
 
 		CronSchedule cronSchedule = null;
 
-		long requiredFireTimestamp = -1;
+		long overdueDeadlineTimestamp = -1;
+		long overdueGraceSeconds = _overdueGraceSeconds;
 
 		if (_cadenceSeconds > 0) {
-			requiredFireTimestamp =
+			overdueDeadlineTimestamp =
 				currentTimeMillis -
-					((_cadenceSeconds + _overdueGraceSeconds) * 1000);
+					((_cadenceSeconds + overdueGraceSeconds) * 1000);
 		}
 		else {
 			try {
 				cronSchedule = _getCronSchedule();
 
 				if (cronSchedule != null) {
-					requiredFireTimestamp = _getRequiredFireTimestamp(
+					overdueGraceSeconds = _getOverdueGraceSeconds(
 						cronSchedule, currentTimeMillis);
+
+					overdueDeadlineTimestamp = _getOverdueDeadlineTimestamp(
+						cronSchedule, currentTimeMillis, overdueGraceSeconds);
+
+					if (overdueDeadlineTimestamp <= 0) {
+						messages.add(
+							_getUnreachableScheduleMessage(cronSchedule));
+
+						statuses.add(MonitorResult.Status.UNKNOWN);
+					}
 				}
 			}
 			catch (Exception exception) {
@@ -181,10 +192,10 @@ public class JobHealthMonitor extends BaseMonitor {
 			}
 		}
 
-		if (requiredFireTimestamp > 0) {
+		if (overdueDeadlineTimestamp > 0) {
 			metrics.put(
-				"required.fire.timestamp",
-				String.valueOf(requiredFireTimestamp));
+				"overdue.deadline.timestamp",
+				String.valueOf(overdueDeadlineTimestamp));
 		}
 
 		if (buildRunning && (_buildDurationMaximumSeconds > 0)) {
@@ -194,12 +205,13 @@ public class JobHealthMonitor extends BaseMonitor {
 				statuses.add(MonitorResult.Status.CRITICAL);
 			}
 		}
-		else if ((requiredFireTimestamp > 0) &&
-				 (lastBuildTimestamp < requiredFireTimestamp)) {
+		else if ((overdueDeadlineTimestamp > 0) &&
+				 (lastBuildTimestamp < overdueDeadlineTimestamp)) {
 
 			messages.add(
 				_getOverdueMessage(
-					buildRunning, cronSchedule, lastBuildAgeSeconds));
+					buildRunning, cronSchedule, lastBuildAgeSeconds,
+					overdueGraceSeconds));
 
 			statuses.add(MonitorResult.Status.WARN);
 		}
@@ -269,36 +281,51 @@ public class JobHealthMonitor extends BaseMonitor {
 		return lastCompletedBuildJSONObject.optLong("timestamp");
 	}
 
+	private long _getOverdueDeadlineTimestamp(
+		CronSchedule cronSchedule, long currentTimeMillis,
+		long overdueGraceSeconds) {
+
+		long toleranceSeconds =
+			overdueGraceSeconds + cronSchedule.getHashSpanSeconds();
+
+		return cronSchedule.getPreviousFireTimestamp(
+			currentTimeMillis - (toleranceSeconds * 1000));
+	}
+
+	private long _getOverdueGraceSeconds(
+		CronSchedule cronSchedule, long currentTimeMillis) {
+
+		long periodSeconds = cronSchedule.getPeriodSeconds(currentTimeMillis);
+
+		if (periodSeconds <= 0) {
+			return _overdueGraceSeconds;
+		}
+
+		return getOverdueGraceSeconds(periodSeconds, _thresholds);
+	}
+
 	private String _getOverdueMessage(
 		boolean buildRunning, CronSchedule cronSchedule,
-		long lastBuildAgeSeconds) {
+		long lastBuildAgeSeconds, long overdueGraceSeconds) {
 
 		if (buildRunning) {
 			return JenkinsResultsParserUtil.combine(
 				"Job ", _jobName, " has been running for ",
 				JenkinsResultsParserUtil.toDurationString(
 					lastBuildAgeSeconds * 1000),
-				", ", _getScheduleMessage(cronSchedule));
+				", ", _getScheduleMessage(cronSchedule, overdueGraceSeconds));
 		}
 
 		return JenkinsResultsParserUtil.combine(
 			"Job ", _jobName, " last ran ",
 			JenkinsResultsParserUtil.toDurationString(
 				lastBuildAgeSeconds * 1000),
-			" ago, ", _getScheduleMessage(cronSchedule));
+			" ago, ", _getScheduleMessage(cronSchedule, overdueGraceSeconds));
 	}
 
-	private long _getRequiredFireTimestamp(
-		CronSchedule cronSchedule, long currentTimeMillis) {
+	private String _getScheduleMessage(
+		CronSchedule cronSchedule, long overdueGraceSeconds) {
 
-		long toleranceSeconds =
-			_overdueGraceSeconds + cronSchedule.getHashSpanSeconds();
-
-		return cronSchedule.getPreviousFireTimestamp(
-			currentTimeMillis - (toleranceSeconds * 1000));
-	}
-
-	private String _getScheduleMessage(CronSchedule cronSchedule) {
 		if (_cadenceSeconds > 0) {
 			return JenkinsResultsParserUtil.combine(
 				"exceeding its cadence of ",
@@ -306,14 +333,20 @@ public class JobHealthMonitor extends BaseMonitor {
 					_cadenceSeconds * 1000),
 				" plus a grace period of ",
 				JenkinsResultsParserUtil.toDurationString(
-					_overdueGraceSeconds * 1000));
+					overdueGraceSeconds * 1000));
 		}
 
 		return JenkinsResultsParserUtil.combine(
 			"exceeding its schedule of ", cronSchedule.getSpec(),
 			" plus a grace period of ",
 			JenkinsResultsParserUtil.toDurationString(
-				_overdueGraceSeconds * 1000));
+				overdueGraceSeconds * 1000));
+	}
+
+	private String _getUnreachableScheduleMessage(CronSchedule cronSchedule) {
+		return JenkinsResultsParserUtil.combine(
+			"Job ", _jobName, " has the schedule ", cronSchedule.getSpec(),
+			", which never comes round");
 	}
 
 	private String _getUntriggerableMessage(boolean disabled) {
@@ -373,5 +406,6 @@ public class JobHealthMonitor extends BaseMonitor {
 	private final JenkinsMaster _jenkinsMaster;
 	private final String _jobName;
 	private final long _overdueGraceSeconds;
+	private final Map<String, String> _thresholds;
 
 }
