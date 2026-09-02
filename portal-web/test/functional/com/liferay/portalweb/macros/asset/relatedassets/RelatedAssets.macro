@@ -31,7 +31,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro selectAsset(scopeSite = null, depotName = null, otherSite = null, assetTitle = null, assetType = null, scopeAssetType = null) {
+	macro selectAsset(assetTitle = null, scopeAssetType = null) {
 		if (isSet(scopeAssetType) && (${scopeAssetType} == "Blogs Entry")) {
 			Blogs.expandPanel(panel = "Related Assets");
 		}

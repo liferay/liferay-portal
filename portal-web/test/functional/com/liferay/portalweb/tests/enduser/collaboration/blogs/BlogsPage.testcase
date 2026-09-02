@@ -832,7 +832,6 @@ definition {
 
 			RelatedAssets.selectAsset(
 				assetTitle = "Blogs Entry1 Title",
-				assetType = "Blogs Entry",
 				scopeAssetType = "Blogs Entry");
 
 			PortletEntry.publish();

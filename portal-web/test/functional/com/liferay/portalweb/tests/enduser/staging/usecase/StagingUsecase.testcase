@@ -360,9 +360,7 @@ definition {
 				entryContent = "Blogs Entry Content",
 				entryTitle = "Blogs Entry Title");
 
-			RelatedAssets.selectAsset(
-				assetAll = "true",
-				assetType = "Basic Document");
+			RelatedAssets.selectAsset(assetAll = "true");
 
 			PortletEntry.publish();
 

@@ -940,9 +940,7 @@ definition {
 			site = "false",
 			siteURLKey = "site-name-staging");
 
-		RelatedAssets.selectAsset(
-			assetTitle = "Web Content Title",
-			assetType = "Basic Web Content");
+		RelatedAssets.selectAsset(assetTitle = "Web Content Title");
 
 		Button.clickPublish();
 

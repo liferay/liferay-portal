@@ -146,14 +146,10 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addExistingRelatedAssetCP(scopeSite = null, webContentTitle = null, otherSite = null, assetTitle = null, siteName = null, assetType = null, edit = null) {
+	macro addExistingRelatedAssetCP(webContentTitle = null, assetTitle = null, siteName = null, assetType = null, edit = null) {
 		var key_webContentTitle = ${webContentTitle};
 
-		RelatedAssets.selectAsset(
-			assetTitle = ${assetTitle},
-			assetType = ${assetType},
-			otherSite = ${otherSite},
-			scopeSite = ${scopeSite});
+		RelatedAssets.selectAsset(assetTitle = ${assetTitle});
 
 		SelectFrame(value1 = "relative=top");
 

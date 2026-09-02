@@ -3306,9 +3306,7 @@ definition {
 			groupName = "Guest",
 			siteURLKey = "guest");
 
-		RelatedAssets.selectAsset(
-			assetTitle = "Document_1.doc",
-			assetType = "Basic Document");
+		RelatedAssets.selectAsset(assetTitle = "Document_1.doc");
 
 		Button.clickPublish();
 

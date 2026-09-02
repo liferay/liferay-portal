@@ -1375,9 +1375,7 @@ definition {
 		task ("Edit the default values of web content structure again") {
 			WebContentStructures.editStructureDefaultValuesCP(structureName = "WC Structure Name");
 
-			RelatedAssets.selectAsset(
-				assetTitle = "Blogs Entry Title",
-				assetType = "Blogs Entry");
+			RelatedAssets.selectAsset(assetTitle = "Blogs Entry Title");
 		}
 
 		task ("Cancel reset the default values") {

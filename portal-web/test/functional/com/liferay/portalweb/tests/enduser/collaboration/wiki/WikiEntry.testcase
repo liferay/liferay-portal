@@ -91,9 +91,7 @@ definition {
 			wikiNodeName = "Main",
 			wikiPageTitle = "Wiki Page Title");
 
-		RelatedAssets.selectAsset(
-			assetTitle = "Web Content Title",
-			assetType = "Basic Web Content");
+		RelatedAssets.selectAsset(assetTitle = "Web Content Title");
 
 		Button.clickPublish();
 

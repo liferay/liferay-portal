@@ -679,9 +679,7 @@ definition {
 		}
 
 		if (isSet(dmDocumentRelatedAsset)) {
-			RelatedAssets.selectAsset(
-				assetTitle = ${assetTitle},
-				assetType = ${assetType});
+			RelatedAssets.selectAsset(assetTitle = ${assetTitle});
 		}
 
 		if (isSet(tagNameList)) {

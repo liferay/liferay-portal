@@ -778,9 +778,7 @@ definition {
 
 		RelatedAssets.removeAsset(removeAssetTitle = "DM Document Title");
 
-		RelatedAssets.selectAsset(
-			assetTitle = "Blogs Entry Title",
-			assetType = "Blogs Entry");
+		RelatedAssets.selectAsset(assetTitle = "Blogs Entry Title");
 
 		KBArticle.clickPublish();
 
