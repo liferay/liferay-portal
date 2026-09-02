@@ -216,62 +216,6 @@ public class AssetListFiltersUtilTest {
 
 	@Test
 	public void testFilterQueriesWithCommonFields() {
-		String priority = String.valueOf(RandomTestUtil.randomDouble());
-
-		_assertTermRangeQuery(
-			Field.PRIORITY, false, false, priority, null,
-			_assertCommonFieldQuery(
-				BooleanClauseOccur.MUST,
-				_getCommonFieldFilterJSONObject(
-					"gt", Field.PRIORITY, priority)));
-
-		String status = String.valueOf(RandomTestUtil.randomInt());
-
-		_assertTermQuery(
-			Field.STATUS, status,
-			_assertCommonFieldQuery(
-				BooleanClauseOccur.MUST_NOT,
-				_getCommonFieldFilterJSONObject(
-					"not-eq", Field.STATUS, status)));
-
-		String title = RandomTestUtil.randomString();
-
-		_assertMatchQuery(
-			"localized_title_en_US", title,
-			_assertCommonFieldQuery(
-				BooleanClauseOccur.MUST,
-				_getCommonFieldFilterJSONObject("eq", Field.TITLE, title)));
-		_assertMatchQuery(
-			"localized_title_en_US", title,
-			_assertCommonFieldQuery(
-				BooleanClauseOccur.MUST,
-				_getCommonFieldFilterJSONObject(
-					"contains", Field.TITLE, title)));
-
-		String userName = RandomTestUtil.randomString();
-
-		_assertTermQuery(
-			Field.USER_NAME, StringUtil.toLowerCase(userName),
-			_assertCommonFieldQuery(
-				BooleanClauseOccur.MUST,
-				_getCommonFieldFilterJSONObject(
-					"eq", Field.USER_NAME, userName)));
-		_assertWildcardQuery(
-			Field.USER_NAME,
-			StringBundler.concat("*", StringUtil.toLowerCase(userName), "*"),
-			_assertCommonFieldQuery(
-				BooleanClauseOccur.MUST_NOT,
-				_getCommonFieldFilterJSONObject(
-					"not-contains", Field.USER_NAME, userName)));
-
-		String viewCount = String.valueOf(RandomTestUtil.randomInt());
-
-		_assertTermQuery(
-			"viewCount", viewCount,
-			_assertCommonFieldQuery(
-				BooleanClauseOccur.MUST,
-				_getCommonFieldFilterJSONObject("eq", "viewCount", viewCount)));
-
 		_assertTermRangeQuery(
 			Field.CREATE_DATE, false, false, "20260115235959", null,
 			_assertCommonFieldQuery(
@@ -297,6 +241,62 @@ public class AssetListFiltersUtilTest {
 				BooleanClauseOccur.MUST_NOT,
 				_getCommonFieldFilterJSONObject(
 					"not-eq", Field.MODIFIED_DATE, "2026-01-15")));
+
+		String priority = String.valueOf(RandomTestUtil.randomDouble());
+
+		_assertTermRangeQuery(
+			Field.PRIORITY, false, false, priority, null,
+			_assertCommonFieldQuery(
+				BooleanClauseOccur.MUST,
+				_getCommonFieldFilterJSONObject(
+					"gt", Field.PRIORITY, priority)));
+
+		String status = String.valueOf(RandomTestUtil.randomInt());
+
+		_assertTermQuery(
+			Field.STATUS, status,
+			_assertCommonFieldQuery(
+				BooleanClauseOccur.MUST_NOT,
+				_getCommonFieldFilterJSONObject(
+					"not-eq", Field.STATUS, status)));
+
+		String title = RandomTestUtil.randomString();
+
+		_assertMatchQuery(
+			"localized_title_en_US", title,
+			_assertCommonFieldQuery(
+				BooleanClauseOccur.MUST,
+				_getCommonFieldFilterJSONObject(
+					"contains", Field.TITLE, title)));
+		_assertMatchQuery(
+			"localized_title_en_US", title,
+			_assertCommonFieldQuery(
+				BooleanClauseOccur.MUST,
+				_getCommonFieldFilterJSONObject("eq", Field.TITLE, title)));
+
+		String userName = RandomTestUtil.randomString();
+
+		_assertTermQuery(
+			Field.USER_NAME, StringUtil.toLowerCase(userName),
+			_assertCommonFieldQuery(
+				BooleanClauseOccur.MUST,
+				_getCommonFieldFilterJSONObject(
+					"eq", Field.USER_NAME, userName)));
+		_assertWildcardQuery(
+			Field.USER_NAME,
+			StringBundler.concat("*", StringUtil.toLowerCase(userName), "*"),
+			_assertCommonFieldQuery(
+				BooleanClauseOccur.MUST_NOT,
+				_getCommonFieldFilterJSONObject(
+					"not-contains", Field.USER_NAME, userName)));
+
+		String viewCount = String.valueOf(RandomTestUtil.randomInt());
+
+		_assertTermQuery(
+			"viewCount", viewCount,
+			_assertCommonFieldQuery(
+				BooleanClauseOccur.MUST,
+				_getCommonFieldFilterJSONObject("eq", "viewCount", viewCount)));
 
 		BooleanClause[] booleanClauses =
 			AssetListFiltersUtil.getFiltersBooleanClauses(
