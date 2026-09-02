@@ -10,6 +10,8 @@ import React from 'react';
 
 import ScheduleField, {
 	isPastDate,
+	toPickerDate,
+	toUTCISOFormat,
 } from '../../../../src/main/resources/META-INF/resources/js/content_editor/components/ScheduleField';
 
 const DATE_CONFIG = {
@@ -190,5 +192,81 @@ describe('isPastDate', () => {
 
 	it('flags an earlier time on the current day as past', () => {
 		expect(isPastDate('07/10/2026 07:00 AM')).toBe(true);
+	});
+
+	it('flags an instant that already passed when the account time zone is ahead of the browser one', () => {
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('Europe/Madrid');
+
+		expect(isPastDate(toPickerDate('2026-07-10T07:55:00Z'))).toBe(true);
+	});
+
+	it('does not flag an instant still to come when the account time zone is ahead of the browser one', () => {
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('Europe/Madrid');
+
+		expect(isPastDate(toPickerDate('2026-07-10T08:05:00Z'))).toBe(false);
+	});
+});
+
+describe('toPickerDate', () => {
+	beforeEach(() => {
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('UTC');
+	});
+
+	it('shows the stored instant in the account time zone instead of the browser one', () => {
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('Europe/Madrid');
+
+		expect(toPickerDate('2026-07-10T08:00:00Z')).toBe(
+			'07/10/2026 10:00 AM'
+		);
+	});
+
+	it('shows no date when the content never expires', () => {
+		expect(toPickerDate('')).toBe('');
+	});
+});
+
+describe('toUTCISOFormat', () => {
+	beforeEach(() => {
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('UTC');
+	});
+
+	it('reads the entered value in the account time zone', () => {
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('Europe/Madrid');
+
+		expect(toUTCISOFormat('07/10/2026 10:00 AM')).toBe(
+			'2026-07-10T08:00:00Z'
+		);
+	});
+
+	it('keeps the stored instant untouched when the value is not edited', () => {
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('Asia/Tokyo');
+
+		expect(toUTCISOFormat(toPickerDate('2026-01-15T23:45:00Z'))).toBe(
+			'2026-01-15T23:45:00Z'
+		);
+	});
+
+	it('keeps the stored instant untouched across the account time zone DST change', () => {
+		global.Liferay.ThemeDisplay.getTimeZone = jest
+			.fn()
+			.mockReturnValue('Pacific/Auckland');
+
+		expect(toUTCISOFormat(toPickerDate('2026-09-26T13:30:00Z'))).toBe(
+			'2026-09-26T13:30:00Z'
+		);
 	});
 });
