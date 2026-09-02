@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -93,17 +94,16 @@ public class ModulesJUnitBatchTestClassGroup extends JUnitBatchTestClassGroup {
 		String testClassFilePath = JenkinsResultsParserUtil.getCanonicalPath(
 			testClass.getTestClassFile());
 
-		File modulesDir = new File(
-			portalGitWorkingDirectory.getWorkingDirectory(), "modules");
+		for (File testClassRootDir : getTestClassRootDirs()) {
+			String testClassRootDirPath =
+				JenkinsResultsParserUtil.getCanonicalPath(testClassRootDir);
 
-		String modulesDirPath = JenkinsResultsParserUtil.getCanonicalPath(
-			modulesDir);
+			if (testClassFilePath.startsWith(testClassRootDirPath + "/")) {
+				super.addTestClass(testClass);
 
-		if (!testClassFilePath.startsWith(modulesDirPath + "/")) {
-			return;
+				return;
+			}
 		}
-
-		super.addTestClass(testClass);
 	}
 
 	@Override
@@ -257,6 +257,12 @@ public class ModulesJUnitBatchTestClassGroup extends JUnitBatchTestClassGroup {
 		}
 
 		return new ArrayList<>(includesJobProperties);
+	}
+
+	protected List<File> getTestClassRootDirs() {
+		return Collections.singletonList(
+			new File(
+				portalGitWorkingDirectory.getWorkingDirectory(), "modules"));
 	}
 
 	private String _getAppTitle(File appBndFile) {
