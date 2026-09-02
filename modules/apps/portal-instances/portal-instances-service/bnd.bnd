@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Instances Service
 Bundle-SymbolicName: com.liferay.portal.instances.service
-Bundle-Version: 5.0.55
+Bundle-Version: 5.0.56
 -dsannotations-options: inherit
