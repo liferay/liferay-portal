@@ -335,7 +335,9 @@ const AssetCategories = ({
 
 					{!vocabularyId &&
 					Liferay.FeatureFlags?.['LPD-62272'] &&
-					hasUpdatePermission ? (
+					hasUpdatePermission &&
+					(getContent ||
+						(objectEntry as IAssetObjectEntry).contentRawText) ? (
 						<AIAssistantTriggerButton
 							anchorId={AI_ASSISTANT_TOOLBAR_TRIGGER_ID}
 							className="ai-assistant-chat__trigger--categorization ml-2"
