@@ -165,6 +165,23 @@ describe('Object relationship description', () => {
 		);
 	});
 
+	it('renders the help message explaining the English fallback', async () => {
+		renderComponent({
+			values: {
+				...objectRelationshipFormBaseDefaultProps.values,
+				system: false,
+			},
+		});
+
+		await waitFor(() =>
+			expect(
+				screen.getByText(
+					'provide-descriptive-text-used-only-by-ai-agents-and-api-consumers'
+				)
+			).toBeInTheDocument()
+		);
+	});
+
 	it('shows the authored value for the default locale', async () => {
 		renderComponent({
 			values: {

@@ -82,6 +82,16 @@ describe('Object definition description', () => {
 		expect(screen.getByLabelText('description')).toBeInTheDocument();
 	});
 
+	it('renders the help message explaining the English fallback', () => {
+		renderComponent();
+
+		expect(
+			screen.getByText(
+				'provide-descriptive-text-used-only-by-ai-agents-and-api-consumers'
+			)
+		).toBeInTheDocument();
+	});
+
 	it('reports every typed character to the form', async () => {
 		const setValues = jest.fn();
 

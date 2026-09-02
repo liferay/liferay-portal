@@ -254,6 +254,16 @@ describe('Object field description', () => {
 			'The insurer claim reference.'
 		);
 	});
+
+	it('renders the help message explaining the English fallback', () => {
+		render(<ObjectFieldFormBase {...descriptionProps} />);
+
+		expect(
+			screen.getByText(
+				'provide-descriptive-text-used-only-by-ai-agents-and-api-consumers'
+			)
+		).toBeInTheDocument();
+	});
 });
 
 describe('when the root model feature is enabled', () => {
