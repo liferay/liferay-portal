@@ -202,6 +202,8 @@ public class ExportPIMBaseSkuToLiferayCommerceServlet extends HttpServlet {
 			objectEntry);
 
 		return JSONUtil.put(
+			"active", true
+		).put(
 			"catalogId", "[$MASTER_CATALOG_ID$]"
 		).put(
 			"description",
@@ -211,22 +213,71 @@ public class ExportPIMBaseSkuToLiferayCommerceServlet extends HttpServlet {
 		).put(
 			"name", JSONUtil.put("en_US", MapUtil.getString(values, "name"))
 		).put(
-			"productType", "simple"
+			"productType",
+			() -> {
+				if (MapUtil.getBoolean(values, "virtual")) {
+					return "virtual";
+				}
+
+				return "simple";
+			}
 		).put(
-			"skus",
-			JSONUtil.toJSONArray(
-				objectEntries,
-				curObjectEntry -> JSONUtil.put(
-					"published", true
-				).put(
-					"purchasable", true
-				).put(
-					"sku",
-					MapUtil.getString(
-						_objectEntryLocalService.getValues(curObjectEntry),
-						"code")
-				))
+			"skus", JSONUtil.toJSONArray(objectEntries, this::_toSkuJSONObject)
 		);
+	}
+
+	private JSONObject _toSkuJSONObject(ObjectEntry objectEntry)
+		throws Exception {
+
+		Map<String, Serializable> values = _objectEntryLocalService.getValues(
+			objectEntry);
+
+		JSONObject jsonObject = JSONUtil.put(
+			"depth", MapUtil.getDouble(values, "depth")
+		).put(
+			"height", MapUtil.getDouble(values, "height")
+		).put(
+			"published", true
+		).put(
+			"purchasable", true
+		).put(
+			"sku", MapUtil.getString(values, "code")
+		).put(
+			"weight", MapUtil.getDouble(values, "weight")
+		).put(
+			"width", MapUtil.getDouble(values, "width")
+		);
+
+		String unitOfMeasureKey = MapUtil.getString(values, "unitOfMeasureKey");
+
+		if (Validator.isNull(unitOfMeasureKey)) {
+			return jsonObject;
+		}
+
+		int precision = 0;
+
+		if (MapUtil.getBoolean(values, "unitOfMeasureAllowDecimalQuantities")) {
+			precision = 2;
+		}
+
+		return jsonObject.put(
+			"skuUnitOfMeasures",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"incrementalOrderQuantity", 1
+				).put(
+					"key", unitOfMeasureKey
+				).put(
+					"name",
+					JSONUtil.put(
+						"en_US", MapUtil.getString(values, "unitOfMeasureName"))
+				).put(
+					"precision", precision
+				).put(
+					"primary", true
+				).put(
+					"rate", 1
+				)));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
