@@ -324,18 +324,12 @@ public class BatchTestClassGroupTest
 
 		batchTestClassGroup.setAxisTestClassGroups();
 
-		List<Integer> axisSizes = new ArrayList<>();
-
 		List<AxisTestClassGroup> axisTestClassGroups =
 			batchTestClassGroup.getAxisTestClassGroups();
 
-		for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
-			List<TestClass> testClasses = axisTestClassGroup.getTestClasses();
-
-			axisSizes.add(testClasses.size());
-		}
-
-		testEquals(expectedAxisSizes, axisSizes);
+		testEquals(
+			expectedAxisSizes,
+			BatchTestClassGroupTestUtil.getAxisSizes(axisTestClassGroups));
 
 		List<TestClass> axisTestClasses = _getTestClasses(axisTestClassGroups);
 

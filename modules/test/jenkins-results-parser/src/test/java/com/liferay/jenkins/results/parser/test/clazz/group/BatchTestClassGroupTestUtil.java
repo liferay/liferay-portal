@@ -11,6 +11,7 @@ import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.JobFactory;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
+import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +32,20 @@ import org.mockito.Mockito;
  * @author Kenji Heigel
  */
 public class BatchTestClassGroupTestUtil {
+
+	public static List<Integer> getAxisSizes(
+		List<AxisTestClassGroup> axisTestClassGroups) {
+
+		List<Integer> axisSizes = new ArrayList<>();
+
+		for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
+			List<TestClass> testClasses = axisTestClassGroup.getTestClasses();
+
+			axisSizes.add(testClasses.size());
+		}
+
+		return axisSizes;
+	}
 
 	public static PortalTestClassJob getPortalTestClassJob() {
 		return getPortalTestClassJob(null);

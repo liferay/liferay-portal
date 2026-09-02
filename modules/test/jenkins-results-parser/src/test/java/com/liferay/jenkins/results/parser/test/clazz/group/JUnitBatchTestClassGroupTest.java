@@ -143,16 +143,8 @@ public class JUnitBatchTestClassGroupTest
 
 			};
 
-		List<Integer> axisSizes = new ArrayList<>();
-
-		List<AxisTestClassGroup> axisTestClassGroups =
-			jUnitBatchTestClassGroup.getAxisTestClassGroups();
-
-		for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
-			List<TestClass> testClasses = axisTestClassGroup.getTestClasses();
-
-			axisSizes.add(testClasses.size());
-		}
+		List<Integer> axisSizes = BatchTestClassGroupTestUtil.getAxisSizes(
+			jUnitBatchTestClassGroup.getAxisTestClassGroups());
 
 		Collections.sort(axisSizes, Collections.reverseOrder());
 
