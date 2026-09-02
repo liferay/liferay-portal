@@ -12,6 +12,7 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.fragment.entry.processor.analytics.AnalyticsAttributesContributorRegistryUtil;
 import com.liferay.fragment.entry.processor.helper.FragmentEntryProcessorHelper;
 import com.liferay.fragment.entry.processor.helper.InfoItemFieldMapped;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
@@ -103,7 +104,13 @@ public class AnalyticsAttributesUtil {
 			fragmentEntryProcessorContext, fragmentEntryProcessorHelper,
 			infoDisplaysFieldValues, infoItemFieldMapped, mappedJSONObject);
 
-		return HashMapBuilder.<String, Object>put(
+		return HashMapBuilder.<String, Object>putAll(
+			_getAnalyticsAttributes(
+				classPKInfoItemIdentifier, fragmentEntryProcessorContext,
+				infoItemFieldMapped, infoItemFieldValues,
+				infoItemServiceRegistry,
+				fragmentEntryProcessorContext.getLocale())
+		).put(
 			"analytics-asset-action",
 			_getAnalyticsAssetAction(infoItemFieldMapped, infoItemFieldValues)
 		).put(
@@ -113,12 +120,6 @@ public class AnalyticsAttributesUtil {
 			_getAnalyticsAssetMimeType(
 				fragmentEntryProcessorHelper, infoItemFieldMapped,
 				infoItemFieldValues, fragmentEntryProcessorContext.getLocale())
-		).putAll(
-			_getAnalyticsAttributes(
-				classPKInfoItemIdentifier, fragmentEntryProcessorContext,
-				infoItemFieldMapped, infoItemFieldValues,
-				infoItemServiceRegistry,
-				fragmentEntryProcessorContext.getLocale())
 		).build();
 	}
 
@@ -368,7 +369,10 @@ public class AnalyticsAttributesUtil {
 		InfoItemFieldValues infoItemFieldValues,
 		InfoItemServiceRegistry infoItemServiceRegistry, Locale locale) {
 
-		return HashMapBuilder.<String, Object>put(
+		return HashMapBuilder.<String, Object>putAll(
+			AnalyticsAttributesContributorRegistryUtil.getAnalyticsAttributes(
+				infoItemFieldMapped, locale)
+		).put(
 			"analytics-asset-categories",
 			() -> _getAnalyticsAssetCategories(
 				classPKInfoItemIdentifier, infoItemFieldMapped, locale)
