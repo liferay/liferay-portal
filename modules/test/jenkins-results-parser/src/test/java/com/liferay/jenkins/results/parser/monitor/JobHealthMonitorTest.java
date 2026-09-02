@@ -298,19 +298,6 @@ public class JobHealthMonitorTest
 	}
 
 	@Test
-	public void testExecuteCronWithoutTrigger() throws Exception {
-		_setJobJSONObject(
-			_newJobJSONObject(
-				42, "SUCCESS",
-				JenkinsResultsParserUtil.getCurrentTimeMillis() -
-					(30L * 24 * 3600 * 1000)));
-
-		MonitorResult monitorResult = _execute(_newMonitorProperties());
-
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
-	}
-
-	@Test
 	public void testExecuteDisabled() throws Exception {
 		JSONObject jobJSONObject = _newJobJSONObject(
 			42, "SUCCESS", JenkinsResultsParserUtil.getCurrentTimeMillis());
@@ -382,6 +369,24 @@ public class JobHealthMonitorTest
 		testEquals(
 			"Unable to determine the last build timestamp for job " +
 				"generate-reports-controller",
+			monitorResult.getMessage());
+	}
+
+	@Test
+	public void testExecuteMissingSchedule() throws Exception {
+		_setJobJSONObject(
+			"<project><triggers/></project>",
+			_newJobJSONObject(
+				42, "SUCCESS",
+				JenkinsResultsParserUtil.getCurrentTimeMillis() -
+					(30L * 24 * 3600 * 1000)));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(
+			"Job generate-reports-controller has no cadence and no schedule, " +
+				"so it is not checked for being on time",
 			monitorResult.getMessage());
 	}
 
@@ -586,19 +591,6 @@ public class JobHealthMonitorTest
 			"monitor[a].threshold[overdue.grace]", "7200");
 
 		MonitorResult monitorResult = _execute(monitorProperties);
-
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
-	}
-
-	@Test
-	public void testExecuteOverdueWithoutCadence() throws Exception {
-		_setJobJSONObject(
-			_newJobJSONObject(
-				42, "SUCCESS",
-				JenkinsResultsParserUtil.getCurrentTimeMillis() -
-					(30L * 24 * 3600 * 1000)));
-
-		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
 		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
 	}
@@ -840,7 +832,7 @@ public class JobHealthMonitorTest
 	}
 
 	private void _setJobJSONObject(JSONObject jobJSONObject) throws Exception {
-		_setJobJSONObject("<project><triggers/></project>", jobJSONObject);
+		_setJobJSONObject(_newConfigXML("0 3 * * *"), jobJSONObject);
 	}
 
 	private void _setJobJSONObject(String configXML, JSONObject jobJSONObject)
