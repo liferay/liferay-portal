@@ -21,24 +21,18 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -257,33 +251,21 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 	}
 
 	private String _getFriendlyURL(
-		boolean cms, long groupId, String languageId,
-		ObjectDefinition objectDefinition, ObjectEntry objectEntry) {
+		String languageId, ObjectDefinition objectDefinition,
+		ObjectEntry objectEntry) {
 
 		String urlTitle = objectEntry.getURLTitle(
 			LocaleUtil.fromLanguageId(languageId));
 
-		if (Validator.isNull(urlTitle)) {
-			if (!objectDefinition.isDefaultStorageType()) {
-				return objectEntry.getExternalReferenceCode();
-			}
-
-			return String.valueOf(objectEntry.getObjectEntryId());
-		}
-
-		if (!cms || (groupId == objectEntry.getGroupId())) {
+		if (Validator.isNotNull(urlTitle)) {
 			return urlTitle;
 		}
 
-		Group group = _groupLocalService.fetchGroup(objectEntry.getGroupId());
-
-		if (group == null) {
-			return urlTitle;
+		if (!objectDefinition.isDefaultStorageType()) {
+			return objectEntry.getExternalReferenceCode();
 		}
 
-		return StringBundler.concat(
-			StringUtil.removeFirst(group.getFriendlyURL(), StringPool.SLASH),
-			StringPool.SLASH, urlTitle);
+		return String.valueOf(objectEntry.getObjectEntryId());
 	}
 
 	private long[] _getGroupIds(long groupId) throws PortalException {
@@ -381,29 +363,22 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		String urlSeparator = StringUtil.quote(
 			objectDefinition.getFriendlyURLSeparator(), CharPool.SLASH);
 
-		try (SafeCloseable safeCloseable =
-				GroupThreadLocal.setGroupIdWithSafeCloseable(
-					layout.getGroupId())) {
+		for (ObjectEntry objectEntry : objectEntries) {
+			String friendlyURL = _getFriendlyURL(
+				themeDisplay.getLanguageId(), objectDefinition, objectEntry);
 
-			for (ObjectEntry objectEntry : objectEntries) {
-				String friendlyURL = _getFriendlyURL(
-					objectDefinition.isCMS(), layout.getGroupId(),
-					themeDisplay.getLanguageId(), objectDefinition,
-					objectEntry);
+			String canonicalURL = _portal.getCanonicalURL(
+				urlSeparator + friendlyURL, themeDisplay, layout);
 
-				String canonicalURL = _portal.getCanonicalURL(
-					urlSeparator + friendlyURL, themeDisplay, layout);
+			Map<Locale, String> alternateURLs = _portal.getAlternateURLs(
+				canonicalURL, themeDisplay, layout,
+				objectDefinitionAvailableLocales);
 
-				Map<Locale, String> alternateURLs = _portal.getAlternateURLs(
-					canonicalURL, themeDisplay, layout,
-					objectDefinitionAvailableLocales);
-
-				for (String alternateURL : alternateURLs.values()) {
-					_sitemapManager.addURLElement(
-						element, alternateURL, typeSettingsUnicodeProperties,
-						objectEntry.getModifiedDate(), canonicalURL,
-						alternateURLs, layout.getGroupId());
-				}
+			for (String alternateURL : alternateURLs.values()) {
+				_sitemapManager.addURLElement(
+					element, alternateURL, typeSettingsUnicodeProperties,
+					objectEntry.getModifiedDate(), canonicalURL, alternateURLs,
+					layout.getGroupId());
 			}
 		}
 	}
@@ -413,9 +388,6 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Language _language;
