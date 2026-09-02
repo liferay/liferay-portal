@@ -34,7 +34,7 @@ public class ModulesTestReport extends BaseTestReport {
 			return matcher.group("testName");
 		}
 
-		return getTestName();
+		return super.getTestName();
 	}
 
 	protected ModulesTestReport(
