@@ -21,10 +21,9 @@ public class OmniSearchResult {
 		String icon, List<OmniSearchResult> omniSearchResults, String title) {
 
 		_icon = icon;
-		_title = title;
-
 		_omniSearchResults = ListUtil.subList(
 			omniSearchResults, 0, OmniSearchConstants.MAX_ENTRIES_PER_SECTION);
+		_title = title;
 
 		_type = Type.SECTION;
 	}
