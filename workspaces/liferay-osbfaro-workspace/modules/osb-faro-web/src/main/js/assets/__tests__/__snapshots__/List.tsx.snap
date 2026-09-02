@@ -63,34 +63,13 @@ exports[`List rendering should match the snapshot 1`] = `
           class="d-flex justify-content-end w-100"
         >
           <div
-            class="mr-1"
-          >
-            <div
-              data-testid="download-csv"
-            >
-              <div
-                data-testid="download-csv-type"
-              >
-                asset
-              </div>
-              <div
-                data-testid="download-csv-range-selectors"
-              >
-                {"rangeEnd":null,"rangeKey":"30","rangeStart":null}
-              </div>
-              <button
-                data-testid="download-csv-call-get-fds-query"
-              >
-                Call getFDSQuery
-              </button>
-              <div
-                data-testid="download-csv-fds-query-result"
-              />
-            </div>
-          </div>
-          <div
             data-testid="dropdown-range-key"
           >
+            <span
+              data-testid="dropdown-range-key-bordered"
+            >
+              true
+            </span>
             <span
               data-testid="current-range-key"
             >
@@ -106,6 +85,36 @@ exports[`List rendering should match the snapshot 1`] = `
             >
               Change to Custom Range
             </button>
+          </div>
+          <span
+            class="align-self-stretch border-left mx-3"
+          />
+          <div
+            data-testid="download-csv"
+          >
+            <div
+              data-testid="download-csv-type"
+            >
+              asset
+            </div>
+            <div
+              data-testid="download-csv-bordered"
+            >
+              true
+            </div>
+            <div
+              data-testid="download-csv-range-selectors"
+            >
+              {"rangeEnd":null,"rangeKey":"30","rangeStart":null}
+            </div>
+            <button
+              data-testid="download-csv-call-get-fds-query"
+            >
+              Call getFDSQuery
+            </button>
+            <div
+              data-testid="download-csv-fds-query-result"
+            />
           </div>
         </div>
       </div>

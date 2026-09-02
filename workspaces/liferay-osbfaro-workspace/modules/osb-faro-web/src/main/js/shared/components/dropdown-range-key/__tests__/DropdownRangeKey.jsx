@@ -61,6 +61,48 @@ describe('DropdownRangeKey', () => {
 		expect(container).toMatchSnapshot();
 	});
 
+	it('should render a filter icon in the trigger button', async () => {
+		const {container} = render(
+			<WrapperComponent>
+				<DropdownRangeKey />
+			</WrapperComponent>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(
+			container.querySelector('.lexicon-icon-filter')
+		).toBeInTheDocument();
+	});
+
+	it('should render the trigger button borderless by default', async () => {
+		const {container} = render(
+			<WrapperComponent>
+				<DropdownRangeKey />
+			</WrapperComponent>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(container.querySelector('.button-root')).toHaveClass(
+			'btn-outline-borderless'
+		);
+	});
+
+	it('should render the trigger button bordered when the bordered prop is true', async () => {
+		const {container} = render(
+			<WrapperComponent>
+				<DropdownRangeKey bordered />
+			</WrapperComponent>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(container.querySelector('.button-root')).not.toHaveClass(
+			'btn-outline-borderless'
+		);
+	});
+
 	it('should display a message with retention period for 13 months on date picker', async () => {
 		const {getByTestId, getByText} = render(
 			<WrapperComponent>

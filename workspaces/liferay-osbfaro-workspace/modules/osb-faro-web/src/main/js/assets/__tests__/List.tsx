@@ -206,10 +206,12 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 
 jest.mock('shared/components/download-report/DownloadStaticCSVReport', () => ({
 	DownloadStaticCSVReport: ({
+		bordered,
 		getFDSQuery,
 		rangeSelectors,
 		type,
 	}: {
+		bordered?: boolean;
 		getFDSQuery?: () => {filter: string; query: string};
 		rangeSelectors?: any;
 		type?: string;
@@ -219,6 +221,10 @@ jest.mock('shared/components/download-report/DownloadStaticCSVReport', () => ({
 		return (
 			<div data-testid="download-csv">
 				<div data-testid="download-csv-type">{type}</div>
+
+				<div data-testid="download-csv-bordered">
+					{JSON.stringify(!!bordered)}
+				</div>
 
 				<div data-testid="download-csv-range-selectors">
 					{JSON.stringify(rangeSelectors ?? null)}
@@ -245,13 +251,19 @@ jest.mock('shared/components/download-report/DownloadStaticCSVReport', () => ({
 
 jest.mock('shared/components/dropdown-range-key/DropdownRangeKey', () => ({
 	DropdownRangeKey: ({
+		bordered,
 		onRangeSelectorChange,
 		rangeSelectors,
 	}: {
+		bordered?: boolean;
 		onRangeSelectorChange: (rs: any) => void;
 		rangeSelectors: any;
 	}) => (
 		<div data-testid="dropdown-range-key">
+			<span data-testid="dropdown-range-key-bordered">
+				{JSON.stringify(!!bordered)}
+			</span>
+
 			<span data-testid="current-range-key">
 				{rangeSelectors.rangeKey}
 			</span>
@@ -435,6 +447,31 @@ describe('List', () => {
 			expect(
 				screen.getByTestId('dropdown-range-key')
 			).toBeInTheDocument();
+		});
+
+		it('should render the DropdownRangeKey as bordered', () => {
+			renderList();
+
+			expect(
+				screen.getByTestId('dropdown-range-key-bordered')
+			).toHaveTextContent('true');
+		});
+
+		it('should render the DropdownRangeKey before the Download CSV button, separated by a divider', () => {
+			const {container} = renderList();
+
+			const dropdownRangeKey = screen.getByTestId('dropdown-range-key');
+			const downloadCSV = screen.getByTestId('download-csv');
+			const divider = container.querySelector(
+				'.align-self-stretch.border-left'
+			);
+
+			expect(divider).toBeInTheDocument();
+
+			expect(
+				dropdownRangeKey.compareDocumentPosition(downloadCSV) &
+					Node.DOCUMENT_POSITION_FOLLOWING
+			).toBeTruthy();
 		});
 
 		it('should match the snapshot', () => {
@@ -645,6 +682,14 @@ describe('List', () => {
 			expect(screen.getByTestId('download-csv-type')).toHaveTextContent(
 				'asset'
 			);
+		});
+
+		it('should render the Download CSV button as bordered', () => {
+			renderList();
+
+			expect(
+				screen.getByTestId('download-csv-bordered')
+			).toHaveTextContent('true');
 		});
 
 		it('should pass the current rangeSelectors to the Download CSV button', () => {
