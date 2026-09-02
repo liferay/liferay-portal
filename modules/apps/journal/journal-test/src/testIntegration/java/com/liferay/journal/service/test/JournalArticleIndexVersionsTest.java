@@ -12,6 +12,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalHelper;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.BaseIndexerPostProcessor;
 import com.liferay.portal.kernel.search.Document;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -183,49 +185,20 @@ public class JournalArticleIndexVersionsTest {
 			_group.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
-		JournalArticle updatedArticle = JournalTestUtil.updateArticle(
+		JournalArticle updatedArticle1 = JournalTestUtil.updateArticle(
 			article, article.getTitleMap(), article.getContent(), true, true,
 			ServiceContextTestUtil.getServiceContext());
 
-		updatedArticle = JournalTestUtil.updateArticle(
-			updatedArticle, updatedArticle.getTitleMap(),
-			updatedArticle.getContent(), true, true,
+		JournalArticle updatedArticle2 = JournalTestUtil.updateArticle(
+			updatedArticle1, updatedArticle1.getTitleMap(),
+			updatedArticle1.getContent(), true, true,
 			ServiceContextTestUtil.getServiceContext());
 
-		AtomicInteger postProcessDocumentCount = new AtomicInteger();
-
-		Bundle bundle = FrameworkUtil.getBundle(
-			JournalArticleIndexVersionsTest.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		Indexer<JournalArticle> indexer = _indexerRegistry.getIndexer(
-			JournalArticle.class);
-
-		ServiceRegistration<IndexerPostProcessor> serviceRegistration =
-			bundleContext.registerService(
-				IndexerPostProcessor.class,
-				new BaseIndexerPostProcessor() {
-
-					@Override
-					public void postProcessDocument(
-						Document document, Object object) {
-
-						postProcessDocumentCount.incrementAndGet();
-					}
-
-				},
-				MapUtil.singletonDictionary(
-					"indexer.class.name", indexer.getClassName()));
-
-		try {
-			JournalTestUtil.expireArticle(_group.getGroupId(), updatedArticle);
-		}
-		finally {
-			serviceRegistration.unregister();
-		}
-
-		Assert.assertEquals(3, postProcessDocumentCount.get());
+		Assert.assertEquals(
+			3,
+			_getPostProcessedDocumentCount(
+				() -> JournalTestUtil.expireArticle(
+					_group.getGroupId(), updatedArticle2)));
 	}
 
 	@Test
@@ -308,6 +281,37 @@ public class JournalArticleIndexVersionsTest {
 		assertSearchCount(1, true);
 	}
 
+	@Test
+	public void testUpdateArticleKeepsSingleHeadArticleVersion()
+		throws Exception {
+
+		_enableIndexAllArticleVersions();
+
+		JournalArticle article = _updateArticle(_VERSION_COUNT);
+
+		assertSearchArticle(
+			1,
+			_journalArticleLocalService.fetchLatestArticle(
+				article.getResourcePrimKey()));
+
+		assertSearchCount(_VERSION_COUNT, false);
+	}
+
+	@Test
+	public void testUpdateArticleReindexesConstantNumberOfArticleVersions()
+		throws Exception {
+
+		_enableIndexAllArticleVersions();
+
+		JournalArticle article1 = _updateArticle(
+			RandomTestUtil.randomInt(3, _VERSION_COUNT));
+		JournalArticle article2 = _updateArticle(2);
+
+		Assert.assertEquals(
+			_getPostProcessedDocumentCount(() -> _updateArticle(article2)),
+			_getPostProcessedDocumentCount(() -> _updateArticle(article1)));
+	}
+
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
@@ -369,6 +373,66 @@ public class JournalArticleIndexVersionsTest {
 		_updateJournalServiceConfiguration(true, true);
 	}
 
+	private int _getPostProcessedDocumentCount(
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		AtomicInteger postProcessedDocumentCount = new AtomicInteger();
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			JournalArticleIndexVersionsTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		Indexer<JournalArticle> indexer = _indexerRegistry.getIndexer(
+			JournalArticle.class);
+
+		ServiceRegistration<IndexerPostProcessor> serviceRegistration =
+			bundleContext.registerService(
+				IndexerPostProcessor.class,
+				new BaseIndexerPostProcessor() {
+
+					@Override
+					public void postProcessDocument(
+						Document document, Object object) {
+
+						postProcessedDocumentCount.incrementAndGet();
+					}
+
+				},
+				MapUtil.singletonDictionary(
+					"indexer.class.name", indexer.getClassName()));
+
+		try {
+			unsafeRunnable.run();
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		return postProcessedDocumentCount.get();
+	}
+
+	private JournalArticle _updateArticle(int versionCount) throws Exception {
+		JournalArticle article = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		for (int i = 1; i < versionCount; i++) {
+			article = _updateArticle(article);
+		}
+
+		return article;
+	}
+
+	private JournalArticle _updateArticle(JournalArticle article)
+		throws Exception {
+
+		return JournalTestUtil.updateArticle(
+			article, article.getTitleMap(), article.getContent(), true, true,
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	private void _updateJournalServiceConfiguration(
 			boolean expireAllArticleVersionsEnabled,
 			boolean indexAllArticleVersionsEnabled)
@@ -391,6 +455,8 @@ public class JournalArticleIndexVersionsTest {
 
 		modifiableSettings.store();
 	}
+
+	private static final int _VERSION_COUNT = 10;
 
 	@DeleteAfterTestRun
 	private Group _group;
