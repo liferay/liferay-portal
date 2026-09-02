@@ -6,9 +6,9 @@
 package com.liferay.product.navigation.omni.search;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -19,7 +19,9 @@ import java.util.List;
 public interface OmniSearchResultProvider {
 
 	public List<OmniSearchResult> getOmniSearchResults(
-			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
+			String keywords, LiferayPortletRequest liferayPortletRequest,
+			LiferayPortletResponse liferayPortletResponse,
+			ThemeDisplay themeDisplay)
 		throws PortalException;
 
 }

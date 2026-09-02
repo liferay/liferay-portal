@@ -11,10 +11,14 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.omni.search.OmniSearchResult;
 import com.liferay.product.navigation.omni.search.OmniSearchResultProvider;
@@ -22,8 +26,6 @@ import com.liferay.product.navigation.omni.search.web.internal.constants.Product
 
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +59,15 @@ public class OmniSearchResultsMVCResourceCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		if (!themeDisplay.isSignedIn() ||
+		LiferayPortletRequest liferayPortletRequest =
+			_portal.getLiferayPortletRequest(resourceRequest);
+
+		String keywords = ParamUtil.getString(
+			_portal.getOriginalServletRequest(
+				_portal.getHttpServletRequest(liferayPortletRequest)),
+			"keywords");
+
+		if (!themeDisplay.isSignedIn() || Validator.isBlank(keywords) ||
 			!FeatureFlagManagerUtil.isEnabled(
 				themeDisplay.getCompanyId(), "LPD-78171")) {
 
@@ -68,12 +78,10 @@ public class OmniSearchResultsMVCResourceCommand
 			return;
 		}
 
-		HttpServletRequest httpServletRequest =
-			_portal.getOriginalServletRequest(
-				_portal.getHttpServletRequest(
-					_portal.getLiferayPortletRequest(resourceRequest)));
-
 		List<OmniSearchResult> omniSearchResults = new ArrayList<>();
+
+		LiferayPortletResponse liferayPortletResponse =
+			_portal.getLiferayPortletResponse(resourceResponse);
 
 		for (OmniSearchResultProvider omniSearchResultProvider :
 				_omniSearchResultProviders) {
@@ -81,7 +89,8 @@ public class OmniSearchResultsMVCResourceCommand
 			try {
 				omniSearchResults.addAll(
 					omniSearchResultProvider.getOmniSearchResults(
-						httpServletRequest, themeDisplay));
+						keywords, liferayPortletRequest, liferayPortletResponse,
+						themeDisplay));
 			}
 			catch (Exception exception) {
 				_log.error(
