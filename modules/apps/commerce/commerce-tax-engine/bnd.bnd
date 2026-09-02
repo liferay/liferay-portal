@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Tax Engine
 Bundle-SymbolicName: com.liferay.commerce.tax.engine
-Bundle-Version: 1.0.40
+Bundle-Version: 1.0.41
 Web-ContextPath: /commerce-tax-engine
 -dsannotations-options: inherit
