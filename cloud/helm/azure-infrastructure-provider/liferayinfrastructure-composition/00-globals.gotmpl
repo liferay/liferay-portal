@@ -15,6 +15,7 @@
 {{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
 
 {{- $activeDataPlane := $targetActiveDataPlane -}}
+{{- $backupRetentionDays := max 7 (min 35 (int ($backup.retentionDays | default 30))) -}}
 {{- $dataPlanes := list $targetActiveDataPlane -}}
 {{- $overlayStorageAccountName := printf "%.9s%.6sovl%s" ($env.deploymentName | replace "-" "" | lower) ($projectId | replace "-" "" | lower) (printf "%s-%s" $env.deploymentName $projectId | sha256sum | trunc 6) -}}
 {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}

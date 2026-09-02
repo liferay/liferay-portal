@@ -4,7 +4,7 @@
 {{- $isWeekly := eq ($backup.frequency | default "Daily") "Weekly" -}}
 
 {{- $anchorDate := $isWeekly | ternary (index $anchorDates ($backup.dayOfWeek | default "Sunday")) "2024-01-01" -}}
-{{- $backupRetentionDuration := printf "P%dD" (int ($backup.retentionDays | default 30)) -}}
+{{- $backupRetentionDuration := printf "P%dD" $backupRetentionDays -}}
 {{- $backupVaultName := printf "%s-vault" $baseName -}}
 
 {{- $backupRepeatingTimeInterval := printf "R/%sT%s:00+00:00/%s" $anchorDate ($backup.timeOfDay | default "05:00") ($isWeekly | ternary "P1W" "P1D") -}}
