@@ -141,12 +141,18 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -362,7 +368,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-83090", "LPD-85565"})
+	@TestInfo({"LPD-83090", "LPD-85565", "LPD-104316"})
 	public void testPostSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
@@ -384,6 +390,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 		_testPostSitePageSpecificationPageExperiencePageElementWithFragmentPageElement();
 		_testPostSitePageSpecificationPageExperiencePageElementWithGridPageElement();
+		_testPostSitePageSpecificationPageExperiencePageElementWithNonexistentWidgetPermissionRole();
 		_testPostSitePageSpecificationPageExperiencePageElementWithWidgetPageElement();
 	}
 
@@ -2193,6 +2200,17 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			pageElementExternalReferenceCode);
 	}
 
+	private WidgetPermission _getWidgetPermission(
+		String[] actionIds, String roleName) {
+
+		WidgetPermission widgetPermission = new WidgetPermission();
+
+		widgetPermission.setActionIds(actionIds);
+		widgetPermission.setRoleName(roleName);
+
+		return widgetPermission;
+	}
+
 	private WidgetPermission[] _getWidgetPermissions() {
 		return TransformUtil.transformToArray(
 			ListUtil.fromArray(
@@ -2205,12 +2223,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 					return null;
 				}
 
-				WidgetPermission widgetPermission = new WidgetPermission();
-
-				widgetPermission.setActionIds(actionIds);
-				widgetPermission.setRoleName(roleName);
-
-				return widgetPermission;
+				return _getWidgetPermission(actionIds, roleName);
 			},
 			WidgetPermission.class);
 	}
@@ -2619,6 +2632,80 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		_assertStyledLayoutStructureItemBackgroundImage(
 			backgroundImageValue, journalArticle.getResourcePrimKey(),
 			journalArticle, pageElement.getExternalReferenceCode());
+	}
+
+	private void _testPostSitePageSpecificationPageExperiencePageElementWithNonexistentWidgetPermissionRole()
+		throws Exception {
+
+		String draftWidgetInstanceExternalReferenceCode =
+			RandomTestUtil.randomString();
+		String namespace = RandomTestUtil.randomString();
+
+		_addFragmentEntryLink(
+			draftWidgetInstanceExternalReferenceCode, namespace);
+
+		String roleName = RandomTestUtil.randomString();
+
+		Assert.assertNull(
+			_roleLocalService.fetchRole(
+				TestPropsValues.getCompanyId(), roleName));
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				testGroup.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
+				_layout.getPlid());
+
+		PageElement pageElement =
+			pageElementResource.
+				postSitePageSpecificationPageExperiencePageElement(
+					testGroup.getExternalReferenceCode(),
+					_draftLayout.getExternalReferenceCode(),
+					segmentsExperience.getExternalReferenceCode(),
+					_getWidgetPageElement(
+						null, null, draftWidgetInstanceExternalReferenceCode,
+						false, RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(), _getWidgetConfig(),
+						RandomTestUtil.randomString(), namespace,
+						JournalContentPortletKeys.JOURNAL_CONTENT,
+						new WidgetPermission[] {
+							_getWidgetPermission(
+								new String[] {ActionKeys.VIEW},
+								RoleConstants.GUEST),
+							_getWidgetPermission(
+								new String[] {ActionKeys.VIEW}, roleName)
+						}));
+
+		assertValid(pageElement);
+
+		WidgetInstancePageElementDefinition
+			widgetInstancePageElementDefinition =
+				(WidgetInstancePageElementDefinition)
+					pageElement.getPageElementDefinition();
+
+		WidgetInstance widgetInstance =
+			widgetInstancePageElementDefinition.getWidgetInstance();
+
+		WidgetPermission[] widgetPermissions =
+			widgetInstance.getWidgetPermissions();
+
+		Assert.assertEquals(
+			Arrays.toString(widgetPermissions), 1, widgetPermissions.length);
+		Assert.assertEquals(
+			RoleConstants.GUEST, widgetPermissions[0].getRoleName());
+
+		Role guestRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
+
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				TestPropsValues.getCompanyId(),
+				JournalContentPortletKeys.JOURNAL_CONTENT,
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				PortletPermissionUtil.getPrimaryKey(
+					_layout.getPlid(),
+					PortletIdCodec.encode(
+						JournalContentPortletKeys.JOURNAL_CONTENT, namespace)),
+				guestRole.getRoleId(), ActionKeys.VIEW));
 	}
 
 	private void _testPostSitePageSpecificationPageExperiencePageElementWithWidgetPageElement()
@@ -4696,6 +4783,12 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	private int _position;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
