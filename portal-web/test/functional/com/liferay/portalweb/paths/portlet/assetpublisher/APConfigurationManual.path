@@ -40,6 +40,21 @@
 	<td>//div[contains(@class,'modal-footer')]//button[contains(@class,'btn-cancel')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>ASSET_SELECTION_MANUAL_ITEM_SELECTOR_SEARCH_FIELD</td>
+	<td>//div[contains(@class,'modal-content')]//input[@type='search']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_SELECTION_MANUAL_ITEM_SELECTOR_RESULTS_INFO</td>
+	<td>//div[contains(@class,'modal-content')]//span[contains(text(),'Found for')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ASSET_SELECTION_MANUAL_ITEM_SELECTOR_SELECT_ALL_CHECKBOX</td>
+	<td>//div[contains(@class,'modal-content')]//label[.//input[@name='items-selector']]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

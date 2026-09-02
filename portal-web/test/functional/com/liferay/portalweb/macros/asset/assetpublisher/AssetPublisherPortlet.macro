@@ -466,24 +466,31 @@ definition {
 					Click(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ADD_BUTTON");
 
 					WaitForElementNotPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_MODAL");
+
+					Alert.viewSuccessMessage();
 				}
 			}
 
 			if (isSet(searchTerm)) {
-				Search.searchPG(
-					modal = "true",
-					portletName = "",
-					searchTerm = ${searchTerm});
+				Type(
+					locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_SEARCH_FIELD",
+					value1 = ${searchTerm});
+
+				KeyPress(
+					locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_SEARCH_FIELD",
+					value1 = "\RETURN");
 
 				AssertTextEquals(
-					locator1 = "Search#SEARCH_INFO",
+					locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_RESULTS_INFO",
 					value1 = ${searchInfo});
 
-				PortletEntry.selectAll();
+				Click(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_SELECT_ALL_CHECKBOX");
 
 				Click(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_ADD_BUTTON");
 
 				WaitForElementNotPresent(locator1 = "APConfigurationManual#ASSET_SELECTION_MANUAL_ITEM_SELECTOR_MODAL");
+
+				Alert.viewSuccessMessage();
 			}
 		}
 

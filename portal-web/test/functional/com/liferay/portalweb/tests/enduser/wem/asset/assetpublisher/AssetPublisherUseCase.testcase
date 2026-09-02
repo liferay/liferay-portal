@@ -785,7 +785,7 @@ definition {
 
 			AssetPublisherPortlet.configureManualAssetSelectionPG(
 				assetType = "Basic Web Content",
-				searchInfo = "3 Results Found for \"Web Content\"",
+				searchInfo = "3 Results Found for:",
 				searchTerm = "Web Content");
 		}
 
