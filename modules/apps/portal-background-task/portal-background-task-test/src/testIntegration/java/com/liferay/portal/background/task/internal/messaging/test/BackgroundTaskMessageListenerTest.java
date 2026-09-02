@@ -38,7 +38,7 @@ import org.osgi.framework.ServiceRegistration;
  * @author Vendel Töreki
  */
 @RunWith(Arquillian.class)
-public class BackgroundTaskErrorStackTraceTest {
+public class BackgroundTaskMessageListenerTest {
 
 	@ClassRule
 	@Rule
@@ -46,25 +46,7 @@ public class BackgroundTaskErrorStackTraceTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testGetErrorStackTrace() throws Exception {
-		BackgroundTask backgroundTask = _addFailedBackgroundTask();
-
-		String errorStackTrace = backgroundTask.getErrorStackTrace();
-
-		Assert.assertTrue(
-			errorStackTrace,
-			errorStackTrace.contains(IllegalStateException.class.getName()));
-		Assert.assertTrue(errorStackTrace, errorStackTrace.contains("\tat "));
-	}
-
-	@Test
-	public void testGetStatusMessage() throws Exception {
-		BackgroundTask backgroundTask = _addFailedBackgroundTask();
-
-		Assert.assertEquals(_STATUS_MESSAGE, backgroundTask.getStatusMessage());
-	}
-
-	private BackgroundTask _addFailedBackgroundTask() throws Exception {
+	public void testDoReceive() throws Exception {
 		_user = UserTestUtil.addUser();
 
 		BackgroundTaskExecutor backgroundTaskExecutor =
@@ -98,7 +80,7 @@ public class BackgroundTaskErrorStackTraceTest {
 			backgroundTaskExecutor.getClass();
 
 		Bundle bundle = FrameworkUtil.getBundle(
-			BackgroundTaskErrorStackTraceTest.class);
+			BackgroundTaskMessageListenerTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
@@ -116,7 +98,7 @@ public class BackgroundTaskErrorStackTraceTest {
 					_backgroundTaskManager.addBackgroundTask(
 						_user.getUserId(),
 						BackgroundTaskConstants.GROUP_ID_DEFAULT,
-						BackgroundTaskErrorStackTraceTest.class.getName(),
+						BackgroundTaskMessageListenerTest.class.getName(),
 						backgroundTaskExecutorClass.getName(), new HashMap<>(),
 						new ServiceContext()
 					).getBackgroundTaskId());
@@ -125,7 +107,17 @@ public class BackgroundTaskErrorStackTraceTest {
 				BackgroundTaskConstants.STATUS_FAILED,
 				backgroundTask.getStatus());
 
-			return backgroundTask;
+			String errorStackTrace = backgroundTask.getErrorStackTrace();
+
+			Assert.assertTrue(
+				errorStackTrace,
+				errorStackTrace.contains(
+					IllegalStateException.class.getName()));
+			Assert.assertTrue(
+				errorStackTrace, errorStackTrace.contains("\tat "));
+
+			Assert.assertEquals(
+				_STATUS_MESSAGE, backgroundTask.getStatusMessage());
 		}
 		finally {
 			serviceRegistration.unregister();
