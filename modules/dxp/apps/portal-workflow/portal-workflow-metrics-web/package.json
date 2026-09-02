@@ -63,5 +63,5 @@
 		"format": "node-scripts format",
 		"test": "RTL_SKIP_AUTO_CLEANUP=true node-scripts test"
 	},
-	"version": "3.0.118"
+	"version": "3.0.119"
 }
