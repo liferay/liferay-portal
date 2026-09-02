@@ -89,12 +89,6 @@ public class BatchTestClassGroupTestUtil {
 			modifiedFiles
 		).when(
 			portalGitWorkingDirectory
-		).getModifiedFilesList();
-
-		Mockito.doReturn(
-			modifiedFiles
-		).when(
-			portalGitWorkingDirectory
 		).getModifiedFilesList(
 			Mockito.anyBoolean(), Mockito.any(), Mockito.anyList()
 		);
@@ -190,8 +184,6 @@ public class BatchTestClassGroupTestUtil {
 					JenkinsResultsParserUtil.getGitWorkingDir(new File(".")),
 					repositoryName));
 
-		_workingDirectory = portalGitWorkingDirectory.getWorkingDirectory();
-
 		_portalTestClassJob = (PortalTestClassJob)JobFactory.newJob(
 			Job.BuildProfile.DXP, "test-portal-acceptance-pullrequest(master)",
 			null, portalGitWorkingDirectory, upstreamBranchName, null,
@@ -244,8 +236,7 @@ public class BatchTestClassGroupTestUtil {
 				portalGitWorkingDirectory
 			).getModifiedPoshiModules();
 
-			Mockito.doReturn(
-				_workingDirectory
+			Mockito.doCallRealMethod(
 			).when(
 				portalGitWorkingDirectory
 			).getWorkingDirectory();
@@ -276,6 +267,5 @@ public class BatchTestClassGroupTestUtil {
 	}
 
 	private static PortalTestClassJob _portalTestClassJob;
-	private static File _workingDirectory;
 
 }
