@@ -80,7 +80,7 @@ public class DispatchConfigurator {
 				"destination.name", destination.getName()
 			).build());
 
-		_addScheduledJobs();
+		_addScheduledJobs(false);
 	}
 
 	@Deactivate
@@ -95,7 +95,9 @@ public class DispatchConfigurator {
 		}
 	}
 
-	private void _addScheduledJobs() {
+	private void _addScheduledJobs(
+		boolean onlyMasterTokenTransitionDependentModes) {
+
 		for (DispatchTrigger dispatchTrigger :
 				_dispatchTriggerLocalService.getDispatchTriggers(true)) {
 
@@ -103,7 +105,17 @@ public class DispatchConfigurator {
 				DispatchTaskClusterMode.valueOf(
 					dispatchTrigger.getDispatchTaskClusterMode());
 
-			if (!_isSchedulable(dispatchTaskClusterMode)) {
+			boolean schedulable;
+
+			if (onlyMasterTokenTransitionDependentModes) {
+				schedulable = _isMasterTokenTransitionDependent(
+					dispatchTaskClusterMode);
+			}
+			else {
+				schedulable = _isSchedulable(dispatchTaskClusterMode);
+			}
+
+			if (!schedulable) {
 				continue;
 			}
 
@@ -137,15 +149,38 @@ public class DispatchConfigurator {
 		}
 	}
 
+	private boolean _isClusterMasterDependent(
+		DispatchTaskClusterMode dispatchTaskClusterMode) {
+
+		if ((dispatchTaskClusterMode ==
+				DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED) ||
+			(dispatchTaskClusterMode ==
+				DispatchTaskClusterMode.SINGLE_NODE_PERSISTED)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isMasterTokenTransitionDependent(
+		DispatchTaskClusterMode dispatchTaskClusterMode) {
+
+		if (dispatchTaskClusterMode ==
+				DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _isSchedulable(
 		DispatchTaskClusterMode dispatchTaskClusterMode) {
 
 		if ((dispatchTaskClusterMode == DispatchTaskClusterMode.ALL_NODES) ||
 			(_clusterMasterExecutor.isMaster() &&
-			 ((dispatchTaskClusterMode ==
-				 DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED) ||
-			  (dispatchTaskClusterMode ==
-				  DispatchTaskClusterMode.SINGLE_NODE_PERSISTED)))) {
+			 _isClusterMasterDependent(dispatchTaskClusterMode))) {
 
 			return true;
 		}
@@ -180,12 +215,11 @@ public class DispatchConfigurator {
 
 		@Override
 		protected void doMasterTokenAcquired() throws Exception {
-			_addScheduledJobs();
+			_addScheduledJobs(true);
 		}
 
 		@Override
 		protected void doMasterTokenReleased() throws Exception {
-			_addScheduledJobs();
 		}
 
 	}
