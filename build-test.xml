@@ -15127,22 +15127,6 @@ ANT_OPTS=${env.ANT_OPTS}</echo>
 			<param name="test.build.license.xml.zip.url" value="${test.license.xml.url}" />
 		</antcall>
 
-		<if>
-			<equals arg1="${downgrade.from.original.bundle}" arg2="true" />
-			<then>
-				<delete dir="${test.release.bundle.parent.dir}/bundles/data" />
-
-				<move
-					file="${test.release.bundle.parent.dir}/bundles-original/data"
-					tofile="${test.release.bundle.parent.dir}/bundles/data"
-				/>
-
-				<delete dir="${test.release.bundle.parent.dir}/bundles/data/elasticsearch8" />
-
-				<delete dir="${test.release.bundle.parent.dir}/bundles-original" />
-			</then>
-		</if>
-
 		<get-test-app-server-lib-portal-dir />
 
 		<antcall inheritAll="false" target="copy-optional-jars">
