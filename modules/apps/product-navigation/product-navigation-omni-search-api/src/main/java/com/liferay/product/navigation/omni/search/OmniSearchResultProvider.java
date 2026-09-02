@@ -16,7 +16,7 @@ import java.util.List;
  * @author Marcos Castro
  * @author Thiago Buarque
  */
-public interface OmniSearchProvider {
+public interface OmniSearchResultProvider {
 
 	public List<OmniSearchResult> getOmniSearchResults(
 			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)

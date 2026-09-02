@@ -16,8 +16,8 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.product.navigation.omni.search.OmniSearchProvider;
 import com.liferay.product.navigation.omni.search.OmniSearchResult;
+import com.liferay.product.navigation.omni.search.OmniSearchResultProvider;
 import com.liferay.product.navigation.omni.search.web.internal.constants.ProductNavigationOmniSearchPortletKeys;
 
 import jakarta.portlet.ResourceRequest;
@@ -75,10 +75,12 @@ public class OmniSearchResultsMVCResourceCommand
 
 		List<OmniSearchResult> omniSearchResults = new ArrayList<>();
 
-		for (OmniSearchProvider omniSearchProvider : _omniSearchProviders) {
+		for (OmniSearchResultProvider omniSearchResultProvider :
+				_omniSearchResultProviders) {
+
 			try {
 				omniSearchResults.addAll(
-					omniSearchProvider.getOmniSearchResults(
+					omniSearchResultProvider.getOmniSearchResults(
 						httpServletRequest, themeDisplay));
 			}
 			catch (Exception exception) {
@@ -121,7 +123,7 @@ public class OmniSearchResultsMVCResourceCommand
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY
 	)
-	private volatile List<OmniSearchProvider> _omniSearchProviders;
+	private volatile List<OmniSearchResultProvider> _omniSearchResultProviders;
 
 	@Reference
 	private Portal _portal;
