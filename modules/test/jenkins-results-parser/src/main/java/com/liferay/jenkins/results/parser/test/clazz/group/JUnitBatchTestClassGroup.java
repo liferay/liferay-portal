@@ -995,8 +995,6 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 							Path path,
 							BasicFileAttributes basicFileAttributes) {
 
-							_searchedFileCount++;
-
 							String pathString = path.toString();
 
 							if (pathString.endsWith(".java")) {
@@ -1142,7 +1140,6 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 	private static final AtomicBoolean _javaFilesLoaded = new AtomicBoolean();
 	private static final Set<File> _javaTestClassFiles =
 		ConcurrentHashMap.newKeySet();
-	private static int _searchedFileCount;
 
 	private final List<File> _autoBalanceTestFiles = new ArrayList<>();
 	private final Map<String, List<String>> _globTestClassMethodNamesMap =
