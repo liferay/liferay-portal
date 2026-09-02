@@ -23,7 +23,7 @@ Take the changed modules from the diff. A module qualifies when one of its chang
 ```bash
 MERGE_BASE=$(git merge-base HEAD master)
 
-git diff --name-only "${MERGE_BASE}...HEAD" -- modules
+git diff --name-only "${MERGE_BASE}...HEAD" -- ':/modules'
 ```
 
 Run each selected module's **full Jest suite**; do not select individual specs by name:
@@ -50,7 +50,7 @@ Sweep only when the addition changes what **other** modules resolve. A dependenc
 
 When it does apply, take each third party package the diff adds to the changed module's `dependencies`, use its npm scope, or the package name itself when it is unscoped, and run every module whose `jest-setup.config.js` or `jest-setup.config.ts` mocks anything in that scope rather than the added package itself, since the modules still missing it are exactly the ones the sweep is for. Do not cap this set. It is bounded in practice by how few modules carry a `jest-setup.config`, so report its size rather than assuming that holds.
 
-That file is the only stub list this sweep reads. A module can also stub through a `__mocks__` directory, through `moduleNameMapper` in its `package.json`, or through `setupFilesAfterEach`, and a stale list in any of those is invisible here.
+That file is the only stub list this sweep reads. A module can also stub through a `__mocks__` directory, through `moduleNameMapper` in its `package.json`, or through `setupFilesAfterEnv`, and a stale list in any of those is invisible here.
 
 **Oversized suites.** When a module's suite is large enough to blow the time budget, fall back to the specs under the module's `test` tree that name each changed source, plus every changed file in that tree, and note the reduced scope in the result. Match on the source's base name appearing in a spec path rather than on a `Foo.test.tsx` convention: this repository's `testMatch` is `${rootDir}/test/**/*.{js,ts,tsx}`, so specs look like `test/js/components/Answer.es.js` and carry no `.test.` infix, and searching for one selects nothing at all.
 

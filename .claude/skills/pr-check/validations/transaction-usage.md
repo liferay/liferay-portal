@@ -23,7 +23,7 @@ FINDINGS=$(
 	git diff --name-only "${MERGE_BASE}...HEAD" -- ':/*.java' \
 		| while IFS= read -r FILE
 	do
-		[ -f "${FILE}" ] || continue
+		[[ -f ${FILE} ]] || continue
 
 		if command grep \
 			--extended-regexp \
@@ -56,7 +56,7 @@ printf '%s' "${FINDINGS}"
 
 The `':/*.java'` pathspec is anchored to the repository root on purpose. Git resolves a bare `'*.java'` against the current directory, so running this from anywhere below the root selects no files at all and the check passes having scanned nothing.
 
-Use `[ ]` rather than `[[ ]]` and `while read` rather than a `for` over an unquoted substitution. `[[ ]]` is not POSIX and fails with `[[: not found` under dash, which is `/bin/sh` on many Linux hosts, and the team runs both macOS and Linux.
+Use `while read` rather than a `for` over an unquoted substitution, so a path holding whitespace stays one file rather than splitting into several.
 
 When `${FINDINGS}` is empty, the branch adds no new transaction usage, so the validation passes.
 

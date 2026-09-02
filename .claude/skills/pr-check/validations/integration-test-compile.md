@@ -18,7 +18,7 @@ Take the changed Java files from the diff:
 REPO_ROOT=$(git rev-parse --show-toplevel)
 MERGE_BASE=$(git merge-base HEAD master)
 
-git diff --name-only "${MERGE_BASE}...HEAD" -- 'modules/**/*.java'
+git diff --name-only "${MERGE_BASE}...HEAD" -- ':/modules/**/*.java'
 ```
 
 An affected module is one that holds `testIntegration` sources compiled against the change, which is almost never the module the diff changed. Liferay keeps integration tests in a sibling `-test` module, so `apps:blogs:blogs-api` is covered by `apps:blogs:blogs-test` rather than by itself. Scoping this to changed directories compiles `NO-SOURCE` and establishes nothing.
@@ -37,7 +37,8 @@ Convert each module directory to a Gradle project path by stripping `modules/` a
 ("${REPO_ROOT}/gradlew" \
 	--parallel \
 	--project-dir "${REPO_ROOT}/modules" \
-	:<path>:compileTestIntegrationJava --rerun)
+	:<path>:compileTestIntegrationJava \
+	--rerun)
 ```
 
 Keep `--rerun`, which is an option on the compile task and so follows the task path. Without it this validation reports a green log for a branch it never compiled. A warm tree prints `compileTestIntegrationJava UP-TO-DATE` against outputs older than the branch sources, and clearing the output directory alone only downgrades that to `FROM-CACHE`. Read the task line before the build result, and treat a `BUILD SUCCESSFUL` whose compile task did not execute as no evidence at all.

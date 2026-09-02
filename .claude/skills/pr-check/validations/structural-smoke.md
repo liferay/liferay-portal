@@ -53,8 +53,10 @@ Read the table's first column as basenames at any depth, except `portal-impl/src
 **Judge from the JUnit XML, never from the exit status.** `build.properties` sets `junit.halt.on.failure=false`, so `ant test-class` prints `BUILD SUCCESSFUL` and exits 0 with failing tests in the same run. The results land at `<project>/test-results/unit/TEST-<FQCN>.xml`, under `portal-impl` or `portal-kernel` to match the scanner:
 
 ```bash
-command grep --only-matching --extended-regexp \
-	'(tests|failures|errors)="[0-9]+"' \
+command grep \
+	--extended-regexp \
+	--only-matching \
+	--regexp='(tests|failures|errors)="[0-9]+"' \
 	"${REPO_ROOT}/portal-kernel/test-results/unit/TEST-com.liferay.portal.modules.ModulesStructureTest.xml"
 ```
 

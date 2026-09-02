@@ -18,7 +18,9 @@ A shared CSS change fans out to every theme. Select each module under `modules/a
 command grep --files-with-matches --include='package.json' --recursive '"liferayTheme"' \
 	"${REPO_ROOT}/modules/apps" \
 	| command grep --invert-match --regexp='/node_modules/' --regexp='/gradleTest/' \
-	| sed "s#/package.json##" | sed "s#${REPO_ROOT}/modules/##" | tr '/' ':'
+	| sed "s#/package.json##" \
+	| sed "s#${REPO_ROOT}/modules/##" \
+	| tr '/' ':'
 ```
 
 Run `packageRunBuild` (not `deploy`) per theme:

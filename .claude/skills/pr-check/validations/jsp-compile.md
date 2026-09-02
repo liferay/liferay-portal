@@ -19,7 +19,7 @@ Take the changed JSPs from the diff:
 ```bash
 MERGE_BASE=$(git merge-base HEAD master)
 
-git diff --name-only "${MERGE_BASE}...HEAD" -- 'modules/*.jsp' 'modules/*.jspf'
+git diff --name-only "${MERGE_BASE}...HEAD" -- ':/modules/*.jsp' ':/modules/*.jspf'
 ```
 
 Group them by their owning module (the nearest ancestor with a `bnd.bnd`), and convert each module directory to a Gradle project path by stripping `modules/` and replacing `/` with `:`.
