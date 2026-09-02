@@ -8,6 +8,7 @@ package com.liferay.portal.kernel.util;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.RandomizerBumper;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -325,6 +326,46 @@ public class StringUtilTest {
 		Assert.assertEquals("%PATH%", StringUtil.quote("PATH", '%'));
 		Assert.assertEquals(
 			"Hello World Hello", StringUtil.quote(" World ", "Hello"));
+	}
+
+	@Test
+	public void testRandomIdNeverReturnsNull() {
+		int[] offsets = {
+			_getOffset('n'), _getOffset('u'), _getOffset('l'), _getOffset('l'),
+			_getOffset('a'), _getOffset('b'), _getOffset('c'), _getOffset('d')
+		};
+		int[] index = new int[1];
+
+		Random random = new Random() {
+
+			@Override
+			public int nextInt(int bound) {
+				return offsets[index[0]++];
+			}
+
+		};
+
+		String randomId = ReflectionTestUtil.invoke(
+			StringUtil.class, "_randomId",
+			new Class<?>[] {int.class, Random.class}, 4, random);
+
+		Assert.assertEquals(randomId, "abcd", randomId);
+
+		Assert.assertEquals(String.valueOf(index[0]), 8, index[0]);
+
+		index[0] = 0;
+
+		randomId = ReflectionTestUtil.invoke(
+			StringUtil.class, "_randomId",
+			new Class<?>[] {int.class, Random.class}, 5, random);
+
+		Assert.assertEquals(randomId, "nulla", randomId);
+
+		Assert.assertEquals(String.valueOf(index[0]), 5, index[0]);
+
+		randomId = StringUtil.randomId(4);
+
+		Assert.assertEquals(randomId, 4, randomId.length());
 	}
 
 	@Test
@@ -1271,6 +1312,10 @@ public class StringUtilTest {
 			StringUtil.wildcardMatches(
 				s, wildcard, CharPool.UNDERLINE, CharPool.PERCENT,
 				CharPool.BACK_SLASH, true));
+	}
+
+	private int _getOffset(char c) {
+		return c - CharPool.LOWER_CASE_A;
 	}
 
 }
