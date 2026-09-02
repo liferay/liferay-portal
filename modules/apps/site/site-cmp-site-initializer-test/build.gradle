@@ -4,6 +4,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-test-util")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
+	testIntegrationImplementation project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
 	testIntegrationImplementation project(":apps:frontend-data-set:frontend-data-set-api")
 	testIntegrationImplementation project(":apps:frontend-data-set:frontend-data-set-test-util")
 	testIntegrationImplementation project(":apps:frontend-taglib:frontend-taglib-clay")
