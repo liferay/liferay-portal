@@ -14,12 +14,16 @@ import {IBaseFilterState} from '../types';
  * A connection that has taken over the filtering owns the whole
  * expression: the configured filters are then informative only, and the
  * consumer applies the ones it wants to obey.
+ *
+ * What says the filtering was taken over is the claim of its owner. A
+ * consumer that owns the filtering and has applied nothing filters by
+ * nothing, which is not the same as leaving the filtering to the data set.
  */
 export function getOdataFiltersStrings(
 	fdsState: IConnectedFDSState
 ): Array<string> {
-	if (fdsState.connectionFilters) {
-		return fdsState.connectionFilters
+	if (fdsState.filteringOwnerAppId) {
+		return (fdsState.connectionFilters ?? [])
 			.map(({odataFilterString}) => odataFilterString)
 			.filter(Boolean);
 	}

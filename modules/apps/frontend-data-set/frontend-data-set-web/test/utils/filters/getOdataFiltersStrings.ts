@@ -11,6 +11,8 @@ import {
 	IFDSState,
 } from '../../../src/main/resources/META-INF/resources/utils/types';
 
+const APP_ID = 'sampleCustomElement';
+
 const selectionFilter = (
 	id: string,
 	selectedItems: Array<{value: string}>,
@@ -50,6 +52,7 @@ describe('getOdataFiltersStrings', () => {
 				{id: 'status', odataFilterString: "status eq 'draft'"},
 				{id: 'author', odataFilterString: "author eq 'joe'"},
 			],
+			filteringOwnerAppId: APP_ID,
 			filters: [selectionFilter('status', [{value: 'approved'}])],
 			search: {query: ''},
 		};
@@ -66,6 +69,7 @@ describe('getOdataFiltersStrings', () => {
 				{id: 'status', odataFilterString: ''},
 				{id: 'author', odataFilterString: "author eq 'joe'"},
 			],
+			filteringOwnerAppId: APP_ID,
 			filters: [],
 			search: {query: ''},
 		};
@@ -76,6 +80,20 @@ describe('getOdataFiltersStrings', () => {
 	it('sends no filter when a connection owns an empty set', () => {
 		const fdsState: IConnectedFDSState = {
 			connectionFilters: [],
+			filteringOwnerAppId: APP_ID,
+			filters: [selectionFilter('status', [{value: 'approved'}])],
+			search: {query: ''},
+		};
+
+		expect(getOdataFiltersStrings(fdsState)).toEqual([]);
+	});
+
+	// The claim of the owner is what takes the configured filters out of the
+	// request, so a consumer that has applied nothing filters by nothing.
+
+	it('sends no filter when the connection that owns the filtering has applied none', () => {
+		const fdsState: IConnectedFDSState = {
+			filteringOwnerAppId: APP_ID,
 			filters: [selectionFilter('status', [{value: 'approved'}])],
 			search: {query: ''},
 		};

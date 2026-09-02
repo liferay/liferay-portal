@@ -384,23 +384,13 @@ const FrontendDataSetContent = ({
 	const [globalFDSState, setGlobalFDSState] =
 		useLiferayState<IFDSState>(memoizedAtom);
 
-	// A consumer that owns the filtering provides the filter UI itself: a
-	// dropdown and chips for filters that no longer reach the request would
-	// not tell the truth. The filters the data set declares stay in its
-	// state, so the consumer can read them and decide which ones to obey,
-	// and they come back the moment the connection releases the filtering.
-
-	const filteringDelegated = Boolean(
-		(globalFDSState as IConnectedFDSState).connectionFilters ||
-			globalFDSState.restoredConnectionState !== undefined
-	);
-
-	const {connectionFilters, connectionState} =
+	const {connectionFilters, connectionState, filteringOwnerAppId} =
 		globalFDSState as IConnectedFDSState;
 
 	const {getConnectionState, restored: connectionStateRestored} =
 		useRestoredConnectionState({
 			configInURLBehavior,
+			filteringOwnerAppId,
 			id,
 			onGiveUp: () => {
 				const unfrozenGlobalFDSState: IFDSState =
@@ -412,6 +402,21 @@ const FrontendDataSetContent = ({
 			},
 			restoredConnectionState: globalFDSState.restoredConnectionState,
 		});
+
+	// A consumer that owns the filtering provides the filter UI itself: a
+	// dropdown and chips for filters that no longer reach the request would
+	// not tell the truth. The filters the data set declares stay in its
+	// state, so the consumer can read them and decide which ones to obey,
+	// and they come back the moment the connection releases the filtering.
+	//
+	// What says so is the claim of the owner rather than the filters it
+	// applied, since it may own the filtering and filter by nothing. A data
+	// set still waiting for a connection to restore what the address carries
+	// counts as much: a dropdown put up for that moment is one taken away
+	// again as soon as the consumer connects.
+
+	const filteringDelegated =
+		Boolean(filteringOwnerAppId) || !connectionStateRestored;
 
 	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
 		useState(false);
@@ -832,7 +837,7 @@ const FrontendDataSetContent = ({
 		);
 
 		const shouldUpdateConnectionState =
-			connectionFilters &&
+			filteringOwnerAppId &&
 			(filteredByConnection ||
 				configInURL?.[EConfigInURLKeys.CONNECTION_STATE] !== undefined);
 
@@ -862,6 +867,7 @@ const FrontendDataSetContent = ({
 	}, [
 		connectionFilters,
 		connectionState,
+		filteringOwnerAppId,
 		globalFDSState,
 		globalFDSStateInitialized,
 		id,
@@ -1311,7 +1317,7 @@ const FrontendDataSetContent = ({
 		const urlConnectionState = getConnectionState();
 
 		const restoredConnectionState =
-			connectionFilters || urlConnectionState !== undefined
+			filteringOwnerAppId || urlConnectionState !== undefined
 				? urlConnectionState ?? null
 				: undefined;
 
@@ -1382,7 +1388,7 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
-		connectionFilters,
+		filteringOwnerAppId,
 		getActiveSorts,
 		getConnectionState,
 		getDelta,

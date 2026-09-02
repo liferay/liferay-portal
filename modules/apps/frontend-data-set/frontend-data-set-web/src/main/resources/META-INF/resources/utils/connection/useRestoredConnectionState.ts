@@ -32,11 +32,13 @@ const RESTORE_TIMEOUT = 10000;
  */
 export function useRestoredConnectionState({
 	configInURLBehavior,
+	filteringOwnerAppId,
 	id,
 	onGiveUp,
 	restoredConnectionState,
 }: {
 	configInURLBehavior: EConfigInURLBehavior;
+	filteringOwnerAppId: string | undefined;
 	id: string;
 	onGiveUp: () => void;
 	restoredConnectionState: unknown;
@@ -70,8 +72,33 @@ export function useRestoredConnectionState({
 		() => getConnectionState() === undefined
 	);
 
-	const offeredRef = useRef(false);
+	const restoreOfferedRef = useRef(false);
 	const onGiveUpRef = useRef(onGiveUp);
+
+	// What is offered is filed under the app id of the connection that left
+	// it, and a connection deletes its own key as soon as it has been handed
+	// what was under it. The key of the owner is therefore what this waits
+	// on, rather than the whole of what is offered: keys of other apps
+	// outlive the one restore that was ever going to happen.
+
+	const ownerRestorePending =
+		filteringOwnerAppId !== undefined &&
+		typeof restoredConnectionState === 'object' &&
+		restoredConnectionState !== null &&
+		filteringOwnerAppId in restoredConnectionState;
+
+	// Whether a restore for the owner was ever coming, which the address
+	// still says: the data set does not write the URL until this wait is
+	// over. It is what tells a restore that has happened from one that was
+	// never going to, since what is offered looks the same either way.
+
+	const urlConnectionState = getConnectionState();
+
+	const ownerRestoreExpected =
+		filteringOwnerAppId !== undefined &&
+		typeof urlConnectionState === 'object' &&
+		urlConnectionState !== null &&
+		filteringOwnerAppId in urlConnectionState;
 
 	// Kept in a ref, and out of the dependencies below, so that giving up
 	// stays a single timeout rather than one restarted by every render.
@@ -85,19 +112,45 @@ export function useRestoredConnectionState({
 			return;
 		}
 
-		// Waiting is over only once the value has been seen offered and then
-		// taken, which is the one order that means a consumer has it: the
-		// connection deletes what it was offered as soon as it has handed it
-		// over, and reading nothing before the offer has landed would say the
-		// same thing about a data set that has not offered anything yet.
+		// Nothing can be read into a restore that has not been offered yet:
+		// it looks exactly like one that has happened, and a data set that
+		// has offered nothing so far would say the same thing.
 
 		if (restoredConnectionState !== undefined) {
-			offeredRef.current = true;
+			restoreOfferedRef.current = true;
 		}
-		else if (offeredRef.current) {
-			setRestored(true);
 
-			return;
+		const restoreOffered =
+			restoreOfferedRef.current || restoredConnectionState !== undefined;
+
+		if (restoreOffered && !ownerRestorePending) {
+			if (ownerRestoreExpected || restoredConnectionState === undefined) {
+
+				// The key of the owner is gone from what the address says
+				// held it, which is the owner having been handed it. Nothing
+				// left on offer at all says as much, whether or not this has
+				// seen who the owner is.
+				//
+				// Keys of other apps stay on offer for whatever connects
+				// later: they were never this wait's to take, nor to drop.
+
+				setRestored(true);
+
+				return;
+			}
+
+			if (filteringOwnerAppId !== undefined) {
+
+				// The connection that owns the filtering is the only one the
+				// offer would ever be handed to, and the address holds no key
+				// of it: nobody is coming for what is left.
+
+				onGiveUpRef.current();
+
+				setRestored(true);
+
+				return;
+			}
 		}
 
 		// Nothing guarantees the consumer is still on the page: its widget
@@ -113,7 +166,13 @@ export function useRestoredConnectionState({
 		}, RESTORE_TIMEOUT);
 
 		return () => clearTimeout(timeoutId);
-	}, [restored, restoredConnectionState]);
+	}, [
+		filteringOwnerAppId,
+		ownerRestoreExpected,
+		ownerRestorePending,
+		restored,
+		restoredConnectionState,
+	]);
 
 	return {getConnectionState, restored};
 }
