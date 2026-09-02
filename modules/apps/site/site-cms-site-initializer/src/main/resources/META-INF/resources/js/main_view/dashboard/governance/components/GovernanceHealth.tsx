@@ -102,7 +102,7 @@ export function GovernanceHealth() {
 				{loadingStatistics ? (
 					<ClayLoadingIndicator size="sm" />
 				) : health ? (
-					<div className="align-items-baseline d-flex">
+					<div className="align-items-baseline d-flex mb-1">
 						<Text size={9} weight="bold">
 							{health.score}
 						</Text>
