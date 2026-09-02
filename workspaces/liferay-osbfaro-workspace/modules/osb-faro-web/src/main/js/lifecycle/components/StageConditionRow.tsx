@@ -2,7 +2,7 @@ import ClayDatePicker from '@clayui/date-picker';
 import getCN from 'classnames';
 import Label from '@clayui/label';
 import moment from 'moment';
-import PickerTriggerButton from 'lifecycle/components/PickerTriggerButton';
+import PickerTriggerButton from 'shared/components/PickerTriggerButton';
 import React, {useState} from 'react';
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
@@ -22,6 +22,9 @@ import {sub} from 'shared/util/lang';
 const selectPlaceholder = (label: string) =>
 	sub(Liferay.Language.get('select-x'), [label]) as string;
 
+const conditionLabel = (label: string, index: number) =>
+	sub(Liferay.Language.get('x-for-condition-x'), [label, index]) as string;
+
 const conditionOperatorType = (condition: IStageCondition) =>
 	resolveOperatorType(condition.fieldDataCategory, condition.fieldDataType);
 
@@ -34,6 +37,7 @@ const conditionOperatorOptions = (condition: IStageCondition) => {
 interface IStageConditionRowProps {
 	condition: IStageCondition;
 	fields?: ICatalogField[];
+	index: number;
 	onChange: (patch: Partial<IStageCondition>) => void;
 	onRemove?: () => void;
 }
@@ -41,6 +45,7 @@ interface IStageConditionRowProps {
 const StageConditionRow: React.FC<IStageConditionRowProps> = ({
 	condition,
 	fields = [],
+	index,
 	onChange,
 	onRemove,
 }) => {
@@ -62,8 +67,9 @@ const StageConditionRow: React.FC<IStageConditionRowProps> = ({
 
 		return (
 			<Picker
-				aria-label={selectPlaceholder(
-					Liferay.Language.get('attribute')
+				aria-label={conditionLabel(
+					selectPlaceholder(Liferay.Language.get('attribute')),
+					index
 				)}
 				as={PickerTriggerButton}
 				items={selectableFields
@@ -126,7 +132,10 @@ const StageConditionRow: React.FC<IStageConditionRowProps> = ({
 
 		return (
 			<Picker
-				aria-label={selectPlaceholder(Liferay.Language.get('operator'))}
+				aria-label={conditionLabel(
+					selectPlaceholder(Liferay.Language.get('operator')),
+					index
+				)}
 				as={PickerTriggerButton}
 				items={operatorOptions}
 				label={
@@ -159,6 +168,10 @@ const StageConditionRow: React.FC<IStageConditionRowProps> = ({
 
 			return (
 				<ClayDatePicker
+					aria-label={conditionLabel(
+						Liferay.Language.get('value'),
+						index
+					)}
 					className="form-control-sm"
 					dateFormat="yyyy-MM-dd"
 					expanded={dateExpanded}
@@ -186,7 +199,10 @@ const StageConditionRow: React.FC<IStageConditionRowProps> = ({
 
 		return (
 			<ClayInput
-				aria-label={Liferay.Language.get('value')}
+				aria-label={conditionLabel(
+					Liferay.Language.get('value'),
+					index
+				)}
 				className="w-auto"
 				onChange={(event) =>
 					onChange({conditionValue: event.target.value})
@@ -217,7 +233,10 @@ const StageConditionRow: React.FC<IStageConditionRowProps> = ({
 
 			{onRemove && (
 				<ClayButtonWithIcon
-					aria-label={Liferay.Language.get('remove')}
+					aria-label={conditionLabel(
+						Liferay.Language.get('remove'),
+						index
+					)}
 					borderless
 					className="ml-auto"
 					data-tooltip-align="top"

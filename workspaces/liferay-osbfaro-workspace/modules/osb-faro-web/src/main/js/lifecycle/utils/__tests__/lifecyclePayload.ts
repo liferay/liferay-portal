@@ -209,7 +209,7 @@ describe('buildStageFilter', () => {
 					},
 				])
 			)
-		).toBe("(industry eq 'Technology') and (annualRevenue gt 1000)");
+		).toBe("((industry eq 'Technology') and (annualRevenue gt 1000))");
 	});
 
 	it('joins several conditions with or when matching on any', () => {
@@ -233,7 +233,7 @@ describe('buildStageFilter', () => {
 					{matchLogic: MatchLogic.Any}
 				)
 			)
-		).toBe("(industry eq 'Technology') or (annualRevenue gt 1000)");
+		).toBe("((industry eq 'Technology') or (annualRevenue gt 1000))");
 	});
 
 	it('leaves out conditions that are not complete', () => {
@@ -247,6 +247,21 @@ describe('buildStageFilter', () => {
 						operator: 'is',
 					},
 					{field: 'annualRevenue', fieldDataCategory: 'Number'},
+				])
+			)
+		).toBe("(industry eq 'Technology')");
+	});
+
+	it('leaves a lone condition unwrapped', () => {
+		expect(
+			buildStageFilter(
+				buildStage([
+					{
+						conditionValue: 'Technology',
+						field: 'industry',
+						fieldDataCategory: 'Text',
+						operator: 'is',
+					},
 				])
 			)
 		).toBe("(industry eq 'Technology')");

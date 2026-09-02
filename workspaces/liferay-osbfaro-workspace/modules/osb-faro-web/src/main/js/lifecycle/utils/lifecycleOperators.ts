@@ -84,10 +84,29 @@ export const isConditionComplete = (condition: IStageCondition): boolean => {
 		return false;
 	}
 
-	return (
-		VALUELESS_OPERATORS.has(condition.operator) ||
-		!!condition.conditionValue
+	if (VALUELESS_OPERATORS.has(condition.operator)) {
+		return true;
+	}
+
+	const conditionValue = condition.conditionValue?.trim() ?? '';
+
+	if (!conditionValue) {
+		return false;
+	}
+
+	const operatorType = resolveOperatorType(
+		condition.fieldDataCategory,
+		condition.fieldDataType
 	);
+
+	if (
+		operatorType === OperatorType.Duration ||
+		operatorType === OperatorType.Number
+	) {
+		return Number.isFinite(Number(conditionValue));
+	}
+
+	return true;
 };
 
 export const isStageConfigured = (stage: IStageConfig): boolean =>

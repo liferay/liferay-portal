@@ -116,9 +116,13 @@ export const buildStageFilter = (stage: IStageConfig): string => {
 		.map(buildConditionFilter)
 		.filter(Boolean);
 
+	if (expressions.length < 2) {
+		return expressions[0] ?? '';
+	}
+
 	const separator = stage.matchLogic === MatchLogic.Any ? ' or ' : ' and ';
 
-	return expressions.join(separator);
+	return `(${expressions.join(separator)})`;
 };
 
 export const buildStageFilterMetadata = (stage: IStageConfig): string =>

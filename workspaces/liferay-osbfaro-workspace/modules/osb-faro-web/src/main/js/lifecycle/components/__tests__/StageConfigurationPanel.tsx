@@ -192,7 +192,7 @@ describe('StageConfigurationPanel', () => {
 		renderPanel({value: withCondition({field: 'account.industry'})});
 
 		expect(screen.getByText('Select Operator')).toBeInTheDocument();
-		expect(screen.queryByLabelText('Value')).toBeNull();
+		expect(screen.queryByLabelText(/value/i)).toBeNull();
 	});
 
 	it('shows a numeric value input for a number field operator', () => {
@@ -206,7 +206,7 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		expect(screen.getByText('greater than')).toBeInTheDocument();
-		expect(screen.getByLabelText('Value')).toHaveAttribute(
+		expect(screen.getByLabelText(/value/i)).toHaveAttribute(
 			'type',
 			'number'
 		);
@@ -224,7 +224,7 @@ describe('StageConfigurationPanel', () => {
 
 		expect(screen.getByText('is before')).toBeInTheDocument();
 		expect(screen.getByPlaceholderText('YYYY-MM-DD')).toBeInTheDocument();
-		expect(screen.queryByLabelText('Value')).toBeNull();
+		expect(screen.queryByLabelText(/value/i)).toBeNull();
 	});
 
 	const dateFieldValue = withCondition({
@@ -286,7 +286,7 @@ describe('StageConfigurationPanel', () => {
 		});
 
 		expect(screen.getByText('contains')).toBeInTheDocument();
-		expect(screen.getByLabelText('Value')).toHaveAttribute('type', 'text');
+		expect(screen.getByLabelText(/value/i)).toHaveAttribute('type', 'text');
 	});
 
 	it('updates the condition value when the value input changes', () => {
@@ -302,7 +302,7 @@ describe('StageConfigurationPanel', () => {
 			}),
 		});
 
-		fireEvent.change(screen.getByLabelText('Value'), {
+		fireEvent.change(screen.getByLabelText(/value/i), {
 			target: {value: '100'},
 		});
 
@@ -326,7 +326,7 @@ describe('StageConfigurationPanel', () => {
 			),
 		});
 
-		expect(screen.queryByLabelText('Value')).toBeNull();
+		expect(screen.queryByLabelText(/value/i)).toBeNull();
 		expect(screen.getByText('Configured')).toBeInTheDocument();
 	});
 
@@ -343,7 +343,7 @@ describe('StageConfigurationPanel', () => {
 			),
 		});
 
-		expect(screen.queryByLabelText('Value')).toBeNull();
+		expect(screen.queryByLabelText(/value/i)).toBeNull();
 		expect(screen.getByText('Configured')).toBeInTheDocument();
 	});
 
@@ -592,7 +592,7 @@ describe('StageConfigurationPanel', () => {
 			]),
 		});
 
-		fireEvent.change(screen.getAllByLabelText('Value')[1], {
+		fireEvent.change(screen.getAllByLabelText(/value/i)[1], {
 			target: {value: 'Energy'},
 		});
 

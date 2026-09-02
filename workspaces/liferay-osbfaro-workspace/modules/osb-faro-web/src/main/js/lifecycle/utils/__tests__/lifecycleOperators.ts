@@ -94,6 +94,45 @@ describe('isConditionComplete', () => {
 		);
 	});
 
+	it('rejects a numeric value the filter could not express', () => {
+		expect(
+			isConditionComplete(
+				buildCondition({
+					conditionValue: '1e999',
+					field: 'annualRevenue',
+					fieldDataCategory: 'Number',
+					operator: 'gt',
+				})
+			)
+		).toBe(false);
+	});
+
+	it('rejects a numeric value that is only whitespace', () => {
+		expect(
+			isConditionComplete(
+				buildCondition({
+					conditionValue: '   ',
+					field: 'annualRevenue',
+					fieldDataCategory: 'Number',
+					operator: 'gt',
+				})
+			)
+		).toBe(false);
+	});
+
+	it('accepts a numeric value the filter can express', () => {
+		expect(
+			isConditionComplete(
+				buildCondition({
+					conditionValue: '1000',
+					field: 'annualRevenue',
+					fieldDataCategory: 'Number',
+					operator: 'gt',
+				})
+			)
+		).toBe(true);
+	});
+
 	it('rejects a condition whose value is still missing', () => {
 		expect(
 			isConditionComplete(

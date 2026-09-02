@@ -5,7 +5,7 @@ import Panel from '@clayui/panel';
 import React from 'react';
 import StageConditionRow from 'lifecycle/components/StageConditionRow';
 import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
-import PickerTriggerButton from 'lifecycle/components/PickerTriggerButton';
+import PickerTriggerButton from 'shared/components/PickerTriggerButton';
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ICatalogField} from 'shared/api/catalog';
 import {Icon, Option, Picker, Text} from '@clayui/core';
@@ -134,7 +134,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 					{Liferay.Language.get('trigger')}
 				</div>
 
-				<div className="border mb-4 rounded">
+				<div className="border mb-4 overflow-hidden rounded">
 					<div className="align-items-center border-bottom c-gap-2 d-flex p-3 stage-configuration-panel__match text-secondary">
 						{sub(
 							Liferay.Language.get('x-of-these-criteria-are-met'),
@@ -176,7 +176,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 						{conditions.map((condition, conditionIndex) => (
 							<React.Fragment key={condition.key}>
 								{conditionIndex > 0 && (
-									<div className="font-weight-semi-bold my-2 small text-secondary text-uppercase">
+									<div className="font-weight-semi-bold my-2 text-secondary text-uppercase">
 										{connectorLabel}
 									</div>
 								)}
@@ -184,6 +184,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 								<StageConditionRow
 									condition={condition}
 									fields={fields}
+									index={conditionIndex + 1}
 									onChange={(patch) =>
 										updateCondition(conditionIndex, patch)
 									}
@@ -200,7 +201,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 						))}
 
 						<ClayButton
-							className="mt-3 text-dark"
+							className="mt-3"
 							displayType="secondary"
 							onClick={addCondition}
 							size="xs"

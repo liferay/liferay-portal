@@ -41,6 +41,7 @@ const renderRow = (
 		<StageConditionRow
 			condition={buildCondition()}
 			fields={mockFields}
+			index={1}
 			onChange={jest.fn()}
 			{...props}
 		/>
@@ -90,11 +91,17 @@ describe('StageConditionRow', () => {
 			onChange,
 		});
 
-		fireEvent.change(screen.getByLabelText('Value'), {
+		fireEvent.change(screen.getByLabelText(/value/i), {
 			target: {value: 'Retail'},
 		});
 
 		expect(onChange).toHaveBeenCalledWith({conditionValue: 'Retail'});
+	});
+
+	it('names its controls after the condition it edits', () => {
+		renderRow({index: 2});
+
+		expect(screen.getByLabelText(/condition 2/i)).toBeInTheDocument();
 	});
 
 	it('offers no remove control when it cannot be removed', () => {

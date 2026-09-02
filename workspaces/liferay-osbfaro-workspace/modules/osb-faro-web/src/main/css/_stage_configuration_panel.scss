@@ -1,7 +1,19 @@
 .stage-configuration-panel {
 	&__condition {
 		border: 0.0625rem solid $cadmin-secondary-l2;
-		border-left: 0.25rem solid $cadmin-indigo;
+		position: relative;
+
+		&::before {
+			background-color: $cadmin-indigo;
+			border-bottom-left-radius: inherit;
+			border-top-left-radius: inherit;
+			bottom: -0.0625rem;
+			content: '';
+			left: -0.0625rem;
+			position: absolute;
+			top: -0.0625rem;
+			width: 0.25rem;
+		}
 	}
 
 	&__match {
