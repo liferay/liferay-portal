@@ -5,6 +5,7 @@
 
 package com.liferay.portal.xmlrpc;
 
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.xmlrpc.Method;
@@ -23,7 +24,7 @@ import org.osgi.framework.ServiceRegistration;
 /**
  * @author Leon Chi
  */
-public class XmlRpcMethodUtilTest {
+public class XmlRpcServletTest {
 
 	@ClassRule
 	@Rule
@@ -31,7 +32,7 @@ public class XmlRpcMethodUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testNoReturn() {
+	public void testNoReturn() throws Exception {
 		Method xmlRpcMethod = (Method)ProxyUtil.newProxyInstance(
 			Method.class.getClassLoader(), new Class<?>[] {Method.class},
 			(proxy, method, args) -> {
@@ -52,8 +53,17 @@ public class XmlRpcMethodUtilTest {
 			bundleContext.registerService(Method.class, xmlRpcMethod, null);
 
 		try {
-			Assert.assertSame(
-				xmlRpcMethod, XmlRpcMethodUtil.getMethod(_TOKEN, _METHOD_NAME));
+			XmlRpcServlet xmlRpcServlet = new XmlRpcServlet();
+
+			java.lang.reflect.Method getMethod =
+				ReflectionUtil.getDeclaredMethod(
+					XmlRpcServlet.class, "_getMethod", String.class,
+					String.class);
+
+			Method actualMethod = (Method)getMethod.invoke(
+				xmlRpcServlet, _TOKEN, _METHOD_NAME);
+
+			Assert.assertSame(xmlRpcMethod, actualMethod);
 		}
 		finally {
 			serviceRegistration.unregister();
