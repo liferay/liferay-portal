@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.bean.BeanLocator;
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.internal.configuration.ConfigurationFactoryImpl;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -47,9 +48,11 @@ import java.io.InputStream;
 
 import java.lang.reflect.Field;
 
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import java.util.Enumeration;
 import java.util.List;
@@ -74,6 +77,18 @@ import org.springframework.jdbc.datasource.DelegatingDataSource;
 public class InitUtil {
 
 	public static void cleanUpJDBC(DataSource dataSource) {
+		if (DBManagerUtil.getDBType() == DBType.HYPERSONIC) {
+			try (Connection connection = dataSource.getConnection();
+
+				Statement statement = connection.createStatement()) {
+
+				statement.executeUpdate("SHUTDOWN");
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+			}
+		}
+
 		if (dataSource instanceof DelegatingDataSource) {
 			DelegatingDataSource delegatingDataSource =
 				(DelegatingDataSource)dataSource;

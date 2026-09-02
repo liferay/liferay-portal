@@ -19,9 +19,6 @@ import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
 import com.liferay.portal.kernel.concurrent.SystemExecutorServiceUtil;
-import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
-import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.db.UpgradeExecutorServiceUtil;
 import com.liferay.portal.kernel.deploy.auto.AutoDeployDir;
 import com.liferay.portal.kernel.deploy.hot.HotDeployUtil;
@@ -72,9 +69,6 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import java.sql.Connection;
-import java.sql.Statement;
 
 import java.util.List;
 import java.util.Map;
@@ -135,18 +129,6 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 		}
 		catch (Exception exception) {
 			_log.error(exception);
-		}
-
-		if (DBManagerUtil.getDBType() == DBType.HYPERSONIC) {
-			try (Connection connection = DataAccess.getConnection();
-
-				Statement statement = connection.createStatement()) {
-
-				statement.executeUpdate("SHUTDOWN");
-			}
-			catch (Exception exception) {
-				_log.error(exception);
-			}
 		}
 
 		DataSource dataSource = (DataSource)PortalBeanLocatorUtil.locate(
