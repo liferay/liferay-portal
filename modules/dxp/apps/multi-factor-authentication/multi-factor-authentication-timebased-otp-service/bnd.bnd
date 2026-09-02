@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Multi-Factor Authentication Time-based OTP Service
 Bundle-SymbolicName: com.liferay.multi.factor.authentication.timebased.otp.service
-Bundle-Version: 2.0.39
+Bundle-Version: 2.0.40
 Liferay-Require-SchemaVersion: 1.0.1
 Liferay-Service: true
 -dsannotations-options: inherit
