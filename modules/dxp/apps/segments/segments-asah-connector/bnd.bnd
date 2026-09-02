@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Segments Asah Connector
 Bundle-SymbolicName: com.liferay.segments.asah.connector
-Bundle-Version: 3.1.4
+Bundle-Version: 3.1.5
 Export-Package: com.liferay.segments.asah.connector.cache
 Web-ContextPath: /segments-asah-connector
 -fixupmessages "Classes found in the wrong directory"; restrict:=error; is:=ignore
