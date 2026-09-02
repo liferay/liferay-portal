@@ -44,29 +44,10 @@ public class CronSchedule {
 		}
 	}
 
-	/**
-	 * Returns the number of seconds spanned by the hash fields in this
-	 * schedule. Jenkins fires an <code>H</code> field at an arbitrary point in
-	 * its range, so a caller comparing a build against a deadline derived from
-	 * this schedule adds this span to its tolerance.
-	 *
-	 * @return the hash span in seconds, or <code>0</code> when the schedule
-	 *         names no hash field
-	 */
 	public long getHashSpanSeconds() {
 		return _hashSpanSeconds;
 	}
 
-	/**
-	 * Returns the number of seconds between the two most recent fires at or
-	 * before the given time. A caller scales its tolerance to this, so that a
-	 * job keeps the same allowance whether its schedule is expressed as a
-	 * cadence or as a cron spec.
-	 *
-	 * @param  currentTimeMillis the time to measure back from
-	 * @return the period in seconds, or <code>-1</code> when the schedule does
-	 *         not come round twice within the search window
-	 */
 	public long getPeriodSeconds(long currentTimeMillis) {
 		long previousFireTimestamp = getPreviousFireTimestamp(
 			currentTimeMillis);
