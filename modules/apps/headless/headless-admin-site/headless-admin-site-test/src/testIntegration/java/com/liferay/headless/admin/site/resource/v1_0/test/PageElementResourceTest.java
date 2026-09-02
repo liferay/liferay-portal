@@ -1096,10 +1096,13 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 		collectionDisplayPageElementDefinition.setCollectionDisplayViewports(
 			() -> collectionDisplayViewports);
 		collectionDisplayPageElementDefinition.setCollectionSettings(
-			() -> new CollectionSettings() {
-				{
-					setCollectionReference(() -> collectionReference);
-				}
+			() -> {
+				CollectionSettings collectionSettings =
+					new CollectionSettings();
+
+				collectionSettings.setCollectionReference(collectionReference);
+
+				return collectionSettings;
 			});
 		collectionDisplayPageElementDefinition.setDisplayAllItems(
 			() -> displayAllItems);

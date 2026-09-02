@@ -592,12 +592,12 @@ public class FragmentConfigurationFieldValueTestUtil {
 		String href = GetterUtil.getString(map.get("href"), null);
 
 		if (href != null) {
-			return new HrefURLValue() {
-				{
-					setHref(() -> href);
-					setUrlType(() -> UrlType.HREF);
-				}
-			};
+			HrefURLValue hrefURLValue = new HrefURLValue();
+
+			hrefURLValue.setHref(href);
+			hrefURLValue.setUrlType(URLValue.UrlType.HREF);
+
+			return hrefURLValue;
 		}
 
 		ItemExternalReference itemExternalReference =
