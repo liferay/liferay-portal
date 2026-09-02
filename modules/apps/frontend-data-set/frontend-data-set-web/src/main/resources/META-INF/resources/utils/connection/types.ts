@@ -43,4 +43,23 @@ export interface IConnectedFDSState extends IFDSState {
 	 * now still says what it says once several consumers can share it.
 	 */
 	connectionState?: Readonly<Record<string, unknown>>;
+
+	/**
+	 * The app id of the connection that owns the filtering, written by the
+	 * connection as it takes the filtering over and absent while no
+	 * connection drives it.
+	 *
+	 * The data set is the side that keeps `connectionState` in the URL and
+	 * offers it back on the next visit, and it is filed under the app id of
+	 * the connection that left it. This is how the data set knows whose that
+	 * is: which key of what the URL carries a connection is going to claim,
+	 * and whether anyone is coming for it at all.
+	 *
+	 * `connectionFilters` does not answer that: a consumer may own the
+	 * filtering and filter by nothing, and the filters it applied may
+	 * outlive the connection that applied them. Being in the state rather
+	 * than in the module also puts it within reach of a second copy of this
+	 * module on the page, which cannot see the owners the first one keeps.
+	 */
+	filteringOwnerAppId?: string;
 }

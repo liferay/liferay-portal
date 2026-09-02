@@ -32,6 +32,8 @@ const DECLARED_FILTERS = [
 	},
 ];
 
+const OTHER_FDS_NAME = 'otherTestDataSet';
+
 const CONNECTION_ID = 'sampleCustomElement';
 
 const OTHER_CONNECTION_ID = 'otherCustomElement';
@@ -52,7 +54,14 @@ describe('FDSConnection filters', () => {
 	let onStatus: jest.Mock;
 	let openToast: jest.Mock;
 
-	const readState = () => State.read(atom as never) as unknown as FDSState;
+	const createFDSAtom = (fdsName: string) =>
+		State.atom(`${fdsName}_fdsState`, {
+			filters: DECLARED_FILTERS,
+			search: {query: ''},
+		}) as never as Liferay.State.Atom<FDSState>;
+
+	const readState = (fdsAtom: Liferay.State.Atom<FDSState> = atom) =>
+		State.read(fdsAtom as never) as unknown as FDSState;
 
 	const offerRestoredConnectionState = (
 		restoredConnectionState: Record<string, unknown> | null
@@ -119,10 +128,7 @@ describe('FDSConnection filters', () => {
 
 		(Liferay.on as jest.Mock).mockReturnValue({detach: jest.fn()});
 
-		atom = State.atom(`${FDS_NAME}_fdsState`, {
-			filters: DECLARED_FILTERS,
-			search: {query: ''},
-		}) as never;
+		atom = createFDSAtom(FDS_NAME);
 
 		connections = [];
 		onRestore = jest.fn();
@@ -166,7 +172,9 @@ describe('FDSConnection filters', () => {
 	it('takes the filtering over as soon as a consumer that owns it connects', async () => {
 		await connectOwningFilters();
 
-		expect(readState().connectionFilters).toEqual([]);
+		expect(readState().filteringOwnerAppId).toBe(CONNECTION_ID);
+
+		expect(readState().connectionFilters).toBeUndefined();
 	});
 
 	it('leaves the filtering to the data set when a consumer only owns the search', async () => {
@@ -321,6 +329,64 @@ describe('FDSConnection filters', () => {
 		]);
 
 		expect(readState().connectionState).toBeUndefined();
+	});
+
+	// The state of the data set holds one key per connection and the data set
+	// writes the URL from the whole map, so what another connection asked to
+	// have remembered survives this one filtering.
+
+	it('keeps the state of other connections when a consumer remembers its own', async () => {
+		await connectOwningFilters();
+
+		const otherConnectionState = {selections: {size: ['Big']}};
+
+		State.write(
+			atom as never,
+			{
+				...readState(),
+				connectionState: {[OTHER_CONNECTION_ID]: otherConnectionState},
+			} as never
+		);
+
+		connection.setFilters(
+			[{id: 'color', odataFilterString: "color in ('Blue')"}],
+			{selections: {color: ['Blue']}}
+		);
+
+		expect(readState().connectionState).toEqual({
+			[CONNECTION_ID]: {selections: {color: ['Blue']}},
+			[OTHER_CONNECTION_ID]: otherConnectionState,
+		});
+	});
+
+	it('takes only its own state out when a consumer filters without remembering anything', async () => {
+		await connectOwningFilters();
+
+		const otherConnectionState = {selections: {size: ['Big']}};
+
+		connection.setFilters(
+			[{id: 'color', odataFilterString: "color in ('Blue')"}],
+			{selections: {color: ['Blue']}}
+		);
+
+		State.write(
+			atom as never,
+			{
+				...readState(),
+				connectionState: {
+					...readState().connectionState,
+					[OTHER_CONNECTION_ID]: otherConnectionState,
+				},
+			} as never
+		);
+
+		connection.setFilters([
+			{id: 'color', odataFilterString: "color in ('Green')"},
+		]);
+
+		expect(readState().connectionState).toEqual({
+			[OTHER_CONNECTION_ID]: otherConnectionState,
+		});
 	});
 
 	it('hands the state the data set restored to the consumer', async () => {
@@ -525,7 +591,7 @@ describe('FDSConnection filters', () => {
 			{id: 'other', odataFilterString: "author eq 'joe'"},
 		]);
 
-		expect(readState().connectionFilters).toEqual([]);
+		expect(readState().connectionFilters).toBeUndefined();
 
 		expect(console.warn).toHaveBeenCalledWith(
 			expect.anything(),
@@ -542,7 +608,7 @@ describe('FDSConnection filters', () => {
 
 		secondConnection.disconnect();
 
-		expect(readState().connectionFilters).toEqual([]);
+		expect(readState().filteringOwnerAppId).toBe(CONNECTION_ID);
 	});
 
 	it('leaves the state the data set restores to the consumer that owns the filtering', async () => {
@@ -686,6 +752,165 @@ describe('FDSConnection filters', () => {
 			expect.objectContaining({status: 'ready'})
 		);
 
-		expect(readState().connectionFilters).toEqual([]);
+		expect(readState().filteringOwnerAppId).toBe(OTHER_CONNECTION_ID);
+	});
+
+	// What says the filtering is owned is the claim of its owner, not the
+	// filters it applies: a consumer may own the filtering and filter by
+	// nothing, and the filters it applied may outlive its connection.
+
+	it('says which app owns the filtering in the state of the data set, and stops saying it once that app is gone', async () => {
+		await connectOwningFilters();
+
+		expect(readState().filteringOwnerAppId).toBe(CONNECTION_ID);
+
+		connection.disconnect();
+
+		expect(readState().filteringOwnerAppId).toBeUndefined();
+	});
+
+	// Another copy of this module on the page keeps its own owners out of
+	// reach, so what a connection of this one goes by is the claim in the
+	// state of the data set.
+
+	it('refuses the filtering to a consumer when the state of the data set says another app owns it', async () => {
+		State.write(
+			atom as never,
+			{...readState(), filteringOwnerAppId: OTHER_CONNECTION_ID} as never
+		);
+
+		await connect(
+			{appId: CONNECTION_ID, owns: ['filters', 'search']},
+			undefined,
+			onStatus,
+			'refused'
+		);
+
+		expect(onStatus).toHaveBeenCalledWith(
+			expect.objectContaining({status: 'refused'})
+		);
+	});
+
+	// Filters left behind are not the new owner's, so taking the filtering
+	// over drops them rather than leaving the data set filtered by a
+	// connection that no longer owns it.
+
+	it('grants the filtering to a consumer when the state of the data set carries filters that no owner claims, and drops them', async () => {
+		State.write(
+			atom as never,
+			{
+				...readState(),
+				connectionFilters: [
+					{id: 'stale', odataFilterString: "color eq 'Blue'"},
+				],
+			} as never
+		);
+
+		await connectOwningFilters();
+
+		expect(readState().connectionFilters).toBeUndefined();
+	});
+
+	// What is granted is the filtering of one data set, so an app that
+	// filters two of them is not asking twice for the same thing.
+
+	it('grants one app the filtering of two data sets', async () => {
+		const otherFDSAtom = createFDSAtom(OTHER_FDS_NAME);
+		const onOtherFDSStatus = jest.fn();
+
+		await connectOwningFilters();
+
+		const otherFDSConnection = new FDSConnection(
+			OTHER_FDS_NAME,
+			{search: onSearch},
+			onOtherFDSStatus,
+			{appId: CONNECTION_ID, owns: ['filters', 'search']}
+		);
+
+		connections.push(otherFDSConnection);
+
+		await waitFor(() =>
+			expect(onOtherFDSStatus).toHaveBeenCalledWith(
+				expect.objectContaining({status: 'ready'})
+			)
+		);
+
+		otherFDSConnection.setFilters([
+			{id: 'other', odataFilterString: "author eq 'joe'"},
+		]);
+
+		expect(readState(otherFDSAtom).connectionFilters).toEqual([
+			{id: 'other', odataFilterString: "author eq 'joe'"},
+		]);
+
+		expect(readState().filteringOwnerAppId).toBe(CONNECTION_ID);
+
+		expect(readState().connectionFilters).toBeUndefined();
+	});
+
+	// A client extension is a custom element and may be taken off the page
+	// without disconnecting. Its element leaving is the only account of that
+	// the data set gets, and without it the filtering would stay taken by a
+	// connection nobody can reach until the next reload.
+
+	it('grants the filtering to a consumer that connects once the element of the owner has left the page', async () => {
+		const element = document.createElement('div');
+
+		document.body.appendChild(element);
+
+		await connect({
+			appId: CONNECTION_ID,
+			element,
+			owns: ['filters', 'search'],
+		});
+
+		element.remove();
+
+		const {onSecondStatus} = await connectSecondOwningFilters('ready');
+
+		expect(onSecondStatus).toHaveBeenCalledWith(
+			expect.objectContaining({status: 'ready'})
+		);
+	});
+
+	it('tells the consumer whose element left the page that its connection is gone', async () => {
+		const element = document.createElement('div');
+
+		document.body.appendChild(element);
+
+		await connect({
+			appId: CONNECTION_ID,
+			element,
+			owns: ['filters', 'search'],
+		});
+
+		element.remove();
+
+		await connectSecondOwningFilters('ready');
+
+		expect(onStatus).toHaveBeenCalledWith(
+			expect.objectContaining({status: 'disconnected'})
+		);
+	});
+
+	// Two copies of one client extension on the page, which is what an
+	// element still in the document tells apart from a stale claim.
+
+	it('refuses the filtering to a second consumer while the element of the owner is still on the page', async () => {
+		const element = document.createElement('div');
+
+		document.body.appendChild(element);
+
+		await connect({
+			appId: CONNECTION_ID,
+			element,
+			owns: ['filters', 'search'],
+		});
+
+		const {onSecondStatus} = await connectSecondOwningFilters();
+
+		expect(onSecondStatus).toHaveBeenCalledWith(
+			expect.objectContaining({status: 'refused'})
+		);
 	});
 });
