@@ -448,6 +448,15 @@ public class DBUpgrader {
 				}
 			}
 
+			if (FeatureFlagManagerUtil.isEnabled("LPS-157670")) {
+				checkRequiredBuildNumber(
+					ReleaseInfo.RELEASE_6_1_0_BUILD_NUMBER);
+			}
+			else {
+				checkRequiredBuildNumber(
+					ReleaseInfo.RELEASE_6_2_0_BUILD_NUMBER);
+			}
+
 			if (PropsValues.UPGRADE_DATABASE_PREUPGRADE_DATA_CLEANUP_ENABLED) {
 				DataCleanupPreupgradeProcessSuite
 					dataCleanupPreupgradeProcessSuite =
@@ -467,15 +476,6 @@ public class DBUpgrader {
 
 					throw exception;
 				}
-			}
-
-			if (FeatureFlagManagerUtil.isEnabled("LPS-157670")) {
-				checkRequiredBuildNumber(
-					ReleaseInfo.RELEASE_6_1_0_BUILD_NUMBER);
-			}
-			else {
-				checkRequiredBuildNumber(
-					ReleaseInfo.RELEASE_6_2_0_BUILD_NUMBER);
 			}
 
 			checkReleaseState();
