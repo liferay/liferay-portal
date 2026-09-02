@@ -5,7 +5,8 @@
 
 package com.liferay.portal.xmlrpc;
 
-import com.liferay.petra.string.StringBundler;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -29,13 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Alexander Chow
@@ -142,64 +137,31 @@ public class XmlRpcServlet extends HttpServlet {
 	}
 
 	private Method _getMethod(String token, String methodName) {
-		return _methodRegistry.get(_getRegistryKey(token, methodName));
+		return _serviceTrackerMap.getService(
+			_getRegistryKey(token, methodName));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(XmlRpcServlet.class);
 
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
-	private static final Map<String, Method> _methodRegistry =
-		new ConcurrentHashMap<>();
-	private static final ServiceTracker<Method, Method> _serviceTracker;
+	private static final ServiceTrackerMap<String, Method> _serviceTrackerMap =
+		ServiceTrackerMapFactory.openSingleValueMap(
+			SystemBundleUtil.getBundleContext(), Method.class, null,
+			(serviceReference, emitter) -> {
+				BundleContext bundleContext =
+					SystemBundleUtil.getBundleContext();
 
-	private static class MethodServiceTrackerCustomizer
-		implements ServiceTrackerCustomizer<Method, Method> {
+				Method method = bundleContext.getService(serviceReference);
 
-		@Override
-		public Method addingService(ServiceReference<Method> serviceReference) {
-			Method method = _bundleContext.getService(serviceReference);
-
-			String token = method.getToken();
-			String methodName = method.getMethodName();
-
-			Method registeredMethod = _methodRegistry.putIfAbsent(
-				_getRegistryKey(token, methodName), method);
-
-			if ((registeredMethod != null) && _log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"There is already an XML-RPC method registered with ",
-						"name ", methodName, " at ", token));
-			}
-
-			return method;
-		}
-
-		@Override
-		public void modifiedService(
-			ServiceReference<Method> serviceReference, Method method) {
-		}
-
-		@Override
-		public void removedService(
-			ServiceReference<Method> serviceReference, Method method) {
-
-			_bundleContext.ungetService(serviceReference);
-
-			_methodRegistry.remove(
-				_getRegistryKey(method.getToken(), method.getMethodName()),
-				method);
-		}
-
-	}
-
-	static {
-		_serviceTracker = new ServiceTracker<>(
-			_bundleContext, Method.class,
-			new XmlRpcServlet.MethodServiceTrackerCustomizer());
-
-		_serviceTracker.open();
-	}
+				if (method != null) {
+					try {
+						emitter.emit(
+							_getRegistryKey(
+								method.getToken(), method.getMethodName()));
+					}
+					finally {
+						bundleContext.ungetService(serviceReference);
+					}
+				}
+			});
 
 }
