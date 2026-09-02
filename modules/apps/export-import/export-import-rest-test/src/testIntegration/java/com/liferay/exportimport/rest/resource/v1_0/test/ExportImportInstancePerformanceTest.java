@@ -255,7 +255,6 @@ public class ExportImportInstancePerformanceTest {
 			new RequestPortletDataHandler();
 
 		requestPortletDataHandler.setName(previewPortletDataHandler.getName());
-
 		requestPortletDataHandler.setRequestPortletDataHandlerControls(
 			_toRequestPortletDataHandlerControls(
 				previewPortletDataHandler.
