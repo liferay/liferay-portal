@@ -412,6 +412,34 @@ public class LayoutPageTemplateEntryServiceUtil {
 			groupId, name, types, start, end, orderByComparator);
 	}
 
+	public static List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status) {
+
+		return getService().getLayoutPageTemplateEntries(
+			groupIds, classNameId, classTypeKey, type, status);
+	}
+
+	public static List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
+
+		return getService().getLayoutPageTemplateEntries(
+			groupIds, classNameId, classTypeKey, type, status, start, end,
+			orderByComparator);
+	}
+
+	public static List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
+		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
+
+		return getService().getLayoutPageTemplateEntries(
+			groupIds, classNameId, classTypeKey, name, type, status, start, end,
+			orderByComparator);
+	}
+
 	public static List<LayoutPageTemplateEntry>
 		getLayoutPageTemplateEntriesByType(
 			long groupId, long layoutPageTemplateCollectionId, int type,
@@ -537,6 +565,22 @@ public class LayoutPageTemplateEntryServiceUtil {
 			groupId, name, types, status);
 	}
 
+	public static int getLayoutPageTemplateEntriesCount(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status) {
+
+		return getService().getLayoutPageTemplateEntriesCount(
+			groupIds, classNameId, classTypeKey, type, status);
+	}
+
+	public static int getLayoutPageTemplateEntriesCount(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status) {
+
+		return getService().getLayoutPageTemplateEntriesCount(
+			groupIds, classNameId, classTypeKey, name, type, status);
+	}
+
 	public static int getLayoutPageTemplateEntriesCountByType(
 		long groupId, long layoutPageTemplateCollectionId, int type) {
 
@@ -637,4 +681,4 @@ public class LayoutPageTemplateEntryServiceUtil {
 			LayoutPageTemplateEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1008902933
+// LIFERAY-SERVICE-BUILDER-HASH:322937130

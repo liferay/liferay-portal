@@ -476,6 +476,39 @@ public class LayoutPageTemplateEntryServiceWrapper
 	}
 
 	@Override
+	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status) {
+
+		return _layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+			groupIds, classNameId, classTypeKey, type, status);
+	}
+
+	@Override
+	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator) {
+
+		return _layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+			groupIds, classNameId, classTypeKey, type, status, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public java.util.List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<LayoutPageTemplateEntry> orderByComparator) {
+
+		return _layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
+			groupIds, classNameId, classTypeKey, name, type, status, start, end,
+			orderByComparator);
+	}
+
+	@Override
 	public java.util.List<LayoutPageTemplateEntry>
 		getLayoutPageTemplateEntriesByType(
 			long groupId, long layoutPageTemplateCollectionId, int type,
@@ -626,6 +659,26 @@ public class LayoutPageTemplateEntryServiceWrapper
 	}
 
 	@Override
+	public int getLayoutPageTemplateEntriesCount(
+		long[] groupIds, long classNameId, String classTypeKey, int type,
+		int status) {
+
+		return _layoutPageTemplateEntryService.
+			getLayoutPageTemplateEntriesCount(
+				groupIds, classNameId, classTypeKey, type, status);
+	}
+
+	@Override
+	public int getLayoutPageTemplateEntriesCount(
+		long[] groupIds, long classNameId, String classTypeKey, String name,
+		int type, int status) {
+
+		return _layoutPageTemplateEntryService.
+			getLayoutPageTemplateEntriesCount(
+				groupIds, classNameId, classTypeKey, name, type, status);
+	}
+
+	@Override
 	public int getLayoutPageTemplateEntriesCountByType(
 		long groupId, long layoutPageTemplateCollectionId, int type) {
 
@@ -744,4 +797,4 @@ public class LayoutPageTemplateEntryServiceWrapper
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1502575075
+// LIFERAY-SERVICE-BUILDER-HASH:-1836737670
