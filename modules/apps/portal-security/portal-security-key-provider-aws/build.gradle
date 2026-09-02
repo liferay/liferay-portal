@@ -19,3 +19,7 @@ dependencies {
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "4.4.0"
 }
+
+liferayOSGi {
+	expandCompileInclude = true
+}

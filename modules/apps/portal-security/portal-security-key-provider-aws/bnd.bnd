@@ -5,3 +5,11 @@ Import-Package:\
 	!javax.xml.bind,\
 	\
 	*
+-dsannotations:\
+	!com.amazonaws.*,\
+	!software.amazon.*,\
+	*
+-metatypeannotations:\
+	!com.amazonaws.*,\
+	!software.amazon.*,\
+	*
