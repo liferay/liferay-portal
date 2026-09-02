@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstant
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -49,6 +50,8 @@ public class BackgroundTaskMessageListenerTest {
 	public void testDoReceive() throws Exception {
 		_user = UserTestUtil.addUser();
 
+		String message = RandomTestUtil.randomString();
+
 		BackgroundTaskExecutor backgroundTaskExecutor =
 			(BackgroundTaskExecutor)ProxyUtil.newProxyInstance(
 				BackgroundTaskExecutor.class.getClassLoader(),
@@ -60,7 +63,7 @@ public class BackgroundTaskMessageListenerTest {
 						return proxy;
 					}
 					else if (Objects.equals(methodName, "execute")) {
-						throw new IllegalStateException("Unable to execute");
+						throw new IllegalStateException(message);
 					}
 					else if (Objects.equals(methodName, "getIsolationLevel")) {
 						return BackgroundTaskConstants.
@@ -113,6 +116,8 @@ public class BackgroundTaskMessageListenerTest {
 				errorStackTrace,
 				errorStackTrace.contains(
 					IllegalStateException.class.getName()));
+			Assert.assertTrue(
+				errorStackTrace, errorStackTrace.contains(message));
 			Assert.assertTrue(
 				errorStackTrace, errorStackTrace.contains("\tat "));
 
