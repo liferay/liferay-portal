@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +54,7 @@ public class PortletUtil {
 		}
 
 		portletPermissionsImporter.importPortletPermissions(
-			layout.getPlid(), portletId, Collections.emptySet(),
+			layout.getPlid(), portletId, new HashSet<>(),
 			_getWidgetPermissionsMaps(widgetPermissions));
 	}
 
