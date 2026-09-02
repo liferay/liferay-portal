@@ -7,6 +7,7 @@ import ClayLink from '@clayui/link';
 import {findAction, replaceTokens} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
+import {getWorkflowTaskAssetTitle} from '../../../utils/getWorkflowTaskAssetTitle';
 import {WorkflowTaskItemData} from '../../../utils/types';
 
 type WorkflowAction = {
@@ -23,9 +24,7 @@ const WorkflowTaskActionLinkRenderer = ({
 	actions: WorkflowAction[];
 	itemData: WorkflowTaskItemData;
 }) => {
-	const title =
-		itemData.embedded?.objectReviewed?.assetTitle ||
-		Liferay.Language.get('untitled-asset');
+	const title = getWorkflowTaskAssetTitle(itemData);
 
 	const selectedAction = findAction(actions, actionId);
 

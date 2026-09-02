@@ -1,0 +1,85 @@
+@import 'atlas-variables';
+
+.lfr-cmp__bulk-update-state {
+	&-body {
+		max-height: 50rem;
+	}
+
+	&-description {
+		color: $gray-600;
+		margin-bottom: 1.25rem;
+	}
+
+	&-step {
+		margin-left: 1.75rem;
+		margin-top: 0.75rem;
+
+		.list-group {
+			margin-bottom: 0;
+		}
+	}
+
+	&-transition {
+		align-items: center;
+		background-color: $gray-100;
+		border: 1px solid $gray-300;
+		border-radius: 0.25rem;
+		color: $gray-600;
+		display: flex;
+		flex-wrap: wrap;
+		font-weight: $font-weight-semi-bold;
+		gap: 0.75rem;
+		margin-top: 0.75rem;
+		padding: 0.75rem 1rem;
+
+		.form-control {
+			flex: 1 1 0;
+		}
+	}
+
+	&-transition-step {
+		background-color: $white;
+		border: 1px solid $gray-300;
+		border-radius: 0.5rem;
+		color: $gray-900;
+		flex: 1 1 0;
+		font-weight: $font-weight-normal;
+		overflow: hidden;
+		padding: 0.35rem 0.75rem;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&-workflow {
+		margin-bottom: 1.25rem;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	&-workflow-badge {
+		color: $gray-600;
+		text-transform: uppercase;
+	}
+
+	&-workflow-header {
+		align-items: center;
+		display: flex;
+		gap: 0.75rem;
+
+		.custom-control {
+			margin-bottom: 0;
+			min-height: 0;
+		}
+	}
+
+	&-workflow-name {
+		font-weight: $font-weight-semi-bold;
+	}
+
+	&-workflow-toggle {
+		color: $gray-600;
+		margin-left: auto;
+	}
+}

@@ -7,19 +7,19 @@ import {WorkflowTaskItemData} from './types';
 
 const TRANSITION_ACTION_PREFIX = 'workflow_';
 
-interface Transition {
+export interface Transition {
 	label: string;
 	name: string;
 }
 
-interface StepGroup {
+export interface StepGroup {
 	label: string;
 	name: string;
 	tasks: WorkflowTaskItemData[];
 	transitions: Transition[];
 }
 
-interface WorkflowGroup {
+export interface WorkflowGroup {
 	stepGroups: StepGroup[];
 	taskCount: number;
 	workflowDefinitionName: string;
