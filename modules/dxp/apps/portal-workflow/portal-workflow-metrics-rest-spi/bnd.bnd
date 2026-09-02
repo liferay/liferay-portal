@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Workflow Metrics REST SPI
 Bundle-SymbolicName: com.liferay.portal.workflow.metrics.rest.spi
-Bundle-Version: 5.0.3
+Bundle-Version: 5.0.4
 Export-Package: com.liferay.portal.workflow.metrics.rest.spi.resource
