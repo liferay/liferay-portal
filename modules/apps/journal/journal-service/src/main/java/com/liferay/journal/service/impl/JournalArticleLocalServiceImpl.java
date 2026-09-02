@@ -8615,7 +8615,6 @@ public class JournalArticleLocalServiceImpl
 		}
 
 		Group group = _groupLocalService.fetchGroup(fileEntry.getGroupId());
-
 		String previewURL = _dlURLHelper.getPreviewURL(
 			fileEntry, fileEntry.getFileVersion(), null, StringPool.BLANK,
 			false, true);
