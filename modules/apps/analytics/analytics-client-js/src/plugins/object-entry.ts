@@ -58,6 +58,12 @@ function getObjectEntryPayload({
 		});
 	}
 
+	if (dataset.analyticsCmpProjects) {
+		Object.assign(payload, {
+			cmpProjects: dataset.analyticsCmpProjects.trim(),
+		});
+	}
+
 	if (dataset.analyticsObjectType) {
 		Object.assign(payload, {
 			objectType: dataset.analyticsObjectType.trim(),
