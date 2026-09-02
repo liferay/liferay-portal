@@ -383,13 +383,13 @@ public class LayoutServiceContextHelperImpl
 				_portal.getPortalURL(
 					company.getVirtualHostname(), portalServerPort, secure));
 
-			themeDisplay.setSecure(secure);
-			themeDisplay.setServerName(company.getVirtualHostname());
-			themeDisplay.setServerPort(portalServerPort);
 			themeDisplay.setPathMain(_portal.getPathMain());
 			themeDisplay.setPermissionChecker(permissionChecker);
 			themeDisplay.setRealUser(user);
 			themeDisplay.setScopeGroupId(_group.getGroupId());
+			themeDisplay.setSecure(secure);
+			themeDisplay.setServerName(company.getVirtualHostname());
+			themeDisplay.setServerPort(portalServerPort);
 			themeDisplay.setSignedIn(!user.isGuestUser());
 			themeDisplay.setSiteGroupId(_group.getGroupId());
 			themeDisplay.setTimeZone(user.getTimeZone());
