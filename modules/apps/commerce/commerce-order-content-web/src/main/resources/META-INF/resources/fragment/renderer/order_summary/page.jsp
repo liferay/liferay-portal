@@ -16,7 +16,7 @@
 			<span class="order-summary-label"><%= HtmlUtil.escape(label) %></span>
 		</c:if>
 
-		<span class="order-summary-value" data-summary-field-name="<%= field %>"><%= HtmlUtil.escape(fieldValue) %></span>
+		<span class="order-summary-value" data-summary-field-name="<%= HtmlUtil.escapeAttribute(field) %>"><%= HtmlUtil.escape(fieldValue) %></span>
 
 		<c:if test="<%= open %>">
 			<liferay-frontend:component
