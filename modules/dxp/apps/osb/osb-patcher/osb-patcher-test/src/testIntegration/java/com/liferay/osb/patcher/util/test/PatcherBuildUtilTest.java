@@ -144,6 +144,8 @@ public class PatcherBuildUtilTest {
 			PatcherBuildLocalServiceUtil.createPatcherBuild(
 				CounterLocalServiceUtil.increment());
 
+		PatcherAccount patcherAccount = _addPatcherAccount();
+
 		PatcherProjectVersion patcherProjectVersion =
 			_addPatcherProjectVersion();
 
@@ -154,8 +156,7 @@ public class PatcherBuildUtilTest {
 		patcherBuild.setUserName(_user.getFullName());
 		patcherBuild.setCreateDate(new Date());
 		patcherBuild.setModifiedDate(new Date());
-		patcherBuild.setPatcherAccountId(
-			_addPatcherAccount().getPatcherAccountId());
+		patcherBuild.setPatcherAccountId(patcherAccount.getPatcherAccountId());
 		patcherBuild.setPatcherFixId(patcherFix.getPatcherFixId());
 		patcherBuild.setPatcherProjectVersionId(
 			patcherProjectVersion.getPatcherProjectVersionId());
@@ -217,13 +218,16 @@ public class PatcherBuildUtilTest {
 			PatcherProjectVersionLocalServiceUtil.createPatcherProjectVersion(
 				CounterLocalServiceUtil.increment());
 
+		PatcherProductVersion patcherProductVersion =
+			_addPatcherProductVersion();
+
 		patcherProjectVersion.setCompanyId(_user.getCompanyId());
 		patcherProjectVersion.setUserId(_user.getUserId());
 		patcherProjectVersion.setUserName(_user.getFullName());
 		patcherProjectVersion.setCreateDate(new Date());
 		patcherProjectVersion.setModifiedDate(new Date());
 		patcherProjectVersion.setPatcherProductVersionId(
-			_addPatcherProductVersion().getPatcherProductVersionId());
+			patcherProductVersion.getPatcherProductVersionId());
 		patcherProjectVersion.setCombinedBranch(false);
 		patcherProjectVersion.setCommittish(RandomTestUtil.randomString());
 		patcherProjectVersion.setName(RandomTestUtil.randomString());
