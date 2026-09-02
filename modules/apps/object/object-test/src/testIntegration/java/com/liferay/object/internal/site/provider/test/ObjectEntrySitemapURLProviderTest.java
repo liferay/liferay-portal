@@ -17,18 +17,14 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
-import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
-import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -165,27 +161,6 @@ public class ObjectEntrySitemapURLProviderTest {
 	}
 
 	@Test
-	public void testVisitCMSObjectDefinition() throws Exception {
-		_testVisitCMSObjectDefinition(
-			(layout, objectDefinition, objectEntry) -> {
-				Group group = _depotEntry.getGroup();
-
-				_assertRootElement(
-					true, group.getFriendlyURL(), layout, objectDefinition,
-					objectEntry);
-			});
-
-		_testVisitCMSObjectDefinition(
-			(layout, objectDefinition, objectEntry) -> {
-				Group group = _depotEntry.getGroup();
-
-				_assertRootElement(
-					true, group.getFriendlyURL(), _layoutSet, objectDefinition,
-					objectEntry, _themeDisplay);
-			});
-	}
-
-	@Test
 	public void testVisitLayout() throws Exception {
 		_testVisitLayout(0, _companyObjectDefinition);
 		_testVisitLayout(_depotEntry.getGroupId(), _depotObjectDefinition);
@@ -227,27 +202,6 @@ public class ObjectEntrySitemapURLProviderTest {
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
 		throws Exception {
 
-		_assertRootElement(
-			expectedHasContent, StringPool.BLANK, layout, objectDefinition,
-			objectEntry);
-	}
-
-	private void _assertRootElement(
-			boolean expectedHasContent, LayoutSet layoutSet,
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
-			ThemeDisplay themeDisplay)
-		throws Exception {
-
-		_assertRootElement(
-			expectedHasContent, StringPool.BLANK, layoutSet, objectDefinition,
-			objectEntry, themeDisplay);
-	}
-
-	private void _assertRootElement(
-			boolean expectedHasContent, String friendlyURL, Layout layout,
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
-		throws Exception {
-
 		Element rootElement = _getRootElement();
 
 		_objectEntrySitemapURLProvider.visitLayout(
@@ -260,11 +214,11 @@ public class ObjectEntrySitemapURLProviderTest {
 		}
 
 		_assertRootElements(
-			friendlyURL, objectDefinition, objectEntry, rootElement.elements());
+			objectDefinition, objectEntry, rootElement.elements());
 	}
 
 	private void _assertRootElement(
-			boolean expectedHasContent, String friendlyURL, LayoutSet layoutSet,
+			boolean expectedHasContent, LayoutSet layoutSet,
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
 			ThemeDisplay themeDisplay)
 		throws Exception {
@@ -281,12 +235,12 @@ public class ObjectEntrySitemapURLProviderTest {
 		}
 
 		_assertRootElements(
-			friendlyURL, objectDefinition, objectEntry, rootElement.elements());
+			objectDefinition, objectEntry, rootElement.elements());
 	}
 
 	private void _assertRootElements(
-		String friendlyURL, ObjectDefinition objectDefinition,
-		ObjectEntry objectEntry, List<Element> rootElements) {
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+		List<Element> rootElements) {
 
 		Set<Locale> availableLocales = _language.getAvailableLocales();
 
@@ -310,8 +264,7 @@ public class ObjectEntrySitemapURLProviderTest {
 		String objectEntryFriendlyURL = StringUtil.toLowerCase(
 			StringBundler.concat(
 				StringPool.SLASH, objectDefinition.getFriendlyURLSeparator(),
-				friendlyURL, StringPool.SLASH,
-				objectEntry.getExternalReferenceCode()));
+				StringPool.SLASH, objectEntry.getExternalReferenceCode()));
 
 		for (Element rootElement : rootElements) {
 			String objectEntryLocalizedURL = rootElement.elementText("loc");
@@ -384,13 +337,11 @@ public class ObjectEntrySitemapURLProviderTest {
 		return themeDisplay;
 	}
 
-	private ObjectDefinition _publishObjectDefinition(
-			long objectFolderId, String scope)
+	private ObjectDefinition _publishObjectDefinition(String scope)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
-				ObjectDefinitionTestUtil.getRandomName(),
 				Collections.singletonList(
 					new TextObjectFieldBuilder(
 					).labelMap(
@@ -400,7 +351,7 @@ public class ObjectEntrySitemapURLProviderTest {
 					).objectFieldSettings(
 						Collections.emptyList()
 					).build()),
-				objectFolderId, scope, TestPropsValues.getUserId());
+				scope);
 
 		if (StringUtil.equals(scope, ObjectDefinitionConstants.SCOPE_DEPOT)) {
 			_objectDefinitionSettingLocalService.addObjectDefinitionSetting(
@@ -411,12 +362,6 @@ public class ObjectEntrySitemapURLProviderTest {
 		}
 
 		return objectDefinition;
-	}
-
-	private ObjectDefinition _publishObjectDefinition(String scope)
-		throws Exception {
-
-		return _publishObjectDefinition(0, scope);
 	}
 
 	private void _testGetModifiedDate(
@@ -445,42 +390,6 @@ public class ObjectEntrySitemapURLProviderTest {
 			Assert.assertNotNull(
 				_objectEntrySitemapURLProvider.getModifiedDate(
 					TestPropsValues.getCompanyId(), _group.getGroupId()));
-		}
-	}
-
-	private void _testVisitCMSObjectDefinition(
-			UnsafeTriConsumer<Layout, ObjectDefinition, ObjectEntry, Exception>
-				unsafeTriConsumer)
-		throws Exception {
-
-		ObjectFolder objectFolder =
-			_objectFolderLocalService.getOrAddEmptyObjectFolder(
-				ObjectFolderConstants.
-					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-				TestPropsValues.getCompanyId(), TestPropsValues.getUserId());
-
-		ObjectDefinition objectDefinition = _publishObjectDefinition(
-			objectFolder.getObjectFolderId(),
-			ObjectDefinitionConstants.SCOPE_DEPOT);
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_getCompanyConfigurationTemporarySwapper(
-						objectDefinition)) {
-
-			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-				_depotEntry.getDepotEntryId(), _group.getGroupId());
-
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				_addDisplayPageTemplate(_group.getGroupId(), objectDefinition);
-
-			ObjectEntry objectEntry = _addObjectEntry(
-				_depotEntry.getGroupId(), objectDefinition);
-
-			unsafeTriConsumer.accept(
-				_layoutLocalService.getLayout(
-					layoutPageTemplateEntry.getPlid()),
-				objectDefinition, objectEntry);
 		}
 	}
 
@@ -675,9 +584,6 @@ public class ObjectEntrySitemapURLProviderTest {
 		type = SitemapURLProvider.class
 	)
 	private SitemapURLProvider _objectEntrySitemapURLProvider;
-
-	@Inject
-	private ObjectFolderLocalService _objectFolderLocalService;
 
 	@Inject
 	private Portal _portal;
