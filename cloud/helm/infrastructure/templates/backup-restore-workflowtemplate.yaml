@@ -1,4 +1,4 @@
-{{- if .Values.backup.enabled -}}
+{{- if and .Values.enabled .Values.backup.enabled -}}
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:

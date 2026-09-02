@@ -39,6 +39,13 @@ tests:
         set:
             backup.enabled: false
     -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the workflow template when the chart is disabled
+        set:
+            backup.enabled: true
+            enabled: false
+    -   asserts:
             -   equal:
                     path: spec.entrypoint
                     value: main
