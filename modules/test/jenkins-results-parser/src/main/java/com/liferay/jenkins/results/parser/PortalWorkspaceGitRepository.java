@@ -369,7 +369,6 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	protected void setUpAdditionalCaches() throws IOException {
 		if (isBinariesCacheEnabled()) {
 			setUpBinariesCache();
-
 			setUpWorkspaceYarnMirrors();
 		}
 
