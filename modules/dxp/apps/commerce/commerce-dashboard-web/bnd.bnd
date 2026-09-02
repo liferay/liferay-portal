@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Dashboard Web
 Bundle-SymbolicName: com.liferay.commerce.dashboard.web
-Bundle-Version: 4.0.63
+Bundle-Version: 4.0.64
 Web-ContextPath: /commerce-dashboard-web
