@@ -557,3 +557,112 @@ test(
 		});
 	}
 );
+
+test(
+	'Compares the two selected versions from the management toolbar',
+	{tag: '@LPD-101810'},
+	async ({
+		apiHelpers,
+		assetsPage,
+		contentsPage,
+		page,
+		structureBuilderPage,
+	}) => {
+		const structureLabel = `Bulk${getRandomInt()}`;
+		const contentTitle = `bulk content ${getRandomString()}`;
+		const spaceName = `Space ${getRandomString()}`;
+
+		await test.step('Create a space and a structure with a text field', async () => {
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				settings: {},
+				type: 'Space',
+			});
+
+			await structureBuilderPage.createStructureFromData({
+				label: structureLabel,
+				name: structureLabel,
+				page: structureBuilderPage,
+			});
+
+			await structureBuilderPage.addField('Text');
+
+			await structureBuilderPage.changeFieldSettings({label: 'Words'});
+
+			await structureBuilderPage.publishStructure();
+		});
+
+		await test.step('Publish three versions', async () => {
+			await contentsPage.goto();
+
+			await contentsPage.createContent(structureLabel, spaceName);
+
+			await contentsPage.fillData([
+				{label: 'Title', value: contentTitle},
+				{label: 'Words', value: 'First'},
+			]);
+
+			await contentsPage.saveContent();
+
+			for (const value of ['Second', 'Third']) {
+				await contentsPage.editContent(contentTitle);
+
+				await contentsPage.fillData([{label: 'Words', value}]);
+
+				await contentsPage.saveContent();
+			}
+		});
+
+		await test.step('Open the version history', async () => {
+			await assetsPage.execItemAction({
+				action: 'View History',
+				filter: contentTitle,
+			});
+
+			await expect(
+				page.getByRole('heading', {name: `"${contentTitle}" History`})
+			).toBeVisible();
+		});
+
+		const compareButton = page.getByRole('button', {
+			exact: true,
+			name: 'Compare',
+		});
+		const rowCheckboxes = page.locator(
+			'tbody tr input[title="Select Item"]'
+		);
+
+		await test.step('The action is disabled with one version selected', async () => {
+			await rowCheckboxes.nth(0).check();
+
+			await expect(compareButton).toBeVisible();
+			await expect(compareButton).toBeDisabled();
+		});
+
+		await test.step('The action is disabled with three versions selected', async () => {
+			await rowCheckboxes.nth(1).check();
+			await rowCheckboxes.nth(2).check();
+
+			await expect(compareButton).toBeDisabled();
+		});
+
+		await test.step('Two selected versions open the comparison preloaded', async () => {
+			await rowCheckboxes.nth(2).uncheck();
+
+			await expect(compareButton).toBeEnabled();
+
+			await compareButton.click();
+
+			await expectDiffBoxToShow(
+				page.frameLocator('iframe[title="Version 3"]'),
+				'words',
+				'Third'
+			);
+			await expectDiffBoxToShow(
+				page.frameLocator('iframe[title="Version 2"]'),
+				'words',
+				'Second'
+			);
+		});
+	}
+);
