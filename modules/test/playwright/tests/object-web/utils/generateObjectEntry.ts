@@ -65,7 +65,9 @@ function generateObjectEntryValue({
 		case 'DateTime':
 			return getRandomDateTime(objectEntryFormat);
 		case 'Decimal':
-			return parseFloat(Math.random().toFixed(10)).toString();
+			return parseFloat(
+				(0.001 + Math.random() * 0.998).toFixed(10)
+			).toString();
 		case 'Encrypted':
 			return getRandomString();
 		case 'Integer':
