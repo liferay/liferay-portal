@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Sharepoint REST OAuth 2 Service
 Bundle-SymbolicName: com.liferay.sharepoint.rest.oauth2.service
-Bundle-Version: 5.0.41
+Bundle-Version: 5.0.42
 Liferay-Releng-Module-Group-Title: Sharepoint
 Liferay-Require-SchemaVersion: 2.0.0
 Liferay-Service: true
