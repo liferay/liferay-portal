@@ -39,19 +39,18 @@ interface Selectors {
 
 export class FDSConnection {
 	private static instanceCount = 0;
+	private static appIdThatOwnsFilter : string | undefined;
 
 	private appId?: string;
 	private atom!: Atom<FDSState>;
 	private disconnected = false;
 	private fdsName: string;
-	private hasWrittenFilters = false;
 	private instanceId: number = ++FDSConnection.instanceCount;
 	private isReady = false;
 	private navigationHandle: {detach: () => void};
 	private onFDSConnectionInfoChange: (
 		fdsConnectionInfo: FDSConnectionInfo
 	) => void;
-	private ownsFiltering: boolean;
 	private requestedOwnership: ReadonlyArray<FDSConnectionOwnership>;
 	private restore?: (connectionState: unknown) => void;
 	private selectors!: Selectors;
@@ -69,7 +68,6 @@ export class FDSConnection {
 		this.fdsName = fdsName;
 		this.onFDSConnectionInfoChange = onFDSConnectionInfoChange;
 		this.requestedOwnership = options.owns ?? DEFAULT_OWNERSHIP;
-		this.ownsFiltering = this.requestedOwnership.includes('filters');
 		this.restore = fdsStateChangeCallback.restore;
 		this.notifyStatus('connecting');
 
@@ -99,19 +97,27 @@ export class FDSConnection {
 				// Before the restore below, since a refused connection must
 				// not consume what the URL left for the owner.
 
-				this.resolveFilteringOwnership();
-
-				if (this.ownsFiltering) {
-					const restoredConnectionState = Liferay.State.read(
-						this.selectors.restoredConnectionState
-					);
-
-					if (restoredConnectionState !== undefined) {
-						this.restoreConnectionState(restoredConnectionState);
+				if (this.requestedOwnership.includes('filters')) {
+					if (!this.appId) {
+						this.warn(
+							'Refused the filtering of ' +
+								this.fdsName +
+								' to this connection: ' +
+							'connect with an appId to own the filtering, since what' +
+									' a connection filters by is kept in the URL under it'
+						);
 					}
-
-					if (!this.hasWrittenFilters) {
-						this.writeConnectionFilters([]);
+					else {
+						if (this.acquireFilters()) {
+							this.handleRestoredConnectionState(Liferay.State.read(
+								this.selectors.restoredConnectionState
+							));
+							this.subscriptions.restoredConnectionState =
+								Liferay.State.subscribe(
+									this.selectors.restoredConnectionState,
+									this.handleRestoredConnectionState
+								);
+						}
 					}
 				}
 
@@ -122,24 +128,13 @@ export class FDSConnection {
 					),
 				};
 
-				// The browser's back and forward buttons move a data set
-				// between filters the same way they move it between searches,
-				// and the data set offers each one it lands on here.
-
-				if (this.ownsFiltering) {
-					this.subscriptions.restoredConnectionState =
-						Liferay.State.subscribe(
-							this.selectors.restoredConnectionState,
-							this.handleRestoredConnectionState
-						);
-				}
-
 				// initialize consumer's state
 
 				fdsStateChangeCallback.search(this.getSearch() || '');
 
 				this.notifyStatus(
-					this.isFilteringRefused() ? 'refused' : 'ready'
+					(this.requestedOwnership.includes('filters') && !this.ownsFiltering()) ?
+						'refused' : 'ready'
 				);
 			})
 			.catch((error: Error) => {
@@ -182,6 +177,16 @@ export class FDSConnection {
 		});
 	};
 
+	private acquireFilters() {
+		if (!FDSConnection.appIdThatOwnsFilter) {
+			FDSConnection.appIdThatOwnsFilter = this.getUniqueId();
+			return true;
+		}
+
+		return false;
+	}
+
+
 	/**
 	 * Applies the given expressions, replacing whatever a previous call
 	 * passed. The filters the data set declares never reach the request while
@@ -207,15 +212,28 @@ export class FDSConnection {
 			return;
 		}
 
-		if (!this.ownsFiltering) {
+		if (!this.appId)  {
+			this.warn(
+				'Refused the filtering of ' +
+					this.fdsName +
+					' to this connection: ' +
+				'connect with an appId to own the filtering, since what' +
+						' a connection filters by is kept in the URL under it'
+			);
+
+			return;
+		}
+
+
+		if (!this.ownsFiltering()) {
 			this.warn(
 				'Ignored setFilters() for ' +
-					this.fdsName +
-					': ' +
-					(this.requestedOwnership.includes('filters')
-						? 'another connection owns the filtering'
-						: "connect with owns: ['filters'] to take the" +
-							' filtering over')
+				this.fdsName +
+				': ' +
+				(this.requestedOwnership.includes('filters')
+					? 'another connection owns the filtering'
+					: "connect with owns: ['filters'] to take the" +
+				' filtering over')
 			);
 
 			return;
@@ -226,6 +244,10 @@ export class FDSConnection {
 			connectionState
 		);
 	};
+
+	private getUniqueId() {
+		return this.appId + '' + this.instanceId;
+	}
 
 	/**
 	 * Drops the filters this connection applies, so that the data set filters
@@ -247,7 +269,7 @@ export class FDSConnection {
 		// the UI for them. A connection that never owned the filtering has
 		// nothing to hand back.
 
-		if (this.ownsFiltering && this.isReady) {
+		if (this.ownsFiltering() && this.isReady) {
 			this.releaseFiltering();
 		}
 
@@ -279,10 +301,10 @@ export class FDSConnection {
 			);
 		}
 
-		this.dropRestoredConnectionState();
+//		this.dropRestoredConnectionState();
 	}
 
-	private dropRestoredConnectionState(): void {
+/*	private dropRestoredConnectionState(): void {
 		const fdsState = {...Liferay.State.read(this.atom)};
 
 		const remaining = this.withoutOwnKey(fdsState.restoredConnectionState);
@@ -296,6 +318,8 @@ export class FDSConnection {
 
 		Liferay.State.write(this.atom, fdsState);
 	}
+
+ */
 
 	/**
 	 * The given slice without this connection's key, or nothing at all once
@@ -341,7 +365,7 @@ export class FDSConnection {
 	};
 
 	private releaseFiltering(): void {
-		this.hasWrittenFilters = false;
+		FDSConnection.appIdThatOwnsFilter = undefined;
 
 		const fdsState = {...Liferay.State.read(this.atom)};
 
@@ -362,27 +386,12 @@ export class FDSConnection {
 		Liferay.State.write(this.atom, fdsState);
 	}
 
-	private resolveFilteringOwnership(): void {
-		if (this.ownsFiltering) {
-			if (!this.appId) {
-				this.refuseFiltering(
-					'connect with an appId to own the filtering, since what' +
-						' a connection filters by is kept in the URL under it'
-				);
-			}
-			else if (this.isFilteringOwned()) {
-				this.refuseFiltering(
-					'another connection already owns it, and a data set can' +
-						' only have one filtering owner'
-				);
-
-				this.warnFilteringTaken();
-			}
-		}
+	private ownsFiltering() : boolean {
+		return FDSConnection.appIdThatOwnsFilter === this.getUniqueId();
 	}
 
 	private refuseFiltering(reason: string): void {
-		this.ownsFiltering = false;
+//		this.ownsFiltering = false;
 
 		this.warn(
 			'Refused the filtering of ' +
@@ -392,13 +401,29 @@ export class FDSConnection {
 		);
 	}
 
-	private isFilteringOwned(): boolean {
-		return Liferay.State.read(this.atom).connectionFilters !== undefined;
+
+	private resolveFilteringOwnership(): void {
+		if (this.ownsFiltering()) {
+			if (!this.appId) {
+				this.refuseFiltering(
+					'connect with an appId to own the filtering, since what' +
+						' a connection filters by is kept in the URL under it'
+				);
+			}
+		/*	else if (this.isFilteringOwned()) {
+				this.refuseFiltering(
+					'another connection already owns it, and a data set can' +
+						' only have one filtering owner'
+				);
+
+				this.warnFilteringTaken();
+			}
+		} */
 	}
 
 	private isFilteringRefused(): boolean {
 		return (
-			this.requestedOwnership.includes('filters') && !this.ownsFiltering
+			this.requestedOwnership.includes('filters') && !this.ownsFiltering()
 		);
 	}
 
@@ -424,7 +449,6 @@ export class FDSConnection {
 		connectionFilters: Array<FDSConnectionFilter>,
 		connectionState?: unknown
 	): void {
-		this.hasWrittenFilters = true;
 
 		Liferay.State.write(this.atom, {
 			...Liferay.State.read(this.atom),
