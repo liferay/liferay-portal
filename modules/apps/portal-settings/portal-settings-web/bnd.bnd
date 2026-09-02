@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Settings Web
 Bundle-SymbolicName: com.liferay.portal.settings.web
-Bundle-Version: 5.0.80
+Bundle-Version: 5.0.81
 Web-ContextPath: /portal-settings-web
 -dsannotations-options: inherit
 -includeresource: META-INF/resources/users_admin/css=@com.liferay.users.admin.web-*.jar!/META-INF/resources/css
