@@ -116,11 +116,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>VOCABULARY_ENTRY_CHECKBOX</td>
-	<td>//tr[contains(.,'${key_vocabularyName}')]/td[1]//input</td>
-	<td></td>
-</tr>
-<tr>
 	<td>VOCABULARY_ENTRY_DESCRIPTION</td>
 	<td>//tr[contains(.,'${key_vocabularyDescription}')]/td[3]</td>
 	<td></td>
