@@ -124,9 +124,6 @@ export default function ({
 			setBannerVisibility(cookieBanner, modifiedDate);
 		}
 
-		// Reading a consent cookie writes back the preference the user stored
-		// in a previous session when it is missing from the browser
-
 		optionalConsentCookieTypeNames.forEach(
 			(optionalConsentCookieTypeName) => {
 				getCookie(optionalConsentCookieTypeName);
@@ -251,10 +248,6 @@ export default function ({
 						displayType: 'secondary',
 						label: Liferay.Language.get('accept-selected'),
 						onClick() {
-
-							// Wait for the consent panel to render, otherwise
-							// there is no selection to save
-
 							if (previewMode || !configurationIframeWindow) {
 								return;
 							}
