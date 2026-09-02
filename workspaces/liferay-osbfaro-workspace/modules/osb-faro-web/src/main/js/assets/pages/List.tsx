@@ -330,7 +330,7 @@ const List = () => {
 					label: ASSET_OBJECT_TYPE_LANG_MAP[value],
 					value,
 				})),
-				label: Liferay.Language.get('object-type'),
+				label: Liferay.Language.get('asset-structure-type'),
 				multiple: false,
 				...(objectType && {
 					preloadedData: {
