@@ -113,13 +113,13 @@ public class BackgroundTaskMessageListenerTest {
 			String errorStackTrace = backgroundTask.getErrorStackTrace();
 
 			Assert.assertTrue(
+				errorStackTrace, errorStackTrace.contains("\tat "));
+			Assert.assertTrue(
 				errorStackTrace,
 				errorStackTrace.contains(
 					IllegalStateException.class.getName()));
 			Assert.assertTrue(
 				errorStackTrace, errorStackTrace.contains(message));
-			Assert.assertTrue(
-				errorStackTrace, errorStackTrace.contains("\tat "));
 
 			Assert.assertEquals(
 				_STATUS_MESSAGE, backgroundTask.getStatusMessage());

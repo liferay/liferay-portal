@@ -375,7 +375,7 @@ public class PublishProcessResourceTest
 
 		_backgroundTaskLocalService.amendBackgroundTask(
 			publishProcess.getId(), null, null,
-			BackgroundTaskConstants.STATUS_FAILED, _STACK_TRACE_STATUS_MESSAGE,
+			BackgroundTaskConstants.STATUS_FAILED, _STATUS_MESSAGE,
 			null);
 
 		PublishProcess failedPublishProcess =
@@ -383,7 +383,7 @@ public class PublishProcessResourceTest
 
 		String errorMessage = failedPublishProcess.getErrorMessage();
 
-		Assert.assertNotEquals(_STACK_TRACE_STATUS_MESSAGE, errorMessage);
+		Assert.assertNotEquals(_STATUS_MESSAGE, errorMessage);
 		Assert.assertFalse(errorMessage, errorMessage.contains(".java:"));
 		Assert.assertFalse(errorMessage, errorMessage.contains("\tat "));
 		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
@@ -642,7 +642,7 @@ public class PublishProcessResourceTest
 
 	private static final String _CRON_EXPRESSION_PAST = "0 30 9 22 8 ? 2020";
 
-	private static final String _STACK_TRACE_STATUS_MESSAGE =
+	private static final String _STATUS_MESSAGE =
 		"java.lang.NullPointerException\n\tat com.liferay.exportimport." +
 			"internal.staging.StagingImpl.publishLayouts(" +
 				"StagingImpl.java:2388)";

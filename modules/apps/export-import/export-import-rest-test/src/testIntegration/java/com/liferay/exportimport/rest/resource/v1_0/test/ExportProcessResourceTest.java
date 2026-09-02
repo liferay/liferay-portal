@@ -694,7 +694,7 @@ public class ExportProcessResourceTest
 							new RequestPortletDataHandler() {
 								{
 									name =
-										"PORTLET_DATA_" + _LAYOUT_SET_LAYOUTS;
+										"PORTLET_DATA_" + _PORTLET_ID;
 
 									setRequestPortletDataHandlerControls(
 										new RequestPortletDataHandlerControl[] {
@@ -850,7 +850,7 @@ public class ExportProcessResourceTest
 
 		_backgroundTaskLocalService.amendBackgroundTask(
 			exportProcess.getId(), null, null,
-			BackgroundTaskConstants.STATUS_FAILED, _STACK_TRACE_STATUS_MESSAGE,
+			BackgroundTaskConstants.STATUS_FAILED, _STATUS_MESSAGE,
 			null);
 
 		ExportProcess failedExportProcess =
@@ -858,7 +858,7 @@ public class ExportProcessResourceTest
 
 		String errorMessage = failedExportProcess.getErrorMessage();
 
-		Assert.assertNotEquals(_STACK_TRACE_STATUS_MESSAGE, errorMessage);
+		Assert.assertNotEquals(_STATUS_MESSAGE, errorMessage);
 		Assert.assertFalse(errorMessage, errorMessage.contains(".java:"));
 		Assert.assertFalse(errorMessage, errorMessage.contains("\tat "));
 		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
@@ -955,7 +955,7 @@ public class ExportProcessResourceTest
 					new RequestPortletDataHandler[] {
 						new RequestPortletDataHandler() {
 							{
-								name = "PORTLET_DATA_" + _LAYOUT_SET_LAYOUTS;
+								name = "PORTLET_DATA_" + _PORTLET_ID;
 
 								setRequestPortletDataHandlerControls(
 									new RequestPortletDataHandlerControl[] {
@@ -1091,10 +1091,10 @@ public class ExportProcessResourceTest
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
-	private static final String _LAYOUT_SET_LAYOUTS =
+	private static final String _PORTLET_ID =
 		"com_liferay_layout_admin_web_portlet_LayoutSetLayoutsPortlet";
 
-	private static final String _STACK_TRACE_STATUS_MESSAGE =
+	private static final String _STATUS_MESSAGE =
 		"java.lang.NullPointerException\n\tat com.liferay.exportimport." +
 			"internal.controller.LayoutExportController.doExport(" +
 				"LayoutExportController.java:412)";
