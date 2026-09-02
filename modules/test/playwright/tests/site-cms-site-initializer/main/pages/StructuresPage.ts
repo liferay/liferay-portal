@@ -40,7 +40,6 @@ export class StructuresPage {
 			| 'Delete'
 			| 'Edit'
 			| 'Export as JSON'
-			| 'Import and Override'
 			| 'Permissions'
 			| 'View Usages';
 		filter: string;

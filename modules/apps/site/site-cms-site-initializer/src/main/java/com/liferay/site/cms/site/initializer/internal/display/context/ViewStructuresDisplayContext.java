@@ -14,7 +14,6 @@ import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -26,6 +25,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -38,7 +38,6 @@ import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,35 +135,27 @@ public class ViewStructuresDisplayContext {
 					_httpServletRequest, ObjectPortletKeys.OBJECT_DEFINITIONS,
 					"import-content-structures", _themeDisplay)
 			).put(
-				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							_themeDisplay.getCompanyId(), "LPD-99758")) {
-
-						return null;
-					}
-
-					return JSONUtil.put(
-						"href",
-						PortletURLBuilder.create(
-							PortletURLFactoryUtil.create(
-								_httpServletRequest,
-								ObjectPortletKeys.OBJECT_DEFINITIONS,
-								PortletRequest.ACTION_PHASE)
-						).setActionName(
-							"/object_definitions/import_object_definition"
-						).buildString()
-					).put(
-						"label",
-						LanguageUtil.format(
-							_httpServletRequest, "import-from-x", "JSON")
-					).put(
-						"redirect", _themeDisplay.getURLCurrent()
-					).put(
-						"symbolLeft", "import"
-					).put(
-						"target", "importStructureModal"
-					);
-				}
+				JSONUtil.put(
+					"href",
+					PortletURLBuilder.create(
+						PortletURLFactoryUtil.create(
+							_httpServletRequest,
+							ObjectPortletKeys.OBJECT_DEFINITIONS,
+							PortletRequest.ACTION_PHASE)
+					).setActionName(
+						"/object_definitions/import_object_definition"
+					).buildString()
+				).put(
+					"label",
+					LanguageUtil.format(
+						_httpServletRequest, "import-from-x", "JSON")
+				).put(
+					"redirect", _themeDisplay.getURLCurrent()
+				).put(
+					"symbolLeft", "import"
+				).put(
+					"target", "importStructureModal"
+				)
 			)
 		).put(
 			"breadcrumbItems", jsonArray
@@ -219,42 +210,31 @@ public class ViewStructuresDisplayContext {
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()
 		throws Exception {
 
-		List<FDSActionDropdownItem> fdsActionDropdownItems = new ArrayList<>();
-
-		fdsActionDropdownItems.add(
+		return ListUtil.fromArray(
 			new FDSActionDropdownItem(
 				ActionUtil.getBaseStructureBuilderURL(_themeDisplay) +
 					"?objectDefinitionId={id}",
 				"pencil", "edit", LanguageUtil.get(_httpServletRequest, "edit"),
-				"get", "update", null));
-		fdsActionDropdownItems.add(
+				"get", "update", null),
 			new FDSActionDropdownItem(
 				ActionUtil.getBaseStructureUsagesURL(_themeDisplay) + "{id}",
 				"list-ul", "viewUsages",
 				LanguageUtil.get(_httpServletRequest, "view-usages"), "get",
-				null, null));
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-99758")) {
-
-			fdsActionDropdownItems.add(
-				new FDSActionDropdownItem(
-					ResourceURLBuilder.createResourceURL(
-						PortletURLFactoryUtil.create(
-							_httpServletRequest,
-							ObjectPortletKeys.OBJECT_DEFINITIONS,
-							PortletRequest.RESOURCE_PHASE)
-					).setParameter(
-						"objectDefinitionId", "{id}"
-					).setResourceID(
-						"/object_definitions/export_bound_object_definitions"
-					).buildString(),
-					"export", "exportBoundObjectDefinitions",
-					LanguageUtil.get(_httpServletRequest, "export-as-json"),
-					"get", "exportBoundObjectDefinitions", null));
-		}
-
-		fdsActionDropdownItems.add(
+				null, null),
+			new FDSActionDropdownItem(
+				ResourceURLBuilder.createResourceURL(
+					PortletURLFactoryUtil.create(
+						_httpServletRequest,
+						ObjectPortletKeys.OBJECT_DEFINITIONS,
+						PortletRequest.RESOURCE_PHASE)
+				).setParameter(
+					"objectDefinitionId", "{id}"
+				).setResourceID(
+					"/object_definitions/export_bound_object_definitions"
+				).buildString(),
+				"export", "exportBoundObjectDefinitions",
+				LanguageUtil.get(_httpServletRequest, "export-as-json"), "get",
+				"exportBoundObjectDefinitions", null),
 			new FDSActionDropdownItem(
 				ResourceURLBuilder.createResourceURL(
 					PortletURLFactoryUtil.create(
@@ -268,30 +248,7 @@ public class ViewStructuresDisplayContext {
 				).buildString(),
 				"export", "export",
 				LanguageUtil.get(_httpServletRequest, "export-as-json"), "get",
-				"exportObjectDefinition", null));
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-99758")) {
-
-			fdsActionDropdownItems.add(
-				new FDSActionDropdownItem(
-					PortletURLBuilder.create(
-						PortletURLFactoryUtil.create(
-							_httpServletRequest,
-							ObjectPortletKeys.OBJECT_DEFINITIONS,
-							PortletRequest.ACTION_PHASE)
-					).setActionName(
-						"/object_definitions/import_object_definition"
-					).setParameter(
-						"externalReferenceCode", "{externalReferenceCode}"
-					).buildString(),
-					"import", "import",
-					LanguageUtil.get(
-						_httpServletRequest, "import-and-override"),
-					"get", "update", null));
-		}
-
-		fdsActionDropdownItems.add(
+				"exportObjectDefinition", null),
 			new FDSActionDropdownItem(
 				PortletURLBuilder.create(
 					PortalUtil.getControlPanelPortletURL(
@@ -314,8 +271,7 @@ public class ViewStructuresDisplayContext {
 				).buildString(),
 				"password-policies", "permissions",
 				LanguageUtil.get(_httpServletRequest, "permissions"), "get",
-				"permissions", "modal-permissions"));
-		fdsActionDropdownItems.add(
+				"permissions", "modal-permissions"),
 			new FDSActionDropdownItem(
 				StringBundler.concat(
 					_themeDisplay.getPortalURL(), _themeDisplay.getPathMain(),
@@ -324,8 +280,6 @@ public class ViewStructuresDisplayContext {
 				"trash", "delete",
 				LanguageUtil.get(_httpServletRequest, "delete"), "delete",
 				"delete", null, Map.of("system", false)));
-
-		return fdsActionDropdownItems;
 	}
 
 	private void _addBreadcrumbItem(

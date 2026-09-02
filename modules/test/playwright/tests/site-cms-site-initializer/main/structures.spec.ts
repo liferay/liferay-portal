@@ -38,16 +38,6 @@ const testWithModalExportImport = mergeTests(
 	structureBuilderPagesTest
 );
 
-const testWithImportExport = mergeTests(
-	cmsPagesTest,
-	structureBuilderPagesTest,
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-99758': {enabled: true},
-	}),
-	loginTest()
-);
-
 test(
 	'Structure can be deleted without confirmation if it does not have an approved status',
 	{tag: '@LPD-51516'},
@@ -191,12 +181,6 @@ test(
 			page.getByRole('menuitem', {exact: true, name: 'Export as JSON'})
 		).toBeVisible();
 		expect(
-			page.getByRole('menuitem', {
-				exact: true,
-				name: 'Import and Override',
-			})
-		).toBeVisible();
-		expect(
 			page.getByRole('menuitem', {exact: true, name: 'Permissions'})
 		).toBeVisible();
 
@@ -226,12 +210,6 @@ test(
 		).toBeVisible();
 		expect(
 			page.getByRole('menuitem', {exact: true, name: 'Export as JSON'})
-		).toBeVisible();
-		expect(
-			page.getByRole('menuitem', {
-				exact: true,
-				name: 'Import and Override',
-			})
 		).toBeVisible();
 		expect(
 			page.getByRole('menuitem', {exact: true, name: 'Permissions'})
@@ -619,84 +597,6 @@ testWithModalExportImport(
 );
 
 test(
-	'Content Structure can be exported as JSON and imported back to override changes',
-	{tag: '@LPD-89302'},
-	async ({page, structureBuilderPage, structuresPage}) => {
-		const structureLabel = `Structure${getRandomInt()}`;
-
-		await structureBuilderPage.createStructureFromData({
-			label: structureLabel,
-			name: structureLabel,
-			page: structureBuilderPage,
-		});
-
-		await structuresPage.goto();
-
-		const downloadPromise = page.waitForEvent('download');
-
-		await structuresPage.execItemAction({
-			action: 'Export as JSON',
-			filter: structureLabel,
-		});
-
-		const download = await downloadPromise;
-
-		const jsonFilePath = `${getTempDir()}/${download.suggestedFilename()}`;
-
-		await download.saveAs(jsonFilePath);
-
-		await page.getByRole('link', {name: structureLabel}).click();
-
-		await structureBuilderPage.addField('Long Text');
-
-		await expect(
-			page.locator('.treeview-link', {hasText: 'Long Text'})
-		).toBeVisible();
-
-		await structureBuilderPage.publishStructure();
-
-		await structuresPage.goto();
-
-		await structuresPage.execItemAction({
-			action: 'Import and Override',
-			filter: structureLabel,
-		});
-
-		const importDialog = page.getByRole('dialog', {
-			name: 'Import and Override Content Structure',
-		});
-
-		const fileChooserPromise = page.waitForEvent('filechooser');
-
-		await importDialog.getByRole('button', {name: 'Add'}).click();
-
-		const fileChooser = await fileChooserPromise;
-
-		await fileChooser.setFiles(jsonFilePath);
-
-		const importButton = importDialog.getByRole('button', {
-			name: 'Import and Override',
-		});
-
-		await expect(importButton).toBeEnabled();
-
-		await importButton.click();
-
-		await expect(importDialog).not.toBeAttached();
-
-		await page.getByRole('link', {name: structureLabel}).click();
-
-		await expect(
-			page.getByRole('heading', {name: structureLabel})
-		).toBeVisible();
-
-		await expect(
-			page.locator('.treeview-link', {hasText: 'Long Text'})
-		).not.toBeVisible();
-	}
-);
-
-test(
 	'New fields can be added and removed on Basic Web Content but existing fields are locked',
 	{tag: '@LPD-89302'},
 	async ({page, structureBuilderPage, structuresPage}) => {
@@ -969,8 +869,8 @@ test(
 	}
 );
 
-testWithImportExport.describe('Import and Export Structures', () => {
-	testWithImportExport(
+test.describe('Import and Export Structures', () => {
+	test(
 		'Content Structure can be exported as JSON and imported back',
 		{tag: '@LPD-99759'},
 		async ({apiHelpers, page, structureBuilderPage, structuresPage}) => {
@@ -1032,7 +932,7 @@ testWithImportExport.describe('Import and Export Structures', () => {
 		}
 	);
 
-	testWithImportExport(
+	test(
 		'Content Structure with a repeatable field survives a JSON export and import round trip',
 		{tag: '@LPD-99759'},
 		async ({page, structureBuilderPage, structuresPage}) => {
@@ -1091,7 +991,7 @@ testWithImportExport.describe('Import and Export Structures', () => {
 		}
 	);
 
-	testWithImportExport(
+	test(
 		'Content Structure that references another survives a JSON export and import round trip',
 		{tag: '@LPD-99759'},
 		async ({page, structureBuilderPage, structuresPage}) => {
@@ -1154,7 +1054,7 @@ testWithImportExport.describe('Import and Export Structures', () => {
 		}
 	);
 
-	testWithImportExport(
+	test(
 		'Importing a Content Structure overrides local changes',
 		{tag: '@LPD-99759'},
 		async ({page, structureBuilderPage, structuresPage}) => {
@@ -1208,7 +1108,7 @@ testWithImportExport.describe('Import and Export Structures', () => {
 		}
 	);
 
-	testWithImportExport(
+	test(
 		'Importing a Content Structure cannot drop a repeatable field the persisted structure still has',
 		{tag: '@LPD-99759'},
 		async ({page, structureBuilderPage, structuresPage}) => {
