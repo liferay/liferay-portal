@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Content Site Generator Web
 Bundle-SymbolicName: com.liferay.content.site.generator.web
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Web-ContextPath: /content-site-generator-web
 -dsannotations-options: inherit
