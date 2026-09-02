@@ -37,7 +37,24 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 }) {
 	return {
 		...otherProps,
-		bulkActions: transformFDSBulkActions(bulkActions),
+		bulkActions: transformFDSBulkActions(bulkActions).map((bulkAction) => {
+			if (bulkAction?.data?.id === 'compare') {
+				return {
+					...bulkAction,
+					isDisabled: ({
+						allItemsSelectedActive,
+						selectedItems,
+					}: {
+						allItemsSelectedActive?: boolean;
+						selectedItems?: Array<any>;
+					}) =>
+						Boolean(allItemsSelectedActive) ||
+						selectedItems?.length !== 2,
+				};
+			}
+
+			return bulkAction;
+		}),
 		customRenderers: {
 			tableCell: [
 				{
