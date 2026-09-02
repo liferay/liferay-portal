@@ -75,12 +75,21 @@ public class LayoutDataCleanupPreupgradeProcess
 
 		DBInspector dbInspector = new DBInspector(connection);
 
+		DataCleanupPreupgradeProcess
+			layoutRevisionDataCleanupPreupgradeProcess =
+				new DataCleanupPreupgradeProcess();
+
+		if (dbInspector.hasTable("LayoutRevision")) {
+			layoutRevisionDataCleanupPreupgradeProcess =
+				new FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess(
+					"not exists (select 1 from (select layoutRevisionId from " +
+						"LayoutRevision) temp where temp.layoutRevisionId = " +
+							"[$SOURCE_TABLE_ALIAS$].plid)",
+					new String[0], "plid", new String[] {"plid"}, "Layout");
+		}
+
 		return new DataCleanupPreupgradeProcess(
-			new FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess(
-				"not exists (select 1 from (select layoutRevisionId from " +
-					"LayoutRevision) temp where temp.layoutRevisionId = " +
-						"[$SOURCE_TABLE_ALIAS$].plid)",
-				new String[0], "plid", new String[] {"plid"}, "Layout"),
+			layoutRevisionDataCleanupPreupgradeProcess,
 			new FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess(
 				StringBundler.concat(
 					"[$SOURCE_TABLE_ALIAS$].classNameId in (select ",

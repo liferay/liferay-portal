@@ -158,6 +158,12 @@ public class DLFileEntryDataCleanupPreupgradeProcess
 			_getDLFileEntryMetadataDataCleanupPreupgradeProcess()
 		throws Exception {
 
+		DBInspector dbInspector = new DBInspector(connection);
+
+		if (!dbInspector.hasTable("DDMStructure")) {
+			return new DataCleanupPreupgradeProcess();
+		}
+
 		List<String> structureIds = new ArrayList<>();
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
