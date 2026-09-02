@@ -35,6 +35,11 @@ import org.osgi.service.component.annotations.Reference;
 public class MCPServerPanelApp extends BasePanelApp {
 
 	@Override
+	public String getIcon() {
+		return "mcp";
+	}
+
+	@Override
 	public Portlet getPortlet() {
 		return _portlet;
 	}
