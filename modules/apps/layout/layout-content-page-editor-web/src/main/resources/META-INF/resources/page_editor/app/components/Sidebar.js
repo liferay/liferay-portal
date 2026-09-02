@@ -84,6 +84,7 @@ export default function Sidebar() {
 		MIN_SIDEBAR_WIDTH
 	);
 
+	const shouldFocusSidebarContentRef = useRef(false);
 	const sidebarContentRef = useRef();
 	const tabListRef = useRef();
 
@@ -132,6 +133,14 @@ export default function Sidebar() {
 	}, [sidebarHidden, sidebarOpen, itemConfigurationOpen]);
 
 	useEffect(() => {
+		if (sidebarOpen && shouldFocusSidebarContentRef.current) {
+			shouldFocusSidebarContentRef.current = false;
+
+			sidebarContentRef.current?.focus({preventScroll: true});
+		}
+	}, [sidebarOpen, sidebarPanelId]);
+
+	useEffect(() => {
 		const wrapper = document.getElementById('wrapper');
 
 		if (!wrapper || selectedViewportSize === VIEWPORT_SIZES.desktop) {
@@ -170,8 +179,7 @@ export default function Sidebar() {
 		);
 
 		if (open) {
-			sidebarContentRef.current.style.visibility = 'visible';
-			sidebarContentRef.current?.focus({preventScroll: true});
+			shouldFocusSidebarContentRef.current = true;
 		}
 	};
 

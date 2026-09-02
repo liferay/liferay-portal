@@ -141,6 +141,39 @@ test('Renders sidebars visible at desktop size and sidebars not visible at small
 	await expect(configurationPanel).not.toBeVisible();
 });
 
+test(
+	'Keeps the sidebar hidden after switching panels and closing it',
+	{
+		tag: '@LPD-104398',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create content page and go to edit mode
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Switch panels, which opens the sidebar through the panel button
+
+		await page.getByLabel('Browser', {exact: true}).click();
+
+		await expect(page.getByLabel('Browser Panel')).toBeVisible();
+
+		// Closing it must leave the panel hidden, so that its controls stay out
+		// of the tab order and out of the accessibility tree
+
+		await clickAndExpectToBeHidden({
+			target: page.getByLabel('Browser Panel'),
+			timeout: 1000,
+			trigger: page.getByLabel('Browser', {exact: true}),
+		});
+	}
+);
+
 test('Checks if sidebars are open or closed depending on Product Menu', async ({
 	apiHelpers,
 	page,
