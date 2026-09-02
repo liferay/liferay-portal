@@ -1584,9 +1584,14 @@ public class JournalArticleLocalServiceImpl
 					IndexerRegistryUtil.nullSafeGetIndexer(
 						JournalArticle.class);
 
-				indexer.reindex(
-					getLatestArticle(
-						groupId, articleId, WorkflowConstants.STATUS_ANY));
+				for (JournalArticle article :
+						journalArticlePersistence.findByG_A(
+							groupId, articleId, QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS,
+							ArticleVersionComparator.getInstance(true))) {
+
+					indexer.reindex(article, false);
+				}
 			}
 		}
 		else {
@@ -6120,6 +6125,10 @@ public class JournalArticleLocalServiceImpl
 
 							currentArticle = journalArticlePersistence.update(
 								currentArticle);
+
+							if (indexer != null) {
+								indexer.reindex(currentArticle, false);
+							}
 
 							notifySubscribers(
 								0, currentArticle, "expired",
