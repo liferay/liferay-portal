@@ -15,7 +15,7 @@ buildscript {
 	apply from: file("build-buildscript.gradle"), to: buildscript
 
 	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.jenkins.results.parser", version: "1.0.1926"
+		classpath group: "com.liferay", name: "com.liferay.jenkins.results.parser", version: "1.0.1927"
 	}
 }
 
