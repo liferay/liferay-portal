@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Pricing Web
 Bundle-SymbolicName: com.liferay.commerce.pricing.web
-Bundle-Version: 4.0.135
+Bundle-Version: 4.0.136
 Web-ContextPath: /commerce-pricing-web
 -dsannotations-options: inherit
