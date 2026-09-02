@@ -448,7 +448,9 @@ public class DBUpgrader {
 				}
 			}
 
-			if (FeatureFlagManagerUtil.isEnabled("LPS-157670")) {
+			if (FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPS-157670")) {
+
 				checkRequiredBuildNumber(
 					ReleaseInfo.RELEASE_6_1_0_BUILD_NUMBER);
 			}
