@@ -56,7 +56,7 @@ editDDMStructureURL.setParameter("structureKey", String.valueOf(ddmStructureKey)
 
 	<aui:model-context bean="<%= ddmStructure %>" model="<%= DDMStructure.class %>" />
 
-	<nav class="component-tbar subnav-tbar-light tbar tbar-article">
+	<nav class="component-tbar subnav-tbar-light tbar tbar-article tbar-structure">
 		<clay:container-fluid
 			fullWidth="<%= true %>"
 		>
@@ -88,7 +88,7 @@ editDDMStructureURL.setParameter("structureKey", String.valueOf(ddmStructureKey)
 
 	<div class="contextual-sidebar-content contextual-sidebar-content--sidebar-open">
 		<clay:container-fluid
-			cssClass="container-view"
+			cssClass="container-view journal-edit-structure-content"
 		>
 			<liferay-ui:error exception="<%= DDMStructureValidationModelListenerException.class %>" message="the-structure-key-cannot-be-modified" />
 
