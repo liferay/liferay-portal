@@ -130,7 +130,7 @@
 </tr>
 <tr>
 	<td>TOOLBAR_VIDEO_BUTTON</td>
-	<td>//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Video']]</td>
+	<td>//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Video']] | //a[contains(@class,'cke_button') and contains(@class,'video')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -256,12 +256,12 @@
 </tr>
 <tr>
 	<td>TOOLBAR_IMAGE_BUTTON</td>
-	<td>//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Image']]</td>
+	<td>//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Image']] | //a[contains(@class,'cke_button') and contains(@class,'image')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TOOLBAR_IMAGE_BUTTON_2</td>
-	<td>xpath=(//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Image']])[2]</td>
+	<td>xpath=(//button[contains(@class,'ck-button')][.//span[contains(@class,'ck-button__label') and normalize-space(text())='Image']] | //a[contains(@class,'cke_button') and contains(@class,'image')])[2]</td>
 	<td></td>
 </tr>
 <tr>
