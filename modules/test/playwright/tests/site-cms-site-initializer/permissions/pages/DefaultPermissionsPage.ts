@@ -73,6 +73,8 @@ export class DefaultPermissionsPage {
 				'Info:Default permissions update action started for all assets.',
 				{type: 'info'}
 			);
+
+			await expect(this.permissionsModal).toBeHidden();
 		}
 		else {
 			await waitForAlert(this.page);

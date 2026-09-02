@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen, waitFor} from '@testing-library/react';
+import {act, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
@@ -460,12 +460,77 @@ describe('DefaultPermissionModalContent', () => {
 				},
 				onCreateError: expect.any(Function),
 				onCreateSuccess: expect.any(Function),
-				overrideDefaultErrorToast: true,
 				selectedData: {
 					selectAll: true,
 				},
 				type: 'DefaultPermissionObjectBulkSelectionAction',
 			});
 		});
+	});
+
+	it('Reenable the save button when the propagate task cannot be created', async () => {
+		const closeModalFn = jest.fn(() => {});
+
+		const props = {
+			actions: {
+				L_CONTENTS: [
+					{key: 'UPDATE1', label: 'Update1'},
+					{key: 'VIEW1', label: 'View1'},
+				],
+				L_FILES: [
+					{key: 'UPDATE2', label: 'Update2'},
+					{key: 'VIEW2', label: 'View2'},
+				],
+				OBJECT_ENTRY_FOLDERS: [
+					{key: 'UPDATE3', label: 'Update3'},
+					{key: 'VIEW3', label: 'View3'},
+				],
+			},
+			allowPropagate: true,
+			classExternalReferenceCode: 'ERC1',
+			className: 'com.liferay.depot.model.DepotEntry',
+			closeModal: closeModalFn,
+			roles: [
+				{key: 'admin', name: 'Administrator', type: '1'},
+				{key: 'guest', name: 'Guest', type: '2'},
+			],
+		};
+
+		renderComponent(props);
+
+		await waitFor(() => {
+			expect(apiGetSpy).toHaveBeenCalledTimes(1);
+		});
+
+		await waitFor(() => {
+			expect(
+				screen.getByTestId(`row-checkbox-guest_UPDATE3`)
+			).toBeEnabled();
+		});
+
+		await waitFor(async () => {
+			screen.getByTestId(`row-checkbox-guest_UPDATE3`).click();
+		});
+
+		expect(screen.getByTestId(`row-checkbox-guest_UPDATE3`)).toBeChecked();
+
+		await waitFor(() => {
+			screen.getByTestId('checkbox-propagate').click();
+
+			screen.getByTestId('button-save').click();
+		});
+
+		await waitFor(() => {
+			expect(apiPostSpy).toHaveBeenCalledTimes(1);
+		});
+
+		const [{onCreateError}] = apiPostSpy.mock.calls[0];
+
+		act(() => {
+			onCreateError({data: null, error: 'Something went wrong'});
+		});
+
+		expect(screen.getByTestId('button-save')).toBeEnabled();
+		expect(closeModalFn).not.toHaveBeenCalled();
 	});
 });

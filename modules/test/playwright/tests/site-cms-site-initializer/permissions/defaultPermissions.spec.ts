@@ -505,6 +505,55 @@ test(
 );
 
 test(
+	'Can propagate Default Permissions from the Space actions menu',
+	{tag: '@LPD-104117'},
+	async ({apiHelpers, defaultPermissionsPage, page, spaceSummaryPage}) => {
+		const spaceName = 'Space' + getRandomInt();
+
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				settings: {},
+				type: 'Space',
+			});
+
+		const folderName = 'Folder' + getRandomInt();
+
+		await apiHelpers.objectFolder.createObjectEntryFolder({
+			parentObjectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+			scopeKey: assetLibrary.siteId,
+			title: folderName,
+		});
+
+		await spaceSummaryPage.goto(spaceName);
+
+		await spaceSummaryPage.clickActionsMenuItem(
+			'Edit and Propagate Default Permissions'
+		);
+
+		const permissions = [
+			{action: 'DELETE', checked: true, role: 'Power User'},
+			{action: 'UPDATE', checked: true, role: 'Power User'},
+		];
+
+		await defaultPermissionsPage.checkPermissionsAndSave(
+			permissions,
+			false,
+			true
+		);
+
+		await spaceSummaryPage.viewAllContentLink.click();
+
+		await verifyPermissions({
+			menuitem: 'Default Permissions',
+			objectName: folderName,
+			page,
+			permissions,
+		});
+	}
+);
+
+test(
 	'Reset permissions to the default permissions of the parent',
 	{tag: '@LPD-62475'},
 	async ({

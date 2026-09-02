@@ -22,6 +22,7 @@ export class SpaceSummaryPage {
 	readonly addMembersButton: Locator;
 	readonly closeButton: Locator;
 	readonly galleryPreview: Locator;
+	readonly moreActionsButton: Locator;
 	readonly userGroupsTab: Locator;
 	readonly usersTab: Locator;
 	readonly viewAllContentLink: Locator;
@@ -48,6 +49,10 @@ export class SpaceSummaryPage {
 			.getByLabel('Close', {exact: true});
 
 		this.galleryPreview = page.locator('.fds-gallery-view__preview');
+
+		this.moreActionsButton = page.getByRole('button', {
+			name: 'More Actions',
+		});
 
 		this.userGroupsTab = page.getByRole('tab', {name: 'User Groups'});
 
@@ -112,6 +117,19 @@ export class SpaceSummaryPage {
 				.getByRole('heading', {exact: true, name: spaceName})
 				.waitFor({timeout: 3000});
 		}).toPass({timeout: 60000});
+	}
+
+	async clickActionsMenuItem(menuitem: string) {
+		await this.moreActionsButton.waitFor();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: menuitem,
+			}),
+			trigger: this.moreActionsButton,
+		});
 	}
 
 	async closeMembersDialog() {

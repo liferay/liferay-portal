@@ -71,12 +71,6 @@ describe('BulkActionTaskStarter', () => {
 	});
 
 	describe('constructor', () => {
-		it('throws an error if apiURL is not provided', () => {
-			expect(
-				() => new BulkActionTaskStarter(getStarterDTO({apiURL: null}))
-			).toThrow('Cannot POST bulk action task.');
-		});
-
 		it('initializes properties correctly', () => {
 			const dto = getStarterDTO();
 			(composeCreateTaskDTO as jest.Mock).mockReturnValue({

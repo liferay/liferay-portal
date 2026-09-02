@@ -91,6 +91,36 @@ describe('Bulk Actions Monitor Utils', () => {
 			);
 		});
 
+		it('omits the search and filter parameters for DefaultPermissionObjectBulkSelectionAction when there is no apiURL', () => {
+			const taskUrl = composeCreateTaskURL(
+				undefined,
+				{
+					filters: [],
+					searchQuery: '',
+					selectAll: true,
+				},
+				'DefaultPermissionObjectBulkSelectionAction'
+			);
+
+			expect(taskUrl).toBe(
+				`${Liferay.ThemeDisplay.getPortalURL()}${'/o/bulk/v1.0/bulk-action'}`
+			);
+		});
+
+		it('throws an error when selectAll is true and there is no apiURL to scope the task with', () => {
+			expect(() =>
+				composeCreateTaskURL(
+					undefined,
+					{
+						filters: [],
+						searchQuery: '',
+						selectAll: true,
+					},
+					'DeleteObjectBulkSelectionAction'
+				)
+			).toThrow('Cannot POST bulk action task.');
+		});
+
 		it('applies specific filter for ExportTranslationBulkAction when selectAll is true', () => {
 			const apiURLWithFilter =
 				'/o/search/v1.0/search?filter=folderId eq 123 and groupIds/any(g:g in (456))';
