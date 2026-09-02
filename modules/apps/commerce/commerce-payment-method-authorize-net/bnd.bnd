@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Payment Method Authorize Net
 Bundle-SymbolicName: com.liferay.commerce.payment.method.authorize.net
-Bundle-Version: 4.0.47
+Bundle-Version: 4.0.48
 Import-Package:\
 	!com.aayushatharva.brotli4j.*,\
 	\
