@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Machine Learning Implementation
 Bundle-SymbolicName: com.liferay.commerce.machine.learning.impl
-Bundle-Version: 5.0.64
+Bundle-Version: 5.0.65
 Web-ContextPath: /commerce-machine-learning-impl
 -dsannotations-options: inherit
