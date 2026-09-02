@@ -69,21 +69,18 @@ public class ExportImportInstancePerformanceTest {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
-
 		_exportProcessResource = ExportProcessResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
-
 		_importPreviewResource = ImportPreviewResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
-
 		_importProcessResource = ImportProcessResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
