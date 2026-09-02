@@ -73,6 +73,17 @@ public class ViewVersionHistoryDisplayContext {
 			).setHref(
 				"#"
 			).setIcon(
+				"order-arrow"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "compare")
+			).build(
+				"compare"
+			),
+			FDSActionDropdownItemBuilder.setHighlighted(
+				true
+			).setHref(
+				"#"
+			).setIcon(
 				"time"
 			).setLabel(
 				LanguageUtil.get(_httpServletRequest, "expire")
