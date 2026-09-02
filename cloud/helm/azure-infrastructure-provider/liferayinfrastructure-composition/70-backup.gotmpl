@@ -1,7 +1,6 @@
-{{- $forceDestroy := $xr.spec.forceDestroy | default false -}}
-
 {{- if $backup.enabled }}
 {{- $anchorDates := dict "Friday" "2024-01-05" "Monday" "2024-01-01" "Saturday" "2024-01-06" "Sunday" "2024-01-07" "Thursday" "2024-01-04" "Tuesday" "2024-01-02" "Wednesday" "2024-01-03" -}}
+{{- $forceDestroy := $xr.spec.forceDestroy | default false -}}
 {{- $isWeekly := eq ($backup.frequency | default "Daily") "Weekly" -}}
 
 {{- $anchorDate := $isWeekly | ternary (index $anchorDates ($backup.dayOfWeek | default "Sunday")) "2024-01-01" -}}
@@ -18,17 +17,11 @@
 
 {{- $backupVaultPrincipalId := $backupVaultIdentity.principalId | default "" -}}
 
-{{- $backupRoleAssignmentNames := list -}}
-
-{{- range $dataPlane := $dataPlanes -}}
-    {{- $backupRoleAssignmentNames = append $backupRoleAssignmentNames (printf "liferay-backup-vault-storage-%s" $dataPlane) -}}
-{{- end -}}
-
 {{- $areBackupRolesAssigned := ne $backupVaultPrincipalId "" -}}
 
-{{- range $backupRoleAssignmentName := $backupRoleAssignmentNames -}}
+{{- range $dataPlane := $dataPlanes -}}
     {{- $isBackupRoleAssigned := false -}}
-    {{- range $condition := dig $backupRoleAssignmentName "resource" "status" "conditions" (list) $observedResources -}}
+    {{- range $condition := dig (printf "liferay-backup-vault-storage-%s" $dataPlane) "resource" "status" "conditions" (list) $observedResources -}}
         {{- if and (eq $condition.type "Ready") (eq $condition.status "True") -}}
             {{- $isBackupRoleAssigned = true -}}
         {{- end -}}

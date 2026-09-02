@@ -246,6 +246,10 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "resolve: Always"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \$backupRoleAssignmentNames
         it: Holds the backup instances back until every vault role assignment is ready
     -   asserts:
             -   documentIndex: 0

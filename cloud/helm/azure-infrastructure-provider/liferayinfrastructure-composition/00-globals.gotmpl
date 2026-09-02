@@ -3,6 +3,7 @@
 {{- $observedResources := .observed.resources | default dict -}}
 {{- $xr := .observed.composite.resource -}}
 
+{{- $backup := $xr.spec.backup | default dict -}}
 {{- $cmkEnabled := $xr.spec.cmk.enabled -}}
 {{- $environmentId := $xr.spec.environmentId -}}
 {{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
@@ -28,7 +29,6 @@
 {{- end }}
 
 {{- $activeDatabaseFqdn := dig (printf "database-primary-%s" $activeDataPlane) "resource" "status" "atProvider" "fqdn" "" $observedResources -}}
-{{- $backup := $xr.spec.backup | default dict -}}
 {{- $backupTargetTags := merge (dict) $tags (dict "should-back-up" "true") -}}
 {{- $uidHash := printf "%s-%s-%s" $env.subscriptionId $env.deploymentName $projectIdFull | sha256sum | trunc 6 -}}
 
