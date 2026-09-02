@@ -46,8 +46,8 @@ public class FIPSApplicationStateMachineUtil {
 			});
 
 		_runAndTransitionToOperational(
-			"Key or CSP entry", "The operation completed successfully",
-			runnable);
+			"The operation completed successfully", runnable,
+			throwable -> error("Key or CSP entry", throwable));
 	}
 
 	public static void operational(String cryptoOfficerUserId, String reason) {
@@ -71,6 +71,18 @@ public class FIPSApplicationStateMachineUtil {
 				"initiating-actor", initiatingActor));
 	}
 
+	public static void preOperationalSelfTest(Runnable runnable) {
+		_transition(
+			FIPSApplicationState.SELF_TEST,
+			fipsAuditEvent -> fipsAuditEvent.put(
+				"message", "The pre-operational self tests started"));
+
+		_runAndTransitionToOperational(
+			"All checks and the validated provider self tests passed", runnable,
+			throwable -> _error(
+				"Self test", "pre-operational-health-failure", throwable));
+	}
+
 	public static void quiescent(String cryptoOfficerUserId, String reason) {
 		_transition(
 			FIPSApplicationState.QUIESCENT,
@@ -87,7 +99,10 @@ public class FIPSApplicationStateMachineUtil {
 			fipsAuditEvent -> fipsAuditEvent.put(
 				"message", "The integrity checks started"));
 
-		_runSelfTest(runnable);
+		_runAndTransitionToOperational(
+			"All checks and the validated provider self tests passed", runnable,
+			throwable -> _error(
+				"Self test", "periodic-health-failure", throwable));
 	}
 
 	public static void selfTest(
@@ -101,7 +116,34 @@ public class FIPSApplicationStateMachineUtil {
 				fipsAuditEvent.put("recovery-action", recoveryAction);
 			});
 
-		_runSelfTest(runnable);
+		_runAndTransitionToOperational(
+			"All checks and the validated provider self tests passed", runnable,
+			throwable -> _error(
+				"Self test", "periodic-health-failure", throwable));
+	}
+
+	private static void _error(
+		String failedStep, String failureEventType, Throwable throwable) {
+
+		try {
+			FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+				failureEventType, FIPSAuditEvent.Severity.CRITICAL);
+
+			FIPSApplicationState fipsApplicationState =
+				getFIPSApplicationState();
+
+			fipsAuditEvent.put("failed-step", failedStep);
+			fipsAuditEvent.put("fips-state", fipsApplicationState.name());
+			fipsAuditEvent.put(
+				"provider-error-message", _getMessage(throwable));
+
+			FIPSAuditUtil.write(fipsAuditEvent);
+		}
+		catch (Exception exception) {
+			throwable.addSuppressed(exception);
+		}
+
+		error(failedStep, throwable);
 	}
 
 	private static String _getMessage(Throwable throwable) {
@@ -142,13 +184,19 @@ public class FIPSApplicationStateMachineUtil {
 	}
 
 	private static void _runAndTransitionToOperational(
-		String failedStep, String message, Runnable runnable) {
+		String message, Runnable runnable,
+		Consumer<Throwable> throwableConsumer) {
 
 		try {
 			runnable.run();
 		}
 		catch (Throwable throwable) {
-			error(failedStep, throwable);
+			try {
+				throwableConsumer.accept(throwable);
+			}
+			catch (Exception exception) {
+				throwable.addSuppressed(exception);
+			}
 
 			throw throwable;
 		}
@@ -156,13 +204,6 @@ public class FIPSApplicationStateMachineUtil {
 		_transition(
 			FIPSApplicationState.OPERATIONAL,
 			fipsAuditEvent -> fipsAuditEvent.put("message", message));
-	}
-
-	private static void _runSelfTest(Runnable runnable) {
-		_runAndTransitionToOperational(
-			"Self test",
-			"All checks and the validated provider self tests passed",
-			runnable);
 	}
 
 	private static void _transition(

@@ -5,6 +5,8 @@
 
 package com.liferay.portal.security.fips.rest.internal.resource.v1_0;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationState;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
@@ -56,6 +58,12 @@ public class FIPSHealthVerificationResourceImpl
 				FIPSModeValidator::validate);
 		}
 		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to complete the FIPS health verification",
+					exception);
+			}
+
 			fipsHealthVerification.setErrorMessage(exception::getMessage);
 		}
 
@@ -77,5 +85,8 @@ public class FIPSHealthVerificationResourceImpl
 
 		return fipsHealthVerification;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		FIPSHealthVerificationResourceImpl.class);
 
 }
