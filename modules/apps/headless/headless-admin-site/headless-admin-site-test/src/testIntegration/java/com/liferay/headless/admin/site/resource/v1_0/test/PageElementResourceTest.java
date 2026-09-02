@@ -372,6 +372,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 	public void testPostSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
+		super.testPostSitePageSpecificationPageExperiencePageElement();
+
 		_testPostSitePageSpecificationPageExperiencePageElementWithCollectionDisplayPageElement();
 		_testPostSitePageSpecificationPageExperiencePageElementWithContainerPageElement();
 
