@@ -5,6 +5,10 @@
 
 package com.liferay.site.pim.site.initializer.internal.feature.flag;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -15,6 +19,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.site.initializer.SiteInitializer;
+import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.internal.util.SiteInitializerUtil;
 
 import java.util.Objects;
@@ -51,6 +56,14 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 			_groupLocalService.checkSystemGroups(companyId);
 
 			SiteInitializerUtil.initialize(companyId, _siteInitializer);
+
+			for (DepotEntry depotEntry :
+					_depotEntryLocalService.getDepotEntries(
+						companyId, DepotConstants.TYPE_SPACE)) {
+
+				PIMObjectEntryFolderUtil.getOrAddProductsObjectEntryFolder(
+					depotEntry.getGroup(), _objectEntryFolderLocalService);
+			}
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
@@ -61,7 +74,13 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 		PIMFeatureFlagListener.class);
 
 	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Reference(
 		target = "(site.initializer.key=com.liferay.site.initializer.pim)"
