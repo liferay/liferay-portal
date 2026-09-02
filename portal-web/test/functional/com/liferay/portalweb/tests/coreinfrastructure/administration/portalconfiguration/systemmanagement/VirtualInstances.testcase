@@ -87,7 +87,6 @@ definition {
 	}
 
 	@description = "This test asserts that a user can update the general informations. Including update the default site name, default mail domain and so."
-	@ignore = "true"
 	@priority = 4
 	test CanUpdateGeneralInfos {
 		property portal.acceptance = "true";
@@ -477,7 +476,6 @@ definition {
 		Page.assertCanonicalURL(customCanonicalURL = "http://www.able.com:8080/page2");
 	}
 
-	@ignore = "true"
 	@priority = 4
 	test ViewVirtualHostPrivateSitePage {
 		property custom.properties = "feature.flag.LPD-35013=false${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com,www.charlie.com";
