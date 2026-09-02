@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -72,7 +73,8 @@ public class JUnitBatchTestClassGroupTest
 		List<AxisTestClassGroup> axisTestClassGroups =
 			jUnitBatchTestClassGroup.getAxisTestClassGroups();
 
-		testEquals(1, axisTestClassGroups.size());
+		Assert.assertEquals(
+			axisTestClassGroups.toString(), 1, axisTestClassGroups.size());
 
 		AxisTestClassGroup axisTestClassGroup = axisTestClassGroups.get(0);
 
@@ -83,7 +85,7 @@ public class JUnitBatchTestClassGroupTest
 
 	@Test
 	public void testSetAxisTestClassGroups() throws Exception {
-		_testSetAxisTestClassGroups(Arrays.asList(3, 3, 1), "3000");
+		_testSetAxisTestClassGroups(Arrays.asList(1, 3, 3), "3000");
 		_testSetAxisTestClassGroups(Arrays.asList(4, 3), "");
 	}
 
@@ -146,12 +148,10 @@ public class JUnitBatchTestClassGroupTest
 
 			};
 
-		List<Integer> axisSizes = BatchTestClassGroupTestUtil.getAxisSizes(
-			jUnitBatchTestClassGroup.getAxisTestClassGroups());
-
-		Collections.sort(axisSizes, Collections.reverseOrder());
-
-		testEquals(expectedAxisSizes, axisSizes);
+		testEquals(
+			expectedAxisSizes,
+			BatchTestClassGroupTestUtil.getAxisSizes(
+				jUnitBatchTestClassGroup.getAxisTestClassGroups()));
 	}
 
 }
