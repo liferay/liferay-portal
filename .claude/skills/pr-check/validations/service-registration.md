@@ -12,7 +12,7 @@ Add a scan here only when a wrong registration is provable from the tree alone, 
 
 ## Command
 
-Use `command grep` for working tree scans, since the shell's `grep` wrapper can redirect them.
+Use `command grep` for any working tree scan, so it is filtered by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
 
 Take the changed Java files from the diff:
 
@@ -38,7 +38,7 @@ Run each scan whose inputs the diff touches:
 
 Collect the risky class names from the diff:
 
-- A changed `.java` file declaring `@Component` with `service = {}`. Its class name is the filename.
+- A changed `.java` file declaring `@Component` with `service = {}`. Its class name is the file name.
 
 - A field the diff adds, declared `<visibility> <Type> _<name>;`, where `*/<Type>.java` declares `@Component` with `service = {}`.
 
@@ -72,15 +72,11 @@ Report any interface present in both, naming the class, the interface, and the b
 
 ### Verdict
 
-FAIL when any scan reports a finding, naming the scan alongside what it found. PASS when every scan prints nothing. Never take the verdict from an exit status: `grep` exits 1 precisely when it matched nothing.
-
-## Autocommit
-
-None. The fix is a design choice, not a repair a check should make.
+FAIL when any scan reports a finding, naming the scan alongside what it found. PASS when every scan prints nothing. Never take the verdict from an exit status: `grep` exits 1 precisely when it matches nothing.
 
 ## Checklist
 
-Add one subitem per scan the selection ran:
+Add one subitem per selected scan:
 
 ```
 - [ ] <scan name>
