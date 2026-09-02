@@ -408,33 +408,34 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	public void testExportImportJournalArticleWithLayoutURLLayoutAndGroupDoesNotExistOnImportSide()
 		throws Exception {
 
-		Group group2 = GroupTestUtil.addGroup();
+		Group layoutGroup = GroupTestUtil.addGroup();
 
-		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(group2);
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(layoutGroup);
 
 		Layout childLayout = LayoutTestUtil.addTypePortletLayout(
-			group2, parentLayout.getPlid());
+			layoutGroup, parentLayout.getPlid());
 
 		String content = StringUtil.replace(
 			_read("journal_article_content.xml"),
 			new String[] {"[$GROUP_NAME$]", "[[$LAYOUT_FRIENDLY_URL$]$]"},
 			new String[] {
-				StringUtil.toLowerCase(group2.getName("en_US")),
+				StringUtil.toLowerCase(layoutGroup.getName("en_US")),
 				StringUtil.toLowerCase(childLayout.getFriendlyURL())
 			});
 
 		DataDefinition dataDefinition =
 			DataDefinitionTestUtil.addDataDefinition(
-				"journal", _dataDefinitionResourceFactory, group2.getGroupId(),
-				_read("data_definition.json"), TestPropsValues.getUser());
+				"journal", _dataDefinitionResourceFactory,
+				layoutGroup.getGroupId(), _read("data_definition.json"),
+				TestPropsValues.getUser());
 
 		JournalArticle article = JournalTestUtil.addArticleWithXMLContent(
-			group2.getGroupId(), content, dataDefinition.getDataDefinitionKey(),
-			null);
+			layoutGroup.getGroupId(), content,
+			dataDefinition.getDataDefinitionKey(), null);
 
 		exportPortlet(JournalPortletKeys.JOURNAL, parentLayout);
 
-		GroupTestUtil.deleteGroup(group2);
+		GroupTestUtil.deleteGroup(layoutGroup);
 
 		ExportImportConfiguration exportImportConfiguration = importPortlet(
 			JournalPortletKeys.JOURNAL, parentLayout);
@@ -454,7 +455,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"Warning: The referenced Layout group reference ('/",
-				StringUtil.toLowerCase(group2.getName("en_US")),
+				StringUtil.toLowerCase(layoutGroup.getName("en_US")),
 				"') was not found. Defaulting to the current '",
 				importedGroup.getGroupKey(), "' group"),
 			exportImportReportEntry.getErrorMessage());
@@ -1647,17 +1648,17 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	private JournalArticle _exportPortletWithMissingArticleReference()
 		throws Exception {
 
-		Group group2 = GroupTestUtil.addGroup();
+		Group referencedArticleGroup = GroupTestUtil.addGroup();
 
 		try {
 			JournalArticle referencedArticle =
 				JournalTestUtil.addArticleWithXMLContent(
-					group2.getGroupId(),
+					referencedArticleGroup.getGroupId(),
 					JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 					JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
 					_buildXMLContent("{}"),
-					_addDataDefinition(group2.getGroupId()), null,
-					LocaleUtil.US);
+					_addDataDefinition(referencedArticleGroup.getGroupId()),
+					null, LocaleUtil.US);
 
 			JournalArticle article = JournalTestUtil.addArticleWithXMLContent(
 				group.getGroupId(),
@@ -1678,7 +1679,7 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			return article;
 		}
 		finally {
-			GroupTestUtil.deleteGroup(group2);
+			GroupTestUtil.deleteGroup(referencedArticleGroup);
 		}
 	}
 
