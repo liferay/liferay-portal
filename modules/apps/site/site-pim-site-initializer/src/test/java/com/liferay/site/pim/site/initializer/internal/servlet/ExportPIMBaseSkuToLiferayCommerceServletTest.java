@@ -37,6 +37,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -91,11 +93,27 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 		_testDoGet();
 		_testDoGetWithMissingObjectDefinition();
 		_testDoGetWithMultipleDepotEntries();
-		_testDoGetWithVariantPIMLink();
 		_testDoGetWithPortalException();
+		_testDoGetWithVariantPIMLink();
+		_testDoGetWithVirtualSku();
+		_testDoGetWithoutUnitOfMeasure();
 	}
 
-	private MockHttpServletResponse _get() throws Exception {
+	private JSONObject _getJSONObject() throws Exception {
+		MockHttpServletResponse mockHttpServletResponse =
+			_getMockHttpServletResponse();
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		return jsonArray.getJSONObject(0);
+	}
+
+	private MockHttpServletResponse _getMockHttpServletResponse()
+		throws Exception {
+
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
@@ -103,6 +121,22 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			new MockHttpServletRequest(), mockHttpServletResponse);
 
 		return mockHttpServletResponse;
+	}
+
+	private JSONObject _getSkuJSONObject(JSONObject jsonObject) {
+		JSONArray jsonArray = jsonObject.getJSONArray("skus");
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		return jsonArray.getJSONObject(0);
+	}
+
+	private JSONObject _getSkuUnitOfMeasureJSONObject(JSONObject jsonObject) {
+		JSONArray jsonArray = jsonObject.getJSONArray("skuUnitOfMeasures");
+
+		Assert.assertEquals(1, jsonArray.length());
+
+		return jsonArray.getJSONObject(0);
 	}
 
 	private void _mockGetObjectEntries(
@@ -145,6 +179,16 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			String code, String externalReferenceCode)
 		throws Exception {
 
+		return _mockObjectEntry(
+			code, externalReferenceCode,
+			Collections.<String, Serializable>emptyMap());
+	}
+
+	private ObjectEntry _mockObjectEntry(
+			String code, String externalReferenceCode,
+			Map<String, Serializable> values)
+		throws Exception {
+
 		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
 
 		Mockito.when(
@@ -159,9 +203,27 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			HashMapBuilder.<String, Serializable>put(
 				"code", code
 			).put(
+				"depth", 10.5D
+			).put(
 				"description", code + " description"
 			).put(
+				"height", 20.5D
+			).put(
 				"name", code + " name"
+			).put(
+				"unitOfMeasureAllowDecimalQuantities", true
+			).put(
+				"unitOfMeasureKey", "box"
+			).put(
+				"unitOfMeasureName", "Box"
+			).put(
+				"virtual", false
+			).put(
+				"weight", 30.5D
+			).put(
+				"width", 40.5D
+			).putAll(
+				values
 			).build()
 		);
 
@@ -244,7 +306,8 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			_mockObjectEntry("SKU-1", "SKU-1"));
 		_mockSpaceDepotEntries(_GROUP_ID);
 
-		MockHttpServletResponse mockHttpServletResponse = _get();
+		MockHttpServletResponse mockHttpServletResponse =
+			_getMockHttpServletResponse();
 
 		Assert.assertEquals(
 			ContentTypes.APPLICATION_JSON,
@@ -263,6 +326,7 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
+		Assert.assertTrue(jsonObject.getBoolean("active"));
 		Assert.assertEquals(
 			"[$MASTER_CATALOG_ID$]", jsonObject.getString("catalogId"));
 		Assert.assertEquals(
@@ -285,9 +349,29 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 
 		JSONObject skuJSONObject = skusJSONArray.getJSONObject(0);
 
+		Assert.assertEquals(10.5, skuJSONObject.getDouble("depth"), 0);
+		Assert.assertEquals(20.5, skuJSONObject.getDouble("height"), 0);
 		Assert.assertTrue(skuJSONObject.getBoolean("published"));
 		Assert.assertTrue(skuJSONObject.getBoolean("purchasable"));
 		Assert.assertEquals("SKU-1", skuJSONObject.getString("sku"));
+		Assert.assertEquals(30.5, skuJSONObject.getDouble("weight"), 0);
+		Assert.assertEquals(40.5, skuJSONObject.getDouble("width"), 0);
+
+		JSONObject skuUnitOfMeasureJSONObject = _getSkuUnitOfMeasureJSONObject(
+			skuJSONObject);
+
+		Assert.assertEquals(
+			1, skuUnitOfMeasureJSONObject.getInt("incrementalOrderQuantity"));
+		Assert.assertEquals("box", skuUnitOfMeasureJSONObject.getString("key"));
+		Assert.assertEquals(2, skuUnitOfMeasureJSONObject.getInt("precision"));
+		Assert.assertTrue(skuUnitOfMeasureJSONObject.getBoolean("primary"));
+		Assert.assertEquals(1, skuUnitOfMeasureJSONObject.getInt("rate"));
+
+		JSONObject skuUnitOfMeasureNameJSONObject =
+			skuUnitOfMeasureJSONObject.getJSONObject("name");
+
+		Assert.assertEquals(
+			"Box", skuUnitOfMeasureNameJSONObject.getString("en_US"));
 	}
 
 	private void _testDoGetWithMissingObjectDefinition() throws Exception {
@@ -301,7 +385,8 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			null
 		);
 
-		MockHttpServletResponse mockHttpServletResponse = _get();
+		MockHttpServletResponse mockHttpServletResponse =
+			_getMockHttpServletResponse();
 
 		Assert.assertEquals(
 			JSONUtil.put(
@@ -329,7 +414,8 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 
 		_mockSpaceDepotEntries(_GROUP_ID, _OTHER_GROUP_ID);
 
-		MockHttpServletResponse mockHttpServletResponse = _get();
+		MockHttpServletResponse mockHttpServletResponse =
+			_getMockHttpServletResponse();
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
@@ -350,6 +436,22 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			"SKU-2", jsonObject2.getString("externalReferenceCode"));
 	}
 
+	private void _testDoGetWithoutUnitOfMeasure() throws Exception {
+		_mockGetObjectEntries(
+			_GROUP_ID, _mockObjectDefinition(),
+			_mockObjectEntry(
+				"SKU-1", "SKU-1",
+				HashMapBuilder.<String, Serializable>put(
+					"unitOfMeasureKey", ""
+				).build()));
+		_mockSpaceDepotEntries(_GROUP_ID);
+
+		JSONObject skuJSONObject = _getSkuJSONObject(_getJSONObject());
+
+		Assert.assertEquals("SKU-1", skuJSONObject.getString("sku"));
+		Assert.assertFalse(skuJSONObject.has("skuUnitOfMeasures"));
+	}
+
 	private void _testDoGetWithPortalException() throws Exception {
 		ObjectEntry objectEntry = _mockObjectEntry("SKU-1", "SKU-1");
 
@@ -363,7 +465,8 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			new PortalException()
 		);
 
-		MockHttpServletResponse mockHttpServletResponse = _get();
+		MockHttpServletResponse mockHttpServletResponse =
+			_getMockHttpServletResponse();
 
 		Assert.assertEquals(
 			JSONUtil.put(
@@ -387,7 +490,8 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 
 		_mockVariantPIMLinks("cluster-1", "ERC-1", "ERC-2");
 
-		MockHttpServletResponse mockHttpServletResponse = _get();
+		MockHttpServletResponse mockHttpServletResponse =
+			_getMockHttpServletResponse();
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
@@ -432,6 +536,21 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 		skuJSONObject = skusJSONArray.getJSONObject(0);
 
 		Assert.assertEquals("SKU-3", skuJSONObject.getString("sku"));
+	}
+
+	private void _testDoGetWithVirtualSku() throws Exception {
+		_mockGetObjectEntries(
+			_GROUP_ID, _mockObjectDefinition(),
+			_mockObjectEntry(
+				"SKU-1", "SKU-1",
+				HashMapBuilder.<String, Serializable>put(
+					"virtual", true
+				).build()));
+		_mockSpaceDepotEntries(_GROUP_ID);
+
+		JSONObject jsonObject = _getJSONObject();
+
+		Assert.assertEquals("virtual", jsonObject.getString("productType"));
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
