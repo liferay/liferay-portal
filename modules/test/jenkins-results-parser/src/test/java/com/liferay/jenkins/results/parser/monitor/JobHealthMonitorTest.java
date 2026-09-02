@@ -848,6 +848,11 @@ public class JobHealthMonitorTest
 
 		UrlReader urlReader = mockUrlReader();
 
+		String jobConfigURL =
+			"http://test-9-1/job/generate-reports-controller/config.xml";
+
+		setUrlReaderOutput(configXML, jobConfigURL, urlReader);
+
 		JSONObject jobsJSONObject = new JSONObject(
 		).put(
 			"jobs",
@@ -856,11 +861,6 @@ public class JobHealthMonitorTest
 				jobJSONObject.put("name", _JOB_NAME)
 			)
 		);
-
-		String jobConfigURL =
-			"http://test-9-1/job/generate-reports-controller/config.xml";
-
-		setUrlReaderOutput(configXML, jobConfigURL, urlReader);
 
 		setUrlReaderOutput(
 			jobsJSONObject.toString(), _MASTER_API_URL, urlReader);

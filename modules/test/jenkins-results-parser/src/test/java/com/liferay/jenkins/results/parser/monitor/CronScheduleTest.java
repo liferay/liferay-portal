@@ -60,9 +60,9 @@ public class CronScheduleTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testGetPeriodSeconds() throws Exception {
-		_testGetPeriodSeconds("2026-08-27 10:07", 900, "*/15 * * * *");
 		_testGetPeriodSeconds("2026-08-27 10:00", 3600, "H * * * *");
 		_testGetPeriodSeconds("2026-08-27 10:00", 86400, "0 3 * * *");
+		_testGetPeriodSeconds("2026-08-27 10:07", 900, "*/15 * * * *");
 
 		_testGetPeriodSeconds("2026-08-27 10:00", 86400, "0 6 * * 1-5");
 		_testGetPeriodSeconds("2026-08-31 10:00", 259200, "0 6 * * 1-5");
