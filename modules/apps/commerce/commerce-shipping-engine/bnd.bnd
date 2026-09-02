@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Shipping Engine
 Bundle-SymbolicName: com.liferay.commerce.shipping.engine
-Bundle-Version: 1.0.16
+Bundle-Version: 1.0.17
 Web-ContextPath: /commerce-shipping-engine
 -dsannotations-options: inherit
