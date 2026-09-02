@@ -121,19 +121,19 @@ public class AssetListAssetEntryProviderOrderByTest {
 	public void testGetAssetEntriesInfoPageOrderedByCommonFieldDisplayDate()
 		throws Exception {
 
-		long now = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 
 		ObjectEntry objectEntry1 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
-				"displayDate", new Date(now - Time.DAY)
+				"displayDate", new Date(time - Time.DAY)
 			).build());
 		ObjectEntry objectEntry2 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
-				"displayDate", new Date(now - (3 * Time.DAY))
+				"displayDate", new Date(time - (3 * Time.DAY))
 			).build());
 		ObjectEntry objectEntry3 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
-				"displayDate", new Date(now - (2 * Time.DAY))
+				"displayDate", new Date(time - (2 * Time.DAY))
 			).build());
 
 		_assertOrderedObjectEntries(
@@ -147,19 +147,19 @@ public class AssetListAssetEntryProviderOrderByTest {
 	public void testGetAssetEntriesInfoPageOrderedByCommonFieldExpirationDate()
 		throws Exception {
 
-		long now = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 
 		ObjectEntry objectEntry1 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
-				"expirationDate", new Date(now + (30 * Time.DAY))
+				"expirationDate", new Date(time + (30 * Time.DAY))
 			).build());
 		ObjectEntry objectEntry2 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
-				"expirationDate", new Date(now + (10 * Time.DAY))
+				"expirationDate", new Date(time + (10 * Time.DAY))
 			).build());
 		ObjectEntry objectEntry3 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
-				"expirationDate", new Date(now + (20 * Time.DAY))
+				"expirationDate", new Date(time + (20 * Time.DAY))
 			).build());
 
 		_assertOrderedObjectEntries(

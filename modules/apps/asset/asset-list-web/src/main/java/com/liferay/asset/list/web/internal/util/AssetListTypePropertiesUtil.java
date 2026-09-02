@@ -94,28 +94,28 @@ public class AssetListTypePropertiesUtil {
 
 	private static JSONArray _getCommonFieldsItemsJSONArray(Locale locale) {
 		return JSONUtil.putAll(
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"author-name", locale, Field.USER_NAME, "text"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"created-date", locale, Field.CREATE_DATE, "date"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"display-date", locale, Field.DISPLAY_DATE, "date"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"expiration-date", locale, Field.EXPIRATION_DATE, "date"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"external-reference-code", locale, "externalReferenceCode",
 				"text"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"modified-date", locale, Field.MODIFIED_DATE, "date"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"priority", locale, Field.PRIORITY, "decimal"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"publish-date", locale, Field.PUBLISH_DATE, "date"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject(
 				"review-date", locale, Field.REVIEW_DATE, "date"),
-			_toCommonFieldJSONObject("status", locale, Field.STATUS, "integer"),
-			_toCommonFieldJSONObject("title", locale, Field.TITLE, "text"),
-			_toCommonFieldJSONObject(
+			_getCommonFieldJSONObject("status", locale, Field.STATUS, "integer"),
+			_getCommonFieldJSONObject("title", locale, Field.TITLE, "text"),
+			_getCommonFieldJSONObject(
 				"view-count", locale, "viewCount", "integer"));
 	}
 
@@ -132,7 +132,7 @@ public class AssetListTypePropertiesUtil {
 					return null;
 				}
 
-				return _toPropertyJSONObject(
+				return _getPropertyJSONObject(
 					classNameId, classTypeId, locale, objectField, type);
 			},
 			_log);
@@ -150,7 +150,7 @@ public class AssetListTypePropertiesUtil {
 		return true;
 	}
 
-	private static JSONObject _toCommonFieldJSONObject(
+	private static JSONObject _getCommonFieldJSONObject(
 		String labelKey, Locale locale, String name, String type) {
 
 		return JSONUtil.put(
@@ -166,7 +166,7 @@ public class AssetListTypePropertiesUtil {
 		);
 	}
 
-	private static JSONObject _toPropertyJSONObject(
+	private static JSONObject _getPropertyJSONObject(
 		long classNameId, long classTypeId, Locale locale,
 		ObjectField objectField, String type) {
 
