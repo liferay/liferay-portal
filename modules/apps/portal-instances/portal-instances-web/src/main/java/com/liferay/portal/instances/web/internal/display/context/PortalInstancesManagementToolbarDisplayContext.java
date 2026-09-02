@@ -8,7 +8,6 @@ package com.liferay.portal.instances.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.BaseManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -53,10 +52,7 @@ public class PortalInstancesManagementToolbarDisplayContext
 					LanguageUtil.get(httpServletRequest, "add"));
 			}
 		).addDropdownItem(
-			() ->
-				PropsValues.DATABASE_PARTITION_ENABLED &&
-				FeatureFlagManagerUtil.isEnabled(
-					PortalUtil.getCompanyId(httpServletRequest), "LPD-11342"),
+			() -> PropsValues.DATABASE_PARTITION_ENABLED,
 			dropdownItem -> {
 				dropdownItem.putData(
 					"importURL",

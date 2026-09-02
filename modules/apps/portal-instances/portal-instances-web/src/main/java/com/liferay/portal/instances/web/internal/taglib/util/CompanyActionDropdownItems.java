@@ -7,7 +7,6 @@ package com.liferay.portal.instances.web.internal.taglib.util;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -59,10 +58,7 @@ public class CompanyActionDropdownItems {
 				dropdownGroupItem.setSeparator(true);
 			}
 		).addGroup(
-			() ->
-				(_company.getCompanyId() != _defaultCompanyId) &&
-				FeatureFlagManagerUtil.isEnabled(
-					PortalUtil.getCompanyId(_httpServletRequest), "LPD-11342"),
+			() -> _company.getCompanyId() != _defaultCompanyId,
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(

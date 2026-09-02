@@ -7,7 +7,6 @@ package com.liferay.portal.instances.web.internal.portlet.action;
 
 import com.liferay.portal.instances.exporter.PortalInstanceExporter;
 import com.liferay.portal.instances.web.internal.constants.PortalInstancesPortletKeys;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -15,11 +14,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -43,15 +40,6 @@ public class ExportInstanceMVCActionCommand extends BaseMVCActionCommand {
 	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-11342")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		long companyId = ParamUtil.getLong(actionRequest, "companyId");
 

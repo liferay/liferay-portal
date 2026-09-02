@@ -14,7 +14,6 @@ import com.liferay.headless.portal.instances.resource.v1_0.PortalInstanceResourc
 import com.liferay.portal.instances.exporter.PortalInstanceExporter;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -154,8 +153,6 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 			String portalInstanceId, PortalInstanceCopy portalInstanceCopy)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		_checkPermission();
 
 		if (portalInstanceCopy == null) {
@@ -205,8 +202,6 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 			String portalInstanceId)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		_checkPermission();
 
 		try {
@@ -240,8 +235,6 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 	public PortalInstance postPortalInstanceImport(
 			PortalInstanceImport portalInstanceImport)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		_checkPermission();
 
@@ -294,14 +287,6 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		_companyService.updateCompany(
 			company.getCompanyId(), company.getVirtualHostname(),
 			company.getMx(), company.getMaxUsers(), false);
-	}
-
-	private void _checkFeatureFlag() {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-11342")) {
-
-			throw new UnsupportedOperationException();
-		}
 	}
 
 	private void _checkPermission() throws Exception {
