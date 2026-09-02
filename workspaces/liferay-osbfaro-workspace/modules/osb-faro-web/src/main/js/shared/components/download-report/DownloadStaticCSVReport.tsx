@@ -13,6 +13,7 @@ import {useDispatch} from 'react-redux';
 import {useParams} from 'react-router-dom';
 
 interface IDownloadStaticCSVReport {
+	bordered?: boolean;
 	children?: any;
 	disabled: boolean;
 
@@ -36,6 +37,7 @@ interface IDownloadStaticCSVReport {
 }
 
 export const DownloadStaticCSVReport: React.FC<IDownloadStaticCSVReport> = ({
+	bordered,
 	children,
 	disabled,
 	getFDSQuery,
@@ -59,6 +61,7 @@ export const DownloadStaticCSVReport: React.FC<IDownloadStaticCSVReport> = ({
 				})
 			) : (
 				<DownloadReportButton
+					bordered={bordered}
 					disabled={disabled}
 					onClick={() => onOpenChange(true)}
 				/>

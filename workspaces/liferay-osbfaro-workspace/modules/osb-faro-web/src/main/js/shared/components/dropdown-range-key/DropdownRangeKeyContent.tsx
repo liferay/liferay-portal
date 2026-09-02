@@ -122,6 +122,8 @@ export const DropdownRangeKeyContent: React.FC<
 					displayType="secondary"
 					size="sm"
 				>
+					<ClayIcon className="icon-root mr-2" symbol="filter" />
+
 					{selectedItem?.label ??
 						Liferay.Language.get('select-date-range')}
 

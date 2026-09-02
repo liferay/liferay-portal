@@ -5,12 +5,14 @@ import React from 'react';
 import {useMutationObserver} from './utils';
 
 interface IDownloadReportButton {
+	bordered?: boolean;
 	disabled: boolean;
 	loading?: boolean;
 	onClick: () => void;
 }
 
 export const DownloadReportButton: React.FC<IDownloadReportButton> = ({
+	bordered = false,
 	disabled,
 	loading = false,
 	onClick,
@@ -19,7 +21,7 @@ export const DownloadReportButton: React.FC<IDownloadReportButton> = ({
 
 	return (
 		<ClayButton
-			borderless
+			borderless={!bordered}
 			disabled={disabled || loading || loadingCount > 0}
 			displayType="secondary"
 			onClick={onClick}
