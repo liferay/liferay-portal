@@ -17,17 +17,28 @@ public class RoleUtil {
 	public static Role getOrAddCMSAdministratorRole(long companyId, long userId)
 		throws Exception {
 
-		String name = RoleConstants.CMS_ADMINISTRATOR;
+		String externalReferenceCode =
+			RoleConstants.toSystemRoleExternalReferenceCode(
+				RoleConstants.CMS_ADMINISTRATOR);
 
-		Role role = RoleLocalServiceUtil.fetchRole(companyId, name);
+		Role role = RoleLocalServiceUtil.fetchRoleByExternalReferenceCode(
+			externalReferenceCode, companyId);
+
+		if (role != null) {
+			return role;
+		}
+
+		role = RoleLocalServiceUtil.fetchRole(
+			companyId, RoleConstants.CMS_ADMINISTRATOR);
 
 		if (role != null) {
 			return role;
 		}
 
 		return RoleLocalServiceUtil.addRole(
-			null, userId, null, 0, name, null, null, RoleConstants.TYPE_REGULAR,
-			null, null);
+			externalReferenceCode, userId, null, 0,
+			RoleConstants.CMS_ADMINISTRATOR, null, null,
+			RoleConstants.TYPE_REGULAR, null, null);
 	}
 
 }

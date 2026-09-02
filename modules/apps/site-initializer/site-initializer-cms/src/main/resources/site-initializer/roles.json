@@ -262,6 +262,7 @@
 				"scope": 1
 			}
 		],
+		"externalReferenceCode": "L_CMS_ADMINISTRATOR",
 		"name": "CMS Administrator",
 		"name_i18n": {
 			"en-US": "CMS Administrator"
