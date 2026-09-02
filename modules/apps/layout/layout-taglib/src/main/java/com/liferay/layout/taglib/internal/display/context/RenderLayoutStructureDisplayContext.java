@@ -51,6 +51,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.InfoFormException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -65,6 +66,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -78,6 +80,7 @@ import com.liferay.segments.context.RequestContextMapper;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -478,6 +481,19 @@ public class RenderLayoutStructureDisplayContext {
 		getLayoutStructureRulesResult() {
 
 		if (_layoutStructureRulesResult != null) {
+			return _layoutStructureRulesResult;
+		}
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPS-169837") ||
+			ListUtil.isEmpty(_layoutStructure.getLayoutStructureRules())) {
+
+			_layoutStructureRulesResult =
+				new LayoutStructureRulesHelper.LayoutStructureRulesResult(
+					Collections.emptySet(), Collections.emptySet(),
+					Collections.emptySet(), Collections.emptySet(),
+					Collections.emptyMap(), Collections.emptyMap());
+
 			return _layoutStructureRulesResult;
 		}
 
