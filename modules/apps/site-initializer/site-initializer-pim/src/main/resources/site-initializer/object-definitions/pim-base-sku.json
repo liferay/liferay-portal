@@ -47,6 +47,20 @@
 			"system": true
 		},
 		{
+			"DBType": "Double",
+			"businessType": "Decimal",
+			"externalReferenceCode": "DEPTH",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Depth"
+			},
+			"name": "depth",
+			"required": false,
+			"system": true
+		},
+		{
 			"DBType": "Clob",
 			"businessType": "RichText",
 			"externalReferenceCode": "DESCRIPTION",
@@ -57,6 +71,20 @@
 				"en_US": "Description"
 			},
 			"name": "description",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "Double",
+			"businessType": "Decimal",
+			"externalReferenceCode": "HEIGHT",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Height"
+			},
+			"name": "height",
 			"required": false,
 			"system": true
 		},
@@ -128,6 +156,49 @@
 				"en_US": "Symbol"
 			},
 			"name": "unitOfMeasureSymbol",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "VIRTUAL",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Virtual"
+			},
+			"name": "virtual",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "Double",
+			"businessType": "Decimal",
+			"externalReferenceCode": "WEIGHT",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Weight"
+			},
+			"name": "weight",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "Double",
+			"businessType": "Decimal",
+			"externalReferenceCode": "WIDTH",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Width"
+			},
+			"name": "width",
 			"required": false,
 			"system": true
 		}
