@@ -92,6 +92,22 @@ public class AssetListTypePropertiesUtil {
 				companyId, PortalUtil.getClassName(classNameId));
 	}
 
+	private static JSONObject _getCommonFieldJSONObject(
+		String labelKey, Locale locale, String name, String type) {
+
+		return JSONUtil.put(
+			"label", LanguageUtil.get(locale, labelKey)
+		).put(
+			"name", name
+		).put(
+			"sortable",
+			ArrayUtil.contains(AssetEntryQuery.ORDER_BY_COLUMNS, name) ||
+			name.equals(Field.MODIFIED_DATE)
+		).put(
+			"type", type
+		);
+	}
+
 	private static JSONArray _getCommonFieldsItemsJSONArray(Locale locale) {
 		return JSONUtil.putAll(
 			_getCommonFieldJSONObject(
@@ -113,7 +129,8 @@ public class AssetListTypePropertiesUtil {
 				"publish-date", locale, Field.PUBLISH_DATE, "date"),
 			_getCommonFieldJSONObject(
 				"review-date", locale, Field.REVIEW_DATE, "date"),
-			_getCommonFieldJSONObject("status", locale, Field.STATUS, "integer"),
+			_getCommonFieldJSONObject(
+				"status", locale, Field.STATUS, "integer"),
 			_getCommonFieldJSONObject("title", locale, Field.TITLE, "text"),
 			_getCommonFieldJSONObject(
 				"view-count", locale, "viewCount", "integer"));
@@ -136,34 +153,6 @@ public class AssetListTypePropertiesUtil {
 					classNameId, classTypeId, locale, objectField, type);
 			},
 			_log);
-	}
-
-	private static boolean _isSortable(String businessType) {
-		if (businessType.equals(ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT) ||
-			businessType.equals(
-				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST) ||
-			businessType.equals(ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
-
-			return false;
-		}
-
-		return true;
-	}
-
-	private static JSONObject _getCommonFieldJSONObject(
-		String labelKey, Locale locale, String name, String type) {
-
-		return JSONUtil.put(
-			"label", LanguageUtil.get(locale, labelKey)
-		).put(
-			"name", name
-		).put(
-			"sortable",
-			ArrayUtil.contains(AssetEntryQuery.ORDER_BY_COLUMNS, name) ||
-			name.equals(Field.MODIFIED_DATE)
-		).put(
-			"type", type
-		);
 	}
 
 	private static JSONObject _getPropertyJSONObject(
@@ -202,6 +191,18 @@ public class AssetListTypePropertiesUtil {
 		).put(
 			"type", type
 		);
+	}
+
+	private static boolean _isSortable(String businessType) {
+		if (businessType.equals(ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT) ||
+			businessType.equals(
+				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST) ||
+			businessType.equals(ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private static String _toType(String businessType) {
