@@ -20,6 +20,7 @@ import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSe
 import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSetting;
 import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandlerControl;
+import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportPreviewResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportProcessResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
@@ -108,11 +109,11 @@ public class ExportImportInstancePerformanceTest {
 
 		file.deleteOnExit();
 
-		Files.write(
-			file.toPath(),
+		HttpInvoker.HttpResponse httpResponse =
 			_exportProcessResource.getExportProcessContentHttpResponse(
-				exportProcess.getId()
-			).getBinaryContent());
+				exportProcess.getId());
+
+		Files.write(file.toPath(), httpResponse.getBinaryContent());
 
 		ImportPreview importPreview = _importPreviewResource.postImportPreview(
 			null, null, null,
