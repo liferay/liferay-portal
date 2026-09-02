@@ -18,8 +18,11 @@ interface ExecItemActionArgs {
 }
 
 export class TasksPage {
+	readonly addCommentDialog: Locator;
 	readonly allTasksTab: Locator;
 	readonly assignTaskToDialog: Locator;
+	readonly bulkUpdateStateButton: Locator;
+	readonly bulkUpdateStateDialog: Locator;
 	readonly calendarView: {
 		datePickerMenu: Locator;
 		dayViewButton: Locator;
@@ -56,10 +59,20 @@ export class TasksPage {
 	constructor(page: Page) {
 		this.page = page;
 
+		this.addCommentDialog = page.getByRole('dialog', {
+			name: 'Add a Comment',
+		});
 		this.allTasksTab = page.getByRole('tab', {name: 'All Tasks'});
 		this.assignTaskToDialog = page.getByRole('dialog', {
 			name: 'Assign Tasks to',
 		});
+		this.bulkUpdateStateDialog = page.getByRole('dialog', {
+			name: 'Bulk Update State',
+		});
+		this.bulkUpdateStateButton = this.bulkUpdateStateDialog.getByRole(
+			'button',
+			{name: 'Update State'}
+		);
 		this.calendarView = {
 			datePickerMenu: page.getByRole('dialog', {name: 'Select Date'}),
 			dayViewButton: page.getByRole('button', {
@@ -187,6 +200,12 @@ export class TasksPage {
 		await this.dataSetFragmentPage.execItemAction({
 			action,
 			filter,
+		});
+	}
+
+	getBulkUpdateStateSelector(stepName: string) {
+		return this.bulkUpdateStateDialog.getByRole('combobox', {
+			name: `Transition from ${stepName}`,
 		});
 	}
 

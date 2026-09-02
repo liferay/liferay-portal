@@ -14,6 +14,7 @@ import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisibl
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {SITE_CMS_SPACE_EXTERNAL_REFERENCE_CODE} from '../../setup/site-cms-site/constants/space';
 import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 import {cmpPagesTest} from './fixtures/cmpPagesTest';
 import {toDateString} from './utils/toDateString';
@@ -307,6 +308,199 @@ test(
 					page.getByRole('row', {name: 'Blocked'})
 				).toHaveCount(2);
 			}).toPass({timeout: 10000});
+		});
+	}
+);
+
+test(
+	'Bulk update the state of workflow tasks grouped by workflow and step',
+	{tag: ['@LPD-103721']},
+	async ({apiHelpers, page, tasksPage}) => {
+		const blogTitles = [getRandomString(), getRandomString()];
+
+		await test.step('Link Single Approver to the blog structure', async () => {
+			const objectDefinition =
+				await apiHelpers.objectAdmin.getObjectDefinitionByName(
+					'CMSBlog'
+				);
+
+			const space = await apiHelpers.headlessAssetLibrary.getAssetLibrary(
+				SITE_CMS_SPACE_EXTERNAL_REFERENCE_CODE
+			);
+
+			const workflowDefinition =
+				await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
+					'Single Approver'
+				);
+
+			await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionLink(
+				objectDefinition.className,
+				space.siteId,
+				workflowDefinition.id,
+				workflowDefinition.name,
+				Number(workflowDefinition.version)
+			);
+		});
+
+		await test.step('Create two CMS blog entries, each linked to a task', async () => {
+			const linkedTask = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					title: getRandomString(),
+				},
+				cmpTask,
+				project.scopeKey
+			);
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.getObjectDefinitionByName(
+					'CMSBlog'
+				);
+
+			for (const title of blogTitles) {
+				const blog = await apiHelpers.objectEntry.postObjectEntry(
+					{
+						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+						title,
+					},
+					'cms/blogs',
+					'Default'
+				);
+
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						classExternalReferenceCode: blog.externalReferenceCode,
+						className: objectDefinition.className,
+						groupExternalReferenceCode:
+							blog.systemProperties.scope.externalReferenceCode,
+						r_cmpTaskToCMPTaskLinks_c_cmpTaskId: linkedTask.id,
+					},
+					'cmp/task-links',
+					project.scopeKey
+				);
+			}
+		});
+
+		await test.step('Assign both workflow tasks to the current user', async () => {
+			const myUserAccount =
+				await apiHelpers.headlessAdminUser.getMyUserAccount();
+
+			let blogWorkflowTasks: {id: number}[] = [];
+
+			await expect(async () => {
+				const {items} =
+					await apiHelpers.headlessAdminWorkflow.getWorkflowTasksBySubmittingUser(
+						myUserAccount.id,
+						-1
+					);
+
+				blogWorkflowTasks = (items ?? []).filter(
+					(workflowTask: {objectReviewed?: {assetTitle?: string}}) =>
+						blogTitles.includes(
+							workflowTask.objectReviewed?.assetTitle as string
+						)
+				);
+
+				expect(blogWorkflowTasks).toHaveLength(blogTitles.length);
+			}).toPass({timeout: 30000});
+
+			for (const workflowTask of blogWorkflowTasks) {
+				await apiHelpers.headlessAdminWorkflow.postAssignTaskToUser(
+					workflowTask.id,
+					myUserAccount.id
+				);
+			}
+		});
+
+		await test.step('Select both tasks and open the bulk update state modal', async () => {
+			await expect(async () => {
+				await tasksPage.goto();
+
+				await tasksPage.workflowTasksTab.click();
+
+				for (const title of blogTitles) {
+					await expect(tasksPage.getItem(title)).toBeVisible({
+						timeout: 2000,
+					});
+				}
+			}).toPass({timeout: 30000});
+
+			for (const title of blogTitles) {
+				await tasksPage
+					.getItem(title)
+					.getByLabel('Select Item')
+					.check();
+			}
+
+			await tasksPage.execBulkItemAction('Update State');
+
+			await expect(tasksPage.bulkUpdateStateDialog).toBeVisible();
+		});
+
+		await test.step('The tasks are grouped under their workflow and current step', async () => {
+			await expect(
+				tasksPage.bulkUpdateStateDialog.getByText('Single Approver')
+			).toBeVisible();
+
+			await expect(
+				tasksPage.bulkUpdateStateDialog.getByText('2 Tasks')
+			).toBeVisible();
+
+			await expect(
+				tasksPage.bulkUpdateStateDialog.getByText(
+					'Current Step: Review'
+				)
+			).toBeVisible();
+
+			for (const title of blogTitles) {
+				await expect(
+					tasksPage.bulkUpdateStateDialog.getByRole('link', {
+						name: title,
+					})
+				).toBeVisible();
+			}
+		});
+
+		await test.step('Choosing a transition is required before the state can be updated', async () => {
+			await expect(tasksPage.bulkUpdateStateButton).toBeDisabled();
+
+			await tasksPage.getBulkUpdateStateSelector('review').click();
+
+			await page.getByRole('option', {name: 'approve'}).click();
+
+			await expect(tasksPage.bulkUpdateStateButton).toBeEnabled();
+		});
+
+		await test.step('The transition is applied once a comment is saved', async () => {
+			await tasksPage.bulkUpdateStateButton.click();
+
+			await expect(tasksPage.addCommentDialog).toBeVisible();
+
+			await tasksPage.addCommentDialog
+				.getByLabel('Comment')
+				.fill('Approving both entries');
+
+			await tasksPage.saveButton.click();
+
+			await waitForAlert(
+				page,
+				'State was successfully updated for 2 tasks.',
+				{autoClose: true, type: 'success'}
+			);
+		});
+
+		await test.step('The transitioned tasks are marked completed', async () => {
+			await expect(async () => {
+				await tasksPage.goto();
+
+				await tasksPage.workflowTasksTab.click();
+
+				for (const title of blogTitles) {
+					await expect(tasksPage.getItem(title)).toContainText(
+						'Completed'
+					);
+				}
+			}).toPass({timeout: 30000});
 		});
 	}
 );
