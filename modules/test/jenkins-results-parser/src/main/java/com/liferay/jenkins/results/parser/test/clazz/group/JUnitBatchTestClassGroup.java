@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,7 +56,7 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 
 	public static void clear() {
 		_javaDirPathStrings.clear();
-		_javaFilesLoaded.set(false);
+		_javaFileDirPaths.clear();
 		_javaTestClassFiles.clear();
 	}
 
@@ -365,6 +364,12 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 
 		_loadJavaFiles(_getWorkingDirectory());
 
+		File portalPrivateWorkspacesDir = getPortalPrivateWorkspacesDir();
+
+		if (portalPrivateWorkspacesDir != null) {
+			_loadJavaFiles(portalPrivateWorkspacesDir);
+		}
+
 		setTestClasses();
 
 		_setAutoBalanceTestFiles();
@@ -402,6 +407,12 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 		_jUnitTestBatch = jUnitTestBatch;
 
 		_loadJavaFiles(_getWorkingDirectory());
+
+		File portalPrivateWorkspacesDir = getPortalPrivateWorkspacesDir();
+
+		if (portalPrivateWorkspacesDir != null) {
+			_loadJavaFiles(portalPrivateWorkspacesDir);
+		}
 
 		setTestClasses(jUnitTestBatch.getTestSelector());
 
@@ -488,6 +499,10 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 					portalGitWorkingDirectory.getWorkingDirectory()),
 				File.separator),
 			includeGlobs.toArray(new String[0]));
+	}
+
+	protected File getPortalPrivateWorkspacesDir() {
+		return null;
 	}
 
 	protected List<JobProperty> getReleaseExcludesJobProperties() {
@@ -968,10 +983,15 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 	}
 
 	private void _loadJavaFiles(File workingDirectory) {
-		synchronized (_javaFilesLoaded) {
-			if (_javaFilesLoaded.get()) {
+		synchronized (_javaFileDirPaths) {
+			String workingDirectoryPath =
+				JenkinsResultsParserUtil.getCanonicalPath(workingDirectory);
+
+			if (_javaFileDirPaths.contains(workingDirectoryPath)) {
 				return;
 			}
+
+			_javaFileDirPaths.add(workingDirectoryPath);
 
 			long start = System.currentTimeMillis();
 
@@ -1039,8 +1059,6 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 					" Java test class files in ", workingDirectory.toString(),
 					" in ",
 					JenkinsResultsParserUtil.toDurationString(duration)));
-
-			_javaFilesLoaded.set(true);
 		}
 	}
 
@@ -1143,7 +1161,8 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 		"(?<testClassGlob>[^#]+)#(?<testClassMethodName>.+)");
 	private static final Set<String> _javaDirPathStrings =
 		ConcurrentHashMap.newKeySet();
-	private static final AtomicBoolean _javaFilesLoaded = new AtomicBoolean();
+	private static final Set<String> _javaFileDirPaths =
+		ConcurrentHashMap.newKeySet();
 	private static final Set<File> _javaTestClassFiles =
 		ConcurrentHashMap.newKeySet();
 
