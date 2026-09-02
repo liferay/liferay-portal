@@ -232,6 +232,16 @@ describe('AssetCategories', () => {
 		expect(screen.queryByTestId('item-selector')).not.toBeInTheDocument();
 	});
 
+	it('does not render the generate categories button when there is no content source', () => {
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+
+		renderComponent();
+
+		expect(
+			screen.queryByRole('button', {name: 'add-categories-with-ai'})
+		).not.toBeInTheDocument();
+	});
+
 	it('falls back to the persisted content when getContent returns nothing', async () => {
 		const fire = jest.fn();
 		const getContent = jest.fn().mockResolvedValue('');
@@ -263,13 +273,18 @@ describe('AssetCategories', () => {
 		).toBe('10');
 	});
 
-	it('fires the categorize event when the sparkle is clicked', async () => {
+	it('fires the categorize event when the generate categories button is clicked', async () => {
 		const fire = jest.fn();
 
 		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
 		(global as any).Liferay.fire = fire;
 
-		renderComponent({classNameId: 1, cmsGroupId: 456, scopeId: 123});
+		renderComponent({
+			classNameId: 1,
+			cmsGroupId: 456,
+			contentRawText: 'persisted content',
+			scopeId: 123,
+		});
 
 		fireEvent.click(
 			screen.getByRole('button', {name: 'add-categories-with-ai'})
@@ -317,7 +332,7 @@ describe('AssetCategories', () => {
 	it('opens the AI assistant as a dropdown anchored to the toolbar trigger when adding categories', () => {
 		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
 
-		renderComponent();
+		renderComponent({contentRawText: 'persisted content'});
 
 		const trigger = screen.getByRole('button', {
 			name: 'add-categories-with-ai',
@@ -429,6 +444,18 @@ describe('AssetCategories', () => {
 		expect(screen.queryByText('stage-1')).not.toBeInTheDocument();
 
 		expect(screen.queryByText('Personas')).not.toBeInTheDocument();
+	});
+
+	it('renders the generate categories button when only getContent supplies the content', () => {
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+
+		renderComponent({
+			getContent: jest.fn().mockResolvedValue('edited content'),
+		});
+
+		expect(
+			screen.getByRole('button', {name: 'add-categories-with-ai'})
+		).toBeInTheDocument();
 	});
 
 	it('renders the panel as collapsable by default', () => {
