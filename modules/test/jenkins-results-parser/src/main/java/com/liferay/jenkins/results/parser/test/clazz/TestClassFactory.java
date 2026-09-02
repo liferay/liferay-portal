@@ -22,6 +22,7 @@ import com.liferay.jenkins.results.parser.test.clazz.group.SemVerModulesBatchTes
 import com.liferay.jenkins.results.parser.test.clazz.group.ServiceBuilderModulesBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.TCKJunitBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesCompileBatchTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesJUnitBatchTestClassGroup;
 
 import java.io.File;
 
@@ -104,6 +105,13 @@ public class TestClassFactory {
 		List<String> testClassMethodNames) {
 
 		if (batchTestClassGroup instanceof JUnitBatchTestClassGroup) {
+			if (batchTestClassGroup instanceof
+					WorkspacesJUnitBatchTestClassGroup) {
+
+				return new WorkspacesJUnitTestClass(
+					batchTestClassGroup, testClassFile, testClassMethodNames);
+			}
+
 			if (batchTestClassGroup instanceof
 					ModulesJUnitBatchTestClassGroup) {
 
@@ -229,6 +237,33 @@ public class TestClassFactory {
 
 				return new JSUnitModulesTestClass(
 					batchTestClassGroup, testClassFile);
+			}
+			else if (batchTestClassGroup instanceof
+						WorkspacesJUnitBatchTestClassGroup) {
+
+				File canonicalFile = _getCanonicalFile(
+					testClassFile, jsonObject);
+
+				ModulesJUnitTestClass modulesJUnitTestClass =
+					_modulesJUnitTestClasses.get(canonicalFile);
+
+				if (modulesJUnitTestClass != null) {
+					return modulesJUnitTestClass;
+				}
+
+				if (jsonObject != null) {
+					modulesJUnitTestClass = new WorkspacesJUnitTestClass(
+						batchTestClassGroup, jsonObject);
+				}
+				else {
+					modulesJUnitTestClass = new WorkspacesJUnitTestClass(
+						batchTestClassGroup, testClassFile);
+				}
+
+				_modulesJUnitTestClasses.put(
+					canonicalFile, modulesJUnitTestClass);
+
+				return _modulesJUnitTestClasses.get(canonicalFile);
 			}
 			else if (batchTestClassGroup instanceof
 						ModulesJUnitBatchTestClassGroup) {
