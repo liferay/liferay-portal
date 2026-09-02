@@ -181,6 +181,11 @@ public class JobHealthMonitor extends BaseMonitor {
 						statuses.add(MonitorResult.Status.UNKNOWN);
 					}
 				}
+				else {
+					messages.add(_getMissingScheduleMessage());
+
+					statuses.add(MonitorResult.Status.UNKNOWN);
+				}
 			}
 			catch (Exception exception) {
 				messages.add(
@@ -279,6 +284,12 @@ public class JobHealthMonitor extends BaseMonitor {
 		}
 
 		return lastCompletedBuildJSONObject.optLong("timestamp");
+	}
+
+	private String _getMissingScheduleMessage() {
+		return JenkinsResultsParserUtil.combine(
+			"Job ", _jobName, " has no cadence and no schedule, so it is not ",
+			"checked for being on time");
 	}
 
 	private long _getOverdueDeadlineTimestamp(
