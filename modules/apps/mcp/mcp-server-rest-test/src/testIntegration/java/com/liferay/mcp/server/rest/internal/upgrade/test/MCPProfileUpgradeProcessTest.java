@@ -228,6 +228,15 @@ public class MCPProfileUpgradeProcessTest {
 				_user.getUserId()));
 	}
 
+	private void _assertActiveProfileStatus(ObjectEntry objectEntry)
+		throws Exception {
+
+		Map<String, Serializable> values = _objectEntryLocalService.getValues(
+			objectEntry.getObjectEntryId());
+
+		Assert.assertEquals("active", values.get("profileStatus"));
+	}
+
 	private void _assertMCPServerProfileToolObjectEntries(
 			ObjectEntry mcpServerProfileObjectEntry,
 			ObjectRelationship objectRelationship, String... expectedTools)
@@ -259,6 +268,16 @@ public class MCPProfileUpgradeProcessTest {
 		for (String expectedTool : expectedTools) {
 			Assert.assertTrue(tools.toString(), tools.contains(expectedTool));
 		}
+	}
+
+	private void _assertMCPServerProfileToolObjectEntry(
+		String externalReferenceCode, ObjectDefinition objectDefinition) {
+
+		Assert.assertNotNull(
+			externalReferenceCode,
+			_objectEntryLocalService.fetchObjectEntry(
+				externalReferenceCode, 0,
+				objectDefinition.getObjectDefinitionId()));
 	}
 
 	private void _assertUpgrade(ObjectDefinition objectDefinition)
@@ -328,21 +347,18 @@ public class MCPProfileUpgradeProcessTest {
 			"mcp-server-v1.0 getToolSetToolSetNameTool",
 			"mcp-server-v1.0 postToolSetToolSetNameToolInvoke");
 
-		for (String externalReferenceCode :
-				new String[] {
-					"L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL",
-					"L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL_SETS_PAGE",
-					"L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL_SUMMARIES_PAGE",
-					"L_MCP_SERVER_DEFAULT_PROFILE_TOOL_INVOKE"
-				}) {
-
-			Assert.assertNotNull(
-				externalReferenceCode,
-				_objectEntryLocalService.fetchObjectEntry(
-					externalReferenceCode, 0,
-					mcpServerProfileToolObjectDefinition.
-						getObjectDefinitionId()));
-		}
+		_assertMCPServerProfileToolObjectEntry(
+			"L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL",
+			mcpServerProfileToolObjectDefinition);
+		_assertMCPServerProfileToolObjectEntry(
+			"L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL_SETS_PAGE",
+			mcpServerProfileToolObjectDefinition);
+		_assertMCPServerProfileToolObjectEntry(
+			"L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL_SUMMARIES_PAGE",
+			mcpServerProfileToolObjectDefinition);
+		_assertMCPServerProfileToolObjectEntry(
+			"L_MCP_SERVER_DEFAULT_PROFILE_TOOL_INVOKE",
+			mcpServerProfileToolObjectDefinition);
 
 		Assert.assertNull(
 			_objectFieldLocalService.fetchObjectField(
@@ -372,17 +388,9 @@ public class MCPProfileUpgradeProcessTest {
 		Assert.assertEquals(
 			"inactive", defaultValueObjectFieldSetting.getValue());
 
-		for (ObjectEntry objectEntry :
-				new ObjectEntry[] {
-					_objectEntry1, _objectEntry2, _objectEntry3
-				}) {
-
-			Map<String, Serializable> values =
-				_objectEntryLocalService.getValues(
-					objectEntry.getObjectEntryId());
-
-			Assert.assertEquals("active", values.get("profileStatus"));
-		}
+		_assertActiveProfileStatus(_objectEntry1);
+		_assertActiveProfileStatus(_objectEntry2);
+		_assertActiveProfileStatus(_objectEntry3);
 	}
 
 	private void _deleteObjectDefinition(String externalReferenceCode)
