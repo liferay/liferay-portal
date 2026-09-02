@@ -5,7 +5,6 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
-import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
@@ -44,14 +43,20 @@ public class JUnitBatchTestClassGroupTest
 	@Test
 	public void testGetAxisCount() throws Exception {
 		String className = "SampleAutoBalanceTest";
+		String packagePath = "com/liferay/";
 
-		File workingDirectory = _newAutoBalanceWorkingDirectory(className);
+		File workingDirectory = temporaryFolder.newFolder();
+
+		File packageDir = new File(workingDirectory, packagePath);
+
+		packageDir.mkdirs();
+
+		BatchTestClassGroupTestUtil.newTestClassFile(className, packageDir);
 
 		Properties jobProperties = new Properties();
 
 		jobProperties.setProperty(
-			"test.class.names.auto.balance",
-			"com/liferay/" + className + ".java");
+			"test.class.names.auto.balance", packagePath + className + ".java");
 
 		JUnitBatchTestClassGroup jUnitBatchTestClassGroup =
 			new JUnitBatchTestClassGroup(
@@ -92,22 +97,6 @@ public class JUnitBatchTestClassGroupTest
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-	private File _newAutoBalanceWorkingDirectory(String className)
-		throws Exception {
-
-		File workingDirectory = new File(
-			JenkinsResultsParserUtil.getCanonicalPath(
-				temporaryFolder.newFolder()));
-
-		File packageDir = new File(workingDirectory, "com/liferay");
-
-		packageDir.mkdirs();
-
-		BatchTestClassGroupTestUtil.newTestClassFile(className, packageDir);
-
-		return workingDirectory;
-	}
-
 	private void _testSetAxisTestClassGroups(
 			List<Integer> expectedAxisSizes, String targetAxisDuration)
 		throws Exception {
@@ -136,7 +125,7 @@ public class JUnitBatchTestClassGroupTest
 			new JUnitBatchTestClassGroup(
 				"unit",
 				BatchTestClassGroupTestUtil.getPortalTestClassJob(
-					jobProperties, new ArrayList<>(), workingDirectory)) {
+					jobProperties, Collections.emptyList(), workingDirectory)) {
 
 				@Override
 				protected void setTestClasses() {
