@@ -63,6 +63,18 @@ Skip this block if MCP is not supported in your DXP version.
 
   **Security note**: this is for local development only. BasicAuth sends credentials in every request. For production, use OAuth2 with `OAuth2HeaderAuthVerifier` instead. Never enable BasicAuth on `/o/*` in production.
 
+- **Instance and admin properties (dev only)**: `configs/local/portal-ext.properties` already ships `company.security.update.password.required=false`, `passwords.default.policy.change.required=false`, `terms.of.use.required=false`, and `users.reminder.queries.enabled=false`, and `company.default.time.zone=UTC`, `company.default.web.id=liferay.com`, and `default.admin.email.address.prefix=test` are already the portal defaults. Confirm those are present rather than adding a second copy of each, and add the lines that are missing:
+
+  ```
+  admin.email.from.address=test@liferay.com
+  admin.email.from.name=Test Test
+  setup.wizard.enabled=false
+  ```
+
+  `setup.wizard.enabled=false`, `terms.of.use.required=false`, and `passwords.default.policy.change.required=false` remove the setup wizard, the Terms of Use screen, and the forced password change, and `users.reminder.queries.enabled=false` disables the password recovery security question prompt that otherwise follows that password change. `default.admin.email.address.prefix` and `company.default.web.id` combine into the admin login — `test` plus `liferay.com` is what makes the documented `test@liferay.com` / `test` credentials work. `admin.email.from.address` and `admin.email.from.name` set the sender on portal notifications. `company.default.time.zone=UTC` keeps portal timestamps aligned with the UTC timestamps in `catalina.out`, which otherwise disagree with the local shell and make log correlation misleading.
+
+  Only some of these are read while the default company and its admin user are created: `admin.email.from.address`, `admin.email.from.name`, `company.default.time.zone`, `company.default.web.id`, `default.admin.email.address.prefix`, and `passwords.default.policy.change.required`. Those must be in place before the bundle has ever booted, because `PasswordPolicyLocalServiceImpl.checkDefaultPasswordPolicy` builds the default policy once and a later edit cannot rename an existing admin or clear a `passwordReset` flag already written to the database. `setup.wizard.enabled`, `terms.of.use.required`, and `users.reminder.queries.enabled` are read on each boot or login instead — `UserImpl` resolves the last two through `PrefsPropsUtil` every time — so adding them later still takes effect after a restart.
+
 - **Configuration sync — before the first start**: copy the local config into the bundle: `cp configs/local/portal-ext.properties bundles/portal-ext.properties`. (This copy is destructive — see `skills/deploy-and-verify/SKILL.md` for the diff before sync rule.)
 
   `configs/local/portal-ext.properties` already ships the properties that skip the manual first login, but they only take effect if this copy happens before the bundle has ever booted. See First Login Bootstrap below.
@@ -91,11 +103,11 @@ Skip this block if MCP is not supported in your DXP version.
 
 ### First Login Bootstrap (Mandatory Before API/MCP Calls)
 
-On a fresh Liferay instance, the default admin `test@liferay.com` is created with `passwordReset=true` and `agreedToTermsOfUse=false` in the database. Until both flags are cleared, every authenticated API call (REST, MCP `call-http-endpoint`) returns 403 — including for the Omni Admin user.
+On a fresh Liferay instance, the default admin `test@liferay.com` is created with `passwordReset=true` and `agreedToTermsOfUse=false` in the database. Until the portal stops enforcing both, every authenticated API call (REST, MCP `call-http-endpoint`) returns 403 — including for the Omni Admin user. `terms.of.use.required=false` and `users.reminder.queries.enabled=false` lift their half of that enforcement on any boot, but `passwordReset` is written when the admin is created, so only `passwords.default.policy.change.required=false` already in effect at that point avoids it.
 
-- **Cleared and synced before its first start**: nothing to do. The admin was created with the properties in effect, so the flags were never set.
+- **Cleared and synced before its first start**: nothing to do. The admin was created with the properties in effect, so `passwordReset` was never set.
 
-- **Already started**: the manual login is the only way through — syncing the properties now will not clear flags already in the database.
+- **Already started**: the manual login is the only way through — syncing the properties now will not clear a `passwordReset` flag already in the database.
 
 Prompt the user to log into `http://localhost:${PORT}` as `test@liferay.com` / `test`, accept the Terms of Use, and complete the password change (use `test` as the new password so existing credentials stay valid). Wait for their reply before making any API or MCP calls.
 
