@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal OSGi Web Jasper Plugins Taglib
 Bundle-SymbolicName: com.liferay.portal.osgi.web.jasper.plugins.taglib
-Bundle-Version: 5.0.21
+Bundle-Version: 5.0.22
 Export-Package: com.liferay.portal.osgi.web.jasper.plugins.taglib
 Fragment-Host: com.liferay.portal.osgi.web.servlet.jsp.compiler
 Import-Package: !org.apache.jasper.compiler.tagplugin
