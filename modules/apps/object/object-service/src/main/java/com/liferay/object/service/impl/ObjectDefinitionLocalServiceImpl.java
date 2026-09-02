@@ -667,19 +667,19 @@ public class ObjectDefinitionLocalServiceImpl
 			_objectLayoutLocalService.deleteObjectLayouts(
 				objectDefinition.getObjectDefinitionId());
 
-			_objectValidationRuleLocalService.deleteObjectValidationRules(
-				objectDefinition.getObjectDefinitionId());
-
 			for (ObjectRelationship objectRelationship :
 					_objectRelationshipPersistence.findByODI1_R(
 						objectDefinition.getObjectDefinitionId(), false)) {
 
-				_deleteCompositeKeyObjectValidationRule(
-					objectRelationship.getObjectFieldId2());
-
 				_objectRelationshipLocalService.deleteObjectRelationship(
 					objectRelationship);
+
+				_deleteCompositeKeyObjectValidationRule(
+					objectRelationship.getObjectFieldId2());
 			}
+
+			_objectValidationRuleLocalService.deleteObjectValidationRules(
+				objectDefinition.getObjectDefinitionId());
 
 			for (ObjectRelationship objectRelationship :
 					_objectRelationshipPersistence.findByODI2_R(
