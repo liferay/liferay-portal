@@ -142,7 +142,7 @@ public class JUnitTestClass extends BaseTestClass {
 
 	@Override
 	public String getTestTaskName() {
-		String taskName = _getTaskName();
+		String taskName = getTaskName();
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(taskName)) {
 			return super.getTestTaskName();
@@ -317,6 +317,21 @@ public class JUnitTestClass extends BaseTestClass {
 		_testrayMainComponentName = testrayMainComponentName;
 	}
 
+	protected String getTaskName() {
+		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
+
+		String batchName = batchTestClassGroup.getBatchName();
+
+		if (batchName.startsWith("modules-integration")) {
+			return "testIntegration";
+		}
+		else if (batchName.startsWith("modules-unit")) {
+			return "test";
+		}
+
+		return null;
+	}
+
 	@Override
 	protected String getTestName() {
 		return _getPackageName() + "." + _getClassName();
@@ -450,23 +465,6 @@ public class JUnitTestClass extends BaseTestClass {
 
 		return new File(
 			portalGitWorkingDirectory.getWorkingDirectory(), "modules");
-	}
-
-	private String _getTaskName() {
-		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
-
-		String batchName = batchTestClassGroup.getBatchName();
-
-		if (batchName.startsWith("modules-integration")) {
-			return "testIntegration";
-		}
-		else if (batchName.startsWith("modules-unit") ||
-				 batchName.startsWith("workspaces-unit")) {
-
-			return "test";
-		}
-
-		return null;
 	}
 
 	private void _initTestClassMethods(String fileContent) {
