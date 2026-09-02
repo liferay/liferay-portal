@@ -9754,8 +9754,7 @@ public class ObjectEntryResourceTest {
 			_OBJECT_FIELD_NAME_1);
 
 		Date displayDate = new Date();
-		Date expirationDate = new Date(
-			System.currentTimeMillis() + Time.MINUTE);
+		Date expirationDate = new Date(System.currentTimeMillis() + Time.HOUR);
 		Date reviewDate = new Date();
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
