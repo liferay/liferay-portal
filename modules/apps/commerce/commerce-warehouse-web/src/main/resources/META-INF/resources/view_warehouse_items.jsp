@@ -95,7 +95,7 @@ if (Validator.isNotNull(backURL)) {
 								}
 						%>
 
-								<tr data-commerce-inventory-warehouse-id="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" data-commerce-inventory-warehouse-item-id="<%= commerceInventoryWarehouseItemId %>" data-commerce-inventory-warehouse-item-uom="<%= cpInstanceUnitOfMeasureKey %>" data-index="<%= curIndex %>" data-mvcc-version="<%= mvccVersion %>" data-reserved-quantity="<%= reservedQuantity %>">
+								<tr data-commerce-inventory-warehouse-id="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" data-commerce-inventory-warehouse-item-id="<%= commerceInventoryWarehouseItemId %>" data-commerce-inventory-warehouse-item-uom="<%= HtmlUtil.escapeAttribute(cpInstanceUnitOfMeasureKey) %>" data-index="<%= curIndex %>" data-mvcc-version="<%= mvccVersion %>" data-reserved-quantity="<%= reservedQuantity %>">
 									<td>
 										<%= HtmlUtil.escape(commerceInventoryWarehouse.getName(locale)) %>
 									</td>
