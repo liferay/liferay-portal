@@ -93,6 +93,17 @@ public class ViewWorkflowTasksSectionDisplayContext
 				"assignToUser"
 			).build(
 				"assign-to"
+			),
+			FDSActionDropdownItemBuilder.setHighlighted(
+				true
+			).setIcon(
+				"arrow-start"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "update-state")
+			).setPermissionKey(
+				"changeTransition"
+			).build(
+				"update-state"
 			));
 	}
 
