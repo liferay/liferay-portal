@@ -79,7 +79,7 @@ public class StyleBookEntryLocalServiceImplTest {
 	public void testUpdateFrontendTokensValues() throws Exception {
 		_testUpdateFrontendTokensValues(StringPool.BLANK);
 		_testUpdateFrontendTokensValues(
-			_createFrontendTokensValues(
+			_getFrontendTokensValues(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString()));
 		_testUpdateFrontendTokensValues(null);
@@ -95,7 +95,7 @@ public class StyleBookEntryLocalServiceImplTest {
 		_testUpdateFrontendTokensValuesWithSameValue();
 	}
 
-	private String _createFrontendTokenDefinition(
+	private String _getFrontendTokenDefinition(
 		JSONObject... frontendTokenSetJSONObjects) {
 
 		JSONObject jsonObject = JSONUtil.put(
@@ -111,7 +111,7 @@ public class StyleBookEntryLocalServiceImplTest {
 		return jsonObject.toString();
 	}
 
-	private JSONObject _createFrontendTokenJSONObject(
+	private JSONObject _getFrontendTokenJSONObject(
 		String defaultValue, String name) {
 
 		return JSONUtil.put(
@@ -135,7 +135,7 @@ public class StyleBookEntryLocalServiceImplTest {
 		);
 	}
 
-	private JSONObject _createFrontendTokenSetJSONObject(
+	private JSONObject _getFrontendTokenSetJSONObject(
 		String name, JSONObject... frontendTokenJSONObjects) {
 
 		return JSONUtil.put(
@@ -147,7 +147,7 @@ public class StyleBookEntryLocalServiceImplTest {
 		);
 	}
 
-	private String _createFrontendTokensValues(
+	private String _getFrontendTokensValues(
 		String cssVariableMapping, String key, String value) {
 
 		return JSONUtil.put(
@@ -220,14 +220,14 @@ public class StyleBookEntryLocalServiceImplTest {
 
 		_mockStyleBookEntry(styleBookEntryId);
 
-		String frontendTokenDefinition = _createFrontendTokenDefinition(
-			_createFrontendTokenSetJSONObject(
+		String frontendTokenDefinition = _getFrontendTokenDefinition(
+			_getFrontendTokenSetJSONObject(
 				RandomTestUtil.randomString(),
-				_createFrontendTokenJSONObject(
+				_getFrontendTokenJSONObject(
 					RandomTestUtil.randomString(), "primaryColor")),
-			_createFrontendTokenSetJSONObject(
+			_getFrontendTokenSetJSONObject(
 				RandomTestUtil.randomString(),
-				_createFrontendTokenJSONObject(
+				_getFrontendTokenJSONObject(
 					RandomTestUtil.randomString(), "primaryColor")));
 
 		AssertUtils.assertFailure(
@@ -258,13 +258,13 @@ public class StyleBookEntryLocalServiceImplTest {
 
 		_mockStyleBookEntry(styleBookEntryId);
 
-		JSONObject frontendTokenJSONObject = _createFrontendTokenJSONObject(
+		JSONObject frontendTokenJSONObject = _getFrontendTokenJSONObject(
 			RandomTestUtil.randomString(), "primaryColor");
 
 		frontendTokenJSONObject.put("type", "NotAValidType");
 
-		String frontendTokenDefinition = _createFrontendTokenDefinition(
-			_createFrontendTokenSetJSONObject(
+		String frontendTokenDefinition = _getFrontendTokenDefinition(
+			_getFrontendTokenSetJSONObject(
 				RandomTestUtil.randomString(), frontendTokenJSONObject));
 
 		AssertUtils.assertFailure(
@@ -287,10 +287,10 @@ public class StyleBookEntryLocalServiceImplTest {
 			styleBookEntry
 		);
 
-		String frontendTokenDefinition = _createFrontendTokenDefinition(
-			_createFrontendTokenSetJSONObject(
+		String frontendTokenDefinition = _getFrontendTokenDefinition(
+			_getFrontendTokenSetJSONObject(
 				RandomTestUtil.randomString(),
-				_createFrontendTokenJSONObject(
+				_getFrontendTokenJSONObject(
 					RandomTestUtil.randomString(), "primaryColor")));
 
 		StyleBookEntry updatedStyleBookEntry =
@@ -333,7 +333,7 @@ public class StyleBookEntryLocalServiceImplTest {
 
 		String key = RandomTestUtil.randomString();
 
-		String frontendTokensValues = _createFrontendTokensValues(
+		String frontendTokensValues = _getFrontendTokensValues(
 			cssVariableMapping, key, value);
 
 		AssertUtils.assertFailure(
@@ -367,7 +367,7 @@ public class StyleBookEntryLocalServiceImplTest {
 
 		StyleBookEntry styleBookEntry = _mockStyleBookEntry(styleBookEntryId);
 
-		String frontendTokensValues = _createFrontendTokensValues(
+		String frontendTokensValues = _getFrontendTokensValues(
 			RandomTestUtil.randomString() + StringPool.LESS_THAN +
 				RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
