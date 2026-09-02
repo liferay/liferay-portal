@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Shipment Content Web
 Bundle-SymbolicName: com.liferay.commerce.shipment.content.web
-Bundle-Version: 4.0.32
+Bundle-Version: 4.0.33
 Web-ContextPath: /commerce-shipment-content-web
