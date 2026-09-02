@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Analytics Reports REST API
 Bundle-SymbolicName: com.liferay.analytics.reports.rest.api
-Bundle-Version: 3.0.6
+Bundle-Version: 3.0.7
 Export-Package:\
 	com.liferay.analytics.reports.rest.dto.v1_0,\
 	com.liferay.analytics.reports.rest.resource.v1_0
