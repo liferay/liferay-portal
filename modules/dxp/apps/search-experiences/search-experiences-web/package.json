@@ -62,5 +62,5 @@
 		"format": "node-scripts format",
 		"test": "USE_REACT_16=true node-scripts test"
 	},
-	"version": "3.0.103"
+	"version": "3.0.104"
 }
