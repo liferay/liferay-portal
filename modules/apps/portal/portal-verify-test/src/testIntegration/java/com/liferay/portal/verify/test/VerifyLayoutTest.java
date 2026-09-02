@@ -36,7 +36,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,11 +65,16 @@ public class VerifyLayoutTest extends BaseVerifyProcessTestCase {
 		_errorMessages = new ArrayList<>();
 
 		for (String keyword : PropsValues.LAYOUT_FRIENDLY_URL_KEYWORDS) {
-			if (!keyword.contains(StringPool.STAR) &&
-				!keyword.contains(StringPool.UNDERLINE)) {
+			if (keyword.contains(StringPool.STAR) ||
+				keyword.contains(StringPool.UNDERLINE)) {
 
+				continue;
+			}
+
+			if (_keyword1 == null) {
 				_keyword1 = keyword;
-
+			}
+			else {
 				_keyword2 = keyword;
 
 				break;
@@ -123,7 +127,6 @@ public class VerifyLayoutTest extends BaseVerifyProcessTestCase {
 			_errorMessages.toString(), 0, _errorMessages.size());
 	}
 
-	@Ignore
 	@Test
 	public void testVerifyLayoutsWithReservedLayoutFriendlyURLs()
 		throws Exception {
