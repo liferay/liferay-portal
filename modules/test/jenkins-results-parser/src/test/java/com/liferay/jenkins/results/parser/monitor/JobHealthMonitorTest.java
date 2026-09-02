@@ -141,18 +141,19 @@ public class JobHealthMonitorTest
 
 	@Test
 	public void testExecuteCadenceOverridesCron() throws Exception {
+		long virtualCurrentTime = _newTimestamp(10, 0);
+
 		_setJobJSONObject(
 			_newConfigXML("0 6 * * 1-5"),
 			_newJobJSONObject(
-				42, "SUCCESS",
-				JenkinsResultsParserUtil.getCurrentTimeMillis() -
-					(3600 * 1000)));
+				42, "SUCCESS", virtualCurrentTime - (3600 * 1000)));
 
 		Properties monitorProperties = _newMonitorProperties();
 
 		monitorProperties.setProperty("monitor[a].parameter[cadence]", "900");
 
-		MonitorResult monitorResult = _execute(monitorProperties);
+		MonitorResult monitorResult = _executeAtTime(
+			monitorProperties, virtualCurrentTime);
 
 		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 		testEquals(
@@ -162,7 +163,9 @@ public class JobHealthMonitorTest
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 
-		Assert.assertNotNull(metrics.get("overdue.deadline.timestamp"));
+		testEquals(
+			String.valueOf(virtualCurrentTime - (2700 * 1000)),
+			metrics.get("overdue.deadline.timestamp"));
 	}
 
 	@Test
@@ -180,10 +183,26 @@ public class JobHealthMonitorTest
 
 		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
 
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		Calendar deadlineCalendar = _newCalendar(3, 0);
+
+		deadlineCalendar.add(Calendar.DAY_OF_MONTH, -1);
+
+		testEquals(
+			String.valueOf(deadlineCalendar.getTimeInMillis()),
+			metrics.get("overdue.deadline.timestamp"));
+
 		monitorResult = _executeAtTime(
 			_newMonitorProperties(), _newTimestamp(10, 5));
 
 		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
+
+		metrics = monitorResult.getMetrics();
+
+		testEquals(
+			String.valueOf(_newTimestamp(3, 0)),
+			metrics.get("overdue.deadline.timestamp"));
 	}
 
 	@Test
@@ -821,7 +840,7 @@ public class JobHealthMonitorTest
 	}
 
 	private void _setJobJSONObject(JSONObject jobJSONObject) throws Exception {
-		_setJobJSONObject(_CONFIG_XML_WITHOUT_TRIGGER, jobJSONObject);
+		_setJobJSONObject("<project><triggers/></project>", jobJSONObject);
 	}
 
 	private void _setJobJSONObject(String configXML, JSONObject jobJSONObject)
@@ -838,10 +857,13 @@ public class JobHealthMonitorTest
 			)
 		);
 
+		String jobConfigURL =
+			"http://test-9-1/job/generate-reports-controller/config.xml";
+
+		setUrlReaderOutput(configXML, jobConfigURL, urlReader);
+
 		setUrlReaderOutput(
 			jobsJSONObject.toString(), _MASTER_API_URL, urlReader);
-
-		setUrlReaderOutput(configXML, _JOB_CONFIG_URL, urlReader);
 	}
 
 	private void _testJobHealthMonitorExpectedIllegalArgumentException(
@@ -875,12 +897,6 @@ public class JobHealthMonitorTest
 		_testJobHealthMonitorExpectedIllegalArgumentException(
 			monitorProperties);
 	}
-
-	private static final String _CONFIG_XML_WITHOUT_TRIGGER =
-		"<project><triggers/></project>";
-
-	private static final String _JOB_CONFIG_URL =
-		"http://test-9-1/job/generate-reports-controller/config.xml";
 
 	private static final String _JOB_NAME = "generate-reports-controller";
 

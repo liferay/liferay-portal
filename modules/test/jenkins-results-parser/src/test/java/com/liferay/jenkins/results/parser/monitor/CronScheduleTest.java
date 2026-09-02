@@ -19,32 +19,32 @@ public class CronScheduleTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testCronSchedule() {
-		_testCronScheduleExpectedIllegalArgumentException(null);
-		_testCronScheduleExpectedIllegalArgumentException("");
-
 		_testCronScheduleExpectedIllegalArgumentException("* * * *");
 		_testCronScheduleExpectedIllegalArgumentException("* * * * * *");
 
+		_testCronScheduleExpectedIllegalArgumentException("0 0 * * MON");
+		_testCronScheduleExpectedIllegalArgumentException("0 0 L * *");
 		_testCronScheduleExpectedIllegalArgumentException("@daily");
 		_testCronScheduleExpectedIllegalArgumentException("H(0-29) 3 * * *");
-		_testCronScheduleExpectedIllegalArgumentException("0 0 L * *");
-		_testCronScheduleExpectedIllegalArgumentException("0 0 * * MON");
 
 		_testCronScheduleExpectedIllegalArgumentException("0 0 * * H");
 		_testCronScheduleExpectedIllegalArgumentException("0 0 * H *");
 		_testCronScheduleExpectedIllegalArgumentException("0 0 H * *");
 		_testCronScheduleExpectedIllegalArgumentException("0 0 H/2 * *");
 
-		_testCronScheduleExpectedIllegalArgumentException("60 * * * *");
-		_testCronScheduleExpectedIllegalArgumentException("* 24 * * *");
-		_testCronScheduleExpectedIllegalArgumentException("* * 0 * *");
-		_testCronScheduleExpectedIllegalArgumentException("* * * 13 *");
 		_testCronScheduleExpectedIllegalArgumentException("* * * * 8");
+		_testCronScheduleExpectedIllegalArgumentException("* * * 13 *");
+		_testCronScheduleExpectedIllegalArgumentException("* * 0 * *");
+		_testCronScheduleExpectedIllegalArgumentException("* 24 * * *");
+		_testCronScheduleExpectedIllegalArgumentException("60 * * * *");
 
 		_testCronScheduleExpectedIllegalArgumentException("*/0 * * * *");
 		_testCronScheduleExpectedIllegalArgumentException("30-10 * * * *");
 
 		_testCronScheduleExpectedIllegalArgumentException("0 0 1 * 1");
+
+		_testCronScheduleExpectedIllegalArgumentException("");
+		_testCronScheduleExpectedIllegalArgumentException(null);
 	}
 
 	@Test
@@ -52,9 +52,9 @@ public class CronScheduleTest extends com.liferay.jenkins.results.parser.Test {
 		_testGetHashSpanSeconds(0, "*/15 * * * *");
 		_testGetHashSpanSeconds(0, "0 6 * * 1-5");
 
-		_testGetHashSpanSeconds(900, "H/15 * * * *");
 		_testGetHashSpanSeconds(3600, "H * * * *");
 		_testGetHashSpanSeconds(3600, "H 3 * * *");
+		_testGetHashSpanSeconds(900, "H/15 * * * *");
 		_testGetHashSpanSeconds(90000, "H H * * 3");
 	}
 
@@ -103,6 +103,8 @@ public class CronScheduleTest extends com.liferay.jenkins.results.parser.Test {
 
 		_testGetPreviousFireTimestamp(
 			"2026-08-27 10:15", "2026-08-27 10:15", "*/15 * * * *");
+
+		_testGetPreviousFireTimestampNoFire("2026-08-27 10:00", "0 0 31 2 *");
 	}
 
 	private long _getTimestamp(String dateString) throws Exception {
@@ -151,6 +153,18 @@ public class CronScheduleTest extends com.liferay.jenkins.results.parser.Test {
 
 		testEquals(
 			_getTimestamp(expectedDateString),
+			cronSchedule.getPreviousFireTimestamp(
+				_getTimestamp(currentDateString)));
+	}
+
+	private void _testGetPreviousFireTimestampNoFire(
+			String currentDateString, String spec)
+		throws Exception {
+
+		CronSchedule cronSchedule = new CronSchedule(spec);
+
+		testEquals(
+			-1L,
 			cronSchedule.getPreviousFireTimestamp(
 				_getTimestamp(currentDateString)));
 	}
