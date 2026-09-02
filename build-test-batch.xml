@@ -4511,6 +4511,151 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="run-workspaces-junit-test">
+		<attribute default="" name="test.junit.args" />
+		<attribute default="" name="test.task.group" />
+
+		<sequential>
+			<beanshell>
+				<![CDATA[
+					import com.liferay.jenkins.results.parser.AntUtil;
+
+					import java.io.File;
+
+					import java.util.ArrayList;
+					import java.util.HashMap;
+					import java.util.List;
+					import java.util.Map;
+					import java.util.regex.Matcher;
+					import java.util.regex.Pattern;
+
+					public static void generateJunitReport(String testClassName, String testTaskName) {
+						Map parameters = new HashMap();
+
+						parameters.put("test.class.name", testClassName);
+						parameters.put("test.task.name", testTaskName);
+
+						AntUtil.callMacrodef(project, "generate-backend-batch-junit-report-workspaces", parameters);
+					}
+
+					public static String getTestClassNameForTestResults(String testClassFilePath) {
+						Pattern pattern = Pattern.compile("([^#]+)\\.java(#.*)?");
+
+						Matcher matcher = pattern.matcher(testClassFilePath);
+
+						String testClassName = testClassFilePath;
+
+						if (matcher.matches()) {
+							testClassName = matcher.group(1);
+						}
+
+						testClassName = testClassName.replace("/", ".");
+
+						return testClassName;
+					}
+
+					public static String getTestName(String testClassFilePath) {
+						Pattern pattern = Pattern.compile(".*/(\\w+)\\.java(?:#(\\w+))?");
+
+						Matcher matcher = pattern.matcher(testClassFilePath);
+
+						if (matcher.matches()) {
+							String testName = matcher.group(1);
+
+							if (matcher.group(2) != null) {
+								testName = testName + "." + matcher.group(2);
+							}
+
+							return testName;
+						}
+
+						return null;
+					}
+
+					File projectDir = new File(project.getProperty("project.dir"));
+
+					Map testNamesMap = new HashMap();
+
+					String testTaskGroup = "@{test.task.group}";
+
+					for (String testTask : testTaskGroup.split(";")) {
+						Pattern pattern = Pattern.compile("([^\\[]+)\\[([^\\]]+)\\]");
+
+						Matcher matcher = pattern.matcher(testTask);
+
+						if (!matcher.find()) {
+							continue;
+						}
+
+						String testTaskName = matcher.group(1);
+
+						String testClassGroup = matcher.group(2);
+
+						String[] testClassFilePathList = testClassGroup.split(",");
+
+						for (String testClassFilePath : testClassFilePathList) {
+							testClassFilePath = testClassFilePath.replaceAll("\\.class", "\\.java");
+
+							generateJunitReport(getTestClassNameForTestResults(testClassFilePath), testTaskName);
+
+							String testName = getTestName(testClassFilePath);
+
+							List testNames = testNamesMap.getOrDefault(testTaskName, new ArrayList());
+
+							if (!testNames.contains(testName)) {
+								testNames.add(testName);
+							}
+
+							testNamesMap.put(testTaskName, testNames);
+						}
+					}
+
+					for (Map.Entry entry : testNamesMap.entrySet()) {
+						String testTaskName = entry.getKey();
+
+						int index = testTaskName.indexOf(":");
+
+						if (index == -1) {
+							System.out.println("Unable to find a workspace directory in " + testTaskName);
+
+							continue;
+						}
+
+						Map parameters = new HashMap();
+
+						parameters.put("dir", testTaskName.substring(0, index));
+						parameters.put("gradle.jvm.args", "@{test.junit.args}");
+
+						StringBuilder sb = new StringBuilder();
+
+						for (String testName : entry.getValue()) {
+							sb.append("--tests ");
+							sb.append(testName);
+							sb.append(" ");
+						}
+
+						parameters.put("test.name", sb.toString());
+
+						parameters.put("test.task", testTaskName.substring(index));
+
+						int timeout = Integer.parseInt(project.getProperty("test.class.timeout.minutes"));
+
+						try {
+							System.out.println("\"gradle-execute-workspaces\" will timeout in " + timeout);
+
+							AntUtil.callTargetWithTimeout(projectDir, "build-common.xml", "gradle-execute-workspaces", parameters, timeout, false);
+						}
+						catch(Exception exception) {
+							System.out.println("Unable to run Gradle execute workspaces target for " + testTaskName);
+
+							exception.printStackTrace();
+						}
+					}
+				]]>
+			</beanshell>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="setup-lpkg-test">
 		<attribute name="database.type" />
 
@@ -10685,5 +10830,39 @@ junit.jvm.override.version=21</echo>
 		<antcall target="workspaces-compile">
 			<param name="batch.jdk.version" value="11" />
 		</antcall>
+	</target>
+
+	<target name="workspaces-unit">
+		<run-batch-test>
+			<test-action>
+				<print-test-class-group test.class.group.index="${axis.variable}" />
+
+				<lstopwatch action="start" name="test.execution.duration" />
+
+				<mkdir dir="${project.dir}/workspaces/test-results" />
+
+				<run-workspaces-junit-test test.junit.args="--continue" test.task.group="${test.task.group}" />
+
+				<lstopwatch action="total" name="test.execution.duration" />
+			</test-action>
+
+			<test-set-up>
+				<if>
+					<isset property="TEST_CLASS_GROUP_${axis.variable}" />
+					<then>
+						<local name="test.class.group" />
+
+						<propertycopy from="TEST_CLASS_GROUP_${axis.variable}" name="test.class.group" />
+
+						<echo file="${project.dir}/test.class.file.names.properties">TEST_CLASS_GROUP_${axis.variable}=${test.class.group}</echo>
+					</then>
+					<else>
+						<antcall inheritAll="false" target="record-test-class-file-names">
+							<param name="test.class.groups.size" value="${test.batch.size}" />
+						</antcall>
+					</else>
+				</if>
+			</test-set-up>
+		</run-batch-test>
 	</target>
 </project>
