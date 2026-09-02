@@ -162,41 +162,48 @@ public class JobHealthMonitorTest
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 
-		Assert.assertNotNull(metrics.get("required.fire.timestamp"));
+		Assert.assertNotNull(metrics.get("overdue.deadline.timestamp"));
+	}
+
+	@Test
+	public void testExecuteCronGraceScalesToPeriod() throws Exception {
+		Calendar calendar = _newCalendar(3, 5);
+
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+		_setJobJSONObject(
+			_newConfigXML("0 3 * * *"),
+			_newJobJSONObject(42, "SUCCESS", calendar.getTimeInMillis()));
+
+		MonitorResult monitorResult = _executeAtTime(
+			_newMonitorProperties(), _newTimestamp(4, 0));
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+
+		monitorResult = _executeAtTime(
+			_newMonitorProperties(), _newTimestamp(10, 5));
+
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 	}
 
 	@Test
 	public void testExecuteCronHashedWithinSpan() throws Exception {
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.set(Calendar.HOUR_OF_DAY, 3);
-		calendar.set(Calendar.MILLISECOND, 0);
-		calendar.set(Calendar.MINUTE, 40);
-		calendar.set(Calendar.SECOND, 0);
+		Calendar calendar = _newCalendar(3, 40);
 
 		long virtualCurrentTime = calendar.getTimeInMillis();
 
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+		calendar.set(Calendar.MINUTE, 47);
+
 		_setJobJSONObject(
 			_newConfigXML("H 3 * * *"),
-			_newJobJSONObject(
-				42, "SUCCESS",
-				virtualCurrentTime - (((23 * 60) + 53) * 60 * 1000)));
+			_newJobJSONObject(42, "SUCCESS", calendar.getTimeInMillis()));
 
-		try (MockedStatic<JenkinsResultsParserUtil>
-				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
-					JenkinsResultsParserUtil.class,
-					Mockito.CALLS_REAL_METHODS)) {
+		MonitorResult monitorResult = _executeAtTime(
+			_newMonitorProperties(), virtualCurrentTime);
 
-			jenkinsResultsParserUtilMockedStatic.when(
-				JenkinsResultsParserUtil::getCurrentTimeMillis
-			).thenReturn(
-				virtualCurrentTime
-			);
-
-			MonitorResult monitorResult = _execute(_newMonitorProperties());
-
-			testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
-		}
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
 	}
 
 	@Test
@@ -236,7 +243,25 @@ public class JobHealthMonitorTest
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 
-		Assert.assertNotNull(metrics.get("required.fire.timestamp"));
+		Assert.assertNotNull(metrics.get("overdue.deadline.timestamp"));
+	}
+
+	@Test
+	public void testExecuteCronUnreachableSchedule() throws Exception {
+		_setJobJSONObject(
+			_newConfigXML("0 0 31 2 *"),
+			_newJobJSONObject(
+				42, "SUCCESS",
+				JenkinsResultsParserUtil.getCurrentTimeMillis() -
+					(4 * 3600 * 1000)));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(
+			"Job generate-reports-controller has the schedule 0 0 31 2 *, " +
+				"which never comes round",
+			monitorResult.getMessage());
 	}
 
 	@Test
@@ -680,6 +705,34 @@ public class JobHealthMonitorTest
 		return jobHealthMonitor.execute();
 	}
 
+	private MonitorResult _executeAtTime(
+		Properties monitorProperties, long virtualCurrentTime) {
+
+		try (MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
+					JenkinsResultsParserUtil.class,
+					Mockito.CALLS_REAL_METHODS)) {
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				JenkinsResultsParserUtil::getCurrentTimeMillis
+			).thenReturn(
+				virtualCurrentTime
+			);
+
+			return _execute(monitorProperties);
+		}
+	}
+
+	private Calendar _newCalendar(int hourOfDay, int minute) {
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.clear();
+
+		calendar.set(2026, Calendar.AUGUST, 27, hourOfDay, minute, 0);
+
+		return calendar;
+	}
+
 	private String _newConfigXML(String spec) {
 		return JenkinsResultsParserUtil.combine(
 			"<project><triggers><hudson.triggers.TimerTrigger><spec>", spec,
@@ -759,6 +812,12 @@ public class JobHealthMonitorTest
 				"timestamp", lastCompletedBuildTimestamp
 			)
 		);
+	}
+
+	private long _newTimestamp(int hourOfDay, int minute) {
+		Calendar calendar = _newCalendar(hourOfDay, minute);
+
+		return calendar.getTimeInMillis();
 	}
 
 	private void _setJobJSONObject(JSONObject jobJSONObject) throws Exception {
