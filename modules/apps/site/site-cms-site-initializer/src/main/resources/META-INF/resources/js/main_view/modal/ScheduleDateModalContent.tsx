@@ -11,7 +11,8 @@ import React, {useRef, useState} from 'react';
 import ScheduleField, {
 	dateConfig,
 	isPastDate,
-	toMomentDate,
+	toPickerDate,
+	toUTCISOFormat,
 } from '../../content_editor/components/ScheduleField';
 
 interface ScheduleFieldRef {
@@ -49,7 +50,7 @@ export default function ScheduleDateModalContent({
 	const [field, setField] = useState({
 		error: '',
 		never: false,
-		value: toMomentDate(date),
+		value: toPickerDate(date),
 	});
 	const [saving, setSaving] = useState(false);
 
@@ -73,11 +74,7 @@ export default function ScheduleDateModalContent({
 		setSaving(true);
 
 		const success = await onSave(
-			field.never
-				? ''
-				: `${moment(field.value, dateConfig.momentFormat)
-						.utc()
-						.format('YYYY-MM-DDTHH:mm:ss')}Z`
+			field.never ? '' : toUTCISOFormat(field.value)
 		);
 
 		setSaving(false);

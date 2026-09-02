@@ -98,6 +98,7 @@ export default React.forwardRef(function ScheduleField(
 				<ClayDatePicker
 					aria-describedby={error}
 					dateFormat={dateConfig.clayFormat}
+					defaultMonth={toUserTimeZoneDate(new Date())}
 					disabled={checked}
 					firstDayOfWeek={dateUtils.getFirstDayOfWeek(
 						locale as Parameters<
@@ -152,19 +153,25 @@ export default React.forwardRef(function ScheduleField(
 });
 
 export function isPastDate(value: string) {
-	const timeZone = Liferay.ThemeDisplay.getTimeZone();
+	const date = moment(value, dateConfig.momentFormat, true);
 
-	const timeZoneDateTime = new Date(
-		new Date().toLocaleString('en-US', {
-			timeZone,
-		})
-	);
+	if (!date.isValid()) {
+		return false;
+	}
 
-	return timeZoneDateTime >= new Date(toServerFormat(value));
+	return date.valueOf() <= toUserTimeZoneDate(new Date()).getTime();
 }
 
 export function toMomentDate(value: string) {
 	return value ? moment(value).format(dateConfig.momentFormat) : '';
+}
+
+export function toPickerDate(value: string) {
+	return value
+		? moment(toUserTimeZoneDate(new Date(value))).format(
+				dateConfig.momentFormat
+			)
+		: '';
 }
 
 export function toServerFormat(value: string) {
@@ -175,4 +182,24 @@ export function toServerFormat(value: string) {
 
 export function toServerISOFormat(value: string) {
 	return toServerFormat(value).replace(' ', 'T');
+}
+
+export function toUTCISOFormat(value: string) {
+	const date = moment(value, dateConfig.momentFormat, true).toDate();
+
+	const offsetAt = (instant: Date) =>
+		toUserTimeZoneDate(instant).getTime() - instant.getTime();
+
+	const firstGuess = new Date(date.getTime() - offsetAt(date));
+	const utcDate = new Date(date.getTime() - offsetAt(firstGuess));
+
+	return `${utcDate.toISOString().slice(0, 19)}Z`;
+}
+
+function toUserTimeZoneDate(date: Date) {
+	return new Date(
+		date.toLocaleString('en-US', {
+			timeZone: Liferay.ThemeDisplay.getTimeZone(),
+		})
+	);
 }
