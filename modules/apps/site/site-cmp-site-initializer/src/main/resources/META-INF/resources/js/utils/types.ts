@@ -20,6 +20,12 @@ export interface ITaskSchema {
 	title: string;
 }
 
+export interface ChangeTransition {
+	comment?: string;
+	transitionName: string;
+	workflowTaskId: number;
+}
+
 export interface IColumn {
 	displayType: IDisplayType;
 	icon: {

@@ -5,7 +5,7 @@
 
 import {ApiHelper} from '@liferay/site-cms-site-initializer';
 
-import {ITaskObjectEntry} from './types';
+import {ChangeTransition, ITaskObjectEntry} from './types';
 
 type WorkflowTaskAssignee = {
 	assignableUsers: Array<{id: number; name: string}>;
@@ -18,6 +18,15 @@ export async function bulkAssignWorkflowTasks(
 	return ApiHelper.patch(
 		assignments,
 		'/o/headless-admin-workflow/v1.0/workflow-tasks/assign-to-user'
+	);
+}
+
+export async function bulkChangeWorkflowTaskTransitions(
+	changeTransitions: ChangeTransition[]
+) {
+	return ApiHelper.patch(
+		changeTransitions,
+		'/o/headless-admin-workflow/v1.0/workflow-tasks/change-transition'
 	);
 }
 
