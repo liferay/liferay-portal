@@ -69,6 +69,7 @@ export const DownloadStaticCSVReport: React.FC<IDownloadStaticCSVReport> = ({
 
 			{open && (
 				<Modal
+					isFDSExport={Boolean(getFDSQuery)}
 					observer={observer}
 					onClose={() => onOpenChange(false)}
 					onSubmit={async () => {
@@ -147,11 +148,13 @@ export const DownloadStaticCSVReport: React.FC<IDownloadStaticCSVReport> = ({
 };
 
 const Modal = ({
+	isFDSExport,
 	observer,
 	onClose,
 	onSubmit,
 	typeLang,
 }: {
+	isFDSExport: boolean;
 	observer: any;
 	onClose: () => void;
 	onSubmit: () => void;
@@ -173,9 +176,13 @@ const Modal = ({
 				<p>
 					{
 						sub(
-							Liferay.Language.get(
-								'the-generated-csv-file-supports-up-to-x-entries-per-export-and-it-will-respect-the-current-ordering-and-search-results.-please-ensure-that-any-desired-changes-have-been-successfully-applied-before-downloading-the-x-list'
-							),
+							isFDSExport
+								? Liferay.Language.get(
+										'the-generated-CSV-file-will-respect-the-current-filter-and-search-results,-with-a-maximum-of-x-entries-supported-per-export.-please-ensure-that-any-desired-changes-have-been-successfully-applied-before-downloading-the-x-list'
+									)
+								: Liferay.Language.get(
+										'the-generated-csv-file-supports-up-to-x-entries-per-export-and-it-will-respect-the-current-ordering-and-search-results.-please-ensure-that-any-desired-changes-have-been-successfully-applied-before-downloading-the-x-list'
+									),
 							[toLocale(MAX_CSV_ENTRIES), typeLang]
 						) as string
 					}
