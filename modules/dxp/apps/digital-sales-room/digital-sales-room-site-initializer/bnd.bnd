@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Digital Sales Room Site Initializer
 Bundle-SymbolicName: com.liferay.digital.sales.room.site.initializer
-Bundle-Version: 1.0.11
+Bundle-Version: 1.0.12
 Liferay-Site-Initializer-Name: Digital Sales Room
 Provide-Capability: liferay.site.initializer
 Web-ContextPath: /digital-sales-room-site-initializer
