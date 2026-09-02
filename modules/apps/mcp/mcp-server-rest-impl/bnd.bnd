@@ -1,6 +1,6 @@
 Bundle-Name: Liferay MCP Server REST Implementation
 Bundle-SymbolicName: com.liferay.mcp.server.rest.impl
-Bundle-Version: 1.0.7
+Bundle-Version: 1.0.8
 Import-Package:\
 	!com.ethlo.*,\
 	\
