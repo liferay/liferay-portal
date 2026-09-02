@@ -617,8 +617,8 @@ describe('List', () => {
 			expect(getObjectTypeFilter()).toBeDefined();
 		});
 
-		it('should label the object type filter "Object Type"', () => {
-			expect(getObjectTypeFilter().label).toBe('Object Type');
+		it('should label the object type filter "Asset Structure Type"', () => {
+			expect(getObjectTypeFilter().label).toBe('Asset Structure Type');
 		});
 
 		it('should offer Content and File as the only options', () => {
