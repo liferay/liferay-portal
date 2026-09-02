@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Segments Experiment Web
 Bundle-SymbolicName: com.liferay.segments.experiment.web
-Bundle-Version: 3.0.123
+Bundle-Version: 3.0.124
 Web-ContextPath: /segments-experiment-web
