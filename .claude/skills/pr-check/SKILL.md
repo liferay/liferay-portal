@@ -58,6 +58,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Portlet Title](validations/portlet-title.md)
 
+1. [Service Registration](validations/service-registration.md)
+
 1. [Transaction Usage](validations/transaction-usage.md)
 
 1. [HTML Escaping](validations/html-escaping.md)
