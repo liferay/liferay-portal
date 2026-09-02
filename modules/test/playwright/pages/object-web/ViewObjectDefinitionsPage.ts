@@ -173,7 +173,20 @@ export class ViewObjectDefinitionsPage {
 
 		await modal.getByRole('textbox').fill(name);
 
+		const reloadResponse = this.page.waitForResponse(
+			(response) =>
+				response
+					.url()
+					.includes('/o/object-admin/v1.0/object-definitions?') &&
+				response.request().method() === 'GET' &&
+				response.status() === 200
+		);
+
 		await modal.getByRole('button', {exact: true, name: 'Delete'}).click();
+
+		const response = await reloadResponse;
+
+		await response.finished();
 	}
 
 	async deleteObjectFolder(objectFolderName: string) {

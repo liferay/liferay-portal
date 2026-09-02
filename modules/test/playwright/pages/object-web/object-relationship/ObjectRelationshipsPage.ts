@@ -103,7 +103,11 @@ export class ObjectRelationshipsPage {
 
 		await modal.getByRole('textbox').fill(name);
 
+		const reload = this.page.waitForEvent('load', {timeout: 10000});
+
 		await modal.getByRole('button', {exact: true, name: 'Delete'}).click();
+
+		await reload;
 	}
 
 	async goto(objectDefinitionLabel: string, objectFolderLabel?: string) {
