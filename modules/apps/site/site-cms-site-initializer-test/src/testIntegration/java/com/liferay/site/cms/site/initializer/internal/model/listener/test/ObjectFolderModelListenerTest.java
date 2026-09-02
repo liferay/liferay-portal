@@ -49,6 +49,11 @@ public class ObjectFolderModelListenerTest {
 		Role role = _roleLocalService.getRole(
 			company.getCompanyId(), RoleConstants.CMS_ADMINISTRATOR);
 
+		Assert.assertEquals(
+			RoleConstants.toSystemRoleExternalReferenceCode(
+				RoleConstants.CMS_ADMINISTRATOR),
+			role.getExternalReferenceCode());
+
 		_assertResourcePermissions(
 			company,
 			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
