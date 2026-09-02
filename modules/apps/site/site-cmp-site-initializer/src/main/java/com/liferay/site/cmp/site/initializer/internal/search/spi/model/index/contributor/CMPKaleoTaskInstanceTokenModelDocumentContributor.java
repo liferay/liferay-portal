@@ -64,11 +64,10 @@ public class CMPKaleoTaskInstanceTokenModelDocumentContributor
 		}
 
 		long[] cmpTaskObjectEntryIds =
-			CMPObjectEntryUtil.getLinkedObjectEntryIds(
-				_filterFactory, _groupLocalService, "L_CMP_TASK_LINK",
+			CMPObjectEntryUtil.getCMPTaskObjectEntryIds(
+				_filterFactory, _groupLocalService,
 				_objectDefinitionLocalService, objectEntry,
-				_objectEntryLocalService,
-				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId");
+				_objectEntryLocalService);
 
 		if (cmpTaskObjectEntryIds.length == 0) {
 			return;
