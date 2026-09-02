@@ -24,6 +24,10 @@ const baseProps = {
 			data: {id: 'assign-to', permissionKey: 'assignToUser'},
 			label: 'Assign To',
 		},
+		{
+			data: {id: 'update-state', permissionKey: 'changeTransition'},
+			label: 'Update State',
+		},
 	],
 	creationMenu: {
 		primaryItems: [],
@@ -44,6 +48,10 @@ const getBulkAction = (id: string) => {
 	);
 };
 
+const selectedTask = (assignedToMe: boolean, completed = false) => ({
+	embedded: {assignedToMe, completed, id: 1},
+});
+
 describe('WorkflowTasksFDSPropsTransformer', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
@@ -54,13 +62,31 @@ describe('WorkflowTasksFDSPropsTransformer', () => {
 
 		const bulkActions = result.bulkActions as any[];
 
-		expect(bulkActions).toHaveLength(2);
+		expect(bulkActions).toHaveLength(3);
 
 		bulkActions.forEach((action) => {
 			expect(action.isDisabled({allItemsSelectedActive: true})).toBe(
 				true
 			);
 		});
+	});
+
+	it('disables update-state when a selected task is already completed', () => {
+		expect(
+			getBulkAction('update-state').isDisabled({
+				allItemsSelectedActive: false,
+				selectedItems: [selectedTask(true), selectedTask(true, true)],
+			})
+		).toBe(true);
+	});
+
+	it('disables update-state when a selected task is not assigned to the user', () => {
+		expect(
+			getBulkAction('update-state').isDisabled({
+				allItemsSelectedActive: false,
+				selectedItems: [selectedTask(true), selectedTask(false)],
+			})
+		).toBe(true);
 	});
 
 	it('does not crash when creationMenu is null', () => {
@@ -94,6 +120,15 @@ describe('WorkflowTasksFDSPropsTransformer', () => {
 		});
 	});
 
+	it('enables update-state when every selected task is assigned to the user', () => {
+		expect(
+			getBulkAction('update-state').isDisabled({
+				allItemsSelectedActive: false,
+				selectedItems: [selectedTask(true), selectedTask(true)],
+			})
+		).toBe(false);
+	});
+
 	it('filters out the kanban view', () => {
 		const result = WorkflowTasksFDSPropsTransformer(baseProps as any);
 
@@ -113,6 +148,17 @@ describe('WorkflowTasksFDSPropsTransformer', () => {
 		expect(
 			getBulkAction('update-due-date').isVisible({selectedItems})
 		).toBe(true);
+	});
+
+	it('leaves the other bulk actions out of the assignee rule', () => {
+		['assign-to', 'update-due-date'].forEach((id) => {
+			expect(
+				getBulkAction(id).isDisabled({
+					allItemsSelectedActive: false,
+					selectedItems: [selectedTask(false)],
+				})
+			).toBe(false);
+		});
 	});
 
 	it('marks all views as non-default', () => {
@@ -151,5 +197,41 @@ describe('WorkflowTasksFDSPropsTransformer', () => {
 		expect(contentComponent({closeModal: jest.fn()}).type).toBe(
 			BulkEditWorkflowDueDateModalContent
 		);
+	});
+
+	it('opens the update state modal at the large size', async () => {
+		const result = WorkflowTasksFDSPropsTransformer(baseProps as any);
+
+		await (result as any).onBulkActionItemClick({
+			action: {data: {id: 'update-state'}},
+			selectedData: {items: []},
+		});
+
+		expect(mockOpenCMPModal).toHaveBeenCalledWith(
+			expect.objectContaining({size: 'lg'})
+		);
+	});
+
+	it('resolves the workflow task url for the rows of the update state modal', async () => {
+		const result = WorkflowTasksFDSPropsTransformer({
+			...baseProps,
+			itemsActions: [
+				{
+					data: {id: 'actionLinkWorkflowTask'},
+					href: '/edit_workflow_task?workflowTaskId={embedded.id}',
+				},
+			],
+		} as any);
+
+		await (result as any).onBulkActionItemClick({
+			action: {data: {id: 'update-state'}},
+			selectedData: {items: []},
+		});
+
+		const [[{contentComponent}]] = mockOpenCMPModal.mock.calls;
+
+		const {getTaskURL} = contentComponent({closeModal: jest.fn()}).props;
+
+		expect(getTaskURL({embedded: {id: 7}})).toContain('workflowTaskId=7');
 	});
 });
