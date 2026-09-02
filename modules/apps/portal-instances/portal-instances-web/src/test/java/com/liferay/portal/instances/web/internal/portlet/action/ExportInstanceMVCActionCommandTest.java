@@ -7,7 +7,6 @@ package com.liferay.portal.instances.web.internal.portlet.action;
 
 import com.liferay.portal.instances.exporter.PortalInstanceExporter;
 import com.liferay.portal.kernel.exception.RequiredCompanyException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -59,16 +58,6 @@ public class ExportInstanceMVCActionCommandTest {
 					invocationOnMock.getArgument(2)
 		);
 
-		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-			FeatureFlagManagerUtil.class);
-
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			true
-		);
-
 		_htmlUtilMockedStatic = Mockito.mockStatic(HtmlUtil.class);
 
 		_htmlUtilMockedStatic.when(
@@ -102,7 +91,6 @@ public class ExportInstanceMVCActionCommandTest {
 
 	@After
 	public void tearDown() {
-		_featureFlagManagerUtilMockedStatic.close();
 		_htmlUtilMockedStatic.close();
 		_jsonPortletResponseUtilMockedStatic.close();
 	}
@@ -163,23 +151,6 @@ public class ExportInstanceMVCActionCommandTest {
 				Mockito.any(ActionResponse.class), Mockito.eq(_jsonObject)));
 	}
 
-	@Test
-	public void testUnsupportedOperationExceptionForDisabledFeatureFlag() {
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			false
-		);
-
-		Assert.assertThrows(
-			UnsupportedOperationException.class,
-			() -> _exportInstanceMVCActionCommand.doProcessAction(
-				_getMockActionRequest(_COMPANY_ID), new MockActionResponse()));
-
-		Mockito.verifyNoInteractions(_portalInstanceExporter);
-	}
-
 	private void _assertError(Exception exception, String expectedError)
 		throws Exception {
 
@@ -228,8 +199,6 @@ public class ExportInstanceMVCActionCommandTest {
 
 		};
 
-	private MockedStatic<FeatureFlagManagerUtil>
-		_featureFlagManagerUtilMockedStatic;
 	private MockedStatic<HtmlUtil> _htmlUtilMockedStatic;
 	private JSONObject _jsonObject;
 	private MockedStatic<JSONPortletResponseUtil>

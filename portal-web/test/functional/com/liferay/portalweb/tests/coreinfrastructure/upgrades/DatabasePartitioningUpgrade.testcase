@@ -137,7 +137,7 @@ definition {
 	test ExportAndAddDBPartitionWithUpgradedDB {
 		property app.server.bundles.size = "1";
 		property cluster.enabled = "true";
-		property custom.properties = "feature.flag.LPD-11342=true${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com,www.baker.com";
 		property data.archive.type = "data-archive-portal-partition";
 		property portal.version = "7.4.13.u33";
 		property test.assert.warning.exceptions = "false";

@@ -13147,18 +13147,6 @@ upgrade.database.auto.run=true</echo>
 		</if>
 
 		<if>
-			<or>
-				<equals arg1="${database.partition.copy}" arg2="true" />
-				<equals arg1="${database.partition.export.and.import}" arg2="true" />
-			</or>
-
-			<then>
-				<echo append="true" file="portal-impl/src/portal-ext.properties">
-feature.flag.LPD-11342=true</echo>
-			</then>
-		</if>
-
-		<if>
 			<equals arg1="${database.partition.enabled}" arg2="true" />
 			<then>
 				<echo append="true" file="portal-impl/src/portal-ext.properties">

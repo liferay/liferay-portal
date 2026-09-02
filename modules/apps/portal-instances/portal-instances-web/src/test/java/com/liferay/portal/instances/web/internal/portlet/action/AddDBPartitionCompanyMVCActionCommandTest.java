@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -83,13 +82,6 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 			invocationOnMock -> invocationOnMock.getArgument(1)
 		);
 
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			true
-		);
-
 		_jsonPortletResponseUtilMockedStatic.when(
 			() -> JSONPortletResponseUtil.writeJSON(
 				Mockito.any(ActionRequest.class),
@@ -114,7 +106,6 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 
 	@After
 	public void tearDown() {
-		_featureFlagManagerUtilMockedStatic.close();
 		_jsonPortletResponseUtilMockedStatic.close();
 		_sessionMessagesMockedStatic.close();
 	}
@@ -219,23 +210,6 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 			"please-enter-a-valid-virtual-host");
 		_assertError(
 			new CompanyWebIdException(), "please-enter-a-valid-web-id");
-	}
-
-	@Test
-	public void testDoProcessActionWithDisabledFeatureFlag() {
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			false
-		);
-
-		Assert.assertThrows(
-			UnsupportedOperationException.class,
-			() -> _addDBPartitionCompanyMVCActionCommand.doProcessAction(
-				_getMockActionRequest(), new MockActionResponse()));
-
-		Mockito.verifyNoInteractions(_companyService);
 	}
 
 	@Test
@@ -447,9 +421,6 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 	private final Company _company = Mockito.mock(Company.class);
 	private final CompanyService _companyService = Mockito.mock(
 		CompanyService.class);
-	private final MockedStatic<FeatureFlagManagerUtil>
-		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-			FeatureFlagManagerUtil.class);
 	private int _hideDefaultSuccessMessageCount;
 	private JSONObject _jsonObject;
 	private final MockedStatic<JSONPortletResponseUtil>

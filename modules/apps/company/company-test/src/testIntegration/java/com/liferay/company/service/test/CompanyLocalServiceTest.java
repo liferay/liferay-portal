@@ -110,7 +110,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.model.impl.CompanyImpl;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -860,7 +859,6 @@ public class CompanyLocalServiceTest {
 			PortalInstancePool.getDefaultCompanyId());
 	}
 
-	@FeatureFlag("LPD-11342")
 	@Test
 	public void testExportCompany() throws Exception {
 		Assume.assumeTrue(_db.isSupportsDBPartition());
@@ -909,7 +907,6 @@ public class CompanyLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-11342")
 	@Test
 	public void testExportCompanyDefaultCompany() {
 		Assume.assumeTrue(_db.isSupportsDBPartition());
@@ -925,7 +922,6 @@ public class CompanyLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-11342")
 	@Test
 	public void testExportCompanyExistingExportedPartition() throws Exception {
 		Assume.assumeTrue(_db.isSupportsDBPartition());
@@ -967,7 +963,6 @@ public class CompanyLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-11342")
 	@Test
 	public void testExportCompanyWhenDBPartitionUtilFails() throws Exception {
 		Assume.assumeTrue(_db.isSupportsDBPartition());
@@ -1017,23 +1012,6 @@ public class CompanyLocalServiceTest {
 				_dbPartitionDB.getDropPartitionSQL(
 					DBPartitionUtil.getExportedPartitionName(
 						_company.getCompanyId())));
-		}
-	}
-
-	@Test
-	public void testExportCompanyWithoutFF() {
-		try {
-			_companyLocalService.exportCompany(
-				PortalInstancePool.getDefaultCompanyId());
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Assert.assertTrue(
-				exception instanceof UnsupportedOperationException);
-
-			Assert.assertEquals(
-				"Feature flag LPD-11342 is disabled", exception.getMessage());
 		}
 	}
 

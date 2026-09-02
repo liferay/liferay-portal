@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.sql.Connection;
@@ -170,7 +169,6 @@ public class PortalInstanceResourceTest
 		_testPostPortalInstanceWithoutOmniadminPermission();
 	}
 
-	@FeatureFlag("LPD-11342")
 	@Override
 	@Test
 	public void testPostPortalInstanceCopy() throws Exception {
@@ -193,7 +191,6 @@ public class PortalInstanceResourceTest
 		_testPostPortalInstanceCopyWithoutOmniadminPermission();
 	}
 
-	@FeatureFlag("LPD-11342")
 	@Override
 	@Test
 	public void testPostPortalInstanceExport() throws Exception {
@@ -206,7 +203,6 @@ public class PortalInstanceResourceTest
 		_testPostPortalInstanceExportWithoutOmniadminPermission();
 	}
 
-	@FeatureFlag("LPD-11342")
 	@Override
 	@Test
 	public void testPostPortalInstanceImport() throws Exception {

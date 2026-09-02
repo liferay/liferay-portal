@@ -378,7 +378,7 @@ definition {
 	test ExportAndAddDBPartition {
 		property app.server.bundles.size = "1";
 		property cluster.enabled = "true";
-		property custom.properties = "feature.flag.LPD-11342=true${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -490,7 +490,7 @@ definition {
 	test ExportNonPartitionedCompanyAndAddDBPartition {
 		property app.server.bundles.size = "1";
 		property cluster.enabled = "true";
-		property custom.properties = "database.partition.enabled=false${line.separator}database.partition.schema.name.prefix=ltest_${line.separator}feature.flag.LPD-11342=true${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
+		property custom.properties = "database.partition.enabled=false${line.separator}database.partition.schema.name.prefix=ltest_${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property database.partition.enabled = "false";
 		property liferay.online.properties = "false";
 		property test.assert.warning.exceptions = "true";

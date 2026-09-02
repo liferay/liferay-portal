@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.exception.CompanyNameException;
 import com.liferay.portal.kernel.exception.CompanyVirtualHostException;
 import com.liferay.portal.kernel.exception.CompanyWebIdException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
@@ -83,16 +82,6 @@ public class CopyDBPartitionCompanyMVCActionCommandTest {
 			invocationOnMock -> invocationOnMock.getArgument(1)
 		);
 
-		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-			FeatureFlagManagerUtil.class);
-
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			true
-		);
-
 		_jsonPortletResponseUtilMockedStatic = Mockito.mockStatic(
 			JSONPortletResponseUtil.class);
 
@@ -123,7 +112,6 @@ public class CopyDBPartitionCompanyMVCActionCommandTest {
 
 	@After
 	public void tearDown() {
-		_featureFlagManagerUtilMockedStatic.close();
 		_jsonPortletResponseUtilMockedStatic.close();
 		_sessionMessagesMockedStatic.close();
 	}
@@ -254,12 +242,6 @@ public class CopyDBPartitionCompanyMVCActionCommandTest {
 			"copying-an-instance-is-already-in-progress",
 			_getMockActionRequest());
 
-		_setUpFailedCopyDBPartitionCompany(
-			new UnsupportedOperationException(
-				"Feature flag LPD-11342 is disabled"));
-
-		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
-
 		_setUpFailedCopyDBPartitionCompany(new UnsupportedOperationException());
 
 		_assertError("an-unexpected-error-occurred", _getMockActionRequest());
@@ -317,23 +299,6 @@ public class CopyDBPartitionCompanyMVCActionCommandTest {
 		_sessionMessagesMockedStatic.verify(
 			() -> SessionMessages.clear(Mockito.any(PortletRequest.class)),
 			Mockito.never());
-	}
-
-	@Test
-	public void testUnsupportedOperationExceptionForDisabledFeatureFlag() {
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			false
-		);
-
-		Assert.assertThrows(
-			UnsupportedOperationException.class,
-			() -> _copyDBPartitionCompanyMVCActionCommand.doProcessAction(
-				_getMockActionRequest(), new MockActionResponse()));
-
-		Mockito.verifyNoInteractions(_companyService);
 	}
 
 	private void _assertCopyDBPartitionCompany(
@@ -464,8 +429,6 @@ public class CopyDBPartitionCompanyMVCActionCommandTest {
 
 			};
 
-	private MockedStatic<FeatureFlagManagerUtil>
-		_featureFlagManagerUtilMockedStatic;
 	private int _hideDefaultSuccessMessageCount;
 	private JSONObject _jsonObject;
 	private MockedStatic<JSONPortletResponseUtil>

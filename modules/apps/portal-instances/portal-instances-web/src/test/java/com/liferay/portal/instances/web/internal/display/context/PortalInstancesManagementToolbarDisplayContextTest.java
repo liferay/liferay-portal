@@ -8,7 +8,6 @@ package com.liferay.portal.instances.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -45,13 +44,6 @@ public class PortalInstancesManagementToolbarDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			true
-		);
-
 		Mockito.when(
 			_liferayPortletResponse.createRenderURL()
 		).thenReturn(
@@ -61,7 +53,6 @@ public class PortalInstancesManagementToolbarDisplayContextTest {
 
 	@After
 	public void tearDown() {
-		_featureFlagManagerUtilMockedStatic.close();
 		_languageUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
 		_portletURLUtilMockedStatic.close();
@@ -90,27 +81,7 @@ public class PortalInstancesManagementToolbarDisplayContextTest {
 			).setWindowState(
 				LiferayWindowState.POP_UP
 			);
-
-			_featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-11342"))
-			).thenReturn(
-				false
-			);
-
-			dropdownItems = _getDropdownItems();
-
-			Assert.assertEquals(
-				dropdownItems.toString(), 1, dropdownItems.size());
-			Assert.assertFalse(_containsImportDropdownItem(dropdownItems));
 		}
-
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-11342"))
-		).thenReturn(
-			true
-		);
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -152,9 +123,6 @@ public class PortalInstancesManagementToolbarDisplayContextTest {
 		return (List<DropdownItem>)creationMenu.get("primaryItems");
 	}
 
-	private final MockedStatic<FeatureFlagManagerUtil>
-		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-			FeatureFlagManagerUtil.class);
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
 	private final MockedStatic<LanguageUtil> _languageUtilMockedStatic =
