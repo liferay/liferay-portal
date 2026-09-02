@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
+import com.liferay.jenkins.results.parser.test.clazz.group.JUnitBatchTestClassGroup;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -47,6 +48,8 @@ public class Test {
 		BuildDatabaseUtil.clearBuildDatabases();
 
 		Environment.setInstance(new Environment());
+
+		JUnitBatchTestClassGroup.clear();
 
 		JenkinsMasterTestUtil.resetCaches();
 
