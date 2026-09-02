@@ -557,6 +557,7 @@ test('Checks Content Flags, Content Ratings and Content Display are compatible w
 
 	await clickAndExpectToBeHidden({
 		target: page.locator('header', {hasText: 'Components'}),
+		timeout: 1000,
 		trigger: page.getByRole('tab', {
 			exact: true,
 			name: 'Components',
