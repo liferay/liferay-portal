@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Multi-Factor Authentication FIDO2 Credential Service
 Bundle-SymbolicName: com.liferay.multi.factor.authentication.fido2.credential.service
-Bundle-Version: 4.0.40
+Bundle-Version: 4.0.41
 Liferay-Require-SchemaVersion: 2.1.0
 Liferay-Service: true
 -dsannotations-options: inherit
