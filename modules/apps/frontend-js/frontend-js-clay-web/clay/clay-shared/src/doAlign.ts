@@ -26,20 +26,17 @@ export function doAlign<T extends HTMLElement, K extends HTMLElement>({
 	targetElement,
 	...config
 }: AlignProps<T, K>): Required<AlignBase> {
+	const rtl = isRtl(sourceElement);
 
-	// Clear any inline positioning written by a previous alignment pass.
-	// `dom-align` only sets one of `left`/`right` (and one of `top`/`bottom`)
-	// per call based on `useCssRight`, so when the resolved direction flips
-	// across calls the opposite side is left behind and both rules apply at
-	// once, producing the RTL flicker reported in LPD-69776.
+	// `dom-align` clears the stale side itself, but only after measuring the
+	// source, so clear it first. Leave the side it writes: measured at its
+	// static position, an auto width source has a width it will not keep.
 
 	sourceElement.style.bottom = '';
-	sourceElement.style.left = '';
-	sourceElement.style.right = '';
-	sourceElement.style.top = '';
+	sourceElement.style[rtl ? 'left' : 'right'] = '';
 
 	return domAlign(sourceElement, targetElement, {
 		...config,
-		useCssRight: isRtl(sourceElement),
+		useCssRight: rtl,
 	});
 }
