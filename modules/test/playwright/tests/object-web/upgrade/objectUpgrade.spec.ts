@@ -97,7 +97,10 @@ test.describe.serial('View Custom Object1 after upgrade', () => {
 				'Custom Objects1 Updated'
 			);
 
-			await editObjectDetailsPage.saveObjectDefinition();
+			const {reload} =
+				await editObjectDetailsPage.saveObjectDefinitionReturningReload();
+
+			await reload;
 
 			await expect(editObjectDetailsPage.labelInput).toHaveValue(
 				'Custom Object1 Updated'
