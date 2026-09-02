@@ -13,12 +13,15 @@ import com.liferay.journal.util.comparator.ArticleVersionComparator;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.batch.BatchIndexingHelper;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -46,7 +49,10 @@ public class JournalArticleModelIndexerWriterContributorTest {
 		_setUpIndexer();
 		_setUpIndexerRegistryUtil();
 		_setUpJournalArticleLocalService();
-		_setUpJournalArticles();
+		_setUpJournalArticles(
+			WorkflowConstants.STATUS_APPROVED,
+			WorkflowConstants.STATUS_APPROVED,
+			WorkflowConstants.STATUS_APPROVED);
 		_setUpPortal();
 	}
 
@@ -75,6 +81,110 @@ public class JournalArticleModelIndexerWriterContributorTest {
 		_testModelDeleted(_journalArticles.get(0), _journalArticles.get(2), 1);
 		_testModelDeleted(_journalArticles.get(1), _journalArticles.get(2), 1);
 		_testModelDeleted(_journalArticles.get(2), _journalArticles.get(1), 1);
+	}
+
+	@Test
+	public void testModelDeletedWithAllVersionsApproved() throws Exception {
+		_setUpJournalServiceConfiguration(true);
+
+		_setUpJournalArticles(_getStatuses());
+
+		Mockito.when(
+			_journalArticleLocalService.fetchLatestArticle(
+				Mockito.anyLong(), Mockito.any(int[].class))
+		).thenReturn(
+			_journalArticles.get(_JOURNAL_ARTICLE_VERSION_COUNT - 2)
+		);
+
+		JournalArticleModelIndexerWriterContributor
+			journalArticleModelIndexerWriterContributor =
+				_createJournalArticleModelIndexerWriterContributor();
+
+		journalArticleModelIndexerWriterContributor.modelDeleted(
+			_journalArticles.get(_JOURNAL_ARTICLE_VERSION_COUNT - 1));
+
+		Mockito.verify(
+			_indexer
+		).reindex(
+			_journalArticles.get(_JOURNAL_ARTICLE_VERSION_COUNT - 2), false
+		);
+
+		Mockito.verifyNoMoreInteractions(_indexer);
+	}
+
+	@Test
+	public void testModelIndexedWithAllVersionsApproved() throws Exception {
+		_setUpJournalServiceConfiguration(true);
+
+		_setUpJournalArticles(_getStatuses());
+
+		JournalArticleModelIndexerWriterContributor
+			journalArticleModelIndexerWriterContributor =
+				_createJournalArticleModelIndexerWriterContributor();
+
+		journalArticleModelIndexerWriterContributor.modelIndexed(
+			_journalArticles.get(_JOURNAL_ARTICLE_VERSION_COUNT - 1));
+
+		Mockito.verify(
+			_indexer
+		).reindex(
+			_journalArticles.get(_JOURNAL_ARTICLE_VERSION_COUNT - 2), false
+		);
+
+		Mockito.verifyNoMoreInteractions(_indexer);
+	}
+
+	@Test
+	public void testModelIndexedWithOnlyFirstAndLastVersionsApproved()
+		throws Exception {
+
+		_setUpJournalServiceConfiguration(true);
+
+		int[] statuses = _getStatuses();
+
+		for (int i = 1; i < (_JOURNAL_ARTICLE_VERSION_COUNT - 1); i++) {
+			statuses[i] = WorkflowConstants.STATUS_DRAFT;
+		}
+
+		_setUpJournalArticles(statuses);
+
+		JournalArticleModelIndexerWriterContributor
+			journalArticleModelIndexerWriterContributor =
+				_createJournalArticleModelIndexerWriterContributor();
+
+		journalArticleModelIndexerWriterContributor.modelIndexed(
+			_journalArticles.get(_JOURNAL_ARTICLE_VERSION_COUNT - 1));
+
+		Mockito.verify(
+			_indexer
+		).reindex(
+			_journalArticles.get(0), false
+		);
+
+		Mockito.verify(
+			_indexer
+		).reindex(
+			_journalArticles.get(_JOURNAL_ARTICLE_VERSION_COUNT - 2), false
+		);
+
+		Mockito.verifyNoMoreInteractions(_indexer);
+	}
+
+	private JournalArticleModelIndexerWriterContributor
+		_createJournalArticleModelIndexerWriterContributor() {
+
+		return new JournalArticleModelIndexerWriterContributor(
+			Mockito.mock(BatchIndexingHelper.class), _configurationProvider,
+			_journalArticleLocalService,
+			Mockito.mock(JournalArticleResourceLocalService.class));
+	}
+
+	private int[] _getStatuses() {
+		int[] statuses = new int[_JOURNAL_ARTICLE_VERSION_COUNT];
+
+		Arrays.fill(statuses, WorkflowConstants.STATUS_APPROVED);
+
+		return statuses;
 	}
 
 	private void _setUpConfigurationProvider() throws Exception {
@@ -111,16 +221,26 @@ public class JournalArticleModelIndexerWriterContributorTest {
 			_journalArticleLocalService.getArticles(
 				Mockito.anyLong(), Mockito.anyString(), Mockito.anyInt(),
 				Mockito.anyInt(), Mockito.any(ArticleVersionComparator.class))
-		).thenReturn(
-			_journalArticles
+		).thenAnswer(
+			invocationOnMock -> {
+				List<JournalArticle> journalArticles = new ArrayList<>(
+					_journalArticles);
+
+				Collections.reverse(journalArticles);
+
+				return journalArticles;
+			}
 		);
 	}
 
-	private void _setUpJournalArticles() {
-		double version = 1.0;
-		long id = 0;
+	private void _setUpJournalArticles(int... statuses) {
+		_journalArticles = new ArrayList<>(statuses.length);
 
-		for (JournalArticle journalArticle : _journalArticles) {
+		double version = 1.0;
+
+		for (int i = 0; i < statuses.length; i++) {
+			JournalArticle journalArticle = Mockito.mock(JournalArticle.class);
+
 			Mockito.when(
 				journalArticle.getArticleId()
 			).thenReturn(
@@ -130,7 +250,13 @@ public class JournalArticleModelIndexerWriterContributorTest {
 			Mockito.when(
 				journalArticle.getId()
 			).thenReturn(
-				id++
+				(long)i
+			);
+
+			Mockito.when(
+				journalArticle.getStatus()
+			).thenReturn(
+				statuses[i]
 			);
 
 			Mockito.when(
@@ -138,7 +264,10 @@ public class JournalArticleModelIndexerWriterContributorTest {
 			).thenReturn(
 				version
 			);
+
 			version += 0.1;
+
+			_journalArticles.add(journalArticle);
 		}
 	}
 
@@ -182,10 +311,7 @@ public class JournalArticleModelIndexerWriterContributorTest {
 
 		JournalArticleModelIndexerWriterContributor
 			journalArticleModelIndexerWriterContributor =
-				new JournalArticleModelIndexerWriterContributor(
-					Mockito.mock(BatchIndexingHelper.class),
-					_configurationProvider, _journalArticleLocalService,
-					Mockito.mock(JournalArticleResourceLocalService.class));
+				_createJournalArticleModelIndexerWriterContributor();
 
 		journalArticleModelIndexerWriterContributor.modelDeleted(
 			deletedVersionJournalArticle);
@@ -197,13 +323,13 @@ public class JournalArticleModelIndexerWriterContributorTest {
 		);
 	}
 
+	private static final int _JOURNAL_ARTICLE_VERSION_COUNT = 50;
+
 	private ConfigurationProvider _configurationProvider;
 	private Indexer<JournalArticle> _indexer;
 	private MockedStatic<IndexerRegistryUtil> _indexerRegistryUtilMockedStatic;
 	private JournalArticleLocalService _journalArticleLocalService;
-	private final List<JournalArticle> _journalArticles = ListUtil.fromArray(
-		Mockito.mock(JournalArticle.class), Mockito.mock(JournalArticle.class),
-		Mockito.mock(JournalArticle.class));
+	private List<JournalArticle> _journalArticles;
 	private final JournalServiceConfiguration _journalServiceConfiguration =
 		Mockito.mock(JournalServiceConfiguration.class);
 
