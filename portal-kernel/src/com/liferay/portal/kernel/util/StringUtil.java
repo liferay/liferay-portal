@@ -2179,9 +2179,11 @@ public class StringUtil {
 	}
 
 	/**
-	 * Returns a randomized string of four lower case, alphabetic characters.
+	 * Returns a randomized string of four lower case, alphabetic characters
+	 * that is never the literal <code>null</code>.
 	 *
 	 * @return a randomized string of four lower case, alphabetic characters
+	 *         that is never the literal <code>null</code>
 	 */
 	public static String randomId() {
 		return randomId(4);
@@ -2189,21 +2191,14 @@ public class StringUtil {
 
 	/**
 	 * Returns a randomized string with the length informed and only alphabetic
-	 * characters.
+	 * characters. A four character result is never the literal
+	 * <code>null</code>.
 	 *
 	 * @return a randomized string with the length informed and only alphabetic
 	 *         characters.
 	 */
 	public static String randomId(int length) {
-		Random random = new Random();
-
-		char[] chars = new char[length];
-
-		for (int i = 0; i < length; i++) {
-			chars[i] = (char)(CharPool.LOWER_CASE_A + random.nextInt(26));
-		}
-
-		return new String(chars);
+		return _randomId(length, new Random());
 	}
 
 	/**
@@ -4966,6 +4961,24 @@ public class StringUtil {
 		}
 
 		return Character.isWhitespace(c);
+	}
+
+	private static String _randomId(int length, Random random) {
+		char[] chars = new char[length];
+
+		while (true) {
+			for (int i = 0; i < length; i++) {
+				chars[i] = (char)(CharPool.LOWER_CASE_A + random.nextInt(26));
+			}
+
+			String randomId = new String(chars);
+
+			if ((length == 4) && randomId.equals(StringPool.NULL)) {
+				continue;
+			}
+
+			return randomId;
+		}
 	}
 
 	private static String _read(InputStream inputStream) throws IOException {
