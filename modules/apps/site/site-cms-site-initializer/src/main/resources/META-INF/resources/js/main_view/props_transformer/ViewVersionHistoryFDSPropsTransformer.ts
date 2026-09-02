@@ -281,7 +281,32 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 			action: any;
 			selectedData: any;
 		}) => {
-			if (action?.data.id === 'delete') {
+			if (action?.data.id === 'compare') {
+				const [sourceVersion, targetVersion] = (
+					selectedData?.keyValues || []
+				).map(Number);
+
+				openCMSModal({
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
+						CompareVersionsModalContent({
+							apiURL: otherProps.apiURL as string,
+							availableLanguageIds:
+								additionalProps.availableLanguageIds,
+							closeModal,
+							defaultLanguageId:
+								additionalProps.defaultLanguageId,
+							initialTargetVersion: targetVersion,
+							initialVersion: sourceVersion,
+							objectEntryId: additionalProps.classPK,
+						}),
+					size: 'full-screen',
+				});
+			}
+			else if (action?.data.id === 'delete') {
 				deleteAssetVersionBulkAction({
 					apiURL: otherProps.apiURL,
 					className: additionalProps.className,
