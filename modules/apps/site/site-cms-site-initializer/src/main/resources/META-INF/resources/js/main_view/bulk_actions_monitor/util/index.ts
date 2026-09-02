@@ -22,7 +22,7 @@ import {
 } from './constants';
 
 export function composeCreateTaskURL(
-	apiURL: string,
+	apiURL: string | undefined,
 	{filters = [], searchQuery = '', selectAll = false}: IBulkActionFDSData,
 	type: keyof IBulkActionType
 ): string {
@@ -41,8 +41,12 @@ export function composeCreateTaskURL(
 		postURL.searchParams.append('type', 'ExportTranslationBulkAction');
 	}
 
-	if (!selectAll) {
+	if (!selectAll || type === 'DefaultPermissionObjectBulkSelectionAction') {
 		return postURL.toString();
+	}
+
+	if (!apiURL) {
+		throw new Error('Cannot POST bulk action task.');
 	}
 
 	if (searchQuery) {

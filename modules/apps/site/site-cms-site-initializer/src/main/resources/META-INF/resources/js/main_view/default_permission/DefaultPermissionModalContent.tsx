@@ -72,17 +72,14 @@ export default function DefaultPermissionModalContent({
 							depotGroupId: currentObjectEntry?.depotGroupId || 0,
 							treePath: currentObjectEntry?.treePath || '',
 						},
-						onCreateError: ({error}) => {
+						onCreateError: () => {
 							setLoading(false);
-
-							throw new Error(error as unknown as any);
 						},
 						onCreateSuccess: () => {
 							closeModal();
 
 							setLoading(false);
 						},
-						overrideDefaultErrorToast: true,
 						selectedData: {
 							selectAll: true,
 						},

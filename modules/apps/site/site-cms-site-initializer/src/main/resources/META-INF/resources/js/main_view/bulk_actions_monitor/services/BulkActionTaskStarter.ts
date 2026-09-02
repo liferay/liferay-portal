@@ -47,10 +47,6 @@ export class BulkActionTaskStarter implements IBulkActionTaskStarter {
 		selectedData,
 		type,
 	}: IBulkActionTaskStarterDTO<keyof IBulkActionType>) {
-		if (!apiURL) {
-			throw new Error('Cannot POST bulk action task.');
-		}
-
 		this.additionalData = additionalData;
 
 		this.onCreateTaskError = onCreateError;
