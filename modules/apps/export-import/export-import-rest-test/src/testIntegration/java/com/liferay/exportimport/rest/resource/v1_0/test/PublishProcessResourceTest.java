@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -119,6 +120,14 @@ public class PublishProcessResourceTest
 		super.tearDown();
 
 		_userLocalService.deleteUser(_user);
+	}
+
+	@Override
+	@Test
+	public void testGetPublishProcess() throws Exception {
+		super.testGetPublishProcess();
+
+		_testGetPublishProcessErrorMessageWhenStatusMessageIsNotJSON();
 	}
 
 	@Override
@@ -354,6 +363,30 @@ public class PublishProcessResourceTest
 		return _stagingGroupHelper.fetchLocalStagingGroup(
 			_groupLocalService.fetchGroupByExternalReferenceCode(
 				siteExternalReferenceCode, testCompany.getCompanyId()));
+	}
+
+	@TestInfo("LPD-102315")
+	private void _testGetPublishProcessErrorMessageWhenStatusMessageIsNotJSON()
+		throws Exception {
+
+		PublishProcess publishProcess = _addPublishProcess(
+			testGroup.getExternalReferenceCode(),
+			RandomTestUtil.randomString());
+
+		_backgroundTaskLocalService.amendBackgroundTask(
+			publishProcess.getId(), null, null,
+			BackgroundTaskConstants.STATUS_FAILED, _STACK_TRACE_STATUS_MESSAGE,
+			null);
+
+		PublishProcess failedPublishProcess =
+			publishProcessResource.getPublishProcess(publishProcess.getId());
+
+		String errorMessage = failedPublishProcess.getErrorMessage();
+
+		Assert.assertNotEquals(_STACK_TRACE_STATUS_MESSAGE, errorMessage);
+		Assert.assertFalse(errorMessage, errorMessage.contains(".java:"));
+		Assert.assertFalse(errorMessage, errorMessage.contains("\tat "));
+		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
 	}
 
 	private void _testPostSitePublishProcessPerformsDirectBinaryImport()
@@ -608,6 +641,11 @@ public class PublishProcessResourceTest
 	private static final String _CRON_EXPRESSION_ONE_TIME = "0 0 3 1 1 ? 2099";
 
 	private static final String _CRON_EXPRESSION_PAST = "0 30 9 22 8 ? 2020";
+
+	private static final String _STACK_TRACE_STATUS_MESSAGE =
+		"java.lang.NullPointerException\n\tat com.liferay.exportimport." +
+			"internal.staging.StagingImpl.publishLayouts(" +
+				"StagingImpl.java:2388)";
 
 	@Inject
 	private BackgroundTaskLocalService _backgroundTaskLocalService;
