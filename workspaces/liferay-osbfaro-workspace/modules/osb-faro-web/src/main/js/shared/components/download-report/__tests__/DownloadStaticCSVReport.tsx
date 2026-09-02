@@ -136,6 +136,52 @@ describe('DownloadStaticCSVReport', () => {
 		});
 	});
 
+	it('displays the FDS-specific modal text when getFDSQuery is provided', async () => {
+		render(
+			<DefaultComponent getFDSQuery={() => ({filter: '', query: ''})} />
+		);
+
+		fireEvent.click(
+			screen.getByRole('button', {
+				name: /download report/i,
+			})
+		);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText(
+					/The generated CSV file will respect the current filter and search results/
+				)
+			).toBeInTheDocument();
+		});
+
+		expect(
+			screen.queryByText(/The generated CSV file supports up to/)
+		).not.toBeInTheDocument();
+	});
+
+	it('displays the default modal text when getFDSQuery is not provided', async () => {
+		render(<DefaultComponent />);
+
+		fireEvent.click(
+			screen.getByRole('button', {
+				name: /download report/i,
+			})
+		);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText(/The generated CSV file supports up to/)
+			).toBeInTheDocument();
+		});
+
+		expect(
+			screen.queryByText(
+				/The generated CSV file will respect the current filter and search results/
+			)
+		).not.toBeInTheDocument();
+	});
+
 	it('displays info alert about download CSV report', async () => {
 		(API.csv.fetchCSV as jest.Mock).mockReturnValue(
 			Promise.resolve({ok: true})
