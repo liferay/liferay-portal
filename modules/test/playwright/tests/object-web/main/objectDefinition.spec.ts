@@ -260,7 +260,7 @@ test.describe('Manage object definitions through Model Builder', () => {
 			objectDefinition1.label['en_US']
 		);
 
-		await modelBuilderObjectDefinitionNodePage.deleteObjectDefinitionOption.click();
+		await modelBuilderObjectDefinitionNodePage.deleteDraftObjectDefinition();
 
 		apiHelpers.data.splice(
 			apiHelpers.data.findIndex(

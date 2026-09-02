@@ -196,13 +196,26 @@ export class ModelBuilderObjectDefinitionNodePage {
 		return objectRelationship;
 	}
 
+	async deleteDraftObjectDefinition() {
+		const reloadedResponse = this._waitForModelBuilderReload();
+
+		await this.deleteObjectDefinitionOption.click();
+
+		await reloadedResponse;
+	}
+
 	async deleteObjectDefinition(objectDefinitionName: string) {
 		await this.deleteObjectDefinitionOption.click();
 		await this.modalDeleteObjectDefinitionTextField.click();
 		await this.modalDeleteObjectDefinitionTextField.fill(
 			objectDefinitionName
 		);
+
+		const reloadedResponse = this._waitForModelBuilderReload();
+
 		await this.modalDeleteObjectDefinitionConfirmationButton.click();
+
+		await reloadedResponse;
 	}
 
 	async fillObjectFieldLabelInput(objectFieldLabel: string) {
@@ -243,5 +256,17 @@ export class ModelBuilderObjectDefinitionNodePage {
 				name: String(objectFieldBusinessType),
 			})
 			.click();
+	}
+
+	private _waitForModelBuilderReload() {
+		return this.page.waitForResponse(
+			(response) =>
+				response.request().method() === 'PUT' &&
+				response
+					.url()
+					.includes(
+						'/o/object-admin/v1.0/object-folders/by-external-reference-code/'
+					)
+		);
 	}
 }
