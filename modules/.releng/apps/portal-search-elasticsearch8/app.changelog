@@ -140,3 +140,14 @@ app.artifacts-1.0.12=\
 app.change.log-1.0.12=LPD-65357 LPD-67964 LPD-76617 LPD-78414 LPD-79774 LPD-80700 LPD-80840 LPD-92633 
 
 app.git.id-1.0.12=f8d9086bc4e244f7896d9e59b1206b772eca598c
+
+#
+# Liferay App Version 1.0.13
+#
+
+app.artifacts-1.0.13=\
+	org.codehaus.stax2-4.2.1.jar
+
+app.change.log-1.0.13=LPD-65357 LPD-67964 LPD-76617 LPD-78414 LPD-79774 LPD-80700 LPD-80840 LPD-92633 
+
+app.git.id-1.0.13=719be443ffd75da0a72ef1dd6666746bda90fbda
