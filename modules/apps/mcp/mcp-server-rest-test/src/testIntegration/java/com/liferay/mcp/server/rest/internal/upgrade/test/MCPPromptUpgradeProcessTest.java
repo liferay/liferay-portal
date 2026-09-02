@@ -88,15 +88,14 @@ public class MCPPromptUpgradeProcessTest {
 	@Before
 	public void setUp() throws Exception {
 		_company = CompanyTestUtil.addCompany();
-
-		_user = UserTestUtil.getAdminUser(_company.getCompanyId());
-
 		_originalCompanyId = CompanyThreadLocal.getCompanyId();
 		_originalName = PrincipalThreadLocal.getName();
 		_originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		CompanyThreadLocal.setCompanyId(_company.getCompanyId());
+
+		_user = UserTestUtil.getAdminUser(_company.getCompanyId());
 
 		UserTestUtil.setUser(_user);
 
