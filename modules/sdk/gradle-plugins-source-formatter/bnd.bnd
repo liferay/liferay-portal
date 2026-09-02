@@ -1,6 +1,6 @@
 Bundle-Description: The Source Formatter Gradle plugin lets you format project files using the Liferay Source Formatter tool.
 Bundle-Name: Liferay Gradle Plugins Source Formatter
 Bundle-SymbolicName: com.liferay.gradle.plugins.source.formatter
-Bundle-Version: 5.3.67
+Bundle-Version: 5.3.68
 Export-Package: com.liferay.gradle.plugins.source.formatter
 -includeresource: @com.liferay.source.formatter-*.jar!/com/liferay/source/formatter/SourceFormatterArgs.class

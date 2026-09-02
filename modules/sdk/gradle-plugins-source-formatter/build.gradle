@@ -20,7 +20,7 @@ tasks.eclipse {
 dependencies {
 	api group: "com.liferay", name: "com.liferay.gradle.util", version: "1.0.53"
 	compileOnly fileTree(builtBy: [rootProject.tasks.getByName("extractGradleApi" + gradleVersion.replace(".", ""))], dir: new File(rootProject.buildDir, "gradle-${gradleVersion}"))
-	compileOnly group: "com.liferay", name: "com.liferay.source.formatter", version: "1.0.1624"
+	compileOnly group: "com.liferay", name: "com.liferay.source.formatter", version: "1.0.1625"
 }
 
 pluginBundle {
