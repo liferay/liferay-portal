@@ -73,6 +73,63 @@
 			"name": "name",
 			"required": true,
 			"system": true
+		},
+		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "UNIT_OF_MEASURE_ALLOW_DECIMAL_QUANTITIES",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Allow Decimal Quantities"
+			},
+			"name": "unitOfMeasureAllowDecimalQuantities",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "UNIT_OF_MEASURE_KEY",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Key"
+			},
+			"name": "unitOfMeasureKey",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "UNIT_OF_MEASURE_NAME",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Name"
+			},
+			"name": "unitOfMeasureName",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "UNIT_OF_MEASURE_SYMBOL",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Symbol"
+			},
+			"name": "unitOfMeasureSymbol",
+			"required": false,
+			"system": true
 		}
 	],
 	"objectFolderExternalReferenceCode": "L_PIM_PRODUCT_TYPES",
@@ -84,5 +141,6 @@
 	},
 	"scope": "depot",
 	"system": true,
-	"titleObjectFieldName": "name"
+	"titleObjectFieldName": "name",
+	"updateStrategy": "UPDATE"
 }
