@@ -171,16 +171,17 @@ public class ObjectEntrySitemapURLProviderTest {
 				Group group = _depotEntry.getGroup();
 
 				_assertRootElement(
-					true, group.getFriendlyURL(), _layoutSet, objectDefinition,
-					objectEntry, _themeDisplay);
+					true, group.getFriendlyURL(), layout, objectDefinition,
+					objectEntry);
 			});
+
 		_testVisitCMSObjectDefinition(
 			(layout, objectDefinition, objectEntry) -> {
 				Group group = _depotEntry.getGroup();
 
 				_assertRootElement(
-					true, group.getFriendlyURL(), layout, objectDefinition,
-					objectEntry);
+					true, group.getFriendlyURL(), _layoutSet, objectDefinition,
+					objectEntry, _themeDisplay);
 			});
 	}
 
