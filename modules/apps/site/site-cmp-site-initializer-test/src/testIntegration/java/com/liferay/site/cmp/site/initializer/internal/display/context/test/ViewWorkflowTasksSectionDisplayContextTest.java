@@ -67,7 +67,7 @@ public class ViewWorkflowTasksSectionDisplayContextTest
 			null);
 
 		Assert.assertEquals(
-			bulkActionDropdownItems.toString(), 2,
+			bulkActionDropdownItems.toString(), 3,
 			bulkActionDropdownItems.size());
 
 		FDSActionDropdownItem updateDueDateFDSActionDropdownItem =
@@ -91,6 +91,17 @@ public class ViewWorkflowTasksSectionDisplayContextTest
 		Assert.assertEquals(
 			"assignToUser",
 			getValue(assignToFDSActionDropdownItem, "permissionKey"));
+
+		FDSActionDropdownItem updateStateFDSActionDropdownItem =
+			(FDSActionDropdownItem)bulkActionDropdownItems.get(2);
+
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"arrow-start", "update-state", "Update State", null,
+			updateStateFDSActionDropdownItem);
+
+		Assert.assertEquals(
+			"changeTransition",
+			getValue(updateStateFDSActionDropdownItem, "permissionKey"));
 	}
 
 	@Override
