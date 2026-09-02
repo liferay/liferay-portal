@@ -7,12 +7,17 @@ package com.liferay.translation.exporter.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeResponse;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -127,6 +132,77 @@ public class XLIFF12TranslationInfoItemFieldValuesExporterTest {
 					"more"));
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
+	@Test
+	public void testExportProtectsRepeatableHTMLFieldWithInlineCodes()
+		throws Exception {
+
+		InfoItemFieldValuesProvider<JournalArticle>
+			infoItemFieldValuesProvider =
+				(InfoItemFieldValuesProvider<JournalArticle>)
+					_infoItemServiceRegistry.getFirstInfoItemService(
+						InfoItemFieldValuesProvider.class,
+						JournalArticle.class.getName());
+
+		JournalArticle journalArticle =
+			_getJournalArticleWithRepeatableHTMLField();
+
+		String xliff = StreamUtil.toString(
+			_xliffTranslationInfoItemFieldValuesExporter.
+				exportInfoItemFieldValues(
+					infoItemFieldValuesProvider.getInfoItemFieldValues(
+						journalArticle),
+					LocaleUtil.getDefault(),
+					LocaleUtil.fromLanguageId("es_ES")));
+
+		Assert.assertEquals(
+			TranslationTestUtil.toFormattedString(
+				StringUtil.replace(
+					TranslationTestUtil.readFileToString(
+						"test-journal-article-repeatable-html-inline-codes-" +
+							"v12.xlf"),
+					"[$JOURNAL_ARTICLE_ID$]",
+					String.valueOf(journalArticle.getResourcePrimKey()))),
+			TranslationTestUtil.toFormattedString(xliff));
+		Assert.assertTrue(
+			xliff,
+			xliff.contains(
+				" one</mrk><mrk mid=\"1\" mtype=\"seg\">beta <bpt id=\"2\">"));
+	}
+
+	@FeatureFlags(
+		featureFlags = @FeatureFlag(enable = false, value = "LPD-102730")
+	)
+	@Test
+	public void testExportReturnsCDATAForRichHTMLField() throws Exception {
+		InfoItemFieldValuesProvider<JournalArticle>
+			infoItemFieldValuesProvider =
+				(InfoItemFieldValuesProvider<JournalArticle>)
+					_infoItemServiceRegistry.getFirstInfoItemService(
+						InfoItemFieldValuesProvider.class,
+						JournalArticle.class.getName());
+
+		JournalArticle journalArticle =
+			TranslationTestUtil.getJournalArticleWithRichHTML(
+				_group, _ddmFormDeserializer);
+
+		Assert.assertEquals(
+			TranslationTestUtil.toFormattedString(
+				StringUtil.replace(
+					TranslationTestUtil.readFileToString(
+						"test-journal-article-rich-html-cdata-v12.xlf"),
+					"[$JOURNAL_ARTICLE_ID$]",
+					String.valueOf(journalArticle.getResourcePrimKey()))),
+			TranslationTestUtil.toFormattedString(
+				StreamUtil.toString(
+					_xliffTranslationInfoItemFieldValuesExporter.
+						exportInfoItemFieldValues(
+							infoItemFieldValuesProvider.getInfoItemFieldValues(
+								journalArticle),
+							LocaleUtil.getDefault(),
+							LocaleUtil.fromLanguageId("es_ES")))));
+	}
+
 	@Test
 	public void testExportReturnsEmptyTargetForUntranslatedField()
 		throws Exception {
@@ -186,6 +262,29 @@ public class XLIFF12TranslationInfoItemFieldValuesExporterTest {
 								journalArticle),
 							LocaleUtil.getDefault(),
 							LocaleUtil.fromLanguageId("es_ES")))));
+	}
+
+	private JournalArticle _getJournalArticleWithRepeatableHTMLField()
+		throws Exception {
+
+		DDMFormDeserializerDeserializeRequest.Builder builder =
+			DDMFormDeserializerDeserializeRequest.Builder.newBuilder(
+				TranslationTestUtil.readFileToString(
+					"test-ddm-form-repeatable-html.json"));
+
+		DDMFormDeserializerDeserializeResponse
+			ddmFormDeserializerDeserializeResponse =
+				_ddmFormDeserializer.deserialize(builder.build());
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName(),
+			ddmFormDeserializerDeserializeResponse.getDDMForm());
+
+		return JournalTestUtil.addArticleWithXMLContent(
+			_group.getGroupId(),
+			TranslationTestUtil.readFileToString(
+				"test-journal-content-repeatable-html-inline-codes.xml"),
+			ddmStructure.getStructureKey(), null);
 	}
 
 	@Inject(filter = "ddm.form.deserializer.type=json")

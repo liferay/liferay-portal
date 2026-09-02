@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US,es_ES" default-locale="en_US">
+	<dynamic-element index-type="text" instance-id="rht1" name="RichText" repeatable="true" type="text_area">
+		<dynamic-content language-id="en_US"><![CDATA[<b>alpha</b> one]]></dynamic-content>
+		<dynamic-content language-id="es_ES"><![CDATA[<b>alfa</b> uno]]></dynamic-content>
+	</dynamic-element>
+	<dynamic-element index-type="text" instance-id="rht2" name="RichText" repeatable="true" type="text_area">
+		<dynamic-content language-id="en_US"><![CDATA[beta <i>two</i>]]></dynamic-content>
+		<dynamic-content language-id="es_ES"><![CDATA[beta <i>dos</i>]]></dynamic-content>
+	</dynamic-element>
+</root>

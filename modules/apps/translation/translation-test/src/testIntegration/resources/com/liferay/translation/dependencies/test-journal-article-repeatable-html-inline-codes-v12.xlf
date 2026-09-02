@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file datatype="plaintext" original="com.liferay.journal.model.JournalArticle:[$JOURNAL_ARTICLE_ID$]" source-language="en-US" target-language="es-ES" tool="Liferay">
+		<body>
+			<trans-unit id="JournalArticle_title">
+				<source xml:lang="en-US"><![CDATA[Test Article]]></source>
+				<target xml:lang="es-ES"></target>
+			</trans-unit>
+			<trans-unit datatype="html" id="JournalArticle_description">
+				<source xml:lang="en-US"></source>
+				<target xml:lang="es-ES"></target>
+			</trans-unit>
+			<trans-unit datatype="html" id="DDMStructure_RichText">
+				<source xml:lang="en-US">
+					<bpt id="1">&lt;b&gt;</bpt>alpha<ept id="1">&lt;/b&gt;</ept> onebeta <bpt id="2">&lt;i&gt;</bpt>two<ept id="2">&lt;/i&gt;</ept>
+				</source>
+				<seg-source>
+					<mrk mid="0" mtype="seg">
+						<bpt id="1">&lt;b&gt;</bpt>alpha<ept id="1">&lt;/b&gt;</ept> one</mrk>
+					<mrk mid="1" mtype="seg">beta <bpt id="2">&lt;i&gt;</bpt>two<ept id="2">&lt;/i&gt;</ept>
+					</mrk>
+				</seg-source>
+				<target xml:lang="es-ES">
+					<mrk mid="0" mtype="seg">
+						<bpt id="1">&lt;b&gt;</bpt>alfa<ept id="1">&lt;/b&gt;</ept> uno</mrk>
+					<mrk mid="1" mtype="seg">beta <bpt id="2">&lt;i&gt;</bpt>dos<ept id="2">&lt;/i&gt;</ept>
+					</mrk>
+				</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<xliff srcLang="en-US" trgLang="es-ES" version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+	<file id="com.liferay.journal.model.JournalArticle:[$JOURNAL_ARTICLE_ID$]">
+		<unit id="JournalArticle_title">
+			<segment>
+				<source><![CDATA[Test Article]]></source>
+				<target></target>
+			</segment>
+		</unit>
+		<unit id="JournalArticle_description">
+			<segment>
+				<source><![CDATA[]]></source>
+				<target></target>
+			</segment>
+		</unit>
+		<unit id="DDMStructure_HTML4acl">
+			<segment>
+				<source><![CDATA[<p class="intro">Hello <b>world</b> &amp; more</p><br/><img src="/images/logo.png"><script>console.log("protect");</script><em>unclosed]]></source>
+				<target><![CDATA[<p class="intro">Hola <b>mundo</b> &amp; mas</p><br/><img src="/images/logo.png"><script>console.log("protect");</script><em>sin cerrar]]></target>
+			</segment>
+		</unit>
+		<unit id="DDMStructure_Text1gf6">
+			<segment>
+				<source><![CDATA[Some Text]]></source>
+				<target><![CDATA[Un poco de texto]]></target>
+			</segment>
+		</unit>
+		<unit id="DDMStructure_Double89452576">
+			<segment>
+				<source><![CDATA[]]></source>
+				<target></target>
+			</segment>
+		</unit>
+		<unit id="DDMStructure_Integer2cc6">
+			<segment>
+				<source><![CDATA[]]></source>
+				<target></target>
+			</segment>
+		</unit>
+	</file>
+</xliff>

@@ -266,13 +266,34 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 			imageInfoFieldValue.getValue(LocaleUtil.SPAIN));
 	}
 
+	@Test
+	public void testImportXLIFF20VersionDocument() throws Exception {
+		InfoItemFieldValues infoItemFieldValues =
+			_xliffTranslationInfoItemFieldValuesImporter.
+				importInfoItemFieldValues(
+					_group.getGroupId(),
+					new InfoItemReference(JournalArticle.class.getName(), 122),
+					TranslationTestUtil.readFileToInputStream(
+						"test-journal-article-122.xlf"));
+
+		Assert.assertNotNull(infoItemFieldValues);
+		Assert.assertNotNull(infoItemFieldValues.getInfoFieldValues());
+
+		Collection<InfoFieldValue<Object>> infoFieldValues =
+			infoItemFieldValues.getInfoFieldValues();
+
+		Assert.assertFalse(infoFieldValues.isEmpty());
+	}
+
 	@FeatureFlags(
 		featureFlags = @FeatureFlag(enable = false, value = "LPD-102730")
 	)
 	@Test
-	public void testImportXLIFF20PreservesInlineCodesWithoutFeatureFlag()
-		throws Exception {
+	public void testImportXLIFF20WithFeatureFlagDisabled() throws Exception {
+		_testImportXLIFF20WithInlineCodes();
+	}
 
+	private void _testImportXLIFF20WithInlineCodes() throws Exception {
 		InfoItemFieldValues infoItemFieldValues =
 			_xliffTranslationInfoItemFieldValuesImporter.
 				importInfoItemFieldValues(
@@ -299,25 +320,6 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 		Assert.assertEquals(
 			"<img src=\"/images/logo.png\"/>",
 			imageInfoFieldValue.getValue(LocaleUtil.SPAIN));
-	}
-
-	@Test
-	public void testImportXLIFF20VersionDocument() throws Exception {
-		InfoItemFieldValues infoItemFieldValues =
-			_xliffTranslationInfoItemFieldValuesImporter.
-				importInfoItemFieldValues(
-					_group.getGroupId(),
-					new InfoItemReference(JournalArticle.class.getName(), 122),
-					TranslationTestUtil.readFileToInputStream(
-						"test-journal-article-122.xlf"));
-
-		Assert.assertNotNull(infoItemFieldValues);
-		Assert.assertNotNull(infoItemFieldValues.getInfoFieldValues());
-
-		Collection<InfoFieldValue<Object>> infoFieldValues =
-			infoItemFieldValues.getInfoFieldValues();
-
-		Assert.assertFalse(infoFieldValues.isEmpty());
 	}
 
 	private static final String _INLINE_CODES_NO_ORIGINAL_DATA_XLIFF =

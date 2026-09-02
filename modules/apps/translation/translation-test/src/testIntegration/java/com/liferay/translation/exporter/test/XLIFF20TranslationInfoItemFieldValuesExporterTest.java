@@ -126,6 +126,39 @@ public class XLIFF20TranslationInfoItemFieldValuesExporterTest {
 				"world</pc> <ph id=\"3\" dataRef=\"d4\"/> more</pc>"));
 	}
 
+	@FeatureFlags(
+		featureFlags = @FeatureFlag(enable = false, value = "LPD-102730")
+	)
+	@Test
+	public void testExportReturnsCDATAForRichHTMLField() throws Exception {
+		InfoItemFieldValuesProvider<JournalArticle>
+			infoItemFieldValuesProvider =
+				(InfoItemFieldValuesProvider<JournalArticle>)
+					_infoItemServiceRegistry.getFirstInfoItemService(
+						InfoItemFieldValuesProvider.class,
+						JournalArticle.class.getName());
+
+		JournalArticle journalArticle =
+			TranslationTestUtil.getJournalArticleWithRichHTML(
+				_group, _ddmFormDeserializer);
+
+		Assert.assertEquals(
+			TranslationTestUtil.toFormattedString(
+				StringUtil.replace(
+					TranslationTestUtil.readFileToString(
+						"test-journal-article-rich-html-cdata.xlf"),
+					"[$JOURNAL_ARTICLE_ID$]",
+					String.valueOf(journalArticle.getResourcePrimKey()))),
+			TranslationTestUtil.toFormattedString(
+				StreamUtil.toString(
+					_xliffTranslationInfoItemFieldValuesExporter.
+						exportInfoItemFieldValues(
+							infoItemFieldValuesProvider.getInfoItemFieldValues(
+								journalArticle),
+							LocaleUtil.getDefault(),
+							LocaleUtil.fromLanguageId("es_ES")))));
+	}
+
 	@Test
 	public void testExportReturnsEmptyTargetForUntranslatedField()
 		throws Exception {
