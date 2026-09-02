@@ -488,6 +488,9 @@ export default function ObjectFieldFormBase({
 						readOnly || values.businessType === 'Relationship'
 					}
 					error={errors.description}
+					helpMessage={Liferay.Language.get(
+						'provide-descriptive-text-used-only-by-ai-agents-and-api-consumers'
+					)}
 					id="objectFieldDescriptionInput"
 					label={Liferay.Language.get('description')}
 					onBlur={(event) => {

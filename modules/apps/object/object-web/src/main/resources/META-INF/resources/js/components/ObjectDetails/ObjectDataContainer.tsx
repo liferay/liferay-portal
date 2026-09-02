@@ -105,6 +105,9 @@ export function ObjectDataContainer({
 					component="textarea"
 					disabled={noPermissionOrLinked}
 					error={errors.description}
+					helpMessage={Liferay.Language.get(
+						'provide-descriptive-text-used-only-by-ai-agents-and-api-consumers'
+					)}
 					id="lfr-objects__object-data-container-description"
 					label={Liferay.Language.get('description')}
 					onBlur={(event) => {

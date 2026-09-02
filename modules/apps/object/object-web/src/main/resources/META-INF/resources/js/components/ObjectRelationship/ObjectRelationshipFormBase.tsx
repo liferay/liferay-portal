@@ -257,6 +257,9 @@ export function ObjectRelationshipFormBase({
 						component="textarea"
 						disabled={descriptionDisabled}
 						error={errors.description}
+						helpMessage={Liferay.Language.get(
+							'provide-descriptive-text-used-only-by-ai-agents-and-api-consumers'
+						)}
 						id="lfr-objects__object-relationship-form-base-description"
 						label={Liferay.Language.get('description')}
 						onBlur={async (event) => {
