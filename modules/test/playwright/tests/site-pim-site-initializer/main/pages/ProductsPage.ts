@@ -81,4 +81,12 @@ export class ProductsPage {
 
 		await this.loadingAnimation.waitFor({state: 'hidden'});
 	}
+
+	async openProductEditor(name: string) {
+		await this.getProduct(name).click();
+
+		await this.generalTab.waitFor();
+
+		await this.loadingAnimation.waitFor({state: 'hidden'});
+	}
 }

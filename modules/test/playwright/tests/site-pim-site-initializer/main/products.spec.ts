@@ -14,8 +14,8 @@ const test = mergeTests(cmsPagesTest, loginTest(), pimPagesTest);
 
 test(
 	'Create a base SKU',
-	{tag: ['@LPD-98441']},
-	async ({contentsPage, productsPage}) => {
+	{tag: ['@LPD-98441', '@LPD-99449', '@LPD-99450']},
+	async ({contentsPage, productPage, productsPage}) => {
 		const baseSkuName = getRandomString();
 
 		try {
@@ -23,14 +23,39 @@ test(
 
 			await productsPage.openNewProductEditor();
 
-			await contentsPage.fillData([
-				{label: 'Code', value: getRandomString()},
-				{label: 'Name', value: baseSkuName},
-			]);
+			await productPage.code.fill(getRandomString());
+			await productPage.depth.fill('10.5');
+			await productPage.height.fill('20.5');
+			await productPage.name.fill(baseSkuName);
+			await productPage.unitOfMeasureAllowDecimalQuantities.setChecked(
+				true
+			);
+			await productPage.unitOfMeasureKey.fill('box');
+			await productPage.unitOfMeasureName.fill('Box');
+			await productPage.unitOfMeasureSymbol.fill('BX');
+			await productPage.virtual.setChecked(true);
+			await productPage.weight.fill('30.5');
+			await productPage.width.fill('40.5');
 
 			await contentsPage.saveContent();
 
 			await expect(productsPage.getProduct(baseSkuName)).toBeVisible();
+
+			await test.step('Verify that the unit of measure and dimension fields are persisted', async () => {
+				await productsPage.openProductEditor(baseSkuName);
+
+				await expect(productPage.depth).toHaveValue('10.5');
+				await expect(productPage.height).toHaveValue('20.5');
+				await expect(
+					productPage.unitOfMeasureAllowDecimalQuantities
+				).toBeChecked();
+				await expect(productPage.unitOfMeasureKey).toHaveValue('box');
+				await expect(productPage.unitOfMeasureName).toHaveValue('Box');
+				await expect(productPage.unitOfMeasureSymbol).toHaveValue('BX');
+				await expect(productPage.virtual).toBeChecked();
+				await expect(productPage.weight).toHaveValue('30.5');
+				await expect(productPage.width).toHaveValue('40.5');
+			});
 		}
 		finally {
 			await productsPage.goto();
