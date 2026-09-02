@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.product.navigation.omni.search.OmniSearchResult;
 import com.liferay.product.navigation.omni.search.OmniSearchResultProvider;
+import com.liferay.product.navigation.omni.search.OmniSearchResultProviderRegistry;
 import com.liferay.product.navigation.omni.search.web.internal.constants.ProductNavigationOmniSearchPortletKeys;
 
 import jakarta.portlet.ResourceRequest;
@@ -33,9 +34,6 @@ import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Marcos Castro
@@ -84,7 +82,8 @@ public class OmniSearchResultsMVCResourceCommand
 			_portal.getLiferayPortletResponse(resourceResponse);
 
 		for (OmniSearchResultProvider omniSearchResultProvider :
-				_omniSearchResultProviders) {
+				_omniSearchResultProviderRegistry.
+					getOmniSearchResultProviders()) {
 
 			try {
 				omniSearchResults.addAll(
@@ -127,12 +126,8 @@ public class OmniSearchResultsMVCResourceCommand
 	private static final Log _log = LogFactoryUtil.getLog(
 		OmniSearchResultsMVCResourceCommand.class);
 
-	@Reference(
-		cardinality = ReferenceCardinality.MULTIPLE,
-		policy = ReferencePolicy.DYNAMIC,
-		policyOption = ReferencePolicyOption.GREEDY
-	)
-	private volatile List<OmniSearchResultProvider> _omniSearchResultProviders;
+	@Reference
+	private OmniSearchResultProviderRegistry _omniSearchResultProviderRegistry;
 
 	@Reference
 	private Portal _portal;
