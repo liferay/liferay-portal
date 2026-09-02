@@ -30,7 +30,10 @@ public class JUnitBatchTestClassGroupTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Before
-	public void setUpGitRemotes() throws Exception {
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
 		setShellCommandOutput(
 			"git remote -v", mockShell(),
 			"upstream\tgit@github.com:liferay/liferay-portal.git (fetch)\n" +
