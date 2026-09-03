@@ -16,7 +16,7 @@ import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectEntryVersion;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
-import com.liferay.object.service.ObjectEntryVersionLocalService;
+import com.liferay.object.service.ObjectEntryVersionService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -60,14 +60,14 @@ public class ObjectEntryVersionFieldValueResolver {
 		DLFileEntryLocalService dlFileEntryLocalService,
 		DLURLHelper dlURLHelper, Language language,
 		ListTypeEntryLocalService listTypeEntryLocalService,
-		ObjectEntryVersionLocalService objectEntryVersionLocalService) {
+		ObjectEntryVersionService objectEntryVersionService) {
 
 		_dlAppLocalService = dlAppLocalService;
 		_dlFileEntryLocalService = dlFileEntryLocalService;
 		_dlURLHelper = dlURLHelper;
 		_language = language;
 		_listTypeEntryLocalService = listTypeEntryLocalService;
-		_objectEntryVersionLocalService = objectEntryVersionLocalService;
+		_objectEntryVersionService = objectEntryVersionService;
 	}
 
 	public Map<String, Object> getFieldValues(
@@ -77,7 +77,7 @@ public class ObjectEntryVersionFieldValueResolver {
 		Map<String, Object> fieldValues = new HashMap<>();
 
 		ObjectEntryVersion objectEntryVersion =
-			_objectEntryVersionLocalService.getObjectEntryVersion(
+			_objectEntryVersionService.getObjectEntryVersion(
 				objectEntryId, version);
 
 		ObjectEntry objectEntry = ObjectEntry.unsafeToDTO(
@@ -195,6 +195,7 @@ public class ObjectEntryVersionFieldValueResolver {
 
 	private Format _getDateTimeFormat(
 		String languageId, ObjectField objectField, User user) {
+
 		Locale locale = LocaleUtil.fromLanguageId(languageId);
 
 		SimpleDateFormat simpleDateFormat =
@@ -394,7 +395,6 @@ public class ObjectEntryVersionFieldValueResolver {
 	private final DLURLHelper _dlURLHelper;
 	private final Language _language;
 	private final ListTypeEntryLocalService _listTypeEntryLocalService;
-	private final ObjectEntryVersionLocalService
-		_objectEntryVersionLocalService;
+	private final ObjectEntryVersionService _objectEntryVersionService;
 
 }

@@ -13,7 +13,7 @@ import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.object.service.ObjectEntryVersionLocalService;
+import com.liferay.object.service.ObjectEntryVersionService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
@@ -67,7 +67,7 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 			new ObjectEntryVersionFieldValueResolver(
 				_dlAppLocalService, _dlFileEntryLocalService, _dlURLHelper,
 				_language, _listTypeEntryLocalService,
-				_objectEntryVersionLocalService);
+				_objectEntryVersionService);
 	}
 
 	@Override
@@ -243,7 +243,7 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		_objectEntryVersionFieldValueResolver;
 
 	@Reference
-	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
+	private ObjectEntryVersionService _objectEntryVersionService;
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
