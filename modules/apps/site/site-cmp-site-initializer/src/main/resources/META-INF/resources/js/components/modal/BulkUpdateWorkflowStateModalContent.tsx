@@ -111,6 +111,7 @@ export default function BulkUpdateWorkflowStateModalContent({
 					const allTasksSelected =
 						selectedTaskIds.length === workflowTaskIds.length;
 					const collapsed = isCollapsed(workflowKey);
+
 					return (
 						<div
 							aria-label={workflowDefinitionName}

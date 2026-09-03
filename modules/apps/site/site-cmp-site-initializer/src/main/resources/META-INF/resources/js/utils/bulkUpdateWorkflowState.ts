@@ -4,10 +4,10 @@
  */
 
 import {
-	getTransitions,
-	groupWorkflowTasks,
 	StepGroup,
 	WorkflowGroup,
+	getTransitions,
+	groupWorkflowTasks,
 } from './groupWorkflowTasks';
 import {ChangeTransition, WorkflowTaskItemData} from './types';
 
