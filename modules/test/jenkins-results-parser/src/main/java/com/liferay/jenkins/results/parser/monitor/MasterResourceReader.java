@@ -108,7 +108,7 @@ public class MasterResourceReader {
 					"/api/json?tree=jobs[buildable,disabled,",
 					"lastBuild[building,number,timestamp],",
 					"lastCompletedBuild[number,result,timestamp],name]")),
-			false, 1, _SECONDS_RETRY_PERIOD, timeoutMillis);
+			false, RETRIES_SIZE_MAX, _SECONDS_RETRY_PERIOD, timeoutMillis);
 
 		JSONArray jobsJSONArray = jsonObject.optJSONArray("jobs");
 
