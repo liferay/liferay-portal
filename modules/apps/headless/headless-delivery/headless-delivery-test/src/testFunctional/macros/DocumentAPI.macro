@@ -282,7 +282,7 @@ definition {
 			var expectedExternalReferenceCodeValue = DocumentAPI.getUuidOfCreatedDocument(responseToParse = ${responseToParse});
 		}
 
-		var actualExternalReferenceCodeValue = JSONUtil.getWithJSONPath(${responseToParse}, "$..externalReferenceCode");
+		var actualExternalReferenceCodeValue = JSONUtil.getWithJSONPath(${responseToParse}, "$.externalReferenceCode");
 
 		TestUtils.assertEquals(
 			actual = ${actualExternalReferenceCodeValue},
