@@ -17,6 +17,7 @@ public class ModulesTestReportTest
 
 	@Test
 	public void testGetTestClassName() {
+		testEquals("assemble", _getTestClassName("assemble"));
 		testEquals(
 			"modules.apps.commerce",
 			_getTestClassName("modules.apps.commerce.assemble"));
@@ -26,21 +27,12 @@ public class ModulesTestReportTest
 	}
 
 	@Test
-	public void testGetTestClassNameWithoutQualifier() {
-		testEquals("assemble", _getTestClassName("assemble"));
-	}
-
-	@Test
 	public void testGetTestName() {
+		testEquals("assemble", _getTestName("assemble"));
 		testEquals("assemble", _getTestName("modules.apps.commerce.assemble"));
 		testEquals(
 			"compileTestIntegrationJava",
 			_getTestName("modules.apps.commerce.compileTestIntegrationJava"));
-	}
-
-	@Test
-	public void testGetTestNameWithoutQualifier() {
-		testEquals("assemble", _getTestName("assemble"));
 	}
 
 	private ModulesTestReport _getModulesTestReport(String testName) {
