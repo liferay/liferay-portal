@@ -10809,6 +10809,8 @@ junit.jvm.override.version=21</echo>
 								<echo>##</echo>
 								<echo></echo>
 
+								<download-gradle-wrapper-binary workspace.dir="${project.dir}/${workspace.dir}" />
+
 								<execute-gradle-task gradle.task.module.dir="${workspace.dir}" gradle.task.name="build">
 									<action>
 										<exec dir="${workspace.dir}" executable="${project.dir}/${workspace.dir}/gradlew" failonerror="true">
