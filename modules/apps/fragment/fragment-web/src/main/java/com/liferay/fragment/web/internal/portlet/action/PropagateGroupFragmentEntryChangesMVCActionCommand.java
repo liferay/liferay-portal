@@ -5,22 +5,35 @@
 
 package com.liferay.fragment.web.internal.portlet.action;
 
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.fragment.web.internal.exception.InvalidPropagationTargetGroupsException;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
+
+import java.util.List;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,7 +63,72 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommand
 			actionRequest, "fragmentEntryERC");
 		long fragmentEntryGroupId = ParamUtil.getLong(
 			actionRequest, "fragmentEntryGroupId");
+
 		long[] groupIds = ParamUtil.getLongValues(actionRequest, "rowIds");
+
+		Set<Long> groupIdsSet = SetUtil.fromArray(groupIds);
+
+		try {
+			Set<Long> propagationTargetGroupIds = _getPropagationTargetGroupIds(
+				fragmentEntryGroupId, groupIdsSet);
+
+			_propagateGroupFragmentEntryChanges(
+				fragmentEntryERC, fragmentEntryGroupId,
+				propagationTargetGroupIds, themeDisplay);
+
+			if (propagationTargetGroupIds.size() < groupIdsSet.size()) {
+				SessionMessages.add(
+					actionRequest, "sitesSkippedFromPropagation");
+			}
+		}
+		catch (InvalidPropagationTargetGroupsException
+					invalidPropagationTargetGroupsException) {
+
+			SessionErrors.add(
+				actionRequest,
+				invalidPropagationTargetGroupsException.getClass());
+
+			hideDefaultErrorMessage(actionRequest);
+		}
+
+		sendRedirect(actionRequest, actionResponse);
+	}
+
+	private Set<Long> _getPropagationTargetGroupIds(
+			long fragmentEntryGroupId, Set<Long> groupIds)
+		throws InvalidPropagationTargetGroupsException {
+
+		if (groupIds.isEmpty()) {
+			return groupIds;
+		}
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			fragmentEntryGroupId);
+
+		if (depotEntry == null) {
+			return groupIds;
+		}
+
+		List<Long> connectedGroupIds = TransformUtil.transform(
+			_depotEntryGroupRelLocalService.getDepotEntryGroupRels(depotEntry),
+			DepotEntryGroupRel::getToGroupId);
+
+		connectedGroupIds.add(fragmentEntryGroupId);
+
+		Set<Long> propagationTargetGroupIds = SetUtil.intersect(
+			groupIds, connectedGroupIds);
+
+		if (propagationTargetGroupIds.isEmpty()) {
+			throw new InvalidPropagationTargetGroupsException();
+		}
+
+		return propagationTargetGroupIds;
+	}
+
+	private void _propagateGroupFragmentEntryChanges(
+			String fragmentEntryERC, long fragmentEntryGroupId,
+			Set<Long> groupIds, ThemeDisplay themeDisplay)
+		throws PortalException {
 
 		for (long groupId : groupIds) {
 			String fragmentEntryScopeERC =
@@ -90,11 +168,13 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommand
 
 			actionableDynamicQuery.performActions();
 		}
-
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
-
-		sendRedirect(actionRequest, actionResponse, redirect);
 	}
+
+	@Reference
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
