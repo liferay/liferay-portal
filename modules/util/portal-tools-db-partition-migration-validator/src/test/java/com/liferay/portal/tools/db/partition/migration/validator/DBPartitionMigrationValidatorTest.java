@@ -185,16 +185,8 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 			"source-success.json", "target-success.json",
 			runtimeException -> Assert.assertEquals(
 				"0", runtimeException.getMessage()),
-			() -> {
-				Assert.assertEquals(
-					0, Files.readAllBytes(_errorFile.toPath()).length);
-
-				String outputFileContent = new String(
-					Files.readAllBytes(_outputFile.toPath()), StringPool.UTF8);
-
-				Assert.assertTrue(
-					outputFileContent.contains(_BETA_FEATURE_MESSAGE));
-			});
+			() -> Assert.assertEquals(
+				0, Files.readAllBytes(_errorFile.toPath()).length));
 	}
 
 	@Test
@@ -210,12 +202,6 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 				Assert.assertTrue(
 					errorFileContent.contains(
 						"Target is not the default partition"));
-
-				String outputFileContent = new String(
-					Files.readAllBytes(_outputFile.toPath()), StringPool.UTF8);
-
-				Assert.assertTrue(
-					outputFileContent.contains(_BETA_FEATURE_MESSAGE));
 			},
 			() -> {
 			});
@@ -446,9 +432,6 @@ public class DBPartitionMigrationValidatorTest extends BaseTestCase {
 
 		unsafeRunnable.run();
 	}
-
-	private static final String _BETA_FEATURE_MESSAGE =
-		"This tool is a beta feature. It is experimental and not supported.";
 
 	private static final String _JDBC_URL =
 		"jdbc:mysql://localhost:3306/lportal?useUnicode=true";
