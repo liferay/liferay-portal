@@ -634,20 +634,13 @@ public class JournalArticleStagedModelDataHandler
 
 		String articleId = article.getArticleId();
 
-		boolean autoArticleId = false;
-
-		List<JournalArticle> articles = _journalArticleLocalService.getArticles(
-			portletDataContext.getScopeGroupId(), articleId);
-
-		if (!articles.isEmpty()) {
-			autoArticleId = true;
-		}
-
 		Map<String, String> articleIds =
 			(Map<String, String>)portletDataContext.getNewPrimaryKeysMap(
 				JournalArticle.class + ".articleId");
 
 		String newArticleId = articleIds.get(articleId);
+
+		boolean autoArticleId = false;
 
 		if (Validator.isNotNull(newArticleId)) {
 
@@ -655,7 +648,14 @@ public class JournalArticleStagedModelDataHandler
 			// article id
 
 			articleId = newArticleId;
-			autoArticleId = false;
+		}
+		else {
+			int articlesCount = _journalArticleLocalService.getArticlesCount(
+				portletDataContext.getScopeGroupId(), articleId);
+
+			if (articlesCount > 0) {
+				autoArticleId = true;
+			}
 		}
 
 		String content = portletDataContext.getZipEntryAsString(
@@ -1144,7 +1144,7 @@ public class JournalArticleStagedModelDataHandler
 				if (!ExportImportThreadLocal.isStagingInProcess() ||
 					!exportVersionHistory) {
 
-					_updateArticleVersions(importedArticle);
+					_updateArticleVersions(importedArticle, portletDataContext);
 				}
 
 				if (Validator.isNull(newArticleId)) {
@@ -1506,12 +1506,20 @@ public class JournalArticleStagedModelDataHandler
 		}
 	}
 
-	private boolean _isExpireAllArticleVersions(long companyId)
+	private boolean _isExpireAllArticleVersions(
+			PortletDataContext portletDataContext)
 		throws PortalException {
+
+		if (portletDataContext.getBooleanParameter(
+				"journal", "version-history", false)) {
+
+			return false;
+		}
 
 		JournalServiceConfiguration journalServiceConfiguration =
 			_configurationProvider.getCompanyConfiguration(
-				JournalServiceConfiguration.class, companyId);
+				JournalServiceConfiguration.class,
+				portletDataContext.getCompanyId());
 
 		return journalServiceConfiguration.expireAllArticleVersionsEnabled();
 	}
@@ -1767,11 +1775,25 @@ public class JournalArticleStagedModelDataHandler
 		}
 	}
 
-	private void _updateArticleVersions(JournalArticle article)
+	private void _updateArticleVersions(
+			JournalArticle article, PortletDataContext portletDataContext)
 		throws PortalException {
 
 		boolean expireAllArticleVersions = _isExpireAllArticleVersions(
-			article.getCompanyId());
+			portletDataContext);
+
+		Map<String, Long> folderIds =
+			(Map<String, Long>)portletDataContext.getNewPrimaryKeysMap(
+				JournalArticle.class + ".folderId");
+
+		String key = StringBundler.concat(
+			article.getGroupId(), StringPool.POUND, article.getArticleId());
+
+		long folderId = GetterUtil.getLong(folderIds.get(key), -1);
+
+		if (!expireAllArticleVersions && (folderId == article.getFolderId())) {
+			return;
+		}
 
 		List<JournalArticle> articles = _journalArticleLocalService.getArticles(
 			article.getGroupId(), article.getArticleId());
@@ -1808,6 +1830,8 @@ public class JournalArticleStagedModelDataHandler
 				_journalArticleLocalService.updateJournalArticle(curArticle);
 			}
 		}
+
+		folderIds.put(key, article.getFolderId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
