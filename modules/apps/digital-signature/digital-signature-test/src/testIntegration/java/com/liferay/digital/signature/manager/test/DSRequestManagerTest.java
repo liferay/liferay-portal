@@ -97,9 +97,22 @@ public class DSRequestManagerTest {
 				TestPropsValues.getCompanyId(),
 				DigitalSignatureConfiguration.class.getName(),
 				HashMapDictionaryBuilder.<String, Object>put(
+					"accountBaseURI", RandomTestUtil.randomString()
+				).put(
+					"apiAccountId", RandomTestUtil.randomString()
+				).put(
+					"apiUsername", RandomTestUtil.randomString()
+				).put(
 					"enabled", true
+				).put(
+					"environment", RandomTestUtil.randomString()
+				).put(
+					"integrationKey", RandomTestUtil.randomString()
+				).put(
+					"rsaPrivateKey", RandomTestUtil.randomString()
+				).put(
+					"siteSettingsStrategy", "always-inherit"
 				).build());
-
 		_dsRequestDocumentObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
