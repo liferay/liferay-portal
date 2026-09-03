@@ -188,6 +188,7 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -876,6 +877,7 @@ public class RenderLayoutStructureTagTest {
 		Assert.assertFalse(content.contains(xssScript));
 	}
 
+	@FeatureFlag("LPS-169837")
 	@Test
 	@TestInfo("LPD-103459")
 	public void testLayoutStructureRules() throws Exception {
