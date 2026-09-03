@@ -59,7 +59,7 @@ export function FormBuilder() {
 	useEffect(() => {
 		if (allowFieldSets && contentType) {
 			fetchFieldSets({contentType, dataDefinitionId, groupId})
-				.then((fieldSets) => {
+				.then(({fieldSets}) => {
 					dispatch({
 						payload: {fieldSets},
 						type: EVENT_TYPES.FIELD_SET.UPDATE_LIST,

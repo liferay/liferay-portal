@@ -75,8 +75,13 @@ export default function FieldSetList({searchTerm}) {
 
 	const trimmedSearchTerm = searchTerm ? searchTerm.trim() : '';
 
-	const {hasError, isLoading, removeSearchResult, searchResults} =
-		useSearchFieldSets(trimmedSearchTerm);
+	const {
+		hasError,
+		isLoading,
+		isTruncated,
+		removeSearchResult,
+		searchResults,
+	} = useSearchFieldSets(trimmedSearchTerm);
 
 	const filteredFieldsets = getSortedFieldsets(
 		trimmedSearchTerm
@@ -197,6 +202,14 @@ export default function FieldSetList({searchTerm}) {
 								/>
 							);
 						})}
+
+						{!isLoading && isTruncated && (
+							<p className="text-3 text-secondary">
+								{Liferay.Language.get(
+									'refine-the-search-criteria-to-reduce-results'
+								)}
+							</p>
+						)}
 					</div>
 				</>
 			) : (

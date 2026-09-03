@@ -51,13 +51,20 @@ export async function fetchFieldSets({
 
 	const items = [];
 
+	let totalCount = 0;
+
 	results.forEach((result) => {
 		if (result.status === 'fulfilled') {
-			items.push(...result.value);
+			items.push(...result.value.items);
+
+			totalCount += result.value.totalCount;
 		}
 	});
 
-	return items.filter(({id}) => id !== parseInt(dataDefinitionId, 10));
+	return {
+		fieldSets: items.filter(({id}) => id !== parseInt(dataDefinitionId, 10)),
+		truncated: totalCount > items.length,
+	};
 }
 
 export default function useSearchFieldSets(searchTerm) {
@@ -85,12 +92,13 @@ export default function useSearchFieldSets(searchTerm) {
 			keywords: debouncedSearchTerm,
 			signal,
 		})
-			.then((items) => {
+			.then(({fieldSets, truncated}) => {
 				if (!signal.aborted) {
 					setSearchState({
 						hasError: false,
-						items,
+						items: fieldSets,
 						term: debouncedSearchTerm,
+						truncated,
 					});
 				}
 			})
@@ -102,6 +110,7 @@ export default function useSearchFieldSets(searchTerm) {
 						hasError: true,
 						items: [],
 						term: debouncedSearchTerm,
+						truncated: false,
 					});
 				}
 			});
@@ -129,6 +138,7 @@ export default function useSearchFieldSets(searchTerm) {
 		hasError: hasCurrentResults && Boolean(searchState.hasError),
 		isLoading:
 			Boolean(contentType) && Boolean(searchTerm) && !hasCurrentResults,
+		isTruncated: hasCurrentResults && Boolean(searchState.truncated),
 		removeSearchResult,
 		searchResults: hasCurrentResults ? searchState.items : null,
 	};

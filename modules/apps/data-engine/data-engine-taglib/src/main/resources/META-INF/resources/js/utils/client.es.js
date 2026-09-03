@@ -103,7 +103,7 @@ export function getItems(baseURL, keywords = '', {signal} = {}) {
 		headers: HEADERS,
 		method: 'GET',
 		signal,
-	}).then(({items = []}) => items);
+	}).then(({items = [], totalCount = 0}) => ({items, totalCount}));
 }
 
 export function request(endpoint, method = 'GET') {
