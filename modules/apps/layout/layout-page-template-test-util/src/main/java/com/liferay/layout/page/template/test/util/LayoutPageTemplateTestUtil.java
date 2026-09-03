@@ -33,6 +33,14 @@ public class LayoutPageTemplateTestUtil {
 			long groupId)
 		throws PortalException {
 
+		return addLayoutPageTemplateCollection(
+			groupId, LayoutPageTemplateCollectionTypeConstants.BASIC);
+	}
+
+	public static LayoutPageTemplateCollection addLayoutPageTemplateCollection(
+			long groupId, int type)
+		throws PortalException {
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				groupId, TestPropsValues.getUserId());
@@ -42,8 +50,7 @@ public class LayoutPageTemplateTestUtil {
 				null, TestPropsValues.getUserId(), groupId,
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, RandomTestUtil.randomString(), StringPool.BLANK,
-				LayoutPageTemplateCollectionTypeConstants.BASIC,
+				null, RandomTestUtil.randomString(), StringPool.BLANK, type,
 				serviceContext);
 	}
 

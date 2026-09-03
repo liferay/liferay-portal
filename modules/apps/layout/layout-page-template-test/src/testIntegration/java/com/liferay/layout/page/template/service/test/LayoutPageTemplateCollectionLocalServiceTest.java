@@ -6,6 +6,9 @@
 package com.liferay.layout.page.template.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionExternalReferenceCodeException;
@@ -19,6 +22,7 @@ import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -31,15 +35,21 @@ import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -208,6 +218,73 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 				" must have fewer than 75 characters"));
 	}
 
+	@FeatureFlag("LPD-57283")
+	@Test
+	@TestInfo("LPD-104557")
+	public void testAddLayoutPageTemplateCollectionInDesignLibrary()
+		throws Exception {
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
+		Group depotGroup = _addDepotGroup(DepotConstants.TYPE_DESIGN_LIBRARY);
+
+		LayoutPageTemplateCollection basicLayoutPageTemplateCollection =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateCollection(
+				depotGroup.getGroupId());
+
+		Assert.assertEquals(
+			depotGroup.getGroupId(),
+			basicLayoutPageTemplateCollection.getGroupId());
+		Assert.assertEquals(
+			LayoutPageTemplateCollectionTypeConstants.BASIC,
+			basicLayoutPageTemplateCollection.getType());
+
+		LayoutPageTemplateCollection displayPageLayoutPageTemplateCollection =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateCollection(
+				depotGroup.getGroupId(),
+				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE);
+
+		Assert.assertEquals(
+			depotGroup.getGroupId(),
+			displayPageLayoutPageTemplateCollection.getGroupId());
+		Assert.assertEquals(
+			LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE,
+			displayPageLayoutPageTemplateCollection.getType());
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-57283"),
+					Boolean.FALSE.toString())) {
+
+			_testAddLayoutPageTemplateCollectionLayoutPageTemplateCollectionGroupIdException(
+				depotGroup.getGroupId(),
+				LayoutPageTemplateCollectionTypeConstants.BASIC);
+			_testAddLayoutPageTemplateCollectionLayoutPageTemplateCollectionGroupIdException(
+				depotGroup.getGroupId(),
+				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE);
+		}
+
+		Group assetLibraryDepotGroup = _addDepotGroup(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		_testAddLayoutPageTemplateCollectionLayoutPageTemplateCollectionGroupIdException(
+			assetLibraryDepotGroup.getGroupId(),
+			LayoutPageTemplateCollectionTypeConstants.BASIC);
+		_testAddLayoutPageTemplateCollectionLayoutPageTemplateCollectionGroupIdException(
+			assetLibraryDepotGroup.getGroupId(),
+			LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE);
+
+		Group spaceDepotGroup = _addDepotGroup(DepotConstants.TYPE_SPACE);
+
+		_testAddLayoutPageTemplateCollectionLayoutPageTemplateCollectionGroupIdException(
+			spaceDepotGroup.getGroupId(),
+			LayoutPageTemplateCollectionTypeConstants.BASIC);
+		_testAddLayoutPageTemplateCollectionLayoutPageTemplateCollectionGroupIdException(
+			spaceDepotGroup.getGroupId(),
+			LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE);
+	}
+
 	@Test
 	@TestInfo("LPD-67157")
 	public void testDeleteLayoutPageTemplateCollectionByExternalReferenceCode()
@@ -270,6 +347,41 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 				SystemEventConstants.TYPE_DELETE));
 	}
 
+	private Group _addDepotGroup(int depotType) throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), depotType, _serviceContext);
+
+		_depotEntries.add(depotEntry);
+
+		return depotEntry.getGroup();
+	}
+
+	private void
+			_testAddLayoutPageTemplateCollectionLayoutPageTemplateCollectionGroupIdException(
+				long groupId, int type)
+		throws Exception {
+
+		try {
+			_layoutPageTemplateCollectionLocalService.
+				addLayoutPageTemplateCollection(
+					null, TestPropsValues.getUserId(), groupId,
+					LayoutPageTemplateConstants.
+						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+					null, RandomTestUtil.randomString(), null, type,
+					_serviceContext);
+
+			Assert.fail();
+		}
+		catch (LayoutPageTemplateCollectionGroupIdException
+					layoutPageTemplateCollectionGroupIdException) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(layoutPageTemplateCollectionGroupIdException);
+			}
+		}
+	}
+
 	private void
 		_testAddLayoutPageTemplateCollectionWithInvalidLayoutPageTemplateCollectionKey(
 			Class<?> clazz, String layoutPageTemplateCollectionKey,
@@ -296,6 +408,12 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutPageTemplateCollectionLocalServiceTest.class);
+
+	@DeleteAfterTestRun
+	private final List<DepotEntry> _depotEntries = new ArrayList<>();
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
