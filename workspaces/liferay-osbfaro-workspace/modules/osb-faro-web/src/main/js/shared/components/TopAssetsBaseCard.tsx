@@ -292,6 +292,18 @@ const TopAssetsWithData: React.FC<ITopAssetsWithDataProps> = ({
 
 	const isLoading = loading && !skipRequest;
 
+	/**
+	 * `.top-assets` zeroes the table's bottom margin so that the footer alone
+	 * separates the last row from the card edge. Without a footer the pane has
+	 * to carry that spacing, or the table collides with the bottom border. The
+	 * `pb-4` matches the table's own suppressed margin, which is what the Top
+	 * Pages and Top Asset Categories cards fall back on.
+	 */
+
+	const showFooter = !!showViewAll && assets.length > 0;
+
+	const tabContentClassName = showFooter ? 'pb-0' : 'pb-4';
+
 	const tabContent = (
 		<TopAssetsTabContent
 			assets={assets}
@@ -312,15 +324,15 @@ const TopAssetsWithData: React.FC<ITopAssetsWithDataProps> = ({
 			</ClayTabs>
 
 			<ClayTabs.Content activeIndex={activeTab} fade>
-				<ClayTabs.TabPane className="pb-0">
+				<ClayTabs.TabPane className={tabContentClassName}>
 					{tabContent}
 				</ClayTabs.TabPane>
-				<ClayTabs.TabPane className="pb-0">
+				<ClayTabs.TabPane className={tabContentClassName}>
 					{tabContent}
 				</ClayTabs.TabPane>
 			</ClayTabs.Content>
 
-			{showViewAll && assets.length > 0 && (
+			{showFooter && (
 				<div className="d-flex p-3">
 					<ClayButton
 						borderless
