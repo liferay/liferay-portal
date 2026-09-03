@@ -58,15 +58,30 @@ public class FragmentEntryLinkDisplayContext {
 	}
 
 	public int getAllUsageCount() throws PortalException {
-		return FragmentEntryLinkLocalServiceUtil.
-			getAllFragmentEntryLinksCountByFragmentEntry(getFragmentEntry());
+		if (_allUsageCount != null) {
+			return _allUsageCount;
+		}
+
+		_allUsageCount =
+			FragmentEntryLinkLocalServiceUtil.
+				getAllFragmentEntryLinksCountByFragmentEntry(
+					getFragmentEntry());
+
+		return _allUsageCount;
 	}
 
 	public int getDisplayPagesUsageCount() throws PortalException {
-		return FragmentEntryLinkLocalServiceUtil.
-			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
-				getFragmentEntry(),
-				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+		if (_displayPagesUsageCount != null) {
+			return _displayPagesUsageCount;
+		}
+
+		_displayPagesUsageCount =
+			FragmentEntryLinkLocalServiceUtil.
+				getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+					getFragmentEntry(),
+					LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+
+		return _displayPagesUsageCount;
 	}
 
 	public long getFragmentCollectionId() {
@@ -167,10 +182,17 @@ public class FragmentEntryLinkDisplayContext {
 	}
 
 	public int getMasterPagesUsageCount() throws PortalException {
-		return FragmentEntryLinkLocalServiceUtil.
-			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
-				getFragmentEntry(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
+		if (_masterPagesUsageCount != null) {
+			return _masterPagesUsageCount;
+		}
+
+		_masterPagesUsageCount =
+			FragmentEntryLinkLocalServiceUtil.
+				getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+					getFragmentEntry(),
+					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
+
+		return _masterPagesUsageCount;
 	}
 
 	public String getNavigation() {
@@ -208,15 +230,30 @@ public class FragmentEntryLinkDisplayContext {
 	}
 
 	public int getPageTemplatesUsageCount() throws PortalException {
-		return FragmentEntryLinkLocalServiceUtil.
-			getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
-				getFragmentEntry(), LayoutPageTemplateEntryTypeConstants.BASIC);
+		if (_pageTemplatesUsageCount != null) {
+			return _pageTemplatesUsageCount;
+		}
+
+		_pageTemplatesUsageCount =
+			FragmentEntryLinkLocalServiceUtil.
+				getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+					getFragmentEntry(),
+					LayoutPageTemplateEntryTypeConstants.BASIC);
+
+		return _pageTemplatesUsageCount;
 	}
 
 	public int getPagesUsageCount() throws PortalException {
-		return FragmentEntryLinkLocalServiceUtil.
-			getAllLayoutFragmentEntryLinksCountByFragmentEntry(
-				getFragmentEntry());
+		if (_pagesUsageCount != null) {
+			return _pagesUsageCount;
+		}
+
+		_pagesUsageCount =
+			FragmentEntryLinkLocalServiceUtil.
+				getAllLayoutFragmentEntryLinksCountByFragmentEntry(
+					getFragmentEntry());
+
+		return _pagesUsageCount;
 	}
 
 	public PortletURL getPortletURL() {
@@ -496,13 +533,18 @@ public class FragmentEntryLinkDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		FragmentEntryLinkDisplayContext.class);
 
+	private Integer _allUsageCount;
+	private Integer _displayPagesUsageCount;
 	private Long _fragmentCollectionId;
 	private FragmentEntry _fragmentEntry;
 	private Long _fragmentEntryId;
 	private final HttpServletRequest _httpServletRequest;
+	private Integer _masterPagesUsageCount;
 	private String _navigation;
 	private String _orderByCol;
 	private String _orderByType;
+	private Integer _pageTemplatesUsageCount;
+	private Integer _pagesUsageCount;
 	private String _redirect;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
