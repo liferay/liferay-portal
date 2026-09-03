@@ -63,10 +63,6 @@ definition {
 
 		WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Content",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
 		AdaptiveMedia.viewImageVariantURL(imageName = "high_resolution_photo-jpg");
 	}
 

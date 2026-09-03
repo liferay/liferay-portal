@@ -449,15 +449,10 @@ definition {
 				value1 = ${webContentTitle});
 
 			if (isSet(description)) {
-				SelectFrame.selectFrameNoLoading(
-					key_fieldLabel = "Description",
-					locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
 				AssertTextEquals(
-					locator1 = "CKEditor#BODY",
+					key_fieldLabel = "Description",
+					locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 					value1 = ${description});
-
-				SelectFrameTop(value1 = "relative=top");
 			}
 		}
 

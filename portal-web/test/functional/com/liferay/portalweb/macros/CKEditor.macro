@@ -48,23 +48,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addEntryExternalURLToExistingText(entryExternalURL = null, fieldLabel = null) {
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = ${fieldLabel},
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		SelectFieldText(locator1 = "CKEditor#BODY");
-
-		SelectFrame(value1 = "relative=top");
-
-		CKEditor.addEntryExternalURL(
-			entryExternalURL = ${entryExternalURL},
-			fieldLabel = ${fieldLabel});
-
-		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
 	macro addGeneratedContent(description = null) {
 		Click.javaScriptClick(locator1 = "CKEditor#TOOLBAR_AI_CREATOR_BUTTON");
 
@@ -172,19 +155,6 @@ definition {
 		AssertValue(
 			locator1 = "CKEditor#BODY_SOURCE_VALUE",
 			value1 = ${sourceValue});
-	}
-
-	@summary = "Default summary"
-	macro viewEntryContent(fieldLabel = null, content = null) {
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = ${fieldLabel},
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-		AssertTextEquals(
-			locator1 = "CKEditor#BODY",
-			value1 = ${content});
-
-		SelectFrameTop();
 	}
 
 	@summary = "Default summary"

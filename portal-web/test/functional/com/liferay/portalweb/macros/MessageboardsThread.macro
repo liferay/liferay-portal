@@ -4,7 +4,7 @@ definition {
 	var userName = "Test Test";
 
 	@summary = "Default summary"
-	macro addCP(displayText = null, dmDocumentTitle = null, threadSubject = null, mbAttachmentFile = null, siteURLKey = null, fieldLabel = null, threadBody = null, vocabularyName = null, pageName = null, categoryName = null) {
+	macro addCP(threadSubject = null, mbAttachmentFile = null, siteURLKey = null, threadBody = null, vocabularyName = null, categoryName = null) {
 		if (isSet(siteURLKey)) {
 			MessageboardsThread.openToAddThread(siteURLKey = ${siteURLKey});
 		}
@@ -22,22 +22,13 @@ definition {
 			locator1 = "TextInput#SUBJECT",
 			value1 = ${threadSubject});
 
-		if (isSet(displayTextWithLink)) {
-			CKEditor.addTextWithLink(
-				displayText = ${displayText},
-				dmDocumentTitle = ${dmDocumentTitle},
-				fieldLabel = ${fieldLabel},
-				pageName = ${pageName});
-		}
-		else {
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+		SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
-			Type(
-				locator1 = "CKEditor#BODY",
-				value1 = ${threadBody});
+		Type(
+			locator1 = "CKEditor#BODY",
+			value1 = ${threadBody});
 
-			SelectFrame(value1 = "relative=top");
-		}
+		SelectFrame(value1 = "relative=top");
 
 		if (isSet(categoryName)) {
 			Panel.expandPanel(panel = "Categorization");

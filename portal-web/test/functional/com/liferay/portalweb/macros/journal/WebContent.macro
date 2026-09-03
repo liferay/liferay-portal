@@ -2274,39 +2274,27 @@ definition {
 			value1 = ${webContentTitle});
 
 		if (${upgradedFieldLabel} == "true") {
-			SelectFrame.selectFrameNoLoading(
-				key_fieldLabel = "content",
-				locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+			var key_fieldLabel = "content";
 		}
 		else {
-			SelectFrame.selectFrameNoLoading(
-				key_fieldLabel = "Content",
-				locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+			var key_fieldLabel = "Content";
 		}
 
 		AssertTextEquals(
-			locator1 = "CKEditor#BODY",
+			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 			value1 = ${webContentContent});
-
-		SelectFrame(value1 = "relative=top");
 
 		if (isSet(webContentDescription)) {
 			if (isSet(otherLocaleSummary)) {
-				SelectFrame.selectFrameNoLoading(
-					key_fieldLabel = ${otherLocaleSummary},
-					locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+				var key_fieldLabel = ${otherLocaleSummary};
 			}
 			else {
-				SelectFrame.selectFrameNoLoading(
-					key_fieldLabel = "Description",
-					locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+				var key_fieldLabel = "Description";
 			}
 
 			AssertTextEquals(
-				locator1 = "CKEditor#BODY",
+				locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 				value1 = ${webContentDescription});
-
-			SelectFrameTop(value1 = "relative=top");
 		}
 
 		if (isSet(displayPageTemplateDisabled)) {
@@ -2668,15 +2656,10 @@ definition {
 			locator1 = "TextInput#TITLE",
 			value1 = ${webContentTitle});
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Content",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
 		AssertTextEquals(
-			locator1 = "CKEditor#BODY",
+			key_fieldLabel = "Content",
+			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 			value1 = ${webContentContent});
-
-		SelectFrameTop();
 	}
 
 	@summary = "Default summary"
@@ -2853,15 +2836,10 @@ definition {
 			}
 
 			if (isSet(description)) {
-				SelectFrame.selectFrameNoLoading(
-					key_fieldLabel = "Description",
-					locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
 				AssertTextEquals(
-					locator1 = "CKEditor#BODY",
+					key_fieldLabel = "Description",
+					locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 					value1 = ${description});
-
-				SelectFrameTop(value1 = "relative=top");
 			}
 		}
 
@@ -3029,15 +3007,10 @@ definition {
 				var webContentRichTextFieldLabel = "Rich Text";
 			}
 
-			SelectFrame.selectFrameNoLoading(
-				key_fieldLabel = ${webContentRichTextFieldLabel},
-				locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
 			AssertTextEquals(
-				locator1 = "CKEditor#BODY",
+				key_fieldLabel = ${webContentRichTextFieldLabel},
+				locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 				value1 = ${webContentRichText});
-
-			SelectFrameTop();
 		}
 
 		if (isSet(webContentSelectFromList)) {
@@ -3132,15 +3105,10 @@ definition {
 			locator1 = "TextInput#TITLE",
 			value1 = ${webContentTitle});
 
-		SelectFrame.selectFrameNoLoading(
-			key_fieldLabel = "Content",
-			locator1 = "CKEditor#BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
 		AssertTextEquals(
-			locator1 = "CKEditor#BODY",
+			key_fieldLabel = "Content",
+			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 			value1 = ${webContentContent});
-
-		SelectFrameTop();
 	}
 
 	@summary = "Default summary"
