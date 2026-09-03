@@ -71,8 +71,8 @@ describe('RoomAnalyticsFilter', () => {
 		render(
 			<RoomAnalyticsFilter
 				filter={filter}
+				groupIds={['11111']}
 				setValue={jest.fn()}
-				visibleGroupIds={['11111']}
 			/>
 		);
 
@@ -83,8 +83,8 @@ describe('RoomAnalyticsFilter', () => {
 		render(
 			<RoomAnalyticsFilter
 				filter={filter}
+				groupIds={['11111']}
 				setValue={jest.fn()}
-				visibleGroupIds={['11111']}
 			/>
 		);
 
@@ -107,8 +107,8 @@ describe('RoomAnalyticsFilter', () => {
 		render(
 			<RoomAnalyticsFilter
 				filter={filter}
+				groupIds={['11111']}
 				setValue={jest.fn()}
-				visibleGroupIds={['11111']}
 			/>
 		);
 
@@ -129,8 +129,8 @@ describe('RoomAnalyticsFilter', () => {
 		render(
 			<RoomAnalyticsFilter
 				filter={filter}
+				groupIds={['11111']}
 				setValue={setValue}
-				visibleGroupIds={['11111']}
 			/>
 		);
 
