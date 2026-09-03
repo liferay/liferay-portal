@@ -46,14 +46,10 @@ function getMergedFieldsets(fieldSets, searchResults, searchTerm) {
 	const mergedFieldSetsById = new Map();
 
 	(searchResults ?? []).forEach((fieldSet) => {
-		const storeFieldSet = storeFieldSetsById.get(fieldSet.id);
-
-		if (!storeFieldSet) {
-			mergedFieldSetsById.set(fieldSet.id, fieldSet);
-		}
-		else if (matchesSearchTerm(storeFieldSet, lowerCaseSearchTerm)) {
-			mergedFieldSetsById.set(fieldSet.id, storeFieldSet);
-		}
+		mergedFieldSetsById.set(
+			fieldSet.id,
+			storeFieldSetsById.get(fieldSet.id) ?? fieldSet
+		);
 	});
 
 	fieldSets.forEach((fieldSet) => {
