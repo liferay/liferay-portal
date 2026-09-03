@@ -427,6 +427,7 @@ export interface IManagementBarProps {
 	selectedItemsKey: string;
 	selectedItemsValue: Array<any>;
 	selectionType?: 'multiple' | 'single';
+	showFilters?: boolean;
 	showNavBarWhenSelected?: boolean;
 	showSearch?: boolean;
 	showSelectAll?: boolean;
@@ -495,6 +496,7 @@ export {
 export enum EConfigInURLKeys {
 	ACTIVE_FILTERS = 'filters',
 	ACTIVE_SORTS = 'sorts',
+	CONNECTION_STATE = 'cs',
 	DELTA = 'delta',
 	PAGE_NUMBER = 'page',
 	SEARCH_PARAM = 'q',
@@ -505,6 +507,7 @@ export enum EConfigInURLKeys {
 export interface IConfigInURL {
 	[EConfigInURLKeys.ACTIVE_FILTERS]: Array<any>;
 	[EConfigInURLKeys.ACTIVE_SORTS]: Array<TSort>;
+	[EConfigInURLKeys.CONNECTION_STATE]: unknown;
 	[EConfigInURLKeys.DELTA]: number;
 	[EConfigInURLKeys.PAGE_NUMBER]: number;
 	[EConfigInURLKeys.SEARCH_PARAM]: string;
@@ -575,8 +578,16 @@ interface ISelectionFilterState extends IBaseFilterState {
 	};
 	showExcludeToggle?: boolean;
 }
+
+/**
+ * What the data set itself writes to its state. The slice a connection owns
+ * is deliberately absent: see `IConnectedFDSState`, next to the only code
+ * that reads it.
+ */
+
 interface IFDSState {
 	filters: Array<IBaseFilterState>;
+	restoredConnectionState?: unknown;
 	search: ISearch;
 }
 

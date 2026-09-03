@@ -8,6 +8,10 @@ import {Root, createRoot} from 'react-dom/client';
 
 import App from './App';
 
+// The "Classic" tab of the Frontend Data Set Sample widget, which keeps its
+// own filtering and its own search box, so that the two search boxes can be
+// seen staying in sync.
+
 const DEFAULT_FDS_NAME =
 	'com_liferay_frontend_data_set_sample_web_internal_portlet_FDSSamplePortlet-classic';
 

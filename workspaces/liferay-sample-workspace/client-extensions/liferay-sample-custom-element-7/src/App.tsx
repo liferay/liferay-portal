@@ -8,6 +8,12 @@
 // types provided by "@liferay/js-api", so the value and its types come from a
 // single import.
 
+// This element drives the search of the data set it connects to and owns
+// nothing else, which is what a connection owns when it declares nothing: the
+// data set keeps filtering as it always has, and keeps its own search box,
+// which stays in sync with the one here. Taking the filtering over is what
+// "liferay-sample-custom-element-8" shows.
+
 import {
 	FDSConnection,
 	FDSConnectionInfo,
@@ -61,8 +67,9 @@ function App({fdsName}: AppProps) {
 	};
 
 	return (
-		<div style={{display: 'flex', gap: '0.5rem', padding: '1rem'}}>
+		<div className="d-flex p-3" style={{gap: '0.5rem'}}>
 			<input
+				aria-label="Search query"
 				className="form-control"
 				disabled={disabled}
 				onChange={(event) => setQuery(event.target.value)}
@@ -72,13 +79,13 @@ function App({fdsName}: AppProps) {
 					}
 				}}
 				placeholder={placeholder}
-				style={{flex: 1}}
+				style={{minWidth: 0}}
 				type="text"
 				value={query}
 			/>
 
 			<button
-				className="btn btn-primary"
+				className="btn btn-primary flex-shrink-0"
 				disabled={disabled}
 				onClick={handleSearch}
 				type="button"
