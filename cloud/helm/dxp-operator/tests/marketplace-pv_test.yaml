@@ -1,0 +1,29 @@
+suite: Marketplace Volume
+templates:
+    -   templates/marketplace-pv.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Emits no marketplace volume until the volume handle is known
+        set:
+            marketplace.claimName: dxp-operator-marketplace
+            marketplace.csi.driver: efs.csi.aws.com
+            marketplace.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.csi.driver
+                    value: efs.csi.aws.com
+            -   equal:
+                    path: spec.csi.volumeHandle
+                    value: fs-0123456789abcdef0::fsap-0123456789abcdef0
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: PersistentVolume
+        it: Mounts the marketplace volume through its access point
+        set:
+            marketplace.claimName: dxp-operator-marketplace
+            marketplace.csi.driver: efs.csi.aws.com
+            marketplace.csi.volumeHandle: fs-0123456789abcdef0::fsap-0123456789abcdef0
+            marketplace.enabled: true

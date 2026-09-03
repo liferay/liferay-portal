@@ -155,6 +155,8 @@ locals {
 	liferay_namespace_pattern="liferay-*"
 	liferay_service_account_role_arn="arn:aws:iam::${local.account_id}:role/${local.liferay_service_account_role_name}"
 	liferay_service_account_role_name="${var.deployment_name}-irsa"
+	marketplace_posix_id=1000
+	marketplace_volume_handle="${data.aws_efs_file_system.marketplace.id}::${aws_efs_access_point.marketplace.id}"
 	oidc_provider=replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
 	rds_exporter_role_arn=var.observability_config.enabled ? "arn:aws:iam::${local.account_id}:role/${var.deployment_name}-rds-exporter" : ""
 	secret_prefixes={
