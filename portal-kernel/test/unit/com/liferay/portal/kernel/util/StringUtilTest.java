@@ -330,11 +330,11 @@ public class StringUtilTest {
 
 	@Test
 	public void testRandomIdNeverReturnsNull() {
+		int[] index = new int[1];
 		int[] offsets = {
 			_getOffset('n'), _getOffset('u'), _getOffset('l'), _getOffset('l'),
 			_getOffset('a'), _getOffset('b'), _getOffset('c'), _getOffset('d')
 		};
-		int[] index = new int[1];
 
 		Random random = new Random() {
 
