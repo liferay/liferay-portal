@@ -157,6 +157,10 @@ export const Routes = buildRoutes({
 									},
 								},
 							},
+							CAMPAIGNS: {
+								path: '/campaigns',
+								routes: {},
+							},
 							CONTACTS: {
 								path: `/${CONTACTS}`,
 								routes: {

@@ -61,7 +61,7 @@ describe('Sidebar', () => {
 		).toHaveAttribute('href', activePathName);
 	});
 
-	it('should render lifecycle and accounts items when LDP is enabled', () => {
+	it('should render lifecycle, campaigns and accounts items when LDP is enabled', () => {
 		const {queryByText} = render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
 				<MemoryRouter>
@@ -71,10 +71,26 @@ describe('Sidebar', () => {
 		);
 
 		expect(queryByText('Lifecycles')).toBeTruthy();
+		expect(queryByText('Campaigns')).toBeTruthy();
 		expect(queryByText('Accounts')).toBeTruthy();
 	});
 
-	it('should not render lifecycle and accounts items when LDP is not enabled', () => {
+	it('should link the campaigns item to the campaigns route', () => {
+		const {queryByText} = render(
+			<Provider store={mockStore(mockStoreDataLDP)}>
+				<MemoryRouter>
+					<Sidebar {...defaultProps} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(queryByText('Campaigns').closest('a')).toHaveAttribute(
+			'href',
+			'/workspace/23/123/campaigns'
+		);
+	});
+
+	it('should not render lifecycle, campaigns and accounts items when LDP is not enabled', () => {
 		const {queryByText} = render(
 			<Provider store={mockStore()}>
 				<MemoryRouter>
@@ -84,6 +100,7 @@ describe('Sidebar', () => {
 		);
 
 		expect(queryByText('Lifecycles')).toBeNull();
+		expect(queryByText('Campaigns')).toBeNull();
 		expect(queryByText('Accounts')).toBeNull();
 	});
 });

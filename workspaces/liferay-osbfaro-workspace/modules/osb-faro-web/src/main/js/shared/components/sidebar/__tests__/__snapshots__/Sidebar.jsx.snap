@@ -105,6 +105,36 @@ exports[`Sidebar should render 1`] = `
           >
             <a
               class="link btn btn-unstyled"
+              href="/workspace/23/123/campaigns"
+            >
+              <span
+                class="link-content-wrapper"
+              >
+                <span
+                  class="icon-wrapper"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-megaphone icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#megaphone"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="item-label"
+                >
+                  Campaigns
+                </span>
+              </span>
+            </a>
+          </li>
+          <li
+            class="sidebar-item-root"
+          >
+            <a
+              class="link btn btn-unstyled"
               href="/workspace/23/123/sites"
             >
               <span

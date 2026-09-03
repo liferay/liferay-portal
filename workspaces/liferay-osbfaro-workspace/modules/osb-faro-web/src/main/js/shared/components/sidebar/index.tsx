@@ -43,6 +43,12 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					route: Routes.LIFECYCLE,
 					url: toRoute(Routes.LIFECYCLE, {channelId, groupId}),
 				},
+				LDPEnabled && {
+					icon: 'megaphone',
+					label: Liferay.Language.get('campaigns'),
+					route: Routes.CAMPAIGNS,
+					url: toRoute(Routes.CAMPAIGNS, {channelId, groupId}),
+				},
 				{
 					icon: 'ac_page',
 					label: Liferay.Language.get('sites'),
