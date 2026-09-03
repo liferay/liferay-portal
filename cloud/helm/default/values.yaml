@@ -53,7 +53,7 @@ customEnvFrom: {}
 customInitContainers:
     x-license-sync:
         -   containerTemplate: |
-                {{- if .license.enabled }}
+                {{- if .licensing.enabled }}
                 -   command:
                         -   bash
                         -   /liferay-init-scripts/deploy-sync.sh
@@ -79,7 +79,7 @@ customInitContainers:
                             type: RuntimeDefault
                     volumeMounts:
                         -   mountPath: /liferay-init-scripts/deploy-sync.sh
-                            name: {{ .license.initScriptsVolumeName }}
+                            name: {{ .licensing.initScriptsVolumeName }}
                             subPath: deploy-sync.sh
                         -   mountPath: /secret
                             name: liferay-license
@@ -361,20 +361,18 @@ image:
     repository: liferay/dxp
     tag: 2026.q1.8-lts
 initContainers: []
-license:
-    enabled: false
-    initScriptsVolumeName: liferay-init-scripts-default
-    secretName: ""
 licensing:
     activationCodeSecretKey: activationCode
     activationCodeSecretName: ""
     enabled: false
+    initScriptsVolumeName: liferay-init-scripts-default
     offline: false
     offlineActivationBundle: ""
     onlineActivationWorkflow:
         clusterRoleName: online-activation-cluster-role
         enabled: true
         serviceAccountName: online-activation-service-account
+    secretName: ""
     syncInterval: 60
 livenessProbe:
     failureThreshold: 3

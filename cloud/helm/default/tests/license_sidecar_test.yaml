@@ -17,7 +17,7 @@ tests:
             value: StatefulSet
         it: Adds the license sync sidecar when the license is enabled
         set:
-            license.enabled: true
+            licensing.enabled: true
     -   asserts:
             -   equal:
                     path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].restartPolicy
@@ -28,7 +28,7 @@ tests:
             value: StatefulSet
         it: Runs the license sync sidecar as a native sidecar
         set:
-            license.enabled: true
+            licensing.enabled: true
     -   asserts:
             -   contains:
                     any: true
@@ -56,7 +56,7 @@ tests:
             value: StatefulSet
         it: Mounts the license secret, sync script, and deploy folder
         set:
-            license.enabled: true
+            licensing.enabled: true
     -   asserts:
             -   contains:
                     any: true
@@ -75,7 +75,7 @@ tests:
             value: StatefulSet
         it: Projects the operator entitlements license as an optional volume
         set:
-            license.enabled: true
+            licensing.enabled: true
     -   asserts:
             -   contains:
                     any: true
@@ -94,8 +94,8 @@ tests:
             value: StatefulSet
         it: Honors an overridden license secret name
         set:
-            license.enabled: true
-            license.secretName: custom-entitlements
+            licensing.enabled: true
+            licensing.secretName: custom-entitlements
     -   asserts:
             -   notContains:
                     any: true
@@ -120,7 +120,7 @@ tests:
             value: StatefulSet
         it: Passes the configured sync interval to the sidecar
         set:
-            license.enabled: true
+            licensing.enabled: true
             licensing.syncInterval: 120
     -   asserts:
             -   notContains:
@@ -134,7 +134,7 @@ tests:
             value: StatefulSet
         it: Omits the license sync sidecar when the license is disabled
         set:
-            license.enabled: false
+            licensing.enabled: false
     -   asserts:
             -   isNotEmpty:
                     path: data['deploy-sync.sh']
