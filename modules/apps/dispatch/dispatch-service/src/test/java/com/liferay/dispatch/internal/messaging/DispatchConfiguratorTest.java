@@ -168,8 +168,8 @@ public class DispatchConfiguratorTest {
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).addSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY), Mockito.any()
+			Mockito.same(_notApplicableDispatchTrigger), Mockito.any(),
+			Mockito.any()
 		);
 
 		Mockito.verify(
@@ -229,22 +229,22 @@ public class DispatchConfiguratorTest {
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).addSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY), Mockito.any()
+			Mockito.same(_notApplicableDispatchTrigger), Mockito.any(),
+			Mockito.any()
 		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).addSchedulerJob(
 			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY), Mockito.any()
+			Mockito.any(), Mockito.any()
 		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).addSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger),
-			Mockito.eq(StorageType.PERSISTED), Mockito.any()
+			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any(),
+			Mockito.any()
 		);
 	}
 
@@ -296,8 +296,7 @@ public class DispatchConfiguratorTest {
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).deleteSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY)
+			Mockito.same(_notApplicableDispatchTrigger), Mockito.any()
 		);
 
 		Mockito.verify(
@@ -363,22 +362,20 @@ public class DispatchConfiguratorTest {
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).deleteSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY)
+			Mockito.same(_notApplicableDispatchTrigger), Mockito.any()
 		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).deleteSchedulerJob(
 			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY)
+			Mockito.any()
 		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).deleteSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger),
-			Mockito.eq(StorageType.PERSISTED)
+			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any()
 		);
 	}
 
@@ -431,15 +428,14 @@ public class DispatchConfiguratorTest {
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).addSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY), Mockito.any()
+			Mockito.same(_allNodesDispatchTrigger), Mockito.any(), Mockito.any()
 		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).addSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY), Mockito.any()
+			Mockito.same(_notApplicableDispatchTrigger), Mockito.any(),
+			Mockito.any()
 		);
 
 		Mockito.verify(
@@ -452,8 +448,8 @@ public class DispatchConfiguratorTest {
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).addSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger),
-			Mockito.eq(StorageType.PERSISTED), Mockito.any()
+			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any(),
+			Mockito.any()
 		);
 
 		_dispatchConfigurator.deactivate();
@@ -520,29 +516,26 @@ public class DispatchConfiguratorTest {
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).deleteSchedulerJob(
-			Mockito.same(_allNodesDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY)
+			Mockito.same(_allNodesDispatchTrigger), Mockito.any()
 		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).deleteSchedulerJob(
-			Mockito.same(_notApplicableDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY)
+			Mockito.same(_notApplicableDispatchTrigger), Mockito.any()
 		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).deleteSchedulerJob(
 			Mockito.same(_singleNodeMemoryClusteredDispatchTrigger),
-			Mockito.eq(StorageType.MEMORY_CLUSTERED)
+			Mockito.any()
 		);
 
 		Mockito.verify(
 			_dispatchTriggerHelper, Mockito.never()
 		).deleteSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger),
-			Mockito.eq(StorageType.PERSISTED)
+			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any()
 		);
 
 		_dispatchConfigurator.deactivate();
