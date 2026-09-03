@@ -4,13 +4,14 @@
  */
 
 import {ObjectFolder} from '@liferay/object-admin-rest-client-js';
-import {Locator, Page, Response, expect} from '@playwright/test';
+import {Locator, Page, Request, Response, expect} from '@playwright/test';
 import {readFile} from 'fs/promises';
 import path from 'path';
 
 import {gotoWithRetry} from '../../utils/gotoWithRetry';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {getTempDir} from '../../utils/temp';
+import {waitForFDS} from '../../utils/waitFor';
 import {waitForSearchToBeReady} from '../../utils/waitForSearchToBeReady';
 
 export class ViewObjectDefinitionsPage {
@@ -138,7 +139,7 @@ export class ViewObjectDefinitionsPage {
 
 		await waitForSearchToBeReady(this.page);
 
-		await this.page.keyboard.press('Enter');
+		await this._submitSearch(objectDefinitionLabel);
 
 		await this.page
 			.getByRole('link', {exact: true, name: objectDefinitionLabel})
@@ -203,7 +204,7 @@ export class ViewObjectDefinitionsPage {
 
 		await waitForSearchToBeReady(this.page);
 
-		await this.page.keyboard.press('Enter');
+		await this._submitSearch(objectDefinitionLabel);
 
 		const downloadPromise = this.page.waitForEvent('download');
 
@@ -303,5 +304,37 @@ export class ViewObjectDefinitionsPage {
 			.getByRole('listitem')
 			.filter({hasText: objectFolderLabel})
 			.click({timeout: options?.timeout});
+	}
+
+	private async _submitSearch(objectDefinitionLabel: string) {
+		await waitForFDS({page: this.page});
+
+		const searchRequestSettled = new Promise<void>((resolve) => {
+			const settle = (request: Request) => {
+				const url = new URL(request.url());
+
+				if (
+					request.method() !== 'GET' ||
+					!url.pathname.endsWith(
+						'/o/object-admin/v1.0/object-definitions'
+					) ||
+					url.searchParams.get('search') !== objectDefinitionLabel
+				) {
+					return;
+				}
+
+				this.page.off('requestfailed', settle);
+				this.page.off('requestfinished', settle);
+
+				resolve();
+			};
+
+			this.page.on('requestfailed', settle);
+			this.page.on('requestfinished', settle);
+		});
+
+		await this.page.keyboard.press('Enter');
+
+		await searchRequestSettled;
 	}
 }
