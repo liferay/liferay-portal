@@ -95,9 +95,7 @@ public class DispatchConfigurator {
 		}
 	}
 
-	private void _addScheduledJobs(
-		boolean onlyMasterTokenTransitionDependentModes) {
-
+	private void _addScheduledJobs(boolean onlyClusterMasterDependentModes) {
 		for (DispatchTrigger dispatchTrigger :
 				_dispatchTriggerLocalService.getDispatchTriggers(true)) {
 
@@ -107,8 +105,8 @@ public class DispatchConfigurator {
 
 			boolean schedulable;
 
-			if (onlyMasterTokenTransitionDependentModes) {
-				schedulable = _isMasterTokenTransitionDependent(
+			if (onlyClusterMasterDependentModes) {
+				schedulable = _isClusterMasterDependent(
 					dispatchTaskClusterMode);
 			}
 			else {
@@ -156,18 +154,6 @@ public class DispatchConfigurator {
 				DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED) ||
 			(dispatchTaskClusterMode ==
 				DispatchTaskClusterMode.SINGLE_NODE_PERSISTED)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _isMasterTokenTransitionDependent(
-		DispatchTaskClusterMode dispatchTaskClusterMode) {
-
-		if (dispatchTaskClusterMode ==
-				DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED) {
 
 			return true;
 		}
