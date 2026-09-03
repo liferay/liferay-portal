@@ -17,12 +17,18 @@ public interface Encryptor {
 	public String decrypt(Key key, String encryptedString)
 		throws EncryptorException;
 
+	public String decryptAuthenticated(Key key, String encryptedString)
+		throws EncryptorException;
+
 	public byte[] decryptUnencodedAsBytes(Key key, byte[] encryptedBytes)
 		throws EncryptorException;
 
 	public Key deserializeKey(String base64String);
 
 	public String encrypt(Key key, String plaintext) throws EncryptorException;
+
+	public String encryptAuthenticated(Key key, String plaintext)
+		throws EncryptorException;
 
 	public byte[] encryptUnencoded(Key key, byte[] plainBytes)
 		throws EncryptorException;

@@ -60,6 +60,21 @@ public class EncryptorImpl implements Encryptor {
 	}
 
 	@Override
+	public String decryptAuthenticated(Key key, String encryptedString)
+		throws EncryptorException {
+
+		try {
+			byte[] decryptedBytes = _decryptGCM(
+				Base64.decode(encryptedString), key);
+
+			return new String(decryptedBytes, ENCODING);
+		}
+		catch (Exception exception) {
+			throw new EncryptorException(exception);
+		}
+	}
+
+	@Override
 	public byte[] decryptUnencodedAsBytes(Key key, byte[] encryptedBytes)
 		throws EncryptorException {
 
@@ -117,6 +132,21 @@ public class EncryptorImpl implements Encryptor {
 		byte[] encryptedBytes = encryptUnencoded(key, plaintext);
 
 		return Base64.encode(encryptedBytes);
+	}
+
+	@Override
+	public String encryptAuthenticated(Key key, String plaintext)
+		throws EncryptorException {
+
+		try {
+			byte[] encryptedBytes = _encryptGCM(
+				key, plaintext.getBytes(ENCODING));
+
+			return Base64.encode(encryptedBytes);
+		}
+		catch (Exception exception) {
+			throw new EncryptorException(exception);
+		}
 	}
 
 	@Override

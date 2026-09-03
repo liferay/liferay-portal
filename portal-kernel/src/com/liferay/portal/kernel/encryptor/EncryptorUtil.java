@@ -22,6 +22,14 @@ public class EncryptorUtil {
 		return encryptor.decrypt(key, encryptedString);
 	}
 
+	public static String decryptAuthenticated(Key key, String encryptedString)
+		throws EncryptorException {
+
+		Encryptor encryptor = _encryptorSnapshot.get();
+
+		return encryptor.decryptAuthenticated(key, encryptedString);
+	}
+
 	public static byte[] decryptUnencodedAsBytes(Key key, byte[] encryptedBytes)
 		throws EncryptorException {
 
@@ -42,6 +50,14 @@ public class EncryptorUtil {
 		Encryptor encryptor = _encryptorSnapshot.get();
 
 		return encryptor.encrypt(key, plaintext);
+	}
+
+	public static String encryptAuthenticated(Key key, String plaintext)
+		throws EncryptorException {
+
+		Encryptor encryptor = _encryptorSnapshot.get();
+
+		return encryptor.encryptAuthenticated(key, plaintext);
 	}
 
 	public static byte[] encryptUnencoded(Key key, byte[] plainBytes)

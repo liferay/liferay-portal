@@ -7,8 +7,10 @@ package com.liferay.portal.encryptor;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.encryptor.Encryptor;
+import com.liferay.portal.kernel.encryptor.EncryptorException;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.security.Key;
@@ -78,6 +80,32 @@ public class EncryptorImplTest {
 					new SecretKeySpec(new byte[8], "AES"),
 					_PLAINTEXT.getBytes()));
 		}
+	}
+
+	@Test
+	public void testEncryptAuthenticatedDetectsTampering() throws Exception {
+		Encryptor encryptor = new EncryptorImpl();
+
+		Key key = encryptor.generateKey();
+
+		String encryptedString1 = encryptor.encryptAuthenticated(
+			key, _PLAINTEXT);
+		String encryptedString2 = encryptor.encryptAuthenticated(
+			key, _PLAINTEXT);
+
+		Assert.assertNotEquals(encryptedString1, encryptedString2);
+
+		Assert.assertEquals(
+			_PLAINTEXT, encryptor.decryptAuthenticated(key, encryptedString1));
+
+		byte[] encryptedBytes = Base64.decode(encryptedString1);
+
+		encryptedBytes[encryptedBytes.length - 1] ^= 0x01;
+
+		Assert.assertThrows(
+			EncryptorException.class,
+			() -> encryptor.decryptAuthenticated(
+				key, Base64.encode(encryptedBytes)));
 	}
 
 	@Test
