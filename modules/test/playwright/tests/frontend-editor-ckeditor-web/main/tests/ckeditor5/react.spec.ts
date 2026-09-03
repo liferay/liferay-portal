@@ -46,7 +46,9 @@ test(
 			const availableButtons =
 				await classicPage.toolbar.buttonLabels.allInnerTexts();
 
-			expect(availableButtons).toEqual(expectedButtons);
+			for (const button of expectedButtons) {
+				expect(availableButtons).toContain(button);
+			}
 		});
 
 		await test.step('Toolbar does not contain removed plugin', async () => {

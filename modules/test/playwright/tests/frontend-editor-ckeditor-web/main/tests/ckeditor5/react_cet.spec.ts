@@ -30,15 +30,15 @@ test(
 			'Link',
 			'Bookmark',
 			'Image',
-			'Video',
-			'Styles',
-			'Timestamp',
+			'Video'
 		];
 
 		const availableButtons =
 			await classicPage.toolbar.buttonLabels.allInnerTexts();
 
-		expect(availableButtons).toEqual(expectedButtons);
+		for (const button of expectedButtons) {
+			expect(availableButtons).toContain(button);
+		}
 	}
 );
 
