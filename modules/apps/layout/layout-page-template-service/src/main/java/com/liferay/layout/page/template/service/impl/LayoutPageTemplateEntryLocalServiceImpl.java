@@ -1229,8 +1229,10 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 		Group group = _groupLocalService.getGroup(groupId);
 
 		if (group.isDepot() &&
-			(!Objects.equals(
-				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, type) ||
+			((!Objects.equals(
+				LayoutPageTemplateEntryTypeConstants.BASIC, type) &&
+			  !Objects.equals(
+				  LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, type)) ||
 			 !FeatureFlagManagerUtil.isEnabled(
 				 group.getCompanyId(), "LPD-57283") ||
 			 !DesignLibraryUtil.isDesignLibraryScope(group))) {

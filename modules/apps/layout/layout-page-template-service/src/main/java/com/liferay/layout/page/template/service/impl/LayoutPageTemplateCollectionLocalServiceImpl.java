@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.service.impl;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionException;
@@ -21,6 +22,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -68,7 +70,12 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 
 		Group group = _groupLocalService.getGroup(groupId);
 
-		if (group.isCompany() || group.isDepot()) {
+		if (group.isCompany() ||
+			(group.isDepot() &&
+			 (!FeatureFlagManagerUtil.isEnabled(
+				 group.getCompanyId(), "LPD-57283") ||
+			  !DesignLibraryUtil.isDesignLibraryScope(group)))) {
+
 			throw new LayoutPageTemplateCollectionGroupIdException();
 		}
 
