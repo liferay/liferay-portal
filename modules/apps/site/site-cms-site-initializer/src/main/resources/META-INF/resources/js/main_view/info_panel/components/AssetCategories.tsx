@@ -256,12 +256,9 @@ const AssetCategories = ({
 	return (
 		<ClayPanel
 			collapsable={collapsable}
+			collapseHeaderClassNames="text-secondary"
 			defaultExpanded={true}
-			displayTitle={
-				<ClayPanel.Title className="panel-title text-secondary">
-					{title ?? Liferay.Language.get('categories')}
-				</ClayPanel.Title>
-			}
+			displayTitle={title ?? Liferay.Language.get('categories')}
 			displayType="unstyled"
 			showCollapseIcon={collapsable}
 		>

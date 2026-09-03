@@ -7,7 +7,6 @@ import Label from '@clayui/label';
 import ClayPanel from '@clayui/panel';
 import {AIAssistantTriggerButton} from '@liferay/ai-hub-cell-js-components-web';
 import {ItemSelector} from '@liferay/frontend-js-item-selector-web';
-import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
@@ -34,7 +33,6 @@ const AssetTags = ({
 	hasUpdatePermission,
 	inputSize,
 	objectEntry,
-	titleClassName,
 	updateObjectEntry,
 }: {
 	assetLibraryId?: number | string | null | undefined;
@@ -46,7 +44,6 @@ const AssetTags = ({
 	hasUpdatePermission?: boolean;
 	inputSize?: CategorizationInputSize;
 	objectEntry: IAssetObjectEntry | EntryCategorizationDTO;
-	titleClassName?: string;
 	updateObjectEntry: (object: EntryCategorizationDTO) => void | Promise<void>;
 }) => {
 	const [canCreate, setCanCreate] = useState(false);
@@ -161,17 +158,9 @@ const AssetTags = ({
 	return (
 		<ClayPanel
 			collapsable={collapsable}
+			collapseHeaderClassNames="text-secondary"
 			defaultExpanded={true}
-			displayTitle={
-				<ClayPanel.Title
-					className={classNames(
-						'panel-title',
-						titleClassName ? titleClassName : 'text-secondary'
-					)}
-				>
-					{Liferay.Language.get('tags')}
-				</ClayPanel.Title>
-			}
+			displayTitle={Liferay.Language.get('tags')}
 			displayType="unstyled"
 			showCollapseIcon={collapsable}
 		>
