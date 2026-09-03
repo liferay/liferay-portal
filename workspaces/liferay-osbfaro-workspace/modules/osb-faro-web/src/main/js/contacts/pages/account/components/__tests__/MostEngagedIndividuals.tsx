@@ -85,6 +85,44 @@ describe('MostEngagedIndividuals', () => {
 		).toContain('/contacts/accounts/acc-1/profile');
 	});
 
+	it('should carry the selected preset to the full list', () => {
+		mockSearch = '?rangeKey=7';
+
+		render(<MostEngagedIndividuals />);
+
+		expect(
+			screen.getByRole('link', {name: 'View All'}).getAttribute('href')
+		).toContain('rangeKey=7');
+	});
+
+	it('should carry the custom bounds to the full list', () => {
+		mockSearch =
+			'?rangeEnd=2026-02-20&rangeKey=CUSTOM&rangeStart=2026-02-10';
+
+		render(<MostEngagedIndividuals />);
+
+		const href = screen
+			.getByRole('link', {name: 'View All'})
+			.getAttribute('href');
+
+		expect(href).toContain('rangeEnd=2026-02-20');
+		expect(href).toContain('rangeKey=CUSTOM');
+		expect(href).toContain('rangeStart=2026-02-10');
+	});
+
+	it('should leave the empty bounds off the full list link', () => {
+		mockSearch = '?rangeKey=30';
+
+		render(<MostEngagedIndividuals />);
+
+		const href = screen
+			.getByRole('link', {name: 'View All'})
+			.getAttribute('href');
+
+		expect(href).not.toContain('rangeEnd');
+		expect(href).not.toContain('rangeStart');
+	});
+
 	it('should render the range dropdown', () => {
 		render(<MostEngagedIndividuals />);
 

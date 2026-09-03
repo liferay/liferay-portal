@@ -75,11 +75,14 @@ const MostEngagedIndividuals: React.FC = () => {
 						button
 						className="button-root rounded-lg"
 						displayType="primary"
-						href={toRoute(Routes.CONTACTS_ACCOUNT_PROFILE, {
-							channelId,
-							groupId,
-							id,
-						})}
+						href={setUriQueryValues(
+							pickBy(rangeSelectors),
+							toRoute(Routes.CONTACTS_ACCOUNT_PROFILE, {
+								channelId,
+								groupId,
+								id,
+							})
+						)}
 						small
 					>
 						{Liferay.Language.get('view-all')}
