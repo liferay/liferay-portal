@@ -660,9 +660,10 @@ public class FileEntryContentDashboardItemTest {
 						_contentDashboardItemFactory.create(
 							fileEntry.getFileEntryId());
 
+			User originalUser = TestPropsValues.getUser();
+
 			Assert.assertEquals(
-				TestPropsValues.getUser(
-				).getFullName(),
+				originalUser.getFullName(),
 				versionableContentDashboardItem.getUserName());
 		}
 		finally {
