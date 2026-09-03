@@ -119,7 +119,6 @@ public class AssetListFiltersUtilTest {
 						_getPicklistValueJSONObject(assetCategoryId1),
 						_getPicklistValueJSONObject(assetCategoryId2)))),
 			assetCategoryId1, assetCategoryId2);
-
 		_assertTermFilters(
 			Field.ASSET_CATEGORY_IDS,
 			_assertAssetFilter(
@@ -179,7 +178,6 @@ public class AssetListFiltersUtilTest {
 						_getPicklistValueJSONObject(assetTagName1),
 						_getPicklistValueJSONObject(assetTagName2)))),
 			assetTagName1, assetTagName2);
-
 		_assertTermFilters(
 			Field.ASSET_TAG_NAMES + ".raw",
 			_assertAssetFilter(
@@ -525,7 +523,6 @@ public class AssetListFiltersUtilTest {
 			_assertCommonFieldQuery(
 				BooleanClauseOccur.MUST,
 				_getKeywordsFilterJSONObject("contains", keyword)));
-
 		_assertStringQuery(
 			keyword,
 			_assertCommonFieldQuery(
