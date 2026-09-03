@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -108,6 +109,8 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 
 			String languageId = jsonObject.getString("languageId");
 
+			User user = portal.getUser(httpServletRequest);
+
 			Map<String, Object> sourceFieldValues =
 				_objectEntryVersionFieldValueResolver.getFieldValues(
 					languageId, objectEntryId,
@@ -129,11 +132,11 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 
 				String source =
 					_objectEntryVersionFieldValueResolver.toDisplayValue(
-						languageId, objectField,
+						languageId, objectField, user,
 						sourceFieldValues.get(fieldName));
 				String target =
 					_objectEntryVersionFieldValueResolver.toDisplayValue(
-						languageId, objectField,
+						languageId, objectField, user,
 						targetFieldValues.get(fieldName));
 
 				if (source.equals(target)) {

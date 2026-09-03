@@ -12,21 +12,25 @@ import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectEntryVersion;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.service.ObjectEntryVersionLocalService;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 
 import java.text.DateFormat;
@@ -34,6 +38,8 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 
 import java.util.Date;
@@ -41,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author Verónica González
@@ -136,7 +143,7 @@ public class ObjectEntryVersionFieldValueResolver {
 	}
 
 	public String toDisplayValue(
-		String languageId, ObjectField objectField, Object value) {
+		String languageId, ObjectField objectField, User user, Object value) {
 
 		String businessType =
 			(objectField == null) ? null : objectField.getBusinessType();
@@ -156,7 +163,8 @@ public class ObjectEntryVersionFieldValueResolver {
 		}
 
 		if (ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME.equals(businessType)) {
-			return _toDateDisplayValue(_getDateTimeFormat(languageId), value);
+			return _toDateDisplayValue(
+				_getDateTimeFormat(languageId, objectField, user), value);
 		}
 
 		if (ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST.equals(
@@ -185,7 +193,8 @@ public class ObjectEntryVersionFieldValueResolver {
 			TimeZoneUtil.getTimeZone(StringPool.UTC));
 	}
 
-	private Format _getDateTimeFormat(String languageId) {
+	private Format _getDateTimeFormat(
+		String languageId, ObjectField objectField, User user) {
 		Locale locale = LocaleUtil.fromLanguageId(languageId);
 
 		SimpleDateFormat simpleDateFormat =
@@ -199,7 +208,7 @@ public class ObjectEntryVersionFieldValueResolver {
 
 		return FastDateFormatFactoryUtil.getSimpleDateFormat(
 			_getShortDatePattern(locale) + ", " + timePattern, locale,
-			TimeZoneUtil.getTimeZone(StringPool.UTC));
+			_getTimeZone(objectField, user));
 	}
 
 	private String _getShortDatePattern(Locale locale) {
@@ -214,6 +223,17 @@ public class ObjectEntryVersionFieldValueResolver {
 		pattern = pattern.replaceAll("y+", "yyyy");
 
 		return pattern;
+	}
+
+	private TimeZone _getTimeZone(ObjectField objectField, User user) {
+		String timeZoneId = ObjectFieldSettingUtil.getTimeZoneId(
+			objectField.getObjectFieldSettings(), user);
+
+		if (timeZoneId == null) {
+			return TimeZoneUtil.getTimeZone(StringPool.UTC);
+		}
+
+		return TimeZoneUtil.getTimeZone(timeZoneId);
 	}
 
 	private String _toAttachmentDisplayValue(Object value) {
@@ -275,6 +295,16 @@ public class ObjectEntryVersionFieldValueResolver {
 		return _language.get(locale, "no");
 	}
 
+	private Date _toDate(String valueString) {
+		if (StringUtil.endsWith(valueString, CharPool.UPPER_CASE_Z)) {
+			return Date.from(Instant.parse(valueString));
+		}
+
+		LocalDateTime localDateTime = LocalDateTime.parse(valueString);
+
+		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
+	}
+
 	private String _toDateDisplayValue(Format format, Object value) {
 		if (value == null) {
 			return StringPool.BLANK;
@@ -283,7 +313,7 @@ public class ObjectEntryVersionFieldValueResolver {
 		String valueString = String.valueOf(value);
 
 		try {
-			return format.format(Date.from(Instant.parse(valueString)));
+			return format.format(_toDate(valueString));
 		}
 		catch (DateTimeParseException dateTimeParseException) {
 			if (_log.isWarnEnabled()) {
