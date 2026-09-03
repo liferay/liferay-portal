@@ -7,7 +7,8 @@ import {fetchFieldSets} from '../../../../src/main/resources/META-INF/resources/
 
 const COMPANY_GROUP_ID = '99';
 
-const getPageJSON = (id) => JSON.stringify({items: [{id}], lastPage: 1});
+const getPageJSON = (id, totalCount = 1) =>
+	JSON.stringify({items: [{id}], totalCount});
 
 describe('fetchFieldSets', () => {
 	let originalGetCompanyGroupId;
@@ -61,6 +62,36 @@ describe('fetchFieldSets', () => {
 		fetch.mock.calls.forEach(([url]) => {
 			expect(new URL(url).searchParams.get('keywords')).toBe('zebra');
 		});
+	});
+
+	it('reports whether the results were truncated', async () => {
+		fetch.mockResponse(async (request) =>
+			getPageJSON(request.url.includes('/sites/') ? 11 : 12, 300)
+		);
+
+		const {fieldSets, truncated} = await fetchFieldSets({
+			contentType: 'journal',
+			dataDefinitionId: '1',
+			groupId: '20',
+			keywords: 'zebra',
+		});
+
+		expect(fieldSets.length).toBe(2);
+		expect(truncated).toBe(true);
+	});
+
+	it('resolves to an empty list when no scope applies', async () => {
+		themeDisplay.getCompanyGroupId = () => undefined;
+
+		expect(
+			await fetchFieldSets({
+				contentType: 'journal',
+				dataDefinitionId: '1',
+				groupId: undefined,
+			})
+		).toEqual({fieldSets: [], truncated: false});
+
+		expect(fetch).not.toHaveBeenCalled();
 	});
 
 	it('skips the company scope when the group is the company group', async () => {
