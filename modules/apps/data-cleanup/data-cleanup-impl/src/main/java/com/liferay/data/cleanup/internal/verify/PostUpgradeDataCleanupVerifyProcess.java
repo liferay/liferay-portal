@@ -59,7 +59,14 @@ public class PostUpgradeDataCleanupVerifyProcess extends VerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
-		_verifyDatabaseState();
+		try (LoggingTimer loggingTimer = new LoggingTimer(
+				PostupgradeVerifyDatabaseState.class.getName())) {
+
+			_verifyDatabaseState();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
 
 		for (PostUpgradeDataCleanupProcess postUpgradeDataCleanupProcess :
 				_getPostUpgradeDataCleanupProcesses()) {
