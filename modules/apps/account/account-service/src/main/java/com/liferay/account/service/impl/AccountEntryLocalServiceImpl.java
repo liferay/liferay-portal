@@ -776,13 +776,6 @@ public class AccountEntryLocalServiceImpl
 			AccountEntry accountEntry, String externalReferenceCode)
 		throws PortalException {
 
-		if (Objects.equals(
-				accountEntry.getExternalReferenceCode(),
-				externalReferenceCode)) {
-
-			return accountEntry;
-		}
-
 		accountEntry.setExternalReferenceCode(externalReferenceCode);
 
 		return updateAccountEntry(accountEntry);

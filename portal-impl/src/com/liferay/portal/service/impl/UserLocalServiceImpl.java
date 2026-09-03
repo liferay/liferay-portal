@@ -4723,12 +4723,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			User user, String externalReferenceCode)
 		throws PortalException {
 
-		if (Objects.equals(
-				user.getExternalReferenceCode(), externalReferenceCode)) {
-
-			return user;
-		}
-
 		user.setExternalReferenceCode(externalReferenceCode);
 
 		return updateUser(user);

@@ -81,7 +81,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -1068,12 +1067,6 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 	public UserGroup updateExternalReferenceCode(
 			UserGroup userGroup, String externalReferenceCode)
 		throws PortalException {
-
-		if (Objects.equals(
-				userGroup.getExternalReferenceCode(), externalReferenceCode)) {
-
-			return userGroup;
-		}
 
 		_validateExternalReferenceCode(
 			userGroup.getUserGroupId(), externalReferenceCode);

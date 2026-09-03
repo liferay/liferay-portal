@@ -534,13 +534,6 @@ public class OAuth2ApplicationLocalServiceImpl
 			OAuth2Application oAuth2Application, String externalReferenceCode)
 		throws PortalException {
 
-		if (Objects.equals(
-				oAuth2Application.getExternalReferenceCode(),
-				externalReferenceCode)) {
-
-			return oAuth2Application;
-		}
-
 		oAuth2Application.setExternalReferenceCode(externalReferenceCode);
 
 		return updateOAuth2Application(oAuth2Application);

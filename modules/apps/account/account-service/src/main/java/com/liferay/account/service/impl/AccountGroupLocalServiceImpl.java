@@ -49,7 +49,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -372,13 +371,6 @@ public class AccountGroupLocalServiceImpl
 	public AccountGroup updateExternalReferenceCode(
 			AccountGroup accountGroup, String externalReferenceCode)
 		throws PortalException {
-
-		if (Objects.equals(
-				accountGroup.getExternalReferenceCode(),
-				externalReferenceCode)) {
-
-			return accountGroup;
-		}
 
 		accountGroup.setExternalReferenceCode(externalReferenceCode);
 

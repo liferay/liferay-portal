@@ -48,7 +48,6 @@ import com.liferay.portal.kernel.util.Validator;
 import java.math.BigDecimal;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -431,13 +430,6 @@ public class CommerceShipmentItemLocalServiceImpl
 		CommerceShipmentItem commerceShipmentItem =
 			commerceShipmentItemPersistence.findByPrimaryKey(
 				commerceShipmentItemId);
-
-		if (Objects.equals(
-				commerceShipmentItem.getExternalReferenceCode(),
-				externalReferenceCode)) {
-
-			return commerceShipmentItem;
-		}
 
 		commerceShipmentItem.setExternalReferenceCode(externalReferenceCode);
 

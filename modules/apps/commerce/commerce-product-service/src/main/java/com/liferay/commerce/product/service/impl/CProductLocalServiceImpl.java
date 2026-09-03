@@ -104,10 +104,6 @@ public class CProductLocalServiceImpl extends CProductLocalServiceBaseImpl {
 
 		CProduct cProduct = cProductPersistence.findByPrimaryKey(cProductId);
 
-		if (externalReferenceCode.equals(cProduct.getExternalReferenceCode())) {
-			return cProduct;
-		}
-
 		cProduct.setExternalReferenceCode(externalReferenceCode);
 
 		cProduct = cProductPersistence.update(cProduct);

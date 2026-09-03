@@ -359,12 +359,6 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 			Address address, String externalReferenceCode)
 		throws PortalException {
 
-		if (Objects.equals(
-				address.getExternalReferenceCode(), externalReferenceCode)) {
-
-			return address;
-		}
-
 		address.setExternalReferenceCode(externalReferenceCode);
 
 		return addressPersistence.update(address);

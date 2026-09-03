@@ -617,13 +617,6 @@ public class CommerceShipmentLocalServiceImpl
 		CommerceShipment commerceShipment =
 			commerceShipmentPersistence.findByPrimaryKey(commerceShipmentId);
 
-		if (Objects.equals(
-				commerceShipment.getExternalReferenceCode(),
-				externalReferenceCode)) {
-
-			return commerceShipment;
-		}
-
 		commerceShipment.setExternalReferenceCode(externalReferenceCode);
 
 		return commerceShipmentPersistence.update(commerceShipment);
