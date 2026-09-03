@@ -65,6 +65,29 @@ jest.mock('@liferay/frontend-js-item-selector-web', () => ({
 				>
 					Click Space
 				</button>
+
+				<button
+					data-testid="simulate-folder-click"
+					onClick={() => {
+						const folderItem = {
+							embedded: {
+								id: 'folder-1',
+								title: 'Folder A',
+							},
+							entryClassName:
+								'com.liferay.object.model.ObjectEntryFolder',
+						};
+						const view = props.fdsProps?.views?.[0];
+						const itemProps = view?.setItemComponentProps?.({
+							item: folderItem,
+							props: {},
+						});
+
+						itemProps?.onClick?.();
+					}}
+				>
+					Click Folder
+				</button>
 			</div>
 		);
 	},
@@ -167,6 +190,36 @@ describe('CMSFilesItemSelectorModal — space navigation', () => {
 
 		expect(screen.getByTestId('api-url')).toHaveTextContent(SPACES_API_URL);
 		expect(screen.queryByTestId('breadcrumbs')).not.toBeInTheDocument();
+	});
+});
+
+describe('CMSFilesItemSelectorModal — expired content filtering', () => {
+	it('excludes non-approved and expired content from the space root URL', () => {
+		render(<CMSFilesItemSelectorModal {...defaultProps} open={true} />);
+
+		fireEvent.click(screen.getByTestId('simulate-space-click'));
+
+		const apiURL = screen.getByTestId('api-url').textContent ?? '';
+
+		expect(apiURL).toContain('status+in+%280%29');
+		expect(apiURL).toContain(
+			'dateExpiration+eq+null+or+dateExpiration+gt+'
+		);
+	});
+
+	it('excludes non-approved and expired content from the child folder URL', () => {
+		render(<CMSFilesItemSelectorModal {...defaultProps} open={true} />);
+
+		fireEvent.click(screen.getByTestId('simulate-space-click'));
+		fireEvent.click(screen.getByTestId('simulate-folder-click'));
+
+		const apiURL = screen.getByTestId('api-url').textContent ?? '';
+
+		expect(apiURL).toContain('folderId+eq+folder-1');
+		expect(apiURL).toContain('status+in+%280%29');
+		expect(apiURL).toContain(
+			'dateExpiration+eq+null+or+dateExpiration+gt+'
+		);
 	});
 });
 
