@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen, waitFor} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -177,6 +177,20 @@ describe('SelectObjectDefinition', () => {
 		).toBeInTheDocument();
 	});
 
+	it('renders the hint while more object definitions can be loaded', async () => {
+		mockPage({lastPage: 2, once: false, totalCount: 200});
+
+		renderSelectObjectDefinition();
+
+		await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+
+		await openMenu();
+
+		expect(
+			await screen.findByText(/Showing \d+ of 200 Items/)
+		).toBeInTheDocument();
+	});
+
 	it('requests object definitions with the context path prefixed', async () => {
 		(Liferay.ThemeDisplay.getPathContext as jest.Mock).mockReturnValueOnce(
 			'/myportal'
@@ -235,5 +249,41 @@ describe('SelectObjectDefinition', () => {
 		await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(3));
 
 		expect(getRequestedURL(2)).toContain('page=1');
+	});
+
+	it('updates the hint when the search is cleared', async () => {
+		mockPage({
+			items: [OBJECT_DEFINITION],
+			lastPage: 1,
+			once: false,
+			totalCount: 1,
+		});
+
+		renderSelectObjectDefinition();
+
+		fireEvent.change(
+			screen.getByPlaceholderText('search-for-an-object-definition'),
+			{target: {value: 'Alpha'}}
+		);
+
+		expect(
+			await screen.findByText('Showing 1 of 1 Items')
+		).toBeInTheDocument();
+
+		mockPage({
+			items: [OBJECT_DEFINITION, SECOND_OBJECT_DEFINITION],
+			lastPage: 1,
+			once: false,
+			totalCount: 2,
+		});
+
+		fireEvent.change(
+			screen.getByPlaceholderText('search-for-an-object-definition'),
+			{target: {value: ''}}
+		);
+
+		expect(
+			await screen.findByText('Showing 2 of 2 Items')
+		).toBeInTheDocument();
 	});
 });
