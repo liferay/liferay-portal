@@ -7,7 +7,6 @@ definition {
 		AssetListsAdmin.selectAsset(
 			assetListName = "Depot Manual Asset List",
 			assetName = "DM Document Title Without Publish",
-			assetType = "Basic Document",
 			itemSubtype = "Basic Document",
 			itemType = "Document");
 
@@ -71,7 +70,6 @@ definition {
 		AssetListsAdmin.selectAsset(
 			assetListName = "Depot Manual Asset List",
 			assetName = "DM Document Title Without Publish",
-			assetType = "Basic Document",
 			itemSubtype = "Basic Document",
 			itemType = "Document");
 

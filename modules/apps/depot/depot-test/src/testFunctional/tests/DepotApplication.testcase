@@ -243,15 +243,13 @@ definition {
 		AssetListsAdmin.selectAsset(
 			assetListName = "Depot Manual Asset List",
 			assetName = "Document_2.jpeg",
-			assetType = "Basic Document",
 			itemType = "All Types");
 
 		DepotNavigator.openDepotAssetListsAdmin(depotName = "Test Depot Name");
 
 		AssetListsAdmin.selectAsset(
 			assetListName = "Depot Manual Asset List",
-			assetName = "WC WebContent Title",
-			assetType = "Basic Web Content");
+			assetName = "WC WebContent Title");
 
 		DepotNavigator.openDepotSettingsGeneral(depotName = "Test Depot Name");
 

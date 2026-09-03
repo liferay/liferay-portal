@@ -78,21 +78,16 @@ definition {
 
 			AssetListsAdmin.selectAsset(
 				assetName = "Content A",
-				assetType = "Basic Web Content",
 				itemSubtype = "Basic Web Content",
 				itemType = "Web Content Article");
 
 			AssetListsAdmin.addPersonalizedVariation(segmentName = "HOME");
 
-			AssetListsAdmin.selectAsset(
-				assetType = "Basic Web Content",
-				entryList = "Content B");
+			AssetListsAdmin.selectAsset(entryList = "Content B");
 
 			AssetListsAdmin.addPersonalizedVariation(segmentName = "ADMIN");
 
-			AssetListsAdmin.selectAsset(
-				assetType = "Basic Web Content",
-				entryList = "Content C");
+			AssetListsAdmin.selectAsset(entryList = "Content C");
 
 			AssetListsAdmin.deprioritizeVariation(variationTitle = "Anyone");
 

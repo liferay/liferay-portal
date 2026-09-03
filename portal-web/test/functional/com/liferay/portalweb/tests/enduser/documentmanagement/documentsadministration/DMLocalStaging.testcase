@@ -1752,7 +1752,6 @@ definition {
 		AssetListsAdmin.selectAsset(
 			assetListName = "Depot Manual Asset List",
 			assetName = "Document_2.jpg",
-			assetType = "Basic Document",
 			itemSubtype = "Basic Document",
 			itemType = "Document");
 

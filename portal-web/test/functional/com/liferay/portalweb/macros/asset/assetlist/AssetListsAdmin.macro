@@ -581,7 +581,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro selectAsset(itemType = null, depotName = null, entryList = null, itemSubtype = null, assetListName = null, assetType = null) {
+	macro selectAsset(assetListName = null, assetName = null, entryList = null, itemSubtype = null, itemType = null) {
 		if (isSet(assetListName)) {
 			Click(
 				key_title = ${assetListName},
@@ -598,40 +598,24 @@ definition {
 
 		Button.clickSelect();
 
-		MenuItem.click(menuItem = ${assetType});
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		if (isSet(depotName)) {
-			AssertClick(
-				key_breadcrumbName = "Sites and Libraries",
-				locator1 = "Breadcrumb#BREADCRUMB_ENTRY",
-				value1 = "Sites and Libraries");
-
-			AssertClick(
-				key_groupTab = "Asset Library",
-				locator1 = "ItemSelector#NAVIGATION_GROUP_TAB",
-				value1 = "Asset Library");
-
-			LexiconCard.clickCard(card = ${depotName});
-		}
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+		WaitForVisible(locator1 = "ItemSelector#INLINE_MODAL");
 
 		if (isSet(entryList)) {
 			for (var assetName : list ${entryList}) {
-				LexiconEntry.selectEntry(rowEntry = ${assetName});
+				var key_itemTitle = ${assetName};
+
+				Click(locator1 = "ItemSelector#INLINE_MODAL_ROW_CHECKBOX");
 			}
 		}
 		else {
-			LexiconEntry.selectEntry(rowEntry = ${assetName});
+			var key_itemTitle = ${assetName};
+
+			Click(locator1 = "ItemSelector#INLINE_MODAL_ROW_CHECKBOX");
 		}
 
-		SelectFrameTop();
+		Click(locator1 = "ItemSelector#INLINE_MODAL_SELECT_BUTTON");
 
-		Button.click(button = "Add");
-
-		SelectFrameTop();
+		WaitForElementNotPresent(locator1 = "ItemSelector#INLINE_MODAL");
 
 		Alert.viewSuccessMessage();
 	}

@@ -343,8 +343,7 @@ definition {
 
 		AssetListsAdmin.selectAsset(
 			assetListName = "Manual Collection",
-			assetName = "Document_1",
-			assetType = "Basic Document");
+			assetName = "Document_1");
 
 		JSONLayout.addWidgetToPublicLayout(
 			groupName = "Site Name",
