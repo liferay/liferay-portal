@@ -182,7 +182,11 @@ public class ObjectEntryVersionFieldValueResolver {
 			return StringPool.BLANK;
 		}
 
-		return String.valueOf(value);
+		if (ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT.equals(businessType)) {
+			return String.valueOf(value);
+		}
+
+		return HtmlUtil.escape(String.valueOf(value));
 	}
 
 	private Format _getDateFormat(String languageId) {
@@ -381,10 +385,10 @@ public class ObjectEntryVersionFieldValueResolver {
 				objectField.getListTypeDefinitionId(), key);
 
 		if (listTypeEntry == null) {
-			return key;
+			return HtmlUtil.escape(key);
 		}
 
-		return listTypeEntry.getName(languageId);
+		return HtmlUtil.escape(listTypeEntry.getName(languageId));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
