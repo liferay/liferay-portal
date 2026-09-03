@@ -16,6 +16,7 @@ import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
+import com.liferay.commerce.order.CommerceOrderAttachmentURLProvider;
 import com.liferay.commerce.order.content.web.internal.constants.CommerceOrderFragmentFDSNames;
 import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
 import com.liferay.commerce.payment.integration.CommercePaymentIntegrationRegistry;
@@ -347,7 +348,7 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 		}
 		else if (field.equals("purchaseOrderDocument")) {
 			return _getPurchaseOrderDocumentAdditionalProps(
-				commerceOrder, permissionChecker);
+				commerceOrder, httpServletRequest, permissionChecker);
 		}
 		else if (field.equals("shippingAddress")) {
 			return HashMapBuilder.<String, Object>put(
@@ -603,7 +604,8 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 	}
 
 	private Map<String, Object> _getPurchaseOrderDocumentAdditionalProps(
-			CommerceOrder commerceOrder, PermissionChecker permissionChecker)
+			CommerceOrder commerceOrder, HttpServletRequest httpServletRequest,
+			PermissionChecker permissionChecker)
 		throws PortalException {
 
 		if (FeatureFlagManagerUtil.isEnabled(
@@ -640,9 +642,9 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 
 			additionalProps.put(
 				"downloadURL",
-				DLURLHelperUtil.getDownloadURL(
-					fileEntry, fileEntry.getLatestFileVersion(), null,
-					StringPool.BLANK, true, true));
+				_commerceOrderAttachmentURLProvider.getDownloadURL(
+					commerceOrderAttachment.getCommerceOrderAttachmentId(),
+					httpServletRequest));
 			additionalProps.put(
 				"isOwner",
 				permissionChecker.getUserId() ==
@@ -792,6 +794,10 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 	)
 	private ModelResourcePermission<CommerceOrderAttachment>
 		_commerceOrderAttachmentModelResourcePermission;
+
+	@Reference
+	private CommerceOrderAttachmentURLProvider
+		_commerceOrderAttachmentURLProvider;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"

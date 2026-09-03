@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.delivery.order.internal.resource.v1_0;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderAttachment;
+import com.liferay.commerce.order.CommerceOrderAttachmentURLProvider;
 import com.liferay.commerce.service.CommerceOrderAttachmentService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -333,9 +334,11 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 							return null;
 						}
 
-						return DLURLHelperUtil.getDownloadURL(
-							fileEntry, fileEntry.getLatestFileVersion(), null,
-							StringPool.BLANK, true, true);
+						return _commerceOrderAttachmentURLProvider.
+							getDownloadURL(
+								commerceOrderAttachment.
+									getCommerceOrderAttachmentId(),
+								contextHttpServletRequest);
 					});
 			}
 		};
@@ -365,6 +368,10 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 
 	@Reference
 	private CommerceOrderAttachmentService _commerceOrderAttachmentService;
+
+	@Reference
+	private CommerceOrderAttachmentURLProvider
+		_commerceOrderAttachmentURLProvider;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;

@@ -8,10 +8,10 @@ package com.liferay.headless.commerce.delivery.cart.internal.resource.v1_0;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderAttachment;
+import com.liferay.commerce.order.CommerceOrderAttachmentURLProvider;
 import com.liferay.commerce.service.CommerceOrderAttachmentService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.document.library.util.DLURLHelperUtil;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.AttachmentBase64;
 import com.liferay.headless.commerce.delivery.cart.internal.dto.v1_0.converter.constants.DTOConverterConstants;
@@ -21,7 +21,6 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.repository.LocalRepository;
@@ -333,9 +332,11 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 							return null;
 						}
 
-						return DLURLHelperUtil.getDownloadURL(
-							fileEntry, fileEntry.getLatestFileVersion(), null,
-							StringPool.BLANK, true, true);
+						return _commerceOrderAttachmentURLProvider.
+							getDownloadURL(
+								commerceOrderAttachment.
+									getCommerceOrderAttachmentId(),
+								contextHttpServletRequest);
 					});
 			}
 		};
@@ -354,6 +355,10 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 
 	@Reference
 	private CommerceOrderAttachmentService _commerceOrderAttachmentService;
+
+	@Reference
+	private CommerceOrderAttachmentURLProvider
+		_commerceOrderAttachmentURLProvider;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
