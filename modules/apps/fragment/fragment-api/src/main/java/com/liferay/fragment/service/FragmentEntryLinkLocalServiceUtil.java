@@ -638,53 +638,6 @@ public class FragmentEntryLinkLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static List<FragmentEntryLink>
-			getLayoutFragmentEntryLinksByFragmentEntry(
-				long groupId,
-				com.liferay.fragment.model.FragmentEntry fragmentEntry,
-				int start, int end,
-				OrderByComparator<FragmentEntryLink> orderByComparator)
-		throws PortalException {
-
-		return getService().getLayoutFragmentEntryLinksByFragmentEntry(
-			groupId, fragmentEntry, start, end, orderByComparator);
-	}
-
-	public static int getLayoutFragmentEntryLinksCountByFragmentEntry(
-			long groupId,
-			com.liferay.fragment.model.FragmentEntry fragmentEntry)
-		throws PortalException {
-
-		return getService().getLayoutFragmentEntryLinksCountByFragmentEntry(
-			groupId, fragmentEntry);
-	}
-
-	public static List<FragmentEntryLink>
-			getLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
-				long groupId,
-				com.liferay.fragment.model.FragmentEntry fragmentEntry,
-				int layoutPageTemplateType, int start, int end,
-				OrderByComparator<FragmentEntryLink> orderByComparator)
-		throws PortalException {
-
-		return getService().
-			getLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
-				groupId, fragmentEntry, layoutPageTemplateType, start, end,
-				orderByComparator);
-	}
-
-	public static int
-			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
-				long groupId,
-				com.liferay.fragment.model.FragmentEntry fragmentEntry,
-				int layoutPageTemplateType)
-		throws PortalException {
-
-		return getService().
-			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
-				groupId, fragmentEntry, layoutPageTemplateType);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -779,4 +732,4 @@ public class FragmentEntryLinkLocalServiceUtil {
 			FragmentEntryLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1282798222
+// LIFERAY-SERVICE-BUILDER-HASH:-1136128694
