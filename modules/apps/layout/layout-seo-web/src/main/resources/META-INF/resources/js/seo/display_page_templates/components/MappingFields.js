@@ -6,7 +6,7 @@
 import {PropTypes} from 'prop-types';
 import React from 'react';
 
-import {FIELD_TYPES} from '../constants';
+import {SUPPORTED_FIELD_TYPES} from '../constants';
 import MappingInput from './MappingInput';
 import MappingSelector from './MappingSelector';
 
@@ -16,7 +16,7 @@ function MappingFields({fields, inputs, selectedSource}) {
 			props.fieldTypes.includes(type)
 		);
 
-		return props.fieldTypes.includes(FIELD_TYPES.TEXT) ? (
+		return props.fieldTypes.includes(SUPPORTED_FIELD_TYPES.TEXT) ? (
 			<MappingInput
 				fieldTypes={props.fieldTypes}
 				fields={filteredFields}

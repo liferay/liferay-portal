@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import {PropTypes} from 'prop-types';
 import React, {useRef, useState} from 'react';
 
-import {FIELD_TYPES} from '../constants';
+import {SUPPORTED_FIELD_TYPES} from '../constants';
 import useOnClickOutside from '../hooks/useOnClickOutside';
 
 const noop = () => {};
@@ -117,7 +117,7 @@ function MappingPanel({
 							displayType="primary"
 							onClick={handleOnSelect}
 						>
-							{fieldTypes.includes(FIELD_TYPES.TEXT)
+							{fieldTypes.includes(SUPPORTED_FIELD_TYPES.TEXT)
 								? Liferay.Language.get('add-field')
 								: Liferay.Language.get('map-content')}
 						</ClayButton>
