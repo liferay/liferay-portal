@@ -245,6 +245,10 @@ public interface DispatchTriggerLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DispatchTrigger> getActiveDispatchTriggers(
+		List<DispatchTaskClusterMode> dispatchTaskClusterModes);
+
 	/**
 	 * Returns the dispatch trigger with the primary key.
 	 *
@@ -375,4 +379,4 @@ public interface DispatchTriggerLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:228313682
+// LIFERAY-SERVICE-BUILDER-HASH:1446508126

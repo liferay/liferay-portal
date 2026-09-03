@@ -279,6 +279,13 @@ public class DispatchTriggerLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static List<DispatchTrigger> getActiveDispatchTriggers(
+		List<com.liferay.dispatch.executor.DispatchTaskClusterMode>
+			dispatchTaskClusterModes) {
+
+		return getService().getActiveDispatchTriggers(dispatchTaskClusterModes);
+	}
+
 	/**
 	 * Returns the dispatch trigger with the primary key.
 	 *
@@ -477,4 +484,4 @@ public class DispatchTriggerLocalServiceUtil {
 			DispatchTriggerLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-939659000
+// LIFERAY-SERVICE-BUILDER-HASH:53945700

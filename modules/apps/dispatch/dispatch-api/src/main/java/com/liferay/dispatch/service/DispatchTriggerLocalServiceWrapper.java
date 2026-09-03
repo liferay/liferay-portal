@@ -317,6 +317,17 @@ public class DispatchTriggerLocalServiceWrapper
 		return _dispatchTriggerLocalService.getActionableDynamicQuery();
 	}
 
+	@Override
+	public java.util.List<com.liferay.dispatch.model.DispatchTrigger>
+		getActiveDispatchTriggers(
+			java.util.List
+				<com.liferay.dispatch.executor.DispatchTaskClusterMode>
+					dispatchTaskClusterModes) {
+
+		return _dispatchTriggerLocalService.getActiveDispatchTriggers(
+			dispatchTaskClusterModes);
+	}
+
 	/**
 	 * Returns the dispatch trigger with the primary key.
 	 *
@@ -557,4 +568,4 @@ public class DispatchTriggerLocalServiceWrapper
 	private DispatchTriggerLocalService _dispatchTriggerLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-345077464
+// LIFERAY-SERVICE-BUILDER-HASH:-594566932
