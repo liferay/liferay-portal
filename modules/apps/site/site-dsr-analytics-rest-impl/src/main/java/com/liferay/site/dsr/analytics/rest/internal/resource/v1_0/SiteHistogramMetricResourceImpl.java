@@ -7,12 +7,13 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.SiteHistogramMetric;
-import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.SiteHistogramMetricResource;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,10 +35,10 @@ public class SiteHistogramMetricResourceImpl
 			String rangeEnd, Integer rangeKey, String rangeStart)
 		throws Exception {
 
-		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
-			groupIds);
+		groupIds = DSRRoomUtil.getGroupIds(
+			groupIds, PermissionThreadLocal.getPermissionChecker());
 
-		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+		if (ArrayUtil.isEmpty(groupIds)) {
 			return new SiteHistogramMetric();
 		}
 
@@ -47,8 +48,7 @@ public class SiteHistogramMetricResourceImpl
 		return analyticsCloudClient.getSessionsSiteHistogramMetric(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			emailAddresses, visibleGroupIds, interval, rangeEnd, rangeKey,
-			rangeStart);
+			emailAddresses, groupIds, interval, rangeEnd, rangeKey, rangeStart);
 	}
 
 	@Override
@@ -57,10 +57,10 @@ public class SiteHistogramMetricResourceImpl
 			Integer rangeKey, String rangeStart)
 		throws Exception {
 
-		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
-			groupIds);
+		groupIds = DSRRoomUtil.getGroupIds(
+			groupIds, PermissionThreadLocal.getPermissionChecker());
 
-		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+		if (ArrayUtil.isEmpty(groupIds)) {
 			return new SiteHistogramMetric();
 		}
 
@@ -70,7 +70,7 @@ public class SiteHistogramMetricResourceImpl
 		return analyticsCloudClient.getVisitorsSiteHistogramMetric(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			visibleGroupIds, interval, rangeEnd, rangeKey, rangeStart);
+			groupIds, interval, rangeEnd, rangeKey, rangeStart);
 	}
 
 	@Reference
@@ -78,9 +78,6 @@ public class SiteHistogramMetricResourceImpl
 
 	@Reference
 	private volatile ChannelResource.Factory _channelResourceFactory;
-
-	@Reference
-	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private Http _http;

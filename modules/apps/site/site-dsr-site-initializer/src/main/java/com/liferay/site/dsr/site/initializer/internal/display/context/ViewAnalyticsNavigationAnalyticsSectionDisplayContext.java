@@ -17,10 +17,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -35,7 +36,6 @@ public class ViewAnalyticsNavigationAnalyticsSectionDisplayContext
 	public ViewAnalyticsNavigationAnalyticsSectionDisplayContext(
 		AnalyticsSettingsManager analyticsSettingsManager,
 		JSONObject configurationJSONObject,
-		DSRRoomGroupIdsHelper dsrRoomGroupIdsHelper,
 		FragmentEntryConfigurationParser fragmentEntryConfigurationParser,
 		FragmentEntryLink fragmentEntryLink,
 		HttpServletRequest httpServletRequest,
@@ -45,8 +45,6 @@ public class ViewAnalyticsNavigationAnalyticsSectionDisplayContext
 			analyticsSettingsManager, configurationJSONObject,
 			fragmentEntryConfigurationParser, fragmentEntryLink,
 			httpServletRequest, objectDefinition);
-
-		_dsrRoomGroupIdsHelper = dsrRoomGroupIdsHelper;
 	}
 
 	public String getActiveTab() {
@@ -87,14 +85,15 @@ public class ViewAnalyticsNavigationAnalyticsSectionDisplayContext
 		).put(
 			"filtersJSONString", getAnalyticsStoreFilters()
 		).put(
-			"visibleGroupIds", _getVisibleGroupIdsJSONArray()
+			"groupIds", _getGroupIdsJSONArray()
 		).build();
 	}
 
-	private JSONArray _getVisibleGroupIdsJSONArray() {
+	private JSONArray _getGroupIdsJSONArray() {
 		try {
 			return JSONUtil.putAll(
-				(Object[])_dsrRoomGroupIdsHelper.filterVisibleGroupIds(null));
+				(Object[])DSRRoomUtil.getGroupIds(
+					null, PermissionThreadLocal.getPermissionChecker()));
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
@@ -105,7 +104,5 @@ public class ViewAnalyticsNavigationAnalyticsSectionDisplayContext
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewAnalyticsNavigationAnalyticsSectionDisplayContext.class);
-
-	private final DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 }

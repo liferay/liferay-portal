@@ -7,12 +7,13 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.IdentityActivity;
-import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.IdentityActivityResource;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,10 +34,10 @@ public class IdentityActivityResourceImpl
 			String[] groupIds, String[] includedEventIds, Integer rangeKey)
 		throws Exception {
 
-		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
-			groupIds);
+		groupIds = DSRRoomUtil.getGroupIds(
+			groupIds, PermissionThreadLocal.getPermissionChecker());
 
-		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+		if (ArrayUtil.isEmpty(groupIds)) {
 			return new IdentityActivity();
 		}
 
@@ -46,7 +47,7 @@ public class IdentityActivityResourceImpl
 		return analyticsCloudClient.getIdentityActivity(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			visibleGroupIds, includedEventIds, rangeKey);
+			groupIds, includedEventIds, rangeKey);
 	}
 
 	@Reference
@@ -54,9 +55,6 @@ public class IdentityActivityResourceImpl
 
 	@Reference
 	private volatile ChannelResource.Factory _channelResourceFactory;
-
-	@Reference
-	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private Http _http;

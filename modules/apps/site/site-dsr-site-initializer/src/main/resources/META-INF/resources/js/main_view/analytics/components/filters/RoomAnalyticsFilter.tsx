@@ -16,14 +16,14 @@ import {AnalyticsFilters, IAnalyticsRoomFilter} from '../../types';
 
 interface IProps {
 	filter: IAnalyticsRoomFilter;
+	groupIds: string[];
 	setValue: any;
-	visibleGroupIds: string[];
 }
 
 export default function RoomAnalyticsFilter({
 	filter,
+	groupIds,
 	setValue,
-	visibleGroupIds,
 }: IProps) {
 	const [room, setRoom] = useState<IRoomObjectEntry | null>(null);
 	const [rooms, setRooms] = useState<IRoomObjectEntry[]>([]);
@@ -33,9 +33,7 @@ export default function RoomAnalyticsFilter({
 			const {items: rooms} = await RoomService.getRooms();
 
 			setRooms(
-				rooms.filter((room) =>
-					visibleGroupIds.includes(String(room.siteId))
-				)
+				rooms.filter((room) => groupIds.includes(String(room.siteId)))
 			);
 		}
 		catch (error: any) {
@@ -45,7 +43,7 @@ export default function RoomAnalyticsFilter({
 				type: 'danger',
 			});
 		}
-	}, [setRooms, visibleGroupIds]);
+	}, [groupIds, setRooms]);
 
 	useEffect(() => {
 		if (room) {

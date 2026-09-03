@@ -7,12 +7,13 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.Events;
-import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.EventsResource;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,10 +35,10 @@ public class EventsResourceImpl extends BaseEventsResourceImpl {
 			Integer rangeKey, String rangeStart, Integer size)
 		throws Exception {
 
-		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
-			groupIds);
+		groupIds = DSRRoomUtil.getGroupIds(
+			groupIds, PermissionThreadLocal.getPermissionChecker());
 
-		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+		if (ArrayUtil.isEmpty(groupIds)) {
 			return new Events();
 		}
 
@@ -47,8 +48,8 @@ public class EventsResourceImpl extends BaseEventsResourceImpl {
 		return analyticsCloudClient.getEvents(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			visibleGroupIds, includeAnonymousUsers, individualId, keywords,
-			page, rangeEnd, rangeKey, rangeStart, size);
+			groupIds, includeAnonymousUsers, individualId, keywords, page,
+			rangeEnd, rangeKey, rangeStart, size);
 	}
 
 	@Reference
@@ -56,9 +57,6 @@ public class EventsResourceImpl extends BaseEventsResourceImpl {
 
 	@Reference
 	private volatile ChannelResource.Factory _channelResourceFactory;
-
-	@Reference
-	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private Http _http;

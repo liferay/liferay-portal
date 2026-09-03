@@ -9,11 +9,18 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupServiceUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -38,6 +45,55 @@ public class DSRRoomUtil {
 		throw new PrincipalException.MustHavePermission(
 			permissionChecker, objectDefinition.getClassName(),
 			objectEntry.getObjectEntryId(), actionId);
+	}
+
+	public static String[] getGroupIds(
+			String[] groupIds, PermissionChecker permissionChecker)
+		throws PortalException {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DSR_ROOM", permissionChecker.getCompanyId());
+
+		if (objectDefinition == null) {
+			return new String[0];
+		}
+
+		return TransformUtil.transformToArray(
+			GroupServiceUtil.search(
+				permissionChecker.getCompanyId(),
+				new long[] {
+					ClassNameLocalServiceUtil.getClassNameId(
+						objectDefinition.getClassName())
+				},
+				null,
+				LinkedHashMapBuilder.<String, Object>put(
+					"actionId", ActionKeys.VIEW
+				).put(
+					"active", Boolean.TRUE
+				).put(
+					"site", Boolean.TRUE
+				).build(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+			group -> {
+				if (!permissionChecker.isCompanyAdmin() &&
+					!permissionChecker.isGroupOwner(group.getGroupId())) {
+
+					return null;
+				}
+
+				String groupId = String.valueOf(group.getGroupId());
+
+				if (ArrayUtil.isNotEmpty(groupIds) &&
+					!ArrayUtil.contains(groupIds, groupId)) {
+
+					return null;
+				}
+
+				return groupId;
+			},
+			String.class);
 	}
 
 	public static boolean isArchived(ObjectEntry objectEntry) {

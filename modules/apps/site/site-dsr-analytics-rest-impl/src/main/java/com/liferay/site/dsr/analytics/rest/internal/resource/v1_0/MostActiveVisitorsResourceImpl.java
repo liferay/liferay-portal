@@ -7,12 +7,13 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.MostActiveVisitors;
-import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.MostActiveVisitorsResource;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,10 +35,10 @@ public class MostActiveVisitorsResourceImpl
 			String rangeStart, Integer size, Integer start)
 		throws Exception {
 
-		String[] visibleGroupIds = _dsrRoomGroupIdsHelper.filterVisibleGroupIds(
-			groupIds);
+		groupIds = DSRRoomUtil.getGroupIds(
+			groupIds, PermissionThreadLocal.getPermissionChecker());
 
-		if (ArrayUtil.isEmpty(visibleGroupIds)) {
+		if (ArrayUtil.isEmpty(groupIds)) {
 			return new MostActiveVisitors();
 		}
 
@@ -47,7 +48,7 @@ public class MostActiveVisitorsResourceImpl
 		return analyticsCloudClient.getMostActiveVisitors(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			visibleGroupIds, rangeEnd, rangeKey, rangeStart, size, start);
+			groupIds, rangeEnd, rangeKey, rangeStart, size, start);
 	}
 
 	@Reference
@@ -55,9 +56,6 @@ public class MostActiveVisitorsResourceImpl
 
 	@Reference
 	private volatile ChannelResource.Factory _channelResourceFactory;
-
-	@Reference
-	private DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper;
 
 	@Reference
 	private Http _http;
