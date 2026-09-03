@@ -9,13 +9,14 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.Events;
-import com.liferay.site.dsr.analytics.rest.helper.DSRRoomGroupIdsHelper;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -29,30 +30,30 @@ public class EventsResourceImplTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetEventsWithoutVisibleGroupIds() throws Exception {
+	public void testGetEvents() throws Exception {
 		EventsResourceImpl eventsResourceImpl = new EventsResourceImpl();
 
-		ReflectionTestUtil.setFieldValue(
-			eventsResourceImpl, "_dsrRoomGroupIdsHelper",
-			_dsrRoomGroupIdsHelper);
 		ReflectionTestUtil.setFieldValue(eventsResourceImpl, "_http", _http);
 
-		Mockito.when(
-			_dsrRoomGroupIdsHelper.filterVisibleGroupIds(Mockito.any())
-		).thenReturn(
-			new String[0]
-		);
+		try (MockedStatic<DSRRoomUtil> dsrRoomUtilMockedStatic =
+				Mockito.mockStatic(DSRRoomUtil.class)) {
 
-		Events events = eventsResourceImpl.getEvents(
-			new String[] {"1"}, null, null, null, null, null, null, null, null);
+			dsrRoomUtilMockedStatic.when(
+				() -> DSRRoomUtil.getGroupIds(Mockito.any(), Mockito.any())
+			).thenReturn(
+				new String[0]
+			);
 
-		Assert.assertNull(events.getEventEntries());
+			Events events = eventsResourceImpl.getEvents(
+				new String[] {"1"}, null, null, null, null, null, null, null,
+				null);
 
-		Mockito.verifyNoInteractions(_http);
+			Assert.assertNull(events.getEventEntries());
+
+			Mockito.verifyNoInteractions(_http);
+		}
 	}
 
-	private final DSRRoomGroupIdsHelper _dsrRoomGroupIdsHelper = Mockito.mock(
-		DSRRoomGroupIdsHelper.class);
 	private final Http _http = Mockito.mock(Http.class);
 
 }
