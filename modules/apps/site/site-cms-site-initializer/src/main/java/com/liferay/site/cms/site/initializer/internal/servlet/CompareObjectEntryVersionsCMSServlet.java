@@ -82,10 +82,10 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 			throw new UnsupportedOperationException();
 		}
 
-		JSONObject jsonObject = null;
+		JSONObject requestJSONObject = null;
 
 		try {
-			jsonObject = _jsonFactory.createJSONObject(
+			requestJSONObject = _jsonFactory.createJSONObject(
 				StreamUtil.toString(
 					httpServletRequest.getInputStream(), StringPool.UTF8));
 		}
@@ -100,7 +100,7 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		}
 
 		try {
-			long objectEntryId = jsonObject.getLong("objectEntryId");
+			long objectEntryId = requestJSONObject.getLong("objectEntryId");
 
 			ObjectEntry objectEntry = _objectEntryService.getObjectEntry(
 				objectEntryId);
@@ -114,18 +114,18 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 				objectFields.put(objectField.getName(), objectField);
 			}
 
-			String languageId = jsonObject.getString("languageId");
+			String languageId = requestJSONObject.getString("languageId");
 
 			User user = portal.getUser(httpServletRequest);
 
 			Map<String, Object> sourceFieldValues =
 				_objectEntryVersionFieldValueResolver.getFieldValues(
 					languageId, objectEntryId,
-					jsonObject.getInt("sourceVersion"));
+					requestJSONObject.getInt("sourceVersion"));
 			Map<String, Object> targetFieldValues =
 				_objectEntryVersionFieldValueResolver.getFieldValues(
 					languageId, objectEntryId,
-					jsonObject.getInt("targetVersion"));
+					requestJSONObject.getInt("targetVersion"));
 
 			JSONObject sourceDiffsJSONObject = _jsonFactory.createJSONObject();
 			JSONObject targetDiffsJSONObject = _jsonFactory.createJSONObject();
@@ -137,26 +137,30 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 			for (String fieldName : fieldNames) {
 				ObjectField objectField = objectFields.get(fieldName);
 
-				String source =
+				String sourceDisplayValue =
 					_objectEntryVersionFieldValueResolver.toDisplayValue(
 						languageId, objectField, user,
 						sourceFieldValues.get(fieldName));
-				String target =
+				String targetDisplayValue =
 					_objectEntryVersionFieldValueResolver.toDisplayValue(
 						languageId, objectField, user,
 						targetFieldValues.get(fieldName));
 
-				if (source.equals(target)) {
+				if (sourceDisplayValue.equals(targetDisplayValue)) {
 					continue;
 				}
 
-				if (_objectEntryVersionFieldValueResolver.isAtomicBusinessType(
+				if (_objectEntryVersionFieldValueResolver.isDateBusinessType(
 						objectField)) {
 
 					sourceDiffsJSONObject.put(
-						fieldName, _toAtomicDiffHtml(target, source));
+						fieldName,
+						_toDateDiffHtml(
+							sourceDisplayValue, targetDisplayValue));
 					targetDiffsJSONObject.put(
-						fieldName, _toAtomicDiffHtml(source, target));
+						fieldName,
+						_toDateDiffHtml(
+							targetDisplayValue, sourceDisplayValue));
 
 					continue;
 				}
@@ -164,11 +168,13 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 				sourceDiffsJSONObject.put(
 					fieldName,
 					_diffHtml.diff(
-						new StringReader(target), new StringReader(source)));
+						new StringReader(targetDisplayValue),
+						new StringReader(sourceDisplayValue)));
 				targetDiffsJSONObject.put(
 					fieldName,
 					_diffHtml.diff(
-						new StringReader(source), new StringReader(target)));
+						new StringReader(sourceDisplayValue),
+						new StringReader(targetDisplayValue)));
 			}
 
 			httpServletResponse.setContentType(ContentTypes.APPLICATION_JSON);
@@ -194,7 +200,7 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		}
 	}
 
-	private String _toAtomicDiffHtml(String removed, String added) {
+	private String _toDateDiffHtml(String added, String removed) {
 		StringBundler sb = new StringBundler(6);
 
 		if (!removed.isEmpty()) {

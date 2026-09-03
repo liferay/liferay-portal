@@ -92,24 +92,24 @@ public class ObjectEntryVersionFieldValueResolver {
 		}
 
 		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-			String name = entry.getKey();
+			String fieldName = entry.getKey();
 
-			if (name.endsWith("_i18n") || name.endsWith("RawText")) {
+			if (fieldName.endsWith("_i18n") || fieldName.endsWith("RawText")) {
 				continue;
 			}
 
-			Object value = entry.getValue();
+			Object fieldValue = entry.getValue();
 
-			Object localizedValues = properties.get(name + "_i18n");
+			Object localizedValues = properties.get(fieldName + "_i18n");
 
 			if (localizedValues instanceof Map) {
 				Map<String, Object> localizedValuesMap =
 					(Map<String, Object>)localizedValues;
 
-				value = localizedValuesMap.get(languageId);
+				fieldValue = localizedValuesMap.get(languageId);
 			}
 
-			fieldValues.put(name, value);
+			fieldValues.put(fieldName, fieldValue);
 		}
 
 		Map<String, String> friendlyUrlPathI18n =
@@ -129,7 +129,7 @@ public class ObjectEntryVersionFieldValueResolver {
 		return fieldValues;
 	}
 
-	public boolean isAtomicBusinessType(ObjectField objectField) {
+	public boolean isDateBusinessType(ObjectField objectField) {
 		String businessType =
 			(objectField == null) ? null : objectField.getBusinessType();
 
