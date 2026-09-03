@@ -83,6 +83,8 @@ public class AssetListEntryExportImportContentProcessor
 		unicodeProperties.setProperty(
 			"classNames", StringUtil.merge(classNames, ","));
 
+		unicodeProperties.remove("anyAssetTypeClassName");
+
 		long defaultClassNameId = GetterUtil.getLong(
 			unicodeProperties.getProperty("anyAssetType", null));
 
