@@ -5,7 +5,7 @@
 
 import {useDebounce} from '@clayui/shared';
 import {useConfig} from 'data-engine-js-components-web';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {getItems} from '../utils/client.es';
 import {errorToast} from '../utils/toast.es';
@@ -76,6 +76,8 @@ export default function useSearchFieldSets(searchTerm) {
 
 	const [searchState, setSearchState] = useState(null);
 
+	const removedFieldSetIdsRef = useRef(new Set());
+
 	const debouncedSearchTerm = useDebounce(searchTerm, SEARCH_DELAY);
 
 	useEffect(() => {
@@ -100,7 +102,9 @@ export default function useSearchFieldSets(searchTerm) {
 				if (!signal.aborted) {
 					setSearchState({
 						hasError: false,
-						items: fieldSets,
+						items: fieldSets.filter(
+							({id}) => !removedFieldSetIdsRef.current.has(id)
+						),
 						term: debouncedSearchTerm,
 						truncated,
 					});
@@ -123,6 +127,8 @@ export default function useSearchFieldSets(searchTerm) {
 	}, [contentType, dataDefinitionId, debouncedSearchTerm, groupId]);
 
 	const removeSearchResult = useCallback((fieldSetId) => {
+		removedFieldSetIdsRef.current.add(fieldSetId);
+
 		setSearchState(
 			(searchState) =>
 				searchState && {
