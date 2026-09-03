@@ -51,7 +51,9 @@ import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleResource;
 import com.liferay.journal.model.JournalFolder;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalArticleLocalServiceWrapper;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalContent;
@@ -72,12 +74,14 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -90,6 +94,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -103,6 +108,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
@@ -117,12 +123,14 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -131,6 +139,9 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Juan Fernández
@@ -275,6 +286,118 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		_assertClassPK(
 			importedArticle2.getContent(),
 			importedArticle1.getResourcePrimKey());
+	}
+
+	@Test
+	@TestInfo("LPD-104372")
+	public void testExportImportJournalArticleVersionsKeepExpirationDates()
+		throws Exception {
+
+		JournalArticle article = _addArticleWithExpiredVersions();
+
+		exportPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(true), false, layout);
+
+		importPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(true), false, layout);
+
+		List<JournalArticle> articles =
+			JournalArticleLocalServiceUtil.getArticles(
+				group.getGroupId(), article.getArticleId());
+
+		for (JournalArticle curArticle : articles) {
+			JournalArticle importedArticle =
+				JournalArticleLocalServiceUtil.fetchArticle(
+					importedGroup.getGroupId(), curArticle.getArticleId(),
+					curArticle.getVersion());
+
+			Assert.assertNotNull(importedArticle);
+
+			_assertEqualsExpirationDate(
+				curArticle.getExpirationDate(),
+				importedArticle.getExpirationDate());
+
+			Assert.assertEquals(
+				curArticle.getStatus(), importedArticle.getStatus());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-104372")
+	public void testExportImportJournalArticleVersionsMoveToAnotherFolder()
+		throws Exception {
+
+		JournalArticle article = _addArticleWithExpiredVersions();
+
+		exportPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(true), false, layout);
+
+		importPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(true), false, layout);
+
+		JournalFolder folder = JournalTestUtil.addFolder(
+			group.getGroupId(), RandomTestUtil.randomString());
+
+		JournalArticleLocalServiceUtil.moveArticle(
+			group.getGroupId(), article.getArticleId(), folder.getFolderId(),
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		exportPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(true), false, layout);
+
+		importPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(true), false, layout);
+
+		JournalFolder importedFolder =
+			JournalFolderLocalServiceUtil.fetchJournalFolderByUuidAndGroupId(
+				folder.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(importedFolder);
+
+		List<JournalArticle> importedArticles =
+			JournalArticleLocalServiceUtil.getArticles(
+				importedGroup.getGroupId(), article.getArticleId());
+
+		Assert.assertEquals(
+			importedArticles.toString(), _VERSION_COUNT,
+			importedArticles.size());
+
+		for (JournalArticle importedArticle : importedArticles) {
+			Assert.assertEquals(
+				importedFolder.getFolderId(), importedArticle.getFolderId());
+			Assert.assertEquals(
+				importedFolder.getTreePath(), importedArticle.getTreePath());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-104372")
+	public void testExportImportJournalArticleVersionsReloadOncePerArticle()
+		throws Exception {
+
+		_addArticleWithExpiredVersions();
+
+		exportPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(true), false, layout);
+
+		AtomicInteger getArticlesCount = new AtomicInteger();
+		AtomicInteger updateJournalArticleCount = new AtomicInteger();
+
+		ServiceRegistration<?> serviceRegistration =
+			_registerCountingJournalArticleLocalServiceWrapper(
+				getArticlesCount, updateJournalArticleCount);
+
+		try {
+			importPortlet(
+				JournalPortletKeys.JOURNAL, _getParameterMap(true), false,
+				layout);
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		Assert.assertEquals(1, getArticlesCount.get());
+		Assert.assertEquals(_VERSION_COUNT, updateJournalArticleCount.get());
 	}
 
 	@Test
@@ -695,6 +818,56 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			1,
 			JournalArticleLocalServiceUtil.getArticlesCount(
 				importedGroup.getGroupId(), importedArticle.getArticleId()));
+	}
+
+	@Test
+	@TestInfo("LPD-104372")
+	public void testExportImportJournalArticleWithoutVersionHistoryExpiresAllVersions()
+		throws Exception {
+
+		JournalArticle article = _addArticleWithExpiredVersions();
+
+		exportImportPortlet(JournalPortletKeys.JOURNAL);
+
+		Assert.assertEquals(
+			_VERSION_COUNT,
+			JournalArticleLocalServiceUtil.getArticlesCount(
+				importedGroup.getGroupId(), article.getArticleId()));
+
+		JournalArticle latestArticle =
+			JournalArticleLocalServiceUtil.getLatestArticle(
+				group.getGroupId(), article.getArticleId());
+
+		latestArticle = JournalArticleLocalServiceUtil.expireArticle(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			latestArticle.getArticleId(), latestArticle.getVersion(), null,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		Date expirationDate = calendar.getTime();
+
+		latestArticle.setExpirationDate(expirationDate);
+
+		JournalArticleLocalServiceUtil.updateJournalArticle(latestArticle);
+
+		exportImportPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(false),
+			_getParameterMap(false));
+
+		for (JournalArticle importedArticle :
+				JournalArticleLocalServiceUtil.getArticles(
+					importedGroup.getGroupId(), article.getArticleId())) {
+
+			_assertEqualsExpirationDate(
+				expirationDate, importedArticle.getExpirationDate());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EXPIRED, importedArticle.getStatus());
+		}
 	}
 
 	@Test
@@ -1543,6 +1716,42 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		}
 	}
 
+	private JournalArticle _addArticleWithExpiredVersions() throws Exception {
+		JournalArticle article = (JournalArticle)addStagedModel(
+			group.getGroupId());
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		calendar.add(Calendar.HOUR, -_VERSION_COUNT);
+
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		for (int i = 1; i < _VERSION_COUNT; i++) {
+			JournalArticle expiredArticle =
+				JournalArticleLocalServiceUtil.expireArticle(
+					TestPropsValues.getUserId(), group.getGroupId(),
+					article.getArticleId(), article.getVersion(), null,
+					ServiceContextTestUtil.getServiceContext(
+						group.getGroupId()));
+
+			calendar.add(Calendar.HOUR, 1);
+
+			expiredArticle.setExpirationDate(calendar.getTime());
+
+			JournalArticleLocalServiceUtil.updateJournalArticle(expiredArticle);
+
+			article = (JournalArticle)addVersion(article);
+		}
+
+		Assert.assertEquals(
+			_VERSION_COUNT,
+			JournalArticleLocalServiceUtil.getArticlesCount(
+				group.getGroupId(), article.getArticleId()));
+
+		return article;
+	}
+
 	private String _addDataDefinition(long groupId) throws Exception {
 		DataDefinitionResource dataDefinitionResource =
 			_dataDefinitionResourceFactory.create(
@@ -1589,6 +1798,21 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		List<Long> classPKs = _getClassPKs(content);
 
 		Assert.assertTrue(classPKs.contains(classPK));
+	}
+
+	private void _assertEqualsExpirationDate(
+		Date expirationDate, Date importedExpirationDate) {
+
+		if (expirationDate == null) {
+			Assert.assertNull(importedExpirationDate);
+
+			return;
+		}
+
+		Assert.assertNotNull(importedExpirationDate);
+
+		Assert.assertEquals(
+			expirationDate.getTime(), importedExpirationDate.getTime());
 	}
 
 	private void _assertImportedArtifacts(
@@ -1737,6 +1961,14 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		return _jsonFactory.createJSONObject(node.getText());
 	}
 
+	private Map<String, String[]> _getParameterMap(boolean versionHistory) {
+		Map<String, String[]> parameterMap = new HashMap<>();
+
+		addParameter(parameterMap, "version-history", versionHistory);
+
+		return parameterMap;
+	}
+
 	private String _read(String fileName) throws Exception {
 		return new String(
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
@@ -1745,6 +1977,46 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	private String _readFileToString(String s) throws Exception {
 		return new String(FileUtil.getBytes(getClass(), s));
 	}
+
+	private ServiceRegistration<?>
+		_registerCountingJournalArticleLocalServiceWrapper(
+			AtomicInteger getArticlesCount,
+			AtomicInteger updateJournalArticleCount) {
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		return bundleContext.registerService(
+			ServiceWrapper.class,
+			new JournalArticleLocalServiceWrapper(_journalArticleLocalService) {
+
+				@Override
+				public List<JournalArticle> getArticles(
+					long groupId, String articleId) {
+
+					getArticlesCount.incrementAndGet();
+
+					return super.getArticles(groupId, articleId);
+				}
+
+				@Override
+				public JournalArticle updateJournalArticle(
+					JournalArticle journalArticle) {
+
+					updateJournalArticleCount.incrementAndGet();
+
+					return super.updateJournalArticle(journalArticle);
+				}
+
+			},
+			HashMapDictionaryBuilder.<String, Object>put(
+				"service.ranking", Integer.MAX_VALUE
+			).put(
+				"service.wrapper.class",
+				JournalArticleLocalService.class.getName()
+			).build());
+	}
+
+	private static final int _VERSION_COUNT = 10;
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
@@ -1779,6 +2051,9 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	@Inject
 	private ExportImportReportEntryLocalService
 		_exportImportReportEntryLocalService;
+
+	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Inject
 	private JournalContent _journalContent;
