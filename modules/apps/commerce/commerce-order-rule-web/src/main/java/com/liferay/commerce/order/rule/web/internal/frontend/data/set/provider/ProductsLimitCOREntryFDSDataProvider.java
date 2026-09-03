@@ -70,8 +70,8 @@ public class ProductsLimitCOREntryFDSDataProvider
 							COREntryConstants.
 								TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES)),
 					cProductExternalReferenceCode -> _fetchCPDefinition(
-						corEntry.getCompanyId(),
-						cProductExternalReferenceCode)),
+						cProductExternalReferenceCode,
+						corEntry.getCompanyId())),
 				cpDefinition -> cpDefinition != null),
 			filteredCPDefinition -> {
 				ThemeDisplay themeDisplay =
@@ -107,7 +107,7 @@ public class ProductsLimitCOREntryFDSDataProvider
 						TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES)),
 			cProductExternalReferenceCode -> {
 				CPDefinition cpDefinition = _fetchCPDefinition(
-					corEntry.getCompanyId(), cProductExternalReferenceCode);
+					cProductExternalReferenceCode, corEntry.getCompanyId());
 
 				return cpDefinition != null;
 			});
@@ -116,7 +116,7 @@ public class ProductsLimitCOREntryFDSDataProvider
 	}
 
 	private CPDefinition _fetchCPDefinition(
-		long companyId, String cProductExternalReferenceCode) {
+		String cProductExternalReferenceCode, long companyId) {
 
 		try {
 			CProduct cProduct =

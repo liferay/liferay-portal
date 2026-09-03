@@ -457,11 +457,10 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	private void _testGetProductByExternalReferenceCodeAttachmentsPageWithBinaries()
 		throws Exception {
 
-		String productExternalReferenceCode =
-			_cProduct.getExternalReferenceCode();
-
 		String base64EncodedContent = Base64.encode(
 			RandomTestUtil.randomBytes());
+		String productExternalReferenceCode =
+			_cProduct.getExternalReferenceCode();
 
 		Attachment postAttachment =
 			attachmentResource.
