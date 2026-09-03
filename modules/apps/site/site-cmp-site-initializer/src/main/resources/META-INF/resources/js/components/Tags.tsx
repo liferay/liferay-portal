@@ -45,7 +45,6 @@ const Tags = ({
 						keywords,
 					} as IAssetObjectEntry
 				}
-				titleClassName="text-default"
 				updateObjectEntry={async ({
 					keywords,
 				}: Partial<IAssetObjectEntry>): Promise<void> => {

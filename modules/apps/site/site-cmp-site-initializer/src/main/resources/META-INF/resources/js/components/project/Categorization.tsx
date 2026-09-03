@@ -107,7 +107,6 @@ export default function Categorization({
 							keywords,
 						} as IAssetObjectEntry
 					}
-					titleClassName="text-default"
 					updateObjectEntry={async ({
 						keywords: updatedKeywords,
 					}: Partial<IAssetObjectEntry>): Promise<void> => {
