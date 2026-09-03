@@ -2,7 +2,6 @@ dependencies {
 	compileInclude group: "com.drewnoakes", name: "metadata-extractor", version: "2.20.0"
 	compileInclude group: "com.epam", name: "parso", version: "2.0.14"
 	compileInclude group: "com.github.albfernandez", name: "juniversalchardet", version: "2.5.0"
-	compileInclude group: "com.github.jai-imageio", name: "jai-imageio-core", version: "1.4.0"
 	compileInclude group: "com.googlecode.plist", name: "dd-plist", version: "1.29"
 	compileInclude group: "com.healthmarketscience.jackcess", name: "jackcess", version: "4.0.10"
 	compileInclude group: "com.healthmarketscience.jackcess", name: "jackcess-encrypt", version: "4.0.3"
