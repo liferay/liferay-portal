@@ -81,8 +81,12 @@ public class EditAudiencesEntryDisplayContext {
 			return _backURL;
 		}
 
-		_backURL = ParamUtil.getString(
-			_httpServletRequest, "backURL", getRedirect());
+		_backURL = PortalUtil.escapeRedirect(
+			ParamUtil.getString(_httpServletRequest, "backURL"));
+
+		if (Validator.isNull(_backURL)) {
+			_backURL = getRedirect();
+		}
 
 		return _backURL;
 	}
@@ -180,7 +184,8 @@ public class EditAudiencesEntryDisplayContext {
 			return _redirect;
 		}
 
-		_redirect = ParamUtil.getString(_httpServletRequest, "redirect");
+		_redirect = PortalUtil.escapeRedirect(
+			ParamUtil.getString(_httpServletRequest, "redirect"));
 
 		if (Validator.isNull(_redirect)) {
 			PortletURL portletURL = _renderResponse.createRenderURL();
