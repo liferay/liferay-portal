@@ -64,4 +64,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
+	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
+	testImplementation project(":apps:headless:headless-delivery:headless-delivery-api")
 }
