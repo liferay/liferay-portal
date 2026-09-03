@@ -180,6 +180,7 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -7115,34 +7116,31 @@ public class DefaultObjectEntryManagerImplTest
 
 		User user = UserTestUtil.addOmniadminUser();
 
-		PrincipalThreadLocal.setName(user.getUserId());
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(user));
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
 
-		objectEntry = _defaultObjectEntryManager.updateObjectEntry(
-			TestPropsValues.getCompanyId(), _createDTOConverterContext(user),
-			objectEntry.getExternalReferenceCode(), _objectDefinition1,
-			new ObjectEntry() {
-				{
-					properties = HashMapBuilder.<String, Object>put(
-						"textObjectFieldName", RandomTestUtil.randomString()
-					).build();
-					systemProperties = new SystemProperties() {
-						{
-							version = new Version() {
-								{
-									number = 2;
-								}
-							};
-						}
-					};
-				}
-			},
-			objectEntry.getScopeKey());
-
-		PrincipalThreadLocal.setName(adminUser.getUserId());
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(adminUser));
+			objectEntry = _defaultObjectEntryManager.updateObjectEntry(
+				TestPropsValues.getCompanyId(),
+				_createDTOConverterContext(user),
+				objectEntry.getExternalReferenceCode(), _objectDefinition1,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"textObjectFieldName", RandomTestUtil.randomString()
+						).build();
+						systemProperties = new SystemProperties() {
+							{
+								version = new Version() {
+									{
+										number = 2;
+									}
+								};
+							}
+						};
+					}
+				},
+				objectEntry.getScopeKey());
+		}
 
 		objectEntry = _defaultObjectEntryManager.getObjectEntry(
 			dtoConverterContext, _objectDefinition1, objectEntry.getId());
