@@ -333,13 +333,13 @@ public class ObjectEntryVersionFieldValueResolver {
 
 		Object[] values = null;
 
-		if (value instanceof Object[]) {
-			values = (Object[])value;
-		}
-		else if (value instanceof List) {
+		if (value instanceof List) {
 			List<?> list = (List<?>)value;
 
 			values = list.toArray();
+		}
+		else if (value instanceof Object[]) {
+			values = (Object[])value;
 		}
 		else {
 			return _toPicklistDisplayValue(languageId, objectField, value);
