@@ -107,10 +107,11 @@ public class ProxyDemoDataAsahServlet extends BaseAsahServlet {
 				transferRequestBody(httpServletRequest, httpURLConnection);
 			}
 
-			int responseCode = httpURLConnection.getResponseCode();
-
 			httpServletResponse.setContentType(
 				httpURLConnection.getContentType());
+
+			int responseCode = httpURLConnection.getResponseCode();
+
 			httpServletResponse.setStatus(responseCode);
 
 			try (InputStream inputStream = _getInputStream(
