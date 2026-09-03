@@ -64,8 +64,12 @@ public class DBResourceUtil {
 				Connection connection)
 		throws Exception {
 
-		Map<String, String> historicalTablesServletContextNames = new TreeMap<>(
-			String.CASE_INSENSITIVE_ORDER);
+		Map<String, String>
+			historicalServiceComponentTablesServletContextNames = new TreeMap<>(
+				String.CASE_INSENSITIVE_ORDER);
+
+		Map<String, String> tablesServletContextNames =
+			getTablesServletContextNames();
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				_SQL_HISTORICAL_SERVICE_COMPONENT);
@@ -78,13 +82,17 @@ public class DBResourceUtil {
 				for (String tableName :
 						parseCreateTableSQL(resultSet.getString(2))) {
 
-					historicalTablesServletContextNames.put(
+					if (tablesServletContextNames.containsKey(tableName)) {
+						continue;
+					}
+
+					historicalServiceComponentTablesServletContextNames.put(
 						tableName, buildNamespace);
 				}
 			}
 		}
 
-		return historicalTablesServletContextNames;
+		return historicalServiceComponentTablesServletContextNames;
 	}
 
 	public static Set<String> getLiferayTableNames(Connection connection)
@@ -251,8 +259,11 @@ public class DBResourceUtil {
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
 		for (Bundle bundle : bundleContext.getBundles()) {
-			if (!BundleUtil.isLiferayRequireSchemaVersionBundle(bundle) &&
-				!BundleUtil.isLiferayServiceBundle(bundle)) {
+			String symbolicName = bundle.getSymbolicName();
+
+			if (!symbolicName.startsWith("com.liferay") ||
+				(!BundleUtil.isLiferayRequireSchemaVersionBundle(bundle) &&
+				 !BundleUtil.isLiferayServiceBundle(bundle))) {
 
 				continue;
 			}
@@ -260,8 +271,7 @@ public class DBResourceUtil {
 			for (String tableName :
 					parseCreateTableSQL(getModuleTablesSQL(bundle))) {
 
-				tablesServletContextNames.put(
-					tableName, bundle.getSymbolicName());
+				tablesServletContextNames.put(tableName, symbolicName);
 			}
 		}
 
@@ -452,8 +462,11 @@ public class DBResourceUtil {
 	}
 
 	private static final String _SQL_HISTORICAL_SERVICE_COMPONENT =
-		"select buildNamespace, data_ from ServiceComponent order by " +
-			"buildNumber";
+		StringBundler.concat(
+			"select buildNamespace, data_ from ServiceComponent where ",
+			"buildNamespace like 'com.liferay%' or buildNamespace = '",
+			ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+			"' order by serviceComponentId");
 
 	private static final String _SQL_SERVICE_COMPONENT = StringBundler.concat(
 		"select data_ from ServiceComponent where buildNumber = (select ",
