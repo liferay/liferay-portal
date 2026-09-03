@@ -10,7 +10,7 @@ import {AssetTypeInfoPanelContext, IAssetTypeInfoPanelContext} from './context';
 import {TABS} from './tab_content';
 
 const AssetTypeInfoPanelFilesView = () => {
-	const {actions}: IAssetTypeInfoPanelContext = useContext(
+	const {actions, cmpEnabled}: IAssetTypeInfoPanelContext = useContext(
 		AssetTypeInfoPanelContext
 	);
 
@@ -22,7 +22,7 @@ const AssetTypeInfoPanelFilesView = () => {
 		TABS.PERFORMANCE,
 		...(actions?.versions?.href ? [TABS.VERSIONS] : []),
 		TABS.COMMENTS,
-		TABS.PROJECTS,
+		...(cmpEnabled ? [TABS.PROJECTS] : []),
 	];
 
 	return (
