@@ -60,7 +60,6 @@ public class DisplayPageTemplateServiceTest {
 	@Test
 	public void testAddLayoutPageTemplateEntry() throws Exception {
 		_testAddLayoutPageTemplateEntry();
-
 		_testAddLayoutPageTemplateEntryWithInvalidClassNameId();
 	}
 
@@ -141,13 +140,11 @@ public class DisplayPageTemplateServiceTest {
 				_group1.getGroupId(),
 				_portal.getClassNameId(JournalArticle.class.getName()),
 				ddmStructure.getStructureKey());
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group2.getGroupId(),
 				_portal.getClassNameId(JournalArticle.class.getName()),
 				ddmStructure.getStructureKey());
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry3 =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group2.getGroupId(),
@@ -294,12 +291,10 @@ public class DisplayPageTemplateServiceTest {
 			_group1.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
 			ddmStructure.getStructureKey());
-
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group2.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
 			ddmStructure.getStructureKey());
-
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group2.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
@@ -355,12 +350,10 @@ public class DisplayPageTemplateServiceTest {
 			_group1.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
 			ddmStructure.getStructureKey());
-
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group2.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
 			ddmStructure.getStructureKey());
-
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group2.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
@@ -398,7 +391,6 @@ public class DisplayPageTemplateServiceTest {
 
 		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 			_group1.getGroupId(), JournalArticle.class.getName());
-
 		String name = RandomTestUtil.randomString();
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
@@ -406,13 +398,11 @@ public class DisplayPageTemplateServiceTest {
 			_portal.getClassNameId(JournalArticle.class.getName()),
 			ddmStructure.getStructureKey(), false, null, name,
 			WorkflowConstants.STATUS_APPROVED);
-
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group2.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
 			ddmStructure.getStructureKey(), false, null, name,
 			WorkflowConstants.STATUS_APPROVED);
-
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group1.getGroupId(),
 			_portal.getClassNameId(JournalArticle.class.getName()),
