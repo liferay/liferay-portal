@@ -2920,7 +2920,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.scheduler.quartz.jar!org.quartz.jar</file-name>
-				<version>2.1.7.LIFERAY-PATCHED-2</version>
+				<version>2.1.7.LIFERAY-PATCHED-3</version>
 				<project-name>org.quartz</project-name>
 				<licenses>
 					<license>
@@ -3114,30 +3114,6 @@
 					<license>
 						<license-name>Eclipse Public License, Version 2.0</license-name>
 						<license-url>https://github.com/locationtech/jts/blob/master/LICENSE_EPLv2.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!log4j-api.jar</file-name>
-				<version>2.20.0</version>
-				<project-name>Apache Log4j API</project-name>
-				<project-url>https://www.apache.org/</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!log4j-core.jar</file-name>
-				<version>2.20.0</version>
-				<project-name>Apache Log4j Core</project-name>
-				<project-url>https://www.apache.org/</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -3412,7 +3388,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.security.key.provider.aws.jar!aws-java-sdk-secretsmanager.jar</file-name>
-				<version>1.12.778</version>
+				<version>1.12.719</version>
 				<project-name>AWS Java SDK for AWS Secrets Manager</project-name>
 				<project-url>https://aws.amazon.com/sdkforjava</project-url>
 				<licenses>
@@ -3424,7 +3400,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.security.key.provider.aws.jar!aws-java-sdk-sts.jar</file-name>
-				<version>1.12.778</version>
+				<version>1.12.719</version>
 				<project-name>AWS Java SDK for AWS STS</project-name>
 				<project-url>https://aws.amazon.com/sdkforjava</project-url>
 				<licenses>
@@ -3448,7 +3424,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.security.key.provider.aws.jar!jmespath-java.jar</file-name>
-				<version>1.12.778</version>
+				<version>1.12.719</version>
 				<project-name>JMES Path Query library</project-name>
 				<project-url>https://aws.amazon.com/sdkforjava</project-url>
 				<licenses>
@@ -4283,44 +4259,69 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!apache-mime4j-core.jar</file-name>
-				<version>0.8.11</version>
+				<version>0.8.14</version>
 				<project-name>Apache James :: Mime4j :: Core</project-name>
 				<project-url>https://www.apache.org/</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
+						<license-name>Apache-2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!apache-mime4j-dom.jar</file-name>
-				<version>0.8.11</version>
+				<version>0.8.14</version>
 				<project-name>Apache James :: Mime4j :: DOM</project-name>
 				<project-url>https://www.apache.org/</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
+						<license-name>Apache-2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.tika.jar!com.drew.metadata.jar</file-name>
-				<version>2.19.0.LIFERAY-PATCHED-1</version>
-				<project-name>com.drew.metadata</project-name>
+				<file-name>com.liferay.portal.tika.jar!cdm.jar</file-name>
+				<version>4.5.5</version>
+				<project-name>CDM core library</project-name>
+				<project-url>http://www.unidata.ucar.edu/software/netcdf-java/documentation.htm</project-url>
 				<licenses>
 					<license>
-						<license-name>LGPL 2.1</license-name>
-						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+						<license-name>(MIT-style) netCDF C library license</license-name>
+						<license-url>http://www.unidata.ucar.edu/software/netcdf/copyright.html</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.tika.jar!commons-exec.jar</file-name>
-				<version>1.3</version>
-				<project-name>Apache Commons Exec</project-name>
-				<project-url>http://commons.apache.org/proper/commons-exec/</project-url>
+				<file-name>com.liferay.portal.tika.jar!dd-plist.jar</file-name>
+				<version>1.29</version>
+				<project-name>dd-plist</project-name>
+				<project-url>http://www.github.com/3breadt/dd-plist</project-url>
+				<licenses>
+					<license>
+						<license-name>MIT License</license-name>
+						<license-url>http://opensource.org/licenses/mit</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!jackcess-encrypt.jar</file-name>
+				<version>4.0.3</version>
+				<project-name>Jackcess Encrypt</project-name>
+				<project-url>https://openhms.sourceforge.io/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!jackcess.jar</file-name>
+				<version>4.0.10</version>
+				<project-name>Jackcess</project-name>
+				<project-url>https://openhms.sourceforge.io/</project-url>
 				<licenses>
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
@@ -4330,9 +4331,9 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!java-libpst.jar</file-name>
-				<version>0.8.1</version>
+				<version>0.9.3</version>
 				<project-name>java-libpst</project-name>
-				<project-url>https://code.google.com/p/java-libpst/</project-url>
+				<project-url>https://github.com/rjohnsondev/java-libpst</project-url>
 				<licenses>
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
@@ -4341,10 +4342,22 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.portal.tika.jar!jempbox.jar</file-name>
+				<version>1.8.17</version>
+				<project-name>Apache JempBox</project-name>
+				<project-url>http://pdfbox.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.portal.tika.jar!jhighlight.jar</file-name>
-				<version>1.0</version>
+				<version>1.1.1</version>
 				<project-name>JHighlight</project-name>
-				<project-url>https://jhighlight.dev.java.net/</project-url>
+				<project-url>https://github.com/codelibs/jhighlight</project-url>
 				<licenses>
 					<license>
 						<license-name>LGPL, v2.1 or later</license-name>
@@ -4378,37 +4391,36 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!juniversalchardet.jar</file-name>
-				<version>1.0.3</version>
+				<version>2.5.0</version>
 				<project-name>juniversalchardet</project-name>
-				<project-url>http://juniversalchardet.googlecode.com/</project-url>
+				<project-url>https://github.com/albfernandez/juniversalchardet</project-url>
 				<licenses>
 					<license>
-						<license-name>Mozilla Public License 1.1 (MPL 1.1)</license-name>
-						<license-url>http://www.mozilla.org/MPL/MPL-1.1.html</license-url>
+						<license-name>Mozilla Public License Version 1.1</license-name>
+						<license-url>https://www.mozilla.org/en-US/MPL/1.1/</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.tika.jar!netcdf.jar</file-name>
-				<version>4.3.23</version>
-				<project-name>NetCDF-Java Library</project-name>
-				<project-url>http://www.unidata.ucar.edu/software/netcdf-java/documentation.htm</project-url>
+				<file-name>com.liferay.portal.tika.jar!metadata-extractor.jar</file-name>
+				<version>2.20.0</version>
+				<project-name>com.drewnoakes:metadata-extractor</project-name>
+				<project-url>https://drewnoakes.com/code/exif/</project-url>
+				<licenses>
+					<license>
+						<license-name>The Apache Software License, Version 2.0</license-name>
+						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!netcdf4.jar</file-name>
+				<version>4.5.5</version>
+				<project-name>netCDF-4 IOSP JNI connection to C library</project-name>
 				<licenses>
 					<license>
 						<license-name>(MIT-style) netCDF C library license</license-name>
 						<license-url>http://www.unidata.ucar.edu/software/netcdf/copyright.html</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.portal.tika.jar!org.apache.tika.core.jar</file-name>
-				<version>1.28.5.LIFERAY-PATCHED-2</version>
-				<project-name>Apache Tika core</project-name>
-				<project-url>http://tika.apache.org/</project-url>
-				<licenses>
-					<license>
-						<license-name>LGPL 2.1</license-name>
-						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -4424,13 +4436,14 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.tika.jar!org.mp4parser.jar</file-name>
-				<version>1.9.41.2.LIFERAY-PATCHED-2</version>
-				<project-name>org.mp4parser</project-name>
+				<file-name>com.liferay.portal.tika.jar!parso.jar</file-name>
+				<version>2.0.14</version>
+				<project-name>parso</project-name>
+				<project-url>https://github.com/epam/parso</project-url>
 				<licenses>
 					<license>
-						<license-name>LGPL 2.1</license-name>
-						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
+						<license-name>Apache License v2</license-name>
+						<license-url>http://www.apache.org/licenses/LICENSE-2.0.html</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -4447,26 +4460,241 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.tika.jar!tagsoup.jar</file-name>
-				<version>1.2.1</version>
-				<project-name>TagSoup</project-name>
-				<project-url>http://home.ccil.org/~cowan/XML/tagsoup/</project-url>
+				<file-name>com.liferay.portal.tika.jar!tika-core.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika core</project-name>
+				<project-url>https://tika.apache.org/</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License 2.0</license-name>
-						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.portal.tika.jar!tika-parsers.jar</file-name>
-				<version>1.28.5</version>
-				<project-name>Apache Tika parsers</project-name>
-				<project-url>http://tika.apache.org/</project-url>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-apple-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika Apple parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-apple-module/</project-url>
 				<licenses>
 					<license>
-						<license-name>Apache License, Version 2.0</license-name>
+						<license-name>Apache-2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-audiovideo-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika audiovideo parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-audiovideo-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-cad-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika cad parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-cad-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-code-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika code parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-code-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-font-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika font parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-font-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-html-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika html parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-html-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-image-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika image parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-image-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-mail-commons.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika mail commons</project-name>
+				<project-url>https://tika.apache.org/tika-parser-mail-commons/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-mail-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika mail parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-mail-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-microsoft-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika Microsoft parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-microsoft-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-miscoffice-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika miscellaneous office format parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-miscoffice-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-pdf-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika PDF parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-pdf-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-pkg-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika package parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-pkg-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-scientific-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika scientific parser module</project-name>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-text-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika text parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-text-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-xml-module.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika XML parser module</project-name>
+				<project-url>https://tika.apache.org/tika-parser-xml-module/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-xmp-commons.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika XMP commons</project-name>
+				<project-url>https://tika.apache.org/tika-parser-xmp-commons/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!tika-parser-zip-commons.jar</file-name>
+				<version>3.3.1</version>
+				<project-name>Apache Tika ZIP commons</project-name>
+				<project-url>https://tika.apache.org/tika-parser-zip-commons/</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!udunits.jar</file-name>
+				<version>4.5.5</version>
+				<project-name>udunits</project-name>
+				<project-url>http://www.unidata.ucar.edu/software/udunits//</project-url>
+				<licenses>
+					<license>
+						<license-name>(MIT-style) netCDF C library license</license-name>
+						<license-url>http://www.unidata.ucar.edu/software/netcdf/copyright.html</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -4479,6 +4707,18 @@
 					<license>
 						<license-name>The Apache Software License, Version 2.0</license-name>
 						<license-url>http://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.portal.tika.jar!xmpbox.jar</file-name>
+				<version>3.0.7</version>
+				<project-name>Apache XmpBox</project-name>
+				<project-url>https://pdfbox.apache.org</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache-2.0</license-name>
+						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -6628,29 +6868,6 @@
 					<license>
 						<license-name>Apache-2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.shared.dependencies.pdfbox.jar!jai-imageio-core.jar</file-name>
-				<version>1.4.0</version>
-				<project-name>Java Advanced Imaging Image I/O Tools API core (standalone)</project-name>
-				<project-url>https://github.com/jai-imageio/jai-imageio-core</project-url>
-				<licenses>
-					<license>
-						<license-name>LICENSE.txt</license-name>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.shared.dependencies.pdfbox.jar!jai-imageio-jpeg2000.jar</file-name>
-				<version>1.3.0</version>
-				<project-name>JPEG2000 support for Java Advanced Imaging Image I/O Tools API</project-name>
-				<project-url>https://github.com/jai-imageio/jai-imageio-jpeg2000</project-url>
-				<licenses>
-					<license>
-						<license-name>JJ2000</license-name>
-						<license-url>LICENSE-JJ2000.txt</license-url>
 					</license>
 				</licenses>
 			</library>
