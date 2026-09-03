@@ -235,8 +235,8 @@ public class BaseWorkspaceGitRepositoryTest
 	public void testTearDown() throws Exception {
 		_testTearDown(false, false, false);
 		_testTearDown(false, true, true);
-		_testTearDown(true, false, false);
 		_testTearDown(true, false, true);
+		_testTearDown(true, true, false);
 		_testTearDown(true, true, true);
 	}
 
