@@ -8,16 +8,28 @@ package com.liferay.staging.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.exportimport.test.util.ExportImportTestUtil;
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.journal.constants.JournalContentPortletKeys;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.PortletIdCodec;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -84,6 +96,79 @@ public class StagingDataPortletPreferencesTest
 			liveJournalArticle.getExternalReferenceCode(),
 			livePortletPreferences.getValue(
 				"articleExternalReferenceCode", StringPool.BLANK));
+	}
+
+	@Test
+	@TestInfo("LPS-130051")
+	public void testSiteNavigationMenuDisplayStylePortletPreferences()
+		throws Exception {
+
+		Layout stagingContentLayout = LayoutTestUtil.addTypeContentLayout(
+			stagingGroup);
+
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), liveGroup, true, false,
+			ServiceContextTestUtil.getServiceContext(liveGroup.getGroupId()));
+
+		Layout draftLayout = stagingContentLayout.fetchDraftLayout();
+
+		JSONObject jsonObject = ContentLayoutTestUtil.addPortletToLayout(
+			draftLayout, SiteNavigationMenuPortletKeys.SITE_NAVIGATION_MENU);
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				jsonObject.getJSONObject(
+					"fragmentEntryLink"
+				).getLong(
+					"fragmentEntryLinkId"
+				));
+
+		String encodedPortletId = PortletIdCodec.encode(
+			SiteNavigationMenuPortletKeys.SITE_NAVIGATION_MENU,
+			fragmentEntryLink.getEditableValuesJSONObject(
+			).getString(
+				"instanceId"
+			));
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		Group companyGroup = company.getGroup();
+
+		LayoutTestUtil.updateLayoutPortletPreferences(
+			draftLayout, encodedPortletId,
+			HashMapBuilder.put(
+				"displayStyle", "ddmTemplate_list-menu-ftl"
+			).put(
+				"displayStyleGroupExternalReferenceCode",
+				companyGroup.getExternalReferenceCode()
+			).put(
+				"displayStyleGroupId", String.valueOf(companyGroup.getGroupId())
+			).build());
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, stagingContentLayout);
+
+		long backgroundTaskId = StagingUtil.publishLayouts(
+			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			liveGroup.getGroupId(), false,
+			new long[] {stagingContentLayout.getLayoutId()},
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildFullPublishParameterMap());
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
+
+		Layout liveContentLayout =
+			_layoutLocalService.getLayoutByUuidAndGroupId(
+				stagingContentLayout.getUuid(), liveGroup.getGroupId(), false);
+
+		PortletPreferences liveContentLayoutPortletPreferences =
+			PortletPreferencesFactoryUtil.getPortletSetup(
+				liveContentLayout, encodedPortletId, null);
+
+		Assert.assertEquals(
+			"ddmTemplate_list-menu-ftl",
+			liveContentLayoutPortletPreferences.getValue(
+				"displayStyle", StringPool.BLANK));
 	}
 
 	@Test
@@ -237,7 +322,13 @@ public class StagingDataPortletPreferencesTest
 	private CompanyLocalService _companyLocalService;
 
 	@Inject
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
