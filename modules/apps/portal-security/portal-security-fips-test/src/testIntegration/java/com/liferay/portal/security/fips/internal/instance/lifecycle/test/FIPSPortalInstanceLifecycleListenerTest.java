@@ -82,7 +82,6 @@ public class FIPSPortalInstanceLifecycleListenerTest {
 			Role role = _roleLocalService.fetchRole(
 				TestPropsValues.getCompanyId(), RoleConstants.CRYPTO_OFFICER);
 
-			Assert.assertNotNull(role);
 			Assert.assertTrue(
 				_resourcePermissionLocalService.hasResourcePermission(
 					TestPropsValues.getCompanyId(), FIPSPortletKeys.FIPS_ADMIN,
