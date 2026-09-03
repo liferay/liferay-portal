@@ -569,21 +569,18 @@ public class FileEntryContentDashboardItemTest {
 		User user = UserTestUtil.addUser(
 			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
 
-		try {
-			FileEntry fileEntry = _getFileEntry(2, user.getUserId());
+		FileEntry fileEntry = _getFileEntry(2, user.getUserId());
 
-			VersionableContentDashboardItem<FileEntry>
-				versionableContentDashboardItem =
-					(VersionableContentDashboardItem<FileEntry>)
-						_contentDashboardItemFactory.create(
-							fileEntry.getFileEntryId());
+		VersionableContentDashboardItem<FileEntry>
+			versionableContentDashboardItem =
+				(VersionableContentDashboardItem<FileEntry>)
+					_contentDashboardItemFactory.create(
+						fileEntry.getFileEntryId());
 
-			Assert.assertEquals(
-				user.getUserId(), versionableContentDashboardItem.getUserId());
-		}
-		finally {
-			_userLocalService.deleteUser(user);
-		}
+		Assert.assertEquals(
+			user.getUserId(), versionableContentDashboardItem.getUserId());
+
+		_userLocalService.deleteUser(user);
 	}
 
 	@Test
@@ -591,23 +588,20 @@ public class FileEntryContentDashboardItemTest {
 		User user = UserTestUtil.addUser(
 			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
 
-		try {
-			FileEntry fileEntry = _getFileEntryWithPendingFileVersion(
-				user.getUserId());
+		FileEntry fileEntry = _getFileEntryWithPendingFileVersion(
+			user.getUserId());
 
-			VersionableContentDashboardItem<FileEntry>
-				versionableContentDashboardItem =
-					(VersionableContentDashboardItem<FileEntry>)
-						_contentDashboardItemFactory.create(
-							fileEntry.getFileEntryId());
+		VersionableContentDashboardItem<FileEntry>
+			versionableContentDashboardItem =
+				(VersionableContentDashboardItem<FileEntry>)
+					_contentDashboardItemFactory.create(
+						fileEntry.getFileEntryId());
 
-			Assert.assertEquals(
-				TestPropsValues.getUserId(),
-				versionableContentDashboardItem.getUserId());
-		}
-		finally {
-			_userLocalService.deleteUser(user);
-		}
+		Assert.assertEquals(
+			TestPropsValues.getUserId(),
+			versionableContentDashboardItem.getUserId());
+
+		_userLocalService.deleteUser(user);
 	}
 
 	@Test
@@ -627,22 +621,18 @@ public class FileEntryContentDashboardItemTest {
 		User user = UserTestUtil.addUser(
 			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
 
-		try {
-			FileEntry fileEntry = _getFileEntry(2, user.getUserId());
+		FileEntry fileEntry = _getFileEntry(2, user.getUserId());
 
-			VersionableContentDashboardItem<FileEntry>
-				versionableContentDashboardItem =
-					(VersionableContentDashboardItem<FileEntry>)
-						_contentDashboardItemFactory.create(
-							fileEntry.getFileEntryId());
+		VersionableContentDashboardItem<FileEntry>
+			versionableContentDashboardItem =
+				(VersionableContentDashboardItem<FileEntry>)
+					_contentDashboardItemFactory.create(
+						fileEntry.getFileEntryId());
 
-			Assert.assertEquals(
-				user.getFullName(),
-				versionableContentDashboardItem.getUserName());
-		}
-		finally {
-			_userLocalService.deleteUser(user);
-		}
+		Assert.assertEquals(
+			user.getFullName(), versionableContentDashboardItem.getUserName());
+
+		_userLocalService.deleteUser(user);
 	}
 
 	@Test
@@ -650,25 +640,22 @@ public class FileEntryContentDashboardItemTest {
 		User user = UserTestUtil.addUser(
 			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
 
-		try {
-			FileEntry fileEntry = _getFileEntryWithPendingFileVersion(
-				user.getUserId());
+		FileEntry fileEntry = _getFileEntryWithPendingFileVersion(
+			user.getUserId());
 
-			VersionableContentDashboardItem<FileEntry>
-				versionableContentDashboardItem =
-					(VersionableContentDashboardItem<FileEntry>)
-						_contentDashboardItemFactory.create(
-							fileEntry.getFileEntryId());
+		VersionableContentDashboardItem<FileEntry>
+			versionableContentDashboardItem =
+				(VersionableContentDashboardItem<FileEntry>)
+					_contentDashboardItemFactory.create(
+						fileEntry.getFileEntryId());
 
-			User originalUser = TestPropsValues.getUser();
+		User originalUser = TestPropsValues.getUser();
 
-			Assert.assertEquals(
-				originalUser.getFullName(),
-				versionableContentDashboardItem.getUserName());
-		}
-		finally {
-			_userLocalService.deleteUser(user);
-		}
+		Assert.assertEquals(
+			originalUser.getFullName(),
+			versionableContentDashboardItem.getUserName());
+
+		_userLocalService.deleteUser(user);
 	}
 
 	@Test
