@@ -209,12 +209,19 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 			},
 		} = this.props;
 
+		// A new segment has no external reference code, so the form seeds the
+		// field with a generated one. Comparing against the raw (empty) segment
+		// value would report a change the user never made, marking an untouched
+		// creation form as dirty. Compare against the same value the form was
+		// seeded with instead.
+
 		return (
 			newIncludeAnonymousUsers !== includeAnonymousUsers ||
 			name !== newName ||
 			criteriaString !== newCriteriaString ||
 			sequential !== newSequential ||
-			externalReferenceCode !== newExternalReferenceCode
+			(externalReferenceCode || this._defaultExternalReferenceCode) !==
+				newExternalReferenceCode
 		);
 	}
 
