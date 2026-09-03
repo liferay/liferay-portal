@@ -1261,8 +1261,8 @@ test(
 
 		const menuItems = {
 			'Applications Menu': [
-				'Content',
 				'Developer and Integration',
+				'In Maintenance',
 				'Search',
 				'Workflow',
 			],

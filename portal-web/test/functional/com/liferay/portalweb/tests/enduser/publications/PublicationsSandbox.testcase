@@ -75,7 +75,7 @@ definition {
 		Publications.createNewPublication(publicationName = "Publication Name");
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Publications",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Publications");
 

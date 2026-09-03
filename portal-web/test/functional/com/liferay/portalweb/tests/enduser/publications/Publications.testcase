@@ -118,7 +118,7 @@ definition {
 			publicationName = "Publication Name 2");
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Publications",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Publications");
 

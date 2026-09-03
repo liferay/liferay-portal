@@ -43,7 +43,7 @@ definition {
 			remotePort = 9080);
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Publications",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Publications");
 
@@ -59,7 +59,7 @@ definition {
 			userEmailAddress = "test@liferay.com");
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Publications",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Publications");
 

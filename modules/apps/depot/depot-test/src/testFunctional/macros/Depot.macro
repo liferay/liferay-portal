@@ -635,7 +635,7 @@ definition {
 	@summary = "Default summary"
 	macro getGroupID(depotName = null) {
 		ApplicationsMenu.gotoPortlet(
-			category = "Content",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Asset Libraries");
 
@@ -681,7 +681,7 @@ definition {
 		}
 
 		ApplicationsMenu.gotoPortlet(
-			category = "Content",
+			category = "In Maintenance",
 			panel = "Applications",
 			portlet = "Asset Libraries");
 
