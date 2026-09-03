@@ -100,9 +100,8 @@ public class PIMFeatureFlagListenerTest {
 	public void testOnValueAddsMissingProductsObjectEntryFolder()
 		throws Exception {
 
-		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
-
 		long companyId = TestPropsValues.getCompanyId();
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
 		try (SafeCloseable safeCloseable =
 				ObjectEntryFolderThreadLocal.
