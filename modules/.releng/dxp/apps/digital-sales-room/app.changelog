@@ -1,0 +1,19 @@
+#
+# Liferay App Version 26.3.0
+#
+
+app.artifacts-26.3.0=\
+	com.liferay.digital.sales.room.site.initializer-1.0.10.jar,\
+	com.liferay.headless.dsr.api-1.2.0.jar,\
+	com.liferay.headless.dsr.client-1.2.0.jar,\
+	com.liferay.headless.dsr.impl-1.0.6.jar,\
+	com.liferay.site.dsr.analytics.rest.api-1.0.2.jar,\
+	com.liferay.site.dsr.analytics.rest.client-1.0.2.jar,\
+	com.liferay.site.dsr.analytics.rest.impl-1.0.2.jar,\
+	com.liferay.site.dsr.site.initializer-1.0.9.jar,\
+	com.liferay.site.dsr.site.initializer.api-3.0.0.jar,\
+	com.liferay.site.initializer.dsr-1.0.7.jar
+
+app.change.log-26.3.0=LPD-101175 LPD-28402 LPD-69509 LPD-69528 LPD-69529 LPD-69570 LPD-69985 LPD-73189 LPD-73190 LPD-73577 LPD-75843 LPD-76076 LPD-76076- LPD-78210 LPD-78211 LPD-78212 LPD-78213 LPD-78214 LPD-79484 LPD-79485 LPD-79517 LPD-79585 LPD-80946 LPD-81592 LPD-82616 LPD-83356 LPD-83650 LPD-83696 LPD-84033 LPD-84034 LPD-84502 LPD-84663 LPD-85296 LPD-85445 LPD-86378 LPD-86387 LPD-86504 LPD-87607 LPD-88816 LPD-89367 LPD-89587 LPD-90002 LPD-90076 LPD-90636 LPD-91292 LPD-91368 LPD-91369 LPD-91476 LPD-91569 LPD-91570 LPD-91572 LPD-91573 LPD-92178 LPD-92365 LPD-92367 LPD-92369 LPD-92370 LPD-92373 LPD-92633 LPD-93246 LPD-93859 LPD-93992 LPD-94454 LPD-94647 LPD-94783 LPD-95001 LPD-97613 LPD-97849 LPD-97854 LPD-98710 
+
+app.git.id-26.3.0=929e22f6df1d1023fc1dfae6fac3e561d3522838
