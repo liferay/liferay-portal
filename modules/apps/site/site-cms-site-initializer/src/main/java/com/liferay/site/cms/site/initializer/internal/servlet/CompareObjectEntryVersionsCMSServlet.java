@@ -6,23 +6,18 @@
 package com.liferay.site.cms.site.initializer.internal.servlet;
 
 import com.liferay.diff.DiffHtml;
-import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.util.DLURLHelper;
-import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
-import com.liferay.object.constants.ObjectFieldConstants;
-import com.liferay.object.model.ObjectEntryVersion;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
-import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -30,14 +25,10 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.TimeZoneUtil;
+import com.liferay.site.cms.site.initializer.internal.comparison.ObjectEntryVersionFieldValueResolver;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,21 +37,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringReader;
 
-import java.text.DateFormat;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-
-import java.time.Instant;
-import java.time.format.DateTimeParseException;
-
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -76,6 +58,15 @@ import org.osgi.service.component.annotations.Reference;
 	service = Servlet.class
 )
 public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
+
+	@Activate
+	protected void activate() {
+		_objectEntryVersionFieldValueResolver =
+			new ObjectEntryVersionFieldValueResolver(
+				_dlAppLocalService, _dlFileEntryLocalService, _dlURLHelper,
+				_language, _listTypeEntryLocalService,
+				_objectEntryVersionLocalService);
+	}
 
 	@Override
 	protected void doPost(
@@ -103,8 +94,8 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		try {
 			long objectEntryId = jsonObject.getLong("objectEntryId");
 
-			com.liferay.object.model.ObjectEntry objectEntry =
-				_objectEntryService.getObjectEntry(objectEntryId);
+			ObjectEntry objectEntry = _objectEntryService.getObjectEntry(
+				objectEntryId);
 
 			Map<String, ObjectField> objectFields = new HashMap<>();
 
@@ -117,10 +108,14 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 
 			String languageId = jsonObject.getString("languageId");
 
-			Map<String, Object> sourceFieldValues = _getFieldValues(
-				languageId, objectEntryId, jsonObject.getInt("sourceVersion"));
-			Map<String, Object> targetFieldValues = _getFieldValues(
-				languageId, objectEntryId, jsonObject.getInt("targetVersion"));
+			Map<String, Object> sourceFieldValues =
+				_objectEntryVersionFieldValueResolver.getFieldValues(
+					languageId, objectEntryId,
+					jsonObject.getInt("sourceVersion"));
+			Map<String, Object> targetFieldValues =
+				_objectEntryVersionFieldValueResolver.getFieldValues(
+					languageId, objectEntryId,
+					jsonObject.getInt("targetVersion"));
 
 			JSONObject sourceDiffsJSONObject = _jsonFactory.createJSONObject();
 			JSONObject targetDiffsJSONObject = _jsonFactory.createJSONObject();
@@ -132,16 +127,22 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 			for (String fieldName : fieldNames) {
 				ObjectField objectField = objectFields.get(fieldName);
 
-				String source = _toDisplayValue(
-					sourceFieldValues.get(fieldName), objectField, languageId);
-				String target = _toDisplayValue(
-					targetFieldValues.get(fieldName), objectField, languageId);
+				String source =
+					_objectEntryVersionFieldValueResolver.toDisplayValue(
+						languageId, objectField,
+						sourceFieldValues.get(fieldName));
+				String target =
+					_objectEntryVersionFieldValueResolver.toDisplayValue(
+						languageId, objectField,
+						targetFieldValues.get(fieldName));
 
 				if (source.equals(target)) {
 					continue;
 				}
 
-				if (_isAtomicBusinessType(objectField)) {
+				if (_objectEntryVersionFieldValueResolver.isAtomicBusinessType(
+						objectField)) {
+
 					sourceDiffsJSONObject.put(
 						fieldName, _toAtomicDiffHtml(target, source));
 					targetDiffsJSONObject.put(
@@ -183,117 +184,6 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		}
 	}
 
-	private Format _getDateFormat(String languageId) {
-		Locale locale = LocaleUtil.fromLanguageId(languageId);
-
-		return FastDateFormatFactoryUtil.getSimpleDateFormat(
-			_getShortDatePattern(locale), locale,
-			TimeZoneUtil.getTimeZone(StringPool.UTC));
-	}
-
-	private Format _getDateTimeFormat(String languageId) {
-		Locale locale = LocaleUtil.fromLanguageId(languageId);
-
-		SimpleDateFormat simpleDateFormat =
-			(SimpleDateFormat)DateFormat.getTimeInstance(
-				DateFormat.SHORT, locale);
-
-		String timePattern = simpleDateFormat.toPattern();
-
-		timePattern = timePattern.replaceAll("h+", "hh");
-		timePattern = timePattern.replaceAll("H+", "HH");
-
-		return FastDateFormatFactoryUtil.getSimpleDateFormat(
-			_getShortDatePattern(locale) + ", " + timePattern, locale,
-			TimeZoneUtil.getTimeZone(StringPool.UTC));
-	}
-
-	private Map<String, Object> _getFieldValues(
-			String languageId, long objectEntryId, int version)
-		throws Exception {
-
-		Map<String, Object> fieldValues = new HashMap<>();
-
-		ObjectEntryVersion objectEntryVersion =
-			_objectEntryVersionLocalService.getObjectEntryVersion(
-				objectEntryId, version);
-
-		ObjectEntry objectEntry = ObjectEntry.unsafeToDTO(
-			objectEntryVersion.getContent());
-
-		Map<String, Object> properties = objectEntry.getProperties();
-
-		Object nestedProperties = properties.get("properties");
-
-		if (nestedProperties instanceof Map) {
-			properties = (Map<String, Object>)nestedProperties;
-		}
-
-		for (Map.Entry<String, Object> entry : properties.entrySet()) {
-			String name = entry.getKey();
-
-			if (name.endsWith("_i18n") || name.endsWith("RawText")) {
-				continue;
-			}
-
-			Object value = entry.getValue();
-
-			Object localizedValues = properties.get(name + "_i18n");
-
-			if (localizedValues instanceof Map) {
-				Map<String, Object> localizedValuesMap =
-					(Map<String, Object>)localizedValues;
-
-				value = localizedValuesMap.get(languageId);
-			}
-
-			fieldValues.put(name, value);
-		}
-
-		Map<String, String> friendlyUrlPathI18n =
-			objectEntry.getFriendlyUrlPath_i18n();
-
-		if ((friendlyUrlPathI18n != null) &&
-			friendlyUrlPathI18n.containsKey(languageId)) {
-
-			fieldValues.put(
-				"objectEntryFriendlyURL", friendlyUrlPathI18n.get(languageId));
-		}
-		else {
-			fieldValues.put(
-				"objectEntryFriendlyURL", objectEntry.getFriendlyUrlPath());
-		}
-
-		return fieldValues;
-	}
-
-	private String _getShortDatePattern(Locale locale) {
-		SimpleDateFormat simpleDateFormat =
-			(SimpleDateFormat)DateFormat.getDateInstance(
-				DateFormat.SHORT, locale);
-
-		String pattern = simpleDateFormat.toPattern();
-
-		pattern = pattern.replaceAll("M+", "MM");
-		pattern = pattern.replaceAll("d+", "dd");
-		pattern = pattern.replaceAll("y+", "yyyy");
-
-		return pattern;
-	}
-
-	private boolean _isAtomicBusinessType(ObjectField objectField) {
-		String businessType =
-			(objectField == null) ? null : objectField.getBusinessType();
-
-		if (ObjectFieldConstants.BUSINESS_TYPE_DATE.equals(businessType) ||
-			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME.equals(businessType)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private String _toAtomicDiffHtml(String removed, String added) {
 		StringBundler sb = new StringBundler(6);
 
@@ -310,175 +200,6 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 		}
 
 		return sb.toString();
-	}
-
-	private String _toAttachmentDisplayValue(Object value) {
-		Object idObject = value;
-
-		if (value instanceof Map) {
-			Map<?, ?> valueMap = (Map<?, ?>)value;
-
-			idObject = valueMap.get("id");
-		}
-
-		long fileEntryId = GetterUtil.getLong(idObject);
-
-		if (fileEntryId == 0) {
-			return String.valueOf(value);
-		}
-
-		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchDLFileEntry(
-			fileEntryId);
-
-		if (dlFileEntry == null) {
-			return String.valueOf(value);
-		}
-
-		String fileName = HtmlUtil.escape(dlFileEntry.getFileName());
-
-		try {
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
-
-			return StringBundler.concat(
-				"<img alt=\"", fileName,
-				"\" class=\"border cms-compare-versions-attachment d-block ",
-				"mb-2 mw-100 rounded\" src=\"",
-				_dlURLHelper.getPreviewURL(
-					fileEntry, fileEntry.getFileVersion(), null,
-					StringPool.BLANK),
-				"\" /> ", fileName);
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
-
-			return fileName;
-		}
-	}
-
-	private String _toDateDisplayValue(Format format, Object value) {
-		String valueString = String.valueOf(value);
-
-		try {
-			return format.format(Date.from(Instant.parse(valueString)));
-		}
-		catch (DateTimeParseException dateTimeParseException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(dateTimeParseException);
-			}
-
-			return valueString;
-		}
-	}
-
-	private String _toDisplayValue(
-		Object value, ObjectField objectField, String languageId) {
-
-		String businessType =
-			(objectField == null) ? null : objectField.getBusinessType();
-
-		if (ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN.equals(businessType)) {
-			Locale locale = LocaleUtil.fromLanguageId(languageId);
-
-			if (GetterUtil.getBoolean(value)) {
-				return _language.get(locale, "yes");
-			}
-
-			return _language.get(locale, "no");
-		}
-
-		if (value == null) {
-			return StringPool.BLANK;
-		}
-
-		if (ObjectFieldConstants.BUSINESS_TYPE_DATE.equals(businessType)) {
-			return _toDateDisplayValue(_getDateFormat(languageId), value);
-		}
-
-		if (ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME.equals(businessType)) {
-			return _toDateDisplayValue(_getDateTimeFormat(languageId), value);
-		}
-
-		if (ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST.equals(
-				businessType)) {
-
-			return _toMultiselectPicklistLabels(objectField, languageId, value);
-		}
-
-		if (ObjectFieldConstants.BUSINESS_TYPE_PICKLIST.equals(businessType)) {
-			return _toPicklistLabel(objectField, languageId, value);
-		}
-
-		if (ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT.equals(
-				businessType)) {
-
-			return _toAttachmentDisplayValue(value);
-		}
-
-		return String.valueOf(value);
-	}
-
-	private String _toMultiselectPicklistLabels(
-		ObjectField objectField, String languageId, Object value) {
-
-		Object[] values = null;
-
-		if (value instanceof Object[]) {
-			values = (Object[])value;
-		}
-		else if (value instanceof List) {
-			List<?> list = (List<?>)value;
-
-			values = list.toArray();
-		}
-		else {
-			return _toPicklistLabel(objectField, languageId, value);
-		}
-
-		StringBundler sb = new StringBundler((values.length * 2) - 1);
-
-		for (int i = 0; i < values.length; i++) {
-			if (i > 0) {
-				sb.append(", ");
-			}
-
-			sb.append(_toPicklistLabel(objectField, languageId, values[i]));
-		}
-
-		return sb.toString();
-	}
-
-	private String _toPicklistLabel(
-		ObjectField objectField, String languageId, Object value) {
-
-		Object keyObject = value;
-
-		if (value instanceof Map) {
-			Map<?, ?> valueMap = (Map<?, ?>)value;
-
-			keyObject = valueMap.get("key");
-		}
-
-		if (keyObject == null) {
-			return StringPool.BLANK;
-		}
-
-		String key = String.valueOf(keyObject);
-
-		if (key.isEmpty()) {
-			return StringPool.BLANK;
-		}
-
-		ListTypeEntry listTypeEntry =
-			_listTypeEntryLocalService.fetchListTypeEntry(
-				objectField.getListTypeDefinitionId(), key);
-
-		if (listTypeEntry == null) {
-			return key;
-		}
-
-		return listTypeEntry.getName(languageId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -507,6 +228,9 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	private ObjectEntryVersionFieldValueResolver
+		_objectEntryVersionFieldValueResolver;
 
 	@Reference
 	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
