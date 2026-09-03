@@ -145,6 +145,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.mass.delete.MassDeleteCacheThreadLocal;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -706,35 +707,37 @@ public class ObjectDefinitionLocalServiceImpl
 		if (objectDefinition.isUnmodifiableSystemObject()) {
 			_dropTable(objectDefinition.getExtensionDBTableName());
 		}
-		else if (objectDefinition.isApproved()) {
-			_assetListEntryLocalService.updateAssetListEntryTypeSettings(
-				objectDefinition.getCompanyId(),
-				_classNameLocalService.getClassNameId(
-					objectDefinition.getClassName()));
+		else {
+			boolean approved = objectDefinition.isApproved();
 
-			_portletLocalService.removePortletModelResources(
-				objectDefinition.getCompanyId(),
-				objectDefinition.getPortletId());
+			if (approved) {
+				_assetListEntryLocalService.updateAssetListEntryTypeSettings(
+					objectDefinition.getCompanyId(),
+					_classNameLocalService.getClassNameId(
+						objectDefinition.getClassName()));
 
-			try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
-					objectDefinition.getCompanyId())) {
+				_portletLocalService.removePortletModelResources(
+					objectDefinition.getCompanyId(),
+					objectDefinition.getPortletId());
 
-				ObjectDefinitionResourcePermissionUtil.removeResourceActions(
-					_objectActionLocalService, objectDefinition,
-					_objectFieldLocalService, _resourceActions);
+				try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
+						objectDefinition.getCompanyId())) {
+
+					ObjectDefinitionResourcePermissionUtil.
+						removeResourceActions(
+							_objectActionLocalService, objectDefinition,
+							_objectFieldLocalService, _resourceActions);
+				}
+				catch (Exception exception) {
+					throw new PortalException(exception);
+				}
+
+				_dropTable(objectDefinition.getDBTableName());
+				_dropTable(objectDefinition.getExtensionDBTableName());
+				_dropTable(objectDefinition.getLocalizationDBTableName());
 			}
-			catch (Exception exception) {
-				throw new PortalException(exception);
-			}
 
-			_dropTable(objectDefinition.getDBTableName());
-			_dropTable(objectDefinition.getExtensionDBTableName());
-			_dropTable(objectDefinition.getLocalizationDBTableName());
-
-			undeployObjectDefinition(objectDefinition);
-
-			_registerTransactionCallbackForCluster(
-				_undeployObjectDefinitionMethodKey, objectDefinition);
+			_undeployObjectDefinition(objectDefinition, approved);
 		}
 
 		objectDefinitionPersistence.remove(objectDefinition);
@@ -2709,6 +2712,24 @@ public class ObjectDefinitionLocalServiceImpl
 		objectDefinitionDeployer.undeploy(objectDefinition);
 
 		_unregister(objectDefinition, serviceRegistrationsMap);
+	}
+
+	private void _undeployObjectDefinition(
+		ObjectDefinition objectDefinition, boolean approved) {
+
+		if (!approved) {
+			Portlet portlet = _portletLocalService.getPortletById(
+				objectDefinition.getPortletId());
+
+			if (portlet == null) {
+				return;
+			}
+		}
+
+		undeployObjectDefinition(objectDefinition);
+
+		_registerTransactionCallbackForCluster(
+			_undeployObjectDefinitionMethodKey, objectDefinition);
 	}
 
 	private void _unregister(
