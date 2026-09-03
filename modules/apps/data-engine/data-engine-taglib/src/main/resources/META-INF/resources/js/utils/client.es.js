@@ -91,13 +91,6 @@ export function confirmDelete(endpoint) {
 		});
 }
 
-export function request(endpoint, method = 'GET') {
-	return fetch(getURL(endpoint), {
-		headers: HEADERS,
-		method,
-	});
-}
-
 export function getItem(endpoint) {
 	return fetch(getURL(endpoint), {
 		headers: HEADERS,
@@ -111,6 +104,13 @@ export function getItems(baseURL, keywords = '', {signal} = {}) {
 		method: 'GET',
 		signal,
 	}).then(({items = []}) => items);
+}
+
+export function request(endpoint, method = 'GET') {
+	return fetch(getURL(endpoint), {
+		headers: HEADERS,
+		method,
+	});
 }
 
 export function updateItem(endpoint, item, params) {
