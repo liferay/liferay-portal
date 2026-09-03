@@ -95,7 +95,6 @@ public class ObjectEntryVersionFieldValueResolverTest {
 			_objectEntryVersionFieldValueResolver.isDateBusinessType(
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)));
-
 		Assert.assertFalse(
 			_objectEntryVersionFieldValueResolver.isDateBusinessType(
 				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_TEXT)));
@@ -142,18 +141,17 @@ public class ObjectEntryVersionFieldValueResolverTest {
 			ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN);
 
 		Assert.assertEquals(
-			"Yes",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, true));
-		Assert.assertEquals(
 			"No",
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
 				_LANGUAGE_ID, objectField, null, false));
-
 		Assert.assertEquals(
 			"No",
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
 				_LANGUAGE_ID, objectField, null, null));
+		Assert.assertEquals(
+			"Yes",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, true));
 	}
 
 	@Test
@@ -164,7 +162,6 @@ public class ObjectEntryVersionFieldValueResolverTest {
 				_LANGUAGE_ID,
 				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_DATE), null,
 				_DATE_VALUE));
-
 		Assert.assertEquals(
 			"15.09.2026",
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
@@ -194,13 +191,15 @@ public class ObjectEntryVersionFieldValueResolverTest {
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
 				_LANGUAGE_ID, convertToUTCObjectField, user,
 				"2026-09-15T12:00:00.000Z");
+
+		Assert.assertTrue(
+			convertToUTCDisplayValue.startsWith("09/15/2026, 08:00"));
+
 		String useInputAsEnteredDisplayValue =
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
 				_LANGUAGE_ID, useInputAsEnteredObjectField, user,
 				"2026-09-15T12:00:00.000");
 
-		Assert.assertTrue(
-			convertToUTCDisplayValue.startsWith("09/15/2026, 08:00"));
 		Assert.assertTrue(
 			useInputAsEnteredDisplayValue.startsWith("09/15/2026, 12:00"));
 	}
@@ -219,11 +218,17 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		);
 
 		String firstKey = RandomTestUtil.randomString();
-		String secondKey = RandomTestUtil.randomString();
 
 		_setUpListTypeEntry(listTypeDefinitionId, firstKey, "First");
+
+		String secondKey = RandomTestUtil.randomString();
+
 		_setUpListTypeEntry(listTypeDefinitionId, secondKey, "Second");
 
+		Assert.assertEquals(
+			"First",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, firstKey));
 		Assert.assertEquals(
 			"First, Second",
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
@@ -234,12 +239,6 @@ public class ObjectEntryVersionFieldValueResolverTest {
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
 				_LANGUAGE_ID, objectField, null,
 				Arrays.asList(firstKey, secondKey)));
-
-		Assert.assertEquals(
-			"First",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, firstKey));
-
 		Assert.assertEquals(
 			StringPool.BLANK,
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
@@ -250,21 +249,13 @@ public class ObjectEntryVersionFieldValueResolverTest {
 	public void testToDisplayValueWithNullValue() {
 		_setUpBooleanLabels();
 
-		for (String businessType :
-				new String[] {
-					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
-					ObjectFieldConstants.BUSINESS_TYPE_DATE,
-					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
-					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST,
-					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST,
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT
-				}) {
-
-			Assert.assertEquals(
-				businessType, StringPool.BLANK,
-				_objectEntryVersionFieldValueResolver.toDisplayValue(
-					_LANGUAGE_ID, _mockObjectField(businessType), null, null));
-		}
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_DATE);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME);
+		_assertNullDisplayValue(
+			ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_PICKLIST);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_TEXT);
 
 		Assert.assertEquals(
 			StringPool.BLANK,
@@ -397,6 +388,13 @@ public class ObjectEntryVersionFieldValueResolverTest {
 				_LANGUAGE_ID,
 				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_TEXT), null,
 				"<img src=x onerror=alert(1)>"));
+	}
+
+	private void _assertNullDisplayValue(String businessType) {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, _mockObjectField(businessType), null, null));
 	}
 
 	private ObjectField _mockObjectField(String businessType) {

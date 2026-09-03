@@ -175,9 +175,7 @@ public class CompareObjectEntryVersionsCMSServletTest
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(mockHttpServletRequest));
 		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
-
 		mockHttpServletRequest.setContent(content);
-
 		mockHttpServletRequest.setContextPath("/o");
 		mockHttpServletRequest.setMethod(HttpMethods.POST);
 		mockHttpServletRequest.setServletPath("/cms/compare-versions");
@@ -210,7 +208,7 @@ public class CompareObjectEntryVersionsCMSServletTest
 		return mockHttpServletResponse;
 	}
 
-	private MockHttpServletResponse _serviceCompareVersions(
+	private MockHttpServletResponse _service(
 			long objectEntryId, int sourceVersion, int targetVersion, User user)
 		throws Exception {
 
@@ -241,50 +239,45 @@ public class CompareObjectEntryVersionsCMSServletTest
 				0, ObjectDefinitionConstants.SCOPE_COMPANY,
 				TestPropsValues.getUserId());
 
-		try {
-			ServiceContext serviceContext =
-				ServiceContextTestUtil.getServiceContext();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
 
-			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-				0, TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId(), 0, "en_US",
-				HashMapBuilder.<String, Serializable>put(
-					"alpha", Date.from(Instant.parse("2026-01-01T00:00:00Z"))
-				).build(),
-				serviceContext);
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(), 0, "en_US",
+			HashMapBuilder.<String, Serializable>put(
+				"alpha", Date.from(Instant.parse("2026-01-01T00:00:00Z"))
+			).build(),
+			serviceContext);
 
-			objectEntry = _objectEntryLocalService.updateObjectEntry(
-				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(), 0,
-				HashMapBuilder.<String, Serializable>put(
-					"alpha", Date.from(Instant.parse("2026-02-02T00:00:00Z"))
-				).build(),
-				serviceContext);
+		objectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(), 0,
+			HashMapBuilder.<String, Serializable>put(
+				"alpha", Date.from(Instant.parse("2026-02-02T00:00:00Z"))
+			).build(),
+			serviceContext);
 
-			Assert.assertEquals(2, objectEntry.getVersion());
+		Assert.assertEquals(2, objectEntry.getVersion());
 
-			JSONObject diffsJSONObject = _toDiffsJSONObject(
-				_serviceCompareVersions(
-					objectEntry.getObjectEntryId(), 1, 2,
-					TestPropsValues.getUser()));
+		JSONObject diffsJSONObject = _toDiffsJSONObject(
+			_service(
+				objectEntry.getObjectEntryId(), 1, 2,
+				TestPropsValues.getUser()));
 
-			JSONObject sourceJSONObject = diffsJSONObject.getJSONObject(
-				"source");
-			JSONObject targetJSONObject = diffsJSONObject.getJSONObject(
-				"target");
+		JSONObject sourceJSONObject = diffsJSONObject.getJSONObject("source");
+		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
 
-			Assert.assertEquals(
-				"<span class=\"diff-html-removed\">02/02/2026</span>" +
-					"<span class=\"diff-html-added\">01/01/2026</span>",
-				sourceJSONObject.getString("alpha"));
-			Assert.assertEquals(
-				"<span class=\"diff-html-removed\">01/01/2026</span>" +
-					"<span class=\"diff-html-added\">02/02/2026</span>",
-				targetJSONObject.getString("alpha"));
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition.getObjectDefinitionId());
-		}
+		Assert.assertEquals(
+			"<span class=\"diff-html-removed\">02/02/2026</span><span " +
+				"class=\"diff-html-added\">01/01/2026</span>",
+			sourceJSONObject.getString("alpha"));
+		Assert.assertEquals(
+			"<span class=\"diff-html-removed\">01/01/2026</span><span " +
+				"class=\"diff-html-added\">02/02/2026</span>",
+			targetJSONObject.getString("alpha"));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
 	}
 
 	private void _testCompareObjectEntryVersionsWithChangedRichTextField()
@@ -304,7 +297,7 @@ public class CompareObjectEntryVersionsCMSServletTest
 		Assert.assertEquals(2, objectEntry.getVersion());
 
 		JSONObject diffsJSONObject = _toDiffsJSONObject(
-			_serviceCompareVersions(
+			_service(
 				objectEntry.getObjectEntryId(), 1, 2,
 				TestPropsValues.getUser()));
 
@@ -344,10 +337,8 @@ public class CompareObjectEntryVersionsCMSServletTest
 
 		Assert.assertEquals(2, objectEntry.getVersion());
 
-		MockHttpServletResponse mockHttpServletResponse =
-			_serviceCompareVersions(
-				objectEntry.getObjectEntryId(), 1, 2,
-				TestPropsValues.getUser());
+		MockHttpServletResponse mockHttpServletResponse = _service(
+			objectEntry.getObjectEntryId(), 1, 2, TestPropsValues.getUser());
 
 		Assert.assertEquals(
 			ContentTypes.APPLICATION_JSON,
@@ -379,10 +370,8 @@ public class CompareObjectEntryVersionsCMSServletTest
 		ObjectEntry objectEntry = _addObjectEntry(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
-		MockHttpServletResponse mockHttpServletResponse =
-			_serviceCompareVersions(
-				objectEntry.getObjectEntryId(), 1, 1,
-				TestPropsValues.getUser());
+		MockHttpServletResponse mockHttpServletResponse = _service(
+			objectEntry.getObjectEntryId(), 1, 1, TestPropsValues.getUser());
 
 		Assert.assertEquals(
 			ContentTypes.APPLICATION_JSON,
@@ -435,57 +424,51 @@ public class CompareObjectEntryVersionsCMSServletTest
 			PermissionThreadLocal.getPermissionChecker();
 		String name = PrincipalThreadLocal.getName();
 
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(user));
-			PrincipalThreadLocal.setName(user.getUserId());
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+		PrincipalThreadLocal.setName(user.getUserId());
 
-			ObjectEntry viewableObjectEntry =
-				_objectEntryService.getObjectEntry(
-					objectEntry.getObjectEntryId());
+		ObjectEntry viewableObjectEntry = _objectEntryService.getObjectEntry(
+			objectEntry.getObjectEntryId());
 
-			Assert.assertEquals(
-				objectEntry.getObjectEntryId(),
-				viewableObjectEntry.getObjectEntryId());
+		Assert.assertEquals(
+			objectEntry.getObjectEntryId(),
+			viewableObjectEntry.getObjectEntryId());
 
-			MockHttpServletResponse mockHttpServletResponse =
-				_serviceCompareVersions(
-					objectEntry.getObjectEntryId(), 1, 2, user);
+		MockHttpServletResponse mockHttpServletResponse = _service(
+			objectEntry.getObjectEntryId(), 1, 2, user);
 
-			Assert.assertEquals(
-				HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-				mockHttpServletResponse.getStatus());
-			Assert.assertEquals(
-				StringPool.BLANK, mockHttpServletResponse.getContentAsString());
+		Assert.assertEquals(
+			HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+			mockHttpServletResponse.getStatus());
+		Assert.assertEquals(
+			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
 
-			_addModelResourcePermissions(
-				new String[] {ActionKeys.UPDATE, ActionKeys.VIEW},
-				objectEntry.getObjectEntryId(), user);
+		_addModelResourcePermissions(
+			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW},
+			objectEntry.getObjectEntryId(), user);
 
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(user));
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
 
-			mockHttpServletResponse = _serviceCompareVersions(
-				objectEntry.getObjectEntryId(), 1, 2, user);
+		mockHttpServletResponse = _service(
+			objectEntry.getObjectEntryId(), 1, 2, user);
 
-			Assert.assertEquals(
-				HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 
-			JSONObject diffsJSONObject = _toDiffsJSONObject(
-				mockHttpServletResponse);
+		JSONObject diffsJSONObject = _toDiffsJSONObject(
+			mockHttpServletResponse);
 
-			JSONObject targetJSONObject = diffsJSONObject.getJSONObject(
-				"target");
+		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
 
-			Assert.assertTrue(
-				targetJSONObject.toString(), targetJSONObject.has("title"));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-			PrincipalThreadLocal.setName(name);
+		Assert.assertTrue(
+			targetJSONObject.toString(), targetJSONObject.has("title"));
 
-			_userLocalService.deleteUser(user);
-		}
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		PrincipalThreadLocal.setName(name);
+
+		_userLocalService.deleteUser(user);
 	}
 
 	private JSONObject _toDiffsJSONObject(
