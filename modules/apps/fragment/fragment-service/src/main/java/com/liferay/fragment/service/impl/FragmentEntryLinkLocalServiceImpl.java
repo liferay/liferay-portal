@@ -383,6 +383,75 @@ public class FragmentEntryLinkLocalServiceImpl
 			));
 	}
 
+	@Override
+	public List<FragmentEntryLink>
+			getAllLayoutFragmentEntryLinksByFragmentEntry(
+				FragmentEntry fragmentEntry, int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException {
+
+		return fragmentEntryLinkPersistence.dslQuery(
+			_getFragmentEntryLinksByFragmentEntryGroupByStep(
+				DSLQueryFactoryUtil.select(FragmentEntryLinkTable.INSTANCE),
+				true,
+				_getAllLayoutFragmentEntryLinksByFragmentEntryPredicate(
+					fragmentEntry)
+			).orderBy(
+				_getOrderByStepLimitStepFunction(orderByComparator)
+			).limit(
+				start, end
+			));
+	}
+
+	@Override
+	public int getAllLayoutFragmentEntryLinksCountByFragmentEntry(
+			FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		return fragmentEntryLinkPersistence.dslQueryCount(
+			_getFragmentEntryLinksByFragmentEntryGroupByStep(
+				DSLQueryFactoryUtil.countDistinct(
+					FragmentEntryLinkTable.INSTANCE.plid),
+				false,
+				_getAllLayoutFragmentEntryLinksByFragmentEntryPredicate(
+					fragmentEntry)));
+	}
+
+	@Override
+	public List<FragmentEntryLink>
+			getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntry(
+				FragmentEntry fragmentEntry, int layoutPageTemplateType,
+				int start, int end,
+				OrderByComparator<FragmentEntryLink> orderByComparator)
+		throws PortalException {
+
+		return fragmentEntryLinkPersistence.dslQuery(
+			_getFragmentEntryLinksByFragmentEntryGroupByStep(
+				DSLQueryFactoryUtil.select(FragmentEntryLinkTable.INSTANCE),
+				true,
+				_getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntryPredicate(
+					fragmentEntry, layoutPageTemplateType)
+			).orderBy(
+				_getOrderByStepLimitStepFunction(orderByComparator)
+			).limit(
+				start, end
+			));
+	}
+
+	@Override
+	public int getAllLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
+			FragmentEntry fragmentEntry, int layoutPageTemplateType)
+		throws PortalException {
+
+		return fragmentEntryLinkPersistence.dslQueryCount(
+			_getFragmentEntryLinksByFragmentEntryGroupByStep(
+				DSLQueryFactoryUtil.countDistinct(
+					FragmentEntryLinkTable.INSTANCE.plid),
+				false,
+				_getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntryPredicate(
+					fragmentEntry, layoutPageTemplateType)));
+	}
+
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *             #getFragmentEntryLinksCountByPlid(long, long)}
@@ -872,6 +941,50 @@ public class FragmentEntryLinkLocalServiceImpl
 		);
 	}
 
+	private Predicate _getAllLayoutFragmentEntryLinksByFragmentEntryPredicate(
+			FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		return _getAllFragmentEntryLinksByFragmentEntryPredicate(
+			fragmentEntry
+		).and(
+			FragmentEntryLinkTable.INSTANCE.plid.notIn(_getPlidsDSLQuery(null))
+		);
+	}
+
+	private Predicate
+			_getAllLayoutPageTemplateFragmentEntryLinksByFragmentEntryPredicate(
+				FragmentEntry fragmentEntry, int layoutPageTemplateType)
+		throws PortalException {
+
+		return _getAllFragmentEntryLinksByFragmentEntryPredicate(
+			fragmentEntry
+		).and(
+			FragmentEntryLinkTable.INSTANCE.plid.in(
+				_getPlidsDSLQuery(
+					LayoutPageTemplateEntryTable.INSTANCE.type.eq(
+						layoutPageTemplateType)))
+		);
+	}
+
+	private GroupByStep _getFragmentEntryLinksByFragmentEntryGroupByStep(
+		FromStep fromStep, boolean latest, Predicate predicate) {
+
+		if (latest) {
+			return fromStep.from(
+				FragmentEntryLinkTable.INSTANCE
+			).where(
+				_getLatestFragmentEntryLinkPredicate(predicate)
+			);
+		}
+
+		return fromStep.from(
+			FragmentEntryLinkTable.INSTANCE
+		).where(
+			predicate
+		);
+	}
+
 	private Predicate _getFragmentEntryLinksByFragmentEntryPredicate(
 			FragmentEntry fragmentEntry, Predicate predicate, long scopeGroupId)
 		throws PortalException {
@@ -971,24 +1084,13 @@ public class FragmentEntryLinkLocalServiceImpl
 			long scopeGroupId)
 		throws PortalException {
 
-		Predicate predicate = _getFragmentEntryLinksByFragmentEntryPredicate(
-			fragmentEntry,
-			FragmentEntryLinkTable.INSTANCE.plid.notIn(_getPlidsDSLQuery(null)),
-			scopeGroupId);
-
-		if (latest) {
-			return fromStep.from(
-				FragmentEntryLinkTable.INSTANCE
-			).where(
-				_getLatestFragmentEntryLinkPredicate(predicate)
-			);
-		}
-
-		return fromStep.from(
-			FragmentEntryLinkTable.INSTANCE
-		).where(
-			predicate
-		);
+		return _getFragmentEntryLinksByFragmentEntryGroupByStep(
+			fromStep, latest,
+			_getFragmentEntryLinksByFragmentEntryPredicate(
+				fragmentEntry,
+				FragmentEntryLinkTable.INSTANCE.plid.notIn(
+					_getPlidsDSLQuery(null)),
+				scopeGroupId));
 	}
 
 	private GroupByStep
@@ -997,27 +1099,15 @@ public class FragmentEntryLinkLocalServiceImpl
 				int layoutPageTemplateType, boolean latest, long scopeGroupId)
 		throws PortalException {
 
-		Predicate predicate = _getFragmentEntryLinksByFragmentEntryPredicate(
-			fragmentEntry,
-			FragmentEntryLinkTable.INSTANCE.plid.in(
-				_getPlidsDSLQuery(
-					LayoutPageTemplateEntryTable.INSTANCE.type.eq(
-						layoutPageTemplateType))),
-			scopeGroupId);
-
-		if (latest) {
-			return fromStep.from(
-				FragmentEntryLinkTable.INSTANCE
-			).where(
-				_getLatestFragmentEntryLinkPredicate(predicate)
-			);
-		}
-
-		return fromStep.from(
-			FragmentEntryLinkTable.INSTANCE
-		).where(
-			predicate
-		);
+		return _getFragmentEntryLinksByFragmentEntryGroupByStep(
+			fromStep, latest,
+			_getFragmentEntryLinksByFragmentEntryPredicate(
+				fragmentEntry,
+				FragmentEntryLinkTable.INSTANCE.plid.in(
+					_getPlidsDSLQuery(
+						LayoutPageTemplateEntryTable.INSTANCE.type.eq(
+							layoutPageTemplateType))),
+				scopeGroupId));
 	}
 
 	private Function<OrderByStep, LimitStep> _getOrderByStepLimitStepFunction(
