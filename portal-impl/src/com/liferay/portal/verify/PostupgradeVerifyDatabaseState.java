@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,8 +43,10 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			_tablesServletContextNamesDCLSingleton.getSingleton(
 				DBResourceUtil::getTablesServletContextNames);
 
-		Set<String> expectedTableNames = _getCaseInsensitiveSet(
-			tablesServletContextNames.keySet());
+		Set<String> expectedTableNames = new TreeSet<>(
+			String.CASE_INSENSITIVE_ORDER);
+
+		expectedTableNames.addAll(tablesServletContextNames.keySet());
 
 		CompanyLocalServiceUtil.forEachCompanyId(
 			companyId -> {
@@ -59,10 +62,6 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 				}
 			});
 
-		if (expectedTableNames.isEmpty()) {
-			return;
-		}
-
 		DBInspector dbInspector = new DBInspector(connection);
 
 		Set<String> expectedViewNames = new TreeSet<>(
@@ -75,37 +74,54 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			expectedTableNames.removeAll(expectedViewNames);
 		}
 
-		Set<String> databaseTableNames = _getCaseInsensitiveSet(
-			dbInspector.getTableNames(null));
+		Set<String> databaseTableNames = new TreeSet<>(
+			String.CASE_INSENSITIVE_ORDER);
+
+		databaseTableNames.addAll(dbInspector.getTableNames(null));
 
 		Set<String> missingTableNames = _asymmetricDifference(
 			expectedTableNames, databaseTableNames);
 
-		Set<String> databaseViewNames = _getCaseInsensitiveSet(
-			dbInspector.getViewNames(null));
+		Set<String> databaseViewNames = new TreeSet<>(
+			String.CASE_INSENSITIVE_ORDER);
+
+		databaseViewNames.addAll(dbInspector.getViewNames(null));
 
 		Set<String> missingViewNames = _asymmetricDifference(
 			expectedViewNames, databaseViewNames);
 
-		Map<String, List<String>> messagesMap = new TreeMap<>();
+		Map<String, List<String>> errorMessagesMap = new TreeMap<>();
 
 		_addMessages(
-			messagesMap, tablesServletContextNames,
+			errorMessagesMap,
 			TransformUtil.transform(
 				missingTableNames, dbInspector::normalizeName),
-			"Missing tables were detected");
+			"Missing tables were detected", tablesServletContextNames);
 		_addMessages(
-			messagesMap, tablesServletContextNames, missingViewNames,
-			"Missing views were detected");
+			errorMessagesMap, missingViewNames, "Missing views were detected",
+			tablesServletContextNames);
 
-		Map<String, String> historicalTablesServletContextNames =
-			_getHistoricalTablesServletContextNames();
+		Map<String, String>
+			historicalServiceComponentTablesServletContextNames =
+				_historicalServiceComponentTablesServletContextNamesDCLSingleton.
+					getSingleton(
+						() -> {
+							try {
+								return DBResourceUtil.
+									getHistoricalServiceComponentTablesServletContextNames(
+										connection);
+							}
+							catch (Exception exception) {
+								return ReflectionUtil.throwException(exception);
+							}
+						});
 
 		Set<String> customTableNames = _asymmetricDifference(
 			databaseTableNames, expectedTableNames);
 
 		Set<String> staleTableNames = _intersect(
-			customTableNames, historicalTablesServletContextNames.keySet());
+			customTableNames,
+			historicalServiceComponentTablesServletContextNames.keySet());
 
 		customTableNames.removeAll(staleTableNames);
 
@@ -113,26 +129,56 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			databaseViewNames, expectedViewNames);
 
 		Set<String> staleViewNames = _intersect(
-			customViewNames, historicalTablesServletContextNames.keySet());
+			customViewNames,
+			historicalServiceComponentTablesServletContextNames.keySet());
 
 		customViewNames.removeAll(staleViewNames);
 
-		_addMessages(
-			messagesMap, historicalTablesServletContextNames, staleTableNames,
-			"Stale tables were detected");
-		_addMessages(
-			messagesMap, historicalTablesServletContextNames, staleViewNames,
-			"Stale views were detected");
+		Map<String, List<String>> warnMessagesMap = new TreeMap<>();
 
-		for (Map.Entry<String, List<String>> entry : messagesMap.entrySet()) {
-			String servletContextName = entry.getKey();
+		_addMessages(
+			warnMessagesMap, staleTableNames, "Stale tables were detected",
+			historicalServiceComponentTablesServletContextNames);
+		_addMessages(
+			warnMessagesMap, staleViewNames, "Stale views were detected",
+			historicalServiceComponentTablesServletContextNames);
 
+		Set<String> servletContextNames = new TreeSet<>(
+			errorMessagesMap.keySet());
+
+		servletContextNames.addAll(warnMessagesMap.keySet());
+
+		for (String servletContextName : servletContextNames) {
 			if (!servletContextName.isEmpty()) {
-				_log.error(_getModuleMessage(servletContextName));
+				Release release = ReleaseLocalServiceUtil.fetchRelease(
+					servletContextName);
+
+				if ((release != null) &&
+					(release.getState() != ReleaseConstants.STATE_GOOD)) {
+
+					_log.error(
+						StringBundler.concat(
+							"Module ", servletContextName,
+							" has release state ",
+							_getReleaseStateLabel(release.getState()),
+							", schema version ", release.getSchemaVersion()));
+				}
 			}
 
-			for (String message : entry.getValue()) {
+			for (String message :
+					errorMessagesMap.getOrDefault(
+						servletContextName, Collections.emptyList())) {
+
 				_log.error(message);
+			}
+
+			if (_log.isWarnEnabled()) {
+				for (String message :
+						warnMessagesMap.getOrDefault(
+							servletContextName, Collections.emptyList())) {
+
+					_log.warn(message);
+				}
 			}
 		}
 
@@ -150,19 +196,22 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 
 		if (!customTableNames.isEmpty()) {
 			_log.info(
-				_getMessage("Custom tables were detected", customTableNames));
+				_getMessage(
+					customTableNames, "Custom tables were detected",
+					StringPool.BLANK));
 		}
 
 		if (!customViewNames.isEmpty()) {
 			_log.info(
-				_getMessage("Custom views were detected", customViewNames));
+				_getMessage(
+					customViewNames, "Custom views were detected",
+					StringPool.BLANK));
 		}
 	}
 
 	private void _addMessages(
-		Map<String, List<String>> messagesMap,
-		Map<String, String> servletContextNames, Collection<String> names,
-		String prefix) {
+		Map<String, List<String>> messagesMap, Collection<String> names,
+		String prefix, Map<String, String> servletContextNames) {
 
 		Map<String, Set<String>> namesMap = new TreeMap<>();
 
@@ -179,7 +228,7 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			messagesMap.computeIfAbsent(
 				entry.getKey(), servletContextName -> new ArrayList<>()
 			).add(
-				_getMessage(prefix, entry.getValue())
+				_getMessage(entry.getValue(), prefix, entry.getKey())
 			);
 		}
 	}
@@ -187,65 +236,30 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 	private Set<String> _asymmetricDifference(
 		Collection<String> collection1, Collection<String> collection2) {
 
-		Set<String> names = _getCaseInsensitiveSet(collection1);
+		Set<String> names = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
+		names.addAll(collection1);
 		names.removeAll(collection2);
 
 		return names;
 	}
 
-	private Set<String> _getCaseInsensitiveSet(Collection<String> names) {
-		Set<String> caseInsensitiveSet = new TreeSet<>(
-			String.CASE_INSENSITIVE_ORDER);
+	private String _getMessage(
+		Set<String> names, String prefix, String servletContextName) {
 
-		caseInsensitiveSet.addAll(names);
-
-		return caseInsensitiveSet;
-	}
-
-	private Map<String, String> _getHistoricalTablesServletContextNames() {
-		return _historicalTablesServletContextNamesDCLSingleton.getSingleton(
-			() -> {
-				try {
-					return DBResourceUtil.
-						getHistoricalServiceComponentTablesServletContextNames(
-							connection);
-				}
-				catch (Exception exception) {
-					return ReflectionUtil.throwException(exception);
-				}
-			});
-	}
-
-	private String _getMessage(String prefix, Set<String> names) {
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			prefix = StringBundler.concat(
 				prefix, " for company ",
 				CompanyThreadLocal.getNonsystemCompanyId());
 		}
 
-		return StringBundler.concat(
-			prefix, StringPool.COLON, StringPool.SPACE, names);
-	}
-
-	private String _getModuleMessage(String servletContextName) {
-		String moduleMessage =
-			"Module " + servletContextName + StringPool.COLON;
-
-		Release release = ReleaseLocalServiceUtil.fetchRelease(
-			servletContextName);
-
-		if ((release == null) ||
-			(release.getState() == ReleaseConstants.STATE_GOOD)) {
-
-			return moduleMessage;
+		if (!servletContextName.isEmpty()) {
+			prefix = StringBundler.concat(
+				prefix, " in module ", servletContextName);
 		}
 
 		return StringBundler.concat(
-			moduleMessage, " release state ",
-			_getReleaseStateLabel(release.getState()), ", schema version ",
-			release.getSchemaVersion(), ", last modified ",
-			release.getModifiedDate());
+			prefix, StringPool.COLON, StringPool.SPACE, names);
 	}
 
 	private String _getReleaseStateLabel(int state) {
@@ -263,8 +277,9 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 	private Set<String> _intersect(
 		Collection<String> collection1, Collection<String> collection2) {
 
-		Set<String> names = _getCaseInsensitiveSet(collection1);
+		Set<String> names = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
+		names.addAll(collection1);
 		names.retainAll(collection2);
 
 		return names;
@@ -274,7 +289,8 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		PostupgradeVerifyDatabaseState.class);
 
 	private static final DCLSingleton<Map<String, String>>
-		_historicalTablesServletContextNamesDCLSingleton = new DCLSingleton<>();
+		_historicalServiceComponentTablesServletContextNamesDCLSingleton =
+			new DCLSingleton<>();
 	private static final DCLSingleton<Map<String, String>>
 		_tablesServletContextNamesDCLSingleton = new DCLSingleton<>();
 
