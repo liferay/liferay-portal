@@ -214,13 +214,13 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 
 		InfoFieldSet infoFieldSet =
 			_displayPageInfoItemFieldSetProvider.getInfoFieldSet(
+				JournalArticle.class.getName(),
 				String.valueOf(_journalArticle.getDDMStructureId()),
-				JournalArticle.class.getSimpleName(),
 				RandomTestUtil.randomString(), _group.getGroupId());
 
 		List<InfoField<?>> infoFields = infoFieldSet.getAllInfoFields();
 
-		Assert.assertEquals(infoFields.toString(), 1, infoFields.size());
+		Assert.assertEquals(infoFields.toString(), 2, infoFields.size());
 	}
 
 	private Group _addConnectedDesignLibraryGroup() throws Exception {
