@@ -113,18 +113,46 @@ public abstract class BaseTasksSectionDisplayContextTestCase
 			bulkActionDropdownItems.toString(), 4,
 			bulkActionDropdownItems.size());
 
+		FDSActionDropdownItem updateDueDateFDSActionDropdownItem =
+			(FDSActionDropdownItem)bulkActionDropdownItems.get(0);
+
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"date-time", "update-due-date", "Update Due Date", "post",
-			(FDSActionDropdownItem)bulkActionDropdownItems.get(0));
+			updateDueDateFDSActionDropdownItem);
+
+		Assert.assertEquals(
+			"update",
+			getValue(updateDueDateFDSActionDropdownItem, "permissionKey"));
+
+		FDSActionDropdownItem assignToFDSActionDropdownItem =
+			(FDSActionDropdownItem)bulkActionDropdownItems.get(1);
+
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"user", "assign-to", "Assign to...", null,
-			(FDSActionDropdownItem)bulkActionDropdownItems.get(1));
+			assignToFDSActionDropdownItem);
+
+		Assert.assertEquals(
+			"update", getValue(assignToFDSActionDropdownItem, "permissionKey"));
+
+		FDSActionDropdownItem updateStateFDSActionDropdownItem =
+			(FDSActionDropdownItem)bulkActionDropdownItems.get(2);
+
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"arrow-start", "update-state", "Update State", "post",
-			(FDSActionDropdownItem)bulkActionDropdownItems.get(2));
+			updateStateFDSActionDropdownItem);
+
+		Assert.assertEquals(
+			"update",
+			getValue(updateStateFDSActionDropdownItem, "permissionKey"));
+
+		FDSActionDropdownItem deleteFDSActionDropdownItem =
+			(FDSActionDropdownItem)bulkActionDropdownItems.get(3);
+
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"trash", "delete", "Delete", null,
-			(FDSActionDropdownItem)bulkActionDropdownItems.get(3));
+			"trash", "delete", "Delete", null, deleteFDSActionDropdownItem);
+
+		Assert.assertEquals(
+			"delete", getValue(deleteFDSActionDropdownItem, "permissionKey"));
 	}
 
 	@Test
