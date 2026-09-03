@@ -62,7 +62,7 @@ public class PostupgradeVerifyDatabaseStateTest
 
 	@Test
 	public void testVerifyPostupgradeCustomTable() throws Exception {
-		String tableName = getNormalizedName("TestCustomerTable");
+		String tableName = getNormalizedName("TestCustomTable");
 
 		_createTable(tableName);
 
@@ -104,7 +104,9 @@ public class PostupgradeVerifyDatabaseStateTest
 			testVerify();
 
 			Assert.assertEquals(
-				_getExpectedMessage("Missing tables were detected", tableName),
+				_getExpectedMessage(
+					"Missing tables were detected", StringPool.BLANK,
+					tableName),
 				_getMessage(logCapture, tableName));
 		}
 		finally {
@@ -150,16 +152,14 @@ public class PostupgradeVerifyDatabaseStateTest
 		try {
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 					PostupgradeVerifyDatabaseState.class.getName(),
-					LoggerTestUtil.ERROR)) {
+					LoggerTestUtil.WARN)) {
 
 				testVerify();
 
 				Assert.assertEquals(
-					"Module " + _BUILD_NAMESPACE + StringPool.COLON,
-					_getMessage(logCapture, _BUILD_NAMESPACE));
-				Assert.assertEquals(
 					_getExpectedMessage(
-						"Stale tables were detected", tableName),
+						"Stale tables were detected", _BUILD_NAMESPACE,
+						tableName),
 					_getMessage(logCapture, tableName));
 			}
 
@@ -176,15 +176,12 @@ public class PostupgradeVerifyDatabaseStateTest
 
 				testVerify();
 
-				String message = _getMessage(logCapture, "release state");
-
-				Assert.assertTrue(
-					message,
-					message.startsWith(
-						StringBundler.concat(
-							"Module ", _BUILD_NAMESPACE,
-							": release state upgrade failure, schema version ",
-							"1.0.0, last modified ")));
+				Assert.assertEquals(
+					StringBundler.concat(
+						"Module ", _BUILD_NAMESPACE,
+						" has release state upgrade failure, schema version ",
+						"1.0.0"),
+					_getMessage(logCapture, "release state"));
 			}
 		}
 		finally {
@@ -216,16 +213,10 @@ public class PostupgradeVerifyDatabaseStateTest
 
 				testVerify();
 
-				String moduleMessage = StringBundler.concat(
-					"Module ", ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
-					StringPool.COLON);
-
-				Assert.assertEquals(
-					moduleMessage, _getMessage(logCapture, moduleMessage));
-
 				Assert.assertEquals(
 					_getExpectedMessage(
 						"Missing views were detected",
+						ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
 						getNormalizedName(_VIEW_NAME)),
 					_getMessage(logCapture, "Missing views were detected"));
 
@@ -238,17 +229,14 @@ public class PostupgradeVerifyDatabaseStateTest
 
 			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 					PostupgradeVerifyDatabaseState.class.getName(),
-					LoggerTestUtil.ERROR)) {
+					LoggerTestUtil.WARN)) {
 
 				testVerify();
 
 				Assert.assertEquals(
-					"Module " + _BUILD_NAMESPACE + StringPool.COLON,
-					_getMessage(logCapture, _BUILD_NAMESPACE));
-
-				Assert.assertEquals(
 					_getExpectedMessage(
-						"Stale views were detected", staleViewName),
+						"Stale views were detected", _BUILD_NAMESPACE,
+						staleViewName),
 					_getMessage(logCapture, "Stale views were detected"));
 			}
 		}
@@ -266,7 +254,7 @@ public class PostupgradeVerifyDatabaseStateTest
 	protected void doVerify() throws VerifyException {
 		Object dclSingleton = ReflectionTestUtil.getFieldValue(
 			PostupgradeVerifyDatabaseState.class,
-			"_historicalTablesServletContextNamesDCLSingleton");
+			"_historicalServiceComponentTablesServletContextNamesDCLSingleton");
 
 		ReflectionTestUtil.invoke(
 			dclSingleton, "destroy", new Class<?>[] {Consumer.class},
@@ -308,12 +296,18 @@ public class PostupgradeVerifyDatabaseStateTest
 		db.runSQL("DROP_TABLE_IF_EXISTS(" + tableName + ")");
 	}
 
-	private String _getExpectedMessage(String prefix, String tableName)
+	private String _getExpectedMessage(
+			String prefix, String servletContextName, String tableName)
 		throws Exception {
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			prefix = StringBundler.concat(
 				prefix, " for company ", TestPropsValues.getCompanyId());
+		}
+
+		if (!servletContextName.isEmpty()) {
+			prefix = StringBundler.concat(
+				prefix, " in module ", servletContextName);
 		}
 
 		return StringBundler.concat(
