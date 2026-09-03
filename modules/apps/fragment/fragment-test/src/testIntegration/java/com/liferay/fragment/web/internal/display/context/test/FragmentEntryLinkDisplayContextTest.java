@@ -11,11 +11,15 @@ import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.test.util.FragmentEntryTestUtil;
 import com.liferay.fragment.test.util.FragmentTestUtil;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.module.util.BundleUtil;
@@ -27,13 +31,13 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -51,7 +55,7 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,9 +79,43 @@ public class FragmentEntryLinkDisplayContextTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeClass
+	public static void setUpClass() throws Exception {
 		_group = GroupTestUtil.addGroup();
+
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		_fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			fragmentCollection.getFragmentCollectionId());
+
+		Group group = GroupTestUtil.addGroup();
+
+		_displayPageTemplateFragmentEntryLink =
+			_addFragmentEntryLinkToLayoutPageTemplateEntry(
+				group, LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+		_layoutFragmentEntryLink1 = _addFragmentEntryLinkToLayout(group);
+		_masterPageFragmentEntryLink =
+			_addFragmentEntryLinkToLayoutPageTemplateEntry(
+				group, LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
+		_pageTemplateFragmentEntryLink =
+			_addFragmentEntryLinkToLayoutPageTemplateEntry(
+				group, LayoutPageTemplateEntryTypeConstants.BASIC);
+
+		_layoutFragmentEntryLink2 = _addFragmentEntryLinkToLayout(
+			GroupTestUtil.addGroup());
+	}
+
+	@Test
+	@TestInfo("LPD-104425")
+	public void testGetAllUsageCount() throws Exception {
+		Assert.assertEquals(5, _getUsageCount("getAllUsageCount"));
+	}
+
+	@Test
+	@TestInfo("LPD-104425")
+	public void testGetDisplayPagesUsageCount() throws Exception {
+		Assert.assertEquals(1, _getUsageCount("getDisplayPagesUsageCount"));
 	}
 
 	@Test
@@ -87,7 +125,7 @@ public class FragmentEntryLinkDisplayContextTest {
 
 		Object fragmentEntryLinkDisplayContext =
 			_getFragmentEntryLinkDisplayContext(
-				fragmentEntry.getFragmentEntryId());
+				fragmentEntry.getFragmentEntryId(), "all");
 
 		_testGetFragmentEntryLinkName(
 			FragmentTestUtil.addFragmentEntryLink(
@@ -109,7 +147,7 @@ public class FragmentEntryLinkDisplayContextTest {
 
 		Object fragmentEntryLinkDisplayContext =
 			_getFragmentEntryLinkDisplayContext(
-				fragmentEntry.getFragmentEntryId());
+				fragmentEntry.getFragmentEntryId(), "all");
 
 		_testGetFragmentEntryLinkTypeLabel(
 			FragmentTestUtil.addFragmentEntryLink(
@@ -122,6 +160,64 @@ public class FragmentEntryLinkDisplayContextTest {
 			FragmentTestUtil.addFragmentEntryLink(
 				fragmentEntry, layout.getPlid()),
 			fragmentEntryLinkDisplayContext, layout);
+	}
+
+	@Test
+	@TestInfo("LPD-104425")
+	public void testGetMasterPagesUsageCount() throws Exception {
+		Assert.assertEquals(1, _getUsageCount("getMasterPagesUsageCount"));
+	}
+
+	@Test
+	@TestInfo("LPD-104425")
+	public void testGetPageTemplatesUsageCount() throws Exception {
+		Assert.assertEquals(1, _getUsageCount("getPageTemplatesUsageCount"));
+	}
+
+	@Test
+	@TestInfo("LPD-104425")
+	public void testGetPagesUsageCount() throws Exception {
+		Assert.assertEquals(2, _getUsageCount("getPagesUsageCount"));
+	}
+
+	@Test
+	@TestInfo("LPD-104425")
+	public void testGetSearchContainer() throws Exception {
+		_testGetSearchContainer(
+			"all", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2,
+			_pageTemplateFragmentEntryLink,
+			_displayPageTemplateFragmentEntryLink,
+			_masterPageFragmentEntryLink);
+
+		_testGetSearchContainer(
+			"pages", _layoutFragmentEntryLink1, _layoutFragmentEntryLink2);
+		_testGetSearchContainer("master-pages", _masterPageFragmentEntryLink);
+		_testGetSearchContainer(
+			"page-templates", _pageTemplateFragmentEntryLink);
+		_testGetSearchContainer(
+			"display-page-templates", _displayPageTemplateFragmentEntryLink);
+	}
+
+	private static FragmentEntryLink _addFragmentEntryLinkToLayout(Group group)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
+
+		return FragmentTestUtil.addFragmentEntryLink(
+			_fragmentEntry, group, layout.getPlid());
+	}
+
+	private static FragmentEntryLink
+			_addFragmentEntryLinkToLayoutPageTemplateEntry(
+				Group group, int type)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				group.getGroupId(), type, WorkflowConstants.STATUS_APPROVED);
+
+		return FragmentTestUtil.addFragmentEntryLink(
+			_fragmentEntry, group, layoutPageTemplateEntry.getPlid());
 	}
 
 	private FragmentEntry _addFragmentEntry() throws Exception {
@@ -175,7 +271,8 @@ public class FragmentEntryLinkDisplayContextTest {
 		};
 	}
 
-	private Object _getFragmentEntryLinkDisplayContext(long fragmentEntryId)
+	private Object _getFragmentEntryLinkDisplayContext(
+			long fragmentEntryId, String navigation)
 		throws Exception {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
@@ -195,6 +292,7 @@ public class FragmentEntryLinkDisplayContextTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 		mockHttpServletRequest.setParameter(
 			"fragmentEntryId", String.valueOf(fragmentEntryId));
+		mockHttpServletRequest.setParameter("navigation", navigation);
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
@@ -219,6 +317,13 @@ public class FragmentEntryLinkDisplayContextTest {
 		return constructor.newInstance(
 			mockHttpServletRequest, mockLiferayPortletRenderRequest,
 			new MockLiferayPortletRenderResponse());
+	}
+
+	private int _getUsageCount(String methodName) throws Exception {
+		return ReflectionTestUtil.invoke(
+			_getFragmentEntryLinkDisplayContext(
+				_fragmentEntry.getFragmentEntryId(), "all"),
+			methodName, new Class<?>[0]);
 	}
 
 	private void _testGetFragmentEntryLinkName(
@@ -249,14 +354,41 @@ public class FragmentEntryLinkDisplayContextTest {
 			_getExpectedWarnMessages(fragmentEntryLink, layout));
 	}
 
+	private void _testGetSearchContainer(
+			String navigation, FragmentEntryLink... fragmentEntryLinks)
+		throws Exception {
+
+		SearchContainer<FragmentEntryLink> searchContainer =
+			ReflectionTestUtil.invoke(
+				_getFragmentEntryLinkDisplayContext(
+					_fragmentEntry.getFragmentEntryId(), navigation),
+				"getSearchContainer", new Class<?>[0]);
+
+		List<FragmentEntryLink> results = searchContainer.getResults();
+
+		Assert.assertEquals(
+			results.toString(), fragmentEntryLinks.length,
+			searchContainer.getTotal());
+
+		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
+			Assert.assertTrue(
+				results.toString(), results.contains(fragmentEntryLink));
+		}
+	}
+
 	private static final String _CLASS_NAME =
 		"com.liferay.fragment.web.internal.display.context." +
 			"FragmentEntryLinkDisplayContext";
 
+	private static FragmentEntryLink _displayPageTemplateFragmentEntryLink;
+	private static FragmentEntry _fragmentEntry;
+	private static Group _group;
+	private static FragmentEntryLink _layoutFragmentEntryLink1;
+	private static FragmentEntryLink _layoutFragmentEntryLink2;
+	private static FragmentEntryLink _masterPageFragmentEntryLink;
+	private static FragmentEntryLink _pageTemplateFragmentEntryLink;
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
-
-	@DeleteAfterTestRun
-	private Group _group;
 
 }
