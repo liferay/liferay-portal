@@ -28,6 +28,8 @@
 							</execute>
 						</then>
 						<else>
+							<download-gradle-wrapper-binary workspace.dir="${analytics.cloud.asah.dir}" />
+
 							<pull-docker-image-dependencies
 								analytics.cloud.image.names.excludes="${analytics.cloud.asah.image.names.excludes}"
 								analytics.cloud.repository.dir="${analytics.cloud.asah.dir}"
@@ -143,7 +145,7 @@
 							</execute>
 						</then>
 						<else>
-							<download-gradle-wrapper-binary workspace.dir="${analytics.cloud.asah.dir}" />
+							<download-gradle-wrapper-binary workspace.dir="${analytics.cloud.faro.dir}" />
 
 							<pull-docker-image-dependencies
 								analytics.cloud.image.names.excludes="${analytics.cloud.faro.image.names.excludes}"
