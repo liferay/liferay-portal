@@ -21,6 +21,9 @@ import com.liferay.portal.kernel.messaging.DestinationConfiguration;
 import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.osgi.framework.BundleContext;
@@ -80,12 +83,12 @@ public class DispatchConfigurator {
 				"destination.name", destination.getName()
 			).build());
 
-		_addScheduledJobs(false);
+		_addScheduledJobs(_getDispatchTaskClusterModes());
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		_deleteScheduledJobs();
+		_deleteScheduledJobs(_getDispatchTaskClusterModes());
 
 		_serviceRegistration.unregister();
 
@@ -95,27 +98,16 @@ public class DispatchConfigurator {
 		}
 	}
 
-	private void _addScheduledJobs(boolean onlyClusterMasterDependentModes) {
+	private void _addScheduledJobs(
+		List<DispatchTaskClusterMode> dispatchTaskClusterModes) {
+
 		for (DispatchTrigger dispatchTrigger :
-				_dispatchTriggerLocalService.getDispatchTriggers(true)) {
+				_dispatchTriggerLocalService.getActiveDispatchTriggers(
+					dispatchTaskClusterModes)) {
 
 			DispatchTaskClusterMode dispatchTaskClusterMode =
 				DispatchTaskClusterMode.valueOf(
 					dispatchTrigger.getDispatchTaskClusterMode());
-
-			boolean schedulable;
-
-			if (onlyClusterMasterDependentModes) {
-				schedulable = _isClusterMasterDependent(
-					dispatchTaskClusterMode);
-			}
-			else {
-				schedulable = _isSchedulable(dispatchTaskClusterMode);
-			}
-
-			if (!schedulable) {
-				continue;
-			}
 
 			try {
 				_dispatchTriggerHelper.addSchedulerJob(
@@ -130,48 +122,31 @@ public class DispatchConfigurator {
 		}
 	}
 
-	private void _deleteScheduledJobs() {
+	private void _deleteScheduledJobs(
+		List<DispatchTaskClusterMode> dispatchTaskClusterModes) {
+
 		for (DispatchTrigger dispatchTrigger :
-				_dispatchTriggerLocalService.getDispatchTriggers(true)) {
+				_dispatchTriggerLocalService.getActiveDispatchTriggers(
+					dispatchTaskClusterModes)) {
 
 			DispatchTaskClusterMode dispatchTaskClusterMode =
 				DispatchTaskClusterMode.valueOf(
 					dispatchTrigger.getDispatchTaskClusterMode());
-
-			if (!_isSchedulable(dispatchTaskClusterMode)) {
-				continue;
-			}
 
 			_dispatchTriggerHelper.deleteSchedulerJob(
 				dispatchTrigger, dispatchTaskClusterMode.getStorageType());
 		}
 	}
 
-	private boolean _isClusterMasterDependent(
-		DispatchTaskClusterMode dispatchTaskClusterMode) {
-
-		if ((dispatchTaskClusterMode ==
-				DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED) ||
-			(dispatchTaskClusterMode ==
-				DispatchTaskClusterMode.SINGLE_NODE_PERSISTED)) {
-
-			return true;
+	private List<DispatchTaskClusterMode> _getDispatchTaskClusterModes() {
+		if (_clusterMasterExecutor.isMaster()) {
+			return Arrays.asList(
+				DispatchTaskClusterMode.ALL_NODES,
+				DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED,
+				DispatchTaskClusterMode.SINGLE_NODE_PERSISTED);
 		}
 
-		return false;
-	}
-
-	private boolean _isSchedulable(
-		DispatchTaskClusterMode dispatchTaskClusterMode) {
-
-		if ((dispatchTaskClusterMode == DispatchTaskClusterMode.ALL_NODES) ||
-			(_clusterMasterExecutor.isMaster() &&
-			 _isClusterMasterDependent(dispatchTaskClusterMode))) {
-
-			return true;
-		}
-
-		return false;
+		return Collections.singletonList(DispatchTaskClusterMode.ALL_NODES);
 	}
 
 	private static final int _MAXIMUM_QUEUE_SIZE = 100;
@@ -201,7 +176,10 @@ public class DispatchConfigurator {
 
 		@Override
 		protected void doMasterTokenAcquired() throws Exception {
-			_addScheduledJobs(true);
+			_addScheduledJobs(
+				Arrays.asList(
+					DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED,
+					DispatchTaskClusterMode.SINGLE_NODE_PERSISTED));
 		}
 
 		@Override
