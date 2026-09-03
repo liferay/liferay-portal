@@ -34,6 +34,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:portal-search-tuning:portal-search-tuning-rankings-api")
+	compileOnly project(":dxp:apps:portal-search-tuning:portal-search-tuning-web-api")
 	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
 	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	testImplementation project(":apps:portal-search:portal-search")

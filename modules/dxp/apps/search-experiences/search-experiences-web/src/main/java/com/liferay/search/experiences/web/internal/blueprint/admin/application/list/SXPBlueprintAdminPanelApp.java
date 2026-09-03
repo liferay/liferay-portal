@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.search.engine.SearchEngineInformation;
-import com.liferay.portal.search.web.application.list.constants.SearchPanelCategoryKeys;
+import com.liferay.search.experiences.constants.SXPPanelCategoryKeys;
 import com.liferay.search.experiences.constants.SXPPortletKeys;
 
 import java.util.Objects;
@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false,
 	property = {
 		"panel.app.order:Integer=100",
-		"panel.category.key=" + SearchPanelCategoryKeys.CONTROL_PANEL_SEARCH
+		"panel.category.key=" + SXPPanelCategoryKeys.CONTROL_PANEL_SEARCH_EXPERIENCES
 	},
 	service = PanelApp.class
 )
