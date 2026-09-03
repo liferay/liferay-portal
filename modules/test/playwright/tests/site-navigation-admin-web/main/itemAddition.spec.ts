@@ -16,6 +16,7 @@ import {createCategories} from '../../../helpers/CreateCategories';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {pagesPagesTest} from '../../layout-admin-web/main/fixtures/pagesPagesTest';
 import {navigationMenusPagesTest} from './fixtures/navigationMenusPagesTest';
 
@@ -93,9 +94,10 @@ test(
 );
 
 test.describe('Add pages to Navigation Menu', () => {
-	test('Load more works properly in search results', async ({
+	test('Search results support load more and adding a selected page', async ({
 		apiHelpers,
 		navigationMenusPage,
+		page,
 		pageSelectorPage,
 		site,
 	}) => {
@@ -163,6 +165,21 @@ test.describe('Add pages to Navigation Menu', () => {
 		await expect(modal.locator('.search-result')).toHaveCount(30);
 
 		await expect(modal.getByText('Load More Results')).not.toBeVisible();
+
+		// Add a page selected from the search results and check it is added to
+		// the menu
+
+		await pageSelectorPage.search('Lemon 3');
+
+		await pageSelectorPage.selectSearchResult('Lemon 3');
+
+		await navigationMenusPage.selectButton.click();
+
+		await waitForAlert(page, 'Success:1 Page was added to this menu.');
+
+		await expect(
+			await navigationMenusPage.getMenuItemCard('Lemon 3')
+		).toBeVisible();
 	});
 
 	test('Checks the correct label for restricted page in the layout tree', async ({

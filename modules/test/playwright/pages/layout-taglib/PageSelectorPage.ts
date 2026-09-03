@@ -39,4 +39,12 @@ export class PageSelectorPage {
 			.locator('.loading-animation')
 			.waitFor({state: 'hidden'});
 	}
+
+	async selectSearchResult(pageName: string) {
+		const searchResult = this.modal.locator('.search-result').filter({
+			has: this.modal.getByText(pageName, {exact: true}),
+		});
+
+		await searchResult.getByRole('checkbox').check();
+	}
 }
