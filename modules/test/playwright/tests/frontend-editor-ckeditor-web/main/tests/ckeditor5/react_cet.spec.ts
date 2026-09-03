@@ -30,7 +30,7 @@ test(
 			'Link',
 			'Bookmark',
 			'Image',
-			'Video'
+			'Video',
 		];
 
 		const availableButtons =
