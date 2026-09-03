@@ -756,6 +756,13 @@ paths:
             operationId: getPerformanceTopAssetPage
             parameters:
                 -   in: query
+                    name: cmpProjectIds
+                    schema:
+                        items:
+                            format: int64
+                            type: integer
+                        type: array
+                -   in: query
                     name: depotEntryIds
                     schema:
                         items:
@@ -811,6 +818,13 @@ paths:
         get:
             operationId: getPerformanceTopAssetExport
             parameters:
+                -   in: query
+                    name: cmpProjectIds
+                    schema:
+                        items:
+                            format: int64
+                            type: integer
+                        type: array
                 -   in: query
                     name: depotEntryIds
                     schema:
