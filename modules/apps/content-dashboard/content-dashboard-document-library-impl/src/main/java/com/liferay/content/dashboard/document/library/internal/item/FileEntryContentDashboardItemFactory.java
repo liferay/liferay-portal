@@ -67,15 +67,6 @@ public class FileEntryContentDashboardItemFactory
 
 		DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
 
-		List<FileVersion> approvedFileVersions = fileEntry.getFileVersions(
-			WorkflowConstants.STATUS_APPROVED, 0, 1);
-
-		FileVersion latestApprovedFileVersion = null;
-
-		if (ListUtil.isNotEmpty(approvedFileVersions)) {
-			latestApprovedFileVersion = approvedFileVersions.get(0);
-		}
-
 		return new FileEntryContentDashboardItem(
 			assetEntry.getCategories(), assetEntry.getTags(),
 			_contentDashboardItemActionProviderRegistry,
@@ -85,7 +76,7 @@ public class FileEntryContentDashboardItemFactory
 			_ddmFieldLocalService, _dlDisplayContextProvider,
 			_dlFileEntryMetadataLocalService, _dlURLHelper, fileEntry,
 			_groupLocalService.fetchGroup(fileEntry.getGroupId()), _language,
-			latestApprovedFileVersion, _portal);
+			_getLatestApprovedFileVersion(fileEntry), _portal);
 	}
 
 	@Override
@@ -99,6 +90,17 @@ public class FileEntryContentDashboardItemFactory
 
 	@Reference
 	protected InfoItemServiceRegistry infoItemServiceRegistry;
+
+	private FileVersion _getLatestApprovedFileVersion(FileEntry fileEntry) {
+		List<FileVersion> approvedFileVersions = fileEntry.getFileVersions(
+			WorkflowConstants.STATUS_APPROVED, 0, 1);
+
+		if (ListUtil.isEmpty(approvedFileVersions)) {
+			return null;
+		}
+
+		return approvedFileVersions.get(0);
+	}
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;
