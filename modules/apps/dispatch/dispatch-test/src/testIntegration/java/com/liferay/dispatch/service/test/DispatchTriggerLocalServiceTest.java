@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
@@ -50,7 +51,9 @@ import java.io.Serializable;
 
 import java.text.SimpleDateFormat;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -253,6 +256,83 @@ public class DispatchTriggerLocalServiceTest {
 			0,
 			_dispatchTriggerLocalService.getUserDispatchTriggersCount(
 				user.getCompanyId(), user.getUserId()));
+	}
+
+	@Test
+	public void testGetActiveDispatchTriggers() throws Exception {
+		User user = TestPropsValues.getUser();
+
+		DispatchTrigger activeAllNodesDispatchTrigger = _updateDispatchTrigger(
+			_addDispatchTrigger(
+				DispatchTriggerTestUtil.randomDispatchTrigger(
+					user, _getRandomDispatchExecutorType(),
+					RandomTestUtil.nextInt())),
+			true, DispatchTaskClusterMode.ALL_NODES);
+		DispatchTrigger activeSingleNodeMemoryClusteredDispatchTrigger =
+			_updateDispatchTrigger(
+				_addDispatchTrigger(
+					DispatchTriggerTestUtil.randomDispatchTrigger(
+						user, _getRandomDispatchExecutorType(),
+						RandomTestUtil.nextInt())),
+				true, DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED);
+		DispatchTrigger activeSingleNodePersistedDispatchTrigger =
+			_updateDispatchTrigger(
+				_addDispatchTrigger(
+					DispatchTriggerTestUtil.randomDispatchTrigger(
+						user, _getRandomDispatchExecutorType(),
+						RandomTestUtil.nextInt())),
+				true, DispatchTaskClusterMode.SINGLE_NODE_PERSISTED);
+		DispatchTrigger inactiveAllNodesDispatchTrigger =
+			_updateDispatchTrigger(
+				_addDispatchTrigger(
+					DispatchTriggerTestUtil.randomDispatchTrigger(
+						user, _getRandomDispatchExecutorType(),
+						RandomTestUtil.nextInt())),
+				false, DispatchTaskClusterMode.ALL_NODES);
+
+		List<DispatchTrigger> allNodesDispatchTriggers =
+			_dispatchTriggerLocalService.getActiveDispatchTriggers(
+				Collections.singletonList(DispatchTaskClusterMode.ALL_NODES));
+
+		Assert.assertTrue(
+			allNodesDispatchTriggers.contains(activeAllNodesDispatchTrigger));
+		Assert.assertFalse(
+			allNodesDispatchTriggers.contains(
+				activeSingleNodeMemoryClusteredDispatchTrigger));
+		Assert.assertFalse(
+			allNodesDispatchTriggers.contains(
+				activeSingleNodePersistedDispatchTrigger));
+		Assert.assertFalse(
+			allNodesDispatchTriggers.contains(inactiveAllNodesDispatchTrigger));
+
+		List<DispatchTaskClusterMode> singleNodeDispatchTaskClusterModes =
+			Arrays.asList(
+				DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED,
+				DispatchTaskClusterMode.SINGLE_NODE_PERSISTED);
+
+		List<DispatchTrigger> singleNodeDispatchTriggers =
+			_dispatchTriggerLocalService.getActiveDispatchTriggers(
+				singleNodeDispatchTaskClusterModes);
+
+		Assert.assertFalse(
+			singleNodeDispatchTriggers.contains(activeAllNodesDispatchTrigger));
+		Assert.assertTrue(
+			singleNodeDispatchTriggers.contains(
+				activeSingleNodeMemoryClusteredDispatchTrigger));
+		Assert.assertTrue(
+			singleNodeDispatchTriggers.contains(
+				activeSingleNodePersistedDispatchTrigger));
+		Assert.assertFalse(
+			singleNodeDispatchTriggers.contains(
+				inactiveAllNodesDispatchTrigger));
+
+		for (DispatchTrigger dispatchTrigger : singleNodeDispatchTriggers) {
+			Assert.assertTrue(dispatchTrigger.isActive());
+			Assert.assertTrue(
+				singleNodeDispatchTaskClusterModes.contains(
+					DispatchTaskClusterMode.valueOf(
+						dispatchTrigger.getDispatchTaskClusterMode())));
+		}
 	}
 
 	@Test
@@ -732,6 +812,20 @@ public class DispatchTriggerLocalServiceTest {
 		nextFireCalendar.setTime(date);
 
 		Assert.assertEquals(expectedCalendar, nextFireCalendar);
+	}
+
+	private DispatchTrigger _updateDispatchTrigger(
+			DispatchTrigger dispatchTrigger, boolean active,
+			DispatchTaskClusterMode dispatchTaskClusterMode)
+		throws Exception {
+
+		return _dispatchTriggerLocalService.updateDispatchTrigger(
+			dispatchTrigger.getDispatchTriggerId(), active,
+			CronExpressionTestUtil.getCronExpression(), dispatchTaskClusterMode,
+			CronExpressionTestUtil.getMonth() + 1, 20,
+			CronExpressionTestUtil.getYear(), 23, 59, false, true,
+			CronExpressionTestUtil.getMonth() - 1, 1,
+			CronExpressionTestUtil.getYear(), 0, 0, "UTC");
 	}
 
 	@Inject
