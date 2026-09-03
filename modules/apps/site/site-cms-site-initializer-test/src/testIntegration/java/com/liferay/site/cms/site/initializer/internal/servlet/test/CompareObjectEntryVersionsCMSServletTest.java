@@ -101,12 +101,12 @@ public class CompareObjectEntryVersionsCMSServletTest
 
 	@Test
 	public void testCompareObjectEntryVersions() throws Exception {
-		_testCompareObjectEntryVersionsWithChangedDateField();
-		_testCompareObjectEntryVersionsWithChangedRichTextField();
-		_testCompareObjectEntryVersionsWithChangedTextField();
-		_testCompareObjectEntryVersionsWithEqualVersions();
-		_testCompareObjectEntryVersionsWithMalformedContent();
+		_testCompareObjectEntryVersionsWithDateObjectField();
+		_testCompareObjectEntryVersionsWithInvalidContent();
 		_testCompareObjectEntryVersionsWithoutUpdatePermission();
+		_testCompareObjectEntryVersionsWithRichTextObjectField();
+		_testCompareObjectEntryVersionsWithSameVersions();
+		_testCompareObjectEntryVersionsWithTextObjectField();
 	}
 
 	private void _addModelResourcePermissions(
@@ -225,7 +225,7 @@ public class CompareObjectEntryVersionsCMSServletTest
 		return _service(content.getBytes(), user);
 	}
 
-	private void _testCompareObjectEntryVersionsWithChangedDateField()
+	private void _testCompareObjectEntryVersionsWithDateObjectField()
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -280,118 +280,7 @@ public class CompareObjectEntryVersionsCMSServletTest
 			objectDefinition.getObjectDefinitionId());
 	}
 
-	private void _testCompareObjectEntryVersionsWithChangedRichTextField()
-		throws Exception {
-
-		String sourceContent = RandomTestUtil.randomString();
-		String title = RandomTestUtil.randomString();
-
-		ObjectEntry objectEntry = _addObjectEntry(
-			"<p>" + sourceContent + "</p>", title);
-
-		String targetContent = RandomTestUtil.randomString();
-
-		objectEntry = _updateObjectEntry(
-			objectEntry, "<p>" + targetContent + "</p>", title);
-
-		Assert.assertEquals(2, objectEntry.getVersion());
-
-		JSONObject diffsJSONObject = _toDiffsJSONObject(
-			_service(
-				objectEntry.getObjectEntryId(), 1, 2,
-				TestPropsValues.getUser()));
-
-		JSONObject sourceJSONObject = diffsJSONObject.getJSONObject("source");
-		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
-
-		Assert.assertFalse(
-			sourceJSONObject.toString(), sourceJSONObject.has("title"));
-		Assert.assertFalse(
-			targetJSONObject.toString(), targetJSONObject.has("title"));
-
-		Assert.assertFalse(
-			sourceJSONObject.toString(),
-			sourceJSONObject.has("contentRawText"));
-		Assert.assertFalse(
-			targetJSONObject.toString(),
-			targetJSONObject.has("contentRawText"));
-
-		String sourceDiff = sourceJSONObject.getString("content");
-		String targetDiff = targetJSONObject.getString("content");
-
-		Assert.assertTrue(sourceDiff, sourceDiff.contains(sourceContent));
-		Assert.assertTrue(targetDiff, targetDiff.contains(targetContent));
-	}
-
-	private void _testCompareObjectEntryVersionsWithChangedTextField()
-		throws Exception {
-
-		String content = RandomTestUtil.randomString();
-		String sourceTitle = RandomTestUtil.randomString();
-
-		ObjectEntry objectEntry = _addObjectEntry(content, sourceTitle);
-
-		String targetTitle = RandomTestUtil.randomString();
-
-		objectEntry = _updateObjectEntry(objectEntry, content, targetTitle);
-
-		Assert.assertEquals(2, objectEntry.getVersion());
-
-		MockHttpServletResponse mockHttpServletResponse = _service(
-			objectEntry.getObjectEntryId(), 1, 2, TestPropsValues.getUser());
-
-		Assert.assertEquals(
-			ContentTypes.APPLICATION_JSON,
-			mockHttpServletResponse.getContentType());
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-
-		JSONObject diffsJSONObject = _toDiffsJSONObject(
-			mockHttpServletResponse);
-
-		JSONObject sourceJSONObject = diffsJSONObject.getJSONObject("source");
-		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
-
-		Assert.assertFalse(
-			sourceJSONObject.toString(), sourceJSONObject.has("content"));
-		Assert.assertFalse(
-			targetJSONObject.toString(), targetJSONObject.has("content"));
-
-		String sourceDiff = sourceJSONObject.getString("title");
-		String targetDiff = targetJSONObject.getString("title");
-
-		_assertDiffHtml(sourceTitle, sourceDiff, targetTitle);
-		_assertDiffHtml(targetTitle, targetDiff, sourceTitle);
-	}
-
-	private void _testCompareObjectEntryVersionsWithEqualVersions()
-		throws Exception {
-
-		ObjectEntry objectEntry = _addObjectEntry(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		MockHttpServletResponse mockHttpServletResponse = _service(
-			objectEntry.getObjectEntryId(), 1, 1, TestPropsValues.getUser());
-
-		Assert.assertEquals(
-			ContentTypes.APPLICATION_JSON,
-			mockHttpServletResponse.getContentType());
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-
-		JSONObject diffsJSONObject = _toDiffsJSONObject(
-			mockHttpServletResponse);
-
-		JSONObject sourceJSONObject = diffsJSONObject.getJSONObject("source");
-		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
-
-		Assert.assertEquals(
-			sourceJSONObject.toString(), 0, sourceJSONObject.length());
-		Assert.assertEquals(
-			targetJSONObject.toString(), 0, targetJSONObject.length());
-	}
-
-	private void _testCompareObjectEntryVersionsWithMalformedContent()
+	private void _testCompareObjectEntryVersionsWithInvalidContent()
 		throws Exception {
 
 		String content = RandomTestUtil.randomString();
@@ -469,6 +358,117 @@ public class CompareObjectEntryVersionsCMSServletTest
 		PrincipalThreadLocal.setName(name);
 
 		_userLocalService.deleteUser(user);
+	}
+
+	private void _testCompareObjectEntryVersionsWithRichTextObjectField()
+		throws Exception {
+
+		String sourceContent = RandomTestUtil.randomString();
+		String title = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			"<p>" + sourceContent + "</p>", title);
+
+		String targetContent = RandomTestUtil.randomString();
+
+		objectEntry = _updateObjectEntry(
+			objectEntry, "<p>" + targetContent + "</p>", title);
+
+		Assert.assertEquals(2, objectEntry.getVersion());
+
+		JSONObject diffsJSONObject = _toDiffsJSONObject(
+			_service(
+				objectEntry.getObjectEntryId(), 1, 2,
+				TestPropsValues.getUser()));
+
+		JSONObject sourceJSONObject = diffsJSONObject.getJSONObject("source");
+		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
+
+		Assert.assertFalse(
+			sourceJSONObject.toString(), sourceJSONObject.has("title"));
+		Assert.assertFalse(
+			targetJSONObject.toString(), targetJSONObject.has("title"));
+
+		Assert.assertFalse(
+			sourceJSONObject.toString(),
+			sourceJSONObject.has("contentRawText"));
+		Assert.assertFalse(
+			targetJSONObject.toString(),
+			targetJSONObject.has("contentRawText"));
+
+		String sourceDiff = sourceJSONObject.getString("content");
+		String targetDiff = targetJSONObject.getString("content");
+
+		Assert.assertTrue(sourceDiff, sourceDiff.contains(sourceContent));
+		Assert.assertTrue(targetDiff, targetDiff.contains(targetContent));
+	}
+
+	private void _testCompareObjectEntryVersionsWithSameVersions()
+		throws Exception {
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		MockHttpServletResponse mockHttpServletResponse = _service(
+			objectEntry.getObjectEntryId(), 1, 1, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_JSON,
+			mockHttpServletResponse.getContentType());
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		JSONObject diffsJSONObject = _toDiffsJSONObject(
+			mockHttpServletResponse);
+
+		JSONObject sourceJSONObject = diffsJSONObject.getJSONObject("source");
+		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
+
+		Assert.assertEquals(
+			sourceJSONObject.toString(), 0, sourceJSONObject.length());
+		Assert.assertEquals(
+			targetJSONObject.toString(), 0, targetJSONObject.length());
+	}
+
+	private void _testCompareObjectEntryVersionsWithTextObjectField()
+		throws Exception {
+
+		String content = RandomTestUtil.randomString();
+		String sourceTitle = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = _addObjectEntry(content, sourceTitle);
+
+		String targetTitle = RandomTestUtil.randomString();
+
+		objectEntry = _updateObjectEntry(objectEntry, content, targetTitle);
+
+		Assert.assertEquals(2, objectEntry.getVersion());
+
+		MockHttpServletResponse mockHttpServletResponse = _service(
+			objectEntry.getObjectEntryId(), 1, 2, TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_JSON,
+			mockHttpServletResponse.getContentType());
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		JSONObject diffsJSONObject = _toDiffsJSONObject(
+			mockHttpServletResponse);
+
+		JSONObject sourceJSONObject = diffsJSONObject.getJSONObject("source");
+		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
+
+		Assert.assertFalse(
+			sourceJSONObject.toString(), sourceJSONObject.has("content"));
+		Assert.assertFalse(
+			targetJSONObject.toString(), targetJSONObject.has("content"));
+
+		String sourceDiff = sourceJSONObject.getString("title");
+		String targetDiff = targetJSONObject.getString("title");
+
+		_assertDiffHtml(sourceTitle, sourceDiff, targetTitle);
+		_assertDiffHtml(targetTitle, targetDiff, sourceTitle);
 	}
 
 	private JSONObject _toDiffsJSONObject(
