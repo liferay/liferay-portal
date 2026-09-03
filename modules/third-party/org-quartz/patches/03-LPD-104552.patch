@@ -1,0 +1,64 @@
+diff --git a/org/quartz/impl/jdbcjobstore/StdJDBCDelegate.java b/org/quartz/impl/jdbcjobstore/StdJDBCDelegate.java
+index 195d8dabe1606..66fc3457c9be4 100644
+--- a/org/quartz/impl/jdbcjobstore/StdJDBCDelegate.java
++++ b/org/quartz/impl/jdbcjobstore/StdJDBCDelegate.java
+@@ -1779,10 +1779,10 @@ public class StdJDBCDelegate implements DriverDelegate, StdJDBCConstants {
+                     endTimeD = new Date(endTime);
+                 }
+ 
+-                rs.close(); rs = null;
+-                ps.close(); ps = null;
+-                
+                 if (triggerType.equals(TTYPE_BLOB)) {
++                    rs.close(); rs = null;
++                    ps.close(); ps = null;
++
+                     ps = conn.prepareStatement(rtp(SELECT_BLOB_TRIGGER));
+                     ps.setString(1, triggerKey.getName());
+                     ps.setString(2, triggerKey.getGroup());
+@@ -1797,9 +1797,19 @@ public class StdJDBCDelegate implements DriverDelegate, StdJDBCConstants {
+                     
+                     if(tDel == null)
+                         throw new JobPersistenceException("No TriggerPersistenceDelegate for trigger discriminator type: " + triggerType);
+-                    
+-                    TriggerPropertyBundle triggerProps = tDel.loadExtendedTriggerProperties(conn, triggerKey);
+-                    
++
++                    TriggerPropertyBundle triggerProps = null;
++                    try {
++                        triggerProps = tDel.loadExtendedTriggerProperties(conn, triggerKey);
++                    } catch (IllegalStateException isex) {
++                        if (isTriggerStillPresent(ps)) {
++                            throw isex;
++                        } else {
++                            // QTZ-386 Trigger has been deleted
++                            return null;
++                        }
++                    }
++
+                     TriggerBuilder<?> tb = newTrigger()
+                         .withDescription(description)
+                         .withPriority(priority)
+@@ -1831,6 +1841,16 @@ public class StdJDBCDelegate implements DriverDelegate, StdJDBCConstants {
+         }
+     }
+ 
++    private boolean isTriggerStillPresent(PreparedStatement ps) throws SQLException {
++        ResultSet rs = null;
++        try {
++            rs = ps.executeQuery();
++            return rs.next();
++        } finally {
++            closeResultSet(rs);
++        }
++    }
++
+     private void setTriggerStateProperties(OperableTrigger trigger, TriggerPropertyBundle props) throws JobPersistenceException {
+         
+         if(props.getStatePropertyNames() == null)
+@@ -3292,3 +3312,4 @@ public class StdJDBCDelegate implements DriverDelegate, StdJDBCConstants {
+ }
+ 
+ // EOF
++/* @generated */
+\ No newline at end of file

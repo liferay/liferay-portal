@@ -1779,10 +1779,10 @@ public class StdJDBCDelegate implements DriverDelegate, StdJDBCConstants {
                     endTimeD = new Date(endTime);
                 }
 
-                rs.close(); rs = null;
-                ps.close(); ps = null;
-                
                 if (triggerType.equals(TTYPE_BLOB)) {
+                    rs.close(); rs = null;
+                    ps.close(); ps = null;
+
                     ps = conn.prepareStatement(rtp(SELECT_BLOB_TRIGGER));
                     ps.setString(1, triggerKey.getName());
                     ps.setString(2, triggerKey.getGroup());
@@ -1797,9 +1797,19 @@ public class StdJDBCDelegate implements DriverDelegate, StdJDBCConstants {
                     
                     if(tDel == null)
                         throw new JobPersistenceException("No TriggerPersistenceDelegate for trigger discriminator type: " + triggerType);
-                    
-                    TriggerPropertyBundle triggerProps = tDel.loadExtendedTriggerProperties(conn, triggerKey);
-                    
+
+                    TriggerPropertyBundle triggerProps = null;
+                    try {
+                        triggerProps = tDel.loadExtendedTriggerProperties(conn, triggerKey);
+                    } catch (IllegalStateException isex) {
+                        if (isTriggerStillPresent(ps)) {
+                            throw isex;
+                        } else {
+                            // QTZ-386 Trigger has been deleted
+                            return null;
+                        }
+                    }
+
                     TriggerBuilder<?> tb = newTrigger()
                         .withDescription(description)
                         .withPriority(priority)
@@ -1828,6 +1838,16 @@ public class StdJDBCDelegate implements DriverDelegate, StdJDBCConstants {
         } finally {
             closeResultSet(rs);
             closeStatement(ps);
+        }
+    }
+
+    private boolean isTriggerStillPresent(PreparedStatement ps) throws SQLException {
+        ResultSet rs = null;
+        try {
+            rs = ps.executeQuery();
+            return rs.next();
+        } finally {
+            closeResultSet(rs);
         }
     }
 
@@ -3292,3 +3312,4 @@ public class StdJDBCDelegate implements DriverDelegate, StdJDBCConstants {
 }
 
 // EOF
+/* @generated */
