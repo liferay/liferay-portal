@@ -572,18 +572,18 @@ public class TestClassGroupFactory {
 			else if (batchName.startsWith("workspaces-unit")) {
 				if (jsonObject != null) {
 					batchTestClassGroup =
-						new WorkspacesJUnitBatchTestClassGroup(
+						new WorkspacesModulesJUnitBatchTestClassGroup(
 							jsonObject, portalTestClassJob);
 				}
 				else if (testBatch instanceof JUnitTestBatch) {
 					batchTestClassGroup =
-						new WorkspacesJUnitBatchTestClassGroup(
+						new WorkspacesModulesJUnitBatchTestClassGroup(
 							batchName, portalTestClassJob,
 							(JUnitTestBatch)testBatch);
 				}
 				else {
 					batchTestClassGroup =
-						new WorkspacesJUnitBatchTestClassGroup(
+						new WorkspacesModulesJUnitBatchTestClassGroup(
 							batchName, portalTestClassJob);
 				}
 			}

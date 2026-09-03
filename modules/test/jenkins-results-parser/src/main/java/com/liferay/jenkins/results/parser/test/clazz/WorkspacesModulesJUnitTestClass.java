@@ -23,7 +23,7 @@ import org.json.JSONObject;
 /**
  * @author Michael Hashimoto
  */
-public class WorkspacesJUnitTestClass extends ModulesJUnitTestClass {
+public class WorkspacesModulesJUnitTestClass extends ModulesJUnitTestClass {
 
 	@Override
 	public String getName() {
@@ -57,20 +57,20 @@ public class WorkspacesJUnitTestClass extends ModulesJUnitTestClass {
 			":", taskName);
 	}
 
-	protected WorkspacesJUnitTestClass(
+	protected WorkspacesModulesJUnitTestClass(
 		BatchTestClassGroup batchTestClassGroup, File testClassFile) {
 
 		super(batchTestClassGroup, testClassFile);
 	}
 
-	protected WorkspacesJUnitTestClass(
+	protected WorkspacesModulesJUnitTestClass(
 		BatchTestClassGroup batchTestClassGroup, File testClassFile,
 		List<String> testClassMethodNames) {
 
 		super(batchTestClassGroup, testClassFile, testClassMethodNames);
 	}
 
-	protected WorkspacesJUnitTestClass(
+	protected WorkspacesModulesJUnitTestClass(
 		BatchTestClassGroup batchTestClassGroup, JSONObject jsonObject) {
 
 		super(batchTestClassGroup, jsonObject);

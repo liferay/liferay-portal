@@ -24,22 +24,22 @@ import org.json.JSONObject;
 /**
  * @author Michael Hashimoto
  */
-public class WorkspacesJUnitBatchTestClassGroup
+public class WorkspacesModulesJUnitBatchTestClassGroup
 	extends ModulesJUnitBatchTestClassGroup {
 
-	protected WorkspacesJUnitBatchTestClassGroup(
+	protected WorkspacesModulesJUnitBatchTestClassGroup(
 		JSONObject jsonObject, PortalTestClassJob portalTestClassJob) {
 
 		super(jsonObject, portalTestClassJob);
 	}
 
-	protected WorkspacesJUnitBatchTestClassGroup(
+	protected WorkspacesModulesJUnitBatchTestClassGroup(
 		String batchName, PortalTestClassJob portalTestClassJob) {
 
 		super(batchName, portalTestClassJob);
 	}
 
-	protected WorkspacesJUnitBatchTestClassGroup(
+	protected WorkspacesModulesJUnitBatchTestClassGroup(
 		String batchName, PortalTestClassJob portalTestClassJob,
 		JUnitTestBatch jUnitTestBatch) {
 
