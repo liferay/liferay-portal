@@ -32,6 +32,7 @@ import {
 import {getAssetTitle} from '../../common/utils/getAssetTitle';
 import {getFormattedLabel} from '../../common/utils/getFormattedText';
 import {getScopeExternalReferenceCode} from '../../common/utils/getScopeExternalReferenceCode';
+import {isSpaceMember} from '../../common/utils/isSpaceMember';
 import {openBulkActionConfirmationModal} from '../../common/utils/openBulkActionConfirmationModal';
 import {openCMSModal} from '../../common/utils/openCMSModal';
 import refreshOnContentChanged from '../../common/utils/refreshOnContentChanged';
@@ -293,19 +294,28 @@ export default function AssetsFDSPropsTransformer({
 								actions={actions}
 								additionalProps={additionalProps}
 								itemData={itemData}
-								onViewClick={(item) => {
-									openCMSModal({
-										contentComponent: () =>
-											AssetNavigationModalContent({
-												additionalProps,
-												contentViewURL:
-													additionalProps.contentViewURL,
-												currentIndex: 0,
-												items: [item],
-											}),
-										size: 'full-screen',
-									});
-								}}
+								onViewClick={
+									isSpaceMember(
+										additionalProps.assetLibraries,
+										itemData
+									)
+										? (item) => {
+												openCMSModal({
+													contentComponent: () =>
+														AssetNavigationModalContent(
+															{
+																additionalProps,
+																contentViewURL:
+																	additionalProps.contentViewURL,
+																currentIndex: 0,
+																items: [item],
+															}
+														),
+													size: 'full-screen',
+												});
+											}
+										: undefined
+								}
 								options={options}
 								systemIconLabel={Liferay.Language.get(
 									'system-default-structure'
@@ -466,7 +476,8 @@ export default function AssetsFDSPropsTransformer({
 							item?.entryClassName !==
 								OBJECT_ENTRY_FOLDER_CLASS_NAME &&
 								!item?.embedded?.file
-						),
+						) &&
+						isSpaceMember(additionalProps.assetLibraries, item),
 					target: 'event',
 				};
 			}
@@ -478,7 +489,8 @@ export default function AssetsFDSPropsTransformer({
 						Boolean(
 							item?.entryClassName !==
 								OBJECT_ENTRY_FOLDER_CLASS_NAME
-						),
+						) &&
+						isSpaceMember(additionalProps.assetLibraries, item),
 					target: 'event',
 				};
 			}
@@ -712,7 +724,9 @@ export default function AssetsFDSPropsTransformer({
 
 				const filteredItems = items.filter(
 					(item: any) =>
-						item?.entryClassName !== OBJECT_ENTRY_FOLDER_CLASS_NAME
+						item?.entryClassName !==
+							OBJECT_ENTRY_FOLDER_CLASS_NAME &&
+						isSpaceMember(additionalProps.assetLibraries, item)
 				);
 
 				const currentItemPos = filteredItems.findIndex(
