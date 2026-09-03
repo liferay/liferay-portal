@@ -731,10 +731,6 @@ public class ObjectDefinitionLocalServiceImpl
 				catch (Exception exception) {
 					throw new PortalException(exception);
 				}
-
-				_dropTable(objectDefinition.getDBTableName());
-				_dropTable(objectDefinition.getExtensionDBTableName());
-				_dropTable(objectDefinition.getLocalizationDBTableName());
 			}
 
 			_undeployObjectDefinition(objectDefinition, approved);
@@ -2716,6 +2712,14 @@ public class ObjectDefinitionLocalServiceImpl
 
 	private void _undeployObjectDefinition(
 		ObjectDefinition objectDefinition, boolean approved) {
+
+		String dbTableName = objectDefinition.getDBTableName();
+
+		if (Validator.isNotNull(dbTableName)) {
+			_dropTable(dbTableName);
+			_dropTable(objectDefinition.getExtensionDBTableName());
+			_dropTable(objectDefinition.getLocalizationDBTableName());
+		}
 
 		if (!approved) {
 			Portlet portlet = _portletLocalService.getPortletById(
