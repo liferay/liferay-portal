@@ -5,7 +5,6 @@
 
 {{- $anchorDate := $isWeekly | ternary (index $anchorDates ($backup.dayOfWeek | default "Sunday")) "2024-01-01" -}}
 {{- $backupRestoreIdentityName := printf "%s-backup-restore" $baseName -}}
-{{- $backupRestoreVaultRoleDefinitionNames := list "Backup Operator" -}}
 {{- $backupRetentionDuration := printf "P%dD" $backupRetentionDays -}}
 {{- $backupVaultName := printf "%s-vault" $baseName -}}
 
@@ -19,18 +18,6 @@
 {{- $backupVaultIdentity := dig "liferay-backup-vault" "resource" "status" "atProvider" "identity" dict $observedResources -}}
 
 {{- $backupVaultPrincipalId := $backupVaultIdentity.principalId | default "" -}}
-
-{{- $areBackupRolesAssigned := ne $backupVaultPrincipalId "" -}}
-
-{{- range $dataPlane := $dataPlanes -}}
-    {{- $isBackupRoleAssigned := false -}}
-    {{- range $condition := dig (printf "liferay-backup-vault-storage-%s" $dataPlane) "resource" "status" "conditions" (list) $observedResources -}}
-        {{- if and (eq $condition.type "Ready") (eq $condition.status "True") -}}
-            {{- $isBackupRoleAssigned = true -}}
-        {{- end -}}
-    {{- end -}}
-    {{- $areBackupRolesAssigned = and $areBackupRolesAssigned $isBackupRoleAssigned -}}
-{{- end }}
 
 {{- if $backupVaultPrincipalId }}
 {{- range $dataPlane := $dataPlanes }}
@@ -57,21 +44,19 @@ spec:
 {{- end }}
 {{- end }}
 {{- if $backupRestoreIdentityPrincipalId }}
-{{- range $roleDefinitionName := $backupRestoreVaultRoleDefinitionNames }}
-{{- $roleSlug := $roleDefinitionName | lower | replace " " "-" }}
 apiVersion: authorization.azure.m.upbound.io/v1beta1
 kind: RoleAssignment
 metadata:
     annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-vault-{{ $roleSlug }}
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-vault-backup-operator
     labels:
         {{- $tags | toYaml | nindent 8 }}
-    name: {{ $backupRestoreIdentityName }}-vault-{{ $roleSlug }}
+    name: {{ $backupRestoreIdentityName }}-vault-backup-operator
 spec:
     forProvider:
         principalId: {{ $backupRestoreIdentityPrincipalId }}
         principalType: ServicePrincipal
-        roleDefinitionName: {{ $roleDefinitionName }}
+        roleDefinitionName: Backup Operator
         scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.DataProtection/backupVaults/{{ $backupVaultName }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
@@ -79,9 +64,9 @@ spec:
         name: iam
 ---
 {{- end }}
-{{- end }}
-{{- if $areBackupRolesAssigned }}
 {{- range $dataPlane := $dataPlanes }}
+{{- $backupRoleId := dig (printf "liferay-backup-vault-storage-%s" $dataPlane) "resource" "status" "atProvider" "id" "" $observedResources }}
+{{- if $backupRoleId }}
 apiVersion: dataprotection.azure.m.upbound.io/v1beta1
 kind: BackupInstanceBlobStorage
 metadata:

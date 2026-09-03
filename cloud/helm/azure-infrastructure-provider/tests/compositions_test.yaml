@@ -67,11 +67,11 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: \$backupRestoreVaultRoleDefinitionNames := list "Backup Operator" -}}
+                    pattern: "composition-resource-name: liferay-backup-restore-vault-backup-operator"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "composition-resource-name: liferay-backup-restore-vault-\\{\\{ \\$roleSlug \\}\\}"
+                    pattern: "roleDefinitionName: Backup Operator"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -109,11 +109,11 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: \{\{- if \$areBackupRolesAssigned \}\}
+                    pattern: \{\{- if \$backupRoleId \}\}
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: \$areBackupRolesAssigned = and \$areBackupRolesAssigned \$isBackupRoleAssigned
+                    pattern: \$backupRoleId := dig \(printf "liferay-backup-vault-storage-%s" \$dataPlane\) "resource" "status" "atProvider" "id" ""
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -121,8 +121,16 @@ tests:
             -   documentIndex: 0
                 notMatchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: \$areVaultRolesAssigned
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: \$backupRoleAssignmentNames
-        it: Holds the backup instances back until every vault role assignment is ready
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \$isBackupRoleAssigned
+        it: Holds each backup instance back until its own vault role assignment exists
     -   asserts:
             -   equal:
                     path: spec.compositeTypeRef.apiVersion
