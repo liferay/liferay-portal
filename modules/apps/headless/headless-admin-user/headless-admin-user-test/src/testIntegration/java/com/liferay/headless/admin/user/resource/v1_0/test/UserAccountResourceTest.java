@@ -34,6 +34,7 @@ import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.headless.admin.user.client.custom.field.CustomField;
 import com.liferay.headless.admin.user.client.custom.field.CustomValue;
+import com.liferay.headless.admin.user.client.dto.v1_0.AccountBrief;
 import com.liferay.headless.admin.user.client.dto.v1_0.Creator;
 import com.liferay.headless.admin.user.client.dto.v1_0.EmailAddress;
 import com.liferay.headless.admin.user.client.dto.v1_0.OrganizationBrief;
@@ -1251,6 +1252,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 					userAccount.setPassword(() -> null);
 				}));
 
+		_testPutUserAccountBatchWithAccountBriefs();
 		_testPutUserAccountWithImageExternalReferenceCode();
 	}
 
@@ -2214,6 +2216,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_regularUserAccountResource = builder.authentication(
 			_regularUserAccount.getEmailAddress(),
 			_regularUserAccountCurrentPassword
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
@@ -3247,6 +3252,65 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_objectValidationRuleLocalService.deleteObjectValidationRule(
 			objectValidationRule);
+	}
+
+	private void _testPutUserAccountBatchWithAccountBriefs() throws Exception {
+		_setUpTestUserAccountResource();
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			_accountEntry.getAccountEntryId(), _regularUserAccount.getId());
+
+		UserAccount userAccount = _randomUserAccount(
+			randomUserAccount -> {
+				randomUserAccount.setAccountBriefs(() -> new AccountBrief[0]);
+				randomUserAccount.setCurrentPassword(() -> null);
+				randomUserAccount.setId(_regularUserAccount::getId);
+				randomUserAccount.setPassword(() -> null);
+			});
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.OFF)) {
+
+			JSONObject[] jsonObjects = new JSONObject[1];
+
+			HTTPTestUtil.customize(
+			).withCredentials(
+				_regularUserAccount.getEmailAddress(),
+				_regularUserAccountCurrentPassword
+			).apply(
+				() ->
+					jsonObjects[0] = HTTPTestUtil.invokeToJSONObject(
+						JSONUtil.putAll(
+							_jsonFactory.createJSONObject(
+								userAccount.toString())
+						).toString(),
+						"headless-admin-user/v1.0/user-accounts/batch",
+						Http.Method.PUT)
+			);
+
+			_waitForFinish("FAILED", true, jsonObjects[0]);
+		}
+
+		Assert.assertNotNull(
+			_accountEntryUserRelLocalService.fetchAccountEntryUserRel(
+				_accountEntry.getAccountEntryId(),
+				_regularUserAccount.getId()));
+
+		_waitForFinish(
+			"COMPLETED", true,
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.putAll(
+					_jsonFactory.createJSONObject(userAccount.toString())
+				).toString(),
+				"headless-admin-user/v1.0/user-accounts/batch",
+				Http.Method.PUT));
+
+		Assert.assertNull(
+			_accountEntryUserRelLocalService.fetchAccountEntryUserRel(
+				_accountEntry.getAccountEntryId(),
+				_regularUserAccount.getId()));
 	}
 
 	private void _testPutUserAccountByExternalReferenceCodeWithImageExternalReferenceCode()
