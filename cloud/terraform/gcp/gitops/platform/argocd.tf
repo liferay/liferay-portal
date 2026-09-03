@@ -180,11 +180,11 @@ resource "helm_release" "argocd" {
 										]
 										ports=[
 											{
-												port="http"
+												port="grpc"
 												protocol="TCP"
 											},
 											{
-												port="grpc"
+												port="http"
 												protocol="TCP"
 											},
 										]
@@ -270,7 +270,7 @@ resource "helm_release" "argocd" {
 												podSelector={
 													matchLabels={
 														"app.kubernetes.io/instance"="argocd"
-														"app.kubernetes.io/name"="argocd-server"
+														"app.kubernetes.io/name"="argocd-application-controller"
 													}
 												}
 											},
@@ -286,7 +286,7 @@ resource "helm_release" "argocd" {
 												podSelector={
 													matchLabels={
 														"app.kubernetes.io/instance"="argocd"
-														"app.kubernetes.io/name"="argocd-application-controller"
+														"app.kubernetes.io/name"="argocd-server"
 													}
 												}
 											},
@@ -343,7 +343,7 @@ resource "helm_release" "argocd" {
 												podSelector={
 													matchLabels={
 														"app.kubernetes.io/instance"="argocd"
-														"app.kubernetes.io/name"="argocd-server"
+														"app.kubernetes.io/name"="argocd-application-controller"
 													}
 												}
 											},
@@ -351,7 +351,7 @@ resource "helm_release" "argocd" {
 												podSelector={
 													matchLabels={
 														"app.kubernetes.io/instance"="argocd"
-														"app.kubernetes.io/name"="argocd-application-controller"
+														"app.kubernetes.io/name"="argocd-applicationset-controller"
 													}
 												}
 											},
@@ -367,7 +367,7 @@ resource "helm_release" "argocd" {
 												podSelector={
 													matchLabels={
 														"app.kubernetes.io/instance"="argocd"
-														"app.kubernetes.io/name"="argocd-applicationset-controller"
+														"app.kubernetes.io/name"="argocd-server"
 													}
 												}
 											},
