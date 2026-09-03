@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {useDebounce} from '@clayui/shared';
 import {useConfig} from 'data-engine-js-components-web';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
@@ -78,10 +77,8 @@ export default function useSearchFieldSets(searchTerm) {
 
 	const removedFieldSetIdsRef = useRef(new Set());
 
-	const debouncedSearchTerm = useDebounce(searchTerm, SEARCH_DELAY);
-
 	useEffect(() => {
-		if (!contentType || !debouncedSearchTerm) {
+		if (!contentType || !searchTerm) {
 			setSearchState(null);
 
 			return;
@@ -91,40 +88,47 @@ export default function useSearchFieldSets(searchTerm) {
 
 		const {signal} = abortController;
 
-		fetchFieldSets({
-			contentType,
-			dataDefinitionId,
-			groupId,
-			keywords: debouncedSearchTerm,
-			signal,
-		})
-			.then(({fieldSets, truncated}) => {
-				if (!signal.aborted) {
-					setSearchState({
-						hasError: false,
-						items: fieldSets.filter(
-							({id}) => !removedFieldSetIdsRef.current.has(id)
-						),
-						term: debouncedSearchTerm,
-						truncated,
-					});
-				}
+		const timeoutId = setTimeout(() => {
+			fetchFieldSets({
+				contentType,
+				dataDefinitionId,
+				groupId,
+				keywords: searchTerm,
+				signal,
 			})
-			.catch(() => {
-				if (!signal.aborted) {
-					errorToast();
+				.then(({fieldSets, truncated}) => {
+					if (!signal.aborted) {
+						setSearchState({
+							hasError: false,
+							items: fieldSets.filter(
+								({id}) =>
+									!removedFieldSetIdsRef.current.has(id)
+							),
+							term: searchTerm,
+							truncated,
+						});
+					}
+				})
+				.catch(() => {
+					if (!signal.aborted) {
+						errorToast();
 
-					setSearchState({
-						hasError: true,
-						items: [],
-						term: debouncedSearchTerm,
-						truncated: false,
-					});
-				}
-			});
+						setSearchState({
+							hasError: true,
+							items: [],
+							term: searchTerm,
+							truncated: false,
+						});
+					}
+				});
+		}, SEARCH_DELAY);
 
-		return () => abortController.abort();
-	}, [contentType, dataDefinitionId, debouncedSearchTerm, groupId]);
+		return () => {
+			abortController.abort();
+
+			clearTimeout(timeoutId);
+		};
+	}, [contentType, dataDefinitionId, groupId, searchTerm]);
 
 	const removeSearchResult = useCallback((fieldSetId) => {
 		removedFieldSetIdsRef.current.add(fieldSetId);
