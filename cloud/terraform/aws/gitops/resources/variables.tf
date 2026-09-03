@@ -20,7 +20,7 @@ variable "argocd_namespace" {
 variable "argocd_sso_config" {
 	default={}
 	type=object({
-		credentials_secret_name=optional(string, "liferay/credentials/argocd-sso")
+		credentials_secret_name=optional(string, "liferay-credentials-argocd-sso")
 		enable_saml_sso=optional(bool, false)
 	})
 }
@@ -71,7 +71,7 @@ variable "infrastructure_git_repo_config" {
 	type=object(
 		{
 			auth=object({
-				credentials_secret_name=optional(string, "liferay/credentials/gitops")
+				credentials_secret_name=optional(string, "liferay-credentials-gitops")
 				internal_secret_name=optional(string, "gitops-credentials")
 				method=optional(string, "https")
 				ssh_private_key_property=optional(string, "git_ssh_private_key")
@@ -148,7 +148,7 @@ variable "liferay_git_repo_config" {
 	type=object(
 		{
 			auth=object({
-				credentials_secret_name=optional(string, "liferay/credentials/gitops")
+				credentials_secret_name=optional(string, "liferay-credentials-gitops")
 				internal_secret_name=optional(string, "gitops-credentials")
 				method=optional(string, "https")
 				ssh_private_key_property=optional(string, "git_ssh_private_key")

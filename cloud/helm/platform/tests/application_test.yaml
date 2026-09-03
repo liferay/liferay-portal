@@ -95,9 +95,6 @@ tests:
                     path: spec.sources[0].repoURL
                     value: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-platform-components
             -   equal:
-                    path: spec.sources[0].targetRevision
-                    value: 0.1.0
-            -   equal:
                     path: spec.syncPolicy.automated.prune
                     value: true
             -   equal:

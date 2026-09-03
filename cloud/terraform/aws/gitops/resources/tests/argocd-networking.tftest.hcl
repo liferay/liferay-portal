@@ -88,8 +88,8 @@ run "should_create_an_http_gateway_for_a_hostname_only" {
 }
 run "should_enable_https_and_prefix_the_tls_secret_name" {
 	assert {
-		condition=kubernetes_manifest.argocd_server_tls_external_secret[0].manifest.spec.dataFrom[0].extract.key == "liferay/certificates/argocd-cert"
-		error_message="A bare TLS secret name must be prefixed with liferay/certificates/"
+		condition=kubernetes_manifest.argocd_server_tls_external_secret[0].manifest.spec.dataFrom[0].extract.key == "liferay-certificates-argocd-cert"
+		error_message="A bare TLS secret name must be prefixed with liferay-certificates-"
 	}
 	assert {
 		condition=length(kubernetes_manifest.argocd_gateway[0].manifest.spec.listeners) == 2
@@ -137,14 +137,14 @@ run "should_not_create_a_gateway_without_a_hostname" {
 }
 run "should_not_double_prefix_an_already_prefixed_tls_secret" {
 	assert {
-		condition=kubernetes_manifest.argocd_server_tls_external_secret[0].manifest.spec.dataFrom[0].extract.key == "liferay/certificates/argocd-cert"
+		condition=kubernetes_manifest.argocd_server_tls_external_secret[0].manifest.spec.dataFrom[0].extract.key == "liferay-certificates-argocd-cert"
 		error_message="An already prefixed TLS secret name must not be prefixed again"
 	}
 	command=plan
 	variables {
 		argocd_domain_config={
 			hostname="argocd.example.com"
-			tls_external_secret_name="liferay/certificates/argocd-cert"
+			tls_external_secret_name="liferay-certificates-argocd-cert"
 		}
 	}
 }

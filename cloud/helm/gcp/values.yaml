@@ -127,15 +127,12 @@ liferay-default:
                     defaultMode: 0755
                     name: liferay-init-scripts-gcp
                 name: liferay-init-scripts-gcp
-    license:
-        enabled: true
     marketplace:
         csi:
             driver: filestore.csi.storage.gke.io
             volumeAttributes:
                 protocol: NFS_V3
                 volume: marketplace
-        enabled: true
         size: 10Gi
     network:
         enabled: true

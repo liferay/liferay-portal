@@ -19,6 +19,7 @@ tests:
         set:
             liferay-default.licensing.enabled: true
             liferay-default.marketplace.csi.volumeHandle: fs-0123456789abcdef0
+            liferay-default.marketplace.enabled: true
     -   asserts:
             -   equal:
                     path: spec.storageClassName
@@ -36,6 +37,7 @@ tests:
         set:
             liferay-default.licensing.enabled: true
             liferay-default.marketplace.csi.volumeHandle: fs-0123456789abcdef0
+            liferay-default.marketplace.enabled: true
     -   asserts:
             -   equal:
                     path: spec.workloadRef.name

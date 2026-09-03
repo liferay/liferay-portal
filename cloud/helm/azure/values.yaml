@@ -104,8 +104,6 @@ liferay-default:
                     defaultMode: 0755
                     name: liferay-init-scripts-azure
                 name: liferay-init-scripts-azure
-    license:
-        enabled: true
     network:
         enabled: true
         timeouts:

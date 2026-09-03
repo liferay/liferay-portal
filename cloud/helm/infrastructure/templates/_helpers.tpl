@@ -44,6 +44,12 @@ readOnlyRootFilesystem: false
 {{- end -}}
 {{- end -}}
 
+{{- define "liferay.validateSecretNameSuffix" -}}
+{{- if regexMatch "-[A-Za-z0-9]{6}$" . -}}
+{{- fail (printf "Secret name must not end with a hyphen and six characters, because AWS Secrets Manager appends that shape to the ARN: %s" .) -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "search.secretReaderServiceAccountName" -}}
 {{- printf "%s-search-secret-reader" .Release.Name -}}
 {{- end -}}

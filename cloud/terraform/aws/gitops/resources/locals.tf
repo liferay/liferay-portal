@@ -158,9 +158,9 @@ locals {
 	oidc_provider=replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")
 	rds_exporter_role_arn=var.observability_config.enabled ? "arn:aws:iam::${local.account_id}:role/${var.deployment_name}-rds-exporter" : ""
 	secret_prefixes={
-		certificates="liferay/certificates/"
-		credentials="liferay/credentials/"
-		licenses="liferay/licenses/"
+		certificates="liferay-certificates-"
+		credentials="liferay-credentials-"
+		licenses="liferay-licenses-"
 	}
 	secret_store_name="${var.deployment_name}-secret-store"
 	secret_store_provider_default={

@@ -24,7 +24,9 @@ enabled: true
 endpoints: {}
 forceDestroy: false
 gateway: {}
-license: {}
+license:
+    externalSecretName: ""
+    targetSecretName: ""
 orphanOnDelete: false
 overlayAccess:
     enabled: false
