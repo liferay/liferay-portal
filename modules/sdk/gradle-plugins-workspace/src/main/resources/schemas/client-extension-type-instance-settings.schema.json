@@ -2004,7 +2004,7 @@
 		},
 		{
 			"properties": {
-				"detectionTimeoutMs": {
+				"detectionTimeout": {
 					"default": 0,
 					"description": "Define the time, in milliseconds, after which the detection of audiences is stopped and the variations (for the audiences that matched before the timeout) are immediately applied to the page. Set it to 0 to disable the timeout and wait until every audience has been detected.",
 					"title": "Detection Timeout",
