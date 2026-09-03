@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayPanel from '@clayui/panel';
 import React, {useEffect, useMemo, useState} from 'react';
 
 import VocabularyService from '../../../common/services/VocabularyService';
@@ -78,7 +79,7 @@ export default function AssetCategorizationSections({
 	}, [assetLibraryId]);
 
 	return (
-		<>
+		<ClayPanel.Group flush>
 			<AssetCategories
 				cmsGroupId={cmsGroupId}
 				errorMessage={errorMessage}
@@ -126,6 +127,6 @@ export default function AssetCategorizationSections({
 					vocabularyId={funnelStageVocabularyId}
 				/>
 			)}
-		</>
+		</ClayPanel.Group>
 	);
 }
