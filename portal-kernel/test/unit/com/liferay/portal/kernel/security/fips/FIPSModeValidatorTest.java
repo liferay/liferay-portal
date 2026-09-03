@@ -7,7 +7,6 @@ package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.internal.security.fips.FIPSModeHelperUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -125,6 +124,35 @@ public class FIPSModeValidatorTest {
 			ReflectionTestUtil.invoke(
 				FIPSModeValidator.class, "_isNotAllowedProviderName",
 				new Class<?>[] {String.class}, (Object)null));
+	}
+
+	@Test
+	public void testReadChannelPropertiesDocument() throws Exception {
+		Document document = ReflectionTestUtil.invoke(
+			FIPSModeValidator.class, "_readChannelPropertiesDocument",
+			new Class<?>[] {String.class},
+			FIPSModeTestUtil.getChannelPropertiesLocation(
+				"cluster-link-channel-properties.xml"));
+
+		NodeList nodeList = document.getElementsByTagName("AUTH");
+
+		Assert.assertEquals(1, nodeList.getLength());
+
+		Element authElement = (Element)nodeList.item(0);
+
+		Assert.assertEquals(
+			FIPSModeTestUtil.AUTH_CLASS_NAME,
+			authElement.getAttribute("auth_class"));
+
+		_assertSecurityException(
+			"Unable to parse the cluster link channel properties",
+			"_readChannelPropertiesDocument", new Class<?>[] {String.class},
+			FIPSModeTestUtil.getChannelPropertiesLocation(
+				"cluster-link-channel-properties-doctype.xml"));
+		_assertSecurityException(
+			"Unable to read the cluster link channel properties",
+			"_readChannelPropertiesDocument", new Class<?>[] {String.class},
+			RandomTestUtil.randomString());
 	}
 
 	@Test
@@ -700,7 +728,9 @@ public class FIPSModeValidatorTest {
 	private Element _getElement(String fileName, String tagName)
 		throws Exception {
 
-		Document document = FIPSModeHelperUtil.readDocument(
+		Document document = ReflectionTestUtil.invoke(
+			FIPSModeValidator.class, "_readChannelPropertiesDocument",
+			new Class<?>[] {String.class},
 			FIPSModeTestUtil.getChannelPropertiesLocation(fileName));
 
 		NodeList nodeList = document.getElementsByTagName(tagName);

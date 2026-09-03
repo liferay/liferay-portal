@@ -9,8 +9,8 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.internal.security.fips.FIPSModeHelperUtil;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
+import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
@@ -22,10 +22,15 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 
 import java.lang.reflect.Method;
 
 import java.net.URL;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import java.security.Provider;
 import java.security.Security;
@@ -41,9 +46,14 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import org.xml.sax.InputSource;
 
 /**
  * @author Caio Farias
@@ -178,6 +188,45 @@ public class FIPSModeValidator {
 		return !_allowedProviderNames.containsKey(name);
 	}
 
+	private static Document _readChannelPropertiesDocument(
+		String channelPropertiesLocation) {
+
+		String channelPropertiesXML;
+
+		try (InputStream inputStream = Files.newInputStream(
+				Paths.get(channelPropertiesLocation))) {
+
+			channelPropertiesXML = StringUtil.read(inputStream);
+		}
+		catch (IOException ioException) {
+			throw new SecurityException(
+				"Unable to read the cluster link channel properties \"" +
+					channelPropertiesLocation + "\" in FIPS mode",
+				ioException);
+		}
+
+		try {
+			DocumentBuilderFactory documentBuilderFactory =
+				SecureXMLFactoryProviderUtil.newDocumentBuilderFactory();
+
+			DocumentBuilder documentBuilder =
+				documentBuilderFactory.newDocumentBuilder();
+
+			documentBuilder.setEntityResolver(
+				(publicId, systemId) -> new InputSource(
+					new StringReader(StringPool.BLANK)));
+
+			return documentBuilder.parse(
+				new InputSource(new StringReader(channelPropertiesXML)));
+		}
+		catch (Exception exception) {
+			throw new SecurityException(
+				"Unable to parse the cluster link channel properties \"" +
+					channelPropertiesLocation + "\" in FIPS mode",
+				exception);
+		}
+	}
+
 	private static void _validateAllowedPropertyValues(
 		Function<String, String> function) {
 
@@ -226,7 +275,7 @@ public class FIPSModeValidator {
 	private static void _validateClusterLinkChannelConfiguration(
 		String channelPropertiesLocation) {
 
-		Document document = FIPSModeHelperUtil.readDocument(
+		Document document = _readChannelPropertiesDocument(
 			channelPropertiesLocation);
 
 		NodeList nodeList = document.getElementsByTagName(StringPool.STAR);
