@@ -203,6 +203,20 @@ tests:
         it: Sets the pod and container security contexts from the values
     -   asserts:
             -   equal:
+                    path: spec.template.spec.securityContext
+                    value:
+                        fsGroup: 1000
+                        fsGroupChangePolicy: OnRootMismatch
+                        runAsNonRoot: true
+                        seccompProfile:
+                            type: RuntimeDefault
+        it: Sets the pod file system group for volumes that honor it
+        set:
+            podSecurityContext:
+                fsGroup: 1000
+                fsGroupChangePolicy: OnRootMismatch
+    -   asserts:
+            -   equal:
                     path: spec.template.spec.containers[0].resources
                     value:
                         limits:
