@@ -18,6 +18,7 @@ patch {
 		autoClean = false
 	}
 
+	fileNames "org/quartz/impl/jdbcjobstore/StdJDBCDelegate.java"
 	fileNames "org/quartz/xml/XMLSchedulingDataProcessor.java"
 	originalLibModuleName = "quartz"
 }
