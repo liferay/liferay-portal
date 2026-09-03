@@ -165,6 +165,7 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 		Assert.assertFalse(infoFieldValues.isEmpty());
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
 	@Test(expected = XLIFFFileException.MustBeValid.class)
 	public void testImportXLIFF20FailsFileInlineCodeWithoutOriginalData()
 		throws Exception {
@@ -291,6 +292,7 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 	@Test
 	public void testImportXLIFF20WithFeatureFlagDisabled() throws Exception {
 		_testImportXLIFF20WithInlineCodes();
+		_testImportXLIFF20WithInvalidInlineCodes();
 	}
 
 	private void _testImportXLIFF20WithInlineCodes() throws Exception {
@@ -322,17 +324,32 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 			imageInfoFieldValue.getValue(LocaleUtil.SPAIN));
 	}
 
+	private void _testImportXLIFF20WithInvalidInlineCodes() throws Exception {
+		InfoItemFieldValues infoItemFieldValues =
+			_xliffTranslationInfoItemFieldValuesImporter.
+				importInfoItemFieldValues(
+					_group.getGroupId(),
+					new InfoItemReference(JournalArticle.class.getName(), 122),
+					new ByteArrayInputStream(
+						_INLINE_CODES_NO_ORIGINAL_DATA_XLIFF.getBytes()));
+
+		InfoFieldValue<Object> contentInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("content");
+
+		Assert.assertEquals(
+			"Hola mundo", contentInfoFieldValue.getValue(LocaleUtil.SPAIN));
+	}
+
 	private static final String _INLINE_CODES_NO_ORIGINAL_DATA_XLIFF =
 		StringBundler.concat(
 			"<?xml version=\"1.0\"?>\n\n<xliff srcLang=\"en-US\" trgLang=",
 			"\"es-ES\" version=\"2.0\" xmlns=",
 			"\"urn:oasis:names:tc:xliff:document:2.0\">\n\t<file id=",
 			"\"com.liferay.journal.model.JournalArticle:122\">\n\t\t<unit id=",
-			"\"JournalArticle_content\">\n\t\t\t<segment>\n\t\t\t\t<source>\n",
-			"\t\t\t\t\t<pc id=\"1\">Hello <pc id=\"2\">world</pc>\n\t\t\t\t\t",
-			"</pc>\n\t\t\t\t</source>\n\t\t\t\t<target>\n\t\t\t\t\t<pc id=\"1",
-			"\">Hola <pc id=\"2\">mundo</pc>\n\t\t\t\t\t</pc>\n\t\t\t\t",
-			"</target>\n\t\t\t</segment>\n\t\t</unit>\n\t</file>\n</xliff>");
+			"\"JournalArticle_content\">\n\t\t\t<segment>\n\t\t\t\t<source>",
+			"<pc id=\"1\">Hello <pc id=\"2\">world</pc></pc></source>\n\t\t\t",
+			"\t<target><pc id=\"1\">Hola <pc id=\"2\">mundo</pc></pc></target",
+			">\n\t\t\t</segment>\n\t\t</unit>\n\t</file>\n</xliff>");
 
 	private static final String _INLINE_CODES_V12_XLIFF = StringBundler.concat(
 		"<?xml version=\"1.0\"?>\n\n<xliff version=\"1.2\" xmlns=",
