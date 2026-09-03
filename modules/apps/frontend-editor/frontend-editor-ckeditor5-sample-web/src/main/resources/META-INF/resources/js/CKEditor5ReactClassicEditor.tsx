@@ -43,6 +43,10 @@ const CKEditor5ReactClassicEditor = ({
 				'|',
 				'headlessImageSelector',
 				'headlessVideoSelector',
+
+				...(editorConfig.showSourceEditingEnhanced
+					? ['|', 'sourceEditingEnhanced']
+					: ['|', 'sourceEditing']),
 			],
 		},
 	};

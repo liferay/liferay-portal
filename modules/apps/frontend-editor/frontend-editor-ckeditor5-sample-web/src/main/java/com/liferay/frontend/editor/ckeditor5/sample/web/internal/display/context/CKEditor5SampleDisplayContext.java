@@ -27,12 +27,14 @@ public class CKEditor5SampleDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public Object getCKEditor5ClassicEditorConfig() throws Exception {
+	public Object getCKEditor5ClassicEditorConfig(String editorConfigKey)
+		throws Exception {
+
 		EditorConfiguration editorConfiguration =
 			EditorConfigurationFactoryUtil.getEditorConfiguration(
-				CKEditor5SamplePortletKeys.CKEDITOR_5_SAMPLE,
-				"sampleReactCKEditor5ClassicEditor", "ckeditor5_classic",
-				new HashMap<String, Object>(), _themeDisplay,
+				CKEditor5SamplePortletKeys.CKEDITOR_5_SAMPLE, editorConfigKey,
+				"ckeditor5_classic", new HashMap<String, Object>(),
+				_themeDisplay,
 				RequestBackedPortletURLFactoryUtil.create(
 					_themeDisplay.getRequest()));
 

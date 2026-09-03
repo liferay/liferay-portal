@@ -15,7 +15,7 @@ CKEditor5SampleDisplayContext ckEditor5SampleDisplayContext = (CKEditor5SampleDi
 	module="{CKEditor5ReactClassicEditor} from frontend-editor-ckeditor5-sample-web"
 	props='<%=
 		HashMapBuilder.<String, Object>put(
-			"editorConfig", ckEditor5SampleDisplayContext.getCKEditor5ClassicEditorConfig()
+			"editorConfig", ckEditor5SampleDisplayContext.getCKEditor5ClassicEditorConfig("sampleReactCKEditor5ClassicEditor")
 		).build()
 	%>'
 />

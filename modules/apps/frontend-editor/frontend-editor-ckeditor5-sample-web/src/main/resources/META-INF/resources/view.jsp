@@ -42,6 +42,12 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced_classic
 						});
 					add(
 						navigationItem -> {
+							navigationItem.setActive(navigation.equals("react_cet_premium"));
+							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "react_cet_premium");
+							navigationItem.setLabel("React + CET Premium");
+						});
+					add(
+						navigationItem -> {
 							navigationItem.setActive(navigation.equals("balloon"));
 							navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "balloon");
 							navigationItem.setLabel("Balloon");
@@ -73,6 +79,9 @@ String navigation = ParamUtil.getString(request, "navigation", "advanced_classic
 			</c:when>
 			<c:when test='<%= StringUtil.equals(navigation, "react_cet") %>'>
 				<liferay-util:include page="/partials/react_cet.jsp" servletContext="<%= application %>" />
+			</c:when>
+			<c:when test='<%= StringUtil.equals(navigation, "react_cet_premium") %>'>
+				<liferay-util:include page="/partials/react_cet_premium.jsp" servletContext="<%= application %>" />
 			</c:when>
 			<c:otherwise>
 				<liferay-util:include page="/partials/advanced_classic.jsp" servletContext="<%= application %>" />
