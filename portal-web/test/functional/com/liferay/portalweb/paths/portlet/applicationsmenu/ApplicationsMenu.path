@@ -27,7 +27,7 @@
 </tr>
 <tr>
 	<td>PANEL</td>
-	<td>//ul[@role='menu' and contains(@class, 'categories-list')]//a[@role='menuitem' and normalize-space()='${key_panel}']</td>
+	<td>//ul[@role='menu' and contains(@class, 'categories-list')]//a[@role='menuitem'][.//span[normalize-space(text())='${key_panel}']]</td>
 	<td></td>
 </tr>
 <tr>
