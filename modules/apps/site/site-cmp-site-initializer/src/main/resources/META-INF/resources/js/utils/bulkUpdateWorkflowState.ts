@@ -104,6 +104,31 @@ export function getWorkflowKey({
 	return `${workflowDefinitionName}-${workflowDefinitionVersion}`;
 }
 
+export function getWorkflowNamesWithMultipleVersions(
+	workflowGroups: WorkflowGroup[]
+) {
+	const versionCountByWorkflowName = new Map<string, number>();
+
+	workflowGroups.forEach(({workflowDefinitionName}) => {
+		versionCountByWorkflowName.set(
+			workflowDefinitionName,
+			(versionCountByWorkflowName.get(workflowDefinitionName) ?? 0) + 1
+		);
+	});
+
+	const workflowNames = new Set<string>();
+
+	versionCountByWorkflowName.forEach(
+		(versionCount, workflowDefinitionName) => {
+			if (versionCount > 1) {
+				workflowNames.add(workflowDefinitionName);
+			}
+		}
+	);
+
+	return workflowNames;
+}
+
 export function getWorkflowTaskIds(workflowGroup: WorkflowGroup) {
 	const workflowTaskIds: number[] = [];
 

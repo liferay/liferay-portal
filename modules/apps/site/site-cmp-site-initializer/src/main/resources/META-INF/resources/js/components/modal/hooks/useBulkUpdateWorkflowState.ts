@@ -8,6 +8,7 @@ import {useMemo, useState} from 'react';
 import {
 	getChangeTransitions,
 	getWorkflowGroups,
+	getWorkflowNamesWithMultipleVersions,
 } from '../../../utils/bulkUpdateWorkflowState';
 import {WorkflowTaskItemData} from '../../../utils/types';
 
@@ -23,6 +24,11 @@ export default function useBulkUpdateWorkflowState(
 	>({});
 
 	const workflowGroups = useMemo(() => getWorkflowGroups(items), [items]);
+
+	const workflowNamesWithMultipleVersions = useMemo(
+		() => getWorkflowNamesWithMultipleVersions(workflowGroups),
+		[workflowGroups]
+	);
 
 	const changeTransitions = useMemo(
 		() =>
@@ -76,5 +82,6 @@ export default function useBulkUpdateWorkflowState(
 		toggleCollapsed,
 		transitionNames,
 		workflowGroups,
+		workflowNamesWithMultipleVersions,
 	};
 }

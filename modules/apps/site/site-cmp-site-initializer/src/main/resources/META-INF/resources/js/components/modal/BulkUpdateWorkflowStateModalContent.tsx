@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayBadge from '@clayui/badge';
 import ClayButton from '@clayui/button';
 import {ClayCheckbox} from '@clayui/form';
@@ -55,6 +56,7 @@ export default function BulkUpdateWorkflowStateModalContent({
 		toggleCollapsed,
 		transitionNames,
 		workflowGroups,
+		workflowNamesWithMultipleVersions,
 	} = useBulkUpdateWorkflowState(items);
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -98,8 +100,19 @@ export default function BulkUpdateWorkflowStateModalContent({
 					)}
 				</p>
 
+				{!!workflowNamesWithMultipleVersions.size && (
+					<ClayAlert
+						className="lfr-cmp__bulk-update-state-alert"
+						displayType="info"
+						variant="feedback"
+					>
+						{Liferay.Language.get('this-workflow-was-updated')}
+					</ClayAlert>
+				)}
+
 				{workflowGroups.map((workflowGroup) => {
-					const {workflowDefinitionName} = workflowGroup;
+					const {workflowDefinitionName, workflowDefinitionVersion} =
+						workflowGroup;
 
 					const workflowKey = getWorkflowKey(workflowGroup);
 					const workflowTaskIds = getWorkflowTaskIds(workflowGroup);
@@ -111,17 +124,28 @@ export default function BulkUpdateWorkflowStateModalContent({
 					const allTasksSelected =
 						selectedTaskIds.length === workflowTaskIds.length;
 					const collapsed = isCollapsed(workflowKey);
+					const hasMultipleVersions =
+						workflowNamesWithMultipleVersions.has(
+							workflowDefinitionName
+						);
+					const versionLabel = sub(
+						Liferay.Language.get('version-x'),
+						workflowDefinitionVersion
+					);
+					const workflowLabel = hasMultipleVersions
+						? `${workflowDefinitionName} ${versionLabel}`
+						: workflowDefinitionName;
 
 					return (
 						<div
-							aria-label={workflowDefinitionName}
+							aria-label={workflowLabel}
 							className="lfr-cmp__bulk-update-state-workflow"
 							key={workflowKey}
 							role="group"
 						>
 							<div className="lfr-cmp__bulk-update-state-workflow-header">
 								<ClayCheckbox
-									aria-label={workflowDefinitionName}
+									aria-label={workflowLabel}
 									checked={!!selectedTaskIds.length}
 									indeterminate={
 										!!selectedTaskIds.length &&
@@ -138,6 +162,14 @@ export default function BulkUpdateWorkflowStateModalContent({
 								<span className="lfr-cmp__bulk-update-state-workflow-name">
 									{workflowDefinitionName}
 								</span>
+
+								{hasMultipleVersions && (
+									<ClayBadge
+										className="lfr-cmp__bulk-update-state-workflow-badge"
+										displayType="secondary"
+										label={versionLabel}
+									/>
+								)}
 
 								<ClayBadge
 									className="lfr-cmp__bulk-update-state-workflow-badge"

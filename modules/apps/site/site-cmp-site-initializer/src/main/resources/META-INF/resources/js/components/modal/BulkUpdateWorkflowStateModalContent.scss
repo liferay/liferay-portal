@@ -1,6 +1,11 @@
 @import 'atlas-variables';
 
 .lfr-cmp__bulk-update-state {
+	&-alert.alert {
+		font-weight: $font-weight-semi-bold;
+		margin-bottom: 1.25rem;
+	}
+
 	&-body {
 		max-height: 50rem;
 	}
