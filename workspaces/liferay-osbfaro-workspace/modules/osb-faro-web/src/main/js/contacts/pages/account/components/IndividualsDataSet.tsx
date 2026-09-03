@@ -15,7 +15,7 @@ const FDS_ID = 'account-individuals-dataset';
 
 const PREVIEW_FDS_ID = 'most-engaged-individuals-dataset';
 
-const PREVIEW_DELTA = 3;
+const PREVIEW_DELTA = 5;
 
 const SORTS = [
 	{
