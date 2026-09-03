@@ -55,7 +55,8 @@ public class CaptchaResourceTest extends BaseCaptchaResourceTestCase {
 		Assert.assertNotNull(captcha.getToken());
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-			EncryptorUtil.decrypt(testCompany.getKeyObj(), captcha.getToken()));
+			EncryptorUtil.decryptAuthenticated(
+				testCompany.getKeyObj(), captcha.getToken()));
 
 		Assert.assertNotNull(jsonObject.get("answer"));
 
@@ -88,7 +89,7 @@ public class CaptchaResourceTest extends BaseCaptchaResourceTestCase {
 		String token = _getToken();
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-			EncryptorUtil.decrypt(testCompany.getKeyObj(), token));
+			EncryptorUtil.decryptAuthenticated(testCompany.getKeyObj(), token));
 
 		_assertStatus(token, jsonObject.getString("answer"), 204);
 
