@@ -21,17 +21,23 @@ import FieldSetModal from './FieldSetModal';
 import useDeleteFieldSet from './actions/useDeleteFieldSet.es';
 import usePropagateFieldSet from './actions/usePropagateFieldSet.es';
 
+function getFieldSetLabel(fieldSet) {
+	return (
+		getLocalizedValue(fieldSet.defaultLanguageId, fieldSet.name ?? {}) ?? ''
+	);
+}
+
 function getSortedFieldsets(fieldsets) {
 	return fieldsets.sort((a, b) => {
-		const localizedValueA = getLocalizedValue(a.defaultLanguageId, a.name);
-		const localizedValueB = getLocalizedValue(b.defaultLanguageId, b.name);
+		const localizedValueA = getFieldSetLabel(a);
+		const localizedValueB = getFieldSetLabel(b);
 
 		return localizedValueA.localeCompare(localizedValueB);
 	});
 }
 
 function matchesSearchTerm(fieldSet, lowerCaseSearchTerm) {
-	const label = getLocalizedValue(fieldSet.defaultLanguageId, fieldSet.name);
+	const label = getFieldSetLabel(fieldSet);
 
 	return label.toLowerCase().includes(lowerCaseSearchTerm);
 }
