@@ -18,6 +18,7 @@ export enum TabName {
 	INPUT_LOCALIZED = 'Input Localized',
 	REACT = 'React',
 	REACT_PLUS_CET = 'React + CET',
+	REACT_PLUS_CET_PREMIUM = 'React + CET Premium',
 }
 
 export class CKEditor5SamplePage extends POM {
@@ -48,6 +49,7 @@ export class CKEditor5SamplePage extends POM {
 			case TabName.BASIC_CLASSIC:
 			case TabName.REACT:
 			case TabName.REACT_PLUS_CET:
+			case TabName.REACT_PLUS_CET_PREMIUM:
 				visitedPage = new ClassicPage(this.page);
 				break;
 

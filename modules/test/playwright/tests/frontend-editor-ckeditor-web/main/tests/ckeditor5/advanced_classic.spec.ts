@@ -307,26 +307,10 @@ test(
 		await expect(imageButton).toBeDisabled();
 		await expect(videoButton).toBeDisabled();
 
-		await classicPage.sourceEditingEnhancedDialog.cancelButton.click();
+		await sourceButton.click();
 
 		await expect(imageButton).toBeEnabled();
 		await expect(videoButton).toBeEnabled();
-	}
-);
-
-test(
-	'Enhanced source editing opens the source view in a modal for DXP licensed installations',
-	{tag: '@LPD-83978'},
-	async ({classicPage, page}) => {
-		await classicPage.toolbar.container
-			.getByRole('button', {exact: true, name: 'Source'})
-			.click();
-
-		await expect(
-			page.getByRole('dialog', {name: 'Edit source'})
-		).toBeVisible();
-
-		await expect(page.locator('.cm-editor')).toBeVisible();
 	}
 );
 
@@ -340,11 +324,11 @@ test(
 
 		await sourceButton.click();
 
-		await classicPage.sourceEditingEnhancedDialog.editable.fill(
+		await classicPage.sourceEditable.fill(
 			'<h2>Heading Two</h2><p>Paragraph with <i>italic</i> text.</p>'
 		);
 
-		await classicPage.sourceEditingEnhancedDialog.saveButton.click();
+		await sourceButton.click();
 
 		await expect(classicPage.editable.locator('h2')).toContainText(
 			'Heading Two'
@@ -429,28 +413,6 @@ test(
 		).toBeVisible();
 	}
 );
-
-if (!process.env.CI) {
-	test(
-		'Enhanced Paste from Office plugin is registered for licensed DXP installations',
-		{tag: '@LPD-95090'},
-		async ({classicPage, page}) => {
-			await expect(classicPage.editable).toBeVisible();
-
-			const hasPasteFromOfficeEnhanced = await page.evaluate(() => {
-				const editorElement = Array.from(
-					document.querySelectorAll('.lfr-ck *')
-				).find((element) => (element as any).ckeditorInstance);
-
-				const editor = (editorElement as any)?.ckeditorInstance;
-
-				return editor?.plugins.has('PasteFromOfficeEnhanced') ?? false;
-			});
-
-			expect(hasPasteFromOfficeEnhanced).toBe(true);
-		}
-	);
-}
 
 test(
 	'Style Book text colors are available in the Styles dropdown',

@@ -23,10 +23,14 @@ const advancedClassicPageTest = classicPageTestFor(TabName.ADVANCED_CLASSIC);
 const basicClassicPageTest = classicPageTestFor(TabName.BASIC_CLASSIC);
 const reactClassicPageTest = classicPageTestFor(TabName.REACT);
 const reactPlusCETClassicPageTest = classicPageTestFor(TabName.REACT_PLUS_CET);
+const reactPlusCETPremiumClassicPageTest = classicPageTestFor(
+	TabName.REACT_PLUS_CET_PREMIUM
+);
 
 export {
 	advancedClassicPageTest,
 	basicClassicPageTest,
 	reactClassicPageTest,
 	reactPlusCETClassicPageTest,
+	reactPlusCETPremiumClassicPageTest,
 };
