@@ -375,6 +375,10 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
+
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
 			panel = "Control Panel",
@@ -434,6 +438,12 @@ definition {
 		// Assert the Home page is a content page in the new virtual instance
 
 		AssertVisible(locator1 = "Icon#EDIT_PENCIL");
+
+		task ("Enable widget pages in the new virtual instance") {
+			PagesAdmin.enableWidgetPages();
+
+			Navigator.openSpecificURL(url = "http://www.able.com:8080");
+		}
 
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
