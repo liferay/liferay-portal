@@ -65,7 +65,9 @@ export async function fetchFieldSets({
 	});
 
 	return {
-		fieldSets: items.filter(({id}) => id !== parseInt(dataDefinitionId, 10)),
+		fieldSets: items.filter(
+			({id}) => id !== parseInt(dataDefinitionId, 10)
+		),
 		truncated: totalCount > items.length,
 	};
 }
@@ -104,8 +106,7 @@ export default function useSearchFieldSets(searchTerm) {
 						setSearchState({
 							hasError: false,
 							items: fieldSets.filter(
-								({id}) =>
-									!removedFieldSetIdsRef.current.has(id)
+								({id}) => !removedFieldSetIdsRef.current.has(id)
 							),
 							term: searchTerm,
 							truncated,
