@@ -1,5 +1,5 @@
 dependencies {
-	compileInclude group: "com.liferay", name: "org.quartz", version: "2.1.7.LIFERAY-PATCHED-2"
+	compileInclude group: "com.liferay", name: "org.quartz", version: "2.1.7.LIFERAY-PATCHED-3"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
