@@ -101,7 +101,8 @@ export default function WorkflowTasksFDSPropsTransformer({
 				}
 
 				return !selectedItems.every(
-					({embedded}) => embedded?.assignedToMe && !embedded?.completed
+					({embedded}) =>
+						embedded?.assignedToMe && !embedded?.completed
 				);
 			},
 		})),
