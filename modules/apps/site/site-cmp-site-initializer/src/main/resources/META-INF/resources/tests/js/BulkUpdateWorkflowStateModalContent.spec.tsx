@@ -119,6 +119,22 @@ describe('BulkUpdateWorkflowStateModalContent', () => {
 		taskId = 0;
 	});
 
+	it('badges the version only for a workflow present at more than one', () => {
+		renderModal([
+			task({assetTitle: 'One', workflowDefinitionVersion: '1'}),
+			task({assetTitle: 'Two', workflowDefinitionVersion: '2'}),
+			task({assetTitle: 'Three', workflowDefinitionName: 'Workflow B'}),
+		]);
+
+		expect(
+			screen.getAllByRole('group', {name: 'Workflow A version-x'})
+		).toHaveLength(2);
+
+		expect(
+			screen.getByRole('group', {name: 'Workflow B'})
+		).toBeInTheDocument();
+	});
+
 	it('collapses a workflow behind its header button', () => {
 		renderModal([task({assetTitle: 'One'})]);
 
@@ -271,5 +287,27 @@ describe('BulkUpdateWorkflowStateModalContent', () => {
 		expect(screen.getByRole('checkbox', {name: 'One'})).not.toBeChecked();
 		expect(screen.getByRole('checkbox', {name: 'Two'})).not.toBeChecked();
 		expect(screen.getByText('update-state')).toBeDisabled();
+	});
+
+	it('warns only when a workflow is present at more than one version', () => {
+		const {queryByText, unmount} = renderModal([
+			task({assetTitle: 'One'}),
+			task({assetTitle: 'Two', workflowDefinitionName: 'Workflow B'}),
+		]);
+
+		expect(
+			queryByText('this-workflow-was-updated')
+		).not.toBeInTheDocument();
+
+		unmount();
+
+		renderModal([
+			task({assetTitle: 'One', workflowDefinitionVersion: '1'}),
+			task({assetTitle: 'Two', workflowDefinitionVersion: '2'}),
+		]);
+
+		expect(
+			screen.getByText('this-workflow-was-updated')
+		).toBeInTheDocument();
 	});
 });
