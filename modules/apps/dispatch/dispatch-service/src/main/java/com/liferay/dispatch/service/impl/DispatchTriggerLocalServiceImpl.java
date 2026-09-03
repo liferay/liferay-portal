@@ -17,6 +17,7 @@ import com.liferay.dispatch.internal.helper.DispatchTriggerHelper;
 import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.DispatchLogLocalService;
 import com.liferay.dispatch.service.base.DispatchTriggerLocalServiceBaseImpl;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -197,6 +198,16 @@ public class DispatchTriggerLocalServiceImpl
 		}
 
 		return null;
+	}
+
+	@Override
+	public List<DispatchTrigger> getActiveDispatchTriggers(
+		List<DispatchTaskClusterMode> dispatchTaskClusterModes) {
+
+		return dispatchTriggerPersistence.findByA_DTCM(
+			true,
+			TransformUtil.transformToIntArray(
+				dispatchTaskClusterModes, DispatchTaskClusterMode::getMode));
 	}
 
 	@Override
