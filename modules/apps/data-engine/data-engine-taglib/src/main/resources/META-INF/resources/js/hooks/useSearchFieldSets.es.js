@@ -43,6 +43,10 @@ export async function fetchFieldSets({
 
 	const results = await Promise.allSettled(requests);
 
+	if (!results.length) {
+		return {fieldSets: [], truncated: false};
+	}
+
 	const rejectedResults = results.filter(({status}) => status === 'rejected');
 
 	if (rejectedResults.length === results.length) {
