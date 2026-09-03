@@ -98,7 +98,7 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 		return depotEntry.getGroup();
 	}
 
-	private LayoutPageTemplateEntry _addDefaultDisplayPageTemplate(
+	private LayoutPageTemplateEntry _addDisplayPageTemplate(
 			long groupId, JournalArticle journalArticle)
 		throws Exception {
 
@@ -168,7 +168,7 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_group);
 
 		LayoutPageTemplateEntry designLibraryLayoutPageTemplateEntry =
-			_addDefaultDisplayPageTemplate(
+			_addDisplayPageTemplate(
 				designLibraryGroup.getGroupId(), journalArticle);
 
 		_assertLayoutFriendlyURLComposite(false, null, journalArticle);
@@ -176,7 +176,7 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 			true, designLibraryLayoutPageTemplateEntry, journalArticle);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_addDefaultDisplayPageTemplate(_group.getGroupId(), journalArticle);
+			_addDisplayPageTemplate(_group.getGroupId(), journalArticle);
 
 		_assertLayoutFriendlyURLComposite(
 			true, layoutPageTemplateEntry, journalArticle);
@@ -189,7 +189,7 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_addGroup());
 
-		_addDefaultDisplayPageTemplate(
+		_addDisplayPageTemplate(
 			designLibraryGroup.getGroupId(), journalArticle);
 
 		_assertLayoutFriendlyURLComposite(true, null, journalArticle);
@@ -202,7 +202,7 @@ public class BaseAssetDisplayPageFriendlyURLResolverTest {
 
 		Group designLibraryGroup = _addConnectedDesignLibraryGroup(_group);
 
-		_addDefaultDisplayPageTemplate(
+		_addDisplayPageTemplate(
 			designLibraryGroup.getGroupId(), journalArticle);
 
 		AssetDisplayPageEntryTestUtil.addAssetDisplayPageEntry(
