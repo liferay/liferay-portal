@@ -20,8 +20,10 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -202,7 +204,12 @@ public class XLIFFTranslationSnapshotProvider
 		xliffDocument.load(tempFile);
 
 		_validateXLIFFFile(groupId, infoItemReference, xliffDocument);
-		_validateInlineCodes(xliffDocument);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-102730")) {
+
+			_validateInlineCodes(xliffDocument);
+		}
 
 		StartXliffData startXliffData = xliffDocument.getStartXliffData();
 
@@ -497,7 +504,9 @@ public class XLIFFTranslationSnapshotProvider
 			if (object instanceof CTag) {
 				CTag cTag = (CTag)object;
 
-				sb.append(cTag.getData());
+				if (cTag.hasData()) {
+					sb.append(cTag.getData());
+				}
 			}
 			else if (object instanceof String) {
 				sb.append((String)object);
