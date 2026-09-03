@@ -307,6 +307,16 @@ describe('TopAssets', () => {
 		});
 	});
 
+	describe('bottom spacing', () => {
+		it('should pad the tab pane bottom when no View All footer follows the table', () => {
+			const {container} = renderTopAssets();
+
+			expect(container.querySelector('.tab-pane.active')).toHaveClass(
+				'pb-4'
+			);
+		});
+	});
+
 	describe('loading state', () => {
 		it('should render the loading indicator while the request is in flight', () => {
 			mockUseRequestWith({loading: true});

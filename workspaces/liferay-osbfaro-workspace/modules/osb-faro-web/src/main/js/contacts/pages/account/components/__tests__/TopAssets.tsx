@@ -580,6 +580,26 @@ describe('TopAssets', () => {
 		});
 	});
 
+	describe('bottom spacing', () => {
+		it('should leave the tab pane bottom unpadded when the View All footer follows the table', () => {
+			const {container} = renderTopAssets();
+
+			expect(container.querySelector('.tab-pane.active')).toHaveClass(
+				'pb-0'
+			);
+		});
+
+		it('should pad the tab pane bottom when no assets leave the card without a footer', () => {
+			mockUseRequestWith({data: {items: []}});
+
+			const {container} = renderTopAssets();
+
+			expect(container.querySelector('.tab-pane.active')).toHaveClass(
+				'pb-4'
+			);
+		});
+	});
+
 	describe('empty state', () => {
 		it('should render the Content empty state when no assets are returned on the Content tab', () => {
 			mockUseRequestWith({data: {items: []}});
