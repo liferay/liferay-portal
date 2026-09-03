@@ -5,7 +5,6 @@
 
 package com.liferay.portal.kernel.internal.security.fips;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -61,16 +60,14 @@ public class FIPSModeHelperUtil {
 		}
 		catch (IOException ioException) {
 			throw new SecurityException(
-				StringBundler.concat(
-					"Unable to read the cluster link channel properties \"",
-					channelPropertiesLocation, "\" in FIPS mode"),
+				"Unable to read the cluster link channel properties \"" +
+					channelPropertiesLocation + "\" in FIPS mode",
 				ioException);
 		}
 		catch (Exception exception) {
 			throw new SecurityException(
-				StringBundler.concat(
-					"Unable to parse the cluster link channel properties \"",
-					channelPropertiesLocation, "\" in FIPS mode"),
+				"Unable to parse the cluster link channel properties \"" +
+					channelPropertiesLocation + "\" in FIPS mode",
 				exception);
 		}
 	}

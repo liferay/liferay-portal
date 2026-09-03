@@ -7,8 +7,11 @@ package com.liferay.portal.json.web.service.client;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.json.web.service.client.internal.JSONWebServiceClientImpl;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -30,8 +33,10 @@ public class BaseJSONWebServiceClientImplTest {
 		JSONWebServiceClientImpl jsonWebServiceClientImpl =
 			new JSONWebServiceClientImpl();
 
-		Assert.assertNotNull(
-			jsonWebServiceClientImpl.getSSLIOSessionStrategy());
+		Assert.assertTrue(
+			ReflectionTestUtil.getFieldValue(
+				jsonWebServiceClientImpl.getSSLIOSessionStrategy(),
+				"hostnameVerifier") instanceof DefaultHostnameVerifier);
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -47,8 +52,10 @@ public class BaseJSONWebServiceClientImplTest {
 
 			jsonWebServiceClientImpl.setTrustSelfSignedCertificates(false);
 
-			Assert.assertNotNull(
-				jsonWebServiceClientImpl.getSSLIOSessionStrategy());
+			Assert.assertTrue(
+				ReflectionTestUtil.getFieldValue(
+					jsonWebServiceClientImpl.getSSLIOSessionStrategy(),
+					"hostnameVerifier") instanceof DefaultHostnameVerifier);
 		}
 	}
 

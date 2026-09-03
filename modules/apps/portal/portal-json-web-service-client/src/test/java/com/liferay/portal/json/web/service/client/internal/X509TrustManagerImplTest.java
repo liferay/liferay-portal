@@ -6,6 +6,7 @@
 package com.liferay.portal.json.web.service.client.internal;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -26,14 +27,22 @@ public class X509TrustManagerImplTest {
 
 	@Test
 	public void testConstructor() {
-		Assert.assertNotNull(new X509TrustManagerImpl());
-		Assert.assertNotNull(new X509TrustManagerImpl(null, true));
+		Assert.assertNotNull(
+			ReflectionTestUtil.getFieldValue(
+				new X509TrustManagerImpl(), "_defaultX509TrustManager"));
+		Assert.assertNotNull(
+			ReflectionTestUtil.getFieldValue(
+				new X509TrustManagerImpl(null, true),
+				"_defaultX509TrustManager"));
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
 
-			Assert.assertNotNull(new X509TrustManagerImpl(null, false));
+			Assert.assertNotNull(
+				ReflectionTestUtil.getFieldValue(
+					new X509TrustManagerImpl(null, false),
+					"_defaultX509TrustManager"));
 
 			SecurityException securityException1 = Assert.assertThrows(
 				SecurityException.class, () -> new X509TrustManagerImpl());

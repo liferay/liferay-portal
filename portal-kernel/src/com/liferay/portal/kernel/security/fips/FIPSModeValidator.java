@@ -503,15 +503,13 @@ public class FIPSModeValidator {
 			PropsUtil.get(PropsKeys.COMPANY_ENCRYPTION_ALGORITHM));
 		validateAlgorithm(PropsValues.TUNNELING_SERVLET_ENCRYPTION_ALGORITHM);
 
-		if (PropsValues.FIPS_ENABLED &&
-			!GetterUtil.getBoolean(
+		if (!GetterUtil.getBoolean(
 				PropsUtil.get(PropsKeys.TUNNEL_UTIL_VERIFY_SSL_HOSTNAME))) {
 
 			throw new SecurityException(
-				StringBundler.concat(
-					"FIPS mode requires the property \"",
-					PropsKeys.TUNNEL_UTIL_VERIFY_SSL_HOSTNAME,
-					"\" to be enabled"));
+				"FIPS mode requires the property \"" +
+					PropsKeys.TUNNEL_UTIL_VERIFY_SSL_HOSTNAME +
+						"\" to be enabled");
 		}
 
 		_validateClusterLinkConfiguration();

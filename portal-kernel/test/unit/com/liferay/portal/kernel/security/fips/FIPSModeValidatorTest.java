@@ -505,8 +505,8 @@ public class FIPSModeValidatorTest {
 						false)) {
 
 				_assertSecurityException(
-					"FIPS mode requires the property \"com.liferay.portal." +
-						"kernel.service.http.TunnelUtil.verify.ssl.hostname\"",
+					"FIPS mode requires the property \"" +
+						PropsKeys.TUNNEL_UTIL_VERIFY_SSL_HOSTNAME + "\"",
 					"_validatePortalProperties", new Class<?>[0]);
 			}
 
@@ -515,8 +515,8 @@ public class FIPSModeValidatorTest {
 						"TUNNEL_UTIL_VERIFY_SSL_HOSTNAME", "false", false)) {
 
 				_assertSecurityException(
-					"FIPS mode requires the property \"com.liferay.portal." +
-						"kernel.service.http.TunnelUtil.verify.ssl.hostname\"",
+					"FIPS mode requires the property \"" +
+						PropsKeys.TUNNEL_UTIL_VERIFY_SSL_HOSTNAME + "\"",
 					"_validatePortalProperties", new Class<?>[0]);
 			}
 		}
