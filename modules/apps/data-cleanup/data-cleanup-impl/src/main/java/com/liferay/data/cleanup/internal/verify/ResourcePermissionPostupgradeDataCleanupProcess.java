@@ -54,7 +54,7 @@ public class ResourcePermissionPostupgradeDataCleanupProcess
 						ResourcePermissionPostupgradeDataCleanupProcess.class.
 							getSimpleName(),
 						" cannot be executed because there are modules that ",
-						"are not active"));
+						"are inactive"));
 			}
 
 			return;

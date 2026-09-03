@@ -61,7 +61,7 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 					messages.contains(
 						"ResourceActionPostUpgradeDataCleanupProcess cannot " +
 							"be executed because there are modules that are " +
-								"not active"));
+								"inactive"));
 			},
 			() -> {
 				Bundle bundle = bundleAtomicReference.get();
@@ -320,7 +320,7 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 					messages.contains(
 						"ResourceActionPostUpgradeDataCleanupProcess cannot " +
 							"be executed because there are modules that are " +
-								"not active"));
+								"inactive"));
 			},
 			() -> {
 				Bundle bundle = bundleAtomicReference.get();

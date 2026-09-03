@@ -62,7 +62,7 @@ public class ResourceActionPostUpgradeDataCleanupProcess
 						ResourceActionPostUpgradeDataCleanupProcess.class.
 							getSimpleName(),
 						" cannot be executed because there are modules that ",
-						"are not active"));
+						"are inactive"));
 			}
 
 			return;

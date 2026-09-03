@@ -172,7 +172,7 @@ public class ResourcePermissionPostupgradeDataCleanupProcessTest
 					messages.contains(
 						"ResourcePermissionPostupgradeDataCleanupProcess " +
 							"cannot be executed because there are modules " +
-								"that are not active"));
+								"that are inactive"));
 			},
 			() -> {
 				Bundle bundle = bundleAtomicReference.get();

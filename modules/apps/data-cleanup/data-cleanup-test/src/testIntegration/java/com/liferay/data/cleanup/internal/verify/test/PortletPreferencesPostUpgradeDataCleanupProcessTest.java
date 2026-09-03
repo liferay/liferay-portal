@@ -507,7 +507,7 @@ public class PortletPreferencesPostUpgradeDataCleanupProcessTest
 					messages.contains(
 						"PortletPreferencesPostUpgradeDataCleanupProcess " +
 							"cannot be executed because there are modules " +
-								"that are not active"));
+								"that are inactive"));
 			},
 			() -> {
 				Bundle bundle = bundleAtomicReference.get();
