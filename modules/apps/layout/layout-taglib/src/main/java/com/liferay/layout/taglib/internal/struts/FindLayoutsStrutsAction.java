@@ -150,6 +150,9 @@ public class FindLayoutsStrutsAction implements StrutsAction {
 							return false;
 						}
 					).put(
+						"externalReferenceCode",
+						layout.getExternalReferenceCode()
+					).put(
 						"groupId", layout.getGroupId()
 					).put(
 						"id", layout.getUuid()
