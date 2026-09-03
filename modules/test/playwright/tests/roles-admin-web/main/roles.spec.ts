@@ -1262,7 +1262,8 @@ test(
 		const menuItems = {
 			'Applications Menu': [
 				'Content',
-				'Developer & Integration',
+				'Developer and Integration',
+				'Search',
 				'Workflow',
 			],
 			'Control Panel': [
