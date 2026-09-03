@@ -7,6 +7,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:asset:asset-api")
+	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:friendly-url:friendly-url-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:layout:layout-display-page-api")
