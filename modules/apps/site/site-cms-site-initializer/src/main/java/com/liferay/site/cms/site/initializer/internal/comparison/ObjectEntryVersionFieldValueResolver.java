@@ -252,14 +252,14 @@ public class ObjectEntryVersionFieldValueResolver {
 		long fileEntryId = GetterUtil.getLong(idObject);
 
 		if (fileEntryId == 0) {
-			return String.valueOf(value);
+			return StringPool.BLANK;
 		}
 
 		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchDLFileEntry(
 			fileEntryId);
 
 		if (dlFileEntry == null) {
-			return String.valueOf(value);
+			return StringPool.BLANK;
 		}
 
 		String fileName = HtmlUtil.escape(dlFileEntry.getFileName());
@@ -269,8 +269,7 @@ public class ObjectEntryVersionFieldValueResolver {
 
 			return StringBundler.concat(
 				"<img alt=\"", fileName,
-				"\" class=\"border cms-compare-versions-attachment d-block ",
-				"mb-2 mw-100 rounded\" src=\"",
+				"\" class=\"cms-compare-versions-attachment\" src=\"",
 				_dlURLHelper.getPreviewURL(
 					fileEntry, fileEntry.getFileVersion(), null,
 					StringPool.BLANK),
