@@ -15,6 +15,7 @@ import {HTML5Backend} from 'react-dnd-html5-backend';
 import {Provider} from 'react-redux';
 import {Segment} from 'shared/util/records';
 import {SegmentStates} from 'shared/util/constants';
+import {useBlocker} from 'react-router-dom';
 
 jest.mock('segment/segment-editor/dynamic/criteria-sidebar/index');
 
@@ -26,11 +27,30 @@ jest.unmock('react-dom');
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useBlocker: () => ({state: 'unblocked'}),
+	useBlocker: jest.fn(() => ({state: 'unblocked'})),
 }));
+
+/**
+ * Runs the guard the editor handed to `useBlocker` on its latest render,
+ * answering whether the editor would stop the user from navigating away.
+ */
+function blocksNavigation() {
+	const {calls} = useBlocker.mock;
+
+	const shouldBlock = calls[calls.length - 1][0];
+
+	return shouldBlock({
+		currentLocation: {pathname: '/segments/create'},
+		nextLocation: {pathname: '/event-analysis'}
+	});
+}
 
 describe('SegmentEditor', () => {
 	afterEach(cleanup);
+
+	beforeEach(() => {
+		useBlocker.mockClear();
+	});
 
 	it('should render', () => {
 		const {container} = render(
@@ -178,6 +198,76 @@ describe('SegmentEditor', () => {
 				'ERC must contain only lowercase letters, numbers, hyphens, and underscores.'
 			)
 		).toBeInTheDocument();
+	});
+
+	// A new segment carries no external reference code, so the form seeds the
+	// field with a generated one. Measuring changes against the raw segment made
+	// an untouched form look dirty and armed the unsaved changes guard on a
+	// creation page nobody had touched yet.
+
+	it('should let the user leave an untouched creation form', () => {
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<DndProvider backend={HTML5Backend}>
+						<SegmentEditor
+							channelId='321'
+							groupId='23'
+							type='BATCH'
+						/>
+					</DndProvider>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		expect(blocksNavigation()).toBe(false);
+	});
+
+	it('should warn before leaving once the segment name changes', () => {
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<DndProvider backend={HTML5Backend}>
+						<SegmentEditor
+							channelId='321'
+							groupId='23'
+							type='BATCH'
+						/>
+					</DndProvider>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		fireEvent.change(screen.getByPlaceholderText('Unnamed Segment'), {
+			target: {value: 'Engaged Accounts'}
+		});
+
+		expect(blocksNavigation()).toBe(true);
+	});
+
+	it('should let the user leave an untouched edit form', () => {
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<DndProvider backend={HTML5Backend}>
+						<SegmentEditor
+							channelId='321'
+							groupId='23'
+							id='123'
+							segment={data.getImmutableMock(
+								Segment,
+								data.mockSegment,
+								123,
+								{externalReferenceCode: 'engaged-accounts'}
+							)}
+							type='BATCH'
+						/>
+					</DndProvider>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		expect(blocksNavigation()).toBe(false);
 	});
 });
 
