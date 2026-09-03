@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 
 import java.util.HashMap;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,6 +99,21 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 				deleteCartByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCodeHttpResponse(
 					attachment.getExternalReferenceCode(),
 					_commerceOrder.getExternalReferenceCode()));
+	}
+
+	@Override
+	@Test
+	public void testPostCartAttachmentByBase64() throws Exception {
+		super.testPostCartAttachmentByBase64();
+
+		Attachment postAttachment =
+			testPostCartAttachmentByBase64_addAttachment(randomAttachment());
+
+		Assert.assertEquals(
+			"commerce-order-attachment/" + postAttachment.getId(),
+			StringUtil.extractLast(postAttachment.getUrl(), "/o/"));
+		Assert.assertTrue(
+			StringUtil.startsWith(postAttachment.getUrl(), "http"));
 	}
 
 	@Override
