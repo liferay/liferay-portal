@@ -103,10 +103,10 @@ public class CompareObjectEntryVersionsCMSServletTest
 	public void testCompareObjectEntryVersions() throws Exception {
 		_testCompareObjectEntryVersionsWithDateObjectField();
 		_testCompareObjectEntryVersionsWithInvalidContent();
-		_testCompareObjectEntryVersionsWithoutUpdatePermission();
 		_testCompareObjectEntryVersionsWithRichTextObjectField();
 		_testCompareObjectEntryVersionsWithSameVersions();
 		_testCompareObjectEntryVersionsWithTextObjectField();
+		_testCompareObjectEntryVersionsWithoutUpdatePermission();
 	}
 
 	private void _addModelResourcePermissions(
