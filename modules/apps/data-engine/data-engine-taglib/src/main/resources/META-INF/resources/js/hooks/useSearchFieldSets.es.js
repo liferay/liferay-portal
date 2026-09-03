@@ -75,6 +75,7 @@ export default function useSearchFieldSets(searchTerm) {
 
 	const [searchState, setSearchState] = useState(null);
 
+	const hasErrorRef = useRef(false);
 	const removedFieldSetIdsRef = useRef(new Set());
 
 	useEffect(() => {
@@ -98,6 +99,8 @@ export default function useSearchFieldSets(searchTerm) {
 			})
 				.then(({fieldSets, truncated}) => {
 					if (!signal.aborted) {
+						hasErrorRef.current = false;
+
 						setSearchState({
 							hasError: false,
 							items: fieldSets.filter(
@@ -111,7 +114,11 @@ export default function useSearchFieldSets(searchTerm) {
 				})
 				.catch(() => {
 					if (!signal.aborted) {
-						errorToast();
+						if (!hasErrorRef.current) {
+							errorToast();
+						}
+
+						hasErrorRef.current = true;
 
 						setSearchState({
 							hasError: true,
