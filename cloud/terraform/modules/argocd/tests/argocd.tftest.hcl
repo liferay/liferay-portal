@@ -103,6 +103,17 @@ run "should_register_the_health_checks_under_the_infrastructure_api_group" {
 	}
 	command=plan
 }
+run "should_tolerate_the_restore_workflow_by_its_field_manager" {
+	assert {
+		condition=contains(yamldecode(yamldecode(helm_release.argocd.values[0]).configs.cm["resource.customizations.ignoreDifferences.azure.liferay.com_LiferayInfrastructure"]).managedFieldsManagers, "liferay-backup-restore")
+		error_message="The LiferayInfrastructure ignore rule must name the restore workflow's field manager, so every field the restore writes is tolerated"
+	}
+	assert {
+		condition=!contains(keys(yamldecode(yamldecode(helm_release.argocd.values[0]).configs.cm["resource.customizations.ignoreDifferences.azure.liferay.com_LiferayInfrastructure"])), "jsonPointers")
+		error_message="The LiferayInfrastructure ignore rule must not enumerate field paths, so growing the restore contract needs no ArgoCD change"
+	}
+	command=plan
+}
 variables {
 	argocd_helm_chart_version="10.1.3"
 	infrastructure_api_group="azure.liferay.com"

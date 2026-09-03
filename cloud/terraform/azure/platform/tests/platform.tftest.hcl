@@ -532,11 +532,11 @@ run "should_wire_the_platform_identities" {
 		error_message="The Crossplane IAM identity must hold Role Based Access Control Administrator on the resource group"
 	}
 	assert {
-		condition=data.azurerm_role_definition.key_vault_crypto_service_encryption_user.name == "Key Vault Crypto Service Encryption User" && data.azurerm_role_definition.storage_blob_data_contributor.name == "Storage Blob Data Contributor" && data.azurerm_role_definition.storage_blob_data_reader.name == "Storage Blob Data Reader"
+		condition=join(",", [for role_definition in [data.azurerm_role_definition.backup_operator, data.azurerm_role_definition.key_vault_crypto_service_encryption_user, data.azurerm_role_definition.storage_account_backup_contributor, data.azurerm_role_definition.storage_blob_data_contributor, data.azurerm_role_definition.storage_blob_data_reader] : role_definition.name]) == "Backup Operator,Key Vault Crypto Service Encryption User,Storage Account Backup Contributor,Storage Blob Data Contributor,Storage Blob Data Reader"
 		error_message="The grantable role allowlist must resolve the intended built in roles by name"
 	}
 	assert {
-		condition=strcontains(azurerm_role_assignment.crossplane_iam_rbac_administrator.condition, basename(data.azurerm_role_definition.key_vault_crypto_service_encryption_user.role_definition_id)) && strcontains(azurerm_role_assignment.crossplane_iam_rbac_administrator.condition, basename(data.azurerm_role_definition.storage_blob_data_contributor.role_definition_id)) && strcontains(azurerm_role_assignment.crossplane_iam_rbac_administrator.condition, basename(data.azurerm_role_definition.storage_blob_data_reader.role_definition_id))
+		condition=length(local.crossplane_iam_grantable_role_definition_ids) == 5 && alltrue([for role_definition in [data.azurerm_role_definition.backup_operator, data.azurerm_role_definition.key_vault_crypto_service_encryption_user, data.azurerm_role_definition.storage_account_backup_contributor, data.azurerm_role_definition.storage_blob_data_contributor, data.azurerm_role_definition.storage_blob_data_reader] : strcontains(azurerm_role_assignment.crossplane_iam_rbac_administrator.condition, basename(role_definition.role_definition_id))])
 		error_message="The role assignment condition must restrict grantable roles to the allowlist"
 	}
 	assert {
