@@ -710,7 +710,7 @@ definition {
 	@priority = 3
 	test NavigateToResultRankingsViaUI {
 		ApplicationsMenu.gotoPortlet(
-			category = "Search Tuning",
+			category = "Search",
 			panel = "Applications",
 			portlet = "Result Rankings");
 
@@ -720,7 +720,7 @@ definition {
 	@priority = 3
 	test NavigateToSynonymsViaUI {
 		ApplicationsMenu.gotoPortlet(
-			category = "Search Tuning",
+			category = "Search",
 			panel = "Applications",
 			portlet = "Synonyms");
 
