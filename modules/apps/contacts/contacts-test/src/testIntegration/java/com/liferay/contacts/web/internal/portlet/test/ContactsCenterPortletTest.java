@@ -26,6 +26,8 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
+import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
+import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -40,6 +42,11 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.Portlet;
+import jakarta.portlet.ResourceServingPortlet;
+
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.ByteArrayOutputStream;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -64,9 +71,6 @@ public class ContactsCenterPortletTest {
 
 	@Test
 	public void testProcessAction() throws Exception {
-		Group group = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
-
 		User user = UserTestUtil.addUser();
 
 		Entry entry1 = _entryLocalService.addEntry(
@@ -80,8 +84,7 @@ public class ContactsCenterPortletTest {
 			String emailAddress =
 				RandomTestUtil.randomString() + "@liferay.com";
 
-			JSONObject jsonObject = _processAction(
-				emailAddress, entry1, group, user);
+			JSONObject jsonObject = _processAction(emailAddress, entry1, user);
 
 			Assert.assertTrue(jsonObject.getBoolean("success"));
 
@@ -96,8 +99,7 @@ public class ContactsCenterPortletTest {
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			JSONObject jsonObject = _processAction(
-				RandomTestUtil.randomString() + "@liferay.com", entry1, group,
-				user);
+				RandomTestUtil.randomString() + "@liferay.com", entry1, user);
 
 			Assert.assertFalse(jsonObject.getBoolean("success"));
 
@@ -121,8 +123,7 @@ public class ContactsCenterPortletTest {
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			JSONObject jsonObject = _processAction(
-				RandomTestUtil.randomString() + "@liferay.com", entry1, group,
-				user);
+				RandomTestUtil.randomString() + "@liferay.com", entry1, user);
 
 			Assert.assertTrue(jsonObject.getBoolean("success"));
 
@@ -133,32 +134,77 @@ public class ContactsCenterPortletTest {
 		}
 	}
 
-	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
-			Entry entry, Group group, String emailAddress, User user)
-		throws Exception {
+	@Test
+	public void testServeResource() throws Exception {
+		User targetUser = UserTestUtil.addUser();
 
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
+		MockLiferayResourceResponse mockLiferayResourceResponse =
+			_serveResource(targetUser, null);
 
+		Assert.assertEquals(
+			HttpServletResponse.SC_FORBIDDEN,
+			_getStatus(mockLiferayResourceResponse));
+		Assert.assertEquals("", _getContent(mockLiferayResourceResponse));
+
+		User user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			JSONObject jsonObject = _jsonFactory.createJSONObject(
+				_getContent(_serveResource(targetUser, user)));
+
+			Assert.assertTrue(jsonObject.getBoolean("success"));
+
+			JSONObject userJSONObject = jsonObject.getJSONObject("user");
+
+			Assert.assertEquals(
+				targetUser.getEmailAddress(),
+				userJSONObject.getString("emailAddress"));
+		}
+	}
+
+	private ThemeDisplay _createThemeDisplay(User user) throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
 			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setLocale(LocaleUtil.getDefault());
+
+		Group group = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
+
 		themeDisplay.setScopeGroupId(group.getGroupId());
-
-		if (user != null) {
-			themeDisplay.setSignedIn(true);
-		}
-
 		themeDisplay.setSiteGroupId(group.getGroupId());
 
 		if (user != null) {
+			themeDisplay.setSignedIn(true);
 			themeDisplay.setUser(user);
 		}
 
+		return themeDisplay;
+	}
+
+	private String _getContent(
+			MockLiferayResourceResponse mockLiferayResourceResponse)
+		throws Exception {
+
+		ByteArrayOutputStream byteArrayOutputStream =
+			(ByteArrayOutputStream)
+				mockLiferayResourceResponse.getPortletOutputStream();
+
+		return new String(byteArrayOutputStream.toByteArray());
+	}
+
+	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
+			String emailAddress, Entry entry, User user)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
 		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, themeDisplay);
+			WebKeys.THEME_DISPLAY, _createThemeDisplay(user));
 
 		mockLiferayPortletActionRequest.setParameter(
 			ActionRequest.ACTION_NAME, "updateEntry");
@@ -176,16 +222,25 @@ public class ContactsCenterPortletTest {
 		return mockLiferayPortletActionRequest;
 	}
 
+	private int _getStatus(
+		MockLiferayResourceResponse mockLiferayResourceResponse) {
+
+		MockHttpServletResponse mockHttpServletResponse =
+			(MockHttpServletResponse)
+				mockLiferayResourceResponse.getHttpServletResponse();
+
+		return mockHttpServletResponse.getStatus();
+	}
+
 	private JSONObject _processAction(
-			String emailAddress, Entry entry, Group group, User user)
+			String emailAddress, Entry entry, User user)
 		throws Exception {
 
 		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
 			new MockLiferayPortletActionResponse();
 
 		_portlet.processAction(
-			_getMockLiferayPortletActionRequest(
-				entry, group, emailAddress, user),
+			_getMockLiferayPortletActionRequest(emailAddress, entry, user),
 			mockLiferayPortletActionResponse);
 
 		MockHttpServletResponse mockHttpServletResponse =
@@ -194,6 +249,31 @@ public class ContactsCenterPortletTest {
 
 		return _jsonFactory.createJSONObject(
 			mockHttpServletResponse.getContentAsString());
+	}
+
+	private MockLiferayResourceResponse _serveResource(
+			User targetUser, User user)
+		throws Exception {
+
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _createThemeDisplay(user));
+		mockLiferayResourceRequest.setResourceID("getContact");
+		mockLiferayResourceRequest.setParameter(
+			"userId", String.valueOf(targetUser.getUserId()));
+
+		MockLiferayResourceResponse mockLiferayResourceResponse =
+			new MockLiferayResourceResponse();
+
+		ResourceServingPortlet resourceServingPortlet =
+			(ResourceServingPortlet)_portlet;
+
+		resourceServingPortlet.serveResource(
+			mockLiferayResourceRequest, mockLiferayResourceResponse);
+
+		return mockLiferayResourceResponse;
 	}
 
 	@Inject
