@@ -8,6 +8,7 @@ package com.liferay.frontend.css.variables.web.internal.servlet.taglib;
 import com.liferay.frontend.css.variables.ScopedCSSVariables;
 import com.liferay.frontend.css.variables.ScopedCSSVariablesProvider;
 import com.liferay.petra.io.StreamUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
@@ -156,6 +157,80 @@ public class ScopedCSSVariablesTopHeadDynamicIncludeTest {
 		String content = bufferCacheServletResponse.getString();
 
 		Assert.assertFalse(content, content.contains(xssScript));
+	}
+
+	@Test
+	public void testIncludeKeepsCSSVariableValuesIntact() throws IOException {
+		ScopedCSSVariablesTopHeadDynamicInclude
+			scopedCSSVariablesTopHeadDynamicInclude =
+				new ScopedCSSVariablesTopHeadDynamicInclude();
+
+		ScopedCSSVariablesProvider scopedCSSVariablesProvider = Mockito.mock(
+			ScopedCSSVariablesProvider.class);
+
+		Map<String, String> cssVariables = HashMapBuilder.put(
+			"aspect-ratio-16-to-9", "56.25%"
+		).put(
+			"box-shadow", "0 0.5rem 1rem rgba(0, 0, 0, 0.15)"
+		).put(
+			"btn-link-color", "var(--primary)"
+		).put(
+			"font-family-sans-serif",
+			"system-ui, -apple-system, 'Segoe UI', sans-serif"
+		).put(
+			"spacer-2", "0.5rem"
+		).put(
+			"white", "#fff"
+		).build();
+
+		Collection<ScopedCSSVariables> scopedCSSVariablesCollection =
+			Arrays.asList(
+				new ScopedCSSVariables() {
+
+					@Override
+					public Map<String, String> getCSSVariables() {
+						return cssVariables;
+					}
+
+					@Override
+					public String getScope() {
+						return ":root";
+					}
+
+				});
+
+		Mockito.when(
+			scopedCSSVariablesProvider.getScopedCSSVariablesCollection(
+				Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			scopedCSSVariablesCollection
+		);
+
+		scopedCSSVariablesTopHeadDynamicInclude.setScopedCSSVariablesProviders(
+			Arrays.asList(scopedCSSVariablesProvider));
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+
+		HttpServletResponse httpServletResponse = Mockito.mock(
+			HttpServletResponse.class);
+
+		BufferCacheServletResponse bufferCacheServletResponse =
+			new BufferCacheServletResponse(httpServletResponse);
+
+		scopedCSSVariablesTopHeadDynamicInclude.include(
+			httpServletRequest, bufferCacheServletResponse,
+			"/html/common/themes/top_head.jsp#post");
+
+		String content = bufferCacheServletResponse.getString();
+
+		for (Map.Entry<String, String> entry : cssVariables.entrySet()) {
+			String cssVariableDeclaration = StringBundler.concat(
+				"--", entry.getKey(), ": ", entry.getValue(), ";");
+
+			Assert.assertTrue(
+				content, content.contains(cssVariableDeclaration));
+		}
 	}
 
 	@Test
