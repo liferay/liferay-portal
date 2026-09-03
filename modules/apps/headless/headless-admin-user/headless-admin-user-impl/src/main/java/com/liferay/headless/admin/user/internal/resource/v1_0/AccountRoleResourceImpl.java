@@ -60,7 +60,7 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 			Long accountId, Long accountRoleId, Long userAccountId)
 		throws Exception {
 
-		_accountRoleLocalService.unassociateUser(
+		_accountRoleService.unassociateUser(
 			accountId, accountRoleId, userAccountId);
 	}
 
@@ -254,9 +254,9 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 		throws Exception {
 
 		return _toAccountRole(
-			_accountRoleLocalService.addAccountRole(
-				accountRole.getExternalReferenceCode(), contextUser.getUserId(),
-				accountId, accountRole.getName(),
+			_accountRoleService.addAccountRole(
+				accountRole.getExternalReferenceCode(), accountId,
+				accountRole.getName(),
 				Collections.singletonMap(
 					contextAcceptLanguage.getPreferredLocale(),
 					accountRole.getDisplayName()),

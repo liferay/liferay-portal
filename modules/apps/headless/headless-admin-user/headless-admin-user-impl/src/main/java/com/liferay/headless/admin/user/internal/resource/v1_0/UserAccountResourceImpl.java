@@ -12,7 +12,7 @@ import com.liferay.account.model.AccountEntryUserRel;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.AccountEntryUserRelService;
-import com.liferay.account.service.AccountRoleLocalService;
+import com.liferay.account.service.AccountRoleService;
 import com.liferay.announcements.kernel.service.AnnouncementsDeliveryLocalService;
 import com.liferay.captcha.rest.dto.v1_0.Captcha;
 import com.liferay.captcha.rest.resource.v1_0.CaptchaResource;
@@ -790,18 +790,17 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		AccountBrief[] accountBriefs = userAccount.getAccountBriefs();
 
 		if (accountBriefs != null) {
-			_accountEntryUserRelLocalService.
-				deleteAccountEntryUserRelsByAccountUserId(userAccountId);
+			_deleteAccountEntryUserRels(userAccountId);
 
 			for (AccountBrief accountBrief : accountBriefs) {
-				_accountEntryUserRelLocalService.addAccountEntryUserRel(
-					accountBrief.getId(), userAccountId);
+				_accountEntryUserRelService.addAccountEntryUserRels(
+					accountBrief.getId(), new long[] {userAccountId});
 
 				RoleBrief[] accountRoleBriefs = accountBrief.getRoleBriefs();
 
 				if (accountRoleBriefs != null) {
 					for (RoleBrief roleBrief : accountRoleBriefs) {
-						_accountRoleLocalService.associateUser(
+						_accountRoleService.associateUser(
 							accountBrief.getId(), roleBrief.getId(),
 							userAccountId);
 					}
@@ -1232,12 +1231,11 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		AccountBrief[] accountBriefs = userAccount.getAccountBriefs();
 
 		if (accountBriefs != null) {
-			_accountEntryUserRelLocalService.
-				deleteAccountEntryUserRelsByAccountUserId(userAccountId);
+			_deleteAccountEntryUserRels(userAccountId);
 
 			for (AccountBrief accountBrief : accountBriefs) {
-				_accountEntryUserRelLocalService.addAccountEntryUserRel(
-					accountBrief.getId(), userAccountId);
+				_accountEntryUserRelService.addAccountEntryUserRels(
+					accountBrief.getId(), new long[] {userAccountId});
 			}
 		}
 
@@ -1393,6 +1391,19 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				userAccount.getCustomFields(),
 				contextAcceptLanguage.getPreferredLocale())
 		).build();
+	}
+
+	private void _deleteAccountEntryUserRels(long accountUserId)
+		throws Exception {
+
+		for (AccountEntryUserRel accountEntryUserRel :
+				_accountEntryUserRelLocalService.
+					getAccountEntryUserRelsByAccountUserId(accountUserId)) {
+
+			_accountEntryUserRelService.deleteAccountEntryUserRels(
+				accountEntryUserRel.getAccountEntryId(),
+				new long[] {accountUserId});
+		}
 	}
 
 	private String _formatActionMapKey(String methodName) {
@@ -1920,10 +1931,10 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	private DTOConverter<AccountEntry, Account> _accountResourceDTOConverter;
 
 	@Reference
-	private AccountRoleLocalService _accountRoleLocalService;
+	private AccountRoleResource _accountRoleResource;
 
 	@Reference
-	private AccountRoleResource _accountRoleResource;
+	private AccountRoleService _accountRoleService;
 
 	@Reference
 	private AnnouncementsDeliveryLocalService
