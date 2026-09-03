@@ -2477,6 +2477,13 @@ definition {
 		Open(value1 = "${baseURL}/c/portal/logout");
 	}
 
+	@description = "Log out of Liferay Portal via URL."
+	macro logoutViaURL {
+		var baseURL = PropsUtil.get("portal.url");
+
+		Open(locator1 = "${baseURL}/c/portal/logout");
+	}
+
 	// This new macro is created after LPS-168612. Once Contact Information are fixed the same way as LPS-168612, then we can consolidate this macro and User.makePrimary
 
 	@summary = "Default summary"
