@@ -113,8 +113,7 @@ public class CustomAssetDisplayPageFriendlyURLResolver
 			return null;
 		}
 
-		return layoutLocalService.fetchLayoutByFriendlyURL(
-			groupId, false, StringPool.SLASH + parts[0]);
+		return _fetchLayoutByFriendlyURL(groupId, StringPool.SLASH + parts[0]);
 	}
 
 	@Override
@@ -135,6 +134,28 @@ public class CustomAssetDisplayPageFriendlyURLResolver
 	@Override
 	protected boolean useOriginalFriendlyURL() {
 		return false;
+	}
+
+	private Layout _fetchLayoutByFriendlyURL(long groupId, String friendlyURL) {
+		Layout layout = layoutLocalService.fetchLayoutByFriendlyURL(
+			groupId, false, friendlyURL);
+
+		if (layout != null) {
+			return layout;
+		}
+
+		for (long connectedGroupId :
+				getConnectedDesignLibraryGroupIds(groupId)) {
+
+			layout = layoutLocalService.fetchLayoutByFriendlyURL(
+				connectedGroupId, false, friendlyURL);
+
+			if (layout != null) {
+				return layout;
+			}
+		}
+
+		return null;
 	}
 
 	private String[] _getPathParts(String path) {

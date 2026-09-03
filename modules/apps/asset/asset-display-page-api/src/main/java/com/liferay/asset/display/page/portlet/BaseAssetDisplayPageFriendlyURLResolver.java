@@ -259,6 +259,36 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			layoutDisplayPageObjectProvider.getClassPK());
 	}
 
+	protected long[] getConnectedDesignLibraryGroupIds(long groupId) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-57283")) {
+
+			return GetterUtil.DEFAULT_LONG_VALUES;
+		}
+
+		DepotEntryLocalService depotEntryLocalService =
+			_depotEntryLocalServiceSnapshot.get();
+
+		if (depotEntryLocalService == null) {
+			return GetterUtil.DEFAULT_LONG_VALUES;
+		}
+
+		try {
+			return ListUtil.toLongArray(
+				depotEntryLocalService.getGroupConnectedDepotEntries(
+					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+				DepotEntry::getGroupId);
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+
+			return GetterUtil.DEFAULT_LONG_VALUES;
+		}
+	}
+
 	protected LayoutDisplayPageObjectProvider<?>
 		getLayoutDisplayPageObjectProvider(
 			LayoutDisplayPageProvider<?> layoutDisplayPageProvider,
@@ -363,7 +393,9 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			return layoutPageTemplateEntry;
 		}
 
-		for (long connectedGroupId : _getConnectedGroupIds(groupId)) {
+		for (long connectedGroupId :
+				getConnectedDesignLibraryGroupIds(groupId)) {
+
 			layoutPageTemplateEntry =
 				layoutPageTemplateEntryService.
 					fetchDefaultLayoutPageTemplateEntry(
@@ -421,36 +453,6 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		}
 
 		return null;
-	}
-
-	private long[] _getConnectedGroupIds(long groupId) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getCompanyId(), "LPD-57283")) {
-
-			return GetterUtil.DEFAULT_LONG_VALUES;
-		}
-
-		DepotEntryLocalService depotEntryLocalService =
-			_depotEntryLocalServiceSnapshot.get();
-
-		if (depotEntryLocalService == null) {
-			return GetterUtil.DEFAULT_LONG_VALUES;
-		}
-
-		try {
-			return ListUtil.toLongArray(
-				depotEntryLocalService.getGroupConnectedDepotEntries(
-					groupId, DepotConstants.TYPE_DESIGN_LIBRARY,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				DepotEntry::getGroupId);
-		}
-		catch (PortalException portalException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(portalException);
-			}
-
-			return GetterUtil.DEFAULT_LONG_VALUES;
-		}
 	}
 
 	private Object _getInfoItem(
