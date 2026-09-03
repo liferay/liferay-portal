@@ -22,6 +22,7 @@ import com.liferay.osb.faro.engine.client.model.ActivityGroup;
 import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Asset;
 import com.liferay.osb.faro.engine.client.model.AssetSummary;
+import com.liferay.osb.faro.engine.client.model.AssetSummaryCMPProject;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryCategory;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryMimeType;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryTag;
@@ -313,6 +314,11 @@ public interface ContactsEngineClient {
 		String individualId, String keywords, String rangeEnd, int rangeKey,
 		String rangeStart, String selectedMetric, String sort,
 		String vocabularyId, int cur, int delta);
+
+	public Results<AssetSummaryCMPProject> getAssetSummaryCMPProjects(
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String keywords, String rangeEnd, int rangeKey,
+		String rangeStart, String sort, int cur, int delta);
 
 	public Results<AssetSummaryMimeType> getAssetSummaryMimeTypes(
 		FaroProject faroProject, long channelId, String rangeEnd, int rangeKey,

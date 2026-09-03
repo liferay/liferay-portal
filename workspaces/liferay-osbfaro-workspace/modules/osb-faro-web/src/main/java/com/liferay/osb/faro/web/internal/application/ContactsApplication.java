@@ -10,6 +10,7 @@ import com.liferay.osb.faro.web.internal.controller.contacts.AccountFaroControll
 import com.liferay.osb.faro.web.internal.controller.contacts.AccountLifecycleFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.ActivityFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.ActivityGroupFaroController;
+import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryCMPProjectFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryCategoryFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryMimeTypeFaroController;
@@ -56,6 +57,7 @@ public class ContactsApplication extends BaseApplication {
 		controllers.add(_activityFaroController);
 		controllers.add(_activityGroupFaroController);
 		controllers.add(_assetSummaryCategoryFaroController);
+		controllers.add(_assetSummaryCMPProjectFaroController);
 		controllers.add(_assetSummaryFaroController);
 		controllers.add(_assetSummaryMimeTypeFaroController);
 		controllers.add(_assetSummaryTagFaroController);
@@ -94,6 +96,10 @@ public class ContactsApplication extends BaseApplication {
 	@Reference
 	private AssetSummaryCategoryFaroController
 		_assetSummaryCategoryFaroController;
+
+	@Reference
+	private AssetSummaryCMPProjectFaroController
+		_assetSummaryCMPProjectFaroController;
 
 	@Reference
 	private AssetSummaryFaroController _assetSummaryFaroController;

@@ -32,6 +32,7 @@ import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.AsahProject;
 import com.liferay.osb.faro.engine.client.model.Asset;
 import com.liferay.osb.faro.engine.client.model.AssetSummary;
+import com.liferay.osb.faro.engine.client.model.AssetSummaryCMPProject;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryCategory;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryMimeType;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryTag;
@@ -1462,6 +1463,54 @@ public class ContactsEngineClientImpl
 			faroProject, Rels.ASSET_SUMMARY_CATEGORIES,
 			new ParameterizedTypeReference
 				<EntityModelPagedModel<AssetSummaryCategory>>() {
+			},
+			uriVariables);
+
+		return pagedModel.getResults();
+	}
+
+	@Override
+	public Results<AssetSummaryCMPProject> getAssetSummaryCMPProjects(
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String keywords, String rangeEnd, int rangeKey,
+		String rangeStart, String sort, int cur, int delta) {
+
+		Map<String, Object> uriVariables = getUriVariables(
+			faroProject, cur, delta, null);
+
+		if (Validator.isNotNull(accountId)) {
+			uriVariables.put("accountIds", Arrays.asList(accountId));
+		}
+
+		uriVariables.put("channelId", channelId);
+
+		if (Validator.isNotNull(individualId)) {
+			uriVariables.put("individualIds", Arrays.asList(individualId));
+		}
+
+		if (Validator.isNotNull(keywords)) {
+			uriVariables.put("keywords", keywords);
+		}
+
+		if ((rangeEnd != null) && (rangeStart != null)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+			uriVariables.put("rangeStart", rangeStart);
+		}
+		else {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(sort)) {
+			uriVariables.put(
+				"sort",
+				Arrays.asList(
+					StringUtil.replace(sort, CharPool.COLON, CharPool.COMMA)));
+		}
+
+		PagedModel<?, AssetSummaryCMPProject> pagedModel = get(
+			faroProject, Rels.ASSET_SUMMARY_CMP_PROJECTS,
+			new ParameterizedTypeReference
+				<EntityModelPagedModel<AssetSummaryCMPProject>>() {
 			},
 			uriVariables);
 

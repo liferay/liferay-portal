@@ -23,6 +23,7 @@ import com.liferay.osb.faro.engine.client.model.ActivityAsset;
 import com.liferay.osb.faro.engine.client.model.ActivityGroup;
 import com.liferay.osb.faro.engine.client.model.Asset;
 import com.liferay.osb.faro.engine.client.model.AssetSummary;
+import com.liferay.osb.faro.engine.client.model.AssetSummaryCMPProject;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryCategory;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryMimeType;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryTag;
@@ -587,6 +588,17 @@ public abstract class BaseMockContactsEngineClientImpl
 			faroProject, accountId, channelId, individualId, keywords, rangeEnd,
 			rangeKey, rangeStart, selectedMetric, sort, vocabularyId, cur,
 			delta);
+	}
+
+	@Override
+	public Results<AssetSummaryCMPProject> getAssetSummaryCMPProjects(
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String keywords, String rangeEnd, int rangeKey,
+		String rangeStart, String sort, int cur, int delta) {
+
+		return contactsEngineClient.getAssetSummaryCMPProjects(
+			faroProject, accountId, channelId, individualId, keywords, rangeEnd,
+			rangeKey, rangeStart, sort, cur, delta);
 	}
 
 	@Override
