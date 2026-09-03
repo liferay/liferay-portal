@@ -1,8 +1,7 @@
 # Database Partition Migration Validator Tool
 
 This tool validates the compatibility between the source and target databases
-for a partition migration. This tool is a beta feature. It is experimental and
-not supported.
+for a partition migration.
 
 ## Requirements
 
