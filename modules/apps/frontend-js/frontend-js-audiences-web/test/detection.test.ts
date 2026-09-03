@@ -16,7 +16,7 @@ import type {
 
 const URL = 'https://example.com/audiences.json';
 
-const TIMEOUT_MS = 1000;
+const TIMEOUT = 1000;
 
 async function flushMicrotasks() {
 	for (let i = 0; i < 10; i++) {
@@ -636,12 +636,12 @@ describe('detection', () => {
 			]);
 
 			const promise = audiences.runDetection(URL, {
-				timeoutMs: TIMEOUT_MS,
+				timeout: TIMEOUT,
 			});
 
 			await flushMicrotasks();
 
-			jest.advanceTimersByTime(TIMEOUT_MS);
+			jest.advanceTimersByTime(TIMEOUT);
 
 			await promise;
 
@@ -652,10 +652,10 @@ describe('detection', () => {
 			(global as any).fetch = jest.fn(() => new Promise(() => {}));
 
 			const promise = audiences.runDetection(URL, {
-				timeoutMs: TIMEOUT_MS,
+				timeout: TIMEOUT,
 			});
 
-			jest.advanceTimersByTime(TIMEOUT_MS);
+			jest.advanceTimersByTime(TIMEOUT);
 
 			await promise;
 
@@ -665,7 +665,7 @@ describe('detection', () => {
 		it('detects the audiences that finish before the timeout', async () => {
 			mockAudiencesDefinitionWithAttribute('hostname', 'eq', 'localhost');
 
-			await audiences.runDetection(URL, {timeoutMs: TIMEOUT_MS});
+			await audiences.runDetection(URL, {timeout: TIMEOUT});
 
 			expect(audiences.get()).toEqual(new Set(['the_audience']));
 		});

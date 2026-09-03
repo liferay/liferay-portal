@@ -83,7 +83,7 @@ export interface Handler {
 }
 
 export interface RunDetectionOptions {
-	timeoutMs?: number;
+	timeout?: number;
 }
 
 export interface AudiencesAPI {

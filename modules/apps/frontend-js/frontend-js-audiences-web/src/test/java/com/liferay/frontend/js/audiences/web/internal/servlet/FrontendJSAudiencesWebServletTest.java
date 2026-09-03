@@ -72,7 +72,7 @@ public class FrontendJSAudiencesWebServletTest {
 	}
 
 	@Test
-	public void testDoGetParsesDetectionTimeoutMs() throws Exception {
+	public void testDoGetParsesDetectionTimeout() throws Exception {
 		_setUpParameters("5000", "false");
 
 		_frontendJSAudiencesWebServlet.doGet(
@@ -85,7 +85,7 @@ public class FrontendJSAudiencesWebServletTest {
 	}
 
 	@Test
-	public void testDoGetWhenDetectionTimeoutMsIsBlank() throws Exception {
+	public void testDoGetWhenDetectionTimeoutIsBlank() throws Exception {
 		_setUpParameters(null, "true");
 
 		_frontendJSAudiencesWebServlet.doGet(
@@ -98,7 +98,7 @@ public class FrontendJSAudiencesWebServletTest {
 	}
 
 	@Test
-	public void testDoGetWhenDetectionTimeoutMsIsNotANumber() throws Exception {
+	public void testDoGetWhenDetectionTimeoutIsNotANumber() throws Exception {
 		_setUpParameters("not-a-number", "true");
 
 		_frontendJSAudiencesWebServlet.doGet(
@@ -154,7 +154,7 @@ public class FrontendJSAudiencesWebServletTest {
 		);
 	}
 
-	private void _setUpParameters(String detectionTimeoutMs, String enableLog) {
+	private void _setUpParameters(String detectionTimeout, String enableLog) {
 		Mockito.when(
 			_httpServletRequest.getParameter("audiencesDefinitionHash")
 		).thenReturn(
@@ -162,9 +162,9 @@ public class FrontendJSAudiencesWebServletTest {
 		);
 
 		Mockito.when(
-			_httpServletRequest.getParameter("detectionTimeoutMs")
+			_httpServletRequest.getParameter("detectionTimeout")
 		).thenReturn(
-			detectionTimeoutMs
+			detectionTimeout
 		);
 
 		Mockito.when(

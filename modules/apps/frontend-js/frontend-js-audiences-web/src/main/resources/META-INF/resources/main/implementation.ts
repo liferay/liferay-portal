@@ -51,7 +51,7 @@ export async function runDetection(
 
 		// Start the timeout
 
-		const signal = createRunDetectionTimeoutAbortSignal(options?.timeoutMs);
+		const signal = createRunDetectionTimeoutAbortSignal(options?.timeout);
 
 		// Start retrieving external dependencies eagerly
 
@@ -80,7 +80,7 @@ export async function runDetection(
 		catch (error: any) {
 			if (error instanceof TimeoutError) {
 				log(
-					`Detection timeout of ${options?.timeoutMs} milliseconds reached`
+					`Detection timeout of ${options?.timeout} milliseconds reached`
 				);
 			}
 			else {
@@ -155,11 +155,11 @@ export function setLogEnabled(enabled: boolean) {
 	log.enabled = enabled;
 }
 
-function createRunDetectionTimeoutAbortSignal(timeoutMs?: number): AbortSignal {
+function createRunDetectionTimeoutAbortSignal(timeout?: number): AbortSignal {
 	const abortController = new AbortController();
 
-	if (timeoutMs) {
-		setTimeout(() => abortController.abort(), timeoutMs);
+	if (timeout) {
+		setTimeout(() => abortController.abort(), timeout);
 	}
 
 	return abortController.signal;

@@ -39,7 +39,7 @@ async function runAudiences() {
 	variations.register();
 
 	await audiences.runDetection(DEFINITION_URL, {
-		timeoutMs: [$DETECTION_TIMEOUT_MS$],
+		timeout: [$DETECTION_TIMEOUT$],
 	});
 
 	if (navigationId !== currentNavigationId) {

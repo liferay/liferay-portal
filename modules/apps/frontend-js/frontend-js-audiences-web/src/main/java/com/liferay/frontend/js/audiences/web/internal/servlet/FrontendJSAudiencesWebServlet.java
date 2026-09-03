@@ -74,7 +74,7 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 			content = BootstrapJavaScriptUtil.getContent(
 				httpServletRequest.getParameter("audiencesDefinitionHash"),
 				GetterUtil.getInteger(
-					httpServletRequest.getParameter("detectionTimeoutMs")),
+					httpServletRequest.getParameter("detectionTimeout")),
 				Boolean.parseBoolean(
 					httpServletRequest.getParameter("enableLog")));
 			contentType = ContentTypes.APPLICATION_JAVASCRIPT;

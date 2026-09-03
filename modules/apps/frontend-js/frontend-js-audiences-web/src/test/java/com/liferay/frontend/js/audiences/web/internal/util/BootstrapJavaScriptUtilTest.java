@@ -75,7 +75,7 @@ public class BootstrapJavaScriptUtilTest {
 		// All three known tokens are replaced
 
 		Assert.assertFalse(content.contains("[$AUDIENCES_DEFINITION_HASH$]"));
-		Assert.assertFalse(content.contains("[$DETECTION_TIMEOUT_MS$]"));
+		Assert.assertFalse(content.contains("[$DETECTION_TIMEOUT$]"));
 		Assert.assertFalse(content.contains("[$ENABLE_LOG$]"));
 
 		// No stale tokens remain
@@ -99,11 +99,11 @@ public class BootstrapJavaScriptUtilTest {
 	}
 
 	@Test
-	public void testGetContentSubstitutesDetectionTimeoutMs() {
+	public void testGetContentSubstitutesDetectionTimeout() {
 		String content = BootstrapJavaScriptUtil.getContent(
 			RandomTestUtil.randomString(8), 5000, true);
 
-		Assert.assertTrue(content, content.contains("timeoutMs: 5000"));
+		Assert.assertTrue(content, content.contains("timeout: 5000"));
 	}
 
 	@Test
