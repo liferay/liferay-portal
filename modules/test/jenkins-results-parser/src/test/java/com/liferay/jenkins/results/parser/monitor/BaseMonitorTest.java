@@ -47,6 +47,32 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testGetBooleanValue() {
+		BaseMonitor baseMonitor = _newBaseMonitor(60);
+
+		testEquals(
+			true,
+			baseMonitor.getBooleanValue(
+				"parameter", true, "expected.green",
+				Collections.<String, String>emptyMap()));
+		testEquals(
+			false,
+			baseMonitor.getBooleanValue(
+				"parameter", true, "expected.green",
+				Collections.singletonMap("expected.green", "false")));
+
+		try {
+			baseMonitor.getBooleanValue(
+				"parameter", true, "expected.green",
+				Collections.singletonMap("expected.green", "yes"));
+
+			Assert.fail("Expected IllegalArgumentException");
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+		}
+	}
+
+	@Test
 	public void testGetOverdueGraceSeconds() {
 		BaseMonitor baseMonitor = _newBaseMonitor(60);
 

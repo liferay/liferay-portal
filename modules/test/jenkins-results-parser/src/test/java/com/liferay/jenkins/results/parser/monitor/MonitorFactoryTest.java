@@ -118,6 +118,32 @@ public class MonitorFactoryTest
 				"unknown-type"));
 	}
 
+	@Test
+	public void testNewMonitorUpstreamJobHealth() {
+		String masterName = RandomTestUtil.randomString();
+
+		JenkinsMasterTestUtil.getJenkinsMaster(
+			masterName, "http://" + masterName);
+
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[branch]", RandomTestUtil.randomString());
+		monitorProperties.setProperty(
+			"monitor[a].parameter[controller.job.name]",
+			RandomTestUtil.randomString());
+		monitorProperties.setProperty(
+			"monitor[a].parameter[master.name]", masterName);
+		monitorProperties.setProperty("monitor[a].type", "upstream-job-health");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof UpstreamJobHealthMonitor);
+	}
+
 	private void _testNewMonitorExpectedIllegalArgumentException(
 		MonitorConfig monitorConfig) {
 
