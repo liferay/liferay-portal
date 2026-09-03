@@ -380,7 +380,7 @@ public class DispatchConfiguratorTest {
 	}
 
 	@Test
-	public void testMasterTokenAcquiredSchedulesOnlyMasterTokenTransitionDependentJobs()
+	public void testMasterTokenAcquiredSchedulesOnlySingleNodeJobs()
 		throws Exception {
 
 		Mockito.when(
@@ -446,10 +446,10 @@ public class DispatchConfiguratorTest {
 		);
 
 		Mockito.verify(
-			_dispatchTriggerHelper, Mockito.never()
+			_dispatchTriggerHelper
 		).addSchedulerJob(
-			Mockito.same(_singleNodePersistedDispatchTrigger), Mockito.any(),
-			Mockito.any()
+			Mockito.same(_singleNodePersistedDispatchTrigger),
+			Mockito.eq(StorageType.PERSISTED), Mockito.any()
 		);
 
 		_dispatchConfigurator.deactivate();
