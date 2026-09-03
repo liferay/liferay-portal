@@ -103,291 +103,19 @@ public class ObjectEntryVersionFieldValueResolverTest {
 	}
 
 	@Test
-	public void testToDisplayValueWithAttachmentBusinessType()
-		throws Exception {
-
-		long fileEntryId = RandomTestUtil.randomLong();
-		String fileName = RandomTestUtil.randomString();
-		String previewURL = RandomTestUtil.randomString();
-
-		_setUpAttachment(fileEntryId, fileName, previewURL);
-
-		ObjectField objectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
-
-		String expectedDisplayValue = StringBundler.concat(
-			"<img alt=\"", fileName,
-			"\" class=\"cms-compare-versions-attachment\" src=\"", previewURL,
-			"\" /> ", fileName);
-
-		Assert.assertEquals(
-			expectedDisplayValue,
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null,
-				HashMapBuilder.<String, Object>put(
-					"id", fileEntryId
-				).build()));
-		Assert.assertEquals(
-			expectedDisplayValue,
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, fileEntryId));
-	}
-
-	@Test
-	public void testToDisplayValueWithBooleanBusinessType() {
-		_setUpBooleanLabels();
-
-		ObjectField objectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN);
-
-		Assert.assertEquals(
-			"No",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, false));
-		Assert.assertEquals(
-			"No",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, null));
-		Assert.assertEquals(
-			"Yes",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, true));
-	}
-
-	@Test
-	public void testToDisplayValueWithDateBusinessType() {
-		Assert.assertEquals(
-			"09/15/2026",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID,
-				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_DATE), null,
-				_DATE_VALUE));
-		Assert.assertEquals(
-			"15.09.2026",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				"de_DE",
-				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_DATE), null,
-				_DATE_VALUE));
-	}
-
-	@Test
-	public void testToDisplayValueWithDateTimeBusinessType() {
-		ObjectField convertToUTCObjectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
-			ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC);
-		ObjectField useInputAsEnteredObjectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
-			ObjectFieldSettingConstants.VALUE_USE_INPUT_AS_ENTERED);
-
-		User user = Mockito.mock(User.class);
-
-		Mockito.when(
-			user.getTimeZoneId()
-		).thenReturn(
-			"America/New_York"
-		);
-
-		String convertToUTCDisplayValue =
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, convertToUTCObjectField, user,
-				"2026-09-15T12:00:00.000Z");
-
-		Assert.assertTrue(
-			convertToUTCDisplayValue.startsWith("09/15/2026, 08:00"));
-
-		String useInputAsEnteredDisplayValue =
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, useInputAsEnteredObjectField, user,
-				"2026-09-15T12:00:00.000");
-
-		Assert.assertTrue(
-			useInputAsEnteredDisplayValue.startsWith("09/15/2026, 12:00"));
-	}
-
-	@Test
-	public void testToDisplayValueWithMultiselectPicklistBusinessType() {
-		long listTypeDefinitionId = RandomTestUtil.randomLong();
-
-		ObjectField objectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST);
-
-		Mockito.when(
-			objectField.getListTypeDefinitionId()
-		).thenReturn(
-			listTypeDefinitionId
-		);
-
-		String firstKey = RandomTestUtil.randomString();
-
-		_setUpListTypeEntry(listTypeDefinitionId, firstKey, "First");
-
-		String secondKey = RandomTestUtil.randomString();
-
-		_setUpListTypeEntry(listTypeDefinitionId, secondKey, "Second");
-
-		Assert.assertEquals(
-			"First",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, firstKey));
-		Assert.assertEquals(
-			"First, Second",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null,
-				new Object[] {firstKey, secondKey}));
-		Assert.assertEquals(
-			"First, Second",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null,
-				Arrays.asList(firstKey, secondKey)));
-		Assert.assertEquals(
-			StringPool.BLANK,
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, new Object[0]));
-	}
-
-	@Test
-	public void testToDisplayValueWithNullValue() {
-		_setUpBooleanLabels();
-
-		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
-		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_DATE);
-		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME);
-		_assertNullDisplayValue(
-			ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST);
-		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_PICKLIST);
-		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_TEXT);
-
-		Assert.assertEquals(
-			StringPool.BLANK,
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, null, null, null));
-	}
-
-	@Test
-	public void testToDisplayValueWithPicklistBusinessType() {
-		long listTypeDefinitionId = RandomTestUtil.randomLong();
-		String key = RandomTestUtil.randomString();
-
-		ObjectField objectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_PICKLIST);
-
-		Mockito.when(
-			objectField.getListTypeDefinitionId()
-		).thenReturn(
-			listTypeDefinitionId
-		);
-
-		_setUpListTypeEntry(listTypeDefinitionId, key, "Label");
-
-		Assert.assertEquals(
-			"Label",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, key));
-		Assert.assertEquals(
-			"Label",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null,
-				HashMapBuilder.<String, Object>put(
-					"key", key
-				).build()));
-
-		String unknownKey = RandomTestUtil.randomString();
-
-		Assert.assertEquals(
-			unknownKey,
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, unknownKey));
-	}
-
-	@Test
-	public void testToDisplayValueWithRichTextBusinessType() {
-		String richText = "<p>Hello <b>World</b></p>";
-
-		Assert.assertEquals(
-			richText,
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID,
-				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT),
-				null, richText));
-	}
-
-	@Test
-	public void testToDisplayValueWithUnresolvableAttachment() {
-		long fileEntryId = RandomTestUtil.randomLong();
-
-		Mockito.when(
-			_dlFileEntryLocalService.fetchDLFileEntry(fileEntryId)
-		).thenReturn(
-			null
-		);
-
-		ObjectField objectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
-
-		Assert.assertEquals(
-			StringPool.BLANK,
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, Collections.emptyMap()));
-		Assert.assertEquals(
-			StringPool.BLANK,
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, fileEntryId));
-	}
-
-	@Test
-	public void testToDisplayValueWithUnsafeAttachmentFileName()
-		throws Exception {
-
-		long fileEntryId = RandomTestUtil.randomLong();
-		String previewURL = RandomTestUtil.randomString();
-
-		_setUpAttachment(
-			fileEntryId, "\"><img src=x onerror=alert(1)>", previewURL);
-
-		String escapedFileName = "&#34;&gt;&lt;img src=x onerror=alert(1)&gt;";
-
-		Assert.assertEquals(
-			StringBundler.concat(
-				"<img alt=\"", escapedFileName,
-				"\" class=\"cms-compare-versions-attachment\" src=\"",
-				previewURL, "\" /> ", escapedFileName),
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID,
-				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT),
-				null, fileEntryId));
-	}
-
-	@Test
-	public void testToDisplayValueWithUnsafePicklistName() {
-		long listTypeDefinitionId = RandomTestUtil.randomLong();
-		String key = RandomTestUtil.randomString();
-
-		ObjectField objectField = _mockObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_PICKLIST);
-
-		Mockito.when(
-			objectField.getListTypeDefinitionId()
-		).thenReturn(
-			listTypeDefinitionId
-		);
-
-		_setUpListTypeEntry(
-			listTypeDefinitionId, key, "<img src=x onerror=alert(1)>");
-
-		Assert.assertEquals(
-			"&lt;img src=x onerror=alert(1)&gt;",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID, objectField, null, key));
-	}
-
-	@Test
-	public void testToDisplayValueWithUnsafeTextValue() {
-		Assert.assertEquals(
-			"&lt;img src=x onerror=alert(1)&gt;",
-			_objectEntryVersionFieldValueResolver.toDisplayValue(
-				_LANGUAGE_ID,
-				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_TEXT), null,
-				"<img src=x onerror=alert(1)>"));
+	public void testToDisplayValue() throws Exception {
+		_testToDisplayValueWithAttachmentBusinessType();
+		_testToDisplayValueWithBooleanBusinessType();
+		_testToDisplayValueWithDateBusinessType();
+		_testToDisplayValueWithDateTimeBusinessType();
+		_testToDisplayValueWithMultiselectPicklistBusinessType();
+		_testToDisplayValueWithNullValue();
+		_testToDisplayValueWithPicklistBusinessType();
+		_testToDisplayValueWithRichTextBusinessType();
+		_testToDisplayValueWithUnresolvableAttachment();
+		_testToDisplayValueWithUnsafeAttachmentFileName();
+		_testToDisplayValueWithUnsafePicklistName();
+		_testToDisplayValueWithUnsafeTextValue();
 	}
 
 	private void _assertNullDisplayValue(String businessType) {
@@ -613,6 +341,282 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		Assert.assertEquals(
 			"hola-mundo", fieldValues.get("objectEntryFriendlyURL"));
 		Assert.assertEquals("Hola", fieldValues.get("title"));
+	}
+
+	private void _testToDisplayValueWithAttachmentBusinessType()
+		throws Exception {
+
+		long fileEntryId = RandomTestUtil.randomLong();
+		String fileName = RandomTestUtil.randomString();
+		String previewURL = RandomTestUtil.randomString();
+
+		_setUpAttachment(fileEntryId, fileName, previewURL);
+
+		ObjectField objectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+
+		String expectedDisplayValue = StringBundler.concat(
+			"<img alt=\"", fileName,
+			"\" class=\"cms-compare-versions-attachment\" src=\"", previewURL,
+			"\" /> ", fileName);
+
+		Assert.assertEquals(
+			expectedDisplayValue,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null,
+				HashMapBuilder.<String, Object>put(
+					"id", fileEntryId
+				).build()));
+		Assert.assertEquals(
+			expectedDisplayValue,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, fileEntryId));
+	}
+
+	private void _testToDisplayValueWithBooleanBusinessType() {
+		_setUpBooleanLabels();
+
+		ObjectField objectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN);
+
+		Assert.assertEquals(
+			"No",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, false));
+		Assert.assertEquals(
+			"No",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, null));
+		Assert.assertEquals(
+			"Yes",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, true));
+	}
+
+	private void _testToDisplayValueWithDateBusinessType() {
+		Assert.assertEquals(
+			"09/15/2026",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID,
+				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_DATE), null,
+				_DATE_VALUE));
+		Assert.assertEquals(
+			"15.09.2026",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				"de_DE",
+				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_DATE), null,
+				_DATE_VALUE));
+	}
+
+	private void _testToDisplayValueWithDateTimeBusinessType() {
+		ObjectField convertToUTCObjectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
+			ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC);
+		ObjectField useInputAsEnteredObjectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
+			ObjectFieldSettingConstants.VALUE_USE_INPUT_AS_ENTERED);
+
+		User user = Mockito.mock(User.class);
+
+		Mockito.when(
+			user.getTimeZoneId()
+		).thenReturn(
+			"America/New_York"
+		);
+
+		String convertToUTCDisplayValue =
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, convertToUTCObjectField, user,
+				"2026-09-15T12:00:00.000Z");
+
+		Assert.assertTrue(
+			convertToUTCDisplayValue.startsWith("09/15/2026, 08:00"));
+
+		String useInputAsEnteredDisplayValue =
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, useInputAsEnteredObjectField, user,
+				"2026-09-15T12:00:00.000");
+
+		Assert.assertTrue(
+			useInputAsEnteredDisplayValue.startsWith("09/15/2026, 12:00"));
+	}
+
+	private void _testToDisplayValueWithMultiselectPicklistBusinessType() {
+		long listTypeDefinitionId = RandomTestUtil.randomLong();
+
+		ObjectField objectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST);
+
+		Mockito.when(
+			objectField.getListTypeDefinitionId()
+		).thenReturn(
+			listTypeDefinitionId
+		);
+
+		String firstKey = RandomTestUtil.randomString();
+
+		_setUpListTypeEntry(listTypeDefinitionId, firstKey, "First");
+
+		String secondKey = RandomTestUtil.randomString();
+
+		_setUpListTypeEntry(listTypeDefinitionId, secondKey, "Second");
+
+		Assert.assertEquals(
+			"First",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, firstKey));
+		Assert.assertEquals(
+			"First, Second",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null,
+				new Object[] {firstKey, secondKey}));
+		Assert.assertEquals(
+			"First, Second",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null,
+				Arrays.asList(firstKey, secondKey)));
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, new Object[0]));
+	}
+
+	private void _testToDisplayValueWithNullValue() {
+		_setUpBooleanLabels();
+
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_DATE);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME);
+		_assertNullDisplayValue(
+			ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_PICKLIST);
+		_assertNullDisplayValue(ObjectFieldConstants.BUSINESS_TYPE_TEXT);
+
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, null, null, null));
+	}
+
+	private void _testToDisplayValueWithPicklistBusinessType() {
+		long listTypeDefinitionId = RandomTestUtil.randomLong();
+		String key = RandomTestUtil.randomString();
+
+		ObjectField objectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_PICKLIST);
+
+		Mockito.when(
+			objectField.getListTypeDefinitionId()
+		).thenReturn(
+			listTypeDefinitionId
+		);
+
+		_setUpListTypeEntry(listTypeDefinitionId, key, "Label");
+
+		Assert.assertEquals(
+			"Label",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, key));
+		Assert.assertEquals(
+			"Label",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null,
+				HashMapBuilder.<String, Object>put(
+					"key", key
+				).build()));
+
+		String unknownKey = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			unknownKey,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, unknownKey));
+	}
+
+	private void _testToDisplayValueWithRichTextBusinessType() {
+		String richText = "<p>Hello <b>World</b></p>";
+
+		Assert.assertEquals(
+			richText,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID,
+				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT),
+				null, richText));
+	}
+
+	private void _testToDisplayValueWithUnresolvableAttachment() {
+		long fileEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_dlFileEntryLocalService.fetchDLFileEntry(fileEntryId)
+		).thenReturn(
+			null
+		);
+
+		ObjectField objectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, Collections.emptyMap()));
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, fileEntryId));
+	}
+
+	private void _testToDisplayValueWithUnsafeAttachmentFileName()
+		throws Exception {
+
+		long fileEntryId = RandomTestUtil.randomLong();
+		String previewURL = RandomTestUtil.randomString();
+
+		_setUpAttachment(
+			fileEntryId, "\"><img src=x onerror=alert(1)>", previewURL);
+
+		String escapedFileName = "&#34;&gt;&lt;img src=x onerror=alert(1)&gt;";
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<img alt=\"", escapedFileName,
+				"\" class=\"cms-compare-versions-attachment\" src=\"",
+				previewURL, "\" /> ", escapedFileName),
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID,
+				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT),
+				null, fileEntryId));
+	}
+
+	private void _testToDisplayValueWithUnsafePicklistName() {
+		long listTypeDefinitionId = RandomTestUtil.randomLong();
+		String key = RandomTestUtil.randomString();
+
+		ObjectField objectField = _mockObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_PICKLIST);
+
+		Mockito.when(
+			objectField.getListTypeDefinitionId()
+		).thenReturn(
+			listTypeDefinitionId
+		);
+
+		_setUpListTypeEntry(
+			listTypeDefinitionId, key, "<img src=x onerror=alert(1)>");
+
+		Assert.assertEquals(
+			"&lt;img src=x onerror=alert(1)&gt;",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID, objectField, null, key));
+	}
+
+	private void _testToDisplayValueWithUnsafeTextValue() {
+		Assert.assertEquals(
+			"&lt;img src=x onerror=alert(1)&gt;",
+			_objectEntryVersionFieldValueResolver.toDisplayValue(
+				_LANGUAGE_ID,
+				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_TEXT), null,
+				"<img src=x onerror=alert(1)>"));
 	}
 
 	private static final String _DATE_VALUE = "2026-09-15T00:00:00.000Z";
