@@ -292,9 +292,13 @@ public class ObjectFolderResourceImpl extends BaseObjectFolderResourceImpl {
 				continue;
 			}
 
-			_objectDefinitionLocalService.updateObjectFolderId(
-				serviceBuilderObjectDefinition.getObjectDefinitionId(),
-				objectFolderId);
+			if (serviceBuilderObjectDefinition.isLinkedToObjectFolder(
+					objectFolderId)) {
+
+				_objectDefinitionLocalService.updateObjectFolderId(
+					serviceBuilderObjectDefinition.getObjectDefinitionId(),
+					objectFolderId);
+			}
 
 			_objectFolderItemLocalService.updateObjectFolderItem(
 				serviceBuilderObjectDefinition.getObjectDefinitionId(),
