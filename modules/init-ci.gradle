@@ -7,24 +7,10 @@ import java.util.concurrent.atomic.DoubleAdder
 File modulesDir = null
 File testResultsDir = null
 
-Map<String, Map> reportGroups = new ConcurrentHashMap<String, Map>()
+Map<String, Map> reportGroupsMap = new ConcurrentHashMap<String, Map>()
 
 gradle.buildFinished {
-	reportGroups.each {
-		String reportGroupName, Map reportGroup ->
-
-		Set<String> pendingTaskPaths = new TreeSet<String>(reportGroup.expectedTaskPaths)
-
-		pendingTaskPaths.removeAll(reportGroup.completedTaskPaths)
-
-		pendingTaskPaths.each {
-			String pendingTaskPath ->
-
-			reportGroup.failureMessages.add(pendingTaskPath + " was not executed. Please check the logs for details.")
-		}
-
-		_writeReport(reportGroupName, reportGroup, testResultsDir)
-	}
+	_writeReports(reportGroupsMap, testResultsDir)
 }
 
 gradle.taskGraph.addTaskExecutionListener(
@@ -39,7 +25,7 @@ gradle.taskGraph.addTaskExecutionListener(
 
 			String reportGroupName = project.ext.reportGroupName
 
-			Map reportGroup = reportGroups.get(reportGroupName)
+			Map reportGroup = reportGroupsMap.get(reportGroupName)
 
 			if (task.ext.has("startTime")) {
 				reportGroup.durationAdder.add((System.currentTimeMillis() - task.ext.startTime) / 1000.0d)
@@ -47,7 +33,9 @@ gradle.taskGraph.addTaskExecutionListener(
 
 			Throwable failure = taskState.failure
 
-			if ((task.name != project.ext.targetTaskName) && (failure == null)) {
+			boolean targetTask = (task.name == project.ext.targetTaskName)
+
+			if (!targetTask && (failure == null)) {
 				return
 			}
 
@@ -60,7 +48,7 @@ gradle.taskGraph.addTaskExecutionListener(
 				reportGroup.failureStacktraces.add(stringWriter.toString())
 			}
 
-			if (task.name == project.ext.targetTaskName) {
+			if (targetTask) {
 				reportGroup.completedTaskPaths.add(task.path)
 			}
 
@@ -100,7 +88,7 @@ gradle.taskGraph.whenReady {
 		project.ext.reportGroupName = reportGroupName
 		project.ext.targetTaskName = task.name
 
-		Map reportGroup = reportGroups.get(reportGroupName)
+		Map reportGroup = reportGroupsMap.get(reportGroupName)
 
 		if (reportGroup == null) {
 			reportGroup = new ConcurrentHashMap()
@@ -111,38 +99,33 @@ gradle.taskGraph.whenReady {
 			reportGroup.failureMessages = new ConcurrentLinkedQueue<String>()
 			reportGroup.failureStacktraces = new ConcurrentLinkedQueue<String>()
 
-			reportGroups.put(reportGroupName, reportGroup)
+			reportGroupsMap.put(reportGroupName, reportGroup)
 		}
 
 		reportGroup.expectedTaskPaths.add(task.path)
 	}
 
-	reportGroups.each {
-		String reportGroupName, Map reportGroup ->
-
-		_writeReportFile(
-			reportGroupName, 0.0d, [reportGroupName + " assemble was not executed. Please check the logs for details."], [], testResultsDir)
-	}
+	_writeReports(reportGroupsMap, testResultsDir)
 }
 
 private String _getReportGroupName(File projectDir, File modulesDir) {
-	List<File> candidateDirs = new ArrayList<File>()
+	List<File> moduleDirs = new ArrayList<File>()
 
 	File currentDir = projectDir
 
 	while ((currentDir != null) && !currentDir.equals(modulesDir) && !modulesDir.equals(currentDir.parentFile)) {
-		candidateDirs.add(currentDir)
+		moduleDirs.add(currentDir)
 
 		currentDir = currentDir.parentFile
 	}
 
-	Collections.reverse(candidateDirs)
+	Collections.reverse(moduleDirs)
 
 	File reportGroupDir = projectDir
 
-	for (File candidateDir : candidateDirs) {
-		if (_isModuleDir(candidateDir)) {
-			reportGroupDir = candidateDir
+	for (File moduleDir : moduleDirs) {
+		if (_isModuleDir(moduleDir)) {
+			reportGroupDir = moduleDir
 
 			break
 		}
@@ -154,9 +137,10 @@ private String _getReportGroupName(File projectDir, File modulesDir) {
 }
 
 private boolean _isModuleDir(File dir) {
-	for (String markerFileName :
-		[".gitrepo", ".lfrbuild-release-src", "app.bnd", "bnd.bnd", "build.gradle", "build.xml", "pom.xml"]) {
+	List<String> markerFileNames = [
+		".gitrepo", ".lfrbuild-release-src", "app.bnd", "bnd.bnd", "build.gradle", "build.xml", "pom.xml"]
 
+	for (String markerFileName : markerFileNames) {
 		File markerFile = new File(dir, markerFileName)
 
 		if (markerFile.exists()) {
@@ -169,30 +153,46 @@ private boolean _isModuleDir(File dir) {
 
 private void _writeReport(String reportGroupName, Map reportGroup, File testResultsDir) {
 	synchronized (reportGroup) {
-		_writeReportFile(
-			reportGroupName, reportGroup.durationAdder.sum(), new ArrayList<String>(reportGroup.failureMessages), new ArrayList<String>(reportGroup.failureStacktraces), testResultsDir)
-	}
-}
+		List<String> failureMessages = new ArrayList<String>(reportGroup.failureMessages)
 
-private void _writeReportFile(
-	String className, double duration, List<String> failureMessages, List<String> failureStacktraces, File testResultsDir) {
+		Set<String> pendingTaskPaths = new TreeSet<String>(reportGroup.expectedTaskPaths)
 
-	Date date = new Date()
-	int failureCount = failureMessages.isEmpty() ? 0 : 1
-	String failureElementString = ""
+		pendingTaskPaths.removeAll(reportGroup.completedTaskPaths)
 
-	if (!failureMessages.isEmpty()) {
-		failureElementString = "<failure message=\"${XmlUtil.escapeXml(failureMessages.join("\n"))}\">${XmlUtil.escapeXml(failureStacktraces.join("\n"))}</failure>"
-	}
+		pendingTaskPaths.each {
+			String pendingTaskPath ->
 
-	File file = new File(testResultsDir, "TEST-${className}.xml")
+			failureMessages.add(pendingTaskPath + " was not executed. Please check the logs for details.")
+		}
 
-	file.text = """<?xml version="1.0" encoding="UTF-8"?>
+		Date date = new Date()
+		double duration = reportGroup.durationAdder.sum()
+		int failureCount = failureMessages.isEmpty() ? 0 : 1
+		String failureElementString = ""
 
-	<testsuite errors="${failureCount}" failures="${failureCount}" hostname="localhost" name="${className}" skipped="0" tests="1" time="${duration}" timestamp="${date.format("yyyy-MM-dd_kk:mm:ss")}">
+		if (failureCount != 0) {
+			List<String> failureStacktraces = new ArrayList<String>(reportGroup.failureStacktraces)
+
+			failureElementString = "<failure message=\"${XmlUtil.escapeXml(failureMessages.join("\n"))}\">${XmlUtil.escapeXml(failureStacktraces.join("\n"))}</failure>"
+		}
+
+		File file = new File(testResultsDir, "TEST-${reportGroupName}.xml")
+
+		file.text = """<?xml version="1.0" encoding="UTF-8"?>
+
+	<testsuite errors="${failureCount}" failures="${failureCount}" hostname="localhost" name="${reportGroupName}" skipped="0" tests="1" time="${duration}" timestamp="${date.format("yyyy-MM-dd_kk:mm:ss")}">
 		<properties />
-		<testcase classname="${className}" name="assemble" time="${duration}">$failureElementString</testcase>
+		<testcase classname="${reportGroupName}" name="assemble" time="${duration}">$failureElementString</testcase>
 		<system-out></system-out>
 		<system-err></system-err>
 	</testsuite>"""
+	}
+}
+
+private void _writeReports(Map<String, Map> reportGroupsMap, File testResultsDir) {
+	reportGroupsMap.each {
+		String reportGroupName, Map reportGroup ->
+
+		_writeReport(reportGroupName, reportGroup, testResultsDir)
+	}
 }
