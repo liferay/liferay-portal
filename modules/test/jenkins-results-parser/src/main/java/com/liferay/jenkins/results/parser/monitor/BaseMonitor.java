@@ -41,6 +41,24 @@ public abstract class BaseMonitor implements Monitor {
 			((timeoutMillis - (timeoutMillis / 10)) / (2 * (maxRetries + 1)));
 	}
 
+	protected boolean getBooleanValue(
+		String category, boolean defaultValue, String name,
+		Map<String, String> values) {
+
+		String value = values.get(name);
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
+			return defaultValue;
+		}
+
+		if (!value.equals("false") && !value.equals("true")) {
+			throw new IllegalArgumentException(
+				getInvalidValueMessage(category, name, value));
+		}
+
+		return Boolean.parseBoolean(value);
+	}
+
 	protected String getInvalidValueMessage(
 		String category, String name, String value) {
 

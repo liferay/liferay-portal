@@ -31,6 +31,10 @@ public class MonitorFactory {
 			if (type.equals("resource-threshold")) {
 				return new ResourceThresholdMonitor(monitorConfig);
 			}
+
+			if (type.equals("upstream-job-health")) {
+				return new UpstreamJobHealthMonitor(monitorConfig);
+			}
 		}
 
 		throw new IllegalArgumentException("Unknown monitor type: " + type);
