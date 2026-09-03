@@ -1,8 +1,9 @@
 @import '_atlas-custom-properties-variables';
 
 @mixin cms-compare-versions-formatted-mark {
+	background-color: $primary-l3;
 	border: 1px dotted $primary;
-	text-decoration: underline dotted;
+	text-decoration: underline;
 }
 
 @mixin cms-compare-versions-mark($background-color, $border-color) {
