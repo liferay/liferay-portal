@@ -2449,16 +2449,11 @@ public class ObjectDefinitionLocalServiceImpl
 	private String _getUniqueClassName(
 		String className, boolean modifiable, boolean system) {
 
-		if (_isUnmodifiableSystemObject(modifiable, system)) {
+		if (_isUnmodifiableSystemObject(modifiable, system) ||
+			(Validator.isNotNull(className) &&
+			 _isClassNameAvailable(className))) {
+
 			return className;
-		}
-
-		if (Validator.isNotNull(className)) {
-			int count = _getObjectDefinitionsCountByClassName(className);
-
-			if (count == 0) {
-				return className;
-			}
 		}
 
 		while (true) {
@@ -2470,7 +2465,7 @@ public class ObjectDefinitionLocalServiceImpl
 				StringUtil.toUpperCase(StringUtil.randomId(1)),
 				RandomUtil.nextInt(10));
 
-			if (_getObjectDefinitionsCountByClassName(randomClassName) == 0) {
+			if (_isClassNameAvailable(randomClassName)) {
 				return randomClassName;
 			}
 		}
@@ -2530,6 +2525,21 @@ public class ObjectDefinitionLocalServiceImpl
 			_fragmentEntryLinkCache.removeFragmentEntryLinkCache(
 				GetterUtil.getLong(layoutClassedModelUsage.getContainerKey()));
 		}
+	}
+
+	private boolean _isClassNameAvailable(String className) {
+		if (_getObjectDefinitionsCountByClassName(className) != 0) {
+			return false;
+		}
+
+		Portlet portlet = _portletLocalService.getPortletById(
+			ObjectDefinitionUtil.getPortletId(className));
+
+		if (portlet == null) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isUnmodifiableSystemObject(
