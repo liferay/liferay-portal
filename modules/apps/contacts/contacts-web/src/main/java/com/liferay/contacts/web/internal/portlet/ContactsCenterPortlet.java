@@ -97,6 +97,8 @@ import jakarta.portlet.PortletResponse;
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.InputStream;
 
 import java.net.URLEncoder;
@@ -424,6 +426,18 @@ public class ContactsCenterPortlet extends MVCPortlet {
 	public void serveResource(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws PortletException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (!themeDisplay.isSignedIn()) {
+			HttpServletResponse httpServletResponse =
+				portal.getHttpServletResponse(resourceResponse);
+
+			httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
+			return;
+		}
 
 		try {
 			String resourceID = resourceRequest.getResourceID();
