@@ -416,12 +416,12 @@ public class LayoutContentVersionLocalServiceImpl
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		Company company = themeDisplay.getCompany();
-
 		String pathImage = _portal.getPathImage();
 		String pathMain = _portal.getPathMain();
 
 		String companyLogo = pathImage + "/company_logo";
+
+		Company company = themeDisplay.getCompany();
 
 		long companyLogoId = company.getLogoId();
 
@@ -431,9 +431,9 @@ public class LayoutContentVersionLocalServiceImpl
 				_webServerServletToken.getToken(companyLogoId));
 		}
 
-		LayoutSet layoutSet = layout.getLayoutSet();
-
 		String layoutSetLogo = null;
+
+		LayoutSet layoutSet = layout.getLayoutSet();
 
 		if (company.isSiteLogo() && layoutSet.isLogo()) {
 			long layoutSetLogoId = layoutSet.getLogoId();
