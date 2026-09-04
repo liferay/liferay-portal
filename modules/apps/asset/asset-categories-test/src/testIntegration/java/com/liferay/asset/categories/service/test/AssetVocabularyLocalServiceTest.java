@@ -38,6 +38,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -75,6 +76,45 @@ public class AssetVocabularyLocalServiceTest {
 	public void testDeleteVocabulary() throws Exception {
 		_testDeleteVocabularySystem();
 		_testDeleteVocabularySystemWhenImporting();
+	}
+
+	@Test
+	public void testGetGroupsVocabularies() throws Exception {
+		AssetTestUtil.addVocabulary(_group.getGroupId());
+
+		List<AssetVocabulary> assetVocabularies =
+			_assetVocabularyLocalService.getGroupsVocabularies(new long[0]);
+
+		Assert.assertTrue(
+			assetVocabularies.toString(), assetVocabularies.isEmpty());
+	}
+
+	@Test
+	public void testGetGroupVocabularies() throws Exception {
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			_group.getGroupId());
+
+		List<AssetVocabulary> assetVocabularies =
+			_assetVocabularyLocalService.getGroupVocabularies(new long[0]);
+
+		Assert.assertTrue(
+			assetVocabularies.toString(), assetVocabularies.isEmpty());
+
+		assetVocabularies = _assetVocabularyLocalService.getGroupVocabularies(
+			new long[0], new int[] {assetVocabulary.getVisibilityType()});
+
+		Assert.assertTrue(
+			assetVocabularies.toString(), assetVocabularies.isEmpty());
+	}
+
+	@Test
+	public void testGetGroupVocabulariesCount() throws Exception {
+		AssetTestUtil.addVocabulary(_group.getGroupId());
+
+		Assert.assertEquals(
+			0,
+			_assetVocabularyLocalService.getGroupVocabulariesCount(
+				new long[0]));
 	}
 
 	@Test

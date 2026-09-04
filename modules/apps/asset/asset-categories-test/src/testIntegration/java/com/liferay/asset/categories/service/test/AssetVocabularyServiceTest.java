@@ -357,6 +357,25 @@ public class AssetVocabularyServiceTest {
 	}
 
 	@Test
+	public void testGetGroupsVocabulariesWithNoGroupIds() throws Exception {
+		AssetTestUtil.addVocabulary(_group.getGroupId());
+
+		List<AssetVocabulary> assetVocabularies =
+			_assetVocabularyService.getGroupsVocabularies(new long[0]);
+
+		Assert.assertTrue(
+			assetVocabularies.toString(), assetVocabularies.isEmpty());
+	}
+
+	@Test
+	public void testGetGroupVocabulariesCountWithNoGroupIds() throws Exception {
+		AssetTestUtil.addVocabulary(_group.getGroupId());
+
+		Assert.assertEquals(
+			0, _assetVocabularyService.getGroupVocabulariesCount(new long[0]));
+	}
+
+	@Test
 	public void testGetGroupVocabulariesPaginatedWithNoViewableVocabularies()
 		throws Exception {
 
@@ -449,6 +468,24 @@ public class AssetVocabularyServiceTest {
 
 		Assert.assertEquals(
 			assetVocabularies.toString(), 1, assetVocabularies.size());
+	}
+
+	@Test
+	public void testGetGroupVocabulariesWithNoGroupIds() throws Exception {
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			_group.getGroupId());
+
+		List<AssetVocabulary> assetVocabularies =
+			_assetVocabularyService.getGroupVocabularies(new long[0]);
+
+		Assert.assertTrue(
+			assetVocabularies.toString(), assetVocabularies.isEmpty());
+
+		assetVocabularies = _assetVocabularyService.getGroupVocabularies(
+			new long[0], new int[] {assetVocabulary.getVisibilityType()});
+
+		Assert.assertTrue(
+			assetVocabularies.toString(), assetVocabularies.isEmpty());
 	}
 
 	@Test
