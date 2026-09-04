@@ -22,6 +22,7 @@ import com.liferay.jenkins.results.parser.test.clazz.group.SemVerModulesBatchTes
 import com.liferay.jenkins.results.parser.test.clazz.group.ServiceBuilderModulesBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.TCKJunitBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesCompileBatchTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesJSUnitModulesBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesModulesJUnitBatchTestClassGroup;
 
 import java.io.File;
@@ -230,6 +231,18 @@ public class TestClassFactory {
 			}
 			else if (batchTestClassGroup instanceof
 						JSUnitModulesBatchTestClassGroup) {
+
+				if (batchTestClassGroup instanceof
+						WorkspacesJSUnitModulesBatchTestClassGroup) {
+
+					if (jsonObject != null) {
+						return new WorkspacesJSUnitModulesTestClass(
+							batchTestClassGroup, jsonObject);
+					}
+
+					return new WorkspacesJSUnitModulesTestClass(
+						batchTestClassGroup, testClassFile);
+				}
 
 				if (jsonObject != null) {
 					return new JSUnitModulesTestClass(
