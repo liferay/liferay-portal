@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -111,6 +112,10 @@ public class BookmarksEntryServiceImpl extends BookmarksEntryServiceBaseImpl {
 
 	@Override
 	public int getFoldersEntriesCount(long groupId, List<Long> folderIds) {
+		if (ListUtil.isEmpty(folderIds)) {
+			return 0;
+		}
+
 		return bookmarksEntryPersistence.filterCountByG_F_S(
 			groupId, ArrayUtil.toArray(folderIds.toArray(new Long[0])),
 			WorkflowConstants.STATUS_APPROVED);

@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GroupSubscriptionCheckSubscriptionSender;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
@@ -311,6 +312,10 @@ public class BookmarksEntryLocalServiceImpl
 
 	@Override
 	public int getFoldersEntriesCount(long groupId, List<Long> folderIds) {
+		if (ListUtil.isEmpty(folderIds)) {
+			return 0;
+		}
+
 		return bookmarksEntryPersistence.countByG_F_S(
 			groupId, ArrayUtil.toArray(folderIds.toArray(new Long[0])),
 			WorkflowConstants.STATUS_APPROVED);
