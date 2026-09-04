@@ -15,6 +15,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -103,6 +105,12 @@ public class ViewAllSectionDisplayContextTest
 	public void testGetBulkActionDropdownItems() throws Exception {
 		List<FDSActionDropdownItem> bulkActionDropdownItems =
 			getBulkActionDropdownItems();
+
+		if (LicenseManagerUtil.isAppEnabled(App.CMP)) {
+			FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+				"archive", "add-assets-to-project", "Add Assets to Project",
+				"post", bulkActionDropdownItems.remove(9));
+		}
 
 		Assert.assertEquals(
 			bulkActionDropdownItems.toString(), 17,
