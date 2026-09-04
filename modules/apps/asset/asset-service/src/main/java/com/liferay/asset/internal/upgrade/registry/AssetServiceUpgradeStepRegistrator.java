@@ -6,8 +6,10 @@
 package com.liferay.asset.internal.upgrade.registry;
 
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
+import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.upgrade.ViewCountUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
@@ -37,6 +39,18 @@ public class AssetServiceUpgradeStepRegistrator
 		registry.register("2.0.0", "2.0.1", new DummyUpgradeStep());
 
 		registry.register("2.0.1", "2.1.0", new DummyUpgradeStep());
+
+		registry.register(
+			"2.1.0", "2.2.0",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update SAPEntry set allowedServiceSignatures = ",
+					"'com.liferay.asset.kernel.service.",
+					"AssetEntryService#incrementViewCounter",
+					"(long,java.lang.String,long)' where name = ",
+					"'ASSET_ENTRY_DEFAULT' and allowedServiceSignatures = ",
+					"'com.liferay.asset.kernel.service.",
+					"AssetEntryService#incrementViewCounter'")));
 	}
 
 	@Reference(
