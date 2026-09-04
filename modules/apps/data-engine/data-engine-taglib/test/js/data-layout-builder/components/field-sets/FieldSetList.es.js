@@ -922,8 +922,15 @@ describe('FieldSetList server-side search', () => {
 			jest.advanceTimersByTime(500);
 		});
 
-		expect(container.querySelectorAll('.field-type').length).toBe(2);
+		const fields = container.querySelectorAll('.field-type');
+
+		expect(fields.length).toBe(2);
+
+		expect(fields[0].querySelector('.list-group-title').textContent).toBe(
+			''
+		);
 		expect(queryByText('Zebra Named')).toBeTruthy();
+		expect(queryByText('undefined')).toBeFalsy();
 	});
 
 	it('renders the field sets from the store without fetching when the search is empty', () => {
