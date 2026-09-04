@@ -7,6 +7,7 @@ package com.liferay.osb.faro.web.internal.controller.contacts;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.Campaign;
+import com.liferay.osb.faro.engine.client.model.CampaignMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
@@ -78,6 +79,31 @@ public class CampaignFaroControllerTest {
 			ReflectionTestUtil.getFieldValue(campaignDisplay, "_campaignName"));
 		Assert.assertEquals(
 			id, ReflectionTestUtil.getFieldValue(campaignDisplay, "_id"));
+
+		Mockito.verify(
+			_faroProjectLocalService
+		).getFaroProjectByGroupId(
+			groupId
+		);
+	}
+
+	@Test
+	public void testGetCampaignMetrics() throws Exception {
+		long channelId = RandomTestUtil.randomLong();
+		List<CampaignMetric> campaignMetrics = Collections.singletonList(
+			new CampaignMetric());
+
+		Mockito.when(
+			_contactsEngineClient.getCampaignMetrics(_faroProject, channelId)
+		).thenReturn(
+			campaignMetrics
+		);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Assert.assertSame(
+			campaignMetrics,
+			_campaignFaroController.getCampaignMetrics(groupId, channelId));
 
 		Mockito.verify(
 			_faroProjectLocalService
