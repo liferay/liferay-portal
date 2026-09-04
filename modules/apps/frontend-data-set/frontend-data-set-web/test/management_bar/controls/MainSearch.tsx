@@ -11,8 +11,12 @@ import '@testing-library/jest-dom';
 
 import FrontendDataSetContext from '../../../src/main/resources/META-INF/resources/FrontendDataSetContext';
 import MainSearch from '../../../src/main/resources/META-INF/resources/management_bar/controls/MainSearch';
+import recentSearches from '../../../src/main/resources/META-INF/resources/utils/recentSearches';
 
 const DEBOUNCE_DELAY = 300;
+
+const FDS_NAME = 'test-fds';
+const OTHER_FDS_NAME = 'other-test-fds';
 
 describe('MainSearch', () => {
 	let onClear: jest.Mock;
@@ -25,7 +29,7 @@ describe('MainSearch', () => {
 	} = {}) {
 		render(
 			<FrontendDataSetContext.Provider
-				value={{apiURL, onSearch, searchAsYouType} as any}
+				value={{apiURL, id: FDS_NAME, onSearch, searchAsYouType} as any}
 			>
 				<MainSearch onClear={onClear} />
 			</FrontendDataSetContext.Provider>
@@ -42,6 +46,9 @@ describe('MainSearch', () => {
 
 	beforeEach(() => {
 		jest.useFakeTimers();
+
+		recentSearches.clear(FDS_NAME);
+		recentSearches.clear(OTHER_FDS_NAME);
 
 		onClear = jest.fn();
 		onSearch = jest.fn();
@@ -154,5 +161,156 @@ describe('MainSearch', () => {
 
 		expect(onSearch).toHaveBeenCalledTimes(1);
 		expect(onSearch).toHaveBeenCalledWith({query: 'ab'});
+	});
+
+	describe('recent searches', () => {
+		function storeQueries(queries: Array<string>, fdsName = FDS_NAME) {
+			queries.forEach((query) => recentSearches.add(fdsName, query));
+		}
+
+		it('lists the stored queries when the empty input is focused', async () => {
+			storeQueries(['vans', 'adidas', 'nike']);
+
+			const input = renderMainSearch();
+
+			await user.click(input);
+
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+
+			expect(
+				screen
+					.getAllByRole('menuitem', {name: /nike|adidas|vans/})
+					.map((menuItem) => menuItem.textContent)
+			).toEqual(['nike', 'adidas', 'vans']);
+		});
+
+		it('lists nothing when the Data Set has no stored queries', async () => {
+			const input = renderMainSearch();
+
+			await user.click(input);
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+
+		it('leaves out the queries stored for another Data Set', async () => {
+			storeQueries(['nike']);
+			storeQueries(['adidas'], OTHER_FDS_NAME);
+
+			const input = renderMainSearch();
+
+			await user.click(input);
+
+			expect(
+				screen.getByRole('menuitem', {name: 'nike'})
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole('menuitem', {name: 'adidas'})
+			).not.toBeInTheDocument();
+		});
+
+		it('fills the input and searches for the clicked query', async () => {
+			storeQueries(['nike']);
+
+			const input = renderMainSearch();
+
+			await user.click(input);
+			await user.click(screen.getByRole('menuitem', {name: 'nike'}));
+
+			expect(input).toHaveValue('nike');
+			expect(onSearch).toHaveBeenCalledWith({query: 'nike'});
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+
+		it('opens the list again when the already focused input is clicked', async () => {
+			storeQueries(['nike']);
+
+			const input = renderMainSearch();
+
+			await user.type(input, 'reebok{Enter}');
+			await user.clear(input);
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+
+			// The input never lost the focus, so only the click can reopen it
+
+			await user.click(input);
+
+			expect(
+				screen.getByRole('menuitem', {name: 'nike'})
+			).toBeInTheDocument();
+		});
+
+		it('keeps only the stored queries matching what the user typed', async () => {
+			storeQueries(['adidas', 'nike air', 'nike sb']);
+
+			const input = renderMainSearch();
+
+			await user.type(input, 'nik');
+
+			expect(
+				screen
+					.getAllByRole('menuitem', {name: /nike/})
+					.map((menuItem) => menuItem.textContent)
+			).toEqual(['nike sb', 'nike air']);
+
+			expect(
+				screen.queryByRole('menuitem', {name: 'adidas'})
+			).not.toBeInTheDocument();
+		});
+
+		it('lists nothing when no stored query matches what the user typed', async () => {
+			storeQueries(['nike']);
+
+			const input = renderMainSearch();
+
+			await user.type(input, 'reebok');
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+
+		it('removes a single query without closing the list', async () => {
+			storeQueries(['adidas', 'nike']);
+
+			const input = renderMainSearch();
+
+			await user.click(input);
+			await user.click(
+				screen.getAllByRole('menuitem', {name: 'clear-search'})[0]
+			);
+
+			expect(
+				screen.queryByRole('menuitem', {name: 'nike'})
+			).not.toBeInTheDocument();
+			expect(
+				screen.getByRole('menuitem', {name: 'adidas'})
+			).toBeInTheDocument();
+			expect(recentSearches.get(FDS_NAME)).toEqual(['adidas']);
+		});
+
+		it('removes every query at once', async () => {
+			storeQueries(['adidas', 'nike']);
+
+			const input = renderMainSearch();
+
+			await user.click(input);
+			await user.click(screen.getByRole('button', {name: 'clear-all'}));
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+			expect(recentSearches.get(FDS_NAME)).toEqual([]);
+		});
+
+		it('closes the list when the user clicks outside the search bar', async () => {
+			storeQueries(['nike']);
+
+			const input = renderMainSearch();
+
+			await user.click(input);
+
+			expect(screen.getByRole('menu')).toBeInTheDocument();
+
+			await user.click(document.body);
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
 	});
 });

@@ -6,17 +6,22 @@
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import {cancelDebounce, debounce} from 'frontend-js-web';
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {SEARCH_AS_YOU_TYPE_DEBOUNCE_DELAY} from '../../constants';
+import recentSearches from '../../utils/recentSearches';
+import RecentSearches from './RecentSearches';
 
 function MainSearch({onClear}: {onClear: () => void}) {
-	const {apiURL, appURL, onSearch, searchAsYouType, searchParam} = useContext(
-		FrontendDataSetContext
-	);
+	const {apiURL, appURL, id, onSearch, searchAsYouType, searchParam} =
+		useContext(FrontendDataSetContext);
 
 	const [inputValue, setInputValue] = useState(searchParam || '');
+	const [recentQueries, setRecentQueries] = useState<Array<string>>([]);
+	const [recentSearchesActive, setRecentSearchesActive] = useState(false);
+
+	const inputGroupItemRef = useRef<HTMLDivElement>(null);
 
 	const debouncedSearch = useMemo(
 		() =>
@@ -43,9 +48,21 @@ function MainSearch({onClear}: {onClear: () => void}) {
 		onSearch({query});
 	};
 
+	const readRecentQueries = () => setRecentQueries(recentSearches.get(id));
+
+	// Clicking counts as well as focusing, because an input that already holds
+	// the focus fires no focus event, and it does hold it after a search or
+	// after Escape closed the dropdown
+
+	const openRecentSearches = () => {
+		readRecentQueries();
+
+		setRecentSearchesActive(true);
+	};
+
 	return (
 		<ClayInput.Group>
-			<ClayInput.GroupItem>
+			<ClayInput.GroupItem ref={inputGroupItemRef}>
 				<ClayInput
 					aria-label={Liferay.Language.get('search')}
 					className="input-group-inset input-group-inset-after"
@@ -74,12 +91,16 @@ function MainSearch({onClear}: {onClear: () => void}) {
 							onSearch({query});
 						}
 					}}
+					onClick={openRecentSearches}
+					onFocus={openRecentSearches}
 					onKeyDown={(event) => {
 						if (event.key !== 'Enter') {
 							return;
 						}
 
 						event.preventDefault();
+
+						setRecentSearchesActive(false);
 
 						doSearch(inputValue);
 					}}
@@ -96,12 +117,39 @@ function MainSearch({onClear}: {onClear: () => void}) {
 						onClick={(event) => {
 							event.preventDefault();
 
+							setRecentSearchesActive(false);
+
 							doSearch(inputValue);
 						}}
 						symbol="search"
 						type="submit"
 					/>
 				</ClayInput.GroupInsetItem>
+
+				<RecentSearches
+					active={recentSearchesActive}
+					alignElementRef={inputGroupItemRef}
+					onActiveChange={setRecentSearchesActive}
+					onClearAll={() => {
+						recentSearches.clear(id);
+
+						readRecentQueries();
+					}}
+					onQueryClick={(query) => {
+						setRecentSearchesActive(false);
+
+						setInputValue(query);
+
+						doSearch(query);
+					}}
+					onQueryRemove={(query) => {
+						recentSearches.remove(id, query);
+
+						readRecentQueries();
+					}}
+					queries={recentQueries}
+					value={inputValue}
+				/>
 			</ClayInput.GroupItem>
 		</ClayInput.Group>
 	);

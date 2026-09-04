@@ -2,3 +2,39 @@ input[type='search']::-webkit-search-decoration:hover,
 input[type='search']::-webkit-search-cancel-button:hover {
 	cursor: pointer;
 }
+
+.fds-recent-searches {
+	.fds-recent-searches-caption {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.fds-recent-searches-clear-all {
+		padding-bottom: 0;
+		padding-top: 0;
+	}
+
+	.fds-recent-searches-item {
+		align-items: center;
+		display: flex;
+
+		.dropdown-item {
+			flex-grow: 1;
+			text-align: left;
+		}
+
+		.fds-recent-searches-item-remove {
+			flex-shrink: 0;
+			margin-right: 0.5rem;
+			visibility: hidden;
+		}
+
+		&:focus-within,
+		&:hover {
+			.fds-recent-searches-item-remove {
+				visibility: visible;
+			}
+		}
+	}
+}
