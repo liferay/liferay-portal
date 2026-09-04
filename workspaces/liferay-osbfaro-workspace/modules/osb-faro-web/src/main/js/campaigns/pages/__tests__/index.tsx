@@ -22,6 +22,11 @@ jest.mock('../../components/CampaignsDataSet', () => ({
 	default: () => <div data-testid="campaigns-data-set" />,
 }));
 
+jest.mock('../../components/OverviewSection', () => ({
+	__esModule: true,
+	default: () => <div data-testid="overview-section" />,
+}));
+
 const renderCampaigns = () =>
 	render(
 		<Provider store={mockStore()}>
@@ -44,6 +49,19 @@ describe('Campaigns', () => {
 		const {container} = renderCampaigns();
 
 		expect(container.querySelector('.breadcrumb')).toBeTruthy();
+	});
+
+	it('should render the overview section above the table', () => {
+		const {getByTestId} = renderCampaigns();
+
+		const overview = getByTestId('overview-section');
+		const table = getByTestId('campaigns-data-set');
+
+		expect(overview).toBeTruthy();
+		expect(
+			overview.compareDocumentPosition(table) &
+				Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
 	});
 
 	it('should render the campaigns table', () => {

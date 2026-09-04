@@ -24,6 +24,7 @@ interface IMetricCardProps {
 	trend?: IMetricCardTrend;
 	trendClassName?: string;
 	value: ReactNode;
+	valueClassName?: string;
 }
 
 const MetricCard: React.FC<IMetricCardProps> = ({
@@ -36,6 +37,7 @@ const MetricCard: React.FC<IMetricCardProps> = ({
 	trend,
 	trendClassName,
 	value,
+	valueClassName = 'text-lowercase',
 }) => {
 	if (loading) {
 		return (
@@ -71,7 +73,12 @@ const MetricCard: React.FC<IMetricCardProps> = ({
 				</div>
 
 				<div>
-					<div className="mt-2 text-lowercase text-weight-semi-bold">
+					<div
+						className={classNames(
+							'mt-2 text-weight-semi-bold',
+							valueClassName
+						)}
+					>
 						<Text size={7}>{value}</Text>
 					</div>
 

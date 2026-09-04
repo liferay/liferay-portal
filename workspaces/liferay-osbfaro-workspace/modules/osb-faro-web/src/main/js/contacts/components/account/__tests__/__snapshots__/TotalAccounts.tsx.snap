@@ -39,7 +39,7 @@ exports[`TotalAccounts should load with empty values when there's no data 1`] = 
           </div>
           <div>
             <div
-              class="mt-2 text-lowercase text-weight-semi-bold"
+              class="mt-2 text-weight-semi-bold text-lowercase"
             >
               <span
                 class="text-7"
@@ -91,7 +91,7 @@ exports[`TotalAccounts should load with empty values when there's no data 1`] = 
           </div>
           <div>
             <div
-              class="mt-2 text-lowercase text-weight-semi-bold"
+              class="mt-2 text-weight-semi-bold text-lowercase"
             >
               <span
                 class="text-7"
@@ -149,7 +149,7 @@ exports[`TotalAccounts should load with empty values when there's no data 1`] = 
           </div>
           <div>
             <div
-              class="mt-2 text-lowercase text-weight-semi-bold"
+              class="mt-2 text-weight-semi-bold text-lowercase"
             >
               <span
                 class="text-7"
@@ -216,7 +216,7 @@ exports[`TotalAccounts should render 1`] = `
           </div>
           <div>
             <div
-              class="mt-2 text-lowercase text-weight-semi-bold"
+              class="mt-2 text-weight-semi-bold text-lowercase"
             >
               <span
                 class="text-7"
@@ -268,7 +268,7 @@ exports[`TotalAccounts should render 1`] = `
           </div>
           <div>
             <div
-              class="mt-2 text-lowercase text-weight-semi-bold"
+              class="mt-2 text-weight-semi-bold text-lowercase"
             >
               <span
                 class="text-7"
@@ -335,7 +335,7 @@ exports[`TotalAccounts should render 1`] = `
           </div>
           <div>
             <div
-              class="mt-2 text-lowercase text-weight-semi-bold"
+              class="mt-2 text-weight-semi-bold text-lowercase"
             >
               <span
                 class="text-7"

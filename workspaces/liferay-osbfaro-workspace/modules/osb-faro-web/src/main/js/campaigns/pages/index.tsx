@@ -1,7 +1,8 @@
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
 import CampaignsDataSet from '../components/CampaignsDataSet';
-import {mockCampaigns} from '../utils/mock-campaigns';
+import OverviewSection from '../components/OverviewSection';
+import {mockCampaigns, mockCampaignMetrics} from '../utils/mock-campaigns';
 import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {SectionHeader} from 'shared/components/SectionHeader';
@@ -33,6 +34,8 @@ const Campaigns: React.FC = () => {
 			</BasePage.Header>
 
 			<BasePage.Body>
+				<OverviewSection metrics={mockCampaignMetrics} />
+
 				<SectionHeader
 					icon="megaphone"
 					rightContent={

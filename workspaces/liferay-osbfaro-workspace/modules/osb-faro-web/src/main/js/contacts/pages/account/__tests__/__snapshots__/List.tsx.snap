@@ -103,7 +103,7 @@ exports[`List rendering should match the snapshot 1`] = `
                 </div>
                 <div>
                   <div
-                    class="mt-2 text-lowercase text-weight-semi-bold"
+                    class="mt-2 text-weight-semi-bold text-lowercase"
                   >
                     <span
                       class="text-7"
@@ -155,7 +155,7 @@ exports[`List rendering should match the snapshot 1`] = `
                 </div>
                 <div>
                   <div
-                    class="mt-2 text-lowercase text-weight-semi-bold"
+                    class="mt-2 text-weight-semi-bold text-lowercase"
                   >
                     <span
                       class="text-7"
@@ -213,7 +213,7 @@ exports[`List rendering should match the snapshot 1`] = `
                 </div>
                 <div>
                   <div
-                    class="mt-2 text-lowercase text-weight-semi-bold"
+                    class="mt-2 text-weight-semi-bold text-lowercase"
                   >
                     <span
                       class="text-7"
