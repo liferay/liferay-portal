@@ -90,6 +90,8 @@ describe('FrontendDataSet', () => {
 		jest.clearAllMocks();
 
 		id = `${ID}-${++fdsCount}`;
+
+		window.history.pushState({}, '', '/');
 	});
 
 	it('cancels a search request superseded by a newer one', async () => {
@@ -249,6 +251,35 @@ describe('FrontendDataSet', () => {
 			const requests = await renderLoaded();
 
 			await search(requests, 'nike', ['nike air']);
+
+			expect(recentSearches.get(id)).toEqual(['nike']);
+		});
+
+		it('remembers a query that arrived in the URL', async () => {
+			window.history.pushState({}, '', `/?${id}_fdsConfig=(q:nike)`);
+
+			const requests = mockPendingRequests();
+
+			render(
+				<FrontendDataSet
+					apiURL="/o/products"
+					id={id}
+					recentSearches={true}
+					views={VIEWS}
+				/>
+			);
+
+			await waitFor(() => expect(requests.length).toBeGreaterThan(0));
+
+			act(() =>
+				requests.forEach((request) =>
+					request.resolve(itemsResponse(['nike air']))
+				)
+			);
+
+			expect(await screen.findByText('nike air')).toBeInTheDocument();
+
+			await settle();
 
 			expect(recentSearches.get(id)).toEqual(['nike']);
 		});
