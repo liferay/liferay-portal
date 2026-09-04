@@ -30,42 +30,89 @@ public class SAPAccessControlPolicyTest {
 
 	@Test
 	public void testMatches() {
+		Class<?>[] parameterTypes = {long.class};
+
 		Assert.assertTrue(
 			_sapAccessControlPolicy.matches(
-				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"*"));
+				"*", "com.liferay.portal.kernel.service.UserService",
+				"getUserById", parameterTypes));
 		Assert.assertTrue(
 			_sapAccessControlPolicy.matches(
+				"com.liferay.portal.kernel.service.*",
 				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"com.liferay.portal.kernel.service.*"));
+				parameterTypes));
 		Assert.assertTrue(
 			_sapAccessControlPolicy.matches(
+				"com.liferay.portal.kernel.service.UserService",
 				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"com.liferay.portal.kernel.service.UserService"));
+				parameterTypes));
 		Assert.assertTrue(
 			_sapAccessControlPolicy.matches(
+				"com.liferay.portal.kernel.service.UserService#getUserById",
 				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"com.liferay.portal.kernel.service.UserService#getUserById"));
+				parameterTypes));
 		Assert.assertTrue(
 			_sapAccessControlPolicy.matches(
+				"com.liferay.portal.kernel.service.UserService#get*",
 				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"com.liferay.portal.kernel.service.UserService#get*"));
+				parameterTypes));
 		Assert.assertTrue(
 			_sapAccessControlPolicy.matches(
+				"com.liferay.portal.kernel.service.*#get*",
 				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"com.liferay.portal.kernel.service.*#get*"));
+				parameterTypes));
 		Assert.assertTrue(
 			_sapAccessControlPolicy.matches(
-				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"#get*"));
+				"#get*", "com.liferay.portal.kernel.service.UserService",
+				"getUserById", parameterTypes));
 		Assert.assertFalse(
 			_sapAccessControlPolicy.matches(
+				"com.liferay.portlet.*#get*",
 				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"com.liferay.portlet.*#get*"));
+				parameterTypes));
 		Assert.assertFalse(
 			_sapAccessControlPolicy.matches(
+				"com.liferay.portal.service.*#update*",
 				"com.liferay.portal.kernel.service.UserService", "getUserById",
-				"com.liferay.portal.service.*#update*"));
+				parameterTypes));
+	}
+
+	@Test
+	public void testMatchesWithParameterTypes() {
+		String className = "com.liferay.portal.kernel.service.UserService";
+
+		Assert.assertTrue(
+			_sapAccessControlPolicy.matches(
+				className + "#addUser(long, java.lang.String)", className,
+				"addUser", new Class<?>[] {long.class, String.class}));
+		Assert.assertTrue(
+			_sapAccessControlPolicy.matches(
+				className + "#getGuestUser()", className, "getGuestUser",
+				new Class<?>[0]));
+		Assert.assertFalse(
+			_sapAccessControlPolicy.matches(
+				className + "#getGuestUser()", className, "getGuestUser",
+				new Class<?>[] {long.class}));
+		Assert.assertTrue(
+			_sapAccessControlPolicy.matches(
+				className + "#getUserById", className, "getUserById",
+				new Class<?>[] {long.class}));
+		Assert.assertTrue(
+			_sapAccessControlPolicy.matches(
+				className + "#getUserById", className, "getUserById",
+				new Class<?>[] {String.class}));
+		Assert.assertTrue(
+			_sapAccessControlPolicy.matches(
+				className + "#getUserById(long)", className, "getUserById",
+				new Class<?>[] {long.class}));
+		Assert.assertFalse(
+			_sapAccessControlPolicy.matches(
+				className + "#getUserById(long)", className, "getUserById",
+				new Class<?>[] {String.class}));
+		Assert.assertFalse(
+			_sapAccessControlPolicy.matches(
+				className + "#getUserById(long)", className, "getUserById",
+				new Class<?>[] {long.class, String.class}));
 	}
 
 	private SAPAccessControlPolicy _sapAccessControlPolicy;
