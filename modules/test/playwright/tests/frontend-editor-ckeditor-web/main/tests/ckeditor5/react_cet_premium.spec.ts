@@ -18,103 +18,113 @@ export const test = mergeTests(
 	loginTest()
 );
 
-test(
-	'Enhanced Paste from Office is loaded alongside the standard plugin',
-	{tag: ['@LPD-101122', '@LPD-95090']},
-	async ({classicPage, page}) => {
-		await expect(classicPage.editable).toBeVisible();
+// The premium plugins need a licensed installation, which CI does not have
+// yet. Skipping their registration keeps them out of Testray altogether,
+// rather than leaving a blocked entry behind the way test.skip does.
 
-		const loadedPlugins = await page.evaluate(() => {
-			const editorElement = Array.from(
-				document.querySelectorAll('.lfr-ck *')
-			).find((element) => (element as any).ckeditorInstance);
+if (!process.env.CI) {
+	test(
+		'Enhanced Paste from Office is loaded alongside the standard plugin',
+		{tag: ['@LPD-101122', '@LPD-95090']},
+		async ({classicPage, page}) => {
+			await expect(classicPage.editable).toBeVisible();
 
-			const editor = (editorElement as any)?.ckeditorInstance;
+			const loadedPlugins = await page.evaluate(() => {
+				const editorElement = Array.from(
+					document.querySelectorAll('.lfr-ck *')
+				).find((element) => (element as any).ckeditorInstance);
 
-			return {
-				pasteFromOffice:
-					editor?.plugins.has('PasteFromOffice') ?? false,
-				pasteFromOfficeEnhanced:
-					editor?.plugins.has('PasteFromOfficeEnhanced') ?? false,
+				const editor = (editorElement as any)?.ckeditorInstance;
+
+				return {
+					pasteFromOffice:
+						editor?.plugins.has('PasteFromOffice') ?? false,
+					pasteFromOfficeEnhanced:
+						editor?.plugins.has('PasteFromOfficeEnhanced') ?? false,
+				};
+			});
+
+			expect(loadedPlugins).toEqual({
+				pasteFromOffice: true,
+				pasteFromOfficeEnhanced: true,
+			});
+		}
+	);
+
+	test(
+		'Premium plugins are entitled by the license key set for this editor',
+		{tag: '@LPD-101122'},
+		async ({classicPage, page}) => {
+			const licenseErrors: string[] = [];
+
+			const collectLicenseError = (message: string) => {
+				if (message.includes('license-key')) {
+					licenseErrors.push(message);
+				}
 			};
-		});
 
-		expect(loadedPlugins).toEqual({
-			pasteFromOffice: true,
-			pasteFromOfficeEnhanced: true,
-		});
-	}
-);
+			page.on('console', (message) =>
+				collectLicenseError(message.text())
+			);
+			page.on('pageerror', (error) => collectLicenseError(error.message));
 
-test(
-	'Premium plugins are entitled by the license key set for this editor',
-	{tag: '@LPD-101122'},
-	async ({classicPage, page}) => {
-		const licenseErrors: string[] = [];
+			await page.reload();
 
-		const collectLicenseError = (message: string) => {
-			if (message.includes('license-key')) {
-				licenseErrors.push(message);
-			}
-		};
+			await expect(classicPage.editable).toBeVisible();
 
-		page.on('console', (message) => collectLicenseError(message.text()));
-		page.on('pageerror', (error) => collectLicenseError(error.message));
+			// Each premium plugin verifies its own entitlement on a one second
+			// interval, so a plugin the license does not cover only reports back
+			// once the editor is already running. An unlicensed plugin throws a
+			// "license-key-*" error and leaves the editor in read-only mode.
 
-		await page.reload();
+			await page.waitForTimeout(3000);
 
-		await expect(classicPage.editable).toBeVisible();
+			expect(licenseErrors).toEqual([]);
 
-		// Each premium plugin verifies its own entitlement on a one second
-		// interval, so a plugin the license does not cover only reports back
-		// once the editor is already running. An unlicensed plugin throws a
-		// "license-key-*" error and leaves the editor in read-only mode.
+			await expect(classicPage.editable).toHaveAttribute(
+				'contenteditable',
+				'true'
+			);
+		}
+	);
 
-		await page.waitForTimeout(3000);
+	test(
+		'Enhanced source editing opens the source view in a modal',
+		{tag: ['@LPD-101122', '@LPD-83978']},
+		async ({classicPage, page}) => {
+			await classicPage.toolbar.container
+				.getByRole('button', {exact: true, name: 'Source'})
+				.click();
 
-		expect(licenseErrors).toEqual([]);
+			await expect(
+				page.getByRole('dialog', {name: 'Edit source'})
+			).toBeVisible();
 
-		await expect(classicPage.editable).toHaveAttribute(
-			'contenteditable',
-			'true'
-		);
-	}
-);
+			await expect(page.locator('.cm-editor')).toBeVisible();
+		}
+	);
 
-test(
-	'Enhanced source editing opens the source view in a modal',
-	{tag: ['@LPD-101122', '@LPD-83978']},
-	async ({classicPage, page}) => {
-		await classicPage.toolbar.container
-			.getByRole('button', {exact: true, name: 'Source'})
-			.click();
+	test(
+		'Content edited in the enhanced source modal is applied to the editor',
+		{tag: '@LPD-101122'},
+		async ({classicPage}) => {
+			await classicPage.toolbar.container
+				.getByRole('button', {exact: true, name: 'Source'})
+				.click();
 
-		await expect(
-			page.getByRole('dialog', {name: 'Edit source'})
-		).toBeVisible();
+			await classicPage.sourceEditingEnhancedDialog.editable.fill(
+				'<h2>Heading Two</h2><p>Paragraph with <i>italic</i> text.</p>'
+			);
 
-		await expect(page.locator('.cm-editor')).toBeVisible();
-	}
-);
+			await classicPage.sourceEditingEnhancedDialog.saveButton.click();
 
-test(
-	'Content edited in the enhanced source modal is applied to the editor',
-	{tag: '@LPD-101122'},
-	async ({classicPage}) => {
-		await classicPage.toolbar.container
-			.getByRole('button', {exact: true, name: 'Source'})
-			.click();
+			await expect(classicPage.editable.locator('h2')).toContainText(
+				'Heading Two'
+			);
 
-		await classicPage.sourceEditingEnhancedDialog.editable.fill(
-			'<h2>Heading Two</h2><p>Paragraph with <i>italic</i> text.</p>'
-		);
-
-		await classicPage.sourceEditingEnhancedDialog.saveButton.click();
-
-		await expect(classicPage.editable.locator('h2')).toContainText(
-			'Heading Two'
-		);
-
-		await expect(classicPage.editable.locator('i')).toContainText('italic');
-	}
-);
+			await expect(classicPage.editable.locator('i')).toContainText(
+				'italic'
+			);
+		}
+	);
+}
