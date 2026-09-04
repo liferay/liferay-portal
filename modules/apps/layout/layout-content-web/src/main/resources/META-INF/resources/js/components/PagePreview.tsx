@@ -43,6 +43,8 @@ export default function PagePreview({
 		}
 	}
 	else {
+		params.set('p_l_id', String(Liferay.ThemeDisplay.getPlid()));
+		params.set('p_l_mode', 'preview');
 		params.set('selPlid', String(Liferay.ThemeDisplay.getPlid()));
 
 		if (experienceId) {
