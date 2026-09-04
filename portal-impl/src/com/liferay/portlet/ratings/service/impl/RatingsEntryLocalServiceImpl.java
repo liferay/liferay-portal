@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portlet.ratings.service.base.RatingsEntryLocalServiceBaseImpl;
 import com.liferay.ratings.kernel.exception.EntryScoreException;
 import com.liferay.ratings.kernel.model.RatingsEntry;
@@ -26,6 +27,7 @@ import com.liferay.ratings.kernel.service.RatingsStatsLocalService;
 import com.liferay.ratings.kernel.service.persistence.RatingsStatsPersistence;
 import com.liferay.social.kernel.model.SocialActivityConstants;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -117,6 +119,10 @@ public class RatingsEntryLocalServiceImpl
 	@Override
 	public Map<Long, RatingsEntry> getEntries(
 		long userId, String className, long[] classPKs) {
+
+		if (ArrayUtil.isEmpty(classPKs)) {
+			return Collections.emptyMap();
+		}
 
 		long classNameId = _classNameLocalService.getClassNameId(className);
 
