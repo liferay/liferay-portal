@@ -1,0 +1,117 @@
+{
+	"availableLanguageIds": [
+		"en_US",
+		"es_ES"
+	],
+	"contentType": "journal",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"confirmationErrorMessage": {
+					"en_US": "",
+					"es_ES": ""
+				},
+				"confirmationLabel": {
+					"en_US": "",
+					"es_ES": ""
+				},
+				"dataType": "string",
+				"direction": [
+					"vertical"
+				],
+				"displayStyle": "singleline",
+				"fieldNamespace": "",
+				"fieldReference": "Text32861154",
+				"hideField": false,
+				"labelAtStructureLevel": true,
+				"nativeField": false,
+				"objectFieldName": "",
+				"options": {
+				},
+				"placeholder": {
+					"en_US": "",
+					"es_ES": ""
+				},
+				"requireConfirmation": false,
+				"requiredErrorMessage": {
+					"en_US": "",
+					"es_ES": ""
+				},
+				"tooltip": {
+					"en_US": "",
+					"es_ES": ""
+				},
+				"visibilityExpression": ""
+			},
+			"defaultValue": {
+				"en_US": "",
+				"es_ES": ""
+			},
+			"fieldType": "text",
+			"indexType": "keyword",
+			"indexable": true,
+			"label": {
+				"en_US": "Text",
+				"es_ES": "Texto"
+			},
+			"localizable": true,
+			"name": "Text32861154",
+			"nestedDataDefinitionFields": [
+			],
+			"readOnly": false,
+			"repeatable": false,
+			"required": false,
+			"showLabel": true,
+			"tip": {
+				"en_US": "",
+				"es_ES": ""
+			}
+		}
+	],
+	"dataDefinitionKey": "NON-DEFAULT-SITE-LANGUAGE-DATA-DEFINITION",
+	"defaultDataLayout": {
+		"dataLayoutFields": {
+		},
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"Text32861154"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"en_US": "",
+					"es_ES": ""
+				},
+				"title": {
+					"en_US": "",
+					"es_ES": ""
+				}
+			}
+		],
+		"dataRules": [
+		],
+		"description": {
+		},
+		"name": {
+			"en_US": "Exported Structure",
+			"es_ES": "Estructura Exportada"
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "es_ES",
+	"description": {
+	},
+	"name": {
+		"en_US": "Exported Structure",
+		"es_ES": "Estructura Exportada"
+	},
+	"storageType": "default"
+}
