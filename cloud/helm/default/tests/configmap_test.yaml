@@ -21,6 +21,17 @@ tests:
                 -   com.example.b
                 -   com.example.c
     -   asserts:
+            -   matchRegex:
+                    path: data["portal-cloud.properties"]
+                    pattern: ComponentBlacklistConfiguration_blacklistComponentNames
+            -   matchRegex:
+                    path: data["portal-cloud.properties"]
+                    pattern: "\"com.example.d\""
+        it: Adds every entry of the component deny list through the loop
+        set:
+            portalComponentDenyList:
+                -   com.example.d
+    -   asserts:
             -   notExists:
                     path: data["portal-cloud.properties"]
         it: Drops the default data when configmap defaults are overridden
@@ -43,6 +54,26 @@ tests:
             autoscaling.enabled: false
             replicaCount: 2
     -   asserts:
+            -   matchRegex:
+                    path: data["portal-cloud.properties"]
+                    pattern: "\"com.example.a\""
+            -   matchRegex:
+                    path: data["portal-cloud.properties"]
+                    pattern: "\"com.example.b\""
+            -   matchRegex:
+                    path: data["portal-cloud.properties"]
+                    pattern: "\"com.example.d\""
+        it: Merges the deny list entries contributed by dependencies
+        set:
+            dependencies:
+                x-example:
+                    portalBundleDenyList:
+                        -   com.example.b
+                    portalComponentDenyList:
+                        -   com.example.d
+            portalBundleDenyList:
+                -   com.example.a
+    -   asserts:
             -   equal:
                     path: metadata.name
                     value: my-portal
@@ -52,8 +83,22 @@ tests:
     -   asserts:
             -   notMatchRegex:
                     path: data["portal-cloud.properties"]
+                    pattern: BundleBlacklistConfiguration_blacklistBundleSymbolicNames
+        it: Omits the bundle deny list override when the deny list is empty
+        set:
+            portalBundleDenyList: []
+    -   asserts:
+            -   notMatchRegex:
+                    path: data["portal-cloud.properties"]
                     pattern: cluster.link.enabled=true
         it: Omits the cluster link properties for a single replica
         set:
             autoscaling.enabled: false
             replicaCount: 1
+    -   asserts:
+            -   notMatchRegex:
+                    path: data["portal-cloud.properties"]
+                    pattern: ComponentBlacklistConfiguration_blacklistComponentNames
+        it: Omits the component deny list override when the deny list is empty
+        set:
+            portalComponentDenyList: []

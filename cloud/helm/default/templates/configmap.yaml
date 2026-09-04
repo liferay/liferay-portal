@@ -36,32 +36,34 @@ data:
         {{- $v.portalProperties | nindent 8 }}
         {{- end }}
         {{- end }}
+        {{- $bundles := default (list) .Values.portalBundleDenyList }}
+        {{- $components := default (list) .Values.portalComponentDenyList }}
+        {{- range $k, $v := .Values.dependencies }}
+        {{- with $v.portalBundleDenyList }}
+        {{- $bundles = concat $bundles . }}
+        {{- end }}
+        {{- with $v.portalComponentDenyList }}
+        {{- $components = concat $components . }}
+        {{- end }}
+        {{- end }}
+        {{- if $bundles }}
         configuration.override.com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration_blacklistBundleSymbolicNames=[\
             {{- $PREFIX := "" }}
-            {{- range $bundle := .Values.portalBundleDenyList }}
+            {{- range $bundle := $bundles }}
             {{ $PREFIX }}{{ $bundle | quote }}\
             {{- $PREFIX = "," -}}
-            {{- end }}
-            {{- range $k, $v := .Values.dependencies }}
-            {{- range $bundle := $v.portalBundleDenyList }}
-            {{ $PREFIX }}{{ $bundle | quote }}\
-            {{- $PREFIX = "," -}}
-            {{- end }}
             {{- end }}
         ]
+        {{- end }}
+        {{- if $components }}
         configuration.override.com.liferay.portal.component.blacklist.internal.configuration.ComponentBlacklistConfiguration_blacklistComponentNames=[\
             {{- $PREFIX := "" }}
-            {{- range $component := .Values.portalComponentDenyList }}
+            {{- range $component := $components }}
             {{ $PREFIX }}{{ $component | quote }}\
             {{- $PREFIX = "," }}
-            {{- end }}
-            {{- range $k, $v := .Values.dependencies }}
-            {{- range $component := $v.portalComponentDenyList }}
-            {{ $PREFIX }}{{ $component | quote }}\
-            {{- $PREFIX = "," }}
-            {{- end }}
             {{- end }}
         ]
+        {{- end }}
         {{ if or (gt (int .Values.replicaCount) 1) .Values.autoscaling.enabled -}}
         cluster.link.autodetect.address=
         cluster.link.channel.properties.control=/opt/liferay/unicast.xml

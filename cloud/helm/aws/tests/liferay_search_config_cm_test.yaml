@@ -18,13 +18,51 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
+                    pattern: com.liferay.portal.search.elasticsearch7.api
+            -   matchRegex:
+                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
                     pattern: com.liferay.portal.search.elasticsearch7.impl
+            -   matchRegex:
+                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
+                    pattern: com.liferay.portal.search.elasticsearch8.api
+            -   matchRegex:
+                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
+                    pattern: com.liferay.portal.search.elasticsearch8.impl
             -   matchRegex:
                     path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
                     pattern: com.liferay.portal.search.learning.to.rank.api
         it: Blacklists the Elasticsearch bundles through the loop when the engine is opensearch
         set:
             liferay-default.search.engine: opensearch
+    -   asserts:
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config"]
+                    pattern: productionModeEnabled=B"true"
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config"]
+                    pattern: remoteClusterConnectionId="REMOTE"
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config"]
+                    pattern: productionModeEnabled=B"true"
+            -   matchRegex:
+                    path: data["com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config"]
+                    pattern: remoteClusterConnectionId="REMOTE"
+        it: Keeps the Elasticsearch sidecar down when the engine is opensearch
+        set:
+            liferay-default.search.engine: opensearch
+    -   asserts:
+            -   notMatchRegex:
+                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
+                    pattern: com.liferay.portal.search.elasticsearch7.impl
+            -   notMatchRegex:
+                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
+                    pattern: com.liferay.portal.search.elasticsearch8.impl
+            -   notMatchRegex:
+                    path: data["com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration.config"]
+                    pattern: com.liferay.portal.search.learning.to.rank.api
+        it: Omits the Elasticsearch bundles from the deny list when the engine is elasticsearch
+        set:
+            liferay-default.search.engine: elasticsearch
     -   asserts:
             -   matchRegex:
                     path: data["com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config"]

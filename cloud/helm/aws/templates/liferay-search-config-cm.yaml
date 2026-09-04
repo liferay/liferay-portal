@@ -2,7 +2,7 @@
 {{- $liferayDefault := index .Values "liferay-default" -}}
 {{- $bundles := list -}}
 {{- if eq $engine "opensearch" -}}
-{{- $bundles = list "com.liferay.portal.search.elasticsearch.cross.cluster.replication.impl" "com.liferay.portal.search.elasticsearch.monitoring.web" "com.liferay.portal.search.elasticsearch7.api" "com.liferay.portal.search.elasticsearch7.impl" "com.liferay.portal.search.learning.to.rank.api" "com.liferay.portal.search.learning.to.rank.impl" -}}
+{{- $bundles = list "com.liferay.portal.search.elasticsearch.cross.cluster.replication.impl" "com.liferay.portal.search.elasticsearch.monitoring.web" "com.liferay.portal.search.elasticsearch7.api" "com.liferay.portal.search.elasticsearch7.impl" "com.liferay.portal.search.elasticsearch8.api" "com.liferay.portal.search.elasticsearch8.impl" "com.liferay.portal.search.learning.to.rank.api" "com.liferay.portal.search.learning.to.rank.impl" -}}
 {{- end -}}
 {{- with $liferayDefault.portalBundleDenyList -}}
 {{- $bundles = concat $bundles . -}}
@@ -27,6 +27,9 @@ data:
         password="$[env:SEARCH_PASSWORD]"
         productionModeEnabled=B"true"
         username="$[env:SEARCH_USERNAME]"
+        {{- else }}
+        productionModeEnabled=B"true"
+        remoteClusterConnectionId="REMOTE"
         {{- end }}
     com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration.config: |
         {{- if eq $engine "elasticsearch" }}
@@ -36,6 +39,9 @@ data:
         password="$[env:SEARCH_PASSWORD]"
         productionModeEnabled=B"true"
         username="$[env:SEARCH_USERNAME]"
+        {{- else }}
+        productionModeEnabled=B"true"
+        remoteClusterConnectionId="REMOTE"
         {{- end }}
     com.liferay.portal.search.opensearch2.configuration.OpenSearchConfiguration.config: |
         {{- if eq $engine "opensearch" }}
