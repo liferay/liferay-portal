@@ -357,8 +357,8 @@ public class ObjectEntryVersionFieldValueResolverTest {
 
 		String expectedDisplayValue = StringBundler.concat(
 			"<img alt=\"", fileName,
-			"\" class=\"cms-compare-versions-attachment\" src=\"", previewURL,
-			"\" /> ", fileName);
+			"\" class=\"border cms-compare-versions-attachment d-block mb-2 ",
+			"mw-100 rounded\" src=\"", previewURL, "\" /> ", fileName);
 
 		Assert.assertEquals(
 			expectedDisplayValue,
@@ -453,8 +453,9 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<img alt=\"", escapedFileName,
-				"\" class=\"cms-compare-versions-attachment\" src=\"",
-				previewURL, "\" /> ", escapedFileName),
+				"\" class=\"border cms-compare-versions-attachment d-block ",
+				"mb-2 mw-100 rounded\" src=\"", previewURL, "\" /> ",
+				escapedFileName),
 			_objectEntryVersionFieldValueResolver.toDisplayValue(
 				_LANGUAGE_ID,
 				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT),

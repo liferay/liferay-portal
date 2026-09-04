@@ -274,7 +274,8 @@ public class ObjectEntryVersionFieldValueResolver {
 
 			return StringBundler.concat(
 				"<img alt=\"", fileName,
-				"\" class=\"cms-compare-versions-attachment\" src=\"",
+				"\" class=\"border cms-compare-versions-attachment d-block ",
+				"mb-2 mw-100 rounded\" src=\"",
 				_dlURLHelper.getPreviewURL(
 					fileEntry, fileEntry.getFileVersion(), null,
 					StringPool.BLANK),
