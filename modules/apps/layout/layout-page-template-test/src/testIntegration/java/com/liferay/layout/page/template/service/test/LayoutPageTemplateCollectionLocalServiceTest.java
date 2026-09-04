@@ -311,8 +311,7 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
 				layoutPageTemplateCollection.
-					getLayoutPageTemplateCollectionId(),
-				RandomTestUtil.randomString());
+					getLayoutPageTemplateCollectionId());
 
 		_layoutPageTemplateCollectionLocalService.
 			deleteLayoutPageTemplateCollection(
