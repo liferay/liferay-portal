@@ -907,6 +907,26 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 	}
 
 	@Test
+	public void testSerializeRecentSearches() throws Exception {
+		_mockSerializeRecentSearches(
+			FDS_NAMES[0],
+			HashMapBuilder.<String, Object>put(
+				"recentSearches", true
+			).build());
+
+		_mockSerializeRecentSearches(FDS_NAMES[1], Collections.emptyMap());
+
+		Assert.assertTrue(
+			_customFDSSerializer.serializeRecentSearches(
+				FDS_NAMES[0], httpServletRequest));
+		Assert.assertFalse(
+			_customFDSSerializer.serializeRecentSearches(
+				FDS_NAMES[1], httpServletRequest));
+
+		_resetFDSSerializer();
+	}
+
+	@Test
 	public void testSerializeSearchAsYouType() throws Exception {
 		_mockSerializeSearchAsYouType(
 			FDS_NAMES[0],
@@ -1618,6 +1638,22 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		Mockito.when(
 			_customFDSSerializer.serializePagination(
+				fdsName, httpServletRequest)
+		).thenCallRealMethod();
+	}
+
+	private void _mockSerializeRecentSearches(
+		String fdsName, Map<String, Object> properties) {
+
+		Mockito.when(
+			_customFDSSerializer.getDataSetObjectEntryProperties(
+				fdsName, httpServletRequest)
+		).thenReturn(
+			properties
+		);
+
+		Mockito.when(
+			_customFDSSerializer.serializeRecentSearches(
 				fdsName, httpServletRequest)
 		).thenCallRealMethod();
 	}

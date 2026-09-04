@@ -40,6 +40,10 @@ public interface SystemFDSEntry {
 		return null;
 	}
 
+	public default boolean getRecentSearches() {
+		return false;
+	}
+
 	public String getRESTApplication();
 
 	public String getRESTEndpoint();
