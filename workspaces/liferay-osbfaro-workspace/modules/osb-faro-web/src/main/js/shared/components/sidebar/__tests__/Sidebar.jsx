@@ -15,7 +15,18 @@ const defaultProps = {
 
 jest.unmock('react-dom');
 
+jest.mock('shared/util/feature-flags', () => ({
+	...jest.requireActual('shared/util/feature-flags'),
+	ENABLE_CAMPAIGNS: false
+}));
+
+const featureFlags = jest.requireMock('shared/util/feature-flags');
+
 describe('Sidebar', () => {
+	beforeEach(() => {
+		featureFlags.ENABLE_CAMPAIGNS = false;
+	});
+
 	it('should render', () => {
 		const {container} = render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
@@ -61,7 +72,7 @@ describe('Sidebar', () => {
 		).toHaveAttribute('href', activePathName);
 	});
 
-	it('should render lifecycle, campaigns and accounts items when LDP is enabled', () => {
+	it('should render lifecycle and accounts items when LDP is enabled', () => {
 		const {queryByText} = render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
 				<MemoryRouter>
@@ -71,11 +82,24 @@ describe('Sidebar', () => {
 		);
 
 		expect(queryByText('Lifecycles')).toBeTruthy();
-		expect(queryByText('Campaigns')).toBeTruthy();
 		expect(queryByText('Accounts')).toBeTruthy();
 	});
 
-	it('should link the campaigns item to the campaigns route', () => {
+	it('should not render the campaigns item while the feature flag is off', () => {
+		const {queryByText} = render(
+			<Provider store={mockStore(mockStoreDataLDP)}>
+				<MemoryRouter>
+					<Sidebar {...defaultProps} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(queryByText('Campaigns')).toBeNull();
+	});
+
+	it('should render the campaigns item when the feature flag is on', () => {
+		featureFlags.ENABLE_CAMPAIGNS = true;
+
 		const {queryByText} = render(
 			<Provider store={mockStore(mockStoreDataLDP)}>
 				<MemoryRouter>
@@ -90,7 +114,21 @@ describe('Sidebar', () => {
 		);
 	});
 
-	it('should not render lifecycle, campaigns and accounts items when LDP is not enabled', () => {
+	it('should not render the campaigns item when the feature flag is on but LDP is not enabled', () => {
+		featureFlags.ENABLE_CAMPAIGNS = true;
+
+		const {queryByText} = render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<Sidebar {...defaultProps} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(queryByText('Campaigns')).toBeNull();
+	});
+
+	it('should not render lifecycle and accounts items when LDP is not enabled', () => {
 		const {queryByText} = render(
 			<Provider store={mockStore()}>
 				<MemoryRouter>
@@ -100,7 +138,6 @@ describe('Sidebar', () => {
 		);
 
 		expect(queryByText('Lifecycles')).toBeNull();
-		expect(queryByText('Campaigns')).toBeNull();
 		expect(queryByText('Accounts')).toBeNull();
 	});
 });

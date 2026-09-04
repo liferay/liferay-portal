@@ -7,6 +7,7 @@ import SidebarItem from './SidebarItem';
 import UserDropdown, {Menus} from 'shared/components/user-dropdown';
 import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {DEVELOPER_MODE, LANGUAGES} from 'shared/util/constants';
+import {ENABLE_CAMPAIGNS} from 'shared/util/feature-flags';
 import {Link, matchPath} from 'react-router-dom';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {User} from 'shared/util/records';
@@ -43,12 +44,13 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					route: Routes.LIFECYCLE,
 					url: toRoute(Routes.LIFECYCLE, {channelId, groupId}),
 				},
-				LDPEnabled && {
-					icon: 'megaphone',
-					label: Liferay.Language.get('campaigns'),
-					route: Routes.CAMPAIGNS,
-					url: toRoute(Routes.CAMPAIGNS, {channelId, groupId}),
-				},
+				LDPEnabled &&
+					ENABLE_CAMPAIGNS && {
+						icon: 'megaphone',
+						label: Liferay.Language.get('campaigns'),
+						route: Routes.CAMPAIGNS,
+						url: toRoute(Routes.CAMPAIGNS, {channelId, groupId}),
+					},
 				{
 					icon: 'ac_page',
 					label: Liferay.Language.get('sites'),
