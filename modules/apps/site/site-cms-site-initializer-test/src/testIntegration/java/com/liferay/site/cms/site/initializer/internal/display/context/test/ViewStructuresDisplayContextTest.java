@@ -79,10 +79,10 @@ public class ViewStructuresDisplayContextTest
 			"list-ul", "viewUsages", "View Usages", "get",
 			fdsActionDropdownItems.get(1));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"export", "export", "Export as JSON", "get",
+			"export", "exportBoundObjectDefinitions", "Export as JSON", "get",
 			fdsActionDropdownItems.get(2));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"import", "import", "Import and Override", "get",
+			"export", "export", "Export as JSON", "get",
 			fdsActionDropdownItems.get(3));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"password-policies", "permissions", "Permissions", "get",
