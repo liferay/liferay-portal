@@ -139,7 +139,15 @@ public class LayoutContentVersionDisplayContextTest {
 				_group.getExternalReferenceCode(), "/site-pages/",
 				_publishedLayout.getExternalReferenceCode(),
 				"/page-specification-versions",
-				"?nestedFields=pageSpecificationVersionPageExperiences"),
+				"/{pageSpecificationVersionExternalReferenceCode}",
+				"/page-specification-version-page-experiences"),
+			config.get("pageSpecificationVersionPageExperiencesURL"));
+		Assert.assertEquals(
+			StringBundler.concat(
+				"/o/headless-admin-site/v1.0/sites/",
+				_group.getExternalReferenceCode(), "/site-pages/",
+				_publishedLayout.getExternalReferenceCode(),
+				"/page-specification-versions"),
 			config.get("pageSpecificationVersionsURL"));
 	}
 
