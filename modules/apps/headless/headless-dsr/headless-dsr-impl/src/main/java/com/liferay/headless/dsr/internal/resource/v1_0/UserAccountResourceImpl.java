@@ -8,6 +8,7 @@ package com.liferay.headless.dsr.internal.resource.v1_0;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.headless.dsr.dto.v1_0.UserAccount;
 import com.liferay.headless.dsr.internal.dto.v1_0.converter.UserAccountDTOConverterContext;
+import com.liferay.headless.dsr.internal.security.permission.DSRRoleAssignmentPermissionUtil;
 import com.liferay.headless.dsr.internal.util.TicketUtil;
 import com.liferay.headless.dsr.resource.v1_0.UserAccountResource;
 import com.liferay.login.web.constants.LoginPortletKeys;
@@ -30,7 +31,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -61,7 +61,6 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.dsr.site.initializer.constants.DSRPortletKeys;
-import com.liferay.site.dsr.site.initializer.constants.DSRRoleConstants;
 import com.liferay.site.dsr.site.initializer.constants.DSRTicketConstants;
 import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
@@ -77,7 +76,6 @@ import java.io.Serializable;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.osgi.service.component.annotations.Component;
@@ -388,8 +386,11 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			return;
 		}
 
-		if (_getRolePriority(group.getGroupId(), contextUser.getUserId()) <=
-				_getRolePriority(group.getGroupId(), userId)) {
+		int rolePriority = DSRRoleAssignmentPermissionUtil.getRolePriority(
+			group.getGroupId(), contextUser.getUserId());
+
+		if (rolePriority <= DSRRoleAssignmentPermissionUtil.getRolePriority(
+				group.getGroupId(), userId)) {
 
 			throw new PrincipalException.MustHavePermission(
 				permissionChecker, Group.class.getName(), group.getGroupId(),
@@ -400,20 +401,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	private void _checkPermission(Group group, String roleKey)
 		throws Exception {
 
-		if (!Objects.equals(
-				roleKey, DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR)) {
-
-			return;
-		}
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		if (!permissionChecker.isGroupAdmin(group.getGroupId()) &&
-			!permissionChecker.isGroupOwner(group.getGroupId())) {
-
-			throw new RoleAssignmentException();
-		}
+		DSRRoleAssignmentPermissionUtil.checkPermission(
+			group, roleKey, contextUser.getUserId());
 	}
 
 	private Group _getGroup(long roomId) throws Exception {
@@ -458,22 +447,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		}
 
 		return objectEntry;
-	}
-
-	private int _getRolePriority(long groupId, long userId) throws Exception {
-		int rolePriority = 0;
-
-		for (UserGroupRole userGroupRole :
-				_userGroupRoleLocalService.getUserGroupRoles(userId, groupId)) {
-
-			Role role = userGroupRole.getRole();
-
-			rolePriority = Math.max(
-				rolePriority,
-				_rolePrioritiesMap.getOrDefault(role.getName(), 0));
-		}
-
-		return rolePriority;
 	}
 
 	private void _initThemeDisplay(long groupId) throws Exception {
@@ -523,17 +496,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				"expiration-date-must-be-a-future-date");
 		}
 	}
-
-	private static final Map<String, Integer> _rolePrioritiesMap =
-		HashMapBuilder.put(
-			DSRRoleConstants.NAME_DSR_CONTENT_CONTRIBUTOR, 1
-		).put(
-			DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR, 2
-		).put(
-			RoleConstants.SITE_ADMINISTRATOR, 3
-		).put(
-			RoleConstants.SITE_OWNER, 4
-		).build();
 
 	@Reference
 	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
