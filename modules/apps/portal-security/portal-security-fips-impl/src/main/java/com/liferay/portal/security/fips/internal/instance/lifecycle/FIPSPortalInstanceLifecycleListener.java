@@ -47,9 +47,9 @@ public class FIPSPortalInstanceLifecycleListener
 		User user = _userLocalService.addDefaultServiceAccountUser(companyId);
 
 		_addCryptoOfficerPasswordPolicy(companyId, user);
+		_addCryptoOfficerRole(companyId, user);
 
 		_addCryptoOfficerResourcePermissions(companyId);
-		_addCryptoOfficerRole(companyId, user);
 	}
 
 	private void _addCryptoOfficerPasswordPolicy(long companyId, User user)
