@@ -21,7 +21,7 @@ import {
 } from '../utils/properties';
 import {List} from 'immutable';
 import {PropertyGroup, PropertySubgroup} from 'shared/util/records';
-import {withRequest} from 'shared/hoc';
+import {withError, withLoading, withQuery} from 'shared/hoc';
 
 const MAX_DELTA = 500;
 
@@ -247,7 +247,41 @@ export const withPropertyGroups = (
 		}
 	};
 
-export default compose(
-	withRequest(fetchPropertyGroups, mapResultToProps),
-	withPropertyGroups
-);
+/**
+ * Requests the property groups the editor needs, with the loading and error
+ * states `withRequest` would provide.
+ *
+ * This composes the same three HOCs `withRequest` composes, but once per
+ * wrapped component rather than on every render. `withRequest` builds them
+ * inside its own render, which makes the subtree a new component type each
+ * time, so any re-render of an ancestor unmounts and remounts the editor. The
+ * editor cannot survive that: the remount discards the `useBlocker`
+ * registration behind its unsaved changes guard, and React Router drops the
+ * blocked navigation with no prompt, leaving the user stuck on the page. See
+ * LPD-104396.
+ */
+const withPropertyGroupsRequest = (
+	WrappedComponent: React.ComponentType<any>
+) =>
+	compose(
+
+		// The third argument hands `withQuery`'s own result straight through,
+		// which is what it does when the argument is omitted. The result is
+		// mapped below instead, once the loading and error states have been
+		// peeled off it.
+
+		withQuery(
+			fetchPropertyGroups,
+			(props: any) => props,
+			(resultProps: any) => resultProps
+		),
+		withError({page: true}),
+		withLoading()
+	)(({data, ...otherProps}: any) => (
+		<WrappedComponent
+			{...otherProps}
+			{...mapResultToProps(data, otherProps)}
+		/>
+	));
+
+export default compose(withPropertyGroupsRequest, withPropertyGroups);
