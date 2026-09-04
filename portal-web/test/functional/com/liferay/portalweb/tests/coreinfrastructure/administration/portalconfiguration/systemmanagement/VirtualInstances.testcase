@@ -91,6 +91,8 @@ definition {
 	test CanUpdateGeneralInfos {
 		property portal.acceptance = "true";
 
+		var portalInstanceName = JSONCompany.getPortalInstanceName();
+
 		PortalSettings.gotoConfiguration(
 			configurationCategory = "Instance Configuration",
 			configurationName = "General",
@@ -109,6 +111,12 @@ definition {
 			fieldValue = "www.able.com");
 
 		PortletEntry.save();
+
+		ApplicationsMenu.openApplicationsMenu();
+
+		AssertElementPresent(
+			key_site = "EditedLiferay",
+			locator1 = "ApplicationsMenu#SITE_LINK");
 
 		ApplicationsMenu.gotoSite(site = "EditedLiferay");
 
@@ -134,11 +142,11 @@ definition {
 
 		FormFields.editText(
 			fieldName = "cdn-host-http",
-			fieldValue = "http://localhost:8080");
+			fieldValue = "http://www.able.com:8080");
 
 		FormFields.editText(
 			fieldName = "cdn-host-https",
-			fieldValue = "https://localhost:8080");
+			fieldValue = "https://www.able.com:8080");
 
 		for (var fieldName : list "legalName,tickerSymbol,legalId,industry,legalType,type,sicCode") {
 			FormFields.editText(
@@ -146,7 +154,7 @@ definition {
 				fieldValue = ${fieldName});
 		}
 
-		Button.clickSave();
+		PortletEntry.save();
 
 		PortalSettings.gotoConfiguration(
 			baseURL = "http://www.able.com:8080",
@@ -156,16 +164,24 @@ definition {
 
 		FormFields.viewTextValue(
 			fieldName = "cdn-host-http",
-			fieldValue = "http://localhost:8080");
+			fieldValue = "http://www.able.com:8080");
 
 		FormFields.viewTextValue(
 			fieldName = "cdn-host-https",
-			fieldValue = "https://localhost:8080");
+			fieldValue = "https://www.able.com:8080");
 
 		for (var fieldName : list "legalName,tickerSymbol,legalId,industry,legalType,type,sicCode") {
 			FormFields.viewTextValue(
 				fieldName = ${fieldName},
 				fieldValue = ${fieldName});
+		}
+
+		task ("Restore the virtual host once the changes are validated so the tear down can reach the instance") {
+			FormFields.editText(
+				fieldName = "virtualHostname",
+				fieldValue = ${portalInstanceName});
+
+			PortletEntry.save();
 		}
 	}
 
