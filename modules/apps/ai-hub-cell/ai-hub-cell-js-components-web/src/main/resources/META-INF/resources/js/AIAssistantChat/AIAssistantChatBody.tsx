@@ -9,9 +9,11 @@ import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
 
+import CharacterCounter from '../components/CharacterCounter';
 import AIAssistantFooterDisclaimer from './components/AIAssistantFooterDisclaimer';
 import AIAssistantMessageBalloon from './components/AIAssistantMessageBalloon';
 import {renderMessageBalloon} from './components/messageBalloonRenderers';
+import {MESSAGE_LENGTH_MAX} from './constants';
 import {AIChat} from './useAIChat';
 import resolveMessage from './utils/resolveMessage';
 
@@ -123,6 +125,7 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 				<ClayInputGroupAI
 					aiState={aiState}
 					id="assistant-user-input"
+					maxLength={MESSAGE_LENGTH_MAX}
 					messages={{
 						retry: Liferay.Language.get('retry'),
 						submit: Liferay.Language.get('submit'),
@@ -132,6 +135,11 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 					placeholder={Liferay.Language.get('ask-me-anything')}
 					readOnly={isGenerating}
 					value={message}
+				/>
+
+				<CharacterCounter
+					count={message.length}
+					max={MESSAGE_LENGTH_MAX}
 				/>
 
 				{(aiState === 'result' || aiState === 'result-readonly') && (

@@ -33,3 +33,5 @@ export const REASON_OPTIONS: {
 		value: 'other',
 	},
 ];
+
+export const USER_MESSAGE_LENGTH_MAX = 5000;

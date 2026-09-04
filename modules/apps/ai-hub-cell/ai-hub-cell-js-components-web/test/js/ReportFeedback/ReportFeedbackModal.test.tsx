@@ -64,6 +64,15 @@ describe('ReportFeedbackModal', () => {
 		).toBeInTheDocument();
 	});
 
+	it('caps the comment at the length the server accepts', async () => {
+		renderModal();
+
+		expect(await screen.findByRole('textbox')).toHaveAttribute(
+			'maxlength',
+			'5000'
+		);
+	});
+
 	it('keeps Send disabled until a reason is chosen', async () => {
 		renderModal();
 

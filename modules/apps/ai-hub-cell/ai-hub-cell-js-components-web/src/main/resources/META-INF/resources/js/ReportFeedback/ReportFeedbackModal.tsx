@@ -10,8 +10,9 @@ import ClayModal, {useModal} from '@clayui/modal';
 import {RequiredMask} from 'frontend-js-components-web';
 import React from 'react';
 
+import CharacterCounter from '../components/CharacterCounter';
 import {ReportFeedbackReason, ReportFeedbackSurface} from './api';
-import {REASON_OPTIONS} from './constants';
+import {REASON_OPTIONS, USER_MESSAGE_LENGTH_MAX} from './constants';
 import showThanksForFeedbackToast from './showThanksForFeedbackToast';
 import useReportFeedback from './useReportFeedback';
 
@@ -106,10 +107,16 @@ const ReportFeedbackModal: React.FC<ReportFeedbackModalProps> = ({
 							component="textarea"
 							disabled={submitting}
 							id="reportFeedbackUserMessage"
+							maxLength={USER_MESSAGE_LENGTH_MAX}
 							onChange={(event) =>
 								setUserMessage(event.target.value)
 							}
 							value={userMessage}
+						/>
+
+						<CharacterCounter
+							count={userMessage.length}
+							max={USER_MESSAGE_LENGTH_MAX}
 						/>
 					</ClayForm.Group>
 				</ClayModal.Body>
