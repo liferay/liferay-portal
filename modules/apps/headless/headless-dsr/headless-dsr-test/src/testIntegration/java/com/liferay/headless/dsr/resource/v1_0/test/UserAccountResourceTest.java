@@ -28,16 +28,21 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -137,6 +142,8 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void testPatchRoomUserAccount() throws Exception {
 		_testPatchRoomUserAccount();
 		_testPatchRoomUserAccountWithContentContributor();
+		_testPatchRoomUserAccountWithDSRRoomCollaborator();
+		_testPatchRoomUserAccountWithPermission();
 		_testPatchRoomUserAccountWithoutRoleKey();
 	}
 
@@ -148,7 +155,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_testPostRoomUserAccount();
 		_testPostRoomUserAccountSiteMember();
 		_testPostRoomUserAccountWithArchivedRoom();
+		_testPostRoomUserAccountWithDSRRoomCollaborator();
 		_testPostRoomUserAccountWithMembershipExpirationDate();
+		_testPostRoomUserAccountWithPermission();
 	}
 
 	@Override
@@ -175,6 +184,30 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	@Override
 	protected Long testGetRoomUserAccountsPage_getRoomId() throws Exception {
 		return _objectEntry.getObjectEntryId();
+	}
+
+	private Role _addRole() throws Exception {
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_SITE);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), Group.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_getGroupId(_objectEntry)), role.getRoleId(),
+			new String[] {ActionKeys.ASSIGN_MEMBERS, ActionKeys.VIEW});
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DSR_ROOM", TestPropsValues.getCompanyId());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_objectEntry.getObjectEntryId()), role.getRoleId(),
+			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
+
+		return role;
 	}
 
 	private User _addUser(String password, String roleName) throws Exception {
@@ -359,24 +392,17 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		Assert.assertNull(patchUserAccount.getMembershipExpirationDate());
 
-		try {
-			userAccountResource.patchRoomUserAccount(
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"Expiration date must be a future date.",
+			() -> userAccountResource.patchRoomUserAccount(
 				_objectEntry.getObjectEntryId(), postUserAccount.getId(),
 				new UserAccount() {
 					{
 						membershipExpirationDate = new Date(
 							System.currentTimeMillis() - Time.DAY);
 					}
-				});
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals(
-				"Expiration date must be a future date.", problem.getTitle());
-		}
+				}));
 	}
 
 	private void _testPatchRoomUserAccountWithContentContributor()
@@ -456,6 +482,43 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			expirationDate, userAccount.getMembershipExpirationDate());
 	}
 
+	private void _testPatchRoomUserAccountWithDSRRoomCollaborator()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password,
+			_addUser(password, DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR));
+
+		User user = _addUser(
+			RandomTestUtil.randomString(), RoleConstants.SITE_MEMBER);
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> userAccountResource.patchRoomUserAccount(
+				_objectEntry.getObjectEntryId(), user.getUserId(),
+				new UserAccount() {
+					{
+						roleKey = RoleConstants.SITE_ADMINISTRATOR;
+					}
+				}));
+
+		userAccountResource.patchRoomUserAccount(
+			_objectEntry.getObjectEntryId(), user.getUserId(),
+			new UserAccount() {
+				{
+					roleKey = DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR;
+				}
+			});
+
+		Assert.assertTrue(
+			_userGroupRoleLocalService.hasUserGroupRole(
+				user.getUserId(), _getGroupId(_objectEntry),
+				DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR));
+	}
+
 	private void _testPatchRoomUserAccountWithoutRoleKey() throws Exception {
 		User user = _addUser(
 			RandomTestUtil.randomString(),
@@ -476,6 +539,27 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		Assert.assertEquals(
 			DSRRoleConstants.NAME_DSR_CONTENT_CONTRIBUTOR,
 			userAccount.getRoleKey());
+	}
+
+	private void _testPatchRoomUserAccountWithPermission() throws Exception {
+		String password = RandomTestUtil.randomString();
+		Role role = _addRole();
+
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password, _addUser(password, role.getName()));
+
+		User user = UserTestUtil.addUser();
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> userAccountResource.patchRoomUserAccount(
+				_objectEntry.getObjectEntryId(), user.getUserId(),
+				new UserAccount() {
+					{
+						roleKey = RoleConstants.SITE_ADMINISTRATOR;
+					}
+				}));
 	}
 
 	private void _testPostRoomUserAccount() throws Exception {
@@ -643,6 +727,44 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		}
 	}
 
+	private void _testPostRoomUserAccountWithDSRRoomCollaborator()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password,
+			_addUser(password, DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR));
+
+		User user = UserTestUtil.addUser();
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> userAccountResource.postRoomUserAccount(
+				_objectEntry.getObjectEntryId(),
+				new UserAccount() {
+					{
+						emailAddress = user.getEmailAddress();
+						roleKey = RoleConstants.SITE_ADMINISTRATOR;
+					}
+				}));
+
+		userAccountResource.postRoomUserAccount(
+			_objectEntry.getObjectEntryId(),
+			new UserAccount() {
+				{
+					emailAddress = user.getEmailAddress();
+					roleKey = DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR;
+				}
+			});
+
+		Assert.assertTrue(
+			_userGroupRoleLocalService.hasUserGroupRole(
+				user.getUserId(), _getGroupId(_objectEntry),
+				DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR));
+	}
+
 	private void _testPostRoomUserAccountWithMembershipExpirationDate()
 		throws Exception {
 
@@ -665,8 +787,10 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		Assert.assertEquals(expirationDate, ticket.getExpirationDate());
 
-		try {
-			userAccountResource.postRoomUserAccount(
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"Expiration date must be a future date.",
+			() -> userAccountResource.postRoomUserAccount(
 				_objectEntry.getObjectEntryId(),
 				new UserAccount() {
 					{
@@ -674,16 +798,49 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 						membershipExpirationDate = new Date(
 							System.currentTimeMillis() - Time.DAY);
 					}
-				});
+				}));
+	}
 
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
+	private void _testPostRoomUserAccountWithPermission() throws Exception {
+		String password = RandomTestUtil.randomString();
+		Role role = _addRole();
 
-			Assert.assertEquals(
-				"Expiration date must be a future date.", problem.getTitle());
-		}
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password, _addUser(password, role.getName()));
+
+		User user = UserTestUtil.addUser();
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> userAccountResource.postRoomUserAccount(
+				_objectEntry.getObjectEntryId(),
+				new UserAccount() {
+					{
+						emailAddress = user.getEmailAddress();
+						roleKey = DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR;
+					}
+				}));
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> userAccountResource.postRoomUserAccount(
+				_objectEntry.getObjectEntryId(),
+				new UserAccount() {
+					{
+						emailAddress = user.getEmailAddress();
+						roleKey = RoleConstants.SITE_ADMINISTRATOR;
+					}
+				}));
+
+		userAccountResource.postRoomUserAccount(
+			_objectEntry.getObjectEntryId(),
+			new UserAccount() {
+				{
+					emailAddress = user.getEmailAddress();
+					roleKey = RoleConstants.SITE_MEMBER;
+				}
+			});
 	}
 
 	private AccountEntry _accountEntry;
@@ -711,6 +868,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;

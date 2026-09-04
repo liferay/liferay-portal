@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -216,6 +217,17 @@ public class InvitedMemberResourceTest
 		Assert.assertEquals(
 			DSRRoleConstants.NAME_DSR_CONTENT_CONTRIBUTOR,
 			patchedInvitedMember.getRoleKey());
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> _invitedMemberDSRContributorResource.patchRoomInvitedMember(
+				_objectEntry.getObjectEntryId(), invitedMember1.getId(),
+				new InvitedMember() {
+					{
+						roleKey = RoleConstants.SITE_ADMINISTRATOR;
+					}
+				}));
 
 		InvitedMember invitedMember2 = randomInvitedMember();
 
