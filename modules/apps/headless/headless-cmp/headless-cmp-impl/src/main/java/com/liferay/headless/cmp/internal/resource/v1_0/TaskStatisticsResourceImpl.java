@@ -13,12 +13,14 @@ import com.liferay.headless.cmp.resource.v1_0.TaskStatisticsResource;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.cms.site.initializer.util.CMPLicenseUtil;
 
 import java.time.LocalDate;
@@ -83,8 +85,12 @@ public class TaskStatisticsResourceImpl extends BaseTaskStatisticsResourceImpl {
 		return _objectEntryLocalService.getValuesListCount(
 			groupIds.toArray(new Long[0]), 0, 0,
 			cmpTaskObjectDefinition.getObjectDefinitionId(),
-			_filterFactory.create(filterString, cmpTaskObjectDefinition), true,
-			null);
+			ObjectEntryTable.INSTANCE.status.neq(
+				WorkflowConstants.STATUS_DRAFT
+			).and(
+				_filterFactory.create(filterString, cmpTaskObjectDefinition)
+			),
+			false, null);
 	}
 
 	private TaskStatistics _toTaskStatistics(
