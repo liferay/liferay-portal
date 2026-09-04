@@ -39,6 +39,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -125,6 +127,11 @@ public abstract class BaseSectionDisplayContextTestCase
 			(ThemeDisplay)mockHttpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		ObjectDefinition cmpProjectObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMP_PROJECT", themeDisplay.getCompanyId());
+
 		return HashMapBuilder.<String, Object>put(
 			"additionalAPIURLParameters",
 			() -> {
@@ -171,6 +178,44 @@ public abstract class BaseSectionDisplayContextTestCase
 				PropsUtil.get(PropsKeys.CMS_BROKEN_LINKS_CHECKER_ENABLED))
 		).put(
 			"candidateAssetLibraries", _getDepotEntriesJSONArray()
+		).put(
+			"cmpEnabled", LicenseManagerUtil.isAppEnabled(App.CMP)
+		).put(
+			"cmpProjectLinkObjectDefinitionId",
+			() -> {
+				ObjectDefinition cmpProjectLinkObjectDefinition =
+					ObjectDefinitionLocalServiceUtil.
+						fetchObjectDefinitionByExternalReferenceCode(
+							"L_CMP_PROJECT_LINK", themeDisplay.getCompanyId());
+
+				if (cmpProjectLinkObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpProjectLinkObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpProjectObjectDefinitionId",
+			() -> {
+				if (cmpProjectObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpProjectObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpProjectViewURL",
+			() -> {
+				if (cmpProjectObjectDefinition == null) {
+					return null;
+				}
+
+				return StringBundler.concat(
+					themeDisplay.getPortalURL(),
+					_portal.getPathFriendlyURLPublic(), "/cms/e/project/",
+					_portal.getClassNameId(
+						cmpProjectObjectDefinition.getClassName()));
+			}
 		).put(
 			"cmsGroupId",
 			() -> {
