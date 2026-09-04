@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.text.Format;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -263,6 +265,10 @@ public class CalendarBookingServiceImpl extends CalendarBookingServiceBaseImpl {
 	public List<CalendarBooking> getCalendarBookings(
 			long calendarId, int[] statuses)
 		throws PortalException {
+
+		if (ArrayUtil.isEmpty(statuses)) {
+			return Collections.emptyList();
+		}
 
 		return _filterCalendarBookings(
 			calendarBookingLocalService.getCalendarBookings(

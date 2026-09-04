@@ -105,6 +105,7 @@ import com.liferay.trash.model.TrashEntry;
 import com.liferay.trash.service.TrashEntryLocalService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -688,6 +689,10 @@ public class CalendarBookingLocalServiceImpl
 	@Override
 	public List<CalendarBooking> getCalendarBookings(
 		long calendarId, int[] statuses) {
+
+		if (ArrayUtil.isEmpty(statuses)) {
+			return Collections.emptyList();
+		}
 
 		return calendarBookingPersistence.findByC_S(calendarId, statuses);
 	}
