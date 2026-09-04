@@ -98,7 +98,35 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		_jsUnitFiles = new ArrayList<>(
-			findFiles(null, "describe\\( -- '*.js' '*.jsx' '*.ts' '*.tsx'"));
+			findFiles(null, _FILE_CONTENT_SNIPPET_JS_UNIT));
+
+		File portalPrivateDir = getPortalPrivateDir();
+
+		if (portalPrivateDir != null) {
+			String standardOut = null;
+
+			try {
+				Process process = JenkinsResultsParserUtil.executeBashCommands(
+					false, portalPrivateDir, 60 * 1000,
+					"git grep " + _FILE_CONTENT_SNIPPET_JS_UNIT);
+
+				standardOut = JenkinsResultsParserUtil.readInputStream(
+					process.getInputStream());
+			}
+			catch (IOException | TimeoutException exception) {
+				throw new GitWorkingDirectoryRuntimeException(
+					this, "Unable to run: git grep in " + portalPrivateDir,
+					exception);
+			}
+
+			Matcher matcher = _jsUnitFilePathPattern.matcher(standardOut);
+
+			while (matcher.find()) {
+				String filePath = matcher.group("filePath");
+
+				_jsUnitFiles.add(new File(portalPrivateDir, filePath.trim()));
+			}
+		}
 
 		return _jsUnitFiles;
 	}
@@ -688,8 +716,13 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		"\\.gradle/", "\\.yarn/", "modules/\\.tsc/", "node_modules_cache"
 	};
 
+	private static final String _FILE_CONTENT_SNIPPET_JS_UNIT =
+		"describe\\( -- '*.js' '*.jsx' '*.ts' '*.tsx'";
+
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(
 		"@esbuild-(linux-.*?)-.*");
+	private static final Pattern _jsUnitFilePathPattern = Pattern.compile(
+		"(?<filePath>[^\\:]+)\\:.+");
 
 	private Properties _appServerProperties;
 	private List<File> _jsUnitFiles;
