@@ -179,10 +179,7 @@ export default function FieldSetList({searchTerm}) {
 								fieldSet.dataDefinitionFields.length
 							);
 							const disabled = fieldSetsInUse.has(fieldSet.id);
-							const label = getLocalizedValue(
-								fieldSet.defaultLanguageId,
-								fieldSet.name
-							);
+							const label = getFieldSetLabel(fieldSet);
 							const onDoubleClick = () => {
 								dispatch({
 									payload: {fieldSet},
