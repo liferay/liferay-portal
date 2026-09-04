@@ -9,22 +9,15 @@ import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.PasswordPolicy;
-import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.security.fips.constants.FIPSConstants;
-import com.liferay.portal.security.fips.constants.FIPSPortletKeys;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,8 +41,6 @@ public class FIPSPortalInstanceLifecycleListener
 
 		_addCryptoOfficerPasswordPolicy(companyId, user);
 		_addCryptoOfficerRole(companyId, user);
-
-		_addCryptoOfficerResourcePermissions(companyId);
 	}
 
 	private void _addCryptoOfficerPasswordPolicy(long companyId, User user)
@@ -90,26 +81,6 @@ public class FIPSPortalInstanceLifecycleListener
 			defaultPasswordPolicy.getResetTicketMaxAge(), new ServiceContext());
 	}
 
-	private void _addCryptoOfficerResourcePermissions(long companyId)
-		throws Exception {
-
-		Role role = _roleLocalService.fetchRole(
-			companyId, RoleConstants.CRYPTO_OFFICER);
-
-		if (role == null) {
-			return;
-		}
-
-		_addResourcePermission(
-			ActionKeys.ACCESS_IN_CONTROL_PANEL, companyId,
-			_fipsAdminPortlet.getPortletName(), role);
-		_addResourcePermission(
-			ActionKeys.VIEW, companyId, _fipsAdminPortlet.getPortletName(),
-			role);
-		_addResourcePermission(
-			ActionKeys.VIEW_CONTROL_PANEL, companyId, PortletKeys.PORTAL, role);
-	}
-
 	private void _addCryptoOfficerRole(long companyId, User user)
 		throws Exception {
 
@@ -125,36 +96,8 @@ public class FIPSPortalInstanceLifecycleListener
 			null, RoleConstants.TYPE_REGULAR, null, null);
 	}
 
-	private void _addResourcePermission(
-			String actionKey, long companyId, String name, Role role)
-		throws Exception {
-
-		ResourcePermission resourcePermission =
-			_resourcePermissionLocalService.fetchResourcePermission(
-				companyId, name, ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(companyId), role.getRoleId());
-
-		if ((resourcePermission != null) &&
-			resourcePermission.hasActionId(actionKey)) {
-
-			return;
-		}
-
-		_resourcePermissionLocalService.addResourcePermission(
-			companyId, name, ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(companyId), role.getRoleId(), actionKey);
-	}
-
-	@Reference(
-		target = "(jakarta.portlet.name=" + FIPSPortletKeys.FIPS_ADMIN + ")"
-	)
-	private Portlet _fipsAdminPortlet;
-
 	@Reference
 	private PasswordPolicyLocalService _passwordPolicyLocalService;
-
-	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Reference
 	private RoleLocalService _roleLocalService;

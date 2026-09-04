@@ -2,6 +2,5 @@ Bundle-Name: Liferay Portal Security FIPS API
 Bundle-SymbolicName: com.liferay.portal.security.fips.api
 Bundle-Version: 1.0.2
 Export-Package:\
-	com.liferay.portal.security.fips.configuration,\
 	com.liferay.portal.security.fips.constants,\
 	com.liferay.portal.security.fips.util

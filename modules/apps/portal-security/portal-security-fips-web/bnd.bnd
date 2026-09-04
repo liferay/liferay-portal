@@ -1,4 +1,0 @@
-Bundle-Name: Liferay Portal Security FIPS Web
-Bundle-SymbolicName: com.liferay.portal.security.fips.web
-Bundle-Version: 1.0.0
-Web-ContextPath: /portal-security-fips-web
