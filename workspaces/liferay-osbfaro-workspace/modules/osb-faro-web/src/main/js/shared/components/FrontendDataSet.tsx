@@ -7,6 +7,7 @@ import React, {lazy, Suspense, useEffect, useState} from 'react';
 import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {Text} from '@clayui/core';
 import {setUriQueryValues, toRoute} from 'shared/util/router';
+import {toThousands} from 'shared/util/numbers';
 
 import type {
 	EConfigInURLBehavior,
@@ -113,6 +114,9 @@ export const columns = {
 		>
 			{label}
 		</Label>
+	),
+	countRenderer: ({value}: FDSCellProps<number | undefined>) => (
+		<div>{toThousands(value ?? 0)}</div>
 	),
 	dateRenderer: ({value}: FDSCellProps<string | number>) => (
 		<div>{value && formatUTCDate(value, getCustomDateFormat())}</div>

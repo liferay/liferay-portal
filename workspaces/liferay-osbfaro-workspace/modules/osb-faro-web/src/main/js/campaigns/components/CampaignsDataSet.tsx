@@ -1,9 +1,12 @@
 import Card from 'shared/components/Card';
 import React from 'react';
-import {FrontendDataSet, pagination} from 'shared/components/FrontendDataSet';
+import {
+	columns,
+	FrontendDataSet,
+	pagination,
+} from 'shared/components/FrontendDataSet';
 import {ICampaign} from '../utils/mock-campaigns';
 import {Text} from '@clayui/core';
-import {toThousands} from 'shared/util/numbers';
 
 interface ICampaignsDataSetProps {
 	items: ICampaign[];
@@ -27,13 +30,13 @@ const views = [
 				{
 					contentRenderer: 'countRenderer',
 					fieldName: 'accountsTouched',
-					label: Liferay.Language.get('accounts'),
+					label: Liferay.Language.get('accounts-touched'),
 					sortable: false,
 				},
 				{
 					contentRenderer: 'countRenderer',
 					fieldName: 'individualsTouched',
-					label: Liferay.Language.get('members'),
+					label: Liferay.Language.get('individuals-touched'),
 					sortable: false,
 				},
 			],
@@ -49,14 +52,20 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({items}) => (
 				campaignNameRenderer: ({value}: {value: string}) => (
 					<Text weight="semi-bold">{value}</Text>
 				),
-				countRenderer: ({value}: {value?: number}) => (
-					<div>{toThousands(value ?? 0)}</div>
-				),
+				countRenderer: columns.countRenderer,
 			}}
 			id="campaigns-list-dataset"
 			items={items}
 			pagination={pagination}
+
+			// Search is served by the request, so it does nothing while the
+			// data set runs on `items`. Hiding it empties the management bar,
+			// which then renders as 65px of blank space, so that goes too. The
+			// backend integration task brings both back with the endpoint.
+
+			showManagementBar={false}
 			showPagination
+			showSearch={false}
 			views={views}
 		/>
 	</Card>

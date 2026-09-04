@@ -54,8 +54,8 @@ describe('CampaignsDataSet', () => {
 
 		expect(getFields().map(({label}: any) => label)).toEqual([
 			'Campaign Name',
-			'Accounts',
-			'Members',
+			'Accounts Touched',
+			'Individuals Touched',
 		]);
 	});
 
@@ -69,6 +69,13 @@ describe('CampaignsDataSet', () => {
 		render(<CampaignsDataSet items={mockCampaigns} />);
 
 		expect(lastFDSProps.showPagination).toBe(true);
+	});
+
+	it('should not offer a search box, nor the bar holding it', () => {
+		render(<CampaignsDataSet items={mockCampaigns} />);
+
+		expect(lastFDSProps.showSearch).toBe(false);
+		expect(lastFDSProps.showManagementBar).toBe(false);
 	});
 
 	it('should render the campaign name in a heavier weight', () => {
