@@ -66,6 +66,7 @@ export default function EditObjectFolder({
 			editObjectDefinitionURL,
 			elements,
 			hasDepotEntry,
+			hasUnsavedObjectFolderItemPositions,
 			isLoadingObjectFolder,
 			learnResourceContext,
 			leftSidebarItems,
@@ -230,8 +231,8 @@ export default function EditObjectFolder({
 	}, [showChangesSaved]);
 
 	useEffect(() => {
-		if (Object.keys(selectedObjectFolder).length) {
-			const makeFetch = async () =>
+		if (hasUnsavedObjectFolderItemPositions) {
+			const makeFetch = async () => {
 				await API.putObjectFolderByExternalReferenceCode({
 					externalReferenceCode:
 						selectedObjectFolder.externalReferenceCode,
@@ -241,11 +242,19 @@ export default function EditObjectFolder({
 					objectFolderItems: selectedObjectFolder.objectFolderItems,
 				});
 
+				dispatch({
+					payload: {
+						updatedHasUnsavedObjectFolderItemPositions: false,
+					},
+					type: TYPES.SET_HAS_UNSAVED_OBJECT_FOLDER_ITEM_POSITIONS,
+				});
+			};
+
 			makeFetch();
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedObjectFolder.objectFolderItems?.length]);
+	}, [hasUnsavedObjectFolderItemPositions]);
 
 	Liferay.on('beforeNavigate', (event) => {
 		const URLparams = new URL(event.path).searchParams;

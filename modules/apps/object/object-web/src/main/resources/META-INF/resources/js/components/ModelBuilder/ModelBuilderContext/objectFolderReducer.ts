@@ -222,6 +222,7 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 				elements: [...updatedElements, newObjectDefinitionNode] as Node<
 					ObjectDefinitionNodeData | ObjectRelationshipEdgeData[]
 				>[],
+				hasUnsavedObjectFolderItemPositions: true,
 				leftSidebarItems: newLeftSidebarItems,
 				objectFolders: updatedObjectFolders,
 				rightSidebarType: 'objectDefinitionDetails',
@@ -574,6 +575,16 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 				elements: newElements,
 				selectedObjectDefinitionNode:
 					updatedSelectedObjectDefinitionNode,
+			};
+		}
+
+		case TYPES.SET_HAS_UNSAVED_OBJECT_FOLDER_ITEM_POSITIONS: {
+			const {updatedHasUnsavedObjectFolderItemPositions} = action.payload;
+
+			return {
+				...state,
+				hasUnsavedObjectFolderItemPositions:
+					updatedHasUnsavedObjectFolderItemPositions,
 			};
 		}
 
@@ -1128,12 +1139,15 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 
 			const updatedObjectFolderItems: ObjectFolderItem[] = [];
 
+			let hasUnsavedObjectFolderItemPositions = false;
 			let objectDefinitionNodes: Node<ObjectDefinitionNodeData>[] = [];
 			const objectRelationshipEdges: Edge<
 				ObjectRelationshipEdgeData[]
 			>[] = [];
 
 			if (selectedObjectFolder) {
+				const outdatedObjectFolderItems =
+					selectedObjectFolder.objectFolderItems;
 				const positionColumn = {x: 0, y: 0};
 
 				objectDefinitionNodes =
@@ -1162,11 +1176,25 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 								objectDefinition,
 								objectFolderExternalReferenceCode:
 									selectedObjectFolder.externalReferenceCode,
-								outdatedObjectFolderItems:
-									selectedObjectFolder.objectFolderItems,
+								outdatedObjectFolderItems,
 								positionColumn,
 								updatedObjectFolderItems,
 							});
+
+							const outdatedObjectFolderItem =
+								outdatedObjectFolderItems.find(
+									(objectFolderItem) =>
+										objectFolderItem.objectDefinitionExternalReferenceCode ===
+										objectDefinition.externalReferenceCode
+								);
+
+							if (
+								!outdatedObjectFolderItem ||
+								outdatedObjectFolderItem.positionX !== x ||
+								outdatedObjectFolderItem.positionY !== y
+							) {
+								hasUnsavedObjectFolderItemPositions = true;
+							}
 
 							updatedObjectFolderItems.push({
 								linkedObjectDefinition:
@@ -1203,6 +1231,7 @@ export function ObjectFolderReducer(state: TState, action: TAction): TState {
 					...objectDefinitionNodes,
 					...objectRelationshipEdges,
 				],
+				hasUnsavedObjectFolderItemPositions,
 				leftSidebarItems: newLeftSidebarItems,
 				objectFolders,
 				rightSidebarType: 'empty' as RightSidebarType,

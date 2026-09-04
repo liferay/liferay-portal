@@ -114,6 +114,12 @@ export type TAction =
 	  }
 	| {
 			payload: {
+				updatedHasUnsavedObjectFolderItemPositions: boolean;
+			};
+			type: TYPES.SET_HAS_UNSAVED_OBJECT_FOLDER_ITEM_POSITIONS;
+	  }
+	| {
+			payload: {
 				nodeHandleConnectable: boolean;
 			};
 			type: TYPES.SET_NODE_HANDLE_CONNECTION;
@@ -238,6 +244,7 @@ export type TState = {
 	forbiddenLastChars: string[];
 	forbiddenNames: string[];
 	hasDepotEntry?: boolean;
+	hasUnsavedObjectFolderItemPositions: boolean;
 	isLoadingObjectFolder: boolean;
 	isRootDescendantNode: boolean;
 	learnResourceContext: ILearnResourceContext;
