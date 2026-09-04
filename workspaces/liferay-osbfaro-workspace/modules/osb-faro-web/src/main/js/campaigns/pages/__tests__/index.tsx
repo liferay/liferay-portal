@@ -9,16 +9,17 @@ import {render} from '@testing-library/react';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/hooks/useRequest', () => ({
-	useRequest: jest.fn(() => ({data: undefined, loading: false})),
-}));
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({
 		channelId: '123',
 		groupId: '23',
 	}),
+}));
+
+jest.mock('../../components/CampaignsDataSet', () => ({
+	__esModule: true,
+	default: () => <div data-testid="campaigns-data-set" />,
 }));
 
 const renderCampaigns = () =>
@@ -43,5 +44,11 @@ describe('Campaigns', () => {
 		const {container} = renderCampaigns();
 
 		expect(container.querySelector('.breadcrumb')).toBeTruthy();
+	});
+
+	it('should render the campaigns table', () => {
+		const {getByTestId} = renderCampaigns();
+
+		expect(getByTestId('campaigns-data-set')).toBeTruthy();
 	});
 });

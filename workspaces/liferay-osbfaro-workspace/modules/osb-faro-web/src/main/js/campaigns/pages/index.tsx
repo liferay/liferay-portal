@@ -1,7 +1,10 @@
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
+import CampaignsDataSet from '../components/CampaignsDataSet';
+import {mockCampaigns} from '../utils/mock-campaigns';
 import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
+import {SectionHeader} from 'shared/components/SectionHeader';
 import {useParams} from 'react-router-dom';
 
 const Campaigns: React.FC = () => {
@@ -28,7 +31,11 @@ const Campaigns: React.FC = () => {
 				</BasePage.Row>
 			</BasePage.Header>
 
-			<BasePage.Body />
+			<BasePage.Body>
+				<SectionHeader icon="megaphone" title={title} />
+
+				<CampaignsDataSet items={mockCampaigns} />
+			</BasePage.Body>
 		</BasePage>
 	);
 };
