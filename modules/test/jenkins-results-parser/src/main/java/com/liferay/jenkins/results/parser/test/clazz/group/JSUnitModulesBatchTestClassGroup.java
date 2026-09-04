@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
@@ -55,6 +56,11 @@ public class JSUnitModulesBatchTestClassGroup
 
 	protected List<PathMatcher> getExcludesPathMatchers() {
 		return getPathMatchers(getExcludesJobProperties());
+	}
+
+	protected String getTestClassMethodName(File jsUnitFile) {
+		return JenkinsResultsParserUtil.getPathRelativeTo(
+			jsUnitFile, portalGitWorkingDirectory.getWorkingDirectory());
 	}
 
 	protected boolean isModulesProjectDir(File projectDir) {
@@ -168,14 +174,10 @@ public class JSUnitModulesBatchTestClassGroup
 						continue;
 					}
 
-					String testClassMethodName =
-						JenkinsResultsParserUtil.getPathRelativeTo(
-							jsUnitFile,
-							portalGitWorkingDirectory.getWorkingDirectory());
-
 					testClass.addTestClassMethod(
 						TestClassFactory.newTestClassMethod(
-							false, testClassMethodName, testClass));
+							false, getTestClassMethodName(jsUnitFile),
+							testClass));
 				}
 
 				if (!testClass.hasTestClassMethods()) {
