@@ -128,19 +128,33 @@ public class ResetTranslationDisplayPageStrutsActionTest {
 		long classNameId = _portal.getClassNameId(
 			_objectDefinition.getClassName());
 
-		String layoutPageTemplateEntryKey =
+		String compareLayoutPageTemplateEntryKey =
+			"LFR_CMS_COMPARE_" + classNameId;
+		String translationLayoutPageTemplateEntryKey =
 			"LFR_CMS_TRANSLATION_" + classNameId;
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group.getGroupId(), classNameId, null, false,
-			layoutPageTemplateEntryKey, WorkflowConstants.STATUS_APPROVED);
+			compareLayoutPageTemplateEntryKey,
+			WorkflowConstants.STATUS_APPROVED);
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group.getGroupId(), classNameId, null, false,
+			translationLayoutPageTemplateEntryKey,
+			WorkflowConstants.STATUS_APPROVED);
 
 		_resetStructureDisplayPageStrutsAction.execute(
 			_getMockHttpServletRequest(), new MockHttpServletResponse());
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
-				_group.getGroupId(), layoutPageTemplateEntryKey);
+				_group.getGroupId(), compareLayoutPageTemplateEntryKey);
+
+		Assert.assertNull(layoutPageTemplateEntry);
+
+		layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				_group.getGroupId(), translationLayoutPageTemplateEntryKey);
 
 		Assert.assertNull(layoutPageTemplateEntry);
 	}
@@ -151,12 +165,20 @@ public class ResetTranslationDisplayPageStrutsActionTest {
 		long classNameId = _portal.getClassNameId(
 			_objectDefinition.getClassName());
 
-		String layoutPageTemplateEntryKey =
+		String compareLayoutPageTemplateEntryKey =
+			"LFR_CMS_COMPARE_" + classNameId;
+		String translationLayoutPageTemplateEntryKey =
 			"LFR_CMS_TRANSLATION_" + classNameId;
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group.getGroupId(), classNameId, null, false,
-			layoutPageTemplateEntryKey, WorkflowConstants.STATUS_APPROVED);
+			compareLayoutPageTemplateEntryKey,
+			WorkflowConstants.STATUS_APPROVED);
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group.getGroupId(), classNameId, null, false,
+			translationLayoutPageTemplateEntryKey,
+			WorkflowConstants.STATUS_APPROVED);
 
 		User user = UserTestUtil.addUser(_company);
 
@@ -181,7 +203,11 @@ public class ResetTranslationDisplayPageStrutsActionTest {
 
 		Assert.assertNotNull(
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
-				_group.getGroupId(), layoutPageTemplateEntryKey));
+				_group.getGroupId(), compareLayoutPageTemplateEntryKey));
+
+		Assert.assertNotNull(
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				_group.getGroupId(), translationLayoutPageTemplateEntryKey));
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest()
