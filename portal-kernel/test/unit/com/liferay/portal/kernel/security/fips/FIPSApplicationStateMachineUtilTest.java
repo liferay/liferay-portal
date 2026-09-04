@@ -7,10 +7,13 @@ package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.internal.log4j.FIPSLog4jUtil;
+import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+
+import java.security.Permission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,20 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@BeforeClass
 	public static void setUpClass() {
+		System.setSecurityManager(
+			new SecurityManager() {
+
+				@Override
+				public void checkExit(int status) {
+					throw new SecurityException();
+				}
+
+				@Override
+				public void checkPermission(Permission permission) {
+				}
+
+			});
+
 		_logManagerMockedStatic.when(
 			() -> LogManager.getLogger(FIPSLog4jUtil.class)
 		).thenReturn(
@@ -53,15 +70,20 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@AfterClass
 	public static void tearDownClass() {
+		System.setSecurityManager(null);
+
 		_logManagerMockedStatic.close();
 	}
 
 	@Before
 	public void setUp() {
-		Mockito.reset(_logger);
+		Mockito.reset(_log, _logger);
 
 		_safeCloseable = PropsValuesTestUtil.swapWithSafeCloseable(
 			"FIPS_AUDIT_DEPLOYMENT_INSTANCE_ID", RandomTestUtil.randomString());
+
+		_originalLog = ReflectionTestUtil.getAndSetFieldValue(
+			FIPSApplicationStateMachineUtil.class, "_log", _log);
 
 		Mockito.doAnswer(
 			invocation -> {
@@ -84,6 +106,9 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@After
 	public void tearDown() {
+		ReflectionTestUtil.setFieldValue(
+			FIPSApplicationStateMachineUtil.class, "_log", _originalLog);
+
 		_safeCloseable.close();
 	}
 
@@ -94,6 +119,27 @@ public class FIPSApplicationStateMachineUtilTest {
 		_testError(FIPSApplicationState.OPERATIONAL);
 		_testError(FIPSApplicationState.QUIESCENT);
 		_testError(FIPSApplicationState.SELF_TEST);
+
+		Mockito.doThrow(
+			new RuntimeException()
+		).when(
+			_log
+		).error(
+			Mockito.anyString(), Mockito.any(Throwable.class)
+		);
+
+		_testErrorWithLoggingFailure();
+
+		Mockito.doThrow(
+			new RuntimeException()
+		).when(
+			_logger
+		).log(
+			Mockito.any(Level.class), Mockito.any(Marker.class),
+			Mockito.any(Message.class)
+		);
+
+		_testErrorWithLoggingFailure();
 	}
 
 	@Test
@@ -123,11 +169,11 @@ public class FIPSApplicationStateMachineUtilTest {
 				}));
 
 		Assert.assertEquals(
-			FIPSApplicationState.ERROR,
+			FIPSApplicationState.POWER_OFF,
 			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
 
 		Assert.assertEquals(
-			_fipsAuditLogEntries.toString(), 2, _fipsAuditLogEntries.size());
+			_fipsAuditLogEntries.toString(), 3, _fipsAuditLogEntries.size());
 
 		_assertEnvelope(
 			_fipsAuditLogEntries.get(1), "severity",
@@ -261,11 +307,11 @@ public class FIPSApplicationStateMachineUtilTest {
 				}));
 
 		Assert.assertEquals(
-			FIPSApplicationState.ERROR,
+			FIPSApplicationState.POWER_OFF,
 			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
 
 		Assert.assertEquals(
-			_fipsAuditLogEntries.toString(), 3, _fipsAuditLogEntries.size());
+			_fipsAuditLogEntries.toString(), 4, _fipsAuditLogEntries.size());
 
 		_assertEnvelope(
 			_fipsAuditLogEntries.get(1), "event-type",
@@ -464,11 +510,11 @@ public class FIPSApplicationStateMachineUtilTest {
 				}));
 
 		Assert.assertEquals(
-			FIPSApplicationState.ERROR,
+			FIPSApplicationState.POWER_OFF,
 			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
 
 		Assert.assertEquals(
-			_fipsAuditLogEntries.toString(), 2, _fipsAuditLogEntries.size());
+			_fipsAuditLogEntries.toString(), 3, _fipsAuditLogEntries.size());
 
 		_assertField(
 			_fipsAuditLogEntries.get(1), "to-state",
@@ -477,10 +523,12 @@ public class FIPSApplicationStateMachineUtilTest {
 		Throwable[] suppressedThrowables2 = securityException2.getSuppressed();
 
 		Assert.assertEquals(
-			ArrayUtil.toString(suppressedThrowables2, ""), 1,
+			ArrayUtil.toString(suppressedThrowables2, ""), 2,
 			suppressedThrowables2.length);
 		Assert.assertSame(
 			RuntimeException.class, suppressedThrowables2[0].getClass());
+		Assert.assertSame(
+			SecurityException.class, suppressedThrowables2[1].getClass());
 	}
 
 	private void _assertEnvelope(
@@ -555,6 +603,8 @@ public class FIPSApplicationStateMachineUtilTest {
 	}
 
 	private void _testError(FIPSApplicationState fipsApplicationState) {
+		Mockito.reset(_log);
+
 		_fipsAuditLogEntries.clear();
 
 		_setFIPSApplicationState(fipsApplicationState);
@@ -562,15 +612,17 @@ public class FIPSApplicationStateMachineUtilTest {
 		String failedStep = RandomTestUtil.randomString();
 		String providerErrorMessage = RandomTestUtil.randomString();
 
-		FIPSApplicationStateMachineUtil.error(
-			failedStep, new SecurityException(providerErrorMessage));
+		Assert.assertThrows(
+			SecurityException.class,
+			() -> FIPSApplicationStateMachineUtil.error(
+				failedStep, new SecurityException(providerErrorMessage)));
 
 		Assert.assertEquals(
-			FIPSApplicationState.ERROR,
+			FIPSApplicationState.POWER_OFF,
 			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
 
 		Assert.assertEquals(
-			_fipsAuditLogEntries.toString(), 1, _fipsAuditLogEntries.size());
+			_fipsAuditLogEntries.toString(), 2, _fipsAuditLogEntries.size());
 
 		_assertEnvelope(
 			_fipsAuditLogEntries.get(0), "event-type", "fips-state-transition");
@@ -587,6 +639,27 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(
 			_fipsAuditLogEntries.get(0), "to-state",
 			FIPSApplicationState.ERROR.name());
+
+		_assertField(
+			_fipsAuditLogEntries.get(1), "from-state",
+			FIPSApplicationState.ERROR.name());
+		_assertField(_fipsAuditLogEntries.get(1), "initiating-actor", "Portal");
+		_assertField(
+			_fipsAuditLogEntries.get(1), "to-state",
+			FIPSApplicationState.POWER_OFF.name());
+
+		Mockito.verify(
+			_log
+		).error(
+			Mockito.contains(failedStep), Mockito.any(Throwable.class)
+		);
+
+		Mockito.verify(
+			_log
+		).error(
+			Mockito.contains(fipsApplicationState.name()),
+			Mockito.any(Throwable.class)
+		);
 	}
 
 	private void _testErrorWithIllegalState(
@@ -594,6 +667,16 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		_assertIllegalStateException(
 			fipsApplicationState,
+			() -> FIPSApplicationStateMachineUtil.error(
+				RandomTestUtil.randomString(),
+				new SecurityException(RandomTestUtil.randomString())));
+	}
+
+	private void _testErrorWithLoggingFailure() {
+		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
+
+		Assert.assertThrows(
+			SecurityException.class,
 			() -> FIPSApplicationStateMachineUtil.error(
 				RandomTestUtil.randomString(),
 				new SecurityException(RandomTestUtil.randomString())));
@@ -781,7 +864,7 @@ public class FIPSApplicationStateMachineUtilTest {
 				}));
 
 		Assert.assertEquals(
-			FIPSApplicationState.ERROR,
+			FIPSApplicationState.POWER_OFF,
 			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
 
 		_assertEnvelope(
@@ -810,7 +893,12 @@ public class FIPSApplicationStateMachineUtilTest {
 			_fipsAuditLogEntries.get(2), "to-state",
 			FIPSApplicationState.ERROR.name());
 		Assert.assertEquals(
-			_fipsAuditLogEntries.toString(), 3, _fipsAuditLogEntries.size());
+			_fipsAuditLogEntries.toString(), 4, _fipsAuditLogEntries.size());
+
+		_assertField(_fipsAuditLogEntries.get(3), "initiating-actor", "Portal");
+		_assertField(
+			_fipsAuditLogEntries.get(3), "to-state",
+			FIPSApplicationState.POWER_OFF.name());
 	}
 
 	private void _testSelfTestWithIllegalState(
@@ -823,6 +911,8 @@ public class FIPSApplicationStateMachineUtilTest {
 				}));
 	}
 
+	private static final Log _log = Mockito.mock(Log.class);
+
 	private static final Logger _logger = Mockito.mock(Logger.class);
 
 	private static final MockedStatic<LogManager> _logManagerMockedStatic =
@@ -830,6 +920,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	private final List<Map<String, Object>> _fipsAuditLogEntries =
 		new ArrayList<>();
+	private Log _originalLog;
 	private SafeCloseable _safeCloseable;
 
 }

@@ -7,24 +7,16 @@ package com.liferay.portal.security.fips.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
-import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.security.fips.rest.client.dto.v1_0.FIPSHealthVerification;
-import com.liferay.portal.security.fips.rest.client.http.HttpInvoker;
 import com.liferay.portal.security.fips.rest.client.problem.Problem;
 import com.liferay.portal.security.fips.rest.client.resource.v1_0.FIPSHealthVerificationResource;
-import com.liferay.portal.security.fips.rest.client.serdes.v1_0.FIPSHealthVerificationSerDes;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.Inject;
 
 import org.junit.Assert;
 import org.junit.Assume;
@@ -77,29 +69,7 @@ public class FIPSHealthVerificationResourceTest
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals("FORBIDDEN", problem.getStatus());
-
-			Role role = RoleTestUtil.addRole(
-				RoleConstants.CRYPTO_OFFICER, RoleConstants.TYPE_REGULAR);
-
-			_userLocalService.addRoleUser(role.getRoleId(), user);
-
-			HttpInvoker.HttpResponse httpResponse =
-				fipsHealthVerificationResource.
-					postFIPSHealthVerificationHttpResponse();
-
-			assertHttpResponseStatusCode(503, httpResponse);
-
-			FIPSHealthVerification fipsHealthVerification =
-				FIPSHealthVerificationSerDes.toDTO(httpResponse.getContent());
-
-			Assert.assertNotNull(fipsHealthVerification.getErrorMessage());
-			Assert.assertEquals(
-				FIPSHealthVerification.Status.ERROR,
-				fipsHealthVerification.getStatus());
 		}
 	}
-
-	@Inject
-	private UserLocalService _userLocalService;
 
 }
