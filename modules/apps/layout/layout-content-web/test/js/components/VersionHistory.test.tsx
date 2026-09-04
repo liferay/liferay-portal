@@ -117,9 +117,12 @@ function mockSmallScreen() {
 }
 
 function mockVersions(versions: typeof VERSIONS) {
-	mockFetch.mockReturnValue(
+	mockFetch.mockImplementation((url: string) =>
 		Promise.resolve({
-			json: () => Promise.resolve({items: versions}),
+			json: () =>
+				Promise.resolve({
+					items: url.startsWith('/page-experiences/') ? [] : versions,
+				}),
 			ok: true,
 		})
 	);
@@ -149,6 +152,8 @@ function renderComponent({hasDraft = false} = {}) {
 					name: 'Home',
 					status: hasDraft ? 'draft' : 'approved',
 				},
+				pageSpecificationVersionPageExperiencesURL:
+					'/page-experiences/{pageSpecificationVersionExternalReferenceCode}',
 				pageSpecificationVersionsURL: 'url',
 			}}
 		/>

@@ -4,7 +4,7 @@
  */
 
 import {config} from '../config';
-import {PageVersion, Status} from '../types/PageVersion';
+import {PageVersion, PageVersionExperience, Status} from '../types/PageVersion';
 import ApiHelper from './ApiHelper';
 
 type PageVersionResponse = Omit<PageVersion, 'status'> & {
@@ -13,6 +13,19 @@ type PageVersionResponse = Omit<PageVersion, 'status'> & {
 
 async function deletePageVersion(url: string) {
 	return ApiHelper.del(url);
+}
+
+async function getPageVersionPageExperiences(
+	pageVersionERC: string,
+	signal?: AbortSignal
+) {
+	return ApiHelper.get<{items: PageVersionExperience[]}>(
+		config.pageSpecificationVersionPageExperiencesURL.replace(
+			'{pageSpecificationVersionExternalReferenceCode}',
+			encodeURIComponent(pageVersionERC)
+		),
+		signal
+	);
 }
 
 async function getPageVersions(signal?: AbortSignal) {
@@ -36,4 +49,9 @@ async function restorePageVersion(url: string) {
 	return ApiHelper.post<void>(url);
 }
 
-export default {deletePageVersion, getPageVersions, restorePageVersion};
+export default {
+	deletePageVersion,
+	getPageVersionPageExperiences,
+	getPageVersions,
+	restorePageVersion,
+};

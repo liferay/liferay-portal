@@ -6,7 +6,7 @@
 import {SegmentExperience} from '@liferay/layout-js-components-web';
 
 import {AvailableLanguage, config} from '../config';
-import {PageVersion} from '../types/PageVersion';
+import {PageVersionExperience} from '../types/PageVersion';
 
 /**
  * Resolves what the toolbar and the preview need for the selected item: the
@@ -15,13 +15,13 @@ import {PageVersion} from '../types/PageVersion';
 export function getVersionData({
 	currentExperienceERC,
 	currentLanguageId,
-	version,
+	pageVersionExperiences,
 }: {
 	currentExperienceERC?: string;
 	currentLanguageId: Liferay.Language.Locale;
-	version?: PageVersion;
+	pageVersionExperiences?: PageVersionExperience[];
 }) {
-	const experiences = getExperiences(version);
+	const experiences = getExperiences(pageVersionExperiences);
 
 	const selectedExperience =
 		experiences.find(
@@ -30,7 +30,7 @@ export function getVersionData({
 		) ?? experiences[0];
 
 	const languages = getLanguages(
-		version,
+		pageVersionExperiences,
 		selectedExperience?.segmentsExperienceERC
 	);
 
@@ -46,12 +46,14 @@ export function getVersionData({
 	};
 }
 
-function getExperiences(version?: PageVersion): SegmentExperience[] {
-	if (!version) {
+function getExperiences(
+	pageVersionExperiences?: PageVersionExperience[]
+): SegmentExperience[] {
+	if (!pageVersionExperiences) {
 		return config.availableSegmentsExperiences;
 	}
 
-	return [...(version.pageSpecificationVersionPageExperiences ?? [])]
+	return [...pageVersionExperiences]
 		.sort((a, b) => b.priority - a.priority)
 		.map(({externalReferenceCode, name_i18n, priority}) => {
 			let statusLabel = Liferay.Language.get('default');
@@ -74,15 +76,15 @@ function getExperiences(version?: PageVersion): SegmentExperience[] {
 }
 
 function getLanguages(
-	version?: PageVersion,
+	pageVersionExperiences?: PageVersionExperience[],
 	experienceERC?: string
 ): Partial<Record<Liferay.Language.Locale, AvailableLanguage>> {
-	if (!version) {
+	if (!pageVersionExperiences) {
 		return config.availableLanguages;
 	}
 
 	const languageIds =
-		version.pageSpecificationVersionPageExperiences?.find(
+		pageVersionExperiences.find(
 			({externalReferenceCode}) => externalReferenceCode === experienceERC
 		)?.availablePreviewLanguageIds ?? [];
 

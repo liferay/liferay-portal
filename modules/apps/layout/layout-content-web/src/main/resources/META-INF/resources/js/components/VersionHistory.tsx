@@ -15,7 +15,7 @@ import React, {useEffect, useState} from 'react';
 
 import {Config, initializeConfig} from '../config';
 import PageVersionService from '../services/PageVersionService';
-import {PageVersion} from '../types/PageVersion';
+import {PageVersion, PageVersionExperience} from '../types/PageVersion';
 import {getVersionData} from '../utils/getVersionData';
 import PagePreview from './PagePreview';
 import ResponsivePanel from './ResponsivePanel';
@@ -40,6 +40,10 @@ export default function VersionHistory({config}: Props) {
 	const [selectedKey, setSelectedKey] = useState<string>();
 
 	const [versions, setVersions] = useState<PageVersion[] | null>(null);
+
+	const [pageVersionExperiences, setPageVersionExperiences] = useState<
+		PageVersionExperience[] | undefined
+	>();
 
 	const [currentExperienceERC, setCurrentExperienceERC] = useState(
 		config.availableSegmentsExperiences[0]?.segmentsExperienceERC
@@ -162,11 +166,45 @@ export default function VersionHistory({config}: Props) {
 		({externalReferenceCode}) => externalReferenceCode === selectedKey
 	);
 
+	const selectedVersionERC = selectedVersion?.externalReferenceCode;
+
+	useEffect(() => {
+		if (!selectedVersionERC) {
+			setPageVersionExperiences(undefined);
+
+			return;
+		}
+
+		const controller = new AbortController();
+
+		const loadPageVersionExperiences = async () => {
+			const {data, error} =
+				await PageVersionService.getPageVersionPageExperiences(
+					selectedVersionERC,
+					controller.signal
+				);
+
+			if (controller.signal.aborted) {
+				return;
+			}
+
+			if (error) {
+				openToast({message: error, type: 'danger'});
+			}
+
+			setPageVersionExperiences(data?.items ?? []);
+		};
+
+		loadPageVersionExperiences();
+
+		return () => controller.abort();
+	}, [selectedVersionERC]);
+
 	const {experiences, languages, selectedExperience, selectedLanguageId} =
 		getVersionData({
 			currentExperienceERC,
 			currentLanguageId,
-			version: selectedVersion,
+			pageVersionExperiences,
 		});
 
 	const keywords = search.trim().toLowerCase();

@@ -28,7 +28,6 @@ export type PageVersion = {
 	dateModified: string;
 	externalReferenceCode: string;
 	name: string;
-	pageSpecificationVersionPageExperiences?: PageVersionExperience[];
 	status: Status;
 	statusDate: string;
 	version: number;

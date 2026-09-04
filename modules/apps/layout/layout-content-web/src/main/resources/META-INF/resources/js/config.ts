@@ -29,6 +29,7 @@ export type Config = {
 	getPagePreviewURL: string;
 	getPageVersionPreviewURL: string;
 	layout: Layout;
+	pageSpecificationVersionPageExperiencesURL: string;
 	pageSpecificationVersionsURL: string;
 };
 
