@@ -417,6 +417,44 @@ public class AccountEntryOrganizationRelServiceHttp {
 		}
 	}
 
+	public static void setAccountEntryOrganizationRels(
+			HttpPrincipal httpPrincipal, long accountEntryId,
+			long[] organizationIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				AccountEntryOrganizationRelServiceUtil.class,
+				"setAccountEntryOrganizationRels",
+				_setAccountEntryOrganizationRelsParameterTypes9);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, accountEntryId, organizationIds);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		AccountEntryOrganizationRelServiceHttp.class);
 
@@ -456,6 +494,10 @@ public class AccountEntryOrganizationRelServiceHttp {
 		_getAccountEntryOrganizationRelsCountParameterTypes8 = new Class[] {
 			long.class
 		};
+	private static final Class<?>[]
+		_setAccountEntryOrganizationRelsParameterTypes9 = new Class[] {
+			long.class, long[].class
+		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1353302028
+// LIFERAY-SERVICE-BUILDER-HASH:663297925

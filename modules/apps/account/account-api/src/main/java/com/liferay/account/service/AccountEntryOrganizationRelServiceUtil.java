@@ -111,6 +111,14 @@ public class AccountEntryOrganizationRelServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
+	public static void setAccountEntryOrganizationRels(
+			long accountEntryId, long[] organizationIds)
+		throws PortalException {
+
+		getService().setAccountEntryOrganizationRels(
+			accountEntryId, organizationIds);
+	}
+
 	public static AccountEntryOrganizationRelService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -121,4 +129,4 @@ public class AccountEntryOrganizationRelServiceUtil {
 			AccountEntryOrganizationRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:209990210
+// LIFERAY-SERVICE-BUILDER-HASH:990917079

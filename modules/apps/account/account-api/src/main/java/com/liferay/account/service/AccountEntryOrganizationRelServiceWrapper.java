@@ -124,6 +124,15 @@ public class AccountEntryOrganizationRelServiceWrapper
 	}
 
 	@Override
+	public void setAccountEntryOrganizationRels(
+			long accountEntryId, long[] organizationIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_accountEntryOrganizationRelService.setAccountEntryOrganizationRels(
+			accountEntryId, organizationIds);
+	}
+
+	@Override
 	public AccountEntryOrganizationRelService getWrappedService() {
 		return _accountEntryOrganizationRelService;
 	}
@@ -140,4 +149,4 @@ public class AccountEntryOrganizationRelServiceWrapper
 		_accountEntryOrganizationRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1117363620
+// LIFERAY-SERVICE-BUILDER-HASH:1957536323
