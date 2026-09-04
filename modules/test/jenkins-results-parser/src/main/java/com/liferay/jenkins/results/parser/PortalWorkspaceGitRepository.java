@@ -647,7 +647,8 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
 			String nodejsNpmCiRegistry =
 				JenkinsResultsParserUtil.getBuildProperty(
-					"portal.build.properties[nodejs.npm.ci.registry]");
+					"portal.build.properties[nodejs.npm.ci.registry]",
+					getUpstreamBranchName());
 
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(nodejsNpmCiRegistry)) {
 				yarnLockFileContent = yarnLockFileContent.replace(
