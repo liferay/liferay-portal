@@ -55,6 +55,7 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -68,6 +69,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -486,6 +488,10 @@ public class FragmentEntryLinkLocalServiceImpl
 	public List<FragmentEntryLink> getFragmentEntryLinksBySegmentsExperienceId(
 		long groupId, long[] segmentsExperienceIds, long plid) {
 
+		if (ArrayUtil.isEmpty(segmentsExperienceIds)) {
+			return Collections.emptyList();
+		}
+
 		return fragmentEntryLinkPersistence.findByG_S_P(
 			groupId, segmentsExperienceIds, plid);
 	}
@@ -494,6 +500,10 @@ public class FragmentEntryLinkLocalServiceImpl
 	public List<FragmentEntryLink> getFragmentEntryLinksBySegmentsExperienceId(
 		long groupId, long[] segmentsExperienceIds, long plid,
 		boolean deleted) {
+
+		if (ArrayUtil.isEmpty(segmentsExperienceIds)) {
+			return Collections.emptyList();
+		}
 
 		return fragmentEntryLinkPersistence.findByG_S_P_D(
 			groupId, segmentsExperienceIds, plid, deleted);
