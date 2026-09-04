@@ -893,18 +893,39 @@ public abstract class BaseWorkspaceGitRepository
 	protected void validateSHAInRemoteGitRef(
 		String branchName, RemoteGitRef remoteGitRef, String sha) {
 
+		LocalGitBranch localGitBranch = null;
 		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
 
-		LocalGitBranch localGitBranch = gitWorkingDirectory.fetch(remoteGitRef);
+		if (remoteGitRef != null) {
+			localGitBranch = gitWorkingDirectory.fetch(remoteGitRef);
+		}
 
-		if ((localGitBranch == null) ||
-			!gitWorkingDirectory.refContainsSHA(localGitBranch, sha)) {
+		if (localGitBranch == null) {
+			if (gitWorkingDirectory.localSHAExists(sha)) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"Unable to find branch \"", branchName,
+						"\" on the remote, continuing with SHA ", sha,
+						" from the local Git repository"));
+
+				return;
+			}
 
 			throw new RuntimeException(
 				JenkinsResultsParserUtil.combine(
-					"SHA ", sha, " was not found in branch \"", branchName,
-					"\" on ", remoteGitRef.getRemoteURL()));
+					"Unable to find branch \"", branchName,
+					"\" on the remote and SHA ", sha,
+					" was not found in the local Git repository"));
 		}
+
+		if (gitWorkingDirectory.refContainsSHA(localGitBranch, sha)) {
+			return;
+		}
+
+		throw new RuntimeException(
+			JenkinsResultsParserUtil.combine(
+				"SHA ", sha, " was not found in branch \"", branchName,
+				"\" on ", remoteGitRef.getRemoteURL()));
 	}
 
 	private File _archiveDotGitDir() {
@@ -1358,7 +1379,8 @@ public abstract class BaseWorkspaceGitRepository
 		_senderRemoteGitRef = GitUtil.getRemoteGitRef(
 			JenkinsResultsParserUtil.combine(
 				"https://github.com/", getSenderBranchUsername(), "/",
-				getName(), "/tree/", getSenderBranchName()));
+				getName(), "/tree/", getSenderBranchName()),
+			false);
 
 		return _senderRemoteGitRef;
 	}
