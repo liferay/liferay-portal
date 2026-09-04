@@ -121,7 +121,7 @@ public class LayoutContentVersionLocalServiceTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-103233", "LPD-103846"})
+	@TestInfo({"LPD-103233", "LPD-103846", "LPD-104550"})
 	public void testAddLayoutContentVersion() throws Exception {
 		_addSegmentsExperiences(2);
 
@@ -448,6 +448,7 @@ public class LayoutContentVersionLocalServiceTest {
 				String html = layoutContentVersionPreview.getHtml();
 
 				Assert.assertTrue(html, html.contains("/company_logo"));
+				Assert.assertFalse(html, html.contains("\"signInURL\":\"\""));
 				Assert.assertTrue(
 					html, html.contains(jsonObject.getString(languageId)));
 			}
