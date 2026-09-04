@@ -49,6 +49,47 @@ describe('ReportFeedbackModal', () => {
 		};
 	});
 
+	it('caps the comment at the length the server accepts', async () => {
+		renderModal();
+
+		expect(await screen.findByRole('textbox')).toHaveAttribute(
+			'maxlength',
+			'5000'
+		);
+	});
+
+	it('does not propagate key events to surrounding components', async () => {
+		const onAncestorKeyDown = jest.fn();
+
+		render(
+			<div onKeyDown={onAncestorKeyDown}>
+				<ReportFeedbackModal
+					agentDefinitionExternalReferenceCodes={['agent-1']}
+					onClose={jest.fn()}
+					surface="aiAssistant"
+				/>
+			</div>
+		);
+
+		fireEvent.keyDown(await screen.findByRole('combobox'), {key: 'Tab'});
+
+		expect(onAncestorKeyDown).not.toHaveBeenCalled();
+	});
+
+	it('keeps Send disabled until a reason is chosen', async () => {
+		renderModal();
+
+		const send = await screen.findByRole('button', {name: 'send'});
+
+		expect(send).toBeDisabled();
+
+		fireEvent.change(screen.getByRole('combobox'), {
+			target: {value: 'other'},
+		});
+
+		expect(send).toBeEnabled();
+	});
+
 	it('renders the title and every reason option', async () => {
 		renderModal();
 
@@ -64,27 +105,18 @@ describe('ReportFeedbackModal', () => {
 		).toBeInTheDocument();
 	});
 
-	it('caps the comment at the length the server accepts', async () => {
+	it('shows an inline error and stays open on failure', async () => {
+		mockPostAIIssueReport.mockRejectedValue(new Error('submit failed'));
+
 		renderModal();
 
-		expect(await screen.findByRole('textbox')).toHaveAttribute(
-			'maxlength',
-			'5000'
-		);
-	});
-
-	it('keeps Send disabled until a reason is chosen', async () => {
-		renderModal();
-
-		const send = await screen.findByRole('button', {name: 'send'});
-
-		expect(send).toBeDisabled();
-
-		fireEvent.change(screen.getByRole('combobox'), {
+		fireEvent.change(await screen.findByRole('combobox'), {
 			target: {value: 'other'},
 		});
+		fireEvent.click(screen.getByRole('button', {name: 'send'}));
 
-		expect(send).toBeEnabled();
+		expect(await screen.findByText('submit failed')).toBeInTheDocument();
+		expect(openToast).not.toHaveBeenCalled();
 	});
 
 	it('submits the report and fires a success toast', async () => {
@@ -105,37 +137,5 @@ describe('ReportFeedbackModal', () => {
 		);
 
 		expect(mockPostAIIssueReport).toHaveBeenCalled();
-	});
-
-	it('shows an inline error and stays open on failure', async () => {
-		mockPostAIIssueReport.mockRejectedValue(new Error('submit failed'));
-
-		renderModal();
-
-		fireEvent.change(await screen.findByRole('combobox'), {
-			target: {value: 'other'},
-		});
-		fireEvent.click(screen.getByRole('button', {name: 'send'}));
-
-		expect(await screen.findByText('submit failed')).toBeInTheDocument();
-		expect(openToast).not.toHaveBeenCalled();
-	});
-
-	it('does not propagate key events to surrounding components', async () => {
-		const onAncestorKeyDown = jest.fn();
-
-		render(
-			<div onKeyDown={onAncestorKeyDown}>
-				<ReportFeedbackModal
-					agentDefinitionExternalReferenceCodes={['agent-1']}
-					onClose={jest.fn()}
-					surface="aiAssistant"
-				/>
-			</div>
-		);
-
-		fireEvent.keyDown(await screen.findByRole('combobox'), {key: 'Tab'});
-
-		expect(onAncestorKeyDown).not.toHaveBeenCalled();
 	});
 });

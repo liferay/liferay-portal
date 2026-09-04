@@ -64,6 +64,72 @@ describe('useCategorizationAgent', () => {
 		mockPostAgentInstance.mockResolvedValue(undefined);
 	});
 
+	it('closes the channel after a result and opens a fresh one per run', async () => {
+		const {fakeEventSource, result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Japan article',
+			});
+		});
+
+		act(() => fakeEventSource.emit('Subscribe', 'sink-1'));
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_AUTO_CATEGORIZE',
+				JSON.stringify({
+					data: '{"suggestions":[{"id":39001,"confidence":0.9}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		expect(fakeEventSource.close).toHaveBeenCalledTimes(1);
+		expect(mockCreateEventSource).toHaveBeenCalledTimes(1);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Another article',
+			});
+		});
+
+		expect(mockCreateEventSource).toHaveBeenCalledTimes(2);
+	});
+
+	it('defers the invoke until the subscribe event arrives', async () => {
+		const {fakeEventSource, result} = await renderAgent(
+			ECategorizationAgent.GENERATE_TAGS
+		);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				content: 'x',
+				existingTags: ['Japan'],
+			});
+		});
+
+		expect(mockPostAgentInstance).not.toHaveBeenCalled();
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-2');
+		});
+
+		expect(mockPostAgentInstance).toHaveBeenCalledWith(
+			expect.objectContaining({
+				agent: 'L_GENERATE_TAGS',
+				context: expect.objectContaining({
+					existingTags: JSON.stringify(['Japan']),
+				}),
+				sseEventSinkKey: 'sink-2',
+			})
+		);
+	});
+
 	it('posts the stringified candidate context and parses the suggestions', async () => {
 		const {fakeEventSource, result} = await renderAgent(
 			ECategorizationAgent.AUTO_CATEGORIZE
@@ -111,6 +177,59 @@ describe('useCategorizationAgent', () => {
 		});
 	});
 
+	it('regenerates by re-posting the last context', async () => {
+		const {fakeEventSource, result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Japan article',
+			});
+		});
+
+		act(() => fakeEventSource.emit('Subscribe', 'sink-1'));
+
+		await act(async () => {
+			(result as {current: {regenerate: Function}}).current.regenerate();
+		});
+
+		expect(mockPostAgentInstance).toHaveBeenCalledTimes(2);
+	});
+
+	it('releases the connect latch and surfaces the error when the channel fails to open', async () => {
+		const {result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		mockCreateEventSource.mockReset();
+		mockCreateEventSource.mockRejectedValue(new Error('no channel'));
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Japan article',
+			});
+		});
+
+		expect(
+			(result as {current: {error: string; status: string}}).current
+		).toMatchObject({
+			error: 'an-unexpected-error-occurred',
+			status: 'error',
+		});
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Japan article',
+			});
+		});
+
+		expect(mockCreateEventSource).toHaveBeenCalledTimes(2);
+	});
+
 	it('reports an empty status when nothing matches', async () => {
 		const {fakeEventSource, result} = await renderAgent(
 			ECategorizationAgent.AUTO_CATEGORIZE
@@ -134,35 +253,6 @@ describe('useCategorizationAgent', () => {
 
 		expect((result as {current: {status: string}}).current.status).toBe(
 			'empty'
-		);
-	});
-
-	it('defers the invoke until the subscribe event arrives', async () => {
-		const {fakeEventSource, result} = await renderAgent(
-			ECategorizationAgent.GENERATE_TAGS
-		);
-
-		await act(async () => {
-			(result as {current: {run: Function}}).current.run({
-				content: 'x',
-				existingTags: ['Japan'],
-			});
-		});
-
-		expect(mockPostAgentInstance).not.toHaveBeenCalled();
-
-		await act(async () => {
-			fakeEventSource.emit('Subscribe', 'sink-2');
-		});
-
-		expect(mockPostAgentInstance).toHaveBeenCalledWith(
-			expect.objectContaining({
-				agent: 'L_GENERATE_TAGS',
-				context: expect.objectContaining({
-					existingTags: JSON.stringify(['Japan']),
-				}),
-				sseEventSinkKey: 'sink-2',
-			})
 		);
 	});
 
@@ -217,6 +307,29 @@ describe('useCategorizationAgent', () => {
 		expect(fakeEventSource.close).toHaveBeenCalled();
 	});
 
+	it('surfaces the error when the channel is unavailable', async () => {
+		const {result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		mockCreateEventSource.mockReset();
+		mockCreateEventSource.mockResolvedValue(null);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Japan article',
+			});
+		});
+
+		expect(
+			(result as {current: {error: string; status: string}}).current
+		).toMatchObject({
+			error: 'an-unexpected-error-occurred',
+			status: 'error',
+		});
+	});
+
 	it('surfaces the generic error on agent invocation failure', async () => {
 		const {fakeEventSource, result} = await renderAgent(
 			ECategorizationAgent.AUTO_CATEGORIZE
@@ -244,118 +357,5 @@ describe('useCategorizationAgent', () => {
 			error: 'an-unexpected-error-occurred',
 			status: 'error',
 		});
-	});
-
-	it('releases the connect latch and surfaces the error when the channel fails to open', async () => {
-		const {result} = await renderAgent(
-			ECategorizationAgent.AUTO_CATEGORIZE
-		);
-
-		mockCreateEventSource.mockReset();
-		mockCreateEventSource.mockRejectedValue(new Error('no channel'));
-
-		await act(async () => {
-			(result as {current: {run: Function}}).current.run({
-				candidateCategories: CANDIDATES,
-				content: 'Japan article',
-			});
-		});
-
-		expect(
-			(result as {current: {error: string; status: string}}).current
-		).toMatchObject({
-			error: 'an-unexpected-error-occurred',
-			status: 'error',
-		});
-
-		await act(async () => {
-			(result as {current: {run: Function}}).current.run({
-				candidateCategories: CANDIDATES,
-				content: 'Japan article',
-			});
-		});
-
-		expect(mockCreateEventSource).toHaveBeenCalledTimes(2);
-	});
-
-	it('surfaces the error when the channel is unavailable', async () => {
-		const {result} = await renderAgent(
-			ECategorizationAgent.AUTO_CATEGORIZE
-		);
-
-		mockCreateEventSource.mockReset();
-		mockCreateEventSource.mockResolvedValue(null);
-
-		await act(async () => {
-			(result as {current: {run: Function}}).current.run({
-				candidateCategories: CANDIDATES,
-				content: 'Japan article',
-			});
-		});
-
-		expect(
-			(result as {current: {error: string; status: string}}).current
-		).toMatchObject({
-			error: 'an-unexpected-error-occurred',
-			status: 'error',
-		});
-	});
-
-	it('regenerates by re-posting the last context', async () => {
-		const {fakeEventSource, result} = await renderAgent(
-			ECategorizationAgent.AUTO_CATEGORIZE
-		);
-
-		await act(async () => {
-			(result as {current: {run: Function}}).current.run({
-				candidateCategories: CANDIDATES,
-				content: 'Japan article',
-			});
-		});
-
-		act(() => fakeEventSource.emit('Subscribe', 'sink-1'));
-
-		await act(async () => {
-			(result as {current: {regenerate: Function}}).current.regenerate();
-		});
-
-		expect(mockPostAgentInstance).toHaveBeenCalledTimes(2);
-	});
-
-	it('closes the channel after a result and opens a fresh one per run', async () => {
-		const {fakeEventSource, result} = await renderAgent(
-			ECategorizationAgent.AUTO_CATEGORIZE
-		);
-
-		await act(async () => {
-			(result as {current: {run: Function}}).current.run({
-				candidateCategories: CANDIDATES,
-				content: 'Japan article',
-			});
-		});
-
-		act(() => fakeEventSource.emit('Subscribe', 'sink-1'));
-
-		await act(async () => {
-			fakeEventSource.emit(
-				'L_AUTO_CATEGORIZE',
-				JSON.stringify({
-					data: '{"suggestions":[{"id":39001,"confidence":0.9}]}',
-					nodeName: 'llm',
-				})
-			);
-		});
-
-		expect(fakeEventSource.close).toHaveBeenCalledTimes(1);
-		expect(mockCreateEventSource).toHaveBeenCalledTimes(1);
-
-		await act(async () => {
-			(result as {current: {run: Function}}).current.run({
-				candidateCategories: CANDIDATES,
-				content: 'Another article',
-			});
-		});
-
-		expect(mockCreateEventSource).toHaveBeenCalledTimes(2);
 	});
 });

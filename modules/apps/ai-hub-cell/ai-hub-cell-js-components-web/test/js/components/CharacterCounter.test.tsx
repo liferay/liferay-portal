@@ -13,10 +13,12 @@ import React from 'react';
 import CharacterCounter from '../../../src/main/resources/META-INF/resources/js/components/CharacterCounter';
 
 describe('CharacterCounter', () => {
-	it('renders nothing while the count is far from the limit', () => {
-		const {container} = render(<CharacterCounter count={0} max={5000} />);
+	it('is accessible', async () => {
+		const {container} = render(
+			<CharacterCounter count={5000} max={5000} />
+		);
 
-		expect(container).toBeEmptyDOMElement();
+		await checkAccessibility({context: container});
 	});
 
 	it('renders nothing one character before the threshold', () => {
@@ -27,10 +29,10 @@ describe('CharacterCounter', () => {
 		expect(container).toBeEmptyDOMElement();
 	});
 
-	it('renders the count once it reaches the threshold', () => {
-		render(<CharacterCounter count={4500} max={5000} />);
+	it('renders nothing while the count is far from the limit', () => {
+		const {container} = render(<CharacterCounter count={0} max={5000} />);
 
-		expect(screen.getByText('4,500 / 5,000')).toBeInTheDocument();
+		expect(container).toBeEmptyDOMElement();
 	});
 
 	it('renders the count at the limit', () => {
@@ -39,11 +41,9 @@ describe('CharacterCounter', () => {
 		expect(screen.getByText('5,000 / 5,000')).toBeInTheDocument();
 	});
 
-	it('is accessible', async () => {
-		const {container} = render(
-			<CharacterCounter count={5000} max={5000} />
-		);
+	it('renders the count once it reaches the threshold', () => {
+		render(<CharacterCounter count={4500} max={5000} />);
 
-		await checkAccessibility({context: container});
+		expect(screen.getByText('4,500 / 5,000')).toBeInTheDocument();
 	});
 });
