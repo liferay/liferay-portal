@@ -21,13 +21,32 @@ import java.util.function.Consumer;
 public class FIPSApplicationStateMachineUtil {
 
 	public static void error(String failedStep, Throwable throwable) {
-		_transition(
-			FIPSApplicationState.ERROR,
-			fipsAuditEvent -> {
-				fipsAuditEvent.put("failed-step", failedStep);
-				fipsAuditEvent.put(
-					"provider-error-message", _getMessage(throwable));
-			});
+		FIPSApplicationState previousFIPSApplicationState =
+			_getAndUpdateFIPSApplicationState(FIPSApplicationState.ERROR);
+
+		try {
+			_writeTransitionFIPSAuditEvent(
+				FIPSApplicationState.ERROR,
+				fipsAuditEvent -> {
+					fipsAuditEvent.put("failed-step", failedStep);
+					fipsAuditEvent.put(
+						"provider-error-message", _getMessage(throwable));
+				},
+				previousFIPSApplicationState);
+
+			_log.error(
+				StringBundler.concat(
+					"Terminating the JVM because the FIPS application state ",
+					"changed from \"", previousFIPSApplicationState, "\" to \"",
+					FIPSApplicationState.ERROR, "\" at the step \"", failedStep,
+					"\": ", _getMessage(throwable)),
+				throwable);
+
+			powerOff("Portal");
+		}
+		finally {
+			System.exit(1);
+		}
 	}
 
 	public static FIPSApplicationState getFIPSApplicationState() {
@@ -148,6 +167,27 @@ public class FIPSApplicationStateMachineUtil {
 		error(failedStep, throwable);
 	}
 
+	private static FIPSApplicationState _getAndUpdateFIPSApplicationState(
+		FIPSApplicationState fipsApplicationState) {
+
+		return _fipsApplicationStateAtomicReference.getAndUpdate(
+			currentFIPSApplicationState -> {
+				Set<FIPSApplicationState> nextFIPSApplicationStates =
+					_allowedTransitions.getOrDefault(
+						currentFIPSApplicationState, Set.of());
+
+				if (!nextFIPSApplicationStates.contains(fipsApplicationState)) {
+					throw new IllegalStateException(
+						StringBundler.concat(
+							"Unable to transition the FIPS application state ",
+							"from \"", currentFIPSApplicationState, "\" to \"",
+							fipsApplicationState, "\""));
+				}
+
+				return fipsApplicationState;
+			});
+	}
+
 	private static String _getMessage(Throwable throwable) {
 		String message = throwable.getMessage();
 
@@ -213,24 +253,17 @@ public class FIPSApplicationStateMachineUtil {
 		Consumer<FIPSAuditEvent> fipsAuditEventConsumer) {
 
 		FIPSApplicationState previousFIPSApplicationState =
-			_fipsApplicationStateAtomicReference.getAndUpdate(
-				currentFIPSApplicationState -> {
-					Set<FIPSApplicationState> nextFIPSApplicationStates =
-						_allowedTransitions.getOrDefault(
-							currentFIPSApplicationState, Set.of());
+			_getAndUpdateFIPSApplicationState(fipsApplicationState);
 
-					if (!nextFIPSApplicationStates.contains(
-							fipsApplicationState)) {
+		_writeTransitionFIPSAuditEvent(
+			fipsApplicationState, fipsAuditEventConsumer,
+			previousFIPSApplicationState);
+	}
 
-						throw new IllegalStateException(
-							StringBundler.concat(
-								"Unable to transition the FIPS application ",
-								"state from \"", currentFIPSApplicationState,
-								"\" to \"", fipsApplicationState, "\""));
-					}
-
-					return fipsApplicationState;
-				});
+	private static void _writeTransitionFIPSAuditEvent(
+		FIPSApplicationState fipsApplicationState,
+		Consumer<FIPSAuditEvent> fipsAuditEventConsumer,
+		FIPSApplicationState previousFIPSApplicationState) {
 
 		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
 			"fips-state-transition", _getSeverity(fipsApplicationState));
