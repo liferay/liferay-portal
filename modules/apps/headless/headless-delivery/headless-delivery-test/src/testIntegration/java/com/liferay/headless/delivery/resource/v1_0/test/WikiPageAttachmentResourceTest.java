@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.wiki.model.WikiNode;
@@ -120,6 +121,52 @@ public class WikiPageAttachmentResourceTest
 					testDeleteSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCode_getSiteId(),
 					previousWikiPage.getExternalReferenceCode(),
 					newWikiPageAttachment.getExternalReferenceCode()));
+
+		// Wiki page attachment without delete permission
+
+		WikiPage siteWikiPage = _addWikiPage();
+
+		WikiPageAttachment siteWikiPageAttachment = _addWikiPageAttachment(
+			siteWikiPage);
+
+		WikiPageAttachmentResource siteMemberWikiPageAttachmentResource =
+			_getSiteMemberWikiPageAttachmentResource();
+
+		assertHttpResponseStatusCode(
+			403,
+			siteMemberWikiPageAttachmentResource.
+				deleteSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCodeHttpResponse(
+					siteWikiPage.getGroupId(),
+					siteWikiPage.getExternalReferenceCode(),
+					siteWikiPageAttachment.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			200,
+			wikiPageAttachmentResource.getWikiPageAttachmentHttpResponse(
+				siteWikiPageAttachment.getId()));
+
+		// Wiki page attachment on a wiki page with no head version
+
+		WikiPage draftWikiPage = _addWikiPage();
+
+		WikiPageAttachment draftWikiPageAttachment = _addWikiPageAttachment(
+			draftWikiPage);
+
+		WikiPageLocalServiceUtil.updateStatus(
+			TestPropsValues.getUserId(), draftWikiPage.getResourcePrimKey(),
+			WorkflowConstants.STATUS_DRAFT, new ServiceContext());
+
+		assertHttpResponseStatusCode(
+			404,
+			wikiPageAttachmentResource.
+				deleteSiteWikiPageByExternalReferenceCodeWikiPageExternalReferenceCodeWikiPageAttachmentByExternalReferenceCodeHttpResponse(
+					draftWikiPage.getGroupId(),
+					draftWikiPage.getExternalReferenceCode(),
+					draftWikiPageAttachment.getExternalReferenceCode()));
+
+		Assert.assertNotNull(
+			DLAppLocalServiceUtil.fetchFileEntry(
+				draftWikiPageAttachment.getId()));
 	}
 
 	@Override
@@ -468,10 +515,10 @@ public class WikiPageAttachmentResourceTest
 		serviceContext.setCommand("update");
 		serviceContext.setScopeGroupId(testGroup.getGroupId());
 
-		return _addWikiPageAttachment(serviceContext);
+		return _addWikiPageAttachment(_addWikiPage(serviceContext));
 	}
 
-	private WikiPageAttachment _addWikiPageAttachment() throws Exception {
+	private WikiPage _addWikiPage() throws Exception {
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setAddGroupPermissions(true);
@@ -479,17 +526,24 @@ public class WikiPageAttachmentResourceTest
 		serviceContext.setCommand("update");
 		serviceContext.setScopeGroupId(testGroup.getGroupId());
 
-		return _addWikiPageAttachment(serviceContext);
+		return _addWikiPage(serviceContext);
 	}
 
-	private WikiPageAttachment _addWikiPageAttachment(
-			ServiceContext serviceContext)
+	private WikiPage _addWikiPage(ServiceContext serviceContext)
 		throws Exception {
 
-		WikiPage wikiPage = WikiPageLocalServiceUtil.addPage(
+		return WikiPageLocalServiceUtil.addPage(
 			TestPropsValues.getUserId(), _wikiPage.getNodeId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), false, serviceContext);
+	}
+
+	private WikiPageAttachment _addWikiPageAttachment() throws Exception {
+		return _addWikiPageAttachment(_addWikiPage());
+	}
+
+	private WikiPageAttachment _addWikiPageAttachment(WikiPage wikiPage)
+		throws Exception {
 
 		return wikiPageAttachmentResource.postWikiPageWikiPageAttachment(
 			wikiPage.getResourcePrimKey(), randomWikiPageAttachment(),
