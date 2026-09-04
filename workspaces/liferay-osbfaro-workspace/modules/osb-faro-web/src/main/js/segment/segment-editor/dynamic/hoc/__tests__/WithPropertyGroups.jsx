@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
-import React from 'react';
+import React, {useState} from 'react';
 import withPropertyGroups from '../WithPropertyGroups';
-import {render} from '@testing-library/react';
+import {act, fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
@@ -130,6 +130,97 @@ describe('WithPropertyGroups', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(container).toMatchSnapshot();
+	});
+
+	// The editor is composed onto this HOC, and a remount here takes its
+	// `useBlocker` registration with it, so React Router drops a blocked
+	// navigation and the unsaved changes prompt never opens. See LPD-104396.
+
+	it('should keep the wrapped component mounted when an ancestor re-renders', async () => {
+		API.fieldMappings.search.mockClear();
+
+		const StatefulComponent = () => {
+			const [draft, setDraft] = useState('');
+
+			return (
+				<input
+					aria-label='draft'
+					onChange={event => setDraft(event.target.value)}
+					value={draft}
+				/>
+			);
+		};
+
+		const WrappedComponent = withPropertyGroups(StatefulComponent);
+
+		const Ancestor = () => {
+			const [renderCount, setRenderCount] = useState(0);
+
+			return (
+				<div>
+					<button onClick={() => setRenderCount(renderCount + 1)}>
+						{'re-render'}
+					</button>
+
+					<WrappedComponent
+						channelId='123'
+						groupId='123'
+						type='BATCH'
+					/>
+				</div>
+			);
+		};
+
+		render(
+			<MemoryRouter>
+				<Ancestor />
+			</MemoryRouter>
+		);
+
+		await act(async () => {});
+
+		const requestCount = API.fieldMappings.search.mock.calls.length;
+
+		fireEvent.change(screen.getByLabelText('draft'), {
+			target: {value: 'unsaved work'}
+		});
+
+		fireEvent.click(screen.getByText('re-render'));
+
+		expect(screen.getByLabelText('draft')).toHaveValue('unsaved work');
+		expect(API.fieldMappings.search).toHaveBeenCalledTimes(requestCount);
+	});
+
+	describe('Error handling', () => {
+		const originalSearch = API.fieldMappings.search;
+
+		beforeEach(() => {
+			API.fieldMappings.search = jest.fn(() =>
+				Promise.reject(new Error('failed'))
+			);
+		});
+
+		afterEach(() => {
+			API.fieldMappings.search = originalSearch;
+		});
+
+		it('should render the error page when the request fails', async () => {
+			const WrappedComponent = withPropertyGroups(TestComponent);
+
+			const {container} = render(
+				<MemoryRouter>
+					<WrappedComponent
+						channelId='123'
+						groupId='123'
+						type='BATCH'
+					/>
+				</MemoryRouter>
+			);
+
+			await act(async () => {});
+
+			expect(container.querySelector('.error-page-root')).toBeTruthy();
+		});
 	});
 
 	describe('Testing Conditional Requests', () => {
