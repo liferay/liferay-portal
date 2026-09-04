@@ -79,6 +79,9 @@ public class LayoutContentVersionDisplayContext {
 					).build();
 				}
 			).put(
+				"pageSpecificationVersionPageExperiencesURL",
+				_getPageSpecificationVersionPageExperiencesURL()
+			).put(
 				"pageSpecificationVersionsURL",
 				_getPageSpecificationVersionsURL()
 			).build()
@@ -138,7 +141,9 @@ public class LayoutContentVersionDisplayContext {
 			});
 	}
 
-	private String _getPageSpecificationVersionsURL() throws PortalException {
+	private String _getPageSpecificationVersionPageExperiencesURL()
+		throws PortalException {
+
 		Group group = _themeDisplay.getScopeGroup();
 
 		Layout draftLayout = _themeDisplay.getLayout();
@@ -149,7 +154,21 @@ public class LayoutContentVersionDisplayContext {
 			"/o/headless-admin-site/v1.0/sites/",
 			group.getExternalReferenceCode(), "/site-pages/",
 			layout.getExternalReferenceCode(), "/page-specification-versions",
-			"?nestedFields=pageSpecificationVersionPageExperiences");
+			"/{pageSpecificationVersionExternalReferenceCode}",
+			"/page-specification-version-page-experiences");
+	}
+
+	private String _getPageSpecificationVersionsURL() throws PortalException {
+		Group group = _themeDisplay.getScopeGroup();
+
+		Layout draftLayout = _themeDisplay.getLayout();
+
+		Layout layout = _layoutLocalService.getLayout(draftLayout.getClassPK());
+
+		return StringBundler.concat(
+			"/o/headless-admin-site/v1.0/sites/",
+			group.getExternalReferenceCode(), "/site-pages/",
+			layout.getExternalReferenceCode(), "/page-specification-versions");
 	}
 
 	private final HttpServletRequest _httpServletRequest;
