@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.exception.NoSuchResourcePermissionException;
 import com.liferay.portal.kernel.exception.NoSuchRoleException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -19,6 +20,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -60,6 +62,7 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
+	@TestInfo("LPD-104558")
 	public void testAddCompany() throws Exception {
 		long companyId = _company.getCompanyId();
 
@@ -148,6 +151,29 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 				companyId, "com.liferay.fragment",
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 				name, List.of("MANAGE_FRAGMENT_ENTRIES"));
+			_assertResourcePermissions(
+				companyId, "com.liferay.layout.page.template",
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				name,
+				List.of(
+					"ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION",
+					"ADD_LAYOUT_PAGE_TEMPLATE_ENTRY"));
+			_assertResourcePermissions(
+				companyId,
+				"com.liferay.layout.page.template.model." +
+					"LayoutPageTemplateCollection",
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				name, List.of(ActionKeys.DELETE, ActionKeys.UPDATE));
+			_assertResourcePermissions(
+				companyId,
+				"com.liferay.layout.page.template.model." +
+					"LayoutPageTemplateEntry",
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				name, List.of(ActionKeys.DELETE, ActionKeys.UPDATE));
+			_assertResourcePermissions(
+				companyId, Layout.class.getName(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				name, List.of(ActionKeys.UPDATE));
 			_assertResourcePermissions(
 				companyId, "com.liferay.style.book",
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
