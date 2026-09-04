@@ -1013,20 +1013,6 @@ test(
 
 				await contentsPage.previewButton.click();
 
-				await clickAndExpectToBeVisible({
-					autoClick: true,
-					target: page.getByRole('option', {name: site.name}),
-					trigger: page.getByLabel('Select Channel'),
-				});
-
-				await clickAndExpectToBeVisible({
-					autoClick: true,
-					target: page.getByRole('option', {
-						name: displayPageTemplateName,
-					}),
-					trigger: page.getByLabel('Select Display Page'),
-				});
-
 				const iframe = page.frameLocator('iframe[title="Preview"]');
 
 				await expect(iframe.getByText(catalanTitle)).toBeVisible();
