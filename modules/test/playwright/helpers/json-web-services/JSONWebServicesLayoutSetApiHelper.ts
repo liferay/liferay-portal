@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {createReadStream} from 'fs';
+
 import {liferayConfig} from '../../liferay.config';
 import {ApiHelpers} from '../ApiHelpers';
 
@@ -43,6 +45,33 @@ export class JSONWebServicesLayoutSetApiHelper {
 				data: urlSearchParams.toString(),
 				failOnStatusCode: true,
 				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
+	async updateLogo({
+		filePath,
+		groupId,
+		privateLayout = false,
+	}: {
+		filePath: string;
+		groupId: string;
+		privateLayout?: boolean;
+	}) {
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/update-logo`,
+			{
+				failOnStatusCode: true,
+				headers: {
+					Authorization: this.apiHelpers.getAuthorizationHeader(),
+					...(await this.apiHelpers.getCSRFTokenHeader()),
+				},
+				multipart: {
+					file: createReadStream(filePath),
+					groupId,
+					hasLogo: true,
+					privateLayout,
+				},
 			}
 		);
 	}
