@@ -13,7 +13,7 @@ import com.liferay.account.exception.DuplicateAccountGroupRelException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountEntryLocalService;
-import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
+import com.liferay.account.service.AccountEntryOrganizationRelService;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.AccountGroupRelService;
@@ -152,7 +152,7 @@ public class AccountResourceImpl
 		throws Exception {
 
 		for (Long accountId : accountIds) {
-			_accountEntryOrganizationRelLocalService.
+			_accountEntryOrganizationRelService.
 				deleteAccountEntryOrganizationRel(accountId, organizationId);
 		}
 	}
@@ -163,7 +163,7 @@ public class AccountResourceImpl
 		throws Exception {
 
 		for (String externalReferenceCode : externalReferenceCodes) {
-			_accountEntryOrganizationRelLocalService.
+			_accountEntryOrganizationRelService.
 				deleteAccountEntryOrganizationRel(
 					DTOConverterUtil.getModelPrimaryKey(
 						_accountResourceDTOConverter, externalReferenceCode),
@@ -515,8 +515,8 @@ public class AccountResourceImpl
 		throws Exception {
 
 		for (Long accountId : accountIds) {
-			_accountEntryOrganizationRelLocalService.
-				addAccountEntryOrganizationRel(accountId, organizationId);
+			_accountEntryOrganizationRelService.addAccountEntryOrganizationRel(
+				accountId, organizationId);
 		}
 	}
 
@@ -526,11 +526,10 @@ public class AccountResourceImpl
 		throws Exception {
 
 		for (String externalReferenceCode : externalReferenceCodes) {
-			_accountEntryOrganizationRelLocalService.
-				addAccountEntryOrganizationRel(
-					DTOConverterUtil.getModelPrimaryKey(
-						_accountResourceDTOConverter, externalReferenceCode),
-					organizationId);
+			_accountEntryOrganizationRelService.addAccountEntryOrganizationRel(
+				DTOConverterUtil.getModelPrimaryKey(
+					_accountResourceDTOConverter, externalReferenceCode),
+				organizationId);
 		}
 	}
 
@@ -1337,8 +1336,8 @@ public class AccountResourceImpl
 		long[] organizationIds = _getOrganizationIds(account);
 
 		if (organizationIds != null) {
-			_accountEntryOrganizationRelLocalService.
-				setAccountEntryOrganizationRels(accountId, organizationIds);
+			_accountEntryOrganizationRelService.setAccountEntryOrganizationRels(
+				accountId, organizationIds);
 		}
 
 		UserAccount[] userAccounts = account.getAccountUserAccounts();
@@ -1449,8 +1448,8 @@ public class AccountResourceImpl
 		_accountEntryModelResourcePermission;
 
 	@Reference
-	private AccountEntryOrganizationRelLocalService
-		_accountEntryOrganizationRelLocalService;
+	private AccountEntryOrganizationRelService
+		_accountEntryOrganizationRelService;
 
 	@Reference
 	private AccountEntryService _accountEntryService;
