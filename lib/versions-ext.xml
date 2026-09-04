@@ -130,7 +130,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/byte-buddy.jar</file-name>
-				<version>1.15.11</version>
+				<version>1.18.8</version>
 				<project-name>Byte Buddy</project-name>
 				<project-url>https://github.com/raphw/byte-buddy</project-url>
 				<licenses>
@@ -142,7 +142,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/byte-buddy-agent.jar</file-name>
-				<version>1.15.11</version>
+				<version>1.18.8</version>
 				<project-name>Byte Buddy Agent</project-name>
 				<project-url>https://github.com/raphw/byte-buddy</project-url>
 				<licenses>
