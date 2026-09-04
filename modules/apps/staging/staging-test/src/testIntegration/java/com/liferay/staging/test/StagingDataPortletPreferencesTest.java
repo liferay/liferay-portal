@@ -103,17 +103,18 @@ public class StagingDataPortletPreferencesTest
 	public void testSiteNavigationMenuDisplayStylePortletPreferences()
 		throws Exception {
 
-		Layout stagingContentLayout = LayoutTestUtil.addTypeContentLayout(
+		Layout stagingLayout = LayoutTestUtil.addTypeContentLayout(
 			stagingGroup);
 
 		StagingLocalServiceUtil.enableLocalStaging(
 			TestPropsValues.getUserId(), liveGroup, true, false,
 			ServiceContextTestUtil.getServiceContext(liveGroup.getGroupId()));
 
-		Layout draftLayout = stagingContentLayout.fetchDraftLayout();
+		Layout draftStagingLayout = stagingLayout.fetchDraftLayout();
 
 		JSONObject jsonObject = ContentLayoutTestUtil.addPortletToLayout(
-			draftLayout, SiteNavigationMenuPortletKeys.SITE_NAVIGATION_MENU);
+			draftStagingLayout,
+			SiteNavigationMenuPortletKeys.SITE_NAVIGATION_MENU);
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
@@ -136,7 +137,7 @@ public class StagingDataPortletPreferencesTest
 		Group companyGroup = company.getGroup();
 
 		LayoutTestUtil.updateLayoutPortletPreferences(
-			draftLayout, encodedPortletId,
+			draftStagingLayout, encodedPortletId,
 			HashMapBuilder.put(
 				"displayStyle", "ddmTemplate_list-menu-ftl"
 			).put(
@@ -146,28 +147,27 @@ public class StagingDataPortletPreferencesTest
 				"displayStyleGroupId", String.valueOf(companyGroup.getGroupId())
 			).build());
 
-		ContentLayoutTestUtil.publishLayout(draftLayout, stagingContentLayout);
+		ContentLayoutTestUtil.publishLayout(draftStagingLayout, stagingLayout);
 
 		long backgroundTaskId = StagingUtil.publishLayouts(
 			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
 			liveGroup.getGroupId(), false,
-			new long[] {stagingContentLayout.getLayoutId()},
+			new long[] {stagingLayout.getLayoutId()},
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildFullPublishParameterMap());
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
 
-		Layout liveContentLayout =
-			_layoutLocalService.getLayoutByUuidAndGroupId(
-				stagingContentLayout.getUuid(), liveGroup.getGroupId(), false);
+		Layout liveLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+			stagingLayout.getUuid(), liveGroup.getGroupId(), false);
 
-		PortletPreferences liveContentLayoutPortletPreferences =
+		PortletPreferences liveLayoutPortletPreferences =
 			PortletPreferencesFactoryUtil.getPortletSetup(
-				liveContentLayout, encodedPortletId, null);
+				liveLayout, encodedPortletId, null);
 
 		Assert.assertEquals(
 			"ddmTemplate_list-menu-ftl",
-			liveContentLayoutPortletPreferences.getValue(
+			liveLayoutPortletPreferences.getValue(
 				"displayStyle", StringPool.BLANK));
 	}
 

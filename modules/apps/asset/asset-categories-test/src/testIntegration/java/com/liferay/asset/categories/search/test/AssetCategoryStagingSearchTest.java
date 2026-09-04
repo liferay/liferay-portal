@@ -98,11 +98,11 @@ public class AssetCategoryStagingSearchTest {
 			ServiceContextTestUtil.getServiceContext(
 				_stagingGroup.getGroupId()));
 
-		ServiceContext articleServiceContext =
+		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_stagingGroup.getGroupId());
 
-		articleServiceContext.setAssetCategoryIds(
+		serviceContext.setAssetCategoryIds(
 			new long[] {assetCategory.getCategoryId()});
 
 		JournalTestUtil.addArticle(
@@ -116,7 +116,7 @@ public class AssetCategoryStagingSearchTest {
 			HashMapBuilder.put(
 				LocaleUtil.US, RandomTestUtil.randomString()
 			).build(),
-			LocaleUtil.US, false, true, articleServiceContext);
+			LocaleUtil.US, false, true, serviceContext);
 
 		ExportImportTestUtil.publishLayoutsRangeFromLastPublishedDate(
 			_stagingGroup, _liveGroup);
