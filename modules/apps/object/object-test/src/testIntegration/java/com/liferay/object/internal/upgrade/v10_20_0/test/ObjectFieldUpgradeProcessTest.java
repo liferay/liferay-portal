@@ -8,14 +8,18 @@ package com.liferay.object.internal.upgrade.v10_20_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -29,6 +33,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import java.util.Collections;
 
@@ -127,27 +135,21 @@ public class ObjectFieldUpgradeProcessTest {
 			EntityCacheUtil.clearCache();
 		}
 
-		Assert.assertNotNull(
-			_objectFieldLocalService.getObjectField(
-				modifiableSystemObjectDefinition.getObjectDefinitionId(),
-				"displayDate"));
-		Assert.assertNotNull(
-			_objectFieldLocalService.getObjectField(
-				modifiableSystemObjectDefinition.getObjectDefinitionId(),
-				"expirationDate"));
-		Assert.assertNotNull(
-			_objectFieldLocalService.getObjectField(
-				modifiableSystemObjectDefinition.getObjectDefinitionId(),
-				"reviewDate"));
-		Assert.assertNotNull(
-			_objectFieldLocalService.getObjectField(
-				objectDefinition.getObjectDefinitionId(), "displayDate"));
-		Assert.assertNotNull(
-			_objectFieldLocalService.getObjectField(
-				objectDefinition.getObjectDefinitionId(), "expirationDate"));
-		Assert.assertNotNull(
-			_objectFieldLocalService.getObjectField(
-				objectDefinition.getObjectDefinitionId(), "reviewDate"));
+		_assertObjectField(
+			modifiableSystemObjectDefinition.getObjectDefinitionId(),
+			"displayDate");
+		_assertObjectField(
+			modifiableSystemObjectDefinition.getObjectDefinitionId(),
+			"expirationDate");
+		_assertObjectField(
+			modifiableSystemObjectDefinition.getObjectDefinitionId(),
+			"reviewDate");
+		_assertObjectField(
+			objectDefinition.getObjectDefinitionId(), "displayDate");
+		_assertObjectField(
+			objectDefinition.getObjectDefinitionId(), "expirationDate");
+		_assertObjectField(
+			objectDefinition.getObjectDefinitionId(), "reviewDate");
 		Assert.assertNull(
 			_objectFieldLocalService.fetchObjectField(
 				userObjectDefinition.getObjectDefinitionId(), "displayDate"));
@@ -158,6 +160,48 @@ public class ObjectFieldUpgradeProcessTest {
 		Assert.assertNull(
 			_objectFieldLocalService.fetchObjectField(
 				userObjectDefinition.getObjectDefinitionId(), "reviewDate"));
+	}
+
+	private void _assertObjectField(long objectDefinitionId, String name)
+		throws Exception {
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectDefinitionId, name);
+
+		Assert.assertEquals(
+			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
+			objectField.getBusinessType());
+		Assert.assertEquals(
+			ObjectFieldConstants.DB_TYPE_DATE_TIME, objectField.getDBType());
+		Assert.assertFalse(objectField.isIndexed());
+		Assert.assertTrue(objectField.isSystem());
+		Assert.assertEquals(
+			ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC,
+			ObjectFieldSettingUtil.getValue(
+				ObjectFieldSettingConstants.NAME_TIME_STORAGE, objectField));
+		Assert.assertEquals(
+			ObjectFieldConstants.READ_ONLY_FALSE,
+			_getColumnValue("readOnly", objectField.getObjectFieldId()));
+	}
+
+	private String _getColumnValue(String columnName, long objectFieldId)
+		throws Exception {
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select ", columnName,
+					" from ObjectField where objectFieldId = ?"))) {
+
+			preparedStatement.setLong(1, objectFieldId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+
+				return resultSet.getString(columnName);
+			}
+		}
 	}
 
 	private static final String _CLASS_NAME =
