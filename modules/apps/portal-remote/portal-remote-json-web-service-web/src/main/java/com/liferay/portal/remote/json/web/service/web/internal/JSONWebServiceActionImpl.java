@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.MethodParameter;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.remote.json.web.service.JSONWebServiceAction;
 import com.liferay.portal.typeconverter.TypeConverterUtil;
 
@@ -457,9 +458,26 @@ public class JSONWebServiceActionImpl implements JSONWebServiceAction {
 		}
 
 		for (Map.Entry<String, Object> innerParameter : innerParameters) {
+			String innerParameterKey = innerParameter.getKey();
+
+			if (Validator.isNull(innerParameterKey) ||
+				innerParameterKey.contains(StringPool.CLOSE_BRACKET) ||
+				innerParameterKey.contains(StringPool.OPEN_BRACKET) ||
+				innerParameterKey.contains(StringPool.PERIOD)) {
+
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							"Ignored inner parameter ", parameterName, ".",
+							innerParameterKey));
+				}
+
+				continue;
+			}
+
 			try {
 				BeanUtil.pojo.setProperty(
-					parameterValue, innerParameter.getKey(),
+					parameterValue, innerParameterKey,
 					innerParameter.getValue());
 			}
 			catch (Exception exception) {
@@ -467,7 +485,7 @@ public class JSONWebServiceActionImpl implements JSONWebServiceAction {
 					_log.debug(
 						StringBundler.concat(
 							"Unable to set inner parameter ", parameterName,
-							".", innerParameter.getKey()),
+							".", innerParameterKey),
 						exception);
 				}
 			}
