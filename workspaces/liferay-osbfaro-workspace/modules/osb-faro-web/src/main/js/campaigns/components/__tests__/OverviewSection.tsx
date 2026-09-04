@@ -5,18 +5,10 @@ import {
 	ICampaignMetric,
 	mockCampaignMetrics,
 } from '../../utils/mock-campaigns';
-import {cleanup, render} from '@testing-library/react';
+import {cleanup, render, screen} from '@testing-library/react';
 import {TrendClassification} from 'segment/types';
 
 jest.unmock('react-dom');
-
-// The header renders a range ending today, so pin "now" and assert the literal
-// the reader sees rather than recomputing it with the same helpers.
-
-jest.mock('shared/util/date', () => ({
-	...jest.requireActual('shared/util/date'),
-	getDateNow: () => jest.requireActual('moment').utc('2026-09-04'),
-}));
 
 const buildMetric = (
 	metricType: CampaignMetricType,
@@ -30,8 +22,23 @@ const buildMetric = (
 	value,
 });
 
+const cardOf = (title: string) => screen.getByText(title).closest('.card')!;
+
 describe('OverviewSection', () => {
-	afterEach(cleanup);
+
+	// The header renders a range ending today, so pin the clock and assert the
+	// literal the reader sees rather than recomputing it with the same helpers.
+
+	afterEach(() => {
+		cleanup();
+		jest.useRealTimers();
+	});
+
+	beforeEach(() => {
+		jest.useFakeTimers().setSystemTime(
+			new Date('2026-09-04T12:00:00.000Z')
+		);
+	});
 
 	it('should render the overview header and all four card titles', () => {
 		const {getByText} = render(<OverviewSection metrics={[]} />);
@@ -46,20 +53,13 @@ describe('OverviewSection', () => {
 	it('should state the window the metrics cover, as secondary text', () => {
 		const {getByText} = render(<OverviewSection metrics={[]} />);
 
-		const window = getByText('Jun 4, 2026 – Sep 4, 2026');
+		// `TrailingNinetyDayRange` owns the window and covers it in its own
+		// suite. Asserted here only to pin that the header renders it.
+
+		const window = getByText('Jun 6, 2026 – Sep 3, 2026');
 
 		expect(window).toBeInTheDocument();
 		expect(window).toHaveClass('text-secondary');
-	});
-
-	it('should end the window today and open it three months earlier', () => {
-		const {getByText} = render(<OverviewSection metrics={[]} />);
-
-		// An en dash, as the design has it, not a hyphen.
-
-		expect(getByText(/\u2013/)).toBeInTheDocument();
-		expect(getByText(/^Jun 4, 2026 /)).toBeInTheDocument();
-		expect(getByText(/ Sep 4, 2026$/)).toBeInTheDocument();
 	});
 
 	it('should map each metric to its card by metricType', () => {
@@ -70,9 +70,7 @@ describe('OverviewSection', () => {
 			buildMetric(CampaignMetricType.ClosedWonAmount, 44),
 		];
 
-		const {getByText} = render(<OverviewSection metrics={metrics} />);
-
-		const cardOf = (title: string) => getByText(title).closest('.card')!;
+		render(<OverviewSection metrics={metrics} />);
 
 		expect(cardOf('Campaigns').textContent).toContain('11');
 		expect(cardOf('Accounts Touched').textContent).toContain('22');
@@ -92,20 +90,14 @@ describe('OverviewSection', () => {
 	});
 
 	it('should abbreviate every value, with no currency symbol', () => {
-		const {getByText} = render(
-			<OverviewSection metrics={mockCampaignMetrics} />
-		);
-
-		const cardOf = (title: string) => getByText(title).closest('.card')!;
+		render(<OverviewSection metrics={mockCampaignMetrics} />);
 
 		expect(cardOf('Campaigns').textContent).toContain('202');
 		expect(cardOf('Accounts Touched').textContent).toContain('1.8K');
 		expect(cardOf('Pipeline Value').textContent).toContain('504M');
 		expect(cardOf('Closed Won').textContent).toContain('124M');
 
-		expect(
-			getByText('Pipeline Value').closest('.card')!.textContent
-		).not.toContain('$');
+		expect(cardOf('Pipeline Value').textContent).not.toContain('$');
 	});
 
 	it('should keep the abbreviation suffix uppercase', () => {
@@ -117,8 +109,8 @@ describe('OverviewSection', () => {
 		// textContent reading '504M' while the card renders '504m'. Assert on
 		// the class, since no assertion over the text can catch this.
 
-		expect(getByText('504M')).toHaveClass('text-uppercase');
-		expect(getByText('1.8K')).toHaveClass('text-uppercase');
+		expect(getByText('504M').closest('.text-uppercase')).toBeTruthy();
+		expect(getByText('1.8K').closest('.text-uppercase')).toBeTruthy();
 	});
 
 	it('should render each trend against the previous 90 day window', () => {

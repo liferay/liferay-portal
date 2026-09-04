@@ -196,7 +196,7 @@ export function convertMillisecondsToMonths(milliseconds) {
 
 /**
  * Formats unix timestamp to specified moment format
- * @param {number|string|Date} date
+ * @param {number|string|Date|moment.Moment} date
  * @param {string|moment.MomentBuiltinFormat} format
  * @param {string|moment.MomentBuiltinFormat} [inputFormatter]
  * @return {string} formatted date

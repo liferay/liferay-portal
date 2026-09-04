@@ -39,9 +39,16 @@ const Campaigns: React.FC = () => {
 				<SectionHeader
 					icon="megaphone"
 					rightContent={
-						<Text color="secondary" size={3}>
-							{Liferay.Language.get('all-time')}
-						</Text>
+
+						// Matches `TrailingNinetyDayRange`, which the section
+						// above renders in the same slot. The design gives both
+						// the same 16px secondary text.
+
+						<span className="mr-2">
+							<Text color="secondary" size={4}>
+								{Liferay.Language.get('all-time')}
+							</Text>
+						</span>
 					}
 					title={title}
 				/>

@@ -7,7 +7,7 @@ import ClayLink from '@clayui/link';
 import {ClayButtonWithIcon} from '@clayui/button';
 import FilterPicker from '../components/FilterPicker';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
-import LifecycleDateRangeIndicator from '../components/LifecycleDateRangeIndicator';
+import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
 import Loading from 'shared/components/Loading';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import OverviewSection from '../components/OverviewSection';
@@ -407,7 +407,7 @@ const BaseLifecycle = () => {
 								/>
 							</div>
 
-							<LifecycleDateRangeIndicator />
+							<TrailingNinetyDayRange />
 						</div>
 					</BasePage.SubHeader>
 				)}
