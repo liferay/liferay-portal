@@ -64,6 +64,7 @@ import com.liferay.portal.kernel.spring.aop.Retry;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -1808,6 +1809,10 @@ public class ResourcePermissionLocalServiceImpl
 			long companyId, String name, int scope, String primKey,
 			long ownerId, Map<Long, String[]> roleIdsToActionIds)
 		throws PortalException {
+
+		if (MapUtil.isEmpty(roleIdsToActionIds)) {
+			return;
+		}
 
 		boolean flushResourcePermissionEnabled =
 			PermissionThreadLocal.isFlushResourcePermissionEnabled(
