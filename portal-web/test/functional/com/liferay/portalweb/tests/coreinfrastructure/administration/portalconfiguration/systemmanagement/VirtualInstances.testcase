@@ -48,6 +48,7 @@ definition {
 	@description = "This automates LPS-157752. It asserts that email settings can be configured in a Virtual Instance."
 	@priority = 4
 	test CanConfigureEmailSettingsInVirtualInstance {
+		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "sequential";
 
@@ -188,6 +189,7 @@ definition {
 	@description = "Verify the default company can be set to a virtual instance via property."
 	@priority = 3
 	test ChangeDefaultCompanyToDifferentInstance {
+		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -317,6 +319,7 @@ definition {
 
 	@priority = 4
 	test PermissionCheckPortalInstances {
+		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "sequential";
 
@@ -372,6 +375,7 @@ definition {
 
 	@priority = 5
 	test ViewDeactivatedPortalInstance {
+		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
