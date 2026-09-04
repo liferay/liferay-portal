@@ -61,7 +61,7 @@ public class ChangesetEntryIndexedColumnSizeUpgradeProcessTest
 
 	@Override
 	protected String getUpgradeProcessClassName() {
-		return "com.liferay.changeset.internal.upgrade.v2_2_0." +
+		return "com.liferay.changeset.internal.upgrade.v3_0_0." +
 			"ChangesetEntryIndexedColumnSizeUpgradeProcess";
 	}
 
