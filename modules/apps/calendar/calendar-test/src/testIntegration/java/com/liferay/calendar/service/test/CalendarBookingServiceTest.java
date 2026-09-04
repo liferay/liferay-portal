@@ -75,6 +75,30 @@ public class CalendarBookingServiceTest {
 	}
 
 	@Test
+	public void testGetCalendarBookingsWithEmptyStatuses() throws Exception {
+		ServiceContext serviceContext = createServiceContext();
+
+		Calendar calendar = CalendarTestUtil.addCalendar(
+			_user1, serviceContext);
+
+		CalendarBookingTestUtil.addRegularCalendarBooking(
+			_user1, calendar, serviceContext);
+
+		List<CalendarBooking> calendarBookings =
+			_calendarBookingService.getCalendarBookings(
+				calendar.getCalendarId(), new int[0]);
+
+		Assert.assertTrue(
+			calendarBookings.toString(), calendarBookings.isEmpty());
+
+		calendarBookings = _calendarBookingLocalService.getCalendarBookings(
+			calendar.getCalendarId(), new int[0]);
+
+		Assert.assertTrue(
+			calendarBookings.toString(), calendarBookings.isEmpty());
+	}
+
+	@Test
 	public void testGetUnapprovedCalendarBookingsForOmniadmin()
 		throws Exception {
 
