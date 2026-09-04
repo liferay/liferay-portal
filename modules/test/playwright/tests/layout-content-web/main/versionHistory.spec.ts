@@ -4,6 +4,7 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -23,10 +24,18 @@ const test = mergeTests(
 );
 
 test(
-	'Previews each version with its own content, experiences and languages',
-	{tag: '@LPD-103548'},
+	'Previews each version with its own content, experiences, languages and a shared custom page set logo',
+	{tag: ['@LPD-103548', '@LPD-103846']},
 	async ({apiHelpers, pageEditorPage, site, versionHistoryPage}) => {
 		const experience = getRandomString();
+
+		// Set a page set logo before publishing so every version and the
+		// current page preview resolve it
+
+		await apiHelpers.jsonWebServicesLayoutSet.updateLogo({
+			filePath: path.join(__dirname, 'dependencies/liferay.png'),
+			groupId: String(site.id),
+		});
 
 		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: String(site.id),
@@ -96,6 +105,19 @@ test(
 			versionHistoryPage.preview.getByText('Draft heading')
 		).toBeVisible();
 
+		// The current page preview resolves the page set logo, not the default
+		// one
+
+		await expect(
+			versionHistoryPage.preview
+				.locator('img[src*="layout_set_logo"]')
+				.first()
+		).toBeAttached();
+
+		await expect(
+			versionHistoryPage.preview.locator('img[src*="company_logo"]')
+		).toHaveCount(0);
+
 		// The first version only had the Button
 
 		await versionHistoryPage.selectVersion('Version 1');
@@ -115,6 +137,18 @@ test(
 		await expect(
 			versionHistoryPage.preview.getByText('English heading')
 		).toBeVisible();
+
+		// The version preview resolves the page set logo too
+
+		await expect(
+			versionHistoryPage.preview
+				.locator('img[src*="layout_set_logo"]')
+				.first()
+		).toBeAttached();
+
+		await expect(
+			versionHistoryPage.preview.locator('img[src*="company_logo"]')
+		).toHaveCount(0);
 
 		// The third version offers the experience and the translation
 
