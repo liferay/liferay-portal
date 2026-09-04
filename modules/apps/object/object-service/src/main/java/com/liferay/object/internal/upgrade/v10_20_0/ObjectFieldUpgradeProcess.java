@@ -157,7 +157,7 @@ public class ObjectFieldUpgradeProcess extends UpgradeProcess {
 				"Label"));
 		preparedStatement2.setBoolean(20, false);
 		preparedStatement2.setString(21, name);
-		preparedStatement2.setBoolean(22, true);
+		preparedStatement2.setString(22, ObjectFieldConstants.READ_ONLY_FALSE);
 		preparedStatement2.setString(23, null);
 		preparedStatement2.setString(24, null);
 		preparedStatement2.setBoolean(25, false);
