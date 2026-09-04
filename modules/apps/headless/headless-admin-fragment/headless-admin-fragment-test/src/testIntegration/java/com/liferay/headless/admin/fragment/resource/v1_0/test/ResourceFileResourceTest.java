@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -185,6 +184,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testGetSiteResourceFileGuest();
 		_testGetSiteResourceFileNonexistentProblemException();
 		_testGetSiteResourceFilePortletFileProblemException();
+		_testGetSiteResourceFilePortletFileWithFragmentSetKeyNameProblemException();
 		_testGetSiteResourceFileResourceFolder();
 		_testGetSiteResourceFileWithoutPermissionsProblemException();
 	}
@@ -431,29 +431,67 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	}
 
 	private FileEntry _addPortletFileEntry() throws Exception {
-		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
-			testGroup.getGroupId(), RandomTestUtil.randomString(),
-			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+		Repository repository = _addPortletRepository();
+
+		return _addPortletFileEntry(repository.getDlFolderId(), repository);
+	}
+
+	private FileEntry _addPortletFileEntry(long folderId, Repository repository)
+		throws Exception {
 
 		return PortletFileRepositoryUtil.addPortletFileEntry(
 			testGroup.getGroupId(), TestPropsValues.getUserId(), null, 0,
-			repository.getPortletId(), repository.getDlFolderId(),
-			RandomTestUtil.randomBytes(), RandomTestUtil.randomString(),
+			repository.getPortletId(), folderId, RandomTestUtil.randomBytes(),
+			RandomTestUtil.randomString(),
 			ContentTypes.APPLICATION_OCTET_STREAM, false);
 	}
 
-	private Folder _addPortletFolder() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
+	private FileEntry _addPortletFileEntry(String folderName) throws Exception {
+		Repository repository = _addPortletRepository();
 
-		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
-			testGroup.getGroupId(), RandomTestUtil.randomString(),
-			serviceContext);
+		Folder folder = _addPortletFolder(
+			folderName, repository.getDlFolderId(), repository);
+
+		return _addPortletFileEntry(folder.getFolderId(), repository);
+	}
+
+	private FileEntry _addPortletFileEntry(
+			String folderName, String subfolderName)
+		throws Exception {
+
+		Repository repository = _addPortletRepository();
+
+		Folder folder = _addPortletFolder(
+			folderName, repository.getDlFolderId(), repository);
+
+		Folder subfolder = _addPortletFolder(
+			subfolderName, folder.getFolderId(), repository);
+
+		return _addPortletFileEntry(subfolder.getFolderId(), repository);
+	}
+
+	private Folder _addPortletFolder() throws Exception {
+		Repository repository = _addPortletRepository();
+
+		return _addPortletFolder(
+			RandomTestUtil.randomString(), repository.getDlFolderId(),
+			repository);
+	}
+
+	private Folder _addPortletFolder(
+			String name, long parentFolderId, Repository repository)
+		throws Exception {
 
 		return PortletFileRepositoryUtil.addPortletFolder(
 			TestPropsValues.getUserId(), repository.getRepositoryId(),
-			repository.getDlFolderId(), RandomTestUtil.randomString(),
-			serviceContext);
+			parentFolderId, name,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+	}
+
+	private Repository _addPortletRepository() throws Exception {
+		return PortletFileRepositoryUtil.addPortletRepository(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 	}
 
 	private void _assertContent(
@@ -1077,6 +1115,32 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 		}
+	}
+
+	private void _testGetSiteResourceFilePortletFileWithFragmentSetKeyNameProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		FileEntry folderFileEntry = _addPortletFileEntry(
+			fragmentCollection.getFragmentCollectionKey());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFileResource.getSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				folderFileEntry.getExternalReferenceCode()));
+
+		FileEntry subfolderFileEntry = _addPortletFileEntry(
+			fragmentCollection.getFragmentCollectionKey(),
+			fragmentCollection.getFragmentCollectionKey());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFileResource.getSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				subfolderFileEntry.getExternalReferenceCode()));
 	}
 
 	private void _testGetSiteResourceFileResourceFolder() throws Exception {
