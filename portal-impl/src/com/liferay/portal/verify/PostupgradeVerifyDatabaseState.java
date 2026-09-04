@@ -20,7 +20,8 @@ import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ReleaseLocalServiceUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 
 import java.util.ArrayList;
@@ -213,23 +214,18 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		Map<String, List<String>> messagesMap, Collection<String> names,
 		String prefix, Map<String, String> servletContextNames) {
 
-		Map<String, Set<String>> namesMap = new TreeMap<>();
+		Map<String, List<String>> namesMap = MapUtil.toPartitionMap(
+			ListUtil.fromCollection(names),
+			name -> servletContextNames.getOrDefault(name, StringPool.BLANK));
 
-		for (String name : names) {
-			namesMap.computeIfAbsent(
-				GetterUtil.getString(servletContextNames.get(name)),
-				servletContextName -> new TreeSet<>()
-			).add(
-				name
-			);
-		}
+		for (Map.Entry<String, List<String>> entry : namesMap.entrySet()) {
+			String servletContextName = entry.getKey();
 
-		for (Map.Entry<String, Set<String>> entry : namesMap.entrySet()) {
-			messagesMap.computeIfAbsent(
-				entry.getKey(), servletContextName -> new ArrayList<>()
-			).add(
-				_getMessage(entry.getValue(), prefix, entry.getKey())
-			);
+			List<String> messages = messagesMap.computeIfAbsent(
+				servletContextName, key -> new ArrayList<>());
+
+			messages.add(
+				_getMessage(entry.getValue(), prefix, servletContextName));
 		}
 	}
 
@@ -245,7 +241,7 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 	}
 
 	private String _getMessage(
-		Set<String> names, String prefix, String servletContextName) {
+		Collection<String> names, String prefix, String servletContextName) {
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			prefix = StringBundler.concat(
@@ -258,8 +254,12 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 				prefix, " in module ", servletContextName);
 		}
 
+		Set<String> sortedNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
+		sortedNames.addAll(names);
+
 		return StringBundler.concat(
-			prefix, StringPool.COLON, StringPool.SPACE, names);
+			prefix, StringPool.COLON, StringPool.SPACE, sortedNames);
 	}
 
 	private String _getReleaseStateLabel(int state) {
