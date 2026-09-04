@@ -1,5 +1,6 @@
 import * as API from 'shared/api';
 import Card from 'shared/components/Card';
+import Loading from 'shared/components/Loading';
 import React from 'react';
 import {
 	columns,
@@ -62,15 +63,16 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	segmentName,
 	stageSelectionNonce,
 }) => {
-	const {data: lifecycleStageFieldValues} = useRequest({
-		dataSourceFn: API.accounts.fetchLifecycleStageFieldValues,
-		skipRequest: !accountLifecycleId,
-		variables: {
-			accountLifecycleId,
-			channelId,
-			groupId,
-		},
-	});
+	const {data: lifecycleStageFieldValues, loading: lifecycleStagesLoading} =
+		useRequest({
+			dataSourceFn: API.accounts.fetchLifecycleStageFieldValues,
+			skipRequest: !accountLifecycleId,
+			variables: {
+				accountLifecycleId,
+				channelId,
+				groupId,
+			},
+		});
 
 	const lifecycleStages: ILifecycleStageFieldValue[] =
 		lifecycleStageFieldValues?.items ?? [];
@@ -89,6 +91,18 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 				({stageType}) => stageType === lifecycleStageFilter
 			)
 		: undefined;
+
+	// The data set reads `filters` only when its reducer is initialized on
+	// mount, so hold it back until the lifecycle stage values are in. Mounting
+	// early and remounting once they arrive is what made the table flash.
+
+	if (accountLifecycleId && lifecycleStagesLoading) {
+		return (
+			<Card minHeight={300}>
+				<Loading />
+			</Card>
+		);
+	}
 
 	return (
 		<Card minHeight={300}>
@@ -212,7 +226,6 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 					lifecycleStageFilter,
 					segmentFilter,
 					stageSelectionNonce,
-					lifecycleStages.length,
 				].join()}
 				pagination={pagination}
 				showPagination

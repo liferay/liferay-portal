@@ -97,6 +97,10 @@ const mockStages = (items: typeof DEFAULT_STAGE_ITEMS | undefined) => {
 	});
 };
 
+const mockStagesLoading = () => {
+	mockedUseRequest.mockReturnValue({data: undefined, loading: true});
+};
+
 type FakeFilter = {
 	apiURL?: string;
 	id: string;
@@ -527,6 +531,47 @@ describe('AccountsDataSet', () => {
 		);
 
 		expect(mountCount).toBe(2);
+	});
+
+	it('should mount the FrontendDataSet only once, once the lifecycle stages have arrived', () => {
+		mockStagesLoading();
+
+		const {rerender} = render(
+			<AccountsDataSet
+				accountLifecycleId="al-1"
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+			/>
+		);
+
+		expect(screen.queryByTestId('fds-component')).toBeNull();
+		expect(mountCount).toBe(0);
+
+		mockStages(DEFAULT_STAGE_ITEMS);
+
+		rerender(
+			<AccountsDataSet
+				accountLifecycleId="al-1"
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+			/>
+		);
+
+		expect(screen.getByTestId('fds-component')).toBeInTheDocument();
+		expect(mountCount).toBe(1);
+	});
+
+	it('should mount the FrontendDataSet right away when accountLifecycleId is not provided, since the stages request is skipped', () => {
+		mockStagesLoading();
+
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		expect(screen.getByTestId('fds-component')).toBeInTheDocument();
+		expect(mountCount).toBe(1);
 	});
 
 	describe('when fieldCatalog is not provided', () => {
