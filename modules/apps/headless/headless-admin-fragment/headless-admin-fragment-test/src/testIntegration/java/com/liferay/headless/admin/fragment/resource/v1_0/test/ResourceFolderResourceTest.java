@@ -125,6 +125,7 @@ public class ResourceFolderResourceTest
 		_testGetSiteResourceFolderFragmentSet();
 		_testGetSiteResourceFolderParentResourceFolder();
 		_testGetSiteResourceFolderPortletFolderProblemException();
+		_testGetSiteResourceFolderPortletFolderWithFragmentSetKeyNameProblemException();
 		_testGetSiteResourceFolderResourceFolderNonexistentProblemException();
 		_testGetSiteResourceFolderWithoutPermissionsProblemException();
 	}
@@ -336,6 +337,10 @@ public class ResourceFolderResourceTest
 	}
 
 	private Folder _addPortletFolder() throws Exception {
+		return _addPortletFolder(RandomTestUtil.randomString());
+	}
+
+	private Folder _addPortletFolder(String name) throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
 
@@ -345,8 +350,7 @@ public class ResourceFolderResourceTest
 
 		return PortletFileRepositoryUtil.addPortletFolder(
 			TestPropsValues.getUserId(), repository.getRepositoryId(),
-			repository.getDlFolderId(), RandomTestUtil.randomString(),
-			serviceContext);
+			repository.getDlFolderId(), name, serviceContext);
 	}
 
 	private void _assertNotContains(
@@ -817,6 +821,22 @@ public class ResourceFolderResourceTest
 
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 		}
+	}
+
+	private void _testGetSiteResourceFolderPortletFolderWithFragmentSetKeyNameProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		Folder folder = _addPortletFolder(
+			fragmentCollection.getFragmentCollectionKey());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFolderResource.getSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				folder.getExternalReferenceCode()));
 	}
 
 	private void _testGetSiteResourceFolderResourceFolderNonexistentProblemException()
