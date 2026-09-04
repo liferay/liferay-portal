@@ -74,7 +74,8 @@ public class PostupgradeVerifyDatabaseStateTest
 
 			String message = _getMessage(logCapture, tableName);
 
-			Assert.assertTrue(message, message.contains("Custom tables"));
+			Assert.assertTrue(
+				message, message.contains("Custom or untracked tables"));
 		}
 		finally {
 			_dropTable(tableName);
@@ -220,7 +221,8 @@ public class PostupgradeVerifyDatabaseStateTest
 						getNormalizedName(_VIEW_NAME)),
 					_getMessage(logCapture, "Missing views were detected"));
 
-				String message = _getMessage(logCapture, "Custom views");
+				String message = _getMessage(
+					logCapture, "Custom or untracked views");
 
 				Assert.assertTrue(message, message.contains(staleViewName));
 			}
