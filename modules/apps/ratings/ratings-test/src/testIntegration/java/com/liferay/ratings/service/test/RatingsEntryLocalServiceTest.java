@@ -18,6 +18,8 @@ import com.liferay.ratings.kernel.exception.EntryScoreException;
 import com.liferay.ratings.kernel.model.RatingsEntry;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalServiceUtil;
 
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -39,6 +41,21 @@ public class RatingsEntryLocalServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@Test
+	public void testGetEntriesWithEmptyClassPKs() throws Exception {
+		String className = RandomTestUtil.randomString();
+
+		RatingsEntryLocalServiceUtil.updateEntry(
+			TestPropsValues.getUserId(), className, RandomTestUtil.randomLong(),
+			1, ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Map<Long, RatingsEntry> ratingsEntries =
+			RatingsEntryLocalServiceUtil.getEntries(
+				TestPropsValues.getUserId(), className, new long[0]);
+
+		Assert.assertTrue(ratingsEntries.toString(), ratingsEntries.isEmpty());
 	}
 
 	@Test
