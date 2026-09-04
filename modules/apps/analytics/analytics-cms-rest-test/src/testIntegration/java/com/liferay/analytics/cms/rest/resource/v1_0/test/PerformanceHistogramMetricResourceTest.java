@@ -14,6 +14,7 @@ import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -68,6 +69,8 @@ public class PerformanceHistogramMetricResourceTest
 		_testGetPerformanceHistogramMetric();
 		_testGetPerformanceHistogramMetricWithAnalyticsCloudNotConnected();
 		_testGetPerformanceHistogramMetricWithDepotEntryMemberUser();
+		_testGetPerformanceHistogramMetricWithInvisibleCMPProjectIds();
+		_testGetPerformanceHistogramMetricWithVisibleCMPProjectIds();
 	}
 
 	private void _addDepotEntry() throws Exception {
@@ -123,6 +126,7 @@ public class PerformanceHistogramMetricResourceTest
 			PerformanceHistogramMetric performanceHistogramMetric =
 				performanceHistogramMetricResource.
 					getPerformanceHistogramMetric(
+						null,
 						TransformUtil.transformToArray(
 							_depotEntries, DepotEntry::getDepotEntryId,
 							Long.class),
@@ -164,6 +168,7 @@ public class PerformanceHistogramMetricResourceTest
 				HttpURLConnection.HTTP_FORBIDDEN,
 				performanceHistogramMetricResource.
 					getPerformanceHistogramMetricHttpResponse(
+						null,
 						TransformUtil.transformToArray(
 							_depotEntries, DepotEntry::getDepotEntryId,
 							Long.class),
@@ -201,7 +206,8 @@ public class PerformanceHistogramMetricResourceTest
 						depotEntryIds ->
 							performanceHistogramMetricResource.
 								getPerformanceHistogramMetric(
-									depotEntryIds, RandomTestUtil.nextInt(),
+									null, depotEntryIds,
+									RandomTestUtil.nextInt(),
 									"downloadsMetric"));
 					DepotEntryTestUtil.assertNoRequest(
 						analyticsCloudHttpServer,
@@ -209,7 +215,8 @@ public class PerformanceHistogramMetricResourceTest
 						depotEntryIds ->
 							performanceHistogramMetricResource.
 								getPerformanceHistogramMetric(
-									depotEntryIds, RandomTestUtil.nextInt(),
+									null, depotEntryIds,
+									RandomTestUtil.nextInt(),
 									"downloadsMetric"));
 					DepotEntryTestUtil.assertNoRequest(
 						analyticsCloudHttpServer,
@@ -217,13 +224,116 @@ public class PerformanceHistogramMetricResourceTest
 						depotEntryIds ->
 							performanceHistogramMetricResource.
 								getPerformanceHistogramMetric(
-									depotEntryIds, RandomTestUtil.nextInt(),
+									null, depotEntryIds,
+									RandomTestUtil.nextInt(),
 									"downloadsMetric"));
 
 					return null;
 				});
 		}
 	}
+
+	private void _testGetPerformanceHistogramMetricWithInvisibleCMPProjectIds()
+		throws Exception {
+
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/objectEntry" +
+						"/performance-overview-metric/histogram",
+					() -> "{}");
+
+			AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
+
+			performanceHistogramMetricResource.getPerformanceHistogramMetric(
+				new Long[] {RandomTestUtil.randomLong()},
+				TransformUtil.transformToArray(
+					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+				RandomTestUtil.nextInt(), "viewsMetric");
+
+			Assert.assertNull(analyticsCloudHttpServer.getLocation());
+		}
+	}
+
+	private void _testGetPerformanceHistogramMetricWithVisibleCMPProjectIds()
+		throws Exception {
+
+		ObjectEntry objectEntry = DepotEntryTestUtil.addCMPProjectObjectEntry(
+			_cmpProjectDepotEntries, testGroup.getGroupId());
+
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/objectEntry" +
+						"/performance-overview-metric/histogram",
+					() -> JSONUtil.put(
+						"histograms",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"metricName", "viewsMetric"
+							).put(
+								"metrics",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"previousValue", 2.0
+									).put(
+										"previousValueKey", "2025-07-17T00:00"
+									).put(
+										"value", 1.0
+									).put(
+										"valueKey", "2025-07-24T00:00"
+									))
+							).put(
+								"total", 7.0
+							).put(
+								"totalValue", 6.0
+							))
+					).toString());
+
+			AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
+
+			PerformanceHistogramMetric performanceHistogramMetric =
+				performanceHistogramMetricResource.
+					getPerformanceHistogramMetric(
+						new Long[] {objectEntry.getObjectEntryId()},
+						TransformUtil.transformToArray(
+							_depotEntries, DepotEntry::getDepotEntryId,
+							Long.class),
+						RandomTestUtil.nextInt(), "viewsMetric");
+
+			Histogram[] histograms = performanceHistogramMetric.getHistograms();
+
+			Assert.assertEquals(
+				Arrays.toString(histograms), 1, histograms.length);
+
+			Histogram histogram = histograms[0];
+
+			Assert.assertEquals("viewsMetric", histogram.getMetricName());
+			Assert.assertEquals(7, histogram.getTotal(), 0);
+			Assert.assertEquals(6, histogram.getTotalValue(), 0);
+
+			Metric[] metrics = histogram.getMetrics();
+
+			Assert.assertEquals(Arrays.toString(metrics), 1, metrics.length);
+
+			Assert.assertEquals(1, metrics[0].getValue(), 0);
+			Assert.assertEquals("2025-07-24T00:00", metrics[0].getValueKey());
+
+			DepotEntryTestUtil.assertCMPProjectId(
+				objectEntry, analyticsCloudHttpServer.getLocation());
+		}
+	}
+
+	@DeleteAfterTestRun
+	private final List<DepotEntry> _cmpProjectDepotEntries = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();

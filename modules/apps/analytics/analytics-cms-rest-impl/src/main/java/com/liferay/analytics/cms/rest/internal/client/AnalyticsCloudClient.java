@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -74,9 +75,10 @@ public class AnalyticsCloudClient {
 	}
 
 	public InputStream getInputStream(
-			AnalyticsConfiguration analyticsConfiguration, String filterString,
-			List<Long> groupIds, String keywords, String metricType,
-			String path, Integer rangeKey, Sort[] sorts)
+			AnalyticsConfiguration analyticsConfiguration,
+			List<Long> cmpProjectIds, String filterString, List<Long> groupIds,
+			String keywords, String metricType, String path, Integer rangeKey,
+			Sort[] sorts)
 		throws PortalException {
 
 		try {
@@ -86,8 +88,9 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
-					null, analyticsConfiguration.liferayAnalyticsDataSourceId(),
-					null, filterString, null, groupIds, keywords,
+					null, cmpProjectIds,
+					analyticsConfiguration.liferayAnalyticsDataSourceId(), null,
+					filterString, null, groupIds, keywords,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
 					metricType, null, null, path, rangeKey, null, null, sorts,
 					null, null));
@@ -137,7 +140,7 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
-					analyticsConfiguration.liferayAnalyticsDataSourceId(),
+					null, analyticsConfiguration.liferayAnalyticsDataSourceId(),
 					externalReferenceCode, groupIds,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
 					"/acquisition-channels", rangeKey, null));
@@ -198,7 +201,7 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
-					analyticsConfiguration.liferayAnalyticsDataSourceId(),
+					null, analyticsConfiguration.liferayAnalyticsDataSourceId(),
 					externalReferenceCode, groupIds,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
 					"/overview/histogram", rangeKey, selectedMetrics));
@@ -262,7 +265,7 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
-					analyticsConfiguration.liferayAnalyticsDataSourceId(),
+					null, analyticsConfiguration.liferayAnalyticsDataSourceId(),
 					externalReferenceCode, groupIds,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
 					"/overview", rangeKey, selectedMetrics));
@@ -325,7 +328,7 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
-					analyticsConfiguration.liferayAnalyticsDataSourceId(),
+					null, analyticsConfiguration.liferayAnalyticsDataSourceId(),
 					externalReferenceCode, groupIds,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
 					"/appears-on", rangeKey, null));
@@ -374,9 +377,9 @@ public class AnalyticsCloudClient {
 
 	public PerformanceAssetConsumption getPerformanceAssetConsumption(
 			AnalyticsConfiguration analyticsConfiguration, Long categoryId,
-			String groupBy, List<Long> groupIds, Locale locale,
-			String metricType, String objectType, int page, Integer rangeKey,
-			int size, Long tagId, Long vocabularyId)
+			List<Long> cmpProjectIds, String groupBy, List<Long> groupIds,
+			Locale locale, String metricType, String objectType, int page,
+			Integer rangeKey, int size, Long tagId, Long vocabularyId)
 		throws PortalException {
 
 		try {
@@ -384,7 +387,7 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
-					categoryId,
+					categoryId, cmpProjectIds,
 					analyticsConfiguration.liferayAnalyticsDataSourceId(), null,
 					null, groupBy, groupIds, null,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
@@ -443,8 +446,9 @@ public class AnalyticsCloudClient {
 	}
 
 	public PerformanceHistogramMetric getPerformanceHistogramMetric(
-			AnalyticsConfiguration analyticsConfiguration, List<Long> groupIds,
-			Integer rangeKey, String selectedMetric)
+			AnalyticsConfiguration analyticsConfiguration,
+			List<Long> cmpProjectIds, List<Long> groupIds, Integer rangeKey,
+			String selectedMetric)
 		throws Exception {
 
 		try {
@@ -452,6 +456,7 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
+					cmpProjectIds,
 					analyticsConfiguration.liferayAnalyticsDataSourceId(), null,
 					groupIds,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
@@ -501,8 +506,9 @@ public class AnalyticsCloudClient {
 	}
 
 	public PerformanceMetric getPerformanceMetric(
-			AnalyticsConfiguration analyticsConfiguration, List<Long> groupIds,
-			String metricType, String path, Integer rangeKey)
+			AnalyticsConfiguration analyticsConfiguration,
+			List<Long> cmpProjectIds, List<Long> groupIds, String metricType,
+			String path, Integer rangeKey)
 		throws Exception {
 
 		try {
@@ -510,6 +516,7 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
+					cmpProjectIds,
 					analyticsConfiguration.liferayAnalyticsDataSourceId(),
 					groupIds,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
@@ -570,8 +577,8 @@ public class AnalyticsCloudClient {
 	}
 
 	public PerformanceOverviewMetric getPerformanceOverviewMetric(
-			AnalyticsConfiguration analyticsConfiguration, List<Long> groupIds,
-			Integer rangeKey)
+			AnalyticsConfiguration analyticsConfiguration,
+			List<Long> cmpProjectIds, List<Long> groupIds, Integer rangeKey)
 		throws Exception {
 
 		try {
@@ -579,6 +586,7 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
+					cmpProjectIds,
 					analyticsConfiguration.liferayAnalyticsDataSourceId(), null,
 					groupIds,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
@@ -640,8 +648,9 @@ public class AnalyticsCloudClient {
 
 			options.setLocation(
 				_getLocation(
-					null, analyticsConfiguration.liferayAnalyticsDataSourceId(),
-					null, filterString, null, groupIds, keywords,
+					null, null,
+					analyticsConfiguration.liferayAnalyticsDataSourceId(), null,
+					filterString, null, groupIds, keywords,
 					analyticsConfiguration.liferayAnalyticsFaroBackendURL(),
 					null, null, pagination.getPage() - 1, "/summaries",
 					rangeKey, null, pagination.getPageSize(), sorts, null,
@@ -709,12 +718,36 @@ public class AnalyticsCloudClient {
 	}
 
 	private String _getLocation(
-		Long categoryId, String dataSourceId, String externalReferenceCode,
-		String filterString, String groupBy, List<Long> groupIds,
-		String keywords, String liferayAnalyticsFaroBackendURL,
-		String metricType, String objectType, Integer page, String path,
-		Integer rangeKey, String[] selectedMetrics, Integer size, Sort[] sorts,
-		Long tagId, Long vocabularyId) {
+		List<Long> cmpProjectIds, String dataSourceId, List<Long> groupIds,
+		String liferayAnalyticsFaroBackendURL, String metricType, String path,
+		Integer rangeKey) {
+
+		return _getLocation(
+			null, cmpProjectIds, dataSourceId, null, null, null, groupIds, null,
+			liferayAnalyticsFaroBackendURL, metricType, null, null, path,
+			rangeKey, null, null, null, null, null);
+	}
+
+	private String _getLocation(
+		List<Long> cmpProjectIds, String dataSourceId,
+		String externalReferenceCode, List<Long> groupIds,
+		String liferayAnalyticsFaroBackendURL, String path, Integer rangeKey,
+		String[] selectedMetrics) {
+
+		return _getLocation(
+			null, cmpProjectIds, dataSourceId, externalReferenceCode, null,
+			null, groupIds, null, liferayAnalyticsFaroBackendURL, null, null,
+			null, path, rangeKey, selectedMetrics, null, null, null, null);
+	}
+
+	private String _getLocation(
+		Long categoryId, List<Long> cmpProjectIds, String dataSourceId,
+		String externalReferenceCode, String filterString, String groupBy,
+		List<Long> groupIds, String keywords,
+		String liferayAnalyticsFaroBackendURL, String metricType,
+		String objectType, Integer page, String path, Integer rangeKey,
+		String[] selectedMetrics, Integer size, Sort[] sorts, Long tagId,
+		Long vocabularyId) {
 
 		String location = String.join(
 			StringPool.BLANK, liferayAnalyticsFaroBackendURL,
@@ -723,6 +756,12 @@ public class AnalyticsCloudClient {
 		if (categoryId != null) {
 			location = HttpComponentsUtil.addParameter(
 				location, "categoryId", categoryId);
+		}
+
+		if (ListUtil.isNotEmpty(cmpProjectIds)) {
+			location = HttpComponentsUtil.addParameter(
+				location, "cmpProjectIds",
+				StringUtil.merge(cmpProjectIds, StringPool.COMMA));
 		}
 
 		if (Validator.isNotNull(dataSourceId)) {
@@ -809,28 +848,6 @@ public class AnalyticsCloudClient {
 		}
 
 		return location;
-	}
-
-	private String _getLocation(
-		String dataSourceId, List<Long> groupIds,
-		String liferayAnalyticsFaroBackendURL, String metricType, String path,
-		Integer rangeKey) {
-
-		return _getLocation(
-			null, dataSourceId, null, null, null, groupIds, null,
-			liferayAnalyticsFaroBackendURL, metricType, null, null, path,
-			rangeKey, null, null, null, null, null);
-	}
-
-	private String _getLocation(
-		String dataSourceId, String externalReferenceCode, List<Long> groupIds,
-		String liferayAnalyticsFaroBackendURL, String path, Integer rangeKey,
-		String[] selectedMetrics) {
-
-		return _getLocation(
-			null, dataSourceId, externalReferenceCode, null, null, groupIds,
-			null, liferayAnalyticsFaroBackendURL, null, null, null, path,
-			rangeKey, selectedMetrics, null, null, null, null);
 	}
 
 	private Double _getMetricValue(JsonNode jsonNode, String metricName) {

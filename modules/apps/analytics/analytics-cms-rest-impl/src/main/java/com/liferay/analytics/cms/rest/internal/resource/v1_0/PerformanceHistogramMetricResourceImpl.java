@@ -8,6 +8,7 @@ package com.liferay.analytics.cms.rest.internal.resource.v1_0;
 import com.liferay.analytics.cms.rest.dto.v1_0.Histogram;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceHistogramMetric;
 import com.liferay.analytics.cms.rest.internal.client.AnalyticsCloudClient;
+import com.liferay.analytics.cms.rest.internal.cmp.project.util.CMPProjectUtil;
 import com.liferay.analytics.cms.rest.internal.depot.entry.util.DepotEntryUtil;
 import com.liferay.analytics.cms.rest.resource.v1_0.PerformanceHistogramMetricResource;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.Arrays;
 
@@ -36,7 +38,8 @@ public class PerformanceHistogramMetricResourceImpl
 
 	@Override
 	public PerformanceHistogramMetric getPerformanceHistogramMetric(
-			Long[] depotEntryIds, Integer rangeKey, String selectedMetric)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String selectedMetric)
 		throws Exception {
 
 		LicenseManagerUtil.checkFreeTier();
@@ -50,12 +53,14 @@ public class PerformanceHistogramMetricResourceImpl
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		if (ArrayUtil.isEmpty(groupIds)) {
-			PerformanceHistogramMetric performanceHistogramMetric =
-				new PerformanceHistogramMetric();
+			return _getEmptyPerformanceHistogramMetric();
+		}
 
-			performanceHistogramMetric.setHistograms(() -> new Histogram[0]);
+		Long[] filteredCMPProjectIds = CMPProjectUtil.getFilteredCMPProjectIds(
+			ActionKeys.VIEW_SITE_ADMINISTRATION, cmpProjectIds);
 
-			return performanceHistogramMetric;
+		if (CMPProjectUtil.hasNoVisibleCMPProjects(filteredCMPProjectIds)) {
+			return _getEmptyPerformanceHistogramMetric();
 		}
 
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
@@ -64,7 +69,17 @@ public class PerformanceHistogramMetricResourceImpl
 		return analyticsCloudClient.getPerformanceHistogramMetric(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			Arrays.asList(groupIds), rangeKey, selectedMetric);
+			ListUtil.fromArray(filteredCMPProjectIds), Arrays.asList(groupIds),
+			rangeKey, selectedMetric);
+	}
+
+	private PerformanceHistogramMetric _getEmptyPerformanceHistogramMetric() {
+		PerformanceHistogramMetric performanceHistogramMetric =
+			new PerformanceHistogramMetric();
+
+		performanceHistogramMetric.setHistograms(() -> new Histogram[0]);
+
+		return performanceHistogramMetric;
 	}
 
 	@Reference

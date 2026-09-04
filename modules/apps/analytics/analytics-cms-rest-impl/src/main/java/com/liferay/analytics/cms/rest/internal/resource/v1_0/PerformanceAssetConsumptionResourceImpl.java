@@ -8,6 +8,7 @@ package com.liferay.analytics.cms.rest.internal.resource.v1_0;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceAssetConsumption;
 import com.liferay.analytics.cms.rest.dto.v1_0.PerformanceAssetConsumptionItem;
 import com.liferay.analytics.cms.rest.internal.client.AnalyticsCloudClient;
+import com.liferay.analytics.cms.rest.internal.cmp.project.util.CMPProjectUtil;
 import com.liferay.analytics.cms.rest.internal.depot.entry.util.DepotEntryUtil;
 import com.liferay.analytics.cms.rest.resource.v1_0.PerformanceAssetConsumptionResource;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -42,9 +44,9 @@ public class PerformanceAssetConsumptionResourceImpl
 
 	@Override
 	public PerformanceAssetConsumption getPerformanceAssetConsumption(
-			Long categoryId, Long[] depotEntryIds, String groupBy,
-			Integer rangeKey, Long structureId, Long tagId, Long vocabularyId,
-			Pagination pagination)
+			Long categoryId, Long[] cmpProjectIds, Long[] depotEntryIds,
+			String groupBy, Integer rangeKey, Long structureId, Long tagId,
+			Long vocabularyId, Pagination pagination)
 		throws Exception {
 
 		LicenseManagerUtil.checkFreeTier();
@@ -60,16 +62,14 @@ public class PerformanceAssetConsumptionResourceImpl
 				contextCompany.getCompanyId(), depotEntryIds));
 
 		if (ArrayUtil.isEmpty(groupIds)) {
-			PerformanceAssetConsumption performanceAssetConsumption =
-				new PerformanceAssetConsumption();
+			return _getEmptyPerformanceAssetConsumption();
+		}
 
-			performanceAssetConsumption.setPerformanceAssetConsumptionItems(
-				() -> new PerformanceAssetConsumptionItem[0]);
-			performanceAssetConsumption.
-				setPerformanceAssetConsumptionItemsCount(() -> 0L);
-			performanceAssetConsumption.setTotalCount(() -> 0L);
+		Long[] filteredCMPProjectIds = CMPProjectUtil.getFilteredCMPProjectIds(
+			ActionKeys.VIEW_SITE_ADMINISTRATION, cmpProjectIds);
 
-			return performanceAssetConsumption;
+		if (CMPProjectUtil.hasNoVisibleCMPProjects(filteredCMPProjectIds)) {
+			return _getEmptyPerformanceAssetConsumption();
 		}
 
 		String objectType = null;
@@ -90,10 +90,23 @@ public class PerformanceAssetConsumptionResourceImpl
 		return analyticsCloudClient.getPerformanceAssetConsumption(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
-			categoryId, groupBy, Arrays.asList(groupIds),
-			contextAcceptLanguage.getPreferredLocale(), "viewsMetric",
-			objectType, pagination.getPage() - 1, rangeKey,
+			categoryId, ListUtil.fromArray(filteredCMPProjectIds), groupBy,
+			Arrays.asList(groupIds), contextAcceptLanguage.getPreferredLocale(),
+			"viewsMetric", objectType, pagination.getPage() - 1, rangeKey,
 			pagination.getPageSize(), tagId, vocabularyId);
+	}
+
+	private PerformanceAssetConsumption _getEmptyPerformanceAssetConsumption() {
+		PerformanceAssetConsumption performanceAssetConsumption =
+			new PerformanceAssetConsumption();
+
+		performanceAssetConsumption.setPerformanceAssetConsumptionItems(
+			() -> new PerformanceAssetConsumptionItem[0]);
+		performanceAssetConsumption.setPerformanceAssetConsumptionItemsCount(
+			() -> 0L);
+		performanceAssetConsumption.setTotalCount(() -> 0L);
+
+		return performanceAssetConsumption;
 	}
 
 	private void _validateGroupBy(String groupBy) {

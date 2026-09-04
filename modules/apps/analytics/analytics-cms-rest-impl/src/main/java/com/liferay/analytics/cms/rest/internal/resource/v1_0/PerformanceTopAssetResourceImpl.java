@@ -85,11 +85,10 @@ public class PerformanceTopAssetResourceImpl
 				});
 		}
 
-		Long[] filteredCMPProjectIds = _getFilteredCMPProjectIds(cmpProjectIds);
+		Long[] filteredCMPProjectIds = CMPProjectUtil.getFilteredCMPProjectIds(
+			ActionKeys.VIEW_SITE_ADMINISTRATION, cmpProjectIds);
 
-		if ((filteredCMPProjectIds != null) &&
-			ArrayUtil.isEmpty(filteredCMPProjectIds)) {
-
+		if (CMPProjectUtil.hasNoVisibleCMPProjects(filteredCMPProjectIds)) {
 			return _getResponse(
 				outputStream -> {
 				});
@@ -101,6 +100,7 @@ public class PerformanceTopAssetResourceImpl
 		InputStream inputStream = analyticsCloudClient.getInputStream(
 			_analyticsSettingsManager.getAnalyticsConfiguration(
 				contextCompany.getCompanyId()),
+			null,
 			CMPProjectUtil.getFilterString(
 				filteredCMPProjectIds, _getFilterString()),
 			Arrays.asList(groupIds), search, null, "/summaries/export",
@@ -130,11 +130,10 @@ public class PerformanceTopAssetResourceImpl
 			return Page.of(Collections.emptyList(), pagination, 0);
 		}
 
-		Long[] filteredCMPProjectIds = _getFilteredCMPProjectIds(cmpProjectIds);
+		Long[] filteredCMPProjectIds = CMPProjectUtil.getFilteredCMPProjectIds(
+			ActionKeys.VIEW_SITE_ADMINISTRATION, cmpProjectIds);
 
-		if ((filteredCMPProjectIds != null) &&
-			ArrayUtil.isEmpty(filteredCMPProjectIds)) {
-
+		if (CMPProjectUtil.hasNoVisibleCMPProjects(filteredCMPProjectIds)) {
 			return Page.of(Collections.emptyList(), pagination, 0);
 		}
 
@@ -164,17 +163,6 @@ public class PerformanceTopAssetResourceImpl
 		}
 
 		return performanceTopAssetPage;
-	}
-
-	private Long[] _getFilteredCMPProjectIds(Long[] cmpProjectIds)
-		throws Exception {
-
-		if (ArrayUtil.isEmpty(cmpProjectIds)) {
-			return null;
-		}
-
-		return CMPProjectUtil.getCMPProjectIds(
-			ActionKeys.VIEW_SITE_ADMINISTRATION, cmpProjectIds);
 	}
 
 	private String _getFilterString() {

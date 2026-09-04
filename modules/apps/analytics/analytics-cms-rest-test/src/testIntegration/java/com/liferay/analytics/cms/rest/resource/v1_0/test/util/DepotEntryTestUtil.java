@@ -9,6 +9,9 @@ import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -19,10 +22,13 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
+
+import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +40,34 @@ import org.junit.Assert;
  */
 public class DepotEntryTestUtil {
 
+	public static ObjectEntry addCMPProjectObjectEntry(
+			List<DepotEntry> depotEntries, long groupId)
+		throws Exception {
+
+		DepotEntry depotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext(
+				groupId, TestPropsValues.getUserId()));
+
+		depotEntries.add(depotEntry);
+
+		return ObjectEntryTestUtil.addObjectEntry(
+			depotEntry.getGroupId(),
+			ObjectDefinitionLocalServiceUtil.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_WEB_CONTENT", depotEntry.getCompanyId()),
+			HashMapBuilder.<String, Serializable>put(
+				"title_i18n",
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build()
+			).build());
+	}
+
 	public static DepotEntry addDepotEntry(long groupId) throws Exception {
 		return DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
@@ -43,6 +77,13 @@ public class DepotEntryTestUtil {
 			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext(
 				groupId, TestPropsValues.getUserId()));
+	}
+
+	public static void assertCMPProjectId(ObjectEntry objectEntry, String url) {
+		Assert.assertEquals(
+			String.valueOf(objectEntry.getObjectEntryId()),
+			URLCodec.decodeURL(
+				HttpComponentsUtil.getParameter(url, "cmpProjectIds", false)));
 	}
 
 	public static void assertGroupIds(

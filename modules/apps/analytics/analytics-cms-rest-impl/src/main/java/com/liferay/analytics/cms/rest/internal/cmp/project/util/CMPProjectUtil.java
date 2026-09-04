@@ -29,8 +29,50 @@ import java.util.List;
  */
 public class CMPProjectUtil {
 
-	public static Long[] getCMPProjectIds(
-			String actionId, Long... cmpProjectIds)
+	public static Long[] getFilteredCMPProjectIds(
+			String actionId, Long[] cmpProjectIds)
+		throws PortalException {
+
+		if (ArrayUtil.isEmpty(cmpProjectIds)) {
+			return null;
+		}
+
+		return _getCMPProjectIds(actionId, cmpProjectIds);
+	}
+
+	public static String getFilterString(
+		Long[] cmpProjectIds, String filterString) {
+
+		if (ArrayUtil.isEmpty(cmpProjectIds)) {
+			return filterString;
+		}
+
+		String cmpProjectFilterString = StringBundler.concat(
+			"cmpProjects/id in ('", StringUtil.merge(cmpProjectIds, "', '"),
+			"')");
+
+		if (Validator.isNull(filterString)) {
+			return cmpProjectFilterString;
+		}
+
+		return StringBundler.concat(
+			"(", filterString, ") and ", cmpProjectFilterString);
+	}
+
+	public static boolean hasNoVisibleCMPProjects(
+		Long[] filteredCMPProjectIds) {
+
+		if ((filteredCMPProjectIds != null) &&
+			ArrayUtil.isEmpty(filteredCMPProjectIds)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private static Long[] _getCMPProjectIds(
+			String actionId, Long[] cmpProjectIds)
 		throws PortalException {
 
 		List<Long> filteredCMPProjectIds = new ArrayList<>();
@@ -77,25 +119,6 @@ public class CMPProjectUtil {
 		}
 
 		return filteredCMPProjectIds.toArray(new Long[0]);
-	}
-
-	public static String getFilterString(
-		Long[] cmpProjectIds, String filterString) {
-
-		if (ArrayUtil.isEmpty(cmpProjectIds)) {
-			return filterString;
-		}
-
-		String cmpProjectFilterString = StringBundler.concat(
-			"cmpProjects/id in ('", StringUtil.merge(cmpProjectIds, "', '"),
-			"')");
-
-		if (Validator.isNull(filterString)) {
-			return cmpProjectFilterString;
-		}
-
-		return StringBundler.concat(
-			"(", filterString, ") and ", cmpProjectFilterString);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(CMPProjectUtil.class);

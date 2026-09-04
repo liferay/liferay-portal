@@ -14,6 +14,7 @@ import com.liferay.analytics.test.util.AnalyticsCloudHttpServer;
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -67,6 +68,8 @@ public class PerformanceOverviewMetricResourceTest
 		_testGetPerformanceOverviewMetric();
 		_testGetPerformanceOverviewMetricWithAnalyticsCloudNotConnected();
 		_testGetPerformanceOverviewMetricWithDepotEntryMemberUser();
+		_testGetPerformanceOverviewMetricWithInvisibleCMPProjectIds();
+		_testGetPerformanceOverviewMetricWithVisibleCMPProjectIds();
 	}
 
 	private void _addDepotEntry() throws Exception {
@@ -163,6 +166,7 @@ public class PerformanceOverviewMetricResourceTest
 
 			PerformanceOverviewMetric performanceOverviewMetric =
 				performanceOverviewMetricResource.getPerformanceOverviewMetric(
+					null,
 					TransformUtil.transformToArray(
 						_depotEntries, DepotEntry::getDepotEntryId, Long.class),
 					RandomTestUtil.nextInt());
@@ -201,6 +205,7 @@ public class PerformanceOverviewMetricResourceTest
 				HttpURLConnection.HTTP_FORBIDDEN,
 				performanceOverviewMetricResource.
 					getPerformanceOverviewMetricHttpResponse(
+						null,
 						TransformUtil.transformToArray(
 							_depotEntries, DepotEntry::getDepotEntryId,
 							Long.class),
@@ -238,26 +243,108 @@ public class PerformanceOverviewMetricResourceTest
 						depotEntryIds ->
 							performanceOverviewMetricResource.
 								getPerformanceOverviewMetric(
-									depotEntryIds, RandomTestUtil.nextInt()));
+									null, depotEntryIds,
+									RandomTestUtil.nextInt()));
 					DepotEntryTestUtil.assertNoRequest(
 						analyticsCloudHttpServer,
 						new DepotEntry[] {_depotEntries.get(0)},
 						depotEntryIds ->
 							performanceOverviewMetricResource.
 								getPerformanceOverviewMetric(
-									depotEntryIds, RandomTestUtil.nextInt()));
+									null, depotEntryIds,
+									RandomTestUtil.nextInt()));
 					DepotEntryTestUtil.assertNoRequest(
 						analyticsCloudHttpServer,
 						_depotEntries.toArray(new DepotEntry[0]),
 						depotEntryIds ->
 							performanceOverviewMetricResource.
 								getPerformanceOverviewMetric(
-									depotEntryIds, RandomTestUtil.nextInt()));
+									null, depotEntryIds,
+									RandomTestUtil.nextInt()));
 
 					return null;
 				});
 		}
 	}
+
+	private void _testGetPerformanceOverviewMetricWithInvisibleCMPProjectIds()
+		throws Exception {
+
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/objectEntry" +
+						"/performance-overview-metric",
+					() -> "{}");
+
+			AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
+
+			performanceOverviewMetricResource.getPerformanceOverviewMetric(
+				new Long[] {RandomTestUtil.randomLong()},
+				TransformUtil.transformToArray(
+					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+				RandomTestUtil.nextInt());
+
+			Assert.assertNull(analyticsCloudHttpServer.getLocation());
+		}
+	}
+
+	private void _testGetPerformanceOverviewMetricWithVisibleCMPProjectIds()
+		throws Exception {
+
+		ObjectEntry objectEntry = DepotEntryTestUtil.addCMPProjectObjectEntry(
+			_cmpProjectDepotEntries, testGroup.getGroupId());
+
+		try (AnalyticsCloudHttpServer analyticsCloudHttpServer =
+				new AnalyticsCloudHttpServer(
+					"/api/1.0/asset-metric/objectEntry" +
+						"/performance-overview-metric",
+					() -> JSONUtil.putAll(
+						JSONUtil.put(
+							"metricType", "viewsMetric"
+						).put(
+							"previousValue", 4
+						).put(
+							"trend",
+							JSONUtil.put(
+								"percentage", 50
+							).put(
+								"trendClassification", "POSITIVE"
+							)
+						).put(
+							"value", 6
+						)
+					).toString());
+
+			AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), true,
+						analyticsCloudHttpServer.getURL())) {
+
+			PerformanceOverviewMetric performanceOverviewMetric =
+				performanceOverviewMetricResource.getPerformanceOverviewMetric(
+					new Long[] {objectEntry.getObjectEntryId()},
+					TransformUtil.transformToArray(
+						_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+					RandomTestUtil.nextInt());
+
+			_assertMetric(
+				performanceOverviewMetric.getViewsMetric(), "viewsMetric", 4, 6,
+				Trend.Classification.POSITIVE, 50);
+
+			DepotEntryTestUtil.assertCMPProjectId(
+				objectEntry, analyticsCloudHttpServer.getLocation());
+		}
+	}
+
+	@DeleteAfterTestRun
+	private final List<DepotEntry> _cmpProjectDepotEntries = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
