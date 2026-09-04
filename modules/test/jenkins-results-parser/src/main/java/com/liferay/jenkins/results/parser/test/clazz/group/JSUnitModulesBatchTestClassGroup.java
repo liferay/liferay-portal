@@ -47,6 +47,16 @@ public class JSUnitModulesBatchTestClassGroup
 		super(batchName, portalTestClassJob);
 	}
 
+	protected List<File> getBaseModuleDirs() throws IOException {
+		return new ArrayList<>(
+			portalGitWorkingDirectory.getModuleDirsList(
+				getExcludesPathMatchers(), getIncludesPathMatchers()));
+	}
+
+	protected List<PathMatcher> getExcludesPathMatchers() {
+		return getPathMatchers(getExcludesJobProperties());
+	}
+
 	protected boolean isModulesProjectDir(File projectDir) {
 		File buildGradleFile = new File(projectDir, "build.gradle");
 		File packageJSONFile = new File(projectDir, "package.json");
@@ -117,16 +127,6 @@ public class JSUnitModulesBatchTestClassGroup
 
 	@Override
 	protected void setTestClasses() throws IOException {
-		List<File> moduleDirs = new ArrayList<>();
-
-		PortalGitWorkingDirectory portalGitWorkingDirectory =
-			getPortalGitWorkingDirectory();
-
-		moduleDirs.addAll(
-			portalGitWorkingDirectory.getModuleDirsList(
-				getPathMatchers(getExcludesJobProperties()),
-				getIncludesPathMatchers()));
-
 		List<String> excludedTestMethodNames = new ArrayList<>();
 
 		for (JobProperty excludesJobProperty : getExcludesJobProperties()) {
@@ -146,8 +146,11 @@ public class JSUnitModulesBatchTestClassGroup
 			}
 		}
 
-		for (File moduleDir : moduleDirs) {
-			List<File> moduleTestDirs = _getModulesProjectDirs(moduleDir);
+		PortalGitWorkingDirectory portalGitWorkingDirectory =
+			getPortalGitWorkingDirectory();
+
+		for (File baseModuleDir : getBaseModuleDirs()) {
+			List<File> moduleTestDirs = _getModulesProjectDirs(baseModuleDir);
 
 			for (File moduleTestDir : moduleTestDirs) {
 				String moduleTestDirPath =
