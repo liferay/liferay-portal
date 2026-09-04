@@ -59,6 +59,11 @@ export class FDSSamplePage {
 	readonly paginator: {
 		itemsPerPageSelector: Locator;
 	};
+	readonly recentSearches: {
+		clearAllButton: Locator;
+		entries: Locator;
+		menu: Locator;
+	};
 	readonly resubmitButton: Locator;
 	readonly sidePanel: Locator;
 	readonly sidePanelFrame: FrameLocator;
@@ -182,6 +187,16 @@ export class FDSSamplePage {
 			itemsPerPageSelector: page.getByLabel('Items Per Page', {
 				exact: true,
 			}),
+		};
+
+		const recentSearchesMenu = page.locator('.fds-recent-searches');
+
+		this.recentSearches = {
+			clearAllButton: recentSearchesMenu.getByRole('button', {
+				name: 'Clear All',
+			}),
+			entries: recentSearchesMenu.locator('.fds-recent-searches-item'),
+			menu: recentSearchesMenu,
 		};
 
 		this.resubmitButton = page.getByRole('button', {name: 'Resubmit'});
@@ -349,6 +364,24 @@ export class FDSSamplePage {
 		return this.activeFiltersToolbar.container
 			.getByRole('button')
 			.filter({hasText: new RegExp(`^${label}:`)});
+	}
+
+	recentSearchEntry(query: string) {
+		return this.recentSearches.menu.getByRole('menuitem', {
+			exact: true,
+			name: query,
+		});
+	}
+
+	recentSearchRemoveButton(query: string) {
+		return this.recentSearches.entries
+			.filter({
+				has: this.page.getByRole('menuitem', {
+					exact: true,
+					name: query,
+				}),
+			})
+			.getByRole('menuitem', {name: 'Clear Search'});
 	}
 
 	async search(value: string) {

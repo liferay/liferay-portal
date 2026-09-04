@@ -311,3 +311,137 @@ test('Search Bar is shown/hidden according to FDS configuration', async ({
 		}
 	});
 });
+
+test(
+	'Recent searches',
+	{
+		tag: ['@LPD-89792'],
+	},
+	async ({fdsSamplePage, page}) => {
+		const searchInput = fdsSamplePage.managementToolbar.searchInput;
+
+		await test.step('The dropdown is not shown when nothing has been searched yet', async () => {
+			await searchInput.click();
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+		});
+
+		await test.step('A query that returned results is listed when the empty input is focused', async () => {
+			await fdsSamplePage.search('Sample55');
+
+			await expect(page.getByText('1 Result Found for:')).toBeVisible();
+
+			await searchInput.clear();
+
+			await searchInput.click();
+
+			await expect(
+				fdsSamplePage.recentSearchEntry('Sample55')
+			).toBeVisible();
+		});
+
+		await test.step('A query that returned no results is not listed', async () => {
+			await fdsSamplePage.search(getRandomString());
+
+			await fdsSamplePage.emptyStateContainer.waitFor();
+
+			await searchInput.clear();
+
+			await searchInput.click();
+
+			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+				'Sample55',
+			]);
+		});
+
+		await test.step('The most recent query is listed first', async () => {
+			await fdsSamplePage.search('Sample12');
+
+			await expect(page.getByText('1 Result Found for:')).toBeVisible();
+
+			await searchInput.clear();
+
+			await searchInput.click();
+
+			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+				'Sample12',
+				'Sample55',
+			]);
+		});
+
+		await test.step('Typing keeps only the queries matching the input and emphasizes the match', async () => {
+			await searchInput.fill('sample5');
+
+			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+				'Sample55',
+			]);
+
+			await expect(
+				fdsSamplePage.recentSearchEntry('Sample55').locator('strong')
+			).toHaveText('Sample5');
+		});
+
+		await test.step('The dropdown is not shown when no stored query matches the input', async () => {
+			await searchInput.fill(getRandomString());
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+		});
+
+		await test.step('Clicking a query fills the input and searches for it', async () => {
+			await searchInput.clear();
+
+			await searchInput.click();
+
+			await fdsSamplePage.recentSearchEntry('Sample55').click();
+
+			await expect(searchInput).toHaveValue('Sample55');
+			await expect(page.getByText('1 Result Found for:')).toBeVisible();
+			await expect(fdsSamplePage.table.bodyRows).toHaveCount(1);
+			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+		});
+
+		await test.step('Removing a query leaves the rest of the list open', async () => {
+			await searchInput.clear();
+
+			await searchInput.click();
+
+			await fdsSamplePage.recentSearchEntry('Sample55').hover();
+
+			await fdsSamplePage.recentSearchRemoveButton('Sample55').click();
+
+			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+				'Sample12',
+			]);
+		});
+
+		await test.step('The dropdown closes when the user clicks outside the search bar', async () => {
+			await fdsSamplePage.table.container.click();
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+		});
+
+		await test.step('The queries survive a page reload', async () => {
+			await fdsSamplePage.activeFiltersToolbar.clearSearchButton.click();
+
+			await page.reload();
+
+			await waitForFDS({page});
+
+			await searchInput.click();
+
+			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+				'Sample12',
+			]);
+		});
+
+		await test.step('Clearing all removes every query', async () => {
+			await fdsSamplePage.recentSearches.clearAllButton.click();
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+
+			await searchInput.click();
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+		});
+	}
+);

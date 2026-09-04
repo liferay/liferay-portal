@@ -124,6 +124,20 @@ test('Advanced FDS is accessible during search interactions', async ({
 
 		await checkAccessibility({page, selectors: [FDS_WRAPPER_SELECTOR]});
 	});
+
+	await test.step('Recent searches dropdown open', async () => {
+		await fdsSamplePage.managementToolbar.searchInput.click();
+
+		await fdsSamplePage.recentSearchEntry('Sample1').waitFor();
+
+		await checkAccessibility({
+			page,
+			selectors: [FDS_WRAPPER_SELECTOR, OPEN_DROPDOWN_SELECTOR],
+			selectorsToExclude: [FOCUS_TRAP_HIDDEN_SELECTOR],
+		});
+
+		await page.keyboard.press('Escape');
+	});
 });
 
 test('Advanced FDS is accessible during filter interactions', async ({
