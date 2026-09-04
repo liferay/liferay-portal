@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.Resource;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -30,7 +31,9 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -84,6 +87,36 @@ public class ResourcePermissionLocalServiceTest {
 			Collections.emptyList(), Collections.emptyList(),
 			Collections.emptyList(), portletName, portletName,
 			_resourceActions.getPortletResourceActions(portletName));
+	}
+
+	@Test
+	public void testSetResourcePermissionsWithEmptyRoleIdsToActionIds()
+		throws Exception {
+
+		_group = GroupTestUtil.addGroup();
+
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+		String primKey = String.valueOf(_group.getGroupId());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), Group.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, primKey, role.getRoleId(),
+			new String[] {ActionKeys.VIEW});
+
+		Map<Long, Long> roleIdsToActionIds = _getRoleIdsToActionIds(primKey);
+
+		Assert.assertFalse(
+			roleIdsToActionIds.toString(), roleIdsToActionIds.isEmpty());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), Group.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, primKey,
+			Collections.emptyMap());
+
+		Assert.assertEquals(
+			roleIdsToActionIds, _getRoleIdsToActionIds(primKey));
 	}
 
 	@Test
@@ -170,6 +203,22 @@ public class ResourcePermissionLocalServiceTest {
 		resource.setScope(scope);
 
 		return resource;
+	}
+
+	private Map<Long, Long> _getRoleIdsToActionIds(String primKey) {
+		Map<Long, Long> roleIdsToActionIds = new HashMap<>();
+
+		for (ResourcePermission resourcePermission :
+				_resourcePermissionLocalService.getResourcePermissions(
+					_group.getCompanyId(), Group.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL, primKey)) {
+
+			roleIdsToActionIds.put(
+				resourcePermission.getRoleId(),
+				resourcePermission.getActionIds());
+		}
+
+		return roleIdsToActionIds;
 	}
 
 	private void _testResources(
