@@ -1025,6 +1025,10 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	 */
 	@Override
 	public List<Role> getRoles(long companyId, int[] types) {
+		if (ArrayUtil.isEmpty(types)) {
+			return Collections.emptyList();
+		}
+
 		return rolePersistence.findByC_T(companyId, types);
 	}
 
