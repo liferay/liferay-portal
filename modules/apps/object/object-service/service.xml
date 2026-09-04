@@ -313,6 +313,11 @@
 			<finder-column name="objectDefinitionId" />
 			<finder-column name="status" />
 		</finder>
+		<finder name="G_ODI_NotS" return-type="Collection" where="objectEntryId = headObjectEntryId">
+			<finder-column name="groupId" />
+			<finder-column name="objectDefinitionId" />
+			<finder-column comparator="!=" name="status" />
+		</finder>
 		<finder name="U_GtCD_ODI" return-type="Collection" where="objectEntryId = headObjectEntryId">
 			<finder-column name="userId" />
 			<finder-column comparator="&gt;" name="createDate" />
