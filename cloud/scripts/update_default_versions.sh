@@ -4,17 +4,16 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-_SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$(dirname "${BASH_SOURCE[0]}")/_chart_version_common.sh"
 
-_ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
+_BUMPED_BOOTSTRAPS=()
+_MODIFIED_BOOTSTRAPS=()
+
 _VERSIONS_JSON_FILE="${_SCRIPTS_DIR}/versions.json"
 
-function main {
-	find "${_ROOT_CLOUD_DIR}" -name "Chart.yaml" -type f | while read -r chart_yaml_file;
-	do
-		_update_default_chart_version "${chart_yaml_file}"
-	done
+readonly _VERSIONS_JSON_FILE
 
+function main {
 	local aws_bootstrap_sources=(
 		"${_ROOT_CLOUD_DIR}/scripts/setup_aws.sh"
 		"${_ROOT_CLOUD_DIR}/terraform/aws/eks"
@@ -45,10 +44,31 @@ function main {
 	_check_bootstrap "gcp" "${gcp_bootstrap_sources[@]}"
 
 	_check_operator
+
+	while true
+	do
+		_update_default_versions
+
+		if has_modified_charts
+		then
+			bump_modified_charts
+
+			continue
+		fi
+
+		if ! _has_modified_bootstraps
+		then
+			return
+		fi
+
+		_bump_modified_bootstraps
+	done
 }
 
 function _bump_bootstrap_version {
 	local bootstrap_name="${1}"
+
+	_BUMPED_BOOTSTRAPS+=("${bootstrap_name}")
 
 	local current_version
 
@@ -56,23 +76,43 @@ function _bump_bootstrap_version {
 
 	local new_version
 
-	new_version=$(echo "${current_version}" | awk -F"." -v OFS="." '{$NF += 1; print}')
+	new_version=$(echo "${current_version}" | awk -F "." -v OFS="." '{$NF += 1; print}')
+
+	local config_json_example_file="${_ROOT_CLOUD_DIR}/scripts/config.json.example_${bootstrap_name}"
+
+	local updated_config_json
+
+	updated_config_json=$(jq --arg version "${new_version}" --tab '.options.version = $version' "${config_json_example_file}")
+
+	printf '%s' "${updated_config_json}" > "${config_json_example_file}"
+
+	local blame_line
+
+	blame_line=$(git_blame_line '"liferay-'"${bootstrap_name}"'-bootstrap": "[0-9]+\.[0-9]+\.[0-9]+"' "${_VERSIONS_JSON_FILE}")
 
 	sed \
 		--in-place \
 		--regexp-extended \
-		"s/\"version\": \".*\"/\"version\": \"${new_version}\"/" \
-		"${_ROOT_CLOUD_DIR}/scripts/config.json.example_${bootstrap_name}"
-
-	local git_blame_line
-
-	git_blame_line=$(_git_blame_line '"liferay-'"${bootstrap_name}"'-bootstrap": "[0-9]+\.[0-9]+\.[0-9]+"' "${_VERSIONS_JSON_FILE}")
-
-	sed \
-		--in-place \
-		--regexp-extended \
-		"${git_blame_line}s/\"liferay-${bootstrap_name}-bootstrap\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-${1}-bootstrap\": \"${new_version}\"/" \
+		--expression "${blame_line}s/\"liferay-${bootstrap_name}-bootstrap\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-${bootstrap_name}-bootstrap\": \"${new_version}\"/" \
 		"${_VERSIONS_JSON_FILE}"
+}
+
+function _bump_modified_bootstraps {
+	count_pass
+
+	local bootstrap_names=("${_MODIFIED_BOOTSTRAPS[@]}")
+
+	_MODIFIED_BOOTSTRAPS=()
+
+	local bootstrap_name
+
+	for bootstrap_name in "${bootstrap_names[@]}"
+	do
+		echo "A source packaged in the liferay-${bootstrap_name}-bootstrap tarball was rewritten. Updating liferay-${bootstrap_name}-bootstrap version." >&2
+		echo "" >&2
+
+		_bump_bootstrap_version "${bootstrap_name}"
+	done
 }
 
 function _bump_operator_version {
@@ -82,23 +122,27 @@ function _bump_operator_version {
 
 	local new_version
 
-	new_version=$(echo "${current_version}" | awk -F"." -v OFS="." '{$NF += 1; print}')
+	new_version=$(echo "${current_version}" | awk -F "." -v OFS="." '{$NF += 1; print}')
 
-	local git_blame_line
+	local blame_line
 
-	git_blame_line=$(_git_blame_line '"liferay-dxp-operator": "[0-9]+\.[0-9]+\.[0-9]+"' "${_VERSIONS_JSON_FILE}")
+	blame_line=$(git_blame_line '"liferay-dxp-operator": "[0-9]+\.[0-9]+\.[0-9]+"' "${_VERSIONS_JSON_FILE}")
 
 	sed \
 		--in-place \
 		--regexp-extended \
-		"${git_blame_line}s/\"liferay-dxp-operator\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-dxp-operator\": \"${new_version}\"/" \
+		--expression "${blame_line}s/\"liferay-dxp-operator\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-dxp-operator\": \"${new_version}\"/" \
 		"${_VERSIONS_JSON_FILE}"
 
-	sed \
-		--in-place \
-		--regexp-extended \
-		"/^image:/,/^[^[:space:]]/ s/^(    tag: ).*/\1${new_version}/" \
-		"${_ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
+	local operator_values_yaml="${_ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
+
+	record_chart_file_update \
+		"${operator_values_yaml}" \
+		sed \
+			--in-place \
+			--regexp-extended \
+			--expression "/^image:/,/^[^[:space:]]/ s/^(    tag: ).*/\1${new_version}/" \
+			"${operator_values_yaml}"
 }
 
 function _check_bootstrap {
@@ -106,24 +150,28 @@ function _check_bootstrap {
 
 	shift
 
-	local git_blame_sha
+	local blame_sha
 
-	git_blame_sha=$(_git_blame_sha '"liferay-'"${bootstrap_name}"'-bootstrap": ".*"' "${_VERSIONS_JSON_FILE}")
+	blame_sha=$(git_blame_sha '"liferay-'"${bootstrap_name}"'-bootstrap": ".*"' "${_VERSIONS_JSON_FILE}")
 
-	local bootstrap_sources
+	if ! is_commit "${blame_sha}"
+	then
+		echo "The blame boundary commit for liferay-${bootstrap_name}-bootstrap cannot be resolved." >&2
 
-	mapfile -d '' bootstrap_sources < <(printf '%s\0' "$@")
+		return
+	fi
 
-	for source in "${bootstrap_sources[@]}"
+	local bootstrap_source
+
+	for bootstrap_source in "${@}"
 	do
-		local clean_source="${source%$'\0'}"
-
 		local commit_count
 
-		commit_count=$(git rev-list --count "${git_blame_sha}..HEAD" -- "${clean_source}")
+		commit_count=$(git rev-list --count "${blame_sha}..HEAD" -- "${bootstrap_source}")
 
-		if [ ${commit_count} -gt 0 ]; then
-			git rev-list --oneline "${git_blame_sha}..HEAD" -- "${clean_source}"
+		if [[ "${commit_count}" -gt 0 ]]
+		then
+			git rev-list --oneline "${blame_sha}..HEAD" -- "${bootstrap_source}"
 
 			echo "The version in ${_VERSIONS_JSON_FILE} is outdated. Updating liferay-${bootstrap_name}-bootstrap version." >&2
 			echo "" >&2
@@ -136,13 +184,11 @@ function _check_bootstrap {
 }
 
 function _check_operator {
-	local git_blame_sha
+	local blame_sha
 
-	git_blame_sha=$(_git_blame_sha '"liferay-dxp-operator": ".*"' "${_VERSIONS_JSON_FILE}")
+	blame_sha=$(git_blame_sha '"liferay-dxp-operator": ".*"' "${_VERSIONS_JSON_FILE}")
 
-	git_blame_sha="${git_blame_sha#^}"
-
-	if [[ -z ${git_blame_sha} ]] || ! git rev-parse --quiet --verify "${git_blame_sha}^{commit}" > /dev/null
+	if ! is_commit "${blame_sha}"
 	then
 		echo "The blame boundary commit for liferay-dxp-operator cannot be resolved." >&2
 
@@ -151,11 +197,11 @@ function _check_operator {
 
 	local commit_count
 
-	commit_count=$(git rev-list --count "${git_blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator")
+	commit_count=$(git rev-list --count "${blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator")
 
-	if [ ${commit_count} -gt 0 ]
+	if [[ "${commit_count}" -gt 0 ]]
 	then
-		git rev-list --oneline "${git_blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator"
+		git rev-list --oneline "${blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator"
 
 		echo "The version in ${_VERSIONS_JSON_FILE} is outdated. Updating liferay-dxp-operator version." >&2
 		echo "" >&2
@@ -164,30 +210,42 @@ function _check_operator {
 	fi
 }
 
-function _git_blame_line {
-	local pattern="${1}"
-	local git_path="${2}"
+function _has_modified_bootstraps {
+	if [[ "${#_MODIFIED_BOOTSTRAPS[@]}" -eq 0 ]]
+	then
+		return 1
+	fi
 
-	local blame_line
-
-	blame_line=$(grep --extended-regexp --line-number "${pattern}" "${git_path}" | cut --delimiter=':' --fields=1)
-
-	echo "${blame_line}"
+	return 0
 }
 
-function _git_blame_sha {
-	local pattern="${1}"
-	local git_path="${2}"
+function _record_bootstrap_file_update {
+	local bootstrap_name="${1}"
+	local file="${2}"
 
-	local git_blame_line
+	shift 2
 
-	git_blame_line=$(_git_blame_line "${pattern}" "${git_path}")
+	local previous_checksum
 
-	local target_sha
+	previous_checksum=$(get_file_checksum "${file}")
 
-	target_sha=$(git blame -L "${git_blame_line}","${git_blame_line}" -- "${git_path}" | cut --delimiter=' ' --fields=1)
+	"${@}"
 
-	echo "${target_sha}"
+	if [ "${previous_checksum}" != "$(get_file_checksum "${file}")" ]
+	then
+		_record_modified_bootstrap "${bootstrap_name}"
+	fi
+}
+
+function _record_modified_bootstrap {
+	local bootstrap_name="${1}"
+
+	if has_array_element "${bootstrap_name}" "${_BUMPED_BOOTSTRAPS[@]}" "${_MODIFIED_BOOTSTRAPS[@]}"
+	then
+		return
+	fi
+
+	_MODIFIED_BOOTSTRAPS+=("${bootstrap_name}")
 }
 
 function _update_chart_versions_json {
@@ -196,11 +254,10 @@ function _update_chart_versions_json {
 
 	local chart_versions_json_file="${_SCRIPTS_DIR}/chart_versions.json"
 
-	local updated_chart_versions_json
-
-	updated_chart_versions_json=$(jq --arg chart_name "${chart_name}" --arg version "${new_version}" --tab '.[$chart_name] = $version' "${chart_versions_json_file}")
-
-	printf '%s' "${updated_chart_versions_json}" > "${chart_versions_json_file}"
+	_record_bootstrap_file_update \
+		"azure" \
+		"${chart_versions_json_file}" \
+		_write_chart_versions_json "${chart_name}" "${new_version}" "${chart_versions_json_file}"
 }
 
 function _update_default_chart_version {
@@ -237,27 +294,73 @@ function _update_default_chart_version {
 			_update_chart_versions_json "${helm_chart_name}" "${new_version}"
 			;;
 		"platform-components")
-			sed --in-place "s/^\(    targetRevision: \).*/\1${new_version}/" "${_ROOT_CLOUD_DIR}/helm/platform/values.yaml"
+			_update_platform_target_revision "${new_version}"
 			;;
 	esac
+}
+
+function _update_default_versions {
+	local chart_yaml_file
+
+	while read -r chart_yaml_file
+	do
+		_update_default_chart_version "${chart_yaml_file}"
+	done < <(find "${_ROOT_CLOUD_DIR}" -name "Chart.yaml" -type f)
 }
 
 function _update_platform_components_target_revision {
 	local chart_repository_name="${1}"
 	local new_version="${2}"
 
-	sed \
-		--in-place \
-		"\|repoURL: .*/${chart_repository_name}\$|,/targetRevision: / s/\(targetRevision: \).*/\1${new_version}/" \
-		"${_ROOT_CLOUD_DIR}/helm/platform-components/values.yaml"
+	local platform_components_values_yaml="${_ROOT_CLOUD_DIR}/helm/platform-components/values.yaml"
+
+	record_chart_file_update \
+		"${platform_components_values_yaml}" \
+		sed \
+			--expression "\|repoURL: .*/${chart_repository_name}\$|,/targetRevision: / s/\(targetRevision: \).*/\1${new_version}/" \
+			--in-place \
+			"${platform_components_values_yaml}"
+}
+
+function _update_platform_target_revision {
+	local new_version="${1}"
+
+	local platform_values_yaml="${_ROOT_CLOUD_DIR}/helm/platform/values.yaml"
+
+	record_chart_file_update \
+		"${platform_values_yaml}" \
+		sed \
+			--expression "s/^\(    targetRevision: \).*/\1${new_version}/" \
+			--in-place \
+			"${platform_values_yaml}"
 }
 
 function _update_resources_tfvars {
 	local cloud="${1}"
-	local new_version="${3}"
 	local variable_name="${2}"
+	local new_version="${3}"
 
-	sed --in-place "s/\(${variable_name} *= *\)\".*\"/\1\"${new_version}\"/" "${_ROOT_CLOUD_DIR}/terraform/${cloud}/gitops/resources/terraform.tfvars"
+	local resources_tfvars_file="${_ROOT_CLOUD_DIR}/terraform/${cloud}/gitops/resources/terraform.tfvars"
+
+	_record_bootstrap_file_update \
+		"${cloud}" \
+		"${resources_tfvars_file}" \
+		sed \
+			--expression "s/\(${variable_name} *= *\)\".*\"/\1\"${new_version}\"/" \
+			--in-place \
+			"${resources_tfvars_file}"
 }
 
-main "$@"
+function _write_chart_versions_json {
+	local chart_name="${1}"
+	local new_version="${2}"
+	local chart_versions_json_file="${3}"
+
+	local updated_chart_versions_json
+
+	updated_chart_versions_json=$(jq --arg chart_name "${chart_name}" --arg version "${new_version}" --tab '.[$chart_name] = $version' "${chart_versions_json_file}")
+
+	printf '%s' "${updated_chart_versions_json}" > "${chart_versions_json_file}"
+}
+
+main "${@}"
