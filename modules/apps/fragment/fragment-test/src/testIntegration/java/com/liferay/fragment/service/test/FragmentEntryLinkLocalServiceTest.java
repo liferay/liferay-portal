@@ -470,6 +470,32 @@ public class FragmentEntryLinkLocalServiceTest {
 	}
 
 	@Test
+	public void testGetFragmentEntryLinksBySegmentsExperienceIdWithEmptyArray()
+		throws Exception {
+
+		_addFragmentEntryLink(
+			_fragmentEntry, null, _defaultSegmentsExperienceId,
+			_layout.getPlid(), StringPool.BLANK, 0, null);
+
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.
+				getFragmentEntryLinksBySegmentsExperienceId(
+					_group.getGroupId(), new long[0], _layout.getPlid());
+
+		Assert.assertTrue(
+			fragmentEntryLinks.toString(), fragmentEntryLinks.isEmpty());
+
+		List<FragmentEntryLink> notDeletedFragmentEntryLinks =
+			_fragmentEntryLinkLocalService.
+				getFragmentEntryLinksBySegmentsExperienceId(
+					_group.getGroupId(), new long[0], _layout.getPlid(), false);
+
+		Assert.assertTrue(
+			notDeletedFragmentEntryLinks.toString(),
+			notDeletedFragmentEntryLinks.isEmpty());
+	}
+
+	@Test
 	public void testGetLayoutFragmentEntryLinksByFragmentEntry()
 		throws Exception {
 
