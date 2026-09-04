@@ -2,6 +2,7 @@ import CampaignsDataSet from '../CampaignsDataSet';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 import {mockCampaigns} from '../../utils/mock-campaigns';
+import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 jest.unmock('react-dom');
 
@@ -17,6 +18,8 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 }));
 
 const getFields = () => lastFDSProps.views[0].schema.fields;
+
+beforeAll(warmFrontendDataSet);
 
 describe('CampaignsDataSet', () => {
 	beforeEach(() => {

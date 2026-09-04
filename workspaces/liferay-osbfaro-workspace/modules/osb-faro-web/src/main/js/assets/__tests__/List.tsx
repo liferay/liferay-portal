@@ -7,6 +7,7 @@ import {mockChannelContext} from 'test/mock-channel-context';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
+import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 jest.unmock('react-dom');
 
@@ -351,6 +352,8 @@ const renderList = ({
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const {useNavigate} = require('react-router-dom');
+
+beforeAll(warmFrontendDataSet);
 
 describe('List', () => {
 	beforeEach(() => {

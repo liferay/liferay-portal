@@ -1,6 +1,7 @@
 import IndividualsDataSet, {getVisitorType} from '../IndividualsDataSet';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
+import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 jest.unmock('react-dom');
 
@@ -21,6 +22,8 @@ jest.mock('react-router-dom', () => ({
 	useLocation: () => ({search: mockSearch}),
 	useParams: () => ({channelId: '456', groupId: '23', id: 'acc-1'}),
 }));
+
+beforeAll(warmFrontendDataSet);
 
 describe('IndividualsDataSet', () => {
 	beforeEach(() => {

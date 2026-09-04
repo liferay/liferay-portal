@@ -3,16 +3,39 @@ import {ClayIconSpriteContext as PortalClayIconSpriteContext} from '@clayui/icon
 import FaroConstants, {RangeKeyTimeRanges} from 'shared/util/constants';
 import Label from '@clayui/label';
 import Loading from 'shared/components/Loading';
-import React, {useEffect, useState} from 'react';
-import {
-	FrontendDataSet as BaseFrontendDataSet,
-	EConfigInURLBehavior,
-} from '@liferay/frontend-data-set-web';
+import React, {lazy, Suspense, useEffect, useState} from 'react';
 import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {Text} from '@clayui/core';
 import {setUriQueryValues, toRoute} from 'shared/util/router';
 
-export * from '@liferay/frontend-data-set-web';
+import type {
+	EConfigInURLBehavior,
+	IFrontendDataSetProps,
+} from '@liferay/frontend-data-set-web';
+
+// The data set is a webpack external the portal serves, and importing it here
+// held every screen that renders one: this module is an ES module, so it could
+// not evaluate until the portal had delivered the data set and its Clay
+// dependency graph, and the page chunk importing it waited too. React Router
+// runs navigations inside `startTransition`, so React held the previous screen
+// rather than showing a fallback, and the section looked unresponsive for as
+// long as that took. Loading it lazily lets each screen commit first and put a
+// spinner where the data set goes.
+//
+// Nothing else in this module may import the external eagerly, or the wait
+// comes straight back. That is why the type import above is `import type`,
+// erased at compile time, and why the enum below is written as its value.
+
+const BaseFrontendDataSet = lazy(() =>
+	import('@liferay/frontend-data-set-web').then((module) => ({
+		default: module.FrontendDataSet,
+	}))
+);
+
+// `EConfigInURLBehavior.OFF`. It is a string enum, so the value is the whole of
+// it, and reading the member would cost an eager import of the external.
+
+const CONFIG_IN_URL_OFF = 'off' as EConfigInURLBehavior;
 
 const {cur, delta, deltaValues} = FaroConstants.pagination;
 
@@ -174,24 +197,21 @@ export function useSnapshots(fdsName: string, enabled = true) {
 	return snapshots;
 }
 
-type IBaseFrontendDataSetProps = React.ComponentProps<
-	typeof BaseFrontendDataSet
->;
-
 /**
- * Drop-in wrapper around the @liferay/frontend-data-set-web FrontendDataSet.
- * Everything from the original module is re-exported, so this is the single
- * entry point for the data set across the app. When `snapshotsEnabled` is set,
+ * Drop-in wrapper around the @liferay/frontend-data-set-web FrontendDataSet,
+ * and the single entry point for the data set across the app. The underlying
+ * data set is loaded lazily, so a screen rendering one is not held waiting for
+ * the portal to deliver it. When `snapshotsEnabled` is set,
  * the data set's saved view snapshots are fetched and the data set is only
  * mounted once they are ready (the base FrontendDataSet reads `snapshots` only
  * when its reducer is initialized on mount). `configInURLBehavior` defaults to
  * OFF so the data set does not dirty the URL unless a consumer overrides it.
  */
 const FrontendDataSet = ({
-	configInURLBehavior = EConfigInURLBehavior.OFF,
+	configInURLBehavior = CONFIG_IN_URL_OFF,
 	snapshotsEnabled = false,
 	...props
-}: IBaseFrontendDataSetProps) => {
+}: IFrontendDataSetProps) => {
 	const snapshots = useSnapshots(props.id, snapshotsEnabled);
 
 	if (snapshots === null) {
@@ -204,14 +224,16 @@ const FrontendDataSet = ({
 
 	return (
 		<PortalClayIconSpriteContext.Provider value="/o/osb-faro-web/dist/sprite.svg">
-			<BaseFrontendDataSet
-				{...props}
-				configInURLBehavior={configInURLBehavior}
-				snapshots={
-					snapshots as unknown as IBaseFrontendDataSetProps['snapshots']
-				}
-				snapshotsEnabled={snapshotsEnabled}
-			/>
+			<Suspense fallback={<Loading />}>
+				<BaseFrontendDataSet
+					{...props}
+					configInURLBehavior={configInURLBehavior}
+					snapshots={
+						snapshots as unknown as IFrontendDataSetProps['snapshots']
+					}
+					snapshotsEnabled={snapshotsEnabled}
+				/>
+			</Suspense>
 		</PortalClayIconSpriteContext.Provider>
 	);
 };

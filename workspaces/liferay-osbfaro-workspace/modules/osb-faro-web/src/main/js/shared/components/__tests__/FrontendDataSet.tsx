@@ -6,13 +6,10 @@ import {
 	screen,
 	waitFor,
 } from '@testing-library/react';
-import {
-	columns,
-	EConfigInURLBehavior,
-	FrontendDataSet,
-	useSnapshots,
-} from '../FrontendDataSet';
+import {columns, FrontendDataSet, useSnapshots} from '../FrontendDataSet';
+import {EConfigInURLBehavior} from '@liferay/frontend-data-set-web';
 import {Routes} from 'shared/util/router';
+import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 jest.unmock('react-dom');
 
@@ -48,6 +45,8 @@ afterEach(() => {
 
 	lastProps = undefined;
 });
+
+beforeAll(warmFrontendDataSet);
 
 describe('columns.nameAndLinkRenderer', () => {
 	it('should generate an href that includes the channelId path segment', () => {

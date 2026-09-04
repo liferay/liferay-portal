@@ -6,6 +6,7 @@ import {IViewField} from '../utils';
 import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {useRequest} from 'shared/hooks/useRequest';
+import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 const DEFAULT_STAGE_ITEMS = [
 	{id: '9990', stageType: LifecycleStages.AWARE},
@@ -160,6 +161,8 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		return <div data-testid="fds-component" id={id} />;
 	},
 }));
+
+beforeAll(warmFrontendDataSet);
 
 describe('AccountsDataSet', () => {
 	beforeEach(() => {
