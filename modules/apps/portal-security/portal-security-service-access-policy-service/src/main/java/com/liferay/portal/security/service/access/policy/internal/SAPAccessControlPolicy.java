@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.security.service.access.policy.ServiceAccessPol
 import com.liferay.portal.kernel.security.service.access.policy.ServiceAccessPolicyThreadLocal;
 import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.service.access.policy.configuration.SAPConfiguration;
 import com.liferay.portal.security.service.access.policy.constants.SAPConstants;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -75,11 +77,13 @@ public class SAPAccessControlPolicy extends BaseAccessControlPolicy {
 		Class<?> clazz = method.getDeclaringClass();
 
 		_checkAccess(
-			allowedServiceSignatures, clazz.getName(), method.getName());
+			allowedServiceSignatures, clazz.getName(), method.getName(),
+			method.getParameterTypes());
 	}
 
 	protected boolean matches(
-		String className, String methodName, String allowedServiceSignature) {
+		String allowedServiceSignature, String className, String methodName,
+		Class<?>[] parameterTypes) {
 
 		String allowedClassName = null;
 		String allowedMethodName = null;
@@ -92,6 +96,24 @@ public class SAPAccessControlPolicy extends BaseAccessControlPolicy {
 		}
 		else {
 			allowedClassName = allowedServiceSignature;
+		}
+
+		String allowedParameterTypes = null;
+
+		if (Validator.isNotNull(allowedMethodName)) {
+			int parameterTypesIndex = allowedMethodName.indexOf(
+				CharPool.OPEN_PARENTHESIS);
+
+			if (parameterTypesIndex > -1) {
+				allowedParameterTypes = allowedMethodName.substring(
+					parameterTypesIndex);
+				allowedMethodName = allowedMethodName.substring(
+					0, parameterTypesIndex);
+			}
+		}
+
+		if (!_matchesParameterTypes(allowedParameterTypes, parameterTypes)) {
+			return false;
 		}
 
 		boolean wildcardMatchClass = false;
@@ -174,7 +196,7 @@ public class SAPAccessControlPolicy extends BaseAccessControlPolicy {
 
 	private void _checkAccess(
 		Set<String> allowedServiceSignatures, String className,
-		String methodName) {
+		String methodName, Class<?>[] parameterTypes) {
 
 		if (allowedServiceSignatures.contains(StringPool.STAR) ||
 			allowedServiceSignatures.contains(className)) {
@@ -190,7 +212,10 @@ public class SAPAccessControlPolicy extends BaseAccessControlPolicy {
 		}
 
 		for (String allowedServiceSignature : allowedServiceSignatures) {
-			if (matches(className, methodName, allowedServiceSignature)) {
+			if (matches(
+					allowedServiceSignature, className, methodName,
+					parameterTypes)) {
+
 				return;
 			}
 		}
@@ -344,6 +369,40 @@ public class SAPAccessControlPolicy extends BaseAccessControlPolicy {
 		}
 
 		return allowedServiceSignatures;
+	}
+
+	private boolean _matchesParameterTypes(
+		String allowedParameterTypes, Class<?>[] parameterTypes) {
+
+		if (allowedParameterTypes == null) {
+			return true;
+		}
+
+		StringBundler sb = new StringBundler((parameterTypes.length * 2) + 2);
+
+		sb.append(StringPool.OPEN_PARENTHESIS);
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (i > 0) {
+				sb.append(StringPool.COMMA);
+			}
+
+			Class<?> parameterType = parameterTypes[i];
+
+			String parameterTypeName = parameterType.getCanonicalName();
+
+			if (parameterTypeName == null) {
+				parameterTypeName = parameterType.getName();
+			}
+
+			sb.append(parameterTypeName);
+		}
+
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return Objects.equals(
+			StringUtil.removeChar(allowedParameterTypes, CharPool.SPACE),
+			sb.toString());
 	}
 
 	@Reference
