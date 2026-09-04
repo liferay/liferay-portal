@@ -30,6 +30,7 @@ import com.liferay.osb.faro.engine.client.model.AssetSummaryType;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryVocabulary;
 import com.liferay.osb.faro.engine.client.model.Author;
 import com.liferay.osb.faro.engine.client.model.BlockedKeyword;
+import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.CatalogField;
 import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
@@ -647,6 +648,24 @@ public abstract class BaseMockContactsEngineClientImpl
 
 		return contactsEngineClient.getBlockedKeywords(
 			faroProject, query, cur, delta, orderByFields);
+	}
+
+	@Override
+	public Campaign getCampaign(
+			FaroProject faroProject, long channelId, String id)
+		throws FaroEngineClientException {
+
+		return contactsEngineClient.getCampaign(faroProject, channelId, id);
+	}
+
+	@Override
+	public Results<Campaign> getCampaigns(
+		FaroProject faroProject, long channelId, String filterString,
+		String keywords, String sortString, int cur, int delta) {
+
+		return contactsEngineClient.getCampaigns(
+			faroProject, channelId, filterString, keywords, sortString, cur,
+			delta);
 	}
 
 	@Override

@@ -94,6 +94,10 @@ public interface Rels {
 
 	public static final String BULK = "bulk";
 
+	public static final String CAMPAIGN = "campaign";
+
+	public static final String CAMPAIGNS = "campaigns";
+
 	public static final String CATALOG_FIELDS = "catalog-fields";
 
 	public static final String CHANNEL = "channel";

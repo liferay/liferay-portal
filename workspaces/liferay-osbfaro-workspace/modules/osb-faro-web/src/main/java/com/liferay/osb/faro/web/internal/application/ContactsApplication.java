@@ -16,6 +16,7 @@ import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryMimeTyp
 import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryTagFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryTypeFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryVocabularyFaroController;
+import com.liferay.osb.faro.web.internal.controller.contacts.CampaignFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.ContactsCardFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.ContactsCardTemplateFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.ContactsLayoutFaroController;
@@ -60,6 +61,7 @@ public class ContactsApplication extends BaseApplication {
 		controllers.add(_assetSummaryTagFaroController);
 		controllers.add(_assetSummaryTypeFaroController);
 		controllers.add(_assetSummaryVocabularyFaroController);
+		controllers.add(_campaignFaroController);
 		controllers.add(_contactsCardFaroController);
 		controllers.add(_contactsCardTemplateFaroController);
 		controllers.add(_contactsLayoutFaroController);
@@ -109,6 +111,9 @@ public class ContactsApplication extends BaseApplication {
 	@Reference
 	private AssetSummaryVocabularyFaroController
 		_assetSummaryVocabularyFaroController;
+
+	@Reference
+	private CampaignFaroController _campaignFaroController;
 
 	@Reference
 	private ContactsCardFaroController _contactsCardFaroController;
