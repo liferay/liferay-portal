@@ -6,6 +6,7 @@
 package com.liferay.journal.web.internal.portlet.action;
 
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
+import com.liferay.data.engine.rest.resource.exception.DataDefinitionValidationException;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.journal.constants.JournalPortletKeys;
@@ -20,12 +21,17 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
+
+import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -51,16 +57,31 @@ public class ImportDataDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
+			String name = ParamUtil.getString(actionRequest, "name");
+
+			if (Validator.isNull(name)) {
+				Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
+
+				throw new DataDefinitionValidationException.MustSetValidName(
+					"Name is null for locale " +
+						siteDefaultLocale.getDisplayName());
+			}
+
 			UploadPortletRequest uploadPortletRequest =
 				_portal.getUploadPortletRequest(actionRequest);
 
 			DataDefinition dataDefinition = DataDefinition.toDTO(
 				FileUtil.read(uploadPortletRequest.getFile("jsonFile")));
 
+			Map<String, Object> nameMap = dataDefinition.getName();
+
 			dataDefinition.setName(
-				() -> HashMapBuilder.<String, Object>put(
-					String.valueOf(themeDisplay.getSiteDefaultLocale()),
-					ParamUtil.getString(actionRequest, "name")
+				() -> HashMapBuilder.<String, Object>putAll(
+					nameMap
+				).put(
+					LocaleUtil.toLanguageId(
+						themeDisplay.getSiteDefaultLocale()),
+					name
 				).build());
 
 			DataDefinitionResource.Builder dataDefinitionResourcedBuilder =
