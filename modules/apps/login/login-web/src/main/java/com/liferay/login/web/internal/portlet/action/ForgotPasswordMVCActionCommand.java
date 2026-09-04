@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -345,6 +346,12 @@ public class ForgotPasswordMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		if (user.isGuestUser()) {
+			PasswordPolicy passwordPolicy = user.getPasswordPolicy();
+
+			if ((passwordPolicy != null) && passwordPolicy.isChangeable()) {
+				PasswordEncryptorUtil.encrypt("ticketKey");
+			}
+
 			SessionMessages.add(
 				_portal.getHttpServletRequest(actionRequest),
 				"forgotPasswordSent");
