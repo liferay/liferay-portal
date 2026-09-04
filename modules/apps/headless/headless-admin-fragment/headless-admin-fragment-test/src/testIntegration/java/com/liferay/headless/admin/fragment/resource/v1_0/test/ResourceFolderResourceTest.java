@@ -6,6 +6,8 @@
 package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
@@ -18,6 +20,7 @@ import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFolderRe
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -90,11 +93,12 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-102182"})
 	public void testDeleteSiteResourceFolder() throws Exception {
 		super.testDeleteSiteResourceFolder();
 
 		_testDeleteSiteResourceFolderChildResourceFolder();
+		_testDeleteSiteResourceFolderDocumentLibraryFolderProblemException();
 		_testDeleteSiteResourceFolderPortletFolderProblemException();
 		_testDeleteSiteResourceFolderWithoutPermissionsProblemException();
 	}
@@ -113,10 +117,11 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-102182"})
 	public void testGetSiteResourceFolder() throws Exception {
 		super.testGetSiteResourceFolder();
 
+		_testGetSiteResourceFolderDocumentLibraryFolderProblemException();
 		_testGetSiteResourceFolderFragmentSet();
 		_testGetSiteResourceFolderParentResourceFolder();
 		_testGetSiteResourceFolderPortletFolderProblemException();
@@ -126,13 +131,14 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-102182"})
 	public void testGetSiteResourceFolderResourceFoldersPage()
 		throws Exception {
 
 		super.testGetSiteResourceFolderResourceFoldersPage();
 
 		_testGetSiteResourceFolderResourceFoldersPage();
+		_testGetSiteResourceFolderResourceFoldersPageDocumentLibraryFolderProblemException();
 		_testGetSiteResourceFolderResourceFoldersPageEmpty();
 		_testGetSiteResourceFolderResourceFoldersPageResourceFolderNonexistentProblemException();
 		_testGetSiteResourceFolderResourceFoldersPageWithoutPermissionsProblemException();
@@ -185,9 +191,10 @@ public class ResourceFolderResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-88489"})
+	@TestInfo({"LPD-88395", "LPD-88489", "LPD-102182"})
 	public void testPutSiteResourceFolder() throws Exception {
 		_testPutSiteResourceFolder();
+		_testPutSiteResourceFolderDocumentLibraryFolderProblemException();
 		_testPutSiteResourceFolderParentResourceFolderExternalReferenceCode();
 		_testPutSiteResourceFolderPortletFolderProblemException();
 		_testPutSiteResourceFolderWithoutPermissionsProblemException();
@@ -309,6 +316,13 @@ public class ResourceFolderResourceTest
 
 		return resourceFolderResource.postSiteResourceFolder(
 			testGroup.getExternalReferenceCode(), resourceFolder);
+	}
+
+	private Folder _addDocumentLibraryFolder(String name) throws Exception {
+		return _dlAppLocalService.addFolder(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			testGroup.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			name, StringPool.BLANK, _getRestrictedServiceContext());
 	}
 
 	private FragmentCollection _addFragmentCollection(long groupId)
@@ -452,6 +466,16 @@ public class ResourceFolderResourceTest
 		).build();
 	}
 
+	private ServiceContext _getRestrictedServiceContext() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		return serviceContext;
+	}
+
 	private ResourceFolder _getSiteResourceFolder(String externalReferenceCode)
 		throws Exception {
 
@@ -581,6 +605,22 @@ public class ResourceFolderResourceTest
 		}
 	}
 
+	private void _testDeleteSiteResourceFolderDocumentLibraryFolderProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		Folder folder = _addDocumentLibraryFolder(
+			fragmentCollection.getFragmentCollectionKey());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFolderResource.deleteSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				folder.getExternalReferenceCode()));
+	}
+
 	private void _testDeleteSiteResourceFolderPortletFolderProblemException()
 		throws Exception {
 
@@ -687,6 +727,22 @@ public class ResourceFolderResourceTest
 					Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetSiteResourceFolderDocumentLibraryFolderProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		Folder folder = _addDocumentLibraryFolder(
+			fragmentCollection.getFragmentCollectionKey());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFolderResource.getSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				folder.getExternalReferenceCode()));
 	}
 
 	private void _testGetSiteResourceFolderFragmentSet() throws Exception {
@@ -812,6 +868,23 @@ public class ResourceFolderResourceTest
 		assertContains(
 			childResourceFolder, (List<ResourceFolder>)page.getItems());
 		Assert.assertEquals(1, page.getTotalCount());
+	}
+
+	private void _testGetSiteResourceFolderResourceFoldersPageDocumentLibraryFolderProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		Folder folder = _addDocumentLibraryFolder(
+			fragmentCollection.getFragmentCollectionKey());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() ->
+				resourceFolderResource.getSiteResourceFolderResourceFoldersPage(
+					testGroup.getExternalReferenceCode(),
+					folder.getExternalReferenceCode(), Pagination.of(1, 10)));
 	}
 
 	private void _testGetSiteResourceFolderResourceFoldersPageEmpty()
@@ -1589,6 +1662,28 @@ public class ResourceFolderResourceTest
 			putResourceFolder.getParentResourceFolderExternalReferenceCode());
 	}
 
+	private void _testPutSiteResourceFolderDocumentLibraryFolderProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		Folder folder = _addDocumentLibraryFolder(
+			fragmentCollection.getFragmentCollectionKey());
+
+		ResourceFolder resourceFolder = _randomResourceFolder(
+			fragmentCollection.getExternalReferenceCode());
+
+		resourceFolder.setExternalReferenceCode(
+			folder.getExternalReferenceCode());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFolderResource.putSiteResourceFolder(
+				testGroup.getExternalReferenceCode(),
+				folder.getExternalReferenceCode(), resourceFolder));
+	}
+
 	private void _testPutSiteResourceFolderParentResourceFolderExternalReferenceCode()
 		throws Exception {
 
@@ -1696,6 +1791,9 @@ public class ResourceFolderResourceTest
 			}
 		}
 	}
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;

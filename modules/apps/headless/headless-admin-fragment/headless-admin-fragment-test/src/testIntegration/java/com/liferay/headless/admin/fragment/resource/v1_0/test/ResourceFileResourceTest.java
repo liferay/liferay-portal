@@ -6,7 +6,11 @@
 package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
+import com.liferay.fragment.constants.FragmentActionKeys;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FileURLReference;
@@ -21,11 +25,15 @@ import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFolderRe
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -35,8 +43,10 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -148,10 +158,11 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-88395")
+	@TestInfo({"LPD-88395", "LPD-102182"})
 	public void testDeleteSiteResourceFile() throws Exception {
 		super.testDeleteSiteResourceFile();
 
+		_testDeleteSiteResourceFileDocumentLibraryFileProblemException();
 		_testDeleteSiteResourceFilePortletFileProblemException();
 		_testDeleteSiteResourceFileWithoutPermissionsProblemException();
 	}
@@ -170,10 +181,12 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-88395")
+	@TestInfo({"LPD-88395", "LPD-102182"})
 	public void testGetSiteResourceFile() throws Exception {
 		super.testGetSiteResourceFile();
 
+		_testGetSiteResourceFileDocumentLibraryFileFragmentPermissionsProblemException();
+		_testGetSiteResourceFileDocumentLibraryFileProblemException();
 		_testGetSiteResourceFileFileURLReferenceFileBase64();
 		_testGetSiteResourceFileFileURLReferenceURL();
 		_testGetSiteResourceFileFragmentSet();
@@ -197,11 +210,12 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-88395")
+	@TestInfo({"LPD-88395", "LPD-102182"})
 	public void testGetSiteResourceFolderResourceFilesPage() throws Exception {
 		super.testGetSiteResourceFolderResourceFilesPage();
 
 		_testGetSiteResourceFolderResourceFilesPage();
+		_testGetSiteResourceFolderResourceFilesPageDocumentLibraryFolderProblemException();
 		_testGetSiteResourceFolderResourceFilesPageEmpty();
 		_testGetSiteResourceFolderResourceFilesPagePortletFolderProblemException();
 		_testGetSiteResourceFolderResourceFilesPageResourceFolderNonexistentProblemException();
@@ -249,10 +263,11 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-88395")
+	@TestInfo({"LPD-88395", "LPD-102182"})
 	public void testPutSiteResourceFile() throws Exception {
 		_testPutSiteResourceFile();
 		_testPutSiteResourceFileBatch();
+		_testPutSiteResourceFileDocumentLibraryFileProblemException();
 		_testPutSiteResourceFileFileURLReferenceFileBase64();
 		_testPutSiteResourceFileFileURLReferenceFileBase64AndURLNullProblemException();
 		_testPutSiteResourceFileFileURLReferenceNullProblemException();
@@ -392,6 +407,24 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		try (OutputStream outputStream = httpExchange.getResponseBody()) {
 			outputStream.write(bytes);
 		}
+	}
+
+	private FileEntry _addDocumentLibraryFileEntry(Folder folder)
+		throws Exception {
+
+		return _dlAppLocalService.addFileEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			folder.getRepositoryId(), folder.getFolderId(),
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM, RandomTestUtil.randomBytes(),
+			null, null, null, _getRestrictedServiceContext());
+	}
+
+	private Folder _addDocumentLibraryFolder(String name) throws Exception {
+		return _dlAppLocalService.addFolder(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			testGroup.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			name, StringPool.BLANK, _getRestrictedServiceContext());
 	}
 
 	private FragmentCollection _addFragmentCollection(long groupId)
@@ -548,6 +581,35 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		}
 	}
 
+	private ResourceFileResource _getFragmentPermissionsResourceFileResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		_userLocalService.addGroupUser(
+			testGroup.getGroupId(), user.getUserId());
+
+		_role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			FragmentConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()),
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		_userLocalService.addRoleUser(_role.getRoleId(), user.getUserId());
+
+		return ResourceFileResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private String _getFragmentSetExternalReferenceCode() throws Exception {
 		if (_fragmentSetExternalReferenceCode == null) {
 			FragmentCollection fragmentCollection = _addFragmentCollection(
@@ -603,6 +665,16 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	private ServiceContext _getRestrictedServiceContext() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		return serviceContext;
 	}
 
 	private ResourceFile _getSiteResourceFile(String externalReferenceCode)
@@ -749,6 +821,23 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		return resourceFolder;
 	}
 
+	private void _testDeleteSiteResourceFileDocumentLibraryFileProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		FileEntry fileEntry = _addDocumentLibraryFileEntry(
+			_addDocumentLibraryFolder(
+				fragmentCollection.getFragmentCollectionKey()));
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFileResource.deleteSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				fileEntry.getExternalReferenceCode()));
+	}
+
 	private void _testDeleteSiteResourceFilePortletFileProblemException()
 		throws Exception {
 
@@ -859,6 +948,43 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 					Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetSiteResourceFileDocumentLibraryFileFragmentPermissionsProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		FileEntry fileEntry = _addDocumentLibraryFileEntry(
+			_addDocumentLibraryFolder(
+				fragmentCollection.getFragmentCollectionKey()));
+
+		ResourceFileResource fragmentPermissionsResourceFileResource =
+			_getFragmentPermissionsResourceFileResource();
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> fragmentPermissionsResourceFileResource.getSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				fileEntry.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteResourceFileDocumentLibraryFileProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		FileEntry fileEntry = _addDocumentLibraryFileEntry(
+			_addDocumentLibraryFolder(
+				fragmentCollection.getFragmentCollectionKey()));
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFileResource.getSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				fileEntry.getExternalReferenceCode()));
 	}
 
 	private void _testGetSiteResourceFileFileURLReferenceFileBase64()
@@ -1170,6 +1296,24 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		assertContains(resourceFile, (List<ResourceFile>)page.getItems());
 		Assert.assertEquals(1, page.getTotalCount());
+	}
+
+	private void _testGetSiteResourceFolderResourceFilesPageDocumentLibraryFolderProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		Folder folder = _addDocumentLibraryFolder(
+			fragmentCollection.getFragmentCollectionKey());
+
+		_addDocumentLibraryFileEntry(folder);
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFileResource.getSiteResourceFolderResourceFilesPage(
+				testGroup.getExternalReferenceCode(),
+				folder.getExternalReferenceCode(), Pagination.of(1, 10)));
 	}
 
 	private void _testGetSiteResourceFolderResourceFilesPageEmpty()
@@ -1883,6 +2027,29 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			irrelevantGroup.getGroupId());
 	}
 
+	private void _testPutSiteResourceFileDocumentLibraryFileProblemException()
+		throws Exception {
+
+		FragmentCollection fragmentCollection = _addFragmentCollection(
+			testGroup.getGroupId());
+
+		FileEntry fileEntry = _addDocumentLibraryFileEntry(
+			_addDocumentLibraryFolder(
+				fragmentCollection.getFragmentCollectionKey()));
+
+		ResourceFile resourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
+		resourceFile.setExternalReferenceCode(
+			fileEntry.getExternalReferenceCode());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> resourceFileResource.putSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				fileEntry.getExternalReferenceCode(), resourceFile));
+	}
+
 	private void _testPutSiteResourceFileFileURLReferenceFileBase64()
 		throws Exception {
 
@@ -2211,6 +2378,9 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	private static HttpServer _httpServer;
 
 	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
 
 	private String _fragmentSetExternalReferenceCode;
@@ -2225,6 +2395,9 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 	private ResourceFileResource _nestedFieldsResourceFileResource;
 	private ResourceFolderResource _resourceFolderResource;
+
+	@DeleteAfterTestRun
+	private Role _role;
 
 	@Inject
 	private UserLocalService _userLocalService;
