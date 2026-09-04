@@ -21,6 +21,7 @@ export class ModelBuilderObjectDefinitionNodePage {
 	readonly modalDeleteObjectDefinitionConfirmationButton: Locator;
 	readonly modalDeleteObjectDefinitionTextField: Locator;
 	readonly modalEditObjectDefinitionExternalReferenceCodeInput: Locator;
+	readonly modelBuilderDiagramAreaLoading: Locator;
 	readonly newObjectFieldSaveButton: Locator;
 	readonly newObjectRelationshipSaveButton: Locator;
 	readonly objectFieldBusinessTypeSelect: Locator;
@@ -64,6 +65,9 @@ export class ModelBuilderObjectDefinitionNodePage {
 			page.getByLabel('External Reference Code' + 'Mandatory');
 		this.modalDeleteObjectDefinitionTextField = page.getByPlaceholder(
 			'Confirm Object Definition Name'
+		);
+		this.modelBuilderDiagramAreaLoading = page.locator(
+			'.lfr-objects__model-builder-diagram-area-loading'
 		);
 		this.newObjectFieldSaveButton = page
 			.getByLabel('New Field')
@@ -258,15 +262,15 @@ export class ModelBuilderObjectDefinitionNodePage {
 			.click();
 	}
 
-	private _waitForModelBuilderReload() {
-		return this.page.waitForResponse(
+	private async _waitForModelBuilderReload() {
+		await this.page.waitForResponse(
 			(response) =>
-				response.request().method() === 'PUT' &&
+				response.request().method() === 'GET' &&
 				response
 					.url()
-					.includes(
-						'/o/object-admin/v1.0/object-folders/by-external-reference-code/'
-					)
+					.includes('/o/object-admin/v1.0/object-folders?pageSize=-1')
 		);
+
+		await this.modelBuilderDiagramAreaLoading.waitFor({state: 'hidden'});
 	}
 }
