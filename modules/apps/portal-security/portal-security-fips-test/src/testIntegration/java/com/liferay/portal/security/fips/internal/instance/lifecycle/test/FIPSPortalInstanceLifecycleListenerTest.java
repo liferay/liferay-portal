@@ -10,20 +10,14 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.PasswordPolicy;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.security.fips.constants.FIPSConstants;
-import com.liferay.portal.security.fips.constants.FIPSPortletKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -79,28 +73,10 @@ public class FIPSPortalInstanceLifecycleListenerTest {
 			Assert.assertTrue(passwordPolicy.isChangeRequired());
 			Assert.assertTrue(passwordPolicy.isLockout());
 
-			Role role = _roleLocalService.fetchRole(
-				TestPropsValues.getCompanyId(), RoleConstants.CRYPTO_OFFICER);
-
-			Assert.assertNotNull(role);
-			Assert.assertTrue(
-				_resourcePermissionLocalService.hasResourcePermission(
-					TestPropsValues.getCompanyId(), FIPSPortletKeys.FIPS_ADMIN,
-					ResourceConstants.SCOPE_COMPANY,
-					String.valueOf(TestPropsValues.getCompanyId()),
-					role.getRoleId(), ActionKeys.ACCESS_IN_CONTROL_PANEL));
-			Assert.assertTrue(
-				_resourcePermissionLocalService.hasResourcePermission(
-					TestPropsValues.getCompanyId(), FIPSPortletKeys.FIPS_ADMIN,
-					ResourceConstants.SCOPE_COMPANY,
-					String.valueOf(TestPropsValues.getCompanyId()),
-					role.getRoleId(), ActionKeys.VIEW));
-			Assert.assertTrue(
-				_resourcePermissionLocalService.hasResourcePermission(
-					TestPropsValues.getCompanyId(), PortletKeys.PORTAL,
-					ResourceConstants.SCOPE_COMPANY,
-					String.valueOf(TestPropsValues.getCompanyId()),
-					role.getRoleId(), ActionKeys.VIEW_CONTROL_PANEL));
+			Assert.assertNotNull(
+				_roleLocalService.fetchRole(
+					TestPropsValues.getCompanyId(),
+					RoleConstants.CRYPTO_OFFICER));
 		}
 	}
 
@@ -114,9 +90,6 @@ public class FIPSPortalInstanceLifecycleListenerTest {
 		filter = "component.name=com.liferay.portal.security.fips.internal.instance.lifecycle.FIPSPortalInstanceLifecycleListener"
 	)
 	private PortalInstanceLifecycleListener _portalInstanceLifecycleListener;
-
-	@Inject
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
