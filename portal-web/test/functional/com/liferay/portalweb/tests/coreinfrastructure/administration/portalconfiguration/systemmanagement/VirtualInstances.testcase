@@ -486,6 +486,16 @@ definition {
 			PagesAdmin.enablePrivatePages();
 		}
 
+		task ("Add a public page and a private page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Public Page");
+
+			JSONLayout.addPrivateLayout(
+				groupName = "Guest",
+				layoutName = "Private Page");
+		}
+
 		PortalSettings.gotoConfiguration(
 			configurationCategory = "Instance Configuration",
 			configurationName = "General",
@@ -505,35 +515,38 @@ definition {
 			privatePageVirtualHostURL = "www.charlie.com",
 			privateVirtualHosts = ${privatePageVirtualHostURL});
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		PagesAdmin.addPublicPage(pageName = "Public Page");
-
-		PagesAdmin.addPrivatePage(pageName = "Private Page");
-
 		Navigator.openSpecificURL(url = "http://www.charlie.com:8080");
 
 		AssertElementPresent(
-			key_pageName = "Home",
+			key_pageName = "Public Page",
 			locator1 = "Home#PAGE");
 
-		User.loginPG(
+		User.firstLoginUI(
 			password = PropsUtil.get("default.admin.password"),
-			specificURL = "http://www.charlie.com:8080/group/guest",
+			specificURL = "http://www.charlie.com:8080",
 			userEmailAddress = "test@liferay.com");
+
+		Navigator.openSpecificURL(url = "http://www.charlie.com:8080");
 
 		AssertTextEquals(
 			key_pageName = "Private Page",
 			locator1 = "Home#PAGE",
 			value1 = "Private Page");
 
-		User.logoutPG();
+		task ("Restore the virtual host so the tear down can reach the instance") {
+			User.firstLoginUI(
+				password = PropsUtil.get("default.admin.password"),
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@liferay.com");
 
-		User.loginUserPG(
-			password = PropsUtil.get("default.admin.password"),
-			userEmailAddress = "test@liferay.com");
+			PortalSettings.gotoConfiguration(
+				baseURL = "http://www.able.com:8080",
+				configurationCategory = "Instance Configuration",
+				configurationName = "General",
+				configurationScope = "Virtual Instance Scope");
+
+			PortalSettings.editVirtualHostCP(virtualHostName = "localhost");
+		}
 	}
 
 	@priority = 4
