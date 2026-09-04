@@ -322,7 +322,8 @@ public class ResourceFolderResourceTest
 		return _dlAppLocalService.addFolder(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			testGroup.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			name, StringPool.BLANK, _getRestrictedServiceContext());
+			name, StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 	}
 
 	private FragmentCollection _addFragmentCollection(long groupId)
@@ -464,16 +465,6 @@ public class ResourceFolderResourceTest
 		).parameters(
 			"nestedFields", nestedFields
 		).build();
-	}
-
-	private ServiceContext _getRestrictedServiceContext() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
-
-		serviceContext.setAddGroupPermissions(false);
-		serviceContext.setAddGuestPermissions(false);
-
-		return serviceContext;
 	}
 
 	private ResourceFolder _getSiteResourceFolder(String externalReferenceCode)
