@@ -730,20 +730,22 @@ public class ObjectServiceUpgradeStepRegistrator
 				ObjectDefinitionExternalReferenceCodeUpgradeProcess(
 					_systemObjectDefinitionManagerRegistry));
 
+		registry.register("13.1.0", "13.2.0", new DummyUpgradeStep());
+
 		registry.register(
-			"13.1.0", "13.2.0",
+			"13.2.0", "13.3.0",
 			new com.liferay.object.internal.upgrade.v13_2_0.
 				ObjectDefinitionExternalReferenceCodeUpgradeProcess(
 					_systemObjectDefinitionManagerRegistry));
 
 		registry.register(
-			"13.2.0", "13.3.0",
+			"13.3.0", "13.4.0",
 			new AttachmentObjectFieldDownloadPermissionUpgradeProcess(
 				_language, _localization, _ploEntryLocalService,
 				_resourceActionLocalService));
 
 		registry.register(
-			"13.3.0", "13.4.0",
+			"13.4.0", "13.5.0",
 			new BaseExternalReferenceCodeUpgradeProcess() {
 
 				@Override
@@ -754,7 +756,7 @@ public class ObjectServiceUpgradeStepRegistrator
 			});
 
 		registry.register(
-			"13.4.0", "13.5.0",
+			"13.5.0", "13.6.0",
 			UpgradeProcessFactory.runSQL(
 				"delete from PLOEntry where key_ = 'model.resource.'"));
 	}
