@@ -759,6 +759,17 @@ public class ObjectServiceUpgradeStepRegistrator
 			"13.5.0", "13.6.0",
 			UpgradeProcessFactory.runSQL(
 				"delete from PLOEntry where key_ = 'model.resource.'"));
+
+		registry.register(
+			"13.5.0", "13.6.0",
+			UpgradeProcessFactory.runSQL(
+				StringBundler.concat(
+					"update ObjectField set readOnly = '",
+					ObjectFieldConstants.READ_ONLY_FALSE,
+					"' where readOnly not in ('",
+					ObjectFieldConstants.READ_ONLY_CONDITIONAL, "', '",
+					ObjectFieldConstants.READ_ONLY_FALSE, "', '",
+					ObjectFieldConstants.READ_ONLY_TRUE, "')")));
 	}
 
 	@Reference
