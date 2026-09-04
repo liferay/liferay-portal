@@ -1,7 +1,7 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "net.bytebuddy", name: "byte-buddy", version: "1.15.11"
-	testIntegrationImplementation group: "net.bytebuddy", name: "byte-buddy-agent", version: "1.15.11"
+	testIntegrationImplementation group: "net.bytebuddy", name: "byte-buddy", version: "1.18.8"
+	testIntegrationImplementation group: "net.bytebuddy", name: "byte-buddy-agent", version: "1.18.8"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
