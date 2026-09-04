@@ -1832,7 +1832,11 @@ public class ActionUtil {
 			ObjectDefinition objectDefinition, ServiceContext serviceContext)
 		throws Exception {
 
-		synchronized (_getCompareContentLayoutMutex(classNameId, group)) {
+		Object lock = _compareContentLayoutLocks.computeIfAbsent(
+			group.getGroupId() + StringPool.POUND + classNameId,
+			key -> new Object());
+
+		synchronized (lock) {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
 				LayoutPageTemplateEntryLocalServiceUtil.
 					fetchLayoutPageTemplateEntry(
@@ -1854,14 +1858,6 @@ public class ActionUtil {
 			return LayoutLocalServiceUtil.fetchLayout(
 				layoutPageTemplateEntry.getPlid());
 		}
-	}
-
-	private static Object _getCompareContentLayoutMutex(
-		long classNameId, Group group) {
-
-		return _compareContentLayoutMutexes.computeIfAbsent(
-			group.getGroupId() + StringPool.POUND + classNameId,
-			key -> new Object());
 	}
 
 	private static Layout _getEditContentLayout(
@@ -1982,7 +1978,7 @@ public class ActionUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 
-	private static final Map<String, Object> _compareContentLayoutMutexes =
+	private static final Map<String, Object> _compareContentLayoutLocks =
 		new ConcurrentHashMap<>();
 
 }
