@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -418,6 +419,7 @@ public class LayoutContentVersionLocalServiceImpl
 		Company company = themeDisplay.getCompany();
 
 		String pathImage = _portal.getPathImage();
+		String pathMain = _portal.getPathMain();
 
 		String companyLogo = pathImage + "/company_logo";
 
@@ -455,8 +457,13 @@ public class LayoutContentVersionLocalServiceImpl
 				curLayout -> !curLayout.isHidden() && curLayout.isPublished()));
 		themeDisplay.setPathContext(_portal.getPathContext());
 		themeDisplay.setPathImage(pathImage);
-		themeDisplay.setPathMain(_portal.getPathMain());
+		themeDisplay.setPathMain(pathMain);
 		themeDisplay.setRealCompanyLogo(companyLogo);
+		themeDisplay.setURLSignIn(
+			HttpComponentsUtil.addParameter(
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), pathMain, "/portal/login"),
+				"p_l_id", layout.getPlid()));
 	}
 
 	private void _validateExternalReferenceCode(
