@@ -6,6 +6,7 @@
 package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.headless.delivery.client.dto.v1_0.WikiPageAttachment;
 import com.liferay.headless.delivery.client.http.HttpInvoker;
@@ -60,6 +61,7 @@ public class WikiPageAttachmentResourceTest
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 		serviceContext.setCommand("update");
 		serviceContext.setScopeGroupId(testGroup.getGroupId());
@@ -218,7 +220,7 @@ public class WikiPageAttachmentResourceTest
 				fileEntry.getFileEntryId()));
 
 		Assert.assertNotNull(
-			DLAppLocalServiceUtil.getFileEntry(fileEntry.getFileEntryId()));
+			DLAppLocalServiceUtil.fetchFileEntry(fileEntry.getFileEntryId()));
 	}
 
 	@Override
@@ -493,7 +495,8 @@ public class WikiPageAttachmentResourceTest
 		serviceContext.setScopeGroupId(testGroup.getGroupId());
 
 		Folder folder = DLAppLocalServiceUtil.addFolder(
-			null, TestPropsValues.getUserId(), testGroup.getGroupId(), 0,
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			serviceContext);
 
