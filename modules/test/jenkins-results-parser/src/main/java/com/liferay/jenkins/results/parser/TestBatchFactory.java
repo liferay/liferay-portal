@@ -41,7 +41,8 @@ public class TestBatchFactory {
 					 batchName.startsWith("modules-semantic-versioning") ||
 					 batchName.startsWith("rest-builder") ||
 					 batchName.startsWith("rest-builder-and-service-builder") ||
-					 batchName.startsWith("service-builder")) {
+					 batchName.startsWith("service-builder") ||
+					 batchName.startsWith("workspaces-js-unit")) {
 
 				testBatch = new ModulesPortalTestBatch(
 					portalBatchBuildData, workspace);

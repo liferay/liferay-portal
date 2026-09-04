@@ -31,7 +31,9 @@ public class TestReportFactory {
 
 			return new JUnitTestReport(downstreamBuildReport, jsonObject);
 		}
-		else if (batchName.startsWith("js-unit")) {
+		else if (batchName.startsWith("js-unit") ||
+				 batchName.startsWith("workspaces-js-unit")) {
+
 			return new JSUnitTestReport(downstreamBuildReport, jsonObject);
 		}
 		else if (batchName.startsWith("modules-compile") ||

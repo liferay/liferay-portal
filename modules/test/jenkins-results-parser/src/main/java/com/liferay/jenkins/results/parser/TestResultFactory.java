@@ -23,7 +23,9 @@ public class TestResultFactory {
 			batchName = downstreamBuild.getBatchName();
 		}
 
-		if (batchName.startsWith("js-unit")) {
+		if (batchName.startsWith("js-unit") ||
+			batchName.startsWith("workspaces-js-unit")) {
+
 			return new JSUnitJUnitTestResult(build, caseJSONObject);
 		}
 

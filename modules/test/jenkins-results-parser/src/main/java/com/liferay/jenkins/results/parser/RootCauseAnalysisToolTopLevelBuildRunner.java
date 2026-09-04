@@ -494,7 +494,8 @@ public class RootCauseAnalysisToolTopLevelBuildRunner
 			portalBatchName.startsWith("modules-semantic-versioning") ||
 			portalBatchName.startsWith("rest-builder") ||
 			portalBatchName.startsWith("rest-builder-and-service-builder") ||
-			portalBatchName.startsWith("service-builder")) {
+			portalBatchName.startsWith("service-builder") ||
+			portalBatchName.startsWith("workspaces-js-unit")) {
 
 			return true;
 		}

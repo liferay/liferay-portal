@@ -96,7 +96,8 @@ public class BuildFactory {
 						 jobVariant.startsWith(
 							 "rest-builder-and-service-builder") ||
 						 jobVariant.startsWith("semantic-versioning") ||
-						 jobVariant.startsWith("service-builder")) {
+						 jobVariant.startsWith("service-builder") ||
+						 jobVariant.startsWith("workspaces-js-unit")) {
 
 					return new JUnitDownstreamBuild(
 						buildURL, cachedDownstreamBuildReport,
