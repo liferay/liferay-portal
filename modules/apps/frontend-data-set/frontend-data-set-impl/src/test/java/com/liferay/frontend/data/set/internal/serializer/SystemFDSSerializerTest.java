@@ -1228,6 +1228,14 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 				FDS_NAMES[1], httpServletRequest));
 
 		_unregisterServices();
+
+		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));
+
+		Assert.assertFalse(
+			systemFDSSerializer.serializeRecentSearches(
+				FDS_NAMES[0], httpServletRequest));
+
+		_unregisterServices();
 	}
 
 	@Test
@@ -2038,6 +2046,15 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 					}
 
 					@Override
+					public boolean getRecentSearches() {
+						if (_recentSearches != null) {
+							return _recentSearches;
+						}
+
+						return SystemFDSEntry.super.getRecentSearches();
+					}
+
+					@Override
 					public String getRESTApplication() {
 						return REST_APPLICATION;
 					}
@@ -2050,11 +2067,6 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 					@Override
 					public String getRESTSchema() {
 						return REST_SCHEMA;
-					}
-
-					@Override
-					public boolean getRecentSearches() {
-						return _recentSearches;
 					}
 
 					@Override
@@ -2151,7 +2163,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		private boolean _hideManagementBarInEmptyState;
 		private int[] _listOfItemsPerPage;
 		private String _propsTransformer;
-		private boolean _recentSearches;
+		private Boolean _recentSearches;
 		private boolean _searchAsYouType;
 		private boolean _showSearch;
 		private boolean _snapshotsEnabled;
