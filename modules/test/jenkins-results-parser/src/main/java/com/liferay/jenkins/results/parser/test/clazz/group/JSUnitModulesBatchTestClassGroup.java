@@ -47,6 +47,40 @@ public class JSUnitModulesBatchTestClassGroup
 		super(batchName, portalTestClassJob);
 	}
 
+	protected boolean isModulesProjectDir(File projectDir) {
+		File buildGradleFile = new File(projectDir, "build.gradle");
+		File packageJSONFile = new File(projectDir, "package.json");
+
+		if (buildGradleFile.exists() && packageJSONFile.exists()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	protected boolean isSkippedProjectDir(File projectDir) {
+		String projectDirPath = projectDir.getAbsolutePath();
+
+		if (projectDirPath.contains("modules") &&
+			!(projectDirPath.contains("modules/apps") ||
+			  projectDirPath.contains("modules/dxp"))) {
+
+			return true;
+		}
+
+		if (_isTestGitrepoJSUnit()) {
+			return false;
+		}
+
+		File gitrepoFile = new File(projectDir, ".gitrepo");
+
+		if (gitrepoFile.exists() && !projectDirPath.contains("osb-faro")) {
+			return true;
+		}
+
+		return false;
+	}
+
 	@Override
 	protected void setAxisTestClassGroups() {
 		super.setAxisTestClassGroups();
@@ -179,8 +213,6 @@ public class JSUnitModulesBatchTestClassGroup
 
 		List<File> modulesProjectDirs = new ArrayList<>();
 
-		boolean testGitrepoJSUnit = _isTestGitrepoJSUnit();
-
 		Files.walkFileTree(
 			portalModulesBaseDir.toPath(),
 			new SimpleFileVisitor<Path>() {
@@ -194,37 +226,16 @@ public class JSUnitModulesBatchTestClassGroup
 					File currentDirectory =
 						JenkinsResultsParserUtil.getCanonicalFile(file);
 
-					String currentDirectoryPath =
-						currentDirectory.getAbsolutePath();
-
-					if (currentDirectoryPath.contains("modules") &&
-						!(currentDirectoryPath.contains("modules/apps") ||
-						  currentDirectoryPath.contains("modules/dxp"))) {
-
+					if (isSkippedProjectDir(currentDirectory)) {
 						return FileVisitResult.SKIP_SUBTREE;
 					}
 
-					if (!testGitrepoJSUnit) {
-						File gitrepoFile = new File(
-							currentDirectory, ".gitrepo");
-
-						if (gitrepoFile.exists() &&
-							!currentDirectoryPath.contains("osb-faro")) {
-
-							return FileVisitResult.SKIP_SUBTREE;
-						}
-					}
-
-					File buildGradleFile = new File(
-						currentDirectory, "build.gradle");
-					File packageJSONFile = new File(
-						currentDirectory, "package.json");
-
-					if (!buildGradleFile.exists() ||
-						!packageJSONFile.exists()) {
-
+					if (!isModulesProjectDir(currentDirectory)) {
 						return FileVisitResult.CONTINUE;
 					}
+
+					File packageJSONFile = new File(
+						currentDirectory, "package.json");
 
 					try {
 						JSONObject packageJSONObject = new JSONObject(
