@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
@@ -61,6 +62,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.EmailAddressValidator;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
@@ -663,6 +665,14 @@ public class EmailNotificationType extends BaseNotificationType {
 				template.put(
 					"portalURL", portal.getPortalURL(httpServletRequest));
 			}
+			else {
+				Company company = _companyLocalService.getCompany(
+					group.getCompanyId());
+
+				template.put("locale", siteDefaultLocale);
+				template.put(
+					"portalURL", company.getPortalURL(group.getGroupId()));
+			}
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
@@ -809,6 +819,9 @@ public class EmailNotificationType extends BaseNotificationType {
 
 	@Reference
 	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	private final Map<String, EmailProvider> _emailProviders = new HashMap<>();
 
