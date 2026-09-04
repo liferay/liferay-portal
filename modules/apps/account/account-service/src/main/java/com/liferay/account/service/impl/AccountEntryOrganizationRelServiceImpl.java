@@ -162,6 +162,19 @@ public class AccountEntryOrganizationRelServiceImpl
 			getAccountEntryOrganizationRelsCount(accountEntryId);
 	}
 
+	@Override
+	public void setAccountEntryOrganizationRels(
+			long accountEntryId, long[] organizationIds)
+		throws PortalException {
+
+		_accountEntryModelResourcePermission.check(
+			getPermissionChecker(), accountEntryId,
+			AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		accountEntryOrganizationRelLocalService.setAccountEntryOrganizationRels(
+			accountEntryId, organizationIds);
+	}
+
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY,
