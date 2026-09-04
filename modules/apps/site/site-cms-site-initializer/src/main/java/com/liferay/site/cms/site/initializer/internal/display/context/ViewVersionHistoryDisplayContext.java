@@ -113,10 +113,7 @@ public class ViewVersionHistoryDisplayContext {
 				StringPool.BLANK, "view", "view-file",
 				_language.get(_httpServletRequest, "view"), null, null, null),
 			_getAddToLaunchFDSActionDropdownItem(),
-			new FDSActionDropdownItem(
-				StringPool.BLANK, null, "compare",
-				_language.get(_httpServletRequest, "compare-to"), null, null,
-				null),
+			_getCompareFDSActionDropdownItem(),
 			new FDSActionDropdownItem(
 				"{actions.restore.href}", "restore", "restore",
 				_language.get(_httpServletRequest, "restore-version"), "put",
@@ -193,6 +190,18 @@ public class ViewVersionHistoryDisplayContext {
 			"{actions.addToLaunch.href}", "rocket", "addToLaunch",
 			_language.get(_httpServletRequest, "add-to-launch"), "get",
 			"addToLaunch", null);
+	}
+
+	private FDSActionDropdownItem _getCompareFDSActionDropdownItem() {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-56634")) {
+
+			return null;
+		}
+
+		return new FDSActionDropdownItem(
+			StringPool.BLANK, "change-list", "compare",
+			_language.get(_httpServletRequest, "compare-to"), null, null, null);
 	}
 
 	private FDSSortItem _getFDSSortItem(
