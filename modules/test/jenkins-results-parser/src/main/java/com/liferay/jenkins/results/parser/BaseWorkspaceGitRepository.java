@@ -1148,11 +1148,10 @@ public abstract class BaseWorkspaceGitRepository
 		String senderBranchSHA = getSenderBranchSHA();
 
 		if (!gitWorkingDirectory.localSHAExists(senderBranchSHA)) {
-			gitWorkingDirectory.fetch(_getSenderRemoteGitRef());
+			validateSHAInRemoteGitRef(
+				getSenderBranchName(), _getSenderRemoteGitRef(),
+				senderBranchSHA);
 		}
-
-		validateSHAInRemoteGitRef(
-			getSenderBranchName(), _getSenderRemoteGitRef(), senderBranchSHA);
 
 		gitWorkingDirectory.createLocalGitBranch(
 			_getSenderBranchHeadName(), true, senderBranchSHA);
@@ -1221,12 +1220,11 @@ public abstract class BaseWorkspaceGitRepository
 			}
 
 			if (!gitWorkingDirectory.localSHAExists(senderBranchSHA)) {
-				gitWorkingDirectory.fetch(_getSenderRemoteGitRef());
+				validateSHAInRemoteGitRef(
+					getSenderBranchName(), _getSenderRemoteGitRef(),
+					senderBranchSHA);
 			}
 		}
-
-		validateSHAInRemoteGitRef(
-			getSenderBranchName(), _getSenderRemoteGitRef(), senderBranchSHA);
 
 		gitWorkingDirectory.createLocalGitBranch(
 			_getSenderBranchHeadName(), true, senderBranchSHA);
