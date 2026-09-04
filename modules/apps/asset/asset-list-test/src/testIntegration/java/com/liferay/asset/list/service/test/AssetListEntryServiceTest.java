@@ -519,6 +519,47 @@ public class AssetListEntryServiceTest {
 	}
 
 	@Test
+	public void testGetAssetListEntriesWithNoAssetEntryTypes()
+		throws PortalException {
+
+		AssetListEntry assetListEntry = _addAssetListEntry("Asset List Title");
+
+		long[] groupIds = {_group.getGroupId()};
+
+		List<AssetListEntry> assetListEntries =
+			_assetListEntryService.getAssetListEntries(
+				groupIds, new String[] {assetListEntry.getAssetEntryType()},
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(
+			assetListEntries.toString(), 1, assetListEntries.size());
+
+		assetListEntries = _assetListEntryService.getAssetListEntries(
+			groupIds, new String[0], QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+
+		Assert.assertTrue(
+			assetListEntries.toString(), assetListEntries.isEmpty());
+
+		Assert.assertEquals(
+			0,
+			_assetListEntryService.getAssetListEntriesCount(
+				groupIds, new String[0]));
+
+		assetListEntries = _assetListEntryService.getAssetListEntries(
+			groupIds, "Asset List", new String[0], QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertTrue(
+			assetListEntries.toString(), assetListEntries.isEmpty());
+
+		Assert.assertEquals(
+			0,
+			_assetListEntryService.getAssetListEntriesCount(
+				groupIds, "Asset List", new String[0]));
+	}
+
+	@Test
 	public void testManualAssetEntryTypeAssetListEntry()
 		throws PortalException {
 
