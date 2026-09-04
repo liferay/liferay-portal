@@ -59,23 +59,29 @@ public class WikiPageAttachmentResourceTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		ServiceContext serviceContext = new ServiceContext();
+		ServiceContext wikiNodeServiceContext = new ServiceContext();
 
-		serviceContext.setAddGroupPermissions(true);
-		serviceContext.setAddGuestPermissions(true);
-		serviceContext.setCommand("update");
-		serviceContext.setScopeGroupId(testGroup.getGroupId());
+		wikiNodeServiceContext.setAddGroupPermissions(true);
+		wikiNodeServiceContext.setAddGuestPermissions(true);
+		wikiNodeServiceContext.setCommand("update");
+		wikiNodeServiceContext.setScopeGroupId(testGroup.getGroupId());
 
 		WikiNode wikiNode = WikiNodeLocalServiceUtil.addNode(
 			UserLocalServiceUtil.getGuestUserId(testGroup.getCompanyId()),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			serviceContext);
+			wikiNodeServiceContext);
+
+		ServiceContext wikiPageServiceContext = new ServiceContext();
+
+		wikiPageServiceContext.setAddGuestPermissions(true);
+		wikiPageServiceContext.setCommand("update");
+		wikiPageServiceContext.setScopeGroupId(testGroup.getGroupId());
 
 		_wikiPage = WikiPageLocalServiceUtil.addPage(
 			UserLocalServiceUtil.getGuestUserId(testGroup.getCompanyId()),
 			wikiNode.getNodeId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), false,
-			serviceContext);
+			wikiPageServiceContext);
 	}
 
 	@Override
