@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.web.internal.controller.contacts;
 
 import com.liferay.osb.faro.engine.client.model.Campaign;
+import com.liferay.osb.faro.engine.client.model.CampaignMetric;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.CampaignDisplay;
@@ -21,6 +22,8 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -44,6 +47,19 @@ public class CampaignFaroController extends BaseFaroController {
 			contactsEngineClient.getCampaign(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
 				channelId, id));
+	}
+
+	@GET
+	@Path("/metrics")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public List<CampaignMetric> getCampaignMetrics(
+			@PathParam("groupId") long groupId,
+			@QueryParam("channelId") long channelId)
+		throws Exception {
+
+		return contactsEngineClient.getCampaignMetrics(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId),
+			channelId);
 	}
 
 	@GET

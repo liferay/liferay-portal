@@ -98,6 +98,8 @@ public interface Rels {
 
 	public static final String CAMPAIGNS = "campaigns";
 
+	public static final String CAMPAIGNS_METRICS = "campaigns-metrics";
+
 	public static final String CATALOG_FIELDS = "catalog-fields";
 
 	public static final String CHANNEL = "channel";

@@ -30,6 +30,7 @@ import com.liferay.osb.faro.engine.client.model.AssetSummaryVocabulary;
 import com.liferay.osb.faro.engine.client.model.Author;
 import com.liferay.osb.faro.engine.client.model.BlockedKeyword;
 import com.liferay.osb.faro.engine.client.model.Campaign;
+import com.liferay.osb.faro.engine.client.model.CampaignMetric;
 import com.liferay.osb.faro.engine.client.model.CatalogField;
 import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
@@ -342,6 +343,10 @@ public interface ContactsEngineClient {
 
 	public Campaign getCampaign(
 			FaroProject faroProject, long channelId, String id)
+		throws FaroEngineClientException;
+
+	public List<CampaignMetric> getCampaignMetrics(
+			FaroProject faroProject, long channelId)
 		throws FaroEngineClientException;
 
 	public Results<Campaign> getCampaigns(
