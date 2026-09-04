@@ -59,7 +59,7 @@ public class FaroClientHttpResponse
 	public FaroClientHttpResponse clone() throws CloneNotSupportedException {
 		HttpHeaders httpHeaders = (HttpHeaders)super.clone();
 
-		for (Map.Entry<String, List<String>> entry : _httpHeaders.entrySet()) {
+		for (Map.Entry<String, List<String>> entry : _httpHeaders.headerSet()) {
 			httpHeaders.put(entry.getKey(), new LinkedList<>(entry.getValue()));
 		}
 
@@ -79,11 +79,6 @@ public class FaroClientHttpResponse
 	@Override
 	public HttpHeaders getHeaders() {
 		return _httpHeaders;
-	}
-
-	@Override
-	public int getRawStatusCode() {
-		return _httpStatusCode.value();
 	}
 
 	@Override

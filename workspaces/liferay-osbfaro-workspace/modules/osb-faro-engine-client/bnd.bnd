@@ -221,7 +221,6 @@ Import-Package:\
 	\
 	!org.reactivestreams.*,\
 	\
-	!org.springframework.boot.*,\
 	!org.springframework.hateoas.*,\
 	!org.springframework.http.*,\
 	!org.springframework.web.*,\

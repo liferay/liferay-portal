@@ -53,7 +53,6 @@ import java.util.Map;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.Cache;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.EntityModel;
@@ -68,6 +67,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -360,10 +360,9 @@ public abstract class BaseEngineClient {
 	}
 
 	protected RestTemplate getRestTemplate(FaroProject faroProject) {
-		RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
+		RestTemplate restTemplate = new RestTemplate();
 
-		restTemplateBuilder = restTemplateBuilder.uriTemplateHandler(
-			new UriBuilderFactory());
+		restTemplate.setUriTemplateHandler(new UriBuilderFactory());
 
 		MappingJackson2HttpMessageConverter
 			mappingJackson2HttpMessageConverter =
@@ -374,10 +373,11 @@ public abstract class BaseEngineClient {
 		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(
 			Arrays.asList(MediaType.APPLICATION_JSON, MediaTypes.HAL_JSON));
 
-		restTemplateBuilder = restTemplateBuilder.messageConverters(
-			mappingJackson2HttpMessageConverter);
+		List<HttpMessageConverter<?>> httpMessageConverters = new ArrayList<>();
 
-		RestTemplate restTemplate = restTemplateBuilder.build();
+		httpMessageConverters.add(mappingJackson2HttpMessageConverter);
+
+		restTemplate.setMessageConverters(httpMessageConverters);
 
 		restTemplate.setErrorHandler(new ResponseErrorHandler());
 
@@ -479,7 +479,7 @@ public abstract class BaseEngineClient {
 		throws Exception {
 
 		UriComponentsBuilder uriComponentsBuilder =
-			UriComponentsBuilder.fromHttpUrl(
+			UriComponentsBuilder.fromUriString(
 				EngineServiceURLUtil.getBackendURL(faroProject, path));
 
 		for (Map.Entry<String, List<String>> entry :

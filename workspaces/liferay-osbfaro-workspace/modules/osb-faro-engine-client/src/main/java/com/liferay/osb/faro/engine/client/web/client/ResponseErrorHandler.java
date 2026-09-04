@@ -15,6 +15,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import java.net.URI;
+
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
@@ -25,7 +28,9 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 public class ResponseErrorHandler extends DefaultResponseErrorHandler {
 
 	@Override
-	public void handleError(ClientHttpResponse clientHttpResponse)
+	public void handleError(
+			URI uri, HttpMethod httpMethod,
+			ClientHttpResponse clientHttpResponse)
 		throws IOException {
 
 		HttpStatusCode httpStatusCode = clientHttpResponse.getStatusCode();
@@ -33,7 +38,7 @@ public class ResponseErrorHandler extends DefaultResponseErrorHandler {
 		int statusCode = httpStatusCode.value();
 
 		if (statusCode < HttpServletResponse.SC_BAD_REQUEST) {
-			super.handleError(clientHttpResponse);
+			super.handleError(uri, httpMethod, clientHttpResponse);
 
 			return;
 		}

@@ -16,6 +16,7 @@ import java.net.URI;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
@@ -73,8 +74,10 @@ public class AuditClientHttpRequestInterceptor
 			childFaroRequestAudit.setEndTime(System.currentTimeMillis());
 
 			if (clientHttpResponse != null) {
-				childFaroRequestAudit.setStatusCode(
-					clientHttpResponse.getRawStatusCode());
+				HttpStatusCode httpStatusCode =
+					clientHttpResponse.getStatusCode();
+
+				childFaroRequestAudit.setStatusCode(httpStatusCode.value());
 			}
 
 			faroRequestAudit.addChildFaroRequestAudit(childFaroRequestAudit);
