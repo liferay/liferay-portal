@@ -35,6 +35,7 @@ exports[`SearchableSelect should render 1`] = `
         id="clay-dropdown-menu-1"
         role="presentation"
         style="left: -999px; top: -995px;"
+        tabindex="0"
       >
         <li
           role="none"

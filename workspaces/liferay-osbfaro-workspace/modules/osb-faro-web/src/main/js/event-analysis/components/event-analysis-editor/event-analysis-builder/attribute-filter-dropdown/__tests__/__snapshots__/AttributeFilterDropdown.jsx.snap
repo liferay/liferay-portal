@@ -25,6 +25,7 @@ exports[`AttributeFilterDropdown render 2`] = `
   id="clay-dropdown-menu-1"
   role="presentation"
   style="left: -995px; top: -999px;"
+  tabindex="0"
 >
   <div
     class="transition-carousel-group"

@@ -63,6 +63,7 @@ exports[`UserDropdown should render dropdown menu when clicked 1`] = `
         class="dropdown-menu user-menu-dropdown show"
         role="presentation"
         style="left: -995px; top: -999px;"
+        tabindex="0"
       >
         <div
           class="transition-carousel-group"
