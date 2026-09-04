@@ -183,29 +183,22 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			}
 		}
 
-		if (!_log.isInfoEnabled() ||
-			(customTableNames.isEmpty() && customViewNames.isEmpty())) {
-
+		if (!_log.isInfoEnabled()) {
 			return;
 		}
-
-		_log.info(
-			StringBundler.concat(
-				"Custom tables and views may include tables that an upgrade ",
-				"dropped before 2025.Q3, because ServiceComponent history is ",
-				"only reliable from that release"));
 
 		if (!customTableNames.isEmpty()) {
 			_log.info(
 				_getMessage(
-					customTableNames, "Custom tables were detected",
+					customTableNames,
+					"Custom or untracked tables were detected",
 					StringPool.BLANK));
 		}
 
 		if (!customViewNames.isEmpty()) {
 			_log.info(
 				_getMessage(
-					customViewNames, "Custom views were detected",
+					customViewNames, "Custom or untracked views were detected",
 					StringPool.BLANK));
 		}
 	}
