@@ -342,14 +342,6 @@ public class BaseWorkspaceGitRepositoryTest
 		return actualBranchName;
 	}
 
-	private VerificationMode _getVerificationMode(boolean invoked) {
-		if (invoked) {
-			return Mockito.times(1);
-		}
-
-		return Mockito.never();
-	}
-
 	private boolean _isFullDotGitDirArchiveRequired(String workingDirectoryName)
 		throws Exception {
 
@@ -454,7 +446,7 @@ public class BaseWorkspaceGitRepositoryTest
 
 		defaultWorkspaceGitRepository.uploadGitArchives();
 
-		VerificationMode verificationMode = _getVerificationMode(
+		VerificationMode verificationMode = getVerificationMode(
 			gitArchiveEnabled && !snapshot &&
 			topLevelJobNames.contains(jobName));
 
@@ -579,7 +571,7 @@ public class BaseWorkspaceGitRepositoryTest
 
 		Mockito.verify(
 			defaultWorkspaceGitRepository,
-			_getVerificationMode(dotGitDirArchiveRequired)
+			getVerificationMode(dotGitDirArchiveRequired)
 		).downloadDotGitArchive();
 
 		Mockito.verify(
@@ -609,7 +601,7 @@ public class BaseWorkspaceGitRepositoryTest
 			new Class<?>[0]);
 
 		Mockito.verify(
-			shell, _getVerificationMode(commitFileIsSHA)
+			shell, getVerificationMode(commitFileIsSHA)
 		).doExecute(
 			Mockito.argThat(
 				executionRequest -> hasCommand(
@@ -784,17 +776,17 @@ public class BaseWorkspaceGitRepositoryTest
 
 		Mockito.verify(
 			defaultWorkspaceGitRepository,
-			_getVerificationMode(gitArchiveEnabled && snapshot)
+			getVerificationMode(gitArchiveEnabled && snapshot)
 		).downloadGitArchives();
 
 		Mockito.verify(
 			defaultWorkspaceGitRepository,
-			_getVerificationMode(!gitArchiveEnabled || !snapshot)
+			getVerificationMode(!gitArchiveEnabled || !snapshot)
 		).initializeGitWorkingDirectory();
 
 		Mockito.verify(
 			defaultWorkspaceGitRepository,
-			_getVerificationMode(gitArchiveEnabled)
+			getVerificationMode(gitArchiveEnabled)
 		).promoteGitArchive();
 	}
 
@@ -915,7 +907,7 @@ public class BaseWorkspaceGitRepositoryTest
 			return;
 		}
 
-		VerificationMode verificationMode = _getVerificationMode(
+		VerificationMode verificationMode = getVerificationMode(
 			dotGitFolderExists);
 
 		Mockito.verify(

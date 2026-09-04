@@ -33,6 +33,7 @@ import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
 
 import org.mockito.Mockito;
+import org.mockito.verification.VerificationMode;
 
 /**
  * @author Peter Yoo
@@ -117,6 +118,14 @@ public class Test {
 		}
 
 		return _simpleClassNames;
+	}
+
+	protected VerificationMode getVerificationMode(boolean invoked) {
+		if (invoked) {
+			return Mockito.times(1);
+		}
+
+		return Mockito.never();
 	}
 
 	protected boolean hasCommand(

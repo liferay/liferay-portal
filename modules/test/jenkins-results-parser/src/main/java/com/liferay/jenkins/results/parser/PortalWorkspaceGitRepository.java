@@ -365,6 +365,13 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		}
 	}
 
+	protected boolean isYarnInstalled() {
+		File yarnIntegrityFile = new File(
+			getDirectory(), "modules/node_modules/.yarn-integrity");
+
+		return yarnIntegrityFile.exists();
+	}
+
 	@Override
 	protected void setUpAdditionalCaches() throws IOException {
 		if (isBinariesCacheEnabled()) {
@@ -477,7 +484,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	}
 
 	protected synchronized void setUpYarn() {
-		if (_setUpYarn || isSnapshot()) {
+		if (_setUpYarn || isYarnInstalled()) {
 			return;
 		}
 
@@ -494,14 +501,6 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
 		if (!JenkinsResultsParserUtil.isCloudCINode() || _setUpYarnCache ||
 			upstreamBranchName.startsWith("ee-")) {
-
-			return;
-		}
-
-		if (isSnapshot()) {
-			downloadYarnCache();
-
-			_setUpYarnCache = true;
 
 			return;
 		}
