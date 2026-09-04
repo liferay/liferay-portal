@@ -12,6 +12,8 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../../../fixtures/usersAndOrganizationsPagesTest';
+import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
@@ -266,6 +268,88 @@ test(
 				}
 			}
 		}
+	}
+);
+
+test(
+	'Cancelling the in-flow account creation does not create the account',
+	{tag: ['@COMMERCE-9022', '@LPD-104785']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceThemeMiniumCatalogPage,
+		page,
+		site,
+	}) => {
+		const accountName = getRandomString();
+
+		let layout;
+
+		await test.step('Create a Site with an account selector and a B2B channel', async () => {
+			layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getFragmentDefinition({
+						id: getRandomString(),
+						key: 'COMMERCE_ACCOUNT_FRAGMENTS-account-selector',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			const channel =
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
+
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+		});
+
+		await test.step('Go to Site and open the create account modal', async () => {
+			await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`, {
+				waitUntil: 'networkidle',
+			});
+
+			await commerceThemeMiniumCatalogPage.openAccountSelectorDropdown();
+
+			await clickAndExpectToBeVisible({
+				target: commerceThemeMiniumCatalogPage.createNewAccountModal,
+				trigger: commerceThemeMiniumCatalogPage.createNewAccountButton,
+			});
+		});
+
+		await test.step('Type an account name and cancel', async () => {
+			await commerceThemeMiniumCatalogPage.createNewAccountModalNameInput.fill(
+				accountName
+			);
+
+			await expect(
+				commerceThemeMiniumCatalogPage.createNewAccountModalNameInput
+			).toHaveValue(accountName);
+
+			await clickAndExpectToBeHidden({
+				target: commerceThemeMiniumCatalogPage.createNewAccountModal,
+				trigger:
+					commerceThemeMiniumCatalogPage.createNewAccountModalCancelButton,
+			});
+		});
+
+		await test.step('Check that the account was not created', async () => {
+			await commerceThemeMiniumCatalogPage.accountSelectorSearchAccountInput.fill(
+				accountName
+			);
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorNoAccountsMessage
+			).toBeVisible();
+
+			expect(
+				await apiHelpers.headlessAdminUser.getAccountByName(accountName)
+			).toBeUndefined();
+		});
 	}
 );
 

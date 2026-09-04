@@ -113,50 +113,6 @@ definition {
 		AssertElementPresent(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT");
 	}
 
-	@description = "COMMERCE-9022. As a sales agent, I want to be able to cancel the in-flow account creation"
-	@priority = 3
-	test CanCancelInFlowAccountCreation {
-		property portal.acceptance = "false";
-
-		task ("GIVEN a Minium site is created and the Catalog page is reached") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-			ApplicationsMenu.gotoSite(site = "Minium");
-		}
-
-		task ("AND the account selector is opened") {
-			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
-		}
-
-		task ("AND the 'Create New Account' button is clicked") {
-			Button.click(button = "Create New Account");
-
-			SelectFrameTop();
-		}
-
-		task ("AND a modal shows up AND a name is typed") {
-			PortletEntry.inputName(name = ${accountName});
-		}
-
-		task ("AND the user clicks 'Cancel'") {
-			Click(
-				key_text = "Cancel",
-				locator1 = "Button#ANY_SECONDARY");
-		}
-
-		task ("THEN the modal closes and the account is not created") {
-			AssertElementPresent(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_NO_ACCOUNTS_WERE_FOUND");
-
-			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
-
-			SelectFrameTop();
-
-			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
-			CommerceAcceleratorsInitializer.viewDisabledAddToCartButton(productName = "ABS Sensor");
-		}
-	}
-
 	@description = "Test for COMMERCE-12909. I want to be able to change the active account while in a pending order's details page"
 	@priority = 5
 	test CanChangeActiveAccountInPendingOrdersPage {

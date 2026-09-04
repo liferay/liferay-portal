@@ -9,8 +9,11 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly accountSelectorAccount: (accountName: string) => Locator;
 	readonly accountSelectorBackButton: Locator;
 	readonly accountSelectorButton: Locator;
+	readonly accountSelectorDropdownMenu: Locator;
+	readonly accountSelectorNoAccountsMessage: Locator;
 	readonly accountSelectorOrdersList: Locator;
 	readonly accountSelectorOrderWorkflowStatus: Locator;
+	readonly accountSelectorSearchAccountInput: Locator;
 	readonly accountSelectorSearchOrderInput: Locator;
 	readonly catalogSearch: Locator;
 	readonly clearSearchButton: Locator;
@@ -19,6 +22,10 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly configurationIFrameDefaultSortingDropdownMenu: Locator;
 	readonly configurationIFrameSaveButton: Locator;
 	readonly configurationMenuItem: Locator;
+	readonly createNewAccountButton: Locator;
+	readonly createNewAccountModal: Locator;
+	readonly createNewAccountModalCancelButton: Locator;
+	readonly createNewAccountModalNameInput: Locator;
 	readonly createNewOrderButton: Locator;
 	readonly firstCardItem: Locator;
 	readonly firstCardItemAddToCartButton: Locator;
@@ -56,12 +63,23 @@ export class CommerceThemeMiniumCatalogPage {
 		this.accountSelectorButton = page
 			.locator('.account-selector-dropdown')
 			.getByRole('button');
+		this.accountSelectorDropdownMenu = page.locator(
+			'.account-selector-dropdown-menu'
+		);
+		this.accountSelectorNoAccountsMessage =
+			this.accountSelectorDropdownMenu.getByText(
+				'No accounts were found.',
+				{exact: true}
+			);
 		this.accountSelectorOrdersList = page.locator('.orders-list');
 		this.accountSelectorOrderWorkflowStatus =
 			this.accountSelectorButton.locator('.workflow-status');
-		this.accountSelectorSearchOrderInput = page
-			.locator('.account-selector-dropdown-menu')
-			.getByPlaceholder('Search Order');
+		this.accountSelectorSearchAccountInput =
+			this.accountSelectorDropdownMenu.getByPlaceholder('Search', {
+				exact: true,
+			});
+		this.accountSelectorSearchOrderInput =
+			this.accountSelectorDropdownMenu.getByPlaceholder('Search Order');
 		this.catalogSearch = page.getByTestId('searchInput');
 		this.clearSearchButton = page.getByRole('button', {
 			name: 'Clear Search',
@@ -81,6 +99,15 @@ export class CommerceThemeMiniumCatalogPage {
 			exact: true,
 			name: 'Configuration',
 		});
+		this.createNewAccountButton =
+			this.accountSelectorDropdownMenu.getByRole('button', {
+				name: 'Create New Account',
+			});
+		this.createNewAccountModal = page.locator('.modal-content');
+		this.createNewAccountModalCancelButton =
+			this.createNewAccountModal.getByRole('button', {name: 'Cancel'});
+		this.createNewAccountModalNameInput =
+			this.createNewAccountModal.locator('input[name="accountName"]');
 		this.createNewOrderButton = page.getByRole('button', {
 			name: 'Create New Order',
 		});
