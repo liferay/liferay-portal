@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.user.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.model.AccountEntry;
@@ -56,6 +57,7 @@ import com.liferay.headless.admin.user.client.pagination.Pagination;
 import com.liferay.headless.admin.user.client.permission.Permission;
 import com.liferay.headless.admin.user.client.problem.Problem;
 import com.liferay.headless.admin.user.client.resource.v1_0.AccountResource;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
@@ -84,6 +86,7 @@ import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
@@ -101,6 +104,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -143,6 +147,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
+		_accountEntry = _addAccountEntry(RandomTestUtil.randomString());
 		_accountGroup = _accountGroupLocalService.addAccountGroup(
 			StringPool.BLANK, TestPropsValues.getUserId(),
 			StringUtil.randomString(), StringUtil.randomString(),
@@ -157,46 +162,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	@Override
 	@Test
 	public void testDeleteOrganizationAccounts() throws Exception {
-		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()));
-
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		for (AccountEntry accountEntry : accountEntries) {
-			_accountEntryOrganizationRelLocalService.
-				addAccountEntryOrganizationRel(
-					accountEntry.getAccountEntryId(),
-					organization.getOrganizationId());
-		}
-
-		Assert.assertEquals(
-			3,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization.getOrganizationId()));
-
-		Long[] accountEntryIds = ListUtil.toArray(
-			accountEntries.subList(1, accountEntries.size()),
-			AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
-
-		accountResource.deleteOrganizationAccounts(
-			organization.getOrganizationId(), accountEntryIds);
-
-		Assert.assertEquals(
-			1,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization.getOrganizationId()));
-
-		AccountEntry accountEntry = accountEntries.get(0);
-
-		Assert.assertTrue(
-			_accountEntryOrganizationRelLocalService.
-				hasAccountEntryOrganizationRel(
-					accountEntry.getAccountEntryId(),
-					organization.getOrganizationId()));
+		_testDeleteOrganizationAccounts();
+		_testDeleteOrganizationAccountsWithPermission();
 	}
 
 	@Override
@@ -204,46 +171,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	public void testDeleteOrganizationAccountsByExternalReferenceCode()
 		throws Exception {
 
-		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()));
-
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		for (AccountEntry accountEntry : accountEntries) {
-			_accountEntryOrganizationRelLocalService.
-				addAccountEntryOrganizationRel(
-					accountEntry.getAccountEntryId(),
-					organization.getOrganizationId());
-		}
-
-		Assert.assertEquals(
-			3,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization.getOrganizationId()));
-
-		String[] externalReferenceCodes = TransformUtil.transformToArray(
-			accountEntries.subList(1, accountEntries.size()),
-			AccountEntryModel::getExternalReferenceCode, String.class);
-
-		accountResource.deleteOrganizationAccountsByExternalReferenceCode(
-			organization.getOrganizationId(), externalReferenceCodes);
-
-		Assert.assertEquals(
-			1,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization.getOrganizationId()));
-
-		AccountEntry accountEntry = accountEntries.get(0);
-
-		Assert.assertTrue(
-			_accountEntryOrganizationRelLocalService.
-				hasAccountEntryOrganizationRel(
-					accountEntry.getAccountEntryId(),
-					organization.getOrganizationId()));
+		_testDeleteOrganizationAccountsByExternalReferenceCode();
+		_testDeleteOrganizationAccountsByExternalReferenceCodeWithPermission();
 	}
 
 	@Override
@@ -450,51 +379,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	@Override
 	@Test
 	public void testPatchOrganizationMoveAccounts() throws Exception {
-		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()));
-
-		Organization organization1 = OrganizationTestUtil.addOrganization();
-
-		for (AccountEntry accountEntry : accountEntries) {
-			_accountEntryOrganizationRelLocalService.
-				addAccountEntryOrganizationRel(
-					accountEntry.getAccountEntryId(),
-					organization1.getOrganizationId());
-		}
-
-		Assert.assertEquals(
-			3,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization1.getOrganizationId()));
-
-		Organization organization2 = OrganizationTestUtil.addOrganization();
-
-		Assert.assertEquals(
-			0,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization2.getOrganizationId()));
-
-		accountResource.patchOrganizationMoveAccounts(
-			organization1.getOrganizationId(),
-			organization2.getOrganizationId(),
-			ListUtil.toArray(
-				accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR));
-
-		Assert.assertEquals(
-			0,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization1.getOrganizationId()));
-
-		Assert.assertEquals(
-			3,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization2.getOrganizationId()));
+		_testPatchOrganizationMoveAccounts();
+		_testPatchOrganizationMoveAccountsWithPermission();
 	}
 
 	@Override
@@ -567,31 +453,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	@Override
 	@Test
 	public void testPostOrganizationAccounts() throws Exception {
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		Assert.assertEquals(
-			0,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization.getOrganizationId()));
-
-		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()));
-
-		Long[] accountEntryIds = ListUtil.toArray(
-			accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
-
-		accountResource.postOrganizationAccounts(
-			organization.getOrganizationId(), accountEntryIds);
-
-		for (Long accountEntryId : accountEntryIds) {
-			Assert.assertTrue(
-				_accountEntryOrganizationRelLocalService.
-					hasAccountEntryOrganizationRel(
-						accountEntryId, organization.getOrganizationId()));
-		}
+		_testPostOrganizationAccounts();
+		_testPostOrganizationAccountsWithPermission();
 	}
 
 	@Override
@@ -599,33 +462,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	public void testPostOrganizationAccountsByExternalReferenceCode()
 		throws Exception {
 
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		Assert.assertEquals(
-			0,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCountByOrganizationId(
-					organization.getOrganizationId()));
-
-		List<AccountEntry> accountEntries = Arrays.asList(
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()),
-			_addAccountEntry(RandomTestUtil.randomString()));
-
-		String[] externalReferenceCodes = TransformUtil.transformToArray(
-			accountEntries, AccountEntryModel::getExternalReferenceCode,
-			String.class);
-
-		accountResource.postOrganizationAccountsByExternalReferenceCode(
-			organization.getOrganizationId(), externalReferenceCodes);
-
-		for (AccountEntry accountEntry : accountEntries) {
-			Assert.assertTrue(
-				_accountEntryOrganizationRelLocalService.
-					hasAccountEntryOrganizationRel(
-						accountEntry.getAccountEntryId(),
-						organization.getOrganizationId()));
-		}
+		_testPostOrganizationAccountsByExternalReferenceCode();
+		_testPostOrganizationAccountsByExternalReferenceCodeWithPermission();
 	}
 
 	@Override
@@ -705,6 +543,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		_testPutAccountWithEmptyOrganizationExternalReferenceCodes();
 		_testPutAccountWithEmptyOrganizationIds();
 		_testPutAccountWithMoreExternalReferenceCodes();
+		_testPutAccountWithOrganizationIds();
 		_testPutAccountWithPostalAddressPhoneNumber();
 		_testPutAccountWithoutName();
 	}
@@ -1019,6 +858,30 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
+	private void _addRoleUsers(User user, String... actionIds)
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), AccountEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_accountEntry.getAccountEntryId()), role.getRoleId(),
+			actionIds);
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+	}
+
+	private User _addUser() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), _PASSWORD, _PASSWORD, false, true);
+
+		return user;
+	}
+
 	private void _assertEquals(
 		AccountContactInformation accountContactInformation1,
 		AccountContactInformation accountContactInformation2) {
@@ -1128,6 +991,22 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		}
 	}
 
+	private void _assertProblemException(
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
 	private boolean _equals(
 		EmailAddress emailAddress1, EmailAddress emailAddress2) {
 
@@ -1205,6 +1084,18 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		}
 
 		return true;
+	}
+
+	private AccountResource _getAccountResource(String password, User user) {
+		return AccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private Object _getCustomFieldCustomValueData(Account account, String name)
@@ -1289,6 +1180,148 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 				urlType = "intranet";
 			}
 		};
+	}
+
+	private void _testDeleteOrganizationAccounts() throws Exception {
+		List<AccountEntry> accountEntries = Arrays.asList(
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		for (AccountEntry accountEntry : accountEntries) {
+			_accountEntryOrganizationRelLocalService.
+				addAccountEntryOrganizationRel(
+					accountEntry.getAccountEntryId(),
+					organization.getOrganizationId());
+		}
+
+		Assert.assertEquals(
+			3,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization.getOrganizationId()));
+
+		Long[] accountEntryIds = ListUtil.toArray(
+			accountEntries.subList(1, accountEntries.size()),
+			AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
+
+		accountResource.deleteOrganizationAccounts(
+			organization.getOrganizationId(), accountEntryIds);
+
+		Assert.assertEquals(
+			1,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization.getOrganizationId()));
+
+		AccountEntry accountEntry = accountEntries.get(0);
+
+		Assert.assertTrue(
+			_accountEntryOrganizationRelLocalService.
+				hasAccountEntryOrganizationRel(
+					accountEntry.getAccountEntryId(),
+					organization.getOrganizationId()));
+	}
+
+	private void _testDeleteOrganizationAccountsByExternalReferenceCode()
+		throws Exception {
+
+		List<AccountEntry> accountEntries = Arrays.asList(
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		for (AccountEntry accountEntry : accountEntries) {
+			_accountEntryOrganizationRelLocalService.
+				addAccountEntryOrganizationRel(
+					accountEntry.getAccountEntryId(),
+					organization.getOrganizationId());
+		}
+
+		Assert.assertEquals(
+			3,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization.getOrganizationId()));
+
+		String[] externalReferenceCodes = TransformUtil.transformToArray(
+			accountEntries.subList(1, accountEntries.size()),
+			AccountEntryModel::getExternalReferenceCode, String.class);
+
+		accountResource.deleteOrganizationAccountsByExternalReferenceCode(
+			organization.getOrganizationId(), externalReferenceCodes);
+
+		Assert.assertEquals(
+			1,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization.getOrganizationId()));
+
+		AccountEntry accountEntry = accountEntries.get(0);
+
+		Assert.assertTrue(
+			_accountEntryOrganizationRelLocalService.
+				hasAccountEntryOrganizationRel(
+					accountEntry.getAccountEntryId(),
+					organization.getOrganizationId()));
+	}
+
+	private void _testDeleteOrganizationAccountsByExternalReferenceCodeWithPermission()
+		throws Exception {
+
+		User user = _addUser();
+
+		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			_accountEntry.getAccountEntryId(),
+			organization.getOrganizationId());
+
+		_assertProblemException(
+			() ->
+				accountResource.
+					deleteOrganizationAccountsByExternalReferenceCode(
+						organization.getOrganizationId(),
+						new String[] {
+							_accountEntry.getExternalReferenceCode()
+						}));
+
+		_addRoleUsers(user, AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		accountResource.deleteOrganizationAccountsByExternalReferenceCode(
+			organization.getOrganizationId(),
+			new String[] {_accountEntry.getExternalReferenceCode()});
+	}
+
+	private void _testDeleteOrganizationAccountsWithPermission()
+		throws Exception {
+
+		User user = _addUser();
+
+		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			_accountEntry.getAccountEntryId(),
+			organization.getOrganizationId());
+
+		_assertProblemException(
+			() -> accountResource.deleteOrganizationAccounts(
+				organization.getOrganizationId(),
+				new Long[] {_accountEntry.getAccountEntryId()}));
+
+		_addRoleUsers(user, AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		accountResource.deleteOrganizationAccounts(
+			organization.getOrganizationId(),
+			new Long[] {_accountEntry.getAccountEntryId()});
 	}
 
 	private void _testGetAccountsPage(
@@ -2007,6 +2040,83 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			postalAddress.getPhoneNumber(), address.getPhoneNumber());
 	}
 
+	private void _testPatchOrganizationMoveAccounts() throws Exception {
+		List<AccountEntry> accountEntries = Arrays.asList(
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
+
+		Organization organization1 = OrganizationTestUtil.addOrganization();
+
+		for (AccountEntry accountEntry : accountEntries) {
+			_accountEntryOrganizationRelLocalService.
+				addAccountEntryOrganizationRel(
+					accountEntry.getAccountEntryId(),
+					organization1.getOrganizationId());
+		}
+
+		Assert.assertEquals(
+			3,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization1.getOrganizationId()));
+
+		Organization organization2 = OrganizationTestUtil.addOrganization();
+
+		Assert.assertEquals(
+			0,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization2.getOrganizationId()));
+
+		accountResource.patchOrganizationMoveAccounts(
+			organization1.getOrganizationId(),
+			organization2.getOrganizationId(),
+			ListUtil.toArray(
+				accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR));
+
+		Assert.assertEquals(
+			0,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization1.getOrganizationId()));
+
+		Assert.assertEquals(
+			3,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization2.getOrganizationId()));
+	}
+
+	private void _testPatchOrganizationMoveAccountsWithPermission()
+		throws Exception {
+
+		User user = _addUser();
+
+		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
+
+		Organization organization1 = OrganizationTestUtil.addOrganization();
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			_accountEntry.getAccountEntryId(),
+			organization1.getOrganizationId());
+
+		Organization organization2 = OrganizationTestUtil.addOrganization();
+
+		_assertProblemException(
+			() -> accountResource.patchOrganizationMoveAccounts(
+				organization1.getOrganizationId(),
+				organization2.getOrganizationId(),
+				new Long[] {_accountEntry.getAccountEntryId()}));
+
+		_addRoleUsers(user, AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		accountResource.patchOrganizationMoveAccounts(
+			organization1.getOrganizationId(),
+			organization2.getOrganizationId(),
+			new Long[] {_accountEntry.getAccountEntryId()});
+	}
+
 	private void _testPostAccountBatch() throws Exception {
 		Account account = randomAccount();
 
@@ -2607,6 +2717,109 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			postalAddress.getPhoneNumber(), address.getPhoneNumber());
 	}
 
+	private void _testPostOrganizationAccounts() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		Assert.assertEquals(
+			0,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization.getOrganizationId()));
+
+		List<AccountEntry> accountEntries = Arrays.asList(
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
+
+		Long[] accountEntryIds = ListUtil.toArray(
+			accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR);
+
+		accountResource.postOrganizationAccounts(
+			organization.getOrganizationId(), accountEntryIds);
+
+		for (Long accountEntryId : accountEntryIds) {
+			Assert.assertTrue(
+				_accountEntryOrganizationRelLocalService.
+					hasAccountEntryOrganizationRel(
+						accountEntryId, organization.getOrganizationId()));
+		}
+	}
+
+	private void _testPostOrganizationAccountsByExternalReferenceCode()
+		throws Exception {
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		Assert.assertEquals(
+			0,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCountByOrganizationId(
+					organization.getOrganizationId()));
+
+		List<AccountEntry> accountEntries = Arrays.asList(
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()),
+			_addAccountEntry(RandomTestUtil.randomString()));
+
+		String[] externalReferenceCodes = TransformUtil.transformToArray(
+			accountEntries, AccountEntryModel::getExternalReferenceCode,
+			String.class);
+
+		accountResource.postOrganizationAccountsByExternalReferenceCode(
+			organization.getOrganizationId(), externalReferenceCodes);
+
+		for (AccountEntry accountEntry : accountEntries) {
+			Assert.assertTrue(
+				_accountEntryOrganizationRelLocalService.
+					hasAccountEntryOrganizationRel(
+						accountEntry.getAccountEntryId(),
+						organization.getOrganizationId()));
+		}
+	}
+
+	private void _testPostOrganizationAccountsByExternalReferenceCodeWithPermission()
+		throws Exception {
+
+		User user = _addUser();
+
+		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_assertProblemException(
+			() ->
+				accountResource.postOrganizationAccountsByExternalReferenceCode(
+					organization.getOrganizationId(),
+					new String[] {_accountEntry.getExternalReferenceCode()}));
+
+		_addRoleUsers(user, AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		accountResource.postOrganizationAccountsByExternalReferenceCode(
+			organization.getOrganizationId(),
+			new String[] {_accountEntry.getExternalReferenceCode()});
+	}
+
+	private void _testPostOrganizationAccountsWithPermission()
+		throws Exception {
+
+		User user = _addUser();
+
+		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		_assertProblemException(
+			() -> accountResource.postOrganizationAccounts(
+				organization.getOrganizationId(),
+				new Long[] {_accountEntry.getAccountEntryId()}));
+
+		_addRoleUsers(user, AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		accountResource.postOrganizationAccounts(
+			organization.getOrganizationId(),
+			new Long[] {_accountEntry.getAccountEntryId()});
+	}
+
 	private void _testPutAccountByExternalReferenceCodeWithContactInformation()
 		throws Exception {
 
@@ -2879,6 +3092,32 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		Assert.assertTrue(putAccount.getLogoId() > 0);
 	}
 
+	private void _testPutAccountWithOrganizationIds() throws Exception {
+		User user = _addUser();
+
+		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
+
+		_addRoleUsers(user, ActionKeys.UPDATE, ActionKeys.VIEW);
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		Account account = new Account();
+
+		account.setExternalReferenceCode(
+			_accountEntry.getExternalReferenceCode());
+		account.setName(RandomTestUtil.randomString());
+		account.setOrganizationIds(
+			new Long[] {organization.getOrganizationId()});
+
+		_assertProblemException(
+			() -> accountResource.putAccount(
+				_accountEntry.getAccountEntryId(), account));
+
+		_addRoleUsers(user, AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		accountResource.putAccount(_accountEntry.getAccountEntryId(), account);
+	}
+
 	private void _testPutAccountWithoutName() throws Exception {
 		Account postAccount = testPutAccount_addAccount();
 
@@ -2926,6 +3165,10 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		Assert.assertEquals(
 			postalAddress.getPhoneNumber(), address.getPhoneNumber());
 	}
+
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
+	private AccountEntry _accountEntry;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
@@ -2996,5 +3239,8 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

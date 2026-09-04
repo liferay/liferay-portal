@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.user.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryOrganizationRel;
@@ -45,7 +46,9 @@ import com.liferay.headless.admin.user.client.dto.v1_0.WebUrl;
 import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.admin.user.client.pagination.Pagination;
 import com.liferay.headless.admin.user.client.permission.Permission;
+import com.liferay.headless.admin.user.client.problem.Problem;
 import com.liferay.headless.admin.user.client.resource.v1_0.OrganizationResource;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringPool;
@@ -87,6 +90,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -164,18 +168,8 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 	@Override
 	@Test
 	public void testDeleteAccountOrganization() throws Exception {
-		com.liferay.portal.kernel.model.Organization organization =
-			OrganizationTestUtil.addOrganization();
-
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			_accountEntry.getAccountEntryId(),
-			organization.getOrganizationId());
-
-		Assert.assertNotNull(
-			_accountEntryOrganizationRelLocalService.
-				fetchAccountEntryOrganizationRel(
-					_accountEntry.getAccountEntryId(),
-					organization.getOrganizationId()));
+		_testDeleteAccountOrganization();
+		_testDeleteAccountOrganizationWithPermission();
 	}
 
 	@Override
@@ -317,28 +311,28 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 	@Override
 	@Test
 	public void testGetAccountOrganization() throws Exception {
-		com.liferay.portal.kernel.model.Organization organization =
-			OrganizationTestUtil.addOrganization();
+		com.liferay.portal.kernel.model.Organization
+			serviceBuilderOrganization = OrganizationTestUtil.addOrganization();
 
 		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
 			_accountEntry.getAccountEntryId(),
-			organization.getOrganizationId());
+			serviceBuilderOrganization.getOrganizationId());
 
 		Assert.assertNotNull(
 			_accountEntryOrganizationRelLocalService.
 				fetchAccountEntryOrganizationRel(
 					_accountEntry.getAccountEntryId(),
-					organization.getOrganizationId()));
+					serviceBuilderOrganization.getOrganizationId()));
 
 		organizationResource.deleteAccountOrganization(
 			_accountEntry.getAccountEntryId(),
-			String.valueOf(organization.getOrganizationId()));
+			String.valueOf(serviceBuilderOrganization.getOrganizationId()));
 
 		Assert.assertNull(
 			_accountEntryOrganizationRelLocalService.
 				fetchAccountEntryOrganizationRel(
 					_accountEntry.getAccountEntryId(),
-					organization.getOrganizationId()));
+					serviceBuilderOrganization.getOrganizationId()));
 	}
 
 	@Override
@@ -476,18 +470,8 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 	@Override
 	@Test
 	public void testPostAccountOrganization() throws Exception {
-		Organization organization =
-			testPostAccountOrganization_addOrganization();
-
-		assertHttpResponseStatusCode(
-			204,
-			organizationResource.postAccountOrganizationHttpResponse(
-				_accountEntry.getAccountEntryId(), organization.getId()));
-
-		assertHttpResponseStatusCode(
-			404,
-			organizationResource.postAccountOrganizationHttpResponse(
-				_accountEntry.getAccountEntryId(), "-"));
+		_testPostAccountOrganization();
+		_testPostAccountOrganizationWithPermission();
 	}
 
 	@LazyReferencing
@@ -1014,6 +998,60 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		return organizationResource.postOrganization(organization);
 	}
 
+	private void _addRoleUsers(User user, String... actionIds)
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), AccountEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_accountEntry.getAccountEntryId()), role.getRoleId(),
+			actionIds);
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+	}
+
+	private User _addUser() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), _PASSWORD, _PASSWORD, false, true);
+
+		return user;
+	}
+
+	private void _assertProblemException(
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private OrganizationResource _getOrganizationResource(
+		String password, User user) {
+
+		return OrganizationResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private OrganizationContactInformation
 		_getRandomOrganizationContactInformation() {
 
@@ -1070,6 +1108,49 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 					});
 			}
 		};
+	}
+
+	private void _testDeleteAccountOrganization() throws Exception {
+		com.liferay.portal.kernel.model.Organization
+			serviceBuilderOrganization = OrganizationTestUtil.addOrganization();
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			_accountEntry.getAccountEntryId(),
+			serviceBuilderOrganization.getOrganizationId());
+
+		Assert.assertNotNull(
+			_accountEntryOrganizationRelLocalService.
+				fetchAccountEntryOrganizationRel(
+					_accountEntry.getAccountEntryId(),
+					serviceBuilderOrganization.getOrganizationId()));
+	}
+
+	private void _testDeleteAccountOrganizationWithPermission()
+		throws Exception {
+
+		User user = _addUser();
+
+		OrganizationResource organizationResource = _getOrganizationResource(
+			_PASSWORD, user);
+
+		com.liferay.portal.kernel.model.Organization
+			serviceBuilderOrganization = OrganizationTestUtil.addOrganization();
+
+		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
+			_accountEntry.getAccountEntryId(),
+			serviceBuilderOrganization.getOrganizationId());
+
+		_assertProblemException(
+			() -> organizationResource.deleteAccountOrganization(
+				_accountEntry.getAccountEntryId(),
+				String.valueOf(
+					serviceBuilderOrganization.getOrganizationId())));
+
+		_addRoleUsers(user, AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		organizationResource.deleteAccountOrganization(
+			_accountEntry.getAccountEntryId(),
+			String.valueOf(serviceBuilderOrganization.getOrganizationId()));
 	}
 
 	private void _testGetOrganizationsPageWithFilter() throws Exception {
@@ -1200,12 +1281,13 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
-		com.liferay.portal.kernel.model.Organization organization =
-			_organizationLocalService.getOrganization(
-				GetterUtil.getLong(postOrganization.getId()));
+		com.liferay.portal.kernel.model.Organization
+			serviceBuilderOrganization =
+				_organizationLocalService.getOrganization(
+					GetterUtil.getLong(postOrganization.getId()));
 
 		_roleLocalService.addGroupRole(
-			organization.getGroupId(), role.getRoleId());
+			serviceBuilderOrganization.getGroupId(), role.getRoleId());
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			TestPropsValues.getCompanyId(),
@@ -1216,8 +1298,8 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		User user1 = UserTestUtil.addUser();
 
 		organizationResource.postUserAccountsByEmailAddress(
-			String.valueOf(organization.getOrganizationId()), null,
-			new String[] {user1.getEmailAddress()});
+			String.valueOf(serviceBuilderOrganization.getOrganizationId()),
+			null, new String[] {user1.getEmailAddress()});
 
 		User user2 = UserTestUtil.addUser();
 
@@ -1234,7 +1316,7 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 			).build();
 
 		Organization getOrganization = organizationResource.getOrganization(
-			String.valueOf(organization.getOrganizationId()));
+			String.valueOf(serviceBuilderOrganization.getOrganizationId()));
 
 		Assert.assertTrue(
 			ArrayUtil.exists(
@@ -1358,6 +1440,40 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 		Assert.assertTrue(
 			ArrayUtil.containsAll(patchOrganization.getKeywords(), keywords));
+	}
+
+	private void _testPostAccountOrganization() throws Exception {
+		Organization organization =
+			testPostAccountOrganization_addOrganization();
+
+		assertHttpResponseStatusCode(
+			204,
+			organizationResource.postAccountOrganizationHttpResponse(
+				_accountEntry.getAccountEntryId(), organization.getId()));
+
+		assertHttpResponseStatusCode(
+			404,
+			organizationResource.postAccountOrganizationHttpResponse(
+				_accountEntry.getAccountEntryId(), "-"));
+	}
+
+	private void _testPostAccountOrganizationWithPermission() throws Exception {
+		User user = _addUser();
+
+		OrganizationResource organizationResource = _getOrganizationResource(
+			_PASSWORD, user);
+
+		Organization organization =
+			testPostAccountOrganization_addOrganization();
+
+		_assertProblemException(
+			() -> organizationResource.postAccountOrganization(
+				_accountEntry.getAccountEntryId(), organization.getId()));
+
+		_addRoleUsers(user, AccountActionKeys.UPDATE_ORGANIZATIONS);
+
+		organizationResource.postAccountOrganization(
+			_accountEntry.getAccountEntryId(), organization.getId());
 	}
 
 	private void _testPostOrganizationBatch() throws Exception {
@@ -1857,6 +1973,8 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		return TransformUtil.transformToArray(
 			users, User::getEmailAddress, String.class);
 	}
+
+	private static final String _PASSWORD = RandomTestUtil.randomString();
 
 	private AccountEntry _accountEntry;
 
