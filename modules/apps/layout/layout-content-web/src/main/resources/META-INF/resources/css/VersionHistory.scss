@@ -67,6 +67,12 @@ $version-history-side-panel-width: 320px;
 #wrapper.c-slideout-container {
 	padding-top: $version-history-toolbar-height;
 
+	&.c-slideout-push-start {
+		@include media-breakpoint-up(lg) {
+			padding-left: $version-history-side-panel-width;
+		}
+	}
+
 	&.c-slideout-transition-in,
 	&.c-slideout-transition-out {
 		transition: none;
