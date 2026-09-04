@@ -1679,11 +1679,11 @@ public class ResourceFolderResourceTest
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
-		Folder folder = _addDocumentLibraryFolder(
-			fragmentCollection.getFragmentCollectionKey());
-
 		ResourceFolder resourceFolder = _randomResourceFolder(
 			fragmentCollection.getExternalReferenceCode());
+
+		Folder folder = _addDocumentLibraryFolder(
+			fragmentCollection.getFragmentCollectionKey());
 
 		resourceFolder.setExternalReferenceCode(
 			folder.getExternalReferenceCode());

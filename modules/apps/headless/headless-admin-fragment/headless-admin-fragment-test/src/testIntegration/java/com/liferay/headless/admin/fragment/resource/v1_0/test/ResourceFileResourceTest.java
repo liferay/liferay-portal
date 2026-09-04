@@ -2032,12 +2032,12 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
+		ResourceFile resourceFile = _randomResourceFile(
+			fragmentCollection.getExternalReferenceCode());
+
 		FileEntry fileEntry = _addDocumentLibraryFileEntry(
 			_addDocumentLibraryFolder(
 				fragmentCollection.getFragmentCollectionKey()));
-
-		ResourceFile resourceFile = _randomResourceFile(
-			fragmentCollection.getExternalReferenceCode());
 
 		resourceFile.setExternalReferenceCode(
 			fileEntry.getExternalReferenceCode());
