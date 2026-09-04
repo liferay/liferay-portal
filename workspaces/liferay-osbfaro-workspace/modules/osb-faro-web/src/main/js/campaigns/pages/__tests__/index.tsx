@@ -51,4 +51,13 @@ describe('Campaigns', () => {
 
 		expect(getByTestId('campaigns-data-set')).toBeTruthy();
 	});
+
+	it('should state that the section covers all time, as secondary text', () => {
+		const {getByText} = renderCampaigns();
+
+		const allTime = getByText('All Time');
+
+		expect(allTime).toBeTruthy();
+		expect(allTime).toHaveClass('text-secondary');
+	});
 });
