@@ -54,6 +54,10 @@ public class FragmentSetUtil {
 				dlFolder.getParentFolderId());
 		}
 
+		if (parentDLFolder == null) {
+			return null;
+		}
+
 		return FragmentCollectionLocalServiceUtil.fetchFragmentCollection(
 			dlFolder.getGroupId(), dlFolder.getName());
 	}
