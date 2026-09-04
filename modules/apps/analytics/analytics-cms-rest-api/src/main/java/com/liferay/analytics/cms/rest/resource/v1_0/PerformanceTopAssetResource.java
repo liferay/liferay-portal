@@ -45,13 +45,15 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface PerformanceTopAssetResource {
 
 	public Response getPerformanceTopAssetExport(
-			Long[] depotEntryIds, Integer rangeKey, String search,
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public Page<PerformanceTopAsset> getPerformanceTopAssetPage(
-			Long[] depotEntryIds, Integer rangeKey, String search,
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
@@ -145,4 +147,4 @@ public interface PerformanceTopAssetResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-493090022
+// LIFERAY-REST-BUILDER-HASH:1109380354

@@ -58,6 +58,10 @@ public abstract class BasePerformanceTopAssetResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "cmpProjectIds"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "depotEntryIds"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -91,6 +95,9 @@ public abstract class BasePerformanceTopAssetResourceImpl
 	@Override
 	public Response getPerformanceTopAssetExport(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("cmpProjectIds")
+			Long[] cmpProjectIds,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("depotEntryIds")
 			Long[] depotEntryIds,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
@@ -117,6 +124,10 @@ public abstract class BasePerformanceTopAssetResourceImpl
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "cmpProjectIds"
+			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "depotEntryIds"
@@ -163,6 +174,9 @@ public abstract class BasePerformanceTopAssetResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<PerformanceTopAsset> getPerformanceTopAssetPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("cmpProjectIds")
+			Long[] cmpProjectIds,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("depotEntryIds")
 			Long[] depotEntryIds,
@@ -634,4 +648,4 @@ public abstract class BasePerformanceTopAssetResourceImpl
 		LogFactoryUtil.getLog(BasePerformanceTopAssetResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-833427348
+// LIFERAY-REST-BUILDER-HASH:-49448628

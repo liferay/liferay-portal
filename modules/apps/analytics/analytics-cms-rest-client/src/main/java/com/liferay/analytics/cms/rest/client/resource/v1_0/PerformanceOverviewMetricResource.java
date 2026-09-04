@@ -33,11 +33,11 @@ public interface PerformanceOverviewMetricResource {
 	}
 
 	public PerformanceOverviewMetric getPerformanceOverviewMetric(
-			Long[] depotEntryIds, Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getPerformanceOverviewMetricHttpResponse(
-			Long[] depotEntryIds, Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey)
 		throws Exception;
 
 	public static class Builder {
@@ -150,12 +150,12 @@ public interface PerformanceOverviewMetricResource {
 		implements PerformanceOverviewMetricResource {
 
 		public PerformanceOverviewMetric getPerformanceOverviewMetric(
-				Long[] depotEntryIds, Integer rangeKey)
+				Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getPerformanceOverviewMetricHttpResponse(
-					depotEntryIds, rangeKey);
+					cmpProjectIds, depotEntryIds, rangeKey);
 
 			String content = httpResponse.getContent();
 
@@ -218,7 +218,8 @@ public interface PerformanceOverviewMetricResource {
 
 		public HttpInvoker.HttpResponse
 				getPerformanceOverviewMetricHttpResponse(
-					Long[] depotEntryIds, Integer rangeKey)
+					Long[] cmpProjectIds, Long[] depotEntryIds,
+					Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -241,6 +242,13 @@ public interface PerformanceOverviewMetricResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (cmpProjectIds != null) {
+				for (int i = 0; i < cmpProjectIds.length; i++) {
+					httpInvoker.parameter(
+						"cmpProjectIds", String.valueOf(cmpProjectIds[i]));
+				}
+			}
 
 			if (depotEntryIds != null) {
 				for (int i = 0; i < depotEntryIds.length; i++) {
@@ -278,4 +286,4 @@ public interface PerformanceOverviewMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1475610571
+// LIFERAY-REST-BUILDER-HASH:1067441570

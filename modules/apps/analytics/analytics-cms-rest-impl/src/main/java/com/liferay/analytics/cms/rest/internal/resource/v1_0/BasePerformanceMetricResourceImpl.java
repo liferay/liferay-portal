@@ -52,6 +52,10 @@ public abstract class BasePerformanceMetricResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "cmpProjectIds"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "depotEntryIds"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -79,6 +83,9 @@ public abstract class BasePerformanceMetricResourceImpl
 	@Override
 	public PerformanceMetric getPerformanceMetric(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("cmpProjectIds")
+			Long[] cmpProjectIds,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("depotEntryIds")
 			Long[] depotEntryIds,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
@@ -102,6 +109,10 @@ public abstract class BasePerformanceMetricResourceImpl
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "cmpProjectIds"
+			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "depotEntryIds"
@@ -130,6 +141,9 @@ public abstract class BasePerformanceMetricResourceImpl
 	@jakarta.ws.rs.Produces("text/csv")
 	@Override
 	public Response getPerformanceMetricExport(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("cmpProjectIds")
+			Long[] cmpProjectIds,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("depotEntryIds")
 			Long[] depotEntryIds,
@@ -594,4 +608,4 @@ public abstract class BasePerformanceMetricResourceImpl
 		LogFactoryUtil.getLog(BasePerformanceMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:821872626
+// LIFERAY-REST-BUILDER-HASH:844765758

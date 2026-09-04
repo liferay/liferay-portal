@@ -43,13 +43,13 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface PerformanceMetricResource {
 
 	public PerformanceMetric getPerformanceMetric(
-			Long[] depotEntryIds, String groupBy, String metricType,
-			Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+			String metricType, Integer rangeKey)
 		throws Exception;
 
 	public Response getPerformanceMetricExport(
-			Long[] depotEntryIds, String groupBy, String metricType,
-			Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+			String metricType, Integer rangeKey)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -140,4 +140,4 @@ public interface PerformanceMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-213412740
+// LIFERAY-REST-BUILDER-HASH:-909510184

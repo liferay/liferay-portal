@@ -203,7 +203,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 	public void testGetPerformanceTopAssetPage() throws Exception {
 		Page<PerformanceTopAsset> page =
 			performanceTopAssetResource.getPerformanceTopAssetPage(
-				null, null, null, null, Pagination.of(1, 10), null);
+				null, null, null, null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -216,7 +216,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 				randomPerformanceTopAsset());
 
 		page = performanceTopAssetResource.getPerformanceTopAssetPage(
-			null, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null, null, null, null, null, Pagination.of(1, (int)totalCount + 2),
 			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -257,7 +257,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 		for (EntityField entityField : entityFields) {
 			Page<PerformanceTopAsset> page =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null,
+					null, null, null, null,
 					getFilterString(
 						entityField, "between", performanceTopAsset1),
 					Pagination.of(1, 2), null);
@@ -320,7 +320,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 		for (EntityField entityField : entityFields) {
 			Page<PerformanceTopAsset> page =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null,
+					null, null, null, null,
 					getFilterString(
 						entityField, operator, performanceTopAsset1),
 					Pagination.of(1, 2), null);
@@ -337,7 +337,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 
 		Page<PerformanceTopAsset> performanceTopAssetsPage =
 			performanceTopAssetResource.getPerformanceTopAssetPage(
-				null, null, null, null, null, null);
+				null, null, null, null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			performanceTopAssetsPage.getTotalCount());
@@ -361,7 +361,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<PerformanceTopAsset> page1 =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null, null,
+					null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -375,7 +375,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 
 			Page<PerformanceTopAsset> page2 =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null, null,
+					null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -387,7 +387,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 
 			Page<PerformanceTopAsset> page3 =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null, null,
+					null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -400,8 +400,8 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 		else {
 			Page<PerformanceTopAsset> page1 =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null, null, Pagination.of(1, totalCount + 2),
-					null);
+					null, null, null, null, null,
+					Pagination.of(1, totalCount + 2), null);
 
 			List<PerformanceTopAsset> performanceTopAssets1 =
 				(List<PerformanceTopAsset>)page1.getItems();
@@ -412,8 +412,8 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 
 			Page<PerformanceTopAsset> page2 =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null, null, Pagination.of(2, totalCount + 2),
-					null);
+					null, null, null, null, null,
+					Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -426,7 +426,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 
 			Page<PerformanceTopAsset> page3 =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null, null,
+					null, null, null, null, null,
 					Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
@@ -566,12 +566,12 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 
 		Page<PerformanceTopAsset> page =
 			performanceTopAssetResource.getPerformanceTopAssetPage(
-				null, null, null, null, null, null);
+				null, null, null, null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<PerformanceTopAsset> ascPage =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null, null,
+					null, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -584,7 +584,7 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 
 			Page<PerformanceTopAsset> descPage =
 				performanceTopAssetResource.getPerformanceTopAssetPage(
-					null, null, null, null,
+					null, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -1627,4 +1627,4 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 			_performanceTopAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1085740111
+// LIFERAY-REST-BUILDER-HASH:566075511

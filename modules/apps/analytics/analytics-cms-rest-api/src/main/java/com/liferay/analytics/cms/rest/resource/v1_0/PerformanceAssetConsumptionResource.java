@@ -43,9 +43,9 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface PerformanceAssetConsumptionResource {
 
 	public PerformanceAssetConsumption getPerformanceAssetConsumption(
-			Long categoryId, Long[] depotEntryIds, String groupBy,
-			Integer rangeKey, Long structureId, Long tagId, Long vocabularyId,
-			Pagination pagination)
+			Long categoryId, Long[] cmpProjectIds, Long[] depotEntryIds,
+			String groupBy, Integer rangeKey, Long structureId, Long tagId,
+			Long vocabularyId, Pagination pagination)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -136,4 +136,4 @@ public interface PerformanceAssetConsumptionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-362814513
+// LIFERAY-REST-BUILDER-HASH:-493181794

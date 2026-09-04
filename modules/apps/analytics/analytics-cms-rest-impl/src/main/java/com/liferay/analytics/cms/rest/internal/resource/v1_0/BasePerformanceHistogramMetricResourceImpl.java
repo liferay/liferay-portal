@@ -51,6 +51,10 @@ public abstract class BasePerformanceHistogramMetricResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "cmpProjectIds"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "depotEntryIds"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -75,6 +79,9 @@ public abstract class BasePerformanceHistogramMetricResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PerformanceHistogramMetric getPerformanceHistogramMetric(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("cmpProjectIds")
+			Long[] cmpProjectIds,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("depotEntryIds")
 			Long[] depotEntryIds,
@@ -534,4 +541,4 @@ public abstract class BasePerformanceHistogramMetricResourceImpl
 		LogFactoryUtil.getLog(BasePerformanceHistogramMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1190533278
+// LIFERAY-REST-BUILDER-HASH:-763055571

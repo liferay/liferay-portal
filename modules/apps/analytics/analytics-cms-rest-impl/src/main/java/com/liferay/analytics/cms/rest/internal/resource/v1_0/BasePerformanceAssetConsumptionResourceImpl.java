@@ -56,6 +56,10 @@ public abstract class BasePerformanceAssetConsumptionResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "cmpProjectIds"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "depotEntryIds"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -103,6 +107,9 @@ public abstract class BasePerformanceAssetConsumptionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("categoryId")
 			Long categoryId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("cmpProjectIds")
+			Long[] cmpProjectIds,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("depotEntryIds")
 			Long[] depotEntryIds,
@@ -573,4 +580,4 @@ public abstract class BasePerformanceAssetConsumptionResourceImpl
 			BasePerformanceAssetConsumptionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1718994387
+// LIFERAY-REST-BUILDER-HASH:-155038268

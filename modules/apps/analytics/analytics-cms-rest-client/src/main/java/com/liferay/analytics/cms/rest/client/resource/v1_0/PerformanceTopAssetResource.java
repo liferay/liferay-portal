@@ -35,23 +35,25 @@ public interface PerformanceTopAssetResource {
 	}
 
 	public void getPerformanceTopAssetExport(
-			Long[] depotEntryIds, Integer rangeKey, String search,
-			String filterString, String sortString)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String search, String filterString, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getPerformanceTopAssetExportHttpResponse(
-			Long[] depotEntryIds, Integer rangeKey, String search,
-			String filterString, String sortString)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String search, String filterString, String sortString)
 		throws Exception;
 
 	public Page<PerformanceTopAsset> getPerformanceTopAssetPage(
-			Long[] depotEntryIds, Integer rangeKey, String search,
-			String filterString, Pagination pagination, String sortString)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String search, String filterString, Pagination pagination,
+			String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getPerformanceTopAssetPageHttpResponse(
-			Long[] depotEntryIds, Integer rangeKey, String search,
-			String filterString, Pagination pagination, String sortString)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String search, String filterString, Pagination pagination,
+			String sortString)
 		throws Exception;
 
 	public static class Builder {
@@ -164,13 +166,14 @@ public interface PerformanceTopAssetResource {
 		implements PerformanceTopAssetResource {
 
 		public void getPerformanceTopAssetExport(
-				Long[] depotEntryIds, Integer rangeKey, String search,
-				String filterString, String sortString)
+				Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+				String search, String filterString, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getPerformanceTopAssetExportHttpResponse(
-					depotEntryIds, rangeKey, search, filterString, sortString);
+					cmpProjectIds, depotEntryIds, rangeKey, search,
+					filterString, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -222,8 +225,9 @@ public interface PerformanceTopAssetResource {
 
 		public HttpInvoker.HttpResponse
 				getPerformanceTopAssetExportHttpResponse(
-					Long[] depotEntryIds, Integer rangeKey, String search,
-					String filterString, String sortString)
+					Long[] cmpProjectIds, Long[] depotEntryIds,
+					Integer rangeKey, String search, String filterString,
+					String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -246,6 +250,13 @@ public interface PerformanceTopAssetResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (cmpProjectIds != null) {
+				for (int i = 0; i < cmpProjectIds.length; i++) {
+					httpInvoker.parameter(
+						"cmpProjectIds", String.valueOf(cmpProjectIds[i]));
+				}
+			}
 
 			if (depotEntryIds != null) {
 				for (int i = 0; i < depotEntryIds.length; i++) {
@@ -284,14 +295,15 @@ public interface PerformanceTopAssetResource {
 		}
 
 		public Page<PerformanceTopAsset> getPerformanceTopAssetPage(
-				Long[] depotEntryIds, Integer rangeKey, String search,
-				String filterString, Pagination pagination, String sortString)
+				Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+				String search, String filterString, Pagination pagination,
+				String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getPerformanceTopAssetPageHttpResponse(
-					depotEntryIds, rangeKey, search, filterString, pagination,
-					sortString);
+					cmpProjectIds, depotEntryIds, rangeKey, search,
+					filterString, pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -353,8 +365,9 @@ public interface PerformanceTopAssetResource {
 		}
 
 		public HttpInvoker.HttpResponse getPerformanceTopAssetPageHttpResponse(
-				Long[] depotEntryIds, Integer rangeKey, String search,
-				String filterString, Pagination pagination, String sortString)
+				Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+				String search, String filterString, Pagination pagination,
+				String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -377,6 +390,13 @@ public interface PerformanceTopAssetResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (cmpProjectIds != null) {
+				for (int i = 0; i < cmpProjectIds.length; i++) {
+					httpInvoker.parameter(
+						"cmpProjectIds", String.valueOf(cmpProjectIds[i]));
+				}
+			}
 
 			if (depotEntryIds != null) {
 				for (int i = 0; i < depotEntryIds.length; i++) {
@@ -433,4 +453,4 @@ public interface PerformanceTopAssetResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1605693953
+// LIFERAY-REST-BUILDER-HASH:1315127369

@@ -33,23 +33,23 @@ public interface PerformanceMetricResource {
 	}
 
 	public PerformanceMetric getPerformanceMetric(
-			Long[] depotEntryIds, String groupBy, String metricType,
-			Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+			String metricType, Integer rangeKey)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getPerformanceMetricHttpResponse(
-			Long[] depotEntryIds, String groupBy, String metricType,
-			Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+			String metricType, Integer rangeKey)
 		throws Exception;
 
 	public void getPerformanceMetricExport(
-			Long[] depotEntryIds, String groupBy, String metricType,
-			Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+			String metricType, Integer rangeKey)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getPerformanceMetricExportHttpResponse(
-			Long[] depotEntryIds, String groupBy, String metricType,
-			Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+			String metricType, Integer rangeKey)
 		throws Exception;
 
 	public static class Builder {
@@ -162,13 +162,14 @@ public interface PerformanceMetricResource {
 		implements PerformanceMetricResource {
 
 		public PerformanceMetric getPerformanceMetric(
-				Long[] depotEntryIds, String groupBy, String metricType,
-				Integer rangeKey)
+				Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+				String metricType, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getPerformanceMetricHttpResponse(
-					depotEntryIds, groupBy, metricType, rangeKey);
+					cmpProjectIds, depotEntryIds, groupBy, metricType,
+					rangeKey);
 
 			String content = httpResponse.getContent();
 
@@ -230,8 +231,8 @@ public interface PerformanceMetricResource {
 		}
 
 		public HttpInvoker.HttpResponse getPerformanceMetricHttpResponse(
-				Long[] depotEntryIds, String groupBy, String metricType,
-				Integer rangeKey)
+				Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+				String metricType, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -254,6 +255,13 @@ public interface PerformanceMetricResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (cmpProjectIds != null) {
+				for (int i = 0; i < cmpProjectIds.length; i++) {
+					httpInvoker.parameter(
+						"cmpProjectIds", String.valueOf(cmpProjectIds[i]));
+				}
+			}
 
 			if (depotEntryIds != null) {
 				for (int i = 0; i < depotEntryIds.length; i++) {
@@ -288,13 +296,14 @@ public interface PerformanceMetricResource {
 		}
 
 		public void getPerformanceMetricExport(
-				Long[] depotEntryIds, String groupBy, String metricType,
-				Integer rangeKey)
+				Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+				String metricType, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getPerformanceMetricExportHttpResponse(
-					depotEntryIds, groupBy, metricType, rangeKey);
+					cmpProjectIds, depotEntryIds, groupBy, metricType,
+					rangeKey);
 
 			String content = httpResponse.getContent();
 
@@ -345,8 +354,8 @@ public interface PerformanceMetricResource {
 		}
 
 		public HttpInvoker.HttpResponse getPerformanceMetricExportHttpResponse(
-				Long[] depotEntryIds, String groupBy, String metricType,
-				Integer rangeKey)
+				Long[] cmpProjectIds, Long[] depotEntryIds, String groupBy,
+				String metricType, Integer rangeKey)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -369,6 +378,13 @@ public interface PerformanceMetricResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (cmpProjectIds != null) {
+				for (int i = 0; i < cmpProjectIds.length; i++) {
+					httpInvoker.parameter(
+						"cmpProjectIds", String.valueOf(cmpProjectIds[i]));
+				}
+			}
 
 			if (depotEntryIds != null) {
 				for (int i = 0; i < depotEntryIds.length; i++) {
@@ -414,4 +430,4 @@ public interface PerformanceMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1713701081
+// LIFERAY-REST-BUILDER-HASH:-217626261

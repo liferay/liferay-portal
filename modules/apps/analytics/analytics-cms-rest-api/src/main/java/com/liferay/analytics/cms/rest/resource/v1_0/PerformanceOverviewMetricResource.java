@@ -42,7 +42,7 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface PerformanceOverviewMetricResource {
 
 	public PerformanceOverviewMetric getPerformanceOverviewMetric(
-			Long[] depotEntryIds, Integer rangeKey)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -133,4 +133,4 @@ public interface PerformanceOverviewMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:19837171
+// LIFERAY-REST-BUILDER-HASH:1919273952

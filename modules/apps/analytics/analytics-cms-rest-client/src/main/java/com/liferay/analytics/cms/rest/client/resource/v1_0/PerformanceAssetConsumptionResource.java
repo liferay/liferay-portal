@@ -34,15 +34,15 @@ public interface PerformanceAssetConsumptionResource {
 	}
 
 	public PerformanceAssetConsumption getPerformanceAssetConsumption(
-			Long categoryId, Long[] depotEntryIds, String groupBy,
-			Integer rangeKey, Long structureId, Long tagId, Long vocabularyId,
-			Pagination pagination)
+			Long categoryId, Long[] cmpProjectIds, Long[] depotEntryIds,
+			String groupBy, Integer rangeKey, Long structureId, Long tagId,
+			Long vocabularyId, Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getPerformanceAssetConsumptionHttpResponse(
-			Long categoryId, Long[] depotEntryIds, String groupBy,
-			Integer rangeKey, Long structureId, Long tagId, Long vocabularyId,
-			Pagination pagination)
+			Long categoryId, Long[] cmpProjectIds, Long[] depotEntryIds,
+			String groupBy, Integer rangeKey, Long structureId, Long tagId,
+			Long vocabularyId, Pagination pagination)
 		throws Exception;
 
 	public static class Builder {
@@ -155,15 +155,15 @@ public interface PerformanceAssetConsumptionResource {
 		implements PerformanceAssetConsumptionResource {
 
 		public PerformanceAssetConsumption getPerformanceAssetConsumption(
-				Long categoryId, Long[] depotEntryIds, String groupBy,
-				Integer rangeKey, Long structureId, Long tagId,
+				Long categoryId, Long[] cmpProjectIds, Long[] depotEntryIds,
+				String groupBy, Integer rangeKey, Long structureId, Long tagId,
 				Long vocabularyId, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getPerformanceAssetConsumptionHttpResponse(
-					categoryId, depotEntryIds, groupBy, rangeKey, structureId,
-					tagId, vocabularyId, pagination);
+					categoryId, cmpProjectIds, depotEntryIds, groupBy, rangeKey,
+					structureId, tagId, vocabularyId, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -226,9 +226,9 @@ public interface PerformanceAssetConsumptionResource {
 
 		public HttpInvoker.HttpResponse
 				getPerformanceAssetConsumptionHttpResponse(
-					Long categoryId, Long[] depotEntryIds, String groupBy,
-					Integer rangeKey, Long structureId, Long tagId,
-					Long vocabularyId, Pagination pagination)
+					Long categoryId, Long[] cmpProjectIds, Long[] depotEntryIds,
+					String groupBy, Integer rangeKey, Long structureId,
+					Long tagId, Long vocabularyId, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -254,6 +254,13 @@ public interface PerformanceAssetConsumptionResource {
 
 			if (categoryId != null) {
 				httpInvoker.parameter("categoryId", String.valueOf(categoryId));
+			}
+
+			if (cmpProjectIds != null) {
+				for (int i = 0; i < cmpProjectIds.length; i++) {
+					httpInvoker.parameter(
+						"cmpProjectIds", String.valueOf(cmpProjectIds[i]));
+				}
 			}
 
 			if (depotEntryIds != null) {
@@ -317,4 +324,4 @@ public interface PerformanceAssetConsumptionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1082966215
+// LIFERAY-REST-BUILDER-HASH:695815252

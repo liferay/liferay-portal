@@ -33,11 +33,13 @@ public interface PerformanceHistogramMetricResource {
 	}
 
 	public PerformanceHistogramMetric getPerformanceHistogramMetric(
-			Long[] depotEntryIds, Integer rangeKey, String selectedMetric)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String selectedMetric)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getPerformanceHistogramMetricHttpResponse(
-			Long[] depotEntryIds, Integer rangeKey, String selectedMetric)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String selectedMetric)
 		throws Exception;
 
 	public static class Builder {
@@ -150,12 +152,13 @@ public interface PerformanceHistogramMetricResource {
 		implements PerformanceHistogramMetricResource {
 
 		public PerformanceHistogramMetric getPerformanceHistogramMetric(
-				Long[] depotEntryIds, Integer rangeKey, String selectedMetric)
+				Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+				String selectedMetric)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getPerformanceHistogramMetricHttpResponse(
-					depotEntryIds, rangeKey, selectedMetric);
+					cmpProjectIds, depotEntryIds, rangeKey, selectedMetric);
 
 			String content = httpResponse.getContent();
 
@@ -218,8 +221,8 @@ public interface PerformanceHistogramMetricResource {
 
 		public HttpInvoker.HttpResponse
 				getPerformanceHistogramMetricHttpResponse(
-					Long[] depotEntryIds, Integer rangeKey,
-					String selectedMetric)
+					Long[] cmpProjectIds, Long[] depotEntryIds,
+					Integer rangeKey, String selectedMetric)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -242,6 +245,13 @@ public interface PerformanceHistogramMetricResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (cmpProjectIds != null) {
+				for (int i = 0; i < cmpProjectIds.length; i++) {
+					httpInvoker.parameter(
+						"cmpProjectIds", String.valueOf(cmpProjectIds[i]));
+				}
+			}
 
 			if (depotEntryIds != null) {
 				for (int i = 0; i < depotEntryIds.length; i++) {
@@ -284,4 +294,4 @@ public interface PerformanceHistogramMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-871232507
+// LIFERAY-REST-BUILDER-HASH:-246641502

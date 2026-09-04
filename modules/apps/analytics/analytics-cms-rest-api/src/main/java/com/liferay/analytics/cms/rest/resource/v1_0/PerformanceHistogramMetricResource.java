@@ -42,7 +42,8 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface PerformanceHistogramMetricResource {
 
 	public PerformanceHistogramMetric getPerformanceHistogramMetric(
-			Long[] depotEntryIds, Integer rangeKey, String selectedMetric)
+			Long[] cmpProjectIds, Long[] depotEntryIds, Integer rangeKey,
+			String selectedMetric)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -133,4 +134,4 @@ public interface PerformanceHistogramMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:773554472
+// LIFERAY-REST-BUILDER-HASH:96225995

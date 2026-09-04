@@ -51,6 +51,10 @@ public abstract class BasePerformanceOverviewMetricResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "cmpProjectIds"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "depotEntryIds"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -71,6 +75,9 @@ public abstract class BasePerformanceOverviewMetricResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public PerformanceOverviewMetric getPerformanceOverviewMetric(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("cmpProjectIds")
+			Long[] cmpProjectIds,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("depotEntryIds")
 			Long[] depotEntryIds,
@@ -527,4 +534,4 @@ public abstract class BasePerformanceOverviewMetricResourceImpl
 		LogFactoryUtil.getLog(BasePerformanceOverviewMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-439891009
+// LIFERAY-REST-BUILDER-HASH:-980750822
