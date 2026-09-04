@@ -6,6 +6,7 @@
 import {EventSource} from 'eventsource';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
+import {RequestTooLargeError} from '../utils/throwIfRequestTooLarge';
 import {
 	createCategorizationEventSource,
 	postCategorizationAgentInstance,
@@ -132,12 +133,16 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 					sseEventSinkKey: sseEventSinkKeyRef.current as string,
 				});
 			}
-			catch {
+			catch (error) {
 				if (stoppedRef.current) {
 					return;
 				}
 
-				setError(Liferay.Language.get('an-unexpected-error-occurred'));
+				setError(
+					error instanceof RequestTooLargeError
+						? error.message
+						: Liferay.Language.get('an-unexpected-error-occurred')
+				);
 				setStatus('error');
 
 				closeEventSource();
@@ -209,29 +214,14 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 					closeEventSource();
 				});
 
-				eventSource.addEventListener(
-					'Agent Invocation Failed',
-					(event) => {
-						let text = '';
+				eventSource.addEventListener('Agent Invocation Failed', () => {
+					setError(
+						Liferay.Language.get('an-unexpected-error-occurred')
+					);
+					setStatus('error');
 
-						try {
-							text = JSON.parse(event.data).data;
-						}
-						catch {
-							text = '';
-						}
-
-						setError(
-							text ||
-								Liferay.Language.get(
-									'an-unexpected-error-occurred'
-								)
-						);
-						setStatus('error');
-
-						closeEventSource();
-					}
-				);
+					closeEventSource();
+				});
 
 				eventSource.addEventListener('error', () => {
 					if (stoppedRef.current) {

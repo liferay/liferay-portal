@@ -7,6 +7,7 @@ import {EventSource} from 'eventsource';
 import {fetch} from 'frontend-js-web';
 
 import postAuthorizationToken from '../utils/postAuthorizationToken';
+import throwIfRequestTooLarge from '../utils/throwIfRequestTooLarge';
 import {HttpRequestAction} from './types';
 
 const AI_HUB_ENDPOINT = '/o/ai-hub/v1.0';
@@ -115,6 +116,13 @@ export async function postChatByExternalReferenceCodeMessage({
 	);
 
 	if (!response.ok) {
+		throwIfRequestTooLarge(
+			response,
+			Liferay.Language.get(
+				'the-message-is-too-long-shorten-it-and-try-again'
+			)
+		);
+
 		throw new Error(`Unable to send the chat message: ${response.status}`);
 	}
 

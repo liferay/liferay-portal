@@ -217,7 +217,7 @@ describe('useCategorizationAgent', () => {
 		expect(fakeEventSource.close).toHaveBeenCalled();
 	});
 
-	it('surfaces the error text on agent invocation failure', async () => {
+	it('surfaces the generic error on agent invocation failure', async () => {
 		const {fakeEventSource, result} = await renderAgent(
 			ECategorizationAgent.AUTO_CATEGORIZE
 		);
@@ -240,7 +240,10 @@ describe('useCategorizationAgent', () => {
 
 		expect(
 			(result as {current: {error: string; status: string}}).current
-		).toMatchObject({error: 'boom', status: 'error'});
+		).toMatchObject({
+			error: 'an-unexpected-error-occurred',
+			status: 'error',
+		});
 	});
 
 	it('releases the connect latch and surfaces the error when the channel fails to open', async () => {

@@ -6,6 +6,7 @@
 import {fetch} from 'frontend-js-web';
 
 import postAuthorizationToken from '../utils/postAuthorizationToken';
+import throwIfRequestTooLarge from '../utils/throwIfRequestTooLarge';
 
 const AI_HUB_ENDPOINT = '/o/ai-hub/v1.0';
 
@@ -54,6 +55,13 @@ export async function postAIIssueReport(payload: ReportFeedbackPayload) {
 	);
 
 	if (!response.ok) {
+		throwIfRequestTooLarge(
+			response,
+			Liferay.Language.get(
+				'the-comment-is-too-long-shorten-it-and-try-again'
+			)
+		);
+
 		throw new Error(
 			`Unable to send feedback (${response.status} ${response.statusText})`
 		);

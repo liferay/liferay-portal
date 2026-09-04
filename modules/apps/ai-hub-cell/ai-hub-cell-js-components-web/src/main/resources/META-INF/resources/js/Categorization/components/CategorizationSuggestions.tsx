@@ -15,6 +15,7 @@ import '../categorization.scss';
 
 interface CategorizationSuggestionsProps {
 	committed?: boolean;
+	error?: string;
 	kind: 'categories' | 'tags';
 	onCommit: (suggestions: Suggestion[]) => void;
 	onDismiss: (suggestion: Suggestion) => void;
@@ -58,6 +59,7 @@ function getIntroText(
 
 export default function CategorizationSuggestions({
 	committed = false,
+	error,
 	kind,
 	onCommit,
 	onDismiss,
@@ -82,7 +84,7 @@ export default function CategorizationSuggestions({
 	if (status === 'error') {
 		return (
 			<span className="categorization-suggestions text-danger">
-				{Liferay.Language.get('an-unexpected-error-occurred')}
+				{error || Liferay.Language.get('an-unexpected-error-occurred')}
 			</span>
 		);
 	}

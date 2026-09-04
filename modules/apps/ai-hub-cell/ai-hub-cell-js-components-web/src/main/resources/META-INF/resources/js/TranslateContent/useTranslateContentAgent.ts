@@ -5,6 +5,7 @@
 
 import {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
 
+import {RequestTooLargeError} from '../utils/throwIfRequestTooLarge';
 import {putAgentInstanceResume} from './api';
 import {TranslateContentMessageBalloonProps} from './types';
 import {getPageContext} from './utils/getPageContext';
@@ -52,7 +53,18 @@ export default function useTranslateContentAgent({
 				sourceLanguageId,
 				targetLanguageIds: JSON.stringify(targetLanguageIds),
 			},
-		}).catch(() => setIsGenerating(false));
+		}).catch((error) => {
+			setIsGenerating(false);
+			setSubmitted(false);
+
+			Liferay.Util.openToast({
+				message:
+					error instanceof RequestTooLargeError
+						? error.message
+						: Liferay.Language.get('an-unexpected-error-occurred'),
+				type: 'danger',
+			});
+		});
 	};
 
 	const toggleLanguageId = (

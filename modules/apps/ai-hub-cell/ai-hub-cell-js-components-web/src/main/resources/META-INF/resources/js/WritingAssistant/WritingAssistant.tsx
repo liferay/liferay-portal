@@ -13,6 +13,7 @@ import {Root, createRoot} from 'react-dom/client';
 
 import ReportFeedbackModal from '../ReportFeedback/ReportFeedbackModal';
 import submitPositiveReportFeedback from '../ReportFeedback/submitPositiveReportFeedback';
+import {RequestTooLargeError} from '../utils/throwIfRequestTooLarge';
 import {createEventSource, postAgentInstance} from './api';
 import WritingAssistantActions from './components/WritingAssistantActions';
 import WritingAssistantConfirmationAction from './components/WritingAssistantConfirmationAction';
@@ -258,11 +259,24 @@ export default class WritingAssistant extends Plugin {
 					handleActionClick={async (type: EActionType) => {
 						this.lastActionType = type;
 
-						await postAgentInstance(
-							this.contentSelection,
-							this.eventSourceReference,
-							type
-						);
+						try {
+							await postAgentInstance(
+								this.contentSelection,
+								this.eventSourceReference,
+								type
+							);
+						}
+						catch (error) {
+							Liferay.Util.openToast({
+								message:
+									error instanceof RequestTooLargeError
+										? error.message
+										: Liferay.Language.get(
+												'an-unexpected-error-occurred'
+											),
+								type: 'danger',
+							});
+						}
 					}}
 					hideBalloon={() => this._hideBalloon(balloon)}
 				/>

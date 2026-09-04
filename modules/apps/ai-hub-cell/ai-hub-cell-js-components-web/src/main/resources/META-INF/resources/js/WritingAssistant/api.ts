@@ -7,6 +7,7 @@ import {EventSource} from 'eventsource';
 import {fetch} from 'frontend-js-web';
 
 import postAuthorizationToken from '../utils/postAuthorizationToken';
+import throwIfRequestTooLarge from '../utils/throwIfRequestTooLarge';
 import {EActionType} from './types';
 
 const AI_HUB_ENDPOINT = '/o/ai-hub/v1.0';
@@ -51,7 +52,7 @@ export async function postAgentInstance(
 		return;
 	}
 
-	await fetch(
+	const response = await fetch(
 		`${authorizationToken.serviceURL}${AI_HUB_ENDPOINT}/agent-instances`,
 		{
 			body: JSON.stringify({
@@ -71,4 +72,15 @@ export async function postAgentInstance(
 			method: 'POST',
 		}
 	);
+
+	throwIfRequestTooLarge(
+		response,
+		Liferay.Language.get(
+			'the-selected-content-is-too-long-shorten-it-and-try-again'
+		)
+	);
+
+	if (!response.ok) {
+		throw new Error(`Unable to invoke agent: ${response.statusText}`);
+	}
 }

@@ -14,6 +14,7 @@ import {
 import {classifyCategorizationIntent} from '../Categorization/services/classifyCategorizationIntent';
 import {ECategorizationAgent} from '../Categorization/types';
 import submitPositiveReportFeedback from '../ReportFeedback/submitPositiveReportFeedback';
+import {RequestTooLargeError} from '../utils/throwIfRequestTooLarge';
 import {
 	AIAssistantActionOutcome,
 	ChatContext,
@@ -198,7 +199,10 @@ export default function useAIChat({
 		};
 	}, []);
 
-	const reportSendFailure = useCallback(() => {
+	const reportSendFailure = useCallback((message?: string) => {
+		const text =
+			message ?? Liferay.Language.get('an-unexpected-error-occurred');
+
 		setIsGenerating(false);
 
 		setMessages((previousMessages) => [
@@ -206,12 +210,12 @@ export default function useAIChat({
 			{
 				error: true,
 				sender: 'assistant',
-				text: Liferay.Language.get('an-unexpected-error-occurred'),
+				text,
 			},
 		]);
 
 		Liferay.Util.openToast({
-			message: Liferay.Language.get('an-unexpected-error-occurred'),
+			message: text,
 			type: 'danger',
 		});
 	}, []);
@@ -253,8 +257,15 @@ export default function useAIChat({
 					message: text,
 				})
 					.then(() => true)
-					.catch(() => {
-						reportSendFailure();
+					.catch((error) => {
+						if (error instanceof RequestTooLargeError) {
+							setMessage(text);
+
+							reportSendFailure(error.message);
+						}
+						else {
+							reportSendFailure();
+						}
 
 						return false;
 					});

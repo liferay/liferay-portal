@@ -44,7 +44,7 @@ export default function CategorizationMessageBalloon({
 	const [dismissed, setDismissed] = useState<string[]>([]);
 	const [regenerated, setRegenerated] = useState(false);
 
-	const {regenerate, resolveTargets, run, status, stop, suggestions} =
+	const {error, regenerate, resolveTargets, run, status, stop, suggestions} =
 		useCategorizationAgent(agent);
 
 	useEffect(() => {
@@ -190,6 +190,7 @@ export default function CategorizationMessageBalloon({
 					<div className="flex-grow-1 m-2">
 						<CategorizationSuggestions
 							committed={committed}
+							error={error}
 							kind={isCategories ? 'categories' : 'tags'}
 							onCommit={(committedSuggestions) => {
 								Liferay.fire(COMMIT_EVENT, {

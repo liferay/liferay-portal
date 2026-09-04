@@ -6,6 +6,7 @@
 import {fetch} from 'frontend-js-web';
 
 import {postAIIssueReport} from '../../../src/main/resources/META-INF/resources/js/ReportFeedback/api';
+import {RequestTooLargeError} from '../../../src/main/resources/META-INF/resources/js/utils/throwIfRequestTooLarge';
 
 jest.mock('frontend-js-web', () => ({fetch: jest.fn()}));
 
@@ -25,11 +26,11 @@ const payload = {
 	surface: 'clickToChat' as const,
 };
 
-function jsonResponse(body: unknown, ok = true) {
+function jsonResponse(body: unknown, ok = true, status = ok ? 200 : 500) {
 	return {
 		json: () => Promise.resolve(body),
 		ok,
-		status: ok ? 200 : 500,
+		status,
 		statusText: ok ? 'OK' : 'Internal Server Error',
 		text: () => Promise.resolve(JSON.stringify(body)),
 	};
@@ -81,6 +82,22 @@ describe('postAIIssueReport', () => {
 
 		expect(reportURL).toBe(
 			'https://ai-hub.liferay.com/o/ai-hub/v1.0/reports'
+		);
+	});
+
+	it('throws a too-long error when the request is too large', async () => {
+		mockFetch.mockResolvedValueOnce(
+			jsonResponse(authorizationToken) as never
+		);
+		mockFetch.mockResolvedValueOnce(jsonResponse({}, false, 413) as never);
+
+		const error = await postAIIssueReport(payload).catch(
+			(caught) => caught
+		);
+
+		expect(error).toBeInstanceOf(RequestTooLargeError);
+		expect(error.message).toBe(
+			'the-comment-is-too-long-shorten-it-and-try-again'
 		);
 	});
 
