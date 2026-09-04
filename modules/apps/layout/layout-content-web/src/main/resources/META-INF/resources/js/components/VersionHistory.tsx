@@ -10,7 +10,7 @@ import {
 	useMediaQuery,
 } from '@liferay/layout-js-components-web';
 import {openToast} from 'frontend-js-components-web';
-import {sub} from 'frontend-js-web';
+import {escapeHTML, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import {Config, initializeConfig} from '../config';
@@ -71,7 +71,7 @@ export default function VersionHistory({config}: Props) {
 			}
 
 			if (error) {
-				openToast({message: error, type: 'danger'});
+				openToast({message: escapeHTML(error), type: 'danger'});
 			}
 
 			setVersions(data?.items ?? []);
@@ -104,7 +104,7 @@ export default function VersionHistory({config}: Props) {
 		);
 
 		if (error) {
-			openToast({message: error, type: 'danger'});
+			openToast({message: escapeHTML(error), type: 'danger'});
 
 			return;
 		}
@@ -154,7 +154,7 @@ export default function VersionHistory({config}: Props) {
 		);
 
 		if (error) {
-			openToast({message: error, type: 'danger'});
+			openToast({message: escapeHTML(error), type: 'danger'});
 
 			return;
 		}
@@ -189,7 +189,7 @@ export default function VersionHistory({config}: Props) {
 			}
 
 			if (error) {
-				openToast({message: error, type: 'danger'});
+				openToast({message: escapeHTML(error), type: 'danger'});
 			}
 
 			setPageVersionExperiences(data?.items ?? []);
