@@ -220,13 +220,17 @@ describe('FrontendDataSet', () => {
 			await typeAndSettle(requests, `${query}{Enter}`, names);
 		}
 
-		async function renderLoaded({searchAsYouType = false} = {}) {
+		async function renderLoaded({
+			recentSearches = true,
+			searchAsYouType = false,
+		} = {}) {
 			const requests = mockPendingRequests();
 
 			render(
 				<FrontendDataSet
 					apiURL="/o/products"
 					id={id}
+					recentSearches={recentSearches}
 					searchAsYouType={searchAsYouType}
 					views={VIEWS}
 				/>
@@ -247,6 +251,14 @@ describe('FrontendDataSet', () => {
 			await search(requests, 'nike', ['nike air']);
 
 			expect(recentSearches.get(id)).toEqual(['nike']);
+		});
+
+		it('remembers nothing when the Data Set does not ask for recent searches', async () => {
+			const requests = await renderLoaded({recentSearches: false});
+
+			await search(requests, 'nike', ['hit']);
+
+			expect(recentSearches.get(id)).toEqual([]);
 		});
 
 		it('does not remember a query that returned no results', async () => {

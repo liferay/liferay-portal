@@ -25,11 +25,20 @@ describe('MainSearch', () => {
 
 	function renderMainSearch({
 		apiURL = '/o/products',
+		recentSearches = false,
 		searchAsYouType = false,
 	} = {}) {
 		render(
 			<FrontendDataSetContext.Provider
-				value={{apiURL, id: FDS_NAME, onSearch, searchAsYouType} as any}
+				value={
+					{
+						apiURL,
+						id: FDS_NAME,
+						onSearch,
+						recentSearches,
+						searchAsYouType,
+					} as any
+				}
 			>
 				<MainSearch onClear={onClear} />
 			</FrontendDataSetContext.Provider>
@@ -171,7 +180,7 @@ describe('MainSearch', () => {
 		it('lists the stored queries when the empty input is focused', async () => {
 			storeQueries(['vans', 'adidas', 'nike']);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.click(input);
 
@@ -184,8 +193,18 @@ describe('MainSearch', () => {
 			).toEqual(['nike', 'adidas', 'vans']);
 		});
 
-		it('lists nothing when the Data Set has no stored queries', async () => {
+		it('lists nothing when the Data Set does not ask for recent searches', async () => {
+			storeQueries(['nike']);
+
 			const input = renderMainSearch();
+
+			await user.click(input);
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+
+		it('lists nothing when the Data Set has no stored queries', async () => {
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.click(input);
 
@@ -196,7 +215,7 @@ describe('MainSearch', () => {
 			storeQueries(['nike']);
 			storeQueries(['adidas'], OTHER_FDS_NAME);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.click(input);
 
@@ -211,7 +230,7 @@ describe('MainSearch', () => {
 		it('fills the input and searches for the clicked query', async () => {
 			storeQueries(['nike']);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.click(input);
 			await user.click(screen.getByRole('menuitem', {name: 'nike'}));
@@ -224,7 +243,7 @@ describe('MainSearch', () => {
 		it('opens the list again when the already focused input is clicked', async () => {
 			storeQueries(['nike']);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.type(input, 'reebok{Enter}');
 			await user.clear(input);
@@ -243,7 +262,7 @@ describe('MainSearch', () => {
 		it('keeps only the stored queries matching what the user typed', async () => {
 			storeQueries(['adidas', 'nike air', 'nike sb']);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.type(input, 'nik');
 
@@ -261,7 +280,7 @@ describe('MainSearch', () => {
 		it('lists nothing when no stored query matches what the user typed', async () => {
 			storeQueries(['nike']);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.type(input, 'reebok');
 
@@ -271,7 +290,7 @@ describe('MainSearch', () => {
 		it('removes a single query without closing the list', async () => {
 			storeQueries(['adidas', 'nike']);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.click(input);
 			await user.click(
@@ -290,7 +309,7 @@ describe('MainSearch', () => {
 		it('removes every query at once', async () => {
 			storeQueries(['adidas', 'nike']);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.click(input);
 			await user.click(screen.getByRole('button', {name: 'clear-all'}));
@@ -302,7 +321,7 @@ describe('MainSearch', () => {
 		it('closes the list when the user clicks outside the search bar', async () => {
 			storeQueries(['nike']);
 
-			const input = renderMainSearch();
+			const input = renderMainSearch({recentSearches: true});
 
 			await user.click(input);
 

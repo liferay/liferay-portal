@@ -14,8 +14,16 @@ import recentSearches from '../../utils/recentSearches';
 import RecentSearches from './RecentSearches';
 
 function MainSearch({onClear}: {onClear: () => void}) {
-	const {apiURL, appURL, id, onSearch, searchAsYouType, searchParam} =
-		useContext(FrontendDataSetContext);
+	const {
+		apiURL,
+		appURL,
+		id,
+		onSearch,
+
+		recentSearches: recentSearchesEnabled,
+		searchAsYouType,
+		searchParam,
+	} = useContext(FrontendDataSetContext);
 
 	const [inputValue, setInputValue] = useState(searchParam || '');
 	const [recentQueries, setRecentQueries] = useState<Array<string>>([]);
@@ -55,6 +63,10 @@ function MainSearch({onClear}: {onClear: () => void}) {
 	// after Escape closed the dropdown
 
 	const openRecentSearches = () => {
+		if (!recentSearchesEnabled) {
+			return;
+		}
+
 		readRecentQueries();
 
 		setRecentSearchesActive(true);
