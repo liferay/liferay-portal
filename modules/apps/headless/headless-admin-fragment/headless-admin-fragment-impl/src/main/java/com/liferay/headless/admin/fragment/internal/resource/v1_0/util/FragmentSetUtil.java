@@ -11,6 +11,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalServiceUtil;
 import com.liferay.fragment.service.FragmentCollectionServiceUtil;
 import com.liferay.headless.admin.fragment.dto.v1_0.FragmentSet;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -39,7 +40,9 @@ public class FragmentSetUtil {
 			serviceContext);
 	}
 
-	public static FragmentCollection getFragmentCollection(DLFolder dlFolder) {
+	public static FragmentCollection getFragmentCollection(DLFolder dlFolder)
+		throws PortalException {
+
 		if (dlFolder == null) {
 			return null;
 		}
@@ -54,12 +57,18 @@ public class FragmentSetUtil {
 				dlFolder.getParentFolderId());
 		}
 
-		if (parentDLFolder == null) {
+		FragmentCollection fragmentCollection =
+			FragmentCollectionLocalServiceUtil.fetchFragmentCollection(
+				dlFolder.getGroupId(), dlFolder.getName());
+
+		if ((fragmentCollection == null) ||
+			(fragmentCollection.getResourcesFolderId(false) !=
+				dlFolder.getFolderId())) {
+
 			return null;
 		}
 
-		return FragmentCollectionLocalServiceUtil.fetchFragmentCollection(
-			dlFolder.getGroupId(), dlFolder.getName());
+		return fragmentCollection;
 	}
 
 	public static FragmentCollection getOrAddFragmentCollection(
