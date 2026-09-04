@@ -1,5 +1,54 @@
 jobs:
+    has-changed-paths:
+        if: ${{ github.repository == 'liferay/liferay-portal' }}
+        outputs:
+            matches: ${{ steps.has_changed_paths.outputs.matches }}
+        runs-on: ubuntu-latest
+        steps:
+            -   if: ${{ github.event_name == 'push' }}
+                name: Checkout code
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 1
+                    sparse-checkout: "!/*"
+                    sparse-checkout-cone-mode: false
+            -   env:
+                    CURRENT_COMMIT: ${{ github.sha }}
+                    PATHS: |
+                        :(glob)workspaces/liferay-sample-workspace/.agents/**
+                        :(glob)workspaces/liferay-sample-workspace/.claude/**
+                    PREVIOUS_BASE_COMMIT: ${{ github.event.before }}
+                id: has_changed_paths
+                if: ${{ github.event_name == 'push' }}
+                name: Check whether the workspace rules changed
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        git fetch --depth=1 --filter=blob:none origin "${PREVIOUS_BASE_COMMIT}"
+
+                        mapfile -t FILTER_PATHS < <(printf '%s\n' "${PATHS}" | grep -v '^$')
+
+                        local changed_paths
+
+                        changed_paths=$(git diff --name-only --no-renames "${PREVIOUS_BASE_COMMIT}" "${CURRENT_COMMIT}" -- "${FILTER_PATHS[@]}")
+
+                        local matches="false"
+
+                        if [[ -n "${changed_paths}" ]]
+                        then
+                            matches="true"
+                        fi
+
+                        echo "matches=${matches}" >> ${GITHUB_OUTPUT}
+                    }
+
+                    main
     publish-liferay-sample-workspace-evergreen:
+        if: ${{ github.event_name == 'workflow_dispatch' || needs.has-changed-paths.outputs.matches == 'true' }}
+        needs: has-changed-paths
         secrets: inherit
         uses: ./.github/workflows/ci-publish-workspace.yaml
         with:
@@ -10,7 +59,4 @@ on:
     push:
         branches:
             -   master
-        paths:
-            -   workspaces/liferay-sample-workspace/.agents/**
-            -   workspaces/liferay-sample-workspace/.claude/**
     workflow_dispatch:
