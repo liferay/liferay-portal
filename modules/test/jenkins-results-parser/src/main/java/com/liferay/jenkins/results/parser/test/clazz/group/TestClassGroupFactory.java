@@ -569,6 +569,18 @@ public class TestClassGroupFactory {
 							batchName, portalTestClassJob);
 				}
 			}
+			else if (batchName.startsWith("workspaces-js-unit")) {
+				if (jsonObject != null) {
+					batchTestClassGroup =
+						new WorkspacesJSUnitModulesBatchTestClassGroup(
+							jsonObject, portalTestClassJob);
+				}
+				else {
+					batchTestClassGroup =
+						new WorkspacesJSUnitModulesBatchTestClassGroup(
+							batchName, portalTestClassJob);
+				}
+			}
 			else if (batchName.startsWith("workspaces-unit")) {
 				if (jsonObject != null) {
 					batchTestClassGroup =
