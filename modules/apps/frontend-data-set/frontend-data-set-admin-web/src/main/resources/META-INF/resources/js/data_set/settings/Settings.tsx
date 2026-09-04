@@ -53,6 +53,9 @@ const Settings = ({
 	const [hideManagementBarInEmptyState, setHideManagementBarInEmptyState] =
 		useState(dataSet.hideManagementBarInEmptyState ?? true);
 	const [loading, setLoading] = useState(true);
+	const [recentSearches, setRecentSearches] = useState(
+		dataSet.recentSearches ?? false
+	);
 	const [searchAsYouType, setSearchAsYouType] = useState(
 		dataSet.searchAsYouType ?? false
 	);
@@ -100,6 +103,7 @@ const Settings = ({
 		const body = {
 			defaultVisualizationMode,
 			hideManagementBarInEmptyState,
+			recentSearches,
 			searchAsYouType,
 			showSearch,
 			snapshotsEnabled,
@@ -451,7 +455,7 @@ const Settings = ({
 						</ClayLayout.Col>
 					</ClayLayout.Row>
 
-					<ClayLayout.Row className="align-items-center justify-content-between">
+					<ClayLayout.Row className="align-items-center justify-content-between mb-4">
 						<ClayLayout.Col size={9}>
 							<div>
 								<label htmlFor="search-as-you-type-toggle">
@@ -474,6 +478,33 @@ const Settings = ({
 								id="search-as-you-type-toggle"
 								onToggle={setSearchAsYouType}
 								toggled={searchAsYouType}
+							/>
+						</ClayLayout.Col>
+					</ClayLayout.Row>
+
+					<ClayLayout.Row className="align-items-center justify-content-between">
+						<ClayLayout.Col size={9}>
+							<div>
+								<label htmlFor="recent-searches-toggle">
+									{Liferay.Language.get(
+										'enable-recent-searches'
+									)}
+								</label>
+							</div>
+
+							<div>
+								{Liferay.Language.get(
+									'enable-recent-searches-help'
+								)}
+							</div>
+						</ClayLayout.Col>
+
+						<ClayLayout.Col className="align-self-start" size={1}>
+							<ClayToggle
+								disabled={!showSearch}
+								id="recent-searches-toggle"
+								onToggle={setRecentSearches}
+								toggled={recentSearches}
 							/>
 						</ClayLayout.Col>
 					</ClayLayout.Row>
