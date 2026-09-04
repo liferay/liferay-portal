@@ -256,6 +256,10 @@ public class JSUnitModulesBatchTestClassGroup
 	}
 
 	private boolean _isTestGitrepoJSUnit() {
+		if (_testGitrepoJSUnit != null) {
+			return _testGitrepoJSUnit;
+		}
+
 		JobProperty jobProperty = getJobProperty("test.gitrepo.js.unit");
 
 		String jobPropertyValue = jobProperty.getValue();
@@ -265,10 +269,15 @@ public class JSUnitModulesBatchTestClassGroup
 
 			recordJobProperty(jobProperty);
 
-			return true;
+			_testGitrepoJSUnit = true;
+		}
+		else {
+			_testGitrepoJSUnit = false;
 		}
 
-		return false;
+		return _testGitrepoJSUnit;
 	}
+
+	private Boolean _testGitrepoJSUnit;
 
 }
