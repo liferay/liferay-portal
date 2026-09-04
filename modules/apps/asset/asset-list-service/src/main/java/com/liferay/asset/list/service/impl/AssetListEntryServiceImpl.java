@@ -16,8 +16,10 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -267,6 +269,10 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 		long[] groupIds, String title, String[] assetEntryTypes, int start,
 		int end, OrderByComparator<AssetListEntry> orderByComparator) {
 
+		if (ArrayUtil.isEmpty(assetEntryTypes)) {
+			return Collections.emptyList();
+		}
+
 		return assetListEntryPersistence.filterFindByG_LikeT_AET(
 			groupIds,
 			_customSQL.keywords(title, false, WildcardMode.SURROUND)[0],
@@ -277,6 +283,10 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 	public List<AssetListEntry> getAssetListEntries(
 		long[] groupIds, String[] assetEntryTypes, int start, int end,
 		OrderByComparator<AssetListEntry> orderByComparator) {
+
+		if (ArrayUtil.isEmpty(assetEntryTypes)) {
+			return Collections.emptyList();
+		}
 
 		return assetListEntryPersistence.filterFindByG_AET(
 			groupIds, assetEntryTypes, start, end, orderByComparator);
@@ -329,6 +339,10 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 	public int getAssetListEntriesCount(
 		long[] groupIds, String title, String[] assetEntryTypes) {
 
+		if (ArrayUtil.isEmpty(assetEntryTypes)) {
+			return 0;
+		}
+
 		return assetListEntryPersistence.filterCountByG_LikeT_AET(
 			groupIds,
 			_customSQL.keywords(title, false, WildcardMode.SURROUND)[0],
@@ -338,6 +352,10 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 	@Override
 	public int getAssetListEntriesCount(
 		long[] groupIds, String[] assetEntryTypes) {
+
+		if (ArrayUtil.isEmpty(assetEntryTypes)) {
+			return 0;
+		}
 
 		return assetListEntryPersistence.filterCountByG_AET(
 			groupIds, assetEntryTypes);
