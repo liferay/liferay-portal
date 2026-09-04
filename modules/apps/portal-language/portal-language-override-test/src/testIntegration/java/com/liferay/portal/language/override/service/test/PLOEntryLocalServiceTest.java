@@ -12,7 +12,10 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -69,6 +72,60 @@ public class PLOEntryLocalServiceTest {
 		_testAddOrUpdatePLOEntryOnExternalReferenceCodeConflict();
 		_testAddOrUpdatePLOEntryOnMatchingExternalReferenceCode();
 		_testAddOrUpdatePLOEntryOnNewExternalReferenceCode();
+	}
+
+	@Test
+	public void testAddOrUpdatePLOEntryForCompanyLocaleAbsentFromLocales()
+		throws Exception {
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		try {
+			Company company = CompanyTestUtil.addCompany();
+
+			CompanyTestUtil.resetCompanyLocales(
+				company.getCompanyId(), "en_US,en_RU", "en_US");
+
+			PLOEntry ploEntry = _addOrUpdatePLOEntry(
+				company.getCompanyId(), RandomTestUtil.randomString(), "en_RU",
+				RandomTestUtil.randomString());
+
+			Assert.assertEquals("en_RU", ploEntry.getLanguageId());
+		}
+		finally {
+			CompanyThreadLocal.setCompanyId(companyId);
+		}
+	}
+
+	@Test
+	public void testAddOrUpdatePLOEntryForLegacyISOLanguageCode()
+		throws Exception {
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		try {
+			Company company = CompanyTestUtil.addCompany();
+
+			CompanyTestUtil.resetCompanyLocales(
+				company.getCompanyId(), "en_US,iw_IL", "en_US");
+
+			String languageId = LocaleUtil.toLanguageId(new Locale("iw", "IL"));
+
+			PLOEntry ploEntry1 = _addOrUpdatePLOEntry(
+				company.getCompanyId(), RandomTestUtil.randomString(),
+				languageId, RandomTestUtil.randomString());
+
+			Assert.assertEquals(languageId, ploEntry1.getLanguageId());
+
+			PLOEntry ploEntry2 = _addOrUpdatePLOEntry(
+				company.getCompanyId(), RandomTestUtil.randomString(), "iw_IL",
+				RandomTestUtil.randomString());
+
+			Assert.assertEquals(languageId, ploEntry2.getLanguageId());
+		}
+		finally {
+			CompanyThreadLocal.setCompanyId(companyId);
+		}
 	}
 
 	@Test
@@ -256,6 +313,15 @@ public class PLOEntryLocalServiceTest {
 
 		Assert.assertEquals(key1, _language.get(LocaleUtil.US, key1));
 		Assert.assertEquals(key2, _language.get(LocaleUtil.US, key2));
+	}
+
+	private PLOEntry _addOrUpdatePLOEntry(
+			long companyId, String key, String languageId, String value)
+		throws PortalException {
+
+		return _ploEntryLocalService.addOrUpdatePLOEntry(
+			null, companyId, TestPropsValues.getUserId(), key, languageId,
+			value);
 	}
 
 	private PLOEntry _addOrUpdatePLOEntry(
