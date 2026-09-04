@@ -1804,9 +1804,6 @@ public interface PropsKeys {
 	public static final String NETVIBES_SERVLET_MAPPING =
 		"netvibes.servlet.mapping";
 
-	public static final String NOTIFICATION_EMAIL_TEMPLATE_ENABLED =
-		"notification.email.template.enabled";
-
 	public static final String NOTIFICATIONS_MAX_EVENTS =
 		"notifications.max.events";
 

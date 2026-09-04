@@ -1491,10 +1491,6 @@ public class PropsValues {
 	public static final String NETVIBES_SERVLET_MAPPING = PropsUtil.get(
 		PropsKeys.NETVIBES_SERVLET_MAPPING);
 
-	public static final boolean NOTIFICATION_EMAIL_TEMPLATE_ENABLED =
-		GetterUtil.getBoolean(
-			PropsUtil.get(PropsKeys.NOTIFICATION_EMAIL_TEMPLATE_ENABLED));
-
 	public static final int NOTIFICATIONS_MAX_EVENTS = GetterUtil.getInteger(
 		PropsUtil.get(PropsKeys.NOTIFICATIONS_MAX_EVENTS));
 

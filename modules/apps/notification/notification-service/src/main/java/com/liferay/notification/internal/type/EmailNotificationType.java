@@ -84,7 +84,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -588,7 +587,7 @@ public class EmailNotificationType extends BaseNotificationType {
 				NotificationTemplate.class.getName() + StringPool.POUND +
 					notificationTemplate.getNotificationTemplateId(),
 				body),
-			!PropsValues.NOTIFICATION_EMAIL_TEMPLATE_ENABLED);
+			true);
 
 		for (TemplateContextContributor templateContextContributor :
 				_serviceTrackerList) {
