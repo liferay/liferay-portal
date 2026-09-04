@@ -44,7 +44,6 @@ import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRe
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -97,7 +96,7 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"admin", () -> _hasUserRole(RoleConstants.ADMINISTRATOR)
 		).put(
-			"administeredSpaceIds", () -> _getAdministeredDepotEntryIds()
+			"administeredSpaceIds", () -> _getAvailableDepotEntryIds()
 		).put(
 			"analyticsEnabled",
 			() -> {
@@ -251,33 +250,25 @@ public class ViewDashboardDisplayContext {
 		).build();
 	}
 
-	private List<String> _getAdministeredDepotEntryIds()
-		throws PortalException {
+	private List<String> _getAvailableDepotEntryIds() throws PortalException {
+		return TransformUtil.transform(
+			_depotEntryService.getDepotEntryGroupIds(
+				_themeDisplay.getCompanyId(), _themeDisplay.getUserId(),
+				DepotConstants.TYPE_SPACE),
+			groupId -> {
+				DepotEntry depotEntry =
+					_depotEntryLocalService.fetchGroupDepotEntry(groupId);
 
-		List<String> administeredDepotEntryIds = new ArrayList<>();
+				if ((depotEntry != null) &&
+					_depotEntryModelResourcePermission.contains(
+						_themeDisplay.getPermissionChecker(), depotEntry,
+						ActionKeys.VIEW_SITE_ADMINISTRATION)) {
 
-		for (long groupId :
-				_depotEntryService.getDepotEntryGroupIds(
-					_themeDisplay.getCompanyId(), _themeDisplay.getUserId(),
-					DepotConstants.TYPE_SPACE)) {
+					return String.valueOf(depotEntry.getDepotEntryId());
+				}
 
-			DepotEntry depotEntry =
-				_depotEntryLocalService.fetchGroupDepotEntry(groupId);
-
-			if (depotEntry == null) {
-				continue;
-			}
-
-			if (_depotEntryModelResourcePermission.contains(
-					_themeDisplay.getPermissionChecker(), depotEntry,
-					ActionKeys.VIEW_SITE_ADMINISTRATION)) {
-
-				administeredDepotEntryIds.add(
-					String.valueOf(depotEntry.getDepotEntryId()));
-			}
-		}
-
-		return administeredDepotEntryIds;
+				return null;
+			});
 	}
 
 	private Long _getCMSGroupId() {
