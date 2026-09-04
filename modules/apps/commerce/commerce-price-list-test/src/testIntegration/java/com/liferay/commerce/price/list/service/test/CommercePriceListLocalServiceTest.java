@@ -12,19 +12,30 @@ import com.liferay.commerce.price.list.exception.CommercePriceListCurrencyExcept
 import com.liferay.commerce.price.list.exception.NoSuchPriceListException;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
+import com.liferay.commerce.price.list.service.CommercePriceListService;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.test.util.price.list.CommercePriceListTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -584,6 +595,52 @@ public class CommercePriceListLocalServiceTest {
 	}
 
 	@Test
+	public void testGetCommercePriceListsWithoutVisibleCatalogs()
+		throws Exception {
+
+		List<CommerceCatalog> commerceCatalogs =
+			CommerceCatalogLocalServiceUtil.getCommerceCatalogs(
+				_company.getCompanyId(), true);
+
+		CommerceCatalog commerceCatalog = commerceCatalogs.get(0);
+
+		CommercePriceListTestUtil.addCommercePriceList(
+			null, commerceCatalog.getGroupId(),
+			Currency.getInstance(
+				LocaleUtil.US
+			).getCurrencyCode(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), true,
+			null, null);
+
+		User user = UserTestUtil.addUser(_company);
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			CommercePriceList.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(_company.getCompanyId()), ActionKeys.VIEW);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			List<CommercePriceList> commercePriceLists =
+				_commercePriceListService.getCommercePriceLists(
+					_company.getCompanyId(), WorkflowConstants.STATUS_APPROVED,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+			Assert.assertTrue(
+				commercePriceLists.toString(), commercePriceLists.isEmpty());
+
+			Assert.assertEquals(
+				0,
+				_commercePriceListService.getCommercePriceListsCount(
+					_company.getCompanyId(),
+					WorkflowConstants.STATUS_APPROVED));
+		}
+	}
+
+	@Test
 	public void testGetOrAddEmptyCommercePriceList() throws Exception {
 		frutillaRule.scenario(
 			"Get or add an empty commerce price list"
@@ -851,6 +908,12 @@ public class CommercePriceListLocalServiceTest {
 	@Inject
 	private CommercePriceListLocalService _commercePriceListLocalService;
 
+	@Inject
+	private CommercePriceListService _commercePriceListService;
+
 	private Group _group;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
