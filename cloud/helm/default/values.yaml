@@ -153,6 +153,13 @@ customInitContainers:
                                 cp --force --recursive --verbose /opt/liferay/glowroot/* /temp/liferay/glowroot
                             fi
 
+                            if [ ! -d /temp/osgi/marketplace ] || [ -z "$(ls --almost-all /temp/osgi/marketplace)" ]
+                            then
+                                mkdir --parents /temp/osgi/marketplace
+
+                                cp --force --recursive --verbose /opt/liferay/osgi/marketplace/. /temp/osgi/marketplace
+                            fi
+
                             if [ ! -f /temp/tomcat/conf/server.xml ]
                             then
                                 mkdir --parents /temp/tomcat/conf
@@ -519,6 +526,9 @@ volumeMounts:
     -   mountPath: /opt/liferay/osgi/configs
         name: liferay-persistent-volume
         subPath: osgi/configs
+    -   mountPath: /opt/liferay/osgi/marketplace
+        name: liferay-persistent-volume
+        subPath: osgi/marketplace
     -   mountPath: /opt/liferay/osgi/modules
         name: liferay-persistent-volume
         subPath: osgi/modules

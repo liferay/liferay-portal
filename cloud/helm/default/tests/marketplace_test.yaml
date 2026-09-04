@@ -112,3 +112,25 @@ tests:
                                     port: 9200
             marketplace.enabled: true
         template: templates/workloads.yaml
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        mountPath: /opt/liferay/osgi/marketplace
+                        name: liferay-persistent-volume
+                        subPath: osgi/marketplace
+                    path: spec.template.spec.containers[?(@.name=="liferay-default")].volumeMounts
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Persists the marketplace folder so a two phase lpkg install survives a restart
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: cp --force --recursive --verbose /opt/liferay/osgi/marketplace/\. /temp/osgi/marketplace
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Seeds the marketplace folder from the image so the override folder is not shadowed
