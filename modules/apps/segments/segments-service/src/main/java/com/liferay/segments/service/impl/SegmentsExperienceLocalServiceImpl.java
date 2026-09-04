@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.util.PortalInstances;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.exception.DefaultSegmentsExperienceException;
@@ -274,6 +275,7 @@ public class SegmentsExperienceLocalServiceImpl
 		// Segments experience
 
 		if (!GroupThreadLocal.isDeleteInProcess() &&
+			!PortalInstances.isCurrentCompanyInDeletionProcess() &&
 			segmentsExperience.hasSegmentsExperiment()) {
 
 			throw new RequiredSegmentsExperienceException.
@@ -281,7 +283,9 @@ public class SegmentsExperienceLocalServiceImpl
 					segmentsExperience.getSegmentsExperienceId());
 		}
 
-		if (!GroupThreadLocal.isDeleteInProcess()) {
+		if (!GroupThreadLocal.isDeleteInProcess() &&
+			!PortalInstances.isCurrentCompanyInDeletionProcess()) {
+
 			_checkUnlockedLayout(
 				segmentsExperience.getPlid(), GuestOrUserUtil.getUserId());
 		}
@@ -299,7 +303,9 @@ public class SegmentsExperienceLocalServiceImpl
 
 		// Segments experiences priorities
 
-		if (!GroupThreadLocal.isDeleteInProcess()) {
+		if (!GroupThreadLocal.isDeleteInProcess() &&
+			!PortalInstances.isCurrentCompanyInDeletionProcess()) {
+
 			_compactSegmentsExperiencesPriorities(segmentsExperience);
 		}
 
