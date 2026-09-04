@@ -80,9 +80,106 @@ public class GitWorkingDirectoryTest
 			gitWorkingDirectory.getLocalGitBranchSHA("master"));
 	}
 
+	@Test
+	public void testGetRebasedLocalGitBranch() throws Exception {
+		File gitRepositoryDir = temporaryFolder.getRoot();
+
+		File gitDir = new File(gitRepositoryDir, ".git");
+
+		gitDir.mkdir();
+
+		Shell shell = mockShell();
+
+		setShellCommandOutput(
+			"git remote -v", shell,
+			"upstream\tgit@github.com:liferay/liferay-portal.git (fetch)\n" +
+				"upstream\tgit@github.com:liferay/liferay-portal.git (push)\n");
+
+		RemoteGitBranch remoteGitBranch = Mockito.mock(RemoteGitBranch.class);
+		LocalGitBranch localGitBranch = Mockito.mock(LocalGitBranch.class);
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.spy(
+			GitWorkingDirectoryFactory.newGitWorkingDirectory(
+				"master", gitRepositoryDir, "liferay-portal"));
+
+		Mockito.doNothing(
+		).when(
+			gitWorkingDirectory
+		).clean();
+
+		Mockito.doReturn(
+			localGitBranch
+		).when(
+			gitWorkingDirectory
+		).createLocalGitBranch(
+			Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyString()
+		);
+
+		Mockito.doReturn(
+			localGitBranch
+		).when(
+			gitWorkingDirectory
+		).createLocalGitBranch(
+			Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyString(),
+			Mockito.nullable(RemoteGitBranch.class)
+		);
+
+		Mockito.doReturn(
+			"other-branch"
+		).when(
+			gitWorkingDirectory
+		).getCurrentBranchName();
+
+		Mockito.doReturn(
+			remoteGitBranch
+		).when(
+			gitWorkingDirectory
+		).getRemoteGitBranch(
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()
+		);
+
+		Mockito.doReturn(
+			true
+		).when(
+			gitWorkingDirectory
+		).localSHAExists(
+			Mockito.anyString()
+		);
+
+		Mockito.doReturn(
+			localGitBranch
+		).when(
+			gitWorkingDirectory
+		).rebase(
+			Mockito.anyBoolean(), Mockito.any(LocalGitBranch.class),
+			Mockito.any(LocalGitBranch.class)
+		);
+
+		Mockito.doNothing(
+		).when(
+			gitWorkingDirectory
+		).reset(
+			Mockito.anyString()
+		);
+
+		gitWorkingDirectory.getRebasedLocalGitBranch(
+			"rebased-branch", _SENDER_BRANCH_NAME,
+			"git@github.com:sender/liferay-portal.git", _LOCAL_BRANCH_SHA,
+			"master", _LOCAL_BRANCH_SHA);
+
+		Mockito.verify(
+			gitWorkingDirectory, Mockito.never()
+		).getRemoteGitBranch(
+			Mockito.eq(_SENDER_BRANCH_NAME), Mockito.anyString(),
+			Mockito.anyBoolean()
+		);
+	}
+
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
 	private static final String _LOCAL_BRANCH_SHA = "abcdef1234567890";
+
+	private static final String _SENDER_BRANCH_NAME = "sender-branch";
 
 }

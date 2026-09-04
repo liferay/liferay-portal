@@ -1946,13 +1946,15 @@ public class GitWorkingDirectory {
 				checkoutLocalGitBranch(tempLocalGitBranch);
 			}
 
-			RemoteGitBranch senderRemoteGitBranch = getRemoteGitBranch(
-				senderBranchName, senderRemoteURL, true);
+			RemoteGitBranch senderRemoteGitBranch = null;
 
 			if (localSHAExists(senderSHA)) {
 				createLocalGitBranch(senderBranchName, true, senderSHA);
 			}
 			else {
+				senderRemoteGitBranch = getRemoteGitBranch(
+					senderBranchName, senderRemoteURL, true);
+
 				fetch(senderRemoteGitBranch);
 			}
 
