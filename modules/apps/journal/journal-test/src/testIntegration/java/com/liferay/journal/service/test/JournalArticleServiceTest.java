@@ -74,6 +74,7 @@ import java.io.InputStream;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -933,6 +934,14 @@ public class JournalArticleServiceTest {
 			PermissionThreadLocal.setPermissionChecker(
 				originalPermissionChecker);
 		}
+	}
+
+	@Test
+	public void testGetFoldersAndArticlesCountWithEmptyFolderIds() {
+		Assert.assertEquals(
+			0,
+			_journalArticleService.getFoldersAndArticlesCount(
+				_group.getGroupId(), Collections.emptyList()));
 	}
 
 	@Test
