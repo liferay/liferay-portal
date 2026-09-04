@@ -605,6 +605,20 @@ public class RoleLocalServiceTest {
 	}
 
 	@Test
+	public void testGetRolesWithEmptyTypes() throws Exception {
+		long companyId = TestPropsValues.getCompanyId();
+
+		List<Role> roles = _roleLocalService.getRoles(
+			companyId, RoleConstants.TYPES_REGULAR_AND_SITE);
+
+		Assert.assertFalse(roles.toString(), roles.isEmpty());
+
+		roles = _roleLocalService.getRoles(companyId, new int[0]);
+
+		Assert.assertTrue(roles.toString(), roles.isEmpty());
+	}
+
+	@Test
 	public void testGetTeamRoleMapWithExclusion() throws Exception {
 		createOrganizationAndTeam();
 
