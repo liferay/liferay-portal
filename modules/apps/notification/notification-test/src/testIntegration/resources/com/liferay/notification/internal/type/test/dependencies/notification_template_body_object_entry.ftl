@@ -17,7 +17,3 @@ ${ObjectField_r_oneToManyObjectRelationship_c_parentObjectDefinitionId.getData()
 ${ObjectField_textObjectField.getData()}
 ${locale}
 ${portalURL}
-
-<#assign serviceContext = staticUtil["com.liferay.portal.kernel.service.ServiceContextThreadLocal"].getServiceContext() />
-
-${serviceContext.getCompanyId()}

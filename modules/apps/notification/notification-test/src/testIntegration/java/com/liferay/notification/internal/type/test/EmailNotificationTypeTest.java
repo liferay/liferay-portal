@@ -75,7 +75,6 @@ import com.liferay.object.test.util.ObjectEntryFolderTestUtil;
 import com.liferay.object.util.HttpServletRequestThreadLocal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.model.Group;
@@ -133,6 +132,8 @@ import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.mail.MailServiceTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -176,8 +177,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -197,17 +196,6 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 	public static void setUpClass() throws Exception {
 		BaseNotificationTypeTest.setUpClass();
 
-		_freeMarkerEngineConfiguration = _configurationAdmin.getConfiguration(
-			"com.liferay.portal.template.freemarker.configuration." +
-				"FreeMarkerEngineConfiguration",
-			StringPool.QUESTION);
-
-		ConfigurationTestUtil.saveConfiguration(
-			_freeMarkerEngineConfiguration,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"restrictedVariables", true
-			).build());
-
 		Bundle bundle = FrameworkUtil.getBundle(
 			EmailNotificationTypeTest.class);
 
@@ -225,9 +213,6 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-		ConfigurationTestUtil.deleteConfiguration(
-			_freeMarkerEngineConfiguration);
-
 		if (_serviceRegistration != null) {
 			_serviceRegistration.unregister();
 		}
@@ -437,6 +422,48 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 		objectActionLocalService.deleteObjectAction(objectAction);
 
 		_deleteCommerceOrder(commerceOrder.getCommerceOrderId());
+	}
+
+	@Test
+	public void testFreeMarkerNotificationWithRestrictedVariables()
+		throws Exception {
+
+		String body =
+			_read("notification_template_body_object_entry.ftl") +
+				"\n${objectUtil(\"java.lang.ProcessBuilder\", " +
+					"[\"true\"]).start()}";
+
+		ObjectAction objectAction = _addNotificationTemplateObjectAction(
+			body, NotificationTemplateConstants.EDITOR_TYPE_FREEMARKER,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
+			childObjectDefinition);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.kernel.transaction",
+				LoggerTestUtil.ERROR)) {
+
+			objectEntryManager.addObjectEntry(
+				dtoConverterContext, childObjectDefinition,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.putAll(
+							childObjectEntryValues
+						).build();
+					}
+				},
+				group.getGroupKey());
+		}
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			notificationQueueEntryLocalService.getNotificationEntries(
+				NotificationConstants.TYPE_EMAIL,
+				NotificationQueueEntryConstants.STATUS_SENT);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 0,
+			notificationQueueEntries.size());
+
+		objectActionLocalService.deleteObjectAction(objectAction);
 	}
 
 	@Test
@@ -2239,9 +2266,7 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 				"listTypeEntry1Value,listTypeEntry2Value",
 				"listTypeEntry1Value", "", "textObjectFieldValue",
 				LanguageUtil.getLanguageId(LocaleUtil.US),
-				_portal.getPortalURL(serviceContext.getRequest()),
-				StringPool.NEW_LINE, StringPool.NEW_LINE,
-				serviceContext.getCompanyId()),
+				_portal.getPortalURL(serviceContext.getRequest())),
 			StringPool.NEW_LINE);
 	}
 
@@ -2463,10 +2488,6 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 			).build());
 	}
 
-	@Inject
-	private static ConfigurationAdmin _configurationAdmin;
-
-	private static Configuration _freeMarkerEngineConfiguration;
 	private static ServiceRegistration<TemplateContextContributor>
 		_serviceRegistration;
 
