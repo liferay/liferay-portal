@@ -445,3 +445,84 @@ test(
 		});
 	}
 );
+
+test(
+	'Recent searches follow the search box',
+	{
+		tag: ['@LPD-89792'],
+	},
+	async ({fdsSamplePage, page}) => {
+		const magnifierButton = page
+			.locator('.navbar-breakpoint-d-none button')
+			.first();
+		const searchInput = fdsSamplePage.managementToolbar.searchInput;
+
+		await test.step('Remember a query for the dropdown to list', async () => {
+			await fdsSamplePage.search('Sample55');
+
+			await expect(page.getByText('1 Result Found for:')).toBeVisible();
+
+			await searchInput.clear();
+		});
+
+		await test.step('The dropdown opens as wide as the search box', async () => {
+			await searchInput.click();
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeVisible();
+
+			const menuBoundingBox =
+				await fdsSamplePage.recentSearches.menu.boundingBox();
+			const searchBoxBoundingBox = await searchInput.boundingBox();
+
+			expect(menuBoundingBox!.width).toBeGreaterThanOrEqual(
+				searchBoxBoundingBox!.width
+			);
+		});
+
+		await test.step('The dropdown narrows with the search box', async () => {
+			const widthBefore =
+				(await fdsSamplePage.recentSearches.menu.boundingBox())!.width;
+
+			await page.setViewportSize({height: 800, width: 960});
+
+			await expect(async () => {
+				const menuBoundingBox =
+					await fdsSamplePage.recentSearches.menu.boundingBox();
+				const searchBoxBoundingBox = await searchInput.boundingBox();
+
+				expect(menuBoundingBox!.width).toBeLessThan(widthBefore);
+				expect(menuBoundingBox!.width).toBeGreaterThanOrEqual(
+					searchBoxBoundingBox!.width
+				);
+			}).toPass();
+		});
+
+		await test.step('The dropdown closes when the management bar puts the search box behind a button', async () => {
+			await page.setViewportSize({height: 800, width: 700});
+
+			await expect(searchInput).toBeHidden();
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+		});
+
+		await test.step('The dropdown opens on the search box that button reveals', async () => {
+			await magnifierButton.click();
+
+			await expect(searchInput).toBeVisible();
+
+			await searchInput.click();
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeVisible();
+		});
+
+		await test.step('The dropdown closes when the revealed search box is put away', async () => {
+			await searchInput.fill('Sample');
+
+			await searchInput.clear();
+
+			await expect(searchInput).toBeHidden();
+
+			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+		});
+	}
+);
