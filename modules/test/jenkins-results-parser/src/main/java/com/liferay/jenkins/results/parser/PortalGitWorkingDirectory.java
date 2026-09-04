@@ -124,7 +124,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			while (matcher.find()) {
 				String filePath = matcher.group("filePath");
 
-				_jsUnitFiles.add(new File(portalPrivateDir, filePath.trim()));
+				_jsUnitFiles.add(new File(portalPrivateDir, filePath));
 			}
 		}
 
@@ -722,7 +722,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(
 		"@esbuild-(linux-.*?)-.*");
 	private static final Pattern _jsUnitFilePathPattern = Pattern.compile(
-		"(?<filePath>[^\\:]+)\\:.+");
+		"(?<filePath>[^:]+):.+");
 
 	private Properties _appServerProperties;
 	private List<File> _jsUnitFiles;
