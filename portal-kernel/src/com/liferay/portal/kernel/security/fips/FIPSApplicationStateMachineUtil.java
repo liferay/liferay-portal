@@ -129,11 +129,13 @@ public class FIPSApplicationStateMachineUtil {
 			FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
 				failureEventType, FIPSAuditEvent.Severity.CRITICAL);
 
+			fipsAuditEvent.put("failed-step", failedStep);
+
 			FIPSApplicationState fipsApplicationState =
 				getFIPSApplicationState();
 
-			fipsAuditEvent.put("failed-step", failedStep);
 			fipsAuditEvent.put("fips-state", fipsApplicationState.name());
+
 			fipsAuditEvent.put(
 				"provider-error-message", _getMessage(throwable));
 

@@ -784,9 +784,6 @@ public class FIPSApplicationStateMachineUtilTest {
 			FIPSApplicationState.ERROR,
 			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
 
-		Assert.assertEquals(
-			_fipsAuditLogEntries.toString(), 3, _fipsAuditLogEntries.size());
-
 		_assertEnvelope(
 			_fipsAuditLogEntries.get(1), "event-type",
 			"periodic-health-failure");
@@ -800,7 +797,6 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(
 			_fipsAuditLogEntries.get(1), "provider-error-message",
 			runtimeException.toString());
-
 		_assertEnvelope(
 			_fipsAuditLogEntries.get(2), "event-type", "fips-state-transition");
 		_assertEnvelope(
@@ -813,6 +809,8 @@ public class FIPSApplicationStateMachineUtilTest {
 		_assertField(
 			_fipsAuditLogEntries.get(2), "to-state",
 			FIPSApplicationState.ERROR.name());
+		Assert.assertEquals(
+			_fipsAuditLogEntries.toString(), 3, _fipsAuditLogEntries.size());
 	}
 
 	private void _testSelfTestWithIllegalState(
