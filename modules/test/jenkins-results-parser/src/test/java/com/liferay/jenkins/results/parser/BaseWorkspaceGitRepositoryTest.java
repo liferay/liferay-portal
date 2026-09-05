@@ -688,10 +688,10 @@ public class BaseWorkspaceGitRepositoryTest
 
 		setShellCommandOutput("git ls-remote", shell, "");
 
-		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
-			GitWorkingDirectory.class);
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
 			_newDefaultWorkspaceGitRepository(pullRequest);
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
 
 		Mockito.doReturn(
 			gitWorkingDirectory
@@ -1043,12 +1043,10 @@ public class BaseWorkspaceGitRepositoryTest
 			boolean refContainsSHA, boolean remoteGitRefFound)
 		throws Exception {
 
-		String sha = RandomTestUtil.randomSHA();
-
-		LocalGitBranch localGitBranch = null;
-		RemoteGitRef remoteGitRef = null;
 		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
 			GitWorkingDirectory.class);
+		LocalGitBranch localGitBranch = null;
+		RemoteGitRef remoteGitRef = null;
 		String remoteURL = RandomTestUtil.randomString();
 
 		if (remoteGitRefFound) {
@@ -1067,6 +1065,8 @@ public class BaseWorkspaceGitRepositoryTest
 				remoteURL
 			);
 		}
+
+		String sha = RandomTestUtil.randomSHA();
 
 		Mockito.when(
 			gitWorkingDirectory.localSHAExists(sha)
