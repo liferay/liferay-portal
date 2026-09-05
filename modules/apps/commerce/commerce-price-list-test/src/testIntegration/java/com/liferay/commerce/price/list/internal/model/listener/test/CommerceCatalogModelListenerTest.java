@@ -44,13 +44,11 @@ public class CommerceCatalogModelListenerTest {
 
 	@Test
 	public void testOnAfterCreate() throws Exception {
-		_assertCatalogBaseCommercePriceListNames(LocaleUtil.US);
-		_assertCatalogBaseCommercePriceListNames(LocaleUtil.SPAIN);
+		_testOnAfterCreate(_LocaleUtil.SPAIN);
+		_testOnAfterCreate(LocaleUtil.US);
 	}
 
-	private void _assertCatalogBaseCommercePriceListNames(Locale locale)
-		throws Exception {
-
+	private void _testOnAfterCreate(Locale locale) throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		CommerceCurrency commerceCurrency =
@@ -66,15 +64,15 @@ public class CommerceCatalogModelListenerTest {
 
 		Assert.assertEquals(
 			_language.format(locale, "x-base-price-list", name, false),
-			_getCatalogBaseCommercePriceListName(
+			_getCommercePriceListName(
 				commerceCatalog, CommercePriceListConstants.TYPE_PRICE_LIST));
 		Assert.assertEquals(
 			_language.format(locale, "x-base-promotion", name, false),
-			_getCatalogBaseCommercePriceListName(
+			_getCommercePriceListName(
 				commerceCatalog, CommercePriceListConstants.TYPE_PROMOTION));
 	}
 
-	private String _getCatalogBaseCommercePriceListName(
+	private String _getCommercePriceListName(
 		CommerceCatalog commerceCatalog, String type) {
 
 		CommercePriceList commercePriceList =
