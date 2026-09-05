@@ -33,10 +33,9 @@ public class JobHealthMonitor extends BaseMonitor {
 
 		_cadenceSeconds = getLongValue("parameter", 0, "cadence", parameters);
 		_expectedGreen = _isExpectedGreen(parameters);
-		_jobName = getRequiredParameter("job.name", parameters);
-
 		_jenkinsMaster = JenkinsMaster.getInstance(
 			getRequiredParameter("master.name", parameters));
+		_jobName = getRequiredParameter("job.name", parameters);
 
 		_thresholds = monitorConfig.getThresholds();
 
