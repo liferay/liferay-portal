@@ -3109,26 +3109,20 @@ public class ObjectEntryLocalServiceImpl
 						getSystemObjectDefinitionManager(
 							objectDefinition.getName());
 
+				Map<Serializable, String> externalReferenceCodes =
+					systemObjectDefinitionManager.
+						getBaseModelExternalReferenceCodes(primaryKeys);
+
 				for (ObjectEntry objectEntry : objectEntries) {
 					Map<String, Serializable> values = objectEntry.getValues();
 
-					long primaryKey = GetterUtil.getLong(
-						values.get(objectField.getName()));
+					String externalReferenceCode = externalReferenceCodes.get(
+						GetterUtil.getLong(values.get(objectField.getName())));
 
-					if (primaryKey == 0) {
-						continue;
-					}
-
-					try {
+					if (externalReferenceCode != null) {
 						values.put(
 							objectRelationshipERCObjectFieldName,
-							systemObjectDefinitionManager.
-								getBaseModelExternalReferenceCode(primaryKey));
-					}
-					catch (PortalException portalException) {
-						if (_log.isDebugEnabled()) {
-							_log.debug(portalException);
-						}
+							externalReferenceCode);
 					}
 				}
 
