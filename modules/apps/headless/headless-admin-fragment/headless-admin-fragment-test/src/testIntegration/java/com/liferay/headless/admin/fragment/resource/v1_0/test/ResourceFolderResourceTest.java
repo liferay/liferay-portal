@@ -319,7 +319,7 @@ public class ResourceFolderResourceTest
 			testGroup.getExternalReferenceCode(), resourceFolder);
 	}
 
-	private Folder _addDocumentLibraryFolder(String name) throws Exception {
+	private Folder _addFolder(String name) throws Exception {
 		return _dlAppLocalService.addFolder(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			testGroup.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
@@ -606,7 +606,7 @@ public class ResourceFolderResourceTest
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
-		Folder folder = _addDocumentLibraryFolder(
+		Folder folder = _addFolder(
 			fragmentCollection.getFragmentCollectionKey());
 
 		_assertProblemExceptionProblemStatus(
@@ -730,7 +730,7 @@ public class ResourceFolderResourceTest
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
-		Folder folder = _addDocumentLibraryFolder(
+		Folder folder = _addFolder(
 			fragmentCollection.getFragmentCollectionKey());
 
 		_assertProblemExceptionProblemStatus(
@@ -887,7 +887,7 @@ public class ResourceFolderResourceTest
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
-		Folder folder = _addDocumentLibraryFolder(
+		Folder folder = _addFolder(
 			fragmentCollection.getFragmentCollectionKey());
 
 		_assertProblemExceptionProblemStatus(
@@ -1682,7 +1682,7 @@ public class ResourceFolderResourceTest
 		ResourceFolder resourceFolder = _randomResourceFolder(
 			fragmentCollection.getExternalReferenceCode());
 
-		Folder folder = _addDocumentLibraryFolder(
+		Folder folder = _addFolder(
 			fragmentCollection.getFragmentCollectionKey());
 
 		resourceFolder.setExternalReferenceCode(

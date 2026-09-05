@@ -401,9 +401,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		}
 	}
 
-	private FileEntry _addDocumentLibraryFileEntry(Folder folder)
-		throws Exception {
-
+	private FileEntry _addFileEntry(Folder folder) throws Exception {
 		return _dlAppLocalService.addFileEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			folder.getRepositoryId(), folder.getFolderId(),
@@ -413,7 +411,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 	}
 
-	private Folder _addDocumentLibraryFolder(String name) throws Exception {
+	private Folder _addFolder(String name) throws Exception {
 		return _dlAppLocalService.addFolder(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			testGroup.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
@@ -820,9 +818,8 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
-		FileEntry fileEntry = _addDocumentLibraryFileEntry(
-			_addDocumentLibraryFolder(
-				fragmentCollection.getFragmentCollectionKey()));
+		FileEntry fileEntry = _addFileEntry(
+			_addFolder(fragmentCollection.getFragmentCollectionKey()));
 
 		_assertProblemExceptionProblemStatus(
 			"NOT_FOUND",
@@ -949,9 +946,8 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
-		FileEntry fileEntry = _addDocumentLibraryFileEntry(
-			_addDocumentLibraryFolder(
-				fragmentCollection.getFragmentCollectionKey()));
+		FileEntry fileEntry = _addFileEntry(
+			_addFolder(fragmentCollection.getFragmentCollectionKey()));
 
 		_assertProblemExceptionProblemStatus(
 			"NOT_FOUND",
@@ -1303,10 +1299,10 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
-		Folder folder = _addDocumentLibraryFolder(
+		Folder folder = _addFolder(
 			fragmentCollection.getFragmentCollectionKey());
 
-		_addDocumentLibraryFileEntry(folder);
+		_addFileEntry(folder);
 
 		_assertProblemExceptionProblemStatus(
 			"NOT_FOUND",
@@ -2035,9 +2031,8 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		ResourceFile resourceFile = _randomResourceFile(
 			fragmentCollection.getExternalReferenceCode());
 
-		FileEntry fileEntry = _addDocumentLibraryFileEntry(
-			_addDocumentLibraryFolder(
-				fragmentCollection.getFragmentCollectionKey()));
+		FileEntry fileEntry = _addFileEntry(
+			_addFolder(fragmentCollection.getFragmentCollectionKey()));
 
 		resourceFile.setExternalReferenceCode(
 			fileEntry.getExternalReferenceCode());
