@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
@@ -13,6 +14,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +47,18 @@ public class MasterResourceReader {
 
 			return masterResourceReader;
 		}
+	}
+
+	public Document getJobConfigDocument(String jobName, int timeoutMillis)
+		throws DocumentException, IOException {
+
+		return Dom4JUtil.parse(
+			JenkinsResultsParserUtil.toString(
+				_getURL(
+					JenkinsResultsParserUtil.combine(
+						"/job/", jobName, "/config.xml")),
+				false, RETRIES_SIZE_MAX, null, null, _SECONDS_RETRY_PERIOD,
+				timeoutMillis, null, false));
 	}
 
 	public Map<String, JSONObject> getJobJSONObjects(int timeoutMillis)

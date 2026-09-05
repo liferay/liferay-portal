@@ -234,8 +234,12 @@ public class JobHealthMonitor extends BaseMonitor {
 			return _cronSchedule;
 		}
 
-		Document document = JenkinsResultsParserUtil.getJobConfigDocument(
-			_jenkinsMaster, _jobName);
+		MasterResourceReader masterResourceReader =
+			MasterResourceReader.getInstance(_jenkinsMaster.getName());
+
+		Document document = masterResourceReader.getJobConfigDocument(
+			_jobName,
+			getAttemptTimeoutMillis(MasterResourceReader.RETRIES_SIZE_MAX));
 
 		Node specNode = Dom4JUtil.getNodeByXPath(
 			document, "//hudson.triggers.TimerTrigger/spec");
