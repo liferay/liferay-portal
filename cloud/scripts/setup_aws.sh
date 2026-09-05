@@ -110,11 +110,11 @@ function _configure_s3_bucket {
 	local bucket_name="${1}"
 	local region="${2}"
 
-	alias_name="alias/tfstate-${bucket_name}"
-
 	local account_id
 
 	account_id="$(aws sts get-caller-identity --output text --query "Account")"
+
+	alias_name="alias/tfstate-${bucket_name}"
 
 	local kms_key_id
 
