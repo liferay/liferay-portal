@@ -693,8 +693,7 @@ public class ExportProcessResourceTest
 						new RequestPortletDataHandler[] {
 							new RequestPortletDataHandler() {
 								{
-									name =
-										"PORTLET_DATA_" + _PORTLET_ID;
+									name = "PORTLET_DATA_" + _PORTLET_ID;
 
 									setRequestPortletDataHandlerControls(
 										new RequestPortletDataHandlerControl[] {
@@ -850,8 +849,7 @@ public class ExportProcessResourceTest
 
 		_backgroundTaskLocalService.amendBackgroundTask(
 			exportProcess.getId(), null, null,
-			BackgroundTaskConstants.STATUS_FAILED, _STATUS_MESSAGE,
-			null);
+			BackgroundTaskConstants.STATUS_FAILED, _STATUS_MESSAGE, null);
 
 		ExportProcess failedExportProcess =
 			exportProcessResource.getExportProcess(exportProcess.getId());

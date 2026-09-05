@@ -732,8 +732,7 @@ public class ImportProcessResourceTest
 
 		_backgroundTaskLocalService.amendBackgroundTask(
 			importProcess.getId(), null, null,
-			BackgroundTaskConstants.STATUS_FAILED, _STATUS_MESSAGE,
-			null);
+			BackgroundTaskConstants.STATUS_FAILED, _STATUS_MESSAGE, null);
 
 		ImportProcess failedImportProcess =
 			importProcessResource.getImportProcess(importProcess.getId());

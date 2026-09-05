@@ -375,8 +375,7 @@ public class PublishProcessResourceTest
 
 		_backgroundTaskLocalService.amendBackgroundTask(
 			publishProcess.getId(), null, null,
-			BackgroundTaskConstants.STATUS_FAILED, _STATUS_MESSAGE,
-			null);
+			BackgroundTaskConstants.STATUS_FAILED, _STATUS_MESSAGE, null);
 
 		PublishProcess failedPublishProcess =
 			publishProcessResource.getPublishProcess(publishProcess.getId());
