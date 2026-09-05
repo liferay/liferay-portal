@@ -284,11 +284,6 @@ public class ObjectFolderResourceTest extends BaseObjectFolderResourceTestCase {
 			objectDefinition);
 
 		Assert.assertEquals(
-			StringBundler.concat(
-				"Object definition ", objectDefinition.getObjectDefinitionId(),
-				" named ", objectDefinition.getShortName(),
-				" against the indexed object definition IDs ",
-				objectDefinitionIds),
 			expected,
 			objectDefinitionIds.contains(
 				objectDefinition.getObjectDefinitionId()));
@@ -345,37 +340,28 @@ public class ObjectFolderResourceTest extends BaseObjectFolderResourceTestCase {
 
 		_indexWriterHelper.commit(objectDefinition.getCompanyId());
 
-		ObjectFolder objectFolder = null;
+		_deleteObjectDefinitionDocument(objectDefinition);
 
-		try {
-			_deleteObjectDefinitionDocument(objectDefinition);
+		ObjectFolder objectFolder = testPostObjectFolder_addObjectFolder(
+			randomObjectFolder());
 
-			objectFolder = testPostObjectFolder_addObjectFolder(
-				randomObjectFolder());
+		objectFolder.setObjectFolderItems(
+			new ObjectFolderItem[] {
+				_toObjectFolderItem(
+					false, objectDefinition.getExternalReferenceCode(), 0, 0)
+			});
 
-			objectFolder.setObjectFolderItems(
-				new ObjectFolderItem[] {
-					_toObjectFolderItem(
-						false, objectDefinition.getExternalReferenceCode(), 0,
-						0)
-				});
+		objectFolderResource.putObjectFolderByExternalReferenceCode(
+			objectFolder.getExternalReferenceCode(), objectFolder);
 
-			objectFolderResource.putObjectFolderByExternalReferenceCode(
-				objectFolder.getExternalReferenceCode(), objectFolder);
+		_indexWriterHelper.commit(objectDefinition.getCompanyId());
 
-			_indexWriterHelper.commit(objectDefinition.getCompanyId());
+		_assertIndexed(true, objectDefinition);
 
-			_assertIndexed(true, objectDefinition);
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition.getObjectDefinitionId());
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
 
-			if (objectFolder != null) {
-				_objectFolderLocalService.deleteObjectFolder(
-					objectFolder.getId());
-			}
-		}
+		_objectFolderLocalService.deleteObjectFolder(objectFolder.getId());
 	}
 
 	private void _testPutObjectFolderByExternalReferenceCodeUnmovedObjectDefinition()
@@ -386,43 +372,40 @@ public class ObjectFolderResourceTest extends BaseObjectFolderResourceTestCase {
 
 		_indexWriterHelper.commit(objectDefinition.getCompanyId());
 
-		try {
-			_deleteObjectDefinitionDocument(objectDefinition);
+		_deleteObjectDefinitionDocument(objectDefinition);
 
-			ObjectFolder objectFolder =
-				objectFolderResource.getObjectFolderByExternalReferenceCode(
-					ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_DEFAULT);
+		ObjectFolder objectFolder =
+			objectFolderResource.getObjectFolderByExternalReferenceCode(
+				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_DEFAULT);
 
-			ObjectFolderItem[] objectFolderItems =
-				objectFolder.getObjectFolderItems();
+		ObjectFolderItem[] objectFolderItems =
+			objectFolder.getObjectFolderItems();
 
-			ObjectFolderItem[] newObjectFolderItems =
-				new ObjectFolderItem[objectFolderItems.length];
+		ObjectFolderItem[] newObjectFolderItems =
+			new ObjectFolderItem[objectFolderItems.length];
 
-			for (int i = 0; i < objectFolderItems.length; i++) {
-				ObjectFolderItem objectFolderItem = objectFolderItems[i];
+		for (int i = 0; i < objectFolderItems.length; i++) {
+			ObjectFolderItem objectFolderItem = objectFolderItems[i];
 
-				newObjectFolderItems[i] = _toObjectFolderItem(
-					objectFolderItem.getLinkedObjectDefinition(),
-					objectFolderItem.getObjectDefinitionExternalReferenceCode(),
-					objectFolderItem.getPositionX(),
-					objectFolderItem.getPositionY());
-			}
-
-			objectFolder.setObjectFolderItems(newObjectFolderItems);
-
-			objectFolderResource.putObjectFolderByExternalReferenceCode(
-				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_DEFAULT,
-				objectFolder);
-
-			_indexWriterHelper.commit(objectDefinition.getCompanyId());
-
-			_assertIndexed(false, objectDefinition);
+			newObjectFolderItems[i] = _toObjectFolderItem(
+				objectFolderItem.getLinkedObjectDefinition(),
+				objectFolderItem.getObjectDefinitionExternalReferenceCode(),
+				objectFolderItem.getPositionX(),
+				objectFolderItem.getPositionY());
 		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition.getObjectDefinitionId());
-		}
+
+		objectFolder.setObjectFolderItems(newObjectFolderItems);
+
+		objectFolderResource.putObjectFolderByExternalReferenceCode(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_DEFAULT,
+			objectFolder);
+
+		_indexWriterHelper.commit(objectDefinition.getCompanyId());
+
+		_assertIndexed(false, objectDefinition);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
 	}
 
 	private ObjectFolderItem _toObjectFolderItem(
