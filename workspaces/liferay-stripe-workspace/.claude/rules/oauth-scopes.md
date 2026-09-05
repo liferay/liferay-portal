@@ -1,1 +1,1 @@
-../../.workspace-rules/rules/oauth-scopes.md
+../../.agents/rules/oauth-scopes.md

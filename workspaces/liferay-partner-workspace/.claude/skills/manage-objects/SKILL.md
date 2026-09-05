@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/manage-objects/SKILL.md
+../../../.agents/skills/manage-objects/SKILL.md

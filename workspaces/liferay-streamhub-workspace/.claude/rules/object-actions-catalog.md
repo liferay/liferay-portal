@@ -1,1 +1,1 @@
-../../.workspace-rules/rules/object-actions-catalog.md
+../../.agents/rules/object-actions-catalog.md

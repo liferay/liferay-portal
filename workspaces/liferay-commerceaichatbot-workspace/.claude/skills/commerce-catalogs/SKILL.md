@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/commerce-catalogs/SKILL.md
+../../../.agents/skills/commerce-catalogs/SKILL.md

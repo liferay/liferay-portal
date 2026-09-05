@@ -1,1 +1,1 @@
-../../.workspace-rules/rules/page-types.md
+../../.agents/rules/page-types.md

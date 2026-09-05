@@ -1,1 +1,1 @@
-../../.workspace-rules/rules/guest-access.md
+../../.agents/rules/guest-access.md

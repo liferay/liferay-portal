@@ -1,1 +1,0 @@
-../../.workspace-rules/liferay-rules.md

@@ -1,1 +1,1 @@
-../../.workspace-rules/rules/site-initializer-format.md
+../../.agents/rules/site-initializer-format.md

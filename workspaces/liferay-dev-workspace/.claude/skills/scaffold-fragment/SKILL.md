@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/scaffold-fragment/SKILL.md
+../../../.agents/skills/scaffold-fragment/SKILL.md

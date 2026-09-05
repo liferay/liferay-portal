@@ -1,1 +1,1 @@
-../../.workspace-rules/rules/client-extension-types.md
+../../.agents/rules/client-extension-types.md

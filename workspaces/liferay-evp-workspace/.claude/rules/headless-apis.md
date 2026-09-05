@@ -1,1 +1,1 @@
-../../.workspace-rules/rules/headless-apis.md
+../../.agents/rules/headless-apis.md

@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/scaffold-client-extension/SKILL.md
+../../../.agents/skills/scaffold-client-extension/SKILL.md

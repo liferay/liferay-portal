@@ -1,1 +1,0 @@
-../../.workspace-rules/rules/guest-access.md

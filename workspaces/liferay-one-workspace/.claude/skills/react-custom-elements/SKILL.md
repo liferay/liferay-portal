@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/react-custom-elements/SKILL.md
+../../../.agents/skills/react-custom-elements/SKILL.md

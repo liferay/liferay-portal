@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/mcp-server/SKILL.md
+../../../.agents/skills/mcp-server/SKILL.md

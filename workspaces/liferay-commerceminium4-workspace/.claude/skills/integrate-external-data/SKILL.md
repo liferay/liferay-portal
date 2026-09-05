@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/integrate-external-data/SKILL.md
+../../../.agents/skills/integrate-external-data/SKILL.md

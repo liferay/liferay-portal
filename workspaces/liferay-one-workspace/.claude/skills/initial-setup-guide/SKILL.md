@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/initial-setup-guide/SKILL.md
+../../../.agents/skills/initial-setup-guide/SKILL.md

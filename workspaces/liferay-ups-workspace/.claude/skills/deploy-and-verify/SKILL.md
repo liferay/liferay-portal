@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/deploy-and-verify/SKILL.md
+../../../.agents/skills/deploy-and-verify/SKILL.md

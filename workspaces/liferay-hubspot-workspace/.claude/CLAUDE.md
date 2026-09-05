@@ -1,1 +1,1 @@
-../.workspace-rules/liferay-rules.md
+../.agents/liferay-rules.md

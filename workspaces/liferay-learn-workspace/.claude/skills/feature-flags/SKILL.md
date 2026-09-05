@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/feature-flags/SKILL.md
+../../../.agents/skills/feature-flags/SKILL.md

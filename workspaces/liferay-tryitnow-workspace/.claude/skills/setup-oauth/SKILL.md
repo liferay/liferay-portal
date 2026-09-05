@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/setup-oauth/SKILL.md
+../../../.agents/skills/setup-oauth/SKILL.md

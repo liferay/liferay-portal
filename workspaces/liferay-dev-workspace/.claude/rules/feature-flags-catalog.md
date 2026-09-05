@@ -1,1 +1,1 @@
-../../.workspace-rules/rules/feature-flags-catalog.md
+../../.agents/rules/feature-flags-catalog.md

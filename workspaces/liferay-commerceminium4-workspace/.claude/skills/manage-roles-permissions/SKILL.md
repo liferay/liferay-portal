@@ -1,1 +1,1 @@
-../../../.workspace-rules/skills/manage-roles-permissions/SKILL.md
+../../../.agents/skills/manage-roles-permissions/SKILL.md
