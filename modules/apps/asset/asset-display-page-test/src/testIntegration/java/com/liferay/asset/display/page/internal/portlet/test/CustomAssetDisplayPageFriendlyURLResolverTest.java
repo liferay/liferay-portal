@@ -149,7 +149,6 @@ public class CustomAssetDisplayPageFriendlyURLResolverTest {
 			TestPropsValues.getCompanyId(), true, "LPD-57283");
 
 		_testGetLayoutDisplayPageObjectProviderLayout();
-
 		_testGetLayoutDisplayPageObjectProviderLayoutWhenDisconnected();
 	}
 
