@@ -32,9 +32,10 @@ public class JSONWebServiceActionImplTest {
 		throws Exception {
 
 		Parent parent = new Parent();
-		String value = RandomTestUtil.randomString();
 
 		List<String> values = parent.getValues();
+
+		String value = RandomTestUtil.randomString();
 
 		values.add(value);
 
