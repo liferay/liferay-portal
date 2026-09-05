@@ -470,17 +470,14 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 		Layout designLibraryLayout = _layoutLocalService.getLayout(
 			designLibraryLayoutPageTemplateEntry.getPlid());
 
-		long layoutPageTemplateEntryId =
-			designLibraryLayoutPageTemplateEntry.getLayoutPageTemplateEntryId();
-		String layoutPageTemplateEntryKey =
-			designLibraryLayoutPageTemplateEntry.
-				getLayoutPageTemplateEntryKey();
-
 		List<InfoFieldValue<Object>> sortedInfoFieldValues =
 			_getSortedInfoFieldValues();
 
 		Assert.assertEquals(
 			sortedInfoFieldValues.toString(), 5, sortedInfoFieldValues.size());
+
+		long layoutPageTemplateEntryId =
+			designLibraryLayoutPageTemplateEntry.getLayoutPageTemplateEntryId();
 
 		_assertInfoFieldValue(
 			"LayoutPageTemplateEntry__ERC__" +
@@ -491,6 +488,11 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 			object -> _assertInfoFieldValueWebURL(
 				FriendlyURLResolverConstants.URL_SEPARATOR_X_CUSTOM_ASSET,
 				designLibraryLayout, object));
+
+		String layoutPageTemplateEntryKey =
+			designLibraryLayoutPageTemplateEntry.
+				getLayoutPageTemplateEntryKey();
+
 		_assertInfoFieldValue(
 			"LayoutPageTemplateEntry__ERC__" +
 				designLibraryLayoutPageTemplateEntry.getExternalReferenceCode(),

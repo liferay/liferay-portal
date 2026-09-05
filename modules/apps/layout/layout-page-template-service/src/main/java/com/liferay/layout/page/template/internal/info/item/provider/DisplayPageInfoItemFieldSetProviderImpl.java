@@ -113,13 +113,13 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 				_getDefaultDisplayPageURL(
 					infoItemReference, object, themeDisplay)));
 
+		long classNameId = _portal.getClassNameId(
+			infoItemReference.getClassName());
+
 		Group group = themeDisplay.getScopeGroup();
 
 		String groupFriendlyURL = _portal.getGroupFriendlyURL(
 			group.getPublicLayoutSet(), themeDisplay, false, false);
-
-		long classNameId = _portal.getClassNameId(
-			infoItemReference.getClassName());
 
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
