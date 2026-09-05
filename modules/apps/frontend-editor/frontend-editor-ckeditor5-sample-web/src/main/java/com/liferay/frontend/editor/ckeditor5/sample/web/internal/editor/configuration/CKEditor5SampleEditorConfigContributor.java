@@ -17,23 +17,6 @@ import java.util.Map;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Asks every editor in the sample portlet but one to load the standard plugins
- * rather than their premium counterparts.
- *
- * <p>
- * Which of the two an editor loads is otherwise decided by the license key,
- * which leaves each of them at the mercy of how the installation happens to be
- * licensed. Pinning the choice keeps these editors loading the same plugins
- * everywhere, so that a test covering a standard plugin never quietly
- * exercises the premium one instead.
- * </p>
- *
- * <p>
- * The editor behind the "React + CET Premium" tab is deliberately left out, so
- * that it keeps following the license and gives the premium plugins somewhere
- * to be exercised.
- * </p>
- *
  * @author Miguel Arroyo
  */
 @Component(
