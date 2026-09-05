@@ -216,12 +216,12 @@ public class AssetListEntryStagedModelDataHandlerTest
 					new long[] {assetEntryClassNameId, nonexistentClassNameId})
 			).buildString());
 
-		Assert.assertEquals(
-			String.valueOf(assetEntryClassNameId),
-			unicodeProperties.getProperty("classNameIds"));
 		Assert.assertTrue(
 			GetterUtil.getBoolean(
 				unicodeProperties.getProperty("anyAssetType")));
+		Assert.assertEquals(
+			String.valueOf(assetEntryClassNameId),
+			unicodeProperties.getProperty("classNameIds"));
 	}
 
 	private void _testExportImportAssetListEntryWithNonexistentClassNames()
@@ -238,10 +238,10 @@ public class AssetListEntryStagedModelDataHandlerTest
 					})
 			).buildString());
 
-		Assert.assertNull(unicodeProperties.getProperty("classNameIds"));
 		Assert.assertTrue(
 			GetterUtil.getBoolean(
 				unicodeProperties.getProperty("anyAssetType")));
+		Assert.assertNull(unicodeProperties.getProperty("classNameIds"));
 	}
 
 	private void _testExportImportAssetListEntryWithSegmentsEntry()
@@ -294,11 +294,11 @@ public class AssetListEntryStagedModelDataHandlerTest
 				"anyAssetTypeClassName", AssetEntry.class.getName()
 			).buildString());
 
-		Assert.assertNull(
-			unicodeProperties.getProperty("anyAssetTypeClassName"));
 		Assert.assertTrue(
 			GetterUtil.getBoolean(
 				unicodeProperties.getProperty("anyAssetType")));
+		Assert.assertNull(
+			unicodeProperties.getProperty("anyAssetTypeClassName"));
 	}
 
 	@Inject
