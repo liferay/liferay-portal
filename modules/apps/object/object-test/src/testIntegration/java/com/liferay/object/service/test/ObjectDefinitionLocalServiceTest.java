@@ -843,39 +843,32 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertNull(
 			portletId, _portletLocalService.getPortletById(portletId));
 
-		ObjectDefinition objectDefinition2 = null;
-
 		_portletLocalService.deployRemotePortlet(
 			new long[0], portlet, new String[0], false, false);
 
-		try {
-			Assert.assertNotNull(
-				portletId, _portletLocalService.getPortletById(portletId));
+		Assert.assertNotNull(
+			portletId, _portletLocalService.getPortletById(portletId));
 
-			objectDefinition2 = _addCustomObjectDefinition(
-				className, ObjectDefinitionTestUtil.getRandomName());
+		ObjectDefinition objectDefinition2 = _addCustomObjectDefinition(
+			className, ObjectDefinitionTestUtil.getRandomName());
 
-			Assert.assertNotEquals(className, objectDefinition2.getClassName());
+		Assert.assertNotEquals(className, objectDefinition2.getClassName());
 
-			objectDefinition2 =
-				_objectDefinitionLocalService.publishCustomObjectDefinition(
-					TestPropsValues.getUserId(),
-					objectDefinition2.getObjectDefinitionId());
+		objectDefinition2 =
+			_objectDefinitionLocalService.publishCustomObjectDefinition(
+				TestPropsValues.getUserId(),
+				objectDefinition2.getObjectDefinitionId());
 
-			String publishedPortletId = objectDefinition2.getPortletId();
+		String publishedPortletId = objectDefinition2.getPortletId();
 
-			Assert.assertNotNull(
-				publishedPortletId,
-				_portletLocalService.getPortletById(publishedPortletId));
-		}
-		finally {
-			if (objectDefinition2 != null) {
-				_objectDefinitionLocalService.deleteObjectDefinition(
-					objectDefinition2.getObjectDefinitionId());
-			}
+		Assert.assertNotNull(
+			publishedPortletId,
+			_portletLocalService.getPortletById(publishedPortletId));
 
-			_portletLocalService.destroyPortlet(portlet);
-		}
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition2.getObjectDefinitionId());
+
+		_portletLocalService.destroyPortlet(portlet);
 
 		Assert.assertNull(
 			portletId, _portletLocalService.getPortletById(portletId));
