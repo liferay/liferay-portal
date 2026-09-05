@@ -6,6 +6,7 @@
 package com.liferay.portal.security.fips.util;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.audit.AuditRequestThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RoleAssignmentException;
 import com.liferay.portal.kernel.log.Log;
@@ -13,8 +14,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEventFactory;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.fips.constants.FIPSConstants;
@@ -23,6 +27,41 @@ import com.liferay.portal.security.fips.constants.FIPSConstants;
  * @author Manuele Castro
  */
 public class FIPSUtil {
+
+	public static void checkCryptoOfficerLoginFailure(User user) {
+		if (!PropsValues.FIPS_ENABLED || (user == null) ||
+			!hasCryptoOfficerRole(user)) {
+
+			return;
+		}
+
+		// Emitting the event is a side effect only. Letting an exception
+		// escape would abort the remaining authentication failure handling,
+		// which is what locks the account out after too many attempts.
+
+		try {
+			String failureReason = "bad-credential";
+
+			if (user.isLockout()) {
+				failureReason = "locked";
+			}
+
+			AuditRequestThreadLocal auditRequestThreadLocal =
+				AuditRequestThreadLocal.getAuditThreadLocal();
+
+			FIPSAuditUtil.write(
+				FIPSAuditEventFactory.createAuthAttemptFailure(
+					String.valueOf(user.getUserId()), "local",
+					user.getFailedLoginAttempts(), failureReason,
+					GetterUtil.getString(
+						auditRequestThreadLocal.getClientIP())));
+		}
+		catch (Throwable throwable) {
+			_log.error(
+				"Unable to write a FIPS auth-attempt-failure audit event",
+				throwable);
+		}
+	}
 
 	public static void checkCryptoOfficerRole(
 			long administratorRoleId, long companyId, long[] roleIds)
