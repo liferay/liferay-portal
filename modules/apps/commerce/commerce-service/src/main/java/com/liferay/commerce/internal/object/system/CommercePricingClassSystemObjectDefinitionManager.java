@@ -91,17 +91,6 @@ public class CommercePricingClassSystemObjectDefinitionManager
 	}
 
 	@Override
-	public String getBaseModelExternalReferenceCode(long primaryKey)
-		throws PortalException {
-
-		CommercePricingClass commercePricingClass =
-			_commercePricingClassLocalService.getCommercePricingClass(
-				primaryKey);
-
-		return commercePricingClass.getExternalReferenceCode();
-	}
-
-	@Override
 	public String getExternalReferenceCode() {
 		return "L_COMMERCE_PRODUCT_GROUP";
 	}

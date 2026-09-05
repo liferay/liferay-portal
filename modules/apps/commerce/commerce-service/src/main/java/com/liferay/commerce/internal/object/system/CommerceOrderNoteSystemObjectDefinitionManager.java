@@ -93,16 +93,6 @@ public class CommerceOrderNoteSystemObjectDefinitionManager
 	}
 
 	@Override
-	public String getBaseModelExternalReferenceCode(long primaryKey)
-		throws PortalException {
-
-		CommerceOrderNote commerceOrderNote =
-			_commerceOrderNoteLocalService.getCommerceOrderNote(primaryKey);
-
-		return commerceOrderNote.getExternalReferenceCode();
-	}
-
-	@Override
 	public String getExternalReferenceCode() {
 		return "L_COMMERCE_ORDER_NOTE";
 	}

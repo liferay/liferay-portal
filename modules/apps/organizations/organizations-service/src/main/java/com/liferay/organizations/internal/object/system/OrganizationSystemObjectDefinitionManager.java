@@ -95,17 +95,6 @@ public class OrganizationSystemObjectDefinitionManager
 	}
 
 	@Override
-	public String getBaseModelExternalReferenceCode(long primaryKey)
-		throws PortalException {
-
-		com.liferay.portal.kernel.model.Organization
-			serviceBuilderOrganization =
-				_organizationLocalService.getOrganization(primaryKey);
-
-		return serviceBuilderOrganization.getExternalReferenceCode();
-	}
-
-	@Override
 	public String getExternalReferenceCode() {
 		return "L_ORGANIZATION";
 	}
