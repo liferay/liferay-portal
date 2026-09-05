@@ -112,6 +112,7 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.InlineSQLHelper;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -823,6 +824,42 @@ public class DefaultObjectEntryManagerImpl
 		int start = _getStartPosition(pagination);
 		int end = _getEndPosition(pagination);
 
+		boolean preferApproved = GetterUtil.getBoolean(
+			dtoConverterContext.getAttribute("preferApproved"));
+
+		List<ObjectEntry> objectEntries = null;
+		int objectEntriesCount = 0;
+
+		Long finderGroupId = _getFinderGroupId(
+			objectDefinition, groupIds, predicate, preferApproved, search,
+			sorts);
+
+		if (finderGroupId == null) {
+			objectEntries = TransformUtil.transform(
+				objectEntryLocalService.getPrimaryKeys(
+					groupIds, companyId, dtoConverterContext.getUserId(),
+					objectDefinition.getObjectDefinitionId(), predicate,
+					preferApproved, search, start, end, sorts),
+				primaryKey -> _getObjectEntry(
+					dtoConverterContext, objectDefinition, primaryKey));
+			objectEntriesCount = objectEntryLocalService.getValuesListCount(
+				groupIds, companyId, dtoConverterContext.getUserId(),
+				objectDefinition.getObjectDefinitionId(), predicate,
+				preferApproved, search);
+		}
+		else {
+			objectEntries = TransformUtil.transform(
+				_objectEntryService.getObjectEntries(
+					finderGroupId, objectDefinition.getObjectDefinitionId(),
+					WorkflowConstants.STATUS_ANY, start, end),
+				serviceBuilderObjectEntry -> _getObjectEntry(
+					dtoConverterContext, objectDefinition,
+					serviceBuilderObjectEntry));
+			objectEntriesCount = _objectEntryService.getObjectEntriesCount(
+				finderGroupId, objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_ANY);
+		}
+
 		return Page.of(
 			HashMapBuilder.put(
 				"create",
@@ -868,22 +905,7 @@ public class DefaultObjectEntryManagerImpl
 					aggregationTerm, predicate,
 					GetterUtil.getBoolean(
 						dtoConverterContext.getAttribute("preferApproved")))),
-			TransformUtil.transform(
-				objectEntryLocalService.getPrimaryKeys(
-					groupIds, companyId, dtoConverterContext.getUserId(),
-					objectDefinition.getObjectDefinitionId(), predicate,
-					GetterUtil.getBoolean(
-						dtoConverterContext.getAttribute("preferApproved")),
-					search, start, end, sorts),
-				primaryKey -> _getObjectEntry(
-					dtoConverterContext, objectDefinition, primaryKey)),
-			pagination,
-			objectEntryLocalService.getValuesListCount(
-				groupIds, companyId, dtoConverterContext.getUserId(),
-				objectDefinition.getObjectDefinitionId(), predicate,
-				GetterUtil.getBoolean(
-					dtoConverterContext.getAttribute("preferApproved")),
-				search));
+			objectEntries, pagination, objectEntriesCount);
 	}
 
 	@Override
@@ -2395,6 +2417,41 @@ public class DefaultObjectEntryManagerImpl
 		return getGroupId(objectDefinition, scopeKey, true);
 	}
 
+	private Long _getFinderGroupId(
+		ObjectDefinition objectDefinition, Long[] groupIds, Predicate predicate,
+		boolean preferApproved, String search, Sort[] sorts) {
+
+		if ((predicate != null) || preferApproved ||
+			Validator.isNotNull(search) || !_isDefaultSort(sorts) ||
+			ArrayUtil.isNotEmpty(
+				objectDefinition.getRootObjectDefinitionIds())) {
+
+			return null;
+		}
+
+		long groupId = 0;
+
+		if (!StringUtil.equals(
+				objectDefinition.getScope(),
+				ObjectDefinitionConstants.SCOPE_COMPANY)) {
+
+			if (groupIds.length != 1) {
+				return null;
+			}
+
+			groupId = groupIds[0];
+		}
+
+		if ((PermissionThreadLocal.getPermissionChecker() != null) &&
+			_inlineSQLHelper.isEnabled(
+				objectDefinition.getCompanyId(), groupId)) {
+
+			return null;
+		}
+
+		return groupId;
+	}
+
 	private String _getGroupExternalReferenceCode(FileEntry fileEntry) {
 		Scope scope = fileEntry.getScope();
 
@@ -3123,6 +3180,24 @@ public class DefaultObjectEntryManagerImpl
 		}
 
 		return (Serializable)value;
+	}
+
+	private boolean _isDefaultSort(Sort[] sorts) {
+		if (sorts == null) {
+			return true;
+		}
+
+		if (sorts.length != 1) {
+			return false;
+		}
+
+		Sort sort = sorts[0];
+
+		if (Objects.equals(sort.getFieldName(), "id") && !sort.isReverse()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isObjectEntryDraft(Status status) {
@@ -4216,6 +4291,9 @@ public class DefaultObjectEntryManagerImpl
 
 	@Reference
 	private Http _http;
+
+	@Reference
+	private InlineSQLHelper _inlineSQLHelper;
 
 	@Reference
 	private JSONFactory _jsonFactory;
