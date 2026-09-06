@@ -26,6 +26,8 @@ public interface FragmentRendererContext {
 
 	public Map<String, Serializable> getAttributes();
 
+	public Object getContextInfoItem();
+
 	public InfoItemReference getContextInfoItemReference();
 
 	public String getFragmentElementId();

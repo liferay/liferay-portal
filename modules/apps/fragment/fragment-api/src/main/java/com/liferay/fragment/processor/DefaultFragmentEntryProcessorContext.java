@@ -59,6 +59,11 @@ public class DefaultFragmentEntryProcessorContext
 	}
 
 	@Override
+	public Object getContextInfoItem() {
+		return _contextInfoItem;
+	}
+
+	@Override
 	public InfoItemReference getContextInfoItemReference() {
 		return _infoItemReference;
 	}
@@ -156,6 +161,10 @@ public class DefaultFragmentEntryProcessorContext
 		_attributes = attributes;
 	}
 
+	public void setContextInfoItem(Object contextInfoItem) {
+		_contextInfoItem = contextInfoItem;
+	}
+
 	public void setContextInfoItemReference(
 		InfoItemReference infoItemReference) {
 
@@ -196,6 +205,7 @@ public class DefaultFragmentEntryProcessorContext
 
 	private Map<String, Serializable> _attributes = new LinkedHashMap<>();
 	private final long _companyId;
+	private Object _contextInfoItem;
 	private boolean _disablePortletRender;
 	private String _fragmentElementId;
 	private final HttpServletRequest _httpServletRequest;

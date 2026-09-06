@@ -41,6 +41,11 @@ public class DefaultFragmentRendererContext implements FragmentRendererContext {
 	}
 
 	@Override
+	public Object getContextInfoItem() {
+		return _contextInfoItem;
+	}
+
+	@Override
 	public InfoItemReference getContextInfoItemReference() {
 		return _infoItemReference;
 	}
@@ -133,6 +138,10 @@ public class DefaultFragmentRendererContext implements FragmentRendererContext {
 		_attributes = attributes;
 	}
 
+	public void setContextInfoItem(Object contextInfoItem) {
+		_contextInfoItem = contextInfoItem;
+	}
+
 	public void setContextInfoItemReference(
 		InfoItemReference infoItemReference) {
 
@@ -180,6 +189,7 @@ public class DefaultFragmentRendererContext implements FragmentRendererContext {
 	}
 
 	private Map<String, Serializable> _attributes = new LinkedHashMap<>();
+	private Object _contextInfoItem;
 	private boolean _disablePortletRender;
 	private final String _fragmentEntryElementId;
 	private final FragmentEntryLink _fragmentEntryLink;

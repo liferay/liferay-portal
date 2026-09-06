@@ -436,6 +436,8 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 		defaultFragmentEntryProcessorContext.setAttributes(
 			fragmentRendererContext.getAttributes());
+		defaultFragmentEntryProcessorContext.setContextInfoItem(
+			fragmentRendererContext.getContextInfoItem());
 		defaultFragmentEntryProcessorContext.setContextInfoItemReference(
 			fragmentRendererContext.getContextInfoItemReference());
 		defaultFragmentEntryProcessorContext.setDisablePortletRender(

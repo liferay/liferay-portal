@@ -42,6 +42,8 @@ public interface FragmentEntryProcessorContext {
 		return serviceContext.getCompanyId();
 	}
 
+	public Object getContextInfoItem();
+
 	public InfoItemReference getContextInfoItemReference();
 
 	public String getFragmentElementId();
