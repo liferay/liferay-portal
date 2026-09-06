@@ -1010,6 +1010,59 @@ public class FragmentEntryProcessorHelperTest {
 	}
 
 	@Test
+	public void testGetInfoItemFieldMappedFromCollectionItem()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		InfoItemReference infoItemReference = new InfoItemReference(
+			JournalArticle.class.getName(),
+			new ClassPKInfoItemIdentifier(journalArticle.getResourcePrimKey()));
+
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					_group.getCompanyId(), new MockHttpServletRequest(),
+					new MockHttpServletResponse(), LocaleUtil.US,
+					FragmentEntryLinkConstants.VIEW, _group.getGroupId());
+
+		defaultFragmentEntryProcessorContext.setContextInfoItem(journalArticle);
+		defaultFragmentEntryProcessorContext.setContextInfoItemReference(
+			infoItemReference);
+
+		JSONObject editableValueJSONObject = JSONUtil.put(
+			"collectionFieldId", "title");
+
+		InfoItemFieldMapped infoItemFieldMapped =
+			_fragmentEntryProcessorHelper.getInfoItemFieldMapped(
+				editableValueJSONObject, defaultFragmentEntryProcessorContext);
+
+		Assert.assertEquals("title", infoItemFieldMapped.getFieldName());
+		Assert.assertEquals(
+			infoItemReference, infoItemFieldMapped.getInfoItemReference());
+		Assert.assertSame(journalArticle, infoItemFieldMapped.getObject());
+
+		defaultFragmentEntryProcessorContext.setContextInfoItem(null);
+
+		infoItemFieldMapped =
+			_fragmentEntryProcessorHelper.getInfoItemFieldMapped(
+				editableValueJSONObject, defaultFragmentEntryProcessorContext);
+
+		Assert.assertEquals(
+			infoItemReference, infoItemFieldMapped.getInfoItemReference());
+		Assert.assertNotSame(journalArticle, infoItemFieldMapped.getObject());
+
+		JournalArticle resolvedJournalArticle =
+			(JournalArticle)infoItemFieldMapped.getObject();
+
+		Assert.assertEquals(
+			journalArticle.getResourcePrimKey(),
+			resolvedJournalArticle.getResourcePrimKey());
+	}
+
+	@Test
 	@TestInfo({"LPD-11377", "LPD-51076"})
 	public void testGetRepeatableAssetTags() throws Exception {
 		JSONObject jsonObject = JSONUtil.put(
