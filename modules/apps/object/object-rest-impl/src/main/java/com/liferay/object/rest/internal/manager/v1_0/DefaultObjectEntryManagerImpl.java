@@ -27,6 +27,7 @@ import com.liferay.object.entry.folder.subscription.util.ObjectEntryFolderSubscr
 import com.liferay.object.entry.scope.provider.ObjectEntryScopeProvider;
 import com.liferay.object.entry.scope.provider.ObjectEntryScopeProviderRegistry;
 import com.liferay.object.entry.util.ObjectEntryDTOConverterUtil;
+import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.field.attachment.AttachmentManager;
@@ -1004,6 +1005,22 @@ public class DefaultObjectEntryManagerImpl
 		return _getObjectEntry(
 			dtoConverterContext, objectDefinition,
 			_objectEntryService.getObjectEntry(objectEntryId));
+	}
+
+	@Override
+	public ObjectEntry getObjectEntry(
+			DTOConverterContext dtoConverterContext,
+			ObjectDefinition objectDefinition,
+			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry)
+		throws Exception {
+
+		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
+			_objectEntryService.checkModelResourcePermission(
+				serviceBuilderObjectEntry, ActionKeys.VIEW);
+		}
+
+		return _getObjectEntry(
+			dtoConverterContext, objectDefinition, serviceBuilderObjectEntry);
 	}
 
 	@Override
@@ -2290,8 +2307,7 @@ public class DefaultObjectEntryManagerImpl
 		throws Exception {
 
 		_objectEntryService.checkModelResourcePermission(
-			objectDefinition.getObjectDefinitionId(),
-			serviceBuilderObjectEntry.getObjectEntryId(), objectActionName);
+			serviceBuilderObjectEntry, objectActionName);
 
 		_objectActionEngine.executeObjectAction(
 			objectActionName, ObjectActionTriggerConstants.KEY_STANDALONE,
