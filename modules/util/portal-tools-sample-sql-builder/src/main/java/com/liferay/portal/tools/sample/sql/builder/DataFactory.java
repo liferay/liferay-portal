@@ -8522,6 +8522,7 @@ public class DataFactory {
 
 		// Other fields
 
+		objectEntryModel.setDefaultLanguageId("en_US");
 		objectEntryModel.setHeadObjectEntryId(
 			objectEntryModel.getObjectEntryId());
 		objectEntryModel.setObjectDefinitionId(objectDefinitionId);
