@@ -807,6 +807,12 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 		else if (objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
+			long primaryKey = GetterUtil.getLong(value);
+
+			if (primaryKey == 0) {
+				return null;
+			}
+
 			ObjectRelationship objectRelationship =
 				objectRelationshipLocalService.
 					fetchObjectRelationshipByObjectFieldId2(
@@ -817,7 +823,7 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					String.valueOf(value),
 					objectEntryLocalService.getTitleValue(
 						objectRelationship.getObjectDefinitionId1(),
-						GetterUtil.getLong(value)));
+						primaryKey));
 			}
 			catch (Exception exception) {
 				if (_log.isDebugEnabled()) {
