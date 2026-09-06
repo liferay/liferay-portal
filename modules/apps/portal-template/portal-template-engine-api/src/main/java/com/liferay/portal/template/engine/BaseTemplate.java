@@ -8,6 +8,7 @@ package com.liferay.portal.template.engine;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.template.StringTemplateResource;
 import com.liferay.portal.kernel.template.Template;
 import com.liferay.portal.kernel.template.TemplateConstants;
 import com.liferay.portal.kernel.template.TemplateException;
@@ -215,6 +216,10 @@ public abstract class BaseTemplate implements Template {
 	protected void cacheTemplateResource(
 		TemplateResourceCache templateResourceCache,
 		TemplateResource templateResource) {
+
+		if (templateResource instanceof StringTemplateResource) {
+			return;
+		}
 
 		TemplateResource cachedTemplateResource =
 			templateResourceCache.getTemplateResource(
