@@ -86,13 +86,13 @@ public class AssetCategoryStagingSearchTest {
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
 			_stagingGroup.getGroupId(), RandomTestUtil.randomString());
 
-		String categoryTitleString = RandomTestUtil.randomString();
+		String categoryTitle = RandomTestUtil.randomString();
 
 		AssetCategory assetCategory = _assetCategoryService.addCategory(
 			_stagingGroup.getGroupId(),
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			HashMapBuilder.put(
-				LocaleUtil.US, categoryTitleString
+				LocaleUtil.US, categoryTitle
 			).build(),
 			new HashMap<>(), assetVocabulary.getVocabularyId(), new String[0],
 			ServiceContextTestUtil.getServiceContext(
@@ -124,7 +124,7 @@ public class AssetCategoryStagingSearchTest {
 		SearchContext searchContext = SearchContextTestUtil.getSearchContext(
 			_liveGroup.getGroupId());
 
-		searchContext.setKeywords(categoryTitleString);
+		searchContext.setKeywords(categoryTitle);
 
 		Hits hits = _indexer.search(searchContext);
 
@@ -134,8 +134,7 @@ public class AssetCategoryStagingSearchTest {
 		DocumentsAssert.assertValuesIgnoreRelevance(
 			(String)searchContext.getAttribute("queryString"), hits.getDocs(),
 			Field.getLocalizedName(LocaleUtil.US, Field.ASSET_CATEGORY_TITLES),
-			Collections.singletonList(
-				StringUtil.toLowerCase(categoryTitleString)));
+			Collections.singletonList(StringUtil.toLowerCase(categoryTitle)));
 	}
 
 	@Rule
