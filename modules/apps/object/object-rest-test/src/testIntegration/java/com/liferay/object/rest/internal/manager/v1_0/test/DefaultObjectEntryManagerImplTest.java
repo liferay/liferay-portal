@@ -6947,6 +6947,57 @@ public class DefaultObjectEntryManagerImplTest
 	}
 
 	@Test
+	public void testGetObjectEntry() throws Exception {
+
+		// Company scope
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			_objectDefinition1, WorkflowConstants.STATUS_APPROVED);
+
+		_assertObjectEntry(
+			objectEntry,
+			_defaultObjectEntryManager.getObjectEntry(
+				dtoConverterContext, _objectDefinition1,
+				_objectEntryLocalService.getObjectEntry(objectEntry.getId())));
+
+		// Site scope
+
+		ObjectEntry siteObjectEntry = _defaultObjectEntryManager.addObjectEntry(
+			_simpleDTOConverterContext, _objectDefinition4,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"textObjectFieldName", RandomTestUtil.randomString()
+					).build();
+				}
+			},
+			_group.getGroupKey());
+
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+			_objectEntryLocalService.getObjectEntry(siteObjectEntry.getId());
+
+		_assertObjectEntry(
+			siteObjectEntry,
+			_defaultObjectEntryManager.getObjectEntry(
+				dtoConverterContext, _objectDefinition4,
+				serviceBuilderObjectEntry));
+
+		// Without view permission
+
+		_user = _addUser();
+
+		AssertUtils.assertFailure(
+			PrincipalException.MustHavePermission.class,
+			StringBundler.concat(
+				"User ", _user.getUserId(), " must have VIEW permission for ",
+				_objectDefinition4.getClassName(), StringPool.SPACE,
+				siteObjectEntry.getId()),
+			() -> _defaultObjectEntryManager.getObjectEntry(
+				dtoConverterContext, _objectDefinition4,
+				serviceBuilderObjectEntry));
+	}
+
+	@Test
 	public void testGetObjectEntryByVersion() throws Exception {
 
 		// Company scope
