@@ -431,9 +431,13 @@ public class FragmentEntryProcessorHelperImpl
 
 			fieldName = editableValueJSONObject.getString("collectionFieldId");
 
-			object = _getInfoItem(
-				fragmentEntryProcessorContext.getScopeGroupId(),
-				infoItemReference);
+			object = fragmentEntryProcessorContext.getContextInfoItem();
+
+			if (object == null) {
+				object = _getInfoItem(
+					fragmentEntryProcessorContext.getScopeGroupId(),
+					infoItemReference);
+			}
 		}
 		else if (isMappedDisplayPage(editableValueJSONObject)) {
 			HttpServletRequest httpServletRequest =
