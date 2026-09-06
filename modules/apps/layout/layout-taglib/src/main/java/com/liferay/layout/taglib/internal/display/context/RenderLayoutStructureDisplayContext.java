@@ -249,6 +249,11 @@ public class RenderLayoutStructureDisplayContext {
 				infoItemReference = infoItemDetails.getInfoItemReference();
 			}
 		}
+		else {
+			defaultFragmentRendererContext.setContextInfoItem(
+				_httpServletRequest.getAttribute(
+					InfoDisplayWebKeys.COLLECTION_INFO_ITEM));
+		}
 
 		defaultFragmentRendererContext.setContextInfoItemReference(
 			infoItemReference);

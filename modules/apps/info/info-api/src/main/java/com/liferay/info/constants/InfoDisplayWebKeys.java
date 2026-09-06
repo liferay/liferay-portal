@@ -10,6 +10,8 @@ package com.liferay.info.constants;
  */
 public class InfoDisplayWebKeys {
 
+	public static final String COLLECTION_INFO_ITEM = "COLLECTION_INFO_ITEM";
+
 	public static final String INFO_FORM = "INFO_FORM";
 
 	public static final String INFO_ITEM = "INFO_ITEM";
