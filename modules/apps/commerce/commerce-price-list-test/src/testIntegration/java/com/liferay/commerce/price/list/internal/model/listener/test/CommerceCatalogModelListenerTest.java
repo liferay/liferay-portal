@@ -44,7 +44,7 @@ public class CommerceCatalogModelListenerTest {
 
 	@Test
 	public void testOnAfterCreate() throws Exception {
-		_testOnAfterCreate(_LocaleUtil.SPAIN);
+		_testOnAfterCreate(LocaleUtil.SPAIN);
 		_testOnAfterCreate(LocaleUtil.US);
 	}
 
