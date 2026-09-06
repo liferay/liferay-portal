@@ -758,10 +758,7 @@ public class ObjectServiceUpgradeStepRegistrator
 		registry.register(
 			"13.5.0", "13.6.0",
 			UpgradeProcessFactory.runSQL(
-				"delete from PLOEntry where key_ = 'model.resource.'"));
-
-		registry.register(
-			"13.5.0", "13.6.0",
+				"delete from PLOEntry where key_ = 'model.resource.'"),
 			UpgradeProcessFactory.runSQL(
 				StringBundler.concat(
 					"update ObjectField set readOnly = '",
