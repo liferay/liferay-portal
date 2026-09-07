@@ -83,6 +83,11 @@ public class DepotPermissionCheckerWrapperTest {
 				permissionChecker.hasPermission(
 					_depotEntry.getGroupId(), Group.class.getName(),
 					_depotEntry.getGroupId(), ActionKeys.VIEW));
+			Assert.assertTrue(
+				permissionChecker.hasPermission(
+					_depotEntry.getGroupId(), Group.class.getName(),
+					_depotEntry.getGroupId(),
+					ActionKeys.VIEW_SITE_ADMINISTRATION));
 		}
 		finally {
 			PrincipalThreadLocal.setName(name);
