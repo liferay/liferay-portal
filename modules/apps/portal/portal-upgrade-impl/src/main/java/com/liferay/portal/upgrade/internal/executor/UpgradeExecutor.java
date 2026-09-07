@@ -308,39 +308,40 @@ public class UpgradeExecutor {
 
 			String bundleSymbolicName = bundle.getSymbolicName();
 
-			Release release = _releaseLocalService.fetchRelease(
-				bundleSymbolicName);
+			try {
+				Release release = _releaseLocalService.fetchRelease(
+					bundleSymbolicName);
 
-			if (release == null) {
-				for (UpgradeStep releaseUpgradeStep :
-						upgradeStepRegistry.getReleaseCreationUpgradeSteps()) {
+				if (release == null) {
+					for (UpgradeStep releaseUpgradeStep :
+							upgradeStepRegistry.
+								getReleaseCreationUpgradeSteps()) {
 
-					try {
-						UpgradeLogContext.setContext(bundleSymbolicName);
+						try {
+							UpgradeLogContext.setContext(bundleSymbolicName);
 
-						releaseUpgradeStep.upgrade();
-					}
-					catch (UpgradeException upgradeException) {
-						_log.error(upgradeException);
-					}
-					finally {
-						UpgradeLogContext.clearContext();
+							releaseUpgradeStep.upgrade();
+						}
+						catch (UpgradeException upgradeException) {
+							_log.error(upgradeException);
+						}
+						finally {
+							UpgradeLogContext.clearContext();
+						}
 					}
 				}
-			}
 
-			if (DBUpgrader.isUpgradeDatabaseAutoRunEnabled() ||
-				(release == null)) {
+				if (DBUpgrader.isUpgradeDatabaseAutoRunEnabled() ||
+					(release == null)) {
 
-				try {
 					execute(bundle, upgradeStepRegistry.getUpgradeInfos());
 				}
-				catch (Throwable throwable) {
-					_log.error(
-						"Failed upgrade process for module ".concat(
-							bundleSymbolicName),
-						throwable);
-				}
+			}
+			catch (Throwable throwable) {
+				_log.error(
+					"Failed upgrade process for module ".concat(
+						bundleSymbolicName),
+					throwable);
 			}
 
 			return upgradeStepRegistry;
