@@ -3208,6 +3208,20 @@ components:
             description:
                 A page template set.
             properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            description:
+                                The action's properties.
+                            type: string
+                        description:
+                            The action's name.
+                        type: object
+                    # @review
+                    description:
+                        Block of actions allowed by the user making the request.
+                    readOnly: true
+                    type: object
                 creator:
                     $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
                     # @review
@@ -5036,6 +5050,131 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/design-libraries/{designLibraryExternalReferenceCode}/page-template-sets":
+        get:
+            # @review
+            description:
+                Retrieves the page template sets of a design library.
+            operationId: getDesignLibraryPageTemplateSetsPage
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: aggregationTerms
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PageTemplateSet"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PageTemplateSet"
+                                type: array
+            tags: ["PageTemplateSet"]
+    "/design-libraries/{designLibraryExternalReferenceCode}/page-template-sets/{pageTemplateSetExternalReferenceCode}":
+        delete:
+            # @review
+            description:
+                Deletes a specific page template set of a design library.
+            operationId: deleteDesignLibraryPageTemplateSet
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: pageTemplateSetExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["PageTemplateSet"]
+        get:
+            # @review
+            description:
+                Retrieves a specific page template set of a design library.
+            operationId: getDesignLibraryPageTemplateSet
+            parameters:
+                -   in: path
+                    name: designLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: pageTemplateSetExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplateSet"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PageTemplateSet"
+            tags: ["PageTemplateSet"]
     "/design-libraries/{designLibraryExternalReferenceCode}/style-books":
         get:
             # @review
