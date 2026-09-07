@@ -52,6 +52,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"application.name=Liferay.Headless.Commerce.Admin.Order",
+		"default=true",
 		"dto.class.name=com.liferay.commerce.model.CommerceOrder",
 		"version=v1.0"
 	},

@@ -29,7 +29,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Stefano Motta
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.product.model.CPInstanceUnitOfMeasure",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.product.model.CPInstanceUnitOfMeasure"
+	},
 	service = DTOConverter.class
 )
 public class SkuUnitOfMeasureDTOConverter

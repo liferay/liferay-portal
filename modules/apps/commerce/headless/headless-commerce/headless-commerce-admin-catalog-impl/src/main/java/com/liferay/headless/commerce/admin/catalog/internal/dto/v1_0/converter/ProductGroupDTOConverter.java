@@ -23,6 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"application.name=Liferay.Headless.Commerce.Admin.Catalog",
+		"default=true",
 		"dto.class.name=com.liferay.commerce.pricing.model.CommercePricingClass",
 		"version=v1.0"
 	},

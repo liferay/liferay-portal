@@ -52,7 +52,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"application.name=Liferay.Headless.Admin.Taxonomy",
+		"application.name=Liferay.Headless.Admin.Taxonomy", "default=true",
 		"dto.class.name=com.liferay.asset.kernel.model.AssetCategory",
 		"version=v1.0"
 	},

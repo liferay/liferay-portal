@@ -26,7 +26,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Danny Situ
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry"
+	},
 	service = DTOConverter.class
 )
 public class ProductVirtualSettingsFileEntryDTOConverter

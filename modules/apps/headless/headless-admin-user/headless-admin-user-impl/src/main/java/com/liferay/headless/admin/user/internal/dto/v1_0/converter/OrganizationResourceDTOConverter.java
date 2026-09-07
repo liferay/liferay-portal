@@ -82,7 +82,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"application.name=Liferay.Headless.Admin.User",
+		"application.name=Liferay.Headless.Admin.User", "default=true",
 		"dto.class.name=com.liferay.portal.kernel.model.Organization",
 		"version=v1.0"
 	},

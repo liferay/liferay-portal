@@ -49,7 +49,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Roberto Díaz
  */
 @Component(
-	property = "dto.class.name=com.liferay.depot.model.DepotEntry",
+	property = {
+		"default=true", "dto.class.name=com.liferay.depot.model.DepotEntry"
+	},
 	service = DTOConverter.class
 )
 public class AssetLibraryDTOConverter
