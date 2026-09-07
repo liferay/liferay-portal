@@ -64,6 +64,18 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 				"test-journal-article-122-iso-8859-encoding.xlf"));
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
+	@Test(expected = XLIFFFileException.MustBeValid.class)
+	public void testImportXLIFF12FailsFileInlineCodeWithoutOriginalData()
+		throws Exception {
+
+		_xliffTranslationInfoItemFieldValuesImporter.importInfoItemFieldValues(
+			_group.getGroupId(),
+			new InfoItemReference(JournalArticle.class.getName(), 122),
+			new ByteArrayInputStream(
+				_INLINE_CODES_NO_ORIGINAL_DATA_V12_XLIFF.getBytes()));
+	}
+
 	@Test(expected = XLIFFFileException.MustHaveValidId.class)
 	public void testImportXLIFF12FailsFileInvalidId() throws Exception {
 		_xliffTranslationInfoItemFieldValuesImporter.importInfoItemFieldValues(
@@ -238,6 +250,26 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
 	@Test
+	public void testImportXLIFF20IgnoresInlineCodeOnlyTarget()
+		throws Exception {
+
+		InfoItemFieldValues infoItemFieldValues =
+			_xliffTranslationInfoItemFieldValuesImporter.
+				importInfoItemFieldValues(
+					_group.getGroupId(),
+					new InfoItemReference(JournalArticle.class.getName(), 122),
+					new ByteArrayInputStream(
+						_INLINE_CODE_ONLY_TARGET_XLIFF.getBytes()));
+
+		Collection<InfoFieldValue<Object>> infoFieldValues =
+			infoItemFieldValues.getInfoFieldValues();
+
+		Assert.assertEquals(
+			infoFieldValues.toString(), 0, infoFieldValues.size());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
+	@Test
 	public void testImportXLIFF20PreservesInlineCodes() throws Exception {
 		InfoItemFieldValues infoItemFieldValues =
 			_xliffTranslationInfoItemFieldValuesImporter.
@@ -339,6 +371,31 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 		Assert.assertEquals(
 			"Hola mundo", contentInfoFieldValue.getValue(LocaleUtil.SPAIN));
 	}
+
+	private static final String _INLINE_CODE_ONLY_TARGET_XLIFF =
+		StringBundler.concat(
+			"<?xml version=\"1.0\"?>\n\n<xliff srcLang=\"en-US\" trgLang=",
+			"\"es-ES\" version=\"2.0\" xmlns=",
+			"\"urn:oasis:names:tc:xliff:document:2.0\">\n\t<file id=",
+			"\"com.liferay.journal.model.JournalArticle:122\">\n\t\t<unit id=",
+			"\"JournalArticle_content\">\n\t\t\t<originalData>\n\t\t\t\t",
+			"<data id=\"d1\">&lt;br/&gt;</data>\n\t\t\t</originalData>\n\t\t",
+			"\t<segment>\n\t\t\t\t<source>Hello<ph dataRef=\"d1\" id=\"1\"/>",
+			"</source>\n\t\t\t\t<target><ph dataRef=\"d1\" id=\"1\"/></target",
+			">\n\t\t\t</segment>\n\t\t</unit>\n\t</file>\n</xliff>");
+
+	private static final String _INLINE_CODES_NO_ORIGINAL_DATA_V12_XLIFF =
+		StringBundler.concat(
+			"<?xml version=\"1.0\"?>\n\n<xliff version=\"1.2\" xmlns=",
+			"\"urn:oasis:names:tc:xliff:document:1.2\">\n\t<file datatype=",
+			"\"html\" original=\"com.liferay.journal.model.JournalArticle:122",
+			"\" source-language=\"en-US\" target-language=\"es-ES\" tool=",
+			"\"Liferay\">\n\t\t<body>\n\t\t\t<trans-unit id=",
+			"\"JournalArticle_content\">\n\t\t\t\t<source xml:lang=\"en-US\">",
+			"<bpt id=\"1\" rid=\"1\"/>Hello<ept id=\"2\" rid=\"1\"/></source>",
+			"\n\t\t\t\t<target xml:lang=\"es-ES\"><bpt id=\"1\" rid=\"1",
+			"\"/>Hola<ept id=\"2\" rid=\"1\"/></target>\n\t\t\t</trans-unit>",
+			"\n\t\t</body>\n\t</file>\n</xliff>");
 
 	private static final String _INLINE_CODES_NO_ORIGINAL_DATA_XLIFF =
 		StringBundler.concat(
