@@ -176,16 +176,11 @@ const RoomStatistics = ({
 												key={roomStatisticsItem.id}
 											>
 												<div>
-													<span className="font-weight-semi-bold mb-0 mr-2 room-statistics-label text-secondary">
+													<span className="font-weight-semi-bold mb-0 room-statistics-label text-secondary">
 														{
 															roomStatisticsItem.label
 														}
 													</span>
-
-													<ClayIcon
-														className="text-secondary"
-														symbol="question-circle"
-													/>
 												</div>
 
 												<div>

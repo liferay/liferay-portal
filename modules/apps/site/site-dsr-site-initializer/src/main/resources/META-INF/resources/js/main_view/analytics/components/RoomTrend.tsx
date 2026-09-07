@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import ClayButton from '@clayui/button';
 import DropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
-import {ClayTooltipProvider} from '@clayui/tooltip';
 import {openToast} from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
@@ -99,15 +98,6 @@ const RoomTrend = () => {
 								<p className="font-weight-semi-bold inline-item inline-item-before m-0">
 									{Liferay.Language.get('room-trend')}
 								</p>
-
-								<ClayTooltipProvider>
-									<ClayButtonWithIcon
-										data-tooltip-align="top"
-										displayType="unstyled"
-										symbol="question-circle-full"
-										title=""
-									/>
-								</ClayTooltipProvider>
 							</div>
 
 							<DropDown
