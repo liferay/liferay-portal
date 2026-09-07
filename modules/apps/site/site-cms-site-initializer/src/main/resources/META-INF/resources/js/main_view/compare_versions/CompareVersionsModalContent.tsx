@@ -79,7 +79,7 @@ export function versionHasLanguage(
 			key !== 'friendlyUrlPath_i18n' &&
 			!isNullOrUndefined(value) &&
 			typeof value === 'object' &&
-			languageId in value
+			Boolean(value[languageId])
 	);
 }
 

@@ -44,6 +44,16 @@ describe('versionHasLanguage', () => {
 		);
 	});
 
+	it('does not have a language whose only translation is empty', () => {
+		const item = createVersionItem({
+			title_i18n: {en_US: 'Title', es_ES: ''},
+		});
+
+		expect(versionHasLanguage(item, 'es_ES', DEFAULT_LANGUAGE_ID)).toBe(
+			false
+		);
+	});
+
 	it('ignores the friendly URL localizations the system fills in for every language', () => {
 		const item = createVersionItem({
 			friendlyUrlPath_i18n: {en_US: 'url', es_ES: 'url'},
