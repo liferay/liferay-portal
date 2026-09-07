@@ -1,5 +1,7 @@
 import groovy.xml.XmlUtil
 
+import java.nio.file.Path
+
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.DoubleAdder
@@ -52,7 +54,7 @@ gradle.taskGraph.addTaskExecutionListener(
 				reportGroup.completedTaskPaths.add(task.path)
 			}
 
-			_writeReport(reportGroupName, reportGroup, testResultsDir)
+			_writeReport(reportGroup, reportGroupName, testResultsDir)
 		}
 
 		void beforeExecute(Task task) {
@@ -83,7 +85,7 @@ gradle.taskGraph.whenReady {
 
 		Project project = task.project
 
-		String reportGroupName = _getReportGroupName(project.projectDir, modulesDir)
+		String reportGroupName = _getReportGroupName(modulesDir, project.projectDir)
 
 		project.ext.reportGroupName = reportGroupName
 		project.ext.targetTaskName = task.name
@@ -108,7 +110,7 @@ gradle.taskGraph.whenReady {
 	_writeReports(reportGroupsMap, testResultsDir)
 }
 
-private String _getReportGroupName(File projectDir, File modulesDir) {
+private String _getReportGroupName(File modulesDir, File projectDir) {
 	List<File> moduleDirs = new ArrayList<File>()
 
 	File currentDir = projectDir
@@ -131,9 +133,14 @@ private String _getReportGroupName(File projectDir, File modulesDir) {
 		}
 	}
 
-	String relativePath = modulesDir.toPath().relativize(reportGroupDir.toPath()).toString()
+	Path modulesDirPath = modulesDir.toPath()
+	Path reportGroupDirPath = reportGroupDir.toPath()
 
-	return "modules." + relativePath.replace(File.separator, ".")
+	Path relativePath = modulesDirPath.relativize(reportGroupDirPath)
+
+	String relativePathString = relativePath.toString()
+
+	return "modules." + relativePathString.replace(File.separator, ".")
 }
 
 private boolean _isModuleDir(File dir) {
@@ -151,7 +158,7 @@ private boolean _isModuleDir(File dir) {
 	return false
 }
 
-private void _writeReport(String reportGroupName, Map reportGroup, File testResultsDir) {
+private void _writeReport(Map reportGroup, String reportGroupName, File testResultsDir) {
 	synchronized (reportGroup) {
 		List<String> failureMessages = new ArrayList<String>(reportGroup.failureMessages)
 
@@ -193,6 +200,6 @@ private void _writeReports(Map<String, Map> reportGroupsMap, File testResultsDir
 	reportGroupsMap.each {
 		String reportGroupName, Map reportGroup ->
 
-		_writeReport(reportGroupName, reportGroup, testResultsDir)
+		_writeReport(reportGroup, reportGroupName, testResultsDir)
 	}
 }
