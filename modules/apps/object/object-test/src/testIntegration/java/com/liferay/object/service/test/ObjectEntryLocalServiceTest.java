@@ -5556,6 +5556,7 @@ public class ObjectEntryLocalServiceTest {
 		_objectEntryLocalService.updateStatus(
 			TestPropsValues.getUserId(), objectEntry2.getObjectEntryId(),
 			WorkflowConstants.STATUS_DRAFT, serviceContext);
+
 		_objectEntryLocalService.moveObjectEntryToTrash(
 			TestPropsValues.getUserId(), objectEntry3, serviceContext);
 

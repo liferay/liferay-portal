@@ -821,20 +821,20 @@ public class DefaultObjectEntryManagerImpl
 		Predicate predicate = _filterFactory.create(
 			filterExpression, groupIds, objectDefinition);
 
-		int start = _getStartPosition(pagination);
-		int end = _getEndPosition(pagination);
-
 		boolean preferApproved = GetterUtil.getBoolean(
 			dtoConverterContext.getAttribute("preferApproved"));
+
+		Long objectEntriesGroupId = _getObjectEntriesGroupId(
+			groupIds, objectDefinition, predicate, preferApproved, search,
+			sorts);
+
+		int start = _getStartPosition(pagination);
+		int end = _getEndPosition(pagination);
 
 		List<ObjectEntry> objectEntries = null;
 		int objectEntriesCount = 0;
 
-		Long finderGroupId = _getFinderGroupId(
-			objectDefinition, groupIds, predicate, preferApproved, search,
-			sorts);
-
-		if (finderGroupId == null) {
+		if (objectEntriesGroupId == null) {
 			objectEntries = TransformUtil.transform(
 				objectEntryLocalService.getPrimaryKeys(
 					groupIds, companyId, dtoConverterContext.getUserId(),
@@ -850,13 +850,14 @@ public class DefaultObjectEntryManagerImpl
 		else {
 			objectEntries = TransformUtil.transform(
 				_objectEntryService.getObjectEntries(
-					finderGroupId, objectDefinition.getObjectDefinitionId(),
+					objectEntriesGroupId,
+					objectDefinition.getObjectDefinitionId(),
 					WorkflowConstants.STATUS_ANY, start, end),
 				serviceBuilderObjectEntry -> _getObjectEntry(
 					dtoConverterContext, objectDefinition,
 					serviceBuilderObjectEntry));
 			objectEntriesCount = _objectEntryService.getObjectEntriesCount(
-				finderGroupId, objectDefinition.getObjectDefinitionId(),
+				objectEntriesGroupId, objectDefinition.getObjectDefinitionId(),
 				WorkflowConstants.STATUS_ANY);
 		}
 
@@ -2417,8 +2418,8 @@ public class DefaultObjectEntryManagerImpl
 		return getGroupId(objectDefinition, scopeKey, true);
 	}
 
-	private Long _getFinderGroupId(
-		ObjectDefinition objectDefinition, Long[] groupIds, Predicate predicate,
+	private Long _getObjectEntriesGroupId(
+		Long[] groupIds, ObjectDefinition objectDefinition, Predicate predicate,
 		boolean preferApproved, String search, Sort[] sorts) {
 
 		if ((predicate != null) || preferApproved ||
