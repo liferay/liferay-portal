@@ -1,0 +1,27 @@
+{
+	"dependencies": {
+		"@ckeditor/ckeditor5-core": "46.0.3",
+		"@ckeditor/ckeditor5-email": "46.0.3",
+		"@ckeditor/ckeditor5-export-inline-styles": "46.0.3",
+		"@ckeditor/ckeditor5-html-support": "46.0.3",
+		"@ckeditor/ckeditor5-merge-fields": "46.0.3",
+		"@ckeditor/ckeditor5-table": "46.0.3",
+		"@ckeditor/ckeditor5-template": "46.0.3",
+		"@ckeditor/ckeditor5-ui": "46.0.3",
+		"@liferay/js-api": "0.8.0"
+	},
+	"description": "Liferay Sample Editor Config Contributor CKEditor 5 Email Editing",
+	"devDependencies": {
+		"serve": "^14.2.0",
+		"typescript": "^5.0.4"
+	},
+	"main": "./src/index.ts",
+	"name": "@liferay/liferay-sample-editor-config-contributor-6",
+	"scripts": {
+		"build": "esbuild src/index.ts --outdir=build --bundle --format=esm --external:@ckeditor/*",
+		"start": "PORT=3004 serve --cors",
+		"watch": "tsc --watch"
+	},
+	"type": "module",
+	"version": "0.0.0"
+}

@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"jsx": "react",
+		"lib": [
+			"DOM",
+			"ES2020"
+		],
+		"module": "ES2020",
+		"moduleResolution": "node",
+		"outDir": "./build",
+		"resolveJsonModule": true,
+		"sourceMap": false,
+		"target": "ES2020",
+		"types": [
+		]
+	},
+	"include": [
+		"./src/**/*"
+	]
+}

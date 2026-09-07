@@ -1502,6 +1502,20 @@
     "@ckeditor/ckeditor5-utils" "48.2.0"
     es-toolkit "1.45.1"
 
+"@ckeditor/ckeditor5-email@46.0.3":
+  version "46.0.3"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-email/-/ckeditor5-email-46.0.3.tgz#1212dc70d55c7c45e3d3c6fc4ed63e530efc3386"
+  integrity sha512-t3nypkORG9UPGIc61yUfd9zzRiDDArOn799fvnkzeJf7Nym6Fu0823pmbzyEebLszdVlkg+BJLLC4m0aVTqBUQ==
+  dependencies:
+    "@ckeditor/ckeditor5-core" "46.0.3"
+    "@ckeditor/ckeditor5-export-inline-styles" "46.0.3"
+    "@ckeditor/ckeditor5-font" "46.0.3"
+    "@ckeditor/ckeditor5-html-support" "46.0.3"
+    "@ckeditor/ckeditor5-list" "46.0.3"
+    "@ckeditor/ckeditor5-table" "46.0.3"
+    "@ckeditor/ckeditor5-utils" "46.0.3"
+    ckeditor5 "46.0.3"
+
 "@ckeditor/ckeditor5-emoji@46.0.3":
   version "46.0.3"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-emoji/-/ckeditor5-emoji-46.0.3.tgz#e129445b3a078b19268482b55dd769449922d636"
@@ -1555,6 +1569,17 @@
     "@ckeditor/ckeditor5-ui" "46.0.3"
     "@ckeditor/ckeditor5-undo" "46.0.3"
     ckeditor5 "46.0.3"
+
+"@ckeditor/ckeditor5-export-inline-styles@46.0.3":
+  version "46.0.3"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-export-inline-styles/-/ckeditor5-export-inline-styles-46.0.3.tgz#48c92e88b5660ce72f3b088039130572f780def0"
+  integrity sha512-HPzm/reWMsdbyMoL3y0EeIxUoecKlBA4ZKp4UmPWWOgzvG1F1nh3OBYzzbU8Fc1YWL/KroAATWKmO6Dp2BTpWA==
+  dependencies:
+    "@ckeditor/ckeditor5-core" "46.0.3"
+    "@ckeditor/ckeditor5-engine" "46.0.3"
+    "@ckeditor/ckeditor5-utils" "46.0.3"
+    ckeditor5 "46.0.3"
+    specificity "0.4.1"
 
 "@ckeditor/ckeditor5-find-and-replace@46.0.3":
   version "46.0.3"
@@ -1797,6 +1822,21 @@
     ckeditor5 "46.0.3"
     es-toolkit "1.39.5"
 
+"@ckeditor/ckeditor5-merge-fields@46.0.3":
+  version "46.0.3"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-merge-fields/-/ckeditor5-merge-fields-46.0.3.tgz#d881cd0f23d19eb3b7ec0d41cf6db701e7ecd2b4"
+  integrity sha512-2ZUmQc3NsuF7yzYTYhZOGr1Mc8mHPkxhlTbE10v6eHnW0/FATku4riD+NuKs5GgASeHGkf28D37cjHV+ZFZSWQ==
+  dependencies:
+    "@ckeditor/ckeditor5-core" "46.0.3"
+    "@ckeditor/ckeditor5-icons" "46.0.3"
+    "@ckeditor/ckeditor5-image" "46.0.3"
+    "@ckeditor/ckeditor5-mention" "46.0.3"
+    "@ckeditor/ckeditor5-ui" "46.0.3"
+    "@ckeditor/ckeditor5-utils" "46.0.3"
+    "@ckeditor/ckeditor5-widget" "46.0.3"
+    ckeditor5 "46.0.3"
+    es-toolkit "1.39.5"
+
 "@ckeditor/ckeditor5-minimap@46.0.3":
   version "46.0.3"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-minimap/-/ckeditor5-minimap-46.0.3.tgz#ba170968a44a87557319ea6efcf97eb3d8923e3a"
@@ -1939,6 +1979,17 @@
     "@ckeditor/ckeditor5-widget" "46.0.3"
     ckeditor5 "46.0.3"
     es-toolkit "1.39.5"
+
+"@ckeditor/ckeditor5-template@46.0.3":
+  version "46.0.3"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-template/-/ckeditor5-template-46.0.3.tgz#bb97e5c862c7744495fc9daba73963f4d968ec7b"
+  integrity sha512-ULcr/nJHU9wO6j4CIlvQkiUw9KPoqc4nedGIZVuIOn3pnEwmCRccZ6K0WrBroc8f6ZPsn8g+XqrwXceyJeufDw==
+  dependencies:
+    "@ckeditor/ckeditor5-core" "46.0.3"
+    "@ckeditor/ckeditor5-icons" "46.0.3"
+    "@ckeditor/ckeditor5-ui" "46.0.3"
+    "@ckeditor/ckeditor5-utils" "46.0.3"
+    ckeditor5 "46.0.3"
 
 "@ckeditor/ckeditor5-theme-lark@46.0.3":
   version "46.0.3"
@@ -10328,6 +10379,11 @@ spdy@^4.0.2:
     http-deceiver "^1.2.7"
     select-hose "^2.0.0"
     spdy-transport "^3.0.0"
+
+specificity@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/specificity/-/specificity-0.4.1.tgz#aab5e645012db08ba182e151165738d00887b019"
+  integrity sha512-1klA3Gi5PD1Wv9Q0wUoOQN1IWAuPu0D1U03ThXTr0cJ20+/iq2tHSDnK7Kk/0LXJ1ztUB2/1Os0wKmfyNgUQfg==
 
 sprintf-js@~1.0.2:
   version "1.0.3"

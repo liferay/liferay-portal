@@ -1,0 +1,9 @@
+assemble:
+    -   from: build
+        into: static
+liferay-sample-editor-config-contributor-6:
+    editorConfigKeys:
+        -   sampleReactCETPremiumEditor
+    name: Liferay Sample Editor Config Contributor CKEditor 5 Email Editing
+    type: editorConfigContributor
+    url: index.js
