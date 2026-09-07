@@ -531,6 +531,11 @@ public interface ObjectEntryLocalService
 			Map<String, Serializable> values)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public void loadValues(
+			ObjectDefinition objectDefinition, List<ObjectEntry> objectEntries)
+		throws PortalException;
+
 	public void moveObjectEntriesToTrash(
 			long userId, ObjectEntryFolder objectEntryFolder,
 			ServiceContext serviceContext)
@@ -625,4 +630,4 @@ public interface ObjectEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:872444325
+// LIFERAY-SERVICE-BUILDER-HASH:-81508022
