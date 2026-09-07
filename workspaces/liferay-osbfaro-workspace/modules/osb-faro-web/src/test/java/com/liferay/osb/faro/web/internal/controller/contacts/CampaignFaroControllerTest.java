@@ -6,12 +6,14 @@
 package com.liferay.osb.faro.web.internal.controller.contacts;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
+import com.liferay.osb.faro.engine.client.model.Account;
 import com.liferay.osb.faro.engine.client.model.Campaign;
 import com.liferay.osb.faro.engine.client.model.CampaignMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
+import com.liferay.osb.faro.web.internal.model.display.contacts.AccountDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.CampaignDisplay;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -46,6 +48,56 @@ public class CampaignFaroControllerTest {
 		ReflectionTestUtils.setField(
 			_campaignFaroController, "faroProjectLocalService",
 			_faroProjectLocalService);
+	}
+
+	@Test
+	public void testGetAccountsFaroFDSResultsDisplay() throws Exception {
+		long channelId = RandomTestUtil.randomLong();
+		String filterString = RandomTestUtil.randomString();
+		String id = RandomTestUtil.randomString();
+		int page = RandomTestUtil.randomInt();
+		int pageSize = RandomTestUtil.randomInt();
+		String search = RandomTestUtil.randomString();
+		String sortString = RandomTestUtil.randomString();
+		int total = RandomTestUtil.randomInt();
+
+		Account account = new Account();
+
+		account.setId(RandomTestUtil.randomString());
+
+		Mockito.when(
+			_contactsEngineClient.getCampaignAccounts(
+				_faroProject, channelId, filterString, id, search, sortString,
+				page, pageSize)
+		).thenReturn(
+			new Results<>(Collections.singletonList(account), total)
+		);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		FaroFDSResultsDisplay<Account> faroFDSResultsDisplay =
+			_campaignFaroController.getAccountsFaroFDSResultsDisplay(
+				groupId, id, channelId, filterString, page, pageSize, search,
+				sortString);
+
+		List<?> items = faroFDSResultsDisplay.getItems();
+
+		AccountDisplay accountDisplay = (AccountDisplay)items.get(0);
+
+		Assert.assertEquals(
+			account.getId(),
+			ReflectionTestUtil.getFieldValue(accountDisplay, "_id"));
+
+		Assert.assertEquals(page, faroFDSResultsDisplay.getPage());
+		Assert.assertEquals(pageSize, faroFDSResultsDisplay.getPageSize());
+		Assert.assertEquals(total, faroFDSResultsDisplay.getTotalCount());
+
+		Mockito.verify(
+			_contactsEngineClient
+		).getCampaignAccounts(
+			_faroProject, channelId, filterString, id, search, sortString, page,
+			pageSize
+		);
 	}
 
 	@Test
