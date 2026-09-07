@@ -64,6 +64,8 @@ public interface ObjectEntry
 
 	public java.util.Date getPublishDate();
 
+	public ObjectEntry getRelatedObjectEntry(String objectFieldName);
+
 	public java.util.Map<java.util.Locale, String> getTitleMap()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
@@ -88,10 +90,13 @@ public interface ObjectEntry
 
 	public void setObjectDefinition(ObjectDefinition objectDefinition);
 
+	public void setRelatedObjectEntry(
+		String objectFieldName, ObjectEntry relatedObjectEntry);
+
 	public void setTransientValues(
 		java.util.Map<String, java.io.Serializable> values);
 
 	public void setValues(java.util.Map<String, java.io.Serializable> values);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1856044374
+// LIFERAY-SERVICE-BUILDER-HASH:1806780153

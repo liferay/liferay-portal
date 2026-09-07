@@ -408,6 +408,11 @@ public class ObjectEntryWrapper
 		return model.getPublishDate();
 	}
 
+	@Override
+	public ObjectEntry getRelatedObjectEntry(String objectFieldName) {
+		return model.getRelatedObjectEntry(objectFieldName);
+	}
+
 	/**
 	 * Returns the review date of this object entry.
 	 *
@@ -851,6 +856,13 @@ public class ObjectEntryWrapper
 		model.setPrimaryKey(primaryKey);
 	}
 
+	@Override
+	public void setRelatedObjectEntry(
+		String objectFieldName, ObjectEntry relatedObjectEntry) {
+
+		model.setRelatedObjectEntry(objectFieldName, relatedObjectEntry);
+	}
+
 	/**
 	 * Sets the review date of this object entry.
 	 *
@@ -1012,4 +1024,4 @@ public class ObjectEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-536486699
+// LIFERAY-SERVICE-BUILDER-HASH:-1478554619
