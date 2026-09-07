@@ -9,29 +9,31 @@ import viewsReducer, {
 
 describe('viewsReducer user preferences', () => {
 	describe('UPDATE_USER_PREFERENCES', () => {
-		it('sets the startup snapshot ERC user preference', () => {
+		it('sets the initial data set snapshot ERC user preference', () => {
 			const state = {userPreferences: null};
 
 			const nextState = viewsReducer(state, {
 				type: EViewsActionTypes.UPDATE_USER_PREFERENCES,
-				value: {userPreferences: {startupSnapshotERC: 'erc-1'}},
+				value: {userPreferences: {initialDataSetSnapshotERC: 'erc-1'}},
 			});
 
 			expect(nextState.userPreferences).toEqual({
-				startupSnapshotERC: 'erc-1',
+				initialDataSetSnapshotERC: 'erc-1',
 			});
 		});
 
-		it('replaces a previously set startup snapshot ERC user preference', () => {
-			const state = {userPreferences: {startupSnapshotERC: 'erc-1'}};
+		it('replaces a previously set initial data set snapshot ERC user preference', () => {
+			const state = {
+				userPreferences: {initialDataSetSnapshotERC: 'erc-1'},
+			};
 
 			const nextState = viewsReducer(state, {
 				type: EViewsActionTypes.UPDATE_USER_PREFERENCES,
-				value: {userPreferences: {startupSnapshotERC: 'erc-2'}},
+				value: {userPreferences: {initialDataSetSnapshotERC: 'erc-2'}},
 			});
 
 			expect(nextState.userPreferences).toEqual({
-				startupSnapshotERC: 'erc-2',
+				initialDataSetSnapshotERC: 'erc-2',
 			});
 		});
 	});
@@ -45,28 +47,28 @@ describe('viewsReducer user preferences', () => {
 					items: [{erc: 'erc-1'}, {erc: 'erc-2'}],
 				},
 			],
-			userPreferences: {startupSnapshotERC: 'erc-1'},
+			userPreferences: {initialDataSetSnapshotERC: 'erc-1'},
 		};
 
-		it('clears the startup snapshot ERC user preference when snapshot is deleted', () => {
+		it('clears the initial data set snapshot ERC user preference when snapshot is deleted', () => {
 			const nextState = viewsReducer(baseState, {
 				type: EViewsActionTypes.DELETE_SNAPSHOT,
 				value: {snapshotERC: 'erc-1'},
 			});
 
 			expect(nextState.userPreferences).toEqual({
-				startupSnapshotERC: null,
+				initialDataSetSnapshotERC: null,
 			});
 		});
 
-		it('keeps the startup snapshot ERC user preference when a different snapshot is deleted', () => {
+		it('keeps the initial data set snapshot ERC user preference when a different snapshot is deleted', () => {
 			const nextState = viewsReducer(baseState, {
 				type: EViewsActionTypes.DELETE_SNAPSHOT,
 				value: {snapshotERC: 'erc-2'},
 			});
 
 			expect(nextState.userPreferences).toEqual({
-				startupSnapshotERC: 'erc-1',
+				initialDataSetSnapshotERC: 'erc-1',
 			});
 		});
 	});

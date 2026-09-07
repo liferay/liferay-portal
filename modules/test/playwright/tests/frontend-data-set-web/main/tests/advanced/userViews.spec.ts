@@ -275,7 +275,7 @@ test(
 );
 
 test(
-	'Set a user view as the startup view and apply it on reload',
+	'Set a user view as the initial view and apply it on reload',
 	{
 		tag: ['@LPD-75910'],
 	},
@@ -304,37 +304,40 @@ test(
 			);
 		});
 
-		await test.step('Set as Startup View shows a success message and a badge', async () => {
+		await test.step('Set as Initial View shows a success message and a badge', async () => {
 			await fdsSamplePage.userViewsActionsButton.click();
 
 			await fdsSamplePage.dropdownMenu
-				.getByRole('menuitem', {name: 'Set as Startup View'})
+				.getByRole('menuitem', {name: 'Set as Initial View'})
 				.click();
 
-			await waitForAlert(page, 'The user view was set as startup');
+			await waitForAlert(
+				page,
+				'The user view was set as the initial view'
+			);
 
 			await fdsSamplePage.userViewsSelectorButton.click();
 
 			await expect(
-				fdsSamplePage.dropdownMenu.getByText('Startup View')
+				fdsSamplePage.dropdownMenu.getByText('Initial View')
 			).toBeVisible();
 
 			await page.keyboard.press('Escape');
 		});
 
-		await test.step('Set as Startup View is hidden once the active view is the startup view', async () => {
+		await test.step('Set as Initial View is hidden once the active view is the initial view', async () => {
 			await fdsSamplePage.userViewsActionsButton.click();
 
 			await expect(
 				fdsSamplePage.dropdownMenu.getByRole('menuitem', {
-					name: 'Set as Startup View',
+					name: 'Set as Initial View',
 				})
 			).not.toBeVisible();
 
 			await page.keyboard.press('Escape');
 		});
 
-		await test.step('The startup view is applied on reload', async () => {
+		await test.step('The initial view is applied on reload', async () => {
 			await page.reload();
 
 			await waitForFDS({
@@ -350,7 +353,7 @@ test(
 );
 
 test(
-	'Change the startup view to another user view and apply it on reload',
+	'Change the initial view to another user view and apply it on reload',
 	{
 		tag: ['@LPD-75910'],
 	},
@@ -388,32 +391,35 @@ test(
 				.click();
 		};
 
-		const setAsStartupView = async () => {
+		const setAsInitialView = async () => {
 			await fdsSamplePage.userViewsActionsButton.click();
 
 			await fdsSamplePage.dropdownMenu
-				.getByRole('menuitem', {name: 'Set as Startup View'})
+				.getByRole('menuitem', {name: 'Set as Initial View'})
 				.click();
 
-			await waitForAlert(page, 'The user view was set as startup');
+			await waitForAlert(
+				page,
+				'The user view was set as the initial view'
+			);
 		};
 
-		await test.step('Set the first user view as the startup view', async () => {
+		await test.step('Set the first user view as the initial view', async () => {
 			await createUserView(firstUserViewName);
 			await createUserView(secondUserViewName);
 
 			await selectUserView(firstUserViewName);
 
-			await setAsStartupView();
+			await setAsInitialView();
 		});
 
-		await test.step('Change the startup view to the second user view', async () => {
+		await test.step('Change the initial view to the second user view', async () => {
 			await selectUserView(secondUserViewName);
 
-			await setAsStartupView();
+			await setAsInitialView();
 		});
 
-		await test.step('The most recently set startup view is applied on reload', async () => {
+		await test.step('The most recently set initial view is applied on reload', async () => {
 			await page.reload();
 
 			await waitForFDS({

@@ -143,7 +143,7 @@ public class SystemFDSSerializerTest {
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
-					"preferences", "{\"startupSnapshotERC\": "
+					"preferences", "{\"initialDataSetSnapshotERC\": "
 				).build(),
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId(), _memberUser.getUserId()));
@@ -163,7 +163,7 @@ public class SystemFDSSerializerTest {
 				HashMapBuilder.<String, Serializable>put(
 					"preferences",
 					JSONUtil.put(
-						"startupSnapshotERC",
+						"initialDataSetSnapshotERC",
 						_objectEntry.getExternalReferenceCode()
 					).toString()
 				).build(),
@@ -172,7 +172,8 @@ public class SystemFDSSerializerTest {
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
-				"startupSnapshotERC", _objectEntry.getExternalReferenceCode()
+				"initialDataSetSnapshotERC",
+				_objectEntry.getExternalReferenceCode()
 			).toString(),
 			_fdsSerializer.serializeUserPreferences(
 				_FDS_NAME, httpServletRequest
