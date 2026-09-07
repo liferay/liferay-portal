@@ -204,6 +204,14 @@ public interface DefaultObjectEntryManager extends ObjectEntryManager {
 			String objectRelationshipName, Pagination pagination)
 		throws Exception;
 
+	public Page<com.liferay.object.model.ObjectEntry>
+			getServiceBuilderObjectEntries(
+				long companyId, ObjectDefinition objectDefinition,
+				String scopeKey, DTOConverterContext dtoConverterContext,
+				String filterString, Pagination pagination, String search,
+				Sort[] sorts)
+		throws Exception;
+
 	public Object getSystemObjectEntry(
 			DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition, long primaryKey)

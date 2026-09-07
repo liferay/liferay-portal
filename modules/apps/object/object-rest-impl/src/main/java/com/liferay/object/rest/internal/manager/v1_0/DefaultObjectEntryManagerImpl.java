@@ -787,8 +787,6 @@ public class DefaultObjectEntryManagerImpl
 			Sort[] sorts)
 		throws Exception {
 
-		List<Long> groupIdsList = new ArrayList<>();
-
 		ObjectScopeProvider objectScopeProvider =
 			_objectScopeProviderRegistry.getObjectScopeProvider(
 				objectDefinition.getScope());
@@ -796,69 +794,22 @@ public class DefaultObjectEntryManagerImpl
 		long groupId = getGroupId(
 			objectDefinition, objectScopeProvider, scopeKey, false);
 
-		if (objectScopeProvider.isValidGroupId(groupId)) {
-			groupIdsList.add(groupId);
-		}
-
-		if (StringUtil.equals(
-				objectDefinition.getScope(),
-				ObjectDefinitionConstants.SCOPE_DEPOT)) {
-
-			groupIdsList.addAll(
-				TransformUtil.transform(
-					_depotEntryLocalService.getGroupConnectedDepotEntries(
-						groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS),
-					DepotEntryModel::getGroupId));
-		}
-
-		if (objectScopeProvider.isGroupAware() &&
-			ListUtil.isEmpty(groupIdsList)) {
-
-			throw new NoSuchGroupException();
-		}
-
-		Long[] groupIds = groupIdsList.toArray(new Long[0]);
+		Long[] groupIds = _getGroupIds(
+			groupId, objectDefinition, objectScopeProvider);
 
 		Predicate predicate = _filterFactory.create(
 			filterExpression, groupIds, objectDefinition);
 
-		boolean preferApproved = GetterUtil.getBoolean(
-			dtoConverterContext.getAttribute("preferApproved"));
-		int start = _getStartPosition(pagination);
-		int end = _getEndPosition(pagination);
+		Page<com.liferay.object.model.ObjectEntry>
+			serviceBuilderObjectEntriesPage = _getServiceBuilderObjectEntries(
+				companyId, objectDefinition, groupIds, dtoConverterContext,
+				predicate, pagination, search, sorts);
 
-		List<ObjectEntry> objectEntries = null;
-		int objectEntriesCount = 0;
-
-		if (_isUseComplexQuery(
-				groupIds, objectDefinition, predicate, preferApproved, search,
-				sorts)) {
-
-			objectEntries = TransformUtil.transform(
-				objectEntryLocalService.getPrimaryKeys(
-					groupIds, companyId, dtoConverterContext.getUserId(),
-					objectDefinition.getObjectDefinitionId(), predicate,
-					preferApproved, search, start, end, sorts),
-				primaryKey -> _getObjectEntry(
-					dtoConverterContext, objectDefinition, primaryKey));
-			objectEntriesCount = objectEntryLocalService.getValuesListCount(
-				groupIds, companyId, dtoConverterContext.getUserId(),
-				objectDefinition.getObjectDefinitionId(), predicate,
-				preferApproved, search);
-		}
-		else {
-			objectEntries = TransformUtil.transform(
-				_objectEntryService.getObjectEntries(
-					groupIds[0], objectDefinition.getObjectDefinitionId(),
-					WorkflowConstants.STATUS_ANY, start, end),
-				serviceBuilderObjectEntry -> _getObjectEntry(
-					dtoConverterContext, objectDefinition,
-					serviceBuilderObjectEntry));
-			objectEntriesCount = _objectEntryService.getObjectEntriesCount(
-				groupIds[0], objectDefinition.getObjectDefinitionId(),
-				WorkflowConstants.STATUS_ANY);
-		}
+		List<ObjectEntry> objectEntries = TransformUtil.transform(
+			new ArrayList<>(serviceBuilderObjectEntriesPage.getItems()),
+			serviceBuilderObjectEntry -> _getObjectEntry(
+				dtoConverterContext, objectDefinition,
+				serviceBuilderObjectEntry));
 
 		return Page.of(
 			HashMapBuilder.put(
@@ -905,7 +856,8 @@ public class DefaultObjectEntryManagerImpl
 					aggregationTerm, predicate,
 					GetterUtil.getBoolean(
 						dtoConverterContext.getAttribute("preferApproved")))),
-			objectEntries, pagination, objectEntriesCount);
+			objectEntries, pagination,
+			serviceBuilderObjectEntriesPage.getTotalCount());
 	}
 
 	@Override
@@ -1203,6 +1155,32 @@ public class DefaultObjectEntryManagerImpl
 				serviceBuilderObjectEntry.getGroupId(),
 				objectRelationship.getObjectRelationshipId(), null,
 				serviceBuilderObjectEntry.getPrimaryKey(), null));
+	}
+
+	@Override
+	public Page<com.liferay.object.model.ObjectEntry>
+			getServiceBuilderObjectEntries(
+				long companyId, ObjectDefinition objectDefinition,
+				String scopeKey, DTOConverterContext dtoConverterContext,
+				String filterString, Pagination pagination, String search,
+				Sort[] sorts)
+		throws Exception {
+
+		ObjectScopeProvider objectScopeProvider =
+			_objectScopeProviderRegistry.getObjectScopeProvider(
+				objectDefinition.getScope());
+
+		Long[] groupIds = _getGroupIds(
+			getGroupId(objectDefinition, objectScopeProvider, scopeKey, false),
+			objectDefinition, objectScopeProvider);
+
+		return _getServiceBuilderObjectEntries(
+			companyId, objectDefinition, groupIds, dtoConverterContext,
+			_filterFactory.create(
+				_objectDefinitionFilterParser.parse(
+					filterString, objectDefinition),
+				groupIds, objectDefinition),
+			pagination, search, sorts);
 	}
 
 	@Override
@@ -2442,6 +2420,38 @@ public class DefaultObjectEntryManagerImpl
 		return null;
 	}
 
+	private Long[] _getGroupIds(
+			long groupId, ObjectDefinition objectDefinition,
+			ObjectScopeProvider objectScopeProvider)
+		throws Exception {
+
+		List<Long> groupIdsList = new ArrayList<>();
+
+		if (objectScopeProvider.isValidGroupId(groupId)) {
+			groupIdsList.add(groupId);
+		}
+
+		if (StringUtil.equals(
+				objectDefinition.getScope(),
+				ObjectDefinitionConstants.SCOPE_DEPOT)) {
+
+			groupIdsList.addAll(
+				TransformUtil.transform(
+					_depotEntryLocalService.getGroupConnectedDepotEntries(
+						groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS),
+					DepotEntryModel::getGroupId));
+		}
+
+		if (objectScopeProvider.isGroupAware() &&
+			ListUtil.isEmpty(groupIdsList)) {
+
+			throw new NoSuchGroupException();
+		}
+
+		return groupIdsList.toArray(new Long[0]);
+	}
+
 	private BaseModel<ExternalReferenceCodeModel> _getManyToOneRelatedModel(
 			ObjectRelationship objectRelationship, long primaryKey,
 			ObjectDefinition relatedObjectDefinition)
@@ -2498,26 +2508,6 @@ public class DefaultObjectEntryManagerImpl
 				return false;
 			},
 			value);
-	}
-
-	private ObjectEntry _getObjectEntry(
-			DTOConverterContext dtoConverterContext,
-			ObjectDefinition objectDefinition, long objectEntryId)
-		throws Exception {
-
-		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
-			_objectEntryService.getObjectEntry(objectEntryId);
-
-		_checkApprovedObjectEntry(
-			GetterUtil.getBoolean(
-				dtoConverterContext.getAttribute("preferApproved")),
-			serviceBuilderObjectEntry);
-		_checkObjectEntryObjectDefinitionId(
-			objectDefinition, serviceBuilderObjectEntry);
-
-		return _toObjectEntry(
-			dtoConverterContext, objectDefinition, serviceBuilderObjectEntry,
-			null);
 	}
 
 	private ObjectEntry _getObjectEntry(
@@ -3035,6 +3025,52 @@ public class DefaultObjectEntryManagerImpl
 		return _toObjectEntry(
 			dtoConverterContext, objectDefinition, serviceBuilderObjectEntry,
 			serviceBuilderParentObjectEntry);
+	}
+
+	private Page<com.liferay.object.model.ObjectEntry>
+			_getServiceBuilderObjectEntries(
+				long companyId, ObjectDefinition objectDefinition,
+				Long[] groupIds, DTOConverterContext dtoConverterContext,
+				Predicate predicate, Pagination pagination, String search,
+				Sort[] sorts)
+		throws Exception {
+
+		int start = _getStartPosition(pagination);
+		int end = _getEndPosition(pagination);
+
+		boolean preferApproved = GetterUtil.getBoolean(
+			dtoConverterContext.getAttribute("preferApproved"));
+
+		List<com.liferay.object.model.ObjectEntry> serviceBuilderObjectEntries =
+			null;
+		int objectEntriesCount = 0;
+
+		if (_isUseComplexQuery(
+				groupIds, objectDefinition, predicate, preferApproved, search,
+				sorts)) {
+
+			serviceBuilderObjectEntries = TransformUtil.transform(
+				objectEntryLocalService.getPrimaryKeys(
+					groupIds, companyId, dtoConverterContext.getUserId(),
+					objectDefinition.getObjectDefinitionId(), predicate,
+					preferApproved, search, start, end, sorts),
+				primaryKey -> _objectEntryService.getObjectEntry(primaryKey));
+			objectEntriesCount = objectEntryLocalService.getValuesListCount(
+				groupIds, companyId, dtoConverterContext.getUserId(),
+				objectDefinition.getObjectDefinitionId(), predicate,
+				preferApproved, search);
+		}
+		else {
+			serviceBuilderObjectEntries = _objectEntryService.getObjectEntries(
+				groupIds[0], objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_ANY, start, end);
+			objectEntriesCount = _objectEntryService.getObjectEntriesCount(
+				groupIds[0], objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_ANY);
+		}
+
+		return Page.of(
+			serviceBuilderObjectEntries, pagination, objectEntriesCount);
 	}
 
 	private int _getStartPosition(Pagination pagination) {
