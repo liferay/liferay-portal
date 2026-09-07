@@ -141,10 +141,10 @@ public class ContactsCenterPortletTest {
 		MockLiferayResourceResponse mockLiferayResourceResponse =
 			_serveResource(targetUser, null);
 
+		Assert.assertEquals("", _getContent(mockLiferayResourceResponse));
 		Assert.assertEquals(
 			HttpServletResponse.SC_FORBIDDEN,
 			_getStatus(mockLiferayResourceResponse));
-		Assert.assertEquals("", _getContent(mockLiferayResourceResponse));
 
 		User user = UserTestUtil.addUser();
 
@@ -205,7 +205,6 @@ public class ContactsCenterPortletTest {
 
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _createThemeDisplay(user));
-
 		mockLiferayPortletActionRequest.setParameter(
 			ActionRequest.ACTION_NAME, "updateEntry");
 		mockLiferayPortletActionRequest.setParameter(
