@@ -4,6 +4,7 @@
 		"@ckeditor/ckeditor5-email": "46.0.3",
 		"@ckeditor/ckeditor5-export-inline-styles": "46.0.3",
 		"@ckeditor/ckeditor5-html-support": "46.0.3",
+		"@ckeditor/ckeditor5-mention": "46.0.3",
 		"@ckeditor/ckeditor5-merge-fields": "46.0.3",
 		"@ckeditor/ckeditor5-table": "46.0.3",
 		"@ckeditor/ckeditor5-template": "46.0.3",
