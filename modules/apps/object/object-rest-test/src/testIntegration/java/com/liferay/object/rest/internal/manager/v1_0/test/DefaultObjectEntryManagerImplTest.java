@@ -7642,6 +7642,50 @@ public class DefaultObjectEntryManagerImplTest
 	}
 
 	@Test
+	public void testGetServiceBuilderObjectEntries() throws Exception {
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			_objectDefinition1, WorkflowConstants.STATUS_APPROVED);
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			_objectDefinition1, WorkflowConstants.STATUS_APPROVED);
+
+		Page<com.liferay.object.model.ObjectEntry> page =
+			_defaultObjectEntryManager.getServiceBuilderObjectEntries(
+				TestPropsValues.getCompanyId(), _objectDefinition1, null,
+				dtoConverterContext, null, Pagination.of(1, 20), null, null);
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		List<com.liferay.object.model.ObjectEntry> serviceBuilderObjectEntries =
+			new ArrayList<>(page.getItems());
+
+		Assert.assertEquals(
+			serviceBuilderObjectEntries.toString(), 2,
+			serviceBuilderObjectEntries.size());
+
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry1 =
+			serviceBuilderObjectEntries.get(0);
+
+		Assert.assertEquals(
+			objectEntry1.getId(),
+			Long.valueOf(serviceBuilderObjectEntry1.getObjectEntryId()));
+		Assert.assertEquals(
+			_objectEntryLocalService.getValues(
+				serviceBuilderObjectEntry1.getObjectEntryId()),
+			serviceBuilderObjectEntry1.getValues());
+
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry2 =
+			serviceBuilderObjectEntries.get(1);
+
+		Assert.assertEquals(
+			objectEntry2.getId(),
+			Long.valueOf(serviceBuilderObjectEntry2.getObjectEntryId()));
+		Assert.assertEquals(
+			_objectEntryLocalService.getValues(
+				serviceBuilderObjectEntry2.getObjectEntryId()),
+			serviceBuilderObjectEntry2.getValues());
+	}
+
+	@Test
 	public void testGetVersionedObjectEntries() throws Exception {
 
 		// Company scope
