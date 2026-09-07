@@ -127,23 +127,23 @@ if (!process.env.CI) {
 			);
 		}
 	);
-}
 
-test(
-	'Email editing buttons added via client extension appear in the toolbar',
-	{tag: '@LPD-95092'},
-	async ({classicPage}) => {
-		const emailEditingButtons = [
-			{name: 'Insert merge field'},
-			{name: 'Insert template'},
-			{name: 'Merge fields preview'},
-			{exact: true, name: 'Preview with Inline Styles'},
-		];
+	test(
+		'Email editing buttons added via client extension appear in the toolbar',
+		{tag: '@LPD-95092'},
+		async ({classicPage}) => {
+			const emailEditingButtons = [
+				{name: 'Insert merge field'},
+				{name: 'Insert template'},
+				{name: 'Merge fields preview'},
+				{exact: true, name: 'Preview with Inline Styles'},
+			];
 
-		for (const options of emailEditingButtons) {
-			await expect(
-				classicPage.toolbar.container.getByRole('button', options)
-			).toBeVisible();
+			for (const options of emailEditingButtons) {
+				await expect(
+					classicPage.toolbar.container.getByRole('button', options)
+				).toBeVisible();
+			}
 		}
-	}
-);
+	);
+}
