@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
@@ -29,7 +31,6 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.ws.rs.core.Response;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -248,17 +249,21 @@ public class AccountMemberResourceImpl extends BaseAccountMemberResourceImpl {
 			AccountEntry accountEntry, User user, AccountMember accountMember)
 		throws Exception {
 
+		long[] roleIds = transformToLongArray(
+			ListUtil.fromArray(accountMember.getAccountRoles()),
+			AccountRole::getRoleId);
+
+		AccountMemberUtil.validateAccountRoleIds(
+			accountEntry.getAccountEntryId(), roleIds);
+
 		_userGroupRoleLocalService.deleteUserGroupRoles(
 			user.getUserId(),
 			new long[] {accountEntry.getAccountEntryGroupId()});
 
-		AccountRole[] accountRoles = accountMember.getAccountRoles();
-
-		if (accountRoles != null) {
+		if (ArrayUtil.isNotEmpty(roleIds)) {
 			_userGroupRoleLocalService.addUserGroupRoles(
 				user.getUserId(), accountEntry.getAccountEntryGroupId(),
-				transformToLongArray(
-					Arrays.asList(accountRoles), AccountRole::getRoleId));
+				roleIds);
 		}
 	}
 
