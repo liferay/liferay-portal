@@ -222,11 +222,11 @@
 			<finder-column arrayable-operator="OR" name="groupId" />
 		</finder>
 		<finder name="Name" return-type="Collection">
-			<finder-column arrayable-operator="OR" case-sensitive="false" name="name" />
+			<finder-column arrayable-operator="OR" name="name" />
 		</finder>
 		<finder name="G_N" return-type="Collection">
 			<finder-column name="groupId" />
-			<finder-column case-sensitive="false" name="name" />
+			<finder-column name="name" />
 		</finder>
 		<finder name="G_LikeN" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
