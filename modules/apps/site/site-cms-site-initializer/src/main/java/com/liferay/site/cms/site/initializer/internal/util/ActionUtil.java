@@ -99,9 +99,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Eudaldo Alonso
@@ -1832,11 +1830,7 @@ public class ActionUtil {
 			ObjectDefinition objectDefinition, ServiceContext serviceContext)
 		throws Exception {
 
-		Object lock = _compareContentLayoutLocks.computeIfAbsent(
-			group.getGroupId() + StringPool.POUND + classNameId,
-			key -> new Object());
-
-		synchronized (lock) {
+		synchronized (_compareContentLayoutLock) {
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
 				LayoutPageTemplateEntryLocalServiceUtil.
 					fetchLayoutPageTemplateEntry(
@@ -1978,7 +1972,6 @@ public class ActionUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 
-	private static final Map<String, Object> _compareContentLayoutLocks =
-		new ConcurrentHashMap<>();
+	private static final Object _compareContentLayoutLock = new Object();
 
 }
