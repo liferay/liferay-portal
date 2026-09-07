@@ -1252,6 +1252,171 @@ public class ObjectEntryPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<ObjectEntry, NoSuchObjectEntryException>
+		_collectionPersistenceFinderByG_ODI_NotS;
+
+	/**
+	 * Returns all the object entries where groupId = &#63; and objectDefinitionId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param status the status
+	 * @return the matching object entries
+	 */
+	@Override
+	public List<ObjectEntry> findByG_ODI_NotS(
+		long groupId, long objectDefinitionId, int status) {
+
+		return findByG_ODI_NotS(
+			groupId, objectDefinitionId, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the object entries where groupId = &#63; and objectDefinitionId = &#63; and status &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param status the status
+	 * @param start the lower bound of the range of object entries
+	 * @param end the upper bound of the range of object entries (not inclusive)
+	 * @return the range of matching object entries
+	 */
+	@Override
+	public List<ObjectEntry> findByG_ODI_NotS(
+		long groupId, long objectDefinitionId, int status, int start, int end) {
+
+		return findByG_ODI_NotS(
+			groupId, objectDefinitionId, status, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the object entries where groupId = &#63; and objectDefinitionId = &#63; and status &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param status the status
+	 * @param start the lower bound of the range of object entries
+	 * @param end the upper bound of the range of object entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching object entries
+	 */
+	@Override
+	public List<ObjectEntry> findByG_ODI_NotS(
+		long groupId, long objectDefinitionId, int status, int start, int end,
+		OrderByComparator<ObjectEntry> orderByComparator) {
+
+		return findByG_ODI_NotS(
+			groupId, objectDefinitionId, status, start, end, orderByComparator,
+			true);
+	}
+
+	/**
+	 * Returns an ordered range of all the object entries where groupId = &#63; and objectDefinitionId = &#63; and status &ne; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param status the status
+	 * @param start the lower bound of the range of object entries
+	 * @param end the upper bound of the range of object entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching object entries
+	 */
+	@Override
+	public List<ObjectEntry> findByG_ODI_NotS(
+		long groupId, long objectDefinitionId, int status, int start, int end,
+		OrderByComparator<ObjectEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByG_ODI_NotS.find(
+			finderCache, new Object[] {groupId, objectDefinitionId, status},
+			start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first object entry in the ordered set where groupId = &#63; and objectDefinitionId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object entry
+	 * @throws NoSuchObjectEntryException if a matching object entry could not be found
+	 */
+	@Override
+	public ObjectEntry findByG_ODI_NotS_First(
+			long groupId, long objectDefinitionId, int status,
+			OrderByComparator<ObjectEntry> orderByComparator)
+		throws NoSuchObjectEntryException {
+
+		return _collectionPersistenceFinderByG_ODI_NotS.findFirst(
+			finderCache, new Object[] {groupId, objectDefinitionId, status},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first object entry in the ordered set where groupId = &#63; and objectDefinitionId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object entry, or <code>null</code> if a matching object entry could not be found
+	 */
+	@Override
+	public ObjectEntry fetchByG_ODI_NotS_First(
+		long groupId, long objectDefinitionId, int status,
+		OrderByComparator<ObjectEntry> orderByComparator) {
+
+		return _collectionPersistenceFinderByG_ODI_NotS.fetchFirst(
+			finderCache, new Object[] {groupId, objectDefinitionId, status},
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the object entries where groupId = &#63; and objectDefinitionId = &#63; and status &ne; &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param status the status
+	 */
+	@Override
+	public void removeByG_ODI_NotS(
+		long groupId, long objectDefinitionId, int status) {
+
+		_collectionPersistenceFinderByG_ODI_NotS.remove(
+			finderCache, new Object[] {groupId, objectDefinitionId, status});
+	}
+
+	/**
+	 * Returns the number of object entries where groupId = &#63; and objectDefinitionId = &#63; and status &ne; &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param status the status
+	 * @return the number of matching object entries
+	 */
+	@Override
+	public int countByG_ODI_NotS(
+		long groupId, long objectDefinitionId, int status) {
+
+		return _collectionPersistenceFinderByG_ODI_NotS.count(
+			finderCache, new Object[] {groupId, objectDefinitionId, status});
+	}
+
+	private CollectionPersistenceFinder<ObjectEntry, NoSuchObjectEntryException>
 		_collectionPersistenceFinderByU_GtCD_ODI;
 
 	/**
@@ -2128,6 +2293,44 @@ public class ObjectEntryPersistenceImpl
 					"objectEntry.", "status", FinderColumn.Type.INTEGER, "=",
 					true, true, ObjectEntry::getStatus));
 
+		_collectionPersistenceFinderByG_ODI_NotS =
+			new CollectionPersistenceFinder<>(
+				this,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_ODI_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"groupId", "objectDefinitionId", "status"},
+					true),
+				null,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByG_ODI_NotS",
+					new String[] {
+						Long.class.getName(), Long.class.getName(),
+						Integer.class.getName()
+					},
+					new String[] {"groupId", "objectDefinitionId", "status"},
+					false),
+				_SQL_SELECT_OBJECTENTRY_WHERE, _SQL_COUNT_OBJECTENTRY_WHERE,
+				ObjectEntryModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
+				"objectEntry.objectEntryId = objectEntry.headObjectEntryId",
+				"objectEntry.objectEntryId = objectEntry.headObjectEntryId",
+				null,
+				new FinderColumn<>(
+					"objectEntry.", "groupId", FinderColumn.Type.LONG, "=",
+					true, true, ObjectEntry::getGroupId),
+				new FinderColumn<>(
+					"objectEntry.", "objectDefinitionId",
+					FinderColumn.Type.LONG, "=", true, true,
+					ObjectEntry::getObjectDefinitionId),
+				new FinderColumn<>(
+					"objectEntry.", "status", FinderColumn.Type.INTEGER, "!=",
+					true, true, ObjectEntry::getStatus));
+
 		_collectionPersistenceFinderByU_GtCD_ODI =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -2260,4 +2463,4 @@ public class ObjectEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1937264170
+// LIFERAY-SERVICE-BUILDER-HASH:-1342389250

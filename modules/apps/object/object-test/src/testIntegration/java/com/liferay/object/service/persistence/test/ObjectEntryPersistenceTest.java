@@ -335,6 +335,15 @@ public class ObjectEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_ODI_NotS() throws Exception {
+		_persistence.countByG_ODI_NotS(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextInt());
+
+		_persistence.countByG_ODI_NotS(0L, 0L, 0);
+	}
+
+	@Test
 	public void testCountByU_GtCD_ODI() throws Exception {
 		_persistence.countByU_GtCD_ODI(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextDate(),
@@ -753,4 +762,4 @@ public class ObjectEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1440861900
+// LIFERAY-SERVICE-BUILDER-HASH:-581398502
