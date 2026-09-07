@@ -590,6 +590,26 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 
+		// The row renders the related entry it carries, not a fresh fetch
+
+		ObjectEntry relatedObjectEntry =
+			_objectEntryLocalService.getObjectEntry(
+				parentObjectEntry.getObjectEntryId());
+
+		String parentTitleValue = RandomTestUtil.randomString();
+
+		relatedObjectEntry.setValues(
+			HashMapBuilder.<String, Serializable>putAll(
+				_objectEntryLocalService.getValues(relatedObjectEntry)
+			).put(
+				"parentTitle", parentTitleValue
+			).build());
+
+		childObjectEntry.setRelatedObjectEntry(
+			"r_oneToManyRelationshipName_" +
+				parentObjectDefinition.getPKObjectFieldName(),
+			relatedObjectEntry);
+
 		_pushServiceContext(_getThemeDisplay(StringPool.BLANK, "UTC"));
 
 		InfoItemFieldValuesProvider<ObjectEntry> infoItemFieldValuesProvider =
@@ -605,6 +625,12 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			infoItemFieldValues.getInfoFieldValue("childTitle");
 
 		Assert.assertEquals(childTitleValue, infoFieldValue.getValue());
+
+		InfoFieldValue<Object> parentTitleInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("parentTitle");
+
+		Assert.assertEquals(
+			parentTitleValue, parentTitleInfoFieldValue.getValue());
 
 		ServiceContextThreadLocal.popServiceContext();
 
