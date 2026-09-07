@@ -5763,7 +5763,7 @@ public class DataFactory {
 			objectDefinitionId, objectFolderId, 0, className,
 			StringBundler.concat("O_", _companyId, StringPool.UNDERLINE, name),
 			true, false, true, label, true, name,
-			PanelCategoryKeys.APPLICATIONS_MENU_APPLICATIONS_CUSTOM_APPS,
+			PanelCategoryKeys.CONTROL_PANEL_OBJECT,
 			"c_" + StringUtil.toLowerCase(name) + "_",
 			"c_" + StringUtil.toLowerCase(name), label, true, false, uuid,
 			uuid);
