@@ -154,6 +154,11 @@ public class ObjectEntryImpl extends ObjectEntryBaseImpl {
 	}
 
 	@Override
+	public ObjectEntry getRelatedObjectEntry(String objectFieldName) {
+		return _relatedObjectEntries.get(objectFieldName);
+	}
+
+	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
 			PortalUtil.getClassNameId(getModelClassName()));
@@ -335,6 +340,13 @@ public class ObjectEntryImpl extends ObjectEntryBaseImpl {
 	}
 
 	@Override
+	public void setRelatedObjectEntry(
+		String objectFieldName, ObjectEntry relatedObjectEntry) {
+
+		_relatedObjectEntries.put(objectFieldName, relatedObjectEntry);
+	}
+
+	@Override
 	public void setTransientValues(Map<String, Serializable> values) {
 		_transientValues = values;
 	}
@@ -349,6 +361,8 @@ public class ObjectEntryImpl extends ObjectEntryBaseImpl {
 
 	private Map<String, Serializable> _indexedValues;
 	private ObjectDefinition _objectDefinition;
+	private final Map<String, ObjectEntry> _relatedObjectEntries =
+		new HashMap<>();
 	private Map<String, Serializable> _transientValues;
 	private Map<String, Serializable> _values;
 
