@@ -247,29 +247,26 @@ public class JournalArticleModelIndexerWriterContributor
 		return latestIndexableArticle;
 	}
 
-	private Collection<JournalArticle> _getReindexableArticleVersions(
+	private Collection<JournalArticle> _getReindexableArticles(
 		JournalArticle article) {
 
-		Map<Long, JournalArticle> reindexableArticleVersions =
-			new LinkedHashMap<>();
+		Map<Long, JournalArticle> reindexableArticles = new LinkedHashMap<>();
 
-		List<JournalArticle> articleVersions =
-			_journalArticleLocalService.getArticles(
-				article.getGroupId(), article.getArticleId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, ArticleVersionComparator.getInstance(false));
+		List<JournalArticle> articles = _journalArticleLocalService.getArticles(
+			article.getGroupId(), article.getArticleId(), QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, ArticleVersionComparator.getInstance(false));
 
 		for (int[] statuses : _REINDEXABLE_STATUSES) {
 			boolean latest = true;
 
-			for (JournalArticle articleVersion : articleVersions) {
-				if (!_hasStatus(articleVersion, statuses)) {
+			for (JournalArticle versionArticle : articles) {
+				if (!_hasStatus(versionArticle, statuses)) {
 					continue;
 				}
 
-				reindexableArticleVersions.put(
-					articleVersion.getId(), articleVersion);
+				reindexableArticles.put(versionArticle.getId(), versionArticle);
 
-				if (!latest || (article.getId() != articleVersion.getId())) {
+				if (!latest || (article.getId() != versionArticle.getId())) {
 					break;
 				}
 
@@ -277,9 +274,9 @@ public class JournalArticleModelIndexerWriterContributor
 			}
 		}
 
-		reindexableArticleVersions.remove(article.getId());
+		reindexableArticles.remove(article.getId());
 
-		return reindexableArticleVersions.values();
+		return reindexableArticles.values();
 	}
 
 	private boolean _hasStatus(JournalArticle article, int[] statuses) {
@@ -300,11 +297,11 @@ public class JournalArticleModelIndexerWriterContributor
 		Indexer<JournalArticle> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(JournalArticle.class);
 
-		for (JournalArticle reindexableArticleVersion :
-				_getReindexableArticleVersions(journalArticle)) {
+		for (JournalArticle reindexableArticle :
+				_getReindexableArticles(journalArticle)) {
 
 			try {
-				indexer.reindex(reindexableArticleVersion, false);
+				indexer.reindex(reindexableArticle, false);
 			}
 			catch (SearchException searchException) {
 				throw new SystemException(searchException);
