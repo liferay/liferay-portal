@@ -113,20 +113,10 @@ public abstract class BaseObjectEntryManager {
 	}
 
 	protected long getGroupId(
-			ObjectDefinition objectDefinition, String scopeKey)
-		throws ObjectEntryScopeException {
-
-		return getGroupId(objectDefinition, scopeKey, false);
-	}
-
-	protected long getGroupId(
-			ObjectDefinition objectDefinition, String scopeKey,
+			ObjectDefinition objectDefinition,
+			ObjectScopeProvider objectScopeProvider, String scopeKey,
 			boolean useCompanyGroup)
 		throws ObjectEntryScopeException {
-
-		ObjectScopeProvider objectScopeProvider =
-			objectScopeProviderRegistry.getObjectScopeProvider(
-				objectDefinition.getScope());
 
 		if (objectScopeProvider.isGroupAware()) {
 			if (scopeKey == null) {
@@ -155,6 +145,25 @@ public abstract class BaseObjectEntryManager {
 		}
 
 		return 0;
+	}
+
+	protected long getGroupId(
+			ObjectDefinition objectDefinition, String scopeKey)
+		throws ObjectEntryScopeException {
+
+		return getGroupId(objectDefinition, scopeKey, false);
+	}
+
+	protected long getGroupId(
+			ObjectDefinition objectDefinition, String scopeKey,
+			boolean useCompanyGroup)
+		throws ObjectEntryScopeException {
+
+		return getGroupId(
+			objectDefinition,
+			objectScopeProviderRegistry.getObjectScopeProvider(
+				objectDefinition.getScope()),
+			scopeKey, useCompanyGroup);
 	}
 
 	protected PortletResourcePermission getPortletResourcePermission(

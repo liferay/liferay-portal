@@ -793,7 +793,8 @@ public class DefaultObjectEntryManagerImpl
 			_objectScopeProviderRegistry.getObjectScopeProvider(
 				objectDefinition.getScope());
 
-		long groupId = getGroupId(objectDefinition, scopeKey);
+		long groupId = getGroupId(
+			objectDefinition, objectScopeProvider, scopeKey, false);
 
 		if (objectScopeProvider.isValidGroupId(groupId)) {
 			groupIdsList.add(groupId);
