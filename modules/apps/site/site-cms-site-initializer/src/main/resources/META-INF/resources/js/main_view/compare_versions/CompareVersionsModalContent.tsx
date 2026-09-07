@@ -37,7 +37,7 @@ interface CompareVersionsModalContentProps {
 	objectEntryId: number;
 }
 
-type VersionItem = IAssetObjectEntry;
+export type VersionItem = IAssetObjectEntry;
 
 type VersionsState =
 	| {status: 'error' | 'loading'}
@@ -64,7 +64,7 @@ function getVersionNumber(item: VersionItem) {
 	return item.systemProperties.version.number;
 }
 
-function versionHasLanguage(
+export function versionHasLanguage(
 	item: VersionItem,
 	languageId: string,
 	defaultLanguageId: string
