@@ -167,13 +167,14 @@ public class ResetTranslationDisplayPageStrutsActionTest {
 
 		String compareLayoutPageTemplateEntryKey =
 			"LFR_CMS_COMPARE_" + classNameId;
-		String translationLayoutPageTemplateEntryKey =
-			"LFR_CMS_TRANSLATION_" + classNameId;
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group.getGroupId(), classNameId, null, false,
 			compareLayoutPageTemplateEntryKey,
 			WorkflowConstants.STATUS_APPROVED);
+
+		String translationLayoutPageTemplateEntryKey =
+			"LFR_CMS_TRANSLATION_" + classNameId;
 
 		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 			_group.getGroupId(), classNameId, null, false,
