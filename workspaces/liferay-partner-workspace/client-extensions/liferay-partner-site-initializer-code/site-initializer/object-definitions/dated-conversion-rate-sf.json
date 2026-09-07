@@ -19,7 +19,7 @@
 			"type": "BigDecimal"
 		}
 	],
-	"panelCategoryKey": "applications_menu.applications.content",
+	"panelCategoryKey": "control_panel.object",
 	"pluralLabel": {
 		"en_US": "Dated Conversion Rates SF"
 	},

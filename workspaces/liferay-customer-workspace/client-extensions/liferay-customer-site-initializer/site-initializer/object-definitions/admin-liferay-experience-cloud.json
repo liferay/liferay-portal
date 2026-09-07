@@ -54,7 +54,7 @@
 		}
 	],
 	"panelAppOrder": 150,
-	"panelCategoryKey": "applications_menu.applications.content",
+	"panelCategoryKey": "control_panel.object",
 	"pluralLabel": {
 		"en_US": "Admins Liferay Experience Cloud"
 	},

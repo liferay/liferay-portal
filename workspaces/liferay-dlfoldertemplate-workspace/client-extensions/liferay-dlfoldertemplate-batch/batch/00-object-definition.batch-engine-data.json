@@ -71,7 +71,7 @@
 					"type": "String"
 				}
 			],
-			"panelCategoryKey": "applications_menu.applications.custom.apps",
+			"panelCategoryKey": "control_panel.object",
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "T4T1 Folder Templates"
@@ -206,7 +206,7 @@
 					"type": "Long"
 				}
 			],
-			"panelCategoryKey": "applications_menu.applications.custom.apps",
+			"panelCategoryKey": "control_panel.object",
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "T4T1 Folder Templates Nodes"

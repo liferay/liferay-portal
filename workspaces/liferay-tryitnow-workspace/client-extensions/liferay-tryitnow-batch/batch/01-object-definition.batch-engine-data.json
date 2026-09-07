@@ -191,7 +191,7 @@
 					"unique": false
 				}
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "control_panel.object",
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "M2H8 Progress Trackers"

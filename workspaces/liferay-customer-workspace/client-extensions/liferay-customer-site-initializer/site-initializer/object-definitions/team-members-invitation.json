@@ -52,7 +52,7 @@
 		}
 	],
 	"panelAppOrder": 320,
-	"panelCategoryKey": "applications_menu.applications.content",
+	"panelCategoryKey": "control_panel.object",
 	"pluralLabel": {
 		"en_US": "Team Members Invitation"
 	},

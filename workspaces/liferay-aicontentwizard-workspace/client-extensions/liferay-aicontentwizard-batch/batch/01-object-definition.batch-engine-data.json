@@ -149,7 +149,7 @@
 					"type": "String"
 				}
 			],
-			"panelCategoryKey": "applications_menu.applications.content",
+			"panelCategoryKey": "control_panel.object",
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "K9L6 AI Content Wizard Settings"

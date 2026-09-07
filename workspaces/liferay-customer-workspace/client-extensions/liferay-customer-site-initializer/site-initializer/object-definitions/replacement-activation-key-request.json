@@ -130,7 +130,7 @@
 		}
 	],
 	"panelAppOrder": 300,
-	"panelCategoryKey": "applications_menu.applications.content",
+	"panelCategoryKey": "control_panel.object",
 	"pluralLabel": {
 		"en_US": "Replacement Activation Key Requests"
 	},

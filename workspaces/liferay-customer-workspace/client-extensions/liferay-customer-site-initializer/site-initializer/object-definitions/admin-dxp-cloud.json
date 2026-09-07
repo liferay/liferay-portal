@@ -65,7 +65,7 @@
 		}
 	],
 	"panelAppOrder": 140,
-	"panelCategoryKey": "applications_menu.applications.content",
+	"panelCategoryKey": "control_panel.object",
 	"pluralLabel": {
 		"en_US": "Admins DXP Cloud"
 	},
