@@ -82,6 +82,7 @@ public class ObjectEntryVersionFieldValueResolverTest {
 
 	@Test
 	public void testGetFieldValues() throws Exception {
+		_testGetFieldValuesWithEmptyTranslation();
 		_testGetFieldValuesWithoutTranslation();
 		_testGetFieldValuesWithTranslation();
 	}
@@ -263,6 +264,43 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		).thenReturn(
 			objectEntryVersion
 		);
+	}
+
+	private void _testGetFieldValuesWithEmptyTranslation() throws Exception {
+		long objectEntryId = RandomTestUtil.randomLong();
+		int version = RandomTestUtil.randomInt();
+
+		_setUpObjectEntryVersion(
+			objectEntryId,
+			JSONUtil.put(
+				"friendlyUrlPath", "hello-world"
+			).put(
+				"friendlyUrlPath_i18n", JSONUtil.put("en_US", "hello-world")
+			).put(
+				"properties",
+				JSONUtil.put(
+					"title", "Hallo"
+				).put(
+					"title_i18n",
+					JSONUtil.put(
+						"de_DE", "Hallo"
+					).put(
+						"en_US", "Hello"
+					).put(
+						"es_ES", ""
+					)
+				)
+			).toString(),
+			version);
+
+		Map<String, Object> fieldValues =
+			_objectEntryVersionFieldValueResolver.getFieldValues(
+				"en_US", "es_ES", objectEntryId, version);
+
+		Assert.assertEquals(fieldValues.toString(), 2, fieldValues.size());
+		Assert.assertEquals(
+			"hello-world", fieldValues.get("objectEntryFriendlyURL"));
+		Assert.assertEquals("Hello", fieldValues.get("title"));
 	}
 
 	private void _testGetFieldValuesWithoutTranslation() throws Exception {

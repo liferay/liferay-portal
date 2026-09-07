@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.text.DateFormat;
 import java.text.Format;
@@ -109,11 +110,11 @@ public class ObjectEntryVersionFieldValueResolver {
 
 				Object localizedValue = localizedValuesMap.get(languageId);
 
-				if (localizedValue == null) {
+				if (Validator.isNull(localizedValue)) {
 					localizedValue = localizedValuesMap.get(defaultLanguageId);
 				}
 
-				if (localizedValue != null) {
+				if (Validator.isNotNull(localizedValue)) {
 					fieldValue = localizedValue;
 				}
 			}
