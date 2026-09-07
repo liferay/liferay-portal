@@ -53,6 +53,16 @@ public class PageTemplateSetSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
+		if (pageTemplateSet.getActions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"actions\": ");
+
+			sb.append(_toJSON(pageTemplateSet.getActions()));
+		}
+
 		if (pageTemplateSet.getCreator() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -207,6 +217,13 @@ public class PageTemplateSetSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
+		if (pageTemplateSet.getActions() == null) {
+			map.put("actions", null);
+		}
+		else {
+			map.put("actions", String.valueOf(pageTemplateSet.getActions()));
+		}
+
 		if (pageTemplateSet.getCreator() == null) {
 			map.put("creator", null);
 		}
@@ -300,7 +317,10 @@ public class PageTemplateSetSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "creator")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				return true;
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
@@ -338,7 +358,13 @@ public class PageTemplateSetSerDes {
 			PageTemplateSet pageTemplateSet, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "creator")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				if (jsonParserFieldValue != null) {
+					pageTemplateSet.setActions(
+						(Map<String, Map<String, String>>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				if (jsonParserFieldValue != null) {
 					pageTemplateSet.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
@@ -492,4 +518,4 @@ public class PageTemplateSetSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-979541312
+// LIFERAY-REST-BUILDER-HASH:-1139040335
