@@ -155,9 +155,7 @@ public class ObjectEntryModelResourcePermission
 			objectEntry = rootObjectEntry;
 		}
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.getObjectDefinition(
-				objectEntry.getObjectDefinitionId());
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		if (Objects.equals(actionId, ActionKeys.DOWNLOAD) &&
 			Objects.equals(
