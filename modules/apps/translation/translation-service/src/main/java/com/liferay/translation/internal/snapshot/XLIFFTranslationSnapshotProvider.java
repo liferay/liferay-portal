@@ -354,6 +354,16 @@ public class XLIFFTranslationSnapshotProvider
 		return LocaleUtil.fromLanguageId(targetLanguageProperty.getValue());
 	}
 
+	private boolean _hasInlineCodes(Fragment fragment) {
+		for (Object object : fragment) {
+			if (object instanceof CTag) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private boolean _isBlankTargetUnit(Unit unit) {
 		for (int i = 0; i < unit.getPartCount(); i++) {
 			Part part = unit.getPart(i);
@@ -361,7 +371,16 @@ public class XLIFFTranslationSnapshotProvider
 			Fragment targetFragment = part.getTarget();
 
 			if ((targetFragment == null) ||
-				!Validator.isBlank(_toText(targetFragment))) {
+				!Validator.isBlank(targetFragment.getPlainText())) {
+
+				return false;
+			}
+
+			Fragment sourceFragment = part.getSource();
+
+			if (_hasInlineCodes(targetFragment) &&
+				((sourceFragment == null) ||
+				 Validator.isBlank(sourceFragment.getPlainText()))) {
 
 				return false;
 			}
