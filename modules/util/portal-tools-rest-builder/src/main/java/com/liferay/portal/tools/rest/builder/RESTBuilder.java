@@ -1205,15 +1205,24 @@ public class RESTBuilder {
 			String escapedVersion)
 		throws Exception {
 
+		boolean createClientScopeFiles = true;
+
 		for (Map.Entry<String, Schema> entry : allExternalSchemas.entrySet()) {
+			Schema schema = entry.getValue();
 			String schemaName = entry.getKey();
 
 			_putSchema(
 				context, escapedVersion,
-				Collections.singletonMap(schemaName, schemaName),
-				entry.getValue(), schemaName, Collections.emptySet());
+				Collections.singletonMap(schemaName, schemaName), schema,
+				schemaName, Collections.emptySet());
 
 			if (Validator.isNotNull(_configYAML.getClientDir())) {
+				if (createClientScopeFiles && _containsVulcanScope(schema)) {
+					_createClientScopeFile(context);
+
+					createClientScopeFiles = false;
+				}
+
 				_createClientDTOFile(context, escapedVersion, schemaName);
 				_createClientSerDesFile(context, escapedVersion, schemaName);
 			}
