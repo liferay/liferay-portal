@@ -49,12 +49,14 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -116,6 +118,7 @@ public class CompareContentItemStrutsActionTest {
 	public void testExecute() throws Exception {
 		_testExecuteWithLayoutPageTemplateEntry();
 		_testExecuteWithParameters();
+		_testExecuteWithRequestLocale();
 		_testExecuteWithoutFeatureFlag();
 		_testExecuteWithoutLayoutPageTemplateEntry();
 		_testExecuteWithoutViewPermission();
@@ -345,6 +348,46 @@ public class CompareContentItemStrutsActionTest {
 		Assert.assertTrue(redirectedURL.contains("p_p_state=maximized"));
 
 		Assert.assertTrue(redirectedURL.contains("version=2"));
+	}
+
+	private void _testExecuteWithRequestLocale() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(objectEntry);
+
+		_execute(mockHttpServletRequest, TestPropsValues.getUser());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_fetchLayoutPageTemplateEntry(objectEntry);
+
+		_layoutLocalService.updateFriendlyURL(
+			TestPropsValues.getUserId(), layoutPageTemplateEntry.getPlid(),
+			StringPool.SLASH +
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
+			LocaleUtil.toLanguageId(LocaleUtil.SPAIN));
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)mockHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		themeDisplay.setLocale(LocaleUtil.SPAIN);
+
+		MockHttpServletResponse mockHttpServletResponse = _execute(
+			mockHttpServletRequest, TestPropsValues.getUser());
+
+		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
+
+		Assert.assertTrue(
+			redirectedURL.contains(layout.getFriendlyURL(LocaleUtil.SPAIN)));
+
+		Assert.assertFalse(
+			redirectedURL.contains(
+				layout.getFriendlyURL(
+					PortalUtil.getSiteDefaultLocale(_group))));
 	}
 
 	@Inject
