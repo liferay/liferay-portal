@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -74,9 +75,9 @@ public class ResetTranslationDisplayPageStrutsAction implements StrutsAction {
 		long classNameId = _portal.getClassNameId(
 			objectDefinition.getClassName());
 
-		_deleteLayoutPageTemplateEntry(
-			group.getGroupId(),
-			_COMPARE_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX + classNameId);
+		ActionUtil.deleteCompareContentLayoutPageTemplateEntry(
+			classNameId, group.getGroupId());
+
 		_deleteLayoutPageTemplateEntry(
 			group.getGroupId(),
 			_TRANSLATION_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX + classNameId);
@@ -108,9 +109,6 @@ public class ResetTranslationDisplayPageStrutsAction implements StrutsAction {
 		ServletResponseUtil.write(
 			httpServletResponse, JSONUtil.toString(jsonObject));
 	}
-
-	private static final String _COMPARE_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX =
-		"LFR_CMS_COMPARE_";
 
 	private static final String
 		_TRANSLATION_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX =

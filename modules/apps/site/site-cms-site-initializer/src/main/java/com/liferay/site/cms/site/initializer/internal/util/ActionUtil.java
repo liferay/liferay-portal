@@ -56,6 +56,7 @@ import com.liferay.object.service.ObjectDefinitionSettingLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -105,6 +106,27 @@ import java.util.Objects;
  * @author Eudaldo Alonso
  */
 public class ActionUtil {
+
+	public static void deleteCompareContentLayoutPageTemplateEntry(
+			long classNameId, long groupId)
+		throws PortalException {
+
+		synchronized (_compareContentLayoutLock) {
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					fetchLayoutPageTemplateEntry(
+						groupId,
+						_COMPARE_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX +
+							classNameId);
+
+			if (layoutPageTemplateEntry == null) {
+				return;
+			}
+
+			LayoutPageTemplateEntryLocalServiceUtil.
+				deleteLayoutPageTemplateEntry(layoutPageTemplateEntry);
+		}
+	}
 
 	public static void generateEditContentLayoutStructure(
 			FormManager formManager,

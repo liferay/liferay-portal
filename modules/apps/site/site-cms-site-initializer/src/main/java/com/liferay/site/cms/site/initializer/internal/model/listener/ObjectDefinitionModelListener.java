@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -70,16 +71,6 @@ public class ObjectDefinitionModelListener
 			layoutPageTemplateEntry =
 				_layoutPageTemplateEntryLocalService.
 					fetchLayoutPageTemplateEntry(
-						group.getGroupId(), "LFR_CMS_COMPARE_" + classNameId);
-
-			if (layoutPageTemplateEntry != null) {
-				_layoutPageTemplateEntryLocalService.
-					deleteLayoutPageTemplateEntry(layoutPageTemplateEntry);
-			}
-
-			layoutPageTemplateEntry =
-				_layoutPageTemplateEntryLocalService.
-					fetchLayoutPageTemplateEntry(
 						group.getGroupId(),
 						"LFR_CMS_TRANSLATION_" + classNameId);
 
@@ -87,6 +78,9 @@ public class ObjectDefinitionModelListener
 				_layoutPageTemplateEntryLocalService.
 					deleteLayoutPageTemplateEntry(layoutPageTemplateEntry);
 			}
+
+			ActionUtil.deleteCompareContentLayoutPageTemplateEntry(
+				classNameId, group.getGroupId());
 		}
 		catch (PortalException portalException) {
 			throw new ModelListenerException(portalException);
