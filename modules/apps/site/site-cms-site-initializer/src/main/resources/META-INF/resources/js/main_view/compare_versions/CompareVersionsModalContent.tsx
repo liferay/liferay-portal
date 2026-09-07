@@ -294,25 +294,26 @@ function CompareVersionPane({
 
 		return (
 			<div className="cms-compare-versions-pane d-flex flex-column">
-				<ClayEmptyState
-					className="justify-content-center"
-					description={Liferay.Language.get(
-						'choose-a-target-version-to-start-the-comparison'
-					)}
-					imgSrc={emptyStateImage}
-					imgSrcReducedMotion={emptyStateImage}
-					small
-					title={Liferay.Language.get(
-						'select-a-version-for-comparison'
-					)}
-				>
-					<VersionPicker
-						excludedVersion={excludedVersion}
-						onVersionChange={onVersionChange}
-						selectedVersion={selectedVersion}
-						versions={versions}
-					/>
-				</ClayEmptyState>
+				<div className="align-items-center d-flex flex-column flex-grow-1 justify-content-center mt-n8 text-center">
+					<ClayEmptyState
+						description={Liferay.Language.get(
+							'choose-a-target-version-to-start-the-comparison'
+						)}
+						imgSrc={emptyStateImage}
+						imgSrcReducedMotion={emptyStateImage}
+						small
+						title={Liferay.Language.get(
+							'select-a-version-for-comparison'
+						)}
+					>
+						<VersionPicker
+							excludedVersion={excludedVersion}
+							onVersionChange={onVersionChange}
+							selectedVersion={selectedVersion}
+							versions={versions}
+						/>
+					</ClayEmptyState>
+				</div>
 			</div>
 		);
 	}
