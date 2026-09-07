@@ -76,7 +76,8 @@ public class ForceReconsentMVCResourceCommand extends BaseMVCResourceCommand {
 			return;
 		}
 
-		ExtendedObjectClassDefinition.Scope scope = null;
+		ExtendedObjectClassDefinition.Scope scope =
+			ExtendedObjectClassDefinition.Scope.SYSTEM;
 		long scopePK = 0;
 
 		PermissionChecker permissionChecker =
@@ -102,14 +103,7 @@ public class ForceReconsentMVCResourceCommand extends BaseMVCResourceCommand {
 			scope = ExtendedObjectClassDefinition.Scope.GROUP;
 			scopePK = themeDisplay.getScopeGroupId();
 		}
-		else if (scopeName.equals(
-					ExtendedObjectClassDefinition.Scope.SYSTEM.getValue()) &&
-				 permissionChecker.isOmniadmin()) {
-
-			scope = ExtendedObjectClassDefinition.Scope.SYSTEM;
-		}
-
-		if (scope == null) {
+		else if (!permissionChecker.isOmniadmin()) {
 			resourceResponse.setProperty(
 				ResourceResponse.HTTP_STATUS_CODE,
 				String.valueOf(HttpServletResponse.SC_FORBIDDEN));

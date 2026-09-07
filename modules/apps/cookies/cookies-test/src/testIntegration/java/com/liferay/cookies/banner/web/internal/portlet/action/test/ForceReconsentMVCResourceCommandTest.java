@@ -79,8 +79,7 @@ public class ForceReconsentMVCResourceCommandTest {
 	@Test
 	public void testServeResource() throws Exception {
 		MockLiferayResourceRequest mockLiferayResourceRequest =
-			_getMockLiferayResourceRequest(
-				HttpMethods.POST, _SYSTEM_SCOPE_NAME);
+			_getMockLiferayResourceRequest(HttpMethods.POST);
 
 		mockLiferayResourceRequest.setParameter(
 			"p_auth", _getSessionCSRFToken(mockLiferayResourceRequest));
@@ -98,7 +97,7 @@ public class ForceReconsentMVCResourceCommandTest {
 	@Test
 	public void testServeResourceWithBlockedRequest() throws Exception {
 		MockLiferayResourceRequest mockLiferayResourceRequest =
-			_getMockLiferayResourceRequest(HttpMethods.GET, _SYSTEM_SCOPE_NAME);
+			_getMockLiferayResourceRequest(HttpMethods.GET);
 
 		mockLiferayResourceRequest.setParameter(
 			"p_auth", _getSessionCSRFToken(mockLiferayResourceRequest));
@@ -108,7 +107,7 @@ public class ForceReconsentMVCResourceCommandTest {
 			HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 
 		mockLiferayResourceRequest = _getMockLiferayResourceRequest(
-			HttpMethods.POST, _SYSTEM_SCOPE_NAME);
+			HttpMethods.POST);
 
 		mockLiferayResourceRequest.setParameter(
 			"p_auth", RandomTestUtil.randomString());
@@ -117,22 +116,12 @@ public class ForceReconsentMVCResourceCommandTest {
 			mockLiferayResourceRequest, HttpServletResponse.SC_FORBIDDEN);
 
 		_testServeResourceWithBlockedRequest(
-			_getMockLiferayResourceRequest(
-				HttpMethods.POST, _SYSTEM_SCOPE_NAME),
+			_getMockLiferayResourceRequest(HttpMethods.POST),
 			HttpServletResponse.SC_FORBIDDEN);
-
-		mockLiferayResourceRequest = _getMockLiferayResourceRequest(
-			HttpMethods.POST, RandomTestUtil.randomString());
-
-		mockLiferayResourceRequest.setParameter(
-			"p_auth", _getSessionCSRFToken(mockLiferayResourceRequest));
-
-		_testServeResourceWithBlockedRequest(
-			mockLiferayResourceRequest, HttpServletResponse.SC_FORBIDDEN);
 	}
 
 	private MockLiferayResourceRequest _getMockLiferayResourceRequest(
-			String method, String scopeName)
+			String method)
 		throws Exception {
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
@@ -143,7 +132,8 @@ public class ForceReconsentMVCResourceCommandTest {
 		mockLiferayResourceRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());
 		mockLiferayResourceRequest.setMethod(method);
-		mockLiferayResourceRequest.setParameter("scope", scopeName);
+		mockLiferayResourceRequest.setParameter(
+			"scope", ExtendedObjectClassDefinition.Scope.SYSTEM.getValue());
 
 		_getSessionCSRFToken(mockLiferayResourceRequest);
 
@@ -214,9 +204,6 @@ public class ForceReconsentMVCResourceCommandTest {
 	}
 
 	private static final long _MODIFIED_DATE = 1000;
-
-	private static final String _SYSTEM_SCOPE_NAME =
-		ExtendedObjectClassDefinition.Scope.SYSTEM.getValue();
 
 	@Inject
 	private ConfigurationAdmin _configurationAdmin;
