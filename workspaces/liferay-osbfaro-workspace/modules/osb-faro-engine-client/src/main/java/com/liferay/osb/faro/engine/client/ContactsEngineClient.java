@@ -356,7 +356,7 @@ public interface ContactsEngineClient {
 
 	public Results<Campaign> getCampaigns(
 		FaroProject faroProject, long channelId, String filterString,
-		String keywords, String sortString, int cur, int delta);
+		String query, String sortString, int cur, int delta);
 
 	public Results<CatalogField> getCatalogFields(
 			FaroProject faroProject, String capability, String query,

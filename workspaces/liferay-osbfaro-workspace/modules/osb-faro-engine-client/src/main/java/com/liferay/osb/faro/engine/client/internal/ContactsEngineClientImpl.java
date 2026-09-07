@@ -1748,7 +1748,7 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<Campaign> getCampaigns(
 		FaroProject faroProject, long channelId, String filterString,
-		String keywords, String sortString, int cur, int delta) {
+		String query, String sortString, int cur, int delta) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
@@ -1759,8 +1759,8 @@ public class ContactsEngineClientImpl
 			uriVariables.put("filter", filterString);
 		}
 
-		if (Validator.isNotNull(keywords)) {
-			uriVariables.put("keywords", keywords);
+		if (Validator.isNotNull(query)) {
+			uriVariables.put("query", query);
 		}
 
 		if (Validator.isNotNull(sortString)) {

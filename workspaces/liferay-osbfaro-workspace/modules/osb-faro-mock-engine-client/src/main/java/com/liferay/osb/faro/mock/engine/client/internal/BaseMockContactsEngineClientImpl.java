@@ -681,10 +681,10 @@ public abstract class BaseMockContactsEngineClientImpl
 	@Override
 	public Results<Campaign> getCampaigns(
 		FaroProject faroProject, long channelId, String filterString,
-		String keywords, String sortString, int cur, int delta) {
+		String query, String sortString, int cur, int delta) {
 
 		return contactsEngineClient.getCampaigns(
-			faroProject, channelId, filterString, keywords, sortString, cur,
+			faroProject, channelId, filterString, query, sortString, cur,
 			delta);
 	}
 

@@ -92,9 +92,9 @@ public class CampaignFaroController extends BaseFaroController {
 			@PathParam("groupId") long groupId,
 			@QueryParam("channelId") long channelId,
 			@QueryParam("filter") String filterString,
-			@QueryParam("keywords") String keywords,
 			@QueryParam("page") int page,
 			@DefaultValue("20") @QueryParam("pageSize") int pageSize,
+			@QueryParam("search") String search,
 			@DefaultValue(StringPool.BLANK) @QueryParam("sort") String
 				sortString)
 		throws Exception {
@@ -102,7 +102,7 @@ public class CampaignFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getCampaigns(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, filterString, keywords, sortString, page, pageSize),
+				channelId, filterString, search, sortString, page, pageSize),
 			CampaignDisplay::new, page, pageSize);
 	}
 
