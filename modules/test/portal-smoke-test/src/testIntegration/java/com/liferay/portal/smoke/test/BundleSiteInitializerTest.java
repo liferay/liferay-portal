@@ -180,6 +180,7 @@ import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsLocator;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -281,6 +282,9 @@ public class BundleSiteInitializerTest {
 
 	@Before
 	public void setUp() throws Exception {
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
 		_group = GroupTestUtil.addGroup();
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
@@ -357,7 +361,9 @@ public class BundleSiteInitializerTest {
 		}
 	}
 
-	@FeatureFlag("LPD-76864")
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-57283"), @FeatureFlag("LPD-76864")}
+	)
 	@Test
 	public void testInitializeFromBundle() throws Exception {
 		Bundle bundle1 = _getBundle(
@@ -442,7 +448,60 @@ public class BundleSiteInitializerTest {
 		}
 	}
 
-	@FeatureFlag("LPD-76864")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag(enable = false, value = "LPD-57283"),
+			@FeatureFlag("LPD-76864")
+		}
+	)
+	@Test
+	public void testInitializeFromBundleWithDesignLibraryFeatureFlagDisabled()
+		throws Exception {
+
+		Bundle bundle1 = _getBundle(
+			"/com.liferay.site.initializer.extender.test.bundle.1.jar");
+		Bundle bundle2 = _getBundle(
+			"/com.liferay.site.initializer.extender.test.bundle.2.jar");
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.site.initializer.extender.internal." +
+					"BundleSiteInitializer",
+				LoggerTestUtil.INFO)) {
+
+			SiteInitializer siteInitializer1 =
+				_siteInitializerRegistry.getSiteInitializer(
+					bundle1.getSymbolicName());
+
+			siteInitializer1.initialize(_group.getGroupId());
+
+			SiteInitializer siteInitializer2 =
+				_siteInitializerRegistry.getSiteInitializer(
+					bundle2.getSymbolicName());
+
+			siteInitializer2.initialize(_group.getGroupId());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(
+				logEntries.toString(),
+				_hasLogEntryMessage(
+					logEntries,
+					"Skipping design library because the feature flag " +
+						"LPD-57283 is disabled"));
+
+			Assert.assertNull(
+				_groupLocalService.fetchGroup(
+					_serviceContext.getCompanyId(), "Test Design Library"));
+		}
+		finally {
+			bundle1.uninstall();
+			bundle2.uninstall();
+		}
+	}
+
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-57283"), @FeatureFlag("LPD-76864")}
+	)
 	@Test
 	public void testInitializeFromFile() throws Exception {
 		File tempDir1 = _getTempDir(
@@ -1628,7 +1687,7 @@ public class BundleSiteInitializerTest {
 			_depotEntryLocalService.getGroupConnectedDepotEntries(
 				_group.getGroupId(), DepotConstants.TYPE_ANY, -1, -1);
 
-		Assert.assertEquals(depotEntries.toString(), 3, depotEntries.size());
+		Assert.assertEquals(depotEntries.toString(), 5, depotEntries.size());
 
 		List<DepotAppCustomization> depotAppCustomizations =
 			_depotAppCustomizationLocalService.getDepotAppCustomizations(
@@ -1662,6 +1721,74 @@ public class BundleSiteInitializerTest {
 			depotAppCustomizations.get(
 				0
 			).getEnabled());
+	}
+
+	private void _assertDepotEntryDesignAssets2() throws Exception {
+		Group group1 = _assertDesignLibraryAssets(
+			"Test Design Library", "test-design-library-fragment-entry",
+			"Test Design Library Fragment Entry",
+			"test-design-library-style-book",
+			"Test Design Library Style Book Entry");
+		Group group2 = _assertDesignLibraryAssets(
+			"Test Design Library 2", "test-design-library-2-fragment-entry",
+			"Test Design Library 2 Fragment Entry",
+			"test-design-library-2-style-book",
+			"Test Design Library 2 Style Book Entry");
+
+		Assert.assertNull(
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				group1.getGroupId(), "test-design-library-2-fragment-entry"));
+		Assert.assertNull(
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				group2.getGroupId(), "test-design-library-fragment-entry"));
+		Assert.assertNull(
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				group1.getGroupId(), "test-design-library-2-style-book"));
+		Assert.assertNull(
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				group2.getGroupId(), "test-design-library-style-book"));
+	}
+
+	private Group _assertDesignLibraryAssets(
+			String assetLibraryName, String fragmentEntryKey,
+			String fragmentEntryName, String styleBookEntryKey,
+			String styleBookEntryName)
+		throws Exception {
+
+		Group group = _groupLocalService.fetchGroup(
+			_serviceContext.getCompanyId(), assetLibraryName);
+
+		Assert.assertNotNull(group);
+
+		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
+			group.getClassPK());
+
+		Assert.assertEquals(
+			DepotConstants.TYPE_DESIGN_LIBRARY, depotEntry.getType());
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				group.getGroupId(), fragmentEntryKey);
+
+		Assert.assertNotNull(fragmentEntry);
+		Assert.assertEquals(fragmentEntryName, fragmentEntry.getName());
+
+		Assert.assertNull(
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				_group.getGroupId(), fragmentEntryKey));
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				group.getGroupId(), styleBookEntryKey);
+
+		Assert.assertNotNull(styleBookEntry);
+		Assert.assertEquals(styleBookEntryName, styleBookEntry.getName());
+
+		Assert.assertNull(
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				_group.getGroupId(), styleBookEntryKey));
+
+		return group;
 	}
 
 	private void _assertDLFileEntry1() throws Exception {
@@ -4764,6 +4891,7 @@ public class BundleSiteInitializerTest {
 		_assertDataDefinition2();
 		_assertDDMTemplate2();
 		_assertDepotEntries2();
+		_assertDepotEntryDesignAssets2();
 		_assertDLFileEntry2();
 		_assertExpandoColumns2();
 		_assertExpandoValues2();

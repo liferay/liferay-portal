@@ -1,0 +1,10 @@
+[
+	{
+		"assetLibraryName": "Test Design Library",
+		"path": "design-library"
+	},
+	{
+		"assetLibraryName": "Test Design Library 2",
+		"path": "design-library-2"
+	}
+]

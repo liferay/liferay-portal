@@ -118,5 +118,29 @@
 				"value": "43200"
 			}
 		]
+	},
+	{
+		"depotAppCustomization": {
+			"com_liferay_asset_list_web_portlet_AssetListPortlet": false,
+			"com_liferay_document_library_web_portlet_DLAdminPortlet": true,
+			"com_liferay_journal_web_portlet_JournalPortlet": false,
+			"com_liferay_translation_web_internal_portlet_TranslationPortlet": false
+		},
+		"description_i18n": {
+			"en_US": "Test Design Library Description"
+		},
+		"name_i18n": {
+			"en_US": "Test Design Library"
+		},
+		"type": "DesignLibrary"
+	},
+	{
+		"description_i18n": {
+			"en_US": "Test Design Library 2 Description"
+		},
+		"name_i18n": {
+			"en_US": "Test Design Library 2"
+		},
+		"type": "DesignLibrary"
 	}
 ]
