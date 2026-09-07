@@ -161,6 +161,14 @@ public class ObjectEntryServiceWrapper
 	}
 
 	@Override
+	public int getObjectEntriesCount(
+		long groupId, long objectDefinitionId, int status) {
+
+		return _objectEntryService.getObjectEntriesCount(
+			groupId, objectDefinitionId, status);
+	}
+
+	@Override
 	public com.liferay.object.model.ObjectEntry getObjectEntry(
 			long objectEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -352,4 +360,4 @@ public class ObjectEntryServiceWrapper
 	private ObjectEntryService _objectEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-29569206
+// LIFERAY-SERVICE-BUILDER-HASH:-786646980

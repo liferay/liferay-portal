@@ -585,6 +585,14 @@ public class ObjectEntryLocalServiceWrapper
 	}
 
 	@Override
+	public int getObjectEntriesCount(
+		long groupId, long objectDefinitionId, int status) {
+
+		return _objectEntryLocalService.getObjectEntriesCount(
+			groupId, objectDefinitionId, status);
+	}
+
+	@Override
 	public long getObjectEntriesCount(
 			long groupId, String languageId,
 			com.liferay.object.model.ObjectDefinition objectDefinition,
@@ -1042,4 +1050,4 @@ public class ObjectEntryLocalServiceWrapper
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1063774189
+// LIFERAY-SERVICE-BUILDER-HASH:660663488
