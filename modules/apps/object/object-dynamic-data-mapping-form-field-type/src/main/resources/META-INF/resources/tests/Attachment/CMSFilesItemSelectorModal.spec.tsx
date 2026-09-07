@@ -133,6 +133,12 @@ afterEach(() => {
 	lastItemSelectorProps = null;
 });
 
+function getDecodedApiURL() {
+	return decodeURIComponent(
+		screen.getByTestId('api-url').textContent ?? ''
+	).replace(/\+/g, ' ');
+}
+
 describe('CMSFilesItemSelectorModal — initial state', () => {
 	it('passes SPACES_API_URL when opening for the first time', () => {
 		render(<CMSFilesItemSelectorModal {...defaultProps} open={true} />);
@@ -199,11 +205,11 @@ describe('CMSFilesItemSelectorModal — expired content filtering', () => {
 
 		fireEvent.click(screen.getByTestId('simulate-space-click'));
 
-		const apiURL = screen.getByTestId('api-url').textContent ?? '';
+		const apiURL = getDecodedApiURL();
 
-		expect(apiURL).toContain('status+in+%280%29');
+		expect(apiURL).toContain('status in (0)');
 		expect(apiURL).toContain(
-			'dateExpiration+eq+null+or+dateExpiration+gt+'
+			'dateExpiration eq null or dateExpiration gt now()'
 		);
 	});
 
@@ -213,12 +219,12 @@ describe('CMSFilesItemSelectorModal — expired content filtering', () => {
 		fireEvent.click(screen.getByTestId('simulate-space-click'));
 		fireEvent.click(screen.getByTestId('simulate-folder-click'));
 
-		const apiURL = screen.getByTestId('api-url').textContent ?? '';
+		const apiURL = getDecodedApiURL();
 
-		expect(apiURL).toContain('folderId+eq+folder-1');
-		expect(apiURL).toContain('status+in+%280%29');
+		expect(apiURL).toContain('folderId eq folder-1');
+		expect(apiURL).toContain('status in (0)');
 		expect(apiURL).toContain(
-			'dateExpiration+eq+null+or+dateExpiration+gt+'
+			'dateExpiration eq null or dateExpiration gt now()'
 		);
 	});
 });
