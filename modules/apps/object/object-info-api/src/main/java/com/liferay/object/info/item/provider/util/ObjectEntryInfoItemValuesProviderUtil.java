@@ -171,8 +171,18 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 			com.liferay.object.model.ObjectEntry
 				serviceBuilderRelatedObjectEntry =
-					objectEntryLocalService.fetchObjectEntry(
-						GetterUtil.getLong(values.get(objectField.getName())));
+					serviceBuilderObjectEntry.getRelatedObjectEntry(
+						objectField.getName());
+
+			if (serviceBuilderRelatedObjectEntry == null) {
+				long objectEntryId = GetterUtil.getLong(
+					values.get(objectField.getName()));
+
+				if (objectEntryId != 0) {
+					serviceBuilderRelatedObjectEntry =
+						objectEntryLocalService.fetchObjectEntry(objectEntryId);
+				}
+			}
 
 			ObjectEntry objectEntry = ObjectEntryInfoItemUtil.getObjectEntry(
 				parentObjectDefinition, objectEntryManagerRegistry,
