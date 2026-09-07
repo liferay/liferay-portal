@@ -79,11 +79,6 @@ public abstract class BaseProductionReadinessMVCResourceCommand
 		serveProductionReadinessResource(resourceRequest, resourceResponse);
 	}
 
-	/**
-	 * Returns <code>true</code> if the command changes state and therefore
-	 * requires a valid CSRF token and the POST method. Read only commands must
-	 * override this method to return <code>false</code>.
-	 */
 	protected boolean isCSRFProtected() {
 		return true;
 	}

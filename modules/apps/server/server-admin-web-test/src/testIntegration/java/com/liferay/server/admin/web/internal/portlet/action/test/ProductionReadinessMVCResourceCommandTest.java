@@ -68,7 +68,8 @@ public class ProductionReadinessMVCResourceCommandTest {
 
 	@After
 	public void tearDown() throws Exception {
-		ConfigurationTestUtil.deleteConfiguration(_PID);
+		ConfigurationTestUtil.deleteConfiguration(
+			_PRODUCTION_READINESS_CONFIGURATION_PID);
 	}
 
 	@Test
@@ -130,7 +131,7 @@ public class ProductionReadinessMVCResourceCommandTest {
 
 	private String[] _getIgnoredRules() throws Exception {
 		Configuration configuration = _configurationAdmin.getConfiguration(
-			_PID, StringPool.QUESTION);
+			_PRODUCTION_READINESS_CONFIGURATION_PID, StringPool.QUESTION);
 
 		Dictionary<String, Object> properties = configuration.getProperties();
 
@@ -211,7 +212,7 @@ public class ProductionReadinessMVCResourceCommandTest {
 		Assert.assertFalse(ArrayUtil.contains(_getIgnoredRules(), _ruleKey));
 	}
 
-	private static final String _PID =
+	private static final String _PRODUCTION_READINESS_CONFIGURATION_PID =
 		"com.liferay.server.admin.web.internal.configuration." +
 			"ProductionReadinessConfiguration";
 

@@ -76,15 +76,14 @@ public class ForceReconsentMVCResourceCommand extends BaseMVCResourceCommand {
 			return;
 		}
 
-		ExtendedObjectClassDefinition.Scope scope =
-			ExtendedObjectClassDefinition.Scope.SYSTEM;
-		long scopePK = 0;
-
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+		ExtendedObjectClassDefinition.Scope scope =
+			ExtendedObjectClassDefinition.Scope.SYSTEM;
 		String scopeName = ParamUtil.getString(
 			resourceRequest, "scope",
 			ExtendedObjectClassDefinition.Scope.SYSTEM.getValue());
+		long scopePK = 0;
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
