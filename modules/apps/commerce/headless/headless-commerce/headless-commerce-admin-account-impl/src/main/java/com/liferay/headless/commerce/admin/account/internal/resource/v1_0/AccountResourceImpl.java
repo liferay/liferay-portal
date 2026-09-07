@@ -139,9 +139,12 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 	@Override
 	public Account getAccount(Long id) throws Exception {
+		AccountEntry accountEntry = _accountEntryService.getAccountEntry(
+			GetterUtil.getLong(id));
+
 		return _accountDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
-				GetterUtil.getLong(id),
+				accountEntry.getAccountEntryId(),
 				contextAcceptLanguage.getPreferredLocale()));
 	}
 
