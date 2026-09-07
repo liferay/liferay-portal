@@ -20,18 +20,10 @@ exports[`RoomStatistics matches snapshot 1`] = `
             >
               <div>
                 <span
-                  class="font-weight-semi-bold mb-0 mr-2 room-statistics-label text-secondary"
+                  class="font-weight-semi-bold mb-0 room-statistics-label text-secondary"
                 >
                   time-viewed
                 </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-question-circle text-secondary"
-                  role="presentation"
-                >
-                  <use
-                    href="#question-circle"
-                  />
-                </svg>
               </div>
               <div>
                 <svg
@@ -54,18 +46,10 @@ exports[`RoomStatistics matches snapshot 1`] = `
             >
               <div>
                 <span
-                  class="font-weight-semi-bold mb-0 mr-2 room-statistics-label text-secondary"
+                  class="font-weight-semi-bold mb-0 room-statistics-label text-secondary"
                 >
                   total-visits
                 </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-question-circle text-secondary"
-                  role="presentation"
-                >
-                  <use
-                    href="#question-circle"
-                  />
-                </svg>
               </div>
               <div>
                 <svg
@@ -88,18 +72,10 @@ exports[`RoomStatistics matches snapshot 1`] = `
             >
               <div>
                 <span
-                  class="font-weight-semi-bold mb-0 mr-2 room-statistics-label text-secondary"
+                  class="font-weight-semi-bold mb-0 room-statistics-label text-secondary"
                 >
                   visitors
                 </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-question-circle text-secondary"
-                  role="presentation"
-                >
-                  <use
-                    href="#question-circle"
-                  />
-                </svg>
               </div>
               <div>
                 <svg
@@ -122,18 +98,10 @@ exports[`RoomStatistics matches snapshot 1`] = `
             >
               <div>
                 <span
-                  class="font-weight-semi-bold mb-0 mr-2 room-statistics-label text-secondary"
+                  class="font-weight-semi-bold mb-0 room-statistics-label text-secondary"
                 >
                   actions
                 </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-question-circle text-secondary"
-                  role="presentation"
-                >
-                  <use
-                    href="#question-circle"
-                  />
-                </svg>
               </div>
               <div>
                 <svg
@@ -156,18 +124,10 @@ exports[`RoomStatistics matches snapshot 1`] = `
             >
               <div>
                 <span
-                  class="font-weight-semi-bold mb-0 mr-2 room-statistics-label text-secondary"
+                  class="font-weight-semi-bold mb-0 room-statistics-label text-secondary"
                 >
                   comments
                 </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-question-circle text-secondary"
-                  role="presentation"
-                >
-                  <use
-                    href="#question-circle"
-                  />
-                </svg>
               </div>
               <div>
                 <svg
