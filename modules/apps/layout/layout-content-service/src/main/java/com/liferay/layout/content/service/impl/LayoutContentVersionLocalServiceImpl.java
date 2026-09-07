@@ -416,10 +416,7 @@ public class LayoutContentVersionLocalServiceImpl
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		String pathImage = _portal.getPathImage();
-		String pathMain = _portal.getPathMain();
-
-		String companyLogo = pathImage + "/company_logo";
+		String companyLogo = _portal.getPathImage() + "/company_logo";
 
 		Company company = themeDisplay.getCompany();
 
@@ -440,8 +437,9 @@ public class LayoutContentVersionLocalServiceImpl
 
 			if (layoutSetLogoId > 0) {
 				layoutSetLogo = StringBundler.concat(
-					pathImage, "/layout_set_logo?img_id=", layoutSetLogoId,
-					"&t=", _webServerServletToken.getToken(layoutSetLogoId));
+					_portal.getPathImage(), "/layout_set_logo?img_id=",
+					layoutSetLogoId, "&t=",
+					_webServerServletToken.getToken(layoutSetLogoId));
 
 				companyLogo = layoutSetLogo;
 			}
@@ -449,6 +447,7 @@ public class LayoutContentVersionLocalServiceImpl
 
 		themeDisplay.setCompanyLogo(companyLogo);
 		themeDisplay.setLayoutSetLogo(layoutSetLogo);
+
 		themeDisplay.setLayouts(
 			ListUtil.filter(
 				_layoutService.getLayouts(
@@ -456,13 +455,14 @@ public class LayoutContentVersionLocalServiceImpl
 					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID),
 				curLayout -> !curLayout.isHidden() && curLayout.isPublished()));
 		themeDisplay.setPathContext(_portal.getPathContext());
-		themeDisplay.setPathImage(pathImage);
-		themeDisplay.setPathMain(pathMain);
+		themeDisplay.setPathImage(_portal.getPathImage());
+		themeDisplay.setPathMain(_portal.getPathMain());
 		themeDisplay.setRealCompanyLogo(companyLogo);
 		themeDisplay.setURLSignIn(
 			HttpComponentsUtil.addParameter(
 				StringBundler.concat(
-					themeDisplay.getPortalURL(), pathMain, "/portal/login"),
+					themeDisplay.getPortalURL(), _portal.getPathMain(),
+					"/portal/login"),
 				"p_l_id", layout.getPlid()));
 	}
 
