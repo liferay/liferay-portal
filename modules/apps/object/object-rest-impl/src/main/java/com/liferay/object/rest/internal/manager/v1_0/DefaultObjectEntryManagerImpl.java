@@ -824,17 +824,28 @@ public class DefaultObjectEntryManagerImpl
 		boolean preferApproved = GetterUtil.getBoolean(
 			dtoConverterContext.getAttribute("preferApproved"));
 
-		Long objectEntriesGroupId = _getObjectEntriesGroupId(
-			groupIds, objectDefinition, predicate, preferApproved, search,
-			sorts);
-
 		int start = _getStartPosition(pagination);
 		int end = _getEndPosition(pagination);
 
 		List<ObjectEntry> objectEntries = null;
 		int objectEntriesCount = 0;
 
-		if (objectEntriesGroupId == null) {
+		if (_isPlainListing(
+				groupIds, objectDefinition, predicate, preferApproved, search,
+				sorts)) {
+
+			objectEntries = TransformUtil.transform(
+				_objectEntryService.getObjectEntries(
+					groupIds[0], objectDefinition.getObjectDefinitionId(),
+					WorkflowConstants.STATUS_ANY, start, end),
+				serviceBuilderObjectEntry -> _getObjectEntry(
+					dtoConverterContext, objectDefinition,
+					serviceBuilderObjectEntry));
+			objectEntriesCount = _objectEntryService.getObjectEntriesCount(
+				groupIds[0], objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_ANY);
+		}
+		else {
 			objectEntries = TransformUtil.transform(
 				objectEntryLocalService.getPrimaryKeys(
 					groupIds, companyId, dtoConverterContext.getUserId(),
@@ -846,19 +857,6 @@ public class DefaultObjectEntryManagerImpl
 				groupIds, companyId, dtoConverterContext.getUserId(),
 				objectDefinition.getObjectDefinitionId(), predicate,
 				preferApproved, search);
-		}
-		else {
-			objectEntries = TransformUtil.transform(
-				_objectEntryService.getObjectEntries(
-					objectEntriesGroupId,
-					objectDefinition.getObjectDefinitionId(),
-					WorkflowConstants.STATUS_ANY, start, end),
-				serviceBuilderObjectEntry -> _getObjectEntry(
-					dtoConverterContext, objectDefinition,
-					serviceBuilderObjectEntry));
-			objectEntriesCount = _objectEntryService.getObjectEntriesCount(
-				objectEntriesGroupId, objectDefinition.getObjectDefinitionId(),
-				WorkflowConstants.STATUS_ANY);
 		}
 
 		return Page.of(
@@ -2418,41 +2416,6 @@ public class DefaultObjectEntryManagerImpl
 		return getGroupId(objectDefinition, scopeKey, true);
 	}
 
-	private Long _getObjectEntriesGroupId(
-		Long[] groupIds, ObjectDefinition objectDefinition, Predicate predicate,
-		boolean preferApproved, String search, Sort[] sorts) {
-
-		if ((predicate != null) || preferApproved ||
-			Validator.isNotNull(search) || !_isDefaultSort(sorts) ||
-			ArrayUtil.isNotEmpty(
-				objectDefinition.getRootObjectDefinitionIds())) {
-
-			return null;
-		}
-
-		long groupId = 0;
-
-		if (!StringUtil.equals(
-				objectDefinition.getScope(),
-				ObjectDefinitionConstants.SCOPE_COMPANY)) {
-
-			if (groupIds.length != 1) {
-				return null;
-			}
-
-			groupId = groupIds[0];
-		}
-
-		if ((PermissionThreadLocal.getPermissionChecker() != null) &&
-			_inlineSQLHelper.isEnabled(
-				objectDefinition.getCompanyId(), groupId)) {
-
-			return null;
-		}
-
-		return groupId;
-	}
-
 	private String _getGroupExternalReferenceCode(FileEntry fileEntry) {
 		Scope scope = fileEntry.getScope();
 
@@ -3228,6 +3191,29 @@ public class DefaultObjectEntryManagerImpl
 		}
 
 		return false;
+	}
+
+	private boolean _isPlainListing(
+		Long[] groupIds, ObjectDefinition objectDefinition, Predicate predicate,
+		boolean preferApproved, String search, Sort[] sorts) {
+
+		if ((predicate != null) || preferApproved ||
+			Validator.isNotNull(search) || !_isDefaultSort(sorts) ||
+			ArrayUtil.isNotEmpty(
+				objectDefinition.getRootObjectDefinitionIds()) ||
+			(groupIds.length != 1)) {
+
+			return false;
+		}
+
+		if ((PermissionThreadLocal.getPermissionChecker() != null) &&
+			_inlineSQLHelper.isEnabled(
+				objectDefinition.getCompanyId(), groupIds[0])) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private boolean _isUniqueName(
