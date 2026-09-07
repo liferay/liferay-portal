@@ -1786,17 +1786,17 @@ public class AssetTagPersistenceImpl
 				new String[] {"name"}, true),
 			new FinderPath(
 				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByName",
-				new String[] {String.class.getName()}, new String[] {"name"}, 1,
+				new String[] {String.class.getName()}, new String[] {"name"}, 0,
 				1, true, null),
 			new FinderPath(
 				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByName",
-				new String[] {String.class.getName()}, new String[] {"name"}, 1,
+				new String[] {String.class.getName()}, new String[] {"name"}, 0,
 				1, false, null),
 			_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
 			AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new ArrayableFinderColumn<>(
-				"assetTag.", "name", FinderColumn.Type.STRING, "=", false,
-				false, true, AssetTag::getName));
+				"assetTag.", "name", FinderColumn.Type.STRING, "=", false, true,
+				true, AssetTag::getName));
 
 		_collectionPersistenceFinderByG_N = new CollectionPersistenceFinder<>(
 			this,
@@ -1811,18 +1811,18 @@ public class AssetTagPersistenceImpl
 			new FinderPath(
 				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_N",
 				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"groupId", "name"}, 2, 2, true, null),
+				new String[] {"groupId", "name"}, 0, 2, true, null),
 			new FinderPath(
 				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_N",
 				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"groupId", "name"}, 2, 2, false, null),
+				new String[] {"groupId", "name"}, 0, 2, false, null),
 			_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
 			AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
 			new FinderColumn<>(
 				"assetTag.", "groupId", FinderColumn.Type.LONG, "=", true, true,
 				AssetTag::getGroupId),
 			new FinderColumn<>(
-				"assetTag.", "name", FinderColumn.Type.STRING, "=", false, true,
+				"assetTag.", "name", FinderColumn.Type.STRING, "=", true, true,
 				AssetTag::getName));
 
 		_collectionPersistenceFinderByG_LikeN =
@@ -1905,4 +1905,4 @@ public class AssetTagPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-123491212
+// LIFERAY-SERVICE-BUILDER-HASH:-604181840
