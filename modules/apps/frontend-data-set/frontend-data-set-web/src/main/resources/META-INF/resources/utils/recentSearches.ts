@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {checkConsent, localStorage} from 'frontend-js-web';
+import functionalStorage from './functionalStorage';
 
 const DEFAULT_MAX_ENTRIES = 20;
 
@@ -65,14 +65,7 @@ function add(
  * @param fdsName Name of the Data Set
  */
 function clear(fdsName: string): string[] {
-	try {
-		_checkConsentFunctionalCookies();
-
-		localStorage.removeItem(_getStorageKey(fdsName));
-	}
-	catch (error) {
-		_logStorageWarning(error);
-	}
+	functionalStorage.remove(_getStorageKey(fdsName));
 
 	return get(fdsName);
 }
@@ -84,21 +77,11 @@ function clear(fdsName: string): string[] {
  * @param fdsName Name of the Data Set
  */
 function get(fdsName: string): string[] {
-	let recentSearches;
+	const storageKey = _getStorageKey(fdsName);
 
-	try {
-		_checkConsentFunctionalCookies();
+	const recentSearches = functionalStorage.get(storageKey);
 
-		recentSearches = JSON.parse(
-			localStorage.getItem(
-				_getStorageKey(fdsName),
-				localStorage.TYPES.FUNCTIONAL
-			) as string
-		);
-	}
-	catch (error) {
-		_logStorageWarning(error);
-
+	if (recentSearches === null) {
 		return [];
 	}
 
@@ -106,7 +89,7 @@ function get(fdsName: string): string[] {
 		!Array.isArray(recentSearches) ||
 		recentSearches.some((recentSearch) => typeof recentSearch !== 'string')
 	) {
-		_logStorageWarning('malformed data');
+		functionalStorage.logWarning(storageKey, 'malformed data');
 
 		return [];
 	}
@@ -128,12 +111,6 @@ function remove(fdsName: string, query: string): string[] {
 			(recentSearch) => !_isSameSearch(recentSearch, query)
 		)
 	);
-}
-
-function _checkConsentFunctionalCookies() {
-	if (!checkConsent(localStorage.TYPES.FUNCTIONAL)) {
-		throw new Error('There is no consent for functional cookies');
-	}
 }
 
 function _continuesWord(prefix: string, search: string): boolean {
@@ -159,15 +136,6 @@ function _normalize(search: string): string {
 	return search.trim().toLowerCase();
 }
 
-function _logStorageWarning(error: unknown) {
-	if (process.env.NODE_ENV === 'development') {
-		console.warn(
-			'Recent searches could not be accessed in browser storage',
-			error
-		);
-	}
-}
-
 // The queries are read back rather than returned as written, so a write that
 // browser storage rejects cannot leave the caller showing a history the Data
 // Set does not have
@@ -176,18 +144,7 @@ function _setRecentSearches(
 	fdsName: string,
 	recentSearches: string[]
 ): string[] {
-	try {
-		_checkConsentFunctionalCookies();
-
-		localStorage.setItem(
-			_getStorageKey(fdsName),
-			JSON.stringify(recentSearches),
-			localStorage.TYPES.FUNCTIONAL
-		);
-	}
-	catch (error) {
-		_logStorageWarning(error);
-	}
+	functionalStorage.set(_getStorageKey(fdsName), recentSearches);
 
 	return get(fdsName);
 }
