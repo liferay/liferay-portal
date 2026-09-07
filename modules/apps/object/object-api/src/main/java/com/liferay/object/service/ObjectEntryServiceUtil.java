@@ -63,6 +63,13 @@ public class ObjectEntryServiceUtil {
 			objectDefinitionId, objectEntryId, actionId);
 	}
 
+	public static void checkModelResourcePermission(
+			ObjectEntry objectEntry, String actionId)
+		throws PortalException {
+
+		getService().checkModelResourcePermission(objectEntry, actionId);
+	}
+
 	public static ObjectEntry copyObjectEntry(
 			long objectEntryId, long objectEntryFolderId,
 			Map<String, Serializable> values,
@@ -318,4 +325,4 @@ public class ObjectEntryServiceUtil {
 		new Snapshot<>(ObjectEntryServiceUtil.class, ObjectEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1024998454
+// LIFERAY-SERVICE-BUILDER-HASH:-812823718
