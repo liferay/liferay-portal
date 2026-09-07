@@ -278,16 +278,21 @@ public class ObjectEntryVersionFieldValueResolverTest {
 			).put(
 				"properties",
 				JSONUtil.put(
-					"title", "Hello"
+					"title", "Hallo"
 				).put(
-					"title_i18n", JSONUtil.put("en_US", "Hello")
+					"title_i18n",
+					JSONUtil.put(
+						"de_DE", "Hallo"
+					).put(
+						"en_US", "Hello"
+					)
 				)
 			).toString(),
 			version);
 
 		Map<String, Object> fieldValues =
 			_objectEntryVersionFieldValueResolver.getFieldValues(
-				"es_ES", objectEntryId, version);
+				"en_US", "es_ES", objectEntryId, version);
 
 		Assert.assertEquals(fieldValues.toString(), 2, fieldValues.size());
 		Assert.assertEquals(
@@ -331,7 +336,7 @@ public class ObjectEntryVersionFieldValueResolverTest {
 
 		Map<String, Object> fieldValues =
 			_objectEntryVersionFieldValueResolver.getFieldValues(
-				"es_ES", objectEntryId, version);
+				"en_US", "es_ES", objectEntryId, version);
 
 		Assert.assertEquals(fieldValues.toString(), 3, fieldValues.size());
 		Assert.assertEquals("<p>Hello</p>", fieldValues.get("content"));

@@ -114,17 +114,19 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 				objectFields.put(objectField.getName(), objectField);
 			}
 
+			String defaultLanguageId = _language.getLanguageId(
+				portal.getSiteDefaultLocale(objectEntry.getGroupId()));
 			String languageId = requestJSONObject.getString("languageId");
 
 			User user = portal.getUser(httpServletRequest);
 
 			Map<String, Object> sourceFieldValues =
 				_objectEntryVersionFieldValueResolver.getFieldValues(
-					languageId, objectEntryId,
+					defaultLanguageId, languageId, objectEntryId,
 					requestJSONObject.getInt("sourceVersion"));
 			Map<String, Object> targetFieldValues =
 				_objectEntryVersionFieldValueResolver.getFieldValues(
-					languageId, objectEntryId,
+					defaultLanguageId, languageId, objectEntryId,
 					requestJSONObject.getInt("targetVersion"));
 
 			JSONObject sourceDiffsJSONObject = _jsonFactory.createJSONObject();

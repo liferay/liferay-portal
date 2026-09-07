@@ -71,7 +71,8 @@ public class ObjectEntryVersionFieldValueResolver {
 	}
 
 	public Map<String, Object> getFieldValues(
-			String languageId, long objectEntryId, int version)
+			String defaultLanguageId, String languageId, long objectEntryId,
+			int version)
 		throws Exception {
 
 		Map<String, Object> fieldValues = new HashMap<>();
@@ -107,6 +108,10 @@ public class ObjectEntryVersionFieldValueResolver {
 					(Map<String, Object>)localizedValues;
 
 				Object localizedValue = localizedValuesMap.get(languageId);
+
+				if (localizedValue == null) {
+					localizedValue = localizedValuesMap.get(defaultLanguageId);
+				}
 
 				if (localizedValue != null) {
 					fieldValue = localizedValue;
