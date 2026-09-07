@@ -489,6 +489,29 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 
 		Group scopeGroup = themeDisplay.getScopeGroup();
 
+		if (objectEntryManager instanceof
+				DefaultObjectEntryManager defaultObjectEntryManager) {
+
+			Page<ObjectEntry> objectEntriesPage =
+				defaultObjectEntryManager.getServiceBuilderObjectEntries(
+					themeDisplay.getCompanyId(), _objectDefinition,
+					scopeGroup.getGroupKey(),
+					new DefaultDTOConverterContext(
+						false, null, null, null, null, themeDisplay.getLocale(),
+						null, themeDisplay.getUser()),
+					_getFilterString(collectionQuery),
+					ObjectEntryInfoCollectionProviderUtil.getPagination(
+						collectionQuery.getPagination()),
+					ObjectEntryInfoCollectionProviderUtil.getSearch(
+						collectionQuery),
+					_SORTS_DEFAULT_OBJECT_ENTRY);
+
+			return InfoPage.of(
+				new ArrayList<>(objectEntriesPage.getItems()),
+				collectionQuery.getPagination(),
+				(int)objectEntriesPage.getTotalCount());
+		}
+
 		Page<com.liferay.object.rest.dto.v1_0.ObjectEntry> objectEntriesPage =
 			objectEntryManager.getObjectEntries(
 				themeDisplay.getCompanyId(), _objectDefinition,
